@@ -1,0 +1,6 @@
+{
+  "ok": true,
+  "scope": "fresh sparse local clone plus current .gitignore working patch; ignore behavior only",
+  "rule": ".gitignore:21:/app/native/ground_vehicle/\tapp/native/ground_vehicle/ignore-probe.dll",
+  "generated_output_untracked_status": ""
+}

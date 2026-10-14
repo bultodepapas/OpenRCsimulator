@@ -120,9 +120,28 @@ func _initialize() -> void:
 	payload.workshop_descriptor.presentation.model_manifest_sha256 = "0".repeat(64)
 	check("changed presentation dependency cannot freeze a trial", not Trial.freeze(payload).get("ok", false))
 	payload.workshop_descriptor = descriptor.duplicate(true)
-	payload.workshop_descriptor.format = Descriptor.LEGACY_FORMAT
-	payload.workshop_descriptor.presentation = {"visual_id": Catalog.DEFAULT_ID, "scale_root": "airplane"}
-	var old_saved := Trial.freeze(payload)
+	var historical_base: Dictionary = base.duplicate(true)
+	_strip_physical_identity(historical_base)
+	var historical_bytes: PackedByteArray = _source_bytes(historical_base)
+	var historical_descriptor: Dictionary = descriptor.duplicate(true)
+	historical_descriptor.format = Descriptor.LEGACY_FORMAT
+	historical_descriptor.base_sha256 = _sha(historical_bytes)
+	historical_descriptor.inventory_bindings = _legacy_inventory_bindings(historical_base)
+	historical_descriptor.presentation = {"visual_id": Catalog.DEFAULT_ID, "scale_root": "airplane"}
+	check("v1 fixture has a genuinely identity-free source snapshot",
+		not _has_physical_identity_metadata(historical_base)
+		and historical_descriptor.format == Descriptor.LEGACY_FORMAT)
+	var historical_descriptor_result: Dictionary = Descriptor.validate(
+		historical_descriptor, Catalog.DEFAULT_ID, historical_bytes)
+	check("historical v1 descriptor validates against its old source snapshot",
+		historical_descriptor_result.get("ok", false))
+	var historical_dependencies: Dictionary = Dependencies.capture(historical_base)
+	check("historical source dependencies remain capturable", historical_dependencies.get("ok", false))
+	var historical_payload: Dictionary = payload.duplicate(true)
+	historical_payload.base_bytes = historical_bytes
+	historical_payload.workshop_descriptor = historical_descriptor
+	historical_payload.dependencies = historical_dependencies.get("manifest", {})
+	var old_saved := Trial.freeze(historical_payload)
 	check("v1 saved descriptor can still launch through its explicit adapter", old_saved.get("ok", false))
 	check("legacy descriptor trial hash binds the resolved model manifest", old_saved.get("ok", false)
 		and old_saved.identity.trial_id == _expected_trial_id(old_saved.identity))
@@ -150,3 +169,56 @@ func _sha(bytes: PackedByteArray) -> String:
 	hashing.start(HashingContext.HASH_SHA256)
 	hashing.update(bytes)
 	return hashing.finish().hex_encode()
+
+
+func _source_bytes(base: Dictionary) -> PackedByteArray:
+	return (JSON.stringify(base, "\t", true, true) + "\n").to_utf8_buffer()
+
+
+func _has_physical_identity_metadata(base: Dictionary) -> bool:
+	if base.has("physical_identity_version") or base.has("crash_hull_ids"):
+		return true
+	for item: Variant in base.get("inventory", []):
+		if item is Dictionary and item.has("id"):
+			return true
+	var gear: Variant = base.get("landing_gear", {})
+	if gear is Dictionary:
+		for contact: Variant in gear.get("contacts", []):
+			if contact is Dictionary and contact.has("id"):
+				return true
+	var propulsion: Variant = base.get("propulsion", {})
+	if propulsion is Dictionary and propulsion.has("id"):
+		return true
+	var controls: Variant = base.get("controls", {})
+	return controls is Dictionary and controls.has("surface_ids")
+
+
+func _strip_physical_identity(base: Dictionary) -> void:
+	base.erase("physical_identity_version")
+	for item: Variant in base.get("inventory", []):
+		if item is Dictionary:
+			item.erase("id")
+	var gear: Variant = base.get("landing_gear", {})
+	if gear is Dictionary:
+		var contacts: Variant = gear.get("contacts", [])
+		if contacts is Array:
+			for contact: Variant in contacts:
+				if contact is Dictionary:
+					contact.erase("id")
+	var propulsion: Variant = base.get("propulsion", {})
+	if propulsion is Dictionary:
+		propulsion.erase("id")
+	base.erase("crash_hull_ids")
+	var controls: Variant = base.get("controls", {})
+	if controls is Dictionary:
+		controls.erase("surface_ids")
+
+
+func _legacy_inventory_bindings(base: Dictionary) -> Array:
+	var bindings: Array = []
+	for index: int in range(base.get("inventory", []).size()):
+		var name: String = str(base["inventory"][index].get("name", ""))
+		var name_hash: String = _sha(name.to_utf8_buffer())
+		bindings.append({"key": "inventory-%03d-%s" % [index, name_hash.substr(0, 12)],
+			"index": index, "name_sha256": name_hash})
+	return bindings

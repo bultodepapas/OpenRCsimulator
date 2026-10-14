@@ -52,7 +52,7 @@ static func evaluate(model: Dictionary, main_speed: float, drive_fraction: float
 			"net_main_torque_nm": -held_loss,
 			"governor_error_rad_s": model.governor_target_main_rad_s - main_speed,
 			"power_limited": false, "zero_drive_hold_proxy": true,
-			"engine_remains_lumped": true}
+			"one_speed_lump_preserved": true}
 	var commanded_torque: float = drive_fraction * model.engine_torque_max_nm
 	var governor_error: float = model.governor_target_main_rad_s - main_speed
 	if governor_enabled:
@@ -84,7 +84,7 @@ static func evaluate(model: Dictionary, main_speed: float, drive_fraction: float
 		"main_drive_torque_nm": main_torque, "main_drive_power_w": main_power,
 		"shaft_loss_torque_nm": shaft_loss, "net_main_torque_nm": net_main_torque,
 		"governor_error_rad_s": governor_error, "power_limited": power_limited,
-		"zero_drive_hold_proxy": false, "engine_remains_lumped": true}
+		"zero_drive_hold_proxy": false, "one_speed_lump_preserved": true}
 
 
 static func _prepared(model: Dictionary) -> bool:

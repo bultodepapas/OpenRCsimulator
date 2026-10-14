@@ -6,6 +6,48 @@
 # visible pause; resuming is an explicit action (resume()).
 extends Node
 
+const FailureConfig := preload("res://failures/config.gd")
+const FailureRuntime := preload("res://failures/runtime.gd")
+const FAILURE_CHECKPOINT_FORMAT := "openrc-flight-checkpoint v10"
+signal failure_changed
+var _failures: RefCounted = null
+var failure_error: String = ""
+
+
+## One resolved episode per new flight. Restart reuses it; ordinary technical flights remain unchanged.
+func setup_failures(config: Dictionary, seed_value: int) -> bool:
+	var checked: Dictionary = FailureConfig.validate(config)
+	if not checked.ok or sim == null or sim.tick != 0 or not physics_enabled or not _flight_ready():
+		failure_error = "Failure settings require a valid physics flight at tick zero."
+		return false
+	var candidate: RefCounted = FailureRuntime.new()
+	if not candidate.begin(checked.config, seed_value, sim.dt()):
+		failure_error = "Failure seed or timestep is invalid."
+		return false
+	_failures = candidate if checked.config.probability_percent > 0 else null
+	failure_error = ""
+	return true
+
+
+func failure_status() -> Dictionary:
+	return _failures.status() if _failures != null else {active = false, selected = false, enabled = false}
+
+
+## Demand downstream of the failed receiver/actuator; pilot inputs stay intact for traces and replay.
+func propulsion_throttle() -> float:
+	return sim.inputs[3] if _failures == null else _failures.effective_throttle(sim.inputs[3])
+
+
+## Training delay counts only accepted ticks at least five metres above local terrain and clear of the wheels.
+func _failure_airborne() -> bool:
+	var ground_up: float = GroundTerrain.sample_validated(sim.state[RB.POS], sim.state[RB.POS + 1], ground_surfaces)[0]
+	if -sim.state[RB.POS + 2] - ground_up < 5.0:
+		return false
+	for compression: float in gear_compressions(sim.state):
+		if compression > 0.0:
+			return false
+	return true
+
 const ElectricStop: Script = preload("res://physics/electric_stop.gd")
 const GlowFlight: Script = preload("res://physics/glow/flight.gd")
 const BatteryStep: Script = preload("res://physics/electric_battery_step.gd")
@@ -945,6 +987,8 @@ func _start_failure_reason() -> String:
 
 
 func _on_sim_faulted(reason: String) -> void:
+	if _failures != null:
+		_failures.rollback()
 	_clear_pending_scenery_damage()
 	_clear_pending_contacts()
 	pause_reason = "simulation fault: " + reason
@@ -952,6 +996,8 @@ func _on_sim_faulted(reason: String) -> void:
 
 func _on_sim_stepped(tick: int, _time_s: float, _state: PackedFloat64Array,
 		_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
+	# This connection precedes external observers: a rejected RK/contact candidate never announces an incident.
+	var failure_activated: bool = _failures != null and tick > 0 and _failures.commit(tick)
 	_committing_contacts = true
 	_observe_contact_tick(tick)
 	if _pending_contact_tick == tick:
@@ -972,6 +1018,8 @@ func _on_sim_stepped(tick: int, _time_s: float, _state: PackedFloat64Array,
 		scenery_damage_changed.emit()
 	_committing_contacts = false
 	contact_events_changed.emit()
+	if failure_activated:
+		failure_changed.emit() # owner contact/scenery state is now checkpointable at the same accepted tick
 
 
 func contact_events() -> Dictionary:
@@ -1195,6 +1243,7 @@ func reload() -> String:
 			return "reload failed; previous aircraft and flight retained: %s" % runway_candidate.message
 	var old_flight: Dictionary = { data = aircraft, start = start, trims = trims.duplicate(true) }
 	var old_snapshot: Dictionary = sim.checkpoint()
+	var old_failures: Dictionary = _failures.snapshot() if _failures != null else {}
 	var old_commands := commands.duplicate(true)
 	var old_raw := raw.duplicate(true)
 	var old_crash := crash.duplicate(true)
@@ -1215,6 +1264,8 @@ func reload() -> String:
 			return "aircraft reload failed during reset; simulation paused: %s" % reason
 		_commit_aircraft(old_flight)
 		if _restore_reload_checkpoint(old_snapshot):
+			if _failures != null and not old_failures.is_empty():
+				_failures.restore(old_failures, sim.tick)
 			_restore_contact_history(old_contacts)
 			soft_contacts = old_soft_contacts
 			_last_scenery_event = old_scenery_event
@@ -1652,6 +1703,8 @@ func reset() -> void:
 
 ## Rebuilds the ordinary trimmed flight without emitting a second reset signal.
 func _reset_airborne_start() -> bool:
+	if _failures != null:
+		_failures.restart()
 	var weather_aux: PackedFloat64Array = _restart_weather_aux()
 	var initial: PackedFloat64Array = start.state.duplicate() if _has_valid_start() else PackedFloat64Array()
 	if _has_valid_start() and not weather_is_calm():
@@ -1703,6 +1756,8 @@ func _reset_airborne_start() -> bool:
 
 
 func _reset_selected_runway_start() -> Dictionary:
+	if _failures != null:
+		_failures.restart()
 	if not surface_error.is_empty():
 		return { ok = false, message = surface_error }
 	if not aircraft.get("ok", false) or not start.get("ok", false):
@@ -1836,8 +1891,16 @@ func adjust_elevator_trim(delta_deg: float) -> bool:
 	return true
 
 
-## Stick commands plus trims in maximum-throw units. Sticks are shaped before trim so reduced
-## rates never attenuate the trim correction; the existing servo applies the summed command.
+## Keyboard trim in normalized maximum-throw units; the fault remains downstream of this command.
+func adjust_aileron_trim(delta_units: float) -> bool:
+	if not is_finite(delta_units) or not physics_enabled or not input_enabled or not _flight_ready() \
+			or sim.paused or not holds.is_empty() or not crash.is_empty() or calibration != null:
+		return false
+	trims.roll = clampf(float(trims.roll) + delta_units, -1.0, 1.0)
+	return true
+
+
+## Stick commands plus trims in maximum-throw units. Reduced rates never attenuate the trim correction.
 func flown_commands() -> Dictionary:
 	var c := commands.duplicate()
 	if rates_active():
@@ -1854,7 +1917,7 @@ func surfaces() -> Dictionary:
 	if not physics_enabled or not aircraft.get("ok", false):
 		return flown_commands()
 	var a: PackedFloat64Array = sim.aux
-	return { roll = a[AUX_SERVO], pitch = a[AUX_SERVO + 1], yaw = a[AUX_SERVO + 2], throttle = sim.inputs[3] }
+	return { roll = a[AUX_SERVO], pitch = a[AUX_SERVO + 1], yaw = a[AUX_SERVO + 2], throttle = propulsion_throttle() }
 
 
 ## Maximum surface throws in degrees from the loaded aircraft ({} without valid data: Commands' default).
@@ -1917,7 +1980,7 @@ func _turbine_evaluate(s: PackedFloat64Array, values: PackedFloat64Array, stage_
 	var ground_loads: PackedFloat64Array = ground.loads
 	for at: int in ground_loads.size():
 		out[at] += ground_loads[at]
-	var rate: float = Turbine.spool_rate(rpm, Turbine.demand_rpm(sim.inputs[3], prop), prop) if engine_running else 0.0
+	var rate: float = Turbine.spool_rate(rpm, Turbine.demand_rpm(propulsion_throttle(), prop), prop) if engine_running else 0.0
 	var derivative := PackedFloat64Array([rate])
 	derivative.append_array(ground.derivative)
 	return {loads = out, derivative = derivative, rotor_momentum = Turbine.rotor_momentum(rpm, prop)}
@@ -1936,7 +1999,7 @@ func turbine_state() -> Dictionary:
 	var air: Dictionary = air_data(sim.state, sim.time())
 	var axial_speed: float = M.dot(air.v_air, prop.axis)
 	return {ok = true, tick = sim.tick, time_s = sim.time(), rpm = rpm,
-		demand_rpm = Turbine.demand_rpm(sim.inputs[3], prop) if engine_running else 0.0,
+		demand_rpm = Turbine.demand_rpm(propulsion_throttle(), prop) if engine_running else 0.0,
 		engine_running = engine_running, axial_airspeed_m_s = axial_speed,
 		gross_thrust_n = Turbine.gross_thrust(rpm, prop, air_density(), axial_speed),
 		net_thrust_n = Turbine.thrust(rpm, axial_speed, prop, air_density()),
@@ -2109,7 +2172,7 @@ func _battery_point(rpm: float, values: PackedFloat64Array, dynamics_only: bool 
 	var charge: float = values[_rotor_index() + 1]
 	var prop: Dictionary = aircraft.model.propulsion
 	var soc: float = maxf(0.0, charge / (3600.0 * float(prop.battery.capacity_ah)))
-	return Propulsion.electric_source_state(rpm, sim.inputs[3], prop, engine_running, soc, charge < 0.0, dynamics_only)
+	return Propulsion.electric_source_state(rpm, propulsion_throttle(), prop, engine_running, soc, charge < 0.0, dynamics_only)
 
 
 func _coupled_rpm(values: PackedFloat64Array, trial: bool = false) -> float:
@@ -2156,7 +2219,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 		var load_torque: float = Propulsion.prop_torque(rpm, M.dot(air.v_air, Propulsion.axis(prop)), prop, air_density())
 		rate = (float(battery_point.shaft_torque_nm) - load_torque) / float(prop.rotor_inertia) * 60.0 / TAU
 	else:
-		rate = Propulsion.shaft_rate(rpm, sim.inputs[3], M.dot(air.v_air, Propulsion.axis(prop)),
+		rate = Propulsion.shaft_rate(rpm, propulsion_throttle(), M.dot(air.v_air, Propulsion.axis(prop)),
 			prop, air_density(), engine_charge_ratio(), engine_running)
 	if not is_finite(rate):
 		return {ok = false}
@@ -2172,7 +2235,7 @@ func _coupled_response(s: PackedFloat64Array, values: PackedFloat64Array, time_s
 		external[i] += ground_loads[i]
 	var locked: bool = false
 	if electric and trial_rpm <= 0.0:
-		var point: Dictionary = battery_point if not battery_point.is_empty() else Propulsion.electric_source_state(rpm, sim.inputs[3], prop, engine_running)
+		var point: Dictionary = battery_point if not battery_point.is_empty() else Propulsion.electric_source_state(rpm, propulsion_throttle(), prop, engine_running)
 		if not point.get("ok", false):
 			return {ok = false}
 		var kt: float = 60.0 / (TAU * float(prop.motor.kv_rpm_per_volt))
@@ -2295,14 +2358,14 @@ func electrical_state() -> Dictionary:
 		return {ok = false}
 	if battery_is_dynamic() and not _battery_values_valid(sim.continuous):
 		return {ok = false}
-	var point: Dictionary = _battery_point(sim.aux[AUX_RPM], sim.continuous) if battery_is_dynamic() else Propulsion.electric_source_state(sim.aux[AUX_RPM], sim.inputs[3],
+	var point: Dictionary = _battery_point(sim.aux[AUX_RPM], sim.continuous) if battery_is_dynamic() else Propulsion.electric_source_state(sim.aux[AUX_RPM], propulsion_throttle(),
 		aircraft.model.propulsion, engine_running)
 	if point.get("ok", false):
 		point.tick = sim.tick
 		point.time_s = sim.time()
 		point.rpm = sim.aux[AUX_RPM]
 		point.enabled = engine_running
-		point.duty = sim.inputs[3] if engine_running else 0.0
+		point.duty = propulsion_throttle() if engine_running else 0.0
 		if battery_is_dynamic():
 			var index: int = _rotor_index() + 1
 			point.remaining_charge_c = sim.continuous[index]
@@ -2337,6 +2400,11 @@ func rotor_momentum(aux: PackedFloat64Array) -> PackedFloat64Array:
 func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
 	if _weather_pending_reset or _shaft_pending_reset:
 		return PackedFloat64Array([NAN]) # configure→reset boundary cannot advance an old layout/RNG
+	if _failures != null:
+		var prepared_failure: Dictionary = _failures.prepare(inputs, aux, _failure_airborne())
+		if not prepared_failure.get("ok", false):
+			return PackedFloat64Array([NAN])
+		inputs = _failures.effective_inputs(inputs)
 	var prop: Dictionary = aircraft.model.propulsion
 	var rpm := 0.0
 	if shaft_is_coupled() or turbine_is_continuous():
@@ -2356,7 +2424,8 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 	var out := PackedFloat64Array([rpm, 0.0, 0.0, 0.0])
 	var rate: float = aircraft.model.controls.servo_rate
 	for k in 3:
-		out[AUX_SERVO + k] = Commands.rate_limit(aux[AUX_SERVO + k], inputs[k], rate, dt)
+		var effective_rate: float = rate if _failures == null else rate * _failures.servo_rate_factor(k)
+		out[AUX_SERVO + k] = Commands.rate_limit(aux[AUX_SERVO + k], inputs[k], effective_rate, dt)
 	var lag := downwash_index()
 	var anchors_end := AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE
 	if anchors_end > AUX_ANCHORS:
@@ -2670,6 +2739,10 @@ func trace_meta() -> Dictionary:
 	if not workshop_identity.is_empty():
 		metadata.workshop = workshop_identity.duplicate(true)
 		metadata.aircraft_input_hash_convention = "sha256 of exact frozen Workshop aircraft bytes"
+	if _failures != null:
+		metadata.failure_plan = JSON.stringify(_failures.plan(), "", true, true)
+		metadata.failure_recording_start = JSON.stringify(_failures.snapshot(), "", true, true)
+		metadata.failure_inputs = "pilot demand before failures; actual servo positions in aux; throttle follows resolved incident"
 	return metadata
 
 
@@ -2723,6 +2796,12 @@ func checkpoint() -> Dictionary:
 	boundary.contact_state = contact_events()
 	if not _contact_history_is_valid(boundary.contact_state, snapshot):
 		return {}
+	if _failures != null:
+		boundary.failure_state = _failures.snapshot()
+		if not _failures.can_restore(boundary.failure_state, sim.tick):
+			return {}
+		boundary.failure_physics_format = boundary.format
+		boundary.format = FAILURE_CHECKPOINT_FORMAT
 	return boundary
 
 
@@ -2762,6 +2841,24 @@ func _configuration_for_weather(field: WeatherField) -> String:
 ## Restoring switches to recorded-input replay and stays paused. No raw radio state is deserialized.
 ## A caller feeds sim.inputs and calls sim.step(); live-session saves are a separate future feature.
 func restore_checkpoint(candidate: Dictionary) -> bool:
+	var restored_failures: RefCounted = null
+	if candidate.get("format") == FAILURE_CHECKPOINT_FORMAT:
+		if typeof(candidate.get("failure_physics_format")) != TYPE_STRING \
+				or candidate.failure_physics_format == FAILURE_CHECKPOINT_FORMAT \
+				or not candidate.get("failure_state") is Dictionary or not candidate.get("simulation") is Dictionary:
+			return false
+		restored_failures = FailureRuntime.new()
+		if typeof(candidate.simulation.get("tick")) != TYPE_INT \
+				or not candidate.failure_state.get("plan") is Dictionary \
+				or candidate.failure_state.plan.get("dt") != sim.dt() \
+				or not restored_failures.restore(candidate.failure_state, candidate.simulation.tick):
+			return false
+		candidate = candidate.duplicate(true)
+		candidate.format = candidate.failure_physics_format
+		candidate.erase("failure_physics_format")
+		candidate.erase("failure_state")
+	elif candidate.has("failure_state") or candidate.has("failure_physics_format"):
+		return false # older readers must never silently resume a damaged flight as a healthy one
 	if not _has_valid_start() or typeof(candidate.get("format")) != TYPE_STRING \
 			or candidate.format not in ["openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2", "openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4", "openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6", "openrc-flight-checkpoint v7", "openrc-flight-checkpoint v8", "openrc-flight-checkpoint v9"] or typeof(candidate.get("configuration")) != TYPE_STRING \
 			or not candidate.get("simulation") is Dictionary:
@@ -2863,6 +2960,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 		sim.aux = old_aux
 		sim.modes = old_modes
 		return false
+	_failures = restored_failures
 	_scenery_damage = restored_damage
 	_restore_contact_history(restored_contacts)
 	soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact) if soft_hull_contacts else []

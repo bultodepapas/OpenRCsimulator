@@ -21,6 +21,12 @@ def read_aircraft(name: str) -> dict[str, Any]:
     return json.loads((AIRCRAFT / name).read_text(encoding="utf-8"))
 
 
+def fixed_wing_sources() -> dict[str, dict[str, Any]]:
+    # Rotorcraft use a separate loader and module contract in the shared directory.
+    sources = {path.name: read_aircraft(path.name) for path in sorted(AIRCRAFT.glob("*.json"))}
+    return {name: source for name, source in sources.items() if source.get("vehicle") != "rotorcraft"}
+
+
 def projection(result: dict[str, Any]) -> dict[str, Any]:
     return {
         "ok": result["ok"],
@@ -59,11 +65,10 @@ def parity_invalid_sources() -> dict[str, dict[str, Any]]:
 
 class AircraftModuleTests(unittest.TestCase):
     def test_all_checked_in_sources_classify_and_keep_descriptor_modules(self):
-        files = sorted(AIRCRAFT.glob("*.json"))
-        self.assertGreaterEqual(len(files), 10)
-        for path in files:
-            with self.subTest(aircraft=path.name):
-                source = json.loads(path.read_text(encoding="utf-8"))
+        sources = fixed_wing_sources()
+        self.assertGreaterEqual(len(sources), 10)
+        for name, source in sources.items():
+            with self.subTest(aircraft=name):
                 result = classify(source)
                 self.assertTrue(result["ok"], result["errors"])
                 descriptor = ROOT / "app" / "data" / "workshop" / f"{source['id']}.json"
@@ -162,8 +167,8 @@ class AircraftModuleTests(unittest.TestCase):
         self.assertIsNotNone(parity_line, completed.stdout)
         gdscript_results = json.loads(parity_line.removeprefix(PARITY_PREFIX))
         python_results = {
-            json.loads(path.read_text(encoding="utf-8"))["id"]: projection(classify(json.loads(path.read_text(encoding="utf-8"))))
-            for path in sorted(AIRCRAFT.glob("*.json"))
+            source["id"]: projection(classify(source))
+            for source in fixed_wing_sources().values()
         }
         python_results.update({key: projection(classify(source)) for key, source in parity_invalid_sources().items()})
         self.assertEqual(gdscript_results, python_results)

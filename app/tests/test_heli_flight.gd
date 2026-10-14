@@ -121,6 +121,26 @@ func _initialize() -> void:
 	if close_ground.ok and far_ground.ok:
 		check("near-ground inflow uses live hub height and does not retain prepared height",
 			close_ground.aero.inflow.ground_factor < far_ground.aero.inflow.ground_factor)
+		check("level positive thrust gates ground effect on a wake toward the terrain",
+			close_ground.aero.ground_effect_wake_intersects_ground
+			and close_ground.aero.ground_effect_height_over_radius_used == 0.5)
+	var inverted: PackedFloat64Array = state.duplicate()
+	var inverted_q: PackedFloat64Array = M.q_from_euler(0.0, 0.0, PI)
+	for index: int in range(4):
+		inverted[RB.ATT + index] = inverted_q[index]
+	var inverted_ground: Dictionary = Flight.evaluate(inverted, context, sticks, "normal", false, false,
+		wind, false, PackedFloat64Array(), {}, 0.5)
+	check("inverted disc disables ground effect when its actual wake points upward",
+		inverted_ground.ok and not inverted_ground.aero.ground_effect_wake_intersects_ground
+		and inverted_ground.aero.ground_effect_height_over_radius_used == -1.0
+		and inverted_ground.aero.inflow.ground_factor == 1.0)
+	var negative_thrust_sticks: PackedFloat64Array = PackedFloat64Array([0.0, 0.0, 0.0, -1.0])
+	var negative_thrust: Dictionary = Flight.evaluate(state, context, negative_thrust_sticks,
+		"normal", false, false, wind, false, PackedFloat64Array(), {}, 0.5)
+	check("negative same-stage thrust does not enable ground effect from height alone",
+		negative_thrust.ok and negative_thrust.aero.main_rotor.thrust_n < 0.0
+		and not negative_thrust.aero.ground_effect_wake_intersects_ground
+		and negative_thrust.aero.inflow.ground_factor == 1.0)
 	var hub_strike: Dictionary = Flight.evaluate(state, context, sticks, "normal", false, false,
 		wind, false, PackedFloat64Array(), {}, -0.01)
 	check("negative live hub height is rejected as a physical rotor ground strike",

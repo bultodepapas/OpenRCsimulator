@@ -27,6 +27,7 @@ ENTRY_RE = re.compile(
 )
 FAMILY_RE = re.compile(r'\bvisual_family\s*=\s*"(?P<family>[^\"]+)"')
 DATA_RE = re.compile(r"\bdata\s*=\s*\"(?P<path>[^\"]*)\"")
+VEHICLE_RE = re.compile(r'\bvehicle\s*=\s*"(?P<vehicle>[^"]+)"')
 ID_RE = re.compile(r"^[a-z0-9][a-z0-9._-]{0,127}$")
 INVENTORY_ID_RE = re.compile(r"^[a-z][a-z0-9]*(?:_[a-z0-9]+)*$")
 LEGACY_FORMAT = "openrc-aircraft-workshop v2"
@@ -45,22 +46,33 @@ def derive_modules(base: dict[str, Any]) -> list[str]:
 
 
 def catalog_entries() -> list[tuple[str, str]]:
-    source = CATALOG.read_text(encoding="utf-8")
+    return _parse_catalog_entries(CATALOG.read_text(encoding="utf-8"))
+
+
+def _parse_catalog_entries(source: str) -> list[tuple[str, str]]:
     entries: list[tuple[str, str]] = []
     seen: set[str] = set()
     for match in ENTRY_RE.finditer(source):
         base_id = match.group("id")
+        vehicle_values = VEHICLE_RE.findall(match.group("body"))
+        if len(vehicle_values) > 1:
+            raise ValueError(f"catalog entry {base_id!r} has multiple vehicle discriminators")
+        vehicle = vehicle_values[0] if vehicle_values else "airplane"
+        if vehicle not in {"airplane", "rotorcraft"}:
+            raise ValueError(f"catalog entry {base_id!r} has unsupported vehicle type: {vehicle!r}")
+        if not ID_RE.fullmatch(base_id) or base_id in seen:
+            raise ValueError(f"invalid or duplicate catalog ID: {base_id!r}")
+        seen.add(base_id)
+        if vehicle == "rotorcraft":
+            continue
         data_match = DATA_RE.search(match.group("body"))
         if data_match is None:
             raise ValueError(f"catalog entry {base_id!r} has no data path")
         data_path = data_match.group("path")
         if not data_path:
             continue
-        if not ID_RE.fullmatch(base_id) or base_id in seen:
-            raise ValueError(f"invalid or duplicate catalog ID: {base_id!r}")
         if not data_path.startswith("res://data/aircraft/"):
             raise ValueError(f"catalog entry {base_id} uses an unsupported data path: {data_path}")
-        seen.add(base_id)
         entries.append((base_id, data_path))
     if not entries:
         raise ValueError("no aircraft catalog data entries were found")

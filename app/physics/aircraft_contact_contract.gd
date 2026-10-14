@@ -79,8 +79,8 @@ static func describe(model_value: Variant, soft_hull: bool) -> Dictionary:
 						_add_error(errors, diagnostics, "invalid_support_contact_name", "landing_gear.contacts[%d].name" % contact_index, "expected a nonempty landing-gear contact name for legacy wheel-profile binding")
 						continue
 					if seen_profile_names.has(contact_name):
-					var duplicate_name_code := "duplicate_wheel_profile_contact_name" if authored_identity else "duplicate_contact_id"
-					_add_error(errors, diagnostics, duplicate_name_code, "landing_gear.contacts[%d].name" % contact_index, "duplicate wheel-profile contact name '%s'" % contact_name)
+						var duplicate_name_code := "duplicate_wheel_profile_contact_name" if authored_identity else "duplicate_contact_id"
+						_add_error(errors, diagnostics, duplicate_name_code, "landing_gear.contacts[%d].name" % contact_index, "duplicate wheel-profile contact name '%s'" % contact_name)
 						continue
 					seen_profile_names[contact_name] = true
 					var contact_id_value: Variant = contact.get("id", "") if authored_identity else contact_name_value

@@ -1,0 +1,95 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+building world for day-classic
+world built for day-classic
+drawing 8 native frames for day-classic
+first force_draw starting for day-classic
+first force_draw finished for day-classic
+manual draws finished for day-classic
+captured day-classic-cloudscape.png (classic, day)
+building world for day-clear
+world built for day-clear
+drawing 8 native frames for day-clear
+first force_draw starting for day-clear
+first force_draw finished for day-clear
+manual draws finished for day-clear
+captured day-clear-cloudscape.png (clear, day)
+building world for day-cirrus
+world built for day-cirrus
+drawing 8 native frames for day-cirrus
+first force_draw starting for day-cirrus
+first force_draw finished for day-cirrus
+manual draws finished for day-cirrus
+captured day-cirrus-cloudscape.png (cirrus, day)
+building world for day-fair_cumulus
+world built for day-fair_cumulus
+drawing 8 native frames for day-fair_cumulus
+first force_draw starting for day-fair_cumulus
+first force_draw finished for day-fair_cumulus
+manual draws finished for day-fair_cumulus
+captured day-fair_cumulus-cloudscape.png (fair_cumulus, day)
+building world for day-broken
+world built for day-broken
+drawing 8 native frames for day-broken
+first force_draw starting for day-broken
+first force_draw finished for day-broken
+manual draws finished for day-broken
+captured day-broken-cloudscape.png (broken, day)
+building world for day-overcast
+world built for day-overcast
+drawing 8 native frames for day-overcast
+first force_draw starting for day-overcast
+first force_draw finished for day-overcast
+manual draws finished for day-overcast
+captured day-overcast-cloudscape.png (overcast, day)
+building world for day-prestorm
+world built for day-prestorm
+drawing 8 native frames for day-prestorm
+first force_draw starting for day-prestorm
+first force_draw finished for day-prestorm
+manual draws finished for day-prestorm
+captured day-prestorm-cloudscape.png (prestorm, day)
+building world for day-distant_storm
+world built for day-distant_storm
+drawing 8 native frames for day-distant_storm
+first force_draw starting for day-distant_storm
+first force_draw finished for day-distant_storm
+manual draws finished for day-distant_storm
+captured day-distant_storm-cloudscape.png (distant_storm, day)
+building world for day-electrical_storm
+world built for day-electrical_storm
+drawing 8 native frames for day-electrical_storm
+first force_draw starting for day-electrical_storm
+first force_draw finished for day-electrical_storm
+manual draws finished for day-electrical_storm
+captured day-electrical_storm-cloudscape.png (electrical_storm, day)
+building world for electrical-full-moon-event-peak
+world built for electrical-full-moon-event-peak
+drawing 8 native frames for electrical-full-moon-event-peak
+first force_draw starting for electrical-full-moon-event-peak
+first force_draw finished for electrical-full-moon-event-peak
+manual draws finished for electrical-full-moon-event-peak
+captured electrical-full-moon-event-peak-cloudscape.png (electrical_storm, night)
+building world for electrical-full-moon-quiet
+world built for electrical-full-moon-quiet
+drawing 8 native frames for electrical-full-moon-quiet
+first force_draw starting for electrical-full-moon-quiet
+first force_draw finished for electrical-full-moon-quiet
+manual draws finished for electrical-full-moon-quiet
+captured electrical-full-moon-quiet-cloudscape.png (electrical_storm, night)
+building world for electrical-new-moon-event-peak
+world built for electrical-new-moon-event-peak
+drawing 8 native frames for electrical-new-moon-event-peak
+first force_draw starting for electrical-new-moon-event-peak
+first force_draw finished for electrical-new-moon-event-peak
+manual draws finished for electrical-new-moon-event-peak
+captured electrical-new-moon-event-peak-cloudscape.png (electrical_storm, night)
+building world for electrical-new-moon-quiet
+world built for electrical-new-moon-quiet
+drawing 8 native frames for electrical-new-moon-quiet
+first force_draw starting for electrical-new-moon-quiet
+first force_draw finished for electrical-new-moon-quiet
+manual draws finished for electrical-new-moon-quiet
+captured electrical-new-moon-quiet-cloudscape.png (electrical_storm, night)
+FW-79 gallery wrote 13 images to C:/DEVELOPMENT/OpenRCsimulator/.drafts/fw79/final-gallery-64d164

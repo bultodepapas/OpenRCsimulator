@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL production scene with soft contacts
+1 checks, 1 failed
+SCRIPT ERROR: Parse Error: Preload file "res://app_state/sky_checkpoint.gd" does not exist.
+   at: GDScript::reload (res://main.gd:39)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "SkyCheckpoint" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://main.gd:39)
+SCRIPT ERROR: Parse Error: Static function "update_cloud_appearance()" not found in base "res://render/atmosphere.gd".
+   at: GDScript::reload (res://main.gd:1297)
+ERROR: Failed to load script "res://main.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

@@ -87,3 +87,8 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
+
+
+## Night-lighting resources (FW-67)
+
+The field mast uses a transformed single head from Innerscene’s CC0 motion security floodlight. The optional hearth uses Kenney’s CC0 campfire pit and Mikodrak’s CC0 fire animation frames. Exact source URLs, authors, source/output hashes, license records and conversion details ship in `night-lighting/asset-manifest.json`, `night-lighting/LICENSES.md` and `night-lighting/licenses/`. No external addon runs in the application.

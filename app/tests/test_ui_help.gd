@@ -10,6 +10,7 @@ const KeyCap := preload("res://ui/key_cap.gd")
 const Reference := preload("res://ui/controls_reference.gd")
 const HelpScreen := preload("res://ui/help_screen.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const PREFS := "user://test_ui_help_settings.cfg"
 
 var _failures := 0
@@ -35,6 +36,13 @@ func _caps_text(n: Node) -> PackedStringArray:
 		if cap is PanelContainer and cap.theme_type_variation == "KeyCap":
 			var l: Array = cap.find_children("*", "Label", true, false)
 			out.append(l[0].text if not l.is_empty() else "<drawn>")
+	return out
+
+
+func _label_texts(n: Node) -> PackedStringArray:
+	var out := PackedStringArray()
+	for label in n.find_children("*", "Label", true, false):
+		out.append(label.text)
 	return out
 
 
@@ -100,16 +108,55 @@ func _run() -> void:
 	TranslationServer.set_locale("en")
 	await ui.settle()
 
+	# A selected research helicopter gets its own axes and handled shortcut set.
+	app.set_aircraft("xcell-60-research")
+	app.open_help(null)
+	await ui.settle()
+	var rotorcraft_help: CanvasLayer = app.help
+	var rotorcraft_caps := _caps_text(rotorcraft_help)
+	var rotorcraft_labels := _label_texts(rotorcraft_help)
+	var rotorcraft_scroll: ScrollContainer = rotorcraft_help.find_children("*", "ScrollContainer", true, false)[0]
+	var rotorcraft_page: Control = rotorcraft_scroll.get_child(0)
+	var rotorcraft_key_count := 0
+	for table in [Reference.shortcut_table(Reference.ROTORCRAFT), Reference.flight_table(Reference.ROTORCRAFT)]:
+		for row in table:
+			rotorcraft_key_count += row[0].size()
+	var rotorcraft_copy := "\n".join(rotorcraft_labels)
+	_check("rotorcraft Help receives its explicit vehicle context", rotorcraft_help._vehicle_type == Reference.ROTORCRAFT)
+	_check("rotorcraft Help shows every key in its own tables", rotorcraft_caps.size() == rotorcraft_key_count,
+		"%d caps for %d listed keys" % [rotorcraft_caps.size(), rotorcraft_key_count])
+	_check("rotorcraft Help fits its compact reference at 720p (%d <= %d px)" % [rotorcraft_page.get_combined_minimum_size().y, rotorcraft_scroll.custom_minimum_size.y],
+		rotorcraft_page.get_combined_minimum_size().y <= rotorcraft_scroll.custom_minimum_size.y)
+	_check("rotorcraft Help names cyclic, yaw and collective", rotorcraft_labels.has("Cyclic roll")
+		and rotorcraft_labels.has("Cyclic pitch") and rotorcraft_labels.has("Yaw") and rotorcraft_labels.has("Collective"))
+	_check("rotorcraft Help explains idle-up curves, trainer and zero-drive",
+		rotorcraft_labels.has("Flight mode: normal / idle-up curves")
+		and rotorcraft_labels.has("Trainer mode") and rotorcraft_labels.has("Zero-drive hold"))
+	_check("rotorcraft Help does not show airplane trim, smoke, reload or engine-fuel shortcuts",
+		not rotorcraft_copy.to_lower().contains("trim") and not rotorcraft_copy.to_lower().contains("smoke")
+		and not rotorcraft_caps.has("F5") and not rotorcraft_caps.has("F6") and not rotorcraft_caps.has("F7")
+		and not rotorcraft_caps.has("F8") and not rotorcraft_caps.has("F9"))
+	_check("rotorcraft Help describes available weather and collective radio input",
+		rotorcraft_help.field_conditions_label.text.contains("turbulence is not integrated")
+		and rotorcraft_help.radio_help_label.text.contains("collective stick")
+		and rotorcraft_help.radio_help_label.text.contains("lower it to arm")
+		and rotorcraft_help.radio_help_label.text.contains("displayed hover percentage")
+		and rotorcraft_help.radio_help_label.text.contains("press P")
+		and not rotorcraft_help.radio_help_label.text.contains("engine starts"))
+	app.close_help()
+	app.set_aircraft(Catalog.DEFAULT_ID)
+	await ui.settle()
+
 	# Help from the pause menu: keys swallowed, Esc closes Help only.
 	app.start_flight()
 	await create_timer(0.3).timeout
 	var session: Node = app.flight.session
 	app.open_pause()
 	await ui.settle()
-	await ui.tap(KEY_DOWN) # Workshop adds one reachable action before Help
-	await ui.tap(KEY_DOWN)
-	await ui.tap(KEY_DOWN)
-	await ui.tap(KEY_DOWN)
+	for _step in 12: # Pause actions can vary by active vehicle and enabled airplane modules.
+		if ui.focus_name() == "Help":
+			break
+		await ui.tap(KEY_DOWN)
 	_check("pause: Help reachable", ui.focus_name() == "Help", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	var tick: int = session.sim.tick

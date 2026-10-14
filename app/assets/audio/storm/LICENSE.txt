@@ -1,0 +1,15 @@
+Thunder candidate: thunder_01.ogg
+
+Creator: rubberduck
+Source: 100 CC0 SFX #2, https://opengameart.org/content/100-cc0-sfx-2
+License: CC0 1.0 Universal, https://creativecommons.org/publicdomain/zero/1.0/
+
+The OpenGameArt listing identifies the pack as CC0 and includes a thunder tag.
+The selected source member is sfx100v2_thunder_01.ogg from sfx_100_v2.zip.
+Source archive SHA-256: 0FC61B4494E2E893C0C015CED4877B3F689C7D84A48CB61DAECD7DDB52DB797B
+Selected member SHA-256: 8A4F1DEE999546B363F989EFF92174375EEAE7C241DC9BEAA0892FB131EF12A9
+Selected member size: 51,493 bytes
+
+app/assets/audio/storm/thunder_01.ogg is an unchanged copy. Credit is provided
+as a courtesy; it does not imply creator endorsement. Human audition and mix
+review remain pending, so this file is still a candidate sound.

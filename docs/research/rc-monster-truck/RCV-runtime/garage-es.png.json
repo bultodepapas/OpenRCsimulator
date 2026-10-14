@@ -1,0 +1,60 @@
+{
+	"engine": "4.7.2-stable (official)",
+	"identities": {
+		"course": {
+			"format": "openrc-ground-course",
+			"id": "mt8-practice-course-estimate-v1",
+			"sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+			"version": "1"
+		},
+		"model": {
+			"format": "openrc-ground-vehicle",
+			"id": "mt8-bisonte-electric-4wd-estimate-v1",
+			"sha256": "6a743aaf1f58f2633beb26f269ec9efe0edc6d14d991448f569968f3e26756c4",
+			"version": "1"
+		}
+	},
+	"image": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-runtime/garage-es.png",
+	"language": "es",
+	"mode": "garage",
+	"ok": true,
+	"renderer": "NVIDIA GeForce RTX 3090",
+	"size": [
+		1280,
+		720
+	],
+	"state": [
+		0.0,
+		0.0,
+		-0.205,
+		0.0,
+		0.0,
+		0.0,
+		1.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.013075533333333333,
+		0.013075533333333333,
+		0.013075533333333333,
+		0.013075533333333333,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0
+	],
+	"ticks": 0
+}

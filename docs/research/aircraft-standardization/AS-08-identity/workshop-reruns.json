@@ -1,0 +1,65 @@
+{
+  "generated_at_utc": "2026-10-14 02:19:30 UTC",
+  "descriptor_generation": {
+    "command": "python research/aircraft-editor/build_descriptors.py",
+    "exit": 0,
+    "ok": true,
+    "log": null,
+    "output": "Generated 7 Workshop descriptors."
+  },
+  "reruns": [
+    {
+      "command": "python research/aircraft-editor/build_descriptors.py --check",
+      "exit": 0,
+      "ok": true,
+      "log": "descriptors-fresh.log"
+    },
+    {
+      "command": "python research/aircraft-editor/test_descriptor_checkout.py",
+      "exit": 0,
+      "ok": true,
+      "log": "descriptor-checkout.log"
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_workshop_descriptor.gd",
+      "exit": 0,
+      "ok": true,
+      "log": "workshop_descriptor.log",
+      "result": "94 checks, 0 failed"
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_workshop_compiler.gd",
+      "exit": 0,
+      "ok": true,
+      "log": "workshop_compiler.log",
+      "result": "301 checks, 0 failures"
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_workshop_trial.gd",
+      "exit": 0,
+      "ok": true,
+      "log": "workshop_trial.log",
+      "result": "36 checks, 0 failed"
+    },
+    {
+      "command": "git diff --check -- app/tests/test_workshop_compiler.gd app/tests/test_workshop_trial.gd app/data/workshop",
+      "exit": 0,
+      "ok": true,
+      "log": null
+    }
+  ],
+  "physical_input_source_sha256": {
+    "app/data/aircraft/jensen_ugly_stik_60.json": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+    "app/data/aircraft/stik_glow_55ax_2t.json": "3e4b0dfda2ac432dd9fe04f0ac31a172f92850845f71ee1df53e0af4e2a44d66",
+    "app/data/aircraft/stik_glow_fs64v_4t.json": "788654c4c9bb6667fc3922d595d548ae85577c803f945803aacb9610dd292140",
+    "app/data/aircraft/gp_extra_300s_60.json": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
+    "app/data/aircraft/p51d_mustang_120.json": "04f69687f7ea73a4235bf223360f38b2634ddc11933abdea8ff01aee7ebda619",
+    "app/data/aircraft/sebart_avanti_s_a200.json": "4910bd4ce0a9cd4e517db7a4cf9246c5c6e5328f512b528ff1077b9c7cda214a",
+    "app/data/aircraft/turbo_lumber_evolution.json": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee"
+  },
+  "source_hashes_unchanged_from_before_to_after_tests": true,
+  "preserved_original_failure_logs": [
+    "workshop_compiler-initial.log",
+    "workshop_trial-initial.log"
+  ]
+}

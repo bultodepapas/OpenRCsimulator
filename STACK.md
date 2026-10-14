@@ -6,7 +6,7 @@ Status: current implementation, checked 2026-10-12. Runtime settings live in [pr
 
 | Layer | Implementation |
 | --- | --- |
-| Engine/language | Official Godot 4.7.2-stable; GDScript |
+| Engine/language | Official Godot 4.7.2-stable; GDScript, with an optional pinned C++ ground-vehicle evaluator |
 | Rendering | Compatibility, `opengl3`; 1280×720 default viewport, 4× MSAA |
 | Simulation | Custom float64 six-degree-of-freedom solver and RK4 at 240 Hz; Godot rigid-body nodes do not solve flight |
 | Aircraft | Catalog JSON `openrc-aircraft v2` with strict validation, per-quantity units/evidence/source and derived mass/CG/inertia; historical v1 is explicit compatibility; [contract](AIRCRAFT_CONTRACT.md) |
@@ -16,13 +16,17 @@ Status: current implementation, checked 2026-10-12. Runtime settings live in [pr
 | Delivery | Windows x86_64, Linux x86_64 and macOS universal ZIP exports; build identity embedded by an export plugin |
 | Checks | Headless GDScript tests, Python schema/trace/tool checks, golden flights, rendered captures and package smoke checks |
 
-Production has no third-party native flight-physics dependency. C++ GDExtension experiments in `research/` are separate from the application. Python, Node, SciPy and asset-generation packages are development tools with per-tool pins. The archived three.js build retains its lockfile and [platform comparison](prototypes/stage0/COMPARISON.md).
+Flight physics has no third-party native solver dependency. The experimental Bisonte MT8 ground activity can use the repository's float64 C++ evaluator through GDExtension, with the GDScript implementation retained as its reference and fallback. Its [pinned builder and qualification](research/rc-monster-truck/native/README.md) own Windows/Linux artifacts generated into ignored `app/native/ground_vehicle/`; macOS uses the reference path. Other C++ experiments remain separate from the application. Python, Node, SciPy and asset-generation packages are development tools with per-tool pins. The archived three.js build retains its lockfile and [platform comparison](prototypes/stage0/COMPARISON.md).
 
 ## Boundaries and data flow
 
 `app_root.tscn` loads `app_root.gd`. No user arguments opens Home and reads validated preferences. Arguments after `--` select direct flight, except `--input-report`, which starts standalone diagnostics. Direct flights ignore player settings.
 
+Home's RC cars entry, or `--vehicle=mt8-bisonte`, starts a separate paused ground-vehicle garage. Its Session owns the 31-value float64 state, fixed 240 Hz RK4 ticks, experiments, recovery, recording and checkpoint identity. Rendering articulates the authorized Blender model from detached state. Native and reference backends share equations and road samples; checkpoints pin the selected implementation and cannot switch it during replay. [Controls and research tools](research/rc-monster-truck/README.md#rcv-05-full-vehicle-runtime-experiments).
+
 The aircraft catalog resolves one ID to matching physics data and its visual builder. The loader validates the configuration and derives the normalized model before `FlightSession` accepts it. A failed initial preparation refuses flight; a failed reload retains the accepted session.
+
+The explicit experimental rotorcraft ID selects a dedicated quantity reader/schema, `HelicopterFlightSession` and `RotorcraftRecorder`, reusing `Simulation` for joint float64 body/shaft/wake/controller integration. The supplied HX-700 Blender visual and X-Cell reference physics are a declared surrogate. [Current helicopter controls and qualification](docs/HELICOPTER.md).
 
 Input is sampled before each simulation tick. `FlightSession` owns trim/start, controls, environment, pause/reset/crash, accepted aircraft and state identity. `Simulation` commits fixed ticks; physics modules evaluate rigid-body, actuator, propulsion and contact state. RK stages use their stage time and state. Checkpoints retain complete replay state; CSV traces are versioned diagnostics with declared sampling times.
 

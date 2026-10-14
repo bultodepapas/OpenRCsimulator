@@ -3,6 +3,8 @@ extends RefCounted
 
 const Config: Script = preload("res://environment/time_of_day_config.gd")
 const VisualTimeline: Script = preload("res://environment/visual_timeline.gd")
+const FailureRuntime: Script = preload("res://failures/runtime.gd")
+const PHYSICS_FORMAT_FAILURES: String = "openrc-flight-checkpoint v10"
 
 const FORMAT: String = "openrc-visual-checkpoint v1"
 const FORMAT_PROGRESSING: String = "openrc-visual-checkpoint v2"
@@ -13,6 +15,7 @@ const PHYSICS_FORMATS: Array[String] = [
 	"openrc-flight-checkpoint v1", "openrc-flight-checkpoint v2",
 	"openrc-flight-checkpoint v3", "openrc-flight-checkpoint v4",
 	"openrc-flight-checkpoint v5", "openrc-flight-checkpoint v6",
+	"openrc-flight-checkpoint v8", "openrc-flight-checkpoint v9",
 ]
 const PAIRED_FIELDS: Array[String] = ["format", "physics", "timeline", "field_identity", "payload_sha256"]
 const PAIRED_MARKERS: Array[String] = ["physics", "timeline", "field_identity", "payload_sha256"]
@@ -67,7 +70,7 @@ static func read(candidate: Variant, expected_field_identity: String) -> Diction
 		return _read_paired(source, expected_field_identity, TIMELINE_FORMAT_FIXED)
 	if format_value == FORMAT_PROGRESSING:
 		return _read_paired(source, expected_field_identity, TIMELINE_FORMAT_PROGRESSING)
-	if not PHYSICS_FORMATS.has(str(format_value)) and format_value != PHYSICS_FORMAT_COLLISION_WORLD:
+	if not PHYSICS_FORMATS.has(str(format_value)) and format_value not in [PHYSICS_FORMAT_COLLISION_WORLD, PHYSICS_FORMAT_FAILURES]:
 		return _failure_read(["unknown checkpoint format '%s'" % str(format_value)])
 	for marker: String in PAIRED_MARKERS:
 		if source.has(marker):
@@ -142,15 +145,32 @@ static func _physics_tick(raw: Variant) -> Dictionary:
 	var format_value: Variant = checkpoint.get("format", null)
 	if typeof(format_value) != TYPE_STRING:
 		return {"ok": false, "errors": ["physics checkpoint format must be a string"]}
+	if format_value == PHYSICS_FORMAT_FAILURES:
+		var inner_format: Variant = checkpoint.get("failure_physics_format")
+		if typeof(inner_format) != TYPE_STRING or (inner_format != PHYSICS_FORMAT_COLLISION_WORLD and not PHYSICS_FORMATS.has(inner_format)):
+			return {ok = false, errors = ["failure checkpoint has an invalid physics format"]}
+		var inner: Dictionary = checkpoint.duplicate(true)
+		inner.format = inner_format
+		inner.erase("failure_physics_format")
+		inner.erase("failure_state")
+		var inner_check: Dictionary = _physics_tick(inner)
+		var runtime: RefCounted = FailureRuntime.new()
+		if not inner_check.ok or not checkpoint.get("failure_state") is Dictionary \
+				or not runtime.restore(checkpoint.failure_state, inner_check.get("tick", -1)) \
+				or runtime.plan().dt != checkpoint.simulation.get("dt"):
+			return {ok = false, errors = ["failure checkpoint has an invalid incident state"]}
+		return inner_check
+	if checkpoint.has("failure_state") or checkpoint.has("failure_physics_format"):
+		return {ok = false, errors = ["incident state requires a failure checkpoint"]}
 	if format_value == PHYSICS_FORMAT_COLLISION_WORLD:
 		var physics_format: Variant = checkpoint.get("physics_format", null)
 		if typeof(physics_format) != TYPE_STRING or not PHYSICS_FORMATS.has(str(physics_format)):
-			return {"ok": false, "errors": ["v7 physics_format must be v1 through v6"]}
+			return {"ok": false, "errors": ["v7 physics_format must identify supported flight physics"]}
 		var collision_world_identity: Variant = checkpoint.get("collision_world_identity", null)
 		if typeof(collision_world_identity) != TYPE_STRING or not _is_sha256(str(collision_world_identity)):
 			return {"ok": false, "errors": ["v7 collision_world_identity must be a lowercase SHA-256"]}
 	elif not PHYSICS_FORMATS.has(str(format_value)):
-		return {"ok": false, "errors": ["physics checkpoint format must be v1 through v6 or v7"]}
+		return {"ok": false, "errors": ["unsupported physics checkpoint format"]}
 	var simulation: Variant = checkpoint.get("simulation", null)
 	if typeof(simulation) != TYPE_DICTIONARY:
 		return {"ok": false, "errors": ["physics checkpoint must contain a simulation object"]}

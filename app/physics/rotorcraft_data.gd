@@ -27,8 +27,15 @@ const UNITS: Dictionary = {
 }
 
 static func load_file(path: String, density: float = 1.225) -> Dictionary:
- var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(path)) if FileAccess.file_exists(path) else null
- return validate(raw, density)
+ var bytes: PackedByteArray=FileAccess.get_file_as_bytes(path) if FileAccess.file_exists(path) else PackedByteArray()
+ var raw: Variant=JSON.parse_string(bytes.get_string_from_utf8()) if not bytes.is_empty() else null
+ var loaded: Dictionary=validate(raw,density)
+ if loaded.ok:
+  var hash: HashingContext=HashingContext.new()
+  hash.start(HashingContext.HASH_SHA256)
+  hash.update(bytes)
+  loaded.input_identity={format="openrc-aircraft v2",sha256=hash.finish().hex_encode()}
+ return loaded
 
 static func validate(raw: Variant, density: float = 1.225) -> Dictionary:
  var errors: PackedStringArray = PackedStringArray()
@@ -36,6 +43,9 @@ static func validate(raw: Variant, density: float = 1.225) -> Dictionary:
   return {ok=false, errors=["expected openrc-aircraft v2 with vehicle rotorcraft"]}
  if raw.get("id") != "xcell-60-research" or raw.get("capabilities") != ["main_rotor", "tail_rotor", "governor", "trainer", "skids"]:
   return {ok=false, errors=["unsupported identity or capabilities"]}
+ var expected: Array=["format","vehicle","id","name","capabilities","qualification","main_rotor","tail_rotor","airframe","body","gravity_m_s2","shaft_elements","drive","electronics","integration","skids"]
+ if raw.size()!=expected.size() or not raw.has_all(expected) or not raw.name is String or not raw.qualification is String or raw.qualification.is_empty():
+  return {ok=false,errors=["malformed rotorcraft header or unknown top-level field"]}
  var parts: Dictionary = {}
  for key: String in ["main_rotor", "tail_rotor", "airframe", "body", "drive", "electronics", "integration", "skids"]:
   parts[key] = _unpack(raw.get(key), key, errors)
@@ -48,12 +58,17 @@ static func validate(raw: Variant, density: float = 1.225) -> Dictionary:
  var gravity: Variant = _quantity(raw.get("gravity_m_s2"), "gravity_m_s2", errors)
  if not is_finite(density) or density <= 0.0: errors.append("invalid atmosphere density")
  if not errors.is_empty(): return {ok=false,errors=errors}
- for key: String in ["main_rotor", "tail_rotor", "airframe"]: parts[key].rho_kg_m3 = density
+ for key: String in ["main_rotor", "tail_rotor", "airframe"]:
+  if not parts[key].get("rho_kg_m3") is float or parts[key].rho_kg_m3<=0.0:
+   return {ok=false,errors=["nominal air density must be positive in "+key]}
+  parts[key].rho_kg_m3 = density
  var main: Dictionary = Main.prepare(parts.main_rotor)
  var tail: Dictionary = Tail.prepare(parts.tail_rotor)
  var airframe: Dictionary = Airframe.prepare(parts.airframe)
  if not main.ok or not tail.ok or not airframe.ok:
   return {ok=false,errors=["invalid rotor or airframe module"]}
+ if shafts.size()!=2 or shafts[0].get("speed_ratio")!=1.0 or shafts[1].get("speed_ratio")!=tail.model.tail_to_main_speed_ratio or shafts[0].get("spin_axis_body_frd")!=PackedFloat64Array([0,0,main.model.rotation_sense]) or shafts[1].get("spin_axis_body_frd")!=PackedFloat64Array([0,tail.model.rotation_sense,0]):
+  return {ok=false,errors=["shaft gearing and signed axes must match the main/tail aerodynamic modules"]}
  var cfg: Dictionary = parts.integration.duplicate()
  cfg.merge(parts.body)
  cfg["inertia_body_kg_m2"]=cfg.inertia_kg_m2
@@ -92,7 +107,7 @@ static func _quantity(node: Variant, key: String, errors: PackedStringArray) -> 
  if not node is Dictionary or node.size() != 4 or not node.has_all(["value", "unit", "kind", "source"]):
   errors.append(key+": requires value, unit, kind, source")
   return null
- if node.unit != UNITS[key] or node.kind not in ["reference", "derived", "estimated"] or not node.source is String or node.source.strip_edges().is_empty():
+ if node.unit != UNITS[key] or node.kind not in ["manual", "measured", "borrowed", "derived", "estimated"] or not node.source is String or node.source.strip_edges().is_empty():
   errors.append(key+": invalid units or evidence")
   return null
  if node.value is Array:

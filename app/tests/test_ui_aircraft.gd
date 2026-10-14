@@ -16,6 +16,7 @@ const TIMBER := "turbo-lumber-evolution"
 const P51 := "p51d-mustang-120"
 const GLOW_55AX := "stik-glow-55ax-2t"
 const GLOW_FS64V := "stik-glow-fs64v-4t"
+const HELI := "xcell-60-research"
 
 var _failures := 0
 var ui: RefCounted
@@ -56,7 +57,7 @@ func _run() -> void:
 	var home: Control = app.home
 	_check("default: the Ugly Stik on the card and in the backdrop", home.aircraft_id == STIK and home.aircraft_name_label.text == Catalog.entry(STIK).name
 		and app.home_scene.airplane.aircraft_id == STIK)
-	_check("default: Fly enabled and focused, counter 1 of 7", not home.fly_button.disabled and ui.focus_name() == "Fly" and home.aircraft_count_label.text == "Aircraft 1 of 7",
+	_check("default: Fly enabled and focused, counter 1 of 8", not home.fly_button.disabled and ui.focus_name() == "Fly" and home.aircraft_count_label.text == "Aircraft 1 of 8",
 		home.aircraft_count_label.text)
 
 	# Right from Fly reaches the next arrow; Enter traverses both inferred glow variants before the Extra.
@@ -101,21 +102,31 @@ func _run() -> void:
 		timber_note.contains("electric") and timber_note.contains("estimated") and timber_note.contains("flaps up")
 		and timber_note.contains("fixed wheels") and timber_note.contains("assists off"), timber_note)
 	_check("Timber: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == TIMBER and ui.focus_name() == "NextAircraft", ui.focus_name())
-	_check("Timber: counter 7 of 7", home.aircraft_count_label.text == "Aircraft 7 of 7", home.aircraft_count_label.text)
+	_check("Timber: counter 7 of 8", home.aircraft_count_label.text == "Aircraft 7 of 8", home.aircraft_count_label.text)
 	_check("Timber selection is saved without starting a session", Preferences.load_from(PREFS).aircraft == TIMBER and app.flight == null)
-	# Wraps to the Stik; Left twice goes back to the Ventage Jet. Spanish texts follow the language.
+	# The experimental helicopter is the eighth entry; next wraps to the Stik. Previous crosses the helicopter before Timber.
+	await ui.tap(KEY_ENTER)
+	_check("helicopter is the eighth catalog selection with the HX-700 preview and hover-only start",
+		home.aircraft_id == HELI and home.aircraft_count_label.text == "Aircraft 8 of 8"
+		and app.home_scene.airplane.visual_family == "hx-700" and home.start_choice == "airborne"
+		and home.start_button.text == "Start: hover" and home.workshop_button.disabled
+		and home.natural_random_button.disabled, "%s / %s" % [home.aircraft_id, home.aircraft_count_label.text])
+	_check("helicopter selection is saved without starting a session",
+		Preferences.load_from(PREFS).aircraft == HELI and app.flight == null)
 	await ui.tap(KEY_ENTER)
 	_check("next wraps around to the Ugly Stik", home.aircraft_id == STIK)
 	await ui.tap(KEY_LEFT)
 	await ui.tap(KEY_ENTER)
-	_check("previous arrow goes back to the Timber", home.aircraft_id == TIMBER, home.aircraft_id)
+	_check("previous arrow from the Stik reaches the eighth helicopter", home.aircraft_id == HELI, home.aircraft_id)
+	await ui.tap(KEY_ENTER)
+	_check("previous from the helicopter returns to the Timber", home.aircraft_id == TIMBER, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
 	_check("previous again: the Ventage Jet", home.aircraft_id == AVANTI, home.aircraft_id)
 	app.set_language("es")
 	await ui.settle()
 	# Labels keep the English source and translate when drawn (auto-translate), so read them the way they are drawn.
 	var status: Label = home.aircraft_status_label
-	_check("Spanish: counter and status translated", home.aircraft_count_label.text == "Avión 6 de 7" and status.can_auto_translate()
+	_check("Spanish: counter and status translated", home.aircraft_count_label.text == "Avión 6 de 8" and status.can_auto_translate()
 		and status.atr(status.text).begins_with("Experimental: primera estimación física (turbina") and home.aircraft_summary_label.atr(home.aircraft_summary_label.text).begins_with("Reactor deportivo"),
 		"%s / %s" % [home.aircraft_count_label.text, status.atr(status.text)])
 	# The Timber's fictional name is the one translated aircraft name (TT-06); the other names pass through tr() unchanged.
@@ -166,15 +177,29 @@ func _run() -> void:
 
 	# End returns Home with the aircraft selected and persisted; choosing Fly again makes a clean session.
 	await ui.tap(KEY_ESCAPE)
-	for _step in 5: # Continue, Restart, Time of day, Help, Flight overlays (HUD-06), End
+	var end_reachable: bool = ui.focus_name() == "End"
+	for _step in 12: # Walk the actual menu order so optional entries do not make the test's count stale.
+		if end_reachable:
+			break
 		await ui.tap(KEY_DOWN)
-	_check("End flight is keyboard reachable", ui.focus_name() == "End", ui.focus_name())
+		end_reachable = ui.focus_name() == "End"
+	_check("End flight is keyboard reachable", end_reachable, ui.focus_name())
+	if not end_reachable:
+		await _close(app)
+		print("all UI aircraft checks failed to reach End flight")
+		quit(1)
+		return
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	_check("End returns to Home and releases the old session", app.flight == null and app.home != null
 		and root.find_children("FlightSession", "", true, false).is_empty()
 		and Preferences.load_from(PREFS).aircraft == TIMBER)
 	home = app.home
+	if home == null:
+		await _close(app)
+		print("all UI aircraft checks failed to return Home")
+		quit(1)
+		return
 	home.fly_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	await ui.settle()

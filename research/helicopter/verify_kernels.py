@@ -1,7 +1,8 @@
 """HELI-03a/04-R1/05/05a/06a–c/13: native verification and disposable defects.
 
 Run from any directory. --out must name a fresh directory; generated logs are
-not source artifacts. --parse-all additionally checks every application script.
+not source artifacts. --parse-all additionally checks every application script;
+--parse-only runs that full application parse without physics tests.
 """
 from __future__ import annotations
 
@@ -25,6 +26,16 @@ SCRIPTS = (
     "physics/rotorcraft/tail_rotor.gd", "tests/test_heli_tail_rotor.gd",
     "physics/rotorcraft/airframe.gd", "tests/test_heli_airframe.gd",
     "physics/rotorcraft/aerodynamic_stage.gd", "tests/test_heli_aerodynamic_stage.gd",
+    "physics/rotorcraft/drive.gd", "tests/test_heli_drive.gd",
+    "physics/rotorcraft/geared_coupling.gd", "tests/test_heli_coupling.gd",
+    "physics/rotorcraft/flight_dynamics.gd", "tests/test_heli_flight.gd",
+    "physics/rotorcraft/trim.gd", "tests/test_heli_trim.gd",
+    "physics/rotorcraft/electronics.gd", "tests/test_heli_electronics.gd",
+    "physics/rotorcraft/skid_contact.gd", "physics/rotorcraft_data.gd",
+    "sim/helicopter_flight_session.gd", "helicopter_main.gd",
+    "render/rotor/heli_rotor_visual.gd", "render/rotor/heli_rotor_blur.gd",
+    "app_root.gd", "render/world/world.gd",
+    "tests/test_heli_session.gd", "tests/test_heli_visual.gd",
 )
 ERROR = re.compile(r"^(?:SCRIPT |SHADER )?ERROR:", re.MULTILINE)
 
@@ -34,8 +45,14 @@ def main() -> int:
     parser.add_argument("--godot", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
     parser.add_argument("--parse-all", action="store_true")
+    parser.add_argument("--parse-only", action="store_true", help="parse every application GDScript without running physics tests")
+    parser.add_argument("--airframe-mutations-only", action="store_true", help="run only the four disposable airframe defect probes")
     parser.add_argument("--native-only", action="store_true", help="focused rerun when Python references/freshness were already checked")
     args = parser.parse_args()
+    if args.parse_only and (args.parse_all or args.native_only or args.airframe_mutations_only):
+        parser.error("--parse-only is a standalone mode; omit --parse-all, --native-only, and --airframe-mutations-only")
+    if args.airframe_mutations_only and (args.parse_all or args.native_only):
+        parser.error("--airframe-mutations-only is a standalone mode; omit --parse-all and --native-only")
     godot = args.godot.resolve()
     out = args.out.resolve()
     out.mkdir(parents=True, exist_ok=False)
@@ -46,16 +63,84 @@ def main() -> int:
                                 errors="replace", capture_output=True, timeout=180)
         output = result.stdout + result.stderr
         (out / f"{name}.log").write_text(output, encoding="utf-8")
+        failure_assertions = output.count("FAIL ")
         if expect_defect:
-            passed = result.returncode != 0 and "FAIL " in output and not ERROR.search(output)
+            passed = result.returncode != 0 and failure_assertions > 0 and not ERROR.search(output)
         else:
             passed = result.returncode == 0 and not ERROR.search(output)
-        records.append({"name": name, "ok": bool(passed), "returncode": result.returncode})
+        record: dict[str, object] = {"name": name, "ok": bool(passed), "returncode": result.returncode}
+        if expect_defect:
+            record["failure_assertions"] = failure_assertions
+            record["parse_errors"] = len(ERROR.findall(output))
+        records.append(record)
         print(f"{'ok' if passed else 'FAIL'} {name}", flush=True)
         return output
 
     def engine(app: Path, *arguments: str) -> list[str]:
         return [str(godot), "--headless", "--path", str(app), "--audio-driver", "Dummy", *arguments]
+
+    def parse_application_scripts() -> None:
+        scripts = sorted(path for path in APP.rglob("*.gd") if ".godot" not in path.parts)
+
+        def parse_one(path: Path) -> dict[str, object]:
+            result = subprocess.run(engine(APP, "--check-only", "--script", f"res://{path.relative_to(APP).as_posix()}"),
+                                    cwd=ROOT, text=True, encoding="utf-8", errors="replace",
+                                    capture_output=True, timeout=60)
+            output = result.stdout + result.stderr
+            return {"path": path.relative_to(APP).as_posix(),
+                    "ok": result.returncode == 0 and not ERROR.search(output), "output": output,
+                    "returncode": result.returncode}
+
+        # Read-only parsing can run concurrently; physics timings must run alone.
+        with ThreadPoolExecutor(max_workers=2) as pool:
+            parsed = []
+            for index, record in enumerate(pool.map(parse_one, scripts), 1):
+                parsed.append(record)
+                if index % 100 == 0:
+                    print(f"parsed {index}/{len(scripts)}", flush=True)
+        (out / "parse-all.json").write_text(json.dumps(parsed, indent=2), encoding="utf-8")
+        ok = all(record["ok"] for record in parsed)
+        failures = [record for record in parsed if not record["ok"]]
+        records.append({"name": "all-application-scripts-parse", "ok": ok,
+                        "count": len(parsed), "failed_count": len(failures)})
+        print(f"{'ok' if ok else 'FAIL'} all-application-scripts-parse ({len(parsed)} scripts, {len(failures)} failed)", flush=True)
+        for record in failures:
+            print(f"FAIL parse {record['path']} (exit {record['returncode']})", flush=True)
+            if record["output"]:
+                print(record["output"].rstrip(), flush=True)
+
+    def run_airframe_mutations() -> None:
+        airframe_source = (APP / "physics/rotorcraft/airframe.gd").read_text(encoding="utf-8")
+        airframe_defects = {
+            "airframe-wake-sign-reversed": ("var uz: float = point_z - wake[2]", "var uz: float = point_z + wake[2]", 2),
+            "airframe-pitch-point-sign-reversed": ("rates[0] * ry - rates[1] * rx", "rates[0] * ry + rates[1] * rx", 2),
+            "airframe-tail-force-injects-energy": ("ideal = -scale * (model.horizontal_tail_lift_curve_slope_per_rad", "ideal = scale * (model.horizontal_tail_lift_curve_slope_per_rad", 1),
+            "airframe-tail-cap-includes-lateral-flow": ("var cap: float = scale * (ux * ux + uz * uz)", "var cap: float = scale * (ux * ux + uy * uy + uz * uz)", 2),
+        }
+        for name, (old, new, expected_anchors) in airframe_defects.items():
+            actual_anchors = airframe_source.count(old)
+            if actual_anchors != expected_anchors:
+                raise RuntimeError(f"mutation anchors drifted: {name} expected {expected_anchors}, found {actual_anchors}")
+            disposable = out / name / "app"
+            for relative in ("physics/rotorcraft/airframe.gd", "physics/math3d.gd", "tests/test_heli_airframe.gd"):
+                target = disposable / relative
+                target.parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(APP / relative, target)
+            (disposable / "project.godot").write_text("config_version=5\n", encoding="utf-8")
+            (disposable / "physics/rotorcraft/airframe.gd").write_text(airframe_source.replace(old, new), encoding="utf-8")
+            run(name, engine(disposable, "--script", "res://tests/test_heli_airframe.gd"), expect_defect=True)
+
+    if args.parse_only:
+        parse_application_scripts()
+        ok = all(record["ok"] for record in records)
+        (out / "summary.json").write_text(json.dumps({"ok": ok, "parse_only": True, "checks": records}, indent=2) + "\n", encoding="utf-8")
+        return 0 if ok else 1
+
+    if args.airframe_mutations_only:
+        run_airframe_mutations()
+        ok = all(record["ok"] for record in records)
+        (out / "summary.json").write_text(json.dumps({"ok": ok, "airframe_mutations_only": True, "checks": records}, indent=2) + "\n", encoding="utf-8")
+        return 0 if ok else 1
 
     if not args.native_only:
         run("reference", [sys.executable, "-m", "unittest", "discover", "-s",
@@ -81,6 +166,13 @@ def main() -> int:
     run("airframe", engine(APP, "--script", "res://tests/test_heli_airframe.gd", "--",
         f"--oracle={ROOT / 'research/helicopter/reference/airframe_oracle.json'}"))
     run("aerodynamic-stage", engine(APP, "--script", "res://tests/test_heli_aerodynamic_stage.gd"))
+    run("drive", engine(APP, "--script", "res://tests/test_heli_drive.gd"))
+    run("geared-coupling", engine(APP, "--script", "res://tests/test_heli_coupling.gd"))
+    run("flight-dynamics", engine(APP, "--script", "res://tests/test_heli_flight.gd"))
+    run("trim", engine(APP, "--script", "res://tests/test_heli_trim.gd"))
+    run("electronics", engine(APP, "--script", "res://tests/test_heli_electronics.gd"))
+    run("helicopter-session", engine(APP, "--script", "res://tests/test_heli_session.gd"))
+    run("helicopter-visual", engine(APP, "--script", "res://tests/test_heli_visual.gd"))
     run("airplane-goldens", engine(APP, "--script", "res://tests/test_golden.gd"))
     hashes: list[str] = []
     for fps in (30, 60, 144):
@@ -148,50 +240,14 @@ def main() -> int:
         (disposable / "physics/rotorcraft/tail_rotor.gd").write_text(tail_source.replace(old, new), encoding="utf-8")
         run(name, engine(disposable, "--script", "res://tests/test_heli_tail_rotor.gd"), expect_defect=True)
 
-    airframe_source = (APP / "physics/rotorcraft/airframe.gd").read_text(encoding="utf-8")
-    airframe_defects = {
-        "airframe-wake-sign-reversed": ("var uz: float = point_z - wake[2]", "var uz: float = point_z + wake[2]"),
-        "airframe-pitch-point-sign-reversed": ("rates[0] * ry - rates[1] * rx", "rates[0] * ry + rates[1] * rx"),
-        "airframe-tail-force-injects-energy": ("ideal = -scale * (model.horizontal_tail_lift_curve_slope_per_rad", "ideal = scale * (model.horizontal_tail_lift_curve_slope_per_rad"),
-        "airframe-tail-cap-includes-lateral-flow": ("var cap: float = scale * (ux * ux + uz * uz)", "var cap: float = scale * (ux * ux + uy * uy + uz * uz)"),
-    }
-    for name, (old, new) in airframe_defects.items():
-        if airframe_source.count(old) != 1:
-            raise RuntimeError(f"airframe mutation anchor drifted: {name}")
-        disposable = out / name / "app"
-        for relative in ("physics/rotorcraft/airframe.gd", "physics/math3d.gd", "tests/test_heli_airframe.gd"):
-            target = disposable / relative
-            target.parent.mkdir(parents=True, exist_ok=True)
-            shutil.copy2(APP / relative, target)
-        (disposable / "project.godot").write_text("config_version=5\n", encoding="utf-8")
-        (disposable / "physics/rotorcraft/airframe.gd").write_text(airframe_source.replace(old, new), encoding="utf-8")
-        run(name, engine(disposable, "--script", "res://tests/test_heli_airframe.gd"), expect_defect=True)
+    run_airframe_mutations()
 
     if args.parse_all:
-        scripts = sorted(path for path in APP.rglob("*.gd") if ".godot" not in path.parts)
-
-        def parse_one(path: Path) -> dict[str, object]:
-            result = subprocess.run(engine(APP, "--check-only", "--script", f"res://{path.relative_to(APP).as_posix()}"),
-                                    cwd=ROOT, text=True, encoding="utf-8", errors="replace",
-                                    capture_output=True, timeout=60)
-            output = result.stdout + result.stderr
-            return {"path": path.relative_to(APP).as_posix(),
-                    "ok": result.returncode == 0 and not ERROR.search(output), "output": output}
-
-        # Read-only parsing can run concurrently; physics timings must run alone.
-        with ThreadPoolExecutor(max_workers=2) as pool:
-            parsed = []
-            for index, record in enumerate(pool.map(parse_one, scripts), 1):
-                parsed.append(record)
-                if index % 100 == 0:
-                    print(f"parsed {index}/{len(scripts)}", flush=True)
-        (out / "parse-all.json").write_text(json.dumps(parsed, indent=2), encoding="utf-8")
-        ok = all(record["ok"] for record in parsed)
-        records.append({"name": "all-application-scripts-parse", "ok": ok, "count": len(parsed)})
-        print(f"{'ok' if ok else 'FAIL'} all-application-scripts-parse ({len(parsed)})", flush=True)
+        parse_application_scripts()
 
     ok = all(record["ok"] for record in records)
-    (out / "summary.json").write_text(json.dumps({"ok": ok, "native_only": args.native_only, "checks": records}, indent=2) + "\n", encoding="utf-8")
+    (out / "summary.json").write_text(json.dumps({"ok": ok, "native_only": args.native_only,
+        "parse_all": args.parse_all, "checks": records}, indent=2) + "\n", encoding="utf-8")
     return 0 if ok else 1
 
 

@@ -8,9 +8,11 @@ const Dashboard = preload("res://vehicles/ground/ground_dashboard.gd")
 const CameraRig = preload("res://vehicles/ground/ground_camera.gd")
 const CourseView = preload("res://vehicles/ground/course_view.gd")
 const Course = preload("res://physics/ground_vehicle/course.gd")
-const World = preload("res://render/world/world.gd")
+const Atmosphere = preload("res://render/atmosphere.gd")
+const ShaderClock = preload("res://render/shader_clock.gd")
 const Frames = preload("res://render/frames.gd")
 const EngineAudio = preload("res://render/engine_audio.gd")
+const ContactDebug = preload("res://vehicles/ground/contact_debug.gd")
 
 signal home_requested
 var startup_error := ""
@@ -43,6 +45,9 @@ var _previous := PackedFloat64Array()
 var _record_export_pending := false
 var _last_export := {}
 var _previous_auto_quit := true
+var _contact_debug: MeshInstance3D
+var _render_road: Callable
+var _audio_was_paused := true
 
 func _ready() -> void:
 	name = "GroundVehicleActivity"
@@ -58,6 +63,7 @@ func _ready() -> void:
 		return
 	_model = session.model_snapshot()
 	_course = session.course_snapshot()
+	_render_road = func(north: float, east: float) -> Dictionary: return Course.sample(_course, north, east)
 	visual = Model.build()
 	if not visual.ok:
 		startup_error = visual.error
@@ -65,9 +71,19 @@ func _ready() -> void:
 		set_process(false)
 		return
 	add_child(visual.root)
-	World.build(self, {"id": "mt8-practice"}, func():
-		if enable_course_visual:
-			CourseView.build(self, _course), {"time_of_day": false})
+	_contact_debug = ContactDebug.new()
+	_contact_debug.visible = false
+	add_child(_contact_debug)
+	# Reuse the shared sky/light calibration; this analytic course has no airfield scenery.
+	ShaderClock.register()
+	Atmosphere.state = {}
+	var environment := WorldEnvironment.new()
+	environment.environment = Atmosphere.environment()
+	add_child(environment)
+	var sun := Atmosphere.create_sun(self)
+	sun.directional_shadow_max_distance = 35.0
+	if enable_course_visual:
+		CourseView.build(self, _course)
 	camera = Camera3D.new()
 	camera.near = 0.01
 	camera.far = 1500.0
@@ -85,6 +101,8 @@ func _ready() -> void:
 		open_garage()
 		dashboard.message("Simulation paused: " + reason, "Simulación en pausa: " + reason))
 	session.tick_advanced.connect(_accepted_tick)
+	session.recording_limit_reached.connect(_on_recording_limit)
+	session.recording_interrupted.connect(_on_recording_interrupted)
 	_snapshot = session.state_snapshot()
 	_previous = _snapshot.duplicate()
 	if enable_audio:
@@ -163,17 +181,24 @@ func _process(delta: float) -> void:
 	camera_rig.update(camera, target, basis, delta, dashboard.menu_visible, func(x: float, z: float) -> float: return Course.sample(_course, -z, x).height_m)
 	var telemetry: Dictionary = session.telemetry_snapshot()
 	telemetry.surface_id = Course.sample(_course, drawn[0], drawn[1]).surface_id
+	_contact_debug.update_snapshot(drawn, _model, telemetry, _render_road)
 	dashboard.update_snapshot(telemetry, session.paused, session.time_s(), session.recording, _show_diagnostics or mode == 2)
 	if visual.travel_outside_art:
 		dashboard.message("Suspension beyond visual travel; see recorded physical state.", "Suspensión fuera del recorrido visual; consulta el estado físico grabado.")
 	if _sound != null:
 		_sound.global_position = target
 		_sound.stream_paused = session.paused or not enable_audio
-		if not _sound.stream_paused:
+		if _sound.stream_paused:
+			_audio_was_paused = true
+		else:
 			# Audible gearbox harmonic, an estimated presentation mapping, not a measured motor RPM.
 			var rpm := 0.0
 			for i in 4:
 				rpm += absf(_snapshot[21 + i]) * 60.0 / TAU * 8.0 / 4.0
+			if _audio_was_paused:
+				_sound.restart_voice()
+				_sound.voice.reset(rpm, 18000.0)
+				_audio_was_paused = false
 			_sound.refill(rpm, 18000.0)
 
 func open_garage() -> void:
@@ -191,7 +216,12 @@ func handle_action(action: String) -> void:
 			if session.resume():
 				dashboard.set_menu(false)
 				camera_rig.reset()
-				dashboard.message("RT drive · LT brake · Left stick steer · Hold B + RT reverse", "RT acelerar · LT frenar · Stick izquierdo girar · B + RT reversa")
+				if mode == 1:
+					dashboard.message("Follow the central lane. Start gently; release throttle before landing.", "Sigue el carril central. Empieza suave; suelta el acelerador antes de aterrizar.")
+				elif Input.get_connected_joypads().is_empty():
+					dashboard.message("W forward · S reverse · A/D steer · Space brake", "W avanzar · S reversa · A/D girar · Espacio frenar")
+				else:
+					dashboard.message("RT drive · LT brake · Left stick steer · Hold B + RT reverse", "RT acelerar · LT frenar · Stick izquierdo girar · B + RT reversa")
 			else:
 				session.add_pause_hold("garage")
 				dashboard.message("Release all controls before continuing.", "Suelta todos los controles antes de continuar.")
@@ -208,7 +238,7 @@ func handle_action(action: String) -> void:
 		"body": visual.nodes.Body.visible = not visual.nodes.Body.visible
 		"contacts":
 			_show_diagnostics = not _show_diagnostics
-			visual.nodes.Collision.visible = _show_diagnostics
+			_contact_debug.visible = _show_diagnostics
 		"sound": enable_audio = not enable_audio
 		"record":
 			if session.recording:
@@ -259,12 +289,25 @@ func _finish_recording() -> bool:
 	dashboard.message("Saved: " + _last_export.csv_path, "Guardado: " + _last_export.csv_path)
 	return true
 
+func _on_recording_limit(_sample_count: int, _elapsed_seconds: float) -> void:
+	_record_export_pending = true
+	open_garage()
+	dashboard.record_button.text = dashboard.words("Save recording", "Guardar grabación")
+	dashboard.message("Recording limit reached. Your data is kept; save it to start another run.", "Límite de grabación alcanzado. Los datos se conservan; guárdalos para iniciar otra prueba.")
+
+func _on_recording_interrupted(reason: String, _sample_count: int) -> void:
+	_record_export_pending = true
+	open_garage()
+	dashboard.record_button.text = dashboard.words("Save interrupted recording", "Guardar grabación interrumpida")
+	dashboard.message("Recording interrupted; data kept: " + reason, "Grabación interrumpida; datos conservados: " + reason)
+
 func _after_reset() -> void:
 	_snapshot = session.state_snapshot()
 	_previous = _snapshot.duplicate()
 	_model = session.model_snapshot()
 	_jump_time = -1.0
 	_landing_pending = false
+	dashboard.plot.clear_history()
 	camera_rig.reset()
 	open_garage()
 

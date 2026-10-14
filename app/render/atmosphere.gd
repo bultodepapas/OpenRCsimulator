@@ -9,6 +9,10 @@ const Spec := preload("res://spec.gd")
 const Frames := preload("res://render/frames.gd")
 const SKY_SHADER := preload("res://render/sky.gdshader")
 const GROUND_SHADER := preload("res://render/ground.gdshader")
+const NEAR_GRASS_SHADER := preload("res://render/near_grass.gdshader")
+const SkyConfig := preload("res://environment/sky_appearance_config.gd")
+const SkyAppearance := preload("res://render/weather/sky_appearance.gd")
+const CloudTransport := preload("res://render/weather/cloud_transport.gd")
 
 ## The cloud noise's lattice period in cells (render/cloud_field.gdshaderinc CLOUD_PERIOD).
 const CLOUD_PERIOD := 64.0
@@ -17,6 +21,14 @@ const CLOUD_PERIOD := 64.0
 # mown/runway materials. Register lazily before any ground material is rendered.
 static var _cloud_registered := false
 static var last_cloud_offset := Vector2.ZERO
+
+## Visual sky configuration is intentionally separate from the validated flight/weather state.
+static var _appearance_selection: Dictionary = {}
+static var _appearance_profile: Dictionary = {}
+static var _appearance: Dictionary = {}
+static var _appearance_enabled := false
+static var _cloud_transport: Dictionary = {}
+static var _last_cloud_sim_time := 0.0
 
 
 ## Koschmieder: visual range = 3.912 / β (2 % contrast threshold).
@@ -62,6 +74,219 @@ static func parameters(lighting: Dictionary = {}) -> Dictionary:
 
 static func _uses_flow_state(lighting: Dictionary = {}) -> bool:
 	return lighting.is_empty() and not state.is_empty()
+
+
+## Validate and install one visual preset without touching the flight/weather configuration.
+## `mean_wind_ned` is the deterministic session mean, never the instantaneous turbulence sample.
+static func configure_appearance(selection: Dictionary, mean_wind_ned: Array = [0.0, 0.0, 0.0], anchor_time_s := 0.0) -> bool:
+	if not is_finite(anchor_time_s) or anchor_time_s < 0.0 or mean_wind_ned.size() != 3:
+		return false
+	for component: Variant in mean_wind_ned:
+		if typeof(component) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(component)) or absf(float(component)) > 1000.0:
+			return false
+	var checked: Dictionary = SkyConfig.validate(selection)
+	if not checked.get("ok", false):
+		return false
+	var resolved: Dictionary = SkyAppearance.resolve(checked.profile, checked.config)
+	if resolved.is_empty():
+		return false
+	var prior_offsets := [Vector2.ZERO] if anchor_time_s == 0.0 else _cloud_offsets_at(anchor_time_s)
+	if prior_offsets.is_empty():
+		prior_offsets.append(_legacy_cloud_offset_at(anchor_time_s))
+	var transport := CloudTransport.build(checked.config, resolved.cloud_layers, mean_wind_ned, anchor_time_s,
+		float(Spec.ATMOSPHERE.cloud_update_s), Spec.ATMOSPHERE.cloud_drift_cells_per_s, prior_offsets,
+		float(Spec.ATMOSPHERE.cloud_deck_m) / maxf(float(Spec.ATMOSPHERE.cloud_scale), 1.0e-6))
+	if transport.is_empty():
+		return false
+	_appearance_selection = checked.config.duplicate(true)
+	_appearance_profile = checked.profile.duplicate(true)
+	_appearance = resolved.duplicate(true)
+	_appearance_enabled = not bool(resolved.legacy)
+	_cloud_transport = transport
+	_last_cloud_sim_time = anchor_time_s
+	if anchor_time_s == 0.0:
+		_set_cloud_offset(Vector2.ZERO)
+	return true
+
+
+static func appearance_config() -> Dictionary:
+	return SkyConfig.defaults() if _appearance_selection.is_empty() else _appearance_selection.duplicate(true)
+
+
+## The selected seed also drives the calibrated classic branch. Its default remains Spec's original seed (1253).
+static func selected_cloud_seed(fallback: int = Spec.ATMOSPHERE.cloud_seed) -> int:
+	return int(_appearance_selection.get("seed", fallback))
+
+
+static func cloud_transport_checkpoint() -> Dictionary:
+	if not CloudTransport.validate(_cloud_transport):
+		var selection := SkyConfig.defaults()
+		var checked: Dictionary = SkyConfig.validate(selection)
+		var resolved: Dictionary = SkyAppearance.resolve(checked.profile, checked.config)
+		return CloudTransport.build(selection, resolved.cloud_layers, [0.0, 0.0, 0.0], _last_cloud_sim_time,
+			float(Spec.ATMOSPHERE.cloud_update_s), Spec.ATMOSPHERE.cloud_drift_cells_per_s,
+			[_legacy_cloud_offset_at(_last_cloud_sim_time)],
+			float(Spec.ATMOSPHERE.cloud_deck_m) / maxf(float(Spec.ATMOSPHERE.cloud_scale), 1.0e-6))
+	return CloudTransport.rebase(_cloud_transport, _last_cloud_sim_time)
+
+
+static func validate_cloud_transport(raw: Variant) -> bool:
+	return CloudTransport.validate(raw)
+
+
+## Check that a valid transport actually belongs to the selected sky profile and motion mode.
+## `expected_mean_wind_ned` binds follow-wind checkpoints to the deterministic weather selection.
+static func validate_cloud_transport_for(selection: Dictionary, raw: Variant, expected_mean_wind_ned: Array = []) -> bool:
+	if not CloudTransport.validate(raw):
+		return false
+	var checked: Dictionary = SkyConfig.validate(selection)
+	if not checked.get("ok", false):
+		return false
+	var transport: Dictionary = raw
+	if transport.motion != checked.config.motion or not is_equal_approx(float(transport.step_s), float(Spec.ATMOSPHERE.cloud_update_s)):
+		return false
+	var mean: Array = transport.mean_wind_ned
+	if not expected_mean_wind_ned.is_empty():
+		if expected_mean_wind_ned.size() != 3:
+			return false
+		for axis in 3:
+			if not is_equal_approx(float(mean[axis]), float(expected_mean_wind_ned[axis])):
+				return false
+	var resolved: Dictionary = SkyAppearance.resolve(checked.profile, checked.config)
+	var expected_layers: Array = resolved.get("cloud_layers", [])
+	if transport.layers.size() != expected_layers.size():
+		return false
+	var base_offsets: Array = [transport.legacy_anchor_offset]
+	for layer: Dictionary in transport.layers:
+		base_offsets.append(layer.anchor_offset)
+	var expected := CloudTransport.build(checked.config, expected_layers, mean, float(transport.anchor_time_s),
+			float(transport.step_s), Spec.ATMOSPHERE.cloud_drift_cells_per_s, base_offsets)
+	if expected.is_empty() or not _vector_array_approx(transport.legacy_velocity_cells_s, expected.legacy_velocity_cells_s):
+		return false
+	for index in expected_layers.size():
+		var actual_layer: Dictionary = transport.layers[index]
+		var profile_layer: Dictionary = expected_layers[index]
+		var expected_layer: Dictionary = expected.layers[index]
+		for key: String in ["type", "seed", "scale_m", "drift_multiplier", "cluster_strength"]:
+			if actual_layer.get(key) != profile_layer.get(key):
+				return false
+		if not _vector_array_approx(actual_layer.velocity_cells_s, expected_layer.velocity_cells_s):
+			return false
+	return true
+
+
+static func restore_cloud_transport(raw: Variant) -> bool:
+	if not CloudTransport.validate(raw):
+		return false
+	var restored: Dictionary = raw.duplicate(true)
+	_cloud_transport = restored
+	_last_cloud_sim_time = float(restored.anchor_time_s)
+	return true
+
+
+## Detached cloud data shared by the sky shader and the localized storm-cloud overlay.
+static func cloud_state_snapshot() -> Dictionary:
+	var layers: Array = []
+	var profile_layers: Array = _appearance.get("cloud_layers", [])
+	for index in mini(profile_layers.size(), CloudTransport.MAX_LAYERS):
+		var layer: Dictionary = profile_layers[index].duplicate(true)
+		layer.offset = CloudTransport.layer_offset(_cloud_transport, index, _last_cloud_sim_time) \
+			if _appearance_enabled else CloudTransport.legacy_offset(_cloud_transport, _last_cloud_sim_time)
+		layers.append(layer)
+	var shadow_index := _shadow_layer_index()
+	var shadow_layer: Dictionary = layers[shadow_index] if shadow_index >= 0 else {}
+	var current_offsets := _cloud_offsets_at(_last_cloud_sim_time)
+	return {
+		"profile_id": str(_appearance.get("id", "classic")),
+		"seed": int(_appearance_selection.get("seed", Spec.ATMOSPHERE.cloud_seed)),
+		"cloud_cover": float(_appearance.get("cloud_cover", Spec.ATMOSPHERE.cloud_coverage)),
+		"cloud_density": float(_appearance.get("cloud_density", 0.0)),
+		"cloud_shadow": float(_appearance.get("cloud_shadow", Spec.ATMOSPHERE.cloud_shadow_strength)),
+		"cloud_shadow_strength": float(_appearance.get("cloud_shadow", Spec.ATMOSPHERE.cloud_shadow_strength)) * float(shadow_layer.get("density", 1.0)),
+		"cloud_color": _appearance.get("cloud_lin", _linear_color(Spec.ATMOSPHERE.cloud_color)),
+		"deck_height_m": float(shadow_layer.get("altitude_m", Spec.ATMOSPHERE.cloud_deck_m)),
+		"cloud_layers": layers,
+		"offset": _selected_cloud_offset(_last_cloud_sim_time, current_offsets),
+	}
+
+
+static func _shadow_layer_index() -> int:
+	var layers: Array = _appearance.get("cloud_layers", [])
+	var best_index := -1
+	var best_altitude := INF
+	for index in layers.size():
+		var layer: Dictionary = layers[index]
+		var kind := str(layer.get("type", ""))
+		if kind in ["cirrus", "anvil"]:
+			continue # high ice decks cast no useful ground shadow in this 2D deck model
+		if float(layer.get("coverage", 0.0)) <= 0.0 or float(layer.get("density", 0.0)) <= 0.0:
+			continue
+		var altitude := float(layer.get("altitude_m", INF))
+		if altitude < best_altitude:
+			best_altitude = altitude
+			best_index = index
+	return best_index
+
+
+static func _cloud_offsets_at(sim_time_s: float) -> Array:
+	if CloudTransport.validate(_cloud_transport):
+		if not _appearance_enabled:
+			return [CloudTransport.legacy_offset_pair(_cloud_transport, sim_time_s)]
+		if not _cloud_transport.layers.is_empty():
+			return CloudTransport.offsets(_cloud_transport, sim_time_s)
+		return [CloudTransport.legacy_offset_pair(_cloud_transport, sim_time_s)]
+	return [_legacy_cloud_offset_at(sim_time_s)]
+
+
+static func _legacy_cloud_offset_at(sim_time_s: float) -> Vector2:
+	return CloudTransport.legacy_offset(_cloud_transport, sim_time_s) if CloudTransport.validate(_cloud_transport) else cloud_offset(sim_time_s)
+
+
+static func _linear_color(color: Color) -> Vector3:
+	var value := color.srgb_to_linear()
+	return Vector3(value.r, value.g, value.b)
+
+
+static func _vector_array_approx(a: Variant, b: Variant) -> bool:
+	if typeof(a) != TYPE_ARRAY or typeof(b) != TYPE_ARRAY or a.size() != 2 or b.size() != 2:
+		return false
+	return is_equal_approx(float(a[0]), float(b[0])) and is_equal_approx(float(a[1]), float(b[1]))
+
+
+static func _profile_ratio(target: Vector3, reference: Vector3) -> Vector3:
+	return Vector3(target.x / maxf(reference.x, 1.0e-6), target.y / maxf(reference.y, 1.0e-6), target.z / maxf(reference.z, 1.0e-6))
+
+
+static func _profile_haze_linear(base: Vector3) -> Vector3:
+	if not _appearance_enabled:
+		return base
+	return base * _profile_ratio(_appearance.horizon_lin, _linear_color(Spec.ATMOSPHERE.haze))
+
+
+static func _profile_sky_tints(mat: ShaderMaterial, lighting: Dictionary = {}) -> void:
+	if not _appearance_enabled:
+		return
+	var base_zenith: Vector3 = state.zenith_lin if _uses_flow_state(lighting) else _linear_color(parameters(lighting).zenith)
+	var base_cloud: Vector3 = state.cloud_lin if _uses_flow_state(lighting) else _linear_color(parameters(lighting).cloud_color)
+	mat.set_shader_parameter("zenith_lin", base_zenith * _profile_ratio(_appearance.zenith_lin, _linear_color(Spec.ATMOSPHERE.zenith)))
+	mat.set_shader_parameter("cloud_lin", base_cloud * _profile_ratio(_appearance.cloud_lin, _linear_color(Spec.ATMOSPHERE.cloud_color)))
+
+
+static func _apply_profile_environment(env: Environment, lighting: Dictionary = {}) -> void:
+	if not _appearance_enabled:
+		return
+	var haze := _profile_haze_linear(haze_linear(lighting))
+	env.fog_light_color = Color(haze.x, haze.y, haze.z).linear_to_srgb()
+	env.fog_light_energy = 1.0
+	env.fog_density = beta() * float(_appearance.haze_scale)
+	var ambient: Vector3 = _appearance.ambient_lin * float(_appearance.ambient_intensity)
+	if _uses_flow_state(lighting):
+		var current: Vector3 = state.ambient_lin
+		var reference := _linear_color(Spec.ATMOSPHERE.haze) * 0.6 + _linear_color(Spec.ATMOSPHERE.zenith) * 0.4
+		ambient = current * _profile_ratio(_appearance.ambient_lin, reference) * float(_appearance.ambient_intensity)
+	env.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
+	env.ambient_light_color = Color(ambient.x, ambient.y, ambient.z).linear_to_srgb()
+	env.ambient_light_energy = 1.0
 
 
 static func shadow_strength(lighting: Dictionary = {}) -> float:
@@ -115,7 +340,7 @@ static func shadow_compensation() -> float:
 static func light_energy(lighting: Dictionary = {}) -> float:
 	var a: Dictionary = parameters(lighting)
 	var energy: float = state.light_energy if _uses_flow_state(lighting) else a.sun_energy
-	return energy * shadow_compensation()
+	return energy * shadow_compensation() * (float(_appearance.sun_intensity) if _appearance_enabled else 1.0)
 
 
 ## Fog sun scatter as set on the engine: divided by the compensation, so the haze's sun term never changes.
@@ -133,7 +358,11 @@ static func sun_linear(lighting: Dictionary = {}) -> Vector3:
 
 ## The directional light's colour (sRGB): the calibrated sun, or the time-of-day sun/moon.
 static func light_color(lighting: Dictionary = {}) -> Color:
-	return state.light_color if _uses_flow_state(lighting) else parameters(lighting).sun_color
+	var color: Color = state.light_color if _uses_flow_state(lighting) else parameters(lighting).sun_color
+	if not _appearance_enabled:
+		return color
+	var tinted := _linear_color(color) * _profile_ratio(_appearance.sun_lin, _linear_color(Spec.ATMOSPHERE.sun_color))
+	return Color(tinted.x, tinted.y, tinted.z).linear_to_srgb()
 
 
 ## Direction for the planar pilot-aid shadow: the light, with its elevation held at ≥ SHADOW_MIN_ELEVATION_DEG so a
@@ -151,7 +380,7 @@ static func shadow_direction(lighting: Dictionary = {}) -> Vector3:
 
 
 static func _set_haze_uniforms(mat: ShaderMaterial, lighting: Dictionary = {}) -> void:
-	mat.set_shader_parameter("haze_lin", haze_linear(lighting))
+	mat.set_shader_parameter("haze_lin", _profile_haze_linear(haze_linear(lighting)))
 	mat.set_shader_parameter("sun_dir", sun_direction(lighting))
 	mat.set_shader_parameter("sun_lin", sun_linear(lighting))
 	mat.set_shader_parameter("sun_scatter", sun_scatter(lighting))
@@ -161,12 +390,82 @@ static func _set_haze_uniforms(mat: ShaderMaterial, lighting: Dictionary = {}) -
 	mat.set_shader_parameter("lobe_height", state.lobe_height if _uses_flow_state(lighting) else lighting.get("lobe_height", 1.5708))
 
 
+static func _set_sky_uniform_if_changed(mat: ShaderMaterial, uniform_name: StringName, value: Variant) -> bool:
+	if mat.get_shader_parameter(uniform_name) == value:
+		return false
+	mat.set_shader_parameter(uniform_name, value)
+	return true
+
+
+static func _apply_cloud_uniforms(mat: ShaderMaterial, sim_time_s: float) -> bool:
+	var offsets := _cloud_offsets_at(sim_time_s)
+	var changed := false
+	if _appearance_enabled:
+		var arrays := SkyAppearance.shader_arrays(_appearance.cloud_layers, offsets,
+			float(_appearance.cloud_cover), float(_appearance.cloud_density))
+		changed = _set_sky_uniform_if_changed(mat, &"layered_appearance", true) or changed
+		changed = _set_sky_uniform_if_changed(mat, &"disc_cloud_occlusion", true) or changed
+		changed = _set_sky_uniform_if_changed(mat, &"appearance_layer_count", arrays.layer_count) or changed
+		changed = _set_sky_uniform_if_changed(mat, &"appearance_layer_parameters", arrays.layer_parameters) or changed
+		changed = _set_sky_uniform_if_changed(mat, &"appearance_layer_motion", arrays.layer_motion) or changed
+		changed = _set_sky_uniform_if_changed(mat, &"appearance_layer_seeds", arrays.layer_seeds) or changed
+		changed = _set_sky_uniform_if_changed(mat, &"appearance_cloud_density", arrays.cloud_density) or changed
+	else:
+		changed = _set_sky_uniform_if_changed(mat, &"layered_appearance", false) or changed
+		changed = _set_sky_uniform_if_changed(mat, &"cloud_offset", _cloud_offset_for_legacy_branch(sim_time_s, offsets)) or changed
+	return changed
+
+
+static func _cloud_offset_for_legacy_branch(sim_time_s: float, offsets: Array = []) -> Vector2:
+	if str(_appearance_selection.get("motion", "legacy")) != "legacy" and not offsets.is_empty():
+		var raw: Variant = offsets[0]
+		if typeof(raw) == TYPE_ARRAY and raw.size() == 2:
+			return Vector2(float(raw[0]), float(raw[1]))
+	return _legacy_cloud_offset_at(sim_time_s)
+
+
+static func _selected_cloud_offset(sim_time_s: float, offsets: Array = []) -> Vector2:
+	if not _appearance_enabled:
+		return _cloud_offset_for_legacy_branch(sim_time_s, offsets)
+	var index := _shadow_layer_index()
+	if index < 0 and not offsets.is_empty():
+		index = 0
+	if index >= 0 and index < offsets.size():
+		var raw: Variant = offsets[index]
+		if typeof(raw) == TYPE_ARRAY and raw.size() == 2:
+			return Vector2(float(raw[0]), float(raw[1]))
+	return Vector2.ZERO
+
+
+static func _set_profile_shadow_uniforms(mat: ShaderMaterial, lighting: Dictionary = {}) -> void:
+	if mat.shader != GROUND_SHADER and mat.shader != NEAR_GRASS_SHADER:
+		return
+	if not _appearance_enabled:
+		mat.set_shader_parameter("appearance_cloud_shadow", false)
+		return
+	mat.set_shader_parameter("appearance_cloud_shadow", true)
+	var index := _shadow_layer_index()
+	if index < 0:
+		mat.set_shader_parameter("cloud_shadow_strength", 0.0)
+		mat.set_shader_parameter("appearance_shadow_density", 0.0)
+		mat.set_shader_parameter("cloud_coverage", 0.0)
+		return
+	var layer: Dictionary = _appearance.cloud_layers[index]
+	var cover := clampf(float(layer.coverage) + (float(_appearance.cloud_cover) - 0.5) * 0.5, 0.0, 1.0)
+	mat.set_shader_parameter("cloud_coverage", float(_appearance.cloud_cover))
+	mat.set_shader_parameter("cloud_deck_m", float(layer.altitude_m))
+	mat.set_shader_parameter("cloud_shadow_strength", float(_appearance.cloud_shadow))
+	mat.set_shader_parameter("appearance_shadow_scale_m", float(layer.scale_m))
+	mat.set_shader_parameter("appearance_shadow_coverage", cover)
+	mat.set_shader_parameter("appearance_shadow_density", float(layer.density) * float(_appearance.cloud_density))
+	mat.set_shader_parameter("appearance_shadow_seed", int(layer.seed))
+	mat.set_shader_parameter("appearance_shadow_cluster", float(layer.cluster_strength))
+
+
 static func sky_material(lighting: Dictionary = {}) -> ShaderMaterial:
 	var mat: ShaderMaterial = ShaderMaterial.new()
 	mat.shader = SKY_SHADER
 	update_sky_material(mat, lighting)
-	mat.set_shader_parameter("cloud_offset", cloud_offset(0.0))
-	_set_cloud_offset(cloud_offset(0.0))
 	return mat
 
 
@@ -181,7 +480,7 @@ static func update_sky_material(mat: ShaderMaterial, lighting: Dictionary = {}) 
 	mat.set_shader_parameter("cloud_lin", Vector3(cl.r, cl.g, cl.b))
 	mat.set_shader_parameter("cloud_coverage", a.cloud_coverage)
 	mat.set_shader_parameter("cloud_scale", a.cloud_scale)
-	mat.set_shader_parameter("cloud_seed", a.cloud_seed)
+	mat.set_shader_parameter("cloud_seed", selected_cloud_seed(int(a.cloud_seed)))
 	mat.set_shader_parameter("cluster_strength", a.cloud_cluster_strength)
 	mat.set_shader_parameter("cirrus_strength", a.cloud_cirrus_strength)
 	mat.set_shader_parameter("silver_strength", a.cloud_silver_strength)
@@ -196,6 +495,8 @@ static func update_sky_material(mat: ShaderMaterial, lighting: Dictionary = {}) 
 		mat.set_shader_parameter("moon_dir", a.get("moon_dir", Vector3.DOWN))
 		mat.set_shader_parameter("moon_lin", a.get("moon_lin", Vector3.ZERO))
 		mat.set_shader_parameter("moon_sun_dir", a.get("moon_sun_dir", Vector3.UP))
+	_profile_sky_tints(mat, lighting)
+	_apply_cloud_uniforms(mat, _last_cloud_sim_time)
 
 
 ## FW-22/61: the time-of-day state's sky uniforms (also called when time flows).
@@ -209,6 +510,8 @@ static func apply_state_to_sky(mat: ShaderMaterial) -> void:
 	mat.set_shader_parameter("disc_cloud_occlusion", false)
 	mat.set_shader_parameter("disc_dir", state.sun_dir)
 	_set_haze_uniforms(mat)
+	_profile_sky_tints(mat)
+	_apply_cloud_uniforms(mat, _last_cloud_sim_time)
 
 
 ## FW-23/61: the time-of-day state's environment: haze colour, ambient colour, no sky reflections (the cubemap path
@@ -224,6 +527,7 @@ static func apply_state_to_environment(env: Environment) -> void:
 	env.ambient_light_energy = 1.0
 	env.reflected_light_source = Environment.REFLECTION_SOURCE_DISABLED
 	env.tonemap_mode = Environment.TONE_MAPPER_AGX if state.get("tonemapper", "aces") == "agx" else Environment.TONE_MAPPER_ACES
+	_apply_profile_environment(env)
 
 
 ## The directional light from the current state (or the calibrated sun): colour, energy, direction.
@@ -257,12 +561,24 @@ static func cloud_offset(sim_time: float) -> Vector2:
 ## Moves the clouds of an environment's sky to a simulation time; returns true when the sky actually changed.
 static func update_clouds(env: Environment, sim_time: float) -> bool:
 	var mat: ShaderMaterial = env.sky.sky_material
-	var off := cloud_offset(sim_time)
+	var offsets := _cloud_offsets_at(sim_time)
+	var off := _selected_cloud_offset(sim_time, offsets)
+	var global_offset_changed: bool = last_cloud_offset != off
 	_set_cloud_offset(off) # also updates all ground surfaces, even when the sky is already at this time
-	if mat.get_shader_parameter("cloud_offset") == off:
-		return false
-	mat.set_shader_parameter("cloud_offset", off)
-	return true
+	var sky_changed := _apply_cloud_uniforms(mat, sim_time)
+	_last_cloud_sim_time = sim_time
+	return global_offset_changed or sky_changed
+
+
+## Refresh the cached field materials after a paused preset change; the sky Environment and sun are updated separately.
+static func update_cloud_appearance(root: Node) -> void:
+	if root == null or not is_instance_valid(root) or not root.has_meta("lighting_materials"):
+		return
+	var materials: Array = root.get_meta("lighting_materials", [])
+	var lighting: Dictionary = root.get_meta("lighting_snapshot", {})
+	for material_value: Variant in materials:
+		if material_value is ShaderMaterial and is_instance_valid(material_value):
+			update_ground_material(material_value as ShaderMaterial, lighting)
 
 
 ## The ground's material: grass texture in world space + the haze as custom fog with the rim fade.
@@ -281,7 +597,7 @@ static func update_ground_material(mat: ShaderMaterial, lighting: Dictionary = {
 	var a: Dictionary = parameters(lighting)
 	mat.set_shader_parameter("cloud_coverage", a.cloud_coverage)
 	mat.set_shader_parameter("cloud_scale", a.cloud_scale)
-	mat.set_shader_parameter("cloud_seed", a.cloud_seed)
+	mat.set_shader_parameter("cloud_seed", selected_cloud_seed(int(a.cloud_seed)))
 	mat.set_shader_parameter("cluster_strength", a.cloud_cluster_strength)
 	mat.set_shader_parameter("cloud_deck_m", a.cloud_deck_m)
 	mat.set_shader_parameter("cloud_shadow_strength", a.cloud_shadow_strength)
@@ -292,6 +608,7 @@ static func update_ground_material(mat: ShaderMaterial, lighting: Dictionary = {
 		mat.set_shader_parameter("rim_end", a.rim_end_m)
 		mat.set_shader_parameter("rim_angular", visibility_m > a.visibility_m)
 	_set_haze_uniforms(mat, lighting)
+	_set_profile_shadow_uniforms(mat, lighting)
 
 
 ## The world environment. L1a: the sky drawn per pixel as background; its radiance (rendered once, QUALITY) lights
@@ -315,6 +632,7 @@ static func environment(lighting: Dictionary = {}) -> Environment:
 	_update_environment_parameters(env, lighting)
 	if _uses_flow_state(lighting):
 		apply_state_to_environment(env)
+	_apply_profile_environment(env, lighting)
 	return env
 
 
@@ -334,6 +652,7 @@ static func update_environment(env: Environment, lighting: Dictionary = {}) -> v
 	_update_environment_parameters(env, lighting)
 	if _uses_flow_state(lighting):
 		apply_state_to_environment(env)
+	_apply_profile_environment(env, lighting)
 
 
 static func _update_environment_parameters(env: Environment, lighting: Dictionary) -> void:

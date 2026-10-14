@@ -1,0 +1,42 @@
+Authored physical identity source migration checks
+Recorded UTC: 2026-10-14 02:00 UTC (workspace local date: 2026-10-13)
+
+Pre-migration snapshots (unchanged):
+  .tools/as-identity/before/manifest.json
+  .tools/as-identity/before/extra-glow-manifest.json
+  Snapshot aircraft JSONs are preserved under .tools/as-identity/before/.
+
+Generation commands executed after source identity/EOL changes:
+  python research/glow-engines/build_installations.py
+  $env:OPENRC_AIRCRAFT_REPORT_DIR='.tools/as-identity/generated-reports/extra'; python research/extra-300/ex05/derive_physics.py
+  $env:OPENRC_AIRCRAFT_REPORT_DIR='.tools/as-identity/generated-reports/p51'; python research/p51/p51-05/derive_physics.py
+  $env:OPENRC_AIRCRAFT_REPORT_DIR='.tools/as-identity/generated-reports/avanti'; python research/avanti-s/av06/derive_physics.py
+  python research/timber/tt07/derive_physics.py
+  Result: all exited 0. Research derivation reports were redirected under .tools to avoid rewriting shared docs.
+
+Authored base Stik EOL:
+  Normalized only line terminators in app/data/aircraft/jensen_ugly_stik_60.json to CRLF.
+  The decoded JSON object before and after was asserted equal; current concurrent authored values were preserved.
+  All nine identified app/data/aircraft outputs now end in CRLF and contain no bare LF.
+
+Source/test validation:
+  python -m py_compile research/glow-engines/build_installations.py research/extra-300/ex05/derive_physics.py research/p51/p51-05/derive_physics.py research/avanti-s/av06/derive_physics.py research/timber/tt07/derive_physics.py research/aircraft-standardization/physical_identity.py research/aircraft-standardization/test_physical_identity_sources.py
+  Result: exit 0.
+  python research/aircraft-standardization/test_physical_identity_sources.py
+  Result: exit 0; 7 tests passed.
+
+Generator freshness checks (all exit 0):
+  python research/glow-engines/build_installations.py --check
+  $env:OPENRC_AIRCRAFT_REPORT_DIR='.tools/as-identity/generated-reports/extra'; python research/extra-300/ex05/derive_physics.py --check
+  $env:OPENRC_AIRCRAFT_REPORT_DIR='.tools/as-identity/generated-reports/p51'; python research/p51/p51-05/derive_physics.py --check
+  $env:OPENRC_AIRCRAFT_REPORT_DIR='.tools/as-identity/generated-reports/avanti'; python research/avanti-s/av06/derive_physics.py --check
+  python research/timber/tt07/derive_physics.py --check
+
+Strict pre-identity value audit (expected nonzero due later donor updates; not waived):
+  python research/aircraft-standardization/test_physical_identity_sources.py --baseline-dir .tools/as-identity/before
+  Result: exit 1, reporting five JSON outputs with shared Stik D6e-R1 aero donor changes; the base Stik also contains the concurrent authored controls.rates profile. The Glow generator intentionally removes controls.rates pending new flight evidence.
+  Exact before/after paths, values, raw-file SHA-256 values, and classification are in .tools/as-identity/checks/source-migration-audit.json.
+  Summary: 4 of 9 identity-stripped outputs exactly match the frozen snapshots; 5 report only classified donor changes, with no unclassified fields.
+
+Scope note:
+  The four donor-derived Glow outputs were regenerated from the current Stik source so they remain generator-fresh. No frozen snapshot values or source baselines were edited to hide the later changes.

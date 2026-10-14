@@ -61,7 +61,8 @@ func _init(initial_scenario: Dictionary = {}) -> void:
 	sidebar.offset_right = SIDEBAR_WIDTH
 	sidebar.custom_minimum_size.x = SIDEBAR_WIDTH
 	surface.add_child(sidebar)
-	var opaque_sidebar_style: StyleBoxFlat = sidebar.get_theme_stylebox("panel").duplicate() as StyleBoxFlat
+	# Detached controls do not inherit their parent's theme until they enter the tree.
+	var opaque_sidebar_style: StyleBoxFlat = surface.theme.get_stylebox("panel", "Sidebar").duplicate() as StyleBoxFlat
 	opaque_sidebar_style.bg_color.a = 1.0
 	sidebar.add_theme_stylebox_override("panel", opaque_sidebar_style)
 

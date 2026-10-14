@@ -1,0 +1,34 @@
+{
+  "ok": true,
+  "airframe_mutations_only": true,
+  "checks": [
+    {
+      "name": "airframe-wake-sign-reversed",
+      "ok": true,
+      "returncode": 1,
+      "failure_assertions": 49,
+      "parse_errors": 0
+    },
+    {
+      "name": "airframe-pitch-point-sign-reversed",
+      "ok": true,
+      "returncode": 1,
+      "failure_assertions": 47,
+      "parse_errors": 0
+    },
+    {
+      "name": "airframe-tail-force-injects-energy",
+      "ok": true,
+      "returncode": 1,
+      "failure_assertions": 49,
+      "parse_errors": 0
+    },
+    {
+      "name": "airframe-tail-cap-includes-lateral-flow",
+      "ok": true,
+      "returncode": 1,
+      "failure_assertions": 1,
+      "parse_errors": 0
+    }
+  ]
+}

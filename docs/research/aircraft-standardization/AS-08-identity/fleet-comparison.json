@@ -1,0 +1,133 @@
+{
+  "ok": true,
+  "comparison": "All fleet fields equal except model_sha256, which intentionally includes authored metadata and source identity",
+  "cases": [
+    {
+      "id": "jensen-das-ugly-stik-60",
+      "soft_hull": false,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    },
+    {
+      "id": "jensen-das-ugly-stik-60",
+      "soft_hull": true,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    },
+    {
+      "id": "stik-glow-55ax-2t",
+      "soft_hull": false,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    },
+    {
+      "id": "stik-glow-55ax-2t",
+      "soft_hull": true,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    },
+    {
+      "id": "stik-glow-fs64v-4t",
+      "soft_hull": false,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    },
+    {
+      "id": "stik-glow-fs64v-4t",
+      "soft_hull": true,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    },
+    {
+      "id": "gp-extra-300s-60",
+      "soft_hull": false,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    },
+    {
+      "id": "gp-extra-300s-60",
+      "soft_hull": true,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    },
+    {
+      "id": "p51d-mustang-120",
+      "soft_hull": false,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    },
+    {
+      "id": "p51d-mustang-120",
+      "soft_hull": true,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    },
+    {
+      "id": "sebart-avanti-s-a200-p100rx",
+      "soft_hull": false,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    },
+    {
+      "id": "sebart-avanti-s-a200-p100rx",
+      "soft_hull": true,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    },
+    {
+      "id": "turbo-lumber-evolution",
+      "soft_hull": false,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    },
+    {
+      "id": "turbo-lumber-evolution",
+      "soft_hull": true,
+      "numerical_exact": true,
+      "identity_changed": true,
+      "changed_fields": [
+        "model_sha256"
+      ]
+    }
+  ],
+  "top_level_exact": true
+}

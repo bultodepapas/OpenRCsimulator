@@ -27,7 +27,8 @@ static func evaluate(main_model: Dictionary, tail_model: Dictionary, airframe_mo
 		state: PackedFloat64Array, omega: float, cg_air: PackedFloat64Array, rates: PackedFloat64Array,
 		collective: float, cyclic_forward: float, cyclic_right: float, tail_collective: float,
 		flow_floor: float, fin_tail_wake_fraction: float, height_over_radius: float = -1.0,
-		loss: float = 1.0, instability: float = 1.0, diagnostics: bool = false) -> Dictionary:
+		loss: float = 1.0, instability: float = 1.0, diagnostics: bool = false,
+		thrust_axis_downworld_scalar: float = NAN) -> Dictionary:
 	if state.size() != 3 or not _vector(cg_air) or not _vector(rates) \
 		or not is_finite(fin_tail_wake_fraction) or fin_tail_wake_fraction < 0.0 or fin_tail_wake_fraction > 1.0:
 		return {"ok": false}
@@ -50,7 +51,8 @@ static func evaluate(main_model: Dictionary, tail_model: Dictionary, airframe_mo
 		return {"ok": false}
 	return _evaluate_models(main_model, tail_model, airframe_model, state, omega, cg_air, rates,
 		collective, cyclic_forward, cyclic_right, tail_collective, flow_floor,
-		fin_tail_wake_fraction, height_over_radius, loss, instability, diagnostics, false)
+		fin_tail_wake_fraction, height_over_radius, loss, instability, diagnostics,
+		false, thrust_axis_downworld_scalar)
 
 
 # Repeated-evaluation entry. The immutable context must come from prepare();
@@ -59,13 +61,16 @@ static func evaluate(main_model: Dictionary, tail_model: Dictionary, airframe_mo
 static func fast_evaluate(context: Dictionary, state: PackedFloat64Array, omega: float,
 		cg_air: PackedFloat64Array, rates: PackedFloat64Array, collective: float,
 		cyclic_forward: float, cyclic_right: float, tail_collective: float,
-		diagnostics: bool = false, height_over_radius_override: float = NAN) -> Dictionary:
+		diagnostics: bool = false, height_over_radius_override: float = NAN,
+		thrust_axis_downworld_scalar: float = NAN) -> Dictionary:
 	if not PerformanceContext.has_valid_header(context) or state.size() != 3 \
 		or not _vector(state) or not _vector(cg_air) or not _vector(rates) \
 		or not _finite([omega, collective, cyclic_forward, cyclic_right, tail_collective]) \
 		or (not is_nan(height_over_radius_override) and not is_finite(height_over_radius_override)) \
 		or (not is_nan(height_over_radius_override) and height_over_radius_override < 0.0 \
-			and height_over_radius_override != -1.0):
+			and height_over_radius_override != -1.0) \
+		or (not is_nan(thrust_axis_downworld_scalar) and (not is_finite(thrust_axis_downworld_scalar) \
+			or absf(thrust_axis_downworld_scalar) > 1.0 + 1.0e-10)):
 		return {"ok": false}
 	var stage_height_over_radius: float = context.height_over_radius
 	if not is_nan(height_over_radius_override):
@@ -73,14 +78,15 @@ static func fast_evaluate(context: Dictionary, state: PackedFloat64Array, omega:
 	return _evaluate_models(context.main_model, context.tail_model, context.airframe_model,
 		state, omega, cg_air, rates, collective, cyclic_forward, cyclic_right, tail_collective,
 		context.flow_floor_m_s, context.fin_tail_wake_fraction, stage_height_over_radius,
-		context.loss, context.instability, diagnostics, true)
+		context.loss, context.instability, diagnostics, true, thrust_axis_downworld_scalar)
 
 
 static func _evaluate_models(main_model: Dictionary, tail_model: Dictionary, airframe_model: Dictionary,
 		state: PackedFloat64Array, omega: float, cg_air: PackedFloat64Array, rates: PackedFloat64Array,
 		collective: float, cyclic_forward: float, cyclic_right: float, tail_collective: float,
 		flow_floor: float, fin_tail_wake_fraction: float, height_over_radius: float,
-		loss: float, instability: float, diagnostics: bool, prepared: bool) -> Dictionary:
+		loss: float, instability: float, diagnostics: bool, prepared: bool,
+		thrust_axis_downworld_scalar: float) -> Dictionary:
 	var hub_air: PackedFloat64Array = M.v3(
 		cg_air[0] + rates[1] * main_model.hub_z_m - rates[2] * main_model.hub_y_m,
 		cg_air[1] + rates[2] * main_model.hub_x_m - rates[0] * main_model.hub_z_m,
@@ -90,7 +96,8 @@ static func _evaluate_models(main_model: Dictionary, tail_model: Dictionary, air
 	var derivative: PackedFloat64Array
 	if prepared:
 		var parts: Array = MainStage._evaluate_prepared_parts(main_model, state, omega, hub_air, rates,
-			collective, cyclic_forward, cyclic_right, flow_floor, height_over_radius, loss, instability, diagnostics)
+			collective, cyclic_forward, cyclic_right, flow_floor, height_over_radius, loss,
+			instability, diagnostics, thrust_axis_downworld_scalar)
 		if parts.size() != 3:
 			return {"ok": false}
 		main_rotor = parts[0]
@@ -98,7 +105,8 @@ static func _evaluate_models(main_model: Dictionary, tail_model: Dictionary, air
 		derivative = parts[2]
 	else:
 		var main: Dictionary = MainStage.evaluate(main_model, state, omega, hub_air, rates,
-			collective, cyclic_forward, cyclic_right, flow_floor, height_over_radius, loss, instability, diagnostics)
+			collective, cyclic_forward, cyclic_right, flow_floor, height_over_radius, loss,
+			instability, diagnostics, thrust_axis_downworld_scalar)
 		if not main.ok:
 			return main
 		main_rotor = main.rotor
@@ -134,8 +142,16 @@ static func _evaluate_models(main_model: Dictionary, tail_model: Dictionary, air
 		loads[i] = main_rotor.loads[i] + tail.loads[i] + airframe.loads[i]
 		if not is_finite(loads[i]):
 			return {"ok": false}
+	var effective_height_over_radius: float = height_over_radius
+	var wake_intersects_ground: bool = true
+	if not is_nan(thrust_axis_downworld_scalar):
+		wake_intersects_ground = main_rotor.thrust_n * thrust_axis_downworld_scalar < 0.0
+		if not wake_intersects_ground:
+			effective_height_over_radius = -1.0
 	var result: Dictionary = {"ok": true, "loads": loads, "derivative": derivative,
-		"main_rotor": main_rotor, "inflow": inflow, "tail_rotor": tail, "airframe": airframe}
+		"main_rotor": main_rotor, "inflow": inflow, "tail_rotor": tail, "airframe": airframe,
+		"ground_effect_height_over_radius_used": effective_height_over_radius,
+		"ground_effect_wake_intersects_ground": wake_intersects_ground}
 	if diagnostics:
 		result["wake_law"] = WAKE_LAW
 		result["hub_air_velocity_body_frd_m_s"] = hub_air

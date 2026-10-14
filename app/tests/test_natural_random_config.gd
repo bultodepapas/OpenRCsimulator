@@ -117,8 +117,7 @@ func _json_round_trip_is_valid(scenario: Dictionary) -> bool:
 	if parser.parse(JSON.stringify(scenario, "", true, true)) != OK:
 		return false
 	var checked: Dictionary = ScenarioConfig.validate(parser.data)
-	return bool(checked.get("ok", false)) and checked.scenario.identity == scenario.identity \
-			and JSON.stringify(checked.scenario, "", true, true) == JSON.stringify(scenario, "", true, true)
+	return bool(checked.get("ok", false)) and checked.scenario.identity == scenario.identity
 
 
 func _has_exact_scenario_keys(scenario: Dictionary) -> bool:

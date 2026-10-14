@@ -45,8 +45,10 @@ func _run() -> void:
 	var mass_selector := _find(workshop, "MassPolicy") as OptionButton
 	var test_fly := _find(workshop, "TestFly") as Button
 	var preview := _find(workshop, "AircraftPreview") as Control
+	var airplane_entries: Array = Catalog.airplane_flyable_entries()
 	_check("screen renders its title, preview and test action", title != null and preview != null and test_fly != null)
-	_check("catalog selector discovers every aircraft", base_selector != null and base_selector.item_count == Catalog.ENTRIES.size())
+	_check("airplane selector discovers every fixed-wing flyable aircraft",
+		base_selector != null and base_selector.item_count == airplane_entries.size())
 	_check("initial keyboard focus enters the aircraft selector", _ui.focus_name() == "BaseAircraft", _ui.focus_name())
 	_check("Workshop is a still editor with no flight session", workshop.get("_compiled").get("ok", false)
 		and workshop.get("_trial_pending") == false)
@@ -74,13 +76,13 @@ func _run() -> void:
 	_check("Tab advances focus inside the editor", _ui.focus_name() != "" and _ui.focus_name() != "BaseAircraft", _ui.focus_name())
 
 	var unsupported_found := false
-	for entry: Dictionary in Catalog.ENTRIES:
+	for entry: Dictionary in airplane_entries:
 		var aircraft_id := str(entry.get("id", ""))
 		workshop.set_aircraft(aircraft_id)
 		await _ui.settle()
 		var selected_index := base_selector.get_selected_id()
 		var selected_matches := str(base_selector.get_item_metadata(selected_index)) == aircraft_id
-		_check("catalog selection remains aligned: %s" % aircraft_id, selected_matches)
+		_check("fixed-wing selection remains aligned: %s" % aircraft_id, selected_matches)
 		var raw_base: Dictionary = workshop.get("_base")
 		if raw_base.is_empty():
 			_check("preview-only aircraft blocks flight build: %s" % aircraft_id, not bool(workshop.get_compiled().get("ok", false)))
@@ -99,6 +101,13 @@ func _run() -> void:
 		if not bool(caps.get("scale", false)):
 			unsupported_found = true
 	_check("catalog includes aircraft with restricted Workshop adjustments", unsupported_found)
+	workshop.set_aircraft("xcell-60-research")
+	await _ui.settle()
+	var rotorcraft_note := _find(workshop, "WorkshopStatus") as Label
+	_check("direct rotorcraft requests return to the fixed-wing default",
+		workshop.get("_base_id") == Catalog.DEFAULT_ID and bool(workshop.get_compiled().get("ok", false)))
+	_check("direct rotorcraft requests explain the Workshop limit",
+		rotorcraft_note != null and "fixed-wing" in rotorcraft_note.text.to_lower())
 
 	workshop.set_aircraft(Catalog.DEFAULT_ID)
 	await _ui.settle()

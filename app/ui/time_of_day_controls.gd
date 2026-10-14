@@ -443,7 +443,7 @@ static func _label(text: String, variation: String, wrap: bool = false) -> Label
 
 static func _choice_label(text: String) -> Label:
 	var label_control: Label = _label(text, "SecondaryLabel")
-	label_control.text = tr(text)
+	label_control.text = TranslationServer.translate(text)
 	label_control.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	return label_control
 

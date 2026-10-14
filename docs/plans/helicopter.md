@@ -1,11 +1,12 @@
 # Helicopter plan: a realistic RC helicopter
 
-**Date:** 2026-10-13. **Status:** implementation started by the owner. HELI-03a/04 supply the steady inflow reference; HELI-04-R1 adds dimensional transient flow and known-event numerical qualification; HELI-05/05a supply main-rotor loads, flapping and a joint main-rotor/inflow stage; HELI-06a–c supply tail, passive airframe loads and a prescribed-speed aerodynamic stand; HELI-13 supplies the pure swash kernel. HELI-25a audits the owner's existing HX-700 Blender source for reuse. No flyable helicopter, aircraft preset or session integration exists. Automatic state-dependent C/M detection, drive/body coupling and full-load performance remain open; HELI-09d's joint-stage diagnostic exceeds the proposed budget.
+**Date:** 2026-10-13. **Status:** the experimental helicopter is playable through Home → Fly and the direct route. A generated X-Cell reference preset, coupled body/main/tail mechanics, trainer and heading controller, terrain-aware hover trim, skids, ground-strike stop and native checkpoint/trace lifecycle are integrated. The supplied HX-700 Blender source supplies the visual. [Current controls and limits](../HELICOPTER.md); [HELI-16 software evidence](../research/helicopter/HELI-16/README.md). Physical validation, automatic C/M event localization, separate engine/freewheel and servo states, full scenery contact, environmental VFX/audio and H15 performance remain open.
 **Prefix:** HELI-00…HELI-36, registered in the [track registry](../README.md#tracks-plans-and-step-ids). `H1…H15` (Phase H) is a different namespace.
 **Owner:** helicopter track, under the main line's acceptance; owns the shared inflow law consumed by the drone track.
 **Owns:**
 - `app/physics/rotorcraft/` and `app/physics/rotorcraft_data.gd`
-- `app/data/aircraft/<heli-id>.json` (generated) and `app/data/schema/openrc-rotorcraft-v1.*`
+- `app/data/aircraft/xcell_60_research.json` (generated) and `app/data/schema/openrc-rotorcraft-v2.schema.json`
+- `app/sim/helicopter_flight_session.gd`, `app/sim/rotorcraft_recorder.gd`, `app/helicopter_main.*`
 - `app/aircraft/<heli>_*.gd` and `assets/aircraft/<heli-id>/`
 - `app/render/rotor/`
 - `app/tests/test_heli_*.gd`, `app/tests/bench_rotorcraft.gd`
@@ -49,7 +50,7 @@ A helicopter is a second vehicle class. It is not a fifth airplane:
 - a different contact (skids)
 - a different crash cause (blade strike)
 
-The owner authorized implementation on 2026-10-13; the scope extension and shared-kernel order are recorded in [DECISIONS](../../DECISIONS.md). The X-Cell is the initial reference direction. Trainer electronics, visual source and default pad/start choices remain open until their steps need them.
+The owner authorized implementation on 2026-10-13; the scope extension and shared-kernel order are recorded in [DECISIONS](../../DECISIONS.md). The first playable route pairs X-Cell reference physics with the supplied HX-700 visual and explicitly estimated trainer/drive settings. It starts in a solved airborne hover. A ground spool-up lifecycle remains a separate step.
 
 What makes it tractable now:
 
@@ -57,7 +58,9 @@ What makes it tractable now:
 - The v2 contract culture (every number with unit, kind and source) fits identified rotorcraft data well.
 - The coupled-shaft work (G2a/G2b) is a direct template for rotor speed.
 
-## 2. What exists today (2026-10-13)
+## 2. Starting architecture (2026-10-13)
+
+The seam audit below describes the tree before helicopter integration. Current implemented behavior belongs to [HELICOPTER](../HELICOPTER.md); the remaining acceptance work is listed in §9. Published equations and software checks do not establish that the HX-700 visual has X-Cell physical properties.
 
 Line references are recorded in [HELI-01 §9](../research/helicopter/HELI-01/README.md#9-code-seams-on-2026-10-13); verify them before editing.
 
@@ -260,6 +263,8 @@ The airplane call path keeps its existing arithmetic, with a byte-identity test.
 
 ### 4.8 State inventory
 
+The implemented experimental state is body13 plus `[Omega,a1,b1,vi,heading_reference,yaw_integral]`, with one RPM mirror in `aux`. Normal/idle-up, trainer and zero-drive settings are checkpointed session controls. The expanded discrete hardware inventory below is a future target; its servo and separate-engine states are not in the current flight.
+
 | Tier | Entries | Notes |
 | --- | --- | --- |
 | Body (existing) | 13 | Unchanged |
@@ -270,6 +275,8 @@ The airplane call path keeps its existing arithmetic, with a byte-identity test.
 Real onboard controllers run at 1–4 kHz [U] and sample sensors discretely. Modelling the gyro and governor as discrete 240 Hz controllers in `aux` is faithful to that structure. It also keeps RK stages free of controller discontinuities.
 
 ### 4.9 Control chain (what the pilot moves → what the blade sees)
+
+The current trainer uses authored estimated curves and controller gains, continuous heading/rate feedback and instantaneous limited swash geometry. The full servo-lag/hardware chain below remains the target for identified controller work.
 
     sticks (4) ─► flight-mode curves ─► electronics (gyro / FBL / flybar-lumped) ─► CCPM mixer ─► servo rate & lag ─► swash geometry ─► θ0, A1, B1, θ_tr
                   (pitch curve, throttle curve, idle-up, hold)                          (120° eCCPM)    (per servo)
@@ -323,6 +330,7 @@ Real onboard controllers run at 1–4 kHz [U] and sample sensors discretely. Mod
 
 - Main rotor, tail rotor, fuselage and empennage are closed-form: an estimated 150–300 scalar operations per evaluation.
 - The kernel is benchmarked **before** integration (HELI-09).
+- The playable research route is an explicit experimental slice; it does not meet the proposed cost gate. [Prepared-context profiling](../research/helicopter/HELI-09/README.md) preserves equations while reducing repeated validation. Hardware acceptance remains open.
 - The rotor ring check runs once per tick, not per stage.
 - Scalarize from the start, following H3/H12: no per-call arrays and trigonometry through `math3d` (H6 guard).
 
@@ -378,6 +386,8 @@ Sketch of the rotorcraft-specific blocks; the exact paths are fixed in HELI-10:
 - The JSON is never hand-edited.
 
 ## 6. Session integration
+
+**Implemented route:** a separate `HelicopterFlightSession` uses the existing `Simulation` owner and a joint body derivative plus six continuous derivatives. `AppRoot` selects it for the explicit rotorcraft catalog ID. Native checkpoints bind exact preset bytes, weather, controls and state; `RotorcraftRecorder` declares its own 32-column diagnostic CSV. The airplane session and airplane trace layout retain their own contracts. The earlier proposed shared-session seam and trace columns below describe future consolidation, not the current interface.
 
 - **One seam in `FlightSession`.** When `model.vehicle == "rotorcraft"`, `_configure_continuous_callbacks` selects `_rotorcraft_evaluate`. That callback returns the joint `{loads, derivative, rotor_momentum}` from `physics/rotorcraft/loads.gd` plus `Ground.evaluate`.
   - Every airplane path stays as it is.
@@ -584,9 +594,9 @@ Each step is one small working change with its proof. A step that touches a coor
 | HELI-06a | `rotorcraft/tail_rotor.gd`: bounded coefficient-trim solve, actual-pitch/normal-flow thrust, cap/blockage, Eq. 50 inflow and profile/induced torque | Standalone source/math anchors and independent oracle; [HELI-06 evidence](../research/helicopter/HELI-06/README.md). No tail-controller, drive, sideways-VRS or flight qualification. |
 | HELI-06b | `rotorcraft/airframe.gd`: passive local-flow fuselage/fin/stabilizer loads, full CP rates/moments, force caps and work diagnostics | [Source conflicts, independent reference and passivity evidence](../research/helicopter/HELI-06b/README.md). Wake velocities explicit; no hidden aircraft data or wake closure. |
 | HELI-06c | `rotorcraft/aerodynamic_stage.gd`: same-stage main/tail/airframe evaluation and explicit source-style shaft wake approximation | [Fixed-body stand](../research/helicopter/HELI-06b/README.md#joint-aerodynamic-stage). Not body flight, drivetrain, complete trim or session integration. |
-| HELI-07 | `rotorcraft/drive.gd`: finite startup drive, delivered-power/rotor-speed balance, hold proxy, discrete governor; actual freewheel with separate engine speed | [Source/interface audit](../research/helicopter/HELI-07/README.md) done; kernel and energy/stop/startup gates open. Rotor-only energy closure requires a clamped-body stand; governor matching is calibration. |
-| HELI-08 | Geared gyroscopic coupling (b-vector form) isolated from the airplane path | [Audit](../research/helicopter/HELI-07/README.md) done; full angular-energy/momentum proof and kernel remain open. Include engine momentum consistently with reflected inertia; no duplicate aerodynamic/drive reaction. |
-| HELI-09 | `bench_rotorcraft.gd`: per-call kernel cost | ≤ 37 µs per full evaluation (150 µs per tick) on the H15 host, or stop and redesign before integration |
+| HELI-07 | Torque/power-capped one-speed drive and proportional governor | Kernel verified on Windows/Linux; actual-preset hover has finite torque/power reserve. [Evidence](../research/helicopter/HELI-07/README.md). Engine inertia is excluded because its signed axis is unknown; separate engine/freewheel and startup calibration remain open. |
+| HELI-08 | Geared gyroscopic coupling (b-vector form) isolated from the airplane path | Simultaneous shaft/body response, angular-energy/momentum and signed-axis/gearing checks implemented; [evidence](../research/helicopter/HELI-08/README.md). No duplicate aerodynamic/drive reaction. |
+| HELI-09 | Per-call aerodynamic/full-flight and whole-tick cost | Prepared-context redesign verified without changing equations; [development diagnostic](../research/helicopter/HELI-09/README.md). The ≤37 µs/full evaluation and H15 whole-tick targets are unmet/open; the experimental flight does not claim performance acceptance. |
 | HELI-09a | Isolated equilibrium-inflow cost diagnostic `research/helicopter/bench_inflow.gd` | Measured on the Windows Ryzen 5900X host; [HELI-04 evidence](../research/helicopter/HELI-04/README.md). This does not close HELI-09 or the whole-tick budget. |
 | HELI-09b | Isolated joint main-disc/wake stage cost `research/helicopter/bench_main_stage.gd` | [HELI-05 measurements](../research/helicopter/HELI-05/README.md#heli-09b-isolated-stage-cost): compact payload verified, VRS cost still leaves insufficient full-load margin. Complete profiling/redesign before session integration; HELI-09 open. |
 | HELI-09c | Isolated source-linearized tail cost `research/helicopter/bench_tail_rotor.gd` | [HELI-06 measurements](../research/helicopter/HELI-06/README.md#heli-09c-isolated-tail-cost): ~21–24 µs median batch means on the development host; no complete-load or H15 acceptance. |
@@ -596,8 +606,8 @@ Each step is one small working change with its proof. A step that touches a coor
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
-| HELI-10 | `openrc-rotorcraft v1` spec, generated schema and `rotorcraft_data.gd` (validation, derivation, identity); shared kernels extracted only if needed | Invalid-data suite (missing, extra, wrong unit, null, out of range, inconsistent CG/inertia); airplane loader untouched or byte-identical |
-| HELI-11 | X-Cell source table and generator `research/helicopter/xcell/derive.py --check` → `app/data/aircraft/xcell-60-mit.json` | Every row cites Table 1 with its kind; `--check` in `test.sh` |
+| HELI-10 | Dedicated strict rotorcraft reader/schema using `openrc-aircraft v2` quantity conventions | Implemented: rejects unknown fields, missing evidence, dimensions, invalid modules, signed-axis/gearing mismatch and contact stiffness. Aggregate source inertia is explicit; full component inventory remains open. |
+| HELI-11 | X-Cell source/estimate table and generator `research/helicopter/xcell/derive.py --check` → `app/data/aircraft/xcell_60_research.json` | Implemented with four independent authoring checks and freshness in `test.sh`; every quantity carries its evidence kind. |
 | HELI-12 | Contract text: rotorcraft section in AIRCRAFT_CONTRACT (with the AS owner) | Reviewed diff |
 
 ### Phase 3: controls and electronics
@@ -605,19 +615,19 @@ Each step is one small working change with its proof. A step that touches a coor
 | ID | Work | Proof / status |
 | --- | --- | --- |
 | HELI-13 | `rotorcraft/swash.gd`: curves per flight mode, 120° CCPM mixer, per-servo rate and lag, linkage ratios, limits | Pure kernel done: 46 checks for curves, mixer inverse, per-servo saturation/rate/lag and linkage. [Evidence](../research/helicopter/HELI-13/README.md). No aircraft curves, azimuth phasing or session control integration qualified yet. |
-| HELI-14 | Input semantics: four sticks, `modes` for flight and electronics modes, keyboard/gamepad keys, optional radio switch mapping in calibration, heli arming and failsafe → hold | Input tests; existing airplane input traces byte-identical; key-clash check |
-| HELI-15 | `rotorcraft/electronics.gd`: tail heading-hold PI with precompensation; flybar-lumped cyclic path; self-level mode only if D7 accepts it | Step responses; heading drift < 1° over 30 s of trimmed hover without wind |
+| HELI-14 | Four sticks, keyboard modes, calibrated radio/gamepad and explicit resume | Integrated: gamepad hover baseline, physical-radio low-stick arming, disconnect pause, calibration/reset and vehicle-specific controls/help. Optional radio mode switches and a physical hold/failsafe model remain open. |
+| HELI-15 | Continuous tail heading/rate PI and trainer feedback through real tail/cyclic controls | Kernel and actual-preset hover/pilot responses verified. Gains are estimates; physical controller calibration and servo lag integration remain open. |
 
 ### Phase 4: session integration
 
 | ID | Work | Proof / status |
 | --- | --- | --- |
-| HELI-16 | `rotorcraft/loads.gd` joint evaluate; the single `FlightSession` seam selecting it | All airplane goldens, traces and fps-determinism byte-identical |
-| HELI-17 | State layout (continuous/aux/modes), reset, checkpoint format, restore, `HELI_COLUMNS`, metadata schema, replay classes | Checkpoint round trip; replay within declared tolerances; 30/60/144 fps determinism for the heli |
-| HELI-18 | `rotorcraft/trim.gd`: hover and forward trim; airborne hover start route | Trim residual < 1e-9; bucket curve V = 0…20 m/s matches HELI-03 |
-| HELI-19 | Skid contact mode (isotropic regularized Coulomb + anchors) with the ground track | Rest on 0–10° slopes; slide threshold = μ; dynamic-rollover fixture |
+| HELI-16 | Joint flight callback in a dedicated rotorcraft session, common Simulation and Home/direct route | Implemented; [software checks and regression evidence](../research/helicopter/HELI-16/README.md). |
+| HELI-17 | Six extra continuous states, reset, native checkpoint, separate rotorcraft recorder and metadata | Implemented with byte-identical replay and rejected checkpoint/CSV negative cases; cadence evidence in HELI-16. |
+| HELI-18 | Full coupled, ground-stationary hover trim including candidate-specific ground effect | Implemented and checked with the actual preset and steady wind. Forward trim, bucket curve and source-response comparison remain open. |
+| HELI-19 | Four float64 spring/damper skid points and regularized Coulomb friction | Flat-field pilot-compensated landing verified. Slope, static-anchor and dynamic-rollover qualification remain open. |
 | HELI-20 | Pad start, spool-up lifecycle, idle-up and hold transitions | Spool-up trace; lift-off in ground effect; hold → coast-down |
-| HELI-21 | Rotor-disc clearance ring and blade-strike terminal causes | Fixtures: tilted disc into a slope, tail-first into the ground, tree proxy |
+| HELI-21 | Analytic full-disc main/tail ground clearance and terminal causes | Tilted-ground strike and restart verified. This is an instantaneous ground envelope; swept scenery/tree collision remains open. |
 | HELI-22 | Linearization and rotorcraft mode classifier | Eigenvalues vs HELI-03 within 1e-6 relative |
 | HELI-23 | Integrated cost (Gate P rule) and long-run stability (10 min of hover, autorotation, pirouettes) | p50/p95 per regime; no nonfinite state; no sticky fault |
 
@@ -628,8 +638,8 @@ Steps HELI-25…27 can start in parallel with Phase 1 because their file boundar
 | ID | Work | Proof / status |
 | --- | --- | --- |
 | HELI-24 | Model-to-paper comparison: digitized Gavrilets heave, axial roll and pitch-pulse responses (held-out), and the governor step (calibration) | Report in `docs/research/helicopter/HELI-24/`; tolerances §10 |
-| HELI-25 | Visual asset, generator or GLB pipeline, node contract, verify script, **catalog PREVIEW** | `verify_<heli>.gd`; catalog test updated (counts, span rule replaced for rotorcraft) |
-| HELI-25a | Audit and reuse the supplied HX-700 `.blend`, embedded generator and adjacent reference PDF | [Source audit and binding candidate](../research/helicopter/HELI-25/README.md); source preserved, standalone inventory and visual inspection. HX-700/X-Cell identity, articulation, runtime bindings, packaging and presentation budgets remain HELI-25 gates; no catalog entry yet. |
+| HELI-25 | Supplied Blender visual, reproducible static GLB/profile pipeline, adapter and playable catalog entry | Implemented; [HELI-25 provenance and verification](../research/helicopter/HELI-25/README.md). Source identity, physical calibration and distribution provenance remain separate gates. |
+| HELI-25a | Audit and reuse the supplied HX-700 `.blend`, embedded generator and adjacent reference PDF | [Source audit, runtime bindings and captures](../research/helicopter/HELI-25/README.md) delivered with a playable catalog entry. Source-only regeneration reproduces GLB/profile hashes and leaves the `.blend` unchanged. Physical identity, articulation, distribution provenance and presentation budgets remain open. |
 | HELI-26 | Rotor disc: analytic coverage shader, cone with coning/TPP, cross-fade by Δθ per frame, tail disc, rotor shadow | Phase-independence test; rpm and view sweep captures; frame-sequence aliasing capture |
 | HELI-27 | Rotor-wash field (pure) and global uniforms; near-grass and turf response | Headless known answers (peak 1.75R; zero thrust → zero wash); captures at z/D = 0.3, 1, 2; cost |
 | HELI-28 | Particles: Compatibility probe (with SM-00), clippings and dust emitters, level-of-detail tiers, determinism settings | Probe report; captures; VFX p95 on the owner's host |

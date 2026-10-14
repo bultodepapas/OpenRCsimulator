@@ -39,6 +39,12 @@ const ADAPT_PUSH_LOG := 0.02
 ## floodlit ground clipped while the eye followed a dark airplane). Scaled by the screen share below the horizon.
 const ADAPT_GROUND_WEIGHT := 0.5
 
+static var _night_profile := "club"
+static var _night_options := {field_lighting = "club", campfire = false}
+static var _night_owner: WeakRef
+static var _night_helper: WeakRef
+static var _night_fire: WeakRef
+static var _night_legacy_lights: WeakRef
 static var _lights := {}
 static var _ground_light := 0.0 # floods' light on the runway centre (scene units), computed once per build
 static var _adapt_clock := -1.0
@@ -58,6 +64,142 @@ const FLOW_AGX_BELOW_SUN_DEG := 10.0
 ## tonemapper, start_lst, latitude.
 static var _flow := {}
 
+const PRESENTATION_CONTEXT_FORMAT := "openrc-world-presentation v1"
+
+
+## Captures the one active world's mutable presentation state before a temporary world is built.
+## Object pointers are weak references so a context never keeps a discarded candidate scene alive.
+static func presentation_context() -> Dictionary:
+	return {
+		"format": PRESENTATION_CONTEXT_FORMAT,
+		"night_profile": _night_profile,
+		"night_options": _night_options.duplicate(true),
+		"night_owner": _weak_context_ref(_night_owner),
+		"night_helper": _weak_context_ref(_night_helper),
+		"night_fire": _weak_context_ref(_night_fire),
+		"night_legacy_lights": _weak_context_ref(_night_legacy_lights),
+		"lights": _lights.duplicate(true),
+		"ground_light": _ground_light,
+		"adapt_clock": _adapt_clock,
+		"adapt_log": _adapt_log,
+		"flow": _capture_flow_context(),
+		"atmosphere_state": Atmosphere.state.duplicate(true),
+		"exposure": Exposure.last,
+		"shader_clock": {"clock": ShaderClock.last_clock, "wind": ShaderClock.last_wind},
+	}
+
+
+## Restores a captured active-world context. Invalid weak references are dropped; a broken active flow is
+## disabled rather than left pointing into a freed trial scene. The caller owns only one retained context.
+static func restore_presentation_context(context: Variant) -> bool:
+	if not context is Dictionary or str(context.get("format", "")) != PRESENTATION_CONTEXT_FORMAT:
+		return false
+	var profile := str(context.get("night_profile", ""))
+	var options: Variant = context.get("night_options")
+	var lights: Variant = context.get("lights")
+	var state: Variant = context.get("atmosphere_state")
+	var shader_clock: Variant = context.get("shader_clock")
+	if not profile in ["club", "airfield", "off"] or not options is Dictionary or not lights is Dictionary \
+			or not state is Dictionary or not shader_clock is Dictionary:
+		return false
+	if not options.get("field_lighting", "") in ["club", "airfield", "off"] or not options.get("campfire", false) is bool:
+		return false
+	if not shader_clock.get("clock", NAN) is float and not shader_clock.get("clock", NAN) is int:
+		return false
+	if not shader_clock.get("wind", null) is Vector3:
+		return false
+	var flow_raw: Variant = context.get("flow")
+	if not flow_raw is Dictionary:
+		return false
+	var restored_flow := _restore_flow_context(flow_raw)
+	var flow_ok: bool = flow_raw.is_empty() or not restored_flow.is_empty()
+	var exposure_value := float(context.get("exposure", NAN))
+	if is_nan(exposure_value) or is_inf(exposure_value):
+		return false
+	var ground_light := float(context.get("ground_light", NAN))
+	var adapt_clock := float(context.get("adapt_clock", NAN))
+	var adapt_log := float(context.get("adapt_log", NAN))
+	if is_nan(ground_light) or is_inf(ground_light) or is_nan(adapt_clock) or is_inf(adapt_clock) \
+			or is_nan(adapt_log) or is_inf(adapt_log):
+		return false
+
+	_night_profile = profile
+	_night_options = options.duplicate(true)
+	_night_owner = _weak_context_ref(context.get("night_owner"))
+	_night_helper = _weak_context_ref(context.get("night_helper"))
+	_night_fire = _weak_context_ref(context.get("night_fire"))
+	_night_legacy_lights = _weak_context_ref(context.get("night_legacy_lights"))
+	_lights = lights.duplicate(true)
+	_ground_light = ground_light
+	_adapt_clock = adapt_clock
+	_adapt_log = adapt_log
+	_flow = restored_flow if flow_ok else {}
+	Atmosphere.state = state.duplicate(true)
+	Exposure.set_value(exposure_value)
+	ShaderClock.update(float(shader_clock.clock), shader_clock.wind)
+	# Reapply the restored selection to the still-live scene-owned helpers and owner metadata.
+	set_night_options(_night_profile, bool(_night_options.campfire))
+	return flow_ok
+
+
+static func _weak_context_ref(value: Variant) -> Variant:
+	if value == null:
+		return null
+	if value is WeakRef:
+		var target: Variant = value.get_ref()
+		return value if target != null and is_instance_valid(target) else null
+	if is_instance_valid(value):
+		return weakref(value)
+	return null
+
+
+static func _resolve_context_ref(value: Variant) -> Variant:
+	if not value is WeakRef:
+		return null
+	var target: Variant = value.get_ref()
+	return target if target != null and is_instance_valid(target) else null
+
+
+static func _capture_flow_context() -> Dictionary:
+	if _flow.is_empty():
+		return {}
+	var captured: Dictionary = _flow.duplicate(true)
+	for key: String in ["environment", "sun", "stars", "lights_node", "airfield_lighting"]:
+		captured[key] = _weak_context_ref(_flow.get(key))
+	var materials: Array = []
+	for material: Variant in _flow.get("materials", []):
+		materials.append(_weak_context_ref(material))
+	captured["materials"] = materials
+	return captured
+
+
+static func _restore_flow_context(raw: Dictionary) -> Dictionary:
+	if raw.is_empty():
+		return {}
+	for key: String in ["when", "time_scale", "step", "environment", "sun", "stars", "lights_node", "materials",
+			"tonemapper", "start_lst", "latitude", "upgraded_lights", "airfield_lighting"]:
+		if not raw.has(key):
+			return {}
+	if not raw.when is Dictionary or not raw.materials is Array or not raw.tonemapper is String \
+			or not raw.upgraded_lights is bool:
+		return {}
+	var environment: Variant = _resolve_context_ref(raw.environment)
+	var sun: Variant = _resolve_context_ref(raw.sun)
+	if not environment is Environment or not sun is DirectionalLight3D:
+		return {}
+	var restored: Dictionary = raw.duplicate(true)
+	for key: String in ["stars", "lights_node", "airfield_lighting"]:
+		restored[key] = _resolve_context_ref(raw[key])
+	var materials: Array[ShaderMaterial] = []
+	for reference: Variant in raw.materials:
+		var material: Variant = _resolve_context_ref(reference)
+		if material is ShaderMaterial:
+			materials.append(material)
+	restored["environment"] = environment
+	restored["sun"] = sun
+	restored["materials"] = materials
+	return restored
+
 
 ## Adds a WorldEnvironment, the field and the sun to `parent`.
 ## `build_field`, when valid, replaces the production field: it must add its own nodes to `parent` (main.gd's seam,
@@ -65,7 +207,13 @@ static var _flow := {}
 ## `conditions` (FW-03): Conditions.resolve() output; empty = resolve from the command line and environment.
 ## A nonempty `lighting` snapshot selects the TOD renderer and clears field-world flow.
 ## Returns {environment, world_environment, field (null when replaced), field_build_ms, sun, conditions, sky (time-of-day state or {})}.
-static func build(parent: Node, field: Dictionary, build_field := Callable(), conditions: Dictionary = {}, lighting: Dictionary = {}) -> Dictionary:
+static func build(parent: Node, field: Dictionary, build_field := Callable(), conditions: Dictionary = {}, lighting: Dictionary = {}, night_options: Dictionary = {}) -> Dictionary:
+	_night_options = resolve_night_options(night_options)
+	_night_profile = str(_night_options.field_lighting)
+	_night_owner = weakref(parent)
+	_night_helper = null
+	_night_fire = null
+	_night_legacy_lights = null
 	ShaderClock.register() # before any material that reads sim_clock / wind_vec compiles
 	if not lighting.is_empty():
 		conditions = {time_of_day = false}
@@ -118,13 +266,17 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 	var sun := Atmosphere.create_sun(parent, lighting) # the sky shader draws the sun disc from this light
 	var stars: Node3D = null
 	if not Atmosphere.state.is_empty() and (flowing or float(Atmosphere.state.sun_elevation_deg) < STARS_BELOW_SUN_DEG):
-		stars = Stars.build(Atmosphere.state, float(conditions.when.latitude_deg)) # FW-24
+		stars = Stars.build(Atmosphere.state, float(conditions.when.latitude_deg), Atmosphere.cloud_state_snapshot()) # FW-24
 		parent.add_child(stars)
+		environment.set_meta("fw_star_field", weakref(stars))
 	var lights_node: Node3D = null
 	if not lights.is_empty():
 		lights_node = FieldLights.build(lights) # FW-31…34: visual only
 		lights_node.visible = upgraded_lights or float(Atmosphere.state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG
 		parent.add_child(lights_node)
+	if lights_node != null and not upgraded_lights:
+		_night_legacy_lights = weakref(lights_node)
+		lights_node.visible = lights_node.visible and _night_profile != "off"
 	var airfield_lighting: Node3D = null
 	if upgraded_lights:
 		var scenery := {}
@@ -136,6 +288,28 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 		airfield_lighting = AirfieldLighting.build(field, lights, scenery)
 		parent.add_child(airfield_lighting)
 		airfield_lighting.bind_environment(environment, lights_node, SNAPSHOT_LOCAL_LIGHT_GAIN if not lighting.is_empty() else 1.0)
+		airfield_lighting.set_profile(_night_profile)
+		_night_helper = weakref(airfield_lighting)
+	# A physical hearth is installed even when its independently controlled flame is off.
+	if field.get("id", "") == "default":
+		var fire_script: GDScript = load("res://render/world/campfire.gd")
+		var fire: Node3D = fire_script.build()
+		var fire_installations: Array = lights.get("installations", [])
+		if fire_installations.is_empty():
+			var fire_data := FieldLights.load_from()
+			if fire_data.ok:
+				fire_installations = fire_data.lights.get("installations", [])
+		for installation: Dictionary in fire_installations:
+			if str(installation.get("type", "")) == "campfire_base":
+				fire.position = Frames.ned_to_render([float(installation.north), float(installation.east), 0.0])
+				fire.rotation.y = -deg_to_rad(float(installation.get("heading", 0.0)))
+				fire.set_meta("installation_id", str(installation.id))
+				break
+		parent.add_child(fire)
+		fire.configure(bool(_night_options.campfire), environment, SNAPSHOT_LOCAL_LIGHT_GAIN if not lighting.is_empty() else 1.0)
+		_night_fire = weakref(fire)
+		environment.set_meta("fw_night_fire", _night_fire)
+	parent.set_meta("night_options", _night_options.duplicate())
 	if flowing:
 		_flow = {when = conditions.when.duplicate(), time_scale = float(conditions.time_scale), step = 0,
 			environment = environment, sun = sun, stars = stars, lights_node = lights_node,
@@ -143,7 +317,49 @@ static func build(parent: Node, field: Dictionary, build_field := Callable(), co
 			start_lst = float(Atmosphere.state.lst_deg), latitude = float(conditions.when.latitude_deg), upgraded_lights = upgraded_lights,
 			airfield_lighting = airfield_lighting}
 	return {environment = environment, world_environment = world_environment, field = field_node, field_build_ms = field_build_ms, sun = sun,
-		conditions = conditions, sky = Atmosphere.state}
+		conditions = conditions, sky = Atmosphere.state, night_options = _night_options.duplicate()}
+
+
+## Independent presentation choices: explicit build options win over technical CLI defaults.
+static func resolve_night_options(supplied: Dictionary = {}) -> Dictionary:
+	var result := {field_lighting = "club", campfire = false}
+	if supplied.is_empty():
+		for arg: String in OS.get_cmdline_user_args():
+			if arg.begins_with("--field-lighting="):
+				var profile := arg.get_slice("=", 1)
+				if profile in ["club", "airfield", "off"]:
+					result.field_lighting = profile
+			if arg.begins_with("--campfire="):
+				result.campfire = arg.get_slice("=", 1) == "on"
+	else:
+		if str(supplied.get("field_lighting", "club")) in ["club", "airfield", "off"]:
+			result.field_lighting = str(supplied.get("field_lighting", "club"))
+		if supplied.get("campfire", false) is bool:
+			result.campfire = bool(supplied.get("campfire", false))
+	return result
+
+
+static func set_night_options(profile: String, campfire: bool) -> bool:
+	if not profile in ["club", "airfield", "off"]:
+		return false
+	_night_profile = profile
+	_night_options = {field_lighting = profile, campfire = campfire}
+	if _night_helper != null and is_instance_valid(_night_helper.get_ref()):
+		_night_helper.get_ref().set_profile(profile)
+	if _night_legacy_lights != null and is_instance_valid(_night_legacy_lights.get_ref()):
+		_night_legacy_lights.get_ref().visible = profile != "off" and float(Atmosphere.state.get("sun_elevation_deg", 90.0)) < FIELD_LIGHTS_BELOW_SUN_DEG
+	if _night_fire != null and is_instance_valid(_night_fire.get_ref()):
+		_night_fire.get_ref().set_enabled(campfire)
+	if _night_owner != null and is_instance_valid(_night_owner.get_ref()):
+		var owner: Node = _night_owner.get_ref()
+		owner.set_meta("night_options", _night_options.duplicate())
+		# Static reflection probes need one refresh after a profile switch, not every flame frame.
+		for probe: Node in owner.find_children("*", "ReflectionProbe", true, false):
+			var reflection := probe as ReflectionProbe
+			var original := reflection.position
+			reflection.position = original + Vector3(0.0001, 0.0, 0.0)
+			reflection.position = original
+	return true
 
 
 ## Fits the night-flying kit to an airplane's model root when the chosen hour needs it (FW-35). Call after measuring
@@ -161,7 +377,7 @@ static func view_exposure(target: Vector3, ground_share := 0.0) -> float:
 	if Atmosphere.state.is_empty():
 		return float(Spec.ATMOSPHERE.exposure)
 	var extra := 0.0
-	if not _lights.is_empty():
+	if not _lights.is_empty() and _night_profile != "off":
 		extra = FieldLights.illuminance_point(_lights, target) + clampf(ground_share, 0.0, 1.0) * ADAPT_GROUND_WEIGHT * _ground_light
 		if LandscapeOptions.enabled():
 			extra *= AirfieldLighting._night_factor({sun_elevation_deg = float(Atmosphere.state.sun_elevation_deg)})
@@ -189,7 +405,27 @@ static func update(environment: Environment, clock_s: float, wind := Vector3.ZER
 		flow_to(clock_s)
 	if view_target is Vector3 and not Atmosphere.state.is_empty():
 		adapt(environment, view_target, clock_s, ground_share(camera))
-	return Atmosphere.update_clouds(environment, clock_s)
+	var fire_ref: Variant = environment.get_meta("fw_night_fire") if environment.has_meta("fw_night_fire") else null
+	if fire_ref is WeakRef:
+		var fire: Variant = fire_ref.get_ref()
+		if is_instance_valid(fire):
+			fire.update_visual(clock_s, wind)
+	var cloud_changed := Atmosphere.update_clouds(environment, clock_s)
+	if cloud_changed:
+		refresh_star_cloud_appearance(environment)
+	return cloud_changed
+
+
+## Reapply the shared cloud mask after a paused visual preset edit or a cloud transport step.
+static func refresh_star_cloud_appearance(environment: Environment) -> void:
+	if environment == null or not is_instance_valid(environment) or not environment.has_meta("fw_star_field"):
+		return
+	var star_ref: Variant = environment.get_meta("fw_star_field")
+	if not (star_ref is WeakRef):
+		return
+	var stars: Variant = star_ref.get_ref()
+	if stars is Node3D and is_instance_valid(stars):
+		Stars.update_cloud_appearance(stars, Atmosphere.cloud_state_snapshot())
 
 
 ## Moves the exposure toward view_exposure(target) (see ADAPT_*). Returns the exposure now in use.
@@ -258,7 +494,7 @@ static func flow_to(clock_s: float) -> bool:
 	for m: ShaderMaterial in _flow.materials:
 		Atmosphere._set_haze_uniforms(m)
 	if _flow.lights_node != null and not _flow.get("upgraded_lights", false):
-		(_flow.lights_node as Node3D).visible = float(state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG
+		(_flow.lights_node as Node3D).visible = _night_profile != "off" and float(state.sun_elevation_deg) < FIELD_LIGHTS_BELOW_SUN_DEG
 	if _flow.stars != null:
 		var lat: float = _flow.latitude
 		(_flow.stars as Node3D).basis = Stars.equatorial_basis(state.lst_deg, lat) * Stars.equatorial_basis(_flow.start_lst, lat).inverse()

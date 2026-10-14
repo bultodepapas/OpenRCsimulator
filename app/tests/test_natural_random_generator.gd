@@ -99,14 +99,17 @@ func _test_distribution() -> void:
 			_within_pct(int(recipe_counts[recipe_id]), weight, CATEGORY_TOLERANCE_PCT), str(recipe_counts[recipe_id]))
 		for aircraft_id: String in ScenarioConfig.EXPECTED_AIRCRAFT_IDS:
 			var count := int(joint_counts["%s|%s" % [aircraft_id, recipe_id]])
+			var expected_count: float = float(DISTRIBUTION_SAMPLE_COUNT) * (weight / 100.0) / float(ScenarioConfig.EXPECTED_AIRCRAFT_IDS.size())
 			_check("aircraft/recipe cell %s × %s shows independent selection" % [aircraft_id, recipe_id],
-				absf(float(count) - 500.0) <= 125.0, str(count))
+				absf(float(count) - expected_count) <= 125.0, str(count))
 	for daylight_value: Variant in policy.get("daylight", []):
 		var daylight: Dictionary = daylight_value
 		var daylight_id := str(daylight.id)
 		var weight := float(daylight.weight_pct)
 		_check("daylight '%s' is near its exact %d%% target" % [daylight_id, int(weight)],
 			_within_pct(int(daylight_counts[daylight_id]), weight, CATEGORY_TOLERANCE_PCT), str(daylight_counts[daylight_id]))
+	print("NR distribution: ", JSON.stringify({samples = DISTRIBUTION_SAMPLE_COUNT, invalid = sample_failures,
+		aircraft = aircraft_counts, recipes = recipe_counts, daylight = daylight_counts, joint = joint_counts}, "", true, true))
 
 
 func _within_pct(count: int, target_pct: float, tolerance_pct: float) -> bool:

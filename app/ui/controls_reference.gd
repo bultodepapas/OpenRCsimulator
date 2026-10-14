@@ -5,6 +5,9 @@
 # names them as the player's keyboard layout prints them. Texts are English source strings (res://i18n/*.po).
 extends RefCounted
 
+const AIRPLANE := "airplane"
+const ROTORCRAFT := "rotorcraft"
+
 ## The sticks: [keys, action] (keyboard.gd: virtual stick, rate-limited, self-centring; throttle holds).
 const FLIGHT := [
 	[[KEY_LEFT, KEY_RIGHT], "Roll"],
@@ -15,6 +18,7 @@ const FLIGHT := [
 
 ## Shortcuts while flying: [keys, what they do] (main.gd _unhandled_input).
 const SHORTCUTS := [
+	[[KEY_BRACKETLEFT, KEY_BRACKETRIGHT], "Aileron trim: left / right"],
 	[[KEY_PAGEUP, KEY_PAGEDOWN], "Elevator trim: nose down / up"],
 	[[KEY_ESCAPE], "Pause menu (in the radio calibration: cancel it)"],
 	[[KEY_R, KEY_P], "Restart / resume after radio failsafe"],
@@ -38,11 +42,52 @@ const FIRST_FLIGHT := [
 	[[KEY_ESCAPE], "Pause"],
 ]
 
+## Helicopter controls use the same physical keyboard axes, with W/S controlling collective rather than throttle.
+const ROTORCRAFT_FLIGHT := [
+	[[KEY_LEFT, KEY_RIGHT], "Cyclic roll"],
+	[[KEY_UP, KEY_DOWN], "Cyclic pitch"],
+	[[KEY_A, KEY_D], "Yaw"],
+	[[KEY_W, KEY_S], "Collective"],
+]
+
+## Shortcuts implemented by helicopter_main.gd. Keep this table limited to its handled key set.
+const ROTORCRAFT_SHORTCUTS := [
+	[[KEY_ESCAPE], "Pause menu / cancel radio calibration"],
+	[[KEY_R], "Restart the hover"],
+	[[KEY_P], "Pause / resume"],
+	[[KEY_C, KEY_1, KEY_2, KEY_5], "Views: next, pilot, chase, orbit"],
+	[[KEY_Z, KEY_EQUAL, KEY_MINUS], "Zoom: auto, in, out"],
+	[[KEY_T], "Record / stop a flight trace"],
+	[[KEY_K], "Calibrate the radio"],
+	[[KEY_ENTER, KEY_KP_ENTER], "Next radio calibration step"],
+	[[KEY_I], "Flight mode: normal / idle-up curves"],
+	[[KEY_G], "Trainer mode"],
+	[[KEY_H], "Zero-drive hold"],
+]
+
+const ROTORCRAFT_FIRST_FLIGHT := [
+	[[KEY_LEFT, KEY_RIGHT, KEY_UP, KEY_DOWN], "Cyclic"],
+	[[KEY_A, KEY_D], "Yaw"],
+	[[KEY_W, KEY_S], "Collective"],
+]
+
+
+static func flight_table(vehicle_type: String = AIRPLANE) -> Array:
+	return ROTORCRAFT_FLIGHT if vehicle_type == ROTORCRAFT else FLIGHT
+
+
+static func shortcut_table(vehicle_type: String = AIRPLANE) -> Array:
+	return ROTORCRAFT_SHORTCUTS if vehicle_type == ROTORCRAFT else SHORTCUTS
+
+
+static func first_flight_table(vehicle_type: String = AIRPLANE) -> Array:
+	return ROTORCRAFT_FIRST_FLIGHT if vehicle_type == ROTORCRAFT else FIRST_FLIGHT
+
 
 ## Every physical key the tables mention (for the consistency test).
-static func all_keys() -> Array:
+static func all_keys(vehicle_type: String = AIRPLANE) -> Array:
 	var keys := []
-	for table in [FLIGHT, SHORTCUTS]:
+	for table in [flight_table(vehicle_type), shortcut_table(vehicle_type)]:
 		for row in table:
 			for k in row[0]:
 				if not k in keys:

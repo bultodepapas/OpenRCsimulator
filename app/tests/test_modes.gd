@@ -23,15 +23,22 @@ const RB := preload("res://physics/rigid_body.gd")
 ## borrowed −13.57/6.16/−0.1833) and the modes carry the downwash lag (ninth value: its real root, 1/s). 10 m/s: the lag
 ## state alone (ζ 0.52 → 0.60). 15/25 m/s: short period ζ 0.74/0.75 → 0.78/0.81, phugoid ζ 0.26/0.74 → 0.21/0.64,
 ## dutch roll ζ 0.29/0.28 → 0.24/0.23, spiral +0.034/−0.0002 → +0.086/+0.032 1/s (Cnr). Report: D11g.
+## All re-recorded by D6e-R1 (2026-10-13): the borrowed derivatives now place the Stik's neutral point on its own planform
+## (static margin at the CG 18.9 % → 6.9 %, ARP-referred D11g rates, local tail incidence). Less pitch stiffness with the
+## same damping: short period 1.43/2.30 → 1.18/1.87 Hz at 15/25 m/s and just overdamped (ζ 1.04/1.11, two real roots);
+## phugoid ζ 0.21/0.64 → 0.30/0.90; 10 m/s short period ζ 0.60 → 0.81. Report: climb-trim root-cause review.
 const BANDS := {
-	10.0: [1.03203198, 0.59932354, 0.19049088, 0.07156103, 0.09205808, 0.58713489, 0.33835158, 0.59118689, -11.98778185],
-	15.0: [1.42880691, 0.78398615, 0.11682285, 0.20967634, 0.05133627, 0.76704244, 0.24301315, 0.08570071, -16.75947762],
-	25.0: [2.30492474, 0.80907652, 0.07020446, 0.64062557, 0.03055681, 1.23159251, 0.22767165, 0.03246443, -27.81774077],
+	10.0: [0.90876188, 0.81032621, 0.16589314, 0.08278454, 0.07248863, 0.56864761, 0.30261772, 0.45051607, -11.08888985],
+	15.0: [1.17609159, 1.04149128, 0.09011891, 0.30299182, 0.05132270, 0.74453681, 0.24857131, 0.07693605, -15.42505926],
+	25.0: [1.87181848, 1.10898697, 0.05115836, 0.90280027, 0.03055473, 1.19343671, 0.23424972, 0.02751213, -25.19697216],
 }
 const TOL := 0.03
 ## Short-period damping floor per speed (default 0.5). D11d had to pin 10 m/s at 0.45 (ζ 0.47 with the tail's Cmq at
 ## 0.28× the oracle); E0a2a's free tail slope brought it back to 0.52, so no speed needs an exception now.
 const SHORT_PERIOD_ZETA_FLOOR := {}
+## Short-period damping ceiling. D6e-R1's near-neutral margin leaves 15 and 25 m/s just overdamped (ζ 1.04/1.11,
+## reported by flight_modes' D8a-R2 branch); the ceiling still catches a damping or stiffness blow-up.
+const SHORT_PERIOD_ZETA_CEILING := 1.25
 
 var _failures := 0
 var _count := 0
@@ -84,7 +91,8 @@ func _initialize() -> void:
 			r.downwash_lag_root < -0.7 * lag_rate and r.downwash_lag_root > -lag_rate, "%.2f" % r.downwash_lag_root)
 		_check("%.0f m/s: oscillatory modes and roll subsidence are damped" % V, r.short_period.zeta > 0 and r.phugoid.zeta > 0 and r.roll_tau > 0 and r.dutch_roll.zeta > 0)
 		var floor: float = SHORT_PERIOD_ZETA_FLOOR.get(V, 0.5)
-		_check("%.0f m/s: short period well damped (%.2f–1), faster than the dutch roll" % [V, floor], r.short_period.zeta > floor and r.short_period.zeta < 1.0 and r.short_period.f_hz > r.dutch_roll.f_hz)
+		_check("%.0f m/s: short period well damped (%.2f–%.2f), faster than the dutch roll" % [V, floor, SHORT_PERIOD_ZETA_CEILING],
+			r.short_period.zeta > floor and r.short_period.zeta < SHORT_PERIOD_ZETA_CEILING and r.short_period.f_hz > r.dutch_roll.f_hz)
 
 	_time_domain(model)
 	print("%d checks, %d failed" % [_count, _failures])

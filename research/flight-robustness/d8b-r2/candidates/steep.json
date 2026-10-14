@@ -57,9 +57,9 @@
       },
       "CLq": {
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim, downwash settled; the wing ahead of the CG loses lift in a pull, so it is below the tail-only closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
         "unit": "1/rad",
-        "value": 2.951
+        "value": 1.977
       },
       "CYb": {
         "kind": "borrowed",
@@ -147,15 +147,15 @@
       },
       "Cmq": {
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; the downwash lag adds Cmadot -3.59 as a state (E0a2b), so Cmq+Cmadot = -11.07; closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -7.741 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CLq lift reproduces it; the downwash lag adds Cmadot -3.59 as a state (E0a2b); closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
         "unit": "1/rad",
-        "value": -7.476
+        "value": -7.944
       },
       "Cnb": {
         "kind": "derived",
         "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b",
         "unit": "1/rad",
-        "value": 0.1214237421962675
+        "value": 0.12741288623702934
       },
       "Cnda_left": {
         "kind": "borrowed",
@@ -173,7 +173,7 @@
         "kind": "derived",
         "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b",
         "unit": "1/rad",
-        "value": -0.06678305820794714
+        "value": -0.07007708743036616
       },
       "Cnp": {
         "kind": "borrowed",
@@ -183,9 +183,9 @@
       },
       "Cnr": {
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -0.1318 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CYr side force reproduces it; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
         "unit": "1/rad",
-        "value": -0.1319
+        "value": -0.1354
       },
       "k_induced": {
         "kind": "borrowed",
@@ -301,9 +301,9 @@
         },
         "incidence": {
           "kind": "derived",
-          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; Cm0/Cma for horizontal effective incidence, vertical symmetric",
+          "source": "research/flight-dynamics/climb-trim/derive_tail_incidence.gd (D6e-R1): effective incidence at which the local model's static Cm equals the oracle's at the 15 m/s level trim (no trim step at the regime switch); with the ARP at the CG this rule reduced to the earlier Cm0/Cma = 0.03845 of docs/research/flight-repair-implementation.md; estimated provisional surface model, not measured flight data",
           "unit": "rad",
-          "value": 0.03845
+          "value": 0.02205
         },
         "lift_slope": {
           "kind": "estimated",
@@ -404,19 +404,19 @@
         "unit": "deg, 1, 1, 1",
         "value": [
           8.0,
-          0.4962489067946081,
+          0.49034227299376204,
           0.0434,
           1.0,
           10.0,
-          0.6435490897487093,
+          0.6376424559478633,
           0.0434,
           1.0,
           14.0,
-          0.8644993641798612,
+          0.8585927303790151,
           0.0834,
           0.85,
           25.0,
-          0.4322496820899306,
+          0.42929636518950753,
           0.2634,
           0.4,
           45.0,
@@ -439,19 +439,19 @@
         "unit": "deg, 1, 1, 1",
         "value": [
           8.0,
-          0.6821525568382019,
+          0.6880591906390479,
           0.0434,
           1.0,
           10.0,
-          0.829452739792303,
+          0.835359373593149,
           0.0434,
           1.0,
           14.0,
-          1.050403014223455,
+          1.056309648024301,
           0.0834,
           0.85,
           25.0,
-          0.5252015071117275,
+          0.5281548240121505,
           0.2634,
           0.4,
           45.0,
@@ -528,11 +528,57 @@
         "value": 25.0
       }
     },
+    "rates": {
+      "normal": {
+        "aileron": {
+          "kind": "borrowed",
+          "source": "Durafly Ugly Stik V2 manual (Version 2) p.8, a 1.1 m foam Ugly Stik: low/high rates elevator 10/20 mm, aileron 10/18 mm, rudder 12/18 mm either way from neutral; the low/high ratio is applied to this model's maximum throws (controls.max_throw). Ratio transferred across scale, not a Jensen figure; PDF sha256 652718b2d87b65eae54c7a7dc3f8b3bd1d290a970589f4495dc6a1a7fe71d7de; docs/research/radio-input/D6e/README.md",
+          "unit": "1",
+          "value": 0.5556
+        },
+        "aileron_expo": {
+          "kind": "estimated",
+          "source": "No Ugly Stik source states expo. Ultra Stick 10cc (Hangar 9 HAN2345, 60 in class) specification listing: 15 % expo on low rates, 25 % on high (https://www.skyraccoon.com/aircraft/Hangar-9_Ultra-Stick-10_HAN2345, unattributed listing); the owner's own radio values replace it",
+          "unit": "1",
+          "value": 0.15
+        },
+        "elevator": {
+          "kind": "borrowed",
+          "source": "Durafly Ugly Stik V2 manual (Version 2) p.8, a 1.1 m foam Ugly Stik: low/high rates elevator 10/20 mm, aileron 10/18 mm, rudder 12/18 mm either way from neutral; the low/high ratio is applied to this model's maximum throws (controls.max_throw). Ratio transferred across scale, not a Jensen figure; PDF sha256 652718b2d87b65eae54c7a7dc3f8b3bd1d290a970589f4495dc6a1a7fe71d7de; docs/research/radio-input/D6e/README.md",
+          "unit": "1",
+          "value": 0.5
+        },
+        "elevator_expo": {
+          "kind": "estimated",
+          "source": "No Ugly Stik source states expo. Ultra Stick 10cc (Hangar 9 HAN2345, 60 in class) specification listing: 15 % expo on low rates, 25 % on high (https://www.skyraccoon.com/aircraft/Hangar-9_Ultra-Stick-10_HAN2345, unattributed listing); the owner's own radio values replace it",
+          "unit": "1",
+          "value": 0.15
+        },
+        "rudder": {
+          "kind": "borrowed",
+          "source": "Durafly Ugly Stik V2 manual (Version 2) p.8, a 1.1 m foam Ugly Stik: low/high rates elevator 10/20 mm, aileron 10/18 mm, rudder 12/18 mm either way from neutral; the low/high ratio is applied to this model's maximum throws (controls.max_throw). Ratio transferred across scale, not a Jensen figure; PDF sha256 652718b2d87b65eae54c7a7dc3f8b3bd1d290a970589f4495dc6a1a7fe71d7de; docs/research/radio-input/D6e/README.md",
+          "unit": "1",
+          "value": 0.6667
+        },
+        "rudder_expo": {
+          "kind": "estimated",
+          "source": "No Ugly Stik source states expo. Ultra Stick 10cc (Hangar 9 HAN2345, 60 in class) specification listing: 15 % expo on low rates, 25 % on high (https://www.skyraccoon.com/aircraft/Hangar-9_Ultra-Stick-10_HAN2345, unattributed listing); the owner's own radio values replace it",
+          "unit": "1",
+          "value": 0.15
+        }
+      }
+    },
     "servo_full_throw_time": {
       "kind": "estimated",
       "source": "Time for a surface to go from neutral to full throw: a standard analog servo at 0.19 s/60 deg (Hitec HS-311 / Futaba S3003 class at 6 V) times about 45 deg of servo-arm travel for full surface throw (typical linkage). Same for every surface",
       "unit": "s",
       "value": 0.14
+    },
+    "surface_ids": {
+      "aileron_left": "surface_aileron_left",
+      "aileron_right": "surface_aileron_right",
+      "elevator": "surface_elevator",
+      "rudder": "surface_rudder"
     }
   },
   "convention_id": "openrc-le-frd-v1",
@@ -593,6 +639,16 @@
     "fin_top",
     "belly"
   ],
+  "crash_hull_ids": [
+    "probe_wing_left_tip",
+    "probe_wing_right_tip",
+    "probe_spinner_tip",
+    "probe_tail_end",
+    "probe_stabilizer_left_tip",
+    "probe_stabilizer_right_tip",
+    "probe_fin_top",
+    "probe_belly_main"
+  ],
   "description": "Jensen Das Ugly Stik (Phil Kraft design), 60 in span, .61 two-stroke glow. Physics data only; visual geometry lives in assets/aircraft/ugly-stik-60/geometry.json.",
   "format": "openrc-aircraft v2",
   "frames": {
@@ -602,6 +658,7 @@
   "id": "jensen-das-ugly-stik-60",
   "inventory": [
     {
+      "id": "item_engine_main",
       "mass": {
         "kind": "manual",
         "source": "O.S. catalog 17750 (RESEARCH.md)",
@@ -631,6 +688,7 @@
       }
     },
     {
+      "id": "item_muffler_main",
       "mass": {
         "kind": "estimated",
         "source": "sibling E-4010A is 156 g (O.S. catalog)",
@@ -660,6 +718,7 @@
       }
     },
     {
+      "id": "item_propeller_main",
       "mass": {
         "kind": "manual",
         "source": "APC LP12060 1.62 oz",
@@ -689,6 +748,7 @@
       }
     },
     {
+      "id": "item_spinner_main",
       "mass": {
         "kind": "estimated",
         "source": "typical 2.25 in spinner",
@@ -718,6 +778,7 @@
       }
     },
     {
+      "id": "item_engine_mount",
       "mass": {
         "kind": "estimated",
         "source": "nylon beam mount",
@@ -747,6 +808,7 @@
       }
     },
     {
+      "id": "item_fuel_tank",
       "mass": {
         "kind": "estimated",
         "source": "8-10 oz clunk tank",
@@ -777,6 +839,7 @@
     },
     {
       "energy_source": "glow_fuel",
+      "id": "item_fuel_main",
       "mass": {
         "kind": "estimated",
         "source": "150 ml at ~0.8 g/ml methanol/oil/nitro blend; flight state: half tank",
@@ -806,6 +869,7 @@
       }
     },
     {
+      "id": "item_receiver_battery",
       "mass": {
         "kind": "estimated",
         "source": "NiMH pack",
@@ -835,6 +899,7 @@
       }
     },
     {
+      "id": "item_receiver_main",
       "mass": {
         "kind": "estimated",
         "source": "typical 6-8 ch receiver",
@@ -864,6 +929,7 @@
       }
     },
     {
+      "id": "item_fuselage_servos",
       "mass": {
         "kind": "estimated",
         "source": "3 standard servos ~45 g",
@@ -893,6 +959,7 @@
       }
     },
     {
+      "id": "item_aileron_servo",
       "mass": {
         "kind": "estimated",
         "source": "standard servo",
@@ -922,6 +989,7 @@
       }
     },
     {
+      "id": "item_nose_gear_assembly",
       "mass": {
         "kind": "estimated",
         "source": "steerable nose leg",
@@ -951,6 +1019,7 @@
       }
     },
     {
+      "id": "item_main_gear_assembly",
       "mass": {
         "kind": "estimated",
         "source": "0.090 in 2024-T3 gear (plan) and wheels",
@@ -980,6 +1049,7 @@
       }
     },
     {
+      "id": "item_wing_airframe",
       "mass": {
         "kind": "estimated",
         "source": "built-up 60 x 12 in thick-section wing, covered",
@@ -1009,6 +1079,7 @@
       }
     },
     {
+      "id": "item_fuselage_front",
       "mass": {
         "kind": "estimated",
         "source": "ply firewall/doublers, balsa sides",
@@ -1038,6 +1109,7 @@
       }
     },
     {
+      "id": "item_fuselage_rear",
       "mass": {
         "kind": "estimated",
         "source": "balsa sides and sheeting",
@@ -1067,6 +1139,7 @@
       }
     },
     {
+      "id": "item_stabilizer_elevator",
       "mass": {
         "kind": "estimated",
         "source": "1/16 sheeted built-up stab, 1/4 sheet elevator",
@@ -1096,6 +1169,7 @@
       }
     },
     {
+      "id": "item_fin_rudder",
       "mass": {
         "kind": "estimated",
         "source": "1/4 sheet fin and rudder",
@@ -1125,6 +1199,7 @@
       }
     },
     {
+      "id": "item_control_hardware",
       "mass": {
         "kind": "estimated",
         "source": "clevises, horns, pushrods, screws, switch harness: rough sum",
@@ -1154,6 +1229,7 @@
       }
     },
     {
+      "id": "item_balance_mass_virtual",
       "mass": {
         "kind": "derived",
         "source": "docs/research/flight-repair-implementation.md D1-R1: virtual reference build, NOT measured hardware or ballast recommendation. Balancing mass from m=(M*x_CG-sum(m_i*x_i))/(x_ballast-x_CG), x_ballast=0.85 m estimated inside aft fuselage; y,z cancel inventory first moments.",
@@ -1198,6 +1274,7 @@
           "unit": "N·s/m",
           "value": 18.6
         },
+        "id": "contact_main_left",
         "max_compression": {
           "kind": "estimated",
           "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice",
@@ -1235,6 +1312,7 @@
           "unit": "N·s/m",
           "value": 18.6
         },
+        "id": "contact_main_right",
         "max_compression": {
           "kind": "estimated",
           "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice",
@@ -1272,6 +1350,7 @@
           "unit": "N·s/m",
           "value": 16.5
         },
+        "id": "contact_nose",
         "max_compression": {
           "kind": "estimated",
           "source": "leg splay before the wire bends permanently or the belly (0.053 m below the thrust line; wheels 0.258 m) hits: a level touchdown at 2 m/s sink compresses ≈ 0.10 m, at 3 m/s ≈ 0.15 m (½mv² = ½Σkδ² plus the 18 mm static sag), so 2 m/s lands and 3 m/s breaks the gear. Guess from RC practice",
@@ -1323,6 +1402,7 @@
       "value": 0.8
     }
   },
+  "physical_identity_version": 1.0,
   "plausibility": {
     "inertia_reference": {
       "kind": "borrowed",
@@ -1379,6 +1459,7 @@
         "value": 16000.0
       }
     },
+    "id": "propulsion_main",
     "kind": "glow_prop",
     "propeller": {
       "cp_table": {
@@ -1500,10 +1581,10 @@
   "reference": {
     "aero_reference_point": {
       "kind": "derived",
-      "source": "taken at the plan CG so the borrowed moment data keeps its static margin at the plan CG; z at mid-wing height (estimated)",
+      "source": "research/flight-dynamics/climb-trim/derive_pitch_reference.py (D6e-R1): x places the borrowed derivatives' neutral point (ARP + 0.1579 c) on the Stik's own estimated neutral point, 43.5 % c (fleet Helmbold/tail-ratio/Raymer method; band 42.5-44.5 %, vortex lattice 44.4 %); replaces the plan-CG placement that transplanted the donor's 15.8 % margin; z at mid-wing height (estimated)",
       "unit": "m",
       "value": [
-        0.1209,
+        0.0844,
         0.0,
         0.07
       ]

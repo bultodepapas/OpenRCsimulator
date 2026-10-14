@@ -1,0 +1,64 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   flight matrix uses the production 240 Hz solver clock  240
+ok   default field resolves for session setup  []
+ok   Natural Random policy resolves for standalone probe bounds
+ok   seed search finds all 20 aircraft/recipe cells  found 20 before seed 65536
+ok   named seed regenerates p51d-mustang-120|windy_day  []
+ok   seed 5 regenerates the same scenario
+ok   generated selection matches its matrix cell
+ok   generated start is airborne
+ok   generated daylight identity is present
+ok   p51d-mustang-120 resolves to packaged aircraft data
+ok   p51d-mustang-120|windy_day weather validates  []
+ok   p51d-mustang-120|windy_day actual session accepts generated weather
+ok   p51d-mustang-120|windy_day actual session accepts the default field
+ok   p51d-mustang-120|windy_day weather handoff preserves generated configuration
+ok   p51d-mustang-120|windy_day weather handoff leaves source configuration unchanged
+ok   p51d-mustang-120|windy_day initial turbulence seed resolves
+ok   p51d-mustang-120|windy_day session starts in the generated mean/gust/turbulence vector  error 0.000000000 m/s
+ok   p51d-mustang-120|windy_day density is finite, positive and matches weather  1.17485731189031
+ok   p51d-mustang-120|windy_day stock aircraft and trim are accepted  trimmed
+ok   p51d-mustang-120|windy_day start is finite and has positive trimmed speed
+ok   p51d-mustang-120|windy_day session reset commits a valid airborne state
+ok   p51d-mustang-120|windy_day wind handoff preserves the trimmed airspeed  air 25.000000000 m/s; trim 25.000000000 m/s
+ok   p51d-mustang-120|windy_day has a finite horizontal aircraft heading
+ok   p51d-mustang-120|windy_day headwind standalone probe passes strict weather validation  []
+ok   p51d-mustang-120|windy_day headwind standalone probe is accepted at the real session reset boundary
+ok   p51d-mustang-120|windy_day headwind standalone probe reset has a finite airborne state and positive density
+ok   p51d-mustang-120|windy_day headwind standalone probe session adopts the separately supplied weather
+ok   p51d-mustang-120|windy_day actual session wind is headwind relative to its airborne heading  along-course -3.000000000 m/s; sample error 0.000000000 m/s
+ok   p51d-mustang-120|windy_day crosswind-left standalone probe passes strict weather validation  []
+ok   p51d-mustang-120|windy_day crosswind-left standalone probe is accepted at the real session reset boundary
+ok   p51d-mustang-120|windy_day crosswind-left standalone probe reset has a finite airborne state and positive density
+ok   p51d-mustang-120|windy_day crosswind-left standalone probe session adopts the separately supplied weather
+ok   p51d-mustang-120|windy_day actual session wind is crosswind-left relative to its airborne heading  along-course 0.000000000 m/s; sample error 0.000000000 m/s
+ok   p51d-mustang-120|windy_day tailwind standalone probe passes strict weather validation  []
+ok   p51d-mustang-120|windy_day tailwind standalone probe is accepted at the real session reset boundary
+ok   p51d-mustang-120|windy_day tailwind standalone probe reset has a finite airborne state and positive density
+ok   p51d-mustang-120|windy_day tailwind standalone probe session adopts the separately supplied weather
+ok   p51d-mustang-120|windy_day actual session wind is tailwind relative to its airborne heading  along-course 3.000000000 m/s; sample error 0.000000000 m/s
+ok   p51d-mustang-120|windy_day crosswind-right standalone probe passes strict weather validation  []
+ok   p51d-mustang-120|windy_day crosswind-right standalone probe is accepted at the real session reset boundary
+ok   p51d-mustang-120|windy_day crosswind-right standalone probe reset has a finite airborne state and positive density
+ok   p51d-mustang-120|windy_day crosswind-right standalone probe session adopts the separately supplied weather
+ok   p51d-mustang-120|windy_day actual session wind is crosswind-right relative to its airborne heading  along-course -0.000000000 m/s; sample error 0.000000000 m/s
+ok   p51d-mustang-120|windy_day daylight band resolves for atmosphere corners
+ok   p51d-mustang-120|windy_day cool-humid-low-pressure standalone atmosphere passes strict weather validation  []
+ok   p51d-mustang-120|windy_day cool-humid-low-pressure standalone atmosphere is accepted at the real session reset boundary
+ok   p51d-mustang-120|windy_day cool-humid-low-pressure standalone atmosphere reset has a finite airborne state and positive density
+ok   p51d-mustang-120|windy_day cool-humid-low-pressure standalone atmosphere session adopts the separately supplied weather
+ok   p51d-mustang-120|windy_day trims at the cool-humid-low-pressure atmosphere corner  air 25.000000000 m/s; trim 25.000000000 m/s
+ok   p51d-mustang-120|windy_day warm-dry-high-pressure standalone atmosphere passes strict weather validation  []
+ok   p51d-mustang-120|windy_day warm-dry-high-pressure standalone atmosphere is accepted at the real session reset boundary
+ok   p51d-mustang-120|windy_day warm-dry-high-pressure standalone atmosphere reset has a finite airborne state and positive density
+ok   p51d-mustang-120|windy_day warm-dry-high-pressure standalone atmosphere session adopts the separately supplied weather
+ok   p51d-mustang-120|windy_day trims at the warm-dry-high-pressure atmosphere corner  air 25.000000000 m/s; trim 25.000000000 m/s
+ok   p51d-mustang-120|windy_day restores its untouched generated weather
+ok   p51d-mustang-120|windy_day standalone probes leave scenario and session weather unchanged
+ok   long gust row has nonzero gust and one complete period
+ok   p51d-mustang-120|windy_day advances exactly 7428 fixed ticks  advanced 7428; fault ''
+ok   p51d-mustang-120|windy_day 240 Hz trace state, loads, wind and ranges remain finite  air 23.389–28.134 m/s; altitude 21.1–34.3 m; wind 5.227–8.848 m/s
+NR-03 row p51d-mustang-120|windy_day seed=5 simulated=30.950 s ticks=7428
+ok   session integrated through delay plus one complete gust period
+NR-03 numerical flight qualification: 60 checks, 0 failed

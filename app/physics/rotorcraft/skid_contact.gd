@@ -8,7 +8,7 @@ static func evaluate(state: PackedFloat64Array, cfg: Dictionary, surfaces: Packe
  var max_depth: float = 0.0
  if state.size() < 13: return {ok=false}
  if -state[2] > cfg.reach_m+Terrain.max_height_validated(surfaces): return {ok=true,loads=loads,max_depth_m=0.0}
- var q: PackedFloat64Array = state.slice(6,10)
+ var q: PackedFloat64Array = M.q_normalized(state.slice(6,10))
  var inverse: PackedFloat64Array = M.quat(q[0],-q[1],-q[2],-q[3])
  var points: PackedFloat64Array = cfg.points_body_frd_m
  for i: int in range(0,12,3):
@@ -51,6 +51,6 @@ static func _disc_hits(state: PackedFloat64Array,q: PackedFloat64Array,arm: Pack
  var center: PackedFloat64Array=M.q_rotate(q,arm)
  var normal: PackedFloat64Array=M.q_rotate(q,axis)
  var terrain: PackedFloat64Array=Terrain.sample_validated(state[0]+center[0],state[1]+center[1],surfaces)
- # Conservative swept-disc envelope over the bounded analytic relief, independent of rendered azimuth.
+ # Instantaneous full-disc envelope over the bounded relief, independent of rendered azimuth.
  var reach: float=radius*M.sqrt_(maxf(0.0,1.0-normal[2]*normal[2]))
- return state[2]+center[2]+reach+terrain[0] > 0.0
+ return state[2]+center[2]+reach+maxf(terrain[0],Terrain.max_height_validated(surfaces)) > 0.0

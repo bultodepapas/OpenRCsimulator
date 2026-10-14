@@ -13,6 +13,7 @@ varying float gain;
 varying float facing;
 void vertex() {
 	vec3 center = (MODELVIEW_MATRIX * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
+	center.z += 0.12; // keep the camera-facing halo clear of its own angled bezel; scene depth still occludes it
 	vec3 source_position = (MODEL_MATRIX * vec4(0.0, 0.0, 0.0, 1.0)).xyz;
 	facing = smoothstep(0.0, 0.3, dot(normalize(CAMERA_POSITION_WORLD - source_position), normalize(source_direction)));
 	float depth_scale = PROJECTION_MATRIX[3][3] == 0.0 ? max(-center.z, 0.001) : 1.0;

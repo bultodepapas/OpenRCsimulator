@@ -109,7 +109,20 @@ python research/flight-dynamics/climb-trim/vlm_neutral_point.py
 & .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/root_cause_variant_probe.gd"
 ```
 
-The Python checks need numpy and scipy. All three are counterfactuals for diagnosis, not calibrated aircraft data.
+The Python checks need numpy and scipy. All three are counterfactuals for diagnosis, not calibrated aircraft data. They describe the data before the correction below; after it, the probe's `baseline` variant (ARP forced to the plan CG) no longer reproduces the historical aircraft, so keep `root-cause-variants.json` as the pre-correction record.
+
+The implemented correction is reproduced by two derivations that write nothing. `derive_pitch_reference.py` prints the Stik's estimated neutral point, the ARP x that places the borrowed derivatives' neutral point there, and the loader's fin-arm `Cnb`/`Cndr` for it. `derive_tail_incidence.gd` solves the local horizontal-tail incidence that removes the static step between regimes at the 15 m/s trim. `research/aero/d11g/derive_rate_derivatives.gd` now prints ARP-referred `Cmq`, `CLq` and `Cnr`. Iterate D11g and the incidence solve until neither changes, then regenerate the glow variants and Workshop descriptors.
+
+```powershell
+python research/flight-dynamics/climb-trim/derive_pitch_reference.py
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/aero/d11g/derive_rate_derivatives.gd"
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/derive_tail_incidence.gd"
+python research/glow-engines/build_installations.py
+python research/aircraft-editor/build_descriptors.py
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/root_cause_variant_probe.gd" -- --production
+```
+
+The last command measures the shipped data with the same protocol and writes `root-cause-correction.json`.
 
 ## Explicit half-throttle start
 

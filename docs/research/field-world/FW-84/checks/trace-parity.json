@@ -1,0 +1,13 @@
+{
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "scope": "same scripted physical flight; classic versus electrical_storm; soundscape off; t=2 s",
+  "sample_header_and_rows_identical": true,
+  "data_rows": 481,
+  "normalized_samples_sha256": "dd3d487530ec5ec83a4db9bdc01b25dfbde3f283ad654057226533cef0967875",
+  "source_files_sha256": {
+    "storm-parity-classic.csv": "89d1168d3920aae0cec1ac77f102dca727ca8c386d6a7b8330b10cebba6f693e",
+    "storm-parity-electrical.csv": "f94300ec5f85c1a01fbec213add089c624a30ed3261b0aaeb0c410c7b2854d59"
+  },
+  "commands": "../README.md#checks-run",
+  "limits": "Comment metadata intentionally differs. Short deterministic software parity check, not severe-weather physical validation or a flown night circuit."
+}

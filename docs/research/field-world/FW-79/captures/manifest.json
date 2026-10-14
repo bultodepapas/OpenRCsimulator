@@ -1,0 +1,391 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"format": "openrc-sky-gallery v1",
+	"frames_after_each_scene_change": 8,
+	"images": [
+		{
+			"camera": {
+				"azimuth_deg": 315.0,
+				"elevation_deg": 25.0,
+				"fov_deg": 70.0
+			},
+			"clock_s": -1.0,
+			"event_id": "",
+			"file": "day-classic-cloudscape.png",
+			"id": "day-classic",
+			"lighting": {
+				"date": "2026-06-21",
+				"latitude_deg": 4.7,
+				"local_seconds": 46800,
+				"longitude_deg": -74.1,
+				"mode": "astronomical snapshot",
+				"sun_elevation_deg": 66.0720425879593,
+				"utc_offset_minutes": -300
+			},
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "classic",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera": {
+				"azimuth_deg": 315.0,
+				"elevation_deg": 25.0,
+				"fov_deg": 70.0
+			},
+			"clock_s": -1.0,
+			"event_id": "",
+			"file": "day-clear-cloudscape.png",
+			"id": "day-clear",
+			"lighting": {
+				"date": "2026-06-21",
+				"latitude_deg": 4.7,
+				"local_seconds": 46800,
+				"longitude_deg": -74.1,
+				"mode": "astronomical snapshot",
+				"sun_elevation_deg": 66.0720425879593,
+				"utc_offset_minutes": -300
+			},
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "clear",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera": {
+				"azimuth_deg": 315.0,
+				"elevation_deg": 25.0,
+				"fov_deg": 70.0
+			},
+			"clock_s": -1.0,
+			"event_id": "",
+			"file": "day-cirrus-cloudscape.png",
+			"id": "day-cirrus",
+			"lighting": {
+				"date": "2026-06-21",
+				"latitude_deg": 4.7,
+				"local_seconds": 46800,
+				"longitude_deg": -74.1,
+				"mode": "astronomical snapshot",
+				"sun_elevation_deg": 66.0720425879593,
+				"utc_offset_minutes": -300
+			},
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "cirrus",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera": {
+				"azimuth_deg": 315.0,
+				"elevation_deg": 25.0,
+				"fov_deg": 70.0
+			},
+			"clock_s": -1.0,
+			"event_id": "",
+			"file": "day-fair_cumulus-cloudscape.png",
+			"id": "day-fair_cumulus",
+			"lighting": {
+				"date": "2026-06-21",
+				"latitude_deg": 4.7,
+				"local_seconds": 46800,
+				"longitude_deg": -74.1,
+				"mode": "astronomical snapshot",
+				"sun_elevation_deg": 66.0720425879593,
+				"utc_offset_minutes": -300
+			},
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "fair_cumulus",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera": {
+				"azimuth_deg": 315.0,
+				"elevation_deg": 25.0,
+				"fov_deg": 70.0
+			},
+			"clock_s": -1.0,
+			"event_id": "",
+			"file": "day-broken-cloudscape.png",
+			"id": "day-broken",
+			"lighting": {
+				"date": "2026-06-21",
+				"latitude_deg": 4.7,
+				"local_seconds": 46800,
+				"longitude_deg": -74.1,
+				"mode": "astronomical snapshot",
+				"sun_elevation_deg": 66.0720425879593,
+				"utc_offset_minutes": -300
+			},
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "broken",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera": {
+				"azimuth_deg": 315.0,
+				"elevation_deg": 25.0,
+				"fov_deg": 70.0
+			},
+			"clock_s": -1.0,
+			"event_id": "",
+			"file": "day-overcast-cloudscape.png",
+			"id": "day-overcast",
+			"lighting": {
+				"date": "2026-06-21",
+				"latitude_deg": 4.7,
+				"local_seconds": 46800,
+				"longitude_deg": -74.1,
+				"mode": "astronomical snapshot",
+				"sun_elevation_deg": 66.0720425879593,
+				"utc_offset_minutes": -300
+			},
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "overcast",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera": {
+				"azimuth_deg": 315.0,
+				"elevation_deg": 25.0,
+				"fov_deg": 70.0
+			},
+			"clock_s": -1.0,
+			"event_id": "",
+			"file": "day-prestorm-cloudscape.png",
+			"id": "day-prestorm",
+			"lighting": {
+				"date": "2026-06-21",
+				"latitude_deg": 4.7,
+				"local_seconds": 46800,
+				"longitude_deg": -74.1,
+				"mode": "astronomical snapshot",
+				"sun_elevation_deg": 66.0720425879593,
+				"utc_offset_minutes": -300
+			},
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "prestorm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera": {
+				"azimuth_deg": 315.0,
+				"elevation_deg": 25.0,
+				"fov_deg": 70.0
+			},
+			"clock_s": -1.0,
+			"event_id": "",
+			"file": "day-distant_storm-cloudscape.png",
+			"id": "day-distant_storm",
+			"lighting": {
+				"date": "2026-06-21",
+				"latitude_deg": 4.7,
+				"local_seconds": 46800,
+				"longitude_deg": -74.1,
+				"mode": "astronomical snapshot",
+				"sun_elevation_deg": 66.0720425879593,
+				"utc_offset_minutes": -300
+			},
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "distant_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera": {
+				"azimuth_deg": 315.0,
+				"elevation_deg": 25.0,
+				"fov_deg": 70.0
+			},
+			"clock_s": -1.0,
+			"event_id": "",
+			"file": "day-electrical_storm-cloudscape.png",
+			"id": "day-electrical_storm",
+			"lighting": {
+				"date": "2026-06-21",
+				"latitude_deg": 4.7,
+				"local_seconds": 46800,
+				"longitude_deg": -74.1,
+				"mode": "astronomical snapshot",
+				"sun_elevation_deg": 66.0720425879593,
+				"utc_offset_minutes": -300
+			},
+			"msaa": "4x",
+			"phase": "day",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera": {
+				"azimuth_deg": 315.0,
+				"elevation_deg": 25.0,
+				"fov_deg": 70.0
+			},
+			"clock_s": 88.8829166666667,
+			"event_id": "3102985321:7",
+			"file": "electrical-full-moon-event-peak-cloudscape.png",
+			"id": "electrical-full-moon-event-peak",
+			"lighting": {
+				"date": "2026-06-29",
+				"latitude_deg": 4.7,
+				"light_source": "moon",
+				"local_hour": 0.0,
+				"longitude_deg": -74.1,
+				"mode": "ephemeris moon-and-sun",
+				"moon_elevation_deg": 55.5952930472382,
+				"moon_illuminated_fraction": 0.99277404578995,
+				"sun_elevation_deg": -62.074094565744,
+				"utc_offset_hours": -5.0
+			},
+			"msaa": "4x",
+			"phase": "night",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera": {
+				"azimuth_deg": 315.0,
+				"elevation_deg": 25.0,
+				"fov_deg": 70.0
+			},
+			"clock_s": 90.2983333333333,
+			"event_id": "",
+			"file": "electrical-full-moon-quiet-cloudscape.png",
+			"id": "electrical-full-moon-quiet",
+			"lighting": {
+				"date": "2026-06-29",
+				"latitude_deg": 4.7,
+				"light_source": "moon",
+				"local_hour": 0.0,
+				"longitude_deg": -74.1,
+				"mode": "ephemeris moon-and-sun",
+				"moon_elevation_deg": 55.5952930472382,
+				"moon_illuminated_fraction": 0.99277404578995,
+				"sun_elevation_deg": -62.074094565744,
+				"utc_offset_hours": -5.0
+			},
+			"msaa": "4x",
+			"phase": "night",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera": {
+				"azimuth_deg": 315.0,
+				"elevation_deg": 25.0,
+				"fov_deg": 70.0
+			},
+			"clock_s": 88.8829166666667,
+			"event_id": "3102985321:7",
+			"file": "electrical-new-moon-event-peak-cloudscape.png",
+			"id": "electrical-new-moon-event-peak",
+			"lighting": {
+				"date": "2026-06-15",
+				"latitude_deg": 4.7,
+				"light_source": "sun",
+				"local_hour": 0.0,
+				"longitude_deg": -74.1,
+				"mode": "ephemeris moon-and-sun",
+				"moon_elevation_deg": -57.839673565361,
+				"moon_illuminated_fraction": 0.00176611919996233,
+				"sun_elevation_deg": -61.9812507329744,
+				"utc_offset_hours": -5.0
+			},
+			"msaa": "4x",
+			"phase": "night",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		},
+		{
+			"camera": {
+				"azimuth_deg": 315.0,
+				"elevation_deg": 25.0,
+				"fov_deg": 70.0
+			},
+			"clock_s": 90.2983333333333,
+			"event_id": "",
+			"file": "electrical-new-moon-quiet-cloudscape.png",
+			"id": "electrical-new-moon-quiet",
+			"lighting": {
+				"date": "2026-06-15",
+				"latitude_deg": 4.7,
+				"light_source": "sun",
+				"local_hour": 0.0,
+				"longitude_deg": -74.1,
+				"mode": "ephemeris moon-and-sun",
+				"moon_elevation_deg": -57.839673565361,
+				"moon_illuminated_fraction": 0.00176611919996233,
+				"sun_elevation_deg": -61.9812507329744,
+				"utc_offset_hours": -5.0
+			},
+			"msaa": "4x",
+			"phase": "night",
+			"preset": "electrical_storm",
+			"resolution": [
+				1280,
+				720
+			]
+		}
+	],
+	"msaa": "4x",
+	"native_renderer": true,
+	"performance_claim": false,
+	"renderer": "gl_compatibility",
+	"sky_configuration": "Atmosphere.configure_appearance",
+	"viewport": [
+		1280,
+		720
+	],
+	"world_builder": "app/render/world/world.gd"
+}

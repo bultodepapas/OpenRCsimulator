@@ -21,6 +21,10 @@ const PROPELLER_EVALUATOR_META := &"_glow_prepared_propeller"
 const VIBRATION_EVALUATOR_META := &"_glow_source_vibration"
 const EVALUATOR_IDENTITY_META := &"_glow_prepared_identity"
 
+## Session demand may include an injected receiver/throttle fault. Standalone physical fixtures keep raw inputs.
+static func _throttle(owner: Node) -> float:
+	return owner.propulsion_throttle() if owner.has_method("propulsion_throttle") else owner.sim.inputs[3]
+
 static func valid(values: PackedFloat64Array, install: Dictionary) -> bool:
 	var state: Dictionary=unpack(values,install)
 	if state.is_empty() or Life.pack_state(state).size()!=6: return false
@@ -73,7 +77,7 @@ static func initial(owner: Node, aux: PackedFloat64Array) -> PackedFloat64Array:
 		install.initial_temperature_k,aux[0],owner.engine_running)
 	if not made.ok: return PackedFloat64Array([NAN])
 	var state: Dictionary=made.state
-	state.servo_fraction=owner.sim.inputs[3]
+	state.servo_fraction=_throttle(owner)
 	state.air_fraction=install.settings.idle_admission+(1.0-install.settings.idle_admission)*state.servo_fraction
 	var point: Dictionary=Source.evaluate(install.profile,aux[0],state.air_fraction,install.profile.operation.nominal_mixture,
 		1.225*owner.engine_charge_ratio(),owner.engine_running)
@@ -119,12 +123,12 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 	var evaluator: Variant=owner.get_meta(EVALUATOR_META,null)
 	var evaluation: Dictionary
 	if evaluator is Life.PreparedEvaluator and identity_matches:
-		evaluation=Life.evaluate_prepared(evaluator,state,rpm,owner.sim.inputs[3],values[12],
+		evaluation=Life.evaluate_prepared(evaluator,state,rpm,_throttle(owner),values[12],
 			1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling)
 	else:
 		# Standalone fixtures may run before initialization; a failed reload can
 		# restore a different installation. Both use the fully validated path.
-		evaluation=Life.evaluate(install.profile,install.settings,state,rpm,owner.sim.inputs[3],values[12],
+		evaluation=Life.evaluate(install.profile,install.settings,state,rpm,_throttle(owner),values[12],
 			1.225*owner.engine_charge_ratio(),float(ambient.get("temperature_k",288.15)),local_cooling)
 	if not evaluation.ok: return evaluation
 	evaluation.air=air

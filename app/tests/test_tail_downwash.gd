@@ -38,9 +38,11 @@ func _initialize() -> void:
 	# Static equivalence where the former law is linear (its effective tail angle α + 1.174·δ + incidence below the tail's
 	# 12° stall onset): lift is identical by construction. Drag is not: the tail's separation term CD90·sin² now uses the
 	# real tail angle (after downwash) instead of the inflated effective one, so the pitching moment differs only by that
-	# drag's small arm.
+	# drag's small arm. The moment band is a coefficient: since D6e-R1 the wing strips ahead of the CG nearly cancel the
+	# tail's moment at some grid points, so a ratio to the total moment would measure that cancellation, not the law.
 	var worst_lift := 0.0
 	var worst_moment := 0.0
+	var moment_scale: float = 0.5 * RHO * V * V * float(model.reference.S) * float(model.reference.c)
 	for deg in [-2.0, 0.0, 2.0, 4.0, 6.0]:
 		for de in [-0.05, 0.0, 0.05]:
 			var alpha_s := deg_to_rad(deg)
@@ -50,11 +52,11 @@ func _initialize() -> void:
 			var lift_a: float = a[0] * sin(alpha_s) - a[2] * cos(alpha_s)
 			var lift_b: float = b[0] * sin(alpha_s) - b[2] * cos(alpha_s)
 			worst_lift = maxf(worst_lift, absf(lift_a - lift_b) / maxf(1.0, absf(lift_b)))
-			worst_moment = maxf(worst_moment, absf(a[4] - b[4]) / absf(b[4]))
+			worst_moment = maxf(worst_moment, absf(a[4] - b[4]) / moment_scale)
 	_check("no rates, α −2…6°, elevator ±0.05 rad: lift identical to the former law (static CLα, Cmα, Cmde kept)", worst_lift < 1e-9,
 		"worst relative %s" % String.num_scientific(worst_lift))
-	_check("no rates: pitching moment within 2 % of the former law (only the tail drag's arm differs)", worst_moment < 0.02,
-		"worst %.2f %%" % (100.0 * worst_moment))
+	_check("no rates: pitching-moment coefficient within 0.003 of the former law (only the tail drag's arm differs)", worst_moment < 0.003,
+		"worst %.5f" % worst_moment)
 	for deg in [8.0, 10.0]:
 		var alpha_d := deg_to_rad(deg)
 		var s := _state(alpha_d, 0.0)

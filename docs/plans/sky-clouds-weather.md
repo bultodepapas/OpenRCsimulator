@@ -4,7 +4,9 @@
 
 Preserve the current beautiful fair-weather sky and add equally polished alternatives: cloudless blue, high wisps, broken cumulus, overcast, dark pre-storm, a distant storm, an electrical thunderstorm with a spectacular night presentation and, finally, an interactive tornado scenario. The sky is a principal landscape in an RC flight simulator: judge it while tracking a small moving airplane, not only in a sky screenshot.
 
-This is a planning delivery. No new presets, downloaded runtime dependencies, weather physics or menu controls are implemented by this document. The dated [FW-76 investigation](../research/field-world/FW-76/README.md) owns source evaluations and research limitations. The [world guide](../FIELD-WORLD-PLAN.md) owns existing behavior. Documentation is in English according to the repository convention; proposed player labels include Spanish.
+**Implementation checkpoint, 2026-10-13:** the Compatibility runtime now has nine selectable sky profiles, a shared Home/paused-flight editor, persisted appearance, deterministic cloud transport, visual checkpoints and an electrical-storm presentation with branched lightning and downloaded CC0 thunder. The classic default is retained. These are presentation changes; physical wind remains the existing uniform field. The distant-storm card is currently a layered-sky prototype, without the planned world-anchored thunderhead or rain curtain. Tropical bands, spatial storm physics, the tornado challenge and a volumetric backend are still unimplemented.
+
+The [world guide](../FIELD-WORLD-PLAN.md#sky-and-cloud-controls) owns current controls and limits. [FW-78/82 evidence](../research/field-world/FW-78/README.md), [FW-79 captures](../research/field-world/FW-79/README.md) and [FW-84 evidence](../research/field-world/FW-84/README.md) distinguish software checks from the remaining art, flight, audio, performance and platform gates. The dated [FW-76 investigation](../research/field-world/FW-76/README.md) retains source evaluations. The requirements below remain the target for incomplete phases; runtime presence does not close their acceptance gates.
 
 ## 1. Delivery decision
 
@@ -15,7 +17,7 @@ This is a planning delivery. No new presets, downloaded runtime dependencies, we
 5. **Finish with a bounded experimental tornado challenge.** The airplane responds through its existing aerodynamic equations. The funnel is a visual representation of a scenario, not the collision shape or force generator.
 6. **Evaluate volumetric rendering as a conditional quality route.** Neither a renderer migration nor a new plugin is a prerequisite for useful sky choices. Select a volumetric dependency only after an isolated comparison on the pinned engine.
 
-These are proposed implementation decisions. Record adopted backend and contract decisions in [DECISIONS](../../DECISIONS.md) when the comparison and interface review are complete.
+The first slice adopts the Compatibility renderer, independent appearance/physics state and scene-local electrical effects; the rationale is recorded in [DECISIONS](../../DECISIONS.md). Volumetric and spatial-weather decisions remain open.
 
 ## 2. Inspected baseline and concrete integration points
 
@@ -165,7 +167,7 @@ Validated player draft / CLI / scenario recipe
                 scene-local render resources
 ```
 
-Add proposed `app/environment/sky_appearance_config.gd` for validation/catalog resolution and `sky_appearance.gd` for composition with the existing lighting snapshot. Keep proposed `app/data/sky/weather_presets.json` authoritative for presets. `Atmosphere` consumes resolved values; neither it nor `World.flow_to()` invents a second preset policy.
+`app/environment/sky_appearance_config.gd` now owns strict validation/catalog resolution, `app/render/weather/sky_appearance.gd` composes render parameters, and `app/data/sky/weather_presets.json` is authoritative for the nine implemented profiles. Appearance v1 stores preset, integer seed, motion, wind-aloft speed/direction, flash mode and thunder volume; user-defined layers and quality/backend choices are not part of v1. `Atmosphere` consumes resolved values; neither it nor `World.flow_to()` invents a second preset policy.
 
 Thread appearance through `app_root → HomeScene / main → World / Atmosphere`, including rebuild, reset, failed launch and Home return. Update both FW-flow and explicit-TOD paths. Retire the previous world flow before switching to a snapshot. Avoid mutable additions to `Spec.ATMOSPHERE`, uncontrolled static singletons or independent third-party sun/time controllers.
 
@@ -287,19 +289,19 @@ Spawn outside the strong-gradient core and verify runway equilibrium/airborne tr
 
 ## 9. Implementation phases and acceptance
 
-Each row is a small independently reviewable change. Runtime work remains pending. `FW-76` covers this research plus the remaining fresh baseline/intake checks. Existing M5/UI/TOD step status remains in its own plan; the rows here own their sky/scenario integration only.
+Each row is an independently reviewable phase. Status reflects the 2026-10-13 implementation and retained evidence; a partial row has running code but has not met every required proof. Existing M5/UI/TOD status remains in its own plan; these rows own sky/scenario integration only.
 
 | Phase / ID | Work | Required proof and status |
 | --- | --- | --- |
-| 0 · FW-76 | Research, source/license shortlist, baseline snapshots, exact renderer probes and acceptance budgets | **Research delivered.** Fresh baseline captures, isolated addon downloads/probes and minimum-hardware measurement pending. |
-| 1 · FW-77 | Validated appearance catalog, resolver and immutable composition contract; identity/migration design with TOD/NR | Invalid/unknown inputs refused; old inputs resolve to exact classic; no Spec mutation; all proposed fields have units/ranges/ownership. **Pending.** |
-| 1 · FW-78 | Sky gallery in existing conditions dialog, draft/apply/cancel, Home summary and EN/ES preferences | 720p keyboard/controller flows, cancel/no-write, focus return, save/reload, failed apply and technical-launch isolation. Share controls with paused route. **Pending.** |
-| 2 · FW-79 | Classic, clear, cirrus, fair cumulus and broken-cloud appearance; overcast/pre-storm morphology prototypes | Side-by-side directional captures; zero-cloud path has no residual cirrus/shadows; independent shapes distinguish overcast/pre-storm. Final storm/overcast lighting and flight acceptance wait for FW-80. **Pending.** |
-| 2 · FW-80 | Unified light/haze/ground-shadow response in fixed, TOD and FW-flow worlds; complete overcast/pre-storm presets | No stale overwrite, doubled exposure or double cloud attenuation; low-angle/night comparisons and actual pilot flight of the complete collection; classic remains exact. **Pending.** |
-| 3 · FW-81 | Still / Follow wind / wind-aloft transport with M5-W07 | Cardinal sign/unit tests, zero-wind freeze, phase-continuous changes, shared shadow motion, no render RNG mutation, 30/60/144 FPS equality of accepted transport state. **Pending.** |
-| 3 · FW-82 | Visual history/checkpoint lifecycle and paused application; integrate NR-07 appearance input | Reset/restore/old records, aborted scene switch, Home preview isolation, passing Evening → fixed sky → Home. Physics bytes unchanged. **Pending.** |
-| 4 · FW-83 | Reused distant storm assets, thunderhead/rainband composition and camera qualification | License/provenance/import evidence, horizon/zoom/moving-camera checks, bounded resources and lighting coherence. **Pending.** |
-| 4 · FW-84 | Electrical-storm preset and night showcase, delivered as FW-84a–e below | Required for `electrical_storm`; ordinary skies and distant cloud banks can ship first. **Pending after FW-82/83; independent of spatial wind.** |
+| 0 · FW-76 | Research, source/license shortlist, baseline snapshots, exact renderer probes and acceptance budgets | **Partial:** research and licensed bolt/audio intake recorded; native classic field/sky comparison is exact in 12 views. Addon comparison and minimum-hardware measurement remain open. |
+| 1 · FW-77 | Validated appearance catalog, resolver and immutable composition contract; identity/migration design with TOD/NR | **Implemented for appearance v1:** strict catalog/config, detached resolution, old-save fallback, independent CLI, exact native envelope and resolved trace context. NR sky selection remains with FW-82/NR-07. |
+| 1 · FW-78 | Sky gallery in existing conditions dialog, draft/apply/cancel, Home summary and EN/ES preferences | **Implemented; qualification partial:** shared nine-card editor, saved draft/apply/cancel, motion/storm controls and explicit night action. Focused UI and actual Home/flight route tests pass; physical-controller acceptance remains open. |
+| 2 · FW-79 | Classic, clear, cirrus, fair cumulus and broken-cloud appearance; overcast/pre-storm morphology prototypes | **Partial:** nine rendered profiles and native day/night gallery; original classic field/sky pixels preserved. Dense-cloud morphology and complete directional/pilot review remain art gates. |
+| 2 · FW-80 | Unified light/haze/ground-shadow response in fixed, TOD and FW-flow worlds; complete overcast/pre-storm presets | **Partial:** composed sun/ambient/haze, shared ground/grass transport, cloud-masked stars/solar disc; fixed/TOD/FW regression checks pass. Full low-angle/moving-camera flight and reflection qualification remain. |
+| 3 · FW-81 | Still / Follow wind / wind-aloft transport with M5-W07 | **Implemented analytic mean-wind proxy:** cardinal signs, zero-speed freeze, seed/mode validation, float64 rebasing and shared 1 s quantized transport. Smooth high-wind presentation/performance qualification remains open. |
+| 3 · FW-82 | Visual history/checkpoint lifecycle and paused application; integrate NR-07 appearance input | **Partial:** paused edits preserve physics bytes; native restore validates profile, time, wind and history before mutation; old records choose classic. Retained Workshop presentation is restored. NR currently keeps classic, and progressing FW checkpoints retain their existing refusal. |
+| 4 · FW-83 | Reused distant storm assets, thunderhead/rainband composition and camera qualification | **Pending:** the current distant-storm card is only layered procedural appearance. World-anchored bank, rain curtain, tropical bands and camera qualification are not implemented. |
+| 4 · FW-84 | Electrical-storm preset and night showcase, delivered as FW-84a–e below | **Partial:** deterministic events, licensed branch mesh adaptation, masked local flash, bounded delayed thunder and UI exist. Full thunderhead art, audio audition, flown night circuit and peak/performance gates remain open. |
 | 5 · FW-85 | Isolated POM/volumetric backend comparison, including a separate Forward+ experiment if justified | Same scenes/cameras/resolution; image, timing, memory and lifecycle comparison. Record accept/reject decision. Production renderer change is a separate project-level decision. **Conditional.** |
 | 6 · FW-86 | Integrate M5-W05 spatial weather and distributed aircraft samples into the sky/scenario boundary | Uniform zero-feature parity, independent field oracle, correct RK stage positions/times, wing/tail/propeller response, versioned trace and rollback tests. **Pending prerequisite for interactive storm.** |
 | 6 · FW-87 | Authored bounded storm/vortex field prototype and scenario contract, with M5 owners | Core/taper/join checks, finite forces, step refinement, seed replay, valid starts and measured whole-tick cost. No physical validation claim. **Pending.** |
@@ -317,7 +319,7 @@ FW-84 is split into five independently reviewable changes:
 | FW-84d | AUD: CC0 thunder selection, event-distance queue, spatial onset/tail and mixing | Distance-delay oracle, current-listener/camera-cut behavior, pause/reset/mute, bounded voices/headroom and speaker/headphone review. |
 | FW-84e | UI/FW/TOD: electrical-storm card, explicit night recipe, Full/Reduced/Off controls and full flight qualification | EN/ES 720p flow, persisted controls, day/dusk/moonless/moonlit flights, aircraft tracking before/during/after flashes and final performance evidence. |
 
-All five substeps remain pending. FW-84a precedes event consumers; b/c/d can be developed independently against its accepted interface, with narrow shared-file ownership. FW-84e closes their combined gate.
+FW-84a's event schedule and software lifecycle checks are implemented. FW-84b/c/d have running first-slice consumers with native compilation/capture and unit evidence; their full art, occlusion, cost and audio gates remain open. FW-84e's controls/night action are implemented, while full flight and performance qualification remain open. See the [FW-84 record](../research/field-world/FW-84/README.md) for exact claims and approximations.
 
 Dependencies:
 
@@ -391,7 +393,7 @@ Quality settings may reduce visual samples, detail layers, texture size or parti
 - [TOOLS](../TOOLS.md): `app/test.sh`, actual app captures and export smoke tests. Use the pinned native Windows engine for GPU work; Bash/WSL or Linux workflows for the documented suite.
 - Existing UI/weather/TOD/checkpoint tests should be extended at their seams; proposed new files can use `test_sky_appearance_*` and `test_cloud_transport_*`. No command for a not-yet-created harness is presented as currently runnable.
 
-This planning change requires document/link/diff checks only. Runtime, GPU and flight qualification begin with implementation; they have not been performed by this delivery.
+Focused runtime tests and native Compatibility image checks have been performed for this implementation. They do not establish minimum-hardware performance, exported-platform parity, human audio acceptance or the complete flown night gate. Retain these distinctions in each delivery's evidence.
 
 ## 11. Ownership, risks and completion
 

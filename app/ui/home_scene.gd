@@ -18,6 +18,7 @@ const World := preload("res://render/world/world.gd")
 const FieldError = preload("res://ui/field_error.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 
 ## Composition, in NED metres from the pilot's eyes and degrees: a low pass along the runway at eye height, banked
 ## toward the camera so the planform shows, seen with a long lens from the field edge (a photographer's view:
@@ -37,6 +38,7 @@ const CLOCK := 37.0
 var field: Dictionary = {}
 var lighting_config: Dictionary = {}
 var night_options: Dictionary = Preferences.NIGHT_DEFAULTS.duplicate(true)
+var sky_config: Dictionary = SkyConfig.defaults()
 var _lighting: Dictionary = {}
 var field_errors: PackedStringArray = PackedStringArray()
 
@@ -46,7 +48,7 @@ var _shadow: MeshInstance3D
 
 
 ## `aircraft`: the catalog ID to show (app_state/aircraft_catalog.gd); show_aircraft() swaps it in place.
-func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}) -> void:
+func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader.DEFAULT_PATH, selected_lighting: Dictionary = {}, selected_night_options: Dictionary = {}, selected_sky: Dictionary = {}) -> void:
 	name = "HomeScene"
 	var checked_light: Dictionary = LightingConfig.validate(LightingConfig.defaults() if selected_lighting.is_empty() else selected_lighting)
 	if not checked_light.ok:
@@ -66,6 +68,12 @@ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader
 	if not loaded_field.ok:
 		return
 	field = loaded_field.field
+	var checked_sky: Dictionary = SkyConfig.validate(SkyConfig.defaults() if selected_sky.is_empty() else selected_sky)
+	if not checked_sky.ok:
+		field_errors = PackedStringArray(checked_sky.errors)
+		return
+	sky_config = checked_sky.config
+	Atmosphere.configure_appearance(sky_config)
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
 	var env: Environment = World.build(self, field, Callable(), {}, snapshot, night_options).environment
 

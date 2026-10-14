@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
-"""Copy the reviewed, static HX-700 GLB into the source and runtime asset trees.
+"""Install the reviewed HX-700 GLB and its derived rotor profiles.
 
-The Blender inventory/export step remains authoritative. This script only installs
-its .tools preview into the two checked-in asset locations and verifies both inputs.
-It never opens or writes the supplied .blend file.
+The Blender static exporter and Godot profile exporter remain authoritative. This
+script installs their .tools outputs into both checked-in asset locations and
+verifies the source, manifest and profile hashes. It never opens or writes the .blend.
 """
 
 from __future__ import annotations
@@ -48,7 +48,7 @@ def copy_verified(source: Path, destination: Path, replace: bool, expected_hash:
             return
         if not replace:
             raise FileExistsError(
-                f"Refusing to replace {destination}; pass --replace after reviewing the new GLB."
+                f"Refusing to replace {destination}; pass --replace after reviewing the generated asset."
             )
     shutil.copyfile(source, destination)
     if sha256(destination) != expected_hash:
@@ -59,7 +59,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--preview", type=Path, default=DEFAULT_PREVIEW)
     parser.add_argument("--profiles", type=Path, default=DEFAULT_PROFILES)
-    parser.add_argument("--replace", action="store_true", help="replace a differing installed GLB")
+    parser.add_argument("--replace", action="store_true", help="replace differing installed assets after review")
     args = parser.parse_args()
 
     source = SOURCE_BLEND.resolve(strict=True)
@@ -83,8 +83,11 @@ def main() -> int:
     if not expected_profile_hash or sha256(profiles) != expected_profile_hash:
         raise SystemExit("Rotor profile hash does not match source-manifest.json.")
     profile_payload = json.loads(profiles.read_text(encoding="utf-8"))
-    if profile_payload.get("schema") != profile_info.get("schema") \
-            or profile_payload.get("source_glb_sha256") != EXPECTED_PREVIEW_SHA256:
+    if (
+        profile_payload.get("schema") != profile_info.get("schema")
+        or profile_payload.get("algorithm") != profile_info.get("algorithm")
+        or profile_payload.get("source_glb_sha256") != EXPECTED_PREVIEW_SHA256
+    ):
         raise SystemExit("Rotor profile metadata is not bound to the reviewed GLB.")
 
     for destination in GLB_DESTINATIONS:

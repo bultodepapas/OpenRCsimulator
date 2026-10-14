@@ -1,79 +1,711 @@
 {
-  "format": "openrc-field-lights v1",
+  "format": "openrc-field-lights v2",
   "field": "default",
   "conversion": {
     "value": 100000,
     "unit": "lux per scene unit",
     "kind": "borrowed",
-    "source": "Scene irradiance 1 = the calibrated sun (Spec.ATMOSPHERE sun_energy 1), taken as ~1e5 lux of clear-day sunlight; a SpotLight3D's energy is its luminous intensity (cd) divided by this, because its irradiance falls as energy / d²."
+    "source": "Existing daytime scene irradiance estimate retained for compatibility; art exposure remains calibrated separately."
   },
-  "fixtures": [
+  "installations": [
+    {
+      "id": "field_mast",
+      "type": "mast",
+      "north": {
+        "value": -8,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Behind the pilot line at the previous flood site; single-mast composition estimate."
+      },
+      "east": {
+        "value": 0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Runway centerline alignment estimate."
+      },
+      "heading": {
+        "value": 0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Faces the four independently aimed heads toward the runway."
+      },
+      "height": {
+        "value": 12,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "12 m option studied for continuous four-sector runway coverage."
+      },
+      "collision_radius": {
+        "value": 0.07,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Existing mast shaft proxy radius."
+      }
+    },
+    {
+      "id": "windsock_mount",
+      "type": "low_light_mount",
+      "north": {
+        "value": -6,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Beside the functional windsock."
+      },
+      "east": {
+        "value": -9.5,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "2.5 m east of the windsock pole."
+      },
+      "heading": {
+        "value": 0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Local flood mount orientation estimate."
+      },
+      "height": {
+        "value": 1.2,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Low lamp aimed at the windsock sleeve."
+      },
+      "collision_radius": {
+        "value": 0.07,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Existing low-mount pole proxy radius."
+      }
+    },
+    {
+      "id": "runway_markers",
+      "type": "marker_array"
+    },
+    {
+      "id": "campfire_base",
+      "type": "campfire_base",
+      "north": {
+        "value": -24,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "North/east position coordinated with the optional Kenney campfire base."
+      },
+      "east": {
+        "value": 15,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Placed east of the picnic tables, clear of the runway view."
+      },
+      "heading": {
+        "value": 0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Static base orientation."
+      },
+      "height": {
+        "value": 0.4,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Kenney base bounds scaled 3.6x."
+      },
+      "width": {
+        "value": 1.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Approximate Kenney base footprint at 3.6x scale."
+      },
+      "depth": {
+        "value": 1.0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Approximate Kenney base footprint at 3.6x scale."
+      },
+      "collision_radius": {
+        "value": 0.55,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Permanent proxy bounds the scaled base with a small edge margin."
+      }
+    }
+  ],
+  "emitters": [
     {
       "id": "flood_west",
-      "type": "flood",
-      "north": {"value": -8, "unit": "m", "kind": "estimated", "source": "Behind the pilot line and the pits, clear of the flight line; club layout estimate."},
-      "east": {"value": -22, "unit": "m", "kind": "estimated", "source": "Symmetric pair either side of the pilot station; estimate."},
-      "height": {"value": 8, "unit": "m", "kind": "estimated", "source": "Sports and club field poles are commonly 6-10 m; estimate."},
-      "aim_north": {"value": 18, "unit": "m", "kind": "estimated", "source": "Runway centre line (15 m) slightly beyond, so the far edge is lit."},
-      "aim_east": {"value": -12, "unit": "m", "kind": "estimated", "source": "Toward the west half of the 100 m runway."},
-      "intensity": {"value": 12000, "unit": "cd", "kind": "estimated", "source": "A ~100 W club LED floodlight (~10,000-13,000 lm) into a 60 deg beam (~0.84 sr); revised from 30,000 cd (a stadium-class figure) after FW-35 captures clipped the lit ground."},
-      "beam_half_angle": {"value": 30, "unit": "deg", "kind": "estimated", "source": "Common 60 deg flood optic."},
-      "range": {"value": 90, "unit": "m", "kind": "estimated", "source": "Light window end, beyond the far runway edge; Godot attenuation window."},
-      "color_temperature": {"value": 5000, "unit": "K", "kind": "borrowed", "source": "LED floodlights are commonly sold at 4000-5700 K."}
+      "type": "spot",
+      "installation_id": "field_mast",
+      "role": "runway_flood",
+      "north": {
+        "value": -8,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Shared field mast site."
+      },
+      "east": {
+        "value": -0.9,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Individually offset on the shared crossarm to keep the four lamp heads visibly distinct."
+      },
+      "height": {
+        "value": 11.75,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Head mounted near the 12 m mast top."
+      },
+      "aim_north": {
+        "value": 9,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Near runway edge target keeps the horizon-safe cone wide enough for full-strip coverage."
+      },
+      "aim_east": {
+        "value": -38,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Four overlapping runway sectors; this head target east position."
+      },
+      "aim_height": {
+        "value": 0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Runway surface target."
+      },
+      "intensity": {
+        "value": 8000,
+        "unit": "cd",
+        "kind": "estimated",
+        "source": "Upper end of the plan's initial 4000-8000 cd sweep; art estimate, not calibrated luminaire data."
+      },
+      "beam_half_angle": {
+        "value": 14.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Two degrees below the head-to-target depression for a horizon-safe beam."
+      },
+      "range": {
+        "value": 75,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Outer runway sector range estimate."
+      },
+      "color_temperature": {
+        "value": 4000,
+        "unit": "K",
+        "kind": "estimated",
+        "source": "Initial neutral-warm mast tint from the plan."
+      },
+      "distance_attenuation": {
+        "value": 2,
+        "unit": "ratio",
+        "kind": "derived",
+        "source": "Matches pinned GLES3 inverse-square distance exponent; see radial_transport."
+      },
+      "angular_attenuation": {
+        "value": 1,
+        "unit": "ratio",
+        "kind": "derived",
+        "source": "Matches pinned GLES3 default smooth cone exponent."
+      }
+    },
+    {
+      "id": "flood_inner_west",
+      "type": "spot",
+      "installation_id": "field_mast",
+      "role": "runway_flood",
+      "north": {
+        "value": -8,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Shared field mast site."
+      },
+      "east": {
+        "value": -0.3,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Individually offset on the shared crossarm to keep the four lamp heads visibly distinct."
+      },
+      "height": {
+        "value": 11.75,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Head mounted near the 12 m mast top."
+      },
+      "aim_north": {
+        "value": 9,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Near runway edge target keeps the horizon-safe cone wide enough for full-strip coverage."
+      },
+      "aim_east": {
+        "value": -10,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Four overlapping runway sectors; this head target east position."
+      },
+      "aim_height": {
+        "value": 0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Runway surface target."
+      },
+      "intensity": {
+        "value": 8000,
+        "unit": "cd",
+        "kind": "estimated",
+        "source": "Upper end of the plan's initial sweep; art estimate."
+      },
+      "beam_half_angle": {
+        "value": 28.9,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Two degrees below the head-to-target depression for a horizon-safe beam."
+      },
+      "range": {
+        "value": 60,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Inner runway sector range estimate."
+      },
+      "color_temperature": {
+        "value": 4000,
+        "unit": "K",
+        "kind": "estimated",
+        "source": "Initial neutral-warm mast tint."
+      },
+      "distance_attenuation": {
+        "value": 2,
+        "unit": "ratio",
+        "kind": "derived",
+        "source": "Matches pinned GLES3 inverse-square distance exponent."
+      },
+      "angular_attenuation": {
+        "value": 1,
+        "unit": "ratio",
+        "kind": "derived",
+        "source": "Matches pinned GLES3 default smooth cone exponent."
+      }
+    },
+    {
+      "id": "flood_inner_east",
+      "type": "spot",
+      "installation_id": "field_mast",
+      "role": "runway_flood",
+      "north": {
+        "value": -8,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Shared field mast site."
+      },
+      "east": {
+        "value": 0.3,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Individually offset on the shared crossarm to keep the four lamp heads visibly distinct."
+      },
+      "height": {
+        "value": 11.75,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Head mounted near the 12 m mast top."
+      },
+      "aim_north": {
+        "value": 9,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Near runway edge target keeps the horizon-safe cone wide enough for full-strip coverage."
+      },
+      "aim_east": {
+        "value": 10,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Four overlapping runway sectors; this head target east position."
+      },
+      "aim_height": {
+        "value": 0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Runway surface target."
+      },
+      "intensity": {
+        "value": 8000,
+        "unit": "cd",
+        "kind": "estimated",
+        "source": "Upper end of the plan's initial sweep; art estimate."
+      },
+      "beam_half_angle": {
+        "value": 28.9,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Two degrees below the head-to-target depression for a horizon-safe beam."
+      },
+      "range": {
+        "value": 60,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Inner runway sector range estimate."
+      },
+      "color_temperature": {
+        "value": 4000,
+        "unit": "K",
+        "kind": "estimated",
+        "source": "Initial neutral-warm mast tint."
+      },
+      "distance_attenuation": {
+        "value": 2,
+        "unit": "ratio",
+        "kind": "derived",
+        "source": "Matches pinned GLES3 inverse-square distance exponent."
+      },
+      "angular_attenuation": {
+        "value": 1,
+        "unit": "ratio",
+        "kind": "derived",
+        "source": "Matches pinned GLES3 default smooth cone exponent."
+      }
     },
     {
       "id": "flood_east",
-      "type": "flood",
-      "north": {"value": -8, "unit": "m", "kind": "estimated", "source": "Mirror of flood_west."},
-      "east": {"value": 22, "unit": "m", "kind": "estimated", "source": "Mirror of flood_west."},
-      "height": {"value": 8, "unit": "m", "kind": "estimated", "source": "Mirror of flood_west."},
-      "aim_north": {"value": 18, "unit": "m", "kind": "estimated", "source": "Mirror of flood_west."},
-      "aim_east": {"value": 12, "unit": "m", "kind": "estimated", "source": "Toward the east half of the runway."},
-      "intensity": {"value": 12000, "unit": "cd", "kind": "estimated", "source": "Mirror of flood_west."},
-      "beam_half_angle": {"value": 30, "unit": "deg", "kind": "estimated", "source": "Mirror of flood_west."},
-      "range": {"value": 90, "unit": "m", "kind": "estimated", "source": "Mirror of flood_west."},
-      "color_temperature": {"value": 5000, "unit": "K", "kind": "borrowed", "source": "Mirror of flood_west."}
+      "type": "spot",
+      "installation_id": "field_mast",
+      "role": "runway_flood",
+      "north": {
+        "value": -8,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Shared field mast site."
+      },
+      "east": {
+        "value": 0.9,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Individually offset on the shared crossarm to keep the four lamp heads visibly distinct."
+      },
+      "height": {
+        "value": 11.75,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Head mounted near the 12 m mast top."
+      },
+      "aim_north": {
+        "value": 9,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Near runway edge target keeps the horizon-safe cone wide enough for full-strip coverage."
+      },
+      "aim_east": {
+        "value": 38,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Four overlapping runway sectors; this head target east position."
+      },
+      "aim_height": {
+        "value": 0,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Runway surface target."
+      },
+      "intensity": {
+        "value": 8000,
+        "unit": "cd",
+        "kind": "estimated",
+        "source": "Upper end of the plan's initial sweep; art estimate."
+      },
+      "beam_half_angle": {
+        "value": 14.0,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Two degrees below the head-to-target depression for a horizon-safe beam."
+      },
+      "range": {
+        "value": 75,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Outer runway sector range estimate."
+      },
+      "color_temperature": {
+        "value": 4000,
+        "unit": "K",
+        "kind": "estimated",
+        "source": "Initial neutral-warm mast tint."
+      },
+      "distance_attenuation": {
+        "value": 2,
+        "unit": "ratio",
+        "kind": "derived",
+        "source": "Matches pinned GLES3 inverse-square distance exponent."
+      },
+      "angular_attenuation": {
+        "value": 1,
+        "unit": "ratio",
+        "kind": "derived",
+        "source": "Matches pinned GLES3 default smooth cone exponent."
+      }
     },
     {
       "id": "windsock_flood",
-      "type": "flood",
-      "north": {"value": -6, "unit": "m", "kind": "estimated", "source": "Beside the windsock (field data: north -6 m, east -12 m)."},
-      "east": {"value": -9.5, "unit": "m", "kind": "estimated", "source": "2.5 m east of the windsock pole."},
-      "height": {"value": 1.2, "unit": "m", "kind": "estimated", "source": "A low lamp aimed up at the sleeve."},
-      "aim_north": {"value": -6, "unit": "m", "kind": "estimated", "source": "The windsock pole."},
-      "aim_east": {"value": -12, "unit": "m", "kind": "estimated", "source": "The windsock pole."},
-      "aim_height": {"value": 3.3, "unit": "m", "kind": "estimated", "source": "The sleeve, just below the 3.6 m pole top."},
-      "intensity": {"value": 2500, "unit": "cd", "kind": "estimated", "source": "Floodlit wind cone, after FAA L-807 (lighted wind cone); intensity estimated."},
-      "beam_half_angle": {"value": 25, "unit": "deg", "kind": "estimated", "source": "Covers the 2.5 m sleeve from 2.5 m away."},
-      "range": {"value": 15, "unit": "m", "kind": "estimated", "source": "Local lamp."},
-      "color_temperature": {"value": 4000, "unit": "K", "kind": "estimated", "source": "Neutral white LED."}
-    },
+      "type": "spot",
+      "installation_id": "windsock_mount",
+      "role": "windsock_flood",
+      "north": {
+        "value": -6,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Low wind-sock lamp mount."
+      },
+      "east": {
+        "value": -9.5,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Offset 2.5 m from the windsock pole."
+      },
+      "height": {
+        "value": 1.2,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Low floodlight height."
+      },
+      "aim_north": {
+        "value": -6,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Windsock pole position."
+      },
+      "aim_east": {
+        "value": -12,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Windsock pole position."
+      },
+      "aim_height": {
+        "value": 3.3,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Sleeve just below the 3.6 m pole top."
+      },
+      "intensity": {
+        "value": 2500,
+        "unit": "cd",
+        "kind": "estimated",
+        "source": "Floodlit windsock, art estimate."
+      },
+      "beam_half_angle": {
+        "value": 25,
+        "unit": "deg",
+        "kind": "estimated",
+        "source": "Local sleeve beam estimate."
+      },
+      "range": {
+        "value": 15,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Local lamp range."
+      },
+      "color_temperature": {
+        "value": 4000,
+        "unit": "K",
+        "kind": "estimated",
+        "source": "Neutral-white LED estimate."
+      },
+      "distance_attenuation": {
+        "value": 2,
+        "unit": "ratio",
+        "kind": "derived",
+        "source": "Matches pinned GLES3 inverse-square distance exponent."
+      },
+      "angular_attenuation": {
+        "value": 1,
+        "unit": "ratio",
+        "kind": "derived",
+        "source": "Matches pinned GLES3 default smooth cone exponent."
+      }
+    }
+  ],
+  "fixtures": [
     {
       "id": "runway_edge_stakes",
       "type": "stake_row",
-      "points": {"value": [[9, -50], [9, -30], [9, -10], [9, 10], [9, 30], [9, 50], [21, -50], [21, -30], [21, -10], [21, 10], [21, 30], [21, 50]], "unit": "m", "kind": "estimated", "source": "Both long edges of the 100 x 12 m runway (field data), every 20 m; club night-fly practice of marking edges with solar stake lights, spacing estimated."},
-      "height": {"value": 0.35, "unit": "m", "kind": "estimated", "source": "Garden solar stake height."},
-      "intensity": {"value": 5, "unit": "cd", "kind": "estimated", "source": "Small solar garden light."},
-      "size": {"value": 0.05, "unit": "m", "kind": "estimated", "source": "Diffuser diameter."},
-      "color_temperature": {"value": 3000, "unit": "K", "kind": "estimated", "source": "Warm-white solar LED."}
+      "installation_id": "runway_markers",
+      "role": "runway_edge",
+      "points": {
+        "value": [
+          [
+            9,
+            -50
+          ],
+          [
+            9,
+            -30
+          ],
+          [
+            9,
+            -10
+          ],
+          [
+            9,
+            10
+          ],
+          [
+            9,
+            30
+          ],
+          [
+            9,
+            50
+          ],
+          [
+            21,
+            -50
+          ],
+          [
+            21,
+            -30
+          ],
+          [
+            21,
+            -10
+          ],
+          [
+            21,
+            10
+          ],
+          [
+            21,
+            30
+          ],
+          [
+            21,
+            50
+          ]
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Existing stakes on both long edges of the 100 x 12 m runway, every 20 m."
+      },
+      "height": {
+        "value": 0.35,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Garden stake height estimate."
+      },
+      "intensity": {
+        "value": 5,
+        "unit": "cd",
+        "kind": "estimated",
+        "source": "Small stake-light estimate."
+      },
+      "size": {
+        "value": 0.05,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Diffuser diameter estimate."
+      },
+      "color_temperature": {
+        "value": 3000,
+        "unit": "K",
+        "kind": "estimated",
+        "source": "Warm-white stake tint estimate."
+      }
     },
     {
       "id": "threshold_stakes",
       "type": "stake_row",
-      "points": {"value": [[11, -51], [15, -51], [19, -51], [11, 51], [15, 51], [19, 51]], "unit": "m", "kind": "estimated", "source": "Across both runway ends; green like full-size threshold lights (artistic borrowing, not an RC rule)."},
-      "height": {"value": 0.35, "unit": "m", "kind": "estimated", "source": "Garden solar stake height."},
-      "intensity": {"value": 5, "unit": "cd", "kind": "estimated", "source": "Small solar garden light."},
-      "size": {"value": 0.05, "unit": "m", "kind": "estimated", "source": "Diffuser diameter."},
-      "color": {"value": "#20ff60", "unit": "srgb", "kind": "estimated", "source": "Green threshold convention (artistic)."}
+      "installation_id": "runway_markers",
+      "role": "runway_threshold",
+      "points": {
+        "value": [
+          [
+            11,
+            -51
+          ],
+          [
+            15,
+            -51
+          ],
+          [
+            19,
+            -51
+          ],
+          [
+            11,
+            51
+          ],
+          [
+            15,
+            51
+          ],
+          [
+            19,
+            51
+          ]
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Existing directional threshold marker positions."
+      },
+      "height": {
+        "value": 0.35,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Garden stake height estimate."
+      },
+      "intensity": {
+        "value": 5,
+        "unit": "cd",
+        "kind": "estimated",
+        "source": "Small stake-light estimate."
+      },
+      "size": {
+        "value": 0.05,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Diffuser diameter estimate."
+      },
+      "color": {
+        "value": "#20ff60",
+        "unit": "srgb",
+        "kind": "estimated",
+        "source": "Green directional threshold convention (artistic)."
+      }
     },
     {
       "id": "pilot_station_lamp",
       "type": "stake_row",
-      "points": {"value": [[0.65, -0.6]], "unit": "m", "kind": "estimated", "source": "Front corner of the pilot station barrier (field data)."},
-      "height": {"value": 0.8, "unit": "m", "kind": "estimated", "source": "Just above the 0.75 m barrier."},
-      "intensity": {"value": 1, "unit": "cd", "kind": "estimated", "source": "A dim red work light."},
-      "size": {"value": 0.04, "unit": "m", "kind": "estimated", "source": "Small lamp."},
-      "color": {"value": "#ff2010", "unit": "srgb", "kind": "borrowed", "source": "Red light preserves dark adaptation (astronomy and night-flying practice)."}
+      "installation_id": "runway_markers",
+      "role": "pilot_station",
+      "points": {
+        "value": [
+          [
+            0.65,
+            -0.6
+          ]
+        ],
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Front corner of the pilot station barrier."
+      },
+      "height": {
+        "value": 0.8,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Just above the 0.75 m barrier."
+      },
+      "intensity": {
+        "value": 1,
+        "unit": "cd",
+        "kind": "estimated",
+        "source": "Dim red work lamp estimate."
+      },
+      "size": {
+        "value": 0.04,
+        "unit": "m",
+        "kind": "estimated",
+        "source": "Small lamp estimate."
+      },
+      "color": {
+        "value": "#ff2010",
+        "unit": "srgb",
+        "kind": "borrowed",
+        "source": "Red light supports night-use readability."
+      }
     }
   ]
 }

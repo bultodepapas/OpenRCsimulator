@@ -469,13 +469,37 @@ static func _add_avanti_cradle(proxies: Array[Dictionary], id: String, north: fl
 
 
 static func _add_lights(proxies: Array[Dictionary], lights: Dictionary) -> void:
+	var installations: Variant = lights.get("installations", [])
+	var has_installations := installations is Array and not (installations as Array).is_empty()
+	if has_installations:
+		for installation_value: Variant in installations:
+			if typeof(installation_value) != TYPE_DICTIONARY:
+				continue
+			var installation: Dictionary = installation_value
+			var installation_id := str(installation.get("id", "fixture"))
+			var kind := str(installation.get("type", ""))
+			var north := float(installation.get("north", NAN))
+			var east := float(installation.get("east", NAN))
+			var height := float(installation.get("height", 0.0))
+			if kind in ["mast", "low_light_mount"]:
+				var radius := float(installation.get("collision_radius", 0.07))
+				_add_capsule(proxies, "lamp:%s:pole" % installation_id, "lamp", "flood_pole", "frangible_impulse",
+					north, east, -height * 0.5, radius, maxf(0.0, height * 0.5 - radius))
+			elif kind == "campfire_base":
+				var width := float(installation.get("width", 1.0))
+				var depth := float(installation.get("depth", 1.0))
+				_add_box(proxies, "fixture:%s:base" % installation_id, "fixture", "campfire_base", "frangible_impulse",
+					north, east, width, height, depth, float(installation.get("heading", 0.0)))
+				proxies.back()["damage_id"] = "installation:%s" % installation_id
+				proxies.back()["damage_profile"] = "wood"
+	# Historical normalized inputs without an installation table retain their per-flood poles.
 	for fixture_value: Variant in lights.get("fixtures", []):
 		if typeof(fixture_value) != TYPE_DICTIONARY:
 			continue
 		var fixture: Dictionary = fixture_value
 		var fixture_id := str(fixture.get("id", "lamp"))
 		var height := float(fixture.get("height", 0.0))
-		if str(fixture.get("type", "")) == "flood":
+		if str(fixture.get("type", "")) == "flood" and not has_installations:
 			_add_capsule(proxies, "lamp:%s:pole" % fixture_id, "lamp", "flood_pole", "frangible_impulse",
 				float(fixture.get("north", NAN)), float(fixture.get("east", NAN)), -height * 0.5,
 				0.07, maxf(0.0, height * 0.5 - 0.07))

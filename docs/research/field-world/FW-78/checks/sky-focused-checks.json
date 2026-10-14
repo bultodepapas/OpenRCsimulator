@@ -1,0 +1,48 @@
+{
+  "format": "FW-78 focused sky checks v1",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "audio_driver": "Dummy",
+  "test_runs": [
+    {
+      "test": "test_sky_appearance_config",
+      "exit": 0,
+      "checks": 77,
+      "failures": 0,
+      "log": "test_sky_appearance_config.log",
+      "stderr": "test_sky_appearance_config.stderr.log",
+      "engine_log": "test_sky_appearance_config.engine.log"
+    },
+    {
+      "test": "test_ui_sky",
+      "exit": 0,
+      "checks": 24,
+      "failures": 0,
+      "log": "test_ui_sky.log",
+      "stderr": "test_ui_sky.stderr.log",
+      "engine_log": "test_ui_sky.engine.log"
+    },
+    {
+      "test": "test_sky_preferences",
+      "exit": 0,
+      "checks": 20,
+      "failures": 0,
+      "log": "test_sky_preferences.log",
+      "stderr": "test_sky_preferences.stderr.log",
+      "engine_log": "test_sky_preferences.engine.log"
+    },
+    {
+      "test": "test_ui_weather",
+      "exit": 0,
+      "checks": 62,
+      "failures": 0,
+      "log": "test_ui_weather.log",
+      "stderr": "test_ui_weather.stderr.log",
+      "engine_log": "test_ui_weather.engine.log"
+    }
+  ],
+  "preview_import": {
+    "exit": 0,
+    "log": "..\\captures\\import.stdout.log",
+    "engine_log": "..\\captures\\import.engine.log"
+  }
+}

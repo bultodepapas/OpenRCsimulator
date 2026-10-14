@@ -72,6 +72,7 @@ def main() -> int:
     ok = run("import", engine("--import"), 300)
     python_checks = [
         ("schema", "research/aircraft-standardization/build_schema.py", ["--check"]),
+        ("physical-identity-sources", "research/aircraft-standardization/test_physical_identity_sources.py", []),
         ("parameters", "research/aircraft-standardization/parameter_register.py", ["--check"]),
         ("migration", "research/aircraft-standardization/migrate.py", ["--check-known"]),
         ("modules-python", "research/aircraft-standardization/test_modules.py", []),

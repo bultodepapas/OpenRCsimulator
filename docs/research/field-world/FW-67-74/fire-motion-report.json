@@ -1,0 +1,642 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "arguments": {
+    "campfire": "on",
+    "cases": "night_campfire_side",
+    "frames": "60",
+    "height": "720",
+    "motion": "fire",
+    "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/night-integration/fire-final",
+    "time_of_day": "night",
+    "width": "1280"
+  },
+  "botanical_stats": {
+    "botanical_batches": 11,
+    "botanical_plants": 221,
+    "botanical_triangles": 83650,
+    "build_ms": 700.141,
+    "cells": 55,
+    "fleet": 4,
+    "flowers": 0,
+    "instances": 136,
+    "motion": 5,
+    "moving_people": 7,
+    "population": 24,
+    "population_triangles": 389787,
+    "quality": "high",
+    "shadows": 86,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "botanicals": 85.198,
+      "fence": 29.104,
+      "fleet": 13.435,
+      "hedge": 15.924,
+      "instances": 35.41,
+      "meshes": 21.56,
+      "patch": 71.093,
+      "track": 1.03
+    },
+    "vegetation_instances": 30,
+    "vegetation_triangles": 94440
+  },
+  "cases": {
+    "night_campfire_side": {
+      "draws": 93.0,
+      "exposure": 11196.2939453125,
+      "frame_ms_raw": [
+        2.939,
+        173.944,
+        187.812,
+        189.163,
+        172.4,
+        181.732,
+        180.855,
+        175.126,
+        182.063,
+        191.018,
+        164.464,
+        187.338,
+        199.621,
+        203.571,
+        190.298,
+        185.229,
+        186.348,
+        174.936,
+        189.702,
+        187.529,
+        181.527,
+        184.56,
+        183.727,
+        174.193,
+        158.673,
+        168.276,
+        163.11,
+        153.73,
+        183.5,
+        192.625,
+        190.584,
+        189.417,
+        189.796,
+        195.734,
+        184.408,
+        190.253,
+        185.346,
+        184.097,
+        179.791,
+        168.024,
+        165.011,
+        177.848,
+        183.808,
+        175.029,
+        161.779,
+        166.839,
+        169.67,
+        186.154,
+        164.167,
+        181.66,
+        175.022,
+        176.336,
+        178.942,
+        195.401,
+        232.71,
+        215.87,
+        224.45,
+        191.318,
+        188.269,
+        183.289
+      ],
+      "glare_strength": 0.0,
+      "glare_visible": false,
+      "lamp_factor": 1.0,
+      "marker_center_px": "(-218.5516, 214.2324)",
+      "median_ms": 183.727,
+      "motion": [
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_000.png",
+          "glare_strength": 0.0,
+          "time_s": 0.0
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_001.png",
+          "glare_strength": 0.0,
+          "time_s": 0.0166666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_002.png",
+          "glare_strength": 0.0,
+          "time_s": 0.0333333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_003.png",
+          "glare_strength": 0.0,
+          "time_s": 0.05
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_004.png",
+          "glare_strength": 0.0,
+          "time_s": 0.0666666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_005.png",
+          "glare_strength": 0.0,
+          "time_s": 0.0833333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_006.png",
+          "glare_strength": 0.0,
+          "time_s": 0.1
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_007.png",
+          "glare_strength": 0.0,
+          "time_s": 0.116666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_008.png",
+          "glare_strength": 0.0,
+          "time_s": 0.133333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_009.png",
+          "glare_strength": 0.0,
+          "time_s": 0.15
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_010.png",
+          "glare_strength": 0.0,
+          "time_s": 0.166666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_011.png",
+          "glare_strength": 0.0,
+          "time_s": 0.183333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_012.png",
+          "glare_strength": 0.0,
+          "time_s": 0.2
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_013.png",
+          "glare_strength": 0.0,
+          "time_s": 0.216666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_014.png",
+          "glare_strength": 0.0,
+          "time_s": 0.233333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_015.png",
+          "glare_strength": 0.0,
+          "time_s": 0.25
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_016.png",
+          "glare_strength": 0.0,
+          "time_s": 0.266666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_017.png",
+          "glare_strength": 0.0,
+          "time_s": 0.283333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_018.png",
+          "glare_strength": 0.0,
+          "time_s": 0.3
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_019.png",
+          "glare_strength": 0.0,
+          "time_s": 0.316666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_020.png",
+          "glare_strength": 0.0,
+          "time_s": 0.333333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_021.png",
+          "glare_strength": 0.0,
+          "time_s": 0.35
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_022.png",
+          "glare_strength": 0.0,
+          "time_s": 0.366666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_023.png",
+          "glare_strength": 0.0,
+          "time_s": 0.383333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_024.png",
+          "glare_strength": 0.0,
+          "time_s": 0.4
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_025.png",
+          "glare_strength": 0.0,
+          "time_s": 0.416666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_026.png",
+          "glare_strength": 0.0,
+          "time_s": 0.433333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_027.png",
+          "glare_strength": 0.0,
+          "time_s": 0.45
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_028.png",
+          "glare_strength": 0.0,
+          "time_s": 0.466666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_029.png",
+          "glare_strength": 0.0,
+          "time_s": 0.483333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_030.png",
+          "glare_strength": 0.0,
+          "time_s": 0.5
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_031.png",
+          "glare_strength": 0.0,
+          "time_s": 0.516666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_032.png",
+          "glare_strength": 0.0,
+          "time_s": 0.533333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_033.png",
+          "glare_strength": 0.0,
+          "time_s": 0.55
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_034.png",
+          "glare_strength": 0.0,
+          "time_s": 0.566666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_035.png",
+          "glare_strength": 0.0,
+          "time_s": 0.583333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_036.png",
+          "glare_strength": 0.0,
+          "time_s": 0.6
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_037.png",
+          "glare_strength": 0.0,
+          "time_s": 0.616666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_038.png",
+          "glare_strength": 0.0,
+          "time_s": 0.633333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_039.png",
+          "glare_strength": 0.0,
+          "time_s": 0.65
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_040.png",
+          "glare_strength": 0.0,
+          "time_s": 0.666666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_041.png",
+          "glare_strength": 0.0,
+          "time_s": 0.683333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_042.png",
+          "glare_strength": 0.0,
+          "time_s": 0.7
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_043.png",
+          "glare_strength": 0.0,
+          "time_s": 0.716666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_044.png",
+          "glare_strength": 0.0,
+          "time_s": 0.733333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_045.png",
+          "glare_strength": 0.0,
+          "time_s": 0.75
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_046.png",
+          "glare_strength": 0.0,
+          "time_s": 0.766666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_047.png",
+          "glare_strength": 0.0,
+          "time_s": 0.783333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_048.png",
+          "glare_strength": 0.0,
+          "time_s": 0.8
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_049.png",
+          "glare_strength": 0.0,
+          "time_s": 0.816666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_050.png",
+          "glare_strength": 0.0,
+          "time_s": 0.833333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_051.png",
+          "glare_strength": 0.0,
+          "time_s": 0.85
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_052.png",
+          "glare_strength": 0.0,
+          "time_s": 0.866666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_053.png",
+          "glare_strength": 0.0,
+          "time_s": 0.883333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_054.png",
+          "glare_strength": 0.0,
+          "time_s": 0.9
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_055.png",
+          "glare_strength": 0.0,
+          "time_s": 0.916666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_056.png",
+          "glare_strength": 0.0,
+          "time_s": 0.933333333333333
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_057.png",
+          "glare_strength": 0.0,
+          "time_s": 0.95
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_058.png",
+          "glare_strength": 0.0,
+          "time_s": 0.966666666666667
+        },
+        {
+          "aircraft_position": "(0.0, 0.0, 0.0)",
+          "camera_position": "(10.0, 1.4, 24.0)",
+          "exposure": 11196.2939453125,
+          "file": "night_campfire_side_059.png",
+          "glare_strength": 0.0,
+          "time_s": 0.983333333333333
+        }
+      ],
+      "night_options": {
+        "campfire": true,
+        "field_lighting": "club"
+      },
+      "p95_ms": 203.571,
+      "p99_ms": 232.71,
+      "primitives": 229011.0,
+      "shadow_draws": 0,
+      "timing_valid": false,
+      "video_memory": 291595787.0,
+      "visible_draws": 93
+    }
+  },
+  "driver": "3.3.0 NVIDIA 610.88",
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "field_build_ms": 6311.99,
+  "height": 720,
+  "lake": {
+    "bank_shader": "res://render/lake/bank.gdshader",
+    "bounds": "[P: (73.25, -5.45, -145.75), S: (103.5, 5.456786, 70.5)]",
+    "first_cross": "(0.004758, -0.5625, 0.008294)",
+    "first_normal": "(0.012433, 0.999763, 0.017871)",
+    "grass_texture": "():<ImageTexture#-9223371959310481843>",
+    "identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+    "mask_count": 20,
+    "mask_mode": 1,
+    "triangles": 44952,
+    "vertices": 13205
+  },
+  "night_options": {
+    "campfire": true,
+    "field_lighting": "club"
+  },
+  "reflection_slots": 2,
+  "renderer": "gl_compatibility",
+  "width": 1280
+}

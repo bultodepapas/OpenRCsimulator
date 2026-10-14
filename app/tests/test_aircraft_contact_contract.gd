@@ -120,6 +120,10 @@ func _fleet() -> void:
 	var profile_status_counts: Dictionary = {}
 	for filename in DirAccess.get_files_at(AIRCRAFT_DIR):
 		if filename.ends_with(".json"):
+			var raw: Variant = JSON.parse_string(FileAccess.get_file_as_string(AIRCRAFT_DIR + filename))
+			# Rotorcraft have a separate contact model in the shared data directory.
+			if typeof(raw) == TYPE_DICTIONARY and raw.get("vehicle", "") == "rotorcraft":
+				continue
 			names.append(filename)
 	names.sort()
 	_check("aircraft data directory contains the current fleet and regression fixtures", names.size() >= 9, str(names.size()))

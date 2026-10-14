@@ -9,7 +9,6 @@ render_mode unshaded, blend_add, depth_draw_never, cull_disabled, fog_disabled, 
 #include "res://render/world/engine_srgb.gdshaderinc"
 
 global uniform float sim_clock;
-global uniform vec2 cloud_drift_offset;
 
 uniform float radiance_scale = 8.2e-6;     // peak quad radiance of a V = 0 star (scene units)
 uniform float size_px = 3.0;               // quad edge in pixels
@@ -18,10 +17,55 @@ uniform float extinction_mag = 0.2;        // V-band extinction per airmass (bor
 uniform float scintillation = 0.18;        // relative flicker amplitude at the horizon (estimate)
 uniform float cloud_coverage = 0.35;
 uniform float cloud_scale = 6.0;
+uniform vec2 cloud_offset = vec2(0.0);
 uniform uint cloud_seed = 1u;
 uniform float cluster_strength = 0.0;
+uniform bool layered_appearance = false;
+uniform int appearance_layer_count = 0;
+uniform vec4 appearance_layer_parameters[8]; // altitude m, metres per noise cell, coverage, density
+uniform vec4 appearance_layer_motion[8]; // offset cells x/y, cluster strength, shape code
+uniform int appearance_layer_seeds[8];
+uniform float appearance_cloud_density = 1.0;
 
 varying vec3 star_light;
+
+float layered_cloud_occlusion(vec3 dir) {
+	float total = 0.0;
+	if (dir.y <= 0.0 || appearance_layer_count <= 0) {
+		return total;
+	}
+	float horizon_fade = smoothstep(0.03, 0.25, dir.y);
+	for (int order = 0; order < 8; order++) {
+		int layer_index = appearance_layer_count - 1 - order;
+		if (layer_index < 0) {
+			break;
+		}
+		vec4 layer = appearance_layer_parameters[layer_index];
+		vec4 layer_motion = appearance_layer_motion[layer_index];
+		uint layer_seed = uint(max(appearance_layer_seeds[layer_index], 0));
+		vec2 deck = (dir.xz / max(dir.y, 0.02)) * (layer.x / max(layer.y, 1.0));
+		vec2 cells = mod(deck + layer_motion.xy, float(CLOUD_FIELD_PERIOD));
+		int shape = int(floor(layer_motion.w + 0.5));
+		float body;
+		if (shape == 1) {
+			body = cloud_stretched_density(cells, layer_seed, layer.z, vec2(3.0, 51.0) / 64.0);
+		} else if (shape == 2) {
+			body = cloud_stretched_density(cells, layer_seed, layer.z, vec2(7.0, 45.0) / 64.0);
+		} else {
+			body = cloud_density(cells, layer_seed, layer.z, layer_motion.z);
+		}
+		if (shape == 3) {
+			float ceiling = smoothstep(0.02, 0.13, dir.y) * smoothstep(0.52, 0.94, layer.z);
+			body = max(body, 0.90 * ceiling);
+		}
+		float optical = clamp(layer.w, 0.0, 1.0) * clamp(appearance_cloud_density, 0.0, 1.0);
+		float layer_horizon_fade = shape == 3 ? smoothstep(0.005, 0.11, dir.y) : horizon_fade;
+		float tower_height = shape == 4 ? mix(0.68, 1.0, smoothstep(0.025, 0.52, dir.y)) : 1.0;
+		float alpha = clamp(body * optical * layer_horizon_fade * tower_height, 0.0, 0.98);
+		total = 1.0 - (1.0 - total) * (1.0 - alpha);
+	}
+	return total;
+}
 
 void vertex() {
 	vec4 center_world = MODEL_MATRIX * vec4(0.0, 0.0, 0.0, 1.0);
@@ -39,10 +83,12 @@ void vertex() {
 	h = ((h >> ((h >> 28u) + 4u)) ^ h) * 277803737u;
 	float phase = float(((h >> 22u) ^ h) & 65535u) / 65536.0;
 	flux *= 1.0 + scintillation * (1.0 - clamp(dir.y, 0.0, 1.0)) * sin(TAU * (7168.0 / 1024.0 * sim_clock + phase));
-	// The sky's cloud deck (render/sky.gdshader): same projection, same field, same drift.
-	if (dir.y > 0.0 && cloud_coverage > 0.0) {
+	// Match the sky mask, including the layered physical decks and their transported offsets.
+	if (layered_appearance) {
+		flux *= 1.0 - layered_cloud_occlusion(dir);
+	} else if (dir.y > 0.0 && cloud_coverage > 0.0) {
 		vec2 deck = dir.xz / max(dir.y, 0.02);
-		vec2 cells = mod(deck * cloud_scale + cloud_drift_offset, float(CLOUD_FIELD_PERIOD));
+		vec2 cells = mod(deck * cloud_scale + cloud_offset, float(CLOUD_FIELD_PERIOD));
 		float density = cloud_density(cells, cloud_seed, cloud_coverage, cluster_strength) * smoothstep(0.03, 0.25, dir.y);
 		flux *= 1.0 - density;
 	}

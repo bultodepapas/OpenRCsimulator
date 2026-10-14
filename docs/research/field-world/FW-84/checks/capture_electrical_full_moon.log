@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+saved C:/DEVELOPMENT/OpenRCsimulator/docs/research/field-world/FW-84/captures/electrical-full-moon-event-peak.png (error 0) draw_calls=157 primitives=164253 sun_px=-1186.8,-1295.6 sim_clock=88.8829166666667 shadow_px=1061.8,742.3 below_px=640.0,742.3

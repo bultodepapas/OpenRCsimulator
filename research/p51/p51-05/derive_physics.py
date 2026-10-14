@@ -647,6 +647,22 @@ coefficients = {
 surf = stik["aero"]["surfaces"]
 same = lambda key: dict(surf[key], source="same provisional value as the Ugly Stik surface model (" + surf[key]["source"].split(";")[-1].strip() + ")", kind=surf[key]["kind"] if surf[key]["kind"] != "derived" else "estimated")
 canopy_top = max(g["canopy"]["top"], key=lambda p: p[1])
+crash_hull_probes = [
+    ("probe_wing_left_le", le(W["le_z_tip"], cp_y + semi * math.tan(dihedral), -semi)),
+    ("probe_wing_right_le", le(W["le_z_tip"], cp_y + semi * math.tan(dihedral), semi)),
+    ("probe_wing_left_te", le(W["le_z_tip"] + ct, cp_y + semi * math.tan(dihedral), -semi)),
+    ("probe_wing_right_te", le(W["le_z_tip"] + ct, cp_y + semi * math.tan(dihedral), semi)),
+    ("probe_spinner_tip", le(g["spinner"]["tip_z"])),
+    ("probe_propeller_bottom", le(PROP["z"], -PROP["diameter"] / 2)),
+    ("probe_propeller_lower_left", le(PROP["z"], -PROP["diameter"] / 2 * 0.7071, -PROP["diameter"] / 2 * 0.7071)),
+    ("probe_propeller_lower_right", le(PROP["z"], -PROP["diameter"] / 2 * 0.7071, PROP["diameter"] / 2 * 0.7071)),
+    ("probe_rudder_bottom", le(T["rudder_te_bottom"][0], T["rudder_te_bottom"][1])),
+    ("probe_stabilizer_left_tip", le(T["stab_tip_le_z"] + cth, T["stab_y"], -hs)),
+    ("probe_stabilizer_right_tip", le(T["stab_tip_le_z"] + cth, T["stab_y"], hs)),
+    ("probe_fin_top", le(fin_top_te, T["fin_top_y"])),
+    ("probe_canopy_top", le(canopy_top[0], canopy_top[1])),
+    ("probe_scoop_bottom", le(g["scoop_stations"][2][0], g["scoop_stations"][2][2])),
+]
 data = {
     "format": "openrc-aircraft v1",
     "physical_identity_version": 1,
@@ -678,18 +694,8 @@ data = {
              **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
     ],
-    "crash_hull": q([
-        le(W["le_z_tip"], cp_y + semi * math.tan(dihedral), -semi), le(W["le_z_tip"], cp_y + semi * math.tan(dihedral), semi),
-        le(W["le_z_tip"] + ct, cp_y + semi * math.tan(dihedral), -semi), le(W["le_z_tip"] + ct, cp_y + semi * math.tan(dihedral), semi),
-        le(g["spinner"]["tip_z"]),
-        le(PROP["z"], -PROP["diameter"] / 2), le(PROP["z"], -PROP["diameter"] / 2 * 0.7071, -PROP["diameter"] / 2 * 0.7071), le(PROP["z"], -PROP["diameter"] / 2 * 0.7071, PROP["diameter"] / 2 * 0.7071),
-        le(T["rudder_te_bottom"][0], T["rudder_te_bottom"][1]),
-        le(T["stab_tip_le_z"] + cth, T["stab_y"], -hs), le(T["stab_tip_le_z"] + cth, T["stab_y"], hs),
-        le(fin_top_te, T["fin_top_y"]),
-        le(canopy_top[0], canopy_top[1]),
-        le(g["scoop_stations"][2][0], g["scoop_stations"][2][2]),
-    ], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + ": wing tip LE/TE (with dihedral), spinner tip, propeller disc bottom and lower quarters (a prop strike), rudder bottom TE, stab tips, fin top, canopy top, scoop bottom. The wheels are landing-gear contacts (P51-12)"),
-    "crash_hull_ids": ["probe_wing_left_le", "probe_wing_right_le", "probe_wing_left_te", "probe_wing_right_te", "probe_spinner_tip", "probe_propeller_bottom", "probe_propeller_lower_left", "probe_propeller_lower_right", "probe_rudder_bottom", "probe_stabilizer_left_tip", "probe_stabilizer_right_tip", "probe_fin_top", "probe_canopy_top", "probe_scoop_bottom"],
+    "crash_hull": q([point for _, point in crash_hull_probes], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + ": wing tip LE/TE (with dihedral), spinner tip, propeller disc bottom and lower quarters (a prop strike), rudder bottom TE, stab tips, fin top, canopy top, scoop bottom. The wheels are landing-gear contacts (P51-12)"),
+    "crash_hull_ids": [identity for identity, _ in crash_hull_probes],
     # CR-01d: one semantic name per crash_hull point above, in the same order (crash presentation only).
     "crash_hull_components": ["left_wing_tip", "right_wing_tip", "left_wing_tip", "right_wing_tip", "spinner", "propeller", "propeller", "propeller", "tail_end", "left_stab_tip", "right_stab_tip", "fin_top", "canopy", "belly"],
     "plausibility": {
@@ -816,7 +822,7 @@ legacy_data = data
 data = upgrade(legacy_data)
 validate_physical_identity(data)
 parity = numeric_parity(legacy_data, data)
-text = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+text = (json.dumps(data, indent=2, ensure_ascii=False) + "\n").replace("\n", "\r\n")
 rows = ["| Section | Quantity | Value | How |", "| --- | --- | --- | --- |"]
 for sec, name, val, how in log:
     v = ", ".join(f"{x:.4g}" for x in val) if isinstance(val, list) else f"{val:.4g}"
@@ -867,14 +873,18 @@ Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({th
 if "--dry" in sys.argv:  # print the intermediate table, write nothing
     print("\n".join(rows))
 elif "--check" in sys.argv:
-    stale = [p for p, t in ((OUT, text), (REPORT, report)) if not p.exists() or p.read_text() != t]
+    stale = []
+    if not OUT.exists() or OUT.read_bytes() != text.encode("utf-8"):
+        stale.append(OUT)
+    if not REPORT.exists() or REPORT.read_text() != report:
+        stale.append(REPORT)
     if stale:
         sys.exit("stale: " + ", ".join(str(p.relative_to(ROOT)) for p in stale) + f" (run {SCRIPT})")
     print("p51d_mustang_120.json and derivation.md are up to date")
 else:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(text)
+    OUT.write_bytes(text.encode("utf-8"))
     REPORT.write_text(report)
     print(f"wrote {OUT.relative_to(ROOT)} and {REPORT.relative_to(ROOT)}")
     print(f"mass {mass:.3f} kg, CG {100 * cg_mac:.1f} % MAC, SM {sm:.1f} % MAC, stall {Vs:.1f} m/s, start {V_start} m/s, static {rpm_static:.0f} rpm, thrust {thrust_static / G0:.1f} kgf")

@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.0242 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.1225 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.9450 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 1.9596 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 6.1934 kg·m2 is 2.11× the scaled UltraStick25e value
+Workshop compiler: 390 checks, 4 failures
+FAIL catalog no-op works with a trial identity xcell-60-research ["/: missing required field \'frames\'", "/: missing required field \'convention_id\'", "/: missing required field \'reference\'", "/: missing required field \'start\'", "/: missing required field \'balance\'", "/: missing required field \'inventory\'", "/: missing required field \'crash_hull\'", "/: missing required field \'plausibility\'", "/: missing required field \'controls\'", "/: missing required field \'aero\'", "/: missing required field \'propulsion\'", "/vehicle: unknown field", "/name: unknown field", "/qualification: unknown field", "/main_rotor: unknown field", "/tail_rotor: unknown field", "/airframe: unknown field", "/body: unknown field", "/gravity_m_s2: unknown field", "/shaft_elements: unknown field", "/drive: unknown field", "/electronics: unknown field", "/integration: unknown field", "/skids: unknown field"]
+FAIL unsupported scale recipe refuses clearly for xcell-60-research 
+FAIL unsupported weight recipe refuses clearly for xcell-60-research 
+FAIL unsupported power recipe refuses clearly for xcell-60-research 

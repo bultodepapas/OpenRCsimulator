@@ -61,7 +61,7 @@ msgid "Could not save settings (error %d)."
 msgstr "No se pudieron guardar los ajustes (error %d)."
 
 msgid "Weather"
-msgstr "Viento"
+msgstr "Clima"
 
 msgid "Reference air"
 msgstr "Aire de referencia"
@@ -1255,3 +1255,227 @@ msgstr "Encendida"
 
 msgid "Choose the field lights and campfire for this paused flight. These visual options do not change flight behavior."
 msgstr "Elige la iluminación del campo y la fogata para este vuelo en pausa. Estas opciones visuales no cambian el comportamiento del vuelo."
+
+msgid "Failures"
+msgstr "Fallas"
+
+msgid "Failure: %s"
+msgstr "Falla: %s"
+
+msgid "FAILURES · NEXT FLIGHT"
+msgstr "FALLAS · PRÓXIMO VUELO"
+
+msgid "Probability of failure per flight"
+msgstr "Probabilidad de falla por vuelo"
+
+msgid "Probability and failure type apply to the next flight only; changing them never rerolls the current flight."
+msgstr "La probabilidad y el tipo de falla se aplican al próximo vuelo; cambiarlos no vuelve a sortear la falla del vuelo actual."
+
+msgid "0 turns failures off. At 100%, one event is always scheduled. It can activate after 20–120 seconds at least 5 m above the terrain, if you keep flying."
+msgstr "0 desactiva las fallas. Con 100%, siempre se programa un suceso. Puede activarse tras 20–120 segundos a 5 m o más sobre el terreno, si sigues volando."
+
+msgid "At most one training failure is assigned per flight. If you end the flight before activation, it did not occur."
+msgstr "Se asigna como máximo una falla de práctica por vuelo. Si terminas antes de que se active, no llega a ocurrir."
+
+msgid "Include catastrophic failures"
+msgstr "Incluir fallas catastróficas"
+
+msgid "Includes sustained radio-link loss with receiver failsafe. Recovery is not guaranteed."
+msgstr "Incluye la pérdida sostenida del enlace de radio y la protección del receptor. No se garantiza la recuperación."
+
+msgid "Notify when a failure occurs"
+msgstr "Avisar cuando ocurra una falla"
+
+msgid "Turning notices off hides labels and hints. The aircraft still responds to the failure."
+msgstr "Al desactivar los avisos se ocultan las etiquetas y las pistas. El avión sigue respondiendo a la falla."
+
+msgid "Applying changes updates notices in this flight. Probability and catastrophic settings apply to the next flight."
+msgstr "Al aplicar, los avisos se actualizan en este vuelo. La probabilidad y las fallas catastróficas se aplican al próximo vuelo."
+
+msgid "Airplanes only"
+msgstr "Solo aviones"
+
+msgid "Failure practice currently supports airplanes only."
+msgstr "La práctica de fallas solo está disponible para aviones."
+
+msgid "%d%% · Catastrophic enabled"
+msgstr "%d%% · Catástrofes permitidas"
+
+msgid "%d%% · Standard"
+msgstr "%d%% · Estándar"
+
+msgid "Failure settings · next flight"
+msgstr "Ajustes de fallas · próximo vuelo"
+
+msgid "Next flight failures: Off"
+msgstr "Fallas del próximo vuelo: desactivadas"
+
+msgid "Next flight failures: %d%% · catastrophic allowed"
+msgstr "Fallas del próximo vuelo: %d%% · permite catástrofes"
+
+msgid "Next flight failures: %d%% · standard"
+msgstr "Fallas del próximo vuelo: %d%% · estándar"
+
+msgid "Current failure: %s"
+msgstr "Falla actual: %s"
+
+msgid "A failure is active."
+msgstr "Hay una falla activa."
+
+msgid "Hint: %s"
+msgstr "Pista: %s"
+
+msgid "Ailerons jammed."
+msgstr "Alerones trabados."
+
+msgid "Elevator jammed."
+msgstr "Elevador trabado."
+
+msgid "Rudder jammed."
+msgstr "Timón trabado."
+
+msgid "Aileron trim shifted."
+msgstr "Compensación de alerones desplazada."
+
+msgid "Elevator trim shifted."
+msgstr "Compensación del elevador desplazada."
+
+msgid "Aileron servo is slow."
+msgstr "El servo de alerones responde lento."
+
+msgid "Throttle response is limited."
+msgstr "La respuesta del acelerador está limitada."
+
+msgid "Throttle is stuck high."
+msgstr "El acelerador quedó atascado arriba."
+
+msgid "Radio link lost."
+msgstr "Se perdió el enlace de radio."
+
+msgid "Keep adequate airspeed. Use gentle rudder inputs if effective; plan a wide approach."
+msgstr "Mantén suficiente velocidad. Usa el timón con suavidad si responde y planifica una aproximación amplia."
+
+msgid "Receiver holds the last control commands and sets throttle to idle. Stick inputs have no effect."
+msgstr "El receptor mantiene las últimas órdenes y lleva el acelerador al ralentí. Las entradas de los mandos no tienen efecto."
+
+msgid "Flight ended before the scheduled failure."
+msgstr "El vuelo terminó antes de que ocurriera la falla programada."
+
+msgid "Last flight: %s"
+msgstr "Vuelo anterior: %s"
+
+msgid "Last flight: a failure activated."
+msgstr "Vuelo anterior: se activó una falla."
+
+msgid "No failure was assigned to the last flight."
+msgstr "No se asignó ninguna falla al vuelo anterior."
+
+msgid "Aileron trim: %+.1f%%"
+msgstr "Compensación de alerones: %+.1f%%"
+
+msgid "Aileron trim: left / right"
+msgstr "Compensación de alerones: izquierda / derecha"
+
+
+# FW-78: cloudscape selection
+msgid "Sky & clouds"
+msgstr "Cielo y nubes"
+
+msgid "Sky and lighting"
+msgstr "Cielo e iluminación"
+
+msgid "Wind preset"
+msgstr "Tipo de viento"
+
+msgid "Choose the cloudscape. Time and flight wind stay as selected."
+msgstr "Elige el cielo. Se conservan la hora y el viento de vuelo seleccionados."
+
+msgid "Cloud motion"
+msgstr "Movimiento de nubes"
+
+msgid "Classic motion"
+msgstr "Movimiento clásico"
+
+msgid "Follow wind"
+msgstr "Seguir el viento"
+
+msgid "Still"
+msgstr "Inmóviles"
+
+msgid "Wind aloft"
+msgstr "Viento en altura"
+
+msgid "Wind aloft speed (m/s)"
+msgstr "Velocidad del viento en altura (m/s)"
+
+msgid "Wind aloft direction FROM (°)"
+msgstr "Dirección de origen del viento en altura (°)"
+
+msgid "Still freezes cloud movement. Flight wind and storm flashes have separate controls."
+msgstr "Inmóviles detiene las nubes. El viento de vuelo y los relámpagos tienen controles separados."
+
+msgid "Flashes"
+msgstr "Destellos"
+
+msgid "Reduced"
+msgstr "Reducidos"
+
+msgid "Thunder volume"
+msgstr "Volumen de los truenos"
+
+msgid "View at night"
+msgstr "Ver de noche"
+
+msgid "Classic clouds"
+msgstr "Nubes actuales"
+
+msgid "Clear blue"
+msgstr "Azul despejado"
+
+msgid "High Cirrus"
+msgstr "Nubes altas"
+
+msgid "Fair-Weather Cumulus"
+msgstr "Cúmulos de buen tiempo"
+
+msgid "Broken Cloud"
+msgstr "Parcialmente nublado"
+
+msgid "Overcast"
+msgstr "Cubierto"
+
+msgid "Building Storm"
+msgstr "Nubes de tormenta"
+
+msgid "Distant Storm"
+msgstr "Tormenta lejana"
+
+msgid "Electrical Storm"
+msgstr "Tormenta eléctrica"
+
+msgid "The familiar blue sky with a modest layer of soft cumulus clouds."
+msgstr "El cielo azul habitual con una capa ligera de cúmulos suaves."
+
+msgid "A clean blue sky without clouds or cloud shadows."
+msgstr "Un cielo azul limpio, sin nubes ni sombras de nubes."
+
+msgid "Thin, high ice-cloud streaks against a luminous blue sky."
+msgstr "Nubes altas y finas sobre un cielo azul luminoso."
+
+msgid "Bright, separated cauliflower-shaped clouds with plenty of blue between them."
+msgstr "Cúmulos brillantes y separados, con amplios espacios de cielo azul."
+
+msgid "Several broad, broken cloud decks with shifting patches of sunlight."
+msgstr "Capas amplias de nubes entrecortadas y claros de luz solar."
+
+msgid "A layered gray ceiling with broad, diffuse light and little direct sun."
+msgstr "Un techo gris de nubes con luz difusa y poco sol directo."
+
+msgid "A dense gray sky with dark, low cloud layers."
+msgstr "Un cielo gris denso con capas bajas y oscuras."
+
+msgid "Broad, dark cloud layers against a lighter sky."
+msgstr "Capas amplias y oscuras de nubes sobre un cielo más claro."
+
+msgid "Dark layered clouds with branching lightning, cloud flashes and delayed thunder."
+msgstr "Capas de nubes oscuras con rayos ramificados, relámpagos y truenos retardados."

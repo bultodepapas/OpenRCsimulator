@@ -1,0 +1,3133 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "openrc-rotorcraft-v2",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "format",
+    "vehicle",
+    "id",
+    "name",
+    "capabilities",
+    "qualification",
+    "main_rotor",
+    "tail_rotor",
+    "airframe",
+    "body",
+    "gravity_m_s2",
+    "shaft_elements",
+    "drive",
+    "electronics",
+    "integration",
+    "skids"
+  ],
+  "properties": {
+    "format": {
+      "const": "openrc-aircraft v2"
+    },
+    "vehicle": {
+      "const": "rotorcraft"
+    },
+    "id": {
+      "const": "xcell-60-research"
+    },
+    "name": {
+      "const": "RC Helicopter Research Trainer"
+    },
+    "capabilities": {
+      "const": [
+        "main_rotor",
+        "tail_rotor",
+        "governor",
+        "trainer",
+        "skids"
+      ]
+    },
+    "qualification": {
+      "const": "Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation."
+    },
+    "main_rotor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rho_kg_m3",
+        "rotor_radius_m",
+        "blade_chord_m",
+        "rotor_blade_count",
+        "blade_lift_curve_slope_per_rad",
+        "blade_section_cd0",
+        "thrust_coefficient_max",
+        "blade_flapping_inertia_kg_m2",
+        "gamma_flybar",
+        "flapback_k_mu",
+        "omega_nominal_rad_s",
+        "cyclic_longitudinal_gain_nominal_rad_per_rad",
+        "cyclic_lateral_gain_nominal_rad_per_rad",
+        "hub_spring_stiffness_nm_per_rad",
+        "hub_position_body_frd_m",
+        "rotation_sense"
+      ],
+      "properties": {
+        "rho_kg_m3": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "kg/m3"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "rotor_radius_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "blade_chord_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "rotor_blade_count": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "blade_lift_curve_slope_per_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1/rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "blade_section_cd0": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "thrust_coefficient_max": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "blade_flapping_inertia_kg_m2": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "kg*m2"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "gamma_flybar": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "flapback_k_mu": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "omega_nominal_rad_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "rad/s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "cyclic_longitudinal_gain_nominal_rad_per_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "cyclic_lateral_gain_nominal_rad_per_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "hub_spring_stiffness_nm_per_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "N*m/rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "hub_position_body_frd_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "rotation_sense": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "tail_rotor": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rho_kg_m3",
+        "main_rotor_radius_m",
+        "tail_rotor_radius_m",
+        "blade_chord_m",
+        "rotor_blade_count",
+        "blade_lift_curve_slope_per_rad",
+        "blade_section_cd0",
+        "thrust_coefficient_max",
+        "tail_to_main_speed_ratio",
+        "hub_distance_aft_m",
+        "hub_height_above_cg_m",
+        "vertical_fin_area_m2",
+        "trim_collective_rad",
+        "wake_efficiency",
+        "rotation_sense"
+      ],
+      "properties": {
+        "rho_kg_m3": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "kg/m3"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "main_rotor_radius_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "tail_rotor_radius_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "blade_chord_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "rotor_blade_count": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "blade_lift_curve_slope_per_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1/rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "blade_section_cd0": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "thrust_coefficient_max": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "tail_to_main_speed_ratio": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "hub_distance_aft_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "hub_height_above_cg_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "vertical_fin_area_m2": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "m2"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "trim_collective_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "wake_efficiency": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "rotation_sense": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "airframe": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "rho_kg_m3",
+        "fuselage_drag_area_body_m2",
+        "fuselage_cp_body_frd_m",
+        "vertical_fin_area_m2",
+        "vertical_fin_lift_curve_slope_per_rad",
+        "vertical_fin_cp_body_frd_m",
+        "horizontal_tail_area_m2",
+        "horizontal_tail_lift_curve_slope_per_rad",
+        "horizontal_tail_cp_body_frd_m"
+      ],
+      "properties": {
+        "rho_kg_m3": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "kg/m3"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "fuselage_drag_area_body_m2": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "unit": {
+              "const": "m2"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "fuselage_cp_body_frd_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "vertical_fin_area_m2": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "m2"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "vertical_fin_lift_curve_slope_per_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1/rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "vertical_fin_cp_body_frd_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "horizontal_tail_area_m2": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "m2"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "horizontal_tail_lift_curve_slope_per_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1/rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "horizontal_tail_cp_body_frd_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 3,
+              "maxItems": 3
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "body": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "mass_kg",
+        "inertia_kg_m2"
+      ],
+      "properties": {
+        "mass_kg": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "kg"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "inertia_kg_m2": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 6,
+              "maxItems": 6
+            },
+            "unit": {
+              "const": "kg*m2"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "gravity_m_s2": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "value",
+        "unit",
+        "kind",
+        "source"
+      ],
+      "properties": {
+        "value": {
+          "type": "number"
+        },
+        "unit": {
+          "const": "m/s2"
+        },
+        "kind": {
+          "enum": [
+            "manual",
+            "measured",
+            "borrowed",
+            "estimated",
+            "derived"
+          ]
+        },
+        "source": {
+          "type": "string",
+          "minLength": 1
+        }
+      }
+    },
+    "shaft_elements": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": [
+          "inertia_kg_m2",
+          "speed_ratio",
+          "spin_axis_body_frd"
+        ],
+        "properties": {
+          "inertia_kg_m2": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "unit",
+              "kind",
+              "source"
+            ],
+            "properties": {
+              "value": {
+                "type": "number"
+              },
+              "unit": {
+                "const": "kg*m2"
+              },
+              "kind": {
+                "enum": [
+                  "manual",
+                  "measured",
+                  "borrowed",
+                  "estimated",
+                  "derived"
+                ]
+              },
+              "source": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "speed_ratio": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "unit",
+              "kind",
+              "source"
+            ],
+            "properties": {
+              "value": {
+                "type": "number"
+              },
+              "unit": {
+                "const": "1"
+              },
+              "kind": {
+                "enum": [
+                  "manual",
+                  "measured",
+                  "borrowed",
+                  "estimated",
+                  "derived"
+                ]
+              },
+              "source": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          },
+          "spin_axis_body_frd": {
+            "type": "object",
+            "additionalProperties": false,
+            "required": [
+              "value",
+              "unit",
+              "kind",
+              "source"
+            ],
+            "properties": {
+              "value": {
+                "type": "array",
+                "items": {
+                  "type": "number"
+                },
+                "minItems": 3,
+                "maxItems": 3
+              },
+              "unit": {
+                "const": "1"
+              },
+              "kind": {
+                "enum": [
+                  "manual",
+                  "measured",
+                  "borrowed",
+                  "estimated",
+                  "derived"
+                ]
+              },
+              "source": {
+                "type": "string",
+                "minLength": 1
+              }
+            }
+          }
+        }
+      },
+      "minItems": 1
+    },
+    "drive": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "engine_torque_max_nm",
+        "engine_power_max_w",
+        "engine_speed_ratio_to_main",
+        "gear_efficiency",
+        "governor_target_main_rad_s",
+        "governor_gain_nm_per_rad_s",
+        "shaft_loss_torque_nm",
+        "shaft_viscous_loss_nm_per_rad_s"
+      ],
+      "properties": {
+        "engine_torque_max_nm": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "N*m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "engine_power_max_w": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "W"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "engine_speed_ratio_to_main": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "gear_efficiency": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "governor_target_main_rad_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "rad/s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "governor_gain_nm_per_rad_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "N*m*s/rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "shaft_loss_torque_nm": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "N*m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "shaft_viscous_loss_nm_per_rad_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "N*m*s/rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "electronics": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "tail_collective_trim_rad",
+        "tail_collective_min_rad",
+        "tail_collective_max_rad",
+        "yaw_control_sign",
+        "yaw_deadzone",
+        "yaw_max_rate_rad_s",
+        "yaw_heading_gain_per_s",
+        "yaw_rate_kp_rad_per_rad_s",
+        "yaw_rate_ki_rad_per_rad",
+        "yaw_integrator_limit_rad",
+        "trainer_max_tilt_rad",
+        "trainer_roll_attitude_gain_per_s",
+        "trainer_pitch_attitude_gain_per_s",
+        "trainer_roll_rate_limit_rad_s",
+        "trainer_pitch_rate_limit_rad_s",
+        "trainer_roll_cyclic_gain_rad_per_rad_s",
+        "trainer_pitch_cyclic_gain_rad_per_rad_s",
+        "linkage",
+        "curves_by_mode"
+      ],
+      "properties": {
+        "tail_collective_trim_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "tail_collective_min_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "tail_collective_max_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "yaw_control_sign": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "yaw_deadzone": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "yaw_max_rate_rad_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "rad/s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "yaw_heading_gain_per_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1/s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "yaw_rate_kp_rad_per_rad_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "yaw_rate_ki_rad_per_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "yaw_integrator_limit_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "trainer_max_tilt_rad": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "rad"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "trainer_roll_attitude_gain_per_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1/s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "trainer_pitch_attitude_gain_per_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1/s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "trainer_roll_rate_limit_rad_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "rad/s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "trainer_pitch_rate_limit_rad_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "rad/s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "trainer_roll_cyclic_gain_rad_per_rad_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "trainer_pitch_cyclic_gain_rad_per_rad_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "linkage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "collective_rad_per_unit",
+            "longitudinal_rad_per_unit",
+            "lateral_rad_per_unit",
+            "collective_min_rad",
+            "collective_max_rad",
+            "cyclic_max_rad"
+          ],
+          "properties": {
+            "collective_rad_per_unit": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "rad"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "longitudinal_rad_per_unit": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "rad"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "lateral_rad_per_unit": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "rad"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "collective_min_rad": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "rad"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "collective_max_rad": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "rad"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            },
+            "cyclic_max_rad": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "value",
+                "unit",
+                "kind",
+                "source"
+              ],
+              "properties": {
+                "value": {
+                  "type": "number"
+                },
+                "unit": {
+                  "const": "rad"
+                },
+                "kind": {
+                  "enum": [
+                    "manual",
+                    "measured",
+                    "borrowed",
+                    "estimated",
+                    "derived"
+                  ]
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1
+                }
+              }
+            }
+          }
+        },
+        "curves_by_mode": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "normal",
+            "idle_up"
+          ],
+          "properties": {
+            "normal": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "pitch",
+                "throttle"
+              ],
+              "properties": {
+                "pitch": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "kind",
+                    "source"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 5,
+                      "maxItems": 5
+                    },
+                    "unit": {
+                      "const": "1"
+                    },
+                    "kind": {
+                      "enum": [
+                        "manual",
+                        "measured",
+                        "borrowed",
+                        "estimated",
+                        "derived"
+                      ]
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "throttle": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "kind",
+                    "source"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 5,
+                      "maxItems": 5
+                    },
+                    "unit": {
+                      "const": "1"
+                    },
+                    "kind": {
+                      "enum": [
+                        "manual",
+                        "measured",
+                        "borrowed",
+                        "estimated",
+                        "derived"
+                      ]
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            },
+            "idle_up": {
+              "type": "object",
+              "additionalProperties": false,
+              "required": [
+                "pitch",
+                "throttle"
+              ],
+              "properties": {
+                "pitch": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "kind",
+                    "source"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 5,
+                      "maxItems": 5
+                    },
+                    "unit": {
+                      "const": "1"
+                    },
+                    "kind": {
+                      "enum": [
+                        "manual",
+                        "measured",
+                        "borrowed",
+                        "estimated",
+                        "derived"
+                      ]
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                },
+                "throttle": {
+                  "type": "object",
+                  "additionalProperties": false,
+                  "required": [
+                    "value",
+                    "unit",
+                    "kind",
+                    "source"
+                  ],
+                  "properties": {
+                    "value": {
+                      "type": "array",
+                      "items": {
+                        "type": "number"
+                      },
+                      "minItems": 5,
+                      "maxItems": 5
+                    },
+                    "unit": {
+                      "const": "1"
+                    },
+                    "kind": {
+                      "enum": [
+                        "manual",
+                        "measured",
+                        "borrowed",
+                        "estimated",
+                        "derived"
+                      ]
+                    },
+                    "source": {
+                      "type": "string",
+                      "minLength": 1
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "integration": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "flow_floor_m_s",
+        "fin_tail_wake_fraction",
+        "height_over_radius",
+        "inflow_loss",
+        "inflow_instability"
+      ],
+      "properties": {
+        "flow_floor_m_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "m/s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "fin_tail_wake_fraction": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "height_over_radius": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "inflow_loss": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "inflow_instability": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    },
+    "skids": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "spring_n_m",
+        "damping_n_s_m",
+        "friction",
+        "slip_m_s",
+        "points_body_frd_m"
+      ],
+      "properties": {
+        "spring_n_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "N/m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "damping_n_s_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "N*s/m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "friction": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "1"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "slip_m_s": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "number"
+            },
+            "unit": {
+              "const": "m/s"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        },
+        "points_body_frd_m": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "value",
+            "unit",
+            "kind",
+            "source"
+          ],
+          "properties": {
+            "value": {
+              "type": "array",
+              "items": {
+                "type": "number"
+              },
+              "minItems": 12,
+              "maxItems": 12
+            },
+            "unit": {
+              "const": "m"
+            },
+            "kind": {
+              "enum": [
+                "manual",
+                "measured",
+                "borrowed",
+                "estimated",
+                "derived"
+              ]
+            },
+            "source": {
+              "type": "string",
+              "minLength": 1
+            }
+          }
+        }
+      }
+    }
+  }
+}

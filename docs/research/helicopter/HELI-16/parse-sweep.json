@@ -1,0 +1,12 @@
+{
+  "ok": false,
+  "parse_only": true,
+  "checks": [
+    {
+      "name": "all-application-scripts-parse",
+      "ok": false,
+      "count": 725,
+      "failed_count": 1
+    }
+  ]
+}

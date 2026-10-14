@@ -156,8 +156,14 @@ func _run() -> void:
 	await _wait(0.3)
 	app.open_pause()
 	await ui.settle()
-	for i in 6: # Continue, Restart, Workshop, Time of day, Help, Flight overlays, End
+	var traversed_pause_controls: Array[String] = []
+	for i in 10:
+		if ui.focus_name() == "End":
+			break
 		await ui.tap(KEY_DOWN)
+		traversed_pause_controls.append(ui.focus_name())
+	_check("failure settings are reachable by keyboard",
+		traversed_pause_controls.has(app.pause_menu.failure_settings_button.name), str(traversed_pause_controls))
 	_check("End flight reachable by keyboard", ui.focus_name() == "End", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	var note: String = recorder.note

@@ -1,6 +1,6 @@
 # Drone racing plan: FPV racing quadcopters and a race mode
 
-**Date:** 2026-10-13. **Status:** in review; the shared foundation is active. The standalone HELI-04 inflow code is not session-ready while its source-law gate is open. DR-00 registration and scope are complete; multirotor/racing implementation remains proposed. Reference-aircraft, controller and racing product recommendations in D1–D14 (§12) remain provisional. DR-01 (research record) is done.
+**Date:** 2026-10-13. **Status:** reviewed against the integrated experimental helicopter. HELI supplies tested signed mean inflow, dimensional transient wake, same-stage body/shaft mechanics, terrain-aware ground effect, a strict quantity reader, deterministic session/replay and per-rotor presentation. These are reusable foundations, not a quadcopter implementation. DR-00/01 are complete; quad powertrain, controller, data, FPV and racing remain proposed. Reference-aircraft, controller and racing product recommendations in D1–D14 (§12) remain provisional.
 **Prefix:** DR-00…DR-41, registered in the [track registry](../README.md#tracks-plans-and-step-ids). `DR-` was free on 2026-10-13 (checked against `docs/`, `app/`, `research/`).
 **Owner:** drone-racing track (proposed), under the main line's acceptance.
 **Owns (proposed):**
@@ -31,6 +31,8 @@
 | Aircraft standardization | [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md) |
 
 **Evidence:** [DR-01 research record](../research/drone-racing/DR-01/README.md) holds the sources, parameter tables, derived numbers and the seam map with line references.
+
+**Shared-foundation review (2026-10-13):** consume HELI's public inflow interface and independent reference vectors without copying or retuning its VRS law. The actual helicopter uses a single geared main/tail degree of freedom; a quad needs four independent signed shaft speeds, a shared battery-bus solve and consistent summed angular momentum. Its controller must remain independently sampled and identified, rather than inheriting the helicopter trainer. The rotorcraft v2 reader and exact-byte checkpoints demonstrate fail-closed authoring/lifecycle patterns; quad inventory and schema need their own validation. Cached rotor-local coverage profiles and signed phase/normal presentation can be reused with per-motor telemetry. Spring/damper skids and instantaneous terrain disc clearance are preliminary examples; quad legs, stopped-prop policy and swept gate/scenery contact still need DR-19 qualification. Automatic C/M event localization and H15 performance remain open for both vehicles. [Current helicopter behavior](../HELICOPTER.md), [integration evidence](../research/helicopter/HELI-16/README.md).
 
 **Goal.** Fly one 5-inch FPV racing quadcopter whose physics comes from published, identified data, through a flight controller that behaves like the one real pilots fly, and race it through gates on the existing field with real timing rules. Hover, punch-outs, prop-wash on descents, ground effect, battery sag, motor saturation and the loss of authority at full throttle must emerge from the equations. The rates and expo a pilot flies must import unchanged. Present it so that:
 
@@ -609,7 +611,7 @@ Steps DR-29, DR-30 and DR-32 can start in parallel with Phase 1 because their fi
 
 Integration steps (DR-14…22, DR-24, DR-30) are serialized with the main line and their owners.
 
-**Order:** HELI-04 owns the first shared inflow implementation, which remains under source-law and reference-vector review. DR-00 registration/scope and DR-01 are complete; after DR-02/03 research and the HELI-04 gate, DR-04…09 may consume the stable contract (with DR-29/32 presentation work in parallel). Reference-aircraft, controller and racing product choices remain provisional. Then DR-10…13 → 14/15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 30 → 31 → 35 → 36 → 27 → 28 → 33 → 34 → 37 → 38 → 39 → 40.
+**Order:** HELI owns the tested shared inflow implementation and reference vectors. After DR-02/03 research, DR-04…09 may consume that interface with quad-specific consumer, timestep/event and cost checks; the helicopter's playable route does not close these gates. DR-29/32 presentation can proceed separately with supplied/downloaded assets. Reference-aircraft, controller and racing product choices remain provisional. Then DR-10…13 → 14/15 → 16 → 17 → 18 → 19 → 20 → 21 → 22 → 23 → 24 → 25 → 26 → 30 → 31 → 35 → 36 → 27 → 28 → 33 → 34 → 37 → 38 → 39 → 40.
 
 ## 11. Acceptance
 

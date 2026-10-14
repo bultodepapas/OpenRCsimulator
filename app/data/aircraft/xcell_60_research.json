@@ -15,85 +15,85 @@
     "rho_kg_m3": {
       "value": 1.225,
       "unit": "kg/m3",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "rotor_radius_m": {
       "value": 0.775,
       "unit": "m",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "blade_chord_m": {
       "value": 0.058,
       "unit": "m",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "rotor_blade_count": {
       "value": 2,
       "unit": "1",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "blade_lift_curve_slope_per_rad": {
       "value": 5.5,
       "unit": "1/rad",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "blade_section_cd0": {
       "value": 0.024,
       "unit": "1",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "thrust_coefficient_max": {
       "value": 0.0055,
       "unit": "1",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "blade_flapping_inertia_kg_m2": {
       "value": 0.038,
       "unit": "kg*m2",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "gamma_flybar": {
       "value": 0.8,
       "unit": "1",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "flapback_k_mu": {
       "value": 0.2,
       "unit": "1",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "omega_nominal_rad_s": {
       "value": 167,
       "unit": "rad/s",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "cyclic_longitudinal_gain_nominal_rad_per_rad": {
       "value": 4.2,
       "unit": "1",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "cyclic_lateral_gain_nominal_rad_per_rad": {
       "value": 4.2,
       "unit": "1",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "hub_spring_stiffness_nm_per_rad": {
       "value": 54,
       "unit": "N*m/rad",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "hub_position_body_frd_m": {
@@ -103,7 +103,7 @@
         -0.235
       ],
       "unit": "m",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "rotation_sense": {
@@ -117,79 +117,79 @@
     "rho_kg_m3": {
       "value": 1.225,
       "unit": "kg/m3",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "main_rotor_radius_m": {
       "value": 0.775,
       "unit": "m",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "tail_rotor_radius_m": {
       "value": 0.13,
       "unit": "m",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "blade_chord_m": {
       "value": 0.029,
       "unit": "m",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "rotor_blade_count": {
       "value": 2,
       "unit": "1",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "blade_lift_curve_slope_per_rad": {
       "value": 5,
       "unit": "1/rad",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "blade_section_cd0": {
       "value": 0.024,
       "unit": "1",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "thrust_coefficient_max": {
       "value": 0.05,
       "unit": "1",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "tail_to_main_speed_ratio": {
       "value": 4.66,
       "unit": "1",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "hub_distance_aft_m": {
       "value": 0.91,
       "unit": "m",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "hub_height_above_cg_m": {
       "value": 0.08,
       "unit": "m",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "vertical_fin_area_m2": {
       "value": 0.012,
       "unit": "m2",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "trim_collective_rad": {
       "value": 0.1,
       "unit": "rad",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "wake_efficiency": {
@@ -209,7 +209,7 @@
     "rho_kg_m3": {
       "value": 1.225,
       "unit": "kg/m3",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "fuselage_drag_area_body_m2": {
@@ -219,7 +219,7 @@
         0.15
       ],
       "unit": "m2",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "fuselage_cp_body_frd_m": {
@@ -235,13 +235,13 @@
     "vertical_fin_area_m2": {
       "value": 0.012,
       "unit": "m2",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "vertical_fin_lift_curve_slope_per_rad": {
       "value": 2,
       "unit": "1/rad",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "vertical_fin_cp_body_frd_m": {
@@ -251,19 +251,19 @@
         -0.08
       ],
       "unit": "m",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "horizontal_tail_area_m2": {
       "value": 0.01,
       "unit": "m2",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "horizontal_tail_lift_curve_slope_per_rad": {
       "value": 3,
       "unit": "1/rad",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "horizontal_tail_cp_body_frd_m": {
@@ -281,7 +281,7 @@
     "mass_kg": {
       "value": 8.2,
       "unit": "kg",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     },
     "inertia_kg_m2": {
@@ -294,14 +294,14 @@
         0
       ],
       "unit": "kg*m2",
-      "kind": "reference",
+      "kind": "borrowed",
       "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
     }
   },
   "gravity_m_s2": {
     "value": 9.80665,
     "unit": "m/s2",
-    "kind": "reference",
+    "kind": "manual",
     "source": "standard gravity"
   },
   "shaft_elements": [
@@ -339,7 +339,7 @@
       "speed_ratio": {
         "value": 4.66,
         "unit": "1",
-        "kind": "reference",
+        "kind": "borrowed",
         "source": "https://users.encs.concordia.ca/~bwgordon/mit_heli_report.pdf"
       },
       "spin_axis_body_frd": {
@@ -356,7 +356,7 @@
   ],
   "drive": {
     "engine_torque_max_nm": {
-      "value": 0.9,
+      "value": 1.2,
       "unit": "N*m",
       "kind": "estimated",
       "source": "docs/research/helicopter/HELI-16/README.md: explicit research trainer estimates"

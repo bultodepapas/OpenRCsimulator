@@ -8,11 +8,14 @@ const Frames := preload("res://render/frames.gd")
 const FieldLights := preload("res://render/world/field_lights.gd")
 const Exposure := preload("res://render/world/exposure.gd")
 const WINDOW_SHADER: Shader = preload("res://render/landscape_upgrade/window_glow.gdshader")
+const HEAD_PATH := "res://assets/landscape/night-lighting/lamp-head.glb"
+const LAMP_SHADER := preload("res://render/landscape_upgrade/field_lamp.gdshader")
+const HEAD_SCALE := 2.4
 const RUNWAY_MARKER_SHADER: Shader = preload("res://render/landscape_upgrade/runway_marker.gdshader")
 
 const LIGHTS_ON_ELEVATION_DEG := 3.0
 const FULL_NIGHT_ELEVATION_DEG := -4.0
-const RUNWAY_SPOT_DISPLAY_CAP := 24.0 # per runway flood, scene-linear after current view exposure; art-directed, not a lux claim.
+const RUNWAY_SPOT_DISPLAY_CAP := 800.0 # per runway flood, scene-linear after current view exposure; art-directed, not a lux claim.
 const AUXILIARY_SPOT_DISPLAY_CAP := 0.6 # windsock flood; lower local display cap, not a lux claim.
 const VERANDA_OMNI_DISPLAY_CAP := 0.12 # per light, scene-linear after current view exposure; art-directed, not a lux claim.
 const RUNWAY_MARKER_DISPLAY_CAP := 1.0 # bounded screen contribution after exposure; art-directed, not a photometric claim.
@@ -42,6 +45,9 @@ const WINDOW_SPECS: Array[Dictionary] = [
 	{"center": Vector3(4.52, 1.55, 0.0), "size": Vector2(1.2, 0.9), "yaw": PI / 2.0},
 ]
 
+var _profile := "club"
+var _last_snapshot := {}
+var _head_directions := {}
 var _environment: Environment
 var _field_lights_node: Node3D
 var _spot_bindings: Array[Dictionary] = []
@@ -94,7 +100,8 @@ func bind_environment(environment: Environment, field_lights_node: Node3D = null
 ## Applies a snapshot with sun_elevation_deg, or with sun_dir/disc_dir and optional sun_disc.
 ## Interpolates continuously from 3° sun elevation to −4°; geometry stays visible throughout daylight.
 func apply_lighting(snapshot: Dictionary) -> void:
-	var factor := _night_factor(snapshot)
+	_last_snapshot = snapshot.duplicate()
+	var factor := _night_factor(snapshot) if _profile != "off" else 0.0
 	var exposure := _current_exposure()
 	if is_equal_approx(factor, _last_night_factor) and is_equal_approx(exposure, _last_exposure):
 		return
@@ -126,6 +133,27 @@ func apply_lighting(snapshot: Dictionary) -> void:
 	for material: ShaderMaterial in _window_materials:
 		if is_instance_valid(material):
 			material.set_shader_parameter("night_glow", factor)
+
+
+## FW-71: profile changes only presentation; fixtures and physical proxies stay installed.
+func set_profile(profile: String) -> bool:
+	if not profile in ["club", "airfield", "off"]:
+		return false
+	_profile = profile
+	set_meta("field_lighting", profile)
+	for binding: Dictionary in _spot_bindings:
+		var spot: SpotLight3D = binding.node
+		if is_instance_valid(spot):
+			spot.light_color = FieldLights.kelvin_color(5000.0) if profile == "airfield" else binding.color
+	for binding: Dictionary in _sprite_bindings:
+		if not str(binding.marker_row).is_empty():
+			var material: ShaderMaterial = binding.material
+			material.set_shader_parameter("edge_color", Color("#fff5e6") if profile == "airfield" else Color("#f2d3a2"))
+			material.set_shader_parameter("halo_min_px", 5.5 if profile == "airfield" else RUNWAY_MARKER_HALO_MIN_PX)
+	_last_night_factor = -1.0
+	_last_exposure = -1.0
+	apply_lighting(_last_snapshot)
+	return true
 
 
 func _process(_delta: float) -> void:
@@ -168,7 +196,8 @@ func _bind_field_lights(field_lights_node: Node3D) -> void:
 			if not spot.has_meta("lu03_base_energy"):
 				spot.set_meta("lu03_base_energy", spot.light_energy)
 			_spot_bindings.append({"node": spot, "energy": float(spot.get_meta("lu03_base_energy")),
-				"display_cap": _spot_display_cap(spot)})
+				"display_cap": _spot_display_cap(spot), "color": spot.get_meta("fw_base_color", spot.light_color)})
+			spot.set_meta("fw_base_color", _spot_bindings.back().color)
 		elif candidate is GeometryInstance3D:
 			var mesh: Mesh = null
 			if candidate is MeshInstance3D:
@@ -183,6 +212,13 @@ func _bind_field_lights(field_lights_node: Node3D) -> void:
 				var material := mesh.surface_get_material(surface) as ShaderMaterial
 				if material == null or material.get_shader_parameter("radiance") == null:
 					continue
+				if _head_directions.has(str(candidate.name)) and material.shader != LAMP_SHADER:
+					candidate.position = _head_directions[str(candidate.name)].position
+					material = material.duplicate() as ShaderMaterial
+					material.shader = LAMP_SHADER
+					material.set_shader_parameter("source_direction", _head_directions[str(candidate.name)].forward)
+					material.set_shader_parameter("size_m", 0.26)
+					mesh.surface_set_material(surface, material)
 				var marker_row := _runway_marker_row(candidate.name)
 				if not marker_row.is_empty():
 					material = _runway_marker_material(material, marker_row)
@@ -196,6 +232,7 @@ func _bind_field_lights(field_lights_node: Node3D) -> void:
 	_last_night_factor = -1.0
 	_last_exposure = -1.0
 	set_meta("bound_sprite_materials", _sprite_bindings.size())
+	set_profile(_profile)
 
 
 static func _runway_marker_row(node_name: String) -> String:
@@ -225,7 +262,9 @@ static func _runway_marker_material(source: ShaderMaterial, row_name: String) ->
 
 
 static func _spot_display_cap(spot: SpotLight3D) -> float:
-	return RUNWAY_SPOT_DISPLAY_CAP if spot.name.begins_with("flood_") else AUXILIARY_SPOT_DISPLAY_CAP
+	if not str(spot.get_meta("installation_id", "")).is_empty() and str(spot.get_meta("role", "")) in ["runway_flood", "club_flood"]:
+		return RUNWAY_SPOT_DISPLAY_CAP
+	return 24.0 if spot.name.begins_with("flood_") else AUXILIARY_SPOT_DISPLAY_CAP
 
 
 func _build_fixture_hardware(lights: Dictionary) -> void:
@@ -235,13 +274,19 @@ func _build_fixture_hardware(lights: Dictionary) -> void:
 		return
 	var surface := SurfaceTool.new()
 	surface.begin(Mesh.PRIMITIVE_TRIANGLES)
+	# The existing shaft supports the downloaded, independently aimed heads on one narrow crossarm.
+	for installation: Dictionary in lights.get("installations", []):
+		if str(installation.get("type", "")) == "mast":
+			var mount := _render(float(installation.north), float(installation.east), float(installation.height) - 0.38)
+			_add_box(surface, Transform3D(Basis.IDENTITY, mount), Vector3(2.3, 0.10, 0.12), METAL_DARK)
 	var floods := 0
 	var posts := 0
 	for fx: Variant in fixtures:
 		if not (fx is Dictionary):
 			continue
 		if str(fx.get("type", "")) == "flood":
-			_add_flood_hardware(surface, fx)
+			if not _add_imported_flood(fx):
+				_add_flood_hardware(surface, fx)
 			floods += 1
 		elif str(fx.get("type", "")) == "stake_row":
 			posts += _add_marker_row(surface, fx)
@@ -262,6 +307,29 @@ func _build_fixture_hardware(lights: Dictionary) -> void:
 	instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	add_child(instance)
 	set_meta("fixture_hardware", {"flood_housings": floods, "marker_posts": posts})
+
+
+## Reuse the downloaded module, with optical axis -Z; no procedural replacement housing.
+func _add_imported_flood(fx: Dictionary) -> bool:
+	if str(fx.get("installation_id", "")).is_empty():
+		return false # historical v1 fixtures retain their existing hardware
+	var scene := load(HEAD_PATH) as PackedScene
+	if scene == null:
+		push_error("Night lighting head resource missing: " + HEAD_PATH)
+		return false
+	var pos := _render(float(fx.north), float(fx.east), float(fx.height))
+	var target := _render(float(fx.aim_north), float(fx.aim_east), float(fx.get("aim_height", 0.0)))
+	var forward := (target - pos).normalized()
+	var basis := Basis.looking_at(forward, Vector3.UP if absf(forward.y) < 0.99 else Vector3.FORWARD)
+	var head := scene.instantiate() as Node3D
+	head.name = str(fx.id) + "_housing"
+	var head_scale := HEAD_SCALE if str(fx.get("role", "")) == "runway_flood" else 1.0
+	head.transform = Transform3D(basis.scaled(Vector3.ONE * head_scale), pos)
+	add_child(head)
+	_head_directions[str(fx.id) + "_lamp"] = {forward = forward, position = pos + forward * (0.0401 * head_scale)}
+	for child: Node in head.find_children("*", "GeometryInstance3D", true, false):
+		(child as GeometryInstance3D).cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
+	return true
 
 
 func _add_flood_hardware(surface: SurfaceTool, fx: Dictionary) -> void:

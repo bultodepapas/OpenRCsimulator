@@ -12,6 +12,7 @@ const RcInput = preload("res://input/rc_input.gd")
 const RcCalibration = preload("res://input/rc_calibration.gd")
 const WeatherField = preload("res://physics/wind_field.gd")
 const GroundSurfaces = preload("res://physics/ground_surfaces.gd")
+const Terrain = preload("res://physics/ground_terrain.gd")
 signal resetting
 var sim: Node = Sim.new()
 var aircraft: Dictionary = {ok=false}
@@ -96,11 +97,20 @@ func set_start_altitude(altitude: float) -> void:
  if is_finite(altitude) and altitude>.3: _start[2]=-altitude
 
 func reset() -> bool:
+ cancel_calibration()
  resetting.emit()
  _ready_to_fly=false
  _stage_failure=""
  if not aircraft.ok: return false
- var solved: Dictionary=Hover.solve_hover(aircraft.context,0.0,_start,wind_at(0.0),{})
+ var ground: float=Terrain.sample_validated(_start[0],_start[1],ground_surfaces)[0]
+ var solved: Dictionary={ok=false}
+ # Match trim to the same terrain sample used by each live RK stage, including hub offset.
+ for iteration: int in 5:
+  solved=Hover.solve_hover(aircraft.context,0.0,_start,wind_at(0.0),{"ground_height_up_m":ground})
+  if not solved.ok: break
+  var actual_ground: float=_ground_under_hub(solved.state)
+  if absf(actual_ground-ground)<1e-10: break
+  ground=actual_ground
  if not solved.ok:
   start_error="Helicopter hover trim refused: "+str(solved.get("fault",solved.get("message","no equilibrium")))
   pause_reason=start_error
@@ -109,6 +119,7 @@ func reset() -> bool:
  _hover=solved
  _trim=solved.trim
  commands={roll=0.0,pitch=0.0,yaw=0.0,throttle=(solved.sticks[3]+1.0)*.5}
+ if radio.connected and radio.is_rate_throttle(): radio.set_rate_throttle_for_start(commands.throttle)
  raw=Commands.neutral_raw()
  flight_mode="normal"
  trainer_enabled=true
@@ -130,11 +141,22 @@ func _stage(body: PackedFloat64Array,continuous: PackedFloat64Array,t: float) ->
  var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces)
  if not contact.ok: return {}
  var sticks: PackedFloat64Array=PackedFloat64Array([-sim.inputs[1],sim.inputs[0],sim.inputs[2],2.0*sim.inputs[3]-1.0])
- var result: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold,wind_at(t),false,contact.loads,_trim)
+ var result: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold,wind_at(t),false,contact.loads,_trim,_height_over_radius(state))
  if not result.ok:
   _stage_failure=str(result.get("message","flight equation refused state"))
   return {}
  return {loads=result.loads,body_derivative=result.body_derivative,derivative=result.derivative,rotor_momentum=result.rotor_momentum}
+
+func _hub_offset(state: PackedFloat64Array) -> PackedFloat64Array:
+ var main: Dictionary=aircraft.context.main_model
+ return M.q_rotate(M.q_normalized(state.slice(6,10)),M.v3(main.hub_x_m,main.hub_y_m,main.hub_z_m))
+
+func _ground_under_hub(state: PackedFloat64Array) -> float:
+ var offset: PackedFloat64Array=_hub_offset(state)
+ return Terrain.sample_validated(state[0]+offset[0],state[1]+offset[1],ground_surfaces)[0]
+
+func _height_over_radius(state: PackedFloat64Array) -> float:
+ return (-state[2]-_hub_offset(state)[2]-_ground_under_hub(state))/aircraft.context.main_model.rotor_radius_m
 
 func _ready() -> void:
  Input.joy_connection_changed.connect(_on_joy_connection_changed)
@@ -179,8 +201,9 @@ func _on_joy_connection_changed(id: int,connected: bool) -> void:
  if connected and not radio.connected:
   var info: Dictionary=device_info.call(id)
   radio.connect_device(id,info,RcCalibration.load_profile(profiles_path,RcInput.key_for(id,info)))
+  if radio.is_rate_throttle(): radio.set_rate_throttle_for_start(commands.throttle)
   sim.set_paused(true)
-  pause_reason="Radio connected: move collective fully low to arm, then P to resume."
+  pause_reason="Gamepad connected: P resumes the hover collective." if radio.is_rate_throttle() else "Radio: lower collective to arm, return it to %.0f%% for hover, then P."%(commands.throttle*100.0)
  elif not connected and radio.connected and id==radio.device_id:
   radio.disconnect_device()
   cancel_calibration()
@@ -219,17 +242,17 @@ func telemetry() -> Dictionary:
  var state: PackedFloat64Array=sim.state.duplicate()
  state.append_array(sim.continuous)
  var sticks: PackedFloat64Array=PackedFloat64Array([-sim.inputs[1],sim.inputs[0],sim.inputs[2],2.0*sim.inputs[3]-1.0])
- var out: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold,wind_at(sim.time()),false,PackedFloat64Array(),_trim)
+ var out: Dictionary=Flight.evaluate(state,aircraft.context,sticks,flight_mode,trainer_enabled,zero_drive_hold,wind_at(sim.time()),false,PackedFloat64Array(),_trim,_height_over_radius(state))
  return out
 func trace_meta() -> Dictionary:
- return {aircraft_id=aircraft.id,aircraft_sha256=FileAccess.get_sha256(aircraft_path),vehicle="rotorcraft",law="experimental-xcell-hx700-v1",continuous_layout="Omega,a1,b1,vi,heading_reference,yaw_integrator",qualification=aircraft.qualification,weather=weather_configuration()}
+ return {aircraft_id=aircraft.id,aircraft_sha256=aircraft.input_identity.sha256,vehicle="rotorcraft",law="experimental-xcell-hx700-v1",continuous_layout="Omega,a1,b1,vi,heading_reference,yaw_integrator",qualification=aircraft.qualification,weather=weather_configuration()}
 func checkpoint() -> Dictionary:
- return {format="openrc-helicopter-checkpoint v1",aircraft_sha256=FileAccess.get_sha256(aircraft_path),weather=weather_configuration(),simulation=sim.checkpoint(),commands=commands.duplicate(),trim=_trim.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold}
+ return {format="openrc-helicopter-checkpoint v1",aircraft_sha256=aircraft.input_identity.sha256,weather=weather_configuration(),simulation=sim.checkpoint(),commands=commands.duplicate(),trim=_trim.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold}
 
 func restore_checkpoint(candidate: Variant) -> Dictionary:
  if not candidate is Dictionary or candidate.size()!=9 or not candidate.has_all(["format","aircraft_sha256","weather","simulation","commands","trim","flight_mode","trainer_enabled","zero_drive_hold"]):
   return {ok=false,errors=["malformed helicopter checkpoint"]}
- if candidate.format!="openrc-helicopter-checkpoint v1" or candidate.aircraft_sha256!=FileAccess.get_sha256(aircraft_path) or candidate.weather!=weather_configuration() or candidate.trim!=_trim:
+ if candidate.format!="openrc-helicopter-checkpoint v1" or candidate.aircraft_sha256!=aircraft.input_identity.sha256 or candidate.weather!=weather_configuration() or candidate.trim!=_trim:
   return {ok=false,errors=["helicopter checkpoint configuration mismatch"]}
  if candidate.flight_mode not in ["normal","idle_up"] or not candidate.trainer_enabled is bool or not candidate.zero_drive_hold is bool or not candidate.commands is Dictionary or candidate.commands.size()!=4:
   return {ok=false,errors=["invalid helicopter control configuration"]}
@@ -245,7 +268,7 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
  var state: PackedFloat64Array=saved.state.duplicate()
  state.append_array(saved.continuous)
  var sticks: PackedFloat64Array=PackedFloat64Array([-expected[1],expected[0],expected[2],2.0*expected[3]-1.0])
- var evaluated: Dictionary=Flight.evaluate(state,aircraft.context,sticks,candidate.flight_mode,candidate.trainer_enabled,candidate.zero_drive_hold,wind_at(saved.tick*saved.dt),false,PackedFloat64Array(),_trim)
+ var evaluated: Dictionary=Flight.evaluate(state,aircraft.context,sticks,candidate.flight_mode,candidate.trainer_enabled,candidate.zero_drive_hold,wind_at(saved.tick*saved.dt),false,PackedFloat64Array(),_trim,_height_over_radius(state))
  if not evaluated.ok: return {ok=false,errors=["saved flight state is outside the rotorcraft domain"]}
  # Every check finishes before recorder/state mutation.
  resetting.emit()

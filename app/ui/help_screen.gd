@@ -18,11 +18,14 @@ const REPOSITORY := "github.com/bultodepapas/OpenRCsimulator"
 var close_button: Button
 var about_label: Label
 var field_conditions_label: Label
+var radio_help_label: Label
+var _vehicle_type := Reference.AIRPLANE
 
 
-func _init(return_focus: Control = null) -> void:
+func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLANE) -> void:
 	name = "Help"
 	layer = LAYER
+	_vehicle_type = Reference.ROTORCRAFT if vehicle_type == Reference.ROTORCRAFT else Reference.AIRPLANE
 	var screen := Screen.mount(self)
 	screen.return_focus = return_focus
 	screen.close_requested.connect(close)
@@ -38,7 +41,7 @@ func _init(return_focus: Control = null) -> void:
 	panel.add_child(scroll)
 	var page := VBoxContainer.new()
 	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	page.add_theme_constant_override("separation", 8)
+	page.add_theme_constant_override("separation", 1)
 	scroll.add_child(page)
 
 	var header := HBoxContainer.new()
@@ -58,16 +61,23 @@ func _init(return_focus: Control = null) -> void:
 	page.add_child(columns)
 	var left := _column(columns)
 	left.add_child(_text("WHILE FLYING", "SectionLabel"))
-	# SM adds two shortcuts; use the available right column so Help still fits at 720p.
-	left.add_child(_key_table(Reference.SHORTCUTS.filter(func(row: Array) -> bool: return not (KEY_H in row[0] or KEY_J in row[0]))))
 	var right := _column(columns)
 	right.add_theme_constant_override("separation", 6)
 	right.add_child(_text("FLY", "SectionLabel"))
-	right.add_child(_key_table(Reference.FLIGHT))
-	right.add_child(_key_table(Reference.SHORTCUTS.filter(func(row: Array) -> bool: return KEY_H in row[0] or KEY_J in row[0]), 4, 145))
+	if _vehicle_type == Reference.ROTORCRAFT:
+		left.add_child(_key_table(Reference.shortcut_table(_vehicle_type), 2, 340))
+		right.add_child(_key_table(Reference.flight_table(_vehicle_type)))
+	else:
+		# Keep the existing table widths and use compact row spacing so the complete reference fits at 720p.
+		left.add_child(_key_table(Reference.SHORTCUTS.filter(func(row: Array) -> bool: return not (KEY_H in row[0] or KEY_J in row[0]))))
+		right.add_child(_key_table(Reference.flight_table(_vehicle_type)))
+		right.add_child(_key_table(Reference.SHORTCUTS.filter(func(row: Array) -> bool: return KEY_H in row[0] or KEY_J in row[0]), 4, 145))
 	right.add_child(_text("Keys are shown as your keyboard layout prints them.", "SecondaryLabel", true))
 	right.add_child(_text("RADIO", "SectionLabel"))
-	right.add_child(_text("Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it.", "SecondaryLabel", true))
+	radio_help_label = _text("", "SecondaryLabel", true)
+	radio_help_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
+	_update_radio_help_text()
+	right.add_child(radio_help_label)
 	right.add_child(_text("RIGHT NOW", "SectionLabel"))
 	field_conditions_label = _text("Flights start airborne. Configure wind, gusts, turbulence and field air density. Landings are experimental; crashes restart.", "SecondaryLabel", true)
 	field_conditions_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
@@ -91,12 +101,25 @@ func _ready() -> void:
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
 		_update_field_conditions_text()
+		_update_radio_help_text()
 		about_label.text = about_text(BuildInfo.current())
 
 
 func _update_field_conditions_text() -> void:
 	if field_conditions_label != null:
-		field_conditions_label.text = tr("Flights start airborne. Configure wind, gusts, turbulence and field air density. Landings are experimental; crashes restart.")
+		if _vehicle_type == Reference.ROTORCRAFT:
+			field_conditions_label.text = tr("The research helicopter starts in a hover. Steady wind and repeating gusts are available; turbulence is not integrated yet. Flight validation is pending.")
+		else:
+			field_conditions_label.text = tr("Flights start airborne. Configure wind, gusts, turbulence and field air density. Landings are experimental; crashes restart.")
+
+
+func _update_radio_help_text() -> void:
+	if radio_help_label == null:
+		return
+	if _vehicle_type == Reference.ROTORCRAFT:
+		radio_help_label.text = tr("Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). The collective stick controls rotor thrust. For a physical radio, lower it to arm, return it to the displayed hover percentage, then press P; a gamepad resumes with P. K calibrates the radio.")
+	else:
+		radio_help_label.text = tr("Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it.")
 
 
 ## Product, build identity (as exported, or "development"), engine and licence: what a bug report needs.
@@ -122,7 +145,7 @@ func _key_table(rows: Array, columns := 2, description_width := 340) -> GridCont
 	var grid := GridContainer.new()
 	grid.columns = columns
 	grid.add_theme_constant_override("h_separation", 14)
-	grid.add_theme_constant_override("v_separation", 2) # trim shortcut fits the 720p Help alongside the existing controls
+	grid.add_theme_constant_override("v_separation", 0) # compact rows keep the full reference visible at 720p
 	for row in rows:
 		var caps := HBoxContainer.new()
 		caps.add_theme_constant_override("separation", 4)

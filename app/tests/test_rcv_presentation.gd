@@ -5,7 +5,8 @@ const Course = preload("res://physics/ground_vehicle/course.gd")
 const Dashboard = preload("res://vehicles/ground/ground_dashboard.gd")
 const CameraRig = preload("res://vehicles/ground/ground_camera.gd")
 const Frames = preload("res://render/frames.gd")
-const World = preload("res://render/world/world.gd")
+const Atmosphere = preload("res://render/atmosphere.gd")
+const ShaderClock = preload("res://render/shader_clock.gd")
 var failures := 0
 var checks := 0
 
@@ -19,7 +20,7 @@ func check(ok: bool, message: String) -> void:
 		printerr("FAIL: " + message)
 
 func _run() -> void:
-	root.size = Vector2i(1280, 800)
+	root.size = Vector2i(1280, 720)
 	root.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
 	root.content_scale_size = Vector2i.ZERO
 	TranslationServer.set_locale("es" if OS.get_cmdline_user_args().has("--es") else "en")
@@ -31,7 +32,13 @@ func _run() -> void:
 		printerr(loaded.errors)
 		quit(1)
 		return
-	World.build(world, {"id": "mt8-practice"}, func(): CourseView.build(world, loaded.course), {"time_of_day": false})
+	ShaderClock.register()
+	Atmosphere.state = {}
+	var environment := WorldEnvironment.new()
+	environment.environment = Atmosphere.environment()
+	world.add_child(environment)
+	Atmosphere.create_sun(world)
+	CourseView.build(world, loaded.course)
 	var visual := Model.build()
 	check(visual.ok, "packaged model imports")
 	if not visual.ok:

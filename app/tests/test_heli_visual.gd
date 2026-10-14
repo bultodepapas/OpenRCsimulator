@@ -70,6 +70,10 @@ func _initialize() -> void:
 		and is_equal_approx(float(model.main_rotor_mount.scale.x), 0.70 / 0.791367365)
 		and Model.align_main_rotor_radius(model, 0.775)
 		and is_equal_approx(float(model.main_rotor_mount.scale.x), 0.775 / 0.791367365))
+	Model.align_tail_rotor_radius(model, 0.13)
+	_check("cached rotor-local profiles inherit selected runtime data radii",
+		absf(float(main_profile.radius) * model.main_rotor_mount.scale.x - 0.775) < 1e-6
+		and absf(float(tail_profile.radius) * model.tail_rotor.scale.x - 0.13) < 1e-6)
 	_check("four physical skid support points are CG-relative and ordered",
 		model.skids.size() == 4
 		and model.skids.left_front.x < 0.0 and model.skids.right_front.x > 0.0
@@ -108,9 +112,16 @@ func _initialize() -> void:
 		and is_equal_approx(float(visual.telemetry.b1), float(state.b1))
 		and is_equal_approx(float(visual.telemetry.collective), float(state.collective))
 		and is_equal_approx(float(root.get_meta("heli_collective", NAN)), float(state.collective)))
-	_check("cyclic flap tilts the visual disk without changing model-root axes",
-		(absf(float(model.main_rotor_tilt.rotation.x)) + absf(float(model.main_rotor_tilt.rotation.z))) > 0.01
-		and (frame.basis.x - Vector3(0.0, 0.0, -1.0)).length() < 1e-6)
+	var a1 := 0.12
+	var b1 := -0.10
+	visual.update({"omega_rad_s": 0.0, "tail_omega_rad_s": 0.0, "a1": a1, "b1": b1}, 0.0)
+	var expected_normal: Vector3 = Vector3(sin(b1), cos(a1) * cos(b1), sin(a1)).normalized()
+	var observed_normal: Vector3 = (Model.GLTF_TO_MODEL * model.main_rotor_tilt.basis
+		* model.main_rotor_mount.basis * Vector3.BACK).normalized()
+	_check("cyclic flap aligns the visual shaft to MainRotor's exact first-harmonic normal",
+		(observed_normal - expected_normal).length() < 1e-6
+		and (frame.basis.x - Vector3(0.0, 0.0, -1.0)).length() < 1e-6,
+		"observed %s; expected %s" % [observed_normal, expected_normal])
 	_check("rotor blur uses blade-passing thresholds at low and high RPM",
 		RotorBlur.blur_fraction(300.0, 2) == 0.0
 		and RotorBlur.blur_fraction(600.0, 2) > 0.0
@@ -140,6 +151,35 @@ func _initialize() -> void:
 	_check("high-RPM main rotor keeps the analytic disc and suppresses strobing blades",
 		main_sources.all(func(node: MeshInstance3D) -> bool: return not node.visible)
 		and fade_blades.all(func(node: Node) -> bool: return not node.visible) and rotor_disc.visible)
+	var disc_mesh := rotor_disc.mesh as ArrayMesh
+	var disc_vertex_alpha_max := 0.0
+	if disc_mesh != null:
+		for surface in disc_mesh.get_surface_count():
+			var arrays: Array = disc_mesh.surface_get_arrays(surface)
+			var colors: PackedColorArray = arrays[Mesh.ARRAY_COLOR]
+			for color: Color in colors:
+				disc_vertex_alpha_max = maxf(disc_vertex_alpha_max, color.a)
+	var full_opacity := float(main_blur._disc_materials[0].albedo_color.a) if not main_blur._disc_materials.is_empty() else 0.0
+	_check("full-speed main disc has measured coverage geometry and readable opacity",
+		disc_mesh != null and disc_mesh.get_surface_count() > 0
+		and disc_vertex_alpha_max > 0.3 and full_opacity >= 0.99,
+		"surfaces %d; max measured alpha %.3f; material alpha %.3f" % [
+			disc_mesh.get_surface_count() if disc_mesh != null else 0, disc_vertex_alpha_max, full_opacity])
+	var tail_sources: Array[MeshInstance3D] = []
+	for surface: Dictionary in tail_blur.measured.surfaces:
+		var source: MeshInstance3D = surface.node
+		if not tail_sources.has(source):
+			tail_sources.append(source)
+	var tail_disc := tail_blur.get_node("analytic_rotor_disc") as MeshInstance3D
+	tail_blur.update(1000.0)
+	var tail_fade_blades: Array[Node] = tail_blur.find_children("*_blade_fade_*", "MeshInstance3D", true, false)
+	_check("tail rotor crossfades at its own blade-passing rate",
+		tail_sources.all(func(node: MeshInstance3D) -> bool: return not node.visible)
+		and tail_fade_blades.any(func(node: Node) -> bool: return node.visible) and tail_disc.visible)
+	tail_blur.update(7369.0)
+	_check("geared high-speed tail rotor suppresses authored blades and shows its disc",
+		tail_sources.all(func(node: MeshInstance3D) -> bool: return not node.visible)
+		and tail_fade_blades.all(func(node: Node) -> bool: return not node.visible) and tail_disc.visible)
 
 	visual.update({"omega_rad_s": NAN, "tail_omega_rad_s": -INF, "a1": INF, "b1": "bad", "collective": NAN}, 0.1)
 	_check("invalid visual telemetry is clamped to finite neutral values",

@@ -658,6 +658,21 @@ engine_c = g["installation"]["engine_center"]
 canopy_top = max(g["canopy_stations"], key=lambda r: r[2])
 tip = Wg["stations"][-1]
 ts = Tg["stations"][-1]
+crash_hull_probes = [
+    ("probe_wing_left_le", le(tip[1], tip[3], -semi)),
+    ("probe_wing_right_le", le(tip[1], tip[3], semi)),
+    ("probe_wing_left_te", le(tip[2], tip[3], -semi)),
+    ("probe_wing_right_te", le(tip[2], tip[3], semi)),
+    ("probe_nose_tip", le(FS[0][0])),
+    ("probe_tail_cone", le(FS[-1][0], FS[-1][3])),
+    ("probe_belly_station_zero", le(0.0, fus_at(0.0)[3])),
+    ("probe_belly_station_minus_half", le(-0.5, fus_at(-0.5)[3])),
+    ("probe_belly_station_plus_six", le(0.6, fus_at(0.6)[3])),
+    ("probe_stabilizer_left_tip", le(ts[2], ts[3], -ts[0])),
+    ("probe_stabilizer_right_tip", le(ts[2], ts[3], ts[0])),
+    ("probe_fin_top", le(max(z for z, _ in fin_raw), fin_top_y)),
+    ("probe_canopy_top", le(canopy_top[0], canopy_top[2])),
+]
 data = {
     "format": "openrc-aircraft v1",
     "physical_identity_version": 1,
@@ -689,15 +704,8 @@ data = {
              **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
     ],
-    "crash_hull": q([
-        le(tip[1], tip[3], -semi), le(tip[1], tip[3], semi), le(tip[2], tip[3], -semi), le(tip[2], tip[3], semi),
-        le(FS[0][0]), le(FS[-1][0], FS[-1][3]),
-        le(0.0, fus_at(0.0)[3]), le(-0.5, fus_at(-0.5)[3]), le(0.6, fus_at(0.6)[3]),
-        le(ts[2], ts[3], -ts[0]), le(ts[2], ts[3], ts[0]),
-        le(max(z for z, _ in fin_raw), fin_top_y),
-        le(canopy_top[0], canopy_top[2]),
-    ], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + ": wing tips LE/TE, nose and tail cone, belly at three stations (gear UP), stab tips, fin top, canopy top. No landing gear contacts: any ground contact is a crash (gear up)"),
-    "crash_hull_ids": ["probe_wing_left_le", "probe_wing_right_le", "probe_wing_left_te", "probe_wing_right_te", "probe_nose_tip", "probe_tail_cone", "probe_belly_station_zero", "probe_belly_station_minus_half", "probe_belly_station_plus_six", "probe_stabilizer_left_tip", "probe_stabilizer_right_tip", "probe_fin_top", "probe_canopy_top"],
+    "crash_hull": q([point for _, point in crash_hull_probes], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + ": wing tips LE/TE, nose and tail cone, belly at three stations (gear UP), stab tips, fin top, canopy top. No landing gear contacts: any ground contact is a crash (gear up)"),
+    "crash_hull_ids": [identity for identity, _ in crash_hull_probes],
     # CR-01d: one semantic name per crash_hull point above, in the same order (crash presentation only).
     "crash_hull_components": ["left_wing_tip", "right_wing_tip", "left_wing_tip", "right_wing_tip", "nose", "tail_end", "belly", "belly", "belly", "left_stab_tip", "right_stab_tip", "fin_top", "canopy"],
     "plausibility": {
@@ -814,7 +822,7 @@ legacy_data = data
 data = upgrade(legacy_data)
 validate_physical_identity(data)
 parity = numeric_parity(legacy_data, data)
-text = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+text = (json.dumps(data, indent=2, ensure_ascii=False) + "\n").replace("\n", "\r\n")
 rows = ["| Section | Quantity | Value | How |", "| --- | --- | --- | --- |"]
 for sec, name, val, how in log:
     vv = ", ".join(f"{x:.4g}" for x in val) if isinstance(val, list) else f"{val:.4g}"
@@ -869,14 +877,18 @@ The clean-airframe coefficient is an estimate, not an Avanti flight measurement 
 if __name__ != "__main__":
     pass  # imported by sensitivity.py: compute only
 elif "--check" in sys.argv:
-    stale = [p for p, t in ((OUT, text), (REPORT, report)) if not p.exists() or p.read_text() != t]
+    stale = []
+    if not OUT.exists() or OUT.read_bytes() != text.encode("utf-8"):
+        stale.append(OUT)
+    if not REPORT.exists() or REPORT.read_text() != report:
+        stale.append(REPORT)
     if stale:
         sys.exit("stale: " + ", ".join(str(p.relative_to(ROOT)) for p in stale) + f" (run {SCRIPT})")
     print("sebart_avanti_s_a200.json and derivation.md are up to date")
 else:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(text)
+    OUT.write_bytes(text.encode("utf-8"))
     REPORT.write_text(report)
     print(f"wrote {OUT.relative_to(ROOT)} and {REPORT.relative_to(ROOT)}")
     print(f"mass {mass:.3f} kg, SM {sm:.1f} % MAC, stall {Vs:.1f} m/s, start {V_start:.0f} m/s, Vmax {V_max:.1f} m/s, J {[round(x, 3) for x in J]}")

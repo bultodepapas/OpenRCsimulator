@@ -28,13 +28,13 @@
     },
     "aero_reference_point": {
       "value": [
-        0.1209,
+        0.0844,
         0.0,
         0.07
       ],
       "unit": "m",
       "kind": "derived",
-      "source": "taken at the plan CG so the borrowed moment data keeps its static margin at the plan CG; z at mid-wing height (estimated)"
+      "source": "research/flight-dynamics/climb-trim/derive_pitch_reference.py (D6e-R1): x places the borrowed derivatives' neutral point (ARP + 0.1579 c) on the Stik's own estimated neutral point, 43.5 % c (fleet Helmbold/tail-ratio/Raymer method; band 42.5-44.5 %, vortex lattice 44.4 %); replaces the plan-CG placement that transplanted the donor's 15.8 % margin; z at mid-wing height (estimated)"
     },
     "planform": "rectangular"
   },
@@ -985,10 +985,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "CLq": {
-        "value": 2.951,
+        "value": 1.977,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639"
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim, downwash settled; the wing ahead of the CG loses lift in a pull, so it is below the tail-only closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639"
       },
       "CLde": {
         "value": 0.0983,
@@ -1111,10 +1111,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cmq": {
-        "value": -7.476,
+        "value": -7.944,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; the downwash lag adds Cmadot -3.59 as a state (E0a2b), so Cmq+Cmadot = -11.07; closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both"
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -7.741 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CLq lift reproduces it; the downwash lag adds Cmadot -3.59 as a state (E0a2b); closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both"
       },
       "Cmde": {
         "value": -0.8488,
@@ -1129,7 +1129,7 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cnb": {
-        "value": 0.1214237421962675,
+        "value": 0.12741288623702934,
         "unit": "1/rad",
         "kind": "derived",
         "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b"
@@ -1141,10 +1141,10 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cnr": {
-        "value": -0.1319,
+        "value": -0.1354,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb"
+        "source": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -0.1318 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CYr side force reproduces it; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb"
       },
       "Cnda_right": {
         "value": 0.0287,
@@ -1159,7 +1159,7 @@
         "source": "OpenFlightSim UltraStick25e"
       },
       "Cndr": {
-        "value": -0.06678305820794714,
+        "value": -0.07007708743036616,
         "unit": "1/rad",
         "kind": "derived",
         "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; CYdr=a_v*S_v/S*tau; Cndr=-CYdr*l/b; Cldr=CYdr*(z_v-z_ARP)/b; Cnb=a_v*S_v/S*l/b"
@@ -1238,10 +1238,10 @@
           "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data ; effective whole-tail calibration Cmde/Cma including omitted downwash"
         },
         "incidence": {
-          "value": 0.03845,
+          "value": 0.02205,
           "unit": "rad",
           "kind": "derived",
-          "source": "docs/research/flight-repair-implementation.md: provisional surface model; estimated, not measured flight data; Cm0/Cma for horizontal effective incidence, vertical symmetric"
+          "source": "research/flight-dynamics/climb-trim/derive_tail_incidence.gd (D6e-R1): effective incidence at which the local model's static Cm equals the oracle's at the 15 m/s level trim (no trim step at the regime switch); with the ARP at the CG this rule reduced to the earlier Cm0/Cma = 0.03845 of docs/research/flight-repair-implementation.md; estimated provisional surface model, not measured flight data"
         },
         "downwash_gradient": {
           "value": 0.457,

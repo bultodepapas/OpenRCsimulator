@@ -134,7 +134,7 @@ func _initialize() -> void:
 		return
 	var rows: Array = []
 	var ok := true
-	for entry: Dictionary in Catalog.flyable_entries():
+	for entry: Dictionary in Catalog.airplane_flyable_entries():
 		var result := inspect(entry)
 		rows.append(result)
 		ok = ok and result.ok

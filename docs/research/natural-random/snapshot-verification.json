@@ -1,0 +1,202 @@
+{
+  "scope": "software verification; no physical/pilot/performance acceptance",
+  "results": [
+    {
+      "name": "import",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 15.469,
+      "errors": []
+    },
+    {
+      "name": "parse-scenario_config",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 0.875,
+      "errors": []
+    },
+    {
+      "name": "parse-natural_random",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 1.047,
+      "errors": []
+    },
+    {
+      "name": "parse-natural_random_screen",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 0.406,
+      "errors": []
+    },
+    {
+      "name": "parse-home",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 1.906,
+      "errors": []
+    },
+    {
+      "name": "parse-app_root",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 2.781,
+      "errors": []
+    },
+    {
+      "name": "parse-main",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 4.672,
+      "errors": []
+    },
+    {
+      "name": "test_natural_random_config",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 1.438,
+      "errors": []
+    },
+    {
+      "name": "test_natural_random_generator",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 30.594,
+      "errors": []
+    },
+    {
+      "name": "test_natural_random_screen",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 0.906,
+      "errors": []
+    },
+    {
+      "name": "test_natural_random_flight",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 25.906,
+      "errors": []
+    },
+    {
+      "name": "test_ui_natural_random",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 48.375,
+      "errors": []
+    },
+    {
+      "name": "test_ui_screen_stack",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 85.203,
+      "errors": []
+    },
+    {
+      "name": "test_ui_pause",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 100.688,
+      "errors": []
+    },
+    {
+      "name": "test_ui_weather",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 59.281,
+      "errors": []
+    },
+    {
+      "name": "test_ui_time_of_day_pause",
+      "ok": false,
+      "exit_code": 1,
+      "timeout": false,
+      "elapsed_s": 26.75,
+      "errors": [
+        "FAIL next Down reaches Time of day Workshop",
+        "FAIL time editor opens over the still-paused flight BaseAircraft",
+        "SCRIPT ERROR: Cannot call method 'get' on a null value."
+      ]
+    },
+    {
+      "name": "test_ui_field_world_time_of_day",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 31.953,
+      "errors": []
+    },
+    {
+      "name": "test_start_choice",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 3.063,
+      "errors": []
+    },
+    {
+      "name": "test_wind_flight",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 8.218,
+      "errors": []
+    },
+    {
+      "name": "test_wind_turbulence",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 1.375,
+      "errors": []
+    },
+    {
+      "name": "test_atmosphere_flight",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 7.204,
+      "errors": []
+    },
+    {
+      "name": "test_time_of_day_checkpoint",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 20.735,
+      "errors": []
+    },
+    {
+      "name": "test_checkpoint_integrity",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 0.281,
+      "errors": []
+    },
+    {
+      "name": "test_replay_integrity",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 8.906,
+      "errors": []
+    }
+  ],
+  "ok": false
+}

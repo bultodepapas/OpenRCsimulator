@@ -107,6 +107,10 @@ func _test_layout(size: Vector2i) -> void:
 	var actions_rect: Rect2 = actions.get_global_rect()
 	_check("briefing sidebar fits %d×%d" % [size.x, size.y], _inside(sidebar_rect, bounds), str(sidebar_rect))
 	var sidebar_style: StyleBoxFlat = screen.sidebar.get_theme_stylebox("panel") as StyleBoxFlat
+	_check("briefing preserves theme gutters at %d×%d" % [size.x, size.y],
+		actions_rect.position.x >= sidebar_rect.position.x + 39.0
+		and actions_rect.end.x <= sidebar_rect.end.x - 39.0
+		and scroll_rect.position.y >= sidebar_rect.position.y + 43.0, str(actions_rect))
 	_check("briefing sidebar background is opaque at %d×%d" % [size.x, size.y],
 		sidebar_style != null and is_equal_approx(sidebar_style.bg_color.a, 1.0), str(sidebar_style.bg_color.a if sidebar_style != null else -1.0))
 	_check("opaque sidebar leaves the field backdrop area uncovered at %d×%d" % [size.x, size.y],

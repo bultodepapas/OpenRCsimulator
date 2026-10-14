@@ -40,10 +40,13 @@ func _initialize() -> void:
 	var n: int = model.envelope.station_ys.size() / 2
 	var wing_profile: float = -float(model.aero.CD0) / 3.0 * (1.0 - 1.0 / (4.0 * n * n))
 	var consistent := fin_invariant + wing_profile
-	print("info Stik-consistent Cnr: fin −2(l_v/b)·Cnβ_fin %.4f + wing profile %.4f = %.4f; oracle Cnr %.4f"
-		% [fin_invariant, wing_profile, consistent, model.aero.Cnr])
-	_check("D11g: the oracle's Cnr %.4f within 2 %% of the Stik-consistent value" % model.aero.Cnr,
-		absf(float(model.aero.Cnr) / consistent - 1.0) < 0.02)
+	# D6e-R1: the data's Cnr is about the ARP, ahead of the CG; the oracle's r × F adds CYr's side-force arm.
+	var r_x: float = -(float(model.reference.arp_le[0]) - float(model.cg_le[0]))
+	var oracle_cnr: float = float(model.aero.Cnr) + float(model.aero.CYr) * r_x / b
+	print("info Stik-consistent Cnr: fin −2(l_v/b)·Cnβ_fin %.4f + wing profile %.4f = %.4f; oracle Cnr %.4f (%.4f about the CG)"
+		% [fin_invariant, wing_profile, consistent, model.aero.Cnr, oracle_cnr])
+	_check("D11g: the oracle's Cnr about the CG %.4f within 2 %% of the Stik-consistent value" % oracle_cnr,
+		absf(oracle_cnr / consistent - 1.0) < 0.02)
 	var worst_fin := 0.0
 	var worst_total := 0.0
 	var worst_cnb := 0.0
@@ -56,10 +59,11 @@ func _initialize() -> void:
 			cnb, total / float(model.aero.Cnr)])
 		worst_fin = maxf(worst_fin, absf(fin_part / fin_invariant - 1.0))
 		worst_total = maxf(worst_total, absf(total / consistent - 1.0))
-		worst_cnb = maxf(worst_cnb, absf(cnb / float(model.aero.Cnb) - 1.0))
+		worst_cnb = maxf(worst_cnb, absf(cnb / cnb_fin - 1.0))
 	_check("fin: local yaw-rate damping = −2·(l_v/b)·Cnβ_fin = %.4f within 2 %% at α 0–11° (consistent velocity, force, arm)" % fin_invariant,
 		worst_fin < 0.02, "worst %.2f %%" % (100.0 * worst_fin))
-	_check("local Cnβ within 3 %% of the data's fin-derived Cnβ %.4f at α 0–11°" % model.aero.Cnb, worst_cnb < 0.03,
+	# The data's Cnb uses the fin arm from the ARP (loader contract); the local fin acts about the CG.
+	_check("local Cnβ within 3 %% of the fin-derived Cnβ about the CG %.4f at α 0–11°" % cnb_fin, worst_cnb < 0.03,
 		"worst %.2f %%" % (100.0 * worst_cnb))
 	_check("local Cnr within 7 %% of the Stik-consistent value %.4f at α 0–11° (wing polar per strip: see the D11f report)" % consistent,
 		worst_total < 0.07, "worst %.2f %%" % (100.0 * worst_total))

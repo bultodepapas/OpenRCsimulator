@@ -31,6 +31,12 @@ uniform uint cloud_seed = 1253u;
 uniform float cluster_strength = 0.0;
 uniform float cloud_deck_m = 1500.0;
 uniform float cloud_shadow_strength = 0.0;
+uniform bool appearance_cloud_shadow = false;
+uniform float appearance_shadow_scale_m = 250.0;
+uniform float appearance_shadow_coverage = 0.35;
+uniform float appearance_shadow_density = 1.0;
+uniform uint appearance_shadow_seed = 1253u;
+uniform float appearance_shadow_cluster = 0.0;
 varying float cloud_transmission;
 
 uniform vec3 haze_lin = vec3(0.584, 0.768, 0.846);
@@ -304,7 +310,14 @@ void fragment() {
 	cloud_transmission = 1.0;
 	if (cloud_shadow_strength > 0.0 && cloud_coverage > 0.0 && sun_dir.y > 0.01) {
 		vec2 deck = world_pos.xz + max(cloud_deck_m - world_pos.y, 0.0) * sun_dir.xz / sun_dir.y;
-		float density = cloud_density(deck * (cloud_scale / cloud_deck_m) + cloud_drift_offset, cloud_seed, cloud_coverage, cluster_strength);
+		float density;
+		if (appearance_cloud_shadow) {
+			density = cloud_density(deck / max(appearance_shadow_scale_m, 1.0) + cloud_drift_offset,
+				appearance_shadow_seed, appearance_shadow_coverage, appearance_shadow_cluster) * appearance_shadow_density;
+		} else {
+			density = cloud_density(deck * (cloud_scale / cloud_deck_m) + cloud_drift_offset,
+				cloud_seed, cloud_coverage, cluster_strength);
+		}
 		cloud_transmission -= clamp(cloud_shadow_strength, 0.0, 1.0) * density * smoothstep(0.01, 0.1, sun_dir.y);
 	}
 	float detail_weight = turf_weight(turf_dx, turf_dy, d);

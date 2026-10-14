@@ -1,8 +1,8 @@
 # Night-lighting source samples
 
-2026-10-13 · **Research inputs only; not imported into the application.**
+2026-10-13 · Immutable downloaded source originals for FW-67; selected derivatives are built for runtime.
 
-These unmodified free downloads support the [night-landscape plan](../../../docs/plans/night-landscape-lighting.md). Selection rationale and static inspection are in [FW-66](../../../docs/research/field-world/FW-66/README.md#resource-comparison). [PROVENANCE.json](PROVENANCE.json) records exact download URLs, source authors, archive members and SHA-256 hashes; [LICENSES.md](LICENSES.md) records license evidence.
+These unmodified CC0 downloads support the [night-landscape plan](../../../docs/plans/night-landscape-lighting.md). Selection rationale and static inspection are in [FW-66](../../../docs/research/field-world/FW-66/README.md#resource-comparison). [PROVENANCE.json](PROVENANCE.json) records exact download URLs, source authors, archive members and SHA-256 hashes; [LICENSES.md](LICENSES.md) records license evidence. Conversion and runtime selection are documented in [tools/night-lighting](../../../tools/night-lighting/README.md).
 
 The [26-investigation follow-up](../../../docs/research/field-world/FW-66/investigations.md) added five source files. The collection now contains **10 art source files, 3,961,937 bytes**, excluding license notes. Source size is not imported GPU memory or shipped package size.
 
@@ -16,4 +16,4 @@ The [26-investigation follow-up](../../../docs/research/field-world/FW-66/invest
 | ohyhei smoke sheet | `source/smoke-sprite-sheet.png` | 1280×1280, 5×5 grid, 21 occupied cells. Final four cells are blank; frame order/playback and material treatment need qualification. |
 | Rob Tuytel / Poly Haven Burned Ground 01 | `source/burned-ground-01-{diff,nor-gl,rough}-1k.jpg` | Three 1024×1024 maps for a possible local hearth patch. UV scale, edge blending and imported memory must pass intake. |
 
-No source file has been modeled, recolored, repacked or optimized. Godot import, visual quality, timing and export qualification belong to FW-67 onward. Future derivatives must record their source hashes and reproducible conversion; do not overwrite these originals or hand-edit generated results. Ship only accepted derivatives and their credits under the application asset directory.
+Source files remain unchanged. Runtime selection and derivatives are generated into `app/assets/landscape/night-lighting/`; source hashes, license notes and the generator are kept alongside the originals. Do not overwrite these downloads or hand-edit generated results. Godot import, visual quality, timing and export qualification remain separate gates.

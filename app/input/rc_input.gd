@@ -144,6 +144,15 @@ func is_rate_throttle() -> bool:
 	return profile.get("kind", "radio") == "gamepad"
 
 
+## Explicit airborne-start boundary for a spring-centred gamepad. This changes
+## only its virtual position; it does not arm a radio or change calibrated axes.
+func set_rate_throttle_for_start(position: float) -> bool:
+	if not is_rate_throttle() or not is_finite(position) or position < 0.0 or position > 1.0:
+		return false
+	_rate_throttle = position
+	return true
+
+
 ## Whether this raw axis has reported since the current connection; polling zero is not evidence.
 func has_axis_sample(axis: int) -> bool:
 	return connected and axis >= 0 and axis < AXES and _seen.has(axis)

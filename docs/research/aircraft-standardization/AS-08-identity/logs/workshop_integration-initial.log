@@ -1,0 +1,99 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Home keyboard opens Workshop
+SCRIPT ERROR: Parse Error: Function "_shadow_layer_index()" not found in base self.
+   at: GDScript::reload (res://render/atmosphere.gd:179)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "shadow_index" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://render/atmosphere.gd:179)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "base_zenith" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://render/atmosphere.gd:233)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "base_cloud" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://render/atmosphere.gd:234)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "ambient" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://render/atmosphere.gd:247)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://ui/home_scene.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://app_root.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tests/test_workshop_integration.gd:0)
+ERROR: Failed to load script "res://tests/test_workshop_integration.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Invalid call. Nonexistent function 'configure_appearance' in base 'GDScript'.
+   at: _init (res://ui/home_scene.gd:76)
+   GDScript backtrace (most recent call first):
+       [0] _init (res://ui/home_scene.gd:76)
+       [1] show_home (res://app_root.gd:175)
+       [2] _ready (res://app_root.gd:143)
+       [3] _run (res://tests/test_workshop_integration.gd:28)
+SCRIPT ERROR: Invalid call. Nonexistent function 'cloud_transport_checkpoint' in base 'GDScript'.
+   at: _start_workshop_trial (res://app_root.gd:689)
+   GDScript backtrace (most recent call first):
+       [0] _start_workshop_trial (res://app_root.gd:689)
+       [1] _run (res://tests/test_workshop_integration.gd:40)
+       [2] tap (res://tests/ui_driver.gd:24)
+       [3] settle (res://tests/ui_driver.gd:55)
+FAIL 200% trial starts
+SCRIPT ERROR: Invalid call. Nonexistent function 'cloud_transport_checkpoint' in base 'GDScript'.
+   at: _start_workshop_trial (res://app_root.gd:689)
+   GDScript backtrace (most recent call first):
+       [0] _start_workshop_trial (res://app_root.gd:689)
+       [1] _request_trial (res://ui/workshop.gd:1160)
+       [2] _run (res://tests/test_workshop_integration.gd:81)
+       [3] tap (res://tests/ui_driver.gd:24)
+       [4] settle (res://tests/ui_driver.gd:55)
+FAIL Extra 50% starts through the same Workshop action
+SCRIPT ERROR: Invalid call. Nonexistent function 'cloud_transport_checkpoint' in base 'GDScript'.
+   at: _start_workshop_trial (res://app_root.gd:689)
+   GDScript backtrace (most recent call first):
+       [0] _start_workshop_trial (res://app_root.gd:689)
+       [1] _request_trial (res://ui/workshop.gd:1160)
+       [2] _run (res://tests/test_workshop_integration.gd:81)
+       [3] tap (res://tests/ui_driver.gd:24)
+       [4] settle (res://tests/ui_driver.gd:55)
+FAIL Extra 200% starts through the same Workshop action
+SCRIPT ERROR: Parse Error: Preload file "res://app_state/sky_checkpoint.gd" does not exist.
+   at: GDScript::reload (res://main.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] _create_flight (res://app_root.gd:459)
+       [1] start_flight (res://app_root.gd:376)
+       [2] _run (res://tests/test_workshop_integration.gd:96)
+       [3] tap (res://tests/ui_driver.gd:24)
+       [4] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "SkyCheckpoint" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://main.gd:39)
+   GDScript backtrace (most recent call first):
+       [0] _create_flight (res://app_root.gd:459)
+       [1] start_flight (res://app_root.gd:376)
+       [2] _run (res://tests/test_workshop_integration.gd:96)
+       [3] tap (res://tests/ui_driver.gd:24)
+       [4] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Parse Error: Static function "update_cloud_appearance()" not found in base "res://render/atmosphere.gd".
+   at: GDScript::reload (res://main.gd:1297)
+   GDScript backtrace (most recent call first):
+       [0] _create_flight (res://app_root.gd:459)
+       [1] start_flight (res://app_root.gd:376)
+       [2] _run (res://tests/test_workshop_integration.gd:96)
+       [3] tap (res://tests/ui_driver.gd:24)
+       [4] settle (res://tests/ui_driver.gd:55)
+ERROR: Failed to load script "res://main.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+   GDScript backtrace (most recent call first):
+       [0] _create_flight (res://app_root.gd:459)
+       [1] start_flight (res://app_root.gd:376)
+       [2] _run (res://tests/test_workshop_integration.gd:96)
+       [3] tap (res://tests/ui_driver.gd:24)
+       [4] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Invalid assignment of property or key 'field_path' with value of type 'String' on a base object of type 'Node3D'.
+   at: start_flight (res://app_root.gd:377)
+   GDScript backtrace (most recent call first):
+       [0] start_flight (res://app_root.gd:377)
+       [1] _run (res://tests/test_workshop_integration.gd:96)
+       [2] tap (res://tests/ui_driver.gd:24)
+       [3] settle (res://tests/ui_driver.gd:55)
+SCRIPT ERROR: Invalid access to property or key 'startup_error' on a base object of type 'Node3D'.
+   at: _run (res://tests/test_workshop_integration.gd:97)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_workshop_integration.gd:97)
+       [1] tap (res://tests/ui_driver.gd:24)
+       [2] settle (res://tests/ui_driver.gd:55)

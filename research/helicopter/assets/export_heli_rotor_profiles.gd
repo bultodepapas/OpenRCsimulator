@@ -26,15 +26,25 @@ func _initialize() -> void:
 	data.rotors.tail = _profile(model.tail_rotor, model.root)
 	if data.rotors.main.is_empty() or data.rotors.tail.is_empty():
 		printerr("The source GLB did not yield two valid rotor coverage profiles.")
+		model.root.free()
 		quit(1)
 		return
-	var out_path := "../.tools/heli25/hx700-rotor-profiles.json"
+	var out_path := ProjectSettings.globalize_path("res://../.tools/heli25/hx700-rotor-profiles.json")
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="):
 			out_path = arg.trim_prefix("--out=")
+	var tools_dir := ProjectSettings.globalize_path("res://../.tools").replace("\\", "/").simplify_path().trim_suffix("/")
+	var normalized_out := out_path.replace("\\", "/").simplify_path()
+	if not normalized_out.begins_with(tools_dir + "/"):
+		printerr("Profile output must stay under the ignored repository .tools directory: ", out_path)
+		model.root.free()
+		quit(1)
+		return
+	DirAccess.make_dir_recursive_absolute(out_path.get_base_dir())
 	var file := FileAccess.open(out_path, FileAccess.WRITE)
 	if file == null:
 		printerr("Cannot write profile export at %s (error %d)." % [out_path, FileAccess.get_open_error()])
+		model.root.free()
 		quit(1)
 		return
 	file.store_string(JSON.stringify(data, "\t", true))
@@ -43,6 +53,7 @@ func _initialize() -> void:
 	print("main radius %.9f m, %d blades; tail radius %.9f m, %d blades" % [
 		float(data.rotors.main.radius), int(data.rotors.main.blades),
 		float(data.rotors.tail.radius), int(data.rotors.tail.blades)])
+	model.root.free()
 	quit(0)
 
 
@@ -74,6 +85,7 @@ func _profile(rotor: Node3D, root: Node3D) -> Dictionary:
 		coverage.append(share)
 	return {
 		"radius": float(measured.radius),
+		"radius_space": "rotor_local_m_before_runtime_radius_alignment",
 		"hub_radius": float(measured.hub_radius),
 		"inner_radius": float(measured.inner_radius),
 		"blades": int(measured.blades),
@@ -82,6 +94,7 @@ func _profile(rotor: Node3D, root: Node3D) -> Dictionary:
 		"coverage": coverage,
 		"colors": colors,
 		"surfaces": surfaces,
+		"alignment": "runtime rotor mount is aligned from accepted aircraft data before attach; cached surface copies inherit its transform",
 	}
 
 

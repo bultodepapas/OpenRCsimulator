@@ -177,6 +177,22 @@ static func legacy_v1_input(raw: Dictionary) -> Dictionary:
 	out.format = LEGACY_FORMAT
 	out.erase("capabilities")
 	out.erase("convention_id")
+	# Identity metadata belongs to v2; the shared historical numerical parser
+	# keeps its closed propulsion shape and receives only its original inputs.
+	out.erase("physical_identity_version")
+	out.erase("crash_hull_ids")
+	if out.get("inventory") is Array:
+		for item in out.inventory:
+			if item is Dictionary:
+				item.erase("id")
+	if out.get("landing_gear") is Dictionary and out.landing_gear.get("contacts") is Array:
+		for contact in out.landing_gear.contacts:
+			if contact is Dictionary:
+				contact.erase("id")
+	if out.get("propulsion") is Dictionary:
+		out.propulsion.erase("id")
+	if out.get("controls") is Dictionary:
+		out.controls.erase("surface_ids")
 	if typeof(out.get("aero")) == TYPE_DICTIONARY:
 		var reference: Variant = out.aero.get("reference_coefficients")
 		if typeof(reference) == TYPE_DICTIONARY and reference.has("CLadot") and typeof(out.aero.get("coefficients")) == TYPE_DICTIONARY:

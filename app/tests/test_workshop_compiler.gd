@@ -4,6 +4,7 @@ const AircraftData := preload("res://physics/aircraft_data.gd")
 const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const Compiler := preload("res://workshop/compiler.gd")
 const Session := preload("res://sim/flight_session.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const STIK_PATH := "res://data/aircraft/jensen_ugly_stik_60.json"
 const EXTRA_PATH := "res://data/aircraft/gp_extra_300s_60.json"
 
@@ -238,7 +239,7 @@ func _test_unfamiliar_identity(base: Dictionary) -> void:
 
 
 func _test_catalog_registry() -> void:
-	var files: PackedStringArray = DirAccess.get_files_at("res://data/aircraft")
+	var entries: Array = Catalog.airplane_flyable_entries()
 	var count := 0
 	var probes := {
 		"scale": {"scale": 1.1},
@@ -246,42 +247,41 @@ func _test_catalog_registry() -> void:
 		"power": {"power_multiplier": 1.1},
 		"controls": {"control_multiplier": 1.1},
 	}
-	for file: String in files:
-		if not file.ends_with(".json"):
-			continue
-		var raw: Dictionary = _read("res://data/aircraft/" + file)
+	for entry: Dictionary in entries:
+		var aircraft_id := str(entry.get("id", ""))
+		var raw: Dictionary = _read(str(entry.get("data", "")))
 		if raw.is_empty():
 			continue
 		count += 1
 		var support: Dictionary = Compiler.capabilities(raw)
-		_check("catalog capability record %s has four flags and a note" % raw.get("id", file),
+		_check("catalog capability record %s has four flags and a note" % aircraft_id,
 			support.has_all(["scale", "weight", "power", "controls", "note"]))
 		for flag: String in ["scale", "weight", "power", "controls"]:
-			_check("catalog capability %s is boolean for %s" % [flag, raw.get("id", file)], typeof(support.get(flag)) == TYPE_BOOL)
+			_check("catalog capability %s is boolean for %s" % [flag, aircraft_id], typeof(support.get(flag)) == TYPE_BOOL)
 		var custom_id := "workshop-catalog-probe-%02d" % count
 		var renamed: Dictionary = raw.duplicate(true)
 		renamed.id = custom_id
 		var renamed_support: Dictionary = Compiler.capabilities(renamed)
-		_check("capability selection is unchanged when catalog ID changes %s" % raw.get("id", file),
+		_check("capability selection is unchanged when catalog ID changes %s" % aircraft_id,
 			_support_flags_equal(support, renamed_support))
 		var no_op: Dictionary = Compiler.compile(raw, {"id": custom_id})
-		_check("catalog no-op works with a trial identity %s" % raw.get("id", file), no_op.ok, str(no_op.errors))
+		_check("catalog no-op works with a trial identity %s" % aircraft_id, no_op.ok, str(no_op.errors))
 		if no_op.ok:
-			_check("catalog no-op effective model identity %s" % raw.get("id", file), no_op.data.model.id == custom_id)
+			_check("catalog no-op effective model identity %s" % aircraft_id, no_op.data.model.id == custom_id)
 			var base_data: Dictionary = AircraftData.validate_and_derive(raw)
 			var profiled_base: Dictionary = WheelProfiles.apply_to_model(base_data.model)
-			_check("catalog no-op physics matches base for %s" % raw.get("id", file),
+			_check("catalog no-op physics matches base for %s" % aircraft_id,
 				profiled_base.ok and _physics_projection(no_op.data.model) == _physics_projection(profiled_base.model))
-			_check("catalog no-op preserves base wheel runtime status for %s" % raw.get("id", file),
+			_check("catalog no-op preserves base wheel runtime status for %s" % aircraft_id,
 				no_op.data.model.get("wheel_profile", {}).get("status", "") == profiled_base.model.get("wheel_profile", {}).get("status", "")
 				and no_op.data.model.get("wheel_profile", {}).get("base_aircraft_id", "") == str(raw.get("id", "")))
 		for capability: String in probes:
 			if support[capability]:
 				continue
 			var refused: Dictionary = Compiler.compile(raw, probes[capability])
-			_check("unsupported %s recipe refuses clearly for %s" % [capability, raw.get("id", file)],
+			_check("unsupported %s recipe refuses clearly for %s" % [capability, aircraft_id],
 				not refused.ok and str(refused.errors).contains(capability))
-	_check("catalog registry inspected current aircraft files", count >= 7, str(count))
+	_check("catalog registry inspected every fixed-wing flyable aircraft", count == entries.size(), str(count))
 
 
 func _test_recipe_validation(base: Dictionary) -> void:

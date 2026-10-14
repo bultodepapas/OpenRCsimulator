@@ -58,15 +58,16 @@ func _initialize() -> void:
 		var r: Dictionary = rows[deg]
 		print("| %4.1f | %.2f | %.3f | %.2f | %.4f | %.3f |" % [deg, r.blend, r.Clp, r.Cmq, r.Cnr, r.CLa])
 
-	# Verification: below the blend the loads are the oracle, so each derivative is the data's coefficient, within 1 %:
-	# the oracle's moments are taken about the aerodynamic reference point (0.07 m above the CG) and moved to the CG, so
-	# the force derivatives (CLq, CYp, CYr) add small α-dependent terms (≤ 0.7 % at α ≤ 4°).
+	# Verification: below the blend the loads are the oracle, so each derivative is the data's coefficient moved to the CG,
+	# within 1 %: the oracle's moments are taken about the aerodynamic reference point (0.07 m above and, since D6e-R1,
+	# ahead of the CG) and the force derivatives CLq, CYp and CYr add their r × F arms (_about_cg).
 	for deg in [0.0, 2.0, 4.0]:
 		var r: Dictionary = rows[deg]
 		_check("oracle region α %.0f°: blend weight is 0" % deg, r.blend == 0.0, str(r.blend))
 		for key in ["Clp", "Cmq", "Cnr"]:
-			_check("oracle region α %.0f°: %s equals the data's %.4f within 1 %%" % [deg, key, a[key]],
-				absf(r[key] / a[key] - 1.0) <= 1e-2, "%.5f" % r[key])
+			var expected := _about_cg(model, key, deg_to_rad(deg))
+			_check("oracle region α %.0f°: %s equals the data's %.4f moved to the CG (%.4f) within 1 %%" % [deg, key, a[key], expected],
+				absf(r[key] / expected - 1.0) <= 1e-2, "%.5f" % r[key])
 
 	# Consistency across the blend: worst ratio to the oracle (α 2°) over α 0…11°.
 	var worst := {}
@@ -87,17 +88,34 @@ func _initialize() -> void:
 			_check("%s within ±%.0f %% of the oracle at every α from 0° to 11°" % [key, 100.0 * BAND], absf(worst[key] - 1.0) <= BAND,
 				"×%.3f" % worst[key])
 
-	# D11g derivation: the data's Cmq, CLq and Cnr are the local model's at the 15 m/s level trim (rerun the generator
-	# when the geometry, tail or wing data change).
+	# D11g derivation: the data's Cmq, CLq and Cnr, moved to the CG, are the local model's at the 15 m/s level trim (rerun
+	# the generator when the geometry, tail, wing or reference point change).
 	var trim := Trim.solve("level", V, model, 9.80665, model.controls.throw_rad)
 	var at_trim := _derivatives(model, trim.alpha, true)
 	for key in ["Cmq", "CLq", "Cnr"]:
-		_check("D11g: data %s %.4f = the local model's %.4f at the 15 m/s trim (α %.2f°) within %.1f %%"
-			% [key, a[key], at_trim[key], rad_to_deg(trim.alpha), 100.0 * DERIVED_TOL],
-			absf(at_trim[key] / a[key] - 1.0) <= DERIVED_TOL)
+		var expected := _about_cg(model, key, trim.alpha)
+		_check("D11g: data %s %.4f, %.4f about the CG, = the local model's %.4f at the 15 m/s trim (α %.2f°) within %.1f %%"
+			% [key, a[key], expected, at_trim[key], rad_to_deg(trim.alpha), 100.0 * DERIVED_TOL],
+			absf(at_trim[key] / expected - 1.0) <= DERIVED_TOL)
 
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+## A rate derivative of the data (about the ARP) moved to the CG at angle of attack `alpha`, β 0, with the oracle's
+## r × F transfer: the CLq lift adds its arm to Cmq, CYr's side force to Cnr and CYp's to Clp. CLq itself is unchanged.
+func _about_cg(model: Dictionary, key: String, alpha: float) -> float:
+	var a: Dictionary = model.aero
+	var r_x: float = -(float(model.reference.arp_le[0]) - float(model.cg_le[0]))
+	var r_z: float = -(float(model.reference.arp_le[2]) - float(model.cg_le[2]))
+	match key:
+		"Cmq":
+			return float(a.Cmq) + float(a.CLq) * (r_x * cos(alpha) + r_z * sin(alpha)) / float(model.reference.c)
+		"Cnr":
+			return float(a.Cnr) + float(a.CYr) * r_x / float(model.reference.b)
+		"Clp":
+			return float(a.Clp) - float(a.CYp) * r_z / float(model.reference.b)
+	return float(a[key])
 
 
 ## Nondimensional Clp, Cmq, Cnr (central differences in p, q, r), CLq and CLα (in α) at angle of attack `alpha`, of

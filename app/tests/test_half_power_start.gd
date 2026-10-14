@@ -37,6 +37,7 @@ func run() -> void:
 	var initial: PackedFloat64Array = s.sim.state.duplicate()
 	var initial_trims: Dictionary = s.trims.duplicate()
 	var initial_speed: float = s.start.V
+	var initial_alpha: float = s.start.alpha
 	fly(s, 2400)
 	check("neutral keyboard holds altitude for ten seconds", s.sim.tick == 2400 and absf(s.sim.state[2] - initial[2]) < 0.001)
 	check("trim remains fixed during equilibrium flight", s.trims == initial_trims and s.raw.pitch == 0.0)
@@ -56,8 +57,10 @@ func run() -> void:
 	s.set_start_altitude(45.0)
 	check("changed launch atmosphere accepted", s.setup_weather(Weather.preset("cool-dense")))
 	s.reset()
+	# Lift scales with density, so a fresh solve changes the trimmed angle of attack. The speed can barely move: prescribed-rpm
+	# thrust and drag both scale with density, and near the polar's minimum-drag CL only induced drag responds (D6e-R1).
 	check("density change re-solves selected power and retains altitude", s.is_flyable() and absf(s.start.throttle - 0.5) < 1e-7
-		and absf(s.start.V - initial_speed) > 0.001 and absf(s.sim.state[2] + 45.0) < 1e-9)
+		and absf(s.start.alpha - initial_alpha) > 1e-3 and absf(s.sim.state[2] + 45.0) < 1e-9)
 	fly(s, 2400)
 	check("new atmosphere holds equilibrium", s.sim.tick == 2400 and absf(s.sim.state[2] + 45.0) < 0.001)
 	s.free()

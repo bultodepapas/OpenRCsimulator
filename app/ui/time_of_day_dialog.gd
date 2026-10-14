@@ -6,6 +6,8 @@ const Widgets := preload("res://ui/widgets.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const SkyControls := preload("res://ui/sky_controls.gd")
+const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 
 signal applied(config: Dictionary)
 signal cancelled
@@ -24,9 +26,12 @@ var error_label: Label
 var _focus_order: Array[Control] = []
 var night_only: bool = false
 var applied_night_options: Dictionary = Preferences.NIGHT_DEFAULTS.duplicate(true)
+var applied_sky_config: Dictionary = SkyConfig.defaults()
+var sky_controls: VBoxContainer
+var visual_tabs: TabBar
 
 
-func _init(initial_config: Variant = null, initial_night_options: Variant = null, field_world_only: bool = false) -> void:
+func _init(initial_config: Variant = null, initial_night_options: Variant = null, field_world_only: bool = false, initial_sky: Variant = null) -> void:
 	name = "TimeOfDayDialog"
 	layer = LAYER
 	night_only = field_world_only
@@ -54,6 +59,13 @@ func _init(initial_config: Variant = null, initial_night_options: Variant = null
 		"SecondaryLabel", true
 	)
 	column.add_child(description_label)
+	if initial_sky != null:
+		visual_tabs = TabBar.new()
+		visual_tabs.name = "VisualConditionsTabs"
+		visual_tabs.add_tab(tr("Time of day"))
+		visual_tabs.add_tab(tr("Sky & clouds"))
+		visual_tabs.focus_mode = Control.FOCUS_ALL
+		column.add_child(visual_tabs)
 
 	var scroll: ScrollContainer = ScrollContainer.new()
 	scroll.name = "TimeOfDayScroll"
@@ -69,7 +81,24 @@ func _init(initial_config: Variant = null, initial_night_options: Variant = null
 	controls.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	controls.focus_order_changed.connect(_set_focus_order)
 	_use_native_option_popups_when_supported()
-	scroll.add_child(controls)
+	var pages := VBoxContainer.new()
+	pages.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.add_child(pages)
+	pages.add_child(controls)
+	if initial_sky != null:
+		sky_controls = SkyControls.new(initial_sky)
+		sky_controls.visible = false
+		sky_controls.focus_order_changed.connect(_set_focus_order)
+		sky_controls.night_requested.connect(func() -> void:
+			controls.call("_on_preset_selected", 5)
+			visual_tabs.current_tab = 0)
+		sky_controls.night_button.disabled = night_only
+		pages.add_child(sky_controls)
+		visual_tabs.tab_changed.connect(func(index: int) -> void:
+			controls.visible = index == 0
+			sky_controls.visible = index == 1
+			scroll.scroll_vertical = 0
+			_set_focus_order())
 
 	error_label = _label("", "SecondaryLabel", true)
 	error_label.name = "ApplyError"
@@ -108,6 +137,10 @@ func _update_texts() -> void:
 	if cancel_button == null:
 		return
 	title_label.text = tr("Field lighting") if night_only else tr("Time of day")
+	if sky_controls != null:
+		title_label.text = tr("Sky and lighting")
+		visual_tabs.set_tab_title(0, tr("Time of day"))
+		visual_tabs.set_tab_title(1, tr("Sky & clouds"))
 	description_label.text = tr("Choose the field lights and campfire for this paused flight. These visual options do not change flight behavior.") \
 		if night_only else tr("Choose the lighting for this flight. Apply updates the paused flight and its future restarts.")
 	cancel_button.text = tr("Cancel")
@@ -115,6 +148,8 @@ func _update_texts() -> void:
 
 
 func _focus_initial_control() -> void:
+	if not is_inside_tree():
+		return
 	if controls != null and night_only and controls.field_lighting_picker != null:
 		controls.field_lighting_picker.grab_focus()
 	elif controls != null and controls.mode_picker != null:
@@ -148,7 +183,9 @@ func _set_focus_order() -> void:
 	if controls == null or cancel_button == null or apply_button == null:
 		return
 	_focus_order.clear()
-	var time_controls: Array[Control] = controls.call("focus_controls")
+	if visual_tabs != null:
+		_focus_order.append(visual_tabs)
+	var time_controls: Array[Control] = sky_controls.call("focus_controls") if sky_controls != null and sky_controls.visible else controls.call("focus_controls")
 	for control: Control in time_controls:
 		_focus_order.append(control)
 	_focus_order.append(cancel_button)
@@ -166,6 +203,12 @@ func _set_focus_order() -> void:
 
 
 func _on_apply() -> void:
+	if sky_controls != null:
+		var checked_sky: Dictionary = sky_controls.call("read_draft")
+		if not checked_sky.ok:
+			show_apply_error(checked_sky.errors)
+			return
+		applied_sky_config = checked_sky.config
 	var night_result: Dictionary = controls.call("read_night_options")
 	if not night_result.get("ok", false):
 		error_label.text = tr(INPUT_ERROR)

@@ -1,7 +1,8 @@
 # D11g generator: the Ugly Stik oracle's rate derivatives Cmq, CLq and Cnr, derived from the Stik's own verified local
 # model (wing induced-flow map D11d, free tail slope E0a2a, fin and wing yaw damping D11f) at the 15 m/s level trim,
 # about the CG, controls neutral, downwash settled (the lag's Cmα̇ is a separate state, E0a2b/D11g). Prints the values
-# to write into app/data/aircraft/jensen_ugly_stik_60.json (4 significant digits), their spread over α 0–6°, and
+# to write into app/data/aircraft/jensen_ugly_stik_60.json (4 significant digits, referred to the ARP since D6e-R1),
+# their about-CG spread over α 0–6°, and
 # closed-form cross-checks from the same data: Cmq_t = −2·a_f·(S_t/S)·(l_t/c)², CLq_t = 2·a_f·(S_t/S)·(l_t/c),
 # Cnr = −2·(l_v/b)·Cnβ_fin − CD0/3, Cmα̇ = −2·a_f·(S_t/S)·(l_t/c)·(dε/dα)·(l_lag/c) (a_f the free tail slope).
 # Run from the repository root: $(app/get-godot.sh) --headless --path app --script "$PWD/research/aero/d11g/derive_rate_derivatives.gd"
@@ -39,9 +40,17 @@ func _initialize() -> void:
 	print("closed form: Cmq_tail %.4f, CLq_tail %.4f, Cnr fin + wing profile %.5f, Cmα̇ %.4f"
 		% [-2.0 * vh * pow(l_t / c, 2), 2.0 * vh * l_t / c, -2.0 * l_v / b * cnb_fin - float(model.aero.CD0) / 3.0,
 		-2.0 * vh * l_t / c * float(tail.downwash_gradient) * float(tail.downwash_lag_length) / c])
-	print("derived at the trim α (write these): Cmq %s, CLq %s, Cnr %s"
-		% [String.num(at_trim.Cmq, 4 - _digits(at_trim.Cmq)), String.num(at_trim.CLq, 4 - _digits(at_trim.CLq)),
-		String.num(at_trim.Cnr, 4 - _digits(at_trim.Cnr))])
+	# D6e-R1: the oracle applies these about the ARP and moves them to the CG with r × F, so the CLq lift and the CYr side
+	# force carried at the ARP add rx/rz arms. Subtract those arms to write the about-ARP values that reproduce the local
+	# model's about-CG damping.
+	var rx: float = -(float(model.reference.arp_le[0]) - float(model.cg_le[0]))
+	var rz: float = -(float(model.reference.arp_le[2]) - float(model.cg_le[2]))
+	var cmq: float = at_trim.Cmq - at_trim.CLq * (rx * cos(alpha) + rz * sin(alpha)) / c
+	var cnr: float = at_trim.Cnr - float(model.aero.CYr) * rx / b
+	print("about the CG: Cmq %.4f, Cnr %.5f; ARP arm rx %.4f m, rz %.4f m" % [at_trim.Cmq, at_trim.Cnr, rx, rz])
+	print("about the ARP at the trim α (write these): Cmq %s, CLq %s, Cnr %s"
+		% [String.num(cmq, 4 - _digits(cmq)), String.num(at_trim.CLq, 4 - _digits(at_trim.CLq)),
+		String.num(cnr, 4 - _digits(cnr))])
 	print("borrowed (UltraStick 25e) before D11g: Cmq -13.5664, CLq 6.1639, Cnr -0.1833")
 	quit(0)
 

@@ -55,6 +55,27 @@ class CheckoutBindings(unittest.TestCase):
 
 
 class InventoryBindings(unittest.TestCase):
+    def test_catalog_descriptors_follow_explicit_vehicle_discriminator(self):
+        source = '''
+        const ENTRIES := [
+            { id = "my-rotorcraft", vehicle = "rotorcraft", data = "res://data/aircraft/ignored.json" },
+            { id = "airplane-with-rotor-in-name", data = "res://data/aircraft/airplane.json" },
+            { id = "explicit-airplane", vehicle = "airplane", data = "res://data/aircraft/explicit.json" },
+        ]
+        '''
+        entries = build_descriptors._parse_catalog_entries(source)
+        self.assertEqual(entries, [
+            ("airplane-with-rotor-in-name", "res://data/aircraft/airplane.json"),
+            ("explicit-airplane", "res://data/aircraft/explicit.json"),
+        ])
+
+    def test_catalog_rejects_unknown_vehicle_discriminator(self):
+        source = '''
+        { id = "future-vehicle", vehicle = "seaplane", data = "res://data/aircraft/future.json" },
+        '''
+        with self.assertRaisesRegex(ValueError, "unsupported vehicle type"):
+            build_descriptors._parse_catalog_entries(source)
+
     def test_identity_version_emits_id_only_bindings(self):
         source = identified_source()
         descriptor_format, bindings = build_descriptors.inventory_binding_contract("fixture", source)

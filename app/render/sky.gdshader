@@ -46,6 +46,13 @@ uniform float cluster_strength : hint_range(0.0, 1.0) = 0.0;
 uniform float cirrus_strength : hint_range(0.0, 0.12) = 0.0; // maximum sky blend for the thin layer
 uniform float cirrus_coverage : hint_range(0.0, 1.0) = 0.34;
 uniform float silver_strength : hint_range(0.0, 1.0) = 0.0;
+// Weather presets use up to eight independent 2D decks. The classic branch below remains the calibrated L4c path.
+uniform bool layered_appearance = false;
+uniform int appearance_layer_count = 0;
+uniform vec4 appearance_layer_parameters[8]; // altitude m, metres per noise cell, coverage, density
+uniform vec4 appearance_layer_motion[8]; // offset cells x/y, cluster strength, shape code
+uniform int appearance_layer_seeds[8];
+uniform float appearance_cloud_density = 1.0;
 
 // FW-61/FW-22: the twilight arch toward the brighter source, azimuth exponent `lobe_k`, vertical e-folding
 // `lobe_height` (radians): it hugs the horizon. Zero lobe_lin (the calibrated fixed sun) adds exactly nothing.
@@ -92,7 +99,70 @@ void sky() {
 	col += moon(EYEDIR); // before the clouds, which hide it
 	float density = 0.0;
 	float cirrus_amount = 0.0;
-	if (EYEDIR.y > 0.0 && cloud_coverage > 0.0) {
+	if (layered_appearance) {
+		if (EYEDIR.y > 0.0 && appearance_layer_count > 0) {
+			float horizon_fade = smoothstep(0.03, 0.25, EYEDIR.y);
+			for (int order = 0; order < 8; order++) {
+				int layer_index = appearance_layer_count - 1 - order; // upper decks first; the nearer low deck paints last
+				if (layer_index < 0) {
+					break;
+				}
+				vec4 layer = appearance_layer_parameters[layer_index];
+				vec4 layer_motion = appearance_layer_motion[layer_index];
+				uint layer_seed = uint(max(appearance_layer_seeds[layer_index], 0));
+				vec2 deck = (EYEDIR.xz / max(EYEDIR.y, 0.02)) * (layer.x / max(layer.y, 1.0));
+				vec2 cells = mod(deck + layer_motion.xy, float(CLOUD_FIELD_PERIOD));
+				int shape = int(floor(layer_motion.w + 0.5));
+				float body;
+				if (shape == 1) {
+					body = cloud_stretched_density(cells, layer_seed, layer.z, vec2(3.0, 51.0) / 64.0);
+				} else if (shape == 2) {
+					body = cloud_stretched_density(cells, layer_seed, layer.z, vec2(7.0, 45.0) / 64.0);
+				} else {
+					body = cloud_density(cells, layer_seed, layer.z, layer_motion.z);
+				}
+				if (shape == 3) { // low stratus: soften the mottling and keep a continuous near-horizon ceiling
+					float ceiling = smoothstep(0.02, 0.13, EYEDIR.y) * smoothstep(0.52, 0.94, layer.z);
+					body = max(body, 0.90 * ceiling);
+				}
+				float optical = clamp(layer.w, 0.0, 1.0) * clamp(appearance_cloud_density, 0.0, 1.0);
+				float layer_horizon_fade = shape == 3 ? smoothstep(0.005, 0.11, EYEDIR.y) : horizon_fade;
+				float tower_height = shape == 4 ? mix(0.68, 1.0, smoothstep(0.025, 0.52, EYEDIR.y)) : 1.0;
+				float alpha = clamp(body * optical * layer_horizon_fade * tower_height, 0.0, 0.98);
+				float lighting = 0.68 + 0.32 * max(dot(EYEDIR, sun_dir), 0.0);
+				float tower_shade = shape == 4 ? mix(0.60, 1.0, smoothstep(0.04, 0.48, EYEDIR.y)) : 1.0;
+				// A broad, periodic low-frequency tone gives clouds real mass at field-view
+				// elevations; the shared high-frequency field still controls their silhouette.
+				float macro_tone = 1.0;
+				if (shape == 3 || shape == 4 || shape == 5) {
+					// Low stratus must vary across field-of-view, where the low deck projects
+					// only a few base cells; towers keep broader kilometer-scale shading.
+					float macro_divisor = shape == 3 ? 2.0 : (shape == 4 ? 8.0 : 16.0);
+					int macro_period = int(float(CLOUD_FIELD_PERIOD) / macro_divisor);
+					float macro_noise = cloud_field_value_noise(mod(cells, float(CLOUD_FIELD_PERIOD)) / macro_divisor,
+						ivec2(macro_period), layer_seed + 32452843u);
+					float macro = smoothstep(0.16, 0.84, macro_noise);
+					if (shape == 4) {
+						macro_tone = mix(0.42, 1.36, macro);
+					} else if (shape == 3) {
+						macro_tone = mix(0.40, 1.38, macro);
+					} else {
+						macro_tone = mix(0.64, 1.24, macro);
+					}
+				}
+				vec3 layer_color = cloud_lin * mix(1.0, 0.82, body) * lighting * tower_shade * macro_tone;
+				// Preserve the calibrated 2.5D relief on ordinary cloud decks. It stays
+				// bounded, background-only, and out of the radiance cubemap pass.
+				float relief_weight = clamp(cloud_relief_strength, 0.0, 1.0) * smoothstep(0.12, 0.40, EYEDIR.y);
+				if (!AT_CUBEMAP_PASS && shape != 1 && shape != 2 && relief_weight > 0.0 && body > 0.0) {
+					vec3 relief = cloud_relief(cells, body, EYEDIR, sun_dir, cloud_lin, layer_seed, layer.z, layer_motion.z);
+					layer_color = mix(layer_color, relief * lighting * tower_shade * macro_tone, relief_weight);
+				}
+				col = mix(col, layer_color, alpha);
+				density = 1.0 - (1.0 - density) * (1.0 - alpha);
+			}
+		}
+	} else if (EYEDIR.y > 0.0 && cloud_coverage > 0.0) {
 		vec2 deck = EYEDIR.xz / max(EYEDIR.y, 0.02);                    // flat layer
 		vec2 cells = mod(deck * cloud_scale + cloud_offset, float(CLOUD_FIELD_PERIOD));
 		float body = cloud_density(cells, cloud_seed, cloud_coverage, cluster_strength);

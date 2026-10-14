@@ -104,7 +104,9 @@ def schema_validator(data: dict[str, Any], cache: dict[Path, Draft202012Validato
 
 def build_cases(app: Path) -> list[Case]:
     fleet_dir = app / "data" / "aircraft"
-    fleet_paths = {path.stem: path for path in sorted(fleet_dir.glob("*.json"))}
+    # The shared directory also holds explicitly tagged rotorcraft with their own schema.
+    fleet_paths = {path.stem: path for path in sorted(fleet_dir.glob("*.json"))
+                   if read_json(path).get("vehicle") != "rotorcraft"}
     if set(fleet_paths) != EXPECTED_FLEET:
         raise AssertionError(
             "expected the four catalog, four electric, four glow, and Turbo Lumber v2 files; "
@@ -166,6 +168,7 @@ def build_cases(app: Path) -> list[Case]:
                      classification="coupled-runtime-only")
     misaligned["crash_hull_ids"].pop()
     gear_up = add("identity:gear-up", stik, schema_ok=True, loader_ok=True)
+    gear_up["id"] = "identity-gear-up-fixture"
     gear_up["capabilities"]["gear"] = "locked_up"
     gear_up.pop("landing_gear")
     for name in ("synthetic_stik_electric_4s", "synthetic_stik_electric_4s_battery"):

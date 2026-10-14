@@ -1,0 +1,16 @@
+[
+  {
+    "name": "app-root",
+    "script": "app_root.gd",
+    "ok": true,
+    "exit_code": 0,
+    "parse_error": false
+  },
+  {
+    "name": "failure-routes",
+    "script": "tests/test_failure_routes.gd",
+    "ok": true,
+    "exit_code": 0,
+    "parse_error": false
+  }
+]

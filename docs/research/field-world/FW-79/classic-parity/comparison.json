@@ -1,0 +1,78 @@
+{
+  "scope": "L4c production field/sky fixture without aircraft; explicit classic configuration on candidate",
+  "baseline": "frozen pre-sky working tree; full baseline app import failed on concurrent unrelated work",
+  "results": {
+    "antisun-000.png": {
+      "equal": true,
+      "changed_channels": 0,
+      "max_delta": 0,
+      "mean_delta": 0.0
+    },
+    "antisun-120.png": {
+      "equal": true,
+      "changed_channels": 0,
+      "max_delta": 0,
+      "mean_delta": 0.0
+    },
+    "cross-000.png": {
+      "equal": true,
+      "changed_channels": 0,
+      "max_delta": 0,
+      "mean_delta": 0.0
+    },
+    "cross-120.png": {
+      "equal": true,
+      "changed_channels": 0,
+      "max_delta": 0,
+      "mean_delta": 0.0
+    },
+    "ground-000.png": {
+      "equal": true,
+      "changed_channels": 0,
+      "max_delta": 0,
+      "mean_delta": 0.0
+    },
+    "ground-120.png": {
+      "equal": true,
+      "changed_channels": 0,
+      "max_delta": 0,
+      "mean_delta": 0.0
+    },
+    "horizon-000.png": {
+      "equal": true,
+      "changed_channels": 0,
+      "max_delta": 0,
+      "mean_delta": 0.0
+    },
+    "horizon-120.png": {
+      "equal": true,
+      "changed_channels": 0,
+      "max_delta": 0,
+      "mean_delta": 0.0
+    },
+    "sun-000.png": {
+      "equal": true,
+      "changed_channels": 0,
+      "max_delta": 0,
+      "mean_delta": 0.0
+    },
+    "sun-120.png": {
+      "equal": true,
+      "changed_channels": 0,
+      "max_delta": 0,
+      "mean_delta": 0.0
+    },
+    "zenith-000.png": {
+      "equal": true,
+      "changed_channels": 0,
+      "max_delta": 0,
+      "mean_delta": 0.0
+    },
+    "zenith-120.png": {
+      "equal": true,
+      "changed_channels": 0,
+      "max_delta": 0,
+      "mean_delta": 0.0
+    }
+  }
+}

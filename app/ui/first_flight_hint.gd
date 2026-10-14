@@ -17,12 +17,14 @@ var duration_s := 10.0
 var _session: Node
 var _flown := 0.0
 var _finished := false
+var _vehicle_type := Reference.AIRPLANE
 
 
-func _init(session: Node) -> void:
+func _init(session: Node, vehicle_type: String = Reference.AIRPLANE) -> void:
 	name = "FirstFlightHint"
 	layer = LAYER
 	_session = session
+	_vehicle_type = Reference.ROTORCRAFT if vehicle_type == Reference.ROTORCRAFT else Reference.AIRPLANE
 	var screen := Control.new()
 	screen.theme = UiTheme.build()
 	screen.set_anchors_preset(Control.PRESET_TOP_WIDE)
@@ -43,7 +45,7 @@ func _init(session: Node) -> void:
 	var row := HBoxContainer.new()
 	row.add_theme_constant_override("separation", 28)
 	card.add_child(row)
-	for item in Reference.FIRST_FLIGHT:
+	for item in Reference.first_flight_table(_vehicle_type):
 		var pair := HBoxContainer.new()
 		pair.add_theme_constant_override("separation", 8)
 		for key in item[0]:

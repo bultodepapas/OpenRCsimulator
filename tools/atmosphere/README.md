@@ -1,5 +1,16 @@
 # Atmosphere evidence tools
 
+## Sky collection and conditions UI (FW-78/79)
+
+`sky_gallery.gd` renders the production `World`/`Atmosphere` in a native Compatibility SubViewport at 1280×720 with 4× MSAA. It records nine daytime profiles plus quiet/peak electrical-storm views at full and new moon. `--mode=day`, `--mode=night` or the default `--mode=all` selects the matrix; `--horizon=on` adds low-angle views. `--write-previews=on` writes nine runtime card images under `app/assets/sky/weather/previews/` from daytime renders only; replacing existing images also requires `--overwrite-previews=on`. Reusing capture outputs requires `--overwrite=on`. The manifest records engine/adapter, lighting, camera and event identity. This is a composition fixture without a flown aircraft, not performance or flight-acceptance evidence.
+
+```sh
+"$(app/get-godot.sh)" --path app --audio-driver Dummy --script "$PWD/tools/atmosphere/sky_gallery.gd" -- --out=/tmp/sky-gallery --mode=all
+"$(app/get-godot.sh)" --path app --audio-driver Dummy --script "$PWD/tools/atmosphere/sky_ui_capture.gd" -- --out=/tmp/sky-ui --locale=es
+```
+
+The UI fixture opens the actual Home/weather editor with a temporary preference file and captures the gallery and storm controls. Repeat with `--locale=en`; import thumbnails before running it. Each tool manually draws a bounded set of settled frames and writes only its caller-selected output folder (plus the optional previews). Use a visible native GPU renderer for visual review. [Capture record](../../docs/research/field-world/FW-79/README.md), [UI/lifecycle evidence](../../docs/research/field-world/FW-78/README.md).
+
 ## Directional cloud relief (L4c)
 
 `l4c_verify.py` runs native Compatibility captures with exact zero-strength,

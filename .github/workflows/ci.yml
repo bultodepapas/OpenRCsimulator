@@ -68,6 +68,19 @@ jobs:
           python3 research/timber/tt07/derive_physics.py --check
       - name: Offline measurement and validation tool regressions
         run: research/test-tools.sh
+      - name: RC native Linux build, float64 loading and reference parity
+        # This verifies the Linux host artifact. App installation requires the
+        # separately qualified Windows artifact as well; macOS uses GDScript.
+        run: python3 research/rc-monster-truck/native/build.py --jobs 2 --godot "$(app/get-godot.sh)"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: rc-native-linux
+          include-hidden-files: true # Explicit generated files inside .tools only.
+          path: |
+            .tools/native-ground-vehicle/libopenrc_ground_vehicle.so
+            .tools/native-ground-vehicle/build-receipt.linux.json
+            .tools/native-ground-vehicle/parity-linux-latest.log
       - run: app/test.sh
       - run: app/capture.sh
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2

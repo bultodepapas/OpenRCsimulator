@@ -1,0 +1,70 @@
+[
+  {
+    "name": "schema-fresh",
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/aircraft-standardization/build_schema.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "seconds": 0.18699999999807915,
+    "log": "schema-fresh.log"
+  },
+  {
+    "name": "identity-sources",
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/aircraft-standardization/test_physical_identity_sources.py"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "seconds": 0.20300000000133878,
+    "log": "identity-sources.log"
+  },
+  {
+    "name": "models-fresh",
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/aircraft-standardization/build_models.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "seconds": 0.21899999999732245,
+    "log": "models-fresh.log"
+  },
+  {
+    "name": "descriptors-fresh",
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/aircraft-editor/build_descriptors.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "seconds": 0.1569999999992433,
+    "log": "descriptors-fresh.log"
+  },
+  {
+    "name": "descriptor-checkout",
+    "command": [
+      "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+      "research/aircraft-editor/test_descriptor_checkout.py"
+    ],
+    "exit_code": 0,
+    "ok": true,
+    "seconds": 9.375,
+    "log": "descriptor-checkout.log"
+  },
+  {
+    "name": "module-parity",
+    "command": [
+      "python",
+      "research/aircraft-standardization/test_modules.py"
+    ],
+    "ok": true,
+    "exit_code": 0,
+    "summary": "5 unittest cases; Godot/Python classification parity included; 86.364 seconds. Output captured by terminal tool in this run."
+  }
+]

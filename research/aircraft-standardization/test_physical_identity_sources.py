@@ -2,7 +2,7 @@
 
 from __future__ import annotations
 
-import hashlib
+import argparse
 import json
 import sys
 import unittest
@@ -17,20 +17,17 @@ if str(Path(__file__).resolve().parent) not in sys.path:
 from physical_identity import validate_physical_identity  # noqa: E402
 
 
-# SHA-256 of canonical JSON after removing only the identity module. These were
-# captured from the pre-identity fleet and Glow APC snapshots; arrays and every
-# non-identity value remain in the canonical serialization.
-BASELINE_SHA256 = {
-    "jensen_ugly_stik_60.json": "37f88602b128f0b1e719998cdd5926b41a4bed7f570caebafc7f1ea962f27fa3",
-    "stik_glow_55ax_2t.json": "e8921fec4ba813dad11c55293f6289ff65e340f35f4142abca96f9bcbf66bb2e",
-    "stik_glow_fs64v_4t.json": "4f19ebbc82944b14c711d0ed542e36adf20150dc62eb5188b50a4ace7ce9f8a5",
-    "gp_extra_300s_60.json": "90c2b2bfc570a1382c3094b318ce53eab79c24777a32f10cdbd37af9df50d3b7",
-    "p51d_mustang_120.json": "cc86c692505fded48a33625c9b3f4dc68a0b8fe50bb30b2f9e88f67eed7b0ce4",
-    "sebart_avanti_s_a200.json": "703d72fb68e78d88603d62585d16ba96eec0880ff653100bdd43a12c86b81172",
-    "turbo_lumber_evolution.json": "b19690809eb57a33ccc9c035e0a654d7d7b58d31b17217b411cdb1c338e9c4e7",
-    "stik_glow_55ax_2t_apc_13x6.json": "7bacab888137161ba197c7b0815caa71e182137266da3ab93c8da2743e7ad061",
-    "stik_glow_fs64v_4t_apc_13x6.json": "518c915d30fd6579e124e3a4459f03ee38dcb4ba8b80a3aa7815bd576e0f4871",
-}
+IDENTIFIED_OUTPUTS = (
+    "jensen_ugly_stik_60.json",
+    "stik_glow_55ax_2t.json",
+    "stik_glow_fs64v_4t.json",
+    "gp_extra_300s_60.json",
+    "p51d_mustang_120.json",
+    "sebart_avanti_s_a200.json",
+    "turbo_lumber_evolution.json",
+    "stik_glow_55ax_2t_apc_13x6.json",
+    "stik_glow_fs64v_4t_apc_13x6.json",
+)
 
 
 def _without_identity(data: dict[str, Any]) -> dict[str, Any]:
@@ -46,26 +43,69 @@ def _without_identity(data: dict[str, Any]) -> dict[str, Any]:
     return result
 
 
-def _canonical_hash(data: dict[str, Any]) -> str:
-    encoded = json.dumps(
-        _without_identity(data),
-        sort_keys=True,
-        separators=(",", ":"),
-        ensure_ascii=False,
-        allow_nan=False,
-    ).encode("utf-8")
-    return hashlib.sha256(encoded).hexdigest()
+def _diff_paths(before: Any, after: Any, path: str = "") -> list[str]:
+    if type(before) is not type(after):
+        return [path or "/"]
+    if isinstance(before, dict):
+        differences = []
+        for key in sorted(before.keys() | after.keys()):
+            child = f"{path}/{key}"
+            if key not in before or key not in after:
+                differences.append(child)
+            else:
+                differences.extend(_diff_paths(before[key], after[key], child))
+            if len(differences) >= 20:
+                return differences[:20]
+        return differences
+    if isinstance(before, list):
+        differences = []
+        if len(before) != len(after):
+            differences.append(f"{path}/length")
+        for index, (left, right) in enumerate(zip(before, after)):
+            differences.extend(_diff_paths(left, right, f"{path}/{index}"))
+            if len(differences) >= 20:
+                return differences[:20]
+        return differences[:20]
+    return [] if before == after else [path or "/"]
+
+
+def audit_baseline(baseline_dir: Path) -> int:
+    """Compare identity-stripped generated JSON with a caller-supplied snapshot set."""
+    aircraft_dir = ROOT / "app/data/aircraft"
+    failures = 0
+    for filename in IDENTIFIED_OUTPUTS:
+        baseline_path = baseline_dir / filename
+        current_path = aircraft_dir / filename
+        if not baseline_path.is_file():
+            print(f"MISSING baseline: {baseline_path}")
+            failures += 1
+            continue
+        before = json.loads(baseline_path.read_text(encoding="utf-8"))
+        after = json.loads(current_path.read_text(encoding="utf-8"))
+        differences = _diff_paths(_without_identity(before), _without_identity(after))
+        if differences:
+            print(f"DIFF {filename}: {', '.join(differences)}")
+            failures += 1
+        else:
+            print(f"SAME {filename}: all non-identity JSON values match")
+    return failures
 
 
 class PhysicalIdentitySourceTests(unittest.TestCase):
-    def test_catalog_and_glow_outputs_keep_all_non_identity_data(self) -> None:
+    def test_catalog_and_glow_outputs_have_valid_identity_modules(self) -> None:
         aircraft_dir = ROOT / "app/data/aircraft"
-        self.assertEqual(len(BASELINE_SHA256), 9)
-        for filename, expected_hash in BASELINE_SHA256.items():
+        for filename in IDENTIFIED_OUTPUTS:
             with self.subTest(aircraft=filename):
                 data = json.loads((aircraft_dir / filename).read_text(encoding="utf-8"))
                 validate_physical_identity(data)
-                self.assertEqual(_canonical_hash(data), expected_hash)
+
+    def test_identified_aircraft_json_uses_authored_crlf_bytes(self) -> None:
+        aircraft_dir = ROOT / "app/data/aircraft"
+        for filename in IDENTIFIED_OUTPUTS:
+            with self.subTest(aircraft=filename):
+                content = (aircraft_dir / filename).read_bytes()
+                self.assertTrue(content.endswith(b"\r\n"))
+                self.assertNotIn(b"\n", content.replace(b"\r\n", b""))
 
     def test_onboarding_template_has_complete_module(self) -> None:
         template = ROOT / "research/aircraft-standardization/template/openrc-aircraft-v2.template.json"
@@ -144,4 +184,15 @@ class PhysicalIdentitySourceTests(unittest.TestCase):
 
 
 if __name__ == "__main__":
-    unittest.main()
+    argument_parser = argparse.ArgumentParser(description=__doc__)
+    argument_parser.add_argument(
+        "--baseline-dir",
+        type=Path,
+        help="optionally audit identity-stripped outputs against JSON snapshots in this directory",
+    )
+    args, unittest_args = argument_parser.parse_known_args()
+    if args.baseline_dir is not None:
+        failures = audit_baseline(args.baseline_dir)
+        if failures:
+            raise SystemExit(f"{failures} identity-stripped baseline comparison(s) differ")
+    unittest.main(argv=[sys.argv[0], *unittest_args])

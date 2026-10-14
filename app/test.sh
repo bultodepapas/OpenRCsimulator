@@ -43,11 +43,16 @@ python3 "$HERE/../research/helicopter/reference/make_airframe_oracle.py" --check
 run --script res://tests/test_heli_airframe.gd -- --oracle="$HERE/../research/helicopter/reference/airframe_oracle.json"
 run --script res://tests/test_heli_aerodynamic_stage.gd
 
+echo "== HELI-16: generated experimental rotorcraft quantities stay current"
+python3 "$HERE/../research/helicopter/xcell/derive.py" --check
+python3 "$HERE/../research/helicopter/xcell/test_derive.py"
+
 echo "== AS-01/02: versioned aircraft contract and migration stay current"
 python3 "$HERE/../research/aircraft-standardization/build_schema.py" --check
 python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --check
 python3 "$HERE/../research/aircraft-standardization/migrate.py" --check-known
 python3 "$HERE/../research/aircraft-standardization/test_migrate.py"
+python3 "$HERE/../research/aircraft-standardization/test_physical_identity_sources.py"
 
 echo "== AS-07/09: shared aircraft modules and generated model bindings"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../research/aircraft-standardization/test_modules.py"
@@ -113,6 +118,10 @@ python3 "$HERE/../research/rc-monster-truck/generate_support_reference.py" --che
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_rcv_support_cli.py"
 
 echo "== RCV-14a: supplied MT8 visual intake and isolated inspector"
+python3 "$HERE/../research/rc-monster-truck/build_visual.py" --check
+python3 "$HERE/../research/rc-monster-truck/build_vehicle_data.py" --check
+python3 "$HERE/../research/rc-monster-truck/test_vehicle_data_generator.py"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../research/rc-monster-truck/test_experiments.py"
 python3 "$HERE/../research/rc-monster-truck/asset_intake.py" --check
 python3 "$HERE/../research/rc-monster-truck/test_asset_intake.py"
 run_with_timeout 180 --script "$HERE/../research/rc-monster-truck/visual/test_mt8_visual.gd"
@@ -156,6 +165,10 @@ for t in "$HERE"/tests/test_*.gd; do
   if [ "$(basename "$t")" = "test_crash_wreck.gd" ]; then test_timeout=180; fi
   # Multiple complete scenery/aircraft rebuilds; not a physics-tick performance gate.
   case "$(basename "$t")" in
+    test_heli_session.gd) test_timeout=300 ;; # Actual preset hover, pilot-compensated landing and checkpoint replay.
+    test_failure_session.gd) test_timeout=180 ;; # EM: real 20-second onset at 240 Hz, seven-aircraft parity and replay
+    test_failure_routes.gd) test_timeout=180 ;; # EM: two complete flights and Home/Pause transitions
+    test_rcv_vehicle_dynamics.gd|test_rcv_session.gd|test_rcv_activity.gd|test_rcv_presentation.gd|test_rcv_menu.gd) test_timeout=300 ;;
     test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;
   esac
   run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" 2>&1 | tee "$LOG"

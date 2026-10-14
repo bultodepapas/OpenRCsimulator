@@ -22,7 +22,7 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ### Random failures and emergency practice
 
-[EM-00 source review](failure-mode/EM-00/README.md) records RC receiver/servo/ESC/engine manuals, numerical and damaged-aircraft references, documented one-wing RC landings, and the current session/control limitations. The [failure-mode plan](../plans/failure-mode.md) owns probability, menus, standardized mechanisms, phases and acceptance. This is planning research, not implemented failures or physical validation.
+[EM-00 source review](failure-mode/EM-00/README.md) records RC receiver/servo/ESC/engine manuals, numerical and damaged-aircraft references, documented one-wing RC landings, and the original session/control limitations. [EM-01 implementation evidence](failure-mode/EM-01/README.md) records software verification of the initial logical-control/throttle mode. The [failure-mode plan](../plans/failure-mode.md) owns current scope, probability, menus, remaining mechanisms and acceptance. Software verification does not establish physical or pilot validation.
 
 ### Natural Random flight
 
@@ -139,6 +139,8 @@ The [scenery guide](../SCENERY-PLAN.md) records current default-on behavior and 
 The [field-world guide](../FIELD-WORLD-PLAN.md) owns composition and night acceptance. Key evidence: [FW-02 parity](field-world/FW-02/README.md), [FW-20 ephemeris](field-world/FW-20/README.md), [FW-23 night rendering](field-world/FW-23/README.md), [FW-24 stars](field-world/FW-24/README.md), [FW-35 aircraft/field lights](field-world/FW-35/README.md), and the [world tools](../../tools/world/README.md).
 
 [FW-76 sky/cloud planning research](field-world/FW-76/README.md) compares free Godot cloud resources, renderer constraints, tutorials, first-hand Reddit reports and primary storm/wind references, including night lightning, reusable bolt VFX and CC0 thunder recordings. The [implementation plan](../plans/sky-clouds-weather.md) owns proposed FW-76–90, with electrical-storm delivery in FW-84a–e; this source review is not an addon, performance or physical-validation result.
+
+[FW-78/82 implementation evidence](field-world/FW-78/README.md) records the sky editor, preferences, deterministic transport and checkpoint contracts. [FW-79](field-world/FW-79/README.md) retains the native nine-profile and night-storm gallery; [FW-84](field-world/FW-84/README.md) records the electrical event/mesh/audio slice and free-resource provenance. Spatial storms/tornadoes and final flight/performance/export qualification remain open.
 
 ### Immersive audio
 

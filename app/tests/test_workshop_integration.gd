@@ -7,6 +7,9 @@ const Frames := preload("res://render/frames.gd")
 const Builder := preload("res://render/airplane.gd")
 const Shadow := preload("res://render/shadow.gd")
 const Wreck := preload("res://render/crash/wreck.gd")
+const SkyConfig := preload("res://environment/sky_appearance_config.gd")
+const Atmosphere := preload("res://render/atmosphere.gd")
+const Exposure := preload("res://render/world/exposure.gd")
 var failures := 0
 
 func _initialize() -> void:
@@ -99,6 +102,9 @@ func _run() -> void:
 		var original: Node = host.flight
 		original.session.sim.process_mode = Node.PROCESS_MODE_DISABLED
 		host.open_pause()
+		check("paused original accepts an independent sky", original.apply_sky_config(SkyConfig.for_preset("broken")).ok)
+		original._env.tonemap_exposure = 2.7
+		Exposure.set_value(2.7)
 		host.open_workshop()
 		await ui.settle()
 		var checkpoint: Dictionary = original.session.sim.checkpoint()
@@ -108,21 +114,26 @@ func _run() -> void:
 		host._start_workshop_trial(bad)
 		check("invalid draft retains original flight and editor", host.flight == original and host.screens.top() == editor_from_pause)
 		var valid_field_path: String = host.field_path
+		var retained_exposure: float = original._env.tonemap_exposure
 		host.field_path = "user://workshop_missing_field_fixture.json"
 		host._start_workshop_trial(payload)
 		host.field_path = valid_field_path
 		check("failed candidate startup preserves old flight and camera", host.flight == original and original.is_inside_tree() and root.get_camera_3d() == original._camera)
 		check("failed candidate startup preserves old recorder", original.recorder != null and original.session.sim.tick == checkpoint.tick)
+		check("failed candidate startup preserves adapted exposure", is_equal_approx(original._env.tonemap_exposure, retained_exposure) and is_equal_approx(Exposure.last, retained_exposure))
 		payload.recipe.scale = 0.5
 		host._start_workshop_trial(payload)
 		check("50% trial from Pause starts independently", host.flight != original and not original.is_inside_tree())
 		if host.flight != original:
 			host.open_pause()
+			check("trial can choose its own sky", host.flight.apply_sky_config(SkyConfig.for_preset("clear")).ok)
 			host.end_flight()
+			check("trial return preserves adapted exposure", is_equal_approx(original._env.tonemap_exposure, retained_exposure) and is_equal_approx(Exposure.last, retained_exposure))
 			await ui.settle()
 			check("return restores previous flight", host.flight == original and original.is_inside_tree())
 			check("original tick and state preserved", original.session.sim.tick == checkpoint.tick and original.session.sim.state == checkpoint.state)
 			check("previous flight remains paused", original.session.sim.paused)
+			check("return restores original sky presentation", original.sky_config.preset == "broken" and Atmosphere.appearance_config().preset == "broken")
 			check("Pause editor draft preserved", host.screens.top() == editor_from_pause)
 	host.queue_free()
 	await ui.settle()

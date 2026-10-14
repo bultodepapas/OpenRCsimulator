@@ -1,0 +1,45 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Home keyboard opens Workshop
+aircraft data warning: inertia: Jyy = 6.1934 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   200% trial starts
+ok   trial has distinct physical identity
+ok   catalog visual identity is retained
+ok   trial is airborne
+ok   trial trace records exact source
+aircraft data warning: inertia: Jyy = 6.1934 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   F5 resolves frozen candidate
+ok   render pose preserves 200% scale
+ok   scaled CG is the simulated world position
+ok   camera extent follows scaled geometry
+ok   wreck geometry follows jensen-das-ugly-stik-60 at 200%
+ok   wreck rigid bodies keep unit scale
+ok   trial restart keeps frozen identity and experimental mass
+ok   return restores same editor instance
+ok   trial return preserves draft and edit history
+ok   Home is still behind editor
+ok   Extra 50% starts through the same Workshop action
+ok   wreck geometry follows gp-extra-300s-60 at 50%
+ok   wreck rigid bodies keep unit scale
+ok   Extra returns to the same draft
+ok   Extra 200% starts through the same Workshop action
+ok   wreck geometry follows gp-extra-300s-60 at 200%
+ok   wreck rigid bodies keep unit scale
+ok   Extra returns to the same draft
+Workshop integration: 1 failed
+aircraft data invalid: res://data/aircraft/jensen_ugly_stik_60.json: JSON error at line 1546: Expected 'EOF'
+ERROR: Aircraft data for presentation: ["res://data/aircraft/jensen_ugly_stik_60.json: JSON error at line 1546: Expected \'EOF\'"]
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:76)
+       [1] show_aircraft (res://ui/home_scene.gd:115)
+       [2] _init (res://ui/home_scene.gd:81)
+       [3] _rebuild_home_scene (res://app_root.gd:1055)
+       [4] start_flight (res://app_root.gd:421)
+       [5] _run (res://tests/test_workshop_integration.gd:96)
+       [6] settle (res://tests/ui_driver.gd:55)
+FAIL original aircraft still starts
+WARNING: 12 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)
+ERROR: 5 resources still in use at exit (run with --verbose for details).
+   at: clear (core/io/resource.cpp:822)

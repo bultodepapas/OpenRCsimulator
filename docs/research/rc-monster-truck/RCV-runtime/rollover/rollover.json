@@ -1,0 +1,221 @@
+{
+  "commands": {
+    "braking_surface_comparison": "& $Godot --headless --audio-driver Dummy --path app --script research/rc-monster-truck/run_experiments.gd -- --duration=3.0 --scenario=braking --output=<fresh-output.csv>",
+    "comparison_variable": "surface_id; all braking runs share identical model/course identities, initial 6 m/s forward and pure-rolling wheel rates, and full brake input",
+    "replay": "& $Godot --headless --audio-driver Dummy --path app --script research/rc-monster-truck/run_experiments.gd -- --duration=3.0 --scenario=rollover --output=<fresh-output.csv>",
+    "rollover_balance_comparison": "& $Godot --headless --audio-driver Dummy --path app --script research/rc-monster-truck/run_experiments.gd -- --duration=3.0 --scenario=rollover --output=<fresh-output.csv>",
+    "scenario": "rollover"
+  },
+  "comparison_policy": "For braking, all surface trials use the same loaded model/course bytes, fixed 240 Hz tick, initial 6 m/s forward speed, pure-rolling wheel rate, and full brake command; only spawn/surface varies. Rollover trials share the same loaded bytes and zero controls and vary only initial right-edge tilt (35/55 degree comparison pair plus a 75 degree over-center witness). Bump and drop use their own fixed scenario initial conditions.",
+  "complete": true,
+  "course_identity": {
+    "format": "openrc-ground-course",
+    "id": "mt8-practice-course-estimate-v1",
+    "sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+    "version": "1"
+  },
+  "course_path": "C:/DEVELOPMENT/OpenRCsimulator/app/data/ground_vehicle/practice.json",
+  "csv_path": "C:/DEVELOPMENT/OpenRCsimulator/tmp/rcv-rollover-v2/rollover.csv",
+  "csv_sha256": "172b85e221a14a709dc048e38d6eb24064eb48dc88b9f188a022b7551f2b63ab",
+  "duration_s": 3.0,
+  "expected_samples_per_run": 721,
+  "experiment_settings": {
+    "comparison_policy": "35 and 55 degrees straddle the fixed-ground-edge reference; 75 degrees is a qualitative over-center witness relative to the estimated spherical tire-center normal-moment sign change. Both are geometric comparators, not compliant-truck acceptance thresholds.",
+    "controls": {
+      "brake": 0.0,
+      "reverse": false,
+      "steering": 0.0,
+      "throttle": 0.0
+    },
+    "initial_roll_angles_deg": [
+      35.0,
+      55.0,
+      75.0
+    ],
+    "support_edge": "right-side tire contact line"
+  },
+  "finite_sample_count": 2163,
+  "format": "openrc-ground-vehicle-experiment",
+  "model_parameters": {
+    "gravity_m_per_s2": 9.80665,
+    "hull_probe_count": 6,
+    "sprung_mass_kg": 4.8,
+    "tire_radius_m": 0.1,
+    "total_mass_kg": 5.52,
+    "travel_bump_m": 0.05,
+    "travel_droop_m": 0.07,
+    "unsprung_mass_kg_per_wheel": 0.18
+  },
+  "public_hz": 240,
+  "rigid_tipping_reference": {
+    "assumptions": "Point support at tire centerline, rigid chassis, fixed CG, no suspension/tire compliance or hull contact. This is a geometric comparator, not an acceptance threshold for the compliant truck model.",
+    "critical_tilt_angle_deg": 46.2902935382776,
+    "critical_tilt_angle_rad": 0.807918033957599,
+    "half_track_m": 0.214447500556172,
+    "kind": "rigid support-edge geometric reference",
+    "upright_sprung_cg_height_above_ground_m": 0.205
+  },
+  "runs": [
+    {
+      "airborne_sample_count": 0,
+      "controls": {
+        "brake": 0.0,
+        "reverse": false,
+        "steering": 0.0,
+        "throttle": 0.0
+      },
+      "final_speed_m_per_s": 0.00000000000155053095501837,
+      "finite_sample_count": 721,
+      "first_hull_contact_time_s": null,
+      "first_wheel_unload_time_s": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "initial_height_offset_m": 0.0,
+      "initial_position_ned_m": [
+        0.0,
+        0.0,
+        -0.308507401377139
+      ],
+      "initial_roll_angle_deg": 35.0,
+      "initial_speed_m_per_s": 0.0,
+      "initial_wheel_contact": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "initial_wheel_spin_rad_per_s": 0.0,
+      "max_abs_roll_angle_deg": 35.0011866167339,
+      "max_abs_suspension_travel_m": 0.0446812448986047,
+      "max_abs_wheel_slip_ratio": 0.348893139949353,
+      "max_hull_contact_count": 0,
+      "max_speed_m_per_s": 1.28929578178536,
+      "maximum_wheel_load_n": 73.2453935701726,
+      "minimum_wheel_load_n": 0.0,
+      "run_id": "rollover_right_edge_35_deg",
+      "sample_count": 721,
+      "spawn_id": "start",
+      "surface_id": "asphalt",
+      "surface_mu_at_spawn": 0.85
+    },
+    {
+      "airborne_sample_count": 0,
+      "controls": {
+        "brake": 0.0,
+        "reverse": false,
+        "steering": 0.0,
+        "throttle": 0.0
+      },
+      "final_speed_m_per_s": 0.00000000000944822677899962,
+      "finite_sample_count": 721,
+      "first_hull_contact_time_s": null,
+      "first_wheel_unload_time_s": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "initial_height_offset_m": 0.0,
+      "initial_position_ned_m": [
+        0.0,
+        0.0,
+        -0.334912435791887
+      ],
+      "initial_roll_angle_deg": 55.0,
+      "initial_speed_m_per_s": 0.0,
+      "initial_wheel_contact": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "initial_wheel_spin_rad_per_s": 0.0,
+      "max_abs_roll_angle_deg": 55.0,
+      "max_abs_suspension_travel_m": 0.0501475769730088,
+      "max_abs_wheel_slip_ratio": 0.349090293221015,
+      "max_hull_contact_count": 0,
+      "max_speed_m_per_s": 1.46549022972353,
+      "maximum_wheel_load_n": 83.5635830665209,
+      "minimum_wheel_load_n": 0.0,
+      "run_id": "rollover_right_edge_55_deg",
+      "sample_count": 721,
+      "spawn_id": "start",
+      "surface_id": "asphalt",
+      "surface_mu_at_spawn": 0.85
+    },
+    {
+      "airborne_sample_count": 58,
+      "controls": {
+        "brake": 0.0,
+        "reverse": false,
+        "steering": 0.0,
+        "throttle": 0.0
+      },
+      "final_speed_m_per_s": 0.00263643357694871,
+      "finite_sample_count": 721,
+      "first_hull_contact_time_s": 0.620833333333333,
+      "first_wheel_unload_time_s": [
+        null,
+        0.629166666666667,
+        null,
+        0.629166666666667
+      ],
+      "initial_height_offset_m": 0.0,
+      "initial_position_ned_m": [
+        0.0,
+        0.0,
+        -0.33273244030034
+      ],
+      "initial_roll_angle_deg": 75.0,
+      "initial_speed_m_per_s": 0.0,
+      "initial_wheel_contact": [
+        false,
+        true,
+        false,
+        true
+      ],
+      "initial_wheel_spin_rad_per_s": 0.0,
+      "max_abs_roll_angle_deg": 179.989709943859,
+      "max_abs_suspension_travel_m": 0.0229637600044712,
+      "max_abs_wheel_slip_ratio": 1.9992469285066,
+      "max_hull_contact_count": 2,
+      "max_speed_m_per_s": 1.4866087472495,
+      "maximum_wheel_load_n": 65.6275089860078,
+      "minimum_wheel_load_n": 0.0,
+      "run_id": "rollover_right_edge_75_deg",
+      "sample_count": 721,
+      "spawn_id": "start",
+      "surface_id": "asphalt",
+      "surface_mu_at_spawn": 0.85
+    }
+  ],
+  "sample_count": 2163,
+  "scenario": "rollover",
+  "scope": "Deterministic full-vehicle software experiment using an estimated MT8 model and synthetic course; not measured or physically validated vehicle evidence.",
+  "solver_version": "openrc-ground-vehicle-dynamics-rk4-v2",
+  "spherical_tire_center_reference": {
+    "assumptions": "Approximate right tire-center support normal with fixed CG and symmetric static tire compression; ignores suspension articulation during roll, unsprung-force distribution, friction and hull contact. This is a moment-sign geometry witness, not a rollover or recovery threshold.",
+    "cg_height_above_tire_hub_center_m": 0.107082027230769,
+    "estimated_sign_change_angle_deg": 63.465249120452,
+    "estimated_sign_change_angle_rad": 1.10767755775032,
+    "estimated_static_tire_compression_m": 0.00208202723076923,
+    "half_track_m": 0.214447500556172,
+    "kind": "spherical tire-center normal-moment sign-change estimate",
+    "tire_radius_m": 0.1,
+    "upright_sprung_cg_height_above_ground_m": 0.205
+  },
+  "status": "complete",
+  "substeps_per_tick": 1,
+  "ticks_per_run": 720,
+  "vehicle_identity": {
+    "format": "openrc-ground-vehicle",
+    "id": "mt8-bisonte-electric-4wd-estimate-v1",
+    "sha256": "941d50bea199e652efdbbfe585cfd3fa1b3b49616e232a42bea861ce2f6f6ab0",
+    "version": "1"
+  },
+  "vehicle_path": "C:/DEVELOPMENT/OpenRCsimulator/app/data/vehicles/ground/mt8_bisonte.json",
+  "version": 1
+}

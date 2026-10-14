@@ -9,6 +9,8 @@ const Conditions := preload("res://render/world/conditions.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const OverlaySettings := preload("res://render/overlays/overlay_settings.gd")
+const SkyConfig := preload("res://environment/sky_appearance_config.gd")
+const FailureConfig := preload("res://failures/config.gd")
 
 const NIGHT_FIELD_LIGHTING_CHOICES: Array[String] = ["club", "airfield", "off"]
 const NIGHT_DEFAULTS := {"field_lighting": "club", "campfire": false}
@@ -40,6 +42,10 @@ const DEFAULTS := {
 	# FW-71: compact presentation choices, kept outside flight physics and the existing weather schema.
 	night_field_lighting = "club",
 	night_campfire = false,
+	# FW-78: additive visual selection. Old preferences retain the exact classic sky.
+	sky_config = SkyConfig.DEFAULTS,
+	# EM-09: optional injected failures are off until the player opts in.
+	failure_config = {"probability_percent": 0, "include_catastrophic": false, "notify": true},
 }
 
 
@@ -47,6 +53,7 @@ const DEFAULTS := {
 ## not be overwritten) and `note` (what happened to an unusable file, "" when all is well).
 static func load_from(path: String) -> Dictionary:
 	var prefs := DEFAULTS.duplicate(true)
+	prefs.failure_config = FailureConfig.defaults()
 	prefs.writable = true
 	prefs.note = ""
 	if not FileAccess.file_exists(path):
@@ -107,7 +114,19 @@ static func load_from(path: String) -> Dictionary:
 			prefs.lighting_invalid = true
 			prefs.time_of_day = "day" # invalid explicit lighting always recovers to the documented legacy daylight
 			prefs.note = _append_note(prefs.note, "invalid time-of-day settings; using legacy daylight")
+	var raw_failure_config: Variant = cfg.get_value("failures", "config", FailureConfig.defaults())
+	var checked_failure_config: Dictionary = FailureConfig.validate(raw_failure_config)
+	if checked_failure_config.get("ok", false):
+		prefs.failure_config = checked_failure_config.config.duplicate(true)
+	else:
+		prefs.note = _append_note(prefs.note, "invalid failure settings; using defaults")
 	var night_field_lighting: Variant = cfg.get_value("night", "field_lighting", DEFAULTS.night_field_lighting)
+	if cfg.has_section_key("sky", "config"):
+		var checked_sky: Dictionary = SkyConfig.validate(cfg.get_value("sky", "config"))
+		if checked_sky.ok:
+			prefs.sky_config = checked_sky.config
+		else:
+			prefs.note = _append_note(prefs.note, "invalid sky settings; using classic clouds")
 	if typeof(night_field_lighting) == TYPE_STRING and NIGHT_FIELD_LIGHTING_CHOICES.has(night_field_lighting):
 		prefs.night_field_lighting = night_field_lighting
 	var night_campfire: Variant = cfg.get_value("night", "campfire", DEFAULTS.night_campfire)
@@ -134,6 +153,14 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	if not checked_night.ok:
 		return ERR_INVALID_DATA
 	var time_of_day: Variant = prefs.get("time_of_day", DEFAULTS.time_of_day)
+	var checked_sky: Dictionary = SkyConfig.validate(prefs.get("sky_config", SkyConfig.DEFAULTS))
+	if not checked_sky.ok:
+		return ERR_INVALID_DATA
+	var checked_failures: Dictionary = FailureConfig.validate(
+		prefs.get("failure_config", FailureConfig.defaults())
+	)
+	if not checked_failures.get("ok", false):
+		return ERR_INVALID_DATA
 	if typeof(time_of_day) != TYPE_STRING or not Conditions.HOME_CHOICES.has(time_of_day):
 		return ERR_INVALID_DATA
 	var cfg := ConfigFile.new()
@@ -153,6 +180,8 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 		cfg.set_value("flight", "lighting_config", checked_lighting.config.duplicate(true))
 	cfg.set_value("night", "field_lighting", checked_night.options.field_lighting)
 	cfg.set_value("night", "campfire", checked_night.options.campfire)
+	cfg.set_value("sky", "config", checked_sky.config)
+	cfg.set_value("failures", "config", checked_failures.config.duplicate(true))
 	var hud: Dictionary = OverlaySettings.validate(prefs.get("hud", DEFAULTS.hud))
 	cfg.set_value("hud", "preset", hud.preset)
 	cfg.set_value("hud", "visible", hud.visible)

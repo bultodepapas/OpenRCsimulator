@@ -64,7 +64,7 @@ func _initialize() -> void:
 		return
 	var rows: Array = []
 	var ok := true
-	for entry: Dictionary in Catalog.flyable_entries():
+	for entry: Dictionary in Catalog.airplane_flyable_entries():
 		for soft in [false, true]:
 			var result := exercise(entry, soft)
 			rows.append(result)

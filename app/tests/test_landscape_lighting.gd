@@ -33,7 +33,7 @@ func _initialize() -> void:
 	var field_lights := FieldLights.build(lights_result.lights)
 	var helper: Variant = AirfieldLighting.build(field_result.field, lights_result.lights, scenery_result.scenery)
 	_check("helper creates runway fixture hardware", helper.get_node_or_null("RunwayFixtureHardware") is MeshInstance3D)
-	_check("all three existing flood heads receive hardware", helper.get_meta("fixture_hardware").flood_housings == 3)
+	_check("four mast heads and windsock receive hardware", helper.get_meta("fixture_hardware").flood_housings == 5)
 	_check("all current stake locations receive posts", helper.get_meta("fixture_hardware").marker_posts == 19,
 		str(helper.get_meta("fixture_hardware").marker_posts))
 	var pavilion: Node = helper.find_child("PavilionLighting_*", true, false)
@@ -53,7 +53,7 @@ func _initialize() -> void:
 	_check("exactly two veranda pool lights", omnis.size() == 2, str(omnis.size()))
 	_check("helper never duplicates existing flood spots", spots.is_empty())
 	var existing_spots := field_lights.find_children("*", "SpotLight3D", true, false)
-	_check("existing FieldLights remains the only three-spot source", existing_spots.size() == 3)
+	_check("existing FieldLights remains the only five-spot source", existing_spots.size() == 5)
 	var original_spot_energies: Array[float] = []
 	for spot: SpotLight3D in existing_spots:
 		original_spot_energies.append(spot.light_energy)
@@ -88,7 +88,7 @@ func _initialize() -> void:
 	var spots_restore := true
 	for i in existing_spots.size():
 		spots_restore = spots_restore and absf((existing_spots[i] as SpotLight3D).light_energy - original_spot_energies[i]) < 1e-6
-	_check("night restores the three original spot energies before high-exposure capping", spots_restore)
+	_check("night restores the five original spot energies before high-exposure capping", spots_restore)
 	day_env.tonemap_exposure = 10000.0
 	Exposure.set_value(10000.0)
 	helper.apply_lighting({"sun_elevation_deg": -8.0})
@@ -97,19 +97,19 @@ func _initialize() -> void:
 	var spots_capped := true
 	var runway_spots_visible := true
 	for spot: SpotLight3D in existing_spots:
-		var cap := 24.0 if spot.name.begins_with("flood_") else 0.6
+		var cap := 800.0 if spot.name.begins_with("flood_") else 0.6
 		var expected_cap_energy := minf(original_spot_energies[existing_spots.find(spot)], cap / 10000.0)
 		spots_capped = spots_capped and spot.light_energy > 0.0 and absf(spot.light_energy - expected_cap_energy) < 1e-8
 		if spot.name.begins_with("flood_"):
-			runway_spots_visible = runway_spots_visible and spot.light_energy >= 0.00239
-	_check("all three existing spot contributions use their high-exposure caps", spots_capped)
-	_check("runway flood spots retain the 24-unit display budget", runway_spots_visible)
+			runway_spots_visible = runway_spots_visible and spot.light_energy >= 0.0799
+	_check("all five existing spot contributions use their high-exposure caps", spots_capped)
+	_check("runway flood spots retain the 800-unit inverse-square display budget", runway_spots_visible)
 	helper.apply_lighting({"sun_elevation_deg": -0.5})
 	var spot_transition := true
 	var spot_factor := float(helper.get_meta("night_factor"))
 	for i in existing_spots.size():
 		var spot: SpotLight3D = existing_spots[i]
-		var cap := 24.0 if spot.name.begins_with("flood_") else 0.6
+		var cap := 800.0 if spot.name.begins_with("flood_") else 0.6
 		var expected := minf(original_spot_energies[i], cap / 10000.0) * spot_factor
 		spot_transition = spot_transition and absf(spot.light_energy - expected) < 1e-8
 	_check("existing spot energy fades continuously under high exposure", spot_transition)
@@ -130,9 +130,9 @@ func _initialize() -> void:
 	var sdr_spots_bounded := true
 	for i in existing_spots.size():
 		var spot: SpotLight3D = existing_spots[i]
-		var cap := 24.0 if spot.name.begins_with("flood_") else 0.6
+		var cap := 800.0 if spot.name.begins_with("flood_") else 0.6
 		var expected := minf(original_spot_energies[i] * 1000.0, cap / 0.6)
-		sdr_spots_bounded = sdr_spots_bounded and absf(spot.light_energy - expected) < 1e-6
+		sdr_spots_bounded = sdr_spots_bounded and absf(spot.light_energy - expected) < 5e-6
 	_check("SDR gain cannot exceed the runway and auxiliary output caps", sdr_spots_bounded)
 	_check("SDR gain keeps veranda pools within their live-exposure cap",
 		omnis.all(func(node: OmniLight3D) -> bool: return node.light_energy > 0.0 and node.light_energy <= 0.200001))
@@ -145,9 +145,18 @@ func _initialize() -> void:
 	_check("sprite SDR gain respects its existing shader display cap", sdr_sprite_bounded)
 
 	var preserved: Array = lights_result.lights.get("fixtures", [])
-	_check("runway edge positions remain in the existing data", preserved[3].points.size() == 12)
-	_check("threshold positions remain in the existing data", preserved[4].points.size() == 6)
-	_check("no added real spots or markers alter fixture counts", field_lights.get_meta("spots") == 3)
+	_check("runway edge positions remain in the existing data", preserved.filter(func(f: Dictionary) -> bool: return f.id == "runway_edge_stakes")[0].points.size() == 12)
+	_check("threshold positions remain in the existing data", preserved.filter(func(f: Dictionary) -> bool: return f.id == "threshold_stakes")[0].points.size() == 6)
+	_check("no added real spots or markers alter fixture counts", field_lights.get_meta("spots") == 5)
+	helper.apply_lighting({"sun_elevation_deg": -8.0})
+	_check("off profile accepted", helper.set_profile("off"))
+	_check("off profile extinguishes every field spot", existing_spots.all(func(s: SpotLight3D) -> bool: return is_zero_approx(s.light_energy)))
+	var club_color: Color = (existing_spots[0] as SpotLight3D).light_color
+	_check("airfield profile accepted", helper.set_profile("airfield"))
+	_check("airfield uses a visibly cooler flood tint", not (existing_spots[0] as SpotLight3D).light_color.is_equal_approx(club_color))
+	_check("airfield restores every spot", existing_spots.all(func(s: SpotLight3D) -> bool: return s.light_energy > 0.0))
+	_check("unknown profile rejected", not helper.set_profile("invalid"))
+	_check("all downloaded head instances exist", helper.find_children("*_housing", "Node3D", false, false).size() == 5)
 	var scenery_off_helper := AirfieldLighting.build(field_result.field, lights_result.lights, {})
 	_check("fixture hardware remains when clubhouse scenery is disabled",
 		scenery_off_helper.get_node_or_null("RunwayFixtureHardware") is MeshInstance3D)

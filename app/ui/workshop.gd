@@ -314,7 +314,7 @@ func _build_aircraft_panel(parent: VBoxContainer) -> void:
 	_base_selector.name = "BaseAircraft"
 	_base_selector.focus_mode = Control.FOCUS_ALL
 	_base_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	for entry: Dictionary in Catalog.ENTRIES:
+	for entry: Dictionary in Catalog.airplane_flyable_entries():
 		_base_selector.add_item(str(entry.get("name", entry.get("id", "Aircraft"))))
 		var index := _base_selector.item_count - 1
 		_base_selector.set_item_metadata(index, str(entry.get("id", "")))
@@ -537,7 +537,8 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
 	_saved_compiler_version = ""
 	_variant_dependencies.clear()
 	var entry := Catalog.entry(id)
-	if entry.is_empty():
+	var rejected_rotorcraft := not entry.is_empty() and Catalog.is_rotorcraft(id)
+	if entry.is_empty() or rejected_rotorcraft:
 		entry = Catalog.entry(Catalog.DEFAULT_ID)
 		id = Catalog.DEFAULT_ID
 	_base_id = str(entry.get("id", Catalog.DEFAULT_ID))
@@ -596,6 +597,8 @@ func _load_catalog_aircraft(id: String, preserve_recipe: bool) -> void:
 	if is_instance_valid(_preview):
 		_preview.set_aircraft(_base_id, _preview_scale())
 	_compile_recipe()
+	if rejected_rotorcraft:
+		set_note("The fixed-wing Workshop cannot load a rotorcraft.")
 
 
 func _update_aircraft_description(entry: Dictionary) -> void:
@@ -680,6 +683,9 @@ func _load_selected_variant() -> void:
 	var next_base_id := str(variant.get("base_id", ""))
 	if Catalog.entry(next_base_id).is_empty():
 		set_note("The saved build refers to an unknown catalog aircraft.")
+		return
+	if Catalog.is_rotorcraft(next_base_id):
+		set_note("This saved build belongs to a rotorcraft and cannot be loaded into the fixed-wing Workshop.")
 		return
 	var next_recipe: Dictionary = Compiler.defaults()
 	next_recipe.merge(variant.get("recipe", {}), true)
@@ -1142,6 +1148,9 @@ func _messages(value: Variant, fallback: String) -> String:
 func _request_trial() -> void:
 	if not bool(_compiled.get("ok", false)):
 		set_note("Resolve the build errors before starting a trial.")
+		return
+	if Catalog.is_rotorcraft(_base_id):
+		set_note("The fixed-wing Workshop cannot start a rotorcraft trial.")
 		return
 	if not Catalog.can_fly(_base_id):
 		set_note("This catalog aircraft has no flight model and cannot start a trial.")

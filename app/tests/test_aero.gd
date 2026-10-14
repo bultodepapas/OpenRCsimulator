@@ -44,7 +44,10 @@ func _initialize() -> void:
 	var lift := qbar * S * cl
 	var drag := qbar * S * cd
 	var my_arp: float = qbar * S * c * a.Cm0
-	var my_transfer := (-0.07) * (-drag) # r = arp − cg = 0.07 m up → body z = −0.07; (r × F)_y = r_z·F_x
+	# r = arp − cg in body axes: the ARP is 0.07 m up (z −0.07) and, since D6e-R1, ahead of the CG; (r × F)_y = r_z·F_x − r_x·F_z.
+	var r_x: float = -(float(_model.reference.arp_le[0]) - float(_model.cg_le[0]))
+	var r_z: float = -(float(_model.reference.arp_le[2]) - float(_model.cg_le[2]))
+	var my_transfer := r_z * (-drag) - r_x * (-lift)
 	var f := _loads([15, 0, 0])
 	_check("lift = qbar·S·CL0 (Fz = −6.837 N)", absf(f[2] + lift) < 1e-9 and absf(lift - 6.8369) < 1e-3, "%s vs %s" % [f[2], -lift])
 	_check("drag = qbar·S·CD (Fx = −2.858 N)", absf(f[0] + drag) < 1e-9 and absf(drag - 2.8576) < 1e-3, "%s vs %s" % [f[0], -drag])

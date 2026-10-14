@@ -6,11 +6,15 @@ class_name HeliRotorBlur
 const PropellerBlur := preload("res://render/propeller_blur.gd")
 const MODEL_BUILDER := preload("res://aircraft/hx700_model.gd")
 const PROFILE_DATA_PATH := "res://assets/aircraft/hx-700/rotor_profiles.json"
+const PROFILE_DATA_SHA256 := "3c410cf978494e0c30ffc8b21a28850811a9954d5e4d64639acc225b56b4c959"
 const PROFILE_SCHEMA := "openrc-heli-rotor-profiles v1"
 const PROFILE_ALGORITHM := "vq05-polar-coverage-rings36-bins240-gap1-blade-share0.5-hub0.98-count0.7-v1"
 const RINGS := 36
 const SEGMENTS := 72
-const GAIN := 1.0
+# The source blades cover only 8–11% of each measured annulus on average. A modest
+# display-only gain keeps that measured disc legible at flight-camera scale; cached
+# coverage and all flight/rotor telemetry remain untouched.
+const DISC_OPACITY_GAIN := 2.5
 
 var measured: Dictionary = {}
 var _rotor: Node3D
@@ -73,6 +77,10 @@ static func _cached_profile(rotor: Node3D) -> Dictionary:
 		_profile_data_error = "profile sidecar has no " + key + " record"
 		_profile_data.clear()
 		return {}
+	var expected_radius := MODEL_BUILDER.MAIN_RADIUS_AUTHORED_M if key == "main" else MODEL_BUILDER.TAIL_RADIUS_AUTHORED_M
+	if absf(float(raw.get("radius", 0.0)) - expected_radius) > 0.002 \
+			or raw.get("radius_space") != "rotor_local_m_before_runtime_radius_alignment":
+		return _invalidate_profile("profile radius frame does not match the HX-700 adapter")
 	var surfaces: Array = []
 	var material_keys: Array = []
 	for descriptor: Variant in raw.get("surfaces", []):
@@ -126,6 +134,9 @@ static func _load_profile_data() -> void:
 		return
 	if not FileAccess.file_exists(PROFILE_DATA_PATH):
 		_profile_data_error = "profile sidecar is missing"
+		return
+	if FileAccess.get_sha256(PROFILE_DATA_PATH) != PROFILE_DATA_SHA256:
+		_profile_data_error = "profile sidecar hash does not match the source manifest"
 		return
 	var file := FileAccess.open(PROFILE_DATA_PATH, FileAccess.READ)
 	if file == null:
@@ -304,7 +315,7 @@ static func _annulus_band(tool: SurfaceTool, r0: float, r1: float, a0: float, a1
 			for vertex in 3:
 				var point: Vector3 = triangle[2 * vertex]
 				var alpha: float = float(triangle[2 * vertex + 1])
-				tool.set_color(Color(tint.r, tint.g, tint.b, alpha))
+				tool.set_color(Color(tint.r, tint.g, tint.b, clampf(DISC_OPACITY_GAIN * alpha, 0.0, 1.0)))
 				tool.add_vertex(point)
 
 
@@ -334,7 +345,7 @@ func update(rotor_rpm: float) -> void:
 	_disc.visible = shown and next_fraction > 0.0
 	for material: StandardMaterial3D in _disc_materials:
 		var color := material.albedo_color
-		color.a = clampf(GAIN * next_fraction, 0.0, 1.0)
+		color.a = next_fraction
 		material.albedo_color = color
 
 

@@ -1,6 +1,8 @@
 ## Analytic course tessellation. Vertices and normals come from the physics sampler.
 extends RefCounted
 const Course = preload("res://physics/ground_vehicle/course.gd")
+const SURFACE_SHADER = preload("res://vehicles/ground/course_surface.gdshader")
+const TURF = preload("res://assets/landscape/turf/detail.png")
 
 static func build(parent: Node3D, course: Dictionary) -> Node3D:
 	var root := Node3D.new()
@@ -26,10 +28,13 @@ static func build(parent: Node3D, course: Dictionary) -> Node3D:
 	var material_by_id := {}
 	for id in course.surface_by_id:
 		var data: Dictionary = course.surface_by_id[id]
-		var material := StandardMaterial3D.new()
-		material.albedo_color = Color(data.color_srgb[0], data.color_srgb[1], data.color_srgb[2])
-		material.roughness = data.roughness
-		material.cull_mode = BaseMaterial3D.CULL_DISABLED
+		var material := ShaderMaterial.new()
+		material.shader = SURFACE_SHADER
+		material.set_shader_parameter("base_color", Color(data.color_srgb[0], data.color_srgb[1], data.color_srgb[2]))
+		material.set_shader_parameter("surface_roughness", data.roughness)
+		material.set_shader_parameter("grass", id == "grass")
+		material.set_shader_parameter("survey_grid", id == "asphalt")
+		material.set_shader_parameter("turf_data", TURF)
 		material_by_id[id] = material
 	var builders := {}
 	for id in material_by_id:
@@ -60,9 +65,15 @@ static func build(parent: Node3D, course: Dictionary) -> Node3D:
 		instance.mesh = builders[id].commit()
 		root.add_child(instance)
 	for region in course.regions:
-		_sign(root, course, str(course.surface_by_id[region.surface_id].name).to_upper(), region.north_min_m - 0.3, (region.east_min_m + region.east_max_m) * 0.5)
+		var title: String = str(course.surface_by_id[region.surface_id].name).to_upper()
+		if TranslationServer.get_locale().begins_with("es"):
+			title = {"grass": "CÉSPED", "gravel": "GRAVA", "slippery": "POCO AGARRE"}.get(region.surface_id, title)
+		_sign(root, course, title, region.north_min_m - 0.3, (region.east_min_m + region.east_max_m) * 0.5)
 	for feature in course.features:
-		_sign(root, course, str(feature.id).to_upper(), feature.center_north_m, feature.center_east_m + feature.width_m * 0.5 + feature.shoulder_width_m + 0.5)
+		var title: String = {"tabletop": "TABLETOP", "wedge": "JUMP", "bump_lane": "BUMPS", "slope": "SLOPE"}.get(feature.type, "")
+		if TranslationServer.get_locale().begins_with("es"):
+			title = {"tabletop": "MESETA", "wedge": "SALTO", "bump_lane": "BACHES", "slope": "PENDIENTE"}.get(feature.type, "")
+		_sign(root, course, title, feature.center_north_m, feature.center_east_m + feature.width_m * 0.5 + feature.shoulder_width_m + 0.5)
 	var apron := MeshInstance3D.new()
 	var apron_mesh := PlaneMesh.new()
 	apron_mesh.size = Vector2(2000, 2000)
@@ -102,7 +113,7 @@ static func _sign(parent: Node3D, course: Dictionary, text: String, north: float
 	var label := Label3D.new()
 	label.text = text
 	label.font_size = 40
-	label.pixel_size = 0.0015
+	label.pixel_size = 0.0025
 	label.modulate = Color("f0d197")
 	label.outline_size = 8
 	label.billboard = BaseMaterial3D.BILLBOARD_ENABLED

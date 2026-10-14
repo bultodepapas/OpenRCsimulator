@@ -1,0 +1,401 @@
+{
+	"cases": [
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v1",
+			"id": "jensen-das-ugly-stik-60",
+			"initial_sha256": "66cb635cdf27468a292bb7809dd300b07b994041f614d45fff8718927fbecabf",
+			"model_sha256": "44a778e6cf090ae47a969a8c1ea973c5263a28c6cef496d3f3a50fdf5de8c574",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "7f76f14fe53b237c6bf1eeb2a5fb1b373aafa519c94dd0f15c2232f4ab936168",
+					"tick": 60
+				},
+				{
+					"sha256": "97be95223c5f85b6e1f2707a276966fd4df2185ce6dde04b778fa5e93e44bce5",
+					"tick": 120
+				},
+				{
+					"sha256": "834ee4f621dd9bab36c8d68f17c0b725fc89a17f2cb893927c0ea740254f9279",
+					"tick": 180
+				},
+				{
+					"sha256": "0a5fa703c2219c5dd073a82649ae37c06635aa58827284e8a304ee8327f429f2",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "8f951196189bb84b7eac1215ef13eddcc5cd8c000e72ad1c5752835f21289599"
+		},
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v1",
+			"id": "jensen-das-ugly-stik-60",
+			"initial_sha256": "66cb635cdf27468a292bb7809dd300b07b994041f614d45fff8718927fbecabf",
+			"model_sha256": "44a778e6cf090ae47a969a8c1ea973c5263a28c6cef496d3f3a50fdf5de8c574",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "7f76f14fe53b237c6bf1eeb2a5fb1b373aafa519c94dd0f15c2232f4ab936168",
+					"tick": 60
+				},
+				{
+					"sha256": "97be95223c5f85b6e1f2707a276966fd4df2185ce6dde04b778fa5e93e44bce5",
+					"tick": 120
+				},
+				{
+					"sha256": "834ee4f621dd9bab36c8d68f17c0b725fc89a17f2cb893927c0ea740254f9279",
+					"tick": 180
+				},
+				{
+					"sha256": "0a5fa703c2219c5dd073a82649ae37c06635aa58827284e8a304ee8327f429f2",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "8f951196189bb84b7eac1215ef13eddcc5cd8c000e72ad1c5752835f21289599"
+		},
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v9",
+			"id": "stik-glow-55ax-2t",
+			"initial_sha256": "ed708daa2cb168fb0006931602780d45a71e326dbf211f38c0ce35b4214a6b13",
+			"model_sha256": "d60eb2816f5c38364514197c54804c47dc0eb34517adc6cea788902311a23114",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "39b317d5b1626c348dbb7f373ee1184a9b088063394445ade8a57d2c266cc8a2",
+					"tick": 60
+				},
+				{
+					"sha256": "cbe82e8cbdb2e5a8369f80538fcdffc024e5364b1a2906b90d5cd9eeca71a593",
+					"tick": 120
+				},
+				{
+					"sha256": "9a35e748b4ed3d5304b77e5ce594fefd2a89f62ab5f5fc85c25a583d700ecd84",
+					"tick": 180
+				},
+				{
+					"sha256": "d785a42c35cb09da0f4cf4ba72347c88f71e68db54d56ac0e5ca50a1bbddcb56",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "de5b5d5c2b5ab4c98bd3e4d168e15b88430672f36c34a0ca803bd1bf614b148b"
+		},
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v9",
+			"id": "stik-glow-55ax-2t",
+			"initial_sha256": "ed708daa2cb168fb0006931602780d45a71e326dbf211f38c0ce35b4214a6b13",
+			"model_sha256": "d60eb2816f5c38364514197c54804c47dc0eb34517adc6cea788902311a23114",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "39b317d5b1626c348dbb7f373ee1184a9b088063394445ade8a57d2c266cc8a2",
+					"tick": 60
+				},
+				{
+					"sha256": "cbe82e8cbdb2e5a8369f80538fcdffc024e5364b1a2906b90d5cd9eeca71a593",
+					"tick": 120
+				},
+				{
+					"sha256": "9a35e748b4ed3d5304b77e5ce594fefd2a89f62ab5f5fc85c25a583d700ecd84",
+					"tick": 180
+				},
+				{
+					"sha256": "d785a42c35cb09da0f4cf4ba72347c88f71e68db54d56ac0e5ca50a1bbddcb56",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "de5b5d5c2b5ab4c98bd3e4d168e15b88430672f36c34a0ca803bd1bf614b148b"
+		},
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v9",
+			"id": "stik-glow-fs64v-4t",
+			"initial_sha256": "25412a3d931fab9911c07814bae127ab495c04a48564db9d617440baf63c0892",
+			"model_sha256": "95b35a9c8641c3ced0a092985f9d34787dc2da6396e112161325debb62c93554",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "e0adacc7e2ce0d131196cf187ea05428a6923b232244fbb3e95adc9cf1354fa8",
+					"tick": 60
+				},
+				{
+					"sha256": "0b5982b8880997ecc18a05f298c58938348b0faca4daa05db94782e68e204bf2",
+					"tick": 120
+				},
+				{
+					"sha256": "0b090f86f085fda484de368ac85be53b3ceecd5ad4b73ad0f7fe9c26465044d0",
+					"tick": 180
+				},
+				{
+					"sha256": "a0c54fe0991685cee61d2b432d966c8e9b8b0d434f12b9f4daf23099bd4f227a",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "c0d03db4f31e62dfae161d8d1da71c3961222f9bfa4b36a2078f3a938ede5bbd"
+		},
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v9",
+			"id": "stik-glow-fs64v-4t",
+			"initial_sha256": "25412a3d931fab9911c07814bae127ab495c04a48564db9d617440baf63c0892",
+			"model_sha256": "95b35a9c8641c3ced0a092985f9d34787dc2da6396e112161325debb62c93554",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "e0adacc7e2ce0d131196cf187ea05428a6923b232244fbb3e95adc9cf1354fa8",
+					"tick": 60
+				},
+				{
+					"sha256": "0b5982b8880997ecc18a05f298c58938348b0faca4daa05db94782e68e204bf2",
+					"tick": 120
+				},
+				{
+					"sha256": "0b090f86f085fda484de368ac85be53b3ceecd5ad4b73ad0f7fe9c26465044d0",
+					"tick": 180
+				},
+				{
+					"sha256": "a0c54fe0991685cee61d2b432d966c8e9b8b0d434f12b9f4daf23099bd4f227a",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "c0d03db4f31e62dfae161d8d1da71c3961222f9bfa4b36a2078f3a938ede5bbd"
+		},
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v1",
+			"id": "gp-extra-300s-60",
+			"initial_sha256": "e346c4bf89a17bf457a67ceb7305f9be3ce899a55db4c17735584f865245a5d6",
+			"model_sha256": "be30c47c792be3f12a814580cdf925a2bea6da27cce6cbc397dd5ebd026ab3fb",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "0451d4f2dc31febcc06cf8f7b4459981e6e8ec68bc60bf51eb6a16b632a7acc4",
+					"tick": 60
+				},
+				{
+					"sha256": "93c6b545834e3f68c589bb1ef8beb5876a5fc0f6596bf19cc1e2b757af9bf04e",
+					"tick": 120
+				},
+				{
+					"sha256": "dd044f89b28592d596d7e22f71e678d8263b3dcc980414aefe4164f72f3ce55c",
+					"tick": 180
+				},
+				{
+					"sha256": "728decf4cce193c28e505d557395018e9ffa3265e98a98e08c04e4e35e01f8e7",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "782bc2a03c3c870788253e5468e57c79dea56c99305e65e049d4bfaa2f3dd533"
+		},
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v1",
+			"id": "gp-extra-300s-60",
+			"initial_sha256": "e346c4bf89a17bf457a67ceb7305f9be3ce899a55db4c17735584f865245a5d6",
+			"model_sha256": "be30c47c792be3f12a814580cdf925a2bea6da27cce6cbc397dd5ebd026ab3fb",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "0451d4f2dc31febcc06cf8f7b4459981e6e8ec68bc60bf51eb6a16b632a7acc4",
+					"tick": 60
+				},
+				{
+					"sha256": "93c6b545834e3f68c589bb1ef8beb5876a5fc0f6596bf19cc1e2b757af9bf04e",
+					"tick": 120
+				},
+				{
+					"sha256": "dd044f89b28592d596d7e22f71e678d8263b3dcc980414aefe4164f72f3ce55c",
+					"tick": 180
+				},
+				{
+					"sha256": "728decf4cce193c28e505d557395018e9ffa3265e98a98e08c04e4e35e01f8e7",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "782bc2a03c3c870788253e5468e57c79dea56c99305e65e049d4bfaa2f3dd533"
+		},
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v1",
+			"id": "p51d-mustang-120",
+			"initial_sha256": "f6d490cdaeaf90b69a0bbca0e43af823d1615dfc977978b95be86d5c9ac74c4f",
+			"model_sha256": "8a87a1a4d27a33c7f7f74c074d9a7ddd8d8de4160bab7442c8b29c1b2e2d0824",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "e241688f4349209391e02dd07e107ac03c0c03dba5e193ce86371b6cddc86e4d",
+					"tick": 60
+				},
+				{
+					"sha256": "7706b93440bc30f8363d38a4a0f72ede06b61fb97bdf168a53ccbd400551cc37",
+					"tick": 120
+				},
+				{
+					"sha256": "c7f78fee1241e96264f30c75b46983a0a78f476a8b246a9608098ae492207341",
+					"tick": 180
+				},
+				{
+					"sha256": "e8d9d5fbe37996e4c319ff7df40678adb769466bcc0025282f731a1510ba97c7",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "399ecab059da22089ab621b52ed408eca7409768a4466707e842aa61aa5a75a6"
+		},
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v1",
+			"id": "p51d-mustang-120",
+			"initial_sha256": "f6d490cdaeaf90b69a0bbca0e43af823d1615dfc977978b95be86d5c9ac74c4f",
+			"model_sha256": "8a87a1a4d27a33c7f7f74c074d9a7ddd8d8de4160bab7442c8b29c1b2e2d0824",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "e241688f4349209391e02dd07e107ac03c0c03dba5e193ce86371b6cddc86e4d",
+					"tick": 60
+				},
+				{
+					"sha256": "7706b93440bc30f8363d38a4a0f72ede06b61fb97bdf168a53ccbd400551cc37",
+					"tick": 120
+				},
+				{
+					"sha256": "c7f78fee1241e96264f30c75b46983a0a78f476a8b246a9608098ae492207341",
+					"tick": 180
+				},
+				{
+					"sha256": "e8d9d5fbe37996e4c319ff7df40678adb769466bcc0025282f731a1510ba97c7",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "399ecab059da22089ab621b52ed408eca7409768a4466707e842aa61aa5a75a6"
+		},
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v8",
+			"id": "sebart-avanti-s-a200-p100rx",
+			"initial_sha256": "1523412d3467d5a2364f69a181d28b2a32c7b06c9227ff2c8ee9a3bc9613c69c",
+			"model_sha256": "5fb29bb7486f549f68e5247a4c962dcdb622eac3723328b2c92ebee8f16fb479",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "de19dd9371d1f0dfed62881e593ad331af2b8c4888060be9c9e1a3ea2a8cdedb",
+					"tick": 60
+				},
+				{
+					"sha256": "7b8a8ea443c6815d681eb7e0b7cb63f41b6bb26a825505ff794ea472cefa1815",
+					"tick": 120
+				},
+				{
+					"sha256": "c53cc9955be8347b74545e50c299ab7779c3c9f66506a075f8e2e14342bd408c",
+					"tick": 180
+				},
+				{
+					"sha256": "e5511c9ec5145f3cc9e623f36982a151383f8e96e5cf5a24327e2d09115ff9a1",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "44f2d6c3b06d9f2351c202b210794edd04693a93a2d17c67740f33863e6a7406"
+		},
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v8",
+			"id": "sebart-avanti-s-a200-p100rx",
+			"initial_sha256": "1523412d3467d5a2364f69a181d28b2a32c7b06c9227ff2c8ee9a3bc9613c69c",
+			"model_sha256": "5fb29bb7486f549f68e5247a4c962dcdb622eac3723328b2c92ebee8f16fb479",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "de19dd9371d1f0dfed62881e593ad331af2b8c4888060be9c9e1a3ea2a8cdedb",
+					"tick": 60
+				},
+				{
+					"sha256": "7b8a8ea443c6815d681eb7e0b7cb63f41b6bb26a825505ff794ea472cefa1815",
+					"tick": 120
+				},
+				{
+					"sha256": "c53cc9955be8347b74545e50c299ab7779c3c9f66506a075f8e2e14342bd408c",
+					"tick": 180
+				},
+				{
+					"sha256": "e5511c9ec5145f3cc9e623f36982a151383f8e96e5cf5a24327e2d09115ff9a1",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "44f2d6c3b06d9f2351c202b210794edd04693a93a2d17c67740f33863e6a7406"
+		},
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v5",
+			"id": "turbo-lumber-evolution",
+			"initial_sha256": "d418b63f4effa6762b42428e2c3c05b6a0f514351b3bc9c8110438a855dfd92b",
+			"model_sha256": "2fa9ac1f6da016b051f54e9abfee38d3b332002278f30fc6940c049ed41c1e5e",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "d8bbfba6abe53a7ad1f36e80a86020b7554c01bf0aabdad7f3117861c599fd45",
+					"tick": 60
+				},
+				{
+					"sha256": "dfdf7573afc5227ec521368d815d3316cb8dc443301637bf29678f0e8b35d290",
+					"tick": 120
+				},
+				{
+					"sha256": "afb942757494ebeeebeb0e746a9abccf0ef5157a4c408b10eb1b997063fe5a00",
+					"tick": 180
+				},
+				{
+					"sha256": "69ce4e74474ad4685b982283e78494c3dde780716c12e4353ef5d194b8bda759",
+					"tick": 240
+				}
+			],
+			"soft_hull": false,
+			"trajectory_sha256": "ba49c0c30ccd2af58b8b36ff4b846809851ab606220a90d0cef1f77a22e3cd97"
+		},
+		{
+			"checkpoint_format": "openrc-flight-checkpoint v5",
+			"id": "turbo-lumber-evolution",
+			"initial_sha256": "d418b63f4effa6762b42428e2c3c05b6a0f514351b3bc9c8110438a855dfd92b",
+			"model_sha256": "2fa9ac1f6da016b051f54e9abfee38d3b332002278f30fc6940c049ed41c1e5e",
+			"ok": true,
+			"replay_exact": true,
+			"samples": [
+				{
+					"sha256": "d8bbfba6abe53a7ad1f36e80a86020b7554c01bf0aabdad7f3117861c599fd45",
+					"tick": 60
+				},
+				{
+					"sha256": "dfdf7573afc5227ec521368d815d3316cb8dc443301637bf29678f0e8b35d290",
+					"tick": 120
+				},
+				{
+					"sha256": "afb942757494ebeeebeb0e746a9abccf0ef5157a4c408b10eb1b997063fe5a00",
+					"tick": 180
+				},
+				{
+					"sha256": "69ce4e74474ad4685b982283e78494c3dde780716c12e4353ef5d194b8bda759",
+					"tick": 240
+				}
+			],
+			"soft_hull": true,
+			"trajectory_sha256": "ba49c0c30ccd2af58b8b36ff4b846809851ab606220a90d0cef1f77a22e3cd97"
+		}
+	],
+	"format": "openrc-as-fleet-probe v1",
+	"godot": "4.7.2-stable (official)",
+	"hz": 240,
+	"ok": true,
+	"ticks_per_case": 240
+}

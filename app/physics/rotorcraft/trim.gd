@@ -10,23 +10,29 @@ const STATE_SIZE: int = 19
 
 ## Initial unknowns are [roll,pitch,long-stick,lat-stick,tail-bias,
 ## collective-stick,a1,b1,vi,Omega]. The final controls are mapped through source angles/curves.
-## Options may provide flight_mode, initial_guess and tolerance; the seeded start
-## is numerical only and all physical parameters remain in the prepared context.
+## Options may provide flight_mode, initial_guess, tolerance and ground_height_up_m.
+## The seeded start is numerical only; ground height affects only geometry and
+## all aircraft physical parameters remain in the prepared context.
 static func solve_hover(context: Dictionary, yaw: float,
 		position_ned: PackedFloat64Array, wind_ned_m_s: PackedFloat64Array,
 		options: Dictionary = {}) -> Dictionary:
 	if not context.is_read_only() or context.get("law") != "openrc-helicopter-flight-dynamics-v1":
 		return _failure("hover trim needs a prepared flight context", 0)
 	for key: Variant in options.keys():
-		if typeof(key) != TYPE_STRING or not ["flight_mode", "initial_guess", "tolerance"].has(key):
+		if typeof(key) != TYPE_STRING or not ["flight_mode", "initial_guess", "tolerance", "ground_height_up_m"].has(key):
 			return _failure("hover-trim options contain an unknown field", 0)
 	var flight_mode: String = str(options.get("flight_mode", "normal"))
 	var initial_guess: PackedFloat64Array = _as_f64(options.get("initial_guess", hover_seed(context, yaw)))
 	var tolerance: float = float(options.get("tolerance", 1.0e-10))
+	var ground_height_up_m: float = NAN
+	if options.has("ground_height_up_m"):
+		if not _number(options.ground_height_up_m):
+			return _failure("hover-trim ground height must be finite", 0)
+		ground_height_up_m = float(options.ground_height_up_m)
 	if not _input_valid(context, flight_mode, yaw, position_ned, wind_ned_m_s, initial_guess, tolerance):
 		return _failure("invalid hover-trim arguments", 0)
 	var x: PackedFloat64Array = initial_guess.duplicate()
-	var evaluated: Dictionary = _evaluate(x, context, flight_mode, yaw, position_ned, wind_ned_m_s)
+	var evaluated: Dictionary = _evaluate(x, context, flight_mode, yaw, position_ned, wind_ned_m_s, ground_height_up_m)
 	if not evaluated.ok:
 		return _failure("initial hover-trim state refused: " + str(evaluated.get("message", "invalid state")), 0)
 	var residual: PackedFloat64Array = _scaled_residual(evaluated, context)
@@ -49,7 +55,7 @@ static func solve_hover(context: Dictionary, yaw: float,
 				direction = -1.0
 			if not _unknowns_valid(probe, context):
 				return _failure("hover trim reached an unknown's physical boundary", iterations)
-			var probe_result: Dictionary = _evaluate(probe, context, flight_mode, yaw, position_ned, wind_ned_m_s)
+			var probe_result: Dictionary = _evaluate(probe, context, flight_mode, yaw, position_ned, wind_ned_m_s, ground_height_up_m)
 			if not probe_result.ok:
 				return _failure("hover-trim Jacobian evaluation refused: " + str(probe_result.get("message", "invalid probe")), iterations)
 			var probe_residual: PackedFloat64Array = _scaled_residual(probe_result, context)
@@ -68,7 +74,7 @@ static func solve_hover(context: Dictionary, yaw: float,
 			for index: int in range(10):
 				candidate[index] += scale * correction[index]
 			if _unknowns_valid(candidate, context):
-				var candidate_result: Dictionary = _evaluate(candidate, context, flight_mode, yaw, position_ned, wind_ned_m_s)
+				var candidate_result: Dictionary = _evaluate(candidate, context, flight_mode, yaw, position_ned, wind_ned_m_s, ground_height_up_m)
 				if candidate_result.ok:
 					var candidate_residual: PackedFloat64Array = _scaled_residual(candidate_result, context)
 					var candidate_norm: float = _norm(candidate_residual)
@@ -88,7 +94,7 @@ static func solve_hover(context: Dictionary, yaw: float,
 			failed_search["correction"] = correction
 			return failed_search
 	if residual_norm > tolerance:
-		return _failure("hover trim did not converge (scaled residual %.6g)" % residual_norm, iterations)
+		return _failure("hover trim did not converge (scaled residual %.6f)" % residual_norm, iterations)
 	if not evaluated.aero.main_rotor.get("within_small_flap_angle_range", false):
 		return _failure("hover trim lies outside the identified small-flap range", iterations)
 	var final_state: PackedFloat64Array = evaluated.state
@@ -119,7 +125,8 @@ static func hover_seed(context: Dictionary, yaw: float = 0.0) -> PackedFloat64Ar
 
 
 static func _evaluate(x: PackedFloat64Array, context: Dictionary, flight_mode: String,
-		yaw: float, position_ned: PackedFloat64Array, wind_ned_m_s: PackedFloat64Array) -> Dictionary:
+		yaw: float, position_ned: PackedFloat64Array, wind_ned_m_s: PackedFloat64Array,
+		ground_height_up_m: float = NAN) -> Dictionary:
 	var attitude: PackedFloat64Array = M.q_from_euler(yaw, x[1], x[0])
 	# Hover trim is a ground-stationary aircraft. Wind belongs in the air-relative
 	# velocity calculation inside Flight.evaluate, not in the body's ground
@@ -130,8 +137,17 @@ static func _evaluate(x: PackedFloat64Array, context: Dictionary, flight_mode: S
 	body.append_array(PackedFloat64Array([x[9], x[6], x[7], x[8], yaw, 0.0]))
 	var sticks: PackedFloat64Array = PackedFloat64Array([x[2], x[3], 0.0, x[5]])
 	var trim_offsets: Dictionary = {"tail_collective_bias_rad": x[4]}
+	var stage_height_over_radius: float = NAN
+	if not is_nan(ground_height_up_m):
+		var hub_arm_body: PackedFloat64Array = PackedFloat64Array([
+			context.main_model.hub_x_m, context.main_model.hub_y_m, context.main_model.hub_z_m])
+		var hub_arm_ned: PackedFloat64Array = M.q_rotate(attitude, hub_arm_body)
+		stage_height_over_radius = (-position_ned[2] - hub_arm_ned[2] - ground_height_up_m) \
+			/ context.main_model.rotor_radius_m
+		if not is_finite(stage_height_over_radius):
+			return {"ok": false, "message": "hover-trim hub height is nonfinite"}
 	var result: Dictionary = Flight.evaluate(body, context, sticks, flight_mode, false, false,
-		wind_ned_m_s, true, PackedFloat64Array(), trim_offsets)
+		wind_ned_m_s, true, PackedFloat64Array(), trim_offsets, stage_height_over_radius)
 	if not result.ok:
 		return {"ok": false, "message": str(result.get("message", "flight equations refused trim probe"))}
 	return {"ok": true, "state": body, "sticks": sticks, "result": result, "aero": result.aero}
@@ -238,6 +254,11 @@ static func _as_f64(value: Variant) -> PackedFloat64Array:
 	if typeof(value) == TYPE_ARRAY:
 		return PackedFloat64Array(value)
 	return PackedFloat64Array()
+
+
+static func _number(value: Variant) -> bool:
+	var kind: int = typeof(value)
+	return (kind == TYPE_FLOAT or kind == TYPE_INT) and is_finite(float(value))
 
 
 static func _input_valid(context: Dictionary, flight_mode: String, yaw: float,

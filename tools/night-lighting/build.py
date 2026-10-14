@@ -11,7 +11,6 @@ import argparse
 import hashlib
 import json
 import math
-import shutil
 import struct
 import sys
 from pathlib import Path
@@ -19,6 +18,7 @@ from typing import Any
 from zipfile import ZipFile
 
 try:
+    import PIL
     from PIL import Image
 except ImportError as exc:  # pragma: no cover - environment setup message
     raise SystemExit("Pillow is required; install tools/night-lighting/requirements.txt") from exc
@@ -45,7 +45,7 @@ FIRE_FRAME_SIZE = (81, 123)
 FIRE_COLUMNS = 8
 FIRE_ROWS = 10
 FIRE_PADDING_PX = 32
-FIRE_SETS = (("1b", 0), ("1f", 40))
+FIRE_SETS = (("b", 0), ("f", 40))
 PIPELINE_VERSION = "fw67-night-lighting-v1"
 
 
@@ -423,6 +423,8 @@ def build_fire_atlas(source_zip: bytes) -> tuple[bytes, dict[str, Any]]:
 
 
 def generated_files() -> dict[str, bytes]:
+    if PIL.__version__ != "12.3.0":
+        raise ValueError(f"Pillow 12.3.0 is required for deterministic atlas output; found {PIL.__version__}")
     lamp_source = source_bytes(LAMP_SOURCE)
     lamp_hash = sha256(lamp_source)
     lamp, lamp_metadata = build_lamp_head(lamp_source, lamp_hash)
@@ -456,6 +458,7 @@ def generated_files() -> dict[str, bytes]:
             "output": "campfire-pit.glb",
             "output_sha256": sha256(kenney_glb),
             "scale": 3.6,
+            "visual_scale_owner": "campfire helper ScaledVisuals child; campfire root position remains parent-owned",
             "source_bounds_m": {"x": 0.2777686, "y": 0.1090655, "z": 0.2692302},
             "runtime_bounds_m_approx": {"x": 0.999967, "y": 0.392636, "z": 0.969229},
             "ground_origin": "GLB root at local y=0; scaling is parent-side uniform, leaving the ground plane fixed",

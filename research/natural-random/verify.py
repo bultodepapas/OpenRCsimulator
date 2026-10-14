@@ -3,6 +3,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import time
 from pathlib import Path
@@ -27,12 +28,13 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--godot", type=Path, required=True)
     parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--app", type=Path, default=ROOT / "app", help="Application tree to verify; defaults to the working tree")
     parser.add_argument("--tests", nargs="*", choices=TESTS)
     args = parser.parse_args()
     out = args.out.resolve()
     out.mkdir(parents=True, exist_ok=False)
     godot = args.godot.resolve()
-    base = [str(godot), "--headless", "--path", str(ROOT / "app"), "--audio-driver", "Dummy"]
+    base = [str(godot), "--headless", "--path", str(args.app.resolve()), "--audio-driver", "Dummy"]
     commands = [("import", ["--editor", "--import", "--quit"])]
     commands += [("parse-" + Path(p).stem, ["--check-only", "--script", "res://" + p]) for p in SCRIPTS]
     commands += [(name, ["--script", "res://tests/" + name + ".gd"]) for name in (args.tests if args.tests is not None else TESTS)]
@@ -42,13 +44,21 @@ def main() -> int:
         timed_out = False
         try:
             with (out / (name + ".log")).open("wb") as stream:
-                result = subprocess.run(base + command, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT, timeout=600)
+                invocation = base + ["--log-file", str(out / (name + ".engine.log"))] + command
+                process = subprocess.Popen(invocation, cwd=ROOT, stdout=stream, stderr=subprocess.STDOUT)
+                code = process.wait(timeout=600)
             log = (out / (name + ".log")).read_text(encoding="utf-8", errors="replace")
-            code = result.returncode
         except subprocess.TimeoutExpired:
+            # The Windows console executable is a wrapper; also stop its owned engine child.
+            if os.name == "nt":
+                subprocess.run(["taskkill", "/PID", str(process.pid), "/T", "/F"], capture_output=True)
+            else:
+                process.kill()
+            process.wait()
             log = (out / (name + ".log")).read_text(encoding="utf-8", errors="replace")
             code, timed_out = -1, True
-        errors = [line for line in log.splitlines() if line.startswith(("ERROR:", "SCRIPT ERROR:", "SHADER ERROR:", "FAIL "))]
+        errors = list(dict.fromkeys(line for line in log.splitlines()
+                      if line.startswith(("ERROR:", "SCRIPT ERROR:", "SHADER ERROR:", "FAIL "))))
         passed = code == 0 and not errors
         (out / (name + ".log")).write_text(log, encoding="utf-8")
         report["results"].append({"name": name, "ok": passed, "exit_code": code, "timeout": timed_out,
@@ -58,6 +68,8 @@ def main() -> int:
         print(f"{'PASS' if passed else 'FAIL'} {name}", flush=True)
         if not passed:
             print("\n".join(errors[:8]), flush=True)
+            if name == "import" or name.startswith("parse-"):
+                break # Dependent runtime tests cannot establish acceptance in an unparseable tree.
     return 0 if report["ok"] else 1
 
 

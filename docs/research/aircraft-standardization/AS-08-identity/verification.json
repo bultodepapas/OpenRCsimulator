@@ -1,0 +1,1185 @@
+{
+  "time_utc": "2026-10-14T02:21:26.496692+00:00",
+  "ok": true,
+  "scope": "24 focused test/probe entries on the shared working tree; accepted reruns supersede initial failures. Not the full app test/export suite.",
+  "accepted": [
+    {
+      "name": "physical_identity",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_physical_identity.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 9.031999999999243,
+      "log": "logs/physical_identity.log",
+      "physical_sources": {
+        "gp_extra_300s_60.json": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
+        "jensen_ugly_stik_60.json": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+        "p51d_mustang_120.json": "04f69687f7ea73a4235bf223360f38b2634ddc11933abdea8ff01aee7ebda619",
+        "sebart_avanti_s_a200.json": "4910bd4ce0a9cd4e517db7a4cf9246c5c6e5328f512b528ff1077b9c7cda214a",
+        "stik_glow_55ax_2t.json": "3e4b0dfda2ac432dd9fe04f0ac31a172f92850845f71ee1df53e0af4e2a44d66",
+        "stik_glow_55ax_2t_apc_13x6.json": "3fbcf8063ba5188435749cdbd4684ab68e630620d277ca631868584c2260f4e4",
+        "stik_glow_fs64v_4t.json": "788654c4c9bb6667fc3922d595d548ae85577c803f945803aacb9610dd292140",
+        "stik_glow_fs64v_4t_apc_13x6.json": "8aa3f4bdc6bb6e90682b8d1c06ebd6d7f6cc3054f53afc846aca51d8836e96b4",
+        "synthetic_stik_electric_4s.json": "4784057b5e930b1c5b0047de34e8c5f75dbfb266c823efb9b29a1409b992688d",
+        "synthetic_stik_electric_4s_battery.json": "830acca41e3464286b8f2fac2e32a5e3176e996c77828a65754aec420642b07b",
+        "synthetic_stik_electric_6s.json": "7f8397e69eec4699ce842ea38c8557d263331afc880993ce40438a3881156402",
+        "synthetic_stik_electric_6s_battery.json": "b6c36b5332b8857b40db4257fffe3bf0de70092777306fc5a0f2de88effc675a",
+        "turbo_lumber_evolution.json": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee",
+        "xcell_60_research.json": "2a17475be523a30773647a79f8635fd66ae1bf2a58ab6b886a78cefabd76d45f"
+      },
+      "source_drift": false,
+      "log_sha256": "7826c55f76b4f685371d6d72cb0093c14e76028671b054f791ee38c6a63c634f"
+    },
+    {
+      "name": "fleet",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\fleet_probe.gd",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-identity\\integration\\fleet-latest.json"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 33.17199999999866,
+      "log": "logs/fleet_latest.log",
+      "before": {
+        "gp_extra_300s_60.json": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
+        "jensen_ugly_stik_60.json": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+        "p51d_mustang_120.json": "04f69687f7ea73a4235bf223360f38b2634ddc11933abdea8ff01aee7ebda619",
+        "sebart_avanti_s_a200.json": "4910bd4ce0a9cd4e517db7a4cf9246c5c6e5328f512b528ff1077b9c7cda214a",
+        "stik_glow_55ax_2t.json": "3e4b0dfda2ac432dd9fe04f0ac31a172f92850845f71ee1df53e0af4e2a44d66",
+        "stik_glow_55ax_2t_apc_13x6.json": "3fbcf8063ba5188435749cdbd4684ab68e630620d277ca631868584c2260f4e4",
+        "stik_glow_fs64v_4t.json": "788654c4c9bb6667fc3922d595d548ae85577c803f945803aacb9610dd292140",
+        "stik_glow_fs64v_4t_apc_13x6.json": "8aa3f4bdc6bb6e90682b8d1c06ebd6d7f6cc3054f53afc846aca51d8836e96b4",
+        "synthetic_stik_electric_4s.json": "4784057b5e930b1c5b0047de34e8c5f75dbfb266c823efb9b29a1409b992688d",
+        "synthetic_stik_electric_4s_battery.json": "830acca41e3464286b8f2fac2e32a5e3176e996c77828a65754aec420642b07b",
+        "synthetic_stik_electric_6s.json": "7f8397e69eec4699ce842ea38c8557d263331afc880993ce40438a3881156402",
+        "synthetic_stik_electric_6s_battery.json": "b6c36b5332b8857b40db4257fffe3bf0de70092777306fc5a0f2de88effc675a",
+        "turbo_lumber_evolution.json": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee"
+      },
+      "after": {
+        "gp_extra_300s_60.json": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
+        "jensen_ugly_stik_60.json": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+        "p51d_mustang_120.json": "04f69687f7ea73a4235bf223360f38b2634ddc11933abdea8ff01aee7ebda619",
+        "sebart_avanti_s_a200.json": "4910bd4ce0a9cd4e517db7a4cf9246c5c6e5328f512b528ff1077b9c7cda214a",
+        "stik_glow_55ax_2t.json": "3e4b0dfda2ac432dd9fe04f0ac31a172f92850845f71ee1df53e0af4e2a44d66",
+        "stik_glow_55ax_2t_apc_13x6.json": "3fbcf8063ba5188435749cdbd4684ab68e630620d277ca631868584c2260f4e4",
+        "stik_glow_fs64v_4t.json": "788654c4c9bb6667fc3922d595d548ae85577c803f945803aacb9610dd292140",
+        "stik_glow_fs64v_4t_apc_13x6.json": "8aa3f4bdc6bb6e90682b8d1c06ebd6d7f6cc3054f53afc846aca51d8836e96b4",
+        "synthetic_stik_electric_4s.json": "4784057b5e930b1c5b0047de34e8c5f75dbfb266c823efb9b29a1409b992688d",
+        "synthetic_stik_electric_4s_battery.json": "830acca41e3464286b8f2fac2e32a5e3176e996c77828a65754aec420642b07b",
+        "synthetic_stik_electric_6s.json": "7f8397e69eec4699ce842ea38c8557d263331afc880993ce40438a3881156402",
+        "synthetic_stik_electric_6s_battery.json": "b6c36b5332b8857b40db4257fffe3bf0de70092777306fc5a0f2de88effc675a",
+        "turbo_lumber_evolution.json": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee"
+      },
+      "source_drift": false,
+      "log_sha256": "97cfc57e9852f6c1c3924e131c3604bce511c65dab3b1d3c137260e98d4ce41f"
+    },
+    {
+      "name": "aircraft_contract",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_contract.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 143.375,
+      "log": "logs/aircraft_contract.log",
+      "log_sha256": "db2511c6199c3d2874322c7579742fad356a9be4f834d6895ed9ad9069a01917"
+    },
+    {
+      "name": "aircraft_data",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_data.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 18.42199999999866,
+      "log": "aircraft_data.log"
+    },
+    {
+      "name": "aircraft_modules",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_modules.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 32.14100000000326,
+      "log": "logs/aircraft_modules.log",
+      "log_sha256": "73aa3341c5cb94f2c6416e0091a36422904aa75e2514515e117da4ea1808e19a"
+    },
+    {
+      "name": "aircraft_physical_identity_contacts",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_physical_identity_contacts.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 73.43800000000192,
+      "log": "logs/aircraft_physical_identity_contacts.log",
+      "log_sha256": "fa730162218428b78702134f263c7a1669ecb69ffce22359e48e87ff1c6cf71f"
+    },
+    {
+      "name": "aircraft_contact_contract",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_contact_contract.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 71.54699999999866,
+      "log": "logs/aircraft_contact_contract.log",
+      "log_sha256": "ca6b98b92f12ce256fa3be08881844839a9248d79d40847054179f44223a22a0"
+    },
+    {
+      "name": "aircraft_contact_events",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_contact_events.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 29.43699999999808,
+      "log": "logs/aircraft_contact_events.log",
+      "log_sha256": "be41c8c06ce6ccdc599f89b697ccaeb3716501568bede833d0253528724e805d"
+    },
+    {
+      "name": "aircraft_contact_session",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_contact_session.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 16.68699999999808,
+      "log": "logs/aircraft_contact_session.log",
+      "log_sha256": "dee476c5cecb27486d1fc5aeb419c4e5c4ddace67f29d1a8527a6910c4a96317"
+    },
+    {
+      "name": "aircraft_propulsion_runtime",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_propulsion_runtime.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 17.1559999999954,
+      "log": "logs/aircraft_propulsion_runtime.log",
+      "log_sha256": "0e6eb36bc0651619d863f32a38afc50f6f49f5075b6c4809c2df8fe56ef69d3a"
+    },
+    {
+      "name": "checkpoint",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_checkpoint.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 17.7190000000046,
+      "log": "logs/checkpoint.log",
+      "log_sha256": "249065b6c88b8b531eb4f452f4990af55e1b5feb047d6ea81303f3d45c5a01b5"
+    },
+    {
+      "name": "checkpoint_integrity",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_checkpoint_integrity.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 2.8280000000013388,
+      "log": "logs/checkpoint_integrity.log",
+      "log_sha256": "00bafa2bb63d598134184ec7d6ef53dfef0c80e4ea6102dc347229ed698ad06f"
+    },
+    {
+      "name": "session_guards",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_session_guards.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 3.9689999999973224,
+      "log": "logs/session_guards.log",
+      "log_sha256": "b3c0a1a8e896f1d818d3c7819e0df9f1cb39ca9f9f1fdb8f141ef7de8e26e431"
+    },
+    {
+      "name": "contact_policy",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_contact_policy.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 127.67200000000594,
+      "log": "logs/contact_policy.log",
+      "log_sha256": "ed776be6d50b05c59463e322522a408fb840879780231a3a7756ff37000d13c3"
+    },
+    {
+      "name": "soft_contacts",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_soft_contacts.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 99.39100000000326,
+      "log": "logs/soft_contacts.log",
+      "log_sha256": "e4cf6a72660fe28992ac7c4ac428a820f1d84d96658edeb3710f93fb2777062f"
+    },
+    {
+      "name": "prop_strike",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_prop_strike.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 96.54699999999866,
+      "log": "logs/prop_strike.log",
+      "log_sha256": "a9a7919b6284f023a65cbf3a544524524d2ca35930ae59f8fb12e9bf4651f328"
+    },
+    {
+      "name": "prop_strike_feedback",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_prop_strike_feedback.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 28.51600000000326,
+      "log": "logs/prop_strike_feedback.log",
+      "log_sha256": "a62421b2de09e4f75c2202c111b30fa4b14ce9e8a790260dd3472dcf77772b3b"
+    },
+    {
+      "name": "wheel_session",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wheel_session.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 15.56199999999808,
+      "log": "logs/wheel_session.log",
+      "log_sha256": "7b9ea5b35d355dda2141105c7022a97faa91846a5f40baba0ec24165cbe18688"
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_workshop_descriptor.gd",
+      "exit": 0,
+      "ok": true,
+      "log": "logs/workshop_descriptor.log",
+      "result": "94 checks, 0 failed",
+      "name": "workshop_descriptor",
+      "exit_code": 0,
+      "log_sha256": "ac17c0fa35840afd74a94f5f859e87091097ed941926ac540bee46e2cf2b0d9b"
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_workshop_compiler.gd",
+      "exit": 0,
+      "ok": true,
+      "log": "logs/workshop_compiler.log",
+      "result": "301 checks, 0 failures",
+      "name": "workshop_compiler",
+      "exit_code": 0,
+      "log_sha256": "834f472056d00d026bd76b6e06d15b212ba7f7e19fd6cc7ffe0d647aa887786f"
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_workshop_trial.gd",
+      "exit": 0,
+      "ok": true,
+      "log": "logs/workshop_trial.log",
+      "result": "36 checks, 0 failed",
+      "name": "workshop_trial",
+      "exit_code": 0,
+      "log_sha256": "74fc46ae376e80d0d2313db39694cc058f64f6fbdcf1d68cfb73756af52cb75e"
+    },
+    {
+      "name": "workshop_store",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_store.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 19.218999999997322,
+      "log": "logs/workshop_store.log",
+      "log_sha256": "68773a988b528f09e7ffac15616a93abaf5dad44988b9d3d045d7b50e2906bf4"
+    },
+    {
+      "name": "workshop_integration",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_integration.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 88.79699999999866,
+      "log": "logs/workshop_integration.log",
+      "before": {
+        "app/data/aircraft/jensen_ugly_stik_60.json": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+        "app/data/workshop/jensen-das-ugly-stik-60.json": "6fd2b9d239f1a91db844d85a04f6a0e6dfd4348ec9b5cd69937da2eba82a4b0d",
+        "app/main.gd": "e6f0a076be3053769faddca10fde45e3436824902479ea6bb79db0f4dd6dc9c3",
+        "app/app_root.gd": "4f81c605ba114bf8cf2355651c4c786a32643f706dff1a8f7ed4ca1a4f7d14b2",
+        "app/sim/flight_session.gd": "6c60ef22e6388654b17e26dd9591c290c1436ba72b77e5b0fccdfa720e4ac951",
+        "app/workshop/descriptor.gd": "879d4773be062a07519b64cb725c7d64c397de7f8f04e16fc116cfafc3e1ab61",
+        "app/ui/workshop.gd": "8184f4bdff6a8fccecdb73da1e421c2912bee986ab72eded61ad7f4a47f38a24"
+      },
+      "after": {
+        "app/data/aircraft/jensen_ugly_stik_60.json": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+        "app/data/workshop/jensen-das-ugly-stik-60.json": "6fd2b9d239f1a91db844d85a04f6a0e6dfd4348ec9b5cd69937da2eba82a4b0d",
+        "app/main.gd": "e6f0a076be3053769faddca10fde45e3436824902479ea6bb79db0f4dd6dc9c3",
+        "app/app_root.gd": "4f81c605ba114bf8cf2355651c4c786a32643f706dff1a8f7ed4ca1a4f7d14b2",
+        "app/sim/flight_session.gd": "6c60ef22e6388654b17e26dd9591c290c1436ba72b77e5b0fccdfa720e4ac951",
+        "app/workshop/descriptor.gd": "879d4773be062a07519b64cb725c7d64c397de7f8f04e16fc116cfafc3e1ab61",
+        "app/ui/workshop.gd": "8184f4bdff6a8fccecdb73da1e421c2912bee986ab72eded61ad7f4a47f38a24"
+      },
+      "source_drift": false,
+      "log_sha256": "c212d33abfe803965f2c9f0dc5167f27dea2a2bd4d4212bdcd93684730ba0574"
+    },
+    {
+      "name": "workshop_ui",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_ui.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 23.577999999994063,
+      "log": "logs/workshop_ui.log",
+      "log_sha256": "f3ab0e247bd89e1d00005d612b50e6a45a6d710ecd2a3a9f13a0a348555bb99d"
+    }
+  ],
+  "initial_attempts": [
+    {
+      "name": "physical_identity",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_physical_identity.gd"
+      ],
+      "ok": false,
+      "exit_code": 0,
+      "seconds": 15.014999999999418,
+      "log": "physical_identity-initial.log"
+    },
+    {
+      "name": "fleet",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\fleet_probe.gd",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-identity\\integration\\fleet.json"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 41.23399999999674,
+      "log": "fleet.log"
+    },
+    {
+      "name": "aircraft_contract",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_contract.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 143.375,
+      "log": "aircraft_contract.log"
+    },
+    {
+      "name": "aircraft_data",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_data.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 18.42199999999866,
+      "log": "aircraft_data.log"
+    },
+    {
+      "name": "aircraft_modules",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_modules.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 32.14100000000326,
+      "log": "aircraft_modules.log"
+    },
+    {
+      "name": "aircraft_physical_identity_contacts",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_physical_identity_contacts.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 73.43800000000192,
+      "log": "aircraft_physical_identity_contacts.log"
+    },
+    {
+      "name": "aircraft_contact_contract",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_contact_contract.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 71.54699999999866,
+      "log": "aircraft_contact_contract.log"
+    },
+    {
+      "name": "aircraft_contact_events",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_contact_events.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 29.43699999999808,
+      "log": "aircraft_contact_events.log"
+    },
+    {
+      "name": "aircraft_contact_session",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_contact_session.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 16.68699999999808,
+      "log": "aircraft_contact_session.log"
+    },
+    {
+      "name": "aircraft_propulsion_runtime",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_propulsion_runtime.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 17.1559999999954,
+      "log": "aircraft_propulsion_runtime.log"
+    },
+    {
+      "name": "checkpoint",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_checkpoint.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 17.7190000000046,
+      "log": "checkpoint.log"
+    },
+    {
+      "name": "checkpoint_integrity",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_checkpoint_integrity.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 2.8280000000013388,
+      "log": "checkpoint_integrity.log"
+    },
+    {
+      "name": "session_guards",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_session_guards.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 3.9689999999973224,
+      "log": "session_guards.log"
+    },
+    {
+      "name": "contact_policy",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_contact_policy.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 127.67200000000594,
+      "log": "contact_policy.log"
+    },
+    {
+      "name": "soft_contacts",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_soft_contacts.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 99.39100000000326,
+      "log": "soft_contacts.log"
+    },
+    {
+      "name": "prop_strike",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_prop_strike.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 96.54699999999866,
+      "log": "prop_strike.log"
+    },
+    {
+      "name": "prop_strike_feedback",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_prop_strike_feedback.gd"
+      ],
+      "ok": false,
+      "exit_code": 1,
+      "seconds": 24.54699999999866,
+      "log": "prop_strike_feedback-initial.log"
+    },
+    {
+      "name": "wheel_session",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wheel_session.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 15.56199999999808,
+      "log": "wheel_session.log"
+    },
+    {
+      "name": "workshop_descriptor",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_descriptor.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 12.078000000001339,
+      "log": "workshop_descriptor.log"
+    },
+    {
+      "name": "workshop_compiler",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_compiler.gd"
+      ],
+      "ok": false,
+      "exit_code": 1,
+      "seconds": 18.906000000002678,
+      "log": "workshop_compiler-initial.log"
+    },
+    {
+      "name": "workshop_trial",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_trial.gd"
+      ],
+      "ok": false,
+      "exit_code": 1,
+      "seconds": 8.81300000000192,
+      "log": "workshop_trial-initial.log"
+    },
+    {
+      "name": "workshop_store",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_store.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 19.218999999997322,
+      "log": "workshop_store.log"
+    },
+    {
+      "name": "workshop_integration",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_integration.gd"
+      ],
+      "ok": false,
+      "exit_code": 4294967295,
+      "seconds": 86.875,
+      "log": "workshop_integration-initial.log"
+    },
+    {
+      "name": "workshop_ui",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_ui.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 23.577999999994063,
+      "log": "workshop_ui.log"
+    }
+  ],
+  "reruns": [
+    {
+      "name": "physical_identity",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_physical_identity.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 54.21899999999732,
+      "log": "physical_identity.log"
+    },
+    {
+      "name": "prop_strike_feedback",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_prop_strike_feedback.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 28.51600000000326,
+      "log": "prop_strike_feedback.log"
+    },
+    {
+      "name": "workshop_integration",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_integration.gd"
+      ],
+      "ok": false,
+      "exit_code": 1,
+      "seconds": 82.53100000000268,
+      "log": "workshop_integration.log"
+    },
+    {
+      "name": "physical_identity",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_physical_identity.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 9.031999999999243,
+      "log": "physical_identity.log",
+      "physical_sources": {
+        "gp_extra_300s_60.json": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
+        "jensen_ugly_stik_60.json": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+        "p51d_mustang_120.json": "04f69687f7ea73a4235bf223360f38b2634ddc11933abdea8ff01aee7ebda619",
+        "sebart_avanti_s_a200.json": "4910bd4ce0a9cd4e517db7a4cf9246c5c6e5328f512b528ff1077b9c7cda214a",
+        "stik_glow_55ax_2t.json": "3e4b0dfda2ac432dd9fe04f0ac31a172f92850845f71ee1df53e0af4e2a44d66",
+        "stik_glow_55ax_2t_apc_13x6.json": "3fbcf8063ba5188435749cdbd4684ab68e630620d277ca631868584c2260f4e4",
+        "stik_glow_fs64v_4t.json": "788654c4c9bb6667fc3922d595d548ae85577c803f945803aacb9610dd292140",
+        "stik_glow_fs64v_4t_apc_13x6.json": "8aa3f4bdc6bb6e90682b8d1c06ebd6d7f6cc3054f53afc846aca51d8836e96b4",
+        "synthetic_stik_electric_4s.json": "4784057b5e930b1c5b0047de34e8c5f75dbfb266c823efb9b29a1409b992688d",
+        "synthetic_stik_electric_4s_battery.json": "830acca41e3464286b8f2fac2e32a5e3176e996c77828a65754aec420642b07b",
+        "synthetic_stik_electric_6s.json": "7f8397e69eec4699ce842ea38c8557d263331afc880993ce40438a3881156402",
+        "synthetic_stik_electric_6s_battery.json": "b6c36b5332b8857b40db4257fffe3bf0de70092777306fc5a0f2de88effc675a",
+        "turbo_lumber_evolution.json": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee",
+        "xcell_60_research.json": "2a17475be523a30773647a79f8635fd66ae1bf2a58ab6b886a78cefabd76d45f"
+      },
+      "source_drift": false
+    },
+    {
+      "name": "workshop_integration",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_workshop_integration.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 88.79699999999866,
+      "log": "workshop_integration.log",
+      "before": {
+        "app/data/aircraft/jensen_ugly_stik_60.json": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+        "app/data/workshop/jensen-das-ugly-stik-60.json": "6fd2b9d239f1a91db844d85a04f6a0e6dfd4348ec9b5cd69937da2eba82a4b0d",
+        "app/main.gd": "e6f0a076be3053769faddca10fde45e3436824902479ea6bb79db0f4dd6dc9c3",
+        "app/app_root.gd": "4f81c605ba114bf8cf2355651c4c786a32643f706dff1a8f7ed4ca1a4f7d14b2",
+        "app/sim/flight_session.gd": "6c60ef22e6388654b17e26dd9591c290c1436ba72b77e5b0fccdfa720e4ac951",
+        "app/workshop/descriptor.gd": "879d4773be062a07519b64cb725c7d64c397de7f8f04e16fc116cfafc3e1ab61",
+        "app/ui/workshop.gd": "8184f4bdff6a8fccecdb73da1e421c2912bee986ab72eded61ad7f4a47f38a24"
+      },
+      "after": {
+        "app/data/aircraft/jensen_ugly_stik_60.json": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+        "app/data/workshop/jensen-das-ugly-stik-60.json": "6fd2b9d239f1a91db844d85a04f6a0e6dfd4348ec9b5cd69937da2eba82a4b0d",
+        "app/main.gd": "e6f0a076be3053769faddca10fde45e3436824902479ea6bb79db0f4dd6dc9c3",
+        "app/app_root.gd": "4f81c605ba114bf8cf2355651c4c786a32643f706dff1a8f7ed4ca1a4f7d14b2",
+        "app/sim/flight_session.gd": "6c60ef22e6388654b17e26dd9591c290c1436ba72b77e5b0fccdfa720e4ac951",
+        "app/workshop/descriptor.gd": "879d4773be062a07519b64cb725c7d64c397de7f8f04e16fc116cfafc3e1ab61",
+        "app/ui/workshop.gd": "8184f4bdff6a8fccecdb73da1e421c2912bee986ab72eded61ad7f4a47f38a24"
+      },
+      "source_drift": false
+    },
+    {
+      "name": "fleet_latest",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\fleet_probe.gd",
+        "--",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-identity\\integration\\fleet-latest.json"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 33.17199999999866,
+      "log": "fleet_latest.log",
+      "before": {
+        "gp_extra_300s_60.json": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
+        "jensen_ugly_stik_60.json": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+        "p51d_mustang_120.json": "04f69687f7ea73a4235bf223360f38b2634ddc11933abdea8ff01aee7ebda619",
+        "sebart_avanti_s_a200.json": "4910bd4ce0a9cd4e517db7a4cf9246c5c6e5328f512b528ff1077b9c7cda214a",
+        "stik_glow_55ax_2t.json": "3e4b0dfda2ac432dd9fe04f0ac31a172f92850845f71ee1df53e0af4e2a44d66",
+        "stik_glow_55ax_2t_apc_13x6.json": "3fbcf8063ba5188435749cdbd4684ab68e630620d277ca631868584c2260f4e4",
+        "stik_glow_fs64v_4t.json": "788654c4c9bb6667fc3922d595d548ae85577c803f945803aacb9610dd292140",
+        "stik_glow_fs64v_4t_apc_13x6.json": "8aa3f4bdc6bb6e90682b8d1c06ebd6d7f6cc3054f53afc846aca51d8836e96b4",
+        "synthetic_stik_electric_4s.json": "4784057b5e930b1c5b0047de34e8c5f75dbfb266c823efb9b29a1409b992688d",
+        "synthetic_stik_electric_4s_battery.json": "830acca41e3464286b8f2fac2e32a5e3176e996c77828a65754aec420642b07b",
+        "synthetic_stik_electric_6s.json": "7f8397e69eec4699ce842ea38c8557d263331afc880993ce40438a3881156402",
+        "synthetic_stik_electric_6s_battery.json": "b6c36b5332b8857b40db4257fffe3bf0de70092777306fc5a0f2de88effc675a",
+        "turbo_lumber_evolution.json": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee"
+      },
+      "after": {
+        "gp_extra_300s_60.json": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
+        "jensen_ugly_stik_60.json": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+        "p51d_mustang_120.json": "04f69687f7ea73a4235bf223360f38b2634ddc11933abdea8ff01aee7ebda619",
+        "sebart_avanti_s_a200.json": "4910bd4ce0a9cd4e517db7a4cf9246c5c6e5328f512b528ff1077b9c7cda214a",
+        "stik_glow_55ax_2t.json": "3e4b0dfda2ac432dd9fe04f0ac31a172f92850845f71ee1df53e0af4e2a44d66",
+        "stik_glow_55ax_2t_apc_13x6.json": "3fbcf8063ba5188435749cdbd4684ab68e630620d277ca631868584c2260f4e4",
+        "stik_glow_fs64v_4t.json": "788654c4c9bb6667fc3922d595d548ae85577c803f945803aacb9610dd292140",
+        "stik_glow_fs64v_4t_apc_13x6.json": "8aa3f4bdc6bb6e90682b8d1c06ebd6d7f6cc3054f53afc846aca51d8836e96b4",
+        "synthetic_stik_electric_4s.json": "4784057b5e930b1c5b0047de34e8c5f75dbfb266c823efb9b29a1409b992688d",
+        "synthetic_stik_electric_4s_battery.json": "830acca41e3464286b8f2fac2e32a5e3176e996c77828a65754aec420642b07b",
+        "synthetic_stik_electric_6s.json": "7f8397e69eec4699ce842ea38c8557d263331afc880993ce40438a3881156402",
+        "synthetic_stik_electric_6s_battery.json": "b6c36b5332b8857b40db4257fffe3bf0de70092777306fc5a0f2de88effc675a",
+        "turbo_lumber_evolution.json": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee"
+      },
+      "source_drift": false
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_workshop_descriptor.gd",
+      "exit": 0,
+      "ok": true,
+      "log": "logs/workshop_descriptor.log",
+      "result": "94 checks, 0 failed",
+      "name": "workshop_descriptor",
+      "exit_code": 0,
+      "log_sha256": "ac17c0fa35840afd74a94f5f859e87091097ed941926ac540bee46e2cf2b0d9b"
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_workshop_compiler.gd",
+      "exit": 0,
+      "ok": true,
+      "log": "logs/workshop_compiler.log",
+      "result": "301 checks, 0 failures",
+      "name": "workshop_compiler",
+      "exit_code": 0,
+      "log_sha256": "834f472056d00d026bd76b6e06d15b212ba7f7e19fd6cc7ffe0d647aa887786f"
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_workshop_trial.gd",
+      "exit": 0,
+      "ok": true,
+      "log": "logs/workshop_trial.log",
+      "result": "36 checks, 0 failed",
+      "name": "workshop_trial",
+      "exit_code": 0,
+      "log_sha256": "74fc46ae376e80d0d2313db39694cc058f64f6fbdcf1d68cfb73756af52cb75e"
+    }
+  ],
+  "late_source_refresh_attempts": [
+    {
+      "time_utc": "2026-10-14T02:15:45.272829+00:00",
+      "reason": "Independent Stik source changed after the first integration run. Preserve current parameters, enforce repository CRLF, regenerate only its existing Glow derivatives.",
+      "stik_eol_only": true,
+      "before": {
+        "gp_extra_300s_60.json": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
+        "jensen_ugly_stik_60.json": "7032b11cb3819081c42a41b5c59680a79f988e62eb80fd14209298912a3ae7d3",
+        "p51d_mustang_120.json": "04f69687f7ea73a4235bf223360f38b2634ddc11933abdea8ff01aee7ebda619",
+        "sebart_avanti_s_a200.json": "4910bd4ce0a9cd4e517db7a4cf9246c5c6e5328f512b528ff1077b9c7cda214a",
+        "stik_glow_55ax_2t.json": "673873d3e79247a2b52ab7fa8dbe1f9c14f2a999ea2149364ddfa5f2ecea55ec",
+        "stik_glow_55ax_2t_apc_13x6.json": "79f434c84d957259f509822fbd3e1a7a5eb357588f552827e780c6580b8886a8",
+        "stik_glow_fs64v_4t.json": "f347e74698eff19c96c19f31dc54a7ea8003e9b9fe909e746df867a6728888ec",
+        "stik_glow_fs64v_4t_apc_13x6.json": "9ff3d6203a7aa2b145d6c4d8257a7b491f2196d708c53926f1e422e61227fc36",
+        "synthetic_stik_electric_4s.json": "4784057b5e930b1c5b0047de34e8c5f75dbfb266c823efb9b29a1409b992688d",
+        "synthetic_stik_electric_4s_battery.json": "830acca41e3464286b8f2fac2e32a5e3176e996c77828a65754aec420642b07b",
+        "synthetic_stik_electric_6s.json": "7f8397e69eec4699ce842ea38c8557d263331afc880993ce40438a3881156402",
+        "synthetic_stik_electric_6s_battery.json": "b6c36b5332b8857b40db4257fffe3bf0de70092777306fc5a0f2de88effc675a",
+        "turbo_lumber_evolution.json": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee",
+        "xcell_60_research.json": "2a17475be523a30773647a79f8635fd66ae1bf2a58ab6b886a78cefabd76d45f"
+      },
+      "after": {
+        "gp_extra_300s_60.json": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
+        "jensen_ugly_stik_60.json": "a3dd964a0fbb8ecccb529ddf8cdb543dd1fc52e87957833686808a1c5dbef3f8",
+        "p51d_mustang_120.json": "04f69687f7ea73a4235bf223360f38b2634ddc11933abdea8ff01aee7ebda619",
+        "sebart_avanti_s_a200.json": "4910bd4ce0a9cd4e517db7a4cf9246c5c6e5328f512b528ff1077b9c7cda214a",
+        "stik_glow_55ax_2t.json": "673873d3e79247a2b52ab7fa8dbe1f9c14f2a999ea2149364ddfa5f2ecea55ec",
+        "stik_glow_55ax_2t_apc_13x6.json": "79f434c84d957259f509822fbd3e1a7a5eb357588f552827e780c6580b8886a8",
+        "stik_glow_fs64v_4t.json": "f347e74698eff19c96c19f31dc54a7ea8003e9b9fe909e746df867a6728888ec",
+        "stik_glow_fs64v_4t_apc_13x6.json": "9ff3d6203a7aa2b145d6c4d8257a7b491f2196d708c53926f1e422e61227fc36",
+        "synthetic_stik_electric_4s.json": "4784057b5e930b1c5b0047de34e8c5f75dbfb266c823efb9b29a1409b992688d",
+        "synthetic_stik_electric_4s_battery.json": "830acca41e3464286b8f2fac2e32a5e3176e996c77828a65754aec420642b07b",
+        "synthetic_stik_electric_6s.json": "7f8397e69eec4699ce842ea38c8557d263331afc880993ce40438a3881156402",
+        "synthetic_stik_electric_6s_battery.json": "b6c36b5332b8857b40db4257fffe3bf0de70092777306fc5a0f2de88effc675a",
+        "turbo_lumber_evolution.json": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee",
+        "xcell_60_research.json": "2a17475be523a30773647a79f8635fd66ae1bf2a58ab6b886a78cefabd76d45f"
+      },
+      "commands": [
+        {
+          "command": [
+            "python",
+            "research/glow-engines/build_installations.py"
+          ],
+          "exit_code": 1,
+          "stdout": "",
+          "stderr": "Traceback (most recent call last):\n  File \"C:\\DEVELOPMENT\\OpenRCsimulator\\research\\glow-engines\\build_installations.py\", line 177, in <module>\n    if __name__=='__main__': main()\n                             ^^^^^^\n  File \"C:\\DEVELOPMENT\\OpenRCsimulator\\research\\glow-engines\\build_installations.py\", line 170, in main\n    for path,value in outputs().items():\n                      ^^^^^^^^^\n  File \"C:\\DEVELOPMENT\\OpenRCsimulator\\research\\glow-engines\\build_installations.py\", line 156, in outputs\n    out[ROOT/'app/data/aircraft'/('stik_glow_'+tag+suffix+'.json')]=aircraft(two,install,suffix)\n                                                                    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\DEVELOPMENT\\OpenRCsimulator\\research\\glow-engines\\build_installations.py\", line 71, in aircraft\n    raw = json.loads((ROOT/'app/data/aircraft/jensen_ugly_stik_60.json').read_text(encoding='utf-8'))\n          ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\\Lib\\json\\__init__.py\", line 346, in loads\n    return _default_decoder.decode(s)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Program Files\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\\Lib\\json\\decoder.py\", line 340, in decode\n    raise JSONDecodeError(\"Extra data\", s, end)\njson.decoder.JSONDecodeError: Extra data: line 1547 column 2 (char 55895)\n"
+        }
+      ]
+    },
+    {
+      "time_utc": "2026-10-14T02:16:52.291658+00:00",
+      "stik_before_eol_sha256": "54782859e8579a14338b03839957404cce5f5330826a7e5b56537f6064174956",
+      "stik_after_eol_sha256": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+      "stik_after_checks_sha256": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+      "commands": [
+        {
+          "command": [
+            "python",
+            "research/glow-engines/build_installations.py"
+          ],
+          "exit_code": 0,
+          "stdout": "Generated both glow installations\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "python",
+            "research/glow-engines/build_installations.py",
+            "--check"
+          ],
+          "exit_code": 0,
+          "stdout": "Glow installations current\n",
+          "stderr": ""
+        },
+        {
+          "command": [
+            "python",
+            "research/aircraft-standardization/test_physical_identity_sources.py"
+          ],
+          "exit_code": 0,
+          "stdout": "",
+          "stderr": ".......\n----------------------------------------------------------------------\nRan 7 tests in 0.045s\n\nOK\n"
+        }
+      ]
+    }
+  ],
+  "workshop_rerun_report": "workshop-reruns.json"
+}

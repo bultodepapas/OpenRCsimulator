@@ -1,10 +1,12 @@
 # RC vehicle research tools
 
+To use the integrated Bisonte, start with [Drive and experiment](#drive-and-experiment). For acceleration, use the [pinned native build guide](native/README.md). Current test results and captures are in the [runtime evidence](../../docs/research/rc-monster-truck/RCV-runtime/README.md).
+
 The [RCV plan](../../docs/plans/rc-monster-truck.md) owns vehicle integration and remaining steps. This directory contains runnable research tools; dated results cover the [quarter car](../../docs/research/rc-monster-truck/RCV-04a/README.md), [four-corner support](../../docs/research/rc-monster-truck/RCV-04b/README.md) and [MT8 visual intake](../../docs/research/rc-monster-truck/RCV-14a/README.md).
 
 ## RCV-14a MT8 visual inspection
 
-The supplied Bisonte MT8 draft can be inspected locally in Godot 4.7.2. The viewer loads the canonical `RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb` and the author's generated rig directly. It changes no authoring file and does not add a vehicle to the application catalog. Runtime bundling awaits the source-rights and binding work recorded in the intake report.
+The supplied Bisonte MT8 draft can be inspected locally in Godot 4.7.2. The preview still loads the canonical `RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb` and the author's generated rig directly. The user authorized inclusion and modification of this delivery; the reviewed [bundled GLB](../../app/assets/vehicles/mt8-bisonte/MT8_Bisonte.glb) and spec are pinned in the app, with the runtime [rig adapter](../../app/vehicles/ground/mt8_rig.gd) and [model adapter](../../app/vehicles/ground/mt8_model.gd). The runtime model is experimental and is not a calibration of a production RC truck.
 
 From the repository root on Windows:
 
@@ -18,7 +20,7 @@ The renderer needs a display. Drag the model to orbit; scroll to zoom. Use Tab/a
 
 The inspector positions each posed truck just above its display floor. This is visual staging, not a gravity/contact solution. Its controls exercise the author's travel limits: −70 to +50 mm and ±30° steering. These are geometry limits, not calibrated physical parameters. The existing support bench has different synthetic dimensions and is deliberately not connected to this asset as if it were measured MT8 mechanics.
 
-The scripts remain outside `app/`, so current game exports do not depend on the authoring directory. Linux/native Godot can launch the same inspector using an absolute script path:
+The inspection scripts remain outside `app/`; the game consumes its reviewed, bundled copy and adapter rather than resolving the authoring directory at runtime. Linux/native Godot can launch the same inspector using an absolute script path:
 
 ```sh
 GODOT="$(app/get-godot.sh)"
@@ -105,7 +107,7 @@ Malformed inputs or non-finite execution exit with status 1; success exits 0. A 
 ```powershell
 python research/rc-monster-truck/generate_suspension_reference.py --check
 & $GodotRcv --headless --path app --audio-driver Dummy --script res://tests/test_rcv_suspension.gd
-$env:OPENRC_TEST_GODOT = $GodotRcv
+$env:OPENRC_TEST_GODOT = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64.exe').Path
 python app/tests/test_rcv_suspension_cli.py
 & $GodotRcv --headless --path app --audio-driver Dummy --script res://tests/test_golden.gd
 ```
@@ -163,8 +165,85 @@ Optional timing warms a separate state for 240 ticks, resets to the original ini
 ```powershell
 python research/rc-monster-truck/generate_support_reference.py --check
 & $GodotRcv --headless --path app --audio-driver Dummy --script res://tests/test_rcv_support.gd
-$env:OPENRC_TEST_GODOT = $GodotRcv
+$env:OPENRC_TEST_GODOT = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64.exe').Path
 python app/tests/test_rcv_support_cli.py
 ```
 
 The new generator uses only the Python standard library. Regenerate its fixture with the same command without `--check` after an intentional reviewed oracle change. The canonical test runner includes both fixture-freshness and CLI suites, and discovers the numerical GDScript test automatically.
+
+## RCV-05+ full vehicle runtime experiments
+
+The first ground-vehicle activity is now connected to the app. This research README is the canonical operating and experiment guide for the experimental Bisonte path. The dated [runtime evidence record](../../docs/research/rc-monster-truck/RCV-runtime/README.md) preserves garage, laboratory and drive captures, bounded checks, isolated package results and integration findings without duplicating operating commands.
+
+### Drive and experiment
+
+Select **RC cars · Bisonte MT8** at the lower right of Home. The separate garage opens with the truck paused; release all controls, then press **Enter / Drive**. Alternatively, launch the project with `-- --vehicle=mt8-bisonte`. This entry does not change the saved aircraft selection. The supplied Blender model and scripts are authorized by their owner for inclusion and modification.
+
+| Action | Keyboard / mouse | Gamepad |
+| --- | --- | --- |
+| Forward / reverse | W / S, or up / down arrows | RT forward; hold B + RT for reverse |
+| Steer | A / D, or left / right arrows | Left stick |
+| Brake | Space | LT |
+| Continue / garage | Enter / Esc | Start toggles |
+| Camera | C cycles chase, operator and orbit; right-drag and wheel adjust view | Garage camera button |
+| Manual recovery | R | Garage recovery button |
+| Record / stop and export | F9 or garage recording button | Garage recording button |
+
+A connected gamepad takes control priority. Focus loss or controller disconnection pauses the activity; returning focus never resumes automatically. Release the controls before continuing. Recovery marks the run as assisted. Reset starts a new valid run. Neither operation silently qualifies a landing or experiment.
+
+Choose **Free drive**, **Jump practice**, or **Physics lab**. The location selector provides the start line, jump approach, bump lane, grass, gravel and slippery pad. Lab changes apply by an explicit reset: gravity 0–2×, grip 0.15–2×, spring rate 0.5–2×, damping 0.25–2×, and 0–1.5 kg ballast at 0.03–0.35 m height. Ballast updates mass, CG and inertia together. The body toggle exposes the suspension; contact markers and travel plots are read-only views of the accepted simulation state.
+
+The initial estimated motor curve fades drive torque to zero at 40 rad/s wheel spin, equivalent to about 14.4 km/h in pure rolling with the 0.1 m tire radius. This is a torque curve, not a hard vehicle-speed clamp: the truck can coast faster downhill. The initial jump feedback has verified short airborne/contact events; the longer-flight landing reward and full teaching curriculum remain separate qualification work.
+
+**Save state / Restore** uses `user://rcv/checkpoint.json`. Checkpoints are tied to the exact vehicle, course, solver and backend build; incompatible states are refused and accepted restores remain paused. Recordings export CSV plus JSON identity/event metadata under `user://rcv/`. The ten-minute recording limit pauses with the data retained. Export failures retain the recording and prevent a destructive reset, parameter change, restore or exit until saving succeeds.
+
+The optional [native evaluator](native/README.md) is installed in this working tree for Windows/Linux x86_64. Generated libraries are ignored by Git: a fresh checkout requires the documented pinned build/install procedure to enable acceleration. Other installations use the GDScript reference backend. The measured Windows reference backend exceeds the 240 Hz tick budget; the native backend passed the measured mean/p95 budget, while the stricter 500 µs target remains open. See the dated evidence for exact scope and values.
+
+The research-only [runner](run_experiments.gd) uses the same strict vehicle/course loaders and 240 Hz dynamics kernel as the activity, currently one RK4 substep per public tick. Regression and step-refinement checks passed; target-machine performance qualification remains open. It injects controlled initial states directly because the interactive Session intentionally has no state-injection API. `braking` records four matched trials in one CSV (asphalt, gravel, grass and slippery); `bump` starts at the synthetic bump lane; `drop` starts 0.45 m above the supported start pose; `rollover` records neutral releases at 35°, 55° and 75° about the right-side tire line. The 35°/55° pair straddles a fixed-ground-edge `atan2(half_track, CG_height)` comparator. A second approximate spherical tire-center normal-moment estimate is derived from the tire radius and static compression; the 55°/75° pair brackets that estimate. Neither reference is a compliant-truck acceptance bound. The runner records per-wheel contact loss, per-probe hull contact, roll and slip. The [Python analyzer](analyze_recording.py) verifies source and recording hashes, independently checks sprung-plus-hub system center-of-mass ballistic motion before contact, reconstructs analytical bump heights and both rollover geometry references from raw profile data, and reports ideal constant-friction braking distances alongside the observed traces. The sprung chassis alone can depart from free-fall motion because suspension forces transfer motion internally.
+
+Run a deterministic scenario from the repository root on Windows:
+
+```powershell
+$RcvGodot = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64_console.exe').Path
+$RcvOut = (New-Item -ItemType Directory -Force '.tools/rcv/experiments').FullName
+$RcvRunner = (Resolve-Path 'research/rc-monster-truck/run_experiments.gd').Path
+& $RcvGodot --headless --path app --audio-driver Dummy --script $RcvRunner -- --scenario=braking --duration=3 --output="$RcvOut/braking.csv"
+python -B research/rc-monster-truck/analyze_recording.py "$RcvOut/braking.csv" --output "$RcvOut/braking.analysis.json"
+& $RcvGodot --headless --path app --audio-driver Dummy --script $RcvRunner -- --scenario=rollover --duration=3 --output="$RcvOut/rollover.csv"
+python -B research/rc-monster-truck/analyze_recording.py "$RcvOut/rollover.csv" --output "$RcvOut/rollover.analysis.json"
+```
+
+The runner accepts only `--scenario=braking|bump|drop|rollover`, required `--output=<fresh .csv>`, and optional `--duration=<seconds>` (default 3 s, maximum 15 s). Duration must represent a whole number of 240 Hz public ticks. The output directory must already exist; the runner refuses to replace either CSV or JSON sidecar. The CSV stores the full 31-value state and wheel/hull contact diagnostics at each public tick. The JSON sidecar binds the run to exact vehicle and course identities and the CSV hash. The analyzer requires `complete: true`, complete sample counts, monotonic tick times and matching bytes before producing a report.
+
+The separate [activity jump driver](drive_jump_landing.gd) uses the actual activity, supported `jump_start` location and accepted driver controls, without state injection or recovery. Launch it as an external Godot `--script` with `-- --throttle-ticks=300 --output=<absolute-fresh.json>`; the existing parent directory is required and throttle duration must be 1–1200 ticks. Optional `--gravity-scale=0..2` applies the same explicit laboratory experiment and records its distinct identity. The driver records the actual accepted control tape and its hash, backend/model/course identities, wheel contacts, AIR-to-ground HUD transition and 120 settling ticks after the first landing. Its success gate additionally requires the existing landing toast, which needs more than 0.08 s airborne. The observed first hops were shorter and therefore correctly fail that additional gate; inspect the outcome instead of treating any written trace as success or extrapolating that window to later jumps.
+
+The run inputs are all estimates where the original delivery supplied geometry only. Surface friction, masses, spring/damper values, motor/brake torque and inertias are not measured. The drop oracle applies only to the complete sprung-plus-hub center of mass before first contact. The bump check verifies that renderer/course geometry matches the analytic road function; it does not validate point-probed obstacle enveloping. The braking reference is ideal constant-friction kinematics and does not establish real stopping performance. The rollover experiments show only how this estimated model responds to the 35°/55° balance comparison and 75° over-center release; they do not validate a real rollover threshold, recovery or handling. The interactive R key performs a manual recovery that invalidates the run; natural self-righting qualification remains open.
+
+### Bounded Windows runtime and package verification
+
+Run the bounded Windows runtime and package evidence tools into a fresh evidence directory. Use the regular Godot executable for the Python-managed subprocesses; the timeout controller must own the actual process. The runtime verifier retains one log per check and a JSON receipt. The package verifier copies the current working-tree app without its import cache, includes the existing aircraft export plugin's external authoring proofs, and writes a Windows export, logs and a receipt.
+
+```powershell
+$RcvGodotApp = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64.exe').Path
+$RcvEvidence = Join-Path $env:TEMP ("openrc-rcv-" + [guid]::NewGuid().ToString("N"))
+python -B research/rc-monster-truck/verify_runtime.py --godot $RcvGodotApp --out (Join-Path $RcvEvidence 'runtime')
+python -B research/rc-monster-truck/verify_package.py --godot $RcvGodotApp --out (Join-Path $RcvEvidence 'package')
+```
+
+Add `--include-menu` to the runtime verifier to also run the broad Home and Home-layout regressions. The truck menu transition test always runs. To verify RC independently when another aircraft's export proof blocks the shared application export, use `--isolated-rc --require-native` with a new package output directory. This changes only the disposable snapshot entry point and does not qualify the full application release. A separate `--isolated-rc --reference-backend` run verifies the compiled GDScript fallback without generated native artifacts.
+
+The package verifier embeds its cost entry in the disposable project before exporting. Official Godot 4.7 release templates disable path overrides, so passing an external `--script` to a release executable would not prove that the benchmark ran. Successful cost evidence must identify `debug_build: false` and the expected backend. Package startup success and the two performance gates are reported separately.
+
+Each runtime check has a 300-second timeout; package import, export and startup steps have 360-second timeouts. A timeout is a failed check even if a report was written. Inspect each receipt's status and check exit codes. The package report is a fresh copy of the current working-tree app plus required export proofs; it is not a clean Git clone or evidence for other operating systems. These bounded checks do not establish physical validity or target-machine frame pacing.
+
+Run the generator freshness/mutation checks and process-level experiment tests with:
+
+```powershell
+$RcvGodot = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64.exe').Path
+$env:OPENRC_TEST_GODOT = $RcvGodot
+python -B research/rc-monster-truck/build_vehicle_data.py --check
+python -B research/rc-monster-truck/test_vehicle_data_generator.py
+python -B research/rc-monster-truck/test_experiments.py
+```
+
+These tools verify deterministic software behavior, not the remaining gates in the [active RCV plan](../../docs/plans/rc-monster-truck.md). Do not mark the vehicle calibrated, physically validated, roll-qualified or performance-qualified from these synthetic experiments.

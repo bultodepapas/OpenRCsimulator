@@ -1,0 +1,156 @@
+{
+  "course_identity": {
+    "format": "openrc-ground-course",
+    "id": "mt8-practice-course-estimate-v1",
+    "sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+    "version": "1"
+  },
+  "format": "openrc-ground-vehicle-analysis",
+  "independent_analysis": {
+    "analysis_limit": "All three releases preserve initialized suspension travel and place the right tire hubs on the flat course, then release with neutral controls. The 35/55 pair brackets the fixed ground-edge atan2 comparator, while 55/75 brackets the estimated spherical tire-center normal-moment sign change. These geometry references make different support assumptions; observed wheel contacts, tire slip, hull contacts and roll remain outputs of this estimated compliant model. No trial establishes a real-truck threshold, self-righting, or handling fidelity.",
+    "angle_pair_straddles_rigid_reference": true,
+    "neutral_release_trials": [
+      {
+        "final_body_down_world_ned_z": 1.0,
+        "final_is_inverted": false,
+        "final_roll_deg": -9.657818753153554e-13,
+        "final_wheel_contacts_fl_fr_rl_rr": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "first_four_wheel_contact_time_s": 0.31666666666666665,
+        "first_hull_contact_time_s": null,
+        "first_inverted_time_s": null,
+        "first_wheel_unload_time_s_fl_fr_rl_rr": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "initial_tilt_deg": 35.0,
+        "initial_wheel_contacts_fl_fr_rl_rr": [
+          false,
+          true,
+          false,
+          true
+        ],
+        "maximum_absolute_roll_deg": 35.00118661673388,
+        "maximum_hull_probes_in_contact": 0,
+        "maximum_wheel_slip_ratio": 0.34889313994935284,
+        "quaternion_roll_reconstruction_error_rad": 2.220446049250313e-16,
+        "relation_to_rigid_reference": "below",
+        "relation_to_spherical_tire_center_reference": "below",
+        "run_id": "rollover_right_edge_35_deg"
+      },
+      {
+        "final_body_down_world_ned_z": 1.0,
+        "final_is_inverted": false,
+        "final_roll_deg": 2.2330127144633378e-11,
+        "final_wheel_contacts_fl_fr_rl_rr": [
+          true,
+          true,
+          true,
+          true
+        ],
+        "first_four_wheel_contact_time_s": 0.5708333333333333,
+        "first_hull_contact_time_s": null,
+        "first_inverted_time_s": null,
+        "first_wheel_unload_time_s_fl_fr_rl_rr": [
+          null,
+          null,
+          null,
+          null
+        ],
+        "initial_tilt_deg": 55.0,
+        "initial_wheel_contacts_fl_fr_rl_rr": [
+          false,
+          true,
+          false,
+          true
+        ],
+        "maximum_absolute_roll_deg": 55.0,
+        "maximum_hull_probes_in_contact": 0,
+        "maximum_wheel_slip_ratio": 0.34909029322101537,
+        "quaternion_roll_reconstruction_error_rad": 4.440892098500626e-16,
+        "relation_to_rigid_reference": "above",
+        "relation_to_spherical_tire_center_reference": "below",
+        "run_id": "rollover_right_edge_55_deg"
+      },
+      {
+        "final_body_down_world_ned_z": -0.836342806156013,
+        "final_is_inverted": true,
+        "final_roll_deg": -177.5126098974867,
+        "final_wheel_contacts_fl_fr_rl_rr": [
+          true,
+          false,
+          false,
+          false
+        ],
+        "first_four_wheel_contact_time_s": null,
+        "first_hull_contact_time_s": 0.6208333333333333,
+        "first_inverted_time_s": 0.4041666666666667,
+        "first_wheel_unload_time_s_fl_fr_rl_rr": [
+          null,
+          0.6291666666666667,
+          null,
+          0.6291666666666667
+        ],
+        "initial_tilt_deg": 75.0,
+        "initial_wheel_contacts_fl_fr_rl_rr": [
+          false,
+          true,
+          false,
+          true
+        ],
+        "maximum_absolute_roll_deg": 179.98970994385945,
+        "maximum_hull_probes_in_contact": 2,
+        "maximum_wheel_slip_ratio": 1.9992469285066015,
+        "quaternion_roll_reconstruction_error_rad": 6.661338147750939e-16,
+        "relation_to_rigid_reference": "above",
+        "relation_to_spherical_tire_center_reference": "above",
+        "run_id": "rollover_right_edge_75_deg"
+      }
+    ],
+    "observed_behavior_is_qualitative": true,
+    "over_center_witness_angle_deg": 75.0,
+    "over_center_witness_exceeds_spherical_reference": true,
+    "rigid_tipping_reference": {
+      "critical_tilt_angle_deg": 46.290293538277574,
+      "critical_tilt_angle_rad": 0.8079180339575994,
+      "half_track_m": 0.21444750055617248,
+      "interpretation": "Fixed ground-edge geometry only. It differs from the spherical tire-center normal-moment estimate and neither predicts nor sets an acceptance threshold for the compliant truck model.",
+      "upright_sprung_cg_height_above_ground_m": 0.205
+    },
+    "roll_angle_representation": "Euler roll is wrapped to ±180 degrees and is not a cumulative rotation count; final inversion is classified independently from the quaternion's body-down axis.",
+    "spherical_tire_center_reference": {
+      "assumptions": "Approximate right tire-center support normal with fixed CG and symmetric static tire compression; ignores suspension articulation during roll, unsprung-force distribution, friction and hull contact. This is a moment-sign geometry witness, not a rollover or recovery threshold.",
+      "cg_height_above_tire_hub_center_m": 0.10708202723076922,
+      "estimated_sign_change_angle_deg": 63.46524912045196,
+      "estimated_sign_change_angle_rad": 1.107677557750322,
+      "estimated_static_tire_compression_m": 0.0020820272307692307,
+      "half_track_m": 0.21444750055617248,
+      "interpretation": "Approximate hub-center normal-moment sign comparator for this modeled tire radius and static compression. It is not a rigid ground-edge threshold or a compliant-truck acceptance value.",
+      "kind": "spherical tire-center normal-moment sign-change estimate",
+      "tire_radius_m": 0.1,
+      "upright_sprung_cg_height_above_ground_m": 0.205
+    }
+  },
+  "qualification": "Software and source-consistency checks only. The bundled vehicle and course parameters are estimates; this report does not establish physical validity or handling fidelity.",
+  "sample_count": 2163,
+  "scenario": "rollover",
+  "solver_version": "openrc-ground-vehicle-dynamics-rk4-v2",
+  "source_metadata": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\rcv-rollover-v2\\rollover.json",
+  "source_metadata_sha256": "9f99e4e2ad898d31cdcb9cc01ff11aa8a0d81c83ba938898236d357269cd5723",
+  "source_recording": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\rcv-rollover-v2\\rollover.csv",
+  "source_recording_sha256": "172b85e221a14a709dc048e38d6eb24064eb48dc88b9f188a022b7551f2b63ab",
+  "status": "complete",
+  "vehicle_identity": {
+    "format": "openrc-ground-vehicle",
+    "id": "mt8-bisonte-electric-4wd-estimate-v1",
+    "sha256": "941d50bea199e652efdbbfe585cfd3fa1b3b49616e232a42bea861ce2f6f6ab0",
+    "version": "1"
+  },
+  "version": 1
+}

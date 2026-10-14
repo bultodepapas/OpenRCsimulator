@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+night field grid received scene irradiance: p05=0.00000190 p50=0.00000998 p95=0.00005405 p95/p05=28.52; nonzero=1313/1313
+WARNING: 'res://assets/landscape/night-lighting/campfire-pit.glb': In external resource #0, invalid UID: 'uid://dptk2qivhqvw1' - using text path instead: 'res://assets/landscape/night-lighting/Textures/colormap.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] build (res://render/world/world.gd:158)
+         [1] _initialize (res://tests/test_world_field_lights.gd:198)
+64 checks, 0 failed

@@ -1,0 +1,63 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   route: no user arguments -> Home
+ok   route: --trace -> direct flight
+ok   route: --quick-flight -> direct flight
+ok   airplane selection preserves the current flight scene
+ok   research helicopter selects the dedicated flight script
+ok   direct CLI selector finds a helicopter catalog ID
+ok   research helicopter Home offers Fly with hover-only start
+ok   airplane Workshop and Natural Random are disabled for the rotorcraft
+ok   Home shown, no flight scene, no simulation
+ok   Home backdrop: our airplane, its camera current
+ok   contrast: Fly normal text 5.38:1 >= 4.5
+ok   contrast: Fly hover text 6.06:1 >= 4.5
+ok   contrast: Fly pressed text 7.38:1 >= 4.5
+ok   contrast: Quit normal text 10.42:1 >= 4.5
+ok   contrast: Quit hover text 8.34:1 >= 4.5
+ok   contrast: Quit pressed text 12.17:1 >= 4.5
+ok   Fly inherits Button's focus outline, without fill
+ok   contrast: focus outline on panel 9.04:1 >= 3
+ok   contrast: every Home label >= 4.5:1 on its surface (worst 7.74, "High-wing sport trainer · 1.52 m · .61 glow")
+ok   smallest text is 18.0 px tall (>= 17 at 1280x720)
+ok   initial focus on Fly
+ok   focus outline visible (keyboard focus)
+ok   Down -> Workshop
+ok   Down -> Language
+ok   Right -> Help
+ok   Right -> Quit
+ok   Up -> Fly
+ok   navigating did not start a flight
+ok   Quit requests closing the app
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Enter on Fly starts the flight
+ok   double Enter -> exactly one flight session
+ok   Home and its backdrop freed after Fly
+ok   the flight's camera is the one in use
+ok   Fly saves the selected default runway start
+ok   fresh Home flight uses gentle turbulent wind
+ok   fresh Home flight has passing evening and latency diagnostics
+WARNING: HX-700 rotor profile cache unavailable; measuring imported geometry: profile sidecar is missing
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] measured_profile (res://render/rotor/heli_rotor_blur.gd:56)
+       [1] attach (res://render/rotor/heli_rotor_blur.gd:36)
+       [2] attach (res://render/rotor/heli_rotor_visual.gd:47)
+       [3] _ready (res://helicopter_main.gd:75)
+       [4] start_flight (res://app_root.gd:403)
+       [5] _ready (res://app_root.gd:138)
+       [6] _run (res://tests/test_ui_home.gd:146)
+WARNING: HX-700 rotor profile cache unavailable; measuring imported geometry: profile sidecar is missing
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] measured_profile (res://render/rotor/heli_rotor_blur.gd:56)
+       [1] attach (res://render/rotor/heli_rotor_blur.gd:36)
+       [2] attach (res://render/rotor/heli_rotor_visual.gd:48)
+       [3] _ready (res://helicopter_main.gd:75)
+       [4] start_flight (res://app_root.gd:403)
+       [5] _ready (res://app_root.gd:138)
+       [6] _run (res://tests/test_ui_home.gd:146)
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+ok   direct --aircraft=xcell-60-research creates the dedicated helicopter main
+ok   direct helicopter route completes setup and starts in a flyable hover
+all UI home checks passed

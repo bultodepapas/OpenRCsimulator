@@ -60,6 +60,10 @@ static func _visit(value: Variant, parts: PackedStringArray, spec: Dictionary, r
 		return
 	if classification["literal_path"]:
 		var literal: Variant = classification["literal_value"]
+		var numeric_pair := typeof(value) in [TYPE_INT, TYPE_FLOAT] and typeof(literal) in [TYPE_INT, TYPE_FLOAT]
+		if typeof(value) != typeof(literal) and not numeric_pair:
+			_issue(issues, path, "must equal %s with the declared type" % str(literal))
+			return
 		if value != literal:
 			_issue(issues, path, "must equal %s" % str(literal))
 		return

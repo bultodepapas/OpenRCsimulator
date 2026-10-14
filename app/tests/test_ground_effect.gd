@@ -306,7 +306,12 @@ func _banked_and_regimes(session: Node) -> void:
 	print("info 0.4 m increments: oracle ΔL %.3f N ΔD %.3f N ΔMy %.4f N·m; strips ΔL %.3f N ΔD %.3f N ΔMy %.4f N·m"
 		% [o.L - of.L, o.D - of.D, o.My - of.My, l.L - lf.L, l.D - lf.D, l.My - lf.My])
 	_check("oracle and strip regimes carry the same lift increment within 5 %", absf((o.L - of.L) - (l.L - lf.L)) < 0.05 * absf(o.L - of.L))
-	_check("oracle and strip regimes carry the same drag increment within 15 %", absf((o.D - of.D) - (l.D - lf.D)) < 0.15 * absf(o.D - of.D))
+	# The drag increment is a few hundredths of a newton. The oracle has no tail induced-drag term, while the strips' tail
+	# drag follows its trim load; since D6e-R1 that load is small, so the ratio alone is ill-conditioned. Accept agreement
+	# within 15 % or within 1 % of the free-air drag.
+	_check("oracle and strip regimes carry the same drag increment within 15 % or 1 % of the free-air drag",
+		absf((o.D - of.D) - (l.D - lf.D)) < maxf(0.15 * absf(o.D - of.D), 0.01 * absf(of.D)),
+		"oracle ΔD %.4f N, strips ΔD %.4f N, free-air drag %.3f N" % [o.D - of.D, l.D - lf.D, of.D])
 	_check("oracle and strip regimes carry the same nose-down increment within 15 %", (o.My - of.My) < 0.0
 		and absf((o.My - of.My) - (l.My - lf.My)) < 0.15 * absf(o.My - of.My))
 	var blended := _wind_axes(Aero.loads(s, air, d, model, RHO, NAN, 0.0), air.alpha)

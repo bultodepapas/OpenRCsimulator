@@ -18,6 +18,8 @@ const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const Commands := preload("res://input/commands.gd")
 const InputPanel := preload("res://render/panel.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
+const FailureConfig := preload("res://failures/config.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
 const CrashDirector = preload("res://render/crash/director.gd")
 const SceneryDamageDirector = preload("res://render/crash/scenery_damage.gd")
 const ImpactSnapshot = preload("res://physics/impact_snapshot.gd")
@@ -33,6 +35,9 @@ const VisualCheckpoint = preload("res://app_state/visual_checkpoint.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
 const TimeOfDayLighting = preload("res://render/time_of_day_lighting.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
+const SkyConfig := preload("res://environment/sky_appearance_config.gd")
+const SkyCheckpoint := preload("res://app_state/sky_checkpoint.gd")
+const Lightning := preload("res://render/weather/lightning.gd")
 const ShaderClock := preload("res://render/shader_clock.gd")
 const Shadow := preload("res://render/shadow.gd")
 const Ground := preload("res://render/ground.gd") # legacy atmosphere fixture only
@@ -78,10 +83,22 @@ var _electric_demo: String = ""
 ## Interactive Home choice only; CLI and scripted routes retain the airborne default.
 var start_choice: String = "airborne"
 var weather_config: Dictionary = {}
+## Resolved only when this flight is created. Session reset retains its draw and onset.
+var failure_config: Dictionary = FailureConfig.defaults()
+var failure_seed: int = -1
+var failure_notifications: bool = true
+var _failure_notice: CanvasLayer
+var _failure_label: Label
+var _failure_overlays_visible: bool = true
 ## TOD: immutable selection for this flight; no preference reads on the direct route.
 var lighting_config: Dictionary = {}
+var sky_config: Dictionary = SkyConfig.defaults()
+var _sky_edits: Array = []
+var _storm_fx: Node3D
 ## FW-71: visual-only field lighting and campfire choices; direct launches resolve these from CLI defaults/flags.
 var night_options: Dictionary = Preferences.NIGHT_DEFAULTS.duplicate(true)
+## AppRoot passes the same argument list it used to choose the direct route; standalone launches use the OS list.
+var user_args: PackedStringArray = OS.get_cmdline_user_args()
 var _lighting: Dictionary = {}
 var _visual_timeline: Dictionary = {}
 var _visual_context_status: String = "present"
@@ -89,6 +106,37 @@ var _field_world_lighting: bool = false
 var _world_environment: WorldEnvironment
 var _sun: DirectionalLight3D
 var _field_node: Node3D
+
+
+func _failure_options(options: Dictionary) -> Dictionary:
+	var config: Dictionary = failure_config.duplicate(true)
+	var seed_value: int = failure_seed
+	if options.has("failures"):
+		if typeof(options.failures) != TYPE_STRING or not str(options.failures).is_valid_int():
+			return {ok = false, errors = ["--failures needs an integer from 0 to 100"]}
+		config.probability_percent = str(options.failures).to_int()
+	for key: String in ["catastrophic", "failure-notices"]:
+		if options.has(key):
+			if options[key] not in ["on", "off"]:
+				return {ok = false, errors = ["--%s must be on or off" % key]}
+			config["include_catastrophic" if key == "catastrophic" else "notify"] = options[key] == "on"
+	if options.has("failure-seed"):
+		if typeof(options["failure-seed"]) != TYPE_STRING or not str(options["failure-seed"]).is_valid_int():
+			return {ok = false, errors = ["--failure-seed needs an integer from 0 to 4294967295"]}
+		seed_value = str(options["failure-seed"]).to_int()
+		if seed_value < 0:
+			return {ok = false, errors = ["--failure-seed must be non-negative"]}
+	var checked: Dictionary = FailureConfig.validate(config)
+	if not checked.ok:
+		return checked
+	if seed_value < -1 or seed_value > 4294967295:
+		return {ok = false, errors = ["Failure seed must fit an unsigned 32-bit integer"]}
+	if seed_value == -1:
+		# A local RNG never perturbs weather/scenery or the failure generator's resolved sequence.
+		var random_source := RandomNumberGenerator.new()
+		random_source.randomize()
+		seed_value = random_source.randi() if checked.config.probability_percent > 0 else 0
+	return {ok = true, config = checked.config, seed = seed_value, errors = []}
 
 
 ## Direct/technical launches never read interactive preferences. All values remain SI/full precision.
@@ -226,6 +274,16 @@ func _ready() -> void:
 			get_tree().quit(ERR_INVALID_PARAMETER)
 		return
 	lighting_config = selected_light.config.duplicate(true)
+	var selected_sky: Dictionary = SkyConfig.validate(sky_config) if interactive_start else SkyConfig.from_args(args)
+	if not selected_sky.ok:
+		startup_error = "; ".join(selected_sky.errors)
+		set_process(false)
+		set_process_unhandled_input(false)
+		if not interactive_start:
+			printerr("sky: " + startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		return
+	sky_config = selected_sky.config
 	_lighting = TimeOfDayLighting.snapshot(lighting_config)
 	_visual_timeline = VisualTimeline.create(lighting_config).timeline
 	var latency_args: Dictionary = args.duplicate()
@@ -456,6 +514,26 @@ func _ready() -> void:
 			get_tree().quit(ERR_INVALID_DATA)
 			return
 	session.start_choice = start_choice
+	var failure_options: Dictionary = _failure_options(args)
+	if not failure_options.ok or (_scripted and failure_options.config.probability_percent > 0):
+		startup_error = "; ".join(failure_options.errors) if not failure_options.ok else "Failures require a physics flight."
+		if not interactive_start:
+			printerr(startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
+	failure_config = failure_options.config.duplicate(true)
+	failure_seed = failure_options.seed
+	failure_notifications = failure_config.notify
+	if not _scripted and not session.setup_failures(failure_config, failure_seed):
+		startup_error = session.failure_error
+		if not interactive_start:
+			printerr(startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+		set_process(false)
+		set_process_unhandled_input(false)
+		return
 	var conditions: Dictionary = _weather_options(args)
 	if not conditions.ok or not session.setup_weather(conditions.config):
 		startup_error = "; ".join(conditions.errors) if not conditions.ok else session.weather_error
@@ -466,6 +544,7 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		return
 	_update_cg_model()
+	Atmosphere.configure_appearance(sky_config, SkyConfig.mean_wind_ned(session.weather_configuration()))
 	if args.has("alt"):
 		session.set_start_altitude(float(args.alt))
 	add_child(session)
@@ -623,6 +702,7 @@ func _process(delta: float) -> void:
 	InputPanel.update(_panel, session.raw, session.commands, _view_name(), _status(), surfaces, session.throws_deg())
 	_camera_dt = dt
 	_render_pose(_current_pose(), surfaces, _prop_angle)
+	_update_storm(visual_clock_s, frozen)
 	_update_smoke()
 	if _crash_director != null:
 		_crash_director.update(dt)
@@ -713,6 +793,7 @@ func _end_smoke_assignment(cancelled: bool) -> void:
 
 
 func _update_hud() -> void:
+	_update_failure_notice()
 	if _crash_director != null and _crash_director.active:
 		_hud.text = ""
 		return
@@ -752,6 +833,37 @@ func _update_hud() -> void:
 				lines.append("ABOVE RECOMMENDED RPM")
 			lines.append("[F6] cut  [F7] starter  [F8] lean  [F9] rich")
 	_hud.text = "\n".join(lines)
+
+
+## An optional incident card, independent of the ordinary telemetry HUD and its preset.
+func _update_failure_notice() -> void:
+	var status: Dictionary = session.failure_status() if session != null else {}
+	var show_notice: bool = failure_notifications and _failure_overlays_visible and bool(status.get("active", false))
+	if not show_notice:
+		if _failure_notice != null:
+			_failure_notice.visible = false
+		return
+	if _failure_notice == null:
+		_failure_notice = CanvasLayer.new()
+		_failure_notice.name = "FailureNotice"
+		_failure_notice.layer = 70
+		add_child(_failure_notice)
+		var card := PanelContainer.new()
+		card.theme = UiTheme.build()
+		card.set_anchors_preset(Control.PRESET_CENTER_TOP)
+		card.offset_left = -250.0
+		card.offset_right = 250.0
+		card.offset_top = 84.0
+		card.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		_failure_notice.add_child(card)
+		_failure_label = Label.new()
+		_failure_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		_failure_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_CENTER
+		_failure_label.custom_minimum_size.x = 470.0
+		_failure_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		card.add_child(_failure_label)
+	_failure_label.text = tr("Failure: %s") % tr(str(status.get("label", ""))) + "\n" + tr(str(status.get("hint", "")))
+	_failure_notice.visible = true
 
 
 ## Ground speed is horizontal NED speed. A vertical-only air current has no compass bearing.
@@ -866,6 +978,10 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return
 		match event.physical_keycode:
+			KEY_BRACKETLEFT, KEY_BRACKETRIGHT:
+				if session.adjust_aileron_trim(-0.005 if event.physical_keycode == KEY_BRACKETLEFT else 0.005):
+					_note = tr("Aileron trim: %+.1f%%") % (session.trims.roll * 100.0)
+					get_viewport().set_input_as_handled()
 			KEY_PAGEUP, KEY_PAGEDOWN:
 				if session.adjust_elevator_trim(-0.1 if event.physical_keycode == KEY_PAGEUP else 0.1):
 					_note = tr("Elevator trim: %+.1f° (PgUp down / PgDn up)") % (session.trims.pitch * session.throws_deg().elevator)
@@ -971,6 +1087,9 @@ func _overlay_snapshot() -> Dictionary:
 ## Shows or hides the flight's text overlays (input panel and HUD). A menu hides them: the paused picture then
 ## shows the airplane alone, and the panel's "[P] resume" never contradicts the menu.
 func set_overlays_visible(on: bool) -> void:
+	_failure_overlays_visible = on
+	if _failure_notice != null:
+		_failure_notice.visible = on and failure_notifications and bool(session.failure_status().get("active", false))
 	for label in [_panel, _hud]:
 		var n: Node = label
 		while n != null and not n is CanvasLayer:
@@ -1022,10 +1141,14 @@ func checkpoint() -> Dictionary:
 	var saved: Dictionary = VisualCheckpoint.make(session.checkpoint(), _visual_timeline, _field_identity())
 	if not saved.ok:
 		return {}
+	var paired: Dictionary = saved.checkpoint
+	if sky_config != SkyConfig.defaults() or not _sky_edits.is_empty():
+		paired = SkyCheckpoint.make(paired, sky_config, Atmosphere.cloud_transport_checkpoint(), _sky_edits)
+		if paired.is_empty():
+			return {}
 	if _crash_director != null:
 		var water_render: Dictionary = _crash_director.water_checkpoint()
 		if not water_render.is_empty():
-			var paired: Dictionary = saved.checkpoint
 			var wrapped: Dictionary = {
 				"format": WATER_CHECKPOINT_FORMAT,
 				"visual": paired,
@@ -1033,7 +1156,7 @@ func checkpoint() -> Dictionary:
 			}
 			wrapped["payload_sha256"] = _water_checkpoint_digest(paired, water_render)
 			return wrapped
-	return saved.checkpoint
+	return paired
 
 
 ## Validate both halves and prepare detached shadow geometry before the physics owner commits.
@@ -1058,9 +1181,20 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 			return {ok = false, errors = ["water aftermath checkpoint is invalid or incompatible"]}
 		visual_candidate = candidate.visual
 		has_water_render = true
-	var decoded: Dictionary = VisualCheckpoint.read(visual_candidate, _field_identity())
+	var sky_restore: Dictionary = SkyCheckpoint.read(visual_candidate)
+	if not sky_restore.ok:
+		return sky_restore
+	var decoded: Dictionary = VisualCheckpoint.read(sky_restore.visual, _field_identity())
 	if not decoded.ok:
 		return decoded
+	var restored_time: float = float(decoded.physics.simulation.tick) * float(decoded.physics.simulation.dt)
+	var restored_mean: Array = SkyConfig.mean_wind_ned(decoded.physics.get("weather_config", {}))
+	if not sky_restore.legacy and (float(sky_restore.transport.anchor_time_s) > restored_time + 1.0e-9 \
+			or not Atmosphere.validate_cloud_transport_for(sky_restore.config, sky_restore.transport, restored_mean)):
+		return {ok = false, errors = ["cloud transport disagrees with checkpoint time or weather"]}
+	for edit: Dictionary in sky_restore.edits:
+		if edit.tick > decoded.physics.simulation.tick or not Atmosphere.validate_cloud_transport_for(edit.config, edit.transport, restored_mean):
+			return {ok = false, errors = ["sky edit disagrees with checkpoint tick or weather"]}
 	# TOD-09c1 defines progressing records before the live controller consumes them.
 	# Refuse even a stopped v2 history: its restart selection and fractional phase
 	# cannot be represented by this controller's fixed-time reset path yet.
@@ -1073,6 +1207,11 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 		return {ok = false, errors = ["physics checkpoint is invalid or incompatible"]}
 	# Existing checkpoints contain no scenario envelope. Never label a restored flight with stale seed provenance.
 	_forget_scenario()
+	sky_config = sky_restore.config.duplicate(true)
+	_sky_edits = sky_restore.edits.duplicate(true)
+	Atmosphere.configure_appearance(sky_config, SkyConfig.mean_wind_ned(session.weather_configuration()))
+	if not sky_restore.legacy:
+		Atmosphere.restore_cloud_transport(sky_restore.transport)
 	if not _commit_lighting(staged, decoded.config):
 		return {ok = false, physics_restored = true, errors = ["physics restored, but visual scene changed during restoration"]}
 	_visual_timeline = decoded.timeline.duplicate(true)
@@ -1086,6 +1225,10 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 	if _engine_audio != null:
 		_engine_audio.stream_paused = true
 	_render_pose(_current_pose(), session.surfaces(), _prop_angle)
+	_refresh_sky()
+	if _storm_fx != null:
+		_storm_fx.reset()
+		_update_storm(session.sim.time(), session.sim.paused)
 	if has_water_render:
 		if not _crash_director.restore_water_checkpoint(water_restore):
 			return {ok = false, physics_restored = true, errors = ["physics restored, but water aftermath could not be restored"]}
@@ -1109,6 +1252,73 @@ func _has_exact_keys(source: Dictionary, expected: Array[String]) -> bool:
 		if typeof(key) != TYPE_STRING or not expected.has(str(key)):
 			return false
 	return true
+
+
+## FW-78/82: validate a paused appearance edit before any lighting/preferences are committed.
+func prepare_sky_edit(raw: Variant) -> Dictionary:
+	var checked: Dictionary = SkyConfig.validate(raw)
+	if not checked.ok:
+		return checked
+	if session == null or not session.sim.paused or _scripted or _capturing or _env == null or not startup_error.is_empty():
+		return {ok = false, errors = ["sky editing requires a paused production flight"]}
+	if _sky_edits.size() >= 4096 and checked.config != sky_config:
+		return {ok = false, errors = ["sky edit history is full; restart before another edit"]}
+	return checked
+
+
+func apply_sky_config(raw: Variant) -> Dictionary:
+	var checked: Dictionary = prepare_sky_edit(raw)
+	if not checked.ok:
+		return checked
+	if checked.config == sky_config:
+		return {ok = true, changed = false, errors = []}
+	if not Atmosphere.configure_appearance(checked.config, SkyConfig.mean_wind_ned(session.weather_configuration()), session.sim.time()):
+		return {ok = false, errors = ["could not prepare cloud appearance"]}
+	sky_config = checked.config
+	_refresh_sky()
+	_sky_edits.append({tick = session.sim.tick, config = sky_config.duplicate(true), transport = Atmosphere.cloud_transport_checkpoint()})
+	if recorder != null and recorder.recording:
+		recorder.trace.meta.sky_context = JSON.stringify(_sky_context(), "", true, true)
+	return {ok = true, changed = true, errors = []}
+
+
+func _sky_context() -> Dictionary:
+	return {config = sky_config.duplicate(true), config_identity = SkyConfig.identity(sky_config),
+		profile = SkyConfig.validate(sky_config).profile, transport = Atmosphere.cloud_transport_checkpoint(),
+		edits = _sky_edits.duplicate(true)}
+
+
+## Restore the retained flight's renderer after a Workshop world used the shared sky uniforms.
+func restore_sky_presentation(transport: Dictionary) -> void:
+	var retained_exposure: float = _env.tonemap_exposure
+	Atmosphere.configure_appearance(sky_config, SkyConfig.mean_wind_ned(session.weather_configuration()))
+	Atmosphere.restore_cloud_transport(transport)
+	_refresh_sky(retained_exposure)
+
+
+func _refresh_sky(retained_exposure: float = -1.0) -> void:
+	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
+	Atmosphere.update_environment(_env, snapshot)
+	if retained_exposure > 0.0:
+		# A retained paused world already has an adapted exposure; do not reset it to the sky baseline.
+		_env.tonemap_exposure = retained_exposure
+		World.Exposure.set_value(retained_exposure)
+	Atmosphere.update_sun(_sun, snapshot)
+	Atmosphere.update_cloud_appearance(_field_node)
+	Atmosphere.update_clouds(_env, session.sim.time())
+	World.refresh_star_cloud_appearance(_env)
+	if _storm_fx != null:
+		_storm_fx.configure(sky_config)
+		_update_storm(session.sim.time(), session.sim.paused)
+
+
+func _update_storm(clock_s: float, paused: bool) -> void:
+	if _storm_fx == null or _camera == null or sky_config.preset != "electrical_storm":
+		return
+	_storm_fx.set_cloud_state(Atmosphere.cloud_state_snapshot())
+	if _soundscape_audio != null:
+		_storm_fx.set_sound_speed(float(_soundscape_audio.snapshot().sound_speed))
+	_storm_fx.update_at(clock_s, _camera.global_position, paused, _env.tonemap_exposure)
 
 
 ## Apply a visual-only edit while paused. Never restore physical state or change live input ownership.
@@ -1190,6 +1400,8 @@ func _prepare_checkpoint_lighting(config: Dictionary) -> Dictionary:
 ## the ZIP name. "development" when running from the source tree.
 func _trace_meta() -> Dictionary:
 	var meta: Dictionary = session.trace_meta()
+	if sky_config != SkyConfig.defaults() or not _sky_edits.is_empty():
+		meta.sky_context = JSON.stringify(_sky_context(), "", true, true)
 	meta.aircraft_visual_family = str(_airplane.get("visual_family", ""))
 	meta.aircraft_model_manifest_sha256 = str(_airplane.get("model_manifest_sha256", ""))
 	var build := BuildInfo.current()
@@ -1210,6 +1422,10 @@ func _trace_meta() -> Dictionary:
 
 ## One file never mixes two flights.
 func _on_resetting() -> void:
+	_sky_edits.clear()
+	Atmosphere.configure_appearance(sky_config, SkyConfig.mean_wind_ned(session.weather_configuration()))
+	if _storm_fx != null:
+		_storm_fx.reset()
 	if not flight_scenario.is_empty() and (session.aircraft.get("input_identity", {}).get("sha256", "") != flight_scenario.aircraft_identity \
 			or session.weather_configuration() != flight_scenario.weather_config):
 		_forget_scenario() # developer reload/environment replacement is no longer the accepted random draw
@@ -1239,10 +1455,14 @@ func _on_resetting() -> void:
 ## --experimental-aircraft-data=<absolute JSON path> (research-only Ugly Stik wing-polar candidate)
 func _user_args() -> Dictionary:
 	var args := {}
-	for a in OS.get_cmdline_user_args():
+	for a in user_args:
 		var kv := a.trim_prefix("--").split("=", true, 1)
 		args[kv[0]] = kv[1] if kv.size() > 1 else true
 	return args
+
+
+func set_user_args(args: PackedStringArray) -> void:
+	user_args = args.duplicate()
 
 
 func _validate_experimental_aircraft_data(path: Variant, selected_aircraft_id: String, scripted: bool, electric_demo: bool) -> Dictionary:
@@ -1292,6 +1512,7 @@ func _build_world() -> bool:
 		startup_error = "Aircraft model failed its manifest and scene binding checks: " + aircraft_id
 		return false
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
+	Atmosphere.configure_appearance(sky_config)
 	var built: Dictionary = World.build(self, field, _build_field, {}, snapshot, night_options)
 	_field_world_lighting = bool(built.conditions.time_of_day)
 	_env = built.environment
@@ -1305,6 +1526,12 @@ func _build_world() -> bool:
 	Shadow.bind_model(_shadow, _airplane.root)
 	_night_kit = World.dress_aircraft(_airplane.root) # FW-35: night kit from dusk, after the extent is measured
 	_camera = PilotCamera.create(self, field.pilot)
+	_storm_fx = Lightning.new()
+	_storm_fx.name = "ElectricalStorm"
+	add_child(_storm_fx)
+	_storm_fx.configure(sky_config)
+	var storm_args: Dictionary = _user_args()
+	_storm_fx.set_audio_enabled(not _scripted and not storm_args.has("capture") and str(storm_args.get("soundscape", "on")) != "off")
 	_rig = CameraRig.new(_camera, _extent.x)
 	if overlays_enabled:
 		_overlays = OverlayManager.new(overlay_settings, TranslationServer.get_locale().substr(0, 2))
@@ -1407,6 +1634,7 @@ func _capture(t: float, c: Dictionary, out: String) -> void:
 	_render_pose(pose, surfaces, TAU * Commands.prop_rev_per_sec(c) * t)
 	var clock_s: float = t if _scripted else sim.time()
 	World.update(_env, clock_s, _render_wind(clock_s), pose.pos, _camera)
+	_update_storm(clock_s, false) # deterministic capture includes the selected event phase
 	_update_hud()
 	await RenderingServer.frame_post_draw
 	await RenderingServer.frame_post_draw
@@ -1456,7 +1684,7 @@ func _write_manifest(png_path: String, err: Error) -> Error:
 		api = RenderingServer.get_video_adapter_api_version(),
 		godot = Engine.get_version_info().string,
 		lp_num_threads = OS.get_environment("LP_NUM_THREADS"),
-		args = " ".join(OS.get_cmdline_user_args()).replace(png_path, png_path.get_file()),
+		args = " ".join(user_args).replace(png_path, png_path.get_file()),
 	}
 	var f := FileAccess.open(png_path.get_basename() + ".json", FileAccess.WRITE)
 	if f == null:
@@ -1581,6 +1809,8 @@ func capture_evidence() -> Dictionary:
 	var basis: Basis = _last_render_pose.get("basis", Basis.IDENTITY)
 	return {
 		format = "openrc-visual-evidence v1", lighting = TimeOfDayLighting.context(lighting_config, _lighting),
+		world_lighting = {enabled = _field_world_lighting, state = Atmosphere.state.duplicate(true) if _field_world_lighting else {}},
+		sky = _sky_context(),
 		night_options = night_options.duplicate(true), provenance = VisualEvidence.provenance(),
 		case_id = str(args.get("case", "unspecified")), aircraft = aircraft_id,
 		field_data = {id = field.id, path = field_path, sha256 = FileAccess.get_sha256(field_path)},

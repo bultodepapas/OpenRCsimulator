@@ -16,6 +16,40 @@ Home saves a time choice. The Evening choice starts at golden hour and advances 
 
 Available named presets include dawn, sunrise, morning, noon, afternoon, golden_hour, sunset, blue_hour, night and night_dark. Without a resolved time, direct technical launches preserve the calibrated 225° azimuth / 45° fixed sun for parity. That fixed reference is not described as astronomical noon.
 
+## Night field and campfire
+
+The Conditions time controls select **Soft club**, **Airfield** or **Off** and toggle **Campfire** independently. Home remembers these choices; the default is Club with the fire off. The field mode changes lamp/marker appearance without removing the installed mast or hearth. Four heads share one 12 m mast; a separate low light continues to illuminate the windsock. Airfield uses cooler floods and white edge cues; the red/green threshold direction cues remain visual aids for this RC field, not airport certification.
+
+Technical launch options use explicit defaults independently of saved Home preferences:
+
+```sh
+$(app/get-godot.sh) --path app -- --quick-flight --time_of_day=night --field-lighting=airfield --campfire=on
+```
+
+The [asset pipeline](../tools/night-lighting/README.md) documents the CC0 downloads, reproducible derivatives and shipped licenses. The fire follows the presentation clock and wind; pausing time holds its animation. Its log-base collision remains present with the flame switched off. The shared Compatibility renderer and aircraft physics are unchanged.
+
+## Sky and cloud controls
+
+Home → **Weather → Sky & clouds** selects the appearance for the next airplane flight. In flight, **Pause → Sky and lighting → Sky & clouds** changes it while the simulation is held. Both editors use the same nine-card gallery and detached draft: Apply saves the choice; Cancel leaves the world and preferences unchanged. Spanish labels are **Clima → Cielo y nubes** and **Cielo e iluminación**.
+
+The profiles are Classic clouds, Clear blue, High Cirrus, Fair-Weather Cumulus, Broken Cloud, Overcast, Building Storm, Distant Storm and Electrical Storm. Classic keeps the calibrated original by default. Clear removes every cloud layer and its ground shadow. Storm/distant profiles currently use projected procedural layers, not traversable cloud volumes or a world-anchored rainbank.
+
+Cloud motion offers **Still**, **Follow wind**, **Wind aloft**, and the original **Classic motion**. Follow wind reads configured mean wind as an authored wind-aloft proxy; calm mean wind freezes translation. It does not follow instantaneous turbulence or multiply speed by the astronomical clock. Wind aloft is independently editable from 0 to 50 m/s with meteorological FROM direction. The current update quantum is one simulation second; very fast winds can show stepping.
+
+Electrical storm adds seeded branched lightning, local cloud illumination, brief scene light and distance-delayed CC0 thunder. **Full / Reduced / Off** controls flashes, and thunder volume is independent. **View at night** changes the time draft explicitly; selecting a sky card alone preserves time and physical weather. Pause suppresses transient peaks and holds thunder. The effects cannot change aerodynamic forces, trim, turbulence RNG or aircraft checkpoint bytes.
+
+Technical launches ignore Home preferences, for example:
+
+```sh
+"$(app/get-godot.sh)" --path app -- --quick-flight --sky=clear
+"$(app/get-godot.sh)" --path app -- --quick-flight --sky=broken --cloud-motion=aloft --cloud-wind-speed=8 --cloud-wind-from=270
+"$(app/get-godot.sh)" --path app -- --quick-flight --sky=electrical_storm --time_of_day=night --storm-flashes=reduced --thunder-volume=0.5
+```
+
+`--cloud-seed` accepts 0–2147483647; `--cloud-motion` accepts `legacy`, `still`, `follow_wind`, or `aloft`; flash values are `full`, `reduced`, `off`; thunder volume is 0–1. Invalid explicit sky options refuse startup. Missing sky data in old preferences/checkpoints resolves to classic. Native technical checkpoints freeze profile, transport and edit history; incompatible catalog retunes are rejected. The existing progressing-world checkpoint restriction remains.
+
+This first integration targets the airplane route. Natural Random and helicopter flights currently keep classic; the helicopter route has no sky editor or storm consumer. Tropical bands, tornadoes, spatial wind forces, rain physics and volumetric traversal are not implemented. [Implementation evidence](research/field-world/FW-78/README.md), [native gallery](research/field-world/FW-79/README.md), [electrical effects and licenses](research/field-world/FW-84/README.md).
+
 ## Current implementation
 
 - FW-01/02 use the same World.build/update path for flight, Home, scenery views and the runway scenario. The parity tool covers 89 views plus trace content; two runs match. See [FW-02 evidence](research/field-world/FW-02/README.md).
@@ -39,9 +73,9 @@ Available named presets include dawn, sunrise, morning, noon, afternoon, golden_
 
 FW-32 light pools were not needed for the first slice. Additional village, traffic, wind-turbine and club lighting is parked behind Gate FW-N; it is not required to review the current night kit.
 
-The owner's 2026-10-13 request adds a separate [night landscape lighting plan](plans/night-landscape-lighting.md), which owns FW-66–75: one mast with four downloaded lamp heads, softer overlapping field light, a selectable airport style and an optional animated campfire. [FW-66](research/field-world/FW-66/README.md) retains source downloads and starting views. This is planned work; existing behavior and the aircraft night-kit gate above are unchanged. The requested field/club refinement is active; unrelated village and traffic lighting remains parked.
+The owner's 2026-10-13 request adds a separate [night landscape lighting plan](plans/night-landscape-lighting.md), which owns FW-66–75: one mast with four downloaded lamp heads, softer overlapping field light, a selectable airport style and an optional animated campfire. [FW-66](research/field-world/FW-66/README.md) retains source downloads and starting views. The night-light implementation is now present: v2 installation data, one four-head mast, downloaded lamp modules, profile controls and a clock-driven optional fire. Validation and remaining limits are recorded in [FW-67–74 evidence](research/field-world/FW-67-74/README.md); the aircraft night-kit gate remains open. The requested field/club refinement is active; unrelated village and traffic lighting remains parked.
 
-The [sky, clouds and storm plan](plans/sky-clouds-weather.md) owns proposed FW-76–90: a selectable cloud collection, wind-linked cloud transport, distant storms, an electrical-storm/night showcase (FW-84a–e) and a later experimental tornado scenario. [FW-76 research](research/field-world/FW-76/README.md) records Godot/GitHub/Reddit/tutorial, free VFX/audio and meteorology sources. It preserves the current sky and Compatibility renderer; spatial weather and distributed aircraft response remain coordinated with M5-W05/W07. No new sky preset, lightning or storm physics is implemented by that planning delivery.
+The active [sky, clouds and storm plan](plans/sky-clouds-weather.md) owns FW-76–90 and the remaining art/flight/performance gates. Nine sky profiles, transport controls and the electrical-effects slice are present as described above. [FW-76 research](research/field-world/FW-76/README.md) retains Godot/GitHub/Reddit/tutorial, free VFX/audio and meteorology sources. Spatial weather and distributed aircraft response remain unimplemented and coordinated with M5-W05/W07.
 
 ## Acceptance and research
 

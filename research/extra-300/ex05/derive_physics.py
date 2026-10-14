@@ -491,6 +491,18 @@ coefficients = {
 }
 surf = stik["aero"]["surfaces"]
 same = lambda key: dict(surf[key], source="same provisional value as the Ugly Stik surface model (" + surf[key]["source"].split(";")[-1].strip() + ")", kind=surf[key]["kind"] if surf[key]["kind"] != "derived" else "estimated")
+crash_hull_probes = [
+    ("probe_wing_left_le", le(W["le_z_tip"], W["chord_plane_y"], -semi)),
+    ("probe_wing_right_le", le(W["le_z_tip"], W["chord_plane_y"], semi)),
+    ("probe_wing_left_te", le(W["le_z_tip"] + ct, W["chord_plane_y"], -semi)),
+    ("probe_wing_right_te", le(W["le_z_tip"] + ct, W["chord_plane_y"], semi)),
+    ("probe_spinner_tip", le(g["spinner"]["tip_z"])),
+    ("probe_rudder_bottom", le(T["rudder_te_low"][0], T["rudder_te_low"][1])),
+    ("probe_stabilizer_left_tip", le(T["elevator_tip_te_z"], T["stab_y"], -T["stab_half_span"])),
+    ("probe_stabilizer_right_tip", le(T["elevator_tip_te_z"], T["stab_y"], T["stab_half_span"])),
+    ("probe_fin_top", le(T["rudder_top_te_z"], T["fin_top_y"])),
+    ("probe_canopy_top", le(max(g["canopy"]["top"], key=lambda p: p[1])[0], max(p[1] for p in g["canopy"]["top"]))),
+]
 data = {
     "format": "openrc-aircraft v1",
     "physical_identity_version": 1,
@@ -522,16 +534,8 @@ data = {
              **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
     ],
-    "crash_hull": q([
-        le(W["le_z_tip"], W["chord_plane_y"], -semi), le(W["le_z_tip"], W["chord_plane_y"], semi),
-        le(W["le_z_tip"] + ct, W["chord_plane_y"], -semi), le(W["le_z_tip"] + ct, W["chord_plane_y"], semi),
-        le(g["spinner"]["tip_z"]),
-        le(T["rudder_te_low"][0], T["rudder_te_low"][1]),
-        le(T["elevator_tip_te_z"], T["stab_y"], -T["stab_half_span"]), le(T["elevator_tip_te_z"], T["stab_y"], T["stab_half_span"]),
-        le(T["rudder_top_te_z"], T["fin_top_y"]),
-        le(max(g["canopy"]["top"], key=lambda p: p[1])[0], max(p[1] for p in g["canopy"]["top"])),
-    ], "m", "measured", "Body crash points (le frame) from " + GEO_SRC + ": wing tip LE/TE, spinner tip, rudder bottom TE, stab tips, fin top, canopy top. Wheel bottoms use E5a landing_gear contacts and are excluded from this crash hull."),
-    "crash_hull_ids": ["probe_wing_left_le", "probe_wing_right_le", "probe_wing_left_te", "probe_wing_right_te", "probe_spinner_tip", "probe_rudder_bottom", "probe_stabilizer_left_tip", "probe_stabilizer_right_tip", "probe_fin_top", "probe_canopy_top"],
+    "crash_hull": q([point for _, point in crash_hull_probes], "m", "measured", "Body crash points (le frame) from " + GEO_SRC + ": wing tip LE/TE, spinner tip, rudder bottom TE, stab tips, fin top, canopy top. Wheel bottoms use E5a landing_gear contacts and are excluded from this crash hull."),
+    "crash_hull_ids": [identity for identity, _ in crash_hull_probes],
     # CR-01d: one semantic name per crash_hull point above, in the same order (crash presentation only).
     "crash_hull_components": ["left_wing_tip", "right_wing_tip", "left_wing_tip", "right_wing_tip", "spinner", "tail_end", "left_stab_tip", "right_stab_tip", "fin_top", "canopy"],
     "plausibility": {
@@ -626,7 +630,7 @@ legacy_data = data
 data = upgrade(legacy_data)
 validate_physical_identity(data)
 parity = numeric_parity(legacy_data, data)
-text = json.dumps(data, indent=2, ensure_ascii=False) + "\n"
+text = (json.dumps(data, indent=2, ensure_ascii=False) + "\n").replace("\n", "\r\n")
 rows = ["| Section | Quantity | Value | How |", "| --- | --- | --- | --- |"]
 for sec, name, val, how in log:
     v = ", ".join(f"{x:.4g}" for x in val) if isinstance(val, list) else f"{val:.4g}"
@@ -663,14 +667,18 @@ Throws (manual p43 high rate): aileron {throws['aileron']:.1f}°, elevator {thro
 """
 
 if "--check" in sys.argv:
-    stale = [p for p, t in ((OUT, text), (REPORT, report)) if not p.exists() or p.read_text() != t]
+    stale = []
+    if not OUT.exists() or OUT.read_bytes() != text.encode("utf-8"):
+        stale.append(OUT)
+    if not REPORT.exists() or REPORT.read_text() != report:
+        stale.append(REPORT)
     if stale:
         sys.exit("stale: " + ", ".join(str(p.relative_to(ROOT)) for p in stale) + f" (run {SCRIPT})")
     print("gp_extra_300s_60.json and derivation.md are up to date")
 else:
     OUT.parent.mkdir(parents=True, exist_ok=True)
     REPORT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(text)
+    OUT.write_bytes(text.encode("utf-8"))
     REPORT.write_text(report)
     print(f"wrote {OUT.relative_to(ROOT)} and {REPORT.relative_to(ROOT)}")
     print(f"dry {dry_mass:.3f} kg / {100 * dry_cg_mac:.2f} % MAC; loaded {mass:.3f} kg / {100 * cg_loaded_mac:.2f} % MAC; SM {sm:.2f} % MAC, stall {Vs:.2f} m/s, start {V_start} m/s")

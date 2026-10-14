@@ -1,10 +1,22 @@
 # Random failures and emergency practice
 
-**Date:** 2026-10-13. **Status:** researched proposal; no runtime implementation in this change. **Owner:** Emergency training track, **EM-00…28**. Shared physics, aircraft contracts, UI, propulsion and damaged-flight work remains with its existing owners in the [track registry](../README.md#tracks-plans-and-step-ids). **Research:** [EM-00 source review and audit](../research/failure-mode/EM-00/README.md).
+**Date:** 2026-10-13. **Status:** first logical-control/throttle slice implemented; aircraft recovery qualification and the remaining phases are open. **Owner:** Emergency training track, **EM-00…28**. Shared physics, aircraft contracts, UI, propulsion and damaged-flight work remains with its existing owners in the [track registry](../README.md#tracks-plans-and-step-ids). **Research:** [EM-00 source review and audit](../research/failure-mode/EM-00/README.md). **Implementation evidence:** [EM-01 initial slice](../research/failure-mode/EM-01/README.md).
 
 **Outcome:** any supported airplane can participate in optional emergency practice through the same capability-based system. A player chooses a whole-number failure probability from **0 to 100**, optionally admits catastrophic failures, and optionally sees a notice when the failure happens. The airplane responds through its real simulated controls, propulsion and aerodynamics. Learning, surprise and repeatable challenges are the reasons to use the feature.
 
-This is a design for implementation, not a claim that these faults, recoveries or probabilities already exist. The document is in English following repository policy; proposed player-facing examples include Spanish.
+The implementation checkpoint below identifies existing behavior. The remaining sections describe the broader target, not delivered or physically validated features. The document is in English following repository policy; the implemented interface supports English and Spanish.
+
+### Implementation checkpoint — initial slice
+
+- **Home → Failures** selects integer probability 0–100, catastrophic admission and notices. Pause offers settings for the next flight; Apply also updates notices in the current flight. Cancel discards all draft changes. Restart retains the resolved episode. End flight reports an active incident, a healthy draw or an interruption before onset.
+- **Eight ordinary injected mechanisms:** both ailerons held through the existing roll actuator, elevator hold, rudder hold, roll bias, pitch bias, slow roll servo, throttle-demand ceiling and elevated throttle-demand hold. Jams capture actual servo position; trim does not release a jam. Keyboard `[` / `]` adjusts roll trim; existing PgUp/PgDn adjusts pitch trim.
+- **One opt-in catastrophic mechanism:** sustained simulated receiver link loss, holding the last accepted control commands with throttle demand at idle. Real controller disconnection retains its existing pause behavior.
+- `app/failures/` owns strict configuration, catalog and versioned private RNG/runtime. A draw assigns at most one event. The current pool is uniform over eight ordinary events, or nine events when radio loss is admitted; this initial policy supersedes the proposed 90/10 category weighting below. These are training choices, not measured RC reliability.
+- Onset is resolved once at **20–120 seconds of qualified airborne time**: accepted physics ticks at least **5 m above local terrain**, with wheels uncompressed. Paused time does not count. Ending before that time does not satisfy the scheduled emergency. The default technical/direct route remains off; Natural Random and non-airplane routes do not inherit this option.
+- The session stages the incident before integration, commits it before external stepped observers and discards it on numerical rejection. `openrc-flight-checkpoint v10` wraps the existing physics format without changing its state layout; native checkpoints carry the complete resolved plan and runtime. Enabled trace headers retain the plan and recording-start state.
+- Direct reproduction: `-- --failures=100 --failure-seed=1751` selects a roll-actuator jam after 20 qualified seconds. Additional flags: `--catastrophic=on|off`, `--failure-notices=on|off`. Seed range is 0–4294967295. Technical launches do not read saved preferences.
+
+This advances the logical-topology portions of **EM-01…11** and the receiver profile in **EM-17**. It does **not** close all their acceptance gates. Independent single-aileron/split-elevator hardware, engine/turbine shutdown and restart laws, intermittent power, brownout, in-flight wing separation, richer lessons, exported-build checks, target-hardware performance and RC pilot recovery qualification remain pending. Stuck throttle uses each existing energy model; it does not manufacture finite fuel in a prescribed-fuel installation.
 
 **Navigation:** [Product](#1-product-decisions) · [Research](#2-evidence-and-realism-boundaries) · [Menus](#4-player-flow-and-menus) · [Probability](#5-exact-probability-time-and-repeat-semantics) · [Fault catalog](#6-fault-catalog) · [Aircraft standard](#7-standardization-across-airplanes) · [Numerics](#8-numerical-and-code-design) · [Wing loss](#10-wing-separation-and-continued-damaged-flight) · [Practice](#11-useful-and-enjoyable-practice) · [Verification](#13-verification-and-acceptance) · [Phases](#14-phased-implementation).
 
@@ -504,13 +516,13 @@ Keep source loading, catalog validation, hashing and topology compilation outsid
 
 ## 14. Phased implementation
 
-Every row is pending except EM-00's document/research work. Each step should land as a small independently reviewable change with proof in its commit message. Split a row further if it cannot preserve a working app. Names and sizes are planning boundaries, not elapsed-time promises.
+EM-00's research is delivered. The implementation checkpoint above records the initial portions of EM-01…11 and EM-17; unlisted work and physical/pilot acceptance remain pending. Each step should land as a small independently reviewable change with proof in its commit message. Split a row further if it cannot preserve a working app. Names and sizes are planning boundaries, not elapsed-time promises.
 
 ### Phase 0 — Contract and baseline
 
 | ID | Work | Dependencies and proof/status |
 | --- | --- | --- |
-| **EM-00** | Research, current-tree audit, UX/probability decisions and track registration. | This plan and linked dated source review. **Documentation delivered; implementation not started.** |
+| **EM-00** | Research, current-tree audit, UX/probability decisions and track registration. | This plan and linked dated source review. **Documentation delivered.** Runtime scope is recorded in the implementation checkpoint above. |
 | **EM-01** | Freeze supported use cases, define ordinary/catastrophic eligibility and baseline corpus. Coordinate EM/AS/CR/UI/AV/NITRO/NR responsibilities. | Capture current healthy state identities and source limits; confirm all seven catalog configurations and actual energy/actuator topology. No physical edits. |
 | **EM-02** | Strict failure request/definition/resolved-record contracts; capability resolver with exclusion reasons. | G0/G4; malformed and unknown modules fail closed; records are detached and source data remains immutable. Resolve AS topology version choice before the next phase. |
 

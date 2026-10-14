@@ -2,6 +2,7 @@
 extends CanvasLayer
 
 const UiTheme = preload("res://ui/ui_theme.gd")
+const Plot = preload("res://vehicles/ground/telemetry_plot.gd")
 signal action_requested(action: String)
 signal mode_selected(index: int)
 signal experiment_requested(knobs: Dictionary)
@@ -19,6 +20,7 @@ var lab: VBoxContainer
 var gauges: Label
 var sliders := {}
 var root_control: Control
+var plot: Control
 var _es := false
 
 func words(english: String, spanish: String) -> String:
@@ -127,6 +129,8 @@ func _ready() -> void:
 			knobs[key] = sliders[key].value
 		experiment_requested.emit(knobs))
 	lab.add_child(apply)
+	# Experiments belong next to the mode and reset controls, ahead of utilities.
+	column.move_child(lab, row.get_index() + 1)
 	column.add_child(_button(words("Return to Home", "Volver al inicio"), "home"))
 	var qualification := _label(words("Estimated physics parameters. Record runs to compare experiments.", "Parámetros físicos estimados. Graba las pruebas para comparar experimentos."), 14)
 	qualification.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -134,6 +138,12 @@ func _ready() -> void:
 	gauges = _label("", 15)
 	gauges.position = Vector2(24, 80)
 	root_control.add_child(gauges)
+	plot = Plot.new()
+	plot.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
+	plot.position = Vector2(24, -250)
+	plot.size = Vector2(300, 120)
+	plot.visible = false
+	root_control.add_child(plot)
 	resume_button.grab_focus.call_deferred()
 
 func _label(text: String, size: int) -> Label:
@@ -156,15 +166,23 @@ func _button(text: String, action: String) -> Button:
 	return button
 
 func _slider(key: String, title: String, low: float, high: float, initial: float) -> void:
+	var row := HBoxContainer.new()
+	row.custom_minimum_size.y = 32
+	lab.add_child(row)
 	var label := _label(title + "  %.2f" % initial, 14)
-	lab.add_child(label)
+	label.custom_minimum_size.x = 172
+	row.add_child(label)
 	var slider := HSlider.new()
+	slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	slider.size_flags_vertical = Control.SIZE_SHRINK_CENTER
+	slider.custom_minimum_size.x = 88
+	slider.tooltip_text = title
 	slider.min_value = low
 	slider.max_value = high
 	slider.step = 0.01
 	slider.value = initial
 	slider.value_changed.connect(func(value: float): label.text = title + "  %.2f" % value)
-	lab.add_child(slider)
+	row.add_child(slider)
 	sliders[key] = slider
 
 func set_menu(shown: bool) -> void:
@@ -183,8 +201,12 @@ func message(english: String, spanish: String) -> void:
 func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recording: bool, diagnostic: bool) -> void:
 	var speed := float(snapshot.get("speed_m_per_s", 0.0)) * 3.6
 	status.text = "BISONTE MT8  /  " + (words("PAUSED", "PAUSA") if paused else words("DRIVING", "CONDUCIENDO"))
-	telemetry.text = "%.1f km/h  ·  %.1f s  ·  %s%s" % [speed, time_s, words("AIR", "AIRE") if snapshot.get("airborne", false) else str(snapshot.get("surface_id", "")), "  ● REC" if recording else ""]
+	var surface := str(snapshot.get("surface_id", ""))
+	var surface_names := {"asphalt": words("Asphalt", "Asfalto"), "grass": words("Grass", "Césped"), "gravel": words("Gravel", "Grava"), "slippery": words("Low grip", "Poco agarre")}
+	telemetry.text = "%.1f km/h  ·  %.1f s  ·  %s%s" % [speed, time_s, words("AIR", "AIRE") if snapshot.get("airborne", false) else surface_names.get(surface, surface), "  ● REC" if recording else ""]
 	gauges.visible = diagnostic
+	plot.visible = diagnostic
+	plot.observe(roundi(time_s * 240.0), snapshot.get("suspension_travel_m", PackedFloat64Array()))
 	if diagnostic:
 		var loads = snapshot.get("wheel_load_n", [0, 0, 0, 0])
 		var slips = snapshot.get("wheel_slip_ratio", [0, 0, 0, 0])

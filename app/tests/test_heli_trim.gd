@@ -3,6 +3,7 @@ extends SceneTree
 
 const Trim = preload("res://physics/rotorcraft/trim.gd")
 const Flight = preload("res://physics/rotorcraft/flight_dynamics.gd")
+const RotorcraftData = preload("res://physics/rotorcraft_data.gd")
 const RB = preload("res://physics/rigid_body.gd")
 const M = preload("res://physics/math3d.gd")
 const Fixture = preload("res://tests/test_heli_flight.gd")
@@ -137,5 +138,43 @@ func _initialize() -> void:
 				close("wind hover position rate " + str(axis), wind_equilibrium.body_derivative[RB.POS + axis], 0.0, 1.0e-8)
 				close("wind hover acceleration residual " + str(axis),
 					wind_equilibrium.body_derivative[RB.VEL + axis], 0.0, 1.0e-8)
+	var ground_trim: Dictionary = Trim.solve_hover(context, 0.0, position, wind, {"ground_height_up_m": 0.0})
+	check("hover trim solves the same candidate-specific ground-effect geometry as flight stages", ground_trim.ok)
+	if ground_trim.ok:
+		var ground_equilibrium: Dictionary = Flight.evaluate(ground_trim.state, context, ground_trim.sticks,
+			"normal", false, false, wind, false, PackedFloat64Array(), ground_trim.trim,
+			(-position[2] - M.q_rotate(PackedFloat64Array([ground_trim.state[RB.ATT],
+				ground_trim.state[RB.ATT + 1], ground_trim.state[RB.ATT + 2], ground_trim.state[RB.ATT + 3]]),
+				PackedFloat64Array([context.main_model.hub_x_m, context.main_model.hub_y_m,
+				context.main_model.hub_z_m]))[2]) / context.main_model.rotor_radius_m)
+		check("ground-effect trimmed state evaluates through the live downstream-wake gate",
+			ground_equilibrium.ok and ground_equilibrium.aero.ground_effect_wake_intersects_ground
+			and ground_equilibrium.aero.ground_effect_height_over_radius_used >= 0.0)
+	var preset: Dictionary = RotorcraftData.load_file("res://data/aircraft/xcell_60_research.json")
+	check("generated xcell research preset passes the production v2 data loader", preset.ok)
+	if preset.ok:
+		var preset_trim: Dictionary = Trim.solve_hover(preset.context, 0.0, position, wind,
+			{"ground_height_up_m": 0.0})
+		check("production preset reaches an airborne ground-effect hover equilibrium", preset_trim.ok)
+		if preset_trim.ok:
+			var preset_drive: Dictionary = preset_trim.evaluation.drive
+			var engine_speed: float = preset_drive.engine_speed_rad_s
+			var power_torque_cap: float = preset.context.drive_model.engine_power_max_w / engine_speed
+			var available_engine_torque: float = minf(preset.context.drive_model.engine_torque_max_nm,
+				power_torque_cap)
+			var available_net_main_torque: float = available_engine_torque \
+				* preset.context.drive_model.engine_speed_ratio_to_main \
+				* preset.context.drive_model.gear_efficiency - preset_drive.shaft_loss_torque_nm
+			var actual_net_main_torque: float = preset_drive.main_drive_torque_nm - preset_drive.shaft_loss_torque_nm
+			var reserve_nm: float = available_net_main_torque - actual_net_main_torque
+			var power_reserve_w: float = preset.context.drive_model.engine_power_max_w - preset_drive.engine_power_w
+			check("hover remains below the finite engine power cap with torque reserve",
+				reserve_nm > 1.5 and power_reserve_w > 400.0 and not preset_drive.power_limited)
+			check("generated-preset rotor remains close to its governor target",
+				absf(preset_trim.state[Flight.OMEGA] - preset.context.drive_model.governor_target_main_rad_s) < 1.0)
+			print("Preset hover drive: omega=%.3f rad/s, engine_torque=%.3f/%.3f Nm, engine_power=%.1f/%.1f W, net_torque_reserve=%.3f Nm, power_reserve=%.1f W" % [
+				preset_trim.state[Flight.OMEGA], preset_drive.engine_torque_nm,
+				preset.context.drive_model.engine_torque_max_nm, preset_drive.engine_power_w,
+				preset.context.drive_model.engine_power_max_w, reserve_nm, power_reserve_w])
 	print("HELI-18 airborne hover trim: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

@@ -6,6 +6,8 @@
 
 The [AS-13 continuation](AS-13/README.md) implements accepted contact observations, transactional collision publication and versioned checkpoint history without changing the physical laws.
 
+The [AS-08 identity continuation](AS-08-identity/README.md) adds authored physical IDs, strict validation, stable contact/event identities and Workshop v3 inventory resolution. Its evidence separates the isolated metadata migration from concurrent Stik calibration changes.
+
 The [AS-09/10 import continuation](AS-09-10-import/README.md) migrates Timber to a common declarative Blender builder with checked gear/rotor construction and retained version 1 procedural adapters. A second distinct Blender delivery remains an onboarding gate.
 
 The [contract](../../../AIRCRAFT_CONTRACT.md) defines configuration, derived-model and runtime-state boundaries. [AS-05](AS-05/README.md) records delivered scope, verification and remaining acceptance.
@@ -27,5 +29,6 @@ The [contract](../../../AIRCRAFT_CONTRACT.md) defines configuration, derived-mod
 | [AS-05 delivery](AS-05/README.md) | Final results, reusable authoring commands, remaining measurement/coordination gates and ownership |
 | [AS-06–14 foundation](AS-06-14/README.md) | Seven configurations/five visual families; common source/package preflight, generated descriptors, exact fourteen-case flight/replay comparison and remaining acceptance |
 | [AS-13 contact observations](AS-13/README.md) | Contact lifecycle, accepted-impact commit/rollback, checkpoint/reload compatibility and exact isolated fleet comparison |
+| [AS-08 stable physical identities](AS-08-identity/README.md) | Nine migrated physical sources, seven Workshop descriptors, historical compatibility, schema/loader mutations and isolated fourteen-case numerical parity |
 
 No aircraft force equation or numeric calibration changed. Source/version identity changes deliberately; measured aircraft mass properties, low-Reynolds-number data and physical ground/flight validation remain open. Unsupported features are rejected, not inferred from hardware names.

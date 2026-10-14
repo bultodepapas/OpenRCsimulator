@@ -635,7 +635,10 @@ static func _file_stamp(path: String) -> String:
 static func _sorted_value(value: Variant) -> Variant:
 	# Normalize integer and float variants before the 12-significant-digit digest serialization.
 	if typeof(value) == TYPE_INT or typeof(value) == TYPE_FLOAT:
-		return ("%.12g" % float(value)).to_float()
+		var number := float(value)
+		var decimals: int = 0 if number == 0.0 else clampi(11 - int(floor(log(absf(number)) / log(10.0))), 0, 24)
+		# Keep the canonical decimal as text: parsing it again would reintroduce float rounding.
+		return {"number": String.num(number, decimals)}
 	if typeof(value) == TYPE_DICTIONARY:
 		var sorted_keys: Array = value.keys()
 		sorted_keys.sort()

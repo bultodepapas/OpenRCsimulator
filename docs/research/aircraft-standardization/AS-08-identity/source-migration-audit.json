@@ -1,0 +1,555 @@
+{
+  "audit": "authored physical identity migration non-identity parity",
+  "generated_utc": "2026-10-14T02:00:19.692449+00:00",
+  "baseline_snapshot_directory": ".tools/as-identity/before",
+  "baseline_snapshot_manifests": [
+    ".tools/as-identity/before/manifest.json",
+    ".tools/as-identity/before/extra-glow-manifest.json"
+  ],
+  "current_directory": "app/data/aircraft",
+  "comparison": "exact parsed JSON equality after removing only authored physical identity fields; arrays and all remaining values/order are preserved",
+  "removed_identity_fields": [
+    "/physical_identity_version",
+    "/inventory/*/id",
+    "/landing_gear/contacts/*/id",
+    "/crash_hull_ids",
+    "/propulsion/id",
+    "/controls/surface_ids"
+  ],
+  "audit_command": "python research/aircraft-standardization/test_physical_identity_sources.py --baseline-dir .tools/as-identity/before",
+  "audit_exit_code": 1,
+  "audit_exit_reason": "The optional strict audit correctly exits nonzero for current non-identity donor updates; no baseline value was altered to conceal them.",
+  "summary": {
+    "outputs_audited": 9,
+    "identity_stripped_equal": 4,
+    "identity_stripped_different": 5,
+    "donor_drift_files": [
+      "jensen_ugly_stik_60.json",
+      "stik_glow_55ax_2t.json",
+      "stik_glow_fs64v_4t.json",
+      "stik_glow_55ax_2t_apc_13x6.json",
+      "stik_glow_fs64v_4t_apc_13x6.json"
+    ],
+    "unclassified_paths": [],
+    "expected_donor_drift": "D6e-R1 changed the shared Stik aerodynamic reference point and six derivative values/sources. It also introduced controls.rates on the base Stik; Glow generation intentionally removes rates pending fresh flight evidence."
+  },
+  "outputs": [
+    {
+      "file": "jensen_ugly_stik_60.json",
+      "baseline_sha256": "b2f2b88e41e5e640974610e8ce925765b5734d31d9b86a7ce9487ff376d523a9",
+      "current_sha256": "c7d1373e6a22f2c9ec0527a6699eb01fb202048a18fc1ffe3f970e3d164cf928",
+      "identity_stripped_equal": false,
+      "difference_count": 11,
+      "numeric_or_value_differences": 6,
+      "unexpected_paths": [],
+      "differences": [
+        {
+          "path": "/aero/coefficients/CLq/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim, downwash settled; the wing ahead of the CG loses lift in a pull, so it is below the tail-only closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/CLq/value",
+          "change": "value_changed",
+          "before": 2.951,
+          "after": 1.992,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cmq/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; the downwash lag adds Cmadot -3.59 as a state (E0a2b), so Cmq+Cmadot = -11.07; closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -7.765 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CLq lift reproduces it; the downwash lag adds Cmadot -3.59 as a state (E0a2b); closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cmq/value",
+          "change": "value_changed",
+          "before": -7.476,
+          "after": -7.97,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnb/value",
+          "change": "value_changed",
+          "before": 0.1214237421962675,
+          "after": 0.12741288623702934,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cndr/value",
+          "change": "value_changed",
+          "before": -0.06678305820794714,
+          "after": -0.07007708743036616,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnr/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -0.1320 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CYr side force reproduces it; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnr/value",
+          "change": "value_changed",
+          "before": -0.1319,
+          "after": -0.1356,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/controls/rates",
+          "change": "added",
+          "before": null,
+          "after": {
+            "normal": {
+              "aileron": {
+                "value": 0.5556,
+                "unit": "1",
+                "kind": "borrowed",
+                "source": "Durafly Ugly Stik V2 manual (Version 2) p.8, a 1.1 m foam Ugly Stik: low/high rates elevator 10/20 mm, aileron 10/18 mm, rudder 12/18 mm either way from neutral; the low/high ratio is applied to this model's maximum throws (controls.max_throw). Ratio transferred across scale, not a Jensen figure; PDF sha256 652718b2d87b65eae54c7a7dc3f8b3bd1d290a970589f4495dc6a1a7fe71d7de; docs/research/radio-input/D6e/README.md"
+              },
+              "elevator": {
+                "value": 0.5,
+                "unit": "1",
+                "kind": "borrowed",
+                "source": "Durafly Ugly Stik V2 manual (Version 2) p.8, a 1.1 m foam Ugly Stik: low/high rates elevator 10/20 mm, aileron 10/18 mm, rudder 12/18 mm either way from neutral; the low/high ratio is applied to this model's maximum throws (controls.max_throw). Ratio transferred across scale, not a Jensen figure; PDF sha256 652718b2d87b65eae54c7a7dc3f8b3bd1d290a970589f4495dc6a1a7fe71d7de; docs/research/radio-input/D6e/README.md"
+              },
+              "rudder": {
+                "value": 0.6667,
+                "unit": "1",
+                "kind": "borrowed",
+                "source": "Durafly Ugly Stik V2 manual (Version 2) p.8, a 1.1 m foam Ugly Stik: low/high rates elevator 10/20 mm, aileron 10/18 mm, rudder 12/18 mm either way from neutral; the low/high ratio is applied to this model's maximum throws (controls.max_throw). Ratio transferred across scale, not a Jensen figure; PDF sha256 652718b2d87b65eae54c7a7dc3f8b3bd1d290a970589f4495dc6a1a7fe71d7de; docs/research/radio-input/D6e/README.md"
+              },
+              "aileron_expo": {
+                "value": 0.15,
+                "unit": "1",
+                "kind": "estimated",
+                "source": "No Ugly Stik source states expo. Ultra Stick 10cc (Hangar 9 HAN2345, 60 in class) specification listing: 15 % expo on low rates, 25 % on high (https://www.skyraccoon.com/aircraft/Hangar-9_Ultra-Stick-10_HAN2345, unattributed listing); the owner's own radio values replace it"
+              },
+              "elevator_expo": {
+                "value": 0.15,
+                "unit": "1",
+                "kind": "estimated",
+                "source": "No Ugly Stik source states expo. Ultra Stick 10cc (Hangar 9 HAN2345, 60 in class) specification listing: 15 % expo on low rates, 25 % on high (https://www.skyraccoon.com/aircraft/Hangar-9_Ultra-Stick-10_HAN2345, unattributed listing); the owner's own radio values replace it"
+              },
+              "rudder_expo": {
+                "value": 0.15,
+                "unit": "1",
+                "kind": "estimated",
+                "source": "No Ugly Stik source states expo. Ultra Stick 10cc (Hangar 9 HAN2345, 60 in class) specification listing: 15 % expo on low rates, 25 % on high (https://www.skyraccoon.com/aircraft/Hangar-9_Ultra-Stick-10_HAN2345, unattributed listing); the owner's own radio values replace it"
+              }
+            }
+          },
+          "added_numeric_leaves": [
+            {
+              "path": "/controls/rates/normal/aileron/value",
+              "value": 0.5556
+            },
+            {
+              "path": "/controls/rates/normal/aileron_expo/value",
+              "value": 0.15
+            },
+            {
+              "path": "/controls/rates/normal/elevator/value",
+              "value": 0.5
+            },
+            {
+              "path": "/controls/rates/normal/elevator_expo/value",
+              "value": 0.15
+            },
+            {
+              "path": "/controls/rates/normal/rudder/value",
+              "value": 0.6667
+            },
+            {
+              "path": "/controls/rates/normal/rudder_expo/value",
+              "value": 0.15
+            }
+          ],
+          "classification": "concurrent Stik normal-rate profile; base Stik authored update, intentionally removed by Glow generator"
+        },
+        {
+          "path": "/reference/aero_reference_point/source",
+          "change": "value_changed",
+          "before": "taken at the plan CG so the borrowed moment data keeps its static margin at the plan CG; z at mid-wing height (estimated)",
+          "after": "research/flight-dynamics/climb-trim/derive_pitch_reference.py (D6e-R1): x places the borrowed derivatives' neutral point (ARP + 0.1579 c) on the Stik's own estimated neutral point, 43.5 % c (fleet Helmbold/tail-ratio/Raymer method; band 42.5-44.5 %, vortex lattice 44.4 %); replaces the plan-CG placement that transplanted the donor's 15.8 % margin; z at mid-wing height (estimated)",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/reference/aero_reference_point/value/0",
+          "change": "value_changed",
+          "before": 0.1209,
+          "after": 0.0844,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        }
+      ]
+    },
+    {
+      "file": "stik_glow_55ax_2t.json",
+      "baseline_sha256": "353413d403bb2749f22959636537eb1d702985af68aa4f096543f3227c7cd9d9",
+      "current_sha256": "f576c340e05a1944185be9bf0a3ad978086c11773f673117da603385307667ac",
+      "identity_stripped_equal": false,
+      "difference_count": 10,
+      "numeric_or_value_differences": 6,
+      "unexpected_paths": [],
+      "differences": [
+        {
+          "path": "/aero/coefficients/CLq/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim, downwash settled; the wing ahead of the CG loses lift in a pull, so it is below the tail-only closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/CLq/value",
+          "change": "value_changed",
+          "before": 2.951,
+          "after": 1.992,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cmq/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; the downwash lag adds Cmadot -3.59 as a state (E0a2b), so Cmq+Cmadot = -11.07; closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -7.765 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CLq lift reproduces it; the downwash lag adds Cmadot -3.59 as a state (E0a2b); closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cmq/value",
+          "change": "value_changed",
+          "before": -7.476,
+          "after": -7.97,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnb/value",
+          "change": "value_changed",
+          "before": 0.1214237421962675,
+          "after": 0.12741288623702934,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cndr/value",
+          "change": "value_changed",
+          "before": -0.06678305820794714,
+          "after": -0.07007708743036616,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnr/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -0.1320 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CYr side force reproduces it; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnr/value",
+          "change": "value_changed",
+          "before": -0.1319,
+          "after": -0.1356,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/reference/aero_reference_point/source",
+          "change": "value_changed",
+          "before": "taken at the plan CG so the borrowed moment data keeps its static margin at the plan CG; z at mid-wing height (estimated)",
+          "after": "research/flight-dynamics/climb-trim/derive_pitch_reference.py (D6e-R1): x places the borrowed derivatives' neutral point (ARP + 0.1579 c) on the Stik's own estimated neutral point, 43.5 % c (fleet Helmbold/tail-ratio/Raymer method; band 42.5-44.5 %, vortex lattice 44.4 %); replaces the plan-CG placement that transplanted the donor's 15.8 % margin; z at mid-wing height (estimated)",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/reference/aero_reference_point/value/0",
+          "change": "value_changed",
+          "before": 0.1209,
+          "after": 0.0844,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        }
+      ]
+    },
+    {
+      "file": "stik_glow_fs64v_4t.json",
+      "baseline_sha256": "8d55e3f51d63f2bb6d2258941eabfe8bde52de3a21bff3e5ea31f2236b168bc5",
+      "current_sha256": "03394b79b2ad9cb916abbfb8e0f3c34bb9bbd41356af35eb838a9a4a7a7c3c80",
+      "identity_stripped_equal": false,
+      "difference_count": 10,
+      "numeric_or_value_differences": 6,
+      "unexpected_paths": [],
+      "differences": [
+        {
+          "path": "/aero/coefficients/CLq/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim, downwash settled; the wing ahead of the CG loses lift in a pull, so it is below the tail-only closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/CLq/value",
+          "change": "value_changed",
+          "before": 2.951,
+          "after": 1.992,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cmq/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; the downwash lag adds Cmadot -3.59 as a state (E0a2b), so Cmq+Cmadot = -11.07; closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -7.765 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CLq lift reproduces it; the downwash lag adds Cmadot -3.59 as a state (E0a2b); closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cmq/value",
+          "change": "value_changed",
+          "before": -7.476,
+          "after": -7.97,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnb/value",
+          "change": "value_changed",
+          "before": 0.1214237421962675,
+          "after": 0.12741288623702934,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cndr/value",
+          "change": "value_changed",
+          "before": -0.06678305820794714,
+          "after": -0.07007708743036616,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnr/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -0.1320 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CYr side force reproduces it; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnr/value",
+          "change": "value_changed",
+          "before": -0.1319,
+          "after": -0.1356,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/reference/aero_reference_point/source",
+          "change": "value_changed",
+          "before": "taken at the plan CG so the borrowed moment data keeps its static margin at the plan CG; z at mid-wing height (estimated)",
+          "after": "research/flight-dynamics/climb-trim/derive_pitch_reference.py (D6e-R1): x places the borrowed derivatives' neutral point (ARP + 0.1579 c) on the Stik's own estimated neutral point, 43.5 % c (fleet Helmbold/tail-ratio/Raymer method; band 42.5-44.5 %, vortex lattice 44.4 %); replaces the plan-CG placement that transplanted the donor's 15.8 % margin; z at mid-wing height (estimated)",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/reference/aero_reference_point/value/0",
+          "change": "value_changed",
+          "before": 0.1209,
+          "after": 0.0844,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        }
+      ]
+    },
+    {
+      "file": "gp_extra_300s_60.json",
+      "baseline_sha256": "ac18151e91916fedfb04cd15ece149286189328cdc7539d11550e1bb2536a0e8",
+      "current_sha256": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
+      "identity_stripped_equal": true,
+      "difference_count": 0,
+      "numeric_or_value_differences": 0,
+      "unexpected_paths": [],
+      "differences": []
+    },
+    {
+      "file": "p51d_mustang_120.json",
+      "baseline_sha256": "08f7eea6ce77ae230a6cf5a453f0ac12363308efd6532132f67d31be983a0551",
+      "current_sha256": "04f69687f7ea73a4235bf223360f38b2634ddc11933abdea8ff01aee7ebda619",
+      "identity_stripped_equal": true,
+      "difference_count": 0,
+      "numeric_or_value_differences": 0,
+      "unexpected_paths": [],
+      "differences": []
+    },
+    {
+      "file": "sebart_avanti_s_a200.json",
+      "baseline_sha256": "578a5438b289f9096409073f8d55ac9df07e9047d696ded713a8ecaf692445de",
+      "current_sha256": "4910bd4ce0a9cd4e517db7a4cf9246c5c6e5328f512b528ff1077b9c7cda214a",
+      "identity_stripped_equal": true,
+      "difference_count": 0,
+      "numeric_or_value_differences": 0,
+      "unexpected_paths": [],
+      "differences": []
+    },
+    {
+      "file": "turbo_lumber_evolution.json",
+      "baseline_sha256": "1115df83ad3847eff914ff67f63622e6d4f34c11d9ca0e73dd8f49fc7c8c2f5e",
+      "current_sha256": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee",
+      "identity_stripped_equal": true,
+      "difference_count": 0,
+      "numeric_or_value_differences": 0,
+      "unexpected_paths": [],
+      "differences": []
+    },
+    {
+      "file": "stik_glow_55ax_2t_apc_13x6.json",
+      "baseline_sha256": "b99109f752506edf8a002b703b2b839d496da5e36b55eb4950e3a590bd10a59d",
+      "current_sha256": "7a6dc8f7b2b8120897f59f03e83524f4f51402c58e64df3de83f28d14245772e",
+      "identity_stripped_equal": false,
+      "difference_count": 10,
+      "numeric_or_value_differences": 6,
+      "unexpected_paths": [],
+      "differences": [
+        {
+          "path": "/aero/coefficients/CLq/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim, downwash settled; the wing ahead of the CG loses lift in a pull, so it is below the tail-only closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/CLq/value",
+          "change": "value_changed",
+          "before": 2.951,
+          "after": 1.992,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cmq/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; the downwash lag adds Cmadot -3.59 as a state (E0a2b), so Cmq+Cmadot = -11.07; closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -7.765 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CLq lift reproduces it; the downwash lag adds Cmadot -3.59 as a state (E0a2b); closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cmq/value",
+          "change": "value_changed",
+          "before": -7.476,
+          "after": -7.97,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnb/value",
+          "change": "value_changed",
+          "before": 0.1214237421962675,
+          "after": 0.12741288623702934,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cndr/value",
+          "change": "value_changed",
+          "before": -0.06678305820794714,
+          "after": -0.07007708743036616,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnr/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -0.1320 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CYr side force reproduces it; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnr/value",
+          "change": "value_changed",
+          "before": -0.1319,
+          "after": -0.1356,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/reference/aero_reference_point/source",
+          "change": "value_changed",
+          "before": "taken at the plan CG so the borrowed moment data keeps its static margin at the plan CG; z at mid-wing height (estimated)",
+          "after": "research/flight-dynamics/climb-trim/derive_pitch_reference.py (D6e-R1): x places the borrowed derivatives' neutral point (ARP + 0.1579 c) on the Stik's own estimated neutral point, 43.5 % c (fleet Helmbold/tail-ratio/Raymer method; band 42.5-44.5 %, vortex lattice 44.4 %); replaces the plan-CG placement that transplanted the donor's 15.8 % margin; z at mid-wing height (estimated)",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/reference/aero_reference_point/value/0",
+          "change": "value_changed",
+          "before": 0.1209,
+          "after": 0.0844,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        }
+      ]
+    },
+    {
+      "file": "stik_glow_fs64v_4t_apc_13x6.json",
+      "baseline_sha256": "e974266243ce3ef90818abf997ab618a5fa3055216d66d613ed1ff37c018babf",
+      "current_sha256": "4031145726fbf0ef74520e4a5a9ccf8f4729eeb53be82e911df467dc4c420300",
+      "identity_stripped_equal": false,
+      "difference_count": 10,
+      "numeric_or_value_differences": 6,
+      "unexpected_paths": [],
+      "differences": [
+        {
+          "path": "/aero/coefficients/CLq/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim, downwash settled; the wing ahead of the CG loses lift in a pull, so it is below the tail-only closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/CLq/value",
+          "change": "value_changed",
+          "before": 2.951,
+          "after": 1.992,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cmq/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; the downwash lag adds Cmadot -3.59 as a state (E0a2b), so Cmq+Cmadot = -11.07; closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -7.765 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CLq lift reproduces it; the downwash lag adds Cmadot -3.59 as a state (E0a2b); closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cmq/value",
+          "change": "value_changed",
+          "before": -7.476,
+          "after": -7.97,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnb/value",
+          "change": "value_changed",
+          "before": 0.1214237421962675,
+          "after": 0.12741288623702934,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cndr/value",
+          "change": "value_changed",
+          "before": -0.06678305820794714,
+          "after": -0.07007708743036616,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnr/source",
+          "change": "value_changed",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g): the Stik's verified local model at the 15 m/s level trim, about the CG, downwash settled; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -0.1320 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CYr side force reproduces it; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/aero/coefficients/Cnr/value",
+          "change": "value_changed",
+          "before": -0.1319,
+          "after": -0.1356,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/reference/aero_reference_point/source",
+          "change": "value_changed",
+          "before": "taken at the plan CG so the borrowed moment data keeps its static margin at the plan CG; z at mid-wing height (estimated)",
+          "after": "research/flight-dynamics/climb-trim/derive_pitch_reference.py (D6e-R1): x places the borrowed derivatives' neutral point (ARP + 0.1579 c) on the Stik's own estimated neutral point, 43.5 % c (fleet Helmbold/tail-ratio/Raymer method; band 42.5-44.5 %, vortex lattice 44.4 %); replaces the plan-CG placement that transplanted the donor's 15.8 % margin; z at mid-wing height (estimated)",
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        },
+        {
+          "path": "/reference/aero_reference_point/value/0",
+          "change": "value_changed",
+          "before": 0.1209,
+          "after": 0.0844,
+          "classification": "D6e-R1 shared Stik aerodynamic-reference/derivative update"
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,42 @@
+{
+  "format": "openrc-rcv-package-verification",
+  "date": "2026-10-13",
+  "source": "fresh copy of current app working tree; no import cache",
+  "platform": "Windows x86_64",
+  "checks": [
+    {
+      "name": "fresh-import",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 19.659,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\rcv-package-final-v2\\app",
+        "--audio-driver",
+        "Dummy",
+        "--import"
+      ]
+    },
+    {
+      "name": "windows-export",
+      "ok": false,
+      "exit_code": 0,
+      "elapsed_s": 15.935,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\rcv-package-final-v2\\app",
+        "--audio-driver",
+        "Dummy",
+        "--export-release",
+        "Windows",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\rcv-package-final-v2\\OpenRC-RC-verification.exe"
+      ]
+    }
+  ],
+  "physical_validation": false,
+  "ok": false
+}

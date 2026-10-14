@@ -20,11 +20,12 @@ func _initialize() -> void:
 
 
 func _test_catalog_descriptors() -> void:
-	var ids: PackedStringArray = Catalog.airplane_flyable_ids()
-	_check("every airplane catalog entry is discovered", ids.size() == 7 and not ids.is_empty(), str(ids))
-	_check("rotorcraft has no airplane Workshop descriptor", Catalog.is_rotorcraft("xcell-60-research") and not ids.has("xcell-60-research"))
-	for id: String in ids:
-		var entry: Dictionary = Catalog.entry(id)
+	var entries: Array = Catalog.airplane_flyable_entries()
+	_check("every fixed-wing flyable catalog aircraft is discovered", entries.size() == 7 and not entries.is_empty(), str(entries))
+	for entry_variant: Variant in entries:
+		var entry: Dictionary = entry_variant
+		var id: String = str(entry.get("id", ""))
+		_check("fixed-wing descriptor entries exclude rotorcraft " + id, not Catalog.is_rotorcraft(id))
 		var base_bytes: PackedByteArray = FileAccess.get_file_as_bytes(str(entry.get("data", "")))
 		var base: Dictionary = JSON.parse_string(base_bytes.get_string_from_utf8())
 		var loaded: Dictionary = Descriptor.load_for(id, base_bytes)

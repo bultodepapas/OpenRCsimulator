@@ -1,0 +1,26 @@
+{
+  "binary_sha256": "2958c34163a8c13d5d5fc675806bd6b45750eb8f435708c1ba4d4b67ade8789e",
+  "engine_debug_build": true,
+  "extension_target": "template_release",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "platform": "windows",
+  "source_sha256": "451a76a00ac0e7d4513390d405e45eb55c6cb9b387ed21e55035d09ab7ef697f",
+  "toolchain_sha256": "3c7b5d84546ed30c8074a74ad654ba04ae4d2b2a8735f1e8b75361ad33e89ffb"
+}
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Preload file "res://physics/rigid_body.gd" does not exist.
+   at: GDScript::reload (res://physics/integrator.gd:8)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "RB" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://physics/integrator.gd:8)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "a" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://physics/integrator.gd:46)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://physics/ground_vehicle/vehicle_dynamics.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://parity_harness.gd:0)
+ERROR: Failed to load script "res://parity_harness.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+OPENRC_NATIVE_EVAL_PROFILE engine_debug=true extension_target=template_release gdscript_ms=1.5948 native_ms=0.3139 speedup=5.08x iterations=50
+OPENRC_NATIVE_PARITY_OK checks=39

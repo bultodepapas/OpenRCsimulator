@@ -7,6 +7,9 @@ const Ephemeris := preload("res://render/world/ephemeris.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const SkyState := preload("res://render/world/sky_state.gd")
 const Stars := preload("res://render/world/stars.gd")
+const World := preload("res://render/world/world.gd")
+const Atmosphere := preload("res://render/atmosphere.gd")
+const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 
 var _failures := 0
 var _count := 0
@@ -58,5 +61,41 @@ func _initialize() -> void:
 	_check("all 5,080 stars built in one MultiMesh", stars.size() == 5080 and mmi.multimesh.instance_count == 5080 and field.get_meta("stars") == 5080)
 	_check("deterministic", str(Stars.placements(SkyState.state(sky), c.when.latitude_deg)[4000]) == str(stars[4000]))
 	field.free()
+	var seeded_classic := SkyConfig.defaults()
+	seeded_classic.seed = 99
+	_check("classic star mask accepts selected seed", Atmosphere.configure_appearance(seeded_classic))
+	var seeded_stars := Stars.build(SkyState.state(sky), c.when.latitude_deg, Atmosphere.cloud_state_snapshot())
+	var seeded_field := seeded_stars.get_node("StarField") as MultiMeshInstance3D
+	var seeded_quad := seeded_field.multimesh.mesh as QuadMesh
+	var seeded_material := seeded_quad.material as ShaderMaterial
+	_check("classic star mask uses non-default seed", int(seeded_material.get_shader_parameter("cloud_seed")) == 99)
+	seeded_stars.free()
+	_check("classic default seed restores star mask", Atmosphere.configure_appearance(SkyConfig.defaults()))
+	var default_stars := Stars.build(SkyState.state(sky), c.when.latitude_deg, Atmosphere.cloud_state_snapshot())
+	var default_field := default_stars.get_node("StarField") as MultiMeshInstance3D
+	var default_quad := default_field.multimesh.mesh as QuadMesh
+	var default_material := default_quad.material as ShaderMaterial
+	_check("classic star mask keeps calibrated seed 1253", int(default_material.get_shader_parameter("cloud_seed")) == 1253)
+	default_stars.free()
+	var electrical := SkyConfig.for_preset("electrical_storm")
+	_check("electrical cloud appearance configures for star occlusion", Atmosphere.configure_appearance(electrical))
+	var storm_stars := Stars.build(SkyState.state(sky), c.when.latitude_deg, Atmosphere.cloud_state_snapshot())
+	var storm_field := storm_stars.get_node("StarField") as MultiMeshInstance3D
+	var storm_quad := storm_field.multimesh.mesh as QuadMesh
+	var storm_material := storm_quad.material as ShaderMaterial
+	_check("electrical stars sample the layered cloud mask",
+		bool(storm_material.get_shader_parameter("layered_appearance"))
+		and int(storm_material.get_shader_parameter("appearance_layer_count")) == 3)
+	var storm_parameters: PackedVector4Array = storm_material.get_shader_parameter("appearance_layer_parameters")
+	_check("star cloud decks sort by physical altitude",
+		storm_parameters[0].x < storm_parameters[1].x and storm_parameters[1].x < storm_parameters[2].x)
+	var retained_environment := Environment.new()
+	retained_environment.set_meta("fw_star_field", weakref(storm_stars))
+	_check("clear appearance configures before refreshing retained stars", Atmosphere.configure_appearance(SkyConfig.for_preset("clear")))
+	World.refresh_star_cloud_appearance(retained_environment)
+	_check("paused preset refresh updates the retained star material",
+		int(storm_material.get_shader_parameter("appearance_layer_count")) == 0
+		and float(storm_material.get_shader_parameter("appearance_cloud_density")) == 0.0)
+	storm_stars.free()
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)

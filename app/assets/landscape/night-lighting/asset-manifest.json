@@ -1,0 +1,1047 @@
+{
+  "assets": {
+    "campfire_base": {
+      "ground_origin": "GLB root at local y=0; scaling is parent-side uniform, leaving the ground plane fixed",
+      "modification": "unmodified source GLB and palette retained; no non-redistributable pack files included",
+      "output": "campfire-pit.glb",
+      "output_sha256": "a78ce38de408456649146077e1917d70bb39f7c87c3c7370276d809d2409b0ab",
+      "palette_sha256": "6ca023be9f12e8c2358fcf94320c8a894b4c05a3dd0bad1f5c268312053caca1",
+      "palette_source": "source/Textures/colormap.png",
+      "runtime_bounds_m_approx": {
+        "x": 0.999967,
+        "y": 0.392636,
+        "z": 0.969229
+      },
+      "scale": 3.6,
+      "source": "source/campfire-pit.glb",
+      "source_author": "Kenney",
+      "source_bounds_m": {
+        "x": 0.2777686,
+        "y": 0.1090655,
+        "z": 0.2692302
+      },
+      "source_license": "CC0-1.0",
+      "source_sha256": "a78ce38de408456649146077e1917d70bb39f7c87c3c7370276d809d2409b0ab",
+      "visual_scale_owner": "campfire helper ScaledVisuals child; campfire root position remains parent-owned"
+    },
+    "fire_atlas": {
+      "frame_count": 80,
+      "frame_size_px": [
+        81,
+        123
+      ],
+      "frames": [
+        {
+          "frame": 1,
+          "index": 0,
+          "rect_px": [
+            32,
+            32,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 2,
+          "index": 1,
+          "rect_px": [
+            177,
+            32,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 3,
+          "index": 2,
+          "rect_px": [
+            322,
+            32,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 4,
+          "index": 3,
+          "rect_px": [
+            467,
+            32,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 5,
+          "index": 4,
+          "rect_px": [
+            612,
+            32,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 6,
+          "index": 5,
+          "rect_px": [
+            757,
+            32,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 7,
+          "index": 6,
+          "rect_px": [
+            902,
+            32,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 8,
+          "index": 7,
+          "rect_px": [
+            1047,
+            32,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 9,
+          "index": 8,
+          "rect_px": [
+            32,
+            219,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 10,
+          "index": 9,
+          "rect_px": [
+            177,
+            219,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 11,
+          "index": 10,
+          "rect_px": [
+            322,
+            219,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 12,
+          "index": 11,
+          "rect_px": [
+            467,
+            219,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 13,
+          "index": 12,
+          "rect_px": [
+            612,
+            219,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 14,
+          "index": 13,
+          "rect_px": [
+            757,
+            219,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 15,
+          "index": 14,
+          "rect_px": [
+            902,
+            219,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 16,
+          "index": 15,
+          "rect_px": [
+            1047,
+            219,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 17,
+          "index": 16,
+          "rect_px": [
+            32,
+            406,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 18,
+          "index": 17,
+          "rect_px": [
+            177,
+            406,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 19,
+          "index": 18,
+          "rect_px": [
+            322,
+            406,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 20,
+          "index": 19,
+          "rect_px": [
+            467,
+            406,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 21,
+          "index": 20,
+          "rect_px": [
+            612,
+            406,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 22,
+          "index": 21,
+          "rect_px": [
+            757,
+            406,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 23,
+          "index": 22,
+          "rect_px": [
+            902,
+            406,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 24,
+          "index": 23,
+          "rect_px": [
+            1047,
+            406,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 25,
+          "index": 24,
+          "rect_px": [
+            32,
+            593,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 26,
+          "index": 25,
+          "rect_px": [
+            177,
+            593,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 27,
+          "index": 26,
+          "rect_px": [
+            322,
+            593,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 28,
+          "index": 27,
+          "rect_px": [
+            467,
+            593,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 29,
+          "index": 28,
+          "rect_px": [
+            612,
+            593,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 30,
+          "index": 29,
+          "rect_px": [
+            757,
+            593,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 31,
+          "index": 30,
+          "rect_px": [
+            902,
+            593,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 32,
+          "index": 31,
+          "rect_px": [
+            1047,
+            593,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 33,
+          "index": 32,
+          "rect_px": [
+            32,
+            780,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 34,
+          "index": 33,
+          "rect_px": [
+            177,
+            780,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 35,
+          "index": 34,
+          "rect_px": [
+            322,
+            780,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 36,
+          "index": 35,
+          "rect_px": [
+            467,
+            780,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 37,
+          "index": 36,
+          "rect_px": [
+            612,
+            780,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 38,
+          "index": 37,
+          "rect_px": [
+            757,
+            780,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 39,
+          "index": 38,
+          "rect_px": [
+            902,
+            780,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 40,
+          "index": 39,
+          "rect_px": [
+            1047,
+            780,
+            81,
+            123
+          ],
+          "set": "b"
+        },
+        {
+          "frame": 1,
+          "index": 40,
+          "rect_px": [
+            32,
+            967,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 2,
+          "index": 41,
+          "rect_px": [
+            177,
+            967,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 3,
+          "index": 42,
+          "rect_px": [
+            322,
+            967,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 4,
+          "index": 43,
+          "rect_px": [
+            467,
+            967,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 5,
+          "index": 44,
+          "rect_px": [
+            612,
+            967,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 6,
+          "index": 45,
+          "rect_px": [
+            757,
+            967,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 7,
+          "index": 46,
+          "rect_px": [
+            902,
+            967,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 8,
+          "index": 47,
+          "rect_px": [
+            1047,
+            967,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 9,
+          "index": 48,
+          "rect_px": [
+            32,
+            1154,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 10,
+          "index": 49,
+          "rect_px": [
+            177,
+            1154,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 11,
+          "index": 50,
+          "rect_px": [
+            322,
+            1154,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 12,
+          "index": 51,
+          "rect_px": [
+            467,
+            1154,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 13,
+          "index": 52,
+          "rect_px": [
+            612,
+            1154,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 14,
+          "index": 53,
+          "rect_px": [
+            757,
+            1154,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 15,
+          "index": 54,
+          "rect_px": [
+            902,
+            1154,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 16,
+          "index": 55,
+          "rect_px": [
+            1047,
+            1154,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 17,
+          "index": 56,
+          "rect_px": [
+            32,
+            1341,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 18,
+          "index": 57,
+          "rect_px": [
+            177,
+            1341,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 19,
+          "index": 58,
+          "rect_px": [
+            322,
+            1341,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 20,
+          "index": 59,
+          "rect_px": [
+            467,
+            1341,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 21,
+          "index": 60,
+          "rect_px": [
+            612,
+            1341,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 22,
+          "index": 61,
+          "rect_px": [
+            757,
+            1341,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 23,
+          "index": 62,
+          "rect_px": [
+            902,
+            1341,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 24,
+          "index": 63,
+          "rect_px": [
+            1047,
+            1341,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 25,
+          "index": 64,
+          "rect_px": [
+            32,
+            1528,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 26,
+          "index": 65,
+          "rect_px": [
+            177,
+            1528,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 27,
+          "index": 66,
+          "rect_px": [
+            322,
+            1528,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 28,
+          "index": 67,
+          "rect_px": [
+            467,
+            1528,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 29,
+          "index": 68,
+          "rect_px": [
+            612,
+            1528,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 30,
+          "index": 69,
+          "rect_px": [
+            757,
+            1528,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 31,
+          "index": 70,
+          "rect_px": [
+            902,
+            1528,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 32,
+          "index": 71,
+          "rect_px": [
+            1047,
+            1528,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 33,
+          "index": 72,
+          "rect_px": [
+            32,
+            1715,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 34,
+          "index": 73,
+          "rect_px": [
+            177,
+            1715,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 35,
+          "index": 74,
+          "rect_px": [
+            322,
+            1715,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 36,
+          "index": 75,
+          "rect_px": [
+            467,
+            1715,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 37,
+          "index": 76,
+          "rect_px": [
+            612,
+            1715,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 38,
+          "index": 77,
+          "rect_px": [
+            757,
+            1715,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 39,
+          "index": 78,
+          "rect_px": [
+            902,
+            1715,
+            81,
+            123
+          ],
+          "set": "f"
+        },
+        {
+          "frame": 40,
+          "index": 79,
+          "rect_px": [
+            1047,
+            1715,
+            81,
+            123
+          ],
+          "set": "f"
+        }
+      ],
+      "layout": {
+        "cell_pitch_px": [
+          145,
+          187
+        ],
+        "columns": 8,
+        "frame_order": "40 frames fire_1b_40_1…40 then 40 frames fire_1f_40_1…40",
+        "image_size_px": [
+          1160,
+          1870
+        ],
+        "padding_px": 32,
+        "rows": 10
+      },
+      "modification": "unmodified downloaded frames placed in an RGBA atlas with transparent padded gutters; no redraw, recolor, scale or resampling",
+      "output": "flames-8x10.png",
+      "output_sha256": "afe9639bc268a23a5262706133613bc823ea65a60d8c36bdfe98ec9d0f68b41d",
+      "source": "source/fire-fx-40-frames.zip",
+      "source_author": "Mikodrak (Martin Jelinek)",
+      "source_license": "CC0-1.0",
+      "source_sha256": "1f105f171df08bac5d116d44baead8219a31cce25244a136f3db24ccee46d1f8"
+    },
+    "lamp_head": {
+      "conversion": {
+        "baked_transforms": true,
+        "emission": "none; runtime lens glow remains controlled by the lighting renderer",
+        "heading_rotation_y_deg": 201.999997902,
+        "omitted": "other twin head, motion sensor and wall backplate",
+        "source_nodes": {
+          "arm": 16,
+          "bezel": 14,
+          "heat_sink_ribs": [
+            4,
+            5,
+            6,
+            7,
+            8
+          ],
+          "housing": 0,
+          "lens": 2
+        },
+        "source_optical_axis": [
+          -0.374606559,
+          0.0,
+          0.927183868
+        ],
+        "surface_batching": "one matte body/arm/ribs/bezel surface plus one separate lens surface"
+      },
+      "format": "openrc-asset-derivative v1",
+      "lens_center_local_m": [
+        -2e-09,
+        0.0,
+        -0.040000011
+      ],
+      "local_bounds_m": {
+        "max": [
+          0.085500002,
+          0.064999998,
+          0.161871963
+        ],
+        "min": [
+          -0.085500002,
+          -0.064999998,
+          -0.042500011
+        ]
+      },
+      "local_forward": "-Z",
+      "materials": [
+        "FloodHousingNeutralMatte",
+        "FloodDiffuserNeutralOpal"
+      ],
+      "origin": "center of retained left housing source node 0",
+      "output": "lamp-head.glb",
+      "output_sha256": "41a34094abcb1d28a7e7873191c0828d8bee26a8035f9a33cb10c036306b7d4a",
+      "pipeline": "fw67-night-lighting-v1",
+      "source": "source/motion-security-floodlight.glb",
+      "source_license": "CC0-1.0",
+      "source_sha256": "bbd6b776bfa9e16141e7e12e03e08b68917b56b191cfcf9893896a9beb889edb",
+      "surface_count": 2,
+      "triangles": {
+        "housing_and_arm": 2608,
+        "lens": 300,
+        "total": 2908
+      },
+      "unit": "m"
+    }
+  },
+  "dependencies": {
+    "Pillow": "12.3.0",
+    "python": "3.11+"
+  },
+  "format": "openrc-asset-derivative v1",
+  "pipeline": "fw67-night-lighting-v1",
+  "runtime_files": [
+    {
+      "bytes": 1526,
+      "path": "LICENSES.md",
+      "sha256": "c7f186b7997938d0989c969d54679dc896bc7c92177a6b67403bff88fb3288a9"
+    },
+    {
+      "bytes": 7440,
+      "path": "Textures/colormap.png",
+      "sha256": "6ca023be9f12e8c2358fcf94320c8a894b4c05a3dd0bad1f5c268312053caca1"
+    },
+    {
+      "bytes": 26468,
+      "path": "campfire-pit.glb",
+      "sha256": "a78ce38de408456649146077e1917d70bb39f7c87c3c7370276d809d2409b0ab"
+    },
+    {
+      "bytes": 866983,
+      "path": "flames-8x10.png",
+      "sha256": "afe9639bc268a23a5262706133613bc823ea65a60d8c36bdfe98ec9d0f68b41d"
+    },
+    {
+      "bytes": 86588,
+      "path": "lamp-head.glb",
+      "sha256": "41a34094abcb1d28a7e7873191c0828d8bee26a8035f9a33cb10c036306b7d4a"
+    },
+    {
+      "bytes": 715,
+      "path": "licenses/kenney-survival-kit-LICENSE.txt",
+      "sha256": "62c8356876481204fa4d40dc59183dfed777adf987d7f2a1390fffe8a699f3ff"
+    },
+    {
+      "bytes": 419,
+      "path": "licenses/mikodrak-YoudBetterReadMe.txt",
+      "sha256": "960c88954f86c9018a9537e6a4453ee8495c91a9fb2b6448a069eaf40e375570"
+    }
+  ],
+  "source_manifest": "assets/landscape/night-lighting/PROVENANCE.json",
+  "track": "FW-67"
+}

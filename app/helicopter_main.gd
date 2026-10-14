@@ -9,9 +9,10 @@ const Frames = preload("res://render/frames.gd")
 const PilotCamera = preload("res://render/pilot_camera.gd")
 const CameraRig = preload("res://render/camera/camera_rig.gd")
 const Terrain = preload("res://physics/ground_terrain.gd")
-const Recorder = preload("res://sim/recorder.gd")
+const Recorder = preload("res://sim/rotorcraft_recorder.gd")
 const Lighting = preload("res://render/time_of_day_lighting.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
+const Preferences = preload("res://app_state/preferences.gd")
 signal pause_requested
 signal overlay_settings_changed(settings: Dictionary)
 var aircraft_id: String="xcell-60-research"
@@ -19,6 +20,7 @@ var field_path: String=FieldLoader.DEFAULT_PATH
 var field: Dictionary={}
 var weather_config: Dictionary={}
 var lighting_config: Dictionary={}
+var night_options: Dictionary=Preferences.NIGHT_DEFAULTS.duplicate(true)
 var start_choice: String="airborne"
 var interactive_start: bool=false
 var latency_marker_enabled: bool=false
@@ -39,6 +41,7 @@ var _hud_layer: CanvasLayer
 var _hud: Label
 var _capture: bool=false
 var _rotor_state: Dictionary={}
+var _injected_user_args: Variant=null
 
 func _ready() -> void:
  var args: Dictionary=_user_args()
@@ -50,14 +53,15 @@ func _ready() -> void:
  if not checked.ok: _refuse("; ".join(checked.errors)); return
  lighting_config=checked.config
  var snapshot: Dictionary=Lighting.snapshot(lighting_config) if lighting_config.mode!="legacy" else {}
- var world: Dictionary=World.build(self,field,Callable(),{},snapshot)
+ var world: Dictionary=World.build(self,field,Callable(),{},snapshot,night_options)
  _environment=world.environment
  _airplane=Builder.build()
  if _airplane.is_empty(): _refuse("HX-700 visual import failed"); return
  add_child(_airplane.root)
- _rotors=RotorVisual.attach(_airplane,self)
  _camera=PilotCamera.create(self,field.pilot)
  _rig=CameraRig.new(_camera,1.55)
+ # Rotorcraft orientation needs more screen coverage than the shared 30-pixel airplane minimum.
+ _rig.pilot_zoom=.35
  _rig.set_view(str(args.get("view","pilot")))
  session=Session.new()
  session.physics_enabled=not args.has("trace") and not args.has("capture")
@@ -71,6 +75,7 @@ func _ready() -> void:
  if not session.reset(): _refuse(session.start_error); return
  Builder.align_main_rotor_radius(_airplane,session.aircraft.context.main_model.rotor_radius_m)
  Builder.align_tail_rotor_radius(_airplane,session.aircraft.context.tail_model.tail_rotor_radius_m)
+ _rotors=RotorVisual.attach(_airplane,self)
  _build_hud()
  print("HELICOPTER READY: ",session.aircraft.qualification)
  if args.has("trace"):
@@ -84,6 +89,10 @@ func _ready() -> void:
   for i: int in ticks:
    session.sim.step()
    if not session.is_flyable(): break
+  if not session.is_flyable():
+   printerr("helicopter capture stopped: ",session.pause_reason)
+   get_tree().quit(1)
+   return
   _present(0.0)
   if _rotors!=null: _rotors.update(_rotor_state,session.sim.time())
   await RenderingServer.frame_post_draw
@@ -96,6 +105,9 @@ func _ready() -> void:
 func _refuse(reason: String) -> void:
  startup_error=reason
  printerr("Helicopter startup refused: ",reason)
+ if session!=null and not session.is_inside_tree():
+  session.free()
+  session=null
  set_process(false)
  if not interactive_start: get_tree().quit(1)
 
@@ -121,8 +133,8 @@ func _present(dt: float) -> void:
  _airplane.root.transform=Frames.root_transform(body,pos,_airplane.cg_model_m)
  var out: Dictionary=session.telemetry()
  var collective: float=float(out.get("controls",{}).get("collective_75_rad",0.0))
- _rotor_state={omega_rad_s=session.sim.continuous[0],a1=session.sim.continuous[1],b1=session.sim.continuous[2],collective=collective,
-  tail_omega_rad_s=session.sim.continuous[0]*session.aircraft.context.tail_model.tail_to_main_speed_ratio}
+ _rotor_state={omega_rad_s=session.sim.continuous[0]*session.aircraft.context.main_model.rotation_sense,a1=session.sim.continuous[1],b1=session.sim.continuous[2],collective=collective,
+  tail_omega_rad_s=session.sim.continuous[0]*session.aircraft.context.tail_model.tail_to_main_speed_ratio*session.aircraft.context.tail_model.rotation_sense}
  if _rotors!=null: _rotors.update(_rotor_state,0.0 if session.sim.paused else dt)
  _rig.update(pos,_airplane.root.global_transform,body,dt,session.sim.paused,_ground_height)
  var wind: PackedFloat64Array=session.wind_at(session.sim.time())
@@ -132,7 +144,12 @@ func _present(dt: float) -> void:
   -s[2],speed,session.sim.aux[0],session.commands.throttle*100.0,
   session.flight_mode,"TRAINER" if session.trainer_enabled else "DIRECT CYCLIC",
   session.pause_reason if not session.pause_reason.is_empty() else ("ZERO DRIVE HOLD" if session.zero_drive_hold else _note)]
+ var main: Dictionary=out.get("aero",{}).get("main_rotor",{})
+ if not main.is_empty() and (not main.get("within_identified_advance_ratio",false) or not main.get("within_small_flap_angle_range",false)):
+  _hud.text+="\nOutside the identified main-rotor envelope."
  if session.calibration!=null: _hud.text+="\n"+str(session.calibration.prompt())
+ if recorder.recording: _hud.text+="\nRecording %.1f s · T: stop"%recorder.seconds()
+ elif not recorder.note.is_empty(): _hud.text+="\n"+recorder.note
 
 func _ground_height(x: float,z: float) -> float:
  return Terrain.sample(-z,x,session.ground_surfaces)[0]
@@ -174,10 +191,14 @@ func apply_lighting_config(_raw: Variant) -> Dictionary:
 
 func _user_args() -> Dictionary:
  var args: Dictionary={}
- for arg: String in OS.get_cmdline_user_args():
+ var source: PackedStringArray=OS.get_cmdline_user_args() if _injected_user_args==null else _injected_user_args
+ for arg: String in source:
   var pair: PackedStringArray=arg.trim_prefix("--").split("=",true,1)
   args[pair[0]]=pair[1] if pair.size()==2 else "1"
  return args
+
+func set_user_args(args: PackedStringArray) -> void:
+ _injected_user_args=args.duplicate()
 
 func _write_trace(args: Dictionary) -> void:
  session.input_enabled=false
@@ -186,12 +207,14 @@ func _write_trace(args: Dictionary) -> void:
  if not is_finite(duration) or duration<0.0: get_tree().quit(1); return
  var ticks: int=int(round(duration*Engine.physics_ticks_per_second))
  recorder.start(session.trace_meta())
+ if not recorder.recording: get_tree().quit(1); return
  for i: int in ticks:
   session.sim.step()
-  if not session.is_flyable():
+  if not session.is_flyable() or not recorder.recording:
    printerr("helicopter trace stopped: ",session.pause_reason)
    recorder.recording=false
    get_tree().quit(1)
    return
+ if recorder.trace.row_count()!=ticks+1: get_tree().quit(1); return
  var error: Error=recorder.stop(str(args.trace))
  get_tree().quit(error)

@@ -157,22 +157,21 @@ def outputs():
     return out
 
 def render_json(value):
-    return json.dumps(value,indent=2,ensure_ascii=False)+'\n'
+    return (json.dumps(value,indent=2,ensure_ascii=False)+'\n').replace('\n','\r\n').encode('utf-8')
 
 def write_generated_json(path,value):
-    # These records are byte-identity evidence; write CRLF on every host.
-    with path.open('w',encoding='utf-8',newline='\r\n') as stream:
-        stream.write(render_json(value))
+    # These records are byte-identity evidence; emit the authored CRLF bytes on every host.
+    path.write_bytes(render_json(value))
 
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--check',action='store_true')
     args=parser.parse_args()
     for path,value in outputs().items():
-        text=render_json(value)
+        rendered=render_json(value)
         if args.check:
-            if not path.exists() or path.read_text(encoding='utf-8')!=text: raise SystemExit('Stale: '+str(path))
-        else: write_generated_json(path,value)
+            if not path.exists() or path.read_bytes()!=rendered: raise SystemExit('Stale: '+str(path))
+        else: path.write_bytes(rendered)
     print('Glow installations current' if args.check else 'Generated both glow installations')
 
 if __name__=='__main__': main()

@@ -1,0 +1,12 @@
+{
+  "aircraft_sha256": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
+  "format": "openrc-helicopter-endurance v1",
+  "ground_surfaces": 18,
+  "max_drift_m": 6.446398970183509e-12,
+  "maximum_omega_rad_s": 167.74916936932547,
+  "minimum_omega_rad_s": 167.74916936932547,
+  "ok": true,
+  "seconds": 600.0,
+  "ticks": 144000,
+  "wall_seconds": 158.425903
+}

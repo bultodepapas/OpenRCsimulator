@@ -49,7 +49,7 @@ func _initialize() -> void:
 		stopped.main_drive_torque_nm - minf(stopped.main_drive_torque_nm, model.shaft_loss_torque_nm))
 	var hold: Dictionary = Drive.evaluate(model, 167.0, 1.0, true, true)
 	check("zero-drive hold has an explicit still-lumped proxy label",
-		hold.ok and hold.zero_drive_hold_proxy and hold.engine_remains_lumped)
+		hold.ok and hold.zero_drive_hold_proxy and hold.one_speed_lump_preserved)
 	check("hold zeros engine power and drive torque", hold.engine_power_w == 0.0 and hold.main_drive_torque_nm == 0.0)
 	close("hold retains declared running shaft losses", hold.net_main_torque_nm, -hold.shaft_loss_torque_nm)
 	check("negative rotor speed is refused rather than hidden", not Drive.evaluate(model, -0.01, 1.0).ok)

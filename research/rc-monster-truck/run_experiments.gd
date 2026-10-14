@@ -6,6 +6,7 @@ extends SceneTree
 const VehicleData := preload("res://physics/ground_vehicle/vehicle_data.gd")
 const CourseData := preload("res://physics/ground_vehicle/course.gd")
 const VehicleDynamics := preload("res://physics/ground_vehicle/vehicle_dynamics.gd")
+const Math3D := preload("res://physics/math3d.gd")
 
 const FORMAT := "openrc-ground-vehicle-experiment"
 const VERSION := 1
@@ -15,7 +16,8 @@ const PUBLIC_HZ := 240
 const INITIAL_BRAKING_SPEED_M_PER_S := 6.0
 const INITIAL_BUMP_SPEED_M_PER_S := 4.0
 const DROP_HEIGHT_M := 0.45
-const SCENARIOS := ["braking", "bump", "drop"]
+const ROLLOVER_INITIAL_ANGLES_DEG := [35.0, 55.0, 75.0]
+const SCENARIOS := ["braking", "bump", "drop", "rollover"]
 const BRAKING_RUNS := [
 	{"surface_id": "asphalt", "spawn_id": "start"},
 	{"surface_id": "gravel", "spawn_id": "gravel"},
@@ -59,8 +61,12 @@ func _initialize() -> void:
 		return
 	var vehicle_path := ProjectSettings.globalize_path(VehicleData.DEFAULT_PATH).simplify_path()
 	var course_path := ProjectSettings.globalize_path(CourseData.DEFAULT_PATH).simplify_path()
-	if output_path.to_lower() == vehicle_path.to_lower() or output_path.to_lower() == course_path.to_lower() \
-		or summary_path.to_lower() == vehicle_path.to_lower() or summary_path.to_lower() == course_path.to_lower():
+	if (
+		output_path.to_lower() == vehicle_path.to_lower()
+		or output_path.to_lower() == course_path.to_lower()
+		or summary_path.to_lower() == vehicle_path.to_lower()
+		or summary_path.to_lower() == course_path.to_lower()
+	):
 		_fail("output paths must not replace vehicle or course input data")
 		return
 	if not _run_experiment(options, vehicle_loaded, course_loaded, output_path, summary_path):
@@ -69,7 +75,7 @@ func _initialize() -> void:
 
 
 func _parse_options(args: PackedStringArray) -> Dictionary:
-	var options := {"scenario": "", "output": "", "duration_s": DEFAULT_DURATION_S}
+	var options := {"scenario": "", "output": "", "duration": DEFAULT_DURATION_S}
 	var seen: Dictionary = {}
 	for arg in args:
 		if not arg.begins_with("--"):
@@ -88,7 +94,7 @@ func _parse_options(args: PackedStringArray) -> Dictionary:
 			return {"ok": false, "error": "--%s must be nonempty" % name}
 		if name == "scenario":
 			if not value in SCENARIOS:
-				return {"ok": false, "error": "--scenario must be braking, bump, or drop"}
+				return {"ok": false, "error": "--scenario must be braking, bump, drop, or rollover"}
 			options.scenario = value
 		elif name == "output":
 			options.output = value
@@ -98,12 +104,12 @@ func _parse_options(args: PackedStringArray) -> Dictionary:
 			var duration_s: float = value.to_float()
 			if not is_finite(duration_s) or duration_s <= 0.0 or duration_s > MAX_DURATION_S:
 				return {"ok": false, "error": "--duration must be > 0 and <= 15 seconds"}
-			options.duration_s = duration_s
+			options.duration = duration_s
 	if str(options.scenario).is_empty():
-		return {"ok": false, "error": "missing required --scenario=braking|bump|drop"}
+		return {"ok": false, "error": "missing required --scenario=braking|bump|drop|rollover"}
 	if str(options.output).is_empty():
 		return {"ok": false, "error": "missing required --output=<csv>"}
-	var ticks: float = float(options.duration_s) * float(PUBLIC_HZ)
+	var ticks: float = float(options.duration) * float(PUBLIC_HZ)
 	if ticks < 1.0 or absf(ticks - roundf(ticks)) > 1.0e-9:
 		return {"ok": false, "error": "duration * 240 must be a positive integer number of ticks"}
 	return {"ok": true, "options": options}
@@ -117,12 +123,13 @@ func _run_experiment(
 	summary_path: String,
 ) -> bool:
 	var scenario: String = str(options.scenario)
-	var duration_s: float = float(options.duration_s)
+	var duration_s: float = float(options.duration)
 	var ticks: int = roundi(duration_s * float(PUBLIC_HZ))
 	var dt: float = 1.0 / float(PUBLIC_HZ)
 	var model: Dictionary = vehicle_loaded.model
 	var course: Dictionary = course_loaded.course
-	var road := Callable(CourseData, "sample").bind(course)
+	var road: Callable = func(north_m: float, east_m: float) -> Dictionary:
+		return CourseData.sample(course, north_m, east_m)
 	var run_definitions: Array[Dictionary] = _build_run_definitions(scenario)
 	var prepared_runs: Array[Dictionary] = []
 	for definition in run_definitions:
@@ -136,6 +143,11 @@ func _run_experiment(
 		if state.size() != VehicleDynamics.STATE_SIZE:
 			_fail("could not make supported initial state for run '%s'" % str(definition.run_id))
 			return false
+		if definition.has("initial_roll_angle_deg"):
+			state = _roll_state_about_right_support(model, course, state, deg_to_rad(float(definition.initial_roll_angle_deg)))
+			if state.size() != VehicleDynamics.STATE_SIZE:
+				_fail("could not construct roll-release state for run '%s'" % str(definition.run_id))
+				return false
 		var initial_speed: float = float(definition.get("initial_speed_m_per_s", 0.0))
 		state[3] = initial_speed
 		# Relative spin is initialized at the pure-rolling rate so braking begins
@@ -161,6 +173,7 @@ func _run_experiment(
 	var header := PackedStringArray(["run_id", "scenario", "surface_id", "sample_index", "time_s"])
 	header.append_array(VehicleDynamics.STATE_LAYOUT)
 	header.append_array(PackedStringArray([
+		"roll_euler_rad", "body_p_rad_per_s",
 		"speed_m_per_s", "forward_speed_m_per_s", "airborne",
 		"road_height_m", "road_mu", "road_surface_id", "total_energy_j",
 		"wheel_load_fl_n", "wheel_load_fr_n", "wheel_load_rl_n", "wheel_load_rr_n",
@@ -168,6 +181,12 @@ func _run_experiment(
 		"wheel_slip_ratio_fl", "wheel_slip_ratio_fr", "wheel_slip_ratio_rl", "wheel_slip_ratio_rr",
 		"telemetry_travel_fl_m", "telemetry_travel_fr_m", "telemetry_travel_rl_m", "telemetry_travel_rr_m",
 	]))
+	for corner in ["fl", "fr", "rl", "rr"]:
+		header.append("wheel_contact_%s" % corner)
+	var hull_radii: PackedFloat64Array = model["hull_probe_radii_m"]
+	for probe in hull_radii.size():
+		header.append("hull_contact_%02d" % probe)
+	header.append("hull_contact_count")
 	csv.store_line(",".join(header))
 	if csv.get_error() != OK:
 		csv.close()
@@ -185,6 +204,12 @@ func _run_experiment(
 		var max_load := -INF
 		var max_speed := 0.0
 		var max_abs_travel := 0.0
+		var max_abs_roll_rad := 0.0
+		var max_slip_ratio := 0.0
+		var max_hull_contact_count := 0
+		var first_hull_contact_time_s: Variant = null
+		var initial_wheel_contact := PackedByteArray()
+		var first_wheel_unload_time_s: Array = [null, null, null, null]
 		var airborne_samples := 0
 		for tick in range(expected_samples):
 			var time_s: float = float(tick) / float(PUBLIC_HZ)
@@ -197,28 +222,47 @@ func _run_experiment(
 				csv.close()
 				_fail("telemetry failed in '%s' at sample %d: %s" % [str(definition.run_id), tick, str(telemetry.get("error", "unknown error"))])
 				return false
-			var energy_j: float = VehicleDynamics.energy(state, model, road)
+			var energy_j: float = float(telemetry.total_energy_j)
 			if not is_finite(energy_j) or not _finite_telemetry(telemetry):
 				csv.close()
 				_fail("non-finite telemetry or energy in '%s' at sample %d" % [str(definition.run_id), tick])
 				return false
 			var surface: Dictionary = CourseData.sample(course, state[0], state[1])
+			var roll_rad := _roll_euler_rad(state)
 			var row := PackedStringArray([
 				str(definition.run_id), scenario, str(definition.surface_id), str(tick), _num(time_s),
 			])
 			for component in state:
 				row.append(_num(component))
 			row.append_array(PackedStringArray([
+				_num(roll_rad), _num(state[VehicleDynamics.RATE]),
 				_num(float(telemetry.speed_m_per_s)),
 				_num(float(telemetry.forward_speed_m_per_s)),
 				"true" if bool(telemetry.airborne) else "false",
 				_num(float(surface.height_m)), _num(float(surface.mu)), str(surface.surface_id), _num(energy_j),
 			]))
-		for descriptor: Dictionary in TELEMETRY_ARRAYS:
-			var values: PackedFloat64Array = telemetry[str(descriptor.key)]
+			for descriptor: Dictionary in TELEMETRY_ARRAYS:
+				var values: PackedFloat64Array = telemetry[str(descriptor.key)]
+				for corner in 4:
+					row.append(_num(values[corner]))
+			var wheel_contacts: PackedByteArray = telemetry.wheel_in_contact
+			var hull_contacts: PackedByteArray = telemetry.hull_in_contact
+			var hull_contact_count := 0
 			for corner in 4:
-				row.append(_num(values[corner]))
-		csv.store_line(",".join(row))
+				row.append("true" if wheel_contacts[corner] != 0 else "false")
+				if tick == 0:
+					initial_wheel_contact.append(wheel_contacts[corner])
+				elif initial_wheel_contact[corner] != 0 and wheel_contacts[corner] == 0 and first_wheel_unload_time_s[corner] == null:
+					first_wheel_unload_time_s[corner] = time_s
+			for probe in hull_contacts.size():
+				var in_contact := hull_contacts[probe] != 0
+				row.append("true" if in_contact else "false")
+				if in_contact:
+					hull_contact_count += 1
+			if hull_contact_count > 0 and first_hull_contact_time_s == null:
+				first_hull_contact_time_s = time_s
+			row.append(str(hull_contact_count))
+			csv.store_line(",".join(row))
 			if csv.get_error() != OK:
 				csv.close()
 				_fail("failed writing sample %d for run '%s'" % [tick, str(definition.run_id)])
@@ -228,6 +272,11 @@ func _run_experiment(
 				min_load = minf(min_load, load)
 				max_load = maxf(max_load, load)
 			max_speed = maxf(max_speed, float(telemetry.speed_m_per_s))
+			max_abs_roll_rad = maxf(max_abs_roll_rad, absf(roll_rad))
+			max_hull_contact_count = maxi(max_hull_contact_count, hull_contact_count)
+			var slips: PackedFloat64Array = telemetry.wheel_slip_ratio
+			for slip in slips:
+				max_slip_ratio = maxf(max_slip_ratio, absf(slip))
 			for travel in state.slice(VehicleDynamics.TRAVEL, VehicleDynamics.TRAVEL + 4):
 				max_abs_travel = maxf(max_abs_travel, absf(travel))
 			if bool(telemetry.airborne):
@@ -237,8 +286,8 @@ func _run_experiment(
 				state = VehicleDynamics.step(state, model, controls, dt, road)
 				if state.size() != VehicleDynamics.STATE_SIZE:
 					csv.close()
-				_fail("kernel step failed in '%s' after tick %d" % [str(definition.run_id), tick])
-				return false
+					_fail("kernel step failed in '%s' after tick %d" % [str(definition.run_id), tick])
+					return false
 		var final_telemetry: Dictionary = VehicleDynamics.telemetry(state, model, road)
 		if not bool(final_telemetry.get("ok", false)):
 			csv.close()
@@ -253,6 +302,13 @@ func _run_experiment(
 			"initial_speed_m_per_s": float(definition.get("initial_speed_m_per_s", 0.0)),
 			"initial_wheel_spin_rad_per_s": float(definition.get("initial_speed_m_per_s", 0.0)) / float(model.tire_radius_m),
 			"initial_height_offset_m": float(definition.get("start_height_offset_m", 0.0)),
+			"initial_roll_angle_deg": float(definition.get("initial_roll_angle_deg", 0.0)),
+			"initial_wheel_contact": [initial_wheel_contact[0] != 0, initial_wheel_contact[1] != 0, initial_wheel_contact[2] != 0, initial_wheel_contact[3] != 0],
+			"first_wheel_unload_time_s": first_wheel_unload_time_s,
+			"first_hull_contact_time_s": first_hull_contact_time_s,
+			"max_hull_contact_count": max_hull_contact_count,
+			"max_abs_roll_angle_deg": rad_to_deg(max_abs_roll_rad),
+			"max_abs_wheel_slip_ratio": max_slip_ratio,
 			"controls": controls,
 			"sample_count": expected_samples,
 			"finite_sample_count": expected_samples,
@@ -285,6 +341,7 @@ func _run_experiment(
 		"scope": "Deterministic full-vehicle software experiment using an estimated MT8 model and synthetic course; not measured or physically validated vehicle evidence.",
 		"scenario": scenario,
 		"public_hz": PUBLIC_HZ,
+		"solver_version": VehicleDynamics.SOLVER_VERSION,
 		"substeps_per_tick": int(VehicleDynamics.SUBSTEPS_PER_TICK),
 		"duration_s": duration_s,
 		"ticks_per_run": ticks,
@@ -303,13 +360,16 @@ func _run_experiment(
 			"tire_radius_m": float(model.tire_radius_m),
 			"travel_droop_m": float(model.travel_droop_m),
 			"travel_bump_m": float(model.travel_bump_m),
+			"hull_probe_count": hull_radii.size(),
 		},
 		"experiment_settings": _experiment_settings(scenario),
-		"comparison_policy": "All trials use the same loaded model bytes, course bytes, fixed 240 Hz public tick, initial forward speed, wheel rolling speed, and brake command. Braking varies only the selected course spawn/surface; bump and drop are single fixed trials.",
+		"rigid_tipping_reference": _rigid_tipping_reference(model, course) if scenario == "rollover" else {},
+		"spherical_tire_center_reference": _spherical_tire_center_reference(model, course) if scenario == "rollover" else {},
+		"comparison_policy": "For braking, all surface trials use the same loaded model/course bytes, fixed 240 Hz tick, initial 6 m/s forward speed, pure-rolling wheel rate, and full brake command; only spawn/surface varies. Rollover trials share the same loaded bytes and zero controls and vary only initial right-edge tilt (35/55 degree comparison pair plus a 75 degree over-center witness). Bump and drop use their own fixed scenario initial conditions.",
 		"runs": run_summaries,
 		"csv_path": output_path,
 		"csv_sha256": csv_sha256,
-		"commands": _command_templates(scenario),
+		"commands": _command_templates(scenario, duration_s),
 	}
 	var summary_file := FileAccess.open(summary_path, FileAccess.WRITE)
 	if summary_file == null:
@@ -345,7 +405,7 @@ func _build_run_definitions(scenario: String) -> Array[Dictionary]:
 			"initial_speed_m_per_s": INITIAL_BUMP_SPEED_M_PER_S,
 			"controls": {"throttle": 0.0, "steering": 0.0, "brake": 0.0, "reverse": false},
 		})
-	else:
+	elif scenario == "drop":
 		result.append({
 			"run_id": "drop_start",
 			"surface_id": "asphalt",
@@ -354,6 +414,16 @@ func _build_run_definitions(scenario: String) -> Array[Dictionary]:
 			"start_height_offset_m": DROP_HEIGHT_M,
 			"controls": {"throttle": 0.0, "steering": 0.0, "brake": 0.0, "reverse": false},
 		})
+	else:
+		for angle_deg in ROLLOVER_INITIAL_ANGLES_DEG:
+			result.append({
+				"run_id": "rollover_right_edge_%02d_deg" % int(angle_deg),
+				"surface_id": "asphalt",
+				"spawn_id": "start",
+				"initial_speed_m_per_s": 0.0,
+				"initial_roll_angle_deg": angle_deg,
+				"controls": {"throttle": 0.0, "steering": 0.0, "brake": 0.0, "reverse": false},
+			})
 	return result
 
 
@@ -362,15 +432,23 @@ func _experiment_settings(scenario: String) -> Dictionary:
 		return {"initial_speed_m_per_s": INITIAL_BRAKING_SPEED_M_PER_S, "brake": 1.0, "initial_wheel_spin": "pure rolling", "surfaces": ["asphalt", "gravel", "grass", "slippery"]}
 	if scenario == "bump":
 		return {"initial_speed_m_per_s": INITIAL_BUMP_SPEED_M_PER_S, "feature_id": "bump-lane-01", "throttle": 0.0}
-	return {"freefall_height_offset_m": DROP_HEIGHT_M, "initial_speed_m_per_s": 0.0, "gravity_only_until_contact": true}
+	if scenario == "drop":
+		return {"freefall_height_offset_m": DROP_HEIGHT_M, "initial_speed_m_per_s": 0.0, "gravity_only_until_contact": true}
+	return {
+		"initial_roll_angles_deg": ROLLOVER_INITIAL_ANGLES_DEG,
+		"support_edge": "right-side tire contact line",
+		"controls": {"throttle": 0.0, "steering": 0.0, "brake": 0.0, "reverse": false},
+		"comparison_policy": "35 and 55 degrees straddle the fixed-ground-edge reference; 75 degrees is a qualitative over-center witness relative to the estimated spherical tire-center normal-moment sign change. Both are geometric comparators, not compliant-truck acceptance thresholds.",
+	}
 
 
-func _command_templates(scenario: String) -> Dictionary:
-	var common := "& $Godot --headless --audio-driver Dummy --path app --script research/rc-monster-truck/run_experiments.gd -- --duration=3"
+func _command_templates(scenario: String, duration_s: float) -> Dictionary:
+	var common := "& $Godot --headless --audio-driver Dummy --path app --script research/rc-monster-truck/run_experiments.gd -- --duration=%s" % _num(duration_s)
 	return {
 		"scenario": scenario,
 		"replay": common + " --scenario=%s --output=<fresh-output.csv>" % scenario,
 		"braking_surface_comparison": common + " --scenario=braking --output=<fresh-output.csv>",
+		"rollover_balance_comparison": common + " --scenario=rollover --output=<fresh-output.csv>",
 		"comparison_variable": "surface_id; all braking runs share identical model/course identities, initial 6 m/s forward and pure-rolling wheel rates, and full brake input",
 	}
 
@@ -402,7 +480,125 @@ func _finite_telemetry(telemetry: Dictionary) -> bool:
 		for value in values:
 			if not is_finite(value):
 				return false
+	var wheel_contacts: Variant = telemetry.get("wheel_in_contact")
+	if not wheel_contacts is PackedByteArray or wheel_contacts.size() != 4:
+		return false
+	var hull_contacts: Variant = telemetry.get("hull_in_contact")
+	if not hull_contacts is PackedByteArray:
+		return false
 	return telemetry.has("airborne") and typeof(telemetry.airborne) == TYPE_BOOL
+
+
+func _roll_state_about_right_support(
+	model: Dictionary,
+	course: Dictionary,
+	state: PackedFloat64Array,
+	roll_rad: float,
+) -> PackedFloat64Array:
+	if not is_finite(roll_rad) or roll_rad <= 0.0 or roll_rad >= PI:
+		return PackedFloat64Array()
+	var quaternion := PackedFloat64Array([Math3D.cos_(0.5 * roll_rad), Math3D.sin_(0.5 * roll_rad), 0.0, 0.0])
+	var corner_x: PackedFloat64Array = model["corner_x_m"]
+	var corner_y: PackedFloat64Array = model["corner_y_m"]
+	var arm_length := float(model["arm_length_m"])
+	var cg_height := float(model["cg_height_above_chassis_datum_m"])
+	var rest_below := float(model["wheel_center_rest_below_chassis_datum_m"])
+	var hub_down_sum := 0.0
+	for corner in [1, 3]:
+		var travel := state[VehicleDynamics.TRAVEL + corner]
+		if absf(travel) >= arm_length:
+			return PackedFloat64Array()
+		var lateral := Math3D.sqrt_(arm_length * arm_length - travel * travel)
+		var hub_body := PackedFloat64Array([
+			corner_x[corner],
+			corner_y[corner] + lateral - arm_length,
+			cg_height + rest_below - travel,
+		])
+		var hub_world_offset := Math3D.q_rotate(quaternion, hub_body)
+		hub_down_sum += hub_world_offset[2]
+	var road := CourseData.sample(course, state[VehicleDynamics.POS], state[VehicleDynamics.POS + 1])
+	var wheel_load := (
+		float(model["sprung_mass_kg"]) / 4.0 + float(model["unsprung_mass_kg"])
+	) * float(model["gravity_m_per_s2"])
+	var tire_compression := wheel_load / float(model["tire_stiffness_n_per_m"]) if wheel_load > 0.0 else 0.0
+	var target_hub_down := -float(road.height_m) - float(model["tire_radius_m"]) + tire_compression
+	var tilted := state.duplicate()
+	for index in 4:
+		tilted[VehicleDynamics.ATT + index] = quaternion[index]
+	tilted[VehicleDynamics.POS + 2] = target_hub_down - hub_down_sum / 2.0
+	return tilted
+
+
+func _rigid_tipping_reference(model: Dictionary, course: Dictionary) -> Dictionary:
+	var spawn := _find_spawn(course, "start")
+	if spawn.is_empty():
+		return {}
+	var gravity := float(model["gravity_m_per_s2"])
+	var travel := (
+		float(model["sprung_mass_kg"]) * gravity
+		/ (4.0 * float(model["suspension_stiffness_n_per_m"]))
+		if gravity > 0.0 else 0.0
+	)
+	var arm_length := float(model["arm_length_m"])
+	if arm_length <= travel:
+		return {}
+	var radial := Math3D.sqrt_(arm_length * arm_length - travel * travel)
+	var right_hub_y := float(model["corner_y_m"][1]) + radial - arm_length
+	var surface := CourseData.sample(course, float(spawn.north_m), float(spawn.east_m))
+	var cg_height_above_ground := float(spawn.vehicle_up_m) - float(surface.height_m)
+	if cg_height_above_ground <= 0.0 or absf(right_hub_y) <= 0.0:
+		return {}
+	var half_track := absf(right_hub_y)
+	var critical_angle := Math3D.atan2_(half_track, cg_height_above_ground)
+	return {
+		"kind": "rigid support-edge geometric reference",
+		"half_track_m": half_track,
+		"upright_sprung_cg_height_above_ground_m": cg_height_above_ground,
+		"critical_tilt_angle_rad": critical_angle,
+		"critical_tilt_angle_deg": rad_to_deg(critical_angle),
+		"assumptions": "Point support at tire centerline, rigid chassis, fixed CG, no suspension/tire compliance or hull contact. This is a geometric comparator, not an acceptance threshold for the compliant truck model.",
+	}
+
+
+func _spherical_tire_center_reference(model: Dictionary, course: Dictionary) -> Dictionary:
+	var fixed_edge := _rigid_tipping_reference(model, course)
+	if fixed_edge.is_empty():
+		return {}
+	var gravity := float(model["gravity_m_per_s2"])
+	var sprung_mass := float(model["sprung_mass_kg"])
+	var unsprung_mass := float(model["unsprung_mass_kg"])
+	var tire_stiffness := float(model["tire_stiffness_n_per_m"])
+	var tire_radius := float(model["tire_radius_m"])
+	if gravity < 0.0 or sprung_mass <= 0.0 or unsprung_mass < 0.0 or tire_stiffness <= 0.0 or tire_radius <= 0.0:
+		return {}
+	var static_tire_compression := (sprung_mass + 4.0 * unsprung_mass) * gravity / (4.0 * tire_stiffness)
+	var cg_height_above_hub_center := (
+		float(fixed_edge.upright_sprung_cg_height_above_ground_m)
+		- tire_radius
+		+ static_tire_compression
+	)
+	if cg_height_above_hub_center <= 0.0:
+		return {}
+	var sign_change_angle := Math3D.atan2_(float(fixed_edge.half_track_m), cg_height_above_hub_center)
+	return {
+		"kind": "spherical tire-center normal-moment sign-change estimate",
+		"half_track_m": float(fixed_edge.half_track_m),
+		"upright_sprung_cg_height_above_ground_m": float(fixed_edge.upright_sprung_cg_height_above_ground_m),
+		"tire_radius_m": tire_radius,
+		"estimated_static_tire_compression_m": static_tire_compression,
+		"cg_height_above_tire_hub_center_m": cg_height_above_hub_center,
+		"estimated_sign_change_angle_rad": sign_change_angle,
+		"estimated_sign_change_angle_deg": rad_to_deg(sign_change_angle),
+		"assumptions": "Approximate right tire-center support normal with fixed CG and symmetric static tire compression; ignores suspension articulation during roll, unsprung-force distribution, friction and hull contact. This is a moment-sign geometry witness, not a rollover or recovery threshold.",
+	}
+
+
+func _roll_euler_rad(state: PackedFloat64Array) -> float:
+	var w := state[VehicleDynamics.ATT]
+	var x := state[VehicleDynamics.ATT + 1]
+	var y := state[VehicleDynamics.ATT + 2]
+	var z := state[VehicleDynamics.ATT + 3]
+	return Math3D.atan2_(2.0 * (w * x + y * z), 1.0 - 2.0 * (x * x + y * y))
 
 
 func _num(value: float) -> String:

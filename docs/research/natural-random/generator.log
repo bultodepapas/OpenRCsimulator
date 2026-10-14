@@ -1,0 +1,54 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   uint32 seed 0 generates a valid scenario
+ok   uint32 seed 0 is preserved exactly
+ok   uint32 seed 0 uses v3 atmosphere and airborne start
+ok   uint32 seed 1 generates a valid scenario
+ok   uint32 seed 1 is preserved exactly
+ok   uint32 seed 1 uses v3 atmosphere and airborne start
+ok   uint32 seed 2147483647 generates a valid scenario
+ok   uint32 seed 2147483647 is preserved exactly
+ok   uint32 seed 2147483647 uses v3 atmosphere and airborne start
+ok   uint32 seed 4294967295 generates a valid scenario
+ok   uint32 seed 4294967295 is preserved exactly
+ok   uint32 seed 4294967295 uses v3 atmosphere and airborne start
+ok   negative seed fails with a structured result
+ok   seed above uint32 fails with a structured result
+ok   repeated seed produces the same fully resolved record
+ok   different master seeds resolve to different identities
+ok   returned scenarios are detached from future generator calls
+ok   all 10,000 generated scenarios pass strict validation
+ok   aircraft 'jensen-das-ugly-stik-60' is approximately uniform
+ok   aircraft 'gp-extra-300s-60' is approximately uniform
+ok   aircraft 'p51d-mustang-120' is approximately uniform
+ok   aircraft 'sebart-avanti-s-a200-p100rx' is approximately uniform
+ok   aircraft 'turbo-lumber-evolution' is approximately uniform
+ok   recipe 'calm_air' is near its exact 20% target
+ok   aircraft/recipe cell jensen-das-ugly-stik-60 × calm_air shows independent selection
+ok   aircraft/recipe cell gp-extra-300s-60 × calm_air shows independent selection
+ok   aircraft/recipe cell p51d-mustang-120 × calm_air shows independent selection
+ok   aircraft/recipe cell sebart-avanti-s-a200-p100rx × calm_air shows independent selection
+ok   aircraft/recipe cell turbo-lumber-evolution × calm_air shows independent selection
+ok   recipe 'gentle_breeze' is near its exact 40% target
+ok   aircraft/recipe cell jensen-das-ugly-stik-60 × gentle_breeze shows independent selection
+ok   aircraft/recipe cell gp-extra-300s-60 × gentle_breeze shows independent selection
+ok   aircraft/recipe cell p51d-mustang-120 × gentle_breeze shows independent selection
+ok   aircraft/recipe cell sebart-avanti-s-a200-p100rx × gentle_breeze shows independent selection
+ok   aircraft/recipe cell turbo-lumber-evolution × gentle_breeze shows independent selection
+ok   recipe 'lively_afternoon' is near its exact 25% target
+ok   aircraft/recipe cell jensen-das-ugly-stik-60 × lively_afternoon shows independent selection
+ok   aircraft/recipe cell gp-extra-300s-60 × lively_afternoon shows independent selection
+ok   aircraft/recipe cell p51d-mustang-120 × lively_afternoon shows independent selection
+ok   aircraft/recipe cell sebart-avanti-s-a200-p100rx × lively_afternoon shows independent selection
+ok   aircraft/recipe cell turbo-lumber-evolution × lively_afternoon shows independent selection
+ok   recipe 'windy_day' is near its exact 15% target
+ok   aircraft/recipe cell jensen-das-ugly-stik-60 × windy_day shows independent selection
+ok   aircraft/recipe cell gp-extra-300s-60 × windy_day shows independent selection
+ok   aircraft/recipe cell p51d-mustang-120 × windy_day shows independent selection
+ok   aircraft/recipe cell sebart-avanti-s-a200-p100rx × windy_day shows independent selection
+ok   aircraft/recipe cell turbo-lumber-evolution × windy_day shows independent selection
+ok   daylight 'morning' is near its exact 25% target
+ok   daylight 'day' is near its exact 50% target
+ok   daylight 'afternoon' is near its exact 25% target
+NR distribution: {"aircraft":{"gp-extra-300s-60":1981,"jensen-das-ugly-stik-60":1992,"p51d-mustang-120":2018,"sebart-avanti-s-a200-p100rx":2010,"turbo-lumber-evolution":1999},"daylight":{"afternoon":2459,"day":5031,"morning":2510},"invalid":0,"joint":{"gp-extra-300s-60|calm_air":400,"gp-extra-300s-60|gentle_breeze":766,"gp-extra-300s-60|lively_afternoon":479,"gp-extra-300s-60|windy_day":336,"jensen-das-ugly-stik-60|calm_air":378,"jensen-das-ugly-stik-60|gentle_breeze":807,"jensen-das-ugly-stik-60|lively_afternoon":506,"jensen-das-ugly-stik-60|windy_day":301,"p51d-mustang-120|calm_air":408,"p51d-mustang-120|gentle_breeze":793,"p51d-mustang-120|lively_afternoon":496,"p51d-mustang-120|windy_day":321,"sebart-avanti-s-a200-p100rx|calm_air":383,"sebart-avanti-s-a200-p100rx|gentle_breeze":814,"sebart-avanti-s-a200-p100rx|lively_afternoon":494,"sebart-avanti-s-a200-p100rx|windy_day":319,"turbo-lumber-evolution|calm_air":392,"turbo-lumber-evolution|gentle_breeze":809,"turbo-lumber-evolution|lively_afternoon":481,"turbo-lumber-evolution|windy_day":317},"recipes":{"calm_air":1961,"gentle_breeze":3989,"lively_afternoon":2456,"windy_day":1594},"samples":10000}
+all Natural Random generator checks passed

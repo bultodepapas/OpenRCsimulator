@@ -1,6 +1,6 @@
 # RC monster truck: physics laboratory and playable vehicle
 
-**Date:** 2026-10-13. **Status:** the first Bisonte MT8 asset has arrived. RCV-14a provides a local articulated Godot inspector and intake verification. RCV-04a/b provide the independent quarter-car and four-corner suspension benches. No selectable truck or menu integration exists yet. **Owner:** RC ground-vehicle track. **Prefix:** RCV-00…RCV-34, registered in the [ownership index](../README.md#tracks-plans-and-step-ids). **Evidence:** [source investigation](../research/rc-monster-truck/README.md), [RCV-04a](../research/rc-monster-truck/RCV-04a/README.md), [RCV-04b](../research/rc-monster-truck/RCV-04b/README.md), [RCV-14a](../research/rc-monster-truck/RCV-14a/README.md). The [research tool guide](../../research/rc-monster-truck/README.md) owns runnable commands.
+**Date:** 2026-10-13. **Status:** Bisonte MT8 is integrated as an experimental ground activity with a garage, driving course, suspension/steering articulation, recording and laboratory controls. Focused runtime and native Windows RC-only package checks passed; the 500 µs, physical, hardware and full application release gates remain open. **Owner:** RC ground-vehicle track. **Prefix:** RCV-00…RCV-34, registered in the [ownership index](../README.md#tracks-plans-and-step-ids). **Evidence:** [source investigation](../research/rc-monster-truck/README.md), [RCV-04a](../research/rc-monster-truck/RCV-04a/README.md), [RCV-04b](../research/rc-monster-truck/RCV-04b/README.md), [RCV-14a](../research/rc-monster-truck/RCV-14a/README.md), [runtime verification](../research/rc-monster-truck/RCV-runtime/README.md). The [operating and research guide](../../research/rc-monster-truck/README.md) owns runnable commands.
 
 This plan adds one large RC monster truck as another selectable vehicle in OpenRC Simulator. It has two equally important uses: expose physical behavior through repeatable experiments, and provide enjoyable driving, jumps and recovery. The same physical model serves both. A successful numerical experiment does not establish real-truck accuracy, and an attractive jump does not establish correct mechanics.
 
@@ -12,7 +12,7 @@ Build a fictional **1/8-class, four-wheel-drive monster truck**, with the high-c
 
 The T-Maxx reference and the requested scale must remain separate: the manufacturer's T-Maxx 3.3 is a **1/10-scale nitro truck**. Its dimensions and mechanisms are reference evidence, not a specification for a 1/8 model. Do not enlarge its mesh by 1.25 and silently reuse its mass, suspension, inertia, gearing or handling. The visual developer proposes the final physical dimensions at RCV-02; the physics owner accepts a separate, sourced mass and mechanism inventory. [Manufacturer sources and limits](../research/rc-monster-truck/README.md#manufacturer-reference).
 
-Recommended first powertrain: **electric 4WD**, explicitly described as an experimental fictional configuration. It provides independently controllable torque, braking and reverse and can reuse parts of the repository's electric work. Nitro sound or an exhaust plume must not stand in for electric mechanics. A T-Maxx-like nitro installation is a later, separately identified configuration requiring clutch, gearing, idle/stall and brake evidence. This is a planning recommendation; the user has not selected a powertrain.
+Implemented first powertrain: **estimated electric 4WD**, explicitly described as an experimental fictional configuration. It provides drive torque, braking and reverse. The owner authorized implementation of the plan and confirmed that the supplied model/scripts are original and authorized for inclusion and modification. Nitro sound or an exhaust plume must not stand in for electric mechanics. A T-Maxx-like nitro installation remains a later, separately identified configuration requiring clutch, gearing, idle/stall and brake evidence.
 
 | Delivery | Player experience | Physical claim permitted |
 | --- | --- | --- |
@@ -378,7 +378,23 @@ Existing commands stay in [TOOLS](../TOOLS.md): `app/test.sh`, `research/test-to
 
 ## 11. Execution order and reviewable steps
 
-RCV-00 is the planning delivery. RCV-04a/b implement bounded quarter-car and coupled four-corner benches; their research inputs do not close the full vehicle schema or mechanical architecture gates. RCV-14a checks the first MT8 asset in an isolated visual inspector; it does not close runtime distribution or driving gates. Other implementation work remains pending. Each step lands with focused proof and dated evidence; no phase may mark physical or user gates closed from headless results alone.
+The following implementation map supersedes the original pending statuses in the execution table below. That table retains the full acceptance scope: implementing a subset does not close a step's physical, hardware or release gates. RCV-04a/b and RCV-14a remain dated evidence for their bounded fixtures.
+
+| Steps | Implemented software | Remaining qualification or capability |
+| --- | --- | --- |
+| RCV-01…03 | Hash-pinned authorized MT8 delivery; generated, strict quantity/provenance vehicle data; estimated electric configuration; deterministic generator and rejection fixtures | Measured component inventory and physical operating envelope |
+| RCV-04…07, 11…12 | 31-value float64 chassis, four moving hubs, four wheel spins and steering servo; configuration-dependent coupled mass matrix; RK4 at 240 Hz; support, friction, reverse, braking and steering tests | Full contact-event convergence, complete work accounting and measured suspension/tire response |
+| RCV-08 | Symmetric four-wheel drive/braking torque, reverse and wheel/body reaction | Explicit differential/shaft topology, electrical/ESC/battery model and split-grip qualification |
+| RCV-09, 19…20 | Transactional session, identity-bound checkpoints, exact float64 JSON payloads, command tape/replay, neutral arming, disconnect/focus holds, reset and marked manual recovery | Real pistol/stick radio profiles and hardware acceptance; wider failure-injection matrix |
+| RCV-10, 13 | Analytic asphalt/grass/gravel/low-grip course, smooth bumps/ramps/slope, compliant tire point probes and chassis probe spheres | Finite tire footprint, vertical curb/sidewall collision, swept contact and 60 s roof/side-rest qualification |
+| RCV-14…17 | Authorized imported GLB/generated rig, CG/datum render adapter, Home RC entry and direct CLI, separate garage/activity with EN/ES controls | General multi-family catalog and persistent vehicle selection are deferred; package qualification is tracked separately |
+| RCV-18, 21…22 | Chase/pilot/orbit cameras, free driving, jump/landing feedback, manual recovery | Longer-jump success-toast qualification, full jump curriculum, camera/rollover scenarios and novice/experienced driver playtests |
+| RCV-23…24 | Bounded gravity/grip/spring/damping/ballast edits with new identity; load/slip/contact overlays, travel plot, CSV recording and reproducible experiment tools | Measured experiment presets and complete automated A/B intervention workflow |
+| RCV-25 | Shared procedural audio voice driven by wheel speed; sound/pause controls | Tire/impact surface audio and calibrated electric sound |
+| RCV-26…27 | Experimental status shown in the garage and trace documentation | All physical measurement and held-out validation gates remain open |
+| RCV-28…31 | Windows/Linux native evaluator parity; integrated Session/replay checks; four aircraft golden replays; native and reference Windows RC-only exports; native release mean/p95 below 4.167 ms | 500 µs target, worst-tick/render pacing, full application export (HX-700 proof blocker), Linux/macOS packages and clean-clone/CI assembly remain open |
+
+The [runtime evidence](../research/rc-monster-truck/RCV-runtime/README.md) records actual test outcomes and limitations. The historical plan's ≤500 µs target is not relaxed merely because a slower implementation passes its numerical checks. No physical or user gate is closed from headless results alone.
 
 | ID | Work and dependency | Proof / status |
 | --- | --- | --- |

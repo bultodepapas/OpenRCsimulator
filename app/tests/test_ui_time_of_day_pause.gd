@@ -59,12 +59,15 @@ func _interactive_pause_edit() -> void:
 	var initial_state: PackedFloat64Array = session.sim.state.duplicate()
 	var initial_commands: Dictionary = session.commands.duplicate(true)
 	var initial_tick: int = session.sim.tick
-	_check("pause menu offers a dedicated Time of day action", app.pause_menu.time_of_day_button.name == "TimeOfDay"
-		and app.pause_menu.time_of_day_button.text == "Time of day")
+	_check("pause menu offers a Sky and lighting action", app.pause_menu.time_of_day_button.name == "TimeOfDay"
+		and app.pause_menu.time_of_day_button.text == "Sky and lighting")
 	await ui.tap(KEY_DOWN)
 	_check("Down reaches Restart", ui.focus_name() == "Restart", ui.focus_name())
-	await ui.tap(KEY_DOWN)
-	_check("next Down reaches Time of day", ui.focus_name() == "TimeOfDay", ui.focus_name())
+	for step: int in 6:
+		await ui.tap(KEY_DOWN)
+		if ui.focus_name() == "TimeOfDay":
+			break
+	_check("keyboard reaches Sky and lighting", ui.focus_name() == "TimeOfDay", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	_check("time editor opens over the still-paused flight", app.time_of_day_dialog != null
@@ -72,6 +75,11 @@ func _interactive_pause_edit() -> void:
 
 	var dialog: CanvasLayer = app.time_of_day_dialog
 	var controls: VBoxContainer = dialog.get("controls") as VBoxContainer
+	var field_picker: OptionButton = controls.find_child("FieldLighting", true, false) as OptionButton
+	var campfire_picker: OptionButton = controls.find_child("Campfire", true, false) as OptionButton
+	_check("paused conditions expose three compact field profiles and a separate campfire toggle",
+		field_picker != null and field_picker.item_count == 3 and field_picker.selected == 0
+		and campfire_picker != null and campfire_picker.item_count == 2 and campfire_picker.selected == 0)
 	var mode_picker: OptionButton = controls.find_child("LightingMode", true, false) as OptionButton
 	var mode_popup: PopupMenu = mode_picker.get_popup()
 	var initial_preset_picker: OptionButton = controls.find_child("TimePreset", true, false) as OptionButton
@@ -90,7 +98,7 @@ func _interactive_pause_edit() -> void:
 	await _assert_modal_bounds(dialog, "es", Vector2i(800, 600))
 	await _assert_modal_bounds(dialog, "en", Vector2i(1280, 720))
 	await _assert_modal_bounds(dialog, "es", Vector2i(1280, 720))
-	_check("Spanish modal title and actions are translated", (dialog.get("title_label") as Label).text == "Hora del día"
+	_check("Spanish modal title and actions are translated", (dialog.get("title_label") as Label).text == "Cielo e iluminación"
 		and apply_button.text == "Aplicar" and (dialog.get("cancel_button") as Button).text == "Cancelar")
 	TranslationServer.set_locale("en")
 	root.size = Vector2i(800, 600)
@@ -145,6 +153,8 @@ func _interactive_pause_edit() -> void:
 	await ui.settle()
 	dialog = app.time_of_day_dialog
 	controls = dialog.get("controls") as VBoxContainer
+	field_picker = controls.find_child("FieldLighting", true, false) as OptionButton
+	campfire_picker = controls.find_child("Campfire", true, false) as OptionButton
 	var preset_picker: OptionButton = controls.find_child("TimePreset", true, false) as OptionButton
 	var preset_popup: PopupMenu = preset_picker.get_popup()
 	_check("preset popup route starts on the lighting control", ui.focus_name() == "LightingMode", ui.focus_name())
@@ -164,6 +174,8 @@ func _interactive_pause_edit() -> void:
 	dialog = app.time_of_day_dialog
 	controls = dialog.get("controls") as VBoxContainer
 	preset_picker = controls.find_child("TimePreset", true, false) as OptionButton
+	field_picker = controls.find_child("FieldLighting", true, false) as OptionButton
+	campfire_picker = controls.find_child("Campfire", true, false) as OptionButton
 	preset_popup = preset_picker.get_popup()
 	await ui.tap(KEY_TAB)
 	await ui.tap(KEY_ENTER)
@@ -176,8 +188,14 @@ func _interactive_pause_edit() -> void:
 	night_draft = night_result.config.duplicate(true) if night_result.get("ok", false) else {}
 	_check("Enter applies the selected preset to the draft", night_result.get("ok", false)
 		and night_draft.mode == "astronomical" and preset_picker.selected == 5, str(night_result))
-	for tab_index: int in 5:
+	field_picker = controls.find_child("FieldLighting", true, false) as OptionButton
+	campfire_picker = controls.find_child("Campfire", true, false) as OptionButton
+	field_picker.select(1)
+	campfire_picker.select(1)
+	for tab_index: int in 16:
 		await ui.tap(KEY_TAB)
+		if ui.focus_name() == "Apply":
+			break
 	_check("preset mode change refreshes the keyboard focus chain", ui.focus_name() == "Apply", ui.focus_name())
 	apply_button = dialog.get("apply_button") as Button
 	await ui.tap(KEY_ENTER)
@@ -188,14 +206,23 @@ func _interactive_pause_edit() -> void:
 		and _timeline_event_count(flight) == 1)
 	_check("Apply preserves tick, state and live controls", session.sim.tick == initial_tick
 		and session.sim.state == initial_state and session.commands == initial_commands)
+	_check("paused Apply updates both visual options without changing the session",
+		flight.night_options == {"field_lighting": "airfield", "campfire": true}
+		and session.sim.tick == initial_tick and session.sim.state == initial_state
+		and session.commands == initial_commands)
 	_check("interactive Apply saves the configured start light", Preferences.load_from(PREFS).lighting_config == night_draft,
 		str(Preferences.load_from(PREFS).lighting_config))
+	_check("interactive Apply persists field lighting and campfire choices",
+		Preferences.load_from(PREFS).night_field_lighting == "airfield"
+		and Preferences.load_from(PREFS).night_campfire == true)
 	_check("Apply returns focus to Time of day", ui.focus_name() == "TimeOfDay", ui.focus_name())
 
 	app.restart_flight()
 	_check("Restart reuses the applied start lighting", app.pause_menu == null and not session.sim.paused
 		and session.sim.tick == 0 and flight.lighting_config == night_draft
 		and _timeline_event_count(flight) == 0)
+	_check("Restart reuses the saved night presentation choices",
+		flight.night_options == {"field_lighting": "airfield", "campfire": true})
 	app.open_pause()
 	await ui.settle()
 	app.end_flight()
@@ -231,6 +258,8 @@ func _direct_route_never_touches_preferences() -> void:
 	await ui.settle()
 	_check("direct CLI route applies lighting without Home", not app.has_home and app.time_of_day_dialog == null
 		and app.pause_menu != null and app.flight.lighting_config == noon and app.flight.session.sim.paused)
+	_check("direct route starts from club lighting and campfire-off defaults",
+		app.flight.night_options == Preferences.NIGHT_DEFAULTS)
 	_check("direct route does not read or write the preference file", _read_text(DIRECT_PREFS) == SENTINEL
 		and not FileAccess.file_exists(DIRECT_PREFS + ".bad"), _read_text(DIRECT_PREFS))
 	app.queue_free()

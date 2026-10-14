@@ -1,0 +1,3494 @@
+{
+	"accepted_control_tape": {
+		"accepted_tick_count": 387,
+		"canonical_rows_sha256": "ae75d033729395ab5df1a8ad641b8653266e0a937bcdc9c1ccbfb824f99fb265",
+		"layout": [
+			"throttle",
+			"steering",
+			"brake",
+			"reverse_flag"
+		],
+		"rows": [
+			{
+				"accepted_tick": 1,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 2,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 3,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 4,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 5,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 6,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 7,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 8,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 9,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 10,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 11,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 12,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 13,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 14,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 15,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 16,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 17,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 18,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 19,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 20,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 21,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 22,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 23,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 24,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 25,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 26,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 27,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 28,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 29,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 30,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 31,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 32,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 33,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 34,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 35,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 36,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 37,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 38,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 39,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 40,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 41,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 42,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 43,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 44,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 45,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 46,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 47,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 48,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 49,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 50,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 51,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 52,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 53,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 54,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 55,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 56,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 57,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 58,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 59,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 60,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 61,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 62,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 63,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 64,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 65,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 66,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 67,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 68,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 69,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 70,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 71,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 72,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 73,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 74,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 75,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 76,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 77,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 78,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 79,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 80,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 81,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 82,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 83,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 84,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 85,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 86,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 87,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 88,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 89,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 90,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 91,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 92,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 93,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 94,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 95,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 96,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 97,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 98,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 99,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 100,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 101,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 102,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 103,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 104,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 105,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 106,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 107,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 108,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 109,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 110,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 111,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 112,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 113,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 114,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 115,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 116,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 117,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 118,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 119,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 120,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 121,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 122,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 123,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 124,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 125,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 126,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 127,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 128,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 129,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 130,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 131,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 132,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 133,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 134,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 135,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 136,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 137,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 138,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 139,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 140,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 141,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 142,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 143,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 144,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 145,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 146,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 147,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 148,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 149,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 150,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 151,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 152,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 153,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 154,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 155,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 156,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 157,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 158,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 159,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 160,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 161,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 162,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 163,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 164,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 165,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 166,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 167,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 168,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 169,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 170,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 171,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 172,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 173,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 174,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 175,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 176,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 177,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 178,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 179,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 180,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 181,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 182,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 183,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 184,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 185,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 186,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 187,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 188,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 189,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 190,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 191,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 192,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 193,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 194,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 195,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 196,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 197,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 198,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 199,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 200,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 201,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 202,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 203,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 204,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 205,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 206,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 207,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 208,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 209,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 210,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 211,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 212,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 213,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 214,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 215,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 216,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 217,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 218,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 219,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 220,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 221,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 222,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 223,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 224,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 225,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 226,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 227,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 228,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 229,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 230,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 231,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 232,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 233,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 234,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 235,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 236,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 237,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 238,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 239,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 240,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 241,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 242,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 243,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 244,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 245,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 246,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 247,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 248,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 249,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 250,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 251,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 252,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 253,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 254,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 255,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 256,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 257,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 258,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 259,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 260,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 261,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 262,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 263,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 264,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 265,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 266,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 267,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 268,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 269,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 270,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 271,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 272,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 273,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 274,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 275,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 276,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 277,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 278,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 279,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 280,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 281,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 282,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 283,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 284,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 285,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 286,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 287,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 288,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 289,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 290,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 291,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 292,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 293,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 294,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 295,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 296,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 297,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 298,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 299,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 300,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			{
+				"accepted_tick": 301,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 302,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 303,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 304,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 305,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 306,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 307,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 308,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 309,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 310,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 311,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 312,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 313,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 314,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 315,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 316,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 317,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 318,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 319,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 320,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 321,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 322,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 323,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 324,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 325,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 326,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 327,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 328,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 329,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 330,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 331,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 332,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 333,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 334,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 335,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 336,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 337,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 338,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 339,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 340,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 341,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 342,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 343,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 344,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 345,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 346,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 347,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 348,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 349,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 350,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 351,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 352,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 353,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 354,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 355,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 356,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 357,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 358,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 359,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 360,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 361,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 362,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 363,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 364,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 365,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 366,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 367,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 368,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 369,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 370,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 371,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 372,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 373,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 374,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 375,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 376,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 377,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 378,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 379,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 380,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 381,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 382,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 383,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 384,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 385,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 386,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			{
+				"accepted_tick": 387,
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			}
+		]
+	},
+	"activity_toast": "W forward · S reverse · A/D steer · Space brake",
+	"airborne_hud_seen": true,
+	"airtime_s": 0.05833333333333335,
+	"backend_identity": {
+		"abi_version": 1,
+		"backend": "native",
+		"backend_version": "openrc-ground-vehicle-native-evaluate-v1",
+		"binary_sha256": "2958c34163a8c13d5d5fc675806bd6b45750eb8f435708c1ba4d4b67ade8789e",
+		"solver_version": "openrc-ground-vehicle-dynamics-rk4-v2",
+		"source_sha256": "451a76a00ac0e7d4513390d405e45eb55c6cb9b387ed21e55035d09ab7ef697f",
+		"toolchain_sha256": "2051a079931113cbf72767863a0159fb69319631343022d647e1031fd301453a"
+	},
+	"control_state_audit": [
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"accepted_tick": 299,
+			"callback_tick": 298,
+			"forward_speed_m_per_s": 3.5161464934294018,
+			"wheel_spin_rad_per_s": [
+				36.48745668323722,
+				36.38120647538112,
+				36.056614578439856,
+				36.07936208210474
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"accepted_tick": 300,
+			"callback_tick": 299,
+			"forward_speed_m_per_s": 3.5243951396240636,
+			"wheel_spin_rad_per_s": [
+				36.573613757998764,
+				36.444763688197206,
+				36.03101747677649,
+				36.04986346549252
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			"accepted_tick": 301,
+			"callback_tick": 300,
+			"forward_speed_m_per_s": 3.5267254789335327,
+			"wheel_spin_rad_per_s": [
+				36.352488795585465,
+				36.22822344566334,
+				35.86318157527136,
+				35.87453036831497
+			]
+		}
+	],
+	"course_identity": {
+		"format": "openrc-ground-course",
+		"id": "mt8-practice-course-estimate-v1",
+		"sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+		"version": "1"
+	},
+	"effective_gravity_m_per_s2": 4.903325,
+	"events": [
+		{
+			"speed_m_per_s": 3.3087018457790696,
+			"tick": 253,
+			"time_s": 1.0541666666666667,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 3.3133913799662373,
+			"tick": 267,
+			"time_s": 1.1125,
+			"type": "landing"
+		},
+		{
+			"speed_m_per_s": 3.5883480434760724,
+			"tick": 352,
+			"time_s": 1.4666666666666666,
+			"type": "jump"
+		},
+		{
+			"speed_m_per_s": 3.6043131217571305,
+			"tick": 358,
+			"time_s": 1.4916666666666667,
+			"type": "landing"
+		}
+	],
+	"final_airborne": false,
+	"final_hull_contact_count": 0,
+	"final_wheel_contact_count": 2,
+	"full_throttle_fade_window": {
+		"accepted_tick_count": 0,
+		"accepted_ticks_first": 301,
+		"accepted_ticks_last": 300,
+		"drive_torque_fade_rad_s": 40.0,
+		"drive_torque_formula": "throttle * drive_torque_per_wheel_nm * max(0, 1 - abs(wheel_spin_rad_s) / drive_torque_fade_rad_s)",
+		"expected_drive_torque_per_wheel_nm": 3.0,
+		"maximum_endpoint_drive_torque_nm": 0.0,
+		"minimum_abs_wheel_spin_rad_per_s": -1.0,
+		"ticks_all_wheels_at_or_above_fade": 0
+	},
+	"ground_hud_after_landing": true,
+	"identity_hashes": {
+		"backend_binary_sha256": "2958c34163a8c13d5d5fc675806bd6b45750eb8f435708c1ba4d4b67ade8789e",
+		"backend_source_sha256": "451a76a00ac0e7d4513390d405e45eb55c6cb9b387ed21e55035d09ab7ef697f",
+		"backend_toolchain_sha256": "2051a079931113cbf72767863a0159fb69319631343022d647e1031fd301453a",
+		"course_sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+		"vehicle_sha256": "cc6ca2e3d3a7ba23a688daa63bd6ebbbc353e949e0cd1abeeb2c2a04f862eb6d"
+	},
+	"landing_event": {
+		"speed_m_per_s": 3.3133913799662373,
+		"tick": 267,
+		"time_s": 1.1125,
+		"type": "landing"
+	},
+	"landing_upright_dot": 0.9999746351605285,
+	"landing_wheel_contact_count": 2,
+	"ok": false,
+	"outcome": "upright_short_landing",
+	"post_landing_settle_ticks": 120,
+	"requested_gravity_scale": 0.5,
+	"run_valid": true,
+	"samples": [
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": false,
+			"east_m": 7.074133322342518e-07,
+			"forward_speed_m_per_s": 0.4270914500336982,
+			"hull_contact_count": 0,
+			"north_m": 6.019853948919992,
+			"speed_m_per_s": 0.4311026666859607,
+			"tick": 24,
+			"time_s": 0.1,
+			"up_m": 0.2157204660339557,
+			"upright_dot": 0.9980251793532906,
+			"wheel_contact_count": 2,
+			"wheel_spin_rad_per_s": [
+				39.54864765791113,
+				39.54864770727871,
+				24.05420625285443,
+				24.055300461624054
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": false,
+			"east_m": 1.6138284173043012e-06,
+			"forward_speed_m_per_s": 0.7285668413442223,
+			"hull_contact_count": 0,
+			"north_m": 6.078595530827852,
+			"speed_m_per_s": 0.7300689038664631,
+			"tick": 48,
+			"time_s": 0.2,
+			"up_m": 0.22176097271673623,
+			"upright_dot": 0.997629424923647,
+			"wheel_contact_count": 2,
+			"wheel_spin_rad_per_s": [
+				39.915459437264936,
+				39.915459437597605,
+				30.069592664726866,
+				30.068946332857376
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": false,
+			"east_m": 1.5215881477101658e-06,
+			"forward_speed_m_per_s": 0.9950106361488001,
+			"hull_contact_count": 0,
+			"north_m": 6.164909768750574,
+			"speed_m_per_s": 1.0087619552390974,
+			"tick": 72,
+			"time_s": 0.3,
+			"up_m": 0.214945968784089,
+			"upright_dot": 0.9995282485627729,
+			"wheel_contact_count": 2,
+			"wheel_spin_rad_per_s": [
+				39.89351765314974,
+				39.89351765315199,
+				30.022227699729076,
+				30.02208600670943
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": false,
+			"east_m": 4.850026071448717e-06,
+			"forward_speed_m_per_s": 1.4732085974444673,
+			"hull_contact_count": 0,
+			"north_m": 6.289727000164077,
+			"speed_m_per_s": 1.4733981680518347,
+			"tick": 96,
+			"time_s": 0.4,
+			"up_m": 0.21122927843569497,
+			"upright_dot": 0.9993846921670018,
+			"wheel_contact_count": 2,
+			"wheel_spin_rad_per_s": [
+				39.058431351013255,
+				39.060085626542254,
+				25.7526593786737,
+				25.75399671156929
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": false,
+			"east_m": 2.8076956476249615e-06,
+			"forward_speed_m_per_s": 1.81876150285426,
+			"hull_contact_count": 0,
+			"north_m": 6.454418964483207,
+			"speed_m_per_s": 1.819470778795663,
+			"tick": 120,
+			"time_s": 0.5,
+			"up_m": 0.21260260628962424,
+			"upright_dot": 0.9996080082860758,
+			"wheel_contact_count": 4,
+			"wheel_spin_rad_per_s": [
+				37.8860072010567,
+				37.883741722189924,
+				29.28434699908642,
+				29.28357750111783
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": false,
+			"east_m": -6.126891440399745e-06,
+			"forward_speed_m_per_s": 2.181564145467476,
+			"hull_contact_count": 0,
+			"north_m": 6.654405791313432,
+			"speed_m_per_s": 2.18250418292549,
+			"tick": 144,
+			"time_s": 0.6,
+			"up_m": 0.21242782674549057,
+			"upright_dot": 0.9995819550373042,
+			"wheel_contact_count": 4,
+			"wheel_spin_rad_per_s": [
+				38.116403245767025,
+				38.11641980402146,
+				28.395913730666123,
+				28.395892540763775
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": false,
+			"east_m": -4.579933411349659e-06,
+			"forward_speed_m_per_s": 2.6083514892668718,
+			"hull_contact_count": 0,
+			"north_m": 6.8931673953089945,
+			"speed_m_per_s": 2.6083684636831017,
+			"tick": 168,
+			"time_s": 0.7,
+			"up_m": 0.21681800742410062,
+			"upright_dot": 0.9982905544488507,
+			"wheel_contact_count": 4,
+			"wheel_spin_rad_per_s": [
+				34.405187478130806,
+				34.41550261874321,
+				28.909336917828924,
+				28.916627223632954
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": false,
+			"east_m": -7.408199594049995e-05,
+			"forward_speed_m_per_s": 2.932927259148,
+			"hull_contact_count": 0,
+			"north_m": 7.170820801483363,
+			"speed_m_per_s": 2.9386318170138055,
+			"tick": 192,
+			"time_s": 0.8,
+			"up_m": 0.24053248341094416,
+			"upright_dot": 0.9857549426654506,
+			"wheel_contact_count": 4,
+			"wheel_spin_rad_per_s": [
+				36.72260195764447,
+				36.70261414782717,
+				32.03857319422967,
+				32.05045265375455
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": false,
+			"east_m": -0.00010850902098275214,
+			"forward_speed_m_per_s": 3.1637104990615637,
+			"hull_contact_count": 0,
+			"north_m": 7.473713419381354,
+			"speed_m_per_s": 3.1662602803266826,
+			"tick": 216,
+			"time_s": 0.9,
+			"up_m": 0.28417354066692163,
+			"upright_dot": 0.9798781919955833,
+			"wheel_contact_count": 2,
+			"wheel_spin_rad_per_s": [
+				39.48644952984037,
+				39.45999560389284,
+				30.628719707811033,
+				30.608675047698952
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": false,
+			"east_m": -0.0004882605870405787,
+			"forward_speed_m_per_s": 3.300418304526048,
+			"hull_contact_count": 0,
+			"north_m": 7.794998166923039,
+			"speed_m_per_s": 3.3005945699866928,
+			"tick": 240,
+			"time_s": 1.0,
+			"up_m": 0.32935025572081095,
+			"upright_dot": 0.9934588835020536,
+			"wheel_contact_count": 2,
+			"wheel_spin_rad_per_s": [
+				39.93245899553449,
+				39.93228073373239,
+				34.32256824574824,
+				34.38832072441295
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": true,
+			"east_m": -0.0006194138084817986,
+			"event": {
+				"speed_m_per_s": 3.3087018457790696,
+				"tick": 253,
+				"time_s": 1.0541666666666667,
+				"type": "jump"
+			},
+			"forward_speed_m_per_s": 3.308095753254909,
+			"hull_contact_count": 0,
+			"north_m": 7.973698361862443,
+			"speed_m_per_s": 3.3087018457790696,
+			"tick": 253,
+			"time_s": 1.0541666666666667,
+			"up_m": 0.34228369352604465,
+			"upright_dot": 0.9984945867539977,
+			"wheel_contact_count": 0,
+			"wheel_spin_rad_per_s": [
+				40.004622856073986,
+				40.00460824091573,
+				38.57836397497584,
+				38.726742796635264
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": true,
+			"east_m": -0.0006194138084817986,
+			"forward_speed_m_per_s": 3.308095753254909,
+			"hull_contact_count": 0,
+			"north_m": 7.973698361862443,
+			"speed_m_per_s": 3.3087018457790696,
+			"tick": 253,
+			"time_s": 1.0541666666666667,
+			"up_m": 0.34228369352604465,
+			"upright_dot": 0.9984945867539977,
+			"wheel_contact_count": 0,
+			"wheel_spin_rad_per_s": [
+				40.004622856073986,
+				40.00460824091573,
+				38.57836397497584,
+				38.726742796635264
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": true,
+			"east_m": -0.000704812696032416,
+			"forward_speed_m_per_s": 3.305743191521817,
+			"hull_contact_count": 0,
+			"north_m": 8.125246621770271,
+			"speed_m_per_s": 3.30830913724834,
+			"tick": 264,
+			"time_s": 1.1,
+			"up_m": 0.34245437922719085,
+			"upright_dot": 0.9999820355538237,
+			"wheel_contact_count": 0,
+			"wheel_spin_rad_per_s": [
+				40.042331698498735,
+				40.04231708334048,
+				39.867608413827504,
+				39.88260983223108
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": false,
+			"east_m": -0.0007262182522824602,
+			"event": {
+				"speed_m_per_s": 3.3133913799662373,
+				"tick": 267,
+				"time_s": 1.1125,
+				"type": "landing"
+			},
+			"forward_speed_m_per_s": 3.310202516641072,
+			"hull_contact_count": 0,
+			"north_m": 8.166581672555283,
+			"speed_m_per_s": 3.3133913799662373,
+			"tick": 267,
+			"time_s": 1.1125,
+			"up_m": 0.3406900566369228,
+			"upright_dot": 0.9999746351605285,
+			"wheel_contact_count": 2,
+			"wheel_spin_rad_per_s": [
+				39.39219722791837,
+				39.66360033284733,
+				39.962127346595686,
+				39.970157121000064
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": false,
+			"east_m": -0.0007262182522824602,
+			"forward_speed_m_per_s": 3.310202516641072,
+			"hull_contact_count": 0,
+			"north_m": 8.166581672555283,
+			"speed_m_per_s": 3.3133913799662373,
+			"tick": 267,
+			"time_s": 1.1125,
+			"up_m": 0.3406900566369228,
+			"upright_dot": 0.9999746351605285,
+			"wheel_contact_count": 2,
+			"wheel_spin_rad_per_s": [
+				39.39219722791837,
+				39.66360033284733,
+				39.962127346595686,
+				39.970157121000064
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 1.0
+			},
+			"airborne": false,
+			"east_m": -0.00041307709241035116,
+			"forward_speed_m_per_s": 3.418458107792068,
+			"hull_contact_count": 0,
+			"north_m": 8.4594616316597,
+			"speed_m_per_s": 3.4185617889973696,
+			"tick": 288,
+			"time_s": 1.2,
+			"up_m": 0.3306393473650309,
+			"upright_dot": 0.9999915854579063,
+			"wheel_contact_count": 4,
+			"wheel_spin_rad_per_s": [
+				35.99773012035326,
+				36.08364575260068,
+				37.104452339205295,
+				37.181727945029
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			"airborne": false,
+			"east_m": 0.00024383028964585702,
+			"forward_speed_m_per_s": 3.538132596353433,
+			"hull_contact_count": 0,
+			"north_m": 8.809791523114965,
+			"speed_m_per_s": 3.5381942833109896,
+			"tick": 312,
+			"time_s": 1.3,
+			"up_m": 0.3323415912848455,
+			"upright_dot": 0.9999593420885303,
+			"wheel_contact_count": 4,
+			"wheel_spin_rad_per_s": [
+				35.215919496490386,
+				35.138981040332126,
+				35.0616208443146,
+				35.03684539165854
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			"airborne": false,
+			"east_m": 0.0007157904669756625,
+			"forward_speed_m_per_s": 3.5567135652892943,
+			"hull_contact_count": 0,
+			"north_m": 9.164046231583,
+			"speed_m_per_s": 3.5574823595813663,
+			"tick": 336,
+			"time_s": 1.4,
+			"up_m": 0.3270552024038143,
+			"upright_dot": 0.9995733428783848,
+			"wheel_contact_count": 2,
+			"wheel_spin_rad_per_s": [
+				34.407083141704675,
+				34.38503364318683,
+				33.705963153269444,
+				33.72312368967883
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			"airborne": true,
+			"east_m": 0.001082230257157043,
+			"event": {
+				"speed_m_per_s": 3.5883480434760724,
+				"tick": 352,
+				"time_s": 1.4666666666666666,
+				"type": "jump"
+			},
+			"forward_speed_m_per_s": 3.5883076480194225,
+			"hull_contact_count": 0,
+			"north_m": 9.401421330235562,
+			"speed_m_per_s": 3.5883480434760724,
+			"tick": 352,
+			"time_s": 1.4666666666666666,
+			"up_m": 0.3086190033104859,
+			"upright_dot": 0.9934814317742358,
+			"wheel_contact_count": 0,
+			"wheel_spin_rad_per_s": [
+				33.71355079540034,
+				33.69150129688249,
+				32.59031751213557,
+				32.60717815977451
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			"airborne": true,
+			"east_m": 0.001082230257157043,
+			"forward_speed_m_per_s": 3.5883076480194225,
+			"hull_contact_count": 0,
+			"north_m": 9.401421330235562,
+			"speed_m_per_s": 3.5883480434760724,
+			"tick": 352,
+			"time_s": 1.4666666666666666,
+			"up_m": 0.3086190033104859,
+			"upright_dot": 0.9934814317742358,
+			"wheel_contact_count": 0,
+			"wheel_spin_rad_per_s": [
+				33.71355079540034,
+				33.69150129688249,
+				32.59031751213557,
+				32.60717815977451
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			"airborne": false,
+			"east_m": 0.0012106763535200146,
+			"event": {
+				"speed_m_per_s": 3.6043131217571305,
+				"tick": 358,
+				"time_s": 1.4916666666666667,
+				"type": "landing"
+			},
+			"forward_speed_m_per_s": 3.6041498617620253,
+			"hull_contact_count": 0,
+			"north_m": 9.49059229892644,
+			"speed_m_per_s": 3.6043131217571305,
+			"tick": 358,
+			"time_s": 1.4916666666666667,
+			"up_m": 0.2972483735680291,
+			"upright_dot": 0.9882574583478081,
+			"wheel_contact_count": 2,
+			"wheel_spin_rad_per_s": [
+				33.71132704559749,
+				33.64123708663719,
+				32.60946311465542,
+				32.62632376229436
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			"airborne": false,
+			"east_m": 0.0012106763535200146,
+			"forward_speed_m_per_s": 3.6041498617620253,
+			"hull_contact_count": 0,
+			"north_m": 9.49059229892644,
+			"speed_m_per_s": 3.6043131217571305,
+			"tick": 358,
+			"time_s": 1.4916666666666667,
+			"up_m": 0.2972483735680291,
+			"upright_dot": 0.9882574583478081,
+			"wheel_contact_count": 2,
+			"wheel_spin_rad_per_s": [
+				33.71132704559749,
+				33.64123708663719,
+				32.60946311465542,
+				32.62632376229436
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			"airborne": false,
+			"east_m": 0.0012462733626284076,
+			"forward_speed_m_per_s": 3.60844799284152,
+			"hull_contact_count": 0,
+			"north_m": 9.52032419737551,
+			"speed_m_per_s": 3.6089270489172747,
+			"tick": 360,
+			"time_s": 1.5,
+			"up_m": 0.2928402236358662,
+			"upright_dot": 0.9862724154188395,
+			"wheel_contact_count": 2,
+			"wheel_spin_rad_per_s": [
+				33.801330494052095,
+				33.76355360322556,
+				32.735117375517035,
+				32.75197802315598
+			]
+		},
+		{
+			"accepted_controls": {
+				"brake": 0.0,
+				"reverse_flag": 0.0,
+				"steering": 0.0,
+				"throttle": 0.0
+			},
+			"airborne": false,
+			"east_m": 0.0019588366282979612,
+			"forward_speed_m_per_s": 3.5980065350173525,
+			"hull_contact_count": 0,
+			"north_m": 9.877683517126602,
+			"speed_m_per_s": 3.6002276902226695,
+			"tick": 384,
+			"time_s": 1.6,
+			"up_m": 0.23901764289544247,
+			"upright_dot": 0.9851909657152442,
+			"wheel_contact_count": 2,
+			"wheel_spin_rad_per_s": [
+				39.552984110562846,
+				39.46842759422259,
+				35.65330323929149,
+				35.67016388693043
+			]
+		}
+	],
+	"spawn_id": "jump_start",
+	"throttle_ticks": 300,
+	"tick_count": 387,
+	"upright_dot_at_end": 0.988663126316003,
+	"vehicle_identity": {
+		"base_sha256": "941d50bea199e652efdbbfe585cfd3fa1b3b49616e232a42bea861ce2f6f6ab0",
+		"format": "openrc-ground-vehicle",
+		"id": "mt8-bisonte-electric-4wd-estimate-v1-experiment-cc6ca2e3d3a7",
+		"settings_json": "{\"ballast_height_m\":0.03,\"ballast_kg\":0.0,\"damper_scale\":1.0,\"gravity_scale\":0.5,\"grip_scale\":1.0,\"spring_scale\":1.0}",
+		"sha256": "cc6ca2e3d3a7ba23a688daa63bd6ebbbc353e949e0cd1abeeb2c2a04f862eb6d",
+		"version": "1"
+	}
+}

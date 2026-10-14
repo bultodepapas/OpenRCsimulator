@@ -28,6 +28,9 @@ func _test_sources() -> void:
 		if base.is_empty():
 			_check("source parses: " + file, false)
 			continue
+		# Rotorcraft have their own loader and module contract.
+		if base.get("vehicle", "") == "rotorcraft":
+			continue
 		count += 1
 		var result: Dictionary = AircraftModules.classify(base)
 		_check("source classification succeeds: " + str(base.get("id", file)), result.ok, str(result.errors))

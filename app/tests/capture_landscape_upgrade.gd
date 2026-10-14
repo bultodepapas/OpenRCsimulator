@@ -12,6 +12,14 @@ const LightingConfig := preload("res://environment/time_of_day_config.gd")
 const SnapshotLighting := preload("res://render/time_of_day_lighting.gd")
 const SceneryMaterials := preload("res://scenery/scenery.gd")
 const FLEET_VIEWS := {
+	"night_runway_club": {eye = [15.0, 72.0, -2.2], at = [15.0, -51.0, -0.35], fov = 40.0},
+	"night_runway_airfield": {eye = [15.0, 72.0, -2.2], at = [15.0, -51.0, -0.35], fov = 40.0},
+	"night_runway_off": {eye = [15.0, 72.0, -2.2], at = [15.0, -51.0, -0.35], fov = 40.0},
+	"night_mast_ortho": {eye = [2.0, -10.0, -12.8], at = [-8.0, 0.0, -11.7], fov = 38.0},
+	"night_campfire_side": {eye = [-24.0, 10.0, -1.4], at = [-24.0, 15.0, -0.45], fov = 44.0},
+	"night_mast": {eye = [2.0, -10.0, -12.8], at = [-8.0, 0.0, -11.7], fov = 38.0},
+	"night_campfire": {eye = [-20.0, 18.0, -1.4], at = [-24.0, 15.0, -0.45], fov = 44.0},
+	"night_court": {eye = [-38.0, 27.0, -4.2], at = [-13.0, 3.0, -1.0], fov = 62.0},
 	"lake_overview": {eye = [45.0, 50.0, -45.0], at = [110.0, 125.0, 0.45], fov = 55.0},
 	"lake_shore": {eye = [78.0, 113.0, -1.5], at = [112.0, 130.0, 0.45], fov = 58.0},
 	"lake_bottom": {eye = [109.5, 125.0, -55.0], at = [110.0, 125.0, 4.5], fov = 58.0},
@@ -158,13 +166,18 @@ func _run() -> void:
 	var original_disc: float = sky.get_shader_parameter("sun_disc")
 	var original_cloud: float = sky.get_shader_parameter("cloud_coverage")
 	var original_exposure: float = built.environment.tonemap_exposure
-	var report := {adapter = RenderingServer.get_video_adapter_name(), driver = RenderingServer.get_video_adapter_api_version(),
+	var report := {night_options = built.get("night_options", {}), adapter = RenderingServer.get_video_adapter_name(), driver = RenderingServer.get_video_adapter_api_version(),
 		engine = Engine.get_version_info(), renderer = "gl_compatibility", width = root.size.x, height = root.size.y,
 		arguments = args, lake = lake_diagnostics, field_build_ms = built.field_build_ms,
 		reflection_slots = ProjectSettings.get_setting("rendering/reflections/reflection_atlas/reflection_count"),
 		botanical_stats = built.field.get_node("Scenery").get_meta("stats") if built.field.has_node("Scenery") else {}, cases = {}}
 	var cases := str(args.get("cases", "pilot_north,postcard_club,glare_clear,glare_off,glare_blocked,glare_aircraft,glare_side,glare_night")).split(",")
 	for case: String in cases:
+		camera.projection = Camera3D.PROJECTION_PERSPECTIVE
+		if case.begins_with("night_runway_"):
+			World.set_night_options(case.trim_prefix("night_runway_"), bool(built.night_options.campfire))
+		else:
+			World.set_night_options(str(built.night_options.field_lighting), bool(built.night_options.campfire))
 		if lighting_helper != null:
 			lighting_helper.set_process(not case.begins_with("marker_"))
 		aircraft.root.visible = false
@@ -219,6 +232,9 @@ func _run() -> void:
 				blocker.visible = true
 				blocker.position = Frames.ned_to_render([15.0, 55.0, -0.7])
 				blocker.basis = camera.basis
+		if case.ends_with("_ortho"):
+			camera.projection = Camera3D.PROJECTION_ORTHOGONAL
+			camera.size = 10.0
 		for i in 60:
 			World.update(built.environment, float(args.get("botanical_clock", 1.5)), Vector3(float(args.get("botanical_wind", 0.0)), 0, 1.0 if args.has("botanical_wind") else 0.0), camera.position + -camera.basis.z * 30.0, camera)
 			if horizon_diagnostic == "no-rim":
@@ -264,7 +280,7 @@ func _run() -> void:
 		root.get_texture().get_image().save_png(out.path_join(case + ".png"))
 		var raw_frames := frames.duplicate()
 		frames.sort()
-		report.cases[case] = {draws = Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
+		report.cases[case] = {night_options = parent.get_meta("night_options", {}), draws = Performance.get_monitor(Performance.RENDER_TOTAL_DRAW_CALLS_IN_FRAME),
 			visible_draws = RenderingServer.viewport_get_render_info(root.get_viewport_rid(), RenderingServer.VIEWPORT_RENDER_INFO_TYPE_VISIBLE, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME),
 			shadow_draws = RenderingServer.viewport_get_render_info(root.get_viewport_rid(), RenderingServer.VIEWPORT_RENDER_INFO_TYPE_SHADOW, RenderingServer.VIEWPORT_RENDER_INFO_DRAW_CALLS_IN_FRAME),
 			primitives = Performance.get_monitor(Performance.RENDER_TOTAL_PRIMITIVES_IN_FRAME),

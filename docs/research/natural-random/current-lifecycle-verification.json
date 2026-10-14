@@ -1,0 +1,70 @@
+{
+  "scope": "software verification; no physical/pilot/performance acceptance",
+  "results": [
+    {
+      "name": "import",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 14.453,
+      "errors": []
+    },
+    {
+      "name": "parse-scenario_config",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 1.015,
+      "errors": []
+    },
+    {
+      "name": "parse-natural_random",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 1.0,
+      "errors": []
+    },
+    {
+      "name": "parse-natural_random_screen",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 0.454,
+      "errors": []
+    },
+    {
+      "name": "parse-home",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 2.562,
+      "errors": []
+    },
+    {
+      "name": "parse-app_root",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 4.594,
+      "errors": []
+    },
+    {
+      "name": "parse-main",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 5.079,
+      "errors": []
+    },
+    {
+      "name": "test_ui_natural_random",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 47.171,
+      "errors": []
+    }
+  ],
+  "ok": true
+}

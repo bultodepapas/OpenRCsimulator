@@ -17,9 +17,11 @@ static func build() -> Dictionary:
 		if not nodes.has(required):
 			error = "Missing MT8 binding: " + required
 	for corner in CORNERS:
-		for part in ["Suspension", "Spin", "WheelMesh", "ArmLower", "ArmUpper", "DriveshaftIn", "DriveshaftOut", "ShockA_Body", "ShockB_Body"]:
+		for part in ["Suspension", "Spin", "WheelMesh", "ArmLower", "ArmUpper", "DriveshaftIn", "DriveshaftOut", "ShockA_Body", "ShockA_Spring", "ShockA_Shaft", "ShockB_Body", "ShockB_Spring", "ShockB_Shaft"]:
 			if not nodes.has(corner + "_" + part):
 				error = "Missing MT8 binding: " + corner + "_" + part
+		if corner in ["FL", "FR"] and not nodes.has(corner + "_Steer"):
+			error = "Missing MT8 binding: " + corner + "_Steer"
 	if not error.is_empty():
 		imported.free()
 		return {"ok": false, "error": error}

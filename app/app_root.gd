@@ -30,6 +30,11 @@ const FlightSession := preload("res://sim/flight_session.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
+const SkyConfig := preload("res://environment/sky_appearance_config.gd")
+const Atmosphere := preload("res://render/atmosphere.gd")
+const World := preload("res://render/world/world.gd")
+const FailureConfig := preload("res://failures/config.gd")
+const FailureMenu := preload("res://ui/failures_menu.gd")
 const FLIGHT_SCENE := "res://main.tscn"
 const InputReport = preload("res://input/input_report.gd")
 const NaturalRandom = preload("res://scenarios/natural_random.gd")
@@ -65,6 +70,9 @@ var weather_dialog: CanvasLayer:
 var time_of_day_dialog: CanvasLayer:
 	get:
 		return screens.get_screen("time_of_day") as CanvasLayer
+var failure_menu: CanvasLayer:
+	get:
+		return screens.get_screen("failures") as CanvasLayer
 ## The interactive route has a Home to return to; the direct route (`--` arguments) only flies and quits.
 var has_home := false
 ## The flight session's own keyboard reader (HeldKeys masks wrap it, never each other).
@@ -89,6 +97,8 @@ var _update_info := {}
 var _workshop_screens: Array[Dictionary] = []
 var _workshop_previous_flight: Node
 var _workshop_previous_keyboard: Callable
+var _workshop_previous_sky_transport: Dictionary = {}
+var _workshop_previous_world_context: Dictionary = {}
 var _workshop_home_detached := false
 
 
@@ -107,6 +117,10 @@ func _ready() -> void:
 	UiInput.isolate_joypads() # before any menu exists (UI-01b): radio sticks never move the focus
 	if user_args.has("--vehicle=mt8-bisonte"):
 		TranslationServer.set_locale("en")
+		if user_args.size() != 1:
+			printerr("The RC route accepts exactly --vehicle=mt8-bisonte")
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
 		for arg in user_args:
 			if arg != "--vehicle=mt8-bisonte":
 				printerr("Unknown RC vehicle option: " + arg)
@@ -123,6 +137,11 @@ func _ready() -> void:
 		# The engine starts in the OS locale (es_ES on a Spanish system): automation is always English.
 		TranslationServer.set_locale("en")
 		Conditions.session_preset = "" # no interactive sky choice may leak into a later technical route
+		var direct_aircraft := aircraft_argument(user_args)
+		if failure_cli_options_unsupported_for_aircraft(direct_aircraft, user_args):
+			printerr("Failure options currently support fixed-wing aircraft only.")
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
 		start_flight()
 		return
 	has_home = true
@@ -149,13 +168,40 @@ static func aircraft_argument(args: PackedStringArray) -> String:
 	return ""
 
 
+## The helicopter entry point currently has no failure runtime, so reject failure settings instead of ignoring them.
+static func failure_cli_options_unsupported_for_aircraft(id: String, args: PackedStringArray) -> bool:
+	if not Catalog.is_rotorcraft(id):
+		return false
+	for arg in args:
+		for option in ["--failures", "--catastrophic", "--failure-notices", "--failure-seed"]:
+			if arg == option or arg.begins_with(option + "="):
+				return true
+	return false
+
+
 ## Keep the existing airplane scene route intact and select the rotorcraft script for explicit catalog IDs.
 static func flight_script_path_for_aircraft(id: String) -> String:
 	return HELICOPTER_MAIN_SCRIPT if Catalog.is_rotorcraft(id) else FLIGHT_SCENE
 
 
+## Rotorcraft accept steady wind and repeating gusts, but turbulence integration is not yet qualified.
+## Keep the selected wind/gust values and clear only the unsupported turbulent component.
+static func weather_for_aircraft(id: String, raw: Variant) -> Dictionary:
+	var checked: Dictionary = WeatherSettings.validate(raw)
+	var config: Dictionary = checked.config.duplicate(true) if checked.get("ok", false) else WeatherSettings.defaults()
+	if Catalog.is_rotorcraft(id) and WeatherSettings.has_turbulence(config):
+		config.turbulence_rms_mps = [0.0, 0.0, 0.0]
+	return config
+
+
 func show_home() -> void:
 	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
+	var home_weather: Dictionary = weather_for_aircraft(aircraft, preferences.get("weather_config", WeatherSettings.defaults()))
+	if home_weather != preferences.get("weather_config", WeatherSettings.defaults()):
+		preferences.weather_config = home_weather.duplicate(true)
+		var weather_save_error: Error = Preferences.save_to(preferences_path, preferences)
+		if weather_save_error != OK:
+			_settings_note = tr("Could not save settings (error %d).") % weather_save_error
 	var night_options: Dictionary = _night_options_from_preferences()
 	var checked_lighting: Dictionary = TimeOfDay.validate(preferences.get("lighting_config", TimeOfDay.defaults()))
 	var lighting_config: Dictionary = checked_lighting.config if checked_lighting.get("ok", false) else TimeOfDay.defaults()
@@ -164,7 +210,7 @@ func show_home() -> void:
 		world_preset = "day" # one active lighting selection; an explicit lighting config supersedes the FW selector
 		preferences.time_of_day = world_preset
 	Conditions.session_preset = world_preset
-	home_scene = HomeScene.new(aircraft, field_path, lighting_config, night_options) # still, configured backdrop; no simulation behind Home
+	home_scene = HomeScene.new(aircraft, field_path, lighting_config, night_options, preferences.get("sky_config", SkyConfig.defaults())) # still backdrop
 	add_child(home_scene)
 	if not home_scene.field_errors.is_empty():
 		return
@@ -172,8 +218,10 @@ func show_home() -> void:
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.set_aircraft(aircraft)
 	home.set_start_choice(preferences.get("start_choice", "airborne"))
-	home.set_weather_config(preferences.get("weather_config", WeatherSettings.defaults()))
+	home.set_weather_config(home_weather)
 	home.set_lighting_config(lighting_config)
+	home.set_sky_config(preferences.get("sky_config", SkyConfig.defaults()))
+	home.set_failure_config(preferences.get("failure_config", FailureConfig.defaults()))
 	home.set_time_of_day(world_preset)
 	home.fly_requested.connect(start_flight)
 	home.ground_vehicle_requested.connect(start_ground_vehicle)
@@ -186,6 +234,7 @@ func show_home() -> void:
 	home.help_requested.connect(open_help)
 	home.weather_requested.connect(open_weather)
 	home.time_requested.connect(set_time_of_day)
+	home.failures_requested.connect(open_failures_settings)
 	home.update_download_requested.connect(_on_update_download)
 	home.update_hidden.connect(_on_update_hidden)
 	screens.push("home", home)
@@ -266,6 +315,9 @@ func set_aircraft(id: String) -> void:
 		return
 	preferences.aircraft = id
 	home.set_aircraft(id)
+	if Catalog.is_rotorcraft(id):
+		preferences.weather_config = weather_for_aircraft(id, preferences.get("weather_config", WeatherSettings.defaults()))
+		home.set_weather_config(preferences.weather_config)
 	if Catalog.is_rotorcraft(id) or not FlightSession.runway_aircraft_supported(id):
 		preferences.start_choice = "airborne"
 	if preferences.start_choice == FlightSession.START_HALF_POWER and not FlightSession.half_power_start_supported(id):
@@ -349,19 +401,32 @@ func start_flight(request: Dictionary = {}) -> void:
 	if not has_home and not is_random:
 		route_aircraft_id = aircraft_argument(user_args)
 	var helicopter_route: bool = Catalog.is_rotorcraft(route_aircraft_id)
+	var failure_config_for_flight: Dictionary = FailureConfig.defaults()
+	if has_home and not is_random and not helicopter_route:
+		var checked_failures: Dictionary = FailureConfig.validate(
+			preferences.get("failure_config", FailureConfig.defaults())
+		)
+		if checked_failures.get("ok", false):
+			failure_config_for_flight = checked_failures.config.duplicate(true)
 	if helicopter_route:
 		chosen_start = "airborne"
+		# Rotorcraft has no sky editor/event consumer yet; never inherit the retired Home renderer.
+		Atmosphere.configure_appearance(SkyConfig.defaults())
 	if departing_home != null:
 		screens.pop(false, false)
 	if home_scene != null:
 		remove_child(home_scene) # one camera and one WorldEnvironment when the flight builds its own
 	flight = _create_flight(route_aircraft_id)
 	flight.field_path = field_path
+	if flight.has_method("set_user_args"):
+		flight.call("set_user_args", user_args)
 	# The legacy airplane entry point still reads direct --aircraft options itself. Rotorcraft needs its route ID.
 	flight.aircraft_id = route_aircraft_id if has_home or is_random or helicopter_route else ""
 	flight.start_choice = chosen_start
 	flight.weather_config = chosen_weather.duplicate(true)
 	flight.lighting_config = chosen_lighting.duplicate(true)
+	if not helicopter_route:
+		flight.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true) if has_home and not is_random else SkyConfig.defaults()
 	flight.night_options = _night_options_from_preferences() if has_home else Preferences.NIGHT_DEFAULTS.duplicate(true)
 	flight.interactive_start = has_home
 	if not helicopter_route:
@@ -370,6 +435,10 @@ func start_flight(request: Dictionary = {}) -> void:
 	# HUD: the Home route flies with the player's overlays; the direct route keeps the legacy labels (--hud=).
 	flight.overlays_enabled = has_home
 	flight.overlay_settings = preferences.get("hud", Preferences.DEFAULTS.hud)
+	if not helicopter_route and _has_property(flight, "failure_config"):
+		flight.set("failure_config", failure_config_for_flight.duplicate(true))
+	if not helicopter_route and _has_property(flight, "failure_notifications"):
+		flight.set("failure_notifications", bool(failure_config_for_flight.get("notify", true)))
 	add_child(flight)
 	if is_random and flight.startup_error.is_empty():
 		var accepted: Dictionary = flight.bind_scenario(request)
@@ -386,10 +455,10 @@ func start_flight(request: Dictionary = {}) -> void:
 		home_scene.camera.make_current()
 		screens.push("home", departing_home)
 		departing_home.reject_start(tr("Could not start flight: %s") % reason)
+		# Any candidate World.build may change shared sky state, including a failed normal flight.
+		Conditions.session_preset = departing_home.time_of_day
+		_rebuild_home_scene()
 		if is_random:
-			# Candidate World.build changed shared sky/exposure state. Rebuild the saved Home selection.
-			Conditions.session_preset = departing_home.time_of_day
-			_rebuild_home_scene()
 			screens.push("natural_random", departing_random, departing_home.natural_random_button)
 			departing_random.show_error(tr("Could not start flight: %s") % reason)
 		return
@@ -420,7 +489,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		if is_random:
 			HeldKeys.mask(flight.session, _keyboard_reader)
 		if has_home and not preferences.get("first_flight_hint_seen", false):
-			var hint := FirstFlightHint.new(flight.session)
+			var hint := FirstFlightHint.new(flight.session, "rotorcraft" if helicopter_route else "airplane")
 			hint.done.connect(_on_first_flight_hint_done)
 			flight.add_child(hint) # freed with the flight
 
@@ -590,20 +659,26 @@ func open_pause() -> void:
 	pause_menu.restart_requested.connect(restart_flight)
 	pause_menu.workshop_requested.connect(open_workshop)
 	pause_menu.workshop_button.visible = not helicopter_route
+	pause_menu.failure_settings_requested.connect(open_failures_settings)
+	pause_menu.failure_settings_button.visible = has_home and not helicopter_route
 	if not _workshop_screens.is_empty():
 		pause_menu.workshop_button.text = "Return to Workshop"
 		pause_menu.end_button.text = "Return to Workshop"
 	pause_menu.time_of_day_requested.connect(open_time_of_day)
 	pause_menu.time_of_day_button.visible = not helicopter_route
-	if bool(flight.get("_field_world_lighting")):
-		pause_menu.time_of_day_button.text = tr("Field lighting")
+	pause_menu.time_of_day_button.text = tr("Sky and lighting")
 	pause_menu.overlays_requested.connect(open_overlays)
 	pause_menu.overlays_button.visible = flight.get("_overlays") != null
 	pause_menu.end_requested.connect(end_flight)
 	pause_menu.quit_requested.connect(quit_app)
 	pause_menu.help_requested.connect(open_help)
 	screens.push("pause", pause_menu)
-	pause_menu.show_for(session)
+	var checked_failures: Dictionary = FailureConfig.validate(
+		preferences.get("failure_config", FailureConfig.defaults())
+	)
+	var next_failure_config: Dictionary = checked_failures.config if checked_failures.get("ok", false) else FailureConfig.defaults()
+	var failure_notifications_enabled := bool(flight.get("failure_notifications")) if _has_property(flight, "failure_notifications") else true
+	pause_menu.show_for(session, next_failure_config, failure_notifications_enabled)
 	flight.set_overlays_visible(false)
 
 
@@ -613,7 +688,11 @@ func open_pause() -> void:
 func open_help(from: Control = null) -> void:
 	if not (screens.is_top("home") or screens.is_top("pause")):
 		return
-	var help := HelpScreen.new(from)
+	var selected_aircraft: String = home.aircraft_id if home != null else ""
+	if flight != null:
+		selected_aircraft = str(flight.get("aircraft_id"))
+	var vehicle_type := "rotorcraft" if Catalog.is_rotorcraft(selected_aircraft) else "airplane"
+	var help := HelpScreen.new(from, vehicle_type)
 	help.closed.connect(close_help)
 	screens.push("help", help, from)
 
@@ -654,6 +733,8 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		return
 	# Suspend, but retain the old world and recorder until the complete new flight passes startup.
 	var previous: Node = flight
+	var previous_sky_transport: Dictionary = Atmosphere.cloud_transport_checkpoint()
+	var previous_world_context: Dictionary = World.presentation_context()
 	if previous != null:
 		remove_child(previous)
 	if home_scene != null and home_scene.is_inside_tree():
@@ -667,9 +748,11 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	candidate.interactive_start = true
 	candidate.weather_config = preferences.get("weather_config", WeatherSettings.defaults()).duplicate(true)
 	candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
+	candidate.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true)
 	if previous != null:
 		candidate.weather_config = previous.weather_config.duplicate(true)
 		candidate.lighting_config = previous.lighting_config.duplicate(true)
+		candidate.sky_config = previous.sky_config.duplicate(true)
 	candidate.overlays_enabled = true
 	candidate.overlay_settings = preferences.get("hud", Preferences.DEFAULTS.hud).duplicate(true)
 	add_child(candidate)
@@ -682,13 +765,18 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		if previous != null:
 			add_child(previous)
 			previous._camera.make_current()
+			World.restore_presentation_context(previous_world_context)
+			previous.restore_sky_presentation(previous_sky_transport)
 		if _workshop_home_detached:
 			add_child(home_scene)
 			home_scene.camera.make_current()
 			_workshop_home_detached = false
+			_rebuild_home_scene()
 		editor.set_note(tr("Could not start flight: %s") % reason)
 		return
 	_workshop_previous_flight = previous
+	_workshop_previous_sky_transport = previous_sky_transport
+	_workshop_previous_world_context = previous_world_context
 	_workshop_previous_keyboard = _keyboard_reader
 	while screens.top() != null:
 		var node: Node = screens.top()
@@ -720,11 +808,16 @@ func _return_to_workshop() -> void:
 	if flight != null:
 		add_child(flight)
 		flight._camera.make_current()
+		World.restore_presentation_context(_workshop_previous_world_context)
+		flight.restore_sky_presentation(_workshop_previous_sky_transport)
 		screens.set_session(flight.session)
+	_workshop_previous_world_context.clear()
+	_workshop_previous_sky_transport.clear()
 	if _workshop_home_detached:
 		add_child(home_scene)
 		home_scene.camera.make_current()
 		_workshop_home_detached = false
+		_rebuild_home_scene()
 	var restored: Array[Dictionary] = _workshop_screens
 	_workshop_screens = []
 	for entry: Dictionary in restored:
@@ -783,6 +876,7 @@ func open_time_of_day(from: Control = null) -> void:
 		flight.lighting_config.duplicate(true),
 		flight.get("night_options"),
 		bool(flight.get("_field_world_lighting")),
+		flight.sky_config,
 	)
 	time_of_day_dialog.applied.connect(_on_time_of_day_applied)
 	time_of_day_dialog.cancelled.connect(close_time_of_day)
@@ -796,6 +890,10 @@ func _on_time_of_day_applied(raw: Dictionary) -> void:
 	if not flight.session.sim.paused:
 		time_of_day_dialog.show_apply_error(["pause the flight before editing lighting"])
 		return
+	var sky_result: Dictionary = flight.prepare_sky_edit(time_of_day_dialog.applied_sky_config)
+	if not sky_result.ok:
+		time_of_day_dialog.show_apply_error(sky_result.errors)
+		return
 	var night_result: Dictionary = Preferences.validate_night_options(time_of_day_dialog.applied_night_options)
 	if not night_result.get("ok", false):
 		time_of_day_dialog.show_apply_error(night_result.get("errors", []))
@@ -804,8 +902,13 @@ func _on_time_of_day_applied(raw: Dictionary) -> void:
 		if not _apply_flight_night_options(night_result.options):
 			time_of_day_dialog.show_apply_error(["could not apply field lighting"])
 			return
+		if not flight.apply_sky_config(sky_result.config).ok:
+			time_of_day_dialog.show_apply_error(["could not apply sky"])
+			return
 		if has_home and flight.remember_lighting_selection:
 			var night_changed: bool = _night_options_from_preferences() != night_result.options
+			night_changed = night_changed or preferences.get("sky_config", SkyConfig.defaults()) != sky_result.config
+			preferences.sky_config = sky_result.config
 			preferences.night_field_lighting = night_result.options.field_lighting
 			preferences.night_campfire = night_result.options.campfire
 			if night_changed:
@@ -818,6 +921,10 @@ func _on_time_of_day_applied(raw: Dictionary) -> void:
 	if not result.get("ok", false):
 		time_of_day_dialog.show_apply_error(result.get("errors", []))
 		return
+	var sky_applied: Dictionary = flight.apply_sky_config(sky_result.config)
+	if not sky_applied.ok:
+		time_of_day_dialog.show_apply_error(sky_applied.errors)
+		return
 	if not _apply_flight_night_options(night_result.options):
 		time_of_day_dialog.show_apply_error(["could not apply field lighting"])
 		return
@@ -827,6 +934,8 @@ func _on_time_of_day_applied(raw: Dictionary) -> void:
 		var save_selection: bool = bool(result.get("changed", false)) \
 			or preferences.get("lighting_config", TimeOfDay.defaults()) != applied_config \
 			or bool(preferences.get("lighting_invalid", false)) or night_changed
+		save_selection = save_selection or preferences.get("sky_config", SkyConfig.defaults()) != sky_result.config
+		preferences.sky_config = sky_result.config
 		preferences.lighting_config = applied_config
 		preferences.lighting_invalid = false
 		preferences.time_of_day = "day"
@@ -853,6 +962,56 @@ func close_time_of_day() -> void:
 		screens.pop()
 
 
+## Home and Pause share one draft screen. Probability and category edits are next-flight settings.
+func open_failures_settings(from: Control = null) -> void:
+	var opened_from_home := flight == null and screens.is_top("home")
+	var opened_from_pause := flight != null and has_home and screens.is_top("pause") \
+		and not Catalog.is_rotorcraft(str(flight.get("aircraft_id")))
+	if not opened_from_home and not opened_from_pause:
+		return
+	if from == null:
+		from = home.failures_button if opened_from_home else pause_menu.failure_settings_button
+	var checked: Dictionary = FailureConfig.validate(
+		preferences.get("failure_config", FailureConfig.defaults())
+	)
+	var current: Dictionary = checked.config if checked.get("ok", false) else FailureConfig.defaults()
+	var menu := FailureMenu.new(current)
+	menu.current_flight_settings = opened_from_pause
+	menu.applied.connect(_on_failures_applied)
+	menu.cancelled.connect(close_failures_settings)
+	screens.push("failures", menu, from)
+
+
+func close_failures_settings() -> void:
+	if screens.is_top("failures"):
+		screens.pop()
+
+
+func _on_failures_applied(raw: Dictionary) -> void:
+	if failure_menu == null:
+		return
+	var checked: Dictionary = FailureConfig.validate(raw)
+	if not checked.get("ok", false):
+		failure_menu.show_apply_error(checked.get("errors", PackedStringArray()))
+		return
+	var config: Dictionary = checked.config.duplicate(true)
+	preferences.failure_config = config
+	if home != null:
+		home.set_failure_config(config)
+	if flight != null and _has_property(flight, "failure_notifications"):
+		flight.set("failure_notifications", bool(config.notify))
+	if pause_menu != null:
+		pause_menu.set_failure_context(config, bool(config.notify))
+	var error: Error = Preferences.save_to(preferences_path, preferences)
+	_settings_note = "" if error == OK else tr("Could not save settings (error %d).") % error
+	if screens.is_top("failures"):
+		screens.pop()
+	if home != null:
+		home.set_note(_settings_note)
+	if pause_menu != null:
+		pause_menu.set_note(_settings_note)
+
+
 ## Opens a draft over Home. Nothing is stored or used by a flight until Apply is pressed.
 func open_weather(from: Control = null) -> void:
 	if not screens.is_top("home"):
@@ -862,6 +1021,7 @@ func open_weather(from: Control = null) -> void:
 		preferences.get("weather_config", WeatherSettings.defaults()),
 		preferences.get("lighting_config", TimeOfDay.defaults()),
 		_night_options_from_preferences(),
+		preferences.get("sky_config", SkyConfig.defaults()),
 	)
 	weather_dialog.applied.connect(_on_weather_applied)
 	weather_dialog.cancelled.connect(close_weather)
@@ -882,9 +1042,18 @@ func _on_weather_applied(raw: Dictionary) -> void:
 	var checked_night: Dictionary = Preferences.validate_night_options(night_raw)
 	if not checked_night.get("ok", false):
 		return
+	var selected_weather: Dictionary = weather_for_aircraft(
+		str(preferences.get("aircraft", Preferences.DEFAULTS.aircraft)), checked.config
+	)
+	var turbulence_removed: bool = selected_weather != checked.config
 	var lighting_changed: bool = preferences.get("lighting_config", TimeOfDay.defaults()) != checked_lighting.config
+	var checked_sky: Dictionary = SkyConfig.validate(weather_dialog.get("applied_sky_config"))
+	if not checked_sky.ok:
+		return
+	var sky_changed: bool = preferences.get("sky_config", SkyConfig.defaults()) != checked_sky.config
+	preferences.sky_config = checked_sky.config
 	var night_changed: bool = _night_options_from_preferences() != checked_night.options
-	preferences.weather_config = checked.config.duplicate(true)
+	preferences.weather_config = selected_weather.duplicate(true)
 	preferences.lighting_config = checked_lighting.config.duplicate(true)
 	preferences.lighting_invalid = false
 	preferences.night_field_lighting = checked_night.options.field_lighting
@@ -895,12 +1064,15 @@ func _on_weather_applied(raw: Dictionary) -> void:
 	if home != null:
 		home.set_weather_config(preferences.weather_config)
 		home.set_lighting_config(preferences.lighting_config)
-	if lighting_changed:
+		home.set_sky_config(preferences.sky_config)
+		if lighting_changed:
 			home.set_time_of_day("day")
-	if lighting_changed or night_changed:
+	if lighting_changed or night_changed or sky_changed:
 		_rebuild_home_scene.call_deferred()
 	var err: Error = Preferences.save_to(preferences_path, preferences)
 	_settings_note = "" if err == OK else tr("Could not save settings (error %d).") % err
+	if err == OK and turbulence_removed:
+		_settings_note = tr("Helicopter turbulence is not qualified; steady wind and gusts remain selected.")
 	if home != null:
 		home.set_note(_settings_note)
 	close_weather()
@@ -913,7 +1085,7 @@ func _rebuild_home_scene() -> void:
 	var previous: Node3D = home_scene
 	remove_child(previous)
 	var aircraft: String = preferences.get("aircraft", Preferences.DEFAULTS.aircraft)
-	var replacement: Node3D = HomeScene.new(aircraft, field_path, preferences.lighting_config, _night_options_from_preferences())
+	var replacement: Node3D = HomeScene.new(aircraft, field_path, preferences.lighting_config, _night_options_from_preferences(), preferences.get("sky_config", SkyConfig.defaults()))
 	if not replacement.field_errors.is_empty():
 		replacement.free()
 		add_child(previous)
@@ -959,6 +1131,12 @@ func end_flight() -> void:
 	if flight == null or not has_home or (screens.top() != null and not screens.is_top("pause")) \
 		or not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press End flight again to end without it."):
 		return
+	var last_failure_status: Dictionary = {}
+	var session: Node = flight.get("session")
+	if session != null and session.has_method("failure_status"):
+		var failure_status: Variant = session.call("failure_status")
+		if failure_status is Dictionary:
+			last_failure_status = failure_status.duplicate(true)
 	screens.clear()
 	screens.set_session(null)
 	flight.recorder.detach()
@@ -966,6 +1144,8 @@ func end_flight() -> void:
 	flight.queue_free()
 	flight = null
 	show_home()
+	if home != null and not last_failure_status.is_empty():
+		home.set_failure_debrief(last_failure_status)
 
 
 func quit_app() -> void:
@@ -999,4 +1179,11 @@ func _trace_saved_or_discarded(message: String) -> bool:
 		return true
 	if pause_menu != null:
 		pause_menu.set_note(tr(message) % err)
+	return false
+
+
+func _has_property(object: Object, property_name: String) -> bool:
+	for property: Dictionary in object.get_property_list():
+		if str(property.get("name", "")) == property_name:
+			return true
 	return false

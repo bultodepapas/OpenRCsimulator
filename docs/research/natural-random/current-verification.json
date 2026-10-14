@@ -1,0 +1,117 @@
+{
+  "scope": "software verification; no physical/pilot/performance acceptance",
+  "results": [
+    {
+      "name": "import",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 17.141,
+      "errors": []
+    },
+    {
+      "name": "parse-scenario_config",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 1.625,
+      "errors": []
+    },
+    {
+      "name": "parse-natural_random",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 0.89,
+      "errors": []
+    },
+    {
+      "name": "parse-natural_random_screen",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 0.296,
+      "errors": []
+    },
+    {
+      "name": "parse-home",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 2.297,
+      "errors": []
+    },
+    {
+      "name": "parse-app_root",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 4.031,
+      "errors": []
+    },
+    {
+      "name": "parse-main",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 4.579,
+      "errors": []
+    },
+    {
+      "name": "test_natural_random_config",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 2.407,
+      "errors": []
+    },
+    {
+      "name": "test_natural_random_generator",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 37.031,
+      "errors": []
+    },
+    {
+      "name": "test_natural_random_screen",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 4.094,
+      "errors": []
+    },
+    {
+      "name": "test_natural_random_flight",
+      "ok": true,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 30.234,
+      "errors": []
+    },
+    {
+      "name": "test_ui_natural_random",
+      "ok": false,
+      "exit_code": 0,
+      "timeout": false,
+      "elapsed_s": 45.75,
+      "errors": [
+        "ERROR: Aircraft data for presentation: [\"res://data/aircraft/jensen_ugly_stik_60.json: JSON error at line 1546: Expected \\'EOF\\'\"]"
+      ]
+    },
+    {
+      "name": "test_ui_time_of_day_pause",
+      "ok": false,
+      "exit_code": 31,
+      "timeout": false,
+      "elapsed_s": 33.406,
+      "errors": [
+        "FAIL pause menu offers a dedicated Time of day action ",
+        "FAIL next Down reaches Time of day Workshop",
+        "FAIL time editor opens over the still-paused flight BaseAircraft",
+        "SCRIPT ERROR: Cannot call method 'get' on a null value."
+      ]
+    }
+  ],
+  "ok": false
+}

@@ -76,8 +76,13 @@ func _initialize() -> void:
 		worst_guided = maxf(worst_guided, e_guided)
 	_check("V(x) at the rest attitude (x ≤ 5 m) within 0.5 % of the 1-D integral", worst_early < 0.005, "worst %.3f %%" % (100.0 * worst_early))
 	_check("V(x) up to 20 m within 3 % of the 1-D integral (rotation adds lift)", worst_all < 0.03, "worst %.2f %%" % (100.0 * worst_all))
-	_check("lift-off distance %.2f m within 10 %% of the 1-D distance to %.2f m/s (%.2f m)" % [run.lof.x, run.lof.v, fixed.x_at_lof],
-		absf(run.lof.x - fixed.x_at_lof) < 0.1 * fixed.x_at_lof)
+	# Hands off, the trim elevator decides when the nose rises. Since D6e-R1 the 15 m/s trim needs 1.6° instead of 5.3° up,
+	# so the roll is longer (lift-off near 26 m/s at 45 m, was 21 m/s at 24 m) and the fixed-attitude estimate drifts
+	# further; the attitude-matched integral below carries the physics check.
+	_check("lift-off distance %.2f m within 12 %% of the fixed-attitude 1-D distance to %.2f m/s (%.2f m)" % [run.lof.x, run.lof.v, fixed.x_at_lof],
+		absf(run.lof.x - fixed.x_at_lof) < 0.12 * fixed.x_at_lof)
+	_check("lift-off distance within 2 %% of the 1-D integral driven by the 6-DOF's pitch (%.2f m)" % guided.x_at_lof,
+		guided.x_at_lof > 0.0 and absf(run.lof.x - guided.x_at_lof) < 0.02 * guided.x_at_lof)
 	_check("the 1-D integral with the 6-DOF's pitch history matches within 0.2 % (difference = rotation; detects a 10 % rolling error)",
 		worst_guided < 0.002, "worst %.3f %%" % (100.0 * worst_guided))
 	print("%d checks, %d failed" % [_count, _failures])

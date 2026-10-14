@@ -203,19 +203,29 @@ def derive(inputs=None):
     # Use a stable leading-skin sample for collision: outermost measured right-wing station, mirrored left.
     # This is 2.752 mm inboard of the r2 cap; it avoids a spurious 155 mm aft probe shift from landmark semantics.
     tip=g["wing"]["stations"][-1]  # [x_right, le_z, te_z, le_y, te_y]
-    hull=[[tip[1],-tip[0],tip[3]],[tip[1],tip[0],tip[3]]]
-    for key in ["nose_spinner_tip","tail_rudder_trailing_edge"]:
-        p=landmarks[key]["measured"];hull.append([p[2],p[0],p[1]])
-    hull += [[gv("tail","te_z_centreline"),-bh/2,zh],[gv("tail","te_z_centreline"),bh/2,zh],
-             [gv("fin","rudder_te_z"),0,gv("fin","top_y")],[-0.2515,0,-gv("thrust","propeller_radius")]]
+    hull_probes = [
+        ("probe_wing_left_tip", [tip[1],-tip[0],tip[3]]),
+        ("probe_wing_right_tip", [tip[1],tip[0],tip[3]]),
+    ]
+    for key, identity in [("nose_spinner_tip", "probe_spinner_tip"),
+                          ("tail_rudder_trailing_edge", "probe_tail_rudder_edge")]:
+        p=landmarks[key]["measured"];hull_probes.append((identity,[p[2],p[0],p[1]]))
+    hull_probes += [
+        ("probe_stabilizer_left_tip", [gv("tail","te_z_centreline"),-bh/2,zh]),
+        ("probe_stabilizer_right_tip", [gv("tail","te_z_centreline"),bh/2,zh]),
+        ("probe_fin_top", [gv("fin","rudder_te_z"),0,gv("fin","top_y")]),
+        ("probe_propeller_bottom", [-0.2515,0,-gv("thrust","propeller_radius")]),
+    ]
     # Fuselage skin excludes wheels; retain several lower-envelope stations for belly strikes.
-    for row in g["fuselage"]["stations"][::max(1,len(g["fuselage"]["stations"])//8)]:hull.append([row[0],0,row[2]])
     sampled_belly_stations = [row[0] for row in g["fuselage"]["stations"][::max(1,len(g["fuselage"]["stations"])//8)]]
     if set(sampled_belly_stations) != set(BELLY_PROBE_IDS_BY_STATION):
         raise ValueError("TT-07 belly-probe identity source does not match the authored station set")
-    hull_ids = ["probe_wing_left_tip", "probe_wing_right_tip", "probe_spinner_tip", "probe_tail_rudder_edge",
-                "probe_stabilizer_left_tip", "probe_stabilizer_right_tip", "probe_fin_top", "probe_propeller_bottom"]
-    hull_ids.extend(BELLY_PROBE_IDS_BY_STATION[station] for station in sampled_belly_stations)
+    hull_probes.extend(
+        (BELLY_PROBE_IDS_BY_STATION[row[0]], [row[0],0,row[2]])
+        for row in g["fuselage"]["stations"][::max(1,len(g["fuselage"]["stations"])//8)]
+    )
+    hull = [point for _, point in hull_probes]
+    hull_ids = [identity for identity, _ in hull_probes]
     # CR-01d: one semantic name per hull point, in the order built above (crash presentation only).
     hull_names=["left_wing_tip","right_wing_tip","spinner","tail_end","left_stab_tip","right_stab_tip","fin_top","propeller"]
     hull_names+=["belly"]*(len(hull)-len(hull_names))
@@ -241,12 +251,12 @@ def derive(inputs=None):
 def main():
     parser=argparse.ArgumentParser();parser.add_argument("--check",action="store_true");args=parser.parse_args()
     model,summary=derive()
-    text=json.dumps(model,indent=2,ensure_ascii=False,allow_nan=False)+"\n"
+    text=(json.dumps(model,indent=2,ensure_ascii=False,allow_nan=False)+"\n").replace("\n","\r\n")
     if args.check:
-        if not OUTPUT.exists() or OUTPUT.read_text(encoding="utf-8")!=text:raise SystemExit("Timber physics data stale: regenerate with "+SOURCE)
+        if not OUTPUT.exists() or OUTPUT.read_bytes()!=text.encode("utf-8"):raise SystemExit("Timber physics data stale: regenerate with "+SOURCE)
         print("TT-07 Timber physics current")
     else:
-        OUTPUT.write_text(text,encoding="utf-8");print(json.dumps(summary,indent=2))
+        OUTPUT.write_bytes(text.encode("utf-8"));print(json.dumps(summary,indent=2))
 
 
 if __name__=="__main__":main()

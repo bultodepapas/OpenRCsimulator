@@ -147,29 +147,33 @@ func _run() -> void:
 	var fixture: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(get_script().resource_path.get_base_dir().path_join("ugly-loop-inputs.json")))
 	for row: Dictionary in fixture.samples:
 		samples[int(row.tick)] = row
-	var apc_case: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://../docs/research/flight-dynamics/climb-trim/apc12x6-comparison.json")).cases[0]
-	var apc := {ct = apc_case.ct_table.value, cp = apc_case.cp_table.value}
-	var probe := _session(_variant(PLAN_CG_X), false)
-	if not probe.start.get("ok", false):
-		print("BASE_TRIM_FAILED ", probe.start)
-		quit(2)
-		return
-	var base: Dictionary = _stiffness(probe.aircraft.model, probe.start.state, probe._deflections(probe.sim.aux), probe.sim.aux[0])
-	probe.free()
-	var arp_geometric: float = PLAN_CG_X - (float(base.static_margin) - GEOMETRIC_MARGIN) * CHORD
-	var variants := [
-		{label = "baseline", arp = PLAN_CG_X, prop = {}},
-		{label = "apc12x6_prop", arp = PLAN_CG_X, prop = apc},
-		{label = "geometric_margin", arp = arp_geometric, prop = {}},
-		{label = "apc12x6_plus_geometric_margin", arp = arp_geometric, prop = apc},
-	]
+	# --production measures the shipped data unchanged (the post-correction record); the default reproduces the counterfactuals.
+	var production := "--production" in OS.get_cmdline_user_args()
+	var variants := []
+	if production:
+		variants.append({label = "production", frozen = AircraftData.load_file(PATH)})
+	else:
+		var apc_case: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://../docs/research/flight-dynamics/climb-trim/apc12x6-comparison.json")).cases[0]
+		var apc := {ct = apc_case.ct_table.value, cp = apc_case.cp_table.value}
+		var probe := _session(_variant(PLAN_CG_X), false)
+		if not probe.start.get("ok", false):
+			print("BASE_TRIM_FAILED ", probe.start)
+			quit(2)
+			return
+		var base: Dictionary = _stiffness(probe.aircraft.model, probe.start.state, probe._deflections(probe.sim.aux), probe.sim.aux[0])
+		probe.free()
+		var arp_geometric: float = PLAN_CG_X - (float(base.static_margin) - GEOMETRIC_MARGIN) * CHORD
+		variants.append({label = "baseline", frozen = _variant(PLAN_CG_X)})
+		variants.append({label = "apc12x6_prop", frozen = _variant(PLAN_CG_X, apc)})
+		variants.append({label = "geometric_margin", frozen = _variant(arp_geometric)})
+		variants.append({label = "apc12x6_plus_geometric_margin", frozen = _variant(arp_geometric, apc)})
 	var reports := {}
 	for v: Dictionary in variants:
-		var frozen := _variant(v.arp, v.prop)
+		var frozen: Dictionary = v.frozen
 		var s := _session(frozen, false)
 		assert(s.start.get("ok", false), "trim failed " + v.label)
 		var d: Dictionary = s._deflections(s.sim.aux)
-		var report := {arp_x_m = v.arp, stability = _stiffness(s.aircraft.model, s.start.state, d, s.sim.aux[0]),
+		var report := {arp_x_m = float(frozen.model.reference.arp_le[0]), stability = _stiffness(s.aircraft.model, s.start.state, d, s.sim.aux[0]),
 			modes = _modes(s.aircraft.model, s.start.state, d, s.sim.aux[0]), trim_throttle = s.commands.throttle,
 			trim_elevator_up_deg = -rad_to_deg(d.elevator), trim_alpha_deg = rad_to_deg(s.start.alpha), flights = {}}
 		s.free()
@@ -183,12 +187,13 @@ func _run() -> void:
 			var f: Dictionary = report.flights[key]
 			summary[key] = {inverted_s = f.first_inverted_s, max_q = f.max_abs_q, max_pitch_deg = f.max_pitch_deg, seconds = f.seconds}
 		print("ROOT_CAUSE_VARIANT ", JSON.stringify(summary))
-	var output: String = ProjectSettings.globalize_path("res://../docs/research/flight-dynamics/climb-trim/root-cause-variants.json")
+	var output: String = ProjectSettings.globalize_path("res://../docs/research/flight-dynamics/climb-trim/"
+		+ ("root-cause-correction.json" if production else "root-cause-variants.json"))
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--output="):
 			output = argument.trim_prefix("--output=")
 	var result := {method = "Normal 15 m/s start re-solved per variant. Calm steps hold the solved throttle for 2 s, then the target for 38 s at 300 m. owner_replay repeats the captured raw inputs in gentle weather from 30 m.",
-		limits = "Counterfactuals, not calibrated replacements. The APC table is one 11149 rpm slice with the legacy rpm-lag law; the geometric margin moves only the moment reference. Lateral data, slipstream, inertia and mass inventory are unchanged.",
+		limits = "Shipped data after the D6e-R1 reference correction; estimated, not a measured margin. Torque roll, slipstream, inertia and mass inventory are unchanged." if production else "Counterfactuals, not calibrated replacements. The APC table is one 11149 rpm slice with the legacy rpm-lag law; the geometric margin moves only the moment reference. Lateral data, slipstream, inertia and mass inventory are unchanged.",
 		source_sha256 = {aircraft = FileAccess.get_sha256(PATH), probe = FileAccess.get_sha256(get_script().resource_path)},
 		geometric_margin_target = GEOMETRIC_MARGIN, variants = reports}
 	var file := FileAccess.open(output, FileAccess.WRITE)

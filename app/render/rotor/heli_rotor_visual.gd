@@ -85,7 +85,15 @@ static func _finite(value: Variant) -> float:
 
 
 static func _cyclic_tilt(a1: float, b1: float) -> Basis:
-	# Display the measured first-harmonic disk response as a small shaft tilt.
-	# The transform is conjugated into the imported GLB frame at the render boundary.
-	var body_tilt := Basis(Vector3.RIGHT, a1) * Basis(Vector3.FORWARD, b1)
+	# Match MainRotor's first-harmonic shaft normal exactly in body/model coordinates.
+	# The supplied mesh shaft is model +Y, and the frame conjugation applies this body
+	# rotation to that visual axis at the presentation boundary.
+	var normal_body := Vector3(sin(b1), cos(a1) * cos(b1), sin(a1)).normalized()
+	var cross := Vector3.UP.cross(normal_body)
+	var dot := clampf(Vector3.UP.dot(normal_body), -1.0, 1.0)
+	var body_tilt := Basis.IDENTITY
+	if cross.length_squared() > 1e-16:
+		body_tilt = Basis(Quaternion(cross.normalized(), acos(dot)))
+	elif dot < 0.0:
+		body_tilt = Basis(Vector3.RIGHT, PI)
 	return MODEL_BUILDER.GLTF_TO_MODEL.inverse() * body_tilt * MODEL_BUILDER.GLTF_TO_MODEL

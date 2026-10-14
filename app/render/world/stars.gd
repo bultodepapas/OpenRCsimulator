@@ -7,6 +7,7 @@ extends RefCounted
 const Frames := preload("res://render/frames.gd")
 const Spec := preload("res://spec.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
+const SkyAppearance := preload("res://render/weather/sky_appearance.gd")
 const SHADER := preload("res://render/world/stars.gdshader")
 const DATA_PATH := "res://data/sky/stars.json"
 
@@ -94,7 +95,7 @@ static func placements(state: Dictionary, latitude_deg: float) -> Array:
 
 ## The star field for a time-of-day state (render/world/sky_state.gd) at a latitude. Uses the sky material's cloud
 ## settings so the deck hides the same stars it covers.
-static func build(state: Dictionary, latitude_deg: float) -> Node3D:
+static func build(state: Dictionary, latitude_deg: float, cloud_snapshot: Dictionary = {}) -> Node3D:
 	var root := Node3D.new()
 	root.name = "Stars"
 	var list := placements(state, latitude_deg)
@@ -106,10 +107,7 @@ static func build(state: Dictionary, latitude_deg: float) -> Node3D:
 	material.set_shader_parameter("radiance_scale", radiance_scale())
 	material.set_shader_parameter("size_px", SIZE_PX)
 	material.set_shader_parameter("rad_per_px", deg_to_rad(Spec.CAMERA.fov_deg) / 720.0)
-	material.set_shader_parameter("cloud_coverage", a.cloud_coverage)
-	material.set_shader_parameter("cloud_scale", a.cloud_scale)
-	material.set_shader_parameter("cloud_seed", a.cloud_seed)
-	material.set_shader_parameter("cluster_strength", a.cloud_cluster_strength)
+	_apply_cloud_snapshot(material, cloud_snapshot if not cloud_snapshot.is_empty() else Atmosphere.cloud_state_snapshot())
 	var quad := QuadMesh.new()
 	quad.size = Vector2.ONE
 	quad.material = material
@@ -132,3 +130,53 @@ static func build(state: Dictionary, latitude_deg: float) -> Node3D:
 	root.add_child(node)
 	root.set_meta("stars", list.size())
 	return root
+
+
+## Refreshes one active star field after a paused preset edit or a quantized cloud transport step.
+static func update_cloud_appearance(root: Node, cloud_snapshot: Dictionary) -> void:
+	if root == null or not is_instance_valid(root):
+		return
+	var field := root.get_node_or_null("StarField") as MultiMeshInstance3D
+	if field == null or field.multimesh == null:
+		return
+	var quad := field.multimesh.mesh as QuadMesh
+	if quad == null:
+		return
+	var material := quad.material as ShaderMaterial
+	if material == null:
+		return
+	_apply_cloud_snapshot(material, cloud_snapshot)
+
+
+static func _apply_cloud_snapshot(material: ShaderMaterial, snapshot: Dictionary) -> void:
+	var spec_atmosphere: Dictionary = Spec.ATMOSPHERE
+	material.set_shader_parameter("cloud_coverage", float(spec_atmosphere.cloud_coverage))
+	material.set_shader_parameter("cloud_scale", float(spec_atmosphere.cloud_scale))
+	material.set_shader_parameter("cloud_seed", int(snapshot.get("seed", spec_atmosphere.cloud_seed)))
+	material.set_shader_parameter("cluster_strength", float(spec_atmosphere.cloud_cluster_strength))
+	material.set_shader_parameter("cloud_offset", _offset(snapshot.get("offset", Vector2.ZERO)))
+	if str(snapshot.get("profile_id", "classic")) == "classic":
+		material.set_shader_parameter("layered_appearance", false)
+		material.set_shader_parameter("appearance_cloud_density", 1.0)
+		return
+	var layers: Array = snapshot.get("cloud_layers", [])
+	var offsets: Array = []
+	for layer_value: Variant in layers:
+		var layer: Dictionary = layer_value
+		offsets.append(layer.get("offset", Vector2.ZERO))
+	var arrays := SkyAppearance.shader_arrays(layers, offsets,
+		float(snapshot.get("cloud_cover", 0.0)), float(snapshot.get("cloud_density", 0.0)))
+	material.set_shader_parameter("layered_appearance", true)
+	material.set_shader_parameter("appearance_layer_count", arrays.layer_count)
+	material.set_shader_parameter("appearance_layer_parameters", arrays.layer_parameters)
+	material.set_shader_parameter("appearance_layer_motion", arrays.layer_motion)
+	material.set_shader_parameter("appearance_layer_seeds", arrays.layer_seeds)
+	material.set_shader_parameter("appearance_cloud_density", arrays.cloud_density)
+
+
+static func _offset(raw: Variant) -> Vector2:
+	if raw is Vector2:
+		return raw
+	if typeof(raw) == TYPE_ARRAY and raw.size() == 2:
+		return Vector2(float(raw[0]), float(raw[1]))
+	return Vector2.ZERO

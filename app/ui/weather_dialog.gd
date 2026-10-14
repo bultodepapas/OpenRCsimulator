@@ -7,6 +7,8 @@ const UiTheme := preload("res://ui/ui_theme.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
+const SkyControls := preload("res://ui/sky_controls.gd")
+const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const SLIDER_GRABBER: Texture2D = preload("res://ui/slider_grabber.svg")
 
@@ -73,6 +75,8 @@ var turbulence_page: VBoxContainer
 var atmosphere_page: VBoxContainer
 var time_of_day_page: VBoxContainer
 var time_of_day_controls: VBoxContainer
+var sky_controls: VBoxContainer
+var applied_sky_config: Dictionary = SkyConfig.defaults()
 var field_inputs: Dictionary = {}
 var field_sliders: Dictionary = {}
 var turbulence_inputs: Dictionary = {}
@@ -101,7 +105,7 @@ var _setting_fields: bool = false
 var _scroll_update_queued: bool = false
 
 
-func _init(initial_config: Variant = null, initial_lighting_config: Variant = null, initial_night_options: Variant = null) -> void:
+func _init(initial_config: Variant = null, initial_lighting_config: Variant = null, initial_night_options: Variant = null, initial_sky_config: Variant = null) -> void:
 	name = "WeatherDialog"
 	layer = LAYER
 	var checked: Dictionary = WeatherSettings.validate(initial_config if initial_config != null else WeatherSettings.defaults())
@@ -136,7 +140,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 
 	var preset_row: HBoxContainer = HBoxContainer.new()
 	preset_row.add_theme_constant_override("separation", 12)
-	preset_row.add_child(_label("Preset", "SecondaryLabel"))
+	preset_row.add_child(_label("Wind preset", "SecondaryLabel"))
 	preset_picker = OptionButton.new()
 	preset_picker.name = "WeatherPreset"
 	preset_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -153,6 +157,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	tab_container.add_tab(tr("Turbulence"))
 	tab_container.add_tab(tr("Atmosphere"))
 	tab_container.add_tab(tr("Time of day"))
+	tab_container.add_tab(tr("Sky & clouds"))
 	tab_container.current_tab = 0
 	column.add_child(tab_container)
 	tab_bar = tab_container
@@ -248,6 +253,14 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	time_of_day_controls.connect("focus_order_changed", _set_focus_ring)
 	page_stack.add_child(time_of_day_controls)
 	time_of_day_page = time_of_day_controls
+	sky_controls = SkyControls.new(initial_sky_config)
+	sky_controls.visible = false
+	sky_controls.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sky_controls.focus_order_changed.connect(_set_focus_ring)
+	sky_controls.night_requested.connect(func() -> void:
+		time_of_day_controls.call("_on_preset_selected", 5)
+		tab_bar.current_tab = 3)
+	page_stack.add_child(sky_controls)
 	tab_bar.tab_changed.connect(_on_tab_changed)
 	_set_tab_titles()
 
@@ -280,7 +293,12 @@ func _ready() -> void:
 	get_viewport().size_changed.connect(_schedule_scroll_height_update)
 	panel.resized.connect(_schedule_scroll_height_update)
 	_schedule_scroll_height_update()
-	preset_picker.grab_focus.call_deferred()
+	_focus_initial_control.call_deferred()
+
+
+func _focus_initial_control() -> void:
+	if is_inside_tree():
+		preset_picker.grab_focus()
 
 
 func _notification(what: int) -> void:
@@ -314,6 +332,7 @@ func _set_tab_titles() -> void:
 	tab_container.set_tab_title(1, tr("Turbulence"))
 	tab_container.set_tab_title(2, tr("Atmosphere"))
 	tab_container.set_tab_title(3, tr("Time of day"))
+	tab_container.set_tab_title(4, tr("Sky & clouds"))
 
 
 func _set_atmosphere_mode_titles() -> void:
@@ -545,6 +564,11 @@ func _rms_inputs_have_energy() -> bool:
 
 
 func _on_apply() -> void:
+	var sky_result: Dictionary = sky_controls.call("read_draft")
+	if not sky_result.ok:
+		error_label.text = tr("Check the sky and cloud motion settings.")
+		_set_error_visible(true)
+		return
 	var lighting_result: Dictionary = time_of_day_controls.call("read_draft")
 	if not lighting_result.get("ok", false):
 		_show_error()
@@ -623,6 +647,7 @@ func _on_apply() -> void:
 		return
 	applied_lighting_config = lighting_result.config.duplicate(true)
 	applied_night_options = night_result.options.duplicate(true)
+	applied_sky_config = sky_result.config
 	applied.emit(checked.config.duplicate(true))
 
 
@@ -660,6 +685,7 @@ func _on_tab_changed(_tab: int) -> void:
 	turbulence_page.visible = _tab == 1
 	atmosphere_page.visible = _tab == 2
 	time_of_day_page.visible = _tab == 3
+	sky_controls.visible = _tab == 4
 	tab_scroll.scroll_vertical = 0
 	_set_focus_ring()
 	_schedule_scroll_height_update()
@@ -690,10 +716,12 @@ func _set_focus_ring() -> void:
 			if atmosphere_sliders.has(key) and atmosphere_sliders[key].focus_mode != Control.FOCUS_NONE:
 				_focus_order.append(atmosphere_sliders[key])
 			_focus_order.append(atmosphere_inputs[key])
-	else:
+	elif tab_container.current_tab == 3:
 		var time_focus: Array[Control] = time_of_day_controls.call("focus_controls")
 		for focus_control: Control in time_focus:
 			_focus_order.append(focus_control)
+	else:
+		_focus_order.append_array(sky_controls.call("focus_controls"))
 	_focus_order.append(cancel_button)
 	_focus_order.append(apply_button)
 	for index: int in _focus_order.size():

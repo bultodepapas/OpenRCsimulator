@@ -34,6 +34,7 @@ func _run() -> void:
 	preferences.language = language
 	preferences.check_updates = false
 	preferences.first_flight_hint_seen = true
+	preferences.latency_marker = false
 	preferences.time_of_day = "day"
 	Preferences.save_to(_preferences_path, preferences)
 	var app := AppRoot.new()

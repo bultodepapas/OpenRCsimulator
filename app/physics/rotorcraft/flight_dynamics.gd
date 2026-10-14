@@ -147,9 +147,16 @@ static func evaluate(state: PackedFloat64Array, context: Dictionary, sticks: Pac
 	if not _main_rotor_domain(context.main_model, state[OMEGA], air_velocity_body, body_rates):
 		return _failure("main-rotor advance ratio exceeds the kernel domain at this speed", "main_rotor_advance_ratio_out_of_domain")
 	var rotor_state: PackedFloat64Array = PackedFloat64Array([state[A1], state[B1], state[VI]])
+	# MainRotor uses this FRD disc normal for its signed scalar thrust. The
+	# downstream wake points in the opposite direction; its world NED-down
+	# component and same-stage thrust decide whether terrain affects inflow.
+	var thrust_axis_body_frd: PackedFloat64Array = PackedFloat64Array([
+		-M.sin_(state[A1]), M.sin_(state[B1]), -M.cos_(state[A1]) * M.cos_(state[B1])])
+	var thrust_axis_downworld_scalar: float = M.q_rotate(attitude, thrust_axis_body_frd)[2]
 	var aero: Dictionary = Stage.fast_evaluate(context.aero_context, rotor_state, state[OMEGA],
 		air_velocity_body, body_rates, electronics.collective_75_rad, electronics.cyclic_forward_rad,
-		electronics.cyclic_right_rad, electronics.tail_collective_rad, diagnostics, height_over_radius)
+		electronics.cyclic_right_rad, electronics.tail_collective_rad, diagnostics,
+		height_over_radius, thrust_axis_downworld_scalar)
 	if not aero.get("ok", false):
 		return _failure("joint aerodynamic stage refused the flight state", "aerodynamic_stage_refused")
 	var drive: Dictionary = Drive.evaluate(context.drive_model, state[OMEGA], electronics.drive_fraction,
