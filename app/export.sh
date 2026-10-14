@@ -76,6 +76,11 @@ for pack in "$DIST/linux/openrc-simulator.x86_64" "$DIST/windows/OpenRC Simulato
     || { cat "$LOG"; echo "field pack check failed: $pack"; exit 1; }
   if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then cat "$LOG"; exit 1; fi
   cat "$LOG"
+  timeout 60 "$GODOT" --headless --path "$PACK_PROBE" --audio-driver Dummy \
+    --main-pack "$pack" --script "$ROOT/research/aircraft-standardization/rotorcraft_package_smoke.gd" > "$LOG" 2>&1 \
+    || { cat "$LOG"; echo "rotorcraft pack check failed: $pack"; exit 1; }
+  if grep -qE "^(SCRIPT |SHADER )?ERROR:" "$LOG"; then cat "$LOG"; exit 1; fi
+  cat "$LOG"
 done
 
 echo "== packages"

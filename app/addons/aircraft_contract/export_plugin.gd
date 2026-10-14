@@ -4,6 +4,7 @@
 extends EditorExportPlugin
 
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const RotorcraftModel := preload("res://aircraft/hx700_model.gd")
 const MARKER := "res://data/aircraft_models/package_proofs.json"
 
 
@@ -12,12 +13,15 @@ func _get_name() -> String:
 
 
 func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String, _flags: int) -> void:
+	# Godot remaps the imported GLB to a PackedScene. Rotor profile validation
+	# also needs its reviewed authoring bytes, avoiding geometry analysis at launch.
+	if FileAccess.get_sha256(RotorcraftModel.SCENE_PATH) != RotorcraftModel.GLB_SHA256:
+		push_error("Cannot export an unverified HX-700 source model")
+		return
+	add_file(RotorcraftModel.SCENE_PATH, FileAccess.get_file_as_bytes(RotorcraftModel.SCENE_PATH), false)
 	var registry: Script = load("res://aircraft/model_registry.gd")
 	var sources: Dictionary = {}
-	var families: Dictionary = {}
-	for id: String in Catalog.ids():
-		families[Catalog.visual_family(id)] = true
-	for family: String in families:
+	for family: String in Catalog.airplane_visual_families():
 		var result: Dictionary = registry.describe(family)
 		if not result.get("ok", false):
 			push_error("Cannot export an invalid aircraft model: " + str(result.get("errors", [])))

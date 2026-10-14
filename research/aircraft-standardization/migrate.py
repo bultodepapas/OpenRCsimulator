@@ -317,6 +317,28 @@ def legacy_input(raw: dict[str, Any]) -> dict[str, Any]:
     data["format"] = FORMAT_V1
     data.pop("convention_id", None)
     data.pop("capabilities", None)
+    # Authored physical identities are a v2-only module. Keep this compatibility
+    # view in the historical v1 shape; callers retain the original v2 object.
+    data.pop("physical_identity_version", None)
+    data.pop("crash_hull_ids", None)
+    inventory = data.get("inventory")
+    if isinstance(inventory, list):
+        for item in inventory:
+            if isinstance(item, dict):
+                item.pop("id", None)
+    landing_gear = data.get("landing_gear")
+    if isinstance(landing_gear, dict):
+        contacts = landing_gear.get("contacts")
+        if isinstance(contacts, list):
+            for contact in contacts:
+                if isinstance(contact, dict):
+                    contact.pop("id", None)
+    propulsion = data.get("propulsion")
+    if isinstance(propulsion, dict):
+        propulsion.pop("id", None)
+    controls = data.get("controls")
+    if isinstance(controls, dict):
+        controls.pop("surface_ids", None)
     aero = data.get("aero")
     if isinstance(aero, dict):
         reference = aero.get("reference_coefficients")

@@ -26,6 +26,10 @@
 # Model manifests are exact-byte Workshop dependencies. Source-script hashes normalize text to LF.
 /app/data/aircraft_models/*.json text eol=lf
 
+# HX-700 source and runtime rotor profiles share the manifest's exact SHA-256.
+/assets/aircraft/hx-700/rotor_profiles.json text eol=lf
+/app/assets/aircraft/hx-700/rotor_profiles.json text eol=lf
+
 # RCV bench identity and generated independent oracle are byte-stable.
 /research/rc-monster-truck/suspension_bench.json text eol=lf
 /research/rc-monster-truck/support_bench.json text eol=lf
