@@ -24,6 +24,8 @@ const VIEWS := {
 	"nose_gear": [Vector3(-0.34, -0.13, -0.40), Vector3(-0.01, -0.15, -0.255), 30.0],
 	"propeller": [Vector3(-0.22, 0.10, -0.66), Vector3(0.0, 0.03, -0.41), 30.0],
 	"prop_hub": [Vector3(-0.10, 0.07, -0.56), Vector3(0.0, 0.035, -0.41), 30.0],
+	"wing_under": [Vector3(-0.35, -0.55, -0.45), Vector3(-0.52, 0.04, 0.02), 34.0],
+	"wing_le_under": [Vector3(-0.30, -0.30, -0.42), Vector3(-0.45, 0.05, -0.06), 30.0],
 	"throttle": [Vector3(-0.20, 0.11, -0.42), Vector3(-0.012, 0.018, -0.36), 24.0],
 }
 
@@ -38,12 +40,14 @@ func _run() -> void:
 	var throttle := 0.5
 	var compression := 0.0
 	var prop_broken := false
+	var scuffed := false
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="): out = arg.trim_prefix("--out=")
 		elif arg.begins_with("--view="): only = arg.trim_prefix("--view=")
 		elif arg.begins_with("--throttle="): throttle = float(arg.trim_prefix("--throttle="))
 		elif arg.begins_with("--gear_compression="): compression = float(arg.trim_prefix("--gear_compression="))
 		elif arg == "--prop_broken": prop_broken = true
+		elif arg == "--scuffs": scuffed = true
 	DirAccess.make_dir_recursive_absolute(out)
 	await process_frame
 	var world := WorldEnvironment.new()
@@ -65,6 +69,12 @@ func _run() -> void:
 	# US-V11: the propeller after a prop strike (apps without render/crash/prop_break.gd have no stubs).
 	if prop_broken and ResourceLoader.exists("res://render/crash/prop_break.gd"):
 		load("res://render/crash/prop_break.gd").call("break_blades", airplane.propeller)
+	# US-V12: a fixed set of soft-contact scuffs (belly on mown grass, left wing on grass and runway).
+	if scuffed and ResourceLoader.exists("res://render/crash/airframe_scuffs.gd"):
+		var scuffs: RefCounted = load("res://render/crash/airframe_scuffs.gd").new()
+		for touch in [[Vector3(0.0, -0.2, 0.05), Vector3(0, 0, -12), 0.6, "mown"], [Vector3(-0.66, 0.0, 0.03), Vector3(0, 0, -15), 0.4, "mown"],
+				[Vector3(-0.45, 0.0, -0.08), Vector3(0, 0, -10), 0.8, "runway"], [Vector3(0.0, -0.2, 0.30), Vector3(0, 0, -9), 0.5, "rough"]]:
+			scuffs.call("add", airplane.root, touch[0], touch[1], touch[2], touch[3])
 	var camera := Camera3D.new()
 	root.add_child(camera)
 	camera.current = true
