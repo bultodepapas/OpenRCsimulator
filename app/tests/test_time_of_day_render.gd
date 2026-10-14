@@ -82,15 +82,38 @@ func run() -> void:
 	var contact_material: StandardMaterial3D = contacts.mesh.surface_get_material(0) as StandardMaterial3D
 	check("night contact cues can only darken", contact_material.albedo_color == Color.BLACK)
 	var grass_count: int = 0
-	for node: Node in built.find_children("*", "MultiMeshInstance3D", true, false):
-		var mesh: Mesh = node.multimesh.mesh
-		if mesh == null or mesh.get_surface_count() == 0:
-			continue
-		var mat: Material = mesh.surface_get_material(0)
-		if mat is ShaderMaterial and mat.shader.resource_path == "res://render/near_grass.gdshader":
-			grass_count += 1
-			check("near grass has night solar energy", (mat.get_shader_parameter("sun_lin") as Vector3).is_zero_approx())
-			check("near grass has matching night haze", (mat.get_shader_parameter("haze_lin") as Vector3).is_equal_approx(Atmosphere.haze_linear(night)))
+	var near_grass: Node3D = built.get_node_or_null("NearGrass") as Node3D
+	check("near grass renderer exists", near_grass != null)
+	if near_grass != null and near_grass.get_meta("imported", false):
+		# Downloaded GLTF grass uses source StandardMaterial3D resources, so its
+		# night response comes from the scene light rather than legacy shader uniforms.
+		for node: Node in near_grass.find_children("*", "MultiMeshInstance3D", true, false):
+			var instance: MultiMeshInstance3D = node as MultiMeshInstance3D
+			if instance.multimesh == null or instance.multimesh.mesh == null:
+				continue
+			var mesh: Mesh = instance.multimesh.mesh
+			for surface: int in range(mesh.get_surface_count()):
+				var mat: Material = mesh.surface_get_material(surface)
+				if mat == null or not mat.resource_path.begins_with("res://assets/landscape/vegetation/models/Grass_"):
+					continue
+				grass_count += 1
+				var base_material: BaseMaterial3D = mat as BaseMaterial3D
+				check("downloaded near grass uses scene lighting", base_material != null and base_material.shading_mode != BaseMaterial3D.SHADING_MODE_UNSHADED)
+				check("downloaded near grass is not self illuminated", base_material != null and not base_material.emission_enabled)
+	else:
+		# Keep coverage for the procedural fallback, whose shader owns TOD uniforms.
+		for node: Node in built.find_children("*", "MultiMeshInstance3D", true, false):
+			var instance: MultiMeshInstance3D = node as MultiMeshInstance3D
+			if instance.multimesh == null or instance.multimesh.mesh == null:
+				continue
+			var mesh: Mesh = instance.multimesh.mesh
+			if mesh.get_surface_count() == 0:
+				continue
+			var mat: Material = mesh.surface_get_material(0)
+			if mat is ShaderMaterial and mat.shader.resource_path == "res://render/near_grass.gdshader":
+				grass_count += 1
+				check("near grass has night solar energy", (mat.get_shader_parameter("sun_lin") as Vector3).is_zero_approx())
+				check("near grass has matching night haze", (mat.get_shader_parameter("haze_lin") as Vector3).is_equal_approx(Atmosphere.haze_linear(night)))
 	check("actual near grass checked", grass_count > 0)
 	built.free()
 	holder.free()
