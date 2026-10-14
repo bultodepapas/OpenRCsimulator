@@ -223,3 +223,46 @@ mip byte counts, repeated-scan equality and unchanged assignments. Both probes r
 existing output files; the runtime probe rejects headless rendering. Capture stdout
 **and stderr through process exit**: the current world probe reports two GL texture
 teardown warnings even though it writes a repeatable inventory and exits zero.
+
+### Moving visibility reference (VQ-01d / CAM-22)
+
+`visibility_capture.gd` reuses the existing aircraft/field builders, CG conversion
+and pilot CameraRig in an isolated native Compatibility SubViewport, 1280×720,
+4× MSAA. It samples prescribed render poses at 30 Hz along a 100 m arc; it does not
+run flight physics. Shader time is zero, node processing is disabled, and there is
+no aircraft shadow, moving propeller, HUD or night kit. Background names select
+historical L6c elevations; they do not certify the current background's pixels.
+
+```powershell
+python research/performance/run_visibility_capture.py --godot .tools/Godot_v4.7.2-stable_win64.exe --app <imported-snapshot-app> --out tmp/visibility-new --source-commit <archived-40-character-commit> --background trees --pose knife_left --autozoom on --frames 60
+python research/performance/visibility_pack.py --input tmp/visibility-new/capture --out tmp/visibility-package-new --frame-count 60
+python -m unittest research.performance.test_visibility_pack -v
+```
+
+Use the actual Windows engine executable so the runner waits through process exit.
+The runner minimizes its window; explicit off-screen draws continue. It retains
+complete logs and requires exit zero, no engine error/warning, a completion marker
+and a valid capture. A zero-exit partial run is rejected. All destinations must be
+new. Keep the archive, import normalization and tool hashes with accepted results;
+the source-commit option is a caller label, not automatic Git verification.
+
+Options: six existing poses (`level`, `inverted`, `knife_left`, `knife_right`,
+`climb`, `dive`), four requested backgrounds (`sky`, `horizon`, `trees`, `ground`),
+fixed-wing family ID, autozoom on/off and 2–600 frames (default 90). Frame count
+changes traversal duration across the same arc. Manual zoom stays 1. Every frame
+records timestamp, NED target, prescribed Euler angles, camera transform/FOV,
+face-on reference span, CG screen location, projected AABB and PNG hash.
+These geometric quantities do not measure pixel contrast or visible pixel area.
+
+The validator checks path containment, PNG hash/dimensions, exact frame order/time,
+finite and bounded projection data, and actual pixel change. Packaging uses the
+existing pinned Pillow **12.3.0** visual environment and preserves original pixels
+in APNG, with 33/34 ms durations summing to the exact requested 30 Hz clip length.
+It decodes and compares every frame and duration, including repeated adjacent
+frames. This verifies the file, not a browser/display's presentation timing.
+The packager holds the clip's decoded frames in memory; use bounded case sizes.
+
+[VQ-01d evidence and numbered review clips](../../docs/research/visual-quality-implementation/VQ-01d/README.md)
+retain the initial four-clip subset, repeat/minimization parity, guards and a
+rejected partial collection. Human orientation, controlled reaction time, other
+aircraft/views/weather and the full acceptance matrix remain open.

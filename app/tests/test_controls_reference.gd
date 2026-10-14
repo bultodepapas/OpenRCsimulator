@@ -82,6 +82,8 @@ func _initialize() -> void:
 	var first := []
 	for row in Reference.FIRST_FLIGHT:
 		first.append_array(row[0])
+	_check("fixed-wing help pairs G gear toggle with B hold brake", Reference.shortcut_table().any(func(row: Array) -> bool:
+		return KEY_G in row[0] and KEY_B in row[0] and "wheel brake" in row[1].to_lower()))
 	_check("first-flight hint: at most 3 items, keys from the tables", Reference.FIRST_FLIGHT.size() <= 3
 		and first.all(func(k: int) -> bool: return k in listed))
 	_check("helicopter first-flight hint uses collective rather than throttle",

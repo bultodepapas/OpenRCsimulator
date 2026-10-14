@@ -1799,6 +1799,33 @@ msgstr "Solicitud de flaps: %d%% — el avión no simula los flaps."
 msgid "Landing gear request: %s — retraction is not simulated."
 msgstr "Solicitud del tren de aterrizaje: %s — la retracción no se simula."
 
+msgid "Landing gear: %s"
+msgstr "Tren de aterrizaje: %s"
+
+msgid "Landing gear is fixed on this aircraft."
+msgstr "El tren de aterrizaje de este avión es fijo."
+
+msgid "Landing gear is controlled by its AUX input."
+msgstr "El tren de aterrizaje se controla con su entrada AUX."
+
+msgid "Gear retraction is blocked while the aircraft is on its wheels."
+msgstr "No se puede retraer el tren mientras el avión está apoyado en las ruedas."
+
+msgid "retraction blocked while on wheels"
+msgstr "retracción bloqueada mientras el avión está apoyado en las ruedas"
+
+msgid "Extending"
+msgstr "Extendiéndose"
+
+msgid "Retracting"
+msgstr "Retrayéndose"
+
+msgid "Unknown"
+msgstr "Desconocido"
+
+msgid "Gear toggle · wheel brake (hold)"
+msgstr "Tren de aterrizaje · freno de ruedas (mantener)"
+
 msgid "Down"
 msgstr "Abajo"
 

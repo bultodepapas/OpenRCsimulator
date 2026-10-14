@@ -1,6 +1,6 @@
 # Global performance and visual-quality implementation plan
 
-2026-10-14 · Revision 9 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
+2026-10-14 · Revision 10 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
 
 **Execution decision:** baseline → visibility reference → measured CPU/loading repairs → texture audit → ground and foliage comparisons → targeted aircraft/weather repairs → qualified quality profiles → native acceptance. Implementation has started with **VQ-01c / DT-01 / DT-10a** measurement tools and a read-only texture inventory. [First evidence and unresolved gates](../research/visual-quality-implementation/VQ-01c/README.md) now include an attributed **DT-11a lake geometry reuse repair** with exact buffer parity and faster Home/Fly transitions. Native flight, cold-loading and visual-change acceptance remain open. Current step status stays in the owning VQ plan.
 
@@ -17,6 +17,8 @@ This is the authoritative sequence and disposition for the [dated research](../r
 Latest VQ-02a slice: [embedded-image and runtime texture inventory](../research/visual-quality-implementation/VQ-02a/README.md) inspects 25 embedded PNG/JPEG images and 39 assigned texture resources across the default day world and five fixed-wing families on a frozen source. This is the permitted independent read-only audit; material/import corrections and full VQ-02a qualification remain open.
 
 ## 1. Decisions already made
+
+Latest VQ-01d slice: [moving visibility references](../research/visual-quality-implementation/VQ-01d/README.md) add four lossless native clips with the existing pilot camera, matched poses and recorded projected sizes. Capture integrity is verified; background classification, the full matrix and owner orientation/response-time acceptance remain open. Material/camera adoption gates are unchanged.
 
 | Topic | Decision for this delivery | Reason / reopening condition |
 | --- | --- | --- |

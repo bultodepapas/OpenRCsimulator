@@ -124,7 +124,9 @@ def main():
         for source, dest in copies:
             dest.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(source, dest)
-    else:
+            if sha(source) != sha(dest):
+                raise ValueError("Copy changed bytes: " + str(dest))
+    elif not args.generated:
         for name in ("hx-700.glb", "construction.json"):
             if sha(AUTHORED / name) != sha(RUNTIME / name):
                 raise ValueError("Authored/runtime copy differs: " + name)

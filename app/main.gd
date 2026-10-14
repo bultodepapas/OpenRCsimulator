@@ -243,6 +243,7 @@ var _frametimes_sim_start_s: float = 0.0
 var _frametimes_sim_start_tick: int = 0
 ## Last one-off message (reload result), shown in the panel.
 var _note := ""
+var _wheel_brake_key_held := false
 var _visual_pose: Dictionary = {}
 var _smoke: EngineSmoke
 var _smoke_key_on := false
@@ -667,6 +668,7 @@ func _ready() -> void:
 
 func _process(delta: float) -> void:
 	if _capturing:
+		_clear_wheel_brake()
 		return
 	var dt := minf(delta, 0.1) # a stalled window must not jump the propeller or the scripted circle
 	if _frametimes_active:
@@ -685,6 +687,8 @@ func _process(delta: float) -> void:
 	if _frame_times.size() > Hud.FRAMES:
 		_frame_times = _frame_times.slice(_frame_times.size() - Hud.FRAMES)
 	var sim: Node = session.sim
+	if _wheel_brake_key_held and (sim.paused or not session.gear_is_retractable()):
+		_clear_wheel_brake()
 	if _smoke_assignment != null and (not session.radio.connected or session.radio.device_id != _smoke_assignment.device_id):
 		_end_smoke_assignment(true)
 	_t += dt
@@ -826,6 +830,12 @@ func _update_hud() -> void:
 		var s: PackedFloat64Array = session.sim.state
 		var air: Dictionary = session.air_data(s)
 		lines.append(Hud.flight_line(air.V, -s[RB.POS + 2], rad_to_deg(air.alpha), session.sim.inputs[3]))
+		var gear: Dictionary = session.gear_state()
+		if bool(gear.get("available", false)):
+			var gear_line := tr("Landing gear: %s") % _gear_status_label(gear)
+			if bool(gear.get("inhibited", false)):
+				gear_line += " — " + tr("retraction blocked while on wheels")
+			lines.append(gear_line)
 		if not session.weather_is_calm():
 			var wind: PackedFloat64Array = session.wind_at(session.sim.time())
 			lines.append(_weather_hud_line(s, wind))
@@ -988,9 +998,18 @@ func controller_action(action: String) -> bool:
 				_note = tr("Smoke is not available on this aircraft.")
 			elif session.radio.auxiliary_action(action):
 				_note = tr("Smoke pump: on") if session.radio.smoke_amount() > 0.0 else tr("Smoke pump: off")
-		"flaps_up", "flaps_down", "flaps_cycle", "gear_toggle":
+		"flaps_up", "flaps_down", "flaps_cycle":
 			if not session.sim.paused and session.radio.auxiliary_action(action):
-				_update_auxiliary_requests(true, "gear" if action == "gear_toggle" else "flaps")
+				_update_auxiliary_requests(true, "flaps")
+		"gear_toggle":
+			if session.sim.paused: return true
+			if _has_gear_aux_binding():
+				_note = tr("Landing gear is controlled by its AUX input.")
+			elif not session.gear_is_retractable():
+				_note = tr("Landing gear is fixed on this aircraft.")
+			else:
+				session.toggle_gear()
+				_note = _gear_command_note()
 		"trim_left": session.adjust_aileron_trim(-0.005)
 		"trim_right": session.adjust_aileron_trim(0.005)
 		"trim_up": session.adjust_elevator_trim(-0.1)
@@ -1009,18 +1028,56 @@ func controller_action(action: String) -> bool:
 	return true
 
 
-## Show requested auxiliary positions honestly: the accepted aircraft contract has
-## no flap aerodynamics or retract actuator/contact state yet. Never animate a
-## landing gear visually while leaving its contacts active in the solver.
+## Keep the current flap request visible. Gear state has its own solver-backed HUD line.
 func _update_auxiliary_requests(force := false, selected_channel := "") -> void:
 	if session == null or session.sim.paused or not session.radio.connected: return
-	for channel_name in ["flaps", "gear"]:
-		var amount: float = session.radio.auxiliary_amount(channel_name)
-		var value := roundi(amount * 100.0) if channel_name == "flaps" else int(amount >= 0.5)
-		if (force and selected_channel == channel_name) or value != int(_last_auxiliary_requests[channel_name]):
-			_note = tr("Flaps request: %d%% — aircraft flaps are not simulated.") % value if channel_name == "flaps" else \
-				tr("Landing gear request: %s — retraction is not simulated.") % (tr("Up") if value > 0 else tr("Down"))
-		_last_auxiliary_requests[channel_name] = value
+	var amount: float = session.radio.auxiliary_amount("flaps")
+	var value := roundi(amount * 100.0)
+	if (force and selected_channel == "flaps") or value != int(_last_auxiliary_requests.flaps):
+		_note = tr("Flaps request: %d%% — aircraft flaps are not simulated.") % value
+	_last_auxiliary_requests.flaps = value
+
+
+func _gear_status_label(gear: Dictionary) -> String:
+	match str(gear.get("status", "")):
+		"up": return tr("Up")
+		"down": return tr("Down")
+		"extending": return tr("Extending")
+		"retracting": return tr("Retracting")
+	return tr("Unknown")
+
+
+func _gear_command_note() -> String:
+	var gear: Dictionary = session.gear_state()
+	if not bool(gear.get("available", false)):
+		return tr("Landing gear is fixed on this aircraft.")
+	if bool(gear.get("inhibited", false)):
+		return tr("Gear retraction is blocked while the aircraft is on its wheels.")
+	return tr("Landing gear: %s") % _gear_status_label(gear)
+
+
+func _has_gear_aux_binding() -> bool:
+	if session == null or not session.radio.profile.get("aux", {}) is Dictionary:
+		return false
+	var aux: Dictionary = session.radio.profile.get("aux", {})
+	var binding: Variant = aux.get("gear", {})
+	return binding is Dictionary and str(binding.get("type", "")) in ["axis", "button"]
+
+
+func _clear_wheel_brake() -> void:
+	if session != null:
+		session.set_wheel_brake(0.0) # Brake release remains valid during pause and focus loss.
+	_wheel_brake_key_held = false
+
+
+func _input(event: InputEvent) -> void:
+	if event is InputEventKey and event.physical_keycode == KEY_B and not event.pressed:
+		_clear_wheel_brake()
+
+
+func _notification(what: int) -> void:
+	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
+		_clear_wheel_brake()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -1054,6 +1111,13 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return
 		match event.physical_keycode:
+			KEY_G:
+				controller_action("gear_toggle")
+				get_viewport().set_input_as_handled()
+			KEY_B:
+				if not session.sim.paused and session.gear_is_retractable() and session.set_wheel_brake(1.0):
+					_wheel_brake_key_held = true
+					get_viewport().set_input_as_handled()
 			KEY_BRACKETLEFT, KEY_BRACKETRIGHT:
 				if session.adjust_aileron_trim(-0.005 if event.physical_keycode == KEY_BRACKETLEFT else 0.005):
 					_note = tr("Aileron trim: %+.1f%%") % (session.trims.roll * 100.0)

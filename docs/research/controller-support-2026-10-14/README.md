@@ -45,6 +45,8 @@ The initial binding harness failed all 11 checks; setup reproduced six failures;
 
 The menu test still reports two ObjectDB instances at shutdown; a verbose rerun identifies `AudioStreamMP3` and `AudioStreamPlaybackMP3`. This input audit does not claim that audio cleanup issue is fixed. AUX/smoke tests deliberately retain warnings for conflicting legacy assignments. Tests use isolated native preferences and synthetic devices. No controller hardware, exported package or filmed latency was qualified, and no input change modifies aircraft physics, datasets or goldens.
 
+The supplementary [canonical Linux attempt](audit-canonical-linux.json) ran `app/test.sh` in an isolated WSL filesystem copy, preserving `.gitattributes` byte policies. It passed the offline/reference stages, guards, complete script parse and all controller-prefixed functional suites. It was deliberately stopped during the unrelated `test_crash_wreck.gd` after controller integration coverage was complete. This is a partial repository run, not a full `app/test.sh` pass or a remaining controller failure; the full release suite remains an acceptance gate. The earlier model-data assertion in the implementation report no longer blocked this snapshot.
+
 ## Pre-implementation application snapshot
 
 The graph located the input seams, but some indexed function ranges were stale. Findings below were checked against current source. They are source inspection findings, not physical controller results.

@@ -22,6 +22,9 @@ var loads: Callable = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Ar
 
 ## Pilot commands, set by the game each frame: [roll, pitch, yaw, throttle] (−1…1, throttle 0…1).
 var inputs := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+## Explicit owner-selected layout. Legacy sessions retain four primary controls;
+## retractable-gear sessions append deployment target and wheel-brake demand.
+var input_size: int = 4
 ## Loads at the start of the latest step (the RK4 k1 evaluation), for traces.
 var last_loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 ## Auxiliary states advanced once per tick, before integration (e.g. [engine_rpm]). Held constant during RK4.
@@ -93,7 +96,7 @@ func reset(initial: PackedFloat64Array) -> bool:
 	if not _configuration_is_valid():
 		_fail_safe("reset rejected: mass, gravity, or inertia is invalid")
 		return false
-	if not _array_is_finite(inputs, 4) or not _array_is_finite(aux) or not _array_is_finite(continuous):
+	if input_size not in [4, 6] or not _array_is_finite(inputs, input_size) or not _array_is_finite(aux) or not _array_is_finite(continuous):
 		_fail_safe("reset rejected: input or auxiliary state is nonfinite or malformed")
 		return false
 	if not _continuous_aux_matches(continuous, aux):
@@ -164,7 +167,7 @@ func step() -> void:
 		return
 	if not _refresh_inertia_inverse():
 		return
-	if not _array_is_finite(inputs, 4) or not _array_is_finite(aux, _last_valid_aux.size()) or modes.size() != _last_valid_modes.size() \
+	if input_size != _last_valid_inputs.size() or not _array_is_finite(inputs, input_size) or not _array_is_finite(aux, _last_valid_aux.size()) or modes.size() != _last_valid_modes.size() \
 			or not _array_is_finite(continuous, _last_valid_continuous.size()):
 		_fail_safe("step rejected: input or auxiliary state is nonfinite or malformed")
 		return
@@ -411,7 +414,7 @@ func _restore_last_valid() -> void:
 		previous = _last_valid_previous.duplicate() if state_is_valid(_last_valid_previous) else state.duplicate()
 		if _array_is_finite(_last_valid_aux):
 			aux = _last_valid_aux.duplicate()
-		if _array_is_finite(_last_valid_inputs, 4):
+		if _array_is_finite(_last_valid_inputs, input_size):
 			inputs = _last_valid_inputs.duplicate()
 		if _loads_are_valid(_last_valid_loads):
 			last_loads = _last_valid_loads.duplicate()
@@ -458,7 +461,7 @@ func can_restore_checkpoint(candidate: Dictionary, expected_aux_size: int = -1, 
 	if not _checkpoint_state_is_valid(candidate.state) or not _checkpoint_state_is_valid(candidate.previous):
 		return false
 	return _array_is_finite(candidate.get("continuous", PackedFloat64Array()), continuous.size()) \
-		and _array_is_finite(candidate.aux, aux.size() if expected_aux_size < 0 else expected_aux_size) and _array_is_finite(candidate.inputs, 4) \
+		and _array_is_finite(candidate.aux, aux.size() if expected_aux_size < 0 else expected_aux_size) and _array_is_finite(candidate.inputs, input_size) \
 		and _loads_are_valid(candidate.last_loads) and typeof(candidate.modes) == TYPE_PACKED_INT64_ARRAY \
 		and candidate.modes.size() == (modes.size() if expected_modes_size < 0 else expected_modes_size) and _configuration_is_valid() \
 		and _array_is_finite(RB.inertia_inverse(inertia), 6) \

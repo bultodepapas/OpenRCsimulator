@@ -47,6 +47,9 @@ echo "== HELI-16: generated experimental rotorcraft quantities stay current"
 python3 "$HERE/../research/helicopter/xcell/derive.py" --check
 python3 "$HERE/../research/helicopter/xcell/test_derive.py"
 
+echo "== HELI-25c: articulated inspection source, bindings and copy identity"
+python3 "$HERE/../research/helicopter/assets/compile_hx700_articulated.py"
+
 echo "== AS-01/02: versioned aircraft contract and migration stay current"
 python3 "$HERE/../research/aircraft-standardization/build_schema.py" --check
 python3 "$HERE/../research/aircraft-standardization/parameter_register.py" --check

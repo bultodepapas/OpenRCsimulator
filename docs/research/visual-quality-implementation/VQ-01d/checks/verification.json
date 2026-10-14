@@ -74,5 +74,6 @@
       "clip_sha256": "771f5caf8076e8c6f8e062d4277ede165daafe574b1f622d7217297755f1d541",
       "manifest_sha256": "3d274817dcfb91f2301062b4a07412b202258ad27c1b1e160e34dedf7520e1ee"
     }
-  ]
+  ],
+  "generated_import_files_match_recorded_identity": true
 }

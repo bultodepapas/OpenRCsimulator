@@ -1,7 +1,7 @@
-# HELI-25c draft: native admission tests for the detached neutral HX-700 preview.
+# HELI-25c: native admission tests for the detached neutral HX-700 preview.
 extends SceneTree
 
-const Model := preload("res://../research/helicopter/assets/draft_runtime/hx700_articulated_model.gd")
+const Model := preload("res://aircraft/hx700_articulated_model.gd")
 const PROFILE_PATH := "res://assets/aircraft/hx-700/articulated/construction.json"
 const ASSET_PATH := "res://assets/aircraft/hx-700/articulated/hx-700.glb"
 const MUTATED_PROFILE_PATH := "user://heli25c-construction-mutated.json"
@@ -64,6 +64,10 @@ func _initialize() -> void:
 		data.bindings.remove_at(data.bindings.size() - 1))
 	_reject_profile("wrong profile purpose", func(data: Dictionary) -> void:
 		data.purpose = "flight-ready")
+	_reject_profile("wrong source identity", func(data: Dictionary) -> void:
+		data.source.sha256 = "0".repeat(64))
+	_reject_profile("wrong reviewed asset digest", func(data: Dictionary) -> void:
+		data.asset.sha256 = "0".repeat(64))
 	_reject_profile("unknown top-level field", func(data: Dictionary) -> void:
 		data["unreviewed"] = true)
 	_reject_profile("unknown binding field", func(data: Dictionary) -> void:
@@ -72,6 +76,8 @@ func _initialize() -> void:
 		data.bindings[0].rest_transform.remove_at(0))
 	_reject_profile("non-finite transform component", func(data: Dictionary) -> void:
 		data.bindings[0].rest_transform[9] = NAN)
+	_reject_profile("transform overflow after native precision conversion", func(data: Dictionary) -> void:
+		data.bindings[0].rest_transform[9] = 1.0e300)
 	_reject_profile("singular transform basis", func(data: Dictionary) -> void:
 		data.bindings[0].rest_transform[0] = 0.0
 		data.bindings[0].rest_transform[1] = 0.0
@@ -80,8 +86,24 @@ func _initialize() -> void:
 		_get_binding(data, "root").parent_id = "main.shaft")
 	_reject_profile("rod length mismatch", func(data: Dictionary) -> void:
 		data.linkages[0].length_m += 0.001)
+	_reject_profile("reused linkage endpoint", func(data: Dictionary) -> void:
+		data.linkages[0].endpoint_b = data.linkages[1].endpoint_b)
 	_reject_native_transform("native rest transform mismatch")
+	_reject_native_nonfinite_transform("native non-finite transform component")
+	_reject_wrapper_transform("generated wrapper must remain identity")
 	_reject_native_rod("native linkage endpoint mismatch")
+	_reject_native_metadata("native binding metadata mismatch")
+	_reject_native_metadata_role("native binding role metadata mismatch")
+	_reject_native_mesh("required mesh missing")
+	_reject_missing_required_texture("missing botalon authored texture", "visual.botalon_carbono", "albedo_texture")
+	_reject_missing_required_texture("missing carenado authored albedo texture", "visual.carenado", "albedo_texture")
+	_reject_missing_required_texture("missing carenado authored metallic texture", "visual.carenado", "metallic_texture")
+	_reject_missing_required_texture("missing carenado authored roughness texture", "visual.carenado", "roughness_texture")
+	_reject_empty_texture("zero-sized material texture")
+	_reject_forbidden_child("camera node", Camera3D.new())
+	_reject_forbidden_child("light node", DirectionalLight3D.new())
+	_reject_forbidden_child("animation node", AnimationPlayer.new())
+	_check_scripted_node_rejected()
 	_check_wrong_profile_hash()
 	_check_corrupted_asset_bytes()
 	_check_missing_raw_asset_bytes()
@@ -108,6 +130,29 @@ func _reject_native_transform(label: String) -> void:
 	instance.free()
 
 
+func _reject_native_nonfinite_transform(label: String) -> void:
+	var instance := _scene.instantiate() as Node3D
+	var binding: Dictionary = _get_binding(_profile, "visual.carenado")
+	var node := instance.find_child(String(binding.node), true, false) as Node3D
+	if node != null:
+		node.position.x = NAN
+	var result := Model.validate(_profile.duplicate(true), instance)
+	_check(label, node != null and not result.ok and _has_error(result.errors, "non-finite native transform"), str(result.errors))
+	instance.free()
+
+
+func _reject_wrapper_transform(label: String) -> void:
+	var instance := _scene.instantiate() as Node3D
+	var binding: Dictionary = _get_binding(_profile, "root")
+	var profile_root := instance.find_child(String(binding.node), true, false) as Node3D
+	if profile_root != null and profile_root.get_parent() == instance:
+		instance.position.x += 0.001
+	var result := Model.validate(_profile.duplicate(true), instance)
+	_check(label, profile_root != null and profile_root.get_parent() == instance and not result.ok
+		and _has_error(result.errors, "generated root wrapper"), str(result.errors))
+	instance.free()
+
+
 func _reject_native_rod(label: String) -> void:
 	var instance := _scene.instantiate() as Node3D
 	var endpoint_id: String = String(_profile.linkages[0].endpoint_a)
@@ -117,6 +162,106 @@ func _reject_native_rod(label: String) -> void:
 		node.position.x += 0.001
 	var result := Model.validate(_profile.duplicate(true), instance)
 	_check(label, node != null and not result.ok and _has_error(result.errors, "endpoint distance"), str(result.errors))
+	instance.free()
+
+
+func _reject_native_metadata(label: String) -> void:
+	var instance := _scene.instantiate() as Node3D
+	var binding: Dictionary = _get_binding(_profile, "main.shaft")
+	var node := instance.find_child(String(binding.node), true, false) as Node3D
+	if node != null:
+		var extras: Dictionary = node.get_meta("extras", {}).duplicate(true)
+		extras["openrc_binding_id"] = "tail.shaft"
+		node.set_meta("extras", extras)
+	var result := Model.validate(_profile.duplicate(true), instance)
+	_check(label, node != null and not result.ok and _has_error(result.errors, "metadata ID"), str(result.errors))
+	instance.free()
+
+
+func _reject_native_metadata_role(label: String) -> void:
+	var instance := _scene.instantiate() as Node3D
+	var binding: Dictionary = _get_binding(_profile, "main.shaft")
+	var node := instance.find_child(String(binding.node), true, false) as Node3D
+	if node != null:
+		var extras: Dictionary = node.get_meta("extras", {}).duplicate(true)
+		extras["openrc_binding_role"] = "tail_shaft"
+		node.set_meta("extras", extras)
+	var result := Model.validate(_profile.duplicate(true), instance)
+	_check(label, node != null and not result.ok and _has_error(result.errors, "metadata role"), str(result.errors))
+	instance.free()
+
+
+func _reject_native_mesh(label: String) -> void:
+	var instance := _scene.instantiate() as Node3D
+	var binding: Dictionary = _get_binding(_profile, "visual.botalon_carbono")
+	var node := instance.find_child(String(binding.node), true, false) as MeshInstance3D
+	if node != null:
+		node.mesh = null
+	var result := Model.validate(_profile.duplicate(true), instance)
+	_check(label, node != null and not result.ok and _has_error(result.errors, "no Mesh resource"), str(result.errors))
+	instance.free()
+
+
+func _reject_empty_texture(label: String) -> void:
+	var instance := _scene.instantiate() as Node3D
+	var binding: Dictionary = _get_binding(_profile, "visual.botalon_carbono")
+	var node := instance.find_child(String(binding.node), true, false) as MeshInstance3D
+	var texture_width := -1
+	if node != null:
+		var material := node.get_active_material(0) as BaseMaterial3D
+		if material != null:
+			var override := material.duplicate(true) as BaseMaterial3D
+			var empty_texture := ImageTexture.new()
+			texture_width = empty_texture.get_width()
+			override.albedo_texture = empty_texture
+			node.set_surface_override_material(0, override)
+	var result := Model.validate(_profile.duplicate(true), instance)
+	_check(label, node != null and texture_width == 0 and not result.ok
+		and _has_error(result.errors, "invalid dimensions"), str(result.errors))
+	instance.free()
+
+
+func _reject_missing_required_texture(label: String, binding_id: String, slot_name: String) -> void:
+	var instance := _scene.instantiate() as Node3D
+	var binding: Dictionary = _get_binding(_profile, binding_id)
+	var node := instance.find_child(String(binding.node), true, false) as MeshInstance3D
+	if node != null:
+		var material := node.get_active_material(0) as BaseMaterial3D
+		if material != null:
+			var override := material.duplicate(true) as BaseMaterial3D
+			override.set(slot_name, null)
+			node.set_surface_override_material(0, override)
+	var result := Model.validate(_profile.duplicate(true), instance)
+	_check(label, node != null and not result.ok and _has_error(result.errors, "required material texture is missing")
+		and _has_error(result.errors, slot_name), str(result.errors))
+	instance.free()
+
+
+func _reject_forbidden_child(label: String, child: Node) -> void:
+	var instance := _scene.instantiate() as Node3D
+	child.name = "InjectedForbiddenNode"
+	instance.add_child(child)
+	var result := Model.validate(_profile.duplicate(true), instance)
+	var expected_error := "animation node"
+	if child is Camera3D or child is Light3D:
+		expected_error = "camera or light"
+	_check(label, not result.ok and _has_error(result.errors, expected_error), str(result.errors))
+	instance.free()
+
+
+func _check_scripted_node_rejected() -> void:
+	var script_resource := GDScript.new()
+	script_resource.source_code = "extends Node3D\n"
+	var script_error := script_resource.reload()
+	var instance := _scene.instantiate() as Node3D
+	var scripted_node := Node3D.new()
+	scripted_node.name = "InjectedScriptNode"
+	if script_error == OK:
+		scripted_node.set_script(script_resource)
+		instance.add_child(scripted_node)
+	var result := Model.validate(_profile.duplicate(true), instance)
+	_check("scripted native node", script_error == OK and not result.ok
+		and _has_error(result.errors, "scripted node"), str(result.errors))
 	instance.free()
 
 

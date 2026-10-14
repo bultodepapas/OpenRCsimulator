@@ -287,7 +287,7 @@ Software checks prove behavior and cost on the VM only. Readability and comfort 
 | CAM-19 | Off-screen indicator seam (HUD track draws it) | Indicator angle test for points around and behind the camera / proposed |
 | CAM-20 | Scenery and LOD survey from far camera positions | Captures at 300/800 m from the pilot; issues filed to owners / proposed |
 | CAM-21 | Cost and smoothness on the target machine (30/60/144 Hz) | Frametimes per view; jitter metric; owner notes / proposed |
-| CAM-22 | Pilot acceptance: moving-clip orientation kit per view and zoom law (with X-PERC-3); comfort rating per chase style | Error rate and response time per mode; owner −2…+2 ratings / proposed |
+| CAM-22 | Pilot acceptance: moving-clip orientation kit per view and zoom law (with X-PERC-3); comfort rating per chase style | [VQ-01d pilot-reference tooling](../research/visual-quality-implementation/VQ-01d/README.md) and four matched clips delivered. Full matrix, error rate/controlled response time per mode and owner −2…+2 ratings remain pending. |
 
 Order: CAM-00 → 01 → 02 → 02b → 03/04 → 05 → 06 → 07 → 08 → 10 → 06b → 09 → 16 → 11 → 17 → 18 → 06c → 14 → 13 → 12 → 15 → 19 → 20 → 21 → 22. The pilot-view improvements come early because they serve Gate 2; the magnifier (CAM-18) moves ahead of the cinematic views because three of the surveyed sims treat it as a readability aid.
 

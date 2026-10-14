@@ -58,3 +58,7 @@
 /assets/aircraft/avanti-s-a200/source/** -text
 /assets/aircraft/avanti-s-a200/blender-geometry.json text eol=lf
 /assets/aircraft/avanti-s-a200/source-manifest.json text eol=lf
+
+# HELI-25c construction profiles are admitted by exact byte hashes.
+/assets/aircraft/hx-700/articulated/*.json text eol=lf
+/app/assets/aircraft/hx-700/articulated/*.json text eol=lf

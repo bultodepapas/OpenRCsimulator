@@ -1,4 +1,4 @@
-# HELI-25c draft: strict loader for the neutral HX-700 mechanical preview.
+# HELI-25c: strict loader for the neutral HX-700 mechanical preview.
 # This detached preview is deliberately separate from aircraft/flight registration.
 extends RefCounted
 
@@ -31,6 +31,29 @@ const REQUIRED_ROLE_COUNTS := {
 	"tail_yoke": 1,
 	"tail_bellcrank": 1,
 	"link_endpoint": 18,
+}
+
+const REQUIRED_MESH_ROLES := {
+	"mesh": true,
+	"link_endpoint": true,
+	"actuator_output": true,
+	"main_blade": true,
+	"tail_blade": true,
+	"main_grip": true,
+	"tail_grip": true,
+	"fixed_swash": true,
+	"rotating_swash": true,
+	"tail_slider": true,
+	"tail_yoke": true,
+	"tail_bellcrank": true,
+}
+
+# These are the only authored texture slots in the hash-pinned GLB. Keeping
+# them explicit means an import that drops a .ctex dependency cannot silently
+# turn a textured material into an untextured one.
+const REQUIRED_TEXTURE_SLOTS := {
+	"visual.botalon_carbono": {0: ["albedo_texture"]},
+	"visual.carenado": {0: ["albedo_texture", "metallic_texture", "roughness_texture"]},
 }
 
 const REQUIRED_SEMANTIC_ROLES := {
@@ -231,6 +254,9 @@ static func validate(data: Dictionary, instance: Node3D) -> Dictionary:
 			errors.append("bound native node is not Node3D: " + node_name)
 			continue
 		resolved_bindings[binding_id] = native_node
+		_validate_node_metadata(native_node, binding_id, String(record.role), errors)
+		if REQUIRED_MESH_ROLES.has(String(record.role)):
+			_validate_native_mesh(native_node, binding_id, String(record.role), errors)
 		var parsed_transform := _parse_transform(record.rest_transform)
 		if parsed_transform.ok:
 			_compare_transform(native_node.transform, parsed_transform.transform, binding_id, errors)
@@ -240,6 +266,11 @@ static func validate(data: Dictionary, instance: Node3D) -> Dictionary:
 		and resolved_bindings.get(profile_root_id, null) != instance
 	if extra_nodes < 0 or (extra_nodes > 0 and not has_wrapper):
 		errors.append("imported scene must contain exactly the bound nodes, with at most one generated root wrapper")
+	if has_wrapper:
+		_compare_transform(instance.transform, Transform3D.IDENTITY, "generated root wrapper", errors)
+	for scene_node: Node in scene_nodes:
+		if not binding_by_node.has(String(scene_node.name)) and not (has_wrapper and scene_node == instance):
+			errors.append("imported scene contains an unbound node: " + String(scene_node.name))
 	if extra_nodes == 0 and resolved_bindings.get(profile_root_id, null) != instance:
 		errors.append("profile root binding must name the imported scene root")
 	for binding_id: String in binding_by_id:
@@ -273,8 +304,9 @@ static func _validate_profile_shape(data: Dictionary, errors: Array[String]) -> 
 		errors.append("construction profile has missing or unknown top-level fields")
 	if data.get("schema") != SCHEMA:
 		errors.append("construction profile schema is not supported")
-	if typeof(data.get("version", null)) != TYPE_INT or int(data.get("version", 0)) != 1:
-		errors.append("construction profile version must be integer 1")
+	var version_value: Variant = data.get("version", null)
+	if not _is_finite_number(version_value) or float(version_value) != 1.0:
+		errors.append("construction profile version must be numeric 1")
 	if data.get("profile_id") != PROFILE_ID:
 		errors.append("construction profile ID is not supported")
 	if data.get("purpose") != PURPOSE:
@@ -313,6 +345,7 @@ static func _validate_profile_shape(data: Dictionary, errors: Array[String]) -> 
 
 static func _validate_binding_graph(binding_by_id: Dictionary, errors: Array[String]) -> void:
 	var roots: Array[String] = []
+	var cycle_reported := false
 	for binding_id: String in binding_by_id:
 		var record: Dictionary = binding_by_id[binding_id]
 		var parent_id := String(record.get("parent_id", ""))
@@ -324,7 +357,9 @@ static func _validate_binding_graph(binding_by_id: Dictionary, errors: Array[Str
 		var cursor := binding_id
 		while not cursor.is_empty() and binding_by_id.has(cursor):
 			if visited.has(cursor):
-				errors.append("binding parent graph contains a cycle through %s" % cursor)
+				if not cycle_reported:
+					errors.append("binding parent graph contains a cycle through %s" % cursor)
+					cycle_reported = true
 				break
 			visited[cursor] = true
 			cursor = String(binding_by_id[cursor].get("parent_id", ""))
@@ -402,6 +437,11 @@ static func _validate_linkages(data: Dictionary, binding_by_id: Dictionary, reso
 
 static func _collect_scene_nodes(node: Node, nodes: Array[Node], errors: Array[String]) -> void:
 	nodes.append(node)
+	if node is Node3D:
+		for component: float in _transform_values((node as Node3D).transform):
+			if not is_finite(component):
+				errors.append("imported node has a non-finite native transform: " + String(node.name))
+				break
 	if node.get_script() != null:
 		errors.append("imported scene contains a scripted node: " + String(node.name))
 	if node is Camera3D or node is Light3D:
@@ -414,13 +454,83 @@ static func _collect_scene_nodes(node: Node, nodes: Array[Node], errors: Array[S
 		_collect_scene_nodes(child, nodes, errors)
 
 
+static func _validate_node_metadata(node: Node3D, binding_id: String, role: String,
+		errors: Array[String]) -> void:
+	var extras_value: Variant = node.get_meta("extras", null)
+	if not extras_value is Dictionary:
+		errors.append("native node lacks its glTF binding extras: " + String(node.name))
+		return
+	var extras: Dictionary = extras_value
+	if not _has_exact_keys(extras, ["openrc_binding_id", "openrc_binding_role"]):
+		errors.append("native node has missing or unknown glTF binding extras: " + String(node.name))
+	if extras.get("openrc_binding_id") != binding_id:
+		errors.append("native node metadata ID does not match binding: " + binding_id)
+	if extras.get("openrc_binding_role") != role:
+		errors.append("native node metadata role does not match binding: " + binding_id)
+
+
+static func _validate_native_mesh(node: Node3D, binding_id: String, role: String,
+		errors: Array[String]) -> void:
+	if not node is MeshInstance3D:
+		errors.append("binding role %s must resolve to MeshInstance3D: %s" % [role, binding_id])
+		return
+	var mesh_node := node as MeshInstance3D
+	if mesh_node.mesh == null:
+		errors.append("mesh binding has no Mesh resource: " + binding_id)
+		return
+	var mesh: Mesh = mesh_node.mesh
+	if mesh.get_surface_count() <= 0:
+		errors.append("mesh binding has no surfaces: " + binding_id)
+		return
+	for surface_index in range(mesh.get_surface_count()):
+		var material := mesh_node.get_active_material(surface_index)
+		if material == null:
+			errors.append("mesh surface has no active material: %s[%d]" % [binding_id, surface_index])
+			continue
+		if not material is BaseMaterial3D:
+			errors.append("mesh surface material must be BaseMaterial3D: %s[%d]" % [binding_id, surface_index])
+			continue
+		_validate_material_textures(material as BaseMaterial3D, binding_id, surface_index, errors)
+
+
+static func _validate_material_textures(material: BaseMaterial3D, binding_id: String,
+		surface_index: int, errors: Array[String]) -> void:
+	var required_surfaces: Dictionary = REQUIRED_TEXTURE_SLOTS.get(binding_id, {})
+	var required_slots: Array = required_surfaces.get(surface_index, [])
+	for slot_value: Variant in required_slots:
+		var slot_name := String(slot_value)
+		var required_texture: Variant = material.get(slot_name)
+		if required_texture == null:
+			errors.append("required material texture is missing: %s[%d].%s" % [binding_id, surface_index, slot_name])
+		elif not required_texture is Texture2D:
+			errors.append("required material texture is not Texture2D: %s[%d].%s" % [binding_id, surface_index, slot_name])
+	for property_info: Dictionary in material.get_property_list():
+		var property_name := String(property_info.get("name", ""))
+		if not property_name.ends_with("_texture"):
+			continue
+		if int(property_info.get("type", TYPE_NIL)) != TYPE_OBJECT:
+			continue
+		var texture_value: Variant = material.get(property_name)
+		if texture_value == null:
+			continue
+		if not texture_value is Texture2D:
+			errors.append("material texture slot is not Texture2D: %s[%d].%s" % [binding_id, surface_index, property_name])
+			continue
+		var texture := texture_value as Texture2D
+		if texture.get_width() <= 0 or texture.get_height() <= 0:
+			errors.append("material texture has invalid dimensions: %s[%d].%s" % [binding_id, surface_index, property_name])
+
+
 static func _compare_transform(actual: Transform3D, expected: Transform3D, binding_id: String,
 		errors: Array[String]) -> void:
 	var actual_values := _transform_values(actual)
 	var expected_values := _transform_values(expected)
 	for index in range(12):
-		if absf(float(actual_values[index]) - float(expected_values[index])) > TRANSFORM_TOLERANCE:
-			errors.append("native rest transform differs from binding %s by more than %.1e" % [binding_id, TRANSFORM_TOLERANCE])
+		if not is_finite(actual_values[index]) or not is_finite(expected_values[index]):
+			errors.append("native rest transform contains a non-finite component for binding %s" % binding_id)
+			return
+		if absf(actual_values[index] - expected_values[index]) > TRANSFORM_TOLERANCE:
+			errors.append("native rest transform differs from binding %s by more than %s" % [binding_id, str(TRANSFORM_TOLERANCE)])
 			return
 
 
@@ -439,7 +549,11 @@ static func _parse_transform(value: Variant) -> Dictionary:
 	var determinant := basis.determinant()
 	if not is_finite(determinant) or absf(determinant) <= 1.0e-12:
 		return {"ok": false, "error": "must have an invertible basis"}
-	return {"ok": true, "transform": Transform3D(basis, Vector3(values[9], values[10], values[11]))}
+	var transform := Transform3D(basis, Vector3(values[9], values[10], values[11]))
+	for component: float in _transform_values(transform):
+		if not is_finite(component):
+			return {"ok": false, "error": "must remain finite at native Vector3 precision"}
+	return {"ok": true, "transform": transform}
 
 
 static func _transform_values(value: Transform3D) -> Array[float]:

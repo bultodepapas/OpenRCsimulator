@@ -54,7 +54,7 @@ func _initialize() -> void:
 	check("flap request exposes intermediate position", session.radio.auxiliary_amount("flaps") == 0.5)
 	check("flap notice declares missing physics", flight._note.contains("50%") and flight._note.contains("not simulated"))
 	flight.controller_action("gear_toggle")
-	check("gear request and unsupported notice", session.radio.auxiliary_amount("gear") == 1.0 and flight._note.contains("retraction is not simulated"))
+	check("fixed landing gear is explained without creating an AUX request", session.radio.auxiliary_amount("gear") == 0.0 and flight._note.contains("fixed"))
 	check("requests do not pretend to alter aircraft physics", session.sim.inputs == before_inputs and session.sim.state == before_state and session.sim.aux == before_aux)
 	flight.controller_action("smoke_toggle")
 	check("missing smoke is explained without changing pump", session.radio.smoke_amount() == 0.0 and flight._note.contains("not available"))
@@ -79,10 +79,28 @@ func _initialize() -> void:
 	session._poll_controller()
 	check("calibration polling cannot re-enable AUX", not session.radio.auxiliary_action("smoke_toggle") and session.radio.smoke_amount() == 0.0)
 	session.cancel_calibration()
+	var gear_session := Session.new()
+	gear_session.physics_enabled = false
+	gear_session.input_enabled = false
+	gear_session.setup("res://data/aircraft/sebart_avanti_s_a200.json", "sebart-avanti-s-a200-p100rx")
+	gear_session.sim.set_paused(false)
+	flight.session = gear_session
+	check("Avanti gear controller action deploys the gear", flight.controller_action("gear_toggle") and bool(gear_session.gear_state().target_down))
+	var target_before_pause: bool = bool(gear_session.gear_state().target_down)
+	check("brake test fixture accepts a held demand", gear_session.set_wheel_brake(1.0))
+	gear_session.sim.set_paused(true)
+	flight.controller_action("gear_toggle")
+	check("paused gear action does not queue", bool(gear_session.gear_state().target_down) == target_before_pause)
+	var brake_release := InputEventKey.new()
+	brake_release.physical_keycode = KEY_B
+	brake_release.pressed = false
+	flight._input(brake_release)
+	check("B key release clears wheel braking during pause", float(gear_session.gear_state().brake) == 0.0)
 	flight._smoke.free()
 	flight._night_kit.free()
 	flight.free()
 	camera.free()
 	session.free()
+	gear_session.free()
 	print("controller flight actions: %d checks, %d failures" % [checks, failures])
 	quit(1 if failures else 0)

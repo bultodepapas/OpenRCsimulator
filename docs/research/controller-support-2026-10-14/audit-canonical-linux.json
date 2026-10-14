@@ -1,0 +1,134 @@
+{
+  "date": "2026-10-14",
+  "platform": "Linux / WSL2 Ubuntu",
+  "engine": "4.7.2-stable",
+  "command": "bash app/test.sh",
+  "snapshot": "Isolated working-tree copy with .gitattributes byte policy, final controller files synchronized before functional suites.",
+  "status": "deliberately_stopped_after_controller_integration",
+  "full_suite_pass": false,
+  "reason": "Supplementary scope check ended after all controller-prefixed suites; unrelated crash/physics tests were not required to close this controller audit.",
+  "completed_phases": [
+    "resource import",
+    "offline generator/reference checks preceding script parse",
+    "float64/math/shader guards",
+    "whole-application script parse"
+  ],
+  "completed_gdscript_suites_before_stop": 72,
+  "interrupted_suite": "test_crash_wreck.gd",
+  "controller_suites": [
+    {
+      "test": "test_controller_actions.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   default semantic actions have recovery and no overlapping conflicts\nok   same button on another device is ignored\nok   selected-device A resolves to menu accept\nok   button release produces no semantic action\nok   menu navigation is not routed as flight trim\nok   menu navigation resolves only in menu context\nok   axis threshold resolves matching sign on selected device\nok   axis value below threshold does not resolve\nok   keyboard remap resolves without a gamepad id\nok   keyboard release produces no semantic action\nok   duplicate back/pause recovery binding is rejected\nok   the sentinel button index is rejected\nok   semantic action labels translate to Spanish\nok   controller binding labels translate to Spanish\nok   pause recovery notice translates to Spanish\nok   controller form and axis controls are translated\nok   rate and absolute throttle presets are distinguished in Spanish\nok   radio recovery, profile type and safety prompts translate\nok   controller setup and arming prompts translate\nall controller action checks passed"
+    },
+    {
+      "test": "test_controller_aux_runtime.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nWARNING: Existing flaps control overlaps a newly calibrated AETR axis; reassign that auxiliary channel.\n     at: push_warning (core/variant/variant_utility.cpp:1033)\n     GDScript backtrace (most recent call first):\n         [0] _preserve_smoke_if_clear (res://input/rc_calibration.gd:214)\n         [1] _next (res://input/rc_calibration.gd:122)\n         [2] advance (res://input/rc_calibration.gd:114)\n         [3] _calibrate (res://tests/test_controller_aux_runtime.gd:222)\n         [4] _run (res://tests/test_controller_aux_runtime.gd:163)\n         [5] _initialize (res://tests/test_controller_aux_runtime.gd:20)\nController auxiliary runtime: 38/38 checks passed"
+    },
+    {
+      "test": "test_controller_aux_setup.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   Back and Pause cannot be cleared\nok   optional semantic actions expose Clear\nok   Clear writes an explicit unbound action and passes profile binding validation\nok   auxiliary help identifies flap and gear bindings as unsimulated requests\nok   Axis mode creates a valid unbound smoke input without colliding with AETR\nok   Axis mapping supports axis 9, edited endpoints, and automatic inversion\nok   Invert swaps axis endpoints and remains consistent with the runtime shape\nok   axis live preview identifies the selected auxiliary source axis\nok   Flaps axis picker allocates a source outside AETR and the smoke axis\nok   Gear button supports index 127 and toggle-on-press mode\nok   button live preview names the button, mode, and physical state\nok   button mode also supports maintained level behavior\nok   Disabled cleanly removes optional channels from the draft\nok   draft auxiliary mappings pass the profile binding validator\nok   Save explains when an AUX mapping overlaps a flight axis\nok   Remap explains when an action conflicts with an AUX input\nok   lower auxiliary controls are reachable by follow-focus scrolling\nall controller auxiliary setup checks passed"
+    },
+    {
+      "test": "test_controller_binding_audit.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\ncontroller binding audit: 14 checks, 0 failures"
+    },
+    {
+      "test": "test_controller_conditioning.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController conditioning: 30 checks, 0 failed"
+    },
+    {
+      "test": "test_controller_extended_actions.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nPASS extended controller actions: 77 checks"
+    },
+    {
+      "test": "test_controller_flight_actions.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: calibrating radio\ncontroller flight actions: 23 checks, 0 failures"
+    },
+    {
+      "test": "test_controller_ground.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nGround controller integration: 22/22 checks passed"
+    },
+    {
+      "test": "test_controller_integration.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller lost. Select a controller or keyboard in Controls.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller lost. Select a controller or keyboard in Controls.\nController integration: 27/27 checks passed"
+    },
+    {
+      "test": "test_controller_menu.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: calibrating radio\nController menu: 23/23 checks passed\nWARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).\n   at: cleanup (core/object/object.cpp:2536)"
+    },
+    {
+      "test": "test_controller_persistence.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller lost. Select a controller or keyboard in Controls.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nController persistence: 25 checks, 0 failures"
+    },
+    {
+      "test": "test_controller_profile.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController profile: 49 checks, 0 failed"
+    },
+    {
+      "test": "test_controller_profile_hardening.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController profile hardening: 30 checks, 0 failures"
+    },
+    {
+      "test": "test_controller_prompts.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nPASS controller prompts: 137 checks"
+    },
+    {
+      "test": "test_controller_registry.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController registry: 27 checks, 0 failed"
+    },
+    {
+      "test": "test_controller_routing_audit.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\ncontroller routing audit: 6 checks, 0 failures"
+    },
+    {
+      "test": "test_controller_setup.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   UI Input records the selected menu device\nok   custom Accept reaches native ui_accept\nok   custom Back reaches native ui_cancel\nok   custom navigation reaches native ui_up\nok   all native joypad GUI events belong to the one selected device\nok   keyboard ui_accept events survive device selection\nok   custom keyboard Accept reaches native ui_accept\nok   clearing UI ownership removes every joypad GUI event\nok   clearing UI ownership removes the injected remap key\nok   keyboard ui_accept remains after isolation\nok   setup opens with the controller section at the top of the page\nok   new setup opens with a valid Mode 2 draft\nok   preset choices retain full tooltip labels\nok   radio calibration is an explicit public action\nok   calibration button emits only the explicit calibration request\nok   empty device/profile choices carry the real -1 ID\nok   current_profile returns an isolated draft copy\nok   axis, deadzone, expo and inversion edit a valid draft\nok   Mode 1 preset updates channel mapping\nok   trigger help names separate roll and pitch axes and release-to-arm\nok   unknown joystick exposes an explicit kind choice and starts unconfigured\nok   choosing Gamepad creates a Mode 2 draft without applying it\nok   choosing Radio creates a custom absolute-throttle draft\nok   changing profile kind never starts radio calibration\nok   unknown joystick is disabled for menu navigation\nok   ambiguous controller identity stays disabled for menu navigation\nok   radio devices are excluded from menu navigation choices\nok   unknown joystick cannot be applied for menu navigation\nok   device picker edits stay drafts until Apply devices\nok   a rejected device-apply callback reports the race and does not emit success\nok   successful apply callback emits both explicit role choices\nok   setup does not mutate the registry by itself\nok   Cancel requests closure\nok   Cancel never writes a profile\nok   Auto renders the actual button binding as text and a packaged glyph\nok   manual Xbox family changes the icon and readable label for the current remapped button\nok   manual glyph selection leaves semantic actions and the remapped physical button unchanged\nok   Cancel does not persist a draft glyph-family choice\nok   Save persists the chosen PlayStation prompt family\nok   saving presentation preference leaves semantic bindings intact\nok   unknown device has no menu ownership before a saved profile matches\nok   explicit Gamepad choice remains a draft and does not enable the menu device\nok   a saved, validated and identity-matched Gamepad profile enables the unknown menu pad\nok   radio-kind profiles and radio-purpose devices never gain menu navigation\nok   Home exposes Controller settings with a source control\nok   Home displays explicit controller state\nok   Pause exposes Controller settings with a source control\nall controller setup checks passed"
+    },
+    {
+      "test": "test_controller_setup_safety.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   successful recovery still displays its warning\nok   initial focus lands on the flight controller choice\nok   captured joypad press does not escape to unhandled input\nok   matching joypad release is consumed after capture ends\nok   matching keyboard release is consumed after capture ends\nok   matching release stays consumed when the logical keycode changes\nok   captured axis stays consumed until it returns to neutral\nok   Escape cancels remapping without closing the screen\nok   Escape release stays inside remapping recovery\nok   changing flight controller cancels its pending capture\nok   new device cannot finish capture started for the old device\nok   switching profiles preserves unsaved channel edits\nok   switching profiles preserves unsaved name edits\nok   switching devices preserves unsaved channel edits\nok   switching devices preserves unsaved name edits\nok   AUX suppresses only a colliding inherited flight action\nok   explicit action remains visible and is rejected on AUX conflict\nok   disconnecting the captured controller cancels remapping\nok   runtime rejection leaves profile setup open\nok   runtime rejection does not fall through to storage\nok   runtime rejection preserves the editable draft\nok   gamepad preset popup is open while focused\nok   Escape dismisses the focused option popup without closing setup\nok   Save does not persist an in-progress remap\nok   Cancel exits and discards while capture is active\ncontroller setup audit passed"
+    },
+    {
+      "test": "test_controller_store.gd",
+      "completed": true,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController profile store: 36 checks, 0 failed"
+    }
+  ]
+}
