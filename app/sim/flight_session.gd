@@ -437,6 +437,10 @@ var device_info: Callable = func(device: int) -> Dictionary:
 		vendor_id = info.get("vendor_id", 0), product_id = info.get("product_id", 0), known = Input.is_joy_known(device) }
 ## Saved radio calibrations, one per device key.
 var profiles_path := "user://rc_calibration.cfg"
+## Interactive shell owns selection; technical sessions retain their explicit legacy test seams.
+var external_controller_selection := false
+var _controller_lost := false
+var _pending_controller_start := -1.0
 ## The calibration wizard while it runs, else null.
 var calibration: RefCounted = null
 ## Source enable, stored with accepted simulation modes. Glow/electric shafts can coast or windmill
@@ -544,6 +548,8 @@ func _load_selected_aircraft() -> Dictionary:
 
 func _ready() -> void:
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
+	if external_controller_selection:
+		return
 	var pads := Input.get_connected_joypads()
 	if not pads.is_empty():
 		_on_joy_connection_changed(pads[0], true)
@@ -557,6 +563,10 @@ func _input(event: InputEvent) -> void:
 
 
 func _on_joy_connection_changed(device: int, is_connected: bool) -> void:
+	if external_controller_selection:
+		if not is_connected and radio.connected and device == radio.device_id:
+			controller_disconnected()
+		return
 	if is_connected and not radio.connected:
 		var info: Dictionary = device_info.call(device)
 		radio.connect_device(device, info, RcCalibration.load_profile(profiles_path, RcInput.key_for(device, info)))
@@ -575,7 +585,7 @@ func _on_joy_connection_changed(device: int, is_connected: bool) -> void:
 
 ## [K]: start the radio calibration wizard. The simulation pauses and the engine idles until it is done.
 func start_calibration() -> bool:
-	if not radio.connected:
+	if not radio.connected or radio.profile.get("kind", "radio") == "gamepad":
 		return false
 	calibration = RcCalibration.new(radio.profile)
 	_failsafe("calibrating radio")
@@ -614,6 +624,8 @@ func _failsafe(reason: String) -> void:
 
 ## Freezes the session for `reason` (a menu): inputs, crash countdown and simulation all stop where they are.
 func hold(reason: String) -> void:
+	if external_controller_selection and not holds.has(reason) and radio.connected and radio.is_gamepad():
+		radio.require_neutral(true)
 	holds[reason] = true
 	sim.set_paused(true)
 
@@ -621,6 +633,42 @@ func hold(reason: String) -> void:
 ## Lifts one hold. The flight stays paused until resume() (or the crash hold ends and restarts it).
 func release(reason: String) -> void:
 	holds.erase(reason)
+
+
+## Called only at a paused, explicit shell selection boundary; never by device enumeration.
+func apply_controller_selection(device: int, info: Dictionary, profile: Dictionary, initial_start := false) -> bool:
+	var staged_throttle: float = float(commands.throttle) if initial_start else 0.0
+	calibration = null
+	radio.disconnect_device()
+	_controller_lost = false
+	_pending_controller_start = -1.0
+	_failsafe("Controller selected; check controls and continue.")
+	if device < 0:
+		return true
+	if profile.is_empty():
+		_controller_lost = true
+		pause_reason = "Configure the selected controller before flying."
+		return false
+	radio.connect_device(device, info, profile)
+	if radio.is_rate_throttle():
+		_pending_controller_start = staged_throttle
+		pause_reason = "Centre and release controls, then continue at %d%% throttle." % roundi(staged_throttle * 100.0)
+	return true
+
+
+func controller_disconnected() -> void:
+	calibration = null
+	radio.disconnect_device()
+	_controller_lost = true
+	_pending_controller_start = -1.0
+	_failsafe("Controller lost. Select a controller or keyboard in Controls.")
+
+
+func controller_focus_lost() -> void:
+	if external_controller_selection and radio.connected:
+		radio.require_neutral(true)
+		sim.set_paused(true)
+		pause_reason = "Focus lost. Release controls and continue explicitly."
 
 
 ## E3a: the wheels roll on this field's surfaces (a validated FieldLoader field). Invalid surface data refuses the
@@ -802,13 +850,16 @@ func is_flyable() -> bool:
 
 ## Whether resume() would fly now: flyable, not held, not showing a crash.
 func can_resume() -> bool:
-	return holds.is_empty() and crash.is_empty() and _flight_ready()
+	return holds.is_empty() and crash.is_empty() and _flight_ready() and not _controller_lost \
+		and (not external_controller_selection or not radio.connected or radio.armed)
 
 
 ## The pilot's explicit "continue" (never automatic). Refused while a menu holds the session or a crash is shown
 ## (the crash restarts by itself; flying on would pass through the ground).
 func resume() -> void:
 	if not holds.is_empty() or not crash.is_empty():
+		return
+	if _controller_lost or (external_controller_selection and radio.connected and not radio.armed):
 		return
 	if not _has_valid_start():
 		sim.set_paused(true)
@@ -819,6 +870,13 @@ func resume() -> void:
 		sim.set_paused(true)
 		pause_reason = "simulation fault: " + sim.fault_reason
 		return
+	if external_controller_selection and radio.connected:
+		if _pending_controller_start >= 0.0:
+			radio.set_rate_throttle_for_start(_pending_controller_start)
+			_pending_controller_start = -1.0
+		commands = radio.sticks()
+		raw = commands.duplicate()
+		sim.inputs = _inputs()
 	pause_reason = ""
 	sim.set_paused(false)
 
@@ -1355,7 +1413,13 @@ func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
 
 func _physics_process(_delta: float) -> void:
 	if not holds.is_empty():
+		if external_controller_selection and input_enabled and radio.connected:
+			radio.poll(read_axis, sim.dt(), Callable(), false)
 		return # frozen by a menu: no sampling (navigation keys never reach the flight), no crash countdown
+	if external_controller_selection and sim.paused and calibration == null:
+		if input_enabled and radio.connected:
+			radio.poll(read_axis, sim.dt(), Callable(), false)
+		return
 	if input_enabled:
 		if radio.connected and calibration != null:
 			radio.poll(read_axis, sim.dt())
@@ -1712,6 +1776,11 @@ func reset() -> void:
 			_fail_selected_start(str(result.message))
 	else:
 		_fail_selected_start("unsupported start choice '%s'" % start_choice)
+	if external_controller_selection and radio.connected:
+		_pending_controller_start = float(commands.throttle) if radio.is_rate_throttle() else -1.0
+		radio.require_neutral(false)
+		sim.set_paused(true)
+		pause_reason = "Restart ready. Release controls and continue explicitly."
 
 
 ## Rebuilds the ordinary trimmed flight without emitting a second reset signal.
@@ -1890,7 +1959,7 @@ func _flight_ready() -> bool:
 ## D6e: true while the aircraft's normal rate profile shapes the sticks (see rate_profile).
 func rates_active() -> bool:
 	return rate_profile == "normal" and aircraft.get("ok", false) and aircraft.model.controls.has("rates") \
-		and not (radio.connected and not radio.is_rate_throttle())
+		and not (radio.connected and not radio.is_gamepad())
 
 
 ## Manual elevator trim, degrees trailing edge up (+ = nose up). Only changes the command offset;

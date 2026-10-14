@@ -1,0 +1,796 @@
+{
+  "complete": false,
+  "configuration": {
+    "aircraft": [
+      "jensen-das-ugly-stik-60",
+      "p51d-mustang-120",
+      "turbo-lumber-evolution"
+    ],
+    "cases": [
+      "maneuver",
+      "runway",
+      "lake"
+    ],
+    "meaning": "simulation ticks; default warmup is 10 simulated seconds and default sample is 60 simulated seconds, not real-time qualification",
+    "repeats": 1,
+    "sample_ticks": 240,
+    "tick_hz": 240,
+    "timeout_seconds_per_probe": 1800.0,
+    "warmup_ticks": 24
+  },
+  "failure": "one or more runs failed or paired trajectories were not comparable",
+  "failures": [
+    "p51d-mustang-120/runway/repeat-01/on: Godot exited with status 2",
+    "p51d-mustang-120/runway/repeat-01/on: probe did not create its report",
+    "p51d-mustang-120/runway/repeat-01/off: Godot exited with status 2",
+    "p51d-mustang-120/runway/repeat-01/off: probe did not create its report",
+    "p51d-mustang-120/runway/repeat-01: observer-on report unavailable; observer-off report unavailable"
+  ],
+  "format": "openrc-session-baseline v1",
+  "metadata": {
+    "engine": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "required_version": "4.7.2",
+      "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+      "version": "4.7.2.stable.official.ed1daf0bf"
+    },
+    "probe": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\session_probe.gd",
+      "sha256": "b922d870cd545e796a601c21f8c16c500a41e2b13cac2ad8b04ab220bec8a2fb"
+    },
+    "system": {
+      "logical_cpu_count": 24,
+      "machine": "AMD64",
+      "platform": "Windows-10-10.0.26100-SP0",
+      "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+      "python": "3.11.9",
+      "release": "10",
+      "system": "Windows"
+    },
+    "workspace": {
+      "branch": "main",
+      "commit": "72403977b7e655989b48c1cc468ad89beb27aa62",
+      "dirty_tracked_code": [
+        {
+          "path": "research/test-tools.sh",
+          "present": true,
+          "sha256": "5ce7dfb548bda9d9a5fb8cecfd4270724a9ab98dad0b278e2e03e5d7d0a9aced",
+          "tracked": true
+        }
+      ],
+      "status_porcelain": [
+        " M docs/TOOLS.md",
+        " M research/test-tools.sh",
+        "?? research/performance/README.md",
+        "?? research/performance/native_summary.py",
+        "?? research/performance/session_baseline.py",
+        "?? research/performance/session_probe.gd",
+        "?? research/performance/test_session_baseline.py",
+        "?? research/performance/test_texture_inventory.py",
+        "?? research/performance/texture_inventory.py"
+      ],
+      "untracked_code": [
+        {
+          "path": "research/performance/native_summary.py",
+          "present": true,
+          "sha256": "73014619ee92436fe24dcde805c24ea231f4ca7fb482b2a000e9aca042019878",
+          "tracked": false
+        },
+        {
+          "path": "research/performance/session_baseline.py",
+          "present": true,
+          "sha256": "9ec3ab76311f4d15e050b2e2860588822227dc0868e32d625f16761d3fa460c5",
+          "tracked": false
+        },
+        {
+          "path": "research/performance/session_probe.gd",
+          "present": true,
+          "sha256": "b922d870cd545e796a601c21f8c16c500a41e2b13cac2ad8b04ab220bec8a2fb",
+          "tracked": false
+        },
+        {
+          "path": "research/performance/test_session_baseline.py",
+          "present": true,
+          "sha256": "56b847c56bf81b79917f9d6138969fbf2ebea96857f798783c6bb0e99c7b2aab",
+          "tracked": false
+        },
+        {
+          "path": "research/performance/test_texture_inventory.py",
+          "present": true,
+          "sha256": "377a0beb045a4fe4a58bf4ec193cdd3489ab9571602b611ed9be977e9fbc35b5",
+          "tracked": false
+        },
+        {
+          "path": "research/performance/texture_inventory.py",
+          "present": true,
+          "sha256": "ee42c1683532d6c74285f91b58c92d937b98ee84502e1114a985ec00c4e3df0b",
+          "tracked": false
+        }
+      ]
+    }
+  },
+  "pairs": [
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "maneuver",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 925.2416666666667,
+      "observer_on_wall_usec_per_tick": 1108.2333333333333,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": 182.99166666666667,
+      "reasons": [],
+      "repeat": 1,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "09ac3d6b6cf4ef3bbbf2b69a8a55f3ca04248b63cc957ce2e1219bef8e17d7cb",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\jensen-das-ugly-stik-60\\maneuver\\repeat-01-observer-off.log",
+          "measured_wall_usec": 222058,
+          "measured_wall_usec_per_sample_tick": 925.2416666666667,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\jensen-das-ugly-stik-60\\maneuver\\repeat-01-observer-off.json",
+          "timing_usec_nearest_rank": {},
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "09ac3d6b6cf4ef3bbbf2b69a8a55f3ca04248b63cc957ce2e1219bef8e17d7cb",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\jensen-das-ugly-stik-60\\maneuver\\repeat-01-observer-on.log",
+          "measured_wall_usec": 265976,
+          "measured_wall_usec_per_sample_tick": 1108.2333333333333,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\jensen-das-ugly-stik-60\\maneuver\\repeat-01-observer-on.json",
+          "timing_usec_nearest_rank": {
+            "input_usec": {
+              "p100": 246,
+              "p50": 154,
+              "p95": 197,
+              "p99": 226
+            },
+            "simulation_usec": {
+              "p100": 1465,
+              "p50": 1003,
+              "p95": 1183,
+              "p99": 1388
+            },
+            "tick_usec": {
+              "p100": 1668,
+              "p50": 1160,
+              "p95": 1367,
+              "p99": 1554
+            }
+          },
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "runway",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 2680.0666666666666,
+      "observer_on_wall_usec_per_tick": 3222.1,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": 542.0333333333333,
+      "reasons": [],
+      "repeat": 1,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "e6bab21a40b6c95632631885d6fd5b04b759471d304501d66aa37e8e29fe9c19",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\jensen-das-ugly-stik-60\\runway\\repeat-01-observer-off.log",
+          "measured_wall_usec": 643216,
+          "measured_wall_usec_per_sample_tick": 2680.0666666666666,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\jensen-das-ugly-stik-60\\runway\\repeat-01-observer-off.json",
+          "timing_usec_nearest_rank": {},
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "e6bab21a40b6c95632631885d6fd5b04b759471d304501d66aa37e8e29fe9c19",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\jensen-das-ugly-stik-60\\runway\\repeat-01-observer-on.log",
+          "measured_wall_usec": 773304,
+          "measured_wall_usec_per_sample_tick": 3222.1,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\jensen-das-ugly-stik-60\\runway\\repeat-01-observer-on.json",
+          "timing_usec_nearest_rank": {
+            "input_usec": {
+              "p100": 1102,
+              "p50": 395,
+              "p95": 747,
+              "p99": 1047
+            },
+            "simulation_usec": {
+              "p100": 6858,
+              "p50": 2382,
+              "p95": 4218,
+              "p99": 5639
+            },
+            "tick_usec": {
+              "p100": 7378,
+              "p50": 2812,
+              "p95": 4983,
+              "p99": 6214
+            }
+          },
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "lake",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 904.7333333333333,
+      "observer_on_wall_usec_per_tick": 920.4875,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": 15.754166666666606,
+      "reasons": [],
+      "repeat": 1,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "af007310dad6924614c92237ba041e45c751551a98304b4b2a82e550b44b11c3",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\jensen-das-ugly-stik-60\\lake\\repeat-01-observer-off.log",
+          "measured_wall_usec": 217136,
+          "measured_wall_usec_per_sample_tick": 904.7333333333333,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\jensen-das-ugly-stik-60\\lake\\repeat-01-observer-off.json",
+          "timing_usec_nearest_rank": {},
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "af007310dad6924614c92237ba041e45c751551a98304b4b2a82e550b44b11c3",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\jensen-das-ugly-stik-60\\lake\\repeat-01-observer-on.log",
+          "measured_wall_usec": 220917,
+          "measured_wall_usec_per_sample_tick": 920.4875,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\jensen-das-ugly-stik-60\\lake\\repeat-01-observer-on.json",
+          "timing_usec_nearest_rank": {
+            "input_usec": {
+              "p100": 432,
+              "p50": 253,
+              "p95": 303,
+              "p99": 376
+            },
+            "simulation_usec": {
+              "p100": 1047,
+              "p50": 629,
+              "p95": 784,
+              "p99": 972
+            },
+            "tick_usec": {
+              "p100": 1397,
+              "p50": 882,
+              "p95": 1131,
+              "p99": 1272
+            }
+          },
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "case_id": "maneuver",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 880.7583333333333,
+      "observer_on_wall_usec_per_tick": 903.4,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": 22.64166666666665,
+      "reasons": [],
+      "repeat": 1,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "b3cedd6f2ba0ace5c17918a2f03dbf668bc74b03410c17135627546dde21b7f0",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\p51d-mustang-120\\maneuver\\repeat-01-observer-off.log",
+          "measured_wall_usec": 211382,
+          "measured_wall_usec_per_sample_tick": 880.7583333333333,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\p51d-mustang-120\\maneuver\\repeat-01-observer-off.json",
+          "timing_usec_nearest_rank": {},
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "b3cedd6f2ba0ace5c17918a2f03dbf668bc74b03410c17135627546dde21b7f0",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\p51d-mustang-120\\maneuver\\repeat-01-observer-on.log",
+          "measured_wall_usec": 216816,
+          "measured_wall_usec_per_sample_tick": 903.4,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\p51d-mustang-120\\maneuver\\repeat-01-observer-on.json",
+          "timing_usec_nearest_rank": {
+            "input_usec": {
+              "p100": 211,
+              "p50": 97,
+              "p95": 108,
+              "p99": 189
+            },
+            "simulation_usec": {
+              "p100": 1607,
+              "p50": 774,
+              "p95": 885,
+              "p99": 1192
+            },
+            "tick_usec": {
+              "p100": 1815,
+              "p50": 871,
+              "p95": 1008,
+              "p99": 1300
+            }
+          },
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "case_id": "runway",
+      "comparable": false,
+      "fingerprints_equal": null,
+      "machine_equal": null,
+      "observer_off_wall_usec_per_tick": null,
+      "observer_on_wall_usec_per_tick": null,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": null,
+      "reasons": [
+        "observer-on report unavailable",
+        "observer-off report unavailable"
+      ],
+      "repeat": 1,
+      "runs": {
+        "off": {
+          "accepted": false,
+          "failures": [
+            "Godot exited with status 2",
+            "probe did not create its report"
+          ]
+        },
+        "on": {
+          "accepted": false,
+          "failures": [
+            "Godot exited with status 2",
+            "probe did not create its report"
+          ]
+        }
+      },
+      "world_equal": null
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "case_id": "lake",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 1199.5583333333334,
+      "observer_on_wall_usec_per_tick": 1970.15,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": 770.5916666666667,
+      "reasons": [],
+      "repeat": 1,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "2d01555c9053bef5fed8bfcda78e138699b7df1852486cc1a7bbc255f9f622e7",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\p51d-mustang-120\\lake\\repeat-01-observer-off.log",
+          "measured_wall_usec": 287894,
+          "measured_wall_usec_per_sample_tick": 1199.5583333333334,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\p51d-mustang-120\\lake\\repeat-01-observer-off.json",
+          "timing_usec_nearest_rank": {},
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "2d01555c9053bef5fed8bfcda78e138699b7df1852486cc1a7bbc255f9f622e7",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\p51d-mustang-120\\lake\\repeat-01-observer-on.log",
+          "measured_wall_usec": 472836,
+          "measured_wall_usec_per_sample_tick": 1970.15,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\p51d-mustang-120\\lake\\repeat-01-observer-on.json",
+          "timing_usec_nearest_rank": {
+            "input_usec": {
+              "p100": 1383,
+              "p50": 456,
+              "p95": 726,
+              "p99": 1031
+            },
+            "simulation_usec": {
+              "p100": 4979,
+              "p50": 1415,
+              "p95": 2261,
+              "p99": 2926
+            },
+            "tick_usec": {
+              "p100": 5470,
+              "p50": 1868,
+              "p95": 2899,
+              "p99": 3560
+            }
+          },
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "turbo-lumber-evolution",
+      "case_id": "maneuver",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 988.8208333333333,
+      "observer_on_wall_usec_per_tick": 1053.4416666666666,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": 64.62083333333328,
+      "reasons": [],
+      "repeat": 1,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "eac132937e48675bbdf21ae88e0b1c9f84be2f3b3984a3a50a3e881e130dd5c2",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\turbo-lumber-evolution\\maneuver\\repeat-01-observer-off.log",
+          "measured_wall_usec": 237317,
+          "measured_wall_usec_per_sample_tick": 988.8208333333333,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\turbo-lumber-evolution\\maneuver\\repeat-01-observer-off.json",
+          "timing_usec_nearest_rank": {},
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "eac132937e48675bbdf21ae88e0b1c9f84be2f3b3984a3a50a3e881e130dd5c2",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\turbo-lumber-evolution\\maneuver\\repeat-01-observer-on.log",
+          "measured_wall_usec": 252826,
+          "measured_wall_usec_per_sample_tick": 1053.4416666666666,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\turbo-lumber-evolution\\maneuver\\repeat-01-observer-on.json",
+          "timing_usec_nearest_rank": {
+            "input_usec": {
+              "p100": 218,
+              "p50": 102,
+              "p95": 170,
+              "p99": 179
+            },
+            "simulation_usec": {
+              "p100": 1478,
+              "p50": 873,
+              "p95": 1397,
+              "p99": 1462
+            },
+            "tick_usec": {
+              "p100": 1653,
+              "p50": 976,
+              "p95": 1562,
+              "p99": 1642
+            }
+          },
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "turbo-lumber-evolution",
+      "case_id": "runway",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 3690.5041666666666,
+      "observer_on_wall_usec_per_tick": 3389.2875,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": -301.2166666666667,
+      "reasons": [],
+      "repeat": 1,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "62b1a63eafa0b454569c2fde4e80a543e188a28a4b8a204d28b88c7be64ed2a9",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\turbo-lumber-evolution\\runway\\repeat-01-observer-off.log",
+          "measured_wall_usec": 885721,
+          "measured_wall_usec_per_sample_tick": 3690.5041666666666,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\turbo-lumber-evolution\\runway\\repeat-01-observer-off.json",
+          "timing_usec_nearest_rank": {},
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "62b1a63eafa0b454569c2fde4e80a543e188a28a4b8a204d28b88c7be64ed2a9",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\turbo-lumber-evolution\\runway\\repeat-01-observer-on.log",
+          "measured_wall_usec": 813429,
+          "measured_wall_usec_per_sample_tick": 3389.2875,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\turbo-lumber-evolution\\runway\\repeat-01-observer-on.json",
+          "timing_usec_nearest_rank": {
+            "input_usec": {
+              "p100": 2322,
+              "p50": 431,
+              "p95": 729,
+              "p99": 1044
+            },
+            "simulation_usec": {
+              "p100": 10115,
+              "p50": 2663,
+              "p95": 3929,
+              "p99": 6678
+            },
+            "tick_usec": {
+              "p100": 10844,
+              "p50": 3114,
+              "p95": 4629,
+              "p99": 7815
+            }
+          },
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "turbo-lumber-evolution",
+      "case_id": "lake",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 1392.65,
+      "observer_on_wall_usec_per_tick": 1212.0083333333334,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": -180.64166666666665,
+      "reasons": [],
+      "repeat": 1,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "8ce6fd79fa9520ab088bb0b7af554ff1ecab127f69153cd7cc34fa93ea25607c",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\turbo-lumber-evolution\\lake\\repeat-01-observer-off.log",
+          "measured_wall_usec": 334236,
+          "measured_wall_usec_per_sample_tick": 1392.65,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\turbo-lumber-evolution\\lake\\repeat-01-observer-off.json",
+          "timing_usec_nearest_rank": {},
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 264,
+          "fingerprint": "8ce6fd79fa9520ab088bb0b7af554ff1ecab127f69153cd7cc34fa93ea25607c",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\turbo-lumber-evolution\\lake\\repeat-01-observer-on.log",
+          "measured_wall_usec": 290882,
+          "measured_wall_usec_per_sample_tick": 1212.0083333333334,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-case-smoke\\runs\\turbo-lumber-evolution\\lake\\repeat-01-observer-on.json",
+          "timing_usec_nearest_rank": {
+            "input_usec": {
+              "p100": 487,
+              "p50": 260,
+              "p95": 407,
+              "p99": 484
+            },
+            "simulation_usec": {
+              "p100": 1594,
+              "p50": 877,
+              "p95": 1245,
+              "p99": 1492
+            },
+            "tick_usec": {
+              "p100": 2078,
+              "p50": 1140,
+              "p95": 1640,
+              "p99": 1959
+            }
+          },
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    }
+  ],
+  "status": "failed",
+  "summary": [
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "maneuver",
+      "comparable_pairs": 1,
+      "overhead_usec_per_tick_nearest_rank": {
+        "p50": 182.99166666666667,
+        "p95": 182.99166666666667,
+        "p99": 182.99166666666667
+      },
+      "requested_pairs": 1
+    },
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "runway",
+      "comparable_pairs": 1,
+      "overhead_usec_per_tick_nearest_rank": {
+        "p50": 542.0333333333333,
+        "p95": 542.0333333333333,
+        "p99": 542.0333333333333
+      },
+      "requested_pairs": 1
+    },
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "lake",
+      "comparable_pairs": 1,
+      "overhead_usec_per_tick_nearest_rank": {
+        "p50": 15.754166666666606,
+        "p95": 15.754166666666606,
+        "p99": 15.754166666666606
+      },
+      "requested_pairs": 1
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "case_id": "maneuver",
+      "comparable_pairs": 1,
+      "overhead_usec_per_tick_nearest_rank": {
+        "p50": 22.64166666666665,
+        "p95": 22.64166666666665,
+        "p99": 22.64166666666665
+      },
+      "requested_pairs": 1
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "case_id": "runway",
+      "comparable_pairs": 0,
+      "overhead_usec_per_tick_nearest_rank": {
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "requested_pairs": 1
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "case_id": "lake",
+      "comparable_pairs": 1,
+      "overhead_usec_per_tick_nearest_rank": {
+        "p50": 770.5916666666667,
+        "p95": 770.5916666666667,
+        "p99": 770.5916666666667
+      },
+      "requested_pairs": 1
+    },
+    {
+      "aircraft_id": "turbo-lumber-evolution",
+      "case_id": "maneuver",
+      "comparable_pairs": 1,
+      "overhead_usec_per_tick_nearest_rank": {
+        "p50": 64.62083333333328,
+        "p95": 64.62083333333328,
+        "p99": 64.62083333333328
+      },
+      "requested_pairs": 1
+    },
+    {
+      "aircraft_id": "turbo-lumber-evolution",
+      "case_id": "runway",
+      "comparable_pairs": 1,
+      "overhead_usec_per_tick_nearest_rank": {
+        "p50": -301.2166666666667,
+        "p95": -301.2166666666667,
+        "p99": -301.2166666666667
+      },
+      "requested_pairs": 1
+    },
+    {
+      "aircraft_id": "turbo-lumber-evolution",
+      "case_id": "lake",
+      "comparable_pairs": 1,
+      "overhead_usec_per_tick_nearest_rank": {
+        "p50": -180.64166666666665,
+        "p95": -180.64166666666665,
+        "p99": -180.64166666666665
+      },
+      "requested_pairs": 1
+    }
+  ]
+}

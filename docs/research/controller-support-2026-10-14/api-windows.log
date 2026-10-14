@@ -1,0 +1,28 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+engine: 4.7.2-stable (official)
+os: Windows
+Input.get_joy_info: true
+Input.get_joy_guid: true
+Input.is_joy_known: true
+Input.add_joy_mapping: true
+Input.has_joy_vibration: true
+Input.start_joy_vibration: true
+Input.stop_joy_vibration: true
+Input.has_joy_light: true
+Input.set_joy_light: true
+Input.has_joy_motion_sensors: true
+Input.get_joy_gyroscope: true
+Input.set_joy_motion_sensors_enabled: true
+Input.start_joy_motion_sensors_calibration: true
+Input.get_joy_path: false
+JoyAxis.SDL_MAX=6 JoyAxis.MAX=10 JoyButton.MAX=128
+ignore_joypad_on_unfocused_application: false
+ui_accept joypad bindings: []
+ui_cancel joypad bindings: []
+ui_select joypad bindings: ["button 3"]
+ui_left joypad bindings: ["button 13", "axis 0 -1"]
+ui_right joypad bindings: ["button 14", "axis 0 +1"]
+ui_up joypad bindings: ["button 11", "axis 1 -1"]
+ui_down joypad bindings: ["button 12", "axis 1 +1"]
+scope: API/default mappings only; headless device discovery is not hardware validation

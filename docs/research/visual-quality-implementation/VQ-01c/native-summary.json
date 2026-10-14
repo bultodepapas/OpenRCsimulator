@@ -1,0 +1,181 @@
+{
+  "active_flight_qualifier_count": 1,
+  "campaign_reasons": [
+    "one or more runs failed an individual performance gate"
+  ],
+  "collection_valid": true,
+  "collection_valid_count": 3,
+  "complete": true,
+  "duration_eligible_count": 3,
+  "failures": [],
+  "format": "openrc-native-frame-summary v1",
+  "hardware_acceptance": "not claimed; this reducer evaluates report integrity and declared software pacing gates only",
+  "input_pattern": "run-*.json with same-stem .log files",
+  "minimum_runs": 3,
+  "performance_pass": false,
+  "performance_pass_count": 0,
+  "policy": {
+    "active_nonadvancing_interval_max_usec": 250000,
+    "minimum_runs": 3,
+    "minimum_sample_s": 60.0,
+    "minimum_warmup_s": 10.0,
+    "p95_max_ms": 18.0,
+    "p99_max_ms": 25.0,
+    "simulation_wall_ratio_max": 1.01,
+    "simulation_wall_ratio_min": 0.99
+  },
+  "run_count": 3,
+  "runs": [
+    {
+      "active_flight_qualifier": true,
+      "active_flight_reasons": [],
+      "collection_reasons": [],
+      "collection_valid": true,
+      "duration_eligibility": {
+        "actual_warmup_s": 10.177406,
+        "eligible": true,
+        "minimum_sample_s": 60.0,
+        "minimum_warmup_s": 10.0,
+        "reasons": [],
+        "requested_sample_s": 60.0,
+        "requested_warmup_s": 10.0
+      },
+      "engine_errors": [],
+      "hardware_acceptance": "not_claimed",
+      "log": "run-1.log",
+      "log_sha256": "2291a0009749085effe6b7daec932e727eb9798c76f668fa592f6e1bf2845aac",
+      "metrics": {
+        "frame_ms": {
+          "max": 41.692,
+          "p50": 15.619,
+          "p95": 29.704,
+          "p99": 31.288999999999998
+        },
+        "max_frame_interval_usec": 41692,
+        "max_nonadvancing_interval_usec": 0,
+        "sample_simulation_span_s": 60.00833333333337,
+        "sample_simulation_ticks": 14402,
+        "sample_wall_span_excluding_first_interval_s": 59.990939,
+        "simulation_wall_ratio": 1.0002899493427395,
+        "tick_wall_ratio": 1.0002899493427388
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": false,
+        "p99_max_ms": 25.0,
+        "p99_pass": false,
+        "pass": false,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_pass": true
+      },
+      "performance_pass": false,
+      "report": "run-1.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "13801da8b04d7e4f984d72eec19d3471aaff0bdba04b76a2b86cc7bfc21f73de"
+    },
+    {
+      "active_flight_qualifier": false,
+      "active_flight_reasons": [
+        "simulation was paused",
+        "simulation did not advance for more than 250 ms"
+      ],
+      "collection_reasons": [],
+      "collection_valid": true,
+      "duration_eligibility": {
+        "actual_warmup_s": 10.003635,
+        "eligible": true,
+        "minimum_sample_s": 60.0,
+        "minimum_warmup_s": 10.0,
+        "reasons": [],
+        "requested_sample_s": 60.0,
+        "requested_warmup_s": 10.0
+      },
+      "engine_errors": [],
+      "hardware_acceptance": "not_claimed",
+      "log": "run-2.log",
+      "log_sha256": "6d94d3048bd6f23e66aab4f66c4403747022c4649ffe649515e994f7a5188505",
+      "metrics": {
+        "frame_ms": {
+          "max": 33.135,
+          "p50": 16.564,
+          "p95": 26.191,
+          "p99": 30.831
+        },
+        "max_frame_interval_usec": 33135,
+        "max_nonadvancing_interval_usec": 17242830,
+        "sample_simulation_span_s": 42.75000000000003,
+        "sample_simulation_ticks": 10260,
+        "sample_wall_span_excluding_first_interval_s": 59.992842,
+        "simulation_wall_ratio": 0.7125850113918595,
+        "tick_wall_ratio": 0.712585011391859
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": false,
+        "p99_max_ms": 25.0,
+        "p99_pass": false,
+        "pass": false,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_pass": false
+      },
+      "performance_pass": false,
+      "report": "run-2.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "345329ad999384952a68533e80783283854d7465aedc0efca5abe0c36ad9e938"
+    },
+    {
+      "active_flight_qualifier": false,
+      "active_flight_reasons": [
+        "simulation was paused",
+        "simulation did not advance during the measured sample",
+        "simulation did not advance for more than 250 ms"
+      ],
+      "collection_reasons": [],
+      "collection_valid": true,
+      "duration_eligibility": {
+        "actual_warmup_s": 10.013633,
+        "eligible": true,
+        "minimum_sample_s": 60.0,
+        "minimum_warmup_s": 10.0,
+        "reasons": [],
+        "requested_sample_s": 60.0,
+        "requested_warmup_s": 10.0
+      },
+      "engine_errors": [],
+      "hardware_acceptance": "not_claimed",
+      "log": "run-3.log",
+      "log_sha256": "dde83dfd04c2f97c02bf83aa73557ccc27cf2dfd09985baeb0c76d914484b9ff",
+      "metrics": {
+        "frame_ms": {
+          "max": 32.137,
+          "p50": 15.633000000000001,
+          "p95": 29.823999999999998,
+          "p99": 30.761
+        },
+        "max_frame_interval_usec": 32137,
+        "max_nonadvancing_interval_usec": 60005088,
+        "sample_simulation_span_s": 0.0,
+        "sample_simulation_ticks": 0,
+        "sample_wall_span_excluding_first_interval_s": 60.005088,
+        "simulation_wall_ratio": 0.0,
+        "tick_wall_ratio": 0.0
+      },
+      "pacing_gate": {
+        "p95_max_ms": 18.0,
+        "p95_pass": false,
+        "p99_max_ms": 25.0,
+        "p99_pass": false,
+        "pass": false,
+        "simulation_wall_ratio_max": 1.01,
+        "simulation_wall_ratio_min": 0.99,
+        "simulation_wall_ratio_pass": false
+      },
+      "performance_pass": false,
+      "report": "run-3.json",
+      "report_format": "openrc-frametimes v2",
+      "report_sha256": "799a6f5b84d61ec62406fa844bde31757cb82db11f53a83bc6d85285a0e200fe"
+    }
+  ]
+}

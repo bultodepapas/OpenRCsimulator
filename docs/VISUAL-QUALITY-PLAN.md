@@ -1,12 +1,12 @@
 # Visual quality: implementation guide and open work
 
-2026-10-14 · Revision 4 · Step prefix: **VQ-**
+2026-10-14 · Revision 6 · Step prefix: **VQ-**
 
 **Status:** VQ-01a/b, VQ-04a and VQ-05 are delivered. VQ-02/03/04b/06/07 remain open; L6c owner readability review and Gates L/2 remain independent acceptance points.
 
 **Owns:** visual-quality coordination and its VQ steps. Landscape implementation lives in [LANDSCAPE-PLAN](LANDSCAPE-PLAN.md); field composition and time of day live in [FIELD-WORLD-PLAN](FIELD-WORLD-PLAN.md) and [TIME-OF-DAY-PLAN](TIME-OF-DAY-PLAN.md). Aircraft appearance stays with each model team.
 
-The [global implementation sequence](plans/global-performance-visual-quality.md#3-order-dependencies-and-reviewable-deliveries) selects the current performance/visual delivery and resolves its research ideas. Start with VQ-01c; VQ-07 and additional postprocessing remain outside that delivery. Rows below register its VQ work without claiming implementation.
+The [global implementation sequence](plans/global-performance-visual-quality.md#3-order-dependencies-and-reviewable-deliveries) selects the current performance/visual delivery and resolves its research ideas. VQ-01c measurement tools and the read-only VQ-02a inventory foundation are implemented; their acceptance gaps remain below. VQ-07 and additional postprocessing remain outside that delivery.
 
 ## Current implementation
 
@@ -20,10 +20,10 @@ VQ-05 blurs every propeller from the live rotor speed. `app/render/propeller_blu
 
 | ID | Work | Status and proof |
 | --- | --- | --- |
-| VQ-01c | Freeze current full-session, loading and native-render baseline with DT-01/10a; extend only missing measurement coverage. | Planned; first implementation task. Raw samples, complete-session semantics, observer cost and failure ledger required. |
+| VQ-01c | Freeze current full-session, loading and native-render baseline with DT-01/10a; extend only missing measurement coverage. | In progress: [measurement foundation and Windows evidence](research/visual-quality-implementation/VQ-01c/README.md). 18 CPU runs / nine matching observer pairs; native pacing campaign fails. [Actual Home/Fly loading and DT-11a geometry reuse](research/visual-quality-implementation/VQ-01c/loading/README.md) now have source evidence. Cold loading/full flight coverage, observer-cost uncertainty and native/package acceptance remain open. |
 | VQ-01d | Extend L6c/CAM visibility evidence with matched motion, projected size and orientation results. | Planned after VQ-01c source/camera freeze; no new camera law or HUD. |
 | VQ-02 | Improve one aircraft material at a time with matched lighting and distances. Coordinate with model owners. | Open; use 20/50/100 m and close views; previews are not flight validation. |
-| VQ-02a | Inventory imports and correct demonstrated channel/color/filter errors before material comparisons. | Planned after VQ-01c/d; assets and generators stay with L/model owners. No blanket reimport or resolution upgrade. |
+| VQ-02a | Inventory imports and correct demonstrated channel/color/filter errors before material comparisons. | [Read-only inventory foundation](research/visual-quality-implementation/VQ-02a/README.md) delivered: 54 texture imports, explicit embedded/runtime-binding gaps. Corrections remain gated by VQ-01c/d; no asset/import change or blanket reimport. |
 | VQ-02b | One affected aircraft's marking/skin or specular repair. | Conditional on VQ-01d/VQ-02a evidence; preserve geometry and default appearance unless the paired result supports a change. |
 | VQ-03 | Optional horizon-aware camera composition experiment. | Open; reject it if tracking delay or readability worsens. |
 | VQ-04b | Compare native shadow maps with the projected silhouette. | Open and optional; keep the existing projection if colour, contact or cost regresses. |

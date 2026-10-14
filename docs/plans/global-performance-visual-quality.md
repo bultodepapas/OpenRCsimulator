@@ -1,8 +1,8 @@
 # Global performance and visual-quality implementation plan
 
-2026-10-14 · Revision 2 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
+2026-10-14 · Revision 4 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
 
-**Execution decision:** baseline → visibility reference → measured CPU/loading repairs → texture audit → ground and foliage comparisons → targeted aircraft/weather repairs → qualified quality profiles → native acceptance. Start with **VQ-01c / DT-01 / DT-10a**, not a new shader or renderer. This document is ready to drive implementation; no runtime work or new benchmark is claimed here.
+**Execution decision:** baseline → visibility reference → measured CPU/loading repairs → texture audit → ground and foliage comparisons → targeted aircraft/weather repairs → qualified quality profiles → native acceptance. Implementation has started with **VQ-01c / DT-01 / DT-10a** measurement tools and a read-only texture inventory. [First evidence and unresolved gates](../research/visual-quality-implementation/VQ-01c/README.md) now include an attributed **DT-11a lake geometry reuse repair** with exact buffer parity and faster Home/Fly transitions. Native flight, cold-loading and visual-change acceptance remain open. Current step status stays in the owning VQ plan.
 
 **Scope decision:** six of the 24 brainstorm ideas are selected as bounded probes/refinements; five are conditional, eight deferred and five rejected from this delivery. The three ambitious rendering branches are also rejected from this delivery. A selected probe ends in either a qualified change or a documented **retain baseline** decision. It does not guarantee that its candidate ships.
 
@@ -240,7 +240,7 @@ Rollback restores code with its source/import/generated outputs as one change. R
 
 ## 8. Completion and immediate next action
 
-**Start with VQ-01c:** retain an untouched snapshot/package, identify actual host/scenarios, run current checks/probes, add only missing complete-session measurement, and publish baseline/failure evidence. VQ-01d follows on that identity. Findings determine whether LU-10-R1 or DT-11a produces the first runtime repair. No rendering-technology or asset-library choice is needed before starting.
+**Continue VQ-01c:** the complete-callback CPU probe, strict native reducer and first Windows source observations now exist. Resolve the [recorded gaps](../research/visual-quality-implementation/VQ-01c/README.md#remaining-acceptance-and-next-implementation-action): foreground native pacing, CPU variance/observer cost, cold Home/first Fly loading, flight coverage and package identity. The actual Home/Fly probe and first before/after samples now exist. VQ-01d follows on the qualified source/camera identity. DT-11a delivered the first narrow runtime repair: [bounded lake geometry reuse](../research/visual-quality-implementation/VQ-01c/loading/README.md). The measured construction bottleneck justified this independent loading repair while query/visibility qualification stays open; no LU-10-R1 query change was adopted. The read-only import inventory may proceed independently; no material candidate is accepted by inventory alone.
 
 Complete means selected probes have outcomes, conditional triggers are resolved, adopted work passes combined correctness/performance/readability gates, qualified controls have safe persistence/recovery, and the native/pilot ledger names accepted platforms/profiles. Missing external acceptance stays open; documents/ZIPs cannot close it. Deferred/rejected ideas are not completion requirements. No implementation step is marked complete by this revision.
 

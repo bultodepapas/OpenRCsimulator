@@ -1,0 +1,643 @@
+{
+  "format": "openrc-vq01c-evidence v1",
+  "date": "2026-10-14",
+  "source_commit": "72403977b7e655989b48c1cc468ad89beb27aa62",
+  "retention_head": "22b3e4825ec97289b76666ca9e942eaa7a8f703d",
+  "runtime_changes_since_measurement": "",
+  "runtime_diff": "",
+  "compression": "gzip with mtime=0; decompress bytes reproduce original raw JSON",
+  "files": [
+    {
+      "path": "cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-off.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-off.json",
+      "sha256": "90750e8e196d220bf767606080294bd6dc5ca9f87d9522d63f1ad344ff452f0e",
+      "uncompressed_sha256": "98342bd65cec6e7308fd9dcd2413f38a69be723b5fde43ad46adb427850a79ed"
+    },
+    {
+      "path": "cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-off.log",
+      "source": "tmp/vq01c-cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-off.log",
+      "sha256": "55ae563107c2591bd7e80d3ab83c179932e5c2798fcac378348373c277a0c5d1",
+      "uncompressed_sha256": "55ae563107c2591bd7e80d3ab83c179932e5c2798fcac378348373c277a0c5d1"
+    },
+    {
+      "path": "cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-on.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-on.json",
+      "sha256": "8fc82b87be45cdb7c48ed31ba8baf401c6569fdb5b86c7d80fe2f32699874a58",
+      "uncompressed_sha256": "aefe81f5d24526df1be4aa69eb3144771d4f1c41ed253de8d59d335e1c858554"
+    },
+    {
+      "path": "cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-on.log",
+      "source": "tmp/vq01c-cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-on.log",
+      "sha256": "55ae563107c2591bd7e80d3ab83c179932e5c2798fcac378348373c277a0c5d1",
+      "uncompressed_sha256": "55ae563107c2591bd7e80d3ab83c179932e5c2798fcac378348373c277a0c5d1"
+    },
+    {
+      "path": "cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-02-observer-off.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-02-observer-off.json",
+      "sha256": "19a636cad4a4f298b0e0d796a2bbc59223910b4b70d11c4489d4074894141725",
+      "uncompressed_sha256": "e163bef2ef3e2d3e70c543b7db04ce8e14033ccbcdc7754b26fe8725ad1d992f"
+    },
+    {
+      "path": "cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-02-observer-off.log",
+      "source": "tmp/vq01c-cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-02-observer-off.log",
+      "sha256": "55ae563107c2591bd7e80d3ab83c179932e5c2798fcac378348373c277a0c5d1",
+      "uncompressed_sha256": "55ae563107c2591bd7e80d3ab83c179932e5c2798fcac378348373c277a0c5d1"
+    },
+    {
+      "path": "cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-02-observer-on.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-02-observer-on.json",
+      "sha256": "c9eb294a73bda7d30e17d4d5d71cfdfc33688b1732f586431d86e62370df6375",
+      "uncompressed_sha256": "64c570f04215f199ba0e96e9ea3a4e6272da24a40559c1bbdafc8ea069df66de"
+    },
+    {
+      "path": "cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-02-observer-on.log",
+      "source": "tmp/vq01c-cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-02-observer-on.log",
+      "sha256": "55ae563107c2591bd7e80d3ab83c179932e5c2798fcac378348373c277a0c5d1",
+      "uncompressed_sha256": "55ae563107c2591bd7e80d3ab83c179932e5c2798fcac378348373c277a0c5d1"
+    },
+    {
+      "path": "cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-03-observer-off.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-03-observer-off.json",
+      "sha256": "0b10bd68084f1efb9cb89efaf0a2329dd9945b0b23c037fd1c855ff25d199cf3",
+      "uncompressed_sha256": "533d7e979fd080c878d300ea69ae0b5dd38fa7680fe5218114712416b26d8d6a"
+    },
+    {
+      "path": "cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-03-observer-off.log",
+      "source": "tmp/vq01c-cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-03-observer-off.log",
+      "sha256": "55ae563107c2591bd7e80d3ab83c179932e5c2798fcac378348373c277a0c5d1",
+      "uncompressed_sha256": "55ae563107c2591bd7e80d3ab83c179932e5c2798fcac378348373c277a0c5d1"
+    },
+    {
+      "path": "cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-03-observer-on.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-03-observer-on.json",
+      "sha256": "92fd1ee0e85f4f47e4ff2f7b80519b78b9e7114bdd08481fff3e80892745e78a",
+      "uncompressed_sha256": "1c0e75015d321d75256329266277cc5390d9d271c1a78525a75a80978a7aac43"
+    },
+    {
+      "path": "cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-03-observer-on.log",
+      "source": "tmp/vq01c-cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-03-observer-on.log",
+      "sha256": "55ae563107c2591bd7e80d3ab83c179932e5c2798fcac378348373c277a0c5d1",
+      "uncompressed_sha256": "55ae563107c2591bd7e80d3ab83c179932e5c2798fcac378348373c277a0c5d1"
+    },
+    {
+      "path": "cpu-trim/runs/p51d-mustang-120/trim/repeat-01-observer-off.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/p51d-mustang-120/trim/repeat-01-observer-off.json",
+      "sha256": "eeb25a70744f2dd8a24e803e7d57cb58df344d56f21692e28d38808da8971b38",
+      "uncompressed_sha256": "07af077a4dd85a99f30b3798b5692257cad5afe0fbf58698701940414475922d"
+    },
+    {
+      "path": "cpu-trim/runs/p51d-mustang-120/trim/repeat-01-observer-off.log",
+      "source": "tmp/vq01c-cpu-trim/runs/p51d-mustang-120/trim/repeat-01-observer-off.log",
+      "sha256": "27363aa73e41bb6ee0a32b986c44fee01c6bdceb8ef63e25fa0f4745b704fb9a",
+      "uncompressed_sha256": "27363aa73e41bb6ee0a32b986c44fee01c6bdceb8ef63e25fa0f4745b704fb9a"
+    },
+    {
+      "path": "cpu-trim/runs/p51d-mustang-120/trim/repeat-01-observer-on.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/p51d-mustang-120/trim/repeat-01-observer-on.json",
+      "sha256": "746b721074c2a2fecb0dac3a5a6043f8b63fc7d4320d88add9dd58a0d35dece2",
+      "uncompressed_sha256": "be86d66925a0eb8fee3ddded349dbfb866602e89c649b6462b76f7001049a43a"
+    },
+    {
+      "path": "cpu-trim/runs/p51d-mustang-120/trim/repeat-01-observer-on.log",
+      "source": "tmp/vq01c-cpu-trim/runs/p51d-mustang-120/trim/repeat-01-observer-on.log",
+      "sha256": "27363aa73e41bb6ee0a32b986c44fee01c6bdceb8ef63e25fa0f4745b704fb9a",
+      "uncompressed_sha256": "27363aa73e41bb6ee0a32b986c44fee01c6bdceb8ef63e25fa0f4745b704fb9a"
+    },
+    {
+      "path": "cpu-trim/runs/p51d-mustang-120/trim/repeat-02-observer-off.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/p51d-mustang-120/trim/repeat-02-observer-off.json",
+      "sha256": "deda290ebd58bfbe9470bd5e6191e96f8140b85956daadaa735dbd2098dd98af",
+      "uncompressed_sha256": "05a7ac3b491fd8191f6fb4ea99c3baa3316c76b019c1d413ef1b366b37acb112"
+    },
+    {
+      "path": "cpu-trim/runs/p51d-mustang-120/trim/repeat-02-observer-off.log",
+      "source": "tmp/vq01c-cpu-trim/runs/p51d-mustang-120/trim/repeat-02-observer-off.log",
+      "sha256": "27363aa73e41bb6ee0a32b986c44fee01c6bdceb8ef63e25fa0f4745b704fb9a",
+      "uncompressed_sha256": "27363aa73e41bb6ee0a32b986c44fee01c6bdceb8ef63e25fa0f4745b704fb9a"
+    },
+    {
+      "path": "cpu-trim/runs/p51d-mustang-120/trim/repeat-02-observer-on.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/p51d-mustang-120/trim/repeat-02-observer-on.json",
+      "sha256": "3ea5b528e240912f41ec6b60bfebdbb6b04dd4790651a58f48bbe8c21e2eee01",
+      "uncompressed_sha256": "ccb4b6493e9339f5481bf3e1e061f06aafc1f7890eac2f51bef5b1fe6ae6d922"
+    },
+    {
+      "path": "cpu-trim/runs/p51d-mustang-120/trim/repeat-02-observer-on.log",
+      "source": "tmp/vq01c-cpu-trim/runs/p51d-mustang-120/trim/repeat-02-observer-on.log",
+      "sha256": "27363aa73e41bb6ee0a32b986c44fee01c6bdceb8ef63e25fa0f4745b704fb9a",
+      "uncompressed_sha256": "27363aa73e41bb6ee0a32b986c44fee01c6bdceb8ef63e25fa0f4745b704fb9a"
+    },
+    {
+      "path": "cpu-trim/runs/p51d-mustang-120/trim/repeat-03-observer-off.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/p51d-mustang-120/trim/repeat-03-observer-off.json",
+      "sha256": "72612321342f686b57f812de5554172c07d443d1d0bc61458d29631f32c70cd8",
+      "uncompressed_sha256": "fdc8c9e3f2b2de25c46b64a4463fc6f250d1439f31379f2a1f80d348a645bfd3"
+    },
+    {
+      "path": "cpu-trim/runs/p51d-mustang-120/trim/repeat-03-observer-off.log",
+      "source": "tmp/vq01c-cpu-trim/runs/p51d-mustang-120/trim/repeat-03-observer-off.log",
+      "sha256": "27363aa73e41bb6ee0a32b986c44fee01c6bdceb8ef63e25fa0f4745b704fb9a",
+      "uncompressed_sha256": "27363aa73e41bb6ee0a32b986c44fee01c6bdceb8ef63e25fa0f4745b704fb9a"
+    },
+    {
+      "path": "cpu-trim/runs/p51d-mustang-120/trim/repeat-03-observer-on.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/p51d-mustang-120/trim/repeat-03-observer-on.json",
+      "sha256": "5f265f532962d6512b2e96720d296bb95fad1709ff6ece5874661b4cebddefde",
+      "uncompressed_sha256": "b66df79cbd7f703f216760f99e656dcdc3b4281a75153b1a80d012c461497931"
+    },
+    {
+      "path": "cpu-trim/runs/p51d-mustang-120/trim/repeat-03-observer-on.log",
+      "source": "tmp/vq01c-cpu-trim/runs/p51d-mustang-120/trim/repeat-03-observer-on.log",
+      "sha256": "27363aa73e41bb6ee0a32b986c44fee01c6bdceb8ef63e25fa0f4745b704fb9a",
+      "uncompressed_sha256": "27363aa73e41bb6ee0a32b986c44fee01c6bdceb8ef63e25fa0f4745b704fb9a"
+    },
+    {
+      "path": "cpu-trim/runs/turbo-lumber-evolution/trim/repeat-01-observer-off.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/turbo-lumber-evolution/trim/repeat-01-observer-off.json",
+      "sha256": "4351d1a8a2eca0c0d996f32736498fd8678e2ced717e0273e3ca651a4a7a31ea",
+      "uncompressed_sha256": "05cf76b856d733dff123a6838aa1db03d21bf85f3ba040b7fca365bf7fa1a936"
+    },
+    {
+      "path": "cpu-trim/runs/turbo-lumber-evolution/trim/repeat-01-observer-off.log",
+      "source": "tmp/vq01c-cpu-trim/runs/turbo-lumber-evolution/trim/repeat-01-observer-off.log",
+      "sha256": "73ddcf41a8678f78429047595c27bdbe49b48d6bf8274cc39de80731cbc4075d",
+      "uncompressed_sha256": "73ddcf41a8678f78429047595c27bdbe49b48d6bf8274cc39de80731cbc4075d"
+    },
+    {
+      "path": "cpu-trim/runs/turbo-lumber-evolution/trim/repeat-01-observer-on.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/turbo-lumber-evolution/trim/repeat-01-observer-on.json",
+      "sha256": "6985dec3788f9609480af7e304ceb5bd67deea4d22f89b0619b7c41b12d34005",
+      "uncompressed_sha256": "d39d6a029e65d63b2a44408628b6a113218762d869db3ede9410570ba2e8ce87"
+    },
+    {
+      "path": "cpu-trim/runs/turbo-lumber-evolution/trim/repeat-01-observer-on.log",
+      "source": "tmp/vq01c-cpu-trim/runs/turbo-lumber-evolution/trim/repeat-01-observer-on.log",
+      "sha256": "73ddcf41a8678f78429047595c27bdbe49b48d6bf8274cc39de80731cbc4075d",
+      "uncompressed_sha256": "73ddcf41a8678f78429047595c27bdbe49b48d6bf8274cc39de80731cbc4075d"
+    },
+    {
+      "path": "cpu-trim/runs/turbo-lumber-evolution/trim/repeat-02-observer-off.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/turbo-lumber-evolution/trim/repeat-02-observer-off.json",
+      "sha256": "8713da1c9a274c35692be682c062a97c3abe099662f6f403ed58fe43632f2ea3",
+      "uncompressed_sha256": "6467ea7f535c0068f32821f90b82fe262be90d3af37a28326aae86d92595f341"
+    },
+    {
+      "path": "cpu-trim/runs/turbo-lumber-evolution/trim/repeat-02-observer-off.log",
+      "source": "tmp/vq01c-cpu-trim/runs/turbo-lumber-evolution/trim/repeat-02-observer-off.log",
+      "sha256": "73ddcf41a8678f78429047595c27bdbe49b48d6bf8274cc39de80731cbc4075d",
+      "uncompressed_sha256": "73ddcf41a8678f78429047595c27bdbe49b48d6bf8274cc39de80731cbc4075d"
+    },
+    {
+      "path": "cpu-trim/runs/turbo-lumber-evolution/trim/repeat-02-observer-on.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/turbo-lumber-evolution/trim/repeat-02-observer-on.json",
+      "sha256": "75da619276e1dc4dfdcb4cfd530341effd7f8fec9f4ff5dfeaff28e37d5271b7",
+      "uncompressed_sha256": "eb9d58d203661128c34e8f8c4ef83b6bb37c0c2ee12ad060e37708722b50ef49"
+    },
+    {
+      "path": "cpu-trim/runs/turbo-lumber-evolution/trim/repeat-02-observer-on.log",
+      "source": "tmp/vq01c-cpu-trim/runs/turbo-lumber-evolution/trim/repeat-02-observer-on.log",
+      "sha256": "73ddcf41a8678f78429047595c27bdbe49b48d6bf8274cc39de80731cbc4075d",
+      "uncompressed_sha256": "73ddcf41a8678f78429047595c27bdbe49b48d6bf8274cc39de80731cbc4075d"
+    },
+    {
+      "path": "cpu-trim/runs/turbo-lumber-evolution/trim/repeat-03-observer-off.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/turbo-lumber-evolution/trim/repeat-03-observer-off.json",
+      "sha256": "16ff103d23c520dd2a353e95d68e0224a271ce07f5522618311e6e429d99e4e8",
+      "uncompressed_sha256": "ec44784ccee09ba42abd57c3d076118f3574d032a23cfe24d91c32c1acb42407"
+    },
+    {
+      "path": "cpu-trim/runs/turbo-lumber-evolution/trim/repeat-03-observer-off.log",
+      "source": "tmp/vq01c-cpu-trim/runs/turbo-lumber-evolution/trim/repeat-03-observer-off.log",
+      "sha256": "73ddcf41a8678f78429047595c27bdbe49b48d6bf8274cc39de80731cbc4075d",
+      "uncompressed_sha256": "73ddcf41a8678f78429047595c27bdbe49b48d6bf8274cc39de80731cbc4075d"
+    },
+    {
+      "path": "cpu-trim/runs/turbo-lumber-evolution/trim/repeat-03-observer-on.json.gz",
+      "source": "tmp/vq01c-cpu-trim/runs/turbo-lumber-evolution/trim/repeat-03-observer-on.json",
+      "sha256": "4e93ed65bb6c35213eec2a1585b0ce0f6e1317c9c4de5c52b4c9cd1ac1aa6e87",
+      "uncompressed_sha256": "5927011ef4fe8c32244fe0e24db443b068c3a50f0097d12b954f5de4774080ee"
+    },
+    {
+      "path": "cpu-trim/runs/turbo-lumber-evolution/trim/repeat-03-observer-on.log",
+      "source": "tmp/vq01c-cpu-trim/runs/turbo-lumber-evolution/trim/repeat-03-observer-on.log",
+      "sha256": "73ddcf41a8678f78429047595c27bdbe49b48d6bf8274cc39de80731cbc4075d",
+      "uncompressed_sha256": "73ddcf41a8678f78429047595c27bdbe49b48d6bf8274cc39de80731cbc4075d"
+    },
+    {
+      "path": "cpu-trim/session_baseline.json",
+      "source": "tmp/vq01c-cpu-trim/session_baseline.json",
+      "sha256": "27c1050a039956d785a96ba2c7a3afc2480c95542a2bdb3bf4c79d692c651e80",
+      "uncompressed_sha256": "27c1050a039956d785a96ba2c7a3afc2480c95542a2bdb3bf4c79d692c651e80"
+    },
+    {
+      "path": "case-smoke/runs/jensen-das-ugly-stik-60/lake/repeat-01-observer-off.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/jensen-das-ugly-stik-60/lake/repeat-01-observer-off.json",
+      "sha256": "d4e6b1ab1b9c0d6eb76700fbc04dda3094e5003b03db7f977d936443edad8228",
+      "uncompressed_sha256": "4fcd0204637daa74f76394d0c292b6a3455ec0fe06e9df371c921aa810d6dd7d"
+    },
+    {
+      "path": "case-smoke/runs/jensen-das-ugly-stik-60/lake/repeat-01-observer-off.log",
+      "source": "tmp/vq01c-case-smoke/runs/jensen-das-ugly-stik-60/lake/repeat-01-observer-off.log",
+      "sha256": "1b7c5444bd52d44e90a97ee28de11ed59d32a0bf6b74f428b02c2e20a7cb9d39",
+      "uncompressed_sha256": "1b7c5444bd52d44e90a97ee28de11ed59d32a0bf6b74f428b02c2e20a7cb9d39"
+    },
+    {
+      "path": "case-smoke/runs/jensen-das-ugly-stik-60/lake/repeat-01-observer-on.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/jensen-das-ugly-stik-60/lake/repeat-01-observer-on.json",
+      "sha256": "97a74d409cb37a098314838e4eeef4479cc9a8ecc13ba2b1a99be346df1a205d",
+      "uncompressed_sha256": "c05dfc51f8946cc9a010f139c5d1ae9fc57ba3011e49e386c7f2ff3136fbf2de"
+    },
+    {
+      "path": "case-smoke/runs/jensen-das-ugly-stik-60/lake/repeat-01-observer-on.log",
+      "source": "tmp/vq01c-case-smoke/runs/jensen-das-ugly-stik-60/lake/repeat-01-observer-on.log",
+      "sha256": "1b7c5444bd52d44e90a97ee28de11ed59d32a0bf6b74f428b02c2e20a7cb9d39",
+      "uncompressed_sha256": "1b7c5444bd52d44e90a97ee28de11ed59d32a0bf6b74f428b02c2e20a7cb9d39"
+    },
+    {
+      "path": "case-smoke/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-observer-off.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-observer-off.json",
+      "sha256": "9f86b99a85e0fa72e36612a32252b4514257f59d5d8bdd758d00aa7d7a32b260",
+      "uncompressed_sha256": "73b2146a368501203701fbf81814ffd1710e91a4ea80a02d0dd11501b2c3afed"
+    },
+    {
+      "path": "case-smoke/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-observer-off.log",
+      "source": "tmp/vq01c-case-smoke/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-observer-off.log",
+      "sha256": "7094262b2fa90fcd23c4234a005516d09b8083b2fd8d434b04129098c26c0e28",
+      "uncompressed_sha256": "7094262b2fa90fcd23c4234a005516d09b8083b2fd8d434b04129098c26c0e28"
+    },
+    {
+      "path": "case-smoke/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-observer-on.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-observer-on.json",
+      "sha256": "5edf0abc83b7926b9dad3589852e8566b00084b2a04d6001bafc88e95f1776ce",
+      "uncompressed_sha256": "de2e10fba9cb5386a1ca1fb14048a722b1796850efebf6119a292af067c3ac9b"
+    },
+    {
+      "path": "case-smoke/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-observer-on.log",
+      "source": "tmp/vq01c-case-smoke/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-observer-on.log",
+      "sha256": "7094262b2fa90fcd23c4234a005516d09b8083b2fd8d434b04129098c26c0e28",
+      "uncompressed_sha256": "7094262b2fa90fcd23c4234a005516d09b8083b2fd8d434b04129098c26c0e28"
+    },
+    {
+      "path": "case-smoke/runs/jensen-das-ugly-stik-60/runway/repeat-01-observer-off.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/jensen-das-ugly-stik-60/runway/repeat-01-observer-off.json",
+      "sha256": "9aa8986ccdc5ebcb2729f471c6ee981e26c5d887237d57ef4c8f1d0fb9f90123",
+      "uncompressed_sha256": "798720e630f3e3b435941798fc12a7586d007acf4d305957f44a0c085c2b900a"
+    },
+    {
+      "path": "case-smoke/runs/jensen-das-ugly-stik-60/runway/repeat-01-observer-off.log",
+      "source": "tmp/vq01c-case-smoke/runs/jensen-das-ugly-stik-60/runway/repeat-01-observer-off.log",
+      "sha256": "339c6b67f17621f8c8d5a53887d46afc9657facaaff875322ca4cbe6f55c0e5f",
+      "uncompressed_sha256": "339c6b67f17621f8c8d5a53887d46afc9657facaaff875322ca4cbe6f55c0e5f"
+    },
+    {
+      "path": "case-smoke/runs/jensen-das-ugly-stik-60/runway/repeat-01-observer-on.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/jensen-das-ugly-stik-60/runway/repeat-01-observer-on.json",
+      "sha256": "499cc1ac30cb13f85bf506845d620238cba7fce85f3ff8702cafa4f924b291dc",
+      "uncompressed_sha256": "829b4fa073d36d82b00e2a275abbde2b78892f65ec75e4d77042d9daf9ab252c"
+    },
+    {
+      "path": "case-smoke/runs/jensen-das-ugly-stik-60/runway/repeat-01-observer-on.log",
+      "source": "tmp/vq01c-case-smoke/runs/jensen-das-ugly-stik-60/runway/repeat-01-observer-on.log",
+      "sha256": "339c6b67f17621f8c8d5a53887d46afc9657facaaff875322ca4cbe6f55c0e5f",
+      "uncompressed_sha256": "339c6b67f17621f8c8d5a53887d46afc9657facaaff875322ca4cbe6f55c0e5f"
+    },
+    {
+      "path": "case-smoke/runs/p51d-mustang-120/lake/repeat-01-observer-off.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/p51d-mustang-120/lake/repeat-01-observer-off.json",
+      "sha256": "17f05d1c57f0722a8e3ce9f60c9b678441fed649ef286a99ce4b9d790e38a153",
+      "uncompressed_sha256": "7638a5dee40638b026eff43283af826253b8bff5fff785fd0381cb6479c69840"
+    },
+    {
+      "path": "case-smoke/runs/p51d-mustang-120/lake/repeat-01-observer-off.log",
+      "source": "tmp/vq01c-case-smoke/runs/p51d-mustang-120/lake/repeat-01-observer-off.log",
+      "sha256": "e09832625db05927e585a2bb02ce165c502542564b2d4a880b3d94d84b98f1f3",
+      "uncompressed_sha256": "e09832625db05927e585a2bb02ce165c502542564b2d4a880b3d94d84b98f1f3"
+    },
+    {
+      "path": "case-smoke/runs/p51d-mustang-120/lake/repeat-01-observer-on.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/p51d-mustang-120/lake/repeat-01-observer-on.json",
+      "sha256": "09423bcede9f38b251d45d204f2c179e0bd856e1edc497ff41ee49e339af6aad",
+      "uncompressed_sha256": "930f84d0f3c504ebf5e2d6cc531c1c999253a7c8d96d3554df7bf18278b39ac6"
+    },
+    {
+      "path": "case-smoke/runs/p51d-mustang-120/lake/repeat-01-observer-on.log",
+      "source": "tmp/vq01c-case-smoke/runs/p51d-mustang-120/lake/repeat-01-observer-on.log",
+      "sha256": "e09832625db05927e585a2bb02ce165c502542564b2d4a880b3d94d84b98f1f3",
+      "uncompressed_sha256": "e09832625db05927e585a2bb02ce165c502542564b2d4a880b3d94d84b98f1f3"
+    },
+    {
+      "path": "case-smoke/runs/p51d-mustang-120/maneuver/repeat-01-observer-off.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/p51d-mustang-120/maneuver/repeat-01-observer-off.json",
+      "sha256": "100b1a7b3db5b4bedfde5a44dbe5468b41ea205ff5b5001f49ac5575d898a13c",
+      "uncompressed_sha256": "104b1ecc131b644837cf74f6e78de453f8f451a28e94e9f52051ec27a68e1220"
+    },
+    {
+      "path": "case-smoke/runs/p51d-mustang-120/maneuver/repeat-01-observer-off.log",
+      "source": "tmp/vq01c-case-smoke/runs/p51d-mustang-120/maneuver/repeat-01-observer-off.log",
+      "sha256": "79db8462e651a0a0ad8290d876ad0b928d884ba871131059aefec87d2f3c99e6",
+      "uncompressed_sha256": "79db8462e651a0a0ad8290d876ad0b928d884ba871131059aefec87d2f3c99e6"
+    },
+    {
+      "path": "case-smoke/runs/p51d-mustang-120/maneuver/repeat-01-observer-on.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/p51d-mustang-120/maneuver/repeat-01-observer-on.json",
+      "sha256": "6f2a62395380278d5f6b655f4505a05b5294fb634e5f1172f6be2c66f79f8ff0",
+      "uncompressed_sha256": "595cfa211eeda5a5c510d676099711b9874e80da4e803b9cffcf0139d2846709"
+    },
+    {
+      "path": "case-smoke/runs/p51d-mustang-120/maneuver/repeat-01-observer-on.log",
+      "source": "tmp/vq01c-case-smoke/runs/p51d-mustang-120/maneuver/repeat-01-observer-on.log",
+      "sha256": "79db8462e651a0a0ad8290d876ad0b928d884ba871131059aefec87d2f3c99e6",
+      "uncompressed_sha256": "79db8462e651a0a0ad8290d876ad0b928d884ba871131059aefec87d2f3c99e6"
+    },
+    {
+      "path": "case-smoke/runs/p51d-mustang-120/runway/repeat-01-observer-off.log",
+      "source": "tmp/vq01c-case-smoke/runs/p51d-mustang-120/runway/repeat-01-observer-off.log",
+      "sha256": "d5dfca684b2c72a2a277cb5a1a94a1a389c2e0bc4c8f917afcc6a25267dd1d88",
+      "uncompressed_sha256": "d5dfca684b2c72a2a277cb5a1a94a1a389c2e0bc4c8f917afcc6a25267dd1d88"
+    },
+    {
+      "path": "case-smoke/runs/p51d-mustang-120/runway/repeat-01-observer-on.log",
+      "source": "tmp/vq01c-case-smoke/runs/p51d-mustang-120/runway/repeat-01-observer-on.log",
+      "sha256": "d5dfca684b2c72a2a277cb5a1a94a1a389c2e0bc4c8f917afcc6a25267dd1d88",
+      "uncompressed_sha256": "d5dfca684b2c72a2a277cb5a1a94a1a389c2e0bc4c8f917afcc6a25267dd1d88"
+    },
+    {
+      "path": "case-smoke/runs/turbo-lumber-evolution/lake/repeat-01-observer-off.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/turbo-lumber-evolution/lake/repeat-01-observer-off.json",
+      "sha256": "f131492fabee8cf4b0918be201a641cd4987cfa02c011de8651e29d7c46f565c",
+      "uncompressed_sha256": "1614729051fdf0994e359920940366dfb8bb8816bc4fa203cd6dda984a4730ab"
+    },
+    {
+      "path": "case-smoke/runs/turbo-lumber-evolution/lake/repeat-01-observer-off.log",
+      "source": "tmp/vq01c-case-smoke/runs/turbo-lumber-evolution/lake/repeat-01-observer-off.log",
+      "sha256": "4c1113561ed7533091157889ae39bd59e875de74889a0ef750fc8044c9486dc8",
+      "uncompressed_sha256": "4c1113561ed7533091157889ae39bd59e875de74889a0ef750fc8044c9486dc8"
+    },
+    {
+      "path": "case-smoke/runs/turbo-lumber-evolution/lake/repeat-01-observer-on.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/turbo-lumber-evolution/lake/repeat-01-observer-on.json",
+      "sha256": "4b5e50efadca6479ad852a5f9e6ef4d8c6034b2492b5763595a35fcee3f2359a",
+      "uncompressed_sha256": "e96f69e4e28fec08b18ac4a96f61be98863ea163ca2b705b8b0fbaf6985a04e3"
+    },
+    {
+      "path": "case-smoke/runs/turbo-lumber-evolution/lake/repeat-01-observer-on.log",
+      "source": "tmp/vq01c-case-smoke/runs/turbo-lumber-evolution/lake/repeat-01-observer-on.log",
+      "sha256": "4c1113561ed7533091157889ae39bd59e875de74889a0ef750fc8044c9486dc8",
+      "uncompressed_sha256": "4c1113561ed7533091157889ae39bd59e875de74889a0ef750fc8044c9486dc8"
+    },
+    {
+      "path": "case-smoke/runs/turbo-lumber-evolution/maneuver/repeat-01-observer-off.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/turbo-lumber-evolution/maneuver/repeat-01-observer-off.json",
+      "sha256": "0f45ed31064ec9f7ea0308bf7ec3a59328867e53b0b2dbed58c1e808cca8d60f",
+      "uncompressed_sha256": "449dc13b5ba410960c5045679deeccc8ac103f9808be964c252883169d78c069"
+    },
+    {
+      "path": "case-smoke/runs/turbo-lumber-evolution/maneuver/repeat-01-observer-off.log",
+      "source": "tmp/vq01c-case-smoke/runs/turbo-lumber-evolution/maneuver/repeat-01-observer-off.log",
+      "sha256": "14327e306d03636d758f80a239c19fab2e0ca6921cf0117d0ee94dc9ef408f2f",
+      "uncompressed_sha256": "14327e306d03636d758f80a239c19fab2e0ca6921cf0117d0ee94dc9ef408f2f"
+    },
+    {
+      "path": "case-smoke/runs/turbo-lumber-evolution/maneuver/repeat-01-observer-on.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/turbo-lumber-evolution/maneuver/repeat-01-observer-on.json",
+      "sha256": "b691b6cd10acd287b6f6737df2c670d643a919202ce0c25c92a79752958adf39",
+      "uncompressed_sha256": "b25985482e434ff9c2707089e4361e6776a4e2aedd2d1698a18aa7f74e1d251a"
+    },
+    {
+      "path": "case-smoke/runs/turbo-lumber-evolution/maneuver/repeat-01-observer-on.log",
+      "source": "tmp/vq01c-case-smoke/runs/turbo-lumber-evolution/maneuver/repeat-01-observer-on.log",
+      "sha256": "14327e306d03636d758f80a239c19fab2e0ca6921cf0117d0ee94dc9ef408f2f",
+      "uncompressed_sha256": "14327e306d03636d758f80a239c19fab2e0ca6921cf0117d0ee94dc9ef408f2f"
+    },
+    {
+      "path": "case-smoke/runs/turbo-lumber-evolution/runway/repeat-01-observer-off.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/turbo-lumber-evolution/runway/repeat-01-observer-off.json",
+      "sha256": "18193f491bbe58ab814dc3f6b5638814e260fe58c3663b7f6f0d38f9bde55e8f",
+      "uncompressed_sha256": "9018cd960024c1eb5a7c0003f581ac08e04c131e9536cbf4f9d3dd5abedaf9ee"
+    },
+    {
+      "path": "case-smoke/runs/turbo-lumber-evolution/runway/repeat-01-observer-off.log",
+      "source": "tmp/vq01c-case-smoke/runs/turbo-lumber-evolution/runway/repeat-01-observer-off.log",
+      "sha256": "f05512b94f615076c90164b20c5bd2dfddd3e8b46e44faebc5f420ccbc1b8e8d",
+      "uncompressed_sha256": "f05512b94f615076c90164b20c5bd2dfddd3e8b46e44faebc5f420ccbc1b8e8d"
+    },
+    {
+      "path": "case-smoke/runs/turbo-lumber-evolution/runway/repeat-01-observer-on.json.gz",
+      "source": "tmp/vq01c-case-smoke/runs/turbo-lumber-evolution/runway/repeat-01-observer-on.json",
+      "sha256": "3d40118443e18e30b29d79198ce50c327f64b678ff540aeb44f85f42a3ab84d5",
+      "uncompressed_sha256": "04a7c6b402b75a55a9e565b0f281907fa73eab4d4dc5295affeec9ebbd31d102"
+    },
+    {
+      "path": "case-smoke/runs/turbo-lumber-evolution/runway/repeat-01-observer-on.log",
+      "source": "tmp/vq01c-case-smoke/runs/turbo-lumber-evolution/runway/repeat-01-observer-on.log",
+      "sha256": "f05512b94f615076c90164b20c5bd2dfddd3e8b46e44faebc5f420ccbc1b8e8d",
+      "uncompressed_sha256": "f05512b94f615076c90164b20c5bd2dfddd3e8b46e44faebc5f420ccbc1b8e8d"
+    },
+    {
+      "path": "case-smoke/session_baseline.json",
+      "source": "tmp/vq01c-case-smoke/session_baseline.json",
+      "sha256": "09bdc11f01649ade69ccccdaf74d17cbed778e7fc34f94003f42854ae7fe3e3e",
+      "uncompressed_sha256": "09bdc11f01649ade69ccccdaf74d17cbed778e7fc34f94003f42854ae7fe3e3e"
+    },
+    {
+      "path": "runner-smoke/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-off.json.gz",
+      "source": "tmp/vq01c-final-runner-smoke/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-off.json",
+      "sha256": "623dbfe15368095e1b781852b0a129dc80de58542a480c9cb035a27970e9f229",
+      "uncompressed_sha256": "291b31e41cb3bbcb8923b9357ffc19186ec7e236494630d5aa2b8f1ba3eb5060"
+    },
+    {
+      "path": "runner-smoke/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-off.log",
+      "source": "tmp/vq01c-final-runner-smoke/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-off.log",
+      "sha256": "79b720480dc37142cecd89c1fdb6e49549ce8bd4bbf4be6560a5a1d6504a92e8",
+      "uncompressed_sha256": "79b720480dc37142cecd89c1fdb6e49549ce8bd4bbf4be6560a5a1d6504a92e8"
+    },
+    {
+      "path": "runner-smoke/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-on.json.gz",
+      "source": "tmp/vq01c-final-runner-smoke/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-on.json",
+      "sha256": "a4052f190022e1fc846d263c4aa01978aeed079a0e468abeadc025e9a62d3d06",
+      "uncompressed_sha256": "6eb8a13572a3c96ec7f6bcf211e8e77dadff19a78b3d748ba402e0f2c2389670"
+    },
+    {
+      "path": "runner-smoke/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-on.log",
+      "source": "tmp/vq01c-final-runner-smoke/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-on.log",
+      "sha256": "79b720480dc37142cecd89c1fdb6e49549ce8bd4bbf4be6560a5a1d6504a92e8",
+      "uncompressed_sha256": "79b720480dc37142cecd89c1fdb6e49549ce8bd4bbf4be6560a5a1d6504a92e8"
+    },
+    {
+      "path": "runner-smoke/session_baseline.json",
+      "source": "tmp/vq01c-final-runner-smoke/session_baseline.json",
+      "sha256": "668a3c3cda94a47d03687d9608e2bc114517737ca2c542e0a9ab461b09bdd7bd",
+      "uncompressed_sha256": "668a3c3cda94a47d03687d9608e2bc114517737ca2c542e0a9ab461b09bdd7bd"
+    },
+    {
+      "path": "probe-guards/altered-observer.json.gz",
+      "source": "tmp/vq01c-probe-verification-final/altered-observer.json",
+      "sha256": "3e3594eb853cf35d90ed464de297d98535d4ac344dbf3ea5ebb3d7c7d7806a05",
+      "uncompressed_sha256": "db768356a254d9705a60f17f3a77e4381f4528501a49868267999e1b359e5e02"
+    },
+    {
+      "path": "probe-guards/altered-observer.log",
+      "source": "tmp/vq01c-probe-verification-final/altered-observer.log",
+      "sha256": "79b720480dc37142cecd89c1fdb6e49549ce8bd4bbf4be6560a5a1d6504a92e8",
+      "uncompressed_sha256": "79b720480dc37142cecd89c1fdb6e49549ce8bd4bbf4be6560a5a1d6504a92e8"
+    },
+    {
+      "path": "probe-guards/control-off.json.gz",
+      "source": "tmp/vq01c-probe-verification-final/control-off.json",
+      "sha256": "8a0314dec3f6b89c2bf0d8a5c35f485816b1d46ecbf6dc53c98bd5c7f2226f25",
+      "uncompressed_sha256": "930170c9fa2f764c34dc1d04d9977cb8da8c4492d10b25519830836ffd1e3385"
+    },
+    {
+      "path": "probe-guards/control-off.log",
+      "source": "tmp/vq01c-probe-verification-final/control-off.log",
+      "sha256": "79b720480dc37142cecd89c1fdb6e49549ce8bd4bbf4be6560a5a1d6504a92e8",
+      "uncompressed_sha256": "79b720480dc37142cecd89c1fdb6e49549ce8bd4bbf4be6560a5a1d6504a92e8"
+    },
+    {
+      "path": "probe-guards/control-on.json.gz",
+      "source": "tmp/vq01c-probe-verification-final/control-on.json",
+      "sha256": "92d6aa3c9f7e2b0cf0b8fe0f46daab89d4ada42e2ffe6c5be5034f36e0178da3",
+      "uncompressed_sha256": "24f12f88d05aad3c3df86a8470549ebdb84f3d479a61e9e1fd42650947db4275"
+    },
+    {
+      "path": "probe-guards/control-on.log",
+      "source": "tmp/vq01c-probe-verification-final/control-on.log",
+      "sha256": "79b720480dc37142cecd89c1fdb6e49549ce8bd4bbf4be6560a5a1d6504a92e8",
+      "uncompressed_sha256": "79b720480dc37142cecd89c1fdb6e49549ce8bd4bbf4be6560a5a1d6504a92e8"
+    },
+    {
+      "path": "probe-guards/input-disabled.json.gz",
+      "source": "tmp/vq01c-probe-verification-final/input-disabled.json",
+      "sha256": "a1fefbb03fc7632001b8b283c2d767ee3876156b39897192ac9792ebba72b479",
+      "uncompressed_sha256": "4e7c8c58a4aa74a5b66e5ecf826a14d4f08f43b9a8091894959570e29f55feb7"
+    },
+    {
+      "path": "probe-guards/input-disabled.log",
+      "source": "tmp/vq01c-probe-verification-final/input-disabled.log",
+      "sha256": "f06040799b98117f47082daf28571e220e7a1d4f1b5fe362c3f2aa8bacbd760a",
+      "uncompressed_sha256": "f06040799b98117f47082daf28571e220e7a1d4f1b5fe362c3f2aa8bacbd760a"
+    },
+    {
+      "path": "probe-guards/paused.json.gz",
+      "source": "tmp/vq01c-probe-verification-final/paused.json",
+      "sha256": "b0f2b6b73a442bc74e234f6bff00c6ae15a6012a61954b3235b05ca80997080b",
+      "uncompressed_sha256": "c855164b43f0cf7be455f480fa02eda25137b184faed5da5c72c1f3352f6b6cd"
+    },
+    {
+      "path": "probe-guards/paused.log",
+      "source": "tmp/vq01c-probe-verification-final/paused.log",
+      "sha256": "f06040799b98117f47082daf28571e220e7a1d4f1b5fe362c3f2aa8bacbd760a",
+      "uncompressed_sha256": "f06040799b98117f47082daf28571e220e7a1d4f1b5fe362c3f2aa8bacbd760a"
+    },
+    {
+      "path": "probe-guards/stopped.json.gz",
+      "source": "tmp/vq01c-probe-verification-final/stopped.json",
+      "sha256": "7c0d88eb620a381fcee5f5b6c747edfc1c590242d945dc05833161fd97960499",
+      "uncompressed_sha256": "7eaf3b6a8f25094d2bf7b16c81570de21d7ee47f215093ba2580eaaaf770fb61"
+    },
+    {
+      "path": "probe-guards/stopped.log",
+      "source": "tmp/vq01c-probe-verification-final/stopped.log",
+      "sha256": "f06040799b98117f47082daf28571e220e7a1d4f1b5fe362c3f2aa8bacbd760a",
+      "uncompressed_sha256": "f06040799b98117f47082daf28571e220e7a1d4f1b5fe362c3f2aa8bacbd760a"
+    },
+    {
+      "path": "probe-guards/verification.json",
+      "source": "tmp/vq01c-probe-verification-final/verification.json",
+      "sha256": "18a3420f4090f22c1497f6fe301fb6311455bb09c26b0da7a075383f7325fdbf",
+      "uncompressed_sha256": "18a3420f4090f22c1497f6fe301fb6311455bb09c26b0da7a075383f7325fdbf"
+    },
+    {
+      "path": "native/run-1.json.gz",
+      "source": "tmp/vq01c-native-baseline/run-1.json",
+      "sha256": "bd267d780be04e264b07dc16b0d0b8637abfb2b51daf85585906fb96452c706e",
+      "uncompressed_sha256": "13801da8b04d7e4f984d72eec19d3471aaff0bdba04b76a2b86cc7bfc21f73de"
+    },
+    {
+      "path": "native/run-1.log",
+      "source": "tmp/vq01c-native-baseline/run-1.log",
+      "sha256": "2291a0009749085effe6b7daec932e727eb9798c76f668fa592f6e1bf2845aac",
+      "uncompressed_sha256": "2291a0009749085effe6b7daec932e727eb9798c76f668fa592f6e1bf2845aac"
+    },
+    {
+      "path": "native/run-2.json.gz",
+      "source": "tmp/vq01c-native-baseline/run-2.json",
+      "sha256": "eb3e49c02a636895b36e7c1c298a0a3e64d298028b88a0a76a8d2fd96a87ccb5",
+      "uncompressed_sha256": "345329ad999384952a68533e80783283854d7465aedc0efca5abe0c36ad9e938"
+    },
+    {
+      "path": "native/run-2.log",
+      "source": "tmp/vq01c-native-baseline/run-2.log",
+      "sha256": "6d94d3048bd6f23e66aab4f66c4403747022c4649ffe649515e994f7a5188505",
+      "uncompressed_sha256": "6d94d3048bd6f23e66aab4f66c4403747022c4649ffe649515e994f7a5188505"
+    },
+    {
+      "path": "native/run-3.json.gz",
+      "source": "tmp/vq01c-native-baseline/run-3.json",
+      "sha256": "85fce106b3c8b9c2e1e12f278380c509035539a029dfd10d8ae383e779da1d7a",
+      "uncompressed_sha256": "799a6f5b84d61ec62406fa844bde31757cb82db11f53a83bc6d85285a0e200fe"
+    },
+    {
+      "path": "native/run-3.log",
+      "source": "tmp/vq01c-native-baseline/run-3.log",
+      "sha256": "dde83dfd04c2f97c02bf83aa73557ccc27cf2dfd09985baeb0c76d914484b9ff",
+      "uncompressed_sha256": "dde83dfd04c2f97c02bf83aa73557ccc27cf2dfd09985baeb0c76d914484b9ff"
+    },
+    {
+      "path": "checks/native-smoke.log",
+      "source": "tmp/vq01c-development/native-smoke.log",
+      "sha256": "bd1b01c27034ad522673608320ebb724ef208c641223119c550d5da8807c3500",
+      "uncompressed_sha256": "bd1b01c27034ad522673608320ebb724ef208c641223119c550d5da8807c3500"
+    },
+    {
+      "path": "checks/native-smoke.json.gz",
+      "source": "tmp/vq01c-development/native-smoke.json",
+      "sha256": "c520d6f2a394d67cba155b68c88c551e39a1de3d8ad0a26fcd42f19ec7b17541",
+      "uncompressed_sha256": "a8837ff286501f3d252ae9a24917fcc3d74f543c8571d08f28f30cfdb24ced70"
+    },
+    {
+      "path": "checks/python-tests.log",
+      "source": "tmp/vq01c-development/python-tests.log",
+      "sha256": "29338ca0c00068c2875cc38d2a3df15f0a9a08189aec5ada98354dfad27d403d",
+      "uncompressed_sha256": "29338ca0c00068c2875cc38d2a3df15f0a9a08189aec5ada98354dfad27d403d"
+    },
+    {
+      "path": "checks/frame-samples-test.log",
+      "source": "tmp/vq01c-development/frame-samples-test.log",
+      "sha256": "1b5f1cd2fb9f2945998a23ef41aa980fdaf459bd1ce00c7ad8df06e0565818d1",
+      "uncompressed_sha256": "1b5f1cd2fb9f2945998a23ef41aa980fdaf459bd1ce00c7ad8df06e0565818d1"
+    },
+    {
+      "path": "checks/simulation-test.log",
+      "source": "tmp/vq01c-development/simulation-test.log",
+      "sha256": "ca740d9d56fc9ab41311a7d73cbd53c3cc3f795dbcf193131f03592f8393a53d",
+      "uncompressed_sha256": "ca740d9d56fc9ab41311a7d73cbd53c3cc3f795dbcf193131f03592f8393a53d"
+    },
+    {
+      "path": "native-summary.json",
+      "source": "tmp/vq01c-development/native-summary-agent.json",
+      "sha256": "fb79c418afa7db04fd1aa1aa8db134edb87a37366c10a1ecfd0ca8c311509b92",
+      "uncompressed_sha256": "fb79c418afa7db04fd1aa1aa8db134edb87a37366c10a1ecfd0ca8c311509b92"
+    },
+    {
+      "path": "cpu-summary.json",
+      "source": "reduced from cpu-trim raw reports with current strict validator",
+      "sha256": "d3d3f249e7258d604d53f3d2c219bd6708d66a5001f28a2c50d5c7ffe3a6fd81"
+    }
+  ],
+  "tools_sha256": {
+    "research/performance/native_summary.py": "73014619ee92436fe24dcde805c24ea231f4ca7fb482b2a000e9aca042019878",
+    "research/performance/README.md": "49d9504e3402924e278056a5011e8bbd9918c22b507064fe7637dd8edb35e75b",
+    "research/performance/session_baseline.py": "4ff47a9a7304f750db607f1352675086ef39ecbc1df8e827bc90e2553f78e648",
+    "research/performance/session_probe.gd": "b922d870cd545e796a601c21f8c16c500a41e2b13cac2ad8b04ab220bec8a2fb",
+    "research/performance/test_native_summary.py": "43fe41c885a5f74369d3e03cfa3e795217ae3a073e53e0c388c804ec6ad12520",
+    "research/performance/test_session_baseline.py": "56b847c56bf81b79917f9d6138969fbf2ebea96857f798783c6bb0e99c7b2aab",
+    "research/performance/test_texture_inventory.py": "377a0beb045a4fe4a58bf4ec193cdd3489ab9571602b611ed9be977e9fbc35b5",
+    "research/performance/texture_inventory.py": "ee42c1683532d6c74285f91b58c92d937b98ee84502e1114a985ec00c4e3df0b",
+    "research/performance/verify_session_probe.py": "452d24c25e6d8faf0455c990eb24ca4e8392bf0e69a9df1928a99f2ceca95abe"
+  },
+  "engine_sha256": {
+    "Godot_v4.7.2-stable_win64.exe": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+    "Godot_v4.7.2-stable_win64_console.exe": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+  }
+}

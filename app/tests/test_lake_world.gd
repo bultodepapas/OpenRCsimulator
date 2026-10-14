@@ -5,6 +5,7 @@ extends SceneTree
 const FieldLoader := preload("res://data/field_loader.gd")
 const LakeLoader := preload("res://data/lake_loader.gd")
 const LakeWorld := preload("res://render/lake/lake_world.gd")
+const LakeTerrain := preload("res://render/lake/lake_terrain.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const LakeCollision := preload("res://sim/lake_collision.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
@@ -130,7 +131,75 @@ func _test_attached_scene(field: Dictionary, lake: Dictionary) -> void:
 	_test_matching_mask(ground_material, basin.material_override as ShaderMaterial, lake)
 	_test_mesh_bounds_and_normals(basin, water, lake)
 	_test_baked_depth_and_shelf(basin, lake, surface_result.rects)
+	_test_geometry_cache(lake, surface_result.rects, ground_material, lake_node, basin, water)
 	field_node.free()
+
+
+func _test_geometry_cache(lake: Dictionary, surfaces: PackedFloat64Array,
+		ground_material: ShaderMaterial, original_root: Node3D,
+		original_basin: MeshInstance3D, original_water: MeshInstance3D) -> void:
+	var original_basin_bytes := _mesh_array_bytes(original_basin.mesh as ArrayMesh)
+	var original_water_bytes := _mesh_array_bytes(original_water.mesh as ArrayMesh)
+	var warm_root: Node3D = LakeTerrain.build(lake, ground_material, surfaces)
+	var warm_basin: MeshInstance3D = warm_root.get_node("Basin") as MeshInstance3D
+	var warm_water: MeshInstance3D = warm_root.get_node("Water") as MeshInstance3D
+	_check("warm lake geometry preserves byte-exact mesh arrays",
+		_mesh_array_bytes(warm_basin.mesh as ArrayMesh) == original_basin_bytes
+		and _mesh_array_bytes(warm_water.mesh as ArrayMesh) == original_water_bytes)
+	_check("warm attaches create independent nodes, meshes, and materials",
+		warm_root != original_root and warm_basin != original_basin and warm_water != original_water
+		and warm_basin.mesh != original_basin.mesh and warm_water.mesh != original_water.mesh
+		and warm_basin.material_override != original_basin.material_override
+		and warm_water.material_override != original_water.material_override)
+
+	# Mutate the returned mesh resources. A later attach must still be assembled from intact cached arrays.
+	(warm_basin.mesh as ArrayMesh).clear_surfaces()
+	(warm_water.mesh as ArrayMesh).clear_surfaces()
+	var after_mutation_root: Node3D = LakeTerrain.build(lake, ground_material, surfaces)
+	var after_mutation_basin: MeshInstance3D = after_mutation_root.get_node("Basin") as MeshInstance3D
+	var after_mutation_water: MeshInstance3D = after_mutation_root.get_node("Water") as MeshInstance3D
+	_check("mutating returned meshes cannot poison the next warm build",
+		warm_basin.mesh.get_surface_count() == 0 and warm_water.mesh.get_surface_count() == 0
+		and after_mutation_basin.mesh.get_surface_count() == 1 and after_mutation_water.mesh.get_surface_count() == 1
+		and after_mutation_basin.mesh != warm_basin.mesh and after_mutation_water.mesh != warm_water.mesh
+		and _mesh_array_bytes(after_mutation_basin.mesh as ArrayMesh) == original_basin_bytes
+		and _mesh_array_bytes(after_mutation_water.mesh as ArrayMesh) == original_water_bytes)
+	warm_root.free()
+	after_mutation_root.free()
+
+	# The normalized identity is deliberately left unchanged: full geometry content must drive invalidation.
+	var changed_lake: Dictionary = lake.duplicate(true)
+	var changed_shoreline: PackedFloat64Array = changed_lake.shoreline_ne_m
+	changed_shoreline[1] += 0.75
+	changed_lake["shoreline_ne_m"] = changed_shoreline
+	changed_lake["identity"] = lake.identity
+	var changed_lake_root: Node3D = LakeTerrain.build(changed_lake, ground_material, surfaces)
+	var changed_lake_basin: MeshInstance3D = changed_lake_root.get_node("Basin") as MeshInstance3D
+	var changed_lake_water: MeshInstance3D = changed_lake_root.get_node("Water") as MeshInstance3D
+	_check("changed lake geometry invalidates both meshes even with the same identity",
+		changed_lake.identity == lake.identity
+		and _mesh_array_bytes(changed_lake_basin.mesh as ArrayMesh) != original_basin_bytes
+		and _mesh_array_bytes(changed_lake_water.mesh as ArrayMesh) != original_water_bytes)
+	var changed_lake_basin_bytes := _mesh_array_bytes(changed_lake_basin.mesh as ArrayMesh)
+	var changed_lake_water_bytes := _mesh_array_bytes(changed_lake_water.mesh as ArrayMesh)
+	changed_lake_root.free()
+
+	var changed_surfaces := surfaces.duplicate()
+	for index in range(0, changed_surfaces.size(), 6):
+		changed_surfaces[index + 5] = 7.5 if changed_surfaces[index + 5] == 2.5 else 2.5
+	var changed_surfaces_root: Node3D = LakeTerrain.build(changed_lake, ground_material, changed_surfaces)
+	var changed_surfaces_basin: MeshInstance3D = changed_surfaces_root.get_node("Basin") as MeshInstance3D
+	var changed_surfaces_water: MeshInstance3D = changed_surfaces_root.get_node("Water") as MeshInstance3D
+	_check("changed ground-surface rolling data invalidates basin geometry only",
+		_mesh_array_bytes(changed_surfaces_basin.mesh as ArrayMesh) != changed_lake_basin_bytes
+		and _mesh_array_bytes(changed_surfaces_water.mesh as ArrayMesh) == changed_lake_water_bytes)
+	changed_surfaces_root.free()
+
+
+func _mesh_array_bytes(mesh: ArrayMesh) -> PackedByteArray:
+	if mesh == null or mesh.get_surface_count() != 1:
+		return PackedByteArray()
+	return var_to_bytes(mesh.surface_get_arrays(0))
 
 
 func _test_matching_mask(ground_material: ShaderMaterial, basin_material: ShaderMaterial,

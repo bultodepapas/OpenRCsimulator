@@ -1,0 +1,306 @@
+{
+  "complete": true,
+  "configuration": {
+    "aircraft": [
+      "jensen-das-ugly-stik-60"
+    ],
+    "cases": [
+      "trim"
+    ],
+    "meaning": "simulation ticks; default warmup is 10 simulated seconds and default sample is 60 simulated seconds, not real-time qualification",
+    "repeats": 1,
+    "sample_ticks": 8,
+    "tick_hz": 240,
+    "timeout_seconds_per_probe": 1800.0,
+    "warmup_ticks": 0
+  },
+  "failure": "",
+  "failures": [],
+  "format": "openrc-session-baseline v1",
+  "metadata": {
+    "engine": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "required_version": "4.7.2",
+      "runtime_binary_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "runtime_binary_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+      "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+      "version": "4.7.2.stable.official.ed1daf0bf"
+    },
+    "probe": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\session_probe.gd",
+      "sha256": "b922d870cd545e796a601c21f8c16c500a41e2b13cac2ad8b04ab220bec8a2fb"
+    },
+    "system": {
+      "logical_cpu_count": 24,
+      "machine": "AMD64",
+      "platform": "Windows-10-10.0.26100-SP0",
+      "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+      "python": "3.11.9",
+      "release": "10",
+      "system": "Windows"
+    },
+    "workspace": {
+      "branch": "main",
+      "commit": "22b3e4825ec97289b76666ca9e942eaa7a8f703d",
+      "dirty_tracked_code": [
+        {
+          "path": "research/performance/session_baseline.py",
+          "present": true,
+          "sha256": "4ff47a9a7304f750db607f1352675086ef39ecbc1df8e827bc90e2553f78e648",
+          "tracked": true
+        }
+      ],
+      "status_porcelain": [
+        " M docs/DESKTOP-DELIVERY-PLAN.md",
+        " M docs/VISUAL-QUALITY-PLAN.md",
+        " M docs/plans/global-performance-visual-quality.md",
+        " M research/performance/README.md",
+        " M research/performance/session_baseline.py",
+        "?? docs/research/visual-quality-implementation/VQ-01c/README.md",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/jensen-das-ugly-stik-60/lake/repeat-01-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/jensen-das-ugly-stik-60/lake/repeat-01-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/jensen-das-ugly-stik-60/lake/repeat-01-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/jensen-das-ugly-stik-60/lake/repeat-01-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/jensen-das-ugly-stik-60/maneuver/repeat-01-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/jensen-das-ugly-stik-60/runway/repeat-01-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/jensen-das-ugly-stik-60/runway/repeat-01-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/jensen-das-ugly-stik-60/runway/repeat-01-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/jensen-das-ugly-stik-60/runway/repeat-01-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/p51d-mustang-120/lake/repeat-01-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/p51d-mustang-120/lake/repeat-01-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/p51d-mustang-120/lake/repeat-01-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/p51d-mustang-120/lake/repeat-01-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/p51d-mustang-120/maneuver/repeat-01-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/p51d-mustang-120/maneuver/repeat-01-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/p51d-mustang-120/maneuver/repeat-01-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/p51d-mustang-120/maneuver/repeat-01-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/p51d-mustang-120/runway/repeat-01-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/p51d-mustang-120/runway/repeat-01-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/turbo-lumber-evolution/lake/repeat-01-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/turbo-lumber-evolution/lake/repeat-01-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/turbo-lumber-evolution/lake/repeat-01-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/turbo-lumber-evolution/lake/repeat-01-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/turbo-lumber-evolution/maneuver/repeat-01-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/turbo-lumber-evolution/maneuver/repeat-01-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/turbo-lumber-evolution/maneuver/repeat-01-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/turbo-lumber-evolution/maneuver/repeat-01-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/turbo-lumber-evolution/runway/repeat-01-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/turbo-lumber-evolution/runway/repeat-01-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/turbo-lumber-evolution/runway/repeat-01-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/runs/turbo-lumber-evolution/runway/repeat-01-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/case-smoke/session_baseline.json",
+        "?? docs/research/visual-quality-implementation/VQ-01c/checks/frame-samples-test.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/checks/native-smoke.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/checks/native-smoke.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/checks/python-tests.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/checks/simulation-test.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-summary.json",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-01-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-02-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-02-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-02-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-02-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-03-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-03-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-03-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/jensen-das-ugly-stik-60/trim/repeat-03-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/p51d-mustang-120/trim/repeat-01-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/p51d-mustang-120/trim/repeat-01-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/p51d-mustang-120/trim/repeat-01-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/p51d-mustang-120/trim/repeat-01-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/p51d-mustang-120/trim/repeat-02-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/p51d-mustang-120/trim/repeat-02-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/p51d-mustang-120/trim/repeat-02-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/p51d-mustang-120/trim/repeat-02-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/p51d-mustang-120/trim/repeat-03-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/p51d-mustang-120/trim/repeat-03-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/p51d-mustang-120/trim/repeat-03-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/p51d-mustang-120/trim/repeat-03-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/turbo-lumber-evolution/trim/repeat-01-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/turbo-lumber-evolution/trim/repeat-01-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/turbo-lumber-evolution/trim/repeat-01-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/turbo-lumber-evolution/trim/repeat-01-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/turbo-lumber-evolution/trim/repeat-02-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/turbo-lumber-evolution/trim/repeat-02-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/turbo-lumber-evolution/trim/repeat-02-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/turbo-lumber-evolution/trim/repeat-02-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/turbo-lumber-evolution/trim/repeat-03-observer-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/turbo-lumber-evolution/trim/repeat-03-observer-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/turbo-lumber-evolution/trim/repeat-03-observer-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/runs/turbo-lumber-evolution/trim/repeat-03-observer-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/cpu-trim/session_baseline.json",
+        "?? docs/research/visual-quality-implementation/VQ-01c/evidence-manifest.json",
+        "?? docs/research/visual-quality-implementation/VQ-01c/native-summary.json",
+        "?? docs/research/visual-quality-implementation/VQ-01c/native/run-1.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/native/run-1.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/native/run-2.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/native/run-2.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/native/run-3.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/native/run-3.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/probe-guards/altered-observer.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/probe-guards/altered-observer.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/probe-guards/control-off.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/probe-guards/control-off.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/probe-guards/control-on.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/probe-guards/control-on.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/probe-guards/input-disabled.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/probe-guards/input-disabled.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/probe-guards/paused.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/probe-guards/paused.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/probe-guards/stopped.json.gz",
+        "?? docs/research/visual-quality-implementation/VQ-01c/probe-guards/stopped.log",
+        "?? docs/research/visual-quality-implementation/VQ-01c/probe-guards/verification.json",
+        "?? docs/research/visual-quality-implementation/VQ-02a/README.md",
+        "?? docs/research/visual-quality-implementation/VQ-02a/texture-inventory.json",
+        "?? research/performance/test_native_summary.py",
+        "?? research/performance/verify_session_probe.py"
+      ],
+      "untracked_code": [
+        {
+          "path": "docs/research/visual-quality-implementation/VQ-01c/case-smoke/session_baseline.json",
+          "present": true,
+          "sha256": "09bdc11f01649ade69ccccdaf74d17cbed778e7fc34f94003f42854ae7fe3e3e",
+          "tracked": false
+        },
+        {
+          "path": "docs/research/visual-quality-implementation/VQ-01c/cpu-summary.json",
+          "present": true,
+          "sha256": "d3d3f249e7258d604d53f3d2c219bd6708d66a5001f28a2c50d5c7ffe3a6fd81",
+          "tracked": false
+        },
+        {
+          "path": "docs/research/visual-quality-implementation/VQ-01c/cpu-trim/session_baseline.json",
+          "present": true,
+          "sha256": "27c1050a039956d785a96ba2c7a3afc2480c95542a2bdb3bf4c79d692c651e80",
+          "tracked": false
+        },
+        {
+          "path": "docs/research/visual-quality-implementation/VQ-01c/evidence-manifest.json",
+          "present": true,
+          "sha256": "1e7bb57a06b3a09f2db1958bfc9c66ce96f9c93d67bc22f2556cedcf08828204",
+          "tracked": false
+        },
+        {
+          "path": "docs/research/visual-quality-implementation/VQ-01c/native-summary.json",
+          "present": true,
+          "sha256": "fb79c418afa7db04fd1aa1aa8db134edb87a37366c10a1ecfd0ca8c311509b92",
+          "tracked": false
+        },
+        {
+          "path": "docs/research/visual-quality-implementation/VQ-01c/probe-guards/verification.json",
+          "present": true,
+          "sha256": "18a3420f4090f22c1497f6fe301fb6311455bb09c26b0da7a075383f7325fdbf",
+          "tracked": false
+        },
+        {
+          "path": "docs/research/visual-quality-implementation/VQ-02a/texture-inventory.json",
+          "present": true,
+          "sha256": "b9769db60a5e89b04feea5dbc221ec8c6fbb51de42c817a3192d3278682108a9",
+          "tracked": false
+        },
+        {
+          "path": "research/performance/test_native_summary.py",
+          "present": true,
+          "sha256": "43fe41c885a5f74369d3e03cfa3e795217ae3a073e53e0c388c804ec6ad12520",
+          "tracked": false
+        },
+        {
+          "path": "research/performance/verify_session_probe.py",
+          "present": true,
+          "sha256": "452d24c25e6d8faf0455c990eb24ca4e8392bf0e69a9df1928a99f2ceca95abe",
+          "tracked": false
+        }
+      ]
+    }
+  },
+  "pairs": [
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "trim",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 886.0,
+      "observer_on_wall_usec_per_tick": 1059.25,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": 173.25,
+      "reasons": [],
+      "repeat": 1,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 8,
+          "fingerprint": "d67126346aa92e6dea74dd05174f377154c28479a2b6b5cfe56eb8978c6cfb8a",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-final-runner-smoke\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-01-observer-off.log",
+          "measured_wall_usec": 7088,
+          "measured_wall_usec_per_sample_tick": 886.0,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-final-runner-smoke\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-01-observer-off.json",
+          "timing_usec_nearest_rank": {},
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 8,
+          "fingerprint": "d67126346aa92e6dea74dd05174f377154c28479a2b6b5cfe56eb8978c6cfb8a",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-final-runner-smoke\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-01-observer-on.log",
+          "measured_wall_usec": 8474,
+          "measured_wall_usec_per_sample_tick": 1059.25,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-final-runner-smoke\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-01-observer-on.json",
+          "timing_usec_nearest_rank": {
+            "input_usec": {
+              "p100": 231,
+              "p50": 113,
+              "p95": 231,
+              "p99": 231
+            },
+            "simulation_usec": {
+              "p100": 1177,
+              "p50": 826,
+              "p95": 1177,
+              "p99": 1177
+            },
+            "tick_usec": {
+              "p100": 1338,
+              "p50": 986,
+              "p95": 1338,
+              "p99": 1338
+            }
+          },
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    }
+  ],
+  "status": "complete",
+  "summary": [
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "trim",
+      "comparable_pairs": 1,
+      "overhead_usec_per_tick_nearest_rank": {
+        "p50": 173.25,
+        "p95": 173.25,
+        "p99": 173.25
+      },
+      "requested_pairs": 1
+    }
+  ]
+}

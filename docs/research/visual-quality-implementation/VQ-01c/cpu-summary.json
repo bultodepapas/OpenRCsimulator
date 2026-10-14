@@ -1,0 +1,132 @@
+{
+  "format": "openrc-vq01c-cpu-summary v1",
+  "current_validator_pass": true,
+  "runs": [
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "run": "repeat-01-observer-on.json",
+      "scope": "complete callback CPU attribution, not Gate P acceptance",
+      "tick_us": {
+        "p50": 1107,
+        "p95": 1568,
+        "p99": 2101
+      },
+      "session_callback_p50_us": 149,
+      "simulation_callback_p50_us": 958,
+      "pair_fingerprint": "ba44be77b5fcadcc0addc2a1febc71485c468ab1738c61595d07b9d4c7765830",
+      "observer_delta_us_per_tick": -32.538611111111095
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "run": "repeat-02-observer-on.json",
+      "scope": "complete callback CPU attribution, not Gate P acceptance",
+      "tick_us": {
+        "p50": 890,
+        "p95": 1366,
+        "p99": 1589
+      },
+      "session_callback_p50_us": 107,
+      "simulation_callback_p50_us": 777,
+      "pair_fingerprint": "ba44be77b5fcadcc0addc2a1febc71485c468ab1738c61595d07b9d4c7765830",
+      "observer_delta_us_per_tick": -18.98048611111119
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "run": "repeat-03-observer-on.json",
+      "scope": "complete callback CPU attribution, not Gate P acceptance",
+      "tick_us": {
+        "p50": 741,
+        "p95": 1390,
+        "p99": 1616
+      },
+      "session_callback_p50_us": 99,
+      "simulation_callback_p50_us": 640,
+      "pair_fingerprint": "ba44be77b5fcadcc0addc2a1febc71485c468ab1738c61595d07b9d4c7765830",
+      "observer_delta_us_per_tick": -62.07763888888894
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "run": "repeat-01-observer-on.json",
+      "scope": "complete callback CPU attribution, not Gate P acceptance",
+      "tick_us": {
+        "p50": 1048,
+        "p95": 1790,
+        "p99": 2498
+      },
+      "session_callback_p50_us": 107,
+      "simulation_callback_p50_us": 927,
+      "pair_fingerprint": "a02d387fc75b5b5cba8b33ddb9244820e66da37ab2c379319efb099c0281170a",
+      "observer_delta_us_per_tick": 147.09152777777786
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "run": "repeat-02-observer-on.json",
+      "scope": "complete callback CPU attribution, not Gate P acceptance",
+      "tick_us": {
+        "p50": 912,
+        "p95": 1277,
+        "p99": 1624
+      },
+      "session_callback_p50_us": 99,
+      "simulation_callback_p50_us": 810,
+      "pair_fingerprint": "a02d387fc75b5b5cba8b33ddb9244820e66da37ab2c379319efb099c0281170a",
+      "observer_delta_us_per_tick": -4.439097222222131
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "run": "repeat-03-observer-on.json",
+      "scope": "complete callback CPU attribution, not Gate P acceptance",
+      "tick_us": {
+        "p50": 1031,
+        "p95": 1550,
+        "p99": 1846
+      },
+      "session_callback_p50_us": 104,
+      "simulation_callback_p50_us": 915,
+      "pair_fingerprint": "a02d387fc75b5b5cba8b33ddb9244820e66da37ab2c379319efb099c0281170a",
+      "observer_delta_us_per_tick": -58.60069444444457
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "run": "repeat-01-observer-on.json",
+      "scope": "complete callback CPU attribution, not Gate P acceptance",
+      "tick_us": {
+        "p50": 1231,
+        "p95": 1973,
+        "p99": 2247
+      },
+      "session_callback_p50_us": 116,
+      "simulation_callback_p50_us": 1109,
+      "pair_fingerprint": "70ce432e506c60b2a31f7e46007c402aea0b8b6a11237c21bffa58d94d99e019",
+      "observer_delta_us_per_tick": -115.69715277777777
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "run": "repeat-02-observer-on.json",
+      "scope": "complete callback CPU attribution, not Gate P acceptance",
+      "tick_us": {
+        "p50": 1351,
+        "p95": 1865,
+        "p99": 2160
+      },
+      "session_callback_p50_us": 137,
+      "simulation_callback_p50_us": 1212,
+      "pair_fingerprint": "70ce432e506c60b2a31f7e46007c402aea0b8b6a11237c21bffa58d94d99e019",
+      "observer_delta_us_per_tick": 31.136319444444553
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "run": "repeat-03-observer-on.json",
+      "scope": "complete callback CPU attribution, not Gate P acceptance",
+      "tick_us": {
+        "p50": 1446,
+        "p95": 2104,
+        "p99": 2463
+      },
+      "session_callback_p50_us": 151,
+      "simulation_callback_p50_us": 1298,
+      "pair_fingerprint": "70ce432e506c60b2a31f7e46007c402aea0b8b6a11237c21bffa58d94d99e019",
+      "observer_delta_us_per_tick": 156.87777777777774
+    }
+  ]
+}

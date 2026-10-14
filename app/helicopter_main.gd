@@ -1,5 +1,6 @@
 # HELI-16/25: playable rotorcraft route, reusing the production world, camera and menus.
 extends Node3D
+var external_controller_selection: bool = false
 const Session = preload("res://sim/helicopter_flight_session.gd")
 const Builder = preload("res://aircraft/hx700_model.gd")
 const RotorVisual = preload("res://render/rotor/heli_rotor_visual.gd")
@@ -64,6 +65,7 @@ func _ready() -> void:
  _rig.pilot_zoom=.35
  _rig.set_view(str(args.get("view","pilot")))
  session=Session.new()
+ session.external_controller_selection=external_controller_selection
  session.physics_enabled=not args.has("trace") and not args.has("capture")
  if not session.setup() or not session.set_field(field): _refuse(session.start_error+session.surface_error); return
  if not weather_config.is_empty() and not session.setup_weather(weather_config): _refuse(session.weather_error); return

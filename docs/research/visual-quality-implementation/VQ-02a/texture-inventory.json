@@ -1,0 +1,5387 @@
+{
+  "coverage_gaps": [
+    {
+      "embedded_image_count": 3,
+      "gap": "embedded GLB image payloads are UNINSPECTED; image headers and pixels were not decoded",
+      "path": "assets/aircraft/hx-700/hx-700.glb"
+    }
+  ],
+  "glb_coverage": [
+    {
+      "embedded_image_count": 3,
+      "external_image_count": 0,
+      "images": [
+        {
+          "buffer_view": 27,
+          "index": 0,
+          "inspection": "UNINSPECTED",
+          "mime_type": "image/png",
+          "name": "hx700_botalon_mascaras"
+        },
+        {
+          "buffer_view": 48,
+          "index": 1,
+          "inspection": "UNINSPECTED",
+          "mime_type": "image/png",
+          "name": "hx700_carenado_mascaras"
+        },
+        {
+          "buffer_view": 49,
+          "index": 2,
+          "inspection": "UNINSPECTED",
+          "mime_type": "image/png",
+          "name": "hx700_carenado_mascaras"
+        }
+      ],
+      "inspection": "JSON metadata only; embedded image payloads are UNINSPECTED",
+      "path": "assets/aircraft/hx-700/hx-700.glb",
+      "status": "parsed"
+    },
+    {
+      "embedded_image_count": 0,
+      "external_image_count": 0,
+      "images": [],
+      "inspection": "JSON metadata only; embedded image payloads are UNINSPECTED",
+      "path": "assets/aircraft/turbo-lumber-evolution/timber.glb",
+      "status": "parsed"
+    },
+    {
+      "embedded_image_count": 0,
+      "external_image_count": 1,
+      "images": [],
+      "inspection": "JSON metadata only; embedded image payloads are UNINSPECTED",
+      "path": "assets/landscape/night-lighting/campfire-pit.glb",
+      "status": "parsed"
+    },
+    {
+      "embedded_image_count": 0,
+      "external_image_count": 0,
+      "images": [],
+      "inspection": "JSON metadata only; embedded image payloads are UNINSPECTED",
+      "path": "assets/landscape/night-lighting/lamp-head.glb",
+      "status": "parsed"
+    },
+    {
+      "embedded_image_count": 0,
+      "external_image_count": 10,
+      "images": [],
+      "inspection": "JSON metadata only; embedded image payloads are UNINSPECTED",
+      "path": "assets/scenery/population/crossover.glb",
+      "status": "parsed"
+    },
+    {
+      "embedded_image_count": 0,
+      "external_image_count": 10,
+      "images": [],
+      "inspection": "JSON metadata only; embedded image payloads are UNINSPECTED",
+      "path": "assets/scenery/population/hatch.glb",
+      "status": "parsed"
+    },
+    {
+      "embedded_image_count": 0,
+      "external_image_count": 7,
+      "images": [],
+      "inspection": "JSON metadata only; embedded image payloads are UNINSPECTED",
+      "path": "assets/scenery/population/pilot.glb",
+      "status": "parsed"
+    },
+    {
+      "embedded_image_count": 0,
+      "external_image_count": 10,
+      "images": [],
+      "inspection": "JSON metadata only; embedded image payloads are UNINSPECTED",
+      "path": "assets/scenery/population/sedan.glb",
+      "status": "parsed"
+    },
+    {
+      "embedded_image_count": 0,
+      "external_image_count": 7,
+      "images": [],
+      "inspection": "JSON metadata only; embedded image payloads are UNINSPECTED",
+      "path": "assets/scenery/population/sitting.glb",
+      "status": "parsed"
+    },
+    {
+      "embedded_image_count": 0,
+      "external_image_count": 7,
+      "images": [],
+      "inspection": "JSON metadata only; embedded image payloads are UNINSPECTED",
+      "path": "assets/scenery/population/standing.glb",
+      "status": "parsed"
+    },
+    {
+      "embedded_image_count": 0,
+      "external_image_count": 0,
+      "images": [],
+      "inspection": "JSON metadata only; embedded image payloads are UNINSPECTED",
+      "path": "assets/vehicles/mt8-bisonte/MT8_Bisonte.glb",
+      "status": "parsed"
+    }
+  ],
+  "resource_uses": [
+    {
+      "consumer_path": "app_root.tscn",
+      "property": "script",
+      "resource_path": "res://app_root.gd",
+      "sampler": "script",
+      "sampler_hints": null,
+      "shader_context": "unknown",
+      "shader_path": null,
+      "usage_kind": "material_binding"
+    },
+    {
+      "consumer_path": "app_root.tscn",
+      "resource_path": "res://app_root.gd",
+      "usage_kind": "resource_string"
+    },
+    {
+      "consumer_path": "helicopter_main.tscn",
+      "property": "script",
+      "resource_path": "res://helicopter_main.gd",
+      "sampler": "script",
+      "sampler_hints": null,
+      "shader_context": "unknown",
+      "shader_path": null,
+      "usage_kind": "material_binding"
+    },
+    {
+      "consumer_path": "helicopter_main.tscn",
+      "resource_path": "res://helicopter_main.gd",
+      "usage_kind": "resource_string"
+    },
+    {
+      "consumer_path": "main.tscn",
+      "property": "script",
+      "resource_path": "res://main.gd",
+      "sampler": "script",
+      "sampler_hints": null,
+      "shader_context": "unknown",
+      "shader_path": null,
+      "usage_kind": "material_binding"
+    },
+    {
+      "consumer_path": "main.tscn",
+      "resource_path": "res://main.gd",
+      "usage_kind": "resource_string"
+    },
+    {
+      "consumer_path": "tests/fixtures/atmosphere_field.tscn",
+      "property": "script",
+      "resource_path": "res://tests/fixtures/atmosphere_field.gd",
+      "sampler": "script",
+      "sampler_hints": null,
+      "shader_context": "unknown",
+      "shader_path": null,
+      "usage_kind": "material_binding"
+    },
+    {
+      "consumer_path": "tests/fixtures/atmosphere_field.tscn",
+      "resource_path": "res://tests/fixtures/atmosphere_field.gd",
+      "usage_kind": "resource_string"
+    }
+  ],
+  "schema_version": 1,
+  "scope": {
+    "app_root": ".",
+    "candidate_policy": "review_candidates are nonblocking prompts, never automatic import errors",
+    "color_space_policy": "source_color and normal hints are reported from shaders; unspecified is not assumed to mean sRGB",
+    "excluded_directories": [
+      ".godot",
+      "captures"
+    ],
+    "image_inspection": "PNG and JPEG headers only; no pixel decode or import mutation",
+    "read_only": true
+  },
+  "shaders": [
+    {
+      "path": "assets/landscape/vegetation/impostors/bush_common_4view.gdshader",
+      "samplers": [
+        {
+          "color_space_hint": "source_color",
+          "filter_hints": [
+            "filter_linear"
+          ],
+          "hint_tokens": [
+            "filter_linear",
+            "repeat_disable",
+            "source_color"
+          ],
+          "name": "impostor_atlas",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [
+            "repeat_disable"
+          ],
+          "type": "sampler2D"
+        }
+      ]
+    },
+    {
+      "path": "render/cloud_field.gdshaderinc",
+      "samplers": []
+    },
+    {
+      "path": "render/cloud_relief.gdshaderinc",
+      "samplers": []
+    },
+    {
+      "path": "render/grass_surface.gdshaderinc",
+      "samplers": [
+        {
+          "color_space_hint": "source_color",
+          "filter_hints": [
+            "filter_linear_mipmap_anisotropic"
+          ],
+          "hint_tokens": [
+            "filter_linear_mipmap_anisotropic",
+            "repeat_enable",
+            "source_color"
+          ],
+          "name": "grass",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [
+            "repeat_enable"
+          ],
+          "type": "sampler2D"
+        }
+      ]
+    },
+    {
+      "path": "render/ground.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/lake/bank.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/lake/water.gdshader",
+      "samplers": [
+        {
+          "color_space_hint": "unspecified",
+          "filter_hints": [
+            "filter_nearest"
+          ],
+          "hint_tokens": [
+            "filter_nearest",
+            "hint_depth_texture",
+            "repeat_disable"
+          ],
+          "name": "depth_texture",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [
+            "repeat_disable"
+          ],
+          "type": "sampler2D"
+        },
+        {
+          "color_space_hint": "unspecified",
+          "filter_hints": [
+            "filter_linear"
+          ],
+          "hint_tokens": [
+            "filter_linear",
+            "hint_screen_texture",
+            "repeat_disable"
+          ],
+          "name": "screen_texture",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [
+            "repeat_disable"
+          ],
+          "type": "sampler2D"
+        }
+      ]
+    },
+    {
+      "path": "render/landscape_upgrade/field_lamp.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/landscape_upgrade/ridge_haze.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/landscape_upgrade/runway_marker.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/landscape_upgrade/sun_glare.gdshader",
+      "samplers": [
+        {
+          "color_space_hint": "unspecified",
+          "filter_hints": [
+            "filter_nearest"
+          ],
+          "hint_tokens": [
+            "filter_nearest",
+            "hint_depth_texture",
+            "repeat_disable"
+          ],
+          "name": "depth_buffer",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [
+            "repeat_disable"
+          ],
+          "type": "sampler2D"
+        }
+      ]
+    },
+    {
+      "path": "render/landscape_upgrade/window_glow.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/near_grass.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/projected_shadow_mask.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/projected_shadow_receiver.gdshader",
+      "samplers": [
+        {
+          "color_space_hint": "unspecified",
+          "filter_hints": [
+            "filter_linear"
+          ],
+          "hint_tokens": [
+            "filter_linear",
+            "repeat_disable"
+          ],
+          "name": "mask",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [
+            "repeat_disable"
+          ],
+          "type": "sampler2D"
+        }
+      ]
+    },
+    {
+      "path": "render/sky.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/smoke/process.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/tree_identity.gdshaderinc",
+      "samplers": []
+    },
+    {
+      "path": "render/tree_wind.gdshaderinc",
+      "samplers": []
+    },
+    {
+      "path": "render/treeline.gdshader",
+      "samplers": [
+        {
+          "color_space_hint": "source_color",
+          "filter_hints": [
+            "filter_linear_mipmap_anisotropic"
+          ],
+          "hint_tokens": [
+            "filter_linear_mipmap_anisotropic",
+            "repeat_disable",
+            "source_color"
+          ],
+          "name": "atlas",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [
+            "repeat_disable"
+          ],
+          "type": "sampler2D"
+        }
+      ]
+    },
+    {
+      "path": "render/turf_detail.gdshaderinc",
+      "samplers": [
+        {
+          "color_space_hint": "unspecified",
+          "filter_hints": [
+            "filter_linear_mipmap_anisotropic"
+          ],
+          "hint_tokens": [
+            "filter_linear_mipmap_anisotropic",
+            "repeat_enable"
+          ],
+          "name": "turf_detail",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [
+            "repeat_enable"
+          ],
+          "type": "sampler2D"
+        }
+      ]
+    },
+    {
+      "path": "render/weather/cloud_flash.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/weather/lightning_bolt.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/weather/rain_curtain.gdshader",
+      "samplers": [
+        {
+          "color_space_hint": "unspecified",
+          "filter_hints": [
+            "filter_linear_mipmap"
+          ],
+          "hint_tokens": [
+            "filter_linear_mipmap",
+            "repeat_disable"
+          ],
+          "name": "cloud_texture",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [
+            "repeat_disable"
+          ],
+          "type": "sampler2D"
+        }
+      ]
+    },
+    {
+      "path": "render/weather/storm_bank.gdshader",
+      "samplers": [
+        {
+          "color_space_hint": "unspecified",
+          "filter_hints": [
+            "filter_linear_mipmap"
+          ],
+          "hint_tokens": [
+            "filter_linear_mipmap",
+            "repeat_disable"
+          ],
+          "name": "cloud_texture",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [
+            "repeat_disable"
+          ],
+          "type": "sampler2D"
+        }
+      ]
+    },
+    {
+      "path": "render/world/campfire_flame.gdshader",
+      "samplers": [
+        {
+          "color_space_hint": "source_color",
+          "filter_hints": [
+            "filter_linear"
+          ],
+          "hint_tokens": [
+            "filter_linear",
+            "source_color"
+          ],
+          "name": "flame_atlas",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [],
+          "type": "sampler2D"
+        }
+      ]
+    },
+    {
+      "path": "render/world/engine_srgb.gdshaderinc",
+      "samplers": []
+    },
+    {
+      "path": "render/world/led_strip.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/world/light_sprite.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "render/world/stars.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "scenery/birds.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "scenery/botanicals.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "scenery/crop_ground.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "scenery/flowers.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "scenery/gravel.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "scenery/imported_vegetation_wind.gdshader",
+      "samplers": [
+        {
+          "color_space_hint": "source_color",
+          "filter_hints": [
+            "filter_linear_mipmap"
+          ],
+          "hint_tokens": [
+            "filter_linear_mipmap",
+            "source_color"
+          ],
+          "name": "albedo_texture",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [],
+          "type": "sampler2D"
+        },
+        {
+          "color_space_hint": "unspecified",
+          "filter_hints": [
+            "filter_linear_mipmap"
+          ],
+          "hint_tokens": [
+            "filter_linear_mipmap",
+            "hint_normal"
+          ],
+          "name": "normal_texture",
+          "normal_hint": true,
+          "normal_hints": [
+            "hint_normal"
+          ],
+          "repeat_hints": [],
+          "type": "sampler2D"
+        }
+      ]
+    },
+    {
+      "path": "scenery/motion.gdshader",
+      "samplers": []
+    },
+    {
+      "path": "scenery/population_person.gdshader",
+      "samplers": [
+        {
+          "color_space_hint": "source_color",
+          "filter_hints": [
+            "filter_linear_mipmap_anisotropic"
+          ],
+          "hint_tokens": [
+            "filter_linear_mipmap_anisotropic",
+            "source_color"
+          ],
+          "name": "base_texture",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [],
+          "type": "sampler2D"
+        },
+        {
+          "color_space_hint": "unspecified",
+          "filter_hints": [
+            "filter_linear_mipmap"
+          ],
+          "hint_tokens": [
+            "filter_linear_mipmap",
+            "hint_normal"
+          ],
+          "name": "normal_texture",
+          "normal_hint": true,
+          "normal_hints": [
+            "hint_normal"
+          ],
+          "repeat_hints": [],
+          "type": "sampler2D"
+        }
+      ]
+    },
+    {
+      "path": "vehicles/ground/course_surface.gdshader",
+      "samplers": [
+        {
+          "color_space_hint": "unspecified",
+          "filter_hints": [
+            "filter_linear_mipmap"
+          ],
+          "hint_tokens": [
+            "filter_linear_mipmap",
+            "repeat_enable"
+          ],
+          "name": "turf_data",
+          "normal_hint": false,
+          "normal_hints": [],
+          "repeat_hints": [
+            "repeat_enable"
+          ],
+          "type": "sampler2D"
+        }
+      ]
+    }
+  ],
+  "summary": {
+    "coverage_gaps": 1,
+    "embedded_glb_images_counted_from_json": 3,
+    "glb_files": 11,
+    "import_sidecars": 126,
+    "material_resource_uses": 8,
+    "non_texture_imports": 72,
+    "review_candidate_count": 0,
+    "shader_sampler_declarations": 16,
+    "shaders": 39,
+    "source_images_parsed": 52,
+    "source_images_unreadable": 0,
+    "source_images_unsupported": 2,
+    "texture_imports": 54
+  },
+  "textures": [
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "editor/convert_colors_with_editor_theme": false,
+          "editor/scale_with_editor_scale": false,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": "",
+          "svg/scale": 1.0
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://aircraft/livery.svg"
+      },
+      "import_sidecar": "aircraft/livery.svg.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": null,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "aircraft/livery.svg.import"
+      ],
+      "review_candidates": [],
+      "source": "aircraft/livery.svg",
+      "source_bytes": 74094,
+      "source_exists": true,
+      "source_image": {
+        "format": "SVG",
+        "reason": "header parser is limited to PNG and JPEG",
+        "status": "unsupported"
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": true,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": true,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/aircraft/hx-700/hx-700_hx700_botalon_mascaras.png"
+      },
+      "import_sidecar": "assets/aircraft/hx-700/hx-700_hx700_botalon_mascaras.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": true,
+        "rgba8_uncompressed_bytes": 38446588,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/aircraft/hx-700/hx-700_hx700_botalon_mascaras.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/aircraft/hx-700/hx-700_hx700_botalon_mascaras.png",
+      "source_bytes": 46623,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 880,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 8192
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": true,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": true,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras.png"
+      },
+      "import_sidecar": "assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": true,
+        "rgba8_uncompressed_bytes": 11184812,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras.png",
+      "source_bytes": 40510,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 1024,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 2048
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": true,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": true,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras_2.png"
+      },
+      "import_sidecar": "assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras_2.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": true,
+        "rgba8_uncompressed_bytes": 11184812,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras_2.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras_2.png",
+      "source_bytes": 40348,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 1024,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 2048
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/crash/flame.png"
+      },
+      "import_sidecar": "assets/crash/flame.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 1249952,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/crash/flame.png.import",
+        "assets/crash/LICENSE-Kenney.txt"
+      ],
+      "review_candidates": [],
+      "source": "assets/crash/flame.png",
+      "source_bytes": 111957,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": null,
+        "channel_layout": "indexed",
+        "color_type": 3,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 536,
+        "interlaced": false,
+        "note": "Indexed PNG channel count depends on its palette and optional transparency.",
+        "status": "parsed",
+        "width": 583
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/crash/smoke.png"
+      },
+      "import_sidecar": "assets/crash/smoke.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 527304,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/crash/smoke.png.import",
+        "assets/crash/LICENSE-Kenney.txt"
+      ],
+      "review_candidates": [],
+      "source": "assets/crash/smoke.png",
+      "source_bytes": 57599,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": null,
+        "channel_layout": "indexed",
+        "color_type": 3,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 346,
+        "interlaced": false,
+        "note": "Indexed PNG channel count depends on its palette and optional transparency.",
+        "status": "parsed",
+        "width": 381
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/night-lighting/flames-8x10.png"
+      },
+      "import_sidecar": "assets/landscape/night-lighting/flames-8x10.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 8676800,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/night-lighting/flames-8x10.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/night-lighting/LICENSES.md"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/night-lighting/flames-8x10.png",
+      "source_bytes": 866983,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 1870,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1160
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/night-lighting/Textures/colormap.png"
+      },
+      "import_sidecar": "assets/landscape/night-lighting/Textures/colormap.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 1048576,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/night-lighting/Textures/colormap.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/night-lighting/LICENSES.md"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/night-lighting/Textures/colormap.png",
+      "source_bytes": 7440,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": null,
+        "channel_layout": "indexed",
+        "color_type": 3,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 512,
+        "interlaced": false,
+        "note": "Indexed PNG channel count depends on its palette and optional transparency.",
+        "status": "parsed",
+        "width": 512
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 0,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": true,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 0,
+          "mipmaps/generate": true,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/trees/atlas.png"
+      },
+      "import_sidecar": "assets/landscape/trees/atlas.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": true,
+        "rgba8_uncompressed_bytes": 5592404,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/trees/atlas.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/trees/LICENSE.txt"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/trees/atlas.png",
+      "source_bytes": 103366,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 1024,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1024
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 0,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": true,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 2,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 2,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 0,
+          "mipmaps/generate": true,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": false,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/turf/detail.png"
+      },
+      "import_sidecar": "assets/landscape/turf/detail.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": true,
+        "rgba8_uncompressed_bytes": 5592404,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/turf/detail.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/turf/PROVENANCE.json"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/turf/detail.png",
+      "source_bytes": 2287341,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 1024,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1024
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/vegetation/impostors/bush_common_4view.png"
+      },
+      "import_sidecar": "assets/landscape/vegetation/impostors/bush_common_4view.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 1048576,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/vegetation/impostors/bush_common_4view.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/vegetation/LICENSE.txt"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/vegetation/impostors/bush_common_4view.png",
+      "source_bytes": 176082,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 256,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1024
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png"
+      },
+      "import_sidecar": "assets/landscape/vegetation/impostors/bush_common_flowers_4view.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 1048576,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/vegetation/impostors/bush_common_flowers_4view.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/vegetation/LICENSE.txt"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/vegetation/impostors/bush_common_flowers_4view.png",
+      "source_bytes": 207658,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 256,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1024
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/vegetation/models/Bark_NormalTree.png"
+      },
+      "import_sidecar": "assets/landscape/vegetation/models/Bark_NormalTree.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16777216,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/vegetation/models/Bark_NormalTree.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/vegetation/LICENSE.txt"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/vegetation/models/Bark_NormalTree.png",
+      "source_bytes": 3894788,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 2048,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 2048
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png"
+      },
+      "import_sidecar": "assets/landscape/vegetation/models/Bark_NormalTree_Normal.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16777216,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/vegetation/models/Bark_NormalTree_Normal.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/vegetation/LICENSE.txt"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/vegetation/models/Bark_NormalTree_Normal.png",
+      "source_bytes": 4384496,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 2048,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 2048
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/vegetation/models/Flowers.png"
+      },
+      "import_sidecar": "assets/landscape/vegetation/models/Flowers.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 3955392,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/vegetation/models/Flowers.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/vegetation/LICENSE.txt"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/vegetation/models/Flowers.png",
+      "source_bytes": 444609,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 981,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1008
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/vegetation/models/Grass.png"
+      },
+      "import_sidecar": "assets/landscape/vegetation/models/Grass.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 1048576,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/vegetation/models/Grass.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/vegetation/LICENSE.txt"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/vegetation/models/Grass.png",
+      "source_bytes": 33605,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 512,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 512
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/vegetation/models/Leaf_Pine_C.png"
+      },
+      "import_sidecar": "assets/landscape/vegetation/models/Leaf_Pine_C.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16777216,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/vegetation/models/Leaf_Pine_C.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/vegetation/LICENSE.txt"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/vegetation/models/Leaf_Pine_C.png",
+      "source_bytes": 70055,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 2048,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 2048
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/vegetation/models/Leaves.png"
+      },
+      "import_sidecar": "assets/landscape/vegetation/models/Leaves.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16777216,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/vegetation/models/Leaves.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/vegetation/LICENSE.txt"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/vegetation/models/Leaves.png",
+      "source_bytes": 2586432,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 2048,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 2048
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png"
+      },
+      "import_sidecar": "assets/landscape/vegetation/models/Leaves_NormalTree_C.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 4194304,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/vegetation/models/Leaves_NormalTree_C.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/vegetation/LICENSE.txt"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/vegetation/models/Leaves_NormalTree_C.png",
+      "source_bytes": 158796,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 1024,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1024
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/landscape/vegetation/models/Leaves_TwistedTree_C.png"
+      },
+      "import_sidecar": "assets/landscape/vegetation/models/Leaves_TwistedTree_C.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 4194304,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/landscape/vegetation/models/Leaves_TwistedTree_C.png.import",
+        "assets/landscape/UPGRADE_CREDITS.md",
+        "assets/landscape/vegetation/LICENSE.txt"
+      ],
+      "review_candidates": [],
+      "source": "assets/landscape/vegetation/models/Leaves_TwistedTree_C.png",
+      "source_bytes": 70353,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 1024,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1024
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 262144,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png",
+      "source_bytes": 27403,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 256,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 256
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16384,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png",
+      "source_bytes": 238,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 64,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 64
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16384,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png",
+      "source_bytes": 239,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 64,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 64
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16384,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png",
+      "source_bytes": 239,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 64,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 64
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16384,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png",
+      "source_bytes": 239,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 64,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 64
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 4194304,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png",
+      "source_bytes": 584631,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 1024,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1024
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16384,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png",
+      "source_bytes": 241,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 64,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 64
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16384,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png",
+      "source_bytes": 240,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 64,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 64
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16384,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png",
+      "source_bytes": 240,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 64,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 64
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 262144,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png",
+      "source_bytes": 71364,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 256,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 256
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16384,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png",
+      "source_bytes": 239,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 64,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 64
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16384,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png",
+      "source_bytes": 240,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 64,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 64
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 4194304,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png",
+      "source_bytes": 1101557,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 1024,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1024
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 4194304,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png",
+      "source_bytes": 891916,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 1024,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1024
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 1048576,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png",
+      "source_bytes": 308642,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 512,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 512
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16384,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png",
+      "source_bytes": 238,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 64,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 64
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 4194304,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png",
+      "source_bytes": 1282057,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 1024,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1024
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16384,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png",
+      "source_bytes": 240,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 64,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 64
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png"
+      },
+      "import_sidecar": "assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 16384,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png.import"
+      ],
+      "review_candidates": [],
+      "source": "assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png",
+      "source_bytes": 239,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 3,
+        "channel_layout": "RGB",
+        "color_type": 2,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 64,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 64
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 0,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": true,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 0,
+          "mipmaps/generate": true,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/sky/weather/clouds/FX_CloudAlpha03.png"
+      },
+      "import_sidecar": "assets/sky/weather/clouds/FX_CloudAlpha03.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": true,
+        "rgba8_uncompressed_bytes": 22369620,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/sky/weather/clouds/FX_CloudAlpha03.png.import",
+        "assets/sky/weather/LICENSES.md"
+      ],
+      "review_candidates": [],
+      "source": "assets/sky/weather/clouds/FX_CloudAlpha03.png",
+      "source_bytes": 2017932,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 2,
+        "channel_layout": "grayscale+alpha",
+        "color_type": 4,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 2048,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 2048
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 0,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": true,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 0,
+          "mipmaps/generate": true,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/sky/weather/clouds/FX_CloudAlpha06.png"
+      },
+      "import_sidecar": "assets/sky/weather/clouds/FX_CloudAlpha06.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": true,
+        "rgba8_uncompressed_bytes": 22369620,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/sky/weather/clouds/FX_CloudAlpha06.png.import",
+        "assets/sky/weather/LICENSES.md"
+      ],
+      "review_candidates": [],
+      "source": "assets/sky/weather/clouds/FX_CloudAlpha06.png",
+      "source_bytes": 2059759,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 2,
+        "channel_layout": "grayscale+alpha",
+        "color_type": 4,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 2048,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 2048
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/sky/weather/previews/broken.png"
+      },
+      "import_sidecar": "assets/sky/weather/previews/broken.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 331776,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/sky/weather/previews/broken.png.import",
+        "assets/sky/weather/LICENSES.md"
+      ],
+      "review_candidates": [],
+      "source": "assets/sky/weather/previews/broken.png",
+      "source_bytes": 122188,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 216,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 384
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/sky/weather/previews/cirrus.png"
+      },
+      "import_sidecar": "assets/sky/weather/previews/cirrus.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 331776,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/sky/weather/previews/cirrus.png.import",
+        "assets/sky/weather/LICENSES.md"
+      ],
+      "review_candidates": [],
+      "source": "assets/sky/weather/previews/cirrus.png",
+      "source_bytes": 86396,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 216,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 384
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/sky/weather/previews/classic.png"
+      },
+      "import_sidecar": "assets/sky/weather/previews/classic.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 331776,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/sky/weather/previews/classic.png.import",
+        "assets/sky/weather/LICENSES.md"
+      ],
+      "review_candidates": [],
+      "source": "assets/sky/weather/previews/classic.png",
+      "source_bytes": 96690,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 216,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 384
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/sky/weather/previews/clear.png"
+      },
+      "import_sidecar": "assets/sky/weather/previews/clear.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 331776,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/sky/weather/previews/clear.png.import",
+        "assets/sky/weather/LICENSES.md"
+      ],
+      "review_candidates": [],
+      "source": "assets/sky/weather/previews/clear.png",
+      "source_bytes": 60358,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 216,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 384
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/sky/weather/previews/distant_storm.png"
+      },
+      "import_sidecar": "assets/sky/weather/previews/distant_storm.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 331776,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/sky/weather/previews/distant_storm.png.import",
+        "assets/sky/weather/LICENSES.md"
+      ],
+      "review_candidates": [],
+      "source": "assets/sky/weather/previews/distant_storm.png",
+      "source_bytes": 64794,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 216,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 384
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/sky/weather/previews/electrical_storm.png"
+      },
+      "import_sidecar": "assets/sky/weather/previews/electrical_storm.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 331776,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/sky/weather/previews/electrical_storm.png.import",
+        "assets/sky/weather/LICENSES.md"
+      ],
+      "review_candidates": [],
+      "source": "assets/sky/weather/previews/electrical_storm.png",
+      "source_bytes": 56357,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 216,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 384
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/sky/weather/previews/fair_cumulus.png"
+      },
+      "import_sidecar": "assets/sky/weather/previews/fair_cumulus.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 331776,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/sky/weather/previews/fair_cumulus.png.import",
+        "assets/sky/weather/LICENSES.md"
+      ],
+      "review_candidates": [],
+      "source": "assets/sky/weather/previews/fair_cumulus.png",
+      "source_bytes": 108157,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 216,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 384
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/sky/weather/previews/overcast.png"
+      },
+      "import_sidecar": "assets/sky/weather/previews/overcast.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 331776,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/sky/weather/previews/overcast.png.import",
+        "assets/sky/weather/LICENSES.md"
+      ],
+      "review_candidates": [],
+      "source": "assets/sky/weather/previews/overcast.png",
+      "source_bytes": 65947,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 216,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 384
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://assets/sky/weather/previews/prestorm.png"
+      },
+      "import_sidecar": "assets/sky/weather/previews/prestorm.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 331776,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "assets/sky/weather/previews/prestorm.png.import",
+        "assets/sky/weather/LICENSES.md"
+      ],
+      "review_candidates": [],
+      "source": "assets/sky/weather/previews/prestorm.png",
+      "source_bytes": 98261,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 216,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 384
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://docs/research/ground-physics/GP-03/visual-gear-extra.png"
+      },
+      "import_sidecar": "docs/research/ground-physics/GP-03/visual-gear-extra.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 3686400,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "docs/research/ground-physics/GP-03/visual-gear-extra.png.import"
+      ],
+      "review_candidates": [],
+      "source": "docs/research/ground-physics/GP-03/visual-gear-extra.png",
+      "source_bytes": 1111955,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 720,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1280
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://docs/research/ground-physics/GP-03/visual-gear-p51.png"
+      },
+      "import_sidecar": "docs/research/ground-physics/GP-03/visual-gear-p51.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 3686400,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "docs/research/ground-physics/GP-03/visual-gear-p51.png.import"
+      ],
+      "review_candidates": [],
+      "source": "docs/research/ground-physics/GP-03/visual-gear-p51.png",
+      "source_bytes": 1046926,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 720,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1280
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": ""
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://docs/research/ground-physics/GP-03/visual-gear-stik.png"
+      },
+      "import_sidecar": "docs/research/ground-physics/GP-03/visual-gear-stik.png.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": 3686400,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "docs/research/ground-physics/GP-03/visual-gear-stik.png.import"
+      ],
+      "review_candidates": [],
+      "source": "docs/research/ground-physics/GP-03/visual-gear-stik.png",
+      "source_bytes": 1121725,
+      "source_exists": true,
+      "source_image": {
+        "bit_depth": 8,
+        "channel_count": 4,
+        "channel_layout": "RGBA",
+        "color_type": 6,
+        "format": "PNG",
+        "header_crc_checked": false,
+        "height": 720,
+        "interlaced": false,
+        "note": null,
+        "status": "parsed",
+        "width": 1280
+      }
+    },
+    {
+      "consumer_paths": [],
+      "import": {
+        "color_space": {
+          "hdr_as_srgb_import_flag": false,
+          "source_color_hint": "reported per shader sampler when available",
+          "status": "not inferred from importer metadata alone"
+        },
+        "compression": {
+          "detect_3d_compress_to": 1,
+          "hdr_compression": 1,
+          "high_quality": false,
+          "lossy_quality": 0.7,
+          "mode": 0,
+          "rdo_quality_loss": 0.0,
+          "uastc_level": 0
+        },
+        "importer": "texture",
+        "mipmaps": {
+          "generate": false,
+          "limit": -1
+        },
+        "processing": {
+          "channel_pack": 0,
+          "hdr_as_srgb": false,
+          "normal_map_invert_y": false,
+          "normal_map_mode": 0,
+          "premultiplied_alpha": false,
+          "size_limit": 0
+        },
+        "raw_params": {
+          "compress/channel_pack": 0,
+          "compress/hdr_compression": 1,
+          "compress/high_quality": false,
+          "compress/lossy_quality": 0.7,
+          "compress/mode": 0,
+          "compress/normal_map": 0,
+          "compress/rdo_quality_loss": 0.0,
+          "compress/uastc_level": 0,
+          "detect_3d/compress_to": 1,
+          "editor/convert_colors_with_editor_theme": false,
+          "editor/scale_with_editor_scale": false,
+          "mipmaps/generate": false,
+          "mipmaps/limit": -1,
+          "process/channel_remap/alpha": 3,
+          "process/channel_remap/blue": 2,
+          "process/channel_remap/green": 1,
+          "process/channel_remap/red": 0,
+          "process/fix_alpha_border": true,
+          "process/hdr_as_srgb": false,
+          "process/hdr_clamp_exposure": false,
+          "process/normal_map_invert_y": false,
+          "process/premult_alpha": false,
+          "process/size_limit": 0,
+          "roughness/mode": 0,
+          "roughness/src_normal": "",
+          "svg/scale": 1.0
+        },
+        "resource_type": "CompressedTexture2D",
+        "source_file": "res://ui/slider_grabber.svg"
+      },
+      "import_sidecar": "ui/slider_grabber.svg.import",
+      "material_uses": [],
+      "memory_reference": {
+        "limitations": "does not model GPU block compression, driver format selection, tiling, or runtime copies",
+        "mipmaps_assumed": false,
+        "rgba8_uncompressed_bytes": null,
+        "status": "theoretical reference only; not a resident-memory measurement"
+      },
+      "provenance_paths": [
+        "ui/slider_grabber.svg.import",
+        "ui/update_notice.gd",
+        "ui/update_notice.gd.uid"
+      ],
+      "review_candidates": [],
+      "source": "ui/slider_grabber.svg",
+      "source_bytes": 229,
+      "source_exists": true,
+      "source_image": {
+        "format": "SVG",
+        "reason": "header parser is limited to PNG and JPEG",
+        "status": "unsupported"
+      }
+    }
+  ],
+  "tool": "research/performance/texture_inventory.py"
+}

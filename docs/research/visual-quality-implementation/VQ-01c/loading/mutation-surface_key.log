@@ -1,0 +1,30 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field and normalized lake definitions load  field=[] lake=[]
+ok   lake defaults on for the exact default field
+ok   default lake-off switch resolves without a lake
+ok   default lake-off switch scene has no Lake node or context metadata
+ok   default lake-off switch context cannot create a water hazard
+ok   custom fields receive no lake scene context
+ok   custom field scene has no Lake node or context metadata
+ok   custom field context cannot create a water hazard
+ok   an explicitly selected scenery layout receives no default lake
+ok   explicit scenery layout scene has no Lake node or context metadata
+ok   explicit scenery layout context cannot create a water hazard
+ok   default field produces the matching physical surface table
+ok   production lake attach creates one identity-matched scene child
+ok   lake scene contains real basin and shoreline water meshes
+ok   ground cutout and basin bank shader share the canonical NED mask
+ok   basin mesh bounds cover the whole bounded bank region
+ok   water mesh follows shoreline bounds at the shared mean-down level  bounds=[P: (80.0, 0.0, -140.0), S: (90.0, 0.00001, 59.0)] shoreline NE=[81.000,140.000]x[80.000,170.000] position=(0.0, -0.45, 0.0)
+ok   baked basin has normalized upward finite normals and scalar bed/shore UVs
+ok   water mesh has upward normals and nonnegative shoreline fade coordinates  vertices=57024 normals=57024 uv2=57024 first_normal=(0.0, 1.0, -0.000015) first_uv2=(0.0, 0.0)
+ok   basin vertices bake the five-metre bed below the unchanged field datum  center=(125.0, -5.45, -109.75) uv=(27.2737, 5.0) flat=[-0.00095000823233, -0.02247374322693, 0.02774444774386] coupled=[-5.45, 0.0, 0.0]
+ok   baked inner shelf follows the authored 5.5 m inset and 0.8 m depth  shore_distance=5.500000 depth=0.800000 vertex=(116.0, -1.25, -131.5)
+ok   renderer mesh and float64 sampler agree on the shelf region
+ok   warm lake geometry preserves byte-exact mesh arrays
+ok   warm attaches create independent nodes, meshes, and materials
+ok   mutating returned meshes cannot poison the next warm build
+ok   changed lake geometry invalidates both meshes even with the same identity
+FAIL changed ground-surface rolling data invalidates basin geometry only
+27 lake world checks, 1 failed

@@ -1,0 +1,158 @@
+{
+  "format": "openrc-session-probe-verification v1",
+  "complete": true,
+  "probe_sha256": "b922d870cd545e796a601c21f8c16c500a41e2b13cac2ad8b04ab220bec8a2fb",
+  "cases": [
+    {
+      "case": "control-on",
+      "passed": true,
+      "exit_code": 0,
+      "failure": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\session_probe.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-probe-verification-final\\control-on.json",
+        "--warmup-ticks=0",
+        "--sample-ticks=8",
+        "--observer=on"
+      ],
+      "script_sha256": "b922d870cd545e796a601c21f8c16c500a41e2b13cac2ad8b04ab220bec8a2fb"
+    },
+    {
+      "case": "control-off",
+      "passed": true,
+      "exit_code": 0,
+      "failure": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\session_probe.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-probe-verification-final\\control-off.json",
+        "--warmup-ticks=0",
+        "--sample-ticks=8",
+        "--observer=off"
+      ],
+      "script_sha256": "b922d870cd545e796a601c21f8c16c500a41e2b13cac2ad8b04ab220bec8a2fb"
+    },
+    {
+      "case": "paused",
+      "passed": true,
+      "exit_code": 1,
+      "failure": "tick/input did not advance exactly once: ",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--script",
+        "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-probe-mutations-dicqj8vu\\paused.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-probe-verification-final\\paused.json",
+        "--warmup-ticks=0",
+        "--sample-ticks=8",
+        "--observer=on"
+      ],
+      "script_sha256": "0da4885cbae6c532d4429c22680bcac8d1a4ef67d41702617e0abd34d59d541d"
+    },
+    {
+      "case": "input-disabled",
+      "passed": true,
+      "exit_code": 1,
+      "failure": "tick/input did not advance exactly once: ",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--script",
+        "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-probe-mutations-dicqj8vu\\input-disabled.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-probe-verification-final\\input-disabled.json",
+        "--warmup-ticks=0",
+        "--sample-ticks=8",
+        "--observer=on"
+      ],
+      "script_sha256": "d73d04eb1db648a0d3f469b311e437f0edfcb230287d587a45ffed05b06f5f00"
+    },
+    {
+      "case": "stopped",
+      "passed": true,
+      "exit_code": 1,
+      "failure": "tick/input did not advance exactly once: ",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--script",
+        "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-probe-mutations-dicqj8vu\\stopped.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-probe-verification-final\\stopped.json",
+        "--warmup-ticks=0",
+        "--sample-ticks=8",
+        "--observer=on"
+      ],
+      "script_sha256": "97594231282741a7faa6dd4208c5802ececb01bf6869fc89be716c64a3b38275"
+    },
+    {
+      "case": "altered-observer",
+      "passed": true,
+      "exit_code": 0,
+      "failure": "",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--script",
+        "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-probe-mutations-dicqj8vu\\altered-observer.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-probe-verification-final\\altered-observer.json",
+        "--warmup-ticks=0",
+        "--sample-ticks=8",
+        "--observer=on"
+      ],
+      "script_sha256": "3bbb6e804a6a371bbda7607291fad6a2e72f739cc861e80ab9e1fa6bcd1b1c5e"
+    },
+    {
+      "case": "unchanged-observer-parity",
+      "passed": true,
+      "pair": {
+        "fingerprints_equal": true,
+        "world_equal": true,
+        "machine_equal": true,
+        "observer_on_wall_usec_per_tick": 888.5,
+        "observer_off_wall_usec_per_tick": 917.875,
+        "observer_overhead_usec_per_tick": -29.375,
+        "comparable": true,
+        "reasons": []
+      }
+    },
+    {
+      "case": "altered-observer-rejected",
+      "passed": true,
+      "pair": {
+        "fingerprints_equal": false,
+        "world_equal": true,
+        "machine_equal": true,
+        "observer_on_wall_usec_per_tick": 1361.875,
+        "observer_off_wall_usec_per_tick": 917.875,
+        "observer_overhead_usec_per_tick": null,
+        "comparable": false,
+        "reasons": [
+          "observer modes produced different fingerprints"
+        ]
+      }
+    }
+  ],
+  "scope": "Disposable external scripts only; no runtime or golden mutation. Software guard checks, not performance samples."
+}

@@ -17,7 +17,9 @@ var connected_devices: Callable = func() -> Array[int]: return Input.get_connect
 var device_info: Callable = func(id: int) -> Dictionary:
 	var info: Dictionary = Input.get_joy_info(id)
 	return {guid = Input.get_joy_guid(id), name = Input.get_joy_name(id), raw_name = info.get("raw_name"),
-		vendor_id = info.get("vendor_id"), product_id = info.get("product_id"), known = Input.is_joy_known(id)}
+		vendor_id = info.get("vendor_id"), product_id = info.get("product_id"), known = Input.is_joy_known(id),
+		vibration_supported = Input.has_joy_vibration(id), steam_input_index = info.get("steam_input_index"),
+		xinput_index = info.get("xinput_index")}
 var _start_usec: int = 0
 var _old_accumulated: bool = true
 var _running: bool = false
@@ -67,7 +69,7 @@ func _ready() -> void:
 	Input.joy_connection_changed.connect(_connection_changed)
 	for id: int in connected_devices.call():
 		_connection_changed(id, true)
-	printerr("Input report: move every stick through its full range for %.2f seconds. Event spacing is observed by Godot, not USB report timing. JSON: %s" % [duration_s, output_path if output_path != "" else "stdout"])
+	printerr("Input report: move every stick through its full range and press/release each button for %.2f seconds. Timing is observed by Godot, not USB report timing. JSON: %s" % [duration_s, output_path if output_path != "" else "stdout"])
 
 
 func _connection_changed(id: int, connected: bool) -> void:
@@ -81,9 +83,14 @@ func _connection_changed(id: int, connected: bool) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	if _running and event is InputEventJoypadMotion:
+	if not _running:
+		return
+	if event is InputEventJoypadMotion:
 		var motion: InputEventJoypadMotion = event as InputEventJoypadMotion
 		data.motion(motion.device, motion.axis, motion.axis_value, int(clock_usec.call()) - _start_usec)
+	elif event is InputEventJoypadButton:
+		var button: InputEventJoypadButton = event as InputEventJoypadButton
+		data.button_event(button.device, int(button.button_index), button.is_pressed(), int(clock_usec.call()) - _start_usec)
 
 
 func _process(_delta: float) -> void:
@@ -101,8 +108,10 @@ func finish() -> int:
 		observed_duration_s = float(int(clock_usec.call()) - _start_usec) / 1e6,
 		os = OS.get_name(), os_version = OS.get_version(), godot = Engine.get_version_info().string, build = BuildInfo.current(),
 		use_accumulated_input = false, ignore_joypad_on_unfocused_application = Input.ignore_joypad_on_unfocused_application,
-		timing = "Monotonic callback arrival times per axis; includes zero-spacing batched events. Not USB report interval or end-to-end latency.",
+		timing = "Monotonic Godot callback arrival times after mapping; per-axis spacing includes zero-spacing batched events. Not USB report interval or end-to-end latency.",
 		axis_semantics = "Godot axes after any engine mapping; unseen axes are unknown, not zero or absent.",
+		button_semantics = "Godot button events after any engine mapping; repeated held-state events count as events but not transitions. Per-button state tracks at most %d indices; the first %d transitions are sampled, with excess raw events and transitions counted separately." % [ReportData.MAX_TRACKED_BUTTONS, ReportData.MAX_RECORDED_BUTTON_TRANSITIONS],
+		capability_semantics = "Godot-reported standard mapping and vibration support; these do not identify physical transport or firmware.",
 		devices = data.snapshot(), rejected_events = data.rejected_events}
 	var encoded: String = JSON.stringify(report, "\t") + "\n"
 	if output_path != "":

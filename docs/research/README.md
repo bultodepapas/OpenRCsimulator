@@ -21,6 +21,10 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ## Entry points per track
 
+### Controller support
+
+[Controller review, 2026-10-14](controller-support-2026-10-14/README.md) records the current gamepad/radio paths, calibration mismatch, Godot 4.7.2 and SDL findings, primary controller sources and a native Windows API probe. The [implementation plan](../plans/controller-support.md) prioritizes Xbox/DualSense on Windows, with explicit device ownership, profiles, safe transitions, menu navigation and physical qualification. API/synthetic checks do not establish hardware support.
+
 ### Random failures and emergency practice
 
 [EM-00 source review](failure-mode/EM-00/README.md) records RC receiver/servo/ESC/engine manuals, numerical and damaged-aircraft references, documented one-wing RC landings, and the original session/control limitations. [EM-01 implementation evidence](failure-mode/EM-01/README.md) records software verification of the initial logical-control/throttle mode. [EM-05 evidence](failure-mode/EM-05/README.md) adds capability-bound glow/electric source loss, historical-plan compatibility and transactional replay. [EM-03a evidence](failure-mode/EM-03a/README.md) records the shared actuator kernel, accepted-surface observation, healthy parity and aircraft-specific availability screen. The [failure-mode plan](../plans/failure-mode.md) owns current scope, probability, menus, remaining mechanisms and acceptance. Software verification does not establish physical or pilot validation.

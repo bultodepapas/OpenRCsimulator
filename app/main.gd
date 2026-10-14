@@ -1,4 +1,7 @@
 extends Node3D
+
+## Set by the interactive shell before the session enters the tree.
+var external_controller_selection := false
 # The game shell: world, airplane rendering, camera, panel, keys, captures and headless traces.
 # The flight itself (aircraft data, trim, commands, simulation) lives in sim/flight_session.gd.
 
@@ -419,6 +422,7 @@ func _ready() -> void:
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
 	session = FlightSession.new()
+	session.external_controller_selection = external_controller_selection
 	session.physics_enabled = not _scripted
 	# This explicit airborne operating point must be selected before setup solves trim.
 	# Runway selection still waits for field/contact configuration below.

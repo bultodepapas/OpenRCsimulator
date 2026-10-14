@@ -1,0 +1,136 @@
+{
+  "date": "2026-10-14",
+  "source_revision": "22b3e4825ec97289b76666ca9e942eaa7a8f703d",
+  "reference_path": "app/render/lake/lake_terrain.gd",
+  "reference_sha256": "c26c2a42c52967fcb9a6205dc2b29a99998f3e93dfd0a14da2f136659fb326ec",
+  "reference_newlines": "CRLF; LF-normalized content verified against Git",
+  "source_files": {
+    "app/render/lake/lake_terrain.gd": "d238d950cfb796697f4fbc7490e6abdc7a30455a59f447290617b499e60975bc",
+    "app/tests/test_lake_world.gd": "6bba0d8c972610d127291af8fc45ab7f239f84a82ada2048e520a2fa3ef3386d",
+    "research/performance/loading_probe.gd": "65f9a7c4815b2321606de1c7fbcde979026e0fccb006ed5367db7428bea1966c",
+    "research/performance/lake_geometry_probe.gd": "b3aeafb3925d7f58e0100eb419fa888d733c2f62c571d48ae66e76ffe89d5a5d"
+  },
+  "engine_files": {
+    ".tools/Godot_v4.7.2-stable_win64_console.exe": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+    ".tools/Godot_v4.7.2-stable_win64.exe": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+  },
+  "artifacts": [
+    {
+      "path": "field-phases.log",
+      "sha256": "202f9a4f90ff4ce89efd872e3f55ba6c1d05e9d7001eee4140b958ed382aec3a",
+      "uncompressed_sha256": "202f9a4f90ff4ce89efd872e3f55ba6c1d05e9d7001eee4140b958ed382aec3a"
+    },
+    {
+      "path": "field_driver.gd.gz",
+      "sha256": "ed9ce20e9407d0bbc1d0902e13d044e4db9d4618a1bb856dd19b0d127eda762a",
+      "uncompressed_sha256": "f8033e53dd566d34dde4f42366c8b16dfaa98d204b4aea04653c31121a6755e8"
+    },
+    {
+      "path": "field_phases.gd.gz",
+      "sha256": "a02d00b66c45484481e75966b7e6d8aa3bc47c66a852da5eccb00933058cdafa",
+      "uncompressed_sha256": "3245467a145f8def3fdef9d42766da4f86dd45ec579ef68e5798e60a358540be"
+    },
+    {
+      "path": "geometry-parity.json",
+      "sha256": "44f6415a8649edc899b765ab800bca5cc945e6598e448461686a7c663b5ff760",
+      "uncompressed_sha256": "44f6415a8649edc899b765ab800bca5cc945e6598e448461686a7c663b5ff760"
+    },
+    {
+      "path": "geometry-parity.log",
+      "sha256": "f90d35e8d1309177077c481a3d55196c75266472145055a3835e824551d8d0ee",
+      "uncompressed_sha256": "f90d35e8d1309177077c481a3d55196c75266472145055a3835e824551d8d0ee"
+    },
+    {
+      "path": "lake-phases.log",
+      "sha256": "22447a0d2ae1fb575e3fcdb2d2365661caedc1762f45bc8f2bc4daa0d8e4993d",
+      "uncompressed_sha256": "22447a0d2ae1fb575e3fcdb2d2365661caedc1762f45bc8f2bc4daa0d8e4993d"
+    },
+    {
+      "path": "lake_world_phases.gd.gz",
+      "sha256": "3b8a7fa90eda57d060b277d1b2a38f5ccc62505f6ac6b97b9a5282dc938cb2e9",
+      "uncompressed_sha256": "52799decc139ad91c3bef45e1f5d9fd7f872fd09ad8836bd55eed6ba22fac611"
+    },
+    {
+      "path": "loading-after.json",
+      "sha256": "54cfe1cac27f1a60a47694e522bc39fbbfdbaacc5e58e0edf51d0da8f49b4b7c",
+      "uncompressed_sha256": "54cfe1cac27f1a60a47694e522bc39fbbfdbaacc5e58e0edf51d0da8f49b4b7c"
+    },
+    {
+      "path": "loading-after.log.gz",
+      "sha256": "d4171695c661b643ff0adad00684424a8ed164170e62941f69624a71b866512d",
+      "uncompressed_sha256": "41e216d57d261d5dba0b786e323cb92052521f6137c26ad5a6db25fc03840d9b"
+    },
+    {
+      "path": "loading-before.json",
+      "sha256": "03cb983ba57ed508ba038f300a379883b5403e8c6a1d962fc3f812d691b26733",
+      "uncompressed_sha256": "03cb983ba57ed508ba038f300a379883b5403e8c6a1d962fc3f812d691b26733"
+    },
+    {
+      "path": "loading-before.log.gz",
+      "sha256": "d87658cc14b8aa2b4169db9adaeb7e91ef298c965035dd915ea1934da0fa1168",
+      "uncompressed_sha256": "865130901c84f8a572ddc00b2109ac28c68c66f27cb6fd8bb1470e8ca1cd64e4"
+    },
+    {
+      "path": "mutation-identity_key.log",
+      "sha256": "6ee6ca3bad386b354fe9751f578245b6b796a8cde1179cb9c26ebc2b49e694fb",
+      "uncompressed_sha256": "6ee6ca3bad386b354fe9751f578245b6b796a8cde1179cb9c26ebc2b49e694fb"
+    },
+    {
+      "path": "mutation-surface_key.log",
+      "sha256": "f8219849eb5d544aa6dbd882695f6b7e91f000feac46a691b35c76dcf04a847e",
+      "uncompressed_sha256": "f8219849eb5d544aa6dbd882695f6b7e91f000feac46a691b35c76dcf04a847e"
+    },
+    {
+      "path": "parse.log",
+      "sha256": "45245afe2cc6ba69eec257aec0816f8e58ee6db53885c78733fc05086dd2591c",
+      "uncompressed_sha256": "45245afe2cc6ba69eec257aec0816f8e58ee6db53885c78733fc05086dd2591c"
+    },
+    {
+      "path": "python-tests.log",
+      "sha256": "f033ef3c676b542c285ba6bc48978e7002a6dfb07c78c7c998b2065d2c31ff06",
+      "uncompressed_sha256": "f033ef3c676b542c285ba6bc48978e7002a6dfb07c78c7c998b2065d2c31ff06"
+    },
+    {
+      "path": "terrain_phases.gd.gz",
+      "sha256": "d7adb7fcac4c624a1cf29c0da5833ff023021125b97a2d6628c1c8a20d502d48",
+      "uncompressed_sha256": "bf590c73e10261e371b926583bc21571876bdfeb3cc10eeb75000e3a393d78a8"
+    },
+    {
+      "path": "test-field-integration.log",
+      "sha256": "5d71d3afd86c2127ff174e9fef5e4d52dceba274096c930ee273141fe15b0a0e",
+      "uncompressed_sha256": "5d71d3afd86c2127ff174e9fef5e4d52dceba274096c930ee273141fe15b0a0e"
+    },
+    {
+      "path": "test_lake_surface.log",
+      "sha256": "adb7990d210be8cf60bcd348e60eedf1b5ca6f1b16424a5eeeacd4654acd90a6",
+      "uncompressed_sha256": "adb7990d210be8cf60bcd348e60eedf1b5ca6f1b16424a5eeeacd4654acd90a6"
+    },
+    {
+      "path": "test_lake_world.log",
+      "sha256": "6e2db80520d0a9011f259579614a27d9f3d15c12463d8449919d7684f78da491",
+      "uncompressed_sha256": "6e2db80520d0a9011f259579614a27d9f3d15c12463d8449919d7684f78da491"
+    },
+    {
+      "path": "test_workshop_trial.log",
+      "sha256": "74858f3a6372a8419cc8ba4fe1e4144fd77e67bc4584264add464d3e7383558f",
+      "uncompressed_sha256": "74858f3a6372a8419cc8ba4fe1e4144fd77e67bc4584264add464d3e7383558f"
+    },
+    {
+      "path": "test_world_presentation_context.log",
+      "sha256": "6878dea7224dbcacb0733486ba1fdf484417960485149b70893a86339f00027e",
+      "uncompressed_sha256": "6878dea7224dbcacb0733486ba1fdf484417960485149b70893a86339f00027e"
+    },
+    {
+      "path": "runtime.patch",
+      "sha256": "d69f35fb3c0e13228230b33cf7e13b684cf3231ea2209467b38494d3fb0b3c2e",
+      "uncompressed_sha256": "d69f35fb3c0e13228230b33cf7e13b684cf3231ea2209467b38494d3fb0b3c2e"
+    }
+  ],
+  "limits": [
+    "source Windows runs, not exported package",
+    "one before and one after native process with three cycles each; not three randomized process pairs",
+    "desktop/background activity and OS caches uncontrolled",
+    "no cold-start or FPS speedup claim",
+    "mutation logs deliberately fail tests; Workshop warning is expected negative coverage"
+  ]
+}

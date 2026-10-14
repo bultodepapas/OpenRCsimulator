@@ -491,11 +491,15 @@ def inspect_godot(executable: Path, timeout: float) -> dict[str, Any]:
         raise RuntimeError(f"Godot --version emitted an engine error: {' | '.join(engine_errors)}")
     if not VERSION_RE.search(version_text):
         raise RuntimeError(f"expected Godot {REQUIRED_GODOT_VERSION}; got {version_text!r}")
+    binary = executable.with_name(executable.name.replace("_console.exe", ".exe"))
+    runtime_binary = binary if executable.name.endswith("_console.exe") and binary.is_file() else executable
     return {
         "path": str(executable),
         "version": version_text,
         "required_version": REQUIRED_GODOT_VERSION,
         "sha256": _sha256_file(executable),
+        "runtime_binary_path": str(runtime_binary),
+        "runtime_binary_sha256": _sha256_file(runtime_binary),
     }
 
 
@@ -851,7 +855,7 @@ def main(argv: Sequence[str] | None = None) -> int:
         for aircraft_id in args.aircraft_ids:
             if not AIRCRAFT_ID_RE.fullmatch(aircraft_id):
                 raise ValueError(f"invalid aircraft ID: {aircraft_id!r}")
-        args.case_ids = parse_id_list(args.case, CASES, "case")
+        args.case_ids = parse_id_list(args.case, ("trim",), "case")
         invalid_cases = [case_id for case_id in args.case_ids if case_id not in CASES]
         if invalid_cases:
             raise ValueError(f"unknown case(s): {', '.join(invalid_cases)}")

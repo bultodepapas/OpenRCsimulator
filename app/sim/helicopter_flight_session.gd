@@ -30,6 +30,8 @@ var device_info: Callable = func(id: int) -> Dictionary:
 var radio: RefCounted = RcInput.new()
 var calibration: RefCounted
 var profiles_path: String = "user://rc_calibration.cfg"
+var external_controller_selection: bool = false
+var _controller_lost: bool = false
 var holds: Dictionary = {}
 var pause_reason: String = ""
 var start_error: String = ""
@@ -159,6 +161,7 @@ func _height_over_radius(state: PackedFloat64Array) -> float:
  return (-state[2]-_hub_offset(state)[2]-_ground_under_hub(state))/aircraft.context.main_model.rotor_radius_m
 
 func _ready() -> void:
+ if external_controller_selection: return
  Input.joy_connection_changed.connect(_on_joy_connection_changed)
  for id: int in Input.get_connected_joypads():
   if not radio.connected: _on_joy_connection_changed(id,true)
@@ -168,13 +171,16 @@ func _input(event: InputEvent) -> void:
  elif event is InputEventJoypadButton: radio.on_button(event.device,event.button_index,event.pressed)
 
 func _physics_process(_dt: float) -> void:
- if not holds.is_empty() or not input_enabled: return
+ if not input_enabled: return
+ if not holds.is_empty():
+  if external_controller_selection and radio.connected: radio.poll(read_axis,sim.dt(),Callable(),false)
+  return
  if calibration!=null:
   radio.poll(read_axis,sim.dt())
   calibration.sample(radio.axes)
   return
  if sim.paused:
-  if radio.connected: radio.poll(read_axis,0.0)
+  if radio.connected: radio.poll(read_axis,sim.dt(),Callable(),false)
   return
  if radio.connected:
   radio.poll(read_axis,sim.dt())
@@ -198,6 +204,9 @@ func _on_stepped(_tick: int,_t: float,body: PackedFloat64Array,_loads: PackedFlo
   sim.set_paused(true)
 
 func _on_joy_connection_changed(id: int,connected: bool) -> void:
+ if external_controller_selection:
+  if not connected and radio.connected and id==radio.device_id: controller_disconnected()
+  return
  if connected and not radio.connected:
   var info: Dictionary=device_info.call(id)
   radio.connect_device(id,info,RcCalibration.load_profile(profiles_path,RcInput.key_for(id,info)))
@@ -211,11 +220,12 @@ func _on_joy_connection_changed(id: int,connected: bool) -> void:
   pause_reason="radio disconnected"
 
 func hold(reason: String) -> void:
+ if external_controller_selection and not holds.has(reason) and radio.connected: radio.require_neutral(true)
  holds[reason]=true
  sim.set_paused(true)
 func release(reason: String) -> void: holds.erase(reason)
 func is_flyable() -> bool: return _ready_to_fly and sim.fault_reason.is_empty() and crash.is_empty()
-func can_resume() -> bool: return is_flyable() and holds.is_empty() and calibration==null and (not radio.connected or radio.armed)
+func can_resume() -> bool: return is_flyable() and holds.is_empty() and calibration==null and not _controller_lost and (not radio.connected or radio.armed)
 func resume() -> void:
  if can_resume():
   pause_reason=""
@@ -223,7 +233,7 @@ func resume() -> void:
 func cancel_calibration() -> void:
  if calibration!=null: calibration=null; pause_reason="calibration cancelled"
 func start_calibration() -> bool:
- if not radio.connected: return false
+ if not radio.connected or radio.profile.get("kind","radio")=="gamepad": return false
  calibration=RcCalibration.new(radio.profile)
  sim.set_paused(true)
  pause_reason="calibrating radio"
@@ -234,6 +244,35 @@ func advance_calibration() -> void:
   RcCalibration.save_profile(profiles_path,radio.device_key,calibration.profile)
   calibration=null
   pause_reason="radio calibrated"
+
+func apply_controller_selection(id: int,info: Dictionary,profile: Dictionary,_initial_start: bool=false) -> bool:
+ calibration=null
+ radio.disconnect_device()
+ _controller_lost=false
+ sim.set_paused(true)
+ pause_reason="Controller selected. Check collective and continue explicitly."
+ if id<0: return true
+ if profile.is_empty() or profile.get("throttle_mode","")=="trigger_absolute":
+  _controller_lost=true
+  pause_reason="Choose a stick-rate or calibrated radio profile for helicopter collective."
+  return false
+ radio.connect_device(id,info,profile)
+ if radio.is_rate_throttle(): radio.set_rate_throttle_for_start(commands.throttle)
+ return true
+
+func controller_disconnected() -> void:
+ radio.disconnect_device()
+ calibration=null
+ _controller_lost=true
+ sim.set_paused(true)
+ pause_reason="Controller lost. Select controls and review collective before continuing."
+
+func controller_focus_lost() -> void:
+ if external_controller_selection and radio.connected:
+  radio.require_neutral(true)
+  sim.set_paused(true)
+  pause_reason="Focus lost. Release controls and review collective before continuing."
+
 func air_density() -> float: return _weather.air_density()
 func wind_at(t: float) -> PackedFloat64Array: return _weather.sample(t)
 func weather_configuration() -> Dictionary: return _weather.configuration()

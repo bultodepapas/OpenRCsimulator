@@ -1,0 +1,534 @@
+{
+  "complete": true,
+  "configuration": {
+    "aircraft": [
+      "jensen-das-ugly-stik-60",
+      "p51d-mustang-120",
+      "turbo-lumber-evolution"
+    ],
+    "cases": [
+      "trim"
+    ],
+    "meaning": "simulation ticks; default warmup is 10 simulated seconds and default sample is 60 simulated seconds, not real-time qualification",
+    "repeats": 3,
+    "sample_ticks": 14400,
+    "tick_hz": 240,
+    "timeout_seconds_per_probe": 1800.0,
+    "warmup_ticks": 2400
+  },
+  "failure": "",
+  "failures": [],
+  "format": "openrc-session-baseline v1",
+  "metadata": {
+    "engine": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "required_version": "4.7.2",
+      "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+      "version": "4.7.2.stable.official.ed1daf0bf"
+    },
+    "probe": {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\session_probe.gd",
+      "sha256": "b922d870cd545e796a601c21f8c16c500a41e2b13cac2ad8b04ab220bec8a2fb"
+    },
+    "system": {
+      "logical_cpu_count": 24,
+      "machine": "AMD64",
+      "platform": "Windows-10-10.0.26100-SP0",
+      "processor": "AMD64 Family 25 Model 33 Stepping 0, AuthenticAMD",
+      "python": "3.11.9",
+      "release": "10",
+      "system": "Windows"
+    },
+    "workspace": {
+      "branch": "main",
+      "commit": "72403977b7e655989b48c1cc468ad89beb27aa62",
+      "dirty_tracked_code": [],
+      "status_porcelain": [
+        "?? research/performance/session_baseline.py",
+        "?? research/performance/session_probe.gd",
+        "?? research/performance/test_session_baseline.py"
+      ],
+      "untracked_code": [
+        {
+          "path": "research/performance/session_baseline.py",
+          "present": true,
+          "sha256": "e9657c72f120abdeaebfd15e40aa7da13624d87d277ce1391ebac6e8c8fb3894",
+          "tracked": false
+        },
+        {
+          "path": "research/performance/session_probe.gd",
+          "present": true,
+          "sha256": "b922d870cd545e796a601c21f8c16c500a41e2b13cac2ad8b04ab220bec8a2fb",
+          "tracked": false
+        },
+        {
+          "path": "research/performance/test_session_baseline.py",
+          "present": true,
+          "sha256": "31d360ced9999972ec30cdf9c7ea5c360040a1da2c36c7a931ae8afbf86e1360",
+          "tracked": false
+        }
+      ]
+    }
+  },
+  "pairs": [
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "trim",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 1145.8254166666666,
+      "observer_on_wall_usec_per_tick": 1113.2868055555555,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": -32.538611111111095,
+      "reasons": [],
+      "repeat": 1,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "ba44be77b5fcadcc0addc2a1febc71485c468ab1738c61595d07b9d4c7765830",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-01-observer-off.log",
+          "measured_wall_usec": 16499886,
+          "measured_wall_usec_per_sample_tick": 1145.8254166666666,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-01-observer-off.json",
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "ba44be77b5fcadcc0addc2a1febc71485c468ab1738c61595d07b9d4c7765830",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-01-observer-on.log",
+          "measured_wall_usec": 16031330,
+          "measured_wall_usec_per_sample_tick": 1113.2868055555555,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-01-observer-on.json",
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "trim",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 988.41875,
+      "observer_on_wall_usec_per_tick": 969.4382638888889,
+      "observer_order": [
+        "off",
+        "on"
+      ],
+      "observer_overhead_usec_per_tick": -18.98048611111119,
+      "reasons": [],
+      "repeat": 2,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "ba44be77b5fcadcc0addc2a1febc71485c468ab1738c61595d07b9d4c7765830",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-02-observer-off.log",
+          "measured_wall_usec": 14233230,
+          "measured_wall_usec_per_sample_tick": 988.41875,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-02-observer-off.json",
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "ba44be77b5fcadcc0addc2a1febc71485c468ab1738c61595d07b9d4c7765830",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-02-observer-on.log",
+          "measured_wall_usec": 13959911,
+          "measured_wall_usec_per_sample_tick": 969.4382638888889,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-02-observer-on.json",
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "trim",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 953.8652083333334,
+      "observer_on_wall_usec_per_tick": 891.7875694444444,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": -62.07763888888894,
+      "reasons": [],
+      "repeat": 3,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "ba44be77b5fcadcc0addc2a1febc71485c468ab1738c61595d07b9d4c7765830",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-03-observer-off.log",
+          "measured_wall_usec": 13735659,
+          "measured_wall_usec_per_sample_tick": 953.8652083333334,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-03-observer-off.json",
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "ba44be77b5fcadcc0addc2a1febc71485c468ab1738c61595d07b9d4c7765830",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-03-observer-on.log",
+          "measured_wall_usec": 12841741,
+          "measured_wall_usec_per_sample_tick": 891.7875694444444,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\jensen-das-ugly-stik-60\\trim\\repeat-03-observer-on.json",
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "case_id": "trim",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 1054.6456944444444,
+      "observer_on_wall_usec_per_tick": 1201.7372222222223,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": 147.09152777777786,
+      "reasons": [],
+      "repeat": 1,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "a02d387fc75b5b5cba8b33ddb9244820e66da37ab2c379319efb099c0281170a",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\p51d-mustang-120\\trim\\repeat-01-observer-off.log",
+          "measured_wall_usec": 15186898,
+          "measured_wall_usec_per_sample_tick": 1054.6456944444444,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\p51d-mustang-120\\trim\\repeat-01-observer-off.json",
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "a02d387fc75b5b5cba8b33ddb9244820e66da37ab2c379319efb099c0281170a",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\p51d-mustang-120\\trim\\repeat-01-observer-on.log",
+          "measured_wall_usec": 17305016,
+          "measured_wall_usec_per_sample_tick": 1201.7372222222223,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\p51d-mustang-120\\trim\\repeat-01-observer-on.json",
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "case_id": "trim",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 984.1271527777777,
+      "observer_on_wall_usec_per_tick": 979.6880555555556,
+      "observer_order": [
+        "off",
+        "on"
+      ],
+      "observer_overhead_usec_per_tick": -4.439097222222131,
+      "reasons": [],
+      "repeat": 2,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "a02d387fc75b5b5cba8b33ddb9244820e66da37ab2c379319efb099c0281170a",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\p51d-mustang-120\\trim\\repeat-02-observer-off.log",
+          "measured_wall_usec": 14171431,
+          "measured_wall_usec_per_sample_tick": 984.1271527777777,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\p51d-mustang-120\\trim\\repeat-02-observer-off.json",
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "a02d387fc75b5b5cba8b33ddb9244820e66da37ab2c379319efb099c0281170a",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\p51d-mustang-120\\trim\\repeat-02-observer-on.log",
+          "measured_wall_usec": 14107508,
+          "measured_wall_usec_per_sample_tick": 979.6880555555556,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\p51d-mustang-120\\trim\\repeat-02-observer-on.json",
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "case_id": "trim",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 1173.4793055555556,
+      "observer_on_wall_usec_per_tick": 1114.878611111111,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": -58.60069444444457,
+      "reasons": [],
+      "repeat": 3,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "a02d387fc75b5b5cba8b33ddb9244820e66da37ab2c379319efb099c0281170a",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\p51d-mustang-120\\trim\\repeat-03-observer-off.log",
+          "measured_wall_usec": 16898102,
+          "measured_wall_usec_per_sample_tick": 1173.4793055555556,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\p51d-mustang-120\\trim\\repeat-03-observer-off.json",
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "a02d387fc75b5b5cba8b33ddb9244820e66da37ab2c379319efb099c0281170a",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\p51d-mustang-120\\trim\\repeat-03-observer-on.log",
+          "measured_wall_usec": 16054252,
+          "measured_wall_usec_per_sample_tick": 1114.878611111111,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\p51d-mustang-120\\trim\\repeat-03-observer-on.json",
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "turbo-lumber-evolution",
+      "case_id": "trim",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 1437.1144444444444,
+      "observer_on_wall_usec_per_tick": 1321.4172916666666,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": -115.69715277777777,
+      "reasons": [],
+      "repeat": 1,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "70ce432e506c60b2a31f7e46007c402aea0b8b6a11237c21bffa58d94d99e019",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\turbo-lumber-evolution\\trim\\repeat-01-observer-off.log",
+          "measured_wall_usec": 20694448,
+          "measured_wall_usec_per_sample_tick": 1437.1144444444444,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\turbo-lumber-evolution\\trim\\repeat-01-observer-off.json",
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "70ce432e506c60b2a31f7e46007c402aea0b8b6a11237c21bffa58d94d99e019",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\turbo-lumber-evolution\\trim\\repeat-01-observer-on.log",
+          "measured_wall_usec": 19028409,
+          "measured_wall_usec_per_sample_tick": 1321.4172916666666,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\turbo-lumber-evolution\\trim\\repeat-01-observer-on.json",
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "turbo-lumber-evolution",
+      "case_id": "trim",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 1338.252986111111,
+      "observer_on_wall_usec_per_tick": 1369.3893055555557,
+      "observer_order": [
+        "off",
+        "on"
+      ],
+      "observer_overhead_usec_per_tick": 31.136319444444553,
+      "reasons": [],
+      "repeat": 2,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "70ce432e506c60b2a31f7e46007c402aea0b8b6a11237c21bffa58d94d99e019",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\turbo-lumber-evolution\\trim\\repeat-02-observer-off.log",
+          "measured_wall_usec": 19270843,
+          "measured_wall_usec_per_sample_tick": 1338.252986111111,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\turbo-lumber-evolution\\trim\\repeat-02-observer-off.json",
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "70ce432e506c60b2a31f7e46007c402aea0b8b6a11237c21bffa58d94d99e019",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\turbo-lumber-evolution\\trim\\repeat-02-observer-on.log",
+          "measured_wall_usec": 19719206,
+          "measured_wall_usec_per_sample_tick": 1369.3893055555557,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\turbo-lumber-evolution\\trim\\repeat-02-observer-on.json",
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    },
+    {
+      "aircraft_id": "turbo-lumber-evolution",
+      "case_id": "trim",
+      "comparable": true,
+      "fingerprints_equal": true,
+      "machine_equal": true,
+      "observer_off_wall_usec_per_tick": 1313.6185416666667,
+      "observer_on_wall_usec_per_tick": 1470.4963194444445,
+      "observer_order": [
+        "on",
+        "off"
+      ],
+      "observer_overhead_usec_per_tick": 156.87777777777774,
+      "reasons": [],
+      "repeat": 3,
+      "runs": {
+        "off": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "70ce432e506c60b2a31f7e46007c402aea0b8b6a11237c21bffa58d94d99e019",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\turbo-lumber-evolution\\trim\\repeat-03-observer-off.log",
+          "measured_wall_usec": 18916107,
+          "measured_wall_usec_per_sample_tick": 1313.6185416666667,
+          "observer": false,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\turbo-lumber-evolution\\trim\\repeat-03-observer-off.json",
+          "validation_errors": []
+        },
+        "on": {
+          "accepted": true,
+          "complete": true,
+          "failure": "",
+          "failures": [],
+          "final_tick": 16800,
+          "fingerprint": "70ce432e506c60b2a31f7e46007c402aea0b8b6a11237c21bffa58d94d99e019",
+          "log": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\turbo-lumber-evolution\\trim\\repeat-03-observer-on.log",
+          "measured_wall_usec": 21175147,
+          "measured_wall_usec_per_sample_tick": 1470.4963194444445,
+          "observer": true,
+          "report_file": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\vq01c-cpu-trim\\runs\\turbo-lumber-evolution\\trim\\repeat-03-observer-on.json",
+          "validation_errors": []
+        }
+      },
+      "world_equal": true
+    }
+  ],
+  "status": "complete",
+  "summary": [
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "case_id": "trim",
+      "comparable_pairs": 3,
+      "overhead_usec_per_tick_nearest_rank": {
+        "p50": -32.538611111111095,
+        "p95": -18.98048611111119,
+        "p99": -18.98048611111119
+      },
+      "requested_pairs": 3
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "case_id": "trim",
+      "comparable_pairs": 3,
+      "overhead_usec_per_tick_nearest_rank": {
+        "p50": -4.439097222222131,
+        "p95": 147.09152777777786,
+        "p99": 147.09152777777786
+      },
+      "requested_pairs": 3
+    },
+    {
+      "aircraft_id": "turbo-lumber-evolution",
+      "case_id": "trim",
+      "comparable_pairs": 3,
+      "overhead_usec_per_tick_nearest_rank": {
+        "p50": 31.136319444444553,
+        "p95": 156.87777777777774,
+        "p99": 156.87777777777774
+      },
+      "requested_pairs": 3
+    }
+  ]
+}

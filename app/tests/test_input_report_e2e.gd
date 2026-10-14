@@ -25,6 +25,14 @@ func motion(id: int, axis: int, value: float) -> void:
 	Input.parse_input_event(event)
 
 
+func button(id: int, button_index: int, pressed: bool) -> void:
+	var event: InputEventJoypadButton = InputEventJoypadButton.new()
+	event.device = id
+	event.button_index = button_index as JoyButton
+	event.pressed = pressed
+	Input.parse_input_event(event)
+
+
 func _initialize() -> void:
 	_run()
 
@@ -39,7 +47,8 @@ func _run() -> void:
 	reporter.clock_usec = func() -> int: return _now
 	reporter.connected_devices = func() -> Array[int]: return [15, 14]
 	reporter.device_info = func(id: int) -> Dictionary:
-		return {name = "Fake %d" % id, guid = "fake-%d" % id, vendor_id = "4617", product_id = "20308", raw_name = "Fake raw"}
+		return {name = "Fake %d" % id, guid = "fake-%d" % id, vendor_id = "4617", product_id = "20308", raw_name = "Fake raw",
+			known = true, vibration_supported = false, serial_number = "must-not-be-published"}
 	root.add_child(reporter)
 	await process_frame
 	check("report disables accumulation", not Input.use_accumulated_input)
@@ -55,9 +64,15 @@ func _run() -> void:
 	Input.joy_connection_changed.emit(15, true)
 	motion(15, 9, 0.3)
 	Input.joy_connection_changed.emit(13, true) # hotplug, no movement
+	button(14, 0, true)
+	button(14, 0, true) # a repeated held-state callback is an event, not a second transition
+	button(14, 0, false)
 	var sessions: Array[Dictionary] = reporter.data.snapshot()
 	check("dispatch reaches collector with exact timestamps", sessions[0].axes[0].events == 2 and sessions[0].axes[0].mean_event_spacing_usec == 2000.0)
 	check("multiple devices collect independently", sessions[1].axes_seen == [2] and sessions[1].axes[2].min == -1.0)
+	check("button callback counts events and deduplicates transitions", sessions[1].button_events == 3 and sessions[1].button_press_events == 2 and sessions[1].button_release_events == 1 and sessions[1].button_transition_count == 2)
+	check("button transition output stays after Godot mapping", sessions[1].button_transitions.size() == 2 and sessions[1].button_transitions[0].button == 0 and sessions[1].button_transitions[0].pressed and not sessions[1].button_transitions[1].pressed)
+	check("capabilities distinguish mapping and supported rumble", sessions[1].capabilities.standard_mapping and not sessions[1].capabilities.vibration_supported)
 	check("hotplug and reconnect produce separate sessions", sessions.size() == 4 and sessions[2].device_id == 15 and sessions[2].axes_seen == [9] and sessions[3].axes_seen.is_empty())
 	check("disconnect stops sampling old session", not sessions[0].connected and sessions[0].disconnected_at_usec == 3000 and reporter.data.rejected_events == 1)
 	_now += 1000000
@@ -69,6 +84,8 @@ func _run() -> void:
 	check("SDL decimal-string USB identifiers serialize as numbers", saved.devices[0].vendor_id == 4617 and saved.devices[0].product_id == 20308)
 	check("observed duration records actual wall interval", saved.observed_duration_s == 1.004 and saved.requested_duration_s == 1.0)
 	check("timing limitations are explicit", "Not USB report interval" in saved.timing and "unseen axes are unknown" in saved.axis_semantics)
+	check("button limits and capability scope are explicit", "bounded" in saved.button_semantics and "transport or firmware" in saved.capability_semantics)
+	check("serial identifiers are never published", not JSON.stringify(saved).contains("must-not-be-published") and not JSON.stringify(saved).contains("serial_number"))
 	var bytes: PackedByteArray = FileAccess.get_file_as_bytes(PATH)
 	motion(14, 2, 1.0)
 	Input.joy_connection_changed.emit(12, true)

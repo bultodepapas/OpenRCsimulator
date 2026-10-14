@@ -10,6 +10,13 @@ const STEP_M := 0.75
 const WATER_EDGE_M := 2.0
 const MAX_MASK_POINTS := 64
 
+# DT-11a: one CPU geometry entry per mesh type. Full input bytes, not the caller's
+# identity label, invalidate it. Never retain nodes, materials, probes or GPU meshes.
+static var _basin_key := PackedByteArray()
+static var _basin_arrays: Array = []
+static var _water_key := PackedByteArray()
+static var _water_arrays: Array = []
+
 
 static func mask_parameters(material: ShaderMaterial, lake: Dictionary) -> void:
 	var points := PackedVector2Array()
@@ -42,36 +49,12 @@ static func build(lake: Dictionary, ground_material: ShaderMaterial, surfaces: P
 		minimum.y = minf(minimum.y, polygon[i + 1])
 		maximum.x = maxf(maximum.x, polygon[i])
 		maximum.y = maxf(maximum.y, polygon[i + 1])
-	var count_n := ceili((maximum.x - minimum.x) / STEP_M) + 2
-	var count_e := ceili((maximum.y - minimum.y) / STEP_M) + 2
-	var origin := Vector2(minimum.x - STEP_M, minimum.y - STEP_M)
-	var verts := PackedVector3Array()
-	var normals := PackedVector3Array()
-	var uv := PackedVector2Array()
-	var indices := PackedInt32Array()
-	for row in count_n + 1:
-		for column in count_e + 1:
-			var n := origin.x + float(row) * STEP_M
-			var e := origin.y + float(column) * STEP_M
-			var terrain := GroundTerrain.sample_validated(n, e, surfaces, lake)
-			verts.append(Vector3(e, terrain[0], -n))
-			normals.append(Vector3(-terrain[2], 1.0, terrain[1]).normalized())
-			uv.append(Vector2(Surface.shore_distance_validated(lake, n, e), maxf(0.0, -terrain[0] - float(lake.water_level_down_m))))
-	for row in count_n:
-		for column in count_e:
-			var a := row * (count_e + 1) + column
-			var b := a + 1
-			var c := a + count_e + 1
-			var d := c + 1
-			indices.append_array(PackedInt32Array([a, d, b, a, c, d]))
-	var arrays := []
-	arrays.resize(Mesh.ARRAY_MAX)
-	arrays[Mesh.ARRAY_VERTEX] = verts
-	arrays[Mesh.ARRAY_NORMAL] = normals
-	arrays[Mesh.ARRAY_TEX_UV] = uv
-	arrays[Mesh.ARRAY_INDEX] = indices
+	var key := var_to_bytes([lake, surfaces])
+	if key != _basin_key or _basin_arrays.is_empty():
+		_basin_arrays = _build_basin_arrays(lake, surfaces, minimum, maximum)
+		_basin_key = key
 	var basin_mesh := ArrayMesh.new()
-	basin_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	basin_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, _basin_arrays)
 	var basin := MeshInstance3D.new()
 	basin.name = "Basin"
 	basin.mesh = basin_mesh
@@ -104,12 +87,55 @@ static func build(lake: Dictionary, ground_material: ShaderMaterial, surfaces: P
 	probe.water_material = water.material_override
 	root.add_child(probe)
 	root.set_meta("lighting_materials", [basin_material, water.material_override])
-	root.set_meta("triangles", indices.size() / 3 + water.mesh.surface_get_array_len(0) / 3)
+	root.set_meta("triangles", (_basin_arrays[Mesh.ARRAY_INDEX] as PackedInt32Array).size() / 3 + water.mesh.surface_get_array_len(0) / 3)
 	return root
+
+
+static func _build_basin_arrays(lake: Dictionary, surfaces: PackedFloat64Array,
+		minimum: Vector2, maximum: Vector2) -> Array:
+	var count_n := ceili((maximum.x - minimum.x) / STEP_M) + 2
+	var count_e := ceili((maximum.y - minimum.y) / STEP_M) + 2
+	var origin := Vector2(minimum.x - STEP_M, minimum.y - STEP_M)
+	var verts := PackedVector3Array()
+	var normals := PackedVector3Array()
+	var uv := PackedVector2Array()
+	var indices := PackedInt32Array()
+	for row in count_n + 1:
+		for column in count_e + 1:
+			var n := origin.x + float(row) * STEP_M
+			var e := origin.y + float(column) * STEP_M
+			var terrain := GroundTerrain.sample_validated(n, e, surfaces, lake)
+			verts.append(Vector3(e, terrain[0], -n))
+			normals.append(Vector3(-terrain[2], 1.0, terrain[1]).normalized())
+			uv.append(Vector2(Surface.shore_distance_validated(lake, n, e), maxf(0.0, -terrain[0] - float(lake.water_level_down_m))))
+	for row in count_n:
+		for column in count_e:
+			var a := row * (count_e + 1) + column
+			var b := a + 1
+			var c := a + count_e + 1
+			var d := c + 1
+			indices.append_array(PackedInt32Array([a, d, b, a, c, d]))
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = verts
+	arrays[Mesh.ARRAY_NORMAL] = normals
+	arrays[Mesh.ARRAY_TEX_UV] = uv
+	arrays[Mesh.ARRAY_INDEX] = indices
+	return arrays
 
 
 ## Exact shoreline triangulation; interior refinement supplies fine geometry for the shared small waves.
 static func water_mesh(lake: Dictionary) -> ArrayMesh:
+	var key := var_to_bytes(lake)
+	if key != _water_key or _water_arrays.is_empty():
+		_water_arrays = _build_water_arrays(lake)
+		_water_key = key
+	var result := ArrayMesh.new()
+	result.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, _water_arrays)
+	return result
+
+
+static func _build_water_arrays(lake: Dictionary) -> Array:
 	var polygon := PackedVector2Array()
 	var source: PackedFloat64Array = lake.shoreline_ne_m
 	for i in range(0, source.size(), 2):
@@ -128,9 +154,7 @@ static func water_mesh(lake: Dictionary) -> ArrayMesh:
 	arrays[Mesh.ARRAY_NORMAL] = normals
 	arrays[Mesh.ARRAY_TEX_UV] = uvs
 	arrays[Mesh.ARRAY_TEX_UV2] = shores
-	var result := ArrayMesh.new()
-	result.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
-	return result
+	return arrays
 
 
 static func _refine_water(a: Vector2, b: Vector2, c: Vector2, lake: Dictionary,
