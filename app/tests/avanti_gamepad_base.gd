@@ -30,7 +30,7 @@ func run_case(speed: float, pitch: float, hold: float = 2.0) -> Dictionary:
 	flight.read_axis = func(_id: int, axis: int) -> float:
 		return pitch if axis == 3 and flight.sim.time() >= 0.5 and flight.sim.time() < 0.5 + hold else 0.0
 	flight.read_button = func(_id: int, _button: int) -> bool: return false
-	for i in 50: flight.radio.poll(flight.read_axis, flight.sim.dt(), flight.read_button, false)
+	for i in hz / 4: flight.radio.poll(flight.read_axis, flight.sim.dt(), flight.read_button, false)
 	assert(flight.radio.armed)
 	assert(flight.radio.set_rate_throttle_for_start(flight.start.throttle))
 	var item := {speed = speed, pitch = pitch, hold_s = hold, alpha_max = 0.0, roll_rate_max = 0.0,

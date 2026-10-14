@@ -217,8 +217,13 @@ static func _evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Pack
 			-model.yaw_max_rate_rad_s, model.yaw_max_rate_rad_s)
 	var yaw_rate_error: float = target_yaw_rate - state[12]
 	var integrator: float = clampf(state[YAW_INTEGRATOR], -model.yaw_integrator_limit_rad, model.yaw_integrator_limit_rad)
+var ground_yaw_precomp: float = 0.0
+if trim.has("ground_yaw_precomp_tail_bias_rad"):
+	var reference_collective: float = float(trim.ground_yaw_precomp_collective_rad)
+	ground_yaw_precomp = float(trim.ground_yaw_precomp_tail_bias_rad) \
+		* clampf(float(swash.theta0_rad) / reference_collective, 0.0, 1.0)
 	var tail_unsaturated: float = model.tail_collective_trim_rad \
-		+ float(trim.get("tail_collective_bias_rad", 0.0)) + model.yaw_control_sign * (
+		+ float(trim.get("tail_collective_bias_rad", 0.0)) + ground_yaw_precomp + model.yaw_control_sign * (
 		model.yaw_rate_kp_rad_per_rad_s * yaw_rate_error + model.yaw_rate_ki_rad_per_rad * integrator)
 	var tail_collective: float = clampf(tail_unsaturated, model.tail_collective_min_rad, model.tail_collective_max_rad)
 	var integral_rate: float = yaw_rate_error
@@ -237,6 +242,8 @@ static func _evaluate(model: Dictionary, state: PackedFloat64Array, sticks: Pack
 	if not body_rate_law:
 		result["heading_error_rad"] = heading_error
 	result["yaw_rate_error_rad_s"] = yaw_rate_error
+	if trim.has("ground_yaw_precomp_tail_bias_rad"):
+		result["ground_yaw_precomp_rad"] = ground_yaw_precomp
 	result["tail_saturated"] = tail_collective != tail_unsaturated
 	result["trainer_active"] = trainer_enabled
 	result["trim"] = trim.duplicate(true)
@@ -299,15 +306,32 @@ static func _wrap(angle: float) -> float:
 
 static func _trim_is_valid(trim: Dictionary, model: Dictionary) -> bool:
 	var keys: Array = ["roll_reference_rad", "pitch_reference_rad", "cyclic_forward_bias_rad",
-		"cyclic_right_bias_rad", "tail_collective_bias_rad"]
+		"cyclic_right_bias_rad", "tail_collective_bias_rad",
+		"ground_yaw_precomp_tail_bias_rad", "ground_yaw_precomp_collective_rad"]
 	for key: Variant in trim.keys():
 		if typeof(key) != TYPE_STRING or not keys.has(key):
 			return false
 	for key: String in keys:
 		if trim.has(key) and not _number(trim[key]):
 			return false
+	var has_ground_precomp_bias: bool = trim.has("ground_yaw_precomp_tail_bias_rad")
+	var has_ground_precomp_collective: bool = trim.has("ground_yaw_precomp_collective_rad")
+	if has_ground_precomp_bias != has_ground_precomp_collective:
+		return false
 	if model.get("law") == BODY_RATE_LAW and (trim.has("roll_reference_rad") or trim.has("pitch_reference_rad")):
 		return false
+	if has_ground_precomp_bias:
+		if model.get("law") != TRAINER_LAW:
+			return false
+		var reference_collective: float = float(trim.ground_yaw_precomp_collective_rad)
+		if reference_collective <= 0.0 or reference_collective > model.linkage.collective_max_rad:
+			return false
+		var baseline_tail: float = model.tail_collective_trim_rad \
+			+ float(trim.get("tail_collective_bias_rad", 0.0))
+		var reference_tail: float = baseline_tail + float(trim.ground_yaw_precomp_tail_bias_rad)
+		if baseline_tail < model.tail_collective_min_rad or baseline_tail > model.tail_collective_max_rad \
+				or reference_tail < model.tail_collective_min_rad or reference_tail > model.tail_collective_max_rad:
+			return false
 	if absf(float(trim.get("roll_reference_rad", 0.0))) >= PI / 2.0 \
 			or absf(float(trim.get("pitch_reference_rad", 0.0))) >= PI / 2.0:
 		return false
