@@ -81,6 +81,16 @@ func _initialize() -> void:
 	airframe_model = Airframe.prepare(air_parameters).model
 	check("different blockage and fin-loading areas refused", not _response(z).ok)
 	airframe_model = original_airframe
+	var original_main: Dictionary = main_model
+	main_model = {}
+	check("missing prepared interface context refused", not _response(z).ok)
+	main_model = original_main
+	var original_tail: Dictionary = tail_model
+	var tail_parameters: Dictionary = TailFixture.PARAMS.duplicate(true)
+	tail_parameters.main_rotor_radius_m = 0.776
+	tail_model = Tail.prepare(tail_parameters).model
+	check("different main-radius wake geometry refused", not _response(z).ok)
+	tail_model = original_tail
 	_hover_stand()
 	print("HELI-06c aerodynamic stage: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures else 0)

@@ -155,6 +155,10 @@ The researched electric Ultra Stick 25e remains a comparison specimen. Only its 
 
 ## Notes
 
+### 2026-10-13 — Inspect the first MT8 asset locally before runtime bundling (RCV-14a)
+
+Retain the received GLB/spec/generated rig unchanged and bind its actual node names through an isolated research adapter. Hash-pin the reviewed runtime inputs, use Godot's GLTFDocument for local inspection, and reject invalid whole poses before applying articulation. Geometry values remain presentation data; they do not replace the synthetic support bench or establish vehicle mass properties. Source rights/reuse records and runtime mounts/LOD qualification remain pending, so the asset is not added to `app/assets` or the aircraft catalog. [Guide](research/rc-monster-truck/README.md#rcv-14a-mt8-visual-inspection), [evidence and handoff findings](docs/research/rc-monster-truck/RCV-14a/README.md).
+
 ### 2026-10-13 — Declarative imported aircraft construction (AS-09/10)
 
 Keep physical `openrc-aircraft v2` independent from model-manifest versions. Retain version 1's zero-argument procedural builders; model version 2 passes checked construction bindings to one shared GLB builder. Controls reference existing geometry records, while rotor frames and gear pivots become explicit declarations. Reject unsupported axis conventions, ambiguous nodes and non-rigid articulation transforms before construction. Preserve Timber's inspector API and per-instance cowl correction without requiring a copied builder for the next conventional Blender delivery. Source/package hashes continue to pin the exact presentation; this is not automatic migration of frozen Workshop trials. [Contract](AIRCRAFT_CONTRACT.md#model-and-package-contract), [migration evidence](docs/research/aircraft-standardization/AS-09-10-import/README.md).

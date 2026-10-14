@@ -16,7 +16,11 @@ static func build() -> Dictionary:
 	if not result.ok:
 		push_warning("Timber model manifest: " + str(result.errors))
 		return {}
-	return ImportedModel.build(result.manifest)
+	var model := ImportedModel.build(result.manifest)
+	# Older Timber metrology tools retain the generated constant by identity.
+	# Dynamic Script.get() in the common loader returns an equivalent dictionary snapshot.
+	if not model.is_empty(): model.data = TimberGeometry.DATA
+	return model
 
 
 static func relative(root: Node3D, node: Node3D) -> Transform3D:

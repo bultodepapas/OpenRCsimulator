@@ -1,0 +1,311 @@
+{
+  "date": "2026-10-13",
+  "step": "RCV-14a",
+  "platform": "Windows-10-10.0.26100-SP0",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "head": "5a1fe87bd8b1b201274df3e3cc362a11a3fd842a",
+  "scope": "Local visual intake and focused Windows clone; no full app suite, export or physical validation.",
+  "checks": [
+    {
+      "check": "static intake freshness",
+      "passed": true,
+      "exit_code": 0,
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "-B",
+        "research/rc-monster-truck/asset_intake.py",
+        "--check"
+      ]
+    },
+    {
+      "check": "static intake mutation tests",
+      "passed": true,
+      "exit_code": 0,
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "-B",
+        "research/rc-monster-truck/test_asset_intake.py"
+      ]
+    },
+    {
+      "check": "Godot articulation and lifecycle",
+      "passed": true,
+      "exit_code": 0,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\visual\\test_mt8_visual.gd"
+      ]
+    },
+    {
+      "check": "GUI key events es",
+      "passed": true,
+      "exit_code": 0,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\visual\\test_preview.gd",
+        "--",
+        "--lang=es"
+      ]
+    },
+    {
+      "check": "GUI key events en",
+      "passed": true,
+      "exit_code": 0,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\visual\\test_preview.gd",
+        "--",
+        "--lang=en"
+      ]
+    },
+    {
+      "check": "reject empty capture",
+      "passed": true,
+      "exit_code": 1,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\visual\\preview.gd",
+        "--",
+        "--capture="
+      ]
+    },
+    {
+      "check": "reject duplicate pose",
+      "passed": true,
+      "exit_code": 1,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\visual\\preview.gd",
+        "--",
+        "--pose=rest",
+        "--pose=bump"
+      ]
+    },
+    {
+      "check": "reject invalid language",
+      "passed": true,
+      "exit_code": 1,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\visual\\preview.gd",
+        "--",
+        "--lang=xx"
+      ]
+    },
+    {
+      "check": "reject unknown option",
+      "passed": true,
+      "exit_code": 1,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\visual\\preview.gd",
+        "--",
+        "--invalid"
+      ]
+    },
+    {
+      "check": "reject headless capture",
+      "passed": true,
+      "exit_code": 1,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\visual\\preview.gd",
+        "--",
+        "--capture=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\mt8-headless-forbidden.png"
+      ]
+    },
+    {
+      "check": "core.autocrlf=true delivery byte identity",
+      "passed": true
+    },
+    {
+      "check": "fresh checkout without import cache",
+      "passed": true,
+      "exit_code": 0,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\Users\\bulto\\AppData\\Local\\Temp\\rcv-mt8-checkout-m6vucrku\\fresh\\app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--script",
+        "C:\\Users\\bulto\\AppData\\Local\\Temp\\rcv-mt8-checkout-m6vucrku\\fresh\\research\\rc-monster-truck\\visual\\test_mt8_visual.gd"
+      ]
+    },
+    {
+      "check": "modified author rig refused before execution",
+      "passed": true,
+      "exit_code": 0,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\Users\\bulto\\AppData\\Local\\Temp\\rcv-mt8-checkout-m6vucrku\\fresh\\app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--script",
+        "C:\\Users\\bulto\\AppData\\Local\\Temp\\rcv-mt8-checkout-m6vucrku\\fresh\\refusal.gd"
+      ]
+    },
+    {
+      "check": "Compatibility capture rest-es.png",
+      "passed": true,
+      "exit_code": 0,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\visual\\preview.gd",
+        "--",
+        "--lang=es",
+        "--pose=rest",
+        "--capture=C:\\Users\\bulto\\AppData\\Local\\Temp\\rcv-mt8-capture-_q5j7urw\\rest-es.png"
+      ]
+    },
+    {
+      "check": "Compatibility capture cross-en.png",
+      "passed": true,
+      "exit_code": 0,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\visual\\preview.gd",
+        "--",
+        "--lang=en",
+        "--pose=cross",
+        "--body=hide",
+        "--capture=C:\\Users\\bulto\\AppData\\Local\\Temp\\rcv-mt8-capture-860z8uc0\\cross-en.png"
+      ]
+    },
+    {
+      "check": "Compatibility capture droop-proxies-es.png",
+      "passed": true,
+      "exit_code": 0,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--rendering-method",
+        "gl_compatibility",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\visual\\preview.gd",
+        "--",
+        "--lang=es",
+        "--pose=droop",
+        "--proxies=show",
+        "--capture=C:\\Users\\bulto\\AppData\\Local\\Temp\\rcv-mt8-capture-a06tvuu5\\droop-proxies-es.png"
+      ]
+    },
+    {
+      "check": "canonical app test hook shell syntax",
+      "passed": true,
+      "exit_code": 0,
+      "command": [
+        "C:\\Program Files\\Git\\bin\\bash.exe",
+        "-n",
+        "app/test.sh"
+      ]
+    }
+  ],
+  "raw_byte_sha256": {
+    "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb": "7967bb46673ae5b4178a3d40ad8c3b8e1a9d0350b1cc73e2084f52ab496bb0a6",
+    "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/mt8_spec.json": "8d9a2ba3b41400fa934376ede5b110fcc046a05819b3f251076ea90e3fb2b5ef",
+    "RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/godot/mt8_rig.gd": "b120b5d202b78d537bb3c71a61339af95463209eb918966535e3c34f760e65a2",
+    "research/rc-monster-truck/asset_intake.py": "c4fb3869feb22a81d360afc86101b6f7aa7ac7fbd825bbe9aee9b5bed353cab7",
+    "research/rc-monster-truck/test_asset_intake.py": "5f8e24938cd3abdbd2f27e115d37233b24bf076b09fe9bd064f78395efc37879",
+    "research/rc-monster-truck/visual/mt8_visual.gd": "9513ad562028ac05c44ce392b3918d9acaf281328f5aa577fb61c6d92e0c7cff",
+    "research/rc-monster-truck/visual/preview.gd": "54ba128de25f94fbfaca6d0277c720da822793d51ef7ac4b458ba8b5758d1e4a",
+    "research/rc-monster-truck/visual/test_mt8_visual.gd": "4fdc9d06f6d87a90f18a1a3ace8c1035db7e950ae399f87d6445ad98d4edbabb",
+    "research/rc-monster-truck/visual/test_preview.gd": "db060169231d7c78f31517c63bac76d35c8f58413ea204f8c7856e8633c12025",
+    "research/rc-monster-truck/visual/preview.ps1": "8b20579f51acb73ef43f9882d9f7a0e87973961c0a66767c1d9884e2c50c7682",
+    "docs/research/rc-monster-truck/RCV-14a/intake.json": "57d0b36581a042dd344e729eadb32ce1901b96742c9a65e804a5d014627b7f11",
+    "app/test.sh": "29f87449b33201980f92a6919d32b87aca2bbeb1b36560d1e83beb7949bafb66"
+  },
+  "capture_sha256": {
+    "cross-en.png": "dfe8f6c974ed46581d9b7b1f686defdc32a0c8c30ea74a74d1c4f919536ce07f",
+    "droop-proxies-es.png": "d1363e49f2391c230fd8857712b0397b9b98934cafa71dfc51e4967d9d6254bb",
+    "rest-es.png": "af7b8a35b449d51a9e30714c1292038756516f5553e6ee325f103be3a1bfb77e"
+  }
+}

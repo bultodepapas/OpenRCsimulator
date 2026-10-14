@@ -27,7 +27,7 @@ GODOT="$(app/get-godot.sh)"
 
 Save a screenshot and exit with `preview.ps1 -Capture C:/captures/mt8.png` or `--capture=/absolute/existing/directory/mt8.png`. The directory must already exist and the output filename must be fresh. Capture requires a real renderer; `--headless` is only for tests. The CLI refuses empty, duplicate or unknown options.
 
-Verification commands (PowerShell):
+The canonical `app/test.sh` runs intake freshness, Python mutation tests, visual articulation and both inspector languages. Focused native commands (PowerShell):
 
 ```powershell
 python -B research/rc-monster-truck/asset_intake.py --check

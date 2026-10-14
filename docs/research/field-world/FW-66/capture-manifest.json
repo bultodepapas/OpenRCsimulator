@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-13",
+  "scope": "successful first planning capture; mutable working tree; not an immutable performance baseline",
+  "files": [
+    {
+      "file": "postcard_club.png",
+      "bytes": 150924,
+      "sha256": "97ad8861ec55f85702af9bc69bcea07ba90c5c7a83540a65e44cc3b20316a6e7"
+    },
+    {
+      "file": "runway_inside.png",
+      "bytes": 395936,
+      "sha256": "90c2945d457a433ae9813406cbf946437c838c7e15ad71f255802450b7258f88"
+    },
+    {
+      "file": "pilot_north.png",
+      "bytes": 154184,
+      "sha256": "b18cff95504cd9aaa29f6c4370d96e96c9669d8eb693037c62242980787d65cd"
+    },
+    {
+      "file": "report.json",
+      "bytes": 3541,
+      "sha256": "c70f386437352861b83cdc51fddb94a819d3580b8839ea3171420483077bc7ea"
+    },
+    {
+      "file": "stdout.log",
+      "bytes": 274,
+      "sha256": "15f3fff138881c016afb10297140f53edd09bffdff98d448ea4a2bedd3b59089"
+    },
+    {
+      "file": "stderr.log",
+      "bytes": 0,
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ]
+}

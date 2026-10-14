@@ -3,6 +3,7 @@ extends SceneTree
 const BUILDER_PATH := "res://aircraft/timber_model.gd"
 const IMPORTED_MODEL_PATH := "res://aircraft/imported_model.gd"
 const TRANSFORM_TOLERANCE := 0.000001
+const MATERIAL_TOLERANCE := 0.000001
 
 var _failures: Array[String] = []
 
@@ -317,9 +318,36 @@ func _compare_state(state_name: String, baseline: Dictionary, candidate: Diction
 			output.append({"state": state_name, "path": path, "kind": "unexpected_node"})
 	var expected_overrides: Array = baseline.get("material_overrides", [])
 	var actual_overrides: Array = candidate.get("material_overrides", [])
-	if expected_overrides != actual_overrides:
+	if not _material_rows_equal(expected_overrides, actual_overrides):
 		output.append({"state": state_name, "kind": "material_override_mismatch",
 			"baseline": expected_overrides, "candidate": actual_overrides})
+
+
+func _material_rows_equal(expected: Array, actual: Array) -> bool:
+	if expected.size() != actual.size():
+		return false
+	for index in expected.size():
+		if not expected[index] is Dictionary or not actual[index] is Dictionary:
+			return false
+		var expected_row: Dictionary = expected[index]
+		var actual_row: Dictionary = actual[index]
+		if expected_row.size() != actual_row.size():
+			return false
+		for key in expected_row:
+			if not actual_row.has(key):
+				return false
+			var expected_value: Variant = expected_row[key]
+			var actual_value: Variant = actual_row[key]
+			if _is_number(expected_value) and _is_number(actual_value):
+				if absf(float(expected_value) - float(actual_value)) > MATERIAL_TOLERANCE:
+					return false
+			elif expected_value != actual_value:
+				return false
+	return true
+
+
+func _is_number(value: Variant) -> bool:
+	return typeof(value) in [TYPE_INT, TYPE_FLOAT]
 
 
 func _rows_by_path(rows: Array) -> Dictionary:

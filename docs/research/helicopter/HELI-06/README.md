@@ -115,7 +115,7 @@ $TailOracle = (Resolve-Path research/helicopter/reference/tail_rotor_oracle.json
 .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_heli_tail_rotor.gd -- --oracle="$TailOracle"
 ```
 
-Airframe/fin/stabilizer loads, tail control, drive/rotor momentum and complete-session integration remain open. Sideways tail VRS and physical transient response are not modeled or validated by this slice. HELI-09 complete-load performance remains an integration gate.
+Airframe/fin/stabilizer kernels and the prescribed-speed joint aerodynamic stand are implemented in [HELI-06b/c](../HELI-06b/README.md). Tail control, drive/rotor momentum and complete-session integration remain open. Sideways tail VRS and physical transient response are not modeled or validated by this slice. HELI-09 complete-load performance remains an integration gate; the joint-stage diagnostic now includes airframe cost.
 
 ## HELI-09c isolated tail cost
 

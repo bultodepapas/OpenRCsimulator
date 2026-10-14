@@ -173,7 +173,7 @@
     },
     {
       "path": "res://aircraft/imported_model_contract.gd",
-      "sha256": "7404b95b516ac5706b582a9423c881e06cbcc9e9544f8da92b1f0499f95005ce",
+      "sha256": "78d887c0c3bdde64fdbd9b5e0abb5d778abbeea14d8901cd298f39a8f5328d3b",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },

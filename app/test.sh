@@ -112,6 +112,13 @@ echo "== RCV-04b: coupled support reference and headless experiments"
 python3 "$HERE/../research/rc-monster-truck/generate_support_reference.py" --check
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_rcv_support_cli.py"
 
+echo "== RCV-14a: supplied MT8 visual intake and isolated inspector"
+python3 "$HERE/../research/rc-monster-truck/asset_intake.py" --check
+python3 "$HERE/../research/rc-monster-truck/test_asset_intake.py"
+run_with_timeout 180 --script "$HERE/../research/rc-monster-truck/visual/test_mt8_visual.gd"
+run --script "$HERE/../research/rc-monster-truck/visual/test_preview.gd" -- --lang=en
+run --script "$HERE/../research/rc-monster-truck/visual/test_preview.gd" -- --lang=es
+
 echo "== float64 guard: no 32-bit math types in simulation code"
 # Godot's Vector3/Basis/Quaternion/Transform3D are 32-bit; simulation state must stay in 64-bit floats.
 # Comment lines are ignored. Rendering code (render/) may use them at the boundary.

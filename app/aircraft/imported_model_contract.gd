@@ -14,8 +14,8 @@ static func validate(construction: Variant, bindings: Dictionary) -> Dictionary:
 		return _result(errors, diagnostics)
 
 	var version: Variant = construction.get("version")
-	if typeof(version) != TYPE_INT or version != 1:
-		_fail(errors, diagnostics, "MODEL_CONSTRUCTION_VERSION_UNSUPPORTED", "$.construction.version", "construction version must be integer 1")
+	if not _is_finite_number(version) or float(version) != 1.0:
+		_fail(errors, diagnostics, "MODEL_CONSTRUCTION_VERSION_UNSUPPORTED", "$.construction.version", "construction version must be numeric 1")
 	if construction.get("hinge_axis") != "+X":
 		_fail(errors, diagnostics, "MODEL_CONSTRUCTION_HINGE_AXIS_INVALID", "$.construction.hinge_axis", "hinge_axis must be +X")
 
@@ -100,6 +100,8 @@ static func validate(construction: Variant, bindings: Dictionary) -> Dictionary:
 				_fail(errors, diagnostics, "MODEL_CONSTRUCTION_WRAPPER_INVALID", path + ".wrapper", "wrapper must be a safe node name")
 			_claim_name(entry.get("node", ""), path + ".node", used_names, errors, diagnostics)
 			_claim_name(entry.get("wrapper", ""), path + ".wrapper", used_names, errors, diagnostics)
+			if _is_node_name(entry.get("wrapper")):
+				_claim_name(str(entry.wrapper) + "_mount", path + ".wrapper_mount", used_names, errors, diagnostics)
 		for expected_role in expected_roles.keys():
 			if not seen_roles.has(expected_role):
 				_fail(errors, diagnostics, "MODEL_CONSTRUCTION_GEAR_ROLE_MISSING", "$.construction.gear", "construction must declare gear role %s" % expected_role)
@@ -209,6 +211,8 @@ static func _check_control_articulation(value: Variant, node_name: String, path:
 	var travel: Variant = value.get("range_deg")
 	if typeof(travel) != TYPE_ARRAY or travel.size() != 2 or not _is_finite_number(travel[0]) or not _is_finite_number(travel[1]):
 		_fail(errors, diagnostics, "MODEL_GEOMETRY_ARTICULATION_INVALID", path + ".geometry_ref", "control articulation needs a finite rest-to-travel range")
+	elif float(travel[0]) >= float(travel[1]):
+		_fail(errors, diagnostics, "MODEL_GEOMETRY_ARTICULATION_INVALID", path + ".geometry_ref", "control articulation range must be increasing")
 	var sign: Variant = value.get("app_sign")
 	if not _is_finite_number(sign) or absf(float(sign)) != 1.0:
 		_fail(errors, diagnostics, "MODEL_GEOMETRY_ARTICULATION_INVALID", path + ".geometry_ref", "control articulation needs a signed presentation conversion")

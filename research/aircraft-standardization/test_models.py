@@ -46,7 +46,7 @@ class AircraftModelManifestTests(unittest.TestCase):
 
     def test_generated_manifests_are_current_and_cover_five_visual_builders(self):
         result = subprocess.run(
-            ["python", "research/aircraft-standardization/build_models.py", "--check"],
+            [sys.executable, "research/aircraft-standardization/build_models.py", "--check"],
             cwd=ROOT,
             capture_output=True,
             text=True,

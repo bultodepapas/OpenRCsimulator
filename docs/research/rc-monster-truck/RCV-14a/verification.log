@@ -1,0 +1,250 @@
+
+== static intake freshness
+intake manifest matches: C:\DEVELOPMENT\OpenRCsimulator\docs\research\rc-monster-truck\RCV-14a\intake.json
+
+exit=0; passed=True
+
+== static intake mutation tests
+test_corrupt_and_wrong_version_containers_are_rejected (__main__.ContainerTests.test_corrupt_and_wrong_version_containers_are_rejected) ... ok
+test_duplicate_child_and_negative_transform_are_rejected (__main__.ContainerTests.test_duplicate_child_and_negative_transform_are_rejected) ... ok
+test_duplicate_json_keys_and_external_uris_are_rejected (__main__.ContainerTests.test_duplicate_json_keys_and_external_uris_are_rejected) ... ok
+test_artifact_inventory_and_check_bytes_are_deterministic (__main__.SuppliedModelTests.test_artifact_inventory_and_check_bytes_are_deterministic) ... ok
+test_duplicate_node_names_are_rejected (__main__.SuppliedModelTests.test_duplicate_node_names_are_rejected) ... ok
+test_external_buffer_and_external_image_are_rejected (__main__.SuppliedModelTests.test_external_buffer_and_external_image_are_rejected) ... ok
+test_missing_node_pivot_and_spec_rig_identity_are_rejected (__main__.SuppliedModelTests.test_missing_node_pivot_and_spec_rig_identity_are_rejected) ... ok
+test_negative_scale_and_baked_animation_are_rejected (__main__.SuppliedModelTests.test_negative_scale_and_baked_animation_are_rejected) ... ok
+test_supplied_glb_passes_static_dimensions_and_articulation_intake (__main__.SuppliedModelTests.test_supplied_glb_passes_static_dimensions_and_articulation_intake) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.389s
+
+OK
+
+exit=0; passed=True
+
+== Godot articulation and lifecycle
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS load hash-pinned MT8 delivery
+PASS pose waits for SceneTree attachment
+PASS delivery wrapper and model root are in SceneTree
+PASS neutral pose accepted after attachment
+PASS node and rest-transform bindings cover the supplied rig
+PASS all four wheel centers match delivered coordinates
+PASS spec wheelbase is 0.420 m — 0.42
+PASS imported wheelbase is 0.420 m — 0.41999998688698
+PASS spec track is 0.430 m — 0.43
+PASS imported track is 0.430 m — 0.43000000715256
+PASS spec tire radius is 0.100 m — 0.1
+PASS delivery contains no physics bodies, shapes, or joints — []
+PASS collision proxy meshes are hidden by default
+PASS zero inputs restore every authored Node3D transform — max transform error 0.00000015164579
+PASS imported tire mesh radius is approximately 0.100 m — mesh radius 0.100417 m
+PASS visual model length stays near 0.66 m — 0.66699999570847
+PASS visual model width stays near 0.52 m — 0.52335369586945
+PASS visual tire bottom is near -0.125 m — -0.12541669607162
+PASS each corner can travel without moving any other wheel assembly
+PASS each corner can travel without moving any other wheel assembly
+PASS each corner can travel without moving any other wheel assembly
+PASS each corner can travel without moving any other wheel assembly
+PASS extreme set mirrors the 25 common poses plus two crossed poses — 27
+PASS all 27 poses are accepted — common t=-0.035 steer=-30 FL
+PASS wheel centers follow all-corner articulation geometry — 0.00000000372529 m at common t=-0.035 steer=-30 FL
+PASS upper/lower arms close at both hub joints in all 27 poses — 0.00000001490116 m
+PASS shock eyes match independent endpoints in all 27 poses — 0.00000001676381 m
+PASS shock body and shaft axes meet without angular kinks — 0.00000011680838
+PASS shock shaft tips remain inside bodies over full travel
+PASS shock springs never reach zero or negative scale
+PASS bump/droop/rest shock lengths match declared endpoints
+PASS positive steer points both front wheels left and leaves rear fixed
+PASS negative steer points FL and FR right
+PASS positive forward wheel spin moves each tire top toward -Z — local +X del nodo XX_Spin; avanzar (-Z) = angulo decreciente
+PASS every invalid pose is refused before mutating any transform
+PASS exact travel and steering limits remain valid
+PASS second model instance loads
+PASS each delivery load owns distinct scene nodes
+PASS body visibility changes only the selected model instance
+PASS proxy visibility changes only the selected model instance
+PASS posing one loaded model leaves the other unchanged
+PASS second delivery instance frees cleanly
+PASS zero inputs restore every authored Node3D transform — max transform error 0.00000015164579
+PASS main delivery instance frees cleanly
+PASS no test instance remains attached
+PASS three repeated load/attach/free cycles release every instance
+RCV-14a MT8 visual: 46 checks, 0 failed
+
+exit=0; passed=True
+
+== GUI key events es
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS inspector loaded reviewed GLB
+PASS initial pose and hidden proxies
+PASS keyboard changes only FL suspension
+PASS keyboard steering reaches visual rig
+PASS body checkbox hides shell
+PASS proxy checkbox reveals debug geometry
+PASS preset popup applies compression to all corners
+PASS opt-in wheel animation advances
+PASS scope status fits minimum window
+MT8 inspector: 9 checks, 0 failures
+
+exit=0; passed=True
+
+== GUI key events en
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS inspector loaded reviewed GLB
+PASS initial pose and hidden proxies
+PASS keyboard changes only FL suspension
+PASS keyboard steering reaches visual rig
+PASS body checkbox hides shell
+PASS proxy checkbox reveals debug geometry
+PASS preset popup applies compression to all corners
+PASS opt-in wheel animation advances
+PASS scope status fits minimum window
+MT8 inspector: 9 checks, 0 failures
+
+exit=0; passed=True
+
+== reject empty capture
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Duplicate or empty option: --capture
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _fail (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/visual/preview.gd:304)
+       [1] _initialize (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/visual/preview.gd:39)
+
+exit=1; passed=True
+
+== reject duplicate pose
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Duplicate or empty option: --pose
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _fail (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/visual/preview.gd:304)
+       [1] _initialize (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/visual/preview.gd:39)
+
+exit=1; passed=True
+
+== reject invalid language
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Invalid language or pose
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _fail (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/visual/preview.gd:304)
+       [1] _initialize (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/visual/preview.gd:56)
+
+exit=1; passed=True
+
+== reject unknown option
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Unknown option: --invalid
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _fail (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/visual/preview.gd:304)
+       [1] _initialize (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/visual/preview.gd:53)
+
+exit=1; passed=True
+
+== reject headless capture
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Capture requires a renderer and a fresh output filename
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _fail (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/visual/preview.gd:304)
+       [1] _initialize (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/visual/preview.gd:59)
+
+exit=1; passed=True
+
+== fresh checkout without import cache
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS load hash-pinned MT8 delivery
+PASS pose waits for SceneTree attachment
+PASS delivery wrapper and model root are in SceneTree
+PASS neutral pose accepted after attachment
+PASS node and rest-transform bindings cover the supplied rig
+PASS all four wheel centers match delivered coordinates
+PASS spec wheelbase is 0.420 m — 0.42
+PASS imported wheelbase is 0.420 m — 0.41999998688698
+PASS spec track is 0.430 m — 0.43
+PASS imported track is 0.430 m — 0.43000000715256
+PASS spec tire radius is 0.100 m — 0.1
+PASS delivery contains no physics bodies, shapes, or joints — []
+PASS collision proxy meshes are hidden by default
+PASS zero inputs restore every authored Node3D transform — max transform error 0.00000015164579
+PASS imported tire mesh radius is approximately 0.100 m — mesh radius 0.100417 m
+PASS visual model length stays near 0.66 m — 0.66699999570847
+PASS visual model width stays near 0.52 m — 0.52335369586945
+PASS visual tire bottom is near -0.125 m — -0.12541669607162
+PASS each corner can travel without moving any other wheel assembly
+PASS each corner can travel without moving any other wheel assembly
+PASS each corner can travel without moving any other wheel assembly
+PASS each corner can travel without moving any other wheel assembly
+PASS extreme set mirrors the 25 common poses plus two crossed poses — 27
+PASS all 27 poses are accepted — common t=-0.035 steer=-30 FL
+PASS wheel centers follow all-corner articulation geometry — 0.00000000372529 m at common t=-0.035 steer=-30 FL
+PASS upper/lower arms close at both hub joints in all 27 poses — 0.00000001490116 m
+PASS shock eyes match independent endpoints in all 27 poses — 0.00000001676381 m
+PASS shock body and shaft axes meet without angular kinks — 0.00000011680838
+PASS shock shaft tips remain inside bodies over full travel
+PASS shock springs never reach zero or negative scale
+PASS bump/droop/rest shock lengths match declared endpoints
+PASS positive steer points both front wheels left and leaves rear fixed
+PASS negative steer points FL and FR right
+PASS positive forward wheel spin moves each tire top toward -Z — local +X del nodo XX_Spin; avanzar (-Z) = angulo decreciente
+PASS every invalid pose is refused before mutating any transform
+PASS exact travel and steering limits remain valid
+PASS second model instance loads
+PASS each delivery load owns distinct scene nodes
+PASS body visibility changes only the selected model instance
+PASS proxy visibility changes only the selected model instance
+PASS posing one loaded model leaves the other unchanged
+PASS second delivery instance frees cleanly
+PASS zero inputs restore every authored Node3D transform — max transform error 0.00000015164579
+PASS main delivery instance frees cleanly
+PASS no test instance remains attached
+PASS three repeated load/attach/free cycles release every instance
+RCV-14a MT8 visual: 46 checks, 0 failed
+
+exit=0; passed=True
+
+== modified author rig refused before execution
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Missing or unreviewed delivery file: godot/mt8_rig.gd
+
+exit=0; passed=True
+
+== Compatibility capture rest-es.png
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+MT8 capture: C:\Users\bulto\AppData\Local\Temp\rcv-mt8-capture-_q5j7urw\rest-es.png
+
+exit=0; passed=True
+
+== Compatibility capture cross-en.png
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+MT8 capture: C:\Users\bulto\AppData\Local\Temp\rcv-mt8-capture-860z8uc0\cross-en.png
+
+exit=0; passed=True
+
+== Compatibility capture droop-proxies-es.png
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+MT8 capture: C:\Users\bulto\AppData\Local\Temp\rcv-mt8-capture-a06tvuu5\droop-proxies-es.png
+
+exit=0; passed=True
+
+== canonical app test hook shell syntax
+exit=0; passed=True

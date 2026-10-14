@@ -34,6 +34,11 @@ EXPECTED_FLEET = {
     "synthetic_stik_electric_6s",
     "synthetic_stik_electric_4s_battery",
     "synthetic_stik_electric_6s_battery",
+    "stik_glow_55ax_2t",
+    "stik_glow_55ax_2t_apc_13x6",
+    "stik_glow_fs64v_4t",
+    "stik_glow_fs64v_4t_apc_13x6",
+    "turbo_lumber_evolution",
 }
 ENGINE_ERROR = re.compile(r"(?:SCRIPT ERROR:|Parse Error:|ERROR:)")
 @dataclass
@@ -102,13 +107,13 @@ def build_cases(app: Path) -> list[Case]:
     fleet_paths = {path.stem: path for path in sorted(fleet_dir.glob("*.json"))}
     if set(fleet_paths) != EXPECTED_FLEET:
         raise AssertionError(
-            "expected the four catalog and four electric v2 files; "
+            "expected the four catalog, four electric, four glow, and Turbo Lumber v2 files; "
             f"missing={sorted(EXPECTED_FLEET - set(fleet_paths))}, "
             f"extra={sorted(set(fleet_paths) - EXPECTED_FLEET)}"
         )
     fleet = {name: read_json(path) for name, path in fleet_paths.items()}
     if any(data.get("format") != "openrc-aircraft v2" for data in fleet.values()):
-        raise AssertionError("all eight current fleet files must be explicitly migrated to v2")
+        raise AssertionError("all thirteen current aircraft data files must be explicitly migrated to v2")
     stik = fleet["jensen_ugly_stik_60"]
     p51 = fleet["p51d_mustang_120"]
     avanti = fleet["sebart_avanti_s_a200"]

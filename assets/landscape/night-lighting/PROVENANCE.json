@@ -1,0 +1,73 @@
+{
+  "format": "openrc-provenance v1",
+  "track": "FW-66",
+  "written": "2026-10-13",
+  "status": "research inputs, not runtime assets",
+  "license_record": "LICENSES.md",
+  "files": [
+    {
+      "file": "source/motion-security-floodlight.glb",
+      "author": "Innerscene",
+      "license": "CC0-1.0",
+      "source_url": "https://www.innerscene.com/tools/library/3d-parts/security-motion-floodlight-d771cce2",
+      "download_url": "https://www.innerscene.com/api/library/security-motion-floodlight-d771cce2/download",
+      "retrieved": "2026-10-13",
+      "bytes": 253564,
+      "sha256": "bbd6b776bfa9e16141e7e12e03e08b68917b56b191cfcf9893896a9beb889edb",
+      "status": "downloaded and statically inspected; Godot import/visual acceptance pending",
+      "modification": "none"
+    },
+    {
+      "file": "source/stake-path-light.glb",
+      "author": "Innerscene",
+      "license": "CC0-1.0",
+      "source_url": "https://www.innerscene.com/tools/library/3d-parts/path-stake-path-light-132d4aa2",
+      "download_url": "https://www.innerscene.com/api/library/path-stake-path-light-132d4aa2/download",
+      "retrieved": "2026-10-13",
+      "bytes": 120092,
+      "sha256": "1801601dcca7de5414de0eaebf4668bed40471c4b4c31a9e1a6a68688fb9fb0e",
+      "status": "downloaded and statically inspected; Godot import/visual acceptance pending",
+      "modification": "none"
+    },
+    {
+      "file": "source/campfire-pit.glb",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "source_url": "https://kenney.nl/assets/survival-kit",
+      "download_url": "https://kenney.nl/media/pages/assets/survival-kit/4065a8185b-1712149243/kenney_survival-kit.zip",
+      "retrieved": "2026-10-13",
+      "bytes": 26468,
+      "sha256": "a78ce38de408456649146077e1917d70bb39f7c87c3c7370276d809d2409b0ab",
+      "status": "downloaded and statically inspected; Godot import/visual acceptance pending",
+      "modification": "none",
+      "archive_entry": "Models/GLB format/campfire-pit.glb",
+      "archive_sha256": "c3586341b5932c87eb43d75d915434f47daed168b17ed36a03e8ca9977c7443e"
+    },
+    {
+      "file": "source/Textures/colormap.png",
+      "author": "Kenney",
+      "license": "CC0-1.0",
+      "source_url": "https://kenney.nl/assets/survival-kit",
+      "download_url": "https://kenney.nl/media/pages/assets/survival-kit/4065a8185b-1712149243/kenney_survival-kit.zip",
+      "retrieved": "2026-10-13",
+      "bytes": 7440,
+      "sha256": "6ca023be9f12e8c2358fcf94320c8a894b4c05a3dd0bad1f5c268312053caca1",
+      "status": "downloaded and statically inspected; Godot import/visual acceptance pending",
+      "modification": "none",
+      "archive_entry": "Models/GLB format/Textures/colormap.png",
+      "archive_sha256": "c3586341b5932c87eb43d75d915434f47daed168b17ed36a03e8ca9977c7443e"
+    },
+    {
+      "file": "source/flame.png",
+      "author": "tauran",
+      "license": "CC0-1.0",
+      "source_url": "https://opengameart.org/content/animated-flame-texture",
+      "download_url": "https://opengameart.org/sites/default/files/flame_0.png",
+      "retrieved": "2026-10-13",
+      "bytes": 309000,
+      "sha256": "2e7739daddfc7bcfd70ef65a264ad56ef6c7addf8781010eb82c99031e473733",
+      "status": "downloaded and statically inspected; Godot import/visual acceptance pending",
+      "modification": "none"
+    }
+  ]
+}

@@ -1,0 +1,141 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "arguments": {
+    "cases": "postcard_club,runway_inside,pilot_north",
+    "frames": "4",
+    "height": "720",
+    "out": "C:/DEVELOPMENT/OpenRCsimulator/tmp/night-lighting-plan-baseline-20261013",
+    "time_of_day": "night",
+    "width": "1280"
+  },
+  "botanical_stats": {
+    "botanical_batches": 11,
+    "botanical_plants": 221,
+    "botanical_triangles": 83650,
+    "build_ms": 746.961,
+    "cells": 55,
+    "fleet": 4,
+    "flowers": 0,
+    "instances": 136,
+    "motion": 5,
+    "moving_people": 7,
+    "population": 24,
+    "population_triangles": 389787,
+    "quality": "high",
+    "shadows": 86,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "botanicals": 95.563,
+      "fence": 27.704,
+      "fleet": 15.908,
+      "hedge": 14.437,
+      "instances": 39.176,
+      "meshes": 20.124,
+      "patch": 73.309,
+      "track": 0.914
+    },
+    "vegetation_instances": 30,
+    "vegetation_triangles": 94440
+  },
+  "cases": {
+    "pilot_north": {
+      "draws": 90.0,
+      "exposure": 1987.79345703125,
+      "frame_ms_raw": [
+        2.285,
+        1.746,
+        1.839,
+        1.646
+      ],
+      "glare_strength": 0.0,
+      "glare_visible": false,
+      "lamp_factor": 1.0,
+      "marker_center_px": "(3270.426, 445.8568)",
+      "median_ms": 1.839,
+      "motion": [],
+      "p95_ms": 2.285,
+      "p99_ms": 2.285,
+      "primitives": 196790.0,
+      "shadow_draws": 0,
+      "timing_valid": true,
+      "video_memory": 281022976.0,
+      "visible_draws": 90
+    },
+    "postcard_club": {
+      "draws": 126.0,
+      "exposure": 1987.79345703125,
+      "frame_ms_raw": [
+        4.028,
+        3.197,
+        4.361,
+        3.179
+      ],
+      "glare_strength": 0.0,
+      "glare_visible": false,
+      "lamp_factor": 1.0,
+      "marker_center_px": "(608.9592, 1230.076)",
+      "median_ms": 4.028,
+      "motion": [],
+      "p95_ms": 4.361,
+      "p99_ms": 4.361,
+      "primitives": 218229.0,
+      "shadow_draws": 0,
+      "timing_valid": true,
+      "video_memory": 264082432.0,
+      "visible_draws": 126
+    },
+    "runway_inside": {
+      "draws": 71.0,
+      "exposure": 1987.79345703125,
+      "frame_ms_raw": [
+        2.454,
+        1.892,
+        2.079,
+        1.941
+      ],
+      "glare_strength": 0.0,
+      "glare_visible": false,
+      "lamp_factor": 1.0,
+      "marker_center_px": "(639.9999, 360.0)",
+      "median_ms": 2.079,
+      "motion": [],
+      "p95_ms": 2.454,
+      "p99_ms": 2.454,
+      "primitives": 186816.0,
+      "shadow_draws": 0,
+      "timing_valid": true,
+      "video_memory": 281022976.0,
+      "visible_draws": 71
+    }
+  },
+  "driver": "3.3.0 NVIDIA 610.88",
+  "engine": {
+    "build": "official",
+    "hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+    "hex": 263938,
+    "major": 4,
+    "minor": 7,
+    "patch": 2,
+    "status": "stable",
+    "string": "4.7.2-stable (official)",
+    "timestamp": 0
+  },
+  "field_build_ms": 6011.042,
+  "height": 720,
+  "lake": {
+    "bank_shader": "res://render/lake/bank.gdshader",
+    "bounds": "[P: (73.25, -5.45, -145.75), S: (103.5, 5.456786, 70.5)]",
+    "first_cross": "(0.004758, -0.5625, 0.008294)",
+    "first_normal": "(0.012433, 0.999763, 0.017871)",
+    "grass_texture": "():<ImageTexture#-9223371960283560377>",
+    "identity": "bcc3774dc2ef339bac49aaec42b6a47b6b6d1104470d9fff35db242f6ab61efa",
+    "mask_count": 20,
+    "mask_mode": 1,
+    "triangles": 44952,
+    "vertices": 13205
+  },
+  "reflection_slots": 2,
+  "renderer": "gl_compatibility",
+  "width": 1280
+}
