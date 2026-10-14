@@ -1,6 +1,6 @@
 # Global performance and visual-quality implementation plan
 
-2026-10-14 · Revision 8 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
+2026-10-14 · Revision 9 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
 
 **Execution decision:** baseline → visibility reference → measured CPU/loading repairs → texture audit → ground and foliage comparisons → targeted aircraft/weather repairs → qualified quality profiles → native acceptance. Implementation has started with **VQ-01c / DT-01 / DT-10a** measurement tools and a read-only texture inventory. [First evidence and unresolved gates](../research/visual-quality-implementation/VQ-01c/README.md) now include an attributed **DT-11a lake geometry reuse repair** with exact buffer parity and faster Home/Fly transitions. Native flight, cold-loading and visual-change acceptance remain open. Current step status stays in the owning VQ plan.
 
@@ -13,6 +13,8 @@ Follow-up: [duplicate night-kit geometry extraction removed](../research/visual-
 The [audio teardown follow-up](../research/visual-quality-implementation/VQ-01c/loading/audio/README.md) reproduces asynchronous mixer retirement and adds bounded, verified cleanup to the loading probe. Three unchanged-package runs close without exit warnings, including 50 cycles with one paused first draw. Production shutdown, uninterrupted interactive-cycle acceptance and the soak remain open.
 
 This is the authoritative sequence and disposition for the [dated research](../research/godot-global-review-2026-10-14.md). It replaces this document's earlier broad backlog and six-prototype recommendation. Implementation status stays in the owning plans: [VQ](../VISUAL-QUALITY-PLAN.md), [landscape](../LANDSCAPE-PLAN.md), [sky](sky-clouds-weather.md), [UI](../MENU-REDESIGN-PLAN.md), [DT](../DESKTOP-DELIVERY-PLAN.md), [camera](camera-views.md), and the [ownership registry](../README.md#tracks-plans-and-step-ids). New follow-up IDs below are registered in those homes; no new track namespace is introduced.
+
+Latest VQ-02a slice: [embedded-image and runtime texture inventory](../research/visual-quality-implementation/VQ-02a/README.md) inspects 25 embedded PNG/JPEG images and 39 assigned texture resources across the default day world and five fixed-wing families on a frozen source. This is the permitted independent read-only audit; material/import corrections and full VQ-02a qualification remain open.
 
 ## 1. Decisions already made
 

@@ -176,8 +176,50 @@ python research/performance/texture_inventory.py `
 Guard verification mutates disposable script copies outside `app/`: paused simulation,
 missing input sampling, an exact stop boundary and an observer that changes controls.
 Expected rejection is a passing guard check, never a successful performance sample.
-The import inventory reads PNG/JPEG headers and text metadata, records GLB JSON image
-counts and leaves embedded pixel payloads uninspected. It cannot resolve runtime-built
-material bindings or determine resident VRAM. Multiple shader assignments in one
+The import inventory reads PNG/JPEG headers and text metadata, validates GLB chunk and
+bufferView boundaries, and inspects embedded PNG/JPEG headers with streamed SHA-256.
+Exact glTF core material references describe channel/color semantics; reuse ambiguity
+is retained. External/data URIs and unsupported formats remain explicit gaps. Hashing
+is capped at 512 MiB per image and per GLB; JPEG header scans are capped at 4 MiB.
+It does not decode pixels, resolve runtime-built bindings or determine resident VRAM.
+Multiple shader assignments in one
 resource file produce unknown shader context rather than a guessed binding. No review
 candidate means these checks found none; it does not establish that all assets are correct.
+
+### Runtime texture inventory (VQ-02a)
+
+Run `texture_runtime_probe.gd` with the pinned native renderer against a separate,
+imported snapshot. Keep its sibling `texture_runtime_inventory.gd` beside it. Use a
+pristine extraction for the static inventory: the editor import normalizes sidecars
+and can extract embedded images. Record both identities, as in the
+[VQ-02a evidence](../../docs/research/visual-quality-implementation/VQ-02a/README.md).
+
+```powershell
+& .tools/Godot_v4.7.2-stable_win64_console.exe --path <snapshot-app> --audio-driver Dummy --script C:/DEVELOPMENT/OpenRCsimulator/research/performance/texture_runtime_probe.gd -- --output=C:/path/to/new-inventory.json --source-commit=<40-character-commit>
+& .tools/Godot_v4.7.2-stable_win64_console.exe --path <snapshot-app> --audio-driver Dummy --script C:/DEVELOPMENT/OpenRCsimulator/research/performance/test_texture_runtime_inventory.gd
+python -m unittest research.performance.test_texture_inventory -v
+```
+
+The probe builds the default fixed-day world and the catalog's fixed-wing visual
+families off-tree. It starts no flight or node processing. It follows assigned stored
+resources, mesh surface materials, MultiMesh resources, overrides, overlays, next
+passes and scalar shader sampler defaults. Resource IDs are case-local; consumer
+edges resolve through `resource_links`. Hidden, disabled and overridden assignments
+are included: this is not an effective draw list. Resolved scenery options are recorded.
+
+Texture records contain dimensions and, when available, the returned Image format,
+compression flag, mip count, byte size and hash. These CPU image bytes are **not VRAM**
+and must not be summed as resident memory. Viewport readback is excluded. Shader filter
+hints remain in the static inventory; BaseMaterial3D filter/channel enums are recorded.
+Home/UI, aircraft night kits, conditional weather, flight-only effects, rotorcraft/ground vehicles,
+sampler arrays/global textures and deep containers remain outside this bounded probe.
+Persistent campfire and club-lighting assignments are included even when disabled.
+The observer reads one complete image at a time without a per-image allocation cap;
+review asset sizes before extending the scene scope. The supplied commit is a provenance
+label, not a verified checkout identity; retain separate archive/import hashes.
+
+The fixture checks shared identity, MultiMesh and material overrides, shader defaults,
+mip byte counts, repeated-scan equality and unchanged assignments. Both probes refuse
+existing output files; the runtime probe rejects headless rendering. Capture stdout
+**and stderr through process exit**: the current world probe reports two GL texture
+teardown warnings even though it writes a repeatable inventory and exits zero.

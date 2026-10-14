@@ -534,7 +534,9 @@ func _create_flight(aircraft_id: String = "") -> Node:
 func open_controls(from: Control = null) -> void:
 	if controllers == null or not (screens.is_top("home") or screens.is_top("pause")):
 		return
+	_clear_controller_actions()
 	var setup := ControllerSetup.new()
+	setup.save_and_apply = controllers.save_profile_from_setup
 	setup.configure(controllers.registry, controllers.store, controllers.registry.selected_device_id("flight"), controllers.registry.selected_device_id("ui"))
 	setup.close_requested.connect(func() -> void:
 		if screens.is_top("controls"): screens.pop())
@@ -551,8 +553,6 @@ func open_controls(from: Control = null) -> void:
 		_update_controller_calibration_button(setup)
 		return true
 	setup.profile_saved.connect(func(profile: Dictionary) -> void:
-		if setup.selected_flight_device_id() >= 0:
-			controllers.apply_profile(profile, setup.selected_flight_device_id())
 		_update_controller_calibration_button(setup)
 		_controller_ui_changed(controllers.registry.selected_device_id("ui")))
 	screens.push("controls", setup, from)
@@ -581,6 +581,17 @@ func _controller_ui_changed(id: int) -> void:
 
 func _clear_controller_actions() -> void:
 	_controller_action_edges.clear()
+	_release_controller_holds()
+
+
+func _release_controller_holds() -> void:
+	for source: Variant in _controller_action_edges.keys():
+		var actions: PackedStringArray = _controller_action_edges[source]
+		var remaining := PackedStringArray()
+		for action: String in actions:
+			if ControllerActions.action_definition(action).get("mode", "press") != "hold": remaining.append(action)
+		if remaining.is_empty(): _controller_action_edges.erase(source)
+		else: _controller_action_edges[source] = remaining
 	if flight != null and flight.session != null and flight.session.has_method("set_controller_cut"):
 		flight.session.set_controller_cut(false)
 
@@ -622,12 +633,15 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.echo: return
 	var in_menu := screens.top() != null
 	var calibrating: bool = flight != null and flight.session != null and flight.session.calibration != null
+	if in_menu or calibrating: _release_controller_holds()
 	var id: int = controllers.registry.selected_device_id("ui" if in_menu or calibrating else "flight")
 	if id < 0: return
-	var source := str(event.device) + ":" + ("axis:%d" % event.axis if event is InputEventJoypadMotion else ("button:%d" % event.button_index if event is InputEventJoypadButton else "key:%d" % event.physical_keycode))
+	var source := ControllerActions.event_source(event)
+	if source.is_empty(): return
 	var previous: PackedStringArray = _controller_action_edges.get(source, PackedStringArray())
 	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id), id, "menu" if in_menu or calibrating else "flight", previous)
-	_controller_action_edges[source] = actions
+	if actions.is_empty(): _controller_action_edges.erase(source)
+	else: _controller_action_edges[source] = actions
 	if flight != null and flight.session.has_method("set_controller_cut"):
 		var held := false
 		for active: PackedStringArray in _controller_action_edges.values():
@@ -806,6 +820,7 @@ func _notification(what: int) -> void:
 func open_pause() -> void:
 	if flight == null or pause_menu != null:
 		return
+	_release_controller_holds()
 	var session: Node = flight.session
 	session.cancel_calibration()
 	var pause_menu := PauseMenu.new(has_home)

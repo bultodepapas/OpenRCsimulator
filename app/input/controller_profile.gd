@@ -265,6 +265,8 @@ static func validate(value: Variant) -> Dictionary:
 		errors.append("require_release must be a boolean")
 	if typeof(value.get("association")) != TYPE_DICTIONARY:
 		errors.append("association must be a Dictionary")
+	elif not _valid_association(value.get("association")):
+		errors.append("association contains invalid device identity data")
 	var action_values: Variant = value.get("actions")
 	if typeof(action_values) != TYPE_DICTIONARY:
 		errors.append("actions must be a Dictionary")
@@ -429,36 +431,35 @@ static func _is_number(value: Variant) -> bool:
 	return typeof(value) in [TYPE_INT, TYPE_FLOAT] and is_finite(float(value))
 
 
-static func _valid_action_binding(value: Variant) -> bool:
-	if typeof(value) != TYPE_DICTIONARY or typeof(value.get("type")) != TYPE_STRING:
+static func _valid_association(value: Variant) -> bool:
+	if typeof(value) != TYPE_DICTIONARY:
 		return false
-	match value.type:
-		"unbound":
-			return value.size() == 1
-		"button":
-			return typeof(value.get("button")) == TYPE_INT and int(value.button) >= 0 and int(value.button) < JOY_BUTTON_MAX
-		"axis":
-			if typeof(value.get("axis")) != TYPE_INT or int(value.axis) < 0 or int(value.axis) >= JOY_AXIS_MAX:
-				return false
-			var sign_value: Variant = value.get("sign", value.get("direction", 0))
-			if typeof(sign_value) != TYPE_INT or abs(int(sign_value)) != 1:
-				return false
-			if value.has("sign") and value.has("direction") and value.sign != value.direction:
-				return false
-			var threshold: Variant = value.get("threshold", 0.65)
-			return _is_number(threshold) and float(threshold) > 0.0 and float(threshold) <= 1.0
-		"key":
-			var logical: Variant = value.get("keycode", 0)
-			var physical: Variant = value.get("physical_keycode", 0)
-			if typeof(logical) != TYPE_INT or typeof(physical) != TYPE_INT or int(logical) < 0 or int(physical) < 0:
-				return false
-			if int(logical) == 0 and int(physical) == 0:
-				return false
-			for modifier in ["ctrl", "alt", "shift", "meta"]:
-				if value.has(modifier) and typeof(value[modifier]) != TYPE_BOOL:
-					return false
-			return not value.has("modifiers")
-	return false
+	for field in ["serial_number", "guid", "legacy_device_key"]:
+		if not value.has(field):
+			continue
+		var identity: Variant = value[field]
+		var limit := 1024 if field == "legacy_device_key" else 256
+		if typeof(identity) != TYPE_STRING or identity.length() > limit:
+			return false
+	for field in ["vendor_id", "product_id"]:
+		if not value.has(field):
+			continue
+		var raw_id: Variant = value[field]
+		var normalized_id := -1
+		if typeof(raw_id) == TYPE_INT:
+			normalized_id = int(raw_id)
+		elif typeof(raw_id) == TYPE_STRING and raw_id.length() <= 10 and raw_id.strip_edges().is_valid_int():
+			normalized_id = raw_id.strip_edges().to_int()
+		if normalized_id < 0 or normalized_id > 65535:
+			return false
+	for field: Variant in value:
+		if typeof(field) != TYPE_STRING or not ["serial_number", "guid", "legacy_device_key", "vendor_id", "product_id"].has(field):
+			return false
+	return true
+
+
+static func _valid_action_binding(value: Variant) -> bool:
+	return ControllerActions.valid_binding(value)
 
 
 static func _is_uuid(value: Variant) -> bool:

@@ -1,6 +1,6 @@
 # Visual quality: implementation guide and open work
 
-2026-10-14 · Revision 10 · Step prefix: **VQ-**
+2026-10-14 · Revision 11 · Step prefix: **VQ-**
 
 Latest VQ-01c / DT-11a follow-up: [night-kit geometry extraction](research/visual-quality-implementation/VQ-01c/loading/night-kit/README.md) retains exact kit output across five visual families and passes 123 native GPU checks. This is a bounded loading repair; full-flight visibility and performance acceptance remain open.
 
@@ -27,7 +27,7 @@ VQ-05 blurs every propeller from the live rotor speed. `app/render/propeller_blu
 | VQ-01c | Freeze current full-session, loading and native-render baseline with DT-01/10a; extend only missing measurement coverage. | In progress: [measurement foundation and Windows evidence](research/visual-quality-implementation/VQ-01c/README.md). 18 CPU runs / nine matching observer pairs; native pacing campaign fails. [Lake reuse/bake](research/visual-quality-implementation/VQ-01c/loading/README.md) and [exact grain precomputation/package repairs](research/visual-quality-implementation/VQ-01c/loading/grain/README.md) have evidence. Cold/first-Fly budgets, full flight coverage, observer-cost uncertainty and native/package qualification remain open. |
 | VQ-01d | Extend L6c/CAM visibility evidence with matched motion, projected size and orientation results. | Planned after VQ-01c source/camera freeze; no new camera law or HUD. |
 | VQ-02 | Improve one aircraft material at a time with matched lighting and distances. Coordinate with model owners. | Open; use 20/50/100 m and close views; previews are not flight validation. |
-| VQ-02a | Inventory imports and correct demonstrated channel/color/filter errors before material comparisons. | [Read-only inventory foundation](research/visual-quality-implementation/VQ-02a/README.md) delivered: 54 texture imports, explicit embedded/runtime-binding gaps. Corrections remain gated by VQ-01c/d; no asset/import change or blanket reimport. |
+| VQ-02a | Inventory imports and correct demonstrated channel/color/filter errors before material comparisons. | [Expanded read-only inventory](research/visual-quality-implementation/VQ-02a/README.md): frozen source has 100 texture sidecars and 25 inspected embedded images; native default-day/five-family probe records 39 assigned texture resources. Pixel/provenance qualification, conditional runtime coverage and two probe teardown warnings remain open. Corrections remain gated by VQ-01c/d; no production asset/import change. |
 | VQ-02b | One affected aircraft's marking/skin or specular repair. | Conditional on VQ-01d/VQ-02a evidence; preserve geometry and default appearance unless the paired result supports a change. |
 | VQ-03 | Optional horizon-aware camera composition experiment. | Open; reject it if tracking delay or readability worsens. |
 | VQ-04b | Compare native shadow maps with the projected silhouette. | Open and optional; keep the existing projection if colour, contact or cost regresses. |

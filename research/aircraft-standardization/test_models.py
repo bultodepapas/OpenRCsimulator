@@ -56,8 +56,9 @@ class AircraftModelManifestTests(unittest.TestCase):
         self.assertEqual(set(self.by_family), FAMILIES)
         self.assertEqual(set(self.manifests), FAMILIES)
         self.assertEqual(self.registry["version"], 2)
-        self.assertEqual(self.manifests["turbo-lumber-evolution"]["version"], 2)
-        self.assertTrue(all(manifest["version"] == 1 for family_id, manifest in self.manifests.items() if family_id != "turbo-lumber-evolution"))
+        imported = {"turbo-lumber-evolution", "sebart-avanti-s-a200-p100rx"}
+        for family_id, manifest in self.manifests.items():
+            self.assertEqual(manifest["version"], 2 if family_id in imported else 1)
         self.assertFalse(validate_registry(self.registry))
 
     def test_fleet_values_and_existing_visual_adapters_are_preserved(self):
@@ -65,7 +66,7 @@ class AircraftModelManifestTests(unittest.TestCase):
             "jensen-das-ugly-stik-60": (-0.115, -0.005, 0.3048, "euler_hinges"),
             "gp-extra-300s-60": (-0.1088, 0.0, 0.3048, "euler_hinges"),
             "p51d-mustang-120": (0.0, 0.0, 0.6604, "euler_hinges"),
-            "sebart-avanti-s-a200-p100rx": (0.0, 0.0, 0.0, "axis_hinges"),
+            "sebart-avanti-s-a200-p100rx": (0.0, 0.0, 0.0, "imported_glb"),
             # R2's measured mesh radius is 0.14032 m (geometry.json), independent of physical propeller sizing.
             "turbo-lumber-evolution": (0.0, 0.0, 0.28064, "imported_glb"),
         }
@@ -152,6 +153,9 @@ class AircraftModelManifestTests(unittest.TestCase):
         timber = next(item for item in legacy["families"] if item["family_id"] == "turbo-lumber-evolution")
         timber.pop("construction")
         timber["builder"]["script"] = "res://aircraft/timber_model.gd"
+        avanti = next(item for item in legacy["families"] if item["family_id"] == "sebart-avanti-s-a200-p100rx")
+        avanti.pop("construction")
+        avanti["builder"]["script"] = "res://aircraft/avanti_s_model.gd"
         self.assertFalse(validate_registry(legacy))
 
     def test_multiple_imported_family_ids_can_share_the_generic_builder(self):

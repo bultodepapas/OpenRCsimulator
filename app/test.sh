@@ -203,7 +203,8 @@ echo "== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01: r
 run --script res://aircraft/verify_p51_clearance.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "P-51 clearance contract failed (see above)"; exit 1; fi
 
-echo "== Avanti S visual contract (aircraft/verify_avanti.gd, AV-03: geometry, hinges, no propeller)"
+echo "== Ventage Jet Blender source and visual contract (AV-31: imported geometry, controls, sections, no propeller)"
+python3 "$HERE/../assets/aircraft/avanti-s-a200/compile_blender.py" --check || exit 1
 run --script res://aircraft/verify_avanti.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Avanti visual contract failed (see above)"; exit 1; fi
 

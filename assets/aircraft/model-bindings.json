@@ -307,14 +307,14 @@
     {
       "family_id": "sebart-avanti-s-a200-p100rx",
       "builder": {
-        "script": "res://aircraft/avanti_s_model.gd",
-        "adapter": "axis_hinges"
+        "script": "res://aircraft/imported_model.gd",
+        "adapter": "imported_glb"
       },
       "geometry": {
-        "script": "res://aircraft/avanti_s_geometry.gd",
-        "source": "assets/aircraft/avanti-s-a200/geometry.json",
+        "script": "res://aircraft/avanti_s_blender_geometry.gd",
+        "source": "assets/aircraft/avanti-s-a200/blender-geometry.json",
         "revision_path": "revision",
-        "identity_path": "revision",
+        "identity_path": "catalog_id",
         "datum": {
           "model_z_le": {
             "value": 0.0
@@ -325,7 +325,9 @@
         }
       },
       "asset": {
-        "kind": "procedural"
+        "kind": "imported_glb",
+        "path": "res://assets/aircraft/avanti-s-a200/avanti_s.glb",
+        "identity_path": "source_alias"
       },
       "bindings": {
         "controls": {
@@ -335,8 +337,8 @@
               {
                 "key": "aileron_left",
                 "node": "aileron_left_hinge",
-                "source": "builder",
-                "geometry_ref": ""
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.aileron_left_hinge"
               }
             ]
           },
@@ -346,8 +348,8 @@
               {
                 "key": "aileron_right",
                 "node": "aileron_right_hinge",
-                "source": "builder",
-                "geometry_ref": ""
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.aileron_right_hinge"
               }
             ]
           },
@@ -357,14 +359,14 @@
               {
                 "key": "elevator_left",
                 "node": "elevator_left_hinge",
-                "source": "builder",
-                "geometry_ref": ""
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.elevator_left_hinge"
               },
               {
                 "key": "elevator_right",
                 "node": "elevator_right_hinge",
-                "source": "builder",
-                "geometry_ref": ""
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.elevator_right_hinge"
               }
             ]
           },
@@ -374,8 +376,8 @@
               {
                 "key": "rudder",
                 "node": "rudder_hinge",
-                "source": "builder",
-                "geometry_ref": ""
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.rudder_hinge"
               }
             ]
           },
@@ -385,8 +387,8 @@
               {
                 "key": "flap_left",
                 "node": "flap_left_hinge",
-                "source": "builder",
-                "geometry_ref": ""
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.flap_left_hinge"
               }
             ]
           },
@@ -396,8 +398,8 @@
               {
                 "key": "flap_right",
                 "node": "flap_right_hinge",
-                "source": "builder",
-                "geometry_ref": ""
+                "source": "geometry_articulation",
+                "geometry_ref": "articulations.flap_right_hinge"
               }
             ]
           }
@@ -416,12 +418,24 @@
           "keys": {}
         },
         "crash": {
-          "provider": "none",
+          "provider": "gltf_extras",
           "metadata_script": "",
           "asset_node": ""
         }
       },
-      "authoring_sources": []
+      "authoring_sources": [
+        {
+          "path": "assets/aircraft/avanti-s-a200/source-manifest.json",
+          "role": "asset_identity"
+        }
+      ],
+      "construction": {
+        "version": 1,
+        "hinge_axis": "+X",
+        "rotor": {},
+        "gear": [],
+        "material_grow": []
+      }
     },
     {
       "family_id": "turbo-lumber-evolution",

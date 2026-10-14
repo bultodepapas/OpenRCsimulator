@@ -1913,6 +1913,15 @@ msgstr "Asignación actualizada. Guarda el perfil para conservarla."
 msgid "Remapping cancelled."
 msgstr "Reasignación cancelada."
 
+msgid "The flight controller changed; remapping was cancelled."
+msgstr "Cambió el control de vuelo; se canceló la reasignación."
+
+msgid "The selected flight controller disconnected; remapping was cancelled."
+msgstr "El control de vuelo seleccionado se desconectó; se canceló la reasignación."
+
+msgid "Finish or cancel remapping before saving."
+msgstr "Finaliza o cancela la reasignación antes de guardar."
+
 msgid "The selected menu controller is disconnected."
 msgstr "El control de menú seleccionado está desconectado."
 

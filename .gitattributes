@@ -53,3 +53,8 @@
 /assets/vehicles/mt8-bisonte/source-manifest.json text eol=lf
 /app/data/vehicles/ground/*.json text eol=lf
 /app/data/ground_vehicle/*.json text eol=lf
+
+# AV-31 preserves the supplied Blender master bytes and hash-bound collision metadata.
+/assets/aircraft/avanti-s-a200/source/** -text
+/assets/aircraft/avanti-s-a200/blender-geometry.json text eol=lf
+/assets/aircraft/avanti-s-a200/source-manifest.json text eol=lf

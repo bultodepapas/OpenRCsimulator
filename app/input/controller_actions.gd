@@ -186,7 +186,7 @@ static func validate_profile_bindings(profile: Dictionary) -> Dictionary:
 static func binding_from_event(event: InputEvent) -> Dictionary:
 	if event is InputEventKey:
 		var key_event := event as InputEventKey
-		if not key_event.pressed or key_event.echo:
+		if not key_event.pressed or key_event.echo or (key_event.keycode == 0 and key_event.physical_keycode == 0):
 			return {}
 		return {
 			"type": "key",
@@ -199,12 +199,12 @@ static func binding_from_event(event: InputEvent) -> Dictionary:
 		}
 	if event is InputEventJoypadButton:
 		var button_event := event as InputEventJoypadButton
-		if not button_event.pressed:
+		if not button_event.pressed or button_event.button_index < 0 or button_event.button_index >= JOY_BUTTON_MAX:
 			return {}
 		return {"type": "button", "button": button_event.button_index}
 	if event is InputEventJoypadMotion:
 		var motion := event as InputEventJoypadMotion
-		if absf(motion.axis_value) >= 0.65:
+		if motion.axis >= 0 and motion.axis < JOY_AXIS_MAX and is_finite(motion.axis_value) and absf(motion.axis_value) >= 0.65:
 			return {"type": "axis", "axis": motion.axis, "sign": 1 if motion.axis_value > 0.0 else -1, "threshold": 0.65}
 	return {}
 
@@ -215,7 +215,11 @@ static func binding_text(binding: Dictionary) -> String:
 			var keycode := int(binding.get("physical_keycode", 0))
 			if keycode == 0:
 				keycode = int(binding.get("keycode", 0))
-			return OS.get_keycode_string(keycode) if keycode != 0 else TranslationServer.translate("Keyboard key")
+			var parts := PackedStringArray()
+			for modifier in ["ctrl", "alt", "shift", "meta"]:
+				if bool(binding.get(modifier, false)): parts.append("Ctrl" if modifier == "ctrl" else modifier.capitalize())
+			parts.append(OS.get_keycode_string(keycode) if keycode != 0 else TranslationServer.translate("Keyboard key"))
+			return "+".join(parts)
 		"button":
 			return _button_name(int(binding.get("button", -1)))
 		"axis":
@@ -241,7 +245,7 @@ static func resolve_event(event: InputEvent, bindings: Dictionary, selected_devi
 	var definitions := _definition_map()
 	for action_id: Variant in bindings:
 		var id := str(action_id)
-		if not definitions.has(id) or not _context_applies(str(definitions[id].context), context):
+		if not definitions.has(id) or not _context_applies(str(definitions[id].context), context) or not valid_binding(bindings[action_id]):
 			continue
 		if matches_binding(bindings[action_id], event, selected_device_id, previous_actions.has(id)):
 			resolved.append(id)
@@ -257,7 +261,7 @@ static func matches_binding(binding: Dictionary, event: InputEvent, selected_dev
 			var key_event := event as InputEventKey
 			var physical := int(binding.get("physical_keycode", 0))
 			var logical := int(binding.get("keycode", 0))
-			return ((physical != 0 and key_event.physical_keycode == physical) or (logical != 0 and key_event.keycode == logical)) \
+			return (key_event.physical_keycode == physical if physical != 0 else logical != 0 and key_event.keycode == logical) \
 				and key_event.ctrl_pressed == bool(binding.get("ctrl", false)) \
 				and key_event.alt_pressed == bool(binding.get("alt", false)) \
 				and key_event.shift_pressed == bool(binding.get("shift", false)) \
@@ -284,6 +288,18 @@ static func action_definition(action_id: String) -> Dictionary:
 	return _definition_map().get(action_id, {}).duplicate(true)
 
 
+## Releases and presses share one source, including synthetic logical-only keys.
+static func event_source(event: InputEvent) -> String:
+	if event is InputEventKey:
+		var code: int = event.physical_keycode if event.physical_keycode != 0 else event.keycode
+		return "key:%d" % code if code > 0 else ""
+	if event is InputEventJoypadButton and event.button_index >= 0 and event.button_index < JOY_BUTTON_MAX:
+		return "%d:button:%d" % [event.device, event.button_index]
+	if event is InputEventJoypadMotion and event.axis >= 0 and event.axis < JOY_AXIS_MAX:
+		return "%d:axis:%d" % [event.device, event.axis]
+	return ""
+
+
 static func _definition_map() -> Dictionary:
 	if _definition_cache.is_empty():
 		for definition in ACTIONS:
@@ -292,21 +308,35 @@ static func _definition_map() -> Dictionary:
 
 
 static func _valid_binding(value: Variant) -> bool:
-	if not value is Dictionary:
+	return valid_binding(value)
+
+
+## One strict shape contract for the profile loader, setup and direct action API.
+static func valid_binding(value: Variant) -> bool:
+	if typeof(value) != TYPE_DICTIONARY or typeof(value.get("type")) != TYPE_STRING:
 		return false
 	var binding: Dictionary = value
-	match str(binding.get("type", "")):
+	match binding.type:
 		"unbound":
 			return binding.size() == 1
 		"key":
-			return int(binding.get("physical_keycode", 0)) != 0 or int(binding.get("keycode", 0)) != 0
+			var logical: Variant = binding.get("keycode", 0)
+			var physical: Variant = binding.get("physical_keycode", 0)
+			if typeof(logical) != TYPE_INT or typeof(physical) != TYPE_INT or logical < 0 or physical < 0:
+				return false
+			if logical == 0 and physical == 0: return false
+			for modifier in ["ctrl", "alt", "shift", "meta"]:
+				if binding.has(modifier) and typeof(binding[modifier]) != TYPE_BOOL: return false
+			return not binding.has("modifiers")
 		"button":
-			return int(binding.get("button", -1)) >= 0 and int(binding.get("button", -1)) < JOY_BUTTON_MAX
+			return typeof(binding.get("button")) == TYPE_INT and binding.button >= 0 and binding.button < JOY_BUTTON_MAX
 		"axis":
-			var threshold := float(binding.get("threshold", 0.65))
-			var sign := int(binding.get("sign", binding.get("direction", 0)))
-			return int(binding.get("axis", -1)) >= 0 and int(binding.get("axis", -1)) < JOY_AXIS_MAX \
-				and absf(sign) == 1 and threshold > 0.0 and threshold <= 1.0
+			if typeof(binding.get("axis")) != TYPE_INT or binding.axis < 0 or binding.axis >= JOY_AXIS_MAX: return false
+			var direction: Variant = binding.get("sign", binding.get("direction", 0))
+			if typeof(direction) != TYPE_INT or direction not in [-1, 1]: return false
+			if binding.has("sign") and binding.has("direction") and binding.sign != binding.direction: return false
+			var threshold: Variant = binding.get("threshold", 0.65)
+			return typeof(threshold) in [TYPE_FLOAT, TYPE_INT] and is_finite(float(threshold)) and threshold > 0.0 and threshold <= 1.0
 	return false
 
 
@@ -315,11 +345,17 @@ static func _same_binding(left: Dictionary, right: Dictionary) -> bool:
 		return false
 	match str(left.type):
 		"key":
+			for modifier in ["ctrl", "alt", "shift", "meta"]:
+				if bool(left.get(modifier, false)) != bool(right.get(modifier, false)): return false
 			var left_physical := int(left.get("physical_keycode", 0))
 			var right_physical := int(right.get("physical_keycode", 0))
 			if left_physical != 0 and right_physical != 0:
 				return left_physical == right_physical
-			return int(left.get("keycode", 0)) == int(right.get("keycode", 0))
+			var left_logical := int(left.get("keycode", 0))
+			var right_logical := int(right.get("keycode", 0))
+			if left_physical != 0: return left_physical == right_logical or (left_logical != 0 and left_logical == right_logical)
+			if right_physical != 0: return right_physical == left_logical or (right_logical != 0 and right_logical == left_logical)
+			return left_logical == right_logical
 		"button":
 			return int(left.get("button", -1)) == int(right.get("button", -2))
 		"axis":

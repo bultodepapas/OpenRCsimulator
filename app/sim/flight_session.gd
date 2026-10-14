@@ -647,6 +647,11 @@ func release(reason: String) -> void:
 	holds.erase(reason)
 
 
+## Compatibility preflight before a profile is persisted or activated.
+func controller_profile_rejection(_profile: Dictionary) -> String:
+	return ""
+
+
 ## Called only at a paused, explicit shell selection boundary; never by device enumeration.
 func apply_controller_selection(device: int, info: Dictionary, profile: Dictionary, initial_start := false) -> bool:
 	controller_cut_held = false

@@ -26,10 +26,13 @@ func load_all() -> Dictionary:
 	if primary.ok:
 		return {"ok": true, "profiles": primary.profiles, "errors": []}
 	var backup_path := path + BACKUP_SUFFIX
-	if FileAccess.file_exists(backup_path):
+	var backup_exists := FileAccess.file_exists(backup_path)
+	if backup_exists:
 		var backup := _read_file(backup_path)
 		if backup.ok:
 			return {"ok": true, "profiles": backup.profiles, "errors": ["Recovered profiles from rollback copy; primary storage is unreadable."], "recovered_from_backup": true}
+		if primary.missing:
+			return {"ok": false, "profiles": [], "errors": ["Primary profile storage is missing and its rollback copy is unreadable: " + backup.error]}
 	if primary.missing:
 		return {"ok": true, "profiles": [], "errors": []}
 	return {"ok": false, "profiles": [], "errors": [primary.error]}
@@ -53,10 +56,34 @@ func save_profile(candidate: Variant) -> Dictionary:
 			break
 	if not found:
 		profiles.append(saved_profile)
-	var write_error := _write_transaction(profiles)
-	if not write_error.is_empty():
-		return {"ok": false, "profile": {}, "error": write_error}
-	return {"ok": true, "profile": saved_profile.duplicate(true), "error": ""}
+	var transaction := _write_transaction(profiles, bool(loaded.get("recovered_from_backup", false)))
+	if not transaction.ok:
+		return {"ok": false, "profile": {}, "error": transaction.error}
+	return {"ok": true, "profile": saved_profile.duplicate(true), "error": "", "warning": transaction.warning}
+
+
+## Restores a previously returned load_all() snapshot after a runtime activation refusal.
+## The current store is checked first so this cannot overwrite a newly damaged file.
+func restore_snapshot(snapshot: Dictionary) -> Dictionary:
+	if not bool(snapshot.get("ok", false)) or typeof(snapshot.get("profiles")) != TYPE_ARRAY:
+		return {"ok": false, "error": "The previous controller profile snapshot is invalid."}
+	var profiles: Array = snapshot.profiles.duplicate(true)
+	var identifiers: Dictionary = {}
+	for candidate in profiles:
+		var validation := ControllerProfile.validate(candidate)
+		if not validation.ok:
+			return {"ok": false, "error": "The previous controller profile snapshot is invalid: " + "; ".join(validation.errors)}
+		var profile_id: String = candidate.profile_id
+		if identifiers.has(profile_id):
+			return {"ok": false, "error": "The previous controller profile snapshot contains duplicate IDs."}
+		identifiers[profile_id] = true
+	var current := load_all()
+	if not current.ok:
+		return {"ok": false, "error": "Could not restore controller profiles because current storage is unreadable: " + "; ".join(current.errors)}
+	var transaction := _write_transaction(profiles, bool(current.get("recovered_from_backup", false)))
+	if not transaction.ok:
+		return {"ok": false, "error": transaction.error}
+	return {"ok": true, "error": "", "warning": transaction.warning}
 
 
 ## Read-only import candidates from rc_calibration.cfg. Imported profiles remain radio profiles.
@@ -174,50 +201,62 @@ func _read_file(target_path: String) -> Dictionary:
 	return {"ok": true, "missing": false, "profiles": profiles, "error": ""}
 
 
-func _write_transaction(profiles: Array) -> String:
+func _write_transaction(profiles: Array, recovered_from_backup := false) -> Dictionary:
 	var parent_dir := ProjectSettings.globalize_path(path).get_base_dir()
 	var dir_error: Error = DirAccess.make_dir_recursive_absolute(parent_dir)
 	if dir_error != OK:
-		return "Could not create controller profile directory (%s)." % str(dir_error)
+		return {"ok": false, "error": "Could not create controller profile directory (%s)." % str(dir_error), "warning": ""}
 	var temporary := path + TEMP_SUFFIX
 	var backup := path + BACKUP_SUFFIX
 	if FileAccess.file_exists(temporary):
 		var remove_temp: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
 		if remove_temp != OK:
-			return "Could not clear stale profile temporary file (%s)." % str(remove_temp)
+			return {"ok": false, "error": "Could not clear stale profile temporary file (%s)." % str(remove_temp), "warning": ""}
 	var cfg := ConfigFile.new()
 	cfg.set_value(STORAGE_SECTION, "schema_version", ControllerProfile.SCHEMA_VERSION)
 	cfg.set_value(STORAGE_SECTION, "profiles", profiles)
 	var write_error: Error = cfg.save(temporary)
 	if write_error != OK:
-		return "Could not write temporary controller profiles (%s)." % str(write_error)
+		return {"ok": false, "error": "Could not write temporary controller profiles (%s)." % str(write_error), "warning": ""}
 	var verify := _read_file(temporary)
 	if not verify.ok or verify.profiles != profiles:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
-		return "Temporary controller profiles failed validation."
+		return {"ok": false, "error": "Temporary controller profiles failed validation.", "warning": ""}
 	var target_exists := FileAccess.file_exists(path)
+	var preserve_recovery_copy := recovered_from_backup and FileAccess.file_exists(backup)
 	if target_exists:
-		if FileAccess.file_exists(backup):
+		if preserve_recovery_copy:
+			var remove_corrupt: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+			if remove_corrupt != OK:
+				DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
+				return {"ok": false, "error": "Could not replace unreadable controller storage while preserving its valid rollback copy (%s)." % str(remove_corrupt), "warning": ""}
+		elif FileAccess.file_exists(backup):
 			var remove_backup: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(backup))
 			if remove_backup != OK:
 				DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
-				return "Could not clear stale profile rollback file (%s)." % str(remove_backup)
-		var backup_error: Error = DirAccess.rename_absolute(ProjectSettings.globalize_path(path), ProjectSettings.globalize_path(backup))
-		if backup_error != OK:
-			DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
-			return "Could not stage existing controller profiles for rollback (%s)." % str(backup_error)
+				return {"ok": false, "error": "Could not clear stale profile rollback file (%s)." % str(remove_backup), "warning": ""}
+		if not preserve_recovery_copy:
+			var backup_error: Error = DirAccess.rename_absolute(ProjectSettings.globalize_path(path), ProjectSettings.globalize_path(backup))
+			if backup_error != OK:
+				DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
+				return {"ok": false, "error": "Could not stage existing controller profiles for rollback (%s)." % str(backup_error), "warning": ""}
 	var commit_error: Error = DirAccess.rename_absolute(ProjectSettings.globalize_path(temporary), ProjectSettings.globalize_path(path))
 	if commit_error != OK:
-		if target_exists and FileAccess.file_exists(backup):
-			DirAccess.rename_absolute(ProjectSettings.globalize_path(backup), ProjectSettings.globalize_path(path))
+		var restore_error: Error = OK
+		if preserve_recovery_copy:
+			restore_error = DirAccess.copy_absolute(ProjectSettings.globalize_path(backup), ProjectSettings.globalize_path(path))
+		elif target_exists and FileAccess.file_exists(backup):
+			restore_error = DirAccess.rename_absolute(ProjectSettings.globalize_path(backup), ProjectSettings.globalize_path(path))
 		if FileAccess.file_exists(temporary):
 			DirAccess.remove_absolute(ProjectSettings.globalize_path(temporary))
-		return "Could not commit controller profiles (%s); previous data was restored." % str(commit_error)
+		var restore_message := "; previous data was restored." if target_exists and restore_error == OK else ("; rollback data remains available at the rollback path (%s)." % str(restore_error) if restore_error != OK else "; no previous primary file was replaced.")
+		return {"ok": false, "error": "Could not commit controller profiles (%s)%s" % [str(commit_error), restore_message], "warning": ""}
+	var warning := ""
 	if FileAccess.file_exists(backup):
 		var clean_error: Error = DirAccess.remove_absolute(ProjectSettings.globalize_path(backup))
 		if clean_error != OK:
-			return "Profiles were saved, but the rollback copy could not be removed (%s)." % str(clean_error)
-	return ""
+			warning = "Profiles were saved, but the rollback copy could not be removed (%s)." % str(clean_error)
+	return {"ok": true, "error": "", "warning": warning}
 
 
 func _association_matches(info: Dictionary, association: Dictionary) -> bool:

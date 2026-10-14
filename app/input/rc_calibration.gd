@@ -61,6 +61,11 @@ func prompt() -> String:
 func sample(axes: PackedFloat64Array) -> void:
 	if step == 0 or done():
 		return
+	if not _valid_axis_sample(axes):
+		error = "invalid axis sample; calibration needs ten finite axes in the -1…+1 range"
+		_reset_sweep()
+		return
+	error = ""
 	for i in RcInput.AXES:
 		_lo[i] = minf(_lo[i], axes[i])
 		_hi[i] = maxf(_hi[i], axes[i])
@@ -74,6 +79,11 @@ func advance(axes: PackedFloat64Array) -> bool:
 	error = ""
 	if done():
 		return true
+	if not _valid_axis_sample(axes):
+		error = "invalid axis sample; calibration needs ten finite axes in the -1…+1 range"
+		if step > 0:
+			_reset_sweep()
+		return false
 	if step == 0:
 		_rest = axes.duplicate()
 		_next()
@@ -117,6 +127,15 @@ func _reset_sweep() -> void:
 		_lo[i] = _rest[i]
 		_hi[i] = _rest[i]
 		_first[i] = 0.0
+
+
+static func _valid_axis_sample(axes: PackedFloat64Array) -> bool:
+	if axes.size() != RcInput.AXES:
+		return false
+	for value in axes:
+		if not is_finite(value) or value < -1.0 or value > 1.0:
+			return false
+	return true
 
 
 ## Saves a profile for a device. Sections are keyed by an MD5 of the device key (ConfigFile-safe).

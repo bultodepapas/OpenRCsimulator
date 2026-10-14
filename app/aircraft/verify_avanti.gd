@@ -1,18 +1,49 @@
-# AV-03 contract checks for the Avanti S visual preview (headless; no physics, not flyable).
-# Ported from research/avanti-s/av02/verify.gd. Run: godot --headless --path app --script res://aircraft/verify_avanti.gd
+# AV-31 scratch qualification for the imported VentageJet Avanti GLB.
+# Copy into app/aircraft/verify_avanti.gd only after the generated model is accepted.
+# Run from app with: godot --headless --path app --script res://aircraft/verify_avanti.gd
 extends SceneTree
 
+const AD := preload("res://physics/aircraft_data.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const Builder := preload("res://render/airplane.gd")
 const Commands := preload("res://input/commands.gd")
-const Avanti := preload("res://aircraft/avanti_s_model.gd")
-const AvantiGeometry := preload("res://aircraft/avanti_s_geometry.gd")
+const Imported := preload("res://aircraft/imported_model.gd")
+const Registry := preload("res://aircraft/model_registry.gd")
 
-const HINGE_NAMES := ["flap_left", "flap_right", "aileron_left", "aileron_right", "elevator_left", "elevator_right", "rudder"]
-# Span and length are the manufacturer nominal values the geometry is built to (DATA.nominal). Vertices are
-# float32 (rounding ~1e-7 m at 1 m), so 0.1 mm (as in AV-02) passes float rounding but no change of the data.
-const SIZE_TOLERANCE_M := 0.0001
-const TEST_DEG := 10.0
-const MIN_TRAVEL_M := 0.001 # smallest TE chord in the data is > 2 cm: 10 deg moves it > 3 mm
-const EXACT_M := 0.000001
+const EXPECTED_ARTICULATIONS := [
+	"aileron_left_hinge", "aileron_right_hinge",
+	"elevator_left_hinge", "elevator_right_hinge",
+	"rudder_hinge", "flap_left_hinge", "flap_right_hinge",
+]
+const ARTICULATION_TO_BINDING := {
+	"aileron_left_hinge": "aileron_left",
+	"aileron_right_hinge": "aileron_right",
+	"elevator_left_hinge": "elevator_left",
+	"elevator_right_hinge": "elevator_right",
+	"rudder_hinge": "rudder",
+	"flap_left_hinge": "flap_left",
+	"flap_right_hinge": "flap_right",
+}
+const BINDING_TO_CONTROL := {
+	"aileron_left": "aileron_left", "aileron_right": "aileron_right",
+	"elevator_left": "elevator", "elevator_right": "elevator",
+	"rudder": "rudder", "flap_left": "flap_left", "flap_right": "flap_right",
+}
+const EXPECTED_SURFACE_SECTIONS := {
+	"aileron_left": "wing_left", "flap_left": "wing_left",
+	"aileron_right": "wing_right", "flap_right": "wing_right",
+	"elevator_left": "horizontal_tail", "elevator_right": "horizontal_tail",
+	"rudder": "vertical_tail",
+}
+const CRASH_SECTIONS := ["core", "wing_left", "wing_right", "wing_center", "engine", "propeller",
+	"horizontal_tail", "vertical_tail", "gear", "canopy"]
+const REST_TOLERANCE_M := 0.00002
+const GEOMETRY_TOLERANCE_M := 0.002
+const NOMINAL_SPAN_TOLERANCE_M := 0.01
+const NOMINAL_LENGTH_TOLERANCE_M := 0.02
+const MIN_PANEL_TRAVEL_M := 0.001
+const POSE_TOLERANCE_M := 0.00005
+const ANGLE_TOLERANCE_RAD := 0.00001
 
 var _checks := 0
 var _failures := 0
@@ -22,249 +53,544 @@ func _check(label: String, passed: bool, detail := "") -> void:
 	_checks += 1
 	if not passed:
 		_failures += 1
-		printerr("FAIL %s %s" % [label, detail])
+		printerr("FAIL AV-31 " + label + (" · " + detail if not detail.is_empty() else ""))
 
 
 func _initialize() -> void:
 	call_deferred("_run")
 
 
-func _meshes(node: Node) -> Array[MeshInstance3D]:
+func _run() -> void:
+	var aircraft_id := Builder.AVANTI_ID
+	var family := Catalog.visual_family(aircraft_id)
+	var described: Dictionary = Registry.describe(family)
+	_check("catalog family resolves", not family.is_empty())
+	_check("model manifest resolves", described.get("ok", false), str(described.get("errors", [])))
+	if not described.get("ok", false):
+		_finish()
+		return
+	var manifest: Dictionary = described.manifest
+	_check("version 2 common imported builder", manifest.version == 2
+		and manifest.builder.script == "res://aircraft/imported_model.gd"
+		and manifest.builder.adapter == "imported_glb")
+	_check("imported GLB asset", manifest.asset.kind == "imported_glb")
+	_check("local +X hinge construction", manifest.construction.hinge_axis == "+X")
+	_check("rotor is absent in construction", manifest.construction.get("rotor", {}).is_empty())
+	_check("gear is absent in construction", manifest.construction.get("gear", []).is_empty())
+	_check("no rotor or gear bindings", not manifest.bindings.rotor.present
+		and manifest.bindings.gear.keys.is_empty())
+	_check("GLTF extras crash sections enabled", manifest.bindings.crash.provider == "gltf_extras")
+
+	var geometry_script := load(str(manifest.geometry.script)) as Script
+	_check("generated geometry script loads", geometry_script != null)
+	if geometry_script == null:
+		_finish()
+		return
+	var geometry_data: Variant = geometry_script.get("DATA")
+	_check("generated geometry DATA is a dictionary", typeof(geometry_data) == TYPE_DICTIONARY)
+	if typeof(geometry_data) != TYPE_DICTIONARY:
+		_finish()
+		return
+	var data: Dictionary = geometry_data
+	_check("geometry articulations are the canonical seven", _same_string_keys(data.get("articulations", {}), EXPECTED_ARTICULATIONS))
+	_check("geometry revision matches asset", data.get("revision", "") == manifest.asset.revision)
+	_check("geometry carries nominal bounds and turbine metadata",
+		data.has_all(["nominal", "bounds", "turbine", "gear_pose"]))
+	_check("source model is in gear-stowed pose", data.get("gear_pose", {}).get("state", "") == "stowed"
+		and int(data.get("gear_pose", {}).get("source_frame", -1)) == 211)
+
+	var build: Dictionary = Builder.build(aircraft_id)
+	var root := build.get("root") as Node3D
+	_check("generic registry/renderer builds Avanti", root != null and build.get("aircraft_id", "") == aircraft_id)
+	if root == null:
+		_finish()
+		return
+	get_root().add_child(root)
+	await process_frame
+	_check("public root name", root.name == "airplane")
+	_check("builder uses generated geometry DATA", build.has("data") and is_same(build.data, data))
+	_check("root revision matches generated geometry", root.get_meta("visual_revision", "") == data.revision)
+	var derived: Dictionary = Registry.validate_derived(manifest, build)
+	_check("registry derived validation", derived.get("ok", false), str(derived.get("errors", [])))
+
+	var propeller := build.get("propeller") as Node3D
+	_check("public propeller marker is empty", propeller != null and propeller.name == "propeller"
+		and propeller.get_child_count() == 0 and not build.get("has_propeller", true))
+	_check("gear wrappers are empty", build.get("gear", {}) is Dictionary and build.gear.is_empty())
+	_check("no imported propeller mesh", _no_propeller_mesh(root))
+	_check("stowed gear geometry is present", root.find_child("gear_stowed", true, false) is MeshInstance3D)
+
+	_check_sections(root)
+	_check_articulations(build, data)
+	var bounds_result := _mesh_bounds(root, root)
+	_check("visible imported geometry has finite vertices", bounds_result.valid and bounds_result.mesh_count > 0)
+	if bounds_result.valid:
+		_check_bounds_against_geometry(bounds_result.box, data)
+	_check_turbine_geometry(root, data)
+
+	var physical_result: Dictionary = AD.load_file(Catalog.entry(aircraft_id).data)
+	_check("physical Avanti data loads", physical_result.get("ok", false), str(physical_result.get("errors", [])))
+	var raw_physical: Variant = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry(aircraft_id).data))
+	var witnesses := _capture_witnesses(build, data)
+	var rest_transforms := _rest_transforms(build)
+	if physical_result.get("ok", false) and not witnesses.is_empty():
+		var physical: Dictionary = physical_result.model
+		var engine_name := str(raw_physical.get("propulsion", {}).get("engine", {}).get("name", "")) \
+			if typeof(raw_physical) == TYPE_DICTIONARY else ""
+		_check("physics configuration names the P100-RX turbine", physical.propulsion.kind == "turbine"
+			and engine_name.contains(str(data.turbine.model)))
+		_run_full_throw_cases(build, data, witnesses, rest_transforms, physical.controls.throw_deg)
+		_run_visual_flap_case(build, data, witnesses, rest_transforms, physical.controls.throw_deg)
+	else:
+		_check("actual mesh witnesses are available for travel checks", false)
+
+	_check("first instance geometry source remains pure", build.get("data", {}) == data)
+	var second: Dictionary = Builder.build(aircraft_id)
+	var second_root := second.get("root") as Node3D
+	_check("second instance builds", second_root != null)
+	if second_root != null:
+		get_root().add_child(second_root)
+		await process_frame
+		_check("instances own distinct nodes", _instances_have_distinct_nodes(build, second))
+		_check("second instance shares the same immutable source data", second.get("data", {}) == data)
+		var second_witnesses := _capture_witnesses(second, data)
+		var second_rest := _rest_transforms(second)
+		var original_snapshot: Dictionary = data.duplicate(true)
+		if physical_result.get("ok", false):
+			var command := {roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = 0.0}
+			Builder.apply_surfaces(build, Commands.hinge_rotations(command, physical_result.model.controls.throw_deg))
+			Imported.set_visual_surfaces(build, {flap_left = 999.0, flap_right = 999.0})
+			_check("posing first instance leaves second instance neutral", _poses_match(second, second_witnesses,
+				second_rest, _witness_positions(second, second_witnesses)))
+			_check("per-instance pose leaves generated geometry data unchanged", data == original_snapshot)
+			_neutralize(build, physical_result.model.controls.throw_deg)
+			Imported.set_visual_surfaces(build, {flap_left = 0.0, flap_right = 0.0})
+			_check("first instance returns to exact neutral", _poses_match(build, witnesses, rest_transforms,
+				_witness_positions(build, witnesses)))
+		_check("both instances retain source-data purity", build.data == original_snapshot and second.data == original_snapshot)
+
+	var mesh_count: int = int(bounds_result.mesh_count) if bounds_result.valid else 0
+	var art_count: int = data.get("articulations", {}).size()
+	print("AV-31 Avanti imported model %s: %d meshes, %d articulations, %d checks, %d failures" %
+		[data.revision, mesh_count, art_count, _checks, _failures])
+	if second_root != null:
+		second_root.free()
+	root.free()
+	_finish(false)
+
+
+func _finish(print_summary := true) -> void:
+	if print_summary:
+		print("AV-31 Avanti imported model: %d checks, %d failures" % [_checks, _failures])
+	if _failures == 0:
+		print("PASS AV-31 %d checks" % _checks)
+	else:
+		printerr("FAIL AV-31 %d of %d checks" % [_failures, _checks])
+	quit(1 if _failures > 0 else 0)
+
+
+func _same_string_keys(value: Variant, expected: Array) -> bool:
+	if typeof(value) != TYPE_DICTIONARY:
+		return false
+	var actual: Array[String] = []
+	for key in value.keys():
+		actual.append(str(key))
+	actual.sort()
+	var sorted_expected: Array[String] = []
+	for key in expected:
+		sorted_expected.append(str(key))
+	sorted_expected.sort()
+	return actual == sorted_expected
+
+
+func _no_propeller_mesh(root: Node3D) -> bool:
+	for mesh in _meshes_under(root):
+		if str(mesh.name).to_lower().contains("propeller"):
+			return false
+	return true
+
+
+func _meshes_under(subtree: Node) -> Array[MeshInstance3D]:
 	var out: Array[MeshInstance3D] = []
-	for m in node.find_children("*", "MeshInstance3D", true, false): out.append(m)
+	if subtree is MeshInstance3D:
+		out.append(subtree)
+	for child in subtree.get_children():
+		out.append_array(_meshes_under(child))
 	return out
 
 
-# Bounds of the visible built vertices, in the root frame.
-func _vertex_bounds(root: Node3D) -> AABB:
+func _check_sections(root: Node3D) -> void:
+	var mesh_count := 0
+	var missing_mesh_sections := 0
+	var invalid_sections := 0
+	for node in [root] + root.find_children("*", "", true, false):
+		var extras: Variant = node.get_meta("extras", {})
+		if node is MeshInstance3D:
+			mesh_count += 1
+			var section := str(extras.get("openrc_section", "")) if typeof(extras) == TYPE_DICTIONARY else ""
+			if section.is_empty():
+				missing_mesh_sections += 1
+			elif not CRASH_SECTIONS.has(section):
+				invalid_sections += 1
+	_check("every imported mesh has an allowed GLTF extras section", mesh_count > 0
+		and missing_mesh_sections == 0 and invalid_sections == 0,
+		"meshes=%d missing=%d invalid=%d" % [mesh_count, missing_mesh_sections, invalid_sections])
+	var hinge_sections := 0
+	for hinge_name: String in EXPECTED_ARTICULATIONS:
+		var binding := str(ARTICULATION_TO_BINDING[hinge_name])
+		var node := root.find_child(hinge_name, true, false)
+		var extras: Variant = node.get_meta("extras", {}) if node != null else {}
+		var expected_section := str(EXPECTED_SURFACE_SECTIONS[binding])
+		var section_matches: bool = typeof(extras) == TYPE_DICTIONARY and extras.get("openrc_section", "") == expected_section
+		_check("%s section is %s" % [hinge_name, expected_section], section_matches)
+		if section_matches:
+			hinge_sections += 1
+	_check("all seven articulated pivots carry GLTF extras sections", hinge_sections == EXPECTED_ARTICULATIONS.size(),
+		"found=%d" % hinge_sections)
+
+
+func _check_articulations(model: Dictionary, data: Dictionary) -> void:
+	var articulations: Dictionary = data.get("articulations", {})
+	var hinges: Dictionary = model.get("hinges", {})
+	_check("runtime hinge map has all seven stable keys", hinges.size() == EXPECTED_ARTICULATIONS.size())
+	for hinge_name: String in EXPECTED_ARTICULATIONS:
+		var binding := str(ARTICULATION_TO_BINDING[hinge_name])
+		var record: Dictionary = articulations.get(hinge_name, {})
+		var entry: Dictionary = hinges.get(binding, {})
+		var node := entry.get("node") as Node3D
+		_check("%s metadata and runtime hinge exist" % hinge_name, not record.is_empty() and node != null)
+		if node == null or record.is_empty():
+			continue
+		var source_parent := str(record.get("parent", ""))
+		_check("%s remains under its authored sibling parent" % hinge_name,
+			node.get_parent() != null and node.get_parent().name == source_parent
+			and model.root.is_ancestor_of(node) and source_parent == "VentageJet",
+			"actual parent=%s path=%s" % [str(node.get_parent().name), str(node.get_path())])
+		var surface_name := str(record.get("surface_node", ""))
+		var surface := model.root.find_child(surface_name, true, false) as MeshInstance3D
+		_check("%s has a named physical surface mesh" % hinge_name, not surface_name.is_empty()
+			and surface != null and node.is_ancestor_of(surface))
+		var translation := _vector3(record.get("rest_translation", []))
+		var rest_basis := _basis(record.get("rest_basis", {}))
+		var range_value: Variant = record.get("range_deg", [])
+		var valid_range: bool = range_value is Array and range_value.size() == 2
+		if valid_range:
+			valid_range = _finite_number(range_value[0]) and _finite_number(range_value[1]) and float(range_value[0]) < float(range_value[1])
+		var app_sign := float(record.get("app_sign", 0.0))
+		_check("%s has finite increasing app-deflection limits" % hinge_name, valid_range)
+		_check("%s application sign is exactly +/-1" % hinge_name, absf(app_sign) == 1.0)
+		_check("%s has the generated positive-motion description" % hinge_name,
+			str(record.get("positive", "")).begins_with("trailing edge "))
+		_check("%s rest translation matches the imported pivot" % hinge_name,
+			translation.is_finite() and node.position.distance_to(translation) <= REST_TOLERANCE_M)
+		_check("%s rest basis is proper and matches the imported pivot" % hinge_name,
+			rest_basis.is_finite() and absf(rest_basis.determinant() - 1.0) <= 0.00002
+			and (rest_basis.transposed() * rest_basis).is_equal_approx(Basis.IDENTITY)
+			and node.basis.is_equal_approx(rest_basis))
+		_check("%s articulation axis is local +X" % hinge_name,
+			entry.get("axis") is Vector3 and node.basis.x.normalized().distance_to(entry.axis) <= 0.00001)
+		_check("%s starts at authored neutral" % hinge_name, node.transform.is_finite()
+			and node.position.distance_to(translation) <= REST_TOLERANCE_M and node.basis.is_equal_approx(rest_basis))
+		_check("%s runtime range and positive semantics match data" % hinge_name,
+			entry.get("range_deg", []) == range_value and entry.get("positive", "") == record.get("positive", "")
+			and absf(float(entry.get("app_sign", 0.0)) - app_sign) < 1.0e-8)
+
+
+func _capture_witnesses(model: Dictionary, data: Dictionary) -> Dictionary:
+	var output := {}
+	var articulations: Dictionary = data.get("articulations", {})
+	for hinge_name: String in EXPECTED_ARTICULATIONS:
+		var record: Dictionary = articulations.get(hinge_name, {})
+		var surface_name := str(record.get("surface_node", ""))
+		var surface := model.root.find_child(surface_name, true, false) as MeshInstance3D
+		if surface == null or surface.mesh == null:
+			_check("%s mesh witness source exists" % hinge_name, false, surface_name)
+			continue
+		var faces := surface.mesh.get_faces()
+		var target := _vector3(record.get("witness_model", []))
+		var root_from_mesh := Imported.relative(model.root, surface)
+		var best_distance_sq := INF
+		var best_vertex := Vector3.ZERO
+		var best_point := Vector3.ZERO
+		for vertex: Vector3 in faces:
+			var point := root_from_mesh * vertex
+			var distance_sq := point.distance_squared_to(target)
+			if distance_sq < best_distance_sq:
+				best_distance_sq = distance_sq
+				best_vertex = vertex
+				best_point = point
+		_check("%s metadata witness resolves to an actual panel vertex" % hinge_name,
+			target.is_finite() and best_distance_sq < 0.002 * 0.002 and not faces.is_empty(),
+			"distance=%.6f m" % sqrt(best_distance_sq) if is_finite(best_distance_sq) else "no surface faces")
+		if is_finite(best_distance_sq):
+			output[hinge_name] = {"mesh": surface, "vertex": best_vertex, "rest": best_point,
+				"record": record.duplicate(true)}
+	return output
+
+
+func _rest_transforms(model: Dictionary) -> Dictionary:
+	var output := {}
+	for hinge_name: String in EXPECTED_ARTICULATIONS:
+		var binding := str(ARTICULATION_TO_BINDING[hinge_name])
+		var entry: Dictionary = model.hinges.get(binding, {})
+		if entry.get("node") is Node3D:
+			output[hinge_name] = entry.node.transform
+	return output
+
+
+func _witness_positions(model: Dictionary, witnesses: Dictionary) -> Dictionary:
+	var output := {}
+	for hinge_name: String in witnesses:
+		var witness: Dictionary = witnesses[hinge_name]
+		output[hinge_name] = Imported.relative(model.root, witness.mesh) * witness.vertex
+	return output
+
+
+func _run_full_throw_cases(model: Dictionary, data: Dictionary, witnesses: Dictionary,
+		rest_transforms: Dictionary, throws: Dictionary) -> void:
+	var cases := [
+		{"name": "right roll", "command": {roll = 1.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}},
+		{"name": "left roll", "command": {roll = -1.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}},
+		{"name": "pull", "command": {roll = 0.0, pitch = 1.0, yaw = 0.0, throttle = 0.0}},
+		{"name": "push", "command": {roll = 0.0, pitch = -1.0, yaw = 0.0, throttle = 0.0}},
+		{"name": "right yaw", "command": {roll = 0.0, pitch = 0.0, yaw = 1.0, throttle = 0.0}},
+		{"name": "left yaw", "command": {roll = 0.0, pitch = 0.0, yaw = -1.0, throttle = 0.0}},
+	]
+	for case: Dictionary in cases:
+		var command: Dictionary = case.command
+		var deflections: Dictionary = Commands.surface_deflections_deg(command, throws)
+		var rotations: Dictionary = Commands.hinge_rotations(command, throws)
+		Builder.apply_surfaces(model, rotations)
+		var current_positions := _witness_positions(model, witnesses)
+		for hinge_name: String in EXPECTED_ARTICULATIONS:
+			var binding := str(ARTICULATION_TO_BINDING[hinge_name])
+			var role := str(BINDING_TO_CONTROL[binding])
+			var degrees := float(deflections.get(role, 0.0))
+			var entry: Dictionary = model.hinges.get(binding, {})
+			if entry.is_empty() or not witnesses.has(hinge_name):
+				continue
+			var node := entry.node as Node3D
+			var record: Dictionary = data.articulations[hinge_name]
+			var app_sign := float(record.app_sign)
+			var expected_angle := deg_to_rad(degrees * app_sign)
+			var actual_angle := _hinge_angle(entry)
+			_check("%s %s angle reaches full physical throw" % [case.name, binding],
+				absf(actual_angle - expected_angle) <= ANGLE_TOLERANCE_RAD,
+				"command=%.3f expected=%.6f actual=%.6f" % [degrees, expected_angle, actual_angle])
+			var range_value: Array = record.range_deg
+			_check("%s %s physical throw fits authored app range" % [case.name, binding],
+				degrees >= float(range_value[0]) - 1.0e-6 and degrees <= float(range_value[1]) + 1.0e-6,
+				"command=%.3f range=%s" % [degrees, str(range_value)])
+			_check("%s %s pose remains finite" % [case.name, binding], node.transform.is_finite()
+				and current_positions.get(hinge_name, Vector3(NAN, NAN, NAN)).is_finite())
+			var witness: Dictionary = witnesses[hinge_name]
+			var now: Vector3 = current_positions[hinge_name]
+			var movement: Vector3 = now - witness.rest
+			if absf(degrees) > 1.0e-8:
+				var direction := _semantic_axis(str(record.positive))
+				var expected_direction: float = movement.dot(direction) * signf(degrees)
+				_check("%s %s physical command moves actual panel witness in semantic direction" % [case.name, binding],
+					direction.length_squared() > 0.5 and expected_direction > MIN_PANEL_TRAVEL_M,
+					"surface %.3f deg moved %s by %s" % [degrees, str(direction), str(movement)])
+				var predicted := _expected_witness_position(model, witness, binding, degrees * app_sign)
+				_check("%s %s actual mesh witness follows full hinge travel" % [case.name, binding],
+					now.distance_to(predicted) <= POSE_TOLERANCE_M,
+					"residual=%.6f m" % now.distance_to(predicted))
+			else:
+				_check("%s leaves %s panel witness neutral" % [case.name, hinge_name],
+					movement.length() <= POSE_TOLERANCE_M,
+					"moved %s" % str(movement))
+		_neutralize(model, throws)
+		_check("%s restores every hinge to authored neutral" % case.name,
+			_poses_match(model, witnesses, rest_transforms, _witness_positions(model, witnesses)))
+
+
+func _run_visual_flap_case(model: Dictionary, data: Dictionary, witnesses: Dictionary,
+		rest_transforms: Dictionary, throws: Dictionary) -> void:
+	var rest_points := _witness_positions(model, witnesses)
+	Imported.set_visual_surfaces(model, {flap_left = -999.0, flap_right = -999.0})
+	_check("visual flap lower clamp is neutral", _poses_match(model, witnesses, rest_transforms, rest_points))
+	Imported.set_visual_surfaces(model, {flap_left = 999.0, flap_right = 999.0})
+	var flap_points := _witness_positions(model, witnesses)
+	for hinge_name: String in ["flap_left_hinge", "flap_right_hinge"]:
+		var binding := str(ARTICULATION_TO_BINDING[hinge_name])
+		var entry: Dictionary = model.hinges[binding]
+		var record: Dictionary = data.articulations[hinge_name]
+		var range_value: Array = record.range_deg
+		var expected_angle := deg_to_rad(float(range_value[1]) * float(record.app_sign))
+		_check("%s flap reaches its visual upper stop" % binding,
+			absf(_hinge_angle(entry) - expected_angle) <= ANGLE_TOLERANCE_RAD)
+		var movement: Vector3 = flap_points[hinge_name] - rest_points[hinge_name]
+		_check("%s visual flap moves actual mesh witness down" % binding,
+			movement.dot(Vector3.DOWN) > MIN_PANEL_TRAVEL_M, "moved %s" % str(movement))
+	# Flight controls must not overwrite inspector-only flap poses.
+	var command := {roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = 0.0}
+	Builder.apply_surfaces(model, Commands.hinge_rotations(command, throws))
+	var after_physical := _witness_positions(model, witnesses)
+	for hinge_name: String in ["flap_left_hinge", "flap_right_hinge"]:
+		_check("physical commands leave visual flap pose independent %s" % hinge_name,
+			after_physical[hinge_name].distance_to(flap_points[hinge_name]) <= POSE_TOLERANCE_M)
+	_neutralize(model, throws)
+	Imported.set_visual_surfaces(model, {flap_left = 0.0, flap_right = 0.0})
+	_check("visual flap reset restores all authored neutrals", _poses_match(model, witnesses,
+		rest_transforms, _witness_positions(model, witnesses)))
+
+
+func _neutralize(model: Dictionary, throws: Dictionary) -> void:
+	Builder.apply_surfaces(model, Commands.hinge_rotations(
+		{roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}, throws))
+
+
+func _poses_match(model: Dictionary, witnesses: Dictionary, rest_transforms: Dictionary,
+		positions: Dictionary) -> bool:
+	var valid := true
+	for hinge_name: String in EXPECTED_ARTICULATIONS:
+		var binding := str(ARTICULATION_TO_BINDING[hinge_name])
+		var entry: Dictionary = model.hinges.get(binding, {})
+		if entry.is_empty() or not witnesses.has(hinge_name) or not rest_transforms.has(hinge_name):
+			valid = false
+			continue
+		valid = valid and entry.node.transform == rest_transforms[hinge_name]
+		valid = valid and positions.get(hinge_name, Vector3(NAN, NAN, NAN)).distance_to(witnesses[hinge_name].rest) <= POSE_TOLERANCE_M
+	return valid
+
+
+func _instances_have_distinct_nodes(first: Dictionary, second: Dictionary) -> bool:
+	if first.root == second.root:
+		return false
+	for hinge_name: String in EXPECTED_ARTICULATIONS:
+		var binding := str(ARTICULATION_TO_BINDING[hinge_name])
+		if not first.hinges.has(binding) or not second.hinges.has(binding):
+			return false
+		if first.hinges[binding].node == second.hinges[binding].node:
+			return false
+	var first_mesh: Node = first.root.find_child("aileron_left", true, false)
+	var second_mesh: Node = second.root.find_child("aileron_left", true, false)
+	return first_mesh != null and second_mesh != null and first_mesh != second_mesh
+
+
+func _check_bounds_against_geometry(actual: AABB, data: Dictionary) -> void:
+	var bounds: Dictionary = data.get("bounds", {})
+	var minimum := _vector3(bounds.get("min", []))
+	var maximum := _vector3(bounds.get("max", []))
+	_check("generated bounds metadata is finite and ordered", minimum.is_finite() and maximum.is_finite()
+		and maximum.x > minimum.x and maximum.y > minimum.y and maximum.z > minimum.z)
+	var actual_maximum := actual.position + actual.size
+	_check("actual imported mesh bounds match generated Blender bounds",
+		actual.position.distance_to(minimum) <= GEOMETRY_TOLERANCE_M
+		and actual_maximum.distance_to(maximum) <= GEOMETRY_TOLERANCE_M,
+		"actual=%s..%s expected=%s..%s" % [str(actual.position), str(actual_maximum), str(minimum), str(maximum)])
+	var nominal: Dictionary = data.get("nominal", {})
+	_check("model span agrees with nominal 2.00 m", absf(actual.size.x - float(nominal.get("span_m", NAN))) <= NOMINAL_SPAN_TOLERANCE_M,
+		"span=%.5f m" % actual.size.x)
+	_check("model length agrees with nominal 2.22 m", absf(actual.size.z - float(nominal.get("length_m", NAN))) <= NOMINAL_LENGTH_TOLERANCE_M,
+		"length=%.5f m" % actual.size.z)
+	_check("nose is -Z and model is laterally symmetric", actual.position.z < -0.8 and actual_maximum.z > 1.0
+		and absf(actual.position.x + actual_maximum.x) <= GEOMETRY_TOLERANCE_M)
+
+
+func _check_turbine_geometry(root: Node3D, data: Dictionary) -> void:
+	var turbine: Dictionary = data.get("turbine", {})
+	var outlet := _vector3(turbine.get("outlet_position", []))
+	var direction := _vector3(turbine.get("outlet_direction", []))
+	var outlet_name := str(turbine.get("outlet_node", ""))
+	var engine_name := str(turbine.get("engine_node", ""))
+	_check("geometry names the JetCat P100-RX", turbine.get("model", "") == "JetCat P100-RX")
+	_check("turbine metadata has finite +Z exhaust geometry", outlet.is_finite() and direction.is_finite()
+		and direction.distance_to(Vector3(0.0, 0.0, 1.0)) <= 0.00001
+		and outlet_name == "exhaust_pipe" and engine_name == "turbine")
+	var outlet_mesh := root.find_child(outlet_name, true, false) as MeshInstance3D
+	var engine_mesh := root.find_child(engine_name, true, false) as MeshInstance3D
+	_check("actual turbine and exhaust meshes exist", outlet_mesh != null and engine_mesh != null
+		and outlet_mesh.mesh != null and engine_mesh.mesh != null)
+	if outlet_mesh == null or engine_mesh == null or outlet_mesh.mesh == null or engine_mesh.mesh == null:
+		return
+	var outlet_bounds := _mesh_bounds(root, outlet_mesh)
+	var engine_bounds := _mesh_bounds(root, engine_mesh)
+	_check("outlet is on the actual exhaust geometry", outlet_bounds.valid and _contains_padded(outlet_bounds.box, outlet, 0.005)
+		and absf((outlet_bounds.box.position.z + outlet_bounds.box.size.z) - outlet.z) <= 0.01,
+		"outlet=%s exhaust=%s..%s" % [str(outlet), str(outlet_bounds.box.position), str(outlet_bounds.box.position + outlet_bounds.box.size)])
+	_check("visible turbine mesh has finite nontrivial extent", engine_bounds.valid
+		and engine_bounds.box.size.x > 0.05 and engine_bounds.box.size.z > 0.1)
+	var nominal: Dictionary = data.get("nominal", {})
+	_check("turbine mesh diameter agrees with nominal installation", engine_bounds.valid
+		and absf(engine_bounds.box.size.x - float(nominal.get("engine_diameter_m", NAN))) <= 0.01)
+	_check("turbine mesh length agrees with nominal installation", engine_bounds.valid
+		and absf(engine_bounds.box.size.z - float(nominal.get("engine_length_m", NAN))) <= 0.02)
+
+
+func _mesh_bounds(root: Node3D, subtree: Node) -> Dictionary:
 	var box := AABB()
 	var first := true
 	var finite := true
-	for m in _meshes(root):
-		if not m.is_visible_in_tree(): continue
-		var t := root.global_transform.affine_inverse() * m.global_transform
-		for v in m.mesh.get_faces():
-			var p: Vector3 = t * v
-			finite = finite and p.is_finite()
-			box = AABB(p, Vector3.ZERO) if first else box.expand(p)
-			first = false
-	_check("finite vertices", finite and not first)
-	return box
+	var mesh_count := 0
+	for mesh in _meshes_under(subtree):
+		if mesh.mesh == null or not mesh.is_visible_in_tree():
+			continue
+		mesh_count += 1
+		var root_from_mesh := Imported.relative(root, mesh)
+		for vertex: Vector3 in mesh.mesh.get_faces():
+			var point := root_from_mesh * vertex
+			finite = finite and point.is_finite()
+			if first:
+				box = AABB(point, Vector3.ZERO)
+				first = false
+			else:
+				box = box.expand(point)
+	return {"valid": finite and not first, "box": box, "mesh_count": mesh_count}
 
 
-func _witness(h: Dictionary) -> Vector3:
-	return h.node.to_global(h.witness)
+func _contains_padded(box: AABB, point: Vector3, tolerance: float) -> bool:
+	var end := box.position + box.size
+	return (point.x >= box.position.x - tolerance and point.x <= end.x + tolerance
+		and point.y >= box.position.y - tolerance and point.y <= end.y + tolerance
+		and point.z >= box.position.z - tolerance and point.z <= end.z + tolerance)
 
 
-# Global position of the aft-most rest vertex of a hinge's meshes (its trailing edge), tracked through the pose.
-func _aft_point(h: Dictionary) -> Vector3:
-	var best := Vector3(0, 0, -INF)
-	var rest_basis: Basis = h.node.basis
-	h.node.basis = h.rest
-	var index := -1
-	var meshes := _meshes(h.node)
-	var all := PackedVector3Array()
-	for m in meshes:
-		for v in m.mesh.get_faces():
-			var p := m.global_transform * v
-			all.append(p)
-			if p.z > best.z:
-				best = p
-				index = all.size() - 1
-	h.node.basis = rest_basis
-	var posed := PackedVector3Array()
-	for m in meshes:
-		for v in m.mesh.get_faces(): posed.append(m.global_transform * v)
-	return posed[index]
+func _expected_witness_position(model: Dictionary, witness: Dictionary, binding: String, angle_deg: float) -> Vector3:
+	var entry: Dictionary = model.hinges[binding]
+	var node := entry.node as Node3D
+	var parent := node.get_parent() as Node3D
+	var parent_to_root := Imported.relative(model.root, parent)
+	var hinge_pose := Transform3D(Basis(entry.axis, deg_to_rad(angle_deg)) * entry.rest, entry.pivot)
+	var mesh_to_hinge := Imported.relative(node, witness.mesh)
+	return parent_to_root * hinge_pose * mesh_to_hinge * witness.vertex
 
 
-func _travel(model: Dictionary, surfaces: Dictionary) -> Dictionary:
-	var rest := {}
-	for key in HINGE_NAMES: rest[key] = [_aft_point(model.hinges[key]), _witness(model.hinges[key])]
-	Avanti.apply_surfaces(model, surfaces)
-	var moved := {}
-	for key in HINGE_NAMES:
-		moved[key] = [_aft_point(model.hinges[key]) - rest[key][0], _witness(model.hinges[key]) - rest[key][1]]
-	Avanti.apply_surfaces(model, {})
-	return moved
+func _hinge_angle(entry: Dictionary) -> float:
+	var node := entry.node as Node3D
+	var relative: Basis = node.basis * entry.rest.inverse()
+	var witness := Vector3.FORWARD.cross(entry.axis).normalized()
+	if witness.length_squared() < 0.5:
+		return NAN
+	return witness.signed_angle_to(relative * witness, entry.axis)
 
 
-func _check_concave_panels() -> void:
-	# A C has area 7 and its vertex centroid lies outside the polygon. A centroid fan overlaps its recess; ear clipping must not.
-	for vertical in [false, true]:
-		var outline: Array = []
-		for p in [Vector2(0, 0), Vector2(3, 0), Vector2(3, 1), Vector2(1, 1), Vector2(1, 2), Vector2(3, 2), Vector2(3, 3), Vector2(0, 3)]:
-			outline.append(Vector3(0, p.y, p.x) if vertical else Vector3(p.x, 0, p.y))
-		var parent := Node3D.new()
-		var mesh := Avanti.slab(outline, Vector3(.01, 0, 0) if vertical else Vector3(0, .01, 0), parent, "concave_probe", Color.WHITE)
-		var vertices := mesh.mesh.get_faces()
-		var volume := 0.0
-		for i in range(0, vertices.size(), 3):
-			volume -= vertices[i].dot(vertices[i + 1].cross(vertices[i + 2])) / 6.0
-		_check("concave panel volume", absf(volume - .14) < .000001, str(volume))
-		parent.free()
+func _semantic_axis(positive: String) -> Vector3:
+	if positive.ends_with("up"):
+		return Vector3.UP
+	if positive.ends_with("down"):
+		return Vector3.DOWN
+	if positive.ends_with("right"):
+		return Vector3.RIGHT
+	return Vector3.ZERO
 
 
-func _check_lofts(model: Dictionary) -> void:
-	for key in ["fuselage_stations", "canopy_stations"]:
-		var knots: Array = model.data[key]
-		var samples := Avanti.interpolate_sections(knots, 4)
-		var valid := samples.size() == (knots.size() - 1) * 4 + 1
-		for i in knots.size() - 1:
-			valid = valid and samples[i * 4] == knots[i]
-			for j in 4:
-				var row: Array = samples[i * 4 + j]
-				valid = valid and row[1] > 0 and row[2] > row[3]
-				for c in range(1, row.size()):
-					valid = valid and row[c] >= minf(knots[i][c], knots[i + 1][c]) - 1e-8 and row[c] <= maxf(knots[i][c], knots[i + 1][c]) + 1e-8
-		_check(key + " interpolation keeps knots and bounds", valid and samples[-1] == knots[-1])
-	for node in [model.skin, model.canopy]:
-		var arrays: Array = node.mesh.surface_get_arrays(0)
-		var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
-		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-		var valid := normals.size() == vertices.size()
-		for n in normals: valid = valid and n.is_finite() and absf(n.length() - 1) < .001
-		_check("%s loft normals unit" % node.name, valid)
-		var outward := true
-		for i in range(0, vertices.size(), 3):
-			var geometric := (vertices[i + 2] - vertices[i]).cross(vertices[i + 1] - vertices[i]).normalized()
-			outward = outward and geometric.dot(normals[i] + normals[i + 1] + normals[i + 2]) > 0
-		_check("%s loft normals agree with faces" % node.name, outward)
-	var parent := Node3D.new()
-	var flat := Avanti.loft(model.data.canopy_stations, parent, "flat_probe", Color.WHITE, 1, 4, false)
-	_check("smooth shading keeps canopy vertices", flat.mesh.get_faces() == model.canopy.mesh.get_faces())
-	parent.free()
+func _basis(value: Variant) -> Basis:
+	# The sidecar records the three basis columns as an array; a normalized
+	# runtime DATA generator may expose the same columns under x/y/z keys.
+	if typeof(value) == TYPE_ARRAY and value.size() == 3:
+		return Basis(_vector3(value[0]), _vector3(value[1]), _vector3(value[2]))
+	if typeof(value) == TYPE_DICTIONARY and value.has_all(["x", "y", "z"]):
+		return Basis(_vector3(value.x), _vector3(value.y), _vector3(value.z))
+	return Basis(Vector3.ZERO, Vector3.ZERO, Vector3.ZERO)
 
 
-func _run() -> void:
-	_check_concave_panels()
-	var model := Avanti.build()
-	var root: Node3D = model.root
-	get_root().add_child(root)
-	await process_frame
-	var data: Dictionary = AvantiGeometry.DATA
-	_check("visual revision", Avanti.VISUAL_REVISION == data.revision and root.get_meta("visual_revision", "") == data.revision)
-	_check("root name", root.name == "airplane")
-	_check("not flyable status", String(root.get_meta("status", "")).contains("not flyable"))
-	var prop = model.get("propeller")
-	_check("propeller marker", prop is Node3D and prop.name == "propeller" and prop.get_parent() == root)
-	_check("propeller empty and invisible", prop is Node3D and prop.get_child_count() == 0 and not prop.visible)
-	_check("has_propeller false", model.get("has_propeller", true) == false)
-	_check("gear empty", model.get("gear") is Dictionary and model.gear.is_empty())
-	_check("data is the generated geometry", is_same(model.data, data))
-	_check("hinge keys", model.hinges.size() == HINGE_NAMES.size() and HINGE_NAMES.all(func(k): return model.hinges.has(k)), str(model.hinges.keys()))
-	for key in model.hinges:
-		var h: Dictionary = model.hinges[key]
-		_check("%s hinge node" % key, h.node is Node3D and h.node.name == key + "_hinge" and h.node.get_child_count() > 0)
+func _vector3(value: Variant) -> Vector3:
+	if typeof(value) != TYPE_ARRAY or value.size() != 3:
+		return Vector3(NAN, NAN, NAN)
+	return Vector3(float(value[0]), float(value[1]), float(value[2]))
 
-	_check_lofts(model)
-	var box := _vertex_bounds(root)
-	_check("span 2.00 m", absf(box.size.x - data.nominal.span_m) < SIZE_TOLERANCE_M, "%.6f m" % box.size.x)
-	_check("length 2.22 m", absf(box.size.z - data.nominal.length_m) < SIZE_TOLERANCE_M, "%.6f m" % box.size.z)
-	_check("fuselage 2.22 m", absf(model.skin.mesh.get_aabb().size.z - data.nominal.length_m) < SIZE_TOLERANCE_M)
-	_check("nose toward -Z", model.skin.mesh.get_aabb().position.z < -1.0 and box.position.z < -1.0, str(box))
-	_check("lateral symmetry", absf(box.position.x + box.end.x) < SIZE_TOLERANCE_M, str(box))
-	_check("P100 envelope", absf(model.motor.mesh.height - data.nominal.engine_length_m) < .00001
-		and absf(model.motor.mesh.top_radius * 2 - data.nominal.engine_diameter_m) < .00001 and not model.motor.visible)
-	# Intermediate tail stations must meet the same straight elevator hinge.
-	for side in [-1.0, 1.0]:
-		var panel: Dictionary = data.tail
-		var span: Array = ["probe", panel.stations[0][0], panel.stations[-1][0]]
-		var h: Dictionary = model.hinges["elevator_left" if side < 0 else "elevator_right"]
-		var straight := true
-		for row in panel.stations:
-			straight = straight and (Avanti.hinge_point(panel, span, row[0], side) - h.end_a).cross(h.axis).length() < .000001
-		_check("straight elevator hinge %s" % side, straight)
 
-	# apply_surfaces: the commands.gd convention, measured on trailing-edge points (aft-most vertex and witness).
-	var rest := {}
-	for key in HINGE_NAMES: rest[key] = model.hinges[key].node.transform
-	var cases := [["aileron_right", "y", 1.0, ["aileron_right"]], ["aileron_left", "y", 1.0, ["aileron_left"]],
-		["elevator", "y", 1.0, ["elevator_left", "elevator_right"]], ["rudder", "x", 1.0, ["rudder"]]]
-	for c in cases:
-		for sign in [1.0, -1.0]:
-			var moved := _travel(model, {c[0]: sign * TEST_DEG})
-			for key in HINGE_NAMES:
-				var d: Array = moved[key]
-				if key in c[3]:
-					var ok: bool = d[0][c[1]] * sign > MIN_TRAVEL_M and d[1][c[1]] * sign > MIN_TRAVEL_M
-					_check("%s %+.0f deg moves %s TE %s%s" % [c[0], sign * TEST_DEG, key, "+" if sign > 0 else "-", c[1]], ok, str(d))
-				else:
-					_check("%s leaves %s still" % [c[0], key], d[0].length() < EXACT_M and d[1].length() < EXACT_M, str(d))
-	# The same senses from a real command through commands.gd: right roll raises the right aileron, pull raises
-	# the elevator, right yaw moves the rudder TE right.
-	var deflections := Commands.surface_deflections_deg({roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = 0.5},
-		{aileron = TEST_DEG, elevator = TEST_DEG, rudder = TEST_DEG})
-	var moved := _travel(model, deflections)
-	_check("right roll: right aileron up", moved.aileron_right[0].y > MIN_TRAVEL_M)
-	_check("right roll: left aileron down", moved.aileron_left[0].y < -MIN_TRAVEL_M)
-	_check("pull: both elevators up", moved.elevator_left[0].y > MIN_TRAVEL_M and moved.elevator_right[0].y > MIN_TRAVEL_M)
-	_check("right yaw: rudder TE right", moved.rudder[0].x > MIN_TRAVEL_M)
-	# Pivots and axes stay put under deflection; neutral restores rest exactly.
-	Avanti.apply_surfaces(model, deflections)
-	Avanti.set_flaps(model, 20.0)
-	for key in HINGE_NAMES:
-		var h: Dictionary = model.hinges[key]
-		_check("%s pivot fixed" % key, h.node.position.distance_to(h.end_a) < EXACT_M)
-		_check("%s axis invariant" % key, (h.node.basis * h.axis).distance_to(h.axis) < EXACT_M)
-	Avanti.apply_surfaces(model, Commands.surface_deflections_deg({roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0},
-		{aileron = TEST_DEG, elevator = TEST_DEG, rudder = TEST_DEG}))
-	Avanti.set_flaps(model, 0.0)
-	for key in HINGE_NAMES:
-		_check("%s neutral is rest exactly" % key, model.hinges[key].node.transform == rest[key])
-
-	# set_flaps: TE down, clamped to the data range; apply_surfaces leaves flaps alone.
-	var c_deg: Dictionary = data.controls_deg
-	var flap_rest := _aft_point(model.hinges.flap_left)
-	Avanti.set_flaps(model, 999.0)
-	var flap_full := _aft_point(model.hinges.flap_left)
-	_check("flap TE goes down", flap_full.y < flap_rest.y - MIN_TRAVEL_M)
-	_check("flap clamped to landing", model.hinges.flap_right.node.basis.is_equal_approx(
-		Basis(model.hinges.flap_right.axis, deg_to_rad(c_deg.flap_landing)) * model.hinges.flap_right.rest))
-	Avanti.apply_surfaces(model, {})
-	_check("apply_surfaces keeps flaps", _aft_point(model.hinges.flap_left).distance_to(flap_full) < EXACT_M)
-	Avanti.set_flaps(model, -30.0)
-	_check("flap clamped to cruise (rest)", model.hinges.flap_left.node.transform == rest.flap_left)
-	# AV-02 inspector mapping still behaves as in AV-02.
-	Avanti.apply_controls(model, 1, 1, 1, 50)
-	var ac := {}
-	for key in HINGE_NAMES: ac[key] = _witness(model.hinges[key])
-	Avanti.apply_controls(model, 0, 0, 0, 0)
-	for key in ["flap_left", "flap_right", "aileron_left"]:
-		_check("apply_controls %s down" % key, ac[key].y < _witness(model.hinges[key]).y - .01)
-	for key in ["elevator_left", "elevator_right", "aileron_right"]:
-		_check("apply_controls %s up" % key, ac[key].y > _witness(model.hinges[key]).y + .01)
-	_check("apply_controls rudder right", ac.rudder.x > _witness(model.hinges.rudder).x + .01)
-	for key in HINGE_NAMES:
-		_check("apply_controls neutral %s is rest" % key, model.hinges[key].node.transform == rest[key])
-
-	# Two builds: independent nodes and meshes, shared immutable materials.
-	var other := Avanti.build()
-	get_root().add_child(other.root)
-	var other_rest := _aft_point(other.hinges.aileron_right)
-	Avanti.apply_surfaces(model, {aileron_right = TEST_DEG, elevator = TEST_DEG})
-	Avanti.set_flaps(model, 50.0)
-	_check("instances independent", _aft_point(other.hinges.aileron_right).distance_to(other_rest) < EXACT_M
-		and other.hinges.flap_left.node.transform == rest.flap_left)
-	_check("instances own their nodes", other.root != root and other.hinges.rudder.node != model.hinges.rudder.node)
-	_check("instances share materials", model.skin.material_override == other.skin.material_override
-		and model.hinges.rudder.node.get_child(0).material_override == other.hinges.rudder.node.get_child(0).material_override)
-	var by_colour := {}
-	var shared := true
-	for m in _meshes(root) + _meshes(other.root):
-		var key: String = m.material_override.albedo_color.to_html()
-		shared = shared and by_colour.get(key, m.material_override) == m.material_override
-		by_colour[key] = m.material_override
-	_check("one material per colour", shared, "%d colours" % by_colour.size())
-	Avanti.apply_surfaces(model, {})
-	Avanti.set_flaps(model, 0.0)
-
-	var meshes := _meshes(root)
-	var triangles := 0
-	for m in meshes: triangles += m.mesh.get_faces().size() / 3
-	print("avanti preview %s: %d meshes, %d triangles, extent %.4f x %.4f x %.4f m" % [Avanti.VISUAL_REVISION, meshes.size(), triangles, box.size.x, box.size.y, box.size.z])
-	other.root.free()
-	root.free()
-	if _failures == 0: print("PASS %d checks" % _checks)
-	else: printerr("FAIL %d of %d checks" % [_failures, _checks])
-	quit(1 if _failures > 0 else 0)
+func _finite_number(value: Variant) -> bool:
+	return typeof(value) in [TYPE_INT, TYPE_FLOAT] and is_finite(float(value))

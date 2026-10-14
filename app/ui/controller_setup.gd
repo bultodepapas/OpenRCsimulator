@@ -14,6 +14,7 @@ signal device_selection_requested(flight_device_id: int, ui_device_id: int)
 signal calibration_requested
 
 const LAYER := 12
+const CAPTURE_AXIS_RELEASE_THRESHOLD := 0.35
 const PRESETS: Array[String] = ["mode1", "mode2", "trigger_absolute"]
 const PROMPT_FAMILIES: Array[String] = ["auto", "xbox", "playstation", "nintendo", "generic"]
 const PROMPT_FAMILY_LABELS: Dictionary = {
@@ -59,6 +60,7 @@ var keep_radio_button: Button
 var restore_gamepad_button: Button
 var joystick_enabled: CheckBox
 var apply_devices: Callable
+var save_and_apply: Callable
 var glyph_family_help_label: Label
 
 var _screen: Control
@@ -66,6 +68,8 @@ var _profiles: Array[Dictionary] = []
 var _legacy_profiles: Array[Dictionary] = []
 var _devices: Array[Dictionary] = []
 var _draft_profile: Dictionary = {}
+var _drafts_by_context: Dictionary = {}
+var _draft_context_key := ""
 var _base_actions: Dictionary = {}
 var _action_bindings: Dictionary = {}
 var _axis_controls: Dictionary = {}
@@ -78,7 +82,9 @@ var _draft_ui_device_id := -1
 var _original_flight_device_id := -1
 var _original_ui_device_id := -1
 var _capturing_action := ""
+var _capturing_device_id := -1
 var _capture_button: Button
+var _capture_release_tokens: Dictionary = {}
 var _preview_clock := 0.0
 var _initial_focus_wait_frames := 0
 var _profile_kind_label: Label
@@ -115,18 +121,24 @@ func request_close() -> void:
 	close_requested.emit()
 
 
+func _cancel_edits() -> void:
+	if not _capturing_action.is_empty():
+		_capture_done()
+	close_requested.emit()
+
+
 func current_profile() -> Dictionary:
 	return _draft_profile.duplicate(true)
 
 
 func load_selected_profile(profile_or_id: Variant) -> bool:
 	if profile_or_id is Dictionary:
-		_set_draft_profile(profile_or_id)
+		_switch_draft_profile(profile_or_id, _profile_context_key(profile_or_id))
 		return true
 	var target_id := str(profile_or_id)
 	for candidate in _profiles:
 		if str(candidate.get("profile_id", "")) == target_id:
-			_set_draft_profile(candidate)
+			_switch_draft_profile(candidate, _profile_context_key(candidate))
 			return true
 	return false
 
@@ -476,7 +488,7 @@ func _build() -> void:
 	footer.add_theme_constant_override("separation", 8)
 	footer.alignment = BoxContainer.ALIGNMENT_END
 	var cancel_button := _button("Cancel", "", "Cancel")
-	cancel_button.pressed.connect(request_close)
+	cancel_button.pressed.connect(_cancel_edits)
 	footer.add_child(cancel_button)
 	save_button = _button("Save profile", "PrimaryButton", "SaveProfile")
 	save_button.pressed.connect(_save_profile)
@@ -540,29 +552,77 @@ func _process(delta: float) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if _consume_capture_release(event):
+		get_viewport().set_input_as_handled()
+		return
 	if _capturing_action.is_empty():
 		return
 	if event is InputEventKey:
 		var key_event := event as InputEventKey
+		get_viewport().set_input_as_handled()
 		if not key_event.pressed or key_event.echo:
 			return
-		if key_event.physical_keycode == KEY_ESCAPE:
+		_track_capture_release(key_event)
+		if key_event.physical_keycode == KEY_ESCAPE or key_event.keycode == KEY_ESCAPE:
 			_cancel_capture()
-			get_viewport().set_input_as_handled()
 			return
-		_capture_binding(event)
+		_capture_binding(key_event)
 		return
 	if event is InputEventJoypadButton:
 		var button_event := event as InputEventJoypadButton
-		if button_event.device != _draft_flight_device_id or not button_event.pressed:
+		if button_event.device != _capturing_device_id:
 			return
-		_capture_binding(event)
+		get_viewport().set_input_as_handled()
+		if not button_event.pressed:
+			return
+		_track_capture_release(button_event)
+		_capture_binding(button_event)
 		return
 	if event is InputEventJoypadMotion:
 		var motion := event as InputEventJoypadMotion
-		if motion.device != _draft_flight_device_id or absf(motion.axis_value) < 0.65:
+		if motion.device != _capturing_device_id:
 			return
-		_capture_binding(event)
+		get_viewport().set_input_as_handled()
+		if not is_finite(motion.axis_value) or absf(motion.axis_value) < 0.65:
+			return
+		_track_capture_release(motion)
+		_capture_binding(motion)
+
+
+func _event_release_token(event: InputEvent) -> String:
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		return "key:%d:%d:%d" % [key_event.device, key_event.physical_keycode, key_event.keycode]
+	if event is InputEventJoypadButton:
+		var button_event := event as InputEventJoypadButton
+		return "button:%d:%d" % [button_event.device, button_event.button_index]
+	if event is InputEventJoypadMotion:
+		var motion := event as InputEventJoypadMotion
+		return "axis:%d:%d" % [motion.device, motion.axis]
+	return ""
+
+
+func _track_capture_release(event: InputEvent) -> void:
+	var token := _event_release_token(event)
+	if not token.is_empty() and (not event is InputEventJoypadMotion or absf((event as InputEventJoypadMotion).axis_value) >= 0.65):
+		_capture_release_tokens[token] = true
+
+
+func _consume_capture_release(event: InputEvent) -> bool:
+	if not (event is InputEventKey or event is InputEventJoypadButton or event is InputEventJoypadMotion):
+		return false
+	var token := _event_release_token(event)
+	if token.is_empty() or not _capture_release_tokens.has(token):
+		return false
+	if event is InputEventKey and not (event as InputEventKey).pressed:
+		_capture_release_tokens.erase(token)
+	elif event is InputEventJoypadButton and not (event as InputEventJoypadButton).pressed:
+		_capture_release_tokens.erase(token)
+	elif event is InputEventJoypadMotion:
+		var motion := event as InputEventJoypadMotion
+		if absf(motion.axis_value) <= CAPTURE_AXIS_RELEASE_THRESHOLD:
+			_capture_release_tokens.erase(token)
+	return true
 
 
 func _connect_registry() -> void:
@@ -574,6 +634,11 @@ func _connect_registry() -> void:
 
 func _on_registry_devices_changed() -> void:
 	_refresh_devices()
+	if not _capturing_action.is_empty():
+		var captured_device := _device_for_id(_capturing_device_id)
+		if captured_device.is_empty() or not bool(captured_device.get("connected", true)):
+			_capture_done()
+			_set_status(tr("The selected flight controller disconnected; remapping was cancelled."), true)
 	_update_action_controls()
 	_update_preview()
 
@@ -635,9 +700,13 @@ func _fill_device_picker(picker: OptionButton, menu_only: bool, target_id: int) 
 
 
 func _on_flight_device_selected(index: int) -> void:
-	_draft_flight_device_id = flight_device_picker.get_item_id(index)
+	var selected_id := flight_device_picker.get_item_id(index)
+	var capture_cancelled := selected_id != _draft_flight_device_id and not _capturing_action.is_empty()
+	if capture_cancelled:
+		_capture_done()
+	_draft_flight_device_id = selected_id
 	_load_profile_for_device(_draft_flight_device_id)
-	_set_status("", false)
+	_set_status(tr("The flight controller changed; remapping was cancelled.") if capture_cancelled else "", false)
 	_update_profile_options()
 	_update_axis_controls()
 	_update_aux_controls()
@@ -680,7 +749,7 @@ func _load_profile_for_device(device_id: int) -> void:
 	if not profile_id.is_empty():
 		for candidate in _profiles:
 			if str(candidate.get("profile_id", "")) == profile_id:
-				_set_draft_profile(candidate)
+				_switch_draft_profile(candidate, _profile_context_key(candidate))
 				return
 	var expected_kind := str(device.get("kind", "gamepad"))
 	var preset := "mode2" if expected_kind == "gamepad" else "radio_custom"
@@ -689,11 +758,36 @@ func _load_profile_for_device(device_id: int) -> void:
 		candidate_profile = ControllerProfile.defaults("gamepad", "mode2")
 	if expected_kind == "joystick":
 		candidate_profile["configured"] = false
-	_set_draft_profile(candidate_profile)
+	_switch_draft_profile(candidate_profile, "device:%d" % device_id)
 
 
-func _set_draft_profile(profile: Dictionary) -> void:
+func _profile_context_key(profile: Dictionary) -> String:
+	var profile_id := str(profile.get("profile_id", ""))
+	return "profile:%s" % profile_id if not profile_id.is_empty() else ""
+
+
+func _remember_current_draft() -> void:
+	if _draft_profile.is_empty() or _draft_context_key.is_empty():
+		return
+	var snapshot := _draft_profile.duplicate(true)
+	if profile_name_edit != null:
+		snapshot["name"] = profile_name_edit.text
+	_drafts_by_context[_draft_context_key] = snapshot
+
+
+func _switch_draft_profile(profile: Dictionary, context_key: String) -> void:
+	_remember_current_draft()
+	var target: Dictionary = _drafts_by_context.get(context_key, profile)
+	_set_draft_profile(target, context_key)
+
+
+func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
+	var previous_profile_id := str(_draft_profile.get("profile_id", ""))
 	_draft_profile = profile.duplicate(true)
+	if not context_key.is_empty():
+		_draft_context_key = context_key
+	elif _draft_context_key.is_empty() or previous_profile_id != str(_draft_profile.get("profile_id", "")):
+		_draft_context_key = _profile_context_key(_draft_profile)
 	profile_name_edit.text = str(_draft_profile.get("name", "Controller profile"))
 	var profile_kind := str(_draft_profile.get("kind", "gamepad"))
 	joystick_enabled.visible = profile_kind == "joystick"
@@ -731,7 +825,10 @@ func _update_profile_options() -> void:
 func _on_profile_selected(index: int) -> void:
 	var profile_index := profile_picker.get_item_id(index)
 	if profile_index >= 0 and profile_index < _profiles.size():
-		_set_draft_profile(_profiles[profile_index])
+		if not _capturing_action.is_empty():
+			_cancel_capture()
+		var profile: Dictionary = _profiles[profile_index]
+		_switch_draft_profile(profile, _profile_context_key(profile))
 
 
 func _update_profile_kind_picker() -> void:
@@ -1185,6 +1282,7 @@ func _get_prompt_texture(texture_path: String) -> Texture2D:
 
 func _start_capture(action_id: String, button: Button) -> void:
 	_capturing_action = action_id
+	_capturing_device_id = _draft_flight_device_id
 	_capture_button = button
 	_capture_button.grab_focus()
 	_set_status(tr("Press a keyboard key or an input on the selected flight controller. Escape cancels remapping."), false)
@@ -1238,6 +1336,7 @@ func _cancel_capture() -> void:
 
 func _capture_done() -> void:
 	_capturing_action = ""
+	_capturing_device_id = -1
 	_capture_button = null
 	_update_action_controls()
 
@@ -1267,6 +1366,9 @@ func _apply_device_selection() -> void:
 
 
 func _save_profile() -> void:
+	if not _capturing_action.is_empty():
+		_set_status(tr("Finish or cancel remapping before saving."), true)
+		return
 	if _draft_profile.is_empty() or profile_store == null:
 		_set_status(tr("There is no controller profile to save."), true)
 		return
@@ -1311,13 +1413,18 @@ func _save_profile() -> void:
 		var errors: Array = validation.get("errors", [])
 		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
 		return
-	var result: Dictionary = profile_store.call("save_profile", candidate)
+	var result: Dictionary
+	if save_and_apply.is_valid():
+		result = save_and_apply.call(candidate, _draft_flight_device_id)
+	else:
+		result = profile_store.call("save_profile", candidate)
 	if not bool(result.get("ok", false)):
 		_set_status(tr("Profile was not saved: %s") % str(result.get("error", tr("storage error"))), true)
 		return
 	var saved: Dictionary = result.get("profile", candidate).duplicate(true)
 	_replace_saved_profile(saved)
 	_draft_profile = saved.duplicate(true)
+	_drafts_by_context[_draft_context_key] = saved.duplicate(true)
 	_refresh_devices()
 	profile_saved.emit(saved.duplicate(true))
 	close_requested.emit()

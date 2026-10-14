@@ -268,6 +268,9 @@ func advance_calibration() -> void:
   calibration=null
   pause_reason="radio calibrated"
 
+func controller_profile_rejection(profile: Dictionary) -> String:
+ return "Choose a stick-rate or calibrated radio profile for helicopter collective." if profile.get("throttle_mode","")=="trigger_absolute" else ""
+
 func apply_controller_selection(id: int,info: Dictionary,profile: Dictionary,_initial_start: bool=false) -> bool:
  calibration=null
  radio.disconnect_device()
@@ -275,7 +278,7 @@ func apply_controller_selection(id: int,info: Dictionary,profile: Dictionary,_in
  sim.set_paused(true)
  pause_reason="Controller selected. Check collective and continue explicitly."
  if id<0: return true
- if profile.is_empty() or profile.get("throttle_mode","")=="trigger_absolute":
+ if profile.is_empty() or not controller_profile_rejection(profile).is_empty():
   _controller_lost=true
   pause_reason="Choose a stick-rate or calibrated radio profile for helicopter collective."
   return false

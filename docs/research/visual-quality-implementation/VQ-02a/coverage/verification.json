@@ -1,0 +1,1104 @@
+{
+  "source_commit": "5f7f4ad529940743bdc16e3d9691243a8a1c6cd8",
+  "archive_command": "git archive --format=zip --output=source.zip 5f7f4ad529940743bdc16e3d9691243a8a1c6cd8 app assets",
+  "archive_sha256": "a049b991e7e5a71e134a31b6c4362213ea026eb50cffd32815aea403ffb7fa78",
+  "engine_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "static_source": "pristine archive; no import run",
+  "runtime_source": "separate extraction after pinned Windows Godot headless editor import",
+  "import_changed_inputs": [
+    {
+      "path": "app/aircraft/livery.svg.import",
+      "archived_sha256": "18f10f3bbfab2953dfbbd1c226d8a383a5b6a3cdc43effb9a237a5c5c5e59a78",
+      "imported_sha256": "a6887e03b90e9f398c6d0ede74f46241e842b362d1dc480f5ba26e8760fd8909"
+    },
+    {
+      "path": "app/assets/aircraft/hx-700/hx-700.glb.import",
+      "archived_sha256": "c0acd09d1d6687608f0ec467d9249be9a12069b228c9510234054b58c2223fcb",
+      "imported_sha256": "57c37dcee638378ff0b44a93198c1d86ad8af221dfdf8e14074a859ac78a4158"
+    },
+    {
+      "path": "app/assets/aircraft/hx-700/hx-700_hx700_botalon_mascaras.png.import",
+      "archived_sha256": "18169a845602829dc66058565c95a0b80265d3e5b11218ec0f55addde7ce1ef6",
+      "imported_sha256": "a7e7b44553a45af6d12d247570faccc072fa4fe7a19daeaa11caeaac7ca7e97b"
+    },
+    {
+      "path": "app/assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras.png.import",
+      "archived_sha256": "8a823336b4553a5a85ea88b999820f211ad54ffc4f9ab2155d44fdb81c70f559",
+      "imported_sha256": "8bc34e8088e0a029d190eb2a230f4c5fd1c34c9d3b1af4c542564f0a18b454d7"
+    },
+    {
+      "path": "app/assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras_2.png.import",
+      "archived_sha256": "33fda28a210a5b103844bd437316f977ab063af5fedd66b9aafe6b34ad52a9f2",
+      "imported_sha256": "23af7583eed91c37b20a2e417e987648c9c8c2f78fa95ac0150bf6c1aebd7816"
+    },
+    {
+      "path": "app/assets/aircraft/turbo-lumber-evolution/timber.glb.import",
+      "archived_sha256": "9fa97a36cd0717d4fe4be82d11829c2055521d3eab0e38baa7dddb1a7f7ca355",
+      "imported_sha256": "d0c94eea920a9193e349ec5eccdf3ef65f98cbfc74cd5da5e9a52c28752c83b6"
+    },
+    {
+      "path": "app/assets/audio/crash/crack_heavy.wav.import",
+      "archived_sha256": "28408df87faee8adfaa5bca417d32ebcf9f21f848283766b64b23db23d75cf47",
+      "imported_sha256": "3bdf793cc97d1f5e21d93e67ff07b1fa3ca6c060257cac3945c4313675757aac"
+    },
+    {
+      "path": "app/assets/audio/crash/crack_light.wav.import",
+      "archived_sha256": "23f8c9c716d9a70d184e62ac0bea71b285af20e7773e04966564ebf5f593f76a",
+      "imported_sha256": "9df2ec68f8970201906cdff0bb7ac9d30d4cdac480dea4ee9c46d4eb35e1db75"
+    },
+    {
+      "path": "app/assets/audio/crash/debris.wav.import",
+      "archived_sha256": "64abf67b529a66a08f65f00653b0f111808337e9177307bfca1c66ea025d2acc",
+      "imported_sha256": "413ef0832ffb4c0ea7783ae0e7e3007fd0eb81a71ed053c5a0c55f548651d42a"
+    },
+    {
+      "path": "app/assets/audio/crash/engine_cut.wav.import",
+      "archived_sha256": "117e1b750a559b7884caa91f5094bff4696d75800f40c749dacc510e0e3f77c1",
+      "imported_sha256": "3a4013f8b91e3754531fcae1a7769707e90966ba55f577c5aac45c96784b81cc"
+    },
+    {
+      "path": "app/assets/audio/crash/fire_loop.wav.import",
+      "archived_sha256": "d6eb070ed98ac0b83b0e21446ca5d82316f7b1775be7b15441beb8fed294de61",
+      "imported_sha256": "13cd211cc8fb61acf434bb60c3d9b202acbd6ca928ca574eccffc086767a2e4b"
+    },
+    {
+      "path": "app/assets/audio/crash/impact_dirt.wav.import",
+      "archived_sha256": "6f7be72d46243fdba0a6687a0b4fea958e10989b2d8b57e787932a97ea7cdb64",
+      "imported_sha256": "151001f375bb03b91d634387bd28b05bc7effedbc7eddf5ee6750ccef3475751"
+    },
+    {
+      "path": "app/assets/audio/crash/impact_grass.wav.import",
+      "archived_sha256": "79e9341cda927445fd7fee6438fc638cae96129b21af9add294c958932e115dc",
+      "imported_sha256": "a04981c02d1b897a175833fbc65a724f73e60186c5b4b34249aaddddf9cedee4"
+    },
+    {
+      "path": "app/assets/audio/crash/impact_hard.wav.import",
+      "archived_sha256": "a66e1e36c84e334d410844d20403fcb934ddfeff5190f502f962f9d42b390eae",
+      "imported_sha256": "b3136736dc6f96e723e0123caaf5ddd7ba19ee2811e30ea9ebcbfb4eb984b36e"
+    },
+    {
+      "path": "app/assets/audio/crash/scrape.wav.import",
+      "archived_sha256": "8678968a70d6a2e4824c367132c4454e4eaee5d0d707cdaf7cf5d038571ab52f",
+      "imported_sha256": "cb9bec28fa7c70c8744bc94a49c4267108ced4f1d08ddb63859f36baffaac429"
+    },
+    {
+      "path": "app/assets/audio/crash/secondary_hit.wav.import",
+      "archived_sha256": "7a07b314d5e8e57c1815a7ce09ebec82573ab8c0dcbb4ff188768c1b9ed66cc0",
+      "imported_sha256": "c2596956c6756df954ec1e2e296721af7aba05680548daa8750d55c51306d03f"
+    },
+    {
+      "path": "app/assets/audio/crash/tear.wav.import",
+      "archived_sha256": "e80e61de54ec565775d7e4231c05e389b944cd82a363c1476674d3aa9e0d650a",
+      "imported_sha256": "ce21d832c3f61bd143433c52fb6d910f8831c32bad4a642443c447283f36e187"
+    },
+    {
+      "path": "app/assets/audio/crash/turbine_spool.wav.import",
+      "archived_sha256": "29dead2a8bb4ce32b2443162a5632157a804d22442cffb02f443436def04449b",
+      "imported_sha256": "bfa289eff5bacd885501c4f149007e1fc5e78a5891541bd5631cdb974acdcdc5"
+    },
+    {
+      "path": "app/assets/audio/soundscape/airframe.wav.import",
+      "archived_sha256": "499d71d20cbd85fcbcc323697ff71f1c14b52507cf9f407a74752a54954bb141",
+      "imported_sha256": "cb35f32db992266b3b05de0bef34ac2db94c3fd2347037c67c0d9077781dca01"
+    },
+    {
+      "path": "app/assets/audio/soundscape/birds_01.wav.import",
+      "archived_sha256": "d773538533ccdd556a590fd792b0897ada6a39eefd09368ba434e634095c1db9",
+      "imported_sha256": "e1c899311d9bf25c6db89f8fa883d694da9ed005f832cee64b07768fda979ef0"
+    },
+    {
+      "path": "app/assets/audio/soundscape/birds_02.wav.import",
+      "archived_sha256": "a38c06b9d1e48a5cae722b261cd95a6c6573d5435af77adec955a6cf48879727",
+      "imported_sha256": "8bf47ce5572d4aaad88916d1afbc58ed6d8a30f1af3258af4014b88b221d01b0"
+    },
+    {
+      "path": "app/assets/audio/soundscape/birds_03.wav.import",
+      "archived_sha256": "4798b72fb145043f01ade6c542ddc95e0dddc074e29021bc8b2a6382968c3df1",
+      "imported_sha256": "f0d1f9a5180b82857dc814e8bbcd174f7460b94520b57c825021e0680187fefe"
+    },
+    {
+      "path": "app/assets/audio/soundscape/birds_04.wav.import",
+      "archived_sha256": "18a543542c4f956dab6a0d4376f6a4316e4f1625b2f609c5190b8a3e61681502",
+      "imported_sha256": "8e31373acbb26700775c17580b3384128eee3c8cfde85ba7409b19af8701744f"
+    },
+    {
+      "path": "app/assets/audio/soundscape/birds_05.wav.import",
+      "archived_sha256": "52db596a3f2344064fc25502c13d3846f8108fbfebf01494c6a8fe1facbd2a9e",
+      "imported_sha256": "eac150b0422d0f3e3cd67c3b5a1d8c7197d88280d66cec887c81a077ecca8e43"
+    },
+    {
+      "path": "app/assets/audio/soundscape/birds_06.wav.import",
+      "archived_sha256": "0f8fee21c950ffa6130ed6da7bb214139fa3cdd27fcc435cf0af6c013e0daa0b",
+      "imported_sha256": "4a127628d0b4a5e6769c601ebdeb986f244697ec2352f0d105648d7ed7c63f5e"
+    },
+    {
+      "path": "app/assets/audio/soundscape/foliage.wav.import",
+      "archived_sha256": "766cfc13c3e11089ecdd1505e3329518aa66b4c09fa0bb59c1c1b45f96c1a2ce",
+      "imported_sha256": "c6b78209e94a20d9663115efc7d11313db71c60ade47cb4f09c0e347922f24da"
+    },
+    {
+      "path": "app/assets/audio/soundscape/motor_combustion.wav.import",
+      "archived_sha256": "72a4bcbfae3a0cf241793836c33cc6983cdef7c0b77515e4b7f5ce88b9cc1a98",
+      "imported_sha256": "9e1b95334f47afe395737f52e28c132f240fb6b49e62f37b948226e61939d19e"
+    },
+    {
+      "path": "app/assets/audio/soundscape/motor_electric.wav.import",
+      "archived_sha256": "17a55023bb9eb6ee9514b2dc6d9913ee141a44c33e301287f3bc3abc2ae6f363",
+      "imported_sha256": "bc76d581cc25f1c230057b21af54e855c5a581c4af828ca4f8226f1f7976d2ad"
+    },
+    {
+      "path": "app/assets/audio/soundscape/motor_propeller.wav.import",
+      "archived_sha256": "25d39553f72b01f41c809b9c346cda56aed082bd5fdbad2fe382597fb6a554f7",
+      "imported_sha256": "437da14ee57d2ccd11608b3c54e6ddb64940907cc1de316ab6e216d7e0659027"
+    },
+    {
+      "path": "app/assets/audio/soundscape/turbine_roar.wav.import",
+      "archived_sha256": "ee69e0444d19d0f1d9b38201c9b3d7d18d0650be7b5dda1e45701caab3f40d8f",
+      "imported_sha256": "4115149dd1fbe818916d8f4423b7717d6585475744676c2ff490e20ab00a6188"
+    },
+    {
+      "path": "app/assets/audio/soundscape/turbine_whine.wav.import",
+      "archived_sha256": "936e534d69e521d6055c3cf7387d7c5ccade9e8ed76f1f9b95c4dded6290cbf8",
+      "imported_sha256": "e01f6a989b0a222e9635d66b31564066083dcc6633749f29349e1fd639a827c7"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/bird_01.wav.import",
+      "archived_sha256": "e6e3ac00f64da315b0c94cf276272207c83e36b44c4ce21c8ef73468fb169862",
+      "imported_sha256": "65d85723005441c01cd724479dd7b570577317c665c25b10c75b7e022eaa7538"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/bird_02.wav.import",
+      "archived_sha256": "a4ba14965d3fa6161d7fd8d0a9f16216a0145a59225467e86767bc1941525d12",
+      "imported_sha256": "46dc85df1ee48d05f90d9dac88ed668f66c94f2f1589cd38bd0b33da499407a5"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/bird_03.wav.import",
+      "archived_sha256": "913acf7073c4a53f0caca03b15a7ab34645a11c3c4747bedf3af3da30922ecad",
+      "imported_sha256": "e3e0fc0d9bf597f274ac12c8d496f9e0be7305a08fdbb689d0d045446bcb0923"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/bird_04.wav.import",
+      "archived_sha256": "4780edc40639a1f2fd64ff50372bdf94b8066241828da6e1e82a0d4255f60be1",
+      "imported_sha256": "5a5908d0b4e3265961df74905144b2071190df0b3234dc34376fc170b524e4b3"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/cricket_01.wav.import",
+      "archived_sha256": "052b1270c7e322f64fd504f9121f715b353c393d88b262c2f45924ae1330f0a9",
+      "imported_sha256": "286cc2b7742cf45f415a17586cd9c9677b791e5d50a8234cafa326e45ceb163c"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/cricket_02.wav.import",
+      "archived_sha256": "636fce0e093529bbb9e4fc27ed3ee64bbbd1d3d2fd05a2766bcce58c1ac5a3d8",
+      "imported_sha256": "f8389aeb8cf965a2a83569987b87b6b771300a42fa9b2bb9121fb209cfa5a691"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/crow_01.wav.import",
+      "archived_sha256": "e2eade622fa63ebc930dbe860541a9076827e6f7092a92ca4a12781cfabc7bcc",
+      "imported_sha256": "ef8e7f22dadb221fb9505321c09cecf1d0605f0f618f682c3b8e865478466273"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/crow_02.wav.import",
+      "archived_sha256": "747aa0686efbf0665780f4caf36295074f058fe2f4215f142d50b0f94f3b31b0",
+      "imported_sha256": "95b61bc378d3351cd7d695092163db0494262c0b14707e4d84c673da13ffc6b7"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/crow_03.wav.import",
+      "archived_sha256": "53aeae16d6e3d116febd0ca35822f905788d8d649427aae87766303de08a8fb1",
+      "imported_sha256": "7b6b4d804d857cd476cac0bd5c68277e97fe220cfd2f7f05fc5bc02e0bb6d283"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/dog_01.wav.import",
+      "archived_sha256": "6ac606b67c04695403cb7142fcdfbe297c30fd2849f59c51b91b72a1356d6254",
+      "imported_sha256": "10cde48abc484a84aecb45adc0d04e0691d279f4a786ce30034bb378dd6d04d0"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/dog_02.wav.import",
+      "archived_sha256": "a73114e80dd435f5d75633850367c1ebede57fc081bef9c01cdbde6b61f2ad00",
+      "imported_sha256": "2102ee29b5509df89d6170a7b886b991bc3f689dd515c094533fa77835d50dc9"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/dog_03.wav.import",
+      "archived_sha256": "75203492c08ebeb8f2711a5d3029d833151391eb666695b1cc8e0a5708dc97e6",
+      "imported_sha256": "971d4b4fb4e613b636ad8f27bd7a095294f9b38ffd6d16c367cefa68840674fb"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/owl_01.wav.import",
+      "archived_sha256": "b221d1ae2a4fd9510f75972f11182ee9b718d5d6e0b22ab8f7837f087f2a412c",
+      "imported_sha256": "c4b45902322992f3d1c6cad4b0887db8587bf4dfff98167c2c2fcecace0301a5"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/owl_02.wav.import",
+      "archived_sha256": "cc84fbb9ca3cf48cd41e8e6b9842b641fbb4edfa4317ed100a30fdbb8a6e2628",
+      "imported_sha256": "b76bc6ac03fdf7b9514f133257ea2965e1879d334a083deb76c661e8a9727713"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wildlife/owl_03.wav.import",
+      "archived_sha256": "63245b8eda6a474363940a7663b31af479368e14f4a100e8434be81b77f2cd26",
+      "imported_sha256": "41c0c296526c9f7a8e1cb43cae7e78587febc87a12c3e28b339e0f5f3386f2aa"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wind_high.wav.import",
+      "archived_sha256": "ba4adc35ecfce67bef519eada1ed0bf2ef8bb00ab348e62efb3e116b202e3fcb",
+      "imported_sha256": "b2659037a65dd603b353a6cb649ba5b2f5358b174cad936cbb781987aec62656"
+    },
+    {
+      "path": "app/assets/audio/soundscape/wind_low.wav.import",
+      "archived_sha256": "b687562cc68b9254300f6af08900de148c18bfe93e8aed24dd7c3cef2538dc82",
+      "imported_sha256": "dd2b135c0f03b022a9dae997f05e10ebff99f0f2ef5526c8c44b03d604c1a6f9"
+    },
+    {
+      "path": "app/assets/audio/storm/thunder_01.ogg.import",
+      "archived_sha256": "b15e48ace8111c3a35fa46ea1af3da63df6e8eca1bf14c982bd3112a090cfdd0",
+      "imported_sha256": "f28ba56b72449ea4ad698509ce24bbbe55d3ee9c4d1a2e45799bcbb98229aed3"
+    },
+    {
+      "path": "app/assets/audio/water/peludo-splash1.wav.import",
+      "archived_sha256": "1062d8e5e0b2277e43b8037dfd780bf67e1a6a12c3b0bd30d75c48ba38bb3df8",
+      "imported_sha256": "217aed09d64bab1b44fb7b74c69fb36df68593a38d2f2876f3cc6eff45526e5e"
+    },
+    {
+      "path": "app/assets/audio/water/peludo-splash2.wav.import",
+      "archived_sha256": "bf387ae86f1ecd88749bede3833d86f5b0b52ffa5958567209f9b8ddcc0f914d",
+      "imported_sha256": "e507436d40ee4b68ffd660afac95f940cd64856aa79a58e22fe2f3e03b6b8438"
+    },
+    {
+      "path": "app/assets/audio/water/randommind-vistula-short.mp3.import",
+      "archived_sha256": "74df659630e38e8a7459dd95aa4a6b0a066e11dbc7e9f95af259b615576803ff",
+      "imported_sha256": "fa6ef93034b65f8e4828482d7eedd37b0da597912463fd2a3dd68159ca68c279"
+    },
+    {
+      "path": "app/assets/crash/flame.png.import",
+      "archived_sha256": "9ef3efc7f82311caaab8ca0c92daa5bdc01c607686a87cdbfd02780ec3cd208a",
+      "imported_sha256": "fae19102a2ca1d7ef974b2103eca1afe72ab6b92f304f99a4eab654a985a72d1"
+    },
+    {
+      "path": "app/assets/crash/smoke.png.import",
+      "archived_sha256": "8d14d0989a68b31cd987f4d1cf63fb90bc0d26292fb124a6e7bdc4fccb26aaea",
+      "imported_sha256": "b4181f1882ce6968f125830bbb61ab5861903d07df61c32f9f11ff0cdb8aaaca"
+    },
+    {
+      "path": "app/assets/input_prompts/generic/button.svg.import",
+      "archived_sha256": "83509bf320b5a768ad9157149da036a5719e2d76cce4bbf881c9383c69645e50",
+      "imported_sha256": "f538b8bb8ad02139b006cc463a5e31ed38f90ca44cfbd831cb31e4b12b91e974"
+    },
+    {
+      "path": "app/assets/input_prompts/generic/shoulder_left.svg.import",
+      "archived_sha256": "57c596c63fea41dfa7e982a859f2e6dc5c78d781fa2b1a48106d7193d2d1b050",
+      "imported_sha256": "7897823a3cd8f6127cdd1e014671692255c63f925d9c7b1c45da21eef680b3c3"
+    },
+    {
+      "path": "app/assets/input_prompts/generic/shoulder_right.svg.import",
+      "archived_sha256": "7c822867f12032d8ed3d0880886aeabc4d767c36755ea8d9e40594875234eba6",
+      "imported_sha256": "aa039440f2cd44cf15074ec61df3757d7e0ef0263177db3077b01d1a8bb2e137"
+    },
+    {
+      "path": "app/assets/input_prompts/generic/stick_press.svg.import",
+      "archived_sha256": "0dd9d6523c09d50660ac0e43bfa1991e5704db600b062b2cb01fc395053b6520",
+      "imported_sha256": "c95d4c589297655a354a8fc3b292aca5426ef2b003b8efbb3de9403852c2bf75"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/back.svg.import",
+      "archived_sha256": "2acb802bf94dd2950d5445bfef41f19a9e32acf20b947d40c1dba0d2052f1cc0",
+      "imported_sha256": "0bbbc84d3c4e55d6e1899928d9d380704a1a09ee09719c687335ee20e0e6ec84"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/dpad_down.svg.import",
+      "archived_sha256": "d9cf2e51d1d25e6f1e5945a14f82dc73f2ba9b1804b029a6bfed021e3eb7d450",
+      "imported_sha256": "ccbe223aeff5b10d7b114be3fa7450a9e2b94958fbc0ddd46767552f8831f9af"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/dpad_left.svg.import",
+      "archived_sha256": "7a58608af9a7b0428df0083693c30eb047b3fab588c6214e959851a6abc754ac",
+      "imported_sha256": "a4a2ebe7ba676c7e09de99564fb3acf2a7f3f80c8f85f23acbf5afcb8b7ff064"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/dpad_right.svg.import",
+      "archived_sha256": "ee85346c3d20ddec472e9d318ca0546ddc911d51fed852ef76777291e0f9fdb9",
+      "imported_sha256": "b902009694029c132b61d2ce27fcc250cb6654e05d392b50a0fa287276653b63"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/dpad_up.svg.import",
+      "archived_sha256": "4e9f1843fc68f7fea0a155873ece71f343f88d00c5c98df6929458186942be99",
+      "imported_sha256": "1d4e6c8bb40c289e67525fb7f9e4f286032c900b8995717382e02431cc5025b3"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/face_bottom.svg.import",
+      "archived_sha256": "14f8fdc60fcbb3195f7cdce55396bf333ec83f964b7c831ec7d0c400481b8c74",
+      "imported_sha256": "14709e1694ff52603c8b0de222935dc2a287be0e0c4f1a438f7f4658196d35a4"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/face_left.svg.import",
+      "archived_sha256": "c27b90d6ad69e9f3119556b70fdbd06d56c28de450c3bf19a99a45f4d311217e",
+      "imported_sha256": "9ee10d0aed4efaf12ba89b2da8e9e4ab26d188d1fd10b87650ec332649b0d385"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/face_right.svg.import",
+      "archived_sha256": "db212ab03044ed897a7aac2b43a4dd2f69b6ea1d3618fdfce186843c5856dcbb",
+      "imported_sha256": "cdcee62d2dd46dc7a91a30596ffa4676cb80a9df1523ddd9aa25a193133fc070"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/face_top.svg.import",
+      "archived_sha256": "6025efa23e381b880fb6eeb1553e34fc0b34937a7729d6dbf92fa495701907aa",
+      "imported_sha256": "dd384c7af3b751480b0270cdfa0506039674d71bffa59bfcbd08441bfd1ee7fd"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/menu.svg.import",
+      "archived_sha256": "253bb6cc2bb70a276d6e2e218a668e6174619a72ce402d56b767b90ada2031e9",
+      "imported_sha256": "b975b47003d3833e6a5792085bf994b52f7df185f989807a7e51603920a0f47f"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/shoulder_left.svg.import",
+      "archived_sha256": "6e9ee938115f32578869344c240a5adcbaf84561e04696b92ad8970df26a90c6",
+      "imported_sha256": "035352c205d51c39a7b3dec23874533d0a68d3017e7a792c77ef47dea06970d1"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/shoulder_right.svg.import",
+      "archived_sha256": "bc1260f3d0981bfa73db93887d1416e2217e9031399cfb7aa952e208bc32535c",
+      "imported_sha256": "0a63ab10c7a3483aed83f4f9949fb1d21293b719ba2050c3ed28ff5bb1226fdf"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/stick_left_press.svg.import",
+      "archived_sha256": "b4e3c7ae992bf6207498f8357b16720b502ea92060f658526465a4a456ec2527",
+      "imported_sha256": "e528e57e24af7732c7358dd3c3cc52c90dbbdcff4fb0694de1836fe03d68a249"
+    },
+    {
+      "path": "app/assets/input_prompts/nintendo/stick_right_press.svg.import",
+      "archived_sha256": "e97b0b4a25dc491abb904abf2876e58da8363f03942f1808b503b4e41bb1bf95",
+      "imported_sha256": "f1bef12ec89972e96a80b3737a524644c187a93ace0e29e7d89b167cd7658d89"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/back.svg.import",
+      "archived_sha256": "029a8765b2c22321709cecfdd9a866d952628168fcb497f8f625b53435939c05",
+      "imported_sha256": "1e37e524a11512a14741f6015b8098608d3a977bdf35306a9e07dcabdfd05a51"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/dpad_down.svg.import",
+      "archived_sha256": "c8a822f1eb00baa21c7a9c3774a0f61af2fd16cf293caf07a5e6770229f4ae83",
+      "imported_sha256": "4ac36694fd0ec3b50176246cb32ed00df0b737e4e71d309e1b03e5e847c925b7"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/dpad_left.svg.import",
+      "archived_sha256": "2721e4e5d40d9f688f7cca4ddc04fce06d42ac9c9efea6ce02c0472bc6b03387",
+      "imported_sha256": "aa0a26241a52e1459fb89053b77d982d7ffb74e29cbf2cfacafe8459750cf87f"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/dpad_right.svg.import",
+      "archived_sha256": "641fe31a32a2d44f8ffa0e96efaf06001b002f6581b11a2ff123b7ceeae51604",
+      "imported_sha256": "aa2bae77bd4045fab8dd97e2adba44c25cc4626a8186f9a6451f72eec980549e"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/dpad_up.svg.import",
+      "archived_sha256": "c4e82e054d16b8e20b970cf9c68689305eeb0829daf3ced7e16bdd62a7dd3392",
+      "imported_sha256": "2c5f752b9d6a8a113f445acab194c246e0bf61c2715940a74d32cc3e280c901e"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/face_bottom.svg.import",
+      "archived_sha256": "26050a251478c76bb06763625838759bd9611fd356eda2dc9d0e9cbff5e5b034",
+      "imported_sha256": "08c1523a5e36b7e1c2e2b6f7f8e096a01b110c6a4ed2799d04c48d20f1e17f44"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/face_left.svg.import",
+      "archived_sha256": "b54eb88ed16a87c7d9831466c8a87bdf098011ae1d4d66490143799af0f4961d",
+      "imported_sha256": "0a2bd18fae92f18c0e2df34384467e037e779baa456318795f1a93da81a4a87c"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/face_right.svg.import",
+      "archived_sha256": "70a79579e55923ce2498e807d39c76105ae880e1e1d9488385ecf9a13da38de5",
+      "imported_sha256": "c67d06fd7f3cb307c24bc05aece31675715a60d15f45a6300cf7681c35a3bb0d"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/face_top.svg.import",
+      "archived_sha256": "0537a551121614952e6058236d2e56e991c2d867a15d759fe25612849514a521",
+      "imported_sha256": "60a858a5ceee6fa8e061d24076cc142a88ba25ad02b2b4644891fac5d0925337"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/menu.svg.import",
+      "archived_sha256": "66a36d42a3f1b3a324d483912c891fc6e92ab6390812dc1182179bc413644847",
+      "imported_sha256": "042a72d5d3e05f96b0f1c6db2be9e86c0fbd01e46117b6d2d15e4cdb95dc19c5"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/shoulder_left.svg.import",
+      "archived_sha256": "0149b702bff027da5b430a57e4cbcfab45b9eb0b6231b6ffa56eef8dd982c038",
+      "imported_sha256": "d13a25ac352a9d8699063991f66110b65850e16246205d364e0920249e7d8b3f"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/shoulder_right.svg.import",
+      "archived_sha256": "76674d25f058d9ae12d9c5ffae860dcdc3f1799ca9a3cfdf6d872f655ea23682",
+      "imported_sha256": "71705caef95ef6b4c7a0dbf2337eea4988abf7948d694b022398fb08966fc3ed"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/stick_left_press.svg.import",
+      "archived_sha256": "737092077305d9b37fb02c3b205a0dcf4995586469ba903b93f1e96329ee67f3",
+      "imported_sha256": "67e406959fff7e9b38e1696292024a95c2a920e8f9208374a9943c47dd6f42a8"
+    },
+    {
+      "path": "app/assets/input_prompts/playstation/stick_right_press.svg.import",
+      "archived_sha256": "53049eec6cdb13130644636e5af7ec7b49ca2a01a9cd3e5b745e397b8eb15345",
+      "imported_sha256": "e058db165ef66968da0e5a009462414c4e43837b2bd36c26ae6d6e07228b96b2"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/back.svg.import",
+      "archived_sha256": "b1244f8ce700d0a62a9e700f6261103c36af68abae6e9f01f8a4cff52075f531",
+      "imported_sha256": "abc33d33d51f1f33c62a7fa656e129ad0d6541e85d4316239a0fedbd2df3e1ec"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/dpad_down.svg.import",
+      "archived_sha256": "11959e687b964c356dc77d8a8a789e11730a8a1485cbf2578b70fa5c73def65f",
+      "imported_sha256": "f29649a3154c4d6c431bc45f508aef7dc18ab69ea3f7218f9cacc1884c264722"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/dpad_left.svg.import",
+      "archived_sha256": "d070a8eba2de12c4dfb23ed7ea4f4ce0c92ba1de1617c8ff564f0a9db538d5fd",
+      "imported_sha256": "0ea7b84e9b44c72d1d12ed714ccaf33dff9eb4bd6b24ff7af759558e47c859c6"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/dpad_right.svg.import",
+      "archived_sha256": "810b513a2f01cd80586d415ba434251eae8802dcd233c5fd3180196786593d70",
+      "imported_sha256": "7ce24b72be3cb95041b0c280114bfc90d7d07af3a4c6b632db24e0812bc74567"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/dpad_up.svg.import",
+      "archived_sha256": "20da056444297eab37fea10e587b9f654578892105a774475d116e8b22a2c220",
+      "imported_sha256": "e22e29b7c0a39e1b8eacbeaf12948c6f6955fa13aca4cff362ae237c06d9ed0e"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/face_bottom.svg.import",
+      "archived_sha256": "031e3962559070d57d5195e6f86f3afe71e445b4d401878f3a50a38129f6152b",
+      "imported_sha256": "0af8bf319b857b8b3e2ddf39f03a3b9c9403fbcc59969ae310371d169928401f"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/face_left.svg.import",
+      "archived_sha256": "4101e34db83beaab7b2297fe708a6e3dc6b4b8c786c5d3712fecb11c59f72abc",
+      "imported_sha256": "624ae0495af0a595dd5926a096112f5e396517cc8db54aa6865014208e8f34e2"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/face_right.svg.import",
+      "archived_sha256": "5c905b013d7b75a30ca5790b05d0673a5e4914cc246513f034dd7a1f650683e7",
+      "imported_sha256": "67e2c9706d6c54cb19227f9c9c315175a62501d860549e6d9afcfe6f61507af2"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/face_top.svg.import",
+      "archived_sha256": "ccc4a4e43f87ae63f19dcb1477041b99001378df5f3e67143adc3825f5583f15",
+      "imported_sha256": "245addc6f02f3a85b70912b2aaa3eb87f1adb05f6d2ef08efc129407f41c81cc"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/menu.svg.import",
+      "archived_sha256": "a1864ef4add2d83d60cb25c7bb369c48450a6689b9d6ab2fff9b6058f5492c49",
+      "imported_sha256": "e992e48e192f3e8c122a83c8262027bf9145160f8e3b4a1ac1b8b39080f81fba"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/shoulder_left.svg.import",
+      "archived_sha256": "8aa4962b99470281c1dbca2ed02ec5477559d8a45e8dc6bf5ccc9c84b4f1f1d0",
+      "imported_sha256": "c36c60c425285c9859423ed64165e348d7583c61d646fc4cb0e00960d97804e9"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/shoulder_right.svg.import",
+      "archived_sha256": "89b5295286e36900ab47847efb018f0dbf78acce43b76ee15b6205c720d5e163",
+      "imported_sha256": "ddfcf7f075fd01ace89a74ae401b16d3566b2383a84a1fc288d6a0fcdc54cd8d"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/stick_left_press.svg.import",
+      "archived_sha256": "cffde5d29945d54a37b1840d257b0fd620efce8f899753a56a8491f38a2eab2b",
+      "imported_sha256": "67d4945bc2ad545ae5cb87cc6ec29267cfbedc0a0656ae7f202d09a2ff506cb1"
+    },
+    {
+      "path": "app/assets/input_prompts/xbox/stick_right_press.svg.import",
+      "archived_sha256": "657f40286a736bbdcb3fb96b92a1801720c9d7e8998b564cece6dfa43a8273ef",
+      "imported_sha256": "8dfb27e6b33141ad739a7a0990b2ac9909f73c5598eeedb48d5f993416b083fc"
+    },
+    {
+      "path": "app/assets/landscape/night-lighting/Textures/colormap.png.import",
+      "archived_sha256": "6ba0dfc73412dd650daa9e9c3770bd694ee8510bd20dcda3b71deb18c6a8ad7b",
+      "imported_sha256": "783c3139846d09e06374dacf79ce25a39d862ef9cf4523f759e21c6d4e70ef40"
+    },
+    {
+      "path": "app/assets/landscape/night-lighting/campfire-pit.glb.import",
+      "archived_sha256": "6944db61194c5e4c8116adcaa6b0505db595e01ac0c061aba948c118948efa4f",
+      "imported_sha256": "58ceeebc7910470c71885f5ac8e25d20623f0dd81d14f702ec70aef8fbc682e0"
+    },
+    {
+      "path": "app/assets/landscape/night-lighting/flames-8x10.png.import",
+      "archived_sha256": "4c266521c6ce632b9566acedfc01821a6ad7b31e9fd1ae9045c9346fdef96158",
+      "imported_sha256": "7fc58d0a90a5e0d435fd9ef0e1763a4e8faab2ca420f4af63bfad2f874c5a560"
+    },
+    {
+      "path": "app/assets/landscape/night-lighting/lamp-head.glb.import",
+      "archived_sha256": "a72d90aedc1d8f9cbdb977d0fa6013f8e408ff137cfdbd39126df8df8baebf29",
+      "imported_sha256": "fa5b8594b4b7afb81e0faaf858dc971ee54a9fdcdd59669e38383e88668f663c"
+    },
+    {
+      "path": "app/assets/landscape/trees/atlas.png.import",
+      "archived_sha256": "fe4df6edb2b7e852056787fe1f4bcd712c6719efb31fad9772ef1ef9b123a933",
+      "imported_sha256": "96d5de5c1ba4f8b5e9e8f6aa97b1a18b64abb39c085d7d944e90c42933eb9413"
+    },
+    {
+      "path": "app/assets/landscape/turf/detail.png.import",
+      "archived_sha256": "7cfedda26b58749ea6b7bc26ac441e514870d8e7adfd3e9a18a39b76486a69c6",
+      "imported_sha256": "0d9fde6a5c7d10762ddb7a95722f457dfb9f0c42989e86ea726e69341062ed98"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/impostors/bush_common_4view.png.import",
+      "archived_sha256": "5ef4352e546d9511ec742c83e96285d4951352460912f3b23268cad0173c0881",
+      "imported_sha256": "666e5b8293d6b63078baabef8fd28e7f9d900d40ba8a2baee2ad9acd341e61b4"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/impostors/bush_common_flowers_4view.png.import",
+      "archived_sha256": "97c3ba4df27fe7c60d5af9018efdc3b894c975618cc589a71f71c2c01e65e990",
+      "imported_sha256": "b1ef8c0d3a581937ffa30276ea152bca9df09ff733a635f76a76d254304f6796"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Bark_NormalTree.png.import",
+      "archived_sha256": "671a703a7b3548066840b687fc8862f683fab4fe53c503b48e440c55a3112f3e",
+      "imported_sha256": "0c2fdc30ae8e06e4550bfce0ec0117549f23071d6607c73297613c42e6e13827"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Bark_NormalTree_Normal.png.import",
+      "archived_sha256": "55bf4fd91e2d347374350955caf36a6fca2c941aede61d17232059807fd0da5a",
+      "imported_sha256": "93cc66c2bdfd4339dbf1331832e8dcf829c22161a0ddf853fff507e153b2d1d3"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Bush_Common.gltf.import",
+      "archived_sha256": "180c99cd0422823bfd073dc4c73539f29c566dd4a403646788332c73bbd2d436",
+      "imported_sha256": "3ea0637e401b2ebdd3d0ae7a5fcf7cf6e07d0e9db3b4f4f66f14f8a3c8eb7b3c"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Bush_Common_Flowers.gltf.import",
+      "archived_sha256": "6a90a6d2fb3e2c0463ab21f1f4d0f34319aaf0112ca01dcf2ce990b7055edc3e",
+      "imported_sha256": "968abd1e13631635da86a5864385d308722577107aa38059a664ba064d12c2b8"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Clover_1.gltf.import",
+      "archived_sha256": "ad4adfcd12a58bfad3da70a086b1a5c98c39c7a11ccc939e1f1ae34d24b12e84",
+      "imported_sha256": "3c32c6d46707ffa55b7e3f319e10c2c9fd1c533acedac55c11311da98e1fbe95"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_1.gltf.import",
+      "archived_sha256": "d78ec195f4a83c7d0a56f05cb82f074af0a8f507f18dde84e7016273c65d00ba",
+      "imported_sha256": "736e7e3939e98d957f766919354cfc8f45e32b53c7f32069296a1c13b7395080"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/CommonTree_3.gltf.import",
+      "archived_sha256": "cbecaa3c8c10f5f5462f0f73e7e7dfd94b10960dc18572fbb892316305fa5d74",
+      "imported_sha256": "c2cd66ca44509e4f0416e2c0316132fe29cd3ddeaf236b7e741bd01c4f67a17b"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Fern_1.gltf.import",
+      "archived_sha256": "b9d268acff8429482fcea1a2993c392ede29669f8a245e3014a4b89c981bf61b",
+      "imported_sha256": "96bc5c31775681bbdf2b05570b5024c57735fcae402898b4f47e992fde743630"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Flower_3_Group.gltf.import",
+      "archived_sha256": "e50d80f65d881e0aa3ae987629c35087ddf8fb22d0ec381f778e3aaa17144691",
+      "imported_sha256": "73aa39d528df88ad64ea9c4ab1bb9aaa11c0c65b87a3fcdc39398d7a0352e77f"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Flower_4_Group.gltf.import",
+      "archived_sha256": "58d60ff7bbe9cc99f5eb964c51c8dcd995f5ebad25c92a4be5477f703574738a",
+      "imported_sha256": "d7387c4dec0a58386d274c09a2f2f5b246608d8c6fe5e62ff56ae1db37a16447"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Flowers.png.import",
+      "archived_sha256": "ef0feea29b0cc320cde7838f9d063978bd2fa2a09a34cf15ff5a071368756993",
+      "imported_sha256": "48baf5f4e428cf7254c6d945e827e0c4c89b69e6e3ae55851cdfcd29d2e840cf"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Grass.png.import",
+      "archived_sha256": "238a3090e4adc802f70a34ec6914eb26c713ec7128ef07fb5b648dbac3ef7bbe",
+      "imported_sha256": "a70b2b58f69dd4244e04f9bf6b87eebff7642c050d5d77d7b276bb0a5655bf3b"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Grass_Common_Short.gltf.import",
+      "archived_sha256": "d6c8dd1eb2cccfcd653454afca6fdea5ebd583e989dba18b3827f75d1c96b894",
+      "imported_sha256": "99ea8fac323f9e4f31adbbe0fdf13cb00ea5d3f0350e0ab75fcab3be9e8cc8a4"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Grass_Common_Tall.gltf.import",
+      "archived_sha256": "a638a83a8614f66eddbb4047d0c7681a177a28d121f2f843c08aae2aafc84e41",
+      "imported_sha256": "7823ad66e99752290ce24a8e9723aad7bd927bc15ee99aa543cd7bc83b7840fc"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf.import",
+      "archived_sha256": "774febe4d45e25174557b70435b7fac7cae28cfbd0f6ff449ee4374981f70bb0",
+      "imported_sha256": "9219c87e11f14553bfad7bb25cf7307467f151f9b9f3432dd58073401a123ea2"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Leaf_Pine_C.png.import",
+      "archived_sha256": "482df99ef7f2be811bb588b62dec72408ee5bd8db4798b6443a4e8dc9078f4ba",
+      "imported_sha256": "5fd284904bca112772489f8f48f20ed102d42ea2932f7c09c0756299ccd5282b"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Leaves.png.import",
+      "archived_sha256": "3dd5c6942fd21aa3428e809363cb57a9fd627846ce9c3213255d3594317ac4d0",
+      "imported_sha256": "59f269a4a1d3a93f0b8138d88697a567efa67982cd844109de114f2d7f1a0d02"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Leaves_NormalTree_C.png.import",
+      "archived_sha256": "5316da907b1f9edc563a6a5011049b0d7756f5f91f2b779adca9f64fd066980b",
+      "imported_sha256": "4cca679886ba79c13dc127dae82be588309ea26acd41e4f0cf97f3c0ccf12911"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Leaves_TwistedTree_C.png.import",
+      "archived_sha256": "e4119058c90b6dc10656ab6d3e66ce773fdd04f8ee7d285774d83d9d4eadc92e",
+      "imported_sha256": "77343a299215dec6335f07521ce5ecd766aa1d08ec10f8d1cf36c279bf3d4092"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/Pine_1.gltf.import",
+      "archived_sha256": "8d092c287c7d213334a0cad6b90b35a6fca74e83232096421d34ea17aa7462a8",
+      "imported_sha256": "1e9f0f0ad131ec578995b590e03c0a56fb1f2b144e2dc8958bfdfadc5c3d4406"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/additional/aredon_reed/reed.obj.import",
+      "archived_sha256": "632018ad7fdc832e3ca63529f61a3f1753cdc30d8efdf5f91af38e3a3e8852c2",
+      "imported_sha256": "e5b60908492d0a0b059e37345016417fcdd611fc83c2c2ed8ee065ec902ad6d5"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/additional/quaternius_crops/Corn_4.obj.import",
+      "archived_sha256": "9009321151712427c54fea09b1b00d0d20def117ed6b2a1db2e45f25e1f43d2f",
+      "imported_sha256": "6869b895d82611e14b7ae58339f12b1cea01d875102eac5b8ccd360d5182fc99"
+    },
+    {
+      "path": "app/assets/landscape/vegetation/models/additional/quaternius_crops/Wheat_4.obj.import",
+      "archived_sha256": "1fb1221ca0ea199f9a18a1fef756a37572001439ea4fc8908ad1baac57e26c52",
+      "imported_sha256": "abced549a6e05f2460e00c2ca759aed14c0f91a41745f1e10a9f73874fa48e39"
+    },
+    {
+      "path": "app/assets/scenery/population/crossover.glb.import",
+      "archived_sha256": "02bec6a0fc01c1189743c291980a3c22be027eb5dd12f0d225ccf66475e3bf32",
+      "imported_sha256": "996ab886371c2c325fe938818f44213566203bceb91b0663af091e86f564a983"
+    },
+    {
+      "path": "app/assets/scenery/population/hatch.glb.import",
+      "archived_sha256": "8af86d8c82a4b6ec70e8643e471139de43f2e0767d78e888b1110a120131852c",
+      "imported_sha256": "a39cdf0872b8684edb8c88b5d754b297cd50310424772fda08519a7ff89f66b4"
+    },
+    {
+      "path": "app/assets/scenery/population/pilot.glb.import",
+      "archived_sha256": "e42aab98ece09230b1f6e71e4904f85a60995e3fe674364482b930c860459d7e",
+      "imported_sha256": "2bb8e188ee71c61111f63bab6de0da70fbcc9d8ac3d67e51b1159142a149350b"
+    },
+    {
+      "path": "app/assets/scenery/population/sedan.glb.import",
+      "archived_sha256": "259f749980b4f2c69e531996456cf6547830b4f401ab262cd83b70147a135a39",
+      "imported_sha256": "b4acbaeb68a7624f2643647cef997dfc3b2c4ab656e0126a41bb4cfd59d0cdd7"
+    },
+    {
+      "path": "app/assets/scenery/population/sitting.glb.import",
+      "archived_sha256": "c15bd79ebdb4fe78e05c04e31080832c2698e188be53bc8387282d0f728f519b",
+      "imported_sha256": "c38f4e2ac4a386ae36159caa3d4a70e93d363c3463f40419997c686660fe538e"
+    },
+    {
+      "path": "app/assets/scenery/population/standing.glb.import",
+      "archived_sha256": "18f0454a07f1516a52cde87bd642577259ddcf7cf34948f1c8d53491104ba42f",
+      "imported_sha256": "efb3f40f2ca0f5863738cff968615ccbb0e8118838d1d7372a27eb939100564d"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png.import",
+      "archived_sha256": "cb59621adf6c88d0d807028b77f398c45063b8100b5767ca4437fe72f4cf11c7",
+      "imported_sha256": "f3f203797b7675b429fcfa144cfbb809703c071299e31f5e062c148108ce34de"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png.import",
+      "archived_sha256": "9fcfc6ab9d38b0465e61bfbf3ad7514b9c446e9bfa4669a326fd81f394297137",
+      "imported_sha256": "08b8b34737e759e35c33ae5bc74a45e26f18d72074ad53b92b43bc9bdc8ca230"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png.import",
+      "archived_sha256": "0ffc1e91f2cd1a2ead5ae44463349b38b13a3a0208b83987f13da84ab1e75d60",
+      "imported_sha256": "3db7293df6123aab20d4fbc23a2d16e495d382271653615b05539023ec410e25"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png.import",
+      "archived_sha256": "74d4a512487b0246f6f01cfddf3009c09e74522a498722b3017d214b6d70e503",
+      "imported_sha256": "e36cc5b51d317eadc9f8fe62898a53cb0573458214cbf74fcb92a86e711c7ab3"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png.import",
+      "archived_sha256": "ce4204230eab12337db23f212679551ed5f57ea66898d8c5b114f77e345c7095",
+      "imported_sha256": "b0a3706a0757c72c0456437960695bea0a1fc6300206a0829a4a3088c2bab64b"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png.import",
+      "archived_sha256": "7e399af01fbd53866ed60aaca784946f83d1f07419a0bc0ef57ae0e6f6e40981",
+      "imported_sha256": "d7acc74884bd3d9de8f110781afc3478967220aad0e67b16f1e8b7076fea7e08"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png.import",
+      "archived_sha256": "6b85ef86533ddb7cb7dac67a2d03c2be8bde6bde34df5f3771aa1149f07cde82",
+      "imported_sha256": "02533f9d57da7d65446748021e8436a56a60cd1dc764d60fc3e1491ac7b785be"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png.import",
+      "archived_sha256": "af9df1e59553681d911254920ba2f21a5d32179de3f8ce6e521244603eb813cd",
+      "imported_sha256": "26ed7f402ac38eff7b780e94f144e3ced30976c9ab35a668a6824180373b1b19"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png.import",
+      "archived_sha256": "62c66fb9a1506f3965ade235781852d40b41d764abc756b2af40c45dd560cc7e",
+      "imported_sha256": "4c49230e12f1d6d5e9f473be805086364ba9f5aa8884108657eb0946a00ca2d1"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png.import",
+      "archived_sha256": "0473d031ba9050689402a97d10ad7e6a2aba9ef4498255035acaf7da82fd3824",
+      "imported_sha256": "6224fcd0ecc9742e77866212fb379f69bbb4d9898406c27f4699b65055733d57"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png.import",
+      "archived_sha256": "cd77179c671e9cd3abfb34f43a76c5e5509963e142eb227a15b0fa6a2c53030e",
+      "imported_sha256": "35ab357c2ac0843dfe22f12de2acf628a3619853fa8b26011edac82c0f9aeafa"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png.import",
+      "archived_sha256": "bcb6b57f2ae999cd82403f8811bf66a234870885dee1688bcd2f3c458f1a7024",
+      "imported_sha256": "6ff4fecaa21790eb756bd3779a100d2fbcac265169c6a5bcebca2d2a570ff571"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png.import",
+      "archived_sha256": "6ec67d01a33131199de91e279873a894f49334bb6a0477064bc427a8d5183e55",
+      "imported_sha256": "dedcb85b2c54a9dc1bed3fae0032c80c63a380b9a441bb1d95cb8a78cbc64a4f"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png.import",
+      "archived_sha256": "f35ed8a3c6b6bcd54f77d2853dbeca1413fb47db21bd80f63c1030983ede73c3",
+      "imported_sha256": "87d9e2eebec5c4425175c7aeefe4043c32b16f8846eb3fe2c59590c97f74a19f"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png.import",
+      "archived_sha256": "4860baa32f969ef6c20b51d3cb14b303411ebe88f7b0849b21130889142c601b",
+      "imported_sha256": "d3eed1fea214a4e3127adbb0b4d7cd2c75e450f1f9739b8abbd57eafdb22d8de"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png.import",
+      "archived_sha256": "bcdb42f5d53861e25d2be79bc421c53d0a26b349fed1ac38bcdb8e82199b0641",
+      "imported_sha256": "63b9917af04776930124988a109cc6578d8c96b5b9eeae1fc2eed336b6da8ec9"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png.import",
+      "archived_sha256": "60f46ab50a5db15eabc9746039ee2a8e4978eb2097d9e19c6f3df76d1bbe0228",
+      "imported_sha256": "f68d980cd6d95af19002c124ddb8c8ba5be9fcbb88e2a181fe38c97442bd6846"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png.import",
+      "archived_sha256": "f0a02a7d6beee6e5c561274ce476c9e0b8ea123951ba550a6c9e236cd34e2e5d",
+      "imported_sha256": "9b0308e0634208fe058073d22abc93d25cfba29a41d533cff1a45a9dec813969"
+    },
+    {
+      "path": "app/assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png.import",
+      "archived_sha256": "8c78ac6f4dcdc26a83d4ddbd0827ab41698afdfdee2b1010633ea2752a02c85c",
+      "imported_sha256": "07942f3fae763078115b28d19aab33997f1224b506de3e02f3c1715761bc1b3d"
+    },
+    {
+      "path": "app/assets/sky/weather/clouds/FX_CloudAlpha03.png.import",
+      "archived_sha256": "a1aa8f9a00ab25d85ae26c7d7831d194a171c2fded3017f6645e6d2cfaaf3587",
+      "imported_sha256": "280eeaeb06c292bb6a6cfe0a4c000c0e923ba3fde0ede782d0375ccf9fed6cea"
+    },
+    {
+      "path": "app/assets/sky/weather/clouds/FX_CloudAlpha06.png.import",
+      "archived_sha256": "9757ea3f5eef5bd029a44b602115f0d8b12270b1cb8eb700c146ce1d240007a6",
+      "imported_sha256": "5e2252f5121ba6de2de790914f75f1bccf0cfb9aace9dab7b44ed6a38e70e6b6"
+    },
+    {
+      "path": "app/assets/sky/weather/previews/broken.png.import",
+      "archived_sha256": "ec653055a4434f51a2b2d9e9bb488cae802f1c11fb987f29e30ace4052ecd06c",
+      "imported_sha256": "719a63c4bec972af4020c00e06fdad50c841316240a5860396b8cf53bd170e52"
+    },
+    {
+      "path": "app/assets/sky/weather/previews/cirrus.png.import",
+      "archived_sha256": "b9e86cb1e61e1557ee9a61989be026871117ab14cc33297680c6ae27a895bdae",
+      "imported_sha256": "a17f080aef4e149dae60035c505eda240320ea3b2c4a4483da40314a5740aa30"
+    },
+    {
+      "path": "app/assets/sky/weather/previews/classic.png.import",
+      "archived_sha256": "812eb9c41e68ddbb592b2ff52fc848c78ec7ebc6a04ff54d511272b6616fdcb5",
+      "imported_sha256": "d1995506ce13d391da8674efcad2771d0752879321e4cb3d43fc5acdb1c20c92"
+    },
+    {
+      "path": "app/assets/sky/weather/previews/clear.png.import",
+      "archived_sha256": "fdb13d79d5c65d29e43cc11aad267656d9350af3bda35aedaee6848b10ce7546",
+      "imported_sha256": "71ad38d20127db8a43d4baf053ca336f4d858cdb9fc05e09662f3547c7b6a66f"
+    },
+    {
+      "path": "app/assets/sky/weather/previews/distant_storm.png.import",
+      "archived_sha256": "537005c84c2260634f1d9ab06e1546d064b98664fb01e5f79c49aef8cb07113a",
+      "imported_sha256": "4d7ea241b37bfdcf2a6f57791bc845747509d4651169cb96b8d7deb8d5ad5cc1"
+    },
+    {
+      "path": "app/assets/sky/weather/previews/electrical_storm.png.import",
+      "archived_sha256": "92c12097e49a10c6bd86c70c9a3553b1aabb57574ac7882551e7f2f00f46fb3c",
+      "imported_sha256": "ad94dc90c47f29518d0908151e37438013f5c9d5fd0d42e61c28592eb3c2ff34"
+    },
+    {
+      "path": "app/assets/sky/weather/previews/fair_cumulus.png.import",
+      "archived_sha256": "34d0b861756fba1137cff381adf3107ea81fa7fcd3d635134d70aca9fa9f4753",
+      "imported_sha256": "3b7381ce291de5bf54850832fd1faffc5cdc6efe399d2029ee451d411d5fc0aa"
+    },
+    {
+      "path": "app/assets/sky/weather/previews/overcast.png.import",
+      "archived_sha256": "98210fbefc1cb348509365d177304b0a7fe6eabbcd9d852074877e9788162800",
+      "imported_sha256": "de6acf3c3f57c3ceff11d027726073ed77af5c22d5d9b05f8a7d77f8d62aceef"
+    },
+    {
+      "path": "app/assets/sky/weather/previews/prestorm.png.import",
+      "archived_sha256": "6ca4dda9fda5ee2826a574b96bcc415764c76af93750672df041bdf8596bc7b7",
+      "imported_sha256": "e1d9d2e6f587ab0e5b258f66decb41b5406a7294044d2148b8242d4914d07e86"
+    },
+    {
+      "path": "app/assets/vehicles/mt8-bisonte/MT8_Bisonte.glb.import",
+      "archived_sha256": "496631f01123fb454d036ab5932249c89820cf1a89c56b0c2b6a77d4ee8b1dac",
+      "imported_sha256": "cede97f76311dfbf3ffd36124c8e9eb57212fb54ea53e177f1727baa39381bea"
+    },
+    {
+      "path": "app/docs/research/ground-physics/GP-03/visual-gear-extra.png.import",
+      "archived_sha256": "1e86b6da64cbdbf5b3758f605a89e6bb5ec4f147190ed5dfd3f8885498706a02",
+      "imported_sha256": "57b7dba60ca6e037fb1978e7fddf1e3f7464310e29793251adeeb937caf4a18d"
+    },
+    {
+      "path": "app/docs/research/ground-physics/GP-03/visual-gear-p51.png.import",
+      "archived_sha256": "272245f8d90d19add86c098ebaa8e9c2e4d4ba3213eeab0d3a1a7ea0702727fc",
+      "imported_sha256": "608c32fb8da18dd9ae89257a0dae60a7b8f2773acbbb6481faf81c089bf14255"
+    },
+    {
+      "path": "app/docs/research/ground-physics/GP-03/visual-gear-stik.png.import",
+      "archived_sha256": "8c1cc7bf4e7e09b9701b3386c46ea7eccb1cbca257d353f2981c01bb68ce57b0",
+      "imported_sha256": "09d265794e24ca1e1fea080f65d35f7c6da4c3ddee862e495a6e222a634828d7"
+    },
+    {
+      "path": "app/ui/slider_grabber.svg.import",
+      "archived_sha256": "3049a08ba2286b4755b4210f3d799eafc70e35b879d8fdc3aa7e7b65fd32d512",
+      "imported_sha256": "35d0cbd66fcd5fc423fe54137b7cd3e3a1840dcabe2e1df60e84892e37f04006"
+    }
+  ],
+  "import_generated_files_outside_cache": [
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s.glb.import",
+      "sha256": "0a1e254d11c6d7254c2c1c634771db1e53affbbd9f02a40aa46bcc32f43cdd09"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fin.png",
+      "sha256": "c3d9f74428db2151c8e558f9dbd37369d706eec05273d965ce792285c4e3f8d7"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fin.png.import",
+      "sha256": "d2d41317ce7d5390408c97dcd1b88f0db485ce1696aac349d5662498298f0008"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fin_barniz_rugosidad.png",
+      "sha256": "49abd116985e094b4266789294e93f38463b927beb3c4af645ac4f81de2f4392"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fin_barniz_rugosidad.png.import",
+      "sha256": "8bb5a3f43c2aa5f2f847a9247c402f9d3c9e597fe3f9092a820793f78d0b3617"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fin_barniz_rugosidad_21.png",
+      "sha256": "29e1cc8705f52fd9eb43509d13ef0f6b91370b755c70f756f00bc4aa1596f7ce"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fin_barniz_rugosidad_21.png.import",
+      "sha256": "84c07fee034ebd02064ad829e87bf6e1590c07f2da230fad2ab86a0581c993ce"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fin_brillo.png",
+      "sha256": "1e9f219fc15f019876771c4eba0361c515831bbc17ea6a10de5c2bc4c03ea977"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fin_brillo.png.import",
+      "sha256": "c68c63fe279dbc874f7cdd119f2c7e4a40c19937ccd88d515ce02b77c1b4c7d3"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fuselage.png",
+      "sha256": "a1efe067410ef307ea3d2e7ace2a3b9e95cf370e11c3bb68b9781f4499773833"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fuselage.png.import",
+      "sha256": "1847d3943517bb5e70169f9cf976cdaa2f883b155f53911d473117685ff9a533"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fuselage_barniz_rugosidad.png",
+      "sha256": "8221afc64e494ecb6c4b7851dab8224c6dc3d97c1d45901f7579c4d4abf94f45"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fuselage_barniz_rugosidad.png.import",
+      "sha256": "aae5475587755e59da4e6ef8c66e47804e46dfb060eb09ab9924df8079e5fb60"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fuselage_barniz_rugosidad_11.png",
+      "sha256": "94dc3340dc1324115e53ae4761691c9f8d469547a41d1ba17b3837d24e26c228"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fuselage_barniz_rugosidad_11.png.import",
+      "sha256": "7ae5cc91f24f1e7f31965d7a86057263960d9a6fdbd8d7f636d88d6d55cc0cd6"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fuselage_brillo.png",
+      "sha256": "08d8430728eeea2d22547bee99b1eead2a71f37fc14e93b74404e6a21474b66e"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_fuselage_brillo.png.import",
+      "sha256": "21b1e6273761ab9aa6c59c04f0d386535ce53d6d340b3f08a85f2dd47833728f"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_stab.png",
+      "sha256": "61b095703d1ec7e18a554d377be8d8d42d69832ed9825e145f482f38faa8bdf6"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_stab.png.import",
+      "sha256": "9fbf76e57439c955e737b220dc594e1e3fc6c23ce7103e6826c7c7a6904f3d91"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_stab_barniz_rugosidad.png",
+      "sha256": "bb3493de3ebda9882ed996680902df9043ecdafd7ac445b3bfc517369f8e7b62"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_stab_barniz_rugosidad.png.import",
+      "sha256": "5e2aabe3a4bb44a28f1747a3704d61e76f1d46387edcbb77e175f9528e99ed96"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_stab_barniz_rugosidad_17.png",
+      "sha256": "8857556e0ba45c5e59bb76ef291a632fdc5b741a98bff50d33f603baedcb68fe"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_stab_barniz_rugosidad_17.png.import",
+      "sha256": "07cf015d41aff3b631041d9a6c7eecd4aefd2cc121e1f63771d044b858224c29"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_stab_brillo.png",
+      "sha256": "26bba5905aaa462e0f19df14c3c872f897f657373de95c826ad138cc8e56d6f2"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_stab_brillo.png.import",
+      "sha256": "6430dba6412c9a9896e6c3fd7eab4bbfba7a8fd9809c55aa2505df69ef661bf6"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_wing.png",
+      "sha256": "0d9e0df433fbf2143862da6abdef2aeaea480129784f4db38730990716a3850f"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_wing.png.import",
+      "sha256": "dc76e16f7ce5af1e3a2add224306cf773750ff3afb9ded01b50ac8842b9eefcd"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_wing_barniz_rugosidad.png",
+      "sha256": "47e18196c50f1dbfd687ab2f5cdcbf7c5d3641a90e00bcf95d27d2bbe5abe83b"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_wing_barniz_rugosidad.png.import",
+      "sha256": "812c70464ecf887ce9abdb9344ff4890f958fab351250b59a018ba16712b23c6"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_wing_barniz_rugosidad_3.png",
+      "sha256": "d53658bd95ad3ee57702cb41f32fef41c98ad32f9ffd077ebf7cd60f1175cd65"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_wing_barniz_rugosidad_3.png.import",
+      "sha256": "28fb2f0f3dac03d6b64d71afabf6a612e212b20626a3fba544f1fa52510f71ca"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_wing_brillo.png",
+      "sha256": "ae018a16153b7f530e458ac62b215540528b5adc821769fc7b13807ef09cd081"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_avanti_wing_brillo.png.import",
+      "sha256": "0e0e0273fa8ae8365daf09510bfff62e5447489eddcdea003a465037872f1f51"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_carbon_twill.png",
+      "sha256": "d6a25c2bba1e5f9d706c7c28609e5e489af92c016f18d9a80cad834e60a63c0d"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_carbon_twill.png.import",
+      "sha256": "ff2beee5fb52447584835680e33b8fcde5ca9cdd05d7d75f0a2a6d1020566c7d"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_carbono_tile_barniz_rugosidad.png",
+      "sha256": "f7f038371dc2929290c47040f57bbae4a40c6697d5a645291ea6aad88cfe88ac"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_carbono_tile_barniz_rugosidad.png.import",
+      "sha256": "b406cae810b9122b61d5331f49cb0ee16688b50e20ab5a726af4e0b409af8655"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_carbono_tile_barniz_rugosidad_7.png",
+      "sha256": "016099e92cf04f0236cd2bee93ed3939092407f6add911bf88df0601fba8d812"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_carbono_tile_barniz_rugosidad_7.png.import",
+      "sha256": "bc55e0bb2482c7ee0ce4b1b62f225c655a59fdc82dc351ae25bd79a437b199e4"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_carbono_tile_brillo.png",
+      "sha256": "e9c4a470ad900801f7de4f9402eb27af8a1cc00eac80d618ef16bac39fb27d33"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_carbono_tile_brillo.png.import",
+      "sha256": "736486cbbfa36ae30a3017fa44156085a1b3fc4f83cd9e07ff1325af89f53892"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_instrument_panel.png",
+      "sha256": "3b8acc85cfdce345579642acb6a64cb5762ada501fce26e8c4463172c4cfd7d3"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_instrument_panel.png.import",
+      "sha256": "c3b37a0bb1eada87633d77ad6e56ffed3d1ee7e3fcfcc621367982e831bc85b6"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_side_console.png",
+      "sha256": "e8caebae723a6025c59fb9f213016b678119b632860315b47d573b70a4c5f1b1"
+    },
+    {
+      "path": "app/assets/aircraft/avanti-s-a200/avanti_s_side_console.png.import",
+      "sha256": "f428f57cde29f08687585c9da301f1572e30337f349c681aa899e81b4d927a1d"
+    }
+  ],
+  "checks": [
+    {
+      "name": "runtime-fixture",
+      "returncode": 0,
+      "log_sha256": "6abaa5a841b943c2355657763b1b62c1bd939ea36b85b515ad1391bc26594173"
+    },
+    {
+      "name": "runtime-final",
+      "returncode": 0,
+      "log_sha256": "a34107ffa02233088de596b0b18cb9ef80b7666ba155c6531a3ccc0c59323dc0"
+    },
+    {
+      "name": "runtime-repeat",
+      "returncode": 0,
+      "log_sha256": "a34107ffa02233088de596b0b18cb9ef80b7666ba155c6531a3ccc0c59323dc0"
+    },
+    {
+      "name": "guard-existing-output",
+      "returncode": 2,
+      "log_sha256": "58fba17db25b785430c513b36f32547b38501d79e18c61a47d7ff8a16920cd88"
+    },
+    {
+      "name": "guard-headless",
+      "returncode": 2,
+      "log_sha256": "458667c5fb16bc8f4be59b11a4656f5d8d5ef12937a661a1278c97500b001164"
+    },
+    {
+      "name": "static-tests",
+      "returncode": 0,
+      "log_sha256": "fc952a4b7d4d0ea3e0728043df073ef0f1a811e1a16480dd9290b40a65330bd2"
+    },
+    {
+      "name": "static-repeat",
+      "returncode": 0,
+      "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "runtime_reports_byte_identical": true,
+  "static_reports_byte_identical": true,
+  "tools": {
+    "texture_inventory.py": "b386caad6ce3674cf6ee1623149b4774acef0879ad56720fd180015701a0b722",
+    "test_texture_inventory.py": "83b9d8d2b7f759149da9c1ad132b9c6c8eb3fdf38f9ccf70d58bee87d70f81c2",
+    "texture_runtime_inventory.gd": "133df2f96b447580cc9f213925f5b2cfe02f033b629df6ec9992d917be1c9ec9",
+    "texture_runtime_probe.gd": "5a8eb2c4a58aabc79174d5a2e76d32154cbe5d1ab4dbba639092c64a2f8d782a",
+    "test_texture_runtime_inventory.gd": "e19dcf0261fe9cab8d117d79c823896639c40df17644a540dde9359b69b5f755"
+  },
+  "outputs": {
+    "runtime-final.json": "571063aca85d3201602daa4717e3aeb3b4632fbfca2c8e7a414ffb354cf98c01",
+    "runtime-repeat.json": "571063aca85d3201602daa4717e3aeb3b4632fbfca2c8e7a414ffb354cf98c01",
+    "static-inventory.json": "c7ee1aab2881289284f22488681739573abd33c38e6adb6f46149c65cb167b6b",
+    "static-repeat.json": "c7ee1aab2881289284f22488681739573abd33c38e6adb6f46149c65cb167b6b"
+  }
+}

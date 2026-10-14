@@ -1,6 +1,6 @@
 # Helicopter plan: a realistic RC helicopter
 
-**Date:** 2026-10-13. **Status:** the experimental helicopter is playable through Home → Fly and the direct route. A generated X-Cell reference preset, coupled body/main/tail mechanics, trainer and heading controller, terrain-aware hover trim, skids, ground-strike stop and native checkpoint/trace lifecycle are integrated. The supplied HX-700 Blender source supplies the visual. [Current controls and limits](../HELICOPTER.md); [HELI-16 software evidence](../research/helicopter/HELI-16/README.md). Physical validation, automatic C/M event localization, separate engine/freewheel and servo states, full scenery contact, environmental VFX/audio and H15 performance remain open.
+**Date:** 2026-10-14. **Status:** the experimental helicopter is playable through Home → Fly and the direct route. A generated X-Cell reference preset, coupled body/main/tail mechanics, trainer and heading controller, terrain-aware hover trim, skids, ground-strike stop and native checkpoint/trace lifecycle are integrated. The supplied HX-700 Blender source supplies the visual. The new articulated source is reviewed under HELI-25b; its integration is planned in §8.1.1. [Current controls and limits](../HELICOPTER.md); [HELI-16 software evidence](../research/helicopter/HELI-16/README.md). Physical validation, automatic C/M event localization, separate engine/freewheel and servo states, full scenery contact, environmental VFX/audio and H15 performance remain open.
 **Prefix:** HELI-00…HELI-36, registered in the [track registry](../README.md#tracks-plans-and-step-ids). `H1…H15` (Phase H) is a different namespace.
 **Owner:** helicopter track, under the main line's acceptance; owns the shared inflow law consumed by the drone track.
 **Owns:**
@@ -99,7 +99,7 @@ Consequences to state honestly:
 | Item | Fact | Policy |
 | --- | --- | --- |
 | Configuration | 8.2 kg **instrumented** (avionics on board); flybar head | Fly the validated configuration first, named as such (D3). A stock variant re-estimates m and J and is labelled `estimated`. |
-| Head | Bell-Hiller flybar lumped into a first-order rotor (τe ≈ 0.1 s, Kµ 0.2) | A flybarless head arrives with a second aircraft (HELI-36), calibrated to the Walker/Tischler 360CFX structure (≈ 8× stiffer in roll). |
+| Head | Bell-Hiller flybar lumped into a first-order rotor (τe ≈ 0.1 s, Kµ 0.2) | The electric HX-700 is the current second-aircraft candidate (HELI-36a). Walker/Tischler 360CFX/R-50 work informs model structure; its identified gains/stiffness do not identify this 700-class head. |
 | Validity | µ < 0.15 (≈ 20 m/s), as published | The data file declares the qualified envelope; telemetry warns beyond it. |
 | Estimated inputs | a_mr borrowed (5.5); C_D0 0.024, C_Tmax, tail a/C_Tmax and γ_fb estimated | Kinds copied verbatim from the paper into `kind`/`source`. |
 | Missing | Visual geometry of the actual airframe; tail-gyro details | A visual asset from photos and drawings with provenance (HELI-25); gyro gains `estimated` until a source is read (HELI-02). |
@@ -354,19 +354,11 @@ A real flybarless self-level or rescue mode is **not** an autopilot. It is in sc
 
 ## 5. Data contract
 
-**Recommendation (D5): a sibling format `openrc-rotorcraft v1`**, not a branch of `openrc-aircraft v2`.
+**Implemented:** `openrc-aircraft v2`, `vehicle: "rotorcraft"`, with the dedicated closed [rotorcraft schema](../../app/data/schema/openrc-rotorcraft-v2.schema.json) and reader. The earlier sibling-v1 proposal is superseded by the [current contract boundary](../../AIRCRAFT_CONTRACT.md#experimental-rotorcraft-boundary). Do not route it through the conventional-airplane loader.
 
-- The v2 loader down-converts to v1 and validates a wing, stable-airplane derivatives and a forward shaft. A branch would touch the frozen AS migration and the 152-path register.
-- The sibling format shares the v2 *rules*:
-  - every quantity `{value, unit, kind, source}`
-  - explicit capabilities
-  - inventory-derived mass, CG and inertia
-  - strict unknown-key errors
-  - file-byte and semantic hashes
-  - a generated schema
-- It shares the *kernels*: quantity parsing, inventory and inertia, identity. These are extracted only if needed, with airplane byte-identity proof.
+Every physical quantity retains `{value, unit, kind, source}` and strict unit/domain/unknown-key checks. The current X-Cell reader admits one explicit capability set and aggregate source mass/inertia. Complete component inventory, installed servo topology, identified electric powertrain and new hardware capabilities require explicit schema/reader extensions before use. Preserve existing airplane and X-Cell behavior when adding those branches.
 
-Sketch of the rotorcraft-specific blocks; the exact paths are fixed in HELI-10:
+The following is a future module sketch, not the current JSON schema; its richer inventory, governor, freewheel and actuator blocks need their own consumers and tests:
 
     vehicle: "rotorcraft"
     capabilities: { controls: "ccpm120_flybar_lumped", gear: "skids", propulsion_layout: "single_main_tail_rotor",
@@ -422,16 +414,46 @@ Sketch of the rotorcraft-specific blocks; the exact paths are fixed in HELI-10:
 
 ### 8.1 Visual model
 
-- **Source (D9), selected by the owner.** Reuse [`HX-700_Helicoptero_RC.blend`](../../Helicopter%203d%20acrobatic/HX-700_Helicoptero_RC.blend) and its embedded `generar_hx700.py`/`LEEME`; do not create a replacement helicopter asset. The adjacent supplied PDF is an IlGoblin Piuma Competizione SG779 assembly manual used as a class-700 dimension/spec reference. The [HELI-25 audit](../research/helicopter/HELI-25/README.md) owns source hashes, measurements, hierarchy, export bindings and remaining gates.
+- **Source (D9), selected by the owner.** The installed visual comes from [`HX-700_Helicoptero_RC.blend`](../../Helicopter%203d%20acrobatic/HX-700_Helicoptero_RC.blend) and its embedded `generar_hx700.py`/`LEEME`. The adjacent supplied PDF is an IlGoblin Piuma Competizione SG779 assembly manual used as a class-700 dimension/spec reference. The [HELI-25 audit](../research/helicopter/HELI-25/README.md) owns that source's hashes, measurements and export bindings. The articulated replacement delivered on 2026-10-14 is reviewed in [HELI-25b](../research/helicopter/HELI-25b/README.md); §8.1.1 owns its integration. Reuse the supplied models and preserve their source files.
 - **Identity and scale.** HX-700 is a procedural flybarless 700-class visual design; the identified flight reference is the instrumented flybar X-Cell .60 SE. These are different configurations. Preserve the authored HX-700 scale and identity. A research preview may show the supplied model, but attaching X-Cell flight behavior requires an explicit research-surrogate label and measured alignment; a qualified HX-700 needs its own physical inventory and electronics. Do not derive inertia, CG, aerodynamic coefficients or gearing from appearance or render drivers.
 - **Coordinates and regeneration.** Source metres use +X nose, +Y left and +Z up. Its structural adapter is `[-x,-y,z]`; body FRD is `[x,-y,-z]` after subtracting an established CG. Both are proper rotations. Preserve the source file, root and authored pivots; export through the source pipeline with an aircraft-only selection. Native Godot binding, package provenance, draw/triangle budgets and source/export freshness must pass before runtime integration.
 - **Node contract** (registered with the model owners):
   - The root stays `airplane`, so existing consumers keep working.
   - `propeller` maps to the **main-rotor mast mount**, with local +Z on the shaft.
   - New keys: `tail_rotor`, `skid_left`, `skid_right`, plus capability-dependent `swashplate`, `flybar` and servo-arm `*_hinge` nodes. The HX-700 has no flybar; do not add one to make its hierarchy resemble the X-Cell.
-  - Bind the existing `Pivote_Rotor_Principal` and `Pivote_Rotor_Cola` via an adapter. Source `velocidad_rotor`/4.6× scripted drivers are presentation animation; simulator telemetry must own animation in a future runtime binding. Blade-pitch articulation and missing swash/servo links require source-pipeline work and verification.
+  - The installed adapter binds `Pivote_Rotor_Principal` and `Pivote_Rotor_Cola`. The earlier source's `velocidad_rotor`/4.6× scripted drivers are presentation animation; simulator telemetry owns runtime animation. The new source provides swash/servo links, but their runtime export and blade-pitch bindings still require the work in §8.1.1.
 - **Spin.** `main.gd` spins the tail rotor at n_tr·Ω through a new, read-only rotor telemetry accessor, not `aux[0]` guesses.
 - **Swashplate and blade pitch** are animated from servo state, following the rule that one servo state drives physics and visuals.
+
+### 8.1.1 Articulated HX-700 delivery integration
+
+**2026-10-14:** the owner supplied `NEW HELI/HX-700_Helicoptero_RC_1.blend`. [HELI-25b](../research/helicopter/HELI-25b/README.md) owns its immutable source identity, 26 pose probes, static-export limitations and inspection images. This section owns the remaining implementation plan. The existing flyable trainer stays available throughout.
+
+**Contract first.** Add a versioned rotorcraft construction profile/sidecar through the AS model-binding pipeline, with a strict reader before installing the new asset. Keep existing conventional manifest readers valid. Proposed binding roles are main/tail shaft, fixed/rotating swash, four actuator outputs, each blade's feather frame, tail slider/yoke/bellcrank, and nine linkage endpoint pairs. Each binding needs a stable semantic ID, source-node reference, parent, local rest transform, axis/pivot frame, sign, SI limits and source hash. Physical component/actuator IDs and replaceable Blender names are different identities. Record attachment coordinates in their actual local rest frames; do not reinterpret construction-world JSON points as already-local pivots.
+
+The new source declares no `openrc_section` properties. Extend the rotorcraft section vocabulary/collector with CR before tagging rotor/head/boom/skid/canopy/battery groups; do not borrow incompatible wing/propeller categories or enable damage merely by separating meshes. The current Timber handoff is useful for export discipline, not a helicopter topology specification.
+
+| Order / owning steps | Deliverable | Acceptance before advancing |
+| --- | --- | --- |
+| 1 · HELI-25b | Source/rig review | Delivered: pinned source, inventory, poses and a disposable static export. No runtime asset replaced. |
+| 2 · HELI-25c, AS-09/10/13 | Neutral game export and generated binding profile | Detach demonstration actions; preserve evaluated neutral pose. Export required anchors or encode their local frames. No cameras, force arrows or mixer/telemetry controllers in the flight asset. Verify every required binding, rest matrix, axis, handedness and all material/image dependencies in native Godot and a fresh packaged export. Missing/duplicate bindings block activation. |
+| 3 · HELI-13a/15a, D6-SAV-02/03/07 | Pure four-actuator and deterministic linkage kernels | Distinguish pilot demand, controller target, travel/rate-limited target and achieved angle. Three swash actuators plus tail feed a float64 forward-kinematic model. Prove rate/first-order response with refinement and analytic step/ramp checks before live coupling. Do not execute Blender drivers as flight physics. |
+| 4 · HELI-17a | Coupled state, interpolation, checkpoint and trace update | Version the four achieved actuator states and fixed-step shaft phase coherently; only now feed achieved collective/cyclic/tail output into aero and visuals. Settle achieved actuator state in hover trim. Reset, pause, mode changes, radio loss, recording and atomic restore cover the whole layout. Keep historical readers explicit. Repeated variable-RPM flights at 30/60/144 fps reproduce servo/blade pose as well as body state. |
+| 5 · HELI-26a | Mechanical display and rotor blur | Fixed mast/gearbox remain fixed; rotating inner swash follows the shaft while outer swash does not spin. Feather blades once, avoiding grip/blade double rotation. Tail slider does not spin; yoke spins/slides. Flap/disc orientation is separate from feather pitch. Extend cached blur for articulated frames or use a declared phase-averaged disc; measure profiles offline for this exact source. |
+| 6 · HELI-23/25c/26a | Game detail tiers and performance | Preserve the detailed master. Group static parts only across compatible material/motion/section boundaries; keep all joints. Reduce hidden bolts, bearing internals and gear teeth for flight view, retaining detail in inspection view. Record triangles, surfaces, draw calls, GPU/CPU and joint-update cost; defer off-screen visual updates only. Never lower physics sampling with camera distance. The H15-host Gate P performance target remains open. |
+| 7 · HELI-36a, EL owners | Separate electric HX-700 configuration | Author component masses/CG/inertia, rotor/blade data, motor/ESC/pack/BEC, gearing/losses and controller evidence. Add electric drive/freewheel only through validated laws and consistent signed momentum. Software-qualified estimated configuration may fly as experimental; physical/pilot qualification remains explicit. Never retune X-Cell silently. |
+
+**Servo and linkage rules.** Reuse the shared actuator/catalog work; a 40 mm servo body does not identify a Savox/Futaba model. Record BEC rail voltage and loaded rate/torque evidence: 12S motor voltage is not servo supply voltage. Convert manufacturer seconds/60° to the declared installation travel; keep subtrim, direction, endpoints and geometry in the installation. Do not add catalog servo mass on top of an aggregate body that already includes servos. Model deadband/backlash or voltage/load effects only with an authored law and separate evidence.
+
+Use nominal inverse kinematics to obtain actuator targets, then achieved actuator positions and actual link lengths for forward kinematics. Check each loop's reachability and residual, servo stops, assembly branch and continuity through full travel. Reject out-of-range authoring, including the +100 mm cyclic-rod negative control against its ±3 mm source limit, independently of Blender's alert/lock flags. Never turn an invalid `acos` into a plausible pose by clamping without reporting it. Do not use Stretch To as a physical rod law. Fit a bounded analytic/harmonic mapping, or qualify a bounded solver, before putting nonlinear mechanics inside every RK stage; fixed arbitrary pass counts are not a convergence guarantee. Blender pose samples are cross-tool oracle data, supplemented by independent lengths, transformations and residual checks. Use the standalone servo kernel as a reference; do not call its full-tick state updater four times inside RK stages. The selected continuous or sampled actuator law needs explicit state/held-target semantics.
+
+**Phase and aero rules.** Resolve the source's 53.13° swash phase against the flight model's cyclic/dynamic convention using signed blade-angle samples over a revolution; do not add another generic 90° precession. Separate mechanical feather pitch, `a1/b1` disc flap and coning. The existing mean-rotor law has no coning/elastic-blade state, so omit or clearly qualify such visual approximation. If achieved geometric blade pitch feeds the mean aero law, derive its collective and first harmonics without aliasing a 2100 rpm rotor through a 240 Hz instantaneous blade sample. A per-blade unsteady aero model requires its own timestep/cost qualification.
+
+Integrate phase from accepted shaft-speed history at fixed ticks/stages, not render `dt` or final RPM multiplied by elapsed time; interpolate the unwrapped phase correctly. Geared tail phase and offsets must match the selected drive. Motor-side slip/coast phase requires a separate qualified engine/motor/freewheel model; the Blender demonstration is not proof of that dynamics.
+
+**Two configuration tracks.** First qualify the new model in an isolated mechanical preview. Any intermediate use on X-Cell remains explicitly a research surrogate and must resolve radius/pivot/contact alignment without scaling the whole articulated mechanism. Its 4.66 tail ratio cannot simultaneously depict the source's 4.923077 tooth-exact transmission; keep incompatible transmission demonstrations disabled or explicitly illustrative. The preferred faithful endpoint is the separate electric HX-700 profile (5.2 kg / 2100 rpm are currently source declarations, not measurements). Source aerodynamic/governor telemetry never overrides flight state or coefficients.
+
+**Required fixtures:** neutral; collective ±; cyclic ± and combined ring limits over 0/90/180/270° and a dense phase sweep; positive/negative tail; travel/rate saturation; per-servo subtrim; rod and head tracking offsets; invalid/unreachable loops; fixed mast/gearbox; independent instances; pause/reset/replay; physical-radio disconnect/mode transitions; variable-RPM capture and 30/60/144 fps pose identity; low/high-RPM blur; source/package dependency failures. Physics-changing actuator integration gets new explained rotorcraft evidence while preserving legacy-plane goldens. No blanket all-axis 0.001° claim: the source has measurable phase-dependent mean-pitch coupling.
 
 ### 8.2 Rotor disc that never strobes
 
@@ -640,6 +662,8 @@ Steps HELI-25…27 can start in parallel with Phase 1 because their file boundar
 | HELI-24 | Model-to-paper comparison: digitized Gavrilets heave, axial roll and pitch-pulse responses (held-out), and the governor step (calibration) | Report in `docs/research/helicopter/HELI-24/`; tolerances §10 |
 | HELI-25 | Supplied Blender visual, reproducible static GLB/profile pipeline, adapter and playable catalog entry | Implemented; [HELI-25 provenance and verification](../research/helicopter/HELI-25/README.md). Source identity, physical calibration and distribution provenance remain separate gates. |
 | HELI-25a | Audit and reuse the supplied HX-700 `.blend`, embedded generator and adjacent reference PDF | [Source audit, runtime bindings and captures](../research/helicopter/HELI-25/README.md) delivered with a playable catalog entry. Source-only regeneration reproduces GLB/profile hashes and leaves the `.blend` unchanged. Physical identity, articulation, distribution provenance and presentation budgets remain open. |
+| HELI-25b | Review the delivered articulated HX-700 revision | [Source, 26 pose probes and static-export inspection](../research/helicopter/HELI-25b/README.md) complete; integration order in §8.1.1. |
+| HELI-25c | Game export, semantic rig bindings and source/package admission | Planned; all required anchors, rest transforms and resource proofs pass before selecting the new visual. |
 | HELI-26 | Rotor disc: analytic coverage shader, cone with coning/TPP, cross-fade by Δθ per frame, tail disc, rotor shadow | Phase-independence test; rpm and view sweep captures; frame-sequence aliasing capture |
 | HELI-27 | Rotor-wash field (pure) and global uniforms; near-grass and turf response | Headless known answers (peak 1.75R; zero thrust → zero wash); captures at z/D = 0.3, 1, 2; cost |
 | HELI-28 | Particles: Compatibility probe (with SM-00), clippings and dust emitters, level-of-detail tiers, determinism settings | Probe report; captures; VFX p95 on the owner's host |
@@ -655,7 +679,8 @@ Steps HELI-25…27 can start in parallel with Phase 1 because their file boundar
 | --- | --- | --- |
 | HELI-34 | Owner flight session (Gate HELI-P, §10) | Ratings and traces in `docs/research/helicopter/HELI-34/` |
 | HELI-35 | Physical data, if the owner or a contributor has a helicopter: hover power and rpm (ESC or engine telemetry), autorotation descent rate (baro/GPS), weight/CG/swing inertia via the VAL-5/6 reducers | Measurements with uncertainty; held-out comparison |
-| HELI-36 | Second aircraft: flybarless electric 700 class (stiff hub, FBL rate loop, ESC governor) calibrated to the 360CFX/R-50 structure; then 3-state Pitt-Peters and disk-quadrature blade element behind capabilities | Separate plan revision |
+| HELI-36 | Second aircraft: independently authored flybarless electric 700 class; later richer inflow/blade aero behind capabilities | HX-700 is the current candidate under HELI-36a. 360CFX/R-50 sources inform architecture, not transferred calibration. |
+| HELI-36a | Electric HX-700 configuration matching the new visual | Planned under §8.1.1; component inventory, electric drive, BEC/servo evidence, FBL identification and qualification stay separate from X-Cell. |
 
 **Parallel lanes** (one agent per lane, each with disjoint files):
 
@@ -687,11 +712,11 @@ Integration steps (HELI-16/17) are serialized with the main line.
 | D2 | Reference aircraft | **X-Cell .60 SE (MIT configuration)**: the only complete, validated data. Alternative: a modern 700-class flybarless electric with estimated data. |
 | D3 | Mass configuration | **As identified (8.2 kg, instrumented)** first; a stock variant later, labelled estimated |
 | D4 | Head type first | **Flybar lumped** (matches the data); flybarless with the second aircraft |
-| D5 | Data format | **Sibling `openrc-rotorcraft v1`** sharing the v2 rules and kernels |
+| D5 | Data format | **Implemented:** `openrc-aircraft v2`, `vehicle: "rotorcraft"`, dedicated closed schema/reader (§5). Versioned actuator/construction extensions precede HX-700 adoption. |
 | D6 | Input layout | **Keep four sticks**; flight/electronics modes in `modes`; simulator-owned curves |
 | D7 | Beginner aid | Offer the self-level only as labelled "trainer electronics", off by default. No invented autopilot. |
 | D8 | Prefix and ownership | `HELI-`; the owned/coordinated paths in the header |
-| D9 | Visual asset source | **Selected 2026-10-13:** reuse the supplied HX-700 Blender file and embedded generator. HELI-25a records provenance/measurements; qualify the export adapter before HELI-25 catalog PREVIEW. |
+| D9 | Visual asset source | **Selected 2026-10-13; new delivery 2026-10-14:** reuse the supplied HX-700 sources and embedded generator. HELI-25a owns the installed visual; HELI-25b reviews the articulated revision, with adoption planned in §8.1.1. |
 | D10 | Pad placement and default start | Pad on the mown area north of the pilot at ≈ 10–15 m; start on the pad, rotor stopped, hold engaged |
 
 ## 12. Risks

@@ -1,0 +1,59 @@
+{
+  "schema": "openrc-avanti-blender-source-v1",
+  "revision": "av31-blender-flight-1",
+  "blender_version": "5.2.2 LTS",
+  "blender_build_hash": "d13f752e3b9c",
+  "source_blend_sha256": "4649d5527da8cc584770279d2ff4bc1494a29445c71f52a2103c33c7b0f05512",
+  "source_geometry_sha256": "77880ace41f6c2ebd0bf30f832ec0414505570850ca0ee21bd1ac7378c14805a",
+  "exporter_lf_sha256": "f1cf0b72479ecb3540afe27454884551aa68f5f42e9282ab94b5b50d9c162d1d",
+  "asset_sha256": "ad9c0c4daf1dd1882b59c8a1344f3cc7a1f51507e998349653d399d52a880d6e",
+  "asset_bytes": 9390660,
+  "selected_source_triangles": 635679,
+  "game_triangles": 130710,
+  "mesh_nodes": 19,
+  "material_surfaces": 75,
+  "materials": 26,
+  "textures": 22,
+  "source_bounds": {
+    "min": [
+      -0.99820006,
+      -0.07156899,
+      -0.93804002
+    ],
+    "max": [
+      0.99819994,
+      0.57664639,
+      1.29735994
+    ]
+  },
+  "game_bounds": {
+    "min": [
+      -0.99820018,
+      -0.07156899,
+      -0.93804002
+    ],
+    "max": [
+      0.9982,
+      0.57664704,
+      1.29735994
+    ]
+  },
+  "native_to_godot": "(-x, z, y), metres; proper rotation, no scale",
+  "gear_pose": {
+    "state": "stowed",
+    "source_action": "GearRetract",
+    "source_frame": 211
+  },
+  "export_options": {
+    "export_format": "GLB",
+    "use_selection": true,
+    "export_yup": true,
+    "export_apply": true,
+    "export_animations": false,
+    "export_extras": true,
+    "export_cameras": false,
+    "export_lights": false
+  },
+  "physical_validation": false,
+  "uv_decimal_places": 6
+}

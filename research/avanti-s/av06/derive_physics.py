@@ -1,10 +1,13 @@
 #!/usr/bin/env python3
 """AV-06: physics data of the SebArt Avanti S Jet 2.2m (A200, 2.00 m span) with a JetCat P100-RX, derived and reproducible.
 
-Reads the visual geometry (assets/aircraft/avanti-s-a200/geometry.json, AV-02 blockout), the sourced inputs in
+Reads the physical surrogate geometry (assets/aircraft/avanti-s-a200/geometry.json, AV-02 blockout), collision-only
+gear-up witnesses from assets/aircraft/avanti-s-a200/blender-geometry.json, the sourced inputs in
 research/avanti-s/av06/inputs.json (manual, catalog, research reports) and the Ugly Stik data file (shared conventions and
-the provisional local-surface limits). Writes app/data/aircraft/sebart_avanti_s_a200.json (openrc-aircraft v2 with
-propulsion kind "turbine", AV-05) and research/avanti-s/av06/derivation.md.
+the provisional local-surface limits). The Blender geometry supplies collision probes only; it does not define or calibrate
+the physical aircraft, aerodynamic surfaces, mass properties, or turbine installation. Writes
+app/data/aircraft/sebart_avanti_s_a200.json (openrc-aircraft v2 with propulsion kind "turbine", AV-05) and
+research/avanti-s/av06/derivation.md.
 
 Methods are textbook estimates, not flight identification: Helmbold/DATCOM lift slopes with sweep, DATCOM downwash with
 tail height, Munk-Multhopp fuselage moment with Biot-Savart upwash, tail-volume derivatives, strip theory for ailerons and
@@ -14,6 +17,7 @@ carries its unit, evidence kind and source.
     python3 research/avanti-s/av06/derive_physics.py           # writes the JSON and the report
     python3 research/avanti-s/av06/derive_physics.py --check   # fails if either file is stale
 """
+import hashlib
 import json
 import math
 import os
@@ -28,6 +32,7 @@ from migrate import legacy_input, numeric_parity, upgrade  # noqa: E402
 from physical_identity import validate_physical_identity  # noqa: E402
 
 GEOMETRY = ROOT / "assets/aircraft/avanti-s-a200/geometry.json"
+COLLISION_GEOMETRY = ROOT / "assets/aircraft/avanti-s-a200/blender-geometry.json"
 INPUTS = ROOT / "research/avanti-s/av06/inputs.json"
 STIK = ROOT / "app/data/aircraft/jensen_ugly_stik_60.json"
 OUT_DIR = Path(os.environ.get("OPENRC_AIRCRAFT_OUTPUT_DIR", ROOT / "app/data/aircraft")).resolve()
@@ -39,14 +44,20 @@ G0 = 9.80665
 NU = 1.46e-5
 SCRIPT = "research/avanti-s/av06/derive_physics.py"
 GEO_SRC = "assets/aircraft/avanti-s-a200/geometry.json (AV-02 visual blockout, estimated)"
+COLLISION_GEOMETRY_SRC = "assets/aircraft/avanti-s-a200/blender-geometry.json"
 
 g = json.loads(GEOMETRY.read_text(encoding="utf-8"))
+collision_geometry_bytes = COLLISION_GEOMETRY.read_bytes()
+collision_geometry_hash = hashlib.sha256(collision_geometry_bytes).hexdigest()
+collision_geometry = json.loads(collision_geometry_bytes.decode("utf-8"))
 IN = globals().get("IN_OVERRIDE") or json.loads(INPUTS.read_text(encoding="utf-8"))  # sensitivity.py injects modified inputs
 log = []
 # Wing station along the fuselage (inputs airframe.wing_forward_shift): every fuselage-attached part (fuselage, canopy,
 # tail, fin, installation, fuselage items) moves aft by this much relative to the wing and its leading-edge datum, i.e.
 # the wing sits that much further forward on the fuselage than the visual blockout draws it. 0 = the blockout as drawn.
 DZ = IN["airframe"]["wing_forward_shift"]["value"]
+if not math.isfinite(DZ):
+    raise ValueError("airframe.wing_forward_shift must be finite")
 for r in g["fuselage_stations"] + g["canopy_stations"]:
     r[0] += DZ
 for r in g["tail"]["stations"]:
@@ -655,29 +666,58 @@ tq = lambda key, unit: q(eng[key]["value"], unit, eng[key]["kind"], eng[key]["so
 intake = g["installation"]["intake_stations"][0]
 EXHAUST_Z = 1.1685 + DZ  # app/aircraft/avanti_s_model.gd: the fixed exhaust ring at the tail cone (model z)
 engine_c = g["installation"]["engine_center"]
-canopy_top = max(g["canopy_stations"], key=lambda r: r[2])
-tip = Wg["stations"][-1]
-ts = Tg["stations"][-1]
-crash_hull_probes = [
-    ("probe_wing_left_le", le(tip[1], tip[3], -semi)),
-    ("probe_wing_right_le", le(tip[1], tip[3], semi)),
-    ("probe_wing_left_te", le(tip[2], tip[3], -semi)),
-    ("probe_wing_right_te", le(tip[2], tip[3], semi)),
-    ("probe_nose_tip", le(FS[0][0])),
-    ("probe_tail_cone", le(FS[-1][0], FS[-1][3])),
-    ("probe_belly_station_zero", le(0.0, fus_at(0.0)[3])),
-    ("probe_belly_station_minus_half", le(-0.5, fus_at(-0.5)[3])),
-    ("probe_belly_station_plus_six", le(0.6, fus_at(0.6)[3])),
-    ("probe_stabilizer_left_tip", le(ts[2], ts[3], -ts[0])),
-    ("probe_stabilizer_right_tip", le(ts[2], ts[3], ts[0])),
-    ("probe_fin_top", le(max(z for z, _ in fin_raw), fin_top_y)),
-    ("probe_canopy_top", le(canopy_top[0], canopy_top[2])),
-]
+CRASH_HULL_IDS = (
+    "probe_wing_left_le", "probe_wing_right_le", "probe_wing_left_te", "probe_wing_right_te",
+    "probe_nose_tip", "probe_tail_cone", "probe_belly_station_zero", "probe_belly_station_minus_half",
+    "probe_belly_station_plus_six", "probe_stabilizer_left_tip", "probe_stabilizer_right_tip",
+    "probe_fin_top", "probe_canopy_top",
+)
+FUSELAGE_ATTACHED_CRASH_HULL_IDS = {
+    "probe_nose_tip", "probe_tail_cone", "probe_belly_station_zero", "probe_belly_station_minus_half",
+    "probe_belly_station_plus_six", "probe_stabilizer_left_tip", "probe_stabilizer_right_tip",
+    "probe_fin_top", "probe_canopy_top",
+}
+collision_probe_records = collision_geometry.get("collision_probes")
+if not isinstance(collision_probe_records, list):
+    raise ValueError(f"{COLLISION_GEOMETRY_SRC} must contain a collision_probes array")
+collision_probe_ids = [record.get("id") if isinstance(record, dict) else None for record in collision_probe_records]
+if collision_probe_ids != list(CRASH_HULL_IDS):
+    raise ValueError(
+        f"{COLLISION_GEOMETRY_SRC} collision_probes IDs/order must be exactly {list(CRASH_HULL_IDS)!r}; "
+        f"found {collision_probe_ids!r}"
+    )
+wing_crash_hull_ids = set(CRASH_HULL_IDS[:4])
+if (FUSELAGE_ATTACHED_CRASH_HULL_IDS & wing_crash_hull_ids
+        or (FUSELAGE_ATTACHED_CRASH_HULL_IDS | wing_crash_hull_ids) != set(CRASH_HULL_IDS)):
+    raise AssertionError("Crash-hull witness shift groups must partition the expected IDs")
+
+crash_hull_probes = []
+for record in collision_probe_records:
+    model_position = record.get("model_position")
+    if (not isinstance(model_position, list) or len(model_position) != 3
+            or any(isinstance(value, bool) or not isinstance(value, (int, float)) or not math.isfinite(value)
+                   for value in model_position)):
+        raise ValueError(
+            f"{COLLISION_GEOMETRY_SRC} probe {record['id']} must have three finite numeric model_position values"
+        )
+    model_x_right, model_y_up, model_z_aft = model_position
+    le_position = [model_z_aft, model_x_right, model_y_up]
+    # This matches the existing physical wing_forward_shift convention: the wing stays fixed while every
+    # fuselage-mounted item (including the tail, fin, canopy and belly witnesses) moves aft by DZ.
+    if record["id"] in FUSELAGE_ATTACHED_CRASH_HULL_IDS:
+        le_position[0] += DZ
+    crash_hull_probes.append((record["id"], le_position))
 data = {
     "format": "openrc-aircraft v1",
     "physical_identity_version": 1,
     "id": "sebart-avanti-s-a200-p100rx",
-    "description": f"Ventage Jet, based on the SebArt Avanti S Jet 2.2m ARF (A200, {b:.2f} m span) with a JetCat P100-RX turbine. EXPERIMENTAL first physics estimate (AV-06), generated by {SCRIPT}; not flight-identified. Flaps up, gear up (in-air start; no landing gear contacts). Visual geometry: assets/aircraft/avanti-s-a200/geometry.json.",
+    "description": (
+        f"Ventage Jet, based on the SebArt Avanti S Jet 2.2m ARF (A200, {b:.2f} m span) with a JetCat P100-RX turbine. "
+        f"EXPERIMENTAL first physics estimate (AV-06), generated by {SCRIPT}; not flight-identified. Physical mass, "
+        "aerodynamic and turbine estimates retain the AV-02 geometry.json surrogate. Visual model and gear-up collision "
+        "witnesses use the imported Blender geometry; its installation is not calibrated. Flaps up, gear up "
+        "(in-air start; no landing gear contacts)."
+    ),
     "frames": {
         "le_frame": "positions in metres from the root wing leading edge beside the fuselage (model z 0) on the root wing mid-plane (model y 0): [x_aft, y_right, z_up]",
         "body": "simulation body axes FRD about the CG: x forward = -x_aft, y right, z down = -z_up",
@@ -704,7 +744,14 @@ data = {
              **({"energy_source": ENERGY_SOURCES[it[0]]} if it[0] in ENERGY_SOURCES else {}))
         for it in items
     ],
-    "crash_hull": q([point for _, point in crash_hull_probes], "m", "derived", "Points that hit the ground first (le frame) from " + GEO_SRC + ": wing tips LE/TE, nose and tail cone, belly at three stations (gear UP), stab tips, fin top, canopy top. No landing gear contacts: any ground contact is a crash (gear up)"),
+    "crash_hull": q(
+        [point for _, point in crash_hull_probes], "m", "derived",
+        f"13 gear-up collision witnesses from the imported Blender visual model in {COLLISION_GEOMETRY_SRC} "
+        f"(SHA-256 {collision_geometry_hash}); source model_position [x_right, y_up, z_aft] mapped to the "
+        "physical LE frame [x_aft, y_right, z_up]. Wing witnesses remain fixed and fuselage-attached witnesses "
+        "include wing_forward_shift. This visual witness source does not replace the AV-02 physical geometry "
+        "surrogate or calibrate installation. No landing gear contacts: any ground contact is a crash (gear up)."
+    ),
     "crash_hull_ids": [identity for identity, _ in crash_hull_probes],
     # CR-01d: one semantic name per crash_hull point above, in the same order (crash presentation only).
     "crash_hull_components": ["left_wing_tip", "right_wing_tip", "left_wing_tip", "right_wing_tip", "nose", "tail_end", "belly", "belly", "belly", "left_stab_tip", "right_stab_tip", "fin_top", "canopy"],
@@ -834,9 +881,13 @@ report = f"""# AV-06: Ventage Jet with JetCat P100-RX, physics derivation
 
 Source aircraft: SebArt Avanti S (A200).
 
-Generated by `{SCRIPT}` from `{GEOMETRY.relative_to(ROOT).as_posix()}` and `inputs.json`; do not edit (regenerate). Output:
-`{OUT.relative_to(ROOT).as_posix()}`. **Experimental**: textbook estimates from an estimated visual geometry and sourced kit/engine data,
-not flight identification. Flaps up and gear up; in-air start only.
+Generated by `{SCRIPT}` from physical surrogate `{GEOMETRY.relative_to(ROOT).as_posix()}`, collision-only visual witnesses
+`{COLLISION_GEOMETRY_SRC}` (SHA-256 `{collision_geometry_hash}`), `inputs.json`, and shared conventions; do not edit (regenerate).
+Output: `{OUT.relative_to(ROOT).as_posix()}`. **Experimental**: textbook estimates from the AV-02 estimated physical surrogate
+and sourced kit/engine data, not flight identification. The imported Blender geometry supplies gear-up collision witnesses only;
+its visual turbine installation is not calibrated and it does not define the physical mass, aerodynamics, inertia or thrust line.
+Flaps up and gear up; in-air start only. `--check` recomputes the sidecar hash and rejects stale generated output/report or an
+invalid/missing collision source.
 
 The final JSON is upgraded to `openrc-aircraft v2` by the ID-gated standardizer. Migration numeric parity: {parity['preserved_numeric_leaves']} original leaves preserved, {parity['relocated_cladot_numeric_leaves']} relocated CLadot leaves, {parity['added_numeric_leaves']} explicit compatibility-default leaves added, {parity['numeric_differences']} differences.
 
@@ -863,7 +914,10 @@ The clean-airframe coefficient is an estimate, not an Avanti flight measurement 
 
 ## Known simplifications
 
-- Geometry is the AV-02 visual blockout (estimated sections); see the inputs' scale factors and their sources.
+- Physical mass, aerodynamic, inertia, and thrust-line estimates continue to use the AV-02 visual blockout as a physical
+  surrogate (estimated sections); see the inputs' scale factors and their sources. The imported Blender model is the visual
+  model and its `collision_probes` provide gear-up crash witnesses only; no physical or turbine-installation calibration is
+  claimed.
 - Flaps fixed up; retracts up. No landing gear contacts (crash hull only): takeoff and landing need AV-09.
 - Fuel mass fixed at the declared state (no burn, AV-10). The session has a discrete on/off state; it does not model ECU
   ignition/autostart, a physical spool-down transient, restart behavior or flameout dynamics.

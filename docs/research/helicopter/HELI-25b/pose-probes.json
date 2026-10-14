@@ -1,0 +1,2490 @@
+{
+  "source_sha256": "1919de349b74286bc36770ab2d7d08f743fd8a4062608d488c7e4e276103725f",
+  "unchanged": true,
+  "samples": [
+    {
+      "case": "neutral",
+      "phase_rad": 0,
+      "inputs": {},
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 1.6805506675154902e-06,
+        "paso_pala_B_grados": 1.6805506675154902e-06,
+        "paso_colectivo_medido_grados": 1.6805506675154902e-06,
+        "error_colectivo_bieletas_grados": 1.6805506675154902e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 0.0,
+        "inclinacion_plato_Y_grados": -1.5068806646922894e-08,
+        "error_inclinacion_plato_grados": 1.5068806646922894e-08,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.6288415281451307e-05,
+        "servo_delantero_der_grados": 1.6288415281451307e-05,
+        "servo_trasero_grados": 0.0,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 89.99999237060547,
+        "brazo_varilla_delantera_der_grados": 89.99999237060547,
+        "brazo_varilla_trasera_grados": 90.0,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50012000582548,
+          "target_mm": 45.50012000582548,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406819075575942,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.7814798034597743e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682079916173,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.953838382069307e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "neutral",
+      "phase_rad": 1.5707963267948966,
+      "inputs": {},
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 1.6805506675154902e-06,
+        "paso_pala_B_grados": 1.6805506675154902e-06,
+        "paso_colectivo_medido_grados": 1.6805506675154902e-06,
+        "error_colectivo_bieletas_grados": 1.6805506675154902e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 0.0,
+        "inclinacion_plato_Y_grados": -1.5068806646922894e-08,
+        "error_inclinacion_plato_grados": 1.5068806646922894e-08,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.6288415281451307e-05,
+        "servo_delantero_der_grados": 1.6288415281451307e-05,
+        "servo_trasero_grados": 0.0,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 89.99999237060547,
+        "brazo_varilla_delantera_der_grados": 89.99999237060547,
+        "brazo_varilla_trasera_grados": 90.0,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50012000582548,
+          "target_mm": 45.50012000582548,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406823904703902,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.264392599433563e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682269993117,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.14391532612035e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "neutral",
+      "phase_rad": 3.141592653589793,
+      "inputs": {},
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 1.6805506675154902e-06,
+        "paso_pala_B_grados": 1.6805506675154902e-06,
+        "paso_colectivo_medido_grados": 1.6805506675154902e-06,
+        "error_colectivo_bieletas_grados": 1.6805506675154902e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 0.0,
+        "inclinacion_plato_Y_grados": -1.5068806646922894e-08,
+        "error_inclinacion_plato_grados": 1.5068806646922894e-08,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.6288415281451307e-05,
+        "servo_delantero_der_grados": 1.6288415281451307e-05,
+        "servo_trasero_grados": 0.0,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 89.99999237060547,
+        "brazo_varilla_delantera_der_grados": 89.99999237060547,
+        "brazo_varilla_trasera_grados": 90.0,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50012000582548,
+          "target_mm": 45.50012000582548,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406822326262454,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.1065484545678146e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682126084336,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.0000065450508373e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "neutral",
+      "phase_rad": 4.71238898038469,
+      "inputs": {},
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 1.6805506675154902e-06,
+        "paso_pala_B_grados": 1.6805506675154902e-06,
+        "paso_colectivo_medido_grados": 1.6805506675154902e-06,
+        "error_colectivo_bieletas_grados": 1.6805506675154902e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 0.0,
+        "inclinacion_plato_Y_grados": -1.5068806646922894e-08,
+        "error_inclinacion_plato_grados": 1.5068806646922894e-08,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.6288415281451307e-05,
+        "servo_delantero_der_grados": 1.6288415281451307e-05,
+        "servo_trasero_grados": 0.0,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 89.99999237060547,
+        "brazo_varilla_delantera_der_grados": 89.99999237060547,
+        "brazo_varilla_trasera_grados": 90.0,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50012000582548,
+          "target_mm": 45.50012000582548,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406818793008227,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.753223031959351e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682414789736,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.2887119452595925e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "collective_plus",
+      "phase_rad": 0,
+      "inputs": {
+        "paso_colectivo": 10.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 9.999956130981445,
+        "paso_pala_B_grados": 9.999956130981445,
+        "paso_colectivo_medido_grados": 9.999956130981445,
+        "error_colectivo_bieletas_grados": 2.5613210254959995e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": 4.696797847747803,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 0.0,
+        "inclinacion_plato_Y_grados": -1.5337906944523638e-08,
+        "error_inclinacion_plato_grados": 1.5337906944523638e-08,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 15.13956356048584,
+        "servo_delantero_der_grados": 15.13956356048584,
+        "servo_trasero_grados": -15.139549255371094,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 74.55037689208984,
+        "brazo_varilla_delantera_der_grados": 74.55037689208984,
+        "brazo_varilla_trasera_grados": 74.07376098632812,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.86801920810296,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.7170786605902322e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.86801920810296,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.7170786605902322e-06
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011821151456,
+          "target_mm": 45.50012000582548,
+          "error_mm": -1.794310918512565e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50000321335354,
+          "target_mm": 73.50000780090953,
+          "error_mm": -4.587555991975023e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50000321335354,
+          "target_mm": 73.50000780090953,
+          "error_mm": -4.587555991975023e-06
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406819075575942,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.7814798034597743e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682079916173,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.953838382069307e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "collective_minus",
+      "phase_rad": 0,
+      "inputs": {
+        "paso_colectivo": -10.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": -10.000015258789062,
+        "paso_pala_B_grados": -10.000015258789062,
+        "paso_colectivo_medido_grados": -10.000015258789062,
+        "error_colectivo_bieletas_grados": 3.4150946248701075e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": -4.6792216300964355,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 0.0,
+        "inclinacion_plato_Y_grados": -1.4800724201791127e-08,
+        "error_inclinacion_plato_grados": 1.4800724201791127e-08,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": -15.053695678710938,
+        "servo_delantero_der_grados": -15.053695678710938,
+        "servo_trasero_grados": 15.053712844848633,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 103.85066986083984,
+        "brazo_varilla_delantera_der_grados": 103.85066986083984,
+        "brazo_varilla_trasera_grados": 104.27582550048828,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.86801299350924,
+          "target_mm": 46.86802092518162,
+          "error_mm": -7.931672378447274e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.86801299350924,
+          "target_mm": 46.86802092518162,
+          "error_mm": -7.931672378447274e-06
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50012723772541,
+          "target_mm": 45.50012000582548,
+          "error_mm": 7.2318999286835606e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50001882350382,
+          "target_mm": 73.50000780090953,
+          "error_mm": 1.102259429330843e-05
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50001884747859,
+          "target_mm": 73.50000780090953,
+          "error_mm": 1.1046569056816224e-05
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406819075575942,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.7814798034597743e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682079916173,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.953838382069307e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "roll_plus",
+      "phase_rad": 0,
+      "inputs": {
+        "ciclico_alabeo": 8.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 4.135570526123047,
+        "paso_pala_B_grados": -4.272650241851807,
+        "paso_colectivo_medido_grados": -0.06853988021612167,
+        "error_colectivo_bieletas_grados": 2.5613210254959995e-06,
+        "diferencia_tracking_grados": 1.7075473124350538e-06,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 2.861891746520996,
+        "inclinacion_plato_Y_grados": 3.8218486309051514,
+        "error_inclinacion_plato_grados": 2.9958209779579192e-06,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.2161836624145508,
+        "servo_delantero_der_grados": -9.812052726745605,
+        "servo_trasero_grados": -8.519087791442871,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 88.90062713623047,
+        "brazo_varilla_delantera_der_grados": 99.0084228515625,
+        "brazo_varilla_trasera_grados": 81.2308120727539,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.86801148617602,
+          "target_mm": 46.86802092518162,
+          "error_mm": -9.439005594913397e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.8680080536101,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.2871571520634006e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011740264858,
+          "target_mm": 45.50012000582548,
+          "error_mm": -2.6031769024825735e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.5000338593561,
+          "target_mm": 73.50000780090953,
+          "error_mm": 2.605844656500267e-05
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50002492044204,
+          "target_mm": 73.50000780090953,
+          "error_mm": 1.711953251515297e-05
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406819075575942,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.7814798034597743e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682079916173,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.953838382069307e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "roll_plus",
+      "phase_rad": 1.5707963267948966,
+      "inputs": {
+        "ciclico_alabeo": 8.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": -6.8244404792785645,
+        "paso_pala_B_grados": 6.6757588386535645,
+        "paso_colectivo_medido_grados": -0.07434084266424179,
+        "error_colectivo_bieletas_grados": 3.2016512250265805e-06,
+        "diferencia_tracking_grados": 4.2688682810876344e-07,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 2.861891746520996,
+        "inclinacion_plato_Y_grados": 3.8218486309051514,
+        "error_inclinacion_plato_grados": 2.9958209779579192e-06,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.2161836624145508,
+        "servo_delantero_der_grados": -9.812052726745605,
+        "servo_trasero_grados": -8.519087791442871,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 88.90062713623047,
+        "brazo_varilla_delantera_der_grados": 99.0084228515625,
+        "brazo_varilla_trasera_grados": 81.2308120727539,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.86801148617602,
+          "target_mm": 46.86802092518162,
+          "error_mm": -9.439005594913397e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.8680080536101,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.2871571520634006e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011740264858,
+          "target_mm": 45.50012000582548,
+          "error_mm": -2.6031769024825735e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50001649447097,
+          "target_mm": 73.50000780090953,
+          "error_mm": 8.693561440509256e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50000262912549,
+          "target_mm": 73.50000780090953,
+          "error_mm": -5.1717840392484504e-06
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406823904703902,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.264392599433563e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682269993117,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.14391532612035e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "roll_plus",
+      "phase_rad": 3.141592653589793,
+      "inputs": {
+        "ciclico_alabeo": 8.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": -4.272650241851807,
+        "paso_pala_B_grados": 4.135570526123047,
+        "paso_colectivo_medido_grados": -0.06853988021612167,
+        "error_colectivo_bieletas_grados": 1.7075473124350538e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 2.861891746520996,
+        "inclinacion_plato_Y_grados": 3.8218486309051514,
+        "error_inclinacion_plato_grados": 2.9958209779579192e-06,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.2161836624145508,
+        "servo_delantero_der_grados": -9.812052726745605,
+        "servo_trasero_grados": -8.519087791442871,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 88.90062713623047,
+        "brazo_varilla_delantera_der_grados": 99.0084228515625,
+        "brazo_varilla_trasera_grados": 81.2308120727539,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.86801148617602,
+          "target_mm": 46.86802092518162,
+          "error_mm": -9.439005594913397e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.8680080536101,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.2871571520634006e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011740264858,
+          "target_mm": 45.50012000582548,
+          "error_mm": -2.6031769024825735e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50002492044204,
+          "target_mm": 73.50000780090953,
+          "error_mm": 1.711953251515297e-05
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50003381517679,
+          "target_mm": 73.50000780090953,
+          "error_mm": 2.601426726300815e-05
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406822326262454,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.1065484545678146e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682126084336,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.0000065450508373e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "roll_plus",
+      "phase_rad": 4.71238898038469,
+      "inputs": {
+        "ciclico_alabeo": 8.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 6.6757588386535645,
+        "paso_pala_B_grados": -6.8244404792785645,
+        "paso_colectivo_medido_grados": -0.07434084266424179,
+        "error_colectivo_bieletas_grados": 3.2016512250265805e-06,
+        "diferencia_tracking_grados": -4.2688682810876344e-07,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 2.861891746520996,
+        "inclinacion_plato_Y_grados": 3.8218486309051514,
+        "error_inclinacion_plato_grados": 2.9958209779579192e-06,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.2161836624145508,
+        "servo_delantero_der_grados": -9.812052726745605,
+        "servo_trasero_grados": -8.519087791442871,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 88.90062713623047,
+        "brazo_varilla_delantera_der_grados": 99.0084228515625,
+        "brazo_varilla_trasera_grados": 81.2308120727539,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.86801148617602,
+          "target_mm": 46.86802092518162,
+          "error_mm": -9.439005594913397e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.8680080536101,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.2871571520634006e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011740264858,
+          "target_mm": 45.50012000582548,
+          "error_mm": -2.6031769024825735e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.5000026076642,
+          "target_mm": 73.50000780090953,
+          "error_mm": -5.193245328882767e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50001655170107,
+          "target_mm": 73.50000780090953,
+          "error_mm": 8.750791536726865e-06
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406818793008227,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.753223031959351e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682414789736,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.2887119452595925e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "pitch_plus",
+      "phase_rad": 0,
+      "inputs": {
+        "ciclico_cabeceo": 8.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": -6.8244404792785645,
+        "paso_pala_B_grados": 6.6757588386535645,
+        "paso_colectivo_medido_grados": -0.07434084266424179,
+        "error_colectivo_bieletas_grados": 3.2016512250265805e-06,
+        "diferencia_tracking_grados": 4.2688682810876344e-07,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": -3.817084550857544,
+        "inclinacion_plato_Y_grados": 2.868255138397217,
+        "error_inclinacion_plato_grados": 8.16961437521968e-06,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": -10.631002426147461,
+        "servo_delantero_der_grados": 4.089080810546875,
+        "servo_trasero_grados": -6.384616851806641,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 99.77267456054688,
+        "brazo_varilla_delantera_der_grados": 86.08324432373047,
+        "brazo_varilla_trasera_grados": 83.47479248046875,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868012628141074,
+          "target_mm": 46.86802092518162,
+          "error_mm": -8.29704054439162e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.8680077567508,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.3168430818666366e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011557978523,
+          "target_mm": 45.50012000582548,
+          "error_mm": -4.42604024897264e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50001651699564,
+          "target_mm": 73.50000780090953,
+          "error_mm": 8.716086114191057e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50000265261691,
+          "target_mm": 73.50000780090953,
+          "error_mm": -5.148292615331229e-06
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406819075575942,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.7814798034597743e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682079916173,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.953838382069307e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "pitch_plus",
+      "phase_rad": 1.5707963267948966,
+      "inputs": {
+        "ciclico_cabeceo": 8.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": -4.272650241851807,
+        "paso_pala_B_grados": 4.135570526123047,
+        "paso_colectivo_medido_grados": -0.06853988021612167,
+        "error_colectivo_bieletas_grados": 1.7075473124350538e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": -3.817084550857544,
+        "inclinacion_plato_Y_grados": 2.868255138397217,
+        "error_inclinacion_plato_grados": 8.16961437521968e-06,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": -10.631002426147461,
+        "servo_delantero_der_grados": 4.089080810546875,
+        "servo_trasero_grados": -6.384616851806641,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 99.77267456054688,
+        "brazo_varilla_delantera_der_grados": 86.08324432373047,
+        "brazo_varilla_trasera_grados": 83.47479248046875,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868012628141074,
+          "target_mm": 46.86802092518162,
+          "error_mm": -8.29704054439162e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.8680077567508,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.3168430818666366e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011557978523,
+          "target_mm": 45.50012000582548,
+          "error_mm": -4.42604024897264e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50002493663467,
+          "target_mm": 73.50000780090953,
+          "error_mm": 1.713572514461248e-05
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50003385452247,
+          "target_mm": 73.50000780090953,
+          "error_mm": 2.605361294172326e-05
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406823904703902,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.264392599433563e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682269993117,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.14391532612035e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "pitch_plus",
+      "phase_rad": 3.141592653589793,
+      "inputs": {
+        "ciclico_cabeceo": 8.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 6.6757588386535645,
+        "paso_pala_B_grados": -6.8244404792785645,
+        "paso_colectivo_medido_grados": -0.07434084266424179,
+        "error_colectivo_bieletas_grados": 3.2016512250265805e-06,
+        "diferencia_tracking_grados": -4.2688682810876344e-07,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": -3.817084550857544,
+        "inclinacion_plato_Y_grados": 2.868255138397217,
+        "error_inclinacion_plato_grados": 8.16961437521968e-06,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": -10.631002426147461,
+        "servo_delantero_der_grados": 4.089080810546875,
+        "servo_trasero_grados": -6.384616851806641,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 99.77267456054688,
+        "brazo_varilla_delantera_der_grados": 86.08324432373047,
+        "brazo_varilla_trasera_grados": 83.47479248046875,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868012628141074,
+          "target_mm": 46.86802092518162,
+          "error_mm": -8.29704054439162e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.8680077567508,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.3168430818666366e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011557978523,
+          "target_mm": 45.50012000582548,
+          "error_mm": -4.42604024897264e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50000263105895,
+          "target_mm": 73.50000780090953,
+          "error_mm": -5.169850581410174e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50001651699564,
+          "target_mm": 73.50000780090953,
+          "error_mm": 8.716086114191057e-06
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406822326262454,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.1065484545678146e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682126084336,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.0000065450508373e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "pitch_plus",
+      "phase_rad": 4.71238898038469,
+      "inputs": {
+        "ciclico_cabeceo": 8.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 4.135570526123047,
+        "paso_pala_B_grados": -4.272650241851807,
+        "paso_colectivo_medido_grados": -0.06853988021612167,
+        "error_colectivo_bieletas_grados": 1.7075473124350538e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": -3.817084550857544,
+        "inclinacion_plato_Y_grados": 2.868255138397217,
+        "error_inclinacion_plato_grados": 8.16961437521968e-06,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": -10.631002426147461,
+        "servo_delantero_der_grados": 4.089080810546875,
+        "servo_trasero_grados": -6.384616851806641,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 99.77267456054688,
+        "brazo_varilla_delantera_der_grados": 86.08324432373047,
+        "brazo_varilla_trasera_grados": 83.47479248046875,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868012628141074,
+          "target_mm": 46.86802092518162,
+          "error_mm": -8.29704054439162e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.8680077567508,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.3168430818666366e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011557978523,
+          "target_mm": 45.50012000582548,
+          "error_mm": -4.42604024897264e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50003387173017,
+          "target_mm": 73.50000780090953,
+          "error_mm": 2.607082063832422e-05
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.5000249285142,
+          "target_mm": 73.50000780090953,
+          "error_mm": 1.712760466432428e-05
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406818793008227,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.753223031959351e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682414789736,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.2887119452595925e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "tail_plus",
+      "phase_rad": 0,
+      "inputs": {
+        "paso_cola": 15.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 1.6805506675154902e-06,
+        "paso_pala_B_grados": 1.6805506675154902e-06,
+        "paso_colectivo_medido_grados": 1.6805506675154902e-06,
+        "error_colectivo_bieletas_grados": 1.6805506675154902e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 0.0,
+        "inclinacion_plato_Y_grados": -1.5068806646922894e-08,
+        "error_inclinacion_plato_grados": 1.5068806646922894e-08,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.6288415281451307e-05,
+        "servo_delantero_der_grados": 1.6288415281451307e-05,
+        "servo_trasero_grados": 0.0,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 89.99999237060547,
+        "brazo_varilla_delantera_der_grados": 89.99999237060547,
+        "brazo_varilla_trasera_grados": 90.0,
+        "servo_cola_grados": 25.149555206298828,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 17.906707763671875,
+        "yugo_cola_mm": -4.295499801635742,
+        "paso_cola_real_grados": 15.00011157989502,
+        "error_paso_cola_grados": 0.00011099057155661285,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50012000582548,
+          "target_mm": 45.50012000582548,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.0180410165174,
+          "target_mm": 810.017984448468,
+          "error_mm": 5.656804933096282e-05
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218536459887854,
+          "target_mm": 26.21850810595456,
+          "error_mm": 2.8353933295477418e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.40682594482672,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.468404881346032e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40684569675533,
+          "target_mm": 18.406791260777908,
+          "error_mm": 5.443597742171846e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "tail_minus",
+      "phase_rad": 0,
+      "inputs": {
+        "paso_cola": -15.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 1.6805506675154902e-06,
+        "paso_pala_B_grados": 1.6805506675154902e-06,
+        "paso_colectivo_medido_grados": 1.6805506675154902e-06,
+        "error_colectivo_bieletas_grados": 1.6805506675154902e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 0.0,
+        "inclinacion_plato_Y_grados": -1.5068806646922894e-08,
+        "error_inclinacion_plato_grados": 1.5068806646922894e-08,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.6288415281451307e-05,
+        "servo_delantero_der_grados": 1.6288415281451307e-05,
+        "servo_trasero_grados": 0.0,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 89.99999237060547,
+        "brazo_varilla_delantera_der_grados": 89.99999237060547,
+        "brazo_varilla_trasera_grados": 90.0,
+        "servo_cola_grados": -20.362682342529297,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": -14.534852981567383,
+        "yugo_cola_mm": 3.5175130367279053,
+        "paso_cola_real_grados": -14.999860763549805,
+        "error_paso_cola_grados": 0.00014001887757331133,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50012000582548,
+          "target_mm": 45.50012000582548,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.018015320092,
+          "target_mm": 810.017984448468,
+          "error_mm": 3.087162394876941e-05
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218511224173263,
+          "target_mm": 26.21850810595456,
+          "error_mm": 3.118218703690445e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.40680923472798,
+          "target_mm": 18.406791260777908,
+          "error_mm": 1.797395007230307e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.406823369292255,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.210851434687356e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "mixed",
+      "phase_rad": 0,
+      "inputs": {
+        "paso_colectivo": 8.0,
+        "ciclico_alabeo": 6.0,
+        "ciclico_cabeceo": 6.0,
+        "paso_cola": 10.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 6.004290580749512,
+        "paso_pala_B_grados": 9.858718872070312,
+        "paso_colectivo_medido_grados": 7.931504726409912,
+        "error_colectivo_bieletas_grados": 2.1344342258089455e-06,
+        "diferencia_tracking_grados": -8.537736562175269e-07,
+        "altura_plato_mm": 3.7627930641174316,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": -0.7158789038658142,
+        "inclinacion_plato_Y_grados": 5.017921447753906,
+        "error_inclinacion_plato_grados": 6.917180144228041e-06,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 5.042182445526123,
+        "servo_delantero_der_grados": 7.804870128631592,
+        "servo_trasero_grados": -23.88248062133789,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 84.88017272949219,
+        "brazo_varilla_delantera_der_grados": 82.17303466796875,
+        "brazo_varilla_trasera_grados": 64.1764144897461,
+        "servo_cola_grados": 16.157203674316406,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 11.606025695800781,
+        "yugo_cola_mm": -2.8149232864379883,
+        "paso_cola_real_grados": 10.000102043151855,
+        "error_paso_cola_grados": 0.00010245283920085058,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868024774622334,
+          "target_mm": 46.86802092518162,
+          "error_mm": 3.849440716408026e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.86801182948567,
+          "target_mm": 46.86802092518162,
+          "error_mm": -9.095695951089056e-06
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011756684998,
+          "target_mm": 45.50012000582548,
+          "error_mm": -2.438975499785556e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50000261284826,
+          "target_mm": 73.50000780090953,
+          "error_mm": -5.1880612659260805e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.49997326726836,
+          "target_mm": 73.50000780090953,
+          "error_mm": -3.453364116978719e-05
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.0180481813654,
+          "target_mm": 810.017984448468,
+          "error_mm": 6.373289738803578e-05
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.21851921565715,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.1109702590772486e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406821775795926,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.0515018018206774e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40681120498251,
+          "target_mm": 18.406791260777908,
+          "error_mm": 1.9944204602495574e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "mixed",
+      "phase_rad": 1.5707963267948966,
+      "inputs": {
+        "paso_colectivo": 8.0,
+        "ciclico_alabeo": 6.0,
+        "ciclico_cabeceo": 6.0,
+        "paso_cola": 10.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": -0.3090934455394745,
+        "paso_pala_B_grados": 16.305627822875977,
+        "paso_colectivo_medido_grados": 7.998266696929932,
+        "error_colectivo_bieletas_grados": 2.5479807845840696e-06,
+        "diferencia_tracking_grados": -1.7342276805720758e-06,
+        "altura_plato_mm": 3.7627930641174316,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": -0.7158789038658142,
+        "inclinacion_plato_Y_grados": 5.017921447753906,
+        "error_inclinacion_plato_grados": 6.917180144228041e-06,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 5.042182445526123,
+        "servo_delantero_der_grados": 7.804870128631592,
+        "servo_trasero_grados": -23.88248062133789,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 84.88017272949219,
+        "brazo_varilla_delantera_der_grados": 82.17303466796875,
+        "brazo_varilla_trasera_grados": 64.1764144897461,
+        "servo_cola_grados": 16.157203674316406,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 11.606025695800781,
+        "yugo_cola_mm": -2.8149232864379883,
+        "paso_cola_real_grados": 10.000102043151855,
+        "error_paso_cola_grados": 0.00010245283920085058,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868024774622334,
+          "target_mm": 46.86802092518162,
+          "error_mm": 3.849440716408026e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.86801182948567,
+          "target_mm": 46.86802092518162,
+          "error_mm": -9.095695951089056e-06
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011756684998,
+          "target_mm": 45.50012000582548,
+          "error_mm": -2.438975499785556e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.5000120727813,
+          "target_mm": 73.50000780090953,
+          "error_mm": 4.271871773653402e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.4999853175962,
+          "target_mm": 73.50000780090953,
+          "error_mm": -2.2483313330212695e-05
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.0180481813654,
+          "target_mm": 810.017984448468,
+          "error_mm": 6.373289738803578e-05
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.21851921565715,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.1109702590772486e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406829347990417,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.808721250919689e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40681432712523,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.306634732107682e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "mixed",
+      "phase_rad": 3.141592653589793,
+      "inputs": {
+        "paso_colectivo": 8.0,
+        "ciclico_alabeo": 6.0,
+        "ciclico_cabeceo": 6.0,
+        "paso_cola": 10.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 9.858718872070312,
+        "paso_pala_B_grados": 6.004290580749512,
+        "paso_colectivo_medido_grados": 7.931504726409912,
+        "error_colectivo_bieletas_grados": 2.1344342258089455e-06,
+        "diferencia_tracking_grados": 8.537736562175269e-07,
+        "altura_plato_mm": 3.7627930641174316,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": -0.7158789038658142,
+        "inclinacion_plato_Y_grados": 5.017921447753906,
+        "error_inclinacion_plato_grados": 6.917180144228041e-06,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 5.042182445526123,
+        "servo_delantero_der_grados": 7.804870128631592,
+        "servo_trasero_grados": -23.88248062133789,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 84.88017272949219,
+        "brazo_varilla_delantera_der_grados": 82.17303466796875,
+        "brazo_varilla_trasera_grados": 64.1764144897461,
+        "servo_cola_grados": 16.157203674316406,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 11.606025695800781,
+        "yugo_cola_mm": -2.8149232864379883,
+        "paso_cola_real_grados": 10.000102043151855,
+        "error_paso_cola_grados": 0.00010245283920085058,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868024774622334,
+          "target_mm": 46.86802092518162,
+          "error_mm": 3.849440716408026e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.86801182948567,
+          "target_mm": 46.86802092518162,
+          "error_mm": -9.095695951089056e-06
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011756684998,
+          "target_mm": 45.50012000582548,
+          "error_mm": -2.438975499785556e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.49997328518147,
+          "target_mm": 73.50000780090953,
+          "error_mm": -3.451572806056902e-05
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50000264676824,
+          "target_mm": 73.50000780090953,
+          "error_mm": -5.1541412915412366e-06
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.0180481813654,
+          "target_mm": 810.017984448468,
+          "error_mm": 6.373289738803578e-05
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.21851921565715,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.1109702590772486e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.40683409450715,
+          "target_mm": 18.406791260777908,
+          "error_mm": 4.2833729242630625e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40681192452682,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.0663748912852498e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "mixed",
+      "phase_rad": 4.71238898038469,
+      "inputs": {
+        "paso_colectivo": 8.0,
+        "ciclico_alabeo": 6.0,
+        "ciclico_cabeceo": 6.0,
+        "paso_cola": 10.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 16.305627822875977,
+        "paso_pala_B_grados": -0.3090934455394745,
+        "paso_colectivo_medido_grados": 7.998266696929932,
+        "error_colectivo_bieletas_grados": 2.5479807845840696e-06,
+        "diferencia_tracking_grados": 1.7342276805720758e-06,
+        "altura_plato_mm": 3.7627930641174316,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": -0.7158789038658142,
+        "inclinacion_plato_Y_grados": 5.017921447753906,
+        "error_inclinacion_plato_grados": 6.917180144228041e-06,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 5.042182445526123,
+        "servo_delantero_der_grados": 7.804870128631592,
+        "servo_trasero_grados": -23.88248062133789,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 84.88017272949219,
+        "brazo_varilla_delantera_der_grados": 82.17303466796875,
+        "brazo_varilla_trasera_grados": 64.1764144897461,
+        "servo_cola_grados": 16.157203674316406,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 11.606025695800781,
+        "yugo_cola_mm": -2.8149232864379883,
+        "paso_cola_real_grados": 10.000102043151855,
+        "error_paso_cola_grados": 0.00010245283920085058,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868024774622334,
+          "target_mm": 46.86802092518162,
+          "error_mm": 3.849440716408026e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.86801182948567,
+          "target_mm": 46.86802092518162,
+          "error_mm": -9.095695951089056e-06
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011756684998,
+          "target_mm": 45.50012000582548,
+          "error_mm": -2.438975499785556e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.49998535433176,
+          "target_mm": 73.50000780090953,
+          "error_mm": -2.2446577773393983e-05
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50001207234627,
+          "target_mm": 73.50000780090953,
+          "error_mm": 4.271436736758005e-06
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.0180481813654,
+          "target_mm": 810.017984448468,
+          "error_mm": 6.373289738803578e-05
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.21851921565715,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.1109702590772486e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406823234956814,
+          "target_mm": 18.406791260777908,
+          "error_mm": 3.197417890632437e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.406832284839886,
+          "target_mm": 18.406791260777908,
+          "error_mm": 4.102406197858954e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "tracking_offset",
+      "phase_rad": 0,
+      "inputs": {
+        "adj:ajuste_bieleta_cabeza_A": 1.0
+      },
+      "telemetry": {
+        "estado_alerta": 1.0,
+        "paso_pala_A_grados": 2.121825695037842,
+        "paso_pala_B_grados": 1.6805506675154902e-06,
+        "paso_colectivo_medido_grados": 1.0609136819839478,
+        "error_colectivo_bieletas_grados": 1.0609136819839478,
+        "diferencia_tracking_grados": 2.121824026107788,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 0.0,
+        "inclinacion_plato_Y_grados": -1.5068806646922894e-08,
+        "error_inclinacion_plato_grados": 1.5068806646922894e-08,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.6288415281451307e-05,
+        "servo_delantero_der_grados": 1.6288415281451307e-05,
+        "servo_trasero_grados": 0.0,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 89.99999237060547,
+        "brazo_varilla_delantera_der_grados": 89.99999237060547,
+        "brazo_varilla_trasera_grados": 90.0,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50012000582548,
+          "target_mm": 45.50012000582548,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 74.49999338288416,
+          "target_mm": 74.50000780090953,
+          "error_mm": -1.4418025372719967e-05
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406819075575942,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.7814798034597743e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682079916173,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.953838382069307e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "servo_limit",
+      "phase_rad": 0,
+      "inputs": {
+        "paso_colectivo": 13.0,
+        "ciclico_alabeo": 10.0,
+        "ciclico_cabeceo": 10.0
+      },
+      "telemetry": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 10.6054105758667,
+        "paso_pala_B_grados": 15.214227676391602,
+        "paso_colectivo_medido_grados": 12.909818649291992,
+        "error_colectivo_bieletas_grados": 2.5613210254959995e-06,
+        "diferencia_tracking_grados": 1.7075473124350538e-06,
+        "altura_plato_mm": 6.088774681091309,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": -0.8397250175476074,
+        "inclinacion_plato_Y_grados": 5.888764381408691,
+        "error_inclinacion_plato_grados": 2.3654270989936776e-05,
+        "anillo_ciclico_factor": 0.7071067690849304,
+        "servo_delantero_izq_grados": 11.321759223937988,
+        "servo_delantero_der_grados": 14.626670837402344,
+        "servo_trasero_grados": -34.938297271728516,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 78.3924789428711,
+        "brazo_varilla_delantera_der_grados": 75.03214263916016,
+        "brazo_varilla_trasera_grados": 50.973182678222656,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868015118405545,
+          "target_mm": 46.86802092518162,
+          "error_mm": -5.806776073313813e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.868011969871944,
+          "target_mm": 46.86802092518162,
+          "error_mm": -8.95530967426339e-06
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50012151528558,
+          "target_mm": 45.50012000582548,
+          "error_mm": 1.5094600982479278e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.49997756692642,
+          "target_mm": 73.50000780090953,
+          "error_mm": -3.0233983110861118e-05
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50002183904998,
+          "target_mm": 73.50000780090953,
+          "error_mm": 1.4038140449201819e-05
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406819075575942,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.7814798034597743e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682079916173,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.953838382069307e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "tail_rod_offset",
+      "phase_rad": 0,
+      "inputs": {
+        "adj:ajuste_varilla_cola": 1.5
+      },
+      "telemetry": {
+        "estado_alerta": 1.0,
+        "paso_pala_A_grados": 1.6805506675154902e-06,
+        "paso_pala_B_grados": 1.6805506675154902e-06,
+        "paso_colectivo_medido_grados": 1.6805506675154902e-06,
+        "error_colectivo_bieletas_grados": 1.6805506675154902e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 0.0,
+        "inclinacion_plato_Y_grados": -1.5068806646922894e-08,
+        "error_inclinacion_plato_grados": 1.5068806646922894e-08,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.6288415281451307e-05,
+        "servo_delantero_der_grados": 1.6288415281451307e-05,
+        "servo_trasero_grados": 0.0,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 89.99999237060547,
+        "brazo_varilla_delantera_der_grados": 89.99999237060547,
+        "brazo_varilla_trasera_grados": 90.0,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": -4.780280590057373,
+        "yugo_cola_mm": 1.1667317152023315,
+        "paso_cola_real_grados": -4.504203796386719,
+        "error_paso_cola_grados": -4.504203796386719,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50012000582548,
+          "target_mm": 45.50012000582548,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 811.518049706205,
+          "target_mm": 811.517984448468,
+          "error_mm": 6.52577369919527e-05
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.21850559757147,
+          "target_mm": 26.21850810595456,
+          "error_mm": -2.508383090571442e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.40681799008354,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.6729305631079114e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.406809939024512,
+          "target_mm": 18.406791260777908,
+          "error_mm": 1.8678246604508786e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "cyclic_servo_saturation",
+      "phase_rad": 0,
+      "inputs": {
+        "paso_colectivo": 13.0,
+        "ciclico_alabeo": 8.0,
+        "adj:limite_servos_ciclicos": 15.0
+      },
+      "telemetry": {
+        "estado_alerta": 1.0,
+        "paso_pala_A_grados": 10.896848678588867,
+        "paso_pala_B_grados": 6.5905985832214355,
+        "paso_colectivo_medido_grados": 8.74372386932373,
+        "error_colectivo_bieletas_grados": 2.1344342258089455e-06,
+        "diferencia_tracking_grados": 8.537736562175269e-07,
+        "altura_plato_mm": 4.111509799957275,
+        "error_altura_plato_mm": -1.9772648811340332,
+        "inclinacion_plato_X_grados": 1.3518297672271729,
+        "inclinacion_plato_Y_grados": 0.7779682278633118,
+        "error_inclinacion_plato_grados": 3.3978688716888428,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 15.0,
+        "servo_delantero_der_grados": 9.662476539611816,
+        "servo_trasero_grados": -15.0,
+        "servo_delantero_izq_saturado": 1.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 1.0,
+        "brazo_varilla_delantera_izq_grados": 74.70987701416016,
+        "brazo_varilla_delantera_der_grados": 80.29411315917969,
+        "brazo_varilla_trasera_grados": 74.22766876220703,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.86802528321923,
+          "target_mm": 46.86802092518162,
+          "error_mm": 4.358037614338173e-06
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.868024919897834,
+          "target_mm": 46.86802092518162,
+          "error_mm": 3.994716216482175e-06
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50011891388618,
+          "target_mm": 45.50012000582548,
+          "error_mm": -1.0919392963160135e-06
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50003062513066,
+          "target_mm": 73.50000780090953,
+          "error_mm": 2.2824221133532774e-05
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50001663923378,
+          "target_mm": 73.50000780090953,
+          "error_mm": 8.838324248472418e-06
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406819075575942,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.7814798034597743e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682079916173,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.953838382069307e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "tail_servo_saturation",
+      "phase_rad": 0,
+      "inputs": {
+        "paso_cola": 20.0,
+        "adj:limite_servo_cola": 10.0
+      },
+      "telemetry": {
+        "estado_alerta": 1.0,
+        "paso_pala_A_grados": 1.6805506675154902e-06,
+        "paso_pala_B_grados": 1.6805506675154902e-06,
+        "paso_colectivo_medido_grados": 1.6805506675154902e-06,
+        "error_colectivo_bieletas_grados": 1.6805506675154902e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 0.0,
+        "inclinacion_plato_Y_grados": -1.5068806646922894e-08,
+        "error_inclinacion_plato_grados": 1.5068806646922894e-08,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.6288415281451307e-05,
+        "servo_delantero_der_grados": 1.6288415281451307e-05,
+        "servo_trasero_grados": 0.0,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 89.99999237060547,
+        "brazo_varilla_delantera_der_grados": 89.99999237060547,
+        "brazo_varilla_trasera_grados": 90.0,
+        "servo_cola_grados": 10.0,
+        "servo_cola_saturado": 1.0,
+        "palanca_cola_grados": 7.209012985229492,
+        "yugo_cola_mm": -1.7566121816635132,
+        "paso_cola_real_grados": 6.341092109680176,
+        "error_paso_cola_grados": -13.658906936645508,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 46.868006021799026,
+          "target_mm": 46.86802092518162,
+          "error_mm": -1.4903382592024172e-05
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 45.50012000582548,
+          "target_mm": 45.50012000582548,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.50000780090953,
+          "target_mm": 73.50000780090953,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.0179763515177,
+          "target_mm": 810.017984448468,
+          "error_mm": -8.096950296021532e-06
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218503084784256,
+          "target_mm": 26.21850810595456,
+          "error_mm": -5.021170302654809e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406816197013615,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.4936235707428978e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40680704984516,
+          "target_mm": 18.406791260777908,
+          "error_mm": 1.5789067251859024e-05
+        }
+      ],
+      "invalid_drivers": []
+    },
+    {
+      "case": "unreachable_rod",
+      "phase_rad": 0,
+      "inputs": {
+        "adj:ajuste_varilla_delantera_izq": 100.0
+      },
+      "telemetry": {
+        "estado_alerta": 1.0,
+        "paso_pala_A_grados": 16.761926651000977,
+        "paso_pala_B_grados": 11.308858871459961,
+        "paso_colectivo_medido_grados": 14.035392761230469,
+        "error_colectivo_bieletas_grados": 2.1344342258089455e-06,
+        "diferencia_tracking_grados": -8.537736562175269e-07,
+        "altura_plato_mm": 6.8831257820129395,
+        "error_altura_plato_mm": 6.883114814758301,
+        "inclinacion_plato_X_grados": 0.0,
+        "inclinacion_plato_Y_grados": -15.53201961517334,
+        "error_inclinacion_plato_grados": 15.53201961517334,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.6288415281451307e-05,
+        "servo_delantero_der_grados": 1.6288415281451307e-05,
+        "servo_trasero_grados": 0.0,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 53.34513854980469,
+        "brazo_varilla_delantera_der_grados": 180.0,
+        "brazo_varilla_trasera_grados": 90.0,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "rods": [
+        {
+          "name": "Varilla_Servo_Delantera_Izq",
+          "actual_mm": 58.82724936462395,
+          "target_mm": 146.8680209251816,
+          "error_mm": -88.04077156055766
+        },
+        {
+          "name": "Varilla_Servo_Delantera_Der",
+          "actual_mm": 58.82724936462395,
+          "target_mm": 46.86802092518162,
+          "error_mm": 11.959228439442334
+        },
+        {
+          "name": "Varilla_Servo_Trasera",
+          "actual_mm": 41.694261767255384,
+          "target_mm": 45.50012000582548,
+          "error_mm": -3.805858238570096
+        },
+        {
+          "name": "Bieleta_Cabeza_A",
+          "actual_mm": 73.50002522428355,
+          "target_mm": 73.50000780090953,
+          "error_mm": 1.7423374018221693e-05
+        },
+        {
+          "name": "Bieleta_Cabeza_B",
+          "actual_mm": 73.49999923942583,
+          "target_mm": 73.50000780090953,
+          "error_mm": -8.561483696212235e-06
+        },
+        {
+          "name": "Varilla_Cola",
+          "actual_mm": 810.017984448468,
+          "target_mm": 810.017984448468,
+          "error_mm": 0.0
+        },
+        {
+          "name": "Bieleta_Palanca_Cola",
+          "actual_mm": 26.218509216003604,
+          "target_mm": 26.21850810595456,
+          "error_mm": 1.110049044683592e-06
+        },
+        {
+          "name": "Bieleta_Paso_Cola_A",
+          "actual_mm": 18.406819075575942,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.7814798034597743e-05
+        },
+        {
+          "name": "Bieleta_Paso_Cola_B",
+          "actual_mm": 18.40682079916173,
+          "target_mm": 18.406791260777908,
+          "error_mm": 2.953838382069307e-05
+        }
+      ],
+      "invalid_drivers": [
+        {
+          "object": "Mezclador_15_Plato_Real",
+          "path": "[\"ALF\"]"
+        }
+      ]
+    }
+  ]
+}

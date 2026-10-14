@@ -28,6 +28,8 @@ A fixed FOV/viewport reference makes a minimum-pixel light grow into a large sur
 
 ## Rendering and visual evidence
 
+- **Include shader defaults when auditing assigned textures.** On pinned Godot 4.7.2, `Shader.get_shader_uniform_list()` omits uniforms with default textures. Enumerate RenderingServer parameters and resolve material overrides/default textures explicitly; a native fixture should prove shared consumers and unchanged assignments. Keep assigned resources separate from visible draws, and CPU image bytes separate from resident VRAM. ([VQ-02a inventory](../research/visual-quality-implementation/VQ-02a/README.md))
+
 - **Differentiate a spatial signal before applying its screen-footprint filter.** Feeding a `dFdx`/`dFdy`-dependent filter into another derivative creates undefined higher-order derivatives. LU-12 keeps the grain height independent of that filter, differentiates it once, then attenuates the gradients. Compare detail-off pixels for filtering and restore the original material for cost measurement: a zero-strength shader still executes. ([Material checks](../research/landscape-upgrade/LU-11/materials.md))
 
 - **Derive collision bounds through the complete render transform.** Atlas occupancy alone missed the tree card's 1.125001 m frame scale; a centred prefab box missed an asymmetric veranda. Include card/frame scale, yaw, bounded animation and the actual prefab origin, then test occupied edge rows and intended openings. Conservative boxes still need their empty-space overcoverage documented. ([Coverage review](../research/landscape-upgrade/LU-11/collision-coverage.md))

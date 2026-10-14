@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import ast
+import hashlib
 import json
 import re
 import struct
@@ -35,7 +36,12 @@ JPEG_SOF_MARKERS = {
 }
 GLB_MAGIC = b"glTF"
 GLB_JSON_CHUNK = 0x4E4F534A
+GLB_BIN_CHUNK = 0x004E4942
 GLB_MAX_JSON_CHUNK = 16 * 1024 * 1024
+GLB_IMAGE_HASH_CHUNK_SIZE = 64 * 1024
+GLB_MAX_IMAGE_HASH_BYTES = 512 * 1024 * 1024
+GLB_MAX_TOTAL_IMAGE_HASH_BYTES = 512 * 1024 * 1024
+GLB_MAX_JPEG_HEADER_BYTES = 4 * 1024 * 1024
 EXCLUDED_DIRS = {".godot", "captures"}
 TEXTURE_IMPORT_SUFFIX = ".import"
 
@@ -492,12 +498,317 @@ def _rgba8_reference_bytes(width: int, height: int, mipmaps: bool) -> int:
         current_height = max(1, current_height // 2)
 
 
+def _nonnegative_integer(value: Any) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and value >= 0
+
+
+class _BoundedStream:
+    """Expose a bounded view of a seekable stream to header parsers."""
+
+    def __init__(self, stream: BinaryIO, start: int, length: int):
+        self._stream = stream
+        self._start = start
+        self._length = length
+        self._position = 0
+
+    def read(self, size: int = -1) -> bytes:
+        if size is None or size < 0:
+            size = self._length - self._position
+        size = min(size, self._length - self._position)
+        if size <= 0:
+            return b""
+        self._stream.seek(self._start + self._position)
+        data = self._stream.read(size)
+        self._position += len(data)
+        return data
+
+    def seek(self, offset: int, whence: int = 0) -> int:
+        if whence == 0:
+            position = offset
+        elif whence == 1:
+            position = self._position + offset
+        elif whence == 2:
+            position = self._length + offset
+        else:
+            raise ValueError("invalid whence")
+        if position < 0 or position > self._length:
+            raise ValueError("seek outside bounded image payload")
+        self._position = position
+        return position
+
+    def tell(self) -> int:
+        return self._position
+
+
+def _hash_stream_range(
+    stream: BinaryIO, start: int, length: int, hash_budget: int
+) -> tuple[str | None, str]:
+    if length > min(GLB_MAX_IMAGE_HASH_BYTES, hash_budget):
+        return None, "skipped_size_limit"
+    digest = hashlib.sha256()
+    stream.seek(start)
+    remaining = length
+    while remaining:
+        data = stream.read(min(GLB_IMAGE_HASH_CHUNK_SIZE, remaining))
+        if not data:
+            return None, "unreadable_truncated_payload"
+        digest.update(data)
+        remaining -= len(data)
+    return digest.hexdigest(), "hashed"
+
+
+def _glb_material_roles(document: dict[str, Any]) -> dict[int, list[dict[str, Any]]]:
+    """Resolve exact glTF 2.0 core material texture references to image indices."""
+
+    role_definitions = (
+        (
+            "pbrMetallicRoughness.baseColorTexture",
+            "base_color",
+            ["R", "G", "B", "A"],
+            [
+                {"channels": ["R", "G", "B"], "meaning": "base color", "color_space": "sRGB"},
+                {"channels": ["A"], "meaning": "alpha", "color_space": "linear"},
+            ],
+        ),
+        (
+            "pbrMetallicRoughness.metallicRoughnessTexture",
+            "metallic_roughness",
+            ["G", "B"],
+            [
+                {"channels": ["G"], "meaning": "roughness", "color_space": "linear"},
+                {"channels": ["B"], "meaning": "metallic", "color_space": "linear"},
+            ],
+        ),
+        (
+            "normalTexture",
+            "normal",
+            ["R", "G", "B"],
+            [{"channels": ["R", "G", "B"], "meaning": "tangent-space normal", "color_space": "linear"}],
+        ),
+        (
+            "occlusionTexture",
+            "occlusion",
+            ["R"],
+            [{"channels": ["R"], "meaning": "occlusion", "color_space": "linear"}],
+        ),
+        (
+            "emissiveTexture",
+            "emissive",
+            ["R", "G", "B"],
+            [{"channels": ["R", "G", "B"], "meaning": "emissive", "color_space": "sRGB"}],
+        ),
+    )
+
+    textures = document.get("textures", [])
+    if not isinstance(textures, list):
+        textures = []
+    image_indices_by_texture: dict[int, list[int]] = {}
+    for texture_index, texture in enumerate(textures):
+        if not isinstance(texture, dict):
+            continue
+        image_index = texture.get("source")
+        if _nonnegative_integer(image_index):
+            image_indices_by_texture[texture_index] = [image_index]
+
+    materials = document.get("materials", [])
+    if not isinstance(materials, list):
+        materials = []
+    roles_by_image: dict[int, list[dict[str, Any]]] = {}
+    for material_index, material in enumerate(materials):
+        if not isinstance(material, dict):
+            continue
+        for property_path, role, channels, semantics in role_definitions:
+            if property_path.startswith("pbrMetallicRoughness."):
+                pbr = material.get("pbrMetallicRoughness")
+                texture_info = pbr.get(property_path.split(".", 1)[1]) if isinstance(pbr, dict) else None
+            else:
+                texture_info = material.get(property_path)
+            if not isinstance(texture_info, dict):
+                continue
+            texture_index = texture_info.get("index")
+            if not _nonnegative_integer(texture_index):
+                continue
+            for image_index in image_indices_by_texture.get(texture_index, []):
+                roles_by_image.setdefault(image_index, []).append(
+                    {
+                        "material_index": material_index,
+                        "material_name": material.get("name"),
+                        "texture_index": texture_index,
+                        "property": property_path,
+                        "role": role,
+                        "channels": list(channels),
+                        "declared_color_semantics": [dict(item) for item in semantics],
+                    }
+                )
+
+    for uses in roles_by_image.values():
+        uses.sort(key=lambda item: (item["material_index"], item["texture_index"], item["property"], item["role"]))
+    return roles_by_image
+
+
+def _summarize_glb_color_semantics(roles: list[dict[str, Any]]) -> dict[str, Any]:
+    by_channel: dict[str, dict[str, set[str]]] = {}
+    for role in roles:
+        for semantic in role["declared_color_semantics"]:
+            for channel in semantic["channels"]:
+                by_channel.setdefault(channel, {}).setdefault(semantic["color_space"], set()).add(role["role"])
+    channel_semantics = []
+    conflicts = []
+    for channel in sorted(by_channel):
+        spaces = by_channel[channel]
+        ordered_spaces = sorted(spaces)
+        channel_semantics.append(
+            {
+                "channel": channel,
+                "color_spaces": ordered_spaces,
+                "roles": sorted({role for values in spaces.values() for role in values}),
+            }
+        )
+        if len(ordered_spaces) > 1:
+            conflicts.append(
+                {
+                    "channel": channel,
+                    "color_spaces": ordered_spaces,
+                    "roles": sorted({role for values in spaces.values() for role in values}),
+                }
+            )
+    distinct_roles = sorted({role["role"] for role in roles})
+    role_reuse = len(distinct_roles) > 1
+    return {
+        "status": "ambiguous" if conflicts or role_reuse else ("declared" if channel_semantics else "not_declared_by_core_material_refs"),
+        "channel_semantics": channel_semantics,
+        "conflicts": conflicts,
+        "roles": distinct_roles,
+        "role_reuse": role_reuse,
+        "scope": "exact glTF 2.0 core material references only; image profiles and extension references are not inspected",
+    }
+
+
+def _buffer0_for_glb(document: dict[str, Any], bin_chunk: tuple[int, int] | None) -> dict[str, Any]:
+    buffers = document.get("buffers")
+    if not isinstance(buffers, list) or not buffers:
+        return {"status": "unavailable", "reason": "GLB has no buffer 0 metadata"}
+    buffer0 = buffers[0]
+    if not isinstance(buffer0, dict):
+        return {"status": "unavailable", "reason": "buffer 0 metadata is not an object"}
+    byte_length = buffer0.get("byteLength")
+    if not _nonnegative_integer(byte_length):
+        return {"status": "unavailable", "reason": "buffer 0 byteLength is not a non-negative integer"}
+    if "uri" in buffer0:
+        return {"status": "unavailable", "reason": "buffer 0 has a URI; external or data URI buffers are not read"}
+    if bin_chunk is None:
+        return {"status": "unavailable", "reason": "buffer 0 has no GLB BIN chunk"}
+    bin_offset, bin_length = bin_chunk
+    if bin_length < byte_length or bin_length > byte_length + 3:
+        return {"status": "invalid", "reason": "BIN chunk length does not match buffer 0 byteLength and GLB padding"}
+    return {
+        "status": "available",
+        "byte_length": byte_length,
+        "bin_offset": bin_offset,
+        "bin_length": bin_length,
+    }
+
+
+def _inspect_buffer_view_image(
+    stream: BinaryIO,
+    image: dict[str, Any],
+    buffer_views: Any,
+    buffer0: dict[str, Any],
+    hash_budget: int,
+) -> dict[str, Any]:
+    result: dict[str, Any] = {
+        "inspection": "UNINSPECTED",
+        "header": None,
+        "header_status": "uninspected",
+        "payload_sha256": None,
+        "hash_status": "not_attempted",
+    }
+    if "uri" in image:
+        result["reason"] = "image defines both uri and bufferView"
+        return result
+    buffer_view_index = image.get("bufferView")
+    if not _nonnegative_integer(buffer_view_index):
+        result["reason"] = "image bufferView is not a non-negative integer"
+        return result
+    if not isinstance(buffer_views, list) or buffer_view_index >= len(buffer_views):
+        result["reason"] = "image bufferView index is outside the bufferViews array"
+        return result
+    view = buffer_views[buffer_view_index]
+    if not isinstance(view, dict):
+        result["reason"] = "image bufferView metadata is not an object"
+        return result
+    if "byteStride" in view or "target" in view:
+        result["reason"] = "image bufferView defines forbidden byteStride or target metadata"
+        return result
+    buffer_index = view.get("buffer")
+    if not _nonnegative_integer(buffer_index):
+        result["reason"] = "image bufferView buffer is not a non-negative integer"
+        return result
+    if buffer_index != 0:
+        result["reason"] = f"image bufferView uses buffer {buffer_index}; only GLB buffer 0 is inspected"
+        return result
+    if buffer0.get("status") != "available":
+        result["reason"] = buffer0.get("reason", "GLB buffer 0 is unavailable")
+        return result
+    byte_offset = view.get("byteOffset", 0)
+    byte_length = view.get("byteLength")
+    if not _nonnegative_integer(byte_offset):
+        result["reason"] = "image bufferView byteOffset is not a non-negative integer"
+        return result
+    if not _nonnegative_integer(byte_length) or byte_length == 0:
+        result["reason"] = "image bufferView byteLength is not a positive integer"
+        return result
+    buffer_length = buffer0["byte_length"]
+    bin_length = buffer0["bin_length"]
+    if byte_offset + byte_length > buffer_length:
+        result["reason"] = "image bufferView range exceeds buffer 0 byteLength"
+        return result
+    if byte_offset + byte_length > bin_length:
+        result["reason"] = "image bufferView range exceeds the GLB BIN chunk"
+        return result
+    mime_type = image.get("mimeType")
+    if not isinstance(mime_type, str):
+        result["reason"] = "bufferView image is missing a string mimeType"
+        return result
+    mime_type = mime_type.strip().lower()
+    image_format = {"image/png": "PNG", "image/jpeg": "JPEG"}.get(mime_type)
+    if image_format is None:
+        result["reason"] = f"unsupported embedded image MIME type: {mime_type or '(empty)'}"
+        return result
+    payload_start = buffer0["bin_offset"] + byte_offset
+    if image_format == "PNG":
+        stream.seek(payload_start)
+        header_bytes = stream.read(min(33, byte_length))
+        header = parse_png_header(header_bytes)
+    else:
+        header_scan_length = min(byte_length, GLB_MAX_JPEG_HEADER_BYTES)
+        header = parse_jpeg_header(_BoundedStream(stream, payload_start, header_scan_length))
+    digest, hash_status = _hash_stream_range(stream, payload_start, byte_length, hash_budget)
+    result.update(
+        {
+            "inspection": "INSPECTED" if hash_status == "hashed" else "PARTIAL",
+            "header": header,
+            "header_status": header["status"],
+            "payload_bytes": byte_length,
+            "payload_sha256": digest,
+            "hash_status": hash_status,
+        }
+    )
+    if hash_status != "hashed":
+        result["reason"] = "payload SHA-256 was not completed within the configured image/GLB byte limit or could not be read"
+    return result
+
+
 def _parse_glb(path: Path, relative_path: str) -> dict[str, Any]:
     result: dict[str, Any] = {
         "path": relative_path,
         "status": "unparsed",
         "embedded_image_count": None,
+        "external_image_count": None,
+        "invalid_image_count": None,
         "images": [],
+        "external_images": [],
+        "invalid_images": [],
         "inspection": "UNINSPECTED",
     }
     try:
@@ -511,70 +822,177 @@ def _parse_glb(path: Path, relative_path: str) -> dict[str, Any]:
             if magic != GLB_MAGIC or version != 2:
                 result["reason"] = "not a GLB 2 container"
                 return result
-            if declared_length < 20 or declared_length > file_size:
-                result["reason"] = "invalid or truncated declared length"
+            if declared_length < 20 or declared_length != file_size:
+                result["reason"] = "declared GLB length does not match the file length"
                 return result
-            chunk_header = _read_exact(stream, 8)
-            if chunk_header is None:
-                result["reason"] = "missing JSON chunk"
+            position = 12
+            json_bytes: bytes | None = None
+            bin_chunk: tuple[int, int] | None = None
+            chunk_index = 0
+            while position < declared_length:
+                if declared_length - position < 8:
+                    result["reason"] = "truncated GLB chunk header"
+                    return result
+                stream.seek(position)
+                chunk_header = _read_exact(stream, 8)
+                if chunk_header is None:
+                    result["reason"] = "truncated GLB chunk header"
+                    return result
+                chunk_length, chunk_type = struct.unpack("<II", chunk_header)
+                data_offset = position + 8
+                chunk_end = data_offset + chunk_length
+                if chunk_length % 4:
+                    result["reason"] = "GLB chunk length is not 4-byte aligned"
+                    return result
+                if chunk_end > declared_length:
+                    result["reason"] = "GLB chunk exceeds declared GLB length"
+                    return result
+                if chunk_index == 0 and chunk_type != GLB_JSON_CHUNK:
+                    result["reason"] = "first chunk is not JSON"
+                    return result
+                if chunk_type == GLB_JSON_CHUNK:
+                    if json_bytes is not None or chunk_index != 0:
+                        result["reason"] = "GLB contains a duplicate or misplaced JSON chunk"
+                        return result
+                    if chunk_length > GLB_MAX_JSON_CHUNK:
+                        result["reason"] = "JSON chunk exceeds the bounded metadata limit"
+                        return result
+                    stream.seek(data_offset)
+                    json_bytes = _read_exact(stream, chunk_length)
+                    if json_bytes is None:
+                        result["reason"] = "truncated JSON chunk"
+                        return result
+                elif chunk_type == GLB_BIN_CHUNK:
+                    if bin_chunk is not None:
+                        result["reason"] = "GLB contains more than one BIN chunk"
+                        return result
+                    if chunk_index != 1:
+                        result["reason"] = "GLB BIN chunk is not the second chunk"
+                        return result
+                    bin_chunk = (data_offset, chunk_length)
+                position = chunk_end
+                chunk_index += 1
+            if position != declared_length or json_bytes is None:
+                result["reason"] = "GLB chunk sequence does not cover the declared file length"
                 return result
-            chunk_length, chunk_type = struct.unpack("<II", chunk_header)
-            if chunk_type != GLB_JSON_CHUNK:
-                result["reason"] = "first chunk is not JSON"
+            document = json.loads(json_bytes.decode("utf-8").rstrip("\x00 \t\r\n"))
+            if not isinstance(document, dict):
+                result["reason"] = "GLB JSON root is not an object"
                 return result
-            if chunk_length > GLB_MAX_JSON_CHUNK:
-                result["reason"] = "JSON chunk exceeds the bounded metadata limit"
-                return result
-            if stream.tell() + chunk_length > declared_length:
-                result["reason"] = "JSON chunk exceeds declared GLB length"
-                return result
-            json_bytes = _read_exact(stream, chunk_length)
-            if json_bytes is None:
-                result["reason"] = "truncated JSON chunk"
-                return result
-        document = json.loads(json_bytes.decode("utf-8").rstrip("\x00 \t\r\n"))
-    except (OSError, UnicodeError, json.JSONDecodeError, struct.error) as error:
+            images = document.get("images", [])
+            if not isinstance(images, list):
+                images = []
+            buffer_views = document.get("bufferViews", [])
+            buffer0 = _buffer0_for_glb(document, bin_chunk)
+            roles_by_image = _glb_material_roles(document)
+            image_records: list[dict[str, Any]] = []
+            external_records: list[dict[str, Any]] = []
+            invalid_records: list[dict[str, Any]] = []
+            embedded_count = external_count = invalid_count = 0
+            remaining_hash_budget = GLB_MAX_TOTAL_IMAGE_HASH_BYTES
+            for index, image in enumerate(images):
+                if not isinstance(image, dict):
+                    invalid_count += 1
+                    invalid_records.append(
+                        {
+                            "index": index,
+                            "source_kind": "invalid",
+                            "embedded": False,
+                            "inspection": "UNINSPECTED",
+                            "reason": "image entry is not an object",
+                            "material_roles": roles_by_image.get(index, []),
+                            "declared_color_semantics": _summarize_glb_color_semantics(roles_by_image.get(index, [])),
+                        }
+                    )
+                    continue
+                has_buffer_view = "bufferView" in image
+                uri = image.get("uri")
+                is_data_uri = isinstance(uri, str) and uri.startswith("data:")
+                is_external_uri = isinstance(uri, str) and bool(uri) and not is_data_uri
+                embedded = has_buffer_view or is_data_uri
+                if embedded:
+                    embedded_count += 1
+                    source_kind = "bufferView" if has_buffer_view else "data_uri"
+                    inspected = (
+                        _inspect_buffer_view_image(
+                            stream, image, buffer_views, buffer0, remaining_hash_budget
+                        )
+                        if has_buffer_view
+                        else {
+                            "inspection": "UNINSPECTED",
+                            "header": None,
+                            "header_status": "uninspected",
+                            "payload_sha256": None,
+                            "hash_status": "not_attempted",
+                            "reason": "data URI image payload inspection is unsupported",
+                        }
+                    )
+                    if inspected.get("hash_status") == "hashed":
+                        remaining_hash_budget -= inspected.get("payload_bytes", 0)
+                elif is_external_uri:
+                    external_count += 1
+                    source_kind = "external_uri"
+                    inspected = {
+                        "inspection": "UNINSPECTED",
+                        "header": None,
+                        "header_status": "uninspected",
+                        "payload_sha256": None,
+                        "hash_status": "not_attempted",
+                        "reason": "external image URI was not read; no network access was attempted",
+                    }
+                else:
+                    invalid_count += 1
+                    source_kind = "invalid"
+                    invalid_reason = (
+                        "image uri is not a non-empty string"
+                        if "uri" in image
+                        else "image has neither a bufferView nor a non-empty URI"
+                    )
+                    inspected = {
+                        "inspection": "UNINSPECTED",
+                        "header": None,
+                        "header_status": "uninspected",
+                        "payload_sha256": None,
+                        "hash_status": "not_attempted",
+                        "reason": invalid_reason,
+                    }
+                roles = roles_by_image.get(index, [])
+                image_record = {
+                    "index": index,
+                    "name": image.get("name"),
+                    "mime_type": image.get("mimeType"),
+                    "source_kind": source_kind,
+                    "embedded": embedded,
+                    "material_roles": roles,
+                    "declared_color_semantics": _summarize_glb_color_semantics(roles),
+                    **inspected,
+                }
+                if has_buffer_view:
+                    image_record["buffer_view"] = image.get("bufferView")
+                elif is_data_uri:
+                    image_record["uri_kind"] = "data_uri"
+                elif is_external_uri:
+                    image_record["uri_kind"] = "external_uri"
+                if embedded:
+                    image_records.append(image_record)
+                elif source_kind == "external_uri":
+                    external_records.append(image_record)
+                else:
+                    invalid_records.append(image_record)
+    except (OSError, UnicodeError, json.JSONDecodeError, RecursionError, struct.error) as error:
         result["reason"] = f"GLB metadata read failed: {error}"
         return result
-    if not isinstance(document, dict):
-        result["reason"] = "GLB JSON root is not an object"
-        return result
-    images = document.get("images", [])
-    if not isinstance(images, list):
-        images = []
-    embedded = []
-    for index, image in enumerate(images):
-        if not isinstance(image, dict):
-            continue
-        uri = image.get("uri")
-        embedded_uri = isinstance(uri, str) and uri.startswith("data:")
-        if "bufferView" not in image and not embedded_uri:
-            continue
-        image_metadata = {
-            "index": index,
-            "name": image.get("name"),
-            "mime_type": image.get("mimeType"),
-            "inspection": "UNINSPECTED",
-        }
-        if "bufferView" in image:
-            image_metadata["buffer_view"] = image.get("bufferView")
-        else:
-            image_metadata["uri_kind"] = "data_uri"
-        embedded.append(image_metadata)
     result.update(
         {
             "status": "parsed",
-            "embedded_image_count": len(embedded),
-            "images": embedded,
-            "external_image_count": sum(
-                1
-                for image in images
-                if isinstance(image, dict)
-                and "uri" in image
-                and "bufferView" not in image
-                and not (isinstance(image.get("uri"), str) and image["uri"].startswith("data:"))
-            ),
-            "inspection": "JSON metadata only; embedded image payloads are UNINSPECTED",
+            "embedded_image_count": embedded_count,
+            "external_image_count": external_count,
+            "invalid_image_count": invalid_count,
+            "images": image_records,
+            "external_images": external_records,
+            "invalid_images": invalid_records,
+            "buffer0": buffer0,
+            "inspection": "supported PNG/JPEG bufferView headers and SHA-256 inspected where valid; pixels and runtime import behavior are unqualified",
         }
     )
     return result
@@ -720,12 +1138,59 @@ def build_inventory(app_root: Path) -> dict[str, Any]:
                     "reason": entry.get("reason"),
                 }
             )
-        elif entry["embedded_image_count"]:
+            continue
+        all_images = entry["images"] + entry["external_images"] + entry["invalid_images"]
+        for image in all_images:
+            if image.get("embedded") and image.get("inspection") != "INSPECTED":
+                coverage_gaps.append(
+                    {
+                        "path": entry["path"],
+                        "image_index": image["index"],
+                        "gap": "embedded image header/hash inspection is incomplete",
+                        "inspection": image.get("inspection"),
+                        "reason": image.get("reason"),
+                    }
+                )
+            elif image.get("embedded") and image.get("header_status") != "parsed":
+                coverage_gaps.append(
+                    {
+                        "path": entry["path"],
+                        "image_index": image["index"],
+                        "gap": "embedded image header could not be parsed",
+                        "reason": (image.get("header") or {}).get("reason"),
+                    }
+                )
+            elif image.get("source_kind") == "external_uri":
+                coverage_gaps.append(
+                    {
+                        "path": entry["path"],
+                        "image_index": image["index"],
+                        "gap": "external image URI is UNINSPECTED; no network access was attempted",
+                    }
+                )
+            elif image.get("source_kind") == "invalid":
+                coverage_gaps.append(
+                    {
+                        "path": entry["path"],
+                        "image_index": image["index"],
+                        "gap": "image source metadata is invalid",
+                        "reason": image.get("reason"),
+                    }
+                )
+        if entry["embedded_image_count"]:
             coverage_gaps.append(
                 {
                     "path": entry["path"],
-                    "gap": "embedded GLB image payloads are UNINSPECTED; image headers and pixels were not decoded",
+                    "gap": "pixel decode and runtime import/transcode/color-space behavior are not qualified",
                     "embedded_image_count": entry["embedded_image_count"],
+                    "headers_parsed": sum(
+                        image.get("embedded") and image.get("header_status") == "parsed"
+                        for image in entry["images"]
+                    ),
+                    "payloads_hashed": sum(
+                        image.get("embedded") and image.get("hash_status") == "hashed"
+                        for image in entry["images"]
+                    ),
                 }
             )
 
@@ -739,8 +1204,8 @@ def build_inventory(app_root: Path) -> dict[str, Any]:
             "app_root": ".",
             "read_only": True,
             "excluded_directories": [".godot", "captures"],
-            "image_inspection": "PNG and JPEG headers only; no pixel decode or import mutation",
-            "color_space_policy": "source_color and normal hints are reported from shaders; unspecified is not assumed to mean sRGB",
+            "image_inspection": "source PNG/JPEG headers; GLB PNG/JPEG bufferView headers and streamed SHA-256 where supported; no pixel decode or import mutation",
+            "color_space_policy": "source_color and normal hints are reported from shaders; exact glTF core material roles declare texture channel semantics; embedded image profiles are not inspected",
             "candidate_policy": "review_candidates are nonblocking prompts, never automatic import errors",
         },
         "summary": {
@@ -755,6 +1220,23 @@ def build_inventory(app_root: Path) -> dict[str, Any]:
             "material_resource_uses": len(resource_uses),
             "glb_files": len(glb_entries),
             "embedded_glb_images_counted_from_json": embedded_count,
+            "embedded_glb_images_inspected": sum(
+                image.get("embedded") and image.get("inspection") == "INSPECTED"
+                for entry in glb_entries
+                for image in entry["images"]
+            ),
+            "embedded_glb_image_headers_parsed": sum(
+                image.get("embedded") and image.get("header_status") == "parsed"
+                for entry in glb_entries
+                for image in entry["images"]
+            ),
+            "embedded_glb_image_payloads_hashed": sum(
+                image.get("embedded") and image.get("hash_status") == "hashed"
+                for entry in glb_entries
+                for image in entry["images"]
+            ),
+            "external_glb_images_counted": sum(entry["external_image_count"] or 0 for entry in glb_entries),
+            "invalid_glb_image_entries": sum(entry["invalid_image_count"] or 0 for entry in glb_entries),
             "coverage_gaps": len(coverage_gaps),
             "review_candidate_count": sum(len(entry["review_candidates"]) for entry in texture_entries),
         },

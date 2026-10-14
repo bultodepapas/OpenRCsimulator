@@ -37,6 +37,8 @@ var device_id := -1
 var device_key := ""
 var device_name := ""
 var profile_source := "default"
+## A rejected draft is not an active-profile fault; existing controls stay live.
+var profile_rejection_error := ""
 var profile_error := ""
 var input_error := ""
 var armed := false
@@ -53,6 +55,7 @@ var _rate_throttle := 0.0
 var _neutral_elapsed := 0.0
 var _pressed_buttons: Dictionary = {}
 var _neutral_release_pending := false
+var _focus_rearm_pending := false
 var _profile_ready := false
 var _profile_snapshot: Dictionary = {}
 
@@ -70,6 +73,8 @@ func connect_device(id: int, info: Dictionary, saved: Dictionary = {}) -> void:
 	device_key = key_for(id, info)
 	input_error = ""
 	profile_error = ""
+	profile_rejection_error = ""
+	_focus_rearm_pending = false
 	_pressed_buttons.clear()
 	var upgraded: Dictionary = ControllerProfile.upgrade_legacy(saved) if not saved.is_empty() else {}
 	if not upgraded.is_empty():
@@ -110,11 +115,13 @@ static func looks_like_radio(name: String) -> bool:
 func use_profile(candidate: Dictionary, source: String) -> bool:
 	var upgraded := ControllerProfile.upgrade_legacy(candidate)
 	if upgraded.is_empty():
-		profile_error = "Profile is invalid and was not applied."
+		profile_rejection_error = "Profile is invalid and was not applied."
 		return false
 	if not _activate_profile(upgraded, source, false, true):
+		profile_rejection_error = "Profile is invalid and was not applied."
 		return false
 	profile_error = ""
+	profile_rejection_error = ""
 	return true
 
 
@@ -127,6 +134,8 @@ func disconnect_device() -> void:
 	_reset_controls(false)
 	_pressed_buttons.clear()
 	input_error = ""
+	profile_rejection_error = ""
+	_focus_rearm_pending = false
 
 
 func is_gamepad() -> bool:
@@ -150,12 +159,13 @@ func require_neutral(preserve_throttle: bool = true, fresh_samples: bool = false
 			_rate_throttle = 0.0
 		if not is_rate_throttle():
 			_rate_throttle = 0.0
-	elif not preserve_throttle:
+	elif not preserve_throttle or fresh_samples:
 		# Radios keep their absolute-throttle contract; a full ownership change
 		# asks for fresh low-throttle evidence but not centered-stick dwell.
 		armed = false
 		_throttle_low_seen = false
-	if not preserve_throttle or (is_gamepad() and fresh_samples):
+		_focus_rearm_pending = fresh_samples and preserve_throttle
+	if not preserve_throttle or fresh_samples:
 		_seen.clear()
 		axes.fill(0.0)
 	input_error = ""
@@ -186,8 +196,18 @@ func on_motion(id: int, axis: int, value: float) -> void:
 		return
 	_seen[axis] = true
 	axes[axis] = clampf(value, -1.0, 1.0)
-	if not armed and axis == _throttle_axis() and not is_rate_throttle():
-		_throttle_low_seen = _normalized_throttle(axes[axis]) <= _idle_threshold()
+	if is_gamepad():
+		_revoke_paused_gamepad_readiness()
+	elif axis == _throttle_axis() and not is_rate_throttle():
+		var throttle_is_low := _normalized_throttle(axes[axis]) <= _idle_threshold()
+		if _focus_rearm_pending:
+			if throttle_is_low:
+				_throttle_low_seen = true
+			else:
+				_throttle_low_seen = false
+				armed = false
+		elif not armed and throttle_is_low:
+			_throttle_low_seen = true
 
 
 func on_button(id: int, button: int, pressed: bool) -> void:
@@ -226,9 +246,10 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 			profile_error = "Invalid active profile: " + "; ".join(validation.errors)
 			_invalidate_input("Invalid profile; flight commands are disabled.")
 			return
-		_profile_ready = true
-		_profile_snapshot = profile.duplicate(true)
-		_configure_smoke_aux()
+		# Direct mutation is an activation boundary too: no low-throttle or
+		# centered-axis evidence collected under the previous mapping can arm it.
+		if not _activate_profile(profile, profile_source, false):
+			return
 	if not is_finite(dt) or dt < 0.0 or not read_axis.is_valid():
 		_invalidate_input("Invalid input sample interval or axis reader.")
 		return
@@ -256,9 +277,20 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 		if is_rate_throttle() and armed and integrate:
 			var rate: float = float(profile.get("throttle_rate", ControllerProfile.DEFAULT_THROTTLE_RATE))
 			_rate_throttle = clampf(_rate_throttle + _stick("throttle") * rate * dt, 0.0, 1.0)
-	elif not armed and _throttle_low_seen and _normalized_throttle(axes[_throttle_axis()]) <= _idle_threshold():
-		armed = true
-		input_error = ""
+	else:
+		var throttle_is_low := _normalized_throttle(axes[_throttle_axis()]) <= _idle_threshold()
+		if _focus_rearm_pending:
+			if not throttle_is_low:
+				_throttle_low_seen = false
+				armed = false
+			elif not armed and _throttle_low_seen:
+				armed = true
+				input_error = ""
+			if integrate and armed and throttle_is_low:
+				_focus_rearm_pending = false
+		elif not armed and _throttle_low_seen and throttle_is_low:
+			armed = true
+			input_error = ""
 
 
 ## Compatibility helpers for radio calibration scripts and old fixtures.
@@ -296,7 +328,7 @@ func _normalized_throttle(value: float) -> float:
 
 
 func throttle_position() -> float:
-	if not _profile_ready:
+	if not _profile_ready or not input_error.is_empty() or not profile_error.is_empty():
 		return 0.0
 	if is_rate_throttle():
 		return _rate_throttle
@@ -304,7 +336,7 @@ func throttle_position() -> float:
 
 
 func sticks() -> Dictionary:
-	if not connected or not _profile_ready:
+	if not connected or not _profile_ready or not input_error.is_empty() or not profile_error.is_empty():
 		return {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0}
 	if is_gamepad() and not armed:
 		return {"roll": 0.0, "pitch": 0.0, "yaw": 0.0, "throttle": 0.0}
@@ -369,6 +401,9 @@ func _activate_profile(candidate: Dictionary, source: String, preserve_rate: boo
 	_profile_snapshot = profile.duplicate(true)
 	profile_source = source
 	input_error = ""
+	profile_error = ""
+	profile_rejection_error = ""
+	_focus_rearm_pending = false
 	_rate_throttle = old_rate if preserve_rate and profile.get("throttle_mode", "") == "stick_rate" else 0.0
 	if keep_radio_history:
 		armed = false
@@ -387,6 +422,7 @@ func _reset_controls(preserve_rate: bool) -> void:
 	armed = false
 	_throttle_low_seen = false
 	_neutral_elapsed = 0.0
+	_focus_rearm_pending = false
 	_neutral_release_pending = bool(profile.get("require_release", true)) and not _pressed_buttons.is_empty()
 	_seen.clear()
 	axes.fill(0.0)
@@ -407,6 +443,12 @@ func _invalidate_input(message: String) -> void:
 
 func _update_neutral_gate(dt: float) -> void:
 	if armed:
+		# The pause/menu gate may become ready before Continue is pressed. Keep
+		# that readiness only while mapped flight controls remain neutral; menu
+		# buttons remain available to operate the UI.
+		if not _auxiliary_enabled and not _fresh_neutral_sample():
+			armed = false
+			_neutral_elapsed = 0.0
 		return
 	if _neutral_release_pending or not _fresh_neutral_sample():
 		_neutral_elapsed = 0.0
@@ -417,6 +459,12 @@ func _update_neutral_gate(dt: float) -> void:
 		armed = true
 		_neutral_elapsed = required
 		input_error = ""
+
+
+func _revoke_paused_gamepad_readiness() -> void:
+	if is_gamepad() and armed and not _auxiliary_enabled and not _fresh_neutral_sample():
+		armed = false
+		_neutral_elapsed = 0.0
 
 
 func _fresh_neutral_sample() -> bool:
