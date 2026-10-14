@@ -23,6 +23,7 @@ const VIEWS := {
 	"gear_side": [Vector3(-1.1, -0.12, -0.05), Vector3(0.0, -0.15, -0.05), 30.0],
 	"nose_gear": [Vector3(-0.34, -0.13, -0.40), Vector3(-0.01, -0.15, -0.255), 30.0],
 	"propeller": [Vector3(-0.22, 0.10, -0.66), Vector3(0.0, 0.03, -0.41), 30.0],
+	"prop_hub": [Vector3(-0.10, 0.07, -0.56), Vector3(0.0, 0.035, -0.41), 30.0],
 	"throttle": [Vector3(-0.20, 0.11, -0.42), Vector3(-0.012, 0.018, -0.36), 24.0],
 }
 
@@ -36,11 +37,13 @@ func _run() -> void:
 	var only := ""
 	var throttle := 0.5
 	var compression := 0.0
+	var prop_broken := false
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--out="): out = arg.trim_prefix("--out=")
 		elif arg.begins_with("--view="): only = arg.trim_prefix("--view=")
 		elif arg.begins_with("--throttle="): throttle = float(arg.trim_prefix("--throttle="))
 		elif arg.begins_with("--gear_compression="): compression = float(arg.trim_prefix("--gear_compression="))
+		elif arg == "--prop_broken": prop_broken = true
 	DirAccess.make_dir_recursive_absolute(out)
 	await process_frame
 	var world := WorldEnvironment.new()
@@ -59,6 +62,9 @@ func _run() -> void:
 			if airplane.gear.has(key): airplane.gear[key].position += Vector3.UP * compression
 		var flex: Node = airplane.root.find_child("gear_flex", false, false)
 		if flex != null: flex.call("update")
+	# US-V11: the propeller after a prop strike (apps without render/crash/prop_break.gd have no stubs).
+	if prop_broken and ResourceLoader.exists("res://render/crash/prop_break.gd"):
+		load("res://render/crash/prop_break.gd").call("break_blades", airplane.propeller)
 	var camera := Camera3D.new()
 	root.add_child(camera)
 	camera.current = true

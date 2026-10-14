@@ -41,6 +41,7 @@ The model contract and reproducible visual evidence pass. The completed work and
 | US-V09h | Grass/soil spray behind the nose wheel, belly scuffs and tail-strike scrapes (`belly_wear.enabled`). [Finish v6 report](research/ugly-stik-finish-v6.md#us-v09fh--tail-spray-hatch-seams-and-field-wear) | Implemented 2026-10-13 |
 | US-V10 | Landing-gear flex: legs bend as clamped cantilevers to the axle the physics compression moves; nose fork rides with its wheel; GPU blend shapes. [Finish v6 report](research/ugly-stik-finish-v6.md#us-v10--landing-gear-flex) · `tests/test_gear_flex.gd` | Implemented 2026-10-13 |
 | US-V10b | Sprung steerable wire nose gear (Jensen torsion coil + owner-photo compression spring): wire telescopes into its spring, bows aft past solid; steering about the wire axis. [Finish v6 report](research/ugly-stik-finish-v6.md#us-v10b--sprung-nose-gear) · `tests/test_gear_flex.gd` | Implemented 2026-10-13 |
+| US-V11 | Broken propeller after a prop strike: hub and splintered stubs stay (pale fracture, slivers) instead of the whole propeller vanishing; same stubs on the wreck; blur respects the break. [Finish v6 report](research/ugly-stik-finish-v6.md#us-v11--broken-propeller-after-a-prop-strike) · `tests/test_prop_strike_feedback.gd` | Implemented 2026-10-14 |
 
 ## Limits and acceptance
 

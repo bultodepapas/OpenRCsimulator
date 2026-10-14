@@ -13,8 +13,12 @@
 # copy of the rotating meshes (split by radius: the Timber's spinner, backplate and bell share one mesh with its
 # blades). The model's own blade nodes are only shown or hidden; their meshes and materials are never edited, so the
 # Home preview, the projected silhouette (which skips `propeller`) and the crash wreck's duplicate stay as built.
+# A prop strike (render/crash/prop_break.gd) marks the propeller broken: the blur then keeps the blades hidden and
+# shows nothing of its own, and the broken stubs are never measured as blades.
 # Evidence and limits: docs/research/visual-quality-implementation/VQ-05/README.md.
 extends Node3D
+
+const PropBreak := preload("res://render/crash/prop_break.gd")
 
 ## Blade-passing frequency (blades × rev/s) where the blades start to blur and where the disc is complete. Flicker
 ## fusion spans ~15 Hz (dim) to ~60 Hz (bright); 60 fps rendering aliases above 30 Hz. Perceptual estimates.
@@ -41,6 +45,7 @@ var measured: Dictionary = {}
 var blur := 0.0
 var rpm := 0.0
 var _shown := false
+var _broken := false
 var _applied := false
 var _propeller: Node3D
 var _session: Node
@@ -98,7 +103,7 @@ static func profile(propeller: Node3D, root: Node3D = null) -> Dictionary:
 	var radius := 0.0
 	for item in propeller.find_children("*", "MeshInstance3D", true, false):
 		var mi := item as MeshInstance3D
-		if mi.mesh == null:
+		if mi.mesh == null or mi.has_meta(PropBreak.STUBS_META):
 			continue
 		var t := relative(propeller, mi)
 		for s in mi.mesh.get_surface_count():
@@ -461,17 +466,19 @@ func _process(_dt: float) -> void:
 ## Applies the blur for a rotor speed (rev/min) and follows the propeller. Idempotent; cheap when nothing changed.
 func update(rotor_rpm: float) -> void:
 	rpm = rotor_rpm
-	var shown := is_instance_valid(_propeller) and _propeller.is_inside_tree() and _propeller.is_visible_in_tree()
+	var broken := is_instance_valid(_propeller) and _propeller.has_meta(PropBreak.BROKEN_META)
+	var shown := not broken and is_instance_valid(_propeller) and _propeller.is_inside_tree() and _propeller.is_visible_in_tree()
 	if shown:
 		global_transform = _propeller.global_transform
 	var fraction := blur_fraction(rpm, measured.blades) if shown else 0.0
-	if _applied and fraction == blur and shown == _shown:
+	if _applied and fraction == blur and shown == _shown and broken == _broken:
 		return
 	blur = fraction
 	_shown = shown
+	_broken = broken
 	_applied = true
 	for node in _originals:
-		node.visible = fraction <= 0.0
+		node.visible = fraction <= 0.0 and not broken
 	for node in _hub_copies:
 		node.visible = shown and fraction > 0.0
 	for node in _blade_copies:
@@ -483,8 +490,8 @@ func update(rotor_rpm: float) -> void:
 		material.albedo_color.a = clampf(GAIN * fraction, 0.0, 1.0)
 
 
-## Restores the model's own blades (for callers that detach the blur).
+## Restores the model's own blades (for callers that detach the blur), unless a prop strike broke them.
 func _exit_tree() -> void:
 	for node in _originals:
 		if is_instance_valid(node):
-			node.visible = true
+			node.visible = not _broken

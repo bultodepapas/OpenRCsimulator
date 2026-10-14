@@ -1,5 +1,6 @@
-# E3d2: in the production flight scene a prop strike hides the broken blades, throws blade fragments, keeps the
-# flight going; a later crash keeps the propeller broken on the wreck; restart restores everything.
+# E3d2: in the production flight scene a prop strike breaks the blades, throws blade fragments, keeps the flight
+# going; a later crash keeps the propeller broken on the wreck; restart restores everything. US-V11: the Stik keeps
+# its hub and shows splintered stubs, on the flying model, through the blur and on the wreck.
 # Run: godot --headless --path . --script res://tests/test_prop_strike_feedback.gd
 extends SceneTree
 
@@ -41,7 +42,10 @@ func _run() -> void:
 	session.reset()
 	director.update(session.sim.dt())
 	var propeller: Node3D = main.get("_airplane").propeller
-	_check("blades are visible before the strike", propeller.visible)
+	var blades := propeller.get_node("propeller_blades") as Node3D
+	var stubs := propeller.get_node("propeller_stubs") as Node3D
+	var blur: Variant = main.get_node_or_null("PropellerBlur")
+	_check("blades are visible before the strike, stubs hidden", propeller.visible and blades.visible and not stubs.visible)
 	var s := _nose_over(session)
 	session.sim.reset(s)
 	session.sim.set_paused(false)
@@ -55,7 +59,12 @@ func _run() -> void:
 			break
 		session.sim.step()
 	_check("the nose-over strikes the propeller in production", not session.prop_strike.is_empty())
-	_check("the broken blades disappear", not propeller.visible)
+	_check("the broken blades disappear and the stubs stay on the hub", propeller.visible and not blades.visible and stubs.visible)
+	if blur != null:
+		for rpm in [9000.0, 0.0]:
+			blur.update(rpm)
+			_check("the blur keeps the broken blades hidden at %.0f rpm" % rpm, not blades.visible and stubs.visible
+				and not blur.get("_disc").visible)
 	_check("blade fragments fly", chips_seen)
 	_check("the flight goes on with the engine stopped", session.crash.is_empty() and not session.engine_running)
 	_check("the crash aftermath stays idle", not director.active)
@@ -85,8 +94,13 @@ func _run() -> void:
 		for group: Dictionary in director.wreck._groups:
 			if String(group.kind) == "propeller":
 				prop_group = group
-		_check("the wreck does not throw the broken propeller again", not prop_group.is_empty() and not bool(prop_group.detached)
-			and (prop_group.members as Array).all(func(m: Node3D) -> bool: return not m.visible))
+		var twin_blades: Node3D = null
+		var twin_stubs: Node3D = null
+		for member: Node3D in prop_group.get("members", []):
+			twin_blades = twin_blades if twin_blades != null else member.find_child("propeller_blades", true, false) as Node3D
+			twin_stubs = twin_stubs if twin_stubs != null else member.find_child("propeller_stubs", true, false) as Node3D
+		_check("the wreck does not throw the broken propeller again", not prop_group.is_empty() and not bool(prop_group.detached))
+		_check("the wreck shows the same stubs", twin_blades != null and twin_stubs != null and not twin_blades.visible and twin_stubs.visible)
 		director.wreck._process(0.5) # release every scheduled section before summing
 		var mass := 0.0
 		for body: RigidBody3D in director.wreck._bodies:
@@ -95,7 +109,11 @@ func _run() -> void:
 		_check("wreck mass stays conserved", absf(mass - float(session.sim.mass)) < 0.001, "%.4f vs %.4f" % [mass, float(session.sim.mass)])
 	session.reset()
 	director.update(session.sim.dt())
-	_check("restart restores the propeller and clears the strike", propeller.visible and session.prop_strike.is_empty() and session.engine_running)
+	if blur != null:
+		blur.update(0.0)
+	_check("restart restores the propeller and clears the strike", propeller.visible and blades.visible and not stubs.visible
+		and session.prop_strike.is_empty() and session.engine_running)
+	_check("restart unbreaks the wreck twin's propeller", director.wreck._hidden_members.is_empty())
 	_finish(main)
 
 

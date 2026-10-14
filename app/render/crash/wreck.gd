@@ -5,6 +5,7 @@ extends Node3D
 signal secondary_impact(position: Vector3, strength: float)
 
 const SectionSplitter = preload("res://render/crash/section_splitter.gd")
+const PropBreak = preload("res://render/crash/prop_break.gd")
 const Severity = preload("res://render/crash/severity.gd")
 
 const MAX_BODIES := 24
@@ -131,7 +132,7 @@ var _c3_contact_exposure_index_j := 0.0
 var _c3_contact_release_pending := false
 var _run_generation := 0
 var _release_kinds: Array = []
-var _hidden_members: Array = [] # E3d2: propeller pieces hidden because the blades broke before the crash
+var _hidden_members: Array = [] # E3d2/US-V11: PropBreak records of the blades broken before the crash
 var _prop_broken := false
 ## Settling damping (s⁻¹). Physically too strong in the air (~22 m/s² at 15 m/s), but CR-09d2 found that 0.3 / 1.0 lets
 ## the box colliders tunnel through the ground plane and keeps pieces from sleeping within 8 s; lowering it waits for
@@ -320,14 +321,14 @@ func start(pose: Transform3D, velocity: Vector3, angular_velocity: Vector3, seve
 		body.collision_mask = 0
 		body.linear_velocity = Vector3.ZERO
 		body.angular_velocity = Vector3.ZERO
-	# E3d2: blades already broken by a prop strike stay hidden (_should_detach keeps them on the core).
+	# E3d2: blades already broken by a prop strike stay broken (_should_detach keeps them on the core); US-V11: the
+	# twin shows the same stubs as the flying model.
 	if _prop_broken:
 		for i in range(1, _groups.size()):
 			if String(_groups[i].kind) == "propeller":
 				for member: Node3D in _groups[i].members:
 					if is_instance_valid(member) and member.visible:
-						member.visible = false
-						_hidden_members.append(member)
+						_hidden_members.append_array(PropBreak.break_blades(member))
 	# Low classes keep all sections attached to the core body. These mass weights are presentation estimates.
 	_groups[0].mass = _core_body.mass
 	_groups[0].base_velocity = safe_velocity
@@ -431,9 +432,7 @@ func reset() -> void:
 	_last_component_hint = ""
 	_last_cg_model = Vector3.ZERO
 	_release_kinds = []
-	for member: Node3D in _hidden_members:
-		if is_instance_valid(member):
-			member.visible = true
+	PropBreak.restore(_hidden_members)
 	_hidden_members.clear()
 	_prop_broken = false
 	_section_masses = {}
