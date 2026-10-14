@@ -64,6 +64,10 @@ Put step status and next actions in the owning plan, measurements and reproducti
 
 Static margin is neutral point minus CG, and the neutral point comes from the target's own wing, tail and downwash. Applying the Ultra Stick's `Cma` about the Ugly Stik's plan CG gave 18.9 % margin where its planform gives about 4–8 %, so the model holds trim α too stiffly and turns every speed gain into a pull-up. Derive pitch stiffness from the target geometry at the target CG, or move the coefficient reference so the neutral point is geometric. Check donor propeller tables against the named propeller too: an 11×6 table on the 12×6 overstated thrust 1.4–1.8× at cruise advance ratios. [Root-cause review](docs/research/flight-dynamics/climb-trim/README.md#root-cause-review-2026-10-13-d6e-r1)
 
+## 2026-10-14 · NITRO-05 — onboard fluids feel the specific force, not the attitude
+
+The first fuel-feed tests expected a nose-up attitude to lean the engine and a nose-down one to richen it. Gravity accelerates the fuel and the airframe alike. The fuel feels only `−F_non-gravitational/m`: lift, thrust, drag and ground loads. A level airplane accelerating at full throttle therefore leans exactly like a steady up-line, and a dive richens only while drag slows it. Model any onboard fluid, accelerometer or pilot cue from that stage-local specific force. Test it from steady or explicitly accelerating states, never from attitude alone. [NITRO-05](docs/plans/RC_NITRO_ENGINE_REALISM_PLAN.md#milestones-and-proof-register) · `app/tests/test_glow_fuel_feed.gd`
+
 ## 2026-10-13 · CR-09f — a SceneTree test that hits a script error hangs instead of failing
 
 When a `--script` SceneTree test raises a runtime script error (indexing `[0]` of an empty list, `.field` on `{}`), Godot prints the error and never reaches `quit()`; the runner only sees its timeout. Two CR-09f mutations looked like hangs for this reason. Fetch optional sections through helpers that return `{}` and read keys with `.get(key, default)`, so a missing part fails its checks and the summary line still prints. [CR-09e/f evidence](docs/research/crash-damage-investigations/CR-09e/README.md)
