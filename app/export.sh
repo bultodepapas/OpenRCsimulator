@@ -79,7 +79,8 @@ for pack in "$DIST/linux/openrc-simulator.x86_64" "$DIST/windows/OpenRC Simulato
 done
 
 echo "== packages"
-(cd "$DIST/linux" && zip -q -9 "$DIST/openrc-simulator-$VERSION-linux-x86_64.zip" openrc-simulator.x86_64)
-(cd "$DIST/windows" && zip -q -9 "$DIST/openrc-simulator-$VERSION-windows-x86_64.zip" "OpenRC Simulator.exe")
+# Include exporter-managed GDExtension libraries beside the executable, preserving their relative paths.
+(cd "$DIST/linux" && zip -q -9 -r "$DIST/openrc-simulator-$VERSION-linux-x86_64.zip" .)
+(cd "$DIST/windows" && zip -q -9 -r "$DIST/openrc-simulator-$VERSION-windows-x86_64.zip" .)
 cp "$DIST/macos/OpenRC Simulator.zip" "$DIST/openrc-simulator-$VERSION-macos-universal.zip"
 (cd "$DIST" && sha256sum openrc-simulator-*.zip > SHA256SUMS && cat SHA256SUMS && ls -la openrc-simulator-*.zip)

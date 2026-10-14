@@ -27,6 +27,16 @@ func _radio(values: Dictionary, moved: Array, saved: Dictionary = {}) -> RcInput
 	return r
 
 
+func _gamepad_neutral_armed() -> RcInput:
+	var r := RcInput.new()
+	r.connect_device(0, {name = "Synthetic gamepad", known = true})
+	for axis in [2, 3, 0, 1]:
+		r.on_motion(0, axis, 0.0)
+	for _tick in 48:
+		r.poll(func(_device: int, _axis: int) -> float: return 0.0, DT, func(_device: int, _button: int) -> bool: return false)
+	return r
+
+
 func _initialize() -> void:
 	# Identity for a saved calibration.
 	var r := _radio({}, [])
@@ -117,17 +127,20 @@ func _initialize() -> void:
 	_check("a saved calibration wins", r.profile_source == "calibrated" and r.profile.roll.axis == 5)
 
 	# Gamepad: deadzone, expo, throttle as a rate from the spring-centred left stick (up = −1 in SDL).
-	r = RcInput.new()
-	r.connect_device(0, { name = "pad", known = true })
+	r = _gamepad_neutral_armed()
+	r.on_motion(0, 2, 0.05)
 	r.poll(func(_d: int, axis: int) -> float: return 0.05 if axis == 2 else 0.0, DT)
 	_check("gamepad: inside the deadzone → 0", r.sticks().roll == 0.0)
+	r.on_motion(0, 2, 1.0)
 	r.poll(func(_d: int, axis: int) -> float: return 1.0 if axis == 2 else 0.0, DT)
 	_check("gamepad: full stick → 1", absf(r.sticks().roll - 1.0) < 1e-12)
 	var dz := 0.08
 	var m := (0.5 - dz) / (1.0 - dz)
+	r.on_motion(0, 2, 0.5)
 	r.poll(func(_d: int, axis: int) -> float: return 0.5 if axis == 2 else 0.0, DT)
 	_check("gamepad: half stick → deadzone + expo curve", absf(r.sticks().roll - (0.7 * m + 0.3 * m * m * m)) < 1e-12, str(r.sticks().roll))
-	_check("gamepad: armed from the start, throttle idle", r.armed and r.sticks().throttle == 0.0)
+	_check("gamepad: fresh neutral evidence arms, throttle starts idle", r.armed and r.sticks().throttle == 0.0)
+	r.on_motion(0, 1, -1.0)
 	for i in 240:
 		r.poll(func(_d: int, axis: int) -> float: return -1.0 if axis == 1 else 0.0, DT)
 	_check("gamepad: left stick up for 1 s → throttle +0.5 (rate 0.5/s)", absf(r.sticks().throttle - 0.5) < 1e-9, str(r.sticks().throttle))

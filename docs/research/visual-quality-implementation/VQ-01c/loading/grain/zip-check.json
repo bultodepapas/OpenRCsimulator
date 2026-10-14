@@ -1,0 +1,17 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\extracted-windows\\OpenRC.exe",
+    "--headless",
+    "--audio-driver",
+    "Dummy",
+    "--",
+    "--trace=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\zip-trace.csv",
+    "--t=1"
+  ],
+  "exit_code": 0,
+  "no_engine_errors": true,
+  "files": {
+    "OpenRC.exe": "86f666f15fc943e214d69f5510a81d317062128444fab7826a3fa89b1547a12e",
+    "openrc_ground_vehicle.dll": "2958c34163a8c13d5d5fc675806bd6b45750eb8f435708c1ba4d4b67ade8789e"
+  }
+}

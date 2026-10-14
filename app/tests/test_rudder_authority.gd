@@ -402,6 +402,9 @@ func _run_device_case(device_id: int, gamepad: bool, direction: float, throw_deg
 		axes[2] = -1.0 # radio throttle low: arm using its real safety rule
 		_joy_motion(device_id, 2, -1.0)
 		_manual_ticks(session, 2)
+	else:
+		for axis: int in [0, 1, 2, 3]: _joy_motion(device_id, axis, 0.0)
+		_manual_ticks(session, 50) # fresh centered evidence and 200 ms neutral before flight input
 	var yaw_position := direction * (0.8 if gamepad else 1.0)
 	axes[yaw_axis] = yaw_position
 	_joy_motion(device_id, yaw_axis, yaw_position)

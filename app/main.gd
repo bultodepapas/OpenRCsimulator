@@ -770,11 +770,26 @@ func _begin_smoke_assignment() -> void:
 	_smoke_assignment = SmokeAssignment.new()
 	center.add_child(_smoke_assignment)
 	_smoke_assignment.profile_ready.connect(func(profile: Dictionary) -> void:
-		var gamepad: bool = profile.get("kind", "") == "gamepad"
-		session.radio.use_profile(profile, "gamepad" if gamepad else "calibrated")
-		var saved: Error = session.RcCalibration.save_smoke_binding(session.profiles_path, session.radio.device_key, profile.aux.smoke) if gamepad \
-			else session.RcCalibration.save_profile(session.profiles_path, session.radio.device_key, profile)
-		_note = tr("Smoke AUX assigned. Move throttle and smoke control to OFF before resuming.") if saved == OK else tr("Smoke AUX assigned for this flight; profile could not be saved.")
+		var saved := false
+		if session.persist_full_controller_profile.is_valid():
+			var result: Dictionary = session.persist_full_controller_profile.call(profile)
+			saved = bool(result.get("ok", false))
+			if not saved:
+				_note = tr("Could not save the updated controller profile; the existing profile is unchanged.")
+		else:
+			var gamepad: bool = profile.get("kind", "") == "gamepad"
+			var applied: bool = session.radio.use_profile(profile, "gamepad" if gamepad else "calibrated")
+			var write_error: Error = ERR_INVALID_DATA
+			if applied:
+				write_error = session.RcCalibration.save_smoke_binding(session.profiles_path, session.radio.device_key, profile.aux.smoke) if gamepad \
+					else session.RcCalibration.save_profile(session.profiles_path, session.radio.device_key, profile)
+			saved = applied and write_error == OK
+			if not applied:
+				_note = tr("The current controller profile could not be updated.")
+			elif not saved:
+				_note = tr("Smoke AUX assigned for this flight; profile could not be saved.")
+		if saved:
+			_note = tr("Smoke AUX assigned. Move throttle and smoke control to OFF before resuming.")
 		_end_smoke_assignment(false))
 	_smoke_assignment.cancelled.connect(func() -> void: _end_smoke_assignment(true))
 	_smoke_assignment.begin(session.radio.device_id, session.radio.profile, session.radio.device_key, session.profiles_path, session.radio.axes)

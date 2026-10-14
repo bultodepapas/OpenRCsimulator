@@ -7,7 +7,7 @@ const Frame := preload("res://render/overlays/overlay_frame.gd")
 
 signal close_requested(id: String)
 
-const DANGER := ["failsafe", "stall", "low"]
+const DANGER := ["failsafe", "controller_lost", "stall", "low"]
 const INFO := ["experimental"]
 ## The chips wrap inside this width (px), so many warnings never reach the corner overlays (Wind is ≈ 232 px wide).
 const MAX_WIDTH := 640.0
@@ -44,6 +44,10 @@ static func text_for(code: String) -> String:
 			return "FAILSAFE · radio lost"
 		"safe":
 			return "RADIO SAFE · throttle low to arm"
+		"gamepad_safe":
+			return "GAMEPAD SAFE · move controls, then release"
+		"controller_lost":
+			return "CONTROLLER LOST · select controls to continue"
 		"stall":
 			return "STALL"
 		"low":

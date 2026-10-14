@@ -258,3 +258,23 @@ Pin godot-cpp, SCons, compiler/SDK versions and strict floating-point flags. Gen
 ### 2026-10-14 — Reuse bounded lake geometry without sharing scene state (DT-11a)
 
 Measured lake mesh generation dominates repeated Home/flight construction. Retain one CPU array entry each for basin and water, keyed by complete serialized inputs, and create fresh meshes, materials and nodes for every scene. Content changes invalidate even when the lake identity label is unchanged. Keep terrain sampling and physics untouched; retain the synchronous failed-start restoration contract. This improves repeated setup while leaving cold loading, resident-memory soak and package acceptance open. [Measurements and parity evidence](docs/research/visual-quality-implementation/VQ-01c/loading/README.md).
+
+The same measured bottleneck also occurs in fresh processes. Ship generated default
+CPU buffers with exact input keys, engine/precision metadata, source stamp and content
+digests; retain procedural generation for missing/incompatible resources and custom
+inputs. Runtime checks the compiled stamp; source tests and the generator's `--check`
+bind it to current samplers and exact arrays. This avoids reading source text in an
+export and adds no asynchronous scene state. [Cold-loading evidence and remaining gates](docs/research/visual-quality-implementation/VQ-01c/loading/cold/README.md).
+
+The next attributed startup repair precomputes the existing Stik wood grain as a
+compressed Image resource, preserving every RGB8/mip byte and the material contract.
+The original recipe remains authoritative; its generator and aircraft dependency
+manifest must be refreshed together. Export verification now follows the runtime's
+separate rotorcraft contract and selected imported/procedural grass branch. Portable
+ZIPs include exporter-managed native libraries alongside the executable. These repairs
+have clean Windows package smoke evidence, not full release/native qualification.
+[Grain parity, paired timings and package evidence](docs/research/visual-quality-implementation/VQ-01c/loading/grain/README.md).
+
+### 2026-10-14 — Separate controller ownership, profiles and activity commands (D6/F3/UI-GP)
+
+Keep Godot's pinned SDL backend and the existing scalar RcInput boundary. The interactive shell owns explicit flight/menu device selection; a connection never grants flight control. Store validated V2 profiles by UUID and hardware evidence without modifying legacy calibration. Gamepads require neutral/release evidence and explicit resume, with rate throttle frozen through menus and focus loss; radios, helicopter collective and ground controls retain their activity contracts. Presentation and remapping remain independent. Synthetic verification does not qualify physical Xbox/DualSense transports. [Plan](docs/plans/controller-support.md), [implementation evidence](docs/research/controller-support-2026-10-14/README.md).

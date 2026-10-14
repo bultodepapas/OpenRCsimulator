@@ -23,6 +23,33 @@ bash research/ugly-stik/model-v4/capture.sh \
 
 Choose a new capture output directory. The v4 wrapper generates inspection, 36 orientation cases, detail, motion and beauty suites; repeats the orientation cases and compares all PNG hashes. It refuses existing outputs and protects historical v1/v2/v3. The offline gallery and image differences require the exact Pillow version in [requirements.txt](../../../research/ugly-stik/model-v4/requirements.txt); the runtime and compilers do not require Pillow.
 
+## Generated propeller grain (DT-11a)
+
+The existing procedural wood recipe in `ugly_stik_finish.gd::generate_grain_image`
+generates `app/aircraft/ugly_stik_grain.res`. This compressed Image resource preserves
+all RGB8 pixels and mip levels; loading it avoids recalculating noise at startup.
+The material, filtering and shared runtime texture remain unchanged. Regenerate with
+the pinned Godot build, then update the aircraft model dependency manifest:
+
+```powershell
+& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy `
+  --script "$PWD/assets/aircraft/ugly-stik-60/bake_grain.gd"
+python research/aircraft-standardization/build_models.py
+# Read-only freshness checks:
+& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy `
+  --script "$PWD/assets/aircraft/ugly-stik-60/bake_grain.gd" -- --check
+python research/aircraft-standardization/build_models.py --check
+```
+
+Commit the generated image and manifest together. `test_stik_grain.gd` runs in
+`app/test.sh` and compares every byte against fresh procedural generation. Direct
+finish-helper calls retain procedural fallback for absent/incompatible image resources;
+the aircraft registry still rejects a missing or modified pinned dependency before
+flight. Baking never bypasses that contract. No external image or new texture recipe
+was introduced. [Parity, loading and exported-package evidence](../../../docs/research/visual-quality-implementation/VQ-01c/loading/grain/README.md).
+
+## Model captures
+
 For an automatic **28-image tour at 2560 × 1440**, including eleven engine views, run:
 
 ```bash

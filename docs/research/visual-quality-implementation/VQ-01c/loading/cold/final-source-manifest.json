@@ -1,0 +1,8 @@
+{
+  "app/render/lake/lake_terrain.gd": "b7467250cf9ba32bc59456aa851351b2c6930e18da5f1472ef89652e4cb996a8",
+  "app/render/lake/generated_geometry_stamp.gd": "f1683c340f3807c653917b18e66c40a37a62cd033518548b62680af746198f9c",
+  "app/assets/landscape/lake/default_geometry.res": "50102097f9aaf329637f1dbca1211a5428aac593bf1b25efdcd291be77e2ff6d",
+  "app/tests/check_field_pack.gd": "d60657424e2eb8275887ea0211c1215fe9b20ece3ce208c8a1f4cda9d5696ad4",
+  "app/tests/test_lake_geometry_bake.gd": "c93630f2c46e73b16ce6221ae841fdcc4a3c3376a40ef6aba89db64583034249",
+  "app/tests/test_lake_world.gd": "6bba0d8c972610d127291af8fc45ab7f239f84a82ada2048e520a2fa3ef3386d"
+}

@@ -19,7 +19,7 @@ func check(label: String, passed: bool) -> void:
 
 func profile(axis: int, minimum: float, maximum: float, inverted: bool) -> Dictionary:
 	var result: Dictionary = Radio.DEFAULT_PROFILE.duplicate(true)
-	result.throttle = {axis = axis, min = minimum, center = minimum, max = maximum, invert = inverted}
+	result["throttle"] = {"axis": axis, "min": minimum, "center": minimum, "max": maximum, "invert": inverted}
 	var available: Array[int] = []
 	for index: int in Radio.AXES:
 		if index != axis:
@@ -58,7 +58,7 @@ func calibration_boundary(axis: int, endpoints: Array) -> void:
 	var history: bool = radio.axes.to_byte_array() == raw_before
 	for index: int in Radio.AXES:
 		history = history and radio.has_axis_sample(index)
-	check(label + " calibration retains raw values and connection history", history)
+	check(label + " radio calibration retains raw values and connection history", history)
 	poll(radio, low)
 	check(label + " stale pre-profile event cannot arm", safe(radio))
 	radio.on_motion(ID + 1, axis, low)
@@ -126,11 +126,25 @@ func gamepad_control() -> void:
 	var radio: Radio = Radio.new()
 	radio.connect_device(ID, {name = "Fake gamepad", known = true})
 	for _tick: int in 240:
+		poll(radio, 0.0)
+	check("gamepad polling alone cannot arm or move throttle", not radio.armed and radio.sticks().throttle == 0.0)
+	for axis: int in [2, 3, 0, 1]:
+		radio.on_motion(ID, axis, 0.0)
+	for _tick: int in 48:
+		poll(radio, 0.0)
+	check("fresh mapped neutral evidence arms rate throttle", radio.armed and radio.sticks().throttle == 0.0)
+	radio.on_motion(ID, radio.profile.throttle.axis, -1.0)
+	for _tick: int in 240:
 		poll(radio, -1.0)
-	check("gamepad rate throttle rises normally without radio events", radio.armed and absf(radio.sticks().throttle - 0.5) < 1e-9)
+	check("rate throttle rises normally after fresh neutral arming", radio.armed and absf(radio.sticks().throttle - 0.5) < 1e-9)
 	radio.use_profile(Radio.GAMEPAD_PROFILE, "gamepad")
 	poll(radio, 0.0)
-	check("gamepad profile reset starts armed at idle", radio.armed and radio.sticks().throttle == 0.0)
+	check("gamepad profile replacement resets to disarmed idle", not radio.armed and radio.sticks().throttle == 0.0)
+	for axis: int in [2, 3, 0, 1]:
+		radio.on_motion(ID, axis, 0.0)
+	for _tick: int in 48:
+		poll(radio, 0.0)
+	check("replacement gamepad mapping needs a fresh neutral interval", radio.armed and radio.sticks().throttle == 0.0)
 
 
 func _initialize() -> void:

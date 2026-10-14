@@ -11,6 +11,7 @@ static var _atlas: ImageTexture
 static var _normal_map: ImageTexture
 static var _grain: ImageTexture
 const GRAIN_SIZE := Vector2i(1024, 128)
+const GRAIN_PATH := "res://aircraft/ugly_stik_grain.res"
 const NORMAL_MAP_SIZE := 1024
 # Slopes are stored ×GAIN for 8-bit precision; the material's normal_scale (1/GAIN) restores them (small-angle mix).
 const NORMAL_MAP_GAIN := 8.0
@@ -152,6 +153,17 @@ static func _bay_profile(supports: Array, size: int, column_x: Callable) -> Arra
 # propeller blur measures (its disc copies albedo_color). Deterministic hash noise; built once.
 static func grain() -> ImageTexture:
 	if _grain != null: return _grain
+	# Literal load keeps the generated resource in the model manifest's dependency closure.
+	var image: Image = load("res://aircraft/ugly_stik_grain.res") as Image if ResourceLoader.exists(GRAIN_PATH) else null
+	if image == null or image.get_size() != GRAIN_SIZE or image.get_format() != Image.FORMAT_RGB8 or not image.has_mipmaps():
+		image = generate_grain_image()
+	_grain = ImageTexture.create_from_image(image)
+	return _grain
+
+
+## DT-11a: authoritative recipe for assets/aircraft/ugly-stik-60/bake_grain.gd.
+## Keep the baked image (including mip levels) byte-identical to this procedural fallback.
+static func generate_grain_image() -> Image:
 	var data := PackedByteArray()
 	data.resize(GRAIN_SIZE.x * GRAIN_SIZE.y * 3)
 	for y in GRAIN_SIZE.y:
@@ -171,8 +183,7 @@ static func grain() -> ImageTexture:
 			data[i + 2] = roundi(255.0 * (value * 0.96))
 	var image := Image.create_from_data(GRAIN_SIZE.x, GRAIN_SIZE.y, false, Image.FORMAT_RGB8, data)
 	image.generate_mipmaps()
-	_grain = ImageTexture.create_from_image(image)
-	return _grain
+	return image
 
 
 # Smooth value noise in [-1, 1] from an integer hash (no RandomNumberGenerator state, identical on every run).

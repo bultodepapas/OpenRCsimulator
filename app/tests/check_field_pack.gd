@@ -4,7 +4,8 @@ extends SceneTree
 
 func _initialize() -> void:
 	var args: PackedStringArray = OS.get_cmdline_user_args()
-	if args.size() != 2 or not ProjectSettings.load_resource_pack(args[0], true):
+	var lake_only := args.size() == 3 and args[2] == "--lake-only"
+	if (args.size() != 2 and not lake_only) or not ProjectSettings.load_resource_pack(args[0], true):
 		printerr("Could not mount field pack: ", args)
 		quit(1)
 		return
@@ -44,6 +45,9 @@ func _initialize() -> void:
 		quit(1)
 		return
 	print("Pack default lake geometry and compiled source stamp validated")
+	if lake_only:
+		quit(0)
+		return
 	var trees: Script = load("res://render/tree_assets.gd")
 	if trees == null or not FileAccess.file_exists("res://assets/landscape/trees/LICENSE.txt"):
 		printerr("Pack has no tree assets adapter/license")
@@ -93,25 +97,15 @@ func _initialize() -> void:
 			quit(1)
 			return
 	var grass: Node3D = field.get_node_or_null("NearGrass") as Node3D
-	if grass == null or grass.get_child_count() != 4:
-		printerr("Pack missing L11a placement, grass shader or chunks")
+	var expected_imported: bool = field.has_node("Scenery") and result.field.id == "default"
+	var grass_error := _grass_error(grass, expected_imported)
+	if not grass_error.is_empty():
+		printerr("Pack invalid L11a grass: ", grass_error)
 		field.free()
 		quit(1)
 		return
-	var clumps: int = 0
-	for chunk: MultiMeshInstance3D in grass.get_children():
-		clumps += chunk.multimesh.instance_count
-		if chunk.multimesh.mesh.surface_get_array_len(0) != 21 or chunk.multimesh.mesh.surface_get_material(0) == null:
-			printerr("Pack invalid L11a clump mesh/material")
-			field.free()
-			quit(1)
-			return
-	if clumps <= 0 or clumps > 6000:
-		printerr("Pack invalid L11a clipped clump count: ", clumps)
-		field.free()
-		quit(1)
-		return
-	print("Pack L11a placement checksum and %d opaque clumps validated" % clumps)
+	print("Pack L11a %s grass and %d clumps validated" % [
+		"imported" if expected_imported else "procedural", grass.get_meta("clumps")])
 	var cue: Node3D = field.get_node_or_null("windsock") as Node3D
 	if cue == null or cue.get_child_count() != 2 or not cue.get_node_or_null("Fabric") is MeshInstance3D:
 		printerr("Pack missing L10a windsock data, mesh builder or material")
@@ -143,3 +137,60 @@ func _initialize() -> void:
 		return
 	print("Pack tree catalog, imported atlas, license and %d-tree field validated" % expected_count)
 	quit(0)
+
+
+## Export coverage: require real source meshes/materials and nonempty instance data.
+## Detailed layout/mask behavior belongs to test_imported_near_grass/test_near_grass.
+func _grass_error(grass: Node3D, imported: bool) -> String:
+	if grass == null or bool(grass.get_meta("imported", false)) != imported:
+		return "missing root or wrong field/scenery grass branch"
+	if grass.get_child_count() < 1 or grass.get_child_count() > (3 if imported else 4):
+		return "invalid number of nonempty source batches/quadrants"
+	var adapter: Script = load("res://scenery/imported_vegetation.gd") if imported else null
+	var clumps := 0
+	var triangles := 0
+	var assets := {}
+	for node: Node in grass.get_children():
+		if not node is MultiMeshInstance3D:
+			return "grass child is not a MultiMeshInstance3D"
+		var batch := node as MultiMeshInstance3D
+		var mm := batch.multimesh
+		if mm == null or mm.instance_count <= 0 or mm.transform_format != MultiMesh.TRANSFORM_3D:
+			return "missing grass instances or invalid transform format"
+		var mesh := mm.mesh as ArrayMesh
+		if mesh == null or mesh.get_surface_count() < 1:
+			return "missing source geometry"
+		var source: Mesh
+		if imported:
+			var asset_id := str(node.name).get_slice("_Part_", 0)
+			if not asset_id in ["grass_common_short", "grass_common_tall", "grass_wispy_tall"]:
+				return "unknown imported grass source"
+			var parts: Array = adapter.get_parts(asset_id)
+			var part_index := int(str(node.name).get_slice("_Part_", 1))
+			if part_index < 0 or part_index >= parts.size() or not mm.use_colors or not mm.use_custom_data:
+				return "missing imported mesh part or instance attributes"
+			source = parts[part_index].mesh
+			if source == null or source.get_surface_count() != mesh.get_surface_count():
+				return "source surface count mismatch"
+			assets[asset_id] = true
+		elif mesh.get_surface_count() != 1 or mesh.surface_get_array_len(0) != 21:
+			return "invalid procedural clump geometry"
+		for surface in mesh.get_surface_count():
+			var arrays := mesh.surface_get_arrays(surface)
+			if mesh.surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES or mesh.surface_get_material(surface) == null:
+				return "missing triangle surface/material"
+			if imported:
+				var original := source.surface_get_arrays(surface)
+				if arrays[Mesh.ARRAY_VERTEX] != original[Mesh.ARRAY_VERTEX] or arrays[Mesh.ARRAY_INDEX] != original[Mesh.ARRAY_INDEX] \
+						or mesh.surface_get_material(surface) != source.surface_get_material(surface):
+					return "imported source geometry/material changed"
+			var indices: Variant = arrays[Mesh.ARRAY_INDEX]
+			var count: int = indices.size() if indices is PackedInt32Array and not indices.is_empty() else arrays[Mesh.ARRAY_VERTEX].size()
+			triangles += (count / 3) * mm.instance_count
+		clumps += mm.instance_count
+	if clumps <= 0 or clumps > 6000 or int(grass.get_meta("clumps", -1)) != clumps:
+		return "clump metadata/count mismatch"
+	if imported and (triangles <= 0 or triangles > 50000 or int(grass.get_meta("triangles", -1)) != triangles \
+			or int(grass.get_meta("asset_batches", -1)) != assets.size()):
+		return "imported triangle budget or batch metadata mismatch"
+	return ""

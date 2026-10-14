@@ -189,6 +189,8 @@ func _fingerprint(device: Dictionary) -> String:
 	var product_id := int(device.get("product_id", 0))
 	if not guid.is_empty() and vendor_id > 0 and product_id > 0:
 		return "%s|%04x:%04x" % [guid.to_lower(), vendor_id, product_id]
+	if not guid.is_empty():
+		return "guid:" + guid.to_lower()
 	var raw_name := str(device.get("raw_name", "")).strip_edges().to_lower()
 	return "name:" + raw_name if not raw_name.is_empty() else ""
 

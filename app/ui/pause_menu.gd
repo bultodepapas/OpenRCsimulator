@@ -15,6 +15,7 @@ signal failure_settings_requested(from: Control)
 signal overlays_requested(from: Control)
 signal end_requested
 signal help_requested(from: Control)
+signal controls_requested(from: Control)
 signal quit_requested
 
 const LAYER := 10 # above the flight's HUD/panel CanvasLayers
@@ -28,8 +29,11 @@ var failure_settings_button: Button
 var overlays_button: Button
 var end_button: Button
 var help_button: Button
+var controls_button: Button
 var quit_button: Button
 var status_label: Label
+var controller_value_label: Label
+var collective_control := false
 var failure_config_label: Label
 var failure_summary_label: Label
 var note_label: Label
@@ -37,6 +41,7 @@ var _session: Node
 var _failure_config: Dictionary = {}
 var _failure_notifications_enabled := true
 var _failure_summary_disclosed := false
+var _controller_status_elapsed := 0.0
 
 
 ## `can_end`: whether "End flight" (back to Home) is offered; the direct route (`--` arguments) has no Home.
@@ -54,16 +59,26 @@ func _init(can_end := true) -> void:
 	panel.custom_minimum_size.x = WIDTH
 	screen.add_child(panel)
 	screen.fade(WIDTH)
+	var scroll := ScrollContainer.new()
+	scroll.name = "PauseScroll"
+	scroll.follow_focus = true
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	panel.add_child(scroll)
 	var column := VBoxContainer.new()
 	column.add_theme_constant_override("separation", 12)
 	column.alignment = BoxContainer.ALIGNMENT_CENTER
-	panel.add_child(column)
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.add_child(column)
 	var title := Label.new()
 	title.text = "PAUSED"
 	title.theme_type_variation = "TitleLabel"
 	column.add_child(title)
 	status_label = _wrapped_label()
 	column.add_child(status_label)
+	controller_value_label = _wrapped_label()
+	controller_value_label.visible = false
+	column.add_child(controller_value_label)
 	failure_config_label = _wrapped_label()
 	failure_config_label.name = "FailureConfig"
 	failure_config_label.visible = false
@@ -93,6 +108,9 @@ func _init(can_end := true) -> void:
 	help_button = _button("Help", "", "Help")
 	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
 	column.add_child(help_button)
+	controls_button = _button("Controller settings", "", "ControllerSettings")
+	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
+	column.add_child(controls_button)
 	overlays_button = _button("Flight overlays", "", "Overlays") # HUD-06; hidden when the flight has none
 	overlays_button.pressed.connect(func() -> void: overlays_requested.emit(overlays_button))
 	overlays_button.visible = false
@@ -130,6 +148,7 @@ func refresh() -> void:
 	continue_button.disabled = not _session.is_flyable()
 	status_label.text = status_text(_session)
 	status_label.visible = status_label.text != ""
+	_refresh_controller_value()
 	failure_config_label.text = failure_config_text(_failure_config)
 	failure_config_label.visible = failure_config_label.text != ""
 	failure_summary_label.text = active_failure_text(_session, _failure_notifications_enabled and _failure_summary_disclosed)
@@ -173,6 +192,32 @@ func _ready() -> void:
 	Input.joy_connection_changed.connect(_on_joy_changed) # disconnected automatically when the menu is freed
 
 
+func _process(delta: float) -> void:
+	_controller_status_elapsed += delta
+	if _controller_status_elapsed >= 0.1 and is_instance_valid(_session):
+		_controller_status_elapsed = 0.0
+		status_label.text = status_text(_session)
+		status_label.visible = not status_label.text.is_empty()
+		_refresh_controller_value()
+
+
+func _refresh_controller_value() -> void:
+	controller_value_label.text = controller_value_text(_session)
+	controller_value_label.visible = not controller_value_label.text.is_empty()
+
+
+func controller_value_text(session: Node) -> String:
+	if not bool(session.get("external_controller_selection")) or not session.radio.connected:
+		return ""
+	var value: float = session.radio.throttle_position()
+	if session.radio.is_rate_throttle():
+		var pending: Variant = session.get("_pending_controller_start")
+		if pending != null and float(pending) >= 0.0:
+			value = float(pending)
+		return (tr("Collective on resume: %.0f%%") if collective_control else tr("Throttle on resume: %.0f%%")) % (value * 100.0)
+	return (tr("Current collective: %.0f%%") if collective_control else tr("Current throttle: %.0f%%")) % (value * 100.0)
+
+
 func _on_joy_changed(_device: int, _connected: bool) -> void:
 	refresh.call_deferred() # after the session has handled the same signal (failsafe, new profile)
 
@@ -181,6 +226,13 @@ func _on_joy_changed(_device: int, _connected: bool) -> void:
 func status_text(session: Node) -> String:
 	if not session.is_flyable():
 		return tr("This flight cannot continue: %s") % session.pause_reason
+	if bool(session.get("external_controller_selection")):
+		if bool(session.get("_controller_lost")):
+			return tr("Controller unavailable. Select a connected device or keyboard in Controller settings.")
+		if session.radio.connected and not session.radio.armed:
+			if session.radio.is_gamepad():
+				return tr("Move each mapped control once, release sticks and triggers, then wait for neutral. Continue is an explicit action.")
+			return tr("Lower the throttle to arm. If the mapping is wrong, open Controller settings and calibrate the selected radio.")
 	if not session.crash.is_empty():
 		if not session.crash_auto_restart:
 			return tr("Crashed. Continue to inspect the wreck, or restart the flight.")

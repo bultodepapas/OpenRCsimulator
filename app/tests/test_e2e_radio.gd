@@ -4,6 +4,8 @@
 # Run: godot --headless --path . --script res://tests/test_e2e_radio.gd
 extends SceneTree
 
+const ControllerProfile := preload("res://input/controller_profile.gd")
+const RcInput := preload("res://input/rc_input.gd")
 const ID := 15 # a real radio on the dev machine would take id 0
 const AIRCRAFT := "turbo-lumber-evolution"
 const PROFILES := "user://test_e2e_rc_calibration.cfg"
@@ -40,6 +42,20 @@ func _key(code: Key) -> void:
 
 func _panel_has(text: String) -> bool:
 	return text in (_main._panel as Label).text
+
+
+func _is_default_radio_profile() -> bool:
+	var candidate: Dictionary = _session.radio.profile
+	if not ControllerProfile.validate(candidate).ok or candidate.get("kind") != "radio" or candidate.get("throttle_mode") != "radio_absolute":
+		return false
+	for channel_name in ["roll", "pitch", "yaw", "throttle"]:
+		var actual: Dictionary = candidate.get(channel_name, {})
+		var expected: Dictionary = RcInput.DEFAULT_PROFILE[channel_name]
+		for field in ["axis", "invert", "min", "center", "max"]:
+			if actual.get(field) != expected.get(field):
+				return false
+	var aux: Variant = candidate.get("aux", {})
+	return typeof(aux) == TYPE_DICTIONARY and aux.is_empty()
 
 
 ## Counted in ticks and frames, not wall time: a slow first frame could eat a timer before any tick ran.
@@ -174,8 +190,8 @@ func _run() -> void:
 		_check("writes malformed fixture " + defect, cfg.save(PROFILES) == OK)
 		Input.joy_connection_changed.emit(ID, true)
 		await _settle()
-		_check("invalid profile falls back completely " + defect,
-			_session.radio.profile_source == "default" and _session.radio.profile == _session.radio.DEFAULT_PROFILE)
+		_check("invalid profile falls back to the complete V2 radio default " + defect,
+			_session.radio.profile_source == "default" and _is_default_radio_profile(), str(_session.radio.profile))
 		_check("rejected profile remains safe at high throttle " + defect,
 			not _session.radio.armed and _session.commands.throttle == 0.0 and _session.sim.paused)
 		_motion(2, -1.0)

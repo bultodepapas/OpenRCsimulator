@@ -1,0 +1,17 @@
+[
+  {
+    "name": "release-grain",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\package\\OpenRC.exe",
+      "--headless",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\test_stik_grain.gd"
+    ],
+    "exit_code": 4294967295,
+    "valid": false,
+    "elapsed_s": 52.41387629999372,
+    "log": "release-grain.log"
+  }
+]

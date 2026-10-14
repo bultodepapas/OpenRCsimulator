@@ -17,6 +17,7 @@ const UiInput := preload("res://ui/ui_input.gd")
 const ControllerService := preload("res://input/controller_service.gd")
 const ControllerSetup := preload("res://ui/controller_setup.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
+const ControllerPrompts := preload("res://ui/controller_prompts.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const PauseMenu := preload("res://ui/pause_menu.gd")
 const HeldKeys := preload("res://ui/held_keys.gd")
@@ -156,7 +157,12 @@ func _ready() -> void:
 	if preferences_path != Preferences.DEFAULT_PATH:
 		controllers.store = ControllerService.Store.new(preferences_path + ".controllers", preferences_path + ".legacy_rc")
 	controllers.ui_selection_changed.connect(_controller_ui_changed)
-	controllers.continuity_lost.connect(func() -> void: open_pause.call_deferred())
+	controllers.flight_selection_changed.connect(_update_controller_home)
+	controllers.flight_selection_changed.connect(_clear_controller_actions)
+	controllers.registry.devices_changed.connect(_update_controller_home)
+	controllers.continuity_lost.connect(func() -> void:
+		_clear_controller_actions()
+		open_pause.call_deferred())
 	add_child(controllers)
 	preferences = Preferences.load_from(preferences_path)
 	if preferences.note != "":
@@ -252,6 +258,7 @@ func show_home() -> void:
 	home.update_download_requested.connect(_on_update_download)
 	home.update_hidden.connect(_on_update_hidden)
 	screens.push("home", home)
+	_update_controller_home()
 	home.set_note(_settings_note)
 	if not _update_info.is_empty():
 		home.show_update(_update_info) # the notice survives a flight: Home is rebuilt after End flight
@@ -531,16 +538,32 @@ func open_controls(from: Control = null) -> void:
 	setup.configure(controllers.registry, controllers.store, controllers.registry.selected_device_id("flight"), controllers.registry.selected_device_id("ui"))
 	setup.close_requested.connect(func() -> void:
 		if screens.is_top("controls"): screens.pop())
-	setup.device_selection_requested.connect(func(flight_id: int, ui_id: int) -> void:
-		controllers.select_devices(flight_id, ui_id)
-		_controller_ui_changed(controllers.registry.selected_device_id("ui")))
+	_update_controller_calibration_button(setup)
+	setup.calibration_requested.connect(func() -> void:
+		if not screens.is_top("controls") or flight == null: return
+		screens.pop()
+		if screens.is_top("pause"): _close_pause()
+		if not flight.session.start_calibration(): open_pause())
+	setup.apply_devices = func(flight_id: int, ui_id: int) -> bool:
+		if not controllers.select_devices(flight_id, ui_id): return false
+		if ground_vehicle != null: ground_vehicle.apply_controller_selection(flight_id)
+		_controller_ui_changed(controllers.registry.selected_device_id("ui"))
+		_update_controller_calibration_button(setup)
+		return true
 	setup.profile_saved.connect(func(profile: Dictionary) -> void:
-		if setup.selected_flight_device_id() == controllers.registry.selected_device_id("flight"):
-			controllers.apply_profile(profile)
+		if setup.selected_flight_device_id() >= 0:
+			controllers.apply_profile(profile, setup.selected_flight_device_id())
+		_update_controller_calibration_button(setup)
 		_controller_ui_changed(controllers.registry.selected_device_id("ui")))
 	screens.push("controls", setup, from)
 	var current: Dictionary = controllers.profile_for_device(controllers.registry.selected_device_id("flight"))
 	if not current.is_empty(): setup.load_selected_profile(current)
+
+
+func _update_controller_calibration_button(setup: Node) -> void:
+	var available: bool = flight != null and flight.session.radio.connected and flight.session.radio.profile.get("kind", "") == "radio"
+	setup.calibrate_button.visible = available
+	setup.calibrate_button.disabled = not available
 
 
 func _controller_bindings(id: int) -> Dictionary:
@@ -552,7 +575,37 @@ func _controller_bindings(id: int) -> Dictionary:
 
 func _controller_ui_changed(id: int) -> void:
 	UiInput.set_gamepad(id, _controller_bindings(id))
+	_clear_controller_actions()
+	_update_controller_home()
+	_update_controller_button_prompts()
+
+
+func _clear_controller_actions() -> void:
 	_controller_action_edges.clear()
+	if flight != null and flight.session != null and flight.session.has_method("set_controller_cut"):
+		flight.session.set_controller_cut(false)
+
+
+func _update_controller_home() -> void:
+	if home == null or controllers == null: return
+	var flight_info: Dictionary = controllers.registry.device_for_id(controllers.registry.selected_device_id("flight"))
+	var ui_info: Dictionary = controllers.registry.device_for_id(controllers.registry.selected_device_id("ui"))
+	home.set_controller_devices(str(flight_info.get("name", "")), str(ui_info.get("name", "")))
+
+
+func _update_controller_button_prompts() -> void:
+	if controllers == null: return
+	var id: int = controllers.registry.selected_device_id("ui")
+	var profile: Dictionary = controllers.profile_for_device(id)
+	var prompt: Dictionary = ControllerPrompts.prompt(_controller_bindings(id).get("accept", {}),
+		str(profile.get("presentation", {}).get("glyph_family", "auto")), controllers.registry.device_for_id(id))
+	for button: Button in [home.fly_button if home != null else null, pause_menu.continue_button if pause_menu != null else null]:
+		if button == null: continue
+		button.icon = load(prompt.texture_path) if id >= 0 and not str(prompt.texture_path).is_empty() else null
+		button.add_theme_constant_override("icon_max_width", 28)
+		# Keep catalog validation tooltips intact; enabled actions show their actual binding.
+		if not button.disabled:
+			button.tooltip_text = tr("Accept / launch") + ": " + str(prompt.text) if id >= 0 else ""
 
 
 func _input(event: InputEvent) -> void:
@@ -569,15 +622,25 @@ func _input(event: InputEvent) -> void:
 	if event is not InputEventJoypadButton and event is not InputEventJoypadMotion and event is not InputEventKey: return
 	if event is InputEventKey and event.echo: return
 	var in_menu := screens.top() != null
-	var id: int = controllers.registry.selected_device_id("ui" if in_menu else "flight")
+	var calibrating: bool = flight != null and flight.session != null and flight.session.calibration != null
+	var id: int = controllers.registry.selected_device_id("ui" if in_menu or calibrating else "flight")
 	if id < 0: return
-	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id), id, "menu" if in_menu else "flight")
+	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id), id, "menu" if in_menu or calibrating else "flight")
 	var source := str(event.device) + ":" + ("axis:%d" % event.axis if event is InputEventJoypadMotion else ("button:%d" % event.button_index if event is InputEventJoypadButton else "key:%d" % event.physical_keycode))
 	var previous: PackedStringArray = _controller_action_edges.get(source, PackedStringArray())
 	_controller_action_edges[source] = actions
+	if flight != null and flight.session.has_method("set_controller_cut"):
+		var held := false
+		for active: PackedStringArray in _controller_action_edges.values():
+			if active.has("throttle_cut"): held = true
+		flight.session.set_controller_cut(held)
 	for action: String in actions:
 		if previous.has(action): continue
 		if in_menu:
+			if action == "calibrate" and (screens.is_top("home") or screens.is_top("pause")):
+				open_controls()
+				get_viewport().set_input_as_handled()
+				return
 			if action not in ["back", "pause"]: continue
 			var focused := get_viewport().gui_get_focus_owner()
 			if focused is OptionButton and focused.get_popup().visible:
@@ -589,6 +652,7 @@ func _input(event: InputEvent) -> void:
 			return
 		elif flight != null and flight.controller_action(action):
 			get_viewport().set_input_as_handled()
+			if calibrating and flight.session.calibration == null: open_pause.call_deferred()
 			return
 
 
@@ -734,6 +798,7 @@ func _notification(what: int) -> void:
 	# Never during captures and traces (their sessions take no input).
 	# Deferred: the notification is propagated through the whole tree, which refuses add_child() meanwhile.
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and flight != null and flight.session != null and flight.session.input_enabled:
+		_clear_controller_actions()
 		flight.session.controller_focus_lost()
 		open_pause.call_deferred()
 
@@ -746,6 +811,7 @@ func open_pause() -> void:
 	session.cancel_calibration()
 	var pause_menu := PauseMenu.new(has_home)
 	var helicopter_route: bool = Catalog.is_rotorcraft(str(flight.get("aircraft_id")))
+	pause_menu.collective_control = helicopter_route
 	pause_menu.continue_requested.connect(continue_flight)
 	pause_menu.restart_requested.connect(restart_flight)
 	pause_menu.workshop_requested.connect(open_workshop)
@@ -772,6 +838,7 @@ func open_pause() -> void:
 	var next_failure_config: Dictionary = checked_failures.config if checked_failures.get("ok", false) else FailureConfig.defaults()
 	var failure_notifications_enabled := bool(flight.get("failure_notifications")) if _has_property(flight, "failure_notifications") else true
 	pause_menu.show_for(session, next_failure_config, failure_notifications_enabled)
+	_update_controller_button_prompts()
 	flight.set_overlays_visible(false)
 
 

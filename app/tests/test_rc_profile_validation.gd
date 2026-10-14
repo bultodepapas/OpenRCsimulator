@@ -46,9 +46,9 @@ func _initialize() -> void:
 	_reject("built-in gamepad is not a saved radio calibration", Radio.GAMEPAD_PROFILE)
 	var gamepad: Radio = Radio.new()
 	gamepad.connect_device(15, {name = "Known gamepad", known = true}, Calibration.load_profile(PATH, KEY))
-	_check("rejected saved kind preserves built-in gamepad mapping", gamepad.profile == Radio.GAMEPAD_PROFILE and gamepad.profile_source == "gamepad")
+	_check("rejected saved kind preserves gamepad role and Mode 2 mapping", gamepad.profile.kind == "gamepad" and [gamepad.profile.roll.axis, gamepad.profile.pitch.axis, gamepad.profile.yaw.axis, gamepad.profile.throttle.axis] == [2, 3, 0, 1] and gamepad.profile_source == "gamepad")
 	gamepad.poll(func(_device: int, _axis: int) -> float: return 0.0, 1.0 / 240.0)
-	_check("built-in gamepad still starts at idle", gamepad.sticks().throttle == 0.0)
+	_check("built-in gamepad starts disarmed at idle until fresh neutral", not gamepad.armed and gamepad.sticks().throttle == 0.0)
 
 	for channel: String in ["throttle", "roll", "pitch", "yaw"]:
 		var missing: Dictionary = base.duplicate(true)

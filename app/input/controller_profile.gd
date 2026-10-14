@@ -7,6 +7,7 @@ const VALID_KINDS := ["gamepad", "radio", "joystick"]
 const VALID_THROTTLE_MODES := ["stick_rate", "trigger_absolute", "radio_absolute"]
 const VALID_GLYPHS := ["auto", "xbox", "playstation", "nintendo", "generic"]
 const SmokeAux := preload("res://input/smoke_aux.gd")
+const ControllerActions := preload("res://input/controller_actions.gd")
 
 const DEFAULT_DEADZONE := 0.08
 const DEFAULT_EXPO := 0.3
@@ -91,46 +92,129 @@ static func unconfigured() -> Dictionary:
 static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dictionary:
 	if typeof(value) != TYPE_DICTIONARY:
 		return {}
-	if int(value.get("schema_version", 0)) == SCHEMA_VERSION:
-		var current: Dictionary = SmokeAux.sanitize_profile(value, false)
+	if value.get("schema_version") == SCHEMA_VERSION:
+		# Runtime callers sometimes construct nested bindings with GDScript's
+		# `key = value` shorthand, which creates StringName keys. Normalize those
+		# keys at the API boundary while keeping validate() strict for raw V2 data.
+		var normalized := _normalize_schema_keys(value, 0)
+		if not normalized.ok or typeof(normalized.value) != TYPE_DICTIONARY:
+			return {}
+		var current: Dictionary = SmokeAux.sanitize_profile(normalized.value, false)
 		return current if validate(current).ok else {}
-	var kind_value: Variant = value.get("kind", "")
+	if value.has("schema_version"):
+		return {}
+	var legacy_result := _legacy_tree(value, 0)
+	if not legacy_result.ok or typeof(legacy_result.value) != TYPE_DICTIONARY:
+		return {}
+	var legacy: Dictionary = legacy_result.value
+	var kind_value: Variant = legacy.get("kind", "")
 	if typeof(kind_value) != TYPE_STRING or not ["radio", "gamepad"].has(kind_value):
 		return {}
 	var kind: String = kind_value
 	var preset := "mode2" if kind == "gamepad" else "radio_custom"
-	var throttle_mode := str(value.get("throttle_mode", "stick_rate" if kind == "gamepad" else "radio_absolute"))
+	var throttle_mode := str(legacy.get("throttle_mode", "stick_rate" if kind == "gamepad" else "radio_absolute"))
 	if kind == "gamepad":
-		preset = "trigger_absolute" if throttle_mode == "trigger_absolute" else ("mode1" if str(value.get("preset", "mode2")) == "mode1" else "mode2")
+		preset = "trigger_absolute" if throttle_mode == "trigger_absolute" else ("mode1" if str(legacy.get("preset", "mode2")) == "mode1" else "mode2")
 	var result := defaults(kind, preset)
 	if result.is_empty():
 		return {}
 	for channel_name in ["roll", "pitch", "yaw", "throttle"]:
-		var old_channel: Variant = value.get(channel_name)
+		var old_channel: Variant = legacy.get(channel_name)
 		if typeof(old_channel) != TYPE_DICTIONARY:
 			return {}
 		var copied: Dictionary = old_channel.duplicate(true)
 		if kind == "gamepad":
 			copied["range_kind"] = "absolute" if channel_name == "throttle" and throttle_mode == "trigger_absolute" else "centered"
-			copied["deadzone"] = float(value.get("deadzone", DEFAULT_DEADZONE))
-			copied["expo"] = float(value.get("expo", DEFAULT_EXPO))
+			copied["deadzone"] = float(legacy.get("deadzone", DEFAULT_DEADZONE))
+			copied["expo"] = float(legacy.get("expo", DEFAULT_EXPO))
 		elif channel_name == "throttle":
 			copied["range_kind"] = "absolute"
 		else:
 			copied["range_kind"] = "centered"
 		result[channel_name] = copied
 	result["throttle_mode"] = throttle_mode
-	result["throttle_rate"] = value.get("throttle_rate", DEFAULT_THROTTLE_RATE)
-	result["name"] = str(value.get("name", result.name))
-	result["preset"] = str(value.get("preset", preset))
-	result["association"] = association.duplicate(true) if not association.is_empty() else value.get("association", {}).duplicate(true) if typeof(value.get("association", {})) == TYPE_DICTIONARY else {}
-	var aux_value: Variant = value.get("aux", {})
+	result["throttle_rate"] = legacy.get("throttle_rate", DEFAULT_THROTTLE_RATE)
+	result["name"] = str(legacy.get("name", result.name))
+	result["preset"] = str(legacy.get("preset", preset))
+	result["association"] = association.duplicate(true) if not association.is_empty() else legacy.get("association", {}).duplicate(true) if typeof(legacy.get("association", {})) == TYPE_DICTIONARY else {}
+	var aux_value: Variant = legacy.get("aux", {})
 	if typeof(aux_value) == TYPE_DICTIONARY:
 		result["aux"] = aux_value.duplicate(true)
-	for key in value:
+	for key in legacy:
 		if not ["kind", "roll", "pitch", "yaw", "throttle", "deadzone", "expo", "throttle_rate", "name", "preset", "schema_version", "profile_id", "aux", "association", "throttle_mode", "configured"].has(str(key)):
-			result[key] = value[key].duplicate(true) if typeof(value[key]) in [TYPE_ARRAY, TYPE_DICTIONARY] else value[key]
+			result[key] = legacy[key].duplicate(true) if typeof(legacy[key]) in [TYPE_ARRAY, TYPE_DICTIONARY] else legacy[key]
 	return result if validate(result).ok else {}
+
+
+## Old RcCalibration profiles use StringName keys in some in-memory/ConfigFile paths.
+## Normalize only that legacy input; schema-v2 candidates stay strictly validated as supplied.
+static func _legacy_tree(value: Variant, depth: int) -> Dictionary:
+	if depth > 16:
+		return {"ok": false, "value": null}
+	if typeof(value) == TYPE_DICTIONARY:
+		if value.size() > 4096:
+			return {"ok": false, "value": null}
+		var result: Dictionary = {}
+		for key in value:
+			if typeof(key) not in [TYPE_STRING, TYPE_STRING_NAME, TYPE_INT]:
+				return {"ok": false, "value": null}
+			var normalized_key: Variant = str(key) if typeof(key) == TYPE_STRING_NAME else key
+			if result.has(normalized_key):
+				return {"ok": false, "value": null}
+			var child := _legacy_tree(value[key], depth + 1)
+			if not child.ok:
+				return {"ok": false, "value": null}
+			result[normalized_key] = child.value
+		return {"ok": true, "value": result}
+	if typeof(value) == TYPE_ARRAY:
+		if value.size() > 4096:
+			return {"ok": false, "value": null}
+		var result: Array = []
+		for child_value in value:
+			var child := _legacy_tree(child_value, depth + 1)
+			if not child.ok:
+				return {"ok": false, "value": null}
+			result.append(child.value)
+		return {"ok": true, "value": result}
+	if typeof(value) == TYPE_STRING_NAME:
+		return {"ok": true, "value": str(value)}
+	if typeof(value) in [TYPE_NIL, TYPE_BOOL, TYPE_INT, TYPE_STRING]:
+		return {"ok": true, "value": value}
+	if typeof(value) == TYPE_FLOAT and is_finite(float(value)):
+		return {"ok": true, "value": value}
+	return {"ok": false, "value": null}
+
+
+## Normalize only dictionary keys. V2 values remain subject to the strict tree validator.
+static func _normalize_schema_keys(value: Variant, depth: int) -> Dictionary:
+	if depth > 16:
+		return {"ok": false, "value": null}
+	if typeof(value) == TYPE_DICTIONARY:
+		if value.size() > 4096:
+			return {"ok": false, "value": null}
+		var result: Dictionary = {}
+		for key in value:
+			if typeof(key) not in [TYPE_STRING, TYPE_STRING_NAME, TYPE_INT]:
+				return {"ok": false, "value": null}
+			var normalized_key: Variant = str(key) if typeof(key) == TYPE_STRING_NAME else key
+			if result.has(normalized_key):
+				return {"ok": false, "value": null}
+			var child := _normalize_schema_keys(value[key], depth + 1)
+			if not child.ok:
+				return {"ok": false, "value": null}
+			result[normalized_key] = child.value
+		return {"ok": true, "value": result}
+	if typeof(value) == TYPE_ARRAY:
+		if value.size() > 4096:
+			return {"ok": false, "value": null}
+		var result: Array = []
+		for child_value in value:
+			var child := _normalize_schema_keys(child_value, depth + 1)
+			if not child.ok:
+				return {"ok": false, "value": null}
+			result.append(child.value)
+		return {"ok": true, "value": result}
+	return {"ok": true, "value": value}
 
 
 static func validate(value: Variant) -> Dictionary:
@@ -181,8 +265,21 @@ static func validate(value: Variant) -> Dictionary:
 		errors.append("require_release must be a boolean")
 	if typeof(value.get("association")) != TYPE_DICTIONARY:
 		errors.append("association must be a Dictionary")
-	if typeof(value.get("actions")) != TYPE_DICTIONARY:
+	var action_values: Variant = value.get("actions")
+	if typeof(action_values) != TYPE_DICTIONARY:
 		errors.append("actions must be a Dictionary")
+	else:
+		var merged_actions: Dictionary = ControllerActions.default_bindings()
+		for action_id in action_values:
+			if typeof(action_id) != TYPE_STRING or ControllerActions.action_definition(str(action_id)).is_empty():
+				errors.append("actions contains an unknown semantic action")
+				continue
+			if not _valid_action_binding(action_values[action_id]):
+				errors.append("actions.%s has an invalid binding" % str(action_id))
+			merged_actions[action_id] = action_values[action_id]
+		var action_validation: Dictionary = ControllerActions.validate(merged_actions)
+		for action_error in action_validation.errors:
+			errors.append("actions: " + str(action_error))
 	var presentation: Variant = value.get("presentation")
 	if typeof(presentation) != TYPE_DICTIONARY:
 		errors.append("presentation must be a Dictionary")
@@ -222,7 +319,9 @@ static func validate(value: Variant) -> Dictionary:
 				errors.append(channel_name + " has zero or reversed range")
 			elif channel.get("range_kind") == "centered" and channel_name != "throttle" and not (lo < center and center < hi):
 				errors.append(channel_name + " requires travel on both sides of center")
-			elif channel.get("range_kind") == "centered" and channel_name == "throttle" and not (lo <= center and center <= hi):
+			elif channel.get("range_kind") == "centered" and channel_name == "throttle" and mode_value == "stick_rate" and not (lo < center and center < hi):
+				errors.append("stick_rate throttle requires travel on both sides of center")
+			elif channel.get("range_kind") == "centered" and channel_name == "throttle" and mode_value != "stick_rate" and not (lo <= center and center <= hi):
 				errors.append("throttle center must be within its endpoints")
 			elif channel.get("range_kind") == "absolute" and not (lo <= center and center <= hi):
 				errors.append(channel_name + " absolute range requires center within endpoints")
@@ -330,6 +429,36 @@ static func _valid_variant_tree(value: Variant, depth: int) -> bool:
 
 static func _is_number(value: Variant) -> bool:
 	return typeof(value) in [TYPE_INT, TYPE_FLOAT] and is_finite(float(value))
+
+
+static func _valid_action_binding(value: Variant) -> bool:
+	if typeof(value) != TYPE_DICTIONARY or typeof(value.get("type")) != TYPE_STRING:
+		return false
+	match value.type:
+		"button":
+			return typeof(value.get("button")) == TYPE_INT and int(value.button) >= 0 and int(value.button) < JOY_BUTTON_MAX
+		"axis":
+			if typeof(value.get("axis")) != TYPE_INT or int(value.axis) < 0 or int(value.axis) >= JOY_AXIS_MAX:
+				return false
+			var sign_value: Variant = value.get("sign", value.get("direction", 0))
+			if typeof(sign_value) != TYPE_INT or abs(int(sign_value)) != 1:
+				return false
+			if value.has("sign") and value.has("direction") and value.sign != value.direction:
+				return false
+			var threshold: Variant = value.get("threshold", 0.65)
+			return _is_number(threshold) and float(threshold) > 0.0 and float(threshold) <= 1.0
+		"key":
+			var logical: Variant = value.get("keycode", 0)
+			var physical: Variant = value.get("physical_keycode", 0)
+			if typeof(logical) != TYPE_INT or typeof(physical) != TYPE_INT or int(logical) < 0 or int(physical) < 0:
+				return false
+			if int(logical) == 0 and int(physical) == 0:
+				return false
+			for modifier in ["ctrl", "alt", "shift", "meta"]:
+				if value.has(modifier) and typeof(value[modifier]) != TYPE_BOOL:
+					return false
+			return not value.has("modifiers")
+	return false
 
 
 static func _is_uuid(value: Variant) -> bool:

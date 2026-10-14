@@ -23,6 +23,7 @@ var commands: Dictionary = {roll=0.0,pitch=0.0,yaw=0.0,throttle=.5}
 var raw: Dictionary = Commands.neutral_raw()
 var read_raw: Callable = Keyboard.read_raw
 var read_axis: Callable = Input.get_joy_axis
+var read_button: Callable = Input.is_joy_button_pressed
 var device_info: Callable = func(id: int) -> Dictionary:
   var info: Dictionary = Input.get_joy_info(id)
   info.merge({name=Input.get_joy_name(id),guid=Input.get_joy_guid(id),known=Input.is_joy_known(id)})
@@ -31,6 +32,8 @@ var radio: RefCounted = RcInput.new()
 var calibration: RefCounted
 var profiles_path: String = "user://rc_calibration.cfg"
 var external_controller_selection: bool = false
+var persist_controller_profile := Callable()
+var persist_full_controller_profile := Callable()
 var _controller_lost: bool = false
 var holds: Dictionary = {}
 var pause_reason: String = ""
@@ -174,20 +177,28 @@ func _input(event: InputEvent) -> void:
  if event is InputEventJoypadMotion: radio.on_motion(event.device,event.axis,event.axis_value)
  elif event is InputEventJoypadButton: radio.on_button(event.device,event.button_index,event.pressed)
 
+func _poll_controller(integrate: bool=true) -> bool:
+ radio.poll(read_axis,sim.dt(),read_button,integrate)
+ if external_controller_selection and (not radio.input_error.is_empty() or not radio.profile_error.is_empty()):
+  controller_disconnected()
+  pause_reason="Invalid controller input. Select controls again before continuing."
+  return false
+ return true
+
 func _physics_process(_dt: float) -> void:
  if not input_enabled: return
  if not holds.is_empty():
-  if external_controller_selection and radio.connected: radio.poll(read_axis,sim.dt(),Callable(),false)
+  if external_controller_selection and radio.connected: _poll_controller(false)
   return
  if calibration!=null:
-  radio.poll(read_axis,sim.dt())
+  if not _poll_controller(): return
   calibration.sample(radio.axes)
   return
  if sim.paused:
-  if radio.connected: radio.poll(read_axis,sim.dt(),Callable(),false)
+  if radio.connected: _poll_controller(false)
   return
  if radio.connected:
-  radio.poll(read_axis,sim.dt())
+  if not _poll_controller(): return
   commands=radio.sticks()
   raw=commands.duplicate()
  else:
@@ -237,13 +248,18 @@ func resume() -> void:
 func cancel_calibration() -> void:
  if calibration!=null: calibration=null; pause_reason="calibration cancelled"
 func start_calibration() -> bool:
- if not radio.connected or radio.profile.get("kind","radio")=="gamepad": return false
+ if not radio.connected or radio.profile.get("kind","")!="radio": return false
  calibration=RcCalibration.new(radio.profile)
  sim.set_paused(true)
  pause_reason="calibrating radio"
  return true
 func advance_calibration() -> void:
  if calibration!=null and calibration.advance(radio.axes):
+  if external_controller_selection and persist_controller_profile.is_valid():
+   var result: Dictionary=persist_controller_profile.call(calibration.profile)
+   calibration=null
+   pause_reason="Radio calibrated. Lower collective again before continuing." if result.get("ok",false) else "Calibration not saved: "+str(result.get("error","storage error"))
+   return
   radio.use_profile(calibration.profile,"calibrated")
   RcCalibration.save_profile(profiles_path,radio.device_key,calibration.profile)
   calibration=null
@@ -273,7 +289,7 @@ func controller_disconnected() -> void:
 
 func controller_focus_lost() -> void:
  if external_controller_selection and radio.connected:
-  radio.require_neutral(true)
+  radio.require_neutral(true,true)
   sim.set_paused(true)
   pause_reason="Focus lost. Release controls and review collective before continuing."
 

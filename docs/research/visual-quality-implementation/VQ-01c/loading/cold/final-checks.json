@@ -1,0 +1,95 @@
+[
+  {
+    "name": "final-native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-cold\\pack-source\\app",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-cold\\final-native.json",
+      "--cycles=2"
+    ],
+    "exit_code": 0,
+    "no_engine_errors": true,
+    "elapsed_s": 17.69506569999794,
+    "log": "final-native.log"
+  },
+  {
+    "name": "generator-check-final",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tools\\ground\\bake_lake_geometry.gd",
+      "--",
+      "--check"
+    ],
+    "exit_code": 0,
+    "no_engine_errors": true,
+    "elapsed_s": 4.846741100001964,
+    "log": "generator-check-final.log"
+  },
+  {
+    "name": "test_lake_world",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-cold\\pack-source\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_lake_world.gd"
+    ],
+    "exit_code": 0,
+    "no_engine_errors": true,
+    "elapsed_s": 9.385326299990993,
+    "log": "test_lake_world.log"
+  },
+  {
+    "name": "test_field_integration",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-cold\\pack-source\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_field_integration.gd"
+    ],
+    "exit_code": 0,
+    "no_engine_errors": true,
+    "elapsed_s": 9.763220399996499,
+    "log": "test_field_integration.log"
+  },
+  {
+    "name": "test_world_presentation_context",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-cold\\pack-source\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_world_presentation_context.gd"
+    ],
+    "exit_code": 0,
+    "no_engine_errors": true,
+    "elapsed_s": 1.8767799000052037,
+    "log": "test_world_presentation_context.log"
+  }
+]

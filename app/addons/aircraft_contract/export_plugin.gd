@@ -16,6 +16,9 @@ func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String,
 	var sources: Dictionary = {}
 	var families: Dictionary = {}
 	for id: String in Catalog.ids():
+		# Match render/airplane.gd: rotorcraft use a dedicated contract, not the airplane manifest registry.
+		if Catalog.is_rotorcraft(id):
+			continue
 		families[Catalog.visual_family(id)] = true
 	for family: String in families:
 		var result: Dictionary = registry.describe(family)

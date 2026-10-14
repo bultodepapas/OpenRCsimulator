@@ -110,7 +110,7 @@ func finish() -> int:
 		use_accumulated_input = false, ignore_joypad_on_unfocused_application = Input.ignore_joypad_on_unfocused_application,
 		timing = "Monotonic Godot callback arrival times after mapping; per-axis spacing includes zero-spacing batched events. Not USB report interval or end-to-end latency.",
 		axis_semantics = "Godot axes after any engine mapping; unseen axes are unknown, not zero or absent.",
-		button_semantics = "Godot button events after any engine mapping; repeated held-state events count as events but not transitions. Per-button state tracks at most %d indices; the first %d transitions are sampled, with excess raw events and transitions counted separately." % [ReportData.MAX_TRACKED_BUTTONS, ReportData.MAX_RECORDED_BUTTON_TRANSITIONS],
+		button_semantics = "Godot button events after any engine mapping; repeated held-state events count as events but not transitions. Sampling is bounded to per-button state for at most %d indices; the first %d transitions are sampled, with excess raw events and transitions counted separately." % [ReportData.MAX_TRACKED_BUTTONS, ReportData.MAX_RECORDED_BUTTON_TRANSITIONS],
 		capability_semantics = "Godot-reported standard mapping and vibration support; these do not identify physical transport or firmware.",
 		devices = data.snapshot(), rejected_events = data.rejected_events}
 	var encoded: String = JSON.stringify(report, "\t") + "\n"

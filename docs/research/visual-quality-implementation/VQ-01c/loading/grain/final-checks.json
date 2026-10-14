@@ -1,0 +1,71 @@
+[
+  {
+    "command": [
+      "python",
+      "research/aircraft-standardization/build_models.py",
+      "--check"
+    ],
+    "exit_code": 0,
+    "stdout": "model manifests current (5 visual families)\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "C:/Windows/System32/wsl.exe",
+      "-d",
+      "Ubuntu",
+      "--cd",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+      "--",
+      "bash",
+      "-n",
+      "tmp/dt11a-startup/export-lf.sh"
+    ],
+    "exit_code": 0,
+    "stdout": "",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "python",
+      "app/tests/check_trimmed_flight.py",
+      "tmp/dt11a-startup/release-trace.csv",
+      "--duration=1"
+    ],
+    "exit_code": 0,
+    "stdout": "trimmed level flight: 240 ticks, 1.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)\n",
+    "stderr": ""
+  },
+  {
+    "command": [
+      "python",
+      "app/tests/check_trimmed_flight.py",
+      "tmp/dt11a-startup/zip-trace.csv",
+      "--duration=1"
+    ],
+    "exit_code": 0,
+    "stdout": "trimmed level flight: 240 ticks, 1.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)\n",
+    "stderr": ""
+  },
+  {
+    "check": "Final passing logs contain no engine ERROR lines",
+    "pass": true
+  },
+  {
+    "zip_command": [
+      "C:/Windows/System32/wsl.exe",
+      "-d",
+      "Ubuntu",
+      "--cd",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/dt11a-startup/release-bundle",
+      "--",
+      "zip",
+      "-q",
+      "-9",
+      "-r",
+      "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/dt11a-startup/windows-grain.zip",
+      "."
+    ],
+    "note": "Previously executed; results and exact extracted member hashes in zip-check.json. Release bundle contains exporter executable and DLL only."
+  }
+]

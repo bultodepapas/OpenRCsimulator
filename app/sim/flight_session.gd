@@ -431,6 +431,7 @@ var radio := RcInput.new()
 ## read_axis(device, axis) -> float and device_info(device) -> { guid, name, vendor_id, product_id }. Replaceable in
 ## tests: Input.get_joy_guid on a device that does not exist prints an engine error.
 var read_axis: Callable = func(device: int, axis: int) -> float: return Input.get_joy_axis(device, axis as JoyAxis)
+var read_button: Callable = Input.is_joy_button_pressed
 var device_info: Callable = func(device: int) -> Dictionary:
 	var info := Input.get_joy_info(device)
 	return { guid = Input.get_joy_guid(device), name = Input.get_joy_name(device),
@@ -439,8 +440,11 @@ var device_info: Callable = func(device: int) -> Dictionary:
 var profiles_path := "user://rc_calibration.cfg"
 ## Interactive shell owns selection; technical sessions retain their explicit legacy test seams.
 var external_controller_selection := false
+var persist_controller_profile := Callable()
+var persist_full_controller_profile := Callable()
 var _controller_lost := false
 var _pending_controller_start := -1.0
+var controller_cut_held := false
 ## The calibration wizard while it runs, else null.
 var calibration: RefCounted = null
 ## Source enable, stored with accepted simulation modes. Glow/electric shafts can coast or windmill
@@ -585,7 +589,7 @@ func _on_joy_connection_changed(device: int, is_connected: bool) -> void:
 
 ## [K]: start the radio calibration wizard. The simulation pauses and the engine idles until it is done.
 func start_calibration() -> bool:
-	if not radio.connected or radio.profile.get("kind", "radio") == "gamepad":
+	if not radio.connected or radio.profile.get("kind", "") != "radio":
 		return false
 	calibration = RcCalibration.new(radio.profile)
 	_failsafe("calibrating radio")
@@ -597,6 +601,11 @@ func advance_calibration() -> void:
 	if calibration == null:
 		return
 	if calibration.advance(radio.axes):
+		if external_controller_selection and persist_controller_profile.is_valid():
+			var result: Dictionary = persist_controller_profile.call(calibration.profile)
+			calibration = null
+			pause_reason = "Radio calibrated. Lower throttle again before continuing." if result.get("ok", false) else "Calibration not saved: " + str(result.get("error", "storage error"))
+			return
 		radio.use_profile(calibration.profile, "calibrated")
 		var err := RcCalibration.save_profile(profiles_path, radio.device_key, calibration.profile)
 		calibration = null
@@ -637,6 +646,7 @@ func release(reason: String) -> void:
 
 ## Called only at a paused, explicit shell selection boundary; never by device enumeration.
 func apply_controller_selection(device: int, info: Dictionary, profile: Dictionary, initial_start := false) -> bool:
+	controller_cut_held = false
 	var staged_throttle: float = float(commands.throttle) if initial_start else 0.0
 	calibration = null
 	radio.disconnect_device()
@@ -657,6 +667,7 @@ func apply_controller_selection(device: int, info: Dictionary, profile: Dictiona
 
 
 func controller_disconnected() -> void:
+	controller_cut_held = false
 	calibration = null
 	radio.disconnect_device()
 	_controller_lost = true
@@ -666,7 +677,7 @@ func controller_disconnected() -> void:
 
 func controller_focus_lost() -> void:
 	if external_controller_selection and radio.connected:
-		radio.require_neutral(true)
+		radio.require_neutral(true, true)
 		sim.set_paused(true)
 		pause_reason = "Focus lost. Release controls and continue explicitly."
 
@@ -676,7 +687,12 @@ func controller_throttle_cut() -> void:
 		radio.set_rate_throttle_for_start(0.0)
 		_pending_controller_start = -1.0
 		commands.throttle = 0.0
-		sim.inputs = flown_inputs()
+		sim.inputs = _inputs()
+
+
+func set_controller_cut(held: bool) -> void:
+	controller_cut_held = held
+	if held: controller_throttle_cut()
 
 
 ## E3a: the wheels roll on this field's surfaces (a validated FieldLoader field). Invalid surface data refuses the
@@ -1419,22 +1435,34 @@ func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
 	return { ok = true, message = "" } if solved.ok else { ok = false, message = "runway start: " + str(solved.message) }
 
 
+func _poll_controller(integrate := true) -> bool:
+	radio.poll(read_axis, sim.dt(), read_button, integrate)
+	if external_controller_selection and (not radio.input_error.is_empty() or not radio.profile_error.is_empty()):
+		controller_disconnected()
+		pause_reason = "Invalid controller input. Review the device and select it again in Controls."
+		return false
+	return true
+
+
 func _physics_process(_delta: float) -> void:
 	if not holds.is_empty():
 		if external_controller_selection and input_enabled and radio.connected:
-			radio.poll(read_axis, sim.dt(), Callable(), false)
+			_poll_controller(false)
 		return # frozen by a menu: no sampling (navigation keys never reach the flight), no crash countdown
 	if external_controller_selection and sim.paused and calibration == null:
 		if input_enabled and radio.connected:
-			radio.poll(read_axis, sim.dt(), Callable(), false)
+			_poll_controller(false)
 		return
 	if input_enabled:
 		if radio.connected and calibration != null:
-			radio.poll(read_axis, sim.dt())
+			if not _poll_controller(): return
 			calibration.sample(radio.axes)
 		elif radio.connected:
-			radio.poll(read_axis, sim.dt())
+			if not _poll_controller(): return
 			commands = radio.sticks()
+			if controller_cut_held:
+				controller_throttle_cut()
+				commands.throttle = 0.0
 			raw = commands.duplicate()
 			raw.throttle = radio.throttle_position() # the stick, even while the throttle is held at idle
 		else:

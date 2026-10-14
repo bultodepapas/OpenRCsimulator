@@ -5,6 +5,10 @@ extends RefCounted
 const ACTIONS: Array[Dictionary] = [
 	{"id": "accept", "label": "Accept / launch", "context": "menu", "mode": "press"},
 	{"id": "back", "label": "Back / cancel", "context": "menu", "mode": "press"},
+	{"id": "navigate_up", "label": "Navigate up", "context": "menu", "mode": "press"},
+	{"id": "navigate_down", "label": "Navigate down", "context": "menu", "mode": "press"},
+	{"id": "navigate_left", "label": "Navigate left", "context": "menu", "mode": "press"},
+	{"id": "navigate_right", "label": "Navigate right", "context": "menu", "mode": "press"},
 	{"id": "pause", "label": "Pause / resume", "context": "both", "mode": "press"},
 	{"id": "camera_cycle", "label": "Cycle camera", "context": "flight", "mode": "press"},
 	{"id": "view_reset", "label": "Reset view", "context": "flight", "mode": "press"},
@@ -20,6 +24,10 @@ const ACTIONS: Array[Dictionary] = [
 const _DEFINITIONS: Dictionary = {
 	"accept": {"label": "Accept / launch", "context": "menu", "mode": "press"},
 	"back": {"label": "Back / cancel", "context": "menu", "mode": "press"},
+	"navigate_up": {"label": "Navigate up", "context": "menu", "mode": "press"},
+	"navigate_down": {"label": "Navigate down", "context": "menu", "mode": "press"},
+	"navigate_left": {"label": "Navigate left", "context": "menu", "mode": "press"},
+	"navigate_right": {"label": "Navigate right", "context": "menu", "mode": "press"},
 	"pause": {"label": "Pause / resume", "context": "both", "mode": "press"},
 	"camera_cycle": {"label": "Cycle camera", "context": "flight", "mode": "press"},
 	"view_reset": {"label": "Reset view", "context": "flight", "mode": "press"},
@@ -39,6 +47,10 @@ static func default_bindings(_device_id: int = -1) -> Dictionary:
 	return {
 		"accept": {"type": "button", "button": JOY_BUTTON_A},
 		"back": {"type": "button", "button": JOY_BUTTON_B},
+		"navigate_up": {"type": "button", "button": JOY_BUTTON_DPAD_UP},
+		"navigate_down": {"type": "button", "button": JOY_BUTTON_DPAD_DOWN},
+		"navigate_left": {"type": "button", "button": JOY_BUTTON_DPAD_LEFT},
+		"navigate_right": {"type": "button", "button": JOY_BUTTON_DPAD_RIGHT},
 		"pause": {"type": "button", "button": JOY_BUTTON_START},
 		"camera_cycle": {"type": "button", "button": JOY_BUTTON_Y},
 		"view_reset": {"type": "button", "button": JOY_BUTTON_RIGHT_STICK},
@@ -82,14 +94,26 @@ static func validate(bindings: Dictionary) -> Dictionary:
 static func binding_from_event(event: InputEvent) -> Dictionary:
 	if event is InputEventKey:
 		var key_event := event as InputEventKey
-		return {"type": "key", "keycode": key_event.keycode, "physical_keycode": key_event.physical_keycode}
+		if not key_event.pressed or key_event.echo:
+			return {}
+		return {
+			"type": "key",
+			"keycode": key_event.keycode,
+			"physical_keycode": key_event.physical_keycode,
+			"ctrl": key_event.ctrl_pressed,
+			"alt": key_event.alt_pressed,
+			"shift": key_event.shift_pressed,
+			"meta": key_event.meta_pressed,
+		}
 	if event is InputEventJoypadButton:
 		var button_event := event as InputEventJoypadButton
+		if not button_event.pressed:
+			return {}
 		return {"type": "button", "button": button_event.button_index}
 	if event is InputEventJoypadMotion:
 		var motion := event as InputEventJoypadMotion
 		if absf(motion.axis_value) >= 0.65:
-			return {"type": "axis", "axis": motion.axis, "direction": 1 if motion.axis_value > 0.0 else -1, "threshold": 0.65}
+			return {"type": "axis", "axis": motion.axis, "sign": 1 if motion.axis_value > 0.0 else -1, "threshold": 0.65}
 	return {}
 
 
@@ -99,13 +123,13 @@ static func binding_text(binding: Dictionary) -> String:
 			var keycode := int(binding.get("physical_keycode", 0))
 			if keycode == 0:
 				keycode = int(binding.get("keycode", 0))
-			return OS.get_keycode_string(keycode) if keycode != 0 else "Keyboard key"
+			return OS.get_keycode_string(keycode) if keycode != 0 else TranslationServer.translate("Keyboard key")
 		"button":
 			return _button_name(int(binding.get("button", -1)))
 		"axis":
-			var sign_text := "+" if int(binding.get("direction", 1)) > 0 else "−"
-			return "Axis %d %s" % [int(binding.get("axis", -1)), sign_text]
-	return "Unbound"
+			var sign_text := "+" if int(binding.get("sign", binding.get("direction", 1))) > 0 else "−"
+			return TranslationServer.translate("Axis %d %s") % [int(binding.get("axis", -1)), sign_text]
+	return TranslationServer.translate("Unbound")
 
 
 ## Returns semantic action IDs for one event. Joypad events from every other device are ignored.
@@ -114,6 +138,12 @@ static func resolve_event(event: InputEvent, bindings: Dictionary, selected_devi
 	var resolved := PackedStringArray()
 	if event is InputEventJoypadButton or event is InputEventJoypadMotion:
 		if selected_device_id < 0 or event.device != selected_device_id:
+			return resolved
+		if event is InputEventJoypadButton and not (event as InputEventJoypadButton).pressed:
+			return resolved
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		if not key_event.pressed or key_event.echo:
 			return resolved
 	for action_id: Variant in bindings:
 		var id := str(action_id)
@@ -132,7 +162,11 @@ static func matches_binding(binding: Dictionary, event: InputEvent, selected_dev
 			var key_event := event as InputEventKey
 			var physical := int(binding.get("physical_keycode", 0))
 			var logical := int(binding.get("keycode", 0))
-			return (physical != 0 and key_event.physical_keycode == physical) or (logical != 0 and key_event.keycode == logical)
+			return ((physical != 0 and key_event.physical_keycode == physical) or (logical != 0 and key_event.keycode == logical)) \
+				and key_event.ctrl_pressed == bool(binding.get("ctrl", false)) \
+				and key_event.alt_pressed == bool(binding.get("alt", false)) \
+				and key_event.shift_pressed == bool(binding.get("shift", false)) \
+				and key_event.meta_pressed == bool(binding.get("meta", false))
 		"button":
 			return event is InputEventJoypadButton and selected_device_id >= 0 and event.device == selected_device_id \
 				and event.button_index == int(binding.get("button", -1))
@@ -141,7 +175,7 @@ static func matches_binding(binding: Dictionary, event: InputEvent, selected_dev
 				return false
 			var motion := event as InputEventJoypadMotion
 			var direction := 1 if motion.axis_value > 0.0 else -1
-			return motion.axis == int(binding.get("axis", -1)) and direction == int(binding.get("direction", 0)) \
+			return motion.axis == int(binding.get("axis", -1)) and direction == int(binding.get("sign", binding.get("direction", 0))) \
 				and absf(motion.axis_value) >= float(binding.get("threshold", 0.65))
 	return false
 
@@ -158,11 +192,12 @@ static func _valid_binding(value: Variant) -> bool:
 		"key":
 			return int(binding.get("physical_keycode", 0)) != 0 or int(binding.get("keycode", 0)) != 0
 		"button":
-			return int(binding.get("button", -1)) >= 0 and int(binding.get("button", -1)) <= JOY_BUTTON_MAX
+			return int(binding.get("button", -1)) >= 0 and int(binding.get("button", -1)) < JOY_BUTTON_MAX
 		"axis":
 			var threshold := float(binding.get("threshold", 0.65))
-			return int(binding.get("axis", -1)) >= 0 and int(binding.get("axis", -1)) <= JOY_AXIS_MAX \
-				and absf(int(binding.get("direction", 0))) == 1 and threshold > 0.0 and threshold <= 1.0
+			var sign := int(binding.get("sign", binding.get("direction", 0)))
+			return int(binding.get("axis", -1)) >= 0 and int(binding.get("axis", -1)) < JOY_AXIS_MAX \
+				and absf(sign) == 1 and threshold > 0.0 and threshold <= 1.0
 	return false
 
 
@@ -180,7 +215,7 @@ static func _same_binding(left: Dictionary, right: Dictionary) -> bool:
 			return int(left.get("button", -1)) == int(right.get("button", -2))
 		"axis":
 			return int(left.get("axis", -1)) == int(right.get("axis", -2)) \
-				and int(left.get("direction", 0)) == int(right.get("direction", 2))
+				and int(left.get("sign", left.get("direction", 0))) == int(right.get("sign", right.get("direction", 2)))
 	return false
 
 
@@ -203,24 +238,24 @@ static func _button_name(button: int) -> String:
 		JOY_BUTTON_Y:
 			return "Y / Triangle"
 		JOY_BUTTON_BACK:
-			return "Back / Share"
+			return TranslationServer.translate("Back / Share")
 		JOY_BUTTON_START:
-			return "Menu / Options"
+			return TranslationServer.translate("Menu / Options")
 		JOY_BUTTON_LEFT_STICK:
-			return "Left stick press"
+			return TranslationServer.translate("Left stick press")
 		JOY_BUTTON_RIGHT_STICK:
-			return "Right stick press"
+			return TranslationServer.translate("Right stick press")
 		JOY_BUTTON_LEFT_SHOULDER:
-			return "Left shoulder"
+			return TranslationServer.translate("Left shoulder")
 		JOY_BUTTON_RIGHT_SHOULDER:
-			return "Right shoulder"
+			return TranslationServer.translate("Right shoulder")
 		JOY_BUTTON_DPAD_UP:
-			return "D-pad up"
+			return TranslationServer.translate("D-pad up")
 		JOY_BUTTON_DPAD_DOWN:
-			return "D-pad down"
+			return TranslationServer.translate("D-pad down")
 		JOY_BUTTON_DPAD_LEFT:
-			return "D-pad left"
+			return TranslationServer.translate("D-pad left")
 		JOY_BUTTON_DPAD_RIGHT:
-			return "D-pad right"
+			return TranslationServer.translate("D-pad right")
 		_:
-			return "Button %d" % button
+			return TranslationServer.translate("Button %d") % button

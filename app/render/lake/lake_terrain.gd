@@ -205,20 +205,26 @@ static func _load_baked_geometry(basin_key: PackedByteArray, water_key: PackedBy
 
 ## The build/check pipeline additionally regenerates and compares every buffer with the sampler.
 static func baked_matches(baked: Resource, basin_key: PackedByteArray, water_key: PackedByteArray) -> bool:
-	if baked == null or baked.get_script() != null or baked.get_meta("format", "") != BAKED_FORMAT \
+	if baked == null or baked.get_script() != null:
+		return false
+	for key: String in ["format", "engine_hex", "double_precision", "sources", "basin_key", "water_key",
+			"basin_arrays", "water_arrays", "basin_sha256", "water_sha256"]:
+		if not baked.has_meta(key):
+			return false
+	if baked.get_meta("format", "") != BAKED_FORMAT \
 			or baked.get_meta("engine_hex", 0) != Engine.get_version_info().hex \
-			or baked.get_meta("double_precision", null) != OS.has_feature("double") \
-			or not baked.get_meta("sources", null) is Dictionary \
+			or baked.get_meta("double_precision", "missing") != OS.has_feature("double") \
+			or not baked.get_meta("sources", {}) is Dictionary \
 			or geometry_digest([baked.get_meta("sources")]) != GeometryStamp.SOURCE_SHA256:
 		return false
-	var basin_matches: bool = not basin_key.is_empty() and baked.get_meta("basin_key", null) == basin_key
-	var water_matches: bool = baked.get_meta("water_key", null) == water_key
+	var basin_matches: bool = not basin_key.is_empty() and baked.get_meta("basin_key", PackedByteArray()) == basin_key
+	var water_matches: bool = baked.get_meta("water_key", PackedByteArray()) == water_key
 	if not basin_matches and not water_matches:
 		return false
 	for name: String in ["basin", "water"]:
 		if (name == "basin" and not basin_matches) or (name == "water" and not water_matches):
 			continue
-		var arrays: Variant = baked.get_meta(name + "_arrays", null)
+		var arrays: Variant = baked.get_meta(name + "_arrays", [])
 		if not arrays is Array or arrays.size() != Mesh.ARRAY_MAX \
 				or not arrays[Mesh.ARRAY_VERTEX] is PackedVector3Array \
 				or arrays[Mesh.ARRAY_VERTEX].is_empty() \

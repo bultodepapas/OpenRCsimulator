@@ -694,6 +694,12 @@ msgstr "AUX de humo asignado. Baja el acelerador y apaga el humo antes de contin
 msgid "Smoke AUX assigned for this flight; profile could not be saved."
 msgstr "AUX de humo asignado para este vuelo; el perfil no se pudo guardar."
 
+msgid "Could not save the updated controller profile; the existing profile is unchanged."
+msgstr "No se pudo guardar el perfil de control actualizado; el perfil existente no cambió."
+
+msgid "The current controller profile could not be updated."
+msgstr "No se pudo actualizar el perfil de control actual."
+
 # SM-03/04 smoke controls and guided assignment.
 msgid "Stik smoke pump"
 msgstr "Humo del Stik"
@@ -1524,3 +1530,511 @@ msgstr "Un banco de nubes alto y lejano, con cima amplia, base oscura y cortinas
 
 msgid "A towering storm lit from within, with branching lightning, rain shafts and delayed thunder."
 msgstr "Una tormenta alta iluminada desde dentro, con rayos ramificados, cortinas de lluvia y truenos con retardo."
+
+# Controller setup and semantic input actions (UI-10-GP-01 / UI-15-GP-01).
+msgid "Controller settings"
+msgstr "Configuración del control"
+
+msgid "Controls"
+msgstr "Controles"
+
+msgid "Release the controls to neutral before continuing; use Controls to select a disconnected device."
+msgstr "Suelta los controles y déjalos en posición neutra antes de continuar; usa Controles para seleccionar un dispositivo desconectado."
+
+msgid "Choose separate flight and menu controllers. Profile changes never send input to the aircraft while this screen is open."
+msgstr "Elige controles distintos para el vuelo y los menús. Los cambios del perfil no envían entradas al avión mientras esta pantalla está abierta."
+
+msgid "Apply devices changes the active selection. Save writes the profile. Cancel discards profile edits."
+msgstr "Aplicar dispositivos cambia la selección activa. Guardar escribe el perfil. Cancelar descarta los cambios del perfil."
+
+msgid "DEVICES"
+msgstr "DISPOSITIVOS"
+
+msgid "Flight controller"
+msgstr "Control de vuelo"
+
+msgid "Menu controller"
+msgstr "Control de menú"
+
+msgid "A radio can fly but cannot navigate menus. Menu navigation stays on the selected gamepad; keyboard and mouse remain available."
+msgstr "Una radio puede pilotar, pero no navegar por los menús. La navegación usa el gamepad seleccionado; el teclado y el ratón siguen disponibles."
+
+msgid "Only a recognized gamepad can navigate menus."
+msgstr "Solo un gamepad reconocido puede navegar por los menús."
+
+msgid "Apply device selection"
+msgstr "Aplicar selección de controles"
+
+msgid "Recover legacy profile…"
+msgstr "Recuperar perfil anterior…"
+
+msgid "Calibrate selected radio"
+msgstr "Calibrar la radio seleccionada"
+
+msgid "Keyboard + mouse"
+msgstr "Teclado + ratón"
+
+msgid "No flight controller"
+msgstr "Sin control de vuelo"
+
+msgid "Controller %d"
+msgstr "Controlador %d"
+
+msgid "disconnected"
+msgstr "desconectado"
+
+msgid "Disconnected controller %d"
+msgstr "Controlador %d desconectado"
+
+msgid "Legacy profile"
+msgstr "Perfil anterior"
+
+msgid "Legacy radio data stays unchanged. Choose how to copy it into a new profile."
+msgstr "Los datos de la radio anterior no se modifican. Elige cómo copiarlos en un perfil nuevo."
+
+msgid "Keep as radio profile"
+msgstr "Conservar como perfil de radio"
+
+msgid "Restore gamepad Mode 2"
+msgstr "Restaurar gamepad en modo 2"
+
+msgid "PROFILE"
+msgstr "PERFIL"
+
+msgid "Saved profile"
+msgstr "Perfil guardado"
+
+msgid "Name"
+msgstr "Nombre"
+
+msgid "Profile type"
+msgstr "Tipo de perfil"
+
+msgid "Gamepad · Mode 2"
+msgstr "Gamepad · Modo 2"
+
+msgid "Radio transmitter · custom"
+msgstr "Radio · personalizado"
+
+msgid "Joystick · custom"
+msgstr "Joystick · personalizado"
+
+msgid "Choose the flight profile for this unknown controller. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically."
+msgstr "Elige el perfil de vuelo para este control desconocido. Gamepad inicia en modo 2; la radio usa un perfil personalizado. La calibración nunca se inicia automáticamente."
+
+msgid "Could not create a profile for that controller type."
+msgstr "No se pudo crear un perfil para ese tipo de control."
+
+msgid "Profile type changed. Save the profile to keep this draft."
+msgstr "Tipo de perfil cambiado. Guarda el perfil para conservar este borrador."
+
+msgid "Device selection changed; refresh and choose connected controllers."
+msgstr "La selección de controles cambió; actualiza la lista y elige controles conectados."
+
+msgid "GAMEPAD SAFE · move controls, then release"
+msgstr "GAMEPAD SEGURO · mueve los controles y suéltalos"
+
+msgid "CONTROLLER LOST · select controls to continue"
+msgstr "CONTROL DESCONECTADO · selecciona controles para continuar"
+
+msgid "Controller unavailable. Select a connected device or keyboard in Controller settings."
+msgstr "Controlador no disponible. Elige un dispositivo conectado o el teclado en Configuración de controles."
+
+msgid "Move each mapped control once, release sticks and triggers, then wait for neutral. Continue is an explicit action."
+msgstr "Mueve una vez cada control asignado, suelta las palancas y los gatillos y espera el neutro. Debes elegir Continuar explícitamente."
+
+msgid "Lower the throttle to arm. If the mapping is wrong, open Controller settings and calibrate the selected radio."
+msgstr "Baja el acelerador para armar. Si la asignación no es correcta, abre Configuración de controles y calibra la radio seleccionada."
+
+msgid "Throttle on resume: %.0f%%"
+msgstr "Acelerador al reanudar: %.0f%%"
+
+msgid "Collective on resume: %.0f%%"
+msgstr "Colectivo al reanudar: %.0f%%"
+
+msgid "Current throttle: %.0f%%"
+msgstr "Acelerador actual: %.0f%%"
+
+msgid "Current collective: %.0f%%"
+msgstr "Colectivo actual: %.0f%%"
+
+msgid "Profile name"
+msgstr "Nombre del perfil"
+
+msgid "Gamepad preset"
+msgstr "Preajuste de gamepad"
+
+msgid "Mode 1 · rate throttle"
+msgstr "Modo 1 · acelerador incremental"
+
+msgid "Mode 2 · rate throttle"
+msgstr "Modo 2 · acelerador incremental"
+
+msgid "Trigger throttle"
+msgstr "Acelerador absoluto en gatillo"
+
+msgid "Mode 1: left X yaw, left Y pitch; right X roll, right Y throttle."
+msgstr "Modo 1: X izquierdo guiñada, Y izquierdo cabeceo; X derecho alabeo, Y derecho acelerador incremental."
+
+msgid "Mode 2: left X yaw, left Y throttle; right X roll, right Y pitch."
+msgstr "Modo 2: X izquierdo guiñada, Y izquierdo acelerador incremental; X derecho alabeo, Y derecho cabeceo."
+
+msgid "Trigger throttle: left X yaw, right X roll, right Y pitch, RT/R2 throttle (axis 5). Release RT/R2 to arm."
+msgstr "Acelerador en gatillo: X izquierdo guiñada, X derecho alabeo, Y derecho cabeceo, RT/R2 acelerador (eje 5). Suelta RT/R2 para armar."
+
+msgid "Use this custom mapping for flight"
+msgstr "Usar esta asignación personalizada para volar"
+
+msgid "Unknown joystick"
+msgstr "Palanca de mando desconocida"
+
+msgid "Restore selected preset"
+msgstr "Restaurar preajuste seleccionado"
+
+msgid "Duplicate profile"
+msgstr "Duplicar perfil"
+
+msgid "AXIS MAPPING AND RESPONSE"
+msgstr "ASIGNACIÓN Y RESPUESTA DE EJES"
+
+msgid "Each channel uses its own scalar axis. Tune its deadzone, expo and inversion, then move the selected flight controller to preview the conditioned value."
+msgstr "Cada canal usa su propio eje escalar. Ajusta la zona muerta, la respuesta exponencial y la inversión; después mueve el control de vuelo seleccionado para previsualizar el valor procesado."
+
+msgid "Channel"
+msgstr "Canal"
+
+msgid "Source axis"
+msgstr "Eje de origen"
+
+msgid "Deadzone"
+msgstr "Zona muerta"
+
+msgid "Expo"
+msgstr "Exponencial"
+
+msgid "Invert"
+msgstr "Invertir"
+
+msgid "LIVE PREVIEW"
+msgstr "VISTA PREVIA EN VIVO"
+
+msgid "This read-only preview does not change flight commands."
+msgstr "Esta vista de solo lectura no cambia las órdenes de vuelo."
+
+msgid "%s · raw — · conditioned —"
+msgstr "%s · sin procesar — · procesado —"
+
+msgid "Axis —"
+msgstr "Eje —"
+
+msgid "Select a flight controller to preview mapped channels."
+msgstr "Selecciona un control de vuelo para previsualizar los canales asignados."
+
+msgid "Select a connected flight controller to preview mapped channels."
+msgstr "Selecciona un control de vuelo conectado para previsualizar los canales asignados."
+
+msgid "ACTIONS"
+msgstr "ACCIONES"
+
+msgid "Bindings are saved by physical control. A different device cannot trigger them."
+msgstr "Las asignaciones se guardan por control físico. Otro dispositivo no puede activarlas."
+
+msgid "Unbound"
+msgstr "Sin asignar"
+
+msgid "Remap"
+msgstr "Reasignar"
+
+msgid "Press a key or selected controller input…"
+msgstr "Pulsa una tecla o un control del dispositivo seleccionado…"
+
+msgid "Save profile"
+msgstr "Guardar perfil"
+
+msgid "Controller services are not available."
+msgstr "Los servicios de control no están disponibles."
+
+msgid "Controller profile storage is not available."
+msgstr "El almacenamiento de perfiles de control no está disponible."
+
+msgid "Could not load controller profiles: %s"
+msgstr "No se pudieron cargar los perfiles de control: %s"
+
+msgid "This profile is not a gamepad preset. Use legacy recovery to change its controller semantics."
+msgstr "Este perfil no es un preajuste de gamepad. Usa la recuperación para cambiar el tipo de control."
+
+msgid "Could not restore the selected gamepad preset."
+msgstr "No se pudo restaurar el preajuste de gamepad seleccionado."
+
+msgid "Preset restored. Save the profile to keep this mapping."
+msgstr "Preajuste restaurado. Guarda el perfil para conservar esta asignación."
+
+msgid "Profile duplicated. Save it to add a separate profile."
+msgstr "Perfil duplicado. Guárdalo para añadirlo como perfil independiente."
+
+msgid "Live values are read only. No controller input reaches the aircraft from this screen."
+msgstr "Los valores en vivo son de solo lectura. Desde esta pantalla no llegan entradas de control al avión."
+
+msgid "Press a keyboard key or an input on the selected flight controller. Escape cancels remapping."
+msgstr "Pulsa una tecla o un control del dispositivo de vuelo seleccionado. Escape cancela la reasignación."
+
+msgid "That binding conflicts with another action or removes recovery."
+msgstr "Esa asignación entra en conflicto con otra acción o elimina una opción de recuperación."
+
+msgid "Binding updated. Save the profile to keep it."
+msgstr "Asignación actualizada. Guarda el perfil para conservarla."
+
+msgid "Remapping cancelled."
+msgstr "Reasignación cancelada."
+
+msgid "The selected menu controller is disconnected."
+msgstr "El control de menú seleccionado está desconectado."
+
+msgid "The selected flight controller is disconnected."
+msgstr "El control de vuelo seleccionado está desconectado."
+
+msgid "Device selection applied. Profile changes still need Save."
+msgstr "Selección de controles aplicada. Aún debes guardar los cambios del perfil."
+
+msgid "There is no controller profile to save."
+msgstr "No hay ningún perfil de control para guardar."
+
+msgid "Apply the flight device selection before saving its profile."
+msgstr "Aplica la selección del control de vuelo antes de guardar su perfil."
+
+msgid "Enter a profile name before saving."
+msgstr "Escribe un nombre para el perfil antes de guardarlo."
+
+msgid "Action bindings need a valid Back and Pause recovery path."
+msgstr "Las acciones deben conservar asignaciones válidas para volver y pausar."
+
+msgid "Profile cannot be saved: %s"
+msgstr "No se puede guardar el perfil: %s"
+
+msgid "Profile was not saved: %s"
+msgstr "No se guardó el perfil: %s"
+
+msgid "storage error"
+msgstr "error de almacenamiento"
+
+msgid "No valid legacy radio profiles were found. The original file was not changed."
+msgstr "No se encontraron perfiles de radio anteriores válidos. El archivo original no se modificó."
+
+msgid "Choose whether to preserve this as radio control or restore a gamepad preset. The legacy file remains unchanged."
+msgstr "Elige si quieres conservarlo como control de radio o restaurar un preajuste de gamepad. El archivo anterior no se modifica."
+
+msgid "Legacy data remains unchanged until you explicitly Save a copied profile."
+msgstr "Los datos anteriores no cambian hasta que guardes explícitamente una copia del perfil."
+
+msgid "Radio semantics and auxiliary data are preserved. Save writes a separate v2 profile."
+msgstr "Se conservan el comportamiento de radio y los datos auxiliares. Guardar crea un perfil v2 independiente."
+
+msgid "This draft uses gamepad Mode 2 rate throttle. Legacy radio calibration remains in the original file."
+msgstr "Este borrador usa acelerador incremental en modo 2. La calibración de radio anterior permanece en el archivo original."
+
+msgid "Accept / launch"
+msgstr "Aceptar / iniciar"
+
+msgid "Back / cancel"
+msgstr "Atrás / cancelar"
+
+msgid "Navigate up"
+msgstr "Navegar arriba"
+
+msgid "Navigate down"
+msgstr "Navegar abajo"
+
+msgid "Navigate left"
+msgstr "Navegar a la izquierda"
+
+msgid "Navigate right"
+msgstr "Navegar a la derecha"
+
+msgid "Pause / resume"
+msgstr "Pausar / reanudar"
+
+msgid "Cycle camera"
+msgstr "Cambiar cámara"
+
+msgid "Reset view"
+msgstr "Restablecer vista"
+
+msgid "Trim left"
+msgstr "Ajustar a la izquierda"
+
+msgid "Trim right"
+msgstr "Ajustar a la derecha"
+
+msgid "Trim up"
+msgstr "Ajustar hacia arriba"
+
+msgid "Trim down"
+msgstr "Ajustar hacia abajo"
+
+msgid "Cycle flight overlays"
+msgstr "Cambiar superposiciones de vuelo"
+
+msgid "Throttle cut (hold)"
+msgstr "Corte de acelerador (mantener)"
+
+msgid "Calibrate controller"
+msgstr "Calibrar control"
+
+msgid "Keyboard key"
+msgstr "Tecla del teclado"
+
+msgid "Controller prompts"
+msgstr "Indicaciones del control"
+
+msgid "Auto"
+msgstr "Automático"
+
+msgid "Xbox"
+msgstr "Xbox"
+
+msgid "PlayStation"
+msgstr "PlayStation"
+
+msgid "Nintendo"
+msgstr "Nintendo"
+
+msgid "Generic"
+msgstr "Genérico"
+
+msgid "Select a connected, configured gamepad to navigate menus."
+msgstr "Selecciona un gamepad conectado y configurado para navegar por los menús."
+
+msgid "Prompt symbols only affect presentation; they never change controller bindings."
+msgstr "Los símbolos solo cambian la presentación; no modifican las asignaciones del control."
+
+msgid "Controller prompt family changed. Save the profile to keep it."
+msgstr "Los símbolos del control cambiaron. Guarda el perfil para conservar la elección."
+
+msgid "A"
+msgstr "A"
+
+msgid "B"
+msgstr "B"
+
+msgid "X"
+msgstr "X"
+
+msgid "Y"
+msgstr "Y"
+
+msgid "Cross"
+msgstr "Cruz"
+
+msgid "Circle"
+msgstr "Círculo"
+
+msgid "Square"
+msgstr "Cuadrado"
+
+msgid "Triangle"
+msgstr "Triángulo"
+
+msgid "Bottom face button"
+msgstr "Botón inferior"
+
+msgid "Right face button"
+msgstr "Botón derecho"
+
+msgid "Left face button"
+msgstr "Botón izquierdo"
+
+msgid "Top face button"
+msgstr "Botón superior"
+
+msgid "Menu"
+msgstr "Menú"
+
+msgid "Options"
+msgstr "Opciones"
+
+msgid "Plus"
+msgstr "Más"
+
+msgid "Share"
+msgstr "Compartir"
+
+msgid "Minus"
+msgstr "Menos"
+
+msgid "LB"
+msgstr "LB"
+
+msgid "RB"
+msgstr "RB"
+
+msgid "L1"
+msgstr "L1"
+
+msgid "R1"
+msgstr "R1"
+
+msgid "L"
+msgstr "L"
+
+msgid "R"
+msgstr "R"
+
+msgid "L3"
+msgstr "L3"
+
+msgid "R3"
+msgstr "R3"
+
+msgid "Axis %d %s"
+msgstr "Eje %d %s"
+
+msgid "Back / Share"
+msgstr "Atrás / Compartir"
+
+msgid "Menu / Options"
+msgstr "Menú / Opciones"
+
+msgid "Left stick press"
+msgstr "Pulsación del stick izquierdo"
+
+msgid "Right stick press"
+msgstr "Pulsación del stick derecho"
+
+msgid "Left shoulder"
+msgstr "Botón superior izquierdo"
+
+msgid "Right shoulder"
+msgstr "Botón superior derecho"
+
+msgid "D-pad up"
+msgstr "Cruceta arriba"
+
+msgid "D-pad down"
+msgstr "Cruceta abajo"
+
+msgid "D-pad left"
+msgstr "Cruceta izquierda"
+
+msgid "D-pad right"
+msgstr "Cruceta derecha"
+
+msgid "Button %d"
+msgstr "Botón %d"
+
+msgid "Flight: keyboard (no controller selected)."
+msgstr "Vuelo: teclado (sin mando asignado)."
+
+msgid "Flight controller: %s. Follow the arming prompt."
+msgstr "Control de vuelo: %s. Sigue el aviso de armado."
+
+msgid "Press A / Cross to claim gamepad menu controls."
+msgstr "Pulsa A / Cruz para controlar los menús con un gamepad."
+
+msgid "Menu controller: %s"
+msgstr "Control de menú: %s"
+
+msgid "Joystick"
+msgstr "Palanca de mando"
+
+msgid "Yaw"
+msgstr "Guiñada"

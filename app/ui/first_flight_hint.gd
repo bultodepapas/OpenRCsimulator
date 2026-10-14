@@ -58,6 +58,11 @@ func _init(session: Node, vehicle_type: String = Reference.AIRPLANE) -> void:
 
 
 func _process(delta: float) -> void:
+	if _finished:
+		return
+	# This card describes keyboard flight. A selected/lost controller owns those
+	# channels until keyboard recovery is explicitly chosen in Controller settings.
+	visible = not _session.radio.connected and not bool(_session.get("_controller_lost"))
 	if not _session.sim.paused:
 		_flown += delta
 	if _flown >= duration_s:

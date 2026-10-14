@@ -2,7 +2,31 @@
 
 2026-10-14. Source snapshot: `22b3e4825ec97289b76666ca9e942eaa7a8f703d` plus the existing working tree. Scope: Xbox, PlayStation DualSense and other controllers, with Windows prioritized by the owner. The [implementation plan](../../plans/controller-support.md) owns proposed work and acceptance; this report owns the dated findings and sources.
 
-## Current application
+## Implementation evidence
+
+The owner subsequently authorized implementation. The interactive application now uses a pure connection registry plus an engine bridge, explicit flight/menu selection, validated V2 profiles, Mode 1/2 and absolute-trigger presets, and a Controls screen. Input state remains scalar; no physics model, aircraft data or golden flight was changed for this work. Godot remains pinned to 4.7.2.
+
+- `controller_registry.gd` tracks connection generations; hot-plug never claims ownership. `controller_service.gd` attaches the chosen device to each session. A UI-only selection leaves the flight throttle intact. Loss, invalid input and uncertain continuity require explicit recovery.
+- `controller_profile.gd` separates device kind from throttle mode and validates finite ranges, mappings, shaping and actions. `controller_profile_store.gd` uses UUIDs, identity evidence, transactional writes and rollback; legacy imports do not modify `rc_calibration.cfg`. Conflicting serial evidence and duplicate connected identities refuse automatic matching.
+- Gamepads require fresh samples for all mapped flight channels, released buttons and 200 ms neutral. Paused sampling updates readiness without integrating rate throttle. Explicit airborne resume seeds scenario power once; later menu resumes preserve current power. Trigger throttle uses 0..1, with no bipolar radio conversion or second expo.
+- Home/Pause Controls supports explicit device selection, presets, draft edits, live previews, save/cancel, remapping and legacy recovery. Selected-gamepad GUI events remain isolated from radios. An unknown device can navigate only after a saved, validated and unambiguous gamepad declaration. Radio calibration and smoke AUX save full V2 profiles on the managed route; direct diagnostic/technical routes retain their separate preference policy.
+- [Kenney Input Prompts 1.5A](../../../app/assets/input_prompts/PROVENANCE.md) supplies 46 unchanged CC0 SVGs. Profile glyph-family overrides affect presentation only; labels/icons follow remapped physical positions, including Nintendo's swapped letters. Ambiguous/emulated identity falls back to generic. Home launch and Pause Continue use the selected UI device's accept prompt.
+- Pause displays staged/held throttle or collective and scrolls with focus. Ordinary menus preserve connection evidence; focus recovery requires fresh gamepad axis events, neutral and explicit resume while retaining virtual throttle. Uncertain continuity after a long suspension follows lost-controller recovery.
+- Helicopter collective and the ground vehicle's RT/LT/steering sampler retain activity-specific semantics. Fixed-wing absolute-trigger presets are refused for helicopter collective.
+
+Native Windows focused checks include profile validation (49), conditioning (30), registry (27), store (36), existing RC input (41), rearming (368), legacy validation (720), calibration (19), smoke AUX (60), engine smoke (54), helicopter session (42), rudder authority (26), ground selection (22), controller menu flow (23), controller integration (27), persistence (25) and glyph resolution/asset loading (137). [checks-windows.json](checks-windows.json) records the final 14 integration/regression suites: all pass, including Home layout/language, Pause, help and overlay behavior. Earlier focused action/setup tests and existing rates, simulation, session guards, keyboard input, screen stack, preference/direct routes, camera and failure routes also passed. These are software checks with synthetic device data, not hardware observations.
+
+[parse-windows.json](parse-windows.json) records the native whole-application script parse: 760/760 passed. The final keyboard-hint visibility adjustment was subsequently covered by the passing menu/help reruns. Logs were inspected for engine errors as well as exit status. Native `test_controller_menu` and `test_ui_language` still report shutdown ObjectDB leak warnings (2 and 24 instances); these warnings are retained in the check report and are not described as a clean leak audit.
+
+The [F6 software cost comparison](cost/README.md) uses the same native engine/host for three alternating baseline/current pairs. At the RcInput seam, median/p95 event-to-command cost rose from 12/23 µs to 44/91 µs; current p95 is 2.18% of the 240 Hz tick budget. The probe includes the new 128-button released-state sampling, but excludes SDL transport, FlightSession, physics, rendering and display. This is neither physical latency nor a full-frame performance qualification.
+
+Rendered Controls captures were inspected at 1280×720 in [English](controls-en.png) and [Spanish](controls-es.png), including the [middle](controls-es-middle.png) and [scrolled footer](controls-es-bottom.png). Focus begins at device selection; content stays within the viewport and scrolls to action remapping and Save/Cancel. [Pause](pause-en.png) shows neutral guidance and staged throttle; [Quit focus](pause-en-quit.png) remains visible through scrolling. The keyboard-only first-flight hint stays hidden while a controller owns flight.
+
+The canonical Linux `app/test.sh` was attempted from an isolated WSL filesystem snapshot honoring `.gitattributes`. It stops in the unrelated `research/aircraft-standardization/test_models.py` Turbo Lumber assertion: expected authored rotor diameter `0.28064`, actual manifest `0.280642`. The same assertion fails in the native working tree. That aircraft datum/test was not changed as part of controller work; the entire suite must not be described as passing.
+
+[windows-no-devices.json](windows-no-devices.json) is a native Windows F1 run after the implementation. It reports `devices: []`. Physical Xbox/DualSense USB/Bluetooth, simultaneous physical devices, exported-package qualification and filmed latency remain untested. Optional feedback/motion effects remain gated in the plan.
+
+## Pre-implementation application snapshot
 
 The graph located the input seams, but some indexed function ranges were stale. Findings below were checked against current source. They are source inspection findings, not physical controller results.
 
@@ -54,8 +78,8 @@ $ControllerGodot = '.\.tools\Godot_v4.7.2-stable_win64_console.exe'
 & $ControllerGodot --headless --quit-after 3 --script docs/research/controller-support-2026-10-14/probe_api.gd
 ```
 
-The output confirms six standardized axes, ten supported axis slots and 128 button slots. Default `ui_accept` and `ui_cancel` have no joypad bindings in this run; directional actions do. `ignore_joypad_on_unfocused_application` defaults to false. The application subsequently removes all joypad UI bindings.
+The output confirms six standardized axes, ten supported axis slots and 128 button slots. Default `ui_accept` and `ui_cancel` have no joypad bindings in this run; directional actions do. `ignore_joypad_on_unfocused_application` defaults to false. The application removes wildcard joypad UI bindings; the implemented adapter then installs only the explicitly selected menu device's bindings.
 
 The older investigation-12 probe was also attempted. Its API section ran, but its repository-root load of RcInput now fails because RcInput preloads `res://input/smoke_aux.gd`; that legacy invocation does not use the application resource root. It was stopped and is not counted as a passing app check. The standalone probe above avoids that dependency.
 
-No physical Xbox, DualSense, generic controller, transport, firmware or end-to-end latency was validated during this review. Runtime behavior remains unchanged. Hardware rows in the implementation plan start as untested.
+No physical Xbox, DualSense, generic controller, transport, firmware or end-to-end latency was validated during the initial review or subsequent software implementation. Hardware rows remain untested; the implementation evidence above supersedes the runtime findings only where explicitly stated.

@@ -143,7 +143,7 @@
     },
     {
       "path": "res://aircraft/ugly_stik_finish.gd",
-      "sha256": "9792efcd70bfd719156c08833ddd5db43c5a543f865bc8a8d7984a52839c69fb",
+      "sha256": "eff5ebd9c255143fd10a7d263c00d9622ca3a1fbd6ef78766cabcf1eb9e84c40",
       "hash_mode": "lf_text",
       "role": "script_dependency"
     },
@@ -164,6 +164,12 @@
       "sha256": "aebaaf3374f15415160a77ab00c990f3d5523106b761ae0c0d3eaaac2374d10a",
       "hash_mode": "lf_text",
       "role": "generated_geometry"
+    },
+    {
+      "path": "res://aircraft/ugly_stik_grain.res",
+      "sha256": "f4dabff80aa6ac249dc6025ae3b1dd632a64fee8251e03fe25bdd6511e361c10",
+      "hash_mode": "raw",
+      "role": "resource_dependency"
     },
     {
       "path": "res://aircraft/ugly_stik_model.gd",

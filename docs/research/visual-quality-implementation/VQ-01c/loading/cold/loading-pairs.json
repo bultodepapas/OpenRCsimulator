@@ -1,0 +1,29 @@
+{
+  "runs": [
+    {
+      "pair": 1,
+      "variant": "baseline",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-cold\\projects\\baseline\\app",
+        "--audio-driver",
+        "Dummy",
+        "--resolution",
+        "1280x720",
+        "--max-fps",
+        "60",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-cold\\pair-1-baseline.json",
+        "--cycles=2"
+      ],
+      "process_wall_s": 13.176325799999177,
+      "exit_code": 1,
+      "valid": false,
+      "report": "pair-1-baseline.json",
+      "log": "pair-1-baseline.log"
+    }
+  ]
+}

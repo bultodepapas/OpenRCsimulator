@@ -98,6 +98,8 @@ func _initialize() -> void:
 	_check("no LOW on a 1.5 m/s approach", Telemetry.warnings(_with(base, { height_agl = 2.0, vertical_speed = -1.5 }), ctx).is_empty())
 	_check("FAR beyond the readable distance", Array(Telemetry.warnings(_with(base, { distance_pilot = far + 1.0 }), ctx)) == ["far"])
 	_check("SAFE: radio connected, not armed", Array(Telemetry.warnings(base, _with(ctx, { radio_connected = true, armed = false }))) == ["safe"])
+	_check("gamepad neutral prompt is distinct from radio throttle-low", Array(Telemetry.warnings(base, _with(ctx, { radio_connected = true, armed = false, controller_kind = "gamepad" }))) == ["gamepad_safe"])
+	_check("lost selection requests explicit controller recovery", Array(Telemetry.warnings(base, _with(ctx, { controller_lost = true, pause_reason = "radio disconnected" }))) == ["controller_lost"])
 	_check("no SAFE when armed", Telemetry.warnings(base, _with(ctx, { radio_connected = true, armed = true })).is_empty())
 	_check("FAILSAFE on radio disconnection", Array(Telemetry.warnings(base, _with(ctx, { pause_reason = "radio disconnected" }))) == ["failsafe"])
 	_check("BATTERY below 20 %", Array(Telemetry.warnings(base, _with(ctx, { battery = { ok = true, soc = 0.15, exhausted = false } }))) == ["battery"])

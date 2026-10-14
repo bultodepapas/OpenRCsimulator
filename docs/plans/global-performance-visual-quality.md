@@ -1,10 +1,12 @@
 # Global performance and visual-quality implementation plan
 
-2026-10-14 · Revision 4 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
+2026-10-14 · Revision 6 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
 
 **Execution decision:** baseline → visibility reference → measured CPU/loading repairs → texture audit → ground and foliage comparisons → targeted aircraft/weather repairs → qualified quality profiles → native acceptance. Implementation has started with **VQ-01c / DT-01 / DT-10a** measurement tools and a read-only texture inventory. [First evidence and unresolved gates](../research/visual-quality-implementation/VQ-01c/README.md) now include an attributed **DT-11a lake geometry reuse repair** with exact buffer parity and faster Home/Fly transitions. Native flight, cold-loading and visual-change acceptance remain open. Current step status stays in the owning VQ plan.
 
 **Scope decision:** six of the 24 brainstorm ideas are selected as bounded probes/refinements; five are conditional, eight deferred and five rejected from this delivery. The three ambitious rendering branches are also rejected from this delivery. A selected probe ends in either a qualified change or a documented **retain baseline** decision. It does not guarantee that its candidate ships.
+
+**Latest DT-11a slice:** [existing grain precomputation and package repairs](../research/visual-quality-implementation/VQ-01c/loading/grain/README.md) preserve every texture/mip byte and improve Home in five paired runs. Clean Windows export, both field-pack grass branches and the extracted ZIP's headless flight pass. First-Fly variation, cold-Home budget, leaks/soak and native flight acceptance remain open.
 
 This is the authoritative sequence and disposition for the [dated research](../research/godot-global-review-2026-10-14.md). It replaces this document's earlier broad backlog and six-prototype recommendation. Implementation status stays in the owning plans: [VQ](../VISUAL-QUALITY-PLAN.md), [landscape](../LANDSCAPE-PLAN.md), [sky](sky-clouds-weather.md), [UI](../MENU-REDESIGN-PLAN.md), [DT](../DESKTOP-DELIVERY-PLAN.md), [camera](camera-views.md), and the [ownership registry](../README.md#tracks-plans-and-step-ids). New follow-up IDs below are registered in those homes; no new track namespace is introduced.
 
@@ -124,6 +126,12 @@ Any Gate P miss outside scenery/lake queries becomes a separately registered H-o
 **Files:** [AppRoot](../../app/app_root.gd), [field builder](../../app/render/field.gd), world/scenery builders and UI loading boundary. Current synchronous creation restores Home on failed setup; preserve it unless measured cost requires staging.
 
 Choose one route: immutable resource reuse for repeated setup; threaded requests for measured I/O; detached pure-data preparation for measured construction; bounded visible warmup for reproduced OpenGL first-use stalls. Do not build all four. Staging requires generation-token cancellation, late-result disposal, isolated candidate state and main-thread scene attachment; those are new coverage requirements.
+
+Implemented within the resource-reuse route: bounded CPU arrays for repeated setup,
+then a generated default-lake resource for fresh processes. The [cold-loading follow-up](../research/visual-quality-implementation/VQ-01c/loading/cold/README.md)
+records exact procedural parity, input/version fallback, paired timings and the limited
+export check. Cold Home and first Fly still miss their targets; attribute the remaining
+phases before selecting another repair. No asynchronous lifecycle was introduced.
 
 **Exit:** cold/warm phase distributions, preserved direct/capture/trace start semantics, failed/cancelled setup, no sky/exposure leak and bounded retention. Use existing field-failure checks; add stale/cancel tests only when introducing those behaviors.
 

@@ -23,7 +23,7 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ### Controller support
 
-[Controller review, 2026-10-14](controller-support-2026-10-14/README.md) records the current gamepad/radio paths, calibration mismatch, Godot 4.7.2 and SDL findings, primary controller sources and a native Windows API probe. The [implementation plan](../plans/controller-support.md) prioritizes Xbox/DualSense on Windows, with explicit device ownership, profiles, safe transitions, menu navigation and physical qualification. API/synthetic checks do not establish hardware support.
+[Controller review, 2026-10-14](controller-support-2026-10-14/README.md) records the original gamepad/radio audit, Godot 4.7.2 and SDL sources, and subsequent implementation evidence: explicit device ownership, V2 profiles, safe transitions, menu navigation, free glyphs and native Windows checks. The [implementation plan](../plans/controller-support.md) retains Xbox/DualSense physical and package qualification and optional feedback as open gates. API/synthetic checks do not establish hardware support.
 
 ### Random failures and emergency practice
 

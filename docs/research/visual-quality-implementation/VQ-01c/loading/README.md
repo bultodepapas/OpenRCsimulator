@@ -1,5 +1,9 @@
 # DT-11a — reuse unchanged lake geometry
 
+Follow-up: [generated default buffers reduce cold loading](cold/README.md). The
+measurements and manifest below remain the original in-memory-cache campaign.
+Next follow-up: [exact grain precomputation and package repairs](grain/README.md).
+
 2026-10-14. Implemented a bounded CPU geometry cache in `app/render/lake/lake_terrain.gd`.
 Source baseline `22b3e482`; Godot 4.7.2-stable, Windows, RTX 3090 / Ryzen 9 5900X.
 [Manifest](evidence-manifest.json) pins sources, engine binaries and raw evidence;

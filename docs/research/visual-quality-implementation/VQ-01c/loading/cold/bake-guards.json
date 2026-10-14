@@ -1,0 +1,22 @@
+{
+	"lake_terrain_reference": {
+		"matches_reference": true,
+		"sha256": "077632c8c619af3a183ce995f6246a4f727024979fb14bf5c5b4a013556aa198"
+	},
+	"terrain-incomplete": {
+		"matches_reference": true,
+		"sha256": "077632c8c619af3a183ce995f6246a4f727024979fb14bf5c5b4a013556aa198"
+	},
+	"terrain-missing": {
+		"matches_reference": true,
+		"sha256": "077632c8c619af3a183ce995f6246a4f727024979fb14bf5c5b4a013556aa198"
+	},
+	"terrain-no-procedural": {
+		"matches_reference": true,
+		"sha256": "077632c8c619af3a183ce995f6246a4f727024979fb14bf5c5b4a013556aa198"
+	},
+	"terrain-stale": {
+		"matches_reference": true,
+		"sha256": "077632c8c619af3a183ce995f6246a4f727024979fb14bf5c5b4a013556aa198"
+	}
+}

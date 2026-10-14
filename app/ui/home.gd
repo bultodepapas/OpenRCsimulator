@@ -14,7 +14,6 @@ const Widgets := preload("res://ui/widgets.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const KeyCap := preload("res://ui/key_cap.gd")
 const Reference := preload("res://ui/controls_reference.gd")
-const RcInput := preload("res://input/rc_input.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const Conditions := preload("res://render/world/conditions.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
@@ -37,6 +36,8 @@ signal quit_requested
 signal language_requested(code: String)
 ## The player asked for Help (it returns the focus to `from` when it closes).
 signal help_requested(from: Control)
+## The player asked to open controller setup (the owner restores focus to `from` when it closes).
+signal controls_requested(from: Control)
 ## The player chose another aircraft (a catalog ID); the owner remembers it and calls set_aircraft().
 signal aircraft_requested(id: String)
 signal start_requested(choice: String)
@@ -72,7 +73,9 @@ var time_button: Button
 var language_button: Button
 var help_button: Button
 var quit_button: Button
+var controls_button: Button
 var control_label: Label
+var controller_prompt_label: Label
 var keys_legend: GridContainer
 var note_label: Label
 var previous_button: Button
@@ -88,6 +91,9 @@ var _fly_sent := false
 ## UI-06d-R1: frames before the column's scroll follows the keyboard focus (see _process).
 var _settle_frames := 3
 var _scroll: ScrollContainer
+var _flight_device_name := ""
+var _menu_device_name := ""
+var _controller_state_received := false
 
 
 func _init() -> void:
@@ -276,9 +282,17 @@ func _init() -> void:
 	row.add_child(help_button)
 	quit_button = _button("Quit", "")
 	quit_button.name = "Quit"
-	quit_button.custom_minimum_size.x = 80
+	quit_button.custom_minimum_size.x = 72
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	row.add_child(quit_button)
+	controls_button = _button("Controls", "")
+	controls_button.name = "ControllerSettings"
+	controls_button.custom_minimum_size.x = 78
+	controls_button.clip_text = true
+	controls_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	controls_button.tooltip_text = tr("Controller settings")
+	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
+	row.add_child(controls_button)
 	column.add_child(row)
 	column.add_child(_gap(6))
 	time_button = _button("", "")
@@ -300,6 +314,10 @@ func _init() -> void:
 	control_label = _label("", "SecondaryLabel", false) # built with tr()
 	control_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(control_label)
+	controller_prompt_label = _label("", "SecondaryLabel", false)
+	controller_prompt_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	controller_prompt_label.visible = false
+	column.add_child(controller_prompt_label)
 	column.add_child(_gap(4))
 	keys_legend = GridContainer.new()
 	keys_legend.columns = 2
@@ -338,8 +356,12 @@ func _ready() -> void:
 	help_button.focus_neighbor_left = help_button.get_path_to(language_button)
 	help_button.focus_neighbor_right = help_button.get_path_to(quit_button)
 	quit_button.focus_neighbor_left = quit_button.get_path_to(help_button)
+	controls_button.focus_neighbor_top = controls_button.get_path_to(fly_button)
+	controls_button.focus_neighbor_bottom = controls_button.get_path_to(time_button)
+	quit_button.focus_neighbor_right = quit_button.get_path_to(controls_button)
+	controls_button.focus_neighbor_left = controls_button.get_path_to(quit_button)
+	controls_button.focus_neighbor_right = controls_button.get_path_to(language_button)
 	time_button.focus_neighbor_top = time_button.get_path_to(language_button)
-	Input.joy_connection_changed.connect(_on_joy_changed)
 	_update_texts()
 	# Keyboard focus starts on Fly, visible (on the next arrow when the saved aircraft is a preview: Fly is disabled).
 	(fly_button if not fly_button.disabled else next_button).grab_focus.call_deferred()
@@ -486,6 +508,14 @@ func _fill_legend() -> void:
 func set_note(text: String) -> void:
 	note_label.text = text
 	note_label.visible = text != ""
+
+
+## Displays the explicitly selected flight and menu devices. Empty names mean keyboard/no controller.
+func set_controller_devices(flight_name: String, menu_name: String) -> void:
+	_flight_device_name = flight_name.strip_edges()
+	_menu_device_name = menu_name.strip_edges()
+	_controller_state_received = true
+	_update_control()
 
 
 ## Shows the completed flight's failure outcome independently of the in-flight notification preference.
@@ -652,23 +682,18 @@ func _update_weather_text() -> void:
 	]
 
 
-## Same rule as FlightSession: the first connected joypad flies, and its throttle must go low to arm the engine.
-## Whole sentences per case (never a translated word inserted into another translated sentence).
+## Show the explicit flight selection. A connected device alone never takes control.
 func _update_control() -> void:
-	var pads := Input.get_connected_joypads()
-	keys_legend.visible = pads.is_empty() # the keys only fly while no joypad is connected
-	if pads.is_empty():
-		control_label.text = tr("Keyboard — no radio connected.")
-		return
-	var pad_name := Input.get_joy_name(pads[0])
-	if RcInput.looks_like_radio(pad_name):
-		control_label.text = tr("Radio “%s”. Lower the throttle to arm the engine. To fly with the keyboard, unplug it.") % pad_name
+	keys_legend.visible = _flight_device_name.is_empty()
+	if _flight_device_name.is_empty():
+		control_label.text = tr("Flight: keyboard (no controller selected).")
 	else:
-		control_label.text = tr("Controller “%s”. Lower the throttle to arm the engine. To fly with the keyboard, unplug it.") % pad_name
-
-
-func _on_joy_changed(_device: int, _connected: bool) -> void:
-	_update_control()
+		control_label.text = tr("Flight controller: %s. Follow the arming prompt.") % _flight_device_name
+	if _menu_device_name.is_empty():
+		controller_prompt_label.text = tr("Press A / Cross to claim gamepad menu controls.")
+	else:
+		controller_prompt_label.text = tr("Menu controller: %s") % _menu_device_name
+	controller_prompt_label.visible = _controller_state_received
 
 
 func _on_fly() -> void:

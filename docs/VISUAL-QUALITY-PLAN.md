@@ -1,6 +1,6 @@
 # Visual quality: implementation guide and open work
 
-2026-10-14 · Revision 6 · Step prefix: **VQ-**
+2026-10-14 · Revision 8 · Step prefix: **VQ-**
 
 **Status:** VQ-01a/b, VQ-04a and VQ-05 are delivered. VQ-02/03/04b/06/07 remain open; L6c owner readability review and Gates L/2 remain independent acceptance points.
 
@@ -20,7 +20,7 @@ VQ-05 blurs every propeller from the live rotor speed. `app/render/propeller_blu
 
 | ID | Work | Status and proof |
 | --- | --- | --- |
-| VQ-01c | Freeze current full-session, loading and native-render baseline with DT-01/10a; extend only missing measurement coverage. | In progress: [measurement foundation and Windows evidence](research/visual-quality-implementation/VQ-01c/README.md). 18 CPU runs / nine matching observer pairs; native pacing campaign fails. [Actual Home/Fly loading and DT-11a geometry reuse](research/visual-quality-implementation/VQ-01c/loading/README.md) now have source evidence. Cold loading/full flight coverage, observer-cost uncertainty and native/package acceptance remain open. |
+| VQ-01c | Freeze current full-session, loading and native-render baseline with DT-01/10a; extend only missing measurement coverage. | In progress: [measurement foundation and Windows evidence](research/visual-quality-implementation/VQ-01c/README.md). 18 CPU runs / nine matching observer pairs; native pacing campaign fails. [Lake reuse/bake](research/visual-quality-implementation/VQ-01c/loading/README.md) and [exact grain precomputation/package repairs](research/visual-quality-implementation/VQ-01c/loading/grain/README.md) have evidence. Cold/first-Fly budgets, full flight coverage, observer-cost uncertainty and native/package qualification remain open. |
 | VQ-01d | Extend L6c/CAM visibility evidence with matched motion, projected size and orientation results. | Planned after VQ-01c source/camera freeze; no new camera law or HUD. |
 | VQ-02 | Improve one aircraft material at a time with matched lighting and distances. Coordinate with model owners. | Open; use 20/50/100 m and close views; previews are not flight validation. |
 | VQ-02a | Inventory imports and correct demonstrated channel/color/filter errors before material comparisons. | [Read-only inventory foundation](research/visual-quality-implementation/VQ-02a/README.md) delivered: 54 texture imports, explicit embedded/runtime-binding gaps. Corrections remain gated by VQ-01c/d; no asset/import change or blanket reimport. |

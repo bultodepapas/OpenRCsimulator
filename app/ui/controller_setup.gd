@@ -1,0 +1,1128 @@
+extends CanvasLayer
+
+const Screen := preload("res://ui/screen.gd")
+const Widgets := preload("res://ui/widgets.gd")
+const UiInput := preload("res://ui/ui_input.gd")
+const ControllerProfile := preload("res://input/controller_profile.gd")
+const ControllerActions := preload("res://input/controller_actions.gd")
+const ControllerPrompts := preload("res://ui/controller_prompts.gd")
+
+signal close_requested
+signal profile_saved(profile: Dictionary)
+signal device_selection_requested(flight_device_id: int, ui_device_id: int)
+signal calibration_requested
+
+const LAYER := 12
+const PRESETS: Array[String] = ["mode1", "mode2", "trigger_absolute"]
+const PROMPT_FAMILIES: Array[String] = ["auto", "xbox", "playstation", "nintendo", "generic"]
+const PROMPT_FAMILY_LABELS: Dictionary = {
+	"auto": "Auto",
+	"xbox": "Xbox",
+	"playstation": "PlayStation",
+	"nintendo": "Nintendo",
+	"generic": "Generic",
+}
+const PROFILE_KIND_CHOICES: Array[Dictionary] = [
+	{"id": 0, "kind": "gamepad", "label": "Gamepad · Mode 2"},
+	{"id": 1, "kind": "radio", "label": "Radio transmitter · custom"},
+	{"id": 2, "kind": "joystick", "label": "Joystick · custom"},
+]
+const CHANNELS: Array[String] = ["roll", "pitch", "yaw", "throttle"]
+const CHANNEL_LABELS: Dictionary = {"roll": "Roll", "pitch": "Pitch", "yaw": "Yaw", "throttle": "Throttle"}
+
+var registry: Object
+var profile_store: Object
+var flight_device_picker: OptionButton
+var ui_device_picker: OptionButton
+var profile_picker: OptionButton
+var profile_name_edit: LineEdit
+var glyph_family_picker: OptionButton
+var profile_kind_picker: OptionButton
+var preset_picker: OptionButton
+var preset_help_label: Label
+var axis_grid: GridContainer
+var action_grid: GridContainer
+var preview_label: Label
+var status_label: Label
+var save_button: Button
+var apply_devices_button: Button
+var calibrate_button: Button
+var legacy_import_button: Button
+var legacy_picker: OptionButton
+var legacy_help_label: Label
+var keep_radio_button: Button
+var restore_gamepad_button: Button
+var joystick_enabled: CheckBox
+var apply_devices: Callable
+var glyph_family_help_label: Label
+
+var _screen: Control
+var _profiles: Array[Dictionary] = []
+var _legacy_profiles: Array[Dictionary] = []
+var _devices: Array[Dictionary] = []
+var _draft_profile: Dictionary = {}
+var _base_actions: Dictionary = {}
+var _action_bindings: Dictionary = {}
+var _axis_controls: Dictionary = {}
+var _preview_labels: Dictionary = {}
+var _preview_bars: Dictionary = {}
+var _draft_flight_device_id := -1
+var _draft_ui_device_id := -1
+var _original_flight_device_id := -1
+var _original_ui_device_id := -1
+var _capturing_action := ""
+var _capture_button: Button
+var _preview_clock := 0.0
+var _initial_focus_wait_frames := 0
+var _profile_kind_label: Label
+var _profile_kind_help_label: Label
+var _prompt_texture_cache: Dictionary = {}
+
+
+func _init() -> void:
+	name = "ControllerSetup"
+	layer = LAYER
+	_build()
+
+
+## The owner injects shared objects before adding this CanvasLayer to the tree.
+## Role choices stay draft until Apply devices; profile edits stay draft until Save.
+func configure(controller_registry: Object, store: Object, flight_device_id := -1, ui_device_id := -1) -> void:
+	registry = controller_registry
+	profile_store = store
+	_original_flight_device_id = flight_device_id if flight_device_id >= 0 else _registry_selected("flight")
+	_original_ui_device_id = ui_device_id if ui_device_id >= 0 else _registry_selected("ui")
+	_draft_flight_device_id = _original_flight_device_id
+	_draft_ui_device_id = _original_ui_device_id
+	_load_profiles()
+	_refresh_devices()
+	_load_profile_for_device(_draft_flight_device_id)
+	_connect_registry()
+
+
+## Parent-facing surface API used by the screen stack and the active flight owner.
+func request_close() -> void:
+	if not _capturing_action.is_empty():
+		_cancel_capture()
+		return
+	close_requested.emit()
+
+
+func current_profile() -> Dictionary:
+	return _draft_profile.duplicate(true)
+
+
+func load_selected_profile(profile_or_id: Variant) -> bool:
+	if profile_or_id is Dictionary:
+		_set_draft_profile(profile_or_id)
+		return true
+	var target_id := str(profile_or_id)
+	for candidate in _profiles:
+		if str(candidate.get("profile_id", "")) == target_id:
+			_set_draft_profile(candidate)
+			return true
+	return false
+
+
+func selected_flight_device_id() -> int:
+	return _draft_flight_device_id
+
+
+func selected_ui_device_id() -> int:
+	return _draft_ui_device_id
+
+
+func _build() -> void:
+	_screen = Screen.mount(self, "Screen")
+	_screen.kind = Screen.Kind.MODAL
+	_screen.dismiss_option_popup_first = true
+	_screen.close_requested.connect(request_close)
+	_screen.dim(0.56)
+	var center: CenterContainer = _screen.center(24.0)
+	var settings_panel := PanelContainer.new()
+	settings_panel.theme_type_variation = "Sidebar"
+	settings_panel.custom_minimum_size = Vector2(1120.0, 620.0)
+	center.add_child(settings_panel)
+	var scroll := ScrollContainer.new()
+	scroll.name = "ControllerSetupScroll"
+	scroll.follow_focus = true
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	settings_panel.add_child(scroll)
+	var page := VBoxContainer.new()
+	page.name = "ControllerSetupPage"
+	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	page.add_theme_constant_override("separation", 8)
+	scroll.add_child(page)
+
+	var header := HBoxContainer.new()
+	var title := _label("Controller settings", "TitleLabel")
+	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	header.add_child(title)
+	var close_button := _button("Close", "", "Close")
+	close_button.pressed.connect(request_close)
+	header.add_child(close_button)
+	page.add_child(header)
+	page.add_child(_label("Choose separate flight and menu controllers. Profile changes never send input to the aircraft while this screen is open.", "SecondaryLabel", true))
+	page.add_child(_label("Apply devices changes the active selection. Save writes the profile. Cancel discards profile edits.", "SecondaryLabel", true))
+
+	page.add_child(_section_label("DEVICES"))
+	var roles := GridContainer.new()
+	roles.columns = 2
+	roles.add_theme_constant_override("h_separation", 24)
+	roles.add_theme_constant_override("v_separation", 4)
+	page.add_child(roles)
+	flight_device_picker = _option("Flight controller")
+	flight_device_picker.item_selected.connect(_on_flight_device_selected)
+	ui_device_picker = _option("Menu controller")
+	ui_device_picker.item_selected.connect(_on_ui_device_selected)
+	_add_field(roles, "Flight controller", flight_device_picker)
+	_add_field(roles, "Menu controller", ui_device_picker)
+	page.add_child(_label("A radio can fly but cannot navigate menus. Menu navigation stays on the selected gamepad; keyboard and mouse remain available.", "SecondaryLabel", true))
+
+	var role_actions := HBoxContainer.new()
+	role_actions.add_theme_constant_override("separation", 8)
+	apply_devices_button = _button("Apply device selection", "PrimaryButton", "ApplyDevices")
+	apply_devices_button.pressed.connect(_apply_device_selection)
+	role_actions.add_child(apply_devices_button)
+	legacy_import_button = _button("Recover legacy profile…")
+	legacy_import_button.pressed.connect(_import_legacy_profiles)
+	role_actions.add_child(legacy_import_button)
+	calibrate_button = _button("Calibrate selected radio")
+	calibrate_button.visible = false
+	calibrate_button.disabled = true
+	calibrate_button.pressed.connect(func() -> void: calibration_requested.emit())
+	role_actions.add_child(calibrate_button)
+	page.add_child(role_actions)
+	legacy_picker = _option("Legacy profile")
+	legacy_picker.visible = false
+	legacy_picker.item_selected.connect(_on_legacy_selected)
+	page.add_child(legacy_picker)
+	legacy_help_label = _label("Legacy radio data stays unchanged. Choose how to copy it into a new profile.", "SecondaryLabel", true)
+	legacy_help_label.visible = false
+	page.add_child(legacy_help_label)
+	var recovery_row := HBoxContainer.new()
+	recovery_row.add_theme_constant_override("separation", 8)
+	keep_radio_button = _button("Keep as radio profile")
+	keep_radio_button.visible = false
+	keep_radio_button.pressed.connect(_keep_legacy_radio)
+	recovery_row.add_child(keep_radio_button)
+	restore_gamepad_button = _button("Restore gamepad Mode 2")
+	restore_gamepad_button.visible = false
+	restore_gamepad_button.pressed.connect(_restore_legacy_gamepad)
+	recovery_row.add_child(restore_gamepad_button)
+	page.add_child(recovery_row)
+
+	page.add_child(_section_label("PROFILE"))
+	var profile_row := GridContainer.new()
+	profile_row.columns = 2
+	profile_row.add_theme_constant_override("h_separation", 24)
+	profile_row.add_theme_constant_override("v_separation", 4)
+	page.add_child(profile_row)
+	profile_picker = _option("Saved profile")
+	profile_picker.item_selected.connect(_on_profile_selected)
+	profile_name_edit = LineEdit.new()
+	profile_name_edit.name = "ProfileName"
+	profile_name_edit.max_length = 80
+	profile_name_edit.placeholder_text = TranslationServer.translate("Profile name")
+	_add_field(profile_row, "Saved profile", profile_picker)
+	_add_field(profile_row, "Name", profile_name_edit)
+	glyph_family_picker = _option("Controller prompts")
+	glyph_family_picker.item_selected.connect(_on_glyph_family_selected)
+	_add_field(profile_row, "Controller prompts", glyph_family_picker)
+	profile_kind_picker = _option("Profile type")
+	profile_kind_picker.item_selected.connect(_on_profile_kind_selected)
+	_profile_kind_label = _label("Profile type", "SecondaryLabel")
+	profile_row.add_child(_profile_kind_label)
+	profile_row.add_child(profile_kind_picker)
+	preset_picker = _option("Gamepad preset")
+	preset_picker.item_selected.connect(_on_preset_selected)
+	_add_field(profile_row, "Gamepad preset", preset_picker)
+	preset_help_label = _label("Mode 2: left X yaw, left Y throttle; right X roll, right Y pitch.", "SecondaryLabel", true)
+	page.add_child(preset_help_label)
+	_profile_kind_help_label = _label("Choose an unknown controller type explicitly. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically.", "SecondaryLabel", true)
+	_profile_kind_help_label.visible = false
+	page.add_child(_profile_kind_help_label)
+	glyph_family_help_label = _label("Prompt symbols only affect presentation; they never change controller bindings.", "SecondaryLabel", true)
+	page.add_child(glyph_family_help_label)
+	joystick_enabled = CheckBox.new()
+	joystick_enabled.text = "Use this custom mapping for flight"
+	joystick_enabled.toggled.connect(_on_joystick_enabled)
+	_add_field(profile_row, "Unknown joystick", joystick_enabled)
+
+	var profile_actions := HBoxContainer.new()
+	profile_actions.add_theme_constant_override("separation", 8)
+	var reset_button := _button("Restore selected preset")
+	reset_button.pressed.connect(_restore_selected_preset)
+	profile_actions.add_child(reset_button)
+	var duplicate_button := _button("Duplicate profile")
+	duplicate_button.pressed.connect(_duplicate_profile)
+	profile_actions.add_child(duplicate_button)
+	page.add_child(profile_actions)
+
+	page.add_child(_section_label("AXIS MAPPING AND RESPONSE"))
+	page.add_child(_label("Each channel uses its own scalar axis. Tune its deadzone, expo and inversion, then move the selected flight controller to preview the conditioned value.", "SecondaryLabel", true))
+	axis_grid = GridContainer.new()
+	axis_grid.name = "AxisMapping"
+	axis_grid.columns = 5
+	axis_grid.add_theme_constant_override("h_separation", 14)
+	axis_grid.add_theme_constant_override("v_separation", 5)
+	page.add_child(axis_grid)
+	for heading in ["Channel", "Source axis", "Deadzone", "Expo", "Invert"]:
+		axis_grid.add_child(_label(heading, "SectionLabel"))
+	for channel in CHANNELS:
+		var channel_label := _label(str(CHANNEL_LABELS[channel]), "SecondaryLabel")
+		axis_grid.add_child(channel_label)
+		var axis_spin := _spin_box(0.0, float(ControllerProfile.AXIS_COUNT - 1), 1.0)
+		axis_spin.custom_minimum_size.x = 120.0
+		axis_grid.add_child(axis_spin)
+		var deadzone_spin := _spin_box(0.0, 0.95, 0.01)
+		deadzone_spin.custom_minimum_size.x = 145.0
+		axis_grid.add_child(deadzone_spin)
+		var expo_spin := _spin_box(0.0, 1.0, 0.01)
+		expo_spin.custom_minimum_size.x = 145.0
+		axis_grid.add_child(expo_spin)
+		var invert := CheckBox.new()
+		invert.text = "Invert"
+		axis_grid.add_child(invert)
+		_axis_controls[channel] = {"axis": axis_spin, "deadzone": deadzone_spin, "expo": expo_spin, "invert": invert}
+		axis_spin.value_changed.connect(_on_axis_changed.bind(channel, "axis"))
+		deadzone_spin.value_changed.connect(_on_axis_changed.bind(channel, "deadzone"))
+		expo_spin.value_changed.connect(_on_axis_changed.bind(channel, "expo"))
+		invert.toggled.connect(_on_axis_invert.bind(channel))
+
+	page.add_child(_section_label("LIVE PREVIEW"))
+	page.add_child(_label("This read-only preview does not change flight commands.", "SecondaryLabel"))
+	var preview_grid := GridContainer.new()
+	preview_grid.columns = 3
+	preview_grid.add_theme_constant_override("h_separation", 18)
+	preview_grid.add_theme_constant_override("v_separation", 4)
+	page.add_child(preview_grid)
+	for channel in CHANNELS:
+		var current := _label(tr("%s · raw — · conditioned —") % tr(str(CHANNEL_LABELS[channel])), "SecondaryLabel", false)
+		current.custom_minimum_size.x = 280.0
+		var meter := ProgressBar.new()
+		meter.custom_minimum_size.x = 180.0
+		meter.min_value = -1.0
+		meter.max_value = 1.0
+		meter.show_percentage = false
+		var axis_name := _label("Axis —", "SecondaryLabel")
+		_preview_labels[channel] = current
+		_preview_bars[channel] = meter
+		preview_grid.add_child(current)
+		preview_grid.add_child(meter)
+		preview_grid.add_child(axis_name)
+	preview_label = _label("Select a flight controller to preview mapped channels.", "SecondaryLabel", true)
+	page.add_child(preview_label)
+
+	page.add_child(_section_label("ACTIONS"))
+	page.add_child(_label("Bindings are saved by physical control. A different device cannot trigger them.", "SecondaryLabel", true))
+	action_grid = GridContainer.new()
+	action_grid.name = "SemanticActions"
+	action_grid.columns = 3
+	action_grid.add_theme_constant_override("h_separation", 18)
+	action_grid.add_theme_constant_override("v_separation", 5)
+	page.add_child(action_grid)
+	for heading in ["Action", "Binding", "Change"]:
+		action_grid.add_child(_label(heading, "SectionLabel"))
+	for definition in ControllerActions.ACTIONS:
+		var action_id := str(definition.id)
+		action_grid.add_child(_label(tr(str(definition.label)), "SecondaryLabel"))
+		var binding_cell := HBoxContainer.new()
+		binding_cell.name = "BindingCell_%s" % action_id
+		binding_cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		binding_cell.add_theme_constant_override("separation", 8)
+		var binding_glyph := TextureRect.new()
+		binding_glyph.name = "BindingGlyph_%s" % action_id
+		binding_glyph.custom_minimum_size = Vector2(28.0, 28.0)
+		binding_glyph.expand_mode = TextureRect.EXPAND_IGNORE_SIZE
+		binding_glyph.stretch_mode = TextureRect.STRETCH_KEEP_ASPECT_CENTERED
+		binding_glyph.visible = false
+		binding_cell.add_child(binding_glyph)
+		var binding_label := _label("Unbound", "SecondaryLabel")
+		binding_label.name = "Binding_%s" % action_id
+		binding_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		binding_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		binding_cell.add_child(binding_label)
+		action_grid.add_child(binding_cell)
+		var change_button := _button("Remap")
+		change_button.name = "Remap_%s" % action_id
+		change_button.pressed.connect(_start_capture.bind(action_id, change_button))
+		action_grid.add_child(change_button)
+
+	status_label = _label("", "SecondaryLabel", true)
+	status_label.name = "Status"
+	status_label.visible = false
+	page.add_child(status_label)
+	var footer := HBoxContainer.new()
+	footer.add_theme_constant_override("separation", 8)
+	footer.alignment = BoxContainer.ALIGNMENT_END
+	var cancel_button := _button("Cancel", "", "Cancel")
+	cancel_button.pressed.connect(request_close)
+	footer.add_child(cancel_button)
+	save_button = _button("Save profile", "PrimaryButton", "SaveProfile")
+	save_button.pressed.connect(_save_profile)
+	footer.add_child(save_button)
+	page.add_child(footer)
+
+
+func _ready() -> void:
+	if registry == null:
+		_set_status(tr("Controller services are not available."), true)
+		return
+	if profile_store == null:
+		_set_status(tr("Controller profile storage is not available."), true)
+		return
+	if _draft_profile.is_empty():
+		_load_profile_for_device(_draft_flight_device_id)
+	_update_profile_options()
+	_update_axis_controls()
+	_update_action_controls()
+	_update_preview()
+	_initial_focus_wait_frames = 2
+
+
+func _notification(what: int) -> void:
+	if what != NOTIFICATION_TRANSLATION_CHANGED or not is_node_ready():
+		return
+	_refresh_devices()
+	_update_profile_options()
+	_update_glyph_family_picker()
+	_update_profile_kind_picker()
+	_update_preset_options()
+	_update_action_controls()
+	profile_name_edit.placeholder_text = TranslationServer.translate("Profile name")
+
+
+func close_button_focus() -> void:
+	# Start at the first meaningful choice. Focusing Save on open makes the scroll
+	# container jump to the end and hides the screen title and device context.
+	# _process calls this after two frames so the page has a measured size; the
+	# initial layout has zero-sized controls and can make follow_focus jump to the end.
+	var scroll := _screen.find_child("ControllerSetupScroll", true, false) as ScrollContainer
+	if scroll != null:
+		scroll.scroll_vertical = 0
+	var focus_target := flight_device_picker if flight_device_picker != null else save_button
+	if focus_target != null:
+		focus_target.grab_focus()
+	if scroll != null:
+		scroll.scroll_vertical = 0
+
+
+func _process(delta: float) -> void:
+	if _initial_focus_wait_frames > 0:
+		_initial_focus_wait_frames -= 1
+		if _initial_focus_wait_frames == 0:
+			close_button_focus()
+	_preview_clock += delta
+	if _preview_clock >= 0.08:
+		_preview_clock = 0.0
+		_update_preview()
+
+
+func _input(event: InputEvent) -> void:
+	if _capturing_action.is_empty():
+		return
+	if event is InputEventKey:
+		var key_event := event as InputEventKey
+		if not key_event.pressed or key_event.echo:
+			return
+		if key_event.physical_keycode == KEY_ESCAPE:
+			_cancel_capture()
+			get_viewport().set_input_as_handled()
+			return
+		_capture_binding(event)
+		return
+	if event is InputEventJoypadButton:
+		var button_event := event as InputEventJoypadButton
+		if button_event.device != _draft_flight_device_id or not button_event.pressed:
+			return
+		_capture_binding(event)
+		return
+	if event is InputEventJoypadMotion:
+		var motion := event as InputEventJoypadMotion
+		if motion.device != _draft_flight_device_id or absf(motion.axis_value) < 0.65:
+			return
+		_capture_binding(event)
+
+
+func _connect_registry() -> void:
+	if registry != null and registry.has_signal("devices_changed"):
+		var callback := Callable(self, "_on_registry_devices_changed")
+		if not registry.is_connected("devices_changed", callback):
+			registry.connect("devices_changed", callback)
+
+
+func _on_registry_devices_changed() -> void:
+	_refresh_devices()
+	_update_action_controls()
+	_update_preview()
+
+
+func _load_profiles() -> void:
+	_profiles.clear()
+	if profile_store == null:
+		return
+	var result: Dictionary = profile_store.call("load_all")
+	for profile in result.get("profiles", []):
+		if profile is Dictionary:
+			_profiles.append(profile.duplicate(true))
+	if not bool(result.get("ok", false)):
+		var errors: Array = result.get("errors", [])
+		_set_status(tr("Could not load controller profiles: %s") % "; ".join(errors), true)
+
+
+func _refresh_devices() -> void:
+	_devices.clear()
+	if registry != null:
+		var found: Variant = registry.call("get_devices")
+		if found is Array:
+			for device in found:
+				if device is Dictionary:
+					_devices.append(device.duplicate(true))
+	_fill_device_picker(flight_device_picker, false, _draft_flight_device_id)
+	_fill_device_picker(ui_device_picker, true, _draft_ui_device_id)
+
+
+func _fill_device_picker(picker: OptionButton, menu_only: bool, target_id: int) -> void:
+	if picker == null:
+		return
+	picker.clear()
+	picker.add_item(tr("Keyboard + mouse") if menu_only else tr("No flight controller"), -1)
+	picker.set_item_id(0, -1)
+	var found_selection := target_id == -1
+	if found_selection:
+		picker.select(0)
+	for device in _devices:
+		var id := int(device.get("id", -1))
+		var kind := str(device.get("kind", "joystick"))
+		if id < 0 or (menu_only and kind == "radio"):
+			continue
+		var name := str(device.get("name", device.get("raw_name", tr("Controller %d") % id)))
+		if not bool(device.get("connected", true)):
+			name += " · " + tr("disconnected")
+		var label := "%s · %s" % [name, tr(kind.capitalize())]
+		picker.add_item(label, id)
+		var item_index := picker.item_count - 1
+		if menu_only and not _is_menu_device_eligible(device):
+			picker.set_item_disabled(item_index, true)
+		if id == target_id:
+			picker.select(item_index)
+			found_selection = true
+	if not found_selection and target_id >= 0:
+		picker.add_item(tr("Disconnected controller %d") % target_id, target_id)
+		picker.set_item_disabled(picker.item_count - 1, true)
+		picker.select(picker.item_count - 1)
+
+
+func _on_flight_device_selected(index: int) -> void:
+	_draft_flight_device_id = flight_device_picker.get_item_id(index)
+	_load_profile_for_device(_draft_flight_device_id)
+	_set_status("", false)
+	_update_profile_options()
+	_update_axis_controls()
+	_update_action_controls()
+	_update_preview()
+
+
+func _on_ui_device_selected(index: int) -> void:
+	_draft_ui_device_id = ui_device_picker.get_item_id(index)
+	_set_status("", false)
+
+
+func _is_menu_device_eligible(device: Dictionary) -> bool:
+	if device.is_empty() or not bool(device.get("connected", true)):
+		return false
+	if bool(device.get("ambiguous", false)) or str(device.get("kind", "")) == "radio":
+		return false
+	if str(device.get("kind", "")) == "gamepad" and bool(device.get("known", false)):
+		return true
+	return _has_saved_gamepad_profile(device)
+
+
+func _has_saved_gamepad_profile(device: Dictionary) -> bool:
+	if profile_store == null or not profile_store.has_method("match_profile"):
+		return false
+	var matched: Variant = profile_store.call("match_profile", device, _devices)
+	if not matched is Dictionary or matched.is_empty():
+		return false
+	if str(matched.get("kind", "")) != "gamepad" or not bool(matched.get("configured", true)):
+		return false
+	return bool(ControllerProfile.validate(matched).get("ok", false))
+
+
+func _load_profile_for_device(device_id: int) -> void:
+	var device := _device_for_id(device_id)
+	var profile_id := str(device.get("profile_id", ""))
+	if profile_id.is_empty() and not device.is_empty() and profile_store != null and profile_store.has_method("match_profile"):
+		var suggestion: Dictionary = profile_store.call("match_profile", device, _devices)
+		profile_id = str(suggestion.get("profile_id", ""))
+	if not profile_id.is_empty():
+		for candidate in _profiles:
+			if str(candidate.get("profile_id", "")) == profile_id:
+				_set_draft_profile(candidate)
+				return
+	var expected_kind := str(device.get("kind", "gamepad"))
+	var preset := "mode2" if expected_kind == "gamepad" else "radio_custom"
+	var candidate_profile := ControllerProfile.defaults(expected_kind, preset)
+	if candidate_profile.is_empty():
+		candidate_profile = ControllerProfile.defaults("gamepad", "mode2")
+	if expected_kind == "joystick":
+		candidate_profile["configured"] = false
+	_set_draft_profile(candidate_profile)
+
+
+func _set_draft_profile(profile: Dictionary) -> void:
+	_draft_profile = profile.duplicate(true)
+	profile_name_edit.text = str(_draft_profile.get("name", "Controller profile"))
+	var profile_kind := str(_draft_profile.get("kind", "gamepad"))
+	joystick_enabled.visible = profile_kind == "joystick"
+	joystick_enabled.set_pressed_no_signal(bool(_draft_profile.get("configured", true)))
+	var existing_actions: Dictionary = _draft_profile.get("actions", {}).duplicate(true)
+	_base_actions = existing_actions
+	_action_bindings = ControllerActions.default_bindings()
+	for key: Variant in existing_actions:
+		if ControllerActions.action_definition(str(key)).is_empty() or not existing_actions[key] is Dictionary:
+			continue
+		_action_bindings[str(key)] = existing_actions[key].duplicate(true)
+	_update_profile_kind_picker()
+	_update_glyph_family_picker()
+	_update_preset_options()
+	_update_profile_options()
+	_update_axis_controls()
+	_update_action_controls()
+	_update_preview()
+
+
+func _update_profile_options() -> void:
+	if profile_picker == null:
+		return
+	profile_picker.clear()
+	profile_picker.add_item(tr("New profile"), -1)
+	profile_picker.set_item_id(0, -1)
+	var current_id := str(_draft_profile.get("profile_id", ""))
+	var selected := 0
+	for index in _profiles.size():
+		var candidate := _profiles[index]
+		profile_picker.add_item("%s · %s" % [str(candidate.get("name", "Controller profile")), tr(str(candidate.get("kind", "")).capitalize())], index)
+		if str(candidate.get("profile_id", "")) == current_id:
+			selected = profile_picker.item_count - 1
+	if selected >= 0:
+		profile_picker.select(selected)
+
+
+func _on_profile_selected(index: int) -> void:
+	var profile_index := profile_picker.get_item_id(index)
+	if profile_index >= 0 and profile_index < _profiles.size():
+		_set_draft_profile(_profiles[profile_index])
+
+
+func _update_profile_kind_picker() -> void:
+	if profile_kind_picker == null:
+		return
+	var device := _device_for_id(_draft_flight_device_id)
+	var can_choose_kind := not device.is_empty() and (not bool(device.get("known", false)) or str(device.get("kind", "")) == "joystick")
+	profile_kind_picker.visible = can_choose_kind
+	if _profile_kind_label != null:
+		_profile_kind_label.visible = can_choose_kind
+	if _profile_kind_help_label != null:
+		_profile_kind_help_label.visible = can_choose_kind
+		_profile_kind_help_label.text = tr("Choose the flight profile for this unknown controller. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically.")
+	if not can_choose_kind:
+		return
+	profile_kind_picker.clear()
+	for index in PROFILE_KIND_CHOICES.size():
+		var choice: Dictionary = PROFILE_KIND_CHOICES[index]
+		profile_kind_picker.add_item(tr(str(choice.label)), int(choice.id))
+		profile_kind_picker.set_item_id(index, int(choice.id))
+	var current_kind := str(_draft_profile.get("kind", "joystick"))
+	var selected_index := 0
+	for index in PROFILE_KIND_CHOICES.size():
+		if str(PROFILE_KIND_CHOICES[index].kind) == current_kind:
+			selected_index = index
+			break
+	profile_kind_picker.select(selected_index)
+	profile_kind_picker.tooltip_text = profile_kind_picker.get_item_text(selected_index)
+
+
+func _on_profile_kind_selected(index: int) -> void:
+	if index < 0 or index >= profile_kind_picker.item_count:
+		return
+	var choice_id := profile_kind_picker.get_item_id(index)
+	var selected_kind := ""
+	for choice in PROFILE_KIND_CHOICES:
+		if int(choice.id) == choice_id:
+			selected_kind = str(choice.kind)
+			break
+	if selected_kind.is_empty() or selected_kind == str(_draft_profile.get("kind", "")):
+		return
+	var preset := "mode2" if selected_kind == "gamepad" else "radio_custom"
+	var replacement := ControllerProfile.defaults(selected_kind, preset)
+	if replacement.is_empty():
+		_set_status(tr("Could not create a profile for that controller type."), true)
+		return
+	for key in ["profile_id", "association", "actions", "presentation"]:
+		if _draft_profile.has(key):
+			replacement[key] = _draft_profile[key].duplicate(true) if _draft_profile[key] is Dictionary else _draft_profile[key]
+	var entered_name := profile_name_edit.text.strip_edges()
+	if not entered_name.is_empty() and entered_name != str(_draft_profile.get("name", "")):
+		replacement["name"] = entered_name
+	if selected_kind == "joystick":
+		replacement["configured"] = false
+	_set_draft_profile(replacement)
+	_set_status(tr("Profile type changed. Save the profile to keep this draft."), false)
+
+
+func _update_preset_options() -> void:
+	if preset_picker == null or _draft_profile.is_empty():
+		return
+	preset_picker.clear()
+	var preset_popup := preset_picker.get_popup()
+	for index in PRESETS.size():
+		var preset := PRESETS[index]
+		var label := "Mode 1 · rate throttle" if preset == "mode1" else ("Mode 2 · rate throttle" if preset == "mode2" else "Trigger throttle")
+		var translated_label := tr(label)
+		preset_picker.add_item(translated_label, index)
+		preset_popup.set_item_tooltip(index, translated_label)
+	var current := PRESETS.find(str(_draft_profile.get("preset", "mode2")))
+	if current >= 0:
+		preset_picker.select(current)
+	else:
+		preset_picker.select(1)
+	preset_picker.disabled = str(_draft_profile.get("kind", "")) != "gamepad"
+	preset_picker.tooltip_text = preset_picker.get_item_text(preset_picker.selected)
+	if preset_help_label != null:
+		match str(_draft_profile.get("preset", "mode2")):
+			"mode1":
+				preset_help_label.text = tr("Mode 1: left X yaw, left Y pitch; right X roll, right Y throttle.")
+			"trigger_absolute":
+				preset_help_label.text = tr("Trigger throttle: left X yaw, right X roll, right Y pitch, RT/R2 throttle (axis 5). Release RT/R2 to arm.")
+			_:
+				preset_help_label.text = tr("Mode 2: left X yaw, left Y throttle; right X roll, right Y pitch.")
+		preset_help_label.visible = str(_draft_profile.get("kind", "")) == "gamepad"
+
+
+func _on_preset_selected(index: int) -> void:
+	if str(_draft_profile.get("kind", "")) != "gamepad" or index < 0 or index >= PRESETS.size():
+		return
+	_apply_preset(PRESETS[index])
+
+
+func _restore_selected_preset() -> void:
+	if str(_draft_profile.get("kind", "")) == "gamepad":
+		_apply_preset(PRESETS[preset_picker.selected])
+	else:
+		_set_status(tr("This profile is not a gamepad preset. Use legacy recovery to change its controller semantics."), true)
+
+
+func _apply_preset(preset: String) -> void:
+	var replacement := ControllerProfile.defaults("gamepad", preset)
+	if replacement.is_empty():
+		_set_status(tr("Could not restore the selected gamepad preset."), true)
+		return
+	for key in ["profile_id", "name", "association", "actions", "presentation", "aux"]:
+		if _draft_profile.has(key):
+			replacement[key] = _draft_profile[key].duplicate(true) if _draft_profile[key] is Dictionary else _draft_profile[key]
+	replacement["preset"] = preset
+	if profile_name_edit.text.strip_edges().is_empty():
+		profile_name_edit.text = str(replacement.get("name", "Gamepad profile"))
+	else:
+		replacement["name"] = profile_name_edit.text.strip_edges()
+	_set_draft_profile(replacement)
+	_set_status(tr("Preset restored. Save the profile to keep this mapping."), false)
+
+
+func _duplicate_profile() -> void:
+	var duplicate := _draft_profile.duplicate(true)
+	var id_source := ControllerProfile.defaults(str(duplicate.get("kind", "gamepad")), str(duplicate.get("preset", "mode2")))
+	if id_source.is_empty():
+		id_source = ControllerProfile.defaults("gamepad", "mode2")
+	duplicate["profile_id"] = id_source.get("profile_id", "")
+	duplicate["name"] = "%s copy" % str(duplicate.get("name", "Controller profile"))
+	_set_draft_profile(duplicate)
+	_set_status(tr("Profile duplicated. Save it to add a separate profile."), false)
+
+
+func _update_axis_controls() -> void:
+	if _draft_profile.is_empty():
+		return
+	var profile_kind := str(_draft_profile.get("kind", "gamepad"))
+	for channel_name in CHANNELS:
+		var controls: Dictionary = _axis_controls[channel_name]
+		var channel: Dictionary = _draft_profile.get(channel_name, {})
+		var axis_spin: SpinBox = controls.axis
+		axis_spin.set_value_no_signal(float(channel.get("axis", 0)))
+		var deadzone_spin: SpinBox = controls.deadzone
+		var has_shaping := profile_kind == "gamepad"
+		deadzone_spin.set_value_no_signal(float(channel.get("deadzone", ControllerProfile.DEFAULT_DEADZONE)))
+		deadzone_spin.editable = has_shaping
+		var expo_spin: SpinBox = controls.expo
+		expo_spin.set_value_no_signal(float(channel.get("expo", ControllerProfile.DEFAULT_EXPO)))
+		expo_spin.editable = has_shaping
+		var invert: CheckBox = controls.invert
+		invert.set_pressed_no_signal(bool(channel.get("invert", false)))
+		axis_spin.editable = true
+		invert.disabled = false
+
+
+func _on_axis_changed(value: float, channel_name: String, property: String) -> void:
+	if not _draft_profile.has(channel_name):
+		return
+	var channel: Dictionary = _draft_profile[channel_name]
+	channel[property] = int(value) if property == "axis" else value
+	_draft_profile[channel_name] = channel
+	_update_preview()
+
+
+func _on_axis_invert(pressed: bool, channel_name: String) -> void:
+	if not _draft_profile.has(channel_name):
+		return
+	var channel: Dictionary = _draft_profile[channel_name]
+	channel["invert"] = pressed
+	_draft_profile[channel_name] = channel
+	_update_preview()
+
+
+func _on_joystick_enabled(enabled: bool) -> void:
+	if str(_draft_profile.get("kind", "")) == "joystick":
+		_draft_profile["configured"] = enabled
+
+
+func _update_preview() -> void:
+	if _preview_labels.is_empty() or _draft_profile.is_empty():
+		return
+	var device := _device_for_id(_draft_flight_device_id)
+	var connected := _draft_flight_device_id >= 0 and not device.is_empty() and bool(device.get("connected", true))
+	var kind := str(_draft_profile.get("kind", "gamepad"))
+	for channel_name in CHANNELS:
+		var channel: Dictionary = _draft_profile.get(channel_name, {})
+		var axis := int(channel.get("axis", 0))
+		var raw := Input.get_joy_axis(_draft_flight_device_id, axis) if connected else 0.0
+		var conditioned := ControllerProfile.conditioned_axis(raw, channel, kind) if connected else 0.0
+		var current: Label = _preview_labels[channel_name]
+		current.text = "%s · raw %+.2f · conditioned %+.2f" % [tr(str(CHANNEL_LABELS[channel_name])), raw, conditioned] if connected else "%s · —" % tr(str(CHANNEL_LABELS[channel_name]))
+		var meter: ProgressBar = _preview_bars[channel_name]
+		var absolute := str(channel.get("range_kind", "centered")) == "absolute"
+		meter.min_value = 0.0 if absolute else -1.0
+		meter.value = conditioned
+	var axis_label: String
+	if connected:
+		axis_label = tr("Live values are read only. No controller input reaches the aircraft from this screen.")
+	else:
+		axis_label = tr("Select a connected flight controller to preview mapped channels.")
+	preview_label.text = axis_label
+
+
+func _update_action_controls() -> void:
+	if action_grid == null:
+		return
+	var presentation: Dictionary = _draft_profile.get("presentation", {})
+	var family := str(presentation.get("glyph_family", "auto"))
+	var device := _device_for_id(_draft_flight_device_id)
+	var child_index := 3
+	for definition in ControllerActions.ACTIONS:
+		var action_id := str(definition.id)
+		var label_control: Label = action_grid.get_child(child_index)
+		var binding_cell: HBoxContainer = action_grid.get_child(child_index + 1)
+		var binding_control: Label = binding_cell.get_node("Binding_%s" % action_id)
+		var glyph_control: TextureRect = binding_cell.get_node("BindingGlyph_%s" % action_id)
+		var capture_button: Button = action_grid.get_child(child_index + 2)
+		label_control.text = tr(str(definition.label))
+		var binding: Dictionary = _action_bindings.get(action_id, {})
+		var prompt: Dictionary = ControllerPrompts.prompt(binding, family, device)
+		var fallback_text := ControllerActions.binding_text(binding)
+		var prompt_text := str(prompt.get("text", fallback_text))
+		binding_control.text = prompt_text if not prompt_text.is_empty() else fallback_text
+		var texture_path := str(prompt.get("texture_path", ""))
+		glyph_control.texture = _get_prompt_texture(texture_path)
+		glyph_control.visible = glyph_control.texture != null
+		if _capturing_action == action_id:
+			capture_button.text = tr("Press a key or selected controller input…")
+		else:
+			capture_button.text = tr("Remap")
+		child_index += 3
+
+
+func _update_glyph_family_picker() -> void:
+	if glyph_family_picker == null:
+		return
+	glyph_family_picker.clear()
+	for family_index in PROMPT_FAMILIES.size():
+		var family := PROMPT_FAMILIES[family_index]
+		glyph_family_picker.add_item(tr(str(PROMPT_FAMILY_LABELS[family])), family_index)
+		glyph_family_picker.set_item_id(family_index, family_index)
+	var presentation: Dictionary = _draft_profile.get("presentation", {})
+	var selected_index := PROMPT_FAMILIES.find(str(presentation.get("glyph_family", "auto")))
+	if selected_index < 0:
+		selected_index = 0
+	glyph_family_picker.select(selected_index)
+	glyph_family_picker.tooltip_text = tr("Prompt symbols only affect presentation; they never change controller bindings.")
+	if glyph_family_help_label != null:
+		glyph_family_help_label.text = tr("Prompt symbols only affect presentation; they never change controller bindings.")
+
+
+func _on_glyph_family_selected(index: int) -> void:
+	if _draft_profile.is_empty() or index < 0 or index >= PROMPT_FAMILIES.size():
+		return
+	var family := PROMPT_FAMILIES[index]
+	var presentation_value: Variant = _draft_profile.get("presentation", {})
+	var presentation: Dictionary = presentation_value.duplicate(true) if presentation_value is Dictionary else {}
+	if str(presentation.get("glyph_family", "auto")) == family:
+		return
+	presentation["glyph_family"] = family
+	_draft_profile["presentation"] = presentation
+	_update_action_controls()
+	_set_status(tr("Controller prompt family changed. Save the profile to keep it."), false)
+
+
+func _get_prompt_texture(texture_path: String) -> Texture2D:
+	if texture_path.is_empty():
+		return null
+	if not _prompt_texture_cache.has(texture_path):
+		var resource: Resource = load(texture_path)
+		_prompt_texture_cache[texture_path] = resource as Texture2D
+	return _prompt_texture_cache[texture_path] as Texture2D
+
+
+func _start_capture(action_id: String, button: Button) -> void:
+	_capturing_action = action_id
+	_capture_button = button
+	_capture_button.grab_focus()
+	_set_status(tr("Press a keyboard key or an input on the selected flight controller. Escape cancels remapping."), false)
+	_update_action_controls()
+
+
+func _capture_binding(event: InputEvent) -> void:
+	var binding := ControllerActions.binding_from_event(event)
+	if binding.is_empty():
+		return
+	var candidate := _action_bindings.duplicate(true)
+	candidate[_capturing_action] = binding
+	var validation: Dictionary = ControllerActions.validate(candidate)
+	if not bool(validation.get("ok", false)):
+		var errors: Array = validation.get("errors", [])
+		_set_status(tr("That binding conflicts with another action or removes recovery."), true)
+	else:
+		_action_bindings = candidate
+		_draft_profile["actions"] = _action_bindings.duplicate(true)
+		_set_status(tr("Binding updated. Save the profile to keep it."), false)
+	_capture_done()
+	get_viewport().set_input_as_handled()
+
+
+func _cancel_capture() -> void:
+	_capture_done()
+	_set_status(tr("Remapping cancelled."), false)
+
+
+func _capture_done() -> void:
+	_capturing_action = ""
+	_capture_button = null
+	_update_action_controls()
+
+
+func _apply_device_selection() -> void:
+	if _draft_ui_device_id >= 0:
+		var menu_device := _device_for_id(_draft_ui_device_id)
+		if menu_device.is_empty() or not bool(menu_device.get("connected", true)):
+			_set_status(tr("The selected menu controller is disconnected."), true)
+			return
+		if not _is_menu_device_eligible(menu_device):
+			_set_status(tr("Select a connected, configured gamepad to navigate menus."), true)
+			return
+	if _draft_flight_device_id >= 0:
+		var flight_device := _device_for_id(_draft_flight_device_id)
+		if flight_device.is_empty() or not bool(flight_device.get("connected", true)):
+			_set_status(tr("The selected flight controller is disconnected."), true)
+			return
+	if apply_devices.is_valid() and not bool(apply_devices.call(_draft_flight_device_id, _draft_ui_device_id)):
+		_refresh_devices()
+		_set_status(tr("Device selection changed; refresh and choose connected controllers."), true)
+		return
+	device_selection_requested.emit(_draft_flight_device_id, _draft_ui_device_id)
+	_original_flight_device_id = _draft_flight_device_id
+	_original_ui_device_id = _draft_ui_device_id
+	_set_status(tr("Device selection applied. Profile changes still need Save."), false)
+
+
+func _save_profile() -> void:
+	if _draft_profile.is_empty() or profile_store == null:
+		_set_status(tr("There is no controller profile to save."), true)
+		return
+	if _draft_flight_device_id != _registry_selected("flight"):
+		_set_status(tr("Apply the flight device selection before saving its profile."), true)
+		return
+	var candidate := _draft_profile.duplicate(true)
+	var profile_name := profile_name_edit.text.strip_edges()
+	if profile_name.is_empty():
+		_set_status(tr("Enter a profile name before saving."), true)
+		return
+	candidate["name"] = profile_name
+	var selected_device := _device_for_id(_draft_flight_device_id)
+	if not selected_device.is_empty():
+		var association: Dictionary = candidate.get("association", {}).duplicate(true)
+		var serial := str(selected_device.get("serial_number", ""))
+		var guid := str(selected_device.get("guid", ""))
+		var vendor_id := int(selected_device.get("vendor_id", 0))
+		var product_id := int(selected_device.get("product_id", 0))
+		if not serial.is_empty():
+			association["serial_number"] = serial
+		if not guid.is_empty() and vendor_id > 0 and product_id > 0:
+			association["guid"] = guid
+			association["vendor_id"] = vendor_id
+			association["product_id"] = product_id
+		if not serial.is_empty() or (not guid.is_empty() and vendor_id > 0 and product_id > 0):
+			candidate["association"] = association
+	candidate["actions"] = _base_actions.duplicate(true)
+	for action_id: Variant in _action_bindings:
+		candidate.actions[str(action_id)] = _action_bindings[action_id].duplicate(true)
+	if str(candidate.get("kind", "")) == "joystick":
+		candidate["configured"] = joystick_enabled.button_pressed
+	var actions_validation: Dictionary = ControllerActions.validate(_action_bindings)
+	if not bool(actions_validation.get("ok", false)):
+		_set_status(tr("Action bindings need a valid Back and Pause recovery path."), true)
+		return
+	var validation: Dictionary = ControllerProfile.validate(candidate)
+	if not bool(validation.get("ok", false)):
+		var errors: Array = validation.get("errors", [])
+		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
+		return
+	var result: Dictionary = profile_store.call("save_profile", candidate)
+	if not bool(result.get("ok", false)):
+		_set_status(tr("Profile was not saved: %s") % str(result.get("error", tr("storage error"))), true)
+		return
+	var saved: Dictionary = result.get("profile", candidate).duplicate(true)
+	_replace_saved_profile(saved)
+	_draft_profile = saved.duplicate(true)
+	_refresh_devices()
+	profile_saved.emit(saved.duplicate(true))
+	close_requested.emit()
+
+
+func _replace_saved_profile(profile: Dictionary) -> void:
+	var profile_id := str(profile.get("profile_id", ""))
+	for index in _profiles.size():
+		if str(_profiles[index].get("profile_id", "")) == profile_id:
+			_profiles[index] = profile.duplicate(true)
+			_update_profile_options()
+			return
+	_profiles.append(profile.duplicate(true))
+	_update_profile_options()
+
+
+func _import_legacy_profiles() -> void:
+	if profile_store == null:
+		return
+	var result: Dictionary = profile_store.call("import_legacy_radio")
+	_legacy_profiles.clear()
+	for candidate in result.get("profiles", []):
+		if candidate is Dictionary:
+			_legacy_profiles.append(candidate.duplicate(true))
+	legacy_picker.clear()
+	for index in _legacy_profiles.size():
+		var candidate := _legacy_profiles[index]
+		legacy_picker.add_item("%s · %s" % [str(candidate.get("name", "Legacy radio")), tr(str(candidate.get("kind", "radio")).capitalize())], index)
+	legacy_picker.visible = not _legacy_profiles.is_empty()
+	legacy_help_label.visible = not _legacy_profiles.is_empty()
+	keep_radio_button.visible = not _legacy_profiles.is_empty()
+	restore_gamepad_button.visible = not _legacy_profiles.is_empty()
+	if _legacy_profiles.is_empty():
+		_set_status(tr("No valid legacy radio profiles were found. The original file was not changed."), true)
+	else:
+		legacy_picker.select(0)
+		_set_status(tr("Choose whether to preserve this as radio control or restore a gamepad preset. The legacy file remains unchanged."), false)
+
+
+func _on_legacy_selected(_index: int) -> void:
+	_set_status(tr("Legacy data remains unchanged until you explicitly Save a copied profile."), false)
+
+
+func _selected_legacy_profile() -> Dictionary:
+	if _legacy_profiles.is_empty() or legacy_picker.selected < 0 or legacy_picker.selected >= _legacy_profiles.size():
+		return {}
+	return _legacy_profiles[legacy_picker.selected].duplicate(true)
+
+
+func _keep_legacy_radio() -> void:
+	var candidate := _selected_legacy_profile()
+	if candidate.is_empty():
+		return
+	var new_id := ControllerProfile.defaults("radio", "radio_custom")
+	candidate["profile_id"] = new_id.get("profile_id", candidate.get("profile_id", ""))
+	candidate["name"] = "%s · radio" % str(candidate.get("name", "Legacy profile"))
+	candidate["kind"] = "radio"
+	candidate["throttle_mode"] = "radio_absolute"
+	_set_draft_profile(candidate)
+	_set_status(tr("Radio semantics and auxiliary data are preserved. Save writes a separate v2 profile."), false)
+
+
+func _restore_legacy_gamepad() -> void:
+	var legacy := _selected_legacy_profile()
+	if legacy.is_empty():
+		return
+	var candidate := ControllerProfile.defaults("gamepad", "mode2")
+	candidate["name"] = "%s · Gamepad Mode 2" % str(legacy.get("name", "Controller"))
+	if legacy.get("aux", {}) is Dictionary:
+		candidate["aux"] = legacy.aux.duplicate(true)
+	if legacy.get("association", {}) is Dictionary:
+		candidate["association"] = legacy.association.duplicate(true)
+	_set_draft_profile(candidate)
+	_set_status(tr("This draft uses gamepad Mode 2 rate throttle. Legacy radio calibration remains in the original file."), false)
+
+
+func _device_for_id(device_id: int) -> Dictionary:
+	for device in _devices:
+		if int(device.get("id", -1)) == device_id:
+			return device.duplicate(true)
+	return {}
+
+
+func _registry_selected(role: String) -> int:
+	if registry == null or not registry.has_method("selected_device_id"):
+		return -1
+	return int(registry.call("selected_device_id", role))
+
+
+func _set_status(text: String, is_error: bool) -> void:
+	if status_label == null:
+		return
+	status_label.text = text
+	status_label.visible = not text.is_empty()
+	status_label.add_theme_color_override("font_color", Color(1.0, 0.62, 0.42) if is_error else Color(0.86, 0.9, 0.94))
+
+
+static func _section_label(text: String) -> Label:
+	var result := _label(text, "SectionLabel")
+	result.add_theme_constant_override("margin_top", 6)
+	return result
+
+
+static func _label(text: String, variation: String, wrap := false) -> Label:
+	return Widgets.label(text, variation, wrap)
+
+
+static func _button(text: String, variation := "", node_name := "") -> Button:
+	return Widgets.button(text, variation, node_name)
+
+
+static func _option(placeholder: String) -> OptionButton:
+	var picker := OptionButton.new()
+	picker.custom_minimum_size.x = 250.0
+	picker.tooltip_text = TranslationServer.translate(placeholder)
+	return picker
+
+
+static func _spin_box(minimum: float, maximum: float, step_value: float) -> SpinBox:
+	var spin := SpinBox.new()
+	spin.min_value = minimum
+	spin.max_value = maximum
+	spin.step = step_value
+	spin.rounded = false
+	spin.allow_greater = false
+	spin.allow_lesser = false
+	spin.custom_minimum_size.x = 110.0
+	return spin
+
+
+static func _add_field(grid: GridContainer, label_text: String, control: Control) -> void:
+	grid.add_child(_label(label_text, "SecondaryLabel"))
+	grid.add_child(control)

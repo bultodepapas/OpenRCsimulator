@@ -1,5 +1,40 @@
 # Ground surface capture
 
+## DT-11a default lake geometry
+
+The default basin and water CPU arrays are generated from the production lake/ground
+loaders and scalar samplers. With the exact engine pinned in `app/get-godot.sh`:
+
+```powershell
+& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy `
+  --script "$PWD/tools/ground/bake_lake_geometry.gd"
+# Check without writing either generated output:
+& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy `
+  --script "$PWD/tools/ground/bake_lake_geometry.gd" -- --check
+```
+
+Commit both generated outputs: `app/assets/landscape/lake/default_geometry.res` and
+`app/render/lake/generated_geometry_stamp.gd`. Do not hand-edit them. Optional
+`--out=<absolute.res>` writes an experimental resource without changing the production
+stamp. `--check` compares the resource's full arrays, input keys and source hashes
+against a fresh procedural generation; line endings are normalized in source hashes.
+The source stamp excludes its own generated file to avoid a circular dependency.
+
+Runtime accepts matching engine/precision, compiled stamp, content digests and full
+normalized inputs. Custom inputs or missing/incompatible metadata use procedural
+generation. The existing one-entry CPU caches remain bounded; every scene receives
+new mesh/material/node resources. Physics samples are never read from this render asset.
+When sampler code changes, regenerate both outputs: runtime checks the compiled stamp,
+while the CI test checks that the stamp still matches current source and geometry.
+
+`test_lake_geometry_bake.gd` runs automatically in `app/test.sh`; the existing lake-world
+checks cover independent scenes and input invalidation. The empty-project field-pack
+smoke explicitly requires a compatible bake so fallback cannot conceal export omission.
+This binary resource has no external dependencies and is included by `all_resources`.
+For a focused exported-lake check, append `--lake-only` after the pack path and field
+SHA-256 arguments to `app/tests/check_field_pack.gd`, still running from an empty project.
+That option does not qualify the remaining field/scenery assets or replace the full smoke.
+
 ## L9e turf material
 
 `turf_generate.py --check` verifies the original packed data texture with Python

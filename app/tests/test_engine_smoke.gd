@@ -91,7 +91,7 @@ func _integration() -> void:
 	check("key repeat cannot toggle pump", main._smoke_key_on)
 	main.session.reset()
 	check("real reset clears request and births", not main._smoke_key_on and not main._smoke.pump.emitting)
-	main.session.radio.connect_device(99, {name = "SM fake radio", guid = "sm-fake", known = false})
+	main.session.radio.connect_device(99, {name = "EdgeTX SM test radio", guid = "sm-fake", known = false})
 	main.session.profiles_path = "user://sm-test-aux-profile.cfg"
 	main._begin_smoke_assignment()
 	check("guided assignment holds real flight", main.session.sim.paused and main._smoke_assignment != null)

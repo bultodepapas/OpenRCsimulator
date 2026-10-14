@@ -102,8 +102,9 @@ func _default_and_switch() -> void:
 	await ui.tap(KEY_DOWN)
 	await ui.tap(KEY_ENTER)
 	_check("Enter on Language -> Spanish at once", TranslationServer.get_locale() == "es" and home.fly_button.atr(home.fly_button.text) == "VOLAR")
-	_check("dynamic texts rebuilt in Spanish", home.language_button.text == "Idioma: Español" and home.control_label.text.begins_with("Teclado"),
+	_check("dynamic texts rebuilt in Spanish", home.language_button.text == "Idioma: Español" and home.control_label.text.begins_with("Vuelo: teclado"),
 		"%s | %s" % [home.language_button.text, home.control_label.text])
+	_check("AUX profile errors translate", TranslationServer.translate("Could not save the updated controller profile; the existing profile is unchanged.") == "No se pudo guardar el perfil de control actualizado; el perfil existente no cambió." and TranslationServer.translate("The current controller profile could not be updated.") == "No se pudo actualizar el perfil de control actual.")
 	_check("focus stays on Language", ui.focus_name() == "Language", ui.focus_name())
 	var untranslated := PackedStringArray()
 	for c in home.find_children("*", "", true, false):

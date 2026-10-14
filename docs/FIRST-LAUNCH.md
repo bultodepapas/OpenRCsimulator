@@ -22,7 +22,7 @@ These test builds have no trusted developer signing/notarization. If macOS refus
 
 ## 3. Fly
 
-Home selects the aircraft, language, launch, weather and lighting. Menus use keyboard or mouse; a radio controls only flight. English is the default, Spanish is available, and valid settings are remembered.
+Home selects the aircraft, language, launch, weather and lighting. The rc8 package uses keyboard/mouse menus. Current source also supports an explicitly selected gamepad; a radio controls only flight. English is the default, Spanish is available, and valid settings are remembered.
 
 In **rc8**, new preferences select the Stik at idle near the runway threshold, gentle wind and passing evening. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. Other flight-capable catalog aircraft start airborne. Saved choices take precedence; Restart uses the selected launch. Details are [below](#current-source).
 
@@ -51,17 +51,33 @@ In **rc8**, new preferences select the Stik at idle near the runway threshold, g
 | F2 | Current source: cycle flight overlays off / pilot / full / developer |
 | F5 | Reload the aircraft data file |
 
-Letters refer to physical QWERTY positions; in-game Help shows your keyboard's labels. A connected USB radio/gamepad replaces the keyboard flight sticks.
+Letters refer to physical QWERTY positions; in-game Help shows your keyboard's labels. In current source, choose a controller explicitly in Controller settings; merely plugging one in does not replace keyboard flight sticks.
 
-Keyboard and gamepad sticks use the aircraft's normal-flight dual rates and expo where its manual states them (Extra, P-51, Ventage Jet; the status line shows `rates: normal`); a radio keeps its own rates. The direct route's `--rates=full` flies the maximum throws, as the Ugly Stik always does.
+Keyboard sticks use aircraft normal rates/expo where specified. Gamepads apply their own scalar deadzone/expo once, followed by aircraft travel rates and trims; radios keep their own rates and curves. The direct route's `--rates=full` flies maximum throws.
 
 Current source lets you adjust elevator trim with **Page Up / Page Down** (Spanish keyboards: **RePág / AvPág**). Establish the desired speed and flight path with the sticks and throttle, then adjust trim to relieve the held elevator command. This is a fixed surface offset, not altitude hold; changes in power or speed may need another adjustment. The transmitter overlay shows the resulting trim. **R** restores the starting trim. Trim keys are ignored while paused or replaying recorded inputs.
+
+### Controller settings (current source)
+
+Open **Controller settings** from Home or Pause. With no menu controller selected, **A / Cross** on a recognized gamepad claims menu navigation and opens settings. Choose the flight controller and optional separate menu gamepad, then **Apply device selection**. Keyboard and mouse remain available. A new connection never takes over a flight.
+
+Choose **Mode 2** (left throttle/rudder, right roll/pitch), **Mode 1** (right throttle/roll, left pitch/rudder), or **absolute trigger throttle** for fixed-wing flight. Mode 1/2 throttle is incremental: pushing the throttle stick changes engine power; releasing it holds that power. The absolute trigger preset maps RT/R2 directly from idle to full power. It requires an independent analog trigger; use a stick-rate preset when a device exposes combined or digital triggers. Helicopter collective uses a stick-rate or calibrated radio profile, not the fixed-wing trigger preset.
+
+Mapping, inversion, gamepad deadzone/expo and action changes stay draft until **Save**. **Cancel** discards profile edits; an already applied device selection remains applied. Profiles live in `user://controller_profiles.cfg`, with a rollback copy. Legacy recovery copies a radio profile or restores a gamepad preset without deleting `rc_calibration.cfg`. Unknown devices require an explicitly configured profile; menu use additionally requires a saved gamepad profile with an unambiguous device association. Reconfirm role selection after restarting the application.
+
+Choose automatic, Xbox, PlayStation, Nintendo or generic button prompts in the profile. A manual choice helps with emulated devices; it changes only labels and icons, never the bindings. The action list shows the actual remapped controls. Artwork is the free Kenney Input Prompts pack.
+
+On first selection, profile replacement or gamepad focus recovery, move every mapped flight control once, release sticks/triggers/buttons, and wait for neutral. Then choose **Continue**. Runway rate throttle starts at idle; airborne rate throttle uses the declared scenario power on explicit resume. Pause shows the throttle or collective value before continuing. Menus and ordinary focus loss freeze current rate throttle. Disconnects, uncertain continuity after suspension and profile changes pause and require explicit recovery; select **No flight controller** to deliberately return to keyboard flight.
+
+Default buttons: **A/Cross** accept, **B/Circle** back, **Menu/Options** pause, **Y/Triangle** camera, right-stick click reset view, **X/Square** overlays, D-pad trims during flight, and held LB/L1 throttle cut for fixed-wing flight. D-pad/left stick navigate menus. Remaps are profile-specific. Ground driving keeps left-stick steering, RT drive, LT brake and B+RT reverse.
+
+These are source features with automated checks, not a claim that every Xbox/PlayStation model or connection has been tested. [Implementation and remaining qualification](research/controller-support-2026-10-14/README.md#implementation-evidence).
 
 ### Radio setup
 
 Connect in USB joystick mode with RF modules off. EdgeTX/OpenTX's Advanced joystick interface with at most eight axes is the starting configuration; mappings still depend on device, firmware and platform. The default channel order is AETR.
 
-Move throttle to low to arm. If channels or directions are wrong, press **K**, follow the on-screen steps with **Enter**, then move throttle away from low and back to low to rearm. Calibration is saved per radio. Unplugging pauses with idle throttle. Simulated-device tests do not certify your hardware.
+Select the radio in Controller settings, then move throttle to low to arm. If channels or directions are wrong, use **Calibrate selected radio** from Pause → Controller settings, or **K** outside menus. Follow the steps with **Enter**, then move throttle away from low and back to low to rearm. A separately selected menu gamepad can advance/cancel the wizard with A/B. Calibration is saved per radio; gamepads cannot enter this radio-only wizard. Unplugging pauses with idle throttle. Simulated-device tests do not certify your hardware.
 
 On the Stik, **J** opens a separate smoke-pump assignment: keep the control OFF, turn exactly one unused axis/button ON, then return it OFF, using Enter at each step. Buttons offer held-level or press-edge toggle. AETR axes cannot be assigned. The profile is saved per device; after assignment/reconnection, report OFF again before using smoke and rearm throttle before resuming. **H** controls the pump when no radio is connected. Ordinary glow exhaust is faint; the pump needs sufficient running RPM/throttle. Other aircraft currently have no configured smoke installation. [Feature and limits](SMOKE-PLAN.md).
 
@@ -99,7 +115,7 @@ Report build, aircraft, controller, operating system, maneuver, commanded input 
 
 Replace the frame-time option above with `--input-report=input-report.json --t=20`. Move each stick through its full range. This standalone diagnostic writes a report and exits without starting flight or changing settings/calibration. The output folder must exist. With no output path, `--input-report` prints JSON; the default duration is 10 seconds.
 
-The report records observed controllers, reconnects, axes and ranges. Unseen axes remain unknown. Event spacing measures Godot callbacks, not USB timing or stick-to-screen latency. Include firmware and USB mode separately. [Diagnostic contract](TOOLS.md#radio-diagnostics).
+The current source report records observed controllers, reconnects, axes/ranges, bounded button transitions and advertised capabilities. Press and release the buttons as well as moving the sticks. Unseen controls remain unknown. Event spacing measures Godot callbacks, not USB timing or stick-to-screen latency. Include firmware and USB/Bluetooth mode separately. [Diagnostic contract](TOOLS.md#radio-diagnostics).
 
 ## 8. Film stick-to-screen latency (F6a)
 

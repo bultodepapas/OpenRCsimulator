@@ -1,0 +1,168 @@
+{
+  "platform": "Windows",
+  "engine": "4.7.2-stable",
+  "scope": "Synthetic software regression checks, not physical controller qualification",
+  "passed": 14,
+  "total": 14,
+  "results": [
+    {
+      "test": "test_controller_conditioning.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "duration_s": 0.42,
+      "summary": [
+        "Controller conditioning: 30 checks, 0 failed"
+      ],
+      "shutdown_warnings": []
+    },
+    {
+      "test": "test_controller_integration.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "duration_s": 2.34,
+      "summary": [
+        "Controller integration: 27/27 checks passed"
+      ],
+      "shutdown_warnings": []
+    },
+    {
+      "test": "test_controller_menu.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "summary": [
+        "Controller menu: 23/23 checks passed"
+      ],
+      "shutdown_warnings": [
+        "WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+      ],
+      "note": "Final focused rerun after hiding the keyboard-only hint for a selected/lost controller."
+    },
+    {
+      "test": "test_controller_persistence.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "duration_s": 2.33,
+      "summary": [
+        "Controller persistence: 25 checks, 0 failures"
+      ],
+      "shutdown_warnings": []
+    },
+    {
+      "test": "test_controller_prompts.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "duration_s": 0.33,
+      "summary": [
+        "PASS controller prompts: 137 checks"
+      ],
+      "shutdown_warnings": []
+    },
+    {
+      "test": "test_heli_session.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "duration_s": 27.59,
+      "summary": [
+        "HELI-16 generated preset/session: 42 checks, 0 failed"
+      ],
+      "shutdown_warnings": []
+    },
+    {
+      "test": "test_overlay_manager.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "duration_s": 17.64,
+      "summary": [
+        "overlay manager: 77 checks, 0 failed"
+      ],
+      "shutdown_warnings": []
+    },
+    {
+      "test": "test_overlay_telemetry.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "duration_s": 0.38,
+      "summary": [
+        "overlay telemetry: 38 checks, 0 failed"
+      ],
+      "shutdown_warnings": []
+    },
+    {
+      "test": "test_rc_input.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "duration_s": 0.41,
+      "summary": [
+        "41 checks, 0 failed"
+      ],
+      "shutdown_warnings": []
+    },
+    {
+      "test": "test_rc_rearm.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "duration_s": 0.62,
+      "summary": [
+        "D6b-R2: 368 checks, 0 failed"
+      ],
+      "shutdown_warnings": []
+    },
+    {
+      "test": "test_ui_help.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "summary": [
+        "all UI help checks passed"
+      ],
+      "shutdown_warnings": [],
+      "note": "Final focused rerun after hiding the keyboard-only hint for a selected/lost controller."
+    },
+    {
+      "test": "test_ui_home_layout.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "duration_s": 8.48,
+      "summary": [
+        "all UI home layout checks passed"
+      ],
+      "shutdown_warnings": []
+    },
+    {
+      "test": "test_ui_language.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "duration_s": 16.47,
+      "summary": [
+        "all UI language checks passed"
+      ],
+      "shutdown_warnings": [
+        "WARNING: 24 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+      ]
+    },
+    {
+      "test": "test_ui_pause.gd",
+      "exit": 0,
+      "passed": true,
+      "errors": [],
+      "duration_s": 51.8,
+      "summary": [
+        "ok   failed save: still in the flight, the menu explains",
+        "all UI pause checks passed"
+      ],
+      "shutdown_warnings": []
+    }
+  ]
+}

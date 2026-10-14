@@ -1,6 +1,6 @@
 # Desktop delivery plan
 
-2026-10-14 · Revision 5 · Step prefix: **DT-**.
+2026-10-14 · Revision 7 · Step prefix: **DT-**.
 
 **Status:** DT-00, DT-00-R1 and DT-00-R2 research is complete. DT-01–DT-12 remain open; initial DT-10/10a measurements and a narrow DT-11a lake geometry reuse repair are recorded through VQ-01c; cold loading and package qualification remain open. The owner acceptance gate DT-13 is open. No fullscreen, installer, public signing/notarization or native Windows/macOS acceptance has shipped through this track.
 
@@ -44,7 +44,7 @@ Display preferences and recovery belong to [MENU-PLAN](MENU-PLAN.md) (UI-07/09);
 | DT-10 | Measure startup, fullscreen and active simulation on frozen packages and named hardware; warm up 10 s and record 60 s per case. | Initial [VQ-01c Windows source observations](research/visual-quality-implementation/VQ-01c/README.md); pacing fails and two samples paused. [Home/Fly loading and DT-11a results](research/visual-quality-implementation/VQ-01c/loading/README.md) now exist; cold/first-Fly budgets, frozen packages/display and native acceptance remain open. |
 | DT-10a | Define timing semantics, sample counts, quantiles, paired comparisons and uncertainty before optimization. | VQ-01c tools distinguish CPU callback samples, native active-flight eligibility and pacing. Observer cost remains unresolved above host variation; no performance acceptance. |
 | DT-10b | Soak an M1-class 8 GB Mac at the declared 60 Hz profile; record 30 min of timing, memory, AC/battery state and sleep/occlusion recovery. | Planned — hardware evidence pending |
-| DT-11a | Fix the largest measured startup/first-frame cost without hiding loading or starting flight early. | [Bounded lake geometry reuse implemented](research/visual-quality-implementation/VQ-01c/loading/README.md); exact geometry parity and faster Home/Fly observed. Cold Home and first Fly still miss budgets; package/soak acceptance open. |
+| DT-11a | Fix the largest measured startup/first-frame cost without hiding loading or starting flight early. | [Lake reuse/bake](research/visual-quality-implementation/VQ-01c/loading/README.md) and [exact grain precomputation](research/visual-quality-implementation/VQ-01c/loading/grain/README.md) implemented. Grain campaign Home median 10.747→8.809 s; first Fly mixed. Clean Windows export, full field-pack smoke and extracted ZIP headless flight pass. Cold/first-Fly budgets, leaks/soak and native qualification remain open. |
 | DT-11b | Reduce measured idle/minimized cost while preserving focus and simulation timing. | Conditional on DT-10 |
 | DT-11c | Add a graphics option only when paired performance and blinded readability evidence support it. | Conditional on DT-10 |
 | DT-11d | Compare Compatibility and Mobile/Metal only if measurements show a renderer need; preserve the baseline absent evidence. | Conditional on DT-10b |

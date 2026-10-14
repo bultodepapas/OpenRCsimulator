@@ -79,10 +79,12 @@ static func far_distance(span: float) -> float:
 ## electrical_state(), experimental }.
 static func warnings(t: Dictionary, ctx: Dictionary) -> PackedStringArray:
 	var out := PackedStringArray()
-	if str(ctx.get("pause_reason", "")) == "radio disconnected":
+	if ctx.get("controller_lost", false):
+		out.append("controller_lost")
+	elif str(ctx.get("pause_reason", "")) == "radio disconnected":
 		out.append("failsafe")
 	if ctx.get("radio_connected", false) and not ctx.get("armed", false):
-		out.append("safe")
+		out.append("gamepad_safe" if ctx.get("controller_kind", "radio") == "gamepad" else "safe")
 	var airborne: bool = float(t.height_agl) > AIRBORNE_HEIGHT
 	var stall_pos: float = float(ctx.get("stall_pos_deg", NAN))
 	var stall_neg: float = float(ctx.get("stall_neg_deg", NAN))

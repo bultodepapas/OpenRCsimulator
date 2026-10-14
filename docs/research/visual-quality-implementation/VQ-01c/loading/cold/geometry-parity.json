@@ -1,0 +1,141 @@
+{
+	"candidate_sha256": "24a39b3ebb990169c4d5aada84e5eefadcecd02b785c99f556e9501f8a026a8a",
+	"complete": true,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"equal": true,
+	"format": "openrc-lake-geometry v1",
+	"reference_sha256": "d238d950cfb796697f4fbc7490e6abdc7a30455a59f447290617b499e60975bc",
+	"samples": [
+		{
+			"candidate": {
+				"build_usec": 18461,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "d4464b4ed9f6f41f43302ec0cad83a77a470fc00500cbaf1171847b9f56d59ce"
+			},
+			"case": "default-0",
+			"equal": true,
+			"input_sha256": "84398678bc06c04d361a91e6dddc8eb6365ef821706b8e9daddc7477efb48733",
+			"reference": {
+				"build_usec": 2774557,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "d4464b4ed9f6f41f43302ec0cad83a77a470fc00500cbaf1171847b9f56d59ce"
+			}
+		},
+		{
+			"candidate": {
+				"build_usec": 4468,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "d4464b4ed9f6f41f43302ec0cad83a77a470fc00500cbaf1171847b9f56d59ce"
+			},
+			"case": "default-1",
+			"equal": true,
+			"input_sha256": "84398678bc06c04d361a91e6dddc8eb6365ef821706b8e9daddc7477efb48733",
+			"reference": {
+				"build_usec": 4221,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "d4464b4ed9f6f41f43302ec0cad83a77a470fc00500cbaf1171847b9f56d59ce"
+			}
+		},
+		{
+			"candidate": {
+				"build_usec": 4184,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "d4464b4ed9f6f41f43302ec0cad83a77a470fc00500cbaf1171847b9f56d59ce"
+			},
+			"case": "default-2",
+			"equal": true,
+			"input_sha256": "84398678bc06c04d361a91e6dddc8eb6365ef821706b8e9daddc7477efb48733",
+			"reference": {
+				"build_usec": 4269,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "d4464b4ed9f6f41f43302ec0cad83a77a470fc00500cbaf1171847b9f56d59ce"
+			}
+		},
+		{
+			"candidate": {
+				"build_usec": 3229337,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "bf9a1cca078a0ad16e369a69714b960f2bbc7e965535523ecfcca2c963c65031"
+			},
+			"case": "water-level-same-identity",
+			"equal": true,
+			"input_sha256": "2f868cae8fdfdbfd19a706e4bd08eaeb17e680c380a81df17b2f2949e9efd4e4",
+			"reference": {
+				"build_usec": 3749665,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "bf9a1cca078a0ad16e369a69714b960f2bbc7e965535523ecfcca2c963c65031"
+			}
+		},
+		{
+			"candidate": {
+				"build_usec": 3539902,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "f4d782b50010e651e29f7c23478a15c2382f3f61ebafd06655ed44c9b40af25c"
+			},
+			"case": "bed-profile-same-identity",
+			"equal": true,
+			"input_sha256": "7ffc37cc1cf3879203fc12dc8aa11ad26afaa950409b6868f8826d392edf5778",
+			"reference": {
+				"build_usec": 3458495,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "f4d782b50010e651e29f7c23478a15c2382f3f61ebafd06655ed44c9b40af25c"
+			}
+		},
+		{
+			"candidate": {
+				"build_usec": 3691941,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "f4b97141e151b4552ab93da4aab6eda5f1e3b4e34b170f8f589cd3433b4303bc"
+			},
+			"case": "shoreline-same-identity",
+			"equal": true,
+			"input_sha256": "7213dc8bfb72db3c569551a6c53b01a23c86b6438aacd2f49eee617fbbee3a6b",
+			"reference": {
+				"build_usec": 3247518,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "f4b97141e151b4552ab93da4aab6eda5f1e3b4e34b170f8f589cd3433b4303bc"
+			}
+		},
+		{
+			"candidate": {
+				"build_usec": 3232798,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "cb3cebd4b3eeb9ea31fb6cb07ebcbd7098af0d9b00d501849440c401850987eb"
+			},
+			"case": "bank-same-identity",
+			"equal": true,
+			"input_sha256": "91a31e3fa0de205c620e2cac23568a500f237c5e66356eab0bea13372825084c",
+			"reference": {
+				"build_usec": 3455299,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "cb3cebd4b3eeb9ea31fb6cb07ebcbd7098af0d9b00d501849440c401850987eb"
+			}
+		},
+		{
+			"candidate": {
+				"build_usec": 2140211,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "55010c0349f3362f2ce60cb6a6e61ce5aeda775e19123ea6667c7d67d9f0dd0b"
+			},
+			"case": "flat-ground-table",
+			"equal": true,
+			"input_sha256": "a2958692a37159b0ea55875ec17a5f003293d492b819905bca71aab66b05ce30",
+			"reference": {
+				"build_usec": 3329315,
+				"geometry_bytes": 4138732,
+				"geometry_sha256": "55010c0349f3362f2ce60cb6a6e61ce5aeda775e19123ea6667c7d67d9f0dd0b"
+			}
+		}
+	],
+	"scope": "serial alternating builder calls; first candidate cold, following unchanged inputs warm; headless CPU construction, not GPU qualification"
+}

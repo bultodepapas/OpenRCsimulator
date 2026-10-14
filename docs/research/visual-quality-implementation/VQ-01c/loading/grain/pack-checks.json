@@ -1,0 +1,64 @@
+[
+  {
+    "name": "pack-field-on",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\empty-pack",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\check_field_pack.gd",
+      "--",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\candidate.pck",
+      "70ccd1952d67b2116c72054662a5fc421d9635466bc7ac6a6125e742a28f30f6"
+    ],
+    "exit_code": 0,
+    "valid": true,
+    "elapsed_s": 2.1752320999949006,
+    "log": "pack-field-on.log",
+    "scenery": "on"
+  },
+  {
+    "name": "pack-field-off",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\empty-pack",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\check_field_pack.gd",
+      "--",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\candidate.pck",
+      "70ccd1952d67b2116c72054662a5fc421d9635466bc7ac6a6125e742a28f30f6"
+    ],
+    "exit_code": 0,
+    "valid": true,
+    "elapsed_s": 1.63132850000693,
+    "log": "pack-field-off.log",
+    "scenery": "off"
+  },
+  {
+    "name": "pack-grain",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\empty-pack",
+      "--main-pack",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\candidate.pck",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\test_stik_grain.gd"
+    ],
+    "exit_code": 0,
+    "valid": false,
+    "elapsed_s": 1.3820222999929683,
+    "log": "pack-grain.log",
+    "scenery": null
+  }
+]

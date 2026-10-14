@@ -50,6 +50,7 @@ var _neutral_elapsed := 0.0
 var _pressed_buttons: Dictionary = {}
 var _neutral_release_pending := false
 var _profile_ready := false
+var _profile_snapshot: Dictionary = {}
 
 
 func _init() -> void:
@@ -105,7 +106,7 @@ func use_profile(candidate: Dictionary, source: String) -> bool:
 	if upgraded.is_empty():
 		profile_error = "Profile is invalid and was not applied."
 		return false
-	if not _activate_profile(upgraded, source, false):
+	if not _activate_profile(upgraded, source, false, true):
 		return false
 	profile_error = ""
 	return true
@@ -130,11 +131,11 @@ func is_rate_throttle() -> bool:
 	return profile.get("throttle_mode", "stick_rate" if profile.get("kind", "radio") == "gamepad" else "radio_absolute") == "stick_rate"
 
 
-## A context/profile handover requires fresh input. A rate throttle can be held
-## through an ordinary pause by passing preserve_throttle=true.
-func require_neutral(preserve_throttle: bool = true) -> void:
+## Ordinary menus keep the connection's axis evidence and virtual throttle.
+## Focus recovery requires new axis events independently of preserving throttle.
+func require_neutral(preserve_throttle: bool = true, fresh_samples: bool = false) -> void:
 	_neutral_elapsed = 0.0
-	_neutral_release_pending = not _pressed_buttons.is_empty()
+	_neutral_release_pending = bool(profile.get("require_release", true)) and not _pressed_buttons.is_empty()
 	if is_gamepad():
 		armed = false
 		if is_rate_throttle() and not preserve_throttle:
@@ -146,7 +147,7 @@ func require_neutral(preserve_throttle: bool = true) -> void:
 		# asks for fresh low-throttle evidence but not centered-stick dwell.
 		armed = false
 		_throttle_low_seen = false
-	if not preserve_throttle:
+	if not preserve_throttle or (is_gamepad() and fresh_samples):
 		_seen.clear()
 		axes.fill(0.0)
 	input_error = ""
@@ -187,7 +188,7 @@ func on_button(id: int, button: int, pressed: bool) -> void:
 		_pressed_buttons[button] = true
 	else:
 		_pressed_buttons.erase(button)
-		_neutral_release_pending = not _pressed_buttons.is_empty()
+		_neutral_release_pending = bool(profile.get("require_release", true)) and not _pressed_buttons.is_empty()
 
 
 ## Synchronizes held-button evidence from the selected device on focus/selection return.
@@ -196,7 +197,7 @@ func observe_pressed_buttons(buttons: Array) -> void:
 	for button in buttons:
 		if typeof(button) == TYPE_INT and int(button) >= 0:
 			_pressed_buttons[int(button)] = true
-	_neutral_release_pending = not _pressed_buttons.is_empty()
+	_neutral_release_pending = bool(profile.get("require_release", true)) and not _pressed_buttons.is_empty()
 
 
 ## Samples all axes and optional smoke AUX. `integrate=false` still collects fresh
@@ -204,13 +205,16 @@ func observe_pressed_buttons(buttons: Array) -> void:
 func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), integrate: bool = true) -> void:
 	if not connected:
 		return
-	var validation := ControllerProfile.validate(profile)
-	if not validation.ok:
-		_profile_ready = false
-		profile_error = "Invalid active profile: " + "; ".join(validation.errors)
-		_invalidate_input("Invalid profile; flight commands are disabled.")
-		return
-	_profile_ready = true
+	if not _profile_ready or profile != _profile_snapshot:
+		var validation := ControllerProfile.validate(profile)
+		if not validation.ok:
+			_profile_ready = false
+			_profile_snapshot.clear()
+			profile_error = "Invalid active profile: " + "; ".join(validation.errors)
+			_invalidate_input("Invalid profile; flight commands are disabled.")
+			return
+		_profile_ready = true
+		_profile_snapshot = profile.duplicate(true)
 	if not is_finite(dt) or dt < 0.0 or not read_axis.is_valid():
 		_invalidate_input("Invalid input sample interval or axis reader.")
 		return
@@ -220,6 +224,12 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 			_invalidate_input("Non-finite polled axis sample; controls require fresh neutral evidence.")
 			return
 		axes[axis] = clampf(value, -1.0, 1.0)
+	if read_button.is_valid():
+		var held_buttons: Array[int] = []
+		for button in 128:
+			if bool(read_button.call(device_id, button)):
+				held_buttons.append(button)
+		observe_pressed_buttons(held_buttons)
 	var smoke_binding := _smoke_binding()
 	if smoke_binding.get("type", "") == "axis":
 		smoke_aux.sample_axis(axes[int(smoke_binding.axis)])
@@ -298,18 +308,30 @@ func smoke_is_armed() -> bool:
 	return smoke_aux.is_armed()
 
 
-func _activate_profile(candidate: Dictionary, source: String, preserve_rate: bool) -> bool:
+func _activate_profile(candidate: Dictionary, source: String, preserve_rate: bool, preserve_radio_history: bool = false) -> bool:
 	var upgraded := ControllerProfile.upgrade_legacy(candidate)
 	if upgraded.is_empty():
 		_profile_ready = false
 		profile_error = "Profile is invalid and cannot drive flight commands."
 		return false
+	var keep_radio_history := preserve_radio_history and _profile_ready and connected and str(profile.get("kind", "")) == "radio" and str(upgraded.get("kind", "")) == "radio"
 	var old_rate := _rate_throttle
+	var previous_axes: PackedFloat64Array = axes.duplicate()
+	var previous_seen: Dictionary = _seen.duplicate(true)
 	profile = upgraded
 	_profile_ready = true
+	_profile_snapshot = profile.duplicate(true)
 	profile_source = source
 	_rate_throttle = old_rate if preserve_rate and profile.get("throttle_mode", "") == "stick_rate" else 0.0
-	_reset_controls(preserve_rate)
+	if keep_radio_history:
+		armed = false
+		_throttle_low_seen = false
+		_neutral_elapsed = 0.0
+		_neutral_release_pending = bool(profile.get("require_release", true)) and not _pressed_buttons.is_empty()
+		axes = previous_axes
+		_seen = previous_seen
+	else:
+		_reset_controls(preserve_rate)
 	_configure_smoke_aux()
 	return true
 
@@ -318,7 +340,7 @@ func _reset_controls(preserve_rate: bool) -> void:
 	armed = false
 	_throttle_low_seen = false
 	_neutral_elapsed = 0.0
-	_neutral_release_pending = not _pressed_buttons.is_empty()
+	_neutral_release_pending = bool(profile.get("require_release", true)) and not _pressed_buttons.is_empty()
 	_seen.clear()
 	axes.fill(0.0)
 	if not preserve_rate:

@@ -233,6 +233,7 @@ static func snapshot(session: Node, pilot: Dictionary, span: float, experimental
 	var battery: Dictionary = session.electrical_state() if session.battery_is_dynamic() else {}
 	var warnings := Telemetry.warnings(t, {
 		radio_connected = radio.connected, armed = radio.armed, pause_reason = session.pause_reason,
+		controller_kind = radio.profile.get("kind", "radio"), controller_lost = bool(session.get("_controller_lost")),
 		stall_pos_deg = rad_to_deg(float(envelope.a1)) if envelope.has("a1") else NAN,
 		stall_neg_deg = rad_to_deg(float(envelope.n1)) if envelope.has("n1") else NAN,
 		span = span, battery = battery, experimental = experimental,

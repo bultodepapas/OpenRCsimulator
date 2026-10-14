@@ -1,8 +1,8 @@
 # Xbox, DualSense and general controller support plan
 
-Status: proposed, 2026-10-14. Priority confirmed by the owner: Xbox and/or DualSense on Windows. The first deliverable is reliable fixed-wing flight and the complete primary menu flow with one selected controller. Radios, helicopter and ground-vehicle behavior must retain their existing contracts. Linux/macOS and additional controller families follow through explicit compatibility rows.
+Status: core implementation delivered in source, 2026-10-14; qualification remains open. Priority confirmed by the owner: Xbox and/or DualSense on Windows. See the [implementation evidence](../research/controller-support-2026-10-14/README.md#implementation-evidence) and [current player instructions](../FIRST-LAUNCH.md#controller-settings-current-source). Radios, helicopter and ground-vehicle behavior retain separate contracts. Linux/macOS and additional controller families follow through explicit compatibility rows.
 
-Build on Godot 4.7.2's SDL backend, existing RcInput, calibration, session holds and F1/F6 tools. The immediate repair is the gamepad-to-radio calibration path. Then add durable profiles, explicit device ownership, safe source transitions, remappable actions and controller navigation. Physical acceptance is required before advertising a model/connection as supported.
+The implementation builds on Godot 4.7.2's SDL backend, RcInput, calibration, session holds and F1/F6 tools. It protects the gamepad-to-radio calibration path and adds durable profiles, explicit device ownership, safe source transitions, remappable actions and controller navigation. Physical acceptance is required before advertising a model/connection as supported.
 
 ## Ownership and scope
 
@@ -144,7 +144,17 @@ Reuse [Kenney Input Prompts](https://kenney.nl/assets/input-prompts) with pinned
 
 ## Ordered implementation steps
 
-All implementation rows below are **pending**. Each row is a separately reviewable change; its proof belongs under the existing input/UI evidence families. Dependencies name rows in this table.
+The table retains the planned work and acceptance gates. Source implementation now covers the calibration guard, registry, V2 profile store, scalar conditioning/presets, session transitions, Controls UI and semantic/menu routing. This is not physical controller qualification. Dependencies name rows in this table.
+
+Current delivery status:
+
+- **Implemented in source:** D6-GP-01/02/03, F3-GP-01/02, UI-10-GP-01 and UI-15-GP-01. Native automated checks cover the new contracts and existing radio, helicopter, ground, keyboard and menu paths. Role ownership is explicit for the current run; persistent profiles are suggested by identity evidence, never by a saved connection ID.
+- **Partially accepted:** F1-GP-01 has bounded button/capability reporting; the native report currently contains no connected devices. UI-12-GP-01 has selected-device routing, EN/ES UI, synthetic primary-flow checks, free Kenney glyphs and a saved glyph-family override that never changes mappings. Physical keyboard-free qualification remains open.
+- **Measured in software:** F6-GP-01 has a native Windows baseline/current comparison at the RcInput seam: event-to-command median/p95 increased from 12/23 µs to 44/91 µs with the new conditioning and released-button sampling. Current p95 is 2.18% of a 240 Hz tick budget; full simulation/SDL/display costs are outside this probe. See the [protocol and distributions](../research/controller-support-2026-10-14/cost/README.md).
+- **Pending:** F4-GP-01/02 and physical F6-GP-01. No Xbox/DualSense model, USB/Bluetooth path, exported Windows package or filmed latency result is certified by this delivery.
+- **Not started, gated as designed:** optional rumble/light feedback (D6-GP-04) and motion/advanced haptics (D6-GP-05). The UI stores no promise of active feedback, and the runtime never drives these effects.
+
+Unknown devices remain unconfigured until an explicit profile is saved. The setup UI edits channel mapping/inversion and gamepad shaping; the existing sweep wizard remains radio-only. Wider HOTAS axis sets, combined-trigger qualification and per-device endpoint/drift calibration beyond the radio wizard are not yet accepted.
 
 | ID | Work and principal files | Dependency | Proof required | Estimate |
 | --- | --- | --- | --- | --- |
@@ -229,4 +239,4 @@ For F6, compare at least 30 filmed transitions per qualified primary transport a
 - **Changed feel:** retain migrated 0.08/0.3/0.5 defaults initially. Optional tuning is visible, reversible and measured. Do not apply transmitter expo twice or alter aircraft mechanics to compensate for controller handling.
 - **Rollback:** keep legacy calibration intact, version profiles/presets, and make new UI/registry integration revertible per step. A reverted build can still use the old file. Profile edits activate only after validation and explicit save; an error cannot overwrite the last working setup.
 
-The next bounded implementation is D6-GP-01 together with F1-GP-01 evidence: protect the existing gamepad calibration path, correct its instructions, and establish native Xbox/DualSense baselines before larger integration work.
+The next acceptance work is native Xbox/DualSense USB/Bluetooth qualification and exported-package fault cycles when hardware is available. Keep optional effects gated on that evidence; remaining hardware rows do not inherit software-test results.

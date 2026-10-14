@@ -1,0 +1,62 @@
+[
+  {
+    "name": "release-trace",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\package\\OpenRC.exe",
+      "--headless",
+      "--audio-driver",
+      "Dummy",
+      "--",
+      "--trace=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\release-trace.csv",
+      "--t=1"
+    ],
+    "exit_code": 0,
+    "valid": true,
+    "elapsed_s": 4.69794909999473,
+    "log": "release-trace.log"
+  },
+  {
+    "name": "exported-grain-final",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\package\\GodotProbe.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\package",
+      "--main-pack",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\package\\OpenRC.exe",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\test_stik_grain.gd"
+    ],
+    "exit_code": 0,
+    "valid": true,
+    "elapsed_s": 1.7493493000074523,
+    "log": "exported-grain-final.log"
+  },
+  {
+    "name": "exported-native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\package\\GodotProbe.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\package",
+      "--main-pack",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\package\\OpenRC.exe",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-startup\\exported-native.json",
+      "--cycles=2"
+    ],
+    "exit_code": 0,
+    "valid": true,
+    "elapsed_s": 17.95070470000792,
+    "log": "exported-native.log"
+  }
+]

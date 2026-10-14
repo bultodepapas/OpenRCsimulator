@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+default-0: reference=2774557 candidate=18461 equal=true
+default-1: reference=4221 candidate=4468 equal=true
+default-2: reference=4269 candidate=4184 equal=true
+water-level-same-identity: reference=3749665 candidate=3229337 equal=true
+bed-profile-same-identity: reference=3458495 candidate=3539902 equal=true
+shoreline-same-identity: reference=3247518 candidate=3691941 equal=true
+bank-same-identity: reference=3455299 candidate=3232798 equal=true
+flat-ground-table: reference=3329315 candidate=2140211 equal=true
