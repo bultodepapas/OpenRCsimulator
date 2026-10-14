@@ -1,10 +1,10 @@
 # OpenRC Simulator: first launch
 
-Status: rc8 player guide, checked 2026-10-12. [rc8 release notes](releases/v0.1.0-rc8.md) describe the download; [flight setup](#current-source) explains its defaults and features. Aircraft remain under evaluation; start with the [Ugly Stik](UGLY-STIK-PLAN.md).
+Status: v0.1.1 player guide, checked 2026-10-14. [v0.1.1 release notes](releases/v0.1.1.md) describe the download; [flight setup](#current-source) explains its defaults and features. Aircraft remain under evaluation; start with the [Ugly Stik](UGLY-STIK-PLAN.md).
 
 ## 1. Download and check
 
-Download a platform ZIP and `SHA256SUMS` from [rc8](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.0-rc8). Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
+Download a platform ZIP and `SHA256SUMS` from [v0.1.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1). Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
 
 - Linux: `sha256sum -c SHA256SUMS --ignore-missing`
 - macOS: `shasum -a 256 openrc-simulator-*.zip`
@@ -24,7 +24,9 @@ These test builds have no trusted developer signing/notarization. If macOS refus
 
 Home selects the aircraft, language, launch, weather and lighting. Menus use keyboard or mouse; a radio controls only flight. English is the default, Spanish is available, and valid settings are remembered.
 
-In **rc8**, new preferences select the Stik at idle near the runway threshold, gentle wind and passing evening. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. Other flight-capable catalog aircraft start airborne. Saved choices take precedence; Restart uses the selected launch. Details are [below](#current-source).
+Fresh settings select the Ugly Stik at idle near the runway threshold. Other flight-capable catalog aircraft start airborne. Saved choices take precedence; Restart repeats the selected launch. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. See [defaults and features](#current-source).
+
+Home also offers two separate experimental activities, each with its own controls: [RC Helicopter Research Trainer](HELICOPTER.md) and [RC cars · Bisonte MT8](../research/rc-monster-truck/README.md).
 
 **Esc** opens Pause; losing window focus also pauses. Continue resumes explicitly. Pause can restart, return to Home or quit. The direct CLI route has no Home to return to.
 
@@ -34,7 +36,7 @@ In **rc8**, new preferences select the Stik at idle near the runway threshold, g
 | ↓ / ↑ | Elevator / pitch; ↓ pulls the stick back |
 | A / D | Rudder |
 | W / S | Increase / decrease throttle |
-| Page Up / Page Down | Current source: elevator trim nose down / nose up, 0.1° per press |
+| Page Up / Page Down | Elevator trim nose down / nose up, 0.1° per press |
 | Esc | Pause; cancel radio calibration |
 | R | Restart flight |
 | P | Resume after a radio failsafe |
@@ -47,15 +49,15 @@ In **rc8**, new preferences select the Stik at idle near the runway threshold, g
 | H | Toggle the Stik smoke pump with keyboard controls |
 | J · Enter | Assign the active radio's smoke AUX · advance its step |
 | T | Start / save a flight trace |
-| F3 | Toggle performance numbers (current source: developer overlays) |
-| F2 | Current source: cycle flight overlays off / pilot / full / developer |
+| F3 | Toggle developer overlays |
+| F2 | Cycle flight overlays: off / pilot / full / developer |
 | F5 | Reload the aircraft data file |
 
 Letters refer to physical QWERTY positions; in-game Help shows your keyboard's labels. A connected USB radio/gamepad replaces the keyboard flight sticks.
 
 Keyboard and gamepad sticks use the aircraft's normal-flight dual rates and expo where its manual states them (Extra, P-51, Ventage Jet; the status line shows `rates: normal`); a radio keeps its own rates. The direct route's `--rates=full` flies the maximum throws, as the Ugly Stik always does.
 
-Current source lets you adjust elevator trim with **Page Up / Page Down** (Spanish keyboards: **RePág / AvPág**). Establish the desired speed and flight path with the sticks and throttle, then adjust trim to relieve the held elevator command. This is a fixed surface offset, not altitude hold; changes in power or speed may need another adjustment. The transmitter overlay shows the resulting trim. **R** restores the starting trim. Trim keys are ignored while paused or replaying recorded inputs.
+Adjust elevator trim with **Page Up / Page Down** (Spanish keyboards: **RePág / AvPág**). Establish the desired speed and flight path with the sticks and throttle, then adjust trim to relieve the held elevator command. This is a fixed surface offset, not altitude hold; changes in power or speed may need another adjustment. The transmitter overlay shows the resulting trim. **R** restores the starting trim. Trim keys are ignored while paused or replaying recorded inputs.
 
 ### Radio setup
 
@@ -67,7 +69,7 @@ On the Stik, **J** opens a separate smoke-pump assignment: keep the control OFF,
 
 ## Current source
 
-New Home preferences select the Stik runway launch, gentle wind/gusts/turbulence, **Evening (time passing)**, scenery, birds, engine shadows and the live diagnostic marker. Existing explicit choices take precedence. Choose **Airborne**, **Calm** and **Day** for the earlier practice setup. Direct command-line flights ignore saved settings and default to airborne, calm/reference weather and fixed daylight.
+Fresh Home preferences also select gentle wind/gusts/turbulence, **Evening (time passing)**, scenery, birds, engine shadows and the live diagnostic marker. Saved choices take precedence. Direct command-line flights ignore saved settings and default to airborne, calm/reference weather and fixed daylight.
 
 **Flight overlays.** Home flights show separate overlays instead of the diagnostic text: flight data (airspeed, ground speed, height above ground, vertical speed, throttle, distance from you, flight time), the transmitter's sticks and trims, short warnings (radio safe, failsafe, stall, sinking low, too far, battery) and the wind seen from where you stand. Telemetry and the developer diagnostics are optional. Close any overlay with its ×, press **F2** to cycle presets, **F3** for the developer overlays, or choose overlays, units (km/h, mph or m/s; by language by default) and transmitter Mode 1/2 under Pause → **Flight overlays**. The choice is saved under `[hud]` in `settings.cfg`. Direct command-line flights keep the legacy text unless `--hud=overlays`. [Plan](plans/flight-overlays.md).
 
@@ -75,7 +77,7 @@ New Home preferences select the Stik runway launch, gentle wind/gusts/turbulence
 
 **Time of day** selects fixed day/dawn/dusk/night or passing evening. Evening advances visual time at 20× simulation time. Pause also offers exact time/date/location editing with an explicit UTC offset. Visual time does not change weather or flight physics. Stars, moonlight, field lamps and an experimental aircraft light kit support night practice; readability still needs pilot testing. [Lighting](TIME-OF-DAY-PLAN.md).
 
-Current source includes per-wheel spin/contact and approximate static tree/prop collision proxies. Ordinary Home and direct flights enable crash effects and retain the aftermath until **R** or Pause → Restart. `--crash-effects=off` restores timed recovery; scripted/capture routes keep their technical policy. A light wingtip, tail or belly touch now continues the flight; only a hard impact ends it (`--soft-contacts=off` restores "any airframe contact is a crash"). Deformation, damage severity and collision proxies are engineering approximations. Flyable structural damage, surveyed collision terrain and calibrated takeoff/landing behavior are not implemented or accepted. [Ground model](research/ground-physics/GP-05/README.md) · [Crash scope](CRASH-DAMAGE-PLAN.md).
+Flight includes per-wheel spin/contact and approximate static tree/prop collision proxies. Ordinary Home and direct flights enable crash effects and retain the aftermath until **R** or Pause → Restart. `--crash-effects=off` restores timed recovery; scripted/capture routes keep their technical policy. A light wingtip, tail or belly touch continues the flight; only a hard impact ends it (`--soft-contacts=off` restores "any airframe contact is a crash"). Deformation, damage severity and collision proxies are engineering approximations. Flyable structural damage, surveyed collision terrain and calibrated takeoff/landing behavior are not implemented or accepted. [Ground model](research/ground-physics/GP-05/README.md) · [Crash scope](CRASH-DAMAGE-PLAN.md).
 
 **Updates.** While Home is open, an exported build asks GitHub once a day whether a newer release is published: one anonymous HTTPS request to `api.github.com` carrying only the app version and the OS name. A newer version shows a small card at the top right. **Download** opens the release page in your browser, where the three ZIPs, `SHA256SUMS` and the release notes are; **Hide** silences that version until a newer one exists. Updating is manual: download the ZIP for your platform and replace the extracted folder; settings and calibration live in your user data folder and are kept. To turn the check off, set `check=false` under `[updates]` in `settings.cfg` (Windows `%APPDATA%\Godot\app_userdata\OpenRC Simulator\`, macOS `~/Library/Application Support/Godot/app_userdata/OpenRC Simulator/`, Linux `~/.local/share/godot/app_userdata/OpenRC Simulator/`). Builds run from the source tree do not check.
 
