@@ -20,6 +20,17 @@ class ProvenanceTests(unittest.TestCase):
             value["source_sha256"] = {p: "f" * 64 for p in report.SOURCE_PATHS}
             for run in value["runs"]:
                 run.setdefault("mode_events", [])
+                engine = str(run["engine"])
+                aircraft_path, installation_path = report.ENGINE_INPUTS[engine]
+                installation_file = report.ROOT / installation_path
+                installation = json.loads(installation_file.read_text(encoding="utf-8"))
+                profile_path = report.ROOT / "app" / installation["profile"].removeprefix("res://")
+                config = run["configuration"]
+                config["aircraft_input_sha256"] = report.sha256(report.ROOT / aircraft_path)
+                identity = json.loads(config["glow_identity"])
+                identity["sha256"] = report.sha256(installation_file)
+                identity["profile"]["sha256"] = report.sha256(profile_path)
+                config["glow_identity"] = json.dumps(identity)
 
     def fixture(self):
         def read(path, *args, **kwargs):
@@ -37,6 +48,12 @@ class ProvenanceTests(unittest.TestCase):
     def test_changed_source_between_rates_is_rejected(self):
         self.runs[report.RUNS[480]]["source_sha256"][report.SOURCE_PATHS[0]] = "a" * 64
         with self.fixture(), self.assertRaisesRegex(ValueError, "identical.*source snapshots"):
+            report.read_runs()
+
+    def test_stale_aircraft_input_hash_is_rejected(self):
+        run = self.runs[report.RUNS[240]]["runs"][0]
+        run["configuration"]["aircraft_input_sha256"] = "0" * 64
+        with self.fixture(), self.assertRaisesRegex(ValueError, "benchmark aircraft hash does not match"):
             report.read_runs()
 
     def test_missing_or_malformed_hash_is_rejected(self):
