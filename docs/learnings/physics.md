@@ -6,6 +6,10 @@ Lessons from ground handling (E1–E3b3), aircraft data and aero consistency (D1
 
 ## Numerical correctness and state
 
+### Check aerodynamic passivity against local air, not only body speed
+
+Gavrilets' printed horizontal-tail force sign and fuselage wake sign conflicted with its FRD conventions. An independent oracle could reproduce those same signs without proving physical consistency. Compute local vehicle-relative flow as `vCG,air + ω×r − vwake`, then check resisting-force work `F·vrel ≤ 0` and CP-to-CG wrench work identity. Moving air can supply positive body work; do not require world-frame aircraft kinetic energy to always decrease. Keep sign corrections explicit and preserve the printed source conflict. ([HELI-06b/c](../research/helicopter/HELI-06b/README.md))
+
 ### A stability limit is not a physical measurement
 
 The explicit integrator limits the spring frequencies it can resolve, but that limit says nothing about the real landing gear's stiffness. A passive contact model can still have inaccurate touchdown forces or trajectories, so check ring-down and switched-contact accuracy with step refinement and independent touchdown cases. Do not reuse an old stiffness number as a physical datum; keep measured gear data separate from a solver's numerical bound. ([H11](../research/simulation-state/H11/README.md), [E1b](../research/ground-contact/E1b/README.md))

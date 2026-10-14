@@ -1,6 +1,6 @@
 {
   "schema": "openrc-aircraft-model-bindings",
-  "version": 1,
+  "version": 2,
   "families": [
     {
       "family_id": "jensen-das-ugly-stik-60",
@@ -426,7 +426,7 @@
     {
       "family_id": "turbo-lumber-evolution",
       "builder": {
-        "script": "res://aircraft/timber_model.gd",
+        "script": "res://aircraft/imported_model.gd",
         "adapter": "imported_glb"
       },
       "geometry": {
@@ -555,7 +555,52 @@
           "path": "assets/aircraft/turbo-lumber-evolution/manual.json",
           "role": "manual_metadata"
         }
-      ]
+      ],
+      "construction": {
+        "version": 1,
+        "hinge_axis": "+X",
+        "rotor": {
+          "frame_node": "thrust_frame",
+          "geometry_ref": "thrust",
+          "axis": "+X"
+        },
+        "gear": [
+          {
+            "role": "steering",
+            "node": "tailwheel_steer",
+            "geometry_ref": "articulations.tailwheel_steer",
+            "wrapper": "tail_steering"
+          },
+          {
+            "role": "left",
+            "node": "wheel_left_axle",
+            "geometry_ref": "articulations.wheel_left_axle",
+            "wrapper": "wheel_left_spin"
+          },
+          {
+            "role": "right",
+            "node": "wheel_right_axle",
+            "geometry_ref": "articulations.wheel_right_axle",
+            "wrapper": "wheel_right_spin"
+          },
+          {
+            "role": "tail",
+            "node": "tailwheel_axle",
+            "geometry_ref": "articulations.tailwheel_axle",
+            "wrapper": "tailwheel_spin"
+          }
+        ],
+        "material_grow": [
+          {
+            "node": "cowl",
+            "materials": [
+              "black",
+              "red"
+            ],
+            "amount_m": 0.0008
+          }
+        ]
+      }
     }
   ]
 }

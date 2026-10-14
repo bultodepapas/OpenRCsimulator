@@ -6,6 +6,8 @@
 
 The [AS-13 continuation](AS-13/README.md) implements accepted contact observations, transactional collision publication and versioned checkpoint history without changing the physical laws.
 
+The [AS-09/10 import continuation](AS-09-10-import/README.md) migrates Timber to a common declarative Blender builder with checked gear/rotor construction and retained version 1 procedural adapters. A second distinct Blender delivery remains an onboarding gate.
+
 The [contract](../../../AIRCRAFT_CONTRACT.md) defines configuration, derived-model and runtime-state boundaries. [AS-05](AS-05/README.md) records delivered scope, verification and remaining acceptance.
 
 | Evidence | Content |

@@ -24,6 +24,9 @@ ADAPTERS = {"euler_hinges", "axis_hinges", "imported_glb"}
 CONTROL_ROLES = {"aileron_left", "aileron_right", "elevator", "rudder", "flap_left", "flap_right"}
 GEAR_ROLES = {"left", "right", "tail", "steering", "nose"}
 REQUIRED_CONTROL_ROLES = {"aileron_left", "aileron_right", "elevator", "rudder"}
+SHARED_IMPORTED_BUILDER = "res://aircraft/imported_model.gd"
+CONSTRUCTION_ROLES = {"left", "right", "tail", "steering", "nose"}
+CONSTRUCTION_AXES = {"+X", "-X", "+Y", "-Y", "+Z", "-Z"}
 
 
 class ModelManifestError(ValueError):
@@ -102,11 +105,12 @@ def _selector_value(source: Any, selector: Any, label: str) -> float:
     return _number(raw, label) * scale
 
 
-def _check_keys(value: Any, required: set[str], label: str) -> dict[str, Any]:
+def _check_keys(value: Any, required: set[str], label: str, optional: set[str] | None = None) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ModelManifestError(f"{label} must be an object")
+    optional = optional or set()
     missing = required - value.keys()
-    unknown = value.keys() - required
+    unknown = value.keys() - required - optional
     if missing:
         raise ModelManifestError(f"{label} is missing fields: {', '.join(sorted(missing))}")
     if unknown:
@@ -114,20 +118,129 @@ def _check_keys(value: Any, required: set[str], label: str) -> dict[str, Any]:
     return value
 
 
+def _safe_node_name(value: Any, label: str) -> str:
+    if not isinstance(value, str) or re.fullmatch(r"[A-Za-z0-9_]+", value) is None:
+        raise ModelManifestError(f"{label} must be a safe node name")
+    return value
+
+
+def _construction_ref(source: dict[str, Any], reference: Any, expected_node: Any, label: str) -> dict[str, Any]:
+    if not isinstance(reference, str) or not reference or re.fullmatch(r"[A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*", reference) is None:
+        raise ModelManifestError(f"{label} must be a dotted source reference")
+    value = _resolve(source, reference, label)
+    if not isinstance(value, dict):
+        raise ModelManifestError(f"{label} must resolve to an object")
+    if value.get("node") != expected_node:
+        raise ModelManifestError(f"{label} node {expected_node!r} does not match source node {value.get('node')!r}")
+    return value
+
+
+def _validate_construction(construction: Any, bindings: dict[str, Any], label: str) -> None:
+    construction = _check_keys(
+        construction,
+        {"version", "hinge_axis", "rotor", "gear", "material_grow"},
+        f"{label}.construction",
+    )
+    if type(construction["version"]) is not int or construction["version"] != 1:
+        raise ModelManifestError(f"{label}.construction.version must be integer 1")
+    if construction["hinge_axis"] != "+X":
+        raise ModelManifestError(f"{label}.construction.hinge_axis must be +X")
+
+    if bindings["rotor"]["present"]:
+        rotor = _check_keys(construction["rotor"], {"frame_node", "geometry_ref", "axis"}, f"{label}.construction.rotor")
+        _safe_node_name(rotor["frame_node"], f"{label}.construction.rotor.frame_node")
+        if not isinstance(rotor["geometry_ref"], str) or re.fullmatch(r"[A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*", rotor["geometry_ref"]) is None:
+            raise ModelManifestError(f"{label}.construction.rotor.geometry_ref must be a dotted source reference")
+        if not isinstance(rotor["axis"], str) or rotor["axis"] not in CONSTRUCTION_AXES:
+            raise ModelManifestError(f"{label}.construction.rotor.axis must be a signed X, Y or Z axis")
+    else:
+        _check_keys(construction["rotor"], set(), f"{label}.construction.rotor")
+        rotor = {}
+
+    expected_roles = set(bindings["gear"]["keys"])
+    if not isinstance(construction["gear"], list):
+        raise ModelManifestError(f"{label}.construction.gear must be an array")
+    seen_roles: set[str] = set()
+    used_names: dict[str, str] = {"propeller": "generated propeller", "propeller_mount": "generated propeller mount"}
+
+    def claim_name(value: Any, item_label: str) -> None:
+        name = _safe_node_name(value, item_label)
+        if name in used_names:
+            raise ModelManifestError(f"{item_label} node name {name!r} collides with {used_names[name]}")
+        used_names[name] = item_label
+
+    for role, control in bindings["controls"].items():
+        for hinge in control["hinges"]:
+            if hinge["source"] != "geometry_articulation":
+                raise ModelManifestError(f"{label}.bindings.controls.{role}.{hinge['key']} must source its hinge from geometry_articulation")
+            claim_name(hinge["node"], f"{label}.bindings.controls.{role}.{hinge['key']}.node")
+    if bindings["rotor"]["node"] != "propeller":
+        claim_name(bindings["rotor"]["node"], f"{label}.bindings.rotor.node")
+    if bindings["rotor"]["spin_node"]:
+        claim_name(bindings["rotor"]["spin_node"], f"{label}.bindings.rotor.spin_node")
+    if bindings["rotor"]["present"]:
+        claim_name(rotor["frame_node"], f"{label}.construction.rotor.frame_node")
+
+    for index, entry in enumerate(construction["gear"]):
+        item_label = f"{label}.construction.gear[{index}]"
+        entry = _check_keys(entry, {"role", "node", "geometry_ref", "wrapper"}, item_label)
+        role = entry["role"]
+        if not isinstance(role, str) or role not in CONSTRUCTION_ROLES:
+            raise ModelManifestError(f"{item_label}.role is unsupported")
+        if role in seen_roles:
+            raise ModelManifestError(f"{item_label}.role duplicates a gear role")
+        seen_roles.add(role)
+        if role not in expected_roles:
+            raise ModelManifestError(f"{item_label}.role is not declared by bindings.gear.keys")
+        claim_name(entry["node"], f"{item_label}.node")
+        wrapper_name = _safe_node_name(entry["wrapper"], f"{item_label}.wrapper")
+        claim_name(wrapper_name, f"{item_label}.wrapper")
+        claim_name(wrapper_name + "_mount", f"{item_label}.wrapper_mount")
+        if not isinstance(entry["geometry_ref"], str) or re.fullmatch(r"[A-Za-z0-9_]+(?:\.[A-Za-z0-9_]+)*", entry["geometry_ref"]) is None:
+            raise ModelManifestError(f"{item_label}.geometry_ref must be a dotted source reference")
+    if seen_roles != expected_roles:
+        missing = ", ".join(sorted(expected_roles - seen_roles))
+        raise ModelManifestError(f"{label}.construction.gear must declare each bindings.gear.keys role once; missing {missing}")
+
+    if not isinstance(construction["material_grow"], list):
+        raise ModelManifestError(f"{label}.construction.material_grow must be an array")
+    seen_material_pairs: set[tuple[str, str]] = set()
+    for index, entry in enumerate(construction["material_grow"]):
+        item_label = f"{label}.construction.material_grow[{index}]"
+        entry = _check_keys(entry, {"node", "materials", "amount_m"}, item_label)
+        node = _safe_node_name(entry["node"], f"{item_label}.node")
+        materials = entry["materials"]
+        if not isinstance(materials, list) or not materials:
+            raise ModelManifestError(f"{item_label}.materials must be a non-empty array")
+        if any(not isinstance(material, str) or not material.strip() for material in materials):
+            raise ModelManifestError(f"{item_label}.materials entries must be non-empty strings")
+        if len(set(materials)) != len(materials):
+            raise ModelManifestError(f"{item_label}.materials repeats a material name")
+        for material in materials:
+            pair = (node, material)
+            if pair in seen_material_pairs:
+                raise ModelManifestError(f"{item_label} repeats node/material pair {pair!r}")
+            seen_material_pairs.add(pair)
+        amount = entry["amount_m"]
+        if isinstance(amount, bool) or not isinstance(amount, (int, float)) or not math.isfinite(float(amount)) or not 0.0 < float(amount) <= 0.01:
+            raise ModelManifestError(f"{item_label}.amount_m must be finite and greater than 0 and at most 0.01 m")
+
+
 def validate_registry(registry: Any) -> list[dict[str, str]]:
     """Validate the authoring registry and its stable role vocabulary."""
     errors: list[dict[str, str]] = []
     try:
         _check_keys(registry, {"schema", "version", "families"}, "registry")
-        if registry["schema"] != "openrc-aircraft-model-bindings" or type(registry["version"]) is not int or registry["version"] != 1:
+        if registry["schema"] != "openrc-aircraft-model-bindings" or type(registry["version"]) is not int or registry["version"] not in {1, 2}:
             raise ModelManifestError("registry schema/version is unsupported")
+        registry_version = registry["version"]
         if not isinstance(registry["families"], list) or not registry["families"]:
             raise ModelManifestError("registry families must be a non-empty array")
         families: set[str] = set()
         builders: set[str] = set()
         for index, family in enumerate(registry["families"]):
             label = f"families[{index}]"
-            _check_keys(family, {"family_id", "builder", "geometry", "asset", "bindings", "authoring_sources"}, label)
+            _check_keys(family, {"family_id", "builder", "geometry", "asset", "bindings", "authoring_sources"}, label, {"construction"})
             family_id = family["family_id"]
             if not isinstance(family_id, str) or not FAMILY_RE.fullmatch(family_id):
                 raise ModelManifestError(f"{label}.family_id is not a stable slug")
@@ -141,7 +254,8 @@ def validate_registry(registry: Any) -> list[dict[str, str]]:
                 raise ModelManifestError(f"{label}.builder must name a supported bundled model builder")
             if script in builders:
                 raise ModelManifestError(f"multiple visual families use builder {script!r}")
-            builders.add(script)
+            if script != SHARED_IMPORTED_BUILDER:
+                builders.add(script)
 
             geometry = _check_keys(family["geometry"], {"script", "source", "revision_path", "identity_path", "datum"}, f"{label}.geometry")
             geometry_script = _safe_resource_path(geometry["script"], f"{label}.geometry.script")
@@ -230,6 +344,18 @@ def validate_registry(registry: Any) -> list[dict[str, str]]:
             if crash["provider"] == "gltf_extras" and asset["kind"] != "imported_glb":
                 raise ModelManifestError(f"{label}.bindings.crash gltf_extras requires an imported_glb asset")
 
+            has_construction = "construction" in family
+            if has_construction:
+                if registry_version != 2:
+                    raise ModelManifestError(f"{label}.construction requires source registry version 2")
+                if script != SHARED_IMPORTED_BUILDER or builder["adapter"] != "imported_glb" or asset["kind"] != "imported_glb":
+                    raise ModelManifestError(f"{label}.construction requires the shared imported_glb builder and an imported asset")
+                if crash["provider"] == "generated_triangle_map":
+                    raise ModelManifestError(f"{label}.construction does not support generated_triangle_map crash metadata")
+                _validate_construction(family["construction"], bindings, label)
+            elif script == SHARED_IMPORTED_BUILDER:
+                raise ModelManifestError(f"{label} shared imported builder requires a construction object")
+
             sources = family["authoring_sources"]
             if not isinstance(sources, list):
                 raise ModelManifestError(f"{label}.authoring_sources must be an array")
@@ -256,8 +382,12 @@ def _validate_articulation(source: dict[str, Any], ref: str, node_name: str, lab
     if not isinstance(articulation.get("positive"), str) or not articulation["positive"].strip():
         raise ModelManifestError(f"{label} has no declared positive direction")
     travel = articulation.get("range_deg")
-    if not isinstance(travel, list) or len(travel) != 2 or not all(math.isfinite(float(x)) for x in travel):
+    if not isinstance(travel, list) or len(travel) != 2:
         raise ModelManifestError(f"{label} has no valid rest-to-travel range")
+    travel_low = _number(travel[0], f"{label}.range_deg[0]")
+    travel_high = _number(travel[1], f"{label}.range_deg[1]")
+    if travel_low >= travel_high:
+        raise ModelManifestError(f"{label} rest-to-travel range must be increasing")
     sign = articulation.get("app_sign")
     if isinstance(sign, bool) or not isinstance(sign, (int, float)) or abs(float(sign)) != 1.0:
         raise ModelManifestError(f"{label} must declare a signed presentation conversion")
@@ -348,6 +478,25 @@ def build_manifest(root: Path, registry_path: Path, family: dict[str, Any]) -> d
         if not isinstance(articulation.get("positive"), str) or not articulation["positive"].strip():
             raise ModelManifestError(f"{family['family_id']} rotor articulation lacks its declared rotation sense")
 
+    construction = family.get("construction")
+    if construction is not None:
+        if rotor_cfg["present"]:
+            thrust_frame = _construction_ref(
+                geometry,
+                construction["rotor"]["geometry_ref"],
+                construction["rotor"]["frame_node"],
+                f"{family['family_id']}.construction.rotor",
+            )
+            if thrust_frame.get("spin_node") != rotor_cfg["spin_node"]:
+                raise ModelManifestError(f"{family['family_id']} construction rotor spin node does not match its thrust frame")
+        for index, gear in enumerate(construction["gear"]):
+            _construction_ref(
+                geometry,
+                gear["geometry_ref"],
+                gear["node"],
+                f"{family['family_id']}.construction.gear[{index}]",
+            )
+
     source_registry_rel = registry_path.relative_to(root).as_posix()
     source_record = {
         "path": source_registry_rel,
@@ -415,9 +564,9 @@ def build_manifest(root: Path, registry_path: Path, family: dict[str, Any]) -> d
         "gear": family["bindings"]["gear"],
         "crash": family["bindings"]["crash"],
     }
-    return {
+    manifest = {
         "schema": "openrc-aircraft-model",
-        "version": 1,
+        "version": 2 if construction is not None else 1,
         "family_id": family["family_id"],
         "builder": family["builder"],
         "surface_method": "apply_surfaces",
@@ -436,6 +585,9 @@ def build_manifest(root: Path, registry_path: Path, family: dict[str, Any]) -> d
         "authoring_sources": authoring_sources,
         "dependencies": dependencies,
     }
+    if construction is not None:
+        manifest["construction"] = construction
+    return manifest
 
 
 def validate_dependency_hashes(root: Path, manifest: dict[str, Any]) -> list[dict[str, str]]:

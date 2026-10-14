@@ -56,6 +56,15 @@ static func validate(construction: Variant, bindings: Dictionary) -> Dictionary:
 	_claim_name("propeller", "$.construction.generated.propeller", used_names, errors, diagnostics)
 	_claim_name("propeller_mount", "$.construction.generated.propeller_mount", used_names, errors, diagnostics)
 	_claim_control_names(controls, used_names, errors, diagnostics)
+	if typeof(controls) == TYPE_DICTIONARY:
+		for role_variant in controls.keys():
+			var control: Variant = controls[role_variant]
+			if typeof(control) != TYPE_DICTIONARY or typeof(control.get("hinges", [])) != TYPE_ARRAY:
+				continue
+			for index in control.get("hinges", []).size():
+				var hinge: Variant = control.get("hinges", [])[index]
+				if typeof(hinge) == TYPE_DICTIONARY and hinge.get("source") != "geometry_articulation":
+					_fail(errors, diagnostics, "MODEL_CONSTRUCTION_CONTROL_SOURCE_INVALID", "$.bindings.controls.%s.hinges[%d].source" % [str(role_variant), index], "shared imported construction requires geometry_articulation controls")
 	if typeof(rotor_binding) == TYPE_DICTIONARY:
 		var public_node: Variant = rotor_binding.get("node", "")
 		if public_node != "propeller": _claim_name(public_node, "$.bindings.rotor.node", used_names, errors, diagnostics)

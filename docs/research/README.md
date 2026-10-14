@@ -146,6 +146,8 @@ The [wind guide](../WIND-PLAN.md) tracks physical wind and visual response. Begi
 
 [HELI-01](helicopter/HELI-01/README.md) records the aircraft and source survey. [HELI-03a/04](helicopter/HELI-04/README.md) supplies the steady inflow reference and published crossflow seams; [HELI-04-R1](helicopter/HELI-04-R1/README.md) qualifies dimensional transient flow with prescribed events. [HELI-05/05a](helicopter/HELI-05/README.md) verifies main-rotor loads/flapping and the fixed-body joint stage; [HELI-06a](helicopter/HELI-06/README.md) verifies the standalone linearized tail. [HELI-13](helicopter/HELI-13/README.md) verifies the pure swash kernel. [HELI-25a](helicopter/HELI-25/README.md) audits and exports the supplied HX-700 Blender visual. The [helicopter plan](../plans/helicopter.md) owns remaining aircraft, session and acceptance work.
 
+[HELI-06b/c](helicopter/HELI-06b/README.md) records the passive airframe extension, source-sign audit, joint aerodynamic stand and unresolved cost gate. [HELI-07/08](helicopter/HELI-07/README.md) audits drivetrain/rotor-momentum ownership and remaining finite-startup/freewheel requirements.
+
 ### Drone racing (shared-foundation review)
 
 [DR-01](drone-racing/DR-01/README.md) records the identified quadrotor models and datasets, small-propeller data limits, Betaflight rate and mixer semantics, racing formats and timing systems, FPV camera and OSD facts, Compatibility-renderer limits and the code-seam map for a multirotor. The [drone racing plan](../plans/drone-racing.md) consumes HELI's shared inflow evidence; multirotor flight and racing remain proposed.

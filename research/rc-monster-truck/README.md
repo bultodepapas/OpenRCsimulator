@@ -1,6 +1,43 @@
-# RC vehicle numerical benches
+# RC vehicle research tools
 
-The [RCV plan](../../docs/plans/rc-monster-truck.md) owns vehicle integration and remaining steps. This directory contains runnable research tools; dated results cover the [quarter car](../../docs/research/rc-monster-truck/RCV-04a/README.md) and [four-corner support](../../docs/research/rc-monster-truck/RCV-04b/README.md).
+The [RCV plan](../../docs/plans/rc-monster-truck.md) owns vehicle integration and remaining steps. This directory contains runnable research tools; dated results cover the [quarter car](../../docs/research/rc-monster-truck/RCV-04a/README.md), [four-corner support](../../docs/research/rc-monster-truck/RCV-04b/README.md) and [MT8 visual intake](../../docs/research/rc-monster-truck/RCV-14a/README.md).
+
+## RCV-14a MT8 visual inspection
+
+The supplied Bisonte MT8 draft can be inspected locally in Godot 4.7.2. The viewer loads the canonical `RC CARS/MT8_Bisonte_entrega1_1/MT8_Bisonte/out/MT8_Bisonte.glb` and the author's generated rig directly. It changes no authoring file and does not add a vehicle to the application catalog. Runtime bundling awaits the source-rights and binding work recorded in the intake report.
+
+From the repository root on Windows:
+
+```powershell
+& ./research/rc-monster-truck/visual/preview.ps1
+# Optional: -Language en -Pose cross -HideBody -ShowProxies
+# Supply -Godot C:/Tools/Godot_v4.7.2-stable_win64_console.exe if needed.
+```
+
+The renderer needs a display. Drag the model to orbit; scroll to zoom. Use Tab/arrows/Space or the mouse for controls. FL/FR/RL/RR mean front-left/front-right/rear-left/rear-right as seen by a driver looking forward. Travel is in millimetres, positive for compression; positive steering turns left. The optional wheel animation shows the forward spin sign and does not move or drive the truck. The proxy toggle shows the six body/roof/side/bumper boxes; tire envelopes are not included. Reset restores camera, pose and wheel phase; visibility toggles remain as selected.
+
+The inspector positions each posed truck just above its display floor. This is visual staging, not a gravity/contact solution. Its controls exercise the author's travel limits: −70 to +50 mm and ±30° steering. These are geometry limits, not calibrated physical parameters. The existing support bench has different synthetic dimensions and is deliberately not connected to this asset as if it were measured MT8 mechanics.
+
+The scripts remain outside `app/`, so current game exports do not depend on the authoring directory. Linux/native Godot can launch the same inspector using an absolute script path:
+
+```sh
+GODOT="$(app/get-godot.sh)"
+"$GODOT" --path app --audio-driver Dummy --script "$PWD/research/rc-monster-truck/visual/preview.gd" -- --lang=en --pose=cross
+```
+
+Save a screenshot and exit with `preview.ps1 -Capture C:/captures/mt8.png` or `--capture=/absolute/existing/directory/mt8.png`. The directory must already exist and the output filename must be fresh. Capture requires a real renderer; `--headless` is only for tests. The CLI refuses empty, duplicate or unknown options.
+
+Verification commands (PowerShell):
+
+```powershell
+python -B research/rc-monster-truck/asset_intake.py --check
+python -B research/rc-monster-truck/test_asset_intake.py
+$RcvGodot = (Resolve-Path '.tools/Godot_v4.7.2-stable_win64_console.exe').Path
+& $RcvGodot --headless --path app --audio-driver Dummy --script (Resolve-Path 'research/rc-monster-truck/visual/test_mt8_visual.gd').Path
+& $RcvGodot --headless --path app --audio-driver Dummy --script (Resolve-Path 'research/rc-monster-truck/visual/test_preview.gd').Path
+```
+
+[asset_intake.py](asset_intake.py) inventories source hashes, geometry, articulation, materials and remaining handoff findings. Generate its JSON with the same command without `--check` only after reviewing a changed delivery. [mt8_visual.gd](visual/mt8_visual.gd) separately pins the reviewed GLB/spec/rig bytes before loading the author rig; a changed file refuses preview until explicitly reviewed and repinned. `.gitattributes` preserves those delivery bytes across checkouts. The adapter maps accepted source node names directly; no source pivots are renamed. It accepts complete four-corner poses, rejects invalid/nonfinite/out-of-range input before changing any node, and converts positive forward spin to the delivered negative local-X angle.
 
 ## RCV-04a suspension bench
 

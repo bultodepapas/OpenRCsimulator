@@ -1,5 +1,5 @@
 {
-	"builder_path": "res://aircraft/timber_model.gd",
+	"builder_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\as-import\\legacy_timber_model.gd",
 	"failures": [],
 	"godot_version": "4.7.2-stable (official)",
 	"ok": true,
@@ -129,7 +129,10 @@
 						-0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -163,7 +166,10 @@
 						-0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -197,7 +203,10 @@
 						0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -231,7 +240,10 @@
 						0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -265,7 +277,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "canopy"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -299,7 +314,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "engine"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -333,7 +351,10 @@
 						0.0,
 						-0.0320000015199184,
 						0.704000055789948
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -367,7 +388,10 @@
 						0.0,
 						-0.0320000015199184,
 						0.704000055789948
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -401,7 +425,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -435,7 +462,10 @@
 						-0.240247249603271,
 						0.105728663504124,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -469,7 +499,10 @@
 						-0.240247249603271,
 						0.105728663504124,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -503,7 +536,10 @@
 						0.240247279405594,
 						0.105728670954704,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -537,7 +573,10 @@
 						0.240247279405594,
 						0.105728670954704,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -571,7 +610,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "core"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -605,7 +647,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -639,7 +684,10 @@
 						-0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -673,7 +721,10 @@
 						-0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -775,7 +826,10 @@
 						-0.131978809833527,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -809,7 +863,10 @@
 						-0.131978809833527,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -843,7 +900,10 @@
 						0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -877,7 +937,10 @@
 						0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -979,7 +1042,10 @@
 						0.131978780031204,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -1013,7 +1079,10 @@
 						0.131978780031204,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -1047,7 +1116,10 @@
 						0.0,
 						0.0538000017404556,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -1081,7 +1153,10 @@
 						0.0,
 						0.0538000017404556,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -1115,7 +1190,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -1217,7 +1295,10 @@
 						0.0,
 						-0.084092378616333,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -1251,7 +1332,10 @@
 						0.0,
 						-0.084092378616333,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -1353,7 +1437,10 @@
 						-0.00778934033587575,
 						-0.112000003457069,
 						0.757502019405365
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -1387,7 +1474,10 @@
 						-0.00778934033587575,
 						-0.112000003457069,
 						0.757502019405365
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -1523,7 +1613,10 @@
 						-0.000326865731040016,
 						0.000327067071339116,
 						-0.242139741778374
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "propeller"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -1557,7 +1650,10 @@
 						-0.000326865731040016,
 						0.000327067071339116,
 						-0.242139741778374
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "propeller"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -1591,7 +1687,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -1625,7 +1724,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				}
 			]
 		},
@@ -1753,7 +1855,10 @@
 						-0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -1787,7 +1892,10 @@
 						-0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -1821,7 +1929,10 @@
 						0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -1855,7 +1966,10 @@
 						0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -1889,7 +2003,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "canopy"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -1923,7 +2040,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "engine"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -1957,7 +2077,10 @@
 						0.0,
 						-0.0320000015199184,
 						0.704000055789948
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -1991,7 +2114,10 @@
 						0.0,
 						-0.0320000015199184,
 						0.704000055789948
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -2025,7 +2151,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -2059,7 +2188,10 @@
 						-0.240247249603271,
 						0.105728663504124,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -2093,7 +2225,10 @@
 						-0.240247249603271,
 						0.105728663504124,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -2127,7 +2262,10 @@
 						0.240247279405594,
 						0.105728670954704,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -2161,7 +2299,10 @@
 						0.240247279405594,
 						0.105728670954704,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -2195,7 +2336,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "core"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -2229,7 +2373,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -2263,7 +2410,10 @@
 						-0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -2297,7 +2447,10 @@
 						-0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -2399,7 +2552,10 @@
 						-0.131978809833527,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -2433,7 +2589,10 @@
 						-0.131978809833527,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -2467,7 +2626,10 @@
 						0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -2501,7 +2663,10 @@
 						0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -2603,7 +2768,10 @@
 						0.131978780031204,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -2637,7 +2805,10 @@
 						0.131978780031204,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -2671,7 +2842,10 @@
 						0.0,
 						0.0538000017404556,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -2705,7 +2879,10 @@
 						0.0,
 						0.0538000017404556,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -2739,7 +2916,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -2841,7 +3021,10 @@
 						0.0,
 						-0.084092378616333,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -2875,7 +3058,10 @@
 						0.0,
 						-0.084092378616333,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -2977,7 +3163,10 @@
 						0.0,
 						-0.112000003457069,
 						0.759000062942505
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3011,7 +3200,10 @@
 						0.0,
 						-0.112000003457069,
 						0.759000062942505
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -3147,7 +3339,10 @@
 						-0.000326865731040016,
 						0.000327067071339116,
 						-0.242139741778374
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "propeller"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3181,7 +3376,10 @@
 						-0.000326865731040016,
 						0.000327067071339116,
 						-0.242139741778374
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "propeller"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3215,7 +3413,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3249,7 +3450,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				}
 			]
 		},
@@ -3377,7 +3581,10 @@
 						-0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3411,7 +3618,10 @@
 						-0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -3445,7 +3655,10 @@
 						0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3479,7 +3692,10 @@
 						0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3513,7 +3729,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "canopy"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3547,7 +3766,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "engine"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -3581,7 +3803,10 @@
 						0.0,
 						-0.0320000015199184,
 						0.704000055789948
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3615,7 +3840,10 @@
 						0.0,
 						-0.0320000015199184,
 						0.704000055789948
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3649,7 +3877,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -3683,7 +3914,10 @@
 						-0.240247249603271,
 						0.105728663504124,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3717,7 +3951,10 @@
 						-0.240247249603271,
 						0.105728663504124,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -3751,7 +3988,10 @@
 						0.240247279405594,
 						0.105728670954704,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3785,7 +4025,10 @@
 						0.240247279405594,
 						0.105728670954704,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3819,7 +4062,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "core"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3853,7 +4099,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -3887,7 +4136,10 @@
 						-0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -3921,7 +4173,10 @@
 						-0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -4023,7 +4278,10 @@
 						-0.131978809833527,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -4057,7 +4315,10 @@
 						-0.131978809833527,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -4091,7 +4352,10 @@
 						0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -4125,7 +4389,10 @@
 						0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -4227,7 +4494,10 @@
 						0.131978780031204,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -4261,7 +4531,10 @@
 						0.131978780031204,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -4295,7 +4568,10 @@
 						0.0,
 						0.0538000017404556,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -4329,7 +4605,10 @@
 						0.0,
 						0.0538000017404556,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -4363,7 +4642,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -4465,7 +4747,10 @@
 						0.0,
 						-0.084092378616333,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -4499,7 +4784,10 @@
 						0.0,
 						-0.084092378616333,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -4601,7 +4889,10 @@
 						0.0,
 						-0.112000003457069,
 						0.759000062942505
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -4635,7 +4926,10 @@
 						0.0,
 						-0.112000003457069,
 						0.759000062942505
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -4771,7 +5065,10 @@
 						-0.000326865731040016,
 						0.000327067071339116,
 						-0.242139741778374
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "propeller"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -4805,7 +5102,10 @@
 						-0.000326865731040016,
 						0.000327067071339116,
 						-0.242139741778374
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "propeller"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -4839,7 +5139,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -4873,7 +5176,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				}
 			]
 		},
@@ -5001,7 +5307,10 @@
 						-0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5035,7 +5344,10 @@
 						-0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -5069,7 +5381,10 @@
 						0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5103,7 +5418,10 @@
 						0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5137,7 +5455,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "canopy"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5171,7 +5492,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "engine"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -5205,7 +5529,10 @@
 						0.0,
 						-0.0320000015199184,
 						0.704000055789948
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5239,7 +5566,10 @@
 						0.0,
 						-0.0320000015199184,
 						0.704000055789948
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5273,7 +5603,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -5307,7 +5640,10 @@
 						-0.240247249603271,
 						0.105728663504124,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5341,7 +5677,10 @@
 						-0.240247249603271,
 						0.105728663504124,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -5375,7 +5714,10 @@
 						0.240247279405594,
 						0.105728670954704,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5409,7 +5751,10 @@
 						0.240247279405594,
 						0.105728670954704,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5443,7 +5788,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "core"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5477,7 +5825,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -5511,7 +5862,10 @@
 						-0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5545,7 +5899,10 @@
 						-0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -5647,7 +6004,10 @@
 						-0.131978809833527,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5681,7 +6041,10 @@
 						-0.131978809833527,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -5715,7 +6078,10 @@
 						0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5749,7 +6115,10 @@
 						0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -5851,7 +6220,10 @@
 						0.131978780031204,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5885,7 +6257,10 @@
 						0.131978780031204,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -5919,7 +6294,10 @@
 						0.0,
 						0.0538000017404556,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5953,7 +6331,10 @@
 						0.0,
 						0.0538000017404556,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -5987,7 +6368,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -6089,7 +6473,10 @@
 						0.0,
 						-0.084092378616333,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -6123,7 +6510,10 @@
 						0.0,
 						-0.084092378616333,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -6225,7 +6615,10 @@
 						-0.00778934033587575,
 						-0.112000003457069,
 						0.757502019405365
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -6259,7 +6652,10 @@
 						-0.00778934033587575,
 						-0.112000003457069,
 						0.757502019405365
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -6395,7 +6791,10 @@
 						-0.000326865731040016,
 						0.000327067071339116,
 						-0.242139741778374
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "propeller"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -6429,7 +6828,10 @@
 						-0.000326865731040016,
 						0.000327067071339116,
 						-0.242139741778374
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "propeller"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -6463,7 +6865,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -6497,7 +6902,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				}
 			]
 		},
@@ -6625,7 +7033,10 @@
 						-0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -6659,7 +7070,10 @@
 						-0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -6693,7 +7107,10 @@
 						0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -6727,7 +7144,10 @@
 						0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -6761,7 +7181,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "canopy"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -6795,7 +7218,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "engine"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -6829,7 +7255,10 @@
 						0.0,
 						-0.0320000015199184,
 						0.704000055789948
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -6863,7 +7292,10 @@
 						0.0,
 						-0.0320000015199184,
 						0.704000055789948
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -6897,7 +7329,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -6931,7 +7366,10 @@
 						-0.240247249603271,
 						0.105728663504124,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -6965,7 +7403,10 @@
 						-0.240247249603271,
 						0.105728663504124,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -6999,7 +7440,10 @@
 						0.240247279405594,
 						0.105728670954704,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -7033,7 +7477,10 @@
 						0.240247279405594,
 						0.105728670954704,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -7067,7 +7514,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "core"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -7101,7 +7551,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -7135,7 +7588,10 @@
 						-0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -7169,7 +7625,10 @@
 						-0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -7271,7 +7730,10 @@
 						-0.131978809833527,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -7305,7 +7767,10 @@
 						-0.131978809833527,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -7339,7 +7804,10 @@
 						0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -7373,7 +7841,10 @@
 						0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -7475,7 +7946,10 @@
 						0.131978780031204,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -7509,7 +7983,10 @@
 						0.131978780031204,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -7543,7 +8020,10 @@
 						0.0,
 						0.0538000017404556,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -7577,7 +8057,10 @@
 						0.0,
 						0.0538000017404556,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -7611,7 +8094,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -7713,7 +8199,10 @@
 						0.0,
 						-0.084092378616333,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -7747,7 +8236,10 @@
 						0.0,
 						-0.084092378616333,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -7849,7 +8341,10 @@
 						0.0,
 						-0.112000003457069,
 						0.759000062942505
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -7883,7 +8378,10 @@
 						0.0,
 						-0.112000003457069,
 						0.759000062942505
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -8019,7 +8517,10 @@
 						-0.000326865731040016,
 						0.000327067071339116,
 						-0.242139741778374
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "propeller"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8053,7 +8554,10 @@
 						-0.000326865731040016,
 						0.000327067071339116,
 						-0.242139741778374
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "propeller"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8087,7 +8591,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8121,7 +8628,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				}
 			]
 		},
@@ -8249,7 +8759,10 @@
 						-0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8283,7 +8796,10 @@
 						-0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -8317,7 +8833,10 @@
 						0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8351,7 +8870,10 @@
 						0.56201708316803,
 						0.116965122520924,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8385,7 +8907,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "canopy"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8419,7 +8944,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "engine"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -8453,7 +8981,10 @@
 						0.0,
 						-0.0320000015199184,
 						0.704000055789948
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8487,7 +9018,10 @@
 						0.0,
 						-0.0320000015199184,
 						0.704000055789948
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8521,7 +9055,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -8555,7 +9092,10 @@
 						-0.240247249603271,
 						0.105728663504124,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8589,7 +9129,10 @@
 						-0.240247249603271,
 						0.105728663504124,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -8623,7 +9166,10 @@
 						0.240247279405594,
 						0.105728670954704,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8657,7 +9203,10 @@
 						0.240247279405594,
 						0.105728670954704,
 						0.157725855708122
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8691,7 +9240,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "core"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8725,7 +9277,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -8759,7 +9314,10 @@
 						-0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8793,7 +9351,10 @@
 						-0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -8895,7 +9456,10 @@
 						-0.131978809833527,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8929,7 +9493,10 @@
 						-0.131978809833527,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -8963,7 +9530,10 @@
 						0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -8997,7 +9567,10 @@
 						0.0460000038146973,
 						-0.0903466045856476,
 						0.0309999976307154
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -9099,7 +9672,10 @@
 						0.131978780031204,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -9133,7 +9709,10 @@
 						0.131978780031204,
 						-0.198000013828278,
 						0.00800000317394733
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -9167,7 +9746,10 @@
 						0.0,
 						0.0538000017404556,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -9201,7 +9783,10 @@
 						0.0,
 						0.0538000017404556,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "vertical_tail"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -9235,7 +9820,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "horizontal_tail"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -9337,7 +9925,10 @@
 						0.0,
 						-0.084092378616333,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -9371,7 +9962,10 @@
 						0.0,
 						-0.084092378616333,
 						0.73800003528595
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -9473,7 +10067,10 @@
 						0.0,
 						-0.112000003457069,
 						0.759000062942505
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -9507,7 +10104,10 @@
 						0.0,
 						-0.112000003457069,
 						0.759000062942505
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "gear"
+					}
 				},
 				{
 					"class": "Node3D",
@@ -9643,7 +10243,10 @@
 						-0.000326865731040016,
 						0.000327067071339116,
 						-0.242139741778374
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "propeller"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -9677,7 +10280,10 @@
 						-0.000326865731040016,
 						0.000327067071339116,
 						-0.242139741778374
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "propeller"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -9711,7 +10317,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_left"
+					}
 				},
 				{
 					"class": "MeshInstance3D",
@@ -9745,7 +10354,10 @@
 						0.0,
 						0.0,
 						0.0
-					]
+					],
+					"section_metadata": {
+						"openrc_section": "wing_right"
+					}
 				}
 			]
 		}

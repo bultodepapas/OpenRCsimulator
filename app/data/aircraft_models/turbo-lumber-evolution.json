@@ -1,9 +1,9 @@
 {
   "schema": "openrc-aircraft-model",
-  "version": 1,
+  "version": 2,
   "family_id": "turbo-lumber-evolution",
   "builder": {
-    "script": "res://aircraft/timber_model.gd",
+    "script": "res://aircraft/imported_model.gd",
     "adapter": "imported_glb"
   },
   "surface_method": "apply_surfaces",
@@ -20,7 +20,7 @@
   "root_node": "airplane",
   "source_registry": {
     "path": "assets/aircraft/model-bindings.json",
-    "sha256": "8a77f6cc57c6debe951cbf69a8c20f846e267b1af48903f0cb4c6a3249f29374",
+    "sha256": "bfea781386dbf097116bc426b22410a269958914894c67bf3c611f9893ace39e",
     "hash_mode": "lf_text"
   },
   "geometry": {
@@ -166,16 +166,28 @@
   ],
   "dependencies": [
     {
+      "path": "res://aircraft/imported_model.gd",
+      "sha256": "29339400039f59cb816428a7b1221c78bac54c90a0e545b4dd84821235f48c87",
+      "hash_mode": "lf_text",
+      "role": "builder"
+    },
+    {
+      "path": "res://aircraft/imported_model_contract.gd",
+      "sha256": "7404b95b516ac5706b582a9423c881e06cbcc9e9544f8da92b1f0499f95005ce",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
+      "path": "res://aircraft/model_manifest.gd",
+      "sha256": "9bf210209c791be07ba8f2636fa95c52f74fb9dbcc97e8b04b017a883cbb9156",
+      "hash_mode": "lf_text",
+      "role": "script_dependency"
+    },
+    {
       "path": "res://aircraft/timber_geometry.gd",
       "sha256": "3c1b06000122d342e93a255e8259cf722add6e72f0bb924a8a91cd68129e2f65",
       "hash_mode": "lf_text",
       "role": "generated_geometry"
-    },
-    {
-      "path": "res://aircraft/timber_model.gd",
-      "sha256": "60ae983ed3f3f8bec8d906aa783ba2fde28bcc5f7aef5a4cbf550c5ebe99290d",
-      "hash_mode": "lf_text",
-      "role": "builder"
     },
     {
       "path": "res://assets/aircraft/turbo-lumber-evolution/timber.glb",
@@ -189,5 +201,50 @@
       "hash_mode": "lf_text",
       "role": "resource_dependency"
     }
-  ]
+  ],
+  "construction": {
+    "version": 1,
+    "hinge_axis": "+X",
+    "rotor": {
+      "frame_node": "thrust_frame",
+      "geometry_ref": "thrust",
+      "axis": "+X"
+    },
+    "gear": [
+      {
+        "role": "steering",
+        "node": "tailwheel_steer",
+        "geometry_ref": "articulations.tailwheel_steer",
+        "wrapper": "tail_steering"
+      },
+      {
+        "role": "left",
+        "node": "wheel_left_axle",
+        "geometry_ref": "articulations.wheel_left_axle",
+        "wrapper": "wheel_left_spin"
+      },
+      {
+        "role": "right",
+        "node": "wheel_right_axle",
+        "geometry_ref": "articulations.wheel_right_axle",
+        "wrapper": "wheel_right_spin"
+      },
+      {
+        "role": "tail",
+        "node": "tailwheel_axle",
+        "geometry_ref": "articulations.tailwheel_axle",
+        "wrapper": "tailwheel_spin"
+      }
+    ],
+    "material_grow": [
+      {
+        "node": "cowl",
+        "materials": [
+          "black",
+          "red"
+        ],
+        "amount_m": 0.0008
+      }
+    ]
+  }
 }

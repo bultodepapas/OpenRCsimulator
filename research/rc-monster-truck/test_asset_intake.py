@@ -52,9 +52,18 @@ class SuppliedModelTests(unittest.TestCase):
 		self.assertTrue(report["self_contained"]["buffers"] >= 1)
 		self.assertEqual(report["animation_count"], 0)
 		self.assertEqual(report["material_count"], 19)
+		self.assertEqual(report["visual_material_count"], 18)
+		self.assertEqual(report["proxy_material_count"], 1)
+		self.assertEqual(report["proxy_material_names"], ["MT8_COL_Proxy"])
 		self.assertEqual(report["geometry"]["visual_triangle_count"], 72800)
 		self.assertEqual(report["articulation"]["root_node"], "MT8_Root")
 		self.assertLessEqual(report["articulation"]["root_identity_error"], 1.0e-5)
+		verified_proxies = {item["name"]: item for item in report["collision_proxies"]["verified"]}
+		self.assertEqual(report["collision_proxies"]["count"], 6)
+		self.assertEqual(set(verified_proxies), set(self.spec["collision_boxes"]))
+		for name, expected in self.spec["collision_boxes"].items():
+			self.assertLessEqual(max(abs(a - b) for a, b in zip(verified_proxies[name]["center_m"], expected["center"])), 1.0e-3)
+			self.assertLessEqual(max(abs(a - b) for a, b in zip(verified_proxies[name]["size_m"], expected["size"])), 1.0e-3)
 
 	def test_external_buffer_and_external_image_are_rejected(self) -> None:
 		bad_buffer = copy.deepcopy(self.document)
@@ -97,6 +106,23 @@ class SuppliedModelTests(unittest.TestCase):
 		bad_spec["corners"]["FR"]["wheel_center_rest"][0] += 0.01
 		with self.assertRaisesRegex(intake.IntakeError, "pivot does not match spec"):
 			self.inspect(spec=bad_spec)
+		bad_dimensions = copy.deepcopy(self.spec)
+		bad_dimensions["wheelbase"] += 0.01
+		with self.assertRaisesRegex(intake.IntakeError, "wheelbase/track dimensions"):
+			self.inspect(spec=bad_dimensions)
+		bad_tire = copy.deepcopy(self.spec)
+		bad_tire["tire_radius"] += 0.02
+		with self.assertRaisesRegex(intake.IntakeError, "tire mesh dimensions"):
+			self.inspect(spec=bad_tire)
+		bad_proxy_spec = copy.deepcopy(self.spec)
+		bad_proxy_spec["collision_boxes"]["COL_Roof"]["center"][1] += 0.002
+		with self.assertRaisesRegex(intake.IntakeError, "COL_Roof imported proxy bounds mismatch"):
+			self.inspect(spec=bad_proxy_spec)
+		bad_proxy_glb = copy.deepcopy(self.document)
+		roof = next(node for node in bad_proxy_glb["nodes"] if node.get("name") == "COL_Roof")
+		roof["translation"][1] += 0.002
+		with self.assertRaisesRegex(intake.IntakeError, "COL_Roof imported proxy bounds mismatch"):
+			self.inspect(bad_proxy_glb)
 		bad_rig = self.rig.replace("const ARM_L := 0.155", "const ARM_L := 0.156", 1)
 		with self.assertRaisesRegex(intake.IntakeError, "rig/spec identity mismatch"):
 			self.inspect(rig=bad_rig)

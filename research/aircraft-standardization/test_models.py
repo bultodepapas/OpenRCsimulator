@@ -14,6 +14,7 @@ from pathlib import Path
 from build_models import (
     ModelManifestError,
     _normal_bytes,
+    _validate_articulation,
     build_manifest,
     validate_dependency_hashes,
     validate_registry,
@@ -54,6 +55,9 @@ class AircraftModelManifestTests(unittest.TestCase):
         self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
         self.assertEqual(set(self.by_family), FAMILIES)
         self.assertEqual(set(self.manifests), FAMILIES)
+        self.assertEqual(self.registry["version"], 2)
+        self.assertEqual(self.manifests["turbo-lumber-evolution"]["version"], 2)
+        self.assertTrue(all(manifest["version"] == 1 for family_id, manifest in self.manifests.items() if family_id != "turbo-lumber-evolution"))
         self.assertFalse(validate_registry(self.registry))
 
     def test_fleet_values_and_existing_visual_adapters_are_preserved(self):
@@ -85,6 +89,7 @@ class AircraftModelManifestTests(unittest.TestCase):
 
     def test_timber_bindings_reference_generated_articulations_without_copying_them(self):
         timber = self.manifests["turbo-lumber-evolution"]
+        construction = timber["construction"]
         geometry = load_json(ROOT / self.by_family["turbo-lumber-evolution"]["geometry"]["source"])
         for role, binding in timber["bindings"]["controls"].items():
             for hinge in binding["hinges"]:
@@ -96,8 +101,84 @@ class AircraftModelManifestTests(unittest.TestCase):
                 self.assertNotIn("positive", hinge)
                 self.assertNotIn("range_deg", hinge)
         self.assertEqual(timber["bindings"]["rotor"]["geometry_ref"], "articulations.propeller_spin")
+        self.assertEqual(construction["rotor"], {"frame_node": "thrust_frame", "geometry_ref": "thrust", "axis": "+X"})
+        for gear in construction["gear"]:
+            _, articulation_key = gear["geometry_ref"].split(".", 1)
+            self.assertEqual(geometry["articulations"][articulation_key]["node"], gear["node"])
+            self.assertIsNone(geometry["articulations"][articulation_key].get("app_sign"))
+            self.assertIsNone(geometry["articulations"][articulation_key].get("range_deg"))
+        self.assertEqual(construction["material_grow"], [{"node": "cowl", "materials": ["black", "red"], "amount_m": 0.0008}])
         self.assertEqual(timber["bindings"]["crash"]["provider"], "gltf_extras")
         self.assertFalse(any(dep["role"] == "crash_metadata" for dep in timber["dependencies"]))
+
+    def test_construction_schema_mutations_reject(self):
+        def reject_mutation(mutate, label):
+            candidate = copy.deepcopy(self.registry)
+            family = next(item for item in candidate["families"] if item["family_id"] == "turbo-lumber-evolution")
+            mutate(family)
+            with self.subTest(mutation=label):
+                self.assertTrue(validate_registry(candidate), label)
+
+        reject_mutation(lambda family: family["construction"].update(version=True), "boolean construction version")
+        reject_mutation(lambda family: family["construction"].update(future_mode="guess"), "unknown construction field")
+        reject_mutation(lambda family: family["construction"]["gear"][1].update(wrapper=family["construction"]["gear"][0]["wrapper"]), "duplicate gear wrapper")
+        reject_mutation(lambda family: family["construction"]["gear"][0].update(geometry_ref="articulations..missing"), "malformed geometry reference")
+        reject_mutation(
+            lambda family: family["construction"]["gear"][0].update(node=family["bindings"]["controls"]["aileron_left"]["hinges"][0]["node"]),
+            "cross-role node collision",
+        )
+        reject_mutation(
+            lambda family: family["construction"]["gear"][2].update(node=family["construction"]["gear"][1]["wrapper"] + "_mount"),
+            "gear wrapper mount collision",
+        )
+        reject_mutation(lambda family: family["construction"]["material_grow"].append(copy.deepcopy(family["construction"]["material_grow"][0])), "duplicate material node/material pair")
+        reject_mutation(lambda family: family["construction"]["material_grow"][0].update(amount_m=float("inf")), "non-finite material growth")
+
+    def test_construction_references_resolve_and_gear_does_not_require_control_metadata(self):
+        family = copy.deepcopy(self.by_family["turbo-lumber-evolution"])
+        family["construction"]["gear"][0]["geometry_ref"] = "articulations.missing_gear"
+        with self.assertRaisesRegex(ModelManifestError, "missing source field"):
+            build_manifest(ROOT, REGISTRY_PATH, family)
+
+        family = copy.deepcopy(self.by_family["turbo-lumber-evolution"])
+        manifest = build_manifest(ROOT, REGISTRY_PATH, family)
+        self.assertEqual(manifest["version"], 2)
+
+    def test_source_registry_v1_remains_readable(self):
+        legacy = copy.deepcopy(self.registry)
+        legacy["version"] = 1
+        timber = next(item for item in legacy["families"] if item["family_id"] == "turbo-lumber-evolution")
+        timber.pop("construction")
+        timber["builder"]["script"] = "res://aircraft/timber_model.gd"
+        self.assertFalse(validate_registry(legacy))
+
+    def test_multiple_imported_family_ids_can_share_the_generic_builder(self):
+        multi_registry = copy.deepcopy(self.registry)
+        source_family = next(item for item in multi_registry["families"] if item["family_id"] == "turbo-lumber-evolution")
+        copied_family = copy.deepcopy(source_family)
+        copied_family["family_id"] = "turbo-lumber-evolution-copy"
+        multi_registry["families"].append(copied_family)
+        self.assertFalse(validate_registry(multi_registry))
+
+        with tempfile.TemporaryDirectory(prefix="multi-imported-family-", dir=ROOT / "assets" / "aircraft") as raw_temp:
+            copied_registry_path = Path(raw_temp) / "model-bindings.json"
+            copied_registry_path.write_text(json.dumps(multi_registry, indent=2) + "\n", encoding="utf-8", newline="\n")
+            first = build_manifest(ROOT, copied_registry_path, source_family)
+            second = build_manifest(ROOT, copied_registry_path, copied_family)
+        self.assertEqual(first["version"], 2)
+        self.assertEqual(second["version"], 2)
+        self.assertEqual(first["builder"]["script"], second["builder"]["script"])
+        self.assertNotEqual(first["family_id"], second["family_id"])
+
+    def test_control_articulation_ranges_require_finite_increasing_numbers(self):
+        geometry = load_json(ROOT / self.by_family["turbo-lumber-evolution"]["geometry"]["source"])
+        articulation = geometry["articulations"]["aileron_left_hinge"]
+        articulation["range_deg"] = [True, 22.0]
+        with self.assertRaisesRegex(ModelManifestError, "finite number"):
+            _validate_articulation(geometry, "articulations.aileron_left_hinge", "aileron_left_hinge", "test control")
+        articulation["range_deg"] = [22.0, -22.0]
+        with self.assertRaisesRegex(ModelManifestError, "must be increasing"):
+            _validate_articulation(geometry, "articulations.aileron_left_hinge", "aileron_left_hinge", "test control")
 
     def test_gltf_sections_require_an_imported_asset_without_a_triangle_map(self):
         procedural = copy.deepcopy(self.registry)

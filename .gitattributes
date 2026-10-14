@@ -28,6 +28,10 @@
 /research/rc-monster-truck/support_bench.json text eol=lf
 /research/rc-monster-truck/fixtures/*.json text eol=lf
 
+# RCV-14a pins the author's delivery bytes, including the supplied visual rig.
+"RC CARS/**" -text
+/docs/research/rc-monster-truck/RCV-14a/intake.json text eol=lf
+
 # Timber r2 is an immutable author delivery; manifests hash its original bytes.
 "Timber Trubo Evolucion V2 BLENDER/turbo_timber_evolution_r2/r2/**" -text
 /app/assets/aircraft/turbo-lumber-evolution/LICENSE.txt -text

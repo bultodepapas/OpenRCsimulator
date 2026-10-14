@@ -5,11 +5,8 @@ extends SceneTree
 
 const Visual := preload("mt8_visual.gd")
 const CORNERS := ["FL", "FR", "RL", "RR"]
-const REST_TRAVEL := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
-const REST_SPIN := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
 const POSITION_TOLERANCE_M := 1.0e-4
 const TRANSFORM_TOLERANCE := 1.0e-4
-const STEER_MAX_RAD := 0.5235987755982988
 
 var _checks := 0
 var _failures := 0
@@ -39,13 +36,13 @@ func _run() -> void:
 	var unloaded_snapshot := _snapshot(model_a)
 	_check(
 		"pose waits for SceneTree attachment",
-		not Visual.apply_pose(model_a, REST_TRAVEL, 0.0, REST_SPIN)
+		not Visual.apply_pose(model_a, _zero4(), 0.0, _zero4())
 			and _snapshot_error(model_a, unloaded_snapshot) == 0.0,
 	)
 	root.add_child(root_a)
 	await process_frame
 	_check("delivery wrapper and model root are in SceneTree", root_a.is_inside_tree() and model_a.model_root.is_inside_tree())
-	_check("neutral pose accepted after attachment", Visual.apply_pose(model_a, REST_TRAVEL, 0.0, REST_SPIN))
+	_check("neutral pose accepted after attachment", Visual.apply_pose(model_a, _zero4(), 0.0, _zero4()))
 	_check_neutral_geometry(model_a)
 	_check_no_physics_nodes(model_a)
 	_check_default_proxies_hidden(model_a)
@@ -55,15 +52,15 @@ func _run() -> void:
 	_check_extreme_poses(model_a)
 	_check_steer_and_spin_signs(model_a)
 	_check_invalid_poses_transactional(model_a)
-	_check_instance_isolation(model_a)
+	await _check_instance_isolation(model_a)
 	_check_rest_pose(model_a)
 
-	var root_b: Node3D = model_a["root"]
-	root_b.queue_free()
+	var root_a_to_free: Node3D = model_a["root"]
+	root_a_to_free.queue_free()
 	await process_frame
-	_check("main delivery instance frees cleanly", not is_instance_valid(root_b))
+	_check("main delivery instance frees cleanly", not is_instance_valid(root_a_to_free))
 	_check("no test instance remains attached", root.get_child_count() == baseline_children)
-	_check_repeat_load_free(baseline_children)
+	await _check_repeat_load_free(baseline_children)
 	print("RCV-14a MT8 visual: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures else 0)
 
@@ -75,7 +72,7 @@ func _check_neutral_geometry(model: Dictionary) -> void:
 		for part in ["ArmLower", "ArmUpper", "Suspension", "Spin", "WheelMesh", "DriveshaftIn", "DriveshaftOut", "ShockA_Body", "ShockA_Spring", "ShockA_Shaft", "ShockB_Body", "ShockB_Spring", "ShockB_Shaft"]:
 			required.append(corner + "_" + part)
 		required.append(corner + ("_Steer" if corner.begins_with("F") else "_Carrier"))
-	for proxy in spec["collision_boxes"]:
+	for proxy in spec["collision_boxes"].keys():
 		required.append(proxy)
 	var bindings_ok := true
 	for name in required:
@@ -90,10 +87,10 @@ func _check_neutral_geometry(model: Dictionary) -> void:
 		wheel_positions[corner] = actual
 		center_ok = center_ok and actual.distance_to(expected) <= POSITION_TOLERANCE_M
 	_check("all four wheel centers match delivered coordinates", center_ok)
-	var front_z := 0.5 * (wheel_positions["FL"].z + wheel_positions["FR"].z)
-	var rear_z := 0.5 * (wheel_positions["RL"].z + wheel_positions["RR"].z)
-	var left_x := 0.5 * (wheel_positions["FL"].x + wheel_positions["RL"].x)
-	var right_x := 0.5 * (wheel_positions["FR"].x + wheel_positions["RR"].x)
+	var front_z: float = 0.5 * (wheel_positions["FL"].z + wheel_positions["FR"].z)
+	var rear_z: float = 0.5 * (wheel_positions["RL"].z + wheel_positions["RR"].z)
+	var left_x: float = 0.5 * (wheel_positions["FL"].x + wheel_positions["RL"].x)
+	var right_x: float = 0.5 * (wheel_positions["FR"].x + wheel_positions["RR"].x)
 	_check("spec wheelbase is 0.420 m", absf(float(spec["wheelbase"]) - 0.420) < 1.0e-12, str(spec["wheelbase"]))
 	_check("imported wheelbase is 0.420 m", absf((rear_z - front_z) - 0.420) < POSITION_TOLERANCE_M, str(rear_z - front_z))
 	_check("spec track is 0.430 m", absf(float(spec["track"]) - 0.430) < 1.0e-12, str(spec["track"]))
@@ -122,10 +119,11 @@ func _check_wheel_dimensions(model: Dictionary) -> void:
 
 
 func _check_no_physics_nodes(model: Dictionary) -> void:
-	var found: PackedStringArray = []
-	var pending: Array[Node] = [model["root"]]
+	var found := PackedStringArray()
+	var pending: Array[Node] = []
+	pending.append(model["root"])
 	while not pending.is_empty():
-		var node := pending.pop_back()
+		var node: Node = pending.pop_back()
 		if node is CollisionObject3D or node is CollisionShape3D or node is Joint3D:
 			found.append("%s (%s)" % [node.name, node.get_class()])
 		for child in node.get_children():
@@ -138,34 +136,34 @@ func _check_default_proxies_hidden(model: Dictionary) -> void:
 	var spec: Dictionary = model["spec"]
 	var hidden := collision != null and not collision.visible
 	var names: Dictionary = spec["collision_boxes"]
-	for proxy in names:
+	for proxy in names.keys():
 		var proxy_node := _node(model, str(proxy))
 		hidden = hidden and proxy_node != null and not proxy_node.is_visible_in_tree()
 	_check("collision proxy meshes are hidden by default", hidden)
 
 
 func _check_rest_pose(model: Dictionary) -> void:
-	var accepted := Visual.apply_pose(model, REST_TRAVEL, 0.0, REST_SPIN)
+	var accepted := Visual.apply_pose(model, _zero4(), 0.0, _zero4())
 	var error := _snapshot_error(model, model["rest"])
-	_check("zero inputs restore every authored Node3D transform", accepted and error < TRANSFORM_TOLERANCE, "max transform error %.8g" % error)
+	_check("zero inputs restore every authored Node3D transform", accepted and error < TRANSFORM_TOLERANCE, "max transform error " + str(error))
 
 
 func _check_independent_travel(model: Dictionary) -> void:
+	Visual.apply_pose(model, _zero4(), 0.0, _zero4())
+	var neutral_transforms := _snapshot(model)
 	var independent := true
 	for moving_index in 4:
-		var travel := REST_TRAVEL.duplicate()
+		var travel := _zero4()
 		travel[moving_index] = 0.04
-		independent = independent and Visual.apply_pose(model, travel, 0.0, REST_SPIN)
+		independent = independent and Visual.apply_pose(model, travel, 0.0, _zero4())
 		for corner_index in 4:
 			var corner: String = CORNERS[corner_index]
 			var expected := _expected_wheel_center(model.spec, corner, travel[corner_index])
 			var actual := _model_position(model, corner + "_Spin")
 			independent = independent and actual.distance_to(expected) < POSITION_TOLERANCE_M
-			if corner_index != moving_index:
-				independent = independent and absf(travel[corner_index]) == 0.0
 			for node_name: String in model.rest:
 				if node_name.begins_with(corner + "_") and corner_index != moving_index:
-					independent = independent and _transform_error(_node(model, node_name).transform, model.rest[node_name]) == 0.0
+					independent = independent and _transform_error(_node(model, node_name).transform, neutral_transforms[node_name]) == 0.0
 		_check("each corner can travel without moving any other wheel assembly", independent)
 	
 
@@ -191,7 +189,7 @@ func _check_extreme_poses(model: Dictionary) -> void:
 	for pose: Dictionary in cases:
 		var travel: PackedFloat64Array = pose["travel"]
 		var steer_rad := float(pose["steer"])
-		if not Visual.apply_pose(model, travel, steer_rad, REST_SPIN):
+		if not Visual.apply_pose(model, travel, steer_rad, _zero4()):
 			accepted = false
 			worst_case = str(pose["label"])
 			continue
@@ -255,10 +253,10 @@ func _check_extreme_poses(model: Dictionary) -> void:
 					declared_shock_lengths = declared_shock_lengths and absf(actual_shock_length - float(shock_range["rest"])) < POSITION_TOLERANCE_M
 
 	_check("all 27 poses are accepted", accepted, worst_case)
-	_check("wheel centers follow all-corner articulation geometry", wheel_error < POSITION_TOLERANCE_M, "%.8g m at %s" % [wheel_error, worst_case])
-	_check("upper/lower arms close at both hub joints in all 27 poses", arm_error < POSITION_TOLERANCE_M, "%.8g m" % arm_error)
-	_check("shock eyes match independent endpoints in all 27 poses", shock_endpoint_error < POSITION_TOLERANCE_M, "%.8g m" % shock_endpoint_error)
-	_check("shock body and shaft axes meet without angular kinks", shock_axis_error < 1.0e-3, "%.8g" % shock_axis_error)
+	_check("wheel centers follow all-corner articulation geometry", wheel_error < POSITION_TOLERANCE_M, str(wheel_error) + " m at " + worst_case)
+	_check("upper/lower arms close at both hub joints in all 27 poses", arm_error < POSITION_TOLERANCE_M, str(arm_error) + " m")
+	_check("shock eyes match independent endpoints in all 27 poses", shock_endpoint_error < POSITION_TOLERANCE_M, str(shock_endpoint_error) + " m")
+	_check("shock body and shaft axes meet without angular kinks", shock_axis_error < 1.0e-3, str(shock_axis_error))
 	_check("shock shaft tips remain inside bodies over full travel", shock_tip_inside)
 	_check("shock springs never reach zero or negative scale", spring_scale_positive)
 	_check("bump/droop/rest shock lengths match declared endpoints", declared_shock_lengths)
@@ -267,7 +265,7 @@ func _check_extreme_poses(model: Dictionary) -> void:
 func _check_steer_and_spin_signs(model: Dictionary) -> void:
 	var spec: Dictionary = model["spec"]
 	var positive_steer := deg_to_rad(20.0)
-	var left_ok := Visual.apply_pose(model, REST_TRAVEL, positive_steer, REST_SPIN)
+	var left_ok := Visual.apply_pose(model, _zero4(), positive_steer, _zero4())
 	var front_left := _model_forward(model, "FL_Steer")
 	var front_right := _model_forward(model, "FR_Steer")
 	var rear_left := _model_forward(model, "RL_Suspension")
@@ -276,20 +274,23 @@ func _check_steer_and_spin_signs(model: Dictionary) -> void:
 	left_ok = left_ok and absf(rear_left.x) < 1.0e-6 and absf(rear_right.x) < 1.0e-6
 	_check("positive steer points both front wheels left and leaves rear fixed", left_ok)
 
-	var right_steer_ok := Visual.apply_pose(model, REST_TRAVEL, -positive_steer, REST_SPIN)
+	var right_steer_ok := Visual.apply_pose(model, _zero4(), -positive_steer, _zero4())
 	front_left = _model_forward(model, "FL_Steer")
 	front_right = _model_forward(model, "FR_Steer")
 	right_steer_ok = right_steer_ok and front_left.x > 0.25 and front_right.x > 0.25
 	_check("negative steer points FL and FR right", right_steer_ok)
 
 	var spin := PackedFloat64Array([0.35, 0.35, 0.35, 0.35])
-	var spin_ok := Visual.apply_pose(model, REST_TRAVEL, 0.0, spin)
+	var spin_ok := Visual.apply_pose(model, _zero4(), 0.0, _zero4())
+	var rest_tops := {}
+	for corner in CORNERS:
+		rest_tops[corner] = _node(model, corner + "_Spin").global_transform.basis.y.normalized()
+	spin_ok = spin_ok and Visual.apply_pose(model, _zero4(), 0.0, spin)
 	var forward := Vector3(0.0, 0.0, -1.0)
 	for corner in CORNERS:
 		var spin_node := _node(model, corner + "_Spin")
-		var spun_top := spin_node.global_transform.basis.y
-		var rest_basis: Basis = model.rest[corner + "_Spin"].basis
-		var rest_top := (model.model_root.global_transform.basis * rest_basis.y).normalized()
+		var spun_top := spin_node.global_transform.basis.y.normalized()
+		var rest_top: Vector3 = rest_tops[corner]
 		spin_ok = spin_ok and (spun_top - rest_top).dot(forward) > 0.04
 	_check("positive forward wheel spin moves each tire top toward -Z", spin_ok, str(spec["spin_axis"]))
 
@@ -300,32 +301,32 @@ func _check_invalid_poses_transactional(model: Dictionary) -> void:
 	var valid := Visual.apply_pose(model, valid_travel, deg_to_rad(15.0), valid_spin)
 	var all_rejected_unchanged := valid
 	var invalid_cases: Array = [
-		{"label": "short travel array", "travel": PackedFloat64Array([0.0, 0.0, 0.0]), "steer": 0.0, "spin": REST_SPIN},
-		{"label": "short spin array", "travel": REST_TRAVEL, "steer": 0.0, "spin": PackedFloat64Array([0.0, 0.0, 0.0])},
-		{"label": "NaN travel", "travel": PackedFloat64Array([NAN, 0.0, 0.0, 0.0]), "steer": 0.0, "spin": REST_SPIN},
-		{"label": "infinite spin", "travel": REST_TRAVEL, "steer": 0.0, "spin": PackedFloat64Array([0.0, INF, 0.0, 0.0])},
-		{"label": "NaN steering", "travel": REST_TRAVEL, "steer": NAN, "spin": REST_SPIN},
-		{"label": "travel above bump stop", "travel": PackedFloat64Array([0.050001, 0.0, 0.0, 0.0]), "steer": 0.0, "spin": REST_SPIN},
-		{"label": "travel below droop stop", "travel": PackedFloat64Array([-0.070001, 0.0, 0.0, 0.0]), "steer": 0.0, "spin": REST_SPIN},
-		{"label": "steering above 30 degrees", "travel": REST_TRAVEL, "steer": deg_to_rad(31.0), "spin": REST_SPIN},
-		{"label": "steering below -30 degrees", "travel": REST_TRAVEL, "steer": deg_to_rad(-31.0), "spin": REST_SPIN},
+		{"label": "short travel array", "travel": PackedFloat64Array([0.0, 0.0, 0.0]), "steer": 0.0, "spin": _zero4()},
+		{"label": "short spin array", "travel": _zero4(), "steer": 0.0, "spin": PackedFloat64Array([0.0, 0.0, 0.0])},
+		{"label": "NaN travel", "travel": PackedFloat64Array([NAN, 0.0, 0.0, 0.0]), "steer": 0.0, "spin": _zero4()},
+		{"label": "infinite spin", "travel": _zero4(), "steer": 0.0, "spin": PackedFloat64Array([0.0, INF, 0.0, 0.0])},
+		{"label": "NaN steering", "travel": _zero4(), "steer": NAN, "spin": _zero4()},
+		{"label": "travel above bump stop", "travel": PackedFloat64Array([float(model.spec["travel_bump"]) + 1.0e-6, 0.0, 0.0, 0.0]), "steer": 0.0, "spin": _zero4()},
+		{"label": "travel below droop stop", "travel": PackedFloat64Array([-float(model.spec["travel_droop"]) - 1.0e-6, 0.0, 0.0, 0.0]), "steer": 0.0, "spin": _zero4()},
+		{"label": "steering above 30 degrees", "travel": _zero4(), "steer": deg_to_rad(float(model.spec["steer_max_deg"]) + 1.0), "spin": _zero4()},
+		{"label": "steering below -30 degrees", "travel": _zero4(), "steer": deg_to_rad(-float(model.spec["steer_max_deg"]) - 1.0), "spin": _zero4()},
 	]
 	for invalid: Dictionary in invalid_cases:
 		var before := _snapshot(model)
 		var accepted := Visual.apply_pose(
 			model,
-			invalid.get("travel", REST_TRAVEL),
+			invalid.get("travel", _zero4()),
 			float(invalid.get("steer", 0.0)),
-			invalid.get("spin", REST_SPIN),
+			invalid.get("spin", _zero4()),
 		)
 		var after_error := _snapshot_error(model, before)
 		all_rejected_unchanged = all_rejected_unchanged and not accepted and after_error == 0.0
 	_check("every invalid pose is refused before mutating any transform", all_rejected_unchanged)
 	_check("exact travel and steering limits remain valid", Visual.apply_pose(
 		model,
-		PackedFloat64Array([-0.07, 0.05, 0.0, 0.0]),
-		STEER_MAX_RAD,
-		REST_SPIN,
+		PackedFloat64Array([-float(model.spec["travel_droop"]), float(model.spec["travel_bump"]), 0.0, 0.0]),
+		deg_to_rad(float(model.spec["steer_max_deg"])),
+		_zero4(),
 	))
 
 
@@ -340,7 +341,7 @@ func _check_instance_isolation(model_a: Dictionary) -> void:
 	await process_frame
 	var body_a := _node(model_a, "Body")
 	var body_b := _node(model_b, "Body")
-	var nodes_are_distinct := root_b != model_a.root and body_a != body_b
+	var nodes_are_distinct: bool = root_b != model_a.root and body_a != body_b
 	_check("each delivery load owns distinct scene nodes", nodes_are_distinct)
 
 	Visual.set_body_visible(model_a, false)
@@ -351,17 +352,19 @@ func _check_instance_isolation(model_a: Dictionary) -> void:
 
 	Visual.set_proxies_visible(model_a, true)
 	var proxy_isolation := true
-	for proxy in model_a.spec["collision_boxes"]:
+	for proxy in model_a.spec["collision_boxes"].keys():
 		var a_node := _node(model_a, str(proxy))
 		var b_node := _node(model_b, str(proxy))
-		proxy_isolation = proxy_isolation and a_node.is_visible_in_tree() and not b_node.is_visible_in_tree()
+		proxy_isolation = proxy_isolation and a_node != null and b_node != null
+		if a_node != null and b_node != null:
+			proxy_isolation = proxy_isolation and a_node.is_visible_in_tree() and not b_node.is_visible_in_tree()
 	Visual.set_proxies_visible(model_a, false)
 	_check("proxy visibility changes only the selected model instance", proxy_isolation)
 
 	var second_pose_before := _snapshot(model_b)
-	var moved := Visual.apply_pose(model_a, PackedFloat64Array([0.045, 0.0, 0.0, 0.0]), 0.0, REST_SPIN)
+	var moved := Visual.apply_pose(model_a, PackedFloat64Array([0.045, 0.0, 0.0, 0.0]), 0.0, _zero4())
 	_check("posing one loaded model leaves the other unchanged", moved and _snapshot_error(model_b, second_pose_before) == 0.0)
-	Visual.apply_pose(model_a, REST_TRAVEL, 0.0, REST_SPIN)
+	Visual.apply_pose(model_a, _zero4(), 0.0, _zero4())
 	root_b.queue_free()
 	await process_frame
 	_check("second delivery instance frees cleanly", not is_instance_valid(root_b))
@@ -388,8 +391,13 @@ func _check_repeat_load_free(baseline_children: int) -> void:
 
 func _extreme_cases(spec: Dictionary) -> Array:
 	var cases: Array = []
-	for travel in [-0.07, -0.035, 0.0, 0.025, 0.05]:
-		for steer_degrees in [-30.0, -15.0, 0.0, 15.0, 30.0]:
+	var droop := -float(spec["travel_droop"])
+	var bump := float(spec["travel_bump"])
+	var travel_values := [droop, droop * 0.5, 0.0, bump * 0.5, bump]
+	var steer_limit := float(spec["steer_max_deg"])
+	var steer_values := [-steer_limit, -steer_limit * 0.5, 0.0, steer_limit * 0.5, steer_limit]
+	for travel in travel_values:
+		for steer_degrees in steer_values:
 			cases.append({
 				"label": "common t=%+.3f steer=%+.0f" % [travel, steer_degrees],
 				"travel": PackedFloat64Array([travel, travel, travel, travel]),
@@ -398,12 +406,7 @@ func _extreme_cases(spec: Dictionary) -> Array:
 	for steer_degrees in [-float(spec["steer_max_deg"]), float(spec["steer_max_deg"])]:
 		cases.append({
 			"label": "crossed FL/RR bump FR/RL droop steer=%+.0f" % steer_degrees,
-			"travel": PackedFloat64Array([
-				float(spec["travel_bump"]),
-				-float(spec["travel_droop"]),
-				-float(spec["travel_droop"]),
-				float(spec["travel_bump"]),
-			]),
+			"travel": PackedFloat64Array([bump, droop, droop, bump]),
 			"steer": deg_to_rad(steer_degrees),
 		})
 	return cases
@@ -505,3 +508,7 @@ func _transform_error(a: Transform3D, b: Transform3D) -> float:
 		+ (a.basis.y - b.basis.y).length()
 		+ (a.basis.z - b.basis.z).length()
 	)
+
+
+func _zero4() -> PackedFloat64Array:
+	return PackedFloat64Array([0.0, 0.0, 0.0, 0.0])

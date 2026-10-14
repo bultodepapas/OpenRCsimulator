@@ -12,16 +12,25 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	var builder := load(BUILDER_PATH) as Script
+	var builder_source := _argument_value("--builder-source=")
+	var builder: Script = null
+	if builder_source.is_empty():
+		builder = load(BUILDER_PATH) as Script
+	else:
+		var dynamic_builder := GDScript.new()
+		dynamic_builder.source_code = FileAccess.get_file_as_string(builder_source)
+		var load_error := dynamic_builder.reload()
+		if load_error == OK:
+			builder = dynamic_builder
 	if builder == null:
-		_failures.append("Could not load " + BUILDER_PATH)
+		_failures.append("Could not load builder source " + (BUILDER_PATH if builder_source.is_empty() else builder_source))
 		_finish({})
 		return
 	var imported_model := load(IMPORTED_MODEL_PATH) as Script
 	var report: Dictionary = {
 		"probe": "AS-09-10-imported-pose-v1",
 		"godot_version": Engine.get_version_info().get("string", "unknown"),
-		"builder_path": BUILDER_PATH,
+		"builder_path": BUILDER_PATH if builder_source.is_empty() else builder_source,
 		"tolerance": TRANSFORM_TOLERANCE,
 		"states": {},
 	}
@@ -197,11 +206,16 @@ func _section_metadata(node: Node) -> Dictionary:
 	var keys: Array[String] = []
 	for key in node.get_meta_list():
 		var key_name := str(key)
-		if key_name.to_lower().contains("section"):
-			keys.append(key_name)
+		keys.append(key_name)
 	keys.sort()
 	for key_name in keys:
-		output[key_name] = _json_safe(node.get_meta(key_name))
+		var value: Variant = node.get_meta(key_name)
+		if key_name.to_lower().contains("section"):
+			output[key_name] = _json_safe(value)
+		elif typeof(value) == TYPE_DICTIONARY:
+			for nested_key in value.keys():
+				if str(nested_key).to_lower().contains("section"):
+					output[str(nested_key)] = _json_safe(value[nested_key])
 	return output
 
 

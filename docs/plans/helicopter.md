@@ -1,6 +1,6 @@
 # Helicopter plan: a realistic RC helicopter
 
-**Date:** 2026-10-13. **Status:** implementation started by the owner. HELI-03a/04 supply the steady inflow reference; HELI-04-R1 adds dimensional transient flow and known-event numerical qualification; HELI-05/05a supply main-rotor loads, flapping and a joint main-rotor/inflow stage; HELI-06a adds the standalone source-linearized tail; HELI-13 supplies the pure swash kernel. HELI-25a audits the owner's existing HX-700 Blender source for reuse. No flyable helicopter, aircraft preset or session integration exists. Automatic state-dependent C/M detection, full loads/cost and other steps remain open.
+**Date:** 2026-10-13. **Status:** implementation started by the owner. HELI-03a/04 supply the steady inflow reference; HELI-04-R1 adds dimensional transient flow and known-event numerical qualification; HELI-05/05a supply main-rotor loads, flapping and a joint main-rotor/inflow stage; HELI-06a–c supply tail, passive airframe loads and a prescribed-speed aerodynamic stand; HELI-13 supplies the pure swash kernel. HELI-25a audits the owner's existing HX-700 Blender source for reuse. No flyable helicopter, aircraft preset or session integration exists. Automatic state-dependent C/M detection, drive/body coupling and full-load performance remain open; HELI-09d's joint-stage diagnostic exceeds the proposed budget.
 **Prefix:** HELI-00…HELI-36, registered in the [track registry](../README.md#tracks-plans-and-step-ids). `H1…H15` (Phase H) is a different namespace.
 **Owner:** helicopter track, under the main line's acceptance; owns the shared inflow law consumed by the drone track.
 **Owns:**
@@ -590,6 +590,7 @@ Each step is one small working change with its proof. A step that touches a coor
 | HELI-09a | Isolated equilibrium-inflow cost diagnostic `research/helicopter/bench_inflow.gd` | Measured on the Windows Ryzen 5900X host; [HELI-04 evidence](../research/helicopter/HELI-04/README.md). This does not close HELI-09 or the whole-tick budget. |
 | HELI-09b | Isolated joint main-disc/wake stage cost `research/helicopter/bench_main_stage.gd` | [HELI-05 measurements](../research/helicopter/HELI-05/README.md#heli-09b-isolated-stage-cost): compact payload verified, VRS cost still leaves insufficient full-load margin. Complete profiling/redesign before session integration; HELI-09 open. |
 | HELI-09c | Isolated source-linearized tail cost `research/helicopter/bench_tail_rotor.gd` | [HELI-06 measurements](../research/helicopter/HELI-06/README.md#heli-09c-isolated-tail-cost): ~21–24 µs median batch means on the development host; no complete-load or H15 acceptance. |
+| HELI-09d | Joint aerodynamic stage cost `research/helicopter/bench_aerodynamic_stage.gd` | [HELI-06b measurements](../research/helicopter/HELI-06b/README.md#heli-09d-joint-stage-cost): ~103–125 µs median batch means before drive/body/control, exceeding the proposal. Profile/redesign before flight integration; HELI-09 open. |
 
 ### Phase 2: data
 

@@ -345,9 +345,9 @@ def _geometry(document: dict[str, Any], nodes: list[dict[str, Any]], world: dict
 	visual_triangle_total = 0
 	primitive_total = 0
 	visual_primitive_total = 0
-	visual_nodes: set[int] = set()
 	bounds_points: list[list[float]] = []
 	named_bounds_points: dict[str, list[list[float]]] = {}
+	proxy_bounds_points: dict[str, list[list[float]]] = {}
 	mesh_instances = 0
 	for node_index, node in enumerate(nodes):
 		mesh_index = node.get("mesh")
@@ -361,8 +361,6 @@ def _geometry(document: dict[str, Any], nodes: list[dict[str, Any]], world: dict
 			_fail(f"meshes[{mesh_index}] must contain primitives")
 		is_visual = not str(node.get("name", "")).startswith("COL_")
 		node_bounds_points: list[list[float]] = []
-		if is_visual:
-			visual_nodes.add(node_index)
 		for primitive_index, primitive in enumerate(mesh["primitives"]):
 			primitive_total += 1
 			if is_visual:
@@ -390,14 +388,17 @@ def _geometry(document: dict[str, Any], nodes: list[dict[str, Any]], world: dict
 			triangle_total += triangles
 			if is_visual:
 				visual_triangle_total += triangles
-				for x in (minimum[0], maximum[0]):
-					for y in (minimum[1], maximum[1]):
-						for z in (minimum[2], maximum[2]):
-							transformed = _transform_point(world[node_index], [x, y, z])
+			for x in (minimum[0], maximum[0]):
+				for y in (minimum[1], maximum[1]):
+					for z in (minimum[2], maximum[2]):
+						transformed = _transform_point(world[node_index], [x, y, z])
+						node_bounds_points.append(transformed)
+						if is_visual:
 							bounds_points.append(transformed)
-							node_bounds_points.append(transformed)
 		if is_visual and str(node.get("name", "")).endswith("_WheelMesh"):
 			named_bounds_points[str(node["name"])] = node_bounds_points
+		if str(node.get("name", "")).startswith("COL_"):
+			proxy_bounds_points[str(node["name"])] = node_bounds_points
 	if not bounds_points:
 		_fail("GLB has no visible triangle mesh bounds")
 	minimum = [min(point[axis] for point in bounds_points) for axis in range(3)]
@@ -411,6 +412,15 @@ def _geometry(document: dict[str, Any], nodes: list[dict[str, Any]], world: dict
 		wheel_min = [min(point[axis] for point in points) for axis in range(3)]
 		wheel_max = [max(point[axis] for point in points) for axis in range(3)]
 		wheel_bounds[corner] = {"min": wheel_min, "max": wheel_max, "size": [wheel_max[i] - wheel_min[i] for i in range(3)]}
+	proxy_bounds: dict[str, dict[str, list[float]]] = {}
+	for name, points in sorted(proxy_bounds_points.items()):
+		if not points:
+			_fail(f"{name} has no proxy geometry bounds")
+		proxy_min = [min(point[axis] for point in points) for axis in range(3)]
+		proxy_max = [max(point[axis] for point in points) for axis in range(3)]
+		proxy_bounds[name] = {"min": proxy_min, "max": proxy_max,
+							  "center": [(proxy_min[i] + proxy_max[i]) / 2.0 for i in range(3)],
+							  "size": [proxy_max[i] - proxy_min[i] for i in range(3)]}
 	return {
 		"mesh_instances": mesh_instances,
 		"primitive_count_including_proxies": primitive_total,
@@ -419,10 +429,11 @@ def _geometry(document: dict[str, Any], nodes: list[dict[str, Any]], world: dict
 		"visual_triangle_count": visual_triangle_total,
 		"visual_bounds_m": {"min": minimum, "max": maximum, "size": [maximum[i] - minimum[i] for i in range(3)]},
 		"wheel_mesh_bounds_m": wheel_bounds,
+		"collision_proxy_bounds_m": proxy_bounds,
 	}
 
 
-def _check_materials(document: dict[str, Any]) -> dict[str, Any]:
+def _check_materials(document: dict[str, Any], nodes: list[dict[str, Any]]) -> dict[str, Any]:
 	materials = document.get("materials", [])
 	if not isinstance(materials, list):
 		_fail("materials must be an array")
@@ -437,7 +448,31 @@ def _check_materials(document: dict[str, Any]) -> dict[str, Any]:
 	duplicates = sorted({name for name in names if names.count(name) > 1})
 	if duplicates:
 		_fail("duplicate material names: " + ", ".join(duplicates))
-	return {"count": len(materials), "names": names}
+	meshes = document.get("meshes", [])
+	visual_indices: set[int] = set()
+	proxy_indices: set[int] = set()
+	for node_index, node in enumerate(nodes):
+		mesh_index = node.get("mesh")
+		if mesh_index is None:
+			continue
+		if isinstance(mesh_index, bool) or not isinstance(mesh_index, int) or not 0 <= mesh_index < len(meshes):
+			_fail(f"nodes[{node_index}].mesh is out of range")
+		for primitive_index, primitive in enumerate(meshes[mesh_index].get("primitives", [])):
+			material_index = primitive.get("material")
+			if material_index is None:
+				continue
+			if isinstance(material_index, bool) or not isinstance(material_index, int) or not 0 <= material_index < len(materials):
+				_fail(f"meshes[{mesh_index}].primitives[{primitive_index}].material is out of range")
+			(material := proxy_indices if str(node.get("name", "")).startswith("COL_") else visual_indices).add(material_index)
+	return {
+		"definition_count": len(materials),
+		"names": names,
+		"visual_used_count": len(visual_indices),
+		"visual_used_names": [names[index] for index in sorted(visual_indices)],
+		"proxy_used_count": len(proxy_indices),
+		"proxy_used_names": [names[index] for index in sorted(proxy_indices)],
+		"unused_names": [names[index] for index in range(len(names)) if index not in visual_indices | proxy_indices],
+	}
 
 
 def _require_node(by_name: dict[str, int], name: str) -> int:
@@ -552,6 +587,32 @@ def _check_articulation(nodes: list[dict[str, Any]], by_name: dict[str, int], wo
 	}
 
 
+def _check_collision_proxies(by_name: dict[str, int], geometry: dict[str, Any], spec: dict[str, Any]) -> dict[str, Any]:
+	proxy_spec = spec.get("collision_boxes")
+	if not isinstance(proxy_spec, dict) or not proxy_spec:
+		_fail("runtime spec must declare collision_boxes")
+	actual = geometry.get("collision_proxy_bounds_m", {})
+	if set(actual) != set(proxy_spec):
+		missing = sorted(set(proxy_spec) - set(actual))
+		extra = sorted(set(actual) - set(proxy_spec))
+		_fail(f"GLB collision proxies and spec collision_boxes differ; missing={missing}, undocumented={extra}")
+	verified: list[dict[str, Any]] = []
+	for name in sorted(proxy_spec):
+		_require_node(by_name, name)
+		record = proxy_spec[name]
+		if not isinstance(record, dict) or not isinstance(record.get("center"), list) or not isinstance(record.get("size"), list):
+			_fail(f"spec.collision_boxes.{name} needs center and size")
+		center = [_finite_number(value, f"spec.collision_boxes.{name}.center") for value in record["center"]]
+		size = [_finite_number(value, f"spec.collision_boxes.{name}.size") for value in record["size"]]
+		if len(center) != 3 or len(size) != 3 or any(value <= 0.0 for value in size):
+			_fail(f"spec.collision_boxes.{name} must have a 3D center and positive 3D size")
+		measured = actual[name]
+		if not _close(measured["center"], center, 1.0e-3) or not _close(measured["size"], size, 1.0e-3):
+			_fail(f"{name} imported proxy bounds mismatch: measured center/size {measured['center']} / {measured['size']}, spec {center} / {size}")
+		verified.append({"name": name, "center_m": measured["center"], "size_m": measured["size"]})
+	return {"count": len(verified), "tolerance_m": 1.0e-3, "verified": verified}
+
+
 def _rig_constants(rig_text: str) -> dict[str, Any]:
 	if "gen_rig_gd.py" not in rig_text or not re.search(r"(generated by|generado por)\s+gen_rig_gd\.py", rig_text, re.IGNORECASE):
 		_fail("rig identity is missing its generated-source marker")
@@ -634,20 +695,27 @@ def inspect_glb(data: bytes, spec: dict[str, Any], rig_text: str) -> dict[str, A
 	if document.get("animations", []) != []:
 		_fail("GLB contains unapproved animations; articulation must be driven by the external rig")
 	geometry = _geometry(document, nodes, world)
-	materials = _check_materials(document)
+	materials = _check_materials(document, nodes)
 	articulation = _check_articulation(nodes, by_name, world, spec, geometry)
+	collision_proxies = _check_collision_proxies(by_name, geometry, spec)
 	identity = _check_spec_and_rig_identity(spec, rig_text)
 	return {
 		"glb_version": 2,
 		"scene_count": len(document.get("scenes", [])),
 		"scene_root_names": [str(nodes[index].get("name", "")) for index in scene_roots],
 		"node_count": len(nodes),
-		"material_count": materials["count"],
+		"material_count": materials["definition_count"],
 		"material_names": materials["names"],
+		"visual_material_count": materials["visual_used_count"],
+		"visual_material_names": materials["visual_used_names"],
+		"proxy_material_count": materials["proxy_used_count"],
+		"proxy_material_names": materials["proxy_used_names"],
+		"unused_material_names": materials["unused_names"],
 		"animation_count": 0,
 		"self_contained": self_contained,
 		"geometry": geometry,
 		"articulation": articulation,
+		"collision_proxies": collision_proxies,
 		"identity": identity,
 	}
 
@@ -710,10 +778,8 @@ def build_manifest(repo_root: Path = REPO_ROOT, package_root: Path = DEFAULT_PAC
 	artifacts = _artifact_inventory(package_root, repo_root)
 	license_names = [item["path"] for item in artifacts if re.search(r"(^|/)(LICENSE|LICENCE|NOTICE|COPYING)(\.|$)", item["path"], re.IGNORECASE)]
 	archive_license = "provided" if license_names else "missing"
-	guide_path = package_root / "README.md"
-	guide_text = guide_path.read_text(encoding="utf-8") if guide_path.is_file() else ""
-	proxy_ids_in_spec = [key for key in spec if "proxy" in key.lower()]
-	proxy_nodes = [name for name in BASE_PARTS if name.startswith("COL_")]
+	proxy_names = [name for name in BASE_PARTS if name.startswith("COL_")]
+	wheel_proxy_names = [name for name in glb_report["geometry"]["collision_proxy_bounds_m"] if "wheel" in name.lower() or any(corner in name for corner in CORNERS)]
 	lod_artifacts = [item["path"] for item in artifacts if re.search(r"(^|[/_.-])lod[1-9]([/_.-]|$)", item["path"], re.IGNORECASE)]
 	anchor_keys = [key for key in spec if re.search(r"camera|audio|sound|listener", key, re.IGNORECASE)]
 	godot_spec_copy = package_root / "godot" / "mt8_spec.json"
@@ -724,10 +790,8 @@ def build_manifest(repo_root: Path = REPO_ROOT, package_root: Path = DEFAULT_PAC
 				 "Spec keys: " + ", ".join(anchor_keys) if anchor_keys else "The geometry spec does not identify camera/audio anchors; a local inspection preview can use an explicit temporary camera, but no runtime anchor binding is accepted."),
 		_finding("lod_set", "present" if lod_artifacts else "missing",
 				 "LOD artifacts: " + ", ".join(lod_artifacts) if lod_artifacts else "Only the blockout GLB is supplied; no LOD1/LOD2 assets or LOD transition contract were found."),
-		_finding("collision_proxy_contract", "partial" if proxy_nodes else "missing",
-				 "Named collision-proxy nodes exist in the GLB, but the runtime spec has no explicit proxy geometry/dimension records." if proxy_nodes and not proxy_ids_in_spec else "Proxy contract requires review against the spec."),
-		_finding("runtime_spec_copy", "present" if godot_spec_copy.is_file() else "missing",
-				 "A Godot project copy of mt8_spec.json is included." if godot_spec_copy.is_file() else "The package README instructs copying out/mt8_spec.json into godot/; that runtime copy is absent. Intake binds the supplied out/ spec by hash and checks its constants against the rig."),
+		_finding("wheel_envelope_proxy_meshes", "present" if wheel_proxy_names else "dimensions-declared-no-mesh-proxy",
+				 "Wheel collision proxies: " + ", ".join(wheel_proxy_names) if wheel_proxy_names else "The GLB has no separate COL_* wheel proxy meshes. The spec declares tire_radius and tire_width, so a runtime primitive envelope can be derived without missing tire dimensions."),
 		_finding("source_identity", "matched", "The package export and submitted root GLB are byte-identical; the rig constants and rest pivots match the runtime spec."),
 	]
 	return {
@@ -743,6 +807,11 @@ def build_manifest(repo_root: Path = REPO_ROOT, package_root: Path = DEFAULT_PAC
 			"package_export_glb": {"path": _repo_relative(package_glb, repo_root, "package"), "sha256": _sha256_bytes(package_glb_bytes), "bytes": len(package_glb_bytes)},
 			"submitted_glb": {"path": _repo_relative(delivery_glb, repo_root, "delivery"), "sha256": _sha256_bytes(delivery_bytes), "bytes": len(delivery_bytes), "matches_package_export": True},
 			"artifacts": artifacts,
+		},
+		"standalone_test_staging": {
+			"godot_glb_copy_present": (package_root / "godot" / "MT8_Bisonte.glb").is_file(),
+			"godot_spec_copy_present": godot_spec_copy.is_file(),
+			"note": "The package README explicitly stages the GLB and spec into godot/ before its standalone test; absent staged copies are not treated as asset defects.",
 		},
 		"glb": glb_report,
 		"findings": findings,

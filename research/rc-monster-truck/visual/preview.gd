@@ -32,7 +32,13 @@ var initial_proxies := false
 
 
 func _initialize() -> void:
+	var seen := {}
 	for arg in OS.get_cmdline_user_args():
+		var key := arg.get_slice("=", 0)
+		if seen.has(key) or arg.ends_with("="):
+			_fail("Duplicate or empty option: " + key)
+			return
+		seen[key] = true
 		if arg.begins_with("--capture="):
 			capture = arg.trim_prefix("--capture=")
 		elif arg.begins_with("--pose="):
@@ -127,7 +133,7 @@ func _build() -> void:
 	rows.add_child(HSeparator.new())
 	body_toggle = _toggle(rows, _t("Body shell", "Carrocería"), initial_body)
 	body_toggle.toggled.connect(func(shown: bool): Visual.set_body_visible(model, shown))
-	proxy_toggle = _toggle(rows, _t("Contact envelopes", "Envolventes de contacto"), initial_proxies)
+	proxy_toggle = _toggle(rows, _t("Body collision proxies", "Proxies de carrocería"), initial_proxies)
 	proxy_toggle.toggled.connect(func(shown: bool): Visual.set_proxies_visible(model, shown))
 	spin_toggle = _toggle(rows, _t("Animate wheel rotation", "Animar giro de ruedas"), false)
 	var spacer := Control.new()

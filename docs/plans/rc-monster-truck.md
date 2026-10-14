@@ -1,6 +1,6 @@
 # RC monster truck: physics laboratory and playable vehicle
 
-**Date:** 2026-10-13. **Status:** implementation continues while the Blender developer prepares the model. RCV-04a delivers the quarter-car suspension bench; RCV-04b adds coupled four-corner heave/roll/pitch support, independent references, experiments and diagnostic timing. No selectable truck or menu integration exists yet. **Owner:** RC ground-vehicle track. **Prefix:** RCV-00…RCV-34, registered in the [ownership index](../README.md#tracks-plans-and-step-ids). **Evidence:** [source investigation](../research/rc-monster-truck/README.md), [RCV-04a](../research/rc-monster-truck/RCV-04a/README.md), [RCV-04b](../research/rc-monster-truck/RCV-04b/README.md). The [bench guide](../../research/rc-monster-truck/README.md) owns runnable commands.
+**Date:** 2026-10-13. **Status:** the first Bisonte MT8 asset has arrived. RCV-14a provides a local articulated Godot inspector and intake verification. RCV-04a/b provide the independent quarter-car and four-corner suspension benches. No selectable truck or menu integration exists yet. **Owner:** RC ground-vehicle track. **Prefix:** RCV-00…RCV-34, registered in the [ownership index](../README.md#tracks-plans-and-step-ids). **Evidence:** [source investigation](../research/rc-monster-truck/README.md), [RCV-04a](../research/rc-monster-truck/RCV-04a/README.md), [RCV-04b](../research/rc-monster-truck/RCV-04b/README.md), [RCV-14a](../research/rc-monster-truck/RCV-14a/README.md). The [research tool guide](../../research/rc-monster-truck/README.md) owns runnable commands.
 
 This plan adds one large RC monster truck as another selectable vehicle in OpenRC Simulator. It has two equally important uses: expose physical behavior through repeatable experiments, and provide enjoyable driving, jumps and recovery. The same physical model serves both. A successful numerical experiment does not establish real-truck accuracy, and an attractive jump does not establish correct mechanics.
 
@@ -378,13 +378,13 @@ Existing commands stay in [TOOLS](../TOOLS.md): `app/test.sh`, `research/test-to
 
 ## 11. Execution order and reviewable steps
 
-RCV-00 is the planning delivery. RCV-04a/b implement bounded quarter-car and coupled four-corner benches; their research inputs do not close the full vehicle schema or mechanical architecture gates. Other implementation work remains pending. Each step lands with focused proof and dated evidence; no phase may mark physical or user gates closed from headless results alone.
+RCV-00 is the planning delivery. RCV-04a/b implement bounded quarter-car and coupled four-corner benches; their research inputs do not close the full vehicle schema or mechanical architecture gates. RCV-14a checks the first MT8 asset in an isolated visual inspector; it does not close runtime distribution or driving gates. Other implementation work remains pending. Each step lands with focused proof and dated evidence; no phase may mark physical or user gates closed from headless results alone.
 
 | ID | Work and dependency | Proof / status |
 | --- | --- | --- |
 | RCV-00 | Register track; repository/source investigation; plan and Blender letter | This plan and its source record / delivered as documentation |
 | RCV-01 | Freeze test envelope, baseline source hashes, candidate powertrain and numerical acceptance protocol | Baseline aircraft outputs and a decision/evidence matrix / pending |
-| RCV-02 | Blender asset reuse audit, reference mechanism and proposed dimensions; no final mesh before fit/license review | Source/license inventory and dimensioned proposal / pending |
+| RCV-02 | Blender asset reuse audit, reference mechanism and proposed dimensions; no final mesh before fit/license review | MT8 draft dimensions and visual linkage received and checked in RCV-14a; reuse/license declaration and physical mechanism acceptance pending |
 | RCV-03 | Strict ground-vehicle quantity/schema/loader and source pipeline | Positive/negative data fixtures, reproducible generator check / pending |
 | RCV-04 | Mechanical-state/integrator spike and independent reduced suspension oracles | **Partial:** [RCV-04a quarter car](../research/rc-monster-truck/RCV-04a/README.md) and [RCV-04b coupled four-corner rig](../research/rc-monster-truck/RCV-04b/README.md) verify reduced motion, energy, refinement and diagnostic kernel cost. Fixed versus variable inertia selection, full-body momentum, complete-tick cost and production state/version selection remain pending |
 | RCV-05 | Flat-ground reduced truck: support, mass properties, basic suspension and a minimal versioned flat-pad descriptor for P1 | RCV-04b provides static corner-load and reduced heave/roll/pitch proofs; production reduced truck, mass inventory, flat pad and valid vehicle spawn remain pending |
@@ -396,10 +396,10 @@ RCV-00 is the planning delivery. RCV-04a/b implement bounded quarter-car and cou
 | RCV-11 | Dynamic unsprung suspension and coupled moving-mass mechanics | Quarter/half-car reference, free-flight total momentum and drop tests / pending |
 | RCV-12 | Wheel/shaft/body coupling and air control | No-external-torque known answers; drive/brake ballistic jump comparison / pending |
 | RCV-13 | Validated physical course descriptor, material mapping and spawn poses | Surface/normal/seam tests and render/proxy agreement / pending |
-| RCV-14 | Blender articulated asset delivery and import verifier | Dimension/pivot/material/license evidence; preview can be accepted independently of driving / pending |
+| RCV-14 | Blender articulated asset delivery and import verifier | **Partial:** [RCV-14a](../research/rc-monster-truck/RCV-14a/README.md) verifies the supplied MT8 draft and local Godot articulation/inspection. Source rights, reuse audit, runtime anchors, LOD/material review and export qualification remain pending |
 | RCV-15 | Shared vehicle catalog facade and scene/session adapter with UI/HELI/DR owners | Aircraft catalog loops unchanged; alternate-session lifecycle tests / pending |
 | RCV-16 | Home family-aware preview, action, start/mode/course and preference migration; P1 uses RCV-05's flat pad, off-road course choices wait for RCV-13 | EN/ES captures, old/future preferences, start rejection and direct CLI isolation / pending |
-| RCV-17 | Truck scene, model articulation and detached render state | Physics→visual mapping at rest, steering, droop, bump and inversion / pending |
+| RCV-17 | Truck scene, model articulation and detached render state | RCV-14a provides a tested visual pose adapter; production scene, detached physical state/CG mapping and inversion integration remain pending |
 | RCV-18 | Truck camera profile and obstacle/near-clip behavior | Reverse/jump/rollover clips at 30/60/144 FPS; camera-on/off parity / pending |
 | RCV-19 | Vehicle device profiles and neutral arming/failsafe | Keyboard/gamepad/pistol/stick radio fixtures plus real hardware trial / pending |
 | RCV-20 | Pause/restart/recovery/help and family transitions | Real-input round trips, no held-input launch, trace save/discard failures / pending |

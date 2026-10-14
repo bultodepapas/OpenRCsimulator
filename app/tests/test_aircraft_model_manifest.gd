@@ -10,6 +10,7 @@ var _failures := 0
 func _initialize() -> void:
 	_test_catalog_family_mapping()
 	_test_manifest_rejections()
+	_test_construction_rejections()
 	_test_gltf_section_contract()
 	_test_builders()
 	print("Aircraft model manifest: %d checks, %d failures" % [_checks, _failures])
@@ -72,7 +73,7 @@ func _test_gltf_section_contract() -> void:
 	_check("r2 section fixture has a current manifest", description.ok, str(description.errors))
 	if not description.ok: return
 	var builder: Script = load(str(description.manifest.builder.script))
-	var built: Dictionary = builder.call("build")
+	var built: Dictionary = builder.call("build", description.manifest) if int(description.manifest.get("version", 1)) == 2 else builder.call("build")
 	var wing: Node = built.root.find_child("wing_left_fixed", true, false)
 	var original: Dictionary = wing.get_meta("extras").duplicate(true)
 	var missing := original.duplicate(true)
@@ -111,6 +112,42 @@ func _test_gltf_section_contract() -> void:
 	_check("gltf section provider rejects procedural asset", not result.ok and _has_code(result.diagnostics, "MODEL_CRASH_ASSET_INVALID"))
 
 
+func _test_construction_rejections() -> void:
+	var description: Dictionary = Registry.describe("turbo-lumber-evolution")
+	_check("generic imported family has a version 2 manifest", description.ok and int(description.manifest.get("version", 0)) == 2, str(description.errors))
+	if not description.ok or int(description.manifest.get("version", 0)) != 2: return
+	var valid: Dictionary = description.manifest
+	var rejected: Dictionary = {}
+	var unknown_version := valid.duplicate(true)
+	unknown_version.construction.version = true
+	rejected = Registry.validate_manifest(unknown_version)
+	_check("boolean construction version rejects", not rejected.ok and _has_code(rejected.diagnostics, "MODEL_CONSTRUCTION_VERSION_UNSUPPORTED"), str(rejected.diagnostics))
+	var unknown_field := valid.duplicate(true)
+	unknown_field.construction.future_mode = "guess"
+	rejected = Registry.validate_manifest(unknown_field)
+	_check("unknown construction field rejects", not rejected.ok and _has_code(rejected.diagnostics, "MODEL_CONSTRUCTION_FIELD_UNKNOWN"), str(rejected.diagnostics))
+	var duplicate_wrapper := valid.duplicate(true)
+	duplicate_wrapper.construction.gear[1].wrapper = duplicate_wrapper.construction.gear[0].wrapper
+	rejected = Registry.validate_manifest(duplicate_wrapper)
+	_check("duplicate construction wrapper rejects", not rejected.ok and _has_code(rejected.diagnostics, "MODEL_CONSTRUCTION_NODE_COLLISION"), str(rejected.diagnostics))
+	var wrapper_mount_collision := valid.duplicate(true)
+	wrapper_mount_collision.construction.gear[2].node = wrapper_mount_collision.construction.gear[1].wrapper + "_mount"
+	rejected = Registry.validate_manifest(wrapper_mount_collision)
+	_check("gear node cannot collide with a generated wrapper mount", not rejected.ok and _has_code(rejected.diagnostics, "MODEL_CONSTRUCTION_NODE_COLLISION"), str(rejected.diagnostics))
+	var unsupported_ref := valid.duplicate(true)
+	unsupported_ref.construction.gear[0].geometry_ref = "articulations..missing"
+	rejected = Registry.validate_manifest(unsupported_ref)
+	_check("malformed construction reference rejects", not rejected.ok and _has_code(rejected.diagnostics, "MODEL_CONSTRUCTION_REF_INVALID"), str(rejected.diagnostics))
+	var cross_role_collision := valid.duplicate(true)
+	cross_role_collision.construction.gear[0].node = cross_role_collision.bindings.controls.aileron_left.hinges[0].node
+	rejected = Registry.validate_manifest(cross_role_collision)
+	_check("construction node cannot collide with a control hinge", not rejected.ok and _has_code(rejected.diagnostics, "MODEL_CONSTRUCTION_NODE_COLLISION"), str(rejected.diagnostics))
+	var duplicate_material := valid.duplicate(true)
+	duplicate_material.construction.material_grow.append(duplicate_material.construction.material_grow[0].duplicate(true))
+	rejected = Registry.validate_manifest(duplicate_material)
+	_check("duplicate material node/material pair rejects", not rejected.ok and _has_code(rejected.diagnostics, "MODEL_CONSTRUCTION_MATERIAL_DUPLICATE"), str(rejected.diagnostics))
+
+
 func _test_builders() -> void:
 	var exercised: Dictionary = {}
 	for aircraft_id in Catalog.ids():
@@ -125,7 +162,7 @@ func _test_builders() -> void:
 		if builder == null:
 			_check("registered builder script loads: " + family_id, false)
 			continue
-		var built: Dictionary = builder.call("build")
+		var built: Dictionary = builder.call("build", description.manifest) if int(description.manifest.get("version", 1)) == 2 else builder.call("build")
 		var result: Dictionary = Registry.validate_derived(description.manifest, built)
 		_check("derived builder bindings conform: " + family_id, result.ok, str(result.errors))
 		if family_id == "jensen-das-ugly-stik-60" and built.get("root") is Node3D:

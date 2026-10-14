@@ -2,6 +2,7 @@
 extends RefCounted
 
 const Manifest := preload("res://aircraft/model_manifest.gd")
+const Construction := preload("res://aircraft/imported_model_contract.gd")
 const REST_TOLERANCE := 0.00002 # Source measurements rounded to six decimal places.
 
 
@@ -39,6 +40,10 @@ static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary) ->
 	if manifest.get("version") != 2 or manifest.builder.script != "res://aircraft/imported_model.gd":
 		root.free()
 		return _failure(["The common importer requires a version 2 imported model manifest."])
+	var references := Construction.validate_geometry(data, manifest.construction, manifest.bindings)
+	if not references.ok:
+		root.free()
+		return _failure(references.errors)
 	var errors := PackedStringArray()
 	var nodes := {}
 	for node in [root] + root.find_children("*", "", true, false):
@@ -95,7 +100,7 @@ static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary) ->
 	root.set_meta("status", data.get("status", ""))
 	root.set_meta("visual_revision", manifest.asset.revision)
 	root.set_meta("asset_sha256", manifest.asset.sha256)
-	root.set_meta("aircraft_id", manifest.asset.identity)
+	root.set_meta("aircraft_id", manifest.family_id)
 	_apply_materials(config.material_grow, nodes)
 	var propeller := Node3D.new()
 	propeller.name = "propeller"
@@ -118,7 +123,7 @@ static func build_scene(root: Node3D, data: Dictionary, manifest: Dictionary) ->
 		gear[bindings.gear.keys[binding.role]] = _wrap(root, gear_pivots[binding.role], binding.wrapper)
 	return {ok = true, errors = PackedStringArray(), model = {
 		root = root, propeller = propeller, hinges = hinges, gear = gear,
-		has_propeller = bindings.rotor.present, data = data, aircraft_id = manifest.asset.identity,
+		has_propeller = bindings.rotor.present, data = data, aircraft_id = manifest.family_id,
 		model_manifest = manifest.duplicate(true)}}
 
 

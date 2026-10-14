@@ -125,7 +125,7 @@
   ],
   "presentation": {
     "visual_family": "gp-extra-300s-60",
-    "model_manifest_sha256": "edb5f042602473a9c335ce55d2aa316eb175a0c9894c7c0253d1be913f6420dc",
+    "model_manifest_sha256": "084ed9500e2e5c2bf7bd62c831a2e4ed0840763a2e90f03dab1f2add816d268c",
     "scale_root": "airplane"
   }
 }
