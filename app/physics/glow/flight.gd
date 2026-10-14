@@ -122,12 +122,13 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 	var feed_factor: float=1.0
 	var airframe: Dictionary={}
 	var feed: Dictionary={}
+	var feed_mass: Dictionary={}
 	if install.has("fuel_feed"):
 		airframe=_airframe(owner,body,values,air,hub_air,rpm,load)
 		if airframe.is_empty(): return {ok=false}
-		var mass: Dictionary=properties(owner,values[1])
-		if not mass.ok: return {ok=false}
-		feed=FuelFeed.evaluate(install.fuel_feed,airframe.external.slice(0,3),mass.mass_kg,
+		feed_mass=properties(owner,values[1])
+		if not feed_mass.ok: return {ok=false}
+		feed=FuelFeed.evaluate(install.fuel_feed,airframe.external.slice(0,3),feed_mass.mass_kg,
 			clampf(state.fuel_kg/install.initial_fuel_kg,0.0,1.0),clampf(state.air_fraction,0.0,1.0),rpm,
 			install.tank_position,install.tank_size,owner.sim.gravity)
 		feed_factor=feed.factor
@@ -149,6 +150,7 @@ static func point(owner: Node, body: PackedFloat64Array, values: PackedFloat64Ar
 	if not airframe.is_empty():
 		evaluation.airframe=airframe
 		evaluation.fuel_feed=feed
+		evaluation.mass=feed_mass
 	return evaluation
 
 
@@ -174,7 +176,8 @@ static func evaluate(body: PackedFloat64Array, values: PackedFloat64Array, time_
 	if not result.ok: return {}
 	var model: Dictionary=owner.aircraft.model
 	var prop: Dictionary=model.propulsion
-	var mass: Dictionary=properties(owner,values[1])
+	var mass: Dictionary=result.get("mass",{})
+	if mass.is_empty(): mass=properties(owner,values[1])
 	if not mass.ok: return {}
 	var rpm: float=maxf(0.0,values[0])
 	var airframe: Dictionary=result.get("airframe",{})
