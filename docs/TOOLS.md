@@ -131,6 +131,11 @@ Focused commands and dependency pins belong to the tool README. Most render chec
 
 ## Native performance experiments
 
+[Session performance tools](../research/performance/README.md) provide the VQ-01c
+complete-callback CPU probe, paired instrumentation checks and native-frame reduction.
+The separate read-only texture inventory supports VQ-02a. CPU probe durations are
+simulated ticks; they do not replace native frame, loading, package or pilot acceptance.
+
 Flight physics uses GDScript. The ground-vehicle activity can use its qualified C++ evaluator, with GDScript reference/fallback; [build and platform contract](../research/rc-monster-truck/native/README.md). Other native candidates below remain research outside production:
 
 | Experiment | Commands and limitations |

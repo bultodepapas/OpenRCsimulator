@@ -4,6 +4,9 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 export PYTHONDONTWRITEBYTECODE=1
 for test in \
+  performance/test_session_baseline.py \
+  performance/test_native_summary.py \
+  performance/test_texture_inventory.py \
   validation/weighing/test_reduce.py \
   validation/inertia/test_reduce.py \
   validation/static-prop/test_reduce.py \
