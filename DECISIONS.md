@@ -155,6 +155,10 @@ The researched electric Ultra Stick 25e remains a comparison specimen. Only its 
 
 ## Notes
 
+### 2026-10-13 — Declarative imported aircraft construction (AS-09/10)
+
+Keep physical `openrc-aircraft v2` independent from model-manifest versions. Retain version 1's zero-argument procedural builders; model version 2 passes checked construction bindings to one shared GLB builder. Controls reference existing geometry records, while rotor frames and gear pivots become explicit declarations. Reject unsupported axis conventions, ambiguous nodes and non-rigid articulation transforms before construction. Preserve Timber's inspector API and per-instance cowl correction without requiring a copied builder for the next conventional Blender delivery. Source/package hashes continue to pin the exact presentation; this is not automatic migration of frozen Workshop trials. [Contract](AIRCRAFT_CONTRACT.md#model-and-package-contract), [migration evidence](docs/research/aircraft-standardization/AS-09-10-import/README.md).
+
 ### 2026-10-13 — Verify coupled truck support in a separate small-angle rig (RCV-04b)
 
 Extend the quarter-car bench to a 14-state heave/roll/pitch plus four-hub system, with fixed generalized mass and an explicit linear mount Jacobian. Keep its `openrc-support-bench` input and local x-forward/y-left/z-up coordinates separate from production aircraft and the future full-vehicle state. Independent matrix-exponential, quarter-reduction, support-load and energy/work checks qualify the synthetic fixture. The research runner refuses sampled angles beyond 0.1 rad; it does not clamp or stabilize motion. This is a constrained vertical verification rig, not a choice of fixed inertia for a full truck with moving wheels. Whole-body transport/momentum, full 6DoF mechanics and complete-tick cost remain open. [Guide](research/rc-monster-truck/README.md#rcv-04b-four-corner-support), [dated evidence](docs/research/rc-monster-truck/RCV-04b/README.md).

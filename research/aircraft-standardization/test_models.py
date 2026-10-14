@@ -104,9 +104,11 @@ class AircraftModelManifestTests(unittest.TestCase):
         self.assertEqual(construction["rotor"], {"frame_node": "thrust_frame", "geometry_ref": "thrust", "axis": "+X"})
         for gear in construction["gear"]:
             _, articulation_key = gear["geometry_ref"].split(".", 1)
-            self.assertEqual(geometry["articulations"][articulation_key]["node"], gear["node"])
-            self.assertIsNone(geometry["articulations"][articulation_key].get("app_sign"))
-            self.assertIsNone(geometry["articulations"][articulation_key].get("range_deg"))
+            articulation = geometry["articulations"][articulation_key]
+            self.assertEqual(articulation["node"], gear["node"])
+            self.assertIsNone(articulation.get("app_sign"))
+            if gear["role"] != "steering":
+                self.assertIsNone(articulation.get("range_deg"))
         self.assertEqual(construction["material_grow"], [{"node": "cowl", "materials": ["black", "red"], "amount_m": 0.0008}])
         self.assertEqual(timber["bindings"]["crash"]["provider"], "gltf_extras")
         self.assertFalse(any(dep["role"] == "crash_metadata" for dep in timber["dependencies"]))

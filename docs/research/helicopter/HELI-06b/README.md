@@ -22,7 +22,7 @@ Fvf,y* = −0.5 ρ Svf (avf √(vrel,x² + vrel,z²) + |vrel,y|) vrel,y
 Fht,z* = −0.5 ρ Sht (aht |vrel,x| + |vrel,z|) vrel,z
 ```
 
-The vertical-fin force is capped at `0.5 ρ Svf |vrel|²`; the horizontal-tail force is capped at `0.5 ρ Sht (vrel,x² + vrel,z²)`. Each cap preserves its ideal force sign. Other surface-force axes are zero in this damping-only law. All component moments use `r × F`. Consequently each component satisfies `F · vrel ≤ 0`. Its power on the body may be positive when a supplied wake transfers energy: `Pbody = Prel + Pwake`, with `Prel = F · vrel` and `Pwake = F · vwake`.
+The vertical-fin force is capped at `0.5 ρ Svf |vrel|²`; the horizontal-tail force is capped at `0.5 ρ Sht (vrel,x² + vrel,z²)`. Each cap preserves its ideal force sign. Other surface-force axes are zero in this damping-only law. All component moments use `r × F`. Consequently each component satisfies `F · vrel ≤ 0`. Ambient-relative body work may be positive when a supplied wake transfers energy: `Pbody,air = Prel + Pwake`, with `Prel = F · vrel` and `Pwake = F · vwake`.
 
 Here `body_air_power_w` means work relative to the ambient air reference: `Σ F · (vCG,air + ω × r)`. It equals `Ftotal · vCG,air + Mtotal · ω`. Actual world-frame body power also includes `Ftotal · vambient`; this kernel cannot infer that term because ambient/ground velocity is not an input. Relative-flow passivity does not imply that aircraft world-frame kinetic energy always decreases in wind.
 
@@ -51,6 +51,8 @@ $AirframeOracle = (Resolve-Path research/helicopter/reference/airframe_oracle.js
 ```
 
 The native test fixture uses the X-Cell drag areas and tail dimensions as explicit numerical inputs at ρ=1.225 kg/m³. The horizontal-tail CP's test height is zero because Table 1 does not give that height; it is not a measured datum. The oracle uses a separate numerical profile and off-axis points. Neither profile is authored aircraft data.
+
+The focused [verification runner](../../../../research/helicopter/verify_kernels.py) passes on official Godot 4.7.2 Windows and Ubuntu/WSL: all 16 HELI scripts parse, all native HELI suites pass, four airplane goldens pass, and 30/60/144 FPS body hashes agree per platform. All 13 disposable sign/root/arm/cap defects fail their intended assertions without script errors. Windows also passes all 67 Python reference tests and all five oracle freshness checks. Working-tree summaries are `.tools/heli-airframe/windows-proof/summary.json` and `linux-proof/summary.json`. This increment does not run the full `app/test.sh`, an application-wide parse sweep, or pilot/physical acceptance; no airplane physics path or golden is edited by this track.
 
 ## Joint aerodynamic stage
 
