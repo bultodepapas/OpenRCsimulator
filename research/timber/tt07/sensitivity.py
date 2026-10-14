@@ -62,6 +62,6 @@ if __name__=='__main__':
     parser=argparse.ArgumentParser();parser.add_argument('--check',action='store_true');args=parser.parse_args()
     path=HERE/'sensitivity.md';text=report()
     if args.check:
-        if not path.exists() or path.read_bytes()!=text.encode('utf-8'):raise SystemExit('TT-07 sensitivity stale')
+        if not path.exists() or path.read_text(encoding='utf-8')!=text:raise SystemExit('TT-07 sensitivity stale')
         print('TT-07 estimate sensitivity current')
     else:path.write_bytes(text.encode('utf-8'));print('TT-07 estimate sensitivity written')

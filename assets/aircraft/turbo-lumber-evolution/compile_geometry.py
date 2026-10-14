@@ -65,7 +65,7 @@ def main():
     output += "extends RefCounted\n\nconst DATA := "
     output += json.dumps(as_godot_json(data), ensure_ascii=False, indent="\t") + "\n"
     if args.check:
-        assert TARGET.exists() and TARGET.read_bytes() == output.encode("utf-8"), "Stale Timber geometry constant: run compile_geometry.py"
+        assert TARGET.exists() and TARGET.read_text(encoding="utf-8") == output, "Stale Timber geometry constant: run compile_geometry.py"
         print("Timber geometry source/runtime: identical")
     else:
         TARGET.write_bytes(output.encode("utf-8"))
