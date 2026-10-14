@@ -52,7 +52,12 @@ func _run() -> void:
 	_key(KEY_RIGHT, true)
 	await create_timer(0.5).timeout # limiter needs 0.25 s
 	var r := _row("roll")
-	_check("hold -> roll +1, aileron +20°", "+1.00" in r and "+20.0°" in r, r)
+	var normal_aileron: float = _main.session.aircraft.model.controls.rates.normal.aileron
+	var roll_trim: float = _main.session.trims.roll
+	var max_aileron_throw: float = _main.session.throws_deg().aileron
+	var expected_aileron_deg: float = clampf(normal_aileron + roll_trim, -1.0, 1.0) * max_aileron_throw
+	_check("hold -> roll +1, aileron %+.1f°" % expected_aileron_deg,
+		"+1.00" in r and ("%+.1f°" % expected_aileron_deg) in r, r)
 	_key(KEY_RIGHT, false)
 	await create_timer(0.5).timeout
 	r = _row("roll")
