@@ -69,6 +69,10 @@ These are unedited Godot captures from the [landscape verification](docs/researc
 - **FPV drone racing:** vehicle, controller and race-mode design/research are underway using the shared rotor foundations. A flyable drone and race mode are not yet implemented. [Drone track](docs/plans/drone-racing.md)
 - Further aircraft, camera, audio, menu and desktop qualification remains in the [documentation map](docs/README.md#tracks-plans-and-step-ids).
 
+## Partners
+
+**[Savox](https://www.teamsavox.com/)** has authorized us to include representations of its products in OpenRC Simulator. Thank you for supporting the project. Selection of Savox servos from the catalog is planned; see the [servo integration plan](docs/plans/savox-servos.md).
+
 ## Develop and contribute
 
 The simulator lives in `app/`, using pinned **Godot 4.7.2**, GDScript and the Compatibility renderer. Its own float64 flight solver runs at 240 Hz. `prototypes/stage0/three/` is the frozen platform bake-off.
