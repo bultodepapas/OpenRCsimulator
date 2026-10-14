@@ -99,6 +99,18 @@ The probe checks historical baseline parity, complete runs, fixed elevator, abse
 
 Both write their correspondingly named evidence JSON files. They are research-only interventions with different post-15-second power protocols; do not compare their later trajectories as if all inputs were equal. Run pinned Godot headlessly from the repository root. The evidence report records decisions and validation limits for the entire campaign.
 
+## Root-cause review tools
+
+`independent_longitudinal.py` reimplements the Stik's attached longitudinal equations without simulator code: the fixed-elevator equilibrium map for the current and APC 12x6 propeller tables, then calm throttle steps with each table and with a 6 % static margin. `vlm_neutral_point.py` computes the stick-fixed neutral point from the Stik's own wing and stabilizer planform with a vortex lattice; it omits fuselage, propeller and slipstream. `root_cause_variant_probe.gd` runs the real session for the baseline, the APC table, a geometric 6 % margin (moving only the coefficient reference point) and both together, with calm 40 s steps and the owner's recorded inputs. It writes `root-cause-variants.json`.
+
+```powershell
+python research/flight-dynamics/climb-trim/independent_longitudinal.py
+python research/flight-dynamics/climb-trim/vlm_neutral_point.py
+& .\.tools\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script "$PWD/research/flight-dynamics/climb-trim/root_cause_variant_probe.gd"
+```
+
+The Python checks need numpy and scipy. All three are counterfactuals for diagnosis, not calibrated aircraft data.
+
 ## Explicit half-throttle start
 
 Home's standard Stik start selector cycles through the legacy airborne, runway and optional airborne-at-50%-throttle choices. The latter solves its speed and all trims; it is not an automatic in-flight assist or a measured cruise prescription. It does **not** eliminate inversion under all power histories.

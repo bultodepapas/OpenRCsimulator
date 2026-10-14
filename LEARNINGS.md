@@ -60,6 +60,10 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-13 · D6e-R1 — a borrowed `Cma` carries the donor's static margin, not the target's
+
+Static margin is neutral point minus CG, and the neutral point comes from the target's own wing, tail and downwash. Applying the Ultra Stick's `Cma` about the Ugly Stik's plan CG gave 18.9 % margin where its planform gives about 4–8 %, so the model holds trim α too stiffly and turns every speed gain into a pull-up. Derive pitch stiffness from the target geometry at the target CG, or move the coefficient reference so the neutral point is geometric. Check donor propeller tables against the named propeller too: an 11×6 table on the 12×6 overstated thrust 1.4–1.8× at cruise advance ratios. [Root-cause review](docs/research/flight-dynamics/climb-trim/README.md#root-cause-review-2026-10-13-d6e-r1)
+
 ## 2026-10-13 · CR-09f — a SceneTree test that hits a script error hangs instead of failing
 
 When a `--script` SceneTree test raises a runtime script error (indexing `[0]` of an empty list, `.field` on `{}`), Godot prints the error and never reaches `quit()`; the runner only sees its timeout. Two CR-09f mutations looked like hangs for this reason. Fetch optional sections through helpers that return `{}` and read keys with `.get(key, default)`, so a missing part fails its checks and the summary line still prints. [CR-09e/f evidence](docs/research/crash-damage-investigations/CR-09e/README.md)
