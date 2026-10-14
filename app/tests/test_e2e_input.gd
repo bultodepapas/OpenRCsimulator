@@ -24,6 +24,31 @@ func _key(code: Key, pressed: bool) -> void:
 	Input.parse_input_event(e)
 
 
+func _release_main() -> void:
+	if _main == null:
+		return
+	_main.set_process(false)
+	_main.set_physics_process(false)
+	var audio: Node = _main.get("_soundscape_audio")
+	if audio != null:
+		audio.set_process(false)
+	var players: Array[Node] = _main.find_children("*", "AudioStreamPlayer", true, false)
+	for node: Node in players:
+		var player: AudioStreamPlayer = node as AudioStreamPlayer
+		if player != null:
+			player.stop()
+			player.stream = null
+	# Match the UI tests: let the audio server release stopped playback before freeing players.
+	await process_frame
+	await process_frame
+	if _main.get_parent() == root:
+		root.remove_child(_main)
+	_main.free()
+	_main = null
+	await process_frame
+	await process_frame
+
+
 func _row(prefix: String) -> String:
 	for line in (_main._panel as Label).text.split("\n"):
 		if line.begins_with(prefix):
@@ -199,5 +224,6 @@ func _run() -> void:
 		finite_state = finite_state and is_finite(value)
 	_check("Timber input path keeps every simulated rigid-body value finite", finite_state)
 
+	await _release_main()
 	print("all e2e checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)
