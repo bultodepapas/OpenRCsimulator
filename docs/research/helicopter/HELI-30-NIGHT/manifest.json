@@ -1,0 +1,258 @@
+{
+  "format": "openrc-heli-night-evidence v1",
+  "utc": "2026-10-14T22:46:16.852844+00:00",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "renderer": "native Windows Compatibility OpenGL 3.3 NVIDIA RTX 3090 driver 610.88",
+  "test_suites": [
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/checks/test_controller_flight_actions.log",
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/checks/test_controls_reference.log",
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/checks/test_heli_night_lights.log",
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/checks/test_heli_night_rotor.log",
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/checks/test_heli_render_audit.log",
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/checks/test_heli_visual.log",
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/checks/test_ui_help.log",
+      "ok": true,
+      "warnings": []
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/checks/test_ui_home.log",
+      "ok": true,
+      "warnings": [
+        "WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+      ]
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/checks/test_ui_home_preview_cache.log",
+      "ok": true,
+      "warnings": [
+        "WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+      ]
+    }
+  ],
+  "capture_count": 23,
+  "captures": [
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/close-ground.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "c1ab78a14503d00ee4c1f774feb8676698c087feabe467a19fca271863973cdc"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/close-hover.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "19c3744e27930ea76df9ae83f7bb8080ad419c77540222dd177611ed2401bc8d"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/distance-100m.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "e69bd5d904d8435455fdf7eddf52d9d8ceefe92c52a79840b186fb79d9e0e858"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/distance-50m.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "61e42124b6389628478ff18043a455a16efec491d279b1992918dae6c045186d"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/fixed/close-ground.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "f939871b46f1fd2855a18dbec104c61da950ad4a24965a4a2a54e81648c7a4fc"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/fixed/close-hover.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "e87331fd0d2873f976548ec63fa9d6d117230db89d89f9499597f57b8d8bc9dd"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/fixed/distance-100m.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "72cf7dc437a262e691f9887fcf86d7ed973d78222445be9b6432dd465556c0b0"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/fixed/distance-50m.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "4ed2e37d08f94b65645ddea0bf71081a7d5e82249e54210b70fde8e9aea4d08a"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/fixed/lights-off.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "8483778c99230bc813d804efbbcaebca535b7c2047f90ab6177a4c650059a2cf"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/fixed/lower-hover.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "45e9d1b847513e89540ab1f6c50ced3b37c3251ba282061994d0c14b597ffd15"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/fixed/navigation.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "20a5e1a1a39afac6d65713c1e962336c094527a7684521bec2ce12782abae44d"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/fixed/slow-spool.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "41ac05c4bb64caf3b5dab76fd84862a81c364c5606ae35b423e0eb4ebc3eb0dd"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/fixed/upper-hover.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "2d16555cbc41c2c4fbcb57974dbc8879f2d73f982d8813e2468373a2193b906f"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/fixed-0.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "543e68340150c450f44f08c15026fc23c5c02580945ed36c820dc1cbac22a69c"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/fixed-12.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "2838943519e67847ca264445ff4252202b1d1940d728c87bcee6fc2462b1df9e"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/home-night.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "e437aa6d3c13d71fc103f502f5248581ec5cb90aad01082459276c3a078d4b02"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/lights-off.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "6991628fdcb272824018b9a37cd712a7687cc68a8e6ce127738de5fc275ab7a6"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/lower-hover.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "ac5182d777fb3c0de621460547d5b2d57c159751a4b6739970ac1ccad2368bae"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/navigation.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "34dd53eb8fc2b5a1b6ec870defe6bf6a3326a91ea89be5f72065525015cb9a5e"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/pilot-airborne.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "0899a984c2083e8b60054e1cd4a52b1471f389a3ae6fc97763c38bfde56f2e55"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/pilot-ground.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "cf620e17d4fa58652cbdbc3d1291cc5168ffbd148f9eb6f33599c0a8ffaf4b71"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/slow-spool.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "fa0206c28c0ce76168e4a19d6d1d039e62b5fb48f39bb286713a5c1d45e1093f"
+    },
+    {
+      "path": "docs/research/helicopter/HELI-30-NIGHT/upper-hover.png",
+      "size": [
+        1280,
+        720
+      ],
+      "sha256": "5029e1d1c728f6f182caf19c62f9ed19a2591a0e68618c294b7ab1100f2e99ea"
+    }
+  ],
+  "sources": {
+    "app/render/rotor/heli_night_lights.gd": "fd6d73485263dcd2e92f786aabbcdf835f2f245492769f89f1913548f7edad90",
+    "app/render/rotor/heli_night_rotor.gd": "6aa86f962e9011894fe64289ab65714994baaa92276040aae17188efd95bde55",
+    "app/helicopter_main.gd": "ec72cef511a38de07d7431be3d58278975ef3859e9e44186ff10660b0172a762",
+    "app/ui/home_scene.gd": "7b1f2cb0d12007025109f34fb28d9bd1cfda67fa70b517487d92e353f2b3fe20",
+    "app/ui/help_screen.gd": "f79e1033b6692217e371f155873f05fa3f45d91021c961718075ece2db57c64c",
+    "app/ui/controls_reference.gd": "e00e7218c64a6e1273317229162ba34d3575dd205ea8b0fa0de6d4db5322c0ca",
+    "app/tests/test_heli_night_lights.gd": "8a83846954ea879fc120cad6f93d15bd91f1aefd06b875078bfe26162951f21b",
+    "app/tests/test_heli_night_rotor.gd": "7dbceb390cc2233c7715a1e4ac84fd0755d1e39a2deb2b6bd6b890b3a256ba6f",
+    "app/render/rotor/heli_night_rotor.gdshader": "2f94d4065927e628202e5112c89adf668e9c408e656934cc7820a104babf6c3f",
+    "app/i18n/es.po": "a2f3d30611376820edca7668fd91172c6df7226d123ce5a3f6c87b8022820f83",
+    "research/helicopter/night_lights/capture.gd": "749cce503b7e8977b65dcaeffeff003a1b80d30b64dd627b794769ed7a137687"
+  },
+  "scope": "Presentation only; not photometric or flight validation. Full app/test.sh and export matrix not run for this patch."
+}

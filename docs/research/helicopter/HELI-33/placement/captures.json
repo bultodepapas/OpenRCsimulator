@@ -1,0 +1,1417 @@
+{
+	"cases": [
+		{
+			"at_s": 0.041666666666666664,
+			"error": 0,
+			"focus": [
+				-7.233269570861012e-05,
+				0.8207207918167114,
+				-6.094461917877197
+			],
+			"image": "12-nose-0040.png",
+			"impact": {
+				"body": [
+					6.064333474021698,
+					0.0,
+					-0.36597058937945826,
+					4.741573626484751,
+					0.0,
+					-0.29291265414973716,
+					0.8253832187179009,
+					0.0,
+					-0.5645728848066279,
+					0.0,
+					0.0,
+					0.010577711252986973,
+					0.0
+				],
+				"body_angular_velocity": [
+					0.0,
+					0.010577711252986973,
+					0.0
+				],
+				"component": "fuselage",
+				"conservative_envelope": false,
+				"contact_method": "measured_hx_carenado_aabb_probe",
+				"effective_mass_kg": 5.10383882984634,
+				"estimated_proxy": true,
+				"ground_normal_world_ned": [
+					0.0,
+					0.0,
+					-1.0
+				],
+				"ground_point_world_ned": [
+					6.191013675996472,
+					-0.08359559,
+					0.0
+				],
+				"main_omega_rad_s": 0.0,
+				"normal_energy_j": 47.438085711557115,
+				"normal_speed_mps": 4.311516969052562,
+				"normal_world_ned": [
+					0.0,
+					0.0,
+					-1.0
+				],
+				"penetration_m": 4.494515870590021e-10,
+				"point_body_frd": [
+					0.38699999,
+					-0.08359559,
+					0.014606640000000004
+				],
+				"point_body_frd_m": [
+					0.38699999,
+					-0.08359559,
+					0.014606640000000004
+				],
+				"point_velocity_world_ned": [
+					1.9957504344055121,
+					0.0,
+					4.311516969052562
+				],
+				"point_world_ned": [
+					6.191013675996472,
+					-0.08359559,
+					4.494515870590021e-10
+				],
+				"reason": "fuselage ground strike",
+				"rotor_phase_model": "",
+				"shaft_phase": [
+					1.5707963267948966,
+					0.0
+				],
+				"surface": "rotorpad",
+				"surface_detail": {
+					"height_up_m": 0.0,
+					"kind": "terrain",
+					"row": 1,
+					"slope_east": 0.0,
+					"slope_north": 0.0
+				},
+				"tail_omega_rad_s": 0.0,
+				"tangent_speed_mps": 1.9957504344055121,
+				"tick": 8,
+				"time_fraction": 0.737929105758667,
+				"time_s": 0.03333333333333333,
+				"velocity_world_ned": [
+					1.9918793031792164,
+					0.0,
+					4.3128569556505205
+				]
+			},
+			"stats": {
+				"active": true,
+				"age_s": 0.041666666666666664,
+				"effects": {
+					"fire": 0.0,
+					"marks": 1,
+					"particles": 636,
+					"splinters": 8,
+					"update_usec": 13
+				},
+				"paused": false,
+				"scenery_bodies": 160,
+				"smoke_policy": "brief nonthermal composite dust; no declared fuel/battery fire inventory",
+				"start_usec": 34249,
+				"surviving_optics": 0,
+				"thermal_fire": false,
+				"wreck": {
+					"active_body_count": 2,
+					"c3_contact_exposure_index_j": 0.0,
+					"c3_contact_exposure_kind": "cosmetic post-crash exposure index; not measured dissipated energy",
+					"c3_contact_exposure_unit": "provisional relative kinetic-energy index J",
+					"c3_contact_release_pending": false,
+					"c3_contact_release_thresholds_j": {
+						"canopy": 25.0,
+						"engine": 50.0,
+						"gear": 12.0,
+						"propeller": 4.0
+					},
+					"cg_model": "(0.0, 0.11, 0.0)",
+					"class_level": 2,
+					"component_hint": "fuselage",
+					"contact_point_model": "(-0.083596, 0.095393, -0.387)",
+					"contact_shadow_count": 24,
+					"detached_group_count": 1,
+					"elapsed_s": 0.10416666666666696,
+					"energy_estimate_source": "normal_impact_energy_j",
+					"focus_position": "(-0.000073, 0.830483, -6.133027)",
+					"fragment_groups": [
+						"core",
+						"propeller",
+						"propeller",
+						"vertical_tail",
+						"gear",
+						"canopy",
+						"tail_boom",
+						"rudder",
+						"rudder"
+					],
+					"ground_normal": "(0.0, 1.0, 0.0)",
+					"ground_point": "(-0.083596, 0.0, -6.191014)",
+					"mass_kg": 8.2,
+					"max_speed_seen_mps": 2.0047404766082764,
+					"normal_impact_energy_estimate_j": 47.438085711557115,
+					"outcome_class": 2,
+					"outcome_component": "fuselage",
+					"paused": false,
+					"pool_size": 24,
+					"prepared": true,
+					"release_kinds": [
+						"canopy"
+					],
+					"rotor_spin_energy_basis": "0.5*shaft inertia*omega^2, divided per authored blade; exact shaft inventory or validated geared momentum",
+					"rotor_spin_energy_budget_j": 0.0,
+					"rotor_spin_energy_used_j": 0.0,
+					"scatter_energy_fraction": 0.12,
+					"scatter_energy_j": 0.0,
+					"secondary_impact_strength_unit": "J",
+					"secondary_impacts": 1,
+					"sleeping_body_count": 0,
+					"started": true
+				}
+			}
+		},
+		{
+			"at_s": 0.241666666666667,
+			"error": 0,
+			"focus": [
+				-7.444818038493395e-05,
+				0.8455026745796204,
+				-6.218573093414307
+			],
+			"image": "12-nose-0240.png",
+			"impact": {
+				"body": [
+					6.064333474021698,
+					0.0,
+					-0.36597058937945826,
+					4.741573626484751,
+					0.0,
+					-0.29291265414973716,
+					0.8253832187179009,
+					0.0,
+					-0.5645728848066279,
+					0.0,
+					0.0,
+					0.010577711252986973,
+					0.0
+				],
+				"body_angular_velocity": [
+					0.0,
+					0.010577711252986973,
+					0.0
+				],
+				"component": "fuselage",
+				"conservative_envelope": false,
+				"contact_method": "measured_hx_carenado_aabb_probe",
+				"effective_mass_kg": 5.10383882984634,
+				"estimated_proxy": true,
+				"ground_normal_world_ned": [
+					0.0,
+					0.0,
+					-1.0
+				],
+				"ground_point_world_ned": [
+					6.191013675996472,
+					-0.08359559,
+					0.0
+				],
+				"main_omega_rad_s": 0.0,
+				"normal_energy_j": 47.438085711557115,
+				"normal_speed_mps": 4.311516969052562,
+				"normal_world_ned": [
+					0.0,
+					0.0,
+					-1.0
+				],
+				"penetration_m": 4.494515870590021e-10,
+				"point_body_frd": [
+					0.38699999,
+					-0.08359559,
+					0.014606640000000004
+				],
+				"point_body_frd_m": [
+					0.38699999,
+					-0.08359559,
+					0.014606640000000004
+				],
+				"point_velocity_world_ned": [
+					1.9957504344055121,
+					0.0,
+					4.311516969052562
+				],
+				"point_world_ned": [
+					6.191013675996472,
+					-0.08359559,
+					4.494515870590021e-10
+				],
+				"reason": "fuselage ground strike",
+				"rotor_phase_model": "",
+				"shaft_phase": [
+					1.5707963267948966,
+					0.0
+				],
+				"surface": "rotorpad",
+				"surface_detail": {
+					"height_up_m": 0.0,
+					"kind": "terrain",
+					"row": 1,
+					"slope_east": 0.0,
+					"slope_north": 0.0
+				},
+				"tail_omega_rad_s": 0.0,
+				"tangent_speed_mps": 1.9957504344055121,
+				"tick": 8,
+				"time_fraction": 0.737929105758667,
+				"time_s": 0.03333333333333333,
+				"velocity_world_ned": [
+					1.9918793031792164,
+					0.0,
+					4.3128569556505205
+				]
+			},
+			"stats": {
+				"active": true,
+				"age_s": 0.241666666666667,
+				"effects": {
+					"fire": 0.0,
+					"marks": 1,
+					"particles": 636,
+					"splinters": 8,
+					"update_usec": 12
+				},
+				"paused": false,
+				"scenery_bodies": 160,
+				"smoke_policy": "brief nonthermal composite dust; no declared fuel/battery fire inventory",
+				"start_usec": 34249,
+				"surviving_optics": 0,
+				"thermal_fire": false,
+				"wreck": {
+					"active_body_count": 2,
+					"c3_contact_exposure_index_j": 0.0,
+					"c3_contact_exposure_kind": "cosmetic post-crash exposure index; not measured dissipated energy",
+					"c3_contact_exposure_unit": "provisional relative kinetic-energy index J",
+					"c3_contact_release_pending": false,
+					"c3_contact_release_thresholds_j": {
+						"canopy": 25.0,
+						"engine": 50.0,
+						"gear": 12.0,
+						"propeller": 4.0
+					},
+					"cg_model": "(0.0, 0.11, 0.0)",
+					"class_level": 2,
+					"component_hint": "fuselage",
+					"contact_point_model": "(-0.083596, 0.095393, -0.387)",
+					"contact_shadow_count": 24,
+					"detached_group_count": 1,
+					"elapsed_s": 0.3100150000000008,
+					"energy_estimate_source": "normal_impact_energy_j",
+					"focus_position": "(-0.000074, 0.845761, -6.220688)",
+					"fragment_groups": [
+						"core",
+						"propeller",
+						"propeller",
+						"vertical_tail",
+						"gear",
+						"canopy",
+						"tail_boom",
+						"rudder",
+						"rudder"
+					],
+					"ground_normal": "(0.0, 1.0, 0.0)",
+					"ground_point": "(-0.083596, 0.0, -6.191014)",
+					"mass_kg": 8.2,
+					"max_speed_seen_mps": 2.546095746423782,
+					"normal_impact_energy_estimate_j": 47.438085711557115,
+					"outcome_class": 2,
+					"outcome_component": "fuselage",
+					"paused": false,
+					"pool_size": 24,
+					"prepared": true,
+					"release_kinds": [
+						"canopy"
+					],
+					"rotor_spin_energy_basis": "0.5*shaft inertia*omega^2, divided per authored blade; exact shaft inventory or validated geared momentum",
+					"rotor_spin_energy_budget_j": 0.0,
+					"rotor_spin_energy_used_j": 0.0,
+					"scatter_energy_fraction": 0.12,
+					"scatter_energy_j": 0.0,
+					"secondary_impact_strength_unit": "J",
+					"secondary_impacts": 1,
+					"sleeping_body_count": 0,
+					"started": true
+				}
+			}
+		},
+		{
+			"at_s": 0.804166666666665,
+			"error": 0,
+			"focus": [
+				-7.436104351654649e-05,
+				0.846983790397644,
+				-6.23123836517334
+			],
+			"image": "12-nose-0800.png",
+			"impact": {
+				"body": [
+					6.064333474021698,
+					0.0,
+					-0.36597058937945826,
+					4.741573626484751,
+					0.0,
+					-0.29291265414973716,
+					0.8253832187179009,
+					0.0,
+					-0.5645728848066279,
+					0.0,
+					0.0,
+					0.010577711252986973,
+					0.0
+				],
+				"body_angular_velocity": [
+					0.0,
+					0.010577711252986973,
+					0.0
+				],
+				"component": "fuselage",
+				"conservative_envelope": false,
+				"contact_method": "measured_hx_carenado_aabb_probe",
+				"effective_mass_kg": 5.10383882984634,
+				"estimated_proxy": true,
+				"ground_normal_world_ned": [
+					0.0,
+					0.0,
+					-1.0
+				],
+				"ground_point_world_ned": [
+					6.191013675996472,
+					-0.08359559,
+					0.0
+				],
+				"main_omega_rad_s": 0.0,
+				"normal_energy_j": 47.438085711557115,
+				"normal_speed_mps": 4.311516969052562,
+				"normal_world_ned": [
+					0.0,
+					0.0,
+					-1.0
+				],
+				"penetration_m": 4.494515870590021e-10,
+				"point_body_frd": [
+					0.38699999,
+					-0.08359559,
+					0.014606640000000004
+				],
+				"point_body_frd_m": [
+					0.38699999,
+					-0.08359559,
+					0.014606640000000004
+				],
+				"point_velocity_world_ned": [
+					1.9957504344055121,
+					0.0,
+					4.311516969052562
+				],
+				"point_world_ned": [
+					6.191013675996472,
+					-0.08359559,
+					4.494515870590021e-10
+				],
+				"reason": "fuselage ground strike",
+				"rotor_phase_model": "",
+				"shaft_phase": [
+					1.5707963267948966,
+					0.0
+				],
+				"surface": "rotorpad",
+				"surface_detail": {
+					"height_up_m": 0.0,
+					"kind": "terrain",
+					"row": 1,
+					"slope_east": 0.0,
+					"slope_north": 0.0
+				},
+				"tail_omega_rad_s": 0.0,
+				"tangent_speed_mps": 1.9957504344055121,
+				"tick": 8,
+				"time_fraction": 0.737929105758667,
+				"time_s": 0.03333333333333333,
+				"velocity_world_ned": [
+					1.9918793031792164,
+					0.0,
+					4.3128569556505205
+				]
+			},
+			"stats": {
+				"active": true,
+				"age_s": 0.804166666666665,
+				"effects": {
+					"fire": 0.0,
+					"marks": 1,
+					"particles": 636,
+					"splinters": 8,
+					"update_usec": 13
+				},
+				"paused": false,
+				"scenery_bodies": 160,
+				"smoke_policy": "brief nonthermal composite dust; no declared fuel/battery fire inventory",
+				"start_usec": 34249,
+				"surviving_optics": 0,
+				"thermal_fire": false,
+				"wreck": {
+					"active_body_count": 2,
+					"c3_contact_exposure_index_j": 0.0,
+					"c3_contact_exposure_kind": "cosmetic post-crash exposure index; not measured dissipated energy",
+					"c3_contact_exposure_unit": "provisional relative kinetic-energy index J",
+					"c3_contact_release_pending": false,
+					"c3_contact_release_thresholds_j": {
+						"canopy": 25.0,
+						"engine": 50.0,
+						"gear": 12.0,
+						"propeller": 4.0
+					},
+					"cg_model": "(0.0, 0.11, 0.0)",
+					"class_level": 2,
+					"component_hint": "fuselage",
+					"contact_point_model": "(-0.083596, 0.095393, -0.387)",
+					"contact_shadow_count": 24,
+					"detached_group_count": 1,
+					"elapsed_s": 0.9183096666666672,
+					"energy_estimate_source": "normal_impact_energy_j",
+					"focus_position": "(-0.000075, 0.846847, -6.229977)",
+					"fragment_groups": [
+						"core",
+						"propeller",
+						"propeller",
+						"vertical_tail",
+						"gear",
+						"canopy",
+						"tail_boom",
+						"rudder",
+						"rudder"
+					],
+					"ground_normal": "(0.0, 1.0, 0.0)",
+					"ground_point": "(-0.083596, 0.0, -6.191014)",
+					"mass_kg": 8.2,
+					"max_speed_seen_mps": 2.6028957673584285,
+					"normal_impact_energy_estimate_j": 47.438085711557115,
+					"outcome_class": 2,
+					"outcome_component": "fuselage",
+					"paused": false,
+					"pool_size": 24,
+					"prepared": true,
+					"release_kinds": [
+						"canopy"
+					],
+					"rotor_spin_energy_basis": "0.5*shaft inertia*omega^2, divided per authored blade; exact shaft inventory or validated geared momentum",
+					"rotor_spin_energy_budget_j": 0.0,
+					"rotor_spin_energy_used_j": 0.0,
+					"scatter_energy_fraction": 0.12,
+					"scatter_energy_j": 0.0,
+					"secondary_impact_strength_unit": "J",
+					"secondary_impacts": 1,
+					"sleeping_body_count": 0,
+					"started": true
+				}
+			}
+		},
+		{
+			"at_s": 2.004166666666661,
+			"error": 0,
+			"focus": [
+				-4.659615115087945e-06,
+				0.21135194599628448,
+				-5.506527423858643
+			],
+			"image": "12-nose-2000.png",
+			"impact": {
+				"body": [
+					6.064333474021698,
+					0.0,
+					-0.36597058937945826,
+					4.741573626484751,
+					0.0,
+					-0.29291265414973716,
+					0.8253832187179009,
+					0.0,
+					-0.5645728848066279,
+					0.0,
+					0.0,
+					0.010577711252986973,
+					0.0
+				],
+				"body_angular_velocity": [
+					0.0,
+					0.010577711252986973,
+					0.0
+				],
+				"component": "fuselage",
+				"conservative_envelope": false,
+				"contact_method": "measured_hx_carenado_aabb_probe",
+				"effective_mass_kg": 5.10383882984634,
+				"estimated_proxy": true,
+				"ground_normal_world_ned": [
+					0.0,
+					0.0,
+					-1.0
+				],
+				"ground_point_world_ned": [
+					6.191013675996472,
+					-0.08359559,
+					0.0
+				],
+				"main_omega_rad_s": 0.0,
+				"normal_energy_j": 47.438085711557115,
+				"normal_speed_mps": 4.311516969052562,
+				"normal_world_ned": [
+					0.0,
+					0.0,
+					-1.0
+				],
+				"penetration_m": 4.494515870590021e-10,
+				"point_body_frd": [
+					0.38699999,
+					-0.08359559,
+					0.014606640000000004
+				],
+				"point_body_frd_m": [
+					0.38699999,
+					-0.08359559,
+					0.014606640000000004
+				],
+				"point_velocity_world_ned": [
+					1.9957504344055121,
+					0.0,
+					4.311516969052562
+				],
+				"point_world_ned": [
+					6.191013675996472,
+					-0.08359559,
+					4.494515870590021e-10
+				],
+				"reason": "fuselage ground strike",
+				"rotor_phase_model": "",
+				"shaft_phase": [
+					1.5707963267948966,
+					0.0
+				],
+				"surface": "rotorpad",
+				"surface_detail": {
+					"height_up_m": 0.0,
+					"kind": "terrain",
+					"row": 1,
+					"slope_east": 0.0,
+					"slope_north": 0.0
+				},
+				"tail_omega_rad_s": 0.0,
+				"tangent_speed_mps": 1.9957504344055121,
+				"tick": 8,
+				"time_fraction": 0.737929105758667,
+				"time_s": 0.03333333333333333,
+				"velocity_world_ned": [
+					1.9918793031792164,
+					0.0,
+					4.3128569556505205
+				]
+			},
+			"stats": {
+				"active": true,
+				"age_s": 2.004166666666661,
+				"effects": {
+					"fire": 0.0,
+					"marks": 1,
+					"particles": 636,
+					"splinters": 8,
+					"update_usec": 28
+				},
+				"paused": false,
+				"scenery_bodies": 160,
+				"smoke_policy": "brief nonthermal composite dust; no declared fuel/battery fire inventory",
+				"start_usec": 34249,
+				"surviving_optics": 0,
+				"thermal_fire": false,
+				"wreck": {
+					"active_body_count": 2,
+					"c3_contact_exposure_index_j": 0.0,
+					"c3_contact_exposure_kind": "cosmetic post-crash exposure index; not measured dissipated energy",
+					"c3_contact_exposure_unit": "provisional relative kinetic-energy index J",
+					"c3_contact_release_pending": false,
+					"c3_contact_release_thresholds_j": {
+						"canopy": 25.0,
+						"engine": 50.0,
+						"gear": 12.0,
+						"propeller": 4.0
+					},
+					"cg_model": "(0.0, 0.11, 0.0)",
+					"class_level": 2,
+					"component_hint": "fuselage",
+					"contact_point_model": "(-0.083596, 0.095393, -0.387)",
+					"contact_shadow_count": 24,
+					"detached_group_count": 1,
+					"elapsed_s": 2.130371666666665,
+					"energy_estimate_source": "normal_impact_energy_j",
+					"focus_position": "(-0.000005, 0.184732, -5.498034)",
+					"fragment_groups": [
+						"core",
+						"propeller",
+						"propeller",
+						"vertical_tail",
+						"gear",
+						"canopy",
+						"tail_boom",
+						"rudder",
+						"rudder"
+					],
+					"ground_normal": "(0.0, 1.0, 0.0)",
+					"ground_point": "(-0.083596, 0.0, -6.191014)",
+					"mass_kg": 8.2,
+					"max_speed_seen_mps": 2.6028957673584285,
+					"normal_impact_energy_estimate_j": 47.438085711557115,
+					"outcome_class": 2,
+					"outcome_component": "fuselage",
+					"paused": false,
+					"pool_size": 24,
+					"prepared": true,
+					"release_kinds": [
+						"canopy"
+					],
+					"rotor_spin_energy_basis": "0.5*shaft inertia*omega^2, divided per authored blade; exact shaft inventory or validated geared momentum",
+					"rotor_spin_energy_budget_j": 0.0,
+					"rotor_spin_energy_used_j": 0.0,
+					"scatter_energy_fraction": 0.12,
+					"scatter_energy_j": 0.0,
+					"secondary_impact_strength_unit": "J",
+					"secondary_impacts": 1,
+					"sleeping_body_count": 1,
+					"started": true
+				}
+			}
+		},
+		{
+			"at_s": 0.041666666666666664,
+			"error": 0,
+			"focus": [
+				-23.968496322631836,
+				0.38819509744644165,
+				-3.753589153289795
+			],
+			"image": "12-fence-0040.png",
+			"impact": {
+				"aircraft_part": "main_rotor_blade",
+				"body": [
+					3.7100000008940697,
+					-23.959999084472656,
+					-0.32499998807907104,
+					24.0,
+					0.0,
+					0.0,
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0
+				],
+				"body_angular_velocity": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"component": "main_rotor",
+				"conservative_envelope": true,
+				"contact_method": "swept_rotor_disc_32_spoke_conservative_envelope_v1",
+				"effective_mass_kg": 3.496282983567387,
+				"estimated_proxy": true,
+				"ground_normal_world_ned": [
+					-0.03034405867132947,
+					0.023796558197896382,
+					-0.9992562043446541
+				],
+				"ground_point_world_ned": [
+					4.367972553290321,
+					-23.959988778848174,
+					0.0015851579266199234
+				],
+				"main_omega_rad_s": 167.66392689524528,
+				"normal_energy_j": 1006.9294992674074,
+				"normal_speed_mps": 24.0,
+				"normal_world_ned": [
+					-1.0,
+					0.0,
+					0.0
+				],
+				"obstacle_id": "barrier:flightline_barrier:post:00",
+				"obstacle_kind": "fence",
+				"obstacle_part": "barrier",
+				"penetration_m": 0.0,
+				"point_body_frd": [
+					0.6579725523962512,
+					1.0305624483197054e-05,
+					-0.23618365360362778
+				],
+				"point_body_frd_m": [
+					0.6579725523962512,
+					1.0305624483197054e-05,
+					-0.23618365360362778
+				],
+				"point_velocity_world_ned": [
+					24.0,
+					-110.31425932106099,
+					-0.9604645550188903
+				],
+				"point_world_ned": [
+					4.367972553290321,
+					-23.959988778848174,
+					-0.5611836416826989
+				],
+				"reason": "main rotor scenery impact (barrier:flightline_barrier:post:00)",
+				"rotor_angular_envelope": true,
+				"rotor_angular_gap_bound_m": 0.03802744760374896,
+				"rotor_blade_half_chord_m": 0.029,
+				"rotor_clearance_padding_m": 0.09202744760374895,
+				"rotor_phase_model": "full_disc_spatial_envelope; phase_window_unavailable",
+				"rotor_spoke_count": 32,
+				"shaft_phase": [
+					0.6987772838845224,
+					3.256302142901874
+				],
+				"surface": "fence",
+				"surface_detail": {
+					"aircraft_part": "main_rotor_blade",
+					"id": "barrier:flightline_barrier:post:00",
+					"kind": "fence",
+					"part": "barrier"
+				},
+				"sweep_half_step_bound_m": 0.025,
+				"tail_omega_rad_s": 781.313899331843,
+				"tangent_speed_mps": 110.31844044272806,
+				"tick": 1,
+				"time_fraction": 0.0,
+				"time_s": 0.004166666666666667,
+				"velocity_world_ned": [
+					24.0,
+					0.0,
+					0.0
+				]
+			},
+			"stats": {
+				"active": true,
+				"age_s": 0.041666666666666664,
+				"effects": {
+					"fire": 0.0,
+					"marks": 1,
+					"particles": 636,
+					"splinters": 36,
+					"update_usec": 35
+				},
+				"paused": false,
+				"scenery_bodies": 160,
+				"smoke_policy": "brief nonthermal composite dust; no declared fuel/battery fire inventory",
+				"start_usec": 26294,
+				"surviving_optics": 0,
+				"thermal_fire": false,
+				"wreck": {
+					"active_body_count": 4,
+					"c3_contact_exposure_index_j": 250.0,
+					"c3_contact_exposure_kind": "cosmetic post-crash exposure index; not measured dissipated energy",
+					"c3_contact_exposure_unit": "provisional relative kinetic-energy index J",
+					"c3_contact_release_pending": false,
+					"c3_contact_release_thresholds_j": {
+						"canopy": 25.0,
+						"engine": 50.0,
+						"gear": 12.0,
+						"propeller": 4.0
+					},
+					"cg_model": "(0.0, 0.11, 0.0)",
+					"class_level": 3,
+					"component_hint": "main_rotor",
+					"contact_point_model": "(0.00001, 0.346184, -0.657972)",
+					"contact_shadow_count": 24,
+					"detached_group_count": 3,
+					"elapsed_s": 0.08215933333333339,
+					"energy_estimate_source": "normal_impact_energy_j",
+					"focus_position": "(-23.9842, 0.350618, -3.710819)",
+					"fragment_groups": [
+						"core",
+						"propeller",
+						"propeller",
+						"vertical_tail",
+						"gear",
+						"canopy",
+						"tail_boom",
+						"rudder",
+						"rudder"
+					],
+					"ground_normal": "(0.023797, 0.999256, 0.030344)",
+					"ground_point": "(-23.95999, -0.001585, -4.367972)",
+					"mass_kg": 8.2,
+					"max_speed_seen_mps": 36.34597396850586,
+					"normal_impact_energy_estimate_j": 1006.9294992674074,
+					"outcome_class": 3,
+					"outcome_component": "main_rotor",
+					"paused": false,
+					"pool_size": 24,
+					"prepared": true,
+					"release_kinds": [
+						"propeller"
+					],
+					"rotor_spin_energy_basis": "0.5*shaft inertia*omega^2, divided per authored blade; exact shaft inventory or validated geared momentum",
+					"rotor_spin_energy_budget_j": 1121.63657603917,
+					"rotor_spin_energy_used_j": 790.8394759846778,
+					"scatter_energy_fraction": 0.12,
+					"scatter_energy_j": 120.83157208197736,
+					"secondary_impact_strength_unit": "J",
+					"secondary_impacts": 1,
+					"sleeping_body_count": 0,
+					"started": true
+				}
+			}
+		},
+		{
+			"at_s": 0.241666666666667,
+			"error": 0,
+			"focus": [
+				-24.026824951171875,
+				0.23015056550502777,
+				-3.5944998264312744
+			],
+			"image": "12-fence-0240.png",
+			"impact": {
+				"aircraft_part": "main_rotor_blade",
+				"body": [
+					3.7100000008940697,
+					-23.959999084472656,
+					-0.32499998807907104,
+					24.0,
+					0.0,
+					0.0,
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0
+				],
+				"body_angular_velocity": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"component": "main_rotor",
+				"conservative_envelope": true,
+				"contact_method": "swept_rotor_disc_32_spoke_conservative_envelope_v1",
+				"effective_mass_kg": 3.496282983567387,
+				"estimated_proxy": true,
+				"ground_normal_world_ned": [
+					-0.03034405867132947,
+					0.023796558197896382,
+					-0.9992562043446541
+				],
+				"ground_point_world_ned": [
+					4.367972553290321,
+					-23.959988778848174,
+					0.0015851579266199234
+				],
+				"main_omega_rad_s": 167.66392689524528,
+				"normal_energy_j": 1006.9294992674074,
+				"normal_speed_mps": 24.0,
+				"normal_world_ned": [
+					-1.0,
+					0.0,
+					0.0
+				],
+				"obstacle_id": "barrier:flightline_barrier:post:00",
+				"obstacle_kind": "fence",
+				"obstacle_part": "barrier",
+				"penetration_m": 0.0,
+				"point_body_frd": [
+					0.6579725523962512,
+					1.0305624483197054e-05,
+					-0.23618365360362778
+				],
+				"point_body_frd_m": [
+					0.6579725523962512,
+					1.0305624483197054e-05,
+					-0.23618365360362778
+				],
+				"point_velocity_world_ned": [
+					24.0,
+					-110.31425932106099,
+					-0.9604645550188903
+				],
+				"point_world_ned": [
+					4.367972553290321,
+					-23.959988778848174,
+					-0.5611836416826989
+				],
+				"reason": "main rotor scenery impact (barrier:flightline_barrier:post:00)",
+				"rotor_angular_envelope": true,
+				"rotor_angular_gap_bound_m": 0.03802744760374896,
+				"rotor_blade_half_chord_m": 0.029,
+				"rotor_clearance_padding_m": 0.09202744760374895,
+				"rotor_phase_model": "full_disc_spatial_envelope; phase_window_unavailable",
+				"rotor_spoke_count": 32,
+				"shaft_phase": [
+					0.6987772838845224,
+					3.256302142901874
+				],
+				"surface": "fence",
+				"surface_detail": {
+					"aircraft_part": "main_rotor_blade",
+					"id": "barrier:flightline_barrier:post:00",
+					"kind": "fence",
+					"part": "barrier"
+				},
+				"sweep_half_step_bound_m": 0.025,
+				"tail_omega_rad_s": 781.313899331843,
+				"tangent_speed_mps": 110.31844044272806,
+				"tick": 1,
+				"time_fraction": 0.0,
+				"time_s": 0.004166666666666667,
+				"velocity_world_ned": [
+					24.0,
+					0.0,
+					0.0
+				]
+			},
+			"stats": {
+				"active": true,
+				"age_s": 0.241666666666667,
+				"effects": {
+					"fire": 0.0,
+					"marks": 1,
+					"particles": 636,
+					"splinters": 36,
+					"update_usec": 46
+				},
+				"paused": false,
+				"scenery_bodies": 160,
+				"smoke_policy": "brief nonthermal composite dust; no declared fuel/battery fire inventory",
+				"start_usec": 26294,
+				"surviving_optics": 0,
+				"thermal_fire": false,
+				"wreck": {
+					"active_body_count": 4,
+					"c3_contact_exposure_index_j": 250.0,
+					"c3_contact_exposure_kind": "cosmetic post-crash exposure index; not measured dissipated energy",
+					"c3_contact_exposure_unit": "provisional relative kinetic-energy index J",
+					"c3_contact_release_pending": false,
+					"c3_contact_release_thresholds_j": {
+						"canopy": 25.0,
+						"engine": 50.0,
+						"gear": 12.0,
+						"propeller": 4.0
+					},
+					"cg_model": "(0.0, 0.11, 0.0)",
+					"class_level": 3,
+					"component_hint": "main_rotor",
+					"contact_point_model": "(0.00001, 0.346184, -0.657972)",
+					"contact_shadow_count": 24,
+					"detached_group_count": 3,
+					"elapsed_s": 0.29212517676767685,
+					"energy_estimate_source": "normal_impact_energy_j",
+					"focus_position": "(-24.02732, 0.228513, -3.592909)",
+					"fragment_groups": [
+						"core",
+						"propeller",
+						"propeller",
+						"vertical_tail",
+						"gear",
+						"canopy",
+						"tail_boom",
+						"rudder",
+						"rudder"
+					],
+					"ground_normal": "(0.023797, 0.999256, 0.030344)",
+					"ground_point": "(-23.95999, -0.001585, -4.367972)",
+					"mass_kg": 8.2,
+					"max_speed_seen_mps": 36.34597396850586,
+					"normal_impact_energy_estimate_j": 1006.9294992674074,
+					"outcome_class": 3,
+					"outcome_component": "main_rotor",
+					"paused": false,
+					"pool_size": 24,
+					"prepared": true,
+					"release_kinds": [
+						"propeller"
+					],
+					"rotor_spin_energy_basis": "0.5*shaft inertia*omega^2, divided per authored blade; exact shaft inventory or validated geared momentum",
+					"rotor_spin_energy_budget_j": 1121.63657603917,
+					"rotor_spin_energy_used_j": 790.8394759846778,
+					"scatter_energy_fraction": 0.12,
+					"scatter_energy_j": 120.83157208197736,
+					"secondary_impact_strength_unit": "J",
+					"secondary_impacts": 3,
+					"sleeping_body_count": 0,
+					"started": true
+				}
+			}
+		},
+		{
+			"at_s": 0.804166666666665,
+			"error": 0,
+			"focus": [
+				-24.067916870117188,
+				0.2177562564611435,
+				-3.602416753768921
+			],
+			"image": "12-fence-0800.png",
+			"impact": {
+				"aircraft_part": "main_rotor_blade",
+				"body": [
+					3.7100000008940697,
+					-23.959999084472656,
+					-0.32499998807907104,
+					24.0,
+					0.0,
+					0.0,
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0
+				],
+				"body_angular_velocity": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"component": "main_rotor",
+				"conservative_envelope": true,
+				"contact_method": "swept_rotor_disc_32_spoke_conservative_envelope_v1",
+				"effective_mass_kg": 3.496282983567387,
+				"estimated_proxy": true,
+				"ground_normal_world_ned": [
+					-0.03034405867132947,
+					0.023796558197896382,
+					-0.9992562043446541
+				],
+				"ground_point_world_ned": [
+					4.367972553290321,
+					-23.959988778848174,
+					0.0015851579266199234
+				],
+				"main_omega_rad_s": 167.66392689524528,
+				"normal_energy_j": 1006.9294992674074,
+				"normal_speed_mps": 24.0,
+				"normal_world_ned": [
+					-1.0,
+					0.0,
+					0.0
+				],
+				"obstacle_id": "barrier:flightline_barrier:post:00",
+				"obstacle_kind": "fence",
+				"obstacle_part": "barrier",
+				"penetration_m": 0.0,
+				"point_body_frd": [
+					0.6579725523962512,
+					1.0305624483197054e-05,
+					-0.23618365360362778
+				],
+				"point_body_frd_m": [
+					0.6579725523962512,
+					1.0305624483197054e-05,
+					-0.23618365360362778
+				],
+				"point_velocity_world_ned": [
+					24.0,
+					-110.31425932106099,
+					-0.9604645550188903
+				],
+				"point_world_ned": [
+					4.367972553290321,
+					-23.959988778848174,
+					-0.5611836416826989
+				],
+				"reason": "main rotor scenery impact (barrier:flightline_barrier:post:00)",
+				"rotor_angular_envelope": true,
+				"rotor_angular_gap_bound_m": 0.03802744760374896,
+				"rotor_blade_half_chord_m": 0.029,
+				"rotor_clearance_padding_m": 0.09202744760374895,
+				"rotor_phase_model": "full_disc_spatial_envelope; phase_window_unavailable",
+				"rotor_spoke_count": 32,
+				"shaft_phase": [
+					0.6987772838845224,
+					3.256302142901874
+				],
+				"surface": "fence",
+				"surface_detail": {
+					"aircraft_part": "main_rotor_blade",
+					"id": "barrier:flightline_barrier:post:00",
+					"kind": "fence",
+					"part": "barrier"
+				},
+				"sweep_half_step_bound_m": 0.025,
+				"tail_omega_rad_s": 781.313899331843,
+				"tangent_speed_mps": 110.31844044272806,
+				"tick": 1,
+				"time_fraction": 0.0,
+				"time_s": 0.004166666666666667,
+				"velocity_world_ned": [
+					24.0,
+					0.0,
+					0.0
+				]
+			},
+			"stats": {
+				"active": true,
+				"age_s": 0.804166666666665,
+				"effects": {
+					"fire": 0.0,
+					"marks": 1,
+					"particles": 636,
+					"splinters": 36,
+					"update_usec": 25
+				},
+				"paused": false,
+				"scenery_bodies": 160,
+				"smoke_policy": "brief nonthermal composite dust; no declared fuel/battery fire inventory",
+				"start_usec": 26294,
+				"surviving_optics": 0,
+				"thermal_fire": false,
+				"wreck": {
+					"active_body_count": 5,
+					"c3_contact_exposure_index_j": 250.0,
+					"c3_contact_exposure_kind": "cosmetic post-crash exposure index; not measured dissipated energy",
+					"c3_contact_exposure_unit": "provisional relative kinetic-energy index J",
+					"c3_contact_release_pending": false,
+					"c3_contact_release_thresholds_j": {
+						"canopy": 25.0,
+						"engine": 50.0,
+						"gear": 12.0,
+						"propeller": 4.0
+					},
+					"cg_model": "(0.0, 0.11, 0.0)",
+					"class_level": 3,
+					"component_hint": "main_rotor",
+					"contact_point_model": "(0.00001, 0.346184, -0.657972)",
+					"contact_shadow_count": 24,
+					"detached_group_count": 4,
+					"elapsed_s": 0.9005913333333335,
+					"energy_estimate_source": "normal_impact_energy_j",
+					"focus_position": "(-24.06734, 0.217578, -3.602393)",
+					"fragment_groups": [
+						"core",
+						"propeller",
+						"propeller",
+						"vertical_tail",
+						"gear",
+						"canopy",
+						"tail_boom",
+						"rudder",
+						"rudder"
+					],
+					"ground_normal": "(0.023797, 0.999256, 0.030344)",
+					"ground_point": "(-23.95999, -0.001585, -4.367972)",
+					"mass_kg": 8.2,
+					"max_speed_seen_mps": 36.34597396850586,
+					"normal_impact_energy_estimate_j": 1006.9294992674074,
+					"outcome_class": 3,
+					"outcome_component": "main_rotor",
+					"paused": false,
+					"pool_size": 24,
+					"prepared": true,
+					"release_kinds": [
+						"propeller"
+					],
+					"rotor_spin_energy_basis": "0.5*shaft inertia*omega^2, divided per authored blade; exact shaft inventory or validated geared momentum",
+					"rotor_spin_energy_budget_j": 1121.63657603917,
+					"rotor_spin_energy_used_j": 790.8394759846778,
+					"scatter_energy_fraction": 0.12,
+					"scatter_energy_j": 120.83157208197736,
+					"secondary_impact_strength_unit": "J",
+					"secondary_impacts": 4,
+					"sleeping_body_count": 0,
+					"started": true
+				}
+			}
+		},
+		{
+			"at_s": 2.004166666666661,
+			"error": 0,
+			"focus": [
+				-24.062496185302734,
+				0.2140728235244751,
+				-3.6026391983032227
+			],
+			"image": "12-fence-2000.png",
+			"impact": {
+				"aircraft_part": "main_rotor_blade",
+				"body": [
+					3.7100000008940697,
+					-23.959999084472656,
+					-0.32499998807907104,
+					24.0,
+					0.0,
+					0.0,
+					1.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0,
+					0.0
+				],
+				"body_angular_velocity": [
+					0.0,
+					0.0,
+					0.0
+				],
+				"component": "main_rotor",
+				"conservative_envelope": true,
+				"contact_method": "swept_rotor_disc_32_spoke_conservative_envelope_v1",
+				"effective_mass_kg": 3.496282983567387,
+				"estimated_proxy": true,
+				"ground_normal_world_ned": [
+					-0.03034405867132947,
+					0.023796558197896382,
+					-0.9992562043446541
+				],
+				"ground_point_world_ned": [
+					4.367972553290321,
+					-23.959988778848174,
+					0.0015851579266199234
+				],
+				"main_omega_rad_s": 167.66392689524528,
+				"normal_energy_j": 1006.9294992674074,
+				"normal_speed_mps": 24.0,
+				"normal_world_ned": [
+					-1.0,
+					0.0,
+					0.0
+				],
+				"obstacle_id": "barrier:flightline_barrier:post:00",
+				"obstacle_kind": "fence",
+				"obstacle_part": "barrier",
+				"penetration_m": 0.0,
+				"point_body_frd": [
+					0.6579725523962512,
+					1.0305624483197054e-05,
+					-0.23618365360362778
+				],
+				"point_body_frd_m": [
+					0.6579725523962512,
+					1.0305624483197054e-05,
+					-0.23618365360362778
+				],
+				"point_velocity_world_ned": [
+					24.0,
+					-110.31425932106099,
+					-0.9604645550188903
+				],
+				"point_world_ned": [
+					4.367972553290321,
+					-23.959988778848174,
+					-0.5611836416826989
+				],
+				"reason": "main rotor scenery impact (barrier:flightline_barrier:post:00)",
+				"rotor_angular_envelope": true,
+				"rotor_angular_gap_bound_m": 0.03802744760374896,
+				"rotor_blade_half_chord_m": 0.029,
+				"rotor_clearance_padding_m": 0.09202744760374895,
+				"rotor_phase_model": "full_disc_spatial_envelope; phase_window_unavailable",
+				"rotor_spoke_count": 32,
+				"shaft_phase": [
+					0.6987772838845224,
+					3.256302142901874
+				],
+				"surface": "fence",
+				"surface_detail": {
+					"aircraft_part": "main_rotor_blade",
+					"id": "barrier:flightline_barrier:post:00",
+					"kind": "fence",
+					"part": "barrier"
+				},
+				"sweep_half_step_bound_m": 0.025,
+				"tail_omega_rad_s": 781.313899331843,
+				"tangent_speed_mps": 110.31844044272806,
+				"tick": 1,
+				"time_fraction": 0.0,
+				"time_s": 0.004166666666666667,
+				"velocity_world_ned": [
+					24.0,
+					0.0,
+					0.0
+				]
+			},
+			"stats": {
+				"active": true,
+				"age_s": 2.004166666666661,
+				"effects": {
+					"fire": 0.0,
+					"marks": 1,
+					"particles": 636,
+					"splinters": 36,
+					"update_usec": 39
+				},
+				"paused": false,
+				"scenery_bodies": 160,
+				"smoke_policy": "brief nonthermal composite dust; no declared fuel/battery fire inventory",
+				"start_usec": 26294,
+				"surviving_optics": 0,
+				"thermal_fire": false,
+				"wreck": {
+					"active_body_count": 5,
+					"c3_contact_exposure_index_j": 250.0,
+					"c3_contact_exposure_kind": "cosmetic post-crash exposure index; not measured dissipated energy",
+					"c3_contact_exposure_unit": "provisional relative kinetic-energy index J",
+					"c3_contact_release_pending": false,
+					"c3_contact_release_thresholds_j": {
+						"canopy": 25.0,
+						"engine": 50.0,
+						"gear": 12.0,
+						"propeller": 4.0
+					},
+					"cg_model": "(0.0, 0.11, 0.0)",
+					"class_level": 3,
+					"component_hint": "main_rotor",
+					"contact_point_model": "(0.00001, 0.346184, -0.657972)",
+					"contact_shadow_count": 24,
+					"detached_group_count": 4,
+					"elapsed_s": 2.1198326666666656,
+					"energy_estimate_source": "normal_impact_energy_j",
+					"focus_position": "(-24.06113, 0.21371, -3.602554)",
+					"fragment_groups": [
+						"core",
+						"propeller",
+						"propeller",
+						"vertical_tail",
+						"gear",
+						"canopy",
+						"tail_boom",
+						"rudder",
+						"rudder"
+					],
+					"ground_normal": "(0.023797, 0.999256, 0.030344)",
+					"ground_point": "(-23.95999, -0.001585, -4.367972)",
+					"mass_kg": 8.2,
+					"max_speed_seen_mps": 36.34597396850586,
+					"normal_impact_energy_estimate_j": 1006.9294992674074,
+					"outcome_class": 3,
+					"outcome_component": "main_rotor",
+					"paused": false,
+					"pool_size": 24,
+					"prepared": true,
+					"release_kinds": [
+						"propeller"
+					],
+					"rotor_spin_energy_basis": "0.5*shaft inertia*omega^2, divided per authored blade; exact shaft inventory or validated geared momentum",
+					"rotor_spin_energy_budget_j": 1121.63657603917,
+					"rotor_spin_energy_used_j": 790.8394759846778,
+					"scatter_energy_fraction": 0.12,
+					"scatter_energy_j": 120.83157208197736,
+					"secondary_impact_strength_unit": "J",
+					"secondary_impacts": 6,
+					"sleeping_body_count": 0,
+					"started": true
+				}
+			}
+		}
+	],
+	"ok": true
+}

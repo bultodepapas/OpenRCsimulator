@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{
+  "ok": true,
+  "output": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-monster-truck\\RCV-performance\\baseline-01\\profile.json",
+  "sampler_cost": {
+    "course_sample_us_best_of_3": 45.65,
+    "sink": 9979.821146503013,
+    "track_sample_us_best_of_3": 18.298125
+  },
+  "tick_cost": {
+    "maximum_us": 13903.0,
+    "mean_us": 5012.791666666667,
+    "median_us": 4871.0,
+    "p95_us": 7555.0,
+    "samples": 480
+  }
+}

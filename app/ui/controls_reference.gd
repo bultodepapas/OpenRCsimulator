@@ -26,6 +26,7 @@ const SHORTCUTS := [
 	[[KEY_Z, KEY_EQUAL, KEY_MINUS, KEY_BACKSPACE], "Zoom: auto on/off, in, out, reset"],
 	[[KEY_V, KEY_L], "Ground shadow · night lights"],
 	[[KEY_T], "Record a flight trace (press again to save it)"],
+	[[KEY_F10, KEY_F11], "Flight log: record/stop · mark maneuver"],
 	[[KEY_K], "Calibrate the radio"],
 	[[KEY_H], "Stik smoke pump"],
 	[[KEY_J], "Assign smoke AUX"],
@@ -53,6 +54,7 @@ const ROTORCRAFT_FLIGHT := [
 
 ## Shortcuts implemented by helicopter_main.gd. Keep this table limited to its handled key set.
 const ROTORCRAFT_SHORTCUTS := [
+	[[KEY_L], "Night lights: auto / all / navigation / off"],
 	[[KEY_ESCAPE], "Pause menu / cancel radio calibration"],
 	[[KEY_R], "Restart the selected helicopter start"],
 	[[KEY_P], "Pause / resume"],

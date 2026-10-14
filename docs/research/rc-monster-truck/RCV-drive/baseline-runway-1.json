@@ -1,0 +1,89 @@
+{
+	"backend_identity": {
+		"abi_version": 1,
+		"backend": "native",
+		"backend_version": "openrc-ground-vehicle-native-evaluate-v1",
+		"binary_sha256": "2958c34163a8c13d5d5fc675806bd6b45750eb8f435708c1ba4d4b67ade8789e",
+		"solver_version": "openrc-ground-vehicle-dynamics-rk4-v2",
+		"source_sha256": "451a76a00ac0e7d4513390d405e45eb55c6cb9b387ed21e55035d09ab7ef697f",
+		"toolchain_sha256": "2051a079931113cbf72767863a0159fb69319631343022d647e1031fd301453a"
+	},
+	"complete": true,
+	"contact": {
+		"airborne_ticks": 0,
+		"events": [
+			{
+				"distance_m": 1.2723050116104586,
+				"end_speed_m_per_s": 0.18683800806522938,
+				"end_tick": 877,
+				"initial_speed_m_per_s": 3.839383672981149,
+				"start_tick": 720,
+				"time_s": 3.654166666666667,
+				"type": "braking_distance"
+			}
+		],
+		"grounded_ticks": 885,
+		"max_hull_contacts": 0,
+		"max_tilt_deg": 3.525840675400101,
+		"max_wall_contacts": 0,
+		"max_wheel_contacts": 4,
+		"rollover_ticks": 0
+	},
+	"controller": "openrc-speed-aware-route-driver-v1",
+	"course_identity": {
+		"format": "openrc-airfield-course",
+		"id": "airfield-default",
+		"sha256": "1302486c83481dadce339091f41f60ec8899c1e0852d4d7e9a59e7d8e35ef8f0",
+		"version": "1"
+	},
+	"csv": {
+		"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-drive/baseline-runway-1.csv",
+		"rows": 885,
+		"sha256": "aec367e8d1e975253f586260f75180a5aad7385095d7e7102e8fb94bdade2076"
+	},
+	"elapsed_sim_s": 3.6875,
+	"failure_reason": "",
+	"fixed_hz": 240,
+	"format": "openrc-rcv-drive-run",
+	"lap_complete": false,
+	"max_acceleration_mps2": 6.167155691368265,
+	"max_seconds": 12.0,
+	"max_speed_mps": 3.8449443770773324,
+	"min_acceleration_mps2": -6.2202247450399994,
+	"path": {
+		"feature_ticks": {},
+		"final_error_m": 0.0,
+		"fraction": 0.0,
+		"length_m": 0.0,
+		"max_error_m": 0.0,
+		"min_track_coverage": 0.0,
+		"progress_m": 0.0
+	},
+	"route_brake_control_limit": 0.35,
+	"runway": {
+		"acceleration_seconds": 3.0,
+		"brake_start_speed_mps": 3.8393962341392234,
+		"brake_start_tick": 720,
+		"braking_distance_m": 1.2769555986670007,
+		"stop_tick": 885
+	},
+	"sample_count": 885,
+	"scenario": "runway",
+	"session_tick_cost_us": {
+		"max": 4342.0,
+		"p50": 1978.0,
+		"p95": 2727.0,
+		"sample_count": 885
+	},
+	"solver_version": "openrc-ground-vehicle-dynamics-rk4-v2",
+	"ticks": 885,
+	"vehicle_identity": {
+		"format": "openrc-ground-vehicle",
+		"id": "mt8-bisonte-electric-4wd-estimate-v1",
+		"sha256": "941d50bea199e652efdbbfe585cfd3fa1b3b49616e232a42bea861ce2f6f6ab0",
+		"version": "1"
+	},
+	"vehicle_path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-drive/baseline-vehicle.json",
+	"vehicle_source_sha256": "941d50bea199e652efdbbfe585cfd3fa1b3b49616e232a42bea861ce2f6f6ab0",
+	"version": 1
+}

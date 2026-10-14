@@ -1,0 +1,49 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS load hash-pinned MT8 delivery
+PASS pose waits for SceneTree attachment
+PASS delivery wrapper and model root are in SceneTree
+PASS neutral pose accepted after attachment
+PASS node and rest-transform bindings cover the supplied rig
+PASS all four wheel centers match delivered coordinates
+PASS spec wheelbase is 0.420 m — 0.42
+PASS imported wheelbase is 0.420 m — 0.41999998688698
+PASS spec track is 0.430 m — 0.43
+PASS imported track is 0.430 m — 0.43000000715256
+PASS spec tire radius is 0.100 m — 0.1
+PASS delivery contains no physics bodies, shapes, or joints — []
+PASS collision proxy meshes are hidden by default
+PASS zero inputs restore every authored Node3D transform — max transform error 0.00000015164579
+PASS imported tire mesh radius is approximately 0.100 m — mesh radius 0.100417 m
+PASS visual model length stays near 0.66 m — 0.66699999570847
+PASS visual model width stays near 0.52 m — 0.52335369586945
+PASS visual tire bottom is near -0.125 m — -0.12541669607162
+PASS each corner can travel without moving any other wheel assembly
+PASS each corner can travel without moving any other wheel assembly
+PASS each corner can travel without moving any other wheel assembly
+PASS each corner can travel without moving any other wheel assembly
+PASS extreme set mirrors the 25 common poses plus two crossed poses — 27
+PASS all 27 poses are accepted — common t=-0.035 steer=-30 FL
+PASS wheel centers follow all-corner articulation geometry — 0.00000000372529 m at common t=-0.035 steer=-30 FL
+PASS upper/lower arms close at both hub joints in all 27 poses — 0.00000001490116 m
+PASS shock eyes match independent endpoints in all 27 poses — 0.00000001676381 m
+PASS shock body and shaft axes meet without angular kinks — 0.00000011680838
+PASS shock shaft tips remain inside bodies over full travel
+PASS shock springs never reach zero or negative scale
+PASS bump/droop/rest shock lengths match declared endpoints
+PASS positive steer points both front wheels left and leaves rear fixed
+PASS negative steer points FL and FR right
+PASS positive forward wheel spin moves each tire top toward -Z — local +X del nodo XX_Spin; avanzar (-Z) = angulo decreciente
+PASS every invalid pose is refused before mutating any transform
+PASS exact travel and steering limits remain valid
+PASS second model instance loads
+PASS each delivery load owns distinct scene nodes
+PASS body visibility changes only the selected model instance
+PASS proxy visibility changes only the selected model instance
+PASS posing one loaded model leaves the other unchanged
+PASS second delivery instance frees cleanly
+PASS zero inputs restore every authored Node3D transform — max transform error 0.00000015164579
+PASS main delivery instance frees cleanly
+PASS no test instance remains attached
+PASS three repeated load/attach/free cycles release every instance
+RCV-14a MT8 visual: 46 checks, 0 failed

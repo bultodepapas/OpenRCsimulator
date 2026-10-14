@@ -1,0 +1,62 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+STAGE manifest 12.214
+STAGE builder 392.36
+STAGE derived 0.732
+STAGE data 240.043
+STAGE model 656.218
+STAGE pose_collect 42.431
+STAGE bind_shadow 5.827
+STAGE dress_update 298.29
+SELECT gp-extra-300s-60
+STAGE manifest 6.873
+STAGE builder 202.766
+STAGE derived 0.769
+STAGE data 38.811
+STAGE model 325.25
+STAGE pose_collect 12.885
+STAGE bind_shadow 4.229
+STAGE dress_update 141.412
+HANDLER 495.381
+DRAW 543.345
+SELECT sebart-avanti-s-a200-p100rx
+ISOLATED_LOAD 716.215
+ISOLATED_INSTANCE 0.55
+STAGE manifest 63.499
+STAGE builder 145.12
+STAGE derived 1.324
+STAGE data 109.555
+STAGE model 328.42
+STAGE pose_collect 97.862
+STAGE bind_shadow 2.288
+STAGE dress_update 689.604
+HANDLER 1128.785
+DRAW 1184.044
+SELECT turbo-lumber-evolution
+STAGE manifest 21.287
+STAGE builder 33.954
+STAGE derived 1.333
+STAGE data 33.944
+STAGE model 98.643
+STAGE pose_collect 26.187
+STAGE bind_shadow 1.846
+STAGE dress_update 202.473
+HANDLER 339.437
+DRAW 391.832
+SELECT gp-extra-300s-60
+STAGE model 0.001
+STAGE pose_collect 0.322
+STAGE bind_shadow 3.086
+STAGE dress_update 0.066
+HANDLER 13.554
+DRAW 24.549
+SELECT sebart-avanti-s-a200-p100rx
+ISOLATED_LOAD 2.041
+ISOLATED_INSTANCE 0.462
+STAGE model 0.001
+STAGE pose_collect 0.244
+STAGE bind_shadow 3.124
+STAGE dress_update 0.106
+HANDLER 13.125
+DRAW 22.543

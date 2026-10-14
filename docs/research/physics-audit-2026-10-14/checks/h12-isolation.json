@@ -1,0 +1,40 @@
+[
+  {
+    "label": "h12-current",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\test_aero_flow.gd"
+    ],
+    "exit_code": 1,
+    "source_sha256": "e319854355b32ae76b068fbcd22d5ccad79e76c9fc45943484acb92a1cbb78d1",
+    "summaries": [
+      "H4 local flow: 20000 byte-exact comparisons, 0 failed",
+      "H12 local loads: 20001 byte-exact comparisons (14553 stalled, 4000 zero-flow), 1556 failed"
+    ]
+  },
+  {
+    "label": "h12-polar-neutralized-disposable-test",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-2026-10-14\\test_aero_flow_without_polar.gd"
+    ],
+    "exit_code": 0,
+    "source_sha256": "6922ba63b6bf1b8f8c74ee415755b2e1b69e688515c426cad14339f6e20c1c5f",
+    "summaries": [
+      "H4 local flow: 20000 byte-exact comparisons, 0 failed",
+      "H12 local loads: 20001 byte-exact comparisons (14553 stalled, 4000 zero-flow), 0 failed"
+    ]
+  }
+]

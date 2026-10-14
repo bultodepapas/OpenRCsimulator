@@ -141,10 +141,10 @@ func _build_report(field: Dictionary, aircraft: Dictionary, resolved: Dictionary
 	]
 	return {
 		"format": "openrc-heli-ground-support-evidence-v1",
-		"generated_utc": Time.get_datetime_string_from_system(true),
+		"generated_utc": Time.get_datetime_string_from_system(true) + "Z",
 		"generator": "research/helicopter/ground_start/verify_support.gd",
 		"runtime": Engine.get_version_info().get("string", "unknown"),
-		"reproduction": "Godot 4.7.2 --headless --path app --audio-driver Dummy --script research/helicopter/ground_start/verify_support.gd -- --out=<repository-root>/docs/research/helicopter/HELI-20/ground-support.json",
+		"reproduction": "From repository root in PowerShell: & '<Godot-4.7.2-console-path>' --headless --path app --audio-driver Dummy --script ../research/helicopter/ground_start/verify_support.gd -- --out=<absolute-repository-root>/docs/research/helicopter/HELI-20/ground-support.json",
 		"scope": "Static default-field pad geometry and zero-drive four-skid equilibrium snapshot. Geometry inputs are estimated visual/layout models; this is not a real-world separation standard or flight certification.",
 		"inputs_sha256": source_hashes,
 		"references": [
@@ -184,6 +184,7 @@ func _build_report(field: Dictionary, aircraft: Dictionary, resolved: Dictionary
 		},
 		"aircraft_envelope": {
 			"actual_bound_m": actual_radius,
+		"bounded_components": ["main rotor disc", "tail rotor disc", "four skid support arms"],
 			"authored_conservative_radius_m": authored_radius,
 			"clearance_margin_m": margin,
 			"actual_bound_plus_margin_m": actual_with_margin,
@@ -225,6 +226,7 @@ func _build_report(field: Dictionary, aircraft: Dictionary, resolved: Dictionary
 		},
 		"limitations": [
 			"Candidate coordinates, field-cue dimensions, pad margin and visual keepouts are simulator layout estimates, not surveyed positions or safety standards.",
+			"The clearance sphere uses the resolver's main/tail disc and skid-arm model. It does not separately test a fuselage/boom mesh or swept scenery collisions.",
 			"Scenery bounds are conservative catalog/mesh proxies. Collision-disabled scenery remains visual-only in the application.",
 			"The support solve is qualified only for this zero-relief horizontal rotorpad; this evidence does not qualify slope parking.",
 			"The reported yaw value is a Coulomb torque upper bound from the solved normal reactions. It does not itself prove drift-free spool-up, which is a separate session acceptance test.",
@@ -259,8 +261,10 @@ func _support_report(aircraft: Dictionary, resolved: Dictionary, surface_table: 
 	var moment_residual: PackedFloat64Array = resolved.moment_residual_nm
 	return {
 		"solver": "GroundStart.resolve on validated default field and xcell-60-research data",
+		"equilibrium_method": "Solve the actual four skid spring/damper loads against gravity for vertical force and roll/pitch moments; report all six force/moment residual components. Zero rates are a solved rest state, not a pose-lock reaction.",
 		"contact_count": int(resolved.contact_count),
-		"state_float64": _packed_array(state),
+		"state": _packed_array(state),
+		"state_dtype": "float64",
 		"state_order": ["north_m", "east_m", "down_m", "velocity_n_m_s", "velocity_e_m_s", "velocity_down_m_s",
 			"quaternion_w", "quaternion_x", "quaternion_y", "quaternion_z", "body_rate_p_rad_s", "body_rate_q_rad_s", "body_rate_r_rad_s"],
 		"state_north_m": float(state[0]),
@@ -520,13 +524,18 @@ func _source_hashes(scenery: Dictionary) -> Dictionary:
 		"res://data/ground/surface_friction.json",
 		SCENERY_PATH,
 		LIGHTS_PATH,
+		"res://data/field_loader.gd",
+		"res://physics/rotorcraft_data.gd",
+		"res://physics/math3d.gd",
 		"res://physics/rotorcraft/ground_start.gd",
 		"res://physics/rotorcraft/skid_contact.gd",
 		"res://physics/ground_surfaces.gd",
+		"res://scenery/scenery_loader.gd",
 		"res://scenery/prefabs.gd",
 		"res://scenery/models.gd",
 		"res://render/flightline_barrier.gd",
 		"res://render/pilot_station.gd",
+		"res://render/world/field_lights.gd",
 	]
 	for group: Dictionary in scenery.get("groups", []):
 		if str(group.get("type", "")) != "fleet":

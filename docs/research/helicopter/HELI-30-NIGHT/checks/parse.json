@@ -1,0 +1,53 @@
+{
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "results": [
+    {
+      "path": "app/render/rotor/heli_night_lights.gd",
+      "sha256": "fd6d73485263dcd2e92f786aabbcdf835f2f245492769f89f1913548f7edad90",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/render/rotor/heli_night_rotor.gd",
+      "sha256": "6aa86f962e9011894fe64289ab65714994baaa92276040aae17188efd95bde55",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/helicopter_main.gd",
+      "sha256": "ec72cef511a38de07d7431be3d58278975ef3859e9e44186ff10660b0172a762",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/ui/home_scene.gd",
+      "sha256": "7b1f2cb0d12007025109f34fb28d9bd1cfda67fa70b517487d92e353f2b3fe20",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/ui/help_screen.gd",
+      "sha256": "f79e1033b6692217e371f155873f05fa3f45d91021c961718075ece2db57c64c",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/ui/controls_reference.gd",
+      "sha256": "e00e7218c64a6e1273317229162ba34d3575dd205ea8b0fa0de6d4db5322c0ca",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_heli_night_lights.gd",
+      "sha256": "8a83846954ea879fc120cad6f93d15bd91f1aefd06b875078bfe26162951f21b",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_heli_night_rotor.gd",
+      "sha256": "7dbceb390cc2233c7715a1e4ac84fd0755d1e39a2deb2b6bd6b890b3a256ba6f",
+      "source_stable": true,
+      "ok": true
+    }
+  ]
+}

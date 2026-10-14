@@ -1,0 +1,24 @@
+{
+  "runtime_receipt": "verification/verification.json",
+  "runtime_groups": 17,
+  "runtime_ok": true,
+  "additional_checks": {
+    "course_cache_regression": {
+      "ok": true,
+      "checks": 37,
+      "log": "course-cache-regression.log"
+    },
+    "incomplete_route_cli": {
+      "expected_exit_code": 1,
+      "observed_exit_code": 1,
+      "duration_s": 1,
+      "complete": false
+    }
+  },
+  "final_test_and_generator_sha256": {
+    "app/tests/test_rcv_powertrain.gd": "6f7aa16278b83e9f6146d29f980279d5542de5281763ffe1f7f952209e72bfe3",
+    "app/tests/test_rcv_obstacle_contacts.gd": "9c0b69c4114c05ba5ad5b726709a0e5529d4e2a789a843587300e9a4ddb24fd8",
+    "app/tests/test_rcv_airfield_course.gd": "ff1c41a960672f254edb568627bfdb4a8b2269d9b4f8d249e8523328920587b8",
+    "research/rc-monster-truck/build_vehicle_data.py": "08d7161dc590aca78741a317ff7cf436b74293adf332bfa85c88739892bd731f"
+  }
+}

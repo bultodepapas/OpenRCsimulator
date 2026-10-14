@@ -1,6 +1,6 @@
 # Crash, damage and destruction
 
-2026-10-12 · Revision 8 · Step prefix: **CR-** · Gate: **CR**
+2026-10-14 · Revision 9 · Step prefix: **CR-** · Gate: **CR**
 
 **Status:** CR-01 diagnostics remain partial. Owner-prioritized experimental crash audio, particles, severity estimate, wreck presentation, ground marks and fire are implemented in bounded slices. Physical failure thresholds, calibrated damage, damaged flight and Gate CR remain open.
 
@@ -32,6 +32,7 @@ Experimental delivery evidence:
 | CR-09c | Imported models break into their real parts: Blender `openrc_section` extras, or a generated section map for a merged mesh (the Timber has 8 real sections); a missing section never leaves a crash with nothing to release. See [CR-09c](research/crash-damage-investigations/CR-09c/README.md). |
 | CR-22b | Fire and smoke follow the tagged energy source: kerosene fire, glow-fuel stain, rare gasoline fire, delayed LiPo venting. See [CR-22b](research/crash-damage-investigations/CR-22b/README.md). |
 | CR-22a | A bounded fuel/hot-turbine/estimated-rupture fire presentation is implemented. It does not model measured fuel burn or validated rupture thresholds. See [CR-22a](research/crash-damage-investigations/CR-22a/README.md). |
+| CR-22c-R1 | Prepared BVHs replace per-contact scuff triangle scans. Compatibility crash shaders are warmed during flight setup; only applicable emitters start at impact. Native ground-impact comparisons cover all eight airplane configurations with unchanged physical impact states. Residual frame spikes and the full class/distance budget remain open. See [crash-stutter evidence](research/crash-damage-investigations/CR-22c-R1/README.md). |
 
 These slices do not close the broader CR-02/03/04/05 contracts, CR-07–10 structural work, or CR-19/20–27 roadmap work.
 

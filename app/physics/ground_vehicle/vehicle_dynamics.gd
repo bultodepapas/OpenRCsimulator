@@ -14,7 +14,7 @@ extends RefCounted
 ## internal generalized loads; ground tire/hull forces are external loads.
 ##
 ## Tires are point-probed compliant spheres. Tangential tire and hull forces
-## use a combined Coulomb circle with a projected Gauss-Seidel acceleration
+## use a combined Coulomb circle with a mobility-metric projected Gauss-Seidel acceleration
 ## constraint and finite slip-relaxation target. This provides low-speed
 ## sticking and wheelspin without the engine contact solver. The model uses
 ## parallel front steering, equal four-wheel drive torque, no differential
@@ -37,12 +37,12 @@ const STEER_RATE := 30
 const STATE_SIZE := 31
 const CORNER_COUNT := 4
 const GENERALIZED_SIZE := 14
-const SOLVER_VERSION := "openrc-ground-vehicle-dynamics-rk4-v2"
+const SOLVER_VERSION := "openrc-ground-vehicle-dynamics-rk4-v3"
 const SUBSTEPS_PER_TICK := 1
 const WALL_MAX_INTEGRATION_STEP_S := 1.0 / 120.0
-const FRICTION_SWEEPS := 6
-const FRICTION_CONVERGENCE_FORCE_TOLERANCE_N := 0.001
-const BRAKE_CONVERGENCE_TORQUE_TOLERANCE_N_M := 0.001
+const FRICTION_SWEEPS := 128
+const FRICTION_CONVERGENCE_FORCE_TOLERANCE_N := 0.000001
+const BRAKE_CONVERGENCE_TORQUE_TOLERANCE_N_M := 0.000001
 const MIN_SLIP_SPEED_M_PER_S := 0.05
 const MATRIX_PIVOT_RELATIVE_TOLERANCE := 1.0e-12
 const MAX_WALL_CONTACT_BOXES := 8
@@ -50,7 +50,7 @@ const WALL_FRICTION_REGULARIZATION_M_PER_S := 0.05
 const BACKEND_GDSCRIPT_REFERENCE := "gdscript_reference"
 const BACKEND_NATIVE := "native"
 const BACKEND_ABI_VERSION := 1
-const BACKEND_NATIVE_VERSION := "openrc-ground-vehicle-native-evaluate-v1"
+const BACKEND_NATIVE_VERSION := "openrc-ground-vehicle-native-evaluate-v2"
 const NATIVE_EXTENSION_PATH := "res://native/ground_vehicle/openrc_ground_vehicle.gdextension"
 const NATIVE_RECEIPT_PATH := "res://native/ground_vehicle/build-receipt.json"
 
@@ -1048,6 +1048,7 @@ static func _evaluate(
 	var reverse_factor := -float(model["reverse_torque_fraction"]) if bool(controls["reverse"]) else 1.0
 	var drive_base := controls_throttle * float(model["drive_torque_per_wheel_nm"]) * reverse_factor
 	var brake_base := float(controls["brake"]) * float(model["brake_torque_per_wheel_nm"])
+	var brake_front_fraction := float(model.get("brake_front_fraction", 0.5))
 	var drive_fade := float(model["drive_torque_fade_rad_s"])
 	var rolling_scale := float(model["rolling_resistance_coefficient"])
 	var tire_mu_scale := float(model["tire_friction_scale"])
@@ -1160,7 +1161,11 @@ static func _evaluate(
 		var hub_forward_speed := M.dot(hub_velocity_ned, forward_world)
 		var ratio_denominator := maxf(MIN_SLIP_SPEED_M_PER_S, maxf(absf(hub_forward_speed), absf(wheel_circumference_speed)))
 		tire_slip_ratio[corner] = (wheel_circumference_speed - hub_forward_speed) / ratio_denominator
-		tire_slip_angle[corner] = M.atan2_(slip_lateral, maxf(absf(slip_long), MIN_SLIP_SPEED_M_PER_S))
+		# Tire slip angle is the hub's travel direction relative to the wheel
+		# plane. Contact-patch longitudinal slip tends to zero in free rolling
+		# and must not be used as its denominator (it reported near 90 degrees).
+		var hub_lateral_speed := M.dot(hub_velocity_ned, lateral_world)
+		tire_slip_angle[corner] = M.atan2_(hub_lateral_speed, maxf(absf(hub_forward_speed), MIN_SLIP_SPEED_M_PER_S))
 		var level_surface := absf(normal[0]) <= 1.0e-12 and absf(normal[1]) <= 1.0e-12 and normal[2] <= -1.0 + 1.0e-12
 		if normal_load > 0.0 and not (can_skip_flat_static_friction and level_surface):
 			var tangent_rows := _tire_contact_rows(q_conjugate, forward_world, lateral_world, r, rho_body, r_prime, wheel_axis, corner)
@@ -1194,7 +1199,9 @@ static func _evaluate(
 				"rows": [brake_row],
 				"slip": PackedFloat64Array([wheel_spin]),
 				"bias": PackedFloat64Array([0.0, 0.0, 0.0]),
-				"mu_load": brake_base,
+				# Fixed axle allocation; total capacity remains four times brake_base.
+				# No velocity, yaw, wheel-slip or terrain feedback alters this split.
+				"mu_load": brake_base * 2.0 * (brake_front_fraction if corner < 2 else 1.0 - brake_front_fraction),
 				"tau": float(model["tire_slip_relaxation_s"]),
 				"kind": "brake",
 				"index": corner,
@@ -1624,6 +1631,27 @@ static func _solve_tangent_friction(
 		contact_row_indexes.append(indexes)
 	var forces := PackedFloat64Array()
 	forces.resize(rows.size())
+	# Contact geometry and inverse mass are constant within this evaluation.
+	# Cache local mobility blocks once, rather than redo 14-term dot products
+	# on every solver sweep.
+	var mobilities: Array[PackedFloat64Array] = []
+	for contact_index in contacts.size():
+		var indexes: PackedInt32Array = contact_row_indexes[contact_index]
+		var i0 := indexes[0]
+		var w00 := _dot_generalized(rows[i0], columns[i0])
+		if indexes.size() == 1:
+			if not is_finite(w00) or w00 <= 1.0e-18:
+				return _failure("Wheel brake mobility is singular")
+			mobilities.append(PackedFloat64Array([w00]))
+			continue
+		var i1 := indexes[1]
+		var w01 := _dot_generalized(rows[i0], columns[i1])
+		var w10 := _dot_generalized(rows[i1], columns[i0])
+		var w11 := _dot_generalized(rows[i1], columns[i1])
+		var determinant := w00 * w11 - w01 * w10
+		if not is_finite(determinant) or determinant <= 1.0e-18:
+			return _failure("Tangent contact mobility is singular")
+		mobilities.append(PackedFloat64Array([w00, w01, w10, w11, determinant]))
 	var slip_bias: Array[PackedFloat64Array] = []
 	for contact in contacts:
 		if str(contact["kind"]) == "brake":
@@ -1648,9 +1676,7 @@ static func _solve_tangent_friction(
 			if str(contact["kind"]) == "brake":
 				var brake_row: PackedFloat64Array = rows[i0]
 				var brake_column: PackedFloat64Array = columns[i0]
-				var brake_mobility := _dot_generalized(brake_row, brake_column)
-				if not is_finite(brake_mobility) or brake_mobility <= 1.0e-18:
-					return _failure("Wheel brake mobility is singular")
+				var brake_mobility := mobilities[contact_index][0]
 				var brake_slip: PackedFloat64Array = contact["slip"]
 				var brake_tau := maxf(float(contact["tau"]), 1.0e-5)
 				var current_brake := _dot_generalized(brake_row, acceleration) + slip_bias[contact_index][0]
@@ -1668,15 +1694,12 @@ static func _solve_tangent_friction(
 			var i1 := indexes[1]
 			var row0: PackedFloat64Array = rows[i0]
 			var row1: PackedFloat64Array = rows[i1]
-			var col0: PackedFloat64Array = columns[i0]
-			var col1: PackedFloat64Array = columns[i1]
-			var w00 := _dot_generalized(row0, col0)
-			var w01 := _dot_generalized(row0, col1)
-			var w10 := _dot_generalized(row1, col0)
-			var w11 := _dot_generalized(row1, col1)
-			var determinant := w00 * w11 - w01 * w10
-			if not is_finite(determinant) or determinant <= 1.0e-18:
-				return _failure("Tangent contact mobility is singular")
+			var mobility: PackedFloat64Array = mobilities[contact_index]
+			var w00 := mobility[0]
+			var w01 := mobility[1]
+			var w10 := mobility[2]
+			var w11 := mobility[3]
+			var determinant := mobility[4]
 			var current_long := _dot_generalized(row0, acceleration) + slip_bias[contact_index][0]
 			var current_lateral := _dot_generalized(row1, acceleration) + slip_bias[contact_index][1]
 			var slip: PackedFloat64Array = contact["slip"]
@@ -1689,12 +1712,10 @@ static func _solve_tangent_friction(
 			var delta_lateral := (-w10 * error_long + w00 * error_lateral) / determinant
 			var trial_long := forces[i0] + delta_long
 			var trial_lateral := forces[i1] + delta_lateral
-			var trial_norm := M.sqrt_(trial_long * trial_long + trial_lateral * trial_lateral)
 			var force_limit := maxf(0.0, float(contact["mu_load"]))
-			if trial_norm > force_limit and trial_norm > 0.0:
-				var ratio := force_limit / trial_norm
-				trial_long *= ratio
-				trial_lateral *= ratio
+			var projected := _project_friction_circle(w00, w01, w10, w11, trial_long, trial_lateral, force_limit)
+			trial_long = projected[0]
+			trial_lateral = projected[1]
 			delta_long = trial_long - forces[i0]
 			delta_lateral = trial_lateral - forces[i1]
 			max_force_delta = maxf(max_force_delta, maxf(absf(delta_long), absf(delta_lateral)))
@@ -1712,6 +1733,41 @@ static func _solve_tangent_friction(
 				and max_brake_torque_delta <= BRAKE_CONVERGENCE_TORQUE_TOLERANCE_N_M:
 			break
 	return {"ok": true, "acceleration": acceleration, "sweeps_used": sweeps_used}
+
+
+## Minimize .5*f'W*f - (W*free_force)'f subject to |f| <= limit.
+## A radial clamp solves this only when contact mobility W is isotropic.
+## Wheel spin makes longitudinal and lateral mobility very different.
+## The KKT multiplier has a finite upper bound |W*free_force|/limit for
+## positive-definite W. Return the feasible side of the bounded bisection.
+static func _project_friction_circle(
+	w00: float, w01: float, w10: float, w11: float,
+	free_x: float, free_y: float, limit: float,
+) -> PackedFloat64Array:
+	if limit <= 0.0:
+		return PackedFloat64Array([0.0, 0.0])
+	if free_x * free_x + free_y * free_y <= limit * limit:
+		return PackedFloat64Array([free_x, free_y])
+	var b0 := w00 * free_x + w01 * free_y
+	var b1 := w10 * free_x + w11 * free_y
+	var lower := 0.0
+	var upper := M.sqrt_(b0 * b0 + b1 * b1) / limit
+	for _iteration in 32:
+		var multiplier := 0.5 * (lower + upper)
+		var a00 := w00 + multiplier
+		var a11 := w11 + multiplier
+		var determinant := a00 * a11 - w01 * w10
+		var fx := (a11 * b0 - w01 * b1) / determinant
+		var fy := (a00 * b1 - w10 * b0) / determinant
+		if fx * fx + fy * fy > limit * limit:
+			lower = multiplier
+		else:
+			upper = multiplier
+	var a00 := w00 + upper
+	var a11 := w11 + upper
+	var determinant := a00 * a11 - w01 * w10
+	return PackedFloat64Array([(a11 * b0 - w01 * b1) / determinant,
+		(a00 * b1 - w10 * b0) / determinant])
 
 
 static func _matrix_vector(matrix: PackedFloat64Array, vector: PackedFloat64Array, n: int) -> PackedFloat64Array:
@@ -1994,6 +2050,10 @@ static func _valid_model(model: Dictionary) -> bool:
 	for key in nonnegative:
 		if float(model[key]) < 0.0:
 			return false
+	var brake_split: Variant = model.get("brake_front_fraction", 0.5)
+	if typeof(brake_split) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(brake_split)) \
+			or float(brake_split) < 0.0 or float(brake_split) > 1.0:
+		return false
 	if not model.has("sprung_inertia_kg_m2") or not model.has("corner_x_m") or not model.has("corner_y_m"):
 		return false
 	var inertia: PackedFloat64Array = model["sprung_inertia_kg_m2"]

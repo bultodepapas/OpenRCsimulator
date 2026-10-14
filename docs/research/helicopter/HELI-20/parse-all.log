@@ -1,0 +1,2 @@
+822 scripts, 1 failed
+{'path': 'app/tools/flight_log_cli.gd', 'sha256': '680f9e5e05c5e5a3f996d3d1b9e3bafe5fec8276dadc5b7d954f181ddebf2b94', 'source_stable': False, 'ok': False, 'output': 'Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n'}

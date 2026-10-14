@@ -14,6 +14,8 @@ var menu_visible := true
 var panel: PanelContainer
 var status: Label
 var telemetry: Label
+var condition_status: Label
+var headlights_button: Button
 var toast: Label
 var resume_button: Button
 var controller_choice: OptionButton
@@ -63,11 +65,14 @@ func _ready() -> void:
 	foot.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_WIDE)
 	foot.offset_left = 24
 	foot.offset_right = -24
-	foot.offset_top = -136
+	foot.offset_top = -160
 	root_control.add_child(foot)
 	telemetry = _label("0.0 km/h", 28)
 	foot.add_child(telemetry)
-	toast = _label(words("Release controls, then press Enter to drive.", "Suelta los controles y pulsa Enter para conducir."), 16)
+	condition_status = _label("", 14)
+	condition_status.visible = false
+	foot.add_child(condition_status)
+	toast = _label(words("Release controls, then select Drive.", "Suelta los controles y pulsa Conducir."), 16)
 	foot.add_child(toast)
 	control_hint = _label("", 14)
 	control_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -83,37 +88,45 @@ func _ready() -> void:
 	panel.set_anchors_and_offsets_preset(Control.PRESET_RIGHT_WIDE)
 	panel.offset_left = -358
 	panel.offset_top = 78
-	panel.offset_bottom = -156
+	panel.offset_bottom = -178
 	panel.offset_right = -20
 	root_control.add_child(panel)
+	var layout := VBoxContainer.new()
+	layout.add_theme_constant_override("separation", 12)
+	panel.add_child(layout)
+	# Device, readiness and Drive remain visible while garage utilities scroll.
+	var header := VBoxContainer.new()
+	header.add_theme_constant_override("separation", 8)
+	layout.add_child(header)
 	var scroll := ScrollContainer.new()
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
-	panel.add_child(scroll)
+	layout.add_child(scroll)
 	var column := VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 10)
 	scroll.add_child(column)
-	column.add_child(_label("Bisonte MT8", 28))
-	column.add_child(_label(words("1:8 · Electric 4WD · Experimental", "1:8 · Eléctrico 4×4 · Experimental"), 14))
+	header.add_child(_label("Bisonte MT8", 28))
+	header.add_child(_label(words("1:8 · Electric 4WD · Experimental", "1:8 · Eléctrico 4×4 · Experimental"), 14))
 	if airfield:
 		column.add_child(_label(words("Airfield · Shared runway", "Aeródromo · Pista de aviones"), 14))
 	if track_available:
 		var directions := _label(words("Dirt circuit north of the runway. Follow the access lane or choose a circuit start below.", "Circuito de tierra al norte de la pista. Sigue el camino de acceso o elige una entrada abajo."), 14)
 		directions.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		column.add_child(directions)
-	column.add_child(_label(words("Driving controls", "Controles del carro"), 15))
+	header.add_child(_label(words("Driving controls", "Controles del carro"), 15))
 	controller_choice = OptionButton.new()
 	controller_choice.fit_to_longest_item = false
 	controller_choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	controller_choice.item_selected.connect(func(index: int): controller_selected.emit(_controller_ids[index]))
-	column.add_child(controller_choice)
+	header.add_child(controller_choice)
 	input_status = _label("", 14)
 	input_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	column.add_child(input_status)
+	header.add_child(input_status)
 	resume_button = _button(words("DRIVE · Enter", "CONDUCIR · Enter"), "resume")
 	resume_button.theme_type_variation = "PrimaryButton"
-	column.add_child(resume_button)
+	header.add_child(resume_button)
 	modes = OptionButton.new()
 	modes.add_item(words("Free drive", "Conducción libre"), 0)
 	if not airfield:
@@ -143,6 +156,8 @@ func _ready() -> void:
 	toggles.add_child(_button(words("Contacts", "Contactos"), "contacts"))
 	toggles.add_child(_button(words("Sound", "Sonido"), "sound"))
 	column.add_child(toggles)
+	headlights_button = _button(words("Headlights on · L", "Faros encendidos · L"), "lights")
+	column.add_child(headlights_button)
 	record_button = _button(words("Record telemetry", "Grabar telemetría"), "record")
 	column.add_child(record_button)
 	var saves := HBoxContainer.new()
@@ -295,6 +310,11 @@ func select_spawn(id: String) -> void:
 func message(english: String, spanish: String) -> void:
 	toast.text = words(english, spanish)
 
+func update_lights(enabled: bool) -> void:
+	if headlights_button == null: return
+	headlights_button.text = words("Headlights on · L", "Faros encendidos · L") if enabled else words("Headlights off · L", "Faros apagados · L")
+
+
 func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recording: bool, diagnostic: bool) -> void:
 	var speed := float(snapshot.get("speed_m_per_s", 0.0)) * 3.6
 	status.text = "BISONTE MT8  /  " + (words("PAUSED", "PAUSA") if paused else words("DRIVING", "CONDUCIENDO"))
@@ -302,15 +322,25 @@ func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recordin
 	var surface_names := {"asphalt": words("Asphalt", "Asfalto"), "grass": words("Grass", "Césped"), "gravel": words("Gravel", "Grava"), "slippery": words("Low grip", "Poco agarre"), "runway": words("Runway", "Pista de aviones"), "mown": words("Mown grass", "Césped corto"), "rough": words("Rough grass", "Césped")}
 	surface_names["rc_dirt"] = words("Dirt circuit", "Circuito de tierra")
 	telemetry.text = "%.1f km/h  ·  %.1f s  ·  %s%s" % [speed, time_s, words("AIR", "AIRE") if snapshot.get("airborne", false) else surface_names.get(surface, surface), "  ● REC" if recording else ""]
+	var damage: Dictionary = snapshot.get("damage", {})
+	var stage := str(damage.get("stage", "intact"))
+	condition_status.visible = stage != "intact"
+	if condition_status.visible:
+		var condition := words("SCUFFED", "ROZADURAS") if stage == "scuffed" else words("DAMAGED", "DAÑADO")
+		if stage == "disabled": condition = words("DRIVE DISABLED", "PROPULSIÓN AVERIADA")
+		condition_status.text = "%s · %s %d%% · %s" % [condition, words("Drive", "Propulsión"),
+			roundi(float(damage.get("drive_scale",1.0))*100.0), words("R: recover + repair", "R: recuperar + reparar")]
+		condition_status.modulate = Color(1.0,0.65,0.35) if stage != "scuffed" else Color(0.92,0.85,0.65)
 	gauges.visible = diagnostic
 	plot.visible = diagnostic
 	plot.observe(roundi(time_s * 240.0), snapshot.get("suspension_travel_m", PackedFloat64Array()))
 	if diagnostic:
 		var loads = snapshot.get("wheel_load_n", [0, 0, 0, 0])
 		var slips = snapshot.get("wheel_slip_ratio", [0, 0, 0, 0])
-		var text := words("WHEEL     LOAD N      SLIP", "RUEDA     CARGA N     DESL.")
+		var travels = snapshot.get("suspension_travel_m", [0,0,0,0])
+		var text := words("WHEEL   LOAD N   SLIP   TRAVEL mm", "RUEDA   CARGA N  DESL.  RECORR. mm")
 		for i in 4:
-			text += "\n%s          %6.1f       %5.2f" % [["FL", "FR", "RL", "RR"][i], loads[i], slips[i]]
+			text += "\n%s       %6.1f    %5.2f    %6.1f" % [["FL", "FR", "RL", "RR"][i], loads[i], slips[i], float(travels[i])*1000.0]
 		if int(snapshot.get("wall_contact_count", 0)) > 0:
 			text += "\n" + words("Wall contacts: %d · %.0f N", "Contactos con pared: %d · %.0f N") % [int(snapshot.wall_contact_count), float(snapshot.wall_normal_load_n)]
 		gauges.text = text

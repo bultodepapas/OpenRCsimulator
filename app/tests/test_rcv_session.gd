@@ -241,9 +241,9 @@ func _test_recording_export(session) -> void:
 		var json := FileAccess.open(str(exported.metadata_path), FileAccess.READ)
 		var metadata: Dictionary = JSON.parse_string(json.get_as_text())
 		json.close()
-		_check("CSV declares recording version and state schema", csv_text.begins_with("# openrc-ground-vehicle-recording v2\n")
-			and metadata.get("format") == "openrc-ground-vehicle-recording v2"
-			and metadata.get("version") == 2 and metadata.get("fixed_hz") == 240
+		_check("CSV declares recording version and state schema", csv_text.begins_with("# openrc-ground-vehicle-recording v3\n")
+			and metadata.get("format") == "openrc-ground-vehicle-recording v3"
+			and metadata.get("version") == 3 and metadata.get("fixed_hz") == 240
 			and metadata.get("state_layout", []).size() == 31
 			and metadata.get("sample_width", 0) > 80)
 		_check("recording metadata includes strict identities and integrity hashes",

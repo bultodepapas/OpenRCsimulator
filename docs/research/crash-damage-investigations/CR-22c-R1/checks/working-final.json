@@ -1,0 +1,20 @@
+[
+  {
+    "test": "working-final-airframe_scuff_cache",
+    "exit": 0,
+    "errors": [],
+    "summary": "airframe scuff cache: 18 checks, 0 failed"
+  },
+  {
+    "test": "working-final-crash_warmup",
+    "exit": 0,
+    "errors": [],
+    "summary": "18 checks, 0 failed"
+  },
+  {
+    "test": "working-final-crash_warmup-native",
+    "exit": 0,
+    "errors": [],
+    "summary": "18 checks, 0 failed"
+  }
+]

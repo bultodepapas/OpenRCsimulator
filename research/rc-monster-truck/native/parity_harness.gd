@@ -26,7 +26,7 @@ func _initialize() -> void:
 	_native = ClassDB.instantiate("OpenRCGroundVehicleNative")
 	var identity: Dictionary = _native.backend_identity()
 	if identity.get("backend") != "native" or int(identity.get("abi_version", 0)) != 1 \
-			or identity.get("solver_version") != "openrc-ground-vehicle-dynamics-rk4-v2" \
+			or identity.get("solver_version") != "openrc-ground-vehicle-dynamics-rk4-v3" \
 			or str(identity.get("source_sha256", "")).length() != 64 \
 			or str(identity.get("toolchain_sha256", "")).length() != 64 \
 			or str(identity.get("binary_sha256", "")).length() != 64:
@@ -55,6 +55,7 @@ func _initialize() -> void:
 		_run_case(str(scenario.name) + "_fixed", scenario.state, model, scenario.controls, road, batch, true, false)
 	_run_case("rest_no_energy", resting, model, VehicleDynamics.DEFAULT_CONTROLS, road, batch, false, true)
 	_run_randomized(resting, model, road, batch)
+	_run_brake_distribution(resting, model, road, batch)
 	_run_invalids(resting, model, batch)
 	_run_evaluate_profile(scenarios[1], model, road, batch)
 	if _failures == 0:
@@ -221,6 +222,31 @@ func _run_randomized(resting: PackedFloat64Array, model: Dictionary, road: Calla
 			"reverse": sample_index % 3 == 0,
 		}
 		_run_case("random_%02d" % sample_index, state, model, controls, road, batch, sample_index % 2 == 0, sample_index % 2 == 1)
+
+
+func _run_brake_distribution(resting: PackedFloat64Array, model: Dictionary, road: Callable, batch: Callable) -> void:
+	var state := resting.duplicate()
+	state[3] = 11.87
+	state[4] = 0.05
+	for corner in 4:
+		state[21 + corner] = 118.7
+	var controls := {"throttle": 0.0, "steering": 0.0, "brake": 1.0, "reverse": false}
+	for fraction in [0.0, 0.5, 0.85, 1.0]:
+		var biased := model.duplicate(true)
+		biased.brake_front_fraction = fraction
+		_run_case("brake_fraction_" + str(fraction), state, biased, controls, road, batch, true, true)
+	var legacy := model.duplicate(true)
+	legacy.erase("brake_front_fraction")
+	_run_case("legacy_equal_brake_distribution", state, legacy, controls, road, batch, true, true)
+	for fraction in [-0.01, 1.01, NAN, INF, true, "0.85"]:
+		var invalid := model.duplicate(true)
+		invalid.brake_front_fraction = fraction
+		# The public GDScript boundary validates before entering _evaluate.
+		var reference: Dictionary = VehicleDynamics.telemetry(state, invalid, road, controls)
+		var native: Dictionary = _native.evaluate(state, invalid, controls, batch, true, true)
+		_checks += 1
+		if reference.get("ok", true) or native.get("ok", true):
+			_fail("invalid axle brake fraction accepted: " + str(fraction))
 
 
 func _run_invalids(resting: PackedFloat64Array, model: Dictionary, batch: Callable) -> void:

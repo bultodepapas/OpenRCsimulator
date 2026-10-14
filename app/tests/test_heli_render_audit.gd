@@ -69,6 +69,13 @@ func _run() -> void:
 	_test_variable_rpm_and_render_rates(session, live, capture, model_a, model_b, visual_a, visual_b)
 	_test_zero_drive_and_pause(session, live, capture, visual_a)
 	_test_reset_and_checkpoint_rebase(session, live, capture, checkpoint)
+	_check("accepted flight advances to nonzero authoritative rotor phase",session.reset())
+	for tick: int in 3: session.sim.step()
+	var spinning_checkpoint: Dictionary=session.checkpoint()
+	for tick: int in 2: session.sim.step()
+	_check("nonzero rotor phase restores from checkpoint",session.restore_checkpoint(spinning_checkpoint).ok)
+	live._ensure_rotor_phase_current()
+	_check("renderer retains saved phase instead of resetting it",live._rotor_phase_current.to_byte_array()==spinning_checkpoint.shaft_phase.to_byte_array() and live._rotor_phase_current[0]!=0.0)
 	_test_instance_isolation(visual_a, visual_b, model_a, model_b)
 	var legacy_state := {"omega_rad_s":2.0,"tail_omega_rad_s":3.0}
 	visual_a.update(legacy_state,0.1)
@@ -211,6 +218,14 @@ func _test_envelope_flags(session: Node) -> void:
 		and not FlightMain.main_rotor_envelope_flags(threshold_state, continuous, context,
 			PackedFloat64Array([0.0, 0.0, 0.0])).within_identified_advance_ratio)
 	var parked: PackedFloat64Array = continuous.duplicate()
+	var calm_body: PackedFloat64Array=threshold_state.duplicate()
+	calm_body[3]=0.0
+	for fraction: float in [.03,.06,.09]:
+		var startup: PackedFloat64Array=continuous.duplicate()
+		startup[0]=fraction*context.main_model.omega_nominal_rad_s
+		_check("startup envelope metadata matches flight at %.2f nominal RPM"%fraction,
+			_flags_match_flight(calm_body,startup,context,PackedFloat64Array([0,0,0]),session)
+			and FlightMain.main_rotor_envelope_flags(calm_body,startup,context,PackedFloat64Array([0,0,0])).within_identified_advance_ratio==(fraction>=.08))
 	parked[0] = 0.0
 	_check("zero-RPM presentation keeps the advance-ratio warning false like Flight.evaluate",
 		_flags_match_flight(body, parked, context, wind, session)

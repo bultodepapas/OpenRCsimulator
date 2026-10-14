@@ -266,8 +266,6 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: flo
 	_fire_duration = minf(KEROSENE_FIRE_MAX_S, fuel_kg / KEROSENE_BURN_KG_S) if hot_turbine and level >= 3 and fuel_kg > 0.0 and severity.get("tank_ruptured",false) else 0.0
 	for p in emitters:
 		p.global_position = _origin
-		p.visible = true
-		p.restart()
 	# CR-03b: material-driven ejecta thrown forward along the slide, never a spherical burst.
 	var profile := dust_profile(surface)
 	dust.direction = (slide.normalized()*0.6 + Vector3.UP*0.8).normalized() if slide.length() > 1.0 else Vector3.UP
@@ -277,20 +275,14 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: flo
 	if not profile.is_empty():
 		dust.color_ramp = _gradient([Color(profile[0], 0.0), Color(profile[0], 0.65), Color(profile[1], 0.0)], [0.0, 0.08, 1.0])
 		dust.gravity = Vector3(0, -float(EJECTA_FALL.get(_profile_name(profile), 0.6)), 0)
-	dust.restart()
-	dust.emitting = level > 0 and not profile.is_empty()
-	touch_dust.emitting = false
-	blade_chips.emitting = false
-	vent.emitting = false
-	fireball.emitting = false
+	_emit(dust, level > 0 and not profile.is_empty())
 	vent.gravity = Vector3(0, 0.5, 0) + wind.limit_length(10.0)*0.2
-	sparks.restart()
-	sparks.emitting = sparks_for(level, surface, str(severity.get("component_group","")), float(severity.get("tangential_speed_mps", 0.0)), hot_turbine)
+	_emit(sparks, sparks_for(level, surface, str(severity.get("component_group","")), float(severity.get("tangential_speed_mps", 0.0)), hot_turbine))
 	flame.emission_sphere_radius = 0.25 + 0.4*power
-	flame.emitting = _fire_duration > 0
-	smoke.emitting = _fire_duration > 0
 	smoke.gravity = Vector3(0,0.35,0) + wind.limit_length(10.0)*0.2
 	flame.gravity = Vector3(0,1,0) + wind.limit_length(10.0)*0.08
+	_emit(flame, _fire_duration > 0)
+	_emit(smoke, _fire_duration > 0)
 	light.global_position = _origin + Vector3.UP*0.6
 	light.visible = _fire_duration > 0
 	if level > 0:
@@ -305,6 +297,14 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: flo
 		_spins[i] = Vector3(_rng.randf_range(-14,14),_rng.randf_range(-14,14),_rng.randf_range(-14,14))
 		fragments.multimesh.set_instance_color(i, chip_color(i, hot_turbine))
 		fragments.multimesh.set_instance_transform(i,Transform3D(Basis.from_euler(_rotations[i]),_positions[i]))
+
+## Restart only an effect that actually begins. Stopping emission lets existing particles fade;
+## reset() hides the pool, so the next impact or delayed vent starts a fresh cycle.
+func _emit(emitter: CPUParticles3D, enabled: bool) -> void:
+	if enabled and not emitter.visible:
+		emitter.visible = true
+		emitter.restart()
+	emitter.emitting = enabled
 
 ## CR-03b: dust colours for a ground or obstacle surface, [start, end]; empty = no dust (hard surfaces).
 static func dust_profile(surface: String) -> Array:
@@ -419,12 +419,12 @@ func update(delta: float, paused: bool) -> void:
 	_age += dt
 	var burning := fire_strength()
 	var venting := _age >= _vent_start_s and _age < _vent_end_s
-	vent.emitting = venting
+	_emit(vent, venting)
 	var flaring := _age >= _vent_start_s and _age < _flare_end_s
 	if flaring:
 		burning = maxf(burning, 1.0)
-	flame.emitting = burning > 0
-	smoke.emitting = burning > 0
+	_emit(flame, burning > 0)
+	_emit(smoke, burning > 0)
 	light.visible = burning > 0
 	light.light_energy = burning*(1.7+0.35*sin(_age*19.0)+0.25*sin(_age*31.0))
 	var flash := flash_strength()

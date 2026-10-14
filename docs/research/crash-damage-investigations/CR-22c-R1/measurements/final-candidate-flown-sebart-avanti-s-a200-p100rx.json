@@ -1,0 +1,1131 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"results": [
+		{
+			"active": true,
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"class_level": 4,
+			"detect_us": 2,
+			"first_draw_us": 11854269,
+			"flown": true,
+			"frames_ms": [
+				25.24,
+				16.932,
+				16.395,
+				15.85,
+				16.283,
+				16.476,
+				14.751,
+				18.064,
+				16.392,
+				18.435,
+				14.897,
+				18.878,
+				42.16,
+				33.122,
+				7.948,
+				6.929,
+				16.946,
+				17.132,
+				16.142,
+				16.868,
+				16.753,
+				16.378,
+				16.804,
+				16.748,
+				16.48,
+				16.757,
+				16.865,
+				16.497,
+				16.631,
+				16.807,
+				16.641,
+				16.317,
+				16.714,
+				17.013,
+				16.729,
+				16.388,
+				16.66,
+				16.953,
+				16.3,
+				16.82,
+				16.679,
+				16.997,
+				16.226,
+				16.613,
+				16.8,
+				16.67,
+				16.813,
+				16.586,
+				16.515,
+				16.633,
+				17.307,
+				16.179,
+				16.777,
+				16.437,
+				17.102,
+				16.605,
+				16.838,
+				16.211,
+				16.753,
+				17.226,
+				16.34,
+				16.769,
+				16.197,
+				16.955,
+				16.529,
+				16.488,
+				16.849,
+				16.609,
+				16.915,
+				16.393,
+				16.747,
+				16.823,
+				16.676,
+				16.388,
+				16.803,
+				16.529,
+				16.851,
+				16.742,
+				16.523,
+				16.506,
+				16.903,
+				16.785,
+				16.462,
+				16.403,
+				16.94,
+				16.572,
+				16.914,
+				16.465,
+				16.695,
+				16.998
+			],
+			"impact_frame": 12,
+			"impact_us": 6022,
+			"main_us": [
+				771,
+				864,
+				908,
+				872,
+				734,
+				899,
+				932,
+				787,
+				801,
+				827,
+				988,
+				925,
+				1750,
+				6976,
+				703,
+				650,
+				765,
+				908,
+				892,
+				671,
+				987,
+				677,
+				750,
+				763,
+				712,
+				743,
+				687,
+				719,
+				669,
+				691,
+				639,
+				659,
+				840,
+				738,
+				716,
+				708,
+				715,
+				703,
+				694,
+				728,
+				794,
+				700,
+				828,
+				772,
+				673,
+				720,
+				797,
+				980,
+				978,
+				637,
+				653,
+				751,
+				670,
+				840,
+				671,
+				658,
+				981,
+				681,
+				710,
+				1193,
+				1133,
+				760,
+				670,
+				701,
+				758,
+				646,
+				856,
+				646,
+				952,
+				802,
+				637,
+				637,
+				652,
+				694,
+				838,
+				743,
+				804,
+				701,
+				902,
+				677,
+				849,
+				651,
+				952,
+				629,
+				864,
+				594,
+				943,
+				842,
+				692,
+				631
+			],
+			"run": 0,
+			"scuff_us": [
+				851
+			],
+			"setup_us": 11789166,
+			"stages": {
+				"audio": 81,
+				"effects": 356,
+				"energy": 15,
+				"wreck": 3057
+			},
+			"state": [
+				-22.3475850057807,
+				-14.755781391872,
+				-0.924827344389721,
+				28.2236048620021,
+				0.423903481529624,
+				1.90520310756742,
+				0.831820055590437,
+				0.277779624360376,
+				-0.433606040456145,
+				0.207122372252913,
+				-0.0863606537640115,
+				0.791351512539097,
+				-0.281413404491806
+			],
+			"stats": {
+				"active": true,
+				"effects": {
+					"fire": 1.0,
+					"marks": 3,
+					"particles": 700,
+					"splinters": 144,
+					"update_usec": 23
+				},
+				"impact_usec": 6022,
+				"report": {
+					"abrasion_class": 1,
+					"abrasion_j_per_kg": 38.9612816445643,
+					"cause": {
+						"detail": "at 29.1 m/s, pitch -56°, bank 31°",
+						"factors": [],
+						"id": "flew_into_ground",
+						"label": "Flew into the ground"
+					},
+					"cg_model": "(0.0, 0.005153, 0.24)",
+					"class": 4,
+					"component": "nose",
+					"component_basis": "aircraft data crash_hull_components label of the struck hull point; not a structural section ID",
+					"component_damage": 0.85,
+					"component_group": "fuselage",
+					"component_is_estimate": false,
+					"contact_point_world": "(-14.65279, 0.025, 21.76544)",
+					"durability": 1.0,
+					"effective_mass_kg": 4.1949747065937,
+					"energy": {
+						"fire_kind": "kerosene",
+						"fire_s": 36.5714285714286,
+						"flare": false,
+						"flash": true,
+						"flash_radius_m": 0.678372115265385,
+						"flash_s": 0.35,
+						"stain": false,
+						"vent_delay_s": -1.0,
+						"vent_s": 0.0
+					},
+					"energy_j": 4672.86591143658,
+					"energy_sources": {
+						"kerosene": 1.28
+					},
+					"error": "",
+					"estimated_energy_j": 1072.41930246883,
+					"friction_work_j": 456.045269203692,
+					"fuel_kg": 1.28,
+					"fuel_kind": "declared inventory; no flight consumption",
+					"impact_angle_deg": 58.54443434679,
+					"inventory_boxes": [
+						{
+							"center": "(-0.527153, 0.012259, 0.289115)",
+							"mass": 0.626,
+							"size": "(0.86, 0.05, 0.362485)"
+						},
+						{
+							"center": "(0.527153, 0.012259, 0.289115)",
+							"mass": 0.626,
+							"size": "(0.86, 0.05, 0.362485)"
+						},
+						{
+							"center": "(-0.218953, 0.065, 1.014561)",
+							"mass": 0.149,
+							"size": "(0.43, 0.02, 0.199356)"
+						},
+						{
+							"center": "(0.218953, 0.065, 1.014561)",
+							"mass": 0.149,
+							"size": "(0.43, 0.02, 0.199356)"
+						},
+						{
+							"center": "(0.0, 0.00275, -1.025)",
+							"mass": 0.007506,
+							"size": "(0.046, 0.039, 0.05)"
+						},
+						{
+							"center": "(0.0, 0.01125, -0.925)",
+							"mass": 0.081112,
+							"size": "(0.12, 0.116, 0.15)"
+						},
+						{
+							"center": "(0.0, 0.0235, -0.75)",
+							"mass": 0.210851,
+							"size": "(0.19, 0.2, 0.2)"
+						},
+						{
+							"center": "(0.0, 0.0305, -0.525)",
+							"mass": 0.377233,
+							"size": "(0.258, 0.248, 0.25)"
+						},
+						{
+							"center": "(0.0, 0.0265, -0.275)",
+							"mass": 0.451559,
+							"size": "(0.302, 0.264, 0.25)"
+						},
+						{
+							"center": "(0.0, 0.01575, -0.075)",
+							"mass": 0.290834,
+							"size": "(0.324, 0.264, 0.15)"
+						},
+						{
+							"center": "(0.0, 0.0035, 0.15)",
+							"mass": 0.543413,
+							"size": "(0.324, 0.259, 0.3)"
+						},
+						{
+							"center": "(0.0, -0.00275, 0.45)",
+							"mass": 0.440244,
+							"size": "(0.274, 0.215, 0.3)"
+						},
+						{
+							"center": "(0.0, -0.00075, 0.73)",
+							"mass": 0.28173,
+							"size": "(0.206, 0.174, 0.26)"
+						},
+						{
+							"center": "(0.0, 0.00125, 0.955)",
+							"mass": 0.14559,
+							"size": "(0.132, 0.131, 0.19)"
+						},
+						{
+							"center": "(0.0, 0.0005, 1.11)",
+							"mass": 0.069928,
+							"size": "(0.094, 0.098, 0.12)"
+						},
+						{
+							"center": "(0.0, 0.243784, 0.913091)",
+							"mass": 0.2,
+							"size": "(0.015, 0.44775, 0.3)"
+						},
+						{
+							"center": "(0.0, 0.17, -0.45)",
+							"mass": 0.3,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, 0.0, 0.15)",
+							"mass": 0.15,
+							"size": "(0.9, 0.04, 0.04)"
+						},
+						{
+							"center": "(0.0, 0.0, 0.3)",
+							"mass": 0.2,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, -0.005, 0.54)",
+							"mass": 1.08,
+							"size": "(0.097, 0.097, 0.241)"
+						},
+						{
+							"center": "(0.0, -0.03, 0.3)",
+							"mass": 0.3,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, 0.0, 0.92)",
+							"mass": 0.35,
+							"size": "(0.08, 0.08, 0.5)"
+						},
+						{
+							"center": "(0.0, -0.03, 0.05)",
+							"mass": 0.3,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(-0.3, -0.02, 0.24)",
+							"mass": 0.4,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.3, -0.02, 0.24)",
+							"mass": 0.4,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, -0.06, -0.7)",
+							"mass": 0.3,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, -0.06, -0.25)",
+							"mass": 0.2,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(-0.75, 0.0, 0.35)",
+							"mass": 0.065,
+							"size": "(0.03, 0.03, 0.03)"
+						},
+						{
+							"center": "(0.75, 0.0, 0.35)",
+							"mass": 0.065,
+							"size": "(0.03, 0.03, 0.03)"
+						},
+						{
+							"center": "(-0.35, 0.0, 0.33)",
+							"mass": 0.075,
+							"size": "(0.03, 0.03, 0.03)"
+						},
+						{
+							"center": "(0.35, 0.0, 0.33)",
+							"mass": 0.075,
+							"size": "(0.03, 0.03, 0.03)"
+						},
+						{
+							"center": "(-0.125, 0.06, 0.95)",
+							"mass": 0.065,
+							"size": "(0.03, 0.03, 0.03)"
+						},
+						{
+							"center": "(0.125, 0.06, 0.95)",
+							"mass": 0.065,
+							"size": "(0.03, 0.03, 0.03)"
+						},
+						{
+							"center": "(0.0, 0.08, 0.85)",
+							"mass": 0.075,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, -0.02, -0.62)",
+							"mass": 0.065,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, -0.03, 0.3)",
+							"mass": 0.45,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, 0.0, 0.3)",
+							"mass": 0.45,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, -0.03, 0.05)",
+							"mass": 1.28,
+							"size": "(0.14, 0.1, 0.25)"
+						},
+						{
+							"center": "(0.0, 0.0, 1.1)",
+							"mass": 0.345089,
+							"size": "(0.04, 0.04, 0.04)"
+						}
+					],
+					"kinematics": "detected rigid contact point",
+					"kinematics_is_proxy": false,
+					"mass_basis": "rigid-body effective mass at the contact point",
+					"mass_kg": 11.705089,
+					"normal_class": 3,
+					"normal_energy_j": 1218.65829826003,
+					"prop_broken": false,
+					"sample_time": "detected_tick_point",
+					"severity": 1.0,
+					"slapdown_class": 4,
+					"slapdown_energy_j": 2049.79793119442,
+					"slapdown_j_per_kg": 175.12023455733,
+					"soft_rule": "impact",
+					"specific_energy_j_per_kg": 91.61991869253,
+					"speed_mps": 28.2565605365327,
+					"surface": "rough",
+					"tangential_speed_mps": 14.7453233960356,
+					"tank_rupture_kind": "estimated: C4, or C3 central impact >=600 J; uncalibrated",
+					"tank_ruptured": true,
+					"tick": 48,
+					"trigger": "hull_contact",
+					"valid": true
+				},
+				"shader_warmup": {
+					"drawn": true,
+					"draws": 2,
+					"particle_samples": 8,
+					"usec": 659325
+				},
+				"update_usec": 42,
+				"water": {
+					"droplet_pool_size": 16,
+					"elapsed_s": 0.0,
+					"has_event": false,
+					"impact_audio_emitted": false,
+					"impact_audio_source_index": -1,
+					"impact_depth_m": 0.0,
+					"point_ned": [],
+					"rings_visible": 0,
+					"seed": 1,
+					"version": 1
+				},
+				"water_active": false,
+				"water_event_count": 0,
+				"wreck": {
+					"active_body_count": 8,
+					"c3_contact_exposure_index_j": 0.0,
+					"c3_contact_exposure_kind": "cosmetic post-crash exposure index; not measured dissipated energy",
+					"c3_contact_exposure_unit": "provisional relative kinetic-energy index J",
+					"c3_contact_release_pending": false,
+					"c3_contact_release_thresholds_j": {
+						"canopy": 25.0,
+						"engine": 50.0,
+						"gear": 12.0,
+						"propeller": 4.0
+					},
+					"cg_model": "(0.0, 0.005153, 0.24)",
+					"class_level": 4,
+					"component_hint": "nose",
+					"contact_point_model": "(-0.007064, -0.003391, -0.91712)",
+					"contact_shadow_count": 24,
+					"detached_group_count": 7,
+					"elapsed_s": 1.31454766666667,
+					"energy_estimate_source": "normal_energy_j",
+					"fragment_groups": [
+						"core",
+						"wing_left",
+						"wing_right",
+						"engine",
+						"horizontal_tail",
+						"vertical_tail",
+						"gear",
+						"canopy"
+					],
+					"mass_kg": 11.705089,
+					"max_speed_seen_mps": 24.7823123931885,
+					"normal_impact_energy_estimate_j": 1218.65829826003,
+					"paused": false,
+					"pool_size": 24,
+					"prepared": true,
+					"release_kinds": [],
+					"scatter_energy_fraction": 0.12,
+					"scatter_energy_j": 131.567303681802,
+					"secondary_impact_strength_unit": "J",
+					"secondary_impacts": 10,
+					"sleeping_body_count": 0,
+					"started": true
+				}
+			},
+			"unchanged": true,
+			"warmup": {
+				"drawn": true,
+				"draws": 2,
+				"particle_samples": 8,
+				"usec": 659325
+			}
+		},
+		{
+			"active": true,
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"class_level": 4,
+			"detect_us": 2,
+			"first_draw_us": 11854269,
+			"flown": true,
+			"frames_ms": [
+				22.26,
+				16.58,
+				17.282,
+				17.97,
+				20.532,
+				15.837,
+				16.495,
+				15.795,
+				16.273,
+				16.993,
+				18.504,
+				17.081,
+				16.438,
+				17.243,
+				8.319,
+				13.917,
+				16.582,
+				16.745,
+				16.928,
+				16.725,
+				16.697,
+				16.678,
+				16.713,
+				16.245,
+				16.778,
+				16.535,
+				16.673,
+				16.683,
+				16.87,
+				16.707,
+				16.518,
+				16.754,
+				16.527,
+				16.657,
+				16.589,
+				16.689,
+				16.53,
+				17.002,
+				16.66,
+				16.468,
+				16.547,
+				16.856,
+				16.862,
+				16.492,
+				16.801,
+				16.396,
+				16.683,
+				16.707,
+				16.807,
+				16.771,
+				16.267,
+				16.898,
+				17.049,
+				16.357,
+				16.569,
+				16.811,
+				16.432,
+				16.791,
+				16.689,
+				16.793,
+				16.418,
+				16.886,
+				16.534,
+				16.644,
+				16.763,
+				16.65,
+				16.711,
+				16.575,
+				16.511,
+				16.774,
+				16.622,
+				16.585,
+				16.621,
+				16.808,
+				16.856,
+				16.55,
+				16.544,
+				16.651,
+				16.832,
+				16.578,
+				16.742,
+				16.529,
+				16.937,
+				16.559,
+				16.509,
+				16.733,
+				16.892,
+				16.389,
+				16.64,
+				16.736
+			],
+			"impact_frame": 12,
+			"impact_us": 5565,
+			"main_us": [
+				851,
+				733,
+				585,
+				690,
+				603,
+				825,
+				695,
+				643,
+				948,
+				1053,
+				1326,
+				852,
+				1473,
+				6374,
+				676,
+				883,
+				984,
+				899,
+				908,
+				821,
+				839,
+				977,
+				1154,
+				931,
+				820,
+				1040,
+				1164,
+				1033,
+				907,
+				1003,
+				982,
+				947,
+				1182,
+				1169,
+				851,
+				1038,
+				1115,
+				1163,
+				1092,
+				1152,
+				925,
+				1184,
+				1149,
+				929,
+				919,
+				1074,
+				814,
+				1004,
+				1084,
+				1076,
+				1133,
+				1098,
+				852,
+				929,
+				833,
+				1203,
+				1177,
+				1092,
+				884,
+				1227,
+				1058,
+				1038,
+				1261,
+				1167,
+				819,
+				1203,
+				899,
+				909,
+				981,
+				1087,
+				931,
+				855,
+				922,
+				879,
+				1141,
+				863,
+				845,
+				897,
+				1016,
+				1216,
+				1085,
+				891,
+				741,
+				1014,
+				786,
+				864,
+				931,
+				1055,
+				758,
+				1017
+			],
+			"run": 1,
+			"scuff_us": [
+				518
+			],
+			"setup_us": 11789166,
+			"stages": {
+				"audio": 112,
+				"effects": 420,
+				"energy": 20,
+				"wreck": 2585
+			},
+			"state": [
+				-22.3475850057807,
+				-14.755781391872,
+				-0.924827344389721,
+				28.2236048620021,
+				0.423903481529624,
+				1.90520310756742,
+				0.831820055590437,
+				0.277779624360376,
+				-0.433606040456145,
+				0.207122372252913,
+				-0.0863606537640115,
+				0.791351512539097,
+				-0.281413404491806
+			],
+			"stats": {
+				"active": true,
+				"effects": {
+					"fire": 1.0,
+					"marks": 4,
+					"particles": 700,
+					"splinters": 144,
+					"update_usec": 33
+				},
+				"impact_usec": 5565,
+				"report": {
+					"abrasion_class": 1,
+					"abrasion_j_per_kg": 38.9612816445643,
+					"cause": {
+						"detail": "at 29.1 m/s, pitch -56°, bank 31°",
+						"factors": [],
+						"id": "flew_into_ground",
+						"label": "Flew into the ground"
+					},
+					"cg_model": "(0.0, 0.005153, 0.24)",
+					"class": 4,
+					"component": "nose",
+					"component_basis": "aircraft data crash_hull_components label of the struck hull point; not a structural section ID",
+					"component_damage": 0.85,
+					"component_group": "fuselage",
+					"component_is_estimate": false,
+					"contact_point_world": "(-14.65279, 0.025, 21.76544)",
+					"durability": 1.0,
+					"effective_mass_kg": 4.1949747065937,
+					"energy": {
+						"fire_kind": "kerosene",
+						"fire_s": 36.5714285714286,
+						"flare": false,
+						"flash": true,
+						"flash_radius_m": 0.678372115265385,
+						"flash_s": 0.35,
+						"stain": false,
+						"vent_delay_s": -1.0,
+						"vent_s": 0.0
+					},
+					"energy_j": 4672.86591143658,
+					"energy_sources": {
+						"kerosene": 1.28
+					},
+					"error": "",
+					"estimated_energy_j": 1072.41930246883,
+					"friction_work_j": 456.045269203692,
+					"fuel_kg": 1.28,
+					"fuel_kind": "declared inventory; no flight consumption",
+					"impact_angle_deg": 58.54443434679,
+					"inventory_boxes": [
+						{
+							"center": "(-0.527153, 0.012259, 0.289115)",
+							"mass": 0.626,
+							"size": "(0.86, 0.05, 0.362485)"
+						},
+						{
+							"center": "(0.527153, 0.012259, 0.289115)",
+							"mass": 0.626,
+							"size": "(0.86, 0.05, 0.362485)"
+						},
+						{
+							"center": "(-0.218953, 0.065, 1.014561)",
+							"mass": 0.149,
+							"size": "(0.43, 0.02, 0.199356)"
+						},
+						{
+							"center": "(0.218953, 0.065, 1.014561)",
+							"mass": 0.149,
+							"size": "(0.43, 0.02, 0.199356)"
+						},
+						{
+							"center": "(0.0, 0.00275, -1.025)",
+							"mass": 0.007506,
+							"size": "(0.046, 0.039, 0.05)"
+						},
+						{
+							"center": "(0.0, 0.01125, -0.925)",
+							"mass": 0.081112,
+							"size": "(0.12, 0.116, 0.15)"
+						},
+						{
+							"center": "(0.0, 0.0235, -0.75)",
+							"mass": 0.210851,
+							"size": "(0.19, 0.2, 0.2)"
+						},
+						{
+							"center": "(0.0, 0.0305, -0.525)",
+							"mass": 0.377233,
+							"size": "(0.258, 0.248, 0.25)"
+						},
+						{
+							"center": "(0.0, 0.0265, -0.275)",
+							"mass": 0.451559,
+							"size": "(0.302, 0.264, 0.25)"
+						},
+						{
+							"center": "(0.0, 0.01575, -0.075)",
+							"mass": 0.290834,
+							"size": "(0.324, 0.264, 0.15)"
+						},
+						{
+							"center": "(0.0, 0.0035, 0.15)",
+							"mass": 0.543413,
+							"size": "(0.324, 0.259, 0.3)"
+						},
+						{
+							"center": "(0.0, -0.00275, 0.45)",
+							"mass": 0.440244,
+							"size": "(0.274, 0.215, 0.3)"
+						},
+						{
+							"center": "(0.0, -0.00075, 0.73)",
+							"mass": 0.28173,
+							"size": "(0.206, 0.174, 0.26)"
+						},
+						{
+							"center": "(0.0, 0.00125, 0.955)",
+							"mass": 0.14559,
+							"size": "(0.132, 0.131, 0.19)"
+						},
+						{
+							"center": "(0.0, 0.0005, 1.11)",
+							"mass": 0.069928,
+							"size": "(0.094, 0.098, 0.12)"
+						},
+						{
+							"center": "(0.0, 0.243784, 0.913091)",
+							"mass": 0.2,
+							"size": "(0.015, 0.44775, 0.3)"
+						},
+						{
+							"center": "(0.0, 0.17, -0.45)",
+							"mass": 0.3,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, 0.0, 0.15)",
+							"mass": 0.15,
+							"size": "(0.9, 0.04, 0.04)"
+						},
+						{
+							"center": "(0.0, 0.0, 0.3)",
+							"mass": 0.2,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, -0.005, 0.54)",
+							"mass": 1.08,
+							"size": "(0.097, 0.097, 0.241)"
+						},
+						{
+							"center": "(0.0, -0.03, 0.3)",
+							"mass": 0.3,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, 0.0, 0.92)",
+							"mass": 0.35,
+							"size": "(0.08, 0.08, 0.5)"
+						},
+						{
+							"center": "(0.0, -0.03, 0.05)",
+							"mass": 0.3,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(-0.3, -0.02, 0.24)",
+							"mass": 0.4,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.3, -0.02, 0.24)",
+							"mass": 0.4,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, -0.06, -0.7)",
+							"mass": 0.3,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, -0.06, -0.25)",
+							"mass": 0.2,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(-0.75, 0.0, 0.35)",
+							"mass": 0.065,
+							"size": "(0.03, 0.03, 0.03)"
+						},
+						{
+							"center": "(0.75, 0.0, 0.35)",
+							"mass": 0.065,
+							"size": "(0.03, 0.03, 0.03)"
+						},
+						{
+							"center": "(-0.35, 0.0, 0.33)",
+							"mass": 0.075,
+							"size": "(0.03, 0.03, 0.03)"
+						},
+						{
+							"center": "(0.35, 0.0, 0.33)",
+							"mass": 0.075,
+							"size": "(0.03, 0.03, 0.03)"
+						},
+						{
+							"center": "(-0.125, 0.06, 0.95)",
+							"mass": 0.065,
+							"size": "(0.03, 0.03, 0.03)"
+						},
+						{
+							"center": "(0.125, 0.06, 0.95)",
+							"mass": 0.065,
+							"size": "(0.03, 0.03, 0.03)"
+						},
+						{
+							"center": "(0.0, 0.08, 0.85)",
+							"mass": 0.075,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, -0.02, -0.62)",
+							"mass": 0.065,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, -0.03, 0.3)",
+							"mass": 0.45,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, 0.0, 0.3)",
+							"mass": 0.45,
+							"size": "(0.0, 0.0, 0.0)"
+						},
+						{
+							"center": "(0.0, -0.03, 0.05)",
+							"mass": 1.28,
+							"size": "(0.14, 0.1, 0.25)"
+						},
+						{
+							"center": "(0.0, 0.0, 1.1)",
+							"mass": 0.345089,
+							"size": "(0.04, 0.04, 0.04)"
+						}
+					],
+					"kinematics": "detected rigid contact point",
+					"kinematics_is_proxy": false,
+					"mass_basis": "rigid-body effective mass at the contact point",
+					"mass_kg": 11.705089,
+					"normal_class": 3,
+					"normal_energy_j": 1218.65829826003,
+					"prop_broken": false,
+					"sample_time": "detected_tick_point",
+					"severity": 1.0,
+					"slapdown_class": 4,
+					"slapdown_energy_j": 2049.79793119442,
+					"slapdown_j_per_kg": 175.12023455733,
+					"soft_rule": "impact",
+					"specific_energy_j_per_kg": 91.61991869253,
+					"speed_mps": 28.2565605365327,
+					"surface": "rough",
+					"tangential_speed_mps": 14.7453233960356,
+					"tank_rupture_kind": "estimated: C4, or C3 central impact >=600 J; uncalibrated",
+					"tank_ruptured": true,
+					"tick": 48,
+					"trigger": "hull_contact",
+					"valid": true
+				},
+				"shader_warmup": {
+					"drawn": true,
+					"draws": 2,
+					"particle_samples": 8,
+					"usec": 659325
+				},
+				"update_usec": 57,
+				"water": {
+					"droplet_pool_size": 16,
+					"elapsed_s": 0.0,
+					"has_event": false,
+					"impact_audio_emitted": false,
+					"impact_audio_source_index": -1,
+					"impact_depth_m": 0.0,
+					"point_ned": [],
+					"rings_visible": 0,
+					"seed": 1,
+					"version": 1
+				},
+				"water_active": false,
+				"water_event_count": 0,
+				"wreck": {
+					"active_body_count": 8,
+					"c3_contact_exposure_index_j": 0.0,
+					"c3_contact_exposure_kind": "cosmetic post-crash exposure index; not measured dissipated energy",
+					"c3_contact_exposure_unit": "provisional relative kinetic-energy index J",
+					"c3_contact_release_pending": false,
+					"c3_contact_release_thresholds_j": {
+						"canopy": 25.0,
+						"engine": 50.0,
+						"gear": 12.0,
+						"propeller": 4.0
+					},
+					"cg_model": "(0.0, 0.005153, 0.24)",
+					"class_level": 4,
+					"component_hint": "nose",
+					"contact_point_model": "(-0.007064, -0.003391, -0.91712)",
+					"contact_shadow_count": 24,
+					"detached_group_count": 7,
+					"elapsed_s": 1.283282,
+					"energy_estimate_source": "normal_energy_j",
+					"fragment_groups": [
+						"core",
+						"wing_left",
+						"wing_right",
+						"engine",
+						"horizontal_tail",
+						"vertical_tail",
+						"gear",
+						"canopy"
+					],
+					"mass_kg": 11.705089,
+					"max_speed_seen_mps": 24.2511577606201,
+					"normal_impact_energy_estimate_j": 1218.65829826003,
+					"paused": false,
+					"pool_size": 24,
+					"prepared": true,
+					"release_kinds": [],
+					"scatter_energy_fraction": 0.12,
+					"scatter_energy_j": 131.456206668767,
+					"secondary_impact_strength_unit": "J",
+					"secondary_impacts": 6,
+					"sleeping_body_count": 0,
+					"started": true
+				}
+			},
+			"unchanged": true,
+			"warmup": {
+				"drawn": true,
+				"draws": 2,
+				"particle_samples": 8,
+				"usec": 659325
+			}
+		}
+	]
+}

@@ -72,10 +72,12 @@ func _check_local_loads() -> void:
 		var actual_model: Dictionary = authored_model.duplicate(true)
 		# D11d couples the strips through an induced-flow map; without it the strip law is the frozen one, so the
 		# refactored two-pass loop must still reproduce it byte for byte (test_strip_induced.gd covers the map).
+		# R01 compares only the pre-polar frozen law here. The enabled optional polar stays covered by
+		# test_wing_polar.gd and test_wing_polar_session.gd; remove it explicitly from both compared inputs.
 		# H12's frozen oracle predates D11j's optional wing-section Cm_ac couple. Keep that optional term neutral in
 		# both the frozen and current model copies for this legacy byte-parity comparison; its enabled effect is checked
 		# independently below against the analytic strip sum.
-		for key in ["induced_map", "strip_slope", "strip_cl0"]:
+		for key in ["induced_map", "strip_slope", "strip_cl0", "wing_polar"]:
 			oracle_model.envelope.erase(key)
 			actual_model.envelope.erase(key)
 		for key in ["downwash_gradient", "free_slope", "elevator_tau", "downwash_per_cl", "free_incidence", "wing_cl0"]:

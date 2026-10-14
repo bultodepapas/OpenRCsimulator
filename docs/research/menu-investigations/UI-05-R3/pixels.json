@@ -1,0 +1,16 @@
+{
+  "size": [
+    1280,
+    720
+  ],
+  "changed_pixels": 3028,
+  "bounds": [
+    40,
+    364,
+    386,
+    509
+  ],
+  "max_channel_difference": 229,
+  "backdrop_changed_pixels": 0,
+  "comparison_note": "Final timing captures differ in keyboard focus outlines inside the sidebar; backdrop compared separately."
+}

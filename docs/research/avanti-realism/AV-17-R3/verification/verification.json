@@ -1,0 +1,302 @@
+{
+  "ok": true,
+  "commands": [
+    {
+      "name": "avanti_gamepad",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_avanti_gamepad.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "avanti_gamepad.log",
+      "log_sha256": "c5f111c9100c13757b6c37448e8988aaf041162e6c8459ee3e83bcf54eee416e"
+    },
+    {
+      "name": "avanti_gamepad_flight",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_avanti_gamepad_flight.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "avanti_gamepad_flight.log",
+      "log_sha256": "00d270ab69e401e892a6a74a8fafe6f2ad37cfb23925dc68d8f2aa0caef175ab"
+    },
+    {
+      "name": "avanti_keyboard",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_avanti_keyboard.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "avanti_keyboard.log",
+      "log_sha256": "35c91f7fd65a64fe91cb701502f6154b587cc15788f82d6bac9c227f1faaeba4"
+    },
+    {
+      "name": "avanti_handling",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_avanti_handling.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "avanti_handling.log",
+      "log_sha256": "645cb0e1bca0d3694f38a184c9446f92b598f8c5e99657df324ecc1222d67d7a"
+    },
+    {
+      "name": "rates",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rates.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "rates.log",
+      "log_sha256": "dbcd8b504c2cd29fa406a19b821aa6cca2a5885ac33f688967c40985a6224112"
+    },
+    {
+      "name": "wing_polar",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wing_polar.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "wing_polar.log",
+      "log_sha256": "5d4639edd9c48c637df862f62aba44c072aef525658b34981a5844c0bb8e9594"
+    },
+    {
+      "name": "wing_polar_session",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wing_polar_session.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "wing_polar_session.log",
+      "log_sha256": "66ac28ad1875523bc09ea9e4030b9a9d150df20369469cf2f44620f405809bb6"
+    },
+    {
+      "name": "aircraft_contract",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_contract.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "aircraft_contract.log",
+      "log_sha256": "1ea3e6473d9a21ef39f6168b1b1e9c701db9cf41046aef4718365a0d6af14ced"
+    },
+    {
+      "name": "aircraft_data",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aircraft_data.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "aircraft_data.log",
+      "log_sha256": "9f4895a8f55d7d4799ee5ce2568add90cecb4ede4167bfa563f4aaf994b14322"
+    },
+    {
+      "name": "turbine_continuous",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_turbine_continuous.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "turbine_continuous.log",
+      "log_sha256": "8e62efc677736e758f2a9d19055b6c4b2800931b38b234e1af8173a54a2c9486"
+    },
+    {
+      "name": "retractable_gear",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_retractable_gear.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "retractable_gear.log",
+      "log_sha256": "2aaedaeeb6dc60cc59414ec07cf5b9bca9604fdea179035e9b9cfe0d9888916b"
+    },
+    {
+      "name": "checkpoint",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_checkpoint.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "checkpoint.log",
+      "log_sha256": "ccec2c90abe1d49d87ce3619ba8947459ff4719fd6a78a31e48eec3ec2383f2b"
+    },
+    {
+      "name": "replay_integrity",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_replay_integrity.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "replay_integrity.log",
+      "log_sha256": "56f1bde543f2f895c90bea5c20f52ad3d08b09b50cbb8f18094ae82b7a050175"
+    },
+    {
+      "name": "controller_flight_actions",
+      "argv": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_controller_flight_actions.gd"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "controller_flight_actions.log",
+      "log_sha256": "fc68eb146c8457b07632fef441ccdf50071d35a0a5203d9855850cbc3fa7b5ba"
+    },
+    {
+      "name": "polar_builder",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/avanti-s/av17-r2/test_build_polar.py"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "polar_builder.log",
+      "log_sha256": "3bed887726824c8bd3e2c4e0cea9f92eca3d71e8e2371cfaf8e45eabe1240dda"
+    },
+    {
+      "name": "aircraft_current",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/avanti-s/av06/derive_physics.py",
+        "--check"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "aircraft_current.log",
+      "log_sha256": "3916976ad0dd7b307afdcf36635d9a488ff9392be3c3410052eeccc53cf696e4"
+    },
+    {
+      "name": "schema_current",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/aircraft-standardization/build_schema.py",
+        "--check"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "schema_current.log",
+      "log_sha256": "3c700854bdc83285bb6edfb53e811dad3c7345d6bedd2e0975d92b5fd36a54fd"
+    },
+    {
+      "name": "parameters_current",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/aircraft-standardization/parameter_register.py",
+        "--check"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "parameters_current.log",
+      "log_sha256": "dce936fd7bfc13c7b99125164e95e49237cab3f313089cbe258bb5f0bc2aff25"
+    },
+    {
+      "name": "descriptors_current",
+      "argv": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/aircraft-editor/build_descriptors.py",
+        "--check"
+      ],
+      "ok": true,
+      "exit_code": 0,
+      "log": "descriptors_current.log",
+      "log_sha256": "e228758c0b8f8735552db5b6975e55b2c42a34809b80202f58d30fa972f0f492"
+    }
+  ]
+}

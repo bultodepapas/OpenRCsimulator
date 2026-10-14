@@ -21,6 +21,10 @@ Some tools use local-only material from `references/`; their reports say when a 
 
 ## Entry points per track
 
+### Flight logging
+
+- [FL-01…04: flight logging design, sources and verification](flight-logging/FL-01/README.md); [current manual](../FLIGHT-LOGGING.md). Bounded fixed-wing recorder, exact replay, explicit candidate experiments and CSV analysis.
+
 ### Controller support
 
 [Controller review, 2026-10-14](controller-support-2026-10-14/README.md) records the original gamepad/radio audit, Godot 4.7.2 and SDL sources, and subsequent implementation evidence: explicit device ownership, V2 profiles, safe transitions, menu navigation, free glyphs and native Windows checks. The [implementation plan](../plans/controller-support.md) retains Xbox/DualSense physical and package qualification and optional feedback as open gates. API/synthetic checks do not establish hardware support.
@@ -62,6 +66,8 @@ Some tools use local-only material from `references/`; their reports say when a 
 [AV-17-R1 keyboard pitch and dive recovery](avanti-realism/AV-17-R1/README.md) records the 2026-10-14 manufacturer/parameter audit, accelerated-stall reproduction, progressive keyboard response, before/after traces and regression evidence.
 
 [AV-17-R2 gamepad pitch and progressive stall](avanti-realism/AV-17-R2/README.md) records the reproduced pure-elevator roll departure, source-based estimated wing polar, fixed gamepad travel, paired traces and remaining physical-validation limits.
+
+[AV-17-R3 rudder release](avanti-realism/AV-17-R3/README.md) records the yaw-moment reference correction, progressive Normal gamepad rudder, paired release traces and preserved pitch behavior.
 
 [AV-18 fuel-turbine source review](turbine-realism/AV-18/README.md) compares identified JetCat revisions, Xicoy and KingTech manufacturer data with original engine experiments, and fingerprints the current propulsion/fuel gaps. The [turbine realism plan](../plans/turbine-realism.md) owns detailed response, ECU, fuel/mass and integration work.
 
@@ -172,6 +178,10 @@ The [wind guide](../WIND-PLAN.md) tracks physical wind and visual response. Begi
 [HELI-06b/c](helicopter/HELI-06b/README.md) records the passive airframe extension, source-sign audit, joint aerodynamic stand and unresolved cost gate. [HELI-07/08](helicopter/HELI-07/README.md) audits drivetrain/rotor-momentum ownership and remaining finite-startup/freewheel requirements.
 
 [HELI-09](helicopter/HELI-09/README.md) records the immutable prepared aerodynamic stage, parity and invalid-input tests, and paired compact-hover timing.
+
+[HELI-20](helicopter/HELI-20/README.md) records the implemented flat-pad trainer, passive static skid support, low-RPM/stop lifecycle, 30 repeated ground flights, checkpoint/phase replay, separate laboratory FBL profile and remaining performance/physical gates.
+
+[HELI-30-NIGHT](helicopter/HELI-30-NIGHT/README.md) records the dedicated RC helicopter night kit, blade-side orientation cues, ground lamp, automatic/manual modes, native captures and presentation verification.
 
 ### Drone racing (shared-foundation review)
 

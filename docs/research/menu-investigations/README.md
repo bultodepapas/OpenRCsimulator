@@ -1,5 +1,9 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+2026-10-14 implementation follow-up: [UI-05-R3 — responsive selection and bounded resource loading](UI-05-R3/README.md). Latest-selection ownership, background loading of selected scenes, headless/native lifecycle checks, five-process comparisons and explicit remaining first-visit stalls.
+
+2026-10-14 research follow-up: [26 — faster aircraft selection without hiding stalls](26-menu-responsiveness-loading.md). Godot documentation, pinned engine source, forum and Reddit findings; ordered loading/texture/selection experiments, acceptance gates and rejected shortcuts. Proposals only; no runtime changes in this investigation.
+
 2026-10-14 responsiveness follow-up: [UI-05-R2 — fast return to recent aircraft](UI-05-R2/README.md), with bounded model/shadow reuse, complete-selector timings, native visual comparisons and lifecycle tests.
 
 2026-10-14 layout follow-up: [UI-06d-R2 — launch captions and live language](UI-06d-R2/README.md) closes the reproduced sidebar-width defect and stale helicopter launch translations, with native captures and input regressions.

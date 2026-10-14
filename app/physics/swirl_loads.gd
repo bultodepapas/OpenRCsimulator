@@ -36,7 +36,7 @@ static func correction(state: PackedFloat64Array, air: Dictionary, d: Dictionary
 	var surfaces: Dictionary = model.surfaces
 	var wing_cl: float = 0.0
 	if surfaces.horizontal.has("free_slope"):
-		wing_cl = Aero.wing_lift_coefficient(state, air, d, model) if is_nan(downwash_cl) else downwash_cl
+		wing_cl = Aero.wing_wake_velocity(state, air, d, model) if is_nan(downwash_cl) else downwash_cl
 	var v: PackedFloat64Array = air.v_air
 	var rates: PackedFloat64Array = state.slice(RB.RATE, RB.RATE + 3)
 	var axis: PackedFloat64Array = Propulsion.axis(prop)
@@ -229,7 +229,7 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 		var axial_normal: float = axial_flow_1 if vertical else axial_flow_2
 		var axial_effective: float
 		if has_downwash:
-			axial_effective = wrapf(M.atan2_(axial_flow_2, axial_flow_0) - downwash_product
+			axial_effective = wrapf(M.atan2_(axial_flow_2, axial_flow_0) - Aero.downwash_angle(downwash_product, 1.0, M.sqrt_(axial_flow_0 * axial_flow_0 + axial_normal * axial_normal))
 				+ elevator_tau_control + free_incidence, -PI, PI)
 		else:
 			axial_effective = wrapf(M.atan2_(axial_normal, axial_flow_0) + control_angle + incidence, -PI, PI)
@@ -253,13 +253,13 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 		var axial_mx: float = 0.0
 		var axial_my: float = 0.0
 		var axial_mz: float = 0.0
-		if not axial_flow_speed < 1.0e-10:
+		if axial_flow_speed > 0.0:
 			var axial_plane_speed: float = M.sqrt_(axial_flow_0 * axial_flow_0 + axial_normal * axial_normal)
-			var axial_force_scale: float = -0.5 * rho * axial_flow_speed * sample_area * axial_cd
+			var axial_force_scale: float = -0.5 * rho * axial_plane_speed * sample_area * axial_cd
 			axial_fx = axial_flow_0 * axial_force_scale
-			axial_fy = axial_flow_1 * axial_force_scale
-			axial_fz = axial_flow_2 * axial_force_scale
-			if axial_plane_speed > 1.0e-10:
+			axial_fy = axial_flow_1 * axial_force_scale if vertical else 0.0
+			axial_fz = 0.0 if vertical else axial_flow_2 * axial_force_scale
+			if axial_plane_speed > 0.0:
 				var axial_lift: float = 0.5 * rho * axial_plane_speed * axial_plane_speed * sample_area * axial_cl
 				axial_fx += axial_lift * axial_normal / axial_plane_speed
 				if vertical:
@@ -279,7 +279,7 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 		var swirl_normal: float = swirl_flow_1 if vertical else swirl_flow_2
 		var swirl_effective: float
 		if has_downwash:
-			swirl_effective = wrapf(M.atan2_(swirl_flow_2, swirl_flow_0) - downwash_product
+			swirl_effective = wrapf(M.atan2_(swirl_flow_2, swirl_flow_0) - Aero.downwash_angle(downwash_product, 1.0, M.sqrt_(swirl_flow_0 * swirl_flow_0 + swirl_normal * swirl_normal))
 				+ elevator_tau_control + free_incidence, -PI, PI)
 		else:
 			swirl_effective = wrapf(M.atan2_(swirl_normal, swirl_flow_0) + control_angle + incidence, -PI, PI)
@@ -303,13 +303,13 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
 		var swirl_mx: float = 0.0
 		var swirl_my: float = 0.0
 		var swirl_mz: float = 0.0
-		if not swirl_flow_speed < 1.0e-10:
+		if swirl_flow_speed > 0.0:
 			var swirl_plane_speed: float = M.sqrt_(swirl_flow_0 * swirl_flow_0 + swirl_normal * swirl_normal)
-			var swirl_force_scale: float = -0.5 * rho * swirl_flow_speed * sample_area * swirl_cd
+			var swirl_force_scale: float = -0.5 * rho * swirl_plane_speed * sample_area * swirl_cd
 			swirl_fx = swirl_flow_0 * swirl_force_scale
-			swirl_fy = swirl_flow_1 * swirl_force_scale
-			swirl_fz = swirl_flow_2 * swirl_force_scale
-			if swirl_plane_speed > 1.0e-10:
+			swirl_fy = swirl_flow_1 * swirl_force_scale if vertical else 0.0
+			swirl_fz = 0.0 if vertical else swirl_flow_2 * swirl_force_scale
+			if swirl_plane_speed > 0.0:
 				var swirl_lift: float = 0.5 * rho * swirl_plane_speed * swirl_plane_speed * sample_area * swirl_cl
 				swirl_fx += swirl_lift * swirl_normal / swirl_plane_speed
 				if vertical:

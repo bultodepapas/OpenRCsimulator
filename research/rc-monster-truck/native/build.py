@@ -256,7 +256,7 @@ def run_smoke_test(library: Path, godot_arg: Path | None, lock: dict) -> None:
         '\t\tpush_error("Native probe does not report IEEE-754 float64")\n'
         '\t\tquit(1)\n'
         '\t\treturn\n'
-        '\tif int(info.get("abi_version", 0)) != 1 or str(info.get("solver_version", "")) != "openrc-ground-vehicle-dynamics-rk4-v2":\n'
+        '\tif int(info.get("abi_version", 0)) != 1 or str(info.get("solver_version", "")) != "openrc-ground-vehicle-dynamics-rk4-v3":\n'
         '\t\tpush_error("Native ABI/solver identity mismatch")\n'
         '\t\tquit(1)\n'
         '\t\treturn\n'

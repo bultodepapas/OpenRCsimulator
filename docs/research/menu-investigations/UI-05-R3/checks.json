@@ -1,0 +1,145 @@
+[
+  {
+    "test": "test_ui_preview_requests",
+    "label": "requests-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-r3\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_preview_requests.gd",
+      "--headless"
+    ],
+    "exit_code": 0,
+    "passed": true
+  },
+  {
+    "test": "test_ui_preview_resources",
+    "label": "resources-final",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-r3\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_preview_resources.gd",
+      "--headless"
+    ],
+    "exit_code": 0,
+    "passed": true
+  },
+  {
+    "test": "test_ui_preview_requests",
+    "label": "requests-native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-r3\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_preview_requests.gd"
+    ],
+    "exit_code": 0,
+    "passed": true
+  },
+  {
+    "test": "test_ui_language",
+    "label": "language",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-r3\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_language.gd",
+      "--headless"
+    ],
+    "exit_code": 0,
+    "passed": true
+  },
+  {
+    "test": "test_ui_home_layout",
+    "label": "layout",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-r3\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_home_layout.gd",
+      "--headless"
+    ],
+    "exit_code": 0,
+    "passed": true
+  },
+  {
+    "test": "test_ui_home_start_layout",
+    "label": "start-layout",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-r3\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_home_start_layout.gd",
+      "--headless"
+    ],
+    "exit_code": 0,
+    "passed": true
+  },
+  {
+    "test": "test_controller_menu",
+    "label": "controller",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-r3\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_controller_menu.gd",
+      "--headless"
+    ],
+    "exit_code": 0,
+    "passed": true
+  },
+  {
+    "test": "test_ui_input",
+    "label": "input",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-r3\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_input.gd",
+      "--headless"
+    ],
+    "exit_code": 0,
+    "passed": true
+  },
+  {
+    "test": "test_projected_shadow",
+    "label": "shadow",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\ui05-r3\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_projected_shadow.gd",
+      "--headless"
+    ],
+    "exit_code": 0,
+    "passed": true
+  }
+]

@@ -1,0 +1,121 @@
+[
+  {
+    "test": "warmup",
+    "exit": 0,
+    "summary": "16 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "effects",
+    "exit": 0,
+    "summary": "60 checks, 0 failures",
+    "errors": []
+  },
+  {
+    "test": "energy",
+    "exit": 1,
+    "summary": "206 checks, 1 failed",
+    "errors": [
+      "FAIL aircraft data file has an explicit energy-test classification: hx700_electric_3d_experimental.json"
+    ]
+  },
+  {
+    "test": "presentation_ladder",
+    "exit": 0,
+    "summary": "43 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "integration",
+    "exit": 0,
+    "summary": "152 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "wreck",
+    "exit": 0,
+    "summary": "277 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "breakup",
+    "exit": 0,
+    "summary": "30 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "sections",
+    "exit": 0,
+    "summary": "37 checks, 0 failed",
+    "errors": [
+      "WARNING: Wreck.prepare: crash section map ignored: surface 0: runs cover 3 of 4 triangles",
+      "WARNING: Wreck: unknown crash section 'rudder_blade' on rudder"
+    ]
+  },
+  {
+    "test": "fracture",
+    "exit": 0,
+    "summary": "CR-09e fracture: 24 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "masses",
+    "exit": 0,
+    "summary": "27 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "wreck_surface",
+    "exit": 0,
+    "summary": "10 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "audio",
+    "exit": 0,
+    "summary": "12 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "cause",
+    "exit": 0,
+    "summary": "29 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "pose",
+    "exit": 0,
+    "summary": "170 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "snapshot",
+    "exit": 0,
+    "summary": "42 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "proportional",
+    "exit": 0,
+    "summary": "49 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "severity",
+    "exit": 0,
+    "summary": "44 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "warmup-native",
+    "exit": 0,
+    "summary": "16 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "integration-native",
+    "exit": 0,
+    "summary": "168 checks, 0 failed",
+    "errors": []
+  }
+]

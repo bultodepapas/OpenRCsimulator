@@ -1,0 +1,388 @@
+ M AGENTS.md
+MM AIRCRAFT_CONTRACT.md
+MM DECISIONS.md
+ M README.md
+MM app/app_root.gd
+MM app/data/aircraft/sebart_avanti_s_a200.json
+ M app/data/schema/aircraft-contract-v2.json
+ M app/data/schema/openrc-aircraft-v2.schema.json
+ M app/data/vehicles/ground/mt8_bisonte.json
+MM app/data/workshop/sebart-avanti-s-a200-p100rx.json
+ M app/helicopter_main.gd
+MM app/i18n/es.po
+ M app/input/commands.gd
+M  app/input/ground_vehicle_input.gd
+ M app/main.gd
+ M app/physics/aircraft_data.gd
+ M app/physics/ground_vehicle/airfield_course.gd
+ M app/physics/ground_vehicle/airfield_track.gd
+ M app/physics/ground_vehicle/vehicle_data.gd
+ M app/physics/ground_vehicle/vehicle_dynamics.gd
+M  app/physics/rotorcraft/electronics.gd
+ M app/render/crash/airframe_scuffs.gd
+ M app/render/crash/director.gd
+ M app/render/crash/effects.gd
+M  app/render/shadow.gd
+ M app/sim/flight_session.gd
+ M app/sim/ground_vehicle/session.gd
+MM app/sim/helicopter_flight_session.gd
+ M app/sim/simulation.gd
+A  app/tests/avanti_gamepad_base.gd.uid
+AM app/tests/test_avanti_gamepad.gd
+A  app/tests/test_avanti_gamepad.gd.uid
+A  app/tests/test_avanti_gamepad_flight.gd
+A  app/tests/test_avanti_gamepad_flight.gd.uid
+AM app/tests/test_controller_car.gd
+M  app/tests/test_controller_ground.gd
+M  app/tests/test_heli_electronics.gd
+M  app/tests/test_heli_ground_session.gd
+ M app/tests/test_heli_render_audit.gd
+A  app/tests/test_heli_skid_bristles.gd.uid
+ M app/tests/test_heli_state_audit.gd
+ M app/tests/test_rcv_activity.gd
+ M app/tests/test_rcv_airfield_course.gd
+ M app/tests/test_rcv_airfield_track.gd
+M  app/tests/test_rcv_input.gd
+ M app/tests/test_rcv_menu.gd
+ M app/tests/test_rcv_obstacle_contacts.gd
+ M app/tests/test_rcv_vehicle_data.gd
+ M app/tests/test_rcv_vehicle_dynamics.gd
+ M app/tests/test_trace_metadata.gd
+ M app/tests/test_ui_aircraft.gd
+ M app/tests/test_ui_home.gd
+A  app/tests/test_ui_home_preview_cache.gd
+A  app/tests/test_ui_home_preview_cache.gd.uid
+ M app/ui/controls_reference.gd
+MM app/ui/help_screen.gd
+ M app/ui/home.gd
+MM app/ui/home_scene.gd
+MM app/vehicles/ground/ground_dashboard.gd
+MM app/vehicles/ground/ground_scene.gd
+MM docs/AVANTI-S-PLAN.md
+ M docs/CRASH-DAMAGE-PLAN.md
+MM docs/FIRST-LAUNCH.md
+MM docs/HELICOPTER.md
+MM docs/MENU-PLAN.md
+MM docs/MENU-REDESIGN-PLAN.md
+ M docs/README.md
+ M docs/TOOLS.md
+ M docs/plans/crash-realism.md
+MM docs/plans/global-performance-visual-quality.md
+ M docs/plans/helicopter.md
+ M docs/plans/rc-monster-truck.md
+MM docs/research/README.md
+ M docs/research/aircraft-standardization/AS-01/parameters.md
+A  docs/research/avanti-realism/AV-17-R2/README.md
+A  docs/research/avanti-realism/AV-17-R2/baseline-240.json
+A  docs/research/avanti-realism/AV-17-R2/baseline-aircraft.json
+A  docs/research/avanti-realism/AV-17-R2/candidate-240.json
+A  docs/research/avanti-realism/AV-17-R2/candidate-480.json
+A  docs/research/avanti-realism/AV-17-R2/comparison.json
+M  docs/research/avanti-realism/AV-17-R2/controller-audit.md
+A  docs/research/avanti-realism/AV-17-R2/dynamics-audit.md
+A  docs/research/avanti-realism/AV-17-R2/dynamics-trim-comparison.json
+A  docs/research/avanti-realism/AV-17-R2/gamepad-comparison.png
+A  docs/research/avanti-realism/AV-17-R2/manifest.json
+A  docs/research/avanti-realism/AV-17-R2/verification/aircraft_contract.log
+A  docs/research/avanti-realism/AV-17-R2/verification/aircraft_current.log
+A  docs/research/avanti-realism/AV-17-R2/verification/aircraft_data.log
+A  docs/research/avanti-realism/AV-17-R2/verification/avanti_gamepad.log
+A  docs/research/avanti-realism/AV-17-R2/verification/avanti_gamepad_flight.log
+A  docs/research/avanti-realism/AV-17-R2/verification/avanti_handling.log
+A  docs/research/avanti-realism/AV-17-R2/verification/avanti_keyboard.log
+A  docs/research/avanti-realism/AV-17-R2/verification/baseline-240.log
+A  docs/research/avanti-realism/AV-17-R2/verification/candidate-240.log
+A  docs/research/avanti-realism/AV-17-R2/verification/candidate-480.log
+A  docs/research/avanti-realism/AV-17-R2/verification/checkpoint.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/aircraft_model_manifest.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/aircraft_modules.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/aircraft_package_proofs.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/aircraft_render_contract.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/descriptor-checkout.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/descriptors-current.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/import.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/imported_aircraft_model.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/migration.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/models-current.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/models-python.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/modules-python.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/parameters.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/physical-identity-sources.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/preflight.json
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/preflight.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/schema.log
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/verification.json
+A  docs/research/avanti-realism/AV-17-R2/verification/conformance/workshop_descriptor.log
+A  docs/research/avanti-realism/AV-17-R2/verification/controller_flight_actions.log
+A  docs/research/avanti-realism/AV-17-R2/verification/descriptors_current.log
+A  docs/research/avanti-realism/AV-17-R2/verification/parameters_current.log
+A  docs/research/avanti-realism/AV-17-R2/verification/polar_builder.log
+A  docs/research/avanti-realism/AV-17-R2/verification/rates.log
+A  docs/research/avanti-realism/AV-17-R2/verification/replay_integrity.log
+A  docs/research/avanti-realism/AV-17-R2/verification/retractable_gear.log
+A  docs/research/avanti-realism/AV-17-R2/verification/schema_current.log
+A  docs/research/avanti-realism/AV-17-R2/verification/turbine_continuous.log
+A  docs/research/avanti-realism/AV-17-R2/verification/verification.json
+A  docs/research/avanti-realism/AV-17-R2/verification/wing_polar.log
+A  docs/research/avanti-realism/AV-17-R2/verification/wing_polar_session.log
+ M docs/research/controller-support-2026-10-14/README.md
+ M docs/research/crash-damage-investigations/CR-22c/README.md
+ M docs/research/crash-damage-investigations/README.md
+ M docs/research/helicopter/HELI-16/README.md
+A  docs/research/helicopter/HELI-20/checks/test_heli_3d_controller.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_aerodynamic_stage.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_airframe.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_construction.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_contact_audit.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_coupling.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_disc_normal_audit.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_drive.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_dynamic_inflow.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_electronics.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_electronics_prepared.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_flight.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_ground_session.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_ground_start.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_inflow.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_lifecycle.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_main_rotor.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_main_rotor_stage.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_performance_context.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_prepared_context_audit.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_render_audit.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_session.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_skid_bristles.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_startup_kernel.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_state_audit.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_swash.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_tail_rotor.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_trim.log
+A  docs/research/helicopter/HELI-20/checks/test_heli_visual.log
+AM docs/research/helicopter/HELI-20/checks/verification.json
+A  docs/research/helicopter/HELI-20/diagnostics/profile-attempts.json
+AM docs/research/helicopter/HELI-20/full-suite.log
+AM docs/research/helicopter/HELI-20/ground-support.json
+A  docs/research/helicopter/HELI-20/pad-night.err.log
+AM docs/research/helicopter/HELI-20/pad-night.log
+AM docs/research/helicopter/HELI-20/pad-night.png
+ M docs/research/helicopter/HELI-20/pad-pilot.log
+ M docs/research/helicopter/HELI-20/pad-pilot.png
+A  docs/research/helicopter/HELI-20/performance.json
+A  docs/research/helicopter/HELI-20/samples.csv
+A  docs/research/helicopter/HELI-20/samples.json
+MM docs/research/menu-investigations/README.md
+A  docs/research/menu-investigations/UI-05-R2/README.md
+A  docs/research/menu-investigations/UI-05-R2/bench.gd.gz
+A  docs/research/menu-investigations/UI-05-R2/benchmark-run.json
+A  docs/research/menu-investigations/UI-05-R2/benchmark.json
+A  docs/research/menu-investigations/UI-05-R2/benchmark.log
+A  docs/research/menu-investigations/UI-05-R2/candidate-day-gp-extra-300s-60.png
+A  docs/research/menu-investigations/UI-05-R2/candidate-day-jensen-das-ugly-stik-60.png
+A  docs/research/menu-investigations/UI-05-R2/candidate-day-sebart-avanti-s-a200-p100rx.png
+A  docs/research/menu-investigations/UI-05-R2/candidate-night-gp-extra-300s-60.png
+A  docs/research/menu-investigations/UI-05-R2/candidate-night-jensen-das-ugly-stik-60.png
+A  docs/research/menu-investigations/UI-05-R2/candidate-night-sebart-avanti-s-a200-p100rx.png
+A  docs/research/menu-investigations/UI-05-R2/candidate-self-day-gp-extra-300s-60.png
+A  docs/research/menu-investigations/UI-05-R2/candidate-self-day-jensen-das-ugly-stik-60.png
+A  docs/research/menu-investigations/UI-05-R2/candidate-self-day-sebart-avanti-s-a200-p100rx.png
+A  docs/research/menu-investigations/UI-05-R2/candidate-self-night-gp-extra-300s-60.png
+A  docs/research/menu-investigations/UI-05-R2/candidate-self-night-jensen-das-ugly-stik-60.png
+A  docs/research/menu-investigations/UI-05-R2/candidate-self-night-sebart-avanti-s-a200-p100rx.png
+A  docs/research/menu-investigations/UI-05-R2/candidate.gd.gz
+A  docs/research/menu-investigations/UI-05-R2/checks.json
+A  docs/research/menu-investigations/UI-05-R2/headless.log
+A  docs/research/menu-investigations/UI-05-R2/integrated-aircraft.log
+A  docs/research/menu-investigations/UI-05-R2/integrated-checks.json
+A  docs/research/menu-investigations/UI-05-R2/integrated-collection.log
+A  docs/research/menu-investigations/UI-05-R2/integrated-preview-headless.log
+A  docs/research/menu-investigations/UI-05-R2/integrated-preview-native.log
+A  docs/research/menu-investigations/UI-05-R2/integrated-shadow.log
+A  docs/research/menu-investigations/UI-05-R2/manifest.json
+A  docs/research/menu-investigations/UI-05-R2/native-final.json
+A  docs/research/menu-investigations/UI-05-R2/native-final.log
+A  docs/research/menu-investigations/UI-05-R2/native-verbose.log
+A  docs/research/menu-investigations/UI-05-R2/native.log
+A  docs/research/menu-investigations/UI-05-R2/pixel-comparison.json
+A  docs/research/menu-investigations/UI-05-R2/pixels.py.gz
+A  docs/research/menu-investigations/UI-05-R2/profile.json
+A  docs/research/menu-investigations/UI-05-R2/profile.log
+A  docs/research/menu-investigations/UI-05-R2/reference-day-gp-extra-300s-60.png
+A  docs/research/menu-investigations/UI-05-R2/reference-day-jensen-das-ugly-stik-60.png
+A  docs/research/menu-investigations/UI-05-R2/reference-day-sebart-avanti-s-a200-p100rx.png
+A  docs/research/menu-investigations/UI-05-R2/reference-night-gp-extra-300s-60.png
+A  docs/research/menu-investigations/UI-05-R2/reference-night-jensen-das-ugly-stik-60.png
+A  docs/research/menu-investigations/UI-05-R2/reference-night-sebart-avanti-s-a200-p100rx.png
+A  docs/research/menu-investigations/UI-05-R2/reference-self-day-gp-extra-300s-60.png
+A  docs/research/menu-investigations/UI-05-R2/reference-self-day-jensen-das-ugly-stik-60.png
+A  docs/research/menu-investigations/UI-05-R2/reference-self-day-sebart-avanti-s-a200-p100rx.png
+A  docs/research/menu-investigations/UI-05-R2/reference-self-night-gp-extra-300s-60.png
+A  docs/research/menu-investigations/UI-05-R2/reference-self-night-jensen-das-ugly-stik-60.png
+A  docs/research/menu-investigations/UI-05-R2/reference-self-night-sebart-avanti-s-a200-p100rx.png
+A  docs/research/menu-investigations/UI-05-R2/reference.gd.gz
+A  docs/research/menu-investigations/UI-05-R2/runtime.patch
+A  docs/research/menu-investigations/UI-05-R2/selection-run.json
+A  docs/research/menu-investigations/UI-05-R2/selection.gd.gz
+A  docs/research/menu-investigations/UI-05-R2/selection.json
+A  docs/research/menu-investigations/UI-05-R2/selection.log
+A  docs/research/menu-investigations/UI-05-R2/selection.py.gz
+A  docs/research/menu-investigations/UI-05-R2/shadow-candidate.gd.gz
+A  docs/research/menu-investigations/UI-05-R2/shadow-reference.gd.gz
+A  docs/research/menu-investigations/UI-05-R2/snapshot.json
+A  docs/research/menu-investigations/UI-05-R2/sources.json
+ M docs/research/rc-monster-truck/RCV-runtime/README.md
+ M docs/research/rc-monster-truck/RCV-track/README.md
+ M research/aircraft-standardization/build_schema.py
+ M research/aircraft-standardization/parameter_register.py
+ M research/avanti-s/av06/derivation.md
+ M research/avanti-s/av06/derive_physics.py
+ M research/avanti-s/av06/inputs.json
+D  research/avanti-s/av17-r2/_scratch_map_parity.gd
+M  research/avanti-s/av17-r2/build_polar.py
+A  research/avanti-s/av17-r2/compare.py
+A  research/avanti-s/av17-r2/dynamics_probe.gd
+M  research/avanti-s/av17-r2/test_build_polar.py
+A  research/avanti-s/av17-r2/verify.py
+A  research/helicopter/ground_start/cycles.gd
+A  research/helicopter/ground_start/profile.gd
+A  research/helicopter/ground_start/profile.py
+ M research/helicopter/ground_start/verify.py
+AM research/helicopter/ground_start/verify_support.gd
+ M research/helicopter/run_fixed_step.gd
+ M research/rc-monster-truck/README.md
+ M research/rc-monster-truck/build_vehicle_data.py
+ M research/rc-monster-truck/native/README.md
+ M research/rc-monster-truck/native/build.py
+ M research/rc-monster-truck/native/parity_harness.gd
+ M research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp
+ M research/rc-monster-truck/native/src/ground_vehicle_native.cpp
+ M research/rc-monster-truck/native/toolchain-lock.json
+ M research/rc-monster-truck/vehicle-data-sources.md
+ M research/rc-monster-truck/verify_runtime.py
+ M research/test-tools.sh
+?? app/physics/rotorcraft/impact_detector.gd
+?? app/physics/rotorcraft/impact_detector.gd.uid
+?? app/render/crash/shader_warmup.gd
+?? app/render/crash/shader_warmup.gd.uid
+?? app/render/rotor/heli_crash_presentation.gd
+?? app/render/rotor/heli_crash_presentation.gd.uid
+?? app/render/rotor/heli_night_lights.gd
+?? app/render/rotor/heli_night_lights.gd.uid
+?? app/render/rotor/heli_night_rotor.gd
+?? app/render/rotor/heli_night_rotor.gd.uid
+?? app/render/rotor/heli_night_rotor.gdshader
+?? app/render/rotor/heli_night_rotor.gdshader.uid
+?? app/render/rotor/heli_wreck.gd
+?? app/render/rotor/heli_wreck.gd.uid
+?? app/sim/flight_log.gd
+?? app/sim/flight_log.gd.uid
+?? app/tests/avanti_rudder_base.gd
+?? app/tests/avanti_rudder_base.gd.uid
+?? app/tests/test_airframe_scuff_cache.gd
+?? app/tests/test_airframe_scuff_cache.gd.uid
+?? app/tests/test_avanti_rudder.gd
+?? app/tests/test_avanti_rudder.gd.uid
+?? app/tests/test_avanti_yaw_flight.gd
+?? app/tests/test_avanti_yaw_flight.gd.uid
+?? app/tests/test_controller_car.gd.uid
+?? app/tests/test_crash_warmup.gd
+?? app/tests/test_crash_warmup.gd.uid
+?? app/tests/test_flight_log.gd
+?? app/tests/test_flight_log.gd.uid
+?? app/tests/test_flight_log_ui.gd
+?? app/tests/test_flight_log_ui.gd.uid
+?? app/tests/test_heli_control_actions.gd
+?? app/tests/test_heli_control_actions.gd.uid
+?? app/tests/test_heli_crash_presentation.gd
+?? app/tests/test_heli_crash_presentation.gd.uid
+?? app/tests/test_heli_crash_visual.gd
+?? app/tests/test_heli_crash_visual.gd.uid
+?? app/tests/test_heli_impact_detector.gd
+?? app/tests/test_heli_impact_detector.gd.uid
+?? app/tests/test_heli_night_lights.gd
+?? app/tests/test_heli_night_lights.gd.uid
+?? app/tests/test_heli_night_rotor.gd
+?? app/tests/test_heli_night_rotor.gd.uid
+?? app/tests/test_rcv_handling.gd
+?? app/tests/test_rcv_handling.gd.uid
+?? app/tests/test_rcv_powertrain.gd
+?? app/tests/test_rcv_powertrain.gd.uid
+?? app/tests/test_ui_preview_requests.gd
+?? app/tests/test_ui_preview_requests.gd.uid
+?? app/tests/test_ui_preview_resources.gd
+?? app/tests/test_ui_preview_resources.gd.uid
+?? app/tools/
+?? app/ui/home_preview_resources.gd
+?? app/ui/home_preview_resources.gd.uid
+?? docs/FLIGHT-LOGGING.md
+?? docs/research/avanti-realism/AV-17-R3/
+?? docs/research/controller-support-2026-10-14/car-controls/
+?? docs/research/crash-damage-investigations/CR-22c-R1/
+?? docs/research/flight-logging/
+?? docs/research/helicopter/HELI-20/README.md
+?? docs/research/helicopter/HELI-20/cadence-144.log
+?? docs/research/helicopter/HELI-20/cadence-30.log
+?? docs/research/helicopter/HELI-20/cadence-60.log
+?? docs/research/helicopter/HELI-20/checks/source-sha256.json
+?? docs/research/helicopter/HELI-20/checks/test_controller_flight_actions.log
+?? docs/research/helicopter/HELI-20/checks/test_controls_reference.log
+?? docs/research/helicopter/HELI-20/checks/test_field_loader.log
+?? docs/research/helicopter/HELI-20/checks/test_field_surfaces.log
+?? docs/research/helicopter/HELI-20/checks/test_ground_surfaces.log
+?? docs/research/helicopter/HELI-20/checks/test_ground_terrain.log
+?? docs/research/helicopter/HELI-20/checks/test_ui_aircraft.log
+?? docs/research/helicopter/HELI-20/checks/test_ui_help.log
+?? docs/research/helicopter/HELI-20/checks/test_ui_home.log
+?? docs/research/helicopter/HELI-20/controller-lifecycle.log
+?? docs/research/helicopter/HELI-20/cycle-source-sha256.json
+?? docs/research/helicopter/HELI-20/cycles-calm.json
+?? docs/research/helicopter/HELI-20/cycles-calm.log
+?? docs/research/helicopter/HELI-20/cycles-gusts.json
+?? docs/research/helicopter/HELI-20/cycles-gusts.log
+?? docs/research/helicopter/HELI-20/cycles-steady.json
+?? docs/research/helicopter/HELI-20/cycles-steady.log
+?? docs/research/helicopter/HELI-20/final-cycle-calm.json
+?? docs/research/helicopter/HELI-20/final-cycle-calm.log
+?? docs/research/helicopter/HELI-20/final-cycle-gusts.json
+?? docs/research/helicopter/HELI-20/final-cycle-gusts.log
+?? docs/research/helicopter/HELI-20/final-cycle-parity.json
+?? docs/research/helicopter/HELI-20/final-cycle-source-sha256.json
+?? docs/research/helicopter/HELI-20/final-cycle-steady.json
+?? docs/research/helicopter/HELI-20/final-cycle-steady.log
+?? docs/research/helicopter/HELI-20/followup-checks/
+?? docs/research/helicopter/HELI-20/models-native.log
+?? docs/research/helicopter/HELI-20/optimization/
+?? docs/research/helicopter/HELI-20/parse-all.json
+?? docs/research/helicopter/HELI-20/parse-all.log
+?? docs/research/helicopter/HELI-20/parse-followup.json
+?? docs/research/helicopter/HELI-20/parse-followup.log
+?? docs/research/helicopter/HELI-20/refinement.json
+?? docs/research/helicopter/HELI-20/refinement.log
+?? docs/research/helicopter/HELI-20/render-final.log
+?? docs/research/helicopter/HELI-30-NIGHT/
+?? docs/research/helicopter/HELI-33/
+?? docs/research/menu-investigations/26-menu-responsiveness-loading.md
+?? docs/research/menu-investigations/UI-05-R3/
+?? docs/research/physics-audit-2026-10-14/
+?? docs/research/rc-monster-truck/RCV-drive/
+?? docs/research/rc-monster-truck/RCV-handling/
+?? docs/research/rc-monster-truck/RCV-performance/
+?? research/avanti-s/av17-r3/
+?? research/crash-damage/cr-22c-r1/
+?? research/helicopter/crashes/
+?? research/helicopter/ground_start/cadence.gd
+?? research/helicopter/ground_start/contact_abba.gd
+?? research/helicopter/ground_start/contact_candidate_test.gd
+?? research/helicopter/ground_start/parse_all.py
+?? research/helicopter/ground_start/refinement.gd
+?? research/helicopter/ground_start/summarize_contact_abba.py
+?? research/helicopter/night_lights/
+?? research/physics-audit-2026-10-14/
+?? research/rc-monster-truck/brake_audit/
+?? research/rc-monster-truck/driving/
+?? research/rc-monster-truck/handling-r2/
+?? research/rc-monster-truck/handling_probe/
+?? research/rc-monster-truck/performance-r2/
+?? research/rc-monster-truck/performance/
+?? research/rc-monster-truck/plot_drive.py
+?? research/rc-monster-truck/visual/probe_controls.gd
+?? tools/flight_log/

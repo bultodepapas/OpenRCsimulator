@@ -9,6 +9,7 @@ const Vehicle := preload("res://physics/ground_vehicle/vehicle_dynamics.gd")
 const Session := preload("res://sim/ground_vehicle/session.gd")
 const M := preload("res://physics/math3d.gd")
 const FIXED_DT := 1.0 / 240.0
+const TABLETOP_APPROACH_MPS := 4.55
 const LOOP_STRAIGHT_M := 24.0
 const LOOP_ARC_M := PI * 6.0
 const LOOP_LENGTH_M := 2.0 * LOOP_STRAIGHT_M + 2.0 * LOOP_ARC_M
@@ -309,7 +310,12 @@ func _test_tabletop_jump_and_landing(field_result: Dictionary) -> void:
 	for tick in 1200:
 		if touchdown_tick >= 0 and tick - touchdown_tick >= 120:
 			break
-		var throttle := 1.0 if tick < int(1.7 / FIXED_DT) and not saw_airborne else 0.0
+		# Approach at a declared teaching speed using ordinary throttle control.
+		# The 5.2 Nm / 120 rad/s motor estimate makes full throttle overshoot this
+		# short tabletop. The speed-limited input keeps the launch in the 4.5–5 m/s
+		# band; throttle is released on tire-off rather than patched into the state.
+		var approach_state: PackedFloat64Array = session.state_snapshot()
+		var throttle := clampf((TABLETOP_APPROACH_MPS - absf(approach_state[Vehicle.VEL])) * 0.8, 0.0, 1.0) if not saw_airborne else 0.0
 		if not session.tick_once({"throttle": throttle, "steering": 0.0, "brake": 0.0,
 			"reverse": false, "armed": true}):
 			break
@@ -342,7 +348,7 @@ func _test_tabletop_jump_and_landing(field_result: Dictionary) -> void:
 	# One landing tick plus up to 0.5 s of coast for attitude/support to settle.
 	var flight_s := float(airborne_ticks) * FIXED_DT
 	var horizontal_flight_m := absf(float(touchdown_east) - float(first_air_east)) if is_finite(touchdown_east) else NAN
-	_check("full-throttle south tabletop pass creates a measurable airborne hop",
+	_check("controlled-speed south tabletop pass creates a measurable airborne hop",
 		resumed and saw_airborne and airborne_ticks >= 20 and flight_s >= 0.08
 		and all_tires_off_during_flight
 		and max_gap_m > 0.215 and max_speed_mps < 8.0,

@@ -1,0 +1,8 @@
+{
+  "pid": 90960,
+  "name": "Godot_v4.7.2-stable_win64.exe",
+  "creation_date": "2026-10-14T18:07:11.254957-05:00",
+  "cpu_seconds": 3.484375,
+  "working_set_bytes": 104828928,
+  "command_line": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe --headless --path app --script C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\rcv-handling-r2\\test-session-debug.gd"
+}

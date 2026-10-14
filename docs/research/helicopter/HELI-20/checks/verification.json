@@ -378,6 +378,98 @@
         ]
       ],
       "log": "test_heli_visual.log"
+    },
+    {
+      "name": "test_ui_home",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 17.462122400000226,
+      "counts": [],
+      "log": "test_ui_home.log"
+    },
+    {
+      "name": "test_ui_aircraft",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 36.75162909999199,
+      "counts": [],
+      "log": "test_ui_aircraft.log"
+    },
+    {
+      "name": "test_ui_help",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 32.268103399997926,
+      "counts": [],
+      "log": "test_ui_help.log"
+    },
+    {
+      "name": "test_controls_reference",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.5360007999988738,
+      "counts": [],
+      "log": "test_controls_reference.log"
+    },
+    {
+      "name": "test_controller_flight_actions",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 10.531229000000167,
+      "counts": [],
+      "log": "test_controller_flight_actions.log"
+    },
+    {
+      "name": "test_field_loader",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 2.1617551000090316,
+      "counts": [
+        [
+          "178",
+          "0"
+        ]
+      ],
+      "log": "test_field_loader.log"
+    },
+    {
+      "name": "test_field_surfaces",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 9.068974800000433,
+      "counts": [
+        [
+          "19",
+          "0"
+        ]
+      ],
+      "log": "test_field_surfaces.log"
+    },
+    {
+      "name": "test_ground_surfaces",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 12.537131899996893,
+      "counts": [
+        [
+          "29",
+          "0"
+        ]
+      ],
+      "log": "test_ground_surfaces.log"
+    },
+    {
+      "name": "test_ground_terrain",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 6.260544599994319,
+      "counts": [
+        [
+          "21",
+          "0"
+        ]
+      ],
+      "log": "test_ground_terrain.log"
     }
   ]
 }

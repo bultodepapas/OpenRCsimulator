@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{
+  "ok": true,
+  "output": "C:\\DEVELOPMENT\\OpenRCsimulator/docs/research/rc-monster-truck/RCV-handling/performance-active-session-r2.json",
+  "tick_cost": {
+    "maximum_us": 7145.0,
+    "mean_us": 3900.485416666667,
+    "median_us": 4034.0,
+    "minimum_us": 2451.0,
+    "p95_us": 4963.0,
+    "samples": 480
+  },
+  "trajectory_sha256": "e2a01ace15ede705ee24c9c9f187029642f06e8f9ce1fbe252f5f39f6e24bb67",
+  "vehicle_data_sha256": "425f2a3fe810f82d609ad2b9dd9618b9fb45bcd813df57873cd8bc8759a750a5"
+}

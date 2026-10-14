@@ -1,0 +1,50 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{
+  "categories": {
+    "changed_data": 987,
+    "feature_transitions": 780,
+    "invalid_inputs": 10,
+    "loop_edges": 2236,
+    "route": 172,
+    "technical_access_edges": 430
+  },
+  "comparisons": 4615,
+  "failures": 0,
+  "format": "openrc-rcv-track-sampler-parity-v1",
+  "ok": true
+}
+{
+  "calls_per_method_per_trial": 16000,
+  "candidate_mean_us_per_sample": 23.99507142857143,
+  "candidate_median_us_per_sample": 18.7223125,
+  "candidate_trial_us_per_sample": [
+    18.4199375,
+    18.7223125,
+    42.9661875,
+    28.4401875,
+    24.5051875,
+    17.7575625,
+    17.154125
+  ],
+  "debug_build": true,
+  "engine": "4.7.2-stable (official)",
+  "format": "openrc-rcv-track-sampler-bench-v1",
+  "median_speedup_percent": 51.61614921679916,
+  "position_count": 935,
+  "processor": "AMD Ryzen 9 5900X 12-Core Processor",
+  "reference_mean_us_per_sample": 53.951678571428566,
+  "reference_median_us_per_sample": 38.695375,
+  "reference_trial_us_per_sample": [
+    28.6986875,
+    31.9895625,
+    105.6396875,
+    68.1916875,
+    76.1965,
+    28.25025,
+    38.695375
+  ],
+  "scope": "Paired same-process direct Track.sample calls against the preserved pre-change GDScript implementation; no vehicle/session ticks.",
+  "sink": 175774.51203293915,
+  "trials": 7
+}

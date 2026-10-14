@@ -1,0 +1,645 @@
+{
+  "backend_identity": {
+    "abi_version": 1,
+    "backend": "native",
+    "backend_version": "openrc-ground-vehicle-native-evaluate-v1",
+    "binary_sha256": "2958c34163a8c13d5d5fc675806bd6b45750eb8f435708c1ba4d4b67ade8789e",
+    "solver_version": "openrc-ground-vehicle-dynamics-rk4-v2",
+    "source_sha256": "451a76a00ac0e7d4513390d405e45eb55c6cb9b387ed21e55035d09ab7ef697f",
+    "toolchain_sha256": "2051a079931113cbf72767863a0159fb69319631343022d647e1031fd301453a"
+  },
+  "complete": true,
+  "contact": {
+    "airborne_ticks": 0,
+    "events": [
+      {
+        "distance_m": 0.28341033729870474,
+        "end_speed_m_per_s": 4.474581168456643,
+        "end_tick": 196,
+        "initial_speed_m_per_s": 4.600098065295381,
+        "start_tick": 181,
+        "time_s": 0.8166666666666667,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.4485609622091146,
+        "end_speed_m_per_s": 4.17047656983773,
+        "end_tick": 233,
+        "initial_speed_m_per_s": 4.465106035689873,
+        "start_tick": 208,
+        "time_s": 0.9708333333333333,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.4813947333296003,
+        "end_speed_m_per_s": 3.8536252567717577,
+        "end_tick": 265,
+        "initial_speed_m_per_s": 4.164038369706188,
+        "start_tick": 236,
+        "time_s": 1.1041666666666667,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.4111554735011129,
+        "end_speed_m_per_s": 3.5046782256821207,
+        "end_tick": 293,
+        "initial_speed_m_per_s": 3.8514825849380494,
+        "start_tick": 266,
+        "time_s": 1.2208333333333332,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.28603321622581923,
+        "end_speed_m_per_s": 3.106075181345092,
+        "end_tick": 320,
+        "initial_speed_m_per_s": 3.4804547019324237,
+        "start_tick": 299,
+        "time_s": 1.3333333333333333,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.4289780000653636,
+        "end_speed_m_per_s": 3.848688801169137,
+        "end_tick": 547,
+        "initial_speed_m_per_s": 4.0882427581455225,
+        "start_tick": 521,
+        "time_s": 2.279166666666667,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.42488110026332343,
+        "end_speed_m_per_s": 3.5060317303902915,
+        "end_tick": 579,
+        "initial_speed_m_per_s": 3.834991951461765,
+        "start_tick": 551,
+        "time_s": 2.4125,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.2853953479929755,
+        "end_speed_m_per_s": 3.0976664844011035,
+        "end_tick": 606,
+        "initial_speed_m_per_s": 3.4784615902866904,
+        "start_tick": 585,
+        "time_s": 2.525,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.41345928869448545,
+        "end_speed_m_per_s": 3.8553073898394077,
+        "end_tick": 832,
+        "initial_speed_m_per_s": 4.098898914955426,
+        "start_tick": 807,
+        "time_s": 3.466666666666667,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.4547161110681907,
+        "end_speed_m_per_s": 3.4965414815533267,
+        "end_tick": 868,
+        "initial_speed_m_per_s": 3.8342219604928944,
+        "start_tick": 838,
+        "time_s": 3.6166666666666667,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.27135067033227306,
+        "end_speed_m_per_s": 3.0994488196321686,
+        "end_tick": 891,
+        "initial_speed_m_per_s": 3.4756289615230007,
+        "start_tick": 871,
+        "time_s": 3.7125,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.1456400640067118,
+        "end_speed_m_per_s": 5.807444437976957,
+        "end_tick": 1184,
+        "initial_speed_m_per_s": 5.848875129104224,
+        "start_tick": 1178,
+        "time_s": 4.933333333333334,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.4730417223166804,
+        "end_speed_m_per_s": 5.584209859683652,
+        "end_tick": 1219,
+        "initial_speed_m_per_s": 5.800580802252138,
+        "start_tick": 1199,
+        "time_s": 5.079166666666667,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 1.3719703293824381,
+        "end_speed_m_per_s": 4.833307721043694,
+        "end_tick": 1283,
+        "initial_speed_m_per_s": 5.582719782556097,
+        "start_tick": 1220,
+        "time_s": 5.345833333333333,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.388278220452112,
+        "end_speed_m_per_s": 4.562123870862629,
+        "end_tick": 1310,
+        "initial_speed_m_per_s": 4.798906582563164,
+        "start_tick": 1290,
+        "time_s": 5.458333333333333,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.364875503747219,
+        "end_speed_m_per_s": 4.272428281527777,
+        "end_tick": 1336,
+        "initial_speed_m_per_s": 4.520996716488733,
+        "start_tick": 1316,
+        "time_s": 5.566666666666666,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.38982234635754937,
+        "end_speed_m_per_s": 3.9670917961753913,
+        "end_tick": 1367,
+        "initial_speed_m_per_s": 4.223170996118128,
+        "start_tick": 1344,
+        "time_s": 5.695833333333333,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.3443414418927056,
+        "end_speed_m_per_s": 3.6324839461718326,
+        "end_tick": 1397,
+        "initial_speed_m_per_s": 3.9264252152350125,
+        "start_tick": 1375,
+        "time_s": 5.820833333333333,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.4530732864896658,
+        "end_speed_m_per_s": 3.254040416054189,
+        "end_tick": 1437,
+        "initial_speed_m_per_s": 3.608106715137014,
+        "start_tick": 1405,
+        "time_s": 5.9875,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.17364793303664547,
+        "end_speed_m_per_s": 3.1615002263913032,
+        "end_tick": 1451,
+        "initial_speed_m_per_s": 3.2515141520979585,
+        "start_tick": 1438,
+        "time_s": 6.045833333333333,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.1435220127063252,
+        "end_speed_m_per_s": 5.731445367221996,
+        "end_tick": 2742,
+        "initial_speed_m_per_s": 5.754250590771209,
+        "start_tick": 2736,
+        "time_s": 11.425,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.04774960701318902,
+        "end_speed_m_per_s": 5.728604448532963,
+        "end_tick": 2745,
+        "initial_speed_m_per_s": 5.73183289768506,
+        "start_tick": 2743,
+        "time_s": 11.4375,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.9808526508154536,
+        "end_speed_m_per_s": 5.259591000617225,
+        "end_tick": 2800,
+        "initial_speed_m_per_s": 5.711526901675494,
+        "start_tick": 2757,
+        "time_s": 11.666666666666666,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.9974487872297185,
+        "end_speed_m_per_s": 4.751155172879227,
+        "end_tick": 2849,
+        "initial_speed_m_per_s": 5.255952879789967,
+        "start_tick": 2801,
+        "time_s": 11.870833333333334,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.45943925859790186,
+        "end_speed_m_per_s": 4.46515061059012,
+        "end_tick": 2873,
+        "initial_speed_m_per_s": 4.751155172879227,
+        "start_tick": 2849,
+        "time_s": 11.970833333333333,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.4835665156156607,
+        "end_speed_m_per_s": 4.173791385341787,
+        "end_tick": 2902,
+        "initial_speed_m_per_s": 4.4588542703054355,
+        "start_tick": 2875,
+        "time_s": 12.091666666666667,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.4647069055729308,
+        "end_speed_m_per_s": 3.853290606911802,
+        "end_tick": 2931,
+        "initial_speed_m_per_s": 4.16985202788562,
+        "start_tick": 2903,
+        "time_s": 12.2125,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.39676154849723855,
+        "end_speed_m_per_s": 3.4612316120436275,
+        "end_tick": 2959,
+        "initial_speed_m_per_s": 3.849564756700291,
+        "start_tick": 2933,
+        "time_s": 12.329166666666666,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.037829515820246004,
+        "end_speed_m_per_s": 3.0273030599046478,
+        "end_tick": 2970,
+        "initial_speed_m_per_s": 3.1360214017932173,
+        "start_tick": 2967,
+        "time_s": 12.375,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 1.1848612579742617,
+        "end_speed_m_per_s": 3.104257663835376,
+        "end_tick": 3229,
+        "initial_speed_m_per_s": 3.121905702421358,
+        "start_tick": 3137,
+        "time_s": 13.454166666666666,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.1689355456215345,
+        "end_speed_m_per_s": 3.1167874028675366,
+        "end_tick": 3265,
+        "initial_speed_m_per_s": 3.118648680767527,
+        "start_tick": 3252,
+        "time_s": 13.604166666666666,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.025973218151287922,
+        "end_speed_m_per_s": 3.1148712462970267,
+        "end_tick": 3267,
+        "initial_speed_m_per_s": 3.1167874028675366,
+        "start_tick": 3265,
+        "time_s": 13.612499999999999,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.347064568992663,
+        "end_speed_m_per_s": 5.498060207930537,
+        "end_tick": 3415,
+        "initial_speed_m_per_s": 5.631608494200933,
+        "start_tick": 3400,
+        "time_s": 14.229166666666666,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.46970863327478346,
+        "end_speed_m_per_s": 5.260031210623229,
+        "end_tick": 3443,
+        "initial_speed_m_per_s": 5.491879326316072,
+        "start_tick": 3422,
+        "time_s": 14.345833333333333,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.9978343785231517,
+        "end_speed_m_per_s": 4.752952192356151,
+        "end_tick": 3492,
+        "initial_speed_m_per_s": 5.25617921640799,
+        "start_tick": 3444,
+        "time_s": 14.549999999999999,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.4784585379009588,
+        "end_speed_m_per_s": 4.467061025481154,
+        "end_tick": 3517,
+        "initial_speed_m_per_s": 4.752952192356151,
+        "start_tick": 3492,
+        "time_s": 14.654166666666667,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.4830619966042709,
+        "end_speed_m_per_s": 4.177451593029182,
+        "end_tick": 3545,
+        "initial_speed_m_per_s": 4.462606254105915,
+        "start_tick": 3518,
+        "time_s": 14.770833333333334,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.44797960193521613,
+        "end_speed_m_per_s": 3.855687572097197,
+        "end_tick": 3573,
+        "initial_speed_m_per_s": 4.174192596451784,
+        "start_tick": 3546,
+        "time_s": 14.8875,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.4410940175172492,
+        "end_speed_m_per_s": 3.4808312300300357,
+        "end_tick": 3605,
+        "initial_speed_m_per_s": 3.8518318616324176,
+        "start_tick": 3576,
+        "time_s": 15.020833333333334,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.15985451636896564,
+        "end_speed_m_per_s": 3.072406654365228,
+        "end_tick": 3621,
+        "initial_speed_m_per_s": 3.4055973865869875,
+        "start_tick": 3609,
+        "time_s": 15.0875,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.7625651983499198,
+        "end_speed_m_per_s": 3.1176886401011465,
+        "end_tick": 3825,
+        "initial_speed_m_per_s": 3.122975358802543,
+        "start_tick": 3765,
+        "time_s": 15.9375,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.02561508933341411,
+        "end_speed_m_per_s": 3.116004472325277,
+        "end_tick": 3828,
+        "initial_speed_m_per_s": 3.1186762501525496,
+        "start_tick": 3826,
+        "time_s": 15.95,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.02586400749935494,
+        "end_speed_m_per_s": 3.1197712736039604,
+        "end_tick": 3838,
+        "initial_speed_m_per_s": 3.119370274377799,
+        "start_tick": 3836,
+        "time_s": 15.991666666666667,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.02589137686249418,
+        "end_speed_m_per_s": 3.1210297432763476,
+        "end_tick": 3840,
+        "initial_speed_m_per_s": 3.1197712736039604,
+        "start_tick": 3838,
+        "time_s": 16.0,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.025916748240316187,
+        "end_speed_m_per_s": 3.1222841018026197,
+        "end_tick": 3842,
+        "initial_speed_m_per_s": 3.1210297432763476,
+        "start_tick": 3840,
+        "time_s": 16.008333333333333,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.03889698947933894,
+        "end_speed_m_per_s": 3.121264570908411,
+        "end_tick": 3845,
+        "initial_speed_m_per_s": 3.1222841018026197,
+        "start_tick": 3842,
+        "time_s": 16.020833333333332,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.025944158655644856,
+        "end_speed_m_per_s": 3.121177369550656,
+        "end_tick": 3847,
+        "initial_speed_m_per_s": 3.121264570908411,
+        "start_tick": 3845,
+        "time_s": 16.029166666666665,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.025952162294374838,
+        "end_speed_m_per_s": 3.1203770263790522,
+        "end_tick": 3849,
+        "initial_speed_m_per_s": 3.121177369550656,
+        "start_tick": 3847,
+        "time_s": 16.0375,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.02595398027662918,
+        "end_speed_m_per_s": 3.1188705824625047,
+        "end_tick": 3851,
+        "initial_speed_m_per_s": 3.1203770263790522,
+        "start_tick": 3849,
+        "time_s": 16.045833333333334,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.025962470814800284,
+        "end_speed_m_per_s": 3.1175130139459664,
+        "end_tick": 3854,
+        "initial_speed_m_per_s": 3.1199897891978825,
+        "start_tick": 3852,
+        "time_s": 16.058333333333334,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.355213451078446,
+        "end_speed_m_per_s": 4.909621210526846,
+        "end_tick": 3980,
+        "initial_speed_m_per_s": 5.104812950227971,
+        "start_tick": 3963,
+        "time_s": 16.583333333333332,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.3753441477007615,
+        "end_speed_m_per_s": 4.646452551725121,
+        "end_tick": 4006,
+        "initial_speed_m_per_s": 4.863974979966129,
+        "start_tick": 3987,
+        "time_s": 16.691666666666666,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.35343546672146603,
+        "end_speed_m_per_s": 4.360882093512721,
+        "end_tick": 4032,
+        "initial_speed_m_per_s": 4.61367220175918,
+        "start_tick": 4013,
+        "time_s": 16.8,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.3457815899086813,
+        "end_speed_m_per_s": 4.061721391203718,
+        "end_tick": 4061,
+        "initial_speed_m_per_s": 4.303626561281176,
+        "start_tick": 4041,
+        "time_s": 16.920833333333334,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.43232778056459853,
+        "end_speed_m_per_s": 3.728374062928473,
+        "end_tick": 4098,
+        "initial_speed_m_per_s": 4.0122387054791275,
+        "start_tick": 4071,
+        "time_s": 17.075,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.3656920883630011,
+        "end_speed_m_per_s": 3.3656016581144206,
+        "end_tick": 4127,
+        "initial_speed_m_per_s": 3.705586846370494,
+        "start_tick": 4102,
+        "time_s": 17.195833333333333,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.28380007002230473,
+        "end_speed_m_per_s": 3.158159727291983,
+        "end_tick": 4154,
+        "initial_speed_m_per_s": 3.3464627619181666,
+        "start_tick": 4133,
+        "time_s": 17.308333333333334,
+        "type": "braking_distance"
+      },
+      {
+        "distance_m": 0.2397000463590094,
+        "end_speed_m_per_s": 5.7285213464238645,
+        "end_tick": 5454,
+        "initial_speed_m_per_s": 5.778841621843872,
+        "start_tick": 5444,
+        "time_s": 22.725,
+        "type": "braking_distance"
+      }
+    ],
+    "grounded_ticks": 5465,
+    "max_hull_contacts": 0,
+    "max_tilt_deg": 39.33419894075078,
+    "max_wall_contacts": 0,
+    "max_wheel_contacts": 4,
+    "rollover_ticks": 0
+  },
+  "controller": "openrc-speed-aware-route-driver-v1-fast",
+  "course_identity": {
+    "format": "openrc-airfield-course",
+    "id": "airfield-default",
+    "sha256": "7a6f79517a024fc44ae7a6757b5fb64e9f3ae1c7cf5a2995b0196f166ab5f8c8",
+    "version": "1"
+  },
+  "csv": {
+    "path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-drive/candidate-fast-signed-verified.csv",
+    "rows": 5465,
+    "sha256": "2197b4a022d117a7b15b73363207e3de1c9bedd3c3dfabb8cdd6d88acac3d13b"
+  },
+  "elapsed_sim_s": 22.770833333333332,
+  "failure_reason": "",
+  "fixed_hz": 240,
+  "format": "openrc-rcv-drive-run",
+  "lap_complete": true,
+  "max_acceleration_mps2": 9.45376341051361,
+  "max_seconds": 50.0,
+  "max_speed_mps": 5.858126786636629,
+  "min_acceleration_mps2": -9.870580933791118,
+  "pace": "fast",
+  "path": {
+    "feature_ticks": {
+      "banked_turn": 2820,
+      "dirt_loop": 1650,
+      "roller_1": 159,
+      "roller_2": 159,
+      "roller_3": 159,
+      "step_up": 233,
+      "tabletop": 285
+    },
+    "final_error_m": 0.48741506802024054,
+    "fraction": 1.0035109833748737,
+    "length_m": 85.69911184307752,
+    "max_error_m": 1.1293132339833212,
+    "min_track_coverage": 1.0,
+    "progress_m": 86.0,
+    "returned_to_start": true
+  },
+  "route_brake_control_limit": 0.35,
+  "runway": {
+    "acceleration_seconds": 3.0,
+    "brake_start_speed_mps": 0.0,
+    "brake_start_tick": -1,
+    "braking_distance_m": 0.0,
+    "stop_tick": -1
+  },
+  "sample_count": 5465,
+  "scenario": "circuit",
+  "session_tick_cost_us": {
+    "max": 8674.0,
+    "p50": 2844.0,
+    "p95": 4453.0,
+    "sample_count": 5465
+  },
+  "solver_version": "openrc-ground-vehicle-dynamics-rk4-v2",
+  "ticks": 5465,
+  "vehicle_identity": {
+    "format": "openrc-ground-vehicle",
+    "id": "mt8-bisonte-electric-4wd-estimate-v1",
+    "sha256": "732ad4197a60b111610e7eadf169e4718a68bdf85799f7cff4350eb4df698a0c",
+    "version": "1"
+  },
+  "vehicle_path": "res://data/vehicles/ground/mt8_bisonte.json",
+  "vehicle_source_sha256": "732ad4197a60b111610e7eadf169e4718a68bdf85799f7cff4350eb4df698a0c",
+  "version": 1,
+  "source_manifest": {
+    "captured_before_utc": "2026-10-14T22:11:18.046917+00:00",
+    "captured_after_utc": "2026-10-14T22:11:46.753150+00:00",
+    "before_sha256": {
+      "research/rc-monster-truck/driving/run_drive.gd": "21c8eb2f6950870db6cf52b6f2a40d31fd055ebfbd665da94b4678dfc266dc4a",
+      "research/rc-monster-truck/driving/run_drive.py": "92c846a358ecc0e719268e594afde8bed17ab54a7a4871be02b134fe7a6f287d",
+      "app/sim/ground_vehicle/session.gd": "b5bade4c818e2c7c3832231560737d187fa24fce9968ffae21a22d78030ad619",
+      "app/physics/ground_vehicle/vehicle_dynamics.gd": "e3b8f6efde820dc0769b9556dacd0cae1338e71a3128f4829acf37f394e4dc79",
+      "app/physics/ground_vehicle/airfield_course.gd": "9e8eaef874081d8abcd679d09be0d02189cc10a028e6409f78c11bc8534a3e3a",
+      "app/physics/ground_vehicle/airfield_track.gd": "a3c2774f89745ce0510cce7a813d22a050f73086be920b1be1a9b484e46f5b54",
+      "app/physics/ground_vehicle/vehicle_data.gd": "3b2dd900dbe08bd3552058f8699654dcaeeb230bfa9aa2f3ca2e3dad534b1194",
+      "app/physics/ground_terrain.gd": "1c650cf179c7ccdca62dfd4b908e34dbc7adfe66700753ca6648af36bf5f2358",
+      "app/physics/ground_contact.gd": "2fa30d5bcebf1b36e67dba9546ee96b42b970df3fdfcb77630c6620df02e4355",
+      "app/data/ground_vehicle/airfield_track.json": "b178c5c22dd77160a48bd72d2e473f52e66a65c52843d25770b224f6cebbba81",
+      "app/data/ground/surface_friction.json": "00c63125e7ed315e6a262227a9a3be0e05b6c2aab812c2247568e9a509169586",
+      "app/data/vehicles/ground/mt8_bisonte.json": "732ad4197a60b111610e7eadf169e4718a68bdf85799f7cff4350eb4df698a0c"
+    },
+    "after_sha256": {
+      "research/rc-monster-truck/driving/run_drive.gd": "21c8eb2f6950870db6cf52b6f2a40d31fd055ebfbd665da94b4678dfc266dc4a",
+      "research/rc-monster-truck/driving/run_drive.py": "92c846a358ecc0e719268e594afde8bed17ab54a7a4871be02b134fe7a6f287d",
+      "app/sim/ground_vehicle/session.gd": "b5bade4c818e2c7c3832231560737d187fa24fce9968ffae21a22d78030ad619",
+      "app/physics/ground_vehicle/vehicle_dynamics.gd": "e3b8f6efde820dc0769b9556dacd0cae1338e71a3128f4829acf37f394e4dc79",
+      "app/physics/ground_vehicle/airfield_course.gd": "9e8eaef874081d8abcd679d09be0d02189cc10a028e6409f78c11bc8534a3e3a",
+      "app/physics/ground_vehicle/airfield_track.gd": "a3c2774f89745ce0510cce7a813d22a050f73086be920b1be1a9b484e46f5b54",
+      "app/physics/ground_vehicle/vehicle_data.gd": "3b2dd900dbe08bd3552058f8699654dcaeeb230bfa9aa2f3ca2e3dad534b1194",
+      "app/physics/ground_terrain.gd": "1c650cf179c7ccdca62dfd4b908e34dbc7adfe66700753ca6648af36bf5f2358",
+      "app/physics/ground_contact.gd": "2fa30d5bcebf1b36e67dba9546ee96b42b970df3fdfcb77630c6620df02e4355",
+      "app/data/ground_vehicle/airfield_track.json": "b178c5c22dd77160a48bd72d2e473f52e66a65c52843d25770b224f6cebbba81",
+      "app/data/ground/surface_friction.json": "00c63125e7ed315e6a262227a9a3be0e05b6c2aab812c2247568e9a509169586",
+      "app/data/vehicles/ground/mt8_bisonte.json": "732ad4197a60b111610e7eadf169e4718a68bdf85799f7cff4350eb4df698a0c"
+    },
+    "changed_during_run": []
+  }
+}

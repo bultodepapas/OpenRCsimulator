@@ -1,0 +1,368 @@
+{
+  "complete_cases": 54,
+  "minimum_rebound_reduction_fraction": 0.6104814282478555,
+  "maximum_rebound_reduction_fraction": 0.694531190139245,
+  "max_240_480_difference": {
+    "peak_yaw_rate": 0.002008446709197642,
+    "return_yaw_rate": 0.0035329145773985715,
+    "peak_beta": 0.00028967145487079904,
+    "late_beta": 0.001139292176265988,
+    "peak_roll_rate": 0.0062306449000004704
+  },
+  "all_other_aircraft_values_identical": true,
+  "exceptions": [
+    "controls.gamepad.yaw_scale",
+    "controls.gamepad.yaw_response_time",
+    "aero.coefficients.Cnp",
+    "aero.coefficients.Cnr"
+  ],
+  "source_hashes": {
+    "baseline-240.json": "b6e009f077a88cb70ef7b544ad438955a62cedd31e0d0ea37565af2b7c57eb74",
+    "candidate-240.json": "d4e5e30bbc0b9cd6d36012a2b12411775653a85c70de2f0f3491a82abffc3de8",
+    "candidate-480.json": "c240e465cd38f4a518fae76f7219963c161814eb72dc74fa07cd0a4467566032"
+  },
+  "cases": [
+    {
+      "speed": 29.0,
+      "yaw": -1.0,
+      "before": {
+        "peak_yaw_rate": 64.4755041075053,
+        "return_yaw_rate": -30.4778557641429,
+        "peak_beta": 18.2180429069638,
+        "late_beta": 0.242554020941182,
+        "peak_roll_rate": 63.7103231446006
+      },
+      "after": {
+        "peak_yaw_rate": 27.7268298106795,
+        "return_yaw_rate": -11.6508773969735,
+        "peak_beta": 8.45387509660488,
+        "late_beta": 0.194449001848618,
+        "peak_roll_rate": 34.7219475381604
+      },
+      "rebound_reduction_fraction": 0.6177264737015811
+    },
+    {
+      "speed": 29.0,
+      "yaw": -0.5,
+      "before": {
+        "peak_yaw_rate": 22.7413266007669,
+        "return_yaw_rate": -10.2600143682358,
+        "peak_beta": 6.38518980274412,
+        "late_beta": 0.131210492524607,
+        "peak_roll_rate": 27.3544322050226
+      },
+      "after": {
+        "peak_yaw_rate": 9.65399689494772,
+        "return_yaw_rate": -3.98798196336644,
+        "peak_beta": 2.9522330541824,
+        "late_beta": 0.0746670699186754,
+        "peak_roll_rate": 12.1584318546952
+      },
+      "rebound_reduction_fraction": 0.6113083451702641
+    },
+    {
+      "speed": 29.0,
+      "yaw": -0.25,
+      "before": {
+        "peak_yaw_rate": 8.58751709443037,
+        "return_yaw_rate": -3.86477845932309,
+        "peak_beta": 2.41279422992125,
+        "late_beta": 0.0525470032622871,
+        "peak_roll_rate": 10.3565586615966
+      },
+      "after": {
+        "peak_yaw_rate": 3.63991082359721,
+        "return_yaw_rate": -1.503255795054,
+        "peak_beta": 1.11343165514652,
+        "late_beta": 0.028316097393336,
+        "peak_roll_rate": 4.58879655556337
+      },
+      "rebound_reduction_fraction": 0.6110370074570088
+    },
+    {
+      "speed": 29.0,
+      "yaw": 0.25,
+      "before": {
+        "peak_yaw_rate": 8.58701733053475,
+        "return_yaw_rate": -3.85801148756188,
+        "peak_beta": 2.41391259297194,
+        "late_beta": 0.0514234600807671,
+        "peak_roll_rate": 10.3640471479767
+      },
+      "after": {
+        "peak_yaw_rate": 3.6398357177464,
+        "return_yaw_rate": -1.5019325445258,
+        "peak_beta": 1.11366372944498,
+        "late_beta": 0.0279992637350162,
+        "peak_roll_rate": 4.59034925535972
+      },
+      "rebound_reduction_fraction": 0.6106977521015715
+    },
+    {
+      "speed": 29.0,
+      "yaw": 0.5,
+      "before": {
+        "peak_yaw_rate": 22.7386800238623,
+        "return_yaw_rate": -10.2113025921109,
+        "peak_beta": 6.39321203439608,
+        "late_beta": 0.124496140956038,
+        "peak_roll_rate": 27.409092527747
+      },
+      "after": {
+        "peak_yaw_rate": 9.65380396109857,
+        "return_yaw_rate": -3.97749200140801,
+        "peak_beta": 2.95399505541727,
+        "late_beta": 0.0725139711348436,
+        "peak_roll_rate": 12.1702635739642
+      },
+      "rebound_reduction_fraction": 0.6104814282478555
+    },
+    {
+      "speed": 29.0,
+      "yaw": 1.0,
+      "before": {
+        "peak_yaw_rate": 64.4657972637979,
+        "return_yaw_rate": -30.12681066319,
+        "peak_beta": 18.2328329761257,
+        "late_beta": 0.221645112096883,
+        "peak_roll_rate": 66.2452967485166
+      },
+      "after": {
+        "peak_yaw_rate": 27.7263217514019,
+        "return_yaw_rate": -11.5661644407991,
+        "peak_beta": 8.46871792525473,
+        "late_beta": 0.178342534720028,
+        "peak_roll_rate": 34.822060173838
+      },
+      "rebound_reduction_fraction": 0.6160840066973619
+    },
+    {
+      "speed": 45.0,
+      "yaw": -1.0,
+      "before": {
+        "peak_yaw_rate": 99.0250327662427,
+        "return_yaw_rate": -89.7486408374842,
+        "peak_beta": 18.5652274501826,
+        "late_beta": 0.131954097028728,
+        "peak_roll_rate": 108.835518797713
+      },
+      "after": {
+        "peak_yaw_rate": 38.148636388838,
+        "return_yaw_rate": -33.4765430394447,
+        "peak_beta": 8.12872268790438,
+        "late_beta": 0.0994116894808722,
+        "peak_roll_rate": 50.6110296866875
+      },
+      "rebound_reduction_fraction": 0.626996657252296
+    },
+    {
+      "speed": 45.0,
+      "yaw": -0.5,
+      "before": {
+        "peak_yaw_rate": 35.4959079796292,
+        "return_yaw_rate": -33.7172587482873,
+        "peak_beta": 6.59487945877593,
+        "late_beta": 0.0708091350505454,
+        "peak_roll_rate": 44.0798669943127
+      },
+      "after": {
+        "peak_yaw_rate": 13.282283936147,
+        "return_yaw_rate": -11.8101947226774,
+        "peak_beta": 2.83767649160585,
+        "late_beta": 0.0387891753379232,
+        "peak_roll_rate": 17.7098179728001
+      },
+      "rebound_reduction_fraction": 0.6497285022235887
+    },
+    {
+      "speed": 45.0,
+      "yaw": -0.25,
+      "before": {
+        "peak_yaw_rate": 13.4300476965841,
+        "return_yaw_rate": -12.8824784223744,
+        "peak_beta": 2.49410101928178,
+        "late_beta": 0.0284123800179,
+        "peak_roll_rate": 16.7070527714121
+      },
+      "after": {
+        "peak_yaw_rate": 5.0078524246181,
+        "return_yaw_rate": -4.46328686869271,
+        "peak_beta": 1.0701387210086,
+        "late_beta": 0.0147332648459014,
+        "peak_roll_rate": 6.68295091720754
+      },
+      "rebound_reduction_fraction": 0.6535381840080683
+    },
+    {
+      "speed": 45.0,
+      "yaw": 0.25,
+      "before": {
+        "peak_yaw_rate": 13.4293586846409,
+        "return_yaw_rate": -12.9097272061512,
+        "peak_beta": 2.49510650143256,
+        "late_beta": 0.0280122844246415,
+        "peak_roll_rate": 16.7169073451576
+      },
+      "after": {
+        "peak_yaw_rate": 5.00778010762606,
+        "return_yaw_rate": -4.46792012296398,
+        "peak_beta": 1.07032023800886,
+        "late_beta": 0.0146279186843953,
+        "peak_roll_rate": 6.684658181138
+      },
+      "rebound_reduction_fraction": 0.6539105705630159
+    },
+    {
+      "speed": 45.0,
+      "yaw": 0.5,
+      "before": {
+        "peak_yaw_rate": 35.4925868716938,
+        "return_yaw_rate": -33.9035441308373,
+        "peak_beta": 6.60237641938564,
+        "late_beta": 0.0682444392275399,
+        "peak_roll_rate": 44.1508160799603
+      },
+      "after": {
+        "peak_yaw_rate": 13.2822560215802,
+        "return_yaw_rate": -11.8421737957467,
+        "peak_beta": 2.83907170701309,
+        "late_beta": 0.0380202235707284,
+        "peak_roll_rate": 17.7230442611472
+      },
+      "rebound_reduction_fraction": 0.6507098564667304
+    },
+    {
+      "speed": 45.0,
+      "yaw": 1.0,
+      "before": {
+        "peak_yaw_rate": 99.0106792566899,
+        "return_yaw_rate": -91.0972305670083,
+        "peak_beta": 18.6246820384162,
+        "late_beta": 0.121010994201462,
+        "peak_roll_rate": 108.979307220012
+      },
+      "after": {
+        "peak_yaw_rate": 38.1499622511831,
+        "return_yaw_rate": -33.7314763296474,
+        "peak_beta": 8.14049880214533,
+        "late_beta": 0.0937022442918887,
+        "peak_roll_rate": 50.7236305590418
+      },
+      "rebound_reduction_fraction": 0.6297200681107911
+    },
+    {
+      "speed": 60.0,
+      "yaw": -1.0,
+      "before": {
+        "peak_yaw_rate": 129.035500077894,
+        "return_yaw_rate": -101.056186141694,
+        "peak_beta": 18.5640361630586,
+        "late_beta": 0.0866660498023112,
+        "peak_roll_rate": 144.496133357431
+      },
+      "after": {
+        "peak_yaw_rate": 45.5778272427428,
+        "return_yaw_rate": -33.007414654958,
+        "peak_beta": 7.65111307337198,
+        "late_beta": 0.0647218305149621,
+        "peak_roll_rate": 62.0864827253365
+      },
+      "rebound_reduction_fraction": 0.6733756149408084
+    },
+    {
+      "speed": 60.0,
+      "yaw": -0.5,
+      "before": {
+        "peak_yaw_rate": 47.3157946858105,
+        "return_yaw_rate": -36.9944660877063,
+        "peak_beta": 6.65294160270187,
+        "late_beta": 0.0482009084342248,
+        "peak_roll_rate": 59.3498622613672
+      },
+      "after": {
+        "peak_yaw_rate": 15.8685223232982,
+        "return_yaw_rate": -11.436037583236,
+        "peak_beta": 2.66998534333978,
+        "late_beta": 0.0259705211858733,
+        "peak_roll_rate": 21.7127227792242
+      },
+      "rebound_reduction_fraction": 0.690871668315918
+    },
+    {
+      "speed": 60.0,
+      "yaw": -0.25,
+      "before": {
+        "peak_yaw_rate": 17.9499229732716,
+        "return_yaw_rate": -14.1402667468392,
+        "peak_beta": 2.51897107945374,
+        "late_beta": 0.0193239747028779,
+        "peak_roll_rate": 22.5308962232829
+      },
+      "after": {
+        "peak_yaw_rate": 5.98289520647506,
+        "return_yaw_rate": -4.31941045427058,
+        "peak_beta": 1.00684006549572,
+        "late_beta": 0.00993794017285397,
+        "peak_roll_rate": 8.19259341930945
+      },
+      "rebound_reduction_fraction": 0.694531190139245
+    },
+    {
+      "speed": 60.0,
+      "yaw": 0.25,
+      "before": {
+        "peak_yaw_rate": 17.949135431495,
+        "return_yaw_rate": -14.1345655538951,
+        "peak_beta": 2.51990854855501,
+        "late_beta": 0.0190700300091874,
+        "peak_roll_rate": 22.5426975413147
+      },
+      "after": {
+        "peak_yaw_rate": 5.98282741972,
+        "return_yaw_rate": -4.31853261450455,
+        "peak_beta": 1.00698900361777,
+        "late_beta": 0.00988204959405192,
+        "peak_roll_rate": 8.19432729518481
+      },
+      "rebound_reduction_fraction": 0.6944700848400338
+    },
+    {
+      "speed": 60.0,
+      "yaw": 0.5,
+      "before": {
+        "peak_yaw_rate": 47.3117217901733,
+        "return_yaw_rate": -36.9521835675608,
+        "peak_beta": 6.65960078707819,
+        "late_beta": 0.0465096314964389,
+        "peak_roll_rate": 59.4344661131824
+      },
+      "after": {
+        "peak_yaw_rate": 15.8685950674455,
+        "return_yaw_rate": -11.4294345059544,
+        "peak_beta": 2.67113573533823,
+        "late_beta": 0.0255490590831685,
+        "peak_roll_rate": 21.7263138329892
+      },
+      "rebound_reduction_fraction": 0.6906966408342928
+    },
+    {
+      "speed": 60.0,
+      "yaw": 1.0,
+      "before": {
+        "peak_yaw_rate": 129.022053330924,
+        "return_yaw_rate": -100.842988020327,
+        "peak_beta": 18.6179449998707,
+        "late_beta": 0.0782538449513346,
+        "peak_roll_rate": 144.658275799325
+      },
+      "after": {
+        "peak_yaw_rate": 45.5802079688951,
+        "return_yaw_rate": -32.956537797586,
+        "peak_beta": 7.66058462644598,
+        "late_beta": 0.0617386672653462,
+        "peak_roll_rate": 62.202709790664
+      },
+      "rebound_reduction_fraction": 0.6731895945909206
+    }
+  ]
+}

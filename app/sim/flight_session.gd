@@ -1480,6 +1480,7 @@ func _physics_process(_delta: float) -> void:
 			calibration.sample(radio.axes)
 		elif radio.connected:
 			if not _poll_controller(): return
+			var previous_yaw: float = commands.yaw
 			commands = radio.sticks()
 			# An unbound AUX defaults to zero: it must not override keyboard/controller toggles.
 			if gear_is_retractable() and not sim.paused and not radio.profile.get("aux", {}).get("gear", {}).is_empty():
@@ -1489,6 +1490,10 @@ func _physics_process(_delta: float) -> void:
 				commands.throttle = 0.0
 			raw = commands.duplicate()
 			raw.throttle = radio.throttle_position() # the stick, even while the throttle is held at idle
+			if radio.armed and radio.is_gamepad() and rates_active():
+				var response: float = aircraft.model.controls.get("gamepad", {}).get("yaw_response_time", 0.0)
+				if response > 0.0:
+					commands.yaw = Commands.gamepad_yaw_response(previous_yaw, commands.yaw, sim.dt(), response)
 		else:
 			raw = read_raw.call()
 			var keyboard: Dictionary = aircraft.model.controls.get("keyboard", {}) if rates_active() else {}
@@ -2055,10 +2060,11 @@ func flown_commands() -> Dictionary:
 	var c := commands.duplicate()
 	if rates_active():
 		c = Commands.shape_sticks(c, aircraft.model.controls.rates.normal, not radio.connected)
-		# Short gamepad sticks may have an aircraft-specific normal pitch travel.
+		# Short gamepad sticks may have aircraft-specific normal pitch/yaw travel.
 		# This is a fixed device setting; trim and physical radio travel remain independent.
 		if radio.connected and radio.is_gamepad():
 			c.pitch *= float(aircraft.model.controls.get("gamepad", {}).get("pitch_scale", 1.0))
+			c.yaw *= float(aircraft.model.controls.get("gamepad", {}).get("yaw_scale", 1.0))
 	c.roll = clampf(c.roll + trims.roll, -1.0, 1.0)
 	c.pitch = clampf(c.pitch + trims.pitch, -1.0, 1.0)
 	c.yaw = clampf(c.yaw + trims.yaw, -1.0, 1.0)
@@ -2736,7 +2742,7 @@ func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -
 	return out
 
 
-## E0a2b: aux index of the lagged wing CL (after the anchors), or −1 without a tail downwash lag.
+## VAL-AUD-R02: aux index of the lagged wing lift-velocity proxy (m/s) (after the anchors), or −1 without a tail downwash lag.
 func downwash_index() -> int:
 	# The lag feeds only the local (strip) model's tail: none without an envelope (a pure-oracle model).
 	if not aircraft.get("ok", false) or aircraft.model.get("envelope", {}).is_empty() \
@@ -2758,10 +2764,10 @@ func aux_component(i: int) -> String:
 	return "downwash" if i == downwash_index() else "anchor"
 
 
-## The wing strips' mean section lift coefficient at state s with the servos in aux (E0a2b lag input).
+## Historical helper name: returns the dimensional wing lift-velocity proxy (m/s), not CL.
 func _wing_cl(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float = NAN) -> float:
 	var air: Dictionary = air_data(s, time_s)
-	return Aero.wing_lift_coefficient(s, air, _deflections(aux), aircraft.model, _ground_up(s))
+	return Aero.wing_wake_velocity(s, air, _deflections(aux), aircraft.model, _ground_up(s))
 
 
 ## M5-GE-1: the ground height (m above the NED datum) under the CG for the aero ground-effect factors, from the same
@@ -2885,7 +2891,7 @@ func trace_meta() -> Dictionary:
 		aircraft_semantic_sha256 = model.get("data_sha256", "unavailable"),
 		aircraft_semantic_hash_convention = "sha256 of Godot JSON.stringify(parsed_input, indent=empty, sort_keys=true, full_precision=false); not file bytes",
 		configuration = aircraft.model.get("configuration", "unspecified"),
-		aero_model = "global-derivatives-v1" if model.get("envelope", {}).is_empty() else "local-surfaces-v1 with bounded attached oracle",
+		aero_model = "global-derivatives-v1" if model.get("envelope", {}).is_empty() else Aero.LOADS_LAW + " with bounded attached oracle",
 		wing_polar_model = "tabulated-wing-v1 (experimental finite-wing strip reference)" if model.get("envelope", {}).has("wing_polar") else "legacy attached-to-flat-plate blend",
 		ground_effect_model = ("image-induced-factor-v1 (aero.ground_effect: strip induced angle/drag and tail downwash from the field terrain height, exact above %.1f spans)" % GroundEffect.FADE_SPAN_RATIO) if GroundEffect.enabled(model) else "none",
 		propulsion_model = propulsion_model,
@@ -3035,6 +3041,10 @@ func trace_meta() -> Dictionary:
 		metadata.recording_start_gear = JSON.stringify(Array(sim.aux.slice(gear_aux_index(), gear_aux_index() + GEAR_AUX_SIZE)), "", true, true)
 		metadata.input_layout = JSON.stringify(["roll", "pitch", "yaw", "throttle", "gear_down", "wheel_brake"])
 		metadata.ground = "retractable tricycle; downlock point contacts; rudder nose steering; main wheel brakes; weight-on-wheels retraction interlock"
+	metadata.aero_loads_law = Aero.LOADS_LAW if not model.get("envelope", {}).is_empty() else "global-derivatives-v1"
+	metadata.wake_state_unit = Aero.WAKE_STATE_UNIT if downwash_index() >= 0 else "none"
+	if turbine:
+		metadata.turbine_loads_law = Turbine.LOADS_LAW
 	return metadata
 
 
@@ -3053,6 +3063,11 @@ func checkpoint() -> Dictionary:
 			or (not engine_running and sim.continuous[0] != 0.0)):
 		return {}
 	var boundary: Dictionary = {format = "openrc-flight-checkpoint v1", configuration = _checkpoint_configuration(), simulation = snapshot}
+	if not aircraft.model.get("envelope", {}).is_empty():
+		boundary.aero_loads_law = Aero.LOADS_LAW
+		boundary.wake_state_unit = Aero.WAKE_STATE_UNIT
+	if Turbine.is_turbine(aircraft.model.propulsion):
+		boundary.turbine_loads_law = Turbine.LOADS_LAW
 	if gear_is_retractable():
 		boundary.gear_law = RetractableGear.LAW
 		boundary.gear_aux_index = gear_aux_index()
@@ -3124,6 +3139,10 @@ func _configuration_for_weather(field: WeatherField) -> String:
 	var config_hash := HashingContext.new()
 	config_hash.start(HashingContext.HASH_SHA256)
 	var parts: Array = [aircraft.model, ground_surfaces]
+	if not aircraft.model.get("envelope", {}).is_empty():
+		parts.append(Aero.LOADS_LAW + "; " + Aero.WAKE_STATE_UNIT)
+	if Turbine.is_turbine(aircraft.model.propulsion):
+		parts.append(Turbine.LOADS_LAW)
 	if gear_is_retractable():
 		parts.append(RetractableGear.LAW + "; inputs=6; aux=extension,accepted_down_target; airborne_up,runway_down")
 	if wheel_count() > 0:
@@ -3181,6 +3200,16 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 			or not candidate.get("simulation") is Dictionary:
 		return false
 	var snapshot: Dictionary = candidate.simulation
+	if not aircraft.model.get("envelope", {}).is_empty():
+		if candidate.get("aero_loads_law") != Aero.LOADS_LAW or candidate.get("wake_state_unit") != Aero.WAKE_STATE_UNIT:
+			return false
+	elif candidate.has("aero_loads_law") or candidate.has("wake_state_unit"):
+		return false
+	if Turbine.is_turbine(aircraft.model.propulsion):
+		if candidate.get("turbine_loads_law") != Turbine.LOADS_LAW:
+			return false
+	elif candidate.has("turbine_loads_law"):
+		return false
 	if gear_is_retractable():
 		if candidate.get("gear_law") != RetractableGear.LAW or candidate.get("gear_aux_index") != gear_aux_index() \
 				or not snapshot.get("aux") is PackedFloat64Array or not _gear_aux_valid(snapshot.aux) \

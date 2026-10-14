@@ -25,5 +25,5 @@ The effects allocate 700 particles: 556 crash, 24 soft-touch puff and 120 LiPo v
 
 ## Open
 
-- Native frame p95 per class and distance, and first-impact hitch with shader pre-warm, on the owner's Windows host: rerun `research/crash-damage/cr-22a/qualify.py` with the new scenarios.
+- [CR-22c-R1](../CR-22c-R1/README.md) adds prepared BVH scuff queries, Compatibility shader warmup, selective emitter startup and native ground-impact comparisons for all eight airplane configurations. Residual frame spikes and the full class/distance budget remain open; rerun `research/crash-damage/cr-22a/qualify.py` for that broader qualification.
 - Distance LOD for particle and chip counts. `CPUParticles3D.amount_ratio` support on the pinned 4.7.2 still needs a probe; until then counts are reduced by class only.

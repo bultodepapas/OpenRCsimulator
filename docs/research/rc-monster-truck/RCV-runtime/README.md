@@ -20,6 +20,8 @@ A fresh Windows RC-only release snapshot passed import, export, packaged airfiel
 
 ## Verified software
 
+The later [RCV-05-R1 controller audit](../../controller-support-2026-10-14/README.md#rcv-05-r1-car-controller-audit) fixes resting-axis deadzones, fresh-input resume and car-specific device selection, adds camera/recovery shortcuts, and records native garage captures. Its operating instructions live in the [driving guide](../../../../research/rc-monster-truck/README.md#drive-and-experiment).
+
 | Check | Result and retained evidence |
 | --- | --- |
 | Data, course and input | 23 vehicle-data checks, 29 course checks and 23 input checks passed; [runtime receipt](runtime/verification.json) includes generator freshness, mutation rejection and float64 guard results. |

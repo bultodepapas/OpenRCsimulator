@@ -1,0 +1,35 @@
+{
+  "format": "openrc-heli-final-cycle-parity v1",
+  "source_changes_since_30_cycles": {
+    "app/sim/simulation.gd": {
+      "before": "814ca70b4a05c7d23c8b405138c40e42b1b0711071e77eab4d34bba20d0e9da6",
+      "after": "b57f836ba757cc25acd3b724b0bd40be2d20bcc92c1837d8d557566adb2e2a41"
+    }
+  },
+  "final_sources_stable": true,
+  "source_change_explanation": "Concurrent FL work added an unconnected before_step signal/emit to Simulation. No helicopter physics or session file changed. Fresh complete cycles compare against cycle 0 of each prior 10-cycle run.",
+  "scenarios": [
+    {
+      "case": "calm",
+      "fresh_cycle_passed": true,
+      "cycle_report_equal": true,
+      "all_1hz_samples_equal": true,
+      "samples_compared": 84
+    },
+    {
+      "case": "steady",
+      "fresh_cycle_passed": true,
+      "cycle_report_equal": true,
+      "all_1hz_samples_equal": true,
+      "samples_compared": 83
+    },
+    {
+      "case": "gusts",
+      "fresh_cycle_passed": true,
+      "cycle_report_equal": true,
+      "all_1hz_samples_equal": true,
+      "samples_compared": 85
+    }
+  ],
+  "ok": true
+}

@@ -1,0 +1,1132 @@
+{
+  "flights": [
+    {
+      "airspeed_min_mps": 14.999999999999998,
+      "alpha_abs_max_deg": 4.18414431314593,
+      "altitude_min_m": 300.0,
+      "axis": "neutral",
+      "beta_abs_max_deg": 0.16000643479842894,
+      "completed": true,
+      "direction": 0.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 0.9973347065310998,
+      "max_rate_deg_s": [
+        2.9775497867881707e-13,
+        1.1766138323909481e-13,
+        1.1361019099107161e-12
+      ],
+      "profile": "normal",
+      "aircraft": "stik"
+    },
+    {
+      "airspeed_min_mps": 14.979427006263048,
+      "alpha_abs_max_deg": 4.184144313145929,
+      "altitude_min_m": 285.75574606518376,
+      "axis": "roll",
+      "beta_abs_max_deg": 6.250458892997125,
+      "completed": true,
+      "direction": -1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.2046262632273872,
+      "max_rate_deg_s": [
+        68.63363637176852,
+        7.843842664904822,
+        34.31903103424786
+      ],
+      "profile": "normal",
+      "aircraft": "stik",
+      "initial_axis_rate_rad_s": -0.1039930017800015,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 14.960870497106395,
+      "alpha_abs_max_deg": 4.232664737472284,
+      "altitude_min_m": 276.25401606909094,
+      "axis": "roll",
+      "beta_abs_max_deg": 5.8580298403581565,
+      "completed": true,
+      "direction": 1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.2234661105316322,
+      "max_rate_deg_s": [
+        68.63697838376115,
+        11.135785553931045,
+        34.5794492411672
+      ],
+      "profile": "normal",
+      "aircraft": "stik",
+      "initial_axis_rate_rad_s": 0.10401916119038887,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 14.999999999999998,
+      "alpha_abs_max_deg": 4.184144313145929,
+      "altitude_min_m": 274.4904131090624,
+      "axis": "pitch",
+      "beta_abs_max_deg": 1.3470830277206327,
+      "completed": true,
+      "direction": -1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.3683267664989123,
+      "max_rate_deg_s": [
+        6.065096246639731,
+        64.43100833263529,
+        8.809371388634796
+      ],
+      "profile": "normal",
+      "aircraft": "stik",
+      "initial_axis_rate_rad_s": -0.036715553202625345,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 9.116666847114486,
+      "alpha_abs_max_deg": 12.302580633263718,
+      "altitude_min_m": 299.9999766992715,
+      "axis": "pitch",
+      "beta_abs_max_deg": 2.2392363468547796,
+      "completed": true,
+      "direction": 1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 2.2041331911151,
+      "max_rate_deg_s": [
+        7.352838818504774,
+        59.566423968620626,
+        21.13662097436647
+      ],
+      "profile": "normal",
+      "aircraft": "stik",
+      "initial_axis_rate_rad_s": 0.03672156668835326,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 14.759205460082294,
+      "alpha_abs_max_deg": 5.514492599014965,
+      "altitude_min_m": 298.9188911120353,
+      "axis": "yaw",
+      "beta_abs_max_deg": 11.638557076559293,
+      "completed": true,
+      "direction": -1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.189398654174702,
+      "max_rate_deg_s": [
+        41.93283909415874,
+        3.6269203555258804,
+        38.102727013930895
+      ],
+      "profile": "normal",
+      "aircraft": "stik",
+      "initial_axis_rate_rad_s": -0.020276474706723283,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 14.884092547260012,
+      "alpha_abs_max_deg": 5.0089320544070155,
+      "altitude_min_m": 296.6143589446118,
+      "axis": "yaw",
+      "beta_abs_max_deg": 12.095027475082459,
+      "completed": true,
+      "direction": 1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.1080651989897674,
+      "max_rate_deg_s": [
+        42.14807951741626,
+        3.956449272845615,
+        38.350704980106315
+      ],
+      "profile": "normal",
+      "aircraft": "stik",
+      "initial_axis_rate_rad_s": 0.02027980281296305,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 14.999999999999998,
+      "alpha_abs_max_deg": 4.18414431314593,
+      "altitude_min_m": 300.0,
+      "axis": "neutral",
+      "beta_abs_max_deg": 0.16000643479842894,
+      "completed": true,
+      "direction": 0.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 0.9973347065310998,
+      "max_rate_deg_s": [
+        2.9775497867881707e-13,
+        1.1766138323909481e-13,
+        1.1361019099107161e-12
+      ],
+      "profile": "full",
+      "aircraft": "stik"
+    },
+    {
+      "airspeed_min_mps": 14.965715289109644,
+      "alpha_abs_max_deg": 4.184144313145929,
+      "altitude_min_m": 261.72893490967226,
+      "axis": "roll",
+      "beta_abs_max_deg": 10.517977422474042,
+      "completed": true,
+      "direction": -1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.4941397172507809,
+      "max_rate_deg_s": [
+        123.29397248565475,
+        13.9433593479878,
+        57.88436146075753
+      ],
+      "profile": "full",
+      "aircraft": "stik",
+      "initial_axis_rate_rad_s": -0.21906325552773825,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 14.94623461183657,
+      "alpha_abs_max_deg": 4.242321920266952,
+      "altitude_min_m": 244.56068598980994,
+      "axis": "roll",
+      "beta_abs_max_deg": 9.84371547307058,
+      "completed": true,
+      "direction": 1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.55554779642081,
+      "max_rate_deg_s": [
+        120.95251377538145,
+        17.612470730688276,
+        58.0385025957635
+      ],
+      "profile": "full",
+      "aircraft": "stik",
+      "initial_axis_rate_rad_s": 0.21913129401615425,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 14.999696675214096,
+      "alpha_abs_max_deg": 15.055769175545972,
+      "altitude_min_m": 246.58679874830628,
+      "axis": "pitch",
+      "beta_abs_max_deg": 6.539186575516739,
+      "completed": true,
+      "direction": -1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.9144257123210893,
+      "max_rate_deg_s": [
+        185.93463171230277,
+        138.02177547033415,
+        21.437903656678852
+      ],
+      "profile": "full",
+      "aircraft": "stik",
+      "initial_axis_rate_rad_s": -0.08573277719289749,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 12.863574011765431,
+      "alpha_abs_max_deg": 24.89590385558273,
+      "altitude_min_m": 293.9613830355344,
+      "axis": "pitch",
+      "beta_abs_max_deg": 2.860627565823455,
+      "completed": true,
+      "direction": 1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 2.205609860020863,
+      "max_rate_deg_s": [
+        69.41720395409844,
+        100.98262899816996,
+        21.839544825754373
+      ],
+      "profile": "full",
+      "aircraft": "stik",
+      "initial_axis_rate_rad_s": 0.08600450397986142,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 14.57558695091111,
+      "alpha_abs_max_deg": 6.709656110807963,
+      "altitude_min_m": 298.8678695380863,
+      "axis": "yaw",
+      "beta_abs_max_deg": 17.834766212549273,
+      "completed": true,
+      "direction": -1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.3222458552562668,
+      "max_rate_deg_s": [
+        55.40680172568499,
+        6.841948887974451,
+        57.01908427073197
+      ],
+      "profile": "full",
+      "aircraft": "stik",
+      "initial_axis_rate_rad_s": -0.03561382739562692,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 14.778812143519962,
+      "alpha_abs_max_deg": 5.895817487551473,
+      "altitude_min_m": 296.60802923928355,
+      "axis": "yaw",
+      "beta_abs_max_deg": 18.234360873285887,
+      "completed": true,
+      "direction": 1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.2100007577990841,
+      "max_rate_deg_s": [
+        56.520621275661604,
+        7.019550522175144,
+        56.13284203428179
+      ],
+      "profile": "full",
+      "aircraft": "stik",
+      "initial_axis_rate_rad_s": 0.03562233456708208,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 29.00000000000012,
+      "alpha_abs_max_deg": 4.045306225222598,
+      "altitude_min_m": 300.0,
+      "axis": "neutral",
+      "beta_abs_max_deg": 1.2112336565131657e-13,
+      "completed": true,
+      "direction": 0.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 0.9975085789635286,
+      "max_rate_deg_s": [
+        1.0078494476295856e-12,
+        6.096677098735975e-11,
+        1.8054705967394876e-12
+      ],
+      "profile": "normal",
+      "aircraft": "jet"
+    },
+    {
+      "airspeed_min_mps": 28.960388371196146,
+      "alpha_abs_max_deg": 4.092630857849744,
+      "altitude_min_m": 212.59379149441713,
+      "axis": "roll",
+      "beta_abs_max_deg": 5.006070579622729,
+      "completed": true,
+      "direction": -1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.9307622263502489,
+      "max_rate_deg_s": [
+        167.2174038965447,
+        17.7910490443709,
+        41.08755307347819
+      ],
+      "profile": "normal",
+      "aircraft": "jet",
+      "initial_axis_rate_rad_s": -0.25296871537232396,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 28.96007700605078,
+      "alpha_abs_max_deg": 4.093982723797722,
+      "altitude_min_m": 209.93654340129396,
+      "axis": "roll",
+      "beta_abs_max_deg": 4.993871113157182,
+      "completed": true,
+      "direction": 1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.9425342466717277,
+      "max_rate_deg_s": [
+        167.22285507052274,
+        16.766402270809444,
+        41.489366024579354
+      ],
+      "profile": "normal",
+      "aircraft": "jet",
+      "initial_axis_rate_rad_s": 0.2529695812832528,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 28.999954422750886,
+      "alpha_abs_max_deg": 4.045306225222455,
+      "altitude_min_m": 282.87747343352777,
+      "axis": "pitch",
+      "beta_abs_max_deg": 0.09529526862120094,
+      "completed": true,
+      "direction": -1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.200876461356536,
+      "max_rate_deg_s": [
+        0.6475381015953063,
+        31.915250649887703,
+        0.41960436819013414
+      ],
+      "profile": "normal",
+      "aircraft": "jet",
+      "initial_axis_rate_rad_s": -0.010996094278840239,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 24.528038299930767,
+      "alpha_abs_max_deg": 8.6838493276885,
+      "altitude_min_m": 299.99969576033163,
+      "axis": "pitch",
+      "beta_abs_max_deg": 0.07907115495447006,
+      "completed": true,
+      "direction": 1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 2.138162014960975,
+      "max_rate_deg_s": [
+        0.5977048807631553,
+        31.81419256406964,
+        0.37263492410643073
+      ],
+      "profile": "normal",
+      "aircraft": "jet",
+      "initial_axis_rate_rad_s": 0.010996109170277936,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 28.425822858659032,
+      "alpha_abs_max_deg": 6.72081085038691,
+      "altitude_min_m": 298.85714352655225,
+      "axis": "yaw",
+      "beta_abs_max_deg": 16.88085780896473,
+      "completed": true,
+      "direction": -1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.5300511038399125,
+      "max_rate_deg_s": [
+        68.4726322460949,
+        16.17969469821777,
+        76.56593819282575
+      ],
+      "profile": "normal",
+      "aircraft": "jet",
+      "initial_axis_rate_rad_s": -0.022763440622683755,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 28.48240326009379,
+      "alpha_abs_max_deg": 6.418939229190229,
+      "altitude_min_m": 298.00304824089676,
+      "axis": "yaw",
+      "beta_abs_max_deg": 16.908381014235143,
+      "completed": true,
+      "direction": 1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.463187303227935,
+      "max_rate_deg_s": [
+        70.45182373795384,
+        14.625520413413108,
+        77.31506172896432
+      ],
+      "profile": "normal",
+      "aircraft": "jet",
+      "initial_axis_rate_rad_s": 0.02276335643733843,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 29.00000000000012,
+      "alpha_abs_max_deg": 4.045306225222598,
+      "altitude_min_m": 300.0,
+      "axis": "neutral",
+      "beta_abs_max_deg": 1.2112336565131657e-13,
+      "completed": true,
+      "direction": 0.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 0.9975085789635286,
+      "max_rate_deg_s": [
+        1.0078494476295856e-12,
+        6.096677098735975e-11,
+        1.8054705967394876e-12
+      ],
+      "profile": "full",
+      "aircraft": "jet"
+    },
+    {
+      "airspeed_min_mps": 28.937618785666373,
+      "alpha_abs_max_deg": 4.106081746993701,
+      "altitude_min_m": 132.29134098854294,
+      "axis": "roll",
+      "beta_abs_max_deg": 6.640867942433549,
+      "completed": true,
+      "direction": -1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 2.784744213952299,
+      "max_rate_deg_s": [
+        335.57928654123504,
+        44.313398219618406,
+        28.44018897580689
+      ],
+      "profile": "full",
+      "aircraft": "jet",
+      "initial_axis_rate_rad_s": -0.6278038569245873,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 28.937306622564442,
+      "alpha_abs_max_deg": 4.107215117078032,
+      "altitude_min_m": 132.373463642325,
+      "axis": "roll",
+      "beta_abs_max_deg": 6.653620439847651,
+      "completed": true,
+      "direction": 1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 2.7822381268902014,
+      "max_rate_deg_s": [
+        335.52757359833953,
+        43.85400009393023,
+        28.879757356667966
+      ],
+      "profile": "full",
+      "aircraft": "jet",
+      "initial_axis_rate_rad_s": 0.6278059993098593,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 24.95817782539231,
+      "alpha_abs_max_deg": 32.85316449290733,
+      "altitude_min_m": 223.6982528856344,
+      "axis": "pitch",
+      "beta_abs_max_deg": 1.698170143653169,
+      "completed": true,
+      "direction": -1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 3.0055265619631264,
+      "max_rate_deg_s": [
+        19.713010991114224,
+        187.45095767076495,
+        11.01571400098827
+      ],
+      "profile": "full",
+      "aircraft": "jet",
+      "initial_axis_rate_rad_s": -0.14646872358112256,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 22.44243418591738,
+      "alpha_abs_max_deg": 33.96711713856184,
+      "altitude_min_m": 272.20799079523675,
+      "axis": "pitch",
+      "beta_abs_max_deg": 0.503898367197593,
+      "completed": true,
+      "direction": 1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 2.851656365222512,
+      "max_rate_deg_s": [
+        3.4756444540551024,
+        140.55416202221068,
+        2.427071330479398
+      ],
+      "profile": "full",
+      "aircraft": "jet",
+      "initial_axis_rate_rad_s": 0.1464575018391253,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 28.226948200251936,
+      "alpha_abs_max_deg": 7.701337437815771,
+      "altitude_min_m": 295.2197493755903,
+      "axis": "yaw",
+      "beta_abs_max_deg": 21.743550199312722,
+      "completed": true,
+      "direction": -1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.6288906906793708,
+      "max_rate_deg_s": [
+        66.58466841162206,
+        25.300338817167603,
+        95.46602651468767
+      ],
+      "profile": "full",
+      "aircraft": "jet",
+      "initial_axis_rate_rad_s": -0.06848561714373383,
+      "initial_response_matches_pilot_sign": true
+    },
+    {
+      "airspeed_min_mps": 28.279222220003337,
+      "alpha_abs_max_deg": 7.3504419279767585,
+      "altitude_min_m": 294.02984268287736,
+      "axis": "yaw",
+      "beta_abs_max_deg": 21.788414961970584,
+      "completed": true,
+      "direction": 1.0,
+      "duration_s": 6.0,
+      "fault_reason": "",
+      "final_tick": 1440,
+      "finite": true,
+      "max_abs_normal_load_g": 1.5587269208828192,
+      "max_rate_deg_s": [
+        66.1442828583949,
+        23.300484843017454,
+        96.86962588700126
+      ],
+      "profile": "full",
+      "aircraft": "jet",
+      "initial_axis_rate_rad_s": 0.06848516152195042,
+      "initial_response_matches_pilot_sign": true
+    }
+  ],
+  "replays": {
+    "stik": {
+      "complete": true,
+      "rows": 1441,
+      "solver_changed": false,
+      "error": "",
+      "dt_s": 0.004166666666666667,
+      "baseline_solver_sha256": "12fb5ebe1d19146cbfbc920f9a9cb53a27990de7783fff3c325a4c4145cdbe1d",
+      "current_solver_sha256": "12fb5ebe1d19146cbfbc920f9a9cb53a27990de7783fff3c325a4c4145cdbe1d"
+    },
+    "jet": {
+      "complete": true,
+      "rows": 1441,
+      "solver_changed": false,
+      "error": "",
+      "dt_s": 0.004166666666666667,
+      "baseline_solver_sha256": "12fb5ebe1d19146cbfbc920f9a9cb53a27990de7783fff3c325a4c4145cdbe1d",
+      "current_solver_sha256": "12fb5ebe1d19146cbfbc920f9a9cb53a27990de7783fff3c325a4c4145cdbe1d"
+    }
+  },
+  "static_control_checks": [
+    {
+      "aircraft": "stik",
+      "speed_mps": 0.0,
+      "control": "elevator",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_absolute_difference": 0.0
+    },
+    {
+      "aircraft": "stik",
+      "speed_mps": 0.0,
+      "control": "rudder",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_absolute_difference": 0.0
+    },
+    {
+      "aircraft": "stik",
+      "speed_mps": 5.0,
+      "control": "elevator",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        -7.216449660063518e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_absolute_difference": 7.216449660063518e-16
+    },
+    {
+      "aircraft": "stik",
+      "speed_mps": 5.0,
+      "control": "rudder",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        -2.3314683517128287e-15,
+        0.0,
+        0.0,
+        4.5102810375396984e-17,
+        0.0,
+        0.0
+      ],
+      "maximum_absolute_difference": 2.3314683517128287e-15
+    },
+    {
+      "aircraft": "stik",
+      "speed_mps": 15.0,
+      "control": "elevator",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        4.440892098500626e-16,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_absolute_difference": 4.440892098500626e-16
+    },
+    {
+      "aircraft": "stik",
+      "speed_mps": 15.0,
+      "control": "rudder",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        0.0,
+        0.0,
+        0.0,
+        -4.163336342344337e-17,
+        0.0,
+        0.0
+      ],
+      "maximum_absolute_difference": 4.163336342344337e-17
+    },
+    {
+      "aircraft": "stik",
+      "speed_mps": 29.0,
+      "control": "elevator",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_absolute_difference": 0.0
+    },
+    {
+      "aircraft": "stik",
+      "speed_mps": 29.0,
+      "control": "rudder",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_absolute_difference": 0.0
+    },
+    {
+      "aircraft": "jet",
+      "speed_mps": 0.0,
+      "control": "elevator",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_absolute_difference": 0.0
+    },
+    {
+      "aircraft": "jet",
+      "speed_mps": 0.0,
+      "control": "rudder",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_absolute_difference": 0.0
+    },
+    {
+      "aircraft": "jet",
+      "speed_mps": 5.0,
+      "control": "elevator",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        -1.071365218763276e-14,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_absolute_difference": 1.071365218763276e-14
+    },
+    {
+      "aircraft": "jet",
+      "speed_mps": 5.0,
+      "control": "rudder",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        -9.381384558082573e-15,
+        0.0,
+        0.0,
+        0.0,
+        -2.7755575615628914e-17,
+        0.0
+      ],
+      "maximum_absolute_difference": 9.381384558082573e-15
+    },
+    {
+      "aircraft": "jet",
+      "speed_mps": 15.0,
+      "control": "elevator",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        2.6645352591003757e-15,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_absolute_difference": 2.6645352591003757e-15
+    },
+    {
+      "aircraft": "jet",
+      "speed_mps": 15.0,
+      "control": "rudder",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        4.440892098500626e-16,
+        0.0,
+        0.0,
+        0.0,
+        8.326672684688674e-17,
+        0.0
+      ],
+      "maximum_absolute_difference": 4.440892098500626e-16
+    },
+    {
+      "aircraft": "jet",
+      "speed_mps": 29.0,
+      "control": "elevator",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        -1.7763568394002505e-15,
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "maximum_absolute_difference": 1.7763568394002505e-15
+    },
+    {
+      "aircraft": "jet",
+      "speed_mps": 29.0,
+      "control": "rudder",
+      "change_of_control_authority_due_to_full_rpm_n_nm": [
+        0.0,
+        0.0,
+        0.0,
+        0.0,
+        -8.326672684688674e-17,
+        0.0
+      ],
+      "maximum_absolute_difference": 8.326672684688674e-17
+    }
+  ],
+  "crossflow_jumps": [
+    {
+      "rpm": 44000,
+      "transverse_axis": 1,
+      "epsilon_mps": 1e-06,
+      "jump_n_nm": [
+        -6.570999899757624e-08,
+        -1.3142,
+        0.0,
+        0.043569672600000005,
+        -2.1784836191918178e-09,
+        -0.433686
+      ]
+    },
+    {
+      "rpm": 44000,
+      "transverse_axis": 1,
+      "epsilon_mps": 0.001,
+      "jump_n_nm": [
+        -6.570882154388613e-05,
+        -1.3142000000065712,
+        0.0,
+        0.04356967260021786,
+        -2.178471665142956e-06,
+        -0.4336860000021685
+      ]
+    },
+    {
+      "rpm": 44000,
+      "transverse_axis": 2,
+      "epsilon_mps": 1e-06,
+      "jump_n_nm": [
+        -6.570999899757624e-08,
+        0.0,
+        -1.3142,
+        0.0,
+        0.4336859978215164,
+        0.0
+      ]
+    },
+    {
+      "rpm": 44000,
+      "transverse_axis": 2,
+      "epsilon_mps": 0.001,
+      "jump_n_nm": [
+        -6.570882154388613e-05,
+        0.0,
+        -1.3142000000065712,
+        0.0,
+        0.4336838215305034,
+        0.0
+      ]
+    },
+    {
+      "rpm": 154000,
+      "transverse_axis": 1,
+      "epsilon_mps": 1e-06,
+      "jump_n_nm": [
+        -2.2999999771400326e-07,
+        -4.6000000000000005,
+        0.0,
+        0.15250380000000002,
+        -7.62519003494333e-09,
+        -1.5180000000000002
+      ]
+    },
+    {
+      "rpm": 154000,
+      "transverse_axis": 1,
+      "epsilon_mps": 0.001,
+      "jump_n_nm": [
+        -0.0002299986774971785,
+        -4.600000000023001,
+        0.0,
+        0.15250380000076255,
+        -7.625176572712e-06,
+        -1.5180000000075904
+      ]
+    },
+    {
+      "rpm": 154000,
+      "transverse_axis": 2,
+      "epsilon_mps": 1e-06,
+      "jump_n_nm": [
+        -2.2999999771400326e-07,
+        0.0,
+        -4.6000000000000005,
+        0.0,
+        1.5179999923748104,
+        0.0
+      ]
+    },
+    {
+      "rpm": 154000,
+      "transverse_axis": 2,
+      "epsilon_mps": 0.001,
+      "jump_n_nm": [
+        -0.0002299986774971785,
+        0.0,
+        -4.600000000023001,
+        0.0,
+        1.5179923748310178,
+        0.0
+      ]
+    }
+  ],
+  "aero_spanwise_limits": [
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "epsilon_mps": 0.01,
+      "velocity_separation_mps": 0.014142135623730952,
+      "delta_loads_n_nm": [
+        0.00276486649641577,
+        -164.4932604350928,
+        -0.09212341828230616,
+        -8.26660337494953,
+        -0.013127099965328098,
+        15.24344602208113
+      ],
+      "side_acceleration_difference_g": 5.813970730226786
+    },
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "epsilon_mps": 0.0001,
+      "velocity_separation_mps": 0.0001414213562373095,
+      "delta_loads_n_nm": [
+        2.765023691122056e-05,
+        -164.4932402169714,
+        -0.0009212641500627658,
+        -8.266602367338342,
+        -0.00013127150534370636,
+        15.243444369533577
+      ],
+      "side_acceleration_difference_g": 5.8139700156226395
+    },
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "epsilon_mps": 1e-06,
+      "velocity_separation_mps": 1.4142135623730952e-06,
+      "delta_loads_n_nm": [
+        2.765025279612572e-07,
+        -164.49324021494957,
+        -9.212644508751132e-06,
+        -8.266602367237581,
+        -1.312715105728844e-06,
+        15.243444369368317
+      ],
+      "side_acceleration_difference_g": 5.8139700155511775
+    },
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "epsilon_mps": 1e-09,
+      "velocity_separation_mps": 1.4142135623730953e-09,
+      "delta_loads_n_nm": [
+        2.7650246952019085e-10,
+        -164.49324021494937,
+        -9.212644539106985e-09,
+        -8.26660236723757,
+        -1.3127151017533769e-09,
+        15.243444369368303
+      ],
+      "side_acceleration_difference_g": 5.81397001555117
+    },
+    {
+      "aircraft_id": "sebart-avanti-s-a200-p100rx",
+      "epsilon_mps": 0.01,
+      "velocity_separation_mps": 0.014142135623730952,
+      "delta_loads_n_nm": [
+        0.0035254184331854187,
+        -256.9718205114344,
+        -0.15678920932423981,
+        -1.8244674209416978,
+        -0.028740578424112897,
+        28.23838353719631
+      ],
+      "side_acceleration_difference_g": 2.2386701344514672
+    },
+    {
+      "aircraft_id": "sebart-avanti-s-a200-p100rx",
+      "epsilon_mps": 0.0001,
+      "velocity_separation_mps": 0.0001414213562373095,
+      "delta_loads_n_nm": [
+        3.5254159513960985e-05,
+        -256.97178958239374,
+        -0.001567891897275522,
+        -1.8244674766909235,
+        -0.00028740574694562424,
+        28.23838069628345
+      ],
+      "side_acceleration_difference_g": 2.238669865005894
+    },
+    {
+      "aircraft_id": "sebart-avanti-s-a200-p100rx",
+      "epsilon_mps": 1e-06,
+      "velocity_separation_mps": 1.4142135623730952e-06,
+      "delta_loads_n_nm": [
+        3.5254159766391954e-07,
+        -256.9717895793008,
+        -1.567891897255925e-05,
+        -1.8244674766965012,
+        -2.8740574703734965e-06,
+        28.238380695999357
+      ],
+      "side_acceleration_difference_g": 2.2386698649789487
+    },
+    {
+      "aircraft_id": "sebart-avanti-s-a200-p100rx",
+      "epsilon_mps": 1e-09,
+      "velocity_separation_mps": 1.4142135623730953e-09,
+      "delta_loads_n_nm": [
+        3.5254138858113083e-10,
+        -256.9717895793005,
+        -1.567891897255923e-08,
+        -1.8244674766964994,
+        -2.874057420483323e-09,
+        28.23838069599933
+      ],
+      "side_acceleration_difference_g": 2.2386698649789465
+    }
+  ],
+  "isa_comparison": [
+    {
+      "geometric_altitude_m": 50.0,
+      "isa_rho_kg_m3": 1.2191306776782016,
+      "runtime_uniform_rho_kg_m3": 1.225,
+      "runtime_force_overestimate_at_same_coefficients_percent": 0.48143504459885467,
+      "real_standard_day_stall_speed_increase_percent": 0.24042849299819036
+    },
+    {
+      "geometric_altitude_m": 500.0,
+      "isa_rho_kg_m3": 1.1672732849512553,
+      "runtime_uniform_rho_kg_m3": 1.225,
+      "runtime_force_overestimate_at_same_coefficients_percent": 4.945432727106014,
+      "real_standard_day_stall_speed_increase_percent": 2.442878096579282
+    },
+    {
+      "geometric_altitude_m": 1000.0,
+      "isa_rho_kg_m3": 1.111659673699691,
+      "runtime_uniform_rho_kg_m3": 1.225,
+      "runtime_force_overestimate_at_same_coefficients_percent": 10.195595736877227,
+      "real_standard_day_stall_speed_increase_percent": 4.974090011239074
+    }
+  ],
+  "flight_count": 28,
+  "completed_flights": 28,
+  "control_sign_checks_passed": 24
+}

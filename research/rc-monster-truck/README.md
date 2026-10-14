@@ -177,19 +177,23 @@ The first ground-vehicle activity is now connected to the app. This research REA
 
 ### Drive and experiment
 
-Select **RC cars · Bisonte MT8** at the lower right of Home. The truck starts paused on the aircraft runway, in the same airfield used by Home and flight. Release all controls, then press **Enter / Drive**. Alternatively, launch the project with `-- --vehicle=mt8-bisonte`. This entry preserves the saved aircraft selection and carries Home's lighting and sky into the drive. The supplied Blender model and scripts are authorized by their owner for inclusion and modification.
+The estimated drivetrain provides 5.2 N m per wheel and a 120 rad/s torque-fade endpoint. Its four curves imply 624 W peak mechanical power; tire grip still limits acceleration. The lower estimated CG and 85/15 front/rear brake allocation improve launch and stopping stability. Reduce speed before bends and ramps; large steering inputs can still produce a skid or rollover. See the [current driving comparisons, physical assumptions and optimization evidence](../../docs/research/rc-monster-truck/RCV-handling/README.md).
 
-| Action | Keyboard / mouse | Gamepad |
+Select **RC cars · Bisonte MT8** at the lower right of Home. The truck starts paused on the aircraft runway, in the same airfield used by Home and flight. The garage's **Driving controls** selector chooses a recognized gamepad when available, otherwise keyboard. Release the controls, wait for **Controls ready**, then select **Drive**, press Enter or the gamepad's Menu/Options button. Alternatively, launch the project with `-- --vehicle=mt8-bisonte`. This entry preserves the saved aircraft selection and carries Home's lighting and sky into the drive. The supplied Blender model and scripts are authorized by their owner for inclusion and modification.
+
+| Action | Keyboard / mouse | Xbox / PlayStation |
 | --- | --- | --- |
-| Forward / reverse | W / S, or up / down arrows | RT forward; hold B + RT for reverse |
+| Forward / reverse | W / S, or up / down arrows | RT / R2 forward; hold B / Circle + RT / R2 for reverse |
 | Steer | A / D, or left / right arrows | Left stick |
-| Brake | Space | LT |
-| Continue / garage | Enter / Esc | Start toggles |
-| Camera | C cycles chase, operator, orbit and circuit overview; right-drag and wheel adjust the close view | Garage camera button |
-| Manual recovery | R | Garage recovery button |
+| Brake | Space | LT / L2; overrides acceleration |
+| Continue / garage | Enter / Esc | Menu / Options toggles |
+| Camera | C cycles chase, operator, orbit and circuit overview; right-drag and wheel adjust the close view | X / Square while driving, or garage camera button |
+| Manual recovery | R | Y / Triangle while driving, or garage recovery button |
 | Record / stop and export | F9 or garage recording button | Garage recording button |
 
-A connected gamepad takes control priority. Focus loss or controller disconnection pauses the activity; returning focus never resumes automatically. Release the controls before continuing. Recovery marks the run as assisted. Reset starts a new valid run. Neither operation silently qualifies a landing or experiment.
+The garage selection belongs only to this car session; it does not change aircraft profiles or saved flight/menu devices. Choose **Keyboard** there to drive without the gamepad. Other devices cannot drive or navigate the garage, and a newly connected gamepad never takes over an active session. Raw radios, unmapped joysticks and steering wheels do not yet have a car mapping; their presence does not block keyboard driving. The car uses the fixed driving scheme above rather than aircraft channel/action remaps. Prompts follow the recognized device family.
+
+Steering and triggers have matching neutral/output deadzones (12% and 4%); input above the deadzone retains proportional control and reaches full travel. Focus loss, disconnection and invalid samples pause the activity; returning focus never resumes automatically. After a disconnect, choose a connected gamepad or **Keyboard** in the garage, release its controls, then continue explicitly. The click samples the current controls, so a newly held trigger cannot reuse a previous neutral sample. Recovery marks the run as assisted. Reset starts a new valid run. Neither operation silently qualifies a landing or experiment. [Controller audit, native captures and verification](../../docs/research/controller-support-2026-10-14/README.md#rcv-05-r1-car-controller-audit).
 
 Choose **Free drive** or **Physics lab**. The location selector provides the runway center/end and, in the default field, circuit entries for ramps, the wall slalom and rollers. The operator camera uses the field's pilot station. Lab changes apply by an explicit reset: gravity 0–2×, grip 0.15–2×, spring rate 0.5–2×, damping 0.25–2×, and 0–1.5 kg ballast at 0.03–0.35 m height. Ballast updates mass, CG and inertia together. The body toggle exposes the suspension; contact markers and travel plots are read-only views of the accepted simulation state.
 

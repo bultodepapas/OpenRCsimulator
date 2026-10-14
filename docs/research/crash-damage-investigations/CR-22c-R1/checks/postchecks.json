@@ -1,0 +1,22 @@
+[
+  {
+    "name": "reference-energy",
+    "exit": 1,
+    "summary": "206 checks, 1 failed",
+    "errors": [
+      "FAIL aircraft data file has an explicit energy-test classification: hx700_electric_3d_experimental.json"
+    ]
+  },
+  {
+    "name": "working-warmup",
+    "exit": 0,
+    "summary": "18 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "name": "working-warmup-native",
+    "exit": 0,
+    "summary": "18 checks, 0 failed",
+    "errors": []
+  }
+]

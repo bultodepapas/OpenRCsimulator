@@ -87,10 +87,10 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 	var cg: PackedFloat64Array = model.cg_le
 	var surfaces: Dictionary = model.surfaces
 	# E0b3a: resolve wing downwash once per evaluation, not from the washed flow. The same held/instantaneous
-	# CL must feed the free and washed evaluations. This is E0a2's angle law, not a new wake-transport model.
+	# dimensional source must feed the free and washed evaluations. This is E0a2's angle law, not a new wake-transport model.
 	var wing_cl: float = 0.0
 	if surfaces.horizontal.has("free_slope"):
-		wing_cl = Aero.wing_lift_coefficient(state, air, d, model) if is_nan(downwash_cl) else downwash_cl
+		wing_cl = Aero.wing_wake_velocity(state, air, d, model) if is_nan(downwash_cl) else downwash_cl
 	var tail_limit: float = surfaces.tail_local_limit
 	var tail_span: float = surfaces.tail_stall_end - surfaces.tail_local_limit
 	var tail_cd0: float = surfaces.tail_CD0
@@ -195,88 +195,18 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 		var rate_arm_0: float = q * arm_2 - r * arm_1
 		var rate_arm_1: float = r * arm_0 - p * arm_2
 		var rate_arm_2: float = p * arm_1 - q * arm_0
-		var control: float = -float(d.rudder) if vertical else float(d.elevator)
-		var control_angle: float = tail.control_effectiveness*control
-		var incidence: float = tail.incidence
-		var has_downwash: bool = not vertical and tail.has("free_slope")
-		var lift_slope: float = tail.free_slope if has_downwash else tail.lift_slope
-		var washed_0 := 0.0
-		var washed_1 := 0.0
-		var washed_2 := 0.0
-		var washed_3 := 0.0
-		var washed_4 := 0.0
-		var washed_5 := 0.0
-		var free_0 := 0.0
-		var free_1 := 0.0
-		var free_2 := 0.0
-		var free_3 := 0.0
-		var free_4 := 0.0
-		var free_5 := 0.0
-		for washed_pass in 2: # 0: free stream, 1: washed (pure and independent; order does not affect values)
-			var f0: float
-			var f1: float
-			var f2: float
-			if washed_pass == 1:
-				f0 = (v0 + (wash_0 - swirl_0)) + rate_arm_0
-				f1 = (v1 + (wash_1 - swirl_1)) + rate_arm_1
-				f2 = (v2 + (wash_2 - swirl_2)) + rate_arm_2
-			else:
-				f0 = (v0 + 0.0) + rate_arm_0
-				f1 = (v1 + 0.0) + rate_arm_1
-				f2 = (v2 + 0.0) + rate_arm_2
-			var normal: float = f1 if vertical else f2
-			var effective: float
-			if has_downwash:
-				effective = wrapf(M.atan2_(normal, f0) - float(tail.downwash_per_cl) * wing_cl
-					+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
-			else:
-				effective = wrapf(M.atan2_(normal, f0) + control_angle + incidence, -PI, PI)
-			var blend := Aero._smoothstep((absf(effective) - tail_limit)/tail_span)
-			var cl: float = (1.0 - blend)*lift_slope*effective + blend*0.5*tail_cd90*M.sin_(2.0*effective)
-			var cd: float = tail_cd0 + tail_k*cl*cl + tail_cd90*M.pow_(M.sin_(effective), 2)
-			var fx := 0.0
-			var fy := 0.0
-			var fz := 0.0
-			var mx := 0.0
-			var my := 0.0
-			var mz := 0.0
-			var flow_speed := M.sqrt_(f0 * f0 + f1 * f1 + f2 * f2)
-			if not flow_speed < 1e-10: # the oracle's test, so NaN takes the same branch
-				var plane_speed := M.sqrt_(f0*f0 + normal*normal)
-				var force_scale: float = drag_q*flow_speed*area*cd
-				fx = f0 * force_scale
-				fy = f1 * force_scale
-				fz = f2 * force_scale
-				if plane_speed > 1e-10:
-					var lift: float = lift_q*plane_speed*plane_speed*area*cl
-					fx += lift*normal/plane_speed
-					if vertical:
-						fy -= lift*f0/plane_speed
-					else:
-						fz -= lift*f0/plane_speed
-				mx = arm_1 * fz - arm_2 * fy
-				my = arm_2 * fx - arm_0 * fz
-				mz = arm_0 * fy - arm_1 * fx
-			if washed_pass == 1:
-				washed_0 = fx
-				washed_1 = fy
-				washed_2 = fz
-				washed_3 = mx
-				washed_4 = my
-				washed_5 = mz
-			else:
-				free_0 = fx
-				free_1 = fy
-				free_2 = fz
-				free_3 = mx
-				free_4 = my
-				free_5 = mz
-		o0 += washed_0 - free_0
-		o1 += washed_1 - free_1
-		o2 += washed_2 - free_2
-		o3 += washed_3 - free_3
-		o4 += washed_4 - free_4
-		o5 += washed_5 - free_5
+		var arm := M.v3(arm_0, arm_1, arm_2)
+		var free := Aero._tail_surface_from_flow(M.v3((v0+0.0)+rate_arm_0, (v1+0.0)+rate_arm_1, (v2+0.0)+rate_arm_2),
+			arm, d, tail, surfaces, area, vertical, rho, wing_cl)
+		var washed := Aero._tail_surface_from_flow(M.v3((v0+wash_0-swirl_0)+rate_arm_0,
+			(v1+wash_1-swirl_1)+rate_arm_1, (v2+wash_2-swirl_2)+rate_arm_2),
+			arm, d, tail, surfaces, area, vertical, rho, wing_cl)
+		o0 += washed[0] - free[0]
+		o1 += washed[1] - free[1]
+		o2 += washed[2] - free[2]
+		o3 += washed[3] - free[3]
+		o4 += washed[4] - free[4]
+		o5 += washed[5] - free[5]
 	if smooth:
 		var result: PackedFloat64Array = PackedFloat64Array([o0*fade, o1*fade, o2*fade, o3*fade, o4*fade, o5*fade])
 		if w.swirl != 0.0:

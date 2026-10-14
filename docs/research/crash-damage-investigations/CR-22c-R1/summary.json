@@ -1,0 +1,142 @@
+[
+  {
+    "aircraft": "gp-extra-300s-60",
+    "reference_first_ms": 134.528,
+    "candidate_first_ms": 42.683,
+    "reference_repeat_ms": 22.465,
+    "candidate_repeat_ms": 47.221,
+    "physics_exact": true,
+    "reference_setup_ms": 9366.219,
+    "candidate_setup_ms": 9902.203,
+    "reference_first_draw_ms": 9806.241,
+    "candidate_first_draw_ms": 10018.473,
+    "warmup_ms": 630.244,
+    "reference_scuff_us": [],
+    "candidate_scuff_us": []
+  },
+  {
+    "aircraft": "jensen-das-ugly-stik-60",
+    "reference_first_ms": 130.099,
+    "candidate_first_ms": 84.64,
+    "reference_repeat_ms": 229.486,
+    "candidate_repeat_ms": 27.358,
+    "physics_exact": true,
+    "reference_setup_ms": 8046.452,
+    "candidate_setup_ms": 9738.625,
+    "reference_first_draw_ms": 8522.508,
+    "candidate_first_draw_ms": 9851.571,
+    "warmup_ms": 744.424,
+    "reference_scuff_us": [
+      204808
+    ],
+    "candidate_scuff_us": [
+      1612
+    ]
+  },
+  {
+    "aircraft": "p51d-mustang-120",
+    "reference_first_ms": 76.767,
+    "candidate_first_ms": 33.407,
+    "reference_repeat_ms": 33.45,
+    "candidate_repeat_ms": 49.986,
+    "physics_exact": true,
+    "reference_setup_ms": 9641.323,
+    "candidate_setup_ms": 12854.411,
+    "reference_first_draw_ms": 10137.173,
+    "candidate_first_draw_ms": 12945.936,
+    "warmup_ms": 956.882,
+    "reference_scuff_us": [],
+    "candidate_scuff_us": [
+      1121,
+      1644
+    ]
+  },
+  {
+    "aircraft": "sebart-avanti-s-a200-p100rx",
+    "reference_first_ms": 89.727,
+    "candidate_first_ms": 42.16,
+    "reference_repeat_ms": 66.621,
+    "candidate_repeat_ms": 17.243,
+    "physics_exact": true,
+    "reference_setup_ms": 11051.26,
+    "candidate_setup_ms": 11789.166,
+    "reference_first_draw_ms": 11526.803,
+    "candidate_first_draw_ms": 11854.269,
+    "warmup_ms": 659.325,
+    "reference_scuff_us": [
+      37333
+    ],
+    "candidate_scuff_us": [
+      851,
+      518
+    ]
+  },
+  {
+    "aircraft": "stik-glow-55ax-2t",
+    "reference_first_ms": 95.831,
+    "candidate_first_ms": 63.049,
+    "reference_repeat_ms": 230.249,
+    "candidate_repeat_ms": 58.485,
+    "physics_exact": true,
+    "reference_setup_ms": 8557.898,
+    "candidate_setup_ms": 10129.705,
+    "reference_first_draw_ms": 9033.944,
+    "candidate_first_draw_ms": 10250.217,
+    "warmup_ms": 606.918,
+    "reference_scuff_us": [
+      196007
+    ],
+    "candidate_scuff_us": []
+  },
+  {
+    "aircraft": "stik-glow-61fx-2t",
+    "reference_first_ms": 112.83,
+    "candidate_first_ms": 63.805,
+    "reference_repeat_ms": 57.151,
+    "candidate_repeat_ms": 30.157,
+    "physics_exact": true,
+    "reference_setup_ms": 9518.208,
+    "candidate_setup_ms": 9462.917,
+    "reference_first_draw_ms": 10081.472,
+    "candidate_first_draw_ms": 9544.083,
+    "warmup_ms": 527.073,
+    "reference_scuff_us": [],
+    "candidate_scuff_us": [
+      1615
+    ]
+  },
+  {
+    "aircraft": "stik-glow-fs64v-4t",
+    "reference_first_ms": 88.555,
+    "candidate_first_ms": 58.542,
+    "reference_repeat_ms": 61.921,
+    "candidate_repeat_ms": 30.847,
+    "physics_exact": true,
+    "reference_setup_ms": 9270.133,
+    "candidate_setup_ms": 9307.532,
+    "reference_first_draw_ms": 9783.371,
+    "candidate_first_draw_ms": 9432.16,
+    "warmup_ms": 609.19,
+    "reference_scuff_us": [],
+    "candidate_scuff_us": []
+  },
+  {
+    "aircraft": "turbo-lumber-evolution",
+    "reference_first_ms": 37.148,
+    "candidate_first_ms": 35.821,
+    "reference_repeat_ms": 29.332,
+    "candidate_repeat_ms": 52.663,
+    "physics_exact": true,
+    "reference_setup_ms": 9601.56,
+    "candidate_setup_ms": 11268.541,
+    "reference_first_draw_ms": 10048.925,
+    "candidate_first_draw_ms": 11411.407,
+    "warmup_ms": 846.653,
+    "reference_scuff_us": [
+      131
+    ],
+    "candidate_scuff_us": [
+      327
+    ]
+  }
+]

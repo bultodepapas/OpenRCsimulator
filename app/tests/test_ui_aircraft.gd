@@ -51,6 +51,14 @@ func _close(app: Node) -> void:
 	await ui.settle()
 
 
+## UI-05-R3: input settles separately from asynchronous preview preparation.
+func _preview(app: Node) -> void:
+	var deadline := Time.get_ticks_msec() + 15000
+	while app.home_scene != null and app.home_scene.preview_pending and Time.get_ticks_msec() < deadline:
+		await process_frame
+	_check("preview preparation completes", app.home_scene == null or not app.home_scene.preview_pending)
+
+
 func _aircraft_counter(id: String) -> String:
 	var ids: PackedStringArray = Catalog.ids()
 	return tr("Aircraft %d of %d") % [ids.find(id) + 1, ids.size()]
@@ -74,6 +82,7 @@ func _run() -> void:
 	await ui.tap(KEY_RIGHT)
 	_check("Right from Fly -> next aircraft arrow", ui.focus_name() == "NextAircraft", ui.focus_name())
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	_check("MAX-61FX Stik: experimental 2-stroke on card and backdrop", home.aircraft_id == GLOW_61FX
 		and home.aircraft_count_label.text == _aircraft_counter(GLOW_61FX)
 		and home.aircraft_name_label.text == Catalog.entry(GLOW_61FX).name
@@ -82,6 +91,7 @@ func _run() -> void:
 		home.aircraft_status_label.text)
 	_check("MAX-61FX selection does not start a flight", app.flight == null)
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	_check("55AX glow Stik: experimental 2-stroke on card and backdrop", home.aircraft_id == GLOW_55AX
 		and home.aircraft_name_label.text == Catalog.entry(GLOW_55AX).name
 		and app.home_scene.airplane.aircraft_id == GLOW_55AX and not home.fly_button.disabled
@@ -89,6 +99,7 @@ func _run() -> void:
 		home.aircraft_status_label.text)
 	_check("55AX selection does not start a flight", app.flight == null)
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	_check("FS-64V glow Stik: experimental true 4-stroke on card and backdrop", home.aircraft_id == GLOW_FS64V
 		and home.aircraft_name_label.text == Catalog.entry(GLOW_FS64V).name
 		and app.home_scene.airplane.aircraft_id == GLOW_FS64V and not home.fly_button.disabled
@@ -96,6 +107,7 @@ func _run() -> void:
 		home.aircraft_status_label.text)
 	_check("FS-64V selection does not start a flight", app.flight == null)
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	_check("Enter on the arrow: the Extra on the card, in the backdrop and saved", home.aircraft_id == EXTRA and home.aircraft_name_label.text == Catalog.entry(EXTRA).name
 		and app.home_scene.airplane.aircraft_id == EXTRA and Preferences.load_from(PREFS).aircraft == EXTRA)
 	_check("Extra: Fly enabled, its status says experimental", not home.fly_button.disabled and home.aircraft_status_label.text.begins_with("Experimental"))
@@ -103,9 +115,11 @@ func _run() -> void:
 
 	# Next again: the P-51 (experimental, flyable); then the Ventage Jet (experimental since AV-07, flyable).
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	_check("P-51: shown, experimental, Fly enabled", home.aircraft_id == P51 and not home.fly_button.disabled
 		and home.aircraft_status_label.text.begins_with("Experimental") and app.home_scene.airplane.aircraft_id == P51, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	_check("Ventage Jet: shown, experimental, Fly enabled", home.aircraft_id == AVANTI and not home.fly_button.disabled
 		and home.aircraft_status_label.text.begins_with("Experimental"), home.aircraft_status_label.text)
 	_check("Ventage Jet: the backdrop shows it, focus stays on the arrow", app.home_scene.airplane.aircraft_id == AVANTI and ui.focus_name() == "NextAircraft", ui.focus_name())
@@ -113,6 +127,7 @@ func _run() -> void:
 
 	# The Timber is now the experimental, data-backed electric aircraft (TT-08/10).
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	_check("Timber: shown, experimental, Fly enabled", home.aircraft_id == TIMBER and not home.fly_button.disabled
 		and home.aircraft_status_label.text.begins_with("Experimental") and home.limits_label.visible, home.aircraft_status_label.text)
 	var timber_note: String = home.aircraft_status_label.text.to_lower()
@@ -124,6 +139,7 @@ func _run() -> void:
 	_check("Timber selection is saved without starting a session", Preferences.load_from(PREFS).aircraft == TIMBER and app.flight == null)
 	# The experimental helicopter is last; next wraps to the Stik. Previous crosses the helicopter before Timber.
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	_check("helicopter is last in the catalog with the HX-700 preview and pad start",
 		home.aircraft_id == HELI and home.aircraft_count_label.text == _aircraft_counter(HELI)
 		and app.home_scene.airplane.visual_family == "hx-700" and home.start_choice == "runway"
@@ -132,13 +148,17 @@ func _run() -> void:
 	_check("helicopter selection is saved without starting a session",
 		Preferences.load_from(PREFS).aircraft == HELI and app.flight == null)
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	_check("next wraps around to the Ugly Stik", home.aircraft_id == STIK)
 	await ui.tap(KEY_LEFT)
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	_check("previous arrow from the Stik reaches the last helicopter", home.aircraft_id == HELI, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	_check("previous from the helicopter returns to the Timber", home.aircraft_id == TIMBER, home.aircraft_id)
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	_check("previous again: the Ventage Jet", home.aircraft_id == AVANTI, home.aircraft_id)
 	app.set_language("es")
 	await ui.settle()
@@ -169,6 +189,7 @@ func _run() -> void:
 		and Preferences.load_from(PREFS).aircraft == TIMBER)
 	home.fly_button.grab_focus()
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	await ui.settle()
 	var timber_flight: Node = app.flight
 	var timber_session: Node = timber_flight.session if timber_flight != null else null
@@ -188,6 +209,7 @@ func _run() -> void:
 	await ui.tap(KEY_DOWN)
 	_check("Restart is keyboard reachable", ui.focus_name() == "Restart", ui.focus_name())
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	await ui.settle()
 	_check("Restart restores a fresh trimmed Timber flight", app.flight == timber_flight and app.pause_menu == null
 		and not timber_session.sim.paused and timber_session.aircraft.model.id == TIMBER and timber_session.sim.time() < 0.25,
@@ -208,6 +230,7 @@ func _run() -> void:
 		quit(1)
 		return
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	await ui.settle()
 	_check("End returns to Home and releases the old session", app.flight == null and app.home != null
 		and root.find_children("FlightSession", "", true, false).is_empty()
@@ -220,6 +243,7 @@ func _run() -> void:
 		return
 	home.fly_button.grab_focus()
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	await ui.settle()
 	_check("reselect after End starts Timber again", app.flight != null and app.flight._airplane.aircraft_id == TIMBER
 		and app.flight.session.aircraft.model.id == TIMBER)
@@ -232,6 +256,7 @@ func _run() -> void:
 		and Preferences.load_from(PREFS).aircraft == TIMBER, home.aircraft_status_label.text)
 	home.fly_button.grab_focus()
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	await ui.settle()
 	_check("persisted Timber choice flies its matching physics", app.flight != null and app.flight._airplane.aircraft_id == TIMBER
 		and app.flight.session.aircraft.model.id == TIMBER)
@@ -243,6 +268,7 @@ func _run() -> void:
 	await ui.settle()
 	app.home.fly_button.grab_focus()
 	await ui.tap(KEY_ENTER)
+	await _preview(app)
 	await ui.settle()
 	_check("Fly with the Extra still starts the matching model and physics", app.flight != null and app.flight._airplane.aircraft_id == EXTRA
 		and app.flight.session.aircraft.model.id == EXTRA and app.home == null)

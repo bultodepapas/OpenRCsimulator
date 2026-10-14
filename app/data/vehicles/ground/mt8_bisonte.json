@@ -106,10 +106,10 @@
       "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. Centered lateral CG placeholder; no component mass inventory is supplied."
     },
     "cg_height_above_chassis_datum_m": {
-      "value": 0.095,
+      "value": 0.065,
       "unit": "m",
       "kind": "estimated",
-      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. CG height above the supplied chassis underside datum; the 0.125 m ride-origin dimension is not treated as a measured CG."
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. Virtual low-mounted electric mass layout: CG 65 mm above the supplied chassis underside datum, reduced from the original 95 mm estimate. RCV handling launch tests at 5.2 Nm/wheel and 120 rad/s found 95 mm flipped, 80 mm stayed upright and 65 mm retained more pitch margin. Hull and rendering offsets are derived from this CG; mass and CG-relative inertia remain estimates. This is not a measured battery layout, and the 125 mm ride-origin dimension is not a CG measurement. See docs/research/rc-monster-truck/RCV-handling/README.md."
     },
     "arm_inner_offset_m": {
       "value": 0.06,
@@ -202,16 +202,22 @@
       "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
     },
     "drive_torque_per_wheel_nm": {
-      "value": 3.0,
+      "value": 5.2,
       "unit": "N m",
       "kind": "estimated",
-      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. Equal-torque electric 4WD approximation."
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. Equal-torque electric 4WD approximation; RCV handling revision raises stall torque from 4.2 to 5.2 Nm per wheel. See docs/research/rc-monster-truck/RCV-handling/README.md."
     },
     "brake_torque_per_wheel_nm": {
-      "value": 6.0,
+      "value": 1.35,
       "unit": "N m",
       "kind": "estimated",
-      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. Nominal mean per-wheel capacity; four times this value is the total brake torque budget, allocated by brake_front_fraction. RCV handling tests at 11.87 m/s found 2.0 Nm pitched over, while 1.2 through 1.65 Nm stopped in similar times; 1.35 Nm retains pitch margin with 85/15 axle allocation. See docs/research/rc-monster-truck/RCV-handling/README.md."
+    },
+    "brake_front_fraction": {
+      "value": 0.85,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. Fixed virtual axle brake allocation: 85 percent front, 15 percent rear, preserving four times the nominal per-wheel torque budget. Chosen from RCV handling tests to reduce premature rear lock; no yaw or slip feedback. This estimated independent-axle brake arrangement is not a measured Traxxas or central-driveline specification. See docs/research/rc-monster-truck/RCV-handling/README.md."
     },
     "reverse_torque_fraction": {
       "value": 0.6,
@@ -220,10 +226,10 @@
       "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
     },
     "drive_torque_fade_rad_s": {
-      "value": 40.0,
+      "value": 120.0,
       "unit": "rad/s",
       "kind": "estimated",
-      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied."
+      "source": "Engineering estimate for an electric 4WD simulation baseline; no physical weighing, spring, tire, torque, or handling measurements were supplied. Linear torque fade reaches zero at this wheel speed; 0.100 m tires imply 12 m/s unloaded rolling speed and the four curves imply 624 W peak mechanical power. This is not a measured motor curve, battery model or guaranteed road speed."
     },
     "rolling_resistance_coefficient": {
       "value": 0.035,

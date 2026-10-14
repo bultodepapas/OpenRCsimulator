@@ -1,0 +1,30 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   no file -> English, writable
+ok   save
+ok   load what was saved
+ok   diagnostic marker opt-out persists
+ok   diagnostic preference rejects the wrong type
+ok   unsupported language -> English
+ok   wrong type -> English (ConfigFile keeps the file's type)
+ok   unreadable file -> defaults, kept as .bad
+ok   newer schema: valid values read, file marked read-only
+ok   newer schema: never overwritten
+ok   Spanish catalog: 795 texts, none untranslated
+ok   language en has a catalog or is the source
+ok   language es has a catalog or is the source
+ok   English by default, even on a Spanish OS
+ok   language button names the language in itself
+ok   Enter on Language -> Spanish at once
+ok   dynamic texts rebuilt in Spanish
+ok   AUX profile errors translate
+ok   focus stays on Language
+ok   every translatable Home text has a Spanish translation
+ok   choice saved
+ok   next start remembers Spanish
+ok   and cycles back to English
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct flight: English, no settings file created
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   direct flight ignores a saved Spanish preference and leaves the file alone
+all UI language checks passed

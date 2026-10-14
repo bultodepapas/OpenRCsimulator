@@ -1482,6 +1482,18 @@
         "unit": "1",
         "kind": "estimated",
         "source": "AV-17-R2 simulator device setting for short gamepad sticks: normal-profile pitch uses 0.4 of the manual normal travel (6 deg before trim). Full profile and RC radios retain maximum travel; not manufacturer data or an aerodynamic limiter. docs/research/avanti-realism/AV-17-R2/README.md."
+      },
+      "yaw_scale": {
+        "value": 0.5,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "AV-17-R3 short-stick gamepad tuning: normal rudder uses half the manual normal travel (12 deg before trim); same yaw command drives the nosewheel mix. Full profile and RC radios bypass. Simulator device policy, not manufacturer setup; docs/research/avanti-realism/AV-17-R3/README.md."
+      },
+      "yaw_response_time": {
+        "value": 0.1,
+        "unit": "s",
+        "kind": "estimated",
+        "source": "AV-17-R3 simulator input policy: first-order time constant for normal-gamepad yaw demand, after device expo and before travel/trim; 63.2 percent response in 0.10 s, 95 percent in 0.30 s. Reduces abrupt rudder-release excitation; not servo lag or yaw-rate feedback. docs/research/avanti-realism/AV-17-R3/README.md."
       }
     }
   },
@@ -1695,16 +1707,16 @@
         "source": "research/avanti-s/av06/derive_physics.py: fin only (v1 contract: equals the vertical surface)"
       },
       "Cnp": {
-        "value": 0.005968,
+        "value": 0.008622,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/avanti-s/av06/derive_physics.py: -CL_ref/8 + fin"
+        "source": "research/avanti-s/av06/derive_physics.py: -CL_ref/8 + fin about CG, minus CYp*(x_CG-x_ARP)/b for the ARP moment contract; AV-17-R3"
       },
       "Cnr": {
-        "value": -0.135714,
+        "value": -0.142153,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/avanti-s/av06/derive_physics.py: fin + wing profile drag + fuselage (-0.02 estimated)"
+        "source": "research/avanti-s/av06/derive_physics.py: fin + wing profile drag + fuselage (-0.02 estimated) about CG, minus CYr*(x_CG-x_ARP)/b for the ARP moment contract; AV-17-R3"
       },
       "Cnda_right": {
         "value": 0.013645,

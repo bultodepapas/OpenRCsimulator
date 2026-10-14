@@ -1,0 +1,14 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI night update mean us: 28.66
+HELI night lights: 27 checks, 0 failed
+SCRIPT ERROR: Parse Error: Cannot infer the type of "has_prepared_momentum" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://render/rotor/heli_wreck.gd:131)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://render/rotor/heli_crash_presentation.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://helicopter_main.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tests/test_heli_night_lights.gd:0)
+ERROR: Failed to load script "res://tests/test_heli_night_lights.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

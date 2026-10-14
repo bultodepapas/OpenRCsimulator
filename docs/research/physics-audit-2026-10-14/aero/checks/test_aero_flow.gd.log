@@ -1,0 +1,24 @@
+RUN test_aero_flow.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+H4 local flow: 20000 byte-exact comparisons, 0 failed
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+FAIL local loads sebart-avanti-s-a200-p100rx sample 1: [-30.061842725677, 188.167611058362, -221.666112134721, 22.738770872432, -30.1191923003208, -34.5986474526745] != [-30.525469475358, 188.783744122488, -222.364964970062, 22.7859097325568, -30.1041156108666, -34.610725809451]
+FAIL local loads sebart-avanti-s-a200-p100rx sample 2: [-91.6377474043307, 215.634788265088, 392.523036243969, -14.6739072635412, 63.1008884154576, -65.1044581270092] != [-53.4572366090931, 184.912626826068, 337.722303066039, 0.95435564350418, 65.0331587214579, -60.5273411889593]
+FAIL local loads sebart-avanti-s-a200-p100rx sample 4: [-21.0781188489814, 205.680756348093, -194.696223637385, 7.4575543026896, -23.816673311888, -41.7336933917136] != [-21.3071157554969, 206.096700024611, -195.1034731153, 7.57179741187311, -23.8074731740633, -41.7999956435473]
+FAIL local loads sebart-avanti-s-a200-p100rx sample 6: [-4.28624451233046, -53.8159776094167, 36.2040422264062, 2.34288721681709, 11.2797918417533, 13.858782302629] != [-4.28475655261031, -53.8279154119022, 36.1997192131758, 2.32356939594942, 11.2799289359726, 13.8511303172334]
+FAIL local loads sebart-avanti-s-a200-p100rx sample 7: [24.3039101744013, -243.414899143843, 368.617644003131, -1.59543077801161, 53.3298401791152, 52.0290278250917] != [24.1829129538704, -243.572196970244, 368.869617171262, -1.48637243492355, 53.321504601992, 52.0858718466028]
+H12 local loads: 20001 byte-exact comparisons (14553 stalled, 4000 zero-flow), 1556 failed
+D11j Timber section moment: ΔMy -1.326784386806 Nm, analytic -1.326784386806 Nm, Cm_ac -0.035000
+EXIT 1

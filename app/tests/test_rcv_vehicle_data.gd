@@ -24,6 +24,7 @@ func _initialize() -> void:
 	_test_kernel_initialization(model)
 	_test_experiment(loaded)
 	_test_strict_rejection()
+	_test_brake_distribution()
 	quit(1 if failures > 0 else 0)
 
 
@@ -67,7 +68,7 @@ func _test_experiment(base: Dictionary) -> void:
 		_check("ballast updates sprung mass and weighted CG", is_equal_approx(ballasted.model.sprung_mass_kg, base.model.sprung_mass_kg + 1.0) and is_equal_approx(ballasted.model.cg_height_above_chassis_datum_m, expected_cg))
 		_check("ballast shifts hull probes relative to the new CG", ballasted.model.hull_probe_centers_frd_m[2] > base.model.hull_probe_centers_frd_m[2])
 		_check("ballast updates inertia with parallel-axis terms", ballasted.model.sprung_inertia_kg_m2[0] > base.model.sprung_inertia_kg_m2[0] and ballasted.model.sprung_inertia_kg_m2[1] > base.model.sprung_inertia_kg_m2[1])
-		_check("experiment does not mutate base", is_equal_approx(base.model.sprung_mass_kg, 4.8) and is_equal_approx(base.model.cg_height_above_chassis_datum_m, 0.095))
+		_check("experiment does not mutate base", is_equal_approx(base.model.sprung_mass_kg, 4.8) and is_equal_approx(base.model.cg_height_above_chassis_datum_m, 0.065))
 	var zero_gravity: Dictionary = knobs.duplicate(true)
 	zero_gravity.gravity_scale = 0.0
 	var zero_result: Dictionary = VehicleData.with_experiment(base, zero_gravity)
@@ -92,6 +93,25 @@ func _test_strict_rejection() -> void:
 	bad_quantity.parameters.sprung_mass_kg.unit = "lb"
 	rejected = VehicleData.validate(bad_quantity)
 	_check("wrong physical units reject the whole model", not bool(rejected.get("ok", true)) and rejected.get("model", {}).is_empty())
+
+
+func _test_brake_distribution() -> void:
+	var authored: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+	var legacy := authored.duplicate(true)
+	legacy.parameters.erase("brake_front_fraction")
+	var loaded: Dictionary = VehicleData.validate(legacy)
+	_check("legacy descriptor defaults to equal axle braking", loaded.get("ok", false) and loaded.model.brake_front_fraction == 0.5)
+	_check("legacy normalization does not mutate authored quantities", not legacy.parameters.has("brake_front_fraction"))
+	for fraction in [0.0, 0.5, 0.85, 1.0]:
+		var valid := authored.duplicate(true)
+		valid.parameters.brake_front_fraction.value = fraction
+		loaded = VehicleData.validate(valid)
+		_check("valid axle brake fraction accepted: " + str(fraction), loaded.get("ok", false) and loaded.model.brake_front_fraction == fraction)
+	for fraction in [-0.01, 1.01, NAN, INF, true, "0.85"]:
+		var invalid := authored.duplicate(true)
+		invalid.parameters.brake_front_fraction.value = fraction
+		loaded = VehicleData.validate(invalid)
+		_check("invalid axle brake fraction rejected: " + str(fraction), not loaded.get("ok", true) and loaded.get("model", {}).is_empty())
 
 
 func _check(label: String, condition: bool, detail: String = "") -> void:

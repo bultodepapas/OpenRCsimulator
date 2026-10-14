@@ -1,0 +1,39 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+RCV session: 46 checks, 6 failed
+ERROR: FAIL: strict checkpoint restore succeeds
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_rcv_session.gd:33)
+       [1] _test_garage_reverse_checkpoint_replay (res://tests/test_rcv_session.gd:132)
+       [2] _initialize (res://tests/test_rcv_session.gd:17)
+ERROR: FAIL: restored checkpoint is paused and byte-for-byte same state
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_rcv_session.gd:33)
+       [1] _test_garage_reverse_checkpoint_replay (res://tests/test_rcv_session.gd:135)
+       [2] _initialize (res://tests/test_rcv_session.gd:17)
+ERROR: FAIL: JSON checkpoint roundtrip preserves authoritative float64 byte hashes
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_rcv_session.gd:33)
+       [1] _test_garage_reverse_checkpoint_replay (res://tests/test_rcv_session.gd:138)
+       [2] _initialize (res://tests/test_rcv_session.gd:17)
+ERROR: FAIL: JSON-loaded checkpoint restores while paused
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_rcv_session.gd:33)
+       [1] _test_garage_reverse_checkpoint_replay (res://tests/test_rcv_session.gd:140)
+       [2] _initialize (res://tests/test_rcv_session.gd:17)
+ERROR: FAIL: state-byte corruption is rejected atomically
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_rcv_session.gd:33)
+       [1] _test_garage_reverse_checkpoint_replay (res://tests/test_rcv_session.gd:146)
+       [2] _initialize (res://tests/test_rcv_session.gd:17)
+ERROR: FAIL: failed restore leaves current state unchanged
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_rcv_session.gd:33)
+       [1] _test_garage_reverse_checkpoint_replay (res://tests/test_rcv_session.gd:153)
+       [2] _initialize (res://tests/test_rcv_session.gd:17)

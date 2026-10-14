@@ -1,0 +1,38 @@
+{
+  "course_identity": {
+    "format": "openrc-ground-course",
+    "id": "mt8-practice-course-estimate-v1",
+    "sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+    "version": "1"
+  },
+  "format": "openrc-ground-vehicle-analysis",
+  "independent_analysis": {
+    "actual_com_height_delta_m_at_last_airborne_sample": -0.46615638368055573,
+    "analysis_limit": "The ballistic check uses the sprung-plus-hub system center of mass, because internal suspension forces can accelerate the sprung chassis during free flight. It covers only pre-contact motion; contact bounce and damping remain estimated and are not physical validation.",
+    "check": "pass",
+    "expected_com_height_delta_m_at_last_airborne_sample": -0.46615638368055556,
+    "first_contact_time_s": 0.3125,
+    "free_flight_sample_count": 75,
+    "last_airborne_time_s": 0.30833333333333335,
+    "maximum_ballistic_height_error_m": 3.3306690738754696e-16,
+    "maximum_ballistic_vertical_velocity_error_m_per_s": 1.7763568394002505e-15,
+    "run_id": "drop_start",
+    "system_com_free_fall_height_change_m": 0.46615638368055556
+  },
+  "qualification": "Software and source-consistency checks only. The bundled vehicle and course parameters are estimates; this report does not establish physical validity or handling fidelity.",
+  "sample_count": 481,
+  "scenario": "drop",
+  "solver_version": "openrc-ground-vehicle-dynamics-rk4-v3",
+  "source_metadata": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\rcv\\dampers\\supported-drop-baseline.json",
+  "source_metadata_sha256": "8a047c55d45a9a38d185dc25e896b88b87ae9433092815f308d0a7d74a54d6f1",
+  "source_recording": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\rcv\\dampers\\supported-drop-baseline.csv",
+  "source_recording_sha256": "1195b638c5865cf645f54ee3bf2bab7878b1f9318d1dd4af8cb84af5c0fe51d2",
+  "status": "complete",
+  "vehicle_identity": {
+    "format": "openrc-ground-vehicle",
+    "id": "mt8-bisonte-electric-4wd-estimate-v1",
+    "sha256": "425f2a3fe810f82d609ad2b9dd9618b9fb45bcd813df57873cd8bc8759a750a5",
+    "version": "1"
+  },
+  "version": 1
+}

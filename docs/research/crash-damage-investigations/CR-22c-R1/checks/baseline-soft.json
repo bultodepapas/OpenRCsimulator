@@ -1,0 +1,18 @@
+[
+  {
+    "name": "reference-soft-contact",
+    "exit": 0,
+    "errors": [
+      "WARNING: Target and up vectors are colinear. This is not advised as it may cause unwanted rotation around local Z axis."
+    ]
+  },
+  {
+    "name": "reference-soft-contact-native",
+    "exit": 0,
+    "errors": [
+      "WARNING: Target and up vectors are colinear. This is not advised as it may cause unwanted rotation around local Z axis.",
+      "ERROR: Texture with GL ID of 27: leaked 349524 bytes.",
+      "ERROR: Texture with GL ID of 28: leaked 349524 bytes."
+    ]
+  }
+]

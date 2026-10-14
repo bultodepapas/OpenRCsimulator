@@ -1,0 +1,40 @@
+{
+  "checks": {
+    "camera_shortcut": true,
+    "device_selector_visible": true,
+    "drive-native-es.png": true,
+    "drive_button_visible": true,
+    "explicit_keyboard_drives": true,
+    "focused": true,
+    "garage-keyboard-es.png": true,
+    "garage-native-es.png": true,
+    "garage_navigation_owned": true,
+    "known_gamepad": true,
+    "neutral_ready": true,
+    "ready_status_visible": true,
+    "recovery_pauses_and_marks_assisted": true,
+    "reset_then_start_drives": true,
+    "start_drives": true,
+    "start_pauses": true
+  },
+  "controls_hint": "Palanca izquierda: girar · RT: acelerar · LT: frenar · Mantén B + RT: reversa\nX: cámara · Y: recuperar · Menú: garaje / continuar",
+  "device": {
+    "kind": "gamepad",
+    "known": true,
+    "name": "XInput Controller"
+  },
+  "engine": "4.7.2-stable (official)",
+  "passed": true,
+  "physical_driving_qualification": false,
+  "renderer": "NVIDIA GeForce RTX 3090",
+  "resting_axes": {
+    "connected": true,
+    "device_id": 0,
+    "left_trigger": 0.0,
+    "left_x": 0.0,
+    "reverse": false,
+    "right_trigger": 0.0
+  },
+  "synthetic_axis_events": false,
+  "synthetic_button_events": true
+}

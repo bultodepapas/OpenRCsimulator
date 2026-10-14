@@ -1,8 +1,8 @@
 # Global performance and visual-quality implementation plan
 
-2026-10-14 · Revision 18 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
+2026-10-14 · Revision 19 · Planning baseline: `70a84ee6` · Godot **4.7.2**, desktop Compatibility.
 
-**Latest menu responsiveness slice:** [UI-05-R2](../research/menu-investigations/UI-05-R2/README.md) retains three recent aircraft visuals and their neutral shadow geometry. On the recorded native selector campaign, retained selections take about 5–6 ms; first-visit construction remains synchronous. The report owns memory/visual limits, lifecycle proof and the next cold-selection investigation.
+**Latest menu responsiveness slice:** [UI-05-R3](../research/menu-investigations/UI-05-R3/README.md) adds latest-selection ownership and bounded asynchronous loading of selected scene resources, retaining UI-05-R2's three visual models. Five native process pairs measure jet selection feedback at 1727→6.44 ms, while the complete first preview still takes about 1604 ms and retains a construction stall. Cached handlers remain around 5 ms. The report separates feedback, readiness, frame spikes, memory limits and lifecycle checks; main-thread model/night preparation is next. Speculative prefetch, texture imports and shader warmup remain gated experiments.
 
 **Menu-focused follow-up:** [UI-05-R1](../research/menu-investigations/UI-05-R1/README.md) reuses unchanged Home legend controls, preserving physical-keyboard label refresh. [UI-06d-R2](../research/menu-investigations/UI-06d-R2/README.md) repairs long launch-caption overflow and live-language updates, with refreshed regression evidence. Native UI-call measurements remain separate from the loading campaigns below; UI-22…29 remain open.
 

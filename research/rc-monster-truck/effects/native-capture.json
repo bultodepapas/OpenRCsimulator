@@ -1,0 +1,131 @@
+{
+	"captures": [
+		{
+			"effects": {
+				"brake_lights": false,
+				"dust_active_wheels": 4,
+				"dust_emission_levels": [
+					1.0,
+					1.0,
+					1.0,
+					1.0
+				],
+				"grime_amount": 0.42000000000000126,
+				"headlight_energy": 0.18,
+				"headlights_enabled": true,
+				"particle_budget_per_wheel": 24,
+				"particle_budget_total": 96,
+				"particle_emitter_count": 4,
+				"paused": false,
+				"prepared": true,
+				"reverse_lights": false
+			},
+			"fixture_telemetry": {
+				"speed_m_per_s": 5.2,
+				"surface_id": "loose_gravel",
+				"wheel_in_contact": [
+					1,
+					1,
+					1,
+					1
+				],
+				"wheel_slip_speed_m_per_s": [
+					1.6,
+					1.6,
+					1.6,
+					1.6
+				]
+			},
+			"label": "day-dust-fixture",
+			"ok": true,
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-effects/effects-day-dust.png",
+			"size": [
+				1302,
+				776
+			],
+			"visual_fixture_only": true
+		},
+		{
+			"effects": {
+				"brake_lights": false,
+				"dust_active_wheels": 0,
+				"dust_emission_levels": [
+					0.0,
+					0.0,
+					0.0,
+					0.0
+				],
+				"grime_amount": 0.42000000000000126,
+				"headlight_energy": 2.4,
+				"headlights_enabled": true,
+				"particle_budget_per_wheel": 24,
+				"particle_budget_total": 96,
+				"particle_emitter_count": 4,
+				"paused": false,
+				"prepared": true,
+				"reverse_lights": false
+			},
+			"label": "night-front-headlights",
+			"ok": true,
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-effects/effects-night-headlights.png",
+			"size": [
+				1302,
+				776
+			],
+			"visual_fixture_only": true
+		},
+		{
+			"control_fixture": {
+				"brake": 1.0,
+				"headlights_enabled": true,
+				"reverse": true
+			},
+			"effects": {
+				"brake_lights": true,
+				"dust_active_wheels": 0,
+				"dust_emission_levels": [
+					0.0,
+					0.0,
+					0.0,
+					0.0
+				],
+				"grime_amount": 0.42000000000000126,
+				"headlight_energy": 2.4,
+				"headlights_enabled": true,
+				"particle_budget_per_wheel": 24,
+				"particle_budget_total": 96,
+				"particle_emitter_count": 4,
+				"paused": false,
+				"prepared": true,
+				"reverse_lights": true
+			},
+			"label": "night-rear-brake-reverse",
+			"ok": true,
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-effects/effects-night-rear-lamps.png",
+			"size": [
+				1302,
+				776
+			],
+			"visual_fixture_only": true
+		}
+	],
+	"fixture_note": "Dust telemetry is staged for visual review only; this capture does not show driving or validate vehicle behavior.",
+	"format": "rcv-ground-effects-native-capture v1",
+	"immutable_source_sha256": {
+		"mt8_glb": "7967bb46673ae5b4178a3d40ad8c3b8e1a9d0350b1cc73e2084f52ab496bb0a6",
+		"smoke_png": "33f894c2279bee9f77874dbfa3c0e9f071a0ee5e1a7065dcc40196029d699f58"
+	},
+	"model_builder": "res://vehicles/ground/mt8_model.gd Model.build()",
+	"ok": true,
+	"renderer": {
+		"adapter": "NVIDIA GeForce RTX 3090",
+		"driver": "opengl3",
+		"godot": "4.7.2-stable (official)",
+		"method": "gl_compatibility",
+		"size": [
+			1280,
+			720
+		]
+	},
+	"rig_pose": "imported MT8 rig initialized in rest pose, grounded by its measured wheel bounds, then 8-degree steer and small wheel spin through rig setters"
+}

@@ -1,0 +1,172 @@
+[
+  {
+    "name": "test_pilot_trim",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_pilot_trim.gd"
+    ],
+    "exit_code": 0,
+    "engine_errors": [],
+    "passed": true,
+    "elapsed_seconds": 27.422
+  },
+  {
+    "name": "test_regime_consistency",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_regime_consistency.gd"
+    ],
+    "exit_code": 0,
+    "engine_errors": [],
+    "passed": true,
+    "elapsed_seconds": 2.422
+  },
+  {
+    "name": "test_avanti_handling",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_avanti_handling.gd"
+    ],
+    "exit_code": 0,
+    "engine_errors": [],
+    "passed": true,
+    "elapsed_seconds": 14.656
+  },
+  {
+    "name": "test_avanti_gamepad",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_avanti_gamepad.gd"
+    ],
+    "exit_code": 0,
+    "engine_errors": [],
+    "passed": true,
+    "elapsed_seconds": 1.782
+  },
+  {
+    "name": "test_avanti_gamepad_flight",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_avanti_gamepad_flight.gd"
+    ],
+    "exit_code": 0,
+    "engine_errors": [],
+    "passed": true,
+    "elapsed_seconds": 11.015
+  },
+  {
+    "name": "test_aircraft_data",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_aircraft_data.gd"
+    ],
+    "exit_code": 0,
+    "engine_errors": [],
+    "passed": true,
+    "elapsed_seconds": 1.125
+  },
+  {
+    "name": "test_rates",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_rates.gd"
+    ],
+    "exit_code": 0,
+    "engine_errors": [],
+    "passed": true,
+    "elapsed_seconds": 2.328
+  },
+  {
+    "name": "test_turbine_continuous",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_turbine_continuous.gd"
+    ],
+    "exit_code": 0,
+    "engine_errors": [],
+    "passed": true,
+    "elapsed_seconds": 2.61
+  },
+  {
+    "name": "test_control_actuators",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_control_actuators.gd"
+    ],
+    "exit_code": 0,
+    "engine_errors": [],
+    "passed": true,
+    "elapsed_seconds": 1.406
+  },
+  {
+    "name": "test_checkpoint",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_checkpoint.gd"
+    ],
+    "exit_code": 0,
+    "engine_errors": [],
+    "passed": true,
+    "elapsed_seconds": 2.516
+  }
+]

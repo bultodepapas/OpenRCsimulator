@@ -1,0 +1,32 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   clean source clone prepares
+ok   main rotor assembly splits into two named blade groups  ["Pala_Principal_A", "Pala_Principal_B"]
+ok   tail rotor assembly splits into two named blade groups  ["Pala_Cola_A", "Pala_Cola_B"]
+ok   live rotor visual attaches after clone preparation
+ok   fixture has the actual named main and tail blades
+ok   impact starts from the supplied body pose
+ok   rotating main-disc contact receives local C2 presentation grade
+ok   rotor floor retains the shared propeller audio/effect alias
+ok   main pivot hub uses impact pose with live local transform
+ok   tail pivot hub also uses impact pose, not post-step globals
+DEBUG main group center=(-0.233432, 0.345, -0.344921) hub=(1.2, 1.145, -2.4) axis=(0.800728, 0.0, 0.599028) omega=-167.0 rawSpin=(0.000001, 2.534944, -0.000002) mass=n/a
+ok   C2 main-rotor hit releases one authored blade only  1
+ok   released blade preserves its live animated transform at impact  Pala_Principal_A
+ok   main rotor inherited spin energy stays within declared shaft budget  budget=1112.741 used=0.521
+ok   detached main blade point speed stays capped
+ok   rotor bodies stay inside the bounded wreck pool
+ok   gear receives no main or tail rotor point velocity
+ok   canopy receives no main or tail rotor point velocity
+ok   reset returns the animated blade to its configure-time source hierarchy
+ok   tail-disc contact starts and releases one named tail blade
+ok   tail-disc contact does not release main blades
+ok   tail blade kinetic share stays within the declared tail-shaft budget  budget=52.959 used=26.480
+ok   C3 skid hit stays local and starts without rotor releases
+ok   skid bodies inherit aircraft velocity without rotor spin
+ok   C3 canopy hit does not release or inherit velocity from either rotor
+ok   canopy linear velocity equals aircraft point velocity
+ok   low non-rotor impact leaves all authored sections attached
+ok   severe C4 impact can release all bounded named debris groups
+ok   reset leaves no active debris bodies
+HELI-33 visual: 28 checks, 0 failed

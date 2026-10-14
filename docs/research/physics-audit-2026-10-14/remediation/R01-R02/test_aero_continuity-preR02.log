@@ -1,0 +1,20 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+info jensen-das-ugly-stik-60 spanwise boundary epsilon/V ratio 1e-6: force-moment 0.000000045, wake 0.000000000
+FAIL jensen-das-ugly-stik-60 Cartesian approach 1 force/moment converges at epsilon/V ratio 1e-9 normalized=0.001411905
+FAIL jensen-das-ugly-stik-60 Cartesian approach 1 wake target converges at epsilon/V ratio 1e-9 normalized=0.098858459
+FAIL jensen-das-ugly-stik-60 Cartesian approach 2 force/moment converges at epsilon/V ratio 1e-9 normalized=1.198588095
+FAIL jensen-das-ugly-stik-60 Cartesian approach 2 wake target converges at epsilon/V ratio 1e-9 normalized=0.098858459
+FAIL jensen-das-ugly-stik-60 Cartesian approach 3 force/moment converges at epsilon/V ratio 1e-9 normalized=1.198588095
+FAIL jensen-das-ugly-stik-60 Cartesian approach 3 wake target converges at epsilon/V ratio 1e-9 normalized=0.098858459
+FAIL jensen-das-ugly-stik-60 mixed stagnant/loaded path 1 leaves wake continuous wake=0.275462477
+FAIL jensen-das-ugly-stik-60 washed-minus-free horizontal tail is Cartesian-continuous normalized=0.291888779
+info sebart-avanti-s-a200-p100rx spanwise boundary epsilon/V ratio 1e-6: force-moment 0.000000035, wake 0.000000000
+FAIL sebart-avanti-s-a200-p100rx Cartesian approach 1 force/moment converges at epsilon/V ratio 1e-9 normalized=0.000190253
+FAIL sebart-avanti-s-a200-p100rx Cartesian approach 2 force/moment converges at epsilon/V ratio 1e-9 normalized=1.211993090
+FAIL sebart-avanti-s-a200-p100rx Cartesian approach 2 wake target converges at epsilon/V ratio 1e-9 normalized=0.000032875
+FAIL sebart-avanti-s-a200-p100rx Cartesian approach 3 force/moment converges at epsilon/V ratio 1e-9 normalized=1.211993090
+FAIL sebart-avanti-s-a200-p100rx Cartesian approach 3 wake target converges at epsilon/V ratio 1e-9 normalized=0.000032875
+FAIL sebart-avanti-s-a200-p100rx mixed stagnant/loaded path 1 leaves wake continuous wake=0.235457187
+FAIL sebart-avanti-s-a200-p100rx washed-minus-free horizontal tail is Cartesian-continuous normalized=0.292791638
+R02 continuity: 58 checks, 15 failed

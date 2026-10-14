@@ -1776,6 +1776,32 @@
                   "maximum": 1.0
                 }
               }
+            },
+            "yaw_scale": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "1"
+                },
+                "value": {
+                  "type": "number",
+                  "minimum": 0.05,
+                  "maximum": 1.0
+                }
+              }
+            },
+            "yaw_response_time": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "unit": {
+                  "const": "s"
+                },
+                "value": {
+                  "type": "number",
+                  "minimum": 0.02,
+                  "maximum": 0.5
+                }
+              }
             }
           }
         },

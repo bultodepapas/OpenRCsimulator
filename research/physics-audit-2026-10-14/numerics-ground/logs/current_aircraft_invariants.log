@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Godot 4.7.2-stable (official); packed state=PackedFloat64Array
+MODEL Ventage Jet id=sebart-avanti-s-a200-p100rx mass_kg=11.705089 J=[[0.68673682129421, 2.4641959070887, 3.05824181740386, 0.0, -0.02976645332748, 0.0]] principal_kg_m2=[0.686363260118, 2.4641959070887, 3.05861537858007] triangle_margin=0.09194378862663 determinant=5.17313876461533 rpm=85000.0 h_body_Nms=[0.31154127148099, 0.0, 0.0] state_type=PackedFloat64Array
+ok   Ventage Jet tensor positive and realizable  principal=[0.686363260118, 2.4641959070887, 3.05861537858007] triangle margin=0.09194378862663
+BALLISTIC Ventage Jet tilted 1.25s NED Δposition_m=0.00000000000001 Δvelocity_m_s=0.00000000000005 down_m=7.66144531250001 velocity_ned=[-0.00000000000002, 0.00000000000005, 12.2583125]
+ok   Ventage Jet tilted free fall resolves gravity in NED  Δp=0.00000000000001 m Δv=0.00000000000005 m/s
+FREE_ROTATION Ventage Jet 5s 240Hz h_Nms=[0.31154127148099, 0.0, 0.0] ΔH_inertial_Nms=0.00000000002941 relative_ΔE=0.00000000000001 final_q_norm=1.0 final_rates=[1.05732009715788, -0.82342022416484, 0.61278069447511]
+ok   Ventage Jet torque-free angular momentum and energy are conserved  ΔH=0.00000000002941 N·m·s relative ΔE=0.00000000000001
+MODEL Jensen Ugly Stik 60 id=jensen-das-ugly-stik-60 mass_kg=2.88505829104375 J=[[0.11540678010017, 0.38708561399355, 0.48410759044528, -0.00954, 0.0072395, 0.00045525693736]] principal_kg_m2=[0.11492977827163, 0.3874197809816, 0.48425042528577] triangle_margin=0.01809913396747 determinant=0.02156176810439 rpm=7500.0 h_body_Nms=[0.27488935718911, 0.0, 0.0] state_type=PackedFloat64Array
+ok   Jensen Ugly Stik 60 tensor positive and realizable  principal=[0.11492977827163, 0.3874197809816, 0.48425042528577] triangle margin=0.01809913396747
+BALLISTIC Jensen Ugly Stik 60 tilted 1.25s NED Δposition_m=0.00000000000001 Δvelocity_m_s=0.00000000000005 down_m=7.66144531250001 velocity_ned=[-0.00000000000002, 0.00000000000005, 12.2583125]
+ok   Jensen Ugly Stik 60 tilted free fall resolves gravity in NED  Δp=0.00000000000001 m Δv=0.00000000000005 m/s
+FREE_ROTATION Jensen Ugly Stik 60 5s 240Hz h_Nms=[0.27488935718911, 0.0, 0.0] ΔH_inertial_Nms=0.00000000000108 relative_ΔE=0.00000000000016 final_q_norm=1.0 final_rates=[1.24423635568821, -0.9071095920967, -0.2013232154091]
+ok   Jensen Ugly Stik 60 torque-free angular momentum and energy are conserved  ΔH=0.00000000000108 N·m·s relative ΔE=0.00000000000016
+current-aircraft invariant probe: 0 failed

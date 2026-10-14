@@ -5,6 +5,9 @@ const Session = preload("res://sim/helicopter_flight_session.gd")
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
 const Builder = preload("res://aircraft/hx700_model.gd")
 const RotorVisual = preload("res://render/rotor/heli_rotor_visual.gd")
+const NightLights = preload("res://render/rotor/heli_night_lights.gd")
+const CrashPresentation = preload("res://render/rotor/heli_crash_presentation.gd")
+const CollisionSetup = preload("res://scenery/collision_setup.gd")
 const Electronics = preload("res://physics/rotorcraft/electronics.gd")
 const MainRotor = preload("res://physics/rotorcraft/main_rotor.gd")
 const Math3D = preload("res://physics/math3d.gd")
@@ -39,6 +42,10 @@ var _camera: Camera3D
 var _rig: RefCounted
 var _airplane: Dictionary={}
 var _rotors: Node3D
+var _night_kit: Node3D
+var _crash_presentation: Node3D
+var _aftermath_paused: bool=false
+var _lighting_snapshot: Dictionary={}
 var _environment: Environment
 var _field_world_lighting: bool=false
 var _overlays: RefCounted
@@ -71,7 +78,9 @@ func _ready() -> void:
   else Preferences.night_options_from_args(args)
  if not night_result.get("ok",false): _refuse("; ".join(night_result.errors)); return
  night_options=night_result.options.duplicate(true)
+ if str(args.get("heli-lights","auto")) not in NightLights.MODES: _refuse("--heli-lights must be auto, all, nav or off"); return
  var snapshot: Dictionary=Lighting.snapshot(lighting_config) if lighting_config.mode!="legacy" else {}
+ _lighting_snapshot=snapshot
  var world: Dictionary=World.build(self,field,Callable(),{},snapshot,night_options)
  _environment=world.environment
  _airplane=Builder.build()
@@ -88,6 +97,9 @@ func _ready() -> void:
  var selected: Dictionary=Catalog.entry(aircraft_id)
  if not Catalog.is_rotorcraft(aircraft_id) or not Catalog.can_fly(aircraft_id): _refuse("This helicopter has no qualified playable configuration."); return
  if not session.setup(str(selected.data),aircraft_id) or not session.set_field(field): _refuse(session.start_error+session.surface_error); return
+ var obstacles: Dictionary=CollisionSetup.build(field)
+ if not obstacles.ok or not session.set_collision_world(obstacles.world):
+  _refuse("Helicopter obstacle inventory refused: "+"; ".join(obstacles.errors)); return
  # Existing technical captures/traces keep their explicit hover fixture unless a start is supplied.
  var requested_start: String=str(args.get("start","airborne" if args.has("trace") or args.has("capture") or args.has("alt") else start_choice))
  if not session.set_start_choice(requested_start): _refuse(session.start_error); return
@@ -101,7 +113,16 @@ func _ready() -> void:
  if not session.reset(): _refuse(session.start_error); return
  Builder.align_main_rotor_radius(_airplane,session.aircraft.context.main_model.rotor_radius_m)
  Builder.align_tail_rotor_radius(_airplane,session.aircraft.context.tail_model.tail_rotor_radius_m)
+ _crash_presentation=CrashPresentation.new()
+ _crash_presentation.name="HelicopterCrashPresentation"
+ add_child(_crash_presentation)
+ if not _crash_presentation.configure(_airplane,session.aircraft.context):
+  _refuse("Helicopter crash presentation could not prepare the source model."); return
+ _crash_presentation.set_collision_world(obstacles.world)
  _rotors=RotorVisual.attach(_airplane,self)
+ _night_kit=NightLights.attach(_airplane)
+ _night_kit.set_mode(str(args.get("heli-lights","auto")))
+ _crash_presentation.set_night_kit(_night_kit)
  _build_hud()
  print("HELICOPTER READY: ",session.aircraft.qualification)
  if args.has("trace"):
@@ -160,21 +181,42 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
  var body: Basis=Frames.quat_to_render(s.slice(6,10))
  _airplane.root.transform=Frames.root_transform(body,pos,_airplane.cg_model_m)
  var phase: PackedFloat64Array=_rotor_phase_at_fraction(fraction)
- if _rotors!=null: _rotors.update(_rotor_state_at_fraction(fraction),phase[0],phase[1])
- _rig.update(pos,_airplane.root.global_transform,body,dt,session.sim.paused,_ground_height)
+ var rotor_display: Dictionary=_rotor_state_at_fraction(fraction)
+ if _rotors!=null: _rotors.update(rotor_display,phase[0],phase[1])
  var wind: PackedFloat64Array=session.wind_at(session.sim.time())
+ var wreck_active: bool=not session.crash.is_empty() and _crash_presentation!=null
+ var presentation_paused: bool=_aftermath_paused or not session.holds.is_empty()
+ if wreck_active:
+  if not _crash_presentation.active:
+   _night_kit.update_visual(NightLights.sun_elevation(_lighting_snapshot,World.Atmosphere.state),World.Exposure.last,rotor_display,phase[0],phase[1],false)
+   var impact_body: PackedFloat64Array=session.crash.get("body",s)
+   var impact_pose: Transform3D=Frames.root_transform(Frames.quat_to_render(impact_body.slice(6,10)),Frames.ned_to_render(impact_body.slice(0,3)),_airplane.cg_model_m)
+   _crash_presentation.start(session.crash,impact_pose,_airplane.cg_model_m,Frames.ned_to_render(wind))
+  _crash_presentation.update(dt,presentation_paused)
+  _airplane.root.visible=false
+  _rotors.visible=false
+  _night_kit.visible=false
+  pos=_crash_presentation.focus_position()
+ _rig.update(pos,Frames.root_transform(body,pos,_airplane.cg_model_m),body,dt,presentation_paused if wreck_active else session.sim.paused,_ground_height)
  World.update(_environment,session.sim.time(),Frames.ned_to_render(wind),pos,_camera)
+ if _night_kit!=null and not wreck_active:
+  _night_kit.update_visual(NightLights.sun_elevation(_lighting_snapshot,World.Atmosphere.state),World.Exposure.last,rotor_display,phase[0],phase[1],session.power.armed)
  var speed: float=sqrt(s[3]*s[3]+s[4]*s[4]+s[5]*s[5])
  _hud.text=tr("RC HELICOPTER · EXPERIMENTAL RESEARCH TRAINER")+"\n"+tr("X-Cell reference physics · HX-700 visual")+"\n"
  _hud.text+=tr("Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm")%[-s[2],speed,session.sim.aux[0],session.aircraft.context.drive_model.governor_target_main_rad_s*60.0/(2.0*PI)]+"\n"
  _hud.text+=tr("Collective %.1f deg (stick %.0f%%) · %s · %s")%[session.collective_pitch()*180.0/PI,session.commands.throttle*100.0,session.flight_mode,tr(session.power_phase())]+"\n"
  _hud.text+=tr("Arrows: cyclic · A/D: yaw · W/S: collective")+"\n"
  _hud.text+=tr("B: arm/disarm · H: hold/start · I: flight mode · G: trainer")+"\n"
+ if _night_kit!=null: _hud.text+="L: "+tr("Night lights: "+_night_kit.mode)+"\n"
  _hud.text+=tr("R: restart · P: pause/resume · C: camera · Esc: menu")+"\n"
  _hud.text+=tr("TRAINER") if session.trainer_enabled else tr("DIRECT CYCLIC")
  _hud.text+="\n"+(tr(session.pause_reason) if not session.pause_reason.is_empty() else _note)
- if session.power_phase()=="DISARMED": _hud.text+="\n"+tr("Center cyclic/yaw and set zero pitch. B: arm, H: start; wait for governed RPM.")
- if not _rotor_envelope_flags.within_identified_advance_ratio or not _rotor_envelope_flags.within_small_flap_angle_range:
+ if wreck_active:
+  _hud.text+="\n"+str(session.crash.component).replace("_"," ")+" · %.1f m/s · "%float(session.crash.normal_speed_mps)+tr("P: pause/resume wreck · R: restart")
+ elif session.power_phase()=="DISARMED": _hud.text+="\n"+tr("Center cyclic/yaw and set zero pitch. B: arm, H: start; wait for governed RPM.")
+ # Cold start/coast are expected lifecycle states; their low-RPM model label is
+ # retained in telemetry without presenting normal startup as a pilot fault.
+ if session.power_phase()=="GOVERNED" and (not _rotor_envelope_flags.within_identified_advance_ratio or not _rotor_envelope_flags.within_small_flap_angle_range):
   _hud.text+="\n"+tr("Outside the identified main-rotor envelope.")
  if session.calibration!=null: _hud.text+="\n"+str(session.calibration.prompt())
  if recorder.recording: _hud.text+="\nRecording %.1f s · T: stop"%recorder.seconds()
@@ -186,6 +228,10 @@ func _ground_height(x: float,z: float) -> float:
 func _on_session_resetting() -> void:
  if recorder!=null and recorder.recording: recorder.stop()
  _rotor_phase_rebase_pending=true
+ _aftermath_paused=false
+ if _crash_presentation!=null: _crash_presentation.reset()
+ if _airplane.get("root") is Node3D: _airplane.root.visible=true
+ if _rotors!=null: _rotors.visible=true
 
 func _on_sim_stepped(tick: int,t: float,body: PackedFloat64Array,_loads: PackedFloat64Array,inputs: PackedFloat64Array,_aux: PackedFloat64Array) -> void:
  if session==null or session.sim.continuous.size() not in [6,14] or body.size()!=13: return
@@ -292,6 +338,7 @@ func set_overlays_visible(on: bool) -> void:
 
 func controller_action(action: String) -> bool:
  match action:
+  "lights_cycle": _cycle_night_lights()
   "helicopter_arm": session.toggle_motor_arm()
   "helicopter_hold": session.set_drive_hold(not session.zero_drive_hold)
   "helicopter_mode": session.request_flight_mode()
@@ -323,7 +370,8 @@ func _unhandled_input(event: InputEvent) -> void:
   match event.physical_keycode:
    KEY_R: session.reset()
    KEY_P:
-    if session.sim.paused: session.resume()
+    if not session.crash.is_empty(): _aftermath_paused=not _aftermath_paused
+    elif session.sim.paused: session.resume()
     else: session.sim.set_paused(true); session.pause_reason="paused"
    KEY_ESCAPE:
     if session.calibration!=null: session.cancel_calibration()
@@ -339,11 +387,16 @@ func _unhandled_input(event: InputEvent) -> void:
    KEY_H: session.set_drive_hold(not session.zero_drive_hold)
    KEY_B: session.toggle_motor_arm()
    KEY_I: session.request_flight_mode()
+   KEY_L: _cycle_night_lights()
    KEY_K: session.start_calibration()
    KEY_ENTER,KEY_KP_ENTER: session.advance_calibration()
    KEY_T:
     if recorder.recording: recorder.stop()
     else: recorder.start(session.trace_meta())
+
+func _cycle_night_lights() -> void:
+ if _night_kit!=null:
+  _night_kit.cycle_mode()
 
 func apply_lighting_config(_raw: Variant) -> Dictionary:
  return {ok=false,errors=["End the helicopter flight to select different lighting on Home."]}

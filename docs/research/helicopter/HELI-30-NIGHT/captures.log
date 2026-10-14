@@ -1,0 +1,14 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+NIGHT CAPTURE close-ground exposure=2158.4287109375 error=0
+NIGHT CAPTURE close-hover exposure=2158.4287109375 error=0
+NIGHT CAPTURE upper-hover exposure=2158.4287109375 error=0
+NIGHT CAPTURE lower-hover exposure=2158.4287109375 error=0
+NIGHT CAPTURE slow-spool exposure=2158.4287109375 error=0
+NIGHT CAPTURE navigation exposure=2158.4287109375 error=0
+NIGHT CAPTURE lights-off exposure=2158.4287109375 error=0
+NIGHT CAPTURE distance-50m exposure=2158.4287109375 error=0
+NIGHT CAPTURE distance-100m exposure=2158.4287109375 error=0
+FIXED 0 elevation=-88.081830980773 exposure=0.60000002384186 active=all
+FIXED 12 elevation=88.1334460994826 exposure=0.60000002384186 active=off

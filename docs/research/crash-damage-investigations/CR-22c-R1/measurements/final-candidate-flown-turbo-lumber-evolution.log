@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+radio connected: 0300fa675e040000ff02000000007801|045e:02ff|XInput Controller (gamepad profile)
+CRASH at 27.8 m/s (sink 22.8 m/s, airframe contact (hull point 8), point speed 27.9 m/s at detected tick) - [R] restart
+CRASH CAUSE: Steep high-speed dive into the ground path -54°, 28.4 m/s
+CRASH at 27.8 m/s (sink 22.8 m/s, airframe contact (hull point 8), point speed 27.9 m/s at detected tick) - [R] restart
+CRASH CAUSE: Steep high-speed dive into the ground path -53°, 27.8 m/s

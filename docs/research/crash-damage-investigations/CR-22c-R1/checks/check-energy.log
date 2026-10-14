@@ -1,0 +1,209 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   a hot turbine with a ruptured kerosene tank burns
+ok   cold kerosene only stains
+ok   glow fuel never shows a fire, only a wet stain
+ok   an intact glow tank leaves nothing
+ok   a destroyed gasoline airplane with the engine running burns briefly  7.4
+ok   a structural (not destroyed) gasoline crash only stains
+ok   a stopped gasoline engine does not ignite
+ok   a wing-tip gasoline crash does not ignite
+ok   a central C3 hit makes a damaged pack vent later
+ok   a harder hit vents sooner  7.5 < 22.5 s
+ok   venting delay stays inside its bounds
+ok   only the worst destroyed band flares
+ok   a wing-tip hit leaves the pack alone
+ok   a damage-class hit leaves the pack alone
+ok   a kerosene fire starts with a flash of the Roberts size  0.68 m
+ok   a gasoline fire flashes smaller than the jet's
+ok   a flash lasts at least the perceptible minimum
+ok   glow fuel never flashes
+ok   a LiPo flare is not a fuel flash
+ok   cold kerosene never flashes
+ok   no tagged energy, no fire, stain or smoke
+ok   particle budget holds with the venting emitter  700
+ok   no smoke and no flame right after the impact
+ok   still quiet just before the venting delay
+ok   the pack vents after the delay
+ok   the worst band flares as venting starts
+ok   the flare is short
+ok   venting ends
+ok   a glow spill leaves one dark wet stain
+ok   ignition throws a fireball
+ok   the flash lights the scene far brighter than the fire  6.9
+ok   the flash is over, the fire burns on  1.73
+ok   reset clears pending venting
+ok   catalog vehicle type is supported: jensen-das-ugly-stik-60
+ok   catalog vehicle flag agrees with its data class: jensen-das-ugly-stik-60
+ok   catalog data path is unique: jensen-das-ugly-stik-60  res://data/aircraft/jensen_ugly_stik_60.json
+ok   catalog vehicle type is supported: stik-glow-61fx-2t
+ok   catalog vehicle flag agrees with its data class: stik-glow-61fx-2t
+ok   catalog data path is unique: stik-glow-61fx-2t  res://data/aircraft/stik_glow_61fx_2t.json
+ok   catalog vehicle type is supported: stik-glow-55ax-2t
+ok   catalog vehicle flag agrees with its data class: stik-glow-55ax-2t
+ok   catalog data path is unique: stik-glow-55ax-2t  res://data/aircraft/stik_glow_55ax_2t.json
+ok   catalog vehicle type is supported: stik-glow-fs64v-4t
+ok   catalog vehicle flag agrees with its data class: stik-glow-fs64v-4t
+ok   catalog data path is unique: stik-glow-fs64v-4t  res://data/aircraft/stik_glow_fs64v_4t.json
+ok   catalog vehicle type is supported: gp-extra-300s-60
+ok   catalog vehicle flag agrees with its data class: gp-extra-300s-60
+ok   catalog data path is unique: gp-extra-300s-60  res://data/aircraft/gp_extra_300s_60.json
+ok   catalog vehicle type is supported: p51d-mustang-120
+ok   catalog vehicle flag agrees with its data class: p51d-mustang-120
+ok   catalog data path is unique: p51d-mustang-120  res://data/aircraft/p51d_mustang_120.json
+ok   catalog vehicle type is supported: sebart-avanti-s-a200-p100rx
+ok   catalog vehicle flag agrees with its data class: sebart-avanti-s-a200-p100rx
+ok   catalog data path is unique: sebart-avanti-s-a200-p100rx  res://data/aircraft/sebart_avanti_s_a200.json
+ok   catalog vehicle type is supported: turbo-lumber-evolution
+ok   catalog vehicle flag agrees with its data class: turbo-lumber-evolution
+ok   catalog data path is unique: turbo-lumber-evolution  res://data/aircraft/turbo_lumber_evolution.json
+ok   catalog vehicle type is supported: xcell-60-research
+ok   catalog vehicle flag agrees with its data class: xcell-60-research
+ok   catalog data path is unique: xcell-60-research  res://data/aircraft/xcell_60_research.json
+ok   data-only airplane configuration stays outside the catalog: stik_glow_55ax_2t_apc_13x6.json
+ok   data-only airplane configuration stays outside the catalog: stik_glow_fs64v_4t_apc_13x6.json
+ok   data-only airplane configuration stays outside the catalog: synthetic_stik_electric_4s.json
+ok   data-only airplane configuration stays outside the catalog: synthetic_stik_electric_4s_battery.json
+ok   data-only airplane configuration stays outside the catalog: synthetic_stik_electric_6s.json
+ok   data-only airplane configuration stays outside the catalog: synthetic_stik_electric_6s_battery.json
+ok   aircraft data file has an explicit energy-test classification: gp_extra_300s_60.json
+ok   catalog airplane has an explicit expected energy classification: gp-extra-300s-60
+ok   gp-extra-300s-60 loads through the airplane schema  []
+ok   gp-extra-300s-60 has the expected airplane data identity
+ok   airplane inventory JSON parses: gp_extra_300s_60.json
+ok   airplane inventory is an array: gp_extra_300s_60.json
+ok   airplane inventory entries and energy tags are valid: gp_extra_300s_60.json
+ok   gp-extra-300s-60 inventory energy tags match its classification  expected ["glow_fuel"], found ["glow_fuel"]
+FAIL aircraft data file has an explicit energy-test classification: hx700_electric_3d_experimental.json
+ok   aircraft data file has an explicit energy-test classification: jensen_ugly_stik_60.json
+ok   catalog airplane has an explicit expected energy classification: jensen-das-ugly-stik-60
+ok   jensen-das-ugly-stik-60 loads through the airplane schema  []
+ok   jensen-das-ugly-stik-60 has the expected airplane data identity
+ok   airplane inventory JSON parses: jensen_ugly_stik_60.json
+ok   airplane inventory is an array: jensen_ugly_stik_60.json
+ok   airplane inventory entries and energy tags are valid: jensen_ugly_stik_60.json
+ok   jensen-das-ugly-stik-60 inventory energy tags match its classification  expected ["glow_fuel"], found ["glow_fuel"]
+ok   aircraft data file has an explicit energy-test classification: p51d_mustang_120.json
+ok   catalog airplane has an explicit expected energy classification: p51d-mustang-120
+ok   p51d-mustang-120 loads through the airplane schema  []
+ok   p51d-mustang-120 has the expected airplane data identity
+ok   airplane inventory JSON parses: p51d_mustang_120.json
+ok   airplane inventory is an array: p51d_mustang_120.json
+ok   airplane inventory entries and energy tags are valid: p51d_mustang_120.json
+ok   p51d-mustang-120 inventory energy tags match its classification  expected ["gasoline"], found ["gasoline"]
+ok   aircraft data file has an explicit energy-test classification: sebart_avanti_s_a200.json
+ok   catalog airplane has an explicit expected energy classification: sebart-avanti-s-a200-p100rx
+ok   sebart-avanti-s-a200-p100rx loads through the airplane schema  []
+ok   sebart-avanti-s-a200-p100rx has the expected airplane data identity
+ok   airplane inventory JSON parses: sebart_avanti_s_a200.json
+ok   airplane inventory is an array: sebart_avanti_s_a200.json
+ok   airplane inventory entries and energy tags are valid: sebart_avanti_s_a200.json
+ok   sebart-avanti-s-a200-p100rx inventory energy tags match its classification  expected ["kerosene"], found ["kerosene"]
+ok   aircraft data file has an explicit energy-test classification: stik_glow_55ax_2t.json
+ok   catalog airplane has an explicit expected energy classification: stik-glow-55ax-2t
+ok   stik-glow-55ax-2t loads through the airplane schema  []
+ok   stik-glow-55ax-2t has the expected airplane data identity
+ok   airplane inventory JSON parses: stik_glow_55ax_2t.json
+ok   airplane inventory is an array: stik_glow_55ax_2t.json
+ok   airplane inventory entries and energy tags are valid: stik_glow_55ax_2t.json
+ok   stik-glow-55ax-2t inventory energy tags match its classification  expected ["glow_fuel"], found ["glow_fuel"]
+ok   aircraft data file has an explicit energy-test classification: stik_glow_55ax_2t_apc_13x6.json
+ok   data-only airplane has an explicit expected energy classification: stik_glow_55ax_2t_apc_13x6.json
+ok   stik-glow-55ax-2t loads through the airplane schema  []
+ok   stik-glow-55ax-2t has the expected airplane data identity
+ok   airplane inventory JSON parses: stik_glow_55ax_2t_apc_13x6.json
+ok   airplane inventory is an array: stik_glow_55ax_2t_apc_13x6.json
+ok   airplane inventory entries and energy tags are valid: stik_glow_55ax_2t_apc_13x6.json
+ok   stik-glow-55ax-2t inventory energy tags match its classification  expected ["glow_fuel"], found ["glow_fuel"]
+ok   aircraft data file has an explicit energy-test classification: stik_glow_61fx_2t.json
+ok   catalog airplane has an explicit expected energy classification: stik-glow-61fx-2t
+ok   stik-glow-61fx-2t loads through the airplane schema  []
+ok   stik-glow-61fx-2t has the expected airplane data identity
+ok   airplane inventory JSON parses: stik_glow_61fx_2t.json
+ok   airplane inventory is an array: stik_glow_61fx_2t.json
+ok   airplane inventory entries and energy tags are valid: stik_glow_61fx_2t.json
+ok   stik-glow-61fx-2t inventory energy tags match its classification  expected ["glow_fuel"], found ["glow_fuel"]
+ok   aircraft data file has an explicit energy-test classification: stik_glow_fs64v_4t.json
+ok   catalog airplane has an explicit expected energy classification: stik-glow-fs64v-4t
+ok   stik-glow-fs64v-4t loads through the airplane schema  []
+ok   stik-glow-fs64v-4t has the expected airplane data identity
+ok   airplane inventory JSON parses: stik_glow_fs64v_4t.json
+ok   airplane inventory is an array: stik_glow_fs64v_4t.json
+ok   airplane inventory entries and energy tags are valid: stik_glow_fs64v_4t.json
+ok   stik-glow-fs64v-4t inventory energy tags match its classification  expected ["glow_fuel"], found ["glow_fuel"]
+ok   aircraft data file has an explicit energy-test classification: stik_glow_fs64v_4t_apc_13x6.json
+ok   data-only airplane has an explicit expected energy classification: stik_glow_fs64v_4t_apc_13x6.json
+ok   stik-glow-fs64v-4t loads through the airplane schema  []
+ok   stik-glow-fs64v-4t has the expected airplane data identity
+ok   airplane inventory JSON parses: stik_glow_fs64v_4t_apc_13x6.json
+ok   airplane inventory is an array: stik_glow_fs64v_4t_apc_13x6.json
+ok   airplane inventory entries and energy tags are valid: stik_glow_fs64v_4t_apc_13x6.json
+ok   stik-glow-fs64v-4t inventory energy tags match its classification  expected ["glow_fuel"], found ["glow_fuel"]
+ok   aircraft data file has an explicit energy-test classification: synthetic_stik_electric_4s.json
+ok   data-only airplane has an explicit expected energy classification: synthetic_stik_electric_4s.json
+ok   synthetic_stik_electric_4s loads through the airplane schema  []
+ok   synthetic_stik_electric_4s has the expected airplane data identity
+ok   airplane inventory JSON parses: synthetic_stik_electric_4s.json
+ok   airplane inventory is an array: synthetic_stik_electric_4s.json
+ok   airplane inventory entries and energy tags are valid: synthetic_stik_electric_4s.json
+ok   synthetic_stik_electric_4s inventory energy tags match its classification  expected [], found []
+ok   aircraft data file has an explicit energy-test classification: synthetic_stik_electric_4s_battery.json
+ok   data-only airplane has an explicit expected energy classification: synthetic_stik_electric_4s_battery.json
+ok   synthetic_stik_electric_4s_battery loads through the airplane schema  []
+ok   synthetic_stik_electric_4s_battery has the expected airplane data identity
+ok   airplane inventory JSON parses: synthetic_stik_electric_4s_battery.json
+ok   airplane inventory is an array: synthetic_stik_electric_4s_battery.json
+ok   airplane inventory entries and energy tags are valid: synthetic_stik_electric_4s_battery.json
+ok   synthetic_stik_electric_4s_battery inventory energy tags match its classification  expected [], found []
+ok   aircraft data file has an explicit energy-test classification: synthetic_stik_electric_6s.json
+ok   data-only airplane has an explicit expected energy classification: synthetic_stik_electric_6s.json
+ok   synthetic_stik_electric_6s loads through the airplane schema  []
+ok   synthetic_stik_electric_6s has the expected airplane data identity
+ok   airplane inventory JSON parses: synthetic_stik_electric_6s.json
+ok   airplane inventory is an array: synthetic_stik_electric_6s.json
+ok   airplane inventory entries and energy tags are valid: synthetic_stik_electric_6s.json
+ok   synthetic_stik_electric_6s inventory energy tags match its classification  expected [], found []
+ok   aircraft data file has an explicit energy-test classification: synthetic_stik_electric_6s_battery.json
+ok   data-only airplane has an explicit expected energy classification: synthetic_stik_electric_6s_battery.json
+ok   synthetic_stik_electric_6s_battery loads through the airplane schema  []
+ok   synthetic_stik_electric_6s_battery has the expected airplane data identity
+ok   airplane inventory JSON parses: synthetic_stik_electric_6s_battery.json
+ok   airplane inventory is an array: synthetic_stik_electric_6s_battery.json
+ok   airplane inventory entries and energy tags are valid: synthetic_stik_electric_6s_battery.json
+ok   synthetic_stik_electric_6s_battery inventory energy tags match its classification  expected [], found []
+ok   aircraft data file has an explicit energy-test classification: turbo_lumber_evolution.json
+ok   catalog airplane has an explicit expected energy classification: turbo-lumber-evolution
+ok   turbo-lumber-evolution loads through the airplane schema  []
+ok   turbo-lumber-evolution has the expected airplane data identity
+ok   airplane inventory JSON parses: turbo_lumber_evolution.json
+ok   airplane inventory is an array: turbo_lumber_evolution.json
+ok   airplane inventory entries and energy tags are valid: turbo_lumber_evolution.json
+ok   turbo-lumber-evolution inventory energy tags match its classification  expected ["lipo"], found ["lipo"]
+ok   aircraft data file has an explicit energy-test classification: xcell_60_research.json
+ok   rotorcraft remains outside airplane inventory energy tags: xcell-60-research
+ok   xcell-60-research loads through the rotorcraft schema  []
+ok   xcell-60-research retains its rotorcraft identity without airplane inventory
+ok   classified aircraft data path exists: res://data/aircraft/jensen_ugly_stik_60.json
+ok   classified aircraft data path exists: res://data/aircraft/stik_glow_61fx_2t.json
+ok   classified aircraft data path exists: res://data/aircraft/stik_glow_55ax_2t.json
+ok   classified aircraft data path exists: res://data/aircraft/stik_glow_fs64v_4t.json
+ok   classified aircraft data path exists: res://data/aircraft/gp_extra_300s_60.json
+ok   classified aircraft data path exists: res://data/aircraft/p51d_mustang_120.json
+ok   classified aircraft data path exists: res://data/aircraft/sebart_avanti_s_a200.json
+ok   classified aircraft data path exists: res://data/aircraft/turbo_lumber_evolution.json
+ok   classified aircraft data path exists: res://data/aircraft/xcell_60_research.json
+ok   classified aircraft data path exists: res://data/aircraft/stik_glow_55ax_2t_apc_13x6.json
+ok   classified aircraft data path exists: res://data/aircraft/stik_glow_fs64v_4t_apc_13x6.json
+ok   classified aircraft data path exists: res://data/aircraft/synthetic_stik_electric_4s.json
+ok   classified aircraft data path exists: res://data/aircraft/synthetic_stik_electric_4s_battery.json
+ok   classified aircraft data path exists: res://data/aircraft/synthetic_stik_electric_6s.json
+ok   classified aircraft data path exists: res://data/aircraft/synthetic_stik_electric_6s_battery.json
+ok   energy expectations still identify a catalog airplane: jensen-das-ugly-stik-60
+ok   energy expectations still identify a catalog airplane: stik-glow-61fx-2t
+ok   energy expectations still identify a catalog airplane: stik-glow-55ax-2t
+ok   energy expectations still identify a catalog airplane: stik-glow-fs64v-4t
+ok   energy expectations still identify a catalog airplane: gp-extra-300s-60
+ok   energy expectations still identify a catalog airplane: p51d-mustang-120
+ok   energy expectations still identify a catalog airplane: sebart-avanti-s-a200-p100rx
+ok   energy expectations still identify a catalog airplane: turbo-lumber-evolution
+206 checks, 1 failed

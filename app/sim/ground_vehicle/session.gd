@@ -7,10 +7,11 @@ const VehicleDynamics := preload("res://physics/ground_vehicle/vehicle_dynamics.
 const VehicleData := preload("res://physics/ground_vehicle/vehicle_data.gd")
 const Course := preload("res://physics/ground_vehicle/course.gd")
 const AirfieldCourse := preload("res://physics/ground_vehicle/airfield_course.gd")
+const Damage := preload("res://physics/ground_vehicle/vehicle_damage.gd")
 const Math3D := preload("res://physics/math3d.gd")
 
-const FORMAT := "openrc-ground-vehicle-checkpoint v2"
-const RECORDING_FORMAT := "openrc-ground-vehicle-recording v2"
+const FORMAT := "openrc-ground-vehicle-checkpoint v3"
+const RECORDING_FORMAT := "openrc-ground-vehicle-recording v3"
 const FIXED_HZ := 240
 const DT := 1.0 / float(FIXED_HZ)
 const STATE_SIZE := 31
@@ -21,7 +22,8 @@ const CONTROL_LAYOUT := ["throttle", "steering", "brake", "reverse_flag"]
 const RECORD_CONTROLS_OFFSET := 1
 const RECORD_STATE_OFFSET := RECORD_CONTROLS_OFFSET + 4
 const RECORD_TELEMETRY_OFFSET := RECORD_STATE_OFFSET + STATE_SIZE
-const RECORD_TELEMETRY_BASE_WIDTH := 44
+const RECORD_TELEMETRY_BASE_WIDTH := 52
+const DAMAGE_CHANNELS := ["body_damage", "suspension_damage", "drive_scale", "last_impact_energy_j"]
 const RECORD_TELEMETRY_SPEED_OFFSET := 0
 const RECORD_TELEMETRY_FORWARD_SPEED_OFFSET := 1
 const RECORD_TELEMETRY_LOAD_OFFSET := 2
@@ -98,6 +100,10 @@ var _recording_limit_hit := false
 var _recorded_controls_sha256 := ""
 var _recording_exported := false
 var _suppress_signals := false
+var _damage = Damage.new()
+var _last_effective_controls: Dictionary = _neutral_controls()
+var _recording_damage_start := PackedFloat64Array()
+var _recording_damage_end := PackedFloat64Array()
 
 
 func prepare_default(experiment: Dictionary = {}) -> bool:
@@ -227,8 +233,13 @@ func _commit_prepared(staged: Dictionary) -> void:
 	_initial_state = staged.initial_state
 	_spawn_up_delta_m = float(staged.spawn_up_delta_m)
 	_state = _initial_state.duplicate()
+	_damage.reset()
 	_last_telemetry = staged.telemetry
+	_last_telemetry["damage"] = _damage.visual_state()
+	_recording_damage_start.clear()
+	_recording_damage_end.clear()
 	_last_controls = _neutral_controls()
+	_last_effective_controls = _neutral_controls()
 	spawn_id = staged.spawn_id
 	prepared = true
 	tick = 0
@@ -310,6 +321,14 @@ func state_snapshot() -> PackedFloat64Array:
 
 func telemetry_snapshot() -> Dictionary:
 	return _last_telemetry.duplicate(true)
+
+
+func damage_snapshot() -> PackedFloat64Array:
+	return _damage.snapshot()
+
+
+func damage_visual_state() -> Dictionary:
+	return _damage.visual_state()
 
 
 func event_tape_snapshot() -> Array[Dictionary]:
@@ -411,22 +430,35 @@ func tick_once(sample: Dictionary) -> bool:
 	if not _state_is_valid(_state):
 		_fail_safe("ground-vehicle state became invalid before tick")
 		return false
-	var next_state: PackedFloat64Array = VehicleDynamics.step(_state, _model, parsed.controls, DT, _road)
+	# Record the requested controls; damage only reduces propulsion authority.
+	var effective_controls: Dictionary = _damage.effective_controls(parsed.controls)
+	var next_state: PackedFloat64Array = VehicleDynamics.step(_state, _model, effective_controls, DT, _road)
 	if not _state_is_valid(next_state):
 		_fail_safe("ground-vehicle kernel rejected the tick or returned nonfinite state")
 		return false
-	var next_telemetry: Dictionary = VehicleDynamics.telemetry(next_state, _model, _road, parsed.controls)
+	var next_telemetry: Dictionary = VehicleDynamics.telemetry(next_state, _model, _road, effective_controls)
 	if not _telemetry_is_valid(next_telemetry):
 		_fail_safe(str(next_telemetry.get("error", "ground-vehicle telemetry failed")))
 		return false
+	var previous_damage: Dictionary = _damage.visual_state()
+	if not _damage.advance(_state, next_state, _last_telemetry, next_telemetry, _model, DT):
+		_fail_safe("ground-vehicle damage observer rejected the tick")
+		return false
+	var next_damage: Dictionary = _damage.visual_state()
+	next_telemetry["damage"] = next_damage
 	var next_tick := tick + 1
 	var new_events: Array[Dictionary] = []
+	if next_damage.stage != previous_damage.stage:
+		new_events.append({"type": "damage", "tick": next_tick, "time_s": float(next_tick) * DT,
+			"stage": next_damage.stage, "body_damage": next_damage.body_damage,
+			"suspension_damage": next_damage.suspension_damage, "drive_scale": next_damage.drive_scale})
 	var next_braking := _braking_run.duplicate(true)
 	_observe_events(_state, next_state, _last_telemetry, next_telemetry, parsed.controls, next_tick, new_events, next_braking)
 	_state = next_state
 	tick = next_tick
 	_last_telemetry = next_telemetry
 	_last_controls = parsed.controls.duplicate(true)
+	_last_effective_controls = effective_controls.duplicate(true)
 	_braking_run = next_braking
 	_append_control(parsed.controls)
 	for event in new_events:
@@ -493,8 +525,11 @@ func manual_recovery() -> bool:
 		load_error = str(telemetry.get("error", "manual recovery telemetry failed"))
 		return false
 	_state = recovered
+	_damage.reset() # Recovery is an explicit repair and already invalidates the run.
+	telemetry["damage"] = _damage.visual_state()
 	_last_telemetry = telemetry
 	_last_controls = _neutral_controls()
+	_last_effective_controls = _neutral_controls()
 	run_valid = false
 	fault_reason = ""
 	_braking_run.clear()
@@ -588,10 +623,17 @@ func checkpoint() -> Dictionary:
 	if not prepared or not _active_backend_matches_prepared() \
 			or not _state_is_valid(_state) or _control_tape.size() != tick * 4:
 		return {}
+	var damage_state: PackedFloat64Array = _damage.snapshot()
+	if not _damage.valid_snapshot(damage_state): return {}
+	var damage_bytes := damage_state.to_byte_array()
 	var state_bytes := _state.to_byte_array()
 	var control_bytes := _control_tape.to_byte_array()
 	var last_control_bytes := _controls_to_packed(_last_controls).to_byte_array()
-	var canonical_events: Variant = _json_value(_event_tape)
+	var applied_control_bytes := _controls_to_packed(_last_effective_controls).to_byte_array()
+	# Hash the JSON-representable events, just as the complete checkpoint will
+	# store them. Hashing raw float64 values before that conversion can reject
+	# our own checkpoint when a contact-event scalar rounds during encoding.
+	var canonical_events: Variant = _json_canonical_variant(_json_value(_event_tape))
 	var canonical_braking: Variant = _json_value(_braking_run)
 	var candidate := {
 		"format": FORMAT,
@@ -607,12 +649,16 @@ func checkpoint() -> Dictionary:
 		"state": _json_canonical_variant(_json_value(_state)),
 		"state_f64_base64": _base64_bytes(state_bytes),
 		"state_sha256": _hash_bytes(state_bytes),
+		"damage_state": _json_canonical_variant(_json_value(damage_state)),
+		"damage_state_f64_base64": _base64_bytes(damage_bytes),
+		"damage_state_sha256": _hash_bytes(damage_bytes),
 		"control_tape": _json_canonical_variant(_json_value(_control_tape)),
 		"control_tape_f64_base64": _base64_bytes(control_bytes),
 		"control_tape_sha256": _hash_bytes(control_bytes),
 		"last_controls": _json_canonical_variant(_json_value(_last_controls)),
 		"last_controls_f64_base64": _base64_bytes(last_control_bytes),
 		"last_controls_sha256": _hash_bytes(last_control_bytes),
+		"applied_controls_f64_base64": _base64_bytes(applied_control_bytes),
 		"recovery_actions": _recovery_actions.duplicate(true),
 		"event_tape": canonical_events,
 		"event_tape_sha256": _hash_variant(canonical_events),
@@ -645,6 +691,11 @@ func can_restore_checkpoint(candidate: Variant) -> bool:
 	if not _integer_value_is_valid(candidate.get("tick")) or int(candidate.tick) < 0 \
 			or typeof(candidate.get("time_s")) not in [TYPE_FLOAT, TYPE_INT] \
 			or absf(float(candidate.time_s) - float(candidate.tick) * DT) > 1.0e-12:
+		return false
+	var candidate_damage := _decode_float64_blob(candidate.get("damage_state_f64_base64"), Damage.SNAPSHOT_SIZE)
+	if not _damage.valid_snapshot(candidate_damage) \
+			or _hash_bytes(candidate_damage.to_byte_array()) != str(candidate.get("damage_state_sha256", "")) \
+			or _json_canonical_variant(_json_value(candidate_damage)) != candidate.get("damage_state"):
 		return false
 	var candidate_state := _decode_float64_blob(candidate.get("state_f64_base64"), STATE_SIZE)
 	if not _state_is_valid(candidate_state) \
@@ -687,7 +738,11 @@ func can_restore_checkpoint(candidate: Variant) -> bool:
 		return false
 	if _checkpoint_hash(candidate) != str(candidate.get("checkpoint_sha256", "")):
 		return false
-	var telemetry: Dictionary = VehicleDynamics.telemetry(candidate_state, _model, _road, parsed_last_controls)
+	var applied_controls := _controls_from_packed(_decode_float64_blob(candidate.get("applied_controls_f64_base64"), 4))
+	if not _applied_controls_are_valid(applied_controls, parsed_last_controls): return false
+	var damage_candidate = Damage.new()
+	if not damage_candidate.restore_snapshot(candidate_damage): return false
+	var telemetry: Dictionary = VehicleDynamics.telemetry(candidate_state, _model, _road, applied_controls)
 	return _telemetry_is_valid(telemetry)
 
 
@@ -696,14 +751,21 @@ func restore_checkpoint(candidate: Variant) -> bool:
 		return false
 	var next_state := _decode_float64_blob(candidate.state_f64_base64, STATE_SIZE)
 	var restored_controls := _controls_from_packed(_decode_float64_blob(candidate.last_controls_f64_base64, 4))
-	var next_telemetry: Dictionary = VehicleDynamics.telemetry(next_state, _model, _road, restored_controls)
+	var restored_effective_controls := _controls_from_packed(_decode_float64_blob(candidate.applied_controls_f64_base64, 4))
+	var next_damage = Damage.new()
+	if not next_damage.restore_snapshot(_decode_float64_blob(candidate.damage_state_f64_base64, Damage.SNAPSHOT_SIZE)):
+		return false
+	var next_telemetry: Dictionary = VehicleDynamics.telemetry(next_state, _model, _road, restored_effective_controls)
+	next_telemetry["damage"] = next_damage.visual_state()
 	if not _telemetry_is_valid(next_telemetry):
 		return false
 	_state = next_state
+	_damage = next_damage
 	tick = int(candidate.tick)
 	spawn_id = str(candidate.spawn_id)
 	_control_tape = _decode_float64_blob(candidate.control_tape_f64_base64, int(candidate.tick) * 4)
 	_last_controls = restored_controls
+	_last_effective_controls = restored_effective_controls
 	_recovery_actions = _dictionary_array(candidate.recovery_actions)
 	_event_tape = _dictionary_array(candidate.event_tape)
 	_braking_run = candidate.braking_run.duplicate(true)
@@ -743,6 +805,8 @@ func start_recording() -> bool:
 	_record_samples.clear()
 	_recording_start_tick = tick
 	_recording_end_tick = tick
+	_recording_damage_start = _damage.snapshot()
+	_recording_damage_end = _recording_damage_start.duplicate()
 	_recording_ticks = 0
 	_recording_events.clear()
 	_recording_run_valid = run_valid
@@ -832,6 +896,9 @@ func _capture_record_sample(controls: Dictionary) -> bool:
 	_record_samples.append_array(telemetry.suspension_travel_m)
 	_record_samples.append_array(telemetry.suspension_force_n)
 	_record_samples.append(float(telemetry.total_energy_j))
+	for channel in DAMAGE_CHANNELS:
+		_record_samples.append(float(telemetry.damage[channel]))
+	_record_samples.append_array(_controls_to_packed(_last_effective_controls))
 	return _record_samples.size() - initial_size == _record_sample_width
 
 
@@ -907,6 +974,13 @@ func _recorded_telemetry(offset: int) -> Dictionary:
 	telemetry["suspension_force_n"] = _recorded_float_array(cursor, 4)
 	cursor += 4
 	telemetry["total_energy_j"] = _record_samples[cursor]
+	cursor += 1
+	var damage := {}
+	for channel in DAMAGE_CHANNELS:
+		damage[channel] = _record_samples[cursor]
+		cursor += 1
+	telemetry["damage"] = damage
+	telemetry["applied_controls"] = _recorded_float_array(cursor, 4)
 	return telemetry
 
 
@@ -920,6 +994,11 @@ func _recording_sample_is_valid(telemetry: Dictionary, controls: Dictionary) -> 
 	if _controls_to_packed(controls).size() != 4 or typeof(telemetry.get("ok")) != TYPE_BOOL \
 			or not bool(telemetry.get("ok")):
 		return false
+	var damage: Variant = telemetry.get("damage")
+	if typeof(damage) != TYPE_DICTIONARY: return false
+	for channel in DAMAGE_CHANNELS:
+		var item: Variant = damage.get(channel)
+		if typeof(item) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(item)): return false
 	for key in ["speed_m_per_s", "forward_speed_m_per_s", "total_energy_j"]:
 		var value: Variant = telemetry.get(key, NAN)
 		if typeof(value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)):
@@ -945,6 +1024,7 @@ func _finish_recording() -> void:
 	_recording_end_tick = tick
 	_recording_run_valid = run_valid
 	_recorded_controls_sha256 = _hash_bytes(_recorded_control_channels().to_byte_array())
+	_recording_damage_end = _damage.snapshot()
 
 
 func _recorded_control_channels() -> PackedFloat64Array:
@@ -983,7 +1063,7 @@ func _json_number(value: float) -> String:
 func _recording_metadata() -> Dictionary:
 	return {
 		"format": RECORDING_FORMAT,
-		"version": 2,
+		"version": 3,
 		"fixed_hz": FIXED_HZ,
 		"dt_s": DT,
 		"state_layout": STATE_LAYOUT.duplicate(),
@@ -997,9 +1077,13 @@ func _recording_metadata() -> Dictionary:
 				"wheel_longitudinal_force_n[4]", "wheel_lateral_force_n[4]", "wheel_brake_torque_n_m[4]",
 				"wheel_slip_ratio[4]", "wheel_slip_angle_rad[4]", "wheel_slip_speed_m_per_s[4]",
 				"wheel_in_contact[4]", "hull_in_contact[N]", "airborne", "suspension_travel_m[4]",
-				"suspension_force_n[4]", "total_energy_j"],
+				"suspension_force_n[4]", "total_energy_j", "damage.body_damage",
+				"damage.suspension_damage", "damage.drive_scale", "damage.last_impact_energy_j", "applied_controls[4]"],
 		},
 		"sample_width": _record_sample_width,
+		"damage_state_layout": Damage.STATE_LAYOUT.duplicate(),
+		"initial_damage_f64_base64": _base64_bytes(_recording_damage_start.to_byte_array()),
+		"final_damage_f64_base64": _base64_bytes(_recording_damage_end.to_byte_array()),
 		"hull_probe_count": _record_hull_contact_count,
 		"corner_order": CORNERS.duplicate(),
 		"model_identity": _model_identity.duplicate(true),
@@ -1357,12 +1441,21 @@ func _identity_equal(left: Variant, right: Dictionary) -> bool:
 		and JSON.stringify(left, "", true, true) == JSON.stringify(right, "", true, true)
 
 
+## A damage modifier may reduce requested throttle only. Braking and steering stay driver-owned.
+func _applied_controls_are_valid(applied: Dictionary, requested: Dictionary) -> bool:
+	if _controls_to_packed(applied).size() != 4: return false
+	return float(applied.throttle) <= float(requested.throttle) \
+		and applied.steering == requested.steering and applied.brake == requested.brake \
+		and applied.reverse == requested.reverse
+
+
 func _solver_identity() -> Dictionary:
 	var engine_version: Dictionary = Engine.get_version_info()
 	var backend_identity := _prepared_backend_identity if prepared and not _prepared_backend_identity.is_empty() \
 		else VehicleDynamics.backend_identity()
 	return {
 		"solver_version": VehicleDynamics.SOLVER_VERSION,
+		"damage_version": Damage.SNAPSHOT_VERSION,
 		"engine_version": str(engine_version.get("string", "")),
 		"fixed_hz": FIXED_HZ,
 		"substeps_per_tick": VehicleDynamics.SUBSTEPS_PER_TICK,
@@ -1375,6 +1468,7 @@ func _solver_identity_matches(value: Variant) -> bool:
 		return false
 	var current := _solver_identity()
 	var old_solver_fields_match: bool = value.get("solver_version") == current.solver_version \
+		and value.get("damage_version") == current.damage_version \
 		and value.get("engine_version") == current.engine_version \
 		and _integer_value_is_valid(value.get("fixed_hz")) \
 		and int(value.fixed_hz) == FIXED_HZ \

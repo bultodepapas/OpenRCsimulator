@@ -1,0 +1,37 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{
+  "ok": true,
+  "output": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-monster-truck\\RCV-performance\\baseline-paired-01\\profile.json",
+  "sampler_cost": {
+    "calls_per_implementation": 4800,
+    "candidate": {
+      "maximum_us": 423.0,
+      "mean_us": 45.06583333333333,
+      "median_us": 39.0,
+      "p95_us": 68.0,
+      "samples": 4800
+    },
+    "compared_fields": "complete course sample dictionaries, including normals, friction, coverage, surface/feature IDs, in_bounds and full wall dictionaries",
+    "mean_reduction_percent": 0.14540855186931717,
+    "method": "single-process interleaved A/B calls; call order alternates for each route/feature query",
+    "positions_compared": 576,
+    "reference": {
+      "maximum_us": 402.0,
+      "mean_us": 45.131458333333335,
+      "median_us": 39.0,
+      "p95_us": 68.0,
+      "samples": 4800
+    },
+    "sample_output_mismatches": 0,
+    "sample_outputs_exact": true,
+    "sink": 4567.906076400502
+  },
+  "tick_cost": {
+    "maximum_us": 6656.0,
+    "mean_us": 3268.68125,
+    "median_us": 3106.0,
+    "p95_us": 4413.0,
+    "samples": 480
+  }
+}

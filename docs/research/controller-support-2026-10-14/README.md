@@ -2,6 +2,25 @@
 
 2026-10-14. Source snapshot: `22b3e4825ec97289b76666ca9e942eaa7a8f703d` plus the existing working tree. Scope: Xbox, PlayStation DualSense and other controllers, with Windows prioritized by the owner. The [implementation plan](../../plans/controller-support.md) owns proposed work and acceptance; this report owns the dated findings and sources.
 
+## RCV-05-R1 car controller audit
+
+2026-10-14. The car sampler accepted trigger readings up to 0.04 as neutral only while arming, then emitted those readings as commands. This could prevent garage resume or creep after it. Its steering arming threshold also disagreed with the output deadzone. New boundary cases reproduced seven failures before correction. Trigger shaping now maps the rest region to exactly zero and scales the remaining range to full travel; steering uses the same 0.12 neutral/output threshold. Brake input above its deadzone cuts throttle. Invalid native samples are no longer clamped into apparent rest and pause the activity.
+
+The car now owns a local connection registry, initialized from the shared inventory or native enumeration on the direct route. It prefers the selected recognized gamepad, then another recognized gamepad, otherwise keyboard. A flight radio no longer strands the car in its garage. The visible car selector, ready status and Drive button remain fixed above scrolling utilities. Aircraft selections and profile files are preserved. Reconnection requires explicit selection; same-handle generations and missing button-release events are covered. Fresh sampling at Continue updates readiness while still paused; it cannot integrate a physics tick. X/Square changes camera and Y/Triangle performs the existing assisted recovery while driving. The [operating guide](../../../research/rc-monster-truck/README.md#drive-and-experiment) owns the complete mapping and limitations.
+
+[Windows checks](car-controls/checks-windows.json) cover the sampler, controller ownership, actual GUI events, accepted simulation commands, garage, session, presentation, Home restoration, shared UI isolation, automatic defaults and aircraft pause recovery. The added scene regression has 31 assertions. These are deterministic software tests with injected devices/axis readers; no vehicle physics, aircraft data or golden traces changed in this work.
+
+The [native receipt](car-controls/native-controls.json) uses the connected device reported as **XInput Controller**, real stationary axis reads and automated button events. It verifies neutral readiness, Start driving/pause, reset → Start, X camera, Y assisted recovery, explicit keyboard selection and visibility of all three primary controls. [Gamepad garage](car-controls/garage-native-es.png), [keyboard garage](car-controls/garage-keyboard-es.png) and [driving HUD](car-controls/drive-native-es.png) were visually inspected at 1280×720 on Windows, Godot 4.7.2 Compatibility and RTX 3090. This is not a physical driving, latency, USB/Bluetooth or DualSense hardware qualification.
+
+Reproduce the native receipt with a recognized, resting gamepad and an existing output directory:
+
+```powershell
+$probe = (Resolve-Path 'research/rc-monster-truck/visual/probe_controls.gd').Path
+& ./.tools/Godot_v4.7.2-stable_win64.exe --path app --audio-driver Dummy --script $probe -- --out=C:/captures/rcv-controls
+```
+
+The probe does not load or save player preferences. The deadzone and focus handling follows the [official Godot controller guidance](https://docs.godotengine.org/en/4.7/tutorials/inputs/controllers_gamepads_joysticks.html#dead-zone); standard mapped devices are distinguished from unknown layouts using the [Input API](https://docs.godotengine.org/en/4.7/classes/class_input.html#class-input-method-is-joy-known).
+
 ## Implementation evidence
 
 The owner subsequently authorized implementation. The interactive application now uses a pure connection registry plus an engine bridge, explicit flight/menu selection, validated V2 profiles, Mode 1/2 and absolute-trigger presets, and a Controls screen. Input state remains scalar; no physics model, aircraft data or golden flight was changed for this work. Godot remains pinned to 4.7.2.

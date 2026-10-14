@@ -1,0 +1,9 @@
+[
+  {
+    "test": "heli_night_lights",
+    "ok": true,
+    "exit": 0,
+    "seconds": 20.265,
+    "sha256": "8a83846954ea879fc120cad6f93d15bd91f1aefd06b875078bfe26162951f21b"
+  }
+]

@@ -35,7 +35,7 @@ def consumer(path: str) -> str:
     if path.startswith("controls.keyboard."):
         return "AircraftData._controls → Commands.keyboard_pitch; keyboard normal-profile virtual stick only, before expo/rates; no aerodynamic or servo change"
     if path.startswith("controls.gamepad."):
-        return "AircraftData._controls → FlightSession.flown_commands; fixed normal-gamepad pitch travel after rates, before trim; full/radio bypass"
+        return "AircraftData._controls → FlightSession normal-gamepad sampler/flown_commands; fixed yaw response time and pitch/yaw travel before trim; full/radio bypass"
     if path.startswith("landing_gear.retraction.") or path.endswith(".retraction_path"):
         return "AircraftData._derive_retraction → RetractableGear actuator/contact interpolation/drag; FlightSession accepted gear state"
     families = [

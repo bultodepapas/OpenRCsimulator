@@ -6,6 +6,8 @@ const ControllerProfile = preload("res://input/controller_profile.gd")
 const Flight = preload("res://physics/rotorcraft/flight_dynamics.gd")
 const Hover = preload("res://physics/rotorcraft/trim.gd")
 const Skids = preload("res://physics/rotorcraft/skid_contact.gd")
+const ImpactDetector = preload("res://physics/rotorcraft/impact_detector.gd")
+const CollisionWorld = preload("res://scenery/collision_world.gd")
 const GroundStart = preload("res://physics/rotorcraft/ground_start.gd")
 const Lifecycle = preload("res://physics/rotorcraft/lifecycle.gd")
 const StepAdapter = preload("res://physics/rotorcraft/simulation_step_adapter.gd")
@@ -58,6 +60,8 @@ var pending_mode: String = ""
 var shaft_phase := PackedFloat64Array([0.0,0.0])
 var _phase_omega := PackedFloat64Array([0.0,0.0])
 var _field: Dictionary = {}
+var _collision_world: Dictionary = {}
+var _impact_geometry: Dictionary = {}
 var _ground_start: Dictionary = {}
 var _weather: RefCounted = WeatherField.new()
 var _start: PackedFloat64Array = PackedFloat64Array([12,4,-3])
@@ -65,7 +69,7 @@ var _hover: Dictionary = {}
 var _trim: Dictionary = {}
 var _ready_to_fly: bool = false
 var _stage_failure: String = ""
-const CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v3"
+const CHECKPOINT_FORMAT: String = "openrc-helicopter-checkpoint v4"
 
 func _init() -> void:
  sim.name="Simulation"
@@ -91,8 +95,14 @@ func setup(path: String=aircraft_path,selected_id: String="") -> bool:
   start_error="This rotorcraft profile is laboratory-only: "+", ".join(loaded.release_gate.missing_capabilities)
   pause_reason=start_error
   return false
+ var impact_geometry: Dictionary=ImpactDetector.prepare(loaded.context,loaded.skids)
+ if not impact_geometry.get("ok",false):
+  start_error="Helicopter contact geometry could not be prepared."
+  pause_reason=start_error
+  return false
  aircraft_path=path
  aircraft=loaded
+ _impact_geometry=impact_geometry
  sim.mass=aircraft.context.mass_kg
  sim.gravity=aircraft.context.gravity_m_s2
  sim.inertia=aircraft.context.inertia_body_kg_m2
@@ -350,16 +360,47 @@ func _on_stepped(_tick: int,_t: float,body: PackedFloat64Array,_loads: PackedFlo
   if _tick>0:
    for i: int in 2: shaft_phase[i]+=.5*(_phase_omega[i]+omega[i])*sim.dt()
   _phase_omega=omega
- if not _ready_to_fly or body.is_empty(): return
- var state: PackedFloat64Array=body.duplicate()
- state.append_array(sim.continuous.slice(0,6))
- var reason: String=Skids.strike(state,aircraft.context.main_model,aircraft.context.tail_model,ground_surfaces)
- var contact: Dictionary=Skids.evaluate(body,aircraft.skids,ground_surfaces)
- if reason.is_empty() and contact.ok and contact.max_depth_m>.04: reason="hard landing: skid travel exceeded"
- if not reason.is_empty():
-  crash={reason=reason,tick=sim.tick}
-  pause_reason=reason+" · R: restart"
+ if not _ready_to_fly or body.is_empty() or not crash.is_empty(): return
+ var detected: Dictionary=ImpactDetector.evaluate(sim.previous,body,sim.continuous,aircraft.context,aircraft.skids,ground_surfaces,shaft_phase,_collision_world,_impact_geometry)
+ if not detected.ok:
+  # Invalid detection input is a diagnostic stop, never a manufactured impact.
+  _ready_to_fly=false
+  pause_reason="Contact detection refused: "+str(detected.get("error","invalid input"))
   sim.set_paused(true)
+  return
+ if not detected.impact.is_empty():
+  crash=detected.impact.duplicate(true)
+  crash.tick=sim.tick
+  crash.time_s=sim.time()
+  crash.shaft_phase=shaft_phase.duplicate()
+  var point: PackedFloat64Array=crash.point_world_ned
+  var terrain: PackedFloat64Array=Terrain.sample_validated(point[0],point[1],ground_surfaces)
+  crash.ground_point_world_ned=PackedFloat64Array([point[0],point[1],-terrain[0]])
+  var up: PackedFloat64Array=PackedFloat64Array([-terrain[1],-terrain[2],-1.0])
+  crash.ground_normal_world_ned=M.scale(up,1.0/M.norm(up))
+  pause_reason=str(crash.reason)+" · R: restart"
+  # Preserve accepted body/shaft state for evidence; cut drive at the terminal boundary.
+  power.armed=false
+  zero_drive_hold=true
+  pending_mode=""
+  radio.set_auxiliary_enabled(false)
+  sim.set_paused(true)
+
+func set_collision_world(world: Dictionary) -> bool:
+ if sim.tick>0: return false
+ if not world.is_empty():
+  if not CollisionWorld._world_header_is_valid(world): return false
+  for proxy: Dictionary in world.proxies:
+   if not CollisionWorld._proxy_is_valid(proxy): return false
+ _collision_world=world.duplicate(true)
+ if _ready_to_fly:
+  _ready_to_fly=false
+  sim.set_paused(true)
+  pause_reason="Obstacle configuration changed. Restart the helicopter."
+ return true
+
+func collision_world() -> Dictionary:
+ return _collision_world.duplicate(true)
 
 func _on_joy_connection_changed(id: int,connected: bool) -> void:
  if external_controller_selection:
@@ -544,7 +585,7 @@ func checkpoint() -> Dictionary:
  var saved_simulation: Dictionary=sim.checkpoint()
  if saved_simulation.is_empty() or not Lifecycle.valid(power,sim.time()) or (not power.armed and not zero_drive_hold) or not _simulation_configuration_matches(saved_simulation) \
  or not _checkpoint_flight_state_is_valid(saved_simulation,commands,flight_mode,trainer_enabled,zero_drive_hold,power): return {}
- return {format=CHECKPOINT_FORMAT,aircraft_sha256=aircraft.input_identity.sha256,weather=weather_configuration(),simulation=saved_simulation,commands=commands.duplicate(),trim=_trim.duplicate(),ground_surfaces=ground_surfaces.duplicate(),start_position=_start.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold,power=power.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}).duplicate(true),shaft_phase=shaft_phase.duplicate()}
+ return {format=CHECKPOINT_FORMAT,aircraft_sha256=aircraft.input_identity.sha256,weather=weather_configuration(),simulation=saved_simulation,commands=commands.duplicate(),trim=_trim.duplicate(),ground_surfaces=ground_surfaces.duplicate(),start_position=_start.duplicate(),flight_mode=flight_mode,trainer_enabled=trainer_enabled,zero_drive_hold=zero_drive_hold,power=power.duplicate(),start_choice=start_choice,pad=_field.get("rotorcraft_pad",{}).duplicate(true),shaft_phase=shaft_phase.duplicate(),collision_world_identity=str(_collision_world.get("identity",""))}
 
 func _simulation_configuration_matches(saved: Dictionary) -> bool:
  if not aircraft.get("ok",false) or not saved.has_all(["mass","gravity","inertia","aux","continuous"]): return false
@@ -579,10 +620,12 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
   return {ok=false,errors=["Reset the selected start before restoring a helicopter checkpoint."]}
  if not candidate is Dictionary:
   return {ok=false,errors=["malformed helicopter checkpoint"]}
- if candidate.get("format") in ["openrc-helicopter-checkpoint v1","openrc-helicopter-checkpoint v2"]:
-  return {ok=false,errors=["helicopter checkpoint v1/v2 lacks power lifecycle and rotor phase; regenerate with v3"]}
- if candidate.get("format")!=CHECKPOINT_FORMAT or candidate.size()!=15 or not candidate.has_all(["format","aircraft_sha256","weather","simulation","commands","trim","ground_surfaces","start_position","flight_mode","trainer_enabled","zero_drive_hold","power","start_choice","pad","shaft_phase"]):
+ if candidate.get("format") in ["openrc-helicopter-checkpoint v1","openrc-helicopter-checkpoint v2","openrc-helicopter-checkpoint v3"]:
+  return {ok=false,errors=["Helicopter checkpoint v1/v2/v3 lacks the current contact boundary; regenerate with v4"]}
+ if candidate.get("format")!=CHECKPOINT_FORMAT or candidate.size()!=16 or not candidate.has_all(["format","aircraft_sha256","weather","simulation","commands","trim","ground_surfaces","start_position","flight_mode","trainer_enabled","zero_drive_hold","power","start_choice","pad","shaft_phase","collision_world_identity"]):
   return {ok=false,errors=["malformed or unsupported helicopter checkpoint"]}
+ if typeof(candidate.collision_world_identity)!=TYPE_STRING or candidate.collision_world_identity!=str(_collision_world.get("identity","")):
+  return {ok=false,errors=["helicopter checkpoint obstacle inventory mismatch"]}
  if not aircraft.get("ok",false) or candidate.aircraft_sha256!=aircraft.input_identity.sha256 or candidate.weather!=weather_configuration() or candidate.trim!=_trim:
   return {ok=false,errors=["helicopter checkpoint configuration mismatch"]}
  if not candidate.ground_surfaces is PackedFloat64Array or not Terrain.is_valid_surface_table(candidate.ground_surfaces) \

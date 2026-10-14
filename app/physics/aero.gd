@@ -17,6 +17,8 @@ const GroundEffect := preload("res://physics/ground_effect.gd")
 
 ## Equal-area elements per wing side (numerical resolution, not an aircraft parameter).
 const WING_STATIONS_PER_SIDE := 3
+const LOADS_LAW := "section-plane-source-weighted-wake-velocity-v2"
+const WAKE_STATE_UNIT := "m/s (equal-area mean of section Vp*CL)"
 
 
 ## Our pilot-side surface angles (degrees, trailing edge UP for ailerons/elevator, RIGHT for rudder,
@@ -46,6 +48,11 @@ static func _smoothstep(x: float) -> float:
 	if x >= 1.0:
 		return 1.0
 	return x * x * (3.0 - 2.0 * x)
+
+
+static func _tail_plane_speed(s: PackedFloat64Array, air: Dictionary, model: Dictionary, tail: Dictionary) -> float:
+	var flow := M.add(air.v_air, M.cross(s.slice(RB.RATE, RB.RATE+3), _arm(tail.position, model.cg_le)))
+	return M.sqrt_(flow[0]*flow[0] + flow[2]*flow[2])
 
 
 ## The α-dependent part of the lift coefficient (no control terms), attached → flat plate.
@@ -164,10 +171,12 @@ static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
 		# The oracle's static tail sees the free-air downwash k_ε·CL_free(now); the ground leaves k_ε·σ_ε·CL_ge(now), so the
 		# tail's angle grows by k_ε·(CL_free − σ_ε·CL_ge) on the free slope. The strips' tail law gives the same difference.
 		var ge_tail: Dictionary = model.surfaces.horizontal
-		var cl_free_now: float = _wing_lift_coefficient_with(s, air, d, model, PackedFloat64Array())
-		var cl_ge_now: float = _wing_lift_coefficient_with(s, air, d, model, ge)
-		var tail_cl: float = float(ge_tail.free_slope) * float(ge_tail.area) / S * float(ge_tail.downwash_per_cl) \
-			* (cl_free_now - ge[stations + 1] * cl_ge_now)
+		var wake_free := _wing_lift_coefficient_with(s, air, d, model, PackedFloat64Array(), true)
+		var wake_ge := _wing_lift_coefficient_with(s, air, d, model, ge, true)
+		var tail_speed := _tail_plane_speed(s, air, model, ge_tail)
+		var tail_cl: float = float(ge_tail.free_slope) * float(ge_tail.area) / S * (
+			downwash_angle(wake_free, float(ge_tail.downwash_per_cl), tail_speed)
+			- downwash_angle(wake_ge * ge[stations+1], float(ge_tail.downwash_per_cl), tail_speed))
 		co_cl += tail_cl
 		co_pitch -= tail_cl * (float(ge_tail.position[0]) - float(ref.arp_le[0])) / c
 	if not is_nan(downwash_cl):
@@ -176,13 +185,12 @@ static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
 		# Cmα̇, the same as the local tail's. Zero once settled; NAN (trim, static solves) adds nothing.
 		# M5-GE-1: in ground effect the lag acts on the reduced downwash, k_ε·σ_ε·(CL_ge − lag), as in the strips' tail.
 		var tail: Dictionary = model.surfaces.horizontal
-		var lag_cl: float
-		if ge.is_empty():
-			lag_cl = float(tail.free_slope) * float(tail.area) / S * float(tail.downwash_per_cl) \
-				* (wing_lift_coefficient(s, air, d, model) - downwash_cl)
-		else:
-			lag_cl = float(tail.free_slope) * float(tail.area) / S * float(tail.downwash_per_cl) * ge[ge.size() - 1] \
-				* (_wing_lift_coefficient_with(s, air, d, model, ge) - downwash_cl)
+		var source := _wing_lift_coefficient_with(s, air, d, model, ge, true)
+		var scale: float = 1.0 if ge.is_empty() else ge[ge.size()-1]
+		var tail_speed := _tail_plane_speed(s, air, model, tail)
+		var lag_cl: float = float(tail.free_slope) * float(tail.area) / S * (
+			downwash_angle(source * scale, float(tail.downwash_per_cl), tail_speed)
+			- downwash_angle(downwash_cl * scale, float(tail.downwash_per_cl), tail_speed))
 		co_cl += lag_cl
 		co_pitch -= lag_cl * (float(tail.position[0]) - float(ref.arp_le[0])) / c
 
@@ -219,45 +227,71 @@ static func _global_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary,
 	return PackedFloat64Array([fx, fy, fz, mx + (ry * fz - rz * fy), my + (rz * fx - rx * fz), mz + (rx * fy - ry * fx)])
 
 
-# Local surface loads: lift is perpendicular to local velocity, drag opposes it;
-# the moment is exactly r cross F. Passive by construction for fixed controls.
+## Two-dimensional section loads in the chord/normal plane. No spanwise coefficient
+## is inferred from CD90. The unresolved spanwise/body-drag domain stays unvalidated.
 static func _surface(v: PackedFloat64Array, rates: PackedFloat64Array, arm: PackedFloat64Array,
 		area: float, cl: float, cd: float, vertical: bool, rho: float) -> PackedFloat64Array:
-	var flow := M.add(v, M.cross(rates, arm))
-	var speed := M.sqrt_(M.dot(flow, flow))
-	if speed < 1e-10:
-		return PackedFloat64Array([0., 0., 0., 0., 0., 0.])
-	var plane_speed := M.sqrt_(flow[0]*flow[0] + flow[1 if vertical else 2]*flow[1 if vertical else 2])
-	var force := M.scale(flow, -0.5*rho*speed*area*cd)
-	if plane_speed > 1e-10:
-		var lift := 0.5*rho*plane_speed*plane_speed*area*cl
-		force[0] += lift*flow[1 if vertical else 2]/plane_speed
-		force[1 if vertical else 2] -= lift*flow[0]/plane_speed
-	var moment := M.cross(arm, force)
-	return PackedFloat64Array([force[0], force[1], force[2], moment[0], moment[1], moment[2]])
+	return _surface_with_flow(M.add(v, M.cross(rates, arm)), arm, area, cl, cd, vertical, rho)
 
 
 static func _surface_with_flow(flow: PackedFloat64Array, arm: PackedFloat64Array,
 		area: float, cl: float, cd: float, vertical: bool, rho: float) -> PackedFloat64Array:
-	var speed := M.sqrt_(M.dot(flow, flow))
-	if speed < 1e-10:
+	var normal: float = flow[1 if vertical else 2]
+	var plane_speed := M.sqrt_(flow[0]*flow[0] + normal*normal)
+	if plane_speed == 0.0:
 		return PackedFloat64Array([0., 0., 0., 0., 0., 0.])
-	var plane_speed := M.sqrt_(flow[0]*flow[0] + flow[1 if vertical else 2]*flow[1 if vertical else 2])
-	var force_scale := -0.5*rho*speed*area*cd
+	var force_scale := -0.5*rho*plane_speed*area*cd
 	var fx: float = flow[0] * force_scale
-	var fy: float = flow[1] * force_scale
-	var fz: float = flow[2] * force_scale
-	if plane_speed > 1e-10:
-		var lift := 0.5*rho*plane_speed*plane_speed*area*cl
-		fx += lift*flow[1 if vertical else 2]/plane_speed
-		if vertical:
-			fy -= lift*flow[0]/plane_speed
-		else:
-			fz -= lift*flow[0]/plane_speed
-	var mx: float = arm[1] * fz - arm[2] * fy
-	var my: float = arm[2] * fx - arm[0] * fz
-	var mz: float = arm[0] * fy - arm[1] * fx
-	return PackedFloat64Array([fx, fy, fz, mx, my, mz])
+	var fy: float = normal * force_scale if vertical else 0.0
+	var fz: float = 0.0 if vertical else normal * force_scale
+	var lift := 0.5*rho*plane_speed*plane_speed*area*cl
+	fx += lift*normal/plane_speed
+	if vertical:
+		fy -= lift*flow[0]/plane_speed
+	else:
+		fz -= lift*flow[0]/plane_speed
+	return PackedFloat64Array([fx, fy, fz, arm[1]*fz-arm[2]*fy,
+		arm[2]*fx-arm[0]*fz, arm[0]*fy-arm[1]*fx])
+
+
+## Reduced downwash closure, not a validated separated-flow circulation model.
+## A dimensional source has a unique zero-flow limit, including an actively washed tail.
+static func downwash_angle(wake_velocity: float, gain: float, plane_speed: float) -> float:
+	return M.atan2_(gain * wake_velocity, plane_speed) if wake_velocity != 0.0 else 0.0
+
+
+## Common strip kinematics for loads and wake. Only off-diagonal induced sources
+## are attenuated: a stagnant or fully separated strip cannot export its undefined
+## angle to a loaded neighbour. Uniform attached planar flow retains the old map.
+## The max speed is homogeneous; its exact-zero branch needs no epsilon denominator.
+static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary) -> Dictionary:
+	var arm := _arm(model.reference.arp_le, model.cg_le)
+	var v: PackedFloat64Array = air.v_air
+	var p: float = s[RB.RATE]
+	var q: float = s[RB.RATE+1]
+	var r: float = s[RB.RATE+2]
+	var ys: PackedFloat64Array = model.envelope.station_ys
+	var twist: PackedFloat64Array = model.surfaces.get("station_incidence", PackedFloat64Array())
+	var angles := PackedFloat64Array()
+	var speeds := PackedFloat64Array()
+	var sources := PackedFloat64Array()
+	var reference_speed := 0.0
+	for i in ys.size():
+		var y: float = arm[1] + ys[i]
+		var f0: float = v[0] + (q*arm[2] - r*y)
+		var f1: float = v[1] + (r*arm[0] - p*arm[2])
+		var f2: float = v[2] + (p*y - q*arm[0])
+		var vp := M.sqrt_(f0*f0 + f2*f2)
+		var control: float = d.aileron_right if ys[i] > 0.0 else d.aileron_left
+		var angle := wrapf(M.atan2_(f2, f0) + float(model.surfaces.wing_aileron_effectiveness)*control, -PI, PI)
+		if not twist.is_empty():
+			angle = wrapf(angle + twist[i], -PI, PI)
+		angles.append(angle)
+		speeds.append(vp)
+		reference_speed = maxf(reference_speed, M.sqrt_(f0*f0 + f1*f1 + f2*f2))
+	for i in ys.size():
+		sources.append((speeds[i]/reference_speed) * (1.0-stall_weight(angles[i], model.envelope)) if reference_speed > 0.0 else 0.0)
+	return {angles = angles, speeds = speeds, sources = sources}
 
 
 static func _tail_curve(alpha: float, slope: float, surfaces: Dictionary) -> float:
@@ -266,9 +300,9 @@ static func _tail_curve(alpha: float, slope: float, surfaces: Dictionary) -> flo
 	return (1.0 - blend)*slope*alpha + blend*0.5*float(surfaces.tail_CD90)*M.sin_(2.0*alpha)
 
 
-## H12: scalar form of the frozen vector oracle in tests/aero_flow_reference.gd. Every product and sum keeps the
-## oracle's order (including the + 0.0 arm terms, which turn -0.0 into +0.0); test_aero_flow.gd compares bytes.
-## downwash_cl: E0a2b's lagged wing CL for the tail's downwash (FlightSession aux); NAN = the instantaneous wing CL.
+## Local section law. H12 parity applies only in its unchanged planar legacy domain.
+## downwash_cl is the historical argument name; v2 carries the dimensional wake driver in m/s.
+## NAN selects the instantaneous source; FlightSession holds the same driver through RK stages.
 static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float,
 		downwash_cl := NAN, strip_diagnostics: Variant = null, ge := PackedFloat64Array()) -> PackedFloat64Array:
 	var ge_active := not ge.is_empty() # M5-GE-1: σ per strip (station order), then mean σ and the tail's σ_ε
@@ -316,18 +350,10 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var mz_sum := 0.0
 	var wing_cl := 0.0 # E0a2: the strips' mean section lift coefficient (equal areas) sets the tail's downwash
 	# D11d: geometric strip angles first, then the induced-flow map (AircraftData._induced_map) couples them.
-	var angles := PackedFloat64Array()
-	angles.resize(stations)
-	for i in stations:
-		var y: float = ys[i]
-		var arm_y: float = ay + y
-		var f0: float = v0 + (q*az - r*arm_y)
-		var f2: float = v2 + (p*arm_y - q*ax)
-		var da: float = da_right if y > 0 else da_left
-		var effective := wrapf(M.atan2_(f2, f0) + aileron_effect * da, -PI, PI)
-		if has_twist:
-			effective = wrapf(effective + twist[i], -PI, PI)
-		angles[i] = effective
+	var wing_flow := _wing_flow(s, air, d, model)
+	var angles: PackedFloat64Array = wing_flow.angles
+	var plane_speeds: PackedFloat64Array = wing_flow.speeds
+	var source_weights: PackedFloat64Array = wing_flow.sources
 	var e_map: PackedFloat64Array = env.get("induced_map", PackedFloat64Array())
 	var coupled := e_map.size() == stations * stations
 	var strip_slope: float = env.get("strip_slope", cla)
@@ -351,7 +377,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		if coupled:
 			var mapped := 0.0
 			for k in stations:
-				mapped += e_map[i * stations + k] * angles[k]
+				mapped += e_map[i * stations + k] * angles[k] * (1.0 if k == i else source_weights[k])
 			base = strip_cl0[i] + strip_slope * mapped
 		else:
 			base = cl0 + cla * effective
@@ -376,21 +402,21 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 				cl = sample[0]
 				weight = 1.0-sample[2]
 				cd = sample[1] + sample[2]*k_induced*M.pow_(cl-cl_min_d, 2)
-		wing_cl += cl / stations
+		wing_cl += (plane_speeds[i] * cl) / stations
 		var speed := M.sqrt_(f0 * f0 + f1 * f1 + f2 * f2)
-		if speed < 1e-10:
+		if plane_speeds[i] == 0.0:
 			if strip_diagnostics != null:
 				strip_diagnostics.append({y_m = y, alpha_geometric_rad = effective,
 					alpha_effective_rad = (base - strip_cl0[i]) / strip_slope if coupled else effective,
-					stall_weight = weight, cl = cl, cd = cd, speed_mps = speed, lift_n = 0.0, drag_n = 0.0,
+					stall_weight = weight, cl = cl, cd = cd, speed_mps = speed, plane_speed_mps = plane_speeds[i], degenerate_section = true, lift_n = 0.0, drag_n = 0.0,
 					force_body_n = PackedFloat64Array([0., 0., 0.]), moment_body_nm = PackedFloat64Array([0., 0., 0.])})
 			continue # the oracle adds +0.0, which never changes a sum that starts at +0.0
 		var plane_speed := M.sqrt_(f0*f0 + f2*f2)
-		var force_scale: float = drag_q*speed*station_area*cd
+		var force_scale: float = drag_q*plane_speed*station_area*cd
 		var fx: float = f0 * force_scale
-		var fy: float = f1 * force_scale
+		var fy := 0.0
 		var fz: float = f2 * force_scale
-		if plane_speed > 1e-10:
+		if plane_speed > 0.0:
 			var lift: float = lift_q*plane_speed*plane_speed*station_area*cl
 			fx += lift*f2/plane_speed
 			fz -= lift*f0/plane_speed
@@ -400,73 +426,32 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		mx_sum += arm_y * fz - az * fy
 		my_sum += az * fx - ax * fz
 		mz_sum += ax * fy - arm_y * fx
-		if cm_ac != 0.0 and plane_speed > 1e-10:
+		if cm_ac != 0.0 and plane_speed > 0.0:
 			my_sum += lift_q * plane_speed * plane_speed * station_area * station_chords[i] * cm_ac
 		if strip_diagnostics != null:
 			strip_diagnostics.append({y_m = y, alpha_geometric_rad = effective,
 				alpha_effective_rad = (base - strip_cl0[i]) / strip_slope if coupled else effective,
 				stall_weight = weight, cl = cl, cd = cd, speed_mps = speed,
+				plane_speed_mps = plane_speed, degenerate_section = false,
 				lift_n = lift_q * plane_speed * plane_speed * station_area * cl,
-				drag_n = -drag_q * speed * speed * station_area * cd,
+				drag_n = -drag_q * plane_speed * plane_speed * station_area * cd,
 				force_body_n = PackedFloat64Array([fx, fy, fz]),
 				moment_body_nm = PackedFloat64Array([arm_y * fz - az * fy, az * fx - ax * fz, ax * fy - arm_y * fx])})
-	var tail_limit: float = surfaces.tail_local_limit
-	var tail_span: float = surfaces.tail_stall_end - surfaces.tail_local_limit
-	var tail_cd0: float = surfaces.tail_CD0
-	var tail_k: float = surfaces.tail_k
-	var tail_cd90: float = surfaces.tail_CD90
-	for tail_index in 2: # horizontal, then vertical: the oracle's summation order
+	var wake: float = wing_cl if is_nan(downwash_cl) else downwash_cl
+	if ge_active:
+		wake *= ge[stations + 1]
+	for tail_index in 2:
 		var vertical := tail_index == 1
 		var tail: Dictionary = surfaces.vertical if vertical else surfaces.horizontal
-		var position: PackedFloat64Array = tail.position
-		var tx: float = -(position[0]-cg[0])
-		var ty: float = position[1]-cg[1]
-		var tz: float = -(position[2]-cg[2])
-		var f0: float = v0 + (q*tz - r*ty)
-		var f1: float = v1 + (r*tx - p*tz)
-		var f2: float = v2 + (p*ty - q*tx)
-		var control: float = -float(d.rudder) if vertical else float(d.elevator)
-		var normal: float = f1 if vertical else f2
-		var effective: float
-		var slope: float
-		if not vertical and tail.has("free_slope"):
-			# E0a2: downwash from the wing's lift; pitch rate (in the flow) and elevator act on the free tail slope.
-			if ge_active: # M5-GE-1: the ground's image reduces the wing's downwash at the tail by σ_ε
-				effective = wrapf(M.atan2_(normal, f0) - float(tail.downwash_per_cl) * ge[stations + 1]
-					* (wing_cl if is_nan(downwash_cl) else downwash_cl)
-					+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
-			else:
-				effective = wrapf(M.atan2_(normal, f0) - float(tail.downwash_per_cl) * (wing_cl if is_nan(downwash_cl) else downwash_cl)
-					+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
-			slope = tail.free_slope
-		else:
-			effective = wrapf(M.atan2_(normal, f0) + tail.control_effectiveness*control + tail.incidence, -PI, PI)
-			slope = tail.lift_slope
-		var blend := _smoothstep((absf(effective) - tail_limit)/tail_span)
-		var cl: float = (1.0 - blend)*slope*effective + blend*0.5*tail_cd90*M.sin_(2.0*effective)
-		var cd: float = tail_cd0 + tail_k*cl*cl + tail_cd90*M.pow_(M.sin_(effective), 2)
-		var speed := M.sqrt_(f0 * f0 + f1 * f1 + f2 * f2)
-		if speed < 1e-10:
-			continue
-		var area: float = tail.area
-		var plane_speed := M.sqrt_(f0*f0 + normal*normal)
-		var force_scale: float = drag_q*speed*area*cd
-		var fx: float = f0 * force_scale
-		var fy: float = f1 * force_scale
-		var fz: float = f2 * force_scale
-		if plane_speed > 1e-10:
-			var lift: float = lift_q*plane_speed*plane_speed*area*cl
-			fx += lift*normal/plane_speed
-			if vertical:
-				fy -= lift*f0/plane_speed
-			else:
-				fz -= lift*f0/plane_speed
-		fx_sum += fx
-		fy_sum += fy
-		fz_sum += fz
-		mx_sum += ty * fz - tz * fy
-		my_sum += tz * fx - tx * fz
-		mz_sum += tx * fy - ty * fx
+		var arm := _arm(tail.position, cg)
+		var flow := M.add(v, M.cross(M.v3(p, q, r), arm))
+		var result := _tail_surface_from_flow(flow, arm, d, tail, surfaces, float(tail.area), vertical, rho, wake)
+		fx_sum += result[0]
+		fy_sum += result[1]
+		fz_sum += result[2]
+		mx_sum += result[3]
+		my_sum += result[4]
+		mz_sum += result[5]
 	return PackedFloat64Array([fx_sum, fy_sum, fz_sum, mx_sum, my_sum, mz_sum])
 
 
@@ -531,7 +516,8 @@ static func _tail_surface_from_flow(flow: PackedFloat64Array, arm: PackedFloat64
 	var effective: float
 	var slope: float
 	if not vertical and tail.has("free_slope"):
-		effective = wrapf(M.atan2_(flow[2], flow[0]) - float(tail.downwash_per_cl) * downwash_cl
+		effective = wrapf(M.atan2_(flow[2], flow[0]) - downwash_angle(downwash_cl, float(tail.downwash_per_cl),
+			M.sqrt_(flow[0]*flow[0] + flow[2]*flow[2]))
 			+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
 		slope = tail.free_slope
 	else:
@@ -599,6 +585,10 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 		var flow_x: float = v0 + (q*arm_z - r*station_y)
 		var flow_z: float = v2 + (p*station_y - q*arm_x)
 		var da: float = da_right if y > 0 else da_left
+		var rate_speed := M.sqrt_(M.pow_(q*arm_z-r*station_y, 2) + M.pow_(r*arm_x-p*arm_z, 2) + M.pow_(p*station_y-q*arm_x, 2))
+		blend = maxf(blend, _smoothstep((M.atan2_(rate_speed, float(air.V))-limit)/a1_span))
+		if blend == 1.0:
+			return blend
 		var angle := wrapf(M.atan2_(flow_z, flow_x) + aileron_effect*da, -PI, PI)
 		if has_twist:
 			angle = wrapf(angle + twist[i], -PI, PI)
@@ -615,23 +605,20 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 		var tz: float = -(tail_position[2]-cg[2])
 		var flow_x: float = v0 + (q*tz - r*ty)
 		var component: float = v1 + (r*tx - p*tz) if vertical else v2 + (p*ty - q*tx)
+		var rate_speed := M.sqrt_(M.pow_(q*tz-r*ty, 2) + M.pow_(r*tx-p*tz, 2) + M.pow_(p*ty-q*tx, 2))
+		blend = maxf(blend, _smoothstep((M.atan2_(rate_speed, float(air.V))-limit)/a1_span))
+		if blend == 1.0:
+			return blend
 		var control: float = -float(d.rudder) if vertical else float(d.elevator)
 		var angle: float
 		if not vertical and tail.has("free_slope"):
-			if not is_nan(downwash_cl) or not ge.is_empty():
-				# E0a2b/M5-GE-1: match _local_loads' actual tail flow. A displaced lag state and reduced
-				# ground-effect downwash can move the tail outside the oracle while body α and the steady tail remain attached.
-				var tail_cl: float = downwash_cl
-				if is_nan(tail_cl):
-					tail_cl = _wing_lift_coefficient_with(s, air, d, model, ge)
-				var downwash_scale := ge[ys.size() + 1] if not ge.is_empty() else 1.0
-				angle = wrapf(M.atan2_(component, flow_x) - float(tail.downwash_per_cl) * downwash_scale * tail_cl
-					+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
-			else:
-				# Legacy static selector: k_ε·(CLα_w·α + CL_w0) = dε/dα·α + k_ε·CL_w0.
-				angle = wrapf(M.atan2_(component, flow_x) - (float(tail.downwash_gradient) * float(air.alpha)
-					+ float(tail.downwash_per_cl) * float(tail.wing_cl0)) + float(tail.elevator_tau) * control
-					+ float(tail.free_incidence), -PI, PI)
+			var wake: float = downwash_cl
+			if is_nan(wake):
+				wake = _wing_lift_coefficient_with(s, air, d, model, ge, true)
+			var scale: float = ge[ys.size()+1] if not ge.is_empty() else 1.0
+			angle = wrapf(M.atan2_(component, flow_x) - downwash_angle(wake * scale,
+				float(tail.downwash_per_cl), M.sqrt_(flow_x*flow_x + component*component))
+				+ float(tail.elevator_tau)*control + float(tail.free_incidence), -PI, PI)
 		else:
 			angle = wrapf(M.atan2_(component, flow_x) + tail.control_effectiveness*control + tail.incidence, -PI, PI)
 		blend = maxf(blend, _smoothstep((absf(angle)-limit)/tail_span))
@@ -646,8 +633,15 @@ static func wing_lift_coefficient(s: PackedFloat64Array, air: Dictionary, d: Dic
 	return _wing_lift_coefficient_with(s, air, d, model, GroundEffect.factors(s, model, ground_up))
 
 
+## Equal-area mean Vp*CL (m/s) from the force-producing strip law. This is an
+## equivalent-lift velocity proxy, not measured circulation in separated flow.
+static func wing_wake_velocity(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary,
+		ground_up := NAN) -> float:
+	return _wing_lift_coefficient_with(s, air, d, model, GroundEffect.factors(s, model, ground_up), true)
+
+
 static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary,
-		ge: PackedFloat64Array) -> float:
+		ge: PackedFloat64Array, dimensional := false) -> float:
 	var ge_active := not ge.is_empty()
 	var p: float = s[RB.RATE]
 	var q: float = s[RB.RATE+1]
@@ -667,18 +661,10 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 	var ys: PackedFloat64Array = env.station_ys
 	var stations := ys.size()
 	var aileron_effect: float = surfaces.wing_aileron_effectiveness
-	var angles := PackedFloat64Array()
-	angles.resize(stations)
-	for i in stations:
-		var y: float = ys[i]
-		var arm_y: float = ay + y
-		var f0: float = v0 + (q*az - r*arm_y)
-		var f2: float = v2 + (p*arm_y - q*ax)
-		var da: float = float(d.aileron_right) if y > 0 else float(d.aileron_left)
-		var effective := wrapf(M.atan2_(f2, f0) + aileron_effect * da, -PI, PI)
-		if not twist.is_empty():
-			effective = wrapf(effective + twist[i], -PI, PI)
-		angles[i] = effective
+	var wing_flow := _wing_flow(s, air, d, model)
+	var angles: PackedFloat64Array = wing_flow.angles
+	var plane_speeds: PackedFloat64Array = wing_flow.speeds
+	var source_weights: PackedFloat64Array = wing_flow.sources
 	var e_map: PackedFloat64Array = env.get("induced_map", PackedFloat64Array())
 	var coupled := e_map.size() == stations * stations
 	var strip_slope: float = env.get("strip_slope", a.CLa)
@@ -698,7 +684,7 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 		if coupled:
 			var mapped := 0.0
 			for k in stations:
-				mapped += e_map[i * stations + k] * angles[k]
+				mapped += e_map[i * stations + k] * angles[k] * (1.0 if k == i else source_weights[k])
 			base = strip_cl0[i] + strip_slope * mapped
 		else:
 			base = float(a.CL0) + float(a.CLa) * effective
@@ -707,7 +693,7 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
 		if not polar.is_empty():
 			cl = WingPolar.evaluate(effective, base, polar)[0]
-		wing_cl += cl / stations
+		wing_cl += (plane_speeds[i] * cl if dimensional else cl) / stations
 	return wing_cl
 
 

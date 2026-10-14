@@ -1,0 +1,434 @@
+{
+  "brake_torque_per_wheel_nm": 1.2,
+  "cases": [
+    {
+      "initial_exact_symmetric_diagnostic": {
+        "brake_torque_nm_fl_fr_rl_rr": [
+          -1.2,
+          -1.2,
+          -1.2,
+          -1.2
+        ],
+        "lat_force_n_fl_fr_rl_rr": [
+          -3.01511904303373,
+          3.81071575351473,
+          3.34547246014037,
+          -3.92848051429438
+        ],
+        "lateral_accel_m_s2": 0.0289266169446979,
+        "long_force_n_fl_fr_rl_rr": [
+          -9.90409964795223,
+          -9.62603647022734,
+          -9.79744592731568,
+          -9.57857888880399
+        ],
+        "patch_slip_lateral_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "patch_slip_long_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "slip_force_power_w_per_corner": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sum_slip_force_power_w": 0.0,
+        "sweeps_used": 6,
+        "wheel_load_n_fl_fr_rl_rr": [
+          13.533177,
+          13.533177,
+          13.533177,
+          13.533177
+        ],
+        "yaw_accel_rad_s2": 1.0069257639363
+      },
+      "name": "reference6"
+    },
+    {
+      "initial_exact_symmetric_diagnostic": {
+        "brake_torque_nm_fl_fr_rl_rr": [
+          -1.2,
+          -1.2,
+          -1.2,
+          -1.2
+        ],
+        "lat_force_n_fl_fr_rl_rr": [
+          -3.94949711542083,
+          3.94949656949275,
+          3.94949689031941,
+          -3.94949650942244
+        ],
+        "lateral_accel_m_s2": -2.24555331608338e-08,
+        "long_force_n_fl_fr_rl_rr": [
+          -9.56993235166868,
+          -9.56993257697238,
+          -9.5699324445677,
+          -9.5699326017633
+        ],
+        "patch_slip_lateral_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "patch_slip_long_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "slip_force_power_w_per_corner": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sum_slip_force_power_w": 0.0,
+        "sweeps_used": 24,
+        "wheel_load_n_fl_fr_rl_rr": [
+          13.533177,
+          13.533177,
+          13.533177,
+          13.533177
+        ],
+        "yaw_accel_rad_s2": -6.19148823587311e-07
+      },
+      "name": "reference24"
+    },
+    {
+      "initial_exact_symmetric_diagnostic": {
+        "brake_torque_nm_fl_fr_rl_rr": [
+          -1.2,
+          -1.2,
+          -1.2,
+          -1.2
+        ],
+        "lat_force_n_fl_fr_rl_rr": [
+          -3.94949655379485,
+          3.94949655379485,
+          3.94949655379495,
+          -3.94949655379494
+        ],
+        "lateral_accel_m_s2": 1.55157604204797e-16,
+        "long_force_n_fl_fr_rl_rr": [
+          -9.56993258345088,
+          -9.56993258345088,
+          -9.56993258345084,
+          -9.56993258345084
+        ],
+        "patch_slip_lateral_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "patch_slip_long_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "slip_force_power_w_per_corner": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sum_slip_force_power_w": 0.0,
+        "sweeps_used": 64,
+        "wheel_load_n_fl_fr_rl_rr": [
+          13.533177,
+          13.533177,
+          13.533177,
+          13.533177
+        ],
+        "yaw_accel_rad_s2": -2.57777015593185e-15
+      },
+      "name": "reference64"
+    },
+    {
+      "initial_exact_symmetric_diagnostic": {
+        "brake_torque_nm_fl_fr_rl_rr": [
+          -1.2,
+          -1.2,
+          -1.2,
+          -1.2
+        ],
+        "lat_force_n_fl_fr_rl_rr": [
+          -3.94949655379485,
+          3.94949655379485,
+          3.94949655379495,
+          -3.94949655379494
+        ],
+        "lateral_accel_m_s2": 1.55157604204797e-16,
+        "long_force_n_fl_fr_rl_rr": [
+          -9.56993258345088,
+          -9.56993258345088,
+          -9.56993258345084,
+          -9.56993258345084
+        ],
+        "patch_slip_lateral_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "patch_slip_long_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "slip_force_power_w_per_corner": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sum_slip_force_power_w": 0.0,
+        "sweeps_used": 128,
+        "wheel_load_n_fl_fr_rl_rr": [
+          13.533177,
+          13.533177,
+          13.533177,
+          13.533177
+        ],
+        "yaw_accel_rad_s2": -2.57777015593185e-15
+      },
+      "name": "reference128"
+    },
+    {
+      "initial_exact_symmetric_diagnostic": {
+        "brake_torque_nm_fl_fr_rl_rr": [
+          -1.2,
+          -1.2,
+          -1.2,
+          -1.2
+        ],
+        "lat_force_n_fl_fr_rl_rr": [
+          -2.22656891517786,
+          2.30812061130025,
+          2.23973029701012,
+          -2.27022533636558
+        ],
+        "lateral_accel_m_s2": 0.006947202067557,
+        "long_force_n_fl_fr_rl_rr": [
+          -10.1106144001429,
+          -10.092309542392,
+          -10.1077070052351,
+          -10.1009014253117
+        ],
+        "patch_slip_lateral_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "patch_slip_long_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "slip_force_power_w_per_corner": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sum_slip_force_power_w": 0.0,
+        "sweeps_used": 6,
+        "wheel_load_n_fl_fr_rl_rr": [
+          13.533177,
+          13.533177,
+          13.533177,
+          13.533177
+        ],
+        "yaw_accel_rad_s2": 0.1000766952538
+      },
+      "name": "metric6"
+    },
+    {
+      "initial_exact_symmetric_diagnostic": {
+        "brake_torque_nm_fl_fr_rl_rr": [
+          -1.2,
+          -1.2,
+          -1.2,
+          -1.2
+        ],
+        "lat_force_n_fl_fr_rl_rr": [
+          -2.2429837879253,
+          2.24298378778238,
+          2.24298378758801,
+          -2.24298378746182
+        ],
+        "lateral_accel_m_s2": -2.27721966274435e-12,
+        "long_force_n_fl_fr_rl_rr": [
+          -10.1069855246744,
+          -10.1069855246665,
+          -10.10698552466,
+          -10.1069855246725
+        ],
+        "patch_slip_lateral_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "patch_slip_long_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "slip_force_power_w_per_corner": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sum_slip_force_power_w": 0.0,
+        "sweeps_used": 24,
+        "wheel_load_n_fl_fr_rl_rr": [
+          13.533177,
+          13.533177,
+          13.533177,
+          13.533177
+        ],
+        "yaw_accel_rad_s2": -3.06905182814221e-10
+      },
+      "name": "metric24"
+    },
+    {
+      "initial_exact_symmetric_diagnostic": {
+        "brake_torque_nm_fl_fr_rl_rr": [
+          -1.2,
+          -1.2,
+          -1.2,
+          -1.2
+        ],
+        "lat_force_n_fl_fr_rl_rr": [
+          -2.24298378734072,
+          2.24298378734072,
+          2.24298378734082,
+          -2.24298378734082
+        ],
+        "lateral_accel_m_s2": 7.56192560882391e-17,
+        "long_force_n_fl_fr_rl_rr": [
+          -10.1069855246627,
+          -10.1069855246627,
+          -10.1069855246627,
+          -10.1069855246627
+        ],
+        "patch_slip_lateral_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "patch_slip_long_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "slip_force_power_w_per_corner": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sum_slip_force_power_w": 0.0,
+        "sweeps_used": 64,
+        "wheel_load_n_fl_fr_rl_rr": [
+          13.533177,
+          13.533177,
+          13.533177,
+          13.533177
+        ],
+        "yaw_accel_rad_s2": -8.95975973493955e-16
+      },
+      "name": "metric64"
+    },
+    {
+      "initial_exact_symmetric_diagnostic": {
+        "brake_torque_nm_fl_fr_rl_rr": [
+          -1.2,
+          -1.2,
+          -1.2,
+          -1.2
+        ],
+        "lat_force_n_fl_fr_rl_rr": [
+          -2.24298378734072,
+          2.24298378734072,
+          2.24298378734082,
+          -2.24298378734082
+        ],
+        "lateral_accel_m_s2": 7.56192560882391e-17,
+        "long_force_n_fl_fr_rl_rr": [
+          -10.1069855246627,
+          -10.1069855246627,
+          -10.1069855246627,
+          -10.1069855246627
+        ],
+        "patch_slip_lateral_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "patch_slip_long_mps_fl_fr_rl_rr": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "slip_force_power_w_per_corner": [
+          0.0,
+          0.0,
+          0.0,
+          0.0
+        ],
+        "sum_slip_force_power_w": 0.0,
+        "sweeps_used": 128,
+        "wheel_load_n_fl_fr_rl_rr": [
+          13.533177,
+          13.533177,
+          13.533177,
+          13.533177
+        ],
+        "yaw_accel_rad_s2": -8.95975973493955e-16
+      },
+      "name": "metric128"
+    }
+  ],
+  "evaluator": "Frozen GDScript reference source cloned in memory; direct _evaluate calls only",
+  "fixture": "flat mu=0.85, rolling=1.0; 9.887221 m/s straight braking; four matched wheel speeds",
+  "frequency_hz": 240,
+  "native_evaluator_used": false,
+  "sources": [
+    "referenceN: baseline Euclidean projection with the requested sweep cap",
+    "metricN: constrained local minimizer in the mobility metric with the requested sweep cap"
+  ],
+  "vehicle_descriptor_identity": {
+    "format": "openrc-ground-vehicle",
+    "id": "mt8-bisonte-electric-4wd-estimate-v1",
+    "sha256": "732ad4197a60b111610e7eadf169e4718a68bdf85799f7cff4350eb4df698a0c",
+    "version": "1"
+  },
+  "vehicle_drive_parameters": {
+    "brake_torque_per_wheel_nm": 1.2,
+    "drive_torque_fade_rad_s": 100.0,
+    "drive_torque_per_wheel_nm": 4.2
+  },
+  "probe_script_sha256": "01532cbb9d29f136199bd3ba402e935f6588b006f97cf93fdf8bdfe7d441ef65",
+  "frozen_source_sha256": "e3b8f6efde820dc0769b9556dacd0cae1338e71a3128f4829acf37f394e4dc79"
+}

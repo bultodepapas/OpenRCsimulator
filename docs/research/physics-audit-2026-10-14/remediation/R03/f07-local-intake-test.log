@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   local intake helper equals independent body-rate point velocity  max component error 0.000000000000 m/s across q=+2,-2,0 rad/s
+ok   common Dynamics propulsion load uses local inlet velocity  max component error 0.000000000000 N/N·m
+ok   generic and stage-air Dynamics paths agree at each same stage  max component error 0.000000000000 N/N·m
+ok   q=±2 rad/s changes local velocity and turbine loads at the offset intake  +q local=[40.1318684263667, -1.0, 5.48358195793046]; -q local=[39.9992564263667, -1.0, 6.80358195793046]
+ok   thrust projection and separate intake/nozzle arms remain consistent
+ok   zero body rate reduces local intake velocity to datum air velocity
+ok   zero intake offset reduces local intake velocity to datum air velocity
+F07 local turbine intake kinematics: 7 checks, 0 failed

@@ -35,6 +35,7 @@ Keep aircraft node/hinge names (`airplane`, `propeller`, `*_hinge`) stable. Gene
 - Do not name constants after built-in classes such as `Panel` or `Label`.
 - Keep drafts outside `app/` until they parse. `app/test.sh` parses every GDScript file; validate scripts before integration and run the relevant checks after integration. Run deliberate mutations on disposable copies.
 - Re-record golden flights only for an intentional, explained physics change. Software verification does not establish physical validation.
+- For flight-feel, controls or aircraft-physics tuning, use the [flight logging workflow](docs/FLIGHT-LOGGING.md): preserve a baseline `.orfl`, verify exact replay, then compare one explicit candidate using the same tick/input tape. Retain source/config identities, markers, CSV and reports with the owning track's evidence. Check `solver_changed` and `complete`; recovered prefixes and candidate runs never establish exact equivalence or physical realism. Keep the recorder read-only and bounded; use existing free plotting tools for visualization.
 - Before moving or renaming files, search the whole repository for their old paths. Update affected references. Verify path, ignore-rule and generated-output changes from a fresh clone.
 - Pin exact dependency versions and upgrade one at a time.
 

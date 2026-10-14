@@ -528,10 +528,15 @@ Clb_body = note("lateral", "Clb wing-body (1/rad)", 1.2 * math.sqrt(AR) * (z_w /
 Clb = Clb_sweep + Clb_dihedral + Clb_body + CYb_v * z_v / b
 Clp = -(CLa_w / 12) * (1 + 3 * lam_geo) / (1 + lam_geo) - eta_h * (CLa_h / 12) * (Sh / S) * (bh / b) ** 2 + 2 * CYb_v * (z_v / b) ** 2
 Clr = CL_ref / 4 * (1 + 0.0 * sweep_qc) - 2 * l_v * z_v / b ** 2 * CYb_v
-Cnp = -CL_ref / 8 - 2 * l_v * z_v / b ** 2 * CYb_v
-Cnr = -0.25 * 0.02 + 2 * (l_v / b) ** 2 * CYb_v - 0.02
+Cnp_cg = -CL_ref / 8 - 2 * l_v * z_v / b ** 2 * CYb_v
+Cnr_cg = -0.25 * 0.02 + 2 * (l_v / b) ** 2 * CYb_v - 0.02
 CYp = 2 * CYb_v * z_v / b
 CYr = -2 * CYb_v * l_v / b
+# AV-17-R3: runtime transfers ARP moments to CG once. These build-ups used CG arms,
+# so remove the side-force rate moment at the forward ARP before serialization.
+arp_forward_of_cg = cg[0] - x_arp
+Cnp = Cnp_cg - CYp * arp_forward_of_cg / b
+Cnr = Cnr_cg - CYr * arp_forward_of_cg / b
 K_adv = 0.15
 Cnda = -2 * K_adv * CL_ref * Clda
 tail_q = CLa_h * eta_h * Sh / S
@@ -667,8 +672,8 @@ coefficients = {
     "Cmde": coeff(Cmde, "1/rad", "derived", "elevator lift x tail arm from the ARP"),
     "Cmda_each": coeff(Cmda, "1/rad", "derived", "aileron lift increment at its thin-airfoil centre, arm from the ARP"),
     "Cnb": coeff(Cnb, "1/rad", "derived", "fin only (v1 contract: equals the vertical surface)"),
-    "Cnp": coeff(Cnp, "1/rad", "derived", "-CL_ref/8 + fin"),
-    "Cnr": coeff(Cnr, "1/rad", "derived", "fin + wing profile drag + fuselage (-0.02 estimated)"),
+    "Cnp": coeff(Cnp, "1/rad", "derived", "-CL_ref/8 + fin about CG, minus CYp*(x_CG-x_ARP)/b for the ARP moment contract; AV-17-R3"),
+    "Cnr": coeff(Cnr, "1/rad", "derived", "fin + wing profile drag + fuselage (-0.02 estimated) about CG, minus CYr*(x_CG-x_ARP)/b for the ARP moment contract; AV-17-R3"),
     "Cnda_right": coeff(Cnda, "1/rad", "derived", "adverse yaw 2 K CL_ref Clda, K 0.15 (Nelson)"),
     "Cnda_left": coeff(-Cnda, "1/rad", "derived", "adverse yaw"),
     "Cndr": coeff(Cndr, "1/rad", "derived", "rudder side force x fin arm from the ARP (must equal the vertical surface)"),
@@ -1110,7 +1115,11 @@ data["controls"]["keyboard"] = {
     "pitch_press_time": qi("controls.keyboard_pitch_press_time", "s"),
     "pitch_release_time": qi("controls.keyboard_pitch_release_time", "s"),
 }
-data["controls"]["gamepad"] = {"pitch_scale": qi("controls.gamepad_pitch_scale", "1")}
+data["controls"]["gamepad"] = {
+    "pitch_scale": qi("controls.gamepad_pitch_scale", "1"),
+    "yaw_scale": qi("controls.gamepad_yaw_scale", "1"),
+    "yaw_response_time": qi("controls.gamepad_yaw_response_time", "s"),
+}
 parity = numeric_parity(legacy_data, data)
 # AV-17-R2: explicit finite-wing proxy, preserving the attached calibration and historical migration.
 data["aero"]["wing_polar"] = build_polar(data)
@@ -1193,6 +1202,16 @@ Its separation fraction is an estimated Kirchhoff-style inverse, not measured Av
 polar and stall speed remain unidentified. The nominal 1-g speed above is a CLmax-based estimate; loaded, trimmed whole-aircraft
 stall behavior also depends on the tail, twist and moments. See `docs/research/avanti-realism/AV-17-R2/README.md` for
 source applicability, reproduction, measured simulated departures and numerical verification.
+
+AV-17-R3 keeps the accepted pitch policy and adds fixed gamepad yaw travel {v('controls.gamepad_yaw_scale'):.2f}
+(±{v('controls.rudder') * v('controls.rates_normal_rudder') * v('controls.gamepad_yaw_scale'):.1f}° before trim) and a
+{v('controls.gamepad_yaw_response_time'):.2f} s first-order input time constant. This response is stored in the existing
+command state and bypassed by full/radio/keyboard modes; it is not a physical servo time or feedback damper.
+The same normal yaw command feeds nosewheel steering. See `docs/research/avanti-realism/AV-17-R3/README.md`.
+
+The lateral build-up obtains Cnp/Cnr about CG ({Cnp_cg:.6f}, {Cnr_cg:.6f}). AV-17-R3 writes their ARP values
+({Cnp:.6f}, {Cnr:.6f}) by subtracting CYp/CYr times the ARP's forward CG arm / span, so the runtime's
+ARP-to-CG force-moment transfer applies exactly once. Static yaw stability, the fin, and its local flow law are unchanged.
 Evidence: `docs/research/avanti-realism/AV-17-R1/README.md`.
 
 ## Turbine at sea level

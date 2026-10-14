@@ -12,6 +12,7 @@ extends Node
 const ScreenStack := preload("res://ui/screen_stack.gd")
 const Home := preload("res://ui/home.gd")
 const HomeScene := preload("res://ui/home_scene.gd")
+const HomePreviewResources := preload("res://ui/home_preview_resources.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const ControllerService := preload("res://input/controller_service.gd")
@@ -60,6 +61,7 @@ var home: Control:
 	get:
 		return screens.get_screen("home") as Control
 var home_scene: Node3D
+var _home_preview_resources: Node
 var flight: Node
 var ground_vehicle: Node3D
 ## Test seam: custom ground activity factory, default remains the packaged scene script.
@@ -233,6 +235,7 @@ func show_home() -> void:
 		preferences.time_of_day = world_preset
 	Conditions.session_preset = world_preset
 	home_scene = HomeScene.new(aircraft, field_path, lighting_config, night_options, preferences.get("sky_config", SkyConfig.defaults())) # still backdrop
+	_connect_home_preview(home_scene)
 	add_child(home_scene)
 	if not home_scene.field_errors.is_empty():
 		return
@@ -361,9 +364,23 @@ func set_aircraft(id: String) -> void:
 	if preferences.start_choice == FlightSession.START_HALF_POWER and not FlightSession.half_power_start_supported(id):
 		preferences.start_choice = "airborne"
 	if home_scene != null:
-		home_scene.show_aircraft(id)
+		home_scene.request_aircraft(id)
 	var err := Preferences.save_to(preferences_path, preferences)
 	home.set_note("" if err == OK else tr("Could not save settings (error %d).") % err)
+
+
+func _connect_home_preview(scene: Node3D) -> void:
+	if not is_instance_valid(_home_preview_resources):
+		_home_preview_resources = HomePreviewResources.new()
+		add_child(_home_preview_resources)
+	scene.preview_resources = _home_preview_resources
+	scene.preview_state_changed.connect(_on_home_preview_state.bind(scene))
+	if home != null: home.set_preview_state("ready")
+
+
+func _on_home_preview_state(id: String, state: String, scene: Node3D) -> void:
+	if scene == home_scene and home != null and home.aircraft_id == id:
+		home.set_preview_state(state)
 
 
 ## Preview the launch choice; only a successful Fly remembers it.
@@ -1299,6 +1316,7 @@ func _rebuild_home_scene() -> void:
 			home.set_note(tr("Could not update Home lighting; the previous view remains active."))
 		return
 	home_scene = replacement
+	_connect_home_preview(home_scene)
 	add_child(home_scene)
 	move_child(home_scene, 0) # keep the backdrop beneath the Home controls
 	previous.queue_free()

@@ -1,0 +1,103 @@
+{
+  "platform": "Windows-10-10.0.26100-SP0",
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "results": [
+    {
+      "name": "test_heli_render_audit",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 5.52261910001107,
+      "counts": [
+        [
+          "32",
+          "0"
+        ]
+      ],
+      "log": "test_heli_render_audit.log"
+    },
+    {
+      "name": "test_controller_actions",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.3473923999990802,
+      "counts": [],
+      "log": "test_controller_actions.log"
+    },
+    {
+      "name": "test_controller_extended_actions",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.338633999999729,
+      "counts": [],
+      "log": "test_controller_extended_actions.log"
+    },
+    {
+      "name": "test_controller_profile",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.45896109999739565,
+      "counts": [
+        [
+          "49",
+          "0"
+        ]
+      ],
+      "log": "test_controller_profile.log"
+    },
+    {
+      "name": "test_controller_binding_audit",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.4168315999995684,
+      "counts": [],
+      "log": "test_controller_binding_audit.log"
+    },
+    {
+      "name": "test_rc_input",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 0.5173649000062142,
+      "counts": [
+        [
+          "41",
+          "0"
+        ]
+      ],
+      "log": "test_rc_input.log"
+    },
+    {
+      "name": "test_golden",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 5.506032799996319,
+      "counts": [],
+      "log": "test_golden.log"
+    },
+    {
+      "name": "test_replay_integrity",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 11.920911500012153,
+      "counts": [
+        [
+          "153",
+          "0"
+        ]
+      ],
+      "log": "test_replay_integrity.log"
+    },
+    {
+      "name": "test_replay_policy",
+      "exit_code": 0,
+      "ok": true,
+      "seconds": 9.139093799996772,
+      "counts": [
+        [
+          "50",
+          "0"
+        ]
+      ],
+      "log": "test_replay_policy.log"
+    }
+  ]
+}

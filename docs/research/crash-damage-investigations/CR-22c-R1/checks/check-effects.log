@@ -1,0 +1,63 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok particle budget
+ok transparent particles do not cast card shadows
+ok no live effects before collision
+ok vertical speed does not lengthen the horizontal gouge
+ok fire needs severe + fuel + hot engine false/0.0/0
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/0.0/1
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/0.0/2
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/0.0/3
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/0.0/4
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/1.28/0
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/1.28/1
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/1.28/2
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/1.28/3
+ok fragment budget
+ok fire needs severe + fuel + hot engine false/1.28/4
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/0.0/0
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/0.0/1
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/0.0/2
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/0.0/3
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/0.0/4
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/1.28/0
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/1.28/1
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/1.28/2
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/1.28/3
+ok fragment budget
+ok fire needs severe + fuel + hot engine true/1.28/4
+ok fragment budget
+ok intact tank does not ignite
+ok pause freezes fragment poses
+ok pause freezes emitters
+ok ballistic fragments remain finite above ground
+ok bounded secondary marks
+ok primary scorch persists
+ok finite fuel budget extinguishes
+ok reset clears aftermath
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+ok reset hides and stops every emitter
+60 checks, 0 failures

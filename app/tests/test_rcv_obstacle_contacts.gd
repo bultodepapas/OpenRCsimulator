@@ -178,6 +178,38 @@ func _initialize() -> void:
 		and int(native_or_default.get("wall_contact_count", 0)) == int(reference.get("wall_contact_count", 0))
 		and parity_error < 1.0e-8,
 		"max acceleration delta %.9f" % parity_error)
+	_test_high_speed_impact(state, model, barrier_road)
 
 	print("RCV obstacle contacts: %d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _test_high_speed_impact(initial: PackedFloat64Array, model: Dictionary, road: Callable) -> void:
+	# The revised motor permits ~10 m/s. A neutral rolling impact isolates wall
+	# collision response from motor work; no drive impulse or state reset follows.
+	for dt in [1.0 / 240.0, 1.0 / 480.0]:
+		var moving := initial.duplicate()
+		moving[Vehicle.VEL] = 10.0
+		for corner in Vehicle.CORNER_COUNT:
+			moving[WHEEL_SPIN + corner] = 10.0 / float(model.tire_radius_m)
+		var initial_energy := float(Vehicle.telemetry(moving, model, road).total_energy_j)
+		var max_energy := initial_energy
+		var contact_seen := false
+		var crossed_before_contact := false
+		var valid := true
+		var peak_load := 0.0
+		for _tick in int(round(0.5 / dt)):
+			moving = Vehicle.step(moving, model, Vehicle.DEFAULT_CONTROLS, dt, road)
+			if moving.size() != Vehicle.STATE_SIZE:
+				valid = false
+				break
+			var report := Vehicle.telemetry(moving, model, road)
+			valid = valid and bool(report.get("ok", false))
+			contact_seen = contact_seen or int(report.get("wall_contact_count", 0)) > 0
+			crossed_before_contact = crossed_before_contact or (not contact_seen and moving[POSITION_NORTH] > 1.15)
+			peak_load = maxf(peak_load, float(report.get("wall_normal_load_n", 0.0)))
+			max_energy = maxf(max_energy, float(report.get("total_energy_j", INF)))
+		_check("10 m/s rolling wall impact is detected and stays dissipative at %d Hz" % int(round(1.0 / dt)),
+			valid and contact_seen and not crossed_before_contact and peak_load > 100.0
+			and max_energy <= initial_energy * 1.01 + 0.1,
+			"peak load %.1f N, energy %.3f→max %.3f J" % [peak_load, initial_energy, max_energy])

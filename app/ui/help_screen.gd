@@ -37,7 +37,7 @@ func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLA
 	var scroll := ScrollContainer.new()
 	scroll.follow_focus = true # keyboard focus must reach what scaling pushes out of view (research 11)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.custom_minimum_size = Vector2(1120, 600) # wide: Spanish lines stay on one row and everything fits at 720p
+	scroll.custom_minimum_size = Vector2(1120, 624) # 704 px including panel padding; the expanded EN/ES reference fits at 720p
 	panel.add_child(scroll)
 	var page := VBoxContainer.new()
 	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL

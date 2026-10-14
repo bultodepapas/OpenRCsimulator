@@ -1,0 +1,15 @@
+{
+  "matplotlib": "3.11.1",
+  "numpy": "2.4.6",
+  "inputs": [
+    "docs\\research\\rc-monster-truck\\RCV-drive\\baseline-runway-1",
+    "docs\\research\\rc-monster-truck\\RCV-drive\\candidate-runway",
+    "docs\\research\\rc-monster-truck\\RCV-drive\\candidate-fast-signed-verified"
+  ],
+  "csv_sha256": [
+    "aec367e8d1e975253f586260f75180a5aad7385095d7e7102e8fb94bdade2076",
+    "a52c626c8b2a5418a8b3f9f06e5c0c84d5679d6b4de51b7960af0140617f0c64",
+    "2197b4a022d117a7b15b73363207e3de1c9bedd3c3dfabb8cdd6d88acac3d13b"
+  ],
+  "output_sha256": "31fe8f7ad4eee363cfe27fe1cffcceb3823ac7c74881f24d183a74a830480238"
+}

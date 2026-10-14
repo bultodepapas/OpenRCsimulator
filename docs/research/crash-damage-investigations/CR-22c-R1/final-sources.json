@@ -1,0 +1,22 @@
+{
+  "app\\render\\crash\\director.gd": "9cc822ccfbf5a5254cdc57a736732425bad3b407ccfe8941100883675ec12e5a",
+  "app\\render\\crash\\effects.gd": "9675a5435eacfe9d9f8dae68f3130675f4c31be360fb4490f03819826767ae0b",
+  "app\\render\\crash\\airframe_scuffs.gd": "a248c68c51b3061a51793f9f4d0d66adc298f7c3a7721e8c50bb344859e7112e",
+  "app\\render\\crash\\shader_warmup.gd": "516bfb8db217e2cde427888b71e95d90ae1970ef29586258dae9fd2f6209628a",
+  "app\\tests\\test_crash_warmup.gd": "66ccd031ea1b93fae65c9c3810dbd4b4c9ec8902892b534b21428f58e76c8b15",
+  "app\\tests\\test_airframe_scuff_cache.gd": "bb9076ea9e277296f828a8a6b1189cf45b6e8c3442a733ae3ee8d27b3e376bdc",
+  "research\\crash-damage\\cr-22c-r1\\instrument.py": "0c51a8106b5b6f2d0df2813fa457dc54e617d179fa2064febb1a640618d002fc",
+  "research\\crash-damage\\cr-22c-r1\\run.py": "e9f09db4924ca37e1009fbeb85443edd33bca267f42785390d93431aa96a53e1",
+  "research\\crash-damage\\cr-22c-r1\\bench.gd": "5016b96e33c65a0c5d3303f06cffc6e7544d4e75bc0c25b13d548666d9f3ac4b",
+  "research\\crash-damage\\cr-22c-r1\\scuff_parity.gd": "fff1180e1471d4e95a6c8dd06928ae9ae4b9659106e7ae35cbd2333c9de69250",
+  "app\\render\\crash\\director.gd.uid": "c3b5e705775e258e99753819818a3f5b3cc6e6bf792dca54e1da86a8b6aa8d6c",
+  "app\\render\\crash\\effects.gd.uid": "148b4bce18c280ed44900b901125c60ca1e6ba684c9c1769e6fc00a7ef194ff6",
+  "app\\render\\crash\\airframe_scuffs.gd.uid": "f2fddf203a4c9b57719fd85e423397c63e64505e3bf6d8561e65b67a6861e508",
+  "app\\render\\crash\\shader_warmup.gd.uid": "8f30215c64896198e426f17730eb4fa2f9829f076f3c5ef3ec02bf5f456f460f",
+  "app\\tests\\test_crash_warmup.gd.uid": "d946daf94d22170e8de97e141c6024d89effb639aee80194b2cbc5e0aec2bd82",
+  "app\\tests\\test_airframe_scuff_cache.gd.uid": "96b13c404c84b643003200ed256e3dfedb021e865cc7c2f4089033879fb0db9e",
+  "frozen-snapshot/app/main.gd": "8f27090481d20bc463eb0ea09322b811aaad02470e5cfe9f46e53ef5f7ba65eb",
+  "frozen-snapshot/app/sim/flight_session.gd": "d23145d1c726752f730ee83988eeacb4fe101b996a8e5608b05b53207b77c5d0",
+  "frozen-snapshot/app/sim/simulation.gd": "b57f836ba757cc25acd3b724b0bd40be2d20bcc92c1837d8d557566adb2e2a41",
+  "frozen-snapshot/app/physics/aircraft_data.gd": "75212e145c5278d3a1a56f663418ea719065cb0d9f3761bca08d8bb8b759ed12"
+}

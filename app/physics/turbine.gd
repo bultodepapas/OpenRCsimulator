@@ -24,6 +24,8 @@ const STOPPED_RPM := 1.0
 ## AV-20 changes integration/sampling, not the empirical engine schedules or mounting-torque model.
 const CONTINUOUS_LAW := "turbine-rpm-governor-rk4-v1"
 const CONTINUOUS_LAYOUT := "turbine shaft rpm; RK4 coupled; prescribed fuel mass"
+## F02/F07: experimental full-vector capture law with rigid-body intake-point velocity.
+const LOADS_LAW := "turbine-capture-vector-signed-axial-local-intake-v3"
 const MAX_STEP_RATIO := 0.25
 
 
@@ -115,7 +117,8 @@ static func steady_rpm(throttle: float, prop: Dictionary) -> float:
 	return table_extrapolated(prop.throttle_map, throttle)
 
 
-## Engine air mass flow (kg/s) at shaft rpm, axial airspeed u (m/s; ram rise for u > 0) and density rho.
+## Nonnegative captured-air mass flow (kg/s) at shaft rpm, local axial intake velocity u (m/s; ram rise for u > 0)
+## and density rho. Reverse axial flow retains the static-flow endpoint; incidence-dependent capture is not identified.
 static func mass_flow(rpm: float, prop: Dictionary, rho: float, u := 0.0) -> float:
 	if rpm < STOPPED_RPM:
 		return 0.0
@@ -135,25 +138,45 @@ static func gross_thrust(rpm: float, prop: Dictionary, rho: float, u := 0.0) -> 
 	return mass_flow(rpm, prop, rho, uu) * M.sqrt_(vj0 * vj0 + k_jet * uu * uu)
 
 
-## Net axial thrust (N) at shaft rpm and axial airspeed u (m/s): gross thrust minus ram drag ṁ·u.
+## Net axial thrust (N) at shaft rpm and local axial intake velocity u (m/s): gross exit force − ṁ_capture·u.
+## The signed reverse-flow continuation is an experimental installed-force surrogate, not an identified inlet map.
 static func thrust(rpm: float, u: float, prop: Dictionary, rho: float) -> float:
-	return gross_thrust(rpm, prop, rho, u) - mass_flow(rpm, prop, rho, u) * maxf(u, 0.0)
+	return gross_thrust(rpm, prop, rho, u) - mass_flow(rpm, prop, rho, u) * u
 
 
-## Body loads about the CG [Fx, Fy, Fz, Mx, My, Mz] for air-relative body velocity v_air. Gross thrust along the fixed
-## nozzle axis through the thrust line; the captured air's momentum −ṁ·v_air at the intakes (forward-moving air only:
-## flying backwards the ram term is dropped). No mounting reaction torque is modeled. A transient term would require
-## the open-system angular-momentum balance (rotor plus inlet/exhaust flux), not rotor acceleration alone; see AV-14.
-static func loads(v_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float) -> PackedFloat64Array:
+## Convert the authored [aft, right, up] intake location to body FRD coordinates from the current reference CG.
+## This is the same arm used for the captured-air force moment in loads().
+static func intake_offset_body(prop: Dictionary) -> PackedFloat64Array:
+	var ri: PackedFloat64Array = prop.get("intake_offset", PackedFloat64Array())
+	if ri.size() != 3:
+		return PackedFloat64Array([NAN, NAN, NAN])
+	return M.v3(-ri[0], ri[1], -ri[2])
+
+
+## Convert datum air-relative velocity to local air-relative velocity at the represented intake.
+## Air.compute has already transformed uniform world NED wind into body axes; the remaining rigid-body term is omega×r.
+## For the current constant-mass turbine route the datum is the CG. A future moving-CG model needs its R05 transform.
+static func local_intake_velocity(v_air_at_datum: PackedFloat64Array, omega_body: PackedFloat64Array,
+		prop: Dictionary) -> PackedFloat64Array:
+	if v_air_at_datum.size() != 3 or omega_body.size() != 3:
+		return PackedFloat64Array([NAN, NAN, NAN])
+	return M.add(v_air_at_datum, M.cross(omega_body, intake_offset_body(prop)))
+
+
+## Body loads about the current CG [Fx, Fy, Fz, Mx, My, Mz]. v_in_air is the air-relative body velocity at the
+## represented intake. Gross exit force follows the nozzle axis; captured-air momentum −ṁ_capture·v_in_air acts at the
+## intake for both signs of axial flow. This full-vector continuation is experimental off axis and in reverse flow.
+## No mounting reaction torque is modeled. A transient term would require the open-system angular-momentum balance
+## (rotor plus inlet/exhaust flux), not rotor acceleration alone; see AV-14.
+static func loads(v_in_air: PackedFloat64Array, rpm: float, prop: Dictionary, rho: float) -> PackedFloat64Array:
 	if rpm < STOPPED_RPM:
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-	var u := M.dot(v_air, prop.axis)
+	var u := M.dot(v_in_air, prop.axis)
 	var gross := M.scale(prop.axis, gross_thrust(rpm, prop, rho, u))
-	var ram := M.scale(v_air, -mass_flow(rpm, prop, rho, u)) if u > 0.0 else M.v3(0.0, 0.0, 0.0)
+	var inlet_momentum := M.scale(v_in_air, -mass_flow(rpm, prop, rho, u))
 	var r: PackedFloat64Array = prop.offset # [x_aft, y_right, z_up] from the CG
-	var ri: PackedFloat64Array = prop.intake_offset
-	var moment := M.add(M.cross(M.v3(-r[0], r[1], -r[2]), gross), M.cross(M.v3(-ri[0], ri[1], -ri[2]), ram))
-	var f := M.add(gross, ram)
+	var moment := M.add(M.cross(M.v3(-r[0], r[1], -r[2]), gross), M.cross(intake_offset_body(prop), inlet_momentum))
+	var f := M.add(gross, inlet_momentum)
 	return PackedFloat64Array([f[0], f[1], f[2], moment[0], moment[1], moment[2]])
 
 

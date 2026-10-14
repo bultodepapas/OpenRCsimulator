@@ -204,6 +204,10 @@ def add_v2_overlay(schema: dict, spec: dict):
         "properties": {"pitch_scale": {"$ref": "#/$defs/evidence", "properties": {
             "unit": {"const": "1"}, "value": {"type": "number", "minimum": 0.05, "maximum": 1.0}}}}}
     controls["allOf"].append({"if": {"required": ["gamepad"]}, "then": {"required": ["rates"]}})
+    for key, unit, low, high in [("yaw_scale", "1", 0.05, 1.0), ("yaw_response_time", "s", 0.02, 0.5)]:
+        controls["properties"]["gamepad"]["properties"][key] = {
+            "$ref": "#/$defs/evidence", "properties": {
+                "unit": {"const": unit}, "value": {"type": "number", "minimum": low, "maximum": high}}}
 
     aero = root_props["aero"]
     aero_props = aero["properties"]

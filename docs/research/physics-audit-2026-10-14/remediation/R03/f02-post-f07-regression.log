@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   force-law identity is separate from the continuous spool law  turbine-capture-vector-signed-axial-local-intake-v3
+ok   static installed thrust remains 90 N
+ok   positive axial thrust at 50 m/s remains 80 N
+ok   reverse axial scalar continuation uses signed u
+ok   crossflow capture force is continuous through axial zero from both sides  negative→positive max delta 0.000000400000; zero→positive 0.000000200000 N/N·m
+ok   zero-axial transverse inlet momentum remains present  F=[90.000000, -4.000000, 2.600000] N
+ok   rotated-axis scalar thrust equals vector-load projection in reverse flow  projection 91.400000000000 N; scalar 91.400000000000 N
+ok   rotated-axis force uses captured flow and distinct exit/intake arms  force error 0.000000000000; moment error 0.000000000000
+ok   two-arm rigid-body load power identity  point 1652.386800000000 W; body 1652.386800000000 W; delta 0.000000000000 W
+F02 captured-air continuity: 9 checks, 0 failed

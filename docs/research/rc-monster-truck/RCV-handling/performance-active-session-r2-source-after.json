@@ -1,0 +1,46 @@
+[
+  {
+    "path": "app/sim/ground_vehicle/session.gd",
+    "sha256": "b5bade4c818e2c7c3832231560737d187fa24fce9968ffae21a22d78030ad619"
+  },
+  {
+    "path": "app/physics/ground_vehicle/vehicle_dynamics.gd",
+    "sha256": "957b3398d114ae57c71c455c1f1054f9b4646a793712d6e9f719aeef5d6a1a22"
+  },
+  {
+    "path": "app/physics/ground_vehicle/airfield_course.gd",
+    "sha256": "9e8eaef874081d8abcd679d09be0d02189cc10a028e6409f78c11bc8534a3e3a"
+  },
+  {
+    "path": "app/physics/ground_vehicle/airfield_track.gd",
+    "sha256": "08efe15de45136ce066b2c212163ef41e36199f662baa5eb6bbcc8e640e4bd30"
+  },
+  {
+    "path": "research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp",
+    "sha256": "240575536d4016f8106157475ff025a779d7bd87002db18e0dbd4362b236b3ad"
+  },
+  {
+    "path": "research/rc-monster-truck/native/src/ground_vehicle_native.cpp",
+    "sha256": "ae71bf3285094c96e9a4c47825d404d8df026f6bda3e005d9d24811fce8c577f"
+  },
+  {
+    "path": "app/native/ground_vehicle/openrc_ground_vehicle.gdextension",
+    "sha256": "1d4b4cbd1070c411922be4ce3c067cf8db610eec6c394dc4811fcfd02236e916"
+  },
+  {
+    "path": "app/native/ground_vehicle/openrc_ground_vehicle.dll",
+    "sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c"
+  },
+  {
+    "path": "app/data/vehicles/ground/mt8_bisonte.json",
+    "sha256": "425f2a3fe810f82d609ad2b9dd9618b9fb45bcd813df57873cd8bc8759a750a5"
+  },
+  {
+    "path": ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+  },
+  {
+    "path": "research/rc-monster-truck/performance-r2/bench_active_session.gd",
+    "sha256": "26241b8e99c34ce9423f6890d701966c695e66c9f9f097bbf8735d3dd3e913e4"
+  }
+]

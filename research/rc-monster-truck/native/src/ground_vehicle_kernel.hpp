@@ -21,11 +21,11 @@ inline constexpr std::size_t kCornerCount = 4;
 inline constexpr std::size_t kMaximumHullProbes = 64;
 inline constexpr std::size_t kMaximumContacts = 8;
 inline constexpr std::size_t kMaximumContactRows = 12;
-inline constexpr std::size_t kFrictionSweeps = 6;
+inline constexpr std::size_t kFrictionSweeps = 128;
 inline constexpr double kMinSlipSpeed = 0.05;
 inline constexpr double kMatrixPivotRelativeTolerance = 1.0e-12;
-inline constexpr double kFrictionConvergenceForceToleranceN = 0.001;
-inline constexpr double kBrakeConvergenceTorqueToleranceNm = 0.001;
+inline constexpr double kFrictionConvergenceForceToleranceN = 0.000001;
+inline constexpr double kBrakeConvergenceTorqueToleranceNm = 0.000001;
 
 using Vec3 = std::array<double, 3>;
 using Quat = std::array<double, 4>;
@@ -56,6 +56,7 @@ struct Model {
 	double droop_stop_damping_n_s_per_m = 0.0;
 	double drive_torque_per_wheel_nm = 0.0;
 	double brake_torque_per_wheel_nm = 0.0;
+	double brake_front_fraction = 0.5;
 	double reverse_torque_fraction = 0.0;
 	double drive_torque_fade_rad_s = 0.0;
 	double rolling_resistance_coefficient = 0.0;
@@ -182,6 +183,10 @@ inline bool finite(const Vec14 &a) {
 }
 
 inline bool valid_model(const Model &m, std::string &error) {
+	if (!std::isfinite(m.brake_front_fraction) || m.brake_front_fraction < 0.0 || m.brake_front_fraction > 1.0) {
+		error = "Brake front fraction must be finite and in [0, 1]";
+		return false;
+	}
 	const std::array<double, 32> scalars{
 		m.sprung_mass_kg, m.unsprung_mass_kg, m.wheel_spin_inertia_kg_m2, m.gravity_m_per_s2,
 		m.arm_inner_offset_m, m.arm_length_m, m.cg_height_above_chassis_datum_m, m.wheel_center_rest_below_chassis_datum_m,
@@ -547,6 +552,30 @@ inline Vec14 contact_row(const Quat &q_conjugate, const Vec3 &direction_world,
 	return row;
 }
 
+// Constrained quadratic contact solve in the inverse-mass metric. Radial
+// clipping is only correct for isotropic mobility; a wheel is anisotropic.
+inline std::array<double, 2> project_friction_circle(double w00, double w01, double w10, double w11,
+		double free_x, double free_y, double limit) {
+	if (limit <= 0.0) return {0.0, 0.0};
+	if (free_x * free_x + free_y * free_y <= limit * limit) return {free_x, free_y};
+	const double b0 = w00 * free_x + w01 * free_y;
+	const double b1 = w10 * free_x + w11 * free_y;
+	double lower = 0.0;
+	double upper = std::sqrt(b0 * b0 + b1 * b1) / limit;
+	for (int iteration = 0; iteration < 32; ++iteration) {
+		const double multiplier = 0.5 * (lower + upper);
+		const double a00 = w00 + multiplier, a11 = w11 + multiplier;
+		const double determinant = a00 * a11 - w01 * w10;
+		const double fx = (a11 * b0 - w01 * b1) / determinant;
+		const double fy = (a00 * b1 - w10 * b0) / determinant;
+		if (fx * fx + fy * fy > limit * limit) lower = multiplier;
+		else upper = multiplier;
+	}
+	const double a00 = w00 + upper, a11 = w11 + upper;
+	const double determinant = a00 * a11 - w01 * w10;
+	return {(a11 * b0 - w01 * b1) / determinant, (a00 * b1 - w10 * b0) / determinant};
+}
+
 inline bool solve_tangent_friction(const Factor &factor, Vec14 &acceleration,
 		const std::array<Contact, kMaximumContacts> &contacts, std::size_t contact_count,
 		bool adaptive, EvalResult &result, std::string &error) {
@@ -555,6 +584,7 @@ inline bool solve_tangent_friction(const Factor &factor, Vec14 &acceleration,
 	std::array<Vec14, kMaximumContactRows> columns{};
 	std::array<std::array<std::size_t, 2>, kMaximumContacts> row_indexes{};
 	std::array<double, kMaximumContactRows> forces{};
+	std::array<std::array<double, 5>, kMaximumContacts> mobilities{};
 	std::size_t row_count = 0;
 	for (std::size_t c = 0; c < contact_count; ++c) {
 		const std::size_t count = contacts[c].brake ? 1 : 2;
@@ -572,6 +602,27 @@ inline bool solve_tangent_friction(const Factor &factor, Vec14 &acceleration,
 			++row_count;
 		}
 	}
+	for (std::size_t c = 0; c < contact_count; ++c) {
+		const auto i0 = row_indexes[c][0];
+		auto &w = mobilities[c];
+		w[0] = dot14(rows[i0], columns[i0]);
+		if (contacts[c].brake) {
+			if (!std::isfinite(w[0]) || w[0] <= 1.0e-18) {
+				error = "Wheel brake mobility is singular";
+				return false;
+			}
+			continue;
+		}
+		const auto i1 = row_indexes[c][1];
+		w[1] = dot14(rows[i0], columns[i1]);
+		w[2] = dot14(rows[i1], columns[i0]);
+		w[3] = dot14(rows[i1], columns[i1]);
+		w[4] = w[0] * w[3] - w[1] * w[2];
+		if (!std::isfinite(w[4]) || w[4] <= 1.0e-18) {
+			error = "Tangent contact mobility is singular";
+			return false;
+		}
+	}
 	for (std::size_t sweep = 0; sweep < kFrictionSweeps; ++sweep) {
 		double max_force_delta = 0.0;
 		double max_brake_torque_delta = 0.0;
@@ -579,11 +630,7 @@ inline bool solve_tangent_friction(const Factor &factor, Vec14 &acceleration,
 			const Contact &contact = contacts[contact_index];
 			const std::size_t i0 = row_indexes[contact_index][0];
 			if (contact.brake) {
-				const double brake_mobility = dot14(rows[i0], columns[i0]);
-				if (!std::isfinite(brake_mobility) || brake_mobility <= 1.0e-18) {
-					error = "Wheel brake mobility is singular";
-					return false;
-				}
+				const double brake_mobility = mobilities[contact_index][0];
 				const double brake_tau = maxf(contact.tau, 1.0e-5);
 				const double current_brake = dot14(rows[i0], acceleration);
 				const double target_brake = -contact.slip[0] / brake_tau;
@@ -598,15 +645,9 @@ inline bool solve_tangent_friction(const Factor &factor, Vec14 &acceleration,
 				continue;
 			}
 			const std::size_t i1 = row_indexes[contact_index][1];
-			const double w00 = dot14(rows[i0], columns[i0]);
-			const double w01 = dot14(rows[i0], columns[i1]);
-			const double w10 = dot14(rows[i1], columns[i0]);
-			const double w11 = dot14(rows[i1], columns[i1]);
-			const double determinant = w00 * w11 - w01 * w10;
-			if (!std::isfinite(determinant) || determinant <= 1.0e-18) {
-				error = "Tangent contact mobility is singular";
-				return false;
-			}
+			const auto &w = mobilities[contact_index];
+			const double w00 = w[0], w01 = w[1], w10 = w[2], w11 = w[3];
+			const double determinant = w[4];
 			const double current_long = dot14(rows[i0], acceleration) + contact.bias[0];
 			const double current_lateral = dot14(rows[i1], acceleration) + contact.bias[1];
 			const double tau = maxf(contact.tau, 1.0e-5);
@@ -617,14 +658,11 @@ inline bool solve_tangent_friction(const Factor &factor, Vec14 &acceleration,
 			double delta_long = (w11 * error_long - w01 * error_lateral) / determinant;
 			double delta_lateral = (-w10 * error_long + w00 * error_lateral) / determinant;
 			double trial_long = forces[i0] + delta_long;
-		double trial_lateral = forces[i1] + delta_lateral;
-			const double trial_norm = std::sqrt(trial_long * trial_long + trial_lateral * trial_lateral);
+			double trial_lateral = forces[i1] + delta_lateral;
 			const double force_limit = maxf(0.0, contact.mu_load);
-			if (trial_norm > force_limit && trial_norm > 0.0) {
-				const double ratio = force_limit / trial_norm;
-				trial_long *= ratio;
-				trial_lateral *= ratio;
-			}
+			const auto projected = project_friction_circle(w00, w01, w10, w11, trial_long, trial_lateral, force_limit);
+			trial_long = projected[0];
+			trial_lateral = projected[1];
 			delta_long = trial_long - forces[i0];
 			delta_lateral = trial_lateral - forces[i1];
 			max_force_delta = maxf(max_force_delta, maxf(std::abs(delta_long), std::abs(delta_lateral)));
@@ -836,7 +874,8 @@ inline bool evaluate(const std::array<double, kStateSize> &state, const Model &m
 		const double hub_forward_speed = dot(hub_velocity_ned, forward_world);
 		const double ratio_denominator = maxf(kMinSlipSpeed, maxf(std::abs(hub_forward_speed), std::abs(wheel_circumference_speed)));
 		result.wheel_slip_ratio[corner] = (wheel_circumference_speed - hub_forward_speed) / ratio_denominator;
-		result.wheel_slip_angle_rad[corner] = std::atan2(slip_lateral, maxf(std::abs(slip_long), kMinSlipSpeed));
+		const double hub_lateral_speed = dot(hub_velocity_ned, lateral_world);
+		result.wheel_slip_angle_rad[corner] = std::atan2(hub_lateral_speed, maxf(std::abs(hub_forward_speed), kMinSlipSpeed));
 		const bool level_surface = std::abs(sample.normal_ned[0]) <= 1.0e-12 &&
 			std::abs(sample.normal_ned[1]) <= 1.0e-12 && sample.normal_ned[2] <= -1.0 + 1.0e-12;
 		if (normal_load > 0.0 && !(skip_static_friction && level_surface)) {
@@ -874,7 +913,7 @@ inline bool evaluate(const std::array<double, kStateSize> &state, const Model &m
 			contact.corner = corner;
 			contact.rows[0][10 + corner] = 1.0;
 			contact.slip[0] = wheel_spin;
-			contact.mu_load = brake_base;
+			contact.mu_load = brake_base * 2.0 * (corner < 2 ? m.brake_front_fraction : 1.0 - m.brake_front_fraction);
 			contact.tau = m.tire_slip_relaxation_s;
 		}
 		double torque = drive_base;

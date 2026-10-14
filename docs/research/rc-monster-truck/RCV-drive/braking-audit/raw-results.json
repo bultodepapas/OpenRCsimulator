@@ -1,0 +1,203 @@
+{
+  "format": "openrc-rcv-braking-audit-v1",
+  "date": "2026-10-14",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "method": {
+    "surface": {
+      "height_m": 0.0,
+      "normal_ned": [0.0, 0.0, -1.0],
+      "mu": 0.85,
+      "rolling": 1.0
+    },
+    "launch": "initialize at rest; full throttle, zero steering for 6.0 s",
+    "braking": "full brake, zero throttle, zero steering; stop threshold speed < 0.1 m/s",
+    "integrator": "vehicle RK4 step, controls held constant through each tick",
+    "pgs": {
+      "default_sweep_cap": 6,
+      "friction_force_early_out_tolerance_n": 0.001,
+      "brake_torque_early_out_tolerance_nm": 0.001
+    },
+    "partial_brake_torque_per_wheel_nm": [1.2, 1.5],
+    "sweep_cap_probe_limitation": {
+      "requested_gdscript_caps": [6, 24],
+      "trajectory_backend": "native",
+      "valid_for_sweep_convergence": false,
+      "reason": "The scripts changed GDScript FRICTION_SWEEPS but called step() without selecting the GDScript reference backend. step() dispatches through _evaluate_active(); the active native backend uses its compiled six-sweep cap, so the cap-24 GDScript edit did not change the trajectory solver."
+    },
+    "full_brake_torque_per_wheel_nm": 2.0,
+    "ramp": "brake input increases linearly from 0 to 1 over 0.2 s",
+    "coordinates": {
+      "u": "body-forward velocity in m/s",
+      "v": "body-lateral velocity in m/s",
+      "yaw": "clockwise/right-positive heading from north, radians",
+      "upright": "cosine of body-up against world-up; 1 is upright"
+    }
+  },
+  "loaded_model": {
+    "drive_torque_per_wheel_nm": 4.2,
+    "drive_torque_fade_rad_s": 100.0,
+    "brake_torque_per_wheel_nm": 2.0,
+    "tire_friction_scale": 0.9,
+    "tire_slip_relaxation_s": 0.04,
+    "corner_x_m_fl_fr_rl_rr": [0.21, 0.21, -0.21, -0.21],
+    "corner_y_m_fl_fr_rl_rr": [-0.215, 0.215, -0.215, 0.215]
+  },
+  "post_launch_state": [
+    {
+      "hz": 240,
+      "u_m_per_s": 9.88722121316808,
+      "v_m_per_s": 0.0000067548453380781,
+      "yaw_rad": 0.00365770024084025,
+      "yaw_rate_rad_per_s": 0.0000324751469583389,
+      "upright": 0.999999999996234,
+      "wheel_load_n_fl_fr_rl_rr": [13.5335967272083, 13.5327362808514, 13.5336274481163, 13.5327467609975],
+      "wheel_lateral_force_n_fl_fr_rl_rr": [0.000995872670290609, 0.0000252294848797653, 0.000758871537021128, -0.0000143792125499587],
+      "wheel_slip_angle_rad_fl_fr_rl_rr": [0.000272797898402214, 0.000272651137474781, -0.00000013658613292921, 0.00000000000000484836]
+    },
+    {
+      "hz": 480,
+      "u_m_per_s": 9.8872212131554,
+      "v_m_per_s": 0.00000676549164225085,
+      "yaw_rad": 0.00365935695021795,
+      "yaw_rate_rad_per_s": 0.0000323963408644927,
+      "upright": 0.999999999996199,
+      "wheel_load_n_fl_fr_rl_rr": [13.5335991929687, 13.5327344985393, 13.5336289153065, 13.5327450054705],
+      "wheel_lateral_force_n_fl_fr_rl_rr": [0.000999583783737108, 0.0000256821236389059, 0.00076029512812086, -0.0000146467870331941],
+      "wheel_slip_angle_rad_fl_fr_rl_rr": [0.000272134680369009, 0.000271994071945161, -0.000000134237936002304, 0.00000000000000055511]
+    }
+  ],
+  "partial_braking": [
+    {
+      "brake_torque_per_wheel_nm": 0.8,
+      "trajectory_backend": "gdscript_reference_direct_evaluate",
+      "hz": 240,
+      "stop_s": 1.825,
+      "stop_distance_north_m": 9.01927864238513,
+      "u_flip_s": 1.17916666666667,
+      "max_abs_yaw_rad": 3.1408603140945,
+      "max_abs_v_m_per_s": null,
+      "min_upright": 0.99604618941996,
+      "note": "Initial screening run; max body-lateral speed was not retained in its summary."
+    },
+    {
+      "brake_torque_per_wheel_nm": 1.0,
+      "trajectory_backend": "gdscript_reference_direct_evaluate",
+      "hz": 240,
+      "stop_s": 1.71666666666667,
+      "stop_distance_north_m": 8.41400155016753,
+      "u_flip_s": 0.966666666666667,
+      "max_abs_yaw_rad": 3.14155794241378,
+      "max_abs_v_m_per_s": null,
+      "min_upright": 0.995376011906672,
+      "note": "Initial screening run; max body-lateral speed was not retained in its summary."
+    },
+    {
+      "brake_torque_per_wheel_nm": 1.2,
+      "trajectory_backend": "native",
+      "nominal_script_sweep_cap": 6,
+      "runs": [
+        {"hz": 240, "stop_s": 1.64583333333333, "stop_distance_north_m": 8.04848631427316, "u_flip_s": 0.954166666666667, "max_abs_yaw_rad": 3.07981913443145, "max_abs_v_m_per_s": 4.96426152854342, "min_upright": 0.995209998446174},
+        {"hz": 480, "stop_s": 1.64583333333333, "stop_distance_north_m": 8.04846510824059, "u_flip_s": 0.954166666666667, "max_abs_yaw_rad": 3.08010850265841, "max_abs_v_m_per_s": 4.96632967711924, "min_upright": 0.995209812686316}
+      ],
+      "transient_at_240hz_t_0_1_s": {
+        "diagnostic_backend": "gdscript_reference_direct_evaluate",
+        "wheel_load_n_fl_fr_rl_rr": [24.6131074651129, 23.5645627260489, 3.22502860504276, 1.80991453220985],
+        "wheel_lateral_force_n_fl_fr_rl_rr": [8.47969818845193, -5.80432371613201, -0.469756012883859, 0.392903172319445],
+        "wheel_slip_angle_rad_fl_fr_rl_rr": [0.283496653434235, 0.000925499710507104, -0.00865474443089157, -0.00782268871195786]
+      },
+      "nominal_cap_24_output_equal_to_cap_6_output": true,
+      "cap_equality_is_valid_sweep_convergence_evidence": false
+    },
+    {
+      "brake_torque_per_wheel_nm": 1.5,
+      "trajectory_backend": "native",
+      "nominal_script_sweep_cap": 6,
+      "runs": [
+        {"hz": 240, "stop_s": 1.5875, "stop_distance_north_m": 7.58228430168906, "u_flip_s": 1.075, "max_abs_yaw_rad": 2.86180550555045, "max_abs_v_m_per_s": 4.34095528340102, "min_upright": 0.994973301765641},
+        {"hz": 480, "stop_s": 1.58541666666667, "stop_distance_north_m": 7.58222460750302, "u_flip_s": 1.075, "max_abs_yaw_rad": 2.86206426869917, "max_abs_v_m_per_s": 4.3420172799925, "min_upright": 0.994972932379455}
+      ],
+      "transient_at_240hz_t_0_1_s": {
+        "diagnostic_backend": "gdscript_reference_direct_evaluate",
+        "wheel_load_n_fl_fr_rl_rr": [26.0574302751765, 24.6639095134672, 0.0, 0.0],
+        "wheel_longitudinal_force_n_fl_fr_rl_rr": [-15.4367681134257, -15.2904297914349, 0.0, 0.0],
+        "wheel_lateral_force_n_fl_fr_rl_rr": [12.1467310752683, -10.8586869460227, 0.0, 0.0],
+        "wheel_slip_angle_rad_fl_fr_rl_rr": [0.288610812138673, -0.0239577309661709, -0.00481188935752372, -0.00469191257187139]
+      },
+      "nominal_cap_24_output_equal_to_cap_6_output": true,
+      "cap_equality_is_valid_sweep_convergence_evidence": false
+    }
+  ],
+  "full_braking": {
+    "brake_torque_per_wheel_nm": 2.0,
+    "trajectory_backend": "native",
+    "step_input": [
+      {"hz": 240, "stop_s": 1.41666666666667, "stop_distance_north_m": 6.80557010231568, "stop_distance_east_m": 0.410977762085205, "max_abs_yaw_rad": 0.370274645376298, "max_abs_v_m_per_s": 0.407633523760689, "min_upright": 0.994186226591306, "u_flip_s": -1.0},
+      {"hz": 480, "stop_s": 1.41666666666667, "stop_distance_north_m": 6.80517842260632, "stop_distance_east_m": 0.406453743630066, "max_abs_yaw_rad": 0.365552173033907, "max_abs_v_m_per_s": 0.402767702735636, "min_upright": 0.994186941980134, "u_flip_s": -1.0}
+    ],
+    "nominal_cap_24_output_equal_to_cap_6_output_at_240hz": true,
+    "cap_equality_is_valid_sweep_convergence_evidence": false,
+    "ramp_200ms": [
+      {"hz": 240, "stop_s": 1.7125, "stop_distance_north_m": 7.73048137338478, "stop_distance_east_m": 2.10864365699272, "max_abs_yaw_rad": 1.71252954689847, "max_abs_v_m_per_s": 2.6273366678032, "min_upright": 0.996087828276597, "u_flip_s": -1.0},
+      {"hz": 480, "stop_s": 1.7125, "stop_distance_north_m": 7.74009306966492, "stop_distance_east_m": 2.10777714520551, "max_abs_yaw_rad": 1.71097780926235, "max_abs_v_m_per_s": 2.62430695378055, "min_upright": 0.996088898214761, "u_flip_s": -1.0}
+    ]
+  },
+  "speed_screen_control": {
+    "trajectory_backend": "native",
+    "fixture": "flat, mu 0.85, rolling 1.0; 6 s full-throttle launch then fixed brake input with zero throttle/steering",
+    "current_fade_setting_rad_s": 100.0,
+    "fade_settings_used_to_set_entry_speed_rad_s": [60.0, 80.0, 100.0],
+    "entry_speeds_m_per_s": [5.93233411500631, 7.90977880060332, 9.88722121316808],
+    "partial_brake_inputs": [0.4, 0.6, 0.75],
+    "partial_brake_peak_yaw_deg_by_input": [
+      {"brake": 0.4, "at_5_93_m_per_s": 4.68064147441176, "at_7_91_m_per_s": 142.008210650453, "at_9_89_m_per_s": 179.958040037749},
+      {"brake": 0.6, "at_5_93_m_per_s": 7.88516496152889, "at_7_91_m_per_s": 130.029661683932, "at_9_89_m_per_s": 176.259799896292},
+      {"brake": 0.75, "at_5_93_m_per_s": 5.76087519119069, "at_7_91_m_per_s": 94.0697855476594, "at_9_89_m_per_s": 163.758934292231}
+    ],
+    "full_brake_peak_yaw_deg_by_entry_speed": [1.01515846661003, 3.33450255375472, 21.2151744407651],
+    "circuit_fast_peak_m_per_s": 5.858126786636629,
+    "source_script": "research/rc-monster-truck/brake_audit/speed_screen.gd",
+    "evidence_log": "docs/research/rc-monster-truck/RCV-drive/braking-audit/speed-screen.log"
+  },
+  "adaptive_early_out_check": {
+    "brake_torque_per_wheel_nm": 1.5,
+    "backend": "gdscript_reference_direct_evaluate",
+    "scope": "The manual RK4 driver calls Vehicle._evaluate() directly for its derivative, bypassing _evaluate_active() and native dispatch; this spot check does not assess native early-out sensitivity.",
+    "hz": 240,
+    "sample_t_s": 1.10416666666667,
+    "adaptive_early_out_enabled": {
+      "u_m_per_s": -0.230080110987696,
+      "v_m_per_s": -2.88693748341526,
+      "yaw_rad": 2.15482388268504,
+      "yaw_rate_rad_per_s": 2.29452854418531
+    },
+    "forced_six_sweeps": {
+      "u_m_per_s": -0.230085561834846,
+      "v_m_per_s": -2.88693594054589,
+      "yaw_rad": 2.15482512729621,
+      "yaw_rate_rad_per_s": 2.29453044902344
+    },
+    "absolute_differences": {
+      "u_m_per_s": 0.00000545084715,
+      "v_m_per_s": 0.00000154386937,
+      "yaw_rad": 0.00000124461117,
+      "yaw_rate_rad_per_s": 0.00000190483813
+    }
+  },
+  "source_sha256": {
+    "app/physics/ground_vehicle/vehicle_dynamics.gd": "e3b8f6efde820dc0769b9556dacd0cae1338e71a3128f4829acf37f394e4dc79",
+    "app/physics/ground_vehicle/vehicle_data.gd": "3b2dd900db8e08bd3552058f8699654dcaeeb230bfa9aa2f3ca2e3dad534b1194",
+    "app/data/vehicles/ground/mt8_bisonte.json": "732ad4197a60b111610e7eadf169e4718a68bdf85799f7cff4350eb4df698a0c",
+    "research/rc-monster-truck/brake_audit/brake_diagnostics.gd": "968c9391bbc5ab7c901ad4ec28d97f8f19fd885fcde99e220c16e9413e259b61"
+  },
+  "current_portable_scratch_script_sha256": {
+    "research/rc-monster-truck/brake_audit/convergence_policy.gd": "5efe225f927abb6c7af1197b10bda61ee7200f4e98ad019199360a4cf2914124",
+    "research/rc-monster-truck/brake_audit/partial_convergence.gd": "35f64f54416abfa75b94be8ab7eaf432c0045ade29fcdac9d96f792a6e3c91bd",
+    "research/rc-monster-truck/brake_audit/speed_screen.gd": "4c5e0fb7aeff79ad05d80032d57e4f2cbfb0e240a79c57a28716fdad82ce8450"
+  },
+  "speed_screen_log_sha256": "4f59a71446de9be04c3af73565c186cba62c2572763102c5d6bc98a79b2acc72",
+  "recorded_run_scratch_script_sha256": {
+    "research/rc-monster-truck/brake_audit/convergence_policy.gd": "8fc29a08434b565b2a8f37b0307de56efd0c7129d5090457a8a63489127ca11b",
+    "research/rc-monster-truck/brake_audit/partial_convergence.gd": "c63609b8c0fb7b45e4c711f3b87bb23f4fa4ebc59d0e3aeb4f4af442e5ac7065"
+  },
+  "interpretation_limit": "Observed trajectories under one flat-surface fixture show agreement between 240 and 480 Hz. This is not sweep-count convergence evidence for the active native solver, nor measurement or physical validation of a real vehicle."
+}

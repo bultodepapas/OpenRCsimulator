@@ -1,0 +1,151 @@
+{
+  "scope": "RCV-05-R1 Windows controller and garage regressions; simulated device/input fixtures, not physical driving qualification",
+  "recorded_utc": "2026-10-14T21:54:58.565146+00:00",
+  "runs": [
+    {
+      "test": "test_rcv_input",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 0.32,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nRCV input: 32 checks, 0 failed\n"
+    },
+    {
+      "test": "test_controller_ground",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 2.63,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nGround controller integration: 22/22 checks passed\n"
+    },
+    {
+      "test": "test_controller_car",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 2.81,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nCar controller audit: 31/31 checks passed\n"
+    },
+    {
+      "test": "test_rcv_activity",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 4.45,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nRCV activity: 23 checks, 0 failures\n"
+    },
+    {
+      "test": "test_rcv_menu",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 12.23,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nRCV menu: 26 checks, 0 failures\n"
+    },
+    {
+      "test": "test_rcv_presentation",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 3.95,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nRCV presentation: 16 checks, 0 failures\n"
+    },
+    {
+      "test": "test_rcv_session",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 2.29,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nRCV session: 85 checks, 0 failed\n"
+    },
+    {
+      "test": "test_ui_input",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 10.82,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   precondition: the engine binds joypad events to ui_* (10 found)\nok   focus starts on Fly\nok   precondition: unisolated, the elevator stick moves the focus\nok   isolation removed 10 joypad events, none left\nok   axis 1 = +1 does not move the focus\nok   axis 1 = -1 does not move the focus\nok   axis 0 = +1 does not move the focus\nok   axis 0 = -1 does not move the focus\nok   button 11 does not move the focus\nok   button 12 does not move the focus\nok   button 13 does not move the focus\nok   button 14 does not move the focus\nok   button 3 does not move the focus\nok   no radio event activated Fly\nok   the flight still reads the raw axis (0.75)\nok   keyboard still reaches the same Down target\nok   app_root isolates joypads at startup\nall UI input checks passed\n"
+    },
+    {
+      "test": "test_controller_auto_defaults",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 0.58,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController automatic defaults: 35/35 checks passed\n"
+    },
+    {
+      "test": "test_controller_pause_recovery",
+      "passed": true,
+      "exit_code": 0,
+      "seconds": 16.42,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nController pause recovery: 22/22 checks passed\n"
+    }
+  ],
+  "parse_checks": [
+    {
+      "path": "app/input/ground_vehicle_input.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "app/vehicles/ground/ground_scene.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "app/vehicles/ground/ground_dashboard.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "app/app_root.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "app/tests/test_rcv_input.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "app/tests/test_controller_ground.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "app/tests/test_controller_car.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "app/tests/test_rcv_activity.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "app/tests/test_rcv_menu.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    {
+      "path": "research/rc-monster-truck/visual/probe_controls.gd",
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    }
+  ],
+  "source_sha256_after_checks": {
+    "app/input/ground_vehicle_input.gd": "55764f9d082fa645320417ea7b9cee098ccf259e66a1dcc3e7b9f25b31075428",
+    "app/vehicles/ground/ground_scene.gd": "ed7cbde3e07a0cac331a6fd02b4ea8b68e6b69ab613acbc031b3d317b9aeccd5",
+    "app/vehicles/ground/ground_dashboard.gd": "83a758ced93bc339d1a4e78d8acb332e3b6216d2e107a7d96e3025479b50615a",
+    "app/app_root.gd": "ce0ef85959e34df944bf51febf786716244856e5c4af5d1000864452725c2d95",
+    "app/tests/test_rcv_input.gd": "175f9f415ff775e00634aec92c4d7216ebfaca8aad86b167efc64a7f08539256",
+    "app/tests/test_controller_ground.gd": "d841f4362c287d2d932429111d57c4967f4b90ed0738770e2c4b22b0fc52f39d",
+    "app/tests/test_controller_car.gd": "7777c64830006165b82d2f67f28b734b7f4d0179cfa2678534ecd7df0f021fa8",
+    "app/tests/test_rcv_activity.gd": "e79a5c2af2100345300eb16b8965aead2f1a20283ddd64686b325fe8e97ffec7",
+    "app/tests/test_rcv_menu.gd": "4bb4a14e03d0c19c40cc24138d3a26870a59fdde3f1d016558859ed5a6d26e31",
+    "research/rc-monster-truck/visual/probe_controls.gd": "98163636f1aad6bb91efaec2b58592e270046982165bb21aa103063e5f66a224"
+  },
+  "passed": true
+}

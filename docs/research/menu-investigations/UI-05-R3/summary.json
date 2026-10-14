@@ -1,0 +1,158 @@
+{
+  "reference/gp-extra-300s-60/first": {
+    "count": 5,
+    "max_frame_ms": 417.033,
+    "p95_frame_ms": 417.033,
+    "frames_over": {
+      "33": 5,
+      "50": 5,
+      "100": 5
+    },
+    "handler_ms": 357.594,
+    "feedback_ms": 394.168,
+    "ready_ms": 394.168
+  },
+  "reference/gp-extra-300s-60/warm": {
+    "count": 20,
+    "max_frame_ms": 13.543,
+    "p95_frame_ms": 13.543,
+    "frames_over": {
+      "33": 0,
+      "50": 0,
+      "100": 0
+    },
+    "handler_ms": 4.783,
+    "feedback_ms": 10.695,
+    "ready_ms": 10.695
+  },
+  "reference/jensen-das-ugly-stik-60/first": {
+    "count": 5,
+    "max_frame_ms": 38.184,
+    "p95_frame_ms": 38.184,
+    "frames_over": {
+      "33": 1,
+      "50": 0,
+      "100": 0
+    },
+    "handler_ms": 4.962,
+    "feedback_ms": 15.475,
+    "ready_ms": 15.475
+  },
+  "reference/jensen-das-ugly-stik-60/warm": {
+    "count": 20,
+    "max_frame_ms": 17.589,
+    "p95_frame_ms": 17.589,
+    "frames_over": {
+      "33": 0,
+      "50": 0,
+      "100": 0
+    },
+    "handler_ms": 4.7625,
+    "feedback_ms": 11.602,
+    "ready_ms": 11.602
+  },
+  "reference/sebart-avanti-s-a200-p100rx/first": {
+    "count": 5,
+    "max_frame_ms": 1865.743,
+    "p95_frame_ms": 1865.743,
+    "frames_over": {
+      "33": 5,
+      "50": 5,
+      "100": 5
+    },
+    "handler_ms": 1684.766,
+    "feedback_ms": 1727.339,
+    "ready_ms": 1727.339
+  },
+  "reference/sebart-avanti-s-a200-p100rx/warm": {
+    "count": 20,
+    "max_frame_ms": 15.023,
+    "p95_frame_ms": 15.023,
+    "frames_over": {
+      "33": 0,
+      "50": 0,
+      "100": 0
+    },
+    "handler_ms": 4.7,
+    "feedback_ms": 10.659,
+    "ready_ms": 10.659
+  },
+  "candidate/gp-extra-300s-60/first": {
+    "count": 5,
+    "max_frame_ms": 438.808,
+    "p95_frame_ms": 438.808,
+    "frames_over": {
+      "33": 5,
+      "50": 5,
+      "100": 5
+    },
+    "handler_ms": 1.683,
+    "feedback_ms": 8.671,
+    "ready_ms": 427.505
+  },
+  "candidate/gp-extra-300s-60/warm": {
+    "count": 20,
+    "max_frame_ms": 13.955,
+    "p95_frame_ms": 13.955,
+    "frames_over": {
+      "33": 0,
+      "50": 0,
+      "100": 0
+    },
+    "handler_ms": 4.707,
+    "feedback_ms": 10.367,
+    "ready_ms": 10.367
+  },
+  "candidate/jensen-das-ugly-stik-60/first": {
+    "count": 5,
+    "max_frame_ms": 16.861,
+    "p95_frame_ms": 16.861,
+    "frames_over": {
+      "33": 0,
+      "50": 0,
+      "100": 0
+    },
+    "handler_ms": 4.979,
+    "feedback_ms": 12.802,
+    "ready_ms": 12.802
+  },
+  "candidate/jensen-das-ugly-stik-60/warm": {
+    "count": 20,
+    "max_frame_ms": 14.85,
+    "p95_frame_ms": 14.85,
+    "frames_over": {
+      "33": 0,
+      "50": 0,
+      "100": 0
+    },
+    "handler_ms": 5.01,
+    "feedback_ms": 11.5135,
+    "ready_ms": 11.5135
+  },
+  "candidate/sebart-avanti-s-a200-p100rx/first": {
+    "count": 5,
+    "max_frame_ms": 1173.917,
+    "p95_frame_ms": 9.335,
+    "frames_over": {
+      "33": 5,
+      "50": 5,
+      "100": 5
+    },
+    "handler_ms": 1.506,
+    "feedback_ms": 6.441,
+    "ready_ms": 1604.268
+  },
+  "candidate/sebart-avanti-s-a200-p100rx/warm": {
+    "count": 20,
+    "max_frame_ms": 13.736,
+    "p95_frame_ms": 13.736,
+    "frames_over": {
+      "33": 0,
+      "50": 0,
+      "100": 0
+    },
+    "handler_ms": 4.855,
+    "feedback_ms": 11.126,
+    "ready_ms": 11.126
+  }
+}

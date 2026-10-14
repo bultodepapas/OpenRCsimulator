@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Could not preload resource script "res://physics/ground_vehicle/airfield_course.gd".
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/performance/bench_airfield.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/ground_vehicle/airfield_course.gd".
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/performance/bench_airfield.gd:8)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "AirfieldCourse" constant because the value doesn't have a set type.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/performance/bench_airfield.gd:8)
+ERROR: Failed to load script "C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/performance/bench_airfield.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

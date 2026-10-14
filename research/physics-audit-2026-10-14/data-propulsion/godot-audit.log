@@ -1,0 +1,25 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+JET id=sebart-avanti-s-a200-p100rx sha256=74043c9bc1de35de066bc65b971e85f5e099173f2d9cccec065c6988abbb6b9d
+JET load_warnings=["Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed"]
+JET mass_kg=11.705089000 cg_LE=[0.23999999812048, 0.0, 0.00515269059466] inventory_cg_LE=[0.23999999812048, 0.0, 0.00515269059466] inertia_FRD=[0.68673682129421, 2.4641959070887, 3.05824181740386, 0.0, -0.02976645332748, 0.0] reference_S_m2=0.702275000_b_m=2.000000000_c_m=0.351137000
+JET inventory_mass_kg=11.705089000 fuel_mass_kg=1.280000000 dry_mass_kg=10.425089000 virtual_ballast_kg=0.345089000 ballast_fraction=0.029482
+JET declared_fuel_CG_sensitivity half_state=[0.23999999812048, 0.0, 0.00515269059466] full_assumed=[0.22127082363471, 0.0, 0.00168752805622] empty=[0.26332833590198, 0.0, 0.0094687634801] full_to_empty_dx_mm=42.058
+JET propulsion kind=turbine axis=[1.0, 0.0, 0.0] offset_LE=[0.9285, 0.0, -0.010153] intake_offset_LE=[-0.33, 0.0, -0.033153]
+JET turbine idle_rpm=44000.0 max_rpm=154000.0 installed_factor=0.920000 ram_flow=0.000005000 rotor_inertia=0.000035000 rotor_sense=1.0
+JET rpm=44000 V=0.0 rho=1.225 mdot=0.065710000 gross=1.846440 net=1.846440 fuel=0.001067000 SFC_gross=2.080328 SFC_net=2.080328 loads=[1.84644, 0.0, 0.0, 0.0, 0.01874690532, 0.0]
+JET rpm=44000 V=70.0 rho=1.225 mdot=0.067319895 gross=5.077902 net=0.365509 fuel=0.001067000 SFC_gross=0.756454 SFC_net=10.509169 loads=[0.36550940804718, 0.0, 0.0, 0.0, -0.1046740139301, 0.0]
+JET rpm=154000 V=0.0 rho=1.225 mdot=0.230000000 gross=92.000000 net=92.000000 fuel=0.005200000 SFC_gross=0.203478 SFC_net=0.203478 loads=[92.0, 0.0, 0.0, 0.0, 0.934076, 0.0]
+JET rpm=154000 V=70.0 rho=1.225 mdot=0.235635000 gross=98.488665 net=81.994215 fuel=0.005200000 SFC_gross=0.190073 SFC_net=0.228309 loads=[81.9942151265388, 0.0, 0.0, 0.0, 0.45311491617975, 0.0]
+JET rotor_momentum_at_max=[0.56443948009497, 0.0, 0.0]
+JET rho_sensitivity max_rpm V=0.0 rho=1.000 net=75.102041; rho=0.900 net=67.591837
+STIK id=jensen-das-ugly-stik-60 sha256=5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6
+STIK load_warnings=["inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value"]
+STIK mass_kg=2.885058291 cg_LE=[0.1209, 0.0, 0.0] inventory_cg_LE=[0.1209, 0.0, 0.0] inertia_FRD=[0.11540678010017, 0.38708561399355, 0.48410759044528, -0.00954, 0.0072395, 0.00045525693736] reference_S_m2=0.464515000_b_m=1.524000000_c_m=0.304800000
+STIK inventory_mass_kg=2.885058291 fuel_mass_kg=0.120000000 dry_mass_kg=2.765058291 virtual_ballast_kg=0.284058291 ballast_fraction=0.098458
+STIK declared_fuel_CG_sensitivity half_state=[0.1209, 0.0, 0.0] full_assumed=[0.11207887327544, 0.0, 0.0] empty=[0.13048677800242, 0.0, 0.0] full_to_empty_dx_mm=18.408
+STIK engine=O.S. MAX-61FX (two-stroke glow) peak_power_W=1397.400 peak_power_rpm=16000.0 max_rpm_static=11149.0 prop=APC 12x6 Sport (LP12060) D_m=0.304800 prop_inventory_mass_kg=0.046000 prop_rotating_inertia_kgm2=0.000350000
+STIK rotor_momentum_at_static=[0.40863219244018, 0.0, 0.0]
+STIK static_rpm=11149.0 V=0.0 thrust_N=41.251877 torque_Nm=0.834106 J=0.000000 shaft_power_W=973.836
+STIK static_rpm=11149.0 V=5.0 thrust_N=38.366030 torque_Nm=0.841651 J=0.088282 shaft_power_W=982.644
+STIK static_rpm=11149.0 V=15.0 thrust_N=32.594336 torque_Nm=0.856740 J=0.264845 shaft_power_W=1000.261

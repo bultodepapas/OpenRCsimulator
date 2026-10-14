@@ -1,0 +1,75 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:32)
+       [1] start (res://render/rotor/heli_crash_presentation.gd:156)
+       [2] _present (res://helicopter_main.gd:194)
+       [3] run (res://../research/helicopter/crashes/placement_probe.gd:13)
+POSE main report=[6.02329923666741, 0.0006530831658, -0.31359967796423] ground=(0.749689, 0.0, -6.022343) initial=(0.046711, 0.368338, -5.912755)
+AFTER 0 (0.046806, 0.351465, -5.921027)
+AFTER 3 (0.047851, 0.301411, -5.945515)
+AFTER 9 (0.049879, 0.199732, -5.993042)
+AFTER 59 (0.157986, 0.099128, -6.065682)
+AFTER 100 (0.161368, 0.099129, -6.067095)
+AFTER 479 (0.16137, 0.09913, -6.067097)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:32)
+       [1] start (res://render/rotor/heli_crash_presentation.gd:156)
+       [2] _present (res://helicopter_main.gd:194)
+       [3] run (res://../research/helicopter/crashes/placement_probe.gd:13)
+POSE tail report=[6.0672258095482, 0.00048457581264, -0.55970406342625] ground=(0.000798, 0.0, -5.26109) initial=(0.00063, 0.443279, -5.982349)
+AFTER 0 (0.00139, 0.443478, -5.990979)
+AFTER 3 (0.003164, 0.428554, -6.013663)
+AFTER 9 (0.006576, 0.376191, -6.057383)
+AFTER 59 (0.013345, 0.179687, -6.24057)
+AFTER 100 (0.013317, 0.179686, -6.244244)
+AFTER 479 (0.013315, 0.179687, -6.244244)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:32)
+       [1] start (res://render/rotor/heli_crash_presentation.gd:156)
+       [2] _present (res://helicopter_main.gd:194)
+       [3] run (res://../research/helicopter/crashes/placement_probe.gd:13)
+POSE hard report=[6.01648350407212, 0.00000078791628, -0.07564495977801] ground=(-0.085759, 0.0, -6.106904) initial=(-0.000039, 0.169033, -5.911552)
+AFTER 0 (-0.000172, 0.163104, -5.911941)
+AFTER 3 (-0.000354, 0.158017, -5.912617)
+AFTER 9 (-0.000457, 0.159317, -5.913046)
+AFTER 59 (-0.000683, 0.241333, -5.912524)
+AFTER 100 (-0.000581, 0.241389, -5.912304)
+AFTER 479 (-0.000563, 0.241401, -5.912314)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:32)
+       [1] start (res://render/rotor/heli_crash_presentation.gd:156)
+       [2] _present (res://helicopter_main.gd:194)
+       [3] run (res://../research/helicopter/crashes/placement_probe.gd:13)
+POSE nose report=[6.0643334740217, 0.0, -0.36597058937946] ground=(-0.083596, 0.0, -6.191014) initial=(0.0, 0.558121, -6.066533)
+AFTER 0 (-0.00002, 0.770075, -6.064492)
+AFTER 3 (-0.000071, 0.814393, -6.07373)
+AFTER 9 (-0.000072, 0.820721, -6.094462)
+AFTER 59 (-0.000074, 0.843746, -6.205216)
+AFTER 100 (-0.000078, 0.848053, -6.241832)
+AFTER 479 (-0.000009, 0.335086, -5.553908)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:32)
+       [1] start (res://render/rotor/heli_crash_presentation.gd:156)
+       [2] _present (res://helicopter_main.gd:194)
+       [3] run (res://../research/helicopter/crashes/placement_probe.gd:13)
+POSE fence report=[3.71000000089407, -23.9599990844727, -0.32499998807907] ground=(-23.95999, -0.001585, -4.367972) initial=(-23.96026, 0.396801, -3.39924)
+AFTER 0 (-23.96026, 0.396374, -3.498573)
+AFTER 3 (-23.96024, 0.401125, -3.79261)
+AFTER 9 (-23.97011, 0.385098, -3.749182)
+AFTER 59 (-24.02468, 0.232285, -3.600856)
+AFTER 100 (-24.03573, 0.222094, -3.592642)
+AFTER 479 (-24.06302, 0.216007, -3.604504)
+WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

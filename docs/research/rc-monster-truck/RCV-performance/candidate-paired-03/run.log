@@ -1,0 +1,47 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{
+  "ok": true,
+  "output": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-monster-truck\\RCV-performance\\candidate-paired-03\\profile.json",
+  "sampler_cost": {
+    "cached_eager": {
+      "maximum_us": 317.0,
+      "mean_us": 49.136875,
+      "median_us": 44.0,
+      "p95_us": 71.0,
+      "samples": 4800
+    },
+    "cached_eager_output_mismatches": 0,
+    "cached_eager_outputs_exact": true,
+    "calls_per_implementation": 4800,
+    "candidate": {
+      "maximum_us": 192.0,
+      "mean_us": 46.717083333333335,
+      "median_us": 42.0,
+      "p95_us": 67.0,
+      "samples": 4800
+    },
+    "candidate_output_mismatches": 0,
+    "candidate_outputs_exact": true,
+    "compared_fields": "complete course sample dictionaries, including normals, friction, coverage, surface/feature IDs, in_bounds and full wall dictionaries",
+    "deferred_allocation_reduction_vs_cached_eager_percent": 4.924594139669379,
+    "mean_reduction_percent": 9.779560569545641,
+    "method": "single-process, interleaved three-way sampler calls; call order rotates for each route/feature query",
+    "positions_compared": 576,
+    "reference": {
+      "maximum_us": 290.0,
+      "mean_us": 51.78104166666667,
+      "median_us": 46.0,
+      "p95_us": 74.0,
+      "samples": 4800
+    },
+    "sink": 4567.906076400502
+  },
+  "tick_cost": {
+    "maximum_us": 5002.0,
+    "mean_us": 3586.7083333333335,
+    "median_us": 3431.0,
+    "p95_us": 4582.0,
+    "samples": 480
+  }
+}

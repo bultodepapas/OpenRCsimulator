@@ -4,6 +4,8 @@
 
 ## Reports
 
+[CR-22c-R1: first-impact stutter](CR-22c-R1/README.md) records the 2026-10-14 native fleet comparison, Compatibility shader warmup and selective emitter startup.
+
 | # | Report | Scope |
 | --- | --- | --- |
 | 01 | [Damage models in simulators and games](01-simulators-games-damage-models.md) | Crash handling, structural damage patterns, and lessons from RC simulators and other games. |

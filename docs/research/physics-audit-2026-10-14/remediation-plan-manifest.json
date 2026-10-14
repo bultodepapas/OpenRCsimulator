@@ -1,0 +1,128 @@
+{
+  "audit_date": "2026-10-14",
+  "amendment": "Detailed remediation plan; original finding prose retained; residual-norm wording corrected.",
+  "captured_at_utc": "2026-10-14T23:08:50.638082+00:00",
+  "scope": "Documentation and source review only. No runtime fixes, parameter edits, new measurements or runtime tests. Hashes are a snapshot, not a full checkout.",
+  "original_manifest": {
+    "path": "docs/research/physics-audit-2026-10-14/artifact-manifest.json",
+    "sha256": "48aed7193d8cffae6cf123753d9736b89b29d0e27b419c2095a2904b4eef532c",
+    "preserved": true
+  },
+  "document_amendments": [
+    {
+      "path": "docs/research/physics-audit-2026-10-14/numerics-ground/README.md",
+      "audit_sha256": "f1528904b90cf82248df95db1b6835013e7f65e6642aa854758be7aae3415479",
+      "amended_sha256": "680fd48ca68f8fb97b8e0887adf9a5b20b1e91ffad5efc13507e9fbdae755744",
+      "bytes": 12617
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/README.md",
+      "audit_sha256": "660db33402420fcbd476815bf28e7135c1b85c7b508aa44ff1287ba81841046d",
+      "amended_sha256": "3da5c898d0b23254236ea3dfbb18d1e84689e6fea725f97d27decfe5089109ef",
+      "bytes": 106925
+    }
+  ],
+  "historical_integrity": {
+    "unchanged_original_artifact_count": 85,
+    "amended_document_count": 2,
+    "original_finding_prose_reconstructed_sha256_matches": true,
+    "numerics_note_only_change": "Euclidean norm -> maximum-component (L-infinity) norm"
+  },
+  "review": {
+    "lead_source_cross_checks": true,
+    "delegated_domains": [
+      "aerodynamics/turbine/flaps",
+      "mass/propulsion/resources",
+      "numerics/ground/family boundaries"
+    ],
+    "runtime_tests_run": false
+  },
+  "document_verification": {
+    "local_file_links_checked": 205,
+    "broken_file_links": [],
+    "single_plan_section": true,
+    "balanced_code_fences": true,
+    "heading_spacing": true,
+    "scope": "File-link existence and selected Markdown structure; not all external URLs or heading anchors."
+  },
+  "source_snapshot": {
+    "head": "c642a997b758d58b9eefefe6f6f3ab6b9ab44742",
+    "working_tree_dirty": true,
+    "linked_files_sha256": {
+      "AIRCRAFT_CONTRACT.md": "924f3f89cc5fdc1c2d4c1494dbbfe42bf053f81f6824640ad053c6fec52bea02",
+      "app/data/aircraft/jensen_ugly_stik_60.json": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+      "app/data/aircraft/sebart_avanti_s_a200.json": "74043c9bc1de35de066bc65b971e85f5e099173f2d9cccec065c6988abbb6b9d",
+      "app/data/schema/aircraft-modules-v1.json": "f9c03fc765bfa7fac27bf7b01e55aed0a8817759a4d1f64b2365e5e8510e417b",
+      "app/physics/aero.gd": "cf034742d69332061eb9414ccd57f7d0b6cb6e1c2f17cc5ae39e70fe26655539",
+      "app/physics/atmosphere.gd": "f395ab497f34f3107ee8ac69ad6e8cff856eebbae56bb6c6e127f75b49e69599",
+      "app/physics/control_actuators.gd": "1bfa36515ad25280fe6c4b4dcb5efa2c87014be02e2f0f2378986f1a7ff71e6d",
+      "app/physics/control_surfaces.gd": "c13215f7186aa827eb4a47e198d3fee04509631e585453fbf69850b3bc50aa93",
+      "app/physics/dynamics.gd": "313851831baa6ccf9769a2a4a28220de96650ff3b64c60dc5275857da89806d3",
+      "app/physics/glow/flight.gd": "96715a14202a80f64aee2558121130bca7518e040f2117698862da3f752c8658",
+      "app/physics/glow/fuel_mass.gd": "dfc4fdd21223360f86d7b93647eac2d72dde5f7e83406fbc6a30d9442730a03d",
+      "app/physics/glow/installation.gd": "10065ead86052d324ef8b561e4c4d21612850ef86022ac8430485daf84956b84",
+      "app/physics/ground_start.gd": "22e2dbafb4c413db093e8ff25a3da7e36db2d8820dbd541c98d0c90e19f9f698",
+      "app/physics/ground_vehicle/vehicle_dynamics.gd": "957b3398d114ae57c71c455c1f1054f9b4646a793712d6e9f719aeef5d6a1a22",
+      "app/physics/propulsion.gd": "4368f5636a983757e2587eadf92db07677d6283d0fe2b3cb3a43cb83e37ebff5",
+      "app/physics/rotorcraft/simulation_step_adapter.gd": "10c372195dda0c448c17c2a6bdb3307c1b78678f31e0feb786236c56eb0f54f0",
+      "app/physics/slipstream.gd": "9f14a283d8d9529375374228ffcc93c650b4a924fa498df14034fe3fdc00edd8",
+      "app/physics/turbine.gd": "1b9559219e1f3542821c6c56c7c62a9b3cbf79d35668175d6c8bee1ef87b8e2c",
+      "app/physics/wash_transport.gd": "2814d3d640997d1ac62b9c45c32d4ff632c29f37a113f263a0f2bca9ed86b67d",
+      "app/sim/aircraft_propulsion_runtime.gd": "fe57c169b6de4285571c2f02417a6a6d6607cae90aec6305732854ec3df9108a",
+      "app/sim/flight_session.gd": "d23145d1c726752f730ee83988eeacb4fe101b996a8e5608b05b53207b77c5d0",
+      "app/sim/ground_vehicle/session.gd": "b5bade4c818e2c7c3832231560737d187fa24fce9968ffae21a22d78030ad619",
+      "app/sim/helicopter_flight_session.gd": "00c179339975ba074376ecdfddacaa5d1999b12f417aa3b6c75da99062686d4d",
+      "app/sim/simulation.gd": "b57f836ba757cc25acd3b724b0bd40be2d20bcc92c1837d8d557566adb2e2a41",
+      "app/test.sh": "47303d087900d9fa1c3adf308e019bfea402f589d1f7f50e26585ed4f5e292a6",
+      "app/tests/aero_flow_reference.gd": "d80e056f9897653330c8b6a716cc847fa9ea1089fe2e696eda5a2411582395e0",
+      "app/tests/test_aero_flow.gd": "e319854355b32ae76b068fbcd22d5ccad79e76c9fc45943484acb92a1cbb78d1",
+      "app/tests/test_retractable_gear_ground.gd": "5beedcb977263f5ea89abd1dffee90d569f958344f93045577e29cd1211c06e5",
+      "app/tests/test_wing_polar.gd": "08976c59a05c30449b24ed567f93d2afde090a6fd2fc68351fc1f724e8150a11",
+      "app/tests/test_wing_polar_session.gd": "6f72415025a89a9420be771322b961be83a97876c3e55439557f9f9499d7e1fd",
+      "docs/ATMOSPHERE-PLAN.md": "97af091920ec195684bace50f983ea44228b7fd3b0c5bcbfeba2f4ab8c703a3e",
+      "docs/FLIGHT-LOGGING.md": "28cc717fc4661baf47b01bdbfd0929a600a288f74a696c0a0d33c3618aaebcc8",
+      "docs/GLOW-ENGINES.md": "8d99df11928dcc7a059667bb46016f6970d88f73b9d326933c2b0e7d5fb1b302",
+      "docs/PROPULSION-CORE-PLAN.md": "2fed46e0a7dd8db30407fc3661b89a6667032390c11403b6d46f166d61c722c3",
+      "docs/README.md": "ba8d88e6adc39833031484483c43e3e5cb4ad2384e75928af5debf2750037f6c",
+      "docs/TOOLS.md": "91b1c13935ca321cac53717e9803551a393ce778804f802e91aef2d6db0c3283",
+      "docs/plans/aircraft-standardization.md": "b0914a18b6ec06d8235143f04b3a832ca000464bee5bac1df32f8eb53b073ac7",
+      "docs/plans/helicopter.md": "48d8b566c191979b6610aa53acfe9976bee62a1b2bce46106385472f309d2ee5",
+      "docs/plans/rc-monster-truck.md": "abdd2cd734dd6b20c504e2da4b351f1dd90890cd59931ed5a370b4892f471914",
+      "docs/plans/turbine-realism.md": "b07ae671de263dbd9402febdf6ef2e6133ad338e4fc1114927ab0f7699c22af5",
+      "research/aircraft-standardization/build_models.py": "3229ae8d033a09e06a5fcd2bb5553eb7453cc7338a428c6af0ebf315ed849aa9",
+      "research/avanti-s/av06/derive_physics.py": "e34a7aefed421e6760ce4cde158105466a136dc21f5da1ac471c45d309e6e691",
+      "research/avanti-s/av06/inputs.json": "95a24a52c928781bed01c8cc4dec56d4d85b39667a71e8899058ef9c6cfa352e",
+      "research/avanti-s/av10/README.md": "3dc9579d644bffbc74d0b8489e0d49bd797e97aaab8eb357c81960274c821883",
+      "research/glow-engines/build_installations.py": "7c2f3df804608888e4f4ea89d4beec9fecf213d3dcad00ff12867ac87bdf13f7",
+      "research/physics-audit-2026-10-14/aero_edges.gd": "febcac11a7a8faf4f664c121ca0877b529ac71051e8ea2aaa81cf393503a7506",
+      "research/physics-audit-2026-10-14/data-propulsion/godot-audit.log": "29a5adf91f6aa8ddb98b4f83e9e5cbe11b723fcff52afcfd3b95a9506589e17f",
+      "research/physics-audit-2026-10-14/numerics-ground/README.md": "380e3b78f97e93803789a8e3c9d0e368c1f148b7d54debbe98ba175bb67d2f5a",
+      "research/physics-audit-2026-10-14/numerics-ground/logs/runway_crosswind_probe.log": "d099bb929b0be9a8fc2fa86f7c8b865afde5d9919cad836f013ab29cdf81e061",
+      "research/physics-audit-2026-10-14/numerics-ground/logs/test_retractable_gear_ground.log": "ff83856f648672f3387f63d9f37d3c1bdcf31060eb72dc521d153e8f965ab4a2",
+      "research/physics-audit-2026-10-14/propulsion_edges.gd": "c05695b90b5577ecd20a313c2b685ab58b5199f072926a73fa0ae8e5e9b7a07f",
+      "research/physics-audit-2026-10-14/reproduce_h12.py": "a5f49589da501550f9fa3523fcc40c226559d95abf09e0a775115d6d57e0bd39",
+      "research/physics-audit-2026-10-14/runway_crosswind.gd": "c07fba40d23f4995dc77f121d4c4b97a3cf494b6fd47543b9c2a1c6f7e13be6e",
+      "research/physics-audit-2026-10-14/session_probe.gd": "66c96536984662227d3087d11b93354a7718ed4d4e5a3b1bd746e3ec629ff63d",
+      "research/physics-audit-2026-10-14/summarize.py": "8a85179b266d4b403a8d44341b90bb107d42a6c9f40e6693067cd79202af8bc2"
+    },
+    "source_drift_since_audit_close": [
+      {
+        "path": "app/physics/ground_vehicle/vehicle_data.gd",
+        "audit_close_sha256": "3b2dd900dbe08bd3552058f8699654dcaeeb230bfa9aa2f3ca2e3dad534b1194",
+        "planning_snapshot_sha256": "dd3207504fc26b70f75aaf8755e3520b1efd441ad7d207e9972db97c27494b37"
+      },
+      {
+        "path": "app/physics/ground_vehicle/vehicle_dynamics.gd",
+        "audit_close_sha256": "cc8bc5b683a70877107886687eaebdb67f12a783947210bb7437b2decfaf2828",
+        "planning_snapshot_sha256": "957b3398d114ae57c71c455c1f1054f9b4646a793712d6e9f719aeef5d6a1a22"
+      },
+      {
+        "path": "app/sim/helicopter_flight_session.gd",
+        "audit_close_sha256": "648f3811294f5e4dca6f75de27f992fe38796c90582fc7a20a20a8853491e8ee",
+        "planning_snapshot_sha256": "00c179339975ba074376ecdfddacaa5d1999b12f417aa3b6c75da99062686d4d"
+      }
+    ],
+    "source_drift_scope": "Concurrent changes; not authored by this planning amendment. Original audit identities are unchanged."
+  },
+  "implementation_status": "All VAL-AUD-R00 through VAL-AUD-R11 work packages are proposed/pending; canonical track plans own implementation status."
+}

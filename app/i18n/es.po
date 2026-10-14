@@ -2426,9 +2426,24 @@ msgstr "El modo cambia el paso de %.1f a %.1f grados. Pulsa modo otra vez para a
 msgid "Helicopter: ground pad or practice hover. On the pad, center controls at zero pitch, arm with B, release hold with H, wait for RPM, then raise collective. Steady wind and gusts are available; flight validation is pending."
 msgstr "Helicóptero: plataforma o estacionario de práctica. En tierra, centra controles con paso cero, arma con B, libera hold con H, espera las RPM y sube el colectivo. Hay viento constante y ráfagas; falta validar el vuelo."
 
+#. UI-05 preview preparation
+msgid "Loading aircraft preview…"
+msgstr "Cargando vista previa del avión…"
+
+msgid "Aircraft preview could not be loaded."
+msgstr "No se pudo cargar la vista previa del avión."
+
 #. HELI-20 ground lifecycle
 msgid "USB radio: lower collective to arm the input, then match the displayed start pitch before motor arming. Gamepads retain the start collective. Assign Helicopter arm, hold and flight mode in Controller settings. Throttle cut latches hold; releasing it never starts the rotor. K calibrates."
 msgstr "Radio USB: baja el colectivo para habilitar la entrada; luego iguala el paso de inicio antes de armar el motor. El gamepad conserva el colectivo inicial. Asigna armado, hold y modo en Controles. El corte activa hold y soltarlo no arranca el rotor. K calibra."
 
 msgid "USB radio (EdgeTX): select Advanced Joystick in Model setup. Lower throttle to arm; unplugging pauses. K: calibrate. Assign gear AUX or Toggle landing gear in Controller settings."
 msgstr "Radio USB (EdgeTX): selecciona Advanced Joystick en Model setup. Baja el acelerador para armar; desconectar pausa el vuelo. K: calibrar. Asigna AUX o Alternar tren de aterrizaje en Ajustes del mando."
+msgid "Night lights: auto"
+msgstr "Luces nocturnas: automático"
+
+msgid "Night lights: auto / all / navigation / off"
+msgstr "Luces: auto / todas / posición / apagadas"
+
+msgid "Flight log: record/stop · mark maneuver"
+msgstr "Registro: grabar/parar · marcar maniobra"

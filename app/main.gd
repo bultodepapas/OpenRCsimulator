@@ -28,6 +28,7 @@ const CrashDirector = preload("res://render/crash/director.gd")
 const SceneryDamageDirector = preload("res://render/crash/scenery_damage.gd")
 const ImpactSnapshot = preload("res://physics/impact_snapshot.gd")
 const Recorder := preload("res://sim/recorder.gd")
+const FlightLog := preload("res://sim/flight_log.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Preferences := preload("res://app_state/preferences.gd")
@@ -74,6 +75,8 @@ var field: Dictionary = {}
 
 var session: Node
 var recorder: RefCounted
+var flight_log: RefCounted
+var _flight_log_label: Label
 ## The catalog aircraft to fly. Set before adding the node (Home does); otherwise --aircraft=<id>, else the Ugly Stik.
 var aircraft_id := ""
 ## Detached Workshop compilation; aircraft_id remains the catalog visual identity.
@@ -638,6 +641,16 @@ func _ready() -> void:
 	# E3d1: interactive flights get soft hull contacts (a wingtip brush or belly slide continues); scripted, capture
 	# and trace routes keep "any hull contact is a crash". -- --soft-contacts=off restores it interactively.
 	session.soft_hull_contacts = not _scripted and not args.has("capture") and str(args.get("soft-contacts", "on")) != "off"
+	flight_log = FlightLog.new(session)
+	if args.has("flight-log"):
+		if typeof(args["flight-log"]) != TYPE_STRING or str(args["flight-log"]).is_empty() or _scripted or args.has("capture"):
+			push_error("--flight-log requires a new file path and a physics flight.")
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
+		if flight_log.start(str(args["flight-log"])) != OK:
+			get_tree().quit(ERR_CANT_CREATE)
+			return
+		_update_flight_log_label()
 	if bool(frametime_options.enabled):
 		_frametimes_path = str(frametime_options.path)
 		_frametimes_warmup_s = float(frametime_options.warmup_s)
@@ -667,6 +680,8 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if flight_log != null and _flight_log_label != null:
+		_update_flight_log_label()
 	if _capturing:
 		_clear_wheel_brake()
 		return
@@ -1119,6 +1134,17 @@ func _unhandled_input(event: InputEvent) -> void:
 				get_viewport().set_input_as_handled()
 				return
 		match event.physical_keycode:
+			KEY_F10:
+				if flight_log != null and not _scripted:
+					if flight_log.recording: flight_log.stop()
+					else: flight_log.start()
+					_update_flight_log_label()
+					get_viewport().set_input_as_handled()
+			KEY_F11:
+				if flight_log != null and flight_log.recording:
+					flight_log.mark()
+					_note = "Flight log marker at tick %d" % session.sim.tick
+					get_viewport().set_input_as_handled()
 			KEY_G:
 				controller_action("gear_toggle")
 				get_viewport().set_input_as_handled()
@@ -1569,6 +1595,38 @@ func _trace_meta() -> Dictionary:
 		# Self-contained optional header, copied/frozen by Recorder; CSV columns and physics identity stay unchanged.
 		meta.visual_context = JSON.stringify(TimeOfDayLighting.context(lighting_config, _lighting), "", true, true)
 	return meta
+
+
+func _update_flight_log_label() -> void:
+	if _flight_log_label == null:
+		var layer := CanvasLayer.new()
+		layer.layer = 25
+		add_child(layer)
+		_flight_log_label = Label.new()
+		layer.add_child(_flight_log_label)
+		_flight_log_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+		_flight_log_label.offset_left = -520
+		_flight_log_label.offset_right = -16
+		_flight_log_label.offset_top = -54
+		_flight_log_label.offset_bottom = -16
+		_flight_log_label.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+		_flight_log_label.clip_text = true
+		var background := StyleBoxFlat.new()
+		background.bg_color = Color(0.03, 0.05, 0.08, 0.86)
+		background.content_margin_left = 12
+		background.content_margin_right = 12
+		_flight_log_label.add_theme_stylebox_override("normal", background)
+		_flight_log_label.add_theme_color_override("font_shadow_color", Color.BLACK)
+		_flight_log_label.add_theme_constant_override("shadow_offset_x", 1)
+		_flight_log_label.add_theme_constant_override("shadow_offset_y", 1)
+		_flight_log_label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_flight_log_label.text = "REC %.1f s · F10 stop · F11 mark" % flight_log.seconds() if flight_log.recording else flight_log.note
+	_flight_log_label.tooltip_text = flight_log.note
+
+
+func _exit_tree() -> void:
+	if flight_log != null:
+		flight_log.stop("flight closed")
 
 
 ## One file never mixes two flights.

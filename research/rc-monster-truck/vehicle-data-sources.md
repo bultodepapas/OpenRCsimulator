@@ -21,9 +21,29 @@ Vehicle mass, inertia, spring/tire properties, damping, motor/brake torque,
 friction scaling, steering servo response, and the six low-complexity hull
 probes are simulation estimates. The delivered package supplies no weighing,
 component inventory, spring/tire test, motor curve, or handling measurements.
-The .095 m CG height is explicitly an estimate; the spec's .125 m ride-origin
+The .065 m CG height is explicitly an estimate; the spec's .125 m ride-origin
 height is not substituted for a CG measurement. This file is a software
 baseline and does not establish physical validation.
+
+The current 2026-10-14 handling revision uses 5.2 N m per-wheel stall torque
+and a 120 rad/s fade endpoint, versus the previous 4.2/100 curve. This implies
+624 W peak mechanical power across four wheels and 12 m/s unloaded rolling
+speed; it is not an electrical or continuous rating. The nominal mean brake
+capacity is 1.35 N m per wheel, allocated 85/15 between the front/rear axles.
+Older descriptors without the optional allocation retain equal brakes.
+
+The estimated CG moves from 95 to 65 mm above the chassis underside datum to
+represent a low-mounted electric mass layout. Launch sensitivity tests found
+the higher-power curve flipped at 95 mm, stayed upright at 80 mm and retained
+more pitch margin at 65 mm. Normalization recomputes the hull offsets and the
+renderer uses the same datum conversion. This is an explicit configuration
+estimate; no measured battery/component mass layout was supplied. The existing
+mass and CG-relative inertia estimates remain unchanged.
+
+The [handling evidence](../../docs/research/rc-monster-truck/RCV-handling/README.md)
+owns current comparisons, source identities and limitations. The preceding
+[drive revision](../../docs/research/rc-monster-truck/RCV-drive/README.md)
+retains the historical 3/40 to 4.2/100 comparison.
 
 Rebuild from the repository root with:
 

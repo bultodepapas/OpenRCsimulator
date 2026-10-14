@@ -2,11 +2,14 @@
 import argparse, hashlib, json, platform, re, subprocess, time
 from pathlib import Path
 ROOT=Path(__file__).resolve().parents[3]
-p=argparse.ArgumentParser(); p.add_argument('--godot',required=True); p.add_argument('--out',required=True); p.add_argument('--ui-only',action='store_true'); a=p.parse_args()
+p=argparse.ArgumentParser(); p.add_argument('--godot',required=True); p.add_argument('--out',required=True); p.add_argument('--ui-only',action='store_true'); p.add_argument('--tests',nargs='+'); a=p.parse_args()
 out=Path(a.out).resolve(); out.mkdir(parents=True,exist_ok=True)
 godot=str(Path(a.godot).resolve())
 names=['test_ui_home','test_ui_aircraft','test_ui_help','test_controls_reference','test_controller_flight_actions','test_field_loader','test_field_surfaces','test_ground_surfaces','test_ground_terrain']
 if not a.ui_only: names=[x.stem for x in sorted((ROOT/'app/tests').glob('test_heli_*.gd'))]+names
+if a.tests:
+ names=a.tests
+ if any(not re.fullmatch(r'test_[a-z0-9_]+',name) or not (ROOT/'app/tests'/f'{name}.gd').is_file() for name in names): p.error('tests must name existing test_*.gd scripts without extensions')
 results=[]
 for name in names:
  command=[godot,'--headless','--path',str(ROOT/'app'),'--script',f'res://tests/{name}.gd']

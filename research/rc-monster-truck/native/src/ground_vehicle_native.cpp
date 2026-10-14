@@ -33,8 +33,8 @@ using openrc::ground_vehicle::Model;
 using openrc::ground_vehicle::Surface;
 using openrc::ground_vehicle::Vec3;
 
-constexpr const char *kBackendVersion = "openrc-ground-vehicle-native-evaluate-v1";
-constexpr const char *kSolverVersion = "openrc-ground-vehicle-dynamics-rk4-v2";
+constexpr const char *kBackendVersion = "openrc-ground-vehicle-native-evaluate-v2";
+constexpr const char *kSolverVersion = "openrc-ground-vehicle-dynamics-rk4-v3";
 constexpr int64_t kAbiVersion = 1;
 constexpr int64_t kStateSize = 31;
 constexpr int64_t kMaximumHullProbes = 64;
@@ -123,6 +123,9 @@ bool read_model(const godot::Dictionary &dictionary, Model &model, std::string &
 	READ_MODEL_SCALAR(droop_stop_damping_n_s_per_m)
 	READ_MODEL_SCALAR(drive_torque_per_wheel_nm)
 	READ_MODEL_SCALAR(brake_torque_per_wheel_nm)
+	if (dictionary.has("brake_front_fraction")) {
+		READ_MODEL_SCALAR(brake_front_fraction)
+	}
 	READ_MODEL_SCALAR(reverse_torque_fraction)
 	READ_MODEL_SCALAR(drive_torque_fade_rad_s)
 	READ_MODEL_SCALAR(rolling_resistance_coefficient)

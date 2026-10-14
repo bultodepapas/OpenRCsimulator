@@ -1,0 +1,79 @@
+[
+  {
+    "test": "heli_impact_detector",
+    "ok": true,
+    "exit": 0,
+    "seconds": 1.281,
+    "sha256": "8427d6f63ebd8d684b1c020bca2a7a0bcae7c281f4bcadd2cbabd2bc79afd910"
+  },
+  {
+    "test": "heli_crash_visual",
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.984,
+    "sha256": "bdd0f82bc879c1b5381fa266410d9d7406db45af8a7894d6d135a744db1ac907"
+  },
+  {
+    "test": "heli_crash_presentation",
+    "ok": true,
+    "exit": 0,
+    "seconds": 2.813,
+    "sha256": "dfd84722eee920661d80c006949d5a2273d42b6989876bfc0a2fdbf4af1da9c5"
+  },
+  {
+    "test": "heli_session",
+    "ok": true,
+    "exit": 0,
+    "seconds": 36.687,
+    "sha256": "5600172bb2bf1d282bc8cdb718773057d400ca47056539c402efc5b33ca3b347"
+  },
+  {
+    "test": "heli_ground_session",
+    "ok": true,
+    "exit": 0,
+    "seconds": 154.344,
+    "sha256": "87d9fcd6f96294b3d33038d6ff56b5950a5e7db2f658ce03211ace6aef0272b0"
+  },
+  {
+    "test": "heli_state_audit",
+    "ok": true,
+    "exit": 0,
+    "seconds": 2.25,
+    "sha256": "42e1738584f8e1f20712e86041aac1fbb4ff50276e2726af84e54448cc87ff0f"
+  },
+  {
+    "test": "heli_render_audit",
+    "ok": true,
+    "exit": 0,
+    "seconds": 4.469,
+    "sha256": "af87c91187f673a34004a2851b7c4bbf8a62fd1537d8f4dd924a5f32402dbaa2"
+  },
+  {
+    "test": "heli_control_actions",
+    "ok": true,
+    "exit": 0,
+    "seconds": 4.015,
+    "sha256": "c3ad961319ee01a321aa2c3217582d01bdf9eebbb27f7cf961406ff20f957836"
+  },
+  {
+    "test": "heli_night_lights",
+    "ok": false,
+    "exit": 0,
+    "seconds": 13.188,
+    "sha256": "8a83846954ea879fc120cad6f93d15bd91f1aefd06b875078bfe26162951f21b"
+  },
+  {
+    "test": "heli_night_rotor",
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.297,
+    "sha256": "7dbceb390cc2233c7715a1e4ac84fd0755d1e39a2deb2b6bd6b890b3a256ba6f"
+  },
+  {
+    "test": "controller_flight_actions",
+    "ok": true,
+    "exit": 0,
+    "seconds": 4.203,
+    "sha256": "8111cd9c54eef8fbc7a1db24193e47331333142aca7d9b5c619bce39c62b8050"
+  }
+]

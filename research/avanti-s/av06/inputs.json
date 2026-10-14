@@ -69,6 +69,18 @@
   }
  },
  "controls": {
+  "gamepad_yaw_scale": {
+   "value": 0.5,
+   "unit": "1",
+   "kind": "estimated",
+   "source": "AV-17-R3 short-stick gamepad tuning: normal rudder uses half the manual normal travel (12 deg before trim); same yaw command drives the nosewheel mix. Full profile and RC radios bypass. Simulator device policy, not manufacturer setup; docs/research/avanti-realism/AV-17-R3/README.md."
+  },
+  "gamepad_yaw_response_time": {
+   "value": 0.1,
+   "unit": "s",
+   "kind": "estimated",
+   "source": "AV-17-R3 simulator input policy: first-order time constant for normal-gamepad yaw demand, after device expo and before travel/trim; 63.2 percent response in 0.10 s, 95 percent in 0.30 s. Reduces abrupt rudder-release excitation; not servo lag or yaw-rate feedback. docs/research/avanti-realism/AV-17-R3/README.md."
+  },
   "gamepad_pitch_scale": {
    "value": 0.4,
    "unit": "1",

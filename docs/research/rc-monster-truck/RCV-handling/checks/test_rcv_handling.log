@@ -1,0 +1,26 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: anisotropic saturated contact satisfies known KKT solution
+PASS: projection respects friction circle
+PASS: reflection preserves force magnitude and changes lateral sign
+PASS: unsaturated contact preserves the unconstrained solution exactly
+PASS: isotropic metric reduces to radial projection
+PASS: zero grip gives zero tangential force
+PASS: uniform mobility scaling preserves the solution
+PASS: vehicle fixture loads
+PASS: vehicle fixture initializes
+PASS: slip angle uses hub direction, independently of wheel spin
+PASS: active/reference slip-angle telemetry agrees
+Symmetric braking yaw/lateral acceleration: -0.00000002532707 / -0.00000000288273 backend=native
+PASS: straight symmetric braking does not create a numerical yaw moment
+PASS: combined skid forces share each tire's friction budget
+PASS: coasting lateral skid dissipates energy
+PASS: fixed axle split preserves total brake capacity: 0.0
+PASS: fixed axle split preserves total brake capacity: 0.5
+PASS: fixed axle split preserves total brake capacity: 0.85
+PASS: fixed axle split preserves total brake capacity: 1.0
+PASS: partial braking arrests both signs of a small lateral disturbance
+PASS: mirrored disturbed stops preserve distance and lateral symmetry
+PASS: 240/480 Hz disturbed braking agrees in distance and time
+Disturbed brake metrics (left/right/fine): [{ "ok": true, "distance": 12.5731845472052, "lateral_distance": -0.01395178477536, "time": 2.10416666666667, "yaw_peak": 0.00093373540213, "lateral_peak": 0.05, "upright_min": 0.99886797021149 }, { "ok": true, "distance": 12.5731849483976, "lateral_distance": 0.01363249713183, "time": 2.10416666666667, "yaw_peak": 0.0009340492703, "lateral_peak": 0.05, "upright_min": 0.9988679667478 }, { "ok": true, "distance": 12.573184670024, "lateral_distance": 0.01357886275867, "time": 2.10416666666667, "yaw_peak": 0.00092982361396, "lateral_peak": 0.05, "upright_min": 0.9988678151643 }]
+RCV handling: 21/21 checks passed

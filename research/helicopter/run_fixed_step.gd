@@ -8,7 +8,7 @@ var done: Dictionary={}
 var hover_throttle: float=0.0
 func _initialize() -> void:
  app=load("res://app_root.tscn").instantiate()
- app.user_args=PackedStringArray(["--aircraft=xcell-60-research"])
+ app.user_args=PackedStringArray(["--aircraft=xcell-60-research","--start=airborne"])
  root.add_child(app)
 func key(code: Key,pressed: bool) -> void:
  var event: InputEventKey=InputEventKey.new()

@@ -3,20 +3,21 @@
 # is a small transparent mesh fitted onto the struck surface. A ray from below the contact finds the lowest visible
 # airframe surface above it; a grid of points along the slide is projected onto the nearby airframe triangles (a
 # scuff may straddle two wing panels). The scuff is a child of the struck mesh, so it moves with hinged surfaces. Presentation only; cleared on restart.
+# CR-22c-R1: prepared local-space BVHs keep triangle scans out of the contact frame.
 extends RefCounted
 
 const MAX_SCUFFS := 24
 ## The ray starts this far below the contact and reaches this far above it (m).
 const RAY_BELOW_M := 0.04
 const RAY_REACH_M := 0.16
-## A contact past the airframe's edge (a hull point on a rounded tip) retries this much closer to the centre (m).
+## A contact past the airframe's edge retries this much closer to the centre (m).
 const RETRY_INWARD_M: Array[float] = [0.0, 0.015, 0.03, 0.05]
 ## Lift off the surface against depth fighting (m), and the grid laid over it.
 const LIFT_M := 0.0006
 const GRID_U := 6
 const GRID_V := 3
 const SCUFF_META := "airframe_scuff"
-## Geometry3D's fixed epsilon is too coarse in metres; intersections run in millimetres.
+## TriangleMesh snaps vertices at 0.0001 of its input units; millimetres keep that well below a micrometre here.
 const MM := 1000.0
 ## Field surface (render/crash/director.gd surface_at) → stain colour; estimates.
 const COLORS := {
@@ -29,14 +30,40 @@ const SKIP_PARTS: Array[String] = ["propeller", "gear", "wheel"]
 
 var marks: Array[MeshInstance3D] = []
 var _serial := 0
+## Resource identity is the key: aircraft panels can share a mesh while keeping independent live transforms.
+var _bvh_by_mesh: Dictionary = {}
+## Watchers bind only an ObjectID, avoiding a Resource -> Callable -> same Resource reference cycle.
+var _mesh_watchers: Dictionary = {}
+var _prepared_root_id := 0
 static var _texture: ImageTexture
 static var _materials: Dictionary = {}
+
+
+## Prepare only eligible meshes owned by this selected aircraft. Hidden panels are included in the cache so a later
+## visibility change is reflected immediately by add()/surface_hit() without rebuilding their BVHs in flight.
+func prepare(root: Node3D) -> void:
+	_disconnect_all_mesh_watchers()
+	_bvh_by_mesh.clear()
+	_prepared_root_id = root.get_instance_id() if is_instance_valid(root) else 0
+	if not is_instance_valid(root):
+		return
+	# Generate the procedural texture before the first soft contact.
+	material("mown")
+	for item in root.find_children("*", "MeshInstance3D", true, false):
+		var mi := item as MeshInstance3D
+		if mi.mesh == null or not _airframe(mi, root):
+			continue
+		_cache_mesh(mi.mesh)
 
 
 ## Marks the airframe under `root` where a contact touched at world `point`, sliding with world `velocity`, with
 ## `strength` 0..1 on `surface`. Returns the scuff, or null when no airframe surface lies over the contact.
 func add(root: Node3D, point: Vector3, velocity: Vector3, strength: float, surface: String) -> MeshInstance3D:
-	var candidates := _candidates(root)
+	if not is_instance_valid(root):
+		return null
+	if _prepared_root_id != root.get_instance_id():
+		prepare(root)
+	var candidates := _candidate_entries(root, _bvh_by_mesh, self)
 	var hit := _surface_hit(candidates, root, point)
 	if hit.is_empty():
 		return null
@@ -51,8 +78,13 @@ func add(root: Node3D, point: Vector3, velocity: Vector3, strength: float, surfa
 	var across := n.cross(along).normalized()
 	var length := clampf(0.035 + 0.09 * level + 0.004 * slide.length(), 0.035, 0.18)
 	var width := 0.022 + 0.03 * level
-	var nearby := _nearby_triangles(candidates, hit.point, 0.6 * length + width)
-	var to_local := node.global_transform.affine_inverse()
+	# Keep the old nearby-panel broadphase, but retain candidates instead of materializing every nearby triangle.
+	var radius := 0.6 * length + width
+	var nearby: Array[Dictionary] = []
+	for candidate in candidates:
+		if candidate.world_aabb.grow(radius).has_point(hit.point):
+			nearby.append(candidate)
+	var to_local: Transform3D = hit.inverse
 	var vertices := PackedVector3Array()
 	var normals := PackedVector3Array()
 	var uvs := PackedVector2Array()
@@ -82,12 +114,12 @@ func add(root: Node3D, point: Vector3, velocity: Vector3, strength: float, surfa
 	arrays[Mesh.ARRAY_NORMAL] = normals
 	arrays[Mesh.ARRAY_TEX_UV] = uvs
 	arrays[Mesh.ARRAY_INDEX] = indices
-	var mesh := ArrayMesh.new()
-	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	var mark_mesh := ArrayMesh.new()
+	mark_mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
 	var scuff := MeshInstance3D.new()
 	scuff.name = "airframe_scuff_%d" % _serial
 	_serial += 1
-	scuff.mesh = mesh
+	scuff.mesh = mark_mesh
 	scuff.material_override = material(surface)
 	scuff.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	scuff.set_meta(SCUFF_META, surface)
@@ -100,7 +132,7 @@ func add(root: Node3D, point: Vector3, velocity: Vector3, strength: float, surfa
 	return scuff
 
 
-## Removes every scuff (restart).
+## Removes every scuff (restart). Prepared mesh BVHs intentionally survive this operation.
 func clear() -> void:
 	for scuff in marks:
 		if is_instance_valid(scuff):
@@ -110,21 +142,119 @@ func clear() -> void:
 
 
 ## The lowest visible airframe surface over world `point`: {node, point, normal (world, facing the ground)} or {}.
+## This compatibility entry point uses a short-lived cache; the runtime instance uses prepare() and retains its cache.
 static func surface_hit(root: Node3D, point: Vector3) -> Dictionary:
-	return _surface_hit(_candidates(root), root, point)
+	if not is_instance_valid(root):
+		return {}
+	var temporary_cache: Dictionary = {}
+	var candidates := _candidate_entries(root, temporary_cache)
+	var hit := _surface_hit(candidates, root, point)
+	if hit.is_empty():
+		return {}
+	# Keep the original public result shape; the cached inverse is an add() implementation detail.
+	return {"node": hit.node, "point": hit.point, "normal": hit.normal}
 
 
-## Visible airframe-skin meshes under `root`.
-static func _candidates(root: Node3D) -> Array[MeshInstance3D]:
-	var out: Array[MeshInstance3D] = []
+func _cache_mesh(mesh: Mesh) -> TriangleMesh:
+	if _bvh_by_mesh.has(mesh):
+		return _bvh_by_mesh[mesh] as TriangleMesh
+	var bvh := _build_bvh(mesh)
+	if bvh != null:
+		_bvh_by_mesh[mesh] = bvh
+		_watch_mesh(mesh)
+	return bvh
+
+
+func _watch_mesh(mesh: Mesh) -> void:
+	var mesh_id := mesh.get_instance_id()
+	if _mesh_watchers.has(mesh_id):
+		return
+	var callback := Callable(self, "_on_mesh_changed").bind(mesh_id)
+	mesh.changed.connect(callback)
+	_mesh_watchers[mesh_id] = {"mesh": mesh, "callback": callback}
+
+
+func _on_mesh_changed(mesh_id: int) -> void:
+	var watch: Dictionary = _mesh_watchers.get(mesh_id, {})
+	var mesh: Mesh = watch.get("mesh") as Mesh
+	if mesh != null:
+		# Rebuilt lazily on the next query, before a stale BVH can be used.
+		_bvh_by_mesh.erase(mesh)
+
+
+func _disconnect_all_mesh_watchers() -> void:
+	for mesh_id in _mesh_watchers.keys():
+		_disconnect_mesh_watcher(int(mesh_id))
+	_mesh_watchers.clear()
+
+
+func _disconnect_mesh_watcher(mesh_id: int) -> void:
+	var watch: Dictionary = _mesh_watchers.get(mesh_id, {})
+	var mesh: Mesh = watch.get("mesh") as Mesh
+	var callback: Callable = watch.get("callback", Callable())
+	if mesh != null and callback.is_valid() and mesh.changed.is_connected(callback):
+		mesh.changed.disconnect(callback)
+	_mesh_watchers.erase(mesh_id)
+
+
+func _prune_mesh_cache(present: Dictionary) -> void:
+	for mesh_id in _mesh_watchers.keys():
+		var watch: Dictionary = _mesh_watchers[mesh_id]
+		var mesh: Mesh = watch.mesh as Mesh
+		if mesh == null or not present.has(mesh):
+			if mesh != null:
+				_bvh_by_mesh.erase(mesh)
+			_disconnect_mesh_watcher(int(mesh_id))
+
+
+## Visible candidate transforms are sampled once per add(), then reused across all 18 grid-point casts.
+## `cache_owner` is null for the static compatibility API and the scuff instance for runtime cache/watch management.
+static func _candidate_entries(root: Node3D, cache: Dictionary, cache_owner: Object = null) -> Array[Dictionary]:
+	var out: Array[Dictionary] = []
+	var present: Dictionary = {}
 	for item in root.find_children("*", "MeshInstance3D", true, false):
 		var mi := item as MeshInstance3D
-		if mi.mesh != null and mi.is_visible_in_tree() and _airframe(mi, root):
-			out.append(mi)
+		if mi.mesh == null or not _airframe(mi, root):
+			continue
+		present[mi.mesh] = true
+		if not mi.is_visible_in_tree():
+			continue
+		var bvh := cache.get(mi.mesh) as TriangleMesh
+		if bvh == null:
+			bvh = _build_bvh(mi.mesh)
+			if bvh != null:
+				cache[mi.mesh] = bvh
+				if cache_owner != null:
+					cache_owner.call("_watch_mesh", mi.mesh)
+		if bvh == null:
+			continue
+		var transform := mi.global_transform
+		var local_aabb := mi.get_aabb()
+		out.append({
+			"node": mi,
+			"bvh": bvh,
+			"transform": transform,
+			"inverse": transform.affine_inverse(),
+			"basis": transform.basis,
+			"local_aabb": local_aabb,
+			"world_aabb": transform * local_aabb,
+		})
+	if cache_owner != null:
+		cache_owner.call("_prune_mesh_cache", present)
 	return out
 
 
-static func _surface_hit(candidates: Array[MeshInstance3D], root: Node3D, point: Vector3) -> Dictionary:
+static func _build_bvh(mesh: Mesh) -> TriangleMesh:
+	var faces := mesh.get_faces()
+	if faces.is_empty():
+		return null
+	for i in faces.size():
+		faces[i] = faces[i] * MM
+	var bvh := TriangleMesh.new()
+	return bvh if bvh.create_from_faces(faces) else null
+
+
+static func _surface_hit(candidates: Array[Dictionary], root: Node3D, point: Vector3) -> Dictionary:
 	var inward := root.global_position - point
 	inward.y = 0.0
 	inward = inward.normalized() if inward.length() > 1e-6 else Vector3.ZERO
@@ -150,77 +280,75 @@ static func _airframe(mi: MeshInstance3D, root: Node3D) -> bool:
 	return true
 
 
-static func _ray_up(candidates: Array[MeshInstance3D], from: Vector3, to: Vector3) -> Dictionary:
+static func _ray_up(candidates: Array[Dictionary], from: Vector3, to: Vector3) -> Dictionary:
 	var best := {}
 	var best_t := INF
-	for mi in candidates:
-		var inv := mi.global_transform.affine_inverse()
-		var a := inv * from
-		var b := inv * to
-		var box := mi.get_aabb().grow(0.002)
+	for candidate in candidates:
+		var inverse: Transform3D = candidate.inverse
+		var a: Vector3 = inverse * from
+		var b: Vector3 = inverse * to
+		var box: AABB = candidate.local_aabb.grow(0.002)
 		if not (box.has_point(a) or box.has_point(b) or box.intersects_segment(a, b) != null):
 			continue
-		var faces := mi.mesh.get_faces()
-		for i in range(0, faces.size(), 3):
-			var p: Variant = Geometry3D.segment_intersects_triangle(a * MM, b * MM, faces[i] * MM, faces[i + 1] * MM, faces[i + 2] * MM)
-			if p == null:
-				continue
-			var world: Vector3 = mi.global_transform * ((p as Vector3) / MM)
-			var t := world.distance_to(from)
-			if t >= best_t:
-				continue
-			var normal: Vector3 = (mi.global_basis * (faces[i + 1] - faces[i]).cross(faces[i + 2] - faces[i])).normalized()
-			if normal.dot(from - world) < 0.0:
-				normal = -normal
-			best_t = t
-			best = {node = mi, point = world, normal = normal}
+		var result: Dictionary = (candidate.bvh as TriangleMesh).intersect_segment(a * MM, b * MM)
+		if result.is_empty():
+			continue
+		var world: Vector3 = candidate.transform * ((result.position as Vector3) / MM)
+		var t := world.distance_to(from)
+		if t >= best_t:
+			continue
+		var normal: Vector3 = (candidate.basis * (result.normal as Vector3)).normalized()
+		if normal.dot(from - world) < 0.0:
+			normal = -normal
+		best_t = t
+		best = {
+			"node": candidate.node,
+			"point": world,
+			"normal": normal,
+			"inverse": candidate.inverse,
+		}
 	return best
 
 
-## Airframe triangles (world) whose bounding box comes within `radius` of world `center` (a large panel triangle can
-## hold the centre with every corner far away).
-static func _nearby_triangles(candidates: Array[MeshInstance3D], center: Vector3, radius: float) -> PackedVector3Array:
-	var out := PackedVector3Array()
-	for node in candidates:
-		var t := node.global_transform
-		if not (t * node.get_aabb()).grow(radius).has_point(center):
-			continue
-		var faces := node.mesh.get_faces()
-		for i in range(0, faces.size(), 3):
-			var a := t * faces[i]
-			var b := t * faces[i + 1]
-			var c := t * faces[i + 2]
-			if AABB(a, Vector3.ZERO).expand(b).expand(c).grow(radius).has_point(center):
-				out.append_array([a, b, c])
-	return out
-
-
-## `p` on the skin: projected along `n`; a point past the skin's edge (ahead of a leading edge, beyond a tip) moves
-## halfway toward `center` until it lands, so the scuff narrows at an edge instead of floating past it.
-static func _onto_skin(triangles: PackedVector3Array, p: Vector3, center: Vector3, n: Vector3) -> Vector3:
+## `p` on the skin: project along `n`; if a point passes a panel edge, move halfway toward the centre until it lands.
+static func _onto_skin(candidates: Array[Dictionary], p: Vector3, center: Vector3, n: Vector3) -> Vector3:
 	var q := p
 	for attempt in 6:
-		var hit: Variant = _project(triangles, q, n)
-		if hit != null:
-			return hit
+		var hit := _project(candidates, q, n)
+		if not hit.is_empty():
+			return hit.point
 		q = q.lerp(center, 0.5)
 	return center
 
 
-## `p` moved along `n` onto the nearest of `triangles` (world), or null where no triangle lies within 3 cm.
-static func _project(triangles: PackedVector3Array, p: Vector3, n: Vector3) -> Variant:
-	var from := (p + n * 0.03) * MM
-	var to := (p - n * 0.03) * MM
-	var best: Variant = null
+## Cast the same finite skin projection as before. TriangleMesh returns the nearest hit along each candidate segment;
+## compare those hits in world space to preserve nearest-panel selection across independent live transforms.
+static func _project(candidates: Array[Dictionary], p: Vector3, n: Vector3) -> Dictionary:
+	return _cast_segment(candidates, p + n * 0.03, p - n * 0.03)
+
+
+static func _cast_segment(candidates: Array[Dictionary], from: Vector3, to: Vector3) -> Dictionary:
+	var best := {}
 	var best_t := INF
-	for i in range(0, triangles.size(), 3):
-		var hit: Variant = Geometry3D.segment_intersects_triangle(from, to, triangles[i] * MM, triangles[i + 1] * MM, triangles[i + 2] * MM)
-		if hit == null:
+	for candidate in candidates:
+		var inverse: Transform3D = candidate.inverse
+		var a: Vector3 = inverse * from
+		var b: Vector3 = inverse * to
+		var box: AABB = candidate.local_aabb
+		if not (box.has_point(a) or box.has_point(b) or box.intersects_segment(a, b) != null):
 			continue
-		var t := (hit as Vector3).distance_to(from)
-		if t < best_t:
-			best_t = t
-			best = (hit as Vector3) / MM
+		var result: Dictionary = (candidate.bvh as TriangleMesh).intersect_segment(a * MM, b * MM)
+		if result.is_empty():
+			continue
+		var world: Vector3 = candidate.transform * ((result.position as Vector3) / MM)
+		var t := world.distance_to(from)
+		if t >= best_t:
+			continue
+		var normal: Vector3 = (candidate.basis * (result.normal as Vector3)).normalized()
+		if normal.dot(from - world) < 0.0:
+			normal = -normal
+		best_t = t
+		best = {"node": candidate.node, "point": world, "normal": normal}
 	return best
 
 

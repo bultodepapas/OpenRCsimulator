@@ -16,6 +16,7 @@ const Shadow := preload("res://render/shadow.gd")
 const ProjectedShadow := preload("res://render/projected_shadow.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const World := preload("res://render/world/world.gd")
+const HeliNightLights = preload("res://render/rotor/heli_night_lights.gd")
 const FieldError = preload("res://ui/field_error.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Preferences := preload("res://app_state/preferences.gd")
@@ -48,6 +49,12 @@ const PREVIEW_MODEL_LIMIT := 3
 var _preview_models: Dictionary = {}
 var _preview_geometry: Dictionary = {}
 var _preview_order: Array[String] = []
+
+signal preview_state_changed(id: String, state: String)
+var preview_resources: Node
+var preview_pending := false
+var requested_aircraft := ""
+var _preview_generation := 0
 
 var airplane: Dictionary
 var camera: Camera3D
@@ -102,6 +109,7 @@ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader
 	camera.current = true
 
 	World.update(env, CLOCK, Vector3.ZERO, _composition_position(AIRPLANE_NED), camera) # FW-23: the eye adapts to the view
+	_update_helicopter_lights()
 
 
 func _composition_position(offset_ned: Array) -> Vector3:
@@ -119,11 +127,11 @@ func _ready() -> void:
 
 ## Shows `id` in the fixed pose, retaining at most three recent visual models for this Home only.
 ## Flight still builds and validates independently; replacing Home drops the cache and its resources.
-func show_aircraft(id: String) -> void:
+func show_aircraft(id: String) -> bool:
 	var retained := _preview_models.has(id)
 	var built: Dictionary = _preview_models[id] if retained else AirplaneBuilder.build(id)
 	if built.is_empty():
-		return
+		return false
 	if not airplane.is_empty():
 		airplane.root.hide()
 		airplane.root.process_mode = Node.PROCESS_MODE_DISABLED
@@ -161,9 +169,72 @@ func show_aircraft(id: String) -> void:
 	var extent: Vector2 = geometry.extent
 	Shadow.bind_model(_shadow, airplane.root, geometry.shape)
 	if not retained:
-		World.dress_aircraft(airplane.root)
+		if rotorcraft:
+			HeliNightLights.attach(airplane)
+		else:
+			World.dress_aircraft(airplane.root)
+	_update_helicopter_lights()
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else 1.0
 	_shadow.visible = strength > 0.0
 	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
 	Shadow.update(_shadow, basis, pos, extent.x, extent.y, direction, strength)
+
+	return true
+
+
+func _update_helicopter_lights() -> void:
+	if airplane.is_empty(): return
+	var kit: Node3D = airplane.root.get_node_or_null("HelicopterNightKit")
+	if kit != null:
+		kit.update_visual(HeliNightLights.sun_elevation(_lighting, Atmosphere.state), World.Exposure.last)
+
+
+## The card updates immediately. Cache misses allow a frame to present before
+## starting resource preparation; only the most recent intent may build a model.
+func request_aircraft(id: String) -> void:
+	_preview_generation += 1
+	requested_aircraft = id
+	if is_instance_valid(preview_resources): preview_resources.cancel_for(self, false)
+	if _preview_models.has(id):
+		preview_pending = false
+		preview_state_changed.emit(id, "ready" if show_aircraft(id) else "failed")
+		return
+	preview_pending = true
+	preview_state_changed.emit(id, "loading")
+	_prepare_preview(id, _preview_generation)
+
+
+func _prepare_preview(id: String, generation: int) -> void:
+	if not is_inside_tree(): return
+	# process_frame precedes node processing, so two boundaries guarantee one
+	# opportunity to render the new card even for requests made during input.
+	await get_tree().process_frame
+	if not _current_preview(id, generation): return
+	await get_tree().process_frame
+	if not _current_preview(id, generation): return
+	if is_instance_valid(preview_resources):
+		preview_resources.request(preview_resources.path_for(id), _preview_resource_ready.bind(id, generation))
+	else:
+		_preview_resource_ready(true, id, generation)
+
+
+func _current_preview(id: String, generation: int) -> bool:
+	return is_inside_tree() and not is_queued_for_deletion() and generation == _preview_generation and id == requested_aircraft
+
+
+func _preview_resource_ready(ok: bool, id: String, generation: int) -> void:
+	if not _current_preview(id, generation): return
+	var shown := ok and show_aircraft(id)
+	preview_pending = false
+	preview_state_changed.emit(id, "ready" if shown else "failed")
+
+
+func _exit_tree() -> void:
+	_preview_generation += 1
+	if is_instance_valid(preview_resources): preview_resources.cancel_for(self)
+
+
+func _enter_tree() -> void:
+	# Ground-vehicle/failed-flight routes may temporarily detach the same Home.
+	if preview_pending: request_aircraft.call_deferred(requested_aircraft)

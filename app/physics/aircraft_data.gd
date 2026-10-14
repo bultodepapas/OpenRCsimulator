@@ -1399,6 +1399,14 @@ static func _controls(errors: PackedStringArray, node: Variant) -> Dictionary:
 			errors.append("controls.gamepad: requires controls.rates.normal")
 		if scale != null:
 			out.gamepad = {pitch_scale = float(scale)}
+		if gamepad.has("yaw_scale"):
+			var yaw_scale = _q(errors, "controls.gamepad.yaw_scale", gamepad.get("yaw_scale"), "1", 0.05, 1.0)
+			if yaw_scale != null and out.has("gamepad"):
+				out.gamepad.yaw_scale = float(yaw_scale)
+		if gamepad.has("yaw_response_time"):
+			var yaw_time = _q(errors, "controls.gamepad.yaw_response_time", gamepad.get("yaw_response_time"), "s", 0.02, 0.5)
+			if yaw_time != null and out.has("gamepad"):
+				out.gamepad.yaw_response_time = float(yaw_time)
 	return out
 
 

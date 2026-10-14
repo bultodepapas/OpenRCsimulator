@@ -238,7 +238,7 @@
     {
       "path": "/controls/gamepad",
       "required": ["pitch_scale"],
-      "allowed": ["pitch_scale"]
+      "allowed": ["pitch_scale", "yaw_scale", "yaw_response_time"]
     },
     {
       "path": "/controls/rates",

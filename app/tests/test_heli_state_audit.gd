@@ -34,7 +34,7 @@ func _run() -> void:
 	var initial_bytes: PackedByteArray = var_to_bytes(initial_checkpoint)
 	var initial_surfaces: PackedFloat64Array = session.ground_surfaces.duplicate()
 	var initial_start: PackedFloat64Array = session._start.duplicate()
-	check("checkpoint v3 records field, start and power identity", initial_checkpoint.get("format", "") == "openrc-helicopter-checkpoint v3" and initial_checkpoint.ground_surfaces.to_byte_array() == initial_surfaces.to_byte_array() and initial_checkpoint.start_position.to_byte_array() == initial_start.to_byte_array() and initial_checkpoint.has("power") and initial_checkpoint.has("shaft_phase"))
+	check("checkpoint v4 records field, obstacles, start and power identity", initial_checkpoint.get("format", "") == "openrc-helicopter-checkpoint v4" and initial_checkpoint.ground_surfaces.to_byte_array() == initial_surfaces.to_byte_array() and initial_checkpoint.start_position.to_byte_array() == initial_start.to_byte_array() and initial_checkpoint.has("power") and initial_checkpoint.has("shaft_phase") and initial_checkpoint.has("collision_world_identity"))
 
 	var failed_setup_weather: Dictionary = session.weather_configuration()
 	session.aircraft_path = "res://data/aircraft/__heli_state_audit_missing__.json"
@@ -56,6 +56,12 @@ func _run() -> void:
 	bad = saved.duplicate(true)
 	bad.start_position[0] += 1.0
 	check("foreign authored start position is rejected atomically", not session.restore_checkpoint(bad).ok and var_to_bytes(session.checkpoint()) == unchanged)
+	bad = saved.duplicate(true)
+	bad.collision_world_identity = "foreign-obstacle-world"
+	check("foreign obstacle inventory is rejected atomically", not session.restore_checkpoint(bad).ok and var_to_bytes(session.checkpoint()) == unchanged)
+	bad = saved.duplicate(true)
+	bad.format = "openrc-helicopter-checkpoint v3"
+	check("historical contact boundary cannot replay as v4", not session.restore_checkpoint(bad).ok and var_to_bytes(session.checkpoint()) == unchanged)
 	bad = saved.duplicate(true)
 	bad.format = "openrc-helicopter-checkpoint v1"
 	bad.erase("ground_surfaces")
@@ -117,7 +123,7 @@ func _run() -> void:
 	var continuous_endpoint: PackedFloat64Array = session.sim.continuous.duplicate()
 	var reset_signal_tick: Array = [-1]
 	session.resetting.connect(func() -> void: reset_signal_tick[0] = session.sim.tick, CONNECT_ONE_SHOT)
-	check("v3 checkpoint restores", session.restore_checkpoint(saved).ok)
+	check("v4 checkpoint restores", session.restore_checkpoint(saved).ok)
 	check("reset observers see the committed restored tick", reset_signal_tick[0] == saved.simulation.tick)
 	check("replayed control tail advances", run_steps(session, 8))
 	check("body and rotor state replay byte-identically", endpoint.to_byte_array() == session.sim.state.to_byte_array() and continuous_endpoint.to_byte_array() == session.sim.continuous.to_byte_array())

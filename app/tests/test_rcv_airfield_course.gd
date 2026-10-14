@@ -26,11 +26,41 @@ func _initialize() -> void:
 	_check("course identity is content-addressed", str(built.identity.get("sha256", "")).length() == 64)
 	_test_spawns(course)
 	_test_shared_surface_sampler(course)
+	_test_surface_cache_invalidation(course)
 	_test_shifted_field(field_result, built)
 	_test_session(field_result, course)
 	_test_lake(field_result)
 	print("RCV airfield course: %d failed" % failures)
 	quit(1 if failures > 0 else 0)
+
+
+func _test_surface_cache_invalidation(course: Dictionary) -> void:
+	var original := AirfieldCourse.sample(course, 15.0, 0.0)
+	var modified_course: Dictionary = course.duplicate(true)
+	var rects: PackedFloat64Array = modified_course.surface_rects
+	var runway_offset := -1
+	for row in course.surface_rows.size():
+		if str(course.surface_rows[row].id) == "runway":
+			runway_offset = row * GroundTerrain.SURFACE_STRIDE
+	_check("cache test locates the runway row", runway_offset >= 0)
+	if runway_offset < 0:
+		return
+	rects[runway_offset + 4] *= 0.5
+	modified_course.surface_rects = rects
+	var changed := AirfieldCourse.sample(modified_course, 15.0, 0.0)
+	_check("same-length surface mutation changes friction despite cached validation",
+		is_equal_approx(changed.mu, original.mu * 0.5))
+	# Packed-array mutation must not modify the already validated cache entry.
+	rects[runway_offset + 4] = NAN
+	modified_course.surface_rects = rects
+	var invalid := AirfieldCourse.sample(modified_course, 15.0, 0.0)
+	_check("nonfinite mutation fails closed after a valid cached lookup",
+		not is_finite(float(invalid.height_m)) and not is_finite(float(invalid.mu)))
+	modified_course.surface_rects = PackedFloat64Array()
+	var empty := AirfieldCourse.sample(modified_course, 15.0, 0.0)
+	_check("empty surface table fails to resolve a road after cached lookup", not is_finite(float(empty.height_m)))
+	_check("original complete sample restores after changed and invalid tables",
+		AirfieldCourse.sample(course, 15.0, 0.0) == original)
 
 
 func _test_spawns(course: Dictionary) -> void:
@@ -152,8 +182,11 @@ func _test_drive_into_rough(field_result: Dictionary) -> void:
 		var state: PackedFloat64Array = driver.state_snapshot()
 		var q := PackedFloat64Array([state[6], state[7], state[8], state[9]])
 		var yaw := M.q_to_euler(q)[0]
-		var steering := 1.0 if absf(yaw) > 0.35 else 0.0
-		var controls := {"throttle": 0.45, "steering": steering, "brake": 0.0,
+		# This checks crossing the runway edge, not maximum-power cornering.
+		# Approach north at a bounded speed through ordinary session controls.
+		var steering := clampf(-yaw * 1.5, -0.5, 0.5)
+		var throttle := clampf((2.0 - absf(state[3])) * 0.3, 0.0, 0.45)
+		var controls := {"throttle": throttle, "steering": steering, "brake": 0.0,
 			"reverse": false, "armed": true}
 		if not driver.tick_once(controls) or driver.state_snapshot()[0] > 22.0:
 			break

@@ -1,0 +1,30 @@
+[
+  {
+    "case": "aero",
+    "exit_code": 0,
+    "seconds": 0.9210000000020955,
+    "script_error": false,
+    "log": "aero.log"
+  },
+  {
+    "case": "propulsion",
+    "exit_code": 0,
+    "seconds": 1.187999999994645,
+    "script_error": false,
+    "log": "propulsion.log"
+  },
+  {
+    "case": "runway",
+    "exit_code": 0,
+    "seconds": 3.1089999999967404,
+    "script_error": false,
+    "log": "runway.log"
+  },
+  {
+    "case": "session",
+    "exit_code": 0,
+    "seconds": 34.6880000000092,
+    "script_error": false,
+    "log": "session.log"
+  }
+]

@@ -1,0 +1,127 @@
+{
+  "backend_identity": {
+    "abi_version": 1,
+    "backend": "native",
+    "backend_version": "openrc-ground-vehicle-native-evaluate-v2",
+    "binary_sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c",
+    "solver_version": "openrc-ground-vehicle-dynamics-rk4-v3",
+    "source_sha256": "e2ae0a5ffebc8d81636302d66238348035ee92bf51d2f40965db7053bb251541",
+    "toolchain_sha256": "78bdd21d315683b45eee37c24b84716430cdba2a9b24066f59a68df476585b4d"
+  },
+  "complete": true,
+  "contact": {
+    "airborne_ticks": 0,
+    "events": [
+      {
+        "distance_m": 11.40477893205638,
+        "end_speed_m_per_s": 0.19670332389078182,
+        "end_tick": 1180,
+        "initial_speed_m_per_s": 11.677914222764961,
+        "start_tick": 720,
+        "time_s": 4.916666666666667,
+        "type": "braking_distance"
+      }
+    ],
+    "grounded_ticks": 1185,
+    "max_hull_contacts": 0,
+    "max_tilt_deg": 8.085804709546382,
+    "max_wall_contacts": 0,
+    "max_wheel_contacts": 4,
+    "rollover_ticks": 0
+  },
+  "controller": "openrc-speed-aware-route-driver-v1-fast",
+  "course_identity": {
+    "format": "openrc-airfield-course",
+    "id": "airfield-default",
+    "sha256": "9d51e40a528c3b1012457238604f9bc7356d15f92541288662eeae180221a027",
+    "version": "1"
+  },
+  "csv": {
+    "path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-handling/drive-candidate-final-runway.csv",
+    "rows": 1185,
+    "sha256": "358af9f53380dc240b32f764e96dc618aafe19e0b8de88efc19a26a1d1f5114e",
+    "storage_path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-handling/drive-candidate-final-runway.csv.gz",
+    "storage_sha256": "047bafea6cc75152a1f31df4eb188e3f70da4e962f46024d1f8852ac4f8b2b41",
+    "storage_format": "gzip"
+  },
+  "elapsed_sim_s": 4.9375,
+  "failure_reason": "",
+  "fixed_hz": 240,
+  "format": "openrc-rcv-drive-run",
+  "lap_complete": false,
+  "max_acceleration_mps2": 8.830531687454558,
+  "max_seconds": 12.0,
+  "max_speed_mps": 11.677919012340213,
+  "min_acceleration_mps2": -6.527859857396692,
+  "pace": "fast",
+  "path": {
+    "feature_ticks": {},
+    "final_error_m": 0.0,
+    "fraction": 0.0,
+    "length_m": 0.0,
+    "max_error_m": 0.0,
+    "min_track_coverage": 0.0,
+    "progress_m": 0.0,
+    "returned_to_start": false
+  },
+  "route_brake_control_limit": 0.35,
+  "runway": {
+    "acceleration_seconds": 3.0,
+    "brake_start_speed_mps": 11.677919012340213,
+    "brake_start_tick": 720,
+    "braking_distance_m": 11.407782522533353,
+    "stop_tick": 1185
+  },
+  "sample_count": 1185,
+  "scenario": "runway",
+  "session_tick_cost_us": {
+    "max": 17579.0,
+    "p50": 3492.0,
+    "p95": 6079.0,
+    "sample_count": 1185
+  },
+  "solver_version": "openrc-ground-vehicle-dynamics-rk4-v3",
+  "ticks": 1185,
+  "vehicle_identity": {
+    "format": "openrc-ground-vehicle",
+    "id": "mt8-bisonte-electric-4wd-estimate-v1",
+    "sha256": "a930bae0c7b462be7811fc0931f496e761586cf8793aa842ef40f01d48c613ec",
+    "version": "1"
+  },
+  "vehicle_path": "C:/DEVELOPMENT/OpenRCsimulator/app/data/vehicles/ground/mt8_bisonte.json",
+  "vehicle_source_sha256": "a930bae0c7b462be7811fc0931f496e761586cf8793aa842ef40f01d48c613ec",
+  "version": 1,
+  "source_manifest": {
+    "captured_before_utc": "2026-10-14T17:54:15.860508-05:00",
+    "captured_after_utc": "2026-10-14T17:54:22.163512-05:00",
+    "before_sha256": {
+      "research/rc-monster-truck/driving/run_drive.gd": "21c8eb2f6950870db6cf52b6f2a40d31fd055ebfbd665da94b4678dfc266dc4a",
+      "research/rc-monster-truck/driving/run_drive.py": "72924a4b26f0f63f76f566e67b97365f828912e778184cf1e47e02c71469c8e9",
+      "app/sim/ground_vehicle/session.gd": "b5bade4c818e2c7c3832231560737d187fa24fce9968ffae21a22d78030ad619",
+      "app/physics/ground_vehicle/vehicle_dynamics.gd": "957b3398d114ae57c71c455c1f1054f9b4646a793712d6e9f719aeef5d6a1a22",
+      "app/physics/ground_vehicle/airfield_course.gd": "9e8eaef874081d8abcd679d09be0d02189cc10a028e6409f78c11bc8534a3e3a",
+      "app/physics/ground_vehicle/airfield_track.gd": "08efe15de45136ce066b2c212163ef41e36199f662baa5eb6bbcc8e640e4bd30",
+      "app/physics/ground_vehicle/vehicle_data.gd": "dd3207504fc26b70f75aaf8755e3520b1efd441ad7d207e9972db97c27494b37",
+      "app/physics/ground_terrain.gd": "1c650cf179c7ccdca62dfd4b908e34dbc7adfe66700753ca6648af36bf5f2358",
+      "app/physics/ground_contact.gd": "2fa30d5bcebf1b36e67dba9546ee96b42b970df3fdfcb77630c6620df02e4355",
+      "app/data/ground_vehicle/airfield_track.json": "b178c5c22dd77160a48bd72d2e473f52e66a65c52843d25770b224f6cebbba81",
+      "app/data/ground/surface_friction.json": "00c63125e7ed315e6a262227a9a3be0e05b6c2aab812c2247568e9a509169586",
+      "app/data/vehicles/ground/mt8_bisonte.json": "a930bae0c7b462be7811fc0931f496e761586cf8793aa842ef40f01d48c613ec"
+    },
+    "after_sha256": {
+      "research/rc-monster-truck/driving/run_drive.gd": "21c8eb2f6950870db6cf52b6f2a40d31fd055ebfbd665da94b4678dfc266dc4a",
+      "research/rc-monster-truck/driving/run_drive.py": "72924a4b26f0f63f76f566e67b97365f828912e778184cf1e47e02c71469c8e9",
+      "app/sim/ground_vehicle/session.gd": "b5bade4c818e2c7c3832231560737d187fa24fce9968ffae21a22d78030ad619",
+      "app/physics/ground_vehicle/vehicle_dynamics.gd": "957b3398d114ae57c71c455c1f1054f9b4646a793712d6e9f719aeef5d6a1a22",
+      "app/physics/ground_vehicle/airfield_course.gd": "9e8eaef874081d8abcd679d09be0d02189cc10a028e6409f78c11bc8534a3e3a",
+      "app/physics/ground_vehicle/airfield_track.gd": "08efe15de45136ce066b2c212163ef41e36199f662baa5eb6bbcc8e640e4bd30",
+      "app/physics/ground_vehicle/vehicle_data.gd": "dd3207504fc26b70f75aaf8755e3520b1efd441ad7d207e9972db97c27494b37",
+      "app/physics/ground_terrain.gd": "1c650cf179c7ccdca62dfd4b908e34dbc7adfe66700753ca6648af36bf5f2358",
+      "app/physics/ground_contact.gd": "2fa30d5bcebf1b36e67dba9546ee96b42b970df3fdfcb77630c6620df02e4355",
+      "app/data/ground_vehicle/airfield_track.json": "b178c5c22dd77160a48bd72d2e473f52e66a65c52843d25770b224f6cebbba81",
+      "app/data/ground/surface_friction.json": "00c63125e7ed315e6a262227a9a3be0e05b6c2aab812c2247568e9a509169586",
+      "app/data/vehicles/ground/mt8_bisonte.json": "a930bae0c7b462be7811fc0931f496e761586cf8793aa842ef40f01d48c613ec"
+    },
+    "changed_during_run": []
+  }
+}

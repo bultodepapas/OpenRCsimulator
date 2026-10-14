@@ -1,0 +1,14 @@
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:32)
+       [1] start (res://render/rotor/heli_crash_presentation.gd:161)
+       [2] _present (res://helicopter_main.gd:194)
+       [3] run (res://../research/helicopter/crashes/capture.gd:36)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:32)
+       [1] start (res://render/rotor/heli_crash_presentation.gd:161)
+       [2] _present (res://helicopter_main.gd:194)
+       [3] run (res://../research/helicopter/crashes/capture.gd:36)

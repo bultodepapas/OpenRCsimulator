@@ -1,0 +1,41 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   file-backed Ventage Jet loads with an applied wheel profile and retractable gear  []
+ok   airborne start initializes gear fully stowed and produces no ground support
+ok   gear can extend in flight
+ok   extension reaches the exact downlock endpoint in its configured time  { &"available": true, &"extension": 1.0, &"target_down": true, &"status": "down", &"brake": 0.0, &"inhibited": false }
+ok   gear can retract in flight
+ok   retraction returns to exact stowed endpoint without fault  { &"available": true, &"extension": 0.0, &"target_down": false, &"status": "up", &"brake": 0.0, &"inhibited": false }
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   Avanti qualifies for a real default-field runway start
+ok   runway start deploys all three gear contacts
+ok   runway rest solves positive load-bearing compression on mains and nose  [0.02093125948675, 0.02088906666477, 0.02180010068541]
+ok   engine-off runway rest stays level on all three wheels without drift or fault  speed 0.0000 m/s, drift 0.0007 m, fault 
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+runway start: idling pose did not converge (residual 9.239795830815291)
+FAIL Ventage Jet runway solver accepts a steady crosswind  { &"ok": true, &"north": 15.0, &"east": -47.0, &"heading": 1.5707963267949, &"message": "" }
+ok   retraction request is inhibited under wheel load
+ok   extension 0.0 has no ghost spring support when penetrated  compression [0.12352452596083, 0.12303698729037, 0.13513987423048], load []
+ok   extension 0.5 has no ghost spring support when penetrated  compression [0.26908705660055, 0.26854451234538, 0.29413548362493], load []
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   powered taxi session starts on the same default runway
+ok   powered taxi accelerates and right steering yaws right without contact loss or crash  speed 1.096 m/s, distance 0.726 m, Δyaw 0.115 rad, fault 
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   wheel brake command 0.0 is accepted
+ok   brake run has no crash or numerical fault
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   wheel brake command 1.0 is accepted
+ok   brake run has no crash or numerical fault
+ok   both main brakes measurably slow an otherwise identical 3 m/s roll  unbraked 2.620 m/s, braked 2.507 m/s
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   1 Nm main-wheel brakes shorten 3 m/s stopping distance and time  free roll 6.003 m/3.95 s; braked 4.926 m/3.38 s
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   nominal 1.5 m/s runway landing is accepted and settles without a gear-limit crash  touch true at 1.508 m/s, peak 0.064 m, fault 
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+CRASH at 3.2 m/s (sink 3.3 m/s, landing gear travel limit (nose)) - restarting
+ok   hard landing collapses at the gear terminal-contact limit  trigger gear_limit at 0.037 s; peak 0.061 m, fault 
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   nominal landing converges at 240/480 Hz within 2 cm and 0.1 m/s  Δposition 0.00002 m, Δvelocity 0.00000 m/s
+25 checks, 1 failed

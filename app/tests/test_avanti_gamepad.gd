@@ -63,9 +63,9 @@ func _run_checks() -> void:
 		absf(float(normal_outputs.pitch) - expected_half * float(rates.elevator) * 0.4) < EPS)
 	_check("gamepad pitch does not receive Avanti elevator expo a second time",
 		absf(float(normal_outputs.pitch) - Commands.expo(expected_half, float(rates.elevator_expo)) * float(rates.elevator) * 0.4) > 1e-4)
-	_check("normal gamepad pitch gain leaves aileron and rudder response unchanged",
+	_check("normal gamepad pitch gain remains independent of aileron and configured rudder travel",
 		absf(float(normal_outputs.roll) - float(three_axes.roll) * float(rates.aileron)) < EPS
-		and absf(float(normal_outputs.yaw) - float(three_axes.yaw) * float(rates.rudder)) < EPS)
+		and absf(float(normal_outputs.yaw) - float(three_axes.yaw) * float(rates.rudder) * float(model.controls.gamepad.get("yaw_scale", 1.0))) < EPS)
 	normal_gamepad.free()
 
 	for endpoint in [-1.0, 1.0]:
@@ -103,6 +103,8 @@ func _run_checks() -> void:
 
 	var explicit_unity_source := source.duplicate(true)
 	explicit_unity_source.controls.gamepad.pitch_scale.value = 1.0
+	if explicit_unity_source.controls.gamepad.has("yaw_scale"):
+		explicit_unity_source.controls.gamepad.yaw_scale.value = 1.0
 	var explicit_unity_result: Dictionary = AircraftData.validate_and_derive(explicit_unity_source)
 	var missing_gamepad_source := source.duplicate(true)
 	missing_gamepad_source.controls.erase("gamepad")

@@ -1,0 +1,104 @@
+{
+  "commands": {
+    "braking_surface_comparison": "& $Godot --headless --audio-driver Dummy --path app --script research/rc-monster-truck/run_experiments.gd -- --duration=2.0 --scenario=braking --output=<fresh-output.csv>",
+    "comparison_variable": "surface_id; all braking runs share identical model/course identities, initial 6 m/s forward and pure-rolling wheel rates, and full brake input",
+    "replay": "& $Godot --headless --audio-driver Dummy --path app --script research/rc-monster-truck/run_experiments.gd -- --duration=2.0 --scenario=drop --output=<fresh-output.csv>",
+    "rollover_balance_comparison": "& $Godot --headless --audio-driver Dummy --path app --script research/rc-monster-truck/run_experiments.gd -- --duration=2.0 --scenario=rollover --output=<fresh-output.csv>",
+    "scenario": "drop"
+  },
+  "comparison_policy": "For braking, all surface trials use the same loaded model/course bytes, fixed 240 Hz tick, initial 6 m/s forward speed, pure-rolling wheel rate, and full brake command; only spawn/surface varies. Rollover trials share the same loaded bytes and zero controls and vary only initial right-edge tilt (35/55 degree comparison pair plus a 75 degree over-center witness). Bump and drop use their own fixed scenario initial conditions.",
+  "complete": true,
+  "course_identity": {
+    "format": "openrc-ground-course",
+    "id": "mt8-practice-course-estimate-v1",
+    "sha256": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+    "version": "1"
+  },
+  "course_path": "C:/DEVELOPMENT/OpenRCsimulator/app/data/ground_vehicle/practice.json",
+  "csv_path": "C:/DEVELOPMENT/OpenRCsimulator/.tools/rcv/dampers/supported-drop-baseline.csv",
+  "csv_sha256": "1195b638c5865cf645f54ee3bf2bab7878b1f9318d1dd4af8cb84af5c0fe51d2",
+  "duration_s": 2.0,
+  "expected_samples_per_run": 481,
+  "experiment_settings": {
+    "freefall_height_offset_m": 0.45,
+    "gravity_only_until_contact": true,
+    "initial_speed_m_per_s": 0.0
+  },
+  "finite_sample_count": 481,
+  "format": "openrc-ground-vehicle-experiment",
+  "model_parameters": {
+    "gravity_m_per_s2": 9.80665,
+    "hull_probe_count": 6,
+    "sprung_mass_kg": 4.8,
+    "tire_radius_m": 0.1,
+    "total_mass_kg": 5.52,
+    "travel_bump_m": 0.05,
+    "travel_droop_m": 0.07,
+    "unsprung_mass_kg_per_wheel": 0.18
+  },
+  "public_hz": 240,
+  "rigid_tipping_reference": {},
+  "runs": [
+    {
+      "airborne_sample_count": 79,
+      "controls": {
+        "brake": 0.0,
+        "reverse": false,
+        "steering": 0.0,
+        "throttle": 0.0
+      },
+      "final_speed_m_per_s": 0.000000166967482405964,
+      "finite_sample_count": 481,
+      "first_hull_contact_time_s": 0.3375,
+      "first_wheel_unload_time_s": [
+        null,
+        null,
+        null,
+        null
+      ],
+      "initial_height_offset_m": 0.45,
+      "initial_position_ned_m": [
+        0.0,
+        0.0,
+        -0.655
+      ],
+      "initial_roll_angle_deg": 0.0,
+      "initial_speed_m_per_s": 0.0,
+      "initial_wheel_contact": [
+        false,
+        false,
+        false,
+        false
+      ],
+      "initial_wheel_spin_rad_per_s": 0.0,
+      "max_abs_roll_angle_deg": 0.000161030796841403,
+      "max_abs_suspension_travel_m": 0.0522700967272884,
+      "max_abs_wheel_slip_ratio": 0.0113298253394098,
+      "max_hull_contact_count": 1,
+      "max_speed_m_per_s": 3.02366607006992,
+      "maximum_wheel_load_n": 130.689807924074,
+      "minimum_wheel_load_n": 0.0,
+      "run_id": "drop_start",
+      "sample_count": 481,
+      "spawn_id": "start",
+      "surface_id": "asphalt",
+      "surface_mu_at_spawn": 0.85
+    }
+  ],
+  "sample_count": 481,
+  "scenario": "drop",
+  "scope": "Deterministic full-vehicle software experiment using an estimated MT8 model and synthetic course; not measured or physically validated vehicle evidence.",
+  "solver_version": "openrc-ground-vehicle-dynamics-rk4-v3",
+  "spherical_tire_center_reference": {},
+  "status": "complete",
+  "substeps_per_tick": 1,
+  "ticks_per_run": 480,
+  "vehicle_identity": {
+    "format": "openrc-ground-vehicle",
+    "id": "mt8-bisonte-electric-4wd-estimate-v1",
+    "sha256": "425f2a3fe810f82d609ad2b9dd9618b9fb45bcd813df57873cd8bc8759a750a5",
+    "version": "1"
+  },
+  "vehicle_path": "C:/DEVELOPMENT/OpenRCsimulator/app/data/vehicles/ground/mt8_bisonte.json",
+  "version": 1
+}

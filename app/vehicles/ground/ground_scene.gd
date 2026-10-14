@@ -26,6 +26,8 @@ const Atmosphere = preload("res://render/atmosphere.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 const Frames = preload("res://render/frames.gd")
 const EngineAudio = preload("res://render/engine_audio.gd")
+const GroundEffects = preload("res://vehicles/ground/ground_effects.gd")
+const DamageView = preload("res://vehicles/ground/ground_damage_view.gd")
 const ContactDebug = preload("res://vehicles/ground/contact_debug.gd")
 
 signal home_requested
@@ -42,6 +44,10 @@ var controller_registry: RefCounted
 var joy_axis_reader: Callable = func(id: int, axis: JoyAxis) -> float: return Input.get_joy_axis(id, axis)
 var joy_button_reader: Callable = func(id: int, button: JoyButton) -> bool: return Input.is_joy_button_pressed(id, button)
 var enable_audio := true
+var enable_vehicle_effects := true
+var _effects: Node3D
+var _damage_view: RefCounted
+var _effects_time_s := 0.0
 var enable_course_visual := true
 ## Production shares the aircraft field. Synthetic ramps remain an explicit research/test fixture.
 var use_practice_fixture := false
@@ -109,6 +115,19 @@ func _ready() -> void:
 		set_process(false)
 		return
 	add_child(visual.root)
+	_damage_view = DamageView.new()
+	if not _damage_view.prepare(visual):
+		startup_error = "Bisonte damage bindings are unavailable"
+		set_physics_process(false)
+		set_process(false)
+		return
+	if enable_vehicle_effects:
+		_effects = GroundEffects.new()
+		if not _effects.prepare(visual, self):
+			startup_error = "Bisonte effects bindings are unavailable"
+			set_physics_process(false)
+			set_process(false)
+			return
 	_contact_debug = ContactDebug.new()
 	_contact_debug.visible = false
 	add_child(_contact_debug)
@@ -386,6 +405,7 @@ func _on_controller_selection_changed(role: String, device: int) -> void:
 func apply_controller_selection(device: int) -> bool:
 	if controller_registry == null or _registry_selected_device_id("flight") != device:
 		return false
+	_shortcut_buttons.clear()
 	if device == -1:
 		_controller_device_id = -1
 		_controller_generation = 0
@@ -412,6 +432,7 @@ func apply_controller_selection(device: int) -> bool:
 
 func _begin_controller_loss(message_en: String, message_es: String) -> void:
 	if not _controller_requires_selection:
+		_shortcut_buttons.clear()
 		_controller_requires_selection = true
 		_keyboard_neutral_gate = false
 		driver.reset()
@@ -469,6 +490,13 @@ func _process(delta: float) -> void:
 	World.update(_environment, 37.0 + session.time_s(), Vector3.ZERO, target, camera)
 	var telemetry: Dictionary = session.telemetry_snapshot()
 	telemetry.surface_id = _render_road.call(drawn[0], drawn[1]).surface_id
+	_damage_view.update(session.damage_visual_state())
+	if _effects != null:
+		var simulated_delta := maxf(0.0, session.time_s() - _effects_time_s)
+		_effects_time_s = session.time_s()
+		var night_weight := 1.0 - smoothstep(0.05, 0.75, float(_lighting.get("sun_energy", 1.0)))
+		_effects.update_render(simulated_delta, telemetry, _last_controls, _render_road, session.paused, night_weight)
+		dashboard.update_lights(_effects.headlights_enabled)
 	_contact_debug.update_snapshot(drawn, _model, telemetry, _render_road)
 	dashboard.update_snapshot(telemetry, session.paused, session.time_s(), session.recording, _show_diagnostics or mode == 2)
 	dashboard.update_input_status(_controls_ready(_last_controls), _controller_requires_selection, _focused)
@@ -516,10 +544,13 @@ func handle_action(action: String) -> void:
 				dashboard.message("Select a connected gamepad or explicitly choose keyboard controls.", "Selecciona un mando conectado o elige explícitamente los controles de teclado.")
 				return
 			# Recheck at the click/Start boundary: the most recent physics sample
-			# may precede a new trigger or key press. Never integrate a tick here.
+			# may precede a new trigger or key press. tick_once only observes the
+			# readiness latch while paused; no physics step can be integrated here.
 			var current: Dictionary = _read_controls()
 			if not _controls_ready(current):
 				dashboard.message("Release all controls before continuing.", "Suelta todos los controles antes de continuar.")
+				return
+			if not session.tick_once(current):
 				return
 			session.release_pause_hold("garage")
 			if session.resume():
@@ -538,7 +569,7 @@ func handle_action(action: String) -> void:
 		"recover":
 			if session.manual_recovery():
 				_after_reset()
-				dashboard.message("Recovered. This run is marked as assisted.", "Recuperado. Esta prueba queda marcada como asistida.")
+				dashboard.message("Recovered and repaired. This run is marked as assisted.", "Recuperado y reparado. Esta prueba queda marcada como asistida.")
 		"camera":
 			camera_rig.mode = (camera_rig.mode + 1) % (4 if _course.has("track") else 3)
 			camera_rig.reset()
@@ -551,6 +582,10 @@ func handle_action(action: String) -> void:
 			_show_diagnostics = not _show_diagnostics
 			_contact_debug.visible = _show_diagnostics
 		"sound": enable_audio = not enable_audio
+		"lights":
+			if _effects != null:
+				_effects.headlights_enabled = not _effects.headlights_enabled
+				dashboard.update_lights(_effects.headlights_enabled)
 		"record":
 			if session.recording:
 				_finish_recording()
@@ -616,6 +651,11 @@ func _after_reset() -> void:
 	_snapshot = session.state_snapshot()
 	_previous = _snapshot.duplicate()
 	_model = session.model_snapshot()
+	_effects_time_s = session.time_s()
+	if _effects != null: _effects.reset()
+	if _damage_view != null:
+		_damage_view.reset()
+		_damage_view.update(session.damage_visual_state())
 	_jump_time = -1.0
 	_landing_pending = false
 	dashboard.plot.clear_history()
@@ -641,7 +681,12 @@ func _experiment(knobs: Dictionary) -> void:
 		dashboard.message(session.load_error, session.load_error)
 
 func _event(event: Dictionary) -> void:
-	if event.type == "jump":
+	if event.type == "damage":
+		if event.stage == "disabled":
+			dashboard.message("Drive damaged. Recover with R to repair.", "Propulsión averiada. Pulsa R para recuperar y reparar.")
+		elif event.stage == "damaged":
+			dashboard.message("Impact damage. Check the truck or recover with R.", "Daños por impacto. Revisa el carro o recupéralo con R.")
+	elif event.type == "jump":
 		_jump_time = event.time_s
 		var state: PackedFloat64Array = session.state_snapshot()
 		_jump_origin = Vector2(state[0], state[1])
@@ -659,6 +704,7 @@ func _notification(what: int) -> void:
 		if dashboard == null or _finish_recording(): get_tree().quit()
 	elif what == NOTIFICATION_APPLICATION_FOCUS_OUT:
 		_focused = false
+		_shortcut_buttons.clear()
 		if dashboard != null: open_garage()
 	elif what == NOTIFICATION_APPLICATION_FOCUS_IN:
 		_focused = true
@@ -688,6 +734,7 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_ESCAPE: handle_action("menu")
 			KEY_ENTER: handle_action("resume")
 			KEY_C: handle_action("camera")
+			KEY_L: handle_action("lights")
 			KEY_R: handle_action("recover")
 			KEY_F9: handle_action("record")
 			_: return

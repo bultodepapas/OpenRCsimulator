@@ -56,6 +56,12 @@ static func expo(x: float, e: float) -> float:
 	return (1.0 - e) * x + e * x * x * x
 
 
+## Fixed gamepad input response, exact for a held target. The aircraft servo remains downstream.
+## Convex, sign-preserving on release; no airspeed, attitude or yaw-rate feedback.
+static func gamepad_yaw_response(value: float, target: float, dt: float, response_time: float) -> float:
+	return target if response_time <= 0.0 else target + (value - target) * exp(-dt / response_time)
+
+
 ## D6e: dual rates and expo on the pilot's sticks, as a radio applies them before the servo: each axis is shaped by
 ## its expo and scaled by its travel fraction of the maximum throw. profile = controls.rates.normal of the aircraft
 ## data ({ aileron, elevator, rudder, aileron_expo, elevator_expo, rudder_expo }). with_expo = false applies the

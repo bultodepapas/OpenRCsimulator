@@ -1,0 +1,12 @@
+{
+  "tools/flight_log/flight_log.py": "516e616559b5647b6a79d2c3e91ec479bfdf3e95615744595444ca31dda55afd",
+  "app/tests/test_flight_log.gd": "5de5e850075ba3dda770d8113feb1ec7a8bed74260286f5933a8985e4dfd67cd",
+  "app/sim/simulation.gd": "b57f836ba757cc25acd3b724b0bd40be2d20bcc92c1837d8d557566adb2e2a41",
+  "app/ui/controls_reference.gd": "744a5c976d966d395a65291c1334c8946656120eae727706afcbb92787c784cc",
+  "app/tests/test_flight_log_ui.gd": "8bc9be60abe18056bca1b12c73e36aba3f4f1cfba353d9c26e5a14177ac30d5d",
+  "app/tests/test_trace_metadata.gd": "fe0d90f2ea027658755bd0466726ba209d0ff7f4856c5a3d6f161b718c773c86",
+  "tools/flight_log/test_flight_log.py": "ef4718970f7343417f8db71bd9f92e1f54b292a4e282693579b678a9dac52d4c",
+  "app/main.gd": "87156cf63476183759173e349fd7dfc838f94e1220c506f45ac58140e4e12024",
+  "app/sim/flight_log.gd": "15732493fe476be55403d12dc65044b978c9a693bf2beaf79e612109dfaebc48",
+  "app/tools/flight_log_cli.gd": "c6880970428da2fbd7634a155cc08739e3e7683689f9909967d549696fb80486"
+}

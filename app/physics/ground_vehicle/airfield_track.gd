@@ -54,15 +54,16 @@ static func matches_field(field: Dictionary) -> bool:
 
 ## Returns additive elevation and its exact partial derivatives, plus the dirt coverage mask.
 static func sample(track: Dictionary, north: float, east: float) -> Dictionary:
-	var empty := {"height_m": 0.0, "dn": 0.0, "de": 0.0, "coverage": 0.0, "feature_id": ""}
-	if track.is_empty(): return empty
+	if track.is_empty():
+		return {"height_m": 0.0, "dn": 0.0, "de": 0.0, "coverage": 0.0, "feature_id": ""}
 	var n := north - float(track.center_north_m)
 	var e := east - float(track.center_east_m)
 	var length := float(track.half_straight_m)
 	var radius := float(track.radius_m)
 	var half := float(track.lane_width_m) * 0.5
 	var shoulder := float(track.shoulder_m)
-	if absf(e) > length + radius + half + shoulder or north < float(track.access.north_min_m) - shoulder or absf(n) > radius + half + shoulder and north > float(track.center_north_m): return empty
+	if absf(e) > length + radius + half + shoulder or north < float(track.access.north_min_m) - shoulder or absf(n) > radius + half + shoulder and north > float(track.center_north_m):
+		return {"height_m": 0.0, "dn": 0.0, "de": 0.0, "coverage": 0.0, "feature_id": ""}
 	var excess_e := e - clampf(e, -length, length)
 	var distance := M.sqrt_(n * n + excess_e * excess_e)
 	var radial_n := n / distance if distance > 1e-12 else 0.0
@@ -93,17 +94,38 @@ static func sample(track: Dictionary, north: float, east: float) -> Dictionary:
 	var height := float(track.pad_height_m) * coverage
 	var dn := float(track.pad_height_m) * cn
 	var de := float(track.pad_height_m) * ce
-	var turn := _smooth((absf(e) - (length - 2.0)) / 3.5)
-	var turn_e := turn[1] * signf(e) / 3.5
+	var turn_t := (absf(e) - (length - 2.0)) / 3.5
+	var turn_value := 0.0
+	var turn_slope := 0.0
+	if turn_t <= 0.0:
+		turn_value = 0.0
+		turn_slope = 0.0
+	elif turn_t >= 1.0:
+		turn_value = 1.0
+		turn_slope = 0.0
+	else:
+		turn_value = turn_t * turn_t * (3.0 - 2.0 * turn_t)
+		turn_slope = 6.0 * turn_t * (1.0 - turn_t)
+	var turn_e := turn_slope * signf(e) / 3.5
 	var across := clampf((lateral + half) / (2.0 * half), 0.0, 1.0)
 	var across_d := 1.0 / (2.0 * half) if lateral > -half and lateral < half else 0.0
-	var bank_shape := _smooth(across)
-	var bank := float(track.bank_height_m) * bank_shape[0]
-	var bank_d := float(track.bank_height_m) * bank_shape[1] * across_d
-	height += bank * turn[0] * strip[0]
-	dn += turn[0] * (bank_d * strip[0] + bank * strip[1]) * radial_n
-	de += turn[0] * (bank_d * strip[0] + bank * strip[1]) * radial_e + bank * turn_e * strip[0]
-	if turn[0] * strip[0] > 0.05: feature = "banked_turn"
+	var bank_slope := 0.0
+	var bank_shape_value := 0.0
+	if across <= 0.0:
+		bank_shape_value = 0.0
+		bank_slope = 0.0
+	elif across >= 1.0:
+		bank_shape_value = 1.0
+		bank_slope = 0.0
+	else:
+		bank_shape_value = across * across * (3.0 - 2.0 * across)
+		bank_slope = 6.0 * across * (1.0 - across)
+	var bank := float(track.bank_height_m) * bank_shape_value
+	var bank_d := float(track.bank_height_m) * bank_slope * across_d
+	height += bank * turn_value * strip[0]
+	dn += turn_value * (bank_d * strip[0] + bank * strip[1]) * radial_n
+	de += turn_value * (bank_d * strip[0] + bank * strip[1]) * radial_e + bank * turn_e * strip[0]
+	if turn_value * strip[0] > 0.05: feature = "banked_turn"
 	for group in ["ramps", "rollers"]:
 		for ramp: Dictionary in track[group]:
 			var along := _ramp(east - float(ramp.east_m), float(ramp.approach_m), float(ramp.deck_m), float(ramp.descent_m))
@@ -124,21 +146,49 @@ static func nearby_walls(track: Dictionary, north: float, east: float) -> Array:
 			result.append(wall)
 	return result
 
-static func _smooth(t: float) -> PackedFloat64Array:
-	if t <= 0.0: return PackedFloat64Array([0.0, 0.0])
-	if t >= 1.0: return PackedFloat64Array([1.0, 0.0])
-	return PackedFloat64Array([t * t * (3.0 - 2.0 * t), 6.0 * t * (1.0 - t)])
-
 static func _band(offset: float, half: float, shoulder: float) -> PackedFloat64Array:
-	var edge := _smooth((absf(offset) - half) / shoulder)
-	return PackedFloat64Array([1.0 - edge[0], -edge[1] * signf(offset) / shoulder])
+	var edge_t := (absf(offset) - half) / shoulder
+	var edge_value := 0.0
+	var edge_slope := 0.0
+	if edge_t <= 0.0:
+		edge_value = 0.0
+		edge_slope = 0.0
+	elif edge_t >= 1.0:
+		edge_value = 1.0
+		edge_slope = 0.0
+	else:
+		edge_value = edge_t * edge_t * (3.0 - 2.0 * edge_t)
+		edge_slope = 6.0 * edge_t * (1.0 - edge_t)
+	return PackedFloat64Array([1.0 - edge_value, -edge_slope * signf(offset) / shoulder])
 
 static func _ramp(offset: float, approach: float, deck: float, descent: float) -> PackedFloat64Array:
 	if offset < -deck * 0.5:
-		var up := _smooth((offset + deck * 0.5 + approach) / approach)
-		return PackedFloat64Array([up[0], up[1] / approach])
-	var down := _smooth((offset - deck * 0.5) / descent)
-	return PackedFloat64Array([1.0 - down[0], -down[1] / descent])
+		var up_t := (offset + deck * 0.5 + approach) / approach
+		var up_value := 0.0
+		var up_slope := 0.0
+		if up_t <= 0.0:
+			up_value = 0.0
+			up_slope = 0.0
+		elif up_t >= 1.0:
+			up_value = 1.0
+			up_slope = 0.0
+		else:
+			up_value = up_t * up_t * (3.0 - 2.0 * up_t)
+			up_slope = 6.0 * up_t * (1.0 - up_t)
+		return PackedFloat64Array([up_value, up_slope / approach])
+	var down_t := (offset - deck * 0.5) / descent
+	var down_value := 0.0
+	var down_slope := 0.0
+	if down_t <= 0.0:
+		down_value = 0.0
+		down_slope = 0.0
+	elif down_t >= 1.0:
+		down_value = 1.0
+		down_slope = 0.0
+	else:
+		down_value = down_t * down_t * (3.0 - 2.0 * down_t)
+		down_slope = 6.0 * down_t * (1.0 - down_t)
+	return PackedFloat64Array([1.0 - down_value, -down_slope / descent])
 
 static func _number(value: Variant) -> bool:
 	return typeof(value) in [TYPE_INT, TYPE_FLOAT] and is_finite(float(value))

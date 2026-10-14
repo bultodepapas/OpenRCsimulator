@@ -18,6 +18,8 @@ const DEFAULT_SURFACE_TABLE_PATH := "res://data/ground/surface_friction.json"
 const DRY_PAVEMENT_MU := 0.85
 const RUNWAY_END_MARGIN_M := 2.0
 const BOUNDS_KEYS := ["north_min_m", "north_max_m", "east_min_m", "east_max_m"]
+static var _has_cached_surface_table := false
+static var _cached_surface_table := PackedFloat64Array()
 
 
 ## Bridge a FieldLoader result to the ground-vehicle course contract.
@@ -149,20 +151,19 @@ static func build(field_result: Dictionary, surface_table_result: Dictionary = {
 
 ## Same road callback contract as the practice course; terrain and surface precedence use aircraft physics modules.
 static func sample(course: Dictionary, north_m: float, east_m: float) -> Dictionary:
-	var invalid := _invalid_sample()
 	var rects_value: Variant = course.get("surface_rects")
 	if not is_finite(north_m) or not is_finite(east_m) \
 			or typeof(rects_value) != TYPE_PACKED_FLOAT64_ARRAY \
-			or not GroundTerrain.is_valid_surface_table(rects_value):
-		return invalid
+			or not _cached_surface_rects_are_valid(rects_value):
+		return _invalid_sample()
 	var rects: PackedFloat64Array = rects_value
 	var lake_value: Variant = course.get("lake", {})
 	if typeof(lake_value) != TYPE_DICTIONARY:
-		return invalid
+		return _invalid_sample()
 	var lake: Dictionary = lake_value
 	var terrain: PackedFloat64Array = GroundTerrain.sample_validated(north_m, east_m, rects, lake)
 	if terrain.size() != 3 or not is_finite(terrain[0]) or not is_finite(terrain[1]) or not is_finite(terrain[2]):
-		return invalid
+		return _invalid_sample()
 	var track: Dictionary = course.get("track", {})
 	var overlay := Track.sample(track, north_m, east_m)
 	terrain[0] += float(overlay.height_m)
@@ -171,17 +172,17 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 	var normal := PackedFloat64Array([-terrain[1], -terrain[2], -1.0])
 	var magnitude := M.sqrt_(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2])
 	if not is_finite(magnitude) or magnitude <= 0.0:
-		return invalid
+		return _invalid_sample()
 	for axis in normal.size():
 		normal[axis] /= magnitude
 	var offset := GroundContact.surface_at(rects, north_m, east_m)
 	if offset < 0 or offset + GroundTerrain.SURFACE_STRIDE > rects.size():
-		return invalid
+		return _invalid_sample()
 	var row_index := int(offset / GroundTerrain.SURFACE_STRIDE)
 	var surface_rows: Variant = course.get("surface_rows", [])
 	if typeof(surface_rows) != TYPE_ARRAY or row_index >= surface_rows.size() \
 			or typeof(surface_rows[row_index]) != TYPE_DICTIONARY:
-		return invalid
+		return _invalid_sample()
 	var row: Dictionary = surface_rows[row_index]
 	var mu := DRY_PAVEMENT_MU * rects[offset + 4]
 	# The kernel applies model.rolling_resistance_coefficient before this surface multiplier.
@@ -191,7 +192,7 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 		mu = lerpf(mu, float(track.mu), coverage)
 		rolling = lerpf(rolling, float(track.rolling), coverage)
 	if not is_finite(mu) or mu <= 0.0 or not is_finite(rolling) or rolling < 0.0:
-		return invalid
+		return _invalid_sample()
 	var bounds_value: Variant = course.get("bounds", {})
 	var in_bounds := false
 	if typeof(bounds_value) == TYPE_DICTIONARY:
@@ -211,6 +212,18 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 		"track_coverage": coverage,
 		"walls": Track.nearby_walls(track, north_m, east_m),
 	}
+
+
+## Reuse validation for an unchanged packed table; equality checks the full float64 contents.
+## Changed inputs still take GroundTerrain's complete fail-closed validation path.
+static func _cached_surface_rects_are_valid(rects: PackedFloat64Array) -> bool:
+	if _has_cached_surface_table and rects == _cached_surface_table:
+		return true
+	if not GroundTerrain.is_valid_surface_table(rects):
+		return false
+	_cached_surface_table = rects
+	_has_cached_surface_table = true
+	return true
 
 
 static func _field_is_valid(field: Dictionary) -> bool:

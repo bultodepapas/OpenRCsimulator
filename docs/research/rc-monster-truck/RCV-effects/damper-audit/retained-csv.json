@@ -1,0 +1,20 @@
+{
+  "format": "openrc-rcv-damper-retained-csv",
+  "version": 1,
+  "files": [
+    {
+      "original_path": ".tools/rcv/dampers/custom-drop-probe.csv",
+      "original_sha256": "06d4a028c810b114577447f5e928730c0aab5da8b24619ef66715704f4c0688d",
+      "retained_path": "damper-drop-probe.csv.gz",
+      "retained_sha256": "6b22a356970ef4a6beee956235afb097066827dac0e1ca9f681ed0fc79b19216",
+      "compression": "gzip, mtime=0, level=9"
+    },
+    {
+      "original_path": ".tools/rcv/dampers/supported-drop-baseline.csv",
+      "original_sha256": "1195b638c5865cf645f54ee3bf2bab7878b1f9318d1dd4af8cb84af5c0fe51d2",
+      "retained_path": "damper-supported-drop-baseline.csv.gz",
+      "retained_sha256": "37a69f7e891aaf1c4b14540058c29a246ac9721e6042fef5739110c430eab8cb",
+      "compression": "gzip, mtime=0, level=9"
+    }
+  ]
+}

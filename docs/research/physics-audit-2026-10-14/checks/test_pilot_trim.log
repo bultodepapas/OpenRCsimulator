@@ -1,0 +1,124 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok jensen-das-ugly-stik-60 valid start
+ok jensen-das-ugly-stik-60 live neutral holds height/speed for 10 s
+ok jensen-das-ugly-stik-60 accepts nose-down trim
+ok jensen-das-ugly-stik-60 trim only changes elevator command offset
+ok jensen-das-ugly-stik-60 degrees independent of aircraft throw/rates
+ok jensen-das-ugly-stik-60 servo flies nose-down trim
+ok jensen-das-ugly-stik-60 finite trim bounded by physical throw
+ok jensen-das-ugly-stik-60 opposite limit bounded
+ok jensen-das-ugly-stik-60 nonfinite trim rejected
+ok jensen-das-ugly-stik-60 pause rejects trim
+ok jensen-das-ugly-stik-60 reset restores solved trim and servos
+ok jensen-das-ugly-stik-60 25 percent power descends with neutral keyboard
+ok jensen-das-ugly-stik-60 replay rejects live trim
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok stik-glow-61fx-2t valid start
+ok stik-glow-61fx-2t initial fuel transport balances feed-aware apparent gravity
+ok stik-glow-61fx-2t feed-aware start remains near force, moment, and shaft trim
+ok stik-glow-61fx-2t finite-fuel neutral flight consumes fuel with finite motion
+ok stik-glow-61fx-2t accepts nose-down trim
+ok stik-glow-61fx-2t trim only changes elevator command offset
+ok stik-glow-61fx-2t degrees independent of aircraft throw/rates
+ok stik-glow-61fx-2t servo flies nose-down trim
+ok stik-glow-61fx-2t finite trim bounded by physical throw
+ok stik-glow-61fx-2t opposite limit bounded
+ok stik-glow-61fx-2t nonfinite trim rejected
+ok stik-glow-61fx-2t pause rejects trim
+ok stik-glow-61fx-2t reset restores solved trim and servos
+ok stik-glow-61fx-2t replay rejects live trim
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok stik-glow-55ax-2t valid start
+ok stik-glow-55ax-2t initial fuel transport balances feed-aware apparent gravity
+ok stik-glow-55ax-2t feed-aware start remains near force, moment, and shaft trim
+ok stik-glow-55ax-2t finite-fuel neutral flight consumes fuel with finite motion
+ok stik-glow-55ax-2t accepts nose-down trim
+ok stik-glow-55ax-2t trim only changes elevator command offset
+ok stik-glow-55ax-2t degrees independent of aircraft throw/rates
+ok stik-glow-55ax-2t servo flies nose-down trim
+ok stik-glow-55ax-2t finite trim bounded by physical throw
+ok stik-glow-55ax-2t opposite limit bounded
+ok stik-glow-55ax-2t nonfinite trim rejected
+ok stik-glow-55ax-2t pause rejects trim
+ok stik-glow-55ax-2t reset restores solved trim and servos
+ok stik-glow-55ax-2t replay rejects live trim
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok stik-glow-fs64v-4t valid start
+ok stik-glow-fs64v-4t initial fuel transport balances feed-aware apparent gravity
+ok stik-glow-fs64v-4t feed-aware start remains near force, moment, and shaft trim
+ok stik-glow-fs64v-4t finite-fuel neutral flight consumes fuel with finite motion
+ok stik-glow-fs64v-4t accepts nose-down trim
+ok stik-glow-fs64v-4t trim only changes elevator command offset
+ok stik-glow-fs64v-4t degrees independent of aircraft throw/rates
+ok stik-glow-fs64v-4t servo flies nose-down trim
+ok stik-glow-fs64v-4t finite trim bounded by physical throw
+ok stik-glow-fs64v-4t opposite limit bounded
+ok stik-glow-fs64v-4t nonfinite trim rejected
+ok stik-glow-fs64v-4t pause rejects trim
+ok stik-glow-fs64v-4t reset restores solved trim and servos
+ok stik-glow-fs64v-4t replay rejects live trim
+ok gp-extra-300s-60 valid start
+ok gp-extra-300s-60 live neutral holds height/speed for 10 s
+ok gp-extra-300s-60 accepts nose-down trim
+ok gp-extra-300s-60 trim only changes elevator command offset
+ok gp-extra-300s-60 degrees independent of aircraft throw/rates
+ok gp-extra-300s-60 servo flies nose-down trim
+ok gp-extra-300s-60 finite trim bounded by physical throw
+ok gp-extra-300s-60 opposite limit bounded
+ok gp-extra-300s-60 nonfinite trim rejected
+ok gp-extra-300s-60 pause rejects trim
+ok gp-extra-300s-60 reset restores solved trim and servos
+ok gp-extra-300s-60 replay rejects live trim
+ok p51d-mustang-120 valid start
+ok p51d-mustang-120 live neutral holds height/speed for 10 s
+ok p51d-mustang-120 accepts nose-down trim
+ok p51d-mustang-120 trim only changes elevator command offset
+ok p51d-mustang-120 degrees independent of aircraft throw/rates
+ok p51d-mustang-120 servo flies nose-down trim
+ok p51d-mustang-120 finite trim bounded by physical throw
+ok p51d-mustang-120 opposite limit bounded
+ok p51d-mustang-120 nonfinite trim rejected
+ok p51d-mustang-120 pause rejects trim
+ok p51d-mustang-120 reset restores solved trim and servos
+ok p51d-mustang-120 replay rejects live trim
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok sebart-avanti-s-a200-p100rx valid start
+ok sebart-avanti-s-a200-p100rx live neutral holds height/speed for 10 s
+ok sebart-avanti-s-a200-p100rx accepts nose-down trim
+ok sebart-avanti-s-a200-p100rx trim only changes elevator command offset
+ok sebart-avanti-s-a200-p100rx degrees independent of aircraft throw/rates
+ok sebart-avanti-s-a200-p100rx servo flies nose-down trim
+ok sebart-avanti-s-a200-p100rx finite trim bounded by physical throw
+ok sebart-avanti-s-a200-p100rx opposite limit bounded
+ok sebart-avanti-s-a200-p100rx nonfinite trim rejected
+ok sebart-avanti-s-a200-p100rx pause rejects trim
+ok sebart-avanti-s-a200-p100rx reset restores solved trim and servos
+ok sebart-avanti-s-a200-p100rx replay rejects live trim
+ok turbo-lumber-evolution valid start
+ok turbo-lumber-evolution live neutral holds height/speed for 10 s
+ok turbo-lumber-evolution accepts nose-down trim
+ok turbo-lumber-evolution trim only changes elevator command offset
+ok turbo-lumber-evolution degrees independent of aircraft throw/rates
+ok turbo-lumber-evolution servo flies nose-down trim
+ok turbo-lumber-evolution finite trim bounded by physical throw
+ok turbo-lumber-evolution opposite limit bounded
+ok turbo-lumber-evolution nonfinite trim rejected
+ok turbo-lumber-evolution pause rejects trim
+ok turbo-lumber-evolution reset restores solved trim and servos
+ok turbo-lumber-evolution 25 percent power descends with neutral keyboard
+ok turbo-lumber-evolution replay rejects live trim
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok faster jet cruise can trim
+ok faster cruise completed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok faster jet cruise can trim
+ok pilot correction accepts faster-cruise elevator
+ok faster cruise completed
+ok old trim climbs; pilot trim holds faster level cruise
+Cruise height change: stale 46.518674 m, adjusted 0.000000 m
+110 checks, 0 failed
+
+--- STDERR ---

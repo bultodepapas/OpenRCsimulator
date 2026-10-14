@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SOURCE_LEN 95273
+RELOAD 0 RESOURCE_HAS_STEP true
+INSTANCE_HAS_STEP true INSTANCE_HAS_EVALUATE true
+RESOURCE_METHODS []
+INSTANCE_METHODS ["step","_rk4_step","_evaluate_active","_evaluate"]
+DYNAMIC_INIT true 
+DYNAMIC_STEP 31 U=0.02440917661196

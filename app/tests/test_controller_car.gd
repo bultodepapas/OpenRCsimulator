@@ -81,11 +81,10 @@ func _run() -> void:
 	activity.handle_action("resume")
 	check(activity.session.paused and activity.dashboard.menu_visible, "fresh trigger at click rejects stale neutral")
 	axes[JOY_AXIS_TRIGGER_RIGHT] = 0.03
-	step()
 	await button(JOY_BUTTON_START, 14)
 	check(activity.session.paused, "unselected device cannot resume")
 	await button(JOY_BUTTON_START)
-	check(not activity.session.paused and not activity.dashboard.menu_visible, "Start resumes from actual GUI input with resting drift")
+	check(not activity.session.paused and not activity.dashboard.menu_visible and activity.session.tick == 0, "fresh neutral Start resumes before another physics tick without advancing time")
 	axes[JOY_AXIS_TRIGGER_RIGHT] = 1.0
 	axes[JOY_AXIS_LEFT_X] = 0.56
 	step()
@@ -133,6 +132,14 @@ func _run() -> void:
 	axes[JOY_AXIS_TRIGGER_LEFT] = 0.02
 	step()
 	activity.handle_action("resume")
+	# Disconnect while Start is still down; the backend need not emit its release.
+	var held_start := InputEventJoypadButton.new()
+	held_start.device = PAD
+	held_start.button_index = JOY_BUTTON_START
+	held_start.pressed = true
+	Input.parse_input_event(held_start)
+	await process_frame
+	await process_frame
 	shared.update_devices([RADIO, UNKNOWN])
 	check(activity.session.paused and activity._controller_requires_selection and UiInput.selected_gamepad_id() == -1, "disconnect pauses and removes stale navigation ownership")
 	shared.update_devices([RADIO, UNKNOWN, GAMEPAD])

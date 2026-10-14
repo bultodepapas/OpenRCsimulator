@@ -3,6 +3,7 @@ extends Node3D
 const Severity = preload("res://render/crash/severity.gd")
 const Wreck = preload("res://render/crash/wreck.gd")
 const Effects = preload("res://render/crash/effects.gd")
+const ShaderWarmup = preload("res://render/crash/shader_warmup.gd")
 const CrashAudio = preload("res://render/crash/crash_audio.gd")
 const Frames = preload("res://render/frames.gd")
 const PropBreak = preload("res://render/crash/prop_break.gd")
@@ -30,6 +31,7 @@ var _water_active := false
 var report: Dictionary = {}
 var last_update_usec := 0
 var impact_usec := 0
+var shader_warmup: Dictionary = {}
 var _fuel_kg := 0.0
 ## CR-22b: tagged energy per kind (inventory energy_source), kg.
 var energy_sources: Dictionary = {}
@@ -65,6 +67,7 @@ func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> 
 	wreck = Wreck.new()
 	add_child(wreck)
 	wreck.prepare(flight._airplane.root)
+	scuffs.prepare(flight._airplane.root)
 	wreck.secondary_impact.connect(_secondary)
 	effects = Effects.new()
 	add_child(effects)
@@ -90,6 +93,7 @@ func configure(scene: Node3D, data_path: String, audio_enabled: bool = true) -> 
 				energy_sources[kind] = float(energy_sources.get(kind, 0.0)) + maxf(0.0,float(item.get("mass",{}).get("value",0.0)))
 	_fuel_kg = float(energy_sources.get("kerosene", 0.0))
 	flight.session.resetting.connect(reset)
+	shader_warmup = ShaderWarmup.prepare(self, effects, wreck._shadows[0], flight.get("_sun") as DirectionalLight3D)
 
 func update(delta: float) -> void:
 	var began := Time.get_ticks_usec()
@@ -622,6 +626,7 @@ func stats() -> Dictionary:
 		if water_effects != null and water_effects._droplet_multimesh != null else 0
 	return {active=active, water_active=_water_active, water_event_count=_water_event_count,
 		impact_usec=impact_usec, update_usec=last_update_usec, effects=effects.stats(), wreck=wreck.stats(),
+		shader_warmup=shader_warmup.duplicate(),
 		water=water_state, report=report.duplicate(true)}
 
 

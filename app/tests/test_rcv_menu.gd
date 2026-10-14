@@ -85,6 +85,7 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	check(app.ground_vehicle == null and app.home != null, "truck returns to Home")
+	check(app.UiInput.selected_gamepad_id() == app.controllers.registry.selected_device_id("ui"), "returning Home restores its controller navigation ownership")
 	check(app.home.aircraft_id == initial_aircraft, "aircraft selection survives RC visit")
 	app.free()
 	await process_frame

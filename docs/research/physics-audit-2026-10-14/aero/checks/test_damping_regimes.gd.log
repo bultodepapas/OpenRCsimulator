@@ -1,0 +1,36 @@
+RUN test_damping_regimes.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   the Stik data loads  []
+| α° | blend | Clp | Cmq | Cnr | CLα |
+|  0.0 | 0.00 | -0.451 | -7.71 | -0.1318 | 4.580 |
+|  2.0 | 0.00 | -0.451 | -7.72 | -0.1318 | 4.580 |
+|  4.0 | 0.00 | -0.451 | -7.74 | -0.1318 | 4.580 |
+|  6.0 | 0.00 | -0.451 | -7.76 | -0.1318 | 4.580 |
+|  7.0 | 0.00 | -0.451 | -7.76 | -0.1318 | 4.580 |
+|  8.0 | 0.00 | -0.451 | -7.77 | -0.1318 | 4.580 |
+|  9.0 | 0.15 | -0.460 | -7.75 | -0.1313 | 4.580 |
+| 10.0 | 0.48 | -0.477 | -7.74 | -0.1297 | 4.580 |
+| 11.0 | 0.82 | -0.496 | -7.75 | -0.1276 | 4.580 |
+ok   oracle region α 0°: blend weight is 0  0.0
+ok   oracle region α 0°: Clp equals the data's -0.4496 moved to the CG (-0.4513) within 1 %  -0.45132
+ok   oracle region α 0°: Cmq equals the data's -7.9440 moved to the CG (-7.7073) within 1 %  -7.70725
+ok   oracle region α 0°: Cnr equals the data's -0.1354 moved to the CG (-0.1318) within 1 %  -0.13181
+ok   oracle region α 2°: blend weight is 0  0.0
+ok   oracle region α 2°: Clp equals the data's -0.4496 moved to the CG (-0.4513) within 1 %  -0.45132
+ok   oracle region α 2°: Cmq equals the data's -7.9440 moved to the CG (-7.7232) within 1 %  -7.72324
+ok   oracle region α 2°: Cnr equals the data's -0.1354 moved to the CG (-0.1318) within 1 %  -0.13181
+ok   oracle region α 4°: blend weight is 0  0.0
+ok   oracle region α 4°: Clp equals the data's -0.4496 moved to the CG (-0.4513) within 1 %  -0.45132
+ok   oracle region α 4°: Cmq equals the data's -7.9440 moved to the CG (-7.7395) within 1 %  -7.73950
+ok   oracle region α 4°: Cnr equals the data's -0.1354 moved to the CG (-0.1318) within 1 %  -0.13181
+worst ratio to the oracle over α 0…11°: { "Clp": 1.09902533026378, "Cmq": 1.00640107746708, "Cnr": 0.96842983809872, "CLa": 0.99999999999998 }
+ok   Clp within ±15 % of the oracle at every α from 0° to 11°  ×1.099
+ok   Cmq within ±15 % of the oracle at every α from 0° to 11°  ×1.006
+ok   Cnr within ±15 % of the oracle at every α from 0° to 11°  ×0.968
+ok   CLa within ±15 % of the oracle at every α from 0° to 11°  ×1.000
+ok   D11g: data Cmq -7.9440, -7.7410 about the CG, = the local model's -7.7409 at the 15 m/s trim (α 4.18°) within 0.5 %  
+ok   D11g: data CLq 1.9770, 1.9770 about the CG, = the local model's 1.9768 at the 15 m/s trim (α 4.18°) within 0.5 %  
+ok   D11g: data Cnr -0.1354, -0.1318 about the CG, = the local model's -0.1318 at the 15 m/s trim (α 4.18°) within 0.5 %  
+20 checks, 0 failed
+EXIT 0

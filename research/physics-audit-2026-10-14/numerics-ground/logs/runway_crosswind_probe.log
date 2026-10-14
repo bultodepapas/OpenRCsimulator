@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft=res://data/aircraft/sebart_avanti_s_a200.json field=default spot={ &"ok": true, &"north": 15.0, &"east": -47.0, &"heading": 1.5707963267949, &"message": "" }
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+crosswind_m_s=0.0 from_deg=0.0 wind_ned=[0.0, 0.0, 0.0] field_ok=true runway_accepted=true start_error= fault=
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+crosswind_m_s=0.5 from_deg=0.0 wind_ned=[-0.5, 0.0, 0.0] field_ok=true runway_accepted=true start_error= fault=
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+crosswind_m_s=1.0 from_deg=0.0 wind_ned=[-1.0, 0.0, 0.0] field_ok=true runway_accepted=true start_error= fault=
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+runway start: idling pose did not converge (residual 9.239795830815291)
+crosswind_m_s=1.5 from_deg=0.0 wind_ned=[-1.5, 0.0, 0.0] field_ok=true runway_accepted=false start_error= fault=
+runway crosswind probe: 1 rejected starts of 4

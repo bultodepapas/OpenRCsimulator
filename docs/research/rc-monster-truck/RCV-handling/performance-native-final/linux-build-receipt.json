@@ -1,0 +1,21 @@
+{
+  "abi_version": 1,
+  "architecture": "x86_64",
+  "backend": "native",
+  "backend_version": "openrc-ground-vehicle-native-evaluate-v2",
+  "binary_sha256": "444738e96a8578298a0b0741907884f644413681e7b932b7368905eafef1ef66",
+  "exception_flags": [
+    "-fexceptions"
+  ],
+  "floating_point_flags": [
+    "-fno-fast-math",
+    "-ffp-contract=off"
+  ],
+  "platform": "linux",
+  "solver_version": "openrc-ground-vehicle-dynamics-rk4-v3",
+  "source_sha256": "e2ae0a5ffebc8d81636302d66238348035ee92bf51d2f40965db7053bb251541",
+  "toolchain": {
+    "compiler_version": "13.3.0"
+  },
+  "toolchain_sha256": "b5aff4b76300001158426258cc6e56d3206cbb23aaaec8308772d4a6174d2800"
+}

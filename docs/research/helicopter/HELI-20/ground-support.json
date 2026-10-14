@@ -21,6 +21,11 @@
     },
     "authored_radius_plus_margin_m": 2.0,
     "basis": "Derived from the validated aircraft data, not measured clearance geometry.",
+    "bounded_components": [
+      "main rotor disc",
+      "tail rotor disc",
+      "four skid support arms"
+    ],
     "clearance_margin_m": 0.75,
     "main_disc_reach_m": 1.01,
     "skid_reach_m": 0.17001305832200064,
@@ -138,10 +143,11 @@
     }
   ],
   "format": "openrc-heli-ground-support-evidence-v1",
-  "generated_utc": "2026-10-14T21:48:18",
+  "generated_utc": "2026-10-14T21:51:00Z",
   "generator": "research/helicopter/ground_start/verify_support.gd",
   "inputs_sha256": {
     "data/aircraft/xcell_60_research.json": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
+    "data/field_loader.gd": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
     "data/fields/default.json": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
     "data/fields/lights.json": "3cfafe6fda67891738c886c5f03e936681c290c6e5abf8733c769a09135f286e",
     "data/ground/surface_friction.json": "00c63125e7ed315e6a262227a9a3be0e05b6c2aab812c2247568e9a509169586",
@@ -151,15 +157,20 @@
     "data/scenery/models/fleet_p51.json": "7e2c94a4553961faeaf2c70eb6ba5cfe39927f97b683c0e701ab52e131cbf4d3",
     "data/scenery/models/fleet_stik.json": "cc951075d79dc53afb76f3eccd2cca507411e807f15166fbe66311645a023949",
     "physics/ground_surfaces.gd": "abe57e2426179ea70d5fcc0d76bc4789b68fc6ed1598b031963cde68e5625536",
+    "physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
     "physics/rotorcraft/ground_start.gd": "4c65de9104610526d0aa1fec0e6480fd8b5b9b967a7dbeaa51a0468a58bdd92b",
     "physics/rotorcraft/skid_contact.gd": "9207684b706216dadf5e83e66b4bce00793a6978b7b0938f3cecc3460d9e1adc",
+    "physics/rotorcraft_data.gd": "248884bb77039fcf7d3485b7b2dac59c1b441dcbc30de51f1a7197cd0779bffe",
     "render/flightline_barrier.gd": "06b8c0d3bbfda404886430575167cdd02438050fed3d6112b535591b7a1929d1",
     "render/pilot_station.gd": "25aac08fb25e87cc3926c8769399197e0018f10551ba974af6c059af9ba41bb2",
+    "render/world/field_lights.gd": "878e9fba1ca5295ec51aa0a2825d7296b0d0c2de053447cc97dc7e3b0ae89195",
     "scenery/models.gd": "cc2e28f9b34c19c9b9ceca7629460a87f2966ac32670bb9c8f22e65cebdfd2d3",
-    "scenery/prefabs.gd": "8fc73f533889fa8e26a62d37a3c0a91100e667be4d3b69be272258f62db30213"
+    "scenery/prefabs.gd": "8fc73f533889fa8e26a62d37a3c0a91100e667be4d3b69be272258f62db30213",
+    "scenery/scenery_loader.gd": "e602586cf055cf9bd9725bf150e22f77f64145573d3c234bb91a6f715606ebfd"
   },
   "limitations": [
     "Candidate coordinates, field-cue dimensions, pad margin and visual keepouts are simulator layout estimates, not surveyed positions or safety standards.",
+    "The clearance sphere uses the resolver's main/tail disc and skid-arm model. It does not separately test a fuselage/boom mesh or swept scenery collisions.",
     "Scenery bounds are conservative catalog/mesh proxies. Collision-disabled scenery remains visual-only in the application.",
     "The support solve is qualified only for this zero-relief horizontal rotorpad; this evidence does not qualify slope parking.",
     "The reported yaw value is a Coulomb torque upper bound from the solved normal reactions. It does not itself prove drift-free spool-up, which is a separate session acceptance test."
@@ -293,7 +304,24 @@
       "north_m": -8.0,
       "type": "mast"
     },
-    "parked_aircraft": {
+    "parked_aircraft_by_center": {
+      "aircraft_id": "gp-extra-300s-60",
+      "baked_mesh_size_m": [
+        1.6239999532699585,
+        0.550000011920929,
+        1.3799999952316284
+      ],
+      "basis": "Conservative circle around baked horizontal mesh bounds; orientation independent.",
+      "center_distance_m": 33.659471178258286,
+      "east_m": -24.0,
+      "edge_distance_lower_bound_m": 32.59389905082391,
+      "group_id": "fleet",
+      "heading_deg": 350.0,
+      "horizontal_circumscribed_radius_m": 1.06557212743438,
+      "model_id": "fleet_extra",
+      "north_m": -17.6
+    },
+    "parked_aircraft_by_mesh_bound": {
       "aircraft_id": "p51d-mustang-120",
       "baked_mesh_size_m": [
         2.819999933242798,
@@ -338,7 +366,11 @@
       "prefab": "person_pilot"
     }
   },
-  "reproduction": "Godot 4.7.2 --headless --path app --audio-driver Dummy --script research/helicopter/ground_start/verify_support.gd -- --out=<repository-root>/docs/research/helicopter/HELI-20/ground-support.json",
+  "references": [
+    "docs/plans/helicopter.md §14.2–§14.3",
+    "docs/research/helicopter/HELI-16/ground-3d-audit-2026-10-14.md"
+  ],
+  "reproduction": "From repository root in PowerShell: & '<Godot-4.7.2-console-path>' --headless --path app --audio-driver Dummy --script ../research/helicopter/ground_start/verify_support.gd -- --out=<absolute-repository-root>/docs/research/helicopter/HELI-20/ground-support.json",
   "runtime": "4.7.2-stable (official)",
   "scope": "Static default-field pad geometry and zero-drive four-skid equilibrium snapshot. Geometry inputs are estimated visual/layout models; this is not a real-world separation standard or flight certification.",
   "support": {
@@ -349,6 +381,7 @@
       0.002010363249999994
     ],
     "contact_count": 4,
+    "equilibrium_method": "Solve the actual four skid spring/damper loads against gravity for vertical force and roll/pitch moments; report all six force/moment residual components. Zero rates are a solved rest state, not a pose-lock reaction.",
     "force_residual_magnitude_n": 2.2737367544323206e-13,
     "force_residual_world_ned_n": [
       0.0,
@@ -371,10 +404,7 @@
     "relative_force_residual": 2.8275197957786e-15,
     "relative_moment_residual": 0.0,
     "solver": "GroundStart.resolve on validated default field and xcell-60-research data",
-    "state_cg_height_above_datum_m": 0.10778963675,
-    "state_down_m": -0.10778963675,
-    "state_east_m": 0.0,
-    "state_float64": [
+    "state": [
       6.0,
       0.0,
       -0.10778963675,
@@ -389,6 +419,10 @@
       0.0,
       0.0
     ],
+    "state_cg_height_above_datum_m": 0.10778963675,
+    "state_down_m": -0.10778963675,
+    "state_dtype": "float64",
+    "state_east_m": 0.0,
     "state_north_m": 6.0,
     "state_order": [
       "north_m",

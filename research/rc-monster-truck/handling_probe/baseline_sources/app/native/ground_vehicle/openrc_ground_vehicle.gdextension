@@ -1,0 +1,8 @@
+[configuration]
+entry_symbol = "openrc_ground_vehicle_library_init"
+compatibility_minimum = "4.7"
+reloadable = false
+
+[libraries]
+windows = "res://native/ground_vehicle/openrc_ground_vehicle.dll"
+linux = "res://native/ground_vehicle/libopenrc_ground_vehicle.so"

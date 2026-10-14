@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Flight log REC: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-14T22-08-30-10931664.orfl
+Flight log saved: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-14T22-08-30-10931664.orfl (67 ticks)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Flight log REC: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-14T22-08-31-11766780.orfl
+Flight log saved: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-14T22-08-31-11766780.orfl (18 ticks)
+Flight log REC: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-14T22-08-31-12081669.orfl
+Flight log saved: C:/Users/bulto/AppData/Roaming/Godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-14T22-08-31-12081669.orfl (17 ticks)
+FL-04 production UI: 0 failures

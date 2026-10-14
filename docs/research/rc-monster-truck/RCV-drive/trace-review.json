@@ -1,0 +1,38 @@
+{
+  "baseline-circuit": {
+    "csv_sha256": "36df5fce3ad43b4be8dc549c01848a098140359369c3fef94dc09f7bd44dbe4d",
+    "method": "independent nearest nominal waypoint from every recorded N/E coordinate; signed wrap, 0.5m spacing",
+    "rows": 7711,
+    "forward_steps": 172,
+    "backward_steps": 0,
+    "max_absolute_step": 1,
+    "signed_progress_m": 86.0,
+    "endpoint_distance_to_first_sample_m": 0.3471516241363894,
+    "one_lap_and_return": true,
+    "source_manifest_unchanged": null
+  },
+  "candidate-circuit": {
+    "csv_sha256": "aff3d8a3896a8d77fab6e7ec9895b6a2605d51a6fab54e5988aea6ad8a625674",
+    "method": "independent nearest nominal waypoint from every recorded N/E coordinate; signed wrap, 0.5m spacing",
+    "rows": 7461,
+    "forward_steps": 172,
+    "backward_steps": 0,
+    "max_absolute_step": 1,
+    "signed_progress_m": 86.0,
+    "endpoint_distance_to_first_sample_m": 0.34919203152190836,
+    "one_lap_and_return": true,
+    "source_manifest_unchanged": null
+  },
+  "candidate-fast-signed-verified": {
+    "csv_sha256": "2197b4a022d117a7b15b73363207e3de1c9bedd3c3dfabb8cdd6d88acac3d13b",
+    "method": "independent nearest nominal waypoint from every recorded N/E coordinate; signed wrap, 0.5m spacing",
+    "rows": 5465,
+    "forward_steps": 172,
+    "backward_steps": 0,
+    "max_absolute_step": 1,
+    "signed_progress_m": 86.0,
+    "endpoint_distance_to_first_sample_m": 0.4351728185380909,
+    "one_lap_and_return": true,
+    "source_manifest_unchanged": true
+  }
+}

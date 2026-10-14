@@ -1,7 +1,7 @@
 # Flight modes of the simulated airplane (D8a): the real equations (aero + propulsion + rigid body) linearized at a
 # level trim, controls and engine frozen, over x = [u, v, w, p, q, r, φ, θ]. 64-bit floats only (guarded).
 # D11g: an aircraft with the tail's downwash lag (E0a2b: envelope and downwash_lag_length, as FlightSession) adds the
-# lagged wing CL as a ninth state, ẋ = (CL_wing − x)·V/l, so the modes carry Cmα̇ as the flight does.
+# lagged wing lift-velocity proxy (m/s) as a ninth state, ẋ = (U_L_wing − x)·V/l, so the modes carry Cmα̇ as the flight does.
 # Used by tests/test_modes.gd (regression bands) and by validation/sensitivity work (D8b, D10).
 extends RefCounted
 
@@ -15,7 +15,7 @@ const L := preload("res://physics/linearize.gd")
 
 const LONGITUDINAL := [0, 2, 4, 7] # u, w, q, θ
 const LATERAL := [1, 3, 5, 6] # v, p, r, φ
-const LAG := 8 # D11g: the lagged wing CL, longitudinal
+const LAG := 8 # D11g: the lagged wing lift-velocity proxy (m/s), longitudinal
 
 
 ## Returns { ok, message, trim, short_period {f_hz, zeta}, phugoid {f_hz, zeta}, roll_tau, dutch_roll {f_hz, zeta},
@@ -38,9 +38,9 @@ static func analyze(model: Dictionary, V: float, g := 9.80665) -> Dictionary:
 		var th := x[7]
 		var out := PackedFloat64Array([dot[RB.VEL], dot[RB.VEL + 1], dot[RB.VEL + 2], dot[RB.RATE], dot[RB.RATE + 1], dot[RB.RATE + 2],
 			x[3] + (x[4] * M.sin_(phi) + x[5] * M.cos_(phi)) * M.tan_(th), x[4] * M.cos_(phi) - x[5] * M.sin_(phi)])
-		if lagged: # FlightSession._pre_step's lag, continuous: ẋ = (CL_wing − x)·V/l
+		if lagged: # FlightSession._pre_step's lag, continuous: ẋ = (U_L_wing − x)·V/l
 			var air: Dictionary = evaluation.air
-			out.append((Aero.wing_lift_coefficient(s, air, d, model) - x[LAG]) * float(air.V)
+			out.append((Aero.wing_wake_velocity(s, air, d, model) - x[LAG]) * float(air.V)
 				/ float(model.surfaces.horizontal.downwash_lag_length))
 		return out
 	var s0: PackedFloat64Array = t.state
@@ -49,7 +49,7 @@ static func analyze(model: Dictionary, V: float, g := 9.80665) -> Dictionary:
 	var longitudinal := LONGITUDINAL.duplicate()
 	if lagged: # settled at the trim
 		var trimmed: PackedFloat64Array = make.call(x0)
-		x0.append(Aero.wing_lift_coefficient(trimmed, Air.compute(trimmed, M.v3(0, 0, 0), Air.RHO_SEA_LEVEL), d, model))
+		x0.append(Aero.wing_wake_velocity(trimmed, Air.compute(trimmed, M.v3(0, 0, 0), Air.RHO_SEA_LEVEL), d, model))
 		longitudinal.append(LAG)
 	var a := L.jacobian(f, x0)
 	# Keep the historical 4×4 modal estimates as diagonal-block projections of the complete matrix. They

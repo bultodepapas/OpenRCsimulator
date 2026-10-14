@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: current generated model loads
+PASS: both full-throttle runs complete with finite coupled states
+PASS: new drive more than doubles sustained flat-ground speed | old 3.937 m/s, new 9.887 m/s
+PASS: new drive reaches 3 m/s sooner under the same grip | old 0.4750 s, new 0.4292 s
+PASS: straight acceleration remains upright without hull strikes | upright 0.985192, hull ticks 0
+BRAKE_SWEEP 1.8 {"distance_m":7.09984513373985,"min_upright_cos":0.995899135541208,"ok":true,"speed_mps":0.0914033968396976,"time_s":1.62083333333333}
+BRAKE_FINE 1.8 {"distance_m":7.0995185324371,"min_upright_cos":0.995898237275389,"ok":true,"speed_mps":0.0957004123204986,"time_s":1.61875}
+BRAKE_SWEEP 2.0 {"distance_m":6.80557010231568,"min_upright_cos":0.994186226591306,"ok":true,"speed_mps":0.0966423242783491,"time_s":1.41666666666667}
+BRAKE_FINE 2.0 {"distance_m":6.805179282433,"min_upright_cos":0.994186941937807,"ok":true,"speed_mps":0.095883565991029,"time_s":1.41666666666667}
+BRAKE_SWEEP 2.2 {"distance_m":6.75805828139182,"min_upright_cos":0.991239568603751,"ok":true,"speed_mps":0.0931884706720954,"time_s":1.40416666666667}
+BRAKE_FINE 2.2 {"distance_m":6.75786050841277,"min_upright_cos":0.991231289857192,"ok":true,"speed_mps":0.0982464428904586,"time_s":1.40208333333333}
+FAIL: full braking stops the faster vehicle without reversing or rolling over | time 0.671 s, distance 4.970 m, residual 5.6301 m/s, upright -0.11858
+PASS: 240/480 Hz high-power runs converge in distance and speed | distance delta 0.0002860 m, speed delta 0.0000000 m/s
+PASS: active/reference derivatives agree at increased wheel speeds | max delta 0.0000000000
+RCV powertrain: 7/8 checks passed

@@ -1,0 +1,165 @@
+{
+  "format": "openrc-flight-log-wrapper-smoke-summary v1",
+  "created_local_date": "2026-10-14",
+  "wrapper": "tools/flight_log/flight_log.py",
+  "godot": ".tools/Godot_v4.7.2-stable_win64_console.exe",
+  "fixture_tree": "tmp/flight-log-final",
+  "source_snapshot": {
+    "used": false,
+    "reason": "The retained candidate A/A and A/B reports were produced from the same current solver hash, so their pairwise comparison is within one solver build."
+  },
+  "six_log_exact_smoke": {
+    "all_exports_and_replays_ok_complete": true,
+    "all_csvs_byte_identical": true,
+    "all_aligned_numeric_comparisons_zero": true,
+    "logs": [
+      {
+        "name": "gp_extra_300s_60",
+        "source_log": "tmp/flight-log-final/gp_extra_300s_60.orfl",
+        "export_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/gp_extra_300s_60-export/export.json",
+        "replay_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/gp_extra_300s_60-replay/replay.json",
+        "summary_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/gp_extra_300s_60-summary.json",
+        "replay_summary_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/gp_extra_300s_60-replay-summary.json",
+        "comparison": "tmp/flight-log-wrapper-smoke-final-20261014-a/gp_extra_300s_60-verified-compare.json",
+        "rows": 261,
+        "csv_sha256_export": "e46b202c22aef59cacbc9c40fddb76893623aedab0121f30723e08e5f37cf523",
+        "csv_sha256_replay": "e46b202c22aef59cacbc9c40fddb76893623aedab0121f30723e08e5f37cf523",
+        "byte_identical": true,
+        "numeric_differences_zero": true
+      },
+      {
+        "name": "jensen_ugly_stik_60",
+        "source_log": "tmp/flight-log-final/jensen_ugly_stik_60.orfl",
+        "export_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/jensen_ugly_stik_60-export/export.json",
+        "replay_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/jensen_ugly_stik_60-replay/replay.json",
+        "summary_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/jensen_ugly_stik_60-summary.json",
+        "replay_summary_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/jensen_ugly_stik_60-replay-summary.json",
+        "comparison": "tmp/flight-log-wrapper-smoke-final-20261014-a/jensen_ugly_stik_60-verified-compare.json",
+        "rows": 261,
+        "csv_sha256_export": "f2be6fd9f629affb5ed32de3b1c077e4ac498b5a92370084448e872c76e4419a",
+        "csv_sha256_replay": "f2be6fd9f629affb5ed32de3b1c077e4ac498b5a92370084448e872c76e4419a",
+        "byte_identical": true,
+        "numeric_differences_zero": true
+      },
+      {
+        "name": "p51d_mustang_120",
+        "source_log": "tmp/flight-log-final/p51d_mustang_120.orfl",
+        "export_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/p51d_mustang_120-export/export.json",
+        "replay_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/p51d_mustang_120-replay/replay.json",
+        "summary_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/p51d_mustang_120-summary.json",
+        "replay_summary_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/p51d_mustang_120-replay-summary.json",
+        "comparison": "tmp/flight-log-wrapper-smoke-final-20261014-a/p51d_mustang_120-verified-compare.json",
+        "rows": 261,
+        "csv_sha256_export": "b51488a405a6584b4166a3d53bddeaadcd2ff1ee77afab21104d136c283ef708",
+        "csv_sha256_replay": "b51488a405a6584b4166a3d53bddeaadcd2ff1ee77afab21104d136c283ef708",
+        "byte_identical": true,
+        "numeric_differences_zero": true
+      },
+      {
+        "name": "sebart_avanti_s_a200",
+        "source_log": "tmp/flight-log-final/sebart_avanti_s_a200.orfl",
+        "export_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/sebart_avanti_s_a200-export/export.json",
+        "replay_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/sebart_avanti_s_a200-replay/replay.json",
+        "summary_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/sebart_avanti_s_a200-summary.json",
+        "replay_summary_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/sebart_avanti_s_a200-replay-summary.json",
+        "comparison": "tmp/flight-log-wrapper-smoke-final-20261014-a/sebart_avanti_s_a200-verified-compare.json",
+        "rows": 261,
+        "csv_sha256_export": "cc56b3f0086545d9c1ba8acb60a2019b32611bca8e0d95cfd884c15e8d274ae6",
+        "csv_sha256_replay": "cc56b3f0086545d9c1ba8acb60a2019b32611bca8e0d95cfd884c15e8d274ae6",
+        "byte_identical": true,
+        "numeric_differences_zero": true
+      },
+      {
+        "name": "stik_glow_61fx_2t",
+        "source_log": "tmp/flight-log-final/stik_glow_61fx_2t.orfl",
+        "export_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/stik_glow_61fx_2t-export/export.json",
+        "replay_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/stik_glow_61fx_2t-replay/replay.json",
+        "summary_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/stik_glow_61fx_2t-summary.json",
+        "replay_summary_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/stik_glow_61fx_2t-replay-summary.json",
+        "comparison": "tmp/flight-log-wrapper-smoke-final-20261014-a/stik_glow_61fx_2t-verified-compare.json",
+        "rows": 261,
+        "csv_sha256_export": "17feab3734c519d52021ba78eee827f812465a2e92cca4ce8d9093dd0fc74f95",
+        "csv_sha256_replay": "17feab3734c519d52021ba78eee827f812465a2e92cca4ce8d9093dd0fc74f95",
+        "byte_identical": true,
+        "numeric_differences_zero": true
+      },
+      {
+        "name": "turbo_lumber_evolution",
+        "source_log": "tmp/flight-log-final/turbo_lumber_evolution.orfl",
+        "export_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/turbo_lumber_evolution-export/export.json",
+        "replay_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/turbo_lumber_evolution-replay/replay.json",
+        "summary_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/turbo_lumber_evolution-summary.json",
+        "replay_summary_report": "tmp/flight-log-wrapper-smoke-final-20261014-a/turbo_lumber_evolution-replay-summary.json",
+        "comparison": "tmp/flight-log-wrapper-smoke-final-20261014-a/turbo_lumber_evolution-verified-compare.json",
+        "rows": 261,
+        "csv_sha256_export": "551ca7b6858af1f5b800b4d5dc63108602baf5cb3f23a1c5696cfa4488e4c73d",
+        "csv_sha256_replay": "551ca7b6858af1f5b800b4d5dc63108602baf5cb3f23a1c5696cfa4488e4c73d",
+        "byte_identical": true,
+        "numeric_differences_zero": true
+      }
+    ]
+  },
+  "recovery": {
+    "source_log": "tmp/flight-log-final/stik_glow_61fx_2t.orfl.truncate",
+    "report": "tmp/flight-log-wrapper-smoke-final-20261014-a/recovery-stik/export.json",
+    "status": "ok",
+    "complete": false,
+    "rows": 261,
+    "recovery_reason": "Invalid or truncated packet length."
+  },
+  "candidate_pair": {
+    "source_log": "tmp/flight-log-final/stik_glow_61fx_2t.orfl",
+    "candidate_a": "tmp/flight-log-wrapper-smoke-final-20261014-a/candidates/stik-a.json",
+    "candidate_b": "tmp/flight-log-wrapper-smoke-final-20261014-a/candidates/stik-b-servo-018.json",
+    "candidate_b_change": "controls.servo_full_throw_time: 0.14 s to 0.18 s",
+    "report_a": "tmp/flight-log-wrapper-smoke-final-20261014-a/candidate-a-a-current/replay.json",
+    "report_b": "tmp/flight-log-wrapper-smoke-final-20261014-a/candidate-a-b-current/replay.json",
+    "compare_a_vs_baseline": "tmp/flight-log-wrapper-smoke-final-20261014-a/candidate-aa-vs-baseline-verified.json",
+    "compare_a_vs_b": "tmp/flight-log-wrapper-smoke-final-20261014-a/candidate-aa-vs-ab-verified.json",
+    "baseline_solver_sha256": "6e83a86d29226afc68d5c0fb83dee1b4e074125d576f8939e0e02832f1def330",
+    "current_solver_sha256_a": "f97ab182fddeedae36bb3cda9b8a3301554cfb6f8255b48ba95132d16a032a12",
+    "current_solver_sha256_b": "f97ab182fddeedae36bb3cda9b8a3301554cfb6f8255b48ba95132d16a032a12",
+    "same_current_solver_for_pair": true,
+    "solver_changed_vs_recorded_baseline": true,
+    "command_inputs_identical": true,
+    "a_vs_baseline_first_divergence": null,
+    "a_vs_b_first_divergence": {
+      "metrics": [
+        "position_m",
+        "velocity_mps",
+        "angular_rate_radps",
+        "quaternion_angle_rad"
+      ],
+      "t_s": 0.004166666666666667,
+      "tick": 1
+    },
+    "a_vs_b_differences": {
+      "angular_rate_radps": {
+        "unit": "rad/s",
+        "rmse": 0.005091604129007563,
+        "max_abs": 0.05056506760752425
+      },
+      "position_m": {
+        "unit": "m",
+        "rmse": 0.001632389021946792,
+        "max_abs": 0.004845809091552411
+      },
+      "quaternion_angle_rad": {
+        "unit": "rad",
+        "rmse": 0.001364251926468659,
+        "max_abs": 0.001973365437837103
+      },
+      "velocity_mps": {
+        "unit": "m/s",
+        "rmse": 0.002697017662447083,
+        "max_abs": 0.008669580186544623
+      }
+    },
+    "interpretation": "A/A and A/B share the same current_solver_sha256 and recorded inputs; A/A vs A/B is the controlled same-solver comparison. The recording baseline carries the older baseline_solver_sha256, so A/A vs baseline is recorded as an observed zero-difference output check, not same-build proof."
+  },
+  "unit_tests": {
+    "command": "python -B -m unittest discover -s tools/flight_log -v",
+    "passed": 13,
+    "failed": 0
+  }
+}

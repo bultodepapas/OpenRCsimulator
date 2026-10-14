@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+radio connected: 0300fa675e040000ff02000000007801|045e:02ff|XInput Controller (gamepad profile)
+PROP STRIKE at 5156 rpm, 28.3 m/s: engine stopped
+CRASH at 25.0 m/s (sink 22.3 m/s, airframe contact (hull point 3), point speed 25.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Steep high-speed dive into the ground path -57°, 28.3 m/s (after a prop strike)
+PROP STRIKE at 5156 rpm, 28.3 m/s: engine stopped
+CRASH at 25.0 m/s (sink 22.3 m/s, airframe contact (hull point 3), point speed 25.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Steep high-speed dive into the ground path -57°, 28.2 m/s (after a prop strike)

@@ -85,6 +85,7 @@ var aircraft_count_label: Label
 var aircraft_name_label: Label
 var aircraft_summary_label: Label
 var aircraft_status_label: Label
+var aircraft_preview_label: Label
 var limits_label: Label
 ## UI-16: the update card (ui/update_notice.gd), created the first time show_update() is called.
 var update_notice: Control
@@ -183,6 +184,11 @@ func _init() -> void:
 	aircraft_status_label.name = "AircraftStatus"
 	aircraft_status_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	card_lines.add_child(aircraft_status_label)
+	aircraft_preview_label = _label("", "SecondaryLabel")
+	aircraft_preview_label.name = "AircraftPreviewState"
+	aircraft_preview_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	aircraft_preview_label.visible = false
+	card_lines.add_child(aircraft_preview_label)
 	card_lines.add_child(_label("Test field · Free flight", "SecondaryLabel"))
 	limits_label = _label("Starts in the air. A crash restarts the flight.", "SecondaryLabel")
 	limits_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
@@ -413,6 +419,12 @@ func set_aircraft(id: String) -> void:
 		next_button.grab_focus()
 	if is_node_ready():
 		_update_texts()
+
+
+## Kept separate from save/launch errors. Label auto-translation stays live.
+func set_preview_state(state: String) -> void:
+	aircraft_preview_label.text = "Loading aircraft preview…" if state == "loading" else "Aircraft preview could not be loaded."
+	aircraft_preview_label.visible = state != "ready"
 
 
 func set_start_choice(choice: String) -> void:

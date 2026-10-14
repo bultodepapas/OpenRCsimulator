@@ -1,0 +1,44 @@
+--- a/app/physics/rotorcraft/skid_contact.gd
++++ b/tmp-candidate/physics/rotorcraft/skid_contact_candidate.gd
+@@ -68,11 +68,13 @@
+   if diagnostics: normal_forces[point_index] = force_n
+   var world_north: float = state[0] + offset[0]
+   var world_east: float = state[1] + offset[1]
+-  var flat_rotorpad: bool = has_bristles and _is_flat_rotorpad(surfaces, world_north, world_east, terrain)
++  var flat_surface_index: int = -1
++  if has_bristles and not surfaces.is_empty() and terrain.size() == 3:
++   flat_surface_index = GroundContact.surface_at(surfaces, world_north, world_east)
++  var flat_rotorpad: bool = has_bristles and _is_flat_rotorpad(surfaces, terrain, flat_surface_index)
+   var tangent_force_body := PackedFloat64Array([0.0, 0.0, 0.0])
+   if flat_rotorpad and force_n > CONTACT_FORCE_EPSILON_N:
+-   var surface_index: int = GroundContact.surface_at(surfaces, world_north, world_east)
+-   var friction_factor: float = surfaces[surface_index + 4]
++   var friction_factor: float = surfaces[flat_surface_index + 4]
+    var mu: float = float(cfg.friction) * friction_factor
+    var stiffness: float = float(cfg.spring_n_m)
+    var damping: float = float(cfg.damping_n_s_m)
+@@ -129,11 +131,10 @@
+  return result
+ 
+ 
+-static func _is_flat_rotorpad(surfaces: PackedFloat64Array, north: float, east: float,
+-		terrain: PackedFloat64Array) -> bool:
++static func _is_flat_rotorpad(surfaces: PackedFloat64Array, terrain: PackedFloat64Array,
++		surface_index: int) -> bool:
+  if surfaces.is_empty() or terrain.size() != 3:
+   return false
+- var surface_index: int = GroundContact.surface_at(surfaces, north, east)
+  return surface_index >= 0 and surface_index + 5 < surfaces.size() \
+   and surfaces[surface_index + 5] == ROTORPAD_ROLLING_FACTOR \
+   and absf(terrain[1]) <= 1.0e-12 and absf(terrain[2]) <= 1.0e-12
+--- a/app/sim/helicopter_flight_session.gd
++++ b/tmp-candidate/sim/helicopter_flight_session_candidate.gd
+@@ -5,7 +5,7 @@
+ const ControllerProfile = preload("res://input/controller_profile.gd")
+ const Flight = preload("res://physics/rotorcraft/flight_dynamics.gd")
+ const Hover = preload("res://physics/rotorcraft/trim.gd")
+-const Skids = preload("res://physics/rotorcraft/skid_contact.gd")
++const Skids = preload("res://physics/rotorcraft/skid_contact_candidate.gd")
+ const GroundStart = preload("res://physics/rotorcraft/ground_start.gd")
+ const Lifecycle = preload("res://physics/rotorcraft/lifecycle.gd")
+ const StepAdapter = preload("res://physics/rotorcraft/simulation_step_adapter.gd")

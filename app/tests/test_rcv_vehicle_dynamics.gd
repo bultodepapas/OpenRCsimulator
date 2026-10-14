@@ -165,22 +165,22 @@ func _compare_friction_to_reference(
 	require_early_exit: bool,
 ) -> void:
 	var adaptive: Dictionary = Vehicle._evaluate(state, model, controls, road, false, true)
-	var six_sweep_reference: Dictionary = Vehicle._evaluate(state, model, controls, road, false, false)
+	var fixed_sweep_reference: Dictionary = Vehicle._evaluate(state, model, controls, road, false, false)
 	var adaptive_acceleration: PackedFloat64Array = adaptive.get("generalized_acceleration", PackedFloat64Array())
-	var reference_acceleration: PackedFloat64Array = six_sweep_reference.get("generalized_acceleration", PackedFloat64Array())
+	var reference_acceleration: PackedFloat64Array = fixed_sweep_reference.get("generalized_acceleration", PackedFloat64Array())
 	var acceleration_delta := _max_abs_difference(adaptive_acceleration, reference_acceleration, Vehicle.GENERALIZED_SIZE) if adaptive_acceleration.size() == reference_acceleration.size() else INF
 	var adaptive_long: PackedFloat64Array = adaptive.get("wheel_longitudinal_force_n", PackedFloat64Array())
-	var reference_long: PackedFloat64Array = six_sweep_reference.get("wheel_longitudinal_force_n", PackedFloat64Array())
+	var reference_long: PackedFloat64Array = fixed_sweep_reference.get("wheel_longitudinal_force_n", PackedFloat64Array())
 	var adaptive_lateral: PackedFloat64Array = adaptive.get("wheel_lateral_force_n", PackedFloat64Array())
-	var reference_lateral: PackedFloat64Array = six_sweep_reference.get("wheel_lateral_force_n", PackedFloat64Array())
+	var reference_lateral: PackedFloat64Array = fixed_sweep_reference.get("wheel_lateral_force_n", PackedFloat64Array())
 	var adaptive_brake: PackedFloat64Array = adaptive.get("wheel_brake_torque_n_m", PackedFloat64Array())
-	var reference_brake: PackedFloat64Array = six_sweep_reference.get("wheel_brake_torque_n_m", PackedFloat64Array())
+	var reference_brake: PackedFloat64Array = fixed_sweep_reference.get("wheel_brake_torque_n_m", PackedFloat64Array())
 	var long_delta := _max_abs_difference(adaptive_long, reference_long, Vehicle.CORNER_COUNT) if adaptive_long.size() == reference_long.size() else INF
 	var lateral_delta := _max_abs_difference(adaptive_lateral, reference_lateral, Vehicle.CORNER_COUNT) if adaptive_lateral.size() == reference_lateral.size() else INF
 	var brake_delta := _max_abs_difference(adaptive_brake, reference_brake, Vehicle.CORNER_COUNT) if adaptive_brake.size() == reference_brake.size() else INF
 	var sweeps_used := int(adaptive.get("friction_sweeps_used", Vehicle.FRICTION_SWEEPS + 1))
-	_check("adaptive PGS matches six-sweep reference: " + case_name,
-		bool(adaptive.get("ok", false)) and bool(six_sweep_reference.get("ok", false))
+	_check("adaptive PGS matches fixed-cap reference: " + case_name,
+		bool(adaptive.get("ok", false)) and bool(fixed_sweep_reference.get("ok", false))
 		and sweeps_used >= 0 and sweeps_used <= Vehicle.FRICTION_SWEEPS
 		and (not require_early_exit or sweeps_used < Vehicle.FRICTION_SWEEPS)
 		and acceleration_delta < 0.01 and long_delta < 0.01 and lateral_delta < 0.01 and brake_delta < 0.01,
@@ -301,7 +301,7 @@ func _initialize() -> void:
 	# hand-authored vertical offset. This checks the reset against tire loads.
 	_check("reset altitude is finite and above tire radius", is_finite(start[DOWN]) and -start[DOWN] > float(model["tire_radius_m"]))
 	_check("state layout keeps the rigid-body prefix and append offsets", Vehicle.POS == 0 and Vehicle.VEL == 3 and Vehicle.ATT == 6 and Vehicle.RATE == 10 and Vehicle.TRAVEL == 13 and Vehicle.TRAVEL_RATE == 17 and Vehicle.WHEEL_SPIN == 21 and Vehicle.WHEEL_ANGLE == 25 and Vehicle.STEER == 29 and Vehicle.STEER_RATE == 30)
-	_check("checkpoint-visible solver version is explicit", Vehicle.SOLVER_VERSION == "openrc-ground-vehicle-dynamics-rk4-v2")
+	_check("checkpoint-visible solver version is explicit", Vehicle.SOLVER_VERSION == "openrc-ground-vehicle-dynamics-rk4-v3")
 	var reference_identity := Vehicle._reference_backend_identity()
 	_check("reference identity pins actual source or remapped bytecode bytes",
 		Vehicle._sha256_is_valid(reference_identity.get("source_sha256", ""))
@@ -399,12 +399,16 @@ func _test_drivetrain(start: PackedFloat64Array, model: Dictionary, flat: Callab
 	var brake_end := Vehicle.derivative(braked, model, brake_controls, flat) if not braked.is_empty() else PackedFloat64Array()
 	var brake_telemetry := Vehicle.telemetry(braked, model, flat, brake_controls) if not braked.is_empty() else {"ok": false}
 	var brake_moments: PackedFloat64Array = brake_telemetry.get("wheel_brake_torque_n_m", PackedFloat64Array())
-	var brake_moment_limit := float(model["brake_torque_per_wheel_nm"])
+	var brake_moments_bounded := brake_moments.size() == 4
+	for corner in brake_moments.size():
+		var fraction := float(model.get("brake_front_fraction", 0.5))
+		var capacity := 2.0 * float(model["brake_torque_per_wheel_nm"]) * (fraction if corner < 2 else 1.0-fraction)
+		brake_moments_bounded = brake_moments_bounded and absf(brake_moments[corner]) <= capacity + 1.0e-8
 	_check("brake torque opposes wheel spin and produces useful tire braking", not braked.is_empty()
 		and brake_start.size() == Vehicle.STATE_SIZE and brake_start[WHEEL_SPIN] < 0.0
 		and absf(braked[FORWARD]) < 0.25
 		and _max_abs(braked.slice(Vehicle.WHEEL_SPIN, Vehicle.WHEEL_SPIN + 4)) < 1.0
-		and brake_moments.size() == 4 and _max_abs(brake_moments) <= brake_moment_limit + 1.0e-8
+		and brake_moments_bounded
 		and bool(brake_telemetry.get("ok", false)),
 		"before %.3f, after %.3f m/s; u_dot %.2f→%.2f m/s²; FL spin %.3f (alpha %.2f) rad/s; FL force %.2f N; brake %.2f Nm" % [
 			rolling[FORWARD], braked[FORWARD] if not braked.is_empty() else NAN,
@@ -419,7 +423,9 @@ func _test_drivetrain(start: PackedFloat64Array, model: Dictionary, flat: Callab
 	rolling_back[FORWARD] = -2.0
 	for corner in 4:
 		rolling_back[WHEEL_SPIN + corner] = -2.0 / float(model["tire_radius_m"])
-	var braked_backwards := _run_steps(rolling_back, model, brake_controls, flat, 90)
+	# Front-biased brakes have less authority while reversing because load
+	# transfers toward the rear. Allow one second, retaining the stop gate.
+	var braked_backwards := _run_steps(rolling_back, model, brake_controls, flat, 240)
 	_check("brakes stop reverse travel without injecting unbounded reverse speed",
 		not braked_backwards.is_empty() and absf(braked_backwards[FORWARD]) < 0.25
 		and _max_abs(braked_backwards.slice(Vehicle.WHEEL_SPIN, Vehicle.WHEEL_SPIN + 4)) < 1.0,
@@ -786,7 +792,7 @@ func _profile_solver_stages(state: PackedFloat64Array, model: Dictionary, road: 
 		pgs_ok = pgs_ok and bool(reference_result.get("ok", false))
 	var fixed_pgs_usec := Time.get_ticks_usec() - started
 	_check("solver-stage profiling fixtures are valid", pgs_ok, "contacts %d" % contacts.size())
-	print("solver-stage cost (%d samples): geometry %.3f ms, mass assembly %.3f ms, Schur factor %.3f ms, generalized solve %.3f ms, adaptive PGS %.3f ms, fixed-six PGS %.3f ms" % [
+	print("solver-stage cost (%d samples): geometry %.3f ms, mass assembly %.3f ms, Schur factor %.3f ms, generalized solve %.3f ms, adaptive PGS %.3f ms, fixed-cap PGS %.3f ms" % [
 		SAMPLES,
 		float(geometry_usec) / float(SAMPLES) / 1000.0,
 		float(mass_assembly_usec) / float(SAMPLES) / 1000.0,

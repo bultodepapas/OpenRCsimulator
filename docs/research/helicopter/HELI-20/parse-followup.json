@@ -1,0 +1,17 @@
+{
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "results": [
+    {
+      "path": "app/tools/flight_log_cli.gd",
+      "sha256": "7b66405e9f0ae027a437dab425737946b3860407b31b073d8fba6a41f92471a8",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_heli_control_actions.gd",
+      "sha256": "c3ad961319ee01a321aa2c3217582d01bdf9eebbb27f7cf961406ff20f957836",
+      "source_stable": true,
+      "ok": true
+    }
+  ]
+}

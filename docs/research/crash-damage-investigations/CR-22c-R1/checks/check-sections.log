@@ -1,0 +1,53 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   prepare succeeds on a mapped merged mesh
+ok   the map's wing halves become wreck groups  ["core", "wing_left", "wing_right", "horizontal_tail"]
+ok   the named tail frame still groups by name
+ok   the flying model keeps its merged mesh
+ok   the twin no longer has the merged mesh
+ok   no triangle is lost or duplicated  22 vs 22
+ok   a section keeps one surface per source material
+ok   a section holds only its own region
+ok   section vertices keep their UVs
+ok   core triangles stay with the body
+ok   splitting repeats exactly
+ok   a C3 left-tip hit releases the real left wing section  ["wing_left"]
+ok   a mismatched map is rejected before any change
+WARNING: Wreck.prepare: crash section map ignored: surface 0: runs cover 3 of 4 triangles
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] prepare (res://render/crash/wreck.gd:185)
+       [1] _splitter (res://tests/test_crash_sections.gd:145)
+ok   a rejected map leaves the twin's merged mesh whole
+WARNING: Wreck: unknown crash section 'rudder_blade' on rudder
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] _section_of (res://render/crash/wreck.gd:774)
+       [1] _collect_candidate_nodes (res://render/crash/wreck.gd:734)
+       [2] _collect_fragment_groups (res://render/crash/wreck.gd:580)
+       [3] prepare (res://render/crash/wreck.gd:197)
+       [4] _resolution (res://tests/test_crash_sections.gd:186)
+ok   glTF extras name a section regardless of the node name
+ok   builder meta attaches a control hinge to its wing
+ok   a core-tagged parent still lets a tagged child break away
+ok   an unknown explicit name falls back to the name rules
+ok   a wing-tip C3 hit on a model without wings releases its legacy sections  ["horizontal_tail", "vertical_tail"]
+ok   Timber r2 tags produce a real wing_left section  ["core", "wing_left", "wing_right", "engine", "propeller", "horizontal_tail", "vertical_tail", "gear", "canopy"]
+ok   Timber r2 tags produce a real wing_right section  ["core", "wing_left", "wing_right", "engine", "propeller", "horizontal_tail", "vertical_tail", "gear", "canopy"]
+ok   Timber r2 tags produce a real horizontal_tail section  ["core", "wing_left", "wing_right", "engine", "propeller", "horizontal_tail", "vertical_tail", "gear", "canopy"]
+ok   Timber r2 tags produce a real vertical_tail section  ["core", "wing_left", "wing_right", "engine", "propeller", "horizontal_tail", "vertical_tail", "gear", "canopy"]
+ok   Timber r2 tags produce a real engine section  ["core", "wing_left", "wing_right", "engine", "propeller", "horizontal_tail", "vertical_tail", "gear", "canopy"]
+ok   Timber r2 tags produce a real canopy section  ["core", "wing_left", "wing_right", "engine", "propeller", "horizontal_tail", "vertical_tail", "gear", "canopy"]
+ok   Timber r2 tags produce a real propeller section  ["core", "wing_left", "wing_right", "engine", "propeller", "horizontal_tail", "vertical_tail", "gear", "canopy"]
+ok   Timber r2 tags produce a real gear section  ["core", "wing_left", "wing_right", "engine", "propeller", "horizontal_tail", "vertical_tail", "gear", "canopy"]
+ok   left wing group contains fixed wing, aileron and flap controls  ["aileron_left_hinge", "aileron_left", "flap_left_hinge", "flap_left", "wing_left_fixed"]
+ok   the cowl is the tagged engine section  ["cowl"]
+ok   the imported model has no merged airframe or generated split sections
+ok   wreck duplicate keeps every direct r2 mesh triangle  42519 vs 42519
+ok   wreck preparation leaves the posed flying model unchanged
+ok   a direct cowl hit releases its tagged engine section
+ok   cowl breakup leaves the posed flying model unchanged
+ok   a left-wing C3 hit releases the fixed wing and its controls together  ["wing_left"]
+ok   left-wing breakup leaves the posed flying model unchanged
+ok   reset also leaves the flying model unchanged
+37 checks, 0 failed

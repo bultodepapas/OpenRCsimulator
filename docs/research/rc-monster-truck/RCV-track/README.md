@@ -15,6 +15,8 @@ The loop footprint is 41.6 × 17.6 m. The 1.2 m access shoulder begins exactly a
 
 ## Vehicle-scale guidance
 
+This section records the initial 4 m/s layout assumptions. The later [power and driving revision](../RCV-drive/README.md) raises available straight-line speed; its route driver slows for this existing geometry. The initial verification figures below remain historical evidence for the original motor.
+
 The values below are estimates for this simulator’s truck and stated maximum speed of about 4 m/s; they are not published RC track standards.
 
 - A 6 m bend radius at 4 m/s gives about 2.7 m/s² lateral acceleration. A simple steady-turn calculation gives a roughly 15° balancing bank angle. Start around 12–18° and blend each bank smoothly into the straights; tire grip and suspension will change the actual limit.

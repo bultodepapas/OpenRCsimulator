@@ -27,4 +27,6 @@ for test in \
   echo "== $test"
   timeout 120 python3 "$ROOT/research/$test"
 done
+echo "== FL-04: flight log analysis and CLI contracts"
+timeout 120 python3 -m unittest discover -s "$ROOT/tools/flight_log" -p 'test_*.py'
 echo "Offline tool regressions passed; physical validation remains open."

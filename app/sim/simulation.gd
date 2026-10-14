@@ -10,6 +10,8 @@ const RK := preload("res://physics/integrator.gd")
 signal paused_changed(paused: bool)
 ## Emitted when a numerical or input-integrity guard stops the simulation.
 signal faulted(reason: String)
+## Read-only observer boundary after input guards, before any tick transition. FL replay records sparse external edits here.
+signal before_step(tick: int)
 ## Emitted after every physics step (and once on reset, with tick 0), for recorders and telemetry.
 signal stepped(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array, aux: PackedFloat64Array)
 
@@ -171,6 +173,7 @@ func step() -> void:
 			or not _array_is_finite(continuous, _last_valid_continuous.size()):
 		_fail_safe("step rejected: input or auxiliary state is nonfinite or malformed")
 		return
+	before_step.emit(tick)
 	var old_aux := aux.duplicate()
 	var next_aux: Variant = pre_step.call(old_aux, inputs, dt())
 	if not _array_is_finite(next_aux) or next_aux.size() != old_aux.size():

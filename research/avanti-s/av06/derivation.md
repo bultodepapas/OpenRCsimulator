@@ -13,7 +13,7 @@ wheel-profile hashes and rejects stale generated output/report, stale registry v
 
 The v1 baseline is upgraded to `openrc-aircraft v2` by the ID-gated standardizer, then the AV-09 gear module is added while
 preserving the historical AS-02 migration policy. Migration numeric parity: 502 original leaves
-preserved, 1 relocated CLadot leaves, 39 explicit
+preserved, 1 relocated CLadot leaves, 41 explicit
 compatibility-default leaves added, 0 differences.
 
 Flight mass 11.705 kg (fuel 1.28 kg), CG 240 mm aft of the root LE = 33.6 % MAC, static margin 8.5 % MAC.
@@ -141,8 +141,8 @@ The clean-airframe coefficient is an estimate, not an Avanti flight measurement 
 | Cmde | -0.9546 | derived |
 | Cmda_each | -0.14906 | derived |
 | Cnb | 0.20234 | derived |
-| Cnp | 0.005968 | derived |
-| Cnr | -0.13571 | derived |
+| Cnp | 0.008622 | derived |
+| Cnr | -0.14215 | derived |
 | Cnda_right | 0.013645 | derived |
 | Cnda_left | -0.013645 | derived |
 | Cndr | -0.098109 | derived |
@@ -170,6 +170,16 @@ Its separation fraction is an estimated Kirchhoff-style inverse, not measured Av
 polar and stall speed remain unidentified. The nominal 1-g speed above is a CLmax-based estimate; loaded, trimmed whole-aircraft
 stall behavior also depends on the tail, twist and moments. See `docs/research/avanti-realism/AV-17-R2/README.md` for
 source applicability, reproduction, measured simulated departures and numerical verification.
+
+AV-17-R3 keeps the accepted pitch policy and adds fixed gamepad yaw travel 0.50
+(±12.0° before trim) and a
+0.10 s first-order input time constant. This response is stored in the existing
+command state and bypassed by full/radio/keyboard modes; it is not a physical servo time or feedback damper.
+The same normal yaw command feeds nosewheel steering. See `docs/research/avanti-realism/AV-17-R3/README.md`.
+
+The lateral build-up obtains Cnp/Cnr about CG (0.005968, -0.135714). AV-17-R3 writes their ARP values
+(0.008622, -0.142153) by subtracting CYp/CYr times the ARP's forward CG arm / span, so the runtime's
+ARP-to-CG force-moment transfer applies exactly once. Static yaw stability, the fin, and its local flow law are unchanged.
 Evidence: `docs/research/avanti-realism/AV-17-R1/README.md`.
 
 ## Turbine at sea level

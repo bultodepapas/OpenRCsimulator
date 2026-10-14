@@ -1,0 +1,11 @@
+{
+  "app/app_root.gd": "9ca0493959ec25d5f29ea960b7762c00aa825535aa4b910154cbf6aa11b18423",
+  "app/ui/home.gd": "f09861c7bc76f2d35eb04beb72e7961abcf556927f09abab3bf8c289d22603fd",
+  "app/ui/home_scene.gd": "aa8b03543d2eb1dbcf337c5b223aa56f9d34cf599de6b097ea73e6d37e851326",
+  "app/ui/home_preview_resources.gd": "42ed2fec8838277e1f8c77a6abf353e5aa91ed8bf6d74fa5f8a6e956f1462440",
+  "app/i18n/es.po": "ae254114d04670aa2f7a7a02115c096e7423692a285adf26f38cbcf57ac8e5b5",
+  "app/tests/test_ui_preview_requests.gd": "47d187410fdf1526eb493eeabd34e9518b08508e24198a7eca669811c793662f",
+  "app/tests/test_ui_preview_resources.gd": "643c58cfdaea5e7ad0f202e185aad6c5a622b04a4614820038c78efef95e7e85",
+  "app/tests/test_ui_aircraft.gd": "694ec9f21f9039f36400c9bea6ebb2fed3eb3c5a2c6bee9377d7fcb164899d00",
+  "app/tests/test_ui_home.gd": "c68274734a240dff081e84a0e032b6b3c3251572eec1deecd0380b67482371e5"
+}

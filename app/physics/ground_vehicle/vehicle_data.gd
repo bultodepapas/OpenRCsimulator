@@ -38,6 +38,7 @@ const PARAMETER_UNITS := {
 	"droop_stop_damping_n_s_per_m": "N s/m",
 	"drive_torque_per_wheel_nm": "N m",
 	"brake_torque_per_wheel_nm": "N m",
+	"brake_front_fraction": "1",
 	"reverse_torque_fraction": "1",
 	"drive_torque_fade_rad_s": "rad/s",
 	"rolling_resistance_coefficient": "1",
@@ -120,8 +121,13 @@ static func validate(data: Variant) -> Dictionary:
 	if not raw_parameters is Dictionary:
 		errors.append("vehicle.parameters must be an object")
 		return _result(errors)
-	_exact_keys(raw_parameters, PARAMETER_UNITS.keys(), "parameters", errors)
-	var values: Dictionary = {}
+	# The optional brake split extends v1 without changing older descriptors:
+	# absent means the original equal torque on all four wheels.
+	var present_keys := PARAMETER_UNITS.keys()
+	if not raw_parameters.has("brake_front_fraction"):
+		present_keys.erase("brake_front_fraction")
+	_exact_keys(raw_parameters, present_keys, "parameters", errors)
+	var values: Dictionary = {"brake_front_fraction": 0.5}
 	for key: String in PARAMETER_UNITS:
 		if not raw_parameters.has(key):
 			continue
@@ -310,6 +316,7 @@ static func _make_model(values: Dictionary, datum_geometry: Dictionary) -> Dicti
 		"droop_stop_damping_n_s_per_m": values.droop_stop_damping_n_s_per_m,
 		"drive_torque_per_wheel_nm": values.drive_torque_per_wheel_nm,
 		"brake_torque_per_wheel_nm": values.brake_torque_per_wheel_nm,
+		"brake_front_fraction": values.brake_front_fraction,
 		"reverse_torque_fraction": values.reverse_torque_fraction,
 		"drive_torque_fade_rad_s": values.drive_torque_fade_rad_s,
 		"rolling_resistance_coefficient": values.rolling_resistance_coefficient,
@@ -335,8 +342,8 @@ static func _validate_values(v: Dictionary, errors: PackedStringArray) -> void:
 				errors.append("parameters.%s must be nonnegative" % key)
 		elif key in ["cg_forward_from_datum_m", "cg_right_from_datum_m"]:
 			pass
-		elif key in ["reverse_torque_fraction", "steer_servo_damping_ratio", "rolling_resistance_coefficient"]:
-			if value < 0.0 or (key == "reverse_torque_fraction" and value > 1.0):
+		elif key in ["reverse_torque_fraction", "brake_front_fraction", "steer_servo_damping_ratio", "rolling_resistance_coefficient"]:
+			if value < 0.0 or (key in ["reverse_torque_fraction", "brake_front_fraction"] and value > 1.0):
 				errors.append("parameters.%s is outside its valid range" % key)
 		elif key == "hull_contact_friction_scale":
 			if value < 0.0 or value > 2.0:

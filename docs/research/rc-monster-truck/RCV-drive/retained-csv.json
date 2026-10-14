@@ -1,0 +1,40 @@
+{
+  "format": "openrc-rcv-retained-csv-v1",
+  "files": [
+    {
+      "path": "baseline-runway-1.csv.gz",
+      "uncompressed_sha256": "aec367e8d1e975253f586260f75180a5aad7385095d7e7102e8fb94bdade2076",
+      "compressed_sha256": "c3e3f68adc6d561b8225a9dd1225854f08c303eeda7e23d8a6147454e55c96e2",
+      "uncompressed_bytes": 545263,
+      "compressed_bytes": 166943
+    },
+    {
+      "path": "baseline-circuit.csv.gz",
+      "uncompressed_sha256": "36df5fce3ad43b4be8dc549c01848a098140359369c3fef94dc09f7bd44dbe4d",
+      "compressed_sha256": "92979b388b5b46b10e1ec4aef4ed46a010006ddf1784248577b6b89956c664b6",
+      "uncompressed_bytes": 4906297,
+      "compressed_bytes": 1724931
+    },
+    {
+      "path": "candidate-runway.csv.gz",
+      "uncompressed_sha256": "a52c626c8b2a5418a8b3f9f06e5c0c84d5679d6b4de51b7960af0140617f0c64",
+      "compressed_sha256": "82accec4d001d59067c884d22fb98a26d95997dba6f02040639edf6144b17a07",
+      "uncompressed_bytes": 695440,
+      "compressed_bytes": 214374
+    },
+    {
+      "path": "candidate-circuit.csv.gz",
+      "uncompressed_sha256": "aff3d8a3896a8d77fab6e7ec9895b6a2605d51a6fab54e5988aea6ad8a625674",
+      "compressed_sha256": "3460495ca8fd10aff6b4c309ae1502b543f062cf2da25357bdc5203c9202b993",
+      "uncompressed_bytes": 4744447,
+      "compressed_bytes": 1670294
+    },
+    {
+      "path": "candidate-fast-signed-verified.csv.gz",
+      "uncompressed_sha256": "2197b4a022d117a7b15b73363207e3de1c9bedd3c3dfabb8cdd6d88acac3d13b",
+      "compressed_sha256": "97f41f38749d37c8c0bef989627b0f7fb51109a5c91a1fd8003562a2b368d2a0",
+      "uncompressed_bytes": 3477225,
+      "compressed_bytes": 1246785
+    }
+  ]
+}

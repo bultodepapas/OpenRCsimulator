@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+RCV activity: 23 checks, 3 failures
+FAIL: real course drive records jump and landing events
+FAIL: HUD reports AIR during flight and leaves AIR at wheel contact
+FAIL: activity derives airtime from observed physics events

@@ -199,6 +199,10 @@ func _run() -> void:
 	_check("Home loads the saved turbulent weather before vehicle selection",
 		WeatherSettings.has_turbulence(home_helicopter_app.home.weather_config))
 	home_helicopter_app.set_aircraft("xcell-60-research")
+	var preview_deadline := Time.get_ticks_msec() + 15000
+	while home_helicopter_app.home_scene.preview_pending and Time.get_ticks_msec() < preview_deadline:
+		await process_frame
+	_check("helicopter preview finishes asynchronously", not home_helicopter_app.home_scene.preview_pending)
 	var selected_helicopter_weather: Dictionary = home_helicopter_app.home.weather_config
 	_check("helicopter selection clears only turbulence and preserves steady wind/gusts",
 		not WeatherSettings.has_turbulence(selected_helicopter_weather)

@@ -10,6 +10,8 @@ This plan is a scoped revision of [MENU-PLAN](MENU-PLAN.md): it keeps its princi
 
 Responsiveness follow-up (2026-10-14): [UI-05-R2](research/menu-investigations/UI-05-R2/README.md) bounds recent aircraft-preview reuse to three models and measures the complete selector. First-visit construction and rapid fleet traversal remain the next performance probes; theme/display delivery status is unchanged.
 
+[Investigation 26](research/menu-investigations/26-menu-responsiveness-loading.md) orders those probes using Godot's loading, texture and Compatibility shader contracts. [UI-05-R3](research/menu-investigations/UI-05-R3/README.md) now delivers latest-selection handling and bounded loading of selected scene resources, with native feedback/ready measurements and remaining construction stalls. Speculative prefetch and texture/shader changes remain conditional; UI-22…29 delivery status is unchanged.
+
 Measurable targets, so that "done" is not a matter of taste:
 
 | Quality | Target | Checked by |

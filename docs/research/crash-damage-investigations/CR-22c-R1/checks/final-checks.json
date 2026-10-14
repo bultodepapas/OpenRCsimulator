@@ -1,0 +1,66 @@
+[
+  {
+    "test": "airframe_scuff_cache",
+    "exit": 0,
+    "summary": "airframe scuff cache: 18 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "airframe_scuffs",
+    "exit": 0,
+    "summary": "US-V12 airframe scuffs: 14 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "soft_contact_feedback",
+    "exit": 0,
+    "summary": "12 checks, 0 failed",
+    "errors": [
+      "WARNING: Target and up vectors are colinear. This is not advised as it may cause unwanted rotation around local Z axis."
+    ]
+  },
+  {
+    "test": "crash_warmup",
+    "exit": 0,
+    "summary": "18 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "crash_effects",
+    "exit": 0,
+    "summary": "60 checks, 0 failures",
+    "errors": []
+  },
+  {
+    "test": "crash_presentation_ladder",
+    "exit": 0,
+    "summary": "43 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "crash_integration",
+    "exit": 0,
+    "summary": "152 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "crash_warmup-native",
+    "exit": 0,
+    "summary": "18 checks, 0 failed",
+    "errors": []
+  },
+  {
+    "test": "soft_contact_feedback-native",
+    "exit": 0,
+    "summary": "12 checks, 0 failed",
+    "errors": [
+      "WARNING: Target and up vectors are colinear. This is not advised as it may cause unwanted rotation around local Z axis."
+    ]
+  },
+  {
+    "test": "crash_integration-native",
+    "exit": 0,
+    "summary": "168 checks, 0 failed",
+    "errors": []
+  }
+]

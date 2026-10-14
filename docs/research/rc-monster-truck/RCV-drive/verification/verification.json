@@ -1,0 +1,303 @@
+{
+  "format": "openrc-rcv-runtime-verification",
+  "date": "2026-10-14",
+  "started_utc": "2026-10-14T22:11:39.195800+00:00",
+  "godot": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+  "godot_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "checks": [
+    {
+      "name": "visual-source",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.147,
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/rc-monster-truck/build_visual.py",
+        "--check"
+      ]
+    },
+    {
+      "name": "vehicle-source",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.127,
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/rc-monster-truck/build_vehicle_data.py",
+        "--check"
+      ]
+    },
+    {
+      "name": "generator-mutations",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.555,
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "research/rc-monster-truck/test_vehicle_data_generator.py"
+      ]
+    },
+    {
+      "name": "float64-guard",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.436,
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "app/tests/check_transcendentals.py"
+      ]
+    },
+    {
+      "name": "test_rcv_vehicle_data",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.396,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_vehicle_data.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_course",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.267,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_course.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_airfield_course",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 1.655,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_airfield_course.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_airfield_track",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 11.471,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_airfield_track.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_obstacle_contacts",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 1.292,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_obstacle_contacts.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_track_view",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 4.896,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_track_view.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_input",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 0.178,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_input.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_vehicle_dynamics",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 3.235,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_vehicle_dynamics.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_powertrain",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 3.991,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_powertrain.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_session",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 1.761,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_session.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_activity",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 2.333,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_activity.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_presentation",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 2.218,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_presentation.gd"
+      ]
+    },
+    {
+      "name": "test_rcv_menu",
+      "ok": true,
+      "exit_code": 0,
+      "elapsed_s": 8.901,
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--headless",
+        "--path",
+        "app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rcv_menu.gd"
+      ]
+    }
+  ],
+  "physical_validation": false,
+  "source_sha256": {
+    "app/app_root.gd": "9ca0493959ec25d5f29ea960b7762c00aa825535aa4b910154cbf6aa11b18423",
+    "app/data/field_loader.gd": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+    "app/data/fields/default.json": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+    "app/data/ground/surface_friction.json": "00c63125e7ed315e6a262227a9a3be0e05b6c2aab812c2247568e9a509169586",
+    "app/data/ground_vehicle/airfield_track.json": "b178c5c22dd77160a48bd72d2e473f52e66a65c52843d25770b224f6cebbba81",
+    "app/data/ground_vehicle/practice.json": "55fd8cac65a004308a618d50a3034677d09d32b093768008e1b42f9716a290f5",
+    "app/data/vehicles/ground/mt8_bisonte.json": "732ad4197a60b111610e7eadf169e4718a68bdf85799f7cff4350eb4df698a0c",
+    "app/input/ground_vehicle_input.gd": "55764f9d082fa645320417ea7b9cee098ccf259e66a1dcc3e7b9f25b31075428",
+    "app/native/ground_vehicle/build-receipt.json": "816f8d26359a763aa73884bd504a9335f610524706582ed81dd198fbe57d690c",
+    "app/native/ground_vehicle/libopenrc_ground_vehicle.so": "21966983e1bceab446e4ee0fa5f57a909c17cf711570ad9663bd916a25f8447c",
+    "app/native/ground_vehicle/LICENSE.godot-cpp.md": "26a5b210d90760156ce886267ce9df235787dcc6cebfd7ecd95ef5b6fdcc95bf",
+    "app/native/ground_vehicle/openrc_ground_vehicle.dll": "2958c34163a8c13d5d5fc675806bd6b45750eb8f435708c1ba4d4b67ade8789e",
+    "app/native/ground_vehicle/openrc_ground_vehicle.gdextension": "1d4b4cbd1070c411922be4ce3c067cf8db610eec6c394dc4811fcfd02236e916",
+    "app/physics/ground_contact.gd": "2fa30d5bcebf1b36e67dba9546ee96b42b970df3fdfcb77630c6620df02e4355",
+    "app/physics/ground_surfaces.gd": "abe57e2426179ea70d5fcc0d76bc4789b68fc6ed1598b031963cde68e5625536",
+    "app/physics/ground_terrain.gd": "1c650cf179c7ccdca62dfd4b908e34dbc7adfe66700753ca6648af36bf5f2358",
+    "app/physics/ground_vehicle/airfield_course.gd": "9e8eaef874081d8abcd679d09be0d02189cc10a028e6409f78c11bc8534a3e3a",
+    "app/physics/ground_vehicle/airfield_track.gd": "a3c2774f89745ce0510cce7a813d22a050f73086be920b1be1a9b484e46f5b54",
+    "app/physics/ground_vehicle/course.gd": "313b43fe7e4816c54d4647c21644a2337640e1510536dcaaa95794f884bf0ca6",
+    "app/physics/ground_vehicle/four_corner.gd": "cb86d370d047c1e6c5f55c4b1b3815181a17d16dc4785d79847357a7a9f04436",
+    "app/physics/ground_vehicle/quarter_car.gd": "5a141caa4dba4628990df398f98043469f2868cc6dc959fb7f252c2943f56605",
+    "app/physics/ground_vehicle/support_bench_data.gd": "4b10e7215952bae418d1a1c3f722d377b0071c241bcfaf102b12420d629ef289",
+    "app/physics/ground_vehicle/suspension_bench_data.gd": "f8acfb63497530b9d9ddc5799356d41b2d956b87f51e9260b3e8902392880dcb",
+    "app/physics/ground_vehicle/vehicle_data.gd": "3b2dd900dbe08bd3552058f8699654dcaeeb230bfa9aa2f3ca2e3dad534b1194",
+    "app/physics/ground_vehicle/vehicle_dynamics.gd": "e3b8f6efde820dc0769b9556dacd0cae1338e71a3128f4829acf37f394e4dc79",
+    "app/physics/lake_surface.gd": "dd9e3c3690eb2a71ad0928aee206d0fedcc4399a4b6cc41b542c1282e06a04a1",
+    "app/render/field.gd": "213c2cd3677184cc6fc5d74a8e4d5649a71961e9b1814ee283055786fd06812e",
+    "app/sim/ground_vehicle/session.gd": "b5bade4c818e2c7c3832231560737d187fa24fce9968ffae21a22d78030ad619",
+    "app/ui/home.gd": "f09861c7bc76f2d35eb04beb72e7961abcf556927f09abab3bf8c289d22603fd",
+    "app/vehicles/ground/airfield_track_view.gd": "72e608c8eda9e532cfa57ae6d8619d477b2879417df5d08d99169033b67cd014",
+    "app/vehicles/ground/contact_debug.gd": "2a4f9442f54f650f7f4bc6b7a4f6af9489aaaef1748e5b12c5267397a44d243b",
+    "app/vehicles/ground/course_surface.gdshader": "75d7c11d2b516284f89bc233b73a6f2a040ecb8f2b183c2c976da356a80c6201",
+    "app/vehicles/ground/course_view.gd": "14525c151e80878bdaa75696ee79631dae58ae7ca3587dfdef29d988946074df",
+    "app/vehicles/ground/ground_camera.gd": "d9f7c5daad09c04998ba1ec14097ef2fb50022cbf13e1182948610e100354e8b",
+    "app/vehicles/ground/ground_dashboard.gd": "83a758ced93bc339d1a4e78d8acb332e3b6216d2e107a7d96e3025479b50615a",
+    "app/vehicles/ground/ground_scene.gd": "ed7cbde3e07a0cac331a6fd02b4ea8b68e6b69ab613acbc031b3d317b9aeccd5",
+    "app/vehicles/ground/mt8_model.gd": "eb1076020a548050aea1d4961f887b68eb3fc12fc0354a8a52db5cea283b9c65",
+    "app/vehicles/ground/mt8_rig.gd": "b120b5d202b78d537bb3c71a61339af95463209eb918966535e3c34f760e65a2",
+    "app/vehicles/ground/telemetry_plot.gd": "f2aa9bf83803c1c3d8e2df97c89cfb7f7bf6e0fddddc7d59f05500dd277f4f03"
+  },
+  "ok": true,
+  "sources_unchanged_during_verification": true
+}
