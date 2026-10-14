@@ -158,6 +158,8 @@ for t in "$HERE"/tests/test_*.gd; do
   if [ "$(basename "$t")" = "test_ui_pause.gd" ]; then test_timeout=180; fi
   # Five full Home/flight/Help cycles also exceed one minute (68.20 s).
   if [ "$(basename "$t")" = "test_ui_screen_stack.gd" ]; then test_timeout=180; fi
+  # Time-of-day UI rebuilds several full Home views and a flight (64.10 s).
+  if [ "$(basename "$t")" = "test_ui_time_of_day.gd" ]; then test_timeout=180; fi
   # Seven catalog aircraft rebuild and crash twice: measured 82.90 s in PT1-rc9.
   if [ "$(basename "$t")" = "test_crash_integration.gd" ]; then test_timeout=180; fi
   # Wreck lifecycle checks include timed scene updates: measured 65.46 s in PT1-rc9.
