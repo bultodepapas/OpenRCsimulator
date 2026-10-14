@@ -1,0 +1,108 @@
+diff --git a/research/performance/loading_probe.gd b/research/performance/loading_probe.gd
+index 87a7c334..f22dbde1 100644
+--- a/research/performance/loading_probe.gd
++++ b/research/performance/loading_probe.gd
+@@ -2,6 +2,12 @@
+ # Run with a native renderer. Engine elapsed time is not parent-process launch time.
+ extends SceneTree
+ 
++const AUDIO_DRAIN_TIMEOUT_USEC := 1_000_000
++var _app: Node
++var _settings_path := "" # Only a sidecar successfully created by this run.
++var _finishing := false
++var _last_shutdown: Dictionary = {}
++
+ 
+ func _initialize() -> void:
+ 	_run.call_deferred()
+@@ -44,9 +50,11 @@ func _run() -> void:
+ 	if preferences_script.save_to(prefs_path, prefs) != OK:
+ 		_fail("Cannot write isolated probe settings")
+ 		return
++	_settings_path = prefs_path
+ 	var before_load := Time.get_ticks_usec()
+ 	var packed: PackedScene = load("res://app_root.tscn")
+ 	var app: Node = packed.instantiate()
++	_app = app
+ 	app.set("user_args", PackedStringArray())
+ 	app.set("preferences_path", prefs_path)
+ 	var before_home := Time.get_ticks_usec()
+@@ -115,20 +123,73 @@ func _run() -> void:
+ 		"scope": "real Home Fly signal through first post-draw; callbacks and focus safety unchanged; no pilot input or package qualification",
+ 		"cycles": samples,
+ 	}
+-	app.queue_free()
+-	await process_frame
+-	await process_frame
++	report["shutdown"] = await _cleanup()
++	report.complete = report.shutdown.audio_released and report.shutdown.settings_removed
+ 	var file := FileAccess.open(output, FileAccess.WRITE)
+ 	if file == null:
+ 		_fail("Cannot create report")
+ 		return
+ 	file.store_string(JSON.stringify(report, "\t") + "\n")
+ 	file.close()
+-	DirAccess.remove_absolute(prefs_path)
+ 	print("loading probe: %d Home/Fly cycles -> %s" % [cycles, output])
+-	quit()
++	if not report.complete:
++		_fail("Probe cleanup incomplete: " + str(report.shutdown))
++		return
++	quit(0)
++
++
++## Outside every timing interval. Weak references observe mixer ownership without extending it.
++func _cleanup() -> Dictionary:
++	if not _last_shutdown.is_empty():
++		return _last_shutdown
++	var playbacks: Array[WeakRef] = []
++	if is_instance_valid(_app):
++		_collect_playbacks(_app, playbacks)
++		_app.queue_free()
++		_app = null
++	var begin := Time.get_ticks_usec()
++	await process_frame
++	await process_frame
++	var remaining := _remaining_playbacks(playbacks)
++	while remaining > 0 and Time.get_ticks_usec() - begin < AUDIO_DRAIN_TIMEOUT_USEC:
++		await process_frame
++		remaining = _remaining_playbacks(playbacks)
++	var settings_removed := true
++	if not _settings_path.is_empty():
++		settings_removed = DirAccess.remove_absolute(_settings_path) == OK
++		if settings_removed:
++			_settings_path = ""
++	_last_shutdown = {tracked_playbacks = playbacks.size(), remaining_playbacks = remaining,
++		audio_released = remaining == 0, elapsed_usec = Time.get_ticks_usec() - begin,
++		timeout_usec = AUDIO_DRAIN_TIMEOUT_USEC, settings_removed = settings_removed}
++	return _last_shutdown
++
++
++func _collect_playbacks(node: Node, refs: Array[WeakRef]) -> void:
++	if node is AudioStreamPlayer or node is AudioStreamPlayer2D or node is AudioStreamPlayer3D:
++		if node.has_stream_playback():
++			refs.append(weakref(node.get_stream_playback()))
++	for child in node.get_children():
++		_collect_playbacks(child, refs)
++
++
++func _remaining_playbacks(refs: Array[WeakRef]) -> int:
++	var remaining := 0
++	for ref in refs:
++		if ref.get_ref() != null:
++			remaining += 1
++	return remaining
+ 
+ 
+ func _fail(message: String) -> void:
+ 	push_error(message)
++	if _finishing:
++		return
++	_finishing = true
++	_finish_failure.call_deferred()
++
++
++func _finish_failure() -> void:
++	var shutdown := await _cleanup()
++	print("loading probe failure cleanup: ", JSON.stringify(shutdown))
+ 	quit(1)

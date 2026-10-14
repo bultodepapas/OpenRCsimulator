@@ -166,6 +166,13 @@ func set_overlays_visible(on: bool) -> void:
 func controller_action(action: String) -> bool:
  match action:
   "camera_cycle": _rig.cycle(1)
+  "camera_previous": _rig.cycle(-1)
+  "camera_pilot": _rig.set_view("pilot")
+  "camera_chase": _rig.set_view("chase")
+  "camera_orbit": _rig.set_view("orbit")
+  "camera_zoom_in": _rig.zoom(1.0)
+  "camera_zoom_out": _rig.zoom(-1.0)
+  "camera_auto_zoom": _rig.toggle_auto_zoom()
   "view_reset": _rig.reset_view()
   "calibrate": session.start_calibration()
   "accept":

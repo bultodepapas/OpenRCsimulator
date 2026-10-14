@@ -1,5 +1,14 @@
 extends RefCounted
 
+const SmokeAux := preload("res://input/smoke_aux.gd")
+const OPTIONAL_ACTION_IDS: PackedStringArray = [
+	"smoke_toggle", "flaps_up", "flaps_down", "flaps_cycle", "gear_toggle",
+	"camera_previous", "camera_pilot", "camera_chase", "camera_orbit",
+	"camera_zoom_in", "camera_zoom_out", "camera_auto_zoom", "lights_cycle",
+]
+const AUX_CHANNEL_IDS: PackedStringArray = ["smoke", "flaps", "gear"]
+static var _definition_cache: Dictionary = {}
+
 ## Semantic gamepad actions are data, not synthetic keyboard events. The owning input router
 ## decides what each returned action means in its current flight or menu context.
 const ACTIONS: Array[Dictionary] = [
@@ -19,32 +28,26 @@ const ACTIONS: Array[Dictionary] = [
 	{"id": "overlay_preset", "label": "Cycle flight overlays", "context": "flight", "mode": "press"},
 	{"id": "throttle_cut", "label": "Throttle cut (hold)", "context": "flight", "mode": "hold"},
 	{"id": "calibrate", "label": "Calibrate controller", "context": "menu", "mode": "press"},
+	{"id": "smoke_toggle", "label": "Toggle smoke pump", "context": "flight", "mode": "press"},
+	{"id": "flaps_up", "label": "Flaps up", "context": "flight", "mode": "press"},
+	{"id": "flaps_down", "label": "Flaps down", "context": "flight", "mode": "press"},
+	{"id": "flaps_cycle", "label": "Cycle flaps", "context": "flight", "mode": "press"},
+	{"id": "gear_toggle", "label": "Toggle landing gear", "context": "flight", "mode": "press"},
+	{"id": "camera_previous", "label": "Previous camera", "context": "flight", "mode": "press"},
+	{"id": "camera_pilot", "label": "Pilot camera", "context": "flight", "mode": "press"},
+	{"id": "camera_chase", "label": "Chase camera", "context": "flight", "mode": "press"},
+	{"id": "camera_orbit", "label": "Orbit camera", "context": "flight", "mode": "press"},
+	{"id": "camera_zoom_in", "label": "Camera zoom in", "context": "flight", "mode": "press"},
+	{"id": "camera_zoom_out", "label": "Camera zoom out", "context": "flight", "mode": "press"},
+	{"id": "camera_auto_zoom", "label": "Toggle auto camera zoom", "context": "flight", "mode": "press"},
+	{"id": "lights_cycle", "label": "Cycle lights", "context": "flight", "mode": "press"},
 ]
-
-const _DEFINITIONS: Dictionary = {
-	"accept": {"label": "Accept / launch", "context": "menu", "mode": "press"},
-	"back": {"label": "Back / cancel", "context": "menu", "mode": "press"},
-	"navigate_up": {"label": "Navigate up", "context": "menu", "mode": "press"},
-	"navigate_down": {"label": "Navigate down", "context": "menu", "mode": "press"},
-	"navigate_left": {"label": "Navigate left", "context": "menu", "mode": "press"},
-	"navigate_right": {"label": "Navigate right", "context": "menu", "mode": "press"},
-	"pause": {"label": "Pause / resume", "context": "both", "mode": "press"},
-	"camera_cycle": {"label": "Cycle camera", "context": "flight", "mode": "press"},
-	"view_reset": {"label": "Reset view", "context": "flight", "mode": "press"},
-	"trim_left": {"label": "Trim left", "context": "flight", "mode": "press"},
-	"trim_right": {"label": "Trim right", "context": "flight", "mode": "press"},
-	"trim_up": {"label": "Trim up", "context": "flight", "mode": "press"},
-	"trim_down": {"label": "Trim down", "context": "flight", "mode": "press"},
-	"overlay_preset": {"label": "Cycle flight overlays", "context": "flight", "mode": "press"},
-	"throttle_cut": {"label": "Throttle cut (hold)", "context": "flight", "mode": "hold"},
-	"calibrate": {"label": "Calibrate controller", "context": "menu", "mode": "press"},
-}
 
 
 ## Defaults follow the common Xbox / DualSense face-button convention. Device IDs are
 ## connection handles and are deliberately never stored in profile bindings.
 static func default_bindings(_device_id: int = -1) -> Dictionary:
-	return {
+	var bindings := {
 		"accept": {"type": "button", "button": JOY_BUTTON_A},
 		"back": {"type": "button", "button": JOY_BUTTON_B},
 		"navigate_up": {"type": "button", "button": JOY_BUTTON_DPAD_UP},
@@ -62,32 +65,121 @@ static func default_bindings(_device_id: int = -1) -> Dictionary:
 		"throttle_cut": {"type": "button", "button": JOY_BUTTON_LEFT_SHOULDER},
 		"calibrate": {"type": "button", "button": JOY_BUTTON_LEFT_STICK},
 	}
+	for action_id in OPTIONAL_ACTION_IDS:
+		bindings[action_id] = {"type": "unbound"}
+	return bindings
 
 
 ## Validate shape, require a back and pause recovery path, and reject collisions whose contexts overlap.
 static func validate(bindings: Dictionary) -> Dictionary:
 	var errors: Array[String] = []
+	var definitions := _definition_map()
 	for action_id in ["back", "pause"]:
-		if not bindings.has(action_id) or not _valid_binding(bindings[action_id]):
+		if not bindings.has(action_id) or not _valid_binding(bindings[action_id]) or _is_unbound(bindings.get(action_id)):
 			errors.append("Missing recovery binding: %s" % action_id)
 	for action_id: Variant in bindings:
-		if not _DEFINITIONS.has(str(action_id)):
+		if not definitions.has(str(action_id)):
 			errors.append("Unknown action: %s" % str(action_id))
 		elif not _valid_binding(bindings[action_id]):
 			errors.append("Invalid binding: %s" % str(action_id))
 	var ids: Array = bindings.keys()
 	for i in ids.size():
 		var left_id := str(ids[i])
-		if not _DEFINITIONS.has(left_id) or not _valid_binding(bindings[ids[i]]):
+		if not definitions.has(left_id) or not _valid_binding(bindings[ids[i]]) or _is_unbound(bindings[ids[i]]):
 			continue
 		for j in range(i + 1, ids.size()):
 			var right_id := str(ids[j])
-			if not _DEFINITIONS.has(right_id) or not _valid_binding(bindings[ids[j]]):
+			if not definitions.has(right_id) or not _valid_binding(bindings[ids[j]]) or _is_unbound(bindings[ids[j]]):
 				continue
-			if _contexts_overlap(_DEFINITIONS[left_id].context, _DEFINITIONS[right_id].context) \
+			if _contexts_overlap(definitions[left_id].context, definitions[right_id].context) \
 					and _same_binding(bindings[ids[i]], bindings[ids[j]]):
 				errors.append("Binding conflict: %s and %s" % [left_id, right_id])
 	return {"ok": errors.is_empty(), "errors": errors}
+
+
+## Resolve saved overrides against the current defaults. Only inherited flight-only defaults
+## that alias a configured auxiliary control are silenced; explicit actions and recovery paths stay.
+static func effective_bindings(profile: Dictionary) -> Dictionary:
+	var bindings := default_bindings()
+	var explicit_actions: Variant = _dict_value(profile, "actions", {})
+	var explicit_ids: Dictionary = {}
+	if explicit_actions is Dictionary:
+		for action_key: Variant in explicit_actions:
+			var action_id := str(action_key)
+			var value: Variant = explicit_actions[action_key]
+			bindings[action_id] = value.duplicate(true) if value is Dictionary or value is Array else value
+			explicit_ids[action_id] = true
+	var definitions := _definition_map()
+	var aux_bindings := _configured_aux_bindings(profile)
+	for action_key: Variant in bindings.keys():
+		var action_id := str(action_key)
+		if not definitions.has(action_id) or not _valid_binding(bindings[action_key]) or _is_unbound(bindings[action_key]):
+			continue
+		if definitions[action_id].context != "flight" or explicit_ids.has(action_id):
+			continue
+		for aux_entry in aux_bindings:
+			if _same_aux_control(bindings[action_key], aux_entry.binding):
+				bindings[action_key] = {"type": "unbound"}
+				break
+	# Legacy radios and custom joysticks may have AUX on SDL button 6, which is
+	# also the inherited gamepad Pause button. Keep the radio AUX assignment and
+	# retain recovery through Escape; an explicitly mapped Pause is never changed.
+	var kind := str(_dict_value(profile, "kind", ""))
+	if kind in ["radio", "joystick"] and not explicit_ids.has("pause"):
+		for aux_entry in aux_bindings:
+			if _same_aux_control(bindings.pause, aux_entry.binding):
+				bindings.pause = {"type": "key", "physical_keycode": KEY_ESCAPE}
+				break
+	return bindings
+
+
+## Validate the whole calibrated profile's semantic bindings and reserved AUX sources.
+## `bindings` in the result is the merged action map suitable for the input router.
+static func validate_profile_bindings(profile: Dictionary) -> Dictionary:
+	var errors: Array[String] = []
+	var actions_value: Variant = _dict_value(profile, "actions", {})
+	if not actions_value is Dictionary:
+		errors.append("actions must be a dictionary")
+	var aux_value: Variant = _dict_value(profile, "aux", {})
+	if not aux_value is Dictionary:
+		errors.append("aux must be a dictionary")
+	var bindings := effective_bindings(profile)
+	var action_report := validate(bindings)
+	for error in action_report.errors:
+		_append_error(errors, str(error))
+	var flight_axes := SmokeAux.flight_axes(profile)
+	var configured_aux: Array[Dictionary] = _configured_aux_bindings(profile)
+	if aux_value is Dictionary:
+		for aux_id in AUX_CHANNEL_IDS:
+			var aux_binding: Variant = _dict_value(aux_value, aux_id, null)
+			if _has_key(aux_value, aux_id) and not SmokeAux.valid_binding(aux_binding, flight_axes):
+				_append_error(errors, "aux.%s is invalid or overlaps a flight axis" % aux_id)
+	for i in configured_aux.size():
+		for j in range(i + 1, configured_aux.size()):
+			if _same_aux_control(configured_aux[i].binding, configured_aux[j].binding):
+				_append_error(errors, "AUX binding conflict: aux.%s and aux.%s" % [
+					configured_aux[i].name, configured_aux[j].name,
+				])
+	var definitions := _definition_map()
+	for action_key: Variant in bindings:
+		var action_id := str(action_key)
+		if not definitions.has(action_id):
+			continue
+		var binding: Variant = bindings[action_key]
+		if not _valid_binding(binding) or _is_unbound(binding):
+			continue
+		var context := str(definitions[action_id].context)
+		if context not in ["flight", "both"]:
+			continue
+		if str(binding.get("type", "")) == "axis" and flight_axes.has(int(binding.axis)):
+			_append_error(errors, "Action %s uses primary flight axis %d" % [action_id, int(binding.axis)])
+		for aux_entry in configured_aux:
+			if _same_aux_control(binding, aux_entry.binding):
+				_append_error(errors, "Action %s conflicts with aux.%s" % [action_id, aux_entry.name])
+		for aux_id in AUX_CHANNEL_IDS:
+			if _aux_is_configured(aux_value, aux_id) and _action_aux_semantic_conflict(action_id, aux_id):
+				_append_error(errors, "Action %s conflicts with aux.%s" % [action_id, aux_id])
+	return {"ok": errors.is_empty(), "errors": errors, "bindings": bindings}
 
 
 ## Store an InputEvent as profile-safe data. No current device ID is persisted.
@@ -134,7 +226,8 @@ static func binding_text(binding: Dictionary) -> String:
 
 ## Returns semantic action IDs for one event. Joypad events from every other device are ignored.
 ## `context` is `flight`, `menu`, or `both`; keyboard events remain available to the caller's own route.
-static func resolve_event(event: InputEvent, bindings: Dictionary, selected_device_id: int, context := "flight") -> PackedStringArray:
+static func resolve_event(event: InputEvent, bindings: Dictionary, selected_device_id: int, context := "flight",
+		previous_actions: PackedStringArray = PackedStringArray()) -> PackedStringArray:
 	var resolved := PackedStringArray()
 	if event is InputEventJoypadButton or event is InputEventJoypadMotion:
 		if selected_device_id < 0 or event.device != selected_device_id:
@@ -145,16 +238,18 @@ static func resolve_event(event: InputEvent, bindings: Dictionary, selected_devi
 		var key_event := event as InputEventKey
 		if not key_event.pressed or key_event.echo:
 			return resolved
+	var definitions := _definition_map()
 	for action_id: Variant in bindings:
 		var id := str(action_id)
-		if not _DEFINITIONS.has(id) or not _context_applies(str(_DEFINITIONS[id].context), context):
+		if not definitions.has(id) or not _context_applies(str(definitions[id].context), context):
 			continue
-		if matches_binding(bindings[action_id], event, selected_device_id):
+		if matches_binding(bindings[action_id], event, selected_device_id, previous_actions.has(id)):
 			resolved.append(id)
 	return resolved
 
 
-static func matches_binding(binding: Dictionary, event: InputEvent, selected_device_id: int) -> bool:
+static func matches_binding(binding: Dictionary, event: InputEvent, selected_device_id: int,
+		previously_active: bool = false) -> bool:
 	match str(binding.get("type", "")):
 		"key":
 			if not event is InputEventKey:
@@ -174,14 +269,26 @@ static func matches_binding(binding: Dictionary, event: InputEvent, selected_dev
 			if not event is InputEventJoypadMotion or selected_device_id < 0 or event.device != selected_device_id:
 				return false
 			var motion := event as InputEventJoypadMotion
+			if not is_finite(motion.axis_value):
+				return false
 			var direction := 1 if motion.axis_value > 0.0 else -1
+			var threshold := float(binding.get("threshold", 0.65))
+			if previously_active:
+				threshold = maxf(threshold * 0.5, threshold - 0.15)
 			return motion.axis == int(binding.get("axis", -1)) and direction == int(binding.get("sign", binding.get("direction", 0))) \
-				and absf(motion.axis_value) >= float(binding.get("threshold", 0.65))
+				and absf(motion.axis_value) >= threshold
 	return false
 
 
 static func action_definition(action_id: String) -> Dictionary:
-	return _DEFINITIONS.get(action_id, {}).duplicate(true)
+	return _definition_map().get(action_id, {}).duplicate(true)
+
+
+static func _definition_map() -> Dictionary:
+	if _definition_cache.is_empty():
+		for definition in ACTIONS:
+			_definition_cache[str(definition.id)] = definition
+	return _definition_cache
 
 
 static func _valid_binding(value: Variant) -> bool:
@@ -189,6 +296,8 @@ static func _valid_binding(value: Variant) -> bool:
 		return false
 	var binding: Dictionary = value
 	match str(binding.get("type", "")):
+		"unbound":
+			return binding.size() == 1
 		"key":
 			return int(binding.get("physical_keycode", 0)) != 0 or int(binding.get("keycode", 0)) != 0
 		"button":
@@ -221,6 +330,74 @@ static func _same_binding(left: Dictionary, right: Dictionary) -> bool:
 
 static func _contexts_overlap(left: String, right: String) -> bool:
 	return left == "both" or right == "both" or left == right
+
+
+static func _is_unbound(value: Variant) -> bool:
+	return value is Dictionary and str(value.get("type", "")) == "unbound"
+
+
+static func _configured_aux_bindings(profile: Dictionary) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	var aux: Variant = _dict_value(profile, "aux", {})
+	if not aux is Dictionary:
+		return result
+	var flight_axes := SmokeAux.flight_axes(profile)
+	for aux_id in AUX_CHANNEL_IDS:
+		if not _has_key(aux, aux_id):
+			continue
+		var binding: Variant = _dict_value(aux, aux_id, null)
+		if SmokeAux.valid_binding(binding, flight_axes):
+			result.append({"name": aux_id, "binding": binding})
+	return result
+
+
+static func _same_aux_control(action_binding: Dictionary, aux_binding: Dictionary) -> bool:
+	var action_type := str(action_binding.get("type", ""))
+	if action_type != str(aux_binding.get("type", "")):
+		return false
+	match action_type:
+		"button":
+			return int(action_binding.get("button", -1)) == int(aux_binding.get("button", -2))
+		"axis":
+			# AUX reserves the whole calibrated axis; direction/sign never frees it for an action.
+			return int(action_binding.get("axis", -1)) == int(aux_binding.get("axis", -2))
+	return false
+
+
+static func _aux_is_configured(aux: Variant, aux_id: String) -> bool:
+	if not aux is Dictionary or not _has_key(aux, aux_id):
+		return false
+	var value: Variant = _dict_value(aux, aux_id, null)
+	return not (value is Dictionary and value.is_empty()) and value != null
+
+
+static func _action_aux_semantic_conflict(action_id: String, aux_id: String) -> bool:
+	match aux_id:
+		"smoke":
+			return action_id == "smoke_toggle"
+		"flaps":
+			return action_id in ["flaps_up", "flaps_down", "flaps_cycle"]
+		"gear":
+			return action_id == "gear_toggle"
+	return false
+
+
+static func _has_key(value: Variant, key: String) -> bool:
+	return value is Dictionary and (value.has(key) or value.has(StringName(key)))
+
+
+static func _dict_value(value: Variant, key: String, fallback: Variant) -> Variant:
+	if not value is Dictionary:
+		return fallback
+	if value.has(key):
+		return value[key]
+	var string_name := StringName(key)
+	return value[string_name] if value.has(string_name) else fallback
+
+
+static func _append_error(errors: Array[String], message: String) -> void:
+	if not errors.has(message):
+		errors.append(message)
 
 
 static func _context_applies(action_context: String, active_context: String) -> bool:

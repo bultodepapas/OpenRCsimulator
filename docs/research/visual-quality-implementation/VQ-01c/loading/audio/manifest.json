@@ -1,0 +1,76 @@
+{
+  "date": "2026-10-14",
+  "head": "ac5f2b0e2d30e54d2c86e8432f06365a3e7295f6",
+  "scope": "Only measurement tooling changes; packaged tests reuse the exact unchanged night-kit Windows artifact.",
+  "sources": {
+    "research/performance/loading_probe.gd": "9a559fae1a71a92472a80dbf5bf8cbba8a6d855ae23bce1454289fa6fbdc40e0",
+    "research/performance/test_loading_probe.py": "ce714a8c239b94149952a7a55de93973e8cd978aa0fb87a888eb429b770dae8e",
+    "app/render/lake/water_effects.gd": "d204e591fb4c131b5ebf22d0a08960dfbdb72ce15116db15bf01684da91acd01",
+    "app/render/lake/lake_world.gd": "00f9387353142bd2ea9ecf9a9a941f245eb09362358a7b4bcc087d4ff9f02529"
+  },
+  "binaries": {
+    ".tools/Godot_v4.7.2-stable_win64.exe": {
+      "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+      "bytes": 180858888
+    },
+    ".tools/Godot_v4.7.2-stable_linux.x86_64": {
+      "sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+      "bytes": 146414384
+    },
+    "tmp/dt11b-integration/package/OpenRC.exe": {
+      "sha256": "09a028d8106946c87a114b5fe0f673d5b8d22a18c0616bcb8f431145c2d876e3",
+      "bytes": 174236064
+    },
+    "tmp/dt11b-integration/package/GodotProbe.exe": {
+      "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+      "bytes": 180858888
+    },
+    "tmp/dt11b-integration/package/openrc_ground_vehicle.dll": {
+      "sha256": "2958c34163a8c13d5d5fc675806bd6b45750eb8f435708c1ba4d4b67ade8789e",
+      "bytes": 443904
+    }
+  },
+  "artifacts": {
+    "cleanup-tests-final.log.gz": "355d0b9babfaac0546bc78173150ca0dae99e6e46882c8af047628cb540c8f9a",
+    "cleanup-tests-final2.log.gz": "355d0b9babfaac0546bc78173150ca0dae99e6e46882c8af047628cb540c8f9a",
+    "cleanup-tests-linux-final.log.gz": "355d0b9babfaac0546bc78173150ca0dae99e6e46882c8af047628cb540c8f9a",
+    "cleanup-tests-linux.log.gz": "355d0b9babfaac0546bc78173150ca0dae99e6e46882c8af047628cb540c8f9a",
+    "cleanup-tests.log.gz": "f8341056331905320bd706bed9fa2996399c09ff49d215fce8204217ab41ca0a",
+    "commands.json": "b4ad28a52cd9f376afb0e8c695b2b83f81fff4e3344d3752d246690d21b659e3",
+    "drain-1.json": "a76c6d3341d9aa3a8f4a751156a58844399a780027957d2aa44f8f199bbe10a9",
+    "drain-1.log.gz": "c5c47680f1b7b537f18736ad19e12bbe861f1f8d8449f2db4f65f8802ea7f5a6",
+    "drain-2.json": "c18e94dc6cab9ee56c814d4f2ce665883bfd06023ab75dc9429013fd7e059d4b",
+    "drain-2.log.gz": "3736bc49ea5ebda7ac1539b6d893b84dbbbfe760aea412d7693591c993746588",
+    "drain-3.json": "b4473cf8e84e9555aa07316ac634f5dca6ac593cf962df8cc492ff1f2cf5c9ab",
+    "drain-3.log.gz": "3736bc49ea5ebda7ac1539b6d893b84dbbbfe760aea412d7693591c993746588",
+    "final-app-render-lake-lake_world.gd.gz": "f6792ae467c9a2804060987cc608d29881def3a3456f6d00622fc03901c41b59",
+    "final-app-render-lake-water_effects.gd.gz": "40920a0bedcb57f70f44210da5f012747ec178b143e7e5a220756dca788e4b9f",
+    "final-research-performance-loading_probe.gd.gz": "ea04c6cb210f83bcde86472e1dbf5ba9b896c4bbe797e093850b4ecbd0bb24ba",
+    "final-research-performance-test_loading_probe.py.gz": "55f497812f8620fc2ec420c319a88d877166ae0411ade18e4059369e85eea71b",
+    "free-1.json": "9556d350f5feca72a56b06097988601252483a5fb566b3ab0e6285b92cd87f26",
+    "free-1.log.gz": "f482900cf52d9c519df76721e740e2510465c8ddb55ba804c56596336db9b980",
+    "free-2.json": "4ec48e7b95f10d18f5405500221b104a45a9e796cf5d7a8995fb5de1be071024",
+    "free-2.log.gz": "0871555fb2b7d5337f6ade0b69bf37f39e82c05ef2fb9fa12a9ef4d0fbea1b47",
+    "free-3.json": "23915e164e4ccab29059e05447d2d0697b6dfc949fb5d0863dd958422acf4325",
+    "free-3.log.gz": "9f01f044eab1108d71c8c81788e74783fc3d4d341b79ff01b0153ce4dc7f6509",
+    "lifecycle_probe.gd.gz": "c7d9556ad65a0324a9cc4e49f9432f0a246ef667e882291c172697d86f4df276",
+    "loading_probe_before.gd.gz": "ba7dbef8f024482f97714b43e1ae194f9f14fc9580d3c693e2796473bb27fcc1",
+    "pack-2a.json": "8bbea979e700c866988757894ce870edb9dae2a3da813e85c9461115ab2df982",
+    "pack-2a.log.gz": "c734f31c5bf1dfe4617f0b32c91eb4746685935d734de21785f0ecaf7f12937a",
+    "pack-2b.json": "8061871ab39dc657f82db342cea0d2c7e47ef4274c9e0014bf4d7adfb3d12d6c",
+    "pack-2b.log.gz": "3702e75366321f18e13e3850edf70d748dc8f126903c7807d31bf24bb9d3749b",
+    "pack-50.json": "45cfdc2f22c11430d106681217079c77a1ea1c3c47a3f3a6d49009a95c7dd696",
+    "pack-50.log.gz": "3bec184bc5c021dc1f90ae95599694cb499a1e854a65454867fcf00fe8ec791a",
+    "package-checks.json": "afc81b2ae425e694789de8833ed531f469dbec45a18e40ddc7c3d48913cd4f99",
+    "parse.log.gz": "31f629ed7cc35d2a04f2a4d4bbf73870704f0ff49b564ab02feb3c10efcbd01a",
+    "run_probes.py.gz": "523d73e66a7cd9047fa79c4f778d9bc3f2f76e1b247543baf17bdc5c870b6467",
+    "stop-1.json": "92e58af7c089f2cc2bc668b4356b4b441c0723d8b1b6bffaadfe3dfab4319e2e",
+    "stop-1.log.gz": "ebbe751da5d1ba07476f84724a6c3263bcb15963f9f2c832882f5f83b45c96e1",
+    "stop-2.json": "7eb1dee61d00308234733a07209327bb41dcd9e0833a2109b78caeb20b1e5904",
+    "stop-2.log.gz": "5fcd518fee34eb82a3db2b8d48191df7d4cd11ebc9a0e826c6963cce5280c5d1",
+    "stop-3.json": "c09241937aa4c6908157ad7c270965b1385382bbcdae213526c1bc80c57f4bad",
+    "stop-3.log.gz": "665a3951fa617a48272d5d613ad14e9ef2d0b876d27b8643776dad47be0fcebd",
+    "tooling.patch": "a76f4d5d79169277adfa229b0c9869e109276c75723cc53e0618f886e7a32d84",
+    "verify_pack.py.gz": "63f2d34bdfedd3c13ebdce9dc4476d6900082dd1eb74bbc5dfc9d2eb2e3e7a61"
+  }
+}

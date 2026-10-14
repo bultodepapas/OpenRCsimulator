@@ -398,7 +398,9 @@ static func attach(root: Node3D) -> Node3D:
 	# Tips, strips and span from the model's own vertices (traced before any kit node exists).
 	var points := vertices(root)
 	var half := span_half(points)
-	var lines := underwing_lines(triangles(root), half)
+	# Both skins use the same posed geometry, before the kit is attached.
+	var tris := triangles(root)
+	var lines := underwing_lines(tris, half)
 	var left := tip(points, half, -1.0)
 	var right := tip(points, half, 1.0)
 	kit.add_child(sprite("nav_left", Color(1.0, 0.06, 0.04), left.centre, NAV_SIZE_M))
@@ -407,7 +409,6 @@ static func attach(root: Node3D) -> Node3D:
 	kit.add_child(sprite("strobe_left", Color(1.0, 1.0, 1.0), left.trailing, NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE))
 	kit.add_child(sprite("strobe_right", Color(1.0, 1.0, 1.0), right.trailing, NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE))
 	Exposure.register()
-	var tris := triangles(root)
 	var top_lines := underwing_lines(tris, half, true)
 	for key: String in ["left", "right"]:
 		var line: PackedVector3Array = lines[key]

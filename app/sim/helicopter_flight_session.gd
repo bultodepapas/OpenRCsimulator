@@ -174,11 +174,12 @@ func _ready() -> void:
   if not radio.connected: _on_joy_connection_changed(id,true)
 
 func _input(event: InputEvent) -> void:
+ radio.set_auxiliary_enabled(not sim.paused and calibration==null and holds.is_empty())
  if event is InputEventJoypadMotion: radio.on_motion(event.device,event.axis,event.axis_value)
  elif event is InputEventJoypadButton: radio.on_button(event.device,event.button_index,event.pressed)
 
 func _poll_controller(integrate: bool=true) -> bool:
- radio.poll(read_axis,sim.dt(),read_button,integrate)
+ radio.poll(read_axis,sim.dt(),read_button,integrate and not sim.paused and calibration==null and holds.is_empty())
  if external_controller_selection and (not radio.input_error.is_empty() or not radio.profile_error.is_empty()):
   controller_disconnected()
   pause_reason="Invalid controller input. Select controls again before continuing."
@@ -235,6 +236,7 @@ func _on_joy_connection_changed(id: int,connected: bool) -> void:
   pause_reason="radio disconnected"
 
 func hold(reason: String) -> void:
+ radio.set_auxiliary_enabled(false)
  if external_controller_selection and not holds.has(reason) and radio.connected: radio.require_neutral(true)
  holds[reason]=true
  sim.set_paused(true)
@@ -250,6 +252,7 @@ func cancel_calibration() -> void:
 func start_calibration() -> bool:
  if not radio.connected or radio.profile.get("kind","")!="radio": return false
  calibration=RcCalibration.new(radio.profile)
+ radio.set_auxiliary_enabled(false)
  sim.set_paused(true)
  pause_reason="calibrating radio"
  return true
@@ -289,6 +292,7 @@ func controller_disconnected() -> void:
 
 func controller_focus_lost() -> void:
  if external_controller_selection and radio.connected:
+  radio.set_auxiliary_enabled(false)
   radio.require_neutral(true,true)
   sim.set_paused(true)
   pause_reason="Focus lost. Release controls and review collective before continuing."

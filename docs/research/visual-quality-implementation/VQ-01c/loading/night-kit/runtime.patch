@@ -1,0 +1,110 @@
+diff --git a/app/addons/aircraft_contract/export_plugin.gd b/app/addons/aircraft_contract/export_plugin.gd
+index d2cc29ac..60e08e93 100644
+--- a/app/addons/aircraft_contract/export_plugin.gd
++++ b/app/addons/aircraft_contract/export_plugin.gd
+@@ -4,6 +4,7 @@
+ extends EditorExportPlugin
+ 
+ const Catalog := preload("res://app_state/aircraft_catalog.gd")
++const RotorcraftModel := preload("res://aircraft/hx700_model.gd")
+ const MARKER := "res://data/aircraft_models/package_proofs.json"
+ 
+ 
+@@ -12,15 +13,15 @@ func _get_name() -> String:
+ 
+ 
+ func _export_begin(_features: PackedStringArray, _is_debug: bool, _path: String, _flags: int) -> void:
++	# Godot remaps the imported GLB to a PackedScene. Rotor profile validation
++	# also needs its reviewed authoring bytes, avoiding geometry analysis at launch.
++	if FileAccess.get_sha256(RotorcraftModel.SCENE_PATH) != RotorcraftModel.GLB_SHA256:
++		push_error("Cannot export an unverified HX-700 source model")
++		return
++	add_file(RotorcraftModel.SCENE_PATH, FileAccess.get_file_as_bytes(RotorcraftModel.SCENE_PATH), false)
+ 	var registry: Script = load("res://aircraft/model_registry.gd")
+ 	var sources: Dictionary = {}
+-	var families: Dictionary = {}
+-	for id: String in Catalog.ids():
+-		# Match render/airplane.gd: rotorcraft use a dedicated contract, not the airplane manifest registry.
+-		if Catalog.is_rotorcraft(id):
+-			continue
+-		families[Catalog.visual_family(id)] = true
+-	for family: String in families:
++	for family: String in Catalog.airplane_visual_families():
+ 		var result: Dictionary = registry.describe(family)
+ 		if not result.get("ok", false):
+ 			push_error("Cannot export an invalid aircraft model: " + str(result.get("errors", [])))
+diff --git a/app/render/world/aircraft_lights.gd b/app/render/world/aircraft_lights.gd
+index c9ff631d..b02a2e2a 100644
+--- a/app/render/world/aircraft_lights.gd
++++ b/app/render/world/aircraft_lights.gd
+@@ -398,7 +398,9 @@ static func attach(root: Node3D) -> Node3D:
+ 	# Tips, strips and span from the model's own vertices (traced before any kit node exists).
+ 	var points := vertices(root)
+ 	var half := span_half(points)
+-	var lines := underwing_lines(triangles(root), half)
++	# Both skins use the same posed geometry, before the kit is attached.
++	var tris := triangles(root)
++	var lines := underwing_lines(tris, half)
+ 	var left := tip(points, half, -1.0)
+ 	var right := tip(points, half, 1.0)
+ 	kit.add_child(sprite("nav_left", Color(1.0, 0.06, 0.04), left.centre, NAV_SIZE_M))
+@@ -407,7 +409,6 @@ static func attach(root: Node3D) -> Node3D:
+ 	kit.add_child(sprite("strobe_left", Color(1.0, 1.0, 1.0), left.trailing, NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE))
+ 	kit.add_child(sprite("strobe_right", Color(1.0, 1.0, 1.0), right.trailing, NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE))
+ 	Exposure.register()
+-	var tris := triangles(root)
+ 	var top_lines := underwing_lines(tris, half, true)
+ 	for key: String in ["left", "right"]:
+ 		var line: PackedVector3Array = lines[key]
+diff --git a/app/tests/check_field_pack.gd b/app/tests/check_field_pack.gd
+index d3244c8a..0bb312e2 100644
+--- a/app/tests/check_field_pack.gd
++++ b/app/tests/check_field_pack.gd
+@@ -1,6 +1,8 @@
+ # L5 export smoke. Run from an EMPTY project root so a missing pack resource cannot fall back to the source tree.
+ extends SceneTree
+ 
++const EXPECTED_GRASS_ASSETS: Array[String] = ["grass_common_short", "grass_common_tall", "grass_wispy_tall"]
++
+ 
+ func _initialize() -> void:
+ 	var args: PackedStringArray = OS.get_cmdline_user_args()
+@@ -146,6 +148,8 @@ func _grass_error(grass: Node3D, imported: bool) -> String:
+ 		return "missing root or wrong field/scenery grass branch"
+ 	if grass.get_child_count() < 1 or grass.get_child_count() > (3 if imported else 4):
+ 		return "invalid number of nonempty source batches/quadrants"
++	if imported and grass.get_child_count() != EXPECTED_GRASS_ASSETS.size():
++		return "missing downloaded grass source batch"
+ 	var adapter: Script = load("res://scenery/imported_vegetation.gd") if imported else null
+ 	var clumps := 0
+ 	var triangles := 0
+@@ -163,7 +167,7 @@ func _grass_error(grass: Node3D, imported: bool) -> String:
+ 		var source: Mesh
+ 		if imported:
+ 			var asset_id := str(node.name).get_slice("_Part_", 0)
+-			if not asset_id in ["grass_common_short", "grass_common_tall", "grass_wispy_tall"]:
++			if not EXPECTED_GRASS_ASSETS.has(asset_id):
+ 				return "unknown imported grass source"
+ 			var parts: Array = adapter.get_parts(asset_id)
+ 			var part_index := int(str(node.name).get_slice("_Part_", 1))
+@@ -180,6 +184,10 @@ func _grass_error(grass: Node3D, imported: bool) -> String:
+ 			if mesh.surface_get_primitive_type(surface) != Mesh.PRIMITIVE_TRIANGLES or mesh.surface_get_material(surface) == null:
+ 				return "missing triangle surface/material"
+ 			if imported:
++				var material := mesh.surface_get_material(surface) as BaseMaterial3D
++				if material == null or material.albedo_texture == null \
++						or material.albedo_texture.get_width() <= 0 or material.albedo_texture.get_height() <= 0:
++					return "missing imported grass texture"
+ 				var original := source.surface_get_arrays(surface)
+ 				if arrays[Mesh.ARRAY_VERTEX] != original[Mesh.ARRAY_VERTEX] or arrays[Mesh.ARRAY_INDEX] != original[Mesh.ARRAY_INDEX] \
+ 						or mesh.surface_get_material(surface) != source.surface_get_material(surface):
+@@ -190,7 +198,8 @@ func _grass_error(grass: Node3D, imported: bool) -> String:
+ 		clumps += mm.instance_count
+ 	if clumps <= 0 or clumps > 6000 or int(grass.get_meta("clumps", -1)) != clumps:
+ 		return "clump metadata/count mismatch"
+-	if imported and (triangles <= 0 or triangles > 50000 or int(grass.get_meta("triangles", -1)) != triangles \
++	if imported and (clumps > 150 or assets.size() != EXPECTED_GRASS_ASSETS.size() \
++			or triangles <= 0 or triangles > 50000 or int(grass.get_meta("triangles", -1)) != triangles \
+ 			or int(grass.get_meta("asset_batches", -1)) != assets.size()):
+ 		return "imported triangle budget or batch metadata mismatch"
+ 	return ""

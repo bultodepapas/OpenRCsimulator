@@ -1,5 +1,8 @@
 # DT-11a — bake existing propeller grain and repair package verification
 
+Follow-up: [night-kit geometry reuse and integrated package checks](../night-kit/README.md).
+This report's measurements and artifact hashes retain their original scope.
+
 2026-10-14. Follow-up to the [default lake bake](../cold/README.md). The Stik now
 loads its existing wood grain from a generated Image resource. All 524,301 RGB8
 bytes, including ten mip levels, match the original recipe. No physics, geometry,

@@ -1,0 +1,23 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\GodotProbe.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+    "--main-pack",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\OpenRC.exe",
+    "--audio-driver",
+    "Dummy",
+    "--resolution",
+    "1280x720",
+    "--max-fps",
+    "60",
+    "--verbose",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+    "--",
+    "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\pack-lifecycle-verified.json",
+    "--cycles=20"
+  ],
+  "exit_code": 0,
+  "wall_seconds": 70.61379730000044
+}

@@ -225,7 +225,8 @@ func _test_glyph_family_save_and_cancel() -> void:
 	save_setup._save_profile()
 	var saved_semantics_after := ControllerActions.resolve_event(joy_event, save_setup._action_bindings, 5, "both")
 	_check("Save persists the chosen PlayStation prompt family", store.last_saved_profile.get("presentation", {}).get("glyph_family", "") == "playstation")
-	_check("saving presentation preference leaves semantic bindings intact", saved_semantics_after == saved_semantics_before and store.last_saved_profile.actions.accept.button == JOY_BUTTON_X)
+	var saved_actions := ControllerActions.effective_bindings(store.last_saved_profile)
+	_check("saving presentation preference leaves semantic bindings intact", saved_semantics_after == saved_semantics_before and saved_actions.accept.button == JOY_BUTTON_X)
 	save_setup.free()
 	await process_frame
 

@@ -1,0 +1,2563 @@
+{
+ "schema": "openrc-avanti-visual-study-v1",
+ "revision": "a200-av02-contours-03+blender-profile-1+plan-1+underside-1+photofit-3+planta-1+tren-1+morro-adelante+morro-cupula-fase9+diente-fase14",
+ "status": "Blender visual model: side profile from the SebArt side-view drawing; not calibrated, not flyable",
+ "units": "m",
+ "axes": {
+  "nose": "-Z",
+  "right": "+X",
+  "up": "+Y"
+ },
+ "datum": {
+  "z": "Root leading edge beside fuselage projected onto symmetry plane",
+  "y": "Estimated wing midplane at root; not measured CG height"
+ },
+ "nominal": {
+  "span_m": 2.0,
+  "length_m": 2.22,
+  "engine_length_m": 0.241,
+  "engine_diameter_m": 0.097,
+  "cg_aft_root_le_m": [
+   0.24,
+   0.25,
+   0.26
+  ]
+ },
+ "fuselage_stations": [
+  [
+   -0.93804,
+   0.001,
+   -0.01412,
+   -0.01612
+  ],
+  [
+   -0.92804,
+   0.01196,
+   -0.00263,
+   -0.02666
+  ],
+  [
+   -0.91804,
+   0.01832,
+   0.00293,
+   -0.03125
+  ],
+  [
+   -0.90804,
+   0.02332,
+   0.00813,
+   -0.03518
+  ],
+  [
+   -0.89804,
+   0.02733,
+   0.01357,
+   -0.03836
+  ],
+  [
+   -0.88804,
+   0.03111,
+   0.01834,
+   -0.04074
+  ],
+  [
+   -0.87804,
+   0.03428,
+   0.02367,
+   -0.04274
+  ],
+  [
+   -0.86804,
+   0.03746,
+   0.02882,
+   -0.04449
+  ],
+  [
+   -0.85804,
+   0.04078,
+   0.03422,
+   -0.04591
+  ],
+  [
+   -0.84804,
+   0.04328,
+   0.0392,
+   -0.0474
+  ],
+  [
+   -0.83804,
+   0.04611,
+   0.04423,
+   -0.04877
+  ],
+  [
+   -0.82804,
+   0.04855,
+   0.04947,
+   -0.05004
+  ],
+  [
+   -0.81804,
+   0.05087,
+   0.05442,
+   -0.051
+  ],
+  [
+   -0.80804,
+   0.05308,
+   0.05918,
+   -0.05259
+  ],
+  [
+   -0.78804,
+   0.05726,
+   0.06918,
+   -0.05466
+  ],
+  [
+   -0.76804,
+   0.06126,
+   0.07869,
+   -0.05625
+  ],
+  [
+   -0.74804,
+   0.06437,
+   0.08852,
+   -0.05832
+  ],
+  [
+   -0.72804,
+   0.06726,
+   0.09811,
+   -0.05952
+  ],
+  [
+   -0.70804,
+   0.07042,
+   0.10755,
+   -0.06136
+  ],
+  [
+   -0.68804,
+   0.07257,
+   0.11703,
+   -0.06283
+  ],
+  [
+   -0.66804,
+   0.07443,
+   0.12594,
+   -0.06393
+  ],
+  [
+   -0.64804,
+   0.07611,
+   0.13531,
+   -0.06503
+  ],
+  [
+   -0.62804,
+   0.07788,
+   0.14404,
+   -0.06614
+  ],
+  [
+   -0.60804,
+   0.07955,
+   0.15298,
+   -0.06724
+  ],
+  [
+   -0.58804,
+   0.07996,
+   0.14872,
+   -0.06764
+  ],
+  [
+   -0.56804,
+   0.08142,
+   0.14516,
+   -0.06834
+  ],
+  [
+   -0.54804,
+   0.08307,
+   0.14246,
+   -0.06944
+  ],
+  [
+   -0.52804,
+   0.08407,
+   0.14133,
+   -0.06944
+  ],
+  [
+   -0.50804,
+   0.0853,
+   0.14133,
+   -0.06944
+  ],
+  [
+   -0.48804,
+   0.08606,
+   0.14133,
+   -0.06944
+  ],
+  [
+   -0.46804,
+   0.08761,
+   0.14243,
+   -0.06944
+  ],
+  [
+   -0.44804,
+   0.0885,
+   0.14354,
+   -0.06944
+  ],
+  [
+   -0.42804,
+   0.08976,
+   0.14464,
+   -0.06944
+  ],
+  [
+   -0.40804,
+   0.09105,
+   0.14634,
+   -0.06944
+  ],
+  [
+   -0.38804,
+   0.09204,
+   0.14794,
+   -0.06944
+  ],
+  [
+   -0.36804,
+   0.09292,
+   0.14954,
+   -0.06944
+  ],
+  [
+   -0.34804,
+   0.09381,
+   0.15176,
+   -0.06944
+  ],
+  [
+   -0.32804,
+   0.09516,
+   0.15415,
+   -0.06944
+  ],
+  [
+   -0.30804,
+   0.09627,
+   0.15685,
+   -0.06944
+  ],
+  [
+   -0.28804,
+   0.09757,
+   0.15971,
+   -0.06944
+  ],
+  [
+   -0.26804,
+   0.09886,
+   0.16288,
+   -0.06944
+  ],
+  [
+   -0.24804,
+   0.10033,
+   0.16589,
+   -0.06944
+  ],
+  [
+   -0.22804,
+   0.10215,
+   0.16922,
+   -0.06944
+  ],
+  [
+   -0.20804,
+   0.10441,
+   0.17192,
+   -0.06944
+  ],
+  [
+   -0.18804,
+   0.1046,
+   0.17494,
+   -0.06944
+  ],
+  [
+   -0.16804,
+   0.1046,
+   0.17779,
+   -0.06944
+  ],
+  [
+   -0.14804,
+   0.1046,
+   0.18065,
+   -0.06944
+  ],
+  [
+   -0.12804,
+   0.1046,
+   0.18351,
+   -0.06944
+  ],
+  [
+   -0.10804,
+   0.1046,
+   0.18935,
+   -0.06944
+  ],
+  [
+   -0.08804,
+   0.1046,
+   0.19538,
+   -0.06944
+  ],
+  [
+   -0.06804,
+   0.1046,
+   0.20204,
+   -0.06944
+  ],
+  [
+   -0.04804,
+   0.1046,
+   0.21003,
+   -0.06944
+  ],
+  [
+   -0.02804,
+   0.1046,
+   0.21876,
+   -0.06944
+  ],
+  [
+   -0.00804,
+   0.1046,
+   0.22854,
+   -0.06944
+  ],
+  [
+   0.01196,
+   0.1046,
+   0.2401,
+   -0.06944
+  ],
+  [
+   0.03196,
+   0.1046,
+   0.25297,
+   -0.06944
+  ],
+  [
+   0.05196,
+   0.1046,
+   0.26759,
+   -0.06944
+  ],
+  [
+   0.07196,
+   0.1046,
+   0.28394,
+   -0.06944
+  ],
+  [
+   0.09196,
+   0.1046,
+   0.28401,
+   -0.06944
+  ],
+  [
+   0.11196,
+   0.1046,
+   0.28218,
+   -0.06944
+  ],
+  [
+   0.13196,
+   0.1046,
+   0.28034,
+   -0.06944
+  ],
+  [
+   0.15196,
+   0.1046,
+   0.27859,
+   -0.06944
+  ],
+  [
+   0.17196,
+   0.1046,
+   0.27667,
+   -0.06944
+  ],
+  [
+   0.19196,
+   0.1046,
+   0.27476,
+   -0.06944
+  ],
+  [
+   0.21196,
+   0.1046,
+   0.27316,
+   -0.06944
+  ],
+  [
+   0.23196,
+   0.1046,
+   0.27109,
+   -0.06944
+  ],
+  [
+   0.25196,
+   0.1046,
+   0.26896,
+   -0.06944
+  ],
+  [
+   0.27196,
+   0.1046,
+   0.26711,
+   -0.06944
+  ],
+  [
+   0.29196,
+   0.1046,
+   0.2652,
+   -0.06944
+  ],
+  [
+   0.31196,
+   0.1046,
+   0.26313,
+   -0.06944
+  ],
+  [
+   0.33196,
+   0.1046,
+   0.26122,
+   -0.06944
+  ],
+  [
+   0.35196,
+   0.1046,
+   0.25904,
+   -0.06944
+  ],
+  [
+   0.37196,
+   0.1046,
+   0.25723,
+   -0.06944
+  ],
+  [
+   0.39196,
+   0.1046,
+   0.25532,
+   -0.06944
+  ],
+  [
+   0.41196,
+   0.1046,
+   0.25309,
+   -0.06944
+  ],
+  [
+   0.43196,
+   0.1046,
+   0.25118,
+   -0.06944
+  ],
+  [
+   0.45196,
+   0.1046,
+   0.24912,
+   -0.06944
+  ],
+  [
+   0.47196,
+   0.1046,
+   0.24691,
+   -0.06944
+  ],
+  [
+   0.49196,
+   0.1046,
+   0.24471,
+   -0.06944
+  ],
+  [
+   0.51196,
+   0.1046,
+   0.2425,
+   -0.06944
+  ],
+  [
+   0.53196,
+   0.1046,
+   0.24052,
+   -0.06944
+  ],
+  [
+   0.55196,
+   0.1046,
+   0.23908,
+   -0.06944
+  ],
+  [
+   0.57196,
+   0.1046,
+   0.23717,
+   -0.06944
+  ],
+  [
+   0.59196,
+   0.1046,
+   0.23699,
+   -0.06944
+  ],
+  [
+   0.61196,
+   0.1046,
+   0.23553,
+   -0.06944
+  ],
+  [
+   0.63196,
+   0.10442,
+   0.23482,
+   -0.06944
+  ],
+  [
+   0.65196,
+   0.10265,
+   0.23412,
+   -0.06944
+  ],
+  [
+   0.67196,
+   0.10265,
+   0.23341,
+   -0.06944
+  ],
+  [
+   0.69196,
+   0.10249,
+   0.2327,
+   -0.06944
+  ],
+  [
+   0.71196,
+   0.10088,
+   0.23199,
+   -0.06944
+  ],
+  [
+   0.73196,
+   0.10026,
+   0.23129,
+   -0.06944
+  ],
+  [
+   0.75196,
+   0.1,
+   0.23058,
+   -0.06944
+  ],
+  [
+   0.77196,
+   0.09912,
+   0.22987,
+   -0.06944
+  ],
+  [
+   0.79196,
+   0.09823,
+   0.22916,
+   -0.06944
+  ],
+  [
+   0.81196,
+   0.0981,
+   0.22845,
+   -0.06944
+  ],
+  [
+   0.83196,
+   0.09663,
+   0.22775,
+   -0.06944
+  ],
+  [
+   0.85196,
+   0.09646,
+   0.22704,
+   -0.06944
+  ],
+  [
+   0.87196,
+   0.09581,
+   0.22633,
+   -0.06944
+  ],
+  [
+   0.89196,
+   0.09469,
+   0.22562,
+   -0.06944
+  ],
+  [
+   0.91196,
+   0.09381,
+   0.22492,
+   -0.06944
+  ],
+  [
+   0.93196,
+   0.09292,
+   0.22421,
+   -0.06944
+  ],
+  [
+   0.95196,
+   0.09188,
+   0.2235,
+   -0.06944
+  ],
+  [
+   0.97196,
+   0.09114,
+   0.22279,
+   -0.06944
+  ],
+  [
+   0.99196,
+   0.09095,
+   0.22209,
+   -0.06944
+  ],
+  [
+   1.01196,
+   0.09056,
+   0.22138,
+   -0.06944
+  ],
+  [
+   1.03196,
+   0.08996,
+   0.22067,
+   -0.06944
+  ],
+  [
+   1.05196,
+   0.08915,
+   0.21996,
+   -0.06944
+  ],
+  [
+   1.07196,
+   0.08813,
+   0.21926,
+   -0.06944
+  ],
+  [
+   1.09196,
+   0.08691,
+   0.21855,
+   -0.06944
+  ],
+  [
+   1.11196,
+   0.08547,
+   0.21784,
+   -0.06944
+  ],
+  [
+   1.13196,
+   0.08383,
+   0.21713,
+   -0.06944
+  ],
+  [
+   1.15196,
+   0.08197,
+   0.21642,
+   -0.06944
+  ],
+  [
+   1.17196,
+   0.07992,
+   0.21572,
+   -0.06944
+  ],
+  [
+   1.19196,
+   0.07765,
+   0.21395,
+   -0.06944
+  ],
+  [
+   1.21196,
+   0.07517,
+   0.18912,
+   -0.03142
+  ],
+  [
+   1.23196,
+   0.07249,
+   0.17205,
+   -0.01382
+  ],
+  [
+   1.25196,
+   0.06961,
+   0.1605,
+   -0.00262
+  ],
+  [
+   1.27196,
+   0.06726,
+   0.15285,
+   0.00532
+  ],
+  [
+   1.28196,
+   0.06726,
+   0.15054,
+   0.00803
+  ]
+ ],
+ "canopy_stations": [
+  [
+   -0.63712,
+   0.002,
+   0.13999,
+   0.12676
+  ],
+  [
+   -0.6183,
+   0.02371,
+   0.1493,
+   0.10472
+  ],
+  [
+   -0.59947,
+   0.03621,
+   0.15843,
+   0.08488
+  ],
+  [
+   -0.58065,
+   0.05433,
+   0.16737,
+   0.06698
+  ],
+  [
+   -0.56183,
+   0.06614,
+   0.17608,
+   0.05291
+  ],
+  [
+   -0.543,
+   0.07426,
+   0.18456,
+   0.04036
+  ],
+  [
+   -0.52418,
+   0.07587,
+   0.19278,
+   0.02976
+  ],
+  [
+   -0.50535,
+   0.07687,
+   0.20073,
+   0.02145
+  ],
+  [
+   -0.48653,
+   0.07753,
+   0.20839,
+   0.01365
+  ],
+  [
+   -0.46771,
+   0.07887,
+   0.21575,
+   0.00882
+  ],
+  [
+   -0.44888,
+   0.07961,
+   0.2228,
+   0.00356
+  ],
+  [
+   -0.43006,
+   0.07961,
+   0.22952,
+   0.0
+  ],
+  [
+   -0.41124,
+   0.07961,
+   0.23591,
+   -0.00441
+  ],
+  [
+   -0.39241,
+   0.07961,
+   0.24196,
+   -0.00551
+  ],
+  [
+   -0.37359,
+   0.08093,
+   0.24766,
+   -0.0089
+  ],
+  [
+   -0.35477,
+   0.08347,
+   0.25301,
+   -0.00992
+  ],
+  [
+   -0.33594,
+   0.08542,
+   0.258,
+   -0.01102
+  ],
+  [
+   -0.31712,
+   0.08701,
+   0.26262,
+   -0.01102
+  ],
+  [
+   -0.2983,
+   0.08841,
+   0.26688,
+   -0.01102
+  ],
+  [
+   -0.27947,
+   0.08974,
+   0.27078,
+   -0.00822
+  ],
+  [
+   -0.26065,
+   0.091,
+   0.27432,
+   -0.00653
+  ],
+  [
+   -0.24182,
+   0.09215,
+   0.27749,
+   -0.00441
+  ],
+  [
+   -0.223,
+   0.09312,
+   0.28031,
+   -0.0011
+  ],
+  [
+   -0.20418,
+   0.09384,
+   0.28277,
+   0.0011
+  ],
+  [
+   -0.18535,
+   0.09427,
+   0.28489,
+   0.00551
+  ],
+  [
+   -0.16653,
+   0.09437,
+   0.28667,
+   0.00882
+  ],
+  [
+   -0.14771,
+   0.09413,
+   0.28812,
+   0.01323
+  ],
+  [
+   -0.12888,
+   0.09356,
+   0.28925,
+   0.01764
+  ],
+  [
+   -0.11006,
+   0.09268,
+   0.29007,
+   0.02756
+  ],
+  [
+   -0.09124,
+   0.09152,
+   0.29059,
+   0.03858
+  ],
+  [
+   -0.07241,
+   0.09014,
+   0.29084,
+   0.05181
+  ],
+  [
+   -0.05359,
+   0.08859,
+   0.29081,
+   0.06393
+  ],
+  [
+   -0.03476,
+   0.08659,
+   0.29054,
+   0.08047
+  ],
+  [
+   -0.01594,
+   0.08331,
+   0.29003,
+   0.09929
+  ],
+  [
+   0.00288,
+   0.07733,
+   0.28931,
+   0.12015
+  ],
+  [
+   0.02171,
+   0.06768,
+   0.2884,
+   0.1433
+  ],
+  [
+   0.04053,
+   0.05474,
+   0.28732,
+   0.17035
+  ],
+  [
+   0.05935,
+   0.0396,
+   0.28609,
+   0.20028
+  ],
+  [
+   0.07818,
+   0.02333,
+   0.28474,
+   0.23563
+  ],
+  [
+   0.097,
+   0.00698,
+   0.28329,
+   0.26786
+  ]
+ ],
+ "wing": {
+  "stations": [
+   [
+    0.06,
+    0.001,
+    0.58939,
+    0.00089
+   ],
+   [
+    0.095,
+    0.001,
+    0.58939,
+    0.00089
+   ],
+   [
+    0.11,
+    0.001,
+    0.58939,
+    0.00089
+   ],
+   [
+    0.125,
+    0.001,
+    0.554,
+    0.00089
+   ],
+   [
+    0.14,
+    0.001,
+    0.53099,
+    0.00089
+   ],
+   [
+    0.155,
+    0.00194,
+    0.51329,
+    0.00089
+   ],
+   [
+    0.17,
+    0.00425,
+    0.50798,
+    0.00089
+   ],
+   [
+    0.1894,
+    0.00532,
+    0.50798,
+    0.00089
+   ],
+   [
+    0.2294,
+    0.0241,
+    0.51152,
+    0.0016
+   ],
+   [
+    0.2694,
+    0.04249,
+    0.51683,
+    0.00232
+   ],
+   [
+    0.3094,
+    0.06163,
+    0.52037,
+    0.00304
+   ],
+   [
+    0.3494,
+    0.07966,
+    0.52391,
+    0.00376
+   ],
+   [
+    0.3894,
+    0.09915,
+    0.52745,
+    0.00448
+   ],
+   [
+    0.4294,
+    0.11791,
+    0.53099,
+    0.00519
+   ],
+   [
+    0.4694,
+    0.1363,
+    0.5363,
+    0.00591
+   ],
+   [
+    0.5094,
+    0.15577,
+    0.53984,
+    0.00663
+   ],
+   [
+    0.5494,
+    0.17523,
+    0.54338,
+    0.00753
+   ],
+   [
+    0.5894,
+    0.17346,
+    0.54869,
+    0.00864
+   ],
+   [
+    0.6294,
+    0.19048,
+    0.55223,
+    0.00974
+   ],
+   [
+    0.6694,
+    0.20924,
+    0.55577,
+    0.01084
+   ],
+   [
+    0.7094,
+    0.228,
+    0.56074,
+    0.01195
+   ],
+   [
+    0.7494,
+    0.24603,
+    0.56461,
+    0.01305
+   ],
+   [
+    0.7894,
+    0.26373,
+    0.56817,
+    0.01415
+   ],
+   [
+    0.8294,
+    0.28251,
+    0.57346,
+    0.01525
+   ],
+   [
+    0.8694,
+    0.306,
+    0.57877,
+    0.01636
+   ],
+   [
+    0.9,
+    0.3349,
+    0.58054,
+    0.0172
+   ],
+   [
+    0.9123,
+    0.3496,
+    0.58133,
+    0.01754
+   ],
+   [
+    0.9246,
+    0.368,
+    0.58256,
+    0.01789
+   ],
+   [
+    0.9368,
+    0.3893,
+    0.58378,
+    0.01823
+   ],
+   [
+    0.9491,
+    0.415,
+    0.58451,
+    0.01857
+   ],
+   [
+    0.9614,
+    0.4422,
+    0.58796,
+    0.01893
+   ],
+   [
+    0.9737,
+    0.4707,
+    0.5947,
+    0.01928
+   ],
+   [
+    0.986,
+    0.5112,
+    0.60564,
+    0.01963
+   ],
+   [
+    0.9982,
+    0.5599,
+    0.61417,
+    0.01995
+   ]
+  ],
+  "hinge_fraction": 0.69,
+  "flap_span": [
+   0.172,
+   0.568
+  ],
+  "aileron_span": [
+   0.5772,
+   0.8958
+  ],
+  "gap_m": 0.004,
+  "slab_thickness_m": 0.024,
+  "control_thickness_m": 0.01,
+  "hinge_line": [
+   [
+    0.16460176991150444,
+    0.40709274336283174
+   ],
+   [
+    0.8902654867256637,
+    0.5044378761061947
+   ]
+  ],
+  "fence": {
+   "x": 0.5752,
+   "z_front": 0.1009
+  },
+  "tip_pod": {
+   "x": 0.9267,
+   "z0": 0.5177,
+   "z1": 0.613,
+   "r": 0.012
+  },
+  "flap_hinge_line": [
+   [
+    0.172,
+    0.4081
+   ],
+   [
+    0.5752,
+    0.4622
+   ]
+  ],
+  "aileron_hinge_line": [
+   [
+    0.5752,
+    0.4622
+   ],
+   [
+    0.8958,
+    0.5052
+   ]
+  ]
+ },
+ "tail": {
+  "stations": [
+   [
+    0.055,
+    0.98589,
+    1.25491,
+    0.13938
+   ],
+   [
+    0.0903,
+    0.98589,
+    1.25491,
+    0.13938
+   ],
+   [
+    0.1442,
+    1.0124,
+    1.26196,
+    0.14151
+   ],
+   [
+    0.1982,
+    1.03892,
+    1.26727,
+    0.14364
+   ],
+   [
+    0.2521,
+    1.0645,
+    1.27435,
+    0.14577
+   ],
+   [
+    0.3061,
+    1.09018,
+    1.28143,
+    0.1479
+   ],
+   [
+    0.36,
+    1.11754,
+    1.28851,
+    0.15003
+   ],
+   [
+    0.3737,
+    1.12922,
+    1.28876,
+    0.15057
+   ],
+   [
+    0.3875,
+    1.14327,
+    1.29028,
+    0.15111
+   ],
+   [
+    0.4012,
+    1.16051,
+    1.29205,
+    0.15166
+   ],
+   [
+    0.415,
+    1.18661,
+    1.29382,
+    0.1522
+   ],
+   [
+    0.4287,
+    1.23302,
+    1.29559,
+    0.15274
+   ],
+   [
+    0.4425,
+    1.28497,
+    1.29736,
+    0.15279
+   ]
+  ],
+  "hinge_fraction": 0.67,
+  "gap_m": 0.003,
+  "slab_thickness_m": 0.014,
+  "control_thickness_m": 0.01,
+  "hinge_line": [
+   [
+    0.085,
+    1.177
+   ],
+   [
+    0.375,
+    1.208
+   ]
+  ],
+  "elevator_span": [
+   0.085,
+   0.442
+  ],
+  "note_root": "root row moved from x 0.015 to 0.055 so the stabiliser panels stop inside the fuselage skin, clear of the thrust tube"
+ },
+ "fin": {
+  "outline_yz": [
+   [
+    0.085,
+    0.3
+   ],
+   [
+    0.1,
+    0.4
+   ],
+   [
+    0.125,
+    0.51
+   ],
+   [
+    0.18,
+    0.64
+   ],
+   [
+    0.27,
+    0.75
+   ],
+   [
+    0.38,
+    0.835
+   ],
+   [
+    0.465,
+    0.887
+   ],
+   [
+    0.498,
+    0.92
+   ],
+   [
+    0.51,
+    0.96
+   ],
+   [
+    0.49,
+    1.105
+   ],
+   [
+    0.06,
+    1.155
+   ]
+  ],
+  "hinge_bottom_yz": [
+   0.065,
+   1.017
+  ],
+  "hinge_top_yz": [
+   0.5,
+   1.035
+  ],
+  "thickness_m": 0.014,
+  "leading_outline_count": 9
+ },
+ "installation": {
+  "engine_center": [
+   0,
+   -0.005,
+   0.54
+  ],
+  "outlet_radius_m": 0.036,
+  "intake_stations": [
+   [
+    -0.09,
+    0.026,
+    0.00856,
+    -0.06144,
+    0.156
+   ],
+   [
+    -0.07,
+    0.029,
+    0.01156,
+    -0.06444,
+    0.156
+   ],
+   [
+    0.015,
+    0.032,
+    0.01456,
+    -0.06544,
+    0.154
+   ],
+   [
+    0.14,
+    0.023,
+    0.01056,
+    -0.05644,
+    0.145
+   ],
+   [
+    0.28,
+    0.006,
+    -0.01044,
+    -0.03644,
+    0.13
+   ]
+  ],
+  "intake_shadow_stations": [
+   [
+    -0.091,
+    0.021,
+    0.001,
+    -0.057,
+    0.156
+   ],
+   [
+    -0.089,
+    0.021,
+    0.001,
+    -0.057,
+    0.156
+   ]
+  ],
+  "nozzle_center_yz": [
+   0.07992,
+   1.28196
+  ],
+  "side_blister_zy": {
+   "front": [
+    -0.3858,
+    0.06503
+   ],
+   "top_end": [
+    -0.05622,
+    0.06724
+   ],
+   "nose_end": [
+    -0.0011,
+    0.02315
+   ],
+   "bot_rear": [
+    -0.01984,
+    -0.01323
+   ],
+   "bot_front": [
+    -0.21164,
+    -0.04299
+   ]
+  },
+  "side_blister_plan": [
+   [
+    -0.2726,
+    0.0
+   ],
+   [
+    -0.2655,
+    0.0
+   ],
+   [
+    -0.2584,
+    0.0
+   ],
+   [
+    -0.2513,
+    0.0
+   ],
+   [
+    -0.2442,
+    0.0002
+   ],
+   [
+    -0.2372,
+    0.0
+   ],
+   [
+    -0.2301,
+    0.0
+   ],
+   [
+    -0.223,
+    0.0
+   ],
+   [
+    -0.2159,
+    0.0004
+   ],
+   [
+    -0.2088,
+    0.0002
+   ],
+   [
+    -0.2018,
+    0.0007
+   ],
+   [
+    -0.1947,
+    0.0016
+   ],
+   [
+    -0.1876,
+    0.0025
+   ],
+   [
+    -0.1805,
+    0.0034
+   ],
+   [
+    -0.1734,
+    0.0042
+   ],
+   [
+    -0.1664,
+    0.006
+   ],
+   [
+    -0.1593,
+    0.006
+   ],
+   [
+    -0.1522,
+    0.0078
+   ],
+   [
+    -0.1451,
+    0.0096
+   ],
+   [
+    -0.138,
+    0.0096
+   ],
+   [
+    -0.131,
+    0.0113
+   ],
+   [
+    -0.1239,
+    0.0131
+   ],
+   [
+    -0.1168,
+    0.0149
+   ],
+   [
+    -0.1097,
+    0.0149
+   ],
+   [
+    -0.1026,
+    0.0166
+   ],
+   [
+    -0.0956,
+    0.0184
+   ],
+   [
+    -0.0885,
+    0.0202
+   ],
+   [
+    -0.0814,
+    0.0219
+   ],
+   [
+    -0.0743,
+    0.0237
+   ],
+   [
+    -0.0672,
+    0.0255
+   ],
+   [
+    -0.0602,
+    0.0273
+   ],
+   [
+    -0.0531,
+    0.0308
+   ],
+   [
+    -0.046,
+    0.0326
+   ],
+   [
+    -0.0389,
+    0.0361
+   ],
+   [
+    -0.0318,
+    0.0405
+   ],
+   [
+    -0.0248,
+    0.0441
+   ],
+   [
+    -0.0177,
+    0.0503
+   ],
+   [
+    -0.0106,
+    0.0582
+   ],
+   [
+    -0.0035,
+    0.0706
+   ],
+   [
+    0.0036,
+    0.0848
+   ],
+   [
+    0.0106,
+    0.0
+   ],
+   [
+    0.0177,
+    0.0
+   ],
+   [
+    0.0248,
+    0.0
+   ]
+  ]
+ },
+ "controls_deg": {
+  "flap_cruise": 0,
+  "flap_takeoff": 20,
+  "flap_landing": 50,
+  "aileron_up": 30,
+  "aileron_down": 25,
+  "elevator_up": 30,
+  "elevator_down": 30,
+  "rudder_each_side": 30
+ },
+ "evidence": {
+  "nominal": {
+   "kind": "manufacturer_nominal",
+   "sources": [
+    {
+     "path": "references/avanti-s/manuals/avanti-s-200-intro.pdf",
+     "url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf",
+     "sha256": "c22d198a694eca39f122ce7ce419d55a30bfb73ca60cdc888471b021c4ec8134"
+    },
+    {
+     "path": "references/avanti-s/turbine/jetcat-p100-rx-dimensions.pdf",
+     "url": "https://www.jetcat.de/jetcat/produkte/hobby/p100_rx/JetCat%20P100%20RX%20Size.PDF",
+     "sha256": "122094da4d679ed03b30b3a16ff0cafbc105e0dbab13e4655ba1aa6703af9cf5"
+    }
+   ]
+  },
+  "controls_deg": {
+   "kind": "manufacturer_nominal",
+   "source": {
+    "path": "references/avanti-s/manuals/avanti-s-200-intro.pdf",
+    "url": "https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf",
+    "sha256": "c22d198a694eca39f122ce7ce419d55a30bfb73ca60cdc888471b021c4ec8134"
+   },
+   "pdf_page": 4
+  },
+  "fuselage_stations": {
+   "kind": "estimated_visual_blockout",
+   "source": "Official CIMG7310/CIMG7313/CIMG7321 photographs; no metric reconstruction",
+   "uncertainty": "Unknown; values are design assumptions, not confidence intervals",
+   "refinement": "Visual estimate from unchanged comparison cameras and existing official photos; docs/research/avanti-s-contour-refinement-v3.md. No metric calibration."
+  },
+  "canopy_stations": {
+   "kind": "estimated_visual_blockout",
+   "source": "Official CIMG7316 and CIMG7310 photographs",
+   "refinement": "Visual estimate from unchanged comparison cameras and existing official photos; docs/research/avanti-s-contour-refinement-v3.md. No metric calibration."
+  },
+  "wing": {
+   "kind": "estimated_visual_blockout",
+   "source": "Official CIMG7321 and CIMG7313; endpoints constrained only by nominal span",
+   "warning": "Area, chord, sweep, dihedral and thickness are unvalidated; not aerodynamic data",
+   "refinement": "Frozen-camera CIMG7321/CIMG7313/CIMG7310 silhouette review; docs/research/avanti-s-contour-refinement.md. Visual estimates, not measured dimensions."
+  },
+  "tail": {
+   "kind": "estimated_visual_blockout",
+   "source": "Official CIMG7313; no calibrated scale",
+   "refinement": "Frozen-camera CIMG7321/CIMG7313/CIMG7310 silhouette review; docs/research/avanti-s-contour-refinement.md. Visual estimates, not measured dimensions."
+  },
+  "fin": {
+   "kind": "estimated_visual_blockout",
+   "source": "Official CIMG7310; no calibrated scale",
+   "refinement": "Frozen-camera CIMG7321/CIMG7313/CIMG7310 silhouette review; docs/research/avanti-s-contour-refinement.md. Visual estimates, not measured dimensions."
+  },
+  "installation": {
+   "kind": "estimated_visual_blockout",
+   "source": "Assembly steps131-134 for arrangement only; positions and duct radii assumed",
+   "refinement": "Frozen-camera CIMG7321/CIMG7313/CIMG7310 silhouette review; docs/research/avanti-s-contour-refinement.md. Visual estimates, not measured dimensions."
+  },
+  "finish": {
+   "kind": "illustrative",
+   "source": "White/blue/red groups for inspection; not exact SebArt livery"
+  },
+  "loft": {
+   "kind": "procedural_visual_interpolation",
+   "source": "Shape-preserving interpolation through estimated sections; adds no measured dimensions."
+  },
+  "blender_profile": {
+   "kind": "estimated_visual_from_drawing",
+   "source": "Side-view livery drawing supplied by the user (colours ignored), registered at the wing root LE and scaled to the nominal 2.22 m length; half widths and planforms still from geometry.json",
+   "scale_m_per_px": 0.001102284011916584
+  },
+  "blender_plan": {
+   "kind": "estimated_visual_from_drawing",
+   "source": "Top-view livery drawing supplied by the user (colours ignored), scaled to the 2.00 m span and registered at the nose of the side profile",
+   "scale_m_per_px": 0.0017699115044247787
+  }
+ },
+ "loft": {
+  "longitudinal_subdivisions": 4,
+  "smooth_normals": true,
+  "interpolation": "bounded_monotone_hermite"
+ },
+ "canopy_bows": [
+  {
+   "top": [
+    -0.45965243296921554,
+    0.2204568023833168
+   ],
+   "bottom": [
+    -0.41004965243296926,
+    0.13558093346573985
+   ]
+  },
+  {
+   "top": [
+    -0.16203574975173785,
+    0.2843892750744787
+   ],
+   "bottom": [
+    -0.22266137040714998,
+    0.15762661370407152
+   ]
+  },
+  {
+   "top": [
+    0.0670009930486594,
+    null
+   ],
+   "bottom": [
+    0.037000993048659406,
+    null
+   ]
+  }
+ ],
+ "fin_profile": {
+  "leading_yz": [
+   [
+    0.17995,
+    0.58185
+   ],
+   [
+    0.23589,
+    0.60185
+   ],
+   [
+    0.23699,
+    0.6283
+   ],
+   [
+    0.23809,
+    0.66798
+   ],
+   [
+    0.2392,
+    0.68121
+   ],
+   [
+    0.2403,
+    0.69444
+   ],
+   [
+    0.2414,
+    0.70767
+   ],
+   [
+    0.2425,
+    0.72089
+   ],
+   [
+    0.24471,
+    0.73412
+   ],
+   [
+    0.24691,
+    0.74735
+   ],
+   [
+    0.24912,
+    0.76058
+   ],
+   [
+    0.25242,
+    0.7738
+   ],
+   [
+    0.25573,
+    0.78703
+   ],
+   [
+    0.25904,
+    0.80026
+   ],
+   [
+    0.26455,
+    0.81349
+   ],
+   [
+    0.26896,
+    0.82671
+   ],
+   [
+    0.27557,
+    0.83994
+   ],
+   [
+    0.28329,
+    0.85317
+   ],
+   [
+    0.291,
+    0.8664
+   ],
+   [
+    0.29872,
+    0.87962
+   ],
+   [
+    0.30864,
+    0.89285
+   ],
+   [
+    0.31856,
+    0.90608
+   ],
+   [
+    0.33069,
+    0.9193
+   ],
+   [
+    0.34281,
+    0.93253
+   ],
+   [
+    0.35604,
+    0.94576
+   ],
+   [
+    0.36816,
+    0.95899
+   ],
+   [
+    0.38139,
+    0.97221
+   ],
+   [
+    0.39462,
+    0.98544
+   ],
+   [
+    0.40674,
+    0.99867
+   ],
+   [
+    0.41997,
+    1.0119
+   ],
+   [
+    0.4332,
+    1.02512
+   ],
+   [
+    0.44532,
+    1.03835
+   ],
+   [
+    0.45855,
+    1.05158
+   ],
+   [
+    0.47068,
+    1.06481
+   ],
+   [
+    0.4828,
+    1.07803
+   ],
+   [
+    0.49603,
+    1.09126
+   ],
+   [
+    0.50815,
+    1.10449
+   ],
+   [
+    0.52028,
+    1.11772
+   ],
+   [
+    0.5302,
+    1.13094
+   ],
+   [
+    0.53791,
+    1.14417
+   ],
+   [
+    0.54563,
+    1.1574
+   ],
+   [
+    0.55114,
+    1.17063
+   ],
+   [
+    0.55445,
+    1.18385
+   ],
+   [
+    0.55776,
+    1.19708
+   ],
+   [
+    0.55996,
+    1.21031
+   ],
+   [
+    0.56106,
+    1.23676
+   ]
+  ],
+  "tip_y": 0.56216,
+  "te_top_yz": [
+   0.56216,
+   1.27865
+  ],
+  "te_bottom_yz": [
+   0.21495,
+   1.19377
+  ],
+  "hinge_top_yz": [
+   0.56216,
+   1.222
+  ],
+  "hinge_bottom_yz": [
+   0.21274,
+   1.084
+  ]
+ },
+ "gear": {
+  "ground_y": -0.235,
+  "nose_z": -0.553,
+  "main_z": 0.3,
+  "main_x": 0.34,
+  "well": {
+   "x": 0.17,
+   "z": 0.255,
+   "r": 0.048,
+   "slot_x": 0.335,
+   "slot_z": 0.3
+  },
+  "main_retract": {
+   "pivot": [
+    0.34245605583678124,
+    -0.003346,
+    0.3337718915763671
+   ],
+   "rotvec": [
+    0.6013165258680895,
+    -0.5954662314401657,
+    -1.407954964241598
+   ],
+   "note": "right gear, Godot axes: rigid rotation of the leg about the pivot (rotation vector, rad) that stows the wheel flat in the wing well; solved in mej/gear_design.py; eighteenth phase: pivot 2 mm higher so that the stowed leg stays inside the lower skin"
+  },
+  "nose_retract": {
+   "pivot_y": -0.045,
+   "angle_deg": 114.0,
+   "note": "rotation about +x (Godot): positive = wheel swings FORWARD into the belly bay ahead of the leg (white workshop photo: door and bay ahead of the leg; underside photo: panel line ahead of the leg). 114 deg keeps the stowed tyre ~1 cm above the belly with the 3.5 cm trailing axle."
+  }
+ },
+ "photo_fit": {
+  "forward_width_scale": 1.0,
+  "tip_up_m": 0.04,
+  "tip_up_power": 10,
+  "fence": {
+   "shape": "D-plate",
+   "rear_top_u": 0.995,
+   "rear_bottom_u": 0.955,
+   "top_rear_m": 0.043,
+   "bottom_rear_m": -0.017,
+   "depth_scale": 1.05,
+   "thickness_m": 0.003,
+   "height_scale": 0.92
+  },
+  "rear_bottom_raise": 0.05,
+  "nozzle_radius_m": 0.058,
+  "tail_y": 0.132,
+  "tail_dihedral_m": -0.01,
+  "section_n_top": 2.8,
+  "intake": {
+   "lip_out": 0.09,
+   "depth": 0.036,
+   "lip_y": 0.092,
+   "housing_y": 0.0,
+   "hood_top": 0.14,
+   "mouth_corner": 0.07,
+   "lip_z0": -0.55,
+   "lip_pow": 1.6,
+   "fairing_len": 0.42,
+   "mouth_bottom_y": 0.0,
+   "depth_pow": 1.6,
+   "note": "cheek intakes: front photo (camera fit) mouth 0.10 x 0.075 m, outer lip x 0.18; CG render lip edge; nineteenth phase: rounded lip (lip_k), lower hood top, half-moon mouth (corner 70 mm) with an elliptic hood nose (CIMG7345, hq-03, CIMG7323); twentieth phase: triangular mouth under a brow (hood_slant, brow), channel deepest at the bottom (chan_bottom), lip swept 7 cm forward at the top (lip_sweep; CIMG7323 front, hq-03, hq-04, CIMG7345); twenty-first phase (PLAN_TOMAS_AIRE): six-camera mouth fit -> lip_out 0.09, hood_slant 1.0, lip_cutback (lip set back at mid height so the mouth shows from above), lip_k 0.6, sweep fade over 9 cm and shorter ramp under the canopy sill, foot_step_max (no crack at the lip foot), dark 6-ring duct with inward normals plus a dark sleeve and an interior screen (light variant); twenty-second phase (PLAN_TOMAS_FORMA): the intake is a 55 cm triangular trough between two design creases read off hq-02/hq-04 (trough_top_zy = brow, trough_bottom_zy = chine, vertex behind the nose gear), C-shaped section (overhanging brow, recessed wall, narrow floor), creases as fixed edge loops of the mesh, cheek following the local brow (hood_top 0.14), concave fairing-to-wing fillet, lower root fillet with strips on the wing; the mouth itself unchanged (blended over trough_lip_len); twenty-third phase (PLAN_TOMAS_FORMA_2): behind the lip the housing wraps under into the belly (pod_underside_r, no chin step), the brow kink becomes a rounded crest (fairing_crest_r) and the flank is convex (fairing_slant -1: cosine); the mouth unchanged; twenty-fourth phase (PLAN_TOMAS_FORMA_3): the hood amplitude reaches the mouth with zero slope (hood_ramp_c1: no crease up the cheek from the mouth top), two more lip-nose rings and the rim pull/channel floor confined to the mouth (lip_rings_fine: no twist at the end of the lip), the crest fill and the convex flank blend in from the mouth over 6 and 8 cm (fairing_crest_z0/len, fairing_flank_z0/len: no shoulder behind the lip nose), the channel wall starts C1 under the lip's S (chan_wall_c1), the brow and chine loops are marked sharp (crease_sharp_deg: split normals in Blender and glTF), denser rim in the light variant (lowres_mouth_density); twenty-fifth phase (PLAN_UNION_ALA): the housing ends inside the wing root (pod_floor_wing: its wall fades out down to a floor 3 mm inside the wing's lower surface, a 7 mm chin ahead of the leading edge; the wrap-under of pod_underside_r hung a lobe under the wing), the concave fillet onto the wing's upper surface is 50 mm, tangent 1.5 mm under the skin and starts at the mouth (fairing_wing_fillet, fairing_fillet_margin/z0/len), the root flare meets the wing as a quarter ellipse (tangent) and ends inside it too",
+   "lip_pow2": 8.0,
+   "lip_mix": 0.8,
+   "lip_k": 0.6,
+   "lip_wmax": 0.02,
+   "lip_wmin": 0.006,
+   "lip_density": 12.0,
+   "hood_slant": 1.0,
+   "chan_bottom": 0.8,
+   "lip_sweep": 0.07,
+   "wall_fade_y0": -0.012,
+   "wall_fade_len": 0.03,
+   "chan_fillet": 0.035,
+   "lip_sweep_pow": 1.4,
+   "brow": 0.35,
+   "sweep_ramp_ahead": 0.3,
+   "lip_cutback": 0.03,
+   "sweep_fade_h": 0.09,
+   "lip_cutback_bias": 1.0,
+   "duct_dark": true,
+   "interior_screen": true,
+   "chin_len": 0.0,
+   "foot_step_max": 0.0065,
+   "duct_x_min": 0.052,
+   "duct_sleeve_to_z": 0.084,
+   "sweep_ramp_ahead_top": 0.2,
+   "trough_top_zy": [
+    [
+     -0.55,
+     0.012
+    ],
+    [
+     -0.51,
+     0.036
+    ],
+    [
+     -0.44,
+     0.054
+    ],
+    [
+     -0.36,
+     0.068
+    ],
+    [
+     -0.28,
+     0.078
+    ],
+    [
+     -0.2,
+     0.084
+    ],
+    [
+     -0.15,
+     0.086
+    ]
+   ],
+   "trough_bottom_zy": [
+    [
+     -0.55,
+     0.012
+    ],
+    [
+     -0.3,
+     0.006
+    ],
+    [
+     -0.08,
+     0.001
+    ]
+   ],
+   "trough_lip_len": 0.06,
+   "fairing_blend": 0.25,
+   "trough_floor": 0.8,
+   "trough_overhang": 0.5,
+   "fairing_wing_fillet": 0.06,
+   "fairing_crest_r": 0.012,
+   "fairing_slant": -1,
+   "pod_underside_r": 0.05,
+   "lip_cutback_pow": 2.0,
+   "hood_ramp_c1": 0.04,
+   "fairing_crest_z0": 0.0,
+   "fairing_crest_len": 0.06,
+   "fairing_flank_z0": 0.0,
+   "fairing_flank_len": 0.08,
+   "chan_wall_c1": 0.15,
+   "lip_rings_fine": 1,
+   "lowres_mouth_density": 1.2,
+   "crease_sharp_deg": 30,
+   "pod_floor_wing": 1,
+   "pod_floor_x": 0.17,
+   "pod_floor_margin": 0.003,
+   "pod_chin": 0.007,
+   "fairing_fillet_margin": 0.0025,
+   "fairing_fillet_z0": 0.0,
+   "fairing_fillet_len": 0.06,
+   "fillet_foot_vertex_sigma": 0.004
+  },
+  "note": "front-low CIMG7323 and front-high CIMG7322 camera fits (RMS ~12 px): forward fuselage ~8 % narrower than the drawings, wider main-gear track",
+  "tail_scarf_m": 0.0,
+  "tail_fairing": {
+   "width": 0.028,
+   "flare_h": 0.04,
+   "lead": 0.05
+  },
+  "fin_height_scale": 1.04,
+  "tip_cap": {
+   "from_x": 0.8978,
+   "thickness_m": 0.026,
+   "round_m": 0.045
+  },
+  "root_fairing": {
+   "edge_x": 0.15,
+   "flare_h": 0.055,
+   "fade_from_z": 0.28,
+   "end_z": 0.4,
+   "rise_len": 0.09,
+   "low_fillet_strips": true,
+   "low_fillet_start": 0.01,
+   "note": " twenty-fifth phase: low_fillet_start 0.01 (the lower root fillet starts 1 cm behind the leading edge, pointed); with pod_floor_wing the flare's profile is a quarter ellipse tangent to the wing top (foot 1.5 mm under the skin at x 0.12) and it ends inside the wing."
+  },
+  "tip_pods": false,
+  "canopy_front_u": {
+   "w": 0.0,
+   "l": 0.018,
+   "tip_ahead": 0.004,
+   "note": "white workshop photo: blunt U-shaped canopy front with a small lip; front canopy half widths raised to 0.85 x an ellipse"
+  },
+  "canopy_front_drop_m": 0.0,
+  "canopy_front_drop_len_m": 0.03,
+  "nose_plan_scale": [
+   [
+    -0.938,
+    0.66
+   ],
+   [
+    -0.92,
+    0.71
+   ],
+   [
+    -0.9,
+    0.77
+   ],
+   [
+    -0.88,
+    0.82
+   ],
+   [
+    -0.86,
+    0.87
+   ],
+   [
+    -0.84,
+    0.9
+   ],
+   [
+    -0.8,
+    0.935
+   ],
+   [
+    -0.76,
+    0.965
+   ],
+   [
+    -0.72,
+    0.99
+   ],
+   [
+    -0.7,
+    1.0
+   ]
+  ],
+  "nose_plan_scale_note": "front-high photo CIMG7322 (fitted camera, widths normalised at z -0.67) and top drawing: the nose is more pointed in plan",
+  "canopy_frame_dy_front": 1.0,
+  "canopy_blend_front_len_m": 0.08,
+  "canopy_frame_dy_front_len_m": 0.1,
+  "glass_front_plan": {
+   "z_tip": -0.612,
+   "z_join": -0.552,
+   "p": 1.6,
+   "note": "windshield front in plan: superellipse cap (p 1.6) from the tip at -0.612 (top drawing) to the frame-height edge at -0.552; top drawing 0.020/0.040/0.051 at -0.605/-0.587/-0.569 (x0.92), front-high photo: broad front"
+  },
+  "canopy_front_drop_note": "0 since the station fairing: the smoothed top line already passes under the canopy front without a corner; the smooth minimum left a crease on the shoulders",
+  "nose_height_scale": [
+   [
+    -0.938,
+    0.72
+   ],
+   [
+    -0.926,
+    0.82
+   ],
+   [
+    -0.91,
+    0.9
+   ],
+   [
+    -0.89,
+    0.96
+   ],
+   [
+    -0.87,
+    1.0
+   ]
+  ],
+  "nose_height_scale_note": "sunset side photo at 4x zoom: the tip is sharper in side view than the drawing trace (tip radius ~5 mm); half height scaled about the middle in the first 7 cm",
+  "dogtooth": {
+   "x": 0.5752,
+   "thickness_blend_m": 0.15,
+   "note": "LE step at the fence: inner and outer panel LE lines continued to the fence (stations: 20.4 mm; top drawing 21.0/21.7 mm). Outer nose is a longer nose on the same thickness (front photo silhouette continuous within 1 px). Manual step 45, underside photo, HQ oblique photos."
+  },
+  "nose_first_ring_m": 0.0006,
+  "ring_min_spacing_m": 0.0004,
+  "canopy_hull": {
+   "on": 1,
+   "sigma_m": 0.006,
+   "note": "twenty-sixth phase (PLAN_CABINA_FORMA): the upper section is the convex hull of the fuselage section and the canopy ellipse, smoothed along its arc (sigma), instead of the polar smooth maximum (canopy_blend_m), which left a concave neck all along the canopy side ; sigma_z_m: the whole upper surface (fuselage + fill) is also smoothed along z inside the canopy (window fading 3 sigma beyond its ends), so the windshield root and the canopy tail run into the nose and the spine without steps",
+   "sigma_z_m": 0.025
+  },
+  "spine": {
+   "n_top": 2.0,
+   "z0": 0.0,
+   "z1": 0.45,
+   "ramp_in": 0.15,
+   "ramp_out": 0.25,
+   "note": "twenty-sixth phase: behind the canopy the upper section exponent goes from section_n_top 2.8 (boxy turtle deck, flat sides and a tight shoulder) to 2.0 (elliptic: the spine continues the canopy section, Thunderbirds and yellow photos), quintic ramps from z0 - ramp_in and after z1 over ramp_out; the canopy width clamp keeps the drawing's exponent"
+  },
+  "livery": "fractura",
+  "fractura": {
+   "naranja": "FF4A12",
+   "violeta": "8C5CE8",
+   "violeta_oscuro": "261A48",
+   "celda_grietas_m": 0.095,
+   "celda_fragmentos_m": 0.038,
+   "frontera_rota_m": 0.035,
+   "ancho_grieta_m": 0.005,
+   "tramos_sin_grieta": 0.25,
+   "fragmentos_oscuros": 0.2,
+   "fragmentos_oscuros_fondo": 0.012,
+   "semilla": 27,
+   "note": "vigesimoseptima fase: pintura naranja fluor / violeta con grietas, inspirada en las fotos del usuario; dibujo propio, simetrico, sin letras. AV_LIVERY=analysis vuelve al gris de analisis",
+   "carbono": 1,
+   "carbono_mecha_m": 0.005,
+   "carbono_oscuro": "101114",
+   "carbono_claro": "383B43",
+   "acabados": {
+    "violeta_rugosidad": 0.5,
+    "violeta_barniz": 0.0,
+    "naranja_rugosidad": 0.08,
+    "naranja_brillo_propio": 0.18,
+    "carbono_rugosidad": 0.16,
+    "carbono_trama_rugosidad": 0.3,
+    "note": "vigesimoctava fase: violeta mate y mas claro, naranja brillante con barniz y un poco de brillo propio (fluor), detalles oscuros en fibra de carbono sarga 2x2 con barniz"
+   }
+  }
+ },
+ "mixes": {
+  "flap_to_elevator_pct_of_down_throw": {
+   "takeoff": 8,
+   "landing": 20
+  },
+  "rudder_to_elevator_pct": 1,
+  "elevator_direction_with_flap": "down (trailing edge down)",
+  "verified": false,
+  "note": "Valores de la auditoria anterior, atribuidos al manual de SebArt (Manual Intro, p. 4). No se ha podido volver a abrir el PDF en esta sesion: comprobar valores y sentido antes de usarlos en vuelo."
+ },
+ "canopy_front_note": "canopy front widened to the top drawing glass outline (as a fraction of the fuselage width; front-high photo CIMG7322 shows the windshield as wide as the nose) + 8 mm; half width never narrows again before -0.33. Earlier: 0.85 x quarter ellipse (white workshop photo).",
+ "canopy_stations_unsmoothed": [
+  [
+   -0.63712,
+   0.002,
+   0.13999,
+   0.12676
+  ],
+  [
+   -0.6183,
+   0.0222,
+   0.14881,
+   0.10472
+  ],
+  [
+   -0.59947,
+   0.0305,
+   0.15763,
+   0.08488
+  ],
+  [
+   -0.58065,
+   0.0362,
+   0.1667,
+   0.06698
+  ],
+  [
+   -0.56183,
+   0.0404,
+   0.17637,
+   0.05291
+  ],
+  [
+   -0.543,
+   0.0435,
+   0.18451,
+   0.04036
+  ],
+  [
+   -0.52418,
+   0.0458,
+   0.1929,
+   0.02976
+  ],
+  [
+   -0.50535,
+   0.0473,
+   0.20121,
+   0.02145
+  ],
+  [
+   -0.48653,
+   0.0507,
+   0.20901,
+   0.01365
+  ],
+  [
+   -0.46771,
+   0.0571,
+   0.21605,
+   0.00882
+  ],
+  [
+   -0.44888,
+   0.06329,
+   0.22351,
+   0.00356
+  ],
+  [
+   -0.43006,
+   0.06902,
+   0.22928,
+   0.0
+  ],
+  [
+   -0.41124,
+   0.07398,
+   0.23589,
+   -0.00441
+  ],
+  [
+   -0.39241,
+   0.07795,
+   0.2414,
+   -0.00551
+  ],
+  [
+   -0.37359,
+   0.08063,
+   0.247,
+   -0.0089
+  ],
+  [
+   -0.35477,
+   0.08277,
+   0.25242,
+   -0.00992
+  ],
+  [
+   -0.33594,
+   0.08481,
+   0.25793,
+   -0.01102
+  ],
+  [
+   -0.31712,
+   0.08671,
+   0.26234,
+   -0.01102
+  ],
+  [
+   -0.2983,
+   0.08846,
+   0.26675,
+   -0.01102
+  ],
+  [
+   -0.27947,
+   0.09002,
+   0.27057,
+   -0.00822
+  ],
+  [
+   -0.26065,
+   0.09139,
+   0.27447,
+   -0.00653
+  ],
+  [
+   -0.24182,
+   0.09251,
+   0.27778,
+   -0.00441
+  ],
+  [
+   -0.223,
+   0.09337,
+   0.28108,
+   -0.0011
+  ],
+  [
+   -0.20418,
+   0.09396,
+   0.28329,
+   0.0011
+  ],
+  [
+   -0.18535,
+   0.09423,
+   0.28549,
+   0.00551
+  ],
+  [
+   -0.16653,
+   0.09419,
+   0.28659,
+   0.00882
+  ],
+  [
+   -0.14771,
+   0.09387,
+   0.2888,
+   0.01323
+  ],
+  [
+   -0.12888,
+   0.0933,
+   0.2888,
+   0.01764
+  ],
+  [
+   -0.11006,
+   0.09248,
+   0.2899,
+   0.02756
+  ],
+  [
+   -0.09124,
+   0.09142,
+   0.2899,
+   0.03858
+  ],
+  [
+   -0.07241,
+   0.09014,
+   0.2899,
+   0.05181
+  ],
+  [
+   -0.05359,
+   0.08864,
+   0.291,
+   0.06393
+  ],
+  [
+   -0.03476,
+   0.08693,
+   0.2899,
+   0.08047
+  ],
+  [
+   -0.01594,
+   0.08399,
+   0.2899,
+   0.09929
+  ],
+  [
+   0.00288,
+   0.07723,
+   0.2899,
+   0.12015
+  ],
+  [
+   0.02171,
+   0.06716,
+   0.2888,
+   0.1433
+  ],
+  [
+   0.04053,
+   0.05443,
+   0.2877,
+   0.17035
+  ],
+  [
+   0.05935,
+   0.03971,
+   0.28659,
+   0.20028
+  ],
+  [
+   0.07818,
+   0.02368,
+   0.28447,
+   0.23563
+  ],
+  [
+   0.097,
+   0.00698,
+   0.28329,
+   0.26786
+  ]
+ ],
+ "canopy_smoothing_note": "top and half-width columns smoothed with a 4th-order smoothing spline (RMS 0.5 mm, max 0.9/1.3 mm): the 1 mm pixel steps of the drawing made the canopy top line wavy. Raw values in canopy_stations_unsmoothed."
+}

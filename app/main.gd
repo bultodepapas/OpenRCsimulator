@@ -246,6 +246,7 @@ var _note := ""
 var _visual_pose: Dictionary = {}
 var _smoke: EngineSmoke
 var _smoke_key_on := false
+var _last_auxiliary_requests := {"flaps": 0, "gear": 0}
 var _smoke_assignment: SmokeAssignment
 var _smoke_assignment_was_paused := false
 var _last_render_pose: Dictionary = {}
@@ -709,6 +710,7 @@ func _process(delta: float) -> void:
 	_render_pose(_current_pose(), surfaces, _prop_angle)
 	_update_storm(visual_clock_s, frozen)
 	_update_smoke()
+	_update_auxiliary_requests()
 	if _crash_director != null:
 		_crash_director.update(dt)
 		if _crash_director.active and is_nan(_look.x):
@@ -971,7 +973,24 @@ func controller_action(action: String) -> bool:
 	if session == null: return false
 	match action:
 		"camera_cycle": _rig.cycle(1)
+		"camera_previous": _rig.cycle(-1)
+		"camera_pilot": _rig.set_view("pilot")
+		"camera_chase": _rig.set_view("chase")
+		"camera_orbit": _rig.set_view("orbit")
+		"camera_zoom_in": _rig.zoom(1.0)
+		"camera_zoom_out": _rig.zoom(-1.0)
+		"camera_auto_zoom": _rig.toggle_auto_zoom()
 		"view_reset": _rig.reset_view()
+		"lights_cycle": _cycle_night_lights()
+		"smoke_toggle":
+			if session.sim.paused: return true
+			if _smoke == null or not _smoke.supports_pump():
+				_note = tr("Smoke is not available on this aircraft.")
+			elif session.radio.auxiliary_action(action):
+				_note = tr("Smoke pump: on") if session.radio.smoke_amount() > 0.0 else tr("Smoke pump: off")
+		"flaps_up", "flaps_down", "flaps_cycle", "gear_toggle":
+			if not session.sim.paused and session.radio.auxiliary_action(action):
+				_update_auxiliary_requests(true, "gear" if action == "gear_toggle" else "flaps")
 		"trim_left": session.adjust_aileron_trim(-0.005)
 		"trim_right": session.adjust_aileron_trim(0.005)
 		"trim_up": session.adjust_elevator_trim(-0.1)
@@ -988,6 +1007,20 @@ func controller_action(action: String) -> bool:
 			else: pause_requested.emit()
 		_: return false
 	return true
+
+
+## Show requested auxiliary positions honestly: the accepted aircraft contract has
+## no flap aerodynamics or retract actuator/contact state yet. Never animate a
+## landing gear visually while leaving its contacts active in the solver.
+func _update_auxiliary_requests(force := false, selected_channel := "") -> void:
+	if session == null or session.sim.paused or not session.radio.connected: return
+	for channel_name in ["flaps", "gear"]:
+		var amount: float = session.radio.auxiliary_amount(channel_name)
+		var value := roundi(amount * 100.0) if channel_name == "flaps" else int(amount >= 0.5)
+		if (force and selected_channel == channel_name) or value != int(_last_auxiliary_requests[channel_name]):
+			_note = tr("Flaps request: %d%% — aircraft flaps are not simulated.") % value if channel_name == "flaps" else \
+				tr("Landing gear request: %s — retraction is not simulated.") % (tr("Up") if value > 0 else tr("Down"))
+		_last_auxiliary_requests[channel_name] = value
 
 
 func _unhandled_input(event: InputEvent) -> void:

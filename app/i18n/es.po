@@ -1727,6 +1727,132 @@ msgstr "%s · sin procesar — · procesado —"
 msgid "Axis —"
 msgstr "Eje —"
 
+msgid "AUXILIARY CHANNELS"
+msgstr "CANALES AUXILIARES"
+
+msgid "Optional Smoke, Flaps and Landing gear inputs can use axes or buttons. Flaps and landing gear are requests only; aircraft physics does not simulate them. Axis endpoints need at least 0.5 travel."
+msgstr "Las entradas opcionales de humo, flaps y tren de aterrizaje pueden usar ejes o botones. Los flaps y el tren solo generan solicitudes; la física del avión no los simula. Los extremos del eje requieren un recorrido mínimo de 0,5."
+
+msgid "Smoke"
+msgstr "Humo"
+
+msgid "Flaps"
+msgstr "Flaps"
+
+msgid "Landing gear"
+msgstr "Tren de aterrizaje"
+
+msgid "Disabled"
+msgstr "Desactivado"
+
+msgid "Axis"
+msgstr "Eje"
+
+msgid "Button"
+msgstr "Botón"
+
+msgid "Off endpoint"
+msgstr "Extremo desactivado"
+
+msgid "On endpoint"
+msgstr "Extremo activado"
+
+msgid "Maintained"
+msgstr "Mientras se mantiene pulsado"
+
+msgid "Toggle per press"
+msgstr "Alternar en cada pulsación"
+
+msgid "Pressed"
+msgstr "Pulsado"
+
+msgid "Released"
+msgstr "Liberado"
+
+msgid "Connect a flight controller to preview this input."
+msgstr "Conecta un control de vuelo para previsualizar esta entrada."
+
+msgid "Invalid auxiliary axis mapping."
+msgstr "La asignación del eje auxiliar no es válida."
+
+msgid "Invalid auxiliary button mapping."
+msgstr "La asignación del botón auxiliar no es válida."
+
+msgid "Axis %d · raw %+.2f · request %.0f%%"
+msgstr "Eje %d · sin procesar %+.2f · solicitud %.0f%%"
+
+msgid "Button %d · %s · %s"
+msgstr "Botón %d · %s · %s"
+
+msgid "Auxiliary input updated. Save the profile to keep it."
+msgstr "Entrada auxiliar actualizada. Guarda el perfil para conservarla."
+
+msgid "Clear"
+msgstr "Borrar"
+
+msgid "Action cleared. Save the profile to keep it."
+msgstr "Acción borrada. Guarda el perfil para conservar el cambio."
+
+msgid "Flaps request: %d%% — aircraft flaps are not simulated."
+msgstr "Solicitud de flaps: %d%% — el avión no simula los flaps."
+
+msgid "Landing gear request: %s — retraction is not simulated."
+msgstr "Solicitud del tren de aterrizaje: %s — la retracción no se simula."
+
+msgid "Down"
+msgstr "Abajo"
+
+msgid "Up"
+msgstr "Arriba"
+
+msgid "Smoke is not available on this aircraft."
+msgstr "El humo no está disponible en este avión."
+
+msgid "Smoke pump: on"
+msgstr "Bomba de humo: encendida"
+
+msgid "Smoke pump: off"
+msgstr "Bomba de humo: apagada"
+
+msgid "Toggle smoke pump"
+msgstr "Alternar bomba de humo"
+
+msgid "Flaps up"
+msgstr "Subir flaps"
+
+msgid "Flaps down"
+msgstr "Bajar flaps"
+
+msgid "Cycle flaps"
+msgstr "Cambiar posición de flaps"
+
+msgid "Toggle landing gear"
+msgstr "Alternar tren de aterrizaje"
+
+msgid "Previous camera"
+msgstr "Cámara anterior"
+
+msgid "Pilot camera"
+msgstr "Cámara de piloto"
+
+msgid "Chase camera"
+msgstr "Vista de persecución"
+
+msgid "Orbit camera"
+msgstr "Cámara orbital"
+
+msgid "Camera zoom in"
+msgstr "Acercar cámara"
+
+msgid "Camera zoom out"
+msgstr "Alejar cámara"
+
+msgid "Toggle auto camera zoom"
+msgstr "Alternar zoom automático de cámara"
+
+msgid "Cycle lights"
+msgstr "Cambiar luces"
+
 msgid "Select a flight controller to preview mapped channels."
 msgstr "Selecciona un control de vuelo para previsualizar los canales asignados."
 

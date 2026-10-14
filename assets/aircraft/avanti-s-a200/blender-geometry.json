@@ -1,0 +1,321 @@
+{
+  "schema": "openrc-avanti-blender-model-v1",
+  "catalog_id": "sebart-avanti-s-a200-p100rx",
+  "revision": "av31-blender-flight-1",
+  "source_alias": "User-supplied Avanti S A200 Blender master",
+  "status": "Imported Blender presentation; experimental P100-RX physics; gear stowed, flaps visual-only.",
+  "units": "m",
+  "axes": {
+    "nose": "-Z",
+    "right": "+X",
+    "up": "+Y"
+  },
+  "nominal": {
+    "span_m": 2.0,
+    "length_m": 2.22,
+    "engine_length_m": 0.241,
+    "engine_diameter_m": 0.097,
+    "cg_aft_root_le_m": [
+      0.24,
+      0.25,
+      0.26
+    ]
+  },
+  "datum": {
+    "z": "Root leading edge beside fuselage projected onto symmetry plane",
+    "y": "Estimated wing midplane at root; not measured CG height"
+  },
+  "bounds": {
+    "min": [
+      -0.99820012,
+      -0.07156899,
+      -0.93804002
+    ],
+    "max": [
+      0.9982,
+      0.57664704,
+      1.29735994
+    ]
+  },
+  "articulations": {
+    "aileron_left_hinge": {
+      "node": "aileron_left_hinge",
+      "parent": "VentageJet",
+      "rest_translation": [
+        -0.57720006,
+        0.01580215,
+        0.46246818
+      ],
+      "rest_basis": [
+        [
+          0.98906147,
+          -0.0644956,
+          -0.13265647
+        ],
+        [
+          0.0639232,
+          0.99791789,
+          -0.00857361
+        ],
+        [
+          0.13293324,
+          -0.0,
+          0.99112499
+        ]
+      ],
+      "range_deg": [
+        -25,
+        30
+      ],
+      "app_sign": -1,
+      "positive": "trailing edge up",
+      "witness_model": [
+        -0.89380026,
+        0.03004547,
+        0.5801872
+      ]
+    },
+    "aileron_right_hinge": {
+      "node": "aileron_right_hinge",
+      "parent": "VentageJet",
+      "rest_translation": [
+        0.57719994,
+        0.01580215,
+        0.4624683
+      ],
+      "rest_basis": [
+        [
+          0.98906142,
+          0.06449561,
+          0.13265665
+        ],
+        [
+          -0.0639232,
+          0.99791789,
+          -0.00857362
+        ],
+        [
+          -0.13293342,
+          -0.0,
+          0.99112499
+        ]
+      ],
+      "range_deg": [
+        -25,
+        30
+      ],
+      "app_sign": -1,
+      "positive": "trailing edge up",
+      "witness_model": [
+        0.89380008,
+        0.03004551,
+        0.5801881
+      ]
+    },
+    "elevator_left_hinge": {
+      "node": "elevator_left_hinge",
+      "parent": "VentageJet",
+      "rest_translation": [
+        -0.08500011,
+        0.13675483,
+        1.17700005
+      ],
+      "rest_basis": [
+        [
+          0.99349803,
+          0.04102988,
+          -0.10620117
+        ],
+        [
+          -0.04079744,
+          0.99915791,
+          0.00436109
+        ],
+        [
+          0.10629068,
+          -0.0,
+          0.99433535
+        ]
+      ],
+      "range_deg": [
+        -30,
+        30
+      ],
+      "app_sign": -1,
+      "positive": "trailing edge up",
+      "witness_model": [
+        -0.44000027,
+        0.12205616,
+        1.29702389
+      ]
+    },
+    "elevator_right_hinge": {
+      "node": "elevator_right_hinge",
+      "parent": "VentageJet",
+      "rest_translation": [
+        0.0849999,
+        0.13675483,
+        1.17700005
+      ],
+      "rest_basis": [
+        [
+          0.99349803,
+          -0.04102988,
+          0.10620135
+        ],
+        [
+          0.04079744,
+          0.99915791,
+          0.0043611
+        ],
+        [
+          -0.10629085,
+          -0.0,
+          0.99433529
+        ]
+      ],
+      "range_deg": [
+        -30,
+        30
+      ],
+      "app_sign": -1,
+      "positive": "trailing edge up",
+      "witness_model": [
+        0.44,
+        0.12205651,
+        1.29703403
+      ]
+    },
+    "rudder_hinge": {
+      "node": "rudder_hinge",
+      "parent": "VentageJet",
+      "rest_translation": [
+        -9e-08,
+        0.21324959,
+        1.08399999
+      ],
+      "rest_basis": [
+        [
+          1.1e-07,
+          0.93486112,
+          0.3550137
+        ],
+        [
+          -1.0,
+          1.5e-07,
+          -9e-08
+        ],
+        [
+          -1.4e-07,
+          -0.35501379,
+          0.93486136
+        ]
+      ],
+      "range_deg": [
+        -30,
+        30
+      ],
+      "app_sign": 1,
+      "positive": "trailing edge right",
+      "witness_model": [
+        -1.42e-06,
+        0.57628632,
+        1.27854371
+      ]
+    },
+    "flap_left_hinge": {
+      "node": "flap_left_hinge",
+      "parent": "VentageJet",
+      "rest_translation": [
+        -0.17200004,
+        0.01090032,
+        0.40809998
+      ],
+      "rest_basis": [
+        [
+          0.99104047,
+          -0.01252563,
+          -0.13297431
+        ],
+        [
+          0.01241438,
+          0.99992156,
+          -0.00166572
+        ],
+        [
+          0.13298473,
+          -0.0,
+          0.99111807
+        ]
+      ],
+      "range_deg": [
+        0,
+        50
+      ],
+      "app_sign": 1,
+      "positive": "trailing edge down",
+      "witness_model": [
+        -0.56600016,
+        0.00812573,
+        0.54558665
+      ]
+    },
+    "flap_right_hinge": {
+      "node": "flap_right_hinge",
+      "parent": "VentageJet",
+      "rest_translation": [
+        0.17199998,
+        0.01090032,
+        0.40810004
+      ],
+      "rest_basis": [
+        [
+          0.99104053,
+          0.01252563,
+          0.13297449
+        ],
+        [
+          -0.01241438,
+          0.99992156,
+          -0.00166572
+        ],
+        [
+          -0.13298491,
+          -0.0,
+          0.99111807
+        ]
+      ],
+      "range_deg": [
+        0,
+        50
+      ],
+      "app_sign": 1,
+      "positive": "trailing edge down",
+      "witness_model": [
+        0.5660001,
+        0.0081258,
+        0.54558742
+      ]
+    }
+  },
+  "turbine": {
+    "model": "JetCat P100-RX",
+    "outlet_position": [
+      0,
+      0.07992,
+      1.28196
+    ],
+    "outlet_direction": [
+      0,
+      0,
+      1
+    ],
+    "physical_source": "research/avanti-s/av06/inputs.json",
+    "geometry_evidence": "User-authored installation estimate, not a measured P100-RX installation."
+  },
+  "gear_pose": {
+    "state": "stowed",
+    "source_action": "GearRetract",
+    "source_frame": 211
+  }
+}

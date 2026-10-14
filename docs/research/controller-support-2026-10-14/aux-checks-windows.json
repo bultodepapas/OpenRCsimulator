@@ -1,0 +1,157 @@
+{
+  "platform": "Windows",
+  "engine": "Godot_v4.7.2-stable_win64_console.exe",
+  "tests": {
+    "test_controller_extended_actions": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nPASS extended controller actions: 77 checks\n"
+    },
+    "test_controller_aux_runtime": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController auxiliary runtime: 38/38 checks passed\nWARNING: Existing flaps control overlaps a newly calibrated AETR axis; reassign that auxiliary channel.\n   at: push_warning (core/variant/variant_utility.cpp:1033)\n   GDScript backtrace (most recent call first):\n       [0] _preserve_smoke_if_clear (res://input/rc_calibration.gd:195)\n       [1] _next (res://input/rc_calibration.gd:112)\n       [2] advance (res://input/rc_calibration.gd:104)\n       [3] _calibrate (res://tests/test_controller_aux_runtime.gd:222)\n       [4] _run (res://tests/test_controller_aux_runtime.gd:163)\n       [5] _initialize (res://tests/test_controller_aux_runtime.gd:20)\n"
+    },
+    "test_controller_flight_actions": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: calibrating radio\ncontroller flight actions: 23 checks, 0 failures\n"
+    },
+    "test_rc_input": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n41 checks, 0 failed\n"
+    },
+    "test_rc_rearm": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nD6b-R2: 368 checks, 0 failed\n"
+    },
+    "test_rc_calibration": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n19 checks, 0 failed\n"
+    },
+    "test_smoke_aux": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nSM-03/04: 60 checks, 0 failed\nWARNING: Existing smoke control overlaps a newly calibrated AETR axis; smoke was disabled and needs reassignment.\n   at: push_warning (core/variant/variant_utility.cpp:1033)\n   GDScript backtrace (most recent call first):\n       [0] _preserve_smoke_if_clear (res://input/rc_calibration.gd:204)\n       [1] _next (res://input/rc_calibration.gd:112)\n       [2] advance (res://input/rc_calibration.gd:104)\n       [3] _calibration_with_aux (res://tests/test_smoke_aux.gd:45)\n       [4] _initialize (res://tests/test_smoke_aux.gd:146)\nWARNING: Ignoring invalid aux.smoke assignment; radio flight channels remain available.\n   at: push_warning (core/variant/variant_utility.cpp:1033)\n   GDScript backtrace (most recent call first):\n       [0] sanitize_profile (res://input/smoke_aux.gd:165)\n       [1] save_profile (res://input/rc_calibration.gd:124)\n       [2] _initialize (res://tests/test_smoke_aux.gd:191)\n"
+    },
+    "test_engine_smoke": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nradio connected: sm-gamepad|0000:0000|SM fake gamepad (gamepad profile)\nSM engine smoke: 56 checks, 0 failures\nWARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).\n   at: cleanup (core/object/object.cpp:2536)\n"
+    },
+    "test_heli_session": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nhelicopter trace saved: user://heli-session-test.csv (4 rows)\nHELI-16 generated preset/session: 42 checks, 0 failed\n"
+    },
+    "test_camera_views": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   pilot view (auto-zoom true) is exactly PilotCamera.aim\nok   pilot view (auto-zoom false) is exactly PilotCamera.aim\nok   close-up view is exactly PilotCamera.aim(inspect)\nok   landscape look view is exactly PilotCamera.look\nok   far airplane: the auto-zoom law is narrower than the base FOV\nok   Z: the first frame after the toggle keeps the FOV (no jump)\nok   Z: settles on the base FOV within 2 s\nok   Z: no frame changes the FOV by more than 3°\nok   Z back on: the law's exact FOV again after 3 s\nok   two zoom-in steps narrow tan(fov/2) by √2\nok   pilot zoom stops at its limit\nok   Backspace: back to the law's exact FOV\nok   C cycles pilot → chase → orbit → close-up → pilot\nok   Shift+C goes back\nok   unknown view refused\nok   names keep the historical panel text\nok   chase: first frame is settled behind and above (south of a northbound airplane)\nok   chase: looks at the airplane\nok   chase: no roll (world up stays up)\nok   chase: straight flight, same camera offset at 30/60/144 fps (≤ 1 cm)\nok   chase: straight flight, exactly one boom behind and above (no speed lag)\nok   chase: 12 s circle stays finite and within 0.5–2.5 booms\nok   chase: circle keeps the airplane near the centre (look-ahead ≤ 10°)\nok   chase: vertical climb holds the last heading, no NaN\nok   chase: sliding backwards follows the nose\nok   chase: slow (taxi) follows the nose\nok   chase: fast track wins over the nose (crab)\nok   chase: clearance above terrain\nok   chase: unknown terrain reads as flat, never NaN\nok   chase: a teleport snaps behind the new position\nok   chase: frozen while paused\nok   orbit: starts exactly where the previous view was\nok   orbit: elevation clamps below the zenith\nok   orbit: near the zenith the basis stays finite and aimed\nok   orbit: distance limit\nok   orbit: low airplane, camera kept above the ground\nok   rig: pilot → orbit keeps the eye when within reach\nok   rig: pilot → orbit from far keeps the direction at the default distance\nok   rig: a flight that starts in orbit sees it from behind-left, above\nall 39 camera view checks passed\n"
+    },
+    "test_controller_integration": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller lost. Select a controller or keyboard in Controls.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller lost. Select a controller or keyboard in Controls.\nController integration: 27/27 checks passed\n"
+    },
+    "test_controller_persistence": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller lost. Select a controller or keyboard in Controls.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nController persistence: 25 checks, 0 failures\n"
+    },
+    "test_controller_setup": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   UI Input records the selected menu device\nok   custom Accept reaches native ui_accept\nok   custom Back reaches native ui_cancel\nok   custom navigation reaches native ui_up\nok   all native joypad GUI events belong to the one selected device\nok   keyboard ui_accept events survive device selection\nok   custom keyboard Accept reaches native ui_accept\nok   clearing UI ownership removes every joypad GUI event\nok   clearing UI ownership removes the injected remap key\nok   keyboard ui_accept remains after isolation\nok   setup opens with the controller section at the top of the page\nok   new setup opens with a valid Mode 2 draft\nok   preset choices retain full tooltip labels\nok   radio calibration is an explicit public action\nok   calibration button emits only the explicit calibration request\nok   empty device/profile choices carry the real -1 ID\nok   current_profile returns an isolated draft copy\nok   axis, deadzone, expo and inversion edit a valid draft\nok   Mode 1 preset updates channel mapping\nok   trigger help names separate roll and pitch axes and release-to-arm\nok   unknown joystick exposes an explicit kind choice and starts unconfigured\nok   choosing Gamepad creates a Mode 2 draft without applying it\nok   choosing Radio creates a custom absolute-throttle draft\nok   changing profile kind never starts radio calibration\nok   unknown joystick is disabled for menu navigation\nok   ambiguous controller identity stays disabled for menu navigation\nok   radio devices are excluded from menu navigation choices\nok   unknown joystick cannot be applied for menu navigation\nok   device picker edits stay drafts until Apply devices\nok   a rejected device-apply callback reports the race and does not emit success\nok   successful apply callback emits both explicit role choices\nok   setup does not mutate the registry by itself\nok   Cancel requests closure\nok   Cancel never writes a profile\nok   Auto renders the actual button binding as text and a packaged glyph\nok   manual Xbox family changes the icon and readable label for the current remapped button\nok   manual glyph selection leaves semantic actions and the remapped physical button unchanged\nok   Cancel does not persist a draft glyph-family choice\nok   Save persists the chosen PlayStation prompt family\nok   saving presentation preference leaves semantic bindings intact\nok   unknown device has no menu ownership before a saved profile matches\nok   explicit Gamepad choice remains a draft and does not enable the menu device\nok   a saved, validated and identity-matched Gamepad profile enables the unknown menu pad\nok   radio-kind profiles and radio-purpose devices never gain menu navigation\nok   Home exposes Controller settings with a source control\nok   Home displays explicit controller state\nok   Pause exposes Controller settings with a source control\nall controller setup checks passed\n"
+    },
+    "test_controller_aux_setup": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   Back and Pause cannot be cleared\nok   optional semantic actions expose Clear\nok   Clear writes an explicit unbound action and passes profile binding validation\nok   auxiliary help identifies flap and gear bindings as unsimulated requests\nok   Axis mode creates a valid unbound smoke input without colliding with AETR\nok   Axis mapping supports axis 9, edited endpoints, and automatic inversion\nok   Invert swaps axis endpoints and remains consistent with the runtime shape\nok   axis live preview identifies the selected auxiliary source axis\nok   Flaps axis picker allocates a source outside AETR and the smoke axis\nok   Gear button supports index 127 and toggle-on-press mode\nok   button live preview names the button, mode, and physical state\nok   button mode also supports maintained level behavior\nok   Disabled cleanly removes optional channels from the draft\nok   draft auxiliary mappings pass the profile binding validator\nok   Save explains when an AUX mapping overlaps a flight axis\nok   Remap explains when an action conflicts with an AUX input\nok   lower auxiliary controls are reachable by follow-focus scrolling\nall controller auxiliary setup checks passed\n"
+    },
+    "test_controller_menu": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: calibrating radio\nController menu: 23/23 checks passed\n"
+    },
+    "test_controller_profile": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nController profile: 49 checks, 0 failed\n"
+    },
+    "test_controller_actions": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   default semantic actions have recovery and no overlapping conflicts\nok   same button on another device is ignored\nok   selected-device A resolves to menu accept\nok   button release produces no semantic action\nok   menu navigation is not routed as flight trim\nok   menu navigation resolves only in menu context\nok   axis threshold resolves matching sign on selected device\nok   axis value below threshold does not resolve\nok   keyboard remap resolves without a gamepad id\nok   keyboard release produces no semantic action\nok   duplicate back/pause recovery binding is rejected\nok   the sentinel button index is rejected\nok   semantic action labels translate to Spanish\nok   controller binding labels translate to Spanish\nok   pause recovery notice translates to Spanish\nok   controller form and axis controls are translated\nok   rate and absolute throttle presets are distinguished in Spanish\nok   radio recovery, profile type and safety prompts translate\nok   controller setup and arming prompts translate\nall controller action checks passed\n"
+    },
+    "test_controller_prompts": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nPASS controller prompts: 137 checks\n"
+    },
+    "test_ui_language": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   no file -> English, writable\nok   save\nok   load what was saved\nok   diagnostic marker opt-out persists\nok   diagnostic preference rejects the wrong type\nok   unsupported language -> English\nok   wrong type -> English (ConfigFile keeps the file's type)\nok   unreadable file -> defaults, kept as .bad\nok   newer schema: valid values read, file marked read-only\nok   newer schema: never overwritten\nok   Spanish catalog: 715 texts, none untranslated\nok   language en has a catalog or is the source\nok   language es has a catalog or is the source\nok   English by default, even on a Spanish OS\nok   language button names the language in itself\nok   Enter on Language -> Spanish at once\nok   dynamic texts rebuilt in Spanish\nok   AUX profile errors translate\nok   focus stays on Language\nok   every translatable Home text has a Spanish translation\nok   choice saved\nok   next start remembers Spanish\nok   and cycles back to English\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nok   direct flight: English, no settings file created\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nok   direct flight ignores a saved Spanish preference and leaves the file alone\nall UI language checks passed\n"
+    },
+    "@input/controller_actions.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@input/controller_profile.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@input/rc_input.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@input/rc_calibration.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@main.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@app_root.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@helicopter_main.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@sim/flight_session.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@sim/helicopter_flight_session.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@render/smoke/exhaust.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    },
+    "@ui/controller_setup.gd": {
+      "passed": true,
+      "exit_code": 0,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n"
+    }
+  },
+  "date": "2026-10-14T19:18:56.947346+00:00"
+}

@@ -17,6 +17,8 @@ This is an implementation plan under existing [track ownership](../README.md#tra
 
 Core scope: one active flight controller, optional separate selected gamepad for menus, persistent controls, Windows Xbox/DualSense USB/Bluetooth, keyboard/mouse recovery, English/Spanish prompts. Multiple connected devices are supported through selection and isolation; combining two controllers into one aircraft, trainer/student handover, arbitrary HOTAS axis expansion, console exports and advanced DualSense effects are outside the first delivery.
 
+The owner subsequently requested more channels. D6-GP-06 / UI-15-GP-02 adds typed smoke/flap/gear input requests, optional camera/light/smoke actions, source-conflict checks and AUX setup; [implementation evidence and capability limits](../research/controller-support-2026-10-14/README.md#d6-gp-06--ui-15-gp-02-auxiliary-expansion). Physical flap aerodynamics and retractable landing contacts remain aircraft extensions, not completed controller capabilities.
+
 ## Baseline and priorities
 
 | Priority | Current finding | Required outcome |

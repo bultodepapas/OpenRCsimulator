@@ -269,15 +269,13 @@ static func validate(value: Variant) -> Dictionary:
 	if typeof(action_values) != TYPE_DICTIONARY:
 		errors.append("actions must be a Dictionary")
 	else:
-		var merged_actions: Dictionary = ControllerActions.default_bindings()
 		for action_id in action_values:
 			if typeof(action_id) != TYPE_STRING or ControllerActions.action_definition(str(action_id)).is_empty():
 				errors.append("actions contains an unknown semantic action")
 				continue
 			if not _valid_action_binding(action_values[action_id]):
 				errors.append("actions.%s has an invalid binding" % str(action_id))
-			merged_actions[action_id] = action_values[action_id]
-		var action_validation: Dictionary = ControllerActions.validate(merged_actions)
+		var action_validation: Dictionary = ControllerActions.validate_profile_bindings(value)
 		for action_error in action_validation.errors:
 			errors.append("actions: " + str(action_error))
 	var presentation: Variant = value.get("presentation")
@@ -435,6 +433,8 @@ static func _valid_action_binding(value: Variant) -> bool:
 	if typeof(value) != TYPE_DICTIONARY or typeof(value.get("type")) != TYPE_STRING:
 		return false
 	match value.type:
+		"unbound":
+			return value.size() == 1
 		"button":
 			return typeof(value.get("button")) == TYPE_INT and int(value.button) >= 0 and int(value.button) < JOY_BUTTON_MAX
 		"axis":

@@ -109,6 +109,10 @@ func _integration() -> void:
 	motion.axis = 4
 	motion.axis_value = -1.0
 	main.session._input(motion)
+	check("paused assignment cannot arm or queue AUX", not main.session.radio.smoke_is_armed() and main.session.radio.smoke_amount() == 0.0)
+	main.session.resume()
+	check("AUX integration resumes flight explicitly", not main.session.sim.paused)
+	main.session._input(motion)
 	check("active flight routes AUX OFF event", main.session.radio.smoke_is_armed())
 	motion.axis_value = 1.0
 	main.session._input(motion)

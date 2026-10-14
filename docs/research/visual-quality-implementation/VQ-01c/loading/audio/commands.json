@@ -1,0 +1,182 @@
+[
+  {
+    "name": "free-1",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--verbose",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\lifecycle_probe.gd",
+      "--",
+      "free",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\free-1.json"
+    ],
+    "exit_code": 0,
+    "engine_error": false,
+    "leaked": true
+  },
+  {
+    "name": "stop-1",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--verbose",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\lifecycle_probe.gd",
+      "--",
+      "stop",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\stop-1.json"
+    ],
+    "exit_code": 0,
+    "engine_error": false,
+    "leaked": true
+  },
+  {
+    "name": "drain-1",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--verbose",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\lifecycle_probe.gd",
+      "--",
+      "drain",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\drain-1.json"
+    ],
+    "exit_code": 0,
+    "engine_error": false,
+    "leaked": false
+  },
+  {
+    "name": "free-2",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--verbose",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\lifecycle_probe.gd",
+      "--",
+      "free",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\free-2.json"
+    ],
+    "exit_code": 0,
+    "engine_error": false,
+    "leaked": true
+  },
+  {
+    "name": "stop-2",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--verbose",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\lifecycle_probe.gd",
+      "--",
+      "stop",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\stop-2.json"
+    ],
+    "exit_code": 0,
+    "engine_error": false,
+    "leaked": true
+  },
+  {
+    "name": "drain-2",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--verbose",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\lifecycle_probe.gd",
+      "--",
+      "drain",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\drain-2.json"
+    ],
+    "exit_code": 0,
+    "engine_error": false,
+    "leaked": false
+  },
+  {
+    "name": "free-3",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--verbose",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\lifecycle_probe.gd",
+      "--",
+      "free",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\free-3.json"
+    ],
+    "exit_code": 0,
+    "engine_error": false,
+    "leaked": false
+  },
+  {
+    "name": "stop-3",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--verbose",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\lifecycle_probe.gd",
+      "--",
+      "stop",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\stop-3.json"
+    ],
+    "exit_code": 0,
+    "engine_error": false,
+    "leaked": true
+  },
+  {
+    "name": "drain-3",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--verbose",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\lifecycle_probe.gd",
+      "--",
+      "drain",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\drain-3.json"
+    ],
+    "exit_code": 0,
+    "engine_error": false,
+    "leaked": false
+  }
+]

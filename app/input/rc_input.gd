@@ -42,6 +42,10 @@ var input_error := ""
 var armed := false
 var axes := PackedFloat64Array()
 var smoke_aux = SmokeAux.new()
+## These are input requests, not simulated flap/gear actuator positions.
+var _extra_aux := {"flaps": SmokeAux.new(), "gear": SmokeAux.new()}
+var _aux_action_values := {"smoke": 0.0, "flaps": 0.0, "gear": 0.0}
+var _auxiliary_enabled := true
 
 var _seen: Dictionary = {}
 var _throttle_low_seen := false
@@ -82,6 +86,8 @@ func connect_device(id: int, info: Dictionary, saved: Dictionary = {}) -> void:
 		_reset_controls(false)
 		_configure_smoke_aux()
 	smoke_aux.connect_device(id)
+	for channel in _extra_aux.values(): channel.connect_device(id)
+	_auxiliary_enabled = true
 	_reset_controls(false)
 	if _profile_ready:
 		profile_error = ""
@@ -116,6 +122,8 @@ func disconnect_device() -> void:
 	connected = false
 	device_id = -1
 	smoke_aux.disconnect_device()
+	for channel in _extra_aux.values(): channel.disconnect_device()
+	_aux_action_values = {"smoke": 0.0, "flaps": 0.0, "gear": 0.0}
 	_reset_controls(false)
 	_pressed_buttons.clear()
 	input_error = ""
@@ -151,7 +159,7 @@ func require_neutral(preserve_throttle: bool = true, fresh_samples: bool = false
 		_seen.clear()
 		axes.fill(0.0)
 	input_error = ""
-	if not preserve_throttle:
+	if not preserve_throttle or fresh_samples:
 		_configure_smoke_aux()
 
 
@@ -170,7 +178,9 @@ func has_axis_sample(axis: int) -> bool:
 func on_motion(id: int, axis: int, value: float) -> void:
 	if not connected or id != device_id or axis < 0 or axis >= AXES:
 		return
-	smoke_aux.on_motion(id, axis, value)
+	if _auxiliary_enabled and input_error.is_empty() and profile_error.is_empty():
+		smoke_aux.on_motion(id, axis, value)
+		for channel in _extra_aux.values(): channel.on_motion(id, axis, value)
 	if not is_finite(value):
 		_invalidate_input("Non-finite axis sample; controls require fresh neutral evidence.")
 		return
@@ -183,7 +193,9 @@ func on_motion(id: int, axis: int, value: float) -> void:
 func on_button(id: int, button: int, pressed: bool) -> void:
 	if not connected or id != device_id or button < 0:
 		return
-	smoke_aux.on_button(id, button, pressed)
+	if _auxiliary_enabled and input_error.is_empty() and profile_error.is_empty():
+		smoke_aux.on_button(id, button, pressed)
+		for channel in _extra_aux.values(): channel.on_button(id, button, pressed)
 	if pressed:
 		_pressed_buttons[button] = true
 	else:
@@ -205,6 +217,7 @@ func observe_pressed_buttons(buttons: Array) -> void:
 func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), integrate: bool = true) -> void:
 	if not connected:
 		return
+	set_auxiliary_enabled(integrate)
 	if not _profile_ready or profile != _profile_snapshot:
 		var validation := ControllerProfile.validate(profile)
 		if not validation.ok:
@@ -215,6 +228,7 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 			return
 		_profile_ready = true
 		_profile_snapshot = profile.duplicate(true)
+		_configure_smoke_aux()
 	if not is_finite(dt) or dt < 0.0 or not read_axis.is_valid():
 		_invalidate_input("Invalid input sample interval or axis reader.")
 		return
@@ -230,11 +244,13 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 			if bool(read_button.call(device_id, button)):
 				held_buttons.append(button)
 		observe_pressed_buttons(held_buttons)
-	var smoke_binding := _smoke_binding()
-	if smoke_binding.get("type", "") == "axis":
-		smoke_aux.sample_axis(axes[int(smoke_binding.axis)])
-	elif smoke_binding.get("type", "") == "button" and read_button.is_valid():
-		smoke_aux.sample_button(bool(read_button.call(device_id, int(smoke_binding.button))))
+	if _auxiliary_enabled and input_error.is_empty() and profile_error.is_empty():
+		for channel in [smoke_aux, _extra_aux.flaps, _extra_aux.gear]:
+			var binding: Dictionary = channel.binding
+			if binding.get("type", "") == "axis":
+				channel.sample_axis(axes[int(binding.axis)])
+			elif binding.get("type", "") == "button" and read_button.is_valid():
+				channel.sample_button(bool(read_button.call(device_id, int(binding.button))))
 	if is_gamepad():
 		_update_neutral_gate(dt)
 		if is_rate_throttle() and armed and integrate:
@@ -301,7 +317,37 @@ func sticks() -> Dictionary:
 
 
 func smoke_amount() -> float:
-	return smoke_aux.amount()
+	return auxiliary_amount("smoke")
+
+
+## Normalized requests: flaps 0=retracted/1=full, gear 0=down/1=up.
+## No aircraft consumes flap/gear requests until its physical capability is implemented.
+func auxiliary_amount(channel_name: String) -> float:
+	if not connected or not _profile_ready or not _auxiliary_enabled or not input_error.is_empty() or not profile_error.is_empty(): return 0.0
+	var channel = smoke_aux if channel_name == "smoke" else _extra_aux.get(channel_name)
+	if channel == null: return 0.0
+	return channel.amount() if not channel.binding.is_empty() else float(_aux_action_values.get(channel_name, 0.0))
+
+
+func auxiliary_action(action: String) -> bool:
+	if not connected or not _profile_ready or not _auxiliary_enabled or not input_error.is_empty() or not profile_error.is_empty(): return false
+	var channel_name := "smoke" if action == "smoke_toggle" else ("gear" if action == "gear_toggle" else "flaps")
+	if not action in ["smoke_toggle", "gear_toggle", "flaps_up", "flaps_down", "flaps_cycle"]: return false
+	var channel = smoke_aux if channel_name == "smoke" else _extra_aux[channel_name]
+	if not channel.binding.is_empty(): return false # one source per function
+	match action:
+		"flaps_up": _aux_action_values.flaps = 0.0
+		"flaps_down": _aux_action_values.flaps = 1.0
+		"flaps_cycle": _aux_action_values.flaps = fmod(float(_aux_action_values.flaps) + 0.5, 1.5)
+		_: _aux_action_values[channel_name] = 1.0 - float(_aux_action_values[channel_name])
+	return true
+
+
+## Menu/focus input cannot queue toggles to be applied after resume.
+func set_auxiliary_enabled(enabled: bool) -> void:
+	if enabled == _auxiliary_enabled: return
+	_auxiliary_enabled = enabled
+	_configure_smoke_aux()
 
 
 func smoke_is_armed() -> bool:
@@ -322,6 +368,7 @@ func _activate_profile(candidate: Dictionary, source: String, preserve_rate: boo
 	_profile_ready = true
 	_profile_snapshot = profile.duplicate(true)
 	profile_source = source
+	input_error = ""
 	_rate_throttle = old_rate if preserve_rate and profile.get("throttle_mode", "") == "stick_rate" else 0.0
 	if keep_radio_history:
 		armed = false
@@ -355,6 +402,7 @@ func _invalidate_input(message: String) -> void:
 	_seen.clear()
 	axes.fill(0.0)
 	_rate_throttle = 0.0
+	_configure_smoke_aux()
 
 
 func _update_neutral_gate(dt: float) -> void:
@@ -400,6 +448,10 @@ func _idle_threshold() -> float:
 func _configure_smoke_aux() -> void:
 	var axes_in_use := SmokeAux.flight_axes(profile)
 	smoke_aux.configure(_smoke_binding(), axes_in_use)
+	var aux: Dictionary = profile.get("aux", {}) if profile.get("aux", {}) is Dictionary else {}
+	for channel_name in _extra_aux:
+		_extra_aux[channel_name].configure(aux.get(channel_name, {}), axes_in_use)
+	_aux_action_values = {"smoke": 0.0, "flaps": 0.0, "gear": 0.0}
 
 
 func _smoke_binding() -> Dictionary:

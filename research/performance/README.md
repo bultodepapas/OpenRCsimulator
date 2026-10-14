@@ -25,6 +25,24 @@ unattended runs. A fresh process is not a cold OS/import/shader cache. Engine el
 time excludes parent-process launch overhead; synchronous build and first draw are
 separate measurements. Three cycles do not establish the DT-12 soak or package gate.
 
+After the last sample, the probe frees its scene and observes weak references to the
+latest playback of each audio player. It allows up to one second for the mixer to
+release them; this teardown is outside all loading timings. The additive `shutdown`
+record reports elapsed time, tracked/remaining playbacks and sidecar removal. A timeout
+or sidecar removal failure marks the report incomplete and exits nonzero. Failures also
+free the owned scene and remove successfully created settings; existing files are never
+removed. This distinguishes asynchronous audio retirement from persistent retention;
+it is not a general memory/RSS or production quit guarantee.
+
+Run its isolated success/failure/retention and file-preservation checks with:
+
+```powershell
+python research/performance/test_loading_probe.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe
+```
+
+[Audio retirement evidence](../../docs/research/visual-quality-implementation/VQ-01c/loading/audio/README.md)
+records the reproduction, external Godot finding and packaged lifecycle run.
+
 `lake_geometry_probe.gd` compares the current lake renderer against an explicit prior
 `lake_terrain.gd` source. Extract that file from the recorded pre-change revision outside
 `app/`, preserve its `res://` dependencies, then run:

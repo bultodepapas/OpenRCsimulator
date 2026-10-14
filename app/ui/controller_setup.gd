@@ -6,6 +6,7 @@ const UiInput := preload("res://ui/ui_input.gd")
 const ControllerProfile := preload("res://input/controller_profile.gd")
 const ControllerActions := preload("res://input/controller_actions.gd")
 const ControllerPrompts := preload("res://ui/controller_prompts.gd")
+const SmokeAux := preload("res://input/smoke_aux.gd")
 
 signal close_requested
 signal profile_saved(profile: Dictionary)
@@ -29,6 +30,8 @@ const PROFILE_KIND_CHOICES: Array[Dictionary] = [
 ]
 const CHANNELS: Array[String] = ["roll", "pitch", "yaw", "throttle"]
 const CHANNEL_LABELS: Dictionary = {"roll": "Roll", "pitch": "Pitch", "yaw": "Yaw", "throttle": "Throttle"}
+const AUX_CHANNELS: Array[String] = ["smoke", "flaps", "gear"]
+const AUX_CHANNEL_LABELS: Dictionary = {"smoke": "Smoke", "flaps": "Flaps", "gear": "Landing gear"}
 
 var registry: Object
 var profile_store: Object
@@ -41,6 +44,8 @@ var profile_kind_picker: OptionButton
 var preset_picker: OptionButton
 var preset_help_label: Label
 var axis_grid: GridContainer
+var aux_grid: VBoxContainer
+var aux_help_label: Label
 var action_grid: GridContainer
 var preview_label: Label
 var status_label: Label
@@ -64,6 +69,8 @@ var _draft_profile: Dictionary = {}
 var _base_actions: Dictionary = {}
 var _action_bindings: Dictionary = {}
 var _axis_controls: Dictionary = {}
+var _aux_controls: Dictionary = {}
+var _clear_action_buttons: Dictionary = {}
 var _preview_labels: Dictionary = {}
 var _preview_bars: Dictionary = {}
 var _draft_flight_device_id := -1
@@ -290,6 +297,113 @@ func _build() -> void:
 		expo_spin.value_changed.connect(_on_axis_changed.bind(channel, "expo"))
 		invert.toggled.connect(_on_axis_invert.bind(channel))
 
+	page.add_child(_section_label("AUXILIARY CHANNELS"))
+	aux_help_label = _label("Optional Smoke, Flaps and Landing gear inputs can use axes or buttons. Flaps and landing gear are requests only; aircraft physics does not simulate them. Axis endpoints need at least 0.5 travel.", "SecondaryLabel", true)
+	aux_help_label.name = "AuxiliaryHelp"
+	aux_help_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	page.add_child(aux_help_label)
+	aux_grid = VBoxContainer.new()
+	aux_grid.name = "AuxiliaryMappings"
+	aux_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	aux_grid.add_theme_constant_override("separation", 8)
+	page.add_child(aux_grid)
+	for aux_name in AUX_CHANNELS:
+		var channel_block := VBoxContainer.new()
+		channel_block.name = "AuxChannel_%s" % aux_name
+		channel_block.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		channel_block.add_theme_constant_override("separation", 3)
+		aux_grid.add_child(channel_block)
+		var channel_row := HBoxContainer.new()
+		channel_row.name = "AuxMappingRow_%s" % aux_name
+		channel_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		channel_row.add_theme_constant_override("separation", 8)
+		channel_block.add_child(channel_row)
+		var aux_label := _label(tr(str(AUX_CHANNEL_LABELS[aux_name])), "SecondaryLabel")
+		aux_label.custom_minimum_size.x = 128.0
+		channel_row.add_child(aux_label)
+		var type_picker := OptionButton.new()
+		type_picker.name = "AuxType_%s" % aux_name
+		type_picker.custom_minimum_size.x = 124.0
+		for mode_data in [["Disabled", 0], ["Axis", 1], ["Button", 2]]:
+			var type_index := type_picker.item_count
+			type_picker.add_item(tr(str(mode_data[0])), int(mode_data[1]))
+			type_picker.set_item_id(type_index, int(mode_data[1]))
+		channel_row.add_child(type_picker)
+		var mapping := HBoxContainer.new()
+		mapping.name = "AuxMapping_%s" % aux_name
+		mapping.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		mapping.add_theme_constant_override("separation", 4)
+		var axis_editor := HBoxContainer.new()
+		axis_editor.name = "AuxAxisEditor_%s" % aux_name
+		axis_editor.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		axis_editor.add_theme_constant_override("separation", 3)
+		var axis_label := _label("Axis", "SecondaryLabel")
+		axis_editor.add_child(axis_label)
+		var axis_spin := _spin_box(0.0, float(ControllerProfile.AXIS_COUNT - 1), 1.0)
+		axis_spin.name = "AuxAxis_%s" % aux_name
+		axis_spin.custom_minimum_size.x = 58.0
+		axis_editor.add_child(axis_spin)
+		var off_label := _label("Off endpoint", "SecondaryLabel")
+		axis_editor.add_child(off_label)
+		var off_spin := _spin_box(-1.0, 1.0, 0.05)
+		off_spin.name = "AuxOff_%s" % aux_name
+		off_spin.custom_minimum_size.x = 66.0
+		axis_editor.add_child(off_spin)
+		var on_label := _label("On endpoint", "SecondaryLabel")
+		axis_editor.add_child(on_label)
+		var on_spin := _spin_box(-1.0, 1.0, 0.05)
+		on_spin.name = "AuxOn_%s" % aux_name
+		on_spin.custom_minimum_size.x = 66.0
+		axis_editor.add_child(on_spin)
+		var aux_invert := CheckBox.new()
+		aux_invert.name = "AuxInvert_%s" % aux_name
+		aux_invert.text = tr("Invert")
+		axis_editor.add_child(aux_invert)
+		mapping.add_child(axis_editor)
+		var button_editor := HBoxContainer.new()
+		button_editor.name = "AuxButtonEditor_%s" % aux_name
+		button_editor.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button_editor.add_theme_constant_override("separation", 4)
+		button_editor.add_child(_label("Button", "SecondaryLabel"))
+		var button_spin := _spin_box(0.0, float(SmokeAux.MAX_BUTTONS - 1), 1.0)
+		button_spin.name = "AuxButton_%s" % aux_name
+		button_spin.custom_minimum_size.x = 70.0
+		button_editor.add_child(button_spin)
+		var button_mode := OptionButton.new()
+		button_mode.name = "AuxButtonMode_%s" % aux_name
+		button_mode.custom_minimum_size.x = 144.0
+		for mode_data in [["Maintained", "level"], ["Toggle per press", "toggle_edge"]]:
+			var mode_index := button_mode.item_count
+			button_mode.add_item(tr(str(mode_data[0])), mode_index)
+			button_mode.set_item_id(mode_index, mode_index)
+		button_editor.add_child(button_mode)
+		mapping.add_child(button_editor)
+		channel_row.add_child(mapping)
+		var aux_preview := _label(tr("Unbound"), "SecondaryLabel", true)
+		aux_preview.name = "AuxPreview_%s" % aux_name
+		aux_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		channel_block.add_child(aux_preview)
+		_aux_controls[aux_name] = {
+			"type": type_picker,
+			"mapping": mapping,
+			"axis_editor": axis_editor,
+			"axis": axis_spin,
+			"off": off_spin,
+			"on": on_spin,
+			"invert": aux_invert,
+			"button_editor": button_editor,
+			"button": button_spin,
+			"button_mode": button_mode,
+			"preview": aux_preview,
+		}
+		type_picker.item_selected.connect(_on_aux_type_selected.bind(aux_name))
+		axis_spin.value_changed.connect(_on_aux_axis_changed.bind(aux_name))
+		off_spin.value_changed.connect(_on_aux_endpoint_changed.bind(aux_name, "off"))
+		on_spin.value_changed.connect(_on_aux_endpoint_changed.bind(aux_name, "on"))
+		aux_invert.toggled.connect(_on_aux_invert_toggled.bind(aux_name))
+		button_spin.value_changed.connect(_on_aux_button_changed.bind(aux_name))
+		button_mode.item_selected.connect(_on_aux_button_mode_selected.bind(aux_name))
+
 	page.add_child(_section_label("LIVE PREVIEW"))
 	page.add_child(_label("This read-only preview does not change flight commands.", "SecondaryLabel"))
 	var preview_grid := GridContainer.new()
@@ -343,6 +457,11 @@ func _build() -> void:
 		binding_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		binding_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		binding_cell.add_child(binding_label)
+		var clear_button := _button("Clear")
+		clear_button.name = "Clear_%s" % action_id
+		clear_button.pressed.connect(_clear_action_binding.bind(action_id))
+		binding_cell.add_child(clear_button)
+		_clear_action_buttons[action_id] = clear_button
 		action_grid.add_child(binding_cell)
 		var change_button := _button("Remap")
 		change_button.name = "Remap_%s" % action_id
@@ -376,6 +495,7 @@ func _ready() -> void:
 		_load_profile_for_device(_draft_flight_device_id)
 	_update_profile_options()
 	_update_axis_controls()
+	_update_aux_controls()
 	_update_action_controls()
 	_update_preview()
 	_initial_focus_wait_frames = 2
@@ -520,6 +640,7 @@ func _on_flight_device_selected(index: int) -> void:
 	_set_status("", false)
 	_update_profile_options()
 	_update_axis_controls()
+	_update_aux_controls()
 	_update_action_controls()
 	_update_preview()
 
@@ -579,16 +700,13 @@ func _set_draft_profile(profile: Dictionary) -> void:
 	joystick_enabled.set_pressed_no_signal(bool(_draft_profile.get("configured", true)))
 	var existing_actions: Dictionary = _draft_profile.get("actions", {}).duplicate(true)
 	_base_actions = existing_actions
-	_action_bindings = ControllerActions.default_bindings()
-	for key: Variant in existing_actions:
-		if ControllerActions.action_definition(str(key)).is_empty() or not existing_actions[key] is Dictionary:
-			continue
-		_action_bindings[str(key)] = existing_actions[key].duplicate(true)
+	_action_bindings = ControllerActions.effective_bindings(_draft_profile)
 	_update_profile_kind_picker()
 	_update_glyph_family_picker()
 	_update_preset_options()
 	_update_profile_options()
 	_update_axis_controls()
+	_update_aux_controls()
 	_update_action_controls()
 	_update_preview()
 
@@ -764,6 +882,184 @@ func _update_axis_controls() -> void:
 		invert.disabled = false
 
 
+func _update_aux_controls() -> void:
+	if _draft_profile.is_empty() or _aux_controls.is_empty():
+		return
+	var aux_value: Variant = _draft_profile.get("aux", {})
+	var aux: Dictionary = aux_value.duplicate(true) if aux_value is Dictionary else {}
+	for aux_name in AUX_CHANNELS:
+		var controls: Dictionary = _aux_controls[aux_name]
+		var binding_value: Variant = aux.get(aux_name, {})
+		var binding: Dictionary = binding_value if binding_value is Dictionary else {}
+		var binding_type := str(binding.get("type", ""))
+		var mode_id := 1 if binding_type == "axis" else (2 if binding_type == "button" else 0)
+		var type_picker: OptionButton = controls.type
+		type_picker.select(mode_id)
+		var axis_editor: HBoxContainer = controls.axis_editor
+		var button_editor: HBoxContainer = controls.button_editor
+		axis_editor.visible = mode_id == 1
+		button_editor.visible = mode_id == 2
+		var axis_spin: SpinBox = controls.axis
+		axis_spin.set_value_no_signal(float(binding.get("axis", _default_aux_axis(aux_name))))
+		var off_spin: SpinBox = controls.off
+		off_spin.set_value_no_signal(float(binding.get("off", -1.0)))
+		var on_spin: SpinBox = controls.on
+		on_spin.set_value_no_signal(float(binding.get("on", 1.0)))
+		var invert: CheckBox = controls.invert
+		invert.set_pressed_no_signal(bool(binding.get("invert", false)))
+		var button_spin: SpinBox = controls.button
+		button_spin.set_value_no_signal(float(binding.get("button", 0)))
+		var button_mode: OptionButton = controls.button_mode
+		button_mode.select(1 if str(binding.get("mode", "level")) == "toggle_edge" else 0)
+		var preview: Label = controls.preview
+		if mode_id == 0:
+			preview.text = tr("Unbound")
+	_update_aux_preview()
+
+
+func _default_aux_axis(aux_name: String) -> int:
+	var used_axes := SmokeAux.flight_axes(_draft_profile)
+	var aux_value: Variant = _draft_profile.get("aux", {})
+	if aux_value is Dictionary:
+		for other_name in AUX_CHANNELS:
+			if other_name == aux_name:
+				continue
+			var other: Variant = aux_value.get(other_name, {})
+			if other is Dictionary and str(other.get("type", "")) == "axis":
+				var axis := int(other.get("axis", -1))
+				if axis >= 0 and not used_axes.has(axis):
+					used_axes.append(axis)
+	for axis_index in ControllerProfile.AXIS_COUNT:
+		if not used_axes.has(axis_index):
+			return axis_index
+	return 0
+
+
+func _aux_binding_for_type(aux_name: String, binding_type: String) -> Dictionary:
+	var aux_value: Variant = _draft_profile.get("aux", {})
+	var aux: Dictionary = aux_value if aux_value is Dictionary else {}
+	var existing_value: Variant = aux.get(aux_name, {})
+	var existing: Dictionary = existing_value if existing_value is Dictionary else {}
+	if str(existing.get("type", "")) == binding_type:
+		return existing.duplicate(true)
+	if binding_type == "axis":
+		var axis := _default_aux_axis(aux_name)
+		return {"type": "axis", "axis": axis, "off": -1.0, "on": 1.0, "invert": false}
+	if binding_type == "button":
+		return {"type": "button", "button": 0, "mode": "level"}
+	return {}
+
+
+func _on_aux_type_selected(index: int, aux_name: String) -> void:
+	if _draft_profile.is_empty() or not _aux_controls.has(aux_name):
+		return
+	var mode_id: int = int(_aux_controls[aux_name].type.get_item_id(index))
+	if mode_id == 0:
+		_commit_aux_binding(aux_name, {})
+	elif mode_id == 1:
+		_commit_aux_binding(aux_name, _aux_binding_for_type(aux_name, "axis"))
+	elif mode_id == 2:
+		_commit_aux_binding(aux_name, _aux_binding_for_type(aux_name, "button"))
+
+
+func _on_aux_axis_changed(value: float, aux_name: String) -> void:
+	var binding := _aux_binding_for_type(aux_name, "axis")
+	binding["axis"] = int(value)
+	_commit_aux_binding(aux_name, binding, false)
+
+
+func _on_aux_endpoint_changed(value: float, aux_name: String, endpoint: String) -> void:
+	var binding := _aux_binding_for_type(aux_name, "axis")
+	binding[endpoint] = value
+	binding["invert"] = float(binding.get("on", 1.0)) < float(binding.get("off", -1.0))
+	var invert: CheckBox = _aux_controls[aux_name].invert
+	invert.set_pressed_no_signal(bool(binding.invert))
+	_commit_aux_binding(aux_name, binding, false)
+
+
+func _on_aux_invert_toggled(pressed: bool, aux_name: String) -> void:
+	var binding := _aux_binding_for_type(aux_name, "axis")
+	var off_value := float(binding.get("off", -1.0))
+	var on_value := float(binding.get("on", 1.0))
+	var current_inverted := on_value < off_value
+	if current_inverted != pressed:
+		binding["off"] = on_value
+		binding["on"] = off_value
+	binding["invert"] = pressed
+	var controls: Dictionary = _aux_controls[aux_name]
+	(controls.off as SpinBox).set_value_no_signal(float(binding.off))
+	(controls.on as SpinBox).set_value_no_signal(float(binding.on))
+	_commit_aux_binding(aux_name, binding, false)
+
+
+func _on_aux_button_changed(value: float, aux_name: String) -> void:
+	var binding := _aux_binding_for_type(aux_name, "button")
+	binding["button"] = int(value)
+	_commit_aux_binding(aux_name, binding, false)
+
+
+func _on_aux_button_mode_selected(index: int, aux_name: String) -> void:
+	var binding := _aux_binding_for_type(aux_name, "button")
+	binding["mode"] = "toggle_edge" if index == 1 else "level"
+	_commit_aux_binding(aux_name, binding, false)
+
+
+func _commit_aux_binding(aux_name: String, binding: Dictionary, report_status := true) -> void:
+	var aux_value: Variant = _draft_profile.get("aux", {})
+	var aux: Dictionary = aux_value.duplicate(true) if aux_value is Dictionary else {}
+	if binding.is_empty():
+		aux.erase(aux_name)
+	else:
+		aux[aux_name] = binding.duplicate(true)
+	if aux.is_empty():
+		_draft_profile.erase("aux")
+	else:
+		_draft_profile["aux"] = aux
+	_action_bindings = ControllerActions.effective_bindings(_draft_profile)
+	_update_aux_controls()
+	_update_action_controls()
+	_update_aux_preview()
+	if report_status:
+		_set_status(tr("Auxiliary input updated. Save the profile to keep it."), false)
+
+
+func _update_aux_preview() -> void:
+	if _aux_controls.is_empty() or _draft_profile.is_empty():
+		return
+	var device := _device_for_id(_draft_flight_device_id)
+	var connected := _draft_flight_device_id >= 0 and not device.is_empty() and bool(device.get("connected", true))
+	var aux_value: Variant = _draft_profile.get("aux", {})
+	var aux: Dictionary = aux_value if aux_value is Dictionary else {}
+	for aux_name in AUX_CHANNELS:
+		var preview: Label = _aux_controls[aux_name].preview
+		var binding_value: Variant = aux.get(aux_name, {})
+		if not binding_value is Dictionary or binding_value.is_empty():
+			preview.text = tr("Unbound")
+			continue
+		var binding: Dictionary = binding_value
+		if not connected:
+			preview.text = tr("Connect a flight controller to preview this input.")
+			continue
+		if str(binding.get("type", "")) == "axis":
+			if not SmokeAux.valid_binding(binding, SmokeAux.flight_axes(_draft_profile)):
+				preview.text = tr("Invalid auxiliary axis mapping.")
+				continue
+			var axis := int(binding.axis)
+			var raw := Input.get_joy_axis(_draft_flight_device_id, axis)
+			var amount := SmokeAux.axis_amount(raw, binding) * 100.0
+			preview.text = tr("Axis %d · raw %+.2f · request %.0f%%") % [axis, raw, amount]
+		elif str(binding.get("type", "")) == "button":
+			if not SmokeAux.valid_binding(binding):
+				preview.text = tr("Invalid auxiliary button mapping.")
+				continue
+			var button := int(binding.button)
+			var pressed := Input.is_joy_button_pressed(_draft_flight_device_id, button)
+			var state := tr("Pressed") if pressed else tr("Released")
+			preview.text = tr("Button %d · %s · %s") % [button, tr("Toggle per press") if binding.mode == "toggle_edge" else tr("Maintained"), state]
+		else:
+			preview.text = tr("Unbound")
+
+
 func _on_axis_changed(value: float, channel_name: String, property: String) -> void:
 	if not _draft_profile.has(channel_name):
 		return
@@ -810,6 +1106,7 @@ func _update_preview() -> void:
 	else:
 		axis_label = tr("Select a connected flight controller to preview mapped channels.")
 	preview_label.text = axis_label
+	_update_aux_preview()
 
 
 func _update_action_controls() -> void:
@@ -826,6 +1123,7 @@ func _update_action_controls() -> void:
 		var binding_control: Label = binding_cell.get_node("Binding_%s" % action_id)
 		var glyph_control: TextureRect = binding_cell.get_node("BindingGlyph_%s" % action_id)
 		var capture_button: Button = action_grid.get_child(child_index + 2)
+		var clear_button: Button = _clear_action_buttons[action_id]
 		label_control.text = tr(str(definition.label))
 		var binding: Dictionary = _action_bindings.get(action_id, {})
 		var prompt: Dictionary = ControllerPrompts.prompt(binding, family, device)
@@ -839,6 +1137,8 @@ func _update_action_controls() -> void:
 			capture_button.text = tr("Press a key or selected controller input…")
 		else:
 			capture_button.text = tr("Remap")
+		clear_button.text = tr("Clear")
+		clear_button.disabled = action_id in ["back", "pause"]
 		child_index += 3
 
 
@@ -895,18 +1195,40 @@ func _capture_binding(event: InputEvent) -> void:
 	var binding := ControllerActions.binding_from_event(event)
 	if binding.is_empty():
 		return
-	var candidate := _action_bindings.duplicate(true)
+	var candidate := _base_actions.duplicate(true)
 	candidate[_capturing_action] = binding
-	var validation: Dictionary = ControllerActions.validate(candidate)
+	var candidate_profile := _draft_profile.duplicate(true)
+	candidate_profile["actions"] = candidate
+	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile)
 	if not bool(validation.get("ok", false)):
 		var errors: Array = validation.get("errors", [])
-		_set_status(tr("That binding conflicts with another action or removes recovery."), true)
+		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
 	else:
-		_action_bindings = candidate
-		_draft_profile["actions"] = _action_bindings.duplicate(true)
+		_base_actions = candidate
+		_draft_profile["actions"] = _base_actions.duplicate(true)
+		_action_bindings = validation.get("bindings", ControllerActions.effective_bindings(_draft_profile))
 		_set_status(tr("Binding updated. Save the profile to keep it."), false)
 	_capture_done()
 	get_viewport().set_input_as_handled()
+
+
+func _clear_action_binding(action_id: String) -> void:
+	if action_id in ["back", "pause"]:
+		return
+	var candidate := _base_actions.duplicate(true)
+	candidate[action_id] = {"type": "unbound"}
+	var candidate_profile := _draft_profile.duplicate(true)
+	candidate_profile["actions"] = candidate
+	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile)
+	if not bool(validation.get("ok", false)):
+		var errors: Array = validation.get("errors", [])
+		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
+		return
+	_base_actions = candidate
+	_draft_profile["actions"] = _base_actions.duplicate(true)
+	_action_bindings = validation.get("bindings", ControllerActions.effective_bindings(_draft_profile))
+	_update_action_controls()
+	_set_status(tr("Action cleared. Save the profile to keep it."), false)
 
 
 func _cancel_capture() -> void:
@@ -973,13 +1295,16 @@ func _save_profile() -> void:
 		if not serial.is_empty() or (not guid.is_empty() and vendor_id > 0 and product_id > 0):
 			candidate["association"] = association
 	candidate["actions"] = _base_actions.duplicate(true)
-	for action_id: Variant in _action_bindings:
-		candidate.actions[str(action_id)] = _action_bindings[action_id].duplicate(true)
 	if str(candidate.get("kind", "")) == "joystick":
 		candidate["configured"] = joystick_enabled.button_pressed
-	var actions_validation: Dictionary = ControllerActions.validate(_action_bindings)
+	var inherited_actions := ControllerActions.effective_bindings(candidate)
+	for action_id: Variant in _action_bindings:
+		if not inherited_actions.has(action_id) or _action_bindings[action_id] != inherited_actions[action_id]:
+			candidate.actions[str(action_id)] = _action_bindings[action_id].duplicate(true)
+	var actions_validation: Dictionary = ControllerActions.validate_profile_bindings(candidate)
 	if not bool(actions_validation.get("ok", false)):
-		_set_status(tr("Action bindings need a valid Back and Pause recovery path."), true)
+		var errors: Array = actions_validation.get("errors", [])
+		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
 		return
 	var validation: Dictionary = ControllerProfile.validate(candidate)
 	if not bool(validation.get("ok", false)):

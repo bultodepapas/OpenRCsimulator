@@ -22,6 +22,10 @@ var _max_wind := 0.0
 var _bounds: Array[Dictionary] = []
 
 
+func supports_pump() -> bool:
+	return bool(_anchor.get("pump", false))
+
+
 ## The optional model contract: finite model-local mouth/direction, positive bore radius,
 ## explicit propulsion kind and explicit pump capability. Unsupported aircraft return [].
 static func valid_anchor(raw: Variant) -> bool:

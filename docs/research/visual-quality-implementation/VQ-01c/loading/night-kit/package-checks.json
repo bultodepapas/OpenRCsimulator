@@ -1,0 +1,103 @@
+[
+  {
+    "name": "pack-field-on",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\GodotProbe.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\check_field_pack.gd",
+      "--",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\OpenRC.exe",
+      "70ccd1952d67b2116c72054662a5fc421d9635466bc7ac6a6125e742a28f30f6"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+    "exit_code": 0,
+    "pass": true
+  },
+  {
+    "name": "pack-field-off",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\GodotProbe.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\check_field_pack.gd",
+      "--",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\OpenRC.exe",
+      "70ccd1952d67b2116c72054662a5fc421d9635466bc7ac6a6125e742a28f30f6"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+    "exit_code": 0,
+    "pass": true
+  },
+  {
+    "name": "pack-rotorcraft",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\GodotProbe.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+      "--audio-driver",
+      "Dummy",
+      "--main-pack",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\OpenRC.exe",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\aircraft-standardization\\rotorcraft_package_smoke.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+    "exit_code": 0,
+    "pass": true
+  },
+  {
+    "name": "pack-night-kit",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\GodotProbe.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+      "--audio-driver",
+      "Dummy",
+      "--main-pack",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\OpenRC.exe",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\test_night_kit.gd"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+    "exit_code": 0,
+    "pass": true
+  },
+  {
+    "name": "release-trace",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\OpenRC.exe",
+      "--headless",
+      "--audio-driver",
+      "Dummy",
+      "--",
+      "--trace=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\release-trace.csv",
+      "--t=1"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+    "exit_code": 0,
+    "pass": true
+  },
+  {
+    "name": "trace-check",
+    "command": [
+      "python",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\check_trimmed_flight.py",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\release-trace.csv",
+      "--duration=1"
+    ],
+    "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+    "exit_code": 0,
+    "pass": true
+  }
+]

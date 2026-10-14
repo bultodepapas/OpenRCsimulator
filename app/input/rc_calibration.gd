@@ -30,6 +30,7 @@ var _hi := PackedFloat64Array()
 var _first := PackedFloat64Array() # sign of each axis's first deflection beyond the threshold (0 = none yet)
 var _used := {}
 var _preserved_smoke: Dictionary = {}
+var _preserved_extra_aux: Dictionary = {}
 var aux_warning: String = ""
 
 
@@ -41,6 +42,9 @@ func _init(existing_profile: Dictionary = {}) -> void:
 		var smoke: Variant = aux.get("smoke", {})
 		if SmokeAux.valid_binding(smoke, SmokeAux.flight_axes(clean)):
 			_preserved_smoke = smoke.duplicate(true)
+		for channel_name in ["flaps", "gear"]:
+			if SmokeAux.valid_binding(aux.get(channel_name), SmokeAux.flight_axes(clean)):
+				_preserved_extra_aux[channel_name] = aux[channel_name].duplicate(true)
 	for a in [_rest, _lo, _hi, _first]:
 		a.resize(RcInput.AXES)
 
@@ -182,10 +186,19 @@ static func load_smoke_binding(path: String, device_key: String) -> Dictionary:
 
 
 func _preserve_smoke_if_clear() -> void:
+	var extra: Dictionary = {}
+	for channel_name in _preserved_extra_aux:
+		if SmokeAux.valid_binding(_preserved_extra_aux[channel_name], SmokeAux.flight_axes(profile)):
+			extra[channel_name] = _preserved_extra_aux[channel_name].duplicate(true)
+		else:
+			aux_warning = "Existing %s control overlaps a newly calibrated AETR axis; reassign that auxiliary channel." % channel_name
+			push_warning(aux_warning)
+	if not extra.is_empty(): profile["aux"] = extra
 	if _preserved_smoke.is_empty():
 		return
 	if SmokeAux.valid_binding(_preserved_smoke, SmokeAux.flight_axes(profile)):
-		profile.aux = { smoke = _preserved_smoke.duplicate(true) }
+		if not profile.has("aux"): profile["aux"] = {}
+		profile.aux["smoke"] = _preserved_smoke.duplicate(true)
 		return
 	aux_warning = "Existing smoke control overlaps a newly calibrated AETR axis; smoke was disabled and needs reassignment."
 	push_warning(aux_warning)

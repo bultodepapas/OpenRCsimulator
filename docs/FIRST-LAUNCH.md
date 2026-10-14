@@ -73,6 +73,14 @@ On first selection, profile replacement or gamepad focus recovery, move every ma
 
 Default buttons: **A/Cross** accept, **B/Circle** back, **Menu/Options** pause, **Y/Triangle** camera, right-stick click reset view, **X/Square** overlays, D-pad trims during flight, and held LB/L1 throttle cut for fixed-wing flight. D-pad/left stick navigate menus. Remaps are profile-specific. Ground driving keeps left-stick steering, RT drive, LT brake and B+RT reverse.
 
+**Additional controls:** the action list also offers smoke toggle, previous/direct pilot/chase/orbit cameras, zoom, auto zoom and lights. New actions start unbound. Use **Clear** to free an existing assignment, then **Remap** and **Save**; Back and Pause must remain assigned. Primary flight axes cannot also trigger flight actions. Camera actions also work in helicopter flight; smoke requires an aircraft with a smoke pump.
+
+The **Auxiliary channels** section maps smoke, flap requests and gear requests independently to an axis or a button. An axis uses calibrated OFF/ON endpoints; buttons can be maintained or toggle on each press. Available input slots are axes 0–9 and buttons 0–127, subject to what the device/backend actually exposes. Assign either an AUX source or semantic buttons to a function, not both. AUX channels cannot share a source or reuse a primary flight axis. After selection, pause/focus recovery or profile changes, return an AUX axis to OFF or release its button before use. Paused input cannot queue an AUX toggle.
+
+Review the effective action list after assigning AUX: an inherited flight button on the same source becomes Unbound. For a radio/joystick AUX on the inherited Pause button, Pause uses **Escape**; an explicitly remapped Pause is preserved and conflicts must be resolved before saving.
+
+**Flaps and retractable gear are input requests only in current aircraft.** Their bindings, preview and requested positions work, but the aircraft datasets declare flaps as not simulated and gear as fixed/locked. The flight notice states this limitation. Flap buttons request 0%, 100%, or cycle 0/50/100%; gear requests down/up. These requests do not change aerodynamics, animated hinges or landing contacts. Physical flaps and retracts require a separate aircraft capability implementation.
+
 These are source features with automated checks, not a claim that every Xbox/PlayStation model or connection has been tested. [Implementation and remaining qualification](research/controller-support-2026-10-14/README.md#implementation-evidence).
 
 ### Radio setup

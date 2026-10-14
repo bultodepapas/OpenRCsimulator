@@ -560,6 +560,7 @@ func _ready() -> void:
 
 
 func _input(event: InputEvent) -> void:
+	radio.set_auxiliary_enabled(not sim.paused and calibration == null and holds.is_empty())
 	if event is InputEventJoypadMotion:
 		radio.on_motion(event.device, event.axis, event.axis_value)
 	elif event is InputEventJoypadButton:
@@ -592,6 +593,7 @@ func start_calibration() -> bool:
 	if not radio.connected or radio.profile.get("kind", "") != "radio":
 		return false
 	calibration = RcCalibration.new(radio.profile)
+	radio.set_auxiliary_enabled(false)
 	_failsafe("calibrating radio")
 	return true
 
@@ -633,6 +635,7 @@ func _failsafe(reason: String) -> void:
 
 ## Freezes the session for `reason` (a menu): inputs, crash countdown and simulation all stop where they are.
 func hold(reason: String) -> void:
+	radio.set_auxiliary_enabled(false)
 	if external_controller_selection and not holds.has(reason) and radio.connected and radio.is_gamepad():
 		radio.require_neutral(true)
 	holds[reason] = true
@@ -677,6 +680,7 @@ func controller_disconnected() -> void:
 
 func controller_focus_lost() -> void:
 	if external_controller_selection and radio.connected:
+		radio.set_auxiliary_enabled(false)
 		radio.require_neutral(true, true)
 		sim.set_paused(true)
 		pause_reason = "Focus lost. Release controls and continue explicitly."
@@ -1436,7 +1440,7 @@ func _validate_runway_candidate(prepared: Dictionary) -> Dictionary:
 
 
 func _poll_controller(integrate := true) -> bool:
-	radio.poll(read_axis, sim.dt(), read_button, integrate)
+	radio.poll(read_axis, sim.dt(), read_button, integrate and not sim.paused and calibration == null and holds.is_empty())
 	if external_controller_selection and (not radio.input_error.is_empty() or not radio.profile_error.is_empty()):
 		controller_disconnected()
 		pause_reason = "Invalid controller input. Review the device and select it again in Controls."

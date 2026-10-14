@@ -1,10 +1,12 @@
 # Desktop delivery plan
 
-2026-10-14 · Revision 7 · Step prefix: **DT-**.
+2026-10-14 · Revision 9 · Step prefix: **DT-**.
 
 **Status:** DT-00, DT-00-R1 and DT-00-R2 research is complete. DT-01–DT-12 remain open; initial DT-10/10a measurements and a narrow DT-11a lake geometry reuse repair are recorded through VQ-01c; cold loading and package qualification remain open. The owner acceptance gate DT-13 is open. No fullscreen, installer, public signing/notarization or native Windows/macOS acceptance has shipped through this track.
 
 Research records remain in [DT-00](research/desktop-delivery-investigations/DT-00/README.md), [DT-00-R1](research/desktop-delivery-investigations/DT-00-R1/README.md) and [DT-00-R2](research/desktop-delivery-investigations/DT-00-R2/README.md). The latter reports inspect Godot/macOS artifacts and synthetic checker behavior; they do not establish native Mac launch or performance.
+
+Latest DT-11a evidence: [night-kit geometry extraction and integrated Windows package checks](research/visual-quality-implementation/VQ-01c/loading/night-kit/README.md). Duplicate work is removed with exact fleet parity; native loading budgets and audio-shutdown/soak qualification remain open.
 
 ## Current delivery
 
@@ -48,7 +50,7 @@ Display preferences and recovery belong to [MENU-PLAN](MENU-PLAN.md) (UI-07/09);
 | DT-11b | Reduce measured idle/minimized cost while preserving focus and simulation timing. | Conditional on DT-10 |
 | DT-11c | Add a graphics option only when paired performance and blinded readability evidence support it. | Conditional on DT-10 |
 | DT-11d | Compare Compatibility and Mobile/Metal only if measurements show a renderer need; preserve the baseline absent evidence. | Conditional on DT-10b |
-| DT-12 | Rehearse the downloaded release on clean accounts using promoted hashes, the frozen suite, soak and repeated launch/flight cycles. | Planned |
+| DT-12 | Rehearse the downloaded release on clean accounts using promoted hashes, the frozen suite, soak and repeated launch/flight cycles. | Preliminary [50-cycle packaged diagnostic](research/visual-quality-implementation/VQ-01c/loading/audio/README.md): stable Home node count, observed audio released, no exit warnings; one paused first draw. Promoted release/clean accounts, uninterrupted interactive coverage and 30-minute soak remain open. |
 | DT-13 | Record the owner's platform-by-platform delivery decision, defects, trust results and rollback path. | Open — delivery gate |
 
 ## Acceptance and evidence

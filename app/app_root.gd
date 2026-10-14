@@ -567,10 +567,9 @@ func _update_controller_calibration_button(setup: Node) -> void:
 
 
 func _controller_bindings(id: int) -> Dictionary:
-	var bindings: Dictionary = ControllerActions.default_bindings()
 	if controllers != null and id >= 0:
-		bindings.merge(controllers.profile_for_device(id).get("actions", {}), true)
-	return bindings
+		return ControllerActions.effective_bindings(controllers.profile_for_device(id))
+	return ControllerActions.default_bindings()
 
 
 func _controller_ui_changed(id: int) -> void:
@@ -625,9 +624,9 @@ func _input(event: InputEvent) -> void:
 	var calibrating: bool = flight != null and flight.session != null and flight.session.calibration != null
 	var id: int = controllers.registry.selected_device_id("ui" if in_menu or calibrating else "flight")
 	if id < 0: return
-	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id), id, "menu" if in_menu or calibrating else "flight")
 	var source := str(event.device) + ":" + ("axis:%d" % event.axis if event is InputEventJoypadMotion else ("button:%d" % event.button_index if event is InputEventJoypadButton else "key:%d" % event.physical_keycode))
 	var previous: PackedStringArray = _controller_action_edges.get(source, PackedStringArray())
+	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id), id, "menu" if in_menu or calibrating else "flight", previous)
 	_controller_action_edges[source] = actions
 	if flight != null and flight.session.has_method("set_controller_cut"):
 		var held := false

@@ -1,0 +1,72 @@
+[
+  {
+    "test": "aircraft_catalog",
+    "exit_code": 0,
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_aircraft_catalog.gd"
+    ]
+  },
+  {
+    "test": "aircraft_model_manifest",
+    "exit_code": 0,
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_aircraft_model_manifest.gd"
+    ]
+  },
+  {
+    "test": "aircraft_package_proofs",
+    "exit_code": 0,
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_aircraft_package_proofs.gd"
+    ]
+  },
+  {
+    "test": "stik_grain",
+    "exit_code": 0,
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_stik_grain.gd"
+    ]
+  },
+  {
+    "test": "world_field_lights",
+    "exit_code": 0,
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_world_field_lights.gd"
+    ]
+  }
+]

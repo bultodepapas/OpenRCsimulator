@@ -1,0 +1,152 @@
+[
+	{
+		"aircraft": "jensen-das-ugly-stik-60",
+		"pairs": [
+			{
+				"candidate": 261249,
+				"equal": true,
+				"reference": 289768
+			},
+			{
+				"candidate": 251359,
+				"equal": true,
+				"reference": 275801
+			},
+			{
+				"candidate": 264745,
+				"equal": true,
+				"reference": 283705
+			},
+			{
+				"candidate": 262783,
+				"equal": true,
+				"reference": 284915
+			},
+			{
+				"candidate": 272142,
+				"equal": true,
+				"reference": 286663
+			}
+		]
+	},
+	{
+		"aircraft": "gp-extra-300s-60",
+		"pairs": [
+			{
+				"candidate": 128439,
+				"equal": true,
+				"reference": 124879
+			},
+			{
+				"candidate": 132711,
+				"equal": true,
+				"reference": 131696
+			},
+			{
+				"candidate": 128695,
+				"equal": true,
+				"reference": 130855
+			},
+			{
+				"candidate": 130467,
+				"equal": true,
+				"reference": 141321
+			},
+			{
+				"candidate": 126286,
+				"equal": true,
+				"reference": 129797
+			}
+		]
+	},
+	{
+		"aircraft": "p51d-mustang-120",
+		"pairs": [
+			{
+				"candidate": 274275,
+				"equal": true,
+				"reference": 297007
+			},
+			{
+				"candidate": 293235,
+				"equal": true,
+				"reference": 304963
+			},
+			{
+				"candidate": 292956,
+				"equal": true,
+				"reference": 309976
+			},
+			{
+				"candidate": 291182,
+				"equal": true,
+				"reference": 304729
+			},
+			{
+				"candidate": 296514,
+				"equal": true,
+				"reference": 319582
+			}
+		]
+	},
+	{
+		"aircraft": "sebart-avanti-s-a200-p100rx",
+		"pairs": [
+			{
+				"candidate": 34259,
+				"equal": true,
+				"reference": 40241
+			},
+			{
+				"candidate": 37713,
+				"equal": true,
+				"reference": 38794
+			},
+			{
+				"candidate": 38669,
+				"equal": true,
+				"reference": 40765
+			},
+			{
+				"candidate": 34950,
+				"equal": true,
+				"reference": 39976
+			},
+			{
+				"candidate": 37523,
+				"equal": true,
+				"reference": 36427
+			}
+		]
+	},
+	{
+		"aircraft": "turbo-lumber-evolution",
+		"pairs": [
+			{
+				"candidate": 202147,
+				"equal": true,
+				"reference": 212890
+			},
+			{
+				"candidate": 211219,
+				"equal": true,
+				"reference": 206943
+			},
+			{
+				"candidate": 200470,
+				"equal": true,
+				"reference": 219356
+			},
+			{
+				"candidate": 209128,
+				"equal": true,
+				"reference": 218042
+			},
+			{
+				"candidate": 202936,
+				"equal": true,
+				"reference": 215690
+			}
+		]
+	}
+]

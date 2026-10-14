@@ -1,0 +1,77 @@
+[
+  {
+    "name": "pack-2a",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\GodotProbe.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+      "--main-pack",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\OpenRC.exe",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--verbose",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\pack-2a.json",
+      "--cycles=2"
+    ],
+    "exit_code": 0,
+    "engine_error": false,
+    "leaked": false
+  },
+  {
+    "name": "pack-2b",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\GodotProbe.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+      "--main-pack",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\OpenRC.exe",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--verbose",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\pack-2b.json",
+      "--cycles=2"
+    ],
+    "exit_code": 0,
+    "engine_error": false,
+    "leaked": false
+  },
+  {
+    "name": "pack-50",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\GodotProbe.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\empty",
+      "--main-pack",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11b-integration\\package\\OpenRC.exe",
+      "--audio-driver",
+      "Dummy",
+      "--resolution",
+      "1280x720",
+      "--max-fps",
+      "60",
+      "--verbose",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\performance\\loading_probe.gd",
+      "--",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\dt11a-audio\\pack-50.json",
+      "--cycles=50"
+    ],
+    "exit_code": 0,
+    "engine_error": false,
+    "leaked": false
+  }
+]
