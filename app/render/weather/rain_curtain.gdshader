@@ -1,9 +1,10 @@
 // FW-83 distant rain veil, using the same downloaded CC0 alpha as the cloud fragments.
 shader_type spatial;
 render_mode unshaded, cull_disabled, depth_draw_never, fog_disabled, world_vertex_coords;
+#include "res://render/world/engine_srgb.gdshaderinc"
 uniform sampler2D cloud_texture : filter_linear_mipmap, repeat_disable;
-uniform vec3 rain_color = vec3(0.13, 0.15, 0.18);
-uniform vec3 haze_color = vec3(0.6, 0.7, 0.8);
+uniform vec3 rain_lin = vec3(0.13, 0.15, 0.18);
+uniform vec3 haze_lin = vec3(0.6, 0.7, 0.8);
 uniform float haze_density = 0.00005;
 uniform float opacity = 0.5;
 varying vec3 world_position;
@@ -16,6 +17,6 @@ void fragment() {
 	float vertical = smoothstep(0.0, 0.15, UV.y) * smoothstep(0.0, 0.20, 1.0 - UV.y);
 	float alpha = (0.24 + shaft * 0.55 + fine * 0.21) * edge * vertical * opacity;
 	float transmission = exp(-length(CAMERA_POSITION_WORLD - world_position) * haze_density);
-	ALBEDO = mix(haze_color, rain_color, transmission);
+	ALBEDO = encode_for_engine(mix(haze_lin, rain_lin, transmission));
 	ALPHA = alpha;
 }

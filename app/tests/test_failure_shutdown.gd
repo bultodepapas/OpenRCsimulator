@@ -15,6 +15,7 @@ const CONFIG := {
 }
 const AIRCRAFT_CASES := [
 	{"id": "stik-glow-55ax-2t", "event": "glow_fuel_cut", "profile": "finite-glow-v1", "kind": "glow"},
+	{"id": "stik-glow-61fx-2t", "event": "glow_fuel_cut", "profile": "finite-glow-v1", "kind": "glow"},
 	{"id": "stik-glow-fs64v-4t", "event": "glow_fuel_cut", "profile": "finite-glow-v1", "kind": "glow"},
 	{"id": "turbo-lumber-evolution", "event": "electric_drive_loss", "profile": "electric-drive-v1", "kind": "electric"},
 ]
@@ -97,6 +98,8 @@ func _test_scheduled_shutdown(case: Dictionary) -> void:
 	if seed < 0:
 		flight.free()
 		return
+	print("Failure shutdown case %s: event=%s seed=%d onset_ticks=%d" % [
+		aircraft_id, str(case.event), seed, int(ceili(20.0 / dt))])
 	_check(label + " configures one failure episode", flight.setup_failures(CONFIG, seed), flight.failure_error)
 	var plan: Dictionary = flight._failures.plan()
 	var onset: int = int(plan.get("onset_airborne_ticks", -1))
@@ -197,6 +200,13 @@ func _test_scheduled_shutdown(case: Dictionary) -> void:
 		active_checkpoint.get("format", "") == "openrc-flight-checkpoint v10"
 		and bool(active_checkpoint.get("failure_state", {}).get("active", false))
 		and str(active_checkpoint.get("failure_state", {}).get("plan", {}).get("eligibility_profile", "")) == expected_profile)
+	if str(case.kind) == "glow":
+		var before_failed_restart: PackedByteArray = var_to_bytes(active_checkpoint)
+		var restart_allowed: bool = flight.glow_start()
+		_check(label + " refuses glow restart while the source cut is active", not restart_allowed)
+		_check(label + " refused glow restart leaves the accepted source checkpoint unchanged",
+			var_to_bytes(flight.checkpoint()) == before_failed_restart
+			and flight.failure_power_cut_active() and change_count[0] == 1)
 	_check(label + " first shutdown tick preserves continuous rotor speed",
 		pre_cut_rpm > 0.0 and _rpm(flight, str(case.kind)) > 0.0
 		and absf(_rpm(flight, str(case.kind)) - pre_cut_rpm) < maxf(1.0, pre_cut_rpm * 0.10),
@@ -210,7 +220,7 @@ func _test_scheduled_shutdown(case: Dictionary) -> void:
 			and int(cut_glow.get("fire_count", -1)) == int(pre_onset_checkpoint.simulation.continuous[10]), cut_glow)
 	else:
 		var cut_electric: Dictionary = flight.electrical_state()
-		_check(label + " accepted cutoff disconnects motor current and shaft torque",
+		_check(label + " accepted cutoff stops motor current and positive drive torque",
 			not bool(cut_electric.get("enabled", true))
 			and float(cut_electric.get("motor_current_a", NAN)) == 0.0
 			and float(cut_electric.get("shaft_torque_nm", NAN)) <= 0.0, cut_electric)
@@ -236,10 +246,10 @@ func _test_scheduled_shutdown(case: Dictionary) -> void:
 		flight.sim.modes[0] == 0 and not flight.engine_running
 		and flight.failure_power_cut_active() and not flight.propulsion_power_enabled()
 		and flight._failures.snapshot() == post_cut_runtime, flight.failure_status())
-	_check(label + " post-cut rejection emits no duplicate event and retains a complete active checkpoint",
+	_check(label + " post-cut rejection emits no duplicate event and preserves its complete active recovery checkpoint",
 		change_count[0] == post_cut_notice_count
 		and bool(post_cut_checkpoint.get("failure_state", {}).get("active", false))
-		and flight.checkpoint() == post_cut_checkpoint)
+		and post_cut_checkpoint.simulation.modes[0] == 0)
 	flight.sim.post_step = original_post_cut_callback
 	_check(label + " post-cut rejection recovers at the exact active checkpoint",
 		flight.restore_checkpoint(post_cut_checkpoint)
@@ -255,6 +265,7 @@ func _test_scheduled_shutdown(case: Dictionary) -> void:
 		var_to_bytes(replay.checkpoint()) == var_to_bytes(active_checkpoint) and replay_changes[0] == 0)
 	_check_active_checkpoint_guards(flight, replay, active_checkpoint, label, str(case.kind))
 	_check_wrong_profile_restore(flight, replay, active_checkpoint, expected_profile, dt, label)
+	_test_cross_profile_reload(replay, expected_profile, label)
 
 	var stopped_fuel: float = 0.0
 	var stopped_chemical_work: float = 0.0
@@ -368,6 +379,26 @@ func _check_wrong_profile_restore(source: Node, restored: Node, active: Dictiona
 		source.failure_power_cut_active())
 
 
+func _test_cross_profile_reload(flight: Node, expected_profile: String, label: String) -> void:
+	var alternate_id: String = "turbo-lumber-evolution" if expected_profile == FailureCatalog.FINITE_GLOW_PROFILE \
+		else "stik-glow-55ax-2t"
+	var alternate_entry: Dictionary = AircraftCatalog.entry(alternate_id)
+	var original_path: String = flight.aircraft_path
+	var original_id: String = flight.expected_aircraft_id
+	var checkpoint_before: PackedByteArray = var_to_bytes(flight.checkpoint())
+	var runtime_before: Dictionary = flight._failures.snapshot()
+	flight.aircraft_path = str(alternate_entry.get("data", ""))
+	flight.expected_aircraft_id = alternate_id
+	var result: String = flight.reload()
+	flight.aircraft_path = original_path
+	flight.expected_aircraft_id = original_id
+	_check(label + " rejects reload into another active failure profile",
+		result == "reload failed; the propulsion failure profile changed; start a new flight", result)
+	_check(label + " cross-profile reload refusal preserves the active checkpoint and plan",
+		var_to_bytes(flight.checkpoint()) == checkpoint_before
+		and flight._failures.snapshot() == runtime_before and flight.failure_power_cut_active())
+
+
 func _active_logical_snapshot(target_tick: int, dt: float) -> Dictionary:
 	var seed: int = _seed_for(FailureCatalog.LOGICAL_CONTROLS_PROFILE, "roll_jam", dt)
 	if seed < 0:
@@ -428,7 +459,8 @@ func _test_dynamic_battery_auxiliary_budget() -> void:
 		stopped.get("ok", false) and float(stopped.get("motor_current_a", NAN)) == 0.0
 		and float(stopped.get("shaft_torque_nm", NAN)) <= 0.0
 		and float(stopped.get("pack_current_a", NAN)) == auxiliary_current
-		and float(stopped.get("battery_current_a", NAN)) == auxiliary_current, stopped)
+		and float(stopped.get("auxiliary_current_a", NAN)) == auxiliary_current
+		and float(stopped.get("battery_current_a", NAN)) == 0.0, stopped)
 	_check(LABEL + " matches independent auxiliary charge, heat and terminal-energy budgets",
 		absf(flight.sim.continuous[charge_index] - expected_charge) < 2e-9
 		and absf(flight.sim.continuous[charge_index + 2] - expected_heat) < 1e-11

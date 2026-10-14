@@ -118,23 +118,16 @@ func update_visual(snapshot: Dictionary, environment: Environment, _sun: Directi
 	var sky := environment.sky.sky_material as ShaderMaterial
 	var cloud_linear: Vector3 = sky.get_shader_parameter("cloud_lin")
 	var haze_linear: Vector3 = sky.get_shader_parameter("haze_lin")
-	var gain := environment.tonemap_exposure
-	var cloud_display := _display_color(cloud_linear * gain)
-	var haze_display := _display_color(haze_linear * gain)
+	# Match the sky's scene-linear radiance. GLES3 applies exposure once after the material.
 	for material: ShaderMaterial in _materials:
-		material.set_shader_parameter("cloud_color", cloud_display)
-		material.set_shader_parameter("haze_color", haze_display)
+		material.set_shader_parameter("cloud_lin", cloud_linear)
+		material.set_shader_parameter("haze_lin", haze_linear)
 		material.set_shader_parameter("haze_density", environment.fog_density * 0.35)
 		material.set_shader_parameter("bank_base", float(_spec.base_m))
 		material.set_shader_parameter("bank_top", float(_spec.top_m))
-	_rain_material.set_shader_parameter("rain_color", cloud_display * 0.28)
-	_rain_material.set_shader_parameter("haze_color", haze_display)
+	_rain_material.set_shader_parameter("rain_lin", cloud_linear * 0.28)
+	_rain_material.set_shader_parameter("haze_lin", haze_linear)
 	_rain_material.set_shader_parameter("haze_density", environment.fog_density * 0.35)
-
-
-static func _display_color(value: Vector3) -> Vector3:
-	var color := Color(maxf(value.x, 0.0), maxf(value.y, 0.0), maxf(value.z, 0.0)).linear_to_srgb()
-	return Vector3(clampf(color.r, 0.0, 0.95), clampf(color.g, 0.0, 0.95), clampf(color.b, 0.0, 0.95))
 
 
 ## Detached diagnostic data for captures/tests. No rendering state is stored in the simulation.

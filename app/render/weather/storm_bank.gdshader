@@ -2,9 +2,10 @@
 // Distinct world centres provide parallax. Only each small lobe faces the camera.
 shader_type spatial;
 render_mode unshaded, cull_disabled, depth_draw_never, fog_disabled, skip_vertex_transform;
+#include "res://render/world/engine_srgb.gdshaderinc"
 uniform sampler2D cloud_texture : filter_linear_mipmap, repeat_disable;
-uniform vec3 cloud_color = vec3(0.8);
-uniform vec3 haze_color = vec3(0.6, 0.7, 0.8);
+uniform vec3 cloud_lin = vec3(0.8);
+uniform vec3 haze_lin = vec3(0.6, 0.7, 0.8);
 uniform float haze_density = 0.00005;
 uniform float bank_base = 1450.0;
 uniform float bank_top = 6200.0;
@@ -24,8 +25,8 @@ void fragment() {
 	float height = clamp((world_position.y - bank_base) / (bank_top - bank_base), 0.0, 1.0);
 	float relief = smoothstep(0.015, 0.46, dot(shape.rgb, vec3(0.3333)));
 	float shade = mix(0.20, 0.95, relief) * mix(0.44, 1.12, smoothstep(0.05, 0.85, height));
-	vec3 color = cloud_color * shade;
+	vec3 color = cloud_lin * shade;
 	float transmission = exp(-length(CAMERA_POSITION_WORLD - world_position) * haze_density);
-	ALBEDO = mix(haze_color, color, transmission);
+	ALBEDO = encode_for_engine(mix(haze_lin, color, transmission));
 	ALPHA = opacity;
 }
