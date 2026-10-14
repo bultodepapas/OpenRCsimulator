@@ -1,0 +1,13 @@
+AS-09/10 imported Timber pose probe
+executable: C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64.exe
+command: C:\DEVELOPMENT\OpenRCsimulator\.tools\Godot_v4.7.2-stable_win64.exe --headless --path C:\DEVELOPMENT\OpenRCsimulator\app --script C:\DEVELOPMENT\OpenRCsimulator\research\aircraft-standardization\imported_pose_probe.gd -- --out=C:\DEVELOPMENT\OpenRCsimulator\docs\research\aircraft-standardization\AS-09-10-import\pose-baseline.json
+return code: 0
+current timber_model.gd sha256: a36e1251da54d6b0af9f37eb741ef1dc480452e600dde666168af7f07d120675
+legacy snapshot sha256: a36e1251da54d6b0af9f37eb741ef1dc480452e600dde666168af7f07d120675
+
+--- stdout ---
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+AS_IMPORT_POSE_PROBE ok=C:\DEVELOPMENT\OpenRCsimulator\docs\research\aircraft-standardization\AS-09-10-import\pose-baseline.json
+
+--- stderr ---

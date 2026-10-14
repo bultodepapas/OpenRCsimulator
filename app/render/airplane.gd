@@ -43,7 +43,8 @@ static func build(id := STIK_ID, propeller_diameter_m := NAN, expected_presentat
 	if builder == null or not builder.has_method("build"):
 		push_error("Aircraft model builder has no build method: " + str(manifest.builder.script))
 		return {}
-	var airplane: Dictionary = builder.call("build")
+	# V1 builders keep their zero-argument ABI. V2 constructs imported scenes from checked bindings.
+	var airplane: Dictionary = builder.call("build", manifest) if manifest.version == 2 else builder.call("build")
 	var verified: Dictionary = registry.validate_derived(manifest, airplane)
 	if not verified.get("ok", false):
 		if airplane.get("root") is Node:

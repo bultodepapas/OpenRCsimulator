@@ -223,7 +223,7 @@ The primary paper says the main blades have no twist, so θ75 = θ0. It omits cy
   - It is applied about the shaft with sign −`rotation_sense`.
   - HELI-05 follows constant C_D0 and 7/3 from Gavrilets Eqs. 11/12. A pitch-dependent profile-drag law is a separate extension requiring data; it is not silently imported into this reference.
   - At Ω = 0 the azimuth-averaged disc is inactive: zero rotor loads/spring moments/flap rates and no λ/µ conversion. Parked individual-blade mechanics are excluded; the separate dimensional wake can still decay.
-- **Fuselage download:** Z_fus = −½ρS_z(w_a + v_i)·|·|, using quadratic three-axis drag areas S_x, S_y, S_z (Heffley form, no α/β singularities).
+- **Fuselage/empennage loads (HELI-06b).** Use explicit AIR-velocity increments at each center of pressure: `vrel = vCG,air + ω×r − vwake`. Fuselage force is `F_i = −½ρS_i vrel,i |vrel|`. This retains the source magnitude form and corrects its inconsistent wake/force signs through an explicitly named passive extension. A downward wake produces downward fuselage download. [Source and passivity audit](../research/helicopter/HELI-06b/README.md); no α/β or zero-speed divisions.
 
 ### 4.6 Tail rotor, fin and stabilizer
 
@@ -233,27 +233,30 @@ The primary paper says the main blades have no twist, so θ75 = θ0. It omits cy
   - Quasi-static tail response is a source-model approximation, not a result established by its lag being near dt. Sideways VRS, transient authority and tail-flow timestep sensitivity remain qualification gates; no Johnson tail extension is silently applied.
   - Inflow uses µz,tr = (v_a − l_tr·r + h_tr·p)/(Ω_tr·R_tr), including the main-rotor wake intensity K_λ (Gavrilets geometric ramp 0 → 1.5).
   - Thrust is capped at C_Tmax,tr·f_t·ρ(Ω_tr·R_tr)²·πR_tr², with fin blockage f_t = 1 − ¾·S_vf/(πR_tr²). **Tail blowout and authority loss at drooping rpm emerge from this cap.**
-- **Fin and horizontal stabilizer.** Quadratic lift with clipping, including main-rotor downwash on the stabilizer: w_ht = w_a + l_ht·q − K_λ·v_i.
+- **Fin and horizontal stabilizer.** HELI-06b normal forces oppose local relative normal velocity and use the source magnitude forms with dynamic-pressure caps; all moments use the full CP arm once. The printed positive horizontal-force sign would inject relative-flow energy in FRD and is not used. Local relative work is nonpositive, while moving wakes can supply positive body work.
+- **Joint prescribed-speed aerodynamics (HELI-06c).** Evaluate main-hub point flow, main rotor/inflow, tail and airframe once per RK stage. The named shaft-aligned wake approximation uses main vi on the fuselage, the tail's Kλ·vi on both tail surfaces, and explicit tail-wake exposure ε·vi,tr on the fin. Density, main radius and fin blockage/load area must agree across prepared contexts. No stage load or flow is reused across calls. Full drive/body coupling and spatial/inverted wake qualification remain open.
 
 ### 4.7 Drive train, engine and governor
 
-    I_Ω·Ω̇ = η_g·n_es·Q_e − Q_mr − n_tr·Q_tr − Q_loss(Ω)
+    I_Ω·Ω̇ + b·ω̇ = η_g·n_es·Q_e − Q_mr − n_tr·Q_tr − Q_loss(Ω)
     I_Ω   = I_mr + n_tr²·I_tr (+ n_es²·I_eng while engaged)
 
 | Element | Phase 1 (X-Cell, as published) | Later |
 | --- | --- | --- |
-| Engine | Power source P_e = P_max·δ_t·charge_ratio, so Q_e = P_e/(n_es·Ω). Uses the existing atmosphere charge ratio. | Reuse the shaft `engine_torque` curve (idle/peak power, friction) once matched data exist. |
-| Clutch / freewheel | One-way: Q_e ≥ 0. Throttle hold forces Q_e = 0. Engine inertia is lumped into I_rot (Gavrilets estimates ≈ 2.5·I_β). | A second shaft state (engine Ω_e) with clutch slip and freewheel events, using the [event-bracket](../../app/physics/event_bracket.gd) pattern. |
+| Engine | Published airborne power approximation is the reference; startup needs an explicit finite available-torque limit plus power limit, with delivered power Q_e Ω_e. No P/Ω singularity or arbitrary RPM floor. Required torque/starter data remain open. | Reuse the shaft `engine_torque` curve (idle/peak power, friction) once matched data exist. A stopped nitro engine is not self-starting. |
+| Clutch / freewheel | One-speed proxy: Q_e ≥ 0; hold sets drive torque to zero with declared lumped inertia. This does not claim actual engine disengagement. Include engine momentum if engine inertia remains coupled. | A second shaft state (engine Ω_e) with clutch slip, overrun/freewheel and engagement events, using the [event-bracket](../../app/physics/event_bracket.gd) pattern. |
 | Governor | **Discrete** PI at 240 Hz in `aux`, with anti-windup and throttle-curve feed-forward. Kp 0.01 s/rad, Ki 0.02 /rad (derived from the published rpm step). | ESC governor for an electric aircraft, on the existing motor/supply laws with an ESC kind `governor`. |
 | Autorotation | Emerges from Q_mr(θ0, λ, Ω) = 0 with Ω as a state and the C_d(α̂) law. No mode switch. | — |
 
 **Gyroscopics.** Generalize `RotorCoupling.response` from one unit axis to a geared rotor vector, keeping the exact simultaneous solve:
 
-- b = I_mr·a_mr + n_tr·I_tr·a_tr
+- b = I_mr·a_mr + n_tr·I_tr·a_tr (+ n_es·I_eng·a_eng when engine inertia is coupled); axes include each shaft's spin sense
 - denominator I_Ω − bᵀJ⁻¹b
 - momentum h = Ω·b
 
 The airplane call path keeps its existing arithmetic, with a byte-identity test.
+
+[HELI-07/08 audit](../research/helicopter/HELI-07/README.md) records the simultaneous solve, existing aerodynamic torque ownership, full angular-energy test and remaining startup/freewheel/low-RPM gates. Do not add a second engine reaction to kernel moments already containing aerodynamic shaft torque.
 
 ### 4.8 State inventory
 
@@ -577,10 +580,12 @@ Each step is one small working change with its proof. A step that touches a coor
 | HELI-04-R1 | `rotorcraft/dynamic_inflow.gd`: dimensional vi derivative, residual decay and stage effective flow; known-event RK4 qualification | Python dense/convolution reference, native tests and explicit raw-240 failure; bounded local known-event procedure passes 1e-3 m/s. [Evidence](../research/helicopter/HELI-04-R1/README.md). Automatic session detector and physical transient validation open. |
 | HELI-05 | `rotorcraft/main_rotor.gd`: untwisted two-blade C_T hard clamp, first-order flap rates, exact-normal force, hub spring/arm and constant-C_D0 torque | Standalone kernel implemented; source/math anchors, separate bare/flybar lags, p/q units, signed loads and independent oracle. [Evidence](../research/helicopter/HELI-05/README.md). Full-flight qualification and aircraft authoring open. |
 | HELI-05a | `rotorcraft/main_rotor_stage.gd`: joint main-rotor loads and [a1,b1,vi] derivatives | Fixed-body, fixed-speed stand settles to an independent hover quadratic and cyclic targets under RK4. [Evidence](../research/helicopter/HELI-05/README.md#joint-main-rotor-stage). Not complete trim, tail/airframe/drive or a flight session. |
-| HELI-06 | Tail and airframe component suite: source-linearized tail, wake ramp, blocked thrust cap and source fuselage/fin/stabilizer forms | Tail delivered under HELI-06a; airframe forms, sign/passivity review and full-component qualification remain open. No fixed-pass tail iteration. |
+| HELI-06 | Tail and airframe component suite: source-linearized tail, wake ramp, blocked thrust cap and passive fuselage/fin/stabilizer extension | Standalone kernels and a prescribed-speed aerodynamic stand delivered under HELI-06a–c; full physical/transient/component qualification remains open. No fixed-pass tail iteration. |
 | HELI-06a | `rotorcraft/tail_rotor.gd`: bounded coefficient-trim solve, actual-pitch/normal-flow thrust, cap/blockage, Eq. 50 inflow and profile/induced torque | Standalone source/math anchors and independent oracle; [HELI-06 evidence](../research/helicopter/HELI-06/README.md). No tail-controller, drive, sideways-VRS or flight qualification. |
-| HELI-07 | `rotorcraft/drive.gd`: rotor speed ODE, freewheel, hold, power-source engine, discrete governor | Energy closure ∫(P_in − P_out)dt = ΔE_rot within 1e-6 relative over 10 s; governor step vs HELI-03 (calibration, labelled) |
-| HELI-08 | Geared gyroscopic coupling in `rotor_coupling.gd` (b-vector form) | Momentum and work closure (extends `test_rotor_coupling`); airplane path byte-identical |
+| HELI-06b | `rotorcraft/airframe.gd`: passive local-flow fuselage/fin/stabilizer loads, full CP rates/moments, force caps and work diagnostics | [Source conflicts, independent reference and passivity evidence](../research/helicopter/HELI-06b/README.md). Wake velocities explicit; no hidden aircraft data or wake closure. |
+| HELI-06c | `rotorcraft/aerodynamic_stage.gd`: same-stage main/tail/airframe evaluation and explicit source-style shaft wake approximation | [Fixed-body stand](../research/helicopter/HELI-06b/README.md#joint-aerodynamic-stage). Not body flight, drivetrain, complete trim or session integration. |
+| HELI-07 | `rotorcraft/drive.gd`: finite startup drive, delivered-power/rotor-speed balance, hold proxy, discrete governor; actual freewheel with separate engine speed | [Source/interface audit](../research/helicopter/HELI-07/README.md) done; kernel and energy/stop/startup gates open. Rotor-only energy closure requires a clamped-body stand; governor matching is calibration. |
+| HELI-08 | Geared gyroscopic coupling (b-vector form) isolated from the airplane path | [Audit](../research/helicopter/HELI-07/README.md) done; full angular-energy/momentum proof and kernel remain open. Include engine momentum consistently with reflected inertia; no duplicate aerodynamic/drive reaction. |
 | HELI-09 | `bench_rotorcraft.gd`: per-call kernel cost | ≤ 37 µs per full evaluation (150 µs per tick) on the H15 host, or stop and redesign before integration |
 | HELI-09a | Isolated equilibrium-inflow cost diagnostic `research/helicopter/bench_inflow.gd` | Measured on the Windows Ryzen 5900X host; [HELI-04 evidence](../research/helicopter/HELI-04/README.md). This does not close HELI-09 or the whole-tick budget. |
 | HELI-09b | Isolated joint main-disc/wake stage cost `research/helicopter/bench_main_stage.gd` | [HELI-05 measurements](../research/helicopter/HELI-05/README.md#heli-09b-isolated-stage-cost): compact payload verified, VRS cost still leaves insufficient full-load margin. Complete profiling/redesign before session integration; HELI-09 open. |

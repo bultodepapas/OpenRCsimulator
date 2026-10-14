@@ -72,7 +72,7 @@ def presentation_binding(base_id: str) -> dict[str, str]:
     family = family_match.group("family")
     manifest_bytes = (ROOT / "app/data/aircraft_models" / f"{family}.json").read_bytes()
     manifest = json.loads(manifest_bytes.decode("utf-8"))
-    if manifest.get("schema") != "openrc-aircraft-model" or manifest.get("version") != 1 or manifest.get("family_id") != family:
+    if manifest.get("schema") != "openrc-aircraft-model" or type(manifest.get("version")) is not int or manifest["version"] not in {1, 2} or manifest.get("family_id") != family:
         raise ValueError(f"{base_id}: invalid model manifest identity")
     return {"visual_family": family, "model_manifest_sha256": sha256(manifest_bytes), "scale_root": "airplane"}
 

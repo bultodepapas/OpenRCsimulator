@@ -1,0 +1,207 @@
+{
+ "cases": [
+  {
+   "pose": {
+    "travel": -0.07,
+    "steer_deg": -30.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": -0.07,
+    "steer_deg": -15.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": -0.07,
+    "steer_deg": 0.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": -0.07,
+    "steer_deg": 15.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": -0.07,
+    "steer_deg": 30.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": -0.035,
+    "steer_deg": -30.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": -0.035,
+    "steer_deg": -15.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": -0.035,
+    "steer_deg": 0.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": -0.035,
+    "steer_deg": 15.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": -0.035,
+    "steer_deg": 30.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.0,
+    "steer_deg": -30.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.0,
+    "steer_deg": -15.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.0,
+    "steer_deg": 0.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.0,
+    "steer_deg": 15.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.0,
+    "steer_deg": 30.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.025,
+    "steer_deg": -30.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.025,
+    "steer_deg": -15.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.025,
+    "steer_deg": 0.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.025,
+    "steer_deg": 15.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.025,
+    "steer_deg": 30.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.05,
+    "steer_deg": -30.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.05,
+    "steer_deg": -15.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.05,
+    "steer_deg": 0.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.05,
+    "steer_deg": 15.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": 0.05,
+    "steer_deg": 30.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": {
+     "FL": 0.05,
+     "RR": 0.05,
+     "FR": -0.07,
+     "RL": -0.07
+    },
+    "steer_deg": -30.0
+   },
+   "hits": []
+  },
+  {
+   "pose": {
+    "travel": {
+     "FL": 0.05,
+     "RR": 0.05,
+     "FR": -0.07,
+     "RL": -0.07
+    },
+    "steer_deg": 30.0
+   },
+   "hits": []
+  }
+ ],
+ "summary": {
+  "poses": 27,
+  "poses_with_hits": 0
+ }
+}
