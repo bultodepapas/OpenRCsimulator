@@ -671,6 +671,14 @@ func controller_focus_lost() -> void:
 		pause_reason = "Focus lost. Release controls and continue explicitly."
 
 
+func controller_throttle_cut() -> void:
+	if radio.connected and radio.is_rate_throttle():
+		radio.set_rate_throttle_for_start(0.0)
+		_pending_controller_start = -1.0
+		commands.throttle = 0.0
+		sim.inputs = flown_inputs()
+
+
 ## E3a: the wheels roll on this field's surfaces (a validated FieldLoader field). Invalid surface data refuses the
 ## flight (like invalid aircraft data). Returns false on failure; call reset() afterwards to restart on them.
 func set_field(field: Dictionary, table_path := GroundSurfaces.DEFAULT_PATH) -> bool:

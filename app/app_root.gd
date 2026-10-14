@@ -14,6 +14,9 @@ const Home := preload("res://ui/home.gd")
 const HomeScene := preload("res://ui/home_scene.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const UiInput := preload("res://ui/ui_input.gd")
+const ControllerService := preload("res://input/controller_service.gd")
+const ControllerSetup := preload("res://ui/controller_setup.gd")
+const ControllerActions := preload("res://input/controller_actions.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const PauseMenu := preload("res://ui/pause_menu.gd")
 const HeldKeys := preload("res://ui/held_keys.gd")
@@ -77,6 +80,8 @@ var failure_menu: CanvasLayer:
 		return screens.get_screen("failures") as CanvasLayer
 ## The interactive route has a Home to return to; the direct route (`--` arguments) only flies and quits.
 var has_home := false
+var controllers: Node
+var _controller_action_edges: Dictionary = {}
 ## The flight session's own keyboard reader (HeldKeys masks wrap it, never each other).
 var _keyboard_reader: Callable
 var _settings_note: String = ""
@@ -147,6 +152,12 @@ func _ready() -> void:
 		start_flight()
 		return
 	has_home = true
+	controllers = ControllerService.new()
+	if preferences_path != Preferences.DEFAULT_PATH:
+		controllers.store = ControllerService.Store.new(preferences_path + ".controllers", preferences_path + ".legacy_rc")
+	controllers.ui_selection_changed.connect(_controller_ui_changed)
+	controllers.continuity_lost.connect(func() -> void: open_pause.call_deferred())
+	add_child(controllers)
 	preferences = Preferences.load_from(preferences_path)
 	if preferences.note != "":
 		print("settings: ", preferences.note)
@@ -234,6 +245,7 @@ func show_home() -> void:
 	home.quit_requested.connect(func() -> void: get_tree().quit())
 	home.language_requested.connect(set_language)
 	home.help_requested.connect(open_help)
+	home.controls_requested.connect(open_controls)
 	home.weather_requested.connect(open_weather)
 	home.time_requested.connect(set_time_of_day)
 	home.failures_requested.connect(open_failures_settings)
@@ -265,6 +277,8 @@ func start_ground_vehicle() -> void:
 			candidate = script.new()
 	var error := "Ground vehicle activity could not be loaded"
 	if candidate != null:
+		if controllers != null and _has_property(candidate, "controller_registry"):
+			candidate.controller_registry = controllers.registry
 		add_child(candidate)
 		error = str(candidate.get("startup_error"))
 		if error.is_empty():
@@ -431,6 +445,7 @@ func start_flight(request: Dictionary = {}) -> void:
 		flight.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true) if has_home and not is_random else SkyConfig.defaults()
 	flight.night_options = _night_options_from_preferences() if has_home else Preferences.NIGHT_DEFAULTS.duplicate(true)
 	flight.interactive_start = has_home
+	flight.external_controller_selection = controllers != null
 	if not helicopter_route:
 		flight.remember_lighting_selection = not is_random
 	flight.latency_marker_enabled = has_home and bool(preferences.get("latency_marker", Preferences.DEFAULTS.latency_marker))
@@ -489,6 +504,10 @@ func start_flight(request: Dictionary = {}) -> void:
 			if flight.has_signal("scenario_changed"):
 				flight.scenario_changed.connect(_on_scenario_changed)
 		_keyboard_reader = flight.session.read_raw
+		if controllers != null:
+			controllers.attach_session(flight.session)
+			if controllers.registry.selected_device_id("flight") >= 0:
+				open_pause.call_deferred()
 		if is_random:
 			HeldKeys.mask(flight.session, _keyboard_reader)
 		if has_home and not preferences.get("first_flight_hint_seen", false):
@@ -503,6 +522,74 @@ func _create_flight(aircraft_id: String = "") -> Node:
 		var helicopter_script: Script = load(route_path) as Script
 		return helicopter_script.new() if helicopter_script != null and helicopter_script.can_instantiate() else null
 	return load(route_path).instantiate()
+
+
+func open_controls(from: Control = null) -> void:
+	if controllers == null or not (screens.is_top("home") or screens.is_top("pause")):
+		return
+	var setup := ControllerSetup.new()
+	setup.configure(controllers.registry, controllers.store, controllers.registry.selected_device_id("flight"), controllers.registry.selected_device_id("ui"))
+	setup.close_requested.connect(func() -> void:
+		if screens.is_top("controls"): screens.pop())
+	setup.device_selection_requested.connect(func(flight_id: int, ui_id: int) -> void:
+		controllers.select_devices(flight_id, ui_id)
+		_controller_ui_changed(controllers.registry.selected_device_id("ui")))
+	setup.profile_saved.connect(func(profile: Dictionary) -> void:
+		if setup.selected_flight_device_id() == controllers.registry.selected_device_id("flight"):
+			controllers.apply_profile(profile)
+		_controller_ui_changed(controllers.registry.selected_device_id("ui")))
+	screens.push("controls", setup, from)
+	var current: Dictionary = controllers.profile_for_device(controllers.registry.selected_device_id("flight"))
+	if not current.is_empty(): setup.load_selected_profile(current)
+
+
+func _controller_bindings(id: int) -> Dictionary:
+	var bindings: Dictionary = ControllerActions.default_bindings()
+	if controllers != null and id >= 0:
+		bindings.merge(controllers.profile_for_device(id).get("actions", {}), true)
+	return bindings
+
+
+func _controller_ui_changed(id: int) -> void:
+	UiInput.set_gamepad(id, _controller_bindings(id))
+	_controller_action_edges.clear()
+
+
+func _input(event: InputEvent) -> void:
+	if controllers == null: return
+	# A deliberate first A/Cross press claims only menu navigation and opens selection.
+	if screens.is_top("home") and controllers.registry.selected_device_id("ui") < 0 \
+		and event is InputEventJoypadButton and event.pressed and event.button_index == JOY_BUTTON_A \
+		and controllers.is_ui_gamepad(event.device):
+		controllers.registry.select_device("ui", event.device)
+		get_viewport().set_input_as_handled()
+		open_controls()
+		return
+	if ground_vehicle != null: return # ground sampler and garage own their distinct control scheme
+	if event is not InputEventJoypadButton and event is not InputEventJoypadMotion and event is not InputEventKey: return
+	if event is InputEventKey and event.echo: return
+	var in_menu := screens.top() != null
+	var id: int = controllers.registry.selected_device_id("ui" if in_menu else "flight")
+	if id < 0: return
+	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id), id, "menu" if in_menu else "flight")
+	var source := str(event.device) + ":" + ("axis:%d" % event.axis if event is InputEventJoypadMotion else ("button:%d" % event.button_index if event is InputEventJoypadButton else "key:%d" % event.physical_keycode))
+	var previous: PackedStringArray = _controller_action_edges.get(source, PackedStringArray())
+	_controller_action_edges[source] = actions
+	for action: String in actions:
+		if previous.has(action): continue
+		if in_menu:
+			if action not in ["back", "pause"]: continue
+			var focused := get_viewport().gui_get_focus_owner()
+			if focused is OptionButton and focused.get_popup().visible:
+				focused.get_popup().hide()
+			else:
+				var surface: Control = ScreenStack._surface(screens.top())
+				if surface != null: surface.close_requested.emit()
+			get_viewport().set_input_as_handled()
+			return
+		elif flight != null and flight.controller_action(action):
+			get_viewport().set_input_as_handled()
+			return
 
 
 func open_natural_random(from: Control = null) -> void:
@@ -647,6 +734,7 @@ func _notification(what: int) -> void:
 	# Never during captures and traces (their sessions take no input).
 	# Deferred: the notification is propagated through the whole tree, which refuses add_child() meanwhile.
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT and flight != null and flight.session != null and flight.session.input_enabled:
+		flight.session.controller_focus_lost()
 		open_pause.call_deferred()
 
 
@@ -675,6 +763,8 @@ func open_pause() -> void:
 	pause_menu.end_requested.connect(end_flight)
 	pause_menu.quit_requested.connect(quit_app)
 	pause_menu.help_requested.connect(open_help)
+	pause_menu.controls_requested.connect(open_controls)
+	pause_menu.controls_button.visible = controllers != null
 	screens.push("pause", pause_menu)
 	var checked_failures: Dictionary = FailureConfig.validate(
 		preferences.get("failure_config", FailureConfig.defaults())
@@ -749,6 +839,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 	candidate.workshop_trial = trial.duplicate(true)
 	candidate.start_choice = "airborne"
 	candidate.interactive_start = true
+	candidate.external_controller_selection = controllers != null
 	candidate.weather_config = preferences.get("weather_config", WeatherSettings.defaults()).duplicate(true)
 	candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
 	candidate.sky_config = preferences.get("sky_config", SkyConfig.defaults()).duplicate(true)
@@ -788,6 +879,7 @@ func _start_workshop_trial(payload: Dictionary) -> void:
 		_workshop_screens.push_front({id = id, node = screens.pop(false, false), opener = opener})
 	flight = candidate
 	screens.set_session(flight.session)
+	if controllers != null: controllers.attach_session(flight.session)
 	_keyboard_reader = flight.session.read_raw
 	flight.pause_requested.connect(open_pause)
 	flight.overlay_settings_changed.connect(_on_overlay_settings_changed)
@@ -806,6 +898,7 @@ func _return_to_workshop() -> void:
 	remove_child(flight)
 	flight.queue_free()
 	flight = _workshop_previous_flight
+	if controllers != null: controllers.attach_session(flight.session if flight != null else null, false)
 	_workshop_previous_flight = null
 	_keyboard_reader = _workshop_previous_keyboard
 	if flight != null:
@@ -1134,6 +1227,9 @@ func continue_flight() -> void:
 	var session: Node = flight.session
 	if not session.is_flyable():
 		return # nothing to go back to: the menu stays, Continue is disabled and says why
+	if controllers != null and (session._controller_lost or (session.radio.connected and not session.radio.armed)):
+		pause_menu.set_note(tr("Release the controls to neutral before continuing; use Controls to select a disconnected device."))
+		return
 	_close_pause()
 	session.resume()
 
@@ -1143,6 +1239,8 @@ func restart_flight() -> void:
 		return
 	_close_pause()
 	flight.session.reset() # the selected launch; the recorder closes its file on reset
+	if controllers != null and flight.session.radio.connected:
+		open_pause()
 
 
 ## Back to Home (UI-03). An active trace is saved first; if that fails the menu says so, and pressing again
@@ -1163,6 +1261,7 @@ func end_flight() -> void:
 	screens.clear()
 	screens.set_session(null)
 	flight.recorder.detach()
+	if controllers != null: controllers.attach_session(null)
 	remove_child(flight) # out of the tree now: its camera, sound and session stop this frame
 	flight.queue_free()
 	flight = null

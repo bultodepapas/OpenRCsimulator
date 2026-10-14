@@ -92,7 +92,8 @@ static func upgrade_legacy(value: Variant, association: Dictionary = {}) -> Dict
 	if typeof(value) != TYPE_DICTIONARY:
 		return {}
 	if int(value.get("schema_version", 0)) == SCHEMA_VERSION:
-		return value.duplicate(true) if validate(value).ok else {}
+		var current: Dictionary = SmokeAux.sanitize_profile(value, false)
+		return current if validate(current).ok else {}
 	var kind_value: Variant = value.get("kind", "")
 	if typeof(kind_value) != TYPE_STRING or not ["radio", "gamepad"].has(kind_value):
 		return {}
@@ -236,10 +237,10 @@ static func validate(value: Variant) -> Dictionary:
 		errors.append("trigger_absolute throttle must use an absolute range")
 	if typeof(mode_value) == TYPE_STRING and mode_value == "radio_absolute" and typeof(value.get("throttle")) == TYPE_DICTIONARY and value.throttle.get("range_kind") != "absolute":
 		errors.append("radio_absolute throttle must use an absolute range")
-	if typeof(value.get("aux")) != TYPE_DICTIONARY:
+	if value.has("aux") and typeof(value.get("aux")) != TYPE_DICTIONARY:
 		errors.append("aux must be a Dictionary")
-	else:
-		var aux: Dictionary = value.aux
+	elif typeof(value.get("aux", {})) == TYPE_DICTIONARY:
+		var aux: Dictionary = value.get("aux", {})
 		if aux.has("smoke") and not SmokeAux.valid_binding(aux.smoke, axes.keys()):
 			errors.append("aux.smoke is invalid or overlaps a flight axis")
 	return {"ok": errors.is_empty(), "errors": errors}

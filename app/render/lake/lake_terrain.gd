@@ -6,9 +6,12 @@ const WaterMaterial := preload("res://render/lake/water_material.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
 const BANK_SHADER := preload("res://render/lake/bank.gdshader")
 const LakeReflection := preload("res://render/lake/lake_reflection.gd")
+const GeometryStamp := preload("res://render/lake/generated_geometry_stamp.gd")
 const STEP_M := 0.75
 const WATER_EDGE_M := 2.0
 const MAX_MASK_POINTS := 64
+const BAKED_PATH := "res://assets/landscape/lake/default_geometry.res"
+const BAKED_FORMAT := "openrc-lake-geometry v1"
 
 # DT-11a: one CPU geometry entry per mesh type. Full input bytes, not the caller's
 # identity label, invalidate it. Never retain nodes, materials, probes or GPU meshes.
@@ -50,6 +53,8 @@ static func build(lake: Dictionary, ground_material: ShaderMaterial, surfaces: P
 		maximum.x = maxf(maximum.x, polygon[i])
 		maximum.y = maxf(maximum.y, polygon[i + 1])
 	var key := var_to_bytes([lake, surfaces])
+	if key != _basin_key or _basin_arrays.is_empty():
+		_load_baked_geometry(key, var_to_bytes(lake))
 	if key != _basin_key or _basin_arrays.is_empty():
 		_basin_arrays = _build_basin_arrays(lake, surfaces, minimum, maximum)
 		_basin_key = key
@@ -128,6 +133,8 @@ static func _build_basin_arrays(lake: Dictionary, surfaces: PackedFloat64Array,
 static func water_mesh(lake: Dictionary) -> ArrayMesh:
 	var key := var_to_bytes(lake)
 	if key != _water_key or _water_arrays.is_empty():
+		_load_baked_geometry(PackedByteArray(), key)
+	if key != _water_key or _water_arrays.is_empty():
 		_water_arrays = _build_water_arrays(lake)
 		_water_key = key
 	var result := ArrayMesh.new()
@@ -178,3 +185,60 @@ static func _refine_water(a: Vector2, b: Vector2, c: Vector2, lake: Dictionary,
 		normals.append(Vector3.UP)
 		uvs.append(point * 0.25)
 		shores.append(Vector2(maxf(0.0, Surface.shore_distance_validated(lake, -point.y, point.x)), 0.0))
+
+
+## Generated CPU buffers only; no shared GPU mesh, material or mutable scene state.
+## A missing/incompatible bake preserves the procedural path for custom definitions.
+static func _load_baked_geometry(basin_key: PackedByteArray, water_key: PackedByteArray) -> void:
+	if not ResourceLoader.exists(BAKED_PATH):
+		return
+	var baked: Resource = ResourceLoader.load(BAKED_PATH, "Resource", ResourceLoader.CACHE_MODE_IGNORE)
+	if not baked_matches(baked, basin_key, water_key):
+		return
+	if not basin_key.is_empty() and baked.get_meta("basin_key") == basin_key:
+		_basin_arrays = baked.get_meta("basin_arrays")
+		_basin_key = basin_key
+	if baked.get_meta("water_key") == water_key:
+		_water_arrays = baked.get_meta("water_arrays")
+		_water_key = water_key
+
+
+## The build/check pipeline additionally regenerates and compares every buffer with the sampler.
+static func baked_matches(baked: Resource, basin_key: PackedByteArray, water_key: PackedByteArray) -> bool:
+	if baked == null or baked.get_script() != null or baked.get_meta("format", "") != BAKED_FORMAT \
+			or baked.get_meta("engine_hex", 0) != Engine.get_version_info().hex \
+			or baked.get_meta("double_precision", null) != OS.has_feature("double") \
+			or not baked.get_meta("sources", null) is Dictionary \
+			or geometry_digest([baked.get_meta("sources")]) != GeometryStamp.SOURCE_SHA256:
+		return false
+	var basin_matches: bool = not basin_key.is_empty() and baked.get_meta("basin_key", null) == basin_key
+	var water_matches: bool = baked.get_meta("water_key", null) == water_key
+	if not basin_matches and not water_matches:
+		return false
+	for name: String in ["basin", "water"]:
+		if (name == "basin" and not basin_matches) or (name == "water" and not water_matches):
+			continue
+		var arrays: Variant = baked.get_meta(name + "_arrays", null)
+		if not arrays is Array or arrays.size() != Mesh.ARRAY_MAX \
+				or not arrays[Mesh.ARRAY_VERTEX] is PackedVector3Array \
+				or arrays[Mesh.ARRAY_VERTEX].is_empty() \
+				or not arrays[Mesh.ARRAY_NORMAL] is PackedVector3Array \
+				or arrays[Mesh.ARRAY_NORMAL].size() != arrays[Mesh.ARRAY_VERTEX].size() \
+				or not arrays[Mesh.ARRAY_TEX_UV] is PackedVector2Array \
+				or arrays[Mesh.ARRAY_TEX_UV].size() != arrays[Mesh.ARRAY_VERTEX].size():
+			return false
+		if name == "basin" and (not arrays[Mesh.ARRAY_INDEX] is PackedInt32Array or arrays[Mesh.ARRAY_INDEX].is_empty()):
+			return false
+		if name == "water" and (not arrays[Mesh.ARRAY_TEX_UV2] is PackedVector2Array \
+				or arrays[Mesh.ARRAY_TEX_UV2].size() != arrays[Mesh.ARRAY_VERTEX].size()):
+			return false
+		if geometry_digest(arrays) != baked.get_meta(name + "_sha256", ""):
+			return false
+	return true
+
+
+static func geometry_digest(arrays: Array) -> String:
+	var hash := HashingContext.new()
+	hash.start(HashingContext.HASH_SHA256)
+	hash.update(var_to_bytes(arrays))
+	return hash.finish().hex_encode()

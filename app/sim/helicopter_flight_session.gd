@@ -135,6 +135,10 @@ func reset() -> bool:
  pause_reason=start_error
  sim.process_mode=Node.PROCESS_MODE_INHERIT if physics_enabled else Node.PROCESS_MODE_DISABLED
  sim.set_paused(not holds.is_empty() or not _ready_to_fly)
+ if external_controller_selection and radio.connected:
+  radio.require_neutral(true)
+  sim.set_paused(true)
+  pause_reason="Restart ready. Release controls and review collective before continuing."
  return _ready_to_fly
 
 func _stage(body: PackedFloat64Array,continuous: PackedFloat64Array,t: float) -> Dictionary:

@@ -69,12 +69,34 @@ func update_devices(observations: Array) -> Dictionary:
 			changed = true
 		_devices[id] = record
 
-	_apply_ambiguity_flags()
-	if changed:
-		devices_changed.emit()
+	changed = _apply_ambiguity_flags() or changed
 	for role in lost_selections:
 		selection_changed.emit(role, -1)
+	if changed:
+		devices_changed.emit()
 	return {"ok": errors.is_empty(), "errors": errors}
+
+
+## Applies a backend disconnect edge immediately, even if enumeration reuses the same ID next frame.
+func disconnect_device(id: int) -> bool:
+	if id < 0 or not _devices.has(id):
+		return false
+	var record: Dictionary = _devices[id]
+	if not record.get("connected", false):
+		return true
+	record = record.duplicate(true)
+	record["connected"] = false
+	_devices[id] = record
+	var changed_roles: Array[String] = []
+	for role in ROLES:
+		if int(_selections[role]) == id:
+			_selections[role] = -1
+			changed_roles.append(role)
+	_apply_ambiguity_flags()
+	for role in changed_roles:
+		selection_changed.emit(role, -1)
+	devices_changed.emit()
+	return true
 
 
 ## A negative ID explicitly clears the role. Selecting a device is never implicit.
@@ -140,7 +162,8 @@ func _normalize_observation(info: Dictionary, id: int) -> Dictionary:
 	}
 
 
-func _apply_ambiguity_flags() -> void:
+func _apply_ambiguity_flags() -> bool:
+	var changed := false
 	var fingerprints: Dictionary = {}
 	for id in _devices:
 		var device: Dictionary = _devices[id]
@@ -156,6 +179,8 @@ func _apply_ambiguity_flags() -> void:
 		if bool(device.get("ambiguous", false)) != ambiguous:
 			device["ambiguous"] = ambiguous
 			_devices[id] = device
+			changed = true
+	return changed
 
 
 func _fingerprint(device: Dictionary) -> String:
@@ -182,6 +207,11 @@ func _string_field(info: Dictionary, field: String, fallback: String = "") -> St
 
 func _uint_field(info: Dictionary, field: String) -> int:
 	var value: Variant = info.get(field, 0)
-	if typeof(value) != TYPE_INT or int(value) < 0 or int(value) > 65535:
+	var normalized := -1
+	if typeof(value) == TYPE_INT:
+		normalized = int(value)
+	elif typeof(value) == TYPE_STRING and value.strip_edges().is_valid_int():
+		normalized = value.strip_edges().to_int()
+	if normalized < 0 or normalized > 65535:
 		return 0
-	return int(value)
+	return normalized

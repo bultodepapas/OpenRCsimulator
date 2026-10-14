@@ -24,6 +24,26 @@ func _initialize() -> void:
 		quit(1)
 		return
 	print("Pack field validated, SHA-256 ", args[1])
+	# DT-11a: procedural fallback must not hide a missing/stale packaged geometry bake.
+	var lake_loader: Script = load("res://data/lake_loader.gd")
+	var ground_surfaces: Script = load("res://physics/ground_surfaces.gd")
+	var lake_terrain: Script = load("res://render/lake/lake_terrain.gd")
+	if lake_loader == null or ground_surfaces == null or lake_terrain == null \
+			or not ResourceLoader.exists(lake_terrain.BAKED_PATH):
+		printerr("Pack missing lake geometry loader/bake")
+		quit(1)
+		return
+	var lake: Dictionary = lake_loader.load_from()
+	var ground_table: Dictionary = ground_surfaces.load_table()
+	var ground: Dictionary = ground_surfaces.build(ground_table.table, result.field) if ground_table.ok else {}
+	var baked: Resource = load(lake_terrain.BAKED_PATH)
+	if not lake.ok or not ground.get("ok", false) or not lake_terrain.baked_matches(
+			baked, var_to_bytes([lake.lake, ground.rects]), var_to_bytes(lake.lake)) \
+			or baked.get_meta("basin_key", null) != var_to_bytes([lake.lake, ground.rects]):
+		printerr("Pack has incompatible lake geometry")
+		quit(1)
+		return
+	print("Pack default lake geometry and compiled source stamp validated")
 	var trees: Script = load("res://render/tree_assets.gd")
 	if trees == null or not FileAccess.file_exists("res://assets/landscape/trees/LICENSE.txt"):
 		printerr("Pack has no tree assets adapter/license")

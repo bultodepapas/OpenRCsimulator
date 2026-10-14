@@ -159,6 +159,20 @@ func _ground_height(x: float,z: float) -> float:
 func set_overlays_visible(on: bool) -> void:
  if _hud_layer!=null: _hud_layer.visible=on
 
+func controller_action(action: String) -> bool:
+ match action:
+  "camera_cycle": _rig.cycle(1)
+  "view_reset": _rig.reset_view()
+  "calibrate": session.start_calibration()
+  "accept":
+   if session.calibration!=null: session.advance_calibration()
+   elif session.sim.paused: session.resume()
+  "back","pause":
+   if session.calibration!=null: session.cancel_calibration()
+   else: pause_requested.emit()
+  _: return false
+ return true
+
 func _unhandled_input(event: InputEvent) -> void:
  if event is InputEventMouseButton and event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP,MOUSE_BUTTON_WHEEL_DOWN]:
   _rig.zoom(1 if event.button_index==MOUSE_BUTTON_WHEEL_UP else -1)

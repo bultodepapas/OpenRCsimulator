@@ -109,17 +109,32 @@ func match_profile(info: Dictionary, connected_devices: Array = []) -> Dictionar
 		return {}
 	var association: Dictionary = matches[0].get("association", {})
 	if association.has("serial_number") and not str(association.serial_number).is_empty():
+		var serial_matches := 0
+		for device in connected_devices:
+			if typeof(device) != TYPE_DICTIONARY or (device.has("connected") and not bool(device.get("connected", false))):
+				continue
+			if str(device.get("serial_number", "")) != str(association.serial_number):
+				continue
+			if association.has("vendor_id") and _metadata_int(device.get("vendor_id", 0)) != _metadata_int(association.vendor_id):
+				continue
+			if association.has("product_id") and _metadata_int(device.get("product_id", 0)) != _metadata_int(association.product_id):
+				continue
+			serial_matches += 1
+		if serial_matches > 1:
+			return {}
 		return matches[0]
 	var guid: String = str(info.get("guid", ""))
-	var vendor_id: int = int(info.get("vendor_id", 0))
-	var product_id: int = int(info.get("product_id", 0))
+	var vendor_id: int = _metadata_int(info.get("vendor_id", 0))
+	var product_id: int = _metadata_int(info.get("product_id", 0))
 	if guid.is_empty() or vendor_id <= 0 or product_id <= 0:
 		return {}
 	var same_identity_count := 0
 	for device in connected_devices:
 		if typeof(device) != TYPE_DICTIONARY:
 			continue
-		if str(device.get("guid", "")) == guid and int(device.get("vendor_id", 0)) == vendor_id and int(device.get("product_id", 0)) == product_id:
+		if device.has("connected") and not bool(device.get("connected", false)):
+			continue
+		if str(device.get("guid", "")) == guid and _metadata_int(device.get("vendor_id", 0)) == vendor_id and _metadata_int(device.get("product_id", 0)) == product_id:
 			same_identity_count += 1
 	if same_identity_count > 1:
 		return {}
@@ -212,10 +227,10 @@ func _association_matches(info: Dictionary, association: Dictionary) -> bool:
 	var observed_serial := str(info.get("serial_number", ""))
 	var stored_guid := str(association.get("guid", ""))
 	var observed_guid := str(info.get("guid", ""))
-	var stored_vendor := int(association.get("vendor_id", 0))
-	var stored_product := int(association.get("product_id", 0))
-	var observed_vendor := int(info.get("vendor_id", 0))
-	var observed_product := int(info.get("product_id", 0))
+	var stored_vendor := _metadata_int(association.get("vendor_id", 0))
+	var stored_product := _metadata_int(association.get("product_id", 0))
+	var observed_vendor := _metadata_int(info.get("vendor_id", 0))
+	var observed_product := _metadata_int(info.get("product_id", 0))
 	if not stored_serial.is_empty():
 		return stored_serial == observed_serial and (stored_vendor == 0 or stored_vendor == observed_vendor) and (stored_product == 0 or stored_product == observed_product)
 	if stored_guid.is_empty() or stored_vendor <= 0 or stored_product <= 0:
@@ -227,7 +242,15 @@ func _legacy_key(info: Dictionary) -> String:
 	if info.has("device_key") and typeof(info.device_key) == TYPE_STRING:
 		return info.device_key
 	var name := str(info.get("raw_name", info.get("name", "")))
-	return "%s|%04x:%04x|%s" % [str(info.get("guid", "")), int(info.get("vendor_id", 0)), int(info.get("product_id", 0)), name]
+	return "%s|%04x:%04x|%s" % [str(info.get("guid", "")), _metadata_int(info.get("vendor_id", 0)), _metadata_int(info.get("product_id", 0)), name]
+
+
+func _metadata_int(value: Variant) -> int:
+	if typeof(value) == TYPE_INT:
+		return int(value)
+	if typeof(value) == TYPE_STRING and value.strip_edges().is_valid_int():
+		return value.strip_edges().to_int()
+	return 0
 
 
 func _redacted_key(key: String) -> String:

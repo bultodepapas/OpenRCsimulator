@@ -951,6 +951,30 @@ func _pose_of(s: PackedFloat64Array) -> Dictionary:
 	return { pos = Frames.ned_to_render([s[RB.POS], s[RB.POS + 1], s[RB.POS + 2]]), basis = Frames.quat_to_render(s.slice(RB.ATT, RB.ATT + 4)) }
 
 
+## Semantic gamepad actions share operations with keyboard shortcuts.
+func controller_action(action: String) -> bool:
+	if session == null: return false
+	match action:
+		"camera_cycle": _rig.cycle(1)
+		"view_reset": _rig.reset_view()
+		"trim_left": session.adjust_aileron_trim(-0.005)
+		"trim_right": session.adjust_aileron_trim(0.005)
+		"trim_up": session.adjust_elevator_trim(-0.1)
+		"trim_down": session.adjust_elevator_trim(0.1)
+		"overlay_preset":
+			if _overlays != null: _overlays.cycle_preset()
+		"throttle_cut": session.controller_throttle_cut()
+		"calibrate": session.start_calibration()
+		"accept":
+			if session.calibration != null: session.advance_calibration()
+			elif session.sim.paused: session.resume()
+		"back", "pause":
+			if session.calibration != null: session.cancel_calibration()
+			else: pause_requested.emit()
+		_: return false
+	return true
+
+
 func _unhandled_input(event: InputEvent) -> void:
 	if _smoke_assignment != null:
 		return
