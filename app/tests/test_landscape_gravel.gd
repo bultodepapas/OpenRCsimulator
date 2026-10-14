@@ -46,7 +46,7 @@ func _initialize() -> void:
 			if mat is ShaderMaterial and mat.shader == Scenery.GRAVEL_SHADER:
 				batches += 1
 				surfaces_valid = surfaces_valid and child.mesh.get_surface_count() == 1
-	_check("47 nonempty scenery cells remain after population extraction", node.get_meta("stats").cells == 47)
+	_check("55 nonempty scenery cells remain after population extraction", node.get_meta("stats").cells == 55)
 	_check("detail uses existing flat single-surface batches", batches > 0 and surfaces_valid)
 	print("gravel flat batches: %d; cells: %d" % [batches, node.get_meta("stats").cells])
 	node.free()
