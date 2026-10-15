@@ -1,0 +1,32 @@
+PASS test_electric_stop EL1d electric stop: 37 checks, 0 failed
+PASS test_electric_event_localization EL2a-P2 event localization: 2946 checks, 0 failed; max linear calls=20, nonlinear=155
+PASS test_electric_battery_step EL2a electric battery step: 63 checks, 0 failed
+PASS test_electric_session EL1d electric session: 86 checks, 0 failed
+PASS test_electric_battery_session EL2a battery session: 103 checks, 0 failed
+PASS test_electric_dynamics EL2a-P1 electric dynamics: 74 checks, 0 failed
+PASS test_electric_runway EL2a-E1 electric runway: 177 checks, 0 failed
+PASS test_glow_session Glow session: 140 checks, 0 failed
+PASS test_glow_coupling glow shaft/prop coupling: 65 checks, 0 failed
+PASS test_glow_oracle 723 checks, 0 failed (36 oracle vectors)
+PASS test_glow_flight_physics glow flight physics: 82 checks, 0 failed
+PASS test_glow_trace NITRO-TRACE: 276 checks, 0 failed
+PASS test_glow_stage_reuse 
+PASS test_heli_startup_kernel HELI low-RPM/startup kernel: 62 checks, 0 failed
+PASS test_heli_session HELI-16 generated preset/session: 42 checks, 0 failed
+PASS test_heli_ground_session HELI-20 ground session: 56 checks, 0 failed
+PASS test_aircraft_propulsion_runtime aircraft propulsion runtime: 214 checks, 0 failed
+PASS test_sf_vehicle_model 27 checks, 0 failed
+PASS test_sf_ground_vehicle_kernel 23 checks, 0 failed
+PASS test_checkpoint H8 checkpoints: 92 checks, 0 failed
+PASS test_session_guards 32 checks, 0 failed
+PASS test_continuous_state continuous state: 42 checks, 0 failed
+PASS test_rk_stage_time 22 checks, 0 failed
+PASS test_golden 
+PASS test_checkpoint_integrity H8-R1 checkpoint integrity: 149 checks, 0 failed
+PASS test_replay_integrity H9-R1 replay integrity: 153 checks, 0 failed
+PASS test_failure_shutdown Failure power shutdown integration: 206 checks, 0 failed
+PASS test_failure_session Failure session integration: 99 checks, 0 failed
+PASS test_turbine_continuous 46 checks, 0 failed
+PASS test_shaft_coupled G2 coupled shaft: 43 checks, 0 failed
+PASS test_rcv_session RCV session: 125 checks, 0 failed
+DONE
