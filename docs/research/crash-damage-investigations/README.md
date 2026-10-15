@@ -35,6 +35,8 @@ The current research has gaps and source-quality limits documented in each repor
 
 ## Implementation evidence
 
+[CR-36a](CR-36a/README.md) extends the economic dossier to the 55AX and FS-64V Stik configurations with exact propeller offers, explicit engine/silencer coverage substitutions, guarded inventory inheritance and production contact-to-report checks. Complete cost coverage remains separate from physical installation qualification.
+
 [CR-29–32](CR-29-32/README.md) records the first playable accident-cost slice: generated USD dossiers, accepted-contact accumulation, conditional repair/salvage calculations, large persistent report, exact healthy-state parity and honest unknown costs. [CR-28](CR-28/README.md) remains the dated price/source record.
 
 [CR-01a](CR-01a/README.md) records the bounded tick-boundary snapshot: detector ordering, rigid hull-point kinematics, explicit unknown gear velocity, lifecycle checks and unchanged ordinary-flight traces. [CR-01b](CR-01b/README.md) verifies crossing reconstruction along the existing pose interpolation, numerical unknown cases and unchanged flight traces. Component labels and crossing-time kinematics remain CR-01; the rendered handoff is covered by CR-01c below.
