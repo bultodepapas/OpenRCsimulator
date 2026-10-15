@@ -30,11 +30,12 @@ Object.assign(translations, websiteCopy);
 aircraft.heli = {name:'RC Helicopter<br>Research Trainer',image:'turntables/heli-poster',span:'HX-700',power:'X-Cell .60',guide:'HELICOPTER',category:['ALAS QUE GIRAN','ROTATING WINGS'],description:['Visual HX-700 y física de referencia X-Cell .60 SE. Un entrenador experimental con arranque en plataforma, vuelo estacionario y kit nocturno; no es un modelo HX-700 calibrado.','HX-700 visuals with X-Cell .60 SE reference physics. An experimental trainer with ground-pad startup, hover practice and a night kit; not a calibrated HX-700 flight model.'],gear:['Patines','Skids']};
 
 const labels = {navigation:['Principal','Main navigation'],aircraftSelect:['Seleccionar avión','Select an aircraft'],fieldSwitch:['Iluminación del campo','Field lighting'],savoxPartner:['Savox, aliados','Savox, project partners']};
-const alts = {heroAlt:['Modelo rojo y blanco del Jensen Das Ugly Stik 60','Red and white Jensen Das Ugly Stik 60 simulator model'],fieldDayAlt:['Vista aérea del campo de vuelo de OpenRC, con pista de césped y zona de pilotos','Aerial view of the OpenRC flying field, grass runway and pilot area'],fieldNightAlt:['Umbral de la pista y club iluminados de noche en OpenRC','Illuminated runway threshold and club at night in OpenRC']};
+const alts = {heroAlt:['Ventage Jet naranja y violeta, render del modelo del simulador','Orange and violet Ventage Jet, a render of the simulator model'],fieldDayAlt:['Vista aérea del campo de vuelo de OpenRC, con pista de césped y zona de pilotos','Aerial view of the OpenRC flying field, grass runway and pilot area'],fieldNightAlt:['Umbral de la pista y club iluminados de noche en OpenRC','Illuminated runway threshold and club at night in OpenRC']};
 alts.clubAlt = ['Club de aeromodelismo, boxes, pilotos y vehículos en OpenRC','OpenRC model flying club, pits, pilots and parked vehicles'];
 alts.truckAlt = ['Render del modelo naranja Bisonte MT8 con suspensión y neumáticos todoterreno','Orange Bisonte MT8 model render with suspension and off-road tires'];
 let language = 'es';
-let currentAircraft = 'stik';
+let currentAircraft = 'jet';
+const aircraftOrder = [...document.querySelectorAll('[data-aircraft]')].map(button => button.dataset.aircraft);
 let currentTime = 'day';
 const languageButton = document.querySelector('.language');
 const originalCopy = new Map([...document.querySelectorAll('[data-i18n]')].map(el => [el, el.innerHTML]));
@@ -55,7 +56,7 @@ function renderAircraft() {
   document.querySelector('#aircraft-gear').textContent = model.gear[index];
   document.querySelector('#aircraft-status').textContent = model.status?.[index] ?? (index ? 'Experimental' : 'Experimental');
   document.querySelector('#aircraft-link').href = `https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/${model.guide}.md`;
-  document.querySelector('#aircraft-number').textContent = `0${Object.keys(aircraft).indexOf(currentAircraft)+1} / 06`;
+  document.querySelector('#aircraft-number').textContent = `0${aircraftOrder.indexOf(currentAircraft)+1} / 06`;
   document.querySelectorAll('[data-aircraft]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.aircraft === currentAircraft)));
   window.OpenRCViewer?.select(currentAircraft,model.name.replace('<br>',' '));
 }

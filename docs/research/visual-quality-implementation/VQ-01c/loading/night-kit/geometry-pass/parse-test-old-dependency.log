@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Static function "_geometry_arrays()" not found in base "res://render/world/aircraft_lights.gd".
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/aircraft-light-geometry/test-candidate.gd:390)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "geometry" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/aircraft-light-geometry/test-candidate.gd:390)
+SCRIPT ERROR: Parse Error: Static function "_geometry_arrays()" not found in base "res://render/world/aircraft_lights.gd".
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/aircraft-light-geometry/test-candidate.gd:398)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "fresh" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/aircraft-light-geometry/test-candidate.gd:398)
+ERROR: Failed to load script "C:/DEVELOPMENT/OpenRCsimulator/tmp/aircraft-light-geometry/test-candidate.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

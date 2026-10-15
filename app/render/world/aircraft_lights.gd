@@ -75,30 +75,25 @@ static func bounds(root: Node3D) -> Dictionary:
 
 ## The model's vertices in its root frame (every MeshInstance3D surface, hinged parts included).
 static func vertices(root: Node3D) -> PackedVector3Array:
-	var out := PackedVector3Array()
-	for node in root.find_children("*", "MeshInstance3D", true, false):
-		var mi := node as MeshInstance3D
-		if mi.mesh == null or not (mi.mesh is ArrayMesh or mi.mesh is PrimitiveMesh):
-			continue
-		var t := Transform3D.IDENTITY
-		var n: Node = mi
-		while n != null and n != root:
-			if n is Node3D:
-				t = (n as Node3D).transform * t
-			n = n.get_parent()
-		for i in mi.mesh.get_surface_count():
-			var arrays: Array = mi.mesh.surface_get_arrays(i)
-			# Keep authored order while transforming the surface in native code.
-			out.append_array(t * (arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array))
-	return out
+	return _geometry_arrays(root, true, false).points
 
 
 ## The model's triangles in its root frame, three vertices each (triangle surfaces only).
 static func triangles(root: Node3D) -> PackedVector3Array:
-	var out := PackedVector3Array()
+	return _geometry_arrays(root, false, true).triangles
+
+
+## Collect both views from each transformed surface once. Single-view callers keep
+## their original mesh/surface filters; arrays belong to this call, not the mesh.
+static func _geometry_arrays(root: Node3D, collect_points := true, collect_faces := true) -> Dictionary:
+	var points := PackedVector3Array()
+	var faces := PackedVector3Array()
 	for node in root.find_children("*", "MeshInstance3D", true, false):
 		var mi := node as MeshInstance3D
 		if mi.mesh == null:
+			continue
+		var include_points := collect_points and (mi.mesh is ArrayMesh or mi.mesh is PrimitiveMesh)
+		if not include_points and not collect_faces:
 			continue
 		var t := Transform3D.IDENTITY
 		var n: Node = mi
@@ -107,17 +102,22 @@ static func triangles(root: Node3D) -> PackedVector3Array:
 				t = (n as Node3D).transform * t
 			n = n.get_parent()
 		for i in mi.mesh.get_surface_count():
-			if mi.mesh is ArrayMesh and (mi.mesh as ArrayMesh).surface_get_primitive_type(i) != Mesh.PRIMITIVE_TRIANGLES:
+			var include_faces := collect_faces and not (mi.mesh is ArrayMesh and
+				(mi.mesh as ArrayMesh).surface_get_primitive_type(i) != Mesh.PRIMITIVE_TRIANGLES)
+			if not include_points and not include_faces:
 				continue
 			var arrays: Array = mi.mesh.surface_get_arrays(i)
 			var verts: PackedVector3Array = t * (arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array)
-			var idx: Variant = arrays[Mesh.ARRAY_INDEX]
-			if idx is PackedInt32Array and not (idx as PackedInt32Array).is_empty():
-				for k: int in idx:
-					out.append(verts[k])
-			else:
-				out.append_array(verts)
-	return out
+			if include_points:
+				points.append_array(verts)
+			if include_faces:
+				var idx: Variant = arrays[Mesh.ARRAY_INDEX]
+				if idx is PackedInt32Array and not (idx as PackedInt32Array).is_empty():
+					for k: int in idx:
+						faces.append(verts[k])
+				else:
+					faces.append_array(verts)
+	return {points = points, triangles = faces}
 
 
 ## Under-wing lines {left, right}: the model's triangles are sliced by vertical planes at STRIP_STATIONS span stations
@@ -466,10 +466,11 @@ static func attach(root: Node3D) -> Node3D:
 	kit.name = "NightKit"
 	var all: AABB = bounds(root).all
 	# Tips, strips and span from the model's own vertices (traced before any kit node exists).
-	var points := vertices(root)
+	var geometry := _geometry_arrays(root)
+	var points: PackedVector3Array = geometry.points
 	var half := span_half(points)
 	# Both skins use the same posed geometry, before the kit is attached.
-	var tris := triangles(root)
+	var tris: PackedVector3Array = geometry.triangles
 	var skins := wing_skin_lines(tris, half)
 	var lines: Dictionary = skins.lower
 	var left := tip(points, half, -1.0)

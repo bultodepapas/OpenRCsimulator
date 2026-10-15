@@ -154,6 +154,7 @@ func _initialize() -> void:
 	airplane.root.free()
 
 	# FW-62: under-wing strips on every catalog aircraft, traced on its own lowest vertices.
+	_test_geometry_arrays()
 	_test_underwing_face_selection()
 	_test_wing_station_ranges()
 	for id: String in [AirplaneBuilder.STIK_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.TIMBER_ID]:
@@ -364,3 +365,38 @@ func _test_wing_station_ranges() -> void:
 	_check("coincident wing stations each retain all four skin triangles", duplicates_ok)
 	_check("reversed semispan preserves left/right geometry and root-to-tip order",
 		var_to_bytes(AircraftLights.wing_skin_lines(flat, -1.0)) == var_to_bytes(AircraftLights.wing_skin_lines(flat, 1.0)))
+
+
+func _test_geometry_arrays() -> void:
+	var model := Node3D.new()
+	model.position = Vector3(100, 100, 100) # collector outputs the root's local frame
+	var parent := Node3D.new()
+	parent.position = Vector3(1, 2, 3)
+	model.add_child(parent)
+	var item := MeshInstance3D.new()
+	item.position = Vector3(.5, 0, 0)
+	parent.add_child(item)
+	var mesh := ArrayMesh.new()
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = PackedVector3Array([Vector3(-1, 0, 0), Vector3(1, 1, 0), Vector3(0, 0, 1), Vector3(4, 7, 9)])
+	arrays[Mesh.ARRAY_INDEX] = PackedInt32Array([2, 0, 1, 1, 0, 2])
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	arrays[Mesh.ARRAY_VERTEX] = PackedVector3Array([Vector3.ZERO, Vector3(2, 0, 0)])
+	arrays[Mesh.ARRAY_INDEX] = null
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINES, arrays)
+	item.mesh = mesh
+	var saved_mesh := var_to_bytes(mesh.surface_get_arrays(0))
+	var geometry := AircraftLights._geometry_arrays(model)
+	var expected_points := PackedVector3Array([Vector3(.5, 2, 3), Vector3(2.5, 3, 3), Vector3(1.5, 2, 4),
+		Vector3(5.5, 9, 12), Vector3(1.5, 2, 3), Vector3(3.5, 2, 3)])
+	var expected_faces := PackedVector3Array([Vector3(1.5, 2, 4), Vector3(.5, 2, 3), Vector3(2.5, 3, 3),
+		Vector3(2.5, 3, 3), Vector3(.5, 2, 3), Vector3(1.5, 2, 4)])
+	_check("shared geometry retains unused/line vertices in root-local order", geometry.points == expected_points)
+	_check("shared geometry preserves triangle winding and excludes line surfaces", geometry.triangles == expected_faces)
+	geometry.points[0] = Vector3(99, 99, 99)
+	var fresh := AircraftLights._geometry_arrays(model)
+	_check("shared geometry results cannot mutate faces, source meshes or later reads",
+		geometry.triangles == expected_faces and fresh.points == expected_points and fresh.triangles == expected_faces
+		and var_to_bytes(mesh.surface_get_arrays(0)) == saved_mesh)
+	model.free()

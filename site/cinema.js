@@ -83,3 +83,43 @@
   if ('ResizeObserver' in window) new ResizeObserver(schedule).observe(document.body);
   schedule();filmLabel();
 })();
+
+/* One view at a time: a deliberate, keyboard-friendly study of the featured jet. */
+(() => {
+  const choices = document.querySelector('.jet-detail-choices');
+  const image = document.querySelector('#jet-detail-image');
+  const detailLink = document.querySelector('.jet-detail-open');
+  const status = document.querySelector('#jet-study-status');
+  const labels = {
+    cockpit:['Primer plano de la cabina del Ventage Jet','Close-up of the Ventage Jet canopy'],
+    wing:['Ala y unión al fuselaje del Ventage Jet','Ventage Jet wing and its fuselage junction'],
+    tail:['Deriva y estabilizadores del Ventage Jet','Ventage Jet fin and stabilizers']
+  };
+  let selected = 'cockpit', generation = 0;
+  function localize() {
+    const english = document.documentElement.lang === 'en';
+    image.alt = labels[selected][english ? 1 : 0];
+    choices.setAttribute('aria-label',english ? 'Jet detail views' : 'Detalles del jet');
+  }
+  choices.hidden = false;
+  choices.querySelectorAll('button').forEach(button => button.addEventListener('click',async () => {
+    const current = ++generation;
+    const key = button.dataset.jetShot;
+    if(key === selected) {choices.removeAttribute('aria-busy');status.textContent='';return;}
+    const next = new Image();next.src = `assets/cinema/jet-${key}.webp`;
+    choices.setAttribute('aria-busy','true');status.textContent = '';
+    try {
+      await next.decode();
+      if(current !== generation) return;
+      selected = key;image.src = next.src;
+      detailLink.dataset.inspectDetail = key;
+      document.querySelector('#jet-detail-index').textContent = `0${Object.keys(labels).indexOf(key)+1} / 03`;
+      choices.querySelectorAll('button').forEach(item => item.setAttribute('aria-pressed',String(item === button)));
+      localize();
+      if(!matchMedia('(prefers-reduced-motion:reduce)').matches) image.animate([{opacity:.15,transform:'scale(1.025)'},{opacity:1,transform:'scale(1)'}],{duration:650,easing:'cubic-bezier(.2,.7,.2,1)'});
+    } catch {
+      if(current === generation) status.textContent = document.documentElement.lang === 'en' ? 'This detail could not load. Please try another view.' : 'No se pudo cargar este detalle. Prueba otra vista.';
+    } finally { if(current === generation) choices.removeAttribute('aria-busy'); }
+  }));
+  document.addEventListener('openrc-language',localize);localize();
+})();
