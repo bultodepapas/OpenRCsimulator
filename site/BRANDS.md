@@ -17,6 +17,8 @@ The current project [README](../README.md) says OpenAI provides a ChatGPT Pro su
 
 No separate ChatGPT or Codex product icon was included in the official OpenAI logo package, so none is bundled here.
 
+The website uses the official OpenAI Blossom beside the ChatGPT product name. The `>_` beside Codex is a generic terminal symbol, not a recreated or purported official Codex logo. Product names link to their official pages. The main sponsor credit describes the subscription support rather than manufacturer certification of this simulator.
+
 ## Savox
 
 The Savox monochrome PNGs came from the official [Savox Logos Package](https://www.teamsavox.com/TeamSavox-Logos-Package.zip), linked on the [Team Savox Download Page](https://www.teamsavox.com/download/). They are original black and white variants for light and dark surfaces.

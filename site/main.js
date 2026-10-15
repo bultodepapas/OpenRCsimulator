@@ -26,8 +26,13 @@ const aircraft = {
   timber: {name:'Turbo Lumber<br>Evolution',image:'turbo-lumber-evolution',span:'1.55 m',power:'800 Kv / 4S',guide:'TIMBER-INTEGRATION-PLAN',category:['EL LADO ELÉCTRICO','THE ELECTRIC SIDE'],description:['Un ala alta eléctrico con ruedas fijas y sonido propio. Inicio en el aire o en pista, sin asistencias; su propulsión aún usa datos estimados.','An electric high-wing model with fixed wheels and its own sound. Airborne or runway starts, assists off; propulsion still uses estimated data.'],gear:['Ruedas fijas','Fixed wheels']}
 };
 
+Object.assign(translations, websiteCopy);
+aircraft.heli = {name:'RC Helicopter<br>Research Trainer',image:'turntables/heli-poster',span:'HX-700',power:'X-Cell .60',guide:'HELICOPTER',category:['ALAS QUE GIRAN','ROTATING WINGS'],description:['Visual HX-700 y física de referencia X-Cell .60 SE. Un entrenador experimental con arranque en plataforma, vuelo estacionario y kit nocturno; no es un modelo HX-700 calibrado.','HX-700 visuals with X-Cell .60 SE reference physics. An experimental trainer with ground-pad startup, hover practice and a night kit; not a calibrated HX-700 flight model.'],gear:['Patines','Skids']};
+
 const labels = {navigation:['Principal','Main navigation'],aircraftSelect:['Seleccionar avión','Select an aircraft'],fieldSwitch:['Iluminación del campo','Field lighting']};
 const alts = {heroAlt:['Modelo rojo y blanco del Jensen Das Ugly Stik 60','Red and white Jensen Das Ugly Stik 60 simulator model'],fieldDayAlt:['Vista aérea del campo de vuelo de OpenRC, con pista de césped y zona de pilotos','Aerial view of the OpenRC flying field, grass runway and pilot area'],fieldNightAlt:['Umbral de la pista y club iluminados de noche en OpenRC','Illuminated runway threshold and club at night in OpenRC']};
+alts.clubAlt = ['Club de aeromodelismo, boxes, pilotos y vehículos en OpenRC','OpenRC model flying club, pits, pilots and parked vehicles'];
+alts.truckAlt = ['Render del modelo naranja Bisonte MT8 con suspensión y neumáticos todoterreno','Orange Bisonte MT8 model render with suspension and off-road tires'];
 let language = 'es';
 let currentAircraft = 'stik';
 let currentTime = 'day';
@@ -38,18 +43,21 @@ function renderAircraft() {
   const model = aircraft[currentAircraft];
   const index = language === 'es' ? 0 : 1;
   const image = document.querySelector('#aircraft-image');
-  image.src = `assets/${model.image}.webp`;
+  image.src = `assets/turntables/${currentAircraft}-poster.webp`;
   image.alt = `${model.name.replace('<br>',' ')} — ${index ? 'studio view' : 'vista de estudio'}`;
   document.querySelector('#aircraft-name').innerHTML = model.name;
   document.querySelector('#aircraft-category').textContent = model.category[index];
   document.querySelector('#aircraft-description').textContent = model.description[index];
   document.querySelector('#aircraft-span').textContent = model.span;
+  document.querySelector('[data-i18n="span"]').textContent = currentAircraft === 'heli' ? (index ? 'Visual model' : 'Modelo visual') : (index ? 'Wingspan' : 'Envergadura');
+  document.querySelector('[data-i18n="power"]').textContent = currentAircraft === 'heli' ? (index ? 'Flight reference' : 'Referencia de vuelo') : (index ? 'Powerplant' : 'Propulsión');
   document.querySelector('#aircraft-power').textContent = model.power;
   document.querySelector('#aircraft-gear').textContent = model.gear[index];
   document.querySelector('#aircraft-status').textContent = model.status?.[index] ?? (index ? 'Experimental' : 'Experimental');
   document.querySelector('#aircraft-link').href = `https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/${model.guide}.md`;
-  document.querySelector('#aircraft-number').textContent = `0${Object.keys(aircraft).indexOf(currentAircraft)+1} / 05`;
+  document.querySelector('#aircraft-number').textContent = `0${Object.keys(aircraft).indexOf(currentAircraft)+1} / 06`;
   document.querySelectorAll('[data-aircraft]').forEach(button => button.setAttribute('aria-pressed', String(button.dataset.aircraft === currentAircraft)));
+  window.OpenRCViewer?.select(currentAircraft,model.name.replace('<br>',' '));
 }
 
 function renderLanguage() {
@@ -62,6 +70,7 @@ function renderLanguage() {
   languageButton.setAttribute('aria-label', index ? 'Cambiar a español' : 'Switch to English');
   document.title = index ? 'OpenRC Simulator — The flying field is open.' : 'OpenRC Simulator — El campo de vuelo está abierto.';
   renderAircraft();
+  document.dispatchEvent(new CustomEvent('openrc-language'));
 }
 
 document.querySelectorAll('[data-aircraft]').forEach(button => button.addEventListener('click', () => {

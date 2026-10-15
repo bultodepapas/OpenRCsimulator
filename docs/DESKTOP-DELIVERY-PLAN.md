@@ -1,6 +1,6 @@
 # Desktop delivery plan
 
-2026-10-15 · Revision 21 · Step prefix: **DT-**.
+2026-10-15 · Revision 22 · Step prefix: **DT-**.
 
 **Status:** DT-00, DT-00-R1 and DT-00-R2 research is complete. DT-01–DT-12 remain open; initial DT-10/10a measurements and a narrow DT-11a lake geometry reuse repair are recorded through VQ-01c; cold loading and package qualification remain open. The owner acceptance gate DT-13 is open. No fullscreen, installer, public signing/notarization or native Windows/macOS acceptance has shipped through this track.
 
@@ -23,6 +23,8 @@ DT-11a continuation (2026-10-15): [native fixed-wing light transforms](research/
 DT-11a continuation (2026-10-15): [shared upper/lower wing cuts](research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/README.md) preserve complete kit output in 300 native fleet pairs and reduce kit construction by 25–33% in the paired campaign. Three permanent shared-data checks are added; field/night-kit/Home-cache regressions pass. Full loading, isolated timing and package qualification remain open.
 
 DT-11a continuation (2026-10-15): [bounded fuselage light station scans](research/visual-quality-implementation/VQ-01c/loading/night-kit/belly-stations/README.md) preserve 300 native contour/kit pairs and reduce measured complete-kit construction by 15–23%. Four endpoint/range regressions are added; field and headless/native night-kit tests pass cleanly. Home cache assertions pass but four audio ObjectDB shutdown leaks reproduce with reference and candidate. Lifecycle, full loading and package qualification remain open.
+
+DT-11a continuation (2026-10-15): [bounded wing light station scans](research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-stations/README.md) preserve 300 native skin/kit pairs and reduce measured two-skin construction by 15–28%. Three permanent endpoint/order checks pass; native night-kit checks are clean. Extra's small complete-kit difference is mixed across processes and does not qualify a reliable gain. Home retains the four-object audio shutdown diagnostic. Full loading, lifecycle and isolated package qualification remain open.
 
 Godot 4.7.2 is pinned, Compatibility is the renderer, physics runs at 240 Hz, and `app/project.godot` sets a 1280×720 viewport. Presets export Linux x86_64, Windows x86_64 and a universal macOS app from the Ubuntu CI job. `app/export.sh` embeds the PCK, creates ZIPs and `SHA256SUMS`, checks the exported Linux binary with a trimmed-flight trace, checks field data in each pack, checks macOS slices for an ad-hoc signature, and checks Windows/macOS numeric version metadata.
 

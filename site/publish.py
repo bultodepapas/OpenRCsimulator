@@ -1,5 +1,6 @@
 """Publish only website assets to the isolated gh-pages branch. Requires Git and gh."""
 from pathlib import Path
+import argparse
 import json
 import shutil
 import subprocess
@@ -18,7 +19,7 @@ def run(*args, cwd=None):
     return result.stdout.strip()
 
 
-def publish():
+def publish(message):
     # Check authority and existing Pages configuration before writing to GitHub.
     info = json.loads(run("gh", "api", f"repos/{REPOSITORY}"))
     if not info["permissions"].get("admin"):
@@ -45,7 +46,7 @@ def publish():
         shutil.copytree(SITE / "assets", stage / "assets", dirs_exist_ok=True)
         run("git", "add", "--", *FILES, "assets", cwd=stage)
         if run("git", "status", "--porcelain", cwd=stage):
-            run("git", "commit", "-m", "WEB-01: publish bilingual OpenRC aircraft showcase\n\nProof: five aircraft, lighting and locale browser checks; desktop/mobile overflow checks; Lighthouse accessibility, SEO and best practices 100.", cwd=stage)
+            run("git", "commit", "-m", message, cwd=stage)
             run("git", "push", "origin", "gh-pages", cwd=stage)
         commit = run("git", "rev-parse", "HEAD", cwd=stage)
     if existing.returncode:
@@ -59,4 +60,6 @@ def publish():
 
 
 if __name__ == "__main__":
-    publish()
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--message", required=True, help="Track step, change summary and completed verification.")
+    publish(parser.parse_args().message)

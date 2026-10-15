@@ -25,19 +25,30 @@ def sha(path):
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--godot', type=Path, required=True)
+    parser.add_argument('--reuse-passing-logs', action='store_true',
+                        help='Revalidate pinned logs and unchanged test sources without rerunning tests')
     args = parser.parse_args()
     checks = EVIDENCE / 'checks'
+    prior = json.loads((checks / 'verification.json').read_text()) if args.reuse_passing_logs else {}
     results = []
     for name, script in TESTS.items():
-        process = subprocess.run(
-            [str(args.godot.resolve()), '--headless', '--path', str(ROOT / 'app'),
-             '--script', 'res://' + script], capture_output=True, text=True,
-            timeout=150, encoding='utf-8', errors='replace',
-        )
-        output = process.stdout + process.stderr
         log_path = checks / (name + '.log')
-        log_path.write_text(output, encoding='utf-8')
-        if process.returncode or re.search(r'^(?:(?:SCRIPT |SHADER )?ERROR:|FAIL[: ])', output, re.M):
+        if args.reuse_passing_logs:
+            entry = next(t for t in prior['tests'] if t['test'] == script)
+            assert entry['source_sha256'] == sha(ROOT / 'app' / script)
+            assert entry['log_sha256'] == sha(log_path)
+            assert prior['model_sha256'] == sha(ROOT / 'app/vehicles/ground/monster_car_2_model.gd')
+            assert prior['voice_sha256'] == sha(ROOT / 'app/audio/nitro_voice.gd')
+            output, returncode = log_path.read_text(), 0
+        else:
+            process = subprocess.run(
+                [str(args.godot.resolve()), '--headless', '--path', str(ROOT / 'app'),
+                 '--script', 'res://' + script], capture_output=True, text=True,
+                timeout=150, encoding='utf-8', errors='replace',
+            )
+            output, returncode = process.stdout + process.stderr, process.returncode
+            log_path.write_text(output, encoding='utf-8')
+        if returncode or re.search(r'^(?:(?:SCRIPT |SHADER )?ERROR:|FAIL[: ])', output, re.M):
             raise RuntimeError(f'{name} failed:\n{output}')
         if not re.search(r'0 fail|test passed|FAILURES=0', output):
             raise RuntimeError(f'{name} did not report a completed passing suite:\n{output}')
@@ -48,7 +59,8 @@ def main():
     assert audio['complete'] and audio['parity_passed'] and audio['parity_complete']
     assert audio['candidate_sha256'] == sha(ROOT / 'app/audio/nitro_voice.gd')
     session = json.loads((checks / 'session.json').read_text())
-    assert session['exact_replay']
+    assert session['complete'] and session['exact_replay'] and session['checkpoint_restore_exact']
+    assert session['backend_identity_probe']['matches_prepared_and_checkpoint_identity']
     report = {'complete': True, 'scope': 'RCV-37 source runtime; scoped regressions',
               'full_repository_suite': False, 'new_release_export': False,
               'tests': results, 'audio_sha256': sha(checks / 'audio.json'),

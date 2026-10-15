@@ -1,0 +1,87 @@
+{
+  "complete": true,
+  "engine": "4.7.2-stable (official)",
+  "processor": "AMD Ryzen 9 5900X 12-Core Processor",
+  "video_adapter": "NVIDIA GeForce RTX 3090",
+  "animation_cpu_per_draw": {
+    "baseline_us": 1705.4180555555556,
+    "candidate_us": 1289.173611111111,
+    "cpu_time_reduction_percent": 24.407179406157343
+  },
+  "audio_cpu_per_run": {
+    "baseline_us": 386281.0,
+    "candidate_us": 323520.0,
+    "cpu_time_reduction_percent": 16.24749858263803,
+    "frames_per_run": 98304
+  },
+  "activity_presentation_cpu": {
+    "mean_us": {
+      "baseline_us": 3720.3083333333334,
+      "candidate_us": 2951.0291666666667,
+      "cpu_time_reduction_percent": 20.677833602501583
+    },
+    "median_us": {
+      "baseline_us": 3443.0,
+      "candidate_us": 2864.0,
+      "cpu_time_reduction_percent": 16.816729596282308
+    },
+    "p95_us": {
+      "baseline_us": 5301.0,
+      "candidate_us": 3568.0,
+      "cpu_time_reduction_percent": 32.69194491605357
+    }
+  },
+  "later_baseline_confirmation_mean_us": 3555.9041666666667,
+  "exact_visual_poses": 173,
+  "exact_audio_frames": 222882,
+  "exact_activity_trajectory_sha256": "a623719ab8efb4226ebbf59828b15bac5d74a07326718eff2af1de93644e6c52",
+  "exact_driving_replay": true,
+  "solver_changed": false,
+  "scope": "CPU callback and component timings, not full GPU frame time or a target-hardware FPS claim. Three native baseline runs followed by three candidate runs and a later baseline confirmation; component pairs alternate execution order. Existing unrelated desktop processes were left running. Later native captures omit text with both adapters; the native screenshots qualify the 3D vehicle only.",
+  "remaining_physics_cost_us": {
+    "maximum_us": 23888.0,
+    "mean_us": 5817.811458333334,
+    "median_us": 5356.0,
+    "minimum_us": 4500.0,
+    "p95_us": 7994.0,
+    "samples": 960
+  },
+  "evidence_sha256": {
+    "baseline-1/activity.json": "9a83d9c1223ba85367ac47469953737f683948f0a20cf4e41dfd8f6532948435",
+    "baseline-1/activity.png": "b10deedcdcb6d6a3d3be3f51bcf49d015109c558fe777b36c3120470ce9d2a04",
+    "baseline-1/render.log": "3ee6d359ef6a6e8d05d00a351c8f316c75b545c07d2094b13a028171b945b524",
+    "baseline-2/activity.json": "3dcb4f3e886195b59a00d5d8a58d93de23e0dfbcacacd34c5bd6b9856e29acdb",
+    "baseline-2/activity.png": "1f378d07abad3a7134e85b38c18c1143588b13763e1786d059b88f637e3b35e8",
+    "baseline-2/render.log": "548ec6ef58de35d3cb678861fb718492d9068bf09aec0cb82acc0b26a03e5d2d",
+    "baseline-3/activity.json": "3fd9f8ae5cd1dc75ff4013c2b97737292705649e6a3302f843c86900a7aef560",
+    "baseline-3/activity.png": "3d85526c519a816ed394a10e293d3bc1efa05fd63eb1f215b9d377fd292b502f",
+    "baseline-3/render.log": "0d0aa53cda85e719fa9554dc3d1ca3ece7e759667f424f6626d2253165637735",
+    "baseline-confirmation/activity.json": "62945be8d1db9af393c487aa83ee84b1aeb81c14966f89ec2a27b03319188f17",
+    "baseline-confirmation/activity.png": "dd98cdd7fa27fc7a0c8d1ca46103a08783589b874428e2c32d240b0da621deb3",
+    "baseline-confirmation/render.log": "98cdf23469d89b54f712e07f70e2161a8a6d167df02d8b774f6d3e1e66fd24dd",
+    "candidate-1/activity.json": "f55583a3d30ec6d5cc776a7c3d4577aa808ec92ecbee9760f855dba01537d23c",
+    "candidate-1/activity.png": "332494293162f538cc5daef481779ead499d6b9c1b90a316ca4b88f2ef1c1651",
+    "candidate-1/render.log": "c1e9e982f6cc62215bb98aa096158c1de128c60a0c879ea03596540984b1b30f",
+    "candidate-2/activity.json": "47e70349deaa72560eac15f923dba31ec14bac61d0c283d0e315dbcba37eabc2",
+    "candidate-2/activity.png": "991b4b6e50dd2c661c87fa9f63cc279783a2efe98feb0bd7b480febcba425b7d",
+    "candidate-2/render.log": "1569899144445a77c781b39011d52c3dfa47995548f7da1c6d8fc152b697f3b6",
+    "candidate-3/activity.json": "ed2cdd67bb95b63f8b8c8b57c72fecb287983ee17d6df5718e79ecadc34197a4",
+    "candidate-3/activity.png": "ea9b44919e5196d9014003c130a2749cc17ac6c5807af8eebd992117207366a0",
+    "candidate-3/render.log": "08d47a4e695b8d956847cbbfa13ce990c9d832396ad6b9ea88d5ba34d92e9056",
+    "checks/audio.json": "cd686cdcb2b1509bd932536d72189a46e678208e466ecbf4dac760532e4e1f64",
+    "checks/audio.log": "8223d8acd1d4f2ff1c5cb157664470ef46c3e4cb71f62973ef20bd182feaa00e",
+    "checks/bisonte-activity.log": "e9385e0cae15a92e5ef8c6fe7fa4f1ec64189e2fe80cdd81ada014548e20bb4e",
+    "checks/identity.json": "d91beb41032921441b312ed6fd268983cd4fd25add1d5c028cf3b95cf98016a2",
+    "checks/identity.log": "1e6d5f095b452578d44bbacceef41ea4bc22beb826261d88620ed5049ba2743d",
+    "checks/nitro-activity.log": "eec563975aabb50e9d239260fb6f0bc3352a9293f317c9b4ad8449be96162b4e",
+    "checks/nitro-audio.log": "b1600231addf2412c1a77149728031d411f27f136b786e136da4e4871e77960b",
+    "checks/nitro-effects.log": "2a5e0d1506d4ec341c1fbf95af3c11e6b1cb35fb85d187be91418062565befd2",
+    "checks/nitro-service.log": "414d6a1017e74f4dc1672a1464e75283d8afe306fbe570c0289bcc42e2935707",
+    "checks/nitro-visual.log": "3de72d3263b054f38b8adf903e8a879cb6eaa7fd06c143ee51351a02e62fd393",
+    "checks/session.json": "d98dd0464fd780bda35660dda22304bd0349f676bac11bb805a98068b8c8d683",
+    "checks/session.log": "852b100f0c15427d181a1984043e0fb15e2f6b4b5fc9ba8ae2d2b90550700323",
+    "checks/verification.json": "8a09f6c0b018ef835a9122366909d8ae3ba96dd34018803a5ad77fc370142c7d",
+    "checks/visual.json": "e1f21653b822e170c33f3ff941d295cdfefd020f31d1342eb14bbfcc2b89b231",
+    "checks/visual.log": "a5b09c87ad73da987b362d09894116fbfe216f8ece347cb1c0318360bc1045b8"
+  }
+}

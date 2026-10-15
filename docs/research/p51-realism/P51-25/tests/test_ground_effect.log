@@ -1,0 +1,69 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+info h/b 0.10: σ 0.5142 (Raymer 0.5107, Wieselsberger 0.5151, VLM 0.51); σ_ε 0.2058 (VLM per unit lift 0.200)
+info h/b 0.17: σ 0.7043 (Raymer 0.6982, Wieselsberger 0.6640, VLM 0.67); σ_ε 0.4313 (VLM per unit lift 0.422)
+info h/b 0.25: σ 0.8133 (Raymer 0.8049, Wieselsberger 0.7690, VLM 0.77); σ_ε 0.6265 (VLM per unit lift 0.615)
+info h/b 0.50: σ 0.9334 (Raymer 0.9211, Wieselsberger 0.9284, VLM 0.91); σ_ε 0.8836 (VLM per unit lift 0.874)
+info h/b 1.00: σ 0.9853 (Raymer 0.9706, Wieselsberger 1.0379, VLM 0.97); σ_ε 0.9808 (VLM per unit lift 0.970)
+ok   induced law equals Raymer's 33(h/b)^1.5 form within 0.01 up to h/b 0.25 and 0.02 up to 1 (the fade)  worst 0.0084 / 0.0147
+ok   induced law within 0.05 of Wieselsberger's image theory for h/b 0.10–0.25  worst 0.0443
+ok   induced law within 0.05 of the T6 image-VLM induced-drag ratios  worst 0.0433
+ok   tail downwash law within 0.03 of the T6 image-VLM downwash ratios per unit lift up to h/b 0.5  worst 0.0118
+ok   σ(0) = 0 and σ = 1 exactly at and above the fade height
+ok   C¹ fade: σ within 1e-7 of 1 at 1 mm·b below the fade height with slope below 1e-4 per span  slope 0.00000795337973
+ok   σ is nondecreasing through the fade
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   the Stik declares aero.ground_effect
+ok   no factors at 30 m
+ok   factors at 0.5 m: one per strip, mean and tail
+ok   no factors without a ground (NAN)
+ok   reach() bounds the module: factors empty at the reach height  reach 3.814 m
+ok   30 m: loads with a ground are byte-identical to the legacy call
+ok   30 m: Dynamics with a ground is byte-identical
+ok   0.5 m: loads with a ground differ from the free-air loads
+ok   Extra (no module): no factors at 0.5 m and reach 0
+ok   Extra: loads with a ground are byte-identical
+ok   Extra: the session never samples a ground
+info CG 3.500 m: σ_mean 1.0000 σ_ε 1.0000, L/L∞ 1.0000, D/D∞ 1.0000, ΔCm +0.0000 = +0.00° elevator (+ = trailing edge down)
+info CG 3.000 m: σ_mean 1.0000 σ_ε 1.0000, L/L∞ 1.0000, D/D∞ 1.0000, ΔCm +0.0000 = +0.00° elevator (+ = trailing edge down)
+info CG 2.000 m: σ_mean 0.9955 σ_ε 0.9949, L/L∞ 1.0021, D/D∞ 1.0002, ΔCm -0.0001 = -0.01° elevator (+ = trailing edge down)
+info CG 1.500 m: σ_mean 0.9866 σ_ε 0.9828, L/L∞ 1.0062, D/D∞ 1.0007, ΔCm -0.0005 = -0.04° elevator (+ = trailing edge down)
+info CG 1.000 m: σ_mean 0.9651 σ_ε 0.9465, L/L∞ 1.0169, D/D∞ 1.0018, ΔCm -0.0020 = -0.14° elevator (+ = trailing edge down)
+info CG 0.750 m: σ_mean 0.9417 σ_ε 0.9009, L/L∞ 1.0289, D/D∞ 1.0029, ΔCm -0.0042 = -0.28° elevator (+ = trailing edge down)
+info CG 0.500 m: σ_mean 0.8945 σ_ε 0.7996, L/L∞ 1.0541, D/D∞ 1.0048, ΔCm -0.0093 = -0.63° elevator (+ = trailing edge down)
+info CG 0.400 m: σ_mean 0.8603 σ_ε 0.7251, L/L∞ 1.0725, D/D∞ 1.0059, ΔCm -0.0133 = -0.90° elevator (+ = trailing edge down)
+info CG 0.258 m: σ_mean 0.7768 σ_ε 0.5555, L/L∞ 1.1174, D/D∞ 1.0077, ΔCm -0.0229 = -1.54° elevator (+ = trailing edge down)
+ok   fixed α (trimmed 15 m/s): lift rises monotonically as the wing descends
+ok   at wheel height the wing gains 3–20 % lift at the same α  L/L∞ 1.1174 at strip h/b 0.215
+ok   at wheel height, at the same lift (α lowered by bisection), the drag is lower  D/D∞ 0.9780 at α 3.61° instead of 4.18°
+ok   at wheel height the reduced tail downwash pitches nose-down, worth 1–8° of up-elevator  ΔCm -0.0229, -1.54°
+ok   1 cm below the reach height the loads are within 1e-6 (relative) of the exact legacy loads  worst 0.0
+ok   h/b 0.05: ground effect moves the actual tail beyond the attached limit  tail 8.117°
+ok   h/b 0.05: default selector retains its static result but explicit ground factors select local flow  static 0.000000, actual 0.002535, expected 0.002535
+ok   Aero.loads applies the ground-aware tail blend
+ok   banked 20° right at 0.8 m: the lower right wing gains more lift (roll moment to the left)  ΔMx -0.1073 N·m
+ok   mirror bank gives the opposite roll moment of the same size within 1 % (the trim is not symmetric)  ΔMx 0.1073 N·m
+info 0.4 m increments: oracle ΔL 2.036 N ΔD 0.018 N ΔMy -0.2604 N·m; strips ΔL 2.036 N ΔD 0.037 N ΔMy -0.2581 N·m
+ok   oracle and strip regimes carry the same lift increment within 5 %
+ok   oracle and strip regimes carry the same drag increment within 15 % or 1 % of the free-air drag  oracle ΔD 0.0181 N, strips ΔD 0.0367 N, free-air drag 3.065 N
+ok   oracle and strip regimes carry the same nose-down increment within 15 %
+ok   the blended loads at 0.4 m lie between the two regimes' lift  blend 30.105 N, oracle 30.105 N, strips 29.507 N
+ok   default field loads
+ok   field surfaces accepted
+ok   at 0.6 m the session samples the field terrain under the CG  ground 0.0021 m
+ok   the sample is the terrain module's own
+ok   the session's load path carries the ground (airborne wheels add nothing)
+ok   … and differs from the out-of-ground-effect evaluation
+ok   the lagged downwash state starts settled on the in-ground-effect wing lift-velocity source  m/s source 6.32738 in ground effect, 6.10528 free
+ok   trace metadata names the ground-effect law
+ok   the session steps in ground effect without fault or crash  tick 48
+ok   at 30 m the session never samples a ground
+ok   … and keeps the exact legacy loads
+ok   the Stik v2 file loads with the module  []
+ok   the structural contract rejects an unknown ground-effect field  ["/aero/ground_effect/gain: unknown field"]
+ok   a missing law constant is rejected
+ok   the module without the free tail law is refused  ["aero.ground_effect: requires aero.surfaces.horizontal.downwash_gradient (the free tail law whose downwash it reduces)"]
+ok   an out-of-range exponent is refused
+ok   a wrong unit is refused
+ok   the absent module derives without it and with another identity
+50 checks, 0 failed

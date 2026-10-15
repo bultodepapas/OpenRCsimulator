@@ -6,7 +6,12 @@
   "rows": 6,
   "frame_count": 36,
   "frame_order": "row-major; frame 0 starts at 0 degrees and each next frame advances 10 degrees around world Y",
-  "background": "#111820",
+  "background": "#101820",
+  "background_mode": "color",
+  "ambient_light": {
+    "color": "#c8c8c8",
+    "energy": 0.45
+  },
   "camera": {
     "distance_model_extents": 1.28,
     "elevation_degrees": 22.0,
@@ -54,10 +59,10 @@
       "width": 3840,
       "height": 2160,
       "frame_count": 36,
-      "sha256": "90a9526969a5aa8870ecc90eb8de1781cbc7248441c2fbea1ba93039fd52d4c4",
-      "bytes": 373074,
-      "poster_sha256": "b2a0bc167b4413562964e02b57cdd7d4d82c2bc1370fa98ef288d09cba221039",
-      "poster_bytes": 12420,
+      "sha256": "b91c95047783dcc54a49ccbccd7991a7d72a51a84ae031b2402e8a5e1e9569b5",
+      "bytes": 374630,
+      "poster_sha256": "6a19efcdc09242feca11e0ec690916c15834552123e2e245adf254c28a727e35",
+      "poster_bytes": 12436,
       "bounds": {
         "position": [
           -0.761171698570251,
@@ -81,10 +86,10 @@
       "width": 3840,
       "height": 2160,
       "frame_count": 36,
-      "sha256": "1d91d8d1656939a93060f429022b21f67bcdd765f3bd90154b9e61d28657c2d4",
-      "bytes": 468118,
-      "poster_sha256": "a0f669708a0353abf28b3f0153108283960f7152ac8a37c22f63b5b2bb0906cb",
-      "poster_bytes": 15900,
+      "sha256": "cfca6536575248f8d308f7cc635af343c9801977c590e9d299c1d0b7c1dd713d",
+      "bytes": 469738,
+      "poster_sha256": "9b82550dcdc74205755aecaf57476ec63e087fc9e11a488f95810b735881b2ef",
+      "poster_bytes": 15966,
       "bounds": {
         "position": [
           -0.811800003051758,
@@ -108,10 +113,10 @@
       "width": 3840,
       "height": 2160,
       "frame_count": 36,
-      "sha256": "86e909cd73ece562a405e51b61cdee782708a24b09789100be5df6084e866fa1",
-      "bytes": 329576,
-      "poster_sha256": "a4281c73663fdb5a183cd2040469fb314ca22d9db21e641bdf8b05b94bec3d06",
-      "poster_bytes": 12158,
+      "sha256": "733f3d7b758da04924c1ba6b8c76da9136b1a1b17e4c171e396ab3417e1dd67f",
+      "bytes": 330682,
+      "poster_sha256": "d784058893397060ac507813392ab470e75599256167272d9fde41b178873b1a",
+      "poster_bytes": 12160,
       "bounds": {
         "position": [
           -1.41127383708954,
@@ -135,10 +140,10 @@
       "width": 3840,
       "height": 2160,
       "frame_count": 36,
-      "sha256": "fbd5c4ce8cb5814c04e0fdf0da410d4e67e2c40c1fff91e13cab71c7c534c8c0",
-      "bytes": 486558,
-      "poster_sha256": "7a2281ad33c89f7860ec26e6f9346cb84a765be301264e854413545f8bdebd44",
-      "poster_bytes": 13960,
+      "sha256": "68946c7f8efab2c2181b686a9321793fc9b590b30bc241785974328cbadcf6b8",
+      "bytes": 486036,
+      "poster_sha256": "8ee1afbd6937791fa52bd8a173b477fb676975a80f9458c0df3a9454926a1e0b",
+      "poster_bytes": 13970,
       "bounds": {
         "position": [
           -0.998200178146362,
@@ -162,10 +167,10 @@
       "width": 3840,
       "height": 2160,
       "frame_count": 36,
-      "sha256": "3e8670f5f79b775938f8917b667ec13094d5782bb7b5f5a63943abd5616e91fa",
-      "bytes": 411844,
-      "poster_sha256": "5821ff99d9f6b8ce1a9c8cf61895a223bc8adb57f2ec13fdfae52be930040ab9",
-      "poster_bytes": 13212,
+      "sha256": "07dfcaba8ab39a27dc98d1637f1506528fde7edf15b59acb0340ffa618300444",
+      "bytes": 412754,
+      "poster_sha256": "484fb7c27995140ea64e26f50a75d3ccb02aa577bfc0868109670ce142a4aa2f",
+      "poster_bytes": 13250,
       "bounds": {
         "position": [
           -0.772751808166504,
@@ -189,10 +194,10 @@
       "width": 3840,
       "height": 2160,
       "frame_count": 36,
-      "sha256": "ab3e8e41bf328db89cdca05d271afe52cd32a3fe60b1ed7d0ecf124cb57b387b",
-      "bytes": 308984,
-      "poster_sha256": "39fbffcaff9a5dbb7d9e02f9b40de9df607290a4378a86d411fd118549bb3aa6",
-      "poster_bytes": 8442,
+      "sha256": "c9195603d3ae1f3190c19a100857da992ac5ebe72e5060cdb0ba7fd13c6ef48d",
+      "bytes": 309162,
+      "poster_sha256": "9c505f1a5043ec18ac56e9355f4604d2e6b64abb43334260898862991a78bd7b",
+      "poster_bytes": 8452,
       "bounds": {
         "position": [
           -0.664143741130829,
@@ -209,15 +214,15 @@
   },
   "provenance": {
     "purpose": "Studio model presentation; not gameplay or flight validation",
-    "generated_at_utc": "2026-10-15T17:35:24.553896+00:00",
-    "git_head": "ebc4ab643b15d99b3765c114664d381028a1c6fd",
+    "generated_at_utc": "2026-10-15T17:37:40.064085+00:00",
+    "git_head": "30106cdf70c938e91a0b379738a675f7918a410e",
     "engine": "4.7.2-stable (official)",
     "renderer": "gl_compatibility",
     "pillow": "12.3.0",
     "webp_quality": 95,
-    "capture_script_sha256": "ed82dbec6a59e63926ba72f6727bce5e1593141e3e1d20419d8697f87361f01b",
-    "package_script_sha256": "479fde52751dc0563cb8eed27680e0dcc174467ee47bb8c03a1da15b365b4bd4",
-    "source_tree_sha256": "6bfde2487136d1b886c99cc769525d1a2434b53ae859cc0b882eadcf444e835d",
+    "capture_script_sha256": "3dc8cf329ff81036d0b13d28253db59c500ef45e35fc1e1177b9cfb44592d5b4",
+    "package_script_sha256": "2a9c408ac1e4d1b859185e00472865049e3be048c7fa64098fb2fbe1595e00cd",
+    "source_tree_sha256": "f4417ea291d055c26f1e4ae0395db143a52d4801ce1e1a364598d62ead11711f",
     "source_files": {
       "app/aircraft/avanti_s_blender_geometry.gd": "ca9c44cd9d8d147328b5b7bd7b77f1b6e237b90038e03de754cb84089873373b",
       "app/aircraft/avanti_s_blender_geometry.gd.uid": "9f62996edc5f2b7a48cd0e16f4da2eb25d79a7be56ea1da50b635d218e1d18da",
@@ -352,8 +357,8 @@
       "app/data/aircraft/xcell_60_research.json": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
       "app/project.godot": "176399ac913ea694682334cf9ff29150236c3958c1aa544299e217bac844a6df",
       "app/render/airplane.gd": "f2758596d536fd566e58accb8a632f00359bd15b3dc91129466fd08b213ba2b8",
-      "site/capture_turntables.gd": "ed82dbec6a59e63926ba72f6727bce5e1593141e3e1d20419d8697f87361f01b",
-      "site/package_turntables.py": "479fde52751dc0563cb8eed27680e0dcc174467ee47bb8c03a1da15b365b4bd4"
+      "site/capture_turntables.gd": "3dc8cf329ff81036d0b13d28253db59c500ef45e35fc1e1177b9cfb44592d5b4",
+      "site/package_turntables.py": "2a9c408ac1e4d1b859185e00472865049e3be048c7fa64098fb2fbe1595e00cd"
     }
   }
 }

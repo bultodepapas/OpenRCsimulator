@@ -25,7 +25,7 @@ COLUMNS = 6
 ROWS = 6
 FRAME_COUNT = COLUMNS * ROWS
 MODEL_KEYS = ("stik", "extra", "mustang", "jet", "timber", "heli")
-BACKGROUND = "#111820"
+BACKGROUND = "#101820"
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ASSET_DIR = ROOT / "site" / "assets" / "turntables"
 DEFAULT_MANIFEST = ROOT / "site" / "assets" / "turntables.json"
@@ -299,6 +299,8 @@ def main() -> int:
         "frame_count": FRAME_COUNT,
         "frame_order": "row-major; frame 0 starts at 0 degrees and each next frame advances 10 degrees around world Y",
         "background": BACKGROUND,
+        "background_mode": capture.get("background_mode", ""),
+        "ambient_light": capture.get("ambient_light", {}),
         "camera": capture.get("camera", {}),
         "lighting": capture.get("lighting", []),
         "models": rendered_models,

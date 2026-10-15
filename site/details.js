@@ -1,4 +1,5 @@
 const websiteCopy = {
+  helicopterTab:'Helicopter',
   navPartners:'Partners', supportedBy:'SUPPORTED BY', supportKicker:'THE SUPPORT BEHIND THE PROJECT', mainSponsor:'PRINCIPAL SPONSOR',
   supportHeading:'Thank you for supporting<br>what we build in the open.', supportCopy:'OpenAI supports this project with a ChatGPT Pro subscription. That support gives us more room to research, build and share OpenRC with the model aviation community.', supportLink:'Thank you, OpenAI ↗',
   supportProducts:'Ideas to explore.<br>Code to share.', chatgptRole:'Support for open-source development', codexRole:'AI development contributor', alongside:'ALSO ALONG FOR THE FLIGHT', savoxEarly:'Thank you, Savox, for welcoming your products into the project.',

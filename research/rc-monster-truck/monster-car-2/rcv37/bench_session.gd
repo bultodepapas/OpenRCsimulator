@@ -217,6 +217,10 @@ func _run() -> void:
 	var body_backend_identity: Dictionary = VehicleDynamics.backend_identity()
 	var identity_probe_matches: bool = _identity_signature(identity_probe) == _identity_signature(prepared_identity) \
 		and _identity_signature(prepared_identity) == _identity_signature(backend_identity)
+	if not identity_probe_matches:
+		_fail("Backend identity differs from prepared/checkpoint identity")
+		session.free()
+		return
 	var source_identities := {
 		"field_loader_script_sha256": FileAccess.get_sha256("res://data/field_loader.gd"),
 		"field_data_sha256": FileAccess.get_sha256(FieldLoader.DEFAULT_PATH),
@@ -364,7 +368,8 @@ func _identity_signature(value: Dictionary) -> String:
 		"toolchain_sha256", "binary_sha256", "implementation_artifact_kind"]
 	var fields: Array[String] = []
 	for key in keys:
-		fields.append(str(value.get(key, "")))
+		# JSON checkpoint numbers decode as float; ABI is an integer contract.
+		fields.append(str(int(value.get(key, -1))) if key == "abi_version" else str(value.get(key, "")))
 	return "|".join(fields)
 
 

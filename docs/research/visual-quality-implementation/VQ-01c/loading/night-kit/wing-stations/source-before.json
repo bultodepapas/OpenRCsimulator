@@ -1,0 +1,10 @@
+{
+  "head": "30106cdf70c938e91a0b379738a675f7918a410e",
+  "sha256": {
+    "app/render/world/aircraft_lights.gd": "6c3c8cb56fc4d71fd092415428b8e6b6ee9ffd9b5880e2efbb7f32ca8ed2f626",
+    "app/render/airplane.gd": "f2758596d536fd566e58accb8a632f00359bd15b3dc91129466fd08b213ba2b8",
+    "app/app_state/aircraft_catalog.gd": "ddc427ef77eb3d70b00021e1f36026552c4262f81e1da78f5f6ffcef9d91c0ad",
+    "app/tests/test_world_field_lights.gd": "58b5116811e4d2771314d02046faf2a34dc4a3fb62599c0287fead7bc110ae2a",
+    "app/tests/test_night_kit.gd": "ba178b61949fd0ebefff45b043ae2d6745b3d7286f55efb0a25fcab7b18a37b2"
+  }
+}

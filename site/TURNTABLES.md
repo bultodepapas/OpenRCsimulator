@@ -17,7 +17,7 @@ All models are built with `res://render/airplane.gd` from the catalog. The helic
 
 ## Capture settings
 
-The capture keeps the existing studio setup: background `#111820`, color ambient light `#c8c8c8` at energy `0.45`, and three directional lights at rotations `[-47, -32, -9]`, `[-24, 145, 12]`, and `[48, -28, 0]` degrees with energies `0.90`, `0.38`, and `0.40`. The perspective camera uses a 38 degree field of view, 22 degree elevation, and a distance of 1.28 times the model's largest visible bounds extent. Each aircraft is centered from the bounds of its rendered meshes.
+The capture uses a color background of `#101820`, ambient light `#c8c8c8` at energy `0.45`, and three directional lights at rotations `[-47, -32, -9]`, `[-24, 145, 12]`, and `[48, -28, 0]` degrees with energies `0.90`, `0.38`, and `0.40`. The perspective camera uses a 38 degree field of view, 22 degree elevation, and a distance of 1.28 times the model's largest visible bounds extent. Each aircraft is centered from the bounds of its rendered meshes. The JSON manifest records these settings.
 
 Frames are assembled left to right, then top to bottom. The sheets are WebP at quality 95 to retain fine outlines. `turntables.json` records the capture engine and renderer, camera and lighting configuration, individual sheet SHA-256 hashes, the capture and package script hashes, and hashes for the model, catalog, and project source inputs. Its source tree digest identifies the complete listed input set.
 

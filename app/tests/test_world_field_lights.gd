@@ -155,6 +155,7 @@ func _initialize() -> void:
 
 	# FW-62: under-wing strips on every catalog aircraft, traced on its own lowest vertices.
 	_test_underwing_face_selection()
+	_test_wing_station_ranges()
 	for id: String in [AirplaneBuilder.STIK_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.TIMBER_ID]:
 		var plane: Dictionary = AirplaneBuilder.build(id)
 		var pts := AircraftLights.vertices(plane.root)
@@ -336,3 +337,30 @@ func _synthetic_wing(slope: float, include_fence: bool, include_degenerate: bool
 			Vector3(0.68, slope * 0.68 - 0.2, 0.4),
 			Vector3(0.58, slope * 0.58 - 0.2, 0.4)]))
 	return triangles
+
+
+func _test_wing_station_ranges() -> void:
+	# At half-span 20, the tip stations are exactly +/-19. Each touches one
+	# triangle's limiting edge: lower bound on the left, upper bound on the right.
+	var edge_triangles := PackedVector3Array([Vector3(-19, 0, -1), Vector3(-18, 0, 0), Vector3(-19, 0, 1),
+		Vector3(19, 0, -1), Vector3(18, 0, 0), Vector3(19, 0, 1)])
+	var sections := AircraftLights._wing_sections(edge_triangles, 20.0)
+	var endpoints_ok := true
+	var touched := 0
+	for j in sections.xs.size():
+		var segments: Array = sections.segments[j]
+		if absf(sections.xs[j]) == 19.0:
+			touched += 1
+			endpoints_ok = endpoints_ok and segments == [[-1.0, 1.0, 0.0, 0.0]]
+		else:
+			endpoints_ok = endpoints_ok and segments.is_empty()
+	_check("wing stations include both limiting triangle edges without extra cuts", endpoints_ok and touched == 2)
+
+	var flat := _synthetic_wing(0.0, false, false)
+	var coincident := AircraftLights._wing_sections(flat, 0.0)
+	var duplicates_ok: bool = coincident.segments.size() == 2 * AircraftLights.STRIP_STATIONS
+	for j in coincident.xs.size():
+		duplicates_ok = duplicates_ok and coincident.xs[j] == 0.0 and coincident.segments[j].size() == 4
+	_check("coincident wing stations each retain all four skin triangles", duplicates_ok)
+	_check("reversed semispan preserves left/right geometry and root-to-tip order",
+		var_to_bytes(AircraftLights.wing_skin_lines(flat, -1.0)) == var_to_bytes(AircraftLights.wing_skin_lines(flat, 1.0)))

@@ -141,6 +141,17 @@ static func _wing_sections(tris: PackedVector3Array, half: float) -> Dictionary:
 	for side: float in [-1.0, 1.0]:
 		for k in range(STRIP_STATIONS - 1, -1, -1):
 			xs.append(side * half * lerpf(STRIP_FROM, STRIP_TO, float(k) / float(STRIP_STATIONS - 1)))
+	# Search a sorted copy, but keep output stations in their original tip-to-root
+	# order. Every station retains the original triangle order, including ties.
+	var station_order: Array[int] = []
+	for j in xs.size():
+		station_order.append(j)
+	var sorted_xs := xs.duplicate()
+	var searchable := is_finite(half)
+	if searchable:
+		station_order.sort_custom(func(u: int, v: int) -> bool: return xs[u] < xs[v])
+		for j in xs.size():
+			sorted_xs[j] = xs[station_order[j]]
 	var segments := [] # per station: Array of [z_min, z_max, y_min, y_max]
 	for x in xs:
 		segments.append([])
@@ -155,7 +166,13 @@ static func _wing_sections(tris: PackedVector3Array, half: float) -> Dictionary:
 		var hi := maxf(a.x, maxf(b.x, c.x))
 		if hi - lo < 1e-6:
 			continue
-		for j in xs.size():
+		var first := 0
+		var stop := xs.size()
+		if searchable and is_finite(lo) and is_finite(hi):
+			first = sorted_xs.bsearch(lo)
+			stop = sorted_xs.bsearch(hi, false)
+		for ordered_index in range(first, stop):
+			var j: int = station_order[ordered_index]
 			var x := xs[j]
 			if x < lo or x > hi:
 				continue

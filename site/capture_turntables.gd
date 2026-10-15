@@ -7,7 +7,9 @@ const Catalog = preload("res://app_state/aircraft_catalog.gd")
 
 const FRAME_COUNT: int = 36
 const FRAME_SIZE: Vector2i = Vector2i(640, 360)
-const BACKGROUND: Color = Color("111820")
+const BACKGROUND: Color = Color("101820")
+const AMBIENT_COLOR: Color = Color("c8c8c8")
+const AMBIENT_ENERGY: float = 0.45
 const CAMERA_FOV_DEGREES: float = 38.0
 const CAMERA_ELEVATION_DEGREES: float = 22.0
 const CAMERA_DISTANCE_EXTENTS: float = 1.28
@@ -50,8 +52,8 @@ func _run() -> void:
 	environment.background_mode = Environment.BG_COLOR
 	environment.background_color = BACKGROUND
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
-	environment.ambient_light_color = Color("c8c8c8")
-	environment.ambient_light_energy = 0.45
+	environment.ambient_light_color = AMBIENT_COLOR
+	environment.ambient_light_energy = AMBIENT_ENERGY
 	var environment_node: WorldEnvironment = WorldEnvironment.new()
 	environment_node.environment = environment
 	world.add_child(environment_node)
@@ -128,7 +130,9 @@ func _run() -> void:
 		"frame_size": [FRAME_SIZE.x, FRAME_SIZE.y],
 		"frame_count_per_model": FRAME_COUNT,
 		"total_frame_count": total_frames,
-		"background": "#111820",
+		"background": "#101820",
+		"background_mode": "color",
+		"ambient_light": {"color": "#c8c8c8", "energy": AMBIENT_ENERGY},
 		"camera": {
 			"projection": "perspective",
 			"fov_degrees": CAMERA_FOV_DEGREES,

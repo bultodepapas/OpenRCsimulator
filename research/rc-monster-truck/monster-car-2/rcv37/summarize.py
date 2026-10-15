@@ -55,11 +55,16 @@ def main():
                                    median(r['presentation_cost'][metric] for r in candidate))
                 for metric in ('mean_us', 'median_us', 'p95_us')}
     session = read('checks/session.json')
-    assert session['exact_replay']
+    assert session['complete'] and session['exact_replay'] and session['checkpoint_restore_exact']
+    assert session['backend_identity_probe']['matches_prepared_and_checkpoint_identity']
+    assert session['backend_identity'] == baseline[0]['backend_identity']['backend_identity']
     verification = read('checks/verification.json')
     assert verification['complete']
     assert verification['model_sha256'] == visual['candidate_sha256']
     assert verification['voice_sha256'] == audio['candidate_sha256']
+    assert verification['session_sha256'] == sha(EVIDENCE / 'checks/session.json')
+    confirmation = read('baseline-confirmation/activity.json')
+    assert confirmation['complete'] and confirmation['trajectory_sha256'] == baseline[0]['trajectory_sha256']
     for path in EVIDENCE.rglob('*.log'):
         assert not ERROR.search(path.read_text(encoding='utf-8-sig')), str(path)
     evidence_hashes = {str(path.relative_to(EVIDENCE)).replace('\\', '/'): sha(path)
@@ -70,11 +75,12 @@ def main():
         'video_adapter': baseline[0]['video_adapter'],
         'animation_cpu_per_draw': animation, 'audio_cpu_per_run': audio_cost,
         'activity_presentation_cpu': activity,
+        'later_baseline_confirmation_mean_us': confirmation['presentation_cost']['mean_us'],
         'exact_visual_poses': visual['parity']['total_pose_count'],
         'exact_audio_frames': audio['parity_results']['compared_frames'],
         'exact_activity_trajectory_sha256': baseline[0]['trajectory_sha256'],
         'exact_driving_replay': session['exact_replay'], 'solver_changed': False,
-        'scope': 'CPU callback and component timings, not full GPU frame time or a target-hardware FPS claim. Three native baseline runs followed by three candidate runs; component pairs alternate execution order. Existing unrelated desktop processes were left running.',
+        'scope': 'CPU callback and component timings, not full GPU frame time or a target-hardware FPS claim. Three native baseline runs followed by three candidate runs and a later baseline confirmation; component pairs alternate execution order. Existing unrelated desktop processes were left running. Later native captures omit text with both adapters; the native screenshots qualify the 3D vehicle only.',
         'remaining_physics_cost_us': session['tick_cost'],
         'evidence_sha256': evidence_hashes,
     }
