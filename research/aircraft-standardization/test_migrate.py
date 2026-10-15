@@ -42,12 +42,18 @@ class AircraftMigration(unittest.TestCase):
     def test_current_retractable_jet_v2_is_idempotent_without_changing_v1_policy(self):
         source = json.loads((ROOT / "app/data/aircraft/sebart_avanti_s_a200.json").read_text(encoding="utf-8"))
         self.assertEqual(upgrade(source), source)
+        self.assertEqual(source["capabilities"]["flaps"], "simulated")
+        self.assertEqual(source["flaps"]["max_angle_deg"]["value"], 50.0)
         self.assertEqual(POLICIES[source["id"]]["gear"], "locked_up")
         self.assertEqual(POLICIES[source["id"]]["gear_contacts"], 0)
         bad = deepcopy(source)
         del bad["landing_gear"]["contacts"][0]["retraction_path"]
         with self.assertRaisesRegex(ValueError, "contact paths"):
             upgrade(bad)
+        bad_flaps = deepcopy(source)
+        bad_flaps["capabilities"]["flaps"] = "not_simulated"
+        with self.assertRaisesRegex(ValueError, "flaps data requires"):
+            upgrade(bad_flaps)
 
     def test_legacy_projection_removes_v2_physical_identity_metadata(self) -> None:
         source = json.loads(
@@ -64,6 +70,7 @@ class AircraftMigration(unittest.TestCase):
         self.assertEqual(legacy["format"], FORMAT_V1)
         self.assertNotIn("physical_identity_version", legacy)
         self.assertNotIn("crash_hull_ids", legacy)
+        self.assertNotIn("flaps", legacy)
         self.assertNotIn("id", legacy["propulsion"])
         self.assertTrue(all("id" not in item for item in legacy["inventory"]))
         self.assertTrue(all("id" not in contact for contact in legacy["landing_gear"]["contacts"]))

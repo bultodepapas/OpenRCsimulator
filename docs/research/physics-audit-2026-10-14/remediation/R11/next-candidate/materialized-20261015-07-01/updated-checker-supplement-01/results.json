@@ -1,0 +1,49 @@
+{
+  "format": "R11 updated-checker supplemental v1",
+  "candidate_root": "/home/bulto/openrc-r11-b09-r05b-20261015-07",
+  "candidate_head": "7c47c7ba02f7d2c874ec92a381ea73ef967069d6",
+  "godot_sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+  "candidate_test_sh_sha256": "dae260326426be613b065b0ae00f040842c310fab217979b537a274b3b36b7d6",
+  "frozen_checker_sha256": "55c6d0f6a9ddf088c60de1050b964250f0af39ea36d1268574319273d9a69295",
+  "live_checker_sha256": "bcaa40377bda39fc8e8e7a2be6753fc41441bf2901b0ca60d8c5feb11c203d81",
+  "frozen_trace_acceptance_sha256": "30e7d3d3b94129380045ff8efed4ece4df56a6ee711cf71c707273e51f579185",
+  "live_trace_acceptance_sha256": "77a9dab563051458cdbfad029e6b453dd2e583a55ee2bae05a7ed0064a1aea93",
+  "suites": [
+    {
+      "name": "frozen-trace-acceptance-updated-checker",
+      "tests_run": 17,
+      "failures": 1,
+      "errors": 0,
+      "skipped": 0,
+      "was_successful": false,
+      "app_override": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app",
+      "checker_override": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/check_trimmed_flight.py",
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/updated-checker-supplement-01/frozen-trace-acceptance-updated-checker.log",
+      "module_app": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app"
+    },
+    {
+      "name": "frozen-shaft-two-tests-updated-checker",
+      "tests_run": 2,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "was_successful": true,
+      "app_override": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app",
+      "checker_override": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/check_trimmed_flight.py",
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/updated-checker-supplement-01/frozen-shaft-two-tests-updated-checker.log"
+    },
+    {
+      "name": "live-one-continuous-metadata-test-frozen-app",
+      "tests_run": 1,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "was_successful": true,
+      "app_override": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app",
+      "checker_override": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/check_trimmed_flight.py",
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/updated-checker-supplement-01/live-one-continuous-metadata-test-frozen-app.log",
+      "module_app": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app"
+    }
+  ],
+  "overall_pass": false
+}

@@ -1,0 +1,45 @@
+{
+	"complete": true,
+	"engine": "4.7.2-stable (official)",
+	"nitro": {
+		"clutch_engaged": false,
+		"clutch_engagement": 0.28770031477467756,
+		"clutch_torque_nm": 0.1783741951603001,
+		"engine_rpm": 9740.214034149505,
+		"engine_running": true,
+		"engine_speed_rad_s": 1019.9928284692095,
+		"engine_torque_nm": 0.19643417366591534,
+		"fuel_fraction": 0.9984813072694612,
+		"fuel_kg": 0.09984813072694612,
+		"wheel_drive_torque_nm": 1.2578977496072368
+	},
+	"solver": {
+		"backend_identity": {
+			"abi_version": 1,
+			"backend": "native",
+			"backend_version": "openrc-nitro-ground-vehicle-composite-v1+openrc-ground-vehicle-native-evaluate-v3",
+			"binary_sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb",
+			"implementation_artifact_kind": "gdscript_source",
+			"solver_version": "openrc-nitro-powertrain-midpoint-v1+openrc-ground-vehicle-dynamics-rk4-v5",
+			"source_sha256": "21bd3ad221497087fcd7861bc4e39db9ce4493407673ab2c30c70a9d80cb7425",
+			"toolchain_sha256": "20011c634359383599e065c970e90e2a0c6612e7481739dbc9d35fe8c8d4a192"
+		},
+		"damage_version": 2,
+		"engine_version": "4.7.2-stable (official)",
+		"environment_artifact": {
+			"kind": "gdscript_source",
+			"sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad"
+		},
+		"environment_version": "openrc-rcv-environment-v1",
+		"fixed_hz": 240,
+		"integration_artifact": {
+			"kind": "gdscript_source",
+			"sha256": "429f3ca8b283df01416546eab9eceb7d08e12996650ec0c51622fc5a15f614c2"
+		},
+		"solver_version": "openrc-nitro-powertrain-midpoint-v1+openrc-ground-vehicle-dynamics-rk4-v5",
+		"substeps_per_tick": 1
+	},
+	"state_sha256": "512ca93fa6c02b8d30d91426299fd1dc43dd2b219e933847ff7a49eddec427e4",
+	"state_size": 33,
+	"tick": 360
+}

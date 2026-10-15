@@ -1,0 +1,11 @@
+# live_trimmed_checker_avanti
+# started_utc=2026-10-15T14:29:29+00:00
+# cwd=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+# timeout_seconds=600
+# expect=zero
+# command=/usr/bin/python3 /mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/check_trimmed_flight.py /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/trace-avanti.csv --duration=3
+# returncode=0
+# timed_out=False
+# engine_error_detected=False
+
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 29.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)

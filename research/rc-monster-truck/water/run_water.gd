@@ -11,6 +11,12 @@ var output := ""
 var capture := false
 var failures := 0
 
+# Offscreen capture has no interactive keyboard or focus. Exercise the real
+# Drive action with a neutral input fixture, rather than bypassing its UI state.
+class CaptureActivity extends Activity:
+	func _read_controls() -> Dictionary:
+		return {"throttle": 0.0, "steering": 0.0, "brake": 0.0, "reverse": false, "armed": true}
+
 func _initialize() -> void:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--output="): output = arg.trim_prefix("--output=")
@@ -33,7 +39,7 @@ func _run() -> void:
 		root.content_scale_size = Vector2i.ZERO
 		root.content_scale_mode = Window.CONTENT_SCALE_MODE_DISABLED
 		TranslationServer.set_locale("es")
-		scene = Activity.new()
+		scene = CaptureActivity.new()
 		scene.enable_audio = false
 		root.add_child(scene)
 		scene.set_process(false)
@@ -61,8 +67,12 @@ func _run() -> void:
 		_check("garage exposes lake entry", scene.dashboard.spawn_ids.has("lake_shore"))
 		if scene._wet_effects != null: scene._wet_effects.audio_enabled = false
 	for hold in session.pause_holds(): session.release_pause_hold(hold)
-	_check("neutral-armed entry starts", session.tick_once(NEUTRAL) and session.resume())
-	if capture: scene.dashboard.set_menu(false)
+	if capture:
+		scene._focused = true
+		scene.handle_action("resume")
+		_check("neutral-armed Drive action starts and closes the garage", not session.is_paused() and not scene.dashboard.menu_visible)
+	else:
+		_check("neutral-armed entry starts", session.tick_once(NEUTRAL) and session.resume())
 	_check("wet recording starts", session.start_recording())
 	var csv := FileAccess.open(output + ".csv", FileAccess.WRITE)
 	if csv == null:

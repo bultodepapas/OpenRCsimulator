@@ -1,0 +1,354 @@
+{
+  "created_utc_date": "2026-10-15",
+  "dt_s": 0.004166666666666667,
+  "engine": "Godot 4.7.2.stable",
+  "evidence_step": "AV-09",
+  "models": {
+    "candidate": {
+      "flap_aerodynamic_gain": 1.0,
+      "path": "app\\data\\aircraft\\sebart_avanti_s_a200.json",
+      "sha256": "387047f77349b61fe0eb463a93794b50d31ec76c65087f0d3cb3f9fe402f7e75"
+    },
+    "same-tape_baseline": {
+      "derivation_report": "docs\\research\\avanti-flaps\\AV-09\\evidence-2026-10-15\\models\\derivation.md",
+      "derivation_report_sha256": "2b3d56497711989a10398365f740ed9ec031e0d6a03a390857fc433d2b578c78",
+      "flap_aerodynamic_gain": 0.0,
+      "generator": "research\\avanti-s\\av06\\derive_physics.py",
+      "generator_input": "research\\avanti-s\\av06\\inputs.json",
+      "generator_input_sha256": "1081c143940c0bedd6edac1519a27c1194564ee7e36f0dabf824174213bfa777",
+      "generator_sha256": "783f193336457a42f2b48b4334c363ef569b8e9fa8cafc74df13860bfda13945",
+      "path": "docs\\research\\avanti-flaps\\AV-09\\evidence-2026-10-15\\models\\av09_flaps_aero_disabled.json",
+      "sha256": "9eec7a8e90db49bc5944d153983724c15ca92465cf650754b0fbf311da6318d7"
+    }
+  },
+  "outputs": {
+    "240_480_refinement": "timestep_refinement.json",
+    "480_hz_candidate_replay": "refinement_480hz/candidate_replay/flight.csv + replay.json",
+    "480_hz_comparison": "refinement_480hz/comparison.json",
+    "480_hz_exact_replay": "refinement_480hz/exact_replay/flight.csv + replay.json",
+    "candidate_replay": "candidate_replay/flight.csv + replay.json",
+    "comparison": "comparison.json",
+    "exact_replay": "exact_replay/flight.csv + replay.json",
+    "paired_segment_analysis": "paired_segment_analysis.json",
+    "source_export": "baseline_export/flight.csv + export.json",
+    "static_model_probe": "static_model_probe.json"
+  },
+  "paired_segment_analysis": {
+    "path": "docs\\research\\avanti-flaps\\AV-09\\evidence-2026-10-15\\paired_segment_analysis.json",
+    "segments": 7,
+    "sha256": "9ca0af543feb7761704cac9d481bf0c6b0eeafb1639bb5d35334f165c1ad0ce5"
+  },
+  "replay": {
+    "baseline_exact": {
+      "complete": true,
+      "mode": "exact",
+      "status": "ok"
+    },
+    "candidate": {
+      "comparison_method": "Open-loop: baseline body/internal initial state and post-conditioning input tape; candidate aircraft mass/inertia/configuration and current solver. Not a newly trimmed flight or pilot adaptation.",
+      "complete": true,
+      "mode": "candidate",
+      "status": "ok"
+    },
+    "candidate_comparison": {
+      "base": "flight.csv",
+      "candidate": "flight.csv",
+      "differences": {
+        "angular_rate_radps": {
+          "components": {
+            "p_radps": {
+              "max_abs": 0.026041666958579134,
+              "rmse": 0.00959109879433758
+            },
+            "q_radps": {
+              "max_abs": 1.0000326517624647,
+              "rmse": 0.5312129175980889
+            },
+            "r_radps": {
+              "max_abs": 0.016198501401496847,
+              "rmse": 0.006744011340104001
+            }
+          },
+          "max_abs": 1.0000326517624647,
+          "max_at": {
+            "component": "q_radps",
+            "t_s": 13.383333333333333,
+            "tick": 3212
+          },
+          "rmse": 0.306770617176261,
+          "unit": "rad/s"
+        },
+        "position_m": {
+          "components": {
+            "down_m": {
+              "max_abs": 299.7225915211304,
+              "rmse": 134.617342865753
+            },
+            "east_m": {
+              "max_abs": 272.5941591769463,
+              "rmse": 163.60757005321804
+            },
+            "north_m": {
+              "max_abs": 3.0174691576512416,
+              "rmse": 1.9515699510275795
+            }
+          },
+          "max_abs": 299.7225915211304,
+          "max_at": {
+            "component": "down_m",
+            "t_s": 22.820833333333333,
+            "tick": 5477
+          },
+          "rmse": 122.32889356733916,
+          "unit": "m"
+        },
+        "quaternion_angle_rad": {
+          "max_abs": 3.1415708236744284,
+          "max_at": {
+            "t_s": 9.170833333333333,
+            "tick": 2201
+          },
+          "rmse": 1.5003040838999706,
+          "unit": "rad"
+        },
+        "velocity_mps": {
+          "components": {
+            "u_mps": {
+              "max_abs": 38.23144889724176,
+              "rmse": 22.12091738660178
+            },
+            "v_mps": {
+              "max_abs": 0.109659161421583,
+              "rmse": 0.040772801250790386
+            },
+            "w_mps": {
+              "max_abs": 7.301240355110506,
+              "rmse": 3.1055526316255784
+            }
+          },
+          "max_abs": 38.23144889724176,
+          "max_at": {
+            "component": "u_mps",
+            "t_s": 8.695833333333333,
+            "tick": 2087
+          },
+          "rmse": 12.896783909098936,
+          "unit": "m/s"
+        }
+      },
+      "first_divergence": {
+        "metrics": [
+          "position_m",
+          "velocity_mps",
+          "angular_rate_radps",
+          "quaternion_angle_rad"
+        ],
+        "t_s": 3.0041666666666664,
+        "tick": 721
+      },
+      "rows": 5521,
+      "status": "ok",
+      "tick": {
+        "first": 0,
+        "last": 5520
+      },
+      "time_s": {
+        "duration": 23.0,
+        "first": 0.0,
+        "last": 23.0
+      }
+    },
+    "paired_csv": {
+      "accepted_command_channels_bitwise_numeric_match": true,
+      "dt_s": 0.004166666666666667,
+      "final_tick": 5520,
+      "first_nonzero_flap_tick": 721,
+      "first_tick": 0,
+      "flap_actual_aux_channel": "aux_16",
+      "last_nonzero_flap_tick": 4439,
+      "max_flap_actual_difference": 0.0,
+      "maximum_flap_fraction": 1.0,
+      "rows": 5521
+    },
+    "source_export_rows": 5521
+  },
+  "scope": "current-solver same-input-tape sensitivity pair; not a clean aircraft calibration or physical validation",
+  "solver_changed": {
+    "candidate": false,
+    "exact_baseline": false
+  },
+  "solver_sha256": "cc8ffa6cbaad22ef57c0ab9b7ba71d1d4473b1a909c99d1e98f88c7a5d44f542",
+  "source_log": {
+    "bytes": 4394900,
+    "path": "docs\\research\\avanti-flaps\\AV-09\\evidence-2026-10-15\\recording\\av09_flaps_open_loop.orfl",
+    "sha256": "10bc456f6d2f5d25aeff431f5ca8d8871614553c8df1e3965c1742d12968be25"
+  },
+  "static_probe": {
+    "method": "AV-09 deterministic static aerodynamic model sensitivity",
+    "not_physical_validation": true,
+    "path": "docs\\research\\avanti-flaps\\AV-09\\evidence-2026-10-15\\static_model_probe.json",
+    "sha256": "8d9bab0b1ad6400a9f0c315f7dbaacf87c643a4eb0253fefc580606b8a8fa7d0"
+  },
+  "tape": {
+    "accepted_start_inputs": [
+      0.0,
+      0.05770393169164367,
+      0.0,
+      0.08596411580227241,
+      0.0,
+      0.0,
+      0.0
+    ],
+    "aircraft_id": "sebart-avanti-s-a200-p100rx",
+    "aircraft_input_sha256": "9eec7a8e90db49bc5944d153983724c15ca92465cf650754b0fbf311da6318d7",
+    "aircraft_path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/avanti-flaps/AV-09/evidence-2026-10-15/models/av09_flaps_aero_disabled.json",
+    "dt_s": 0.004166666666666667,
+    "evidence_step": "AV-09",
+    "flap_aux_index": 16,
+    "flap_input_index": 6,
+    "flap_law": "controls.flaps.hinged_trailing_edge.v1",
+    "initial_altitude_m_above_flat_runway_datum": 500.0,
+    "interpretation": "The source log contains one accepted command tape. Candidate replay reuses its tick-indexed accepted inputs; it is open-loop and is not an adapted piloted flight.",
+    "physics_ticks_per_second": 240,
+    "recorder_observer_usec": 234268,
+    "recorder_peak_buffer_rows": 240,
+    "rows_including_initial": 5521,
+    "scope": "high-altitude open-loop actuator/aerodynamic response comparison; not a takeoff, approach or landing profile",
+    "segments": [
+      {
+        "cmd_flaps": 0.0,
+        "duration_s": 3.0,
+        "first_tick": 1,
+        "last_tick": 720,
+        "name": "clean_hold",
+        "pitch_offset_from_trim_command": 0.0
+      },
+      {
+        "cmd_flaps": 0.4,
+        "duration_s": 3.0,
+        "first_tick": 721,
+        "last_tick": 1440,
+        "name": "flap_20deg_hold",
+        "pitch_offset_from_trim_command": 0.0
+      },
+      {
+        "cmd_flaps": 1.0,
+        "duration_s": 7.0,
+        "first_tick": 1441,
+        "last_tick": 3120,
+        "name": "full_flap_50deg_hold",
+        "pitch_offset_from_trim_command": 0.0
+      },
+      {
+        "cmd_flaps": 1.0,
+        "duration_s": 1.5,
+        "first_tick": 3121,
+        "last_tick": 3480,
+        "name": "same_tape_pitch_pulse",
+        "pitch_offset_from_trim_command": 0.15
+      },
+      {
+        "cmd_flaps": 1.0,
+        "duration_s": 2.5,
+        "first_tick": 3481,
+        "last_tick": 4080,
+        "name": "open_loop_recovery",
+        "pitch_offset_from_trim_command": 0.0
+      },
+      {
+        "cmd_flaps": 0.0,
+        "duration_s": 4.0,
+        "first_tick": 4081,
+        "last_tick": 5040,
+        "name": "flap_retraction",
+        "pitch_offset_from_trim_command": 0.0
+      },
+      {
+        "cmd_flaps": 0.0,
+        "duration_s": 2.0,
+        "first_tick": 5041,
+        "last_tick": 5520,
+        "name": "clean_return",
+        "pitch_offset_from_trim_command": 0.0
+      }
+    ],
+    "tape_id": "av09-flaps-open-loop-v1",
+    "ticks": 5520
+  },
+  "time_step_refinement": {
+    "480_hz_replay": {
+      "baseline_exact": {
+        "complete": true,
+        "mode": "exact",
+        "solver_changed": false,
+        "status": "ok"
+      },
+      "candidate": {
+        "complete": true,
+        "mode": "candidate",
+        "solver_changed": false,
+        "status": "ok"
+      },
+      "paired_csv": {
+        "accepted_command_channels_bitwise_numeric_match": true,
+        "dt_s": 0.0020833333333333333,
+        "final_tick": 11040,
+        "first_nonzero_flap_tick": 1441,
+        "first_tick": 0,
+        "flap_actual_aux_channel": "aux_16",
+        "last_nonzero_flap_tick": 8879,
+        "max_flap_actual_difference": 0.0,
+        "maximum_flap_fraction": 1.0,
+        "rows": 11041
+      }
+    },
+    "altitude_margin": {
+      "240_hz_candidate": {
+        "initial_agl_m": 500.0,
+        "maximum_agl_m": 533.9623456277676,
+        "minimum_agl_m": 478.41298728347243
+      },
+      "240_hz_gain0": {
+        "initial_agl_m": 500.0,
+        "maximum_agl_m": 500.00013441095615,
+        "minimum_agl_m": 179.04985836184855
+      },
+      "480_hz_candidate": {
+        "initial_agl_m": 500.0,
+        "maximum_agl_m": 533.9737012719742,
+        "minimum_agl_m": 478.40689885421875
+      },
+      "480_hz_gain0": {
+        "initial_agl_m": 500.0,
+        "maximum_agl_m": 500.00013440352626,
+        "minimum_agl_m": 179.07578991287488
+      },
+      "interpretation": "The tape is a high-altitude open-loop response study above a flat sea-level datum. A 100 m floor is enforced for every baseline and candidate trace; it is not a landing-path experiment.",
+      "minimum_required_agl_m": 100.0,
+      "runway_datum_altitude_m": 0.0
+    },
+    "analysis_path": "docs\\research\\avanti-flaps\\AV-09\\evidence-2026-10-15\\timestep_refinement.json",
+    "analysis_sha256": "fc679e3b72ed5d11b21371d9cae366412d9f2a563a5e47520af524cd4da68194",
+    "paired_480_hz_segment_path": "docs\\research\\avanti-flaps\\AV-09\\evidence-2026-10-15\\refinement_480hz\\paired_segment_analysis.json",
+    "paired_480_hz_segment_sha256": "e6463db6e8b703657b76440ca9ae44d5f83a59d6285968246fc6264e030ddd89",
+    "rates_hz": [
+      240,
+      480
+    ],
+    "same_piecewise_constant_time_command_schedule": true,
+    "source_logs": {
+      "240_hz": {
+        "dt_s": 0.004166666666666667,
+        "path": "docs\\research\\avanti-flaps\\AV-09\\evidence-2026-10-15\\recording\\av09_flaps_open_loop.orfl",
+        "sha256": "10bc456f6d2f5d25aeff431f5ca8d8871614553c8df1e3965c1742d12968be25",
+        "ticks": 5520
+      },
+      "480_hz": {
+        "dt_s": 0.0020833333333333333,
+        "path": "docs\\research\\avanti-flaps\\AV-09\\evidence-2026-10-15\\refinement_480hz\\recording\\av09_flaps_open_loop_480hz.orfl",
+        "sha256": "6e4183a26641caf4e80d7d083f1f5227f9927c14e8d58627dfc401923ed4420f",
+        "ticks": 11040
+      }
+    }
+  }
+}

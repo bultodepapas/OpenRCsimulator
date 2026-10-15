@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Validate custom-atmosphere v6/v10 traces or calm standard-column v11 traces."""
+from flap_trace_contract import project as project_flaps
 import argparse
 import csv
 import io
@@ -214,6 +215,9 @@ def _json_metadata_value(metadata, key):
 
 
 def check(path, duration=None):
+    handled, projected = project_flaps(path, check, duration)
+    if handled:
+        return projected
     lines = Path(path).read_text(encoding='utf-8').splitlines()
     metadata = {}
     data_lines = []
@@ -470,6 +474,9 @@ def check_column(path, duration=None):
     This specialized lane rejects nonzero wind, gust, or turbulence settings; it does
     not validate arbitrary weather-v4 traces.
     """
+    handled, projected = project_flaps(path, check_column, duration)
+    if handled:
+        return projected
     metadata, data_lines = _column_trace_parts(path)
     if metadata.get('format') != COLUMN_FORMAT:
         raise ValueError('expected openrc-trace v11 standard-column output')

@@ -1,0 +1,52 @@
+[
+  {
+    "label": "test_projected_shadow-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_projected_shadow.gd"
+    ],
+    "exit_code": 0,
+    "diagnostics": [
+      "Projected shadow regression: 43 checks, 0 failed"
+    ]
+  },
+  {
+    "label": "test_projected_shadow-native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_projected_shadow.gd"
+    ],
+    "exit_code": 0,
+    "diagnostics": [
+      "Projected shadow regression: 43 checks, 0 failed"
+    ]
+  },
+  {
+    "label": "test_ui_home_preview_cache-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_home_preview_cache.gd"
+    ],
+    "exit_code": 0,
+    "diagnostics": [
+      "Home preview cache: 18 checks, 0 failed"
+    ]
+  }
+]

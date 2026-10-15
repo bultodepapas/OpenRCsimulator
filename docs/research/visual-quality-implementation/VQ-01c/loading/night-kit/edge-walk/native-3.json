@@ -1,0 +1,906 @@
+{
+	"rows": [
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 0,
+			"triangle_vertices": 170289,
+			"usec": 62888,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 0,
+			"triangle_vertices": 170289,
+			"usec": 59171,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 1,
+			"triangle_vertices": 170289,
+			"usec": 58873,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 1,
+			"triangle_vertices": 170289,
+			"usec": 62542,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 2,
+			"triangle_vertices": 170289,
+			"usec": 62667,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 2,
+			"triangle_vertices": 170289,
+			"usec": 60250,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 3,
+			"triangle_vertices": 170289,
+			"usec": 59394,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 3,
+			"triangle_vertices": 170289,
+			"usec": 62600,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 4,
+			"triangle_vertices": 170289,
+			"usec": 62836,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 4,
+			"triangle_vertices": 170289,
+			"usec": 58934,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 5,
+			"triangle_vertices": 170289,
+			"usec": 59717,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 5,
+			"triangle_vertices": 170289,
+			"usec": 64330,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 0,
+			"usec": 90903,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 0,
+			"usec": 86035,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 1,
+			"usec": 84711,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 1,
+			"usec": 88306,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 2,
+			"usec": 87915,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 2,
+			"usec": 87162,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 3,
+			"usec": 90651,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 3,
+			"usec": 107802,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 4,
+			"usec": 95451,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 4,
+			"usec": 86849,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 5,
+			"usec": 88440,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "jensen-das-ugly-stik-60",
+			"pair": 5,
+			"usec": 89600,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 0,
+			"triangle_vertices": 58506,
+			"usec": 35437,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 0,
+			"triangle_vertices": 58506,
+			"usec": 31014,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 1,
+			"triangle_vertices": 58506,
+			"usec": 33441,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 1,
+			"triangle_vertices": 58506,
+			"usec": 35019,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 2,
+			"triangle_vertices": 58506,
+			"usec": 35328,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 2,
+			"triangle_vertices": 58506,
+			"usec": 31923,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 3,
+			"triangle_vertices": 58506,
+			"usec": 32807,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 3,
+			"triangle_vertices": 58506,
+			"usec": 35693,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 4,
+			"triangle_vertices": 58506,
+			"usec": 36294,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 4,
+			"triangle_vertices": 58506,
+			"usec": 35349,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 5,
+			"triangle_vertices": 58506,
+			"usec": 33270,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 5,
+			"triangle_vertices": 58506,
+			"usec": 36538,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 0,
+			"usec": 50547,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 0,
+			"usec": 45089,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 1,
+			"usec": 41177,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 1,
+			"usec": 45463,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 2,
+			"usec": 44288,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 2,
+			"usec": 40948,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 3,
+			"usec": 44573,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 3,
+			"usec": 45708,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 4,
+			"usec": 47688,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 4,
+			"usec": 41915,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 5,
+			"usec": 41372,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "gp-extra-300s-60",
+			"pair": 5,
+			"usec": 43904,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 0,
+			"triangle_vertices": 158079,
+			"usec": 74360,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 0,
+			"triangle_vertices": 158079,
+			"usec": 67363,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 1,
+			"triangle_vertices": 158079,
+			"usec": 66780,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 1,
+			"triangle_vertices": 158079,
+			"usec": 72461,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 2,
+			"triangle_vertices": 158079,
+			"usec": 72363,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 2,
+			"triangle_vertices": 158079,
+			"usec": 66454,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 3,
+			"triangle_vertices": 158079,
+			"usec": 67376,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 3,
+			"triangle_vertices": 158079,
+			"usec": 74543,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 4,
+			"triangle_vertices": 158079,
+			"usec": 71203,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 4,
+			"triangle_vertices": 158079,
+			"usec": 66208,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 5,
+			"triangle_vertices": 158079,
+			"usec": 66242,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 5,
+			"triangle_vertices": 158079,
+			"usec": 73711,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 0,
+			"usec": 100678,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 0,
+			"usec": 91186,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 1,
+			"usec": 91830,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 1,
+			"usec": 97680,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 2,
+			"usec": 107912,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 2,
+			"usec": 95374,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 3,
+			"usec": 94485,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 3,
+			"usec": 96774,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 4,
+			"usec": 98339,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 4,
+			"usec": 90189,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 5,
+			"usec": 90757,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "p51d-mustang-120",
+			"pair": 5,
+			"usec": 96403,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 0,
+			"triangle_vertices": 439956,
+			"usec": 178428,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 0,
+			"triangle_vertices": 439956,
+			"usec": 165322,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 1,
+			"triangle_vertices": 439956,
+			"usec": 167837,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 1,
+			"triangle_vertices": 439956,
+			"usec": 182030,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 2,
+			"triangle_vertices": 439956,
+			"usec": 173936,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 2,
+			"triangle_vertices": 439956,
+			"usec": 166644,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 3,
+			"triangle_vertices": 439956,
+			"usec": 165401,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 3,
+			"triangle_vertices": 439956,
+			"usec": 170618,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 4,
+			"triangle_vertices": 439956,
+			"usec": 169573,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 4,
+			"triangle_vertices": 439956,
+			"usec": 161597,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 5,
+			"triangle_vertices": 439956,
+			"usec": 161991,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 5,
+			"triangle_vertices": 439956,
+			"usec": 170763,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 0,
+			"usec": 213156,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 0,
+			"usec": 212832,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 1,
+			"usec": 208625,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 1,
+			"usec": 214577,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 2,
+			"usec": 229350,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 2,
+			"usec": 210288,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 3,
+			"usec": 206097,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 3,
+			"usec": 217054,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 4,
+			"usec": 214741,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 4,
+			"usec": 203440,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 5,
+			"usec": 203642,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "sebart-avanti-s-a200-p100rx",
+			"pair": 5,
+			"usec": 216253,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 0,
+			"triangle_vertices": 127557,
+			"usec": 50850,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 0,
+			"triangle_vertices": 127557,
+			"usec": 47372,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 1,
+			"triangle_vertices": 127557,
+			"usec": 47931,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 1,
+			"triangle_vertices": 127557,
+			"usec": 50431,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 2,
+			"triangle_vertices": 127557,
+			"usec": 50923,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 2,
+			"triangle_vertices": 127557,
+			"usec": 47426,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 3,
+			"triangle_vertices": 127557,
+			"usec": 47613,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 3,
+			"triangle_vertices": 127557,
+			"usec": 49937,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 4,
+			"triangle_vertices": 127557,
+			"usec": 50803,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 4,
+			"triangle_vertices": 127557,
+			"usec": 47759,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 5,
+			"triangle_vertices": 127557,
+			"usec": 47726,
+			"variant": 1,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 5,
+			"triangle_vertices": 127557,
+			"usec": 51510,
+			"variant": 0,
+			"workload": "contours"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 0,
+			"usec": 65095,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 0,
+			"usec": 60809,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 1,
+			"usec": 61071,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 1,
+			"usec": 63621,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 2,
+			"usec": 64555,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 2,
+			"usec": 61067,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 3,
+			"usec": 62194,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 3,
+			"usec": 64592,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 4,
+			"usec": 65708,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 4,
+			"usec": 61967,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 5,
+			"usec": 61401,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"aircraft": "turbo-lumber-evolution",
+			"pair": 5,
+			"usec": 63924,
+			"variant": 0,
+			"workload": "kit_build"
+		}
+	],
+	"synthetic_cases": 256,
+	"valid": true
+}

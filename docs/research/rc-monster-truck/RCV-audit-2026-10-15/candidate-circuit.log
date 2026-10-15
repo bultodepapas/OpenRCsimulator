@@ -1,0 +1,20 @@
+command: ['C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe', '--headless', '--path', 'C:\\DEVELOPMENT\\OpenRCsimulator\\app', '--audio-driver', 'Dummy', '--script', 'C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\driving\\run_drive.gd', '--', '--scenario=circuit', '--pace=fast', '--output=C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-audit-2026-10-15/candidate-circuit.csv']
+timeout_seconds: 300
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+
+SCRIPT ERROR: Parse Error: Preload file "res://physics/ground_vehicle/nitro_dynamics.gd" does not exist.
+   at: GDScript::reload (res://sim/ground_vehicle/session.gd:13)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "NitroDynamics" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://sim/ground_vehicle/session.gd:13)
+SCRIPT ERROR: Parse Error: Static function "load_vehicle()" not found in base "res://physics/ground_vehicle/vehicle_data.gd".
+   at: GDScript::reload (res://sim/ground_vehicle/session.gd:1445)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/driving/run_drive.gd:0)
+ERROR: Failed to load script "C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/driving/run_drive.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+SCRIPT ERROR: Invalid call. Nonexistent function 'new' in base 'GDScript'.
+   at: _initialize (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/driving/run_drive.gd:67)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/driving/run_drive.gd:67)

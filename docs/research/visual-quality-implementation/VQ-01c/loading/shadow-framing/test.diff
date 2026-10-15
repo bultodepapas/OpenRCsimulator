@@ -1,0 +1,67 @@
+--- test-before
++++ test-after
+@@ -233,7 +233,7 @@
+ 		AirplaneBuilder.STIK_ID,
+ 		AirplaneBuilder.EXTRA_ID,
+ 		AirplaneBuilder.P51_ID,
+-		AirplaneBuilder.AVANTI_ID,
++		"sebart-avanti-s-a200-p100rx",
+ 		AirplaneBuilder.TIMBER_ID,
+ 	]
+ 	for id: String in ids:
+@@ -348,8 +348,55 @@
+ 	_test_independent_projection_and_datum()
+ 	_test_collection_excludes_hidden_and_propeller()
+ 	_test_conservative_framing()
++	_test_framing_reuse_inputs()
+ 	_test_neutral_geometry_on_catalog_models()
+ 	_test_binding_lifecycle_and_hidden_updates()
+ 	print("Projected shadow regression: %d checks, %d failed" % [_checks, _failures])
+ 	quit(1 if _failures > 0 else 0)
+ 
++
++
++func _test_framing_reuse_inputs() -> void:
++	var host := Node3D.new()
++	root.add_child(host)
++	var model := Node3D.new()
++	host.add_child(model)
++	var mesh := BoxMesh.new()
++	mesh.size = Vector3(3, 0.6, 2)
++	var projected := Projected.new()
++	host.add_child(projected)
++	projected.setup(model, {mesh = mesh, bounds = mesh.get_aabb(), triangles = 12}, 32, Viewport.MSAA_DISABLED)
++	var direction := Vector3(0.3, 1, -0.2)
++	var height := 3.0
++	projected.refresh(height, direction, 0.5, true)
++	var first_transform: Transform3D = projected.receiver.transform
++	var signature := var_to_bytes(projected._last_signature)
++	projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
++	model.position = Vector3(4, 3, -2)
++	projected.refresh(height, direction, 0.7, true)
++	_check("translation and opacity still update without redrawing unchanged framing",
++		projected.receiver.transform != first_transform and signature == var_to_bytes(projected._last_signature)
++		and projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED
++		and projected.receiver.material_override.get_shader_parameter("opacity") == 0.7)
++	for change: String in ["basis", "direction", "height", "bounds"]:
++		if change == "basis": model.rotation = Vector3(0.2, 0.3, -0.1)
++		elif change == "direction": direction = Vector3(-0.5, 0.01, 0.4)
++		elif change == "height": height = 12.0
++		else: projected.bounds.size.x += 0.125
++		projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
++		projected.refresh(height, direction, 0.5, true)
++		var blur := clampf(0.018 + maxf(height, 0.0) * 0.0093, 0.018, 0.45)
++		var expected := Projected.framing(projected.bounds, model.global_basis, direction, blur)
++		_check("framing invalidates changed " + change,
++			projected.mask_material.get_shader_parameter("frame_center") == expected.get_center()
++			and projected.mask_material.get_shader_parameter("frame_size") == expected.size.x
++			and projected.receiver.material_override.get_shader_parameter("blur_uv") == blur / expected.size.x
++			and projected.viewport.render_target_update_mode == SubViewport.UPDATE_ONCE)
++	projected.refresh(100, direction, 0.5, true)
++	var capped_signature := var_to_bytes(projected._last_signature)
++	projected.viewport.render_target_update_mode = SubViewport.UPDATE_DISABLED
++	projected.refresh(200, direction, 0.5, true)
++	_check("height changes above the blur cap retain the same mask framing",
++		var_to_bytes(projected._last_signature) == capped_signature
++		and projected.viewport.render_target_update_mode == SubViewport.UPDATE_DISABLED)
++	host.free()

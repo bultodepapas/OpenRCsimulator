@@ -1,0 +1,3 @@
+usage: build_vehicle_data.py [-h] [--spec SPEC] [--glb GLB] [--out OUT]
+                             [--check]
+build_vehicle_data.py: error: 'C:\\DEVELOPMENT\\OpenRCsimulator\\RC CARS\\MT8_Bisonte_entrega1_1\\MT8_Bisonte\\out\\mt8_spec.json' is not in the subpath of 'C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\rcv-audit-20261015-frozen' OR one path is relative and the other is absolute.

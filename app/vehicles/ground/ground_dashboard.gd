@@ -11,11 +11,21 @@ signal spawn_selected(id: String)
 signal controller_selected(device_id: int)
 
 var menu_visible := true
+var vehicle_name := "Bisonte MT8"
+var nitro := false
+var fuel_status: Label
+var fuel_gauge: ProgressBar
+var engine_start_button: Button
+var engine_stop_button: Button
+var refuel_button: Button
 var panel: PanelContainer
 var status: Label
 var telemetry: Label
 var condition_status: Label
 var headlights_button: Button
+var auxiliary_button: Button
+var neon_button: Button
+var _last_lights_state := -1
 var toast: Label
 var resume_button: Button
 var controller_choice: OptionButton
@@ -56,7 +66,7 @@ func _ready() -> void:
 	root_control.add_child(margin)
 	var top := HBoxContainer.new()
 	margin.add_child(top)
-	status = _label("BISONTE MT8", 24)
+	status = _label(vehicle_name.to_upper(), 24)
 	status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(status)
 	_menu_button = _button(words("Garage · Esc", "Garaje · Esc"), "menu")
@@ -108,8 +118,27 @@ func _ready() -> void:
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 10)
 	scroll.add_child(column)
-	header.add_child(_label("Bisonte MT8", 28))
-	header.add_child(_label(words("1:8 · Electric 4WD · Experimental", "1:8 · Eléctrico 4×4 · Experimental"), 14))
+	header.add_child(_label(vehicle_name, 28))
+	header.add_child(_label(words("1:8 · Nitro 4WD · Experimental", "1:8 · Nitro 4×4 · Experimental") if nitro else words("1:8 · Electric 4WD · Experimental", "1:8 · Eléctrico 4×4 · Experimental"), 14))
+	if nitro:
+		fuel_status = _label("", 15)
+		fuel_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		column.add_child(fuel_status)
+		fuel_gauge = ProgressBar.new()
+		fuel_gauge.custom_minimum_size.y = 8
+		fuel_gauge.show_percentage = false
+		column.add_child(fuel_gauge)
+		var engine_row := HBoxContainer.new()
+		engine_start_button = _button(words("Start engine", "Arrancar"), "engine_start")
+		engine_stop_button = _button(words("Stop engine", "Apagar"), "engine_stop")
+		engine_row.add_child(engine_start_button)
+		engine_row.add_child(engine_stop_button)
+		column.add_child(engine_row)
+		refuel_button = _button(words("Refuel nitro tank", "Repostar combustible nitro"), "refuel")
+		column.add_child(refuel_button)
+		var nitro_hint := _label(words("Stop the vehicle for engine service. Switch off before refuelling. No reverse gear.", "Detén el carro para atender el motor. Apágalo antes de repostar. Sin reversa."), 14)
+		nitro_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		column.add_child(nitro_hint)
 	if airfield:
 		column.add_child(_label(words("Airfield · Shared runway", "Aeródromo · Pista de aviones"), 14))
 	if track_available:
@@ -160,8 +189,14 @@ func _ready() -> void:
 	toggles.add_child(_button(words("Contacts", "Contactos"), "contacts"))
 	toggles.add_child(_button(words("Sound", "Sonido"), "sound"))
 	column.add_child(toggles)
+	column.add_child(_button(words("Clean vehicle", "Limpiar carro"), "clean"))
 	headlights_button = _button(words("Headlights on · L", "Faros encendidos · L"), "lights")
 	column.add_child(headlights_button)
+	if nitro:
+		auxiliary_button = _button(words("Auxiliary lights off · K", "Exploradoras apagadas · K"), "aux_lights")
+		column.add_child(auxiliary_button)
+		neon_button = _button(words("Neon on · N", "Neón encendido · N"), "neon")
+		column.add_child(neon_button)
 	record_button = _button(words("Record telemetry", "Grabar telemetría"), "record")
 	column.add_child(record_button)
 	var saves := HBoxContainer.new()
@@ -196,7 +231,7 @@ func _ready() -> void:
 	root_control.add_child(gauges)
 	plot = Plot.new()
 	plot.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	plot.position = Vector2(24, -250)
+	plot.position = Vector2(24, -300 if nitro else -250)
 	plot.size = Vector2(300, 120)
 	plot.visible = false
 	root_control.add_child(plot)
@@ -240,6 +275,11 @@ func set_controllers(devices: Array, selected: int, needs_selection: bool) -> vo
 			"W/S o ↑/↓: avanzar / reversa · A/D o ←/→: girar · Espacio: frenar\nC: cámara · R: recuperar · Esc: garaje · Enter: continuar")
 		resume_button.text = words("DRIVE · Enter", "CONDUCIR · Enter")
 		_menu_button.text = words("Garage · Esc", "Garaje · Esc")
+	if nitro:
+		if _using_gamepad:
+			control_hint.text = words("Left stick: steer · %s: accelerate · %s: brake · No reverse\n%s: camera · %s: recover · %s: garage / continue", "Palanca izquierda: girar · %s: acelerar · %s: frenar · Sin reversa\n%s: cámara · %s: recuperar · %s: garaje / continuar") % [rt, lt, camera_button, recover_button, start]
+		else:
+			control_hint.text = words("W / ↑: accelerate · A/D / ←/→: steer · Space / S / ↓: brake · No reverse\nC: camera · R: recover · Esc: garage · Enter: continue", "W / ↑: acelerar · A/D / ←/→: girar · Espacio / S / ↓: frenar · Sin reversa\nC: cámara · R: recuperar · Esc: garaje · Enter: continuar")
 	controller_choice.tooltip_text = words("This selection only controls the car. Aircraft settings are preserved.", "Esta selección controla solo el carro. Los ajustes de vuelo se conservan.")
 	update_input_status(false, needs_selection, true)
 
@@ -314,14 +354,21 @@ func select_spawn(id: String) -> void:
 func message(english: String, spanish: String) -> void:
 	toast.text = words(english, spanish)
 
-func update_lights(enabled: bool) -> void:
+func update_lights(enabled: bool, auxiliary: bool = false, neon: bool = true) -> void:
 	if headlights_button == null: return
+	var state := int(enabled) | (int(auxiliary) << 1) | (int(neon) << 2)
+	if state == _last_lights_state: return
+	_last_lights_state = state
 	headlights_button.text = words("Headlights on · L", "Faros encendidos · L") if enabled else words("Headlights off · L", "Faros apagados · L")
+	if auxiliary_button != null:
+		auxiliary_button.text = words("Auxiliary lights on · K", "Exploradoras encendidas · K") if auxiliary else words("Auxiliary lights off · K", "Exploradoras apagadas · K")
+	if neon_button != null:
+		neon_button.text = words("Neon on · N", "Neón encendido · N") if neon else words("Neon off · N", "Neón apagado · N")
 
 
 func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recording: bool, diagnostic: bool) -> void:
 	var speed := float(snapshot.get("speed_m_per_s", 0.0)) * 3.6
-	status.text = "BISONTE MT8  /  " + (words("PAUSED", "PAUSA") if paused else words("DRIVING", "CONDUCIENDO"))
+	status.text = vehicle_name.to_upper() + "  /  " + (words("PAUSED", "PAUSA") if paused else words("DRIVING", "CONDUCIENDO"))
 	var surface := str(snapshot.get("surface_id", ""))
 	var surface_names := {"asphalt": words("Asphalt", "Asfalto"), "grass": words("Grass", "Césped"), "gravel": words("Gravel", "Grava"), "slippery": words("Low grip", "Poco agarre"), "runway": words("Runway", "Pista de aviones"), "mown": words("Mown grass", "Césped corto"), "rough": words("Rough grass", "Césped")}
 	surface_names["rc_dirt"] = words("Dirt circuit", "Circuito de tierra")
@@ -333,6 +380,27 @@ func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recordin
 	if wet:
 		surface_title = words("Wading", "Vadeando") if float(environment.get("body_submersion", 0.0)) < 0.5 else words("Submerged · R: recover", "Sumergido · R: recuperar")
 	telemetry.text = "%.1f km/h  ·  %.1f s  ·  %s%s" % [speed, time_s, surface_title, "  ● REC" if recording else ""]
+	if nitro:
+		var powertrain: Dictionary = snapshot.get("nitro", {})
+		var fuel := float(powertrain.get("fuel_kg", 0.0))
+		var running := bool(powertrain.get("engine_running", false))
+		var spinning := float(powertrain.get("engine_rpm", 0.0)) > 30.0 / PI
+		var stationary := bool(snapshot.get("service_stationary", false))
+		fuel_status.text = words("Nitro fuel · %.1f g · %.2f g/min", "Combustible nitro · %.1f g · %.2f g/min") % [
+			fuel * 1000.0, float(powertrain.get("fuel_flow_kg_per_s", 0.0)) * 60000.0]
+		fuel_gauge.value = 100.0 * float(powertrain.get("fuel_fraction", 0.0))
+		engine_start_button.disabled = not paused or not stationary or spinning or fuel <= 0.0
+		engine_stop_button.disabled = not paused or not stationary or not spinning
+		refuel_button.disabled = not paused or not stationary or spinning
+		var engagement := float(powertrain.get("clutch_engagement", 0.0))
+		var clutch := words("Clutch open", "Embrague libre")
+		if engagement > 0.01:
+			clutch = words("Clutch %d%%", "Embrague %d%%") % roundi(engagement * 100.0)
+		var engine_text := "%.0f RPM" % float(powertrain.get("engine_rpm", 0.0)) if running else words("Engine off", "Motor apagado")
+		if fuel <= 0.0: engine_text = words("Tank empty", "Tanque vacío")
+		telemetry.text += "\n%s  ·  %s %d%%  ·  %s" % [engine_text,
+			words("Fuel", "Combustible"), roundi(100.0 * float(powertrain.get("fuel_fraction", 0.0))),
+			clutch]
 	var damage: Dictionary = snapshot.get("damage", {})
 	var stage := str(damage.get("stage", "intact"))
 	condition_status.visible = stage != "intact"

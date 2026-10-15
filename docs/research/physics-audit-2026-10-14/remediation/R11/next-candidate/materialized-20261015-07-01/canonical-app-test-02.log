@@ -442,3 +442,338 @@ all physics/sim transcendental calls route through math3d
 isolated injection rejected
 == shaders never read TIME (LANDSCAPE-PLAN L0d: animation runs on sim_clock, so captures repeat)
 == parse check: every script
+== test_aero.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+23 checks, 0 failed
+== test_aero_continuity.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+info jensen-das-ugly-stik-60 spanwise boundary epsilon/V ratio 1e-6: force-moment 0.000000000, wake 0.000001977
+info sebart-avanti-s-a200-p100rx spanwise boundary epsilon/V ratio 1e-6: force-moment 0.000000000, wake 0.000000089
+R02 continuity: 64 checks, 0 failed
+== test_aero_flow.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+H4 local flow: 20000 byte-exact comparisons, 0 failed (legacy frozen weight plus independently evaluated R02 rate guard)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+H12 local loads: 20001 comparisons in attached planar forward domain, 20000 samples verified attached, 0 failed
+D11j Timber section moment: ΔMy -1.326784386806 Nm, analytic -1.326784386806 Nm, Cm_ac -0.035000
+== test_air_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+11 checks, 0 failed
+== test_air_density.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+29 checks, 0 failed
+== test_aircraft_catalog.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default is the Ugly Stik and it is in the catalog  
+ok   nine catalog entries, unique IDs  ["jensen-das-ugly-stik-60", "stik-glow-61fx-2t", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution", "xcell-60-research"]
+ok   eight airplane configurations remain available to airplane solvers  
+ok   airplane visual families are unique, complete, registered, include Timber, and exclude HX-700  ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution"]
+ok   nine simulated entries include the experimental helicopter  ["jensen-das-ugly-stik-60", "stik-glow-61fx-2t", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution", "xcell-60-research"]
+ok   research helicopter catalog identity and visual family are explicit  
+ok   glow Stik variants are explicitly experimental and identify inferred profiles  
+ok   unknown ID: no entry, cannot fly  
+ok   step wraps both ways  
+ok   the airplane render adapter retains its eight catalog IDs  
+ok   jensen-das-ugly-stik-60: builds root/propeller/hinges  
+ok   jensen-das-ugly-stik-60: surfaces deflect and return through the shared adapter  
+ok   jensen-das-ugly-stik-60: data loads  
+ok   jensen-das-ugly-stik-60: the data file is this aircraft (id matches)  jensen-das-ugly-stik-60
+ok   jensen-das-ugly-stik-60: span of the built model matches the data within 1 %  model 1.5223 m, data 1.5240 m
+ok   jensen-das-ugly-stik-60: CG lands on the root chord in the visual model  model point (0.0, -0.005, 0.0059), LE z -0.1150, chord 0.3048
+ok   stik-glow-61fx-2t: builds root/propeller/hinges  
+ok   stik-glow-61fx-2t: surfaces deflect and return through the shared adapter  
+ok   stik-glow-61fx-2t: data loads  
+ok   stik-glow-61fx-2t: the data file is this aircraft (id matches)  stik-glow-61fx-2t
+ok   stik-glow-61fx-2t: span of the built model matches the data within 1 %  model 1.5223 m, data 1.5240 m
+ok   stik-glow-61fx-2t: CG lands on the root chord in the visual model  model point (-0.0, -0.005, 0.0059), LE z -0.1150, chord 0.3048
+ok   stik-glow-55ax-2t: builds root/propeller/hinges  
+ok   stik-glow-55ax-2t: surfaces deflect and return through the shared adapter  
+ok   stik-glow-55ax-2t: data loads  
+ok   stik-glow-55ax-2t: the data file is this aircraft (id matches)  stik-glow-55ax-2t
+ok   stik-glow-55ax-2t: data carries its explicit glow_2t family  
+ok   stik-glow-55ax-2t: visual and blur radii use the selected model diameter  
+ok   stik-glow-55ax-2t: glow propeller uses the physical shaft spin sign  
+ok   stik-glow-55ax-2t: span of the built model matches the data within 1 %  model 1.5223 m, data 1.5240 m
+ok   stik-glow-55ax-2t: CG lands on the root chord in the visual model  model point (0.0, -0.005, 0.0059), LE z -0.1150, chord 0.3048
+ok   stik-glow-fs64v-4t: builds root/propeller/hinges  
+ok   stik-glow-fs64v-4t: surfaces deflect and return through the shared adapter  
+ok   stik-glow-fs64v-4t: data loads  
+ok   stik-glow-fs64v-4t: the data file is this aircraft (id matches)  stik-glow-fs64v-4t
+ok   stik-glow-fs64v-4t: data carries its explicit glow_4t family  
+ok   stik-glow-fs64v-4t: visual and blur radii use the selected model diameter  
+ok   stik-glow-fs64v-4t: glow propeller uses the physical shaft spin sign  
+ok   stik-glow-fs64v-4t: span of the built model matches the data within 1 %  model 1.5223 m, data 1.5240 m
+ok   stik-glow-fs64v-4t: CG lands on the root chord in the visual model  model point (0.0, -0.005, 0.0059), LE z -0.1150, chord 0.3048
+ok   gp-extra-300s-60: builds root/propeller/hinges  
+ok   gp-extra-300s-60: surfaces deflect and return through the shared adapter  
+ok   gp-extra-300s-60: data loads  
+ok   gp-extra-300s-60: the data file is this aircraft (id matches)  gp-extra-300s-60
+ok   gp-extra-300s-60: span of the built model matches the data within 1 %  model 1.6236 m, data 1.6256 m
+ok   gp-extra-300s-60: CG lands on the root chord in the visual model  model point (0.0, -0.023952, -0.00614), LE z -0.1088, chord 0.3885
+ok   p51d-mustang-120: builds root/propeller/hinges  
+ok   p51d-mustang-120: surfaces deflect and return through the shared adapter  
+ok   p51d-mustang-120: data loads  
+ok   p51d-mustang-120: the data file is this aircraft (id matches)  p51d-mustang-120
+ok   p51d-mustang-120: span of the built model matches the data within 1 %  model 2.8225 m, data 2.8200 m
+ok   p51d-mustang-120: CG lands on the root chord in the visual model  model point (0.0, -0.071146, 0.177763), LE z 0.0000, chord 0.6664
+ok   sebart-avanti-s-a200-p100rx: builds root/propeller/hinges  
+ok   sebart-avanti-s-a200-p100rx: surfaces deflect and return through the shared adapter  
+ok   sebart-avanti-s-a200-p100rx: data loads  
+ok   sebart-avanti-s-a200-p100rx: the data file is this aircraft (id matches)  sebart-avanti-s-a200-p100rx
+ok   sebart-avanti-s-a200-p100rx: span of the built model matches the data within 1 %  model 1.9964 m, data 2.0000 m
+ok   sebart-avanti-s-a200-p100rx: CG lands on the root chord in the visual model  model point (0.0, 0.005153, 0.24), LE z 0.0000, chord 0.4591
+ok   turbo-lumber-evolution: builds root/propeller/hinges  
+ok   turbo-lumber-evolution: surfaces deflect and return through the shared adapter  
+ok   turbo-lumber-evolution: data loads  
+ok   turbo-lumber-evolution: the data file is this aircraft (id matches)  turbo-lumber-evolution
+ok   turbo-lumber-evolution: span of the built model matches the data within 1 %  model 1.5455 m, data 1.5550 m
+ok   turbo-lumber-evolution: CG lands on the root chord in the visual model  model point (0.0, -0.002176, 0.06), LE z 0.0000, chord 0.2103
+ok   xcell-60-research: explicit rotorcraft adapter bypasses airplane manifests  
+ok   stik-glow-55ax-2t APC 13x6 alternative diameter reaches visual and blur geometry  
+ok   stik-glow-fs64v-4t APC 13x6 alternative diameter reaches visual and blur geometry  
+ok   Extra: loaded CG = dry manual station plus prescribed fuel within 1 mm  z -0.00614 m, expected -0.00614 m
+ok   Extra: physics throws = the model's manual high rates  { "aileron": 17.600665, "elevator": 23.921943, "rudder": 30.026071 } vs { &"aileron": 17.6006649098975, &"elevator": 23.92194317248, &"rudder": 30.0260709855021 }
+ok   Extra: tapered wing roots = measured geometry  
+ok   Extra: equal-area strips move inboard on the tapered wing  outer strip at 0.638 m of 0.813
+ok   flight scene: Extra model and Extra physics together  
+ok   flight scene: trimmed at the Extra's start speed  17.0
+ok   flight scene: trace header names the Extra and its speed  trimmed level flight (engine running) across view at 17.0 m/s (D5: six-axis trim, calm air)
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-55ax-2t flight scene: matching glow telemetry is available  { "family": "glow_2t", "cycle_revolutions": 1, "admission": 0.35333901729744, "air_target": 0.35333901729744, "commanded_throttle": 0.10185974624645, "servo_fraction": 0.10185974624645, "mixture_command": 1.15, "actual_mixture": 1.14292637565094, "fuel_target_kg_s": 0.00011341297559, "fuel_feed_factor": 0.99381435515287, "fuel_transport_kg_s": 0.00011341693177, "firing_fraction": 1.0, "phase_revolutions": 0.75632546871067, &"running": true, &"stop_reason": "", &"opportunity_count": 6, &"fire_count": 6, &"firing_accumulator": 0.0, "fuel_kg": 0.11999432912407, "temperature_k": 389.906099168689, "air_fraction": 0.35333901729744, "ok": true, "message": "", "indicated_torque_nm": 0.21658903545106, "mechanical_torque_nm": 0.02421492951311, "pumping_torque_nm": 0.00225215115746, "valve_torque_nm": 0.0, "shaft_torque_nm": 0.19012195478049, "delivered_fuel_kg_s": 0.00011341693177, "burned_fuel_kg_s": 0.00005913857264, "unburned_fuel_kg_s": 0.00005427835913, "fuel_input_power_w": 1679.52274608131, "chemical_power_w": 1097.23867998843, "indicated_power_w": 183.886630376516, "mechanical_loss_w": 20.5587590512052, "pumping_loss_w": 1.9121027367874, "valve_loss_w": 0.0, "cycle_work_j": 1.3608690452423, "air_charge_kg_cycle": 0.00000247103032, "cycle_frequency_hz": 135.124412609279, "opportunity_frequency_hz": 135.124412609279, "firing_frequency_hz": 135.124412609279, &"profile_identity": { &"id": "os_max_55ax_candidate", &"manufacturer": "O.S. Engines", &"model": "MAX-55AX", &"status": "candidate", &"cycle_revolutions": 1, &"input_sha256": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258" }, &"brake_power_w": 161.415768588523, &"unburned_chemical_power_w": 582.284066092877, &"fuel_feed": { &"factor": 0.99381435515287, &"head_pa": 21.2207470511708, &"needled_head_pa": 42.01757259, &"drive_pa": 1644.2533411962, &"g_eff": [-0.25503751175417, 0.00000321099496, 9.80334177943421] }, &"rpm": 8107.46475655674, &"blade_count": 2.0, &"propeller": { &"ok": true, &"thrust_n": 5.01139941592447, &"torque_nm": 0.19030056518566, &"shaft_power_w": 161.567410916536, &"thrust_power_w": 100.193644357167, &"dissipation_w": 61.373766559369 }, &"hub_air_velocity_body_m_s": [19.9931468321577, -0.0470931933532, 0.52098703585128], &"mass_properties": { &"ok": true, &"mass_kg": 2.62289340579394, &"cg_body_m": [-0.00000047760099, 0.0, 0.0], &"inertia": [0.11585023959309, 0.32162928628711, 0.41789069617136, -0.0076956, 0.0078543, 0.00060438944289], &"inverse": [8.65666401649931, 3.11414864159849, 2.39604605118848, 0.20743366260008, -0.16300292761874, -0.00840268714024], &"inertia_origin": [0.11585023959309, 0.32162928628771, 0.41789069617196, -0.0076956, 0.0078543, 0.00060438944289] }, &"shaft_work_j": 8.07099255295581, &"propeller_work_j": 8.0791330432093, &"thrust_work_j": 5.01022311846854, &"recommended_max_rpm": 15833.3333333333, &"above_recommended_rpm": false, &"source_vibration": { &"ok": true, &"errors": [], &"family": "glow_2t", &"cycle_revolutions": 1, &"firing_order": 1.0, &"phase_rad": 4.75213307244859, &"omega_rad_s": 849.011723947893, &"alpha_rad_s2": 0.0, &"constant_speed_assumption": true, &"source_force_n": 20.1453021730808, &"order_1x_force_cosine_n": -78.2631300210607, &"order_1x_force_sine_n": 0.0, &"order_2x_force_cosine_n": -22.8355800627404, &"order_2x_force_sine_n": 0.0, &"order_1x_force_peak_n": 78.2631300210607, &"order_2x_force_peak_n": 22.8355800627404, &"opportunity_frequency_hz": 135.124412609279, &"mean_successful_fire_rate_hz": 135.124412609279 } }
+ok   stik-glow-55ax-2t runtime audio snapshot follows the accepted family and firing fraction  
+ok   stik-glow-55ax-2t runtime glow voice replaces legacy motor and propeller loops  
+ok   stik-glow-55ax-2t runtime visual and blur follow session model propeller  
+ok   stik-glow-55ax-2t HUD shows family, engine values, mode and controls  airspeed  20.0 m/s   altitude  30.0 m   AoA  +1.5°   throttle  10%
+ 18 fps   frame p95  54.2 ms   physics 3236 µs/tick  [F3]
+Glow 2-stroke  8107 rpm  head 117 °C  fuel ~150 mL  running  φ 1.15
+[F6] cut  [F7] starter  [F8] lean  [F9] rich
+ok   stik-glow-55ax-2t recommended RPM warning is hidden at the trimmed start point  
+ok   stik-glow-55ax-2t HUD consumes the physical above-recommended RPM flag  { "family": "glow_2t", "cycle_revolutions": 1, "admission": 0.35333901729744, "air_target": 0.35333901729744, "commanded_throttle": 0.10185974624645, "servo_fraction": 0.10185974624645, "mixture_command": 1.15, "actual_mixture": 0.50001128968817, "fuel_target_kg_s": 0.00008711109891, "fuel_feed_factor": 0.33394701672535, "fuel_transport_kg_s": 0.00011341693177, "firing_fraction": 0.62915545055709, "phase_revolutions": 0.75632546871067, &"running": true, &"stop_reason": "", &"opportunity_count": 6, &"fire_count": 6, &"firing_accumulator": 0.0, "fuel_kg": 0.11999432912407, "temperature_k": 389.906099168689, "air_fraction": 0.35333901729744, "ok": true, "message": "", "indicated_torque_nm": 0.04444336457026, "mechanical_torque_nm": 0.03966866666667, "pumping_torque_nm": 0.0041896927611, "valve_torque_nm": 0.0, "shaft_torque_nm": 0.0005850051425, "delivered_fuel_kg_s": 0.00011341693177, "burned_fuel_kg_s": 0.00002110454917, "unburned_fuel_kg_s": 0.0000923123826, "fuel_input_power_w": 1679.52274608131, "chemical_power_w": 391.567240084864, "indicated_power_w": 73.6945431277079, "mechanical_loss_w": 65.7772941979577, "pumping_loss_w": 6.94721240977477, "valve_loss_w": 0.0, "cycle_work_j": 0.27924589526951, "air_charge_kg_cycle": 0.00000286772797, "cycle_frequency_hz": 263.905555555556, "opportunity_frequency_hz": 263.905555555556, "firing_frequency_hz": 166.037618710075, &"profile_identity": { &"id": "os_max_55ax_candidate", &"manufacturer": "O.S. Engines", &"model": "MAX-55AX", &"status": "candidate", &"cycle_revolutions": 1, &"input_sha256": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258" }, &"brake_power_w": 0.97003651997545, &"unburned_chemical_power_w": 1287.95550599645, &"fuel_feed": { &"factor": 0.33394701672535, &"head_pa": -1816.9137051927, &"needled_head_pa": 42.01757259, &"drive_pa": 2050.24399100164, &"g_eff": [-22.833478323205, 0.00000321099496, 9.80334177943421] }, &"rpm": 15834.3333333333, &"blade_count": 2.0, &"propeller": { &"ok": true, &"thrust_n": 64.2322429333875, &"torque_nm": 1.54664499463528, &"shaft_power_w": 2564.59647829329, &"thrust_power_w": 1284.20466432604, &"dissipation_w": 1280.39181396725 }, &"hub_air_velocity_body_m_s": [19.9931468321577, -0.0470931933532, 0.52098703585128], &"mass_properties": { &"ok": true, &"mass_kg": 2.62289340579394, &"cg_body_m": [-0.00000047760099, 0.0, 0.0], &"inertia": [0.11585023959309, 0.32162928628711, 0.41789069617136, -0.0076956, 0.0078543, 0.00060438944289], &"inverse": [8.65666401649931, 3.11414864159849, 2.39604605118848, 0.20743366260008, -0.16300292761874, -0.00840268714024], &"inertia_origin": [0.11585023959309, 0.32162928628771, 0.41789069617196, -0.0076956, 0.0078543, 0.00060438944289] }, &"shaft_work_j": 8.07099255295581, &"propeller_work_j": 8.0791330432093, &"thrust_work_j": 5.01022311846854, &"recommended_max_rpm": 15833.3333333333, &"above_recommended_rpm": true, &"source_vibration": { &"ok": true, &"errors": [], &"family": "glow_2t", &"cycle_revolutions": 1, &"firing_order": 1.0, &"phase_rad": 4.75213307244859, &"omega_rad_s": 1658.16750914973, &"alpha_rad_s2": 0.0, &"constant_speed_assumption": true, &"source_force_n": 76.8428056898427, &"order_1x_force_cosine_n": -298.529078453012, &"order_1x_force_sine_n": 0.0, &"order_2x_force_cosine_n": -87.1046771351382, &"order_2x_force_sine_n": 0.0, &"order_1x_force_peak_n": 298.529078453012, &"order_2x_force_peak_n": 87.1046771351382, &"opportunity_frequency_hz": 263.905555555556, &"mean_successful_fire_rate_hz": 166.037618710075 } }
+ok   stik-glow-55ax-2t main render applies the adapter's physical spin sign  
+ok   stik-glow-55ax-2t F6 cuts combustion  
+ok   stik-glow-55ax-2t F8 requests a lean physical mixture value  
+ok   stik-glow-55ax-2t F9 requests a rich physical mixture value  
+ok   stik-glow-55ax-2t F7 restarts the glow engine  
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   stik-glow-fs64v-4t flight scene: matching glow telemetry is available  { "family": "glow_4t", "cycle_revolutions": 2, "admission": 0.42126088561385, "air_target": 0.42126088561385, "commanded_throttle": 0.10963213171362, "servo_fraction": 0.10963213171362, "mixture_command": 1.15, "actual_mixture": 1.14419677896755, "fuel_target_kg_s": 0.00008726183881, "fuel_feed_factor": 0.99493765543287, "fuel_transport_kg_s": 0.00008726324784, "firing_fraction": 1.0, "phase_revolutions": 1.20211560379873, &"running": true, &"stop_reason": "", &"opportunity_count": 3, &"fire_count": 3, &"firing_accumulator": 0.0, "fuel_kg": 0.11999563682992, "temperature_k": 389.936923161636, "air_fraction": 0.42126088561385, "ok": true, "message": "", "indicated_torque_nm": 0.35114160523615, "mechanical_torque_nm": 0.02528490043511, "pumping_torque_nm": 0.02068348981069, "valve_torque_nm": 0.01464245021756, "shaft_torque_nm": 0.29053076477279, "delivered_fuel_kg_s": 0.00008726324784, "burned_fuel_kg_s": 0.00006082361185, "unburned_fuel_kg_s": 0.00002643963599, "fuel_input_power_w": 1292.2286589463, "chemical_power_w": 1128.50237320232, "indicated_power_w": 317.795537649291, "mechanical_loss_w": 22.8837267027378, "pumping_loss_w": 18.7192877939697, "valve_loss_w": 13.2519338922014, "cycle_work_j": 4.41257554951847, "air_charge_kg_cycle": 0.00000476742637, "cycle_frequency_hz": 72.020418479627, "opportunity_frequency_hz": 72.020418479627, "firing_frequency_hz": 72.020418479627, &"profile_identity": { &"id": "os_fs_64v_candidate", &"manufacturer": "O.S. Engines", &"model": "FS-64V", &"status": "candidate", &"cycle_revolutions": 2, &"input_sha256": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39" }, &"brake_power_w": 262.940589260382, &"unburned_chemical_power_w": 163.726285743984, &"fuel_feed": { &"factor": 0.99493765543287, &"head_pa": -179.790890690196, &"needled_head_pa": -168.07029036, &"drive_pa": 1328.63357438428, &"g_eff": [-0.24950140286711, 0.00000439787328, 9.80347418082206] }, &"rpm": 8642.45021755524, &"blade_count": 2.0, &"propeller": { &"ok": true, &"thrust_n": 5.03842176426379, &"torque_nm": 0.29076429881466, &"shaft_power_w": 263.151945805109, &"thrust_power_w": 100.734968299996, &"dissipation_w": 162.416977505113 }, &"hub_air_velocity_body_m_s": [19.9933576451424, -0.07189840177024, 0.50986150088846], &"mass_properties": { &"ok": true, &"mass_kg": 2.59337377425963, &"cg_body_m": [-0.00000037164881, 0.0, -0.0], &"inertia": [0.11607789339918, 0.31707885053831, 0.41271543560829, -0.0027984, 0.0094867, 0.00025143831305], &"inverse": [8.6329669256417, 3.15446639090756, 2.42754159337699, 0.0763482054365, -0.19848437235387, -0.00367673728072], &"inertia_origin": [0.11607789339918, 0.31707885053867, 0.41271543560865, -0.0027984, 0.0094867, 0.00025143831305] }, &"shaft_work_j": 13.147109602445, &"propeller_work_j": 13.1585382897237, &"thrust_work_j": 5.03738174852747, &"recommended_max_rpm": 11000.0, &"above_recommended_rpm": false, &"source_vibration": { &"ok": true, &"errors": [], &"family": "glow_4t", &"cycle_revolutions": 2, &"firing_order": 0.5, &"phase_rad": 1.26992979213991, &"omega_rad_s": 905.035270416236, &"alpha_rad_s2": 0.0, &"constant_speed_assumption": true, &"source_force_n": -5.16900938438699, &"order_1x_force_cosine_n": -96.3924224953705, &"order_1x_force_sine_n": 0.0, &"order_2x_force_cosine_n": -28.1253366782313, &"order_2x_force_sine_n": 0.0, &"order_1x_force_peak_n": 96.3924224953705, &"order_2x_force_peak_n": 28.1253366782313, &"opportunity_frequency_hz": 72.020418479627, &"mean_successful_fire_rate_hz": 72.020418479627 } }
+ok   stik-glow-fs64v-4t runtime audio snapshot follows the accepted family and firing fraction  
+ok   stik-glow-fs64v-4t runtime glow voice replaces legacy motor and propeller loops  
+ok   stik-glow-fs64v-4t runtime visual and blur follow session model propeller  
+ok   stik-glow-fs64v-4t HUD shows family, engine values, mode and controls  airspeed  20.0 m/s   altitude  30.0 m   AoA  +1.5°   throttle  11%
+ 22 fps   frame p95  45.8 ms   physics 2116 µs/tick  [F3]
+Glow 4-stroke  8642 rpm  head 117 °C  fuel ~150 mL  running  φ 1.15
+[F6] cut  [F7] starter  [F8] lean  [F9] rich
+ok   stik-glow-fs64v-4t recommended RPM warning is hidden at the trimmed start point  
+ok   stik-glow-fs64v-4t HUD consumes the physical above-recommended RPM flag  { "family": "glow_4t", "cycle_revolutions": 2, "admission": 0.42126088561385, "air_target": 0.42126088561385, "commanded_throttle": 0.10963213171362, "servo_fraction": 0.10963213171362, "mixture_command": 1.15, "actual_mixture": 0.9341200589641, "fuel_target_kg_s": 0.00009002165038, "fuel_feed_factor": 0.83795453450872, "fuel_transport_kg_s": 0.00008726324784, "firing_fraction": 1.0, "phase_revolutions": 1.20211560379873, &"running": true, &"stop_reason": "", &"opportunity_count": 3, &"fire_count": 3, &"firing_accumulator": 0.0, "fuel_kg": 0.11999563682992, "temperature_k": 389.936923161636, "air_fraction": 0.42126088561385, "ok": true, "message": "", "indicated_torque_nm": 0.29237880252968, "mechanical_torque_nm": 0.030002, "pumping_torque_nm": 0.02127245296039, "valve_torque_nm": 0.017001, "shaft_torque_nm": 0.22410334956929, "delivered_fuel_kg_s": 0.00008726324784, "burned_fuel_kg_s": 0.00006641974606, "unburned_fuel_kg_s": 0.00002084350178, "fuel_input_power_w": 1292.2286589463, "chemical_power_w": 1232.33130662486, "indicated_power_w": 336.826820470562, "mechanical_loss_w": 34.5629648261935, "pumping_loss_w": 24.5063343589353, "valve_loss_w": 19.5855264652395, "cycle_work_j": 3.67414039237046, "air_charge_kg_cycle": 0.00000458761262, "cycle_frequency_hz": 91.675, "opportunity_frequency_hz": 91.675, "firing_frequency_hz": 91.675, &"profile_identity": { &"id": "os_fs_64v_candidate", &"manufacturer": "O.S. Engines", &"model": "FS-64V", &"status": "candidate", &"cycle_revolutions": 2, &"input_sha256": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39" }, &"brake_power_w": 258.171994820194, &"unburned_chemical_power_w": 59.8973523214386, &"fuel_feed": { &"factor": 0.83795453450872, &"head_pa": -574.435136171034, &"needled_head_pa": -168.07029036, &"drive_pa": 1532.47900240821, &"g_eff": [-8.62242189239472, 0.00000439787328, 9.80347418082206] }, &"rpm": 11001.0, &"blade_count": 2.0, &"propeller": { &"ok": true, &"thrust_n": 26.7525341757658, &"torque_nm": 0.85564860564059, &"shaft_power_w": 985.726040275224, &"thrust_power_w": 534.872983689982, &"dissipation_w": 450.853056585242 }, &"hub_air_velocity_body_m_s": [19.9933576451424, -0.07189840177024, 0.50986150088846], &"mass_properties": { &"ok": true, &"mass_kg": 2.59337377425963, &"cg_body_m": [-0.00000037164881, 0.0, -0.0], &"inertia": [0.11607789339918, 0.31707885053831, 0.41271543560829, -0.0027984, 0.0094867, 0.00025143831305], &"inverse": [8.6329669256417, 3.15446639090756, 2.42754159337699, 0.0763482054365, -0.19848437235387, -0.00367673728072], &"inertia_origin": [0.11607789339918, 0.31707885053867, 0.41271543560865, -0.0027984, 0.0094867, 0.00025143831305] }, &"shaft_work_j": 13.147109602445, &"propeller_work_j": 13.1585382897237, &"thrust_work_j": 5.03738174852747, &"recommended_max_rpm": 11000.0, &"above_recommended_rpm": true, &"source_vibration": { &"ok": true, &"errors": [], &"family": "glow_4t", &"cycle_revolutions": 2, &"firing_order": 0.5, &"phase_rad": 1.26992979213991, &"omega_rad_s": 1152.02202607138, &"alpha_rad_s2": 0.0, &"constant_speed_assumption": true, &"source_force_n": -8.37525187617805, &"order_1x_force_cosine_n": -156.182888696659, &"order_1x_force_sine_n": 0.0, &"order_2x_force_cosine_n": -45.5709713923129, &"order_2x_force_sine_n": 0.0, &"order_1x_force_peak_n": 156.182888696659, &"order_2x_force_peak_n": 45.5709713923129, &"opportunity_frequency_hz": 91.675, &"mean_successful_fire_rate_hz": 91.675 } }
+ok   stik-glow-fs64v-4t main render applies the adapter's physical spin sign  
+ok   stik-glow-fs64v-4t F6 cuts combustion  
+ok   stik-glow-fs64v-4t F8 requests a lean physical mixture value  
+ok   stik-glow-fs64v-4t F9 requests a rich physical mixture value  
+ok   stik-glow-fs64v-4t F7 restarts the glow engine  
+98 checks, 0 failed
+== test_aircraft_contact_contract.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+722 checks, 0 failed
+== test_aircraft_contact_events.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   event format is versioned
+ok   active hull contact normalizes
+ok   hull identity and lifecycle use bound point ID
+ok   hull record carries law, response, tick and measures
+ok   normalized hull event array validates
+ok   hull normalization leaves source records and bindings unchanged
+ok   event measurements do not alias source records
+ok   prior contact becomes persistent
+ok   missing prior contact emits an ended lifecycle
+ok   malformed source lifecycle is rejected
+ok   NaN scalar measurement is rejected
+ok   malformed vector is rejected
+ok   hull impact resolves its stable binding and observed tick
+ok   hull impact keeps optional crossing and available kinematics
+ok   impact snapshot arrays are copied
+ok   serialized impact vectors do not alias snapshot
+ok   hull impact validates
+ok   gear impact uses support ID and measured compression
+ok   gear snapshot invents no impulse
+ok   pending scenery response cannot claim a dissipative impulse
+ok   scenery contact links its hull probe and sub-tick timing
+ok   scenery soft contact records dissipative response and real measurements
+ok   conflicting response status is rejected
+ok   swept events require their observed contact fraction
+ok   failed scenery response is terminal
+ok   lake propeller probe uses its single-rotor binding at index minus one
+ok   water event uses authoritative time fraction and terminal response
+ok   lake propeller probe carries the authored rotor ID
+ok   lake gear probe resolves support binding
+ok   single propeller strike is engine-stop-and-continue
+ok   propeller strike validates against rotor-disc binding
+ok   strike normalization leaves source record unchanged
+ok   authored rotor ID is carried into strike event and validates
+ok   legacy rotor ID cannot satisfy an authored rotor binding
+ok   empty rotor binding cannot serialize a strike
+ok   malformed strike vector is rejected
+ok   strike without its authoritative tick or measurements is rejected
+ok   strike payload tick must match serializer tick
+ok   event validation requires strike rpm and kinematics
+ok   event validation rejects missing strike velocity
+ok   duplicate event IDs are rejected
+ok   a terminal contact replaces rather than duplicates its hull observation
+ok   contact ID pointing at the wrong source binding is rejected
+ok   source and response combinations are checked
+ok   unknown response is rejected
+ok   unknown lifecycle is rejected
+ok   nonfinite event scalar is rejected
+ok   nonfinite event vector is rejected
+ok   Object values are rejected from snapshots
+49 checks, 0 failed
+== test_aircraft_contact_session.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+CRASH at 2400.0 m/s (sink 0.0 m/s, lamp impact (lamp:contact-test:pole), normal speed 2400.0 m/s) - restarting
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+PROP STRIKE at 5156 rpm, 0.0 m/s: engine stopped
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+PROP STRIKE at 5156 rpm, 15.0 m/s: engine stopped
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+CRASH at 480.0 m/s (sink 480.0 m/s, water impact (lake:near_runway:water), normal speed 479.9 m/s) - restarting
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+AS-13 contact session: 63 checks, 0 failures
+== test_aircraft_contract.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+AS aircraft contract: 2902 checks, 0 failures
+== test_aircraft_data.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+E0b2: 15 propulsion cases equal numerically; 7 signed-zero byte differences
+87 checks, 0 failed
+== test_aircraft_model_manifest.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Aircraft model manifest: 75 checks, 0 failures
+== test_aircraft_modules.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Aircraft modules: 69 checks, 0 failures
+== test_aircraft_package_proofs.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Aircraft package proofs: 29 checks, 0 failures
+== test_aircraft_physical_identity_contacts.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+15 checks, 0 failures
+== test_aircraft_propulsion_runtime.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft propulsion runtime: 214 checks, 0 failed
+== test_aircraft_render_contract.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+AS render contract: 330 checks, 0 failures
+== test_airframe_scuff_cache.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   prepare caches the selected aircraft mesh 
+ok   prepared cache supports a live mark 
+ok   add reuses the prepared BVH 
+ok   clear removes marks but retains the prepared BVH 
+ok   static surface_hit observes live visibility 
+ok   instance add skips a currently hidden surface 
+ok   showing a prepared mesh makes it queryable again 
+ok   surface_hit uses the panel's current transform 
+ok   Resource.changed invalidates an in-place mesh edit 
+ok   the edited mesh rebuilds a usable BVH 
+ok   the rebuilt BVH follows changed vertices 
+ok   a replacement mesh gets its own BVH 
+ok   the detached mesh and its watcher leave the selected cache 
+ok   prepare switches the cache to the selected aircraft 
+ok   an old aircraft resource cannot invalidate the new cache 
+ok   the selected aircraft remains queryable after a root switch 
+ok   cache signal connections do not retain the scuff owner 
+ok   released scuff caches do not retain mesh resources 
+airframe scuff cache: 18 checks, 0 failed
+== test_airframe_scuffs.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   a belly touch marks the fuselage fuselage
+ok   the belly scuff lies on the underside within 1.5 mm and faces the ground 
+ok   the scuff runs along the slide (0.0, 0.008026, -0.999968)
+ok   one scuff costs 43.1 ms (on contact only) 
+ok   a wingtip brush marks the left wing /root/airplane/wing_frame_left/wing_left_3/airframe_scuff_1
+ok   the wingtip scuff lies on the wing's underside on true, down true, n (-0.049674, -0.993974, 0.097712)
+ok   a scuff near the leading edge follows the curved skin within 1 mm /root/airplane/wing_frame_left/wing_left_0/airframe_scuff_2
+ok   a trailing-edge brush near the tip marks the aileron /root/airplane/wing_frame_left/aileron_left_hinge/aileron_left/airframe_scuff_3
+ok   the aileron carries its scuff when it moves 
+ok   nothing is marked away from the airframe 
+ok   a runway scuff is abraded film, lighter than a grass stain 
+ok   an unknown surface falls back to soil 
+ok   the scuff count is capped at 24 24 nodes
+ok   clear() removes every scuff 
+US-V12 airframe scuffs: 14 checks, 0 failed
+== test_atmosphere.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+47 checks, 0 failed
+== test_atmosphere_column.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+R09 atmosphere column: 83 checks, 0 failed
+== test_atmosphere_column_session.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+FAIL column preferences save
+FAIL column preferences advertise new schema
+FAIL column preference round trip
+M5-ATM-4 session: 96 checks, 3 failed

@@ -1,0 +1,3 @@
+598:FAIL column preferences save
+599:FAIL column preferences advertise new schema
+600:FAIL column preference round trip

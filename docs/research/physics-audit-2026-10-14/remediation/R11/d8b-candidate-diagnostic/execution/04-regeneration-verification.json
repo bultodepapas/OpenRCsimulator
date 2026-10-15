@@ -1,0 +1,92 @@
+{
+  "format": "d8b-r2-regeneration-verification-v1",
+  "scope": "static post-run verification of isolated copy; no production or frozen-07 writes",
+  "scratch_root": "tmp/physics-audit-r11-d8b-candidate-repro-02",
+  "history_root": "tmp/physics-audit-r11-d8b-candidate-repro-01 (unexecuted initial frozen copy)",
+  "manifest_sha256": "7f7d14b202a18d270dbb1cc8c04aaad6471318a0f0a3a9f9b75e21a4cce804f6",
+  "pinned_frozen_inputs_match": true,
+  "pinned_source_hashes": {
+    "app/data/aircraft/jensen_ugly_stik_60.json": {
+      "expected": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+      "actual": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723"
+    },
+    "app/physics/aircraft_data.gd": {
+      "expected": "40a574c5c049179941372d7c355cb53f1ede4588154201070618c8108bd353b9",
+      "actual": "40a574c5c049179941372d7c355cb53f1ede4588154201070618c8108bd353b9"
+    },
+    "app/tests/wing_polar_fixture.gd": {
+      "expected": "13d9f43b6cbbb1e70a1ceac4a7bc8c87b982faf8a1722d09df34f011fc68e88b",
+      "actual": "13d9f43b6cbbb1e70a1ceac4a7bc8c87b982faf8a1722d09df34f011fc68e88b"
+    },
+    "app/tests/test_pullup_cli.py": {
+      "expected": "bb2af28dc23e599ec70818cd97180119dde5b103e065e06091be2c02b6f4526e",
+      "actual": "bb2af28dc23e599ec70818cd97180119dde5b103e065e06091be2c02b6f4526e"
+    },
+    "app/project.godot": {
+      "expected": "272cdc12ae91e6255df584bd8c0008051fca280f0cc526625e4dbe1a21f3120a",
+      "actual": "272cdc12ae91e6255df584bd8c0008051fca280f0cc526625e4dbe1a21f3120a"
+    },
+    "research/flight-robustness/d8b-r2/make_candidates.gd": {
+      "expected": "636f0bcf8c4c1166bac90b450bc18a01e8e131d3c6ae6595231f5131a126e4b2",
+      "actual": "636f0bcf8c4c1166bac90b450bc18a01e8e131d3c6ae6595231f5131a126e4b2"
+    }
+  },
+  "candidates": [
+    {
+      "path": "research/flight-robustness/d8b-r2/candidates/steep.json",
+      "before_sha256": "ee8e7cc612f0e374dbe7587215ead5b978f6d7c0d81fa15680abcd4f9e5cc9fe",
+      "after_sha256": "861fe08ccafbb0750ee60f3adae9a2d54cca4f606e343b8851b30b09d0fb7a25",
+      "bytes_changed": true,
+      "nonpolar_dictionary_matches_frozen_catalog": false,
+      "nonpolar_differences": [
+        {
+          "path": "/aero/coefficients/Cldr/value",
+          "before": 0.00045123687978342,
+          "after": 0.00045123687978342573
+        }
+      ],
+      "polar_unchanged_vs_frozen_candidate": true,
+      "polar_differences_vs_frozen_candidate": []
+    },
+    {
+      "path": "research/flight-robustness/d8b-r2/candidates/intermediate.json",
+      "before_sha256": "46c999b7d84ea1c1c6d5dfc181cdd47efa3c0eeb63799ddb4d5a1f44376b578e",
+      "after_sha256": "add61d572414a0eb2915f34b100f77f5b77f1ba2c27021bf26f7357758a9370c",
+      "bytes_changed": true,
+      "nonpolar_dictionary_matches_frozen_catalog": false,
+      "nonpolar_differences": [
+        {
+          "path": "/aero/coefficients/Cldr/value",
+          "before": 0.00045123687978342,
+          "after": 0.00045123687978342573
+        }
+      ],
+      "polar_unchanged_vs_frozen_candidate": true,
+      "polar_differences_vs_frozen_candidate": []
+    },
+    {
+      "path": "research/flight-robustness/d8b-r2/candidates/retained.json",
+      "before_sha256": "dba2f262a17b08250a5f74d1c8cbf88f3fd123ed22b4c5161a672f3b99afc45b",
+      "after_sha256": "76f38ee2e9cf5f9d540e5df050d1f00b0abedf4b3c904bb2097e5c0120b5a2bd",
+      "bytes_changed": true,
+      "nonpolar_dictionary_matches_frozen_catalog": false,
+      "nonpolar_differences": [
+        {
+          "path": "/aero/coefficients/Cldr/value",
+          "before": 0.00045123687978342,
+          "after": 0.00045123687978342573
+        }
+      ],
+      "polar_unchanged_vs_frozen_candidate": true,
+      "polar_differences_vs_frozen_candidate": []
+    }
+  ],
+  "non_candidate_source_drift": [],
+  "unexpected_source_files": [
+    "app/native/ground_vehicle/openrc_ground_vehicle.gdextension.uid"
+  ],
+  "generated_import_cache": {
+    "app_dot_godot_excluded_from_source_copy": true,
+    "generated_file_count_after_import": 435
+  }
+}

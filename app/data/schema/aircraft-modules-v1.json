@@ -118,7 +118,23 @@
     },
     "flaps": {
       "not_simulated": {
-        "law": "controls.flaps.neutral_only.v1"
+        "law": "controls.flaps.neutral_only.v1",
+        "presence_relations": [
+          {
+            "path": "flaps",
+            "present": false
+          }
+        ]
+      },
+      "simulated": {
+        "module": "controls.flaps.hinged_trailing_edge.v1",
+        "law": "controls.flaps.hinged_trailing_edge.v1",
+        "presence_relations": [
+          {
+            "path": "flaps",
+            "present": true
+          }
+        ]
       }
     }
   },

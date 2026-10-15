@@ -149,7 +149,8 @@ def main() -> None:
         (model["aero"]["envelope"]["CL_max"]["value"], 1.021297, "CL_max"),
         (model["aero"]["coefficients"]["k_induced"]["value"], 0.073249, "k_induced"),
         (model["propulsion"]["propeller"]["diameter"]["value"], 0.6604, "propeller diameter"),
-        (model["aero"]["coefficients"]["Cnb"]["value"], 0.1394867577485912, "Cnb"),
+        # P51-25 adds a flight-calibrated body term; the vertical-fin part must stay unchanged.
+        (model["aero"]["coefficients"]["Cnb"]["value"] - model["aero"]["surfaces"].get("body_cn_beta", {}).get("value", 0.0), 0.1394867577485912, "Cnb fin part"),
     )
     for actual, expected, label in sentinels:
         close(actual, expected, 1e-6, f"unchanged physics sentinel {label}")

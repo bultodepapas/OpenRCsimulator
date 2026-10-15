@@ -1,0 +1,35 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   level, full tank: the carburetor 1 cm above the surface sees −ρg·0.01 (-84.0 Pa) 
+ok   level, half tank: the surface drops to the centre, −ρg·0.03 
+ok   vertical up-line, full tank: fuel lifted over 0.12 − 0.05 m (-588 Pa) 
+ok   vertical up-line, 10 %% tank: lifted over 0.12 + 0.04 m 
+ok   vertical dive pushes fuel to the carburetor (+1429 Pa) 
+ok   no apparent gravity, no head 
+ok   idle admission gives the idle drive 
+ok   full admission at rated rpm gives the full-throttle drive 
+ok   the drive never exceeds its full-throttle value 
+ok   needled condition: k = 1 
+ok   k = sqrt((p + Δp)/(p + Δp_needled)) = 0.9564 
+ok   a head beyond the drive starves the carburetor (k = 0) 
+ok   flooding is bounded at 2.0 
+ok   the same up-line head leans the idle far more than full throttle (k 0.804 vs 0.956) 
+ok   the 55AX Stik loads with its fuel_feed block []
+ok   premix density comes from the profile's own blend (856.9 kg/m³) 
+ok   the carburetor lies ahead of the tank in body axes 
+ok   the block is optional 
+ok   a carburetor the idle drive cannot feed in level flight is refused 
+ok   a full-throttle drive below the idle drive is refused 
+ok   unknown fuel_feed fields are refused 
+ok   an unsourced pressure is refused 
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+ok   trimmed level flight: the fuel feels 1 g straight down the body z axis [-0.25336518074599, -0.00006638510566, 9.80365190384403] 
+ok   trimmed level flight with a full tank runs needled (k 0.9938) 
+ok   full throttle from 12 m/s throws the fuel aft (5.4 m/s²) 
+ok   and leans the engine (k 0.920, mixture 0.958 vs 1.143 trimmed) 
+ok   a low tank leans it further (k 0.790 vs 0.920) 
+ok   a dive that drag is slowing throws the fuel forward and richens (k 1.285, g aft -7.1 m/s²) 
+NITRO-05 fuel feed: 28 checks, 0 failed

@@ -1,5 +1,26 @@
 # DT-11a — reuse unchanged lake geometry
 
+2026-10-15 presentation follow-up: [projected-shadow framing reuse](shadow-framing/README.md)
+preserves 5,250 native state pairs and reduces shadow-update CPU time by 20–49%
+across four workloads. Headless/native shadow and Home checks exit cleanly;
+whole-game FPS and historical lifecycle issues remain separate acceptance gates.
+
+2026-10-15 construction follow-up: [bounded helicopter canopy station scans](heli-canopy/stations/README.md)
+preserve 60 real contour/kit geometry pairs and reduce complete night-kit
+construction from 96.207 to 28.519 ms. Five permanent edge-case checks pass;
+temporary workspace and the existing native shutdown issue are recorded separately.
+
+2026-10-15 construction follow-up: [native helicopter canopy transforms](heli-canopy/transforms/README.md)
+reduce geometry extraction by 14.6%, preserving 60 real geometry/kit comparisons.
+Non-indexed surfaces now handle Godot's null index slot. Complete-kit timings are
+mixed; full loading, FPS and lifecycle qualification remain open.
+
+2026-10-15 presentation follow-up: [reuse unchanged helicopter optic gains](heli-updates/README.md)
+preserves 5,245 native update-state comparisons and reduces stable-light CPU
+updates by about 19 µs. Six permanent transition checks are added; changing dusk
+has mixed process results. Native integration retains the two texture shutdown
+errors reproduced on the reference. This is separate from loading and FPS claims.
+
 Follow-up: [generated default buffers reduce cold loading](cold/README.md). The
 measurements and manifest below remain the original in-memory-cache campaign.
 Next follow-up: [exact grain precomputation and package repairs](grain/README.md).
@@ -20,6 +41,57 @@ Latest construction repair: [horizon azimuth reuse and index preallocation](hori
 with 40 exact native mesh pairs and about 20% less mesh construction time. A
 separate combined native test reproduces texture shutdown errors on the baseline;
 that diagnostic remains open and is not counted as a clean native pass.
+
+2026-10-15 follow-up: [fallback shadow pixel reuse](shadow-mask-cache/README.md)
+preserves independent images/textures with one fixed CPU mip-byte cache. Repeated
+carrier construction measures 16.266→0.853 ms with 100 exact native output pairs;
+first-generation and complete-loading non-regression remain open.
+
+2026-10-15 follow-up: [batch population shadow transforms](population-shadow/README.md)
+preserves exact geometry in 72 real-cell and 768 synthetic pairs. Repeated
+three-cell collection measures 29.990→27.708 ms; full loading remains unqualified.
+Field regressions pass; the report retains separate P-51 contract and Home exit
+diagnostics from the wider checks.
+
+2026-10-15 follow-up: [helicopter canopy intersection rejection](heli-canopy/README.md)
+preserves contour/kit geometry and reduces measured kit construction from 1.753 s
+to 0.494 s. Headless integration checks pass; a native texture shutdown diagnostic
+reproduces on the reference and remains open. Full loading is not qualified.
+The [batched-contour follow-up](heli-canopy/README.md#follow-up-reuse-cuts-for-four-profiles)
+then reduces kit construction from 465.734 to 127.429 ms in its own paired campaign,
+with exact geometry and six additional permanent contour checks.
+
+2026-10-15 follow-up: [native aircraft-light geometry transforms](night-kit/transforms/README.md)
+reduce measured extraction by 15–49% across five fixed-wing families, with 300
+exact native geometry/kit pairs. Full-kit gains are smaller and do not qualify
+complete loading. The standalone night-kit test now registers shader globals
+before model creation and passes headless/native without shader warnings.
+
+2026-10-15 follow-up: [shared upper/lower wing cuts](night-kit/wing-slices/README.md)
+reduce measured two-skin construction by 46–51% and complete kit construction by
+25–33% across five families. Three permanent ownership checks and 300 exact native
+fleet pairs pass; complete loading and isolated hardware qualification stay open.
+
+2026-10-15 follow-up: [bounded fuselage light station scans](night-kit/belly-stations/README.md)
+reduce measured complete-kit construction by 15–23%, preserving 300 native
+contour/kit pairs. Four boundary regressions and native night-kit checks pass.
+Home cache assertions pass with four audio shutdown leaks reproduced on both
+reference and candidate; lifecycle and full-loading qualification remain open.
+
+2026-10-15 follow-up: [bounded wing light station scans](night-kit/wing-stations/README.md)
+preserve 300 native skin/kit pairs and reduce two-skin construction by 15–28%.
+Three endpoint/order regressions pass. Extra's small full-kit difference remains
+inconclusive across processes; Home still reports four audio objects at shutdown.
+
+2026-10-15 follow-up: [direct light-contour edge traversal](night-kit/edge-walk/README.md)
+removes temporary edge arrays, preserving 300 native contour/kit pairs and reducing
+complete-kit pooled medians by 2–8%. Focused lights and Home-cache checks close
+cleanly in this run; the earlier intermittent audio shutdown diagnostic remains open.
+
+2026-10-15 follow-up: [single-pass aircraft light geometry](night-kit/geometry-pass/README.md)
+preserves 300 native geometry/kit pairs and reduces combined extraction by 17–43%.
+Three filter/order/ownership regressions pass. Direct native face extraction is
+rejected for different surface semantics; Home's audio exit diagnostic remains open.
 
 2026-10-14. Implemented a bounded CPU geometry cache in `app/render/lake/lake_terrain.gd`.
 Source baseline `22b3e482`; Godot 4.7.2-stable, Windows, RTX 3090 / Ryzen 9 5900X.

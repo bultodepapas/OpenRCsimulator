@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   P-51 data loads and trims at its own start speed  25.0 trimmed
+ok   data id  p51d-mustang-120
+ok   giant-scale mass and span  21.50 kg, 2.820 m
+ok   trim throttle leaves a climb reserve (below 85 %)  14 %
+ok   trim elevator within half the throw  0.16275440102761
+ok   hands-off 30 s: finite  
+ok   hands-off 30 s: altitude within 2 m, speed within 0.3 m/s  Δalt -0.0000 m, Δspeed 0.00000 m/s
+ok   coordinated roll at 25 m/s: 113°/s ± 7 % (single-axis prediction)  115.2°/s
+ok   coordinated roll at 27 m/s: 122°/s ± 7 % (single-axis prediction)  122.3°/s
+FAIL inside loop at 0.7 stick from 27 m/s: 360° of pitch within 8 s, finite  343° (5.2 s)
+ok   inside loop: faster than the 1-g stall speed over the top  min 27.0 m/s (1-g stall 15.7)
+ok   full-up power-off: α passes the stall start, finite  α max 21.4° (stall start 11.9°)
+ok   spin: right rudder + full up yaws right  r max 1.77 rad/s
+ok   spin recovery: yaw rate below 0.5 rad/s 3 s after recovery input, finite  0.23 rad/s
+ok   spin: still above the ground at the end  68 m
+15 checks, 1 failed

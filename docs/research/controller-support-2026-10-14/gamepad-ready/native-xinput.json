@@ -1,0 +1,9 @@
+{
+  "connected": true,
+  "device_name": "XInput Controller",
+  "focused": true,
+  "live_verified": true,
+  "ready": true,
+  "status": "input: gamepad \"XInput Controller\" (gamepad profile) READY",
+  "warnings": []
+}

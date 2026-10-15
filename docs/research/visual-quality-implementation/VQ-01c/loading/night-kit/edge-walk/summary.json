@@ -1,0 +1,326 @@
+{
+  "native_pairs": 300,
+  "synthetic_evaluations": 1280,
+  "groups": [
+    {
+      "aircraft": "gp-extra-300s-60",
+      "workload": "contours",
+      "samples_per_variant": 25,
+      "per_process_warm_ms": [
+        [
+          38.117,
+          33.942
+        ],
+        [
+          35.89,
+          32.425
+        ],
+        [
+          35.693,
+          33.27
+        ],
+        [
+          42.808,
+          38.344
+        ],
+        [
+          36.85,
+          33.288
+        ]
+      ],
+      "reference_warm_median_ms": 36.85,
+      "reference_first_pair_median_ms": 35.688,
+      "candidate_warm_median_ms": 33.441,
+      "candidate_first_pair_median_ms": 31.493,
+      "warm_reduction_percent": 9.251017639077341
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "workload": "kit_build",
+      "samples_per_variant": 25,
+      "per_process_warm_ms": [
+        [
+          44.932,
+          41.748
+        ],
+        [
+          44.24,
+          40.72
+        ],
+        [
+          45.463,
+          41.372
+        ],
+        [
+          52.37,
+          46.659
+        ],
+        [
+          45.443,
+          42.046
+        ]
+      ],
+      "reference_warm_median_ms": 45.443,
+      "reference_first_pair_median_ms": 45.662,
+      "candidate_warm_median_ms": 41.748,
+      "candidate_first_pair_median_ms": 43.149,
+      "warm_reduction_percent": 8.131065290583805
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "workload": "contours",
+      "samples_per_variant": 25,
+      "per_process_warm_ms": [
+        [
+          63.139,
+          59.53
+        ],
+        [
+          62.186,
+          58.486
+        ],
+        [
+          62.667,
+          59.394
+        ],
+        [
+          62.517,
+          62.641
+        ],
+        [
+          69.968,
+          62.39
+        ]
+      ],
+      "reference_warm_median_ms": 62.943,
+      "reference_first_pair_median_ms": 63.095,
+      "candidate_warm_median_ms": 59.717,
+      "candidate_first_pair_median_ms": 59.171,
+      "warm_reduction_percent": 5.125272071556807
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "workload": "kit_build",
+      "samples_per_variant": 25,
+      "per_process_warm_ms": [
+        [
+          88.977,
+          85.924
+        ],
+        [
+          87.696,
+          83.28
+        ],
+        [
+          89.6,
+          87.162
+        ],
+        [
+          87.921,
+          86.488
+        ],
+        [
+          93.75,
+          89.484
+        ]
+      ],
+      "reference_warm_median_ms": 88.906,
+      "reference_first_pair_median_ms": 92.332,
+      "candidate_warm_median_ms": 86.849,
+      "candidate_first_pair_median_ms": 87.429,
+      "warm_reduction_percent": 2.3136796166737916
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "workload": "contours",
+      "samples_per_variant": 25,
+      "per_process_warm_ms": [
+        [
+          70.661,
+          66.116
+        ],
+        [
+          71.688,
+          66.11
+        ],
+        [
+          72.461,
+          66.454
+        ],
+        [
+          83.71,
+          85.583
+        ],
+        [
+          91.31,
+          89.218
+        ]
+      ],
+      "reference_warm_median_ms": 72.56,
+      "reference_first_pair_median_ms": 74.36,
+      "candidate_warm_median_ms": 67.376,
+      "candidate_first_pair_median_ms": 67.363,
+      "warm_reduction_percent": 7.144432194046302
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "workload": "kit_build",
+      "samples_per_variant": 25,
+      "per_process_warm_ms": [
+        [
+          97.443,
+          89.769
+        ],
+        [
+          96.685,
+          90.745
+        ],
+        [
+          97.68,
+          91.83
+        ],
+        [
+          126.783,
+          128.268
+        ],
+        [
+          133.366,
+          122.662
+        ]
+      ],
+      "reference_warm_median_ms": 98.441,
+      "reference_first_pair_median_ms": 100.678,
+      "candidate_warm_median_ms": 93.748,
+      "candidate_first_pair_median_ms": 97.28,
+      "warm_reduction_percent": 4.76732255868998
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "workload": "contours",
+      "samples_per_variant": 25,
+      "per_process_warm_ms": [
+        [
+          173.033,
+          162.488
+        ],
+        [
+          173.966,
+          164.315
+        ],
+        [
+          170.763,
+          165.401
+        ],
+        [
+          184.085,
+          172.489
+        ],
+        [
+          186.457,
+          172.327
+        ]
+      ],
+      "reference_warm_median_ms": 179.594,
+      "reference_first_pair_median_ms": 178.428,
+      "candidate_warm_median_ms": 167.837,
+      "candidate_first_pair_median_ms": 165.691,
+      "warm_reduction_percent": 6.54643250888115
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "workload": "kit_build",
+      "samples_per_variant": 25,
+      "per_process_warm_ms": [
+        [
+          208.649,
+          201.638
+        ],
+        [
+          207.646,
+          200.491
+        ],
+        [
+          216.253,
+          206.097
+        ],
+        [
+          233.064,
+          239.916
+        ],
+        [
+          334.268,
+          316.551
+        ]
+      ],
+      "reference_warm_median_ms": 216.253,
+      "reference_first_pair_median_ms": 213.156,
+      "candidate_warm_median_ms": 206.664,
+      "candidate_first_pair_median_ms": 212.832,
+      "warm_reduction_percent": 4.434158138846634
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "workload": "contours",
+      "samples_per_variant": 25,
+      "per_process_warm_ms": [
+        [
+          50.08,
+          47.74
+        ],
+        [
+          58.61,
+          47.024
+        ],
+        [
+          50.803,
+          47.726
+        ],
+        [
+          53.227,
+          50.222
+        ],
+        [
+          78.802,
+          73.871
+        ]
+      ],
+      "reference_warm_median_ms": 53.045,
+      "reference_first_pair_median_ms": 51.301,
+      "candidate_warm_median_ms": 48.638,
+      "candidate_first_pair_median_ms": 47.971,
+      "warm_reduction_percent": 8.308040343104917
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "workload": "kit_build",
+      "samples_per_variant": 25,
+      "per_process_warm_ms": [
+        [
+          62.52,
+          60.289
+        ],
+        [
+          61.509,
+          59.375
+        ],
+        [
+          64.555,
+          61.401
+        ],
+        [
+          66.715,
+          63.446
+        ],
+        [
+          94.432,
+          91.202
+        ]
+      ],
+      "reference_warm_median_ms": 64.555,
+      "reference_first_pair_median_ms": 64.947,
+      "candidate_warm_median_ms": 62.16,
+      "candidate_first_pair_median_ms": 60.809,
+      "warm_reduction_percent": 3.7100147161335473
+    }
+  ]
+}

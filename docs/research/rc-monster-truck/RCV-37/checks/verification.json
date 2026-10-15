@@ -1,0 +1,54 @@
+{
+  "complete": true,
+  "scope": "RCV-37 source runtime; scoped regressions",
+  "full_repository_suite": false,
+  "new_release_export": false,
+  "tests": [
+    {
+      "test": "tests/test_rcv_nitro_audio.gd",
+      "source_sha256": "d890ee13022e6a640dc581cf92b59517827195bc3aba41e4e49797bd47d15064",
+      "log": "nitro-audio.log",
+      "log_sha256": "b1600231addf2412c1a77149728031d411f27f136b786e136da4e4871e77960b",
+      "passed": true
+    },
+    {
+      "test": "tests/test_rcv_nitro_visual.gd",
+      "source_sha256": "268e244c5f56471c8d37d1058abc1e5377f6ba628bbc4c153339d366009ae4e6",
+      "log": "nitro-visual.log",
+      "log_sha256": "3de72d3263b054f38b8adf903e8a879cb6eaa7fd06c143ee51351a02e62fd393",
+      "passed": true
+    },
+    {
+      "test": "tests/test_rcv_nitro_activity.gd",
+      "source_sha256": "96786e4ea175baa57a48e33e9b8233c4d8d9b02aa820ecc44abab5f078e734b0",
+      "log": "nitro-activity.log",
+      "log_sha256": "eec563975aabb50e9d239260fb6f0bc3352a9293f317c9b4ad8449be96162b4e",
+      "passed": true
+    },
+    {
+      "test": "tests/test_rcv36_effects.gd",
+      "source_sha256": "0387278c0278404f738f75251c5a71665113689c9cc20eea480dc52afefe08b3",
+      "log": "nitro-effects.log",
+      "log_sha256": "2a5e0d1506d4ec341c1fbf95af3c11e6b1cb35fb85d187be91418062565befd2",
+      "passed": true
+    },
+    {
+      "test": "tests/test_rcv_nitro_service.gd",
+      "source_sha256": "b1974d1b3d62696d22342198bcf19d75c904300edc87df5b05fda7cb09cfc186",
+      "log": "nitro-service.log",
+      "log_sha256": "414d6a1017e74f4dc1672a1464e75283d8afe306fbe570c0289bcc42e2935707",
+      "passed": true
+    },
+    {
+      "test": "tests/test_rcv_activity.gd",
+      "source_sha256": "451b307c257b00892faa41711d3c2d6f2f5b00f816be657d56b676f6cb2b70ae",
+      "log": "bisonte-activity.log",
+      "log_sha256": "e9385e0cae15a92e5ef8c6fe7fa4f1ec64189e2fe80cdd81ada014548e20bb4e",
+      "passed": true
+    }
+  ],
+  "audio_sha256": "cd686cdcb2b1509bd932536d72189a46e678208e466ecbf4dac760532e4e1f64",
+  "session_sha256": "d98dd0464fd780bda35660dda22304bd0349f676bac11bb805a98068b8c8d683",
+  "model_sha256": "cd19dec6f75f0fbdb929206a3988da157df3b18bbcf066a91e9aca58e2714a73",
+  "voice_sha256": "e1337ea28fa1167d4c2613ffca6ce97906cef0daa541df2b6d737b4282017d6c"
+}

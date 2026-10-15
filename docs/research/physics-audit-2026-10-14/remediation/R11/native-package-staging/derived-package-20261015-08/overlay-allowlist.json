@@ -1,0 +1,35 @@
+{
+  "format": "openrc-r11-derived-package-overlay-allowlist-v1",
+  "base": {
+    "candidate_root": "/home/bulto/openrc-r11-b09-r05b-20261015-07",
+    "manifest_path": "../../next-candidate/materialized-20261015-07-01/post-overlay-initial.json",
+    "manifest_sha256": "7f7d14b202a18d270dbb1cc8c04aaad6471318a0f0a3a9f9b75e21a4cce804f6",
+    "tree_sha256": "b9108ec7cfa993a396a218fd809f9d58bee6e9e54d299424a6a42599f6f77e5c",
+    "entry_count": 14922
+  },
+  "derived_candidate": "/home/bulto/openrc-r11-package-20261015-08",
+  "overlays": [
+    {
+      "path": "app/native/ground_vehicle/openrc_ground_vehicle.dll",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r11-native-package-staging-20261015-01/bin/openrc_ground_vehicle.dll",
+      "sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c",
+      "mode": "0o644",
+      "provenance": "Historical Windows native v2 / solver v3 DLL; 50-case parity receipt and ABI/source identities are in the adjacent native-package-staging manifest.json."
+    },
+    {
+      "path": "app/tests/check_trimmed_flight.py",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/check_trimmed_flight.py",
+      "sha256": "bcaa40377bda39fc8e8e7a2be6753fc41441bf2901b0ca60d8c5feb11c203d81",
+      "mode": "0o644",
+      "provenance": "Updated live checker with exact R02 law identity; frozen-07 source checker hash is retained in the before manifest."
+    }
+  ],
+  "excluded": [
+    ".git is copied separately as build_info support input.",
+    ".tools is not copied.",
+    "app/.godot import cache is not copied.",
+    "dist export output is not copied.",
+    "tmp task/test output is not copied."
+  ],
+  "export_performed": false
+}

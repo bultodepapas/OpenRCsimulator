@@ -1,0 +1,30 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{
+	"candidate_json_new_parse_cldr_value": 0.00045123687978342,
+	"candidate_json_new_parse_error": 0,
+	"candidate_path": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r11-d8b-candidate-repro-02/research/flight-robustness/d8b-r2/candidates/intermediate.json",
+	"catalog_and_candidate_nonpolar_dictionary_equal": true,
+	"catalog_cldr_value_stringified_full_precision": "0.00045123687978342",
+	"catalog_json_new_parse_cldr_value": 0.00045123687978342,
+	"catalog_json_new_parse_error": 0,
+	"catalog_static_parse_cldr_value": 0.00045123687978342,
+	"catalog_value_after_validate_and_derive": 0.00045123687978342,
+	"fixture_cldr_value_stringified_full_precision": "0.00045123687978342",
+	"fixture_raw_cldr_value": 0.00045123687978342,
+	"fixture_serialized_roundtrip_cldr_value": 0.00045123687978342,
+	"format": "d8b-r2-godot-cldr-parse-probe-v1",
+	"godot": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"serialized_fixture_nonpolar_dictionary_equal": true,
+	"validate_ok": true
+}

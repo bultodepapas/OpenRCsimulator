@@ -1,0 +1,31 @@
+{
+  "format": "d8b-r2-frozen-copy-preparation-v1",
+  "status": "prepared_not_run",
+  "frozen_source": "/home/bulto/openrc-r11-b09-r05b-20261015-07",
+  "isolated_copy": "tmp/physics-audit-r11-d8b-candidate-repro-02",
+  "copy_scope": [
+    "app/",
+    "research/flight-robustness/d8b-r2/"
+  ],
+  "excluded_cache": "app/.godot/ (clean copy; generated cache will be initialized only in this disposable target)",
+  "source_manifest": "docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/post-overlay-initial.json",
+  "source_manifest_sha256": "7f7d14b202a18d270dbb1cc8c04aaad6471318a0f0a3a9f9b75e21a4cce804f6",
+  "verified_copied_files": {
+    "app/data/aircraft/jensen_ugly_stik_60.json": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+    "app/physics/aircraft_data.gd": "40a574c5c049179941372d7c355cb53f1ede4588154201070618c8108bd353b9",
+    "app/tests/wing_polar_fixture.gd": "13d9f43b6cbbb1e70a1ceac4a7bc8c87b982faf8a1722d09df34f011fc68e88b",
+    "app/tests/test_pullup_cli.py": "bb2af28dc23e599ec70818cd97180119dde5b103e065e06091be2c02b6f4526e",
+    "app/project.godot": "272cdc12ae91e6255df584bd8c0008051fca280f0cc526625e4dbe1a21f3120a",
+    "research/flight-robustness/d8b-r2/make_candidates.gd": "636f0bcf8c4c1166bac90b450bc18a01e8e131d3c6ae6595231f5131a126e4b2",
+    "research/flight-robustness/d8b-r2/candidates/steep.json": "ee8e7cc612f0e374dbe7587215ead5b978f6d7c0d81fa15680abcd4f9e5cc9fe",
+    "research/flight-robustness/d8b-r2/candidates/intermediate.json": "46c999b7d84ea1c1c6d5dfc181cdd47efa3c0eeb63799ddb4d5a1f44376b578e",
+    "research/flight-robustness/d8b-r2/candidates/retained.json": "dba2f262a17b08250a5f74d1c8cbf88f3fd123ed22b4c5161a672f3b99afc45b"
+  },
+  "planned_sequence": [
+    "Run Godot --import in the disposable app copy; app/test.sh initializes imported resources before tests.",
+    "Run make_candidates.gd write mode in the isolated copy.",
+    "Run the same generator with -- --check in the isolated copy.",
+    "Run the unchanged app/tests/test_pullup_cli.py with OPENRC_TEST_GODOT set to the frozen-07 Godot binary."
+  ],
+  "constraint": "Prepared before lane release; all execution remains confined to the disposable copy."
+}

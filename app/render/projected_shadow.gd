@@ -16,6 +16,9 @@ var bounds: AABB
 var triangle_count := 0
 var _last_signature: Array = []
 var _last_request: Array = []
+# The remaining frame inputs; basis/direction/frame already live in _last_signature.
+var _frame_bounds := AABB()
+var _frame_blur := 0.0
 
 
 ## The shape is captured at bind time. Propellers are omitted: a neutral blade
@@ -73,9 +76,12 @@ static func project(point: Vector3, direction: Vector3) -> Vector2:
 
 ## Conservative bounds of projected model, with room for every blur tap.
 static func framing(box: AABB, basis: Basis, direction: Vector3, blur_m: float) -> Rect2:
-	var rect := Rect2(project(basis * box.get_endpoint(0), direction), Vector2.ZERO)
+	var slope := direction / maxf(direction.y, 0.05)
+	var point := basis * box.get_endpoint(0)
+	var rect := Rect2(Vector2(point.x - slope.x * point.y, point.z - slope.z * point.y), Vector2.ZERO)
 	for i in range(1, 8):
-		rect = rect.expand(project(basis * box.get_endpoint(i), direction))
+		point = basis * box.get_endpoint(i)
+		rect = rect.expand(Vector2(point.x - slope.x * point.y, point.z - slope.z * point.y))
 	var side := maxf(rect.size.x, rect.size.y) + 2.0 * (blur_m + 0.04)
 	side = maxf(side, 0.1)
 	return Rect2(rect.get_center() - Vector2.ONE * side * 0.5, Vector2.ONE * side)
@@ -155,7 +161,14 @@ func refresh(height: float, direction: Vector3, opacity: float, shown: bool) -> 
 	# Artistic area-light approximation, bounded to keep the RC height cue readable.
 	var blur := clampf(0.018 + maxf(height, 0.0) * 0.0093, 0.018, 0.45)
 	var pose := source.global_transform if source.is_inside_tree() else source.transform
-	var frame := framing(bounds, pose.basis, direction, blur)
+	var frame: Rect2
+	if _last_signature.size() == 3 and pose.basis == _last_signature[0] \
+			and direction == _last_signature[1] and bounds == _frame_bounds and blur == _frame_blur:
+		frame = _last_signature[2]
+	else:
+		frame = framing(bounds, pose.basis, direction, blur)
+		_frame_bounds = bounds
+		_frame_blur = blur
 	var center := frame.get_center()
 	var ground_origin := project(pose.origin - Vector3(0, HEIGHT, 0), direction) + center
 	receiver.transform = Transform3D(Basis.from_scale(Vector3(frame.size.x, 1, frame.size.y)),

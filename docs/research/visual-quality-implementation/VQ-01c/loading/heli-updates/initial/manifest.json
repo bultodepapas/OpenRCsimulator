@@ -1,0 +1,76 @@
+{
+  "commands": [
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\heli-light-updates\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\native-1.json"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\heli-light-updates\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\native-2.json",
+      "--reverse"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\heli-light-updates\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\native-3.json"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\heli-light-updates\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\native-4.json",
+      "--reverse"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\heli-light-updates\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates-native\\native-5.json"
+    ]
+  ],
+  "sha256": {
+    "reference.gd": "bf37c54714070847adb29b72e9d56e0e0e834b248cea9129b75477f24b573119",
+    "candidate.gd": "42056eed859008552ac1df8339d7f9211a35fdc9f37731b22f517aa16f50680e",
+    "compare.gd": "8239a449e64275854f9d5c8999ff274d6ec6a5dbcd567e265288c06ab53d39e3"
+  }
+}

@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   authored lake definition loads
+ok   empty lake context preserves the original sampler bit-for-bit
+ok   outside the bank, field height and slopes are exactly unchanged
+ok   invalid lake context fails closed
+ok   deep basin terrain uses the five-metre bed below mean water
+ok   bank fades field relief and joins the lake slope continuously
+ok   wheel frame uses the deep bed height and normal
+ok   wheel contact normal follows the sloped lake bed
+ok   gear compression follows the bed when context is present
+ok   gear collapse checks bed support
+ok   spring energy follows the bed compression
+ok   wheel evaluation produces a finite 100 N bed load
+ok   legacy contact load also supports the sampled bed
+ok   anchor support is evaluated against the lake bed
+all lake ground contact checks passed

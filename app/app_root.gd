@@ -64,6 +64,7 @@ var home_scene: Node3D
 var _home_preview_resources: Node
 var flight: Node
 var ground_vehicle: Node3D
+var selected_ground_vehicle_id := "mt8-bisonte"
 ## Test seam: custom ground activity factory, default remains the packaged scene script.
 var ground_vehicle_factory := Callable()
 var pause_menu: CanvasLayer:
@@ -125,22 +126,17 @@ func _ready() -> void:
 		add_child(diagnostic)
 		return
 	UiInput.isolate_joypads() # before any menu exists (UI-01b): radio sticks never move the focus
-	if user_args.has("--vehicle=mt8-bisonte"):
+	if user_args.has("--vehicle=mt8-bisonte") or user_args.has("--vehicle=monster-car-2"):
 		TranslationServer.set_locale("en")
 		if user_args.size() != 1:
-			printerr("The RC route accepts exactly --vehicle=mt8-bisonte")
+			printerr("The RC route accepts exactly one --vehicle=<id> option")
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
-		for arg in user_args:
-			if arg != "--vehicle=mt8-bisonte":
-				printerr("Unknown RC vehicle option: " + arg)
-				get_tree().quit(ERR_INVALID_PARAMETER)
-				return
-		start_ground_vehicle()
+		start_ground_vehicle(user_args[0].trim_prefix("--vehicle="))
 		return
 	for arg in user_args:
 		if arg.begins_with("--vehicle"):
-			printerr("Unknown RC vehicle; expected --vehicle=mt8-bisonte")
+			printerr("Unknown RC vehicle; expected mt8-bisonte or monster-car-2")
 			get_tree().quit(ERR_INVALID_PARAMETER)
 			return
 	if wants_direct_flight(user_args):
@@ -240,6 +236,7 @@ func show_home() -> void:
 	if not home_scene.field_errors.is_empty():
 		return
 	var home := Home.new()
+	home.ground_vehicle_id = selected_ground_vehicle_id
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.set_aircraft(aircraft)
 	home.set_start_choice(preferences.get("start_choice", "airborne"))
@@ -273,8 +270,12 @@ func show_home() -> void:
 
 
 ## Ground vehicles have their own data/session contract; aircraft catalog and preferences stay aircraft-only.
-func start_ground_vehicle() -> void:
+func start_ground_vehicle(vehicle_id: String = "") -> void:
 	if ground_vehicle != null or flight != null:
+		return
+	if vehicle_id.is_empty():
+		vehicle_id = home.ground_vehicle_id if home != null else "mt8-bisonte"
+	if not preload("res://vehicles/ground/vehicle_catalog.gd").contains(vehicle_id):
 		return
 	var departing_home := home
 	if departing_home != null and not screens.is_top("home"):
@@ -292,6 +293,8 @@ func start_ground_vehicle() -> void:
 			candidate = script.new()
 	var error := "Ground vehicle activity could not be loaded"
 	if candidate != null:
+		if _has_property(candidate, "vehicle_id"):
+			candidate.vehicle_id = vehicle_id
 		if _has_property(candidate, "field_path"):
 			candidate.field_path = field_path
 			candidate.lighting_config = preferences.get("lighting_config", TimeOfDay.defaults()).duplicate(true)
@@ -303,6 +306,7 @@ func start_ground_vehicle() -> void:
 		error = str(candidate.get("startup_error"))
 		if error.is_empty():
 			ground_vehicle = candidate
+			selected_ground_vehicle_id = vehicle_id
 			ground_vehicle.home_requested.connect(end_ground_vehicle)
 			if departing_home != null: departing_home.queue_free()
 			if home_scene != null: home_scene.queue_free()
@@ -596,8 +600,11 @@ func _update_controller_calibration_button(setup: Node) -> void:
 	setup.calibrate_button.disabled = not available
 
 
-func _controller_bindings(id: int) -> Dictionary:
+func _controller_bindings(id: int, flight_context := false) -> Dictionary:
 	if controllers != null and id >= 0:
+		if flight_context:
+			var capabilities: Dictionary = flight.controller_capabilities() if flight != null and flight.has_method("controller_capabilities") else {}
+			return ControllerActions.effective_bindings(controllers.profile_for_device(id), capabilities)
 		return ControllerActions.effective_bindings(controllers.profile_for_device(id))
 	return ControllerActions.default_bindings()
 
@@ -664,7 +671,7 @@ func _input(event: InputEvent) -> void:
 	var source := ControllerActions.event_source(event)
 	if source.is_empty(): return
 	var previous: PackedStringArray = _controller_action_edges.get(source, PackedStringArray())
-	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id), id, "menu" if in_menu or calibrating else "flight", previous)
+	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id, not in_menu and not calibrating), id, "menu" if in_menu or calibrating else "flight", previous)
 	if actions.is_empty(): _controller_action_edges.erase(source)
 	else: _controller_action_edges[source] = actions
 	if flight != null and flight.session.has_method("set_controller_cut"):
@@ -674,6 +681,8 @@ func _input(event: InputEvent) -> void:
 		flight.session.set_controller_cut(held)
 	for action: String in actions:
 		if previous.has(action): continue
+		# A held Back/Accept button cannot become an aircraft command when a menu closes.
+		if event is InputEventJoypadButton and not previous.is_empty(): continue
 		if in_menu:
 			if action == "calibrate" and (screens.is_top("home") or screens.is_top("pause")):
 				open_controls()
@@ -1335,7 +1344,7 @@ func continue_flight() -> void:
 	if not session.is_flyable():
 		return # nothing to go back to: the menu stays, Continue is disabled and says why
 	if controllers != null and (session._controller_lost or (session.radio.connected and not session.radio.armed)):
-		pause_menu.set_note(tr("Release the controls to neutral before continuing; use Controls to select a disconnected device."))
+		pause_menu.set_note(pause_menu.status_text(flight.session))
 		return
 	_close_pause()
 	session.resume()

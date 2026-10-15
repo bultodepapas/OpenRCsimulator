@@ -1,0 +1,26 @@
+{
+  "base_manifest_sha256": "f61830ce291e789a76d43d059a5d6253ffa2d367e8857a9fa322ebc1e2b4f5f4",
+  "format": "openrc-r11-derived-package-overlay-allowlist-v1",
+  "overlays": [
+    {
+      "mode": "0o644",
+      "path": "app/native/ground_vehicle/build-receipt.json",
+      "sha256": "8718896783cb792f949732a5a4d74c6d08a1bde0bd52c43f9d1982efb3fd9ff7",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/native-package-staging/receipt-merge-20261015-02/build-receipt.json"
+    },
+    {
+      "mode": "0o755",
+      "path": "app/export.sh",
+      "sha256": "dd7230a202a0ca01f805a6797963c37ece39306d8fbed956f5ed8d733c2a75e4",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/export.sh"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/check_native_pack.gd",
+      "sha256": "2249f62dfa8a4c8ffdabe78cab853a6247044be329d94c382c612e91f516d3ba",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/check_native_pack.gd"
+    }
+  ],
+  "source_candidate": "/home/bulto/openrc-r11-package-20261015-08",
+  "target_candidate": "/home/bulto/openrc-r11-package-20261015-09"
+}

@@ -300,3 +300,15 @@ static func set_visual_surfaces(model: Dictionary, surfaces_deg: Dictionary) -> 
 		for binding: Dictionary in control.hinges:
 			var hinge: Dictionary = model.hinges[binding.key]
 			_set_hinge(hinge, clampf(float(surfaces_deg.get(role, 0.0)), hinge.range_deg[0], hinge.range_deg[1]) * hinge.app_sign)
+
+
+## Session-driven flap pose. Only manifest-declared physical flap hinges move here.
+static func set_flaps(model: Dictionary, degrees: float) -> void:
+	if not is_finite(degrees): return
+	for role in ["flap_left", "flap_right"]:
+		var control: Dictionary = model.model_manifest.bindings.controls.get(role, {})
+		if control.is_empty() or control.get("visual_only", true): continue
+		for binding: Dictionary in control.hinges:
+			var hinge: Dictionary = model.hinges.get(binding.key, {})
+			if hinge.is_empty(): continue
+			_set_hinge(hinge, clampf(degrees, hinge.range_deg[0], hinge.range_deg[1]) * hinge.app_sign)

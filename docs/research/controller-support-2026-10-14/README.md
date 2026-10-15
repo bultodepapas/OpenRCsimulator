@@ -2,6 +2,31 @@
 
 2026-10-14. Source snapshot: `22b3e4825ec97289b76666ca9e942eaa7a8f703d` plus the existing working tree. Scope: Xbox, PlayStation DualSense and other controllers, with Windows prioritized by the owner. The [implementation plan](../../plans/controller-support.md) owns proposed work and acceptance; this report owns the dated findings and sources.
 
+
+## Gamepad readiness (2026-10-15, F3-GP-02-R2)
+
+The owner reported confusing GAMEPAD SAFE behavior. The old gate required motion evidence on every mapped axis, a centered dwell and released buttons. Verified stationary polling existed only during paused sampling; direct fixed-wing launches had no engine confirmation callback. This left normal connected controllers waiting for an unnecessary gesture.
+
+Recognized standard gamepads now become ready on the first valid live poll, during active or paused sampling. Stick movement and held menu buttons no longer revoke Continue. Paused rate throttle remains frozen and the shell still requires explicit Continue; flight action routing retains its held-menu-button guard. Raw/nonstandard layouts retain their existing evidence gate; radio low-throttle arming, malformed input rejection and connection-generation checks remain. The top GAMEPAD SAFE banner and gamepad SAFE/ARMED footer are removed. Setup, Home and Pause instructions describe the current behavior.
+
+The revised recovery test reproduced ten failures before correction and passes all 24 checks afterward. The focused run covers 33 controller, overlay, smoke, radio and helicopter suites. An obsolete setup assertion still expected release-to-arm text; it was updated for the intended behavior and its suite passed on rerun. [Check receipt](gamepad-ready/checks-windows.json) retains the original result and final rerun. All 886 application GDScript files pass the native syntax check; results are recorded separately in that receipt. This is not a full repository test run.
+
+The [native XInput receipt](gamepad-ready/native-xinput.json) uses the real engine connection and axis polling, without injected profile metadata or an arming gesture: connected, focused, live-verified and ready were all true. The [Spanish jet capture](gamepad-ready/jet-es.png) was visually inspected at 1280×720; neither the warning banner nor the SAFE footer is present. This checks actual device recognition/readiness, not physical button, USB/Bluetooth or latency qualification. The [same-command-tape replay](gamepad-ready/README.md) separately checks solver equivalence and documents the limits and unrelated Avanti fixture failure.
+
+## Aircraft auxiliary defaults (2026-10-15, D6-GP-06-R1)
+
+Research and implemented scope: use the existing semantic action router and active aircraft capabilities. The current jet admits retractable gear; its flaps declare `not_simulated`, and the smoke renderer admits only an installed glow pump. The Stik has that pump. Do not change aircraft data or flight physics for a controller preset.
+
+[SDL's positional gamepad mapping](https://wiki.libsdl.org/SDL3/SDL_GamepadButton) supports shared Xbox/PlayStation positions. [Godot's known-device contract](https://docs.godotengine.org/en/stable/classes/class_input.html#class-input-method-is-joy-known) explicitly excludes standardized indices for unknown joysticks. The [MSFS controller FAQ](https://flightsimulator.zendesk.com/hc/en-us/articles/16459737949980-Controller-Settings-FAQ) distinguishes general and aircraft-specific mappings. These sources support contextual presets, not a universal aircraft button convention.
+
+Implemented: B/Circle toggles retractable gear; RB/R1 toggles an installed smoke pump. Defaults fill only free flight bindings on gamepad profiles and preserve explicit remaps/unbinds, AUX assignments, menu behavior and unknown-joystick/radio profiles. Unsupported flaps remain unassigned. The guide shows aircraft availability, effective bindings and accepted gear/smoke state; setup explains automatic assignments. Holding Back while closing a menu cannot trigger gear until the button is released and pressed again. No new dependency, device firmware change or hardware compatibility claim.
+
+Baseline: `test_controller_extended_actions` (77), `test_controller_profile` (49) and `test_controller_setup` pass on native Windows/Godot 4.7.2 before this change.
+
+Final [verification receipt](auxiliary-defaults/checks-windows.json): all 28 controller/overlay/smoke suites pass, and all 886 application GDScript files pass the native syntax check. Coverage includes binding collisions, saved profiles, explicit clears, aircraft changes, actual shell event routing, held Back suppression and jet gear admission. Deliberately conflicting AUX fixtures emit expected warnings. This is not a complete `app/test.sh` run or a physical controller qualification.
+
+The rendered guide was inspected in English and Spanish at 1280×720 using native Godot Compatibility on RTX 3090: [Xbox Spanish](auxiliary-defaults/jet-xbox-es.png), [PlayStation English](auxiliary-defaults/jet-playstation-en.png). Captures use injected guide profile metadata and actual jet capability/gear state. The runtime detected a connected XInput Controller; physical button trials and DualSense hardware were not tested. Equipment-state updates preserve the guide's scroll position. No aircraft physics, data or golden flights changed for these presets.
+
 ## RCV-05-R1 car controller audit
 
 2026-10-14. The car sampler accepted trigger readings up to 0.04 as neutral only while arming, then emitted those readings as commands. This could prevent garage resume or creep after it. Its steering arming threshold also disagreed with the output deadzone. New boundary cases reproduced seven failures before correction. Trigger shaping now maps the rest region to exactly zero and scales the remaining range to full travel; steering uses the same 0.12 neutral/output threshold. Brake input above its deadzone cuts throttle. Invalid native samples are no longer clamped into apparent rest and pause the activity.

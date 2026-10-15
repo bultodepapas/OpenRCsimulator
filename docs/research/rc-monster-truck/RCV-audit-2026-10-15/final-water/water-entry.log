@@ -1,0 +1,75 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS airfield prepares with the production lake
+PASS default remains the aircraft runway
+PASS lake-shore reset is supported
+PASS neutral-armed entry starts
+PASS wet recording starts
+ENTRY_PROGRESS 4 145.499355966431
+ENTRY_PROGRESS 484 142.961384893272
+ENTRY_PROGRESS 964 140.065205344205
+ENTRY_PROGRESS 1444 137.512560021559
+ENTRY_PROGRESS 1924 136.600892943909
+ENTRY_PROGRESS 2404 135.836972899251
+ENTRY_PROGRESS 2884 135.077219378147
+ENTRY_PROGRESS 3364 134.341883627433
+PASS all water-entry ticks accepted
+PASS active entry develops buoyancy and dissipates fluid work
+PASS entry visits mud, shallow and submerged stages
+PASS submerged checkpoint restores
+PASS replay resumes
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS wet replay physical state is byte exact
+PASS wet replay damage state is byte exact
+PASS incompatible water identity rejected
+PASS submerged truck can be recovered to dry staging
+PASS water recording stops
+PASS packed recording retains water channels
+WATER_RESULT {"capture":false,"engine":"4.7.2-stable (official)","final_damage":{"body_bottom_damage":0.0,"body_damage":0.0,"body_front_damage":0.0,"body_left_damage":0.0,"body_rear_damage":0.0,"body_right_damage":0.0,"drive_scale":1.0,"last_impact_energy_j":0.0,"stage":"intact","suspension_damage":0.0,"suspension_damage_by_corner":[0.0,0.0,0.0,0.0]},"final_state":[133.996736954023,125.31312502852,1.03946903296097,0.344630547684492,-0.0200554567976162,0.00782684448953766,-0.00933809880720171,0.0309535856881855,-0.00979125493765355,0.999429240502026,0.00976271245039815,0.0418114295816898,0.0000967560582389482,0.00613251453563293,0.0038021561684513,0.0125576408387301,0.0145295795680143,0.0000506096066201927,-0.000272024684179113,-0.0000480511942583585,0.000386695640745225,67.1592668530985,69.6008516087372,60.1505601410851,57.8451427474027,705.396365294878,713.679162937033,614.244990334975,615.466302799321,0.01235150856545,0.00196214595318927],"identities":{"course":{"format":"openrc-airfield-course","id":"airfield-default","sha256":"69e02c0904defa321bee97bb26c82b612f77bb7749c10dae435c988e0d3718ae","version":"1"},"model":{"format":"openrc-ground-vehicle","id":"mt8-bisonte-electric-4wd-estimate-v1","sha256":"425f2a3fe810f82d609ad2b9dd9618b9fb45bcd813df57873cd8bc8759a750a5","version":"1"},"vehicle_id":"mt8-bisonte"},"max_body_submersion":1.0,"max_buoyancy_n":25.44629542,"max_depth_m":0.77248576858292,"minimum_drag_power_w":-161.076802883588,"ok":true,"peak_effects":{},"phases":{"deep":{"environment":{"body_submersion":1.0,"buoyancy_n":25.44629542,"drag_power_w":-157.908717408746,"ok":true,"power_w":-159.564881580757,"water_depth_m":0.650316505385246,"wheel_depth_m":[0.689442528386111,0.674517167870226,0.620049585061118,0.602584783313935],"wheel_mud":[1.0,1.0,1.0,1.0],"wheel_submersion":[1.0,1.0,1.0,1.0],"wheel_water_height_m":[-0.45,-0.45,-0.45,-0.45]},"state":[134.915049221527,125.261063889678,0.916344647807331,0.377903093937251,-0.0318266010377221,0.00797386476943964,-0.00502047727793382,0.0742421901809079,-0.0190695209961222,0.997045257435199,0.00551557647496739,0.0249768688031506,0.00655265640449752,0.00586883006507778,0.00443468576139944,0.0127521410756391,0.0135698294754379,0.000139177340745882,-0.000218590376852572,-0.000101768497461082,0.000341893183833451,66.810234389037,68.3334828808104,59.1907477900532,58.1756430787732,534.717274275447,537.911974092284,462.135418258514,467.607413406798,0.0140654802507584,-0.00331712893903397],"tick":2988},"mud":{"environment":{"body_submersion":0.0,"buoyancy_n":0.0,"drag_power_w":0.0,"ok":true,"power_w":0.0,"water_depth_m":0.0,"wheel_depth_m":[0.0,0.0,0.0,0.0],"wheel_mud":[0.215545058426351,0.11656999777706,0.0,0.0],"wheel_submersion":[0.0,0.0,0.0,0.0],"wheel_water_height_m":[0.0,0.0,0.0,0.0]},"state":[139.898233207381,125.001678952421,0.227967393356014,1.43393380628789,0.00407480344595104,-0.0113195342524727,0.000618004381688035,0.0464417724981006,-0.00974901702659761,0.998873233450989,0.0209010008827001,0.0991650283970204,0.00165775675356986,0.0147327218375625,0.0130746374724653,0.0111594543261307,0.0118021295665079,-0.000129397387220531,0.0000459548125329485,0.000400522034703516,0.000766823077514061,14.5215427913304,14.5139361877333,14.5204369946673,14.5130333776195,70.0199200105442,71.6562421145704,57.3093298823984,57.0997165337405,0.000492540384000805,0.000417818001920833],"tick":992},"shallow":{"environment":{"body_submersion":0.0,"buoyancy_n":4.44227959226683,"drag_power_w":-31.2870435833046,"ok":true,"power_w":-31.9197164636466,"water_depth_m":0.0805196959207743,"wheel_depth_m":[0.115475937960316,0.102811964995909,0.0581514678463048,0.048681535765661],"wheel_mud":[1.0,1.0,1.0,1.0],"wheel_submersion":[0.6167520612326,0.525163549711219,0.214059420470603,0.157005771129153],"wheel_water_height_m":[-0.45,-0.45,-0.45,-0.45]},"state":[137.82470644086,125.006278286658,0.355695452124742,1.02103249093394,-0.0150459711975608,0.00697675907721347,0.00898042343551987,0.0619952141189068,-0.0134961405680547,0.997944787857042,-0.0198314290204908,-0.0632176628827394,-0.140444684303972,0.0109400112128998,0.012205521676131,0.0148679687304313,0.0133424236688738,-0.00328502384958066,-0.00616990695488391,0.00554793180640656,0.0062264224873763,29.6017383251466,24.9971619646008,16.6589279357004,20.313674538303,92.2768559326591,93.326822591223,78.3050334243408,78.3927098318871,0.0058093951240963,0.0955058633742771],"tick":1352}},"physical_validation":false,"scope":"production lake, ordinary controls, no state injection","solver_identity":{"backend_identity":{"abi_version":1.0,"backend":"native","backend_version":"openrc-ground-vehicle-native-evaluate-v3","binary_sha256":"01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb","solver_version":"openrc-ground-vehicle-dynamics-rk4-v5","source_sha256":"6d4c5eabeb2f8565cf84d08fb6825ab5b1cacc47a7ebc26f215ac97b88ae1c2b","toolchain_sha256":"20011c634359383599e065c970e90e2a0c6612e7481739dbc9d35fe8c8d4a192"},"damage_version":2.0,"engine_version":"4.7.2-stable (official)","environment_artifact":{"kind":"gdscript_source","sha256":"06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad"},"environment_version":"openrc-rcv-environment-v1","fixed_hz":240.0,"integration_artifact":{"kind":"gdscript_source","sha256":"f676ff26c27ec9a7d1bc0c7672f8584367f27a9d19baed6809eb475ba709f4e1"},"solver_version":"openrc-ground-vehicle-dynamics-rk4-v5","substeps_per_tick":1.0},"tick_p50_us":12862.0,"tick_p95_us":16774.0,"ticks":3600}

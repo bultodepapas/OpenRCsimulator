@@ -21,6 +21,7 @@ func _initialize() -> void:
 	_test_aux_compatibility()
 	_test_aux_to_aux_collisions()
 	_test_radio_aux_pause_compatibility()
+	_test_aircraft_defaults()
 	if failures == 0:
 		print("PASS extended controller actions: %d checks" % checks)
 	else:
@@ -228,6 +229,46 @@ func _test_radio_aux_pause_compatibility() -> void:
 	report = Actions.validate_profile_bindings(profile)
 	_check("explicit radio pause is never silently moved off its AUX collision", not report.ok \
 		and report.bindings.pause.type == "button" and report.bindings.pause.button == JOY_BUTTON_START)
+
+
+func _test_aircraft_defaults() -> void:
+	var profile := _profile()
+	profile.kind = "gamepad"
+	var original := profile.duplicate(true)
+	var jet := Actions.effective_bindings(profile, {gear = true, smoke = false, flaps = false})
+	_check("jet automatically maps B/Circle to retractable gear", jet.gear_toggle == {type = "button", button = JOY_BUTTON_B})
+	_check("unavailable equipment actions remain unbound", jet.smoke_toggle.type == "unbound" and jet.flaps_cycle.type == "unbound")
+	var stik := Actions.effective_bindings(profile, {gear = false, smoke = true})
+	_check("Stik automatically maps RB/R1 to smoke only", stik.smoke_toggle == {type = "button", button = JOY_BUTTON_RIGHT_SHOULDER} and stik.gear_toggle.type == "unbound")
+	_check("aircraft defaults never mutate a saved profile", profile == original)
+	_check("automatic assignments pass existing validation", Actions.validate_profile_bindings(profile).ok)
+	var event := InputEventJoypadButton.new()
+	event.device = 4
+	event.button_index = JOY_BUTTON_B
+	event.pressed = true
+	_check("B means gear only in flight", Actions.resolve_event(event, jet, 4, "flight") == PackedStringArray(["gear_toggle"]))
+	_check("B retains Back in menus", Actions.resolve_event(event, jet, 4, "menu") == PackedStringArray(["back"]))
+	_check("another device cannot operate automatic gear", Actions.resolve_event(event, jet, 5, "flight").is_empty())
+	profile.actions.gear_toggle = {type = "unbound"}
+	_check("explicit Clear survives automatic defaults", Actions.effective_bindings(profile).gear_toggle.type == "unbound")
+	profile.actions.gear_toggle = {type = "button", button = 127}
+	_check("explicit remap survives aircraft changes", Actions.effective_bindings(profile, {}).gear_toggle.button == 127)
+	profile.actions = {camera_cycle = {type = "button", button = JOY_BUTTON_B}, pause = {type = "button", button = JOY_BUTTON_RIGHT_SHOULDER}}
+	var occupied := Actions.effective_bindings(profile)
+	_check("automatic actions never steal occupied flight or recovery buttons", occupied.gear_toggle.type == "unbound" and occupied.smoke_toggle.type == "unbound" and Actions.validate_profile_bindings(profile).ok)
+	profile.actions = {}
+	profile.aux = {gear = {type = "axis", axis = 9, off = -1.0, on = 1.0, invert = false}}
+	_check("gear AUX owns the function even on another source", Actions.effective_bindings(profile).gear_toggle.type == "unbound" and Actions.validate_profile_bindings(profile).ok)
+	profile.aux = {flaps = {type = "button", button = JOY_BUTTON_RIGHT_SHOULDER, mode = "toggle_edge"}}
+	_check("another AUX owns the physical smoke candidate", Actions.effective_bindings(profile).smoke_toggle.type == "unbound" and Actions.validate_profile_bindings(profile).ok)
+	profile.aux = {}
+	for kind in ["radio", "joystick"]:
+		profile.kind = kind
+		var raw := Actions.effective_bindings(profile)
+		_check("%s receives no invented standard button mapping" % kind, raw.gear_toggle.type == "unbound" and raw.smoke_toggle.type == "unbound")
+		profile.actions.gear_toggle = {type = "button", button = 25}
+		_check("%s retains explicit equipment mappings" % kind, Actions.effective_bindings(profile).gear_toggle.button == 25)
+		profile.actions = {}
 
 
 func _profile() -> Dictionary:

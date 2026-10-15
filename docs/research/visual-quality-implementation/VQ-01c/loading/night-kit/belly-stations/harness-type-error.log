@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+SCRIPT ERROR: Trying to assign value of type 'Dictionary' to a variable of type 'AABB'.
+   at: _run (C:/DEVELOPMENT/OpenRCsimulator/research/visual-quality/belly-light-stations/compare.gd:29)
+   GDScript backtrace (most recent call first):
+       [0] _run (C:/DEVELOPMENT/OpenRCsimulator/research/visual-quality/belly-light-stations/compare.gd:29)

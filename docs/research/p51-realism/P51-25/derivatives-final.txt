@@ -1,0 +1,8 @@
+glide V 28.6  alpha 2.78 deg  blend 0.000
+  d/d beta                total Cl -0.06365 Cn +0.04583  aero Cl -0.06365 Cn +0.04583  oracle Cl -0.06365 Cn +0.04583  local Cl -0.02718 Cn +0.05053  prop Cl +0.00000 Cn +0.00000  other Cl +0.00000 Cn +0.00000
+  d/d aileron(one side)   total Cl -0.19742 Cn +0.02377  aero Cl -0.19742 Cn +0.02377  oracle Cl -0.19742 Cn +0.02377  local Cl -0.14760 Cn -0.00163  prop Cl +0.00000 Cn +0.00000  other Cl +0.00000 Cn +0.00000
+  d/d rudder              total Cl +0.01446 Cn -0.07100  aero Cl +0.01446 Cn -0.07100  oracle Cl +0.01446 Cn -0.07100  local Cl +0.01443 Cn -0.07083  prop Cl +0.00000 Cn +0.00000  other Cl +0.00000 Cn +0.00000
+level V 28.6  alpha 2.86 deg  blend 0.000
+  d/d beta                total Cl -0.07115 Cn +0.07945  aero Cl -0.06359 Cn +0.04579  oracle Cl -0.06359 Cn +0.04579  local Cl -0.02719 Cn +0.05058  prop Cl -0.00067 Cn -0.00793  other Cl -0.00690 Cn +0.04159
+  d/d aileron(one side)   total Cl -0.19742 Cn +0.02377  aero Cl -0.19742 Cn +0.02377  oracle Cl -0.19742 Cn +0.02377  local Cl -0.14760 Cn -0.00172  prop Cl +0.00000 Cn +0.00000  other Cl +0.00000 Cn +0.00000
+  d/d rudder              total Cl +0.01775 Cn -0.08416  aero Cl +0.01446 Cn -0.07100  oracle Cl +0.01446 Cn -0.07100  local Cl +0.01443 Cn -0.07082  prop Cl +0.00000 Cn +0.00000  other Cl +0.00329 Cn -0.01317

@@ -1,0 +1,104 @@
+{
+  "step": "RCV-40",
+  "complete": true,
+  "solver_changed": false,
+  "course_changed": true,
+  "scope": "Headless CPU timing; median of three interleaved round means. Component medians use five alternating batches. Not a frame/GPU or physical-validation claim.",
+  "paired_tick_cost": {
+    "baseline_us": 7040.313541666666,
+    "candidate_us": 6122.295833333334,
+    "reduction_percent": 13.03944352620422
+  },
+  "component_costs": {
+    "terrain": {
+      "baseline_us": 8.40234375,
+      "candidate_us": 4.891276041666667,
+      "reduction_percent": 41.78676584534324
+    },
+    "global_mixed": {
+      "baseline_us": 8.746666666666666,
+      "candidate_us": 6.871666666666667,
+      "reduction_percent": 21.436737804878035
+    },
+    "inside_course_lane": {
+      "baseline_us": 13.046333333333333,
+      "candidate_us": 7.4783333333333335,
+      "reduction_percent": 42.67865811594574
+    }
+  },
+  "paired_round_reductions_percent": [
+    12.99203727888253,
+    12.889118271933487,
+    13.03944352620422
+  ],
+  "terrain_comparisons_including_invalid_classification": 18256,
+  "track_exact_comparisons": 45596,
+  "paired_exact_state_and_telemetry_ticks": 3060,
+  "trajectory_sha256": "d2c255aee62148ea79908da716d1c1c6279b20b22e5b1a88bc9e261597908eb8",
+  "exact_replay_each_version": true,
+  "regression_suites_passed": 12,
+  "reported_numbered_assertions_passed": 365,
+  "baseline_course_identity": {
+    "format": "openrc-airfield-course",
+    "id": "airfield-default",
+    "sha256": "4c8d6a969e217fe6ad7f751427d6b6ce1863f7db96b274f3c5b56c08edefe7a9",
+    "version": "1"
+  },
+  "candidate_course_identity": {
+    "format": "openrc-airfield-course",
+    "id": "airfield-default",
+    "sha256": "6f4b7e0512dd77013d3a5eb6d27203e91785ec61af01f19ac5a0883ff691824c",
+    "version": "1"
+  },
+  "current_source_sha256": {
+    "app/sim/ground_vehicle/session.gd": "2eb5bc12fa3f73d3cbc25aea6f109115bf541054027c585ad185491d6c7653e0",
+    "research/rc-monster-truck/monster-car-2/rcv40/baseline_terrain.gd": "1c650cf179c7ccdca62dfd4b908e34dbc7adfe66700753ca6648af36bf5f2358",
+    "app/physics/ground_terrain.gd": "42e9f30e155c8b710dbc3f0219da5b7ba72776fe5123132752a8f13dee260a90",
+    "research/rc-monster-truck/monster-car-2/rcv40/baseline_track.gd": "08efe15de45136ce066b2c212163ef41e36199f662baa5eb6bbcc8e640e4bd30",
+    "app/physics/ground_vehicle/airfield_track.gd": "e741a808b42028057308a6e7f2fb22b47cf9f55523a6a58fcca87cf6086dbef2",
+    "research/rc-monster-truck/monster-car-2/rcv40/baseline_course.gd": "4bd293238a1a4b3cd91c1d75e572bf839049f248568816b7b9cae292bd58c798",
+    "app/physics/ground_vehicle/airfield_course.gd": "7b444694cbb27f79fa87cf8f6ebace8877bceaa94559648a43826b16eb867b1e",
+    "research/rc-monster-truck/monster-car-2/rcv40/bench_pair.gd": "a169a22af78bffba89506e9d4d1ea7220cb5aa5a550728a557867ebaac0faf54"
+  },
+  "profile_source_sha256": {
+    "app/data/field_loader.gd": "910e4df336217f54c9c28f4c7b5b16adf8cb9d23c3d5c222e203369751f2e022",
+    "app/data/fields/default.json": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+    "app/data/vehicles/ground/monster_car_2.json": "974ce75e239e6e569004adf7b02cf0940159cf0887af218a51c3a5b12b47f1dc",
+    "app/physics/ground_vehicle/vehicle_data.gd": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae",
+    "app/sim/ground_vehicle/session.gd": "2eb5bc12fa3f73d3cbc25aea6f109115bf541054027c585ad185491d6c7653e0",
+    "app/physics/ground_vehicle/nitro_dynamics.gd": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa",
+    "app/physics/ground_vehicle/vehicle_dynamics.gd": "75355709c0f813b64c8127899494c3980253cdc16d73a9e480b0204c709e17f5",
+    "app/physics/ground_vehicle/vehicle_environment.gd": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad",
+    "app/physics/ground_vehicle/vehicle_damage.gd": "682a41701ec516f55cf8250f0ef6755efdddb5ad77538f8cc7b62fc725f0ae56",
+    "app/physics/ground_vehicle/airfield_course.gd": "7b444694cbb27f79fa87cf8f6ebace8877bceaa94559648a43826b16eb867b1e",
+    "app/physics/ground_vehicle/airfield_track.gd": "e741a808b42028057308a6e7f2fb22b47cf9f55523a6a58fcca87cf6086dbef2",
+    "research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp": "e48b3163f201887dd3b0c2b59bba95f0ee36f75ab64ef841f11dca8695e29933",
+    "research/rc-monster-truck/native/src/ground_vehicle_native.cpp": "55d123a0aa748db95fe3456559121ebe940e8ecacd4098bb6b94125a47d642ec"
+  },
+  "evidence_sha256": {
+    "baseline.json": "b9b0712c986dad85038f655a8fe041e2dfbdb23bdab01e45430c7b1801e5605c",
+    "baseline.log": "a34fe677bd2e5b1ba40fd5fb71fb4b7b4629d3c7a635dcac1562befacce68f52",
+    "candidate.json": "6ab10f7de7325287971428078483c6a346037807462a54c2ce6b2257352c25b6",
+    "candidate.log": "86b94be7bc27c00143f9c9613179b37b47b5b8b0141cca88c6859959dd9961a8",
+    "checks/test_ground_contact.log": "c5a26be1b3c49960c5ebb3ed6b69c8b3362da69cbe9d56af507df1946b137715",
+    "checks/test_ground_start_environment.log": "c7b6d5258366ae04debeb92c3bd5ee29493cf3ff68023a1fbdfcdda1e1f1dea2",
+    "checks/test_ground_surfaces.log": "d6a18da5595e6cae48b0c24ecf12c53c91b8a180bca705d2f449fcec4ba2a434",
+    "checks/test_ground_terrain.log": "2f769f95da3d33e20357ff596570ecb87125cf65459b10d79e0d3c495e16cd7d",
+    "checks/test_heli_ground_session.log": "6f1bff0887dc9140aecea5be38238b6e5c1eda9ceef318addfba4f9ae67ac1cb",
+    "checks/test_heli_ground_start.log": "4f9c793e1c80d4a74b6964c0d7cdf0d6941c958877c08f7d63d18383db18715c",
+    "checks/test_lake_ground_contact.log": "7a973ca3e5321b29846056959cf22b9c809cd046b6b229a49b8572154f68aa9a",
+    "checks/test_nitro_dynamics.log": "dc58c4ef735b67d5524279aaf0ffb4e5e518d8a8f7d90195a0ff87e59fa7c55d",
+    "checks/test_rcv_airfield_course.log": "4fd18bc0805fe439e96b2154940278e24c762d4b411510d92a96478b4a15d52a",
+    "checks/test_rcv_airfield_track.log": "39537cdcee7a8cbd44b122ecfb5fead54fb70822208d316659652cb656006e36",
+    "checks/test_rcv_nitro_session.log": "c8c0bec92706a16a9467d323de27e07acdded7b25e64c4ea8a8478519d4ecf15",
+    "checks/test_rcv_session.log": "55bbe4f48db0770570ce7e8ead23b54dc5b0ce049b7aa2f3490fb72d9c3da60b",
+    "checks/verification.json": "5420b8a0aeea80b3971db30138230f1f1dde4c90df271a48db1a67de49e25991",
+    "paired.json": "7082faa28813b31c13a5972f9fa239bef500eea2309374fc53d36cc6b2edde9a",
+    "paired.log": "c2423c8af9a4331b4eaa8bad0ef42d4a140e59287fe9d880d70d77636dc08b7c",
+    "terrain.json": "40bdbc8f45f3c475626c6ac0914dcafc48f1872706267a1740b3dd90912ca714",
+    "terrain.log": "717ed9843b60f84501c6a03496f00a38a05e2aba28c339e6c43d98df16c5f6ec",
+    "track.json": "3f4a8803a7f3a4cc99f2522a638b757ae0592bfb420d590daf880896a5f7de4f",
+    "track.log": "4f10852056158d765855d8d1b00a201e5657248cc5a5bc7f766b1ce8018ad7da"
+  },
+  "validator_sha256": "7ec9f2fa06ab5d1c7c23dfdfd1b284288f7411c983dcbfab2f94c8d2a9732a05"
+}

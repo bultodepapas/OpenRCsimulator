@@ -1,0 +1,232 @@
+{
+  "checks": {
+    "direct_rate_dependent_matrix_vs_dimensional_g_max_abs_CL_error": 6.661338147750939e-16,
+    "production_export_E_max_abs_error": 1.1663357241120664e-07,
+    "uniform_KJ_induced_drag_positive_N": 0.52850127347147,
+    "uniform_KJ_plus_profile_power_on_airframe_W": -50.94008341045256,
+    "uniform_KJ_power_on_airframe_W": -9.367183543865522,
+    "uniform_induced_downwash_min_mps": 0.28330167890159924,
+    "variable_chord_direct_matrix_vs_g_max_abs_CL_error": 2.220446049250313e-16,
+    "variable_chord_fixture_has_finite_E": true,
+    "velocity_density_similarity": {
+      "base_rho_kg_m3": 1.225,
+      "expected_force_and_moment_ratio": 5.551020408163264,
+      "maximum_absolute_ratio_error": 1.4352963262354024e-12,
+      "observed_ratios": {
+        "fx_kj_n": 5.551020408163271,
+        "fx_profile_n": 5.551020408163266,
+        "fz_kj_n": 5.551020408163265,
+        "yaw_kj_nm": 5.5510204081647,
+        "yaw_profile_nm": 5.5510204081633585
+      },
+      "scaled_rho_kg_m3": 1.7,
+      "velocity_and_yaw_rate_scale": 2.0
+    },
+    "zero_camber_D11f_midpoint_rows": [
+      {
+        "absolute_error_nm": 2.1250362580715887e-17,
+        "alpha_deg": 2.0,
+        "candidate_total_yaw_nm": 0.0034831854835156127,
+        "d11f_total_yaw_nm": 0.003483185483515634,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 6.982261990806649e-17,
+        "alpha_deg": 2.0,
+        "candidate_total_yaw_nm": -0.003483185483515564,
+        "d11f_total_yaw_nm": -0.003483185483515634,
+        "rate_rad_s": 0.05
+      },
+      {
+        "absolute_error_nm": 2.7321894746634712e-17,
+        "alpha_deg": 4.0,
+        "candidate_total_yaw_nm": 0.0034768186026943038,
+        "d11f_total_yaw_nm": 0.003476818602694331,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 6.114900252818245e-17,
+        "alpha_deg": 4.0,
+        "candidate_total_yaw_nm": -0.0034768186026943038,
+        "d11f_total_yaw_nm": -0.003476818602694365,
+        "rate_rad_s": 0.05
+      },
+      {
+        "absolute_error_nm": 1.691355389077387e-16,
+        "alpha_deg": 8.0,
+        "candidate_total_yaw_nm": 0.00345138985527621,
+        "d11f_total_yaw_nm": 0.003451389855276041,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 1.5612511283791264e-16,
+        "alpha_deg": 8.0,
+        "candidate_total_yaw_nm": -0.0034513898552761546,
+        "d11f_total_yaw_nm": -0.0034513898552759985,
+        "rate_rad_s": 0.05
+      },
+      {
+        "absolute_error_nm": 6.114900252818245e-17,
+        "alpha_deg": 10.0,
+        "candidate_total_yaw_nm": 0.0034323589696910184,
+        "d11f_total_yaw_nm": 0.0034323589696910795,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 1.43982048506075e-16,
+        "alpha_deg": 10.0,
+        "candidate_total_yaw_nm": -0.00343235896969063,
+        "d11f_total_yaw_nm": -0.003432358969690774,
+        "rate_rad_s": 0.05
+      }
+    ],
+    "zero_camber_D11f_midpoint_total_yaw_max_abs_error_Nm": 1.691355389077387e-16
+  },
+  "counterexamples_and_refusals": {
+    "15deg_stall_limit_rejection": "candidate refuses a geometric section angle at/above the supplied attached limit",
+    "exact_zero_rejection": "candidate refuses stagnant or reverse axial flow: every u_i must be > 0",
+    "near_zero_gamma_max_abs_m2_s": 0.3466912380491092,
+    "near_zero_note": "Illustrates poor conditioning as one panel approaches u=0; no validity claim, and exact u=0 is refused.",
+    "near_zero_positive_axial_max_abs_CL_algebraic_only": 19884.837160373758,
+    "near_zero_positive_axial_rate_rad_s": 23.622023622047244,
+    "near_zero_positive_axial_u_min_mps": 1.4999999999432134e-05,
+    "reverse_flow_rejection": "candidate refuses stagnant or reverse axial flow: every u_i must be > 0"
+  },
+  "domain": {
+    "attached": "user/admission condition; the Stik sweep checks geometric atan2(w,u) below its existing R02 a1; no stall or dynamic-stall model is present",
+    "force_quadrature": "circulation is panelwise at 3/4-chord collocation; force is integrated over each bound span segment with 1/2/4/8-point Gauss-Legendre samples",
+    "positive_axial": "strictly every collocation u_i>0; exact zero/reverse is refused, with no epsilon floor",
+    "rates": "the equality proof is per panel for arbitrary positive u_i and w_i inside this linear attached horseshoe model; sampled evidence uses yaw rate only",
+    "section_flow": "planar u,w only; no spanwise local velocity, sweep, sideslip, rotor wake, or 3-D bound-vortex closure"
+  },
+  "force_quadrature_refinement_alpha4_48_panels": [
+    {
+      "gauss_order_per_panel": 1,
+      "k_j_only_Cnr_alpha4": -4.685365254627993e-05,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.01447201660629014
+    },
+    {
+      "gauss_order_per_panel": 2,
+      "k_j_only_Cnr_alpha4": -0.00011815885149317083,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014549585445251532
+    },
+    {
+      "gauss_order_per_panel": 4,
+      "k_j_only_Cnr_alpha4": -0.00019559901193037777,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014627025605689412
+    },
+    {
+      "gauss_order_per_panel": 8,
+      "k_j_only_Cnr_alpha4": -0.00027970513885529043,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014711131732615096
+    }
+  ],
+  "identity": {
+    "D11f_source_sha256": "b71405f04f9385a27a733c2b719560ca6032f682289a53d996ed338b8ef737e8",
+    "candidate_source_sha256": "48d0f37a933eff00fb8c1d890dbae4925065f27704835629930e3ad8c4607ada",
+    "production_aero_source_sha256": "7ac94f6003f2cb7660a56dd94755c6a7d6143d90cc446c6b6c20433038ce38e3",
+    "production_aircraft_sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+    "production_input_export_sha256": "e9139e59b16c2deaa5b5b4db8175a7053d4be4ce900fb8a4ff5e587930f076b6"
+  },
+  "interpretation": "Research candidate and software/model-form comparison only; not a promoted runtime law or physical validation.",
+  "model": {
+    "CD0_semantics": "production value is a whole-aircraft polar; used only as the inherited D11f comparison profile term, not asserted as measured wing-section CD0",
+    "alpha_zero_semantics": "M_static * production strip_cl0; equivalent intercept reconstructed from the existing fitted R02 strips, not measured airfoil camber/incidence",
+    "area_m2": 0.464515,
+    "chord_m": 0.3048,
+    "coordinates": "D11f comparison frame: x aft, y right, z up; yaw is \u03a3 y*Fx; body-power sign is negative force dot the D11f air-on-wing velocity",
+    "dimensional_source": "g_i=u_i*CL_i; g=a0*E*(w+u*(alpha_zero+incidence)); Gamma_i=0.5*c_i*g_i",
+    "equivalent_alpha_zero_mean_rad": 0.02342707020770664,
+    "equivalent_alpha_zero_rad": [
+      0.023427071600925664,
+      0.023427069805466157,
+      0.023427069216728102,
+      0.023427069216728113,
+      0.023427069805466154,
+      0.02342707160092567
+    ],
+    "equivalent_alpha_zero_spread_rad": 2.384197568539026e-09,
+    "force_closure": "Kutta\u2013Joukowski on each piecewise-constant bound \u0393 panel; trailing-leg-only downwash at spanwise force quadrature points; no separate section CL/induced-drag force is added",
+    "geometry_operator": "K_ij=-0.5*c_j*horseshoe_z_ij-\u03b4_ij/(2\u03c0), E=(I+a0*K)^-1; collocation uses the full horseshoe at each 3/4-chord point",
+    "panel_count": 6,
+    "span_m": 1.524,
+    "strip_slope_per_rad": 6.0817546480911915
+  },
+  "panel_refinement_alpha4": [
+    {
+      "k_j_only_Cnr_alpha4": -0.0009232395263665147,
+      "panels_per_semispan": 3,
+      "total_panels": 6,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.015354666120125513
+    },
+    {
+      "k_j_only_Cnr_alpha4": -0.000650922871117073,
+      "panels_per_semispan": 6,
+      "total_panels": 12,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.015082349464876776
+    },
+    {
+      "k_j_only_Cnr_alpha4": -0.00042935082360427663,
+      "panels_per_semispan": 12,
+      "total_panels": 24,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014860777417362591
+    },
+    {
+      "k_j_only_Cnr_alpha4": -0.00027970513885529043,
+      "panels_per_semispan": 24,
+      "total_panels": 48,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014711131732615096
+    },
+    {
+      "k_j_only_Cnr_alpha4": -0.00018516570389211226,
+      "panels_per_semispan": 48,
+      "total_panels": 96,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014616592297650426
+    }
+  ],
+  "schema": "r02-attached-circulation-candidate-v1",
+  "yaw_cnr_model_form_sweep": [
+    {
+      "R02_fixed_E_polar_Cnr": -0.014590311817212771,
+      "alpha_deg": 0.0,
+      "candidate_KJ_only_Cnr": -0.00019638354129138393,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr": -0.014261198356106276
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.013316523849314104,
+      "alpha_deg": 2.0,
+      "candidate_KJ_only_Cnr": -0.00010140982273070434,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr": -0.014157656732379004
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.011840060751877005,
+      "alpha_deg": 4.0,
+      "candidate_KJ_only_Cnr": -6.31255192210335e-06,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr": -0.01403686618474325
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.010179457190661857,
+      "alpha_deg": 6.0,
+      "candidate_KJ_only_Cnr": 8.879240975855623e-05,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr": -0.013898973877874426
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.008362403468035257,
+      "alpha_deg": 8.0,
+      "candidate_KJ_only_Cnr": 0.00018378919156641896,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr": -0.013744147812308677
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.006425612928216825,
+      "alpha_deg": 10.0,
+      "candidate_KJ_only_Cnr": 0.0002785620545526114,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr": -0.013572576619758055
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.005426215234117323,
+      "alpha_deg": 11.0,
+      "candidate_KJ_only_Cnr": 0.0003258284188156434,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr": -0.013480576133564416
+    }
+  ]
+}

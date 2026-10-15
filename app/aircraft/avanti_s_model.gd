@@ -19,7 +19,7 @@ static func apply_surfaces(model: Dictionary, surfaces_deg: Dictionary) -> void:
 	Imported.apply_surfaces(model, surfaces_deg)
 
 static func set_flaps(model: Dictionary, degrees: float) -> void:
-	Imported.set_visual_surfaces(model, {flap_left = degrees, flap_right = degrees})
+	Imported.set_flaps(model, degrees)
 
 static func apply_controls(model: Dictionary, roll: float, pitch: float, yaw: float, flap_deg: float) -> void:
 	roll = clampf(roll, -1.0, 1.0)

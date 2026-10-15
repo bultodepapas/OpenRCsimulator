@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: Monster Car 2 data loads  []
+PASS: Nitro backend identity pins both adapter and body GDScript artifacts
+PASS: preload derives from estimated sprung mass at nominal gravity
+PASS: Nitro applies source preload privately to generalized suspension forces
+PASS: zero gravity settles toward the droop stop  travel=-0.04417 m
+PASS: zero-gravity wheel centers remain on the unmodified road plane  center error=0.000000001 m
+PASS: zero-gravity preloaded wheels start clear and avoid a launch impulse
+PASS: double gravity remains inside compliant bump travel  travel=0.03611 m
+PASS: half spring scale retains constant source preload  travel=0.00000 m
+PASS: initialized state contains body, engine, and fuel float64 fields
+PASS: source ride datum is zero suspension compression at nominal gravity
+PASS: engine starts at idle with full fuel and four tire contacts
+PASS: mechanical total energy includes the spinning Nitro flywheel  added=11.10330495 J, expected=11.10330495 J
+PASS: idle remains steady without unintended restart or propulsion  u=-0.00001870 m/s, RPM delta=0.00000000
+PASS: 240 Hz sustained throttle moves the truck and spends fuel  u=2.114 m/s, RPM=10205, fuel=0.099830 kg
+PASS: four-wheel braking reduces speed after the sustained run
+PASS: raw reverse input cannot drive the forward-only Nitro transmission backward or forward  u=-0.00001870 m/s, RPM delta=0.00000000
+PASS: complete Nitro state replays bit-for-bit from the same control tape
+PASS: powertrain converges under 120/240 Hz step refinement  Δu=0.0000 m/s, ΔRPM=0.0
+PASS: powertrain converges under 240/480 Hz step refinement  Δu=0.0000 m/s, ΔRPM=0.0
+PASS: near-empty fuel caps combustion work to available chemical energy
+PASS: fuel depletion reaches zero without negative mass
+PASS: stalled engine does not auto-restart while fuel remains
+PASS: empty tank telemetry reports no combustion and zero fuel fraction
+Nitro dynamics: 24 checks, 0 failed

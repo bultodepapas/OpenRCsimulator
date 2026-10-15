@@ -128,7 +128,7 @@ func _run() -> void:
 	var action_radio := RcInput.new()
 	var action_profile := _profile({})
 	action_radio.connect_device(DEVICE_ID, INFO, action_profile)
-	_check("flap cycle step one is half", action_radio.auxiliary_action("flaps_cycle") and absf(action_radio.auxiliary_amount("flaps") - 0.5) < 1e-12)
+	_check("flap cycle step one is the 40% takeoff detent", action_radio.auxiliary_action("flaps_cycle") and absf(action_radio.auxiliary_amount("flaps") - 0.4) < 1e-12)
 	_check("flap cycle step two is full", action_radio.auxiliary_action("flaps_cycle") and action_radio.auxiliary_amount("flaps") == 1.0)
 	_check("flap cycle step three returns to zero", action_radio.auxiliary_action("flaps_cycle") and action_radio.auxiliary_amount("flaps") == 0.0)
 	_check("flap up and down set deterministic endpoints", action_radio.auxiliary_action("flaps_down") and action_radio.auxiliary_amount("flaps") == 1.0 and action_radio.auxiliary_action("flaps_up") and action_radio.auxiliary_amount("flaps") == 0.0)

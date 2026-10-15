@@ -50,19 +50,17 @@ func _run() -> void:
 	candidate.event_tape.append({"type": "forged_event", "tick": 0, "time_s": 0.0})
 	candidate.event_tape_sha256 = verifier._hash_variant(candidate.event_tape)
 	candidate.checkpoint_sha256 = verifier._checkpoint_hash(candidate)
+	var verifier_state_before: PackedFloat64Array = verifier.state_snapshot()
 	var accepted := verifier.can_restore_checkpoint(candidate)
 	var restored := verifier.restore_checkpoint(candidate)
-	var restored_events: Array[Dictionary] = verifier.event_tape_snapshot()
-	var replayed := verifier.replay(verifier.control_tape_snapshot()) if restored else false
+	var unchanged := verifier.state_snapshot().to_byte_array() == verifier_state_before.to_byte_array()
 	print("forged_event_accepted=", accepted,
 		" restored=", restored,
-		" replayed=", replayed,
-		" restored_event_count=", restored_events.size(),
-		" restored_event=", restored_events.back() if not restored_events.is_empty() else {},
-		" replay_event_count=", verifier.event_tape_snapshot().size())
+		" state_unchanged=", unchanged)
 	print("checkpoint_event_probe=" + ("FAIL" if accepted and restored else "PASS"))
 	print("braking_event_checkpoint_probe=" + ("FAIL" if saw_braking_event and not braking_checkpoint_restorable else "PASS"))
-	var has_defect := (accepted and restored) or (saw_braking_event and not braking_checkpoint_restorable)
+	var has_defect := (accepted and restored) or not unchanged \
+		or (saw_braking_event and not braking_checkpoint_restorable)
 	source.free()
 	verifier.free()
 	quit(1 if has_defect else 0)

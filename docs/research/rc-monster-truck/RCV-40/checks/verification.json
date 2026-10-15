@@ -1,0 +1,156 @@
+{
+  "step": "RCV-40",
+  "complete": true,
+  "sources": {
+    "app/physics/ground_terrain.gd": "42e9f30e155c8b710dbc3f0219da5b7ba72776fe5123132752a8f13dee260a90",
+    "app/physics/ground_vehicle/airfield_course.gd": "7b444694cbb27f79fa87cf8f6ebace8877bceaa94559648a43826b16eb867b1e",
+    "app/physics/ground_vehicle/airfield_track.gd": "e741a808b42028057308a6e7f2fb22b47cf9f55523a6a58fcca87cf6086dbef2",
+    "app/sim/ground_vehicle/session.gd": "2eb5bc12fa3f73d3cbc25aea6f109115bf541054027c585ad185491d6c7653e0"
+  },
+  "tests": [
+    {
+      "test": "test_ground_terrain.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "21 checks, 0 failed"
+      ],
+      "errors": [],
+      "log": "test_ground_terrain.log",
+      "log_sha256": "2f769f95da3d33e20357ff596570ecb87125cf65459b10d79e0d3c495e16cd7d",
+      "test_sha256": "96a11e132e3349d981ecc25f6d5af8c645406da85d7f4596272fb3603fa60ede"
+    },
+    {
+      "test": "test_ground_contact.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "22 checks, 0 failed"
+      ],
+      "errors": [],
+      "log": "test_ground_contact.log",
+      "log_sha256": "c5a26be1b3c49960c5ebb3ed6b69c8b3362da69cbe9d56af507df1946b137715",
+      "test_sha256": "ed379f89fae0b0e51f2b69ddac744265c5e4e9d1bc1180bd5f2436ea4aae66cd"
+    },
+    {
+      "test": "test_ground_surfaces.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "29 checks, 0 failed"
+      ],
+      "errors": [],
+      "log": "test_ground_surfaces.log",
+      "log_sha256": "d6a18da5595e6cae48b0c24ecf12c53c91b8a180bca705d2f449fcec4ba2a434",
+      "test_sha256": "0db82bfc369837df8cf8ca163ec95ed8630fce88618ec7274babcd7c38dc93c4"
+    },
+    {
+      "test": "test_ground_start_environment.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "10 checks, 0 failed"
+      ],
+      "errors": [],
+      "log": "test_ground_start_environment.log",
+      "log_sha256": "c7b6d5258366ae04debeb92c3bd5ee29493cf3ff68023a1fbdfcdda1e1f1dea2",
+      "test_sha256": "d492d78b359244e370e84f551477aae213ccfbd5a6d90ea8e16843479bdc1fc6"
+    },
+    {
+      "test": "test_lake_ground_contact.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "all lake ground contact checks passed"
+      ],
+      "errors": [],
+      "log": "test_lake_ground_contact.log",
+      "log_sha256": "7a973ca3e5321b29846056959cf22b9c809cd046b6b229a49b8572154f68aa9a",
+      "test_sha256": "e7b8f35d5aebda553395dfc36115afcf9c4bccf098fa60db11931546bb3e4f70"
+    },
+    {
+      "test": "test_heli_ground_start.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "14 checks, 0 failed"
+      ],
+      "errors": [],
+      "log": "test_heli_ground_start.log",
+      "log_sha256": "4f9c793e1c80d4a74b6964c0d7cdf0d6941c958877c08f7d63d18383db18715c",
+      "test_sha256": "da90c75f6fcf039aa41917e59dabdcd73756706a87c182734c2acbf0710673d9"
+    },
+    {
+      "test": "test_heli_ground_session.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "HELI-20 ground session: 56 checks, 0 failed"
+      ],
+      "errors": [],
+      "log": "test_heli_ground_session.log",
+      "log_sha256": "6f1bff0887dc9140aecea5be38238b6e5c1eda9ceef318addfba4f9ae67ac1cb",
+      "test_sha256": "87d9fcd6f96294b3d33038d6ff56b5950a5e7db2f658ce03211ace6aef0272b0"
+    },
+    {
+      "test": "test_rcv_airfield_track.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV airfield track: 19 checks, 0 failures"
+      ],
+      "errors": [],
+      "log": "test_rcv_airfield_track.log",
+      "log_sha256": "39537cdcee7a8cbd44b122ecfb5fead54fb70822208d316659652cb656006e36",
+      "test_sha256": "80b2906cbc9474b820011bc958363e4d0b51c691efa7aaa9f9b435bbf931a7d6"
+    },
+    {
+      "test": "test_rcv_airfield_course.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV airfield course: 0 failed"
+      ],
+      "errors": [],
+      "log": "test_rcv_airfield_course.log",
+      "log_sha256": "4fd18bc0805fe439e96b2154940278e24c762d4b411510d92a96478b4a15d52a",
+      "test_sha256": "614292bac89a7aa0b4da9840ad614cdb44885c06fabd1d9bb48f33fe4f27dc5b"
+    },
+    {
+      "test": "test_rcv_nitro_session.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV Nitro session: 28 checks, 0 failed"
+      ],
+      "errors": [],
+      "log": "test_rcv_nitro_session.log",
+      "log_sha256": "c8c0bec92706a16a9467d323de27e07acdded7b25e64c4ea8a8478519d4ecf15",
+      "test_sha256": "7556e3929b1d30ba23040a426a6d8515c8edf9eb6d8aec14f81f48849e85bc7f"
+    },
+    {
+      "test": "test_nitro_dynamics.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "Nitro dynamics: 30 checks, 0 failed"
+      ],
+      "errors": [],
+      "log": "test_nitro_dynamics.log",
+      "log_sha256": "dc58c4ef735b67d5524279aaf0ffb4e5e518d8a8f7d90195a0ff87e59fa7c55d",
+      "test_sha256": "22fc924189a5d462d988d4cfed21087df26289f7075d88431ec418ef1a22dd0c"
+    },
+    {
+      "test": "test_rcv_session.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV session: 136 checks, 0 failed"
+      ],
+      "errors": [],
+      "log": "test_rcv_session.log",
+      "log_sha256": "55bbe4f48db0770570ce7e8ead23b54dc5b0ce049b7aa2f3490fb72d9c3da60b",
+      "test_sha256": "5e8dffdac3a4fa99560dca96462ee594294789d63b8ce4cc3c7c08ed0c804ce2"
+    }
+  ]
+}

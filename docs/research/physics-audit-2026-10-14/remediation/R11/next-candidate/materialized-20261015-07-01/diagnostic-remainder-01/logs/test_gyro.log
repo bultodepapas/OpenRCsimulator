@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   rotor angular momentum at full rpm ≈ 0.41 N·m·s  0.4086
+ok   pull up (q > 0), clockwise prop → nose yaws RIGHT (ṙ > 0)  Δṙ 0.845 rad/s²
+ok   size: Δω̇ = J⁻¹·(0, 0, q·h)  
+ok   yaw right (r > 0), clockwise prop → nose pitches DOWN (q̇ < 0)  Δq̇ -1.058 rad/s²
+ok   torque-free tumble with the rotor: total angular momentum conserved to 1e-6 over 60 s  4.171457206637082e-11
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   flown pull-up at full throttle: yaw rate more to the right with the gyro  r -0.124 vs -0.188 rad/s
+6 checks, 0 failed

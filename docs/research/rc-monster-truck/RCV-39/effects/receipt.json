@@ -1,0 +1,391 @@
+{
+	"baseline_path": "C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/monster-car-2/rcv39/baseline_effects.gd",
+	"candidate_path": "C:/DEVELOPMENT/OpenRCsimulator/app/vehicles/ground/ground_effects.gd",
+	"complete": true,
+	"created_utc": "2026-10-15T19:59:38",
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"equivalent": true,
+	"os": "Windows",
+	"result": {
+		"performance": {
+			"alternating_batches": 5,
+			"case_results": {
+				"moving_dirty": {
+					"baseline_median_us_per_update": 99.5285,
+					"batches": 5,
+					"candidate_median_us_per_update": 69.9455,
+					"measured_updates_per_sample": 2000,
+					"median_speedup_ratio": 1.42294357749962,
+					"moving_transform_assignment_in_timed_loop": true,
+					"samples": [
+						{
+							"batch": 0,
+							"case": "moving-dirty",
+							"elapsed_usec": 199192,
+							"implementation": "baseline",
+							"order": [
+								"baseline",
+								"candidate"
+							],
+							"us_per_update": 99.596
+						},
+						{
+							"batch": 0,
+							"case": "moving-dirty",
+							"elapsed_usec": 143543,
+							"implementation": "candidate",
+							"order": [
+								"baseline",
+								"candidate"
+							],
+							"us_per_update": 71.7715
+						},
+						{
+							"batch": 1,
+							"case": "moving-dirty",
+							"elapsed_usec": 136370,
+							"implementation": "candidate",
+							"order": [
+								"candidate",
+								"baseline"
+							],
+							"us_per_update": 68.185
+						},
+						{
+							"batch": 1,
+							"case": "moving-dirty",
+							"elapsed_usec": 194844,
+							"implementation": "baseline",
+							"order": [
+								"candidate",
+								"baseline"
+							],
+							"us_per_update": 97.422
+						},
+						{
+							"batch": 2,
+							"case": "moving-dirty",
+							"elapsed_usec": 199057,
+							"implementation": "baseline",
+							"order": [
+								"baseline",
+								"candidate"
+							],
+							"us_per_update": 99.5285
+						},
+						{
+							"batch": 2,
+							"case": "moving-dirty",
+							"elapsed_usec": 107992,
+							"implementation": "candidate",
+							"order": [
+								"baseline",
+								"candidate"
+							],
+							"us_per_update": 53.996
+						},
+						{
+							"batch": 3,
+							"case": "moving-dirty",
+							"elapsed_usec": 139891,
+							"implementation": "candidate",
+							"order": [
+								"candidate",
+								"baseline"
+							],
+							"us_per_update": 69.9455
+						},
+						{
+							"batch": 3,
+							"case": "moving-dirty",
+							"elapsed_usec": 194831,
+							"implementation": "baseline",
+							"order": [
+								"candidate",
+								"baseline"
+							],
+							"us_per_update": 97.4155
+						},
+						{
+							"batch": 4,
+							"case": "moving-dirty",
+							"elapsed_usec": 221850,
+							"implementation": "baseline",
+							"order": [
+								"baseline",
+								"candidate"
+							],
+							"us_per_update": 110.925
+						},
+						{
+							"batch": 4,
+							"case": "moving-dirty",
+							"elapsed_usec": 141551,
+							"implementation": "candidate",
+							"order": [
+								"baseline",
+								"candidate"
+							],
+							"us_per_update": 70.7755
+						}
+					],
+					"warmup_updates_per_sample": 100
+				},
+				"stable_paused": {
+					"baseline_median_us_per_update": 17.437,
+					"batches": 5,
+					"candidate_median_us_per_update": 4.6275,
+					"measured_updates_per_sample": 2000,
+					"median_speedup_ratio": 3.76812533765532,
+					"moving_transform_assignment_in_timed_loop": false,
+					"samples": [
+						{
+							"batch": 0,
+							"case": "stable-paused",
+							"elapsed_usec": 34874,
+							"implementation": "baseline",
+							"order": [
+								"baseline",
+								"candidate"
+							],
+							"us_per_update": 17.437
+						},
+						{
+							"batch": 0,
+							"case": "stable-paused",
+							"elapsed_usec": 8833,
+							"implementation": "candidate",
+							"order": [
+								"baseline",
+								"candidate"
+							],
+							"us_per_update": 4.4165
+						},
+						{
+							"batch": 1,
+							"case": "stable-paused",
+							"elapsed_usec": 9255,
+							"implementation": "candidate",
+							"order": [
+								"candidate",
+								"baseline"
+							],
+							"us_per_update": 4.6275
+						},
+						{
+							"batch": 1,
+							"case": "stable-paused",
+							"elapsed_usec": 35022,
+							"implementation": "baseline",
+							"order": [
+								"candidate",
+								"baseline"
+							],
+							"us_per_update": 17.511
+						},
+						{
+							"batch": 2,
+							"case": "stable-paused",
+							"elapsed_usec": 31142,
+							"implementation": "baseline",
+							"order": [
+								"baseline",
+								"candidate"
+							],
+							"us_per_update": 15.571
+						},
+						{
+							"batch": 2,
+							"case": "stable-paused",
+							"elapsed_usec": 10801,
+							"implementation": "candidate",
+							"order": [
+								"baseline",
+								"candidate"
+							],
+							"us_per_update": 5.4005
+						},
+						{
+							"batch": 3,
+							"case": "stable-paused",
+							"elapsed_usec": 10831,
+							"implementation": "candidate",
+							"order": [
+								"candidate",
+								"baseline"
+							],
+							"us_per_update": 5.4155
+						},
+						{
+							"batch": 3,
+							"case": "stable-paused",
+							"elapsed_usec": 26900,
+							"implementation": "baseline",
+							"order": [
+								"candidate",
+								"baseline"
+							],
+							"us_per_update": 13.45
+						},
+						{
+							"batch": 4,
+							"case": "stable-paused",
+							"elapsed_usec": 35527,
+							"implementation": "baseline",
+							"order": [
+								"baseline",
+								"candidate"
+							],
+							"us_per_update": 17.7635
+						},
+						{
+							"batch": 4,
+							"case": "stable-paused",
+							"elapsed_usec": 7889,
+							"implementation": "candidate",
+							"order": [
+								"baseline",
+								"candidate"
+							],
+							"us_per_update": 3.9445
+						}
+					],
+					"warmup_updates_per_sample": 100
+				}
+			},
+			"complete": true,
+			"measured_updates": 2000,
+			"sample_count": 20,
+			"warmup_updates": 100
+		},
+		"tape": [
+			{
+				"name": "dry-moving",
+				"operation": "update",
+				"steps": 12
+			},
+			{
+				"name": "dirt",
+				"operation": "update",
+				"steps": 12
+			},
+			{
+				"name": "mud",
+				"operation": "update",
+				"steps": 12
+			},
+			{
+				"name": "wet",
+				"operation": "update",
+				"steps": 12
+			},
+			{
+				"name": "drying",
+				"operation": "update",
+				"steps": 24
+			},
+			{
+				"name": "pause",
+				"operation": "update",
+				"steps": 3
+			},
+			{
+				"name": "transform-motion",
+				"operation": "update",
+				"steps": 10
+			},
+			{
+				"name": "pause-before-clean",
+				"operation": "update",
+				"steps": 1
+			},
+			{
+				"name": "clean-while-paused",
+				"operation": "clean",
+				"steps": 0
+			},
+			{
+				"name": "resume-after-clean",
+				"operation": "update",
+				"steps": 1
+			},
+			{
+				"name": "dirty-before-reset",
+				"operation": "update",
+				"steps": 8
+			},
+			{
+				"name": "reset",
+				"operation": "reset",
+				"steps": 0
+			}
+		]
+	},
+	"schema": "rcv39-ground-effects-bench-v1",
+	"source_hashes": {
+		"baseline_effects.gd": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/monster-car-2/rcv39/baseline_effects.gd",
+			"sha256": "83e87335f3c38ccd217bed41a29afec54eaa69260ef6deb4fca4f1a7e87351e8"
+		},
+		"bench_effects.gd": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/monster-car-2/rcv39/bench_effects.gd",
+			"sha256": "9e8e2295f3aeee1e4900625c80435630825bee9662ce373ec1242402427794a7"
+		},
+		"candidate_effects.gd": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/app/vehicles/ground/ground_effects.gd",
+			"sha256": "2de86bdca45f53ad6abaf28b87dd67e5f6ee5bfa9a6128cb1e4cbf38737121da"
+		},
+		"ground_grime_overlay.gdshader": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/app/vehicles/ground/ground_grime_overlay.gdshader",
+			"sha256": "828f63afa0a9ee1d3f08bb9aa79ea3e8ddd09cf4c3c19384b92b03ed0aa5a70d"
+		},
+		"monster_car_2_model.gd": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/app/vehicles/ground/monster_car_2_model.gd",
+			"sha256": "cd19dec6f75f0fbdb929206a3988da157df3b18bbcf066a91e9aca58e2714a73"
+		},
+		"production_ground_effects.gd": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/app/vehicles/ground/ground_effects.gd",
+			"sha256": "2de86bdca45f53ad6abaf28b87dd67e5f6ee5bfa9a6128cb1e4cbf38737121da"
+		},
+		"test_rcv36_effects.gd": {
+			"path": "C:/DEVELOPMENT/OpenRCsimulator/app/tests/test_rcv36_effects.gd",
+			"sha256": "cdefe9a7aa043df36db33414f46a2a4666132ad1004d0844e7b13e7e9740897a"
+		}
+	},
+	"structure": {
+		"candidate_diagnostic_grime_material_count": 5,
+		"cross_vehicle_overlay_materials_shared": 0,
+		"overlays_attached_per_vehicle": [
+			70,
+			70
+		],
+		"shell_meshes": 66,
+		"source_material_resource_overlap": 23,
+		"source_mesh_nodes_distinct": true,
+		"source_mesh_resource_overlap": 67,
+		"unique_overlay_materials": [
+			70,
+			5
+		]
+	},
+	"verification": {
+		"checks": 206554,
+		"comparison_snapshots": 97,
+		"diagnostic_performance_fields_excluded": [
+			"grime_material_count"
+		],
+		"failures": 0,
+		"mismatches": [],
+		"overlay_uniform_comparisons": 47530
+	}
+}

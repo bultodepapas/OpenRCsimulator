@@ -1,0 +1,1831 @@
+{
+  "modelo": "Monster truck RC nitro 1:8 (diseño propio)",
+  "unidades": "metros, kilogramos, radianes salvo indicación",
+  "ejes_blender": "X adelante, Y izquierda, Z arriba; origen en el centro del chasis a nivel del piso",
+  "ejes_gltf": "glTF usa Y arriba: (x, y, z)_gltf = (x, z, -y)_blender",
+  "geometria": {
+    "distancia_ejes": 0.4,
+    "ancho_via": 0.4,
+    "radio_rueda": 0.087,
+    "ancho_rueda": 0.09267,
+    "altura_eje_reposo": 0.0865,
+    "recorrido_rueda": {
+      "extension": -0.044,
+      "compresion": 0.036
+    }
+  },
+  "esquinas": {
+    "Del_Izq": {
+      "puntos": {
+        "L0": [
+          0.2,
+          0.045,
+          0.06
+        ],
+        "L1": [
+          0.20372,
+          0.164,
+          0.06
+        ],
+        "U0": [
+          0.2,
+          0.05,
+          0.106
+        ],
+        "U1": [
+          0.19578,
+          0.155,
+          0.1165
+        ],
+        "A": [
+          0.2095,
+          0.115,
+          0.0715
+        ],
+        "R": [
+          0.2095,
+          0.05,
+          0.14
+        ],
+        "P": [
+          0.1755,
+          0.0558,
+          0.14551
+        ],
+        "S": [
+          0.1755,
+          0.0482,
+          0.16587
+        ],
+        "B": [
+          0.08,
+          0.0482,
+          0.16587
+        ],
+        "W": [
+          0.2,
+          0.2,
+          0.0865
+        ],
+        "D0": [
+          0.2,
+          0.0525,
+          0.0865
+        ],
+        "D1": [
+          0.2,
+          0.15978,
+          0.0865
+        ],
+        "eje_balancin": [
+          -0.0,
+          0.7254,
+          0.68833
+        ],
+        "bieleta_interior": [
+          0.15,
+          0.046,
+          0.0915
+        ],
+        "bieleta_exterior": [
+          0.174,
+          0.153,
+          0.099
+        ]
+      },
+      "leyenda": {
+        "L0": "pivote interior brazo inferior",
+        "L1": "rótula exterior brazo inferior",
+        "U0": "pivote interior brazo superior",
+        "U1": "rótula exterior brazo superior",
+        "A": "varilla de empuje en el brazo",
+        "R": "varilla de empuje en el balancín",
+        "P": "pivote del balancín",
+        "S": "amortiguador en el balancín",
+        "B": "amortiguador en el chasis",
+        "W": "centro de rueda",
+        "D0": "palier interior",
+        "D1": "palier exterior"
+      },
+      "largo_amortiguador_reposo": 0.0955,
+      "curvas": {
+        "recorrido_rueda": [
+          -0.044,
+          -0.042,
+          -0.04,
+          -0.038,
+          -0.036,
+          -0.034,
+          -0.032,
+          -0.03,
+          -0.028,
+          -0.026,
+          -0.024,
+          -0.022,
+          -0.02,
+          -0.018,
+          -0.016,
+          -0.014,
+          -0.012,
+          -0.01,
+          -0.008,
+          -0.006,
+          -0.004,
+          -0.002,
+          0.0,
+          0.002,
+          0.004,
+          0.006,
+          0.008,
+          0.01,
+          0.012,
+          0.014,
+          0.016,
+          0.018,
+          0.02,
+          0.022,
+          0.024,
+          0.026,
+          0.028,
+          0.03,
+          0.032,
+          0.034,
+          0.036
+        ],
+        "compresion_amortiguador": [
+          -0.01181,
+          -0.01124,
+          -0.01069,
+          -0.01014,
+          -0.0096,
+          -0.00906,
+          -0.00852,
+          -0.00799,
+          -0.00746,
+          -0.00693,
+          -0.0064,
+          -0.00588,
+          -0.00535,
+          -0.00482,
+          -0.00429,
+          -0.00376,
+          -0.00323,
+          -0.0027,
+          -0.00216,
+          -0.00163,
+          -0.00109,
+          -0.00054,
+          0.0,
+          0.00055,
+          0.0011,
+          0.00165,
+          0.00221,
+          0.00277,
+          0.00333,
+          0.0039,
+          0.00447,
+          0.00504,
+          0.00562,
+          0.0062,
+          0.00678,
+          0.00737,
+          0.00795,
+          0.00854,
+          0.00913,
+          0.00972,
+          0.01031
+        ],
+        "relacion_palanca": [
+          0.2812,
+          0.2792,
+          0.2757,
+          0.2728,
+          0.2704,
+          0.2685,
+          0.2669,
+          0.2658,
+          0.2649,
+          0.2643,
+          0.264,
+          0.2638,
+          0.2639,
+          0.2642,
+          0.2647,
+          0.2653,
+          0.266,
+          0.2669,
+          0.2679,
+          0.2691,
+          0.2703,
+          0.2716,
+          0.273,
+          0.2745,
+          0.2761,
+          0.2777,
+          0.2793,
+          0.281,
+          0.2826,
+          0.2843,
+          0.286,
+          0.2876,
+          0.2891,
+          0.2906,
+          0.2919,
+          0.293,
+          0.294,
+          0.2947,
+          0.2951,
+          0.2951,
+          0.295
+        ],
+        "caida_grados": [
+          -3.525,
+          -3.387,
+          -3.246,
+          -3.104,
+          -2.961,
+          -2.815,
+          -2.667,
+          -2.518,
+          -2.366,
+          -2.212,
+          -2.057,
+          -1.899,
+          -1.739,
+          -1.576,
+          -1.411,
+          -1.244,
+          -1.075,
+          -0.902,
+          -0.728,
+          -0.55,
+          -0.37,
+          -0.186,
+          0.0,
+          0.189,
+          0.382,
+          0.578,
+          0.777,
+          0.98,
+          1.187,
+          1.398,
+          1.612,
+          1.831,
+          2.054,
+          2.281,
+          2.513,
+          2.75,
+          2.992,
+          3.239,
+          3.492,
+          3.75,
+          4.014
+        ],
+        "desplazamiento_lateral_rueda": [
+          -0.006,
+          -0.00536,
+          -0.00476,
+          -0.0042,
+          -0.00367,
+          -0.00318,
+          -0.00273,
+          -0.00231,
+          -0.00192,
+          -0.00157,
+          -0.00126,
+          -0.00097,
+          -0.00072,
+          -0.00051,
+          -0.00032,
+          -0.00017,
+          -5e-05,
+          4e-05,
+          9e-05,
+          0.00012,
+          0.00011,
+          7e-05,
+          -0.0,
+          -0.0001,
+          -0.00024,
+          -0.0004,
+          -0.0006,
+          -0.00083,
+          -0.00109,
+          -0.00138,
+          -0.00171,
+          -0.00207,
+          -0.00246,
+          -0.00288,
+          -0.00333,
+          -0.00382,
+          -0.00434,
+          -0.0049,
+          -0.00549,
+          -0.00611,
+          -0.00677
+        ]
+      }
+    },
+    "Del_Der": {
+      "puntos": {
+        "L0": [
+          0.2,
+          -0.045,
+          0.06
+        ],
+        "L1": [
+          0.20372,
+          -0.164,
+          0.06
+        ],
+        "U0": [
+          0.2,
+          -0.05,
+          0.106
+        ],
+        "U1": [
+          0.19578,
+          -0.155,
+          0.1165
+        ],
+        "A": [
+          0.2095,
+          -0.115,
+          0.0715
+        ],
+        "R": [
+          0.2095,
+          -0.05,
+          0.14
+        ],
+        "P": [
+          0.1755,
+          -0.0558,
+          0.14551
+        ],
+        "S": [
+          0.1755,
+          -0.0482,
+          0.16587
+        ],
+        "B": [
+          0.08,
+          -0.0482,
+          0.16587
+        ],
+        "W": [
+          0.2,
+          -0.2,
+          0.0865
+        ],
+        "D0": [
+          0.2,
+          -0.0525,
+          0.0865
+        ],
+        "D1": [
+          0.2,
+          -0.15978,
+          0.0865
+        ],
+        "eje_balancin": [
+          -0.0,
+          -0.7254,
+          0.68833
+        ],
+        "bieleta_interior": [
+          0.15,
+          -0.046,
+          0.0915
+        ],
+        "bieleta_exterior": [
+          0.174,
+          -0.153,
+          0.099
+        ]
+      },
+      "leyenda": {
+        "L0": "pivote interior brazo inferior",
+        "L1": "rótula exterior brazo inferior",
+        "U0": "pivote interior brazo superior",
+        "U1": "rótula exterior brazo superior",
+        "A": "varilla de empuje en el brazo",
+        "R": "varilla de empuje en el balancín",
+        "P": "pivote del balancín",
+        "S": "amortiguador en el balancín",
+        "B": "amortiguador en el chasis",
+        "W": "centro de rueda",
+        "D0": "palier interior",
+        "D1": "palier exterior"
+      },
+      "largo_amortiguador_reposo": 0.0955,
+      "curvas": {
+        "recorrido_rueda": [
+          -0.044,
+          -0.042,
+          -0.04,
+          -0.038,
+          -0.036,
+          -0.034,
+          -0.032,
+          -0.03,
+          -0.028,
+          -0.026,
+          -0.024,
+          -0.022,
+          -0.02,
+          -0.018,
+          -0.016,
+          -0.014,
+          -0.012,
+          -0.01,
+          -0.008,
+          -0.006,
+          -0.004,
+          -0.002,
+          0.0,
+          0.002,
+          0.004,
+          0.006,
+          0.008,
+          0.01,
+          0.012,
+          0.014,
+          0.016,
+          0.018,
+          0.02,
+          0.022,
+          0.024,
+          0.026,
+          0.028,
+          0.03,
+          0.032,
+          0.034,
+          0.036
+        ],
+        "compresion_amortiguador": [
+          -0.01181,
+          -0.01124,
+          -0.01069,
+          -0.01014,
+          -0.0096,
+          -0.00906,
+          -0.00852,
+          -0.00799,
+          -0.00746,
+          -0.00693,
+          -0.0064,
+          -0.00588,
+          -0.00535,
+          -0.00482,
+          -0.00429,
+          -0.00376,
+          -0.00323,
+          -0.0027,
+          -0.00216,
+          -0.00163,
+          -0.00109,
+          -0.00054,
+          0.0,
+          0.00055,
+          0.0011,
+          0.00165,
+          0.00221,
+          0.00277,
+          0.00333,
+          0.0039,
+          0.00447,
+          0.00504,
+          0.00562,
+          0.0062,
+          0.00678,
+          0.00737,
+          0.00795,
+          0.00854,
+          0.00913,
+          0.00972,
+          0.01031
+        ],
+        "relacion_palanca": [
+          0.2812,
+          0.2792,
+          0.2757,
+          0.2728,
+          0.2704,
+          0.2685,
+          0.2669,
+          0.2658,
+          0.2649,
+          0.2643,
+          0.264,
+          0.2638,
+          0.2639,
+          0.2642,
+          0.2647,
+          0.2653,
+          0.266,
+          0.2669,
+          0.2679,
+          0.2691,
+          0.2703,
+          0.2716,
+          0.273,
+          0.2745,
+          0.2761,
+          0.2777,
+          0.2793,
+          0.281,
+          0.2826,
+          0.2843,
+          0.286,
+          0.2876,
+          0.2891,
+          0.2906,
+          0.2919,
+          0.293,
+          0.294,
+          0.2947,
+          0.2951,
+          0.2951,
+          0.295
+        ],
+        "caida_grados": [
+          -3.525,
+          -3.387,
+          -3.246,
+          -3.104,
+          -2.961,
+          -2.815,
+          -2.667,
+          -2.518,
+          -2.366,
+          -2.212,
+          -2.057,
+          -1.899,
+          -1.739,
+          -1.576,
+          -1.411,
+          -1.244,
+          -1.075,
+          -0.902,
+          -0.728,
+          -0.55,
+          -0.37,
+          -0.186,
+          0.0,
+          0.189,
+          0.382,
+          0.578,
+          0.777,
+          0.98,
+          1.187,
+          1.398,
+          1.612,
+          1.831,
+          2.054,
+          2.281,
+          2.513,
+          2.75,
+          2.992,
+          3.239,
+          3.492,
+          3.75,
+          4.014
+        ],
+        "desplazamiento_lateral_rueda": [
+          -0.006,
+          -0.00536,
+          -0.00476,
+          -0.0042,
+          -0.00367,
+          -0.00318,
+          -0.00273,
+          -0.00231,
+          -0.00192,
+          -0.00157,
+          -0.00126,
+          -0.00097,
+          -0.00072,
+          -0.00051,
+          -0.00032,
+          -0.00017,
+          -5e-05,
+          4e-05,
+          9e-05,
+          0.00012,
+          0.00011,
+          7e-05,
+          -0.0,
+          -0.0001,
+          -0.00024,
+          -0.0004,
+          -0.0006,
+          -0.00083,
+          -0.00109,
+          -0.00138,
+          -0.00171,
+          -0.00207,
+          -0.00246,
+          -0.00288,
+          -0.00333,
+          -0.00382,
+          -0.00434,
+          -0.0049,
+          -0.00549,
+          -0.00611,
+          -0.00677
+        ]
+      }
+    },
+    "Tras_Izq": {
+      "puntos": {
+        "L0": [
+          -0.2,
+          0.045,
+          0.06
+        ],
+        "L1": [
+          -0.2,
+          0.164,
+          0.06
+        ],
+        "U0": [
+          -0.2,
+          0.05,
+          0.106
+        ],
+        "U1": [
+          -0.2,
+          0.155,
+          0.1165
+        ],
+        "A": [
+          -0.2095,
+          0.115,
+          0.0715
+        ],
+        "R": [
+          -0.2095,
+          0.05,
+          0.14
+        ],
+        "P": [
+          -0.1755,
+          0.0558,
+          0.14551
+        ],
+        "S": [
+          -0.1755,
+          0.0482,
+          0.16587
+        ],
+        "B": [
+          -0.0825,
+          0.0482,
+          0.16587
+        ],
+        "W": [
+          -0.2,
+          0.2,
+          0.0865
+        ],
+        "D0": [
+          -0.2,
+          0.0525,
+          0.0865
+        ],
+        "D1": [
+          -0.2,
+          0.15978,
+          0.0865
+        ],
+        "eje_balancin": [
+          -0.0,
+          0.7254,
+          0.68833
+        ]
+      },
+      "leyenda": {
+        "L0": "pivote interior brazo inferior",
+        "L1": "rótula exterior brazo inferior",
+        "U0": "pivote interior brazo superior",
+        "U1": "rótula exterior brazo superior",
+        "A": "varilla de empuje en el brazo",
+        "R": "varilla de empuje en el balancín",
+        "P": "pivote del balancín",
+        "S": "amortiguador en el balancín",
+        "B": "amortiguador en el chasis",
+        "W": "centro de rueda",
+        "D0": "palier interior",
+        "D1": "palier exterior"
+      },
+      "largo_amortiguador_reposo": 0.093,
+      "curvas": {
+        "recorrido_rueda": [
+          -0.044,
+          -0.042,
+          -0.04,
+          -0.038,
+          -0.036,
+          -0.034,
+          -0.032,
+          -0.03,
+          -0.028,
+          -0.026,
+          -0.024,
+          -0.022,
+          -0.02,
+          -0.018,
+          -0.016,
+          -0.014,
+          -0.012,
+          -0.01,
+          -0.008,
+          -0.006,
+          -0.004,
+          -0.002,
+          0.0,
+          0.002,
+          0.004,
+          0.006,
+          0.008,
+          0.01,
+          0.012,
+          0.014,
+          0.016,
+          0.018,
+          0.02,
+          0.022,
+          0.024,
+          0.026,
+          0.028,
+          0.03,
+          0.032,
+          0.034,
+          0.036
+        ],
+        "compresion_amortiguador": [
+          -0.01181,
+          -0.01124,
+          -0.01069,
+          -0.01014,
+          -0.0096,
+          -0.00906,
+          -0.00852,
+          -0.00799,
+          -0.00746,
+          -0.00693,
+          -0.0064,
+          -0.00588,
+          -0.00535,
+          -0.00482,
+          -0.00429,
+          -0.00376,
+          -0.00323,
+          -0.0027,
+          -0.00216,
+          -0.00163,
+          -0.00109,
+          -0.00054,
+          0.0,
+          0.00055,
+          0.0011,
+          0.00165,
+          0.00221,
+          0.00277,
+          0.00333,
+          0.0039,
+          0.00447,
+          0.00504,
+          0.00562,
+          0.0062,
+          0.00678,
+          0.00737,
+          0.00795,
+          0.00854,
+          0.00913,
+          0.00972,
+          0.01031
+        ],
+        "relacion_palanca": [
+          0.2813,
+          0.2794,
+          0.2758,
+          0.2728,
+          0.2705,
+          0.2685,
+          0.267,
+          0.2658,
+          0.2649,
+          0.2643,
+          0.264,
+          0.2639,
+          0.2639,
+          0.2642,
+          0.2647,
+          0.2653,
+          0.266,
+          0.2669,
+          0.2679,
+          0.2691,
+          0.2703,
+          0.2716,
+          0.273,
+          0.2745,
+          0.2761,
+          0.2777,
+          0.2793,
+          0.281,
+          0.2826,
+          0.2843,
+          0.286,
+          0.2876,
+          0.2891,
+          0.2905,
+          0.2918,
+          0.293,
+          0.2939,
+          0.2946,
+          0.2949,
+          0.2949,
+          0.2948
+        ],
+        "caida_grados": [
+          -3.525,
+          -3.387,
+          -3.246,
+          -3.104,
+          -2.961,
+          -2.815,
+          -2.667,
+          -2.518,
+          -2.366,
+          -2.212,
+          -2.057,
+          -1.899,
+          -1.739,
+          -1.576,
+          -1.411,
+          -1.244,
+          -1.075,
+          -0.902,
+          -0.728,
+          -0.55,
+          -0.37,
+          -0.186,
+          0.0,
+          0.189,
+          0.382,
+          0.578,
+          0.777,
+          0.98,
+          1.187,
+          1.398,
+          1.612,
+          1.831,
+          2.054,
+          2.281,
+          2.513,
+          2.75,
+          2.992,
+          3.239,
+          3.492,
+          3.75,
+          4.014
+        ],
+        "desplazamiento_lateral_rueda": [
+          -0.006,
+          -0.00536,
+          -0.00476,
+          -0.0042,
+          -0.00367,
+          -0.00318,
+          -0.00273,
+          -0.00231,
+          -0.00192,
+          -0.00157,
+          -0.00126,
+          -0.00097,
+          -0.00072,
+          -0.00051,
+          -0.00032,
+          -0.00017,
+          -5e-05,
+          4e-05,
+          9e-05,
+          0.00012,
+          0.00011,
+          7e-05,
+          -0.0,
+          -0.0001,
+          -0.00024,
+          -0.0004,
+          -0.0006,
+          -0.00083,
+          -0.00109,
+          -0.00138,
+          -0.00171,
+          -0.00207,
+          -0.00246,
+          -0.00288,
+          -0.00333,
+          -0.00382,
+          -0.00434,
+          -0.0049,
+          -0.00549,
+          -0.00611,
+          -0.00677
+        ]
+      }
+    },
+    "Tras_Der": {
+      "puntos": {
+        "L0": [
+          -0.2,
+          -0.045,
+          0.06
+        ],
+        "L1": [
+          -0.2,
+          -0.164,
+          0.06
+        ],
+        "U0": [
+          -0.2,
+          -0.05,
+          0.106
+        ],
+        "U1": [
+          -0.2,
+          -0.155,
+          0.1165
+        ],
+        "A": [
+          -0.2095,
+          -0.115,
+          0.0715
+        ],
+        "R": [
+          -0.2095,
+          -0.05,
+          0.14
+        ],
+        "P": [
+          -0.1755,
+          -0.0558,
+          0.14551
+        ],
+        "S": [
+          -0.1755,
+          -0.0482,
+          0.16587
+        ],
+        "B": [
+          -0.0825,
+          -0.0482,
+          0.16587
+        ],
+        "W": [
+          -0.2,
+          -0.2,
+          0.0865
+        ],
+        "D0": [
+          -0.2,
+          -0.0525,
+          0.0865
+        ],
+        "D1": [
+          -0.2,
+          -0.15978,
+          0.0865
+        ],
+        "eje_balancin": [
+          -0.0,
+          -0.7254,
+          0.68833
+        ]
+      },
+      "leyenda": {
+        "L0": "pivote interior brazo inferior",
+        "L1": "rótula exterior brazo inferior",
+        "U0": "pivote interior brazo superior",
+        "U1": "rótula exterior brazo superior",
+        "A": "varilla de empuje en el brazo",
+        "R": "varilla de empuje en el balancín",
+        "P": "pivote del balancín",
+        "S": "amortiguador en el balancín",
+        "B": "amortiguador en el chasis",
+        "W": "centro de rueda",
+        "D0": "palier interior",
+        "D1": "palier exterior"
+      },
+      "largo_amortiguador_reposo": 0.093,
+      "curvas": {
+        "recorrido_rueda": [
+          -0.044,
+          -0.042,
+          -0.04,
+          -0.038,
+          -0.036,
+          -0.034,
+          -0.032,
+          -0.03,
+          -0.028,
+          -0.026,
+          -0.024,
+          -0.022,
+          -0.02,
+          -0.018,
+          -0.016,
+          -0.014,
+          -0.012,
+          -0.01,
+          -0.008,
+          -0.006,
+          -0.004,
+          -0.002,
+          0.0,
+          0.002,
+          0.004,
+          0.006,
+          0.008,
+          0.01,
+          0.012,
+          0.014,
+          0.016,
+          0.018,
+          0.02,
+          0.022,
+          0.024,
+          0.026,
+          0.028,
+          0.03,
+          0.032,
+          0.034,
+          0.036
+        ],
+        "compresion_amortiguador": [
+          -0.01181,
+          -0.01124,
+          -0.01069,
+          -0.01014,
+          -0.0096,
+          -0.00906,
+          -0.00852,
+          -0.00799,
+          -0.00746,
+          -0.00693,
+          -0.0064,
+          -0.00588,
+          -0.00535,
+          -0.00482,
+          -0.00429,
+          -0.00376,
+          -0.00323,
+          -0.0027,
+          -0.00216,
+          -0.00163,
+          -0.00109,
+          -0.00054,
+          0.0,
+          0.00055,
+          0.0011,
+          0.00165,
+          0.00221,
+          0.00277,
+          0.00333,
+          0.0039,
+          0.00447,
+          0.00504,
+          0.00562,
+          0.0062,
+          0.00678,
+          0.00737,
+          0.00795,
+          0.00854,
+          0.00913,
+          0.00972,
+          0.01031
+        ],
+        "relacion_palanca": [
+          0.2813,
+          0.2794,
+          0.2758,
+          0.2728,
+          0.2705,
+          0.2685,
+          0.267,
+          0.2658,
+          0.2649,
+          0.2643,
+          0.264,
+          0.2639,
+          0.2639,
+          0.2642,
+          0.2647,
+          0.2653,
+          0.266,
+          0.2669,
+          0.2679,
+          0.2691,
+          0.2703,
+          0.2716,
+          0.273,
+          0.2745,
+          0.2761,
+          0.2777,
+          0.2793,
+          0.281,
+          0.2826,
+          0.2843,
+          0.286,
+          0.2876,
+          0.2891,
+          0.2905,
+          0.2918,
+          0.293,
+          0.2939,
+          0.2946,
+          0.2949,
+          0.2949,
+          0.2948
+        ],
+        "caida_grados": [
+          -3.525,
+          -3.387,
+          -3.246,
+          -3.104,
+          -2.961,
+          -2.815,
+          -2.667,
+          -2.518,
+          -2.366,
+          -2.212,
+          -2.057,
+          -1.899,
+          -1.739,
+          -1.576,
+          -1.411,
+          -1.244,
+          -1.075,
+          -0.902,
+          -0.728,
+          -0.55,
+          -0.37,
+          -0.186,
+          0.0,
+          0.189,
+          0.382,
+          0.578,
+          0.777,
+          0.98,
+          1.187,
+          1.398,
+          1.612,
+          1.831,
+          2.054,
+          2.281,
+          2.513,
+          2.75,
+          2.992,
+          3.239,
+          3.492,
+          3.75,
+          4.014
+        ],
+        "desplazamiento_lateral_rueda": [
+          -0.006,
+          -0.00536,
+          -0.00476,
+          -0.0042,
+          -0.00367,
+          -0.00318,
+          -0.00273,
+          -0.00231,
+          -0.00192,
+          -0.00157,
+          -0.00126,
+          -0.00097,
+          -0.00072,
+          -0.00051,
+          -0.00032,
+          -0.00017,
+          -5e-05,
+          4e-05,
+          9e-05,
+          0.00012,
+          0.00011,
+          7e-05,
+          -0.0,
+          -0.0001,
+          -0.00024,
+          -0.0004,
+          -0.0006,
+          -0.00083,
+          -0.00109,
+          -0.00138,
+          -0.00171,
+          -0.00207,
+          -0.00246,
+          -0.00288,
+          -0.00333,
+          -0.00382,
+          -0.00434,
+          -0.0049,
+          -0.00549,
+          -0.00611,
+          -0.00677
+        ]
+      }
+    }
+  },
+  "direccion": {
+    "control_max": 0.42,
+    "tabla": [
+      {
+        "control": -0.42,
+        "cremallera_m": 0.00924,
+        "rueda_izq_grados": -21.961,
+        "rueda_der_grados": -26.965
+      },
+      {
+        "control": -0.36,
+        "cremallera_m": 0.00792,
+        "rueda_izq_grados": -18.807,
+        "rueda_der_grados": -22.484
+      },
+      {
+        "control": -0.3,
+        "cremallera_m": 0.0066,
+        "rueda_izq_grados": -15.7,
+        "rueda_der_grados": -18.253
+      },
+      {
+        "control": -0.24,
+        "cremallera_m": 0.00528,
+        "rueda_izq_grados": -12.615,
+        "rueda_der_grados": -14.249
+      },
+      {
+        "control": -0.18,
+        "cremallera_m": 0.00396,
+        "rueda_izq_grados": -9.528,
+        "rueda_der_grados": -10.447
+      },
+      {
+        "control": -0.12,
+        "cremallera_m": 0.00264,
+        "rueda_izq_grados": -6.413,
+        "rueda_der_grados": -6.821
+      },
+      {
+        "control": -0.06,
+        "cremallera_m": 0.00132,
+        "rueda_izq_grados": -3.245,
+        "rueda_der_grados": -3.347
+      },
+      {
+        "control": 0.0,
+        "cremallera_m": -0.0,
+        "rueda_izq_grados": 0.0,
+        "rueda_der_grados": 0.0
+      },
+      {
+        "control": 0.06,
+        "cremallera_m": -0.00132,
+        "rueda_izq_grados": 3.347,
+        "rueda_der_grados": 3.245
+      },
+      {
+        "control": 0.12,
+        "cremallera_m": -0.00264,
+        "rueda_izq_grados": 6.821,
+        "rueda_der_grados": 6.413
+      },
+      {
+        "control": 0.18,
+        "cremallera_m": -0.00396,
+        "rueda_izq_grados": 10.447,
+        "rueda_der_grados": 9.528
+      },
+      {
+        "control": 0.24,
+        "cremallera_m": -0.00528,
+        "rueda_izq_grados": 14.249,
+        "rueda_der_grados": 12.615
+      },
+      {
+        "control": 0.3,
+        "cremallera_m": -0.0066,
+        "rueda_izq_grados": 18.253,
+        "rueda_der_grados": 15.7
+      },
+      {
+        "control": 0.36,
+        "cremallera_m": -0.00792,
+        "rueda_izq_grados": 22.484,
+        "rueda_der_grados": 18.807
+      },
+      {
+        "control": 0.42,
+        "cremallera_m": -0.00924,
+        "rueda_izq_grados": 26.965,
+        "rueda_der_grados": 21.961
+      }
+    ],
+    "nota": "ángulo de la mangueta alrededor del eje de pivote; + = gira a la izquierda"
+  },
+  "transmision": {
+    "relacion_diferencial": 3.3077,
+    "relacion_1a_marcha": 2.6,
+    "traccion": "4x4, diferenciales delantero y trasero",
+    "nota": "relaciones del modelo, no de un producto real; ajustables"
+  },
+  "masas": {
+    "masa_total_kg": 7.026,
+    "cg_total_m": [
+      0.0023,
+      -0.002,
+      0.1096
+    ],
+    "masa_suspendida_kg": 4.952,
+    "cg_suspendida_m": [
+      0.0021,
+      -0.0028,
+      0.1196
+    ],
+    "inercia_suspendida_kg_m2": [
+      [
+        0.044862,
+        -0.001672,
+        0.004444
+      ],
+      [
+        -0.001672,
+        0.161689,
+        0.000548
+      ],
+      [
+        0.004444,
+        0.000548,
+        0.153347
+      ]
+    ],
+    "inercia_total_kg_m2": [
+      [
+        0.127964,
+        -0.001674,
+        0.004423
+      ],
+      [
+        -0.001674,
+        0.252588,
+        0.000688
+      ],
+      [
+        0.004423,
+        0.000688,
+        0.317652
+      ]
+    ],
+    "no_suspendida": {
+      "Del_Izq": {
+        "masa_no_suspendida_kg": 0.5257,
+        "cg_m": [
+          0.1998,
+          0.1882,
+          0.0857
+        ]
+      },
+      "Del_Der": {
+        "masa_no_suspendida_kg": 0.5257,
+        "cg_m": [
+          0.1998,
+          -0.1882,
+          0.0857
+        ]
+      },
+      "Tras_Izq": {
+        "masa_no_suspendida_kg": 0.5115,
+        "cg_m": [
+          -0.2002,
+          0.1897,
+          0.0854
+        ]
+      },
+      "Tras_Der": {
+        "masa_no_suspendida_kg": 0.5115,
+        "cg_m": [
+          -0.2002,
+          -0.1897,
+          0.0854
+        ]
+      }
+    },
+    "piezas_mas_pesadas": [
+      [
+        "Chasis_Placa",
+        760.0
+      ],
+      [
+        "Carroceria_Casco",
+        357.9
+      ],
+      [
+        "Llanta_Del_Izq",
+        228.0
+      ],
+      [
+        "Llanta_Del_Der",
+        228.0
+      ],
+      [
+        "Llanta_Tras_Der",
+        228.0
+      ],
+      [
+        "Llanta_Tras_Izq",
+        228.0
+      ],
+      [
+        "Diferencial_Tras",
+        202.0
+      ],
+      [
+        "Diferencial_Del",
+        202.0
+      ],
+      [
+        "Motor_Carter",
+        168.1
+      ],
+      [
+        "Motor_Culata",
+        138.0
+      ],
+      [
+        "Tanque_Combustible",
+        118.1
+      ],
+      [
+        "Escape_Sintonizado",
+        105.4
+      ],
+      [
+        "Rin_Del_Der",
+        104.4
+      ],
+      [
+        "Rin_Del_Izq",
+        104.4
+      ],
+      [
+        "Rin_Tras_Izq",
+        104.4
+      ],
+      [
+        "Rin_Tras_Der",
+        104.4
+      ],
+      [
+        "Bateria_Receptor",
+        100.1
+      ],
+      [
+        "Carroceria_Cabina",
+        83.9
+      ],
+      [
+        "Cardan_Central_Tras",
+        77.8
+      ],
+      [
+        "Amort_Del_Der_Cuerpo_Malla",
+        62.7
+      ]
+    ],
+    "materiales_sin_densidad": [],
+    "supuestos": {
+      "densidades_kg_m3": {
+        "Plastico_Negro": 1150,
+        "Plastico_Gris": 1150,
+        "Silicona_Escape": 1200,
+        "Etiqueta": 1150,
+        "Termoencogible_Bateria": 2400,
+        "Aluminio_Chasis": 2700,
+        "Aluminio_Anodizado": 2700,
+        "Aluminio_Fundido": 2700,
+        "Culata_Titanio": 2700,
+        "Acero_Oscuro": 7850,
+        "Cromo": 7850,
+        "Rin_Negro_Cromado": 1150,
+        "Caucho_Llanta": 250,
+        "Tanque_Translucido": 380,
+        "Manguera_Combustible": 1100,
+        "Espuma_Filtro": 60,
+        "Cable_Rojo": 1300,
+        "Cable_Blanco": 1300,
+        "Pintura_Carroceria": 1200,
+        "Pintura_Franjas": 1200,
+        "Vinilo_Franjas": 1200,
+        "Vidrio_Polarizado": 1200,
+        "Faro": 1200,
+        "Stop": 1200,
+        "Ceramica_Bujia": 3000,
+        "Aluminio_Verde": 2810,
+        "Nylon_Amarillo": 1150,
+        "Resorte_Azul": 7850,
+        "Aluminio_Amarillo": 2700,
+        "Uretano_Tope": 1200,
+        "Compuesto_Gris_Titanio": 1400,
+        "Pintura_Livery": 1200,
+        "Plastico_Negro_Mate": 1150,
+        "Plastico_Negro_Brillo": 1150,
+        "Plastico_Cromado": 1150,
+        "Aluminio_Pulido": 2700,
+        "Gris_Metalico": 1150,
+        "Goma_Correa": 1200,
+        "Aluminio_Rojo": 2700,
+        "Recubrimiento_Caja": 1150,
+        "LED_Blanco": 1200,
+        "Neon_Azul": 1200,
+        "Neon_Rosa": 1200,
+        "Neon_Verde": 1200,
+        "Ambar": 1200,
+        "Stop_LED": 1200,
+        "Fibra_Carbono": 1550,
+        "Banda_Parabrisas": 1200,
+        "Placa": 1200
+      },
+      "laminas_espesor_m": {
+        "Pintura_Carroceria": 0.0008,
+        "Pintura_Franjas": 0.0001,
+        "Vinilo_Franjas": 0.0001,
+        "Vidrio_Polarizado": 0.001,
+        "Etiqueta": 0.0001,
+        "Pintura_Livery": 0.0008,
+        "Banda_Parabrisas": 0.0001,
+        "Placa": 0.0005
+      },
+      "pared_mallas_abiertas_m": 0.001,
+      "fraccion_llenado": {
+        "Diferencial_Tras": 0.3,
+        "Diferencial_Del": 0.3,
+        "Motor_Carter": 0.45,
+        "Transmision": 0.4,
+        "Arranque_Carcasa": 0.35,
+        "Rin_": 0.5,
+        "Caja_Radio_Tapa": 0.6,
+        "Servo_Direccion": 0.8,
+        "Servo_Acelerador": 0.8,
+        "Filtro_Base": 0.5,
+        "Campana_Embrague": 0.6,
+        "Volante_Motor": 0.8,
+        "Mangueta_": 0.7,
+        "Portamangueta_": 0.7,
+        "Defensas": 0.25,
+        "Guardafango_": 0.12,
+        "Soplador": 0.15,
+        "Aleron_Soportes": 1.0,
+        "Aleron_Gurney": 1.0,
+        "Aleron": 0.1,
+        "Defensa_Trasera": 0.25,
+        "Defensa_Tubular": 0.4,
+        "Estribos": 0.4,
+        "Escapes_Laterales": 0.6,
+        "Barra_Antivuelco": 0.35,
+        "Barra_Luces": 0.4,
+        "Focos_Antivuelco": 0.5,
+        "Parrilla_Celdas": 0.5,
+        "Faros_Carcasa": 0.4,
+        "Antiniebla": 0.5
+      },
+      "nota": "estimación a partir de la geometría del modelo; reemplazar por masas medidas si se tienen"
+    }
+  },
+  "resortes_sugeridos": {
+    "frecuencia_objetivo_Hz": 2.2,
+    "zeta_compresion": 0.35,
+    "zeta_extension": 0.55,
+    "por_eje": {
+      "Del": {
+        "fraccion_masa_suspendida": 0.505,
+        "masa_suspendida_esquina_kg": 1.251,
+        "relacion_palanca_reposo": 0.273,
+        "rigidez_en_rueda_N_m": 239.0,
+        "rigidez_resorte_N_m": 3207.3,
+        "rigidez_resorte_N_mm": 3.207,
+        "fuerza_resorte_reposo_N": 44.95,
+        "precarga_en_extension_mm": 2.21,
+        "largo_instalado_extension_mm": 47.3,
+        "largo_libre_resorte_mm": 49.5,
+        "fuerza_resorte_compresion_total_N": 78.0,
+        "amortiguador_N_s_m": {
+          "compresion": 162.4,
+          "extension": 255.2
+        },
+        "hundimiento_estatico_mm": 44.0,
+        "ok_precarga_positiva": true
+      },
+      "Tras": {
+        "fraccion_masa_suspendida": 0.495,
+        "masa_suspendida_esquina_kg": 1.225,
+        "relacion_palanca_reposo": 0.273,
+        "rigidez_en_rueda_N_m": 234.1,
+        "rigidez_resorte_N_m": 3140.6,
+        "rigidez_resorte_N_mm": 3.141,
+        "fuerza_resorte_reposo_N": 44.02,
+        "precarga_en_extension_mm": 2.21,
+        "largo_instalado_extension_mm": 44.8,
+        "largo_libre_resorte_mm": 47.0,
+        "fuerza_resorte_compresion_total_N": 76.4,
+        "amortiguador_N_s_m": {
+          "compresion": 159.0,
+          "extension": 249.9
+        },
+        "hundimiento_estatico_mm": 44.0,
+        "ok_precarga_positiva": true
+      }
+    },
+    "nota": "con estos resortes el auto queda en h=0 (44 mm sobre la extensión total y 36 mm antes del tope); ajustar FREC_MARCHA_HZ / AMORT_ZETA y recalcular"
+  },
+  "reparto_peso": {
+    "delantero": 0.506,
+    "trasero": 0.494,
+    "carga_eje_del_N": 34.86,
+    "carga_eje_tras_N": 34.07,
+    "altura_cg_total_mm": 109.6,
+    "altura_cg_suspendida_mm": 119.6
+  },
+  "topes_compresion": {
+    "Del_Izq": {
+      "largo_libre_mm": 3.86,
+      "contacto_recorrido_mm": 28.0,
+      "aplastado_max_mm": 2.36,
+      "fuerza_N": {
+        "ley": "F = 12·x + 4·x³ (x en mm de aplastamiento, uretano 90A)",
+        "a_tope": 80.8
+      }
+    },
+    "Del_Der": {
+      "largo_libre_mm": 3.86,
+      "contacto_recorrido_mm": 28.0,
+      "aplastado_max_mm": 2.36,
+      "fuerza_N": {
+        "ley": "F = 12·x + 4·x³ (x en mm de aplastamiento, uretano 90A)",
+        "a_tope": 80.8
+      }
+    },
+    "Tras_Izq": {
+      "largo_libre_mm": 3.86,
+      "contacto_recorrido_mm": 28.0,
+      "aplastado_max_mm": 2.36,
+      "fuerza_N": {
+        "ley": "F = 12·x + 4·x³ (x en mm de aplastamiento, uretano 90A)",
+        "a_tope": 80.7
+      }
+    },
+    "Tras_Der": {
+      "largo_libre_mm": 3.86,
+      "contacto_recorrido_mm": 28.0,
+      "aplastado_max_mm": 2.36,
+      "fuerza_N": {
+        "ley": "F = 12·x + 4·x³ (x en mm de aplastamiento, uretano 90A)",
+        "a_tope": 80.7
+      }
+    }
+  },
+  "todo_terreno": {
+    "centro_balanceo": {
+      "Del": {
+        "centro_instantaneo_mm": [
+          -410.0,
+          60.0
+        ],
+        "altura_centro_balanceo_mm": 19.7
+      },
+      "Tras": {
+        "centro_instantaneo_mm": [
+          -410.0,
+          60.0
+        ],
+        "altura_centro_balanceo_mm": 19.7
+      }
+    },
+    "balanceo": {
+      "rigidez_por_eje": {
+        "Del": {
+          "resortes_Nm_rad": 19.12,
+          "barra_Nm_rad": 16.21,
+          "total_Nm_rad": 35.33
+        },
+        "Tras": {
+          "resortes_Nm_rad": 18.73,
+          "barra_Nm_rad": 12.72,
+          "total_Nm_rad": 31.45
+        }
+      },
+      "reparto_rigidez_delantero": 0.529,
+      "brazo_de_balanceo_mm": 99.9,
+      "gradiente_grados_por_g": 4.16,
+      "gradiente_sin_barras_grados_por_g": 7.35,
+      "barras": {
+        "Del": {
+          "diametro_mm": 3.4,
+          "tramo_torsion_mm": 84.2,
+          "brazo_mm": 57.3,
+          "bieleta_mm": 22.3,
+          "rigidez_torsion_Nm_rad": 12.3,
+          "rigidez_efectiva_Nm_rad": 9.06,
+          "dpsi_dh_rad_m": 3.345,
+          "giro_brazo_grados": [
+            -8.9,
+            10.0
+          ],
+          "rigidez_balanceo_Nm_rad": 16.21,
+          "rigidez_rueda_contraria_N_m": 101.3
+        },
+        "Tras": {
+          "diametro_mm": 3.2,
+          "tramo_torsion_mm": 84.2,
+          "brazo_mm": 57.3,
+          "bieleta_mm": 22.3,
+          "rigidez_torsion_Nm_rad": 9.65,
+          "rigidez_efectiva_Nm_rad": 7.11,
+          "dpsi_dh_rad_m": 3.345,
+          "giro_brazo_grados": [
+            -10.0,
+            8.9
+          ],
+          "rigidez_balanceo_Nm_rad": 12.72,
+          "rigidez_rueda_contraria_N_m": 79.5
+        }
+      }
+    },
+    "estabilidad": {
+      "factor_estabilidad_estatica": 1.825,
+      "aceleracion_lateral_vuelco_g": 1.743,
+      "nota": "cuerpo rígido = SSF; con balanceo, el CG se corre hacia afuera y baja el límite"
+    },
+    "anti_squat_anti_dive": {
+      "anti_squat_trasero_pct": 0.0,
+      "anti_dive_delantero_pct": 0.0,
+      "nota": "pivotes de los brazos paralelos a X: brazo oscilante lateral infinito -> 0 %. Inclinar 3-5° los pivotes traseros daría ~20-35 % de antihundimiento al acelerar."
+    },
+    "direccion_geometria": {
+      "caster_grados": 8.0,
+      "inclinacion_pivote_grados": 9.05,
+      "avance_mecanico_mm": 12.2
+    },
+    "distancia_al_piso": {
+      "reposo": {
+        "minimo_mm": 45.0,
+        "pieza": "Herraje_Chasis_hueco",
+        "minimo_entre_ejes_mm": 45.0,
+        "pieza_entre_ejes": "Herraje_Chasis_hueco"
+      },
+      "compresion_total": {
+        "minimo_mm": 9.0,
+        "pieza": "Herraje_Chasis_hueco",
+        "minimo_entre_ejes_mm": 9.0,
+        "pieza_entre_ejes": "Herraje_Chasis_hueco"
+      }
+    },
+    "angulos": {
+      "ataque": {
+        "grados": 45.6,
+        "limita": "Parachoques_Base_Del"
+      },
+      "salida": {
+        "grados": 45.6,
+        "limita": "Parachoques_Base_Tras"
+      },
+      "ventral": {
+        "grados": 27.0,
+        "limita": "Chasis_Placa"
+      }
+    }
+  },
+  "colisiones": [
+    "COL_Brazo_Inf_Del_Der",
+    "COL_Brazo_Inf_Del_Izq",
+    "COL_Brazo_Inf_Tras_Der",
+    "COL_Brazo_Inf_Tras_Izq",
+    "COL_Brazo_Sup_Del_Der",
+    "COL_Brazo_Sup_Del_Izq",
+    "COL_Brazo_Sup_Tras_Der",
+    "COL_Brazo_Sup_Tras_Izq",
+    "COL_Carroceria",
+    "COL_Chasis_Placa",
+    "COL_Mamparo_Del",
+    "COL_Mamparo_Tras",
+    "COL_Motor",
+    "COL_Parachoques_Del",
+    "COL_Parachoques_Tras",
+    "COL_Rueda_Del_Der",
+    "COL_Rueda_Del_Izq",
+    "COL_Rueda_Tras_Der",
+    "COL_Rueda_Tras_Izq"
+  ]
+}

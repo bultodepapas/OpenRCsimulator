@@ -1,0 +1,80 @@
+{
+  "unit": "microseconds",
+  "pooled_warm_medians": {
+    "four_lines": [
+      88701,
+      20501
+    ],
+    "kit_build": [
+      96207,
+      28519
+    ]
+  },
+  "processes": [
+    {
+      "file": "native-1.json",
+      "medians": {
+        "four_lines": [
+          86742,
+          20230
+        ],
+        "kit_build": [
+          95409,
+          28036
+        ]
+      }
+    },
+    {
+      "file": "native-2.json",
+      "medians": {
+        "four_lines": [
+          90272,
+          20632
+        ],
+        "kit_build": [
+          96977,
+          27535
+        ]
+      }
+    },
+    {
+      "file": "native-3.json",
+      "medians": {
+        "four_lines": [
+          88455,
+          20203
+        ],
+        "kit_build": [
+          113369,
+          28932
+        ]
+      }
+    },
+    {
+      "file": "native-4.json",
+      "medians": {
+        "four_lines": [
+          94490,
+          21461
+        ],
+        "kit_build": [
+          94431,
+          27837
+        ]
+      }
+    },
+    {
+      "file": "native-5.json",
+      "medians": {
+        "four_lines": [
+          87748,
+          20217
+        ],
+        "kit_build": [
+          94565,
+          29719
+        ]
+      }
+    }
+  ]
+}

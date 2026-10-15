@@ -1,0 +1,6 @@
+app: Slipstream.loads best-of-7: 93.41 us/call (x4 RK stages = 373.6 us/tick)
+tmp/p51-26/appB: Slipstream.loads best-of-7: 201.04 us/call (x4 RK stages = 804.2 us/tick)
+tmp/p51-26/appC: Slipstream.loads best-of-7: 161.33 us/call (x4 RK stages = 645.3 us/tick)
+app: Slipstream.loads best-of-7: 108.19 us/call (x4 RK stages = 432.8 us/tick)
+tmp/p51-26/appB: Slipstream.loads best-of-7: 211.18 us/call (x4 RK stages = 844.7 us/tick)
+tmp/p51-26/appC: Slipstream.loads best-of-7: 149.40 us/call (x4 RK stages = 597.6 us/tick)

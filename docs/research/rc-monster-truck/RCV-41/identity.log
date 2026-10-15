@@ -1,0 +1,48 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{
+  "artifact_cases": 24,
+  "benchmark": {
+    "artifact_calls_per_pair": 400,
+    "baseline_elapsed_us": [
+      316266,
+      283098,
+      295496,
+      282988,
+      293609
+    ],
+    "calls_per_pair": 200,
+    "candidate_elapsed_us": [
+      193976,
+      204596,
+      182066,
+      169796,
+      173808
+    ],
+    "order_by_round": [
+      "baseline,candidate",
+      "candidate,baseline",
+      "baseline,candidate",
+      "candidate,baseline",
+      "baseline,candidate"
+    ],
+    "rounds_each": 5,
+    "sink": 261120,
+    "warmup_pair_calls_each": 20
+  },
+  "cache_bounds": {
+    "available": true,
+    "byte_limit": 262144,
+    "entry_byte_sizes": {
+      "res://../tmp/rcv41/identity-98924-1115272/redirected_payload.gdc": 6,
+      "res://../tmp/rcv41/identity-98924-1115272/remap_fallback.gd": 3
+    },
+    "entry_count": 2,
+    "entry_limit": 2,
+    "ok": true
+  },
+  "failures": [],
+  "ok": true,
+  "output": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-41/identity.json",
+  "validation_cases": 82
+}

@@ -161,7 +161,9 @@ func _runway_and_domain() -> void:
 	s.free()
 
 func _preferences_and_family_guard() -> void:
-	var path: String = "res://../tmp/atmosphere-column-prefs-%d.cfg" % OS.get_process_id()
+	var directory := ProjectSettings.globalize_path("res://../tmp/atmosphere-column-prefs-%d" % OS.get_process_id())
+	var path := directory.path_join("preferences.cfg")
+	check("column preference fixture directory prepares", DirAccess.make_dir_recursive_absolute(directory) == OK)
 	var prefs: Dictionary = Preferences.DEFAULTS.duplicate(true)
 	prefs.weather_config = column()
 	check("column preferences save", Preferences.save_to(path, prefs) == OK)
@@ -169,6 +171,7 @@ func _preferences_and_family_guard() -> void:
 	check("column preferences advertise new schema", config.load(path) == OK and config.get_value("meta", "schema") == 5)
 	check("column preference round trip", Preferences.load_from(path).weather_config == column())
 	DirAccess.remove_absolute(path)
+	DirAccess.remove_absolute(directory)
 	var h := Heli.new()
 	check("rotorcraft cannot silently adopt fixed-wing column", not h.setup_weather(column()) and h.weather_error.contains("vertical atmosphere"))
 	h.free()

@@ -75,30 +75,25 @@ static func bounds(root: Node3D) -> Dictionary:
 
 ## The model's vertices in its root frame (every MeshInstance3D surface, hinged parts included).
 static func vertices(root: Node3D) -> PackedVector3Array:
-	var out := PackedVector3Array()
-	for node in root.find_children("*", "MeshInstance3D", true, false):
-		var mi := node as MeshInstance3D
-		if mi.mesh == null or not (mi.mesh is ArrayMesh or mi.mesh is PrimitiveMesh):
-			continue
-		var t := Transform3D.IDENTITY
-		var n: Node = mi
-		while n != null and n != root:
-			if n is Node3D:
-				t = (n as Node3D).transform * t
-			n = n.get_parent()
-		for i in mi.mesh.get_surface_count():
-			var arrays: Array = mi.mesh.surface_get_arrays(i)
-			for v: Vector3 in arrays[Mesh.ARRAY_VERTEX]:
-				out.append(t * v)
-	return out
+	return _geometry_arrays(root, true, false).points
 
 
 ## The model's triangles in its root frame, three vertices each (triangle surfaces only).
 static func triangles(root: Node3D) -> PackedVector3Array:
-	var out := PackedVector3Array()
+	return _geometry_arrays(root, false, true).triangles
+
+
+## Collect both views from each transformed surface once. Single-view callers keep
+## their original mesh/surface filters; arrays belong to this call, not the mesh.
+static func _geometry_arrays(root: Node3D, collect_points := true, collect_faces := true) -> Dictionary:
+	var points := PackedVector3Array()
+	var faces := PackedVector3Array()
 	for node in root.find_children("*", "MeshInstance3D", true, false):
 		var mi := node as MeshInstance3D
 		if mi.mesh == null:
+			continue
+		var include_points := collect_points and (mi.mesh is ArrayMesh or mi.mesh is PrimitiveMesh)
+		if not include_points and not collect_faces:
 			continue
 		var t := Transform3D.IDENTITY
 		var n: Node = mi
@@ -107,18 +102,22 @@ static func triangles(root: Node3D) -> PackedVector3Array:
 				t = (n as Node3D).transform * t
 			n = n.get_parent()
 		for i in mi.mesh.get_surface_count():
-			if mi.mesh is ArrayMesh and (mi.mesh as ArrayMesh).surface_get_primitive_type(i) != Mesh.PRIMITIVE_TRIANGLES:
+			var include_faces := collect_faces and not (mi.mesh is ArrayMesh and
+				(mi.mesh as ArrayMesh).surface_get_primitive_type(i) != Mesh.PRIMITIVE_TRIANGLES)
+			if not include_points and not include_faces:
 				continue
 			var arrays: Array = mi.mesh.surface_get_arrays(i)
-			var verts: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-			var idx: Variant = arrays[Mesh.ARRAY_INDEX]
-			if idx is PackedInt32Array and not (idx as PackedInt32Array).is_empty():
-				for k: int in idx:
-					out.append(t * verts[k])
-			else:
-				for v: Vector3 in verts:
-					out.append(t * v)
-	return out
+			var verts: PackedVector3Array = t * (arrays[Mesh.ARRAY_VERTEX] as PackedVector3Array)
+			if include_points:
+				points.append_array(verts)
+			if include_faces:
+				var idx: Variant = arrays[Mesh.ARRAY_INDEX]
+				if idx is PackedInt32Array and not (idx as PackedInt32Array).is_empty():
+					for k: int in idx:
+						faces.append(verts[k])
+				else:
+					faces.append_array(verts)
+	return {points = points, triangles = faces}
 
 
 ## Under-wing lines {left, right}: the model's triangles are sliced by vertical planes at STRIP_STATIONS span stations
@@ -127,11 +126,33 @@ static func triangles(root: Node3D) -> PackedVector3Array:
 ## walking inward, the substantial piece (> 3 cm) nearest the previous station's mid chord continues it, so split
 ## flaps, struts, gear and tail surfaces never take the strip. It runs STRIP_GAP_M below the piece's lowest point.
 static func underwing_lines(tris: PackedVector3Array, half: float, top := false) -> Dictionary:
+	var sections := _wing_sections(tris, half)
+	return _wing_lines_from_sections(sections, top)
+
+
+## Trace both skins from one set of cuts; each result owns its output lines.
+static func wing_skin_lines(tris: PackedVector3Array, half: float) -> Dictionary:
+	var sections := _wing_sections(tris, half)
+	return {lower = _wing_lines_from_sections(sections, false), upper = _wing_lines_from_sections(sections, true)}
+
+
+static func _wing_sections(tris: PackedVector3Array, half: float) -> Dictionary:
 	var xs := PackedFloat64Array() # tip to root on each side
 	for side: float in [-1.0, 1.0]:
 		for k in range(STRIP_STATIONS - 1, -1, -1):
 			xs.append(side * half * lerpf(STRIP_FROM, STRIP_TO, float(k) / float(STRIP_STATIONS - 1)))
-	var segments := [] # per station: Array of [z_min, z_max, y_min]
+	# Search a sorted copy, but keep output stations in their original tip-to-root
+	# order. Every station retains the original triangle order, including ties.
+	var station_order: Array[int] = []
+	for j in xs.size():
+		station_order.append(j)
+	var sorted_xs := xs.duplicate()
+	var searchable := is_finite(half)
+	if searchable:
+		station_order.sort_custom(func(u: int, v: int) -> bool: return xs[u] < xs[v])
+		for j in xs.size():
+			sorted_xs[j] = xs[station_order[j]]
+	var segments := [] # per station: Array of [z_min, z_max, y_min, y_max]
 	for x in xs:
 		segments.append([])
 	for i in range(0, tris.size() - 2, 3):
@@ -145,23 +166,42 @@ static func underwing_lines(tris: PackedVector3Array, half: float, top := false)
 		var hi := maxf(a.x, maxf(b.x, c.x))
 		if hi - lo < 1e-6:
 			continue
-		for j in xs.size():
+		var first := 0
+		var stop := xs.size()
+		if searchable and is_finite(lo) and is_finite(hi):
+			first = sorted_xs.bsearch(lo)
+			stop = sorted_xs.bsearch(hi, false)
+		for ordered_index in range(first, stop):
+			var j: int = station_order[ordered_index]
 			var x := xs[j]
 			if x < lo or x > hi:
 				continue
 			var z0 := INF
 			var z1 := -INF
-			var y0 := -INF if top else INF # the outermost skin point: lowest for the belly, highest for the top
-			for e: Array in [[a, b], [b, c], [c, a]]:
-				var p: Vector3 = e[0]
-				var q: Vector3 = e[1]
+			var y0 := INF
+			var y1 := -INF
+			# Preserve AB, BC, CA order without temporary edge arrays.
+			for edge in 3:
+				var p: Vector3 = a if edge == 0 else (b if edge == 1 else c)
+				var q: Vector3 = b if edge == 0 else (c if edge == 1 else a)
 				if (p.x - x) * (q.x - x) <= 0.0 and absf(q.x - p.x) > 1e-9:
 					var hit := p.lerp(q, (x - p.x) / (q.x - p.x))
 					z0 = minf(z0, hit.z)
 					z1 = maxf(z1, hit.z)
-					y0 = maxf(y0, hit.y) if top else minf(y0, hit.y)
+					y0 = minf(y0, hit.y)
+					y1 = maxf(y1, hit.y)
 			if z0 < INF:
-				segments[j].append([z0, z1, y0])
+				segments[j].append([z0, z1, y0, y1])
+	# Sort once from the original triangle order, including equal-start segments.
+	for segs: Array in segments:
+		segs.sort_custom(func(u: Array, v: Array) -> bool: return u[0] < v[0])
+	return {xs = xs, segments = segments}
+
+
+static func _wing_lines_from_sections(sections: Dictionary, top: bool) -> Dictionary:
+	var xs: PackedFloat64Array = sections.xs
+	var segments: Array = sections.segments
+	var height_index := 3 if top else 2
 	var lines := {left = PackedVector3Array(), right = PackedVector3Array()}
 	var previous_mid := {left = NAN, right = NAN}
 	for j in xs.size():
@@ -169,14 +209,13 @@ static func underwing_lines(tris: PackedVector3Array, half: float, top := false)
 		var segs: Array = segments[j]
 		if segs.is_empty():
 			continue
-		segs.sort_custom(func(u: Array, v: Array) -> bool: return u[0] < v[0])
 		var pieces := [] # [z_min, z_max, y_min]
 		for seg: Array in segs:
 			if not pieces.is_empty() and seg[0] <= pieces[-1][1] + 0.01:
 				pieces[-1][1] = maxf(pieces[-1][1], seg[1])
-				pieces[-1][2] = maxf(pieces[-1][2], seg[2]) if top else minf(pieces[-1][2], seg[2])
+				pieces[-1][2] = maxf(pieces[-1][2], seg[height_index]) if top else minf(pieces[-1][2], seg[height_index])
 			else:
-				pieces.append(seg.duplicate())
+				pieces.append([seg[0], seg[1], seg[height_index]])
 		var best: Array = []
 		for piece: Array in pieces:
 			var extent: float = piece[1] - piece[0]
@@ -251,6 +290,11 @@ static func belly_line(tris: PackedVector3Array, all: AABB) -> PackedVector3Arra
 	var zs := PackedFloat64Array()
 	for k in BELLY_STATIONS:
 		zs.append(all.position.z + all.size.z * lerpf(BELLY_FROM, BELLY_TO, float(k) / float(BELLY_STATIONS - 1)))
+	# Binary bounds include both triangle endpoints and repeated stations. Retain
+	# the scan for descending/non-finite caller bounds, where bsearch is invalid.
+	var ordered := true
+	for j in zs.size():
+		ordered = ordered and is_finite(zs[j]) and (j == 0 or zs[j] >= zs[j - 1])
 	var crossings: Array = []
 	for z in zs:
 		crossings.append(PackedFloat64Array())
@@ -260,14 +304,22 @@ static func belly_line(tris: PackedVector3Array, all: AABB) -> PackedVector3Arra
 		var c := tris[i + 2]
 		var lo := minf(a.z, minf(b.z, c.z))
 		var hi := maxf(a.z, maxf(b.z, c.z))
-		for j in zs.size():
+		if hi - lo < 1e-9:
+			continue
+		var first := 0
+		var stop := zs.size()
+		if ordered and is_finite(lo) and is_finite(hi):
+			first = zs.bsearch(lo)
+			stop = zs.bsearch(hi, false)
+		for j in range(first, stop):
 			var z := zs[j]
-			if z < lo or z > hi or hi - lo < 1e-9:
+			if z < lo or z > hi:
 				continue
 			var hits: Array[Vector3] = []
-			for e: Array in [[a, b], [b, c], [c, a]]:
-				var p: Vector3 = e[0]
-				var q: Vector3 = e[1]
+			# Preserve AB, BC, CA order without temporary edge arrays.
+			for edge in 3:
+				var p: Vector3 = a if edge == 0 else (b if edge == 1 else c)
+				var q: Vector3 = b if edge == 0 else (c if edge == 1 else a)
 				if (p.z - z) * (q.z - z) <= 0.0 and absf(q.z - p.z) > 1e-9:
 					hits.append(p.lerp(q, (z - p.z) / (q.z - p.z)))
 			if hits.size() >= 2 and hits[0].x * hits[1].x <= 0.0 and absf(hits[1].x - hits[0].x) > 1e-9:
@@ -318,9 +370,10 @@ static func wing_piece(tris: PackedVector3Array, x: float) -> Array:
 		var z0 := INF
 		var z1 := -INF
 		var y0 := INF
-		for e: Array in [[a, b], [b, c], [c, a]]:
-			var p: Vector3 = e[0]
-			var q: Vector3 = e[1]
+		# Preserve AB, BC, CA order without temporary edge arrays.
+		for edge in 3:
+			var p: Vector3 = a if edge == 0 else (b if edge == 1 else c)
+			var q: Vector3 = b if edge == 0 else (c if edge == 1 else a)
 			if (p.x - x) * (q.x - x) <= 0.0 and absf(q.x - p.x) > 1e-9:
 				var hit := p.lerp(q, (x - p.x) / (q.x - p.x))
 				z0 = minf(z0, hit.z)
@@ -413,11 +466,13 @@ static func attach(root: Node3D) -> Node3D:
 	kit.name = "NightKit"
 	var all: AABB = bounds(root).all
 	# Tips, strips and span from the model's own vertices (traced before any kit node exists).
-	var points := vertices(root)
+	var geometry := _geometry_arrays(root)
+	var points: PackedVector3Array = geometry.points
 	var half := span_half(points)
 	# Both skins use the same posed geometry, before the kit is attached.
-	var tris := triangles(root)
-	var lines := underwing_lines(tris, half)
+	var tris: PackedVector3Array = geometry.triangles
+	var skins := wing_skin_lines(tris, half)
+	var lines: Dictionary = skins.lower
 	var left := tip(points, half, -1.0)
 	var right := tip(points, half, 1.0)
 	kit.add_child(sprite("nav_left", Color(1.0, 0.06, 0.04), left.centre, NAV_SIZE_M))
@@ -426,7 +481,7 @@ static func attach(root: Node3D) -> Node3D:
 	kit.add_child(sprite("strobe_left", Color(1.0, 1.0, 1.0), left.trailing, NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE))
 	kit.add_child(sprite("strobe_right", Color(1.0, 1.0, 1.0), right.trailing, NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE))
 	Exposure.register()
-	var top_lines := underwing_lines(tris, half, true)
+	var top_lines: Dictionary = skins.upper
 	for key: String in ["left", "right"]:
 		var line: PackedVector3Array = lines[key]
 		if line.size() >= 2:

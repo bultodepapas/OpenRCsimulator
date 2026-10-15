@@ -1,0 +1,488 @@
+{
+  "all_additions_classified": true,
+  "all_candidates_preserve_manifested_source": true,
+  "all_git_states_unchanged": true,
+  "candidates": [
+    {
+      "all_manifested_source_bytes_modes_and_paths_preserved": true,
+      "baseline_entry_count": 14922,
+      "baseline_manifest": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/post-overlay-initial.json",
+      "baseline_manifest_sha256": "7f7d14b202a18d270dbb1cc8c04aaad6471318a0f0a3a9f9b75e21a4cce804f6",
+      "baseline_source_tree_sha256": "b9108ec7cfa993a396a218fd809f9d58bee6e9e54d299424a6a42599f6f77e5c",
+      "candidate": "07",
+      "candidate_root": "/home/bulto/openrc-r11-b09-r05b-20261015-07",
+      "changed_manifested_files": [],
+      "generated_or_diagnostic_additions": {
+        "Godot-generated UID sidecar": [
+          {
+            "path": "app/native/ground_vehicle/openrc_ground_vehicle.gdextension.uid",
+            "sha256": "aa79a6e4136d7e3aaaa5d8aa62eb409d79a0688d27a2b36f0836d6a8dedd4b0c",
+            "size_bytes": 20
+          }
+        ],
+        "Python bytecode cache": [
+          {
+            "path": "app/tests/__pycache__/check_atmosphere_trace.cpython-312.pyc",
+            "sha256": "743cc6f06f7821cb86914ed9ddb1b0e721c89d4d6b16c863cb3d0e34efc1be7e",
+            "size_bytes": 45839
+          },
+          {
+            "path": "app/tests/__pycache__/check_trimmed_flight.cpython-312.pyc",
+            "sha256": "1fd29fd508eb2f35f3eecbbb95f34664465c6155cda1c5a86a1d129fb1b92016",
+            "size_bytes": 41777
+          },
+          {
+            "path": "app/tests/__pycache__/check_wind_trace.cpython-312.pyc",
+            "sha256": "87665eb92efff5a7183f41f850adfeef00aca31c86a782075a23af50bbb6e238",
+            "size_bytes": 30880
+          },
+          {
+            "path": "app/tests/__pycache__/test_atmosphere_cli.cpython-312.pyc",
+            "sha256": "e29f1179b9b9d66a44a2c4edd5a4130f43b293f8ca59185ef96ed990294fec16",
+            "size_bytes": 19282
+          },
+          {
+            "path": "app/tests/__pycache__/test_shaft_cli.cpython-312.pyc",
+            "sha256": "5dbcd4566abedf4387d14b1cfb086704be29ccbfea4c52bba0002bb973578457",
+            "size_bytes": 18148
+          },
+          {
+            "path": "app/tests/__pycache__/test_trace_acceptance.cpython-312.pyc",
+            "sha256": "f719c89ed85ef4a7fba827d19b1a4e31edfa971da4360fdf785cb1089b57ad34",
+            "size_bytes": 38747
+          },
+          {
+            "path": "research/aircraft-editor/__pycache__/build_descriptors.cpython-312.pyc",
+            "sha256": "9f752391220cde144c50ba818ee48390acd60a2febecbbfaaba2d296bbb7b75f",
+            "size_bytes": 15194
+          },
+          {
+            "path": "research/aircraft-standardization/__pycache__/build_models.cpython-312.pyc",
+            "sha256": "683b34fdf1db711fc50b6073a8ed5f016e8ca9b8d9d2ed9b35acdf1b46ca91ed",
+            "size_bytes": 49698
+          },
+          {
+            "path": "research/aircraft-standardization/__pycache__/migrate.cpython-312.pyc",
+            "sha256": "e5979b7a6de9d4f5148490a1ca7ee2a6738a18284f1387d17a0f4a4067f93599",
+            "size_bytes": 22595
+          },
+          {
+            "path": "research/aircraft-standardization/__pycache__/modules.cpython-312.pyc",
+            "sha256": "1d1b671e8379ddd13400dba49e1ef0ffbbbbef1383626f4aa70f612754d005ac",
+            "size_bytes": 16085
+          },
+          {
+            "path": "research/aircraft-standardization/__pycache__/physical_identity.cpython-312.pyc",
+            "sha256": "174ac24a04158922d1e430370d264a957e799ebed0844a0076b1cebc617a4cc4",
+            "size_bytes": 5854
+          },
+          {
+            "path": "research/avanti-s/av06/__pycache__/derive_physics.cpython-312.pyc",
+            "sha256": "4645bf329b1e180ec686a6dfe2192c941a834842649d77f357806fde45c97a7c",
+            "size_bytes": 113715
+          },
+          {
+            "path": "research/avanti-s/av06/__pycache__/sensitivity.cpython-312.pyc",
+            "sha256": "65ffa96856b5b4ca9fd2a23e8c68711383a46c7fa458efcb2a1ff6f6ff88703a",
+            "size_bytes": 10355
+          },
+          {
+            "path": "research/avanti-s/av17-r2/__pycache__/build_polar.cpython-312.pyc",
+            "sha256": "cae4ccdc5caef658416cb150900f0cfc9593e55d8d43e80f4ff7a267bb89f574",
+            "size_bytes": 25392
+          },
+          {
+            "path": "research/glow-engines/__pycache__/build_installations.cpython-312.pyc",
+            "sha256": "46f41f2f6de6cd862ece831f97d853c6d9d9dc5e5792ebcdbbfd652886bf6f95",
+            "size_bytes": 15881
+          },
+          {
+            "path": "research/glow-engines/__pycache__/build_profiles.cpython-312.pyc",
+            "sha256": "f6112369ee75b77056a67ce406815deb4826ffe577056f7aaee39e4371fb1128",
+            "size_bytes": 18186
+          },
+          {
+            "path": "research/glow-engines/__pycache__/calibration_report.cpython-312.pyc",
+            "sha256": "8f8632bdf412e6b8a15a32e1c8d6a5995a013212b07cd5a8b4ae0cf84e2d1fe1",
+            "size_bytes": 63729
+          },
+          {
+            "path": "research/glow-engines/__pycache__/cycle_oracle.cpython-312.pyc",
+            "sha256": "fd9576a36c7ef95cb66dc1a2f7f52391733fa7af5ca15b438cd8e5c6d2ad98ed",
+            "size_bytes": 67197
+          },
+          {
+            "path": "research/glow-engines/__pycache__/installation_schema.cpython-312.pyc",
+            "sha256": "5cfdcded56ad30ae2a19af484bfb81915a3c2c32b743c91ab9b53b33e7330505",
+            "size_bytes": 12422
+          },
+          {
+            "path": "research/glow-engines/__pycache__/pilot_review.cpython-312.pyc",
+            "sha256": "0f5045cee68a59f20f7115e8ffb886f4588ec0fda6f3cf287143ab34cd5a270b",
+            "size_bytes": 31858
+          },
+          {
+            "path": "research/glow-engines/__pycache__/refinement_report.cpython-312.pyc",
+            "sha256": "d4281015ae41e652c188a2c882bcec5625cbde6561fabe19f19ae4197bb3d894",
+            "size_bytes": 31259
+          },
+          {
+            "path": "research/glow-engines/reference/__pycache__/reference.cpython-312.pyc",
+            "sha256": "44f5415261001a4de80195e3ccff82717a30ef0c671b03dcb4f5c7a96392410c",
+            "size_bytes": 24935
+          },
+          {
+            "path": "research/helicopter/hx700/__pycache__/derive.cpython-312.pyc",
+            "sha256": "908990a69b01bee56c928c61a2a75593e5e30811974f9bb033afa71890ec26a6",
+            "size_bytes": 11286
+          },
+          {
+            "path": "research/helicopter/reference/__pycache__/airframe.cpython-312.pyc",
+            "sha256": "9c7f2788a463d92a2ddf9fa3f36e96867019d86939e973b0910a55a772042f4c",
+            "size_bytes": 17161
+          },
+          {
+            "path": "research/helicopter/reference/__pycache__/dynamic_inflow.cpython-312.pyc",
+            "sha256": "1a7d7a2f7553947a0b2f93478f74da91cf6d6ce04285afa1f044939d2c0ca925",
+            "size_bytes": 6349
+          },
+          {
+            "path": "research/helicopter/reference/__pycache__/johnson_inflow.cpython-312.pyc",
+            "sha256": "19ae4cb3d861d9011362fb6c85d057e4367dcdd01fb2e933e4519ec4428c4494",
+            "size_bytes": 15599
+          },
+          {
+            "path": "research/helicopter/reference/__pycache__/main_rotor.cpython-312.pyc",
+            "sha256": "dd33e01cb44be5c65b955cf1c91af22e2f0326039422f97880d4cbf0d514ea01",
+            "size_bytes": 17357
+          },
+          {
+            "path": "research/helicopter/reference/__pycache__/make_dynamic_oracle.cpython-312.pyc",
+            "sha256": "b4f49529e8dfdd1d68a6dc7efa329c1d8b3d74b2093d0c8c5818e1f66d8d0387",
+            "size_bytes": 29382
+          },
+          {
+            "path": "research/helicopter/reference/__pycache__/make_main_rotor_oracle.cpython-312.pyc",
+            "sha256": "417fddd612cb20193af34d5d2fa9a932fac011610425c3db6f680f01ff75b7ff",
+            "size_bytes": 14655
+          },
+          {
+            "path": "research/helicopter/reference/__pycache__/tail_rotor.cpython-312.pyc",
+            "sha256": "125c2a45dda81420db8591d79a4f23520f76eebd35c53aacb6780cf3dc6b3a0d",
+            "size_bytes": 18677
+          },
+          {
+            "path": "research/helicopter/xcell/__pycache__/derive.cpython-312.pyc",
+            "sha256": "8a988b5fe5a1ed6175f4cb00cd026887899e4e9093b01f24d70ba4bbed1c08ec",
+            "size_bytes": 13092
+          },
+          {
+            "path": "research/propwash/e0b2/__pycache__/derive_geometry.cpython-312.pyc",
+            "sha256": "013a83d45ecd6f4f11567237bbf8b9b0ae9c17a3ba382ed056beb37a368bf274",
+            "size_bytes": 10588
+          },
+          {
+            "path": "research/propwash/e0b3b/__pycache__/derive_profile.cpython-312.pyc",
+            "sha256": "e5f5e175a405671d22bf51c4d9d45523eb97434c09bc699987feb981911e2b89",
+            "size_bytes": 14971
+          },
+          {
+            "path": "research/rc-monster-truck/__pycache__/asset_intake.cpython-312.pyc",
+            "sha256": "4ab0e703aba22575e4e79f86b72a6213a2a81ebf486c0f7465de11e005349eef",
+            "size_bytes": 66870
+          },
+          {
+            "path": "research/rc-monster-truck/__pycache__/generate_suspension_reference.cpython-312.pyc",
+            "sha256": "5bce35ce4c3354708f70deace72fa4aab68cec7b4092fb4d2696fb6e0cbb8d62",
+            "size_bytes": 22552
+          },
+          {
+            "path": "research/timber/tt07/__pycache__/derive_physics.cpython-312.pyc",
+            "sha256": "202f6037fd30fb44f401f506e34d2f47d4a466afd224a2a8373d2872e6bdc8c6",
+            "size_bytes": 29385
+          },
+          {
+            "path": "research/timber/tt07/__pycache__/sensitivity.cpython-312.pyc",
+            "sha256": "1a354eddc6c68d3ef3bba98f55034bec9422a7ad7bcdc75f6e10d1000e2c7b62",
+            "size_bytes": 6298
+          },
+          {
+            "path": "tools/grass/__pycache__/place.cpython-312.pyc",
+            "sha256": "7a06e11940a57b857a25ca1a2b1be5e02c30b591030d977c809631d7d6c5f7b1",
+            "size_bytes": 9696
+          },
+          {
+            "path": "tools/trees/__pycache__/place.cpython-312.pyc",
+            "sha256": "823d748f140e033d1b44558b9d5fd8f69c2ace173e31d3b6650032ce38a8700a",
+            "size_bytes": 15046
+          }
+        ],
+        "ignored flight-recorder test scratch": [
+          {
+            "path": "tmp/flight-log-1027155/gp_extra_300s_60.orfl",
+            "sha256": "30c293fa8621764cb626e9e0662512a57af016e5d713caa51dc0fd7170ee1d05",
+            "size_bytes": 216208
+          },
+          {
+            "path": "tmp/flight-log-1027155/gp_extra_300s_60.orfl.bitflip",
+            "sha256": "12ba61aa2d4e0e35d56e45759fef677140f5d7eef400cfc13f8b08a830127982",
+            "size_bytes": 216208
+          },
+          {
+            "path": "tmp/flight-log-1027155/gp_extra_300s_60.orfl.length",
+            "sha256": "c5a3dcfea48685749deec8a095510f874b2faf704d380f6998f646071c78cca6",
+            "size_bytes": 216208
+          },
+          {
+            "path": "tmp/flight-log-1027155/gp_extra_300s_60.orfl.limit",
+            "sha256": "36c85ad3bd7c869bec0c5dc7479d4663ac7a17bda7e7ac94a71f5db697ad6766",
+            "size_bytes": 25184
+          },
+          {
+            "path": "tmp/flight-log-1027155/gp_extra_300s_60.orfl.reset",
+            "sha256": "d9d46e5876c6fb2ac0999228e11b4c78a39c13fac10d2f2970018a33bce44378",
+            "size_bytes": 27708
+          },
+          {
+            "path": "tmp/flight-log-1027155/gp_extra_300s_60.orfl.trailing",
+            "sha256": "8f130e68fe44aacc6b4c1180b9fd47a8addef7e8f7a8aa05c86e08118973c493",
+            "size_bytes": 216209
+          },
+          {
+            "path": "tmp/flight-log-1027155/gp_extra_300s_60.orfl.truncate",
+            "sha256": "278990112e4aeba870579dbd6215f5ec40157ee6ca586e070cd6ab42869d4f84",
+            "size_bytes": 216108
+          },
+          {
+            "path": "tmp/flight-log-1027155/jensen_ugly_stik_60.orfl",
+            "sha256": "7b3e3f12cdea12938a80979480e327ad6b19624c2d80f7eb1425a6d45765894e",
+            "size_bytes": 216900
+          },
+          {
+            "path": "tmp/flight-log-1027155/jensen_ugly_stik_60.orfl.bitflip",
+            "sha256": "0a1985ea22bb2569a6f4a77a1ad9b96915a87a608169d1f622a5e1518d2696b4",
+            "size_bytes": 216900
+          },
+          {
+            "path": "tmp/flight-log-1027155/jensen_ugly_stik_60.orfl.length",
+            "sha256": "d54039c3015bb8841311d7d92c1d609ad7599afae368a847a53a1691bb30b4eb",
+            "size_bytes": 216900
+          },
+          {
+            "path": "tmp/flight-log-1027155/jensen_ugly_stik_60.orfl.limit",
+            "sha256": "4b89b13331f52a701cb5c9f685f8aa1e379d7718a422f97f80525119f20deb9a",
+            "size_bytes": 24180
+          },
+          {
+            "path": "tmp/flight-log-1027155/jensen_ugly_stik_60.orfl.reset",
+            "sha256": "2f6e5ad35f782f5675ee9d83044fb1b58f114092cc51c42b260288ab4699d897",
+            "size_bytes": 26228
+          },
+          {
+            "path": "tmp/flight-log-1027155/jensen_ugly_stik_60.orfl.trailing",
+            "sha256": "cf985ec7c5e042da5eef76cff68e3dcecc992488ef7c4c72084fc0ab4e069922",
+            "size_bytes": 216901
+          },
+          {
+            "path": "tmp/flight-log-1027155/jensen_ugly_stik_60.orfl.truncate",
+            "sha256": "b80174645160317962b362a5fe05175bd87e717cf91c17eddaf58516f0d9088c",
+            "size_bytes": 216800
+          },
+          {
+            "path": "tmp/flight-log-1027155/p51d_mustang_120.orfl",
+            "sha256": "b53b4ad4b727cf4c9908a36b1d112cb575a0e7d9c5ad5b9d3cc9bf53b6ac3667",
+            "size_bytes": 201336
+          },
+          {
+            "path": "tmp/flight-log-1027155/p51d_mustang_120.orfl.bitflip",
+            "sha256": "fa714c7e0ac93c1c556b9e73be42ece9d60e12240df98bb838569c26afe3752d",
+            "size_bytes": 201336
+          },
+          {
+            "path": "tmp/flight-log-1027155/p51d_mustang_120.orfl.length",
+            "sha256": "6e63a036e8c9a5b2e23c1924539027c6256020c7878accc0c96dd9cbe5d78b1f",
+            "size_bytes": 201336
+          },
+          {
+            "path": "tmp/flight-log-1027155/p51d_mustang_120.orfl.limit",
+            "sha256": "a71c7e38409b54fcdb5653b71610f37bd67e1784a589a4d2d9ad5f4aa1103a87",
+            "size_bytes": 27412
+          },
+          {
+            "path": "tmp/flight-log-1027155/p51d_mustang_120.orfl.reset",
+            "sha256": "88927a9e8592e36f7f83fdb1b74bb99732cfcec8708b51f9e6333d40c5d5bf8b",
+            "size_bytes": 29380
+          },
+          {
+            "path": "tmp/flight-log-1027155/p51d_mustang_120.orfl.trailing",
+            "sha256": "914fe5a53f763340a159a1767c811b1cb34fab548deec5e05d80e9c871f7f597",
+            "size_bytes": 201337
+          },
+          {
+            "path": "tmp/flight-log-1027155/p51d_mustang_120.orfl.truncate",
+            "sha256": "27ce8d563ad969234e906da70d857c8f2b12b9ef5bbb2281091fba7d01ca3b9d",
+            "size_bytes": 201236
+          },
+          {
+            "path": "tmp/flight-log-1027155/sebart_avanti_s_a200.orfl",
+            "sha256": "1b2285cf7a5a1e688e9079db1c1d0f97091a1ff71b9b7668eedeaf78f2384d5b",
+            "size_bytes": 241052
+          },
+          {
+            "path": "tmp/flight-log-1027155/sebart_avanti_s_a200.orfl.bitflip",
+            "sha256": "02d738d8d548a38a569cb7faa8986983f70e067552a05a272894c09dedc07b45",
+            "size_bytes": 241052
+          },
+          {
+            "path": "tmp/flight-log-1027155/sebart_avanti_s_a200.orfl.length",
+            "sha256": "7c9e09355ab9c206066fc21128394a5235811eb68be1ca9350f04f7ff6226474",
+            "size_bytes": 241052
+          },
+          {
+            "path": "tmp/flight-log-1027155/sebart_avanti_s_a200.orfl.limit",
+            "sha256": "b31106f1e91d181eb4a9e988c6882a95b23164ddd4fa17f13851545c130f0363",
+            "size_bytes": 37396
+          },
+          {
+            "path": "tmp/flight-log-1027155/sebart_avanti_s_a200.orfl.reset",
+            "sha256": "d8657214e1c927fb342b34a60123f664f763b3a67787013d46f0290d6fde6840",
+            "size_bytes": 40068
+          },
+          {
+            "path": "tmp/flight-log-1027155/sebart_avanti_s_a200.orfl.trailing",
+            "sha256": "4bbf0046c63f70fc9b5efa00a36d8b31e63408e3392fdc867ee2bfe7ea09d7a1",
+            "size_bytes": 241053
+          },
+          {
+            "path": "tmp/flight-log-1027155/sebart_avanti_s_a200.orfl.truncate",
+            "sha256": "ed913d50e5085787f576151189c66ae56e67ce680492b3ca518d54ebfb69b9e7",
+            "size_bytes": 240952
+          },
+          {
+            "path": "tmp/flight-log-1027155/stik_glow_61fx_2t.orfl",
+            "sha256": "0530045b2d1337290fa910267a6211dea4b4ded6bab1ad61fc460580110e5fdd",
+            "size_bytes": 266580
+          },
+          {
+            "path": "tmp/flight-log-1027155/stik_glow_61fx_2t.orfl.bitflip",
+            "sha256": "7eca0ccf733e57c95612cf3e076865d657beaf7f224a10cd86fa7130ac810e10",
+            "size_bytes": 266580
+          },
+          {
+            "path": "tmp/flight-log-1027155/stik_glow_61fx_2t.orfl.length",
+            "sha256": "eb66e185fcfe8b3a7744a412f7ddbd8ca93fb467b1b3b51690994b3dd2a21288",
+            "size_bytes": 266580
+          },
+          {
+            "path": "tmp/flight-log-1027155/stik_glow_61fx_2t.orfl.limit",
+            "sha256": "6c35490d3a8c42d60923f93c202930273dea642101911f60a1a5c79ee54b7908",
+            "size_bytes": 44408
+          },
+          {
+            "path": "tmp/flight-log-1027155/stik_glow_61fx_2t.orfl.reset",
+            "sha256": "8211b90b50e66f8432db9b791cf00d0d7b3b05ec99e1080139bac8de1b54cb6f",
+            "size_bytes": 46636
+          },
+          {
+            "path": "tmp/flight-log-1027155/stik_glow_61fx_2t.orfl.trailing",
+            "sha256": "6a5d99324f84bdfbce0a19504e2f687ad7293f6a3c37feafe8b216d3e875675a",
+            "size_bytes": 266581
+          },
+          {
+            "path": "tmp/flight-log-1027155/stik_glow_61fx_2t.orfl.truncate",
+            "sha256": "78568670d742f14f8dbaa70c08be08417ae45a3e74d2a6a0d2f0e4fcac7a072d",
+            "size_bytes": 266480
+          },
+          {
+            "path": "tmp/flight-log-1027155/turbo_lumber_evolution.orfl",
+            "sha256": "36af7d93d72377065d8ac071374ea28af4adf15eb809ad839ccaadd6510a54d3",
+            "size_bytes": 221176
+          },
+          {
+            "path": "tmp/flight-log-1027155/turbo_lumber_evolution.orfl.bitflip",
+            "sha256": "ff9c81564704c09e816e3671ab5418604a5343a0f26c34a5d68b393746c15551",
+            "size_bytes": 221176
+          },
+          {
+            "path": "tmp/flight-log-1027155/turbo_lumber_evolution.orfl.length",
+            "sha256": "27bb53e828472af625db3e237d3164e6ed020cae13a731f31605f4afaf20bea5",
+            "size_bytes": 221176
+          },
+          {
+            "path": "tmp/flight-log-1027155/turbo_lumber_evolution.orfl.limit",
+            "sha256": "77f38508a9317ce9d522d0e711529cc21ddc6ec0e4d13c6d7ac8d12064bd27a1",
+            "size_bytes": 26008
+          },
+          {
+            "path": "tmp/flight-log-1027155/turbo_lumber_evolution.orfl.reset",
+            "sha256": "a2a77d73ebf1f96343b30b685f59bcac6b2318b1db0196c528705790b94803b8",
+            "size_bytes": 28432
+          },
+          {
+            "path": "tmp/flight-log-1027155/turbo_lumber_evolution.orfl.trailing",
+            "sha256": "6bf06a6cacd0a097f3755683e8c5f895189d54709e59436c8c4281978de65365",
+            "size_bytes": 221177
+          },
+          {
+            "path": "tmp/flight-log-1027155/turbo_lumber_evolution.orfl.truncate",
+            "sha256": "8ab8aaa5a938c265be4506446c4eda2a6047ea470f6399b207ca2394328ec585",
+            "size_bytes": 221076
+          },
+          {
+            "path": "tmp/flight-log-1027155/verification.json",
+            "sha256": "a15571064f60047efa90645c9ceed7bb5b2ae102cfbb6ccab10d74e808cf5de7",
+            "size_bytes": 1362
+          }
+        ],
+        "retained package diagnostic runner support": [
+          {
+            "path": "tmp/package-editor-sidecar-runner-01/Godot_v4.7.2-stable_linux.x86_64",
+            "sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+            "size_bytes": 146414384
+          },
+          {
+            "path": "tmp/package-editor-sidecar-runner-01/libopenrc_ground_vehicle.so",
+            "sha256": "08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3",
+            "size_bytes": 979304
+          }
+        ]
+      },
+      "git_head_status_and_staging_unchanged_since_materialization": true,
+      "missing_manifested_files": [],
+      "postrun_git_head": "7c47c7ba02f7d2c874ec92a381ea73ef967069d6",
+      "postrun_git_index_sha256": "18186a06da12ef65e7ac856b3eedf30638501832a24dd1e753ea30ff89b47c22",
+      "postrun_git_status_entries": 66,
+      "postrun_observed_source_tree_sha256_including_additions": "57c5420a9c3fb23c21122fca2e54e8a013c4229d7dd6c573143a4c5cfb7e46dc",
+      "unclassified_additions": []
+    },
+    {
+      "all_manifested_source_bytes_modes_and_paths_preserved": true,
+      "baseline_entry_count": 14923,
+      "baseline_manifest": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/native-package-staging/derived-package-20261015-08/candidate-after-overlays.json",
+      "baseline_manifest_sha256": "f61830ce291e789a76d43d059a5d6253ffa2d367e8857a9fa322ebc1e2b4f5f4",
+      "baseline_source_tree_sha256": "84fdc89552592750909ab85407b4e7ded9aa18327d8dd22da6e3c7d3d69a51a1",
+      "candidate": "08",
+      "candidate_root": "/home/bulto/openrc-r11-package-20261015-08",
+      "changed_manifested_files": [],
+      "generated_or_diagnostic_additions": {
+        "Godot-generated UID sidecar": [
+          {
+            "path": "app/native/ground_vehicle/openrc_ground_vehicle.gdextension.uid",
+            "sha256": "aa79a6e4136d7e3aaaa5d8aa62eb409d79a0688d27a2b36f0836d6a8dedd4b0c",
+            "size_bytes": 20
+          }
+        ]
+      },
+      "git_head_status_and_staging_unchanged_since_materialization": true,
+      "missing_manifested_files": [],
+      "postrun_git_head": "7c47c7ba02f7d2c874ec92a381ea73ef967069d6",
+      "postrun_git_index_sha256": "a9c184442f10eef1dead0a3dbdb9cd1a47ab083231441e605794983beda80817",
+      "postrun_git_status_entries": 67,
+      "postrun_observed_source_tree_sha256_including_additions": "61ffadc5f456ee4ff1f5c1005eaa5240813ce265ed88848cd91c5c3857806ab7",
+      "unclassified_additions": []
+    }
+  ],
+  "captured_utc": "2026-10-15T14:49:37.908937+00:00",
+  "format": "openrc-r11-postrun-addition-classification-v1",
+  "method": "Use immutable baseline entry hashes/modes plus post-run full tree walk; additions are separately hashed and classified. No candidate files were deleted or rewritten."
+}

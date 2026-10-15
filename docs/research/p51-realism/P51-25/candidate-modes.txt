@@ -1,0 +1,4 @@
+V 22.0: dutch roll 0.758 Hz period 1.32 s zeta 0.210 cycles-to-half 0.51; spiral tau -15.2 s; roll tau 0.095 s
+V 28.6: dutch roll 0.690 Hz period 1.45 s zeta 0.252 cycles-to-half 0.42; spiral tau -109.4 s; roll tau 0.072 s
+V 35.0: dutch roll 0.778 Hz period 1.28 s zeta 0.261 cycles-to-half 0.41; spiral tau 199.1 s; roll tau 0.059 s
+V 45.0: dutch roll 0.952 Hz period 1.05 s zeta 0.267 cycles-to-half 0.40; spiral tau 87.4 s; roll tau 0.046 s

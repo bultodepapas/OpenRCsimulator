@@ -1,0 +1,15 @@
+# app_trace_extra
+# started_utc=2026-10-15T14:29:06+00:00
+# cwd=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+# timeout_seconds=75
+# expect=zero
+# command=/usr/bin/timeout 60 /home/bulto/openrc-r11-b09-r05b-20261015-07/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/bulto/openrc-r11-b09-r05b-20261015-07/app --audio-driver Dummy -- --aircraft=gp-extra-300s-60 --trace=/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/trace-extra.csv --t=3
+# returncode=0
+# timed_out=False
+# engine_error_detected=False
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+trace saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/trace-extra.csv (721 rows)
+WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

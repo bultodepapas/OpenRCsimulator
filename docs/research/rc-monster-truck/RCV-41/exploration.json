@@ -1,0 +1,93 @@
+{
+	"complete": true,
+	"content_hashing": {
+		"res://physics/ground_vehicle/nitro_dynamics.gd": {
+			"mean_us_by_round": {
+				"artifact_lookup": [
+					597.075,
+					593.485,
+					532.485,
+					540.825,
+					540.56
+				],
+				"buffered_sha": [
+					683.59,
+					516.285,
+					488.0,
+					520.525,
+					455.505
+				],
+				"builtin_file_sha": [
+					907.63,
+					439.545,
+					493.08,
+					457.72,
+					471.67
+				],
+				"content_compare_sha": [
+					446.68,
+					471.56,
+					399.78,
+					376.27,
+					372.745
+				],
+				"file_exists_only": [
+					58.265,
+					53.905,
+					40.31,
+					57.6,
+					52.315
+				]
+			},
+			"sha256": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa"
+		},
+		"res://physics/ground_vehicle/vehicle_dynamics.gd": {
+			"mean_us_by_round": {
+				"artifact_lookup": [
+					904.835,
+					875.625,
+					774.185,
+					753.29,
+					607.13
+				],
+				"buffered_sha": [
+					851.29,
+					775.625,
+					685.16,
+					667.605,
+					710.945
+				],
+				"builtin_file_sha": [
+					813.52,
+					810.065,
+					745.63,
+					641.175,
+					780.605
+				],
+				"content_compare_sha": [
+					363.03,
+					295.52,
+					320.425,
+					434.305,
+					253.425
+				],
+				"file_exists_only": [
+					53.475,
+					52.405,
+					35.61,
+					37.66,
+					30.445
+				]
+			},
+			"sha256": "75355709c0f813b64c8127899494c3980253cdc16d73a9e480b0204c709e17f5"
+		}
+	},
+	"engine": "4.7.2-stable (official)",
+	"harness_sha256": "a2e0c25359fcad5d27e82db31f5fb38c6cc5c8f26aaa591988d33d073d399ca0",
+	"identity_us": 1093.05,
+	"processor": "AMD Ryzen 9 5900X 12-Core Processor",
+	"validation_us": {
+		"native_hex": 1.12825,
+		"script_loop": 8.5685
+	}
+}

@@ -1,0 +1,28 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   successful recovery still displays its warning
+ok   initial focus lands on the flight controller choice
+ok   captured joypad press does not escape to unhandled input
+ok   matching joypad release is consumed after capture ends
+ok   matching keyboard release is consumed after capture ends
+ok   matching release stays consumed when the logical keycode changes
+ok   captured axis stays consumed until it returns to neutral
+ok   Escape cancels remapping without closing the screen
+ok   Escape release stays inside remapping recovery
+ok   changing flight controller cancels its pending capture
+ok   new device cannot finish capture started for the old device
+ok   switching profiles preserves unsaved channel edits
+ok   switching profiles preserves unsaved name edits
+ok   switching devices preserves unsaved channel edits
+ok   switching devices preserves unsaved name edits
+ok   AUX suppresses only a colliding inherited flight action
+ok   explicit action remains visible and is rejected on AUX conflict
+ok   disconnecting the captured controller cancels remapping
+ok   runtime rejection leaves profile setup open
+ok   runtime rejection does not fall through to storage
+ok   runtime rejection preserves the editable draft
+ok   gamepad preset popup is open while focused
+ok   Escape dismisses the focused option popup without closing setup
+ok   Save does not persist an in-progress remap
+ok   Cancel exits and discards while capture is active
+controller setup audit passed

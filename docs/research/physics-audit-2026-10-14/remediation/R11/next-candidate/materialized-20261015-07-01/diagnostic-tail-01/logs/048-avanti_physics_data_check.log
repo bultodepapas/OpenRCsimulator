@@ -1,0 +1,11 @@
+# avanti_physics_data_check
+# started_utc=2026-10-15T14:29:29+00:00
+# cwd=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+# timeout_seconds=600
+# expect=zero
+# command=/usr/bin/python3 /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../research/avanti-s/av06/derive_physics.py --check
+# returncode=0
+# timed_out=False
+# engine_error_detected=False
+
+sebart_avanti_s_a200.json and derivation.md are up to date

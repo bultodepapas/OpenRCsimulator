@@ -1,0 +1,3 @@
+== P-51D physics data and ground-effect table are not stale (research/p51/p51-05/derive_physics.py, p51-20/ground_effect_vlm.py --check)
+current
+p51d_mustang_120.json and derivation.md are up to date

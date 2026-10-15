@@ -382,7 +382,7 @@
             ]
           },
           "flap_left": {
-            "visual_only": true,
+            "visual_only": false,
             "hinges": [
               {
                 "key": "flap_left",
@@ -393,7 +393,7 @@
             ]
           },
           "flap_right": {
-            "visual_only": true,
+            "visual_only": false,
             "hinges": [
               {
                 "key": "flap_right",

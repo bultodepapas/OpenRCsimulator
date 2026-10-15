@@ -1,0 +1,80 @@
+{
+  "timing_scope": "Sum of the three cell collector timings per pair; scenery creation and output comparisons excluded. Pair 0 excluded from warm statistics for both variants.",
+  "reference_median_us": 29990,
+  "candidate_median_us": 27708,
+  "reduction_percent": 7.609203067689229,
+  "real_cell_pairs": 72,
+  "synthetic_pairs": 768,
+  "unique_synthetic_cases": 256,
+  "runs": [
+    {
+      "run": 1,
+      "warm_batches_us": [
+        [
+          30648,
+          28265,
+          28335,
+          27535,
+          34407,
+          28985,
+          28399
+        ],
+        [
+          26181,
+          26963,
+          26511,
+          27708,
+          29661,
+          26931,
+          27269
+        ]
+      ]
+    },
+    {
+      "run": 2,
+      "warm_batches_us": [
+        [
+          30608,
+          34127,
+          33294,
+          28608,
+          29658,
+          27863,
+          27953
+        ],
+        [
+          26679,
+          31279,
+          31092,
+          27237,
+          27154,
+          27206,
+          26844
+        ]
+      ]
+    },
+    {
+      "run": 3,
+      "warm_batches_us": [
+        [
+          31555,
+          44528,
+          28777,
+          30329,
+          32861,
+          29990,
+          30946
+        ],
+        [
+          31441,
+          29086,
+          28356,
+          31103,
+          31088,
+          28822,
+          29072
+        ]
+      ]
+    }
+  ]
+}

@@ -1,0 +1,35 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+SCRIPT ERROR: Trying to assign value of type 'Nil' to a variable of type 'PackedInt32Array'.
+   at: _triangles (C:/DEVELOPMENT/OpenRCsimulator/tmp/heli-geometry-native/reference.gd:185)
+   GDScript backtrace (most recent call first):
+       [0] _triangles (C:/DEVELOPMENT/OpenRCsimulator/tmp/heli-geometry-native/reference.gd:185)
+       [1] _synthetic (C:/DEVELOPMENT/OpenRCsimulator/research/visual-quality/heli-canopy-transforms/compare.gd:92)
+       [2] _run (C:/DEVELOPMENT/OpenRCsimulator/research/visual-quality/heli-canopy-transforms/compare.gd:57)
+SCRIPT ERROR: Trying to assign value of type 'Nil' to a variable of type 'PackedInt32Array'.
+   at: _triangles (C:/DEVELOPMENT/OpenRCsimulator/tmp/heli-geometry-native/candidate.gd:185)
+   GDScript backtrace (most recent call first):
+       [0] _triangles (C:/DEVELOPMENT/OpenRCsimulator/tmp/heli-geometry-native/candidate.gd:185)
+       [1] _synthetic (C:/DEVELOPMENT/OpenRCsimulator/research/visual-quality/heli-canopy-transforms/compare.gd:93)
+       [2] _run (C:/DEVELOPMENT/OpenRCsimulator/research/visual-quality/heli-canopy-transforms/compare.gd:57)
+SCRIPT ERROR: Out of bounds set index '0' (on base: 'PackedVector3Array')
+   at: _synthetic (C:/DEVELOPMENT/OpenRCsimulator/research/visual-quality/heli-canopy-transforms/compare.gd:95)
+   GDScript backtrace (most recent call first):
+       [0] _synthetic (C:/DEVELOPMENT/OpenRCsimulator/research/visual-quality/heli-canopy-transforms/compare.gd:95)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/visual-quality/heli-canopy-transforms/compare.gd:57)
+Canopy exact geometry/kit pairs: 12; synthetic cases: 256; valid=false
+ERROR: 1 RID allocations of type 'N5GLES34MeshE' were leaked at exit.
+ERROR: 1 RID allocations of type 'N17RendererSceneCull8InstanceE' were leaked at exit.
+ERROR: Pages in use exist at exit in PagedAllocator: N20RasterizerSceneGLES321GeometryInstanceGLES3E
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+ERROR: Buffer with GL ID of 815: leaked 252 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 816: leaked 24 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 817: leaked 252 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

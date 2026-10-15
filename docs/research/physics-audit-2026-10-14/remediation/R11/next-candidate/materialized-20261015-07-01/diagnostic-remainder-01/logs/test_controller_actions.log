@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default semantic actions have recovery and no overlapping conflicts
+ok   same button on another device is ignored
+ok   selected-device A resolves to menu accept
+ok   button release produces no semantic action
+ok   menu navigation is not routed as flight trim
+ok   menu navigation resolves only in menu context
+ok   axis threshold resolves matching sign on selected device
+ok   axis value below threshold does not resolve
+ok   keyboard remap resolves without a gamepad id
+ok   keyboard release produces no semantic action
+ok   duplicate back/pause recovery binding is rejected
+ok   the sentinel button index is rejected
+ok   semantic action labels translate to Spanish
+ok   controller binding labels translate to Spanish
+ok   pause recovery notice translates to Spanish
+ok   controller form and axis controls are translated
+ok   rate and absolute throttle presets are distinguished in Spanish
+ok   radio recovery, profile type and safety prompts translate
+ok   controller setup and arming prompts translate
+all controller action checks passed

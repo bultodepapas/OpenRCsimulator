@@ -1,0 +1,89 @@
+[
+  {
+    "label": "test_heli_night_lights-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_heli_night_lights.gd"
+    ],
+    "exit_code": 0,
+    "diagnostics": [
+      "HELI night lights: 39 checks, 0 failed"
+    ]
+  },
+  {
+    "label": "test_heli_night_rotor-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_heli_night_rotor.gd"
+    ],
+    "exit_code": 0,
+    "diagnostics": [
+      "heli night rotor: 18 checks, 0 failed"
+    ]
+  },
+  {
+    "label": "test_heli_crash_presentation-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_heli_crash_presentation.gd"
+    ],
+    "exit_code": 0,
+    "diagnostics": [
+      "HELI-33 crash presentation: 44 checks, 0 failed"
+    ]
+  },
+  {
+    "label": "test_ui_home_preview_cache-headless",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--headless",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_ui_home_preview_cache.gd"
+    ],
+    "exit_code": 0,
+    "diagnostics": [
+      "Home preview cache: 18 checks, 0 failed",
+      "WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ]
+  },
+  {
+    "label": "test_heli_night_lights-native",
+    "command": [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "res://tests/test_heli_night_lights.gd"
+    ],
+    "exit_code": 0,
+    "diagnostics": [
+      "HELI night lights: 39 checks, 0 failed",
+      "ERROR: Texture with GL ID of 24: leaked 349524 bytes.",
+      "ERROR: Texture with GL ID of 25: leaked 349524 bytes."
+    ]
+  }
+]

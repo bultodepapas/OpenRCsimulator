@@ -140,7 +140,7 @@ static func inspect(path: String, recover := false) -> Dictionary:
 	for key in ["state", "loads", "inputs", "aux", "continuous", "modes"]:
 		if typeof(layout.get(key)) != TYPE_INT or layout[key] < 0 or layout[key] > 4096:
 			return {ok = false, error = "Invalid sample layout."}
-	if layout.state != 13 or layout.loads != 6 or layout.inputs not in [4, 6] or layout.aux < 4 or layout.modes < 1:
+	if layout.state != 13 or layout.loads != 6 or layout.inputs not in [4, 5, 6, 7] or layout.aux < 4 or layout.modes < 1:
 		return {ok = false, error = "Unsupported sample layout."}
 	var snapshot: Dictionary = header.checkpoint.simulation
 	if snapshot.get("dt") != header.dt_s:
@@ -273,7 +273,8 @@ static func columns(layout: Dictionary) -> PackedStringArray:
 	var result := PackedStringArray(["tick", "t_s", "loads_t_s"])
 	result.append_array(PackedStringArray(RB.STATE_LAYOUT))
 	result.append_array(PackedStringArray(["Fx_N", "Fy_N", "Fz_N", "Mx_Nm", "My_Nm", "Mz_Nm", "cmd_roll", "cmd_pitch", "cmd_yaw", "cmd_throttle"]))
-	if layout.inputs == 6: result.append_array(PackedStringArray(["cmd_gear_down", "cmd_wheel_brake"]))
+	if layout.inputs in [6, 7]: result.append_array(PackedStringArray(["cmd_gear_down", "cmd_wheel_brake"]))
+	if layout.inputs in [5, 7]: result.append("cmd_flaps")
 	result.append_array(PackedStringArray(["engine_rpm", "srv_roll", "srv_pitch", "srv_yaw"]))
 	for i in range(4, layout.aux): result.append("aux_%d" % i)
 	for i in layout.continuous: result.append("continuous_%d" % i)

@@ -1,0 +1,76 @@
+{
+  "commands": [
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\wing-light-stations\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\native-1.json"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\wing-light-stations\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\native-2.json",
+      "--reverse"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\wing-light-stations\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\native-3.json"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\wing-light-stations\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\native-4.json",
+      "--reverse"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\wing-light-stations\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-stations-native\\native-5.json"
+    ]
+  ],
+  "sha256": {
+    "reference.gd": "6c3c8cb56fc4d71fd092415428b8e6b6ee9ffd9b5880e2efbb7f32ca8ed2f626",
+    "candidate.gd": "26121b43e1bed1466ac2c28e882a107e29bd9f20073929596fea5157febd22ab",
+    "compare.gd": "f523423a420d8fee8c199473cb7ff3adadeda4e1ddedfc085863c5413181b54d"
+  }
+}

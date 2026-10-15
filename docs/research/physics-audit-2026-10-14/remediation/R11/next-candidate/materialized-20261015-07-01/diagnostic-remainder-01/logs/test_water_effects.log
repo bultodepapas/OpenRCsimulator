@@ -1,0 +1,42 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   normalized lake fixture loads
+ok   lake configuration accepts canonical water level
+ok   fixed visual pool is bounded
+ok   pool meshes have no shadow casting
+ok   snapshot starts one water event
+ok   impact lands on mean water surface at world NED point
+ok   declarative depth is measured below mean water level
+ok   one CC0 source voice is selected per begin
+ok   selected voice is one of the downloaded source clips
+ok   impact does not modify the immutable physics snapshot
+ok   local visual clock advances through crash freeze when user is not paused
+ok   only aircraft render root sinks
+ok   render root stays above the declared visual sink limit
+ok   rings stay small and muted rather than broad white foam
+ok   pooled droplet transforms remain finite
+ok   user pause freezes effect phase
+ok   user pause freezes the visual aircraft sink
+ok   checkpoint records emitted audio without replay state
+ok   unpaused visual phase resumes
+ok   frame delta and event clock remain bounded
+ok   finite event clock retires every effect mesh
+ok   valid phase state prepares for restore
+ok   event restore requires an already configured lake
+ok   restore target configures independently
+ok   restore rebuilds visuals and sink phase
+ok   restore retains source selection but does not replay impact audio
+ok   nonfinite phase is rejected before mutation
+ok   nonfinite impact coordinates are rejected
+ok   impossible lake depth is rejected
+ok   audio-off configuration accepts the same lake
+ok   dictionary impact starts with no audio event
+ok   audio-off event has no stream or playback request
+ok   simulation freeze is ignored by render clock
+ok   invalid impact leaves current render event unchanged
+ok   ambient uses the verified MP3 source as a loop
+ok   ambient is quiet and localized to the lake
+ok   disabled ambience has no stream
+ok   clear restores the visual model and clears the event
+ok   cleared checkpoint is safely restorable
+39 checks, 0 failures

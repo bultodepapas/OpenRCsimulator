@@ -1,0 +1,11 @@
+# p51_appearance_check
+# started_utc=2026-10-15T14:18:27+00:00
+# cwd=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+# timeout_seconds=600
+# expect=zero
+# command=/usr/bin/python3 /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../assets/aircraft/p51d-mustang-120/compile_appearance.py --check
+# returncode=0
+# timed_out=False
+# engine_error_detected=False
+
+P-51 appearance source/runtime: identical

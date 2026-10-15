@@ -1,0 +1,19 @@
+--- runtime-before
++++ runtime-after
+@@ -182,11 +182,13 @@
+  for s: int in node.mesh.get_surface_count():
+   var arrays: Array=node.mesh.surface_get_arrays(s)
+   var vertices: PackedVector3Array=arrays[Mesh.ARRAY_VERTEX]
+-  var indices: PackedInt32Array=arrays[Mesh.ARRAY_INDEX]
++  var indices: PackedInt32Array=arrays[Mesh.ARRAY_INDEX] if arrays[Mesh.ARRAY_INDEX]!=null else PackedInt32Array()
++  # Transform each source vertex once in native code, then preserve face order.
++  var transformed: PackedVector3Array=transform_value*vertices
+   if indices.is_empty():
+-   for point: Vector3 in vertices: result.append(transform_value*point)
++   result.append_array(transformed)
+   else:
+-   for index: int in indices: result.append(transform_value*vertices[index])
++   for index: int in indices: result.append(transformed[index])
+  return result
+ 
+ ## Slice actual canopy triangles; no floating outline based on its bounding box.

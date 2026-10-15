@@ -1055,6 +1055,19 @@
                 }
               }
             },
+            "body_cn_beta": {
+              "$ref": "#/$defs/evidence",
+              "properties": {
+                "value": {
+                  "type": "number",
+                  "minimum": -0.5,
+                  "maximum": 0.0
+                },
+                "unit": {
+                  "const": "1/rad"
+                }
+              }
+            },
             "horizontal": {
               "type": "object",
               "required": [

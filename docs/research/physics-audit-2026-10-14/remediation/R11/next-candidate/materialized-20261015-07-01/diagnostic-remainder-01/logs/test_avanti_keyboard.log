@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+V 29 hold -1.00 alpha 7.82 g 3.10 stall 0.03 recovered 2.229 complete true
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+V 45 hold -1.00 alpha 6.59 g 5.11 stall 0.00 recovered 1.787 complete true
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+V 60 hold -1.00 alpha 6.31 g 7.92 stall 0.00 recovered 1.550 complete true
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+V 45 hold 0.50 alpha 7.27 g 5.20 stall 0.01 recovered -1.000 complete true
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+V 45 hold 2.00 alpha 15.07 g 6.47 stall 0.77 recovered 1.179 complete true
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+V 45 hold 3.00 alpha 18.70 g 6.47 stall 0.98 recovered 1.179 complete true
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+AV-17-R1 keyboard and dive recovery: 39 checks, 0 failed

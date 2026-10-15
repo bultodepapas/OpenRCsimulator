@@ -231,9 +231,7 @@ func status_text(session: Node) -> String:
 			return tr("Controller unavailable. Select a connected device or keyboard in Controller settings.")
 		if session.radio.connected and not session.radio.armed:
 			if session.radio.is_gamepad():
-				if session.radio.can_confirm_gamepad_poll():
-					return tr("Release the sticks, triggers and buttons, then select Continue.")
-				return tr("Move each mapped control once, release sticks and triggers, then wait for neutral. Continue is an explicit action.")
+				return tr("Checking controller input. If it does not respond, open Controller settings.")
 			return tr("Lower the throttle to arm. If the mapping is wrong, open Controller settings and calibrate the selected radio.")
 		if session.radio.connected and session.radio.armed and session.crash.is_empty():
 			return tr("Controls ready. Select Continue to fly.")

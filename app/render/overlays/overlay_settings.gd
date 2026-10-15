@@ -4,17 +4,17 @@ extends RefCounted
 
 const Units := preload("res://render/overlays/units.gd")
 
-const IDS := ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance"]
+const IDS := ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls"]
 const PRESET_ORDER := ["off", "pilot", "full", "developer"]
 const PRESETS := {
 	off = [],
-	pilot = ["flight", "transmitter", "warnings", "wind"],
-	full = ["flight", "transmitter", "warnings", "wind", "telemetry"],
-	developer = ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance"],
+	pilot = ["flight", "transmitter", "warnings", "wind", "controls"],
+	full = ["flight", "transmitter", "warnings", "wind", "telemetry", "controls"],
+	developer = ["flight", "transmitter", "warnings", "wind", "telemetry", "diagnostics", "performance", "controls"],
 }
 const DEVELOPER := ["diagnostics", "performance"]
 ## D2/D3/D4: Pilot preset, units by language, Mode 2.
-const DEFAULTS := { preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind"], units = "auto", stick_mode = 2 }
+const DEFAULTS := { preset = "pilot", visible = ["flight", "transmitter", "warnings", "wind", "controls"], units = "auto", stick_mode = 2 }
 
 
 ## Settings from anything (a preferences file, a dialog): always a complete valid dictionary, defaults where invalid.

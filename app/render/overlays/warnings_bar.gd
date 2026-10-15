@@ -44,8 +44,6 @@ static func text_for(code: String) -> String:
 			return "FAILSAFE · radio lost"
 		"safe":
 			return "RADIO SAFE · throttle low to arm"
-		"gamepad_safe":
-			return "GAMEPAD SAFE · move controls, then release"
 		"controller_lost":
 			return "CONTROLLER LOST · select controls to continue"
 		"stall":

@@ -11,7 +11,6 @@ const HX700 := preload("res://aircraft/hx700_model.gd")
 
 const STIK_ID := "jensen-das-ugly-stik-60"
 const EXTRA_ID := "gp-extra-300s-60"
-const AVANTI_ID := "sebart-avanti-s-a200-p100rx"
 const P51_ID := "p51d-mustang-120"
 const TIMBER_ID := "turbo-lumber-evolution"
 const STIK_GLOW_55AX_ID := "stik-glow-55ax-2t"
@@ -150,6 +149,15 @@ static func apply_surfaces(airplane: Dictionary, rotations: Dictionary) -> void:
 static func apply_throttle(airplane: Dictionary, throttle: float) -> void:
 	if airplane.has("controls") and not airplane.get("_finite_glow_visual", false):
 		Controls.set_throttle(airplane.controls, throttle)
+
+
+## Render the session's accepted flap angle through the aircraft's existing visual pose.
+static func apply_flaps(airplane: Dictionary, degrees: float) -> void:
+	if not is_finite(degrees):
+		return
+	var builder: Script = airplane.get("_model_builder")
+	if builder != null and builder.has_method("set_flaps"):
+		builder.call("set_flaps", airplane, degrees)
 
 
 ## The inverse of Commands.hinge_rotations(): trailing-edge deflections in degrees (up for ailerons/elevator,

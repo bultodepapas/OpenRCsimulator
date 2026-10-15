@@ -4,20 +4,33 @@ extends Node3D
 const CORNERS := ["FL", "FR", "RL", "RR"]
 const SMOKE_TEXTURE: Texture2D = preload("res://assets/crash/smoke.png")
 const GRIME_SHADER_PATH := "res://vehicles/ground/ground_grime_overlay.gdshader"
+const NitroLights = preload("res://vehicles/ground/monster_car_2_lights.gd")
 const PARTICLES_PER_TIRE := 24
 const MAX_GRIME := 0.46
 const TIRE_RADIUS_FALLBACK_M := 0.061
+const FULL_SHELL_GRIME_OPACITY_GAIN := 1.8
 
 var _prepared := false
 var headlights_enabled := true
+var auxiliary_enabled := false
+var neon_enabled := true
+var _nitro_lights: Node3D
 var _vehicle_root: Node3D
 var _body_mesh: MeshInstance3D
+var _shell_meshes: Array[MeshInstance3D] = []
 var _wheel_nodes: Array[Node3D] = []
 var _wheel_radii := PackedFloat32Array()
 var _emitters: Array[CPUParticles3D] = []
 var _dust_levels := PackedFloat32Array([0.0, 0.0, 0.0, 0.0])
 var _grime_material: ShaderMaterial
 var _grime_materials: Array[ShaderMaterial] = []
+# Bindings remain per mesh; only distinct, vehicle-owned resources need uploads.
+var _grime_update_materials: Array[ShaderMaterial] = []
+var _grime_frame_valid := false
+var _grime_world_frame := Transform3D.IDENTITY
+var _uploaded_grime := 0.0
+var _uploaded_wet := 0.0
+var _full_shell_grime := false
 var _grime_amount := 0.0
 var _wet_amount := 0.0
 var _paused := false
@@ -32,6 +45,18 @@ var _tail_materials: Array[StandardMaterial3D] = []
 var _tail_lens_colors: Array[Color] = []
 var _reverse_materials: Array[StandardMaterial3D] = []
 var _reverse_lens_colors: Array[Color] = []
+
+
+func _exit_tree() -> void:
+	# Detach our overlays before their resources and the vehicle are released.
+	# This also avoids stale shader-parameter queries in Godot's dummy renderer.
+	for mesh in _shell_meshes:
+		if is_instance_valid(mesh) and _grime_materials.has(mesh.material_overlay):
+			mesh.material_overlay = null
+	for wheel in _wheel_nodes:
+		if is_instance_valid(wheel) and wheel is MeshInstance3D \
+				and _grime_materials.has(wheel.material_overlay):
+			wheel.material_overlay = null
 
 
 ## Build all per-instance visuals once. `visual` is the read-only result from mt8_model.build().
@@ -52,15 +77,26 @@ func prepare(visual: Dictionary, scene_parent: Node = null) -> bool:
 	_vehicle_root = root_value as Node3D
 	_wheel_nodes = checked_wheels
 	_body_mesh = body_value as MeshInstance3D if body_value is MeshInstance3D else null
+	var authored_body_value: Variant = visual.get("body_nodes", [])
+	if typeof(authored_body_value) == TYPE_ARRAY:
+		for mesh_value in authored_body_value:
+			if mesh_value is MeshInstance3D:
+				_append_shell_mesh(mesh_value as MeshInstance3D)
+	if _body_mesh != null:
+		_append_shell_mesh(_body_mesh)
+	_full_shell_grime = _shell_meshes.size() > 1
 	if not _build_grime_overlay():
 		_vehicle_root = null
+		_shell_meshes.clear()
 		_wheel_nodes.clear()
 		_body_mesh = null
 		return false
+	_sync_grime_frame()
 	if scene_parent != null and get_parent() == null:
 		scene_parent.add_child(self)
 	_build_dust_emitters()
-	_build_vehicle_lights()
+	if not _build_vehicle_lights(visual):
+		return false
 	_prepared = true
 	return true
 
@@ -79,6 +115,7 @@ func update_render(
 		return
 	var dt := clampf(simulation_elapsed_since_render, 0.0, 0.1) if is_finite(simulation_elapsed_since_render) else 0.0
 	_paused = paused
+	_sync_grime_frame()
 	_update_lights(telemetry, last_controls, night_weight)
 	if paused:
 		for emitter in _emitters:
@@ -103,6 +140,7 @@ func update_render(
 	var speed := absf(float(speed_value))
 	var environment := _accepted_environment(telemetry)
 	var dirt_activity := 0.0
+	var distance_soil_activity := 0.0
 	var mud_activity := 0.0
 	var wet_target := float(environment.get("body_submersion", 0.0))
 	var water_wash := wet_target
@@ -160,6 +198,9 @@ func update_render(
 				var ground_height: Variant = sample.get("height_m", source.y - _wheel_radii[i])
 				var ground_height_valid := typeof(ground_height) in [TYPE_FLOAT, TYPE_INT] \
 					and is_finite(float(ground_height))
+				if _full_shell_grime and surface_factor > 0.0 and ground_height_valid \
+						and not over_wet_surface and not over_mud:
+					distance_soil_activity += surface_factor * maxf(speed, slip_speed)
 				if surface_factor > 0.0 and ground_height_valid and not over_wet_surface \
 						and not over_mud and (speed >= 0.35 or slip_speed >= 0.12):
 					var speed_factor := clampf((speed - 0.35) / 4.5, 0.0, 1.0)
@@ -168,6 +209,9 @@ func update_render(
 					source.y = float(ground_height) + 0.018
 					var emitter := _emitters[i]
 					emitter.global_transform = Transform3D(_vehicle_root.global_basis.orthonormalized(), source)
+					emitter.speed_scale = 0.45 + sqrt(level) * 0.9
+					emitter.initial_velocity_max = lerpf(0.5, 1.4, level)
+					emitter.scale_amount_max = lerpf(0.45, 0.9, level)
 					var dust_tint := Color(1.0, 0.92, 0.81).lerp(Color(0.32, 0.38, 0.54), _night_weight)
 					var dust_alpha := 0.8 * sqrt(level) * lerpf(1.0, 0.08, _night_weight)
 					emitter.color = Color(dust_tint.r, dust_tint.g, dust_tint.b, dust_alpha)
@@ -179,7 +223,9 @@ func update_render(
 		_emitters[i].emitting = level > 0.015
 		dirt_activity += level
 	if dt > 0.0:
-		if dirt_activity > 0.0:
+		if _full_shell_grime and distance_soil_activity > 0.0:
+			_grime_amount = minf(MAX_GRIME, _grime_amount + distance_soil_activity * dt * 0.0005)
+		elif dirt_activity > 0.0:
 			_grime_amount = minf(MAX_GRIME, _grime_amount + dirt_activity * 0.25 * dt * 0.028)
 		if mud_activity > 0.0:
 			_grime_amount = minf(MAX_GRIME, _grime_amount + mud_activity * 0.25 * dt * 0.08)
@@ -187,9 +233,7 @@ func update_render(
 			_grime_amount = maxf(0.0, _grime_amount - water_wash * dt * 0.006)
 		var wet_rate := 1.5 if wet_target > _wet_amount else 0.22
 		_wet_amount = move_toward(_wet_amount, clampf(wet_target, 0.0, 1.0), wet_rate * dt)
-		for material in _grime_materials:
-			material.set_shader_parameter("dirt_amount", _grime_amount)
-			material.set_shader_parameter("wet_amount", _wet_amount)
+		_sync_grime_amounts()
 
 
 ## Reset clears only this component's particle buffers and overlay. Body visibility and source
@@ -197,21 +241,31 @@ func update_render(
 func reset() -> void:
 	if not _prepared:
 		return
-	_grime_amount = 0.0
-	_wet_amount = 0.0
-	for material in _grime_materials:
-		material.set_shader_parameter("dirt_amount", 0.0)
-		material.set_shader_parameter("wet_amount", 0.0)
-	for i in 4:
-		_dust_levels[i] = 0.0
-		_emitters[i].emitting = false
-		_emitters[i].restart()
-		_emitters[i].emitting = false
-		_emitters[i].speed_scale = 1.0
+	clean_vehicle()
 	_paused = false
+	for emitter in _emitters:
+		emitter.speed_scale = 1.0
 	_brake_lights = false
 	_reverse_lights = false
-	_apply_tail_light_state()
+	if _nitro_lights != null:
+		_update_lights({}, {}, _night_weight)
+	else:
+		_apply_tail_light_state()
+
+
+## Clean only render-side grime, wet sheen and particle buffers.
+func clean_vehicle() -> void:
+	if not _prepared:
+		return
+	_grime_amount = 0.0
+	_wet_amount = 0.0
+	_sync_grime_frame()
+	_sync_grime_amounts()
+	_clear_dust_levels()
+	for emitter in _emitters:
+		emitter.restart()
+		emitter.emitting = false
+		emitter.speed_scale = 0.0 if _paused else 1.0
 
 
 ## Stable, allocation-light readout for focused tests and capture manifests.
@@ -230,40 +284,57 @@ func diagnostic_snapshot() -> Dictionary:
 		"particle_emitter_count": _emitters.size(),
 		"particle_budget_per_wheel": PARTICLES_PER_TIRE,
 		"particle_budget_total": _emitters.size() * PARTICLES_PER_TIRE,
+		"grime_overlay_count": _grime_materials.size(),
+		"grime_material_count": _grime_update_materials.size(),
+		"grime_shell_mesh_count": _shell_meshes.size(),
+		"full_shell_grime": _full_shell_grime,
 		"grime_amount": _grime_amount,
 		"wet_amount": _wet_amount,
 		"headlights_enabled": headlights_enabled and not _headlight_lights.is_empty(),
 		"headlight_energy": _last_headlight_energy,
 		"brake_lights": _brake_lights,
 		"reverse_lights": _reverse_lights,
+		"lighting": _nitro_lights.diagnostic_snapshot() if _nitro_lights != null else {},
 		"paused": _paused,
 	}
 
 
 func _build_grime_overlay() -> bool:
-	if _body_mesh == null:
+	if _shell_meshes.is_empty():
 		return false
 	var shader := ResourceLoader.load(GRIME_SHADER_PATH, "Shader") as Shader
 	if shader == null:
 		return false
-	_grime_material = _make_grime_material(shader, _body_mesh.get_aabb(), false)
-	_body_mesh.material_overlay = _grime_material
-	_grime_materials.append(_grime_material)
+	var shell_bounds := _body_bounds_in_vehicle_space() if _full_shell_grime else _body_mesh.get_aabb()
+	# MODEL_MATRIX is supplied per draw by Godot. All shell uniforms use the
+	# same vehicle-space bounds, so sharing within this vehicle is exact.
+	_grime_material = _make_grime_material(shader, shell_bounds, false, _full_shell_grime)
+	_grime_update_materials.append(_grime_material)
+	for shell_mesh in _shell_meshes:
+		shell_mesh.material_overlay = _grime_material
+		_grime_materials.append(_grime_material)
 	for wheel_value in _wheel_nodes:
 		var wheel_mesh := wheel_value as MeshInstance3D
 		if wheel_mesh == null:
 			return false
-		var wheel_material := _make_grime_material(shader, wheel_mesh.get_aabb(), true)
+		var wheel_bounds := _mesh_bounds_in_vehicle_space(wheel_mesh) if _full_shell_grime else wheel_mesh.get_aabb()
+		var wheel_material := _make_grime_material(shader, wheel_bounds, true, _full_shell_grime)
 		wheel_mesh.material_overlay = wheel_material
 		_grime_materials.append(wheel_material)
+		_grime_update_materials.append(wheel_material)
 	return true
 
 
-func _make_grime_material(shader: Shader, bounds: AABB, full_height: bool) -> ShaderMaterial:
+func _make_grime_material(shader: Shader, bounds: AABB, full_height: bool, vehicle_space: bool = false) -> ShaderMaterial:
 	var material := ShaderMaterial.new()
 	material.shader = shader
 	material.set_shader_parameter("dirt_amount", 0.0)
 	material.set_shader_parameter("wet_amount", 0.0)
+	material.set_shader_parameter("use_vehicle_space", vehicle_space)
+	material.set_shader_parameter(
+		"dirt_opacity_gain",
+		FULL_SHELL_GRIME_OPACITY_GAIN if vehicle_space else 1.0,
+	)
 	if full_height:
 		var margin := maxf(bounds.size.y * 0.04, 0.002)
 		material.set_shader_parameter("dirt_band_bottom", bounds.end.y + margin)
@@ -272,6 +343,39 @@ func _make_grime_material(shader: Shader, bounds: AABB, full_height: bool) -> Sh
 		material.set_shader_parameter("dirt_band_bottom", bounds.position.y + bounds.size.y * 0.04)
 		material.set_shader_parameter("dirt_band_top", bounds.position.y + bounds.size.y * 0.48)
 	return material
+
+
+func _append_shell_mesh(mesh: MeshInstance3D) -> void:
+	if mesh != null and not _shell_meshes.has(mesh):
+		_shell_meshes.append(mesh)
+
+
+func _sync_grime_frame() -> void:
+	if not _full_shell_grime or _vehicle_root == null:
+		return
+	var world_frame := _vehicle_root.global_transform
+	if _grime_frame_valid and world_frame == _grime_world_frame:
+		return
+	var vehicle_from_world := world_frame.affine_inverse()
+	for material in _grime_update_materials:
+		material.set_shader_parameter("vehicle_from_world", vehicle_from_world)
+	_grime_world_frame = world_frame
+	_grime_frame_valid = true
+
+
+func _sync_grime_amounts() -> void:
+	# Exact comparison: even the smallest accepted change reaches the shader.
+	var dirt_changed := _grime_amount != _uploaded_grime
+	var wet_changed := _wet_amount != _uploaded_wet
+	if not dirt_changed and not wet_changed:
+		return
+	for material in _grime_update_materials:
+		if dirt_changed:
+			material.set_shader_parameter("dirt_amount", _grime_amount)
+		if wet_changed:
+			material.set_shader_parameter("wet_amount", _wet_amount)
+	_uploaded_grime = _grime_amount
+	_uploaded_wet = _wet_amount
 
 
 func _build_dust_emitters() -> void:
@@ -303,6 +407,8 @@ func _build_dust_emitters() -> void:
 		particles.one_shot = false
 		particles.emitting = false
 		particles.speed_scale = 1.0
+		particles.fixed_fps = 60
+		particles.fract_delta = true
 		particles.mesh = dust_quad
 		particles.direction = Vector3(0.0, 0.84, 0.54)
 		particles.spread = 31.0
@@ -319,7 +425,16 @@ func _build_dust_emitters() -> void:
 		_emitters.append(particles)
 
 
-func _build_vehicle_lights() -> void:
+func _build_vehicle_lights(visual: Dictionary) -> bool:
+	if visual.has("headlight_positions"):
+		_nitro_lights = NitroLights.new()
+		if not _nitro_lights.prepare(visual):
+			_nitro_lights.free()
+			_nitro_lights = null
+			return false
+		_headlight_lights = _nitro_lights.headlights
+		_update_lights({}, {}, _night_weight)
+		return true
 	var bounds := _body_bounds_in_vehicle_space()
 	var half_width := clampf(bounds.size.x * 0.34, 0.075, 0.15)
 	var body_y := bounds.position.y + bounds.size.y * 0.53
@@ -360,26 +475,26 @@ func _build_vehicle_lights() -> void:
 		_reverse_lens_colors.append(reverse_color)
 		_add_lens(sphere, reverse_material, tail_position + Vector3(-side * 0.018, 0.0, 0.0), Vector3(0.48, 0.38, 0.28), "ReverseLightLens")
 	_update_lights({}, {}, _night_weight)
+	return true
 
 
 func _body_bounds_in_vehicle_space() -> AABB:
+	if _full_shell_grime:
+		var shell_bounds := AABB()
+		var has_bounds := false
+		for shell_mesh in _shell_meshes:
+			var mesh_bounds := _mesh_bounds_in_vehicle_space(shell_mesh)
+			if not has_bounds:
+				shell_bounds = mesh_bounds
+				has_bounds = true
+			else:
+				var low := shell_bounds.position.min(mesh_bounds.position)
+				var high := shell_bounds.end.max(mesh_bounds.end)
+				shell_bounds = AABB(low, high - low)
+		if has_bounds:
+			return shell_bounds
 	if _body_mesh != null:
-		var local_bounds := _body_mesh.get_aabb()
-		var lo := Vector3(INF, INF, INF)
-		var hi := Vector3(-INF, -INF, -INF)
-		for x in 2:
-			for y in 2:
-				for z in 2:
-					var local_point := local_bounds.position + Vector3(
-						local_bounds.size.x * float(x),
-						local_bounds.size.y * float(y),
-						local_bounds.size.z * float(z),
-					)
-					var vehicle_point := _vehicle_root.to_local(_body_mesh.to_global(local_point))
-					lo = lo.min(vehicle_point)
-					hi = hi.max(vehicle_point)
-		if lo.is_finite() and hi.is_finite():
-			return AABB(lo, hi - lo)
+		return _mesh_bounds_in_vehicle_space(_body_mesh)
 	var front_left := _vehicle_root.to_local(_wheel_nodes[0].global_position)
 	var front_right := _vehicle_root.to_local(_wheel_nodes[1].global_position)
 	var rear_left := _vehicle_root.to_local(_wheel_nodes[2].global_position)
@@ -389,6 +504,27 @@ func _body_bounds_in_vehicle_space() -> AABB:
 	var min_z := minf(front_left.z, front_right.z) - 0.05
 	var max_z := maxf(rear_left.z, rear_right.z) + 0.05
 	return AABB(Vector3(min_x, front_left.y + 0.035, min_z), Vector3(max_x - min_x, 0.06, max_z - min_z))
+
+
+func _mesh_bounds_in_vehicle_space(mesh: MeshInstance3D) -> AABB:
+	var local_bounds := mesh.get_aabb()
+	var mesh_to_vehicle := _vehicle_root.global_transform.affine_inverse() * mesh.global_transform
+	var lo := Vector3(INF, INF, INF)
+	var hi := Vector3(-INF, -INF, -INF)
+	for x in 2:
+		for y in 2:
+			for z in 2:
+				var local_point := local_bounds.position + Vector3(
+					local_bounds.size.x * float(x),
+					local_bounds.size.y * float(y),
+					local_bounds.size.z * float(z),
+				)
+				var vehicle_point := mesh_to_vehicle * local_point
+				lo = lo.min(vehicle_point)
+				hi = hi.max(vehicle_point)
+	if lo.is_finite() and hi.is_finite():
+		return AABB(lo, hi - lo)
+	return local_bounds
 
 
 func _add_lens(mesh: Mesh, material: StandardMaterial3D, position: Vector3, scale_value: Vector3, label: String) -> void:
@@ -415,9 +551,16 @@ func _make_lens_material(color: Color, initial_energy: float) -> StandardMateria
 func _update_lights(telemetry: Dictionary, controls: Dictionary, night_weight: float) -> void:
 	var night := clampf(night_weight, 0.0, 1.0) if is_finite(night_weight) else 0.0
 	_night_weight = night
+	if _nitro_lights != null:
+		_nitro_lights.observe(controls, night, headlights_enabled, auxiliary_enabled, neon_enabled)
+		_last_headlight_energy = _headlight_lights[0].light_energy
+		_brake_lights = _nitro_lights._last_brake
+		_reverse_lights = false
+		return
 	_last_headlight_energy = lerpf(0.18, 2.4, night) if headlights_enabled else 0.0
 	for i in _headlight_lights.size():
 		_headlight_lights[i].light_energy = _last_headlight_energy
+	for i in _headlight_materials.size():
 		_headlight_materials[i].emission_energy_multiplier = lerpf(0.28, 1.9, night) if headlights_enabled else 0.0
 		_headlight_materials[i].albedo_color = _headlight_lens_colors[i] if headlights_enabled else _headlight_lens_colors[i] * 0.12
 	var brake_value: Variant = controls.get("brake", 0.0)

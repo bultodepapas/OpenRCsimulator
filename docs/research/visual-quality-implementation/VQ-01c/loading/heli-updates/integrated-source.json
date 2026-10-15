@@ -1,0 +1,6 @@
+{
+  "app\\render\\rotor\\heli_night_lights.gd": "36d249ee6eaa9646f0498c696db9b34610afbf4f976a699b47916695a273f33e",
+  "app\\tests\\test_heli_night_lights.gd": "4b9926bd6cef70e1493864f59614720cbf9a0e46f14f1631b2b29e01f924fbaf",
+  "app\\render\\rotor\\heli_night_rotor.gd": "6aa86f962e9011894fe64289ab65714994baaa92276040aae17188efd95bde55",
+  "app\\aircraft\\hx700_model.gd": "01d038424b21174b42b374d28bb03fc8915cbe3fa964e3ededa11f0c1a57c457"
+}

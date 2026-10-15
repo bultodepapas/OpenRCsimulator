@@ -1,0 +1,79 @@
+utc=2026-10-15T14:43:59Z
+candidate=/home/bulto/openrc-r11-package-20261015-08
+dist=/home/bulto/openrc-r11-package-20261015-08/dist
+/home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64
+/home/bulto/.local/share/godot/export_templates/4.7.2.stable
+4.7.2.stable.official.ed1daf0bf
+53469f21c4f897036b571c19c628e8749e5a2282d0462794219aa01a9a5ad369  /home/bulto/openrc-r11-package-20261015-08/app/export.sh
+0da31ffbc585890c7c21ebcddd154a570fc91166a1461ee151b9320b3cb95599  /home/bulto/openrc-r11-package-20261015-08/app/export_presets.cfg
+8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e  /home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64
+be1d0b04910c8a98b630b0db6616f650d5c61e8bc60900cf4b4af48a43e306ec  /home/bulto/openrc-r11-package-20261015-08/app/native/ground_vehicle/build-receipt.json
+adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c  /home/bulto/openrc-r11-package-20261015-08/app/native/ground_vehicle/openrc_ground_vehicle.dll
+7c47c7ba02f7d2c874ec92a381ea73ef967069d6
+ M app/assets/landscape/lake/default_geometry.res
+ M app/data/aircraft/jensen_ugly_stik_60.json
+ M app/data/aircraft/sebart_avanti_s_a200.json
+ M app/data/aircraft/stik_glow_55ax_2t.json
+ M app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json
+ M app/data/aircraft/stik_glow_61fx_2t.json
+ M app/data/aircraft/stik_glow_fs64v_4t.json
+ M app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json
+ M app/data/workshop/jensen-das-ugly-stik-60.json
+ M app/data/workshop/sebart-avanti-s-a200-p100rx.json
+ M app/data/workshop/stik-glow-55ax-2t.json
+ M app/data/workshop/stik-glow-61fx-2t.json
+ M app/data/workshop/stik-glow-fs64v-4t.json
+ M app/physics/aero.gd
+ M app/render/lake/generated_geometry_stamp.gd
+ M app/render/world/aircraft_lights.gd
+ M app/test.sh
+ M app/tests/avanti_pullup_base.gd
+ M app/tests/check_math_sensitivity.py
+ M app/tests/check_trimmed_flight.py
+ M app/tests/golden/pull_throttle.json
+ M app/tests/golden/roll_15.json
+ M app/tests/golden/rudder_doublet.json
+ M app/tests/test_aircraft_contact_contract.gd
+ M app/tests/test_avanti_keyboard.gd
+ M app/tests/test_control_surface_observation.gd
+ M app/tests/test_controller_sections.gd
+ M app/tests/test_crash_energy.gd
+ M app/tests/test_crash_hull_labels.gd
+ M app/tests/test_crash_integration.gd
+ M app/tests/test_crash_pose.gd
+ M app/tests/test_downwash_lag.gd
+ M app/tests/test_field_integration.gd
+ M app/tests/test_landscape_scenery_grass_mask.gd
+ M app/tests/test_modes.gd
+ M app/tests/test_shaft_refinement.gd
+ M app/tests/test_start_choice.gd
+ M app/tests/test_ui_home.gd
+ M app/tests/test_wheel_session.gd
+ M app/tests/test_world_field_lights.gd
+ M app/tests/test_yaw_damping.gd
+ M research/aero/d11g/derive_rate_derivatives.gd
+ M research/avanti-s/av17-r2/build_polar.py
+ M research/avanti-s/av17-r2/test_build_polar.py
+?? app/physics/ground_vehicle/vehicle_damage.gd.uid
+?? app/physics/mass_inventory.gd.uid
+?? app/tests/test_aero_continuity.gd.uid
+?? app/tests/test_atmosphere_column.gd.uid
+?? app/tests/test_atmosphere_column_session.gd.uid
+?? app/tests/test_dynamic_mass_contact.gd.uid
+?? app/tests/test_dynamic_mass_contact_boundary.gd.uid
+?? app/tests/test_dynamic_mass_contact_session.gd.uid
+?? app/tests/test_ground_start_environment.gd.uid
+?? app/tests/test_heli_crash_relaunch.gd.uid
+?? app/tests/test_mass_inventory.gd.uid
+?? app/tests/test_rcv_activity_audit.gd.uid
+?? app/tests/test_rcv_damage.gd.uid
+?? app/tests/test_rcv_damage_session.gd.uid
+?? app/tests/test_rcv_effects_activity.gd.uid
+?? app/tests/test_rcv_ground_effects.gd.uid
+?? app/tests/test_rcv_render_audit.gd.uid
+?? app/tests/test_runway_transaction.gd.uid
+?? app/tests/test_ui_standard_column.gd.uid
+?? app/vehicles/ground/ground_damage_view.gd.uid
+?? app/vehicles/ground/ground_effects.gd.uid
+?? app/vehicles/ground/ground_grime_overlay.gdshader.uid
+?? research/aero/d11g/apply_rate_derivatives.py

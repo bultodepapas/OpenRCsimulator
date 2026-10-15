@@ -1,0 +1,410 @@
+{
+  "checks": {
+    "direct_rate_dependent_matrix_vs_dimensional_g_max_abs_CL_error": 5.551115123125783e-16,
+    "nonuniform_local_flow_quadrature": {
+      "alpha_deg": 4.0,
+      "analytic_profile_integral": {
+        "fx_profile_N": 2.778299221999738,
+        "yaw_profile_Nm": -0.0035761547373199254
+      },
+      "profile_cd0_semantics": "borrowed whole-aircraft CD0 used only to demonstrate quadratic-velocity/profile-force quadrature; not a section coefficient",
+      "sampled_orders": {
+        "1": {
+          "kj_force_z_N": 25.095646111277734,
+          "kj_yaw_Nm": -1.5642147574157494e-06,
+          "profile_force_N": 2.7782990560327314,
+          "profile_force_abs_error_N": 1.6596700636029027e-07,
+          "profile_yaw_Nm": -0.003476817105727781,
+          "profile_yaw_abs_error_Nm": 9.933763159214459e-05
+        },
+        "2": {
+          "kj_force_z_N": 25.095646111277734,
+          "kj_yaw_Nm": -1.5642147573949328e-06,
+          "profile_force_N": 2.7782992219997387,
+          "profile_force_abs_error_N": 8.881784197001252e-16,
+          "profile_yaw_Nm": -0.003576154737319842,
+          "profile_yaw_abs_error_Nm": 8.326672684688674e-17
+        },
+        "4": {
+          "kj_force_z_N": 25.095646111277734,
+          "kj_yaw_Nm": -1.5642147573706466e-06,
+          "profile_force_N": 2.7782992219997382,
+          "profile_force_abs_error_N": 4.440892098500626e-16,
+          "profile_yaw_Nm": -0.0035761547373200364,
+          "profile_yaw_abs_error_Nm": 1.1102230246251565e-16
+        },
+        "8": {
+          "kj_force_z_N": 25.095646111277734,
+          "kj_yaw_Nm": -1.564214757381055e-06,
+          "profile_force_N": 2.7782992219997382,
+          "profile_force_abs_error_N": 4.440892098500626e-16,
+          "profile_yaw_Nm": -0.003576154737319894,
+          "profile_yaw_abs_error_Nm": 3.122502256758253e-17
+        }
+      },
+      "yaw_rate_rad_s": 0.05
+    },
+    "production_export_E_max_abs_error": 2.220446049250313e-16,
+    "uniform_KJ_induced_drag_positive_N": 0.5285009532759817,
+    "uniform_KJ_plus_profile_power_on_airframe_W": -49.48108523985053,
+    "uniform_KJ_power_identity_abs_error_W": 1.7763568394002505e-15,
+    "uniform_KJ_power_on_airframe_W": -7.908203272742487,
+    "uniform_KJ_power_vs_minus_u_drag_abs_error_W": 7.993605777301127e-15,
+    "uniform_induced_downwash_min_mps": 0.28330156746992363,
+    "uniform_induced_drag_and_power_identity": {
+      "induced_drag_N": 0.5285009532759817,
+      "induced_power_on_airframe_W": -7.9082032727424885,
+      "minus_u_times_induced_drag_W": -7.9082032727424965
+    },
+    "uniform_zero_yaw_symmetry": {
+      "absolute_integrated_kj_yaw_Nm": 1.1820514185523212e-16,
+      "absolute_integrated_total_yaw_Nm": 1.1820514185523212e-16,
+      "max_mirrored_center_downwash_gap_mps": 1.226796442210798e-14,
+      "max_mirrored_gamma_gap_m2_s": 9.992007221626409e-16,
+      "max_mirrored_panel_kj_fx_gap_N": 4.371503159461554e-16
+    },
+    "variable_chord_direct_matrix_vs_g_max_abs_CL_error": 1.6653345369377348e-16,
+    "variable_chord_fixture_has_finite_E": true,
+    "variable_chord_gamma_equals_half_chord_times_g_max_abs_error_m2_s": 0.0,
+    "velocity_density_similarity": {
+      "base_rho_kg_m3": 1.225,
+      "expected_force_and_moment_ratio": 5.551020408163264,
+      "maximum_absolute_ratio_error": 1.184314868396541e-10,
+      "observed_ratios": {
+        "fx_kj_n": 5.551020408163262,
+        "fx_profile_n": 5.5510204081632715,
+        "fz_kj_n": 5.551020408163268,
+        "yaw_kj_nm": 5.551020408281696,
+        "yaw_profile_nm": 5.551020408162049
+      },
+      "scaled_rho_kg_m3": 1.7,
+      "velocity_and_yaw_rate_scale": 2.0
+    },
+    "zero_camber_D11f_midpoint_rows": [
+      {
+        "absolute_error_nm": 2.1250362580715887e-17,
+        "alpha_deg": 2.0,
+        "candidate_total_yaw_nm": 0.0034831854835156127,
+        "d11f_total_yaw_nm": 0.003483185483515634,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 6.982261990806649e-17,
+        "alpha_deg": 2.0,
+        "candidate_total_yaw_nm": -0.003483185483515564,
+        "d11f_total_yaw_nm": -0.003483185483515634,
+        "rate_rad_s": 0.05
+      },
+      {
+        "absolute_error_nm": 2.7321894746634712e-17,
+        "alpha_deg": 4.0,
+        "candidate_total_yaw_nm": 0.0034768186026943038,
+        "d11f_total_yaw_nm": 0.003476818602694331,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 6.114900252818245e-17,
+        "alpha_deg": 4.0,
+        "candidate_total_yaw_nm": -0.0034768186026943038,
+        "d11f_total_yaw_nm": -0.003476818602694365,
+        "rate_rad_s": 0.05
+      },
+      {
+        "absolute_error_nm": 1.1362438767648086e-16,
+        "alpha_deg": 8.0,
+        "candidate_total_yaw_nm": 0.0034513898552761546,
+        "d11f_total_yaw_nm": 0.003451389855276041,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 2.1163626406917047e-16,
+        "alpha_deg": 8.0,
+        "candidate_total_yaw_nm": -0.00345138985527621,
+        "d11f_total_yaw_nm": -0.0034513898552759985,
+        "rate_rad_s": 0.05
+      },
+      {
+        "absolute_error_nm": 3.942159099157294e-16,
+        "alpha_deg": 10.0,
+        "candidate_total_yaw_nm": 0.0034323589696906853,
+        "d11f_total_yaw_nm": 0.0034323589696910795,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 1.8908485888147197e-16,
+        "alpha_deg": 10.0,
+        "candidate_total_yaw_nm": -0.003432358969690963,
+        "d11f_total_yaw_nm": -0.003432358969690774,
+        "rate_rad_s": 0.05
+      },
+      {
+        "absolute_error_nm": 1.3010426069826053e-16,
+        "alpha_deg": 11.0,
+        "candidate_total_yaw_nm": 0.0034212737031096285,
+        "d11f_total_yaw_nm": 0.0034212737031094984,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 1.474514954580286e-16,
+        "alpha_deg": 11.0,
+        "candidate_total_yaw_nm": -0.003421273703109351,
+        "d11f_total_yaw_nm": -0.0034212737031094984,
+        "rate_rad_s": 0.05
+      }
+    ],
+    "zero_camber_D11f_midpoint_total_yaw_max_abs_error_Nm": 3.942159099157294e-16
+  },
+  "counterexamples_and_refusals": {
+    "15deg_stall_limit_rejection": "candidate refuses a geometric section angle at/above the supplied attached limit",
+    "exact_zero_rejection": "candidate refuses stagnant or reverse axial flow: every u_i must be > 0",
+    "force_quadrature_nonfinite_axial_rejection": "force quadrature received a non-finite velocity",
+    "force_quadrature_reverse_axial_rejection": "force quadrature is restricted to strictly positive axial velocity",
+    "force_quadrature_zero_axial_rejection": "force quadrature is restricted to strictly positive axial velocity",
+    "inconsistent_mesh_size_rejection": "mesh edge, centre, and chord counts are inconsistent",
+    "mismatched_map_size_rejection": "all panel vectors and maps must have the same order",
+    "near_zero_gamma_max_abs_m2_s": 0.3466910977107182,
+    "near_zero_note": "Illustrates poor conditioning as one panel approaches u=0; no validity claim, and exact u=0 is refused.",
+    "near_zero_positive_axial_max_abs_CL_algebraic_only": 19884.832458191555,
+    "near_zero_positive_axial_rate_rad_s": 23.622023622047244,
+    "near_zero_positive_axial_u_min_mps": 1.4999999999432134e-05,
+    "negative_density_rejection": "air density must be finite and nonnegative",
+    "nonfinite_collocation_axial_rejection": "candidate requires finite panel inputs",
+    "nonfinite_density_rejection": "air density must be finite and nonnegative",
+    "nonpositive_chord_rejection": "candidate requires a positive receiving-panel chord",
+    "reverse_flow_rejection": "candidate refuses stagnant or reverse axial flow: every u_i must be > 0",
+    "zero_density_maximum_absolute_load": 0.0
+  },
+  "domain": {
+    "attached": "user/admission condition; the Stik sweep checks geometric atan2(w,u) below its existing R02 a1; no stall or dynamic-stall model is present",
+    "force_quadrature": "circulation is panelwise at 3/4-chord collocation; external/local flow is sampled along the bound span with Gauss-Legendre quadrature, while the induced trailing-leg downwash is evaluated once at each panel center to avoid endpoint singularities",
+    "positive_axial": "strictly every collocation u_i>0; exact zero/reverse is refused, with no epsilon floor",
+    "rates": "the equality proof is per panel for arbitrary positive u_i and w_i inside this linear attached horseshoe model; sampled evidence uses yaw rate only",
+    "section_flow": "planar u,w only; no spanwise local velocity, sweep, sideslip, rotor wake, or 3-D bound-vortex closure"
+  },
+  "force_quadrature_refinement_alpha4_96_panels": [
+    {
+      "gauss_order_per_panel": 1,
+      "k_j_only_Cnr_alpha4": -4.800882272652067e-05,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014477869506481422
+    },
+    {
+      "gauss_order_per_panel": 2,
+      "k_j_only_Cnr_alpha4": -4.800882272680638e-05,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014479435416486431
+    },
+    {
+      "gauss_order_per_panel": 4,
+      "k_j_only_Cnr_alpha4": -4.8008822726409323e-05,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014479435416488847
+    },
+    {
+      "gauss_order_per_panel": 8,
+      "k_j_only_Cnr_alpha4": -4.8008822725755685e-05,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014479435416481239
+    },
+    {
+      "gauss_order_per_panel": 16,
+      "k_j_only_Cnr_alpha4": -4.800882272558977e-05,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014479435416485833
+    },
+    {
+      "gauss_order_per_panel": 32,
+      "k_j_only_Cnr_alpha4": -4.8008822728632304e-05,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014479435416482483
+    }
+  ],
+  "identity": {
+    "D11f_source_sha256": "b71405f04f9385a27a733c2b719560ca6032f682289a53d996ed338b8ef737e8",
+    "candidate_source_sha256": "d642014e08b415a5c88fb475bdd7e52ff90aecfb8e738a1f473856d9ded8c1c0",
+    "numpy_version": "2.4.6",
+    "production_aero_source_sha256": "7ac94f6003f2cb7660a56dd94755c6a7d6143d90cc446c6b6c20433038ce38e3",
+    "production_aircraft_data_source_sha256": "75212e145c5278d3a1a56f663418ea719065cb0d9f3761bca08d8bb8b759ed12",
+    "production_aircraft_sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+    "production_input_export_sha256": "e9139e59b16c2deaa5b5b4db8175a7053d4be4ce900fb8a4ff5e587930f076b6",
+    "python_executable": "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "python_version": "3.11.9",
+    "requirements_v3_sha256": "aac4b057efd278d60500643489f11048a56091c46634f101ad3ed06055b632ad",
+    "scipy_version": "1.17.1"
+  },
+  "interpretation": "Research candidate and software/model-form comparison only; not a promoted runtime law or physical validation.",
+  "model": {
+    "CD0_semantics": "production value is a whole-aircraft polar; used only as the inherited D11f comparison profile term, not asserted as measured wing-section CD0",
+    "alpha_zero_semantics": "M_static * production strip_cl0; equivalent intercept reconstructed from the existing fitted R02 strips, not measured airfoil camber/incidence",
+    "area_m2": 0.464515,
+    "coordinates": "D11f comparison frame: x aft, y right, z up; yaw is \u03a3 y*Fx; body-power sign is negative force dot the D11f air-on-wing velocity",
+    "dimensional_source": "g_i=u_i*CL_i; g=a0*E*(w+u*(alpha_zero+incidence)); Gamma_i=0.5*c_i*g_i",
+    "equivalent_alpha_zero_mean_rad": 0.023427066624078705,
+    "equivalent_alpha_zero_rad": [
+      0.023427066624078705,
+      0.02342706662407871,
+      0.0234270666240787,
+      0.023427066624078705,
+      0.02342706662407871,
+      0.023427066624078702
+    ],
+    "equivalent_alpha_zero_spread_rad": 1.0408340855860843e-17,
+    "exported_rounded_mean_chord_m": 0.3048,
+    "force_closure": "Kutta\u2013Joukowski on each piecewise-constant bound \u0393 panel; trailing-leg-only induced downwash is evaluated at each panel center to avoid bound-line endpoint singularities, while external flow is sampled along the bound segment; no separate section CL/induced-drag force is added",
+    "geometry_lanes": {
+      "D11f_authored": {
+        "chord_definition": "literal D11f reference input; kept separate from the production S/b chord",
+        "chord_m": 0.3048,
+        "span_m": 1.524
+      },
+      "production_export": {
+        "area_m2": 0.464515,
+        "chord_definition": "source wing area divided by span; export mean_chord_m is rounded and is reported separately",
+        "span_m": 1.524,
+        "strip_chord_m": 0.3047998687664042
+      }
+    },
+    "geometry_operator": "K_ij=-0.5*c_j*horseshoe_z_ij-\u03b4_ij/(2\u03c0), E=(I+a0*K)^-1; collocation uses the full horseshoe at each 3/4-chord point",
+    "panel_count": 6,
+    "production_strip_chord_area_over_span_m": 0.3047998687664042,
+    "span_m": 1.524,
+    "strip_slope_per_rad": 6.0817546480911915
+  },
+  "panel_refinement_alpha4": [
+    {
+      "force_quadrature_order": 16,
+      "k_j_only_Cnr_alpha4": -6.312324858850949e-06,
+      "panels_per_semispan": 3,
+      "total_panels": 6,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014437738918618628
+    },
+    {
+      "force_quadrature_order": 16,
+      "k_j_only_Cnr_alpha4": -3.5288197997555036e-05,
+      "panels_per_semispan": 6,
+      "total_panels": 12,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014466714791756412
+    },
+    {
+      "force_quadrature_order": 16,
+      "k_j_only_Cnr_alpha4": -4.3894783686656724e-05,
+      "panels_per_semispan": 12,
+      "total_panels": 24,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014475321377444176
+    },
+    {
+      "force_quadrature_order": 16,
+      "k_j_only_Cnr_alpha4": -4.6853481231009435e-05,
+      "panels_per_semispan": 24,
+      "total_panels": 48,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014478280074987509
+    },
+    {
+      "force_quadrature_order": 16,
+      "k_j_only_Cnr_alpha4": -4.800882272558977e-05,
+      "panels_per_semispan": 48,
+      "total_panels": 96,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014479435416485833
+    },
+    {
+      "force_quadrature_order": 16,
+      "k_j_only_Cnr_alpha4": -4.850560026169079e-05,
+      "panels_per_semispan": 96,
+      "total_panels": 192,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.01447993219401728
+    }
+  ],
+  "refinement_note": "Panel and line-quadrature sweeps are numerical convergence diagnostics, not physical validation; report values directly and do not treat the coarsest production-strip match as a continuum result.",
+  "schema": "r02-attached-circulation-candidate-v3",
+  "superseded_v1_pointwise_endpoint_probe": {
+    "diagnostic": {
+      "adjacent_circulation_jump_m2_s": -0.05921762133727315,
+      "edge_y_m": -0.254,
+      "pointwise_downwash_samples": [
+        {
+          "epsilon_m": 0.0001,
+          "epsilon_times_left_m2_s": -0.004686067440633483,
+          "epsilon_times_right_m2_s": 0.004738702589720299,
+          "left_downwash_mps": -46.86067440633483,
+          "right_downwash_mps": 47.38702589720298
+        },
+        {
+          "epsilon_m": 1e-06,
+          "epsilon_times_left_m2_s": -0.004712125401024723,
+          "epsilon_times_right_m2_s": 0.004712651752486222,
+          "left_downwash_mps": -4712.125401024723,
+          "right_downwash_mps": 4712.651752486222
+        },
+        {
+          "epsilon_m": 1e-08,
+          "epsilon_times_left_m2_s": -0.004712385947708615,
+          "epsilon_times_right_m2_s": 0.004712391211223212,
+          "left_downwash_mps": -471238.5947708615,
+          "right_downwash_mps": 471239.12112232123
+        },
+        {
+          "epsilon_m": 1e-10,
+          "epsilon_times_left_m2_s": -0.004712388160763241,
+          "epsilon_times_right_m2_s": 0.0047123882133983845,
+          "left_downwash_mps": -47123881.607632406,
+          "right_downwash_mps": 47123882.13398384
+        }
+      ],
+      "shared_edge_index": 2
+    },
+    "interpretation": "The original pointwise self-wake quadrature is retained in candidate-results-v1 but rejected for continuum inference: trailing-leg velocity on the bound line grows as a panel-edge circulation jump divided by distance. Version 2 holds this discrete induced downwash at the panel center; it does not supply a continuous finite-core wake law.",
+    "source_sha256": "48d0f37a933eff00fb8c1d890dbae4925065f27704835629930e3ad8c4607ada"
+  },
+  "yaw_cnr_model_form_sweep": [
+    {
+      "R02_fixed_E_polar_Cnr": -0.014590311817212771,
+      "alpha_deg": 0.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": -0.00019638347168155423,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": -0.00019638347168154455,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.014663050138347216,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.014261198286496038
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.01331652380332081,
+      "alpha_deg": 2.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": -0.00010140967430384978,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": -0.00010140967430388895,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.01455926363851325,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.01415765658395198
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.011840060724788954,
+      "alpha_deg": 4.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": -6.312324858715753e-06,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": -6.3123248591130266e-06,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.014437738918618494,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.014036865957680524
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.010179457249739626,
+      "alpha_deg": 6.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": 8.879271518146551e-05,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": 8.879271518143663e-05,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.01429862403781308,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.013898973572452374
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.008362403684342394,
+      "alpha_deg": 8.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": 0.00018378957497702127,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": 0.0001837895749750209,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.014142088486148684,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.013744147428899704
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.0064256133780600765,
+      "alpha_deg": 10.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": 0.00027856251548442136,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": 0.0002785625154841519,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.013968322978092406,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.013572576158826113
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.005426215831369491,
+      "alpha_deg": 11.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": 0.0003258289182972957,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": 0.0003258289183013244,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.013875044335578056,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.013480575634078399
+    }
+  ]
+}

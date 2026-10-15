@@ -1,0 +1,460 @@
+{
+ "esquinas": {
+  "Del_Izq": {
+   "recorrido_rueda_mm": [
+    -44.0,
+    36.0
+   ],
+   "amortiguador_largo_mm": [
+    85.19,
+    95.5,
+    107.31
+   ],
+   "carrera_amortiguador_mm": 22.12,
+   "relacion_movimiento": [
+    0.28,
+    0.273,
+    0.296
+   ],
+   "caida_grados": [
+    3.52,
+    0.0,
+    -4.02
+   ],
+   "cambio_via_mm": [
+    -6.0,
+    -6.77
+   ],
+   "bump_steer_grados": [
+    0.048,
+    0.017
+   ],
+   "cambio_batalla_mm": [
+    0.03,
+    0.01
+   ],
+   "palier_angulo_dif_max": 22.7,
+   "palier_angulo_rueda_max": 19.18,
+   "palier_deslizamiento_mm": [
+    -2.45,
+    1.42
+   ],
+   "balancin_giro_grados": [
+    -35.9,
+    31.2
+   ],
+   "palier_angulo_con_direccion": [
+    22.73,
+    31.11
+   ]
+  },
+  "Del_Der": {
+   "recorrido_rueda_mm": [
+    -44.0,
+    36.0
+   ],
+   "amortiguador_largo_mm": [
+    85.19,
+    95.5,
+    107.31
+   ],
+   "carrera_amortiguador_mm": 22.12,
+   "relacion_movimiento": [
+    0.28,
+    0.273,
+    0.296
+   ],
+   "caida_grados": [
+    3.52,
+    0.0,
+    -4.02
+   ],
+   "cambio_via_mm": [
+    -6.0,
+    -6.77
+   ],
+   "bump_steer_grados": [
+    -0.048,
+    -0.017
+   ],
+   "cambio_batalla_mm": [
+    0.03,
+    0.01
+   ],
+   "palier_angulo_dif_max": 22.7,
+   "palier_angulo_rueda_max": 19.18,
+   "palier_deslizamiento_mm": [
+    -1.42,
+    2.45
+   ],
+   "balancin_giro_grados": [
+    -35.9,
+    31.2
+   ],
+   "palier_angulo_con_direccion": [
+    22.73,
+    31.11
+   ]
+  },
+  "Tras_Izq": {
+   "recorrido_rueda_mm": [
+    -44.0,
+    36.0
+   ],
+   "amortiguador_largo_mm": [
+    82.69,
+    93.0,
+    104.81
+   ],
+   "carrera_amortiguador_mm": 22.12,
+   "relacion_movimiento": [
+    0.281,
+    0.273,
+    0.295
+   ],
+   "caida_grados": [
+    3.53,
+    0.0,
+    -4.01
+   ],
+   "cambio_via_mm": [
+    -6.0,
+    -6.77
+   ],
+   "bump_steer_grados": [
+    0.0,
+    0.0
+   ],
+   "cambio_batalla_mm": [
+    0.0,
+    0.0
+   ],
+   "palier_angulo_dif_max": 22.68,
+   "palier_angulo_rueda_max": 19.16,
+   "palier_deslizamiento_mm": [
+    -2.36,
+    1.36
+   ],
+   "balancin_giro_grados": [
+    -35.9,
+    31.2
+   ]
+  },
+  "Tras_Der": {
+   "recorrido_rueda_mm": [
+    -44.0,
+    36.0
+   ],
+   "amortiguador_largo_mm": [
+    82.69,
+    93.0,
+    104.81
+   ],
+   "carrera_amortiguador_mm": 22.12,
+   "relacion_movimiento": [
+    0.281,
+    0.273,
+    0.295
+   ],
+   "caida_grados": [
+    3.53,
+    0.0,
+    -4.01
+   ],
+   "cambio_via_mm": [
+    -6.0,
+    -6.77
+   ],
+   "bump_steer_grados": [
+    -0.0,
+    -0.0
+   ],
+   "cambio_batalla_mm": [
+    0.0,
+    0.0
+   ],
+   "palier_angulo_dif_max": 22.68,
+   "palier_angulo_rueda_max": 19.16,
+   "palier_deslizamiento_mm": [
+    -1.36,
+    2.36
+   ],
+   "balancin_giro_grados": [
+    -35.9,
+    31.2
+   ]
+  }
+ },
+ "amortiguadores": {
+  "Del_Izq": {
+   "largo_reposo_mm": 95.5,
+   "carrera_mm": 22.12,
+   "cuerpo_mm": 39.69,
+   "margen_fondo_mm": 5.28,
+   "vastago_dentro_en_extension_mm": 12.28,
+   "copa_a_sello_mm": 1.5,
+   "resorte_largo_min_mm": 25.19,
+   "resorte_margen_bloqueo_mm": 7.33
+  },
+  "Del_Der": {
+   "largo_reposo_mm": 95.5,
+   "carrera_mm": 22.12,
+   "cuerpo_mm": 39.69,
+   "margen_fondo_mm": 5.28,
+   "vastago_dentro_en_extension_mm": 12.28,
+   "copa_a_sello_mm": 1.5,
+   "resorte_largo_min_mm": 25.19,
+   "resorte_margen_bloqueo_mm": 7.33
+  },
+  "Tras_Izq": {
+   "largo_reposo_mm": 93.0,
+   "carrera_mm": 22.12,
+   "cuerpo_mm": 37.19,
+   "margen_fondo_mm": 4.03,
+   "vastago_dentro_en_extension_mm": 11.03,
+   "copa_a_sello_mm": 1.5,
+   "resorte_largo_min_mm": 22.69,
+   "resorte_margen_bloqueo_mm": 4.83
+  },
+  "Tras_Der": {
+   "largo_reposo_mm": 93.0,
+   "carrera_mm": 22.12,
+   "cuerpo_mm": 37.19,
+   "margen_fondo_mm": 4.03,
+   "vastago_dentro_en_extension_mm": 11.03,
+   "copa_a_sello_mm": 1.5,
+   "resorte_largo_min_mm": 22.69,
+   "resorte_margen_bloqueo_mm": 4.83
+  }
+ },
+ "direccion": {
+  "giro_max_interior": 26.97,
+  "giro_max_exterior": 21.96,
+  "exterior_ideal_ackermann": 18.63,
+  "ackermann_pct": 60.1,
+  "radio_giro_m": 0.879,
+  "servo_brazo_grados": [
+   -28.9,
+   33.8
+  ],
+  "kingpin_inclinacion": 9.05,
+  "avance_caster": 8.0,
+  "scrub_radius_mm": 26.4
+ },
+ "cardanes": {
+  "Del": {
+   "largo_mm": 79.4,
+   "angulo_transmision": 15.48,
+   "angulo_diferencial": 15.48
+  },
+  "Tras": {
+   "largo_mm": 160.1,
+   "angulo_transmision": 1.52,
+   "angulo_diferencial": 1.52
+  }
+ },
+ "resortes": {
+  "frecuencia_objetivo_Hz": 2.2,
+  "zeta_compresion": 0.35,
+  "zeta_extension": 0.55,
+  "por_eje": {
+   "Del": {
+    "fraccion_masa_suspendida": 0.505,
+    "masa_suspendida_esquina_kg": 1.251,
+    "relacion_palanca_reposo": 0.273,
+    "rigidez_en_rueda_N_m": 239.0,
+    "rigidez_resorte_N_m": 3207.3,
+    "rigidez_resorte_N_mm": 3.207,
+    "fuerza_resorte_reposo_N": 44.95,
+    "precarga_en_extension_mm": 2.21,
+    "largo_instalado_extension_mm": 47.3,
+    "largo_libre_resorte_mm": 49.5,
+    "fuerza_resorte_compresion_total_N": 78.0,
+    "amortiguador_N_s_m": {
+     "compresion": 162.4,
+     "extension": 255.2
+    },
+    "hundimiento_estatico_mm": 44.0,
+    "ok_precarga_positiva": true
+   },
+   "Tras": {
+    "fraccion_masa_suspendida": 0.495,
+    "masa_suspendida_esquina_kg": 1.225,
+    "relacion_palanca_reposo": 0.273,
+    "rigidez_en_rueda_N_m": 234.1,
+    "rigidez_resorte_N_m": 3140.6,
+    "rigidez_resorte_N_mm": 3.141,
+    "fuerza_resorte_reposo_N": 44.02,
+    "precarga_en_extension_mm": 2.21,
+    "largo_instalado_extension_mm": 44.8,
+    "largo_libre_resorte_mm": 47.0,
+    "fuerza_resorte_compresion_total_N": 76.4,
+    "amortiguador_N_s_m": {
+     "compresion": 159.0,
+     "extension": 249.9
+    },
+    "hundimiento_estatico_mm": 44.0,
+    "ok_precarga_positiva": true
+   }
+  },
+  "nota": "con estos resortes el auto queda en h=0 (44 mm sobre la extensión total y 36 mm antes del tope); ajustar FREC_MARCHA_HZ / AMORT_ZETA y recalcular"
+ },
+ "reparto_peso": {
+  "delantero": 0.506,
+  "trasero": 0.494,
+  "carga_eje_del_N": 34.86,
+  "carga_eje_tras_N": 34.07,
+  "altura_cg_total_mm": 109.6,
+  "altura_cg_suspendida_mm": 119.6
+ },
+ "masas": {
+  "total": 7.026,
+  "suspendida": 4.952,
+  "cg_total": [
+   0.0023,
+   -0.002,
+   0.1096
+  ],
+  "no_suspendida": {
+   "Del_Izq": 0.5257,
+   "Del_Der": 0.5257,
+   "Tras_Izq": 0.5115,
+   "Tras_Der": 0.5115
+  }
+ },
+ "relaciones": {
+  "diferencial": 3.308,
+  "primera": 2.6,
+  "total": 8.6
+ },
+ "reporte": {
+  "Del_Izq": {
+   "brazo_inf": "(7.907589235)*h+(-1.745681217)*h*h+(73.01352183)*h*h*h+(-115.126381)*h*h*h*h+(2321.480164)*h*h*h*h*h",
+   "brazo_inf_err": 5.2487623829478025e-06,
+   "brazo_sup": "(8.821400369)*h+(0.6051173359)*h*h+(95.14783879)*h*h*h+(-44.88320585)*h*h*h*h+(3129.639294)*h*h*h*h*h",
+   "brazo_sup_err": 5.2322421506545425e-06,
+   "balancin": "(-13.66642617)*h+(-18.54701791)*h*h+(-523.515615)*h*h*h+(719.560397)*h*h*h*h+(-88989.84597)*h*h*h*h*h",
+   "balancin_err": 0.0006154594352536513,
+   "mangueta": "(-6.268352327)*h+(8.51917598)*h*h+(-34.64154962)*h*h*h+(361.6543708)*h*h*h*h+(-1318.930022)*h*h*h*h*h",
+   "mangueta_err": 9.050360746443165e-06,
+   "amort": "(0.2732088613)*h+(0.3759565956)*h*h+(2.505264278)*h*h*h+(-77.93439153)*h*h*h*h+(50.4868743)*h*h*h*h*h",
+   "amort_err": 7.93846447769836e-06,
+   "amort_min": -0.011761023449467833,
+   "amort_max": 0.010285466175889435,
+   "mr": [
+    0.27447216811254055,
+    0.2730604768728609,
+    0.2947509909259757
+   ],
+   "caida": [
+    -3.5142253862230746,
+    4.001178363259795
+   ]
+  },
+  "Del_Der": {
+   "brazo_inf": "(-7.907589235)*h+(1.745681217)*h*h+(-73.01352183)*h*h*h+(115.126381)*h*h*h*h+(-2321.480164)*h*h*h*h*h",
+   "brazo_inf_err": 5.24876238283678e-06,
+   "brazo_sup": "(-8.821400369)*h+(-0.6051173359)*h*h+(-95.14783879)*h*h*h+(44.88320585)*h*h*h*h+(-3129.639294)*h*h*h*h*h",
+   "brazo_sup_err": 5.232242150599031e-06,
+   "balancin": "(13.66642617)*h+(18.54701791)*h*h+(523.515615)*h*h*h+(-719.560397)*h*h*h*h+(88989.84597)*h*h*h*h*h",
+   "balancin_err": 0.0006154594352545395,
+   "mangueta": "(6.268352327)*h+(-8.51917598)*h*h+(34.64154962)*h*h*h+(-361.6543708)*h*h*h*h+(1318.930022)*h*h*h*h*h",
+   "mangueta_err": 9.050360746387653e-06,
+   "amort": "(0.2732088613)*h+(0.3759565956)*h*h+(2.505264278)*h*h*h+(-77.93439153)*h*h*h*h+(50.4868743)*h*h*h*h*h",
+   "amort_err": 7.93846447772438e-06,
+   "amort_min": -0.011761023449467833,
+   "amort_max": 0.010285466175889435,
+   "mr": [
+    0.2744721681125404,
+    0.2730604768728614,
+    0.2947509909259759
+   ],
+   "caida": [
+    -3.5142253862230746,
+    4.001178363259783
+   ]
+  },
+  "Tras_Izq": {
+   "brazo_inf": "(7.907589235)*h+(-1.745681217)*h*h+(73.01352183)*h*h*h+(-115.126381)*h*h*h*h+(2321.480164)*h*h*h*h*h",
+   "brazo_inf_err": 5.248762383058825e-06,
+   "brazo_sup": "(8.821400369)*h+(0.6051173359)*h*h+(95.14783879)*h*h*h+(-44.88320585)*h*h*h*h+(3129.639294)*h*h*h*h*h",
+   "brazo_sup_err": 5.232242150710054e-06,
+   "balancin": "(13.66642617)*h+(18.54701791)*h*h+(523.515615)*h*h*h+(-719.560397)*h*h*h*h+(88989.84597)*h*h*h*h*h",
+   "balancin_err": 0.0006154594352554277,
+   "mangueta": "(-6.268352327)*h+(8.51917598)*h*h+(-34.64154962)*h*h*h+(361.6543708)*h*h*h*h+(-1318.930022)*h*h*h*h*h",
+   "mangueta_err": 9.050360746332142e-06,
+   "amort": "(0.2732105789)*h+(0.3761113314)*h*h+(2.500674893)*h*h*h+(-78.71262565)*h*h*h*h+(46.37527158)*h*h*h*h*h",
+   "amort_err": 8.009573862608269e-06,
+   "amort_min": -0.011762609542836477,
+   "amort_max": 0.010283998190748031,
+   "mr": [
+    0.27457787384703186,
+    0.2730604751363637,
+    0.2946370226417443
+   ],
+   "caida": [
+    -3.5142253862230746,
+    4.001178363259795
+   ]
+  },
+  "Tras_Der": {
+   "brazo_inf": "(-7.907589235)*h+(1.745681217)*h*h+(-73.01352183)*h*h*h+(115.126381)*h*h*h*h+(-2321.480164)*h*h*h*h*h",
+   "brazo_inf_err": 5.248762383058825e-06,
+   "brazo_sup": "(-8.821400369)*h+(-0.6051173359)*h*h+(-95.14783879)*h*h*h+(44.88320585)*h*h*h*h+(-3129.639294)*h*h*h*h*h",
+   "brazo_sup_err": 5.232242150932098e-06,
+   "balancin": "(-13.66642617)*h+(-18.54701791)*h*h+(-523.515615)*h*h*h+(719.560397)*h*h*h*h+(-88989.84597)*h*h*h*h*h",
+   "balancin_err": 0.0006154594352548726,
+   "mangueta": "(6.268352327)*h+(-8.51917598)*h*h+(34.64154962)*h*h*h+(-361.6543708)*h*h*h*h+(1318.930022)*h*h*h*h*h",
+   "mangueta_err": 9.050360746609698e-06,
+   "amort": "(0.2732105789)*h+(0.3761113314)*h*h+(2.500674893)*h*h*h+(-78.71262565)*h*h*h*h+(46.37527158)*h*h*h*h*h",
+   "amort_err": 8.009573862587452e-06,
+   "amort_min": -0.011762609542836477,
+   "amort_max": 0.010283998190748031,
+   "mr": [
+    0.27457787384703086,
+    0.27306047513636333,
+    0.2946370226417435
+   ],
+   "caida": [
+    -3.5142253862230746,
+    4.001178363259808
+   ]
+  },
+  "direccion_Izq": [
+   0.003708008947411967,
+   27.10285040227438,
+   -21.88191766549833
+  ],
+  "direccion_Der": [
+   0.003708008947407415,
+   21.881917665498307,
+   -27.10285040227438
+  ],
+  "brazo_servo_err": 0.0005394200282224926,
+  "palier_desalineacion_max_grados": {
+   "Del_Izq": 6.47,
+   "Del_Der": 6.47,
+   "Tras_Izq": 0.0,
+   "Tras_Der": 0.0
+  },
+  "palier_deslizamiento_mm": {
+   "Del_Izq": [
+    -2.63,
+    1.56
+   ],
+   "Del_Der": [
+    -2.63,
+    1.56
+   ],
+   "Tras_Izq": [
+    -2.38,
+    1.38
+   ],
+   "Tras_Der": [
+    -2.38,
+    1.38
+   ]
+  },
+  "apoyo_ruedas_mm": 0.03
+ }
+}

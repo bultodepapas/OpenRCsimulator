@@ -1,0 +1,4 @@
+level V 25.7 d(rudder)/d(beta) 0.715  d(aileron)/d(beta) -0.298  d(bank)/d(beta) 1.163  
+level V 28.6 d(rudder)/d(beta) 0.718  d(aileron)/d(beta) -0.299  d(bank)/d(beta) 1.428  
+level V 35.0 d(rudder)/d(beta) 0.714  d(aileron)/d(beta) -0.298  d(bank)/d(beta) 2.120  
+level V 45.0 d(rudder)/d(beta) 0.716  d(aileron)/d(beta) -0.298  d(bank)/d(beta) 3.493  

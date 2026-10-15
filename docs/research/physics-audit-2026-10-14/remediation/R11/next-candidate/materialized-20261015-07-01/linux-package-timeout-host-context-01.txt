@@ -1,0 +1,61 @@
+2026-10-15T14:07:02Z
+HOST
+Devil
+Linux Devil 6.18.54.1-microsoft-standard-WSL2 #1 SMP PREEMPT_DYNAMIC Tue Oct  6 19:13:07 UTC 2026 x86_64 x86_64 x86_64 GNU/Linux
+UPTIME/LOAD
+ 09:07:02 up 1 day, 16:00,  1 user,  load average: 1.33, 2.03, 2.68
+1.33 2.03 2.68 2/1812 403
+MEMORY
+               total        used        free      shared  buff/cache   available
+Mem:            31Gi       5.5Gi        21Gi       481Mi       5.5Gi        25Gi
+Swap:          8.0Gi       220Ki       8.0Gi
+VMSTAT
+procs -----------memory---------- ---swap-- -----io---- -system-- -------cpu-------
+ r  b   swpd   free   buff  cache   si   so    bi    bo   in   cs us sy id wa st gu
+ 1  0    220 22099312 845492 4959440    0    0  1759   835 13319    9  2  2 96  0  0  0
+ 1  0    220 22096568 845492 4960448    0    0     0     0 22570 44663  2  7 91  0  0  0
+ 2  0    220 22096288 845500 4961668    0    0     0    44 18262 37341  2  6 92  0  0  0
+ 1  0    220 22084948 845512 4962400    0    0     0   100 17669 34228  3  5 92  0  0  0
+ 3  0    220 22084948 845512 4963492    0    0     0     0 17471 36095  2  6 93  0  0  0
+TOP CPU
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED COMMAND
+    341       1 Rs   98.3  0.2 90676 845288       00:11 /bin/journalctl --boot 0 --dmesg --output short-monotonic --quiet --no-pager --no-hostname
+    343     312 Dsl  12.3  0.3 103088 1448788     00:11 /usr/bin/node /mnt/c/Users/bulto/AppData/Roaming/npm/node_modules/openclaw/dist/index.js gateway --port 18789
+      1       0 Ss    2.5  0.0 13212  21692       00:13 /sbin/init
+     42       1 S<s   1.6  0.0 17188  42116       00:13 /usr/lib/systemd/systemd-journald
+     72       1 Ss    0.6  0.0  6336  24684       00:13 /usr/lib/systemd/systemd-udevd
+    312       1 Ss    0.6  0.0 11604  20456       00:11 /usr/lib/systemd/systemd --user
+    393     392 Ss+   0.4  0.0  3580   4896       00:04 bash -lc date -u +%Y-%m-%dT%H:%M:%SZ; printf "HOST\n"; hostname; uname -a; printf "UPTIME/LOAD\n"; uptime; cat /proc/loadavg; printf "MEMORY\n"; free -h; printf "VMSTAT\n"; vmstat 1 5; printf "TOP CPU\n"; ps -eo pid,ppid,stat,pcpu,pmem,rss,vsz,etime,args --sort=-pcpu | head -15; printf "OWNED EXECUTABLE COMM MATCH\n"; ps -C openrc-simulato -o pid,ppid,stat,pcpu,pmem,rss,vsz,etime,args; printf "CPU PRESSURE\n"; cat /proc/pressure/cpu; printf "MEMORY PRESSURE\n"; cat /proc/pressure/memory; printf "IO PRESSURE\n"; cat /proc/pressure/io; printf "CGROUP MEMORY CURRENT/MAX\n"; cat /sys/fs/cgroup/memory.current; cat /sys/fs/cgroup/memory.max; printf "CGROUP CPU STAT\n"; cat /sys/fs/cgroup/cpu.stat; printf "CGROUP IO STAT\n"; cat /sys/fs/cgroup/io.stat
+    197       1 Ssl   0.3  0.0 23252 107052       00:12 /usr/bin/python3 /usr/share/unattended-upgrades/unattended-upgrade-shutdown --wait-for-signal
+    155       1 Ss    0.3  0.0 13248  21352       00:12 /usr/lib/systemd/systemd-resolved
+    174       1 Ssl   0.3  0.0 13748 1756636      00:12 /usr/libexec/wsl-pro-service
+    170       1 Ss    0.3  0.0  8848  18000       00:12 /usr/lib/systemd/systemd-logind
+    252       1 Ss    0.2  0.0  7532  17300       00:12 /usr/lib/systemd/systemd-timedated
+    156       1 Ssl   0.2  0.0  7992  91044       00:12 /usr/lib/systemd/systemd-timesyncd
+    182       1 Ssl   0.1  0.0  5532 222524       00:12 /usr/sbin/rsyslogd -n -iNONE
+OWNED EXECUTABLE COMM MATCH
+    PID    PPID STAT %CPU %MEM   RSS    VSZ     ELAPSED COMMAND
+CPU PRESSURE
+some avg10=0.00 avg60=0.39 avg300=0.49 total=456832722
+full avg10=0.00 avg60=0.00 avg300=0.00 total=0
+MEMORY PRESSURE
+some avg10=0.00 avg60=0.00 avg300=0.00 total=5320749
+full avg10=0.00 avg60=0.00 avg300=0.00 total=5316029
+IO PRESSURE
+some avg10=0.48 avg60=0.40 avg300=0.17 total=859388830
+full avg10=0.48 avg60=0.38 avg300=0.16 total=837994017
+CGROUP MEMORY CURRENT/MAX
+1276579840
+max
+CGROUP CPU STAT
+usage_usec 17132987
+user_usec 7185331
+system_usec 9947656
+nice_usec 0
+nr_periods 0
+nr_throttled 0
+throttled_usec 0
+nr_bursts 0
+burst_usec 0
+CGROUP IO STAT
+8:80 rbytes=697450496 wbytes=5025792 rios=5888 wios=23 dbytes=0 dios=0

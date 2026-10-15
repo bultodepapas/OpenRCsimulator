@@ -1,0 +1,22 @@
+{
+  "commands": [
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\population-shadow\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\population-shadow-runner-check\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\population-shadow-runner-check\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\population-shadow-runner-check\\native-1.json"
+    ]
+  ],
+  "sha256": {
+    "reference.gd": "b4f9ca3dcade669b8989928230a93c6d4c2fee82bb142c87700a97839664ebb3",
+    "candidate.gd": "a9fe03fa9e0a15404ae5eabaa3d79c3fabf96a987432c69e325623fc640efc91",
+    "compare.gd": "e12ce21c087b4c29751544c53b28c290ac2c0365e0f8a2ae00bb965ee4b1296f"
+  }
+}

@@ -1,0 +1,16 @@
+scons: Entering directory `C:\DEVELOPMENT\OpenRCsimulator\.tools\native-ground-vehicle\build\windows-x86_64-template_release'
+scons: Reading SConscript files ...
+Building for architecture x86_64 on platform windows
+scons: done reading SConscript files.
+scons: Building targets ...
+scons: `C:\DEVELOPMENT\OpenRCsimulator\.tools\native-ground-vehicle\godot-cpp\bin\libgodot-cpp.windows.template_release.x86_64.lib' is up to date.
+Compiling shared C:\DEVELOPMENT\OpenRCsimulator\research\rc-monster-truck\native\src\ground_vehicle_native.cpp ...
+Linking Shared Library lib\openrc_ground_vehicle.dll ...
+scons: done building targets.
+Built research-only C:\DEVELOPMENT\OpenRCsimulator\.tools\native-ground-vehicle\openrc_ground_vehicle.dll (windows/x86_64, ['/fp:strict']).
+Verified GDExtension load and PackedFloat64Array round-trip.
+OPENRC_NATIVE_LAKE_PARITY points=669 channels=2676 bit_exact=2676 max_abs_error=0.0
+OPENRC_NATIVE_LAKE_PROFILE points=669 rounds=3 gdscript_ms_per_sample=0.15900249128052 native_ms_per_sample=0.00985102142501 speedup=16.1407111425826 check=-10120.7657219458
+OPENRC_NATIVE_EVAL_PROFILE engine_debug=true extension_target=template_release gdscript_ms=1.3056 native_ms=0.2478 speedup=5.27x iterations=50
+OPENRC_NATIVE_PARITY_OK checks=733
+Retained parity stdout and build hashes at C:\DEVELOPMENT\OpenRCsimulator\.tools\native-ground-vehicle\parity-windows-latest.log.

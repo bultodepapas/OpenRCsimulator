@@ -10,6 +10,8 @@ This optional GDExtension accelerates the experimental monster-truck evaluator. 
 
 The numerical core stores simulation values as IEEE-754 `double`; it does not use Godot vector types as simulation state. Its identity is ABI `1`, backend version `openrc-ground-vehicle-native-evaluate-v3`, and solver version `openrc-ground-vehicle-dynamics-rk4-v5`. `backend_identity()` reads the current platform row from `build-receipt.json` and reports the backend, ABI/solver versions, and source, toolchain and binary SHA-256 values. A session freezes this identity and rejects a checkpoint or replay from another backend build.
 
+Session also binds the GDScript integration source or exported bytecode artifact, since native force evaluation does not replace the GDScript RK orchestration. The [2026-10-15 audit](../../../docs/research/rc-monster-truck/RCV-audit-2026-10-15/native/README.md) records current Windows/Linux v5 builds, 733 evaluator parity checks per platform and exact lake-sampler parity. Earlier release-package results below remain dated evidence for their original solver.
+
 The [RCV-09-R2 handling revision](../../../docs/research/rc-monster-truck/RCV-handling/README.md) adds mobility-metric friction-circle projection, a 128-sweep cap with adaptive update tolerances, cached mobility blocks, corrected hub slip-angle telemetry and optional fixed axle brake allocation. Cap exhaustion remains a bounded result, not a convergence certificate.
 
 ## Pinned build tools

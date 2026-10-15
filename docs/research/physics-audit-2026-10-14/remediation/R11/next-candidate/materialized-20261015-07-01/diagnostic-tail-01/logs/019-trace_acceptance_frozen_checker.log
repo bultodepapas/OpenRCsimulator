@@ -1,0 +1,130 @@
+# trace_acceptance_frozen_checker
+# started_utc=2026-10-15T14:18:55+00:00
+# cwd=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+# timeout_seconds=600
+# expect=zero
+# command=/usr/bin/python3 /home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py
+# returncode=1
+# timed_out=False
+# engine_error_detected=False
+
+FFFFFE..FFFF...F...E.
+======================================================================
+ERROR: test_active_avanti_gear_contract_rejects_incomplete_metadata_and_rows (__main__.TraceAcceptance.test_active_avanti_gear_contract_rejects_incomplete_metadata_and_rows)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py", line 142, in test_active_avanti_gear_contract_rejects_incomplete_metadata_and_rows
+    self.assertIn('12 ticks', check(path, .05, 240))
+                              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/check_trimmed_flight.py", line 516, in check
+    check_metadata(metadata, first)
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/check_trimmed_flight.py", line 145, in check_metadata
+    raise ValueError(f'missing or unsupported {key}')
+ValueError: missing or unsupported aero_model
+
+======================================================================
+ERROR: test_timber_electric_endpoint_equations_reject_corruption (__main__.TraceAcceptance.test_timber_electric_endpoint_equations_reject_corruption)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py", line 208, in test_timber_electric_endpoint_equations_reject_corruption
+    self.assertIn('12 ticks', check(path, .05, 240))
+                              ^^^^^^^^^^^^^^^^^^^^^
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/check_trimmed_flight.py", line 516, in check
+    check_metadata(metadata, first)
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/check_trimmed_flight.py", line 145, in check_metadata
+    raise ValueError(f'missing or unsupported {key}')
+ValueError: missing or unsupported aero_model
+
+======================================================================
+FAIL: test_active_aircraft_metadata (__main__.TraceAcceptance.test_active_aircraft_metadata) (aircraft='jensen-das-ugly-stik-60')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py", line 129, in test_active_aircraft_metadata
+    self.assertEqual(checked.returncode, 0, checked.stderr)
+AssertionError: 1 != 0 : FAIL missing or unsupported aero_model
+
+
+======================================================================
+FAIL: test_active_aircraft_metadata (__main__.TraceAcceptance.test_active_aircraft_metadata) (aircraft='gp-extra-300s-60')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py", line 129, in test_active_aircraft_metadata
+    self.assertEqual(checked.returncode, 0, checked.stderr)
+AssertionError: 1 != 0 : FAIL missing or unsupported aero_model
+
+
+======================================================================
+FAIL: test_active_aircraft_metadata (__main__.TraceAcceptance.test_active_aircraft_metadata) (aircraft='p51d-mustang-120')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py", line 129, in test_active_aircraft_metadata
+    self.assertEqual(checked.returncode, 0, checked.stderr)
+AssertionError: 1 != 0 : FAIL missing or unsupported aero_model
+
+
+======================================================================
+FAIL: test_active_aircraft_metadata (__main__.TraceAcceptance.test_active_aircraft_metadata) (aircraft='sebart-avanti-s-a200-p100rx')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py", line 129, in test_active_aircraft_metadata
+    self.assertEqual(checked.returncode, 0, checked.stderr)
+AssertionError: 1 != 0 : FAIL missing or unsupported aero_model
+
+
+======================================================================
+FAIL: test_active_aircraft_metadata (__main__.TraceAcceptance.test_active_aircraft_metadata) (aircraft='turbo-lumber-evolution')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py", line 129, in test_active_aircraft_metadata
+    self.assertEqual(checked.returncode, 0, checked.stderr)
+AssertionError: 1 != 0 : FAIL missing or unsupported aero_model
+
+
+======================================================================
+FAIL: test_complete_real_flight_passes (__main__.TraceAcceptance.test_complete_real_flight_passes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py", line 74, in test_complete_real_flight_passes
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : FAIL missing or unsupported aero_model
+
+
+======================================================================
+FAIL: test_continuous_turbine_metadata_rejects_mixed_sampling (__main__.TraceAcceptance.test_continuous_turbine_metadata_rejects_mixed_sampling) (key='wheel_profile_status', value='applied')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py", line 196, in test_continuous_turbine_metadata_rejects_mixed_sampling
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+======================================================================
+FAIL: test_default_duration_and_fractional_tick_rounding (__main__.TraceAcceptance.test_default_duration_and_fractional_tick_rounding)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py", line 376, in test_default_duration_and_fractional_tick_rounding
+    self.assertEqual(checked.returncode, 0, checked.stderr)
+AssertionError: 1 != 0 : FAIL missing or unsupported aero_model
+
+
+======================================================================
+FAIL: test_exact_input_artifact_verification (__main__.TraceAcceptance.test_exact_input_artifact_verification)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py", line 269, in test_exact_input_artifact_verification
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : FAIL missing or unsupported aero_model
+
+
+======================================================================
+FAIL: test_legacy_metadata_is_explicit_and_cannot_verify_file_bytes (__main__.TraceAcceptance.test_legacy_metadata_is_explicit_and_cannot_verify_file_bytes)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py", line 288, in test_legacy_metadata_is_explicit_and_cannot_verify_file_bytes
+    self.assertEqual(result.returncode, 0, result.stderr)
+AssertionError: 1 != 0 : FAIL missing or unsupported aero_model
+
+
+----------------------------------------------------------------------
+Ran 17 tests in 104.593s
+
+FAILED (failures=10, errors=2)

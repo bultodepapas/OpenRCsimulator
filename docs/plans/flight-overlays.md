@@ -7,7 +7,7 @@
 
 ## 1. What exists
 
-Home flights show seven independent overlays on one `CanvasLayer` (`render/overlays/overlay_manager.gd`). Each has a title and an × that closes only that overlay; the × never takes keyboard focus.
+Home flights show eight independent overlays on one `CanvasLayer` (`render/overlays/overlay_manager.gd`). Each has a title and an × that closes only that overlay; the × never takes keyboard focus.
 
 | ID | Overlay | Anchor | Content |
 | --- | --- | --- | --- |
@@ -18,8 +18,9 @@ Home flights show seven independent overlays on one `CanvasLayer` (`render/overl
 | O5 | Telemetry | right | α, β, pitch/bank angle, heading, load factor, engine rpm |
 | O6 | Diagnostics (developer) | top left | today's input panel and HUD text, unchanged |
 | O7 | Performance (developer) | bottom centre | fps, frame p95, physics µs/tick |
+| O8 | Control guide | top left | keyboard reference and active controller axes/buttons/AUX; aircraft equipment availability, accepted gear status and smoke output; scrollable, with device tabs and existing Kenney prompts |
 
-Presets: Off, Pilot (O1–O4, default), Full (O1–O5), Developer (all), Custom (any other set). **F2** cycles Off → Pilot → Full → Developer; **F3** toggles O6+O7; Pause → **Flight overlays** sets overlays, units and stick mode and previews them live above the paused flight. Settings live under `[hud]` in `settings.cfg` (additive; older builds ignore it).
+Presets: Off, Pilot (O1–O4 + O8, default), Full (O1–O5 + O8), Developer (all), Custom (any other set). **F2** cycles Off → Pilot → Full → Developer; **F3** toggles O6+O7; Pause → **Flight overlays** sets overlays, units and stick mode and previews them live above the paused flight. Settings live under `[hud]` in `settings.cfg` (additive; older builds ignore it). Named presets include the guide; saved custom sets retain their explicit visibility choices.
 
 Rules the implementation keeps:
 
@@ -28,7 +29,7 @@ Rules the implementation keeps:
 - Numbers come from 64-bit state in `telemetry.gd` (pure): load factor = −F<sub>z,body</sub>/(m·g) from `sim.last_loads` (gravity excluded); height above ground from `GroundTerrain.sample` on the session's own surface table. No session accessor was added.
 - Units (`units.gd`): metric km/h·m·m/s, imperial mph·ft·ft/min, SI m/s·m; "auto" = imperial for English, metric otherwise (D3). Exact factors 0.44704 m/s and 0.3048 m.
 - Numbers refresh at 10 Hz; sticks every frame.
-- Other flight layers keep clear of the Pilot preset: the first-flight hint sits bottom centre and the Home latency marker top left (HUD-11-R1).
+- Other flight layers keep clear of the Pilot preset: the first-flight hint sits bottom centre and the Home latency marker beside the controls guide, below wrapped warnings (HUD-11-R2).
 
 ### Warning triggers
 
@@ -61,6 +62,7 @@ The 1 m, 3 m/s, 2 m/s, 2 s and 20 % values are display thresholds, not physics, 
 | HUD-10 | O5 Telemetry | live flight scene / done |
 | HUD-11 | Spanish texts, contrast, layout | es entries; contrast ≥ 4.5:1 over any sky; no overlap at 1280×720 and 1920×1080 (Pilot, Full) and in Spanish; en/es rendered captures at 720p and 1080p / done |
 | HUD-11-R1 | Visual review repairs: "-0°", wind jitter, warning wrap, dialog preview, hint and latency-marker placement | [review](../research/flight-overlays/HUD-01-10/README.md#visual-review-and-repairs-2026-10-13-hud-11-r1) / done |
+| HUD-11-R2 | Default-open controls guide, profile-aware prompts, keyboard reference, close/reopen and Spanish copy | [verification](../research/flight-overlays/HUD-01-10/README.md#controls-guide-2026-10-15-hud-11-r2) / done |
 | HUD-12 | Cost and pilot acceptance | VM (no GPU): ≈ 60 µs mean per frame, ≈ 0.26 ms on the 10 Hz refresh frames / owner reads Pilot preset in flight at 720p and 1080p: pending |
 
 ## 3. Decisions

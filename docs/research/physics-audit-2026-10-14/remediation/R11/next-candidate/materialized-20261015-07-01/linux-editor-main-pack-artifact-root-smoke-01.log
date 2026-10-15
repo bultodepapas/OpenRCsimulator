@@ -1,0 +1,72 @@
+ERROR: Can't open dynamic library, file not found: 'native/ground_vehicle/libopenrc_ground_vehicle.so'.
+   at: open_dynamic_library (drivers/unix/os_unix.cpp:1063)
+ERROR: GDExtension dynamic library not found: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.
+   at: open_library (core/extension/gdextension.cpp:810)
+ERROR: Error loading extension: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.
+   at: load_extensions (core/extension/gdextension_manager.cpp:333)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS jensen-das-ugly-stik-60 is a catalog flight entry
+PASS jensen-das-ugly-stik-60 catalog data resource exists
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+PASS jensen-das-ugly-stik-60 prepares and trims from the catalog resource
+PASS jensen-das-ugly-stik-60 loaded data identity matches catalog ID
+PASS jensen-das-ugly-stik-60 timestep gives an integral one-second command interval
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/linux-editor-main-pack-artifact-root-01/jensen-das-ugly-stik-60.orfl
+PASS jensen-das-ugly-stik-60 flight log starts
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/linux-editor-main-pack-artifact-root-01/jensen-das-ugly-stik-60.orfl (240 ticks)
+PASS jensen-das-ugly-stik-60 accepts one second of explicit commands without a fault
+PASS jensen-das-ugly-stik-60 flight log stops cleanly
+PASS jensen-das-ugly-stik-60 logger elapsed time is one second
+PASS jensen-das-ugly-stik-60 ORFL passes complete-file inspection
+PASS jensen-das-ugly-stik-60 ORFL contains initial sample plus every accepted tick
+PASS jensen-das-ugly-stik-60 ORFL final tick is the one-second boundary
+PASS jensen-das-ugly-stik-60 complete checkpoint captured at one-second boundary
+PASS jensen-das-ugly-stik-60 first 60-tick continuation completes without a fault
+PASS jensen-das-ugly-stik-60 restores checkpoint for recorded-input continuation
+PASS jensen-das-ugly-stik-60 restored continuation exactly matches body/aux/continuous/modes/tick
+PASS jensen-das-ugly-stik-60 restored continuation has no simulation fault
+PASS sebart-avanti-s-a200-p100rx is a catalog flight entry
+PASS sebart-avanti-s-a200-p100rx catalog data resource exists
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+PASS sebart-avanti-s-a200-p100rx prepares and trims from the catalog resource
+PASS sebart-avanti-s-a200-p100rx loaded data identity matches catalog ID
+PASS sebart-avanti-s-a200-p100rx timestep gives an integral one-second command interval
+Flight log REC: /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/linux-editor-main-pack-artifact-root-01/sebart-avanti-s-a200-p100rx.orfl
+PASS sebart-avanti-s-a200-p100rx flight log starts
+Flight log saved: /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/linux-editor-main-pack-artifact-root-01/sebart-avanti-s-a200-p100rx.orfl (240 ticks)
+PASS sebart-avanti-s-a200-p100rx accepts one second of explicit commands without a fault
+PASS sebart-avanti-s-a200-p100rx flight log stops cleanly
+PASS sebart-avanti-s-a200-p100rx logger elapsed time is one second
+PASS sebart-avanti-s-a200-p100rx ORFL passes complete-file inspection
+PASS sebart-avanti-s-a200-p100rx ORFL contains initial sample plus every accepted tick
+PASS sebart-avanti-s-a200-p100rx ORFL final tick is the one-second boundary
+PASS sebart-avanti-s-a200-p100rx complete checkpoint captured at one-second boundary
+PASS sebart-avanti-s-a200-p100rx first 60-tick continuation completes without a fault
+PASS sebart-avanti-s-a200-p100rx restores checkpoint for recorded-input continuation
+PASS sebart-avanti-s-a200-p100rx restored continuation exactly matches body/aux/continuous/modes/tick
+PASS sebart-avanti-s-a200-p100rx restored continuation has no simulation fault
+R11 package smoke: 34 checks, 0 failures; /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/linux-editor-main-pack-artifact-root-01
+	Command being timed: "/usr/bin/timeout --signal=TERM --kill-after=5s 60s /home/bulto/openrc-r11-b09-r05b-20261015-07/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/bulto/openrc-r11-b09-r05b-20261015-07/dist/linux --audio-driver Dummy --main-pack /home/bulto/openrc-r11-b09-r05b-20261015-07/dist/linux/openrc-simulator.x86_64 --script /mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/r11_package_smoke.gd -- --out=/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/linux-editor-main-pack-artifact-root-01 --runner=linux-pinned-editor-main-pack-export-root"
+	User time (seconds): 1.30
+	System time (seconds): 0.14
+	Percent of CPU this job got: 77%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 0:01.86
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 200032
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 47
+	Minor (reclaiming a frame) page faults: 35060
+	Voluntary context switches: 2313
+	Involuntary context switches: 11
+	Swaps: 0
+	File system inputs: 0
+	File system outputs: 0
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0

@@ -1,0 +1,16 @@
+level V 25.7 beta +-1 deg: d(rudder)/d(beta) 1.005  d(aileron)/d(beta) -0.285  d(bank)/d(beta) 1.161  throttle 0.148  rudder0 -3.39 deg
+level V 25.7 beta +-2 deg: d(rudder)/d(beta) 0.875  d(aileron)/d(beta) -0.282  d(bank)/d(beta) 1.160  throttle 0.148  rudder0 -3.39 deg
+level V 28.6 beta +-1 deg: d(rudder)/d(beta) 0.850  d(aileron)/d(beta) -0.282  d(bank)/d(beta) 1.424  throttle 0.194  rudder0 -2.81 deg
+level V 28.6 beta +-2 deg: d(rudder)/d(beta) 0.783  d(aileron)/d(beta) -0.279  d(bank)/d(beta) 1.423  throttle 0.194  rudder0 -2.81 deg
+level V 35.0 beta +-1 deg: d(rudder)/d(beta) 0.739  d(aileron)/d(beta) -0.279  d(bank)/d(beta) 2.113  throttle 0.332  rudder0 -2.22 deg
+level V 35.0 beta +-2 deg: d(rudder)/d(beta) 0.700  d(aileron)/d(beta) -0.280  d(bank)/d(beta) 2.114  throttle 0.332  rudder0 -2.22 deg
+level V 45.0 beta +-1 deg: d(rudder)/d(beta) 0.680  d(aileron)/d(beta) -0.281  d(bank)/d(beta) 3.482  throttle 0.672  rudder0 -1.85 deg
+level V 45.0 beta +-2 deg: d(rudder)/d(beta) 0.655  d(aileron)/d(beta) -0.280  d(bank)/d(beta) 3.487  throttle 0.672  rudder0 -1.85 deg
+glide V 25.7 beta +-1 deg: d(rudder)/d(beta) 0.550  d(aileron)/d(beta) -0.281  d(bank)/d(beta) 1.030  throttle nan  rudder0 0.00 deg
+glide V 25.7 beta +-2 deg: d(rudder)/d(beta) 0.550  d(aileron)/d(beta) -0.281  d(bank)/d(beta) 1.031  throttle nan  rudder0 0.00 deg
+glide V 28.6 beta +-1 deg: d(rudder)/d(beta) 0.551  d(aileron)/d(beta) -0.282  d(bank)/d(beta) 1.270  throttle nan  rudder0 0.00 deg
+glide V 28.6 beta +-2 deg: d(rudder)/d(beta) 0.551  d(aileron)/d(beta) -0.282  d(bank)/d(beta) 1.271  throttle nan  rudder0 0.00 deg
+glide V 35.0 beta +-1 deg: d(rudder)/d(beta) 0.552  d(aileron)/d(beta) -0.282  d(bank)/d(beta) 1.915  throttle nan  rudder0 0.00 deg
+glide V 35.0 beta +-2 deg: d(rudder)/d(beta) 0.552  d(aileron)/d(beta) -0.282  d(bank)/d(beta) 1.917  throttle nan  rudder0 0.00 deg
+glide V 45.0 beta +-1 deg: d(rudder)/d(beta) 0.552  d(aileron)/d(beta) -0.283  d(bank)/d(beta) 3.312  throttle nan  rudder0 0.00 deg
+glide V 45.0 beta +-2 deg: d(rudder)/d(beta) 0.552  d(aileron)/d(beta) -0.283  d(bank)/d(beta) 3.322  throttle nan  rudder0 0.00 deg

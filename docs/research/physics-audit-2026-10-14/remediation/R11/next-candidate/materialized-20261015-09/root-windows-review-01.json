@@ -1,0 +1,89 @@
+{
+  "format": "openrc-r11-root-windows-package-review-v1",
+  "captured_utc": "2026-10-15T15:33:09.880009+00:00",
+  "source_manifest_sha256": "bd9cc04069b725b1317bb3125c5f06bb0d338336d1f5e41b93c81e552ce3eebc",
+  "scope": "Independent receipt, native marker, runner artifact hashes and complete tick/time/finite/source-identity review of already completed Windows runs; no new simulator run or physical validation.",
+  "windows_native_run_sha256": "5a416cfd3f3f5de3bd2ae0ed80a61a415056214dd65f55507dc47beb5e8ae047",
+  "windows_native_inputs": [
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\Godot_v4.7.2-stable_win64_console.exe",
+      "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+    },
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\Godot_v4.7.2-stable_win64.exe",
+      "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424"
+    },
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\OpenRC Simulator.exe",
+      "sha256": "250f8c234644ee353b7c6a7616cce0c3bc4bb3fffb2e134292ffd793360ad564"
+    },
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\openrc_ground_vehicle.dll",
+      "sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c"
+    },
+    {
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\check_native_pack.gd",
+      "sha256": "2249f62dfa8a4c8ffdabe78cab853a6247044be329d94c382c612e91f516d3ba"
+    }
+  ],
+  "windows_native_identity": {
+    "abi_version": 1,
+    "backend": "native",
+    "backend_version": "openrc-ground-vehicle-native-evaluate-v2",
+    "binary_sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c",
+    "solver_version": "openrc-ground-vehicle-dynamics-rk4-v3",
+    "source_sha256": "e2ae0a5ffebc8d81636302d66238348035ee92bf51d2f40965db7053bb251541",
+    "toolchain_sha256": "78bdd21d315683b45eee37c24b84716430cdba2a9b24066f59a68df476585b4d"
+  },
+  "traces": {
+    "stik-default": {
+      "csv_sha256": "dce7a4aabe3646744d54b8143dba18134f9e3b988dd67a2cb3578bd3cf3ad1e3",
+      "row_count": 721,
+      "tick_start": 0,
+      "tick_end": 720,
+      "duration_s": 3.0,
+      "aircraft": "jensen-das-ugly-stik-60 (res://data/aircraft/jensen_ugly_stik_60.json)",
+      "source_manifest_path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "aircraft_input_sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+      "app_build": "7c47c7b-dirty",
+      "aero_model": "section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle",
+      "run_receipt_sha256": "85483aa427960f271caf05d8b57421d341689c6a3b12a7bba742766320cb5dd3",
+      "checker_log_sha256": "1b69e80457526cda491d1ee78f9b34c78b604cb8756dc8ad148b7301b7a8d1e5",
+      "verified_runner_inputs": [
+        {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\OpenRC Simulator.exe",
+          "sha256": "250f8c234644ee353b7c6a7616cce0c3bc4bb3fffb2e134292ffd793360ad564"
+        },
+        {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\openrc_ground_vehicle.dll",
+          "sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c"
+        }
+      ]
+    },
+    "jet-avanti": {
+      "csv_sha256": "db0c961b9df1d4ac3a4ccccc952d5f4d2dc2103ece0974a21981d1fb28df3287",
+      "row_count": 721,
+      "tick_start": 0,
+      "tick_end": 720,
+      "duration_s": 3.0,
+      "aircraft": "sebart-avanti-s-a200-p100rx (res://data/aircraft/sebart_avanti_s_a200.json)",
+      "source_manifest_path": "app/data/aircraft/sebart_avanti_s_a200.json",
+      "aircraft_input_sha256": "68d3fd42b28e30bf1dc210b838d945d517f062506749af14f995a5a5f39a83b6",
+      "app_build": "7c47c7b-dirty",
+      "aero_model": "section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle",
+      "run_receipt_sha256": "cc2a6ac7d3e47dcc2261043663bc6acbbf2b25eda8b79d4dd8ad7a969b618750",
+      "checker_log_sha256": "97291188dad2d77d0d49771ff9b8f619277143f5b6f92447259d7feacf8eeb91",
+      "verified_runner_inputs": [
+        {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\OpenRC Simulator.exe",
+          "sha256": "250f8c234644ee353b7c6a7616cce0c3bc4bb3fffb2e134292ffd793360ad564"
+        },
+        {
+          "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\openrc_ground_vehicle.dll",
+          "sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c"
+        }
+      ]
+    }
+  },
+  "passed": true
+}

@@ -1,0 +1,8 @@
+Vehicle data is reproducible: C:\DEVELOPMENT\OpenRCsimulator\app\data\vehicles\ground\monster_car_2.json
+test_checked_in_vehicle_data_is_fresh (__main__.VehicleDataGeneratorTests.test_checked_in_vehicle_data_is_fresh) ... ok
+test_disposable_source_mutation_changes_geometry_output (__main__.VehicleDataGeneratorTests.test_disposable_source_mutation_changes_geometry_output) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.056s
+
+OK

@@ -1,0 +1,260 @@
+{
+	"adapter": "NVIDIA GeForce RTX 3090",
+	"complete": true,
+	"engine": {
+		"build": "official",
+		"hash": "ed1daf0bf001b61586d9930840f2f1394092c079",
+		"hex": 263938,
+		"major": 4,
+		"minor": 7,
+		"patch": 2,
+		"status": "stable",
+		"string": "4.7.2-stable (official)",
+		"timestamp": 0
+	},
+	"exact_pairs": 20,
+	"failures": [],
+	"samples": [
+		{
+			"pair": 0,
+			"usec": 12157,
+			"variant": "reference",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 0,
+			"usec": 13648,
+			"variant": "candidate",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 1,
+			"usec": 4,
+			"variant": "candidate",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 1,
+			"usec": 13612,
+			"variant": "reference",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 2,
+			"usec": 16850,
+			"variant": "reference",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 2,
+			"usec": 12,
+			"variant": "candidate",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 3,
+			"usec": 3,
+			"variant": "candidate",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 3,
+			"usec": 15411,
+			"variant": "reference",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 4,
+			"usec": 13255,
+			"variant": "reference",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 4,
+			"usec": 6,
+			"variant": "candidate",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 5,
+			"usec": 2,
+			"variant": "candidate",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 5,
+			"usec": 12562,
+			"variant": "reference",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 6,
+			"usec": 15423,
+			"variant": "reference",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 6,
+			"usec": 7,
+			"variant": "candidate",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 7,
+			"usec": 3,
+			"variant": "candidate",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 7,
+			"usec": 14531,
+			"variant": "reference",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 8,
+			"usec": 13721,
+			"variant": "reference",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 8,
+			"usec": 9,
+			"variant": "candidate",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 9,
+			"usec": 2,
+			"variant": "candidate",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 9,
+			"usec": 14672,
+			"variant": "reference",
+			"workload": "silhouette"
+		},
+		{
+			"pair": 0,
+			"usec": 16951,
+			"variant": "reference",
+			"workload": "create"
+		},
+		{
+			"pair": 0,
+			"usec": 1057,
+			"variant": "candidate",
+			"workload": "create"
+		},
+		{
+			"pair": 1,
+			"usec": 580,
+			"variant": "candidate",
+			"workload": "create"
+		},
+		{
+			"pair": 1,
+			"usec": 16518,
+			"variant": "reference",
+			"workload": "create"
+		},
+		{
+			"pair": 2,
+			"usec": 16266,
+			"variant": "reference",
+			"workload": "create"
+		},
+		{
+			"pair": 2,
+			"usec": 1169,
+			"variant": "candidate",
+			"workload": "create"
+		},
+		{
+			"pair": 3,
+			"usec": 1333,
+			"variant": "candidate",
+			"workload": "create"
+		},
+		{
+			"pair": 3,
+			"usec": 14434,
+			"variant": "reference",
+			"workload": "create"
+		},
+		{
+			"pair": 4,
+			"usec": 13397,
+			"variant": "reference",
+			"workload": "create"
+		},
+		{
+			"pair": 4,
+			"usec": 805,
+			"variant": "candidate",
+			"workload": "create"
+		},
+		{
+			"pair": 5,
+			"usec": 955,
+			"variant": "candidate",
+			"workload": "create"
+		},
+		{
+			"pair": 5,
+			"usec": 17324,
+			"variant": "reference",
+			"workload": "create"
+		},
+		{
+			"pair": 6,
+			"usec": 16649,
+			"variant": "reference",
+			"workload": "create"
+		},
+		{
+			"pair": 6,
+			"usec": 935,
+			"variant": "candidate",
+			"workload": "create"
+		},
+		{
+			"pair": 7,
+			"usec": 994,
+			"variant": "candidate",
+			"workload": "create"
+		},
+		{
+			"pair": 7,
+			"usec": 17503,
+			"variant": "reference",
+			"workload": "create"
+		},
+		{
+			"pair": 8,
+			"usec": 17523,
+			"variant": "reference",
+			"workload": "create"
+		},
+		{
+			"pair": 8,
+			"usec": 880,
+			"variant": "candidate",
+			"workload": "create"
+		},
+		{
+			"pair": 9,
+			"usec": 778,
+			"variant": "candidate",
+			"workload": "create"
+		},
+		{
+			"pair": 9,
+			"usec": 15478,
+			"variant": "reference",
+			"workload": "create"
+		}
+	],
+	"scope": "native construction; parity/readback outside timing; first calls retained separately; shared host, not startup or FPS"
+}

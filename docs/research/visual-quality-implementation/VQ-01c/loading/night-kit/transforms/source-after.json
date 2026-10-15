@@ -1,0 +1,9 @@
+{
+  "sha256": {
+    "app/render/world/aircraft_lights.gd": "3a03244089054004998276dcb0acee8be76250b7465c40948e191d623a878594",
+    "app/render/airplane.gd": "f2758596d536fd566e58accb8a632f00359bd15b3dc91129466fd08b213ba2b8",
+    "app/app_state/aircraft_catalog.gd": "ddc427ef77eb3d70b00021e1f36026552c4262f81e1da78f5f6ffcef9d91c0ad",
+    "app/project.godot": "176399ac913ea694682334cf9ff29150236c3958c1aa544299e217bac844a6df"
+  },
+  "scope": "Only the four monitored runtime paths. Other tracks changed physics/data concurrently; each model instance is shared by both variants within each process."
+}

@@ -1,0 +1,76 @@
+{
+  "commands": [
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\heli-canopy-transforms\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\native-1.json"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\heli-canopy-transforms\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\native-2.json",
+      "--reverse"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\heli-canopy-transforms\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\native-3.json"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\heli-canopy-transforms\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\native-4.json",
+      "--reverse"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\heli-canopy-transforms\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-geometry-native-final\\native-5.json"
+    ]
+  ],
+  "sha256": {
+    "reference.gd": "36d249ee6eaa9646f0498c696db9b34610afbf4f976a699b47916695a273f33e",
+    "candidate.gd": "550412fde0370d6aec459d135f464eea903ee46bac9a8e064b7c933964607562",
+    "compare.gd": "13109814c2745f41b84e0e4377c331be6acec6557e6cdf8a20984ba370ab8a85"
+  }
+}

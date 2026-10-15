@@ -1,0 +1,144 @@
+build 20.4 s
+piezas 441, cuerpos rígidos 65, poses 31
+choques por movimiento: 0; contactos permanentes: 59
+== CHOQUES POR MOVIMIENTO == 0
+== PERMANENTES == 59
+  Amort_Del_Der_Copa x Amort_Del_Der_Resorte
+  Amort_Del_Der_Copa x Amort_Del_Der_Tope
+  Amort_Del_Der_Cuerpo_Malla x Amort_Del_Der_Resorte
+  Amort_Del_Der_Cuerpo_Malla x Amort_Del_Der_Vastago_Malla
+  Amort_Del_Izq_Copa x Amort_Del_Izq_Resorte
+  Amort_Del_Izq_Copa x Amort_Del_Izq_Tope
+  Amort_Del_Izq_Cuerpo_Malla x Amort_Del_Izq_Resorte
+  Amort_Del_Izq_Cuerpo_Malla x Amort_Del_Izq_Vastago_Malla
+  Amort_Tras_Der_Copa x Amort_Tras_Der_Resorte
+  Amort_Tras_Der_Copa x Amort_Tras_Der_Tope
+  Amort_Tras_Der_Cuerpo_Malla x Amort_Tras_Der_Resorte
+  Amort_Tras_Der_Cuerpo_Malla x Amort_Tras_Der_Vastago_Malla
+  Amort_Tras_Izq_Copa x Amort_Tras_Izq_Resorte
+  Amort_Tras_Izq_Copa x Amort_Tras_Izq_Tope
+  Amort_Tras_Izq_Cuerpo_Malla x Amort_Tras_Izq_Resorte
+  Amort_Tras_Izq_Cuerpo_Malla x Amort_Tras_Izq_Vastago_Malla
+  Brazo_Inferior_Del_Der x Pasador_Interior_Del_Der
+  Brazo_Inferior_Del_Izq x Pasador_Interior_Del_Izq
+  Brazo_Inferior_Nervios_Del_Der x Pasador_Interior_Del_Der
+  Brazo_Inferior_Nervios_Del_Izq x Pasador_Interior_Del_Izq
+  Brazo_Inferior_Nervios_Tras_Der x Pasador_Interior_Tras_Der
+  Brazo_Inferior_Nervios_Tras_Izq x Pasador_Interior_Tras_Izq
+  Brazo_Inferior_Tras_Der x Pasador_Interior_Tras_Der
+  Brazo_Inferior_Tras_Izq x Pasador_Interior_Tras_Izq
+  Brazo_Superior_Bujes_Del_Der x Brazo_Superior_Pasador_Del_Der
+  Brazo_Superior_Bujes_Del_Izq x Brazo_Superior_Pasador_Del_Izq
+  Brazo_Superior_Bujes_Tras_Der x Brazo_Superior_Pasador_Tras_Der
+  Brazo_Superior_Bujes_Tras_Izq x Brazo_Superior_Pasador_Tras_Izq
+  Brazo_Superior_Del_Der x Brazo_Superior_Pasador_Del_Der
+  Brazo_Superior_Del_Izq x Brazo_Superior_Pasador_Del_Izq
+  Brazo_Superior_Pasador_Tras_Der x Brazo_Superior_Tras_Der
+  Brazo_Superior_Pasador_Tras_Izq x Brazo_Superior_Tras_Izq
+  Diferencial_Del x Diferencial_Salida_Del_Der
+  Diferencial_Del x Diferencial_Salida_Del_Izq
+  Diferencial_Salida_Del_Der x Herraje_Mamparo_Del_cromo
+  Diferencial_Salida_Del_Izq x Herraje_Mamparo_Del_cromo
+  Diferencial_Salida_Tras_Der x Diferencial_Tras
+  Diferencial_Salida_Tras_Der x Herraje_Mamparo_Tras_cromo
+  Diferencial_Salida_Tras_Izq x Diferencial_Tras
+  Diferencial_Salida_Tras_Izq x Herraje_Mamparo_Tras_cromo
+  Eje_Rueda_Del_Der x Herraje_Mangueta_Del_Der_cromo
+  Eje_Rueda_Del_Izq x Herraje_Mangueta_Del_Izq_cromo
+  Eje_Rueda_Tras_Der x Herraje_Portamangueta_Tras_Der_cromo
+  Eje_Rueda_Tras_Izq x Herraje_Portamangueta_Tras_Izq_cromo
+  Estabilizadora_Centro_Del x Estabilizadora_Del_Der
+  Estabilizadora_Centro_Del x Estabilizadora_Del_Izq
+  Estabilizadora_Centro_Tras x Estabilizadora_Tras_Der
+  Estabilizadora_Centro_Tras x Estabilizadora_Tras_Izq
+  Estabilizadora_Del_Der x Estabilizadora_Soportes_Del
+  Estabilizadora_Del_Izq x Estabilizadora_Soportes_Del
+  Estabilizadora_Soportes_Tras x Estabilizadora_Tras_Der
+  Estabilizadora_Soportes_Tras x Estabilizadora_Tras_Izq
+  Herraje_Portamangueta_Del_Der_acero x Mangueta_Del_Der_Malla
+  Herraje_Portamangueta_Del_Izq_acero x Mangueta_Del_Izq_Malla
+  Mangueta_Tras_Der_Malla x Pasadores_Brazo_Tras_Der
+  Mangueta_Tras_Izq_Malla x Pasadores_Brazo_Tras_Izq
+  Pasadores_Brazo_Del_Der x Portamangueta_Del_Der
+  Pasadores_Brazo_Del_Izq x Portamangueta_Del_Izq
+  Servo_Brazo_Direccion x Servo_Tapas_Direccion
+== INTERMITENTES == 0
+== ESTATICO == 47
+    840 Llanta_Tras_Izq x Rin_Tras_Izq
+    840 Llanta_Tras_Der x Rin_Tras_Der
+    840 Llanta_Del_Izq x Rin_Del_Izq
+    840 Llanta_Del_Der x Rin_Del_Der
+    384 Llanta_Tras_Izq x Rin_Beadlock_Tras_Izq
+    384 Llanta_Tras_Der x Rin_Beadlock_Tras_Der
+    384 Llanta_Del_Izq x Rin_Beadlock_Del_Izq
+    384 Llanta_Del_Der x Rin_Beadlock_Del_Der
+    237 Escape_Acople x Escape_Colector
+    224 Antiniebla x Defensas
+    132 Capo_Bulto x Soplador_Correa
+    128 Diferencial_Tras x Postes_Carroceria
+    128 Diferencial_Del x Postes_Carroceria
+     96 Escape_Acople x Escape_Sintonizado
+     72 Amort_Tras_Izq_Rotula x Amort_Tras_Izq_Vastago_Malla
+     72 Amort_Tras_Der_Rotula x Amort_Tras_Der_Vastago_Malla
+     72 Amort_Del_Izq_Rotula x Amort_Del_Izq_Vastago_Malla
+     72 Amort_Del_Der_Rotula x Amort_Del_Der_Vastago_Malla
+     70 Amort_Tras_Izq_Cuerpo_Malla x Amort_Tras_Izq_Ojo_Fijo
+     70 Amort_Tras_Der_Cuerpo_Malla x Amort_Tras_Der_Ojo_Fijo
+     56 Capo_Bulto x Soplador_Poleas
+     44 Brazo_Superior_Bujes_Tras_Izq x Brazo_Superior_Tras_Izq
+     44 Brazo_Superior_Bujes_Tras_Der x Brazo_Superior_Tras_Der
+     42 Antena_Cable x Caja_Radio_Detalles
+     40 Diferencial_Tras x Mamparo_Orejas_Tras_Izq
+     40 Diferencial_Tras x Mamparo_Orejas_Tras_Der
+     40 Diferencial_Del x Mamparo_Orejas_Del_Izq
+     40 Diferencial_Del x Mamparo_Orejas_Del_Der
+     40 Capo_Bulto x Carroceria_Casco
+     39 Brazo_Superior_Bujes_Del_Izq x Brazo_Superior_Del_Izq
+     39 Brazo_Superior_Bujes_Del_Der x Brazo_Superior_Del_Der
+     36 Barra_Antivuelco x Focos_Antivuelco
+     32 Cardan_Central_Tras x Cardan_Copas_Tras
+     32 Cardan_Central_Del x Cardan_Copas_Del
+     32 Brazo_Inferior_Nervios_Tras_Izq x Brazo_Inferior_Tras_Izq
+     32 Brazo_Inferior_Nervios_Tras_Der x Brazo_Inferior_Tras_Der
+     32 Brazo_Inferior_Del_Izq x Brazo_Inferior_Nervios_Del_Izq
+     32 Brazo_Inferior_Del_Der x Brazo_Inferior_Nervios_Del_Der
+     31 Filtro_Combustible x Manguera_Carburador
+     31 Arranque_Cuerda x Arranque_Manija
+     20 Soplador x Soplador_Toma
+     20 Amort_Del_Izq_Cuerpo_Malla x Amort_Del_Izq_Ojo_Fijo
+     20 Amort_Del_Der_Cuerpo_Malla x Amort_Del_Der_Ojo_Fijo
+     12 Filtro_Combustible_Malla x Manguera_Carburador
+      7 Carroceria_Casco x Guardafango_Tras_Izq
+      7 Carroceria_Casco x Guardafango_Tras_Der
+      6 Defensa_Tubular x Defensas
+== HOLGURAS < 0.8 mm == 30
+   0.10 mm Amort_Del_Der_Cuerpo_Malla x Amort_Del_Der_Tope [todas +36 mm, dirección -0.42]
+   0.10 mm Amort_Del_Izq_Cuerpo_Malla x Amort_Del_Izq_Tope [todas +36 mm, dirección -0.42]
+   0.10 mm Amort_Tras_Der_Cuerpo_Malla x Amort_Tras_Der_Tope [todas +36 mm, dirección -0.42]
+   0.10 mm Amort_Tras_Izq_Cuerpo_Malla x Amort_Tras_Izq_Tope [todas +36 mm, dirección -0.42]
+   0.20 mm Freno_Disco x Freno_Pastillas [todas +0 mm, dirección +0.42]
+   0.24 mm Diferencial_Salida_Del_Der x Palier_Del_Der [cruce de ejes, dirección -0.42]
+   0.25 mm Diferencial_Salida_Del_Izq x Palier_Del_Izq [cabeceo acelera, dirección +0.42]
+   0.30 mm Amort_Del_Der_Tope x Amort_Del_Der_Vastago_Malla [todas -44 mm, dirección -0.42]
+   0.30 mm Amort_Del_Izq_Tope x Amort_Del_Izq_Vastago_Malla [todas -44 mm, dirección -0.42]
+   0.30 mm Amort_Tras_Der_Tope x Amort_Tras_Der_Vastago_Malla [todas +36 mm, dirección -0.42]
+   0.30 mm Amort_Tras_Izq_Tope x Amort_Tras_Izq_Vastago_Malla [todas +36 mm, dirección -0.42]
+   0.42 mm Eje_Copa_Del_Der x Palier_Del_Der [cabeceo frenada, dirección -0.42]
+   0.46 mm Eje_Copa_Del_Der x Mangueta_Del_Der_Malla [reposo]
+   0.46 mm Eje_Copa_Del_Izq x Mangueta_Del_Izq_Malla [reposo]
+   0.47 mm Eje_Copa_Del_Izq x Palier_Del_Izq [cabeceo frenada, dirección +0.42]
+   0.50 mm Campana_Embrague x Transmision [todas -44 mm, dirección -0.42]
+   0.50 mm Freno_Disco x Freno_Pinza [todas +36 mm, dirección -0.42]
+   0.50 mm Mangueta_Del_Der_Malla x Portamangueta_Del_Der [todas +36 mm, dirección +0.42]
+   0.50 mm Mangueta_Del_Izq_Malla x Portamangueta_Del_Izq [todas +36 mm, dirección -0.42]
+   0.50 mm Motor_Carter x Volante_Motor [todas +0 mm, dirección -0.42]
+   0.59 mm Bieleta_Rotulas_Der x Servo_Brazo_Direccion [todas -44 mm, dirección +0.00]
+   0.60 mm Direccion_Bellcrank x Varilla_Direccion [reposo]
+   0.63 mm Amort_Tras_Der_Cuerpo_Malla x Soporte_Amort_Orejas_Tras [todas -44 mm, dirección -0.42]
+   0.63 mm Amort_Tras_Izq_Cuerpo_Malla x Soporte_Amort_Orejas_Tras [todas -44 mm, dirección -0.42]
+   0.63 mm Eje_Copa_Tras_Der x Palier_Tras_Der [balanceo der, dirección -0.42]
+   0.63 mm Eje_Copa_Tras_Izq x Palier_Tras_Izq [balanceo izq, dirección +0.42]
+   0.64 mm Amort_Del_Der_Cuerpo_Malla x Soporte_Amort_Orejas_Del [todas -44 mm, dirección -0.42]
+   0.64 mm Amort_Del_Izq_Cuerpo_Malla x Soporte_Amort_Orejas_Del [todas -44 mm, dirección -0.42]
+   0.77 mm Eje_Copa_Tras_Der x Mangueta_Tras_Der_Malla [cabeceo acelera, dirección -0.42]
+   0.77 mm Eje_Copa_Tras_Izq x Mangueta_Tras_Izq_Malla [cabeceo acelera, dirección -0.42]

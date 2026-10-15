@@ -1,0 +1,128 @@
+{
+  "warm_pairs_per_variant_per_family": 25,
+  "real_skin_kit_pairs": 300,
+  "synthetic_cases_per_run": 256,
+  "processes": 5,
+  "results": {
+    "gp-extra-300s-60": {
+      "wing_skins": {
+        "warm_median_us": [
+          87325,
+          46795
+        ],
+        "first_pair_median_us": [
+          89018,
+          46733
+        ],
+        "warm_reduction_percent": 46.412825651302605
+      },
+      "kit_build": {
+        "warm_median_us": [
+          138458,
+          93327
+        ],
+        "first_pair_median_us": [
+          133825,
+          95970
+        ],
+        "warm_reduction_percent": 32.59544410579382
+      }
+    },
+    "jensen-das-ugly-stik-60": {
+      "wing_skins": {
+        "warm_median_us": [
+          142695,
+          70460
+        ],
+        "first_pair_median_us": [
+          119152,
+          67652
+        ],
+        "warm_reduction_percent": 50.62195591996917
+      },
+      "kit_build": {
+        "warm_median_us": [
+          281438,
+          210399
+        ],
+        "first_pair_median_us": [
+          286138,
+          201421
+        ],
+        "warm_reduction_percent": 25.24143861170134
+      }
+    },
+    "p51d-mustang-120": {
+      "wing_skins": {
+        "warm_median_us": [
+          184233,
+          95955
+        ],
+        "first_pair_median_us": [
+          190336,
+          100162
+        ],
+        "warm_reduction_percent": 47.91649704450342
+      },
+      "kit_build": {
+        "warm_median_us": [
+          330372,
+          231628
+        ],
+        "first_pair_median_us": [
+          315744,
+          221141
+        ],
+        "warm_reduction_percent": 29.888731490562158
+      }
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "wing_skins": {
+        "warm_median_us": [
+          465465,
+          246562
+        ],
+        "first_pair_median_us": [
+          468076,
+          241967
+        ],
+        "warm_reduction_percent": 47.028885093401215
+      },
+      "kit_build": {
+        "warm_median_us": [
+          748574,
+          527516
+        ],
+        "first_pair_median_us": [
+          747427,
+          542252
+        ],
+        "warm_reduction_percent": 29.5305474141501
+      }
+    },
+    "turbo-lumber-evolution": {
+      "wing_skins": {
+        "warm_median_us": [
+          112231,
+          56947
+        ],
+        "first_pair_median_us": [
+          117841,
+          58929
+        ],
+        "warm_reduction_percent": 49.259117356167195
+      },
+      "kit_build": {
+        "warm_median_us": [
+          200540,
+          137986
+        ],
+        "first_pair_median_us": [
+          187945,
+          138684
+        ],
+        "warm_reduction_percent": 31.192779495362522
+      }
+    }
+  }
+}

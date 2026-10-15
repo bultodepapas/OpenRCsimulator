@@ -12,6 +12,7 @@ const Math3D := preload("res://physics/math3d.gd")
 const WetPhysics := preload("res://physics/ground_vehicle/vehicle_environment.gd")
 const Sim := preload("res://sim/simulation.gd")
 const VehicleModel := preload("res://sim/vehicle_model.gd")
+const NitroDynamics := preload("res://physics/ground_vehicle/nitro_dynamics.gd")
 
 const FORMAT := "openrc-ground-vehicle-checkpoint v3"
 const RECORDING_FORMAT := "openrc-ground-vehicle-recording v4"
@@ -30,6 +31,8 @@ const RECORD_TELEMETRY_BASE_WIDTH := 73
 const ENVIRONMENT_SCALARS := ["body_submersion", "water_depth_m", "buoyancy_n", "drag_power_w", "power_w"]
 const ENVIRONMENT_ARRAYS := ["wheel_submersion", "wheel_water_height_m", "wheel_depth_m", "wheel_mud"]
 const DAMAGE_CHANNELS := ["body_damage", "suspension_damage", "drive_scale", "last_impact_energy_j"]
+const NITRO_TELEMETRY_FIELDS := ["engine_rpm", "fuel_kg", "fuel_fraction", "clutch_engaged", "clutch_engagement",
+	"throttle_fraction", "fuel_flow_kg_per_s", "clutch_slip", "clutch_torque_nm", "wheel_drive_torque_nm"]
 const RECORD_TELEMETRY_SPEED_OFFSET := 0
 const RECORD_TELEMETRY_FORWARD_SPEED_OFFSET := 1
 const RECORD_TELEMETRY_LOAD_OFFSET := 2
@@ -96,6 +99,7 @@ var _vehicle_result: Dictionary = {}
 var _base_vehicle_result: Dictionary = {}
 var _course_result: Dictionary = {}
 var _model_identity: Dictionary = {}
+var _vehicle_id := ""
 var _course_identity: Dictionary = {}
 var _prepared_backend_identity: Dictionary = {}
 var _road: Callable
@@ -124,8 +128,8 @@ var _recording_damage_start := PackedFloat64Array()
 var _recording_damage_end := PackedFloat64Array()
 
 
-func prepare_default(experiment: Dictionary = {}) -> bool:
-	var base_vehicle_result: Dictionary = VehicleData.load_default()
+func prepare_default(experiment: Dictionary = {}, vehicle_id: String = "mt8-bisonte") -> bool:
+	var base_vehicle_result: Dictionary = _load_vehicle(vehicle_id)
 	var vehicle_result := base_vehicle_result
 	var course_result: Dictionary = Course.load_default()
 	var pose_up_delta_m := 0.0
@@ -137,13 +141,16 @@ func prepare_default(experiment: Dictionary = {}) -> bool:
 				load_error = str(support_delta.error)
 				return false
 			pose_up_delta_m = float(support_delta.delta_m)
+	base_vehicle_result["vehicle_id"] = vehicle_id
+	vehicle_result["vehicle_id"] = vehicle_id
 	return prepare(vehicle_result, course_result, base_vehicle_result, pose_up_delta_m)
 
 
-## Prepare the Bisonte on the validated airplane field, sampling the same ground model as aircraft.
-## The terrain-aware kernel initializer computes model-specific static support at the selected spawn.
-func prepare_airfield(field_result: Dictionary, experiment: Dictionary = {}, lake: Dictionary = {}) -> bool:
-	var base_vehicle_result: Dictionary = VehicleData.load_default()
+## Prepare the selected ground vehicle on the validated airplane field, sampling the same ground
+## model as aircraft. The selected kernel computes model-specific static support at that spawn.
+func prepare_airfield(field_result: Dictionary, experiment: Dictionary = {}, lake: Dictionary = {},
+		vehicle_id: String = "mt8-bisonte") -> bool:
+	var base_vehicle_result: Dictionary = _load_vehicle(vehicle_id)
 	if not bool(base_vehicle_result.get("ok", false)):
 		load_error = "; ".join(_result_errors(base_vehicle_result, "vehicle data did not load"))
 		return false
@@ -153,6 +160,8 @@ func prepare_airfield(field_result: Dictionary, experiment: Dictionary = {}, lak
 		if not bool(vehicle_result.get("ok", false)):
 			load_error = "; ".join(_result_errors(vehicle_result, "vehicle experiment was rejected"))
 			return false
+	base_vehicle_result["vehicle_id"] = vehicle_id
+	vehicle_result["vehicle_id"] = vehicle_id
 	var course_result: Dictionary = AirfieldCourse.build(field_result, {}, lake)
 	if not bool(course_result.get("ok", false)):
 		load_error = "; ".join(_result_errors(course_result, "airfield course could not be built"))
@@ -202,7 +211,7 @@ func _stage_session(vehicle_result: Dictionary, course_result: Dictionary, reque
 	var vehicle_copy: Dictionary = vehicle_result.duplicate(true)
 	var base_vehicle_copy: Dictionary = baseline_vehicle_result.duplicate(true)
 	var course_result_copy: Dictionary = course_result.duplicate(true)
-	var backend_identity := VehicleDynamics.backend_identity()
+	var backend_identity := _backend_identity_for_model(model_copy)
 	if not _backend_identity_is_valid(backend_identity):
 		return {"ok": false, "errors": PackedStringArray(["vehicle dynamics backend identity is malformed"])}
 	var staged_spawn := _find_spawn(course_copy, requested_spawn)
@@ -213,12 +222,12 @@ func _stage_session(vehicle_result: Dictionary, course_result: Dictionary, reque
 	var spawn_pose: Dictionary = staged_spawn.pose.duplicate(true)
 	var road := _make_road(course_copy)
 	var initial: Variant = _make_spawn_state(model_copy, course_copy, spawn_pose, road, pose_up_delta_m)
-	if not _state_is_valid(initial):
+	if not _state_is_valid_for_model(initial, model_copy):
 		return {"ok": false, "errors": PackedStringArray(["vehicle kernel could not initialize the selected course spawn"])}
-	var telemetry: Dictionary = VehicleDynamics.telemetry(initial, model_copy, road, _neutral_controls())
-	if not _telemetry_is_valid(telemetry):
+	var telemetry: Dictionary = _telemetry_for_model(initial, model_copy, road, _neutral_controls())
+	if not _telemetry_is_valid_for_model(telemetry, model_copy):
 		return {"ok": false, "errors": PackedStringArray([str(telemetry.get("error", "initial vehicle telemetry is invalid"))])}
-	if not _backend_identities_equal(backend_identity, VehicleDynamics.backend_identity()):
+	if not _backend_identities_equal(backend_identity, _backend_identity_for_model(model_copy)):
 		return {"ok": false, "errors": PackedStringArray(["vehicle dynamics backend changed during session preparation"])}
 	return {
 		"ok": true,
@@ -245,6 +254,12 @@ func _commit_prepared(staged: Dictionary) -> void:
 	_base_vehicle_result = staged.base_vehicle_result
 	_course_result = staged.course_result
 	_model_identity = staged.model_identity
+	_vehicle_id = str(staged.base_vehicle_result.get("vehicle_id", ""))
+	if _vehicle_id.is_empty():
+		var base_identity: Variant = staged.base_vehicle_result.get("identity", {})
+		_vehicle_id = str(staged.model_identity.get("id", ""))
+		if typeof(base_identity) == TYPE_DICTIONARY:
+			_vehicle_id = str(base_identity.get("id", _vehicle_id))
 	_course_identity = staged.course_identity
 	_prepared_backend_identity = staged.backend_identity
 	_road = staged.road
@@ -362,7 +377,8 @@ func recovery_actions_snapshot() -> Array[Dictionary]:
 
 
 func identities_snapshot() -> Dictionary:
-	return {"model": _model_identity.duplicate(true), "course": _course_identity.duplicate(true)}
+	return {"model": _model_identity.duplicate(true), "course": _course_identity.duplicate(true),
+		"vehicle_id": _vehicle_id}
 
 
 func model_snapshot() -> Dictionary:
@@ -461,30 +477,37 @@ func tick_once(sample: Dictionary) -> bool:
 	var previous_state: PackedFloat64Array = _state
 	# SF-03: the kernel integrates this tick's plan. Damage, events and recording stay tick-boundary observers
 	# here, so an observer that rejects the tick rolls the kernel back to the state it had committed.
-	var plan: Dictionary = VehicleDynamics.begin_tick(previous_state, _model, effective_controls, DT, _road)
-	if not bool(plan.get("ok", false)):
-		_fail_safe("ground-vehicle kernel rejected the tick or returned nonfinite state")
-		return false
+	if _uses_nitro(_model):
+		# The nitro composite (NitroDynamics.step) is this model's whole-tick policy and validates its own plan.
+		_tick_controls = effective_controls
+		_tick_road = _road
+		_tick_substeps = _substeps_for_model(_model)
+	else:
+		var plan: Dictionary = VehicleDynamics.begin_tick(previous_state, _model, effective_controls, DT, _road)
+		if not bool(plan.get("ok", false)):
+			_fail_safe("ground-vehicle kernel rejected the tick or returned nonfinite state")
+			return false
+		_tick_controls = effective_controls
+		_tick_road = plan["road"]
+		_tick_substeps = int(plan["substeps"])
 	var rollback: Dictionary = sim.checkpoint()
 	if rollback.is_empty():
 		_fail_safe("ground-vehicle kernel cannot checkpoint the tick it is about to integrate")
 		return false
-	_tick_controls = effective_controls
-	_tick_road = plan["road"]
-	_tick_substeps = int(plan["substeps"])
 	sim.inputs = _controls_to_packed(parsed.controls)
 	sim.step()
 	var next_state: PackedFloat64Array = _state
 	if not sim.fault_reason.is_empty() or not _state_is_valid(next_state):
 		_fail_safe("ground-vehicle kernel rejected the tick or returned nonfinite state")
 		return false
-	var next_telemetry: Dictionary = VehicleDynamics.telemetry(next_state, _model, _road, effective_controls)
+	var next_telemetry: Dictionary = _telemetry_for_model(next_state, _model, _road, effective_controls)
 	if not _telemetry_is_valid(next_telemetry):
 		sim.restore_checkpoint(rollback)
 		_fail_safe(str(next_telemetry.get("error", "ground-vehicle telemetry failed")))
 		return false
 	var previous_damage: Dictionary = _damage.visual_state()
-	if not _damage.advance(previous_state, next_state, _last_telemetry, next_telemetry, _model, DT):
+	if not _damage.advance(_damage_observer_state(previous_state), _damage_observer_state(next_state),
+			_last_telemetry, next_telemetry, _model, DT):
 		sim.restore_checkpoint(rollback)
 		_fail_safe("ground-vehicle damage observer rejected the tick")
 		return false
@@ -547,6 +570,73 @@ func advance(frame_dt: float, sample: Dictionary, max_ticks: int = 8) -> int:
 	return count
 
 
+## Explicit pit service changes only the two powertrain state values. It does
+## not recover, repair, teleport or advance the vehicle. Actions are replayed.
+func service_nitro(action: String) -> bool:
+	if not prepared or not _uses_nitro(_model) or not paused or recording \
+			or _has_unexported_recording() or not fault_reason.is_empty() \
+			or not _active_backend_matches_prepared():
+		load_error = "Nitro service requires a paused, healthy session with recordings saved"
+		return false
+	if action not in ["start", "stop", "refuel"]:
+		load_error = "Unknown nitro service action"
+		return false
+	# A pause can freeze a moving vehicle; it is not evidence of a stationary pit stop.
+	if not nitro_service_stationary():
+		load_error = "Stop the vehicle before servicing it"
+		return false
+	var running := _state[NitroDynamics.ENGINE_SPEED] > NitroDynamics.ENGINE_STALL_SPEED_RAD_S
+	var candidate := _state.duplicate()
+	match action:
+		"stop":
+			if not running:
+				load_error = "Engine is already stopped"
+				return false
+			candidate[NitroDynamics.ENGINE_SPEED] = 0.0
+		"start":
+			if running or candidate[NitroDynamics.FUEL_MASS] <= 0.0:
+				load_error = "Starting requires fuel and a stopped engine"
+				return false
+			candidate[NitroDynamics.ENGINE_SPEED] = float(_model.powertrain.engine_idle_speed_rad_s)
+		"refuel":
+			if running:
+				load_error = "Stop the engine before refuelling"
+				return false
+			candidate[NitroDynamics.FUEL_MASS] = float(_model.powertrain.initial_fuel_mass_kg)
+	var observed := _telemetry_for_model(candidate, _model, _road, _neutral_controls())
+	if not _state_is_valid(candidate) or not _telemetry_is_valid(observed):
+		load_error = "Nitro service produced invalid state"
+		return false
+	# SF-03: the kernel owns the state; a service edit replaces it at the current tick without a step.
+	if not _restore_kernel_state(candidate, tick):
+		load_error = "Nitro service produced invalid state"
+		return false
+	# External starter/fuel service is explicit assistance, as with recovery.
+	run_valid = false
+	observed["damage"] = _damage.visual_state()
+	_last_telemetry = observed
+	_last_controls = _neutral_controls()
+	_last_effective_controls = _neutral_controls()
+	_last_sample_is_neutral_armed = false
+	_braking_run.clear()
+	var event := {"type": "nitro_service", "tick": tick, "time_s": time_s(), "action": action}
+	_event_tape.append(event)
+	_recovery_actions.append({"type": "nitro_service", "tick": tick, "action": action})
+	if not _suppress_signals: event_added.emit(event.duplicate(true))
+	load_error = ""
+	return true
+
+
+func nitro_service_stationary() -> bool:
+	if not prepared or not _uses_nitro(_model): return false
+	var speed_squared := 0.0
+	for index in range(3, 6): speed_squared += _state[index] * _state[index]
+	if speed_squared > 0.01: return false
+	for index in range(21, 25):
+		if absf(_state[index]) > 0.5: return false
+	return true
+
+
 func manual_recovery() -> bool:
 	if not prepared:
 		return false
@@ -562,7 +652,7 @@ func manual_recovery() -> bool:
 	if not _state_is_valid(recovered):
 		load_error = "manual recovery pose was rejected"
 		return false
-	var telemetry: Dictionary = VehicleDynamics.telemetry(recovered, _model, _road, _neutral_controls())
+	var telemetry: Dictionary = _telemetry_for_model(recovered, _model, _road, _neutral_controls())
 	if not _telemetry_is_valid(telemetry):
 		load_error = str(telemetry.get("error", "manual recovery telemetry failed"))
 		return false
@@ -608,16 +698,10 @@ func replay(controls: Variant, actions: Array = []) -> bool:
 		return false
 	var staged_controls: Array[Dictionary] = controls_result.controls
 	var staged_actions: Array[Dictionary] = []
-	var previous_action_tick := -1
-	for item in actions:
-		if typeof(item) != TYPE_DICTIONARY or item.get("type") != "manual_recovery" \
-				or not _integer_value_is_valid(item.get("tick")) or int(item.tick) < previous_action_tick \
-				or int(item.tick) < 0 or int(item.tick) > staged_controls.size() \
-				or str(item.get("spawn_id", "")) != spawn_id:
-			load_error = "replay actions are malformed or refer to another spawn"
-			return false
-		previous_action_tick = int(item.tick)
-		staged_actions.append(item.duplicate(true))
+	if not _actions_are_valid(actions, staged_controls.size(), spawn_id):
+		load_error = "Replay actions are malformed or refer to another spawn"
+		return false
+	for item in actions: staged_actions.append(item.duplicate(true))
 	var before := checkpoint()
 	if before.is_empty():
 		load_error = "current session cannot produce a replay rollback checkpoint"
@@ -646,11 +730,23 @@ func _replay_validated(controls: Array[Dictionary], actions: Array[Dictionary]) 
 	var action_index := 0
 	for index in range(controls.size() + 1):
 		while action_index < actions.size() and int(actions[action_index].tick) == tick:
-			if not manual_recovery():
+			var action: Dictionary = actions[action_index]
+			var applied := false
+			if action.type == "nitro_service":
+				pause("replay service")
+				applied = service_nitro(str(action.action))
+			else:
+				applied = manual_recovery()
+			if not applied:
 				_suppress_signals = false
 				return false
 			action_index += 1
 		if index < controls.size():
+			if paused and action_index > 0 and actions[action_index - 1].type == "nitro_service":
+				tick_once({"throttle": 0.0, "steering": 0.0, "brake": 0.0, "reverse": false, "armed": true})
+				if not resume():
+					_suppress_signals = false
+					return false
 			if not tick_once(controls[index]):
 				_suppress_signals = false
 				return false
@@ -685,10 +781,12 @@ func checkpoint() -> Dictionary:
 		"tick": tick,
 		"time_s": time_s(),
 		"model_identity": _model_identity.duplicate(true),
+		"vehicle_id": _vehicle_id,
 		"course_identity": _course_identity.duplicate(true),
 		"solver_identity": _solver_identity(),
 		"spawn_id": spawn_id,
 		"control_layout": CONTROL_LAYOUT.duplicate(),
+		"state_layout": _state_layout_for_model(_model),
 		"state": _json_canonical_variant(_json_value(_state)),
 		"state_f64_base64": _base64_bytes(state_bytes),
 		"state_sha256": _hash_bytes(state_bytes),
@@ -728,6 +826,16 @@ func can_restore_checkpoint(candidate: Variant) -> bool:
 	if not _identity_equal(candidate.get("model_identity", {}), _model_identity) \
 			or not _identity_equal(candidate.get("course_identity", {}), _course_identity):
 		return false
+	if candidate.has("vehicle_id"):
+		if typeof(candidate.get("vehicle_id")) != TYPE_STRING or str(candidate.vehicle_id) != _vehicle_id:
+			return false
+	elif _vehicle_id != "mt8-bisonte":
+		return false
+	if candidate.has("state_layout"):
+		if candidate.get("state_layout") != _state_layout_for_model(_model):
+			return false
+	elif _vehicle_id != "mt8-bisonte":
+		return false
 	if not _solver_identity_matches(candidate.get("solver_identity", {})):
 		return false
 	if typeof(candidate.get("spawn_id")) != TYPE_STRING or not _find_spawn(_course, str(candidate.spawn_id)).ok:
@@ -742,7 +850,7 @@ func can_restore_checkpoint(candidate: Variant) -> bool:
 		return false
 	if not _checkpoint_float_array_mirror_matches(candidate.get("damage_state"), candidate_damage):
 		return false
-	var candidate_state := _decode_float64_blob(candidate.get("state_f64_base64"), STATE_SIZE)
+	var candidate_state := _decode_float64_blob(candidate.get("state_f64_base64"), _state_size_for_model(_model))
 	if not _state_is_valid(candidate_state) \
 			or _hash_bytes(candidate_state.to_byte_array()) != str(candidate.get("state_sha256", "")):
 		return false
@@ -791,20 +899,20 @@ func can_restore_checkpoint(candidate: Variant) -> bool:
 	if not damage_candidate.restore_snapshot(candidate_damage): return false
 	var post_tick_drive_scale := float(damage_candidate.visual_state().drive_scale)
 	if not _applied_controls_are_valid(applied_controls, parsed_last_controls, post_tick_drive_scale): return false
-	var telemetry: Dictionary = VehicleDynamics.telemetry(candidate_state, _model, _road, applied_controls)
+	var telemetry: Dictionary = _telemetry_for_model(candidate_state, _model, _road, applied_controls)
 	return _telemetry_is_valid(telemetry)
 
 
 func restore_checkpoint(candidate: Variant) -> bool:
 	if not can_restore_checkpoint(candidate):
 		return false
-	var next_state := _decode_float64_blob(candidate.state_f64_base64, STATE_SIZE)
+	var next_state := _decode_float64_blob(candidate.state_f64_base64, _state_size_for_model(_model))
 	var restored_controls := _controls_from_packed(_decode_float64_blob(candidate.last_controls_f64_base64, 4))
 	var restored_effective_controls := _controls_from_packed(_decode_float64_blob(candidate.applied_controls_f64_base64, 4))
 	var next_damage = Damage.new()
 	if not next_damage.restore_snapshot(_decode_float64_blob(candidate.damage_state_f64_base64, Damage.SNAPSHOT_SIZE)):
 		return false
-	var next_telemetry: Dictionary = VehicleDynamics.telemetry(next_state, _model, _road, restored_effective_controls)
+	var next_telemetry: Dictionary = _telemetry_for_model(next_state, _model, _road, restored_effective_controls)
 	next_telemetry["damage"] = next_damage.visual_state()
 	if not _telemetry_is_valid(next_telemetry):
 		return false
@@ -815,7 +923,7 @@ func restore_checkpoint(candidate: Variant) -> bool:
 	_control_tape = _decode_float64_blob(candidate.control_tape_f64_base64, int(candidate.tick) * 4)
 	_last_controls = restored_controls
 	_last_effective_controls = restored_effective_controls
-	_recovery_actions = _dictionary_array(candidate.recovery_actions)
+	_recovery_actions = _event_array(candidate.recovery_actions)
 	_event_tape = _event_array(candidate.event_tape)
 	_braking_run = candidate.braking_run.duplicate(true)
 	_last_telemetry = next_telemetry
@@ -839,6 +947,14 @@ func restore_checkpoint(candidate: Variant) -> bool:
 	return true
 
 
+func _record_telemetry_offset() -> int:
+	return RECORD_STATE_OFFSET + _state_size_for_model(_model)
+
+
+func _record_nitro_telemetry_count() -> int:
+	return NITRO_TELEMETRY_FIELDS.size() if _uses_nitro(_model) else 0
+
+
 func start_recording() -> bool:
 	if not prepared or not _active_backend_matches_prepared() or not fault_reason.is_empty() \
 			or recording or _has_unexported_recording():
@@ -847,7 +963,8 @@ func start_recording() -> bool:
 	if typeof(hull_radii) != TYPE_PACKED_FLOAT64_ARRAY:
 		return false
 	_record_hull_contact_count = hull_radii.size()
-	_record_sample_width = RECORD_TELEMETRY_OFFSET + RECORD_TELEMETRY_BASE_WIDTH + _record_hull_contact_count
+	_record_sample_width = _record_telemetry_offset() + RECORD_TELEMETRY_BASE_WIDTH \
+		+ _record_hull_contact_count + _record_nitro_telemetry_count()
 	if not _recording_sample_is_valid(_last_telemetry, _last_controls):
 		_record_sample_width = 0
 		_record_hull_contact_count = 0
@@ -951,6 +1068,14 @@ func _capture_record_sample(controls: Dictionary) -> bool:
 	_record_samples.append_array(_controls_to_packed(_last_effective_controls))
 	for key in ENVIRONMENT_SCALARS: _record_samples.append(float(telemetry.environment[key]))
 	for key in ENVIRONMENT_ARRAYS: _record_samples.append_array(telemetry.environment[key])
+	if _uses_nitro(_model):
+		var nitro: Dictionary = telemetry.nitro
+		for field in NITRO_TELEMETRY_FIELDS:
+			var item: Variant = nitro[field]
+			if typeof(item) == TYPE_BOOL:
+				_record_samples.append(1.0 if bool(item) else 0.0)
+			else:
+				_record_samples.append(float(item))
 	return _record_samples.size() - initial_size == _record_sample_width
 
 
@@ -968,8 +1093,8 @@ func _write_recording_csv(path: String) -> String:
 		var record_tick := int(_record_samples[base])
 		var controls_offset := base + RECORD_CONTROLS_OFFSET
 		var state_offset := base + RECORD_STATE_OFFSET
-		var telemetry_offset := base + RECORD_TELEMETRY_OFFSET
-		var state_json := JSON.stringify(_recorded_float_array(state_offset, STATE_SIZE), "", false, true)
+		var telemetry_offset := base + _record_telemetry_offset()
+		var state_json := JSON.stringify(_recorded_float_array(state_offset, _state_size_for_model(_model)), "", false, true)
 		var telemetry_json := JSON.stringify(_recorded_telemetry(telemetry_offset), "", true, true)
 		file.store_line(",".join(PackedStringArray([
 			str(record_tick), _json_number(float(record_tick) * DT),
@@ -1042,6 +1167,13 @@ func _recorded_telemetry(offset: int) -> Dictionary:
 		environment[key] = _recorded_float_array(cursor, 4)
 		cursor += 4
 	telemetry["environment"] = environment
+	if _uses_nitro(_model):
+		var nitro := {}
+		for field in NITRO_TELEMETRY_FIELDS:
+			nitro[field] = _record_samples[cursor]
+			cursor += 1
+		nitro["clutch_engaged"] = bool(nitro.clutch_engaged)
+		telemetry["nitro"] = nitro
 	return telemetry
 
 
@@ -1078,7 +1210,24 @@ func _recording_sample_is_valid(telemetry: Dictionary, controls: Dictionary) -> 
 	var hull_contact: Variant = telemetry.get("hull_in_contact")
 	return typeof(wheel_contact) == TYPE_PACKED_BYTE_ARRAY and wheel_contact.size() == 4 \
 		and typeof(hull_contact) == TYPE_PACKED_BYTE_ARRAY and hull_contact.size() == _record_hull_contact_count \
-		and typeof(telemetry.get("airborne")) == TYPE_BOOL
+		and typeof(telemetry.get("airborne")) == TYPE_BOOL \
+		and (not _uses_nitro(_model) or _nitro_telemetry_is_valid(telemetry.get("nitro")))
+
+
+func _nitro_telemetry_is_valid(value: Variant) -> bool:
+	if typeof(value) != TYPE_DICTIONARY:
+		return false
+	for key in NITRO_TELEMETRY_FIELDS:
+		if key == "clutch_engaged": continue
+		var item: Variant = value.get(key, NAN)
+		if typeof(item) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(item)):
+			return false
+	return float(value.engine_rpm) >= 0.0 and float(value.fuel_kg) >= 0.0 \
+		and float(value.fuel_fraction) >= 0.0 and float(value.fuel_fraction) <= 1.0 \
+		and float(value.clutch_engagement) >= 0.0 and float(value.clutch_engagement) <= 1.0 \
+		and float(value.throttle_fraction) >= 0.0 and float(value.throttle_fraction) <= 1.0 \
+		and float(value.fuel_flow_kg_per_s) >= 0.0 and absf(float(value.clutch_slip)) <= 1.0 \
+		and typeof(value.get("clutch_engaged")) == TYPE_BOOL
 
 
 func _finish_recording() -> void:
@@ -1125,27 +1274,32 @@ func _json_number(value: float) -> String:
 
 
 func _recording_metadata() -> Dictionary:
+	var telemetry_fields := ["speed_m_per_s", "forward_speed_m_per_s", "wheel_load_n[4]",
+		"wheel_longitudinal_force_n[4]", "wheel_lateral_force_n[4]", "wheel_brake_torque_n_m[4]",
+		"wheel_slip_ratio[4]", "wheel_slip_angle_rad[4]", "wheel_slip_speed_m_per_s[4]",
+	"wheel_in_contact[4]", "hull_in_contact[N]", "airborne", "suspension_travel_m[4]",
+		"suspension_force_n[4]", "total_energy_j", "damage.body_damage",
+		"damage.suspension_damage", "damage.drive_scale", "damage.last_impact_energy_j", "applied_controls[4]",
+		"environment.body_submersion", "environment.water_depth_m", "environment.buoyancy_n",
+		"environment.drag_power_w", "environment.power_w", "environment.wheel_submersion[4]",
+		"environment.wheel_water_height_m[4]", "environment.wheel_depth_m[4]", "environment.wheel_mud[4]"]
+	if _uses_nitro(_model):
+		for field in NITRO_TELEMETRY_FIELDS:
+			telemetry_fields.append("nitro." + field)
 	return {
 		"format": RECORDING_FORMAT,
 		"version": 4,
 		"fixed_hz": FIXED_HZ,
 		"dt_s": DT,
-		"state_layout": STATE_LAYOUT.duplicate(),
+		"state_layout": _state_layout_for_model(_model),
+		"vehicle_id": _vehicle_id,
 		"control_layout": CONTROL_LAYOUT.duplicate(),
 		"sample_layout": {
 			"tick_offset": 0,
 			"controls_offset": RECORD_CONTROLS_OFFSET,
 			"state_offset": RECORD_STATE_OFFSET,
-			"telemetry_offset": RECORD_TELEMETRY_OFFSET,
-			"telemetry_fields": ["speed_m_per_s", "forward_speed_m_per_s", "wheel_load_n[4]",
-				"wheel_longitudinal_force_n[4]", "wheel_lateral_force_n[4]", "wheel_brake_torque_n_m[4]",
-				"wheel_slip_ratio[4]", "wheel_slip_angle_rad[4]", "wheel_slip_speed_m_per_s[4]",
-				"wheel_in_contact[4]", "hull_in_contact[N]", "airborne", "suspension_travel_m[4]",
-				"suspension_force_n[4]", "total_energy_j", "damage.body_damage",
-				"damage.suspension_damage", "damage.drive_scale", "damage.last_impact_energy_j", "applied_controls[4]",
-				"environment.body_submersion", "environment.water_depth_m", "environment.buoyancy_n",
-				"environment.drag_power_w", "environment.power_w", "environment.wheel_submersion[4]",
-				"environment.wheel_water_height_m[4]", "environment.wheel_depth_m[4]", "environment.wheel_mud[4]"],
+			"telemetry_offset": _record_telemetry_offset(),
+			"telemetry_fields": telemetry_fields,
 		},
 		"sample_width": _record_sample_width,
 		"damage_state_layout": Damage.STATE_LAYOUT.duplicate(),
@@ -1462,8 +1616,57 @@ func _make_road(course_value: Dictionary) -> Callable:
 		return Course.sample(course_value, north_m, east_m)
 
 
+func _load_vehicle(vehicle_id: String) -> Dictionary:
+	if vehicle_id == "mt8-bisonte":
+		return VehicleData.load_default()
+	return VehicleData.load_vehicle(vehicle_id)
+
+
+func _uses_nitro(model: Dictionary) -> bool:
+	return str(model.get("drive_configuration", "")) == "nitro_4wd"
+
+
+func _state_size_for_model(model: Dictionary) -> int:
+	return int(NitroDynamics.STATE_SIZE) if _uses_nitro(model) else int(VehicleDynamics.STATE_SIZE)
+
+
+func _state_layout_for_model(model: Dictionary) -> Array:
+	return NitroDynamics.STATE_LAYOUT.duplicate() if _uses_nitro(model) else STATE_LAYOUT.duplicate()
+
+
+func _backend_identity_for_model(model: Dictionary) -> Dictionary:
+	return NitroDynamics.backend_identity() if _uses_nitro(model) else VehicleDynamics.backend_identity()
+
+
+func _substeps_for_model(model: Dictionary) -> int:
+	return int(NitroDynamics.SUBSTEPS_PER_TICK) if _uses_nitro(model) else int(VehicleDynamics.SUBSTEPS_PER_TICK)
+
+
+func _initialize_model(model: Dictionary, road: Callable, north_m: float = 0.0, east_m: float = 0.0) -> Dictionary:
+	if _uses_nitro(model):
+		return NitroDynamics.initialize(model, road, north_m, east_m)
+	return VehicleDynamics.initialize(model, road, north_m, east_m)
+
+
+func _damage_observer_state(state_value: PackedFloat64Array) -> PackedFloat64Array:
+	return state_value.slice(0, VehicleDynamics.STATE_SIZE) if _uses_nitro(_model) else state_value
+
+
+func _telemetry_for_model(state_value: PackedFloat64Array, model: Dictionary, road: Callable,
+		controls: Dictionary) -> Dictionary:
+	if _uses_nitro(model):
+		return NitroDynamics.telemetry(state_value, model, road, controls, DT)
+	return VehicleDynamics.telemetry(state_value, model, road, controls)
+
+
 func _make_spawn_state(model: Dictionary, course_value: Dictionary, pose: Dictionary,
 		road: Callable, pose_up_delta_m: float) -> PackedFloat64Array:
+	if _uses_nitro(model):
+		if str(course_value.get("sampler", "")) == AirfieldCourse.FORMAT:
+			return NitroDynamics.make_terrain_state(model, pose, road)
+		var nitro_practice_pose := pose.duplicate(true)
+		nitro_practice_pose.vehicle_up_m = float(nitro_practice_pose.vehicle_up_m) + pose_up_delta_m
+		return NitroDynamics.make_state(model, nitro_practice_pose, road)
 	if str(course_value.get("sampler", "")) == AirfieldCourse.FORMAT:
 		return VehicleDynamics.make_terrain_state(model, pose, road)
 	var practice_pose := pose.duplicate(true)
@@ -1486,13 +1689,14 @@ func _support_altitude_delta(experiment: Dictionary, baseline: Dictionary,
 		# make_terrain_state solves support from the current model and real wheel patches each prepare/reset.
 		return {"ok": true, "delta_m": 0.0}
 	var road := _make_road(course_value.duplicate(true))
-	var experiment_support: Dictionary = VehicleDynamics.initialize(experiment_model, road, 0.0, 0.0)
-	var baseline_support: Dictionary = VehicleDynamics.initialize(baseline_model, road, 0.0, 0.0)
+	var experiment_support: Dictionary = _initialize_model(experiment_model, road, 0.0, 0.0)
+	var baseline_support: Dictionary = _initialize_model(baseline_model, road, 0.0, 0.0)
 	if not experiment_support.get("ok", false) or not baseline_support.get("ok", false):
 		return {"ok": false, "error": "kernel could not compute baseline and experiment support altitudes"}
 	var experiment_state: Variant = experiment_support.get("state")
 	var baseline_state: Variant = baseline_support.get("state")
-	if not _state_is_valid(experiment_state) or not _state_is_valid(baseline_state):
+	if not _state_is_valid_for_model(experiment_state, experiment_model) \
+			or not _state_is_valid_for_model(baseline_state, baseline_model):
 		return {"ok": false, "error": "kernel returned invalid state while estimating support altitude"}
 	var delta_m := float(baseline_state[2]) - float(experiment_state[2])
 	if not is_finite(delta_m):
@@ -1541,15 +1745,18 @@ func _applied_controls_are_valid(applied: Dictionary, requested: Dictionary, min
 func _solver_identity() -> Dictionary:
 	var engine_version: Dictionary = Engine.get_version_info()
 	var backend_identity := _prepared_backend_identity if prepared and not _prepared_backend_identity.is_empty() \
-		else VehicleDynamics.backend_identity()
+		else _backend_identity_for_model(_model)
+	var implementation_path := "res://physics/ground_vehicle/nitro_dynamics.gd" \
+		if _uses_nitro(_model) else "res://physics/ground_vehicle/vehicle_dynamics.gd"
 	return {
-		"solver_version": VehicleDynamics.SOLVER_VERSION,
+		"solver_version": str(backend_identity.get("solver_version", VehicleDynamics.SOLVER_VERSION)),
 		"environment_version": WetPhysics.VERSION,
 		"environment_artifact": VehicleDynamics._reference_implementation_artifact("res://physics/ground_vehicle/vehicle_environment.gd"),
+		"integration_artifact": VehicleDynamics._reference_implementation_artifact(implementation_path),
 		"damage_version": Damage.SNAPSHOT_VERSION,
 		"engine_version": str(engine_version.get("string", "")),
 		"fixed_hz": FIXED_HZ,
-		"substeps_per_tick": VehicleDynamics.SUBSTEPS_PER_TICK,
+		"substeps_per_tick": _substeps_for_model(_model),
 		"backend_identity": backend_identity.duplicate(true),
 	}
 
@@ -1561,12 +1768,13 @@ func _solver_identity_matches(value: Variant) -> bool:
 	var old_solver_fields_match: bool = value.get("solver_version") == current.solver_version \
 		and value.get("environment_version") == current.environment_version \
 		and value.get("environment_artifact") == current.environment_artifact \
+		and _implementation_artifact_matches(value.get("integration_artifact"), current.integration_artifact) \
 		and value.get("damage_version") == current.damage_version \
 		and value.get("engine_version") == current.engine_version \
 		and _integer_value_is_valid(value.get("fixed_hz")) \
 		and int(value.fixed_hz) == FIXED_HZ \
 		and _integer_value_is_valid(value.get("substeps_per_tick")) \
-		and int(value.substeps_per_tick) == VehicleDynamics.SUBSTEPS_PER_TICK
+		and int(value.substeps_per_tick) == _substeps_for_model(_model)
 	if not old_solver_fields_match:
 		return false
 	var backend_value: Variant = value.get("backend_identity")
@@ -1579,9 +1787,22 @@ func _solver_identity_matches(value: Variant) -> bool:
 		and _backend_identities_equal(backend_value, current.backend_identity)
 
 
+func _implementation_artifact_matches(value: Variant, current: Variant) -> bool:
+	if typeof(value) != TYPE_DICTIONARY or typeof(current) != TYPE_DICTIONARY \
+			or value.size() != 2 or current.size() != 2:
+		return false
+	for artifact in [value, current]:
+		if typeof(artifact.get("sha256")) != TYPE_STRING \
+				or not _sha256_field_is_valid(artifact.get("sha256"), false) \
+				or typeof(artifact.get("kind")) != TYPE_STRING \
+				or str(artifact.kind) not in ["gdscript_source", "gdscript_remapped_bytecode"]:
+			return false
+	return value.sha256 == current.sha256 and value.kind == current.kind
+
+
 func _active_backend_matches_prepared() -> bool:
 	return prepared and not _prepared_backend_identity.is_empty() \
-		and _backend_identities_equal(_prepared_backend_identity, VehicleDynamics.backend_identity())
+		and _backend_identities_equal(_prepared_backend_identity, _backend_identity_for_model(_model))
 
 
 func _backend_identity_is_valid(value: Variant) -> bool:
@@ -1590,8 +1811,8 @@ func _backend_identity_is_valid(value: Variant) -> bool:
 	for key in ["backend", "backend_version", "solver_version"]:
 		if typeof(value.get(key)) != TYPE_STRING or str(value[key]).is_empty():
 			return false
-	if str(value.solver_version) != VehicleDynamics.SOLVER_VERSION \
-			or not _integer_value_is_valid(value.get("abi_version")) or int(value.abi_version) != VehicleDynamics.BACKEND_ABI_VERSION:
+	if not _integer_value_is_valid(value.get("abi_version")) \
+			or int(value.abi_version) != VehicleDynamics.BACKEND_ABI_VERSION:
 		return false
 	if not _sha256_field_is_valid(value.get("source_sha256"), false) \
 			or not _sha256_field_is_valid(value.get("toolchain_sha256"), true) \
@@ -1639,14 +1860,19 @@ func _sha256_field_is_valid(value: Variant, allow_empty: bool) -> bool:
 		return allow_empty
 	if digest.length() != 64 or digest.to_lower() != digest:
 		return false
-	for character in digest:
-		if not str(character) in "0123456789abcdef":
-			return false
-	return true
+	# Native hexadecimal parsing accepts a sign; the identity contract does not.
+	var first := digest.unicode_at(0)
+	return first != 43 and first != 45 and digest.is_valid_hex_number(false)
 
 
 func _state_is_valid(value: Variant) -> bool:
-	if typeof(value) != TYPE_PACKED_FLOAT64_ARRAY or value.size() != STATE_SIZE:
+	return _state_is_valid_for_model(value, _model)
+
+
+func _state_is_valid_for_model(value: Variant, model: Dictionary) -> bool:
+	if typeof(value) != TYPE_PACKED_FLOAT64_ARRAY or value.size() != _state_size_for_model(model):
+		return false
+	if _uses_nitro(model) and not NitroDynamics._valid_state(value, model):
 		return false
 	for item in value:
 		if not is_finite(float(item)):
@@ -1655,6 +1881,10 @@ func _state_is_valid(value: Variant) -> bool:
 
 
 func _telemetry_is_valid(value: Variant) -> bool:
+	return _telemetry_is_valid_for_model(value, _model)
+
+
+func _telemetry_is_valid_for_model(value: Variant, model: Dictionary) -> bool:
 	if typeof(value) != TYPE_DICTIONARY or not value.get("ok", false):
 		return false
 	if not WetPhysics.telemetry_is_valid(value.get("environment")): return false
@@ -1670,56 +1900,40 @@ func _telemetry_is_valid(value: Variant) -> bool:
 			for item in wheel_values:
 				if not is_finite(float(item)):
 					return false
-	return typeof(value.get("airborne")) == TYPE_BOOL
+	return typeof(value.get("airborne")) == TYPE_BOOL \
+		and (not _uses_nitro(model) or _nitro_telemetry_is_valid(value.get("nitro")))
 
 
 func _actions_are_valid(actions: Array, max_tick: int, expected_spawn: String) -> bool:
 	var last_tick := -1
 	for item in actions:
-		if typeof(item) != TYPE_DICTIONARY or item.get("type") != "manual_recovery" \
-				or not _integer_value_is_valid(item.get("tick")) or int(item.tick) < last_tick \
-				or int(item.tick) < 0 or int(item.tick) > max_tick \
-				or str(item.get("spawn_id", "")) != expected_spawn:
+		if typeof(item) != TYPE_DICTIONARY or not _event_tick_is_valid(item.get("tick"), max_tick) \
+				or int(item.tick) < last_tick:
 			return false
+		match str(item.get("type", "")):
+			"manual_recovery":
+				if not _event_has_exact_keys(item, ["type", "tick", "spawn_id"]) \
+						or str(item.get("spawn_id", "")) != expected_spawn: return false
+			"nitro_service":
+				if not _uses_nitro(_model) or not _event_has_exact_keys(item, ["type", "tick", "action"]) \
+						or item.get("action") not in ["start", "stop", "refuel"]: return false
+			_: return false
 		last_tick = int(item.tick)
 	return true
 
 
 func _recovery_history_is_consistent(actions: Array, events: Array) -> bool:
-	var counts_by_tick: Dictionary = {}
+	# Order matters when stop/refuel/start share a tick.
+	var index := 0
 	for item in events:
-		if typeof(item) != TYPE_DICTIONARY:
-			return false
-		if item.get("type") != "manual_recovery":
-			continue
-		if not _integer_value_is_valid(item.get("tick")) or typeof(item.get("spawn_id")) != TYPE_STRING:
-			return false
-		var event_tick := int(item.tick)
-		if not counts_by_tick.has(event_tick):
-			counts_by_tick[event_tick] = {}
-		var spawn_counts: Dictionary = counts_by_tick[event_tick]
-		var spawn_id: String = item.spawn_id
-		spawn_counts[spawn_id] = int(spawn_counts.get(spawn_id, 0)) + 1
-		counts_by_tick[event_tick] = spawn_counts
-	for action in actions:
-		if typeof(action) != TYPE_DICTIONARY or not _integer_value_is_valid(action.get("tick")) \
-				or typeof(action.get("spawn_id")) != TYPE_STRING:
-			return false
-		var action_tick := int(action.tick)
-		if not counts_by_tick.has(action_tick):
-			return false
-		var spawn_counts: Dictionary = counts_by_tick[action_tick]
-		var spawn_id: String = action.spawn_id
-		var count := int(spawn_counts.get(spawn_id, 0))
-		if count <= 0:
-			return false
-		spawn_counts[spawn_id] = count - 1
-	for tick_key in counts_by_tick:
-		var spawn_counts: Dictionary = counts_by_tick[tick_key]
-		for count_value in spawn_counts.values():
-			if int(count_value) != 0:
-				return false
-	return true
+		if typeof(item) != TYPE_DICTIONARY: return false
+		if item.get("type") not in ["manual_recovery", "nitro_service"]: continue
+		if index >= actions.size(): return false
+		var projected: Dictionary = item.duplicate(true)
+		projected.erase("time_s")
+		if projected != actions[index]: return false
+		index += 1
+	return index == actions.size()
 
 
 func _events_are_valid(events: Array, max_tick: int) -> bool:
@@ -1770,6 +1984,12 @@ func _events_are_valid(events: Array, max_tick: int) -> bool:
 						or not _event_number_in_range(item.get("end_speed_m_per_s"), 0.0, INF):
 					return false
 				event_tick = int(item.end_tick)
+			"nitro_service":
+				if not _uses_nitro(_model) or not _event_has_exact_keys(item, ["type", "tick", "time_s", "action"]) \
+						or not _event_tick_is_valid(item.get("tick"), max_tick) \
+						or not _event_time_matches_tick(item.get("time_s"), int(item.tick)) \
+						or item.get("action") not in ["start", "stop", "refuel"]: return false
+				event_tick = int(item.tick)
 			"manual_recovery":
 				if not _event_has_exact_keys(item, ["type", "tick", "time_s", "spawn_id"]) \
 						or not _event_tick_is_valid(item.get("tick"), max_tick) \
@@ -1913,15 +2133,15 @@ func _combined_state() -> PackedFloat64Array:
 
 ## Install this vehicle into the kernel and reset it to `initial` (31 values) at tick 0.
 func _install_kernel(initial: PackedFloat64Array) -> bool:
-	if initial.size() != STATE_SIZE:
+	if initial.size() != _state_size_for_model(_model):
 		return false
 	var vehicle: VehicleModel = VehicleModel.new()
 	vehicle.input_size = CONTROL_LAYOUT.size()
 	vehicle.aux_size = 0
 	vehicle.modes_size = 0
-	vehicle.continuous_size = STATE_SIZE - BODY_SIZE
-	vehicle.identity = {"vehicle": "ground-vehicle", "solver": VehicleDynamics.SOLVER_VERSION,
-		"state_layout": STATE_LAYOUT.duplicate()}
+	vehicle.continuous_size = _state_size_for_model(_model) - BODY_SIZE
+	vehicle.identity = {"vehicle": "ground-vehicle", "solver": str(_backend_identity_for_model(_model).get("solver_version", "")),
+		"state_layout": _state_layout_for_model(_model)}
 	vehicle.stage = _stage
 	vehicle.step_policy = _tick_policy
 	if not sim.set_model(vehicle):
@@ -1942,7 +2162,7 @@ func _install_kernel(initial: PackedFloat64Array) -> bool:
 
 ## Replace the kernel's committed state at `at_tick` without emitting a tick (manual recovery, checkpoint restore).
 func _restore_kernel_state(combined: PackedFloat64Array, at_tick: int) -> bool:
-	if combined.size() != STATE_SIZE or at_tick < 0:
+	if combined.size() != _state_size_for_model(_model) or at_tick < 0:
 		return false
 	var body: PackedFloat64Array = combined.slice(0, BODY_SIZE)
 	var snapshot: Dictionary = {
@@ -1958,10 +2178,16 @@ func _restore_kernel_state(combined: PackedFloat64Array, at_tick: int) -> bool:
 ## VehicleModel stage: the 31-value derivative of this tick's plan, split for the kernel. The coupled generalized
 ## solve does not separate body loads; telemetry owns the forces, so the kernel's load record is zero here.
 func _stage(body: PackedFloat64Array, continuous: PackedFloat64Array, _t: float) -> Dictionary:
+	if _uses_nitro(_model):
+		# The nitro composite integrates itself inside _tick_policy and exposes no stage derivative.
+		var zero: PackedFloat64Array = PackedFloat64Array()
+		zero.resize(continuous.size())
+		return {"loads": PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), "derivative": zero,
+			"rotor_momentum": PackedFloat64Array([0.0, 0.0, 0.0]), "body_derivative": PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])}
 	var combined: PackedFloat64Array = body.duplicate()
 	combined.append_array(continuous)
 	var rate: PackedFloat64Array = VehicleDynamics.stage_derivative(combined, _model, _tick_controls, _tick_road)
-	if rate.size() != STATE_SIZE:
+	if rate.size() != VehicleDynamics.STATE_SIZE:
 		return {}
 	return {
 		"loads": PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
@@ -1972,6 +2198,8 @@ func _stage(body: PackedFloat64Array, continuous: PackedFloat64Array, _t: float)
 
 
 func _tick_policy(combined: PackedFloat64Array, t: float, dt: float, f: Callable, k1: PackedFloat64Array) -> PackedFloat64Array:
+	if _uses_nitro(_model):
+		return NitroDynamics.step(combined, _model, _tick_controls, dt, _tick_road)
 	return VehicleDynamics.tick_policy(combined, t, dt, f, k1, _tick_substeps)
 
 

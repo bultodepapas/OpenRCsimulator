@@ -71,6 +71,17 @@ Moving the truck onto the shared kernel left telemetry, damage, events and recor
 ## 2026-10-15 · SF-02 — a vehicle's coupled-state layout belongs to the start, not the vehicle
 
 Declaring the helicopter's continuous block as six rotor states refused every ground start: a pad start appends four elastic skid-friction pairs, so the same vehicle integrates 14 coupled values. A layout declaration must be made where the start is resolved and held fixed for the run; the kernel then enforces it at reset and restore. [SF-01/02 evidence](docs/research/simulation-foundation/SF-01/README.md).
+## 2026-10-15 · P51-26 — distrust a perfect match, and point-sample nothing singular
+
+A first propeller-sidewash candidate hit the P-51D's measured 0.55 °/° almost exactly; re-deriving Ribner's relation in the model's own terms showed it counted the axial-wash deflection twice and diverged at static thrust. The correct form gives 0.72. Before accepting a result that lands on the target, rewrite the source equation in the code's variables and check the limits. In the same step, a free-vortex swirl sampled at one centroid per tail piece made a stability derivative wrong by up to 2× in either direction as speed changed. Integrate any profile with a core or edge kink across its kinks (split there, then low-order Gauss) and compare with a dense reference before trusting its derivatives. [Evidence](docs/research/p51-realism/P51-26/README.md).
+
+## 2026-10-15 · P51-25 — calibrate whole-aircraft ratios about the CG, and test the maneuver, not an integral
+
+A steady-sideslip calibration solved with the stored coefficients missed its target by 19 %. They are about the aerodynamic reference point; the runtime adds r × F at the CG, and a 64 mm / 97 mm offset turns CYβ and CYδr into significant Cnβ, Clβ and Cldr. Solve any whole-airplane balance (trim, sideslip, turn) about the CG with the runtime's own transfer, then confirm on the runtime. In the same step, a loop check that integrated pitch rate passed a rolling departure that never went past 46° of pitch. A maneuver check should assert the maneuver's geometry (here: passing the vertical with small sideslip) and be shown to pass a genuine example. [Evidence](docs/research/p51-realism/P51-25/README.md).
+
+## 2026-10-15 · P51-24 — a constant inside a metrology script is not a measurement
+
+The P-51's "measured" tail group carried a hard-coded rudder hinge, so its physics rudder was 43 % short of the NACA production area. It looked plausible because the measured outline around it was right. Steady-sideslip data exposed it: the model needed about four times the rudder per degree of sideslip that the P-51D flight tests recorded. Cross-check every control-surface split against published surface areas, chords and spans before tuning stability. Keep the visual and physical definitions explicit when they cannot change together. In this case the generator solved an aerodynamic hinge from the silhouette and the NACA area, which then reproduced the published chord and span independently, while the visual rework stays a separate reviewed step. [P51-24](docs/research/p51-realism/P51-24/README.md)
 
 ## 2026-10-15 · P51-22 — a consistent law can drop a measured effect; fix the source, not the denominator
 

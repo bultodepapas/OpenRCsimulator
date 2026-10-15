@@ -1,0 +1,19 @@
+--- app/physics/slipstream.gd	2026-10-15 15:49:03.315006400 -0500
++++ app/physics/slipstream.gd	2026-10-15 15:49:36.050708000 -0500
+@@ -219,6 +219,16 @@
+ 					sw2 += (ax[0] * rb1 - ax[1] * rb0) * scn
+ 					wsum += wt
+ 				segments.append([seg_area, seg_eta, sw0 / wsum, sw1 / wsum, sw2 / wsum])
++		if segments.size() > 1:
++			# Cost-neutral variant: one evaluation at the legacy centroid with the area-weighted mean swirl of all segments.
++			var m0 := 0.0
++			var m1 := 0.0
++			var m2 := 0.0
++			for sg: Array in segments:
++				m0 += float(sg[0]) * float(sg[2])
++				m1 += float(sg[0]) * float(sg[3])
++				m2 += float(sg[0]) * float(sg[4])
++			segments = [[immersed, eta, m0 / immersed, m1 / immersed, m2 / immersed]]
+ 		if segments.is_empty():
+ 			segments = [[]]
+ 		for seg: Array in segments:

@@ -94,17 +94,48 @@ static func _sample_microrelief_validated(north: float, east: float,
 		var north_high_value: float = north_max - north
 		var east_low_value: float = east - east_min
 		var east_high_value: float = east_max - east
-		var north_low: float = _smooth_edge_value(north_low_value)
-		var north_high: float = _smooth_edge_value(north_high_value)
-		var east_low: float = _smooth_edge_value(east_low_value)
-		var east_high: float = _smooth_edge_value(east_high_value)
+		# Evaluate each edge's value and slope together. Keep the original
+		# arithmetic order (including signed zero) while avoiding eight script
+		# calls and repeated transition divisions for every surface/query.
+		var north_low := 0.0
+		var north_low_slope := 0.0
+		if north_low_value >= EDGE_BLEND_M:
+			north_low = 1.0
+		elif north_low_value > 0.0:
+			var t := north_low_value / EDGE_BLEND_M
+			north_low = t * t * (3.0 - 2.0 * t)
+			north_low_slope = 6.0 * t * (1.0 - t) / EDGE_BLEND_M
+		var north_high := 0.0
+		var north_high_slope := 0.0
+		if north_high_value >= EDGE_BLEND_M:
+			north_high = 1.0
+		elif north_high_value > 0.0:
+			var t := north_high_value / EDGE_BLEND_M
+			north_high = t * t * (3.0 - 2.0 * t)
+			north_high_slope = 6.0 * t * (1.0 - t) / EDGE_BLEND_M
+		var east_low := 0.0
+		var east_low_slope := 0.0
+		if east_low_value >= EDGE_BLEND_M:
+			east_low = 1.0
+		elif east_low_value > 0.0:
+			var t := east_low_value / EDGE_BLEND_M
+			east_low = t * t * (3.0 - 2.0 * t)
+			east_low_slope = 6.0 * t * (1.0 - t) / EDGE_BLEND_M
+		var east_high := 0.0
+		var east_high_slope := 0.0
+		if east_high_value >= EDGE_BLEND_M:
+			east_high = 1.0
+		elif east_high_value > 0.0:
+			var t := east_high_value / EDGE_BLEND_M
+			east_high = t * t * (3.0 - 2.0 * t)
+			east_high_slope = 6.0 * t * (1.0 - t) / EDGE_BLEND_M
 		var mask_north: float = north_low * north_high
 		var mask_east: float = east_low * east_high
 		var mask: float = mask_north * mask_east
-		var mask_gradient_north: float = (_smooth_edge_slope(north_low_value) * north_high
-			- north_low * _smooth_edge_slope(north_high_value)) * mask_east
-		var mask_gradient_east: float = (_smooth_edge_slope(east_low_value) * east_high
-			- east_low * _smooth_edge_slope(east_high_value)) * mask_north
+		var mask_gradient_north: float = (north_low_slope * north_high
+			- north_low * north_high_slope) * mask_east
+		var mask_gradient_east: float = (east_low_slope * east_high
+			- east_low * east_high_slope) * mask_north
 		var target: float = amplitude_for_rolling_factor(surfaces[i + 5])
 		var difference: float = target - amplitude
 		amplitude_north = amplitude_north * (1.0 - mask) + difference * mask_gradient_north

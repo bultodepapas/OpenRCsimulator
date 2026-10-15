@@ -14,7 +14,7 @@ func _init() -> void:
 
 func update_snapshot(state: PackedFloat64Array, model: Dictionary, telemetry: Dictionary, road: Callable = Callable()) -> void:
 	lines.clear_surfaces()
-	if not visible or state.size() != 31:
+	if not visible or state.size() < 31:
 		return
 	var body := Frames.quat_to_render(state.slice(6, 10))
 	global_transform = Transform3D(body, Frames.ned_to_render([state[0], state[1], state[2]]))

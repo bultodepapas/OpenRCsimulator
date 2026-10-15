@@ -47,6 +47,7 @@ const BRAKE_CONVERGENCE_TORQUE_TOLERANCE_N_M := 0.000001
 const MIN_SLIP_SPEED_M_PER_S := 0.05
 const MATRIX_PIVOT_RELATIVE_TOLERANCE := 1.0e-12
 const MAX_WALL_CONTACT_BOXES := 8
+const PRELOADED_STATIC_STOP_TOLERANCE_M := 0.005
 const WALL_FRICTION_REGULARIZATION_M_PER_S := 0.05
 const BACKEND_GDSCRIPT_REFERENCE := "gdscript_reference"
 const BACKEND_NATIVE := "native"
@@ -55,6 +56,11 @@ const BACKEND_NATIVE_VERSION := "openrc-ground-vehicle-native-evaluate-v3"
 const NATIVE_EXTENSION_PATH := "res://native/ground_vehicle/openrc_ground_vehicle.gdextension"
 const NATIVE_RECEIPT_PATH := "res://native/ground_vehicle/build-receipt.json"
 
+## Content-keyed digest reuse: files are reopened and fully read on every lookup.
+## Bound retained bytes to 2 * 256 KiB; larger artifacts use streaming SHA-256.
+const MAX_CACHED_ARTIFACT_BYTES := 262144
+const MAX_CACHED_ARTIFACTS := 2
+static var _artifact_content_cache: Dictionary = {}
 static var _backend_identity_cache: Dictionary = {}
 static var _reference_backend_identity_cache: Dictionary = {}
 static var _native_backend_instance: Object
@@ -132,7 +138,7 @@ static func _reference_backend_identity() -> Dictionary:
 
 static func _reference_implementation_artifact(source_path: String) -> Dictionary:
 	if FileAccess.file_exists(source_path):
-		var source_sha256 := FileAccess.get_sha256(source_path)
+		var source_sha256 := _content_checked_file_sha256(source_path)
 		if _sha256_is_valid(source_sha256):
 			return {"sha256": source_sha256, "kind": "gdscript_source"}
 	var remap_path := source_path + ".remap"
@@ -147,10 +153,45 @@ static func _reference_implementation_artifact(source_path: String) -> Dictionar
 	var bytecode_path := str(target_value)
 	if not FileAccess.file_exists(bytecode_path):
 		return {"sha256": "", "kind": ""}
-	var bytecode_sha256 := FileAccess.get_sha256(bytecode_path)
+	var bytecode_sha256 := _content_checked_file_sha256(bytecode_path)
 	if not _sha256_is_valid(bytecode_sha256):
 		return {"sha256": "", "kind": ""}
 	return {"sha256": bytecode_sha256, "kind": "gdscript_remapped_bytecode"}
+
+
+## Reuse only the digest of identical bytes, never file metadata or an unread file.
+## The returned string is detached; cached byte buffers are private and bounded.
+static func _content_checked_file_sha256(path: String) -> String:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		_artifact_content_cache.erase(path)
+		return ""
+	var length := file.get_length()
+	if length > MAX_CACHED_ARTIFACT_BYTES:
+		file.close()
+		_artifact_content_cache.erase(path)
+		return FileAccess.get_sha256(path)
+	var bytes := file.get_buffer(length)
+	var complete := bytes.size() == length and file.get_error() == OK and file.get_length() == length
+	file.close()
+	if not complete:
+		_artifact_content_cache.erase(path)
+		return ""
+	var previous: Dictionary = _artifact_content_cache.get(path, {})
+	if not previous.is_empty() and previous.bytes == bytes:
+		return previous.sha256
+	var context := HashingContext.new()
+	if context.start(HashingContext.HASH_SHA256) != OK:
+		_artifact_content_cache.erase(path)
+		return ""
+	if not bytes.is_empty() and context.update(bytes) != OK:
+		_artifact_content_cache.erase(path)
+		return ""
+	var digest := context.finish().hex_encode()
+	if not _artifact_content_cache.has(path) and _artifact_content_cache.size() >= MAX_CACHED_ARTIFACTS:
+		_artifact_content_cache.erase(_artifact_content_cache.keys()[0])
+	_artifact_content_cache[path] = {"bytes": bytes, "sha256": digest}
+	return digest
 
 
 static func _load_native_backend() -> Object:
@@ -282,10 +323,9 @@ static func _sha256_is_valid(value: Variant) -> bool:
 	var digest := str(value)
 	if digest.length() != 64 or digest.to_lower() != digest:
 		return false
-	for character in digest:
-		if not str(character) in "0123456789abcdef":
-			return false
-	return true
+	# Native hexadecimal parsing accepts a sign; the identity contract does not.
+	var first := digest.unicode_at(0)
+	return first != 43 and first != 45 and digest.is_valid_hex_number(false)
 
 
 ## Construct a level, zero-speed supported state for a spawn point. Spawns must
@@ -399,18 +439,24 @@ static func make_terrain_state(model: Dictionary, pose: Dictionary, road: Callab
 			mean_height += height / float(CORNER_COUNT)
 		var cg_up := mean_height + datum - travel
 		if gravity == 0.0:
-			# Without weight there is no spring/tire preload. Place the relaxed
-			# suspension just clear of the highest tire patch, with no stored energy.
+			# With no weight, keep the free or explicitly preloaded suspension pose
+			# and place it just clear of the highest tire patch.
 			var highest := hub_heights[0]
 			for height in hub_heights: highest = maxf(highest, height)
-			state[POS + 2] = -(highest + datum + 1.0e-9)
+			state[POS + 2] = -(highest + datum - travel + 1.0e-9)
 			return state if _finite_array(state) else PackedFloat64Array()
 		var change := absf(state[POS + 2] + cg_up)
 		state[POS + 2] = -cg_up
 		for corner in CORNER_COUNT:
 			if absf(hub_heights[corner] - mean_height) > 0.02: return PackedFloat64Array()
 			var fitted_travel := travel + hub_heights[corner] - mean_height
-			if fitted_travel < -float(model.travel_droop_m) or fitted_travel > float(model.travel_bump_m):
+			# A preloaded spring can settle a fraction beyond a travel limit against
+			# the model's compliant stop. Permit that small equilibrium deflection
+			# for Nitro vehicles while retaining the strict legacy Bisonte gate.
+			var stop_allowance := PRELOADED_STATIC_STOP_TOLERANCE_M \
+				if float(model.get("suspension_preload_n", 0.0)) > 0.0 else 0.0
+			if fitted_travel < -float(model.travel_droop_m) - stop_allowance \
+				or fitted_travel > float(model.travel_bump_m) + stop_allowance:
 				return PackedFloat64Array()
 			change = maxf(change, absf(state[TRAVEL + corner] - fitted_travel))
 			state[TRAVEL + corner] = fitted_travel
@@ -2113,6 +2159,11 @@ static func _valid_model(model: Dictionary) -> bool:
 	for key in scalars:
 		if not model.has(key) or not is_finite(float(model[key])):
 			return false
+	if model.has("suspension_preload_n"):
+		var suspension_preload: Variant = model["suspension_preload_n"]
+		if typeof(suspension_preload) not in [TYPE_INT, TYPE_FLOAT] \
+				or not is_finite(float(suspension_preload)) or float(suspension_preload) < 0.0:
+			return false
 	var positive := [
 		"sprung_mass_kg", "unsprung_mass_kg", "wheel_spin_inertia_kg_m2", "arm_length_m",
 		"tire_radius_m", "suspension_stiffness_n_per_m", "tire_stiffness_n_per_m",
@@ -2261,10 +2312,25 @@ static func _add_scaled_vector(target: PackedFloat64Array, value: PackedFloat64A
 
 
 static func _static_travel(model: Dictionary) -> float:
-	if float(model["gravity_m_per_s2"]) <= 0.0:
-		return 0.0
-	return float(model["sprung_mass_kg"]) * float(model["gravity_m_per_s2"]) \
-		/ (4.0 * float(model["suspension_stiffness_n_per_m"]))
+	var gravity := float(model["gravity_m_per_s2"])
+	var stiffness := float(model["suspension_stiffness_n_per_m"])
+	var preload_n := float(model.get("suspension_preload_n", 0.0))
+	var corner_load := float(model["sprung_mass_kg"]) * gravity / 4.0
+	if preload_n <= 0.0:
+		if gravity <= 0.0:
+			return 0.0
+		return corner_load / stiffness
+	# The source ride datum includes a fixed spring preload. Solve the linear
+	# spring equilibrium against the same compliant stops used during integration
+	# so lab gravity/spring changes still initialize inside the represented range.
+	var free_travel := (corner_load - preload_n) / stiffness
+	if free_travel > float(model["travel_bump_m"]):
+		var bump_k := float(model["bump_stop_stiffness_n_per_m"])
+		return (corner_load - preload_n + bump_k * float(model["travel_bump_m"])) / (stiffness + bump_k)
+	if free_travel < -float(model["travel_droop_m"]):
+		var droop_k := float(model["droop_stop_stiffness_n_per_m"])
+		return (corner_load - preload_n - droop_k * float(model["travel_droop_m"])) / (stiffness + droop_k)
+	return free_travel
 
 
 static func _check_static_spawn_patch(

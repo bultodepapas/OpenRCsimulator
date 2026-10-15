@@ -1,4 +1,4 @@
-## Strict MT8 ground-vehicle data loader and deterministic experiment builder.
+## Strict ground-vehicle data loader and deterministic experiment builder.
 ## The returned model is normalized SI data for VehicleDynamics; the source JSON
 ## retains provenance for every physical parameter.
 extends RefCounted
@@ -6,9 +6,34 @@ extends RefCounted
 const FORMAT := "openrc-ground-vehicle"
 const VERSION := 1
 const DEFAULT_PATH := "res://data/vehicles/ground/mt8_bisonte.json"
+const MONSTER_CAR_2_PATH := "res://data/vehicles/ground/monster_car_2.json"
 const KINDS := ["manual", "measured", "derived", "borrowed", "estimated"]
-const TOP_KEYS := ["format", "version", "id", "name", "description", "drive_configuration", "geometry_source", "parameters"]
+const TOP_KEYS := ["format", "version", "id", "name", "description", "drive_configuration", "geometry_source", "parameters", "powertrain"]
+const REQUIRED_TOP_KEYS := ["format", "version", "id", "name", "description", "drive_configuration", "geometry_source", "parameters"]
 const GEOMETRY_SOURCE_KEYS := ["spec_path", "spec_sha256", "glb_path", "glb_sha256", "asset_frame", "physics_frame", "rights_status"]
+const POWERTRAIN_KEYS := ["kind", "parameters"]
+const POWERTRAIN_KIND := "nitro_single_speed_centrifugal_clutch"
+const POWERTRAIN_PARAMETER_UNITS := {
+	"engine_displacement_cm3": "cm^3",
+	"engine_idle_rpm": "rpm",
+	"engine_max_rpm": "rpm",
+	"engine_rotor_inertia_kg_m2": "kg m^2",
+	"engine_drag_torque_nm": "N m",
+	"engine_viscous_drag_nm_s_per_rad": "N m s/rad",
+	"idle_torque_nm": "N m",
+	"idle_governor_gain_nm_s_per_rad": "N m s/rad",
+	"clutch_engage_start_rpm": "rpm",
+	"clutch_engage_full_rpm": "rpm",
+	"clutch_capacity_nm": "N m",
+	"clutch_slip_stiffness_nm_s_per_rad": "N m s/rad",
+	"gear_ratio": "1",
+	"gear_efficiency": "1",
+	"initial_fuel_mass_kg": "kg",
+	"fuel_specific_consumption_kg_per_j": "kg/J",
+	"engine_curve_rpm": "rpm",
+	"engine_curve_torque_nm": "N m",
+}
+const POWERTRAIN_ARRAY_SIZES := {"engine_curve_rpm": 11, "engine_curve_torque_nm": 11}
 const PARAMETER_UNITS := {
 	"sprung_mass_kg": "kg",
 	"unsprung_mass_kg": "kg",
@@ -26,6 +51,7 @@ const PARAMETER_UNITS := {
 	"wheel_center_rest_below_chassis_datum_m": "m",
 	"tire_radius_m": "m",
 	"suspension_stiffness_n_per_m": "N/m",
+	"suspension_preload_n": "N",
 	"suspension_damping_n_s_per_m": "N s/m",
 	"tire_stiffness_n_per_m": "N/m",
 	"tire_damping_n_s_per_m": "N s/m",
@@ -57,11 +83,10 @@ const ARRAY_SIZES := {
 	"corner_x_datum_frd_m": 4,
 	"corner_y_datum_frd_m": 4,
 	"corner_z_datum_frd_m": 4,
-	"hull_probe_centers_datum_frd_m": 18,
-	"hull_probe_radii_m": 6,
 }
 const NONNEGATIVE_FIELDS := [
 	"gravity_m_per_s2",
+	"suspension_preload_n",
 	"suspension_damping_n_s_per_m",
 	"tire_damping_n_s_per_m",
 	"bump_stop_damping_n_s_per_m",
@@ -72,6 +97,18 @@ const KNOB_KEYS := ["gravity_scale", "grip_scale", "spring_scale", "damper_scale
 
 static func load_default() -> Dictionary:
 	return load_file(DEFAULT_PATH)
+
+
+## Resolve only the two application vehicle IDs. `load_default()` remains the
+## historical Bisonte entry point and is intentionally byte/model compatible.
+static func load_vehicle(vehicle_id: String) -> Dictionary:
+	match vehicle_id:
+		"mt8-bisonte":
+			return load_default()
+		"monster-car-2":
+			return load_file(MONSTER_CAR_2_PATH)
+		_:
+			return _result(PackedStringArray(["Unknown ground vehicle id: %s" % vehicle_id]))
 
 
 static func load_file(path: String) -> Dictionary:
@@ -107,16 +144,30 @@ static func validate(data: Variant) -> Dictionary:
 	var errors := PackedStringArray()
 	if not data is Dictionary:
 		return _result(PackedStringArray(["Ground vehicle data must be an object"]))
-	_exact_keys(data, TOP_KEYS, "vehicle", errors)
+	for required_key in REQUIRED_TOP_KEYS:
+		if not data.has(required_key):
+			errors.append("vehicle.%s is required" % required_key)
+	for key in data:
+		if not key is String or not key in TOP_KEYS:
+			errors.append("Unknown field vehicle.%s" % str(key))
 	if data.get("format") != FORMAT:
 		errors.append("Unsupported ground vehicle format")
 	if not _number(data.get("version")) or float(data.get("version", -1.0)) != float(VERSION):
 		errors.append("Unsupported ground vehicle version")
 	if not _text(data.get("id")) or not _text(data.get("name")) or not _text(data.get("description")):
 		errors.append("Ground vehicle id, name, and description must be nonempty text")
-	if data.get("drive_configuration") != "electric_4wd":
-		errors.append("Only electric_4wd is supported by this ground-vehicle schema")
+	var drive_configuration := str(data.get("drive_configuration", ""))
+	if drive_configuration not in ["electric_4wd", "nitro_4wd"]:
+		errors.append("Unsupported ground-vehicle drive configuration")
 	_validate_geometry_source(data.get("geometry_source"), errors)
+	var powertrain_values: Dictionary = {}
+	if drive_configuration == "nitro_4wd":
+		if not data.has("powertrain"):
+			errors.append("Nitro 4WD vehicle requires vehicle.powertrain")
+		else:
+			powertrain_values = _normalize_powertrain(data.powertrain, errors)
+	elif data.has("powertrain"):
+		errors.append("Only nitro_4wd vehicles may declare vehicle.powertrain")
 	var raw_parameters: Variant = data.get("parameters")
 	if not raw_parameters is Dictionary:
 		errors.append("vehicle.parameters must be an object")
@@ -126,8 +177,10 @@ static func validate(data: Variant) -> Dictionary:
 	var present_keys := PARAMETER_UNITS.keys()
 	if not raw_parameters.has("brake_front_fraction"):
 		present_keys.erase("brake_front_fraction")
+	if not raw_parameters.has("suspension_preload_n"):
+		present_keys.erase("suspension_preload_n")
 	_exact_keys(raw_parameters, present_keys, "parameters", errors)
-	var values: Dictionary = {"brake_front_fraction": 0.5}
+	var values: Dictionary = {"brake_front_fraction": 0.5, "suspension_preload_n": 0.0}
 	for key: String in PARAMETER_UNITS:
 		if not raw_parameters.has(key):
 			continue
@@ -148,6 +201,13 @@ static func validate(data: Variant) -> Dictionary:
 				errors.append("parameters.%s must be a finite numeric array of length %d" % [key, ARRAY_SIZES[key]])
 				continue
 			values[key] = PackedFloat64Array(value)
+		elif key in ["hull_probe_centers_datum_frd_m", "hull_probe_radii_m"]:
+			var minimum_size := 18 if key == "hull_probe_centers_datum_frd_m" else 6
+			var maximum_size := 36 if key == "hull_probe_centers_datum_frd_m" else 12
+			if not _finite_variable_array(value, minimum_size, maximum_size):
+				errors.append("parameters.%s must be a finite numeric array with a supported hull-probe count" % key)
+				continue
+			values[key] = PackedFloat64Array(value)
 		else:
 			if not _number(value):
 				errors.append("parameters.%s must be a finite number, not a boolean" % key)
@@ -156,6 +216,8 @@ static func validate(data: Variant) -> Dictionary:
 	if not errors.is_empty():
 		return _result(errors)
 	_validate_values(values, errors)
+	if drive_configuration != "nitro_4wd" and float(values.get("suspension_preload_n", 0.0)) > 0.0:
+		errors.append("parameters.suspension_preload_n is only supported by nitro_4wd")
 	if not errors.is_empty():
 		return _result(errors)
 	var datum_geometry := {
@@ -168,6 +230,13 @@ static func validate(data: Variant) -> Dictionary:
 		"cg_height_above_chassis_datum_m": values.cg_height_above_chassis_datum_m,
 	}
 	var model := _make_model(values, datum_geometry)
+	# Keep Bisonte's normalized model byte-compatible when it omits the optional
+	# Nitro preload parameter. The kernel treats its absence as zero.
+	if raw_parameters.has("suspension_preload_n"):
+		model["suspension_preload_n"] = float(values.suspension_preload_n)
+	model["drive_configuration"] = drive_configuration
+	if drive_configuration == "nitro_4wd":
+		model["powertrain"] = powertrain_values
 	var identity := {
 		"format": FORMAT,
 		"version": str(VERSION),
@@ -226,6 +295,8 @@ static func with_experiment(base_loaded: Dictionary, knobs: Dictionary) -> Dicti
 	_add_parallel_axis(inertia, added_mass, _subtract3(ballast_frd, new_cg_frd))
 	model.sprung_inertia_kg_m2 = inertia
 	model.sprung_mass_kg = total_mass
+	model.cg_forward_from_datum_m = new_cg_forward
+	model.cg_right_from_datum_m = new_cg_right
 	model.cg_height_above_chassis_datum_m = new_cg_height
 	model.gravity_m_per_s2 = float(model.gravity_m_per_s2) * settings.gravity_scale
 	model.tire_friction_scale = float(model.tire_friction_scale) * settings.grip_scale
@@ -300,6 +371,8 @@ static func _make_model(values: Dictionary, datum_geometry: Dictionary) -> Dicti
 		"corner_y_m": corners_y,
 		"arm_inner_offset_m": values.arm_inner_offset_m,
 		"arm_length_m": values.arm_length_m,
+		"cg_forward_from_datum_m": values.cg_forward_from_datum_m,
+		"cg_right_from_datum_m": values.cg_right_from_datum_m,
 		"cg_height_above_chassis_datum_m": values.cg_height_above_chassis_datum_m,
 		"wheel_center_rest_below_chassis_datum_m": values.wheel_center_rest_below_chassis_datum_m,
 		"tire_radius_m": values.tire_radius_m,
@@ -332,9 +405,114 @@ static func _make_model(values: Dictionary, datum_geometry: Dictionary) -> Dicti
 	}
 
 
+## Validate the richer engine descriptor and normalize its speeds to rad/s for
+## the float64 dynamics kernel. The original JSON keeps the cited RPM curve and
+## per-quantity provenance intact.
+static func _normalize_powertrain(raw: Variant, errors: PackedStringArray) -> Dictionary:
+	var error_count := errors.size()
+	if not raw is Dictionary:
+		errors.append("vehicle.powertrain must be an object")
+		return {}
+	_exact_keys(raw, POWERTRAIN_KEYS, "powertrain", errors)
+	if raw.get("kind") != POWERTRAIN_KIND:
+		errors.append("vehicle.powertrain.kind is unsupported")
+	var raw_parameters: Variant = raw.get("parameters")
+	if not raw_parameters is Dictionary:
+		errors.append("vehicle.powertrain.parameters must be an object")
+		return {}
+	_exact_keys(raw_parameters, POWERTRAIN_PARAMETER_UNITS.keys(), "powertrain.parameters", errors)
+	var values: Dictionary = {}
+	for key: String in POWERTRAIN_PARAMETER_UNITS:
+		var quantity: Variant = raw_parameters.get(key)
+		if not quantity is Dictionary:
+			errors.append("powertrain.parameters.%s must be a quantity object" % key)
+			continue
+		_exact_keys(quantity, ["value", "unit", "kind", "source"], "powertrain.parameters." + key, errors)
+		if quantity.get("unit") != POWERTRAIN_PARAMETER_UNITS[key]:
+			errors.append("powertrain.parameters.%s requires unit %s" % [key, POWERTRAIN_PARAMETER_UNITS[key]])
+		if not quantity.get("kind") in KINDS:
+			errors.append("powertrain.parameters.%s has an unsupported provenance kind" % key)
+		if not _text(quantity.get("source")):
+			errors.append("powertrain.parameters.%s requires a nonempty source" % key)
+		var value: Variant = quantity.get("value")
+		if POWERTRAIN_ARRAY_SIZES.has(key):
+			if not _finite_array(value, int(POWERTRAIN_ARRAY_SIZES[key])):
+				errors.append("powertrain.parameters.%s must be a finite numeric array of length %d" % [key, int(POWERTRAIN_ARRAY_SIZES[key])])
+				continue
+			values[key] = PackedFloat64Array(value)
+		elif not _number(value):
+			errors.append("powertrain.parameters.%s must be a finite number, not a boolean" % key)
+		else:
+			values[key] = float(value)
+	if errors.size() > error_count:
+		return {}
+	_validate_powertrain_values(values, errors)
+	if errors.size() > error_count:
+		return {}
+	var normalized: Dictionary = {
+		"kind": POWERTRAIN_KIND,
+		"engine_displacement_m3": float(values.engine_displacement_cm3) * 1.0e-6,
+		"engine_idle_speed_rad_s": float(values.engine_idle_rpm) * PI / 30.0,
+		"engine_max_speed_rad_s": float(values.engine_max_rpm) * PI / 30.0,
+		"engine_rotor_inertia_kg_m2": float(values.engine_rotor_inertia_kg_m2),
+		"engine_drag_torque_nm": float(values.engine_drag_torque_nm),
+		"engine_viscous_drag_nm_s_per_rad": float(values.engine_viscous_drag_nm_s_per_rad),
+		"idle_torque_nm": float(values.idle_torque_nm),
+		"idle_governor_gain_nm_s_per_rad": float(values.idle_governor_gain_nm_s_per_rad),
+		"clutch_engage_start_speed_rad_s": float(values.clutch_engage_start_rpm) * PI / 30.0,
+		"clutch_engage_full_speed_rad_s": float(values.clutch_engage_full_rpm) * PI / 30.0,
+		"clutch_capacity_nm": float(values.clutch_capacity_nm),
+		"clutch_slip_stiffness_nm_s_per_rad": float(values.clutch_slip_stiffness_nm_s_per_rad),
+		"gear_ratio": float(values.gear_ratio),
+		"gear_efficiency": float(values.gear_efficiency),
+		"initial_fuel_mass_kg": float(values.initial_fuel_mass_kg),
+		"fuel_specific_consumption_kg_per_j": float(values.fuel_specific_consumption_kg_per_j),
+		"engine_torque_curve_nm": values.engine_curve_torque_nm.duplicate(),
+	}
+	var curve_speed := PackedFloat64Array()
+	for rpm: float in values.engine_curve_rpm:
+		curve_speed.append(rpm * PI / 30.0)
+	normalized["engine_torque_curve_speed_rad_s"] = curve_speed
+	return normalized
+
+
+static func _validate_powertrain_values(values: Dictionary, errors: PackedStringArray) -> void:
+	for key: String in POWERTRAIN_PARAMETER_UNITS:
+		if POWERTRAIN_ARRAY_SIZES.has(key):
+			continue
+		var value := float(values[key])
+		if key in ["engine_drag_torque_nm", "engine_viscous_drag_nm_s_per_rad", "idle_torque_nm", "idle_governor_gain_nm_s_per_rad"]:
+			if value < 0.0:
+				errors.append("powertrain.parameters.%s must be nonnegative" % key)
+		elif value <= 0.0:
+			errors.append("powertrain.parameters.%s must be positive" % key)
+	if values.is_empty():
+		return
+	if float(values.gear_efficiency) > 1.0:
+		errors.append("powertrain.parameters.gear_efficiency must be in (0, 1]")
+	if not (float(values.engine_idle_rpm) < float(values.clutch_engage_start_rpm)
+			and float(values.clutch_engage_start_rpm) < float(values.clutch_engage_full_rpm)
+			and float(values.clutch_engage_full_rpm) < float(values.engine_max_rpm)):
+		errors.append("engine idle, centrifugal-clutch engagement, and maximum speeds must be ordered")
+	var curve_rpm: PackedFloat64Array = values.engine_curve_rpm
+	var curve_torque: PackedFloat64Array = values.engine_curve_torque_nm
+	for index in curve_rpm.size():
+		if curve_rpm[index] < 0.0 or curve_torque[index] < 0.0:
+			errors.append("engine torque curve values must be nonnegative")
+			break
+		if index > 0 and curve_rpm[index] <= curve_rpm[index - 1]:
+			errors.append("engine torque-curve RPM samples must increase strictly")
+			break
+	if curve_rpm.size() == POWERTRAIN_ARRAY_SIZES.engine_curve_rpm:
+		if curve_rpm[0] != 0.0 or curve_rpm[curve_rpm.size() - 1] < float(values.engine_max_rpm):
+			errors.append("engine torque curve must cover zero through the maximum engine speed")
+		if curve_torque[curve_torque.size() - 1] != 0.0:
+			errors.append("engine torque must taper to zero at the final curve sample")
+
+
 static func _validate_values(v: Dictionary, errors: PackedStringArray) -> void:
 	for key in PARAMETER_UNITS:
-		if ARRAY_SIZES.has(key):
+		if ARRAY_SIZES.has(key) or key in ["hull_probe_centers_datum_frd_m", "hull_probe_radii_m"]:
 			continue
 		var value: float = float(v[key])
 		if key in NONNEGATIVE_FIELDS:
@@ -409,6 +587,15 @@ static func _exact_keys(data: Dictionary, allowed: Array, path: String, errors: 
 
 static func _finite_array(value: Variant, length: int) -> bool:
 	if not value is Array or value.size() != length:
+		return false
+	for item in value:
+		if not _number(item):
+			return false
+	return true
+
+
+static func _finite_variable_array(value: Variant, minimum_size: int, maximum_size: int) -> bool:
+	if not value is Array or value.size() < minimum_size or value.size() > maximum_size:
 		return false
 	for item in value:
 		if not _number(item):

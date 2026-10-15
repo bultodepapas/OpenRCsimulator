@@ -1,0 +1,5 @@
+V 22.0  level: alpha 5.65 elev -2.332 deg thr 0.102 | glide: alpha 5.64 elev -1.568 deg | power-on minus glide elev -0.764 deg (true true)
+V 25.0  level: alpha 4.11 elev -1.841 deg thr 0.137 | glide: alpha 4.06 elev -1.182 deg | power-on minus glide elev -0.659 deg (true true)
+V 28.6  level: alpha 2.86 elev -1.443 deg thr 0.193 | glide: alpha 2.78 elev -0.824 deg | power-on minus glide elev -0.618 deg (true true)
+V 35.0  level: alpha 1.51 elev -1.007 deg thr 0.332 | glide: alpha 1.38 elev -0.392 deg | power-on minus glide elev -0.615 deg (true true)
+V 45.0  level: alpha 0.43 elev -0.652 deg thr 0.673 | glide: alpha 0.24 elev -0.005 deg | power-on minus glide elev -0.646 deg (true true)

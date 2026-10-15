@@ -278,10 +278,11 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 			if bool(read_button.call(device_id, button)):
 				held_buttons.append(button)
 		observe_pressed_buttons(held_buttons)
-	# SDL may emit no motion event for an axis already resting at neutral. Only
-	# the engine bridge may confirm that these polled standard axes are present.
-	# This supplies sample evidence, never bypasses neutral/release time or resumes.
-	if not integrate and not armed and input_error.is_empty() and read_button.is_valid() and can_confirm_gamepad_poll():
+	# A verified standard gamepad is ready from its live sample. Do not require
+	# a stick gesture, centered dwell or button release to enable flight controls.
+	# Session pause/Continue still owns when the simulation may advance.
+	var live_gamepad := input_error.is_empty() and read_button.is_valid() and can_confirm_gamepad_poll()
+	if live_gamepad:
 		for channel_name in ["roll", "pitch", "yaw", "throttle"]:
 			var axis: int = int(profile[channel_name].axis)
 			_seen[axis] = true
@@ -293,7 +294,10 @@ func poll(read_axis: Callable, dt: float, read_button: Callable = Callable(), in
 			elif binding.get("type", "") == "button" and read_button.is_valid():
 				channel.sample_button(bool(read_button.call(device_id, int(binding.button))))
 	if is_gamepad():
-		_update_neutral_gate(dt)
+		if live_gamepad:
+			armed = true
+		else:
+			_update_neutral_gate(dt)
 		if is_rate_throttle() and armed and integrate:
 			var rate: float = float(profile.get("throttle_rate", ControllerProfile.DEFAULT_THROTTLE_RATE))
 			_rate_throttle = clampf(_rate_throttle + _stick("throttle") * rate * dt, 0.0, 1.0)
@@ -390,8 +394,20 @@ func auxiliary_action(action: String) -> bool:
 	match action:
 		"flaps_up": _aux_action_values.flaps = 0.0
 		"flaps_down": _aux_action_values.flaps = 1.0
-		"flaps_cycle": _aux_action_values.flaps = fmod(float(_aux_action_values.flaps) + 0.5, 1.5)
+		"flaps_cycle":
+			var current_flaps := float(_aux_action_values.flaps)
+			_aux_action_values.flaps = 0.4 if current_flaps < 0.2 else (1.0 if current_flaps < 0.7 else 0.0)
 		_: _aux_action_values[channel_name] = 1.0 - float(_aux_action_values[channel_name])
+	return true
+
+
+## Set the semantic action request to an exact detent without taking over a bound radio AUX channel.
+func set_flaps_action_amount(amount: float) -> bool:
+	if not connected or not _profile_ready or not _auxiliary_enabled or not input_error.is_empty() or not profile_error.is_empty():
+		return false
+	if not is_finite(amount) or not _extra_aux.flaps.binding.is_empty():
+		return false
+	_aux_action_values.flaps = clampf(amount, 0.0, 1.0)
 	return true
 
 
@@ -482,6 +498,8 @@ func _update_neutral_gate(dt: float) -> void:
 
 
 func _revoke_paused_gamepad_readiness() -> void:
+	if can_confirm_gamepad_poll():
+		return
 	if is_gamepad() and armed and not _auxiliary_enabled and not _fresh_neutral_sample():
 		armed = false
 		_neutral_elapsed = 0.0
@@ -536,7 +554,7 @@ func _describe_state() -> String:
 	if not input_error.is_empty():
 		return "SAFE - " + input_error
 	if is_gamepad():
-		return "ARMED" if armed else "SAFE - move bound controls, return to neutral, then wait to arm"
+		return "READY" if armed else "WAITING - check controller connection and mapping"
 	return "ARMED" if armed else "SAFE - move throttle to low to arm"
 
 

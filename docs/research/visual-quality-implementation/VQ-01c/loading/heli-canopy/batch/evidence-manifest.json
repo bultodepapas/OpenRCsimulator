@@ -1,0 +1,31 @@
+{
+  "sha256": {
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/candidate.gd.gz": "9cda35a595a26eef76656b0c281eae55e82a2e90aa264d8066d195287decb67f",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/native-1.json": "ab3c7e529ab26bee7d9c8c90d82aac2db6d1bc4082ee802cb2b9acc03c318f2b",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/native-1.log": "e74d422046c4b6fcc91a694af66994e1961903156c3037d42572a14083276256",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/native-2.json": "11d5f76cee668f2e5496ad320eba71d00684dc03079d0ef23d2c0e458a733f3e",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/native-2.log": "e74d422046c4b6fcc91a694af66994e1961903156c3037d42572a14083276256",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/native-3.json": "ce275b8183beea21de2fd7a652a27eb2436e9187b7b8b8948610bed309f2909b",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/native-3.log": "e74d422046c4b6fcc91a694af66994e1961903156c3037d42572a14083276256",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/native-4.json": "02f34a33c7620fd4ce63f6c282ac222667df269167ac73504fccc41316c9bdb7",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/native-4.log": "e74d422046c4b6fcc91a694af66994e1961903156c3037d42572a14083276256",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/native-5.json": "e82f056e1d47f4497da0f0e26fea3b6bd35755a33cc8bac75e7c13fe734d9892",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/native-5.log": "e74d422046c4b6fcc91a694af66994e1961903156c3037d42572a14083276256",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/reference.gd.gz": "4bf33f6922e4d7e4fe3d4c01cb62bc70323a7f254a27f0e3e14caf54dc46c66d",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/source-after.json": "5f675ab39c150d74006591c5b0fc706a3aca62d3932ac568bdde0738492aa6e6",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/source-before.json": "3aae745822ab7d2250ed90b016b09d788859b6f184d0116265625c25dc974889",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/summary.json": "9ce009d5f25b17fd0a93ddedab4709ee083b004dec05120ada0f9f9042a5dbad",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/test-before.gd.gz": "69ec3de555a805347dbd3b2d858b79b5a39e3d57a4d54a1330792ca664df94a2",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/test-candidate.gd.gz": "352130619d84aa413fbc80102114e5dd8e1f8adf7af6005825c1a65ddd0f94f1",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/test_heli_crash_presentation-headless.log": "6b6904fec5a99f9ba6bd25fcca176302189b6cb6691dfc24a5e6d7eaea1e7016",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/test_heli_night_lights-headless.log": "2a2e9297fc9e1e090bf3d4a1ef6de6b310936d42efb4ae7f67e1a7ef4cec5059",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/test_heli_night_lights-native.log": "94e331310cf43e24ae198206c9092dc7620986e388a71b48531d0b23bd2461e9",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/test_heli_night_rotor-headless.log": "ec0e88aea3b7ed9a0812b36709d61a9ff957ac9fdd11a9529043553a3bb3e9a8",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/test_ui_home_preview_cache-headless.log": "a301f9ce2046c86607cdd3ed56f9782205001658dd681f00bb30abe60744446c",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/runner-check/manifest.json": "d175fb34db37b819f1556358f46386c4b4094c9420dcbf178574283d71e94aab",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/runner-check/native-1.json": "cb7477ee95671b1c20936533c3e3bcbef39bf40b5186e5bf0e7cf45825c9a565",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/heli-canopy/batch/runner-check/native-1.log": "e74d422046c4b6fcc91a694af66994e1961903156c3037d42572a14083276256",
+    "research/visual-quality/heli-canopy-batch/run.py": "6a4f8bfec0b568b251d30cb6bcd9bbc297ad562a91b0cc4f19330635e0ba63ce",
+    "research/visual-quality/heli-canopy-batch/compare.gd": "e215d0b173ac994120fab1d9e6ba45477cac227955843fb60174eed9028adeee"
+  }
+}

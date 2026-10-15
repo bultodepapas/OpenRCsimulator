@@ -225,12 +225,17 @@ func _test_lake(field_result: Dictionary) -> void:
 				var actual := AirfieldCourse.sample(bridged.course, float(north), float(east))
 				var shared := GroundTerrain.sample_validated(float(north), float(east), bridged.course.surface_rects, loaded.lake)
 				var magnitude := M.sqrt_(shared[1]*shared[1] + shared[2]*shared[2] + 1.0)
-				same = same and actual.height_m == shared[0] and actual.normal_ned == PackedFloat64Array([-shared[1]/magnitude,-shared[2]/magnitude,-1.0/magnitude])
+				# Scalar equality treats the overlay's +0 and the basin's -0 alike.
+				same = same and actual.height_m == shared[0]
+				for axis in 3:
+					var expected_normal := (-shared[axis + 1] if axis < 2 else -1.0) / magnitude
+					same = same and actual.normal_ned[axis] == expected_normal
 		_check("dry broadphase and native lake path preserve shared heights/normals over 980 points", same)
 		var moved: Dictionary = loaded.lake.duplicate(true)
 		var moved_bank: PackedFloat64Array = moved.bank_ne_m
 		for index in range(0, moved_bank.size(), 2): moved_bank[index] += 200.0
 		moved.bank_ne_m = moved_bank
+		same = true
 		for sample_lake: Dictionary in [loaded.lake, moved, loaded.lake]:
 			var polygon: PackedFloat64Array = sample_lake.bank_ne_m
 			for offset in [-0.026, -0.025, 0.0, 0.025, 0.026]:

@@ -1,0 +1,320 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+SCRIPT ERROR: Parse Error: Could not preload resource script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:20)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:20)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "Aero" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://physics/aircraft_data.gd:20)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:653)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:681)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:1787)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://physics/ground_surfaces.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://physics/rotorcraft/ground_start.gd:0)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/dynamics.gd:10)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "Aero" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://physics/dynamics.gd:10)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "aero_loads" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://physics/dynamics.gd:84)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "total" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://physics/dynamics.gd:95)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://physics/trim.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://sim/scenarios.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://input/commands.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://sim/helicopter_flight_session.gd:0)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:345)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "Aero" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://sim/flight_session.gd:345)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "deflections" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://sim/flight_session.gd:1116)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3180)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3348)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3349)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3374)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3375)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3457)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3457)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3524)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3524)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://app_state/preferences.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://helicopter_main.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tests/test_heli_night_lights.gd:0)
+ERROR: Failed to load script "res://tests/test_heli_night_lights.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+HELI night update mean us: 18.883
+SCRIPT ERROR: Invalid call. Nonexistent function '_q' in base 'GDScript'.
+   at: validate (res://physics/ground_surfaces.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] validate (res://physics/ground_surfaces.gd:48)
+       [1] load_table (res://physics/ground_surfaces.gd:30)
+       [2] _surface_rects (res://scenery/botanical_habitats.gd:245)
+       [3] layout (res://scenery/botanical_habitats.gd:92)
+       [4] build (res://scenery/botanical_habitats.gd:140)
+       [5] build (res://scenery/scenery.gd:387)
+       [6] attach (res://scenery/scenery.gd:171)
+       [7] build (res://render/field.gd:82)
+       [8] build (res://render/world/world.gd:262)
+       [9] _init (res://ui/home_scene.gd:92)
+       [10] run (res://tests/test_heli_night_lights.gd:82)
+SCRIPT ERROR: Invalid call. Nonexistent function '_q' in base 'GDScript'.
+   at: validate (res://physics/ground_surfaces.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] validate (res://physics/ground_surfaces.gd:48)
+       [1] load_table (res://physics/ground_surfaces.gd:30)
+       [2] attach (res://render/lake/lake_world.gd:51)
+       [3] build (res://render/field.gd:83)
+       [4] build (res://render/world/world.gd:262)
+       [5] _init (res://ui/home_scene.gd:92)
+       [6] run (res://tests/test_heli_night_lights.gd:82)
+SCRIPT ERROR: Invalid access to property or key 'ok' on a base object of type 'Dictionary'.
+   at: attach (res://render/lake/lake_world.gd:52)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://render/lake/lake_world.gd:52)
+       [1] build (res://render/field.gd:83)
+       [2] build (res://render/world/world.gd:262)
+       [3] _init (res://ui/home_scene.gd:92)
+       [4] run (res://tests/test_heli_night_lights.gd:82)
+SCRIPT ERROR: Invalid call. Nonexistent function 'load_file' in base 'GDScript'.
+   at: build (res://render/airplane.gd:73)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:73)
+       [1] show_aircraft (res://ui/home_scene.gd:132)
+       [2] run (res://tests/test_heli_night_lights.gd:86)
+FAIL cached helicopter is hidden
+HELI night lights: 39 checks, 1 failed
+ERROR: Pages in use exist at exit in PagedAllocator: N20RasterizerSceneGLES321GeometryInstanceGLES3E
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+ERROR: 3 shaders of type SceneShaderGLES3 were never freed
+   at: ~ShaderGLES3 (drivers/gles3/shader_gles3.cpp:838)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+ERROR: Texture with GL ID of 24: leaked 349524 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)
+ERROR: Texture with GL ID of 25: leaked 349524 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:82)
+ERROR: Buffer with GL ID of 2077: leaked 469920 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2078: leaked 187968 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2079: leaked 131880 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2080: leaked 5280 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2081: leaked 26400 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2082: leaked 28800 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2083: leaked 26400 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2084: leaked 26400 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2085: leaked 26400 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2086: leaked 10800 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2087: leaked 8640 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2088: leaked 10800 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2089: leaked 8640 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2090: leaked 10800 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2091: leaked 8640 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2092: leaked 11280 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2093: leaked 9024 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2094: leaked 10800 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2095: leaked 8640 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2096: leaked 10800 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2097: leaked 8640 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2098: leaked 10800 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2099: leaked 8640 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2100: leaked 11280 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2101: leaked 9024 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2102: leaked 960 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2103: leaked 384 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2104: leaked 1680 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2105: leaked 672 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2106: leaked 1680 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2107: leaked 672 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2108: leaked 960 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2109: leaked 384 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2110: leaked 2160 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2111: leaked 864 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2112: leaked 960 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2113: leaked 2140 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2114: leaked 856 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2115: leaked 720 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2116: leaked 52800 bytes.
+   at: ~Utilities (drivers/gles3/storage/utERROR: 31 RID allocations of type 'N5GLES34MeshE' were leaked at exit.
+ERROR: 15 RID allocations of type 'N5GLES38MaterialE' were leaked at exit.
+ERROR: 3 RID allocations of type 'N5GLES36ShaderE' were leaked at exit.
+ERROR: 32 RID allocations of type 'N17RendererSceneCull8InstanceE' were leaked at exit.
+ilities.cpp:113)
+ERROR: Buffer with GL ID of 2117: leaked 960 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2118: leaked 2140 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2119: leaked 856 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2120: leaked 720 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2121: leaked 52800 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2122: leaked 940 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2123: leaked 376 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2124: leaked 288 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2125: leaked 2140 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2126: leaked 856 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2127: leaked 720 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2128: leaked 24000 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+ERROR: Buffer with GL ID of 2129: leaked 88920 bytes.
+   at: ~Utilities (drivers/gles3/storage/utilities.cpp:113)
+WARNING: 97 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

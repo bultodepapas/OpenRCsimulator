@@ -120,6 +120,8 @@ Read the [family research](extra-300-family-research.md), [integration audit](ex
 
 The [AV-09 landing-gear evidence](avanti-gear/AV-09/README.md) covers the Blender retract mechanism, runtime actuator, runway support, steering, brakes, replay and exported-package captures.
 
+The [AV-09-F flap evidence](avanti-flaps/AV-09/README.md) covers the manufacturer's detents and elevator mix, estimated aerodynamic model, sampled travel, keyboard/controller/AUX integration, paired input-tape comparisons and exact replay.
+
 The simulator name is Ventage Jet; the source aircraft is the SebArt Avanti S (A200). Start with [family research](avanti-s-family-research.md), the [integration audit](avanti-s-integration-audit.md), and [AV-06 physics model](avanti-s-av06-physics-model.md). The current imported model, turbine installation, control rig, collision witnesses and Windows package proof are in [AV-31 Blender integration](avanti-blender/AV-31/README.md), with regeneration in the [asset guide](../../assets/aircraft/avanti-s-a200/README.md). The [v4 contour study](avanti-s-refinement-v4.md) describes the superseded visual blockout. Generated measurements and viewers remain in [research/avanti-s](../../research/avanti-s/). The [Ventage Jet plan](../AVANTI-S-PLAN.md) owns implementation.
 
 ### P-51D

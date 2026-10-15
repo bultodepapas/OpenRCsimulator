@@ -1,0 +1,113 @@
+{
+  "native_pairs": 300,
+  "synthetic_cases": 1280,
+  "warm_pair_indices": [
+    1,
+    2,
+    3,
+    4,
+    5
+  ],
+  "groups": [
+    {
+      "aircraft": "gp-extra-300s-60",
+      "workload": "belly_line",
+      "reference_warm_median_ms": 31.396,
+      "reference_first_pair_median_ms": 31.406,
+      "candidate_warm_median_ms": 15.953,
+      "candidate_first_pair_median_ms": 15.515,
+      "warm_samples_per_variant": 25,
+      "warm_reduction_percent": 49.18779462351892
+    },
+    {
+      "aircraft": "gp-extra-300s-60",
+      "workload": "kit_build",
+      "reference_warm_median_ms": 91.715,
+      "reference_first_pair_median_ms": 93.782,
+      "candidate_warm_median_ms": 77.644,
+      "candidate_first_pair_median_ms": 80.73,
+      "warm_samples_per_variant": 25,
+      "warm_reduction_percent": 15.34209235130567
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "workload": "belly_line",
+      "reference_warm_median_ms": 75.954,
+      "reference_first_pair_median_ms": 74.544,
+      "candidate_warm_median_ms": 32.391,
+      "candidate_first_pair_median_ms": 33.885,
+      "warm_samples_per_variant": 25,
+      "warm_reduction_percent": 57.35445137846591
+    },
+    {
+      "aircraft": "jensen-das-ugly-stik-60",
+      "workload": "kit_build",
+      "reference_warm_median_ms": 190.389,
+      "reference_first_pair_median_ms": 190.789,
+      "candidate_warm_median_ms": 146.418,
+      "candidate_first_pair_median_ms": 147.618,
+      "warm_samples_per_variant": 25,
+      "warm_reduction_percent": 23.095346895041203
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "workload": "belly_line",
+      "reference_warm_median_ms": 75.198,
+      "reference_first_pair_median_ms": 70.954,
+      "candidate_warm_median_ms": 35.89,
+      "candidate_first_pair_median_ms": 34.49,
+      "warm_samples_per_variant": 25,
+      "warm_reduction_percent": 52.27266682624537
+    },
+    {
+      "aircraft": "p51d-mustang-120",
+      "workload": "kit_build",
+      "reference_warm_median_ms": 199.511,
+      "reference_first_pair_median_ms": 197.387,
+      "candidate_warm_median_ms": 156.52,
+      "candidate_first_pair_median_ms": 149.946,
+      "warm_samples_per_variant": 25,
+      "warm_reduction_percent": 21.548185313090496
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "workload": "belly_line",
+      "reference_warm_median_ms": 180.349,
+      "reference_first_pair_median_ms": 191.247,
+      "candidate_warm_median_ms": 84.311,
+      "candidate_first_pair_median_ms": 84.542,
+      "warm_samples_per_variant": 25,
+      "warm_reduction_percent": 53.25119629163455
+    },
+    {
+      "aircraft": "sebart-avanti-s-a200-p100rx",
+      "workload": "kit_build",
+      "reference_warm_median_ms": 451.344,
+      "reference_first_pair_median_ms": 461.445,
+      "candidate_warm_median_ms": 354.579,
+      "candidate_first_pair_median_ms": 362.945,
+      "warm_samples_per_variant": 25,
+      "warm_reduction_percent": 21.439301286823355
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "workload": "belly_line",
+      "reference_warm_median_ms": 57.784,
+      "reference_first_pair_median_ms": 51.642,
+      "candidate_warm_median_ms": 24.971,
+      "candidate_first_pair_median_ms": 18.761,
+      "warm_samples_per_variant": 25,
+      "warm_reduction_percent": 56.78561539526512
+    },
+    {
+      "aircraft": "turbo-lumber-evolution",
+      "workload": "kit_build",
+      "reference_warm_median_ms": 140.724,
+      "reference_first_pair_median_ms": 128.846,
+      "candidate_warm_median_ms": 109.773,
+      "candidate_first_pair_median_ms": 102.702,
+      "warm_samples_per_variant": 25,
+      "warm_reduction_percent": 21.994116142235864
+    }
+  ]
+}

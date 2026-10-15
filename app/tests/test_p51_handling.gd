@@ -82,6 +82,18 @@ func _initialize() -> void:
 		if is_nan(loop_time) and turned >= TAU:
 			loop_time = r * session.sim.dt()
 	_check("inside loop at 0.7 stick from 27 m/s: 360° of pitch within 8 s, finite", turned >= TAU and _finite(lt), "%.0f° (%.1f s)" % [rad_to_deg(turned), loop_time])
+	# P51-25: integrated q also reaches 360° in a banked rolling departure. A loop passes the vertical and stays near
+	# coordinated (no rudder is applied) until it closes.
+	var end := loop_time if not is_nan(loop_time) else 8.0
+	var top := _max(lt, "pitch_deg")
+	var slip := 0.0
+	for r in lt.row_count():
+		if r * session.sim.dt() <= end:
+			var u: float = lt.value(r, "u_mps")
+			var w: float = lt.value(r, "w_mps")
+			slip = maxf(slip, absf(rad_to_deg(atan2(float(lt.value(r, "v_mps")), sqrt(u * u + w * w)))))
+	_check("inside loop is a loop: pitch attitude passes the vertical (> 80°) and |β| stays below 10°", top > 80.0 and slip < 10.0,
+		"pitch max %.0f°, |β| max %.1f°" % [top, slip])
 	_check("inside loop: faster than the 1-g stall speed over the top", _min(lt, "speed_mps", 0.0, loop_time) > _stall_speed(model),
 		"min %.1f m/s (1-g stall %.1f)" % [_min(lt, "speed_mps", 0.0, loop_time), _stall_speed(model)])
 

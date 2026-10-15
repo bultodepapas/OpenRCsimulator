@@ -1,0 +1,70 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{
+  "benchmark": {
+    "global_mixed": {
+      "baseline_elapsed_us": [
+        25435.0,
+        27680.0,
+        29946.0,
+        26165.0,
+        26240.0
+      ],
+      "baseline_median_us": 26240.0,
+      "calls_per_timed_pass": 3000,
+      "candidate_elapsed_us": [
+        19364.0,
+        20435.0,
+        20615.0,
+        22214.0,
+        21666.0
+      ],
+      "candidate_median_us": 20615.0,
+      "candidate_over_baseline": 0.7856326219512195,
+      "order_by_round": [
+        "baseline,candidate",
+        "candidate,baseline",
+        "baseline,candidate",
+        "candidate,baseline",
+        "baseline,candidate"
+      ],
+      "points_per_pass": 3000,
+      "rounds_each": 5,
+      "warmup_calls_each": 200
+    },
+    "inside_course_lane": {
+      "baseline_elapsed_us": [
+        47963.0,
+        39127.0,
+        38569.0,
+        40500.0,
+        39139.0
+      ],
+      "baseline_median_us": 39139.0,
+      "calls_per_timed_pass": 3000,
+      "candidate_elapsed_us": [
+        25678.0,
+        22622.0,
+        22435.0,
+        19982.0,
+        20121.0
+      ],
+      "candidate_median_us": 22435.0,
+      "candidate_over_baseline": 0.5732134188405427,
+      "order_by_round": [
+        "baseline,candidate",
+        "candidate,baseline",
+        "baseline,candidate",
+        "candidate,baseline",
+        "baseline,candidate"
+      ],
+      "points_per_pass": 3000,
+      "rounds_each": 5,
+      "warmup_calls_each": 200
+    }
+  },
+  "difference_count": 0,
+  "exact_comparisons": 45596,
+  "ok": true,
+  "output": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-40/track.json"
+}

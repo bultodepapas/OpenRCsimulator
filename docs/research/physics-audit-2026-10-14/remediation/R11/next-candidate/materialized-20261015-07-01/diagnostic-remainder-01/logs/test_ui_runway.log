@@ -1,0 +1,105 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   no preferences -> runway start
+ok   write old preferences without a start choice
+ok   old schema-1 preferences without start choice -> current runway default
+ok   write invalid start preference taxi
+ok   invalid start preference taxi -> airborne
+ok   write invalid start preference 7
+ok   invalid start preference 7 -> airborne
+ok   write invalid start preference true
+ok   invalid start preference true -> airborne
+ok   runway preference is valid for the Stik
+ok   runway preference is valid for qualified Timber
+ok   runway preference is valid for qualified Avanti
+ok   runway preference for the Extra is sanitized
+ok   future schema reads a valid runway choice and stays read-only
+ok   future schema refuses save without changing its bytes
+ok   save failure is reported for a path below an existing file
+ok   seed preferences with the first-flight hint suppressed
+ok   Home defaults to air; the Stik can choose runway
+ok   Home starts focused on Fly
+ok   Up from Fly focuses the start selector
+ok   a real Enter event selects runway
+ok   changing start choice does not save it
+ok   radio axis cannot navigate Home or change the start
+ok   Extra disables runway and sanitizes the selected choice
+ok   aircraft change persists the sanitized start
+ok   returning to Stik does not restore unsupported runway
+ok   runway can be selected again on the supported Stik
+ok   selection is still not persisted before Fly
+ok   Down from the selector returns focus to Fly
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly creates one flight and removes Home
+ok   Fly saves the selected runway choice
+ok   main and session receive the selected choice
+ok   runway launch succeeded without fallback
+ok   trace metadata identifies the launch choice
+ok   R restarts on runway
+ok   pause navigation reaches Restart
+ok   Pause Restart retains runway
+CRASH at 0.1 m/s (sink 0.0 m/s, airframe contact (hull point 3), point speed 0.1 m/s at detected tick) - [R] restart
+CRASH CAUSE: Flew into the ground at 1.7 m/s, pitch -2°, bank -0° (low airspeed)
+ok   ground contact enters the crash hold
+ok   crash recovery restarts on runway
+ok   pause navigation reaches End
+ok   flight -> Home preserves runway and saves no active session
+ok   Home focus returns to Fly
+ok   fake radio still cannot move Home focus or selection
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home -> flight again uses runway
+ok   fake radio is registered without implicit flight selection
+failsafe: Controller selected; check controls and continue.
+ok   fake radio can be explicitly selected for flight
+ok   selected fake radio connects while preserving runway launch
+ok   fake radio throttle low arms the transmitter
+ok   P resumes after the selected radio is armed
+ok   radio roll reaches flight controls with solved trim
+ok   radio throttle reaches full power after arming
+failsafe: Controller selected; check controls and continue.
+ok   keyboard can be explicitly selected after the fake radio flight
+ok   manual radio flight can end back at Home
+ok   runway cycles to explicit half-power airborne start
+ok   half-power label explains fixed trim
+ok   new choice is not saved before Fly
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   half-power Home launch succeeds
+ok   main installs the selected equilibrium before flight
+ok   new choice persists after successful Fly
+ok   trace distinguishes selected half-power profile and actual airborne launch
+ok   restart retains selected half-power trim
+ok   return to Home preserves half-power profile
+ok   unsupported aircraft clears half-power choice in UI and preferences
+ok   write Spanish airborne preferences
+ok   saved Spanish Home defaults to airborne
+ok   Spanish Home focuses the start selector
+ok   real Spanish Home event selects runway without saving
+ok   Down returns focus to Fly after choosing runway
+ok   rejected runway launch leaves Home active and no session behind
+ok   rejection clears Fly latch and keeps Fly usable
+ok   rejection displays a Spanish reason
+ok   rejected start does not save or overwrite the preference file
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Fly can be retried after rejection
+ok   retry starts the selected runway choice
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future preferences still show valid runway choice
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   future-schema settings do not block the flight
+ok   failed save reason stays on the flight
+ok   failed save reason remains visible on returned Home
+ok   future preference bytes are preserved after failed save
+ok   alternate field fixture is valid
+ok   write runway preference for alternate-field probe
+ok   runway is disabled outside the existing default field
+ok   alternate field can select airborne half power without offering runway
+ok   alternate field start cycle returns to legacy airborne
+ok   write runway preference before aircraft sanitization
+ok   changing to gp-extra-300s-60 sanitizes runway
+ok   changing to p51d-mustang-120 sanitizes runway
+ok   switching back to the Stik does not restore runway
+ok   qualified Timber enables the runway selector
+ok   Home can select runway for qualified Timber
+ok   write qualified Avanti runway preference
+ok   qualified Avanti enables and restores the runway selector
+all UI runway checks passed

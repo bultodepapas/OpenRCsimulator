@@ -4,13 +4,24 @@ The accepted quaternion contract allows lengths within `1e-3` of one, while `mat
 
 The stage-level regression starts from a valid unit quaternion and 12 rad/s body-z spin. The first RK midpoint state has quaternion length `1.004987562`; its position derivative now matches the normalized spatial rotation, while qdot still matches the raw quaternion ODE. This isolates the defect from malformed public input. A 2 s free-flight run at 12 rad/s refines from maximum position errors of `0.049187880 m` at `dt=1/30 s`, to `0.003375948 m` at `dt=1/60 s`, and `0.000218028 m` at `dt=1/120 s`. At the coarse step, the raw-map baseline had maximum-axis error `0.049854743 m` and Euclidean error `0.057470708 m`; the normalized-map result has maximum-axis error `0.049187880 m` and Euclidean error `0.058126636 m`. The overall path error therefore did not improve in this coarse case; RK4 truncation dominates. This is step-refinement evidence, not a claim that normalizing the intermediate attitude removes that truncation. The regression's direct midpoint mapping assertion is the principal proof of the fix. The probe is `research/rc-monster-truck/audit-2026-10-15/physics/unit_spin_position_probe.gd`.
 
-`_evaluate_active` now memoizes deterministic road samples by exact nested float keys for that single evaluation. Each callback-owned dictionary is deep-copied once into the cache; all consumers treat the returned sample as read-only. The cache is discarded on return, with no quantization or reuse across RK stages, states, or times. The wet reference test has 19 logical requests (center, eight water cells, four tire patches, six hull probes); the callback receives 14 calls, each for a distinct exact coordinate, showing five within-evaluation duplicates reused.
+`_evaluate_active` now memoizes deterministic road samples by exact nested float keys for that single evaluation. Each callback-owned dictionary is deep-copied once into the cache; all consumers treat the returned sample as read-only. The cache is discarded on return, with no quantization or reuse across RK stages, states, or times. The wet reference test has 19 logical requests (center, eight water cells, four tire patches, six hull probes); the callback receives 14 calls, each for a distinct exact coordinate, showing five within-evaluation duplicates reused. A second test uses the same exact pose with a callback returning one shared mutable dictionary: later queries cannot mutate the cached center sample, and the next evaluation makes 14 fresh calls and observes the updated `water_depth_m` (`0.1` to `0.6`).
 
 Verification used Godot 4.7.2 on Windows:
 
 ```text
 .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_rcv_attitude_integration.gd
-RCV attitude integration: 6 checks, 0 failures
+RCV attitude integration: 8 checks, 0 failures
 ```
 
-The solver identity is now `openrc-ground-vehicle-dynamics-rk4-v5` because RK-stage integration behavior is corrected. Native identity sources and parity checks are updated; the native binary/build receipt still require the coordinated rebuild.
+The solver identity is now `openrc-ground-vehicle-dynamics-rk4-v5` because RK-stage integration behavior is corrected. Native identity sources and parity checks are updated, and the coordinated native rebuild has installed the v5 binaries and receipt.
+
+The coordinated v5 build is now installed for Windows and Linux, and the complete RC suite passed 30/30 checks. The generated receipt reports solver v5 for both platforms. The instrumented before/after profile is recorded in `../road-profile-before.log` and `../road-profile-after.log`. It compares the combined v4 baseline and v5 candidate, including concurrent course/cache work, so total tick changes are not attributed to the attitude fix alone:
+
+| Pose | Road calls per step | Road callback time (µs) | Mean step time (µs) |
+| --- | ---: | ---: | ---: |
+| Runway, v4 → v5 | 41 → 41 | 1885 → 970 | 2533.2 → 1828.0 |
+| Mud, v4 → v5 | 152 → 120 | 5874 → 4319 | 10043.8 → 8187.5 |
+| Shallow water, v4 → v5 | 152 → 120 | 7677 → 4284 | 10792.9 → 7971.8 |
+| Deep water, v4 → v5 | 152 → 120 | 6208 → 4473 | 13009.7 → 8453.2 |
+
+For the wet poses, v5 makes 120 callbacks for 120 distinct coordinates instead of 152 calls for those same 120 coordinates, consistent with the scoped exact-coordinate cache removing repeated requests. Runway callback count remains 41 (32 distinct coordinates), while measured callback time falls; this profile alone does not identify the source of that reduction. These are workload-specific instrumented timings, not a physical validation result.

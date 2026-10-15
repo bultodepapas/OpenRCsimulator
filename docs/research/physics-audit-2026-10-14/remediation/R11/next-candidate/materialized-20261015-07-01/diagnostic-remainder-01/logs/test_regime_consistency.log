@@ -1,0 +1,91 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   jensen-das-ugly-stik-60: aircraft data loads  []
+ok   jensen-das-ugly-stik-60: level trim at 15 m/s  trimmed
+jensen-das-ugly-stik-60 at the 15 m/s trim (α 4.18°, δe -1.63°): oracle CLα 4.580 Cmα -0.315 Cmq -7.80 CLq 2.00 Cmδe -0.841 Cm -0.0001 | local CLα 4.579 Cmα -0.480 Cmq -7.75 CLq 1.98 Cmδe -0.997 Cm 0.0000
+ok   jensen-das-ugly-stik-60: local Cmq -7.75 within 12 % of the oracle's -7.80
+ok   jensen-das-ugly-stik-60: local CLα 4.579 within 10 % of the oracle's 4.580
+ok   jensen-das-ugly-stik-60: local Cmδe -0.997 within 20 % of the oracle's -0.841
+ok   jensen-das-ugly-stik-60: local Cmα -0.480 within 0.20 of the oracle's -0.315
+ok   jensen-das-ugly-stik-60: static Cm at the trim: local 0.0000 within 0.012 of the oracle's -0.0001 (no trim step at the regime switch)
+ok   jensen-das-ugly-stik-60: α 0°, neutral elevator: local Cmq -7.76 within 12 % of the oracle's -7.77
+ok   jensen-das-ugly-stik-60: α 4°, neutral elevator: local Cmq -7.80 within 12 % of the oracle's -7.80
+ok   jensen-das-ugly-stik-60: α 8°, neutral elevator: local Cmq -7.90 within 12 % of the oracle's -7.84
+ok   stik-glow-61fx-2t: aircraft data loads  []
+ok   stik-glow-61fx-2t: level trim at 20 m/s  trimmed
+stik-glow-61fx-2t at the 20 m/s trim (α 1.77°, δe -0.82°): oracle CLα 4.580 Cmα -0.257 Cmq -7.78 CLq 2.00 Cmδe -0.841 Cm -0.0001 | local CLα 4.579 Cmα -0.428 Cmq -7.75 CLq 2.06 Cmδe -0.999 Cm 0.0049
+ok   stik-glow-61fx-2t: local Cmq -7.75 within 12 % of the oracle's -7.78
+ok   stik-glow-61fx-2t: local CLα 4.579 within 10 % of the oracle's 4.580
+ok   stik-glow-61fx-2t: local Cmδe -0.999 within 20 % of the oracle's -0.841
+ok   stik-glow-61fx-2t: local Cmα -0.428 within 0.20 of the oracle's -0.257
+ok   stik-glow-61fx-2t: static Cm at the trim: local 0.0049 within 0.012 of the oracle's -0.0001 (no trim step at the regime switch)
+ok   stik-glow-61fx-2t: α 0°, neutral elevator: local Cmq -7.76 within 12 % of the oracle's -7.77
+ok   stik-glow-61fx-2t: α 4°, neutral elevator: local Cmq -7.80 within 12 % of the oracle's -7.80
+ok   stik-glow-61fx-2t: α 8°, neutral elevator: local Cmq -7.90 within 12 % of the oracle's -7.84
+ok   stik-glow-55ax-2t: aircraft data loads  []
+ok   stik-glow-55ax-2t: level trim at 20 m/s  trimmed
+stik-glow-55ax-2t at the 20 m/s trim (α 1.49°, δe -0.73°): oracle CLα 4.580 Cmα -0.250 Cmq -7.78 CLq 2.00 Cmδe -0.841 Cm -0.0001 | local CLα 4.579 Cmα -0.421 Cmq -7.75 CLq 2.07 Cmδe -0.999 Cm 0.0055
+ok   stik-glow-55ax-2t: local Cmq -7.75 within 12 % of the oracle's -7.78
+ok   stik-glow-55ax-2t: local CLα 4.579 within 10 % of the oracle's 4.580
+ok   stik-glow-55ax-2t: local Cmδe -0.999 within 20 % of the oracle's -0.841
+ok   stik-glow-55ax-2t: local Cmα -0.421 within 0.20 of the oracle's -0.250
+ok   stik-glow-55ax-2t: static Cm at the trim: local 0.0055 within 0.012 of the oracle's -0.0001 (no trim step at the regime switch)
+ok   stik-glow-55ax-2t: α 0°, neutral elevator: local Cmq -7.76 within 12 % of the oracle's -7.77
+ok   stik-glow-55ax-2t: α 4°, neutral elevator: local Cmq -7.80 within 12 % of the oracle's -7.80
+ok   stik-glow-55ax-2t: α 8°, neutral elevator: local Cmq -7.90 within 12 % of the oracle's -7.84
+ok   stik-glow-fs64v-4t: aircraft data loads  []
+ok   stik-glow-fs64v-4t: level trim at 20 m/s  trimmed
+stik-glow-fs64v-4t at the 20 m/s trim (α 1.46°, δe -0.72°): oracle CLα 4.580 Cmα -0.250 Cmq -7.78 CLq 2.00 Cmδe -0.841 Cm -0.0002 | local CLα 4.579 Cmα -0.421 Cmq -7.75 CLq 2.07 Cmδe -0.999 Cm 0.0055
+ok   stik-glow-fs64v-4t: local Cmq -7.75 within 12 % of the oracle's -7.78
+ok   stik-glow-fs64v-4t: local CLα 4.579 within 10 % of the oracle's 4.580
+ok   stik-glow-fs64v-4t: local Cmδe -0.999 within 20 % of the oracle's -0.841
+ok   stik-glow-fs64v-4t: local Cmα -0.421 within 0.20 of the oracle's -0.250
+ok   stik-glow-fs64v-4t: static Cm at the trim: local 0.0055 within 0.012 of the oracle's -0.0002 (no trim step at the regime switch)
+ok   stik-glow-fs64v-4t: α 0°, neutral elevator: local Cmq -7.76 within 12 % of the oracle's -7.77
+ok   stik-glow-fs64v-4t: α 4°, neutral elevator: local Cmq -7.80 within 12 % of the oracle's -7.80
+ok   stik-glow-fs64v-4t: α 8°, neutral elevator: local Cmq -7.90 within 12 % of the oracle's -7.84
+ok   gp-extra-300s-60: aircraft data loads  []
+ok   gp-extra-300s-60: level trim at 17 m/s  trimmed
+gp-extra-300s-60 at the 17 m/s trim (α 5.38°, δe -2.93°): oracle CLα 4.451 Cmα -0.613 Cmq -8.86 CLq 5.81 Cmδe -1.030 Cm 0.0043 | local CLα 4.450 Cmα -0.624 Cmq -8.58 CLq 3.05 Cmδe -1.035 Cm 0.0048
+ok   gp-extra-300s-60: local Cmq -8.58 within 12 % of the oracle's -8.86
+ok   gp-extra-300s-60: local CLα 4.450 within 10 % of the oracle's 4.451
+ok   gp-extra-300s-60: local Cmδe -1.035 within 8 % of the oracle's -1.030
+ok   gp-extra-300s-60: local Cmα -0.624 within 0.20 of the oracle's -0.613
+ok   gp-extra-300s-60: static Cm at the trim: local 0.0048 within 0.012 of the oracle's 0.0043 (no trim step at the regime switch)
+ok   gp-extra-300s-60: α 0°, neutral elevator: local Cmq -8.54 within 12 % of the oracle's -8.91
+ok   gp-extra-300s-60: α 4°, neutral elevator: local Cmq -8.58 within 12 % of the oracle's -8.88
+ok   gp-extra-300s-60: α 8°, neutral elevator: local Cmq -8.68 within 12 % of the oracle's -8.84
+ok   p51d-mustang-120: aircraft data loads  []
+ok   p51d-mustang-120: level trim at 25 m/s  trimmed
+p51d-mustang-120 at the 25 m/s trim (α 4.11°, δe -2.44°): oracle CLα 4.338 Cmα -0.224 Cmq -7.53 CLq 5.45 Cmδe -0.854 Cm 0.0186 | local CLα 4.337 Cmα -0.239 Cmq -8.02 CLq 2.25 Cmδe -0.864 Cm 0.0196
+ok   p51d-mustang-120: local Cmq -8.02 within 12 % of the oracle's -7.53
+ok   p51d-mustang-120: local CLα 4.337 within 10 % of the oracle's 4.338
+ok   p51d-mustang-120: local Cmδe -0.864 within 8 % of the oracle's -0.854
+ok   p51d-mustang-120: local Cmα -0.239 within 0.20 of the oracle's -0.224
+ok   p51d-mustang-120: static Cm at the trim: local 0.0196 within 0.012 of the oracle's 0.0186 (no trim step at the regime switch)
+ok   p51d-mustang-120: α 0°, neutral elevator: local Cmq -7.96 within 12 % of the oracle's -7.61
+ok   p51d-mustang-120: α 4°, neutral elevator: local Cmq -8.00 within 12 % of the oracle's -7.53
+ok   p51d-mustang-120: α 8°, neutral elevator: local Cmq -8.11 within 12 % of the oracle's -7.46
+ok   sebart-avanti-s-a200-p100rx: aircraft data loads  []
+ok   sebart-avanti-s-a200-p100rx: level trim at 29 m/s  trimmed
+sebart-avanti-s-a200-p100rx at the 29 m/s trim (α 4.05°, δe -1.73°): oracle CLα 4.629 Cmα -0.398 Cmq -6.95 CLq 6.25 Cmδe -0.912 Cm -0.0013 | local CLα 4.626 Cmα -0.409 Cmq -7.18 CLq 2.59 Cmδe -0.915 Cm 0.0006
+ok   sebart-avanti-s-a200-p100rx: local Cmq -7.18 within 12 % of the oracle's -6.95
+ok   sebart-avanti-s-a200-p100rx: local CLα 4.626 within 10 % of the oracle's 4.629
+ok   sebart-avanti-s-a200-p100rx: local Cmδe -0.915 within 8 % of the oracle's -0.912
+ok   sebart-avanti-s-a200-p100rx: local Cmα -0.409 within 0.20 of the oracle's -0.398
+ok   sebart-avanti-s-a200-p100rx: static Cm at the trim: local 0.0006 within 0.012 of the oracle's -0.0013 (no trim step at the regime switch)
+ok   sebart-avanti-s-a200-p100rx: α 0°, neutral elevator: local Cmq -7.13 within 12 % of the oracle's -6.95
+ok   sebart-avanti-s-a200-p100rx: α 4°, neutral elevator: local Cmq -7.18 within 12 % of the oracle's -6.95
+ok   sebart-avanti-s-a200-p100rx: α 8°, neutral elevator: local Cmq -7.25 within 12 % of the oracle's -6.94
+ok   turbo-lumber-evolution: aircraft data loads  []
+ok   turbo-lumber-evolution: level trim at 13 m/s  trimmed
+turbo-lumber-evolution at the 13 m/s trim (α 4.32°, δe -2.66°): oracle CLα 4.817 Cmα -1.635 Cmq -12.68 CLq 4.44 Cmδe -1.392 Cm 0.0032 | local CLα 4.817 Cmα -1.628 Cmq -12.69 CLq 3.34 Cmδe -1.366 Cm 0.0021
+ok   turbo-lumber-evolution: local Cmq -12.69 within 12 % of the oracle's -12.68
+ok   turbo-lumber-evolution: local CLα 4.817 within 10 % of the oracle's 4.817
+ok   turbo-lumber-evolution: local Cmδe -1.366 within 8 % of the oracle's -1.392
+ok   turbo-lumber-evolution: local Cmα -1.628 within 0.20 of the oracle's -1.635
+ok   turbo-lumber-evolution: static Cm at the trim: local 0.0021 within 0.012 of the oracle's 0.0032 (no trim step at the regime switch)
+ok   turbo-lumber-evolution: α 0°, neutral elevator: local Cmq -12.80 within 12 % of the oracle's -12.53
+ok   turbo-lumber-evolution: α 4°, neutral elevator: local Cmq -12.79 within 12 % of the oracle's -12.67
+ok   turbo-lumber-evolution: α 8°, neutral elevator: local Cmq -12.91 within 12 % of the oracle's -12.81
+80 checks, 0 failed

@@ -1,0 +1,7 @@
+{
+  "app/render/shadow.gd": "bb469bfb2bfa73d901ad2bc459691ae7f2730478f75ccef8a3176204bdf13313",
+  "app/render/projected_shadow.gd": "0c5bc46ac42116d5b0dd9194695dbd3a2a29a95fe640ed6382575cc7b166a992",
+  "app/render/projected_shadow_mask.gdshader": "1d745413a473e4f9b64300e60917c72477e0d46b460fd4e3b22776b718bfc5ef",
+  "app/render/projected_shadow_receiver.gdshader": "4182f5e85f0aebba5323099abe02906862cda47e1ccc32443085d330f8a0272b",
+  "app/spec.gd": "0b9e3625e60945e04e96533f44ccd22c906957d8eef15baf9ffae5b879aee0bc"
+}

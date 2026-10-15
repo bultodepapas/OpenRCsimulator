@@ -1,11 +1,13 @@
-# AV-09: real retractable gear state in deterministic v10 flight traces.
+# AV-09: coupled retractable gear and flap state in deterministic flight traces.
 extends SceneTree
 
 const Flight := preload("res://sim/flight_session.gd")
 const Recorder := preload("res://sim/recorder.gd")
 const Trace := preload("res://sim/trace.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const Flaps := preload("res://physics/flaps.gd")
 const GEAR_COLUMNS := ["gear_extension", "gear_target_down", "cmd_gear_down", "cmd_wheel_brake"]
+const FLAP_COLUMNS := ["cmd_flaps", "flap_fraction", "flap_deg"]
 const TURBULENCE_COLUMNS := ["turbulence_north_mps", "turbulence_east_mps", "turbulence_down_mps",
 	"loads_turbulence_north_mps", "loads_turbulence_east_mps", "loads_turbulence_down_mps"]
 const TURBULENCE_MODEL := "uniform-ned-cosine-plus-temporal-ou-pcg32-normal53-v1"
@@ -34,7 +36,7 @@ func _record_one(metadata: Dictionary, session: Node, inputs: PackedFloat64Array
 		aux: PackedFloat64Array) -> Trace:
 	var malformed := Trace.new()
 	malformed.meta = metadata.duplicate(true)
-	malformed.record(0, 0.0, session.sim.state, session.sim.last_loads, inputs, aux,
+	malformed.record(session.sim.tick, session.sim.time(), session.sim.state, session.sim.last_loads, inputs, aux,
 		session.sim.continuous.duplicate())
 	return malformed
 
@@ -42,8 +44,8 @@ func _record_one(metadata: Dictionary, session: Node, inputs: PackedFloat64Array
 func _initialize() -> void:
 	var flight := Flight.new()
 	flight.setup(Catalog.entry("sebart-avanti-s-a200-p100rx").data)
-	_check("Avanti exposes retractable gear and six accepted inputs", flight.gear_is_retractable()
-		and flight.sim.inputs.size() == 6)
+	_check("Avanti exposes retractable gear, flaps, and seven accepted inputs", flight.gear_is_retractable()
+		and flight.flaps_available() and flight.sim.inputs.size() == 7)
 	var turbulence := {
 		"format": "openrc-weather v2",
 		"speed_mps": 0.0,
@@ -62,24 +64,28 @@ func _initialize() -> void:
 	var start_state: Dictionary = flight.gear_state()
 	var meta: Dictionary = flight.trace_meta()
 	var gear_index: int = flight.gear_aux_index()
+	var flap_index: int = flight.flap_aux_index()
 	var turbulence_index: int = flight.turbulence_index()
 	var continuous: Array = JSON.parse_string(meta.recording_start_continuous)
 	var wheel_layout: Array = JSON.parse_string(meta.wheel_state_layout)
-	_check("recording metadata uses v8 gear and complete turbine/wheel state",
-		meta.metadata_schema == "openrc-flight-meta v8" and meta.gear_law == "retractable-point-gear-v1"
+	_check("recording metadata uses v9 gear/flap and complete turbine/wheel state",
+		meta.metadata_schema == "openrc-flight-meta v9" and meta.gear_law == "retractable-point-gear-v1"
 		and meta.gear_trace_schema == "openrc-gear-trace v1" and wheel_layout.size() == flight.wheel_count()
-		and continuous.size() == 1 + wheel_layout.size())
-	_check("gear AUX pair precedes the seven-field turbulence state",
-		gear_index >= 4 and turbulence_index == gear_index + 2 and flight.sim.aux.size() == turbulence_index + 7)
+		and continuous.size() == 1 + wheel_layout.size() and meta.flap_law == Flaps.LAW
+		and meta.flap_trace_schema == "openrc-flap-trace v1" and meta.flap_input_index == 6)
+	_check("gear, flap, and turbulence AUX states use the declared order",
+		gear_index >= 4 and flap_index == gear_index + 2 and turbulence_index == flap_index + 1
+		and flight.sim.aux.size() == turbulence_index + 7)
 	_check("start snapshot records stowed gear target", start_state.available and start_state.extension == 0.0
-		and not start_state.target_down)
+		and not start_state.target_down and flight.flap_state().actual == 0.0)
 
 	var recorder := Recorder.new(flight.sim, flight.electrical_state)
 	recorder.start(meta)
-	_check("recorder starts the actual v10 trace", recorder.trace.row_count() == 1
-		and recorder.trace.columns().slice(-4) == GEAR_COLUMNS and recorder.trace.to_csv().contains("# format: openrc-trace v10\n"))
-	_check("gear request and wheel brake are accepted in flight",
-		flight.set_gear_down(true) and flight.set_wheel_brake(0.5))
+	_check("recorder starts the actual v12 trace", recorder.trace.row_count() == 1
+		and recorder.trace.columns().slice(-7) == GEAR_COLUMNS + FLAP_COLUMNS
+		and recorder.trace.to_csv().contains("# format: openrc-trace v12\n"))
+	_check("gear, wheel brake, and flap requests are accepted in flight",
+		flight.set_gear_down(true) and flight.set_wheel_brake(0.5) and flight.set_flaps(1.0))
 	flight.sim.inputs = flight._inputs()
 	flight.sim.step()
 	var mid_state: Dictionary = flight.gear_state()
@@ -91,6 +97,12 @@ func _initialize() -> void:
 		and recorder.trace.value(1, "gear_target_down") == 1.0
 		and recorder.trace.value(1, "cmd_gear_down") == 1.0
 		and recorder.trace.value(1, "cmd_wheel_brake") == 0.5)
+	var flap_status: Dictionary = flight.flap_state()
+	_check("trace records normalized flap demand and the slewing endpoint",
+		flap_status.available and flap_status.actual > 0.0 and flap_status.actual < 1.0
+		and recorder.trace.value(1, "cmd_flaps") == 1.0
+		and recorder.trace.value(1, "flap_fraction") == flap_status.actual
+		and is_equal_approx(recorder.trace.value(1, "flap_deg"), flap_status.angle_deg))
 	var csv_text: String = recorder.trace.to_csv()
 	var data_rows := PackedStringArray()
 	for line: String in csv_text.split("\n"):
@@ -98,16 +110,20 @@ func _initialize() -> void:
 			data_rows.append(line)
 	var header := data_rows[0].split(",") if not data_rows.is_empty() else PackedStringArray()
 	var row := data_rows[2].split(",") if data_rows.size() > 2 else PackedStringArray()
-	_check("CSV round-trip places turbulence before the gear tail",
-		data_rows.size() == 3 and Array(header.slice(-4)) == GEAR_COLUMNS
+	_check("CSV round-trip places turbulence before the gear and flap tails",
+		data_rows.size() == 3 and Array(header.slice(-7)) == GEAR_COLUMNS + FLAP_COLUMNS
 		and header.find(TURBULENCE_COLUMNS[0]) >= 0
 		and header.find(TURBULENCE_COLUMNS[-1]) < header.find(GEAR_COLUMNS[0])
+		and header.find(GEAR_COLUMNS[-1]) < header.find(FLAP_COLUMNS[0])
 		and is_equal_approx(float(row[header.find("gear_extension")]), extension)
-		and float(row[header.find("gear_target_down")]) == 1.0)
+		and float(row[header.find("gear_target_down")]) == 1.0
+		and is_equal_approx(float(row[header.find("flap_fraction")]), flap_status.actual))
 	_check("trace metadata retains turbulence and full gear start snapshots",
 		csv_text.contains("# gear_aux_index: %d\n" % gear_index)
 		and csv_text.contains("# turbulence_aux_index: %d\n" % turbulence_index)
 		and csv_text.contains("# gear_trace_schema: openrc-gear-trace v1\n")
+		and csv_text.contains("# flap_trace_schema: openrc-flap-trace v1\n")
+		and csv_text.contains("# flap_aux_index: %d\n" % flap_index)
 		and csv_text.contains("# recording_start_gear: [0.0,0.0]\n"))
 
 	# The gear extension and target, wheel spin, turbulence interval, and accepted command
@@ -119,7 +135,11 @@ func _initialize() -> void:
 		and checkpoint.get("gear_aux_index") == gear_index
 		and checkpoint.simulation.aux[gear_index] > 0.0 and checkpoint.simulation.aux[gear_index] < 1.0
 		and checkpoint.simulation.aux[gear_index + 1] == 1.0
-		and checkpoint.simulation.inputs[4] == 1.0 and checkpoint.simulation.inputs[5] == 0.5)
+		and checkpoint.simulation.inputs[4] == 1.0 and checkpoint.simulation.inputs[5] == 0.5
+		and checkpoint.get("flap_law") == Flaps.LAW
+		and checkpoint.get("flap_aux_index") == flap_index and checkpoint.get("flap_input_index") == 6
+		and checkpoint.simulation.aux[flap_index] > 0.0 and checkpoint.simulation.aux[flap_index] < 1.0
+		and checkpoint.simulation.inputs[6] == 1.0)
 	recorder.recording = false
 	recorder.detach()
 	for _tick in 12:
@@ -129,7 +149,9 @@ func _initialize() -> void:
 	var restored: bool = flight.restore_checkpoint(checkpoint_copy)
 	_check("mid-extension checkpoint restores the accepted actuator state", restored
 		and flight.gear_state().extension == checkpoint.simulation.aux[gear_index]
-		and flight.gear_state().target_down and flight.sim.inputs[5] == 0.5)
+		and flight.gear_state().target_down and flight.sim.inputs[5] == 0.5
+		and flight.flap_state().actual == checkpoint.simulation.aux[flap_index]
+		and flight.flap_state().requested == 1.0 and flight.sim.inputs[6] == 1.0)
 	for _tick in 12:
 		flight.sim.step()
 	_check("gear and turbulence replay reproduce every simulation boundary bit", _snapshot_matches(flight.sim, expected_replay))
@@ -162,6 +184,11 @@ func _initialize() -> void:
 	var bad_command_trace := _record_one(baseline_meta, flight, nonbinary_command, flight.sim.aux)
 	_check("recorder rejects nonbinary gear command input",
 		bad_command_trace.row_count() == 0 and bad_command_trace._invalid_weather)
+	var invalid_flap_command: PackedFloat64Array = flight.sim.inputs.duplicate()
+	invalid_flap_command[6] = 1.5
+	var bad_flap_command_trace := _record_one(baseline_meta, flight, invalid_flap_command, flight.sim.aux)
+	_check("recorder rejects flap command outside normalized endpoints",
+		bad_flap_command_trace.row_count() == 0 and bad_flap_command_trace._invalid_weather)
 
 	flight.free()
 	print("AV-09 retractable gear trace: %d checks, %d failed" % [_checks, _failures])

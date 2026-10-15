@@ -1,0 +1,7 @@
+test_explicit_split_preserves_default_rows (frozen_test_shaft_cli.ShaftCLI.test_explicit_split_preserves_default_rows) ... ok
+test_reference_trim_and_model_identity (frozen_test_shaft_cli.ShaftCLI.test_reference_trim_and_model_identity) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 14.774s
+
+OK

@@ -1,0 +1,26 @@
+{
+  "silhouette": {
+    "reference": 14316,
+    "candidate": 5
+  },
+  "create": {
+    "reference": 16266,
+    "candidate": 853
+  },
+  "first_mask": {
+    "reference": [
+      12157,
+      17930,
+      14059,
+      14158,
+      11903
+    ],
+    "candidate": [
+      13648,
+      16245,
+      16041,
+      15919,
+      11380
+    ]
+  }
+}

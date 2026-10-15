@@ -502,6 +502,7 @@ func _build() -> void:
 	filter_row.add_child(action_filter)
 	page.add_child(filter_row)
 	page.add_child(_label("Bindings are saved by physical control. A different device cannot trigger them.", "SecondaryLabel", true))
+	page.add_child(_label("Gamepads: B/Circle controls retractable gear and RB/R1 controls an installed smoke pump automatically. Flap actions depend on the selected aircraft. Existing assignments take priority; remap other joysticks to choose their buttons.", "SecondaryLabel", true))
 	action_grid = GridContainer.new()
 	action_grid.name = "SemanticActions"
 	action_grid.columns = 3
@@ -1062,7 +1063,7 @@ func _update_preset_options() -> void:
 			"mode1":
 				preset_help_label.text = tr("Mode 1: left X yaw, left Y pitch; right X roll, right Y throttle.")
 			"trigger_absolute":
-				preset_help_label.text = tr("Trigger throttle: left X yaw, right X roll, right Y pitch, RT/R2 throttle (axis 5). Release RT/R2 to arm.")
+				preset_help_label.text = tr("Trigger throttle: left X yaw, right X roll, right Y pitch, RT/R2 throttle (axis 5).")
 			_:
 				preset_help_label.text = tr("Mode 2: left X yaw, left Y throttle; right X roll, right Y pitch.")
 		preset_help_label.visible = str(_draft_profile.get("kind", "")) == "gamepad"

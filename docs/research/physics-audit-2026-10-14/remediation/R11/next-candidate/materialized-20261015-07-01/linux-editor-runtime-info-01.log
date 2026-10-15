@@ -1,0 +1,28 @@
+UTC=2026-10-15T14:08:42Z
+
+ENGINE VERSION
+4.7.2.stable.official.ed1daf0bf
+
+HELP FEATURES
+  [92m-e, --editor                      [1;91mE[0m  Start the editor instead of running the scene.
+  [92m--main-pack [95m<file>[0m                [1;93mX[0m  Path to a pack (.pck) file to load.
+  [92m--headless                        [1;92mR[0m  Enable headless mode (--display-driver headless --audio-driver Dummy). Useful for servers and with --script.
+  [92m--editor-pseudolocalization       [1;91mE[0m  Enable pseudolocalization for the editor and the project manager.
+  [92m-s, --script [95m<script>[0m             [1;93mX[0m  Run a script.
+  [92m--check-only                      [1;93mX[0m  Only parse for errors and quit (use with --script).
+  [92m--export-release [95m<preset>[0m [95m<path>[0m  [1;91mE[0m  Export the project in release mode using the given preset and output path. The preset name should match one defined in "export_presets.cfg".
+  [92m--export-debug [95m<preset>[0m [95m<path>[0m    [1;91mE[0m  Export the project in debug mode using the given preset and output path. See --export-release description for other considerations.
+  [92m--export-pack [95m<preset>[0m [95m<path>[0m     [1;91mE[0m  Export the project data only using the given preset and output path. The <path> extension determines whether it will be in PCK or ZIP format.
+  [92m--export-patch [95m<preset>[0m [95m<path>[0m    [1;91mE[0m  Export pack with changed files only. See --export-pack description for other considerations.
+  [92m--patches [95m<paths>[0m                 [1;91mE[0m  List of patches to use with --export-patch. The list is comma-separated.
+  [92m--install-android-build-template  [1;91mE[0m  Install the Android build template. Used in conjunction with --export-release or --export-debug.
+  [92m--build-solutions                 [1;91mE[0m  Build the scripting solutions (e.g. for C# projects). Implies --editor and requires a valid project to edit.
+
+CPU/MEMORY
+24
+ 09:08:42 up 1 day, 16:01,  1 user,  load average: 1.87, 1.99, 2.59
+               total        used        free      shared  buff/cache   available
+Mem:            31Gi       5.5Gi        20Gi       481Mi       5.8Gi        25Gi
+Swap:          8.0Gi       220Ki       8.0Gi
+
+ACTIVE GODOT/APP COMM

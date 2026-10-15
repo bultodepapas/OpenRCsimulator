@@ -1,0 +1,15 @@
+verify_p51 exit=0 verify_p51: 248 checks, 0 failed 
+verify_p51_clearance exit=0 verify_p51_clearance: 12 checks, 0 failed (30412 ms) 
+test_p51_handling exit=1 FAIL inside loop at 0.7 stick from 27 m/s: 360° of pitch within 8 s, finite  345° (5.2 s) 15 checks, 1 failed 
+test_p51_envelope exit=1 FAIL power-off stall recovers (stick forward, opposite rudder, wings level, α-limited pull-out) within 80 m, no crash  83 m 15 checks, 1 failed 
+test_p51_ground exit=1 FAIL lift-off between 1.05 and 1.5 Vs (rotation at 1.25 Vs)  25.2 m/s 12 checks, 1 failed 
+test_runway_start exit=0 18 checks, 0 failed 
+test_prop_strike exit=0 34 checks, 0 failed 
+test_aircraft_data exit=0 87 checks, 0 failed 
+test_aircraft_catalog exit=0 98 checks, 0 failed 
+test_trim exit=0 14 checks, 0 failed 
+test_rudder_authority exit=1 FAIL |r| at 3.0 s (1.5 s after release) ≤15°/s (estimated recovery screen) βpk 20.39° RMS 10.68°, rpk 92.58°/s RMS 42.67°/s, ppk 57.00°/s, αpk 6.50°, rollpk 19.01°, altitude 30.00–30.30 m (Δpk 0.30 m), rpm pk 5156, r@3s -15.13°/s, rfi
+envelope 240 exit 0
+ground 240 exit 0
+envelope 480 exit 0
+ground 480 exit 0

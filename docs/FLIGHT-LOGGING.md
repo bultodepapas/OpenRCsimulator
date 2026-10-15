@@ -138,6 +138,7 @@ Useful groups:
 | Roll and adverse yaw | `cmd_roll`, `srv_roll`, `p_radps`, `r_radps`, `beta_rad`, `Mx_Nm`, `Mz_Nm` |
 | Power response | `cmd_throttle`, `engine_rpm`, `Fx_N`, `tas_mps`, relevant continuous-state columns |
 | Gear / braking | `cmd_gear_down`, `cmd_wheel_brake`, gear auxiliary states, loads and body motion |
+| Flaps | `cmd_flaps`, the `aux_N` at metadata `flap_aux_index`, `srv_pitch`, airspeed, angle of attack and loads |
 
 Use F11 event ticks in the report to select intervals. A practical session is a short
 settled segment, a small isolated step/doublet, neutral recovery, then a repeat at a
@@ -152,7 +153,7 @@ their own `loads_t_s`, not the endpoint timestamp.
 | Position / velocity / quaternion / rates | Float64 NED position in m; body FRD velocity in m/s; body-to-NED `[w,x,y,z]`; body rates in rad/s. These are committed endpoints. |
 | `Fx_N`…`Mz_Nm`, `loads_t_s` | Body force/moment excluding gravity, from RK4 k1 at the interval start. At tick 0, initial loads. A mid-flight initial row retains the preceding step's k1 time. |
 | `raw_*`, `stick_*` | Session input sample and shaped virtual/radio stick commands. These are not USB packets; keyboard raw throttle is a rate request. No HID identifiers or device enumeration are recorded. |
-| `cmd_*` | Commands actually supplied to the physics tick, after input conditioning/rates/trim, before failures/servo dynamics. Gear/brake channels only where supported. |
+| `cmd_*` | Commands actually supplied to the physics tick, after input conditioning/rates/trim, before failures/servo dynamics. Gear/brake and flap channels only where supported. |
 | `engine_rpm`, `srv_*` | Accepted shaft RPM and actual normalized servo outputs. |
 | `aux_*`, `continuous_*`, `mode_*` | Complete owner-defined internal arrays, preserving float64 and int64. Includes active wheel/wake/turbulence/energy/propulsion states. Layout/law descriptions are in report metadata and [FlightSession](../app/sim/flight_session.gd). Unused subsystems add no arrays. |
 | Air channels | Endpoint true airspeed, angle of attack, sideslip and NED wind. No extra aerodynamic force evaluation. |
@@ -163,6 +164,16 @@ Body velocity is not air-relative velocity. Positive `down_m` points down; altit
 above the NED datum is `-down_m`, which is not terrain clearance. Servo values are
 fractions of maximum throw, not degrees. [Aircraft units/signs](../AIRCRAFT_CONTRACT.md#coordinates-signs-and-units)
 remain authoritative.
+
+The optional flap channel is normalized 0–1. Its accepted actuator position is retained
+in the auxiliary array; `flap_aux_index`, `flap_input_index`, `flap_max_angle_deg` and
+`flap_law` identify the layout and interpretation. Multiply actual fraction by the
+maximum angle for degrees down. Elevator servo output includes the authored flap mix;
+`cmd_pitch` remains the pilot demand before mixing/failures. A recording with this
+actuator cannot be replayed against a model that removes its state. Clean historical
+recordings remain exportable and require their original source for exact replay.
+The existing **T** CSV route uses `openrc-trace v12` with explicit `cmd_flaps`,
+`flap_fraction` and `flap_deg` columns when flaps are installed.
 
 The log does not collect rendering frames, audio, GPU counters, operating-system
 telemetry, calibration files or network traffic. Wall-clock observer cost is an

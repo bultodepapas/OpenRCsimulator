@@ -1,0 +1,59 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/jensen_ugly_stik_60.orfl
+Flight log saved: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/jensen_ugly_stik_60.orfl (260 ticks)
+Flight log already exists: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/jensen_ugly_stik_60.orfl
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/jensen_ugly_stik_60.orfl.reset
+Flight log saved: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/jensen_ugly_stik_60.orfl.reset (0 ticks)
+Cannot open flight log (12).
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/jensen_ugly_stik_60.orfl.limit
+Flight log byte limit exceeded; file is incomplete.
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/gp_extra_300s_60.orfl
+Flight log saved: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/gp_extra_300s_60.orfl (260 ticks)
+Flight log already exists: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/gp_extra_300s_60.orfl
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/gp_extra_300s_60.orfl.reset
+Flight log saved: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/gp_extra_300s_60.orfl.reset (0 ticks)
+Cannot open flight log (12).
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/gp_extra_300s_60.orfl.limit
+Flight log byte limit exceeded; file is incomplete.
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/p51d_mustang_120.orfl
+Flight log saved: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/p51d_mustang_120.orfl (260 ticks)
+Flight log already exists: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/p51d_mustang_120.orfl
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/p51d_mustang_120.orfl.reset
+Flight log saved: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/p51d_mustang_120.orfl.reset (0 ticks)
+Cannot open flight log (12).
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/p51d_mustang_120.orfl.limit
+Flight log byte limit exceeded; file is incomplete.
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/sebart_avanti_s_a200.orfl
+Flight log saved: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/sebart_avanti_s_a200.orfl (260 ticks)
+Flight log already exists: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/sebart_avanti_s_a200.orfl
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/sebart_avanti_s_a200.orfl.reset
+Flight log saved: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/sebart_avanti_s_a200.orfl.reset (0 ticks)
+Cannot open flight log (12).
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/sebart_avanti_s_a200.orfl.limit
+Flight log byte limit exceeded; file is incomplete.
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/turbo_lumber_evolution.orfl
+Flight log saved: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/turbo_lumber_evolution.orfl (260 ticks)
+Flight log already exists: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/turbo_lumber_evolution.orfl
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/turbo_lumber_evolution.orfl.reset
+Flight log saved: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/turbo_lumber_evolution.orfl.reset (0 ticks)
+Cannot open flight log (12).
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/turbo_lumber_evolution.orfl.limit
+Flight log byte limit exceeded; file is incomplete.
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/stik_glow_61fx_2t.orfl
+Flight log saved: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/stik_glow_61fx_2t.orfl (260 ticks)
+Flight log already exists: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/stik_glow_61fx_2t.orfl
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/stik_glow_61fx_2t.orfl.reset
+Flight log saved: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/stik_glow_61fx_2t.orfl.reset (0 ticks)
+Cannot open flight log (12).
+Flight log REC: /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155/stik_glow_61fx_2t.orfl.limit
+Flight log byte limit exceeded; file is incomplete.
+FL-04 flight logs: 3247 checks, 0 failures; /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../tmp/flight-log-1027155

@@ -1,0 +1,36 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   surface table loads  []
+ok   runway, zero-relief rotorpad, mown and rough material factors load  { "runway": { &"friction_factor": 0.8, &"rolling_factor": 2.5 }, "rotorpad": { &"friction_factor": 0.7, &"rolling_factor": 0.5 }, "mown": { &"friction_factor": 0.7, &"rolling_factor": 5.0 }, "rough": { &"friction_factor": 0.7, &"rolling_factor": 7.5 } }
+ok   refuses: wrong format  ["format must be \'openrc-surfaces v1\', got \'openrc-surfaces v0\'"]
+ok   refuses: a missing surface type  ["surfaces.mown: missing"]
+ok   refuses: friction factor above 1 (would break the side-force bound)  ["surfaces.runway.friction_factor: 1.2 outside [0.05, 1.0] 1"]
+ok   refuses: rolling factor in percent  ["surfaces.rough.rolling_factor: unit \'%\', expected \'1\'"]
+ok   refuses: an unknown surface type  ["surfaces.ice: unknown surface type (expected [\"runway\", \"rotorpad\", \"mown\", \"rough\"])"]
+ok   refuses: an empty source  ["surfaces.rough.rolling_factor: empty source"]
+ok   default field loads  []
+ok   surface lookup table builds from the field  []
+ok   runway centre, threshold and edge are runway
+ok   just past the runway's end and side is rough
+ok   the pilot station and 30 km away are rough (beyond every rectangle: rough)
+ok   default rotorcraft pad uses its dedicated flat-support material
+ok   precedence: runway over rotorpad over mown over rough, whatever the field's order  2.5 0.5 5.0 7.5 7.5
+ok   on the runway: rolling drag −0.04·2.5·100 = −10 N  [-10.0, 0.0, -100.0, 0.0, -2.0, 0.0]
+ok   on the runway: sideways skid saturates at −0.8·0.8·100 = −64 N  [0.0, -64.0, -100.0, 12.8, 0.0, 0.0]
+ok   on the rough: rolling drag −0.04·7.5·100 = −30 N  [-30.0, 0.0, -100.0, 0.0, -6.0, 0.0]
+ok   on the rough at 1.5 cm/s: half the drag (creep speed 0.1·C_rr = 3 cm/s)  [-15.0, 0.0, -100.0, 0.0, -3.0, 0.0]
+ok   the wheel's own surface counts: CG on the runway, wheel past its end → rough drag −30 N  [-30.0, 0.0, -100.0, 0.0, 24.0, 0.0]
+ok   without a surface table: the gear's pavement values (−4 N), as in E2  [-4.0, 0.0, -100.0, 0.0, -0.8, 0.0]
+ok   friction never produces power across surface edges (2000 random states)  max P -0.67197749822696 W
+ok   coast-down on the runway from 3 m/s: 0.981 m/s² (C_rr·factor·g) within 1 %  0.9791 m/s²
+ok   coast-down on the rough from 3 m/s: 2.942 m/s² (C_rr·factor·g) within 1 %  2.9326 m/s²
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   no field (pavement): idling on the runway spot rolls away (E2 finding)  20.8 m in 10 s, 3.74 m/s
+ok   set_field builds the surfaces and keeps the flight flyable
+ok   on the mown runway: idle (2.6 N) does not beat rolling resistance (2.8 N); only the regularisation's creep, ≤ 1 cm/s  0.096 m in 10 s, 0.0091 m/s
+ok   on the rough: idle holds (creep ≤ 1 cm/s)  0.109 m in 10 s, 0.0097 m/s
+info trace header: 3 profiled spring-damper gear contacts; deterministic bounded grass relief (GP-01, at most 7 mm), terrain-normal projection, field-scaled friction and wheel-radius-corrected rolling resistance; steering and continuous relative wheel spin; brakes off (no brake command exposed); field 'default'
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ground surfaces invalid: res://data/ground/missing.json: missing or not a JSON object
+ok   invalid surface data refuses the flight (like invalid aircraft data)  ground surfaces invalid: res://data/ground/missing.json: missing or not a JSON object
+29 checks, 0 failed

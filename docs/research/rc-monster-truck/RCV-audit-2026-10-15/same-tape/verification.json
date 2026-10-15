@@ -1,0 +1,10 @@
+{
+  "ok": false,
+  "reference_commit": "551b681fd8f1565f46876c577f768b37926c8342",
+  "reference_kernel_sha256": "ecd8baa1e8cce6b82e2881c378e3d7456d59c65bd7831b61e971c378d581edf0",
+  "candidate_kernel_sha256": "f676ff26c27ec9a7d1bc0c7672f8584367f27a9d19baed6809eb475ba709f4e1",
+  "input_csv_sha256": "42ba9c78ab80e3fa4a75e12e641a9778844ab201dc7692db55531ae91813edae",
+  "godot_sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+  "exit_code": 4294967295,
+  "physical_validation": false
+}

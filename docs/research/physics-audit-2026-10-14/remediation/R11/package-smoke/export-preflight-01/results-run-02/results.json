@@ -1,0 +1,85 @@
+{
+  "case_count": 6,
+  "cases": [
+    {
+      "case": "positive_merged_receipt",
+      "exit_code": 0,
+      "expected_exit_code": 0,
+      "expected_output": "\"format\": \"openrc-native-export-artifacts-v1\"",
+      "linux_binary": "/home/bulto/openrc-r11-package-20261015-08/app/native/ground_vehicle/libopenrc_ground_vehicle.so",
+      "passed": true,
+      "receipt": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/native-package-staging/receipt-merge-20261015-02/build-receipt.json",
+      "stderr": "",
+      "stdout": "{\"abi_version\": 1, \"backend\": \"native\", \"backend_version\": \"openrc-ground-vehicle-native-evaluate-v2\", \"format\": \"openrc-native-export-artifacts-v1\", \"platforms\": {\"linux\": {\"binary\": \"/home/bulto/openrc-r11-package-20261015-08/app/native/ground_vehicle/libopenrc_ground_vehicle.so\", \"binary_sha256\": \"08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3\", \"toolchain_sha256\": \"86c94e45f49cb2c40d81cb2b501865113b974a9a5f25863e313e16d451ab561c\"}, \"windows\": {\"binary\": \"/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r11-native-package-staging-20261015-01/bin/openrc_ground_vehicle.dll\", \"binary_sha256\": \"adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c\", \"toolchain_sha256\": \"78bdd21d315683b45eee37c24b84716430cdba2a9b24066f59a68df476585b4d\"}}, \"solver_version\": \"openrc-ground-vehicle-dynamics-rk4-v3\", \"source_sha256\": \"e2ae0a5ffebc8d81636302d66238348035ee92bf51d2f40965db7053bb251541\"}",
+      "windows_binary": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r11-native-package-staging-20261015-01/bin/openrc_ground_vehicle.dll"
+    },
+    {
+      "case": "missing_windows_row",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "expected_output": "lacks the windows platform row",
+      "linux_binary": "/home/bulto/openrc-r11-package-20261015-08/app/native/ground_vehicle/libopenrc_ground_vehicle.so",
+      "passed": true,
+      "receipt": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/export-preflight-01/results-run-02/fixtures/missing-windows-row.json",
+      "stderr": "native receipt lacks the windows platform row",
+      "stdout": "",
+      "windows_binary": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r11-native-package-staging-20261015-01/bin/openrc_ground_vehicle.dll"
+    },
+    {
+      "case": "boolean_windows_abi",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "expected_output": "non-integer or unsupported ABI version",
+      "linux_binary": "/home/bulto/openrc-r11-package-20261015-08/app/native/ground_vehicle/libopenrc_ground_vehicle.so",
+      "passed": true,
+      "receipt": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/export-preflight-01/results-run-02/fixtures/boolean-windows-abi.json",
+      "stderr": "native windows receipt row has a non-integer or unsupported ABI version",
+      "stdout": "",
+      "windows_binary": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r11-native-package-staging-20261015-01/bin/openrc_ground_vehicle.dll"
+    },
+    {
+      "case": "windows_source_mismatch",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "expected_output": "disagrees with the shared source identity",
+      "linux_binary": "/home/bulto/openrc-r11-package-20261015-08/app/native/ground_vehicle/libopenrc_ground_vehicle.so",
+      "passed": true,
+      "receipt": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/export-preflight-01/results-run-02/fixtures/windows-source-mismatch.json",
+      "stderr": "native windows receipt row disagrees with the shared source identity",
+      "stdout": "",
+      "windows_binary": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r11-native-package-staging-20261015-01/bin/openrc_ground_vehicle.dll"
+    },
+    {
+      "case": "envelope_source_mismatch",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "expected_output": "disagrees with the shared source identity",
+      "linux_binary": "/home/bulto/openrc-r11-package-20261015-08/app/native/ground_vehicle/libopenrc_ground_vehicle.so",
+      "passed": true,
+      "receipt": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/export-preflight-01/results-run-02/fixtures/envelope-source-mismatch.json",
+      "stderr": "native linux receipt row disagrees with the shared source identity",
+      "stdout": "",
+      "windows_binary": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r11-native-package-staging-20261015-01/bin/openrc_ground_vehicle.dll"
+    },
+    {
+      "case": "windows_binary_mismatch",
+      "exit_code": 1,
+      "expected_exit_code": 1,
+      "expected_output": "differs from its receipt",
+      "linux_binary": "/home/bulto/openrc-r11-package-20261015-08/app/native/ground_vehicle/libopenrc_ground_vehicle.so",
+      "passed": true,
+      "receipt": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/native-package-staging/receipt-merge-20261015-02/build-receipt.json",
+      "stderr": "exported windows native artifact differs from its receipt: /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/export-preflight-01/results-run-02/fixtures/windows-binary-corrupted.dll",
+      "stdout": "",
+      "windows_binary": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/export-preflight-01/results-run-02/fixtures/windows-binary-corrupted.dll"
+    }
+  ],
+  "format": "openrc-r11-native-export-preflight-cases-v1",
+  "inputs": {
+    "linux_binary_sha256": "08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3",
+    "preflight_sha256": "724f14787ca7c91228c3fdc99c7f1d1a1716c6f9b5fd3a4a38e3ccf5c6f5d258",
+    "receipt_sha256": "8718896783cb792f949732a5a4d74c6d08a1bde0bd52c43f9d1982efb3fd9ff7",
+    "windows_binary_sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c"
+  },
+  "passed": true
+}

@@ -1,0 +1,9 @@
+candidate=/home/bulto/openrc-r11-package-20261015-08
+godot=/home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64
+draft=/mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd
+8084810a036e4a601596322550ff1b616f84e41bd0cfe514a5f220e8240365aa  /mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd
+8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e  /home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64
+command=/home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/bulto/openrc-r11-package-20261015-08/app --check-only --script /mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+exit=0

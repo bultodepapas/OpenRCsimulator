@@ -7,6 +7,7 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const Trace := preload("res://sim/trace.gd")
 const AircraftData := preload("res://physics/aircraft_data.gd")
+const Flaps := preload("res://physics/flaps.gd")
 const GlowFlight := preload("res://physics/glow/flight.gd")
 const Turbine := preload("res://physics/turbine.gd")
 const TIMBER := "turbo-lumber-evolution"
@@ -69,7 +70,9 @@ func _initialize() -> void:
 		var glow_profiled: bool = session.glow_is_active()
 		var wheel_profiled: bool = session.wheel_count() > 0
 		var expected_schema: String = "openrc-flight-meta v7" if glow_profiled else ("openrc-flight-meta v6" if wheel_profiled else "openrc-flight-meta v2")
-		if session.gear_is_retractable():
+		if session.flaps_available():
+			expected_schema = "openrc-flight-meta v9" # optional flap layout follows the gear channels
+		elif session.gear_is_retractable():
 			expected_schema = "openrc-flight-meta v8" # published gear/input/extension metadata contract
 		_check("metadata schema " + entry.id, meta.metadata_schema == expected_schema)
 		if wheel_profiled:
@@ -109,6 +112,16 @@ func _initialize() -> void:
 			_check("Avanti continuous turbine governor", meta.propulsion_model == Turbine.CONTINUOUS_LAW
 				and meta.turbine_integrator == "rk4")
 			_check("Avanti no propwash", meta.propwash_model == "none")
+			if session.flaps_available():
+				var input_layout: Array = JSON.parse_string(meta.input_layout)
+				_check("Avanti flap schema and law are explicit", meta.metadata_schema == "openrc-flight-meta v9"
+					and meta.flap_law == Flaps.LAW
+					and meta.flap_trace_schema == "openrc-flap-trace v1")
+				_check("Avanti flap indices follow gear and the declared input order",
+					meta.flap_aux_index == session.flap_aux_index()
+					and meta.flap_input_index == 6
+					and input_layout == ["roll", "pitch", "yaw", "throttle", "gear_down", "wheel_brake", "flaps"]
+					and meta.recording_start_flap == session.flap_state().actual)
 		elif entry.id == TIMBER:
 			_check("Timber coupled electric motor", meta.propulsion_model == "electric-fixed-bus-coupled-stop-v1")
 			_check("Timber no unmodeled propwash", meta.propwash_model == "none")

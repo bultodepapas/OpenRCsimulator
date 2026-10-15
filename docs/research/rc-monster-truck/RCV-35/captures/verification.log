@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+Nitro activity captures: status=0 tick=360 telemetry={ "engine_rpm": 9740.21403414951, "engine_speed_rad_s": 1019.99282846921, "engine_running": true, "fuel_kg": 0.09984813072695, "fuel_fraction": 0.99848130726946, "clutch_engaged": false, "clutch_engagement": 0.28770031477468, "engine_torque_nm": 0.19643417366592, "clutch_torque_nm": 0.1783741951603, "wheel_drive_torque_nm": 1.25789774960724 }

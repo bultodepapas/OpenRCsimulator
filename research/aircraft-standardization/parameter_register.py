@@ -38,6 +38,8 @@ def consumer(path: str) -> str:
         return "AircraftData._controls → FlightSession normal-gamepad sampler/flown_commands; fixed yaw response time and pitch/yaw travel before trim; full/radio bypass"
     if path.startswith("landing_gear.retraction.") or path.endswith(".retraction_path"):
         return "AircraftData._derive_retraction → RetractableGear actuator/contact interpolation/drag; FlightSession accepted gear state"
+    if path.startswith("flaps."):
+        return "AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers"
     families = [
         ("inventory[].", "AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier"),
         ("reference.", "AircraftData reference/strip derivation → Aero.loads, trim, render datum checks"),

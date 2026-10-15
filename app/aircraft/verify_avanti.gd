@@ -10,6 +10,7 @@ const Imported := preload("res://aircraft/imported_model.gd")
 const Registry := preload("res://aircraft/model_registry.gd")
 const Retraction := preload("res://aircraft/retractable_model.gd")
 
+const AVANTI_ID := "sebart-avanti-s-a200-p100rx"
 const EXPECTED_ARTICULATIONS := [
 	"aileron_left_hinge", "aileron_right_hinge",
 	"elevator_left_hinge", "elevator_right_hinge",
@@ -67,7 +68,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
-	var aircraft_id := Builder.AVANTI_ID
+	var aircraft_id := AVANTI_ID
 	var family := Catalog.visual_family(aircraft_id)
 	var described: Dictionary = Registry.describe(family)
 	_check("catalog family resolves", not family.is_empty())
@@ -154,7 +155,7 @@ func _run() -> void:
 		_check("physics configuration names the P100-RX turbine", physical.propulsion.kind == "turbine"
 			and engine_name.contains(str(data.turbine.model)))
 		_run_full_throw_cases(build, data, witnesses, rest_transforms, physical.controls.throw_deg)
-		_run_visual_flap_case(build, data, witnesses, rest_transforms, physical.controls.throw_deg)
+		_run_physical_flap_case(build, data, witnesses, rest_transforms, physical.controls.throw_deg)
 	else:
 		_check("actual mesh witnesses are available for travel checks", false)
 
@@ -180,12 +181,12 @@ func _run() -> void:
 		if physical_result.get("ok", false):
 			var command := {roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = 0.0}
 			Builder.apply_surfaces(build, Commands.hinge_rotations(command, physical_result.model.controls.throw_deg))
-			Imported.set_visual_surfaces(build, {flap_left = 999.0, flap_right = 999.0})
+			Imported.set_flaps(build, 50.0)
 			_check("posing first instance leaves second instance neutral", _poses_match(second, second_witnesses,
 				second_rest, _witness_positions(second, second_witnesses)))
 			_check("per-instance pose leaves generated geometry data unchanged", data == original_snapshot)
 			_neutralize(build, physical_result.model.controls.throw_deg)
-			Imported.set_visual_surfaces(build, {flap_left = 0.0, flap_right = 0.0})
+			Imported.set_flaps(build, 0.0)
 			_check("first instance returns to exact neutral", _poses_match(build, witnesses, rest_transforms,
 				_witness_positions(build, witnesses)))
 		_check("both instances retain source-data purity", build.data == original_snapshot and second.data == original_snapshot)
@@ -617,12 +618,12 @@ func _run_full_throw_cases(model: Dictionary, data: Dictionary, witnesses: Dicti
 			_poses_match(model, witnesses, rest_transforms, _witness_positions(model, witnesses)))
 
 
-func _run_visual_flap_case(model: Dictionary, data: Dictionary, witnesses: Dictionary,
+func _run_physical_flap_case(model: Dictionary, data: Dictionary, witnesses: Dictionary,
 		rest_transforms: Dictionary, throws: Dictionary) -> void:
 	var rest_points := _witness_positions(model, witnesses)
-	Imported.set_visual_surfaces(model, {flap_left = -999.0, flap_right = -999.0})
-	_check("visual flap lower clamp is neutral", _poses_match(model, witnesses, rest_transforms, rest_points))
-	Imported.set_visual_surfaces(model, {flap_left = 999.0, flap_right = 999.0})
+	Imported.set_flaps(model, -999.0)
+	_check("physical flap lower clamp is neutral", _poses_match(model, witnesses, rest_transforms, rest_points))
+	Imported.set_flaps(model, 999.0)
 	var flap_points := _witness_positions(model, witnesses)
 	for hinge_name: String in ["flap_left_hinge", "flap_right_hinge"]:
 		var binding := str(ARTICULATION_TO_BINDING[hinge_name])
@@ -630,21 +631,30 @@ func _run_visual_flap_case(model: Dictionary, data: Dictionary, witnesses: Dicti
 		var record: Dictionary = data.articulations[hinge_name]
 		var range_value: Array = record.range_deg
 		var expected_angle := deg_to_rad(float(range_value[1]) * float(record.app_sign))
-		_check("%s flap reaches its visual upper stop" % binding,
+		_check("%s flap reaches its physical upper stop" % binding,
 			absf(_hinge_angle(entry) - expected_angle) <= ANGLE_TOLERANCE_RAD)
 		var movement: Vector3 = flap_points[hinge_name] - rest_points[hinge_name]
-		_check("%s visual flap moves actual mesh witness down" % binding,
+		_check("%s physical flap moves actual mesh witness down" % binding,
 			movement.dot(Vector3.DOWN) > MIN_PANEL_TRAVEL_M, "moved %s" % str(movement))
-	# Flight controls must not overwrite inspector-only flap poses.
+	# A partial conventional surface update resets missing physical flaps; the session pose is applied afterward.
 	var command := {roll = 1.0, pitch = 1.0, yaw = 1.0, throttle = 0.0}
 	Builder.apply_surfaces(model, Commands.hinge_rotations(command, throws))
-	var after_physical := _witness_positions(model, witnesses)
+	var after_surface_command := _witness_positions(model, witnesses)
+	var flaps_reset := true
 	for hinge_name: String in ["flap_left_hinge", "flap_right_hinge"]:
-		_check("physical commands leave visual flap pose independent %s" % hinge_name,
-			after_physical[hinge_name].distance_to(flap_points[hinge_name]) <= POSE_TOLERANCE_M)
+		var binding := str(ARTICULATION_TO_BINDING[hinge_name])
+		var hinge: Dictionary = model.hinges[binding]
+		flaps_reset = flaps_reset and hinge.node.transform == rest_transforms[hinge_name]
+		flaps_reset = flaps_reset and after_surface_command[hinge_name].distance_to(witnesses[hinge_name].rest) <= POSE_TOLERANCE_M
+	_check("partial surface update resets omitted physical flap roles", flaps_reset)
+	Imported.set_flaps(model, 50.0)
+	var reapplied_flaps := _witness_positions(model, witnesses)
+	for hinge_name: String in ["flap_left_hinge", "flap_right_hinge"]:
+		_check("session flap pose reapplies after conventional surfaces %s" % hinge_name,
+			reapplied_flaps[hinge_name].distance_to(flap_points[hinge_name]) <= POSE_TOLERANCE_M)
 	_neutralize(model, throws)
-	Imported.set_visual_surfaces(model, {flap_left = 0.0, flap_right = 0.0})
-	_check("visual flap reset restores all authored neutrals", _poses_match(model, witnesses,
+	Imported.set_flaps(model, 0.0)
+	_check("physical flap reset restores all authored neutrals", _poses_match(model, witnesses,
 		rest_transforms, _witness_positions(model, witnesses)))
 
 

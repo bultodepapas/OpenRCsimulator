@@ -1,0 +1,12 @@
+V 20 stick 0.25 total 9.0 deg: p_max 0.440 rad/s pb/2V 0.0285 per total deg 0.00316
+V 20 stick 0.50 total 18.0 deg: p_max 0.914 rad/s pb/2V 0.0557 per total deg 0.00309
+V 20 stick 1.00 total 36.0 deg: p_max 1.858 rad/s pb/2V 0.1066 per total deg 0.00296
+V 25 stick 0.25 total 9.0 deg: p_max 0.545 rad/s pb/2V 0.0283 per total deg 0.00314
+V 25 stick 0.50 total 18.0 deg: p_max 1.105 rad/s pb/2V 0.0552 per total deg 0.00307
+V 25 stick 1.00 total 36.0 deg: p_max 2.121 rad/s pb/2V 0.1027 per total deg 0.00285
+V 35 stick 0.25 total 9.0 deg: p_max 0.711 rad/s pb/2V 0.0270 per total deg 0.00300
+V 35 stick 0.50 total 18.0 deg: p_max 1.415 rad/s pb/2V 0.0529 per total deg 0.00294
+V 35 stick 1.00 total 36.0 deg: p_max 2.647 rad/s pb/2V 0.1057 per total deg 0.00294
+V 45 stick 0.25 total 9.0 deg: p_max 0.890 rad/s pb/2V 0.0267 per total deg 0.00297
+V 45 stick 0.50 total 18.0 deg: p_max 1.729 rad/s pb/2V 0.0520 per total deg 0.00289
+V 45 stick 1.00 total 36.0 deg: p_max 3.312 rad/s pb/2V 0.1043 per total deg 0.00290

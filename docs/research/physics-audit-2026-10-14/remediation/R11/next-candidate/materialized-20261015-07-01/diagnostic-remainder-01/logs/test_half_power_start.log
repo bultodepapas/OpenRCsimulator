@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok selected profile is flyable at requested power
+ok neutral keyboard holds altitude for ten seconds
+ok trim remains fixed during equilibrium flight
+ok power increase still produces natural climb
+ok no automatic elevator compensation after throttle change
+ok restart restores solved speed and power
+ok quarter power with neutral keyboard descends
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok reload retains selected half-power equilibrium
+ok metadata names selected profile
+HALF_POWER_START {"elevator_up_deg":0.759931512743366,"reload_message":"aircraft reloaded: trimmed at 21 m/s, throttle 50 %","speed_mps":20.6035370826721,"throttle":0.500000007370472}
+ok changed launch atmosphere accepted
+ok density change re-solves selected power and retains altitude
+ok new atmosphere holds equilibrium
+trim: half-power airborne start is not qualified for this aircraft
+ok unsupported aircraft cannot silently fall back
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok selecting profile after setup refits before reset
+HALF_POWER_CHECKS 14 failures=0

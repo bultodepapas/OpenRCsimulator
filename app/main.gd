@@ -250,7 +250,6 @@ var _wheel_brake_key_held := false
 var _visual_pose: Dictionary = {}
 var _smoke: EngineSmoke
 var _smoke_key_on := false
-var _last_auxiliary_requests := {"flaps": 0}
 var _smoke_assignment: SmokeAssignment
 var _smoke_assignment_was_paused := false
 var _last_render_pose: Dictionary = {}
@@ -730,7 +729,6 @@ func _process(delta: float) -> void:
 	_render_pose(_current_pose(), surfaces, _prop_angle)
 	_update_storm(visual_clock_s, frozen)
 	_update_smoke()
-	_update_auxiliary_requests()
 	if _crash_director != null:
 		_crash_director.update(dt)
 		if _crash_director.active and is_nan(_look.x):
@@ -852,6 +850,17 @@ func _update_hud() -> void:
 			if bool(gear.get("inhibited", false)):
 				gear_line += " — " + tr("retraction blocked while on wheels")
 			lines.append(gear_line)
+		var flaps: Dictionary = session.flap_state()
+		if bool(flaps.get("available", false)):
+			var actual_deg := float(flaps.get("angle_deg", 0.0))
+			var target_deg := float(flaps.get("target_deg", 0.0))
+			var flap_line := tr("Flaps: %.1f° actual → %.1f° target") % [actual_deg, target_deg]
+			var flap_limit := float(flaps.get("limit_mps", NAN))
+			lines.append(flap_line)
+			if bool(flaps.get("overspeed", false)) and is_finite(flap_limit) and flap_limit > 0.0:
+				lines.append(tr("Flaps above estimated speed limit: %.0f m/s EAS") % flap_limit)
+		else:
+			lines.append(tr("Flaps are unavailable on this aircraft."))
 		if not session.weather_is_calm():
 			var wind: PackedFloat64Array = session.wind_at(session.sim.time())
 			lines.append(_weather_hud_line(s, wind))
@@ -995,6 +1004,15 @@ func _pose_of(s: PackedFloat64Array) -> Dictionary:
 
 
 ## Semantic gamepad actions share operations with keyboard shortcuts.
+## This presentation/routing contract advertises only implemented aircraft equipment.
+func controller_capabilities() -> Dictionary:
+	return {
+		"gear": session != null and session.gear_is_retractable(),
+		"smoke": _smoke != null and _smoke.supports_pump(),
+		"flaps": session != null and session.flaps_available(),
+	}
+
+
 func controller_action(action: String) -> bool:
 	if session == null: return false
 	match action:
@@ -1015,8 +1033,8 @@ func controller_action(action: String) -> bool:
 			elif session.radio.auxiliary_action(action):
 				_note = tr("Smoke pump: on") if session.radio.smoke_amount() > 0.0 else tr("Smoke pump: off")
 		"flaps_up", "flaps_down", "flaps_cycle":
-			if not session.sim.paused and session.radio.auxiliary_action(action):
-				_update_auxiliary_requests(true, "flaps")
+			if not session.sim.paused:
+				_request_flaps_action(action)
 		"gear_toggle":
 			if session.sim.paused: return true
 			if _has_gear_aux_binding():
@@ -1044,15 +1062,71 @@ func controller_action(action: String) -> bool:
 		_: return false
 	return true
 
+## Keyboard detents follow the active model's full-down angle and recommended takeoff fraction.
+func _flap_detents() -> Array[float]:
+	var takeoff_fraction: float = float(session.aircraft.model.flaps.get("takeoff_fraction", 0.4))
+	var detents: Array[float] = [0.0]
+	if takeoff_fraction > 0.0 and takeoff_fraction < 1.0:
+		detents.append(takeoff_fraction)
+	detents.append(1.0)
+	return detents
 
-## Keep the current flap request visible. Gear state has its own solver-backed HUD line.
-func _update_auxiliary_requests(force := false, selected_channel := "") -> void:
-	if session == null or session.sim.paused or not session.radio.connected: return
-	var amount: float = session.radio.auxiliary_amount("flaps")
-	var value := roundi(amount * 100.0)
-	if (force and selected_channel == "flaps") or value != int(_last_auxiliary_requests.flaps):
-		_note = tr("Flaps request: %d%% — aircraft flaps are not simulated.") % value
-	_last_auxiliary_requests.flaps = value
+
+func _flap_detent_after(requested: float, direction: int) -> float:
+	var detents := _flap_detents()
+	var nearest := 0
+	var distance := INF
+	for i in detents.size():
+		var candidate_distance := absf(requested - detents[i])
+		if candidate_distance < distance:
+			nearest = i
+			distance = candidate_distance
+	return detents[posmod(nearest + direction, detents.size())]
+
+
+func _request_flaps_amount(amount: float) -> bool:
+	if session == null:
+		return false
+	var state: Dictionary = session.flap_state()
+	if not bool(state.get("available", false)):
+		_note = tr("Flaps are unavailable on this aircraft.")
+		return false
+	if session.sim.paused:
+		return false
+	var normalized := clampf(amount, 0.0, 1.0)
+	if session.radio.connected and not session.radio.set_flaps_action_amount(normalized):
+		_note = tr("Flaps are controlled by the radio AUX input.")
+		return false
+	if not session.set_flaps(normalized):
+		_note = tr("Flaps request was refused.")
+		return false
+	_note = tr("Flaps request accepted.")
+	return true
+
+
+func _request_flaps_action(action: String) -> bool:
+	if session == null:
+		return false
+	var state: Dictionary = session.flap_state()
+	if not bool(state.get("available", false)):
+		_note = tr("Flaps are unavailable on this aircraft.")
+		return false
+	var requested := float(state.get("requested", 0.0))
+	match action:
+		"flaps_up": return _request_flaps_amount(0.0)
+		"flaps_down": return _request_flaps_amount(1.0)
+		"flaps_cycle": return _request_flaps_amount(_flap_detent_after(requested, 1))
+	return false
+
+
+func _step_flaps(direction: int) -> void:
+	if session == null or session.sim.paused:
+		return
+	var state: Dictionary = session.flap_state()
+	if not bool(state.get("available", false)):
+		_note = tr("Flaps are unavailable on this aircraft.")
+		return
+	_request_flaps_amount(_flap_detent_after(float(state.get("requested", 0.0)), direction))
 
 
 func _gear_status_label(gear: Dictionary) -> String:
@@ -1147,6 +1221,9 @@ func _unhandled_input(event: InputEvent) -> void:
 					get_viewport().set_input_as_handled()
 			KEY_G:
 				controller_action("gear_toggle")
+				get_viewport().set_input_as_handled()
+			KEY_F:
+				_step_flaps(-1 if event.shift_pressed else 1)
 				get_viewport().set_input_as_handled()
 			KEY_B:
 				if not session.sim.paused and session.gear_is_retractable() and session.set_wheel_brake(1.0):
@@ -1255,7 +1332,15 @@ func _overlay_snapshot() -> Dictionary:
 		return {}
 	var forward: Vector3 = -_camera.global_transform.basis.z
 	var view_heading: float = OverlayManager.Telemetry.heading_of_render_forward(forward.x, forward.z)
-	return OverlayManager.snapshot(session, field.pilot, _extent.x, not _experimental_aircraft_path.is_empty(), view_heading)
+	var snap := OverlayManager.snapshot(session, field.pilot, _extent.x, not _experimental_aircraft_path.is_empty(), view_heading)
+	if snap.has("control_guide"):
+		snap.control_guide.capabilities = controller_capabilities()
+		snap.control_guide.equipment_state = {
+			gear = session.gear_state().get("status", "unavailable"),
+			smoke = "on" if _smoke != null and float(_smoke.levels.pump) > 0.0 else "off",
+			flaps = session.flap_state(),
+		}
+	return snap
 
 
 ## Shows or hides the flight's text overlays (input panel and HUD). A menu hides them: the paused picture then
@@ -1799,6 +1884,9 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_airplane.root.scale = Vector3.ONE * float(workshop_trial.get("scale", 1.0))
 	_airplane.propeller.rotation.z = prop_angle * float(_airplane.get("propeller_spin_sign", 1.0))
 	AirplaneBuilder.apply_surfaces(_airplane, _surface_rotations_for_render(c))
+	if session != null and session.flaps_available():
+		var flap_state: Dictionary = session.flap_state()
+		AirplaneBuilder.apply_flaps(_airplane, float(flap_state.get("angle_deg", 0.0)))
 	AirplaneBuilder.apply_throttle(_airplane, float(c.get("throttle", 0.0))) # US-V09c carburettor lever, visual only
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting and _shadow_mode == "sun" else 1.0

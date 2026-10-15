@@ -1,0 +1,7 @@
+checker=/home/bulto/openrc-r11-package-20261015-09/app/tests/check_trimmed_flight.py
+csv=/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-09/windows-release-traces-01/jet-avanti.csv
+bcaa40377bda39fc8e8e7a2be6753fc41441bf2901b0ca60d8c5feb11c203d81  /home/bulto/openrc-r11-package-20261015-09/app/tests/check_trimmed_flight.py
+db0c961b9df1d4ac3a4ccccc952d5f4d2dc2103ece0974a21981d1fb28df3287  /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-09/windows-release-traces-01/jet-avanti.csv
+command=python3 /home/bulto/openrc-r11-package-20261015-09/app/tests/check_trimmed_flight.py /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-09/windows-release-traces-01/jet-avanti.csv --duration=3
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 29.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)
+exit=0

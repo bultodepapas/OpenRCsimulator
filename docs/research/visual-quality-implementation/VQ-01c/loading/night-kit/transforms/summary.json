@@ -1,0 +1,128 @@
+{
+  "warm_pairs_per_variant_per_family": 25,
+  "real_geometry_kit_pairs": 300,
+  "synthetic_cases_per_run": 256,
+  "processes": 5,
+  "results": {
+    "gp-extra-300s-60": {
+      "geometry": {
+        "warm_median_us": [
+          9225,
+          4688
+        ],
+        "first_pair_median_us": [
+          10031,
+          4516
+        ],
+        "warm_reduction_percent": 49.18157181571816
+      },
+      "kit_build": {
+        "warm_median_us": [
+          132558,
+          122900
+        ],
+        "first_pair_median_us": [
+          128373,
+          122248
+        ],
+        "warm_reduction_percent": 7.285867318456829
+      }
+    },
+    "jensen-das-ugly-stik-60": {
+      "geometry": {
+        "warm_median_us": [
+          30850,
+          17997
+        ],
+        "first_pair_median_us": [
+          29785,
+          18517
+        ],
+        "warm_reduction_percent": 41.66288492706644
+      },
+      "kit_build": {
+        "warm_median_us": [
+          272770,
+          254493
+        ],
+        "first_pair_median_us": [
+          274700,
+          261908
+        ],
+        "warm_reduction_percent": 6.700516919016019
+      }
+    },
+    "p51d-mustang-120": {
+      "geometry": {
+        "warm_median_us": [
+          26833,
+          14539
+        ],
+        "first_pair_median_us": [
+          27696,
+          15125
+        ],
+        "warm_reduction_percent": 45.81671822010212
+      },
+      "kit_build": {
+        "warm_median_us": [
+          295626,
+          283587
+        ],
+        "first_pair_median_us": [
+          286394,
+          276883
+        ],
+        "warm_reduction_percent": 4.072375230866032
+      }
+    },
+    "sebart-avanti-s-a200-p100rx": {
+      "geometry": {
+        "warm_median_us": [
+          47240,
+          40154
+        ],
+        "first_pair_median_us": [
+          51559,
+          40846
+        ],
+        "warm_reduction_percent": 15.000000000000002
+      },
+      "kit_build": {
+        "warm_median_us": [
+          644411,
+          631339
+        ],
+        "first_pair_median_us": [
+          665309,
+          623590
+        ],
+        "warm_reduction_percent": 2.028519066248091
+      }
+    },
+    "turbo-lumber-evolution": {
+      "geometry": {
+        "warm_median_us": [
+          14368,
+          12032
+        ],
+        "first_pair_median_us": [
+          15046,
+          12333
+        ],
+        "warm_reduction_percent": 16.258351893095767
+      },
+      "kit_build": {
+        "warm_median_us": [
+          183801,
+          182046
+        ],
+        "first_pair_median_us": [
+          193742,
+          181461
+        ],
+        "warm_reduction_percent": 0.9548370248257609
+      }
+    }
+  }
+}

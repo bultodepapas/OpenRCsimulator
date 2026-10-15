@@ -1,0 +1,39 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Timber FlightSession loads and trims its own data  13.0981758065403; trimmed
+ok   Timber uses its 2.190 kg, 1.555 m experimental model  turbo-lumber-evolution / 2.190 kg / 1.555 m
+ok   electric motor shaft is integrated with the coupled RK4 law
+ok   in-air start is level, flaps-up and at the data start speed
+ok   full-throttle static current stays below the stated 70 A controller rating  38.13 A at 9400 rpm
+ok   level trim succeeds  trimmed
+ok   level trace completes without crash, pause or simulation fault  7201/7201 rows; 
+ok   30 s hands-off trace is complete, continuous and finite  7201 rows
+ok   30 s trimmed level flight stays within 2 m and 0.3 m/s  Δalt 0.000 m, Δspeed -0.0000 m/s
+ok   level trim succeeds  trimmed
+ok   level trace completes without crash, pause or simulation fault  721/721 rows; 
+ok   3 s throttle-up produces finite RPM/current response  RPM 4397→9353, peak current 112.99 A
+ok   source-off reaches the coupled motor stop with no motor current  0.0 rpm, 0.000 A
+ok   re-enabled full command spins the motor back up  9323.3 rpm, 39.32 A
+ok   glide trim succeeds  trimmed
+ok   glide trace completes without crash, pause or simulation fault  1441/1441 rows; 
+ok   flaps-up power-off trim glides down with the source disabled  Δalt -6.231 m, max RPM 0.0
+ok   level trim succeeds  trimmed
+ok   level trace completes without crash, pause or simulation fault  121/121 rows; 
+ok   roll command -0.35 produces the intended body rotation  rate -1.032064 rad/s
+ok   level trim succeeds  trimmed
+ok   level trace completes without crash, pause or simulation fault  121/121 rows; 
+ok   roll command +0.35 produces the intended body rotation  rate +1.021417 rad/s
+ok   level trim succeeds  trimmed
+ok   level trace completes without crash, pause or simulation fault  121/121 rows; 
+ok   pitch command -0.35 produces the intended body rotation  rate -0.372507 rad/s
+ok   level trim succeeds  trimmed
+ok   level trace completes without crash, pause or simulation fault  121/121 rows; 
+ok   pitch command +0.35 produces the intended body rotation  rate +0.307822 rad/s
+ok   level trim succeeds  trimmed
+ok   level trace completes without crash, pause or simulation fault  121/121 rows; 
+ok   yaw command -0.35 produces the intended body rotation  rate -0.201493 rad/s
+ok   level trim succeeds  trimmed
+ok   level trace completes without crash, pause or simulation fault  121/121 rows; 
+ok   yaw command +0.35 produces the intended body rotation  rate +0.202526 rad/s
+ok   checkpoint restores Timber and exactly replays the electric shaft and wheels  checkpoint openrc-flight-checkpoint v5; tick 130
+TT-09 Timber handling: 36 checks, 0 failed

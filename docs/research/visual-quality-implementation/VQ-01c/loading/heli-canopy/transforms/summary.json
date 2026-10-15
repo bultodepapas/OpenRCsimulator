@@ -1,0 +1,80 @@
+{
+  "unit": "microseconds",
+  "pooled_warm_medians": {
+    "geometry": [
+      7022,
+      5994
+    ],
+    "kit_build": [
+      146902,
+      145397
+    ]
+  },
+  "processes": [
+    {
+      "file": "native-1.json",
+      "medians": {
+        "geometry": [
+          6857,
+          5958
+        ],
+        "kit_build": [
+          150255,
+          146333
+        ]
+      }
+    },
+    {
+      "file": "native-2.json",
+      "medians": {
+        "geometry": [
+          7152,
+          6296
+        ],
+        "kit_build": [
+          168716,
+          169478
+        ]
+      }
+    },
+    {
+      "file": "native-3.json",
+      "medians": {
+        "geometry": [
+          6794,
+          5794
+        ],
+        "kit_build": [
+          142871,
+          144123
+        ]
+      }
+    },
+    {
+      "file": "native-4.json",
+      "medians": {
+        "geometry": [
+          7022,
+          6051
+        ],
+        "kit_build": [
+          148256,
+          144773
+        ]
+      }
+    },
+    {
+      "file": "native-5.json",
+      "medians": {
+        "geometry": [
+          7141,
+          5985
+        ],
+        "kit_build": [
+          142395,
+          145276
+        ]
+      }
+    }
+  ]
+}

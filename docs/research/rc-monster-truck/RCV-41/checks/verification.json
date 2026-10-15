@@ -1,0 +1,108 @@
+{
+  "step": "RCV-41",
+  "complete": true,
+  "sources": {
+    "app/physics/ground_vehicle/vehicle_dynamics.gd": "f4328d387528fd9bcf84dba303c5ee872b71485ebaa5554b3f78b3678bf1e679",
+    "app/physics/ground_vehicle/nitro_dynamics.gd": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa",
+    "app/physics/ground_vehicle/airfield_course.gd": "7b444694cbb27f79fa87cf8f6ebace8877bceaa94559648a43826b16eb867b1e",
+    "app/sim/ground_vehicle/session.gd": "1cf7c3312b675e4b12badb733cbadb323c1a7fd98bbae607837f34c02bce38fc"
+  },
+  "tests": [
+    {
+      "test": "test_rcv_session.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV session: 168 checks, 0 failed"
+      ],
+      "errors": [],
+      "log": "test_rcv_session.log",
+      "log_sha256": "544d7aadc334e8f2dc1bd200d80b1ec1081fef503416e8146b43d66b48f24de2",
+      "test_sha256": "e2253f16e7f9dd8b8001095caca95bb13638941dd358c00ceafce181b50c71fc"
+    },
+    {
+      "test": "test_rcv_nitro_session.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV Nitro session: 28 checks, 0 failed"
+      ],
+      "errors": [],
+      "log": "test_rcv_nitro_session.log",
+      "log_sha256": "c8c0bec92706a16a9467d323de27e07acdded7b25e64c4ea8a8478519d4ecf15",
+      "test_sha256": "7556e3929b1d30ba23040a426a6d8515c8edf9eb6d8aec14f81f48849e85bc7f"
+    },
+    {
+      "test": "test_nitro_dynamics.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "Nitro dynamics: 30 checks, 0 failed"
+      ],
+      "errors": [],
+      "log": "test_nitro_dynamics.log",
+      "log_sha256": "dc58c4ef735b67d5524279aaf0ffb4e5e518d8a8f7d90195a0ff87e59fa7c55d",
+      "test_sha256": "22fc924189a5d462d988d4cfed21087df26289f7075d88431ec418ef1a22dd0c"
+    },
+    {
+      "test": "test_rcv_airfield_course.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV airfield course: 0 failed"
+      ],
+      "errors": [],
+      "log": "test_rcv_airfield_course.log",
+      "log_sha256": "4fd18bc0805fe439e96b2154940278e24c762d4b411510d92a96478b4a15d52a",
+      "test_sha256": "614292bac89a7aa0b4da9840ad614cdb44885c06fabd1d9bb48f33fe4f27dc5b"
+    },
+    {
+      "test": "test_rcv_vehicle_dynamics.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV-05 vehicle dynamics: 55 checks, 0 failures"
+      ],
+      "errors": [],
+      "log": "test_rcv_vehicle_dynamics.log",
+      "log_sha256": "ec6ffe7a1dc16c0b5ca3babd13fd700b44635a225a05506dfd6aebbdacdb6e7d",
+      "test_sha256": "406cf20f010caedb0b56cc32c3d13dc9e4c1ce165ef72e4d8d14dceb33bf72a9"
+    },
+    {
+      "test": "test_rcv_nitro_service.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV Nitro service: 38 checks, 0 failed"
+      ],
+      "errors": [],
+      "log": "test_rcv_nitro_service.log",
+      "log_sha256": "414d6a1017e74f4dc1672a1464e75283d8afe306fbe570c0289bcc42e2935707",
+      "test_sha256": "b1974d1b3d62696d22342198bcf19d75c904300edc87df5b05fda7cb09cfc186"
+    },
+    {
+      "test": "test_rcv_damage_session.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV damage Session: 19/19 checks passed"
+      ],
+      "errors": [],
+      "log": "test_rcv_damage_session.log",
+      "log_sha256": "446a4f2f37da6bda5f9a49594d89715300cafccaafa34a6aac922a9f34956257",
+      "test_sha256": "581301bf8143cb6993731b19819d1a28e2777d4cb310129b5efcd0e779680662"
+    },
+    {
+      "test": "test_rcv_obstacle_contacts.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV obstacle contacts: 14 checks, 0 failures"
+      ],
+      "errors": [],
+      "log": "test_rcv_obstacle_contacts.log",
+      "log_sha256": "d0156da18bb41b25ffe846df61e5532d35cc0319b23d5480712ab10872db558f",
+      "test_sha256": "9c0b69c4114c05ba5ad5b726709a0e5529d4e2a789a843587300e9a4ddb24fd8"
+    }
+  ]
+}

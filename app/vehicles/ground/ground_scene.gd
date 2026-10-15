@@ -5,7 +5,7 @@ const Session = preload("res://sim/ground_vehicle/session.gd")
 const Driver = preload("res://input/ground_vehicle_input.gd")
 const Registry = preload("res://input/controller_registry.gd")
 const UiInput = preload("res://ui/ui_input.gd")
-const Model = preload("res://vehicles/ground/mt8_model.gd")
+const VehicleCatalog = preload("res://vehicles/ground/vehicle_catalog.gd")
 const Dashboard = preload("res://vehicles/ground/ground_dashboard.gd")
 const CameraRig = preload("res://vehicles/ground/ground_camera.gd")
 const CourseView = preload("res://vehicles/ground/course_view.gd")
@@ -26,13 +26,18 @@ const Atmosphere = preload("res://render/atmosphere.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 const Frames = preload("res://render/frames.gd")
 const EngineAudio = preload("res://render/engine_audio.gd")
+const NitroAudio = preload("res://audio/nitro_engine_audio.gd")
 const GroundEffects = preload("res://vehicles/ground/ground_effects.gd")
 const GroundWetEffects = preload("res://vehicles/ground/ground_wet_effects.gd")
 const DamageView = preload("res://vehicles/ground/ground_damage_view.gd")
 const ContactDebug = preload("res://vehicles/ground/contact_debug.gd")
+const NitroExhaust = preload("res://vehicles/ground/nitro_exhaust.gd")
 
 signal home_requested
 var startup_error := ""
+var vehicle_id := VehicleCatalog.DEFAULT_ID
+var _visual_adapter: Script
+var _vehicle_entry := {}
 var session: Node
 var visual := {}
 var dashboard: CanvasLayer
@@ -47,6 +52,7 @@ var joy_button_reader: Callable = func(id: int, button: JoyButton) -> bool: retu
 var enable_audio := true
 var enable_vehicle_effects := true
 var _effects: Node3D
+var _nitro_exhaust: CPUParticles3D
 var _wet_effects: Node3D
 var _damage_view: RefCounted
 var _effects_time_s := 0.0
@@ -66,6 +72,7 @@ var _course := {}
 var _model := {}
 var _focused := true
 var _sound: AudioStreamPlayer3D
+var _nitro_sound: NitroAudio
 var checkpoint_path := "user://rcv/checkpoint.json"
 var _checkpoint := {}
 var _checkpoint_backup_path := ""
@@ -94,6 +101,20 @@ var _shortcut_buttons := {}
 
 func _ready() -> void:
 	name = "GroundVehicleActivity"
+	_vehicle_entry = VehicleCatalog.entry(vehicle_id)
+	if _vehicle_entry.is_empty():
+		startup_error = "Unknown ground vehicle: " + vehicle_id
+		set_physics_process(false)
+		set_process(false)
+		return
+	_visual_adapter = load(_vehicle_entry.model_path) as Script
+	if _visual_adapter == null:
+		startup_error = "Ground vehicle visual adapter is unavailable"
+		set_physics_process(false)
+		set_process(false)
+		return
+	if vehicle_id != VehicleCatalog.DEFAULT_ID and checkpoint_path == "user://rcv/checkpoint.json":
+		checkpoint_path = "user://rcv/%s-checkpoint.json" % vehicle_id
 	_presentation_context = World.presentation_context()
 	_initialize_driving_devices()
 	_connect_controller_registry()
@@ -102,7 +123,7 @@ func _ready() -> void:
 	session = Session.new()
 	session.name = "GroundVehicleSession"
 	add_child(session)
-	var prepared: bool = session.prepare_default() if use_practice_fixture else _prepare_airfield()
+	var prepared: bool = session.prepare_default({}, vehicle_id) if use_practice_fixture else _prepare_airfield()
 	if not prepared:
 		if startup_error.is_empty(): startup_error = session.load_error
 		set_physics_process(false)
@@ -112,33 +133,39 @@ func _ready() -> void:
 	_course = session.course_snapshot()
 	_render_road = func(north: float, east: float) -> Dictionary:
 		return Course.sample(_course, north, east) if use_practice_fixture else AirfieldCourse.sample(_course, north, east)
-	visual = Model.build()
+	visual = _visual_adapter.build()
 	if not visual.ok:
 		startup_error = visual.error
 		set_physics_process(false)
 		set_process(false)
 		return
 	add_child(visual.root)
+	if _vehicle_entry.nitro: visual["gear_ratio"] = float(_model.powertrain.gear_ratio)
 	_damage_view = DamageView.new()
 	if not _damage_view.prepare(visual):
-		startup_error = "Bisonte damage bindings are unavailable"
+		startup_error = "Vehicle damage bindings are unavailable"
 		set_physics_process(false)
 		set_process(false)
 		return
 	if enable_vehicle_effects:
 		_effects = GroundEffects.new()
 		if not _effects.prepare(visual, self):
-			startup_error = "Bisonte effects bindings are unavailable"
+			startup_error = "Vehicle effects bindings are unavailable"
 			set_physics_process(false)
 			set_process(false)
 			return
 		_wet_effects = GroundWetEffects.new()
 		_wet_effects.audio_enabled = enable_audio
 		if not _wet_effects.prepare(visual, self):
-			startup_error = "Bisonte wet effects bindings are unavailable"
+			startup_error = "Vehicle wet effects bindings are unavailable"
 			set_physics_process(false)
 			set_process(false)
 			return
+		if _vehicle_entry.nitro:
+			_nitro_exhaust = NitroExhaust.new()
+			_nitro_exhaust.position = visual.get("exhaust_position", Vector3(0.12, 0.1, 0.0))
+			_nitro_exhaust.direction = visual.get("exhaust_direction", Vector3(1, 0.1, 0.15))
+			visual.root.add_child(_nitro_exhaust)
 	_contact_debug = ContactDebug.new()
 	_contact_debug.visible = false
 	add_child(_contact_debug)
@@ -155,12 +182,16 @@ func _ready() -> void:
 		var sun := Atmosphere.create_sun(self, _lighting)
 		sun.directional_shadow_max_distance = 35.0
 		if enable_course_visual: CourseView.build(self, _course)
+	if _vehicle_entry.get("nitro", false) and enable_vehicle_effects:
+		GroundEffects.NitroLights.configure_environment(_environment)
 	camera = Camera3D.new()
 	camera.near = 0.01
 	camera.far = Spec.CAMERA.far
 	add_child(camera)
 	camera.make_current()
 	dashboard = Dashboard.new()
+	dashboard.vehicle_name = _vehicle_entry.name
+	dashboard.nitro = _vehicle_entry.nitro
 	dashboard.airfield = not use_practice_fixture
 	dashboard.track_available = _course.has("track")
 	for spawn: Dictionary in _course.get("spawns", []):
@@ -284,9 +315,13 @@ func _prepare_airfield() -> bool:
 		startup_error = "; ".join(lake.errors)
 		return false
 	camera_rig.pilot_position = Frames.ned_to_render([field.pilot.north, field.pilot.east, field.pilot.down - field.pilot.eye_height])
-	return session.prepare_airfield(loaded, {}, lake.lake)
+	return session.prepare_airfield(loaded, {}, lake.lake, vehicle_id)
 
 func _build_audio() -> void:
+	if _vehicle_entry.nitro:
+		_nitro_sound = NitroAudio.create(self)
+		_nitro_sound.observe(session.telemetry_snapshot(), {}, true, enable_audio)
+		return
 	_sound = EngineAudio.new()
 	var stream := AudioStreamGenerator.new()
 	stream.mix_rate = 22050.0
@@ -342,6 +377,10 @@ func _read_controls() -> Dictionary:
 	if controller_registry != null:
 		keys.blocked = keys.blocked or _controller_requires_selection or _keyboard_neutral_gate
 	var controls: Dictionary = driver.sample(keys, joy)
+	if _vehicle_entry.get("nitro", false) and controls.get("reverse", false):
+		controls.brake = maxf(float(controls.brake), float(controls.throttle))
+		controls.throttle = 0.0
+		controls.reverse = false
 	if controller_registry != null and _keyboard_neutral_gate:
 		_keyboard_neutral_gate = false
 	return controls
@@ -498,9 +537,12 @@ func _key(code: Key) -> bool:
 func _accepted_tick(_tick: int, _time: float, state: PackedFloat64Array, _telemetry: Dictionary) -> void:
 	_previous = _snapshot
 	_snapshot = state
+	if _vehicle_entry.get("nitro", false) and state.size() > 31:
+		# Cosmetic crank phase follows accepted simulation time, including idle.
+		visual["engine_phase_rad"] = fposmod(float(visual.get("engine_phase_rad", 0.0)) + state[31] * Session.DT, TAU)
 
 func _process(delta: float) -> void:
-	if dashboard == null or _snapshot.size() != 31:
+	if dashboard == null or _snapshot.size() < 31:
 		return
 	# Interpolation changes only the drawn pose. No callback can feed float32 render state back.
 	var drawn := _snapshot.duplicate()
@@ -509,24 +551,30 @@ func _process(delta: float) -> void:
 		drawn[i] = lerpf(_previous[i], _snapshot[i], alpha)
 	var qa := Quaternion(Frames.quat_to_render(_previous.slice(6, 10)))
 	var qb := Quaternion(Frames.quat_to_render(_snapshot.slice(6, 10)))
-	Model.draw(visual, drawn, _model.cg_height_above_chassis_datum_m)
+	var visual_cg := Vector3(float(_model.get("cg_right_from_datum_m", 0.0)),
+		float(_model.cg_height_above_chassis_datum_m), -float(_model.get("cg_forward_from_datum_m", 0.0)))
+	visual["cg_offset"] = visual_cg
+	_visual_adapter.draw(visual, drawn, _model.cg_height_above_chassis_datum_m)
 	var basis := Basis(qa.slerp(qb, alpha))
 	var target := Frames.ned_to_render([drawn[0], drawn[1], drawn[2]])
-	visual.root.transform = Frames.root_transform(basis, target, Vector3(0, _model.cg_height_above_chassis_datum_m, 0))
+	visual.root.transform = Frames.root_transform(basis, target, visual_cg)
 	camera_rig.update(camera, target, basis, delta, dashboard.menu_visible, func(x: float, z: float) -> float: return _render_road.call(-z, x).height_m)
 	World.update(_environment, 37.0 + session.time_s(), Vector3.ZERO, target, camera)
 	var telemetry: Dictionary = session.telemetry_snapshot()
 	telemetry.surface_id = _render_road.call(drawn[0], drawn[1]).surface_id
+	telemetry["service_stationary"] = session.nitro_service_stationary()
 	_damage_view.update(session.damage_visual_state())
+	var simulated_delta := maxf(0.0, session.time_s() - _effects_time_s)
+	_effects_time_s = session.time_s()
+	if _nitro_exhaust != null:
+		_nitro_exhaust.observe(telemetry, session.paused, simulated_delta)
 	if _effects != null:
-		var simulated_delta := maxf(0.0, session.time_s() - _effects_time_s)
-		_effects_time_s = session.time_s()
 		var night_weight := 1.0 - smoothstep(0.05, 0.75, float(_lighting.get("sun_energy", 1.0)))
 		_effects.update_render(simulated_delta, telemetry, _last_controls, _render_road, session.paused, night_weight)
 		if _wet_effects != null:
 			_wet_effects.audio_enabled = enable_audio
 			_wet_effects.update_render(simulated_delta, telemetry, session.paused, night_weight)
-		dashboard.update_lights(_effects.headlights_enabled)
+		dashboard.update_lights(_effects.headlights_enabled, _effects.auxiliary_enabled, _effects.neon_enabled)
 	_contact_debug.update_snapshot(drawn, _model, telemetry, _render_road)
 	dashboard.update_snapshot(telemetry, session.paused, session.time_s(), session.recording, _show_diagnostics or mode == 2)
 	dashboard.update_input_status(_controls_ready(_last_controls), _controller_requires_selection, _focused)
@@ -538,15 +586,20 @@ func _process(delta: float) -> void:
 		if _sound.stream_paused:
 			_audio_was_paused = true
 		else:
-			# Audible gearbox harmonic, an estimated presentation mapping, not a measured motor RPM.
+			# The electric model retains its gearbox harmonic.
 			var rpm := 0.0
+			var max_rpm := 18000.0
 			for i in 4:
 				rpm += absf(_snapshot[21 + i]) * 60.0 / TAU * 8.0 / 4.0
 			if _audio_was_paused:
 				_sound.restart_voice()
-				_sound.voice.reset(rpm, 18000.0)
+				_sound.voice.reset(rpm, max_rpm)
 				_audio_was_paused = false
-			_sound.refill(rpm, 18000.0)
+			_sound.refill(rpm, max_rpm)
+	if _nitro_sound != null:
+		_nitro_sound.global_position = target
+		_nitro_sound.observe(telemetry, _last_controls, session.paused, enable_audio)
+		_nitro_sound.refill()
 
 func open_garage() -> void:
 	if dashboard == null:
@@ -596,6 +649,21 @@ func handle_action(action: String) -> void:
 		"reset":
 			if not _finish_recording(): return
 			if session.reset(): _after_reset()
+		"engine_start", "engine_stop", "refuel":
+			if not _finish_recording(): return
+			var service := action.trim_prefix("engine_")
+			if session.service_nitro(service):
+				_snapshot = session.state_snapshot()
+				_previous = _snapshot.duplicate()
+				_last_controls = {}
+				_audio_was_paused = true
+				dashboard.message("Engine service complete. Release controls to continue.", "Motor atendido. Suelta los controles para continuar.")
+			else:
+				dashboard.message("Stop the car and engine before refuelling; fuel is needed to start.", "Detén el carro y apaga el motor antes de repostar; necesitas combustible para arrancar.")
+		"clean":
+			if _effects != null: _effects.clean_vehicle()
+			if _wet_effects != null: _wet_effects.reset()
+			dashboard.message("Vehicle cleaned.", "Carro limpio.")
 		"recover":
 			if session.manual_recovery():
 				_after_reset()
@@ -607,15 +675,25 @@ func handle_action(action: String) -> void:
 			if _course.has("track"):
 				camera_rig.mode = 0 if camera_rig.mode == 3 else 3
 				camera_rig.reset()
-		"body": visual.nodes.Body.visible = not visual.nodes.Body.visible
+		"body":
+			var shown: bool = not visual.nodes.Body.visible
+			for body_node: Node3D in visual.get("body_nodes", [visual.nodes.Body]):
+				body_node.visible = shown
 		"contacts":
 			_show_diagnostics = not _show_diagnostics
 			_contact_debug.visible = _show_diagnostics
-		"sound": enable_audio = not enable_audio
+		"sound":
+			enable_audio = not enable_audio
+			if enable_audio and _sound == null and _nitro_sound == null: _build_audio()
 		"lights":
 			if _effects != null:
 				_effects.headlights_enabled = not _effects.headlights_enabled
-				dashboard.update_lights(_effects.headlights_enabled)
+				dashboard.update_lights(_effects.headlights_enabled, _effects.auxiliary_enabled, _effects.neon_enabled)
+		"aux_lights", "neon":
+			if _effects != null and _vehicle_entry.get("nitro", false):
+				if action == "aux_lights": _effects.auxiliary_enabled = not _effects.auxiliary_enabled
+				else: _effects.neon_enabled = not _effects.neon_enabled
+				dashboard.update_lights(_effects.headlights_enabled, _effects.auxiliary_enabled, _effects.neon_enabled)
 		"record":
 			if session.recording:
 				_finish_recording()
@@ -730,7 +808,7 @@ func _finish_recording() -> bool:
 		_record_export_pending = true
 	if not _record_export_pending:
 		return true
-	var name := "mt8-%d-%d" % [int(Time.get_unix_time_from_system()), Time.get_ticks_msec()]
+	var name := "%s-%d-%d" % [vehicle_id, int(Time.get_unix_time_from_system()), Time.get_ticks_msec()]
 	_last_export = session.export_recording(name)
 	if not _last_export.ok:
 		open_garage()
@@ -755,11 +833,13 @@ func _on_recording_interrupted(reason: String, _sample_count: int) -> void:
 
 func _after_reset() -> void:
 	_snapshot = session.state_snapshot()
+	if _vehicle_entry.get("nitro", false): visual["engine_phase_rad"] = 0.0
 	_previous = _snapshot.duplicate()
 	_model = session.model_snapshot()
 	_effects_time_s = session.time_s()
 	if _effects != null: _effects.reset()
 	if _wet_effects != null: _wet_effects.reset()
+	if _nitro_exhaust != null: _nitro_exhaust.restart()
 	if _damage_view != null:
 		_damage_view.reset()
 		_damage_view.update(session.damage_visual_state())
@@ -844,6 +924,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_ENTER: handle_action("resume")
 			KEY_C: handle_action("camera")
 			KEY_L: handle_action("lights")
+			KEY_K: handle_action("aux_lights")
+			KEY_N: handle_action("neon")
 			KEY_R: handle_action("recover")
 			KEY_F9: handle_action("record")
 			_: return

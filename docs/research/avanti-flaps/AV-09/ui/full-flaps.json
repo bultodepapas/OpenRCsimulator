@@ -1,0 +1,21 @@
+{
+	"capture_scene": "flaps",
+	"format": "openrc-ui-capture v2",
+	"image": "full-flaps.png",
+	"sha256": "0a86242f534ee46dcaffb59ea9caf0fabaae4ed3b60d16f1b7f8ad5f871afe27",
+	"ui_evidence": {
+		"camera_view": "orbit",
+		"flap_state": {
+			"actual": 0.999999999999997,
+			"angle_deg": 49.9999999999999,
+			"available": true,
+			"limit_mps": 30.0,
+			"moving": false,
+			"overspeed": false,
+			"requested": 1.0,
+			"target_deg": 50.0
+		},
+		"hud": "airspeed  23.4 m/s   altitude  36.3 m   AoA  -5.2°   throttle   0%\nLanding gear: Up\nFlaps: 50.0° actual → 50.0° target\n1000000 fps   frame p95   0.0 ms   physics 2543 µs/tick  [F3]",
+		"renderer": "gl_compatibility"
+	}
+}

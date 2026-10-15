@@ -164,6 +164,29 @@ def add_v2_overlay(schema: dict, spec: dict):
     }
     root_props["convention_id"] = {"const": spec["convention_id"]}
     root_props["capabilities"] = capability_schema(spec)
+    def flap_quantity(unit, low, high):
+        return {"$ref": "#/$defs/evidence", "properties": {
+            "value": {"type": "number", "minimum": low, "maximum": high},
+            "unit": {"const": unit}}}
+    flap_fields = {
+        "max_angle_deg": flap_quantity("deg", 5, 60),
+        "takeoff_angle_deg": flap_quantity("deg", 0, 60),
+        "inner_span_m": flap_quantity("m", 0, 2),
+        "outer_span_m": flap_quantity("m", 0, 2),
+        "hinge_fraction": flap_quantity("1", 0.5, 0.95),
+        "extension_time": flap_quantity("s", 0.25, 30),
+        "retraction_time": flap_quantity("s", 0.25, 30),
+        "max_speed_mps": flap_quantity("m/s", 5, 100),
+        "elevator_mix_per_flap_fraction": flap_quantity("1", 0, 0.5),
+        "effective_angle_limit_deg": flap_quantity("deg", 5, 30),
+        "profile_drag_coefficient": flap_quantity("1", 0, 1),
+        # A generated zero value is used only as a paired software sensitivity control.
+        "aerodynamic_gain": flap_quantity("1", 0, 1),
+    }
+    root_props["flaps"] = {
+        "type": "object", "required": list(flap_fields),
+        "properties": flap_fields, "additionalProperties": False,
+    }
     merge_required(schema, ["id", "frames", "convention_id", "capabilities", "start"])
     schema["additionalProperties"] = False
 
@@ -356,6 +379,9 @@ def add_v2_overlay(schema: dict, spec: dict):
     for gear_kind in ["fixed_tricycle", "fixed_taildragger", "locked_down_taildragger", "retractable_tricycle"]:
         rules.append({"if": {"properties": {"capabilities": {"properties": {"gear": {"const": gear_kind}}}}}, "then": {"required": ["landing_gear"]}})
     rules.append({"if": {"properties": {"capabilities": {"properties": {"gear": {"const": "locked_up"}}}}}, "then": {"not": {"required": ["landing_gear"]}}})
+    rules.append({"if": branch_condition(["capabilities", "flaps"], "simulated"),
+                  "then": {"required": ["flaps"]},
+                  "else": {"not": {"required": ["flaps"]}}})
     rules.append({"if": branch_condition(["capabilities", "gear"], "retractable_tricycle"),
                   "then": {"properties": {"landing_gear": {"required": ["retraction"], "properties": {
                       "contacts": {"items": {"required": ["retraction_path"]}}}}}},

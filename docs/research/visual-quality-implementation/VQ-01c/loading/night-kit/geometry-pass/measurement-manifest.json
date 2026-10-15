@@ -1,0 +1,76 @@
+{
+  "commands": [
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\aircraft-light-geometry\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\native-1.json"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\aircraft-light-geometry\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\native-2.json",
+      "--reverse"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\aircraft-light-geometry\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\native-3.json"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\aircraft-light-geometry\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\native-4.json",
+      "--reverse"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\aircraft-light-geometry\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-geometry-native\\native-5.json"
+    ]
+  ],
+  "sha256": {
+    "reference.gd": "4d7ca2750d8982cefc7a04798497134d3ce84d44c13daedd7c3f27a522d5ef9d",
+    "candidate.gd": "69b3bbe6549a5847fa0eb78b0c21227eee74eb4dc678008efda2eb28b61613f8",
+    "compare.gd": "9d7ae61f38c943741019514f6c4240c72e0f3eda444efe4ce7d173a1a4addaf0"
+  }
+}

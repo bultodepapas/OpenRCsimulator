@@ -1,8 +1,10 @@
 # RC vehicle research tools
 
-To use the integrated Bisonte, start with [Drive and experiment](#drive-and-experiment). For acceleration, use the [pinned native build guide](native/README.md). Current test results and captures are in the [runtime evidence](../../docs/research/rc-monster-truck/RCV-runtime/README.md).
+To use the integrated Bisonte, start with [Drive and experiment](#drive-and-experiment). For acceleration, use the [pinned native build guide](native/README.md). The [2026-10-15 behavior audit](../../docs/research/rc-monster-truck/RCV-audit-2026-10-15/README.md) records current fixes and verification; initial integration captures remain in the [runtime evidence](../../docs/research/rc-monster-truck/RCV-runtime/README.md).
 
 The [RCV plan](../../docs/plans/rc-monster-truck.md) owns vehicle integration and remaining steps. This directory contains runnable research tools; dated results cover the [quarter car](../../docs/research/rc-monster-truck/RCV-04a/README.md), [four-corner support](../../docs/research/rc-monster-truck/RCV-04b/README.md) and [MT8 visual intake](../../docs/research/rc-monster-truck/RCV-14a/README.md).
+
+The second selectable car, **MONSTER CAR 2**, uses the supplied nitro Blender delivery. Select it in Home's RC car selector and open the garage, or launch with `-- --vehicle=monster-car-2`. Its [integration guide](monster-car-2/README.md) owns source reproduction, nitro behavior and verification. The Bisonte commands and electric controls below retain their existing behavior.
 
 ## RCV-14a MT8 visual inspection
 
@@ -179,7 +181,7 @@ The first ground-vehicle activity is now connected to the app. This research REA
 
 The estimated drivetrain provides 5.2 N m per wheel and a 120 rad/s torque-fade endpoint. Its four curves imply 624 W peak mechanical power; tire grip still limits acceleration. The lower estimated CG and 85/15 front/rear brake allocation improve launch and stopping stability. Reduce speed before bends and ramps; large steering inputs can still produce a skid or rollover. See the [current driving comparisons, physical assumptions and optimization evidence](../../docs/research/rc-monster-truck/RCV-handling/README.md).
 
-Select **RC cars · Bisonte MT8** at the lower right of Home. The truck starts paused on the aircraft runway, in the same airfield used by Home and flight. The garage's **Driving controls** selector chooses a recognized gamepad when available, otherwise keyboard. Release the controls, wait for **Controls ready**, then select **Drive**, press Enter or the gamepad's Menu/Options button. Alternatively, launch the project with `-- --vehicle=mt8-bisonte`. This entry preserves the saved aircraft selection and carries Home's lighting and sky into the drive. The supplied Blender model and scripts are authorized by their owner for inclusion and modification.
+Select **Bisonte MT8** in Home's RC car selector, then **RC cars · Open garage** at the lower right. The truck starts paused on the aircraft runway, in the same airfield used by Home and flight. The garage's **Driving controls** selector chooses a recognized gamepad when available, otherwise keyboard. Release the controls, wait for **Controls ready**, then select **Drive**, press Enter or the gamepad's Menu/Options button. Alternatively, launch the project with `-- --vehicle=mt8-bisonte`. This entry preserves the saved aircraft selection and carries Home's lighting and sky into the drive. The supplied Blender model and scripts are authorized by their owner for inclusion and modification.
 
 | Action | Keyboard / mouse | Xbox / PlayStation |
 | --- | --- | --- |

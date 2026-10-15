@@ -1,0 +1,149 @@
+{
+  "artifacts": {
+    "baseline_csv_sha256_verified": true,
+    "baseline_metadata_sha256_verified": true,
+    "candidate_csv_sha256_verified": true,
+    "candidate_metadata_sha256_verified": true,
+    "state_delta_csv": "state-delta.csv",
+    "state_delta_csv_sha256": "9a85d54942b56aa40a1546bdc6830ff53b253eda54a61a871c1ea2b66e6c1fdd"
+  },
+  "complete": true,
+  "course_identity_matches": true,
+  "exact_candidate_replay": true,
+  "format": "openrc-monster-car-2-rcv36-physics-replay-comparison-v1",
+  "reasons_incomplete": [],
+  "same_control_tape": true,
+  "solver_changed": true,
+  "solver_identity": {
+    "baseline": {
+      "backend_identity": {
+        "abi_version": 1,
+        "backend": "native",
+        "backend_version": "openrc-nitro-ground-vehicle-composite-v1+openrc-ground-vehicle-native-evaluate-v3",
+        "binary_sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb",
+        "implementation_artifact_kind": "gdscript_source",
+        "solver_version": "openrc-nitro-powertrain-midpoint-v1+openrc-ground-vehicle-dynamics-rk4-v5",
+        "source_sha256": "21bd3ad221497087fcd7861bc4e39db9ce4493407673ab2c30c70a9d80cb7425",
+        "toolchain_sha256": "20011c634359383599e065c970e90e2a0c6612e7481739dbc9d35fe8c8d4a192"
+      },
+      "damage_version": 2,
+      "engine_version": "4.7.2-stable (official)",
+      "environment_artifact": {
+        "kind": "gdscript_source",
+        "sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad"
+      },
+      "environment_version": "openrc-rcv-environment-v1",
+      "fixed_hz": 240,
+      "integration_artifact": {
+        "kind": "gdscript_source",
+        "sha256": "429f3ca8b283df01416546eab9eceb7d08e12996650ec0c51622fc5a15f614c2"
+      },
+      "solver_version": "openrc-nitro-powertrain-midpoint-v1+openrc-ground-vehicle-dynamics-rk4-v5",
+      "substeps_per_tick": 1
+    },
+    "candidate": {
+      "backend_identity": {
+        "abi_version": 1,
+        "backend": "native",
+        "backend_version": "openrc-nitro-ground-vehicle-composite-v2+openrc-ground-vehicle-native-evaluate-v3",
+        "binary_sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb",
+        "implementation_artifact_kind": "gdscript_source",
+        "solver_version": "openrc-nitro-powertrain-midpoint-v2+openrc-ground-vehicle-dynamics-rk4-v5",
+        "source_sha256": "7cb8e54cdf4ad4df49af7a327f225e4f489155e06a412cbdf04d4a9faf4fede1",
+        "toolchain_sha256": "20011c634359383599e065c970e90e2a0c6612e7481739dbc9d35fe8c8d4a192"
+      },
+      "damage_version": 2,
+      "engine_version": "4.7.2-stable (official)",
+      "environment_artifact": {
+        "kind": "gdscript_source",
+        "sha256": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad"
+      },
+      "environment_version": "openrc-rcv-environment-v1",
+      "fixed_hz": 240,
+      "integration_artifact": {
+        "kind": "gdscript_source",
+        "sha256": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa"
+      },
+      "solver_version": "openrc-nitro-powertrain-midpoint-v2+openrc-ground-vehicle-dynamics-rk4-v5",
+      "substeps_per_tick": 1
+    }
+  },
+  "state_trace": {
+    "compared_scalar_values": 15873,
+    "first_divergent_tick": 84,
+    "identical": false,
+    "max_abs_delta_by_state": {
+      "down_m": 1.1354805984353789e-13,
+      "east_m": 6.042527589400493e-12,
+      "engine_speed_rad_s": 0.0,
+      "fuel_mass_kg": 0.0,
+      "north_m": 6.141753772226366e-13,
+      "p_rad_per_s": 4.8955423048724356e-11,
+      "q_rad_per_s": 1.4319016892333503e-11,
+      "qw": 1.1690648449302898e-13,
+      "qx": 1.163963023187442e-12,
+      "qy": 7.588096817556789e-13,
+      "qz": 2.292249723367945e-12,
+      "r_rad_per_s": 4.806693931769246e-11,
+      "steering_rate_right_rad_per_s": 0.0,
+      "steering_right_rad": 0.0,
+      "travel_fl_m": 7.974836069291058e-13,
+      "travel_fr_m": 4.206184012200964e-13,
+      "travel_rate_fl_m_per_s": 1.1934684143732888e-11,
+      "travel_rate_fr_m_per_s": 9.095418862514748e-12,
+      "travel_rate_rl_m_per_s": 8.689235962699993e-12,
+      "travel_rate_rr_m_per_s": 8.816751148610358e-12,
+      "travel_rl_m": 3.456887553987542e-13,
+      "travel_rr_m": 5.871050173800185e-13,
+      "u_m_per_s": 5.271338920920243e-13,
+      "v_m_per_s": 5.585483464631835e-12,
+      "w_m_per_s": 5.744460462864254e-12,
+      "wheel_angle_fl_rad": 1.255529014088097e-11,
+      "wheel_angle_fr_rad": 3.296918293926865e-11,
+      "wheel_angle_rl_rad": 1.0338396805309458e-11,
+      "wheel_angle_rr_rad": 2.0733637029479723e-11,
+      "wheel_spin_fl_rad_per_s": 6.467359980888432e-11,
+      "wheel_spin_fr_rad_per_s": 1.5713652601334616e-10,
+      "wheel_spin_rl_rad_per_s": 9.493916763858579e-11,
+      "wheel_spin_rr_rad_per_s": 1.2590817277668975e-10
+    },
+    "rms_delta_by_state": {
+      "down_m": 4.729077207607668e-14,
+      "east_m": 1.7653201367421316e-12,
+      "engine_speed_rad_s": 0.0,
+      "fuel_mass_kg": 0.0,
+      "north_m": 1.6270430017873168e-13,
+      "p_rad_per_s": 9.601892043887529e-12,
+      "q_rad_per_s": 3.648658554458406e-12,
+      "qw": 4.486967295717556e-14,
+      "qx": 2.88826735406986e-13,
+      "qy": 2.2473461778912105e-13,
+      "qz": 8.744912115366948e-13,
+      "r_rad_per_s": 8.410692920176204e-12,
+      "steering_rate_right_rad_per_s": 0.0,
+      "steering_right_rad": 0.0,
+      "travel_fl_m": 2.1234145239067138e-13,
+      "travel_fr_m": 1.1137111448080046e-13,
+      "travel_rate_fl_m_per_s": 2.3423274430934873e-12,
+      "travel_rate_fr_m_per_s": 1.824642237094711e-12,
+      "travel_rate_rl_m_per_s": 1.6968000178703512e-12,
+      "travel_rate_rr_m_per_s": 1.8743490480818863e-12,
+      "travel_rl_m": 1.0340082458593702e-13,
+      "travel_rr_m": 1.3973429811134664e-13,
+      "u_m_per_s": 1.5048733077046168e-13,
+      "v_m_per_s": 1.1983909100997802e-12,
+      "w_m_per_s": 1.599786042040281e-12,
+      "wheel_angle_fl_rad": 2.4368999752987526e-12,
+      "wheel_angle_fr_rad": 7.459503793997526e-12,
+      "wheel_angle_rl_rad": 4.142048453740594e-12,
+      "wheel_angle_rr_rad": 5.78411737647054e-12,
+      "wheel_spin_fl_rad_per_s": 2.2413443106463884e-11,
+      "wheel_spin_fr_rad_per_s": 5.153464065015812e-11,
+      "wheel_spin_rl_rad_per_s": 1.9824716473050444e-11,
+      "wheel_spin_rr_rad_per_s": 3.062362821181663e-11
+    },
+    "sample_count": 481,
+    "state_width": 33
+  },
+  "vehicle_model_identity_matches": true
+}

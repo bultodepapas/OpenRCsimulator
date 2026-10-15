@@ -1,0 +1,17 @@
+candidate=/home/bulto/openrc-r11-package-20261015-08
+godot=/home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64
+draft=/mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd
+8056d025702443b20e6ba5036a0984d33beee3a85790d2aeb89d10004879b840  /mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd
+8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e  /home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64
+command=/home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/bulto/openrc-r11-package-20261015-08/app --check-only --script /mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Cannot infer the type of "envelope_ok" variable because the value doesn't have a set type.
+          at: GDScript::reload (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd:52)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "row_ok" variable because the value doesn't have a set type.
+          at: GDScript::reload (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd:65)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "abi_ok" variable because the value doesn't have a set type.
+          at: GDScript::reload (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd:108)
+ERROR: Failed to load script "/mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+exit=1

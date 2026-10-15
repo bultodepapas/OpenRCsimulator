@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   test preferences save
+ok   interactive app starts on Home
+ok   Home Fly is the focused real button
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home Fly creates the flight
+ok   Home and HomeScene leave the viewport
+ok   exactly one Camera3D remains under the viewport
+ok   exactly one WorldEnvironment remains under the viewport
+ok   aircraft shadow mask owns an isolated 3D world
+ok   flight camera is active
+ok   fixed capture state is exactly 360 simulation ticks
+ok   fixed capture state is exactly 1.5 simulation seconds
+ok   disabled simulation stays frozen without showing the pause state
+all UI flight capture checks passed
+WARNING: 24 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

@@ -1,0 +1,516 @@
+{
+  "verification": "RCV-35 visual bundle fresh-clone source-manifest check",
+  "timestamp_utc": "2026-10-15T14:20:50.655773+00:00",
+  "status": "pass",
+  "core_autocrlf": true,
+  "production_repository": "C:\\DEVELOPMENT\\OpenRCsimulator",
+  "source_manifest": "assets/vehicles/monster-car-2/source-manifest.json",
+  "included_inputs": [
+    ".gitattributes",
+    "app/assets/vehicles/monster-car-2/SOURCE.txt",
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1.glb",
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1_banda_parabrisas.png",
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1_carroceria_color.jpg",
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1_carroceria_emision.png",
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1_carroceria_mr.png",
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1_fibra_carbono.png",
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1_placa.png",
+    "app/assets/vehicles/monster-car-2/source-manifest.json",
+    "app/assets/vehicles/monster-car-2/visual_rig.bin",
+    "app/assets/vehicles/monster-car-2/visual_rig.json",
+    "assets/vehicles/monster-car-2/README.md",
+    "assets/vehicles/monster-car-2/SOURCE.txt",
+    "assets/vehicles/monster-car-2/datos_simulacion_1.json",
+    "assets/vehicles/monster-car-2/monster_truck_nitro_1.glb",
+    "assets/vehicles/monster-car-2/source-manifest.json",
+    "assets/vehicles/monster-car-2/visual_rig.bin",
+    "assets/vehicles/monster-car-2/visual_rig.json",
+    "monster car 2/analisis_choques_1.txt",
+    "monster car 2/analisis_mecanico_1.md",
+    "monster car 2/datos_simulacion_1.json",
+    "monster car 2/livery.py",
+    "monster car 2/mecanica_1.json",
+    "monster car 2/monster_truck_colisiones_1.glb",
+    "monster car 2/monster_truck_nitro.py",
+    "monster car 2/monster_truck_nitro_1.blend",
+    "monster car 2/monster_truck_nitro_1.fbx",
+    "monster car 2/monster_truck_nitro_1.glb",
+    "monster car 2/monster_truck_nitro_LOD1_1.glb",
+    "research/rc-monster-truck/monster-car-2/visual_bake.py",
+    "research/rc-monster-truck/monster-car-2/visual_verify.py"
+  ],
+  "excluded_paths": [
+    "*.import Godot sidecars",
+    "app/.godot imported textures/cache",
+    "Blender bake execution; visual_verify.py validates packaged outputs"
+  ],
+  "commands": [
+    {
+      "label": "production visual bundle verifier",
+      "command": "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe research/rc-monster-truck/monster-car-2/visual_verify.py",
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "exit_code": 0,
+      "stdout": "OK monster_truck_nitro_1.glb cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759\nOK visual_rig.bin 4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d\nOK visual_rig.json 86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57\nOK SOURCE.txt b47ecd368f588cec221b73712a5902cb7c30d3935089052a5926d90b3015661b\nOK source-manifest.json 0c856e407c55eb5f926967b5c03655775000dd729a63494ef8b10f5558872934\nOK source manifest monster car 2/monster_truck_nitro_1.blend acae5bfff2227a8b370b5baf31af1df4ac177a27a04b0094f25e3ba44b5ba0bf\nOK source manifest monster car 2/monster_truck_nitro_1.glb cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759\nOK source manifest monster car 2/monster_truck_colisiones_1.glb daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5\nOK source manifest monster car 2/datos_simulacion_1.json 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0\nOK source manifest research/rc-monster-truck/monster-car-2/visual_bake.py f66b2ecdec5197e0b1501546f6e63f1bbf83b349891ba062e529dd527dbd6c60\nOK source manifest assets/vehicles/monster-car-2/visual_rig.bin 4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d\nOK source manifest assets/vehicles/monster-car-2/visual_rig.json 86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57\nMonster Car 2 packaged visual assets verified",
+      "stderr": ""
+    },
+    {
+      "label": "git version",
+      "command": "\"C:\\Program Files\\Git\\cmd\\git.EXE\" --version",
+      "cwd": "C:\\DEVELOPMENT\\OpenRCsimulator",
+      "exit_code": 0,
+      "stdout": "git version 2.52.0.windows.1",
+      "stderr": ""
+    },
+    {
+      "label": "initialize disposable repository",
+      "command": "\"C:\\Program Files\\Git\\cmd\\git.EXE\" init --quiet",
+      "cwd": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\snapshot",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "configure disposable author",
+      "command": "\"C:\\Program Files\\Git\\cmd\\git.EXE\" config user.name \"RCV-35 Visual Checkout Verification\"",
+      "cwd": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\snapshot",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "configure disposable email",
+      "command": "\"C:\\Program Files\\Git\\cmd\\git.EXE\" config user.email rcv35-visual-checkout@example.invalid",
+      "cwd": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\snapshot",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "set disposable core.autocrlf true",
+      "command": "\"C:\\Program Files\\Git\\cmd\\git.EXE\" config core.autocrlf true",
+      "cwd": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\snapshot",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "stage only scoped inputs",
+      "command": "\"C:\\Program Files\\Git\\cmd\\git.EXE\" add --all",
+      "cwd": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\snapshot",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "commit scoped visual snapshot",
+      "command": "\"C:\\Program Files\\Git\\cmd\\git.EXE\" commit --quiet -m \"RCV-35 disposable visual source verification\"",
+      "cwd": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\snapshot",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "read disposable commit",
+      "command": "\"C:\\Program Files\\Git\\cmd\\git.EXE\" rev-parse HEAD",
+      "cwd": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\snapshot",
+      "exit_code": 0,
+      "stdout": "7b3cae1e7f83f43b68bf0cb0380693cc1c8007c6",
+      "stderr": ""
+    },
+    {
+      "label": "confirm snapshot clean",
+      "command": "\"C:\\Program Files\\Git\\cmd\\git.EXE\" status --short",
+      "cwd": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\snapshot",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "fresh clone with autocrlf true",
+      "command": "\"C:\\Program Files\\Git\\cmd\\git.EXE\" -c core.autocrlf=true clone --quiet C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\snapshot C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\fresh-clone",
+      "cwd": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    },
+    {
+      "label": "confirm clone autocrlf",
+      "command": "\"C:\\Program Files\\Git\\cmd\\git.EXE\" config --get core.autocrlf",
+      "cwd": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\fresh-clone",
+      "exit_code": 0,
+      "stdout": "true",
+      "stderr": ""
+    },
+    {
+      "label": "inspect checkout attributes",
+      "command": "\"C:\\Program Files\\Git\\cmd\\git.EXE\" check-attr text eol -- assets/vehicles/monster-car-2/visual_rig.json app/assets/vehicles/monster-car-2/visual_rig.json assets/vehicles/monster-car-2/source-manifest.json app/assets/vehicles/monster-car-2/source-manifest.json assets/vehicles/monster-car-2/datos_simulacion_1.json research/rc-monster-truck/monster-car-2/visual_bake.py assets/vehicles/monster-car-2/SOURCE.txt",
+      "cwd": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\fresh-clone",
+      "exit_code": 0,
+      "stdout": "assets/vehicles/monster-car-2/visual_rig.json: text: unset\nassets/vehicles/monster-car-2/visual_rig.json: eol: unspecified\napp/assets/vehicles/monster-car-2/visual_rig.json: text: unset\napp/assets/vehicles/monster-car-2/visual_rig.json: eol: unspecified\nassets/vehicles/monster-car-2/source-manifest.json: text: unset\nassets/vehicles/monster-car-2/source-manifest.json: eol: unspecified\napp/assets/vehicles/monster-car-2/source-manifest.json: text: unset\napp/assets/vehicles/monster-car-2/source-manifest.json: eol: unspecified\nassets/vehicles/monster-car-2/datos_simulacion_1.json: text: unset\nassets/vehicles/monster-car-2/datos_simulacion_1.json: eol: unspecified\nresearch/rc-monster-truck/monster-car-2/visual_bake.py: text: set\nresearch/rc-monster-truck/monster-car-2/visual_bake.py: eol: lf\nassets/vehicles/monster-car-2/SOURCE.txt: text: set\nassets/vehicles/monster-car-2/SOURCE.txt: eol: lf",
+      "stderr": ""
+    },
+    {
+      "label": "fresh-clone visual bundle verifier",
+      "command": "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe research/rc-monster-truck/monster-car-2/visual_verify.py",
+      "cwd": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\fresh-clone",
+      "exit_code": 0,
+      "stdout": "OK monster_truck_nitro_1.glb cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759\nOK visual_rig.bin 4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d\nOK visual_rig.json 86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57\nOK SOURCE.txt b47ecd368f588cec221b73712a5902cb7c30d3935089052a5926d90b3015661b\nOK source-manifest.json 0c856e407c55eb5f926967b5c03655775000dd729a63494ef8b10f5558872934\nOK source manifest monster car 2/monster_truck_nitro_1.blend acae5bfff2227a8b370b5baf31af1df4ac177a27a04b0094f25e3ba44b5ba0bf\nOK source manifest monster car 2/monster_truck_nitro_1.glb cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759\nOK source manifest monster car 2/monster_truck_colisiones_1.glb daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5\nOK source manifest monster car 2/datos_simulacion_1.json 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0\nOK source manifest research/rc-monster-truck/monster-car-2/visual_bake.py f66b2ecdec5197e0b1501546f6e63f1bbf83b349891ba062e529dd527dbd6c60\nOK source manifest assets/vehicles/monster-car-2/visual_rig.bin 4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d\nOK source manifest assets/vehicles/monster-car-2/visual_rig.json 86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57\nMonster Car 2 packaged visual assets verified",
+      "stderr": ""
+    },
+    {
+      "label": "confirm fresh clone clean",
+      "command": "\"C:\\Program Files\\Git\\cmd\\git.EXE\" status --short",
+      "cwd": "C:\\Users\\bulto\\AppData\\Local\\Temp\\openrc-rcv35-visual-checkout-ss6_7a_u\\fresh-clone",
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": ""
+    }
+  ],
+  "source_and_clone_hashes": {
+    ".gitattributes": {
+      "source_sha256": "6f1893af458a4831729058e484746c537c34bdb1be2471776af3e458214620a0",
+      "checkout_sha256": "477d0011f8190a70d33a1454c070df691066e82831132ee47cf32e7b391ac6a8",
+      "same_bytes": false,
+      "same_after_crlf_normalization": true
+    },
+    "app/assets/vehicles/monster-car-2/SOURCE.txt": {
+      "source_sha256": "b47ecd368f588cec221b73712a5902cb7c30d3935089052a5926d90b3015661b",
+      "checkout_sha256": "b47ecd368f588cec221b73712a5902cb7c30d3935089052a5926d90b3015661b",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1.glb": {
+      "source_sha256": "cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759",
+      "checkout_sha256": "cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1_banda_parabrisas.png": {
+      "source_sha256": "615204ef9779290fa174afd7892c959ab1a0ea8ac98f858025ac125d0b149792",
+      "checkout_sha256": "615204ef9779290fa174afd7892c959ab1a0ea8ac98f858025ac125d0b149792",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1_carroceria_color.jpg": {
+      "source_sha256": "d4d64dccf03854caf30fbb5a1dbc1e255686bfa6662c9fa68626a497be60d11f",
+      "checkout_sha256": "d4d64dccf03854caf30fbb5a1dbc1e255686bfa6662c9fa68626a497be60d11f",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1_carroceria_emision.png": {
+      "source_sha256": "e71a15cc1aa36743d41fe1da077aa460beaaa32c5d6cb3858ac80ec5fec09043",
+      "checkout_sha256": "e71a15cc1aa36743d41fe1da077aa460beaaa32c5d6cb3858ac80ec5fec09043",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1_carroceria_mr.png": {
+      "source_sha256": "8881e2f6b7fdbbdb39fb3210aa7902bb9ba9782bbda1b5bd23b54b6aeead4811",
+      "checkout_sha256": "8881e2f6b7fdbbdb39fb3210aa7902bb9ba9782bbda1b5bd23b54b6aeead4811",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1_fibra_carbono.png": {
+      "source_sha256": "7c64379ec795cf3828c344660f435b9402735eb7d3f48b720474e34123eeaf8d",
+      "checkout_sha256": "7c64379ec795cf3828c344660f435b9402735eb7d3f48b720474e34123eeaf8d",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "app/assets/vehicles/monster-car-2/monster_truck_nitro_1_placa.png": {
+      "source_sha256": "9bdb8e489c694cef552f1feb109c536b21c5fdfacf9b5be406188a9bd2601b3b",
+      "checkout_sha256": "9bdb8e489c694cef552f1feb109c536b21c5fdfacf9b5be406188a9bd2601b3b",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "app/assets/vehicles/monster-car-2/source-manifest.json": {
+      "source_sha256": "0c856e407c55eb5f926967b5c03655775000dd729a63494ef8b10f5558872934",
+      "checkout_sha256": "0c856e407c55eb5f926967b5c03655775000dd729a63494ef8b10f5558872934",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "app/assets/vehicles/monster-car-2/visual_rig.bin": {
+      "source_sha256": "4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d",
+      "checkout_sha256": "4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "app/assets/vehicles/monster-car-2/visual_rig.json": {
+      "source_sha256": "86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57",
+      "checkout_sha256": "86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "assets/vehicles/monster-car-2/README.md": {
+      "source_sha256": "5f40908a1f39efa8f0f0680452de50abbdcee03f8a7617c9da0f35e130e2b40a",
+      "checkout_sha256": "57b62ced3e0e4f4c7ea6013df11f864cee6ccf84e4fb6a803fb2276809a83fd5",
+      "same_bytes": false,
+      "same_after_crlf_normalization": true
+    },
+    "assets/vehicles/monster-car-2/SOURCE.txt": {
+      "source_sha256": "b47ecd368f588cec221b73712a5902cb7c30d3935089052a5926d90b3015661b",
+      "checkout_sha256": "b47ecd368f588cec221b73712a5902cb7c30d3935089052a5926d90b3015661b",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "assets/vehicles/monster-car-2/datos_simulacion_1.json": {
+      "source_sha256": "510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0",
+      "checkout_sha256": "510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "assets/vehicles/monster-car-2/monster_truck_nitro_1.glb": {
+      "source_sha256": "cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759",
+      "checkout_sha256": "cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "assets/vehicles/monster-car-2/source-manifest.json": {
+      "source_sha256": "0c856e407c55eb5f926967b5c03655775000dd729a63494ef8b10f5558872934",
+      "checkout_sha256": "0c856e407c55eb5f926967b5c03655775000dd729a63494ef8b10f5558872934",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "assets/vehicles/monster-car-2/visual_rig.bin": {
+      "source_sha256": "4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d",
+      "checkout_sha256": "4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "assets/vehicles/monster-car-2/visual_rig.json": {
+      "source_sha256": "86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57",
+      "checkout_sha256": "86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "monster car 2/analisis_choques_1.txt": {
+      "source_sha256": "e5302ebd280adb21ab85046a6b7dcd20a88e714ea47ae0eba903a74647f3b0eb",
+      "checkout_sha256": "e5302ebd280adb21ab85046a6b7dcd20a88e714ea47ae0eba903a74647f3b0eb",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "monster car 2/analisis_mecanico_1.md": {
+      "source_sha256": "c15aad316431a93db5662f8f9967e442aa67beb2e3074bc645ac61b765bd41e8",
+      "checkout_sha256": "c15aad316431a93db5662f8f9967e442aa67beb2e3074bc645ac61b765bd41e8",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "monster car 2/datos_simulacion_1.json": {
+      "source_sha256": "510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0",
+      "checkout_sha256": "510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "monster car 2/livery.py": {
+      "source_sha256": "577373699176a8a376a20a3ff3793bec48aa5cca47f0199baea3042e798bc14f",
+      "checkout_sha256": "577373699176a8a376a20a3ff3793bec48aa5cca47f0199baea3042e798bc14f",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "monster car 2/mecanica_1.json": {
+      "source_sha256": "dabe2642dd16bfe1ec20e40eb8fabb3521f8b4825abd3da1ce4efe6aee116bef",
+      "checkout_sha256": "dabe2642dd16bfe1ec20e40eb8fabb3521f8b4825abd3da1ce4efe6aee116bef",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "monster car 2/monster_truck_colisiones_1.glb": {
+      "source_sha256": "daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5",
+      "checkout_sha256": "daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "monster car 2/monster_truck_nitro.py": {
+      "source_sha256": "adea91c90deacbceeee26b4f4333af84964f66b35c57967439859b118e9a2fda",
+      "checkout_sha256": "adea91c90deacbceeee26b4f4333af84964f66b35c57967439859b118e9a2fda",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "monster car 2/monster_truck_nitro_1.blend": {
+      "source_sha256": "acae5bfff2227a8b370b5baf31af1df4ac177a27a04b0094f25e3ba44b5ba0bf",
+      "checkout_sha256": "acae5bfff2227a8b370b5baf31af1df4ac177a27a04b0094f25e3ba44b5ba0bf",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "monster car 2/monster_truck_nitro_1.fbx": {
+      "source_sha256": "c621701c210d3bffafa9bcd3035b6a6cbf12fcf0df9dc8bd70dfbaeea6a73037",
+      "checkout_sha256": "c621701c210d3bffafa9bcd3035b6a6cbf12fcf0df9dc8bd70dfbaeea6a73037",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "monster car 2/monster_truck_nitro_1.glb": {
+      "source_sha256": "cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759",
+      "checkout_sha256": "cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "monster car 2/monster_truck_nitro_LOD1_1.glb": {
+      "source_sha256": "4a2af499c52db5a085be1ee56ba46981a6e9833ce86218c4ab67a162d7126bb4",
+      "checkout_sha256": "4a2af499c52db5a085be1ee56ba46981a6e9833ce86218c4ab67a162d7126bb4",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "research/rc-monster-truck/monster-car-2/visual_bake.py": {
+      "source_sha256": "f66b2ecdec5197e0b1501546f6e63f1bbf83b349891ba062e529dd527dbd6c60",
+      "checkout_sha256": "f66b2ecdec5197e0b1501546f6e63f1bbf83b349891ba062e529dd527dbd6c60",
+      "same_bytes": true,
+      "same_after_crlf_normalization": true
+    },
+    "research/rc-monster-truck/monster-car-2/visual_verify.py": {
+      "source_sha256": "d0a406895d8edd66d8ae8fee4006017c556ba9430bc5bca09fb40ecd609bd5ef",
+      "checkout_sha256": "a48f633c2efc1f53b81a1c84b8f09c5d6f1e3a8a1f0814e26a2873646830ec9f",
+      "same_bytes": false,
+      "same_after_crlf_normalization": true
+    }
+  },
+  "manifest_checks": [
+    {
+      "path": "monster car 2/monster_truck_nitro_1.blend",
+      "expected_size": 7096678,
+      "actual_size": 7096678,
+      "expected_sha256": "acae5bfff2227a8b370b5baf31af1df4ac177a27a04b0094f25e3ba44b5ba0bf",
+      "actual_sha256": "acae5bfff2227a8b370b5baf31af1df4ac177a27a04b0094f25e3ba44b5ba0bf",
+      "size_pass": true,
+      "sha256_pass": true,
+      "pass": true
+    },
+    {
+      "path": "monster car 2/monster_truck_nitro_1.glb",
+      "expected_size": 15237120,
+      "actual_size": 15237120,
+      "expected_sha256": "cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759",
+      "actual_sha256": "cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759",
+      "size_pass": true,
+      "sha256_pass": true,
+      "pass": true
+    },
+    {
+      "path": "monster car 2/monster_truck_colisiones_1.glb",
+      "expected_size": 129748,
+      "actual_size": 129748,
+      "expected_sha256": "daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5",
+      "actual_sha256": "daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5",
+      "size_pass": true,
+      "sha256_pass": true,
+      "pass": true
+    },
+    {
+      "path": "monster car 2/datos_simulacion_1.json",
+      "expected_size": 38099,
+      "actual_size": 38099,
+      "expected_sha256": "510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0",
+      "actual_sha256": "510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0",
+      "size_pass": true,
+      "sha256_pass": true,
+      "pass": true
+    },
+    {
+      "path": "research/rc-monster-truck/monster-car-2/visual_bake.py",
+      "expected_size": 22599,
+      "actual_size": 22599,
+      "expected_sha256": "f66b2ecdec5197e0b1501546f6e63f1bbf83b349891ba062e529dd527dbd6c60",
+      "actual_sha256": "f66b2ecdec5197e0b1501546f6e63f1bbf83b349891ba062e529dd527dbd6c60",
+      "size_pass": true,
+      "sha256_pass": true,
+      "pass": true
+    },
+    {
+      "path": "assets/vehicles/monster-car-2/visual_rig.bin",
+      "expected_size": 3553104,
+      "actual_size": 3553104,
+      "expected_sha256": "4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d",
+      "actual_sha256": "4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d",
+      "size_pass": true,
+      "sha256_pass": true,
+      "pass": true
+    },
+    {
+      "path": "assets/vehicles/monster-car-2/visual_rig.json",
+      "expected_size": 186260,
+      "actual_size": 186260,
+      "expected_sha256": "86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57",
+      "actual_sha256": "86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57",
+      "size_pass": true,
+      "sha256_pass": true,
+      "pass": true
+    }
+  ],
+  "source_runtime_pair_checks": {
+    "monster_truck_nitro_1.glb": {
+      "source_sha256": "cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759",
+      "runtime_sha256": "cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759",
+      "same_bytes": true
+    },
+    "visual_rig.bin": {
+      "source_sha256": "4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d",
+      "runtime_sha256": "4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d",
+      "same_bytes": true
+    },
+    "visual_rig.json": {
+      "source_sha256": "86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57",
+      "runtime_sha256": "86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57",
+      "same_bytes": true
+    },
+    "SOURCE.txt": {
+      "source_sha256": "b47ecd368f588cec221b73712a5902cb7c30d3935089052a5926d90b3015661b",
+      "runtime_sha256": "b47ecd368f588cec221b73712a5902cb7c30d3935089052a5926d90b3015661b",
+      "same_bytes": true
+    },
+    "source-manifest.json": {
+      "source_sha256": "0c856e407c55eb5f926967b5c03655775000dd729a63494ef8b10f5558872934",
+      "runtime_sha256": "0c856e407c55eb5f926967b5c03655775000dd729a63494ef8b10f5558872934",
+      "same_bytes": true
+    }
+  },
+  "normalized_text_paths": {
+    ".gitattributes": {
+      "same_bytes": false,
+      "same_after_crlf_normalization": true,
+      "source_sha256": "6f1893af458a4831729058e484746c537c34bdb1be2471776af3e458214620a0",
+      "checkout_sha256": "477d0011f8190a70d33a1454c070df691066e82831132ee47cf32e7b391ac6a8"
+    },
+    "assets/vehicles/monster-car-2/README.md": {
+      "same_bytes": false,
+      "same_after_crlf_normalization": true,
+      "source_sha256": "5f40908a1f39efa8f0f0680452de50abbdcee03f8a7617c9da0f35e130e2b40a",
+      "checkout_sha256": "57b62ced3e0e4f4c7ea6013df11f864cee6ccf84e4fb6a803fb2276809a83fd5"
+    },
+    "research/rc-monster-truck/monster-car-2/visual_verify.py": {
+      "same_bytes": false,
+      "same_after_crlf_normalization": true,
+      "source_sha256": "d0a406895d8edd66d8ae8fee4006017c556ba9430bc5bca09fb40ecd609bd5ef",
+      "checkout_sha256": "a48f633c2efc1f53b81a1c84b8f09c5d6f1e3a8a1f0814e26a2873646830ec9f"
+    }
+  },
+  "production_visual_verify": {
+    "exit_code": 0,
+    "stdout": "OK monster_truck_nitro_1.glb cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759\nOK visual_rig.bin 4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d\nOK visual_rig.json 86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57\nOK SOURCE.txt b47ecd368f588cec221b73712a5902cb7c30d3935089052a5926d90b3015661b\nOK source-manifest.json 0c856e407c55eb5f926967b5c03655775000dd729a63494ef8b10f5558872934\nOK source manifest monster car 2/monster_truck_nitro_1.blend acae5bfff2227a8b370b5baf31af1df4ac177a27a04b0094f25e3ba44b5ba0bf\nOK source manifest monster car 2/monster_truck_nitro_1.glb cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759\nOK source manifest monster car 2/monster_truck_colisiones_1.glb daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5\nOK source manifest monster car 2/datos_simulacion_1.json 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0\nOK source manifest research/rc-monster-truck/monster-car-2/visual_bake.py f66b2ecdec5197e0b1501546f6e63f1bbf83b349891ba062e529dd527dbd6c60\nOK source manifest assets/vehicles/monster-car-2/visual_rig.bin 4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d\nOK source manifest assets/vehicles/monster-car-2/visual_rig.json 86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57\nMonster Car 2 packaged visual assets verified",
+    "stderr": ""
+  },
+  "disposable_commit": "7b3cae1e7f83f43b68bf0cb0380693cc1c8007c6",
+  "snapshot_status": "",
+  "clone_core_autocrlf": "true",
+  "checkout_attributes": [
+    "assets/vehicles/monster-car-2/visual_rig.json: text: unset",
+    "assets/vehicles/monster-car-2/visual_rig.json: eol: unspecified",
+    "app/assets/vehicles/monster-car-2/visual_rig.json: text: unset",
+    "app/assets/vehicles/monster-car-2/visual_rig.json: eol: unspecified",
+    "assets/vehicles/monster-car-2/source-manifest.json: text: unset",
+    "assets/vehicles/monster-car-2/source-manifest.json: eol: unspecified",
+    "app/assets/vehicles/monster-car-2/source-manifest.json: text: unset",
+    "app/assets/vehicles/monster-car-2/source-manifest.json: eol: unspecified",
+    "assets/vehicles/monster-car-2/datos_simulacion_1.json: text: unset",
+    "assets/vehicles/monster-car-2/datos_simulacion_1.json: eol: unspecified",
+    "research/rc-monster-truck/monster-car-2/visual_bake.py: text: set",
+    "research/rc-monster-truck/monster-car-2/visual_bake.py: eol: lf",
+    "assets/vehicles/monster-car-2/SOURCE.txt: text: set",
+    "assets/vehicles/monster-car-2/SOURCE.txt: eol: lf"
+  ],
+  "exact_byte_mismatches": [],
+  "text_normalization_mismatches": [],
+  "manifest_entry_count": 7,
+  "fresh_clone_visual_verify": {
+    "exit_code": 0,
+    "stdout": "OK monster_truck_nitro_1.glb cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759\nOK visual_rig.bin 4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d\nOK visual_rig.json 86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57\nOK SOURCE.txt b47ecd368f588cec221b73712a5902cb7c30d3935089052a5926d90b3015661b\nOK source-manifest.json 0c856e407c55eb5f926967b5c03655775000dd729a63494ef8b10f5558872934\nOK source manifest monster car 2/monster_truck_nitro_1.blend acae5bfff2227a8b370b5baf31af1df4ac177a27a04b0094f25e3ba44b5ba0bf\nOK source manifest monster car 2/monster_truck_nitro_1.glb cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759\nOK source manifest monster car 2/monster_truck_colisiones_1.glb daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5\nOK source manifest monster car 2/datos_simulacion_1.json 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0\nOK source manifest research/rc-monster-truck/monster-car-2/visual_bake.py f66b2ecdec5197e0b1501546f6e63f1bbf83b349891ba062e529dd527dbd6c60\nOK source manifest assets/vehicles/monster-car-2/visual_rig.bin 4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d\nOK source manifest assets/vehicles/monster-car-2/visual_rig.json 86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57\nMonster Car 2 packaged visual assets verified",
+    "stderr": ""
+  },
+  "clone_status": "",
+  "disposable_workspace_removed": true
+}

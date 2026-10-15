@@ -22,6 +22,8 @@ var _rotors: Array[Dictionary]=[]
 var _landing: SpotLight3D
 var _frame_fill: OmniLight3D
 var _beacon: MeshInstance3D
+# Owned optic materials change gain only with the exact dusk factor.
+var _last_optic_factor: float=NAN
 
 static func attach(aircraft: Dictionary) -> Node3D:
  if not aircraft.get("root") is Node3D: return null
@@ -58,10 +60,15 @@ func update_visual(sun_deg: float, exposure: float, telemetry: Dictionary={}, ma
  active_mode="off" if mode=="off" or factor<=0.0 else ("nav" if mode=="nav" else "all")
  visible=active_mode!="off"
  var safe_exposure: float=maxf(exposure,.001) if is_finite(exposure) else .6
- for optic: Dictionary in _optics:
-  optic.node.visible=active_mode=="all" or (active_mode=="nav" and optic.nav)
-  optic.material.set_shader_parameter("radiance",float(optic.radiance)*factor)
-  optic.material.set_shader_parameter("display_cap",float(optic.cap)*factor)
+ if factor!=_last_optic_factor:
+  for optic: Dictionary in _optics:
+   optic.node.visible=active_mode=="all" or (active_mode=="nav" and optic.nav)
+   optic.material.set_shader_parameter("radiance",float(optic.radiance)*factor)
+   optic.material.set_shader_parameter("display_cap",float(optic.cap)*factor)
+  _last_optic_factor=factor
+ else:
+  for optic: Dictionary in _optics:
+   optic.node.visible=active_mode=="all" or (active_mode=="nav" and optic.nav)
  _beacon.visible=active_mode!="off" and armed
  _landing.visible=active_mode=="all"
  _frame_fill.visible=active_mode=="all"
@@ -84,11 +91,13 @@ func _build() -> void:
  var canopy: MeshInstance3D=root.find_child("Carenado",true,false) as MeshInstance3D
  if canopy!=null:
   var triangles: PackedVector3Array=_triangles(root,canopy)
+  var lines: Array=_canopy_lines(triangles,[[-1.0,.43],[-1.0,.83],[1.0,.43],[1.0,.83]])
   for side: float in [-1.0,1.0]:
+   var line_index: int=0 if side<0 else 2
    var side_name: String="port" if side<0 else "starboard"
-   var line: PackedVector3Array=canopy_line(triangles,side,.43)
+   var line: PackedVector3Array=lines[line_index]
    _add_strip("canopy_"+side_name,line,PORT if side<0 else STARBOARD,Vector3(side,0,0))
-   _add_strip("canopy_crown_"+side_name,canopy_line(triangles,side,.83),WARM,Vector3(side,.6,0).normalized(),.006)
+   _add_strip("canopy_crown_"+side_name,lines[line_index+1],WARM,Vector3(side,.6,0).normalized(),.006)
  _add_strip("skid_port",PackedVector3Array([Vector3(-.096,.01,-.205),Vector3(-.096,.01,.185)]),BELLY,Vector3(-1,-.3,0).normalized())
  _add_strip("skid_starboard",PackedVector3Array([Vector3(.096,.01,-.205),Vector3(.096,.01,.185)]),BELLY,Vector3(1,-.3,0).normalized())
  for side: float in [-1.0,1.0]:
@@ -135,6 +144,7 @@ func _build() -> void:
 func _add_sprite(label: String,color: Color,point: Vector3,size_m: float,nav: bool,flash: Vector4=Vector4(1,0,0,0)) -> MeshInstance3D:
  var node: MeshInstance3D=AircraftLights.sprite(label,color,point,size_m,1.2,flash,3.5,1.4)
  add_child(node)
+ _last_optic_factor=NAN
  _optics.append({node=node,material=node.mesh.material,nav=nav,radiance=1.2,cap=.65})
  return node
 
@@ -163,6 +173,7 @@ func _add_strip(label: String,line: PackedVector3Array,color: Color,face: Vector
  node.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
  node.extra_cull_margin=.15
  add_child(node)
+ _last_optic_factor=NAN
  _optics.append({node=node,material=material,nav=false,radiance=STRIP_RADIANCE,cap=.65})
 
 static func _triangles(root: Node3D,node: MeshInstance3D) -> PackedVector3Array:
@@ -171,22 +182,72 @@ static func _triangles(root: Node3D,node: MeshInstance3D) -> PackedVector3Array:
  for s: int in node.mesh.get_surface_count():
   var arrays: Array=node.mesh.surface_get_arrays(s)
   var vertices: PackedVector3Array=arrays[Mesh.ARRAY_VERTEX]
-  var indices: PackedInt32Array=arrays[Mesh.ARRAY_INDEX]
+  var indices: PackedInt32Array=arrays[Mesh.ARRAY_INDEX] if arrays[Mesh.ARRAY_INDEX]!=null else PackedInt32Array()
+  # Transform each source vertex once in native code, then preserve face order.
+  var transformed: PackedVector3Array=transform_value*vertices
   if indices.is_empty():
-   for point: Vector3 in vertices: result.append(transform_value*point)
+   result.append_array(transformed)
   else:
-   for index: int in indices: result.append(transform_value*vertices[index])
+   for index: int in indices: result.append(transformed[index])
  return result
 
 ## Slice actual canopy triangles; no floating outline based on its bounding box.
 static func canopy_line(triangles: PackedVector3Array,side: float,height_fraction: float) -> PackedVector3Array:
- var line: PackedVector3Array=[]
- for station: int in 17:
-  var z: float=lerpf(-.355,.045,float(station)/16.0)
-  var segments: Array=[]
-  var lo: float=INF
-  var hi: float=-INF
-  for i: int in range(0,triangles.size()-2,3):
+ return _canopy_lines(triangles,[[side,height_fraction]])[0]
+
+## Each profile is [side, height_fraction]. Share station intersections only within
+## this call; preserve float64 profile values and independent packed output lines.
+static func _canopy_lines(triangles: PackedVector3Array,profiles: Array) -> Array:
+ var lines: Array=[]
+ for profile: Array in profiles: lines.append(PackedVector3Array())
+ var stations: PackedFloat64Array=[]
+ for station: int in 17: stations.append(lerpf(-.355,.045,float(station)/16.0))
+ var sections: Array=_canopy_sections(triangles,stations)
+ for station: int in stations.size():
+  var z: float=stations[station]
+  var section: Dictionary=sections[station]
+  var segments: Array=section.segments
+  var lo: float=section.lo
+  var hi: float=section.hi
+  if segments.is_empty(): continue
+  for index: int in profiles.size():
+   var side: float=profiles[index][0]
+   var height_fraction: float=profiles[index][1]
+   var y: float=lerpf(lo,hi,height_fraction)
+   var x: float=-INF
+   for segment: PackedVector3Array in segments:
+    var a: Vector3=segment[0]
+    var b: Vector3=segment[1]
+    if (a.y-y)*(b.y-y)>0 or absf(a.y-b.y)<1e-8: continue
+    x=maxf(x,side*lerpf(a.x,b.x,(y-a.y)/(b.y-a.y)))
+   if is_finite(x):
+    var line: PackedVector3Array=lines[index]
+    line.append(Vector3(side*(x+.002),y,z))
+    lines[index]=line
+ return lines
+
+
+## Stations are the sorted float64 planes generated by _canopy_lines. Visit only
+## planes inside each triangle's closed Z interval; retain the original traversal
+## for non-finite vertices, for which binary-search bounds would be unreliable.
+static func _canopy_sections(triangles: PackedVector3Array,stations: PackedFloat64Array) -> Array:
+ var sections: Array=[]
+ for z: float in stations: sections.append({segments=[],lo=INF,hi=-INF})
+ for i: int in range(0,triangles.size()-2,3):
+  var az: float=triangles[i].z
+  var bz: float=triangles[i+1].z
+  var cz: float=triangles[i+2].z
+  var first: int=0
+  var stop: int=stations.size()
+  if is_finite(az) and is_finite(bz) and is_finite(cz):
+   first=stations.bsearch(minf(az,minf(bz,cz)))
+   stop=stations.bsearch(maxf(az,maxf(bz,cz)),false)
+  for station: int in range(first,stop):
+   var z: float=stations[station]
+   if (az<z and bz<z and cz<z) or (az>z and bz>z and cz>z): continue
+   var section: Dictionary=sections[station]
+   var lo: float=section.lo
+   var hi: float=section.hi
    var points: PackedVector3Array=[]
    for edge: int in 3:
     var a: Vector3=triangles[i+edge]
@@ -194,14 +255,6 @@ static func canopy_line(triangles: PackedVector3Array,side: float,height_fractio
     if (a.z-z)*(b.z-z)>0 or absf(a.z-b.z)<1e-8: continue
     var p: Vector3=a.lerp(b,(z-a.z)/(b.z-a.z))
     points.append(p); lo=minf(lo,p.y); hi=maxf(hi,p.y)
-   if points.size()>=2: segments.append(points)
-  if segments.is_empty(): continue
-  var y: float=lerpf(lo,hi,height_fraction)
-  var x: float=-INF
-  for segment: PackedVector3Array in segments:
-   var a: Vector3=segment[0]
-   var b: Vector3=segment[1]
-   if (a.y-y)*(b.y-y)>0 or absf(a.y-b.y)<1e-8: continue
-   x=maxf(x,side*lerpf(a.x,b.x,(y-a.y)/(b.y-a.y)))
-  if is_finite(x): line.append(Vector3(side*(x+.002),y,z))
- return line
+   section.lo=lo; section.hi=hi
+   if points.size()>=2: section.segments.append(points)
+ return sections

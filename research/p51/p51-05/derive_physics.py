@@ -160,9 +160,38 @@ fin = [(T["dorsal_start_z"], fus_top(T["dorsal_start_z"])), (T["fin_root_le_z"],
        (T["fin_top_le_z"], T["fin_top_y"]), (fin_top_te, T["fin_top_y"]), tuple(T["rudder_te_bottom"]), (z_post, T["rudder_te_bottom"][1])]
 Sv, fin_cz, fin_cy = shoelace(fin)
 note("tail", "Sv (m2)", Sv, "fin (with dorsal fillet) + rudder side polygon")
-rud = [(z_post, T["fin_top_y"]), (fin_top_te, T["fin_top_y"]), tuple(T["rudder_te_bottom"]), (z_post, T["rudder_te_bottom"][1])]
+# P51-24: the rudder's aerodynamic hinge. The visual hinge (geometry rudder_hinge_z, the tail post) is an unmeasured
+# constant that leaves 7.2 ft2 of rudder; the production P-51D rudder is 10.41 ft2 of the 20.02 ft2 vertical tail (fin 9.61,
+# NACA RM L6J25 / MR L-566 dimension tables). Solve the hinge so the measured full-size tail silhouette aft of it has that
+# area; it then reproduces the published 26 in maximum chord and 74 in span within about 1 in and 3 in.
+RUDDER_AREA_FT2 = 10.41
+_up, _lo = src["full_size"]["tail"]["upper_outline"], src["full_size"]["tail"]["lower_outline"]
+
+
+def _outline_y(pts, z):
+    if z <= pts[0][0]:
+        return pts[0][1]
+    for (z0, y0), (z1, y1) in zip(pts, pts[1:]):
+        if z0 <= z <= z1:
+            return y0 + (y1 - y0) * (z - z0) / (z1 - z0)
+    return pts[-1][1]
+
+
+def _area_aft(zh, n=4000):
+    z_end = min(_up[-1][0], _lo[-1][0])
+    h = (z_end - zh) / n
+    return sum(max(0.0, _outline_y(_up, zh + (i + 0.5) * h) - _outline_y(_lo, zh + (i + 0.5) * h)) * h for i in range(n))
+
+
+_lo_h, _hi_h = 6.0, 6.8
+for _ in range(60):
+    _mid = 0.5 * (_lo_h + _hi_h)
+    _lo_h, _hi_h = (_mid, _hi_h) if _area_aft(_mid) > RUDDER_AREA_FT2 * (12 * IN) ** 2 else (_lo_h, _mid)
+z_rudder_aero = note("tail", "rudder aerodynamic hinge (model z)", 0.5 * (_lo_h + _hi_h) * g["scale"]["factor"],
+                     f"full-size {0.5 * (_lo_h + _hi_h):.3f} m: the measured silhouette aft of it is the NACA production rudder area {RUDDER_AREA_FT2} ft2; the visual hinge {z_post:.4f} (tail post, unmeasured) leaves {_area_aft(z_post / g['scale']['factor']) / (12 * IN) ** 2:.1f} ft2")
+rud = [(z_rudder_aero, T["fin_top_y"]), (fin_top_te, T["fin_top_y"]), tuple(T["rudder_te_bottom"]), (z_rudder_aero, T["rudder_te_bottom"][1])]
 Sr, _, _ = shoelace(rud)
-cf_r = note("tail", "rudder area fraction", Sr / Sv, "used as its chord fraction")
+cf_r = note("tail", "rudder area fraction", Sr / Sv, "exposed side polygon aft of the aerodynamic hinge (P51-24); used as its chord fraction")
 h_v = T["fin_top_y"] - T["rudder_te_bottom"][1]
 fin_le_at = lambda y: T["fin_root_le_z"] + (T["fin_top_le_z"] - T["fin_root_le_z"]) * (y - fin[1][1]) / (T["fin_top_y"] - fin[1][1])
 xv_ac = fin_le_at(fin_cy) + 0.25 * (Sv / h_v)
@@ -418,8 +447,8 @@ CYdr = slope_v * Sv / S * ce_v
 Cnb = slope_v * Sv / S * arm_v_arp / b
 Cndr = -CYdr * arm_v_arp / b
 Cldr = CYdr * (fin_cy - arp_y) / b
-note("lateral", "Cnb body, omitted (1/rad)", -0.001 * 1.4 * 57.3 * (0.6 * fus_len * fus_d / S) * (fus_len / b),
-     "estimated DATCOM -K_N K_Rl (S_side/S)(L/b): destabilizing; not represented because the shared surface-consistency rule currently requires Cnb to equal the vertical-fin contribution")
+Cnb_body_datcom = note("lateral", "Cnb body, DATCOM estimate (1/rad)", -0.001 * 1.4 * 57.3 * (0.6 * fus_len * fus_d / S) * (fus_len / b),
+     "estimated DATCOM -K_N K_Rl (S_side/S)(L/b), fuselage only: comparison for the flight-calibrated body term below (P51-25)")
 Clb_dihedral = note("lateral", "Clb dihedral (1/rad)", -CLa_w * dihedral * (1 + 2 * lam) / (6 * (1 + lam)), "strip theory: -CLa_w Gamma (1 + 2 lambda) / (6 (1 + lambda)); 5 deg geometric dihedral")
 dihedral_low = note("lateral", "Clb low-wing interference (1/rad)", 1.2 * math.sqrt(AR) * (-z_w / b) * (2 * fus_d / b),
                     "DATCOM: 1.2 sqrt(AR) (z_w/b)(2d/b), destabilizing for a low wing")
@@ -460,6 +489,30 @@ D_q = sum(parts.values()) * 1.1
 CD0 = note("drag", "CD0", D_q / S, f"skin friction (30 % laminar on surfaces) x form factors (Raymer ch. 12) + scoop + gear DOWN + cooling, x1.1 excrescences: " + ", ".join(f"{k} {v:.4f} m2" for k, v in parts.items()))
 e_osw = note("drag", "Oswald e", 0.75, "full-size P-51D 0.70-0.75 (Loftin, NASA SP-468: L/D max 14.6 with CD0 0.0163); no measured value")
 k_ind = 1 / (math.pi * e_osw * AR)
+
+# P51-25: the destabilizing body (fuselage, spinner, canopy, propeller) yaw, calibrated to the P-51D's steady sideslips.
+# NACA RM L6J25 Table I (production tail, clean, +-1 deg): rudder per sideslip 0.46 / 0.55 / 0.31 at 103 / 200 / 350 mph.
+# The 200 mph value is used (closest to the model's flight CL; the report notes that its slopes are approximate). The
+# coefficients are about the ARP; the airplane balances moments about its CG, where the runtime adds r x F (Aero.
+# _global_loads): side force dFy/dbeta = qS (CYb - CD) and dFy/ddr = qS CYdr act at rx = CG - ARP (aft) and rz (CG above
+# the ARP is negative). Aileron side force is zero. The attached steady sideslip [Clda Cldr; Cnda Cndr]_cg [da; dr] =
+# -beta [Clb; Cnb]_cg is linear in Cnb, so one solve fixes the total; rudder (P51-24) and aileron power (P51-25 roll
+# check) are already validated against flight data.
+RUDDER_PER_SIDESLIP = 0.55
+Cnb_fin = Cnb
+_rx = cg_model_z - x_arp  # CG aft of the ARP (m), body x forward is -le z
+_rz = -(arp_y - cg[2])  # body z (down) of the ARP relative to the CG
+_CD_ref = CD0 + k_ind * (CL_ref - 0.5 * CL0_w) ** 2
+_CY_beta = CYb_v + CYb_B - _CD_ref  # wind-axis side force and drag rotated into body y
+_Clb_cg, _Cldr_cg = Clb - _rz / b * _CY_beta, Cldr - _rz / b * CYdr
+_Cndr_cg = Cndr + _rx / b * CYdr
+_cl_da, _cn_da = 2 * Clda, 2 * Cnda  # per unit antisymmetric aileron (right +x, left -x), as in the data
+_det = _cl_da * _Cndr_cg - _Cldr_cg * _cn_da
+_rudder_per_beta = lambda cnb: (_cl_da * (cnb + _rx / b * _CY_beta) - _cn_da * _Clb_cg) / _det
+note("lateral", "rudder per sideslip, fin-only Cnb (deg/deg)", abs(_rudder_per_beta(Cnb_fin)), f"attached-oracle steady sideslip about the CG (ARP {_rx * 1000:.0f} mm ahead, {_rz * 1000:.0f} mm below; CD {_CD_ref:.4f} at CL_ref); XP-51 cruise about 0.85 (NACA MR L-566 Fig. 39), P-51D 0.31-0.55 (RM L6J25 Table I)")
+Cnb = (math.copysign(RUDDER_PER_SIDESLIP, _rudder_per_beta(Cnb_fin)) * _det + _cn_da * _Clb_cg) / _cl_da - _rx / b * _CY_beta
+Cnb_body = note("lateral", "Cnb body, flight-calibrated (1/rad)", Cnb - Cnb_fin,
+                f"CALIBRATED (P51-25): total Cnb {Cnb:.4f} about the ARP ({Cnb + _rx / b * _CY_beta:.4f} about the CG) gives {RUDDER_PER_SIDESLIP} deg rudder per deg sideslip (P-51D, RM L6J25, 200 mph); fin {Cnb_fin:.4f}; the DATCOM fuselage estimate {Cnb_body_datcom:.4f} supplies {Cnb_body_datcom / (Cnb - Cnb_fin):.0%}, the rest lumps spinner, bubble canopy and propeller-in-yaw. Munk-type couple in the local model, faded over the declared sideslip blend")
 
 
 def station_centres(span, root, tip, n=3):
@@ -725,7 +778,7 @@ coefficients = {
     "Cmq": coeff(Cmq, "1/rad", "derived", "tail damping about the CG (undownwashed tail slope) x1.1 for wing/fuselage"),
     "Cmde": coeff(Cmde, "1/rad", "derived", "elevator lift x tail arm from the ARP"),
     "Cmda_each": coeff(Cmda, "1/rad", "derived", "aileron lift increment at its thin-airfoil centre, arm from the ARP"),
-    "Cnb": coeff(Cnb, "1/rad", "derived", "vertical-fin contribution only; shared surface-consistency rule requires Cnb to equal the modeled vertical surface"),
+    "Cnb": coeff(Cnb, "1/rad", "derived", "vertical-fin contribution plus the flight-calibrated body term aero.surfaces.body_cn_beta (P51-25); the shared rule requires Cnb = fin + body"),
     "Cnp": coeff(Cnp, "1/rad", "derived", "-CL_ref/8 + fin"),
     "Cnr": coeff(Cnr, "1/rad", "derived", "fin + wing profile drag + fuselage (-0.02 estimated)"),
     "Cnda_right": coeff(Cnda, "1/rad", "derived", "adverse yaw 2 K CL_ref Clda, K 0.15 (Nelson, AR 5.8, taper 0.48)"),
@@ -845,6 +898,7 @@ data = {
                 "control_effectiveness": q(ce_v, "1", "derived", D("thin-airfoil tau x 0.8 / sidewash factor")),
                 "incidence": q(0.0, "rad", "estimated", "symmetric fin; engine side thrust not modelled"),
             },
+            "body_cn_beta": q(Cnb_body, "1/rad", "derived", D(f"CALIBRATED (P51-25): destabilizing body yaw about the ARP so the oracle steady sideslip, balanced about the CG, needs {RUDDER_PER_SIDESLIP} deg rudder per deg sideslip, the production P-51D value at 200 mph (NACA RM L6J25 Table I, ntrs.nasa.gov/citations/20050019329; approximate slopes over +-1 deg, climb power); DATCOM fuselage alone {Cnb_body_datcom:.4f}. Lumps fuselage, spinner, canopy and propeller in yaw; geometric scaling does not establish it for the RC model")),
         },
         # P51-20: the shared M5-GE-1 module with constants fitted to this planform and tail (image-method VLM).
         "ground_effect": {
@@ -903,7 +957,7 @@ def check_consistency(d):
     cy = fin_["lift_slope"]["value"] * fin_["area"]["value"] / S_ * fin_["control_effectiveness"]["value"]
     arm = fin_["position"]["value"][0] - arp[0]
     exp = {"CYdr": cy, "Cndr": -cy * arm / b_, "Cldr": cy * (fin_["position"]["value"][2] - arp[2]) / b_,
-           "Cnb": fin_["lift_slope"]["value"] * fin_["area"]["value"] / S_ * arm / b_}
+           "Cnb": fin_["lift_slope"]["value"] * fin_["area"]["value"] / S_ * arm / b_ + d["aero"]["surfaces"].get("body_cn_beta", {}).get("value", 0.0)}
     for k, v in exp.items():
         d["aero"]["coefficients"][k]["value"] = v
     # The loader's trapezoid/area rule (1 %) must hold on the rounded values.
@@ -969,7 +1023,7 @@ CL_max at Re 13e6 exceeds the model's {CL_max:.2f}). Correction {math.degrees(d_
 - A full-size report notes 1 deg left fin offset on P-51B/D. This model has no fixed fin-incidence/yaw-bias term; a rudder control trim does not represent that geometry, so the effect is omitted.
 - The neutral point is calibrated to the full-size glide value through one lumped fuselage/scoop/propeller term (K_fus {K_f:.3f}/deg, above Raymer's 0.005-0.015).
 - The tail's zero-alpha flow angle is calibrated to the full-size glide trim curves through one lumped term ({math.degrees(d_inc * (1 - deps)):+.2f} deg at the tail, P51-19); the stabilizer stays at its +2 deg leading-edge-up setting (NACA ACR 4K02 confirms the sign). Reynolds similarity for the RC model is not established.
-- Fuselage directional destabilization is omitted because the shared surface-consistency rule requires Cnb to equal the modeled vertical-fin contribution.
+- Body directional destabilization (P51-25) is one lumped term calibrated to the P-51D steady-sideslip rudder slope (RM L6J25), applied as a Munk-type couple that fades out over the declared sideslip blend (15-25 deg) because its evidence is small-sideslip attached flow; it is not separated into fuselage, canopy and propeller parts and has no damping contribution.
 - The induced-flow strip map calibrates section slope and offsets so integrated wing-plus-horizontal-tail lift slope and
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;
   Clp and detailed spanwise attached/post-stall loading remain model predictions at the current strip resolution.

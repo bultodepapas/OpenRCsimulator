@@ -1,0 +1,22 @@
+{
+  "commands": [
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\wing-light-slices\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-slices-runner-check\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-slices-runner-check\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\wing-light-slices-runner-check\\native-1.json"
+    ]
+  ],
+  "sha256": {
+    "reference.gd": "3a03244089054004998276dcb0acee8be76250b7465c40948e191d623a878594",
+    "candidate.gd": "52b6ab43d1a452dd1b01136d97b832ebb198079cd60ec076e9cbc0690140e149",
+    "compare.gd": "9f5f10a808415909fcf99a7b4f94e2d1a2ac5a2f731ed6cd20417b2b09184e30"
+  }
+}

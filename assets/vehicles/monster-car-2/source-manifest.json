@@ -1,0 +1,48 @@
+{
+  "schema": "openrc-monster-car-2-source-manifest-v1",
+  "hash": "SHA-256",
+  "files": [
+    {
+      "path": "monster car 2/monster_truck_nitro_1.blend",
+      "role": "user-supplied Blender source",
+      "bytes": 7096678,
+      "sha256": "acae5bfff2227a8b370b5baf31af1df4ac177a27a04b0094f25e3ba44b5ba0bf"
+    },
+    {
+      "path": "monster car 2/monster_truck_nitro_1.glb",
+      "role": "user-supplied main visual GLB",
+      "bytes": 15237120,
+      "sha256": "cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759"
+    },
+    {
+      "path": "monster car 2/monster_truck_colisiones_1.glb",
+      "role": "user-supplied collision GLB",
+      "bytes": 129748,
+      "sha256": "daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5"
+    },
+    {
+      "path": "monster car 2/datos_simulacion_1.json",
+      "role": "user-supplied simulation spec",
+      "bytes": 38099,
+      "sha256": "510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0"
+    },
+    {
+      "path": "research/rc-monster-truck/monster-car-2/visual_bake.py",
+      "role": "authored rig bake generator",
+      "bytes": 22599,
+      "sha256": "f66b2ecdec5197e0b1501546f6e63f1bbf83b349891ba062e529dd527dbd6c60"
+    },
+    {
+      "path": "assets/vehicles/monster-car-2/visual_rig.bin",
+      "role": "derived authored transform table",
+      "bytes": 3553104,
+      "sha256": "4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d"
+    },
+    {
+      "path": "assets/vehicles/monster-car-2/visual_rig.json",
+      "role": "derived authored transform manifest",
+      "bytes": 186260,
+      "sha256": "86e6b94d11fb75ffec128dc5fe9d73be7094ab76505b3ea227afd4c27fba0e57"
+    }
+  ]
+}

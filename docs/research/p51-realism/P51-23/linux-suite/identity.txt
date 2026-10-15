@@ -1,0 +1,33 @@
+ed1720a8 dsf
+ M app/test.sh
+ M research/p51/p51-20/ground_effect_vlm.py
+?? app/physics/ground_vehicle/vehicle_damage.gd.uid
+?? app/physics/ground_vehicle/vehicle_environment.gd.uid
+?? app/physics/mass_inventory.gd.uid
+?? app/tests/test_aero_continuity.gd.uid
+?? app/tests/test_atmosphere_column.gd.uid
+?? app/tests/test_atmosphere_column_session.gd.uid
+?? app/tests/test_dynamic_mass_contact.gd.uid
+?? app/tests/test_dynamic_mass_contact_boundary.gd.uid
+?? app/tests/test_dynamic_mass_contact_session.gd.uid
+?? app/tests/test_ground_start_environment.gd.uid
+?? app/tests/test_heli_crash_relaunch.gd.uid
+?? app/tests/test_mass_inventory.gd.uid
+?? app/tests/test_rcv_activity_audit.gd.uid
+?? app/tests/test_rcv_damage.gd.uid
+?? app/tests/test_rcv_damage_session.gd.uid
+?? app/tests/test_rcv_effects_activity.gd.uid
+?? app/tests/test_rcv_ground_effects.gd.uid
+?? app/tests/test_rcv_render_audit.gd.uid
+?? app/tests/test_rcv_wet_effects.gd.uid
+?? app/tests/test_runway_transaction.gd.uid
+?? app/tests/test_ui_standard_column.gd.uid
+?? app/vehicles/ground/ground_damage_view.gd.uid
+?? app/vehicles/ground/ground_effects.gd.uid
+?? app/vehicles/ground/ground_grime_overlay.gdshader.uid
+?? app/vehicles/ground/ground_wet_effects.gd.uid
+dca91a9ba5f03506d57b54a989ea56ba3f0da31b0d993d8f68b999aaf689d141  app/data/aircraft/p51d_mustang_120.json
+676d9d5a490e88d8f864e49c20ebe45caddfe98fe1cc85ac192bbf5cb233193a  app/test.sh
+8e645f44940a0344236e0c62b67cb2752c1316b34e01b91cd39f7e4f202cf995  research/p51/p51-20/ground_effect_vlm.py
+8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e  .tools/Godot_v4.7.2-stable_linux.x86_64
+Linux 6.18.54.1-microsoft-standard-WSL2

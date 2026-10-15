@@ -1,0 +1,44 @@
+test_body_directional exit=0 P51-25 body directional: 14 checks, 0 failed 
+verify_p51 exit=0 verify_p51: 248 checks, 0 failed 
+test_p51_handling exit=1 FAIL inside loop is a loop: pitch attitude passes the vertical (> 80°) and |β| stays below 10°  pitch max 46°, |β| max 20.1° 16 checks, 1 failed (rerun after the P51-25 loop-check correction)
+test_p51_envelope exit=1 FAIL power-off stall recovers (stick forward, opposite rudder, wings level, α-limited pull-out) within 80 m, no crash  81 m 15 checks, 1 failed 
+test_p51_ground exit=1 FAIL lift-off between 1.05 and 1.5 Vs (rotation at 1.25 Vs)  25.3 m/s 12 checks, 1 failed 
+test_runway_start exit=0 18 checks, 0 failed 
+test_prop_strike exit=0 34 checks, 0 failed 
+test_aircraft_data exit=0 87 checks, 0 failed 
+test_aircraft_catalog exit=0 98 checks, 0 failed 
+test_aircraft_contract exit=0 AS aircraft contract: 2904 checks, 0 failures 
+test_trim exit=0 14 checks, 0 failed 
+test_modes exit=0 42 checks, 0 failed 
+test_golden exit=0 4 golden flights, 0 failed 
+test_attached_flow exit=0 H15 attached flow: 20000 air-data and 20000 global-load byte-exact comparisons (10000 windy, 16326 stalled, 4000 without envelope), 0 failed 
+test_aero_continuity exit=0 R02 continuity: 64 checks, 0 failed 
+test_envelope_integrity exit=0 D1-R4: 64 checks, 0 failed 
+test_induced_integrity exit=0 D1-R5 integration: 177 checks, 0 failed 
+test_downwash_lag exit=0 22 checks, 0 failed 
+test_slipstream_downwash exit=0 E0b3a: 15 checks, 0 failed 
+test_slipstream_scalar exit=0 H13/R02 slipstream: 10001 projected-load comparisons (1 aircraft, 6082 washed, 1429 static air, 448 stopped), 0 failed 
+test_swirl_accuracy exit=0 E0b6 swirl accuracy: 41 checks, 0 failed 
+test_swirl_optimization exit=0 E0b6p optimized swirl equivalence: 7 checks, 0 failed 
+test_wash_profile exit=0 E0b3b: 20 checks, 0 failed 
+test_rudder_authority exit=1 FAIL |r| at 3.0 s (1.5 s after release) ≤15°/s (estimated recovery screen) βpk 20.39° RMS 10.68°, rpk 92.58°/s RMS 42.67°/s, ppk 57.00°/s, αpk 6.50°, rollpk 19.01°, altitude 30.00–30.30 m (Δpk 0.30 m), rpm pk 5156, r@3s -15.13°/s, rfinal -15.13°/s 26 checks, 1 failed 
+test_extra_handling exit=0 12 checks, 0 failed 
+test_timber_handling exit=0 TT-09 Timber handling: 36 checks, 0 failed 
+test_avanti_handling exit=0 47 checks, 0 failed 
+test_ground_effect exit=0 50 checks, 0 failed 
+test_checkpoint exit=0 H8 checkpoints: 92 checks, 0 failed 
+test_trace_metadata exit=0 C7-R2 / DATA-3: 341 checks, 0 failed 
+test_flight_log exit=0 FL-04 flight logs: 3247 checks, 0 failures; C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1996543 
+Schema is current: C:\DEVELOPMENT\OpenRCsimulator\app\data\schema\openrc-aircraft-v2.schema.json
+parameter register is current
+p51d_mustang_120.json and derivation.md are up to date
+8 Workshop descriptors are current.
+P51-15 inventory oracle PASS: mass 21.499999 kg, CG [+0.177763, -0.071146] m, Jxx 3.861834 / Jyy 6.817989 / Jzz 9.946226 kg·m² (ΔJxx/ΔJzz +0.449604)
+  "report": null
+}
+
+OK
+probe envelope 240 exit 0
+probe ground 240 exit 0
+probe envelope 480 exit 0
+probe ground 480 exit 0

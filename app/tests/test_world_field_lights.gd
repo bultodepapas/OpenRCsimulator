@@ -154,7 +154,9 @@ func _initialize() -> void:
 	airplane.root.free()
 
 	# FW-62: under-wing strips on every catalog aircraft, traced on its own lowest vertices.
+	_test_geometry_arrays()
 	_test_underwing_face_selection()
+	_test_wing_station_ranges()
 	for id: String in [AirplaneBuilder.STIK_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.TIMBER_ID]:
 		var plane: Dictionary = AirplaneBuilder.build(id)
 		var pts := AircraftLights.vertices(plane.root)
@@ -278,6 +280,25 @@ func _test_underwing_face_selection() -> void:
 	_check("under-wing selectors ignore a lower fence and collapsed face, retaining both known skins", flat_ok,
 		"lower=%s upper=%s" % [str(lower), str(upper)])
 
+	var skins := AircraftLights.wing_skin_lines(flat_with_fence, 1.0)
+	_check("batched wing skins preserve independent single-skin results",
+		var_to_bytes(skins.lower) == var_to_bytes(AircraftLights.underwing_lines(flat_with_fence, 1.0))
+		and var_to_bytes(skins.upper) == var_to_bytes(AircraftLights.underwing_lines(flat_with_fence, 1.0, true)))
+	var sections := AircraftLights._wing_sections(flat_with_fence, 1.0)
+	var saved_sections := var_to_bytes(sections)
+	var upper_first := AircraftLights._wing_lines_from_sections(sections, true)
+	var lower_second := AircraftLights._wing_lines_from_sections(sections, false)
+	_check("wing selectors leave shared cuts unchanged and ignore selection order",
+		saved_sections == var_to_bytes(sections) and var_to_bytes(upper_first) == var_to_bytes(skins.upper)
+		and var_to_bytes(lower_second) == var_to_bytes(skins.lower))
+	var saved_upper := var_to_bytes(skins.upper)
+	var changed: PackedVector3Array = skins.lower.right
+	changed[0] = Vector3(99, 99, 99)
+	skins.lower.right = changed
+	_check("editing a lower strip cannot change the upper strip or later builds",
+		saved_upper == var_to_bytes(skins.upper)
+		and var_to_bytes(lower_second) == var_to_bytes(AircraftLights.wing_skin_lines(flat_with_fence, 1.0).lower))
+
 	# A 0.5 m/m spanwise slope is a real tilted skin (normal still vertical-dominant), not a flat-plane-only special case.
 	var slope := 0.5
 	var sloped: PackedVector3Array = AircraftLights.underwing_lines(_synthetic_wing(slope, false, false), 1.0).right
@@ -317,3 +338,65 @@ func _synthetic_wing(slope: float, include_fence: bool, include_degenerate: bool
 			Vector3(0.68, slope * 0.68 - 0.2, 0.4),
 			Vector3(0.58, slope * 0.58 - 0.2, 0.4)]))
 	return triangles
+
+
+func _test_wing_station_ranges() -> void:
+	# At half-span 20, the tip stations are exactly +/-19. Each touches one
+	# triangle's limiting edge: lower bound on the left, upper bound on the right.
+	var edge_triangles := PackedVector3Array([Vector3(-19, 0, -1), Vector3(-18, 0, 0), Vector3(-19, 0, 1),
+		Vector3(19, 0, -1), Vector3(18, 0, 0), Vector3(19, 0, 1)])
+	var sections := AircraftLights._wing_sections(edge_triangles, 20.0)
+	var endpoints_ok := true
+	var touched := 0
+	for j in sections.xs.size():
+		var segments: Array = sections.segments[j]
+		if absf(sections.xs[j]) == 19.0:
+			touched += 1
+			endpoints_ok = endpoints_ok and segments == [[-1.0, 1.0, 0.0, 0.0]]
+		else:
+			endpoints_ok = endpoints_ok and segments.is_empty()
+	_check("wing stations include both limiting triangle edges without extra cuts", endpoints_ok and touched == 2)
+
+	var flat := _synthetic_wing(0.0, false, false)
+	var coincident := AircraftLights._wing_sections(flat, 0.0)
+	var duplicates_ok: bool = coincident.segments.size() == 2 * AircraftLights.STRIP_STATIONS
+	for j in coincident.xs.size():
+		duplicates_ok = duplicates_ok and coincident.xs[j] == 0.0 and coincident.segments[j].size() == 4
+	_check("coincident wing stations each retain all four skin triangles", duplicates_ok)
+	_check("reversed semispan preserves left/right geometry and root-to-tip order",
+		var_to_bytes(AircraftLights.wing_skin_lines(flat, -1.0)) == var_to_bytes(AircraftLights.wing_skin_lines(flat, 1.0)))
+
+
+func _test_geometry_arrays() -> void:
+	var model := Node3D.new()
+	model.position = Vector3(100, 100, 100) # collector outputs the root's local frame
+	var parent := Node3D.new()
+	parent.position = Vector3(1, 2, 3)
+	model.add_child(parent)
+	var item := MeshInstance3D.new()
+	item.position = Vector3(.5, 0, 0)
+	parent.add_child(item)
+	var mesh := ArrayMesh.new()
+	var arrays := []
+	arrays.resize(Mesh.ARRAY_MAX)
+	arrays[Mesh.ARRAY_VERTEX] = PackedVector3Array([Vector3(-1, 0, 0), Vector3(1, 1, 0), Vector3(0, 0, 1), Vector3(4, 7, 9)])
+	arrays[Mesh.ARRAY_INDEX] = PackedInt32Array([2, 0, 1, 1, 0, 2])
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES, arrays)
+	arrays[Mesh.ARRAY_VERTEX] = PackedVector3Array([Vector3.ZERO, Vector3(2, 0, 0)])
+	arrays[Mesh.ARRAY_INDEX] = null
+	mesh.add_surface_from_arrays(Mesh.PRIMITIVE_LINES, arrays)
+	item.mesh = mesh
+	var saved_mesh := var_to_bytes(mesh.surface_get_arrays(0))
+	var geometry := AircraftLights._geometry_arrays(model)
+	var expected_points := PackedVector3Array([Vector3(.5, 2, 3), Vector3(2.5, 3, 3), Vector3(1.5, 2, 4),
+		Vector3(5.5, 9, 12), Vector3(1.5, 2, 3), Vector3(3.5, 2, 3)])
+	var expected_faces := PackedVector3Array([Vector3(1.5, 2, 4), Vector3(.5, 2, 3), Vector3(2.5, 3, 3),
+		Vector3(2.5, 3, 3), Vector3(.5, 2, 3), Vector3(1.5, 2, 4)])
+	_check("shared geometry retains unused/line vertices in root-local order", geometry.points == expected_points)
+	_check("shared geometry preserves triangle winding and excludes line surfaces", geometry.triangles == expected_faces)
+	geometry.points[0] = Vector3(99, 99, 99)
+	var fresh := AircraftLights._geometry_arrays(model)
+	_check("shared geometry results cannot mutate faces, source meshes or later reads",
+		geometry.triangles == expected_faces and fresh.points == expected_points and fresh.triangles == expected_faces
+		and var_to_bytes(mesh.surface_get_arrays(0)) == saved_mesh)
+	model.free()

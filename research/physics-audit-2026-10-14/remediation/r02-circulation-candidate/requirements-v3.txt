@@ -1,0 +1,4 @@
+# Reproduced with the default research Python in this workspace on 2026-10-15.
+# Exact pins keep quadrature and dense linear algebra reproducible.
+numpy==2.4.6
+scipy==1.17.1

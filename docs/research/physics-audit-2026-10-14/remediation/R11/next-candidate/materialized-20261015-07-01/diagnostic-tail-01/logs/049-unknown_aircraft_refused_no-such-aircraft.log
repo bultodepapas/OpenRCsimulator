@@ -1,0 +1,18 @@
+# unknown_aircraft_refused_no-such-aircraft
+# started_utc=2026-10-15T14:29:29+00:00
+# cwd=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+# timeout_seconds=75
+# expect=nonzero
+# command=/usr/bin/timeout 60 /home/bulto/openrc-r11-b09-r05b-20261015-07/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/bulto/openrc-r11-b09-r05b-20261015-07/app --audio-driver Dummy -- --aircraft=no-such-aircraft --trace=/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/unknown-aircraft.csv --t=1
+# returncode=1
+# timed_out=False
+# engine_error_detected=False
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: aircraft 'no-such-aircraft' refused: not in the catalog (jensen-das-ugly-stik-60, stik-glow-61fx-2t, stik-glow-55ax-2t, stik-glow-fs64v-4t, gp-extra-300s-60, p51d-mustang-120, sebart-avanti-s-a200-p100rx, turbo-lumber-evolution, xcell-60-research)
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://main.gd:366)
+       [1] start_flight (res://app_root.gd:498)
+       [2] _ready (res://app_root.gd:155)

@@ -1,0 +1,11 @@
+{
+  "format": "R11 independent derived-source review v1",
+  "captured_utc": "2026-10-15T14:27:30.538217+00:00",
+  "candidate": "/home/bulto/openrc-r11-package-20261015-08",
+  "manifest_sha256": "f61830ce291e789a76d43d059a5d6253ffa2d367e8857a9fa322ebc1e2b4f5f4",
+  "files_checked": 14923,
+  "bytes_checked": 2097069562,
+  "method": "Read every manifested file, compare SHA-256/size/mode, require nlink=1. Does not qualify unmanifested outputs or runtime behavior.",
+  "failures": [],
+  "ok": true
+}

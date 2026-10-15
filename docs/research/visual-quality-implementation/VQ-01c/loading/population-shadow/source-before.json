@@ -1,0 +1,9 @@
+{
+  "head": "5b305fe299a8a83bf48efcb509aaa9262f73a3cc",
+  "sha256": {
+    "app/render/field_projected_shadows.gd": "b4f9ca3dcade669b8989928230a93c6d4c2fee82bb142c87700a97839664ebb3",
+    "app/render/projected_shadow.gd": "0c5bc46ac42116d5b0dd9194695dbd3a2a29a95fe640ed6382575cc7b166a992",
+    "app/scenery/scenery.gd": "831fec7a25a310815947b89de820172cf25dca4384fa30c909681278055cec5e",
+    "app/project.godot": "176399ac913ea694682334cf9ff29150236c3958c1aa544299e217bac844a6df"
+  }
+}

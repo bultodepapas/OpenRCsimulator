@@ -1,0 +1,32 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field loads
+ok   default scenery, including worn links, validates
+ok   parking-to-door link is one worn pedestrian track
+ok   door-to-pits link is one worn pedestrian track
+ok   walk links share the central door threshold
+ok   shared endpoint reaches the pavilion's open central doorway
+ok   pits link ends at the east shelter's open front center
+ok   parking link starts just outside the apron and joins its feather
+ok   both links begin in the existing car-park ground cell
+ok   farm-track bend is rounded without moving either endpoint
+ok   worn-parking-door rounds pedestrian turns while preserving its endpoints
+ok   worn-parking-door stays at the low worn-ground lift, beneath concrete floors
+ok   worn-door-pits rounds pedestrian turns while preserving its endpoints
+ok   worn-door-pits stays at the low worn-ground lift, beneath concrete floors
+ok   collision world builds for route-clearance checks
+ok   both paths stay at least 3 m behind the runway safety line
+ok   parking path passes through the pavilion's clear central veranda bay
+ok   pits path reaches the open front between shelter posts
+ok   walking lines keep a visible gap from the veranda flower clumps
+ok   worn links clear all other low solid collision proxies
+ok   worn links add ground triangles
+ok   worn links add at most 2,000 ground triangles
+ok   worn links reuse the same 40 m cell meshes
+ok   no ground draw or cell surface is added
+LU-18 mesh evidence: cells=55, triangles before=52924 after=53248 added=324, surfaces=55
+ok   baseline and worn-link collision worlds build
+ok   visual ground links leave the collision proxy count unchanged
+ok   visual ground links leave checkpoint collision identity unchanged
+LU-18 collision evidence: proxies=4958 identity=314157cab6e244889c56c8f8aafe1212bcab76e415145738298aef68e636a7cd
+LU-18 ground: 27 checks, 0 failures

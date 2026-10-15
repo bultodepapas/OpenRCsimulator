@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: fixture quaternion has nonzero yaw component
+PASS: valid q[3] yaw and rotated normal are accepted
+PASS: rotated normal recovers independently computed effective mass
+PASS: simulation reset establishes a valid joint boundary
+PASS: configured transaction reset succeeds
+PASS: joint contact callback receives both integrated continuous endpoints
+PASS: late auxiliary projection failure is fail-closed
+PASS: no contact body or continuous tail commits after projection failure
+PASS: fault emits once and stepped emits no candidate tick
+PASS: owner can clear staged contact bookkeeping on fault
+PASS: explicit reset clears sticky failure
+PASS: valid retry publishes one complete tick
+R05-B independent review fixture: 12 checks, 0 failures

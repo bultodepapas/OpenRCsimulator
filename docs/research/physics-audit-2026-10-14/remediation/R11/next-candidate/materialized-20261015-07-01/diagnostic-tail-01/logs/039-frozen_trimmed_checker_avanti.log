@@ -1,0 +1,11 @@
+# frozen_trimmed_checker_avanti
+# started_utc=2026-10-15T14:29:23+00:00
+# cwd=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+# timeout_seconds=600
+# expect=zero
+# command=/usr/bin/python3 /home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/check_trimmed_flight.py /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/trace-avanti.csv --duration=3
+# returncode=1
+# timed_out=False
+# engine_error_detected=False
+
+FAIL missing or unsupported aero_model
