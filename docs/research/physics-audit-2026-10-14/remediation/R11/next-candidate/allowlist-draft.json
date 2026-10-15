@@ -1,6 +1,6 @@
 {
   "format": "openrc-r11-linux-candidate-overlay-allowlist-v1",
-  "status": "root_approved_for_materialization_final_identities_received_pending_hash_verification",
+  "status": "root_approved_for_materialization_final_identities_received_and_hash_verified",
   "date": "2026-10-15",
   "base": {
     "candidate_root": "/home/bulto/openrc-r11-b09-r05b-20261014-03",
@@ -12,12 +12,22 @@
       "app/test.sh": "dae260326426be613b065b0ae00f040842c310fab217979b537a274b3b36b7d6",
       "app/tests/check_math_sensitivity.py": "9715901a3eeb90dd19a357e6abc1f35fdb95b3430167f78c3e87356921e1a43a"
     },
+    "support_inputs": [
+      {
+        "path": ".tools/Godot_v4.7.2-stable_linux.x86_64",
+        "sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+        "size_bytes": 146414384,
+        "mode": "0o755",
+        "version": "4.7.2.stable.official.ed1daf0bf",
+        "reason": "Pinned Linux engine used by canonical app/test.sh through app/get-godot.sh; retained as separately hashed support input because ignored .tools binaries are absent from the source manifest."
+      }
+    ],
     "h7_reconciliation": "The physical source includes the H7 instrumentation change recorded in linux-focused-candidate-after.json. The approved overlay below replaces only check_math_sensitivity.py with the final return-inventory-guard revision (d31a14be...).",
     "archive": "/home/bulto/openrc-r11-b09-r05b-20261014-03.tar",
     "archive_sha256": "723133aa8de4382f70174cb613f7cb97b08bb1dcc2d640db65573515587098d4",
     "manifest": "../linux-rate-guard-candidate-before.json",
     "manifest_sha256": "5142177d915370eef1f780e111ba9227506847cefa71f6792822649fc4e04043",
-    "copy_policy": "Create a new physical copy from the verified -03 tree using exactly the 14918 paths in physical_copy_source_manifest; no hardlinks. Omit only app/.godot and the generated untracked .gd.uid files listed in the source-after receipt. Preserve the old candidate and record pre/post path, mode, and byte hashes."
+    "copy_policy": "Create a new physical copy from the verified -03 tree using exactly the 14918 paths in physical_copy_source_manifest, including all paths in that manifest even when Git marks them untracked; no hardlinks. Preserve its synthetic .git directory as separately hashed support/provenance metadata, and record HEAD/status before and after. Separately copy the exact pinned Godot support binary identified above. Omit only the inventoried app/.godot cache, Python __pycache__ files, and prior tmp/flight-log-960337 scratch artifacts; list every excluded path/hash/size in the receipt. Preserve the old candidate and record pre/post path, mode, and byte hashes. Do not stage, reset, or commit inside the copy."
   },
   "retained_base_paths": [
     {
@@ -88,7 +98,7 @@
     },
     {
       "group": "d11g_reference_refresh",
-      "purpose": "Carry only the three intentionally refreshed rate-response tapes; source generator and derived-data identities remain pending final owner review.",
+      "purpose": "Carry only the three intentionally refreshed rate-response tapes; source generator and derived-data identities were independently reviewed and are included below.",
       "files": [
         {"path":"app/tests/golden/roll_15.json","sha256":"a556a84d9fee23ef6640e96e1aa42f75ab364019d0d99e47959b858bfb458eb7"},
         {"path":"app/tests/golden/pull_throttle.json","sha256":"50b0839b3445fbb0c3849812e3d695f7a17c959f2a63eb5ff92d47aaf9d89f83"},
@@ -97,7 +107,7 @@
     },
     {
       "group": "d11g_rate_data_pipeline",
-      "purpose": "Include the final, owner-verified canonical generator/updater and its exact ten aircraft/workshop outputs.",
+      "purpose": "Include the final, owner-verified canonical generator/updater and its exact ten aircraft/workshop outputs, bound by the final owner identity receipt.",
       "files": [
         {"path":"research/aero/d11g/derive_rate_derivatives.gd","sha256":"18726e3ea418a5faa65e24e64170bab5edb0bdcd3c0cde219d848e4bfe3db9e8"},
         {"path":"research/aero/d11g/apply_rate_derivatives.py","sha256":"be05742129bcf3bfe98d45b05e7bb38faaf1ea7f6ee267677e0be54f614c15f8"},
@@ -113,6 +123,9 @@
         {"path":"app/data/workshop/stik-glow-fs64v-4t.json","sha256":"3f92b1cbb8ba567a117b1dee13282e933d5fb23b2f76253e8df9a929fbf4f46e"}
       ],
       "derivation_evidence": [
+        {"path":"docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/identity-final-v4.json","sha256":"a721d2e40bbb6e73786658c68461b9f1c8df79bdbf334a092d226f6b7a9c0f8f"},
+        {"path":"docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_fullspeed_normalization_probe.py","sha256":"0a89bd0efa47597efcc2f1a6c43ef72d2a102cd7792289565377d8199101a0f7"},
+        {"path":"docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_fullspeed_normalization-v1.json","sha256":"2f79443cbd9c07ea8bd307e3d7438f88642b917f6299520de912d8681799c89f"},
         {"path":"docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/current-law-report-v4.json","sha256":"bc8a85cd6c977fd82d90beea38984986d91c5cf70b78116fbbd5e3809516bc65"},
         {"path":"docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/current-law-report-v4-replay.json","sha256":"bc8a85cd6c977fd82d90beea38984986d91c5cf70b78116fbbd5e3809516bc65"},
         {"path":"docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_r02_vs_kj_comparison-v4.json","sha256":"7fd711ddecc0ee46208b07bad0076f4c38cdda7e18fb3348cb4ebf4cef36c83b"},
@@ -156,7 +169,7 @@
   "explicit_exclusions": [
     "Current live app/test.sh (676d9d5a...); it contains additional P-51 generator checks not present in the frozen allowlisted base and is outside this candidate scope.",
     "External all-axis flight runner and its diagnostics; evidence only, not an app dependency.",
-    "All other live-tree changes and generated caches not listed above."
+    "The app/.godot import cache, Python __pycache__ bytecode, and prior tmp/flight-log-960337 scratch files inventoried in the materialization receipt; all manifested .uid files are copied. No other unmanifested source-candidate files are accepted."
   ],
-  "execution_gate": "Root approved physical materialization from the verified -03 source manifest plus listed overlays. Verify every live source hash and derivation receipt before applying. Run canonical app/test.sh only after those identity checks; preserve the expected open yaw/P51 failures."
+  "execution_gate": "Root approved physical materialization from the verified -03 source manifest plus listed overlays. Verify every live source hash and derivation receipt before applying. Preserve and separately verify the source candidate's synthetic .git metadata; do not stage, reset, or commit. Run canonical app/test.sh only after those identity checks; preserve expected open yaw/P51 failures."
 }

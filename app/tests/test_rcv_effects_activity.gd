@@ -30,6 +30,17 @@ func _run() -> void:
 	var reference = make_activity(false)
 	check(scene.startup_error.is_empty() and reference.startup_error.is_empty(), "both production-airfield activities start")
 	check(scene.session.spawn_id == "start", "default spawn stays on aircraft runway")
+	scene.handle_action("sound")
+	scene._process(0.0)
+	check(scene.enable_audio and scene._wet_effects.audio_enabled, "sound toggle enables the water voice as well as engine audio")
+	# An already playing splash must stop, including when muting from the garage.
+	scene._wet_effects._audio_player.stream = scene._wet_effects.SPLASH_ONE
+	scene._wet_effects._audio_player.play()
+	scene.handle_action("sound")
+	scene._process(0.0)
+	check(not scene.enable_audio and not scene._wet_effects.audio_enabled
+		and not scene._wet_effects._audio_player.playing and scene._wet_effects._audio_player.stream == null,
+		"muting from the garage stops an active splash and disables new water sound")
 	var ready: bool = scene.session.reset("track_rollers") and reference.session.reset("track_rollers")
 	scene._after_reset()
 	reference._after_reset()

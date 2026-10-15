@@ -1,0 +1,20 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\crash-damage\\cr-22c-r3\\compare.gd",
+    "--",
+    "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\crash-r3\\repro-final\\results.json",
+    "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\crash-r3\\repro-final\\reference.gd",
+    "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\crash\\effects.gd"
+  ],
+  "source_sha256": {
+    "reference.gd": "9675a5435eacfe9d9f8dae68f3130675f4c31be360fb4490f03819826767ae0b",
+    "effects.gd": "3a74241fa59da0d36e5bb81798cc6e715043231326b0e4dbfc4349cd3548400d",
+    "compare.gd": "ee94ac7d8996e8a562040d51a0a366c5104b8118480ab3759bf0eaa1b39652f8"
+  }
+}

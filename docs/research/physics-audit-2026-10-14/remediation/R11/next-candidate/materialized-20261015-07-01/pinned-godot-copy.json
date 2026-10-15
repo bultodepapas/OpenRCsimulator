@@ -1,0 +1,17 @@
+{
+  "captured_utc": "2026-10-15T13:08:18.811339+00:00",
+  "entries": [
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "Godot_v4.7.2-stable_linux.x86_64",
+      "sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+      "size_bytes": 146414384
+    }
+  ],
+  "entry_count": 1,
+  "format": "openrc-r11-candidate-tree-manifest-v1",
+  "purpose": "Separately hashed copy of the pinned Linux Godot support tool retained at the candidate root for app/get-godot.sh.",
+  "root": "/home/bulto/openrc-r11-b09-r05b-20261015-07/.tools",
+  "tree_sha256": "b0d77b8d09e2c37759c2216a261cab2dcdd606da3a9177b1ac19cf9b837f2f0b"
+}

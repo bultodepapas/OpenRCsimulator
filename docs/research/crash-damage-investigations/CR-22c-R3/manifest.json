@@ -1,0 +1,25 @@
+{
+  "date": "2026-10-15",
+  "baseline_head": "734503de",
+  "observed_head": "734503deff9586ebc768b18601b3cc137f9e6de1",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "sources": {
+    "app/render/crash/effects.gd": "3a74241fa59da0d36e5bb81798cc6e715043231326b0e4dbfc4349cd3548400d",
+    "app/tests/test_crash_effects.gd": "080d7fcb06344c2732b61b799f96fd975988d6e9a3bd1a9897a685e095fcbcd4",
+    "app/tests/test_crash_warmup.gd": "66ccd031ea1b93fae65c9c3810dbd4b4c9ec8902892b534b21428f58e76c8b15",
+    "app/tests/test_crash_presentation_ladder.gd": "52f03506d7c6bc015ae42e50777e6ad84cbd85f5955b521d92ed3862700d0774",
+    "app/tests/test_heli_crash_presentation.gd": "2b0900d74c648a3e5c1d9145ca62ebd0c9a405985a4cee7f7502bba868bf0dcb",
+    "app/tests/test_crash_integration.gd": "32ac22e790da21ec5aebeebf0c03f049b9ab17390253ed2265ba0cce67791897",
+    "app/project.godot": "176399ac913ea694682334cf9ff29150236c3958c1aa544299e217bac844a6df",
+    "app/assets/crash/smoke.png": "33f894c2279bee9f77874dbfa3c0e9f071a0ee5e1a7065dcc40196029d699f58",
+    "app/assets/crash/flame.png": "bfd931b030a6ac464fbdd439a5230933571f52da9b0b94d197fce18c1e081260",
+    "research/crash-damage/cr-22c-r3/compare.gd": "ee94ac7d8996e8a562040d51a0a366c5104b8118480ab3759bf0eaa1b39652f8"
+  },
+  "baseline": {
+    "source_sha256": "9675a5435eacfe9d9f8dae68f3130675f4c31be360fb4490f03819826767ae0b"
+  },
+  "variants": {
+    "0": "reference",
+    "1": "candidate"
+  }
+}

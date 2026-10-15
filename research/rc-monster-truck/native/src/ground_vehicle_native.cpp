@@ -34,7 +34,7 @@ using openrc::ground_vehicle::Surface;
 using openrc::ground_vehicle::Vec3;
 
 constexpr const char *kBackendVersion = "openrc-ground-vehicle-native-evaluate-v3";
-constexpr const char *kSolverVersion = "openrc-ground-vehicle-dynamics-rk4-v4";
+constexpr const char *kSolverVersion = "openrc-ground-vehicle-dynamics-rk4-v5";
 constexpr int64_t kAbiVersion = 1;
 constexpr int64_t kStateSize = 31;
 constexpr int64_t kMaximumHullProbes = 64;

@@ -1,6 +1,6 @@
 # VAL-AUD-R11 integration evidence
 
-2026-10-14. This qualifies the implemented [remediation slices](../README.md), not the complete plan or physical aircraft. Original R00 recordings and the original audit remain unchanged.
+Updated 2026-10-15. This qualifies the implemented [remediation slices](../README.md), not the complete plan or physical aircraft. Original R00 recordings and the original audit remain unchanged.
 
 ## Stable recordings and control scenarios
 
@@ -30,6 +30,8 @@ Four golden flights were re-recorded only after the section-force/wake checks an
 Only three modal band centers changed. Their existing 3% tolerance was not widened. An independently composed derivative/Jacobian and SciPy eigensolve establish the new references, including a finite-difference step sweep. The 42 mode checks pass, including the existing nonlinear lag-response test. [Mode evidence and old/new controls](../R02-modes/README.md).
 
 The subsequent [D11g data integration](d11g-root-integration/README.md) regenerates the Stik's three stored rate derivatives from the current local law and updates its generated variants/descriptors. Independent modal calculations justify one additional center change (25 m/s spiral), retaining 3%. Three affected goldens are regenerated with unchanged inputs/policies; the original glide remains unchanged. Old-data and current-data recordings, exact replays and same-input comparisons are retained separately. These references verify software consistency and do not resolve the yaw model discrepancy below.
+
+The [complete D11g control comparison](d11g-root-integration/all-axis-flights/README.md) covers all 28 cases: both aircraft, normal/full authority, neutral and both directions on each axis. All 28 old-data recordings replay exactly, and all 28 same-tape data candidates finish with 1,441 rows each. Independent review of all 40,348 paired CSV rows confirms identical initial body states, tick/time sequences and command tapes, finite results, and the reported position/velocity/rate differences. The 14 Jet comparisons are exactly unchanged; the Stik changes are recorded explicitly. This data-only comparison retains the same solver fingerprint and does not qualify the underlying aerodynamic closure physically.
 
 Failed runs are retained honestly. `final-scenarios-01` refreshed the goldens successfully but its recording verification failed because concurrent ground-vehicle source changed the solver fingerprint between recording and exact replay. `final-scenarios-02` passed the isolated Stik record/replay, then stopped on a comparison-runner path error. Neither is a passing integration gate. `final-scenarios-03` corrects the path and uses an immutable source snapshot; it is the accepted recording run.
 

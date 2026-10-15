@@ -14,6 +14,8 @@ func _initialize() -> void:
 	var session = Session.new()
 	_test_prepare_and_transaction(session)
 	if failures == 0:
+		_test_braking_checkpoint_events()
+	if failures == 0:
 		_test_garage_reverse_checkpoint_replay(session)
 	if failures == 0:
 		_test_experiment_and_reset(session)
@@ -79,6 +81,64 @@ func _test_prepare_and_transaction(session) -> void:
 	session.pause("test-complete")
 
 
+func _test_braking_checkpoint_events() -> void:
+	var source = Session.new()
+	var prepared: bool = source.prepare_default()
+	_check("braking event fixture prepares", prepared)
+	if not prepared:
+		source.free()
+		return
+	_check("braking event fixture resumes from a neutral sample",
+		source.tick_once(_neutral()) and source.resume())
+	var throttle := _neutral()
+	throttle.throttle = 1.0
+	var accelerated := true
+	for _tick in 480:
+		if not source.tick_once(throttle):
+			accelerated = false
+			break
+	_check("braking event fixture reaches measurable forward speed", accelerated
+		and float(source.telemetry_snapshot().get("forward_speed_m_per_s", 0.0)) > 0.5)
+	var brake := _neutral()
+	brake.brake = 1.0
+	var braking_event_seen := false
+	var braking_completed := true
+	for _tick in 1200:
+		if not source.tick_once(brake):
+			braking_completed = false
+			break
+		for event: Dictionary in source.event_tape_snapshot():
+			if str(event.get("type", "")) == "braking_distance":
+				braking_event_seen = true
+				break
+		if braking_event_seen:
+			break
+	_check("full braking emits the declared braking-distance event", braking_completed and braking_event_seen)
+	var braking_events: Array[Dictionary] = source.event_tape_snapshot()
+	var expected_state: PackedFloat64Array = source.state_snapshot()
+	var expected_damage: PackedFloat64Array = source.damage_snapshot()
+	var expected_tape: PackedFloat64Array = source.control_tape_snapshot()
+	var expected_checkpoint: Dictionary = source.checkpoint()
+	_check("checkpoint with a braking-distance event is restorable",
+		braking_event_seen and not expected_checkpoint.is_empty()
+		and source.can_restore_checkpoint(expected_checkpoint))
+	var fork = Session.new()
+	var fork_prepared: bool = fork.prepare_default()
+	var restored := fork_prepared and fork.restore_checkpoint(expected_checkpoint)
+	_check("braking checkpoint restores exact state, damage, controls, and event count", restored
+		and _arrays_equal(fork.state_snapshot(), expected_state)
+		and _arrays_equal(fork.damage_snapshot(), expected_damage)
+		and _arrays_equal(fork.control_tape_snapshot(), expected_tape)
+		and fork.event_tape_snapshot().size() == braking_events.size())
+	var replayed := restored and fork.replay(expected_tape)
+	_check("braking-distance event survives exact replay", replayed
+		and _arrays_equal(fork.state_snapshot(), expected_state)
+		and _arrays_equal(fork.damage_snapshot(), expected_damage)
+		and fork.event_tape_snapshot() == braking_events)
+	fork.free()
+	source.free()
+
+
 func _test_garage_reverse_checkpoint_replay(session) -> void:
 	var sampler = InputSampler.new()
 	_check("neutral sample is armed before opening garage", session.tick_once(sampler.sample({}, {})))
@@ -132,6 +192,32 @@ func _test_garage_reverse_checkpoint_replay(session) -> void:
 	var checkpoint_after_recovery: Dictionary = session.checkpoint()
 	_check("recovery is represented by an event and replay action",
 		not session.event_tape_snapshot().is_empty() and session.recovery_actions_snapshot().size() == 1)
+	var unknown_event_checkpoint: Dictionary = checkpoint_after_recovery.duplicate(true)
+	unknown_event_checkpoint.event_tape.append({"type": "unknown_event", "tick": session.tick,
+		"time_s": session.time_s()})
+	unknown_event_checkpoint.event_tape_sha256 = session._hash_variant(unknown_event_checkpoint.event_tape)
+	unknown_event_checkpoint.checkpoint_sha256 = session._checkpoint_hash(unknown_event_checkpoint)
+	var state_before_unknown_event: PackedFloat64Array = session.state_snapshot()
+	_check("self-hashed unknown checkpoint events are rejected transactionally",
+		not session.can_restore_checkpoint(unknown_event_checkpoint)
+		and not session.restore_checkpoint(unknown_event_checkpoint)
+		and _arrays_equal(session.state_snapshot(), state_before_unknown_event))
+	var reordered_event_checkpoint: Dictionary = checkpoint_after_recovery.duplicate(true)
+	reordered_event_checkpoint.event_tape.append({"type": "jump", "tick": session.tick - 1,
+		"time_s": float(session.tick - 1) * Session.DT, "speed_m_per_s": 1.0})
+	reordered_event_checkpoint.event_tape_sha256 = session._hash_variant(reordered_event_checkpoint.event_tape)
+	reordered_event_checkpoint.checkpoint_sha256 = session._checkpoint_hash(reordered_event_checkpoint)
+	_check("self-hashed nonmonotonic checkpoint event history is rejected",
+		not session.can_restore_checkpoint(reordered_event_checkpoint))
+	var mistimed_event_checkpoint: Dictionary = checkpoint_after_recovery.duplicate(true)
+	var mistimed_events: Array = mistimed_event_checkpoint.event_tape.duplicate(true)
+	if not mistimed_events.is_empty():
+		mistimed_events[0].time_s = float(mistimed_events[0].time_s) + Session.DT
+	mistimed_event_checkpoint.event_tape = mistimed_events
+	mistimed_event_checkpoint.event_tape_sha256 = session._hash_variant(mistimed_events)
+	mistimed_event_checkpoint.checkpoint_sha256 = session._checkpoint_hash(mistimed_event_checkpoint)
+	_check("self-hashed event time inconsistent with its tick is rejected",
+		 not mistimed_events.is_empty() and not session.can_restore_checkpoint(mistimed_event_checkpoint))
 	var recovered_state: PackedFloat64Array = session.state_snapshot()
 	var falsely_valid_checkpoint: Dictionary = checkpoint_after_recovery.duplicate(true)
 	falsely_valid_checkpoint.run_valid = true
@@ -464,7 +550,7 @@ func _test_checkpoint_json_serialization() -> void:
 	var expected_tape := PackedFloat64Array([0.0, steering, 0.0, 0.0])
 	_check("checkpoint JSON fixture preserves authoritative steering bytes",
 		_arrays_equal(source.control_tape_snapshot(), expected_tape))
-	source._event_tape.append({"type": "serialization_fixture", "tick": source.tick,
+	source._event_tape.append({"type": "jump", "tick": source.tick,
 		"time_s": source.time_s(), "speed_m_per_s": absf(steering)})
 	var checkpoint: Dictionary = source.checkpoint()
 	_check("checkpoint JSON fixture includes a valid nonempty event tape",

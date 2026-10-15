@@ -38,7 +38,7 @@ const STEER_RATE := 30
 const STATE_SIZE := 31
 const CORNER_COUNT := 4
 const GENERALIZED_SIZE := 14
-const SOLVER_VERSION := "openrc-ground-vehicle-dynamics-rk4-v4"
+const SOLVER_VERSION := "openrc-ground-vehicle-dynamics-rk4-v5"
 const SUBSTEPS_PER_TICK := 1
 const WALL_MAX_INTEGRATION_STEP_S := 1.0 / 120.0
 const FRICTION_SWEEPS := 128
@@ -507,7 +507,10 @@ static func _derivative_core(
 	var rate_body := _slice3(state, RATE)
 	var accel_body: PackedFloat64Array = PackedFloat64Array([acceleration[0], acceleration[1], acceleration[2]])
 	var body_velocity_rate := M.sub(accel_body, M.cross(rate_body, velocity_body))
-	var position_rate := M.q_rotate(_state_quaternion(state), velocity_body)
+	# RK stage states are not unit length even though accepted public states are.
+	# q_rotate assumes a unit quaternion, so normalize only for this spatial map;
+	# qdot below must use the raw stage value for the quaternion ODE.
+	var position_rate := M.q_rotate(M.q_normalized(_state_quaternion(state)), velocity_body)
 	for i in 3:
 		result[POS + i] = position_rate[i]
 		result[VEL + i] = body_velocity_rate[i]
@@ -543,13 +546,13 @@ static func telemetry(
 	road: Callable,
 	controls: Dictionary = DEFAULT_CONTROLS,
 ) -> Dictionary:
-	if state.size() != STATE_SIZE or not _valid_model(model) or not road.is_valid() or not _valid_controls(controls) or not _finite_array(state):
+	if state.size() != STATE_SIZE or not _valid_model(model) or not road.is_valid() or not _valid_controls(controls) or not _finite_array(state) or not _valid_attitude(state):
 		return {"ok": false, "error": "Invalid telemetry input"}
 	var evaluated := _evaluate_active(state, model, controls, road)
 	if not bool(evaluated["ok"]):
 		return {"ok": false, "error": str(evaluated["error"])}
 	var velocity: PackedFloat64Array = _slice3(state, VEL)
-	var position_world_velocity: PackedFloat64Array = M.q_rotate(_state_quaternion(state), velocity)
+	var position_world_velocity: PackedFloat64Array = M.q_rotate(M.q_normalized(_state_quaternion(state)), velocity)
 	return {
 		"ok": true,
 		"error": "",
@@ -627,7 +630,21 @@ static func _evaluate_active(
 	adaptive_friction: bool = true,
 ) -> Dictionary:
 	var result: Dictionary
-	var center_value: Variant = road.call(state[POS], state[POS + 1])
+	# A road is a deterministic spatial function for the duration of one
+	# evaluation. Cache exact float coordinate pairs here only; never quantize,
+	# retain values across states/times, or expose callback-owned mutable samples.
+	var road_cache: Dictionary = {}
+	var evaluation_road: Callable = func(north_m: float, east_m: float) -> Variant:
+		var east_samples: Dictionary = road_cache.get(north_m, {})
+		if east_samples.has(east_m):
+			return east_samples[east_m]
+		var sample: Variant = road.call(north_m, east_m)
+		if typeof(sample) == TYPE_DICTIONARY:
+			sample = sample.duplicate(true)
+		east_samples[east_m] = sample
+		road_cache[north_m] = east_samples
+		return sample
+	var center_value: Variant = evaluation_road.call(state[POS], state[POS + 1])
 	if typeof(center_value) != TYPE_DICTIONARY or not WetPhysics.surface_is_valid(center_value):
 		return _failure("Malformed environmental road sample")
 	var environmental: Dictionary = {}
@@ -635,7 +652,7 @@ static func _evaluate_active(
 	if bool(center_value.get("wet_zone", false)):
 		var geometry := _corner_geometry(state, model, state[STEER], state[STEER_RATE], 0.0)
 		if not geometry.ok: return geometry
-		environmental = WetPhysics.evaluate(state, model, geometry, road, center_value)
+		environmental = WetPhysics.evaluate(state, model, geometry, evaluation_road, center_value)
 		if not environmental.ok: return environmental
 		applied_controls = controls.duplicate()
 		var external: PackedFloat64Array = environmental.generalized_force.duplicate()
@@ -645,14 +662,14 @@ static func _evaluate_active(
 		applied_controls["external_generalized_force"] = external
 		environmental.erase("generalized_force")
 	if _backend_override_for_tests == BACKEND_GDSCRIPT_REFERENCE:
-		result = _evaluate(state, model, applied_controls, road, calculate_energy, adaptive_friction)
+		result = _evaluate(state, model, applied_controls, evaluation_road, calculate_energy, adaptive_friction)
 	else:
 		var native := _load_native_backend()
 		if native == null:
-			result = _evaluate(state, model, applied_controls, road, calculate_energy, adaptive_friction)
+			result = _evaluate(state, model, applied_controls, evaluation_road, calculate_energy, adaptive_friction)
 		else:
 			var road_batch := func(coordinates_xy: PackedFloat64Array) -> Dictionary:
-				return _sample_road_batch(road, coordinates_xy)
+				return _sample_road_batch(evaluation_road, coordinates_xy)
 			var native_result: Variant = native.call("evaluate", state, model, applied_controls, road_batch,
 				calculate_energy, adaptive_friction)
 			if typeof(native_result) != TYPE_DICTIONARY:
@@ -665,7 +682,7 @@ static func _evaluate_active(
 	if not bool(result.get("ok", false)):
 		return result
 	if not environmental.is_empty(): result["environment"] = environmental
-	return _apply_wall_contacts(state, model, road, result, calculate_energy, center_value)
+	return _apply_wall_contacts(state, model, evaluation_road, result, calculate_energy, center_value)
 
 
 ## Optional static AABBs are sampled once at the sprung-body center, shared by

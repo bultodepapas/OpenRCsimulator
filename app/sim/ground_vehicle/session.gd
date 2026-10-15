@@ -776,7 +776,7 @@ func restore_checkpoint(candidate: Variant) -> bool:
 	_last_controls = restored_controls
 	_last_effective_controls = restored_effective_controls
 	_recovery_actions = _dictionary_array(candidate.recovery_actions)
-	_event_tape = _dictionary_array(candidate.event_tape)
+	_event_tape = _event_array(candidate.event_tape)
 	_braking_run = candidate.braking_run.duplicate(true)
 	_last_telemetry = next_telemetry
 	run_valid = bool(candidate.run_valid)
@@ -1362,6 +1362,22 @@ func _dictionary_array(value: Array) -> Array[Dictionary]:
 	return result
 
 
+func _event_array(value: Array) -> Array[Dictionary]:
+	var result: Array[Dictionary] = []
+	for item in value:
+		if typeof(item) != TYPE_DICTIONARY:
+			continue
+		var event: Dictionary = item.duplicate(true)
+		if event.has("tick"):
+			event["tick"] = int(event.tick)
+		if event.has("start_tick"):
+			event["start_tick"] = int(event.start_tick)
+		if event.has("end_tick"):
+			event["end_tick"] = int(event.end_tick)
+		result.append(event)
+	return result
+
+
 func _json_canonical_variant(value: Variant) -> Variant:
 	var encoded := JSON.stringify(_json_value(value), "", true, true)
 	return JSON.parse_string(encoded)
@@ -1667,14 +1683,96 @@ func _recovery_history_is_consistent(actions: Array, events: Array) -> bool:
 
 
 func _events_are_valid(events: Array, max_tick: int) -> bool:
+	var previous_event_tick := -1
 	for item in events:
-		if typeof(item) != TYPE_DICTIONARY or typeof(item.get("type")) != TYPE_STRING \
-				or not _integer_value_is_valid(item.get("tick")) or int(item.tick) < 0 or int(item.tick) > max_tick:
+		if typeof(item) != TYPE_DICTIONARY or typeof(item.get("type")) != TYPE_STRING:
 			return false
-		for raw_value in item.values():
-			if typeof(raw_value) in [TYPE_FLOAT, TYPE_INT] and not is_finite(float(raw_value)):
+		var event_tick := -1
+		match str(item.type):
+			"damage":
+				if not _event_has_exact_keys(item, ["type", "tick", "time_s", "stage",
+						"body_damage", "suspension_damage", "drive_scale"]) \
+						or not _event_tick_is_valid(item.get("tick"), max_tick) \
+						or not _event_time_matches_tick(item.get("time_s"), int(item.tick)) \
+						or typeof(item.get("stage")) != TYPE_STRING \
+						or str(item.stage) not in ["scuffed", "damaged", "disabled"] \
+						or not _event_number_in_range(item.get("body_damage"), 0.0, 1.0) \
+						or not _event_number_in_range(item.get("suspension_damage"), 0.0, 1.0) \
+						or not _event_number_in_range(item.get("drive_scale"), 0.0, 1.0):
+					return false
+				var expected_stage := "intact"
+				var damage_fraction := maxf(float(item.body_damage), float(item.suspension_damage))
+				if float(item.drive_scale) <= 0.02:
+					expected_stage = "disabled"
+				elif damage_fraction >= 0.28:
+					expected_stage = "damaged"
+				elif damage_fraction >= 0.04:
+					expected_stage = "scuffed"
+				if str(item.stage) != expected_stage or expected_stage == "intact":
+					return false
+				event_tick = int(item.tick)
+			"jump", "landing":
+				if not _event_has_exact_keys(item, ["type", "tick", "time_s", "speed_m_per_s"]) \
+						or not _event_tick_is_valid(item.get("tick"), max_tick) \
+						or not _event_time_matches_tick(item.get("time_s"), int(item.tick)) \
+						or not _event_number_in_range(item.get("speed_m_per_s"), 0.0, INF):
+					return false
+				event_tick = int(item.tick)
+			"braking_distance":
+				if not _event_has_exact_keys(item, ["type", "start_tick", "end_tick", "time_s",
+						"distance_m", "initial_speed_m_per_s", "end_speed_m_per_s"]) \
+						or not _event_tick_is_valid(item.get("start_tick"), max_tick) \
+						or not _event_tick_is_valid(item.get("end_tick"), max_tick) \
+						or int(item.end_tick) <= int(item.start_tick) \
+						or not _event_time_matches_tick(item.get("time_s"), int(item.end_tick)) \
+						or not _event_number_in_range(item.get("distance_m"), 0.0, INF) \
+						or not _event_number_in_range(item.get("initial_speed_m_per_s"), 0.5, INF, true) \
+						or not _event_number_in_range(item.get("end_speed_m_per_s"), 0.0, INF):
+					return false
+				event_tick = int(item.end_tick)
+			"manual_recovery":
+				if not _event_has_exact_keys(item, ["type", "tick", "time_s", "spawn_id"]) \
+						or not _event_tick_is_valid(item.get("tick"), max_tick) \
+						or not _event_time_matches_tick(item.get("time_s"), int(item.tick)) \
+						or typeof(item.get("spawn_id")) != TYPE_STRING or str(item.spawn_id).is_empty():
+					return false
+				event_tick = int(item.tick)
+			_:
 				return false
+		if event_tick < previous_event_tick:
+			return false
+		previous_event_tick = event_tick
 	return true
+
+
+func _event_has_exact_keys(event: Dictionary, expected_keys: Array) -> bool:
+	if event.size() != expected_keys.size():
+		return false
+	for key in expected_keys:
+		if not event.has(str(key)):
+			return false
+	return true
+
+
+func _event_tick_is_valid(value: Variant, max_tick: int) -> bool:
+	return _integer_value_is_valid(value) and int(value) >= 0 and int(value) <= max_tick
+
+
+func _event_time_matches_tick(value: Variant, at_tick: int) -> bool:
+	return typeof(value) in [TYPE_INT, TYPE_FLOAT] and is_finite(float(value)) \
+		and absf(float(value) - float(at_tick) * DT) <= 1.0e-12
+
+
+func _event_number_in_range(value: Variant, minimum: float, maximum: float,
+		strict_minimum := false) -> bool:
+	if typeof(value) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(value)):
+		return false
+	var number := float(value)
+	if strict_minimum and number <= minimum:
+		return false
+	if not strict_minimum and number < minimum:
+		return false
+	return number <= maximum
 
 
 func _braking_state_is_valid(braking: Dictionary, at_tick: int) -> bool:

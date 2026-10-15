@@ -284,6 +284,16 @@
       "sha256": "e097d7e58c27c14637d6e295db0f669207ede80764ffaefe24a34987f0b50fd6"
     },
     {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_fullspeed_normalization-v1.json",
+      "bytes": 1923,
+      "sha256": "2f79443cbd9c07ea8bd307e3d7438f88642b917f6299520de912d8681799c89f"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_fullspeed_normalization_probe.py",
+      "bytes": 7058,
+      "sha256": "0a89bd0efa47597efcc2f1a6c43ef72d2a102cd7792289565377d8199101a0f7"
+    },
+    {
       "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_r02_input_export-v1.json",
       "bytes": 1548,
       "sha256": "e9139e59b16c2deaa5b5b4db8175a7053d4be4ce900fb8a4ff5e587930f076b6"
@@ -318,5 +328,18 @@
       "bytes": 19499,
       "sha256": "18726e3ea418a5faa65e24e64170bab5edb0bdcd3c0cde219d848e4bfe3db9e8"
     }
-  ]
+  ],
+  "reproducer_fidelity": {
+    "probe": {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_fullspeed_normalization-v1.json",
+      "sha256": "2f79443cbd9c07ea8bd307e3d7438f88642b917f6299520de912d8681799c89f"
+    },
+    "script": {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_fullspeed_normalization_probe.py",
+      "sha256": "0a89bd0efa47597efcc2f1a6c43ef72d2a102cd7792289565377d8199101a0f7"
+    },
+    "max_abs_source_weight_difference": 7.370726251565429e-09,
+    "max_full_minus_plane_speed_mps": 1.1079062467445056e-07,
+    "wing_Cnr_full_minus_plane": -2.083046408973832e-11
+  }
 }

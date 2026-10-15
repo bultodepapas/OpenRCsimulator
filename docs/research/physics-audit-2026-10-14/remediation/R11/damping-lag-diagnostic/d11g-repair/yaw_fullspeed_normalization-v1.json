@@ -1,0 +1,53 @@
+{
+  "condition": {
+    "alpha_deg": 11.0,
+    "arp_x_le_m": 0.0844,
+    "body_arm_x_m": 0.03649999999999998,
+    "cg_x_le_m": 0.12089999999999998,
+    "density_kg_m3": 1.225,
+    "inventory_mass_kg": 2.885058291043753,
+    "speed_mps": 15.0,
+    "station_y_m": [
+      -0.635,
+      -0.381,
+      -0.127,
+      0.127,
+      0.381,
+      0.635
+    ],
+    "yaw_rate_rad_s": [
+      0.05,
+      -0.05
+    ]
+  },
+  "identity": {
+    "aero_source_sha256": "7ac94f6003f2cb7660a56dd94755c6a7d6143d90cc446c6b6c20433038ce38e3",
+    "aircraft_sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+    "comparator_sha256": "c8c3dfdfe60c731e0befba310b79e4db6dab15db0967972a634b4dd6176d140c",
+    "input_export_sha256": "e9139e59b16c2deaa5b5b4db8175a7053d4be4ce900fb8a4ff5e587930f076b6"
+  },
+  "interpretation": "Read-only numerical comparison of the standalone max-Vp approximation against Aero._wing_flow's max full-speed source normalization; this is a tiny reproducer-fidelity check, not a force-law or physical validation.",
+  "max_abs_source_weight_difference": 7.370726251565429e-09,
+  "rates": [
+    {
+      "full_minus_plane_max_speed_mps": 1.1079062467445056e-07,
+      "max_full_speed_mps": 15.031167994715478,
+      "max_plane_speed_mps": 15.031167883924853,
+      "side_velocity_f1_mps": 0.001824999999999999,
+      "yaw_rate_rad_s": 0.05
+    },
+    {
+      "full_minus_plane_max_speed_mps": 1.1079062467445056e-07,
+      "max_full_speed_mps": 15.031167994715478,
+      "max_plane_speed_mps": 15.031167883924853,
+      "side_velocity_f1_mps": -0.001824999999999999,
+      "yaw_rate_rad_s": -0.05
+    }
+  ],
+  "schema": "r02-yaw-fullspeed-normalization-probe/v1",
+  "wing_Cnr": {
+    "full_minus_plane": -2.083046408973832e-11,
+    "production_max_full_speed": -0.0054262158522008505,
+    "standalone_max_plane_speed": -0.0054262158313703865
+  }
+}

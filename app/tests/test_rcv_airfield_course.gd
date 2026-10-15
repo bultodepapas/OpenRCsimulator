@@ -4,6 +4,7 @@ const AirfieldCourse := preload("res://physics/ground_vehicle/airfield_course.gd
 const FieldLoader := preload("res://data/field_loader.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const LakeLoader := preload("res://data/lake_loader.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
 const Session := preload("res://sim/ground_vehicle/session.gd")
 const M := preload("res://physics/math3d.gd")
 
@@ -217,6 +218,26 @@ func _test_lake(field_result: Dictionary) -> void:
 		var expected: PackedFloat64Array = GroundTerrain.sample_validated(15.0, 0.0,
 			bridged.course.surface_rects, loaded.lake)
 		_check("lake-aware road still samples the shared GroundTerrain path", p.height_m == expected[0])
+		var same := true
+		# Both sides of the bank bounds and their finite-difference stencil must agree.
+		for north in range(60, 164, 3):
+			for east in range(80, 164, 3):
+				var actual := AirfieldCourse.sample(bridged.course, float(north), float(east))
+				var shared := GroundTerrain.sample_validated(float(north), float(east), bridged.course.surface_rects, loaded.lake)
+				var magnitude := M.sqrt_(shared[1]*shared[1] + shared[2]*shared[2] + 1.0)
+				same = same and actual.height_m == shared[0] and actual.normal_ned == PackedFloat64Array([-shared[1]/magnitude,-shared[2]/magnitude,-1.0/magnitude])
+		_check("dry broadphase and native lake path preserve shared heights/normals over 980 points", same)
+		var moved: Dictionary = loaded.lake.duplicate(true)
+		var moved_bank: PackedFloat64Array = moved.bank_ne_m
+		for index in range(0, moved_bank.size(), 2): moved_bank[index] += 200.0
+		moved.bank_ne_m = moved_bank
+		for sample_lake: Dictionary in [loaded.lake, moved, loaded.lake]:
+			var polygon: PackedFloat64Array = sample_lake.bank_ne_m
+			for offset in [-0.026, -0.025, 0.0, 0.025, 0.026]:
+				var north: float = polygon[0] + offset
+				var east: float = polygon[1] + offset
+				same = same and AirfieldCourse._outside_lake_bank(sample_lake, north, east) == LakeSurface._outside_expanded_polygon_aabb(polygon, north, east, LakeSurface.SAMPLE_EPSILON_M)
+		_check("bank bounds invalidate on changed contents and preserve stencil-edge decisions", same)
 
 
 func _check(label: String, passed: bool) -> void:

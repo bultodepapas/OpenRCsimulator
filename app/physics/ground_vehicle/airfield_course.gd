@@ -21,6 +21,8 @@ const RUNWAY_END_MARGIN_M := 2.0
 const BOUNDS_KEYS := ["north_min_m", "north_max_m", "east_min_m", "east_max_m"]
 static var _has_cached_surface_table := false
 static var _cached_surface_table := PackedFloat64Array()
+static var _cached_lake_bank := PackedFloat64Array()
+static var _cached_lake_bank_bounds := PackedFloat64Array()
 
 
 ## Bridge a FieldLoader result to the ground-vehicle course contract.
@@ -179,7 +181,9 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 	var sampled_shore_distance := NAN
 	if not lake.is_empty():
 		var base := GroundTerrain.sample_validated(north_m, east_m, rects)
-		terrain = VehicleDynamics.sample_lake_terrain(lake, north_m, east_m, base)
+		# Outside the expanded bank stencil, the shared composition is exactly base.
+		# Avoid native dictionary validation and shoreline scans on every dry tire query.
+		terrain = base if _outside_lake_bank(lake, north_m, east_m) else VehicleDynamics.sample_lake_terrain(lake, north_m, east_m, base)
 		if terrain.size() == 4:
 			sampled_shore_distance = terrain[3]
 			terrain = terrain.slice(0, 3)
@@ -242,6 +246,27 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 	result.merge(wet)
 	if float(wet.get("mud_fraction", 0.0)) > 0.5: result.surface_id = "mud"
 	return result
+
+
+## Content-keyed bounds only; no sampled height or quantized position is cached.
+## Packed-array copy-on-write and equality invalidate this on bank edits.
+static func _outside_lake_bank(lake: Dictionary, north: float, east: float) -> bool:
+	var polygon: Variant = lake.get("bank_ne_m")
+	if typeof(polygon) != TYPE_PACKED_FLOAT64_ARRAY or polygon.size() < 16 or polygon.size() % 2 != 0:
+		return false
+	if polygon != _cached_lake_bank:
+		var bounds := PackedFloat64Array([INF, -INF, INF, -INF])
+		for index in range(0, polygon.size(), 2):
+			if not is_finite(polygon[index]) or not is_finite(polygon[index + 1]): return false
+			bounds[0] = minf(bounds[0], polygon[index])
+			bounds[1] = maxf(bounds[1], polygon[index])
+			bounds[2] = minf(bounds[2], polygon[index + 1])
+			bounds[3] = maxf(bounds[3], polygon[index + 1])
+		_cached_lake_bank = polygon
+		_cached_lake_bank_bounds = bounds
+	var margin := LakeSurface.SAMPLE_EPSILON_M
+	return north < _cached_lake_bank_bounds[0] - margin or north > _cached_lake_bank_bounds[1] + margin \
+		or east < _cached_lake_bank_bounds[2] - margin or east > _cached_lake_bank_bounds[3] + margin
 
 
 static func _wet_bounds(lake: Dictionary) -> PackedFloat64Array:

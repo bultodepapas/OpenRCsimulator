@@ -1,0 +1,220 @@
+{
+  "captured_utc": "2026-10-15T13:08:18.763850+00:00",
+  "entries": [
+    {
+      "kind": "file",
+      "mode": "0o644",
+      "path": "COMMIT_EDITMSG",
+      "sha256": "e939ad44f5204a49ca5ebe8dbd6dba876a01cfa80aa87510e604ec35965bd5b8",
+      "size_bytes": 62
+    },
+    {
+      "kind": "file",
+      "mode": "0o644",
+      "path": "HEAD",
+      "sha256": "a81bcc669d6b9a753394b05ee7cbccec96bba70cbff4802d2a7e4e4cb4f0d9df",
+      "size_bytes": 42
+    },
+    {
+      "kind": "file",
+      "mode": "0o644",
+      "path": "config",
+      "sha256": "7fe1127379588217f4fab525a9595be61b6ae0a839396800b0031a00a695f809",
+      "size_bytes": 169
+    },
+    {
+      "kind": "file",
+      "mode": "0o644",
+      "path": "description",
+      "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee",
+      "size_bytes": 73
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/applypatch-msg.sample",
+      "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7",
+      "size_bytes": 478
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/commit-msg.sample",
+      "sha256": "1f74d5e9292979b573ebd59741d46cb93ff391acdd083d340b94370753d92437",
+      "size_bytes": 896
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/fsmonitor-watchman.sample",
+      "sha256": "e0549964e93897b519bd8e333c037e51fff0f88ba13e086a331592bf801fa1d0",
+      "size_bytes": 4726
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/post-update.sample",
+      "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5",
+      "size_bytes": 189
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/pre-applypatch.sample",
+      "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475",
+      "size_bytes": 424
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/pre-commit.sample",
+      "sha256": "f9af7d95eb1231ecf2eba9770fedfa8d4797a12b02d7240e98d568201251244a",
+      "size_bytes": 1643
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/pre-merge-commit.sample",
+      "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53",
+      "size_bytes": 416
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/pre-push.sample",
+      "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a",
+      "size_bytes": 1374
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/pre-rebase.sample",
+      "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3",
+      "size_bytes": 4898
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/pre-receive.sample",
+      "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989",
+      "size_bytes": 544
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/prepare-commit-msg.sample",
+      "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619",
+      "size_bytes": 1492
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/push-to-checkout.sample",
+      "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f",
+      "size_bytes": 2783
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/sendemail-validate.sample",
+      "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92",
+      "size_bytes": 2308
+    },
+    {
+      "kind": "file",
+      "mode": "0o755",
+      "path": "hooks/update.sample",
+      "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106",
+      "size_bytes": 3650
+    },
+    {
+      "kind": "file",
+      "mode": "0o644",
+      "path": "index",
+      "sha256": "d7d15f89b4a661bf1c6a52d7f66da5252768e3c528f5539fbe9e2efb5d2319e5",
+      "size_bytes": 1999559
+    },
+    {
+      "kind": "file",
+      "mode": "0o644",
+      "path": "info/exclude",
+      "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1",
+      "size_bytes": 240
+    },
+    {
+      "kind": "file",
+      "mode": "0o644",
+      "path": "info/refs",
+      "sha256": "d877a1a8f92b3db9a5f4384ab4faf86b10eae3df207f735fa45958c687adb567",
+      "size_bytes": 78
+    },
+    {
+      "kind": "file",
+      "mode": "0o644",
+      "path": "logs/HEAD",
+      "sha256": "d721d53ea780ee1396301287438b7d721fe0d7815b3d9253b1a43578abde4d9c",
+      "size_bytes": 234
+    },
+    {
+      "kind": "file",
+      "mode": "0o644",
+      "path": "logs/refs/heads/r11-linux-source-snapshot",
+      "sha256": "d721d53ea780ee1396301287438b7d721fe0d7815b3d9253b1a43578abde4d9c",
+      "size_bytes": 234
+    },
+    {
+      "kind": "file",
+      "mode": "0o444",
+      "path": "objects/26/b7c661083bb773895206c75f4f9b711e8083fb",
+      "sha256": "ebc9d91c06bb3f903722b04023908f69ceb71f4593d7a6068cc7d50fa421799d",
+      "size_bytes": 82417719
+    },
+    {
+      "kind": "file",
+      "mode": "0o444",
+      "path": "objects/info/commit-graph",
+      "sha256": "b37af1466f7a9be8a321c4e36a2f5ebbf10d9d27b23338a1cd8cd4ee9d6c4cf1",
+      "size_bytes": 1172
+    },
+    {
+      "kind": "file",
+      "mode": "0o644",
+      "path": "objects/info/packs",
+      "sha256": "2945fd4e03953b812914a0d0dfe2dc02f2f6a04ca6f6620076d236cf7f7bfaa7",
+      "size_bytes": 54
+    },
+    {
+      "kind": "file",
+      "mode": "0o444",
+      "path": "objects/pack/pack-1a582b926aa48fc8f31ad6735b0655f91537de15.idx",
+      "sha256": "7e1551f59a318b03fd3ec4d3083ee88a4c2e048b6658701acd1a64c833155656",
+      "size_bytes": 376832
+    },
+    {
+      "kind": "file",
+      "mode": "0o444",
+      "path": "objects/pack/pack-1a582b926aa48fc8f31ad6735b0655f91537de15.pack",
+      "sha256": "e98f62a8410fb90b6ec7cac9a446b5488217fbdbf368de3e57acf05d26ca0d0e",
+      "size_bytes": 1495130827
+    },
+    {
+      "kind": "file",
+      "mode": "0o444",
+      "path": "objects/pack/pack-1a582b926aa48fc8f31ad6735b0655f91537de15.rev",
+      "sha256": "a0894d2466c3348d4d2185d64f6b0b263cb421d0bfd8a42b19246832fb46324c",
+      "size_bytes": 53732
+    },
+    {
+      "kind": "file",
+      "mode": "0o644",
+      "path": "packed-refs",
+      "sha256": "660084600d902365b8afee190990532241a6ec8e24983e23fdbd8855362dcffd",
+      "size_bytes": 124
+    }
+  ],
+  "entry_count": 30,
+  "format": "openrc-r11-candidate-tree-manifest-v1",
+  "purpose": "Separately hashed synthetic .git support metadata from the source candidate; excluded from the source tree manifest.",
+  "root": "/home/bulto/openrc-r11-b09-r05b-20261014-03/.git",
+  "tree_sha256": "f18591ad56ba202376468e0f0def7bf287ce53306bf51a6baaf46300f5398668"
+}

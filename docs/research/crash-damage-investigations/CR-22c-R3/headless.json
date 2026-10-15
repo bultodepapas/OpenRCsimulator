@@ -1,0 +1,902 @@
+{
+	"comparisons": 18000,
+	"rows": [
+		{
+			"frames": 1200,
+			"repeat": 0,
+			"scenario": "airborne",
+			"usec": 109807,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 0,
+			"scenario": "airborne",
+			"usec": 95842,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 1,
+			"scenario": "airborne",
+			"usec": 111340,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 1,
+			"scenario": "airborne",
+			"usec": 120738,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 2,
+			"scenario": "airborne",
+			"usec": 120732,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 2,
+			"scenario": "airborne",
+			"usec": 106838,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 3,
+			"scenario": "airborne",
+			"usec": 104396,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 3,
+			"scenario": "airborne",
+			"usec": 109831,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 4,
+			"scenario": "airborne",
+			"usec": 109695,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 4,
+			"scenario": "airborne",
+			"usec": 111994,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 5,
+			"scenario": "airborne",
+			"usec": 96405,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 5,
+			"scenario": "airborne",
+			"usec": 110011,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 6,
+			"scenario": "airborne",
+			"usec": 107005,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 6,
+			"scenario": "airborne",
+			"usec": 92476,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 7,
+			"scenario": "airborne",
+			"usec": 86276,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 7,
+			"scenario": "airborne",
+			"usec": 109983,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 8,
+			"scenario": "airborne",
+			"usec": 101368,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 8,
+			"scenario": "airborne",
+			"usec": 101156,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 9,
+			"scenario": "airborne",
+			"usec": 107350,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 9,
+			"scenario": "airborne",
+			"usec": 107415,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 10,
+			"scenario": "airborne",
+			"usec": 111447,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 10,
+			"scenario": "airborne",
+			"usec": 113090,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 11,
+			"scenario": "airborne",
+			"usec": 110743,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 11,
+			"scenario": "airborne",
+			"usec": 105646,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 12,
+			"scenario": "airborne",
+			"usec": 103462,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 12,
+			"scenario": "airborne",
+			"usec": 111175,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 13,
+			"scenario": "airborne",
+			"usec": 105739,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 13,
+			"scenario": "airborne",
+			"usec": 111889,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 14,
+			"scenario": "airborne",
+			"usec": 115540,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 14,
+			"scenario": "airborne",
+			"usec": 106638,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 15,
+			"scenario": "airborne",
+			"usec": 105583,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 15,
+			"scenario": "airborne",
+			"usec": 114812,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 0,
+			"scenario": "settled",
+			"usec": 15542,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 0,
+			"scenario": "settled",
+			"usec": 3536,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 1,
+			"scenario": "settled",
+			"usec": 2639,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 1,
+			"scenario": "settled",
+			"usec": 19180,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 2,
+			"scenario": "settled",
+			"usec": 18589,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 2,
+			"scenario": "settled",
+			"usec": 3635,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 3,
+			"scenario": "settled",
+			"usec": 2490,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 3,
+			"scenario": "settled",
+			"usec": 18987,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 4,
+			"scenario": "settled",
+			"usec": 24600,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 4,
+			"scenario": "settled",
+			"usec": 3855,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 5,
+			"scenario": "settled",
+			"usec": 2954,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 5,
+			"scenario": "settled",
+			"usec": 24688,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 6,
+			"scenario": "settled",
+			"usec": 27273,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 6,
+			"scenario": "settled",
+			"usec": 4347,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 7,
+			"scenario": "settled",
+			"usec": 8415,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 7,
+			"scenario": "settled",
+			"usec": 16714,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 8,
+			"scenario": "settled",
+			"usec": 18671,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 8,
+			"scenario": "settled",
+			"usec": 4159,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 9,
+			"scenario": "settled",
+			"usec": 2917,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 9,
+			"scenario": "settled",
+			"usec": 15079,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 10,
+			"scenario": "settled",
+			"usec": 16465,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 10,
+			"scenario": "settled",
+			"usec": 2569,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 11,
+			"scenario": "settled",
+			"usec": 2588,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 11,
+			"scenario": "settled",
+			"usec": 23439,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 12,
+			"scenario": "settled",
+			"usec": 22839,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 12,
+			"scenario": "settled",
+			"usec": 4324,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 13,
+			"scenario": "settled",
+			"usec": 4841,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 13,
+			"scenario": "settled",
+			"usec": 20091,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 14,
+			"scenario": "settled",
+			"usec": 22573,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 14,
+			"scenario": "settled",
+			"usec": 5335,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 15,
+			"scenario": "settled",
+			"usec": 4606,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 15,
+			"scenario": "settled",
+			"usec": 25961,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 0,
+			"scenario": "paused",
+			"usec": 1441,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 0,
+			"scenario": "paused",
+			"usec": 600,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 1,
+			"scenario": "paused",
+			"usec": 611,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 1,
+			"scenario": "paused",
+			"usec": 1513,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 2,
+			"scenario": "paused",
+			"usec": 1537,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 2,
+			"scenario": "paused",
+			"usec": 629,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 3,
+			"scenario": "paused",
+			"usec": 637,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 3,
+			"scenario": "paused",
+			"usec": 1544,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 4,
+			"scenario": "paused",
+			"usec": 1686,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 4,
+			"scenario": "paused",
+			"usec": 1069,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 5,
+			"scenario": "paused",
+			"usec": 597,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 5,
+			"scenario": "paused",
+			"usec": 2965,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 6,
+			"scenario": "paused",
+			"usec": 2660,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 6,
+			"scenario": "paused",
+			"usec": 565,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 7,
+			"scenario": "paused",
+			"usec": 609,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 7,
+			"scenario": "paused",
+			"usec": 2059,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 8,
+			"scenario": "paused",
+			"usec": 1499,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 8,
+			"scenario": "paused",
+			"usec": 689,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 9,
+			"scenario": "paused",
+			"usec": 651,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 9,
+			"scenario": "paused",
+			"usec": 1361,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 10,
+			"scenario": "paused",
+			"usec": 1484,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 10,
+			"scenario": "paused",
+			"usec": 665,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 11,
+			"scenario": "paused",
+			"usec": 556,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 11,
+			"scenario": "paused",
+			"usec": 1674,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 12,
+			"scenario": "paused",
+			"usec": 1465,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 12,
+			"scenario": "paused",
+			"usec": 647,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 13,
+			"scenario": "paused",
+			"usec": 666,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 13,
+			"scenario": "paused",
+			"usec": 1466,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 14,
+			"scenario": "paused",
+			"usec": 1614,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 14,
+			"scenario": "paused",
+			"usec": 496,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 15,
+			"scenario": "paused",
+			"usec": 1076,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 15,
+			"scenario": "paused",
+			"usec": 2215,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 0,
+			"scenario": "inactive",
+			"usec": 1746,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 0,
+			"scenario": "inactive",
+			"usec": 1199,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 1,
+			"scenario": "inactive",
+			"usec": 612,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 1,
+			"scenario": "inactive",
+			"usec": 1856,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 2,
+			"scenario": "inactive",
+			"usec": 1465,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 2,
+			"scenario": "inactive",
+			"usec": 693,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 3,
+			"scenario": "inactive",
+			"usec": 619,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 3,
+			"scenario": "inactive",
+			"usec": 1636,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 4,
+			"scenario": "inactive",
+			"usec": 1384,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 4,
+			"scenario": "inactive",
+			"usec": 606,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 5,
+			"scenario": "inactive",
+			"usec": 599,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 5,
+			"scenario": "inactive",
+			"usec": 1504,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 6,
+			"scenario": "inactive",
+			"usec": 1600,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 6,
+			"scenario": "inactive",
+			"usec": 491,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 7,
+			"scenario": "inactive",
+			"usec": 540,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 7,
+			"scenario": "inactive",
+			"usec": 1329,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 8,
+			"scenario": "inactive",
+			"usec": 1337,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 8,
+			"scenario": "inactive",
+			"usec": 632,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 9,
+			"scenario": "inactive",
+			"usec": 730,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 9,
+			"scenario": "inactive",
+			"usec": 1393,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 10,
+			"scenario": "inactive",
+			"usec": 1422,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 10,
+			"scenario": "inactive",
+			"usec": 604,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 11,
+			"scenario": "inactive",
+			"usec": 553,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 11,
+			"scenario": "inactive",
+			"usec": 1610,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 12,
+			"scenario": "inactive",
+			"usec": 1467,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 12,
+			"scenario": "inactive",
+			"usec": 524,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 13,
+			"scenario": "inactive",
+			"usec": 576,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 13,
+			"scenario": "inactive",
+			"usec": 1412,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 14,
+			"scenario": "inactive",
+			"usec": 1633,
+			"variant": 0
+		},
+		{
+			"frames": 1200,
+			"repeat": 14,
+			"scenario": "inactive",
+			"usec": 734,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 15,
+			"scenario": "inactive",
+			"usec": 680,
+			"variant": 1
+		},
+		{
+			"frames": 1200,
+			"repeat": 15,
+			"scenario": "inactive",
+			"usec": 1153,
+			"variant": 0
+		}
+	],
+	"valid": true
+}

@@ -524,6 +524,7 @@ func _process(delta: float) -> void:
 		var night_weight := 1.0 - smoothstep(0.05, 0.75, float(_lighting.get("sun_energy", 1.0)))
 		_effects.update_render(simulated_delta, telemetry, _last_controls, _render_road, session.paused, night_weight)
 		if _wet_effects != null:
+			_wet_effects.audio_enabled = enable_audio
 			_wet_effects.update_render(simulated_delta, telemetry, session.paused, night_weight)
 		dashboard.update_lights(_effects.headlights_enabled)
 	_contact_debug.update_snapshot(drawn, _model, telemetry, _render_road)

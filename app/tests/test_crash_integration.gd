@@ -52,8 +52,18 @@ func _test_aircraft(aircraft_id: String) -> void:
 		disabled.get("_crash_director") == null and disabled_session.crash_auto_restart)
 
 	var first_tick: int = enabled_session.sim.tick
+	# Catch-up physics ticks may run before this coroutine resumes. Stop at the exact
+	# comparison boundary instead of depending on wall-clock scheduling.
+	var enabled_stop: int = enabled_session.sim.stop_at_tick
+	var disabled_stop: int = disabled_session.sim.stop_at_tick
+	enabled_session.sim.stop_at_tick = first_tick + 100
+	disabled_session.sim.stop_at_tick = first_tick + 100
 	var frame_guard := 0
 	while (enabled_session.sim.tick < first_tick + 100 or disabled_session.sim.tick < first_tick + 100) and frame_guard < 500:
+		# Native focus loss intentionally pauses production simulations. This controlled
+		# healthy-flight phase owns resume; the crash hold assertions below still test pause.
+		enabled_session.sim.set_paused(false)
+		disabled_session.sim.set_paused(false)
 		await physics_frame
 		frame_guard += 1
 	var enabled_checkpoint: Dictionary = enabled_session.sim.checkpoint()
@@ -64,6 +74,8 @@ func _test_aircraft(aircraft_id: String) -> void:
 		not enabled_checkpoint.is_empty() and not disabled_checkpoint.is_empty())
 	_check("%s: healthy physics is identical with crash effects on or off through 100 ticks" % aircraft_id,
 		enabled_checkpoint == disabled_checkpoint)
+	enabled_session.sim.stop_at_tick = enabled_stop
+	disabled_session.sim.stop_at_tick = disabled_stop
 
 	disabled.queue_free()
 	await process_frame

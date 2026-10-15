@@ -1,0 +1,14 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+class 0 / fuel parity: true
+class 0 / vent parity: true
+class 1 / fuel parity: true
+class 1 / vent parity: true
+class 2 / fuel parity: true
+class 2 / vent parity: true
+class 3 / fuel parity: true
+class 3 / vent parity: true
+class 4 / fuel parity: true
+class 4 / vent parity: true
+18000 exact comparisons; valid=true

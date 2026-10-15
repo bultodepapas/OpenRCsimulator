@@ -30,7 +30,7 @@ func _initialize() -> void:
 	var identity: Dictionary = _native.backend_identity()
 	if identity.get("backend") != "native" or int(identity.get("abi_version", 0)) != 1 \
 			or identity.get("backend_version") != "openrc-ground-vehicle-native-evaluate-v3" \
-			or identity.get("solver_version") != "openrc-ground-vehicle-dynamics-rk4-v4" \
+			or identity.get("solver_version") != "openrc-ground-vehicle-dynamics-rk4-v5" \
 			or str(identity.get("source_sha256", "")).length() != 64 \
 			or str(identity.get("toolchain_sha256", "")).length() != 64 \
 			or str(identity.get("binary_sha256", "")).length() != 64:

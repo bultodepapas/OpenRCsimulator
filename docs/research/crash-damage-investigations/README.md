@@ -8,6 +8,8 @@
 
 [CR-22c-R2: repeated contact work](CR-22c-R2/README.md) records once-per-tick soft-contact feedback, cached wreck shadows and cached scenery sort distances, with preserved output comparisons and lifecycle regressions.
 
+[CR-22c-R3: resting chips](CR-22c-R3/README.md) records skipped scans after chips settle, shared ballistic increments and transition-only particle pause writes, with exact state comparisons and delayed-effect/reset checks.
+
 | # | Report | Scope |
 | --- | --- | --- |
 | 01 | [Damage models in simulators and games](01-simulators-games-damage-models.md) | Crash handling, structural damage patterns, and lessons from RC simulators and other games. |

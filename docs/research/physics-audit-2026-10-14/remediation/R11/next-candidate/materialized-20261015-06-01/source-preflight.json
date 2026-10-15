@@ -1,0 +1,304 @@
+{
+  "allowlist": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/allowlist-draft.json",
+  "allowlist_sha256": "874a155122bdb9553190a94371d90a9ed10f82cb1e940baeceba53b11fd049b1",
+  "candidate_source_root": "/home/bulto/openrc-r11-b09-r05b-20261014-03",
+  "captured_utc": "2026-10-15T13:05:33.629468+00:00",
+  "derivation_evidence_verified": [
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/identity-final-v4.json",
+      "sha256": "a721d2e40bbb6e73786658c68461b9f1c8df79bdbf334a092d226f6b7a9c0f8f"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_fullspeed_normalization_probe.py",
+      "sha256": "0a89bd0efa47597efcc2f1a6c43ef72d2a102cd7792289565377d8199101a0f7"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_fullspeed_normalization-v1.json",
+      "sha256": "2f79443cbd9c07ea8bd307e3d7438f88642b917f6299520de912d8681799c89f"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/current-law-report-v4.json",
+      "sha256": "bc8a85cd6c977fd82d90beea38984986d91c5cf70b78116fbbd5e3809516bc65"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/current-law-report-v4-replay.json",
+      "sha256": "bc8a85cd6c977fd82d90beea38984986d91c5cf70b78116fbbd5e3809516bc65"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_r02_vs_kj_comparison-v4.json",
+      "sha256": "7fd711ddecc0ee46208b07bad0076f4c38cdda7e18fb3348cb4ebf4cef36c83b"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_r02_input_export-v1.json",
+      "sha256": "e9139e59b16c2deaa5b5b4db8175a7053d4be4ce900fb8a4ff5e587930f076b6"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/rcv-powertrain-timeout/native-build-01/verification.json",
+      "sha256": "121789f7da5bc9ffa5c2f87de737968c4c99aa57b8ec17c30f9ab3a6f530f091"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/rcv-powertrain-timeout/native-build-01/stage-receipt.json",
+      "sha256": "d88d8c81b29f40d778301a279155706b40e73740e62e17bf30d5dd08ab1f70c9"
+    }
+  ],
+  "format": "openrc-r11-candidate-source-preflight-v1",
+  "overlay_sources_verified": [
+    {
+      "mode": "0o755",
+      "path": ".tools/Godot_v4.7.2-stable_linux.x86_64",
+      "role": "Pinned local Linux test/export tool input; copied separately from the repository source manifest.",
+      "sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+      "size_bytes": 146414384,
+      "source": "/home/bulto/openrc-r11-b09-r05b-20261014-03/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "version": "4.7.2.stable.official.ed1daf0bf"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_aircraft_contact_contract.gd",
+      "sha256": "6a89e992ecd7d4563928c236273081cbf340ee329986352de5e8f8a5a9292452",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_aircraft_contact_contract.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_crash_integration.gd",
+      "sha256": "df80f84b0a799e6e353c70f5633d1694ff5498e29ae61bd1f7473fb8478524da",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_crash_integration.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_crash_pose.gd",
+      "sha256": "453e6e526218fffc33dcc4938a28a5deab2dcf09f2c970c9fb0dc57fded303bb",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_crash_pose.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_crash_energy.gd",
+      "sha256": "8cae4e7927dc92d21ee35e508ff0be0a250d729b81af861528e9ce72c2d2f261",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_crash_energy.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_crash_hull_labels.gd",
+      "sha256": "ac29a6f16ec048bb23fa94d722526f9784ee5ddabb2e75cd82b38fc3089585a6",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_crash_hull_labels.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_downwash_lag.gd",
+      "sha256": "c7f4ab584ec70d023f5c1b772c1060924b95f623a5a3a7872e07d4f5b0c9600f",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_downwash_lag.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_controller_sections.gd",
+      "sha256": "6648f2e0f211fd03429a167284126e5e83628532bb605da5364e8706884c22c0",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_controller_sections.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_start_choice.gd",
+      "sha256": "f3fe6d8e01aa9876897367f21d3025ff704e0217f66e91e33d41bbe9cc6439a5",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_start_choice.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_shaft_refinement.gd",
+      "sha256": "a84b5c2a77b04e853878166c5f8fea4a9fa143babb841d829c8e8e98be31c9a5",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_shaft_refinement.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_ui_home.gd",
+      "sha256": "d4d070b95d68d033fa012461057e12e01ed2ee54b74a72c377dbd0e5a8dfff23",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_ui_home.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_wheel_session.gd",
+      "sha256": "540254b449235f52ad0afb3ab686010561743583a610d6f1f5c846fdcde63357",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_wheel_session.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_field_integration.gd",
+      "sha256": "849a2197f9ca7f2fce0d6eed92e61f238f72fd5f27cb80ca5b852b5cd4e6e983",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_field_integration.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_landscape_scenery_grass_mask.gd",
+      "sha256": "a6acbcdea648aca5bdc88ad37b6188a3e544d896b79ff71e8bdd2afd492c2638",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_landscape_scenery_grass_mask.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_avanti_keyboard.gd",
+      "sha256": "6ce9a0d0d89bd83720e3aada71b1c7ec8f14cea4e6234d58001e0547dfd3e2ef",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_avanti_keyboard.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/avanti_pullup_base.gd",
+      "sha256": "e8bcea1882804e835871f5b856678d01ab4e6bc3f1ed1048d8c79989f1aa5176",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/avanti_pullup_base.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_control_surface_observation.gd",
+      "sha256": "cc79e175c84cf7b4489bc4bf9895d1fa44c177c32721a285ac6c8f4606b0f26e",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_control_surface_observation.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_modes.gd",
+      "sha256": "8de3b99f132507f0e1e05f3119dabececbb1c4d684ea0c5141a05e8ea00f4131",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_modes.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/check_math_sensitivity.py",
+      "sha256": "d31a14be6489fd820a19e4c3adc84e95310bec735ff57ed68d5b4772fc0b1140",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/check_math_sensitivity.py"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_yaw_damping.gd",
+      "sha256": "62ac478c19863c6794497c2f9a05dc3d5dda19a8b57c65692682e9619cae785e",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_yaw_damping.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/golden/roll_15.json",
+      "sha256": "a556a84d9fee23ef6640e96e1aa42f75ab364019d0d99e47959b858bfb458eb7",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/golden/roll_15.json"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/golden/pull_throttle.json",
+      "sha256": "50b0839b3445fbb0c3849812e3d695f7a17c959f2a63eb5ff92d47aaf9d89f83",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/golden/pull_throttle.json"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/golden/rudder_doublet.json",
+      "sha256": "500b4e81190f886075a1fe55489c0af7b2b3b167499a8363fa06181561d67696",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/golden/rudder_doublet.json"
+    },
+    {
+      "mode": "0o644",
+      "path": "research/aero/d11g/derive_rate_derivatives.gd",
+      "sha256": "18726e3ea418a5faa65e24e64170bab5edb0bdcd3c0cde219d848e4bfe3db9e8",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/research/aero/d11g/derive_rate_derivatives.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "research/aero/d11g/apply_rate_derivatives.py",
+      "sha256": "be05742129bcf3bfe98d45b05e7bb38faaf1ea7f6ee267677e0be54f614c15f8",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/research/aero/d11g/apply_rate_derivatives.py"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/data/aircraft/jensen_ugly_stik_60.json"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/data/aircraft/stik_glow_55ax_2t.json",
+      "sha256": "e5494601e2bf3390f95c37f2175bb28b508b2a340c8c9fe55d56b1a7b335c3ae",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/data/aircraft/stik_glow_55ax_2t.json"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json",
+      "sha256": "ac71c4a05cb0375f445b50f68f8fb3ceb2254e5a0ae933c900905b362b046524",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/data/aircraft/stik_glow_61fx_2t.json",
+      "sha256": "4f50726804a1fbc6dbac3570e4ca4b2b20a270933816ff0032cd0463de7a5177",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/data/aircraft/stik_glow_61fx_2t.json"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/data/aircraft/stik_glow_fs64v_4t.json",
+      "sha256": "d381fc6c3fb014e2c727410b1c1996c8f7cf35e0ad6af63c0268e11c5b1092af",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/data/aircraft/stik_glow_fs64v_4t.json"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
+      "sha256": "0f0b06b924eafdf9c4ddd02ee736ea87fcd7c5364b39da4592292fea104cd92e",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/data/workshop/jensen-das-ugly-stik-60.json",
+      "sha256": "1a124b2fcf2a2cadea719edb60002e6bb97755eca3c2b750eb59fb8758e93c3f",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/data/workshop/jensen-das-ugly-stik-60.json"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/data/workshop/stik-glow-55ax-2t.json",
+      "sha256": "38c0eb1e5f786b04826074464aaf4959c4b38c790fdf7a38b76d793e94806c8e",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/data/workshop/stik-glow-55ax-2t.json"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/data/workshop/stik-glow-61fx-2t.json",
+      "sha256": "c07cf42587985bbaa825c05223899f18b2b2b6f1086f3b541afe51bbf9c95f1b",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/data/workshop/stik-glow-61fx-2t.json"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/data/workshop/stik-glow-fs64v-4t.json",
+      "sha256": "3f92b1cbb8ba567a117b1dee13282e933d5fb23b2f76253e8df9a929fbf4f46e",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/data/workshop/stik-glow-fs64v-4t.json"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/render/world/aircraft_lights.gd",
+      "sha256": "d0363990bd3a6933be97dfcb5639dcbfba91422bbf1e91c7515b3c1b5ac93893",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/render/world/aircraft_lights.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/tests/test_world_field_lights.gd",
+      "sha256": "6281250c79fc6205b261d225a6a9c59ffa22911050d059795f3353a5658648fd",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/tests/test_world_field_lights.gd"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/assets/landscape/lake/default_geometry.res",
+      "sha256": "1be6cdbf85fd7761a2f5d1bcfc9766da1babd2bbde6dee01b7319bc67c788e35",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/assets/landscape/lake/default_geometry.res"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/render/lake/generated_geometry_stamp.gd",
+      "sha256": "3f6177bca34b1bc77de4d2c69dbc6f0329ca73a257381dabb27070ec0a66f1c2",
+      "source": "/mnt/c/DEVELOPMENT/OpenRCsimulator/app/render/lake/generated_geometry_stamp.gd"
+    },
+    {
+      "mode": "0o777",
+      "path": "app/native/ground_vehicle/libopenrc_ground_vehicle.so",
+      "sha256": "08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3",
+      "source": "/tmp/openrc-r11-rcv-powertrain-native-diag-20261015-01/app/native/ground_vehicle/libopenrc_ground_vehicle.so"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/native/ground_vehicle/openrc_ground_vehicle.gdextension",
+      "sha256": "07c29b52303bf64c32ed4197cc8f5cc0fb0746d30f855bdda26678d38edb9485",
+      "source": "/tmp/openrc-r11-rcv-powertrain-native-diag-20261015-01/app/native/ground_vehicle/openrc_ground_vehicle.gdextension"
+    },
+    {
+      "mode": "0o644",
+      "path": "app/native/ground_vehicle/build-receipt.json",
+      "sha256": "be1d0b04910c8a98b630b0db6616f650d5c61e8bc60900cf4b4af48a43e306ec",
+      "source": "/tmp/openrc-r11-rcv-powertrain-native-diag-20261015-01/app/native/ground_vehicle/build-receipt.json"
+    }
+  ],
+  "pwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "source_root": "/mnt/c/DEVELOPMENT/OpenRCsimulator"
+}

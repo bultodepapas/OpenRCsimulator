@@ -63,6 +63,7 @@ var _active := false
 var _paused := false
 var _mark_index := 0
 var _fragment_count := 0
+var _fragments_settled := true
 var _origin := Vector3.ZERO
 var last_update_usec := 0
 
@@ -288,6 +289,7 @@ func start(point: Vector3, velocity: Vector3, severity: Dictionary, fuel_kg: flo
 	if level > 0:
 		mark(_origin, velocity, radius, _fire_duration > 0)
 	_fragment_count = splinter_count(level, power)
+	_fragments_settled = _fragment_count == 0
 	fragments.multimesh.visible_instance_count = _fragment_count
 	for i in _fragment_count:
 		_positions[i] = _origin + Vector3(_rng.randf_range(-0.5,0.5),_rng.randf_range(0.15,0.7),_rng.randf_range(-0.5,0.5))
@@ -409,9 +411,10 @@ func secondary(point: Vector3, strength: float) -> void:
 
 func update(delta: float, paused: bool) -> void:
 	var began := Time.get_ticks_usec()
+	if _paused != paused:
+		for p in emitters:
+			p.speed_scale = 0.0 if paused else 1.0
 	_paused = paused
-	for p in emitters:
-		p.speed_scale = 0.0 if paused else 1.0
 	if not _active or paused:
 		last_update_usec = Time.get_ticks_usec()-began
 		return
@@ -431,12 +434,17 @@ func update(delta: float, paused: bool) -> void:
 	if flash > 0.0:
 		light.visible = true
 		light.light_energy = maxf(light.light_energy, 8.0 * flash)
-	if _age < 12.0:
+	if _age < 12.0 and not _fragments_settled:
+		# The same ballistic increment applies to every chip this frame.
+		var gravity_step := Vector3.DOWN*9.81*dt
+		var drag := exp(-dt*0.65)
+		_fragments_settled = true
 		for i in _fragment_count:
 			if _velocities[i].length_squared() < 0.002 and _positions[i].y <= 0.015:
 				continue
-			_velocities[i] += Vector3.DOWN*9.81*dt
-			_velocities[i] *= exp(-dt*0.65)
+			_fragments_settled = false
+			_velocities[i] += gravity_step
+			_velocities[i] *= drag
 			_positions[i] += _velocities[i]*dt
 			_rotations[i] += _spins[i]*dt
 			if _positions[i].y < 0.012:
@@ -541,6 +549,7 @@ func reset() -> void:
 	_flash_s = 0.0
 	_mark_index = 0
 	_fragment_count = 0
+	_fragments_settled = true
 	_rng.seed = 220031
 	for p in emitters:
 		p.emitting = false

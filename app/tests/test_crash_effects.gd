@@ -46,6 +46,27 @@ func run() -> void:
 	for step in 3000:
 		fx.update(1.0/60,false)
 	check("finite fuel budget extinguishes",fx.fire_strength() == 0 and not fx.flame.emitting and not fx.smoke.emitting)
+	# CR-22c-R3: resting chips do not stop delayed energy effects or the next burst.
+	fx.start(Vector3.ZERO,Vector3(40,-50,0),{"class":4,"severity":1.0},0.0,false,Vector3.ZERO)
+	for step in 600:
+		fx.update(1.0/60.0,false)
+	var settled_buffer: PackedFloat32Array = fx.fragments.multimesh.buffer
+	var settled_positions: PackedVector3Array = fx._positions.duplicate()
+	check("chips settle before the 12-second update cutoff",fx._fragments_settled and fx._age < 12.0)
+	fx.apply_energy({vent_delay_s=11.0,vent_s=2.0,flare=true})
+	for step in 90:
+		fx.update(1.0/60.0,false)
+	check("settled chips retain every position, instance transform and color",fx._positions == settled_positions and fx.fragments.multimesh.buffer == settled_buffer)
+	check("settled chips still allow delayed battery vent and flare",fx.vent.emitting and fx.flame.emitting and fx.light.visible)
+	var held_age: float = fx._age
+	for step in 12:
+		fx.update(1.0/60.0,true)
+	check("repeated pause holds delayed effects and all particle clocks",fx._age == held_age and fx.emitters.all(func(p): return p.speed_scale == 0.0))
+	fx.start(Vector3.ZERO,Vector3(40,-50,0),{"class":4,"severity":1.0},0.0,false,Vector3.ZERO)
+	var fresh_positions: PackedVector3Array = fx._positions.duplicate()
+	fx.update(1.0/60.0,false)
+	check("a new crash after settled pause moves fresh chips",fx._positions != fresh_positions)
+	check("a new crash restores all particle clocks",fx.emitters.all(func(p): return p.speed_scale == 1.0))
 	fx.reset()
 	check("reset clears aftermath",fx.stats().marks == 0 and fx.stats().splinters == 0 and not fx.light.visible)
 	for p in fx.emitters:

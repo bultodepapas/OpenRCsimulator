@@ -36,6 +36,8 @@ Experimental delivery evidence:
 
 CR-22c-R2 avoids repeated soft-contact feedback at the same simulation tick, reuses unchanged wreck shadow projections and calculates each scenery sort distance once. See [measurements and regressions](research/crash-damage-investigations/CR-22c-R2/README.md).
 
+CR-22c-R3 stops scanning resting chips, shares per-frame ballistic increments and updates particle clocks only on pause transitions. Delayed energy effects remain active. See [state parity and CPU evidence](research/crash-damage-investigations/CR-22c-R3/README.md).
+
 These slices do not close the broader CR-02/03/04/05 contracts, CR-07–10 structural work, or CR-19/20–27 roadmap work.
 
 ## Remaining work and dependencies
