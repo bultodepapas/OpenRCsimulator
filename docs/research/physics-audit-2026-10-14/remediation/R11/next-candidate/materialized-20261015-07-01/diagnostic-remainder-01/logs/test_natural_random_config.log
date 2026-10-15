@@ -1,0 +1,29 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   policy catalog is loaded
+ok   policy catalog callers receive detached data
+ok   seed zero generates a valid resolved scenario
+ok   scenario has the exact v1 envelope
+ok   scenario uses the fixed default field and one of five stock aircraft
+ok   source identities are lowercase SHA-256 digests
+ok   resolved identity survives full-precision JSON round trip
+ok   current field, aircraft data and model sources match the record
+ok   unknown scenario keys are rejected
+ok   missing envelope keys are rejected
+ok   negative seeds are rejected even with a matching digest
+ok   seeds above uint32 are rejected
+ok   non-default field IDs are rejected
+ok   non-stock aircraft IDs are rejected
+ok   unknown weather v3 keys are rejected
+ok   generated night lighting is rejected
+ok   capabilities must exactly match the supported set and order
+ok   tampered canonical identity is rejected
+ok   float changes at the published 12-significant-digit identity precision alter the digest
+ok   valid legacy lighting can customize a generated scenario
+ok   customization records lineage and changes the identity
+ok   custom scenario still passes cheap strict validation
+ok   customization leaves the source record detached
+ok   the custom astronomical sample is a real night
+ok   valid night lighting can customize a generated scenario
+ok   invalid lighting customization fails closed
+all Natural Random config checks passed

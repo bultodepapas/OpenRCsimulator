@@ -21,6 +21,11 @@ with 40 exact native mesh pairs and about 20% less mesh construction time. A
 separate combined native test reproduces texture shutdown errors on the baseline;
 that diagnostic remains open and is not counted as a clean native pass.
 
+2026-10-15 follow-up: [fallback shadow pixel reuse](shadow-mask-cache/README.md)
+preserves independent images/textures with one fixed CPU mip-byte cache. Repeated
+carrier construction measures 16.266→0.853 ms with 100 exact native output pairs;
+first-generation and complete-loading non-regression remain open.
+
 2026-10-14. Implemented a bounded CPU geometry cache in `app/render/lake/lake_terrain.gd`.
 Source baseline `22b3e482`; Godot 4.7.2-stable, Windows, RTX 3090 / Ryzen 9 5900X.
 [Manifest](evidence-manifest.json) pins sources, engine binaries and raw evidence;

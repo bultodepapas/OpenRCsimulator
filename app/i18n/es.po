@@ -2465,3 +2465,9 @@ msgstr "Luces: auto / todas / posición / apagadas"
 
 msgid "Flight log: record/stop · mark maneuver"
 msgstr "Registro: grabar/parar · marcar maniobra"
+
+msgid "RC cars · Open garage"
+msgstr "Carros RC · Abrir garaje"
+
+msgid "RC car"
+msgstr "Carro RC"

@@ -1,0 +1,139 @@
+{
+  "schema": "r11-rudder-authority-data-matrix-v1",
+  "run": {
+    "candidate_app": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app",
+    "godot": "/home/bulto/openrc-r11-b09-r05b-20261015-07/.tools/Godot_v4.7.2-stable_linux.x86_64",
+    "godot_version": "4.7.2.stable.official.ed1daf0bf",
+    "command": "timeout --signal=TERM 60s /home/bulto/openrc-r11-b09-r05b-20261015-07/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/bulto/openrc-r11-b09-r05b-20261015-07/app --audio-driver Dummy --script /mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd",
+    "probe_sha256": "c731e0d0348a9d477697374a310ae46df863f7ec5c25235b8758ea2e8baa6dbd",
+    "output_log": "rudder-data-matrix-frozen-07-linux-01.log",
+    "output_sha256": "77088a59dcb66d420f91aa0a64930b7c1c7801cc87a72ab756c25f6a0517e853"
+  },
+  "frozen_source_sha256": {
+    "app/data/aircraft/jensen_ugly_stik_60.json": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+    "app/physics/aero.gd": "7ac94f6003f2cb7660a56dd94755c6a7d6143d90cc446c6b6c20433038ce38e3",
+    "app/tests/test_rudder_authority.gd": "ba727eb29464392539eae13582765fd3bfffd0c8aa4465eef7a61736a7983e58",
+    "app/sim/maneuvers.gd": "0b1884431b738ea086552ff051b09c9e455c49ab1cfc5d66023b412cb933b324",
+    "app/sim/scenarios.gd": "756b95412911c5f1b0c5774d1f0901909e0b157731ca624663f72442df3458a8",
+    "app/sim/flight_session.gd": "df45d4bd217e7d54a6d160a46fd9577e01bcc47413014def4dce769e7279e7ae"
+  },
+  "data_before_regeneration": {
+    "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/before/app/data/aircraft/jensen_ugly_stik_60.json",
+    "sha256": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "coefficients": {
+      "Cmq": -7.944,
+      "CLq": 1.977,
+      "Cnr": -0.1354
+    }
+  },
+  "data_after_regeneration": {
+    "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+    "sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "changed_leaves_only": [
+      "aero.coefficients.Cmq.value",
+      "aero.coefficients.Cmq.source",
+      "aero.coefficients.CLq.value",
+      "aero.coefficients.CLq.source",
+      "aero.coefficients.Cnr.value",
+      "aero.coefficients.Cnr.source"
+    ],
+    "coefficients": {
+      "Cmq": -8.009,
+      "CLq": 2.003,
+      "Cnr": -0.1335
+    }
+  },
+  "case_results_r_at_3s_deg_s": [
+    {
+      "hz": 240,
+      "case": "D11g current regenerated values",
+      "Cmq": -8.009,
+      "CLq": 2.003,
+      "Cnr": -0.1335,
+      "rows": 721,
+      "r_at_3s": -15.12527305,
+      "r_final": -15.12527305,
+      "peak_abs_r": 92.579585502
+    },
+    {
+      "hz": 240,
+      "case": "D11g preserved pre-regeneration values",
+      "Cmq": -7.944,
+      "CLq": 1.977,
+      "Cnr": -0.1354,
+      "rows": 721,
+      "r_at_3s": -14.709714206,
+      "r_final": -14.709714206,
+      "peak_abs_r": 92.4237479
+    },
+    {
+      "hz": 240,
+      "case": "new Cmq/CLq with old Cnr",
+      "Cmq": -8.009,
+      "CLq": 2.003,
+      "Cnr": -0.1354,
+      "rows": 721,
+      "r_at_3s": -14.709636698,
+      "r_final": -14.709636698,
+      "peak_abs_r": 92.42356266
+    },
+    {
+      "hz": 240,
+      "case": "old Cmq/CLq with new Cnr",
+      "Cmq": -7.944,
+      "CLq": 1.977,
+      "Cnr": -0.1335,
+      "rows": 721,
+      "r_at_3s": -15.125328582,
+      "r_final": -15.125328582,
+      "peak_abs_r": 92.57977364
+    },
+    {
+      "hz": 480,
+      "case": "D11g current regenerated values",
+      "Cmq": -8.009,
+      "CLq": 2.003,
+      "Cnr": -0.1335,
+      "rows": 1441,
+      "r_at_3s": -15.200615853,
+      "r_final": -15.200615853,
+      "peak_abs_r": 92.579095158
+    },
+    {
+      "hz": 480,
+      "case": "D11g preserved pre-regeneration values",
+      "Cmq": -7.944,
+      "CLq": 1.977,
+      "Cnr": -0.1354,
+      "rows": 1441,
+      "r_at_3s": -14.785031197,
+      "r_final": -14.785031197,
+      "peak_abs_r": 92.426617166
+    },
+    {
+      "hz": 480,
+      "case": "new Cmq/CLq with old Cnr",
+      "Cmq": -8.009,
+      "CLq": 2.003,
+      "Cnr": -0.1354,
+      "rows": 1441,
+      "r_at_3s": -14.784939112,
+      "r_final": -14.784939112,
+      "peak_abs_r": 92.426427457
+    },
+    {
+      "hz": 480,
+      "case": "old Cmq/CLq with new Cnr",
+      "Cmq": -7.944,
+      "CLq": 1.977,
+      "Cnr": -0.1335,
+      "rows": 1441,
+      "r_at_3s": -15.200685982,
+      "r_final": -15.200685982,
+      "peak_abs_r": 92.57928772
+    }
+  ],
+  "interpretation": "The regenerated data crosses the existing 15 deg/s recovery screen. The split matrix attributes nearly all of that software-acceptance change to the less-negative Cnr. The screen and both generations of D11g derivatives are unvalidated against physical flight data."
+}

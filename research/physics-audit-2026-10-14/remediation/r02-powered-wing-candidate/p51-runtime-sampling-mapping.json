@@ -1,0 +1,359 @@
+{
+  "candidate_polygon_and_centroid_comparison": [
+    {
+      "candidate_centroid_inside_candidate_static_hard_tube": false,
+      "candidate_polygon_centroid_body_m": [
+        -0.016305744109150616,
+        -1.0916809727662642,
+        0.09705399999999999
+      ],
+      "candidate_polygon_hard_tube_intersection_area_m2": 0.0,
+      "candidate_polygon_source_area_m2": 0.228749,
+      "candidate_polygon_weighted_area_m2": 0.0,
+      "runtime_point_minus_polygon_centroid_body_m": [
+        0.08019174410915061,
+        -4.440892098500626e-16,
+        0.0
+      ],
+      "runtime_station_sample_body_m": [
+        0.063886,
+        -1.0916809727662646,
+        0.09705399999999999
+      ],
+      "runtime_station_sample_index": 0,
+      "strip_id": "strip_0"
+    },
+    {
+      "candidate_centroid_inside_candidate_static_hard_tube": false,
+      "candidate_polygon_centroid_body_m": [
+        -0.08113277107251443,
+        -0.5830214957582339,
+        0.09705399999999999
+      ],
+      "candidate_polygon_hard_tube_intersection_area_m2": 0.0,
+      "candidate_polygon_source_area_m2": 0.22874899999999987,
+      "candidate_polygon_weighted_area_m2": 0.0,
+      "runtime_point_minus_polygon_centroid_body_m": [
+        0.14501877107251443,
+        1.1102230246251565e-16,
+        0.0
+      ],
+      "runtime_station_sample_body_m": [
+        0.063886,
+        -0.5830214957582338,
+        0.09705399999999999
+      ],
+      "runtime_station_sample_index": 1,
+      "strip_id": "strip_1"
+    },
+    {
+      "candidate_centroid_inside_candidate_static_hard_tube": false,
+      "candidate_polygon_centroid_body_m": [
+        -0.13249701738459757,
+        -0.17999652469514468,
+        0.09705399999999999
+      ],
+      "candidate_polygon_hard_tube_intersection_area_m2": 0.09316023294813035,
+      "candidate_polygon_source_area_m2": 0.22874900000000012,
+      "candidate_polygon_weighted_area_m2": 0.09316023294813035,
+      "runtime_point_minus_polygon_centroid_body_m": [
+        0.19638301738459757,
+        0.0,
+        0.0
+      ],
+      "runtime_station_sample_body_m": [
+        0.063886,
+        -0.17999652469514468,
+        0.09705399999999999
+      ],
+      "runtime_station_sample_index": 2,
+      "strip_id": "strip_2"
+    },
+    {
+      "candidate_centroid_inside_candidate_static_hard_tube": false,
+      "candidate_polygon_centroid_body_m": [
+        -0.13249701738459757,
+        0.17999652469514468,
+        0.09705399999999999
+      ],
+      "candidate_polygon_hard_tube_intersection_area_m2": 0.0739822296078235,
+      "candidate_polygon_source_area_m2": 0.22874900000000012,
+      "candidate_polygon_weighted_area_m2": 0.0739822296078235,
+      "runtime_point_minus_polygon_centroid_body_m": [
+        0.19638301738459757,
+        0.0,
+        0.0
+      ],
+      "runtime_station_sample_body_m": [
+        0.063886,
+        0.17999652469514468,
+        0.09705399999999999
+      ],
+      "runtime_station_sample_index": 3,
+      "strip_id": "strip_3"
+    },
+    {
+      "candidate_centroid_inside_candidate_static_hard_tube": false,
+      "candidate_polygon_centroid_body_m": [
+        -0.08113277107251443,
+        0.5830214957582339,
+        0.09705399999999999
+      ],
+      "candidate_polygon_hard_tube_intersection_area_m2": 0.0,
+      "candidate_polygon_source_area_m2": 0.22874899999999987,
+      "candidate_polygon_weighted_area_m2": 0.0,
+      "runtime_point_minus_polygon_centroid_body_m": [
+        0.14501877107251443,
+        -1.1102230246251565e-16,
+        0.0
+      ],
+      "runtime_station_sample_body_m": [
+        0.063886,
+        0.5830214957582338,
+        0.09705399999999999
+      ],
+      "runtime_station_sample_index": 4,
+      "strip_id": "strip_4"
+    },
+    {
+      "candidate_centroid_inside_candidate_static_hard_tube": false,
+      "candidate_polygon_centroid_body_m": [
+        -0.016305744109150616,
+        1.0916809727662642,
+        0.09705399999999999
+      ],
+      "candidate_polygon_hard_tube_intersection_area_m2": 0.0,
+      "candidate_polygon_source_area_m2": 0.228749,
+      "candidate_polygon_weighted_area_m2": 0.0,
+      "runtime_point_minus_polygon_centroid_body_m": [
+        0.08019174410915061,
+        4.440892098500626e-16,
+        0.0
+      ],
+      "runtime_station_sample_body_m": [
+        0.063886,
+        1.0916809727662646,
+        0.09705399999999999
+      ],
+      "runtime_station_sample_index": 5,
+      "strip_id": "strip_5"
+    }
+  ],
+  "derived_runtime_samples": {
+    "arp_body_arm_m": [
+      0.063886,
+      0.0,
+      0.09705399999999999
+    ],
+    "arp_le_m": [
+      0.113877,
+      0.0,
+      -0.1682
+    ],
+    "hard_wake_boundaries": {
+      "edge_fraction": 0.0,
+      "s_max": null,
+      "s_min_m": 0.0
+    },
+    "plan_cg_le_m": [
+      0.177763,
+      0.0,
+      -0.071146
+    ],
+    "points_body_frd_m": [
+      {
+        "point_body_m": [
+          0.063886,
+          -1.0916809727662646,
+          0.09705399999999999
+        ],
+        "station_index": 0,
+        "station_y_m": -1.0916809727662646
+      },
+      {
+        "point_body_m": [
+          0.063886,
+          -0.5830214957582338,
+          0.09705399999999999
+        ],
+        "station_index": 1,
+        "station_y_m": -0.5830214957582338
+      },
+      {
+        "point_body_m": [
+          0.063886,
+          -0.17999652469514468,
+          0.09705399999999999
+        ],
+        "station_index": 2,
+        "station_y_m": -0.17999652469514468
+      },
+      {
+        "point_body_m": [
+          0.063886,
+          0.17999652469514468,
+          0.09705399999999999
+        ],
+        "station_index": 3,
+        "station_y_m": 0.17999652469514468
+      },
+      {
+        "point_body_m": [
+          0.063886,
+          0.5830214957582338,
+          0.09705399999999999
+        ],
+        "station_index": 4,
+        "station_y_m": 0.5830214957582338
+      },
+      {
+        "point_body_m": [
+          0.063886,
+          1.0916809727662646,
+          0.09705399999999999
+        ],
+        "station_index": 5,
+        "station_y_m": 1.0916809727662646
+      }
+    ],
+    "root_chord_m": 0.6664,
+    "span_m": 2.82,
+    "station_ys_m": [
+      -1.0916809727662646,
+      -0.5830214957582338,
+      -0.17999652469514468,
+      0.17999652469514468,
+      0.5830214957582338,
+      1.0916809727662646
+    ],
+    "tip_chord_m": 0.307,
+    "wake_origin_hub_body_m": [
+      0.726463,
+      0.0,
+      -0.071146
+    ],
+    "wake_path_body": [
+      -0.9993813570294788,
+      -0.01744426647499975,
+      -0.03053851320982266
+    ],
+    "wake_radius_m": 0.23348441999999997
+  },
+  "geometry_identity": {
+    "aircraft_data_sha256": "dca91a9ba5f03506d57b54a989ea56ba3f0da31b0d993d8f68b999aaf689d141",
+    "candidate_geometry_kernel_sha256": "c9014ea7dbb8a0cee4553f947c118903160a9a9b3aa54dec305ea813022f9a27"
+  },
+  "interpretation": {
+    "candidate_representation": "A separate inferred flat, unswept trapezoid panel per strip, from authored span/root/tip chord and the ARP z plane; each polygon centroid is an area centroid.",
+    "current_wing_wash_behavior": "Aero._wing_flow/_local_loads use the six ARP-based points without a Slipstream sample. Dynamics adds Slipstream.loads separately; that opt-in path computes washed tail loads.",
+    "not_equivalent": "Candidate polygon centroids have varying x along the trapezoid and do not equal runtime points at the ARP x/z. Polygon hit area is not the current runtime's per-strip aerodynamic integration.",
+    "runtime_representation": "Six spanwise strip sample/load points; no explicit planform polygon vertices are used by _wing_flow/_local_loads.",
+    "wake": "The geometric query uses authored hub and thrust axis, runtime RADIUS_MIN=0.7071, and s>=0 as a candidate static hard tube. It is not the current dynamic wake state or an existing wing-wash load coupling."
+  },
+  "runtime_point_wake_hits": [
+    {
+      "candidate_tube_s_m": 0.6760740972692505,
+      "inside_candidate_static_hard_tube": false,
+      "occupancy": 0.0,
+      "point_body_m": [
+        0.063886,
+        -1.0916809727662646,
+        0.09705399999999999
+      ],
+      "radial_distance_m": 1.0963533564642678,
+      "station_index": 0,
+      "station_y_m": -1.0916809727662646
+    },
+    {
+      "candidate_tube_s_m": 0.6672009058072884,
+      "inside_candidate_static_hard_tube": false,
+      "occupancy": 0.0,
+      "point_body_m": [
+        0.063886,
+        -0.5830214957582338,
+        0.09705399999999999
+      ],
+      "radial_distance_m": 0.601711340041969,
+      "station_index": 1,
+      "station_y_m": -0.5830214957582338
+    },
+    {
+      "candidate_tube_s_m": 0.6601704308159848,
+      "inside_candidate_static_hard_tube": false,
+      "occupancy": 0.0,
+      "point_body_m": [
+        0.063886,
+        -0.17999652469514468,
+        0.09705399999999999
+      ],
+      "radial_distance_m": 0.2527316207117084,
+      "station_index": 2,
+      "station_y_m": -0.17999652469514468
+    },
+    {
+      "candidate_tube_s_m": 0.6538906161332729,
+      "inside_candidate_static_hard_tube": false,
+      "occupancy": 0.0,
+      "point_body_m": [
+        0.063886,
+        0.17999652469514468,
+        0.09705399999999999
+      ],
+      "radial_distance_m": 0.2685615980816666,
+      "station_index": 3,
+      "station_y_m": 0.17999652469514468
+    },
+    {
+      "candidate_tube_s_m": 0.6468601411419693,
+      "inside_candidate_static_hard_tube": false,
+      "occupancy": 0.0,
+      "point_body_m": [
+        0.063886,
+        0.5830214957582338,
+        0.09705399999999999
+      ],
+      "radial_distance_m": 0.6235266981027836,
+      "station_index": 4,
+      "station_y_m": 0.5830214957582338
+    },
+    {
+      "candidate_tube_s_m": 0.6379869496800072,
+      "inside_candidate_static_hard_tube": false,
+      "occupancy": 0.0,
+      "point_body_m": [
+        0.063886,
+        1.0916809727662646,
+        0.09705399999999999
+      ],
+      "radial_distance_m": 1.118945717748139,
+      "station_index": 5,
+      "station_y_m": 1.0916809727662646
+    }
+  ],
+  "scope": "Read-only mapping of current strip sampling points to the candidate wake; no runtime or aircraft data changes",
+  "source_locations": {
+    "aero_arm_conversion": "app/physics/aero.gd:537-539; LE [aft,right,up] to body FRD arm",
+    "aero_local_load_arms": "app/physics/aero.gd:306-329, 398-443; station force moments use ARP x/z and station y",
+    "aero_wing_flow": "app/physics/aero.gd:267-294; x/z at ARP arm and y at ARP arm plus station_ys",
+    "candidate_polygon_builder": "research/physics-audit-2026-10-14/remediation/r02-powered-wing-candidate/geometry_quadrature.py:p51_physics_panels",
+    "station_count": "app/physics/aero.gd:19; 3 stations per semispan, parsed from source",
+    "station_ys": "app/physics/aircraft_data.gd:580-604; equal-area strip centroid locations"
+  },
+  "source_sha256": {
+    "aero_gd": "7ac94f6003f2cb7660a56dd94755c6a7d6143d90cc446c6b6c20433038ce38e3",
+    "aircraft_data_gd": "75212e145c5278d3a1a56f663418ea719065cb0d9f3761bca08d8bb8b759ed12",
+    "aircraft_json": "dca91a9ba5f03506d57b54a989ea56ba3f0da31b0d993d8f68b999aaf689d141",
+    "coordinate_covariance_results": "647fff136e752cfdd8472c48476ea216e180db5946ca3a6bac3c81049c7085b0",
+    "geometry_quadrature_py": "c9014ea7dbb8a0cee4553f947c118903160a9a9b3aa54dec305ea813022f9a27",
+    "historical_candidate_results_unchanged": "d44d1a35d3e6958221164a35ed4973546e910ab5948f16dc65763d44d15ff6a4",
+    "mapping_probe_py": "786b756f6ef1a58254204fcd6694d3c06e29d23f06463bbf83e023458da9d62f",
+    "r02_readme": "c0a009f3ce366c6de55aed6f6c159767a4a426356b5a6408b7de2c09d2749112",
+    "slipstream_gd": "bb810e8e9e93b1b89ad1750cd4db507eb7fe66fad070a5cce51dfd0dce58ab06"
+  },
+  "summary": {
+    "candidate_centroid_candidate_tube_hit_count": 0,
+    "candidate_polygon_nonzero_overlap_count": 2,
+    "runtime_sample_candidate_tube_hit_count": 0
+  },
+  "title": "P-51 runtime wing-sample versus candidate polygon mapping"
+}

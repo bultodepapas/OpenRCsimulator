@@ -1,0 +1,74 @@
+{
+  "ok": true,
+  "paths": {
+    "trace": "docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\next-candidate\\materialized-20261015-07-01\\linux-exported-main-smoke-01.csv",
+    "aircraft": "app\\data\\aircraft\\jensen_ugly_stik_60.json",
+    "previous_checker": "docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\trace-aero-identity\\previous-check_trimmed_flight.py",
+    "current_checker": "app\\tests\\check_trimmed_flight.py"
+  },
+  "sha256": {
+    "trace": "55814f1c02d4d2e21fa719e6731da58bd6e9719b396532cafd610ccfc5df828c",
+    "aircraft": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+    "previous_checker": "369432c6c0d16f00295547a7e32f626fa815dc95e2fbde782aac4ce3c49fbc5e",
+    "current_checker": "bcaa40377bda39fc8e8e7a2be6753fc41441bf2901b0ca60d8c5feb11c203d81"
+  },
+  "results": [
+    {
+      "name": "previous-real",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\trace-aero-identity\\previous-check_trimmed_flight.py",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\next-candidate\\materialized-20261015-07-01\\linux-exported-main-smoke-01.csv",
+        "--duration=3",
+        "--aircraft-input=C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\aircraft\\jensen_ugly_stik_60.json"
+      ],
+      "exit_code": 1,
+      "expected_exit": 1,
+      "stdout": "",
+      "stderr": "FAIL missing or unsupported aero_model\n"
+    },
+    {
+      "name": "current-real",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\check_trimmed_flight.py",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\next-candidate\\materialized-20261015-07-01\\linux-exported-main-smoke-01.csv",
+        "--duration=3",
+        "--aircraft-input=C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\aircraft\\jensen_ugly_stik_60.json"
+      ],
+      "exit_code": 0,
+      "expected_exit": 0,
+      "stdout": "trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s; exact aircraft input bytes verified\n",
+      "stderr": ""
+    },
+    {
+      "name": "unknown-law",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\check_trimmed_flight.py",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\trace-aero-identity\\unknown-law.csv",
+        "--duration=3",
+        "--aircraft-input=C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\aircraft\\jensen_ugly_stik_60.json"
+      ],
+      "exit_code": 1,
+      "expected_exit": 1,
+      "stdout": "",
+      "stderr": "FAIL missing or unsupported aero_model\n"
+    },
+    {
+      "name": "incomplete-law",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\tests\\check_trimmed_flight.py",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\trace-aero-identity\\incomplete-law.csv",
+        "--duration=3",
+        "--aircraft-input=C:\\DEVELOPMENT\\OpenRCsimulator\\app\\data\\aircraft\\jensen_ugly_stik_60.json"
+      ],
+      "exit_code": 1,
+      "expected_exit": 1,
+      "stdout": "",
+      "stderr": "FAIL missing or unsupported aero_model\n"
+    }
+  ],
+  "trace_unchanged": true
+}

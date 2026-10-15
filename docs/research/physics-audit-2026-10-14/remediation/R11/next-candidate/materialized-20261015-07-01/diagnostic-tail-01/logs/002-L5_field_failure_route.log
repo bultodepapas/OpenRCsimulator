@@ -1,0 +1,16 @@
+# L5_field_failure_route
+# started_utc=2026-10-15T14:17:59+00:00
+# cwd=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+# timeout_seconds=600
+# expect=zero
+# command=/usr/bin/python3 /home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_field_failures.py FieldFailureRoutes.test_headless_invalid_fields_fail_both_routes
+# returncode=0
+# timed_out=False
+# engine_error_detected=False
+
+test_headless_invalid_fields_fail_both_routes (__main__.FieldFailureRoutes.test_headless_invalid_fields_fail_both_routes) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 18.698s
+
+OK

@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   found the stick keys in keyboard.gd (8)
+ok   found the shortcuts in main.gd (33)
+ok   found the helicopter shortcuts (19)
+ok   every handled key is in the Help tables
+ok   every key in the Help tables is handled
+ok   every helicopter handled key is in its Help table
+ok   every helicopter Help key is handled
+ok   helicopter W/S is labelled collective
+ok   helicopter shortcuts explain idle-up, trainer and zero-drive
+ok   helicopter shortcuts omit airplane-only trim, smoke, fuel and reload keys
+ok   fixed-wing help pairs G gear toggle with B hold brake
+ok   first-flight hint: at most 3 items, keys from the tables
+ok   helicopter first-flight hint uses collective rather than throttle
+all controls reference checks passed

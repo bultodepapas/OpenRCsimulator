@@ -1,0 +1,35 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   a box half inside a section puts half its mass there
+ok   a box fully inside puts all of it there
+ok   a point item counts when inside, not when outside
+ok   a thin skin's region is thickened, a bulky part's barely
+ok   a section without items gets the floor mass from the core  { "core": 0.98500001430511, "horizontal_tail": 0.01499999966472 }
+ok   jensen-das-ugly-stik-60 intact wreck weighs the aircraft  2.8851 vs 2.8851
+ok   jensen-das-ugly-stik-60 intact wreck's centre of mass is the aircraft CG  (0.0, -0.005, 0.0059) vs (0.0, -0.005, 0.0059) (0.0 mm)
+ok   jensen-das-ugly-stik-60 uses a custom centre of mass
+     jensen-das-ugly-stik-60 section masses: { "core": 0.3405878841877, "wing_left": 0.28221958875656, "wing_right": 0.28185230493546, "engine": 0.72046768665314, "propeller": 0.08184760808945, "horizontal_tail": 0.19828554987907, "vertical_tail": 0.18063461780548, "gear": 0.1295508146286, "tail_boom": 0.14755314588547, "aileron_left": 0.01499999966472, "aileron_right": 0.01499999966472, "elevator": 0.01499999966472, "rudder": 0.01499999966472, "wheel": 0.01499999966472 }
+ok   jensen-das-ugly-stik-60 destroyed wreck conserves mass  2.885058 vs 2.885058
+ok   jensen-das-ugly-stik-60 wing halves weigh the same  0.28221958875656 / 0.28185230493546
+ok   jensen-das-ugly-stik-60 wing halves carry real wing mass
+ok   jensen-das-ugly-stik-60 gear section does not swallow tank and battery  0.130 vs gear items 0.195
+ok   jensen-das-ugly-stik-60 engine section carries the engine  0.720 vs engine 0.550
+ok   jensen-das-ugly-stik-60 reset restores automatic centre of mass
+ok   jensen-das-ugly-stik-60 without inventory keeps the fixed shares and conserves mass
+ok   turbo-lumber-evolution intact wreck weighs the aircraft  2.1900 vs 2.1900
+ok   turbo-lumber-evolution intact wreck's centre of mass is the aircraft CG  (0.0, -0.002176, 0.06) vs (0.0, -0.002176, 0.06) (0.0 mm)
+ok   turbo-lumber-evolution uses a custom centre of mass
+     turbo-lumber-evolution section masses: { "core": 0.79103463888168, "wing_left": 0.22021548449993, "wing_right": 0.22021548449993, "engine": 0.29986083507538, "propeller": 0.24850127100945, "horizontal_tail": 0.08173898607492, "vertical_tail": 0.04859003424644, "gear": 0.01499999966472, "canopy": 0.13443243503571 }
+ok   turbo-lumber-evolution destroyed wreck conserves mass  2.190000 vs 2.190000
+ok   turbo-lumber-evolution wing halves weigh the same  0.22021548449993 / 0.22021548449993
+ok   turbo-lumber-evolution wing halves carry real wing mass
+ok   turbo-lumber-evolution gear section does not swallow tank and battery  0.015 vs gear items 0.147
+ok   turbo-lumber-evolution engine section carries the engine  0.300 vs engine 0.160
+ok   turbo-lumber-evolution reset restores automatic centre of mass
+ok   turbo-lumber-evolution without inventory keeps the fixed shares and conserves mass
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+CRASH at 20.0 m/s (sink 12.0 m/s, airframe contact (hull point 8), point speed 20.0 m/s at detected tick) - [R] restart
+CRASH CAUSE: Flew into the ground at 15.0 m/s, pitch 4°, bank 0°
+ok   production crash hands the inventory to the wreck
+ok   production wreck uses inventory section masses
+27 checks, 0 failed

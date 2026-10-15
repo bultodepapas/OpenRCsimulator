@@ -15,6 +15,8 @@ const FUSELAGE_U := Vector2(0.46, 0.54)
 const STAB := Rect2(0.30, 0.85, 0.40, 0.13)
 ## The wing's mid-chord sits at this v: the quad is shifted so it lies under the airplane's CG.
 const WING_CENTER_V := 0.335
+## One immutable CPU mip chain; returned images and carrier GPU textures stay independent.
+static var _silhouette_bytes := PackedByteArray()
 
 
 static func create(parent: Node3D) -> MeshInstance3D:
@@ -111,6 +113,8 @@ static func update(shadow: MeshInstance3D, b: Basis, pos: Vector3, span: float, 
 
 ## White silhouette with soft edges in the alpha channel (deterministic; a 2-pass box blur).
 static func silhouette() -> Image:
+	if not _silhouette_bytes.is_empty():
+		return Image.create_from_data(SIZE, SIZE, true, Image.FORMAT_RGBA8, _silhouette_bytes)
 	var mask := PackedFloat32Array()
 	mask.resize(SIZE * SIZE)
 	for j in SIZE:
@@ -128,6 +132,7 @@ static func silhouette() -> Image:
 		for i in SIZE:
 			img.set_pixel(i, j, Color(1, 1, 1, mask[j * SIZE + i]))
 	img.generate_mipmaps()
+	_silhouette_bytes = img.get_data()
 	return img
 
 

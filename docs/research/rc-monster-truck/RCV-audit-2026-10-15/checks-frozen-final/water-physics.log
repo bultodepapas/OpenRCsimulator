@@ -1,0 +1,35 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: strict MT8 vehicle model loads  []
+PASS: test process selects the GDScript reference solver
+PASS: dry static reference state initializes
+PASS: default field and validated lake build a lake-aware course  []
+PASS: lake shore spawn is a dry, south-facing staging pad
+lake staging sample -0.0023 m high, depth 0.0000 mud 0.000; supported state 31 values
+PASS: lake shore staging spawn resolves to dry ground and a supported vehicle state
+lake samples (N,E): staging 145.5,125 depth nan mud nan; bank 139.4,125 depth 0.0000 mud 0.488; shallow 138,125 depth 0.0582; deeper 137,125 depth 0.2176; center 110,125 depth 5.0000
+PASS: lake sampler exposes a shallow wading edge and a deeper basin
+PASS: shoreline blend exposes a nonzero dry mud band
+PASS: dry active evaluation is byte-equal to the legacy reference result
+PASS: dry telemetry carries only zero environment defaults
+synthetic wheel occupancy: 0.06 m depth 0.2289; 0.22 m depth 0.9997; body 0.0000 -> 0.8230
+PASS: shallow water wets tire caps and deeper water increases occupancy
+PASS: supported reference state can be moved into the deep-water column
+full immersion lift 25.446295420 N; Archimedes 25.446295420 N; truck weight 54.132708000 N; displaced 2.600000 L
+PASS: open-truck displaced volume produces Archimedes-consistent lift below vehicle weight
+PASS: water-column clipping makes shore force tend to zero with depth  10 µm water layer lift 0.001856411 N / full 25.446295420 N
+PASS: cells fully below the lake bed receive no fluid lift or drag
+PASS: water drag dissipates translation  Pdrag -347.214167057 W
+PASS: water drag dissipates body rotation  Pdrag -3.888758592 W
+PASS: water drag dissipates wheel spin  Pdrag -0.096900000 W
+PASS: reported fluid work equals independent generalized-force power  generalized -53.990728407 W, reported -53.990728407 W, error 0.000000 W
+PASS: active dynamics rejects nonfinite water depth before force application
+PASS: surface validator rejects absent, negative, and out-of-range wet values
+0.1 s drop: wet down 0.477057 m/vd 0.490159 m/s; dry down 0.497541 m/vd 0.976047 m/s
+PASS: fully immersed open truck sinks under gravity but water slows the drop
+0.1 s internal RK4 refinement, excluding wheel-angle channels: coarse→fine 0.00000112883128, medium→fine 0.00000005492569
+PASS: wet reference RK4 state converges as internal step halves
+wet damage accounting: speed drop 0.374687 m/s, drag work -10.149620 J, naive loss 10.149620 J, damage energy 0.000000 J
+damage fixture accepted=true, accounted contact loss 0.000000000 J, visual damage 0.000000000, suspension 0.000000000, drive 1.000000000
+PASS: fluid work above the damage threshold is removed from a marked contact-energy estimate
+RCV-water numeric test summary: 24 checks, 0 failures

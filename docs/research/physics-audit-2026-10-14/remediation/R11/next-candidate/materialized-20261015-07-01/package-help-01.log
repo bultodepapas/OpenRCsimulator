@@ -1,0 +1,73 @@
+[38;5;39mGodot Engine[0m v4.7.2.stable.official.ed1daf0bf - [4mhttps://godotengine.org[0m
+[90mFree and open source software under the terms of the MIT license.[0m
+[90m(c) 2014-present Godot Engine contributors. (c) 2007-present Juan Linietsky, Ariel Manzur.[0m
+
+[1;93mUsage:[0m
+  /home/bulto/openrc-r11-b09-r05b-20261015-07/dist/linux/openrc-simulator.x86_64 [96m[options] [path to "project.godot" file][0m
+
+[1;93mOption legend (this build = release export template):[0m
+  [1;92mR[0m  Available in editor builds, debug export templates and release export templates.
+
+[1;93mGeneral options:[0m
+  [92m-h, --help                        [1;92mR[0m  Display this help message.
+  [92m--version                         [1;92mR[0m  Display the version string.
+  [92m-v, --verbose                     [1;92mR[0m  Use verbose stdout mode.
+  [92m--quiet                           [1;92mR[0m  Quiet mode, silences stdout messages. Errors are still displayed.
+  [92m--no-header                       [1;92mR[0m  Do not print engine version and rendering driver/method header on startup.
+
+[1;93mRun options:[0m
+  [92m--, ++                            [1;92mR[0m  Separator for user-provided arguments. Following arguments are not used by the engine, but can be read from `OS.get_cmdline_user_args()`.
+  [92m--quit                            [1;92mR[0m  Quit after the first iteration.
+  [92m--quit-after [95m<int>[0m                [1;92mR[0m  Quit after the given number of iterations. Set to 0 to disable.
+  [92m-l, --language [95m<locale>[0m           [1;92mR[0m  Use a specific locale (<locale> being a two-letter code).
+  [92m--render-thread [95m<mode>[0m            [1;92mR[0m  Render thread mode ("unsafe" [deprecated], "safe", "separate").
+  [92m--audio-driver [95m<driver>[0m           [1;92mR[0m  Audio driver ["PulseAudio", "ALSA", "Dummy"].
+  [92m--display-driver [95m<driver>[0m         [1;92mR[0m  Display driver (and rendering driver) ["x11" ("vulkan", "opengl3", "opengl3_es", "dummy"), "wayland" ("vulkan", "opengl3", "opengl3_es", "dummy"), "headless" ("dummy")].
+  [92m--audio-output-latency [95m<ms>[0m       [1;92mR[0m  Override audio output latency in milliseconds (default is 15 ms).
+  [92m                                   [0m  [90mLower values make sound playback more reactive but increase CPU usage, and may result in audio cracking if the CPU can't keep up.
+  [92m--rendering-method [95m<renderer>[0m     [1;92mR[0m  Renderer name. Requires driver support.
+  [92m--rendering-driver [95m<driver>[0m       [1;92mR[0m  Rendering driver (depends on display driver).
+  [92m--gpu-index [95m<device_index>[0m        [1;92mR[0m  Use a specific GPU (only available on the Forward+/Mobile renderers; run with --verbose to get a list of available devices).
+  [92m--text-driver [95m<driver>[0m            [1;92mR[0m  Text driver (used for font rendering, bidirectional support and shaping).
+  [92m--tablet-driver [95m<driver>[0m          [1;92mR[0m  Pen tablet input driver.
+  [92m--headless                        [1;92mR[0m  Enable headless mode (--display-driver headless --audio-driver Dummy). Useful for servers and with --script.
+  [92m--log-file [95m<file>[0m                 [1;92mR[0m  Write output/error log to the specified path instead of the default location defined by the project.
+  [92m                                   [0m  [90m<file> path should be absolute or relative to the project directory.
+  [92m--write-movie [95m<file>[0m              [1;92mR[0m  Write a video to the specified path (usually with .avi or .png extension).
+  [92m                                   [0m  [90m--fixed-fps is forced when enabled, but it can be used to change movie FPS.
+  [92m                                   [0m  [90m--disable-vsync can speed up movie writing but makes interaction more difficult.
+  [92m                                   [0m  [90m--quit-after can be used to specify the number of frames to write.
+
+[1;93mDisplay options:[0m
+  [92m-f, --fullscreen                  [1;92mR[0m  Request fullscreen mode.
+  [92m-m, --maximized                   [1;92mR[0m  Request a maximized window.
+  [92m-w, --windowed                    [1;92mR[0m  Request windowed mode.
+  [92m-t, --always-on-top               [1;92mR[0m  Request an always-on-top window.
+  [92m--resolution [95m<W>[0mx[95m<H>[0m              [1;92mR[0m  Request window resolution.
+  [92m--position [95m<X>[0m,[95m<Y>[0m                [1;92mR[0m  Request window position.
+  [92m--screen [95m<N>[0m                      [1;92mR[0m  Request window screen.
+  [92m--single-window                   [1;92mR[0m  Use a single window (no separate subwindows).
+  [92m--xr-mode [95m<mode>[0m                  [1;92mR[0m  Select XR (Extended Reality) mode ["default", "off", "on"].
+  [92m--wid [95m<window_id>[0m                 [1;92mR[0m  Request parented to window.
+  [92m--accessibility [95m<mode>[0m            [1;92mR[0m  Select accessibility mode ['auto' (when screen reader is running, default), 'always', 'disabled'].
+  [92m--accessibility-driver [95m<driver>[0m   [1;92mR[0m  Select accessibility driver ['accesskit', 'dummy'].
+
+[1;93mDebug options:[0m
+  [92m-d, --debug                       [1;92mR[0m  Debug (local stdout debugger).
+  [92m-b, --breakpoints                 [1;92mR[0m  Breakpoint list as source::line comma-separated pairs, no spaces (use %%20 instead).
+  [92m--ignore-error-breaks             [1;92mR[0m  If debugger is connected, prevents sending error breakpoints.
+  [92m--profiling                       [1;92mR[0m  Enable profiling in the script debugger.
+  [92m--gpu-profile                     [1;92mR[0m  Show a GPU profile of the tasks that took the most time during frame rendering.
+  [92m--gpu-validation                  [1;92mR[0m  Enable graphics API validation layers for debugging.
+  [92m--generate-spirv-debug-info       [1;92mR[0m  Generate SPIR-V debug information (Vulkan only). This allows source-level shader debugging with RenderDoc.
+  [92m--single-threaded-scene           [1;92mR[0m  Force scene tree to run in single-threaded mode. Sub-thread groups are disabled and run on the main thread.
+  [92m--max-fps [95m<fps>[0m                   [1;92mR[0m  Set a maximum number of frames per second rendered (can be used to limit power usage). A value of 0 results in unlimited framerate.
+  [92m--frame-delay [95m<ms>[0m                [1;92mR[0m  Simulate high CPU load (delay each frame by <ms> milliseconds). Do not use as a FPS limiter; use --max-fps instead.
+  [92m--time-scale [95m<scale>[0m              [1;92mR[0m  Force time scale (higher values are faster, 1.0 is normal speed).
+  [92m--disable-vsync                   [1;92mR[0m  Forces disabling of vertical synchronization, even if enabled in the project settings. Does not override driver-level V-Sync enforcement.
+  [92m--disable-render-loop             [1;92mR[0m  Disable render loop so rendering only occurs when called explicitly from script.
+  [92m--disable-crash-handler           [1;92mR[0m  Disable crash handler when supported by the platform code.
+  [92m--fixed-fps [95m<fps>[0m                 [1;92mR[0m  Force a fixed number of frames per second. This setting disables real-time synchronization.
+  [92m--delta-smoothing [95m<enable>[0m        [1;92mR[0m  Enable or disable frame delta smoothing ["enable", "disable"].
+  [92m--print-fps                       [1;92mR[0m  Print the frames per second to the stdout.
+

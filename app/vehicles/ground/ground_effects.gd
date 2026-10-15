@@ -11,6 +11,7 @@ const TIRE_RADIUS_FALLBACK_M := 0.061
 var _prepared := false
 var headlights_enabled := true
 var _vehicle_root: Node3D
+var _authored_lights := {}
 var _body_mesh: MeshInstance3D
 var _wheel_nodes: Array[Node3D] = []
 var _wheel_radii := PackedFloat32Array()
@@ -50,6 +51,12 @@ func prepare(visual: Dictionary, scene_parent: Node = null) -> bool:
 		checked_wheels.append(wheel as Node3D)
 	var body_value: Variant = nodes_value.get("Body")
 	_vehicle_root = root_value as Node3D
+	if visual.has("headlight_positions"):
+		_authored_lights = {
+			"positions": visual.headlight_positions,
+			"heads": visual.get("headlight_nodes", []),
+			"tails": visual.get("brake_light_nodes", []),
+		}
 	_wheel_nodes = checked_wheels
 	_body_mesh = body_value as MeshInstance3D if body_value is MeshInstance3D else null
 	if not _build_grime_overlay():
@@ -320,6 +327,21 @@ func _build_dust_emitters() -> void:
 
 
 func _build_vehicle_lights() -> void:
+	if not _authored_lights.is_empty():
+		_bind_lamp_materials(_authored_lights.heads, _headlight_materials, _headlight_lens_colors)
+		_bind_lamp_materials(_authored_lights.tails, _tail_materials, _tail_lens_colors)
+		for point: Vector3 in _authored_lights.positions:
+			var spot := SpotLight3D.new()
+			spot.name = "HeadlightBeam"
+			spot.position = point
+			spot.spot_range = 8.0
+			spot.spot_angle = 22.0
+			spot.rotation.x = deg_to_rad(-6.0)
+			spot.shadow_enabled = false
+			_vehicle_root.add_child(spot)
+			_headlight_lights.append(spot)
+		_update_lights({}, {}, _night_weight)
+		return
 	var bounds := _body_bounds_in_vehicle_space()
 	var half_width := clampf(bounds.size.x * 0.34, 0.075, 0.15)
 	var body_y := bounds.position.y + bounds.size.y * 0.53
@@ -360,6 +382,22 @@ func _build_vehicle_lights() -> void:
 		_reverse_lens_colors.append(reverse_color)
 		_add_lens(sphere, reverse_material, tail_position + Vector3(-side * 0.018, 0.0, 0.0), Vector3(0.48, 0.38, 0.28), "ReverseLightLens")
 	_update_lights({}, {}, _night_weight)
+
+
+## Copy authored lens materials per instance; keep the supplied textures and geometry.
+func _bind_lamp_materials(nodes: Array, materials: Array[StandardMaterial3D], colors: Array[Color]) -> void:
+	for node: MeshInstance3D in nodes:
+		for surface in node.mesh.get_surface_count():
+			var source := node.get_active_material(surface) as StandardMaterial3D
+			if source == null:
+				continue
+			var material: StandardMaterial3D = source.duplicate()
+			material.emission_enabled = true
+			if material.emission.is_equal_approx(Color.BLACK):
+				material.emission = material.albedo_color
+			node.set_surface_override_material(surface, material)
+			materials.append(material)
+			colors.append(material.albedo_color)
 
 
 func _body_bounds_in_vehicle_space() -> AABB:
@@ -418,6 +456,7 @@ func _update_lights(telemetry: Dictionary, controls: Dictionary, night_weight: f
 	_last_headlight_energy = lerpf(0.18, 2.4, night) if headlights_enabled else 0.0
 	for i in _headlight_lights.size():
 		_headlight_lights[i].light_energy = _last_headlight_energy
+	for i in _headlight_materials.size():
 		_headlight_materials[i].emission_energy_multiplier = lerpf(0.28, 1.9, night) if headlights_enabled else 0.0
 		_headlight_materials[i].albedo_color = _headlight_lens_colors[i] if headlights_enabled else _headlight_lens_colors[i] * 0.12
 	var brake_value: Variant = controls.get("brake", 0.0)

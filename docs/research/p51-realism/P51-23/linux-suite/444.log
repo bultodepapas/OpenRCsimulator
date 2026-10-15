@@ -1,0 +1,10 @@
+== H7: exact one-ulp math sensitivity and golden branch signatures
+Traceback (most recent call last):
+  File "/home/bulto/p51-verify-20261015/app/tests/check_math_sensitivity.py", line 513, in <module>
+    raise SystemExit(main())
+                     ^^^^^^
+  File "/home/bulto/p51-verify-20261015/app/tests/check_math_sensitivity.py", line 406, in main
+    check_variant("baseline", baseline)
+  File "/home/bulto/p51-verify-20261015/app/tests/check_math_sensitivity.py", line 383, in check_variant
+    raise AssertionError(f"{name} golden {golden_name} replay failed: {result.get('message')}")
+AssertionError: baseline golden pull_throttle replay failed: worst error: position 0.03932350222540393 m, velocity 0.015581478300989104 m/s, attitude 0.0017599656846035427, rate 0.003399937078512383 rad/s; auxiliary/discrete mismatch

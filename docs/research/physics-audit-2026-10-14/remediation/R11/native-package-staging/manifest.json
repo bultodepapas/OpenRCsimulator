@@ -1,0 +1,105 @@
+{
+  "format": "openrc-r11-native-package-staging v1",
+  "captured_local_date": "2026-10-15",
+  "frozen_candidate": "/home/bulto/openrc-r11-b09-r05b-20261015-07",
+  "export_failure": {
+    "log": "docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/export-01.log",
+    "line": 1280,
+    "message": "Failed to open app/native/ground_vehicle/openrc_ground_vehicle.dll"
+  },
+  "candidate_native_identity": {
+    "abi_version": 1,
+    "backend_version": "openrc-ground-vehicle-native-evaluate-v2",
+    "solver_version": "openrc-ground-vehicle-dynamics-rk4-v3",
+    "source_sha256": "e2ae0a5ffebc8d81636302d66238348035ee92bf51d2f40965db7053bb251541",
+    "native_files": {
+      "research/rc-monster-truck/native/src/ground_vehicle_native.cpp": "ae71bf3285094c96e9a4c47825d404d8df026f6bda3e005d9d24811fce8c577f",
+      "research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp": "240575536d4016f8106157475ff025a779d7bd87002db18e0dbd4362b236b3ad"
+    },
+    "build_inputs": {
+      "research/rc-monster-truck/native/toolchain-lock.json": "4926d2b141bf32d6776b372b36a7fe67e5007813004c4bcfc197a6f2a4aba4a6",
+      "research/rc-monster-truck/native/build.py": "1ca72cd0d8e96841a655021f91e39a8ce658b1d654ac6b36424efa5522f37035",
+      "research/rc-monster-truck/native/parity_harness.gd": "6075eac146698ca66aa02eacfbac59bb4ef94d3f1b9b1965b9faf5690f9a7d12",
+      "frozen-07-research/native-slipstream/build.py": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745",
+      "historical-build-working-research/native-slipstream/build.py": "2d8664208756fb7421bf408c2a20f8787c0b37a0108a3bc189750dd1dc41cbfc"
+    }
+  },
+  "historical_windows_artifact": {
+    "original_path": "tmp/physics-audit-r11-final-scenarios-04/verified-app/native/ground_vehicle/openrc_ground_vehicle.dll",
+    "staged_path": "tmp/physics-audit-r11-native-package-staging-20261015-01/bin/openrc_ground_vehicle.dll",
+    "sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c",
+    "physical_copy_verified": true,
+    "receipt_source": "docs/research/rc-monster-truck/RCV-handling/performance-native-final/windows-build-receipt.json",
+    "receipt_sha256": "2a652cd7f9af3f921e6b2521b9db7541b2c5c684046226e3cf032a2964f12581",
+    "parity_source": "docs/research/rc-monster-truck/RCV-handling/performance-native-final/windows-parity.log",
+    "parity_sha256": "0eb555dc63809cf8cacfa01169591acae0d5a71002c5b305167fbeac6a2eea75",
+    "historical_build_input_verification": {
+      "original_path": "docs/research/rc-monster-truck/RCV-handling/performance-native-final/linux-verification.json",
+      "staged_path": "tmp/physics-audit-r11-native-package-staging-20261015-01/receipts/historical-linux-verification.json",
+      "sha256": "cdd8da2e68ca30ba80f4588d4d1c05abc82fbb69125b0c1529a00ae62f3879be"
+    },
+    "parity_checks": 50,
+    "godot": "4.7.2.stable.official.ed1daf0bf",
+    "receipt_identity": {
+      "platform": "windows",
+      "architecture": "x86_64",
+      "abi_version": 1,
+      "backend_version": "openrc-ground-vehicle-native-evaluate-v2",
+      "solver_version": "openrc-ground-vehicle-dynamics-rk4-v3",
+      "source_sha256": "e2ae0a5ffebc8d81636302d66238348035ee92bf51d2f40965db7053bb251541",
+      "binary_sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c",
+      "toolchain_sha256": "78bdd21d315683b45eee37c24b84716430cdba2a9b24066f59a68df476585b4d",
+      "compiler_toolset": "14.51.36231",
+      "sdk_version": "10.0.26100.0",
+      "visual_studio_version_label": "18.9.12128.139",
+      "floating_point_flags": ["/fp:strict"],
+      "exception_flags": ["/EHsc"]
+    }
+  },
+  "frozen_linux_receipt": {
+    "original_path": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/native/ground_vehicle/build-receipt.json",
+    "staged_path": "tmp/physics-audit-r11-native-package-staging-20261015-01/receipts/frozen-07-linux-build-receipt.json",
+    "sha256": "be1d0b04910c8a98b630b0db6616f650d5c61e8bc60900cf4b4af48a43e306ec",
+    "identity": {
+      "platform": "linux",
+      "architecture": "x86_64",
+      "abi_version": 1,
+      "backend_version": "openrc-ground-vehicle-native-evaluate-v2",
+      "solver_version": "openrc-ground-vehicle-dynamics-rk4-v3",
+      "source_sha256": "e2ae0a5ffebc8d81636302d66238348035ee92bf51d2f40965db7053bb251541",
+      "binary_sha256": "08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3"
+    }
+  },
+  "staged_inputs": {
+    "toolchain_lock": {
+      "path": "tmp/physics-audit-r11-native-package-staging-20261015-01/inputs/frozen-07-toolchain-lock.json",
+      "sha256": "4926d2b141bf32d6776b372b36a7fe67e5007813004c4bcfc197a6f2a4aba4a6"
+    },
+    "unchanged_extension_descriptor": {
+      "path": "tmp/physics-audit-r11-native-package-staging-20261015-01/inputs/frozen-07-openrc_ground_vehicle.gdextension",
+      "sha256": "07c29b52303bf64c32ed4197cc8f5cc0fb0746d30f855bdda26678d38edb9485"
+    }
+  },
+  "toolchain_hash_reconciliation": {
+    "frozen_07_lock_sha256": "4926d2b141bf32d6776b372b36a7fe67e5007813004c4bcfc197a6f2a4aba4a6",
+    "historical_working_shared_builder_sha256": "2d8664208756fb7421bf408c2a20f8787c0b37a0108a3bc189750dd1dc41cbfc",
+    "frozen_07_shared_builder_sha256": "a41a0e1d9bee663dfdf81dd7c3f5f27d821058f105e006b5546492957d4d3745",
+    "recomputed_historical_windows_toolchain_sha256": "78bdd21d315683b45eee37c24b84716430cdba2a9b24066f59a68df476585b4d",
+    "recomputed_frozen_07_windows_toolchain_sha256": "36095eb2cd6a1ee60c4550161422c3f981e405f38027e6842b282feca85ae83b",
+    "shared_builder_executable_ast_equal_ignoring_module_docstring": true,
+    "shared_builder_sconstruct_text_function_sha256": "f79d46ce8fb899362dd9e89b29dc4c89ebdfb5b000210db68bb05126a3548f9c"
+  },
+  "windows_host_preflight_observation": {
+    "installed_visual_studio_product": "18.10.4 (18.10.12306.391)",
+    "developer_prompt_vctoolsversion": "14.51.36231",
+    "developer_prompt_windows_sdk_version": "10.0.26100.0",
+    "build_script_checks_toolset_and_sdk_only": true,
+    "native_build_run_for_this_staging": false
+  },
+  "non_mutation": {
+    "frozen_07_modified": false,
+    "live_app_native_files_modified": false,
+    "descriptor_modified": false,
+    "windows_export_run_from_staging": false
+  }
+}

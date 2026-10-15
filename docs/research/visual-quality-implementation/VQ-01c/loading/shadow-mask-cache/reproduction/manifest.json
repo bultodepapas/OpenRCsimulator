@@ -1,0 +1,21 @@
+{
+  "commands": [
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\shadow-mask-cache\\compare.gd",
+      "--",
+      "--directory=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\shadow-mask-cache\\repro",
+      "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\shadow-mask-cache\\repro\\native-0.json"
+    ]
+  ],
+  "sha256": {
+    "reference.gd": "166f24488f84c6f0e5c77eba3d540209fb0f3d3544d69dcadcfa3cccda895501",
+    "candidate.gd": "bb469bfb2bfa73d901ad2bc459691ae7f2730478f75ccef8a3176204bdf13313",
+    "compare.gd": "235f2c46b549e07e554d667b03facaa75c3b7569739b9c99fb8fd152cb19df13"
+  }
+}

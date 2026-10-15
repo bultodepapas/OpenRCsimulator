@@ -82,6 +82,9 @@ python3 "$HERE/../research/glow-engines/reference/test_reference.py"
 echo "== P51-16: separated hardware inventory and physical inertia stay consistent"
 python3 "$HERE/../research/p51/p51-15/test_inventory.py"
 
+echo "== D11g: Stik rate derivatives and provenance match the current local law"
+run --script "$HERE/../research/aero/d11g/derive_rate_derivatives.gd" -- --check
+
 echo "== AV-15: independent geometry, inventory and fixed-build sensitivity checks"
 python3 "$HERE/../research/avanti-s/av14/test_geometry_inventory.py"
 python3 "$HERE/../research/avanti-s/av14/test_sensitivity.py"
@@ -132,6 +135,11 @@ run_with_timeout 180 --script "$HERE/../research/rc-monster-truck/visual/test_mt
 run --script "$HERE/../research/rc-monster-truck/visual/test_preview.gd" -- --lang=en
 run --script "$HERE/../research/rc-monster-truck/visual/test_preview.gd" -- --lang=es
 
+echo "== RCV-35: source-derived MONSTER CAR 2 data stays current"
+python3 "$HERE/../research/rc-monster-truck/monster-car-2/build_vehicle_data.py" --check
+python3 "$HERE/../research/rc-monster-truck/monster-car-2/test_build_vehicle_data.py"
+python3 "$HERE/../research/rc-monster-truck/monster-car-2/visual_verify.py"
+
 echo "== float64 guard: no 32-bit math types in simulation code"
 # Godot's Vector3/Basis/Quaternion/Transform3D are 32-bit; simulation state must stay in 64-bit floats.
 # Comment lines are ignored. Rendering code (render/) may use them at the boundary.
@@ -174,7 +182,7 @@ for t in "$HERE"/tests/test_*.gd; do
     test_heli_session.gd|test_heli_ground_session.gd) test_timeout=300 ;; # Actual preset hover, pilot-compensated landing and checkpoint replay.
     test_failure_session.gd|test_failure_shutdown.gd) test_timeout=180 ;; # EM: real 20-second onsets at 240 Hz, fleet parity and replay
     test_failure_routes.gd) test_timeout=180 ;; # EM: two complete flights and Home/Pause transitions
-    test_rcv_vehicle_dynamics.gd|test_rcv_session.gd|test_rcv_airfield_course.gd|test_rcv_airfield_track.gd|test_rcv_obstacle_contacts.gd|test_rcv_activity.gd|test_rcv_presentation.gd|test_rcv_menu.gd) test_timeout=300 ;;
+    test_rcv_vehicle_dynamics.gd|test_rcv_session.gd|test_rcv_airfield_course.gd|test_rcv_airfield_track.gd|test_rcv_obstacle_contacts.gd|test_rcv_activity.gd|test_rcv_presentation.gd|test_rcv_menu.gd|test_rcv_nitro_activity.gd|test_rcv_nitro_session.gd|test_nitro_dynamics.gd) test_timeout=300 ;;
     test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;
   esac
   run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" 2>&1 | tee "$LOG"

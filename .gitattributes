@@ -62,3 +62,11 @@
 # HELI-25c construction profiles are admitted by exact byte hashes.
 /assets/aircraft/hx-700/articulated/*.json text eol=lf
 /app/assets/aircraft/hx-700/articulated/*.json text eol=lf
+
+# RCV-35: supplied MONSTER CAR 2 Blender delivery is an immutable byte source.
+"monster car 2/**" -text
+/app/assets/vehicles/monster-car-2/*.json -text
+/app/assets/vehicles/monster-car-2/SOURCE.txt text eol=lf
+/assets/vehicles/monster-car-2/*.json -text
+/assets/vehicles/monster-car-2/SOURCE.txt text eol=lf
+/research/rc-monster-truck/monster-car-2/visual_bake.py text eol=lf

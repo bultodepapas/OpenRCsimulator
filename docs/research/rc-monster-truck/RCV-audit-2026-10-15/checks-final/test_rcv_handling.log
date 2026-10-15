@@ -1,0 +1,26 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: anisotropic saturated contact satisfies known KKT solution
+PASS: projection respects friction circle
+PASS: reflection preserves force magnitude and changes lateral sign
+PASS: unsaturated contact preserves the unconstrained solution exactly
+PASS: isotropic metric reduces to radial projection
+PASS: zero grip gives zero tangential force
+PASS: uniform mobility scaling preserves the solution
+PASS: vehicle fixture loads
+PASS: vehicle fixture initializes
+PASS: slip angle uses hub direction, independently of wheel spin
+PASS: active/reference slip-angle telemetry agrees
+Symmetric braking yaw/lateral acceleration: -0.00000000948037 / -0.00000000136722 backend=native
+PASS: straight symmetric braking does not create a numerical yaw moment
+PASS: combined skid forces share each tire's friction budget
+PASS: coasting lateral skid dissipates energy
+PASS: fixed axle split preserves total brake capacity: 0.0
+PASS: fixed axle split preserves total brake capacity: 0.5
+PASS: fixed axle split preserves total brake capacity: 0.85
+PASS: fixed axle split preserves total brake capacity: 1.0
+PASS: partial braking arrests both signs of a small lateral disturbance
+PASS: mirrored disturbed stops preserve distance and lateral symmetry
+PASS: 240/480 Hz disturbed braking agrees in distance and time
+Disturbed brake metrics (left/right/fine): [{ "ok": true, "distance": 12.5733202691656, "lateral_distance": -0.01391745938942, "time": 2.10833333333333, "yaw_peak": 0.00094120491674, "lateral_peak": 0.05, "upright_min": 0.99914003450924 }, { "ok": true, "distance": 12.5733205450293, "lateral_distance": 0.01365063997435, "time": 2.10833333333333, "yaw_peak": 0.0009415157388, "lateral_peak": 0.05, "upright_min": 0.99914002796769 }, { "ok": true, "distance": 12.5731316131785, "lateral_distance": 0.01363748267953, "time": 2.10625, "yaw_peak": 0.00094093533968, "lateral_peak": 0.05, "upright_min": 0.99913999218162 }]
+RCV handling: 21/21 checks passed

@@ -1,0 +1,882 @@
+RUN test_atmosphere_flight.gd timeout=60s
+PASS test_atmosphere_flight.gd
+RUN test_attached_flow.gd timeout=60s
+PASS test_attached_flow.gd
+RUN test_avanti_gamepad.gd timeout=60s
+PASS test_avanti_gamepad.gd
+RUN test_avanti_gamepad_flight.gd timeout=60s
+PASS test_avanti_gamepad_flight.gd
+RUN test_avanti_handling.gd timeout=60s
+PASS test_avanti_handling.gd
+RUN test_avanti_keyboard.gd timeout=60s
+PASS test_avanti_keyboard.gd
+RUN test_avanti_rudder.gd timeout=60s
+PASS test_avanti_rudder.gd
+RUN test_avanti_yaw_flight.gd timeout=60s
+PASS test_avanti_yaw_flight.gd
+RUN test_botanical_habitats.gd timeout=60s
+PASS test_botanical_habitats.gd
+RUN test_build_info.gd timeout=60s
+PASS test_build_info.gd
+RUN test_camera_math.gd timeout=60s
+PASS test_camera_math.gd
+RUN test_camera_route.gd timeout=60s
+PASS test_camera_route.gd
+RUN test_camera_views.gd timeout=60s
+PASS test_camera_views.gd
+RUN test_campfire.gd timeout=60s
+PASS test_campfire.gd
+RUN test_checkpoint.gd timeout=60s
+PASS test_checkpoint.gd
+RUN test_checkpoint_integrity.gd timeout=60s
+PASS test_checkpoint_integrity.gd
+RUN test_cloud_transport.gd timeout=60s
+PASS test_cloud_transport.gd
+RUN test_contact_policy.gd timeout=60s
+PASS test_contact_policy.gd
+RUN test_continuous_state.gd timeout=60s
+PASS test_continuous_state.gd
+RUN test_control_actuators.gd timeout=60s
+PASS test_control_actuators.gd
+RUN test_control_surface_observation.gd timeout=60s
+PASS test_control_surface_observation.gd
+RUN test_control_surfaces.gd timeout=60s
+PASS test_control_surfaces.gd
+RUN test_controller_actions.gd timeout=60s
+PASS test_controller_actions.gd
+RUN test_controller_auto_defaults.gd timeout=60s
+PASS test_controller_auto_defaults.gd
+RUN test_controller_aux_runtime.gd timeout=60s
+PASS test_controller_aux_runtime.gd
+RUN test_controller_aux_setup.gd timeout=60s
+PASS test_controller_aux_setup.gd
+RUN test_controller_binding_audit.gd timeout=60s
+PASS test_controller_binding_audit.gd
+RUN test_controller_car.gd timeout=60s
+PASS test_controller_car.gd
+RUN test_controller_conditioning.gd timeout=60s
+PASS test_controller_conditioning.gd
+RUN test_controller_extended_actions.gd timeout=60s
+PASS test_controller_extended_actions.gd
+RUN test_controller_flight_actions.gd timeout=60s
+PASS test_controller_flight_actions.gd
+RUN test_controller_ground.gd timeout=60s
+PASS test_controller_ground.gd
+RUN test_controller_integration.gd timeout=60s
+PASS test_controller_integration.gd
+RUN test_controller_menu.gd timeout=60s
+PASS test_controller_menu.gd
+RUN test_controller_pause_recovery.gd timeout=60s
+PASS test_controller_pause_recovery.gd
+RUN test_controller_persistence.gd timeout=60s
+PASS test_controller_persistence.gd
+RUN test_controller_profile.gd timeout=60s
+PASS test_controller_profile.gd
+RUN test_controller_profile_hardening.gd timeout=60s
+PASS test_controller_profile_hardening.gd
+RUN test_controller_prompts.gd timeout=60s
+PASS test_controller_prompts.gd
+RUN test_controller_registry.gd timeout=60s
+PASS test_controller_registry.gd
+RUN test_controller_routing_audit.gd timeout=60s
+PASS test_controller_routing_audit.gd
+RUN test_controller_sections.gd timeout=60s
+PASS test_controller_sections.gd
+RUN test_controller_settings_save.gd timeout=60s
+PASS test_controller_settings_save.gd
+RUN test_controller_setup.gd timeout=60s
+PASS test_controller_setup.gd
+RUN test_controller_setup_safety.gd timeout=60s
+PASS test_controller_setup_safety.gd
+RUN test_controller_store.gd timeout=60s
+PASS test_controller_store.gd
+RUN test_controls.gd timeout=60s
+PASS test_controls.gd
+RUN test_controls_reference.gd timeout=60s
+PASS test_controls_reference.gd
+RUN test_crash.gd timeout=60s
+PASS test_crash.gd
+RUN test_crash_audio.gd timeout=60s
+PASS test_crash_audio.gd
+RUN test_crash_breakup.gd timeout=60s
+PASS test_crash_breakup.gd
+RUN test_crash_cause.gd timeout=60s
+PASS test_crash_cause.gd
+RUN test_crash_effects.gd timeout=60s
+PASS test_crash_effects.gd
+RUN test_crash_energy.gd timeout=60s
+PASS test_crash_energy.gd
+RUN test_crash_fracture.gd timeout=60s
+PASS test_crash_fracture.gd
+RUN test_crash_hull_labels.gd timeout=60s
+PASS test_crash_hull_labels.gd
+RUN test_crash_integration.gd timeout=180s
+PASS test_crash_integration.gd
+RUN test_crash_masses.gd timeout=60s
+PASS test_crash_masses.gd
+RUN test_crash_pose.gd timeout=60s
+PASS test_crash_pose.gd
+RUN test_crash_presentation_ladder.gd timeout=60s
+PASS test_crash_presentation_ladder.gd
+RUN test_crash_proportional.gd timeout=60s
+PASS test_crash_proportional.gd
+RUN test_crash_sections.gd timeout=60s
+PASS test_crash_sections.gd
+RUN test_crash_severity.gd timeout=60s
+PASS test_crash_severity.gd
+RUN test_crash_snapshot.gd timeout=60s
+PASS test_crash_snapshot.gd
+RUN test_crash_warmup.gd timeout=60s
+PASS test_crash_warmup.gd
+RUN test_crash_wreck.gd timeout=180s
+PASS test_crash_wreck.gd
+RUN test_crash_wreck_surface.gd timeout=60s
+PASS test_crash_wreck_surface.gd
+RUN test_cruise_trim.gd timeout=60s
+PASS test_cruise_trim.gd
+RUN test_damping_regimes.gd timeout=60s
+PASS test_damping_regimes.gd
+RUN test_downloaded_habitats.gd timeout=60s
+PASS test_downloaded_habitats.gd
+RUN test_downwash_lag.gd timeout=60s
+PASS test_downwash_lag.gd
+RUN test_dynamic_mass_contact.gd timeout=60s
+PASS test_dynamic_mass_contact.gd
+RUN test_dynamic_mass_contact_boundary.gd timeout=60s
+PASS test_dynamic_mass_contact_boundary.gd
+RUN test_dynamic_mass_contact_session.gd timeout=60s
+PASS test_dynamic_mass_contact_session.gd
+RUN test_dynamics.gd timeout=60s
+PASS test_dynamics.gd
+RUN test_e2e_input.gd timeout=60s
+PASS test_e2e_input.gd
+RUN test_e2e_radio.gd timeout=60s
+PASS test_e2e_radio.gd
+RUN test_electric_battery_data.gd timeout=60s
+PASS test_electric_battery_data.gd
+RUN test_electric_battery_session.gd timeout=60s
+PASS test_electric_battery_session.gd
+RUN test_electric_battery_step.gd timeout=60s
+PASS test_electric_battery_step.gd
+RUN test_electric_data.gd timeout=60s
+PASS test_electric_data.gd
+RUN test_electric_dynamics.gd timeout=60s
+PASS test_electric_dynamics.gd
+RUN test_electric_event_localization.gd timeout=60s
+PASS test_electric_event_localization.gd
+RUN test_electric_input.gd timeout=60s
+PASS test_electric_input.gd
+RUN test_electric_motor.gd timeout=60s
+PASS test_electric_motor.gd
+RUN test_electric_motor_compact.gd timeout=60s
+PASS test_electric_motor_compact.gd
+RUN test_electric_propulsion.gd timeout=60s
+PASS test_electric_propulsion.gd
+RUN test_electric_runway.gd timeout=60s
+PASS test_electric_runway.gd
+RUN test_electric_session.gd timeout=60s
+PASS test_electric_session.gd
+RUN test_electric_stop.gd timeout=60s
+PASS test_electric_stop.gd
+RUN test_electric_supply.gd timeout=60s
+PASS test_electric_supply.gd
+RUN test_electrical_bank.gd timeout=60s
+PASS test_electrical_bank.gd
+RUN test_engine_audio.gd timeout=60s
+PASS test_engine_audio.gd
+RUN test_engine_smoke.gd timeout=60s
+PASS test_engine_smoke.gd
+RUN test_engine_sound.gd timeout=60s
+PASS test_engine_sound.gd
+RUN test_engine_voice.gd timeout=60s
+PASS test_engine_voice.gd
+RUN test_envelope.gd timeout=60s
+PASS test_envelope.gd
+RUN test_envelope_integrity.gd timeout=60s
+PASS test_envelope_integrity.gd
+RUN test_extra_handling.gd timeout=60s
+PASS test_extra_handling.gd
+RUN test_extra_installation.gd timeout=60s
+PASS test_extra_installation.gd
+RUN test_failure_availability_ui.gd timeout=60s
+PASS test_failure_availability_ui.gd
+RUN test_failure_launch.gd timeout=60s
+PASS test_failure_launch.gd
+RUN test_failure_power.gd timeout=60s
+PASS test_failure_power.gd
+RUN test_failure_profiles.gd timeout=60s
+PASS test_failure_profiles.gd
+RUN test_failure_routes.gd timeout=180s
+PASS test_failure_routes.gd
+RUN test_failure_session.gd timeout=180s
+PASS test_failure_session.gd
+RUN test_failure_shutdown.gd timeout=180s
+PASS test_failure_shutdown.gd
+RUN test_failure_ui.gd timeout=60s
+PASS test_failure_ui.gd
+RUN test_failures.gd timeout=60s
+PASS test_failures.gd
+RUN test_far_forest.gd timeout=60s
+PASS test_far_forest.gd
+RUN test_field_integration.gd timeout=60s
+PASS test_field_integration.gd
+RUN test_field_light_contract.gd timeout=60s
+PASS test_field_light_contract.gd
+RUN test_field_loader.gd timeout=60s
+PASS test_field_loader.gd
+RUN test_field_projected_shadows.gd timeout=60s
+PASS test_field_projected_shadows.gd
+RUN test_field_surfaces.gd timeout=60s
+PASS test_field_surfaces.gd
+RUN test_flight_cue_shadows.gd timeout=60s
+PASS test_flight_cue_shadows.gd
+RUN test_flight_log.gd timeout=60s
+PASS test_flight_log.gd
+RUN test_flight_log_ui.gd timeout=60s
+PASS test_flight_log_ui.gd
+RUN test_flightline_barrier.gd timeout=60s
+PASS test_flightline_barrier.gd
+RUN test_flightline_barrier_data.gd timeout=60s
+PASS test_flightline_barrier_data.gd
+RUN test_frame_samples.gd timeout=60s
+PASS test_frame_samples.gd
+RUN test_frames.gd timeout=60s
+PASS test_frames.gd
+RUN test_gear_flex.gd timeout=60s
+PASS test_gear_flex.gd
+RUN test_glow_audio.gd timeout=60s
+PASS test_glow_audio.gd
+RUN test_glow_coupling.gd timeout=60s
+PASS test_glow_coupling.gd
+RUN test_glow_equilibrium.gd timeout=60s
+PASS test_glow_equilibrium.gd
+RUN test_glow_flight_physics.gd timeout=60s
+PASS test_glow_flight_physics.gd
+RUN test_glow_four_stroke.gd timeout=60s
+PASS test_glow_four_stroke.gd
+RUN test_glow_fuel_feed.gd timeout=60s
+PASS test_glow_fuel_feed.gd
+RUN test_glow_hub_inflow.gd timeout=60s
+PASS test_glow_hub_inflow.gd
+RUN test_glow_installation.gd timeout=60s
+PASS test_glow_installation.gd
+RUN test_glow_lifecycle.gd timeout=60s
+PASS test_glow_lifecycle.gd
+RUN test_glow_oracle.gd timeout=60s
+PASS test_glow_oracle.gd
+RUN test_glow_prepared.gd timeout=60s
+PASS test_glow_prepared.gd
+RUN test_glow_profiles.gd timeout=60s
+PASS test_glow_profiles.gd
+RUN test_glow_propeller_momentum.gd timeout=60s
+PASS test_glow_propeller_momentum.gd
+RUN test_glow_propeller_prepared.gd timeout=60s
+PASS test_glow_propeller_prepared.gd
+RUN test_glow_session.gd timeout=60s
+PASS test_glow_session.gd
+RUN test_glow_stage_reuse.gd timeout=60s
+PASS test_glow_stage_reuse.gd
+RUN test_glow_thermal.gd timeout=60s
+PASS test_glow_thermal.gd
+RUN test_glow_trace.gd timeout=60s
+PASS test_glow_trace.gd
+RUN test_glow_two_stroke.gd timeout=60s
+PASS test_glow_two_stroke.gd
+RUN test_glow_vibration.gd timeout=60s
+PASS test_glow_vibration.gd
+RUN test_golden.gd timeout=60s
+PASS test_golden.gd
+RUN test_grass_mask_bounds.gd timeout=60s
+PASS test_grass_mask_bounds.gd
+RUN test_ground_contact.gd timeout=60s
+PASS test_ground_contact.gd
+RUN test_ground_effect.gd timeout=60s
+PASS test_ground_effect.gd
+RUN test_ground_friction.gd timeout=60s
+PASS test_ground_friction.gd
+RUN test_ground_image_cache.gd timeout=60s
+PASS test_ground_image_cache.gd
+RUN test_ground_physics.gd timeout=60s
+PASS test_ground_physics.gd
+RUN test_ground_start_environment.gd timeout=60s
+PASS test_ground_start_environment.gd
+RUN test_ground_start_integrity.gd timeout=60s
+PASS test_ground_start_integrity.gd
+RUN test_ground_stiction.gd timeout=60s
+PASS test_ground_stiction.gd
+RUN test_ground_surfaces.gd timeout=60s
+PASS test_ground_surfaces.gd
+RUN test_ground_terrain.gd timeout=60s
+PASS test_ground_terrain.gd
+RUN test_gyro.gd timeout=60s
+PASS test_gyro.gd
+RUN test_half_power_start.gd timeout=60s
+PASS test_half_power_start.gd
+RUN test_handling.gd timeout=60s
+PASS test_handling.gd
+RUN test_heli_3d_controller.gd timeout=60s
+PASS test_heli_3d_controller.gd
+RUN test_heli_aerodynamic_stage.gd timeout=60s
+PASS test_heli_aerodynamic_stage.gd
+RUN test_heli_airframe.gd timeout=60s
+PASS test_heli_airframe.gd
+RUN test_heli_construction.gd timeout=60s
+PASS test_heli_construction.gd
+RUN test_heli_contact_audit.gd timeout=60s
+PASS test_heli_contact_audit.gd
+RUN test_heli_control_actions.gd timeout=60s
+PASS test_heli_control_actions.gd
+RUN test_heli_coupling.gd timeout=60s
+PASS test_heli_coupling.gd
+RUN test_heli_crash_presentation.gd timeout=60s
+PASS test_heli_crash_presentation.gd
+RUN test_heli_crash_relaunch.gd timeout=60s
+PASS test_heli_crash_relaunch.gd
+RUN test_heli_crash_visual.gd timeout=60s
+PASS test_heli_crash_visual.gd
+RUN test_heli_disc_normal_audit.gd timeout=60s
+PASS test_heli_disc_normal_audit.gd
+RUN test_heli_drive.gd timeout=60s
+PASS test_heli_drive.gd
+RUN test_heli_dynamic_inflow.gd timeout=60s
+PASS test_heli_dynamic_inflow.gd
+RUN test_heli_electronics.gd timeout=60s
+PASS test_heli_electronics.gd
+RUN test_heli_electronics_prepared.gd timeout=60s
+PASS test_heli_electronics_prepared.gd
+RUN test_heli_flight.gd timeout=60s
+PASS test_heli_flight.gd
+RUN test_heli_ground_session.gd timeout=300s
+PASS test_heli_ground_session.gd
+RUN test_heli_ground_start.gd timeout=60s
+PASS test_heli_ground_start.gd
+RUN test_heli_impact_detector.gd timeout=60s
+PASS test_heli_impact_detector.gd
+RUN test_heli_inflow.gd timeout=60s
+PASS test_heli_inflow.gd
+RUN test_heli_lifecycle.gd timeout=60s
+PASS test_heli_lifecycle.gd
+RUN test_heli_main_rotor.gd timeout=60s
+PASS test_heli_main_rotor.gd
+RUN test_heli_main_rotor_stage.gd timeout=60s
+PASS test_heli_main_rotor_stage.gd
+RUN test_heli_night_lights.gd timeout=60s
+PASS test_heli_night_lights.gd
+RUN test_heli_night_rotor.gd timeout=60s
+PASS test_heli_night_rotor.gd
+RUN test_heli_performance_context.gd timeout=60s
+PASS test_heli_performance_context.gd
+RUN test_heli_prepared_context_audit.gd timeout=60s
+PASS test_heli_prepared_context_audit.gd
+RUN test_heli_render_audit.gd timeout=60s
+PASS test_heli_render_audit.gd
+RUN test_heli_session.gd timeout=300s
+PASS test_heli_session.gd
+RUN test_heli_skid_bristles.gd timeout=60s
+PASS test_heli_skid_bristles.gd
+RUN test_heli_startup_kernel.gd timeout=60s
+PASS test_heli_startup_kernel.gd
+RUN test_heli_state_audit.gd timeout=60s
+PASS test_heli_state_audit.gd
+RUN test_heli_swash.gd timeout=60s
+PASS test_heli_swash.gd
+RUN test_heli_tail_rotor.gd timeout=60s
+PASS test_heli_tail_rotor.gd
+RUN test_heli_trim.gd timeout=60s
+PASS test_heli_trim.gd
+RUN test_heli_visual.gd timeout=60s
+PASS test_heli_visual.gd
+RUN test_horizon.gd timeout=60s
+PASS test_horizon.gd
+RUN test_hull_crossing.gd timeout=60s
+PASS test_hull_crossing.gd
+RUN test_imported_aircraft_model.gd timeout=60s
+PASS test_imported_aircraft_model.gd
+RUN test_imported_hedge.gd timeout=60s
+PASS test_imported_hedge.gd
+RUN test_imported_near_grass.gd timeout=60s
+PASS test_imported_near_grass.gd
+RUN test_imported_vegetation.gd timeout=60s
+PASS test_imported_vegetation.gd
+RUN test_induced_integrity.gd timeout=60s
+PASS test_induced_integrity.gd
+RUN test_input_report.gd timeout=60s
+PASS test_input_report.gd
+RUN test_input_report_buttons.gd timeout=60s
+PASS test_input_report_buttons.gd
+RUN test_input_report_cli.gd timeout=180s
+PASS test_input_report_cli.gd
+RUN test_input_report_e2e.gd timeout=60s
+PASS test_input_report_e2e.gd
+RUN test_integrator.gd timeout=60s
+PASS test_integrator.gd
+RUN test_lake_collision.gd timeout=60s
+PASS test_lake_collision.gd
+RUN test_lake_geometry_bake.gd timeout=60s
+PASS test_lake_geometry_bake.gd
+RUN test_lake_ground_contact.gd timeout=60s
+PASS test_lake_ground_contact.gd
+RUN test_lake_session.gd timeout=60s
+PASS test_lake_session.gd
+RUN test_lake_surface.gd timeout=60s
+PASS test_lake_surface.gd
+RUN test_lake_world.gd timeout=60s
+PASS test_lake_world.gd
+RUN test_landing_maneuver.gd timeout=180s
+PASS test_landing_maneuver.gd
+RUN test_landing_variations.gd timeout=180s
+PASS test_landing_variations.gd
+RUN test_landscape_architecture.gd timeout=60s
+PASS test_landscape_architecture.gd
+RUN test_landscape_checkpoint.gd timeout=60s
+PASS test_landscape_checkpoint.gd
+RUN test_landscape_collision.gd timeout=60s
+PASS test_landscape_collision.gd
+RUN test_landscape_collision_coverage.gd timeout=60s
+PASS test_landscape_collision_coverage.gd
+RUN test_landscape_collision_oracle.gd timeout=60s
+PASS test_landscape_collision_oracle.gd
+RUN test_landscape_collision_session.gd timeout=60s
+PASS test_landscape_collision_session.gd
+RUN test_landscape_collision_setup.gd timeout=60s
+PASS test_landscape_collision_setup.gd
+RUN test_landscape_collision_support.gd timeout=60s
+PASS test_landscape_collision_support.gd
+RUN test_landscape_collision_world.gd timeout=60s
+PASS test_landscape_collision_world.gd
+RUN test_landscape_gravel.gd timeout=60s
+PASS test_landscape_gravel.gd
+RUN test_landscape_ground_lu18.gd timeout=60s
+PASS test_landscape_ground_lu18.gd
+RUN test_landscape_horizon.gd timeout=60s
+PASS test_landscape_horizon.gd
+RUN test_landscape_lighting.gd timeout=60s
+PASS test_landscape_lighting.gd
+RUN test_landscape_marker_optics.gd timeout=60s
+PASS test_landscape_marker_optics.gd
+RUN test_landscape_population.gd timeout=60s
+PASS test_landscape_population.gd
+RUN test_landscape_population_assets.gd timeout=60s
+PASS test_landscape_population_assets.gd
+RUN test_landscape_runtime.gd timeout=60s
+PASS test_landscape_runtime.gd
+RUN test_landscape_scenery_eligibility.gd timeout=60s
+PASS test_landscape_scenery_eligibility.gd
+RUN test_landscape_scenery_grass_mask.gd timeout=60s
+PASS test_landscape_scenery_grass_mask.gd
+RUN test_landscape_tree_bounds.gd timeout=60s
+PASS test_landscape_tree_bounds.gd
+RUN test_landscape_twilight.gd timeout=60s
+PASS test_landscape_twilight.gd
+RUN test_landscape_vegetation.gd timeout=60s
+PASS test_landscape_vegetation.gd
+RUN test_latency_patch.gd timeout=60s
+PASS test_latency_patch.gd
+RUN test_latency_patch_cli.gd timeout=180s
+PASS test_latency_patch_cli.gd
+RUN test_latency_patch_route.gd timeout=60s
+PASS test_latency_patch_route.gd
+RUN test_mass_inventory.gd timeout=60s
+PASS test_mass_inventory.gd
+RUN test_math3d.gd timeout=60s
+PASS test_math3d.gd
+RUN test_modes.gd timeout=60s
+PASS test_modes.gd
+RUN test_natural_random_config.gd timeout=60s
+PASS test_natural_random_config.gd
+RUN test_natural_random_flight.gd timeout=60s
+PASS test_natural_random_flight.gd
+RUN test_natural_random_generator.gd timeout=60s
+PASS test_natural_random_generator.gd
+RUN test_natural_random_screen.gd timeout=60s
+PASS test_natural_random_screen.gd
+RUN test_near_grass.gd timeout=60s
+PASS test_near_grass.gd
+RUN test_night_kit.gd timeout=60s
+PASS test_night_kit.gd
+RUN test_overlay_manager.gd timeout=60s
+PASS test_overlay_manager.gd
+RUN test_overlay_telemetry.gd timeout=60s
+PASS test_overlay_telemetry.gd
+RUN test_overlay_units.gd timeout=60s
+PASS test_overlay_units.gd
+RUN test_p51_envelope.gd timeout=60s
+FAIL test_p51_envelope.gd exit=1 engine_error=0 (continuing)
+RUN test_p51_ground.gd timeout=60s
+FAIL test_p51_ground.gd exit=1 engine_error=0 (continuing)
+RUN test_p51_handling.gd timeout=60s
+FAIL test_p51_handling.gd exit=1 engine_error=0 (continuing)
+RUN test_physical_envelope.gd timeout=60s
+PASS test_physical_envelope.gd
+RUN test_physical_identity.gd timeout=60s
+PASS test_physical_identity.gd
+RUN test_pilot_aids.gd timeout=60s
+PASS test_pilot_aids.gd
+RUN test_pilot_station.gd timeout=60s
+PASS test_pilot_station.gd
+RUN test_pilot_station_data.gd timeout=60s
+PASS test_pilot_station_data.gd
+RUN test_pilot_trim.gd timeout=60s
+PASS test_pilot_trim.gd
+RUN test_projected_shadow.gd timeout=60s
+PASS test_projected_shadow.gd
+RUN test_prop_strike.gd timeout=60s
+PASS test_prop_strike.gd
+RUN test_prop_strike_feedback.gd timeout=60s
+PASS test_prop_strike_feedback.gd
+RUN test_propeller_blur.gd timeout=60s
+PASS test_propeller_blur.gd
+RUN test_propeller_wake.gd timeout=60s
+PASS test_propeller_wake.gd
+RUN test_propulsion.gd timeout=60s
+PASS test_propulsion.gd
+RUN test_propulsion_scalar.gd timeout=60s
+PASS test_propulsion_scalar.gd
+RUN test_pullup_invariants.gd timeout=60s
+PASS test_pullup_invariants.gd
+RUN test_rates.gd timeout=60s
+PASS test_rates.gd
+RUN test_rc_axis_history.gd timeout=60s
+PASS test_rc_axis_history.gd
+RUN test_rc_calibration.gd timeout=60s
+PASS test_rc_calibration.gd
+RUN test_rc_fault_boundaries.gd timeout=60s
+PASS test_rc_fault_boundaries.gd
+RUN test_rc_input.gd timeout=60s
+PASS test_rc_input.gd
+RUN test_rc_profile_validation.gd timeout=60s
+PASS test_rc_profile_validation.gd
+RUN test_rc_rearm.gd timeout=60s
+PASS test_rc_rearm.gd
+RUN test_rcv_activity.gd timeout=300s
+PASS test_rcv_activity.gd
+RUN test_rcv_activity_audit.gd timeout=60s
+PASS test_rcv_activity_audit.gd
+RUN test_rcv_airfield_course.gd timeout=300s
+PASS test_rcv_airfield_course.gd
+RUN test_rcv_airfield_track.gd timeout=300s
+PASS test_rcv_airfield_track.gd
+RUN test_rcv_course.gd timeout=60s
+PASS test_rcv_course.gd
+RUN test_rcv_damage.gd timeout=60s
+PASS test_rcv_damage.gd
+RUN test_rcv_damage_session.gd timeout=60s
+PASS test_rcv_damage_session.gd
+RUN test_rcv_effects_activity.gd timeout=60s
+PASS test_rcv_effects_activity.gd
+RUN test_rcv_ground_effects.gd timeout=60s
+PASS test_rcv_ground_effects.gd
+RUN test_rcv_handling.gd timeout=60s
+PASS test_rcv_handling.gd
+RUN test_rcv_input.gd timeout=60s
+PASS test_rcv_input.gd
+RUN test_rcv_menu.gd timeout=300s
+PASS test_rcv_menu.gd
+RUN test_rcv_obstacle_contacts.gd timeout=300s
+PASS test_rcv_obstacle_contacts.gd
+RUN test_rcv_powertrain.gd timeout=60s
+PASS test_rcv_powertrain.gd
+RUN test_rcv_presentation.gd timeout=300s
+PASS test_rcv_presentation.gd
+RUN test_rcv_render_audit.gd timeout=60s
+PASS test_rcv_render_audit.gd
+RUN test_rcv_session.gd timeout=300s
+PASS test_rcv_session.gd
+RUN test_rcv_support.gd timeout=60s
+PASS test_rcv_support.gd
+RUN test_rcv_suspension.gd timeout=60s
+PASS test_rcv_suspension.gd
+RUN test_rcv_track_view.gd timeout=60s
+PASS test_rcv_track_view.gd
+RUN test_rcv_vehicle_data.gd timeout=60s
+PASS test_rcv_vehicle_data.gd
+RUN test_rcv_vehicle_dynamics.gd timeout=300s
+PASS test_rcv_vehicle_dynamics.gd
+RUN test_regime_consistency.gd timeout=60s
+PASS test_regime_consistency.gd
+RUN test_replay_integrity.gd timeout=60s
+PASS test_replay_integrity.gd
+RUN test_replay_policy.gd timeout=60s
+PASS test_replay_policy.gd
+RUN test_retractable_gear.gd timeout=60s
+PASS test_retractable_gear.gd
+RUN test_retractable_gear_ground.gd timeout=60s
+PASS test_retractable_gear_ground.gd
+RUN test_retractable_gear_input.gd timeout=60s
+PASS test_retractable_gear_input.gd
+RUN test_retractable_gear_trace.gd timeout=60s
+PASS test_retractable_gear_trace.gd
+RUN test_rigid_body.gd timeout=60s
+PASS test_rigid_body.gd
+RUN test_rk_stage_time.gd timeout=60s
+PASS test_rk_stage_time.gd
+RUN test_rotor_coupling.gd timeout=60s
+PASS test_rotor_coupling.gd
+RUN test_rudder_authority.gd timeout=60s
+FAIL test_rudder_authority.gd exit=1 engine_error=0 (continuing)
+RUN test_runway_checkpoint_metadata.gd timeout=60s
+PASS test_runway_checkpoint_metadata.gd
+RUN test_runway_start.gd timeout=60s
+PASS test_runway_start.gd
+RUN test_runway_transaction.gd timeout=60s
+PASS test_runway_transaction.gd
+RUN test_scenery_ambience.gd timeout=60s
+PASS test_scenery_ambience.gd
+RUN test_scenery_build.gd timeout=60s
+FAIL test_scenery_build.gd exit=1 engine_error=0 (continuing)
+RUN test_scenery_damage_session.gd timeout=60s
+PASS test_scenery_damage_session.gd
+RUN test_scenery_destruction.gd timeout=60s
+PASS test_scenery_destruction.gd
+RUN test_scenery_destruction_runtime.gd timeout=60s
+PASS test_scenery_destruction_runtime.gd
+RUN test_scenery_ground_lu08.gd timeout=60s
+PASS test_scenery_ground_lu08.gd
+RUN test_scenery_loader.gd timeout=60s
+PASS test_scenery_loader.gd
+RUN test_scenery_scenario.gd timeout=60s
+PASS test_scenery_scenario.gd
+RUN test_scenery_trace.gd timeout=60s
+PASS test_scenery_trace.gd
+RUN test_servo.gd timeout=60s
+PASS test_servo.gd
+RUN test_session_guards.gd timeout=60s
+PASS test_session_guards.gd
+RUN test_shader_clock.gd timeout=60s
+PASS test_shader_clock.gd
+RUN test_shadow_blur.gd timeout=60s
+PASS test_shadow_blur.gd
+RUN test_shadow_collection.gd timeout=60s
+PASS test_shadow_collection.gd
+RUN test_shaft_coupled.gd timeout=60s
+PASS test_shaft_coupled.gd
+RUN test_shaft_data.gd timeout=60s
+PASS test_shaft_data.gd
+RUN test_shaft_equilibrium.gd timeout=60s
+PASS test_shaft_equilibrium.gd
+RUN test_shaft_refinement.gd timeout=60s
+PASS test_shaft_refinement.gd
+RUN test_simulation.gd timeout=60s
+PASS test_simulation.gd
+RUN test_sky_appearance_config.gd timeout=60s
+PASS test_sky_appearance_config.gd
+RUN test_sky_checkpoint.gd timeout=60s
+PASS test_sky_checkpoint.gd
+RUN test_sky_preferences.gd timeout=60s
+PASS test_sky_preferences.gd
+RUN test_sky_render.gd timeout=60s
+PASS test_sky_render.gd
+RUN test_sky_routes.gd timeout=60s
+PASS test_sky_routes.gd
+RUN test_slipstream_downwash.gd timeout=60s
+PASS test_slipstream_downwash.gd
+RUN test_slipstream_scalar.gd timeout=60s
+PASS test_slipstream_scalar.gd
+RUN test_smoke_aux.gd timeout=60s
+PASS test_smoke_aux.gd
+RUN test_soft_contact_feedback.gd timeout=60s
+PASS test_soft_contact_feedback.gd
+RUN test_soft_contacts.gd timeout=60s
+PASS test_soft_contacts.gd
+RUN test_soundscape.gd timeout=60s
+PASS test_soundscape.gd
+RUN test_spin.gd timeout=60s
+PASS test_spin.gd
+RUN test_stall_solver.gd timeout=60s
+PASS test_stall_solver.gd
+RUN test_start_choice.gd timeout=60s
+PASS test_start_choice.gd
+RUN test_stik_grain.gd timeout=60s
+PASS test_stik_grain.gd
+RUN test_storm_bank.gd timeout=60s
+PASS test_storm_bank.gd
+RUN test_storm_cell.gd timeout=60s
+PASS test_storm_cell.gd
+RUN test_storm_events.gd timeout=60s
+PASS test_storm_events.gd
+RUN test_strip_induced.gd timeout=60s
+PASS test_strip_induced.gd
+RUN test_swirl_accuracy.gd timeout=60s
+PASS test_swirl_accuracy.gd
+RUN test_swirl_optimization.gd timeout=60s
+PASS test_swirl_optimization.gd
+RUN test_swirl_torque.gd timeout=60s
+PASS test_swirl_torque.gd
+RUN test_tail_downwash.gd timeout=60s
+PASS test_tail_downwash.gd
+RUN test_takeoff_roll.gd timeout=60s
+PASS test_takeoff_roll.gd
+RUN test_timber_data.gd timeout=60s
+PASS test_timber_data.gd
+RUN test_timber_ground.gd timeout=60s
+PASS test_timber_ground.gd
+RUN test_timber_handling.gd timeout=60s
+PASS test_timber_handling.gd
+RUN test_time_of_day_checkpoint.gd timeout=60s
+PASS test_time_of_day_checkpoint.gd
+RUN test_time_of_day_checkpoint_v2.gd timeout=60s
+PASS test_time_of_day_checkpoint_v2.gd
+RUN test_time_of_day_clock.gd timeout=60s
+PASS test_time_of_day_clock.gd
+RUN test_time_of_day_config.gd timeout=60s
+PASS test_time_of_day_config.gd
+RUN test_time_of_day_edit.gd timeout=60s
+PASS test_time_of_day_edit.gd
+RUN test_time_of_day_render.gd timeout=60s
+PASS test_time_of_day_render.gd
+RUN test_time_of_day_render_update.gd timeout=60s
+PASS test_time_of_day_render_update.gd
+RUN test_time_of_day_scenery_update.gd timeout=60s
+PASS test_time_of_day_scenery_update.gd
+RUN test_time_of_day_session.gd timeout=60s
+PASS test_time_of_day_session.gd
+RUN test_time_of_day_solar.gd timeout=60s
+PASS test_time_of_day_solar.gd
+RUN test_time_of_day_timeline.gd timeout=60s
+PASS test_time_of_day_timeline.gd
+RUN test_touchdown.gd timeout=60s
+PASS test_touchdown.gd
+RUN test_trace.gd timeout=60s
+PASS test_trace.gd
+RUN test_trace_metadata.gd timeout=60s
+PASS test_trace_metadata.gd
+RUN test_tree_assets.gd timeout=60s
+PASS test_tree_assets.gd
+RUN test_tree_wind.gd timeout=60s
+PASS test_tree_wind.gd
+RUN test_treeline.gd timeout=60s
+PASS test_treeline.gd
+RUN test_treeline_data.gd timeout=60s
+PASS test_treeline_data.gd
+RUN test_trim.gd timeout=60s
+PASS test_trim.gd
+RUN test_trim_density.gd timeout=60s
+PASS test_trim_density.gd
+RUN test_trim_integrity.gd timeout=60s
+PASS test_trim_integrity.gd
+RUN test_turbine.gd timeout=60s
+PASS test_turbine.gd
+RUN test_turbine_continuous.gd timeout=60s
+PASS test_turbine_continuous.gd
+RUN test_turbulence_flight.gd timeout=60s
+PASS test_turbulence_flight.gd
+RUN test_ui_aircraft.gd timeout=600s
+PASS test_ui_aircraft.gd
+RUN test_ui_atmosphere.gd timeout=60s
+PASS test_ui_atmosphere.gd
+RUN test_ui_field_world_time_of_day.gd timeout=60s
+PASS test_ui_field_world_time_of_day.gd
+RUN test_ui_flight_capture.gd timeout=60s
+PASS test_ui_flight_capture.gd
+RUN test_ui_help.gd timeout=60s
+PASS test_ui_help.gd
+RUN test_ui_home.gd timeout=60s
+PASS test_ui_home.gd
+RUN test_ui_home_layout.gd timeout=60s
+PASS test_ui_home_layout.gd
+RUN test_ui_home_legend.gd timeout=60s
+PASS test_ui_home_legend.gd
+RUN test_ui_home_preview_cache.gd timeout=60s
+PASS test_ui_home_preview_cache.gd
+RUN test_ui_home_start_layout.gd timeout=60s
+PASS test_ui_home_start_layout.gd
+RUN test_ui_input.gd timeout=60s
+PASS test_ui_input.gd
+RUN test_ui_language.gd timeout=60s
+PASS test_ui_language.gd
+RUN test_ui_natural_random.gd timeout=600s
+PASS test_ui_natural_random.gd
+RUN test_ui_pause.gd timeout=180s
+PASS test_ui_pause.gd
+RUN test_ui_preview_requests.gd timeout=60s
+PASS test_ui_preview_requests.gd
+RUN test_ui_preview_resources.gd timeout=60s
+PASS test_ui_preview_resources.gd
+RUN test_ui_runway.gd timeout=600s
+PASS test_ui_runway.gd
+RUN test_ui_screen_stack.gd timeout=180s
+PASS test_ui_screen_stack.gd
+RUN test_ui_sky.gd timeout=60s
+PASS test_ui_sky.gd
+RUN test_ui_standard_column.gd timeout=60s
+PASS test_ui_standard_column.gd
+RUN test_ui_time_of_day.gd timeout=60s
+PASS test_ui_time_of_day.gd
+RUN test_ui_time_of_day_pause.gd timeout=60s
+PASS test_ui_time_of_day_pause.gd
+RUN test_ui_turbulence.gd timeout=60s
+PASS test_ui_turbulence.gd
+RUN test_ui_update_notice.gd timeout=60s
+PASS test_ui_update_notice.gd
+RUN test_ui_weather.gd timeout=60s
+PASS test_ui_weather.gd
+RUN test_ui_weather_sliders.gd timeout=60s
+PASS test_ui_weather_sliders.gd
+RUN test_update_check.gd timeout=60s
+PASS test_update_check.gd
+RUN test_vegetation_collision_proxies.gd timeout=60s
+PASS test_vegetation_collision_proxies.gd
+RUN test_visual_checkpoint.gd timeout=60s
+PASS test_visual_checkpoint.gd
+RUN test_visual_evidence.gd timeout=60s
+PASS test_visual_evidence.gd
+RUN test_visual_timeline.gd timeout=60s
+PASS test_visual_timeline.gd
+RUN test_wash_profile.gd timeout=60s
+PASS test_wash_profile.gd
+RUN test_wash_transport.gd timeout=60s
+PASS test_wash_transport.gd
+RUN test_water_checkpoint.gd timeout=60s
+PASS test_water_checkpoint.gd
+RUN test_water_director.gd timeout=60s
+PASS test_water_director.gd
+RUN test_water_effects.gd timeout=60s
+PASS test_water_effects.gd
+RUN test_wheel_session.gd timeout=60s
+PASS test_wheel_session.gd
+RUN test_wildlife.gd timeout=60s
+PASS test_wildlife.gd
+RUN test_wind_field.gd timeout=60s
+PASS test_wind_field.gd
+RUN test_wind_flight.gd timeout=60s
+PASS test_wind_flight.gd
+RUN test_wind_hud.gd timeout=60s
+PASS test_wind_hud.gd
+RUN test_wind_trace.gd timeout=60s
+PASS test_wind_trace.gd
+RUN test_wind_turbulence.gd timeout=60s
+PASS test_wind_turbulence.gd
+RUN test_windsock.gd timeout=60s
+PASS test_windsock.gd
+RUN test_windsock_data.gd timeout=60s
+PASS test_windsock_data.gd
+RUN test_wing_polar.gd timeout=60s
+PASS test_wing_polar.gd
+RUN test_wing_polar_session.gd timeout=60s
+PASS test_wing_polar_session.gd
+RUN test_workshop_compiler.gd timeout=60s
+PASS test_workshop_compiler.gd
+RUN test_workshop_descriptor.gd timeout=60s
+PASS test_workshop_descriptor.gd
+RUN test_workshop_integration.gd timeout=600s
+PASS test_workshop_integration.gd
+RUN test_workshop_store.gd timeout=60s
+PASS test_workshop_store.gd
+RUN test_workshop_trial.gd timeout=60s
+PASS test_workshop_trial.gd
+RUN test_workshop_ui.gd timeout=600s
+PASS test_workshop_ui.gd
+RUN test_world_ephemeris.gd timeout=60s
+PASS test_world_ephemeris.gd
+RUN test_world_field_lights.gd timeout=60s
+PASS test_world_field_lights.gd
+RUN test_world_flow.gd timeout=60s
+PASS test_world_flow.gd
+RUN test_world_presentation_context.gd timeout=60s
+PASS test_world_presentation_context.gd
+RUN test_world_sky.gd timeout=60s
+PASS test_world_sky.gd
+RUN test_world_stars.gd timeout=60s
+PASS test_world_stars.gd
+RUN test_yaw_damping.gd timeout=60s
+FAIL test_yaw_damping.gd exit=1 engine_error=0 (continuing)

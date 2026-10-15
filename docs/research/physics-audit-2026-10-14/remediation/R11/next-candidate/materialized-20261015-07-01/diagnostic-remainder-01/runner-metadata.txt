@@ -1,0 +1,8 @@
+candidate=/home/bulto/openrc-r11-b09-r05b-20261015-07
+app=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+godot=/home/bulto/openrc-r11-b09-r05b-20261015-07/.tools/Godot_v4.7.2-stable_linux.x86_64
+started_utc=2026-10-15T13:25:21Z
+first_test_after=test_atmosphere_column_session.gd
+completed_utc=2026-10-15T13:56:43Z
+tests=441
+failed_or_engine_error=6

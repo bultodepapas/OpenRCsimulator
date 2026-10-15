@@ -1,0 +1,58 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _run_case (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:66)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:42)
+case=%s hz=%d aircraft=%s model_Cmq=%.6f model_CLq=%.6f model_Cnr=%.6f rows=%d expected_rows=%d dt=%.12g r_at_3s_deg_s=%.9f r_final_deg_s=%.9f peak_abs_r_deg_s=%.9f
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _run_case (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:66)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:42)
+case=%s hz=%d aircraft=%s model_Cmq=%.6f model_CLq=%.6f model_Cnr=%.6f rows=%d expected_rows=%d dt=%.12g r_at_3s_deg_s=%.9f r_final_deg_s=%.9f peak_abs_r_deg_s=%.9f
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _run_case (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:66)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:42)
+case=%s hz=%d aircraft=%s model_Cmq=%.6f model_CLq=%.6f model_Cnr=%.6f rows=%d expected_rows=%d dt=%.12g r_at_3s_deg_s=%.9f r_final_deg_s=%.9f peak_abs_r_deg_s=%.9f
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _run_case (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:66)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:42)
+case=%s hz=%d aircraft=%s model_Cmq=%.6f model_CLq=%.6f model_Cnr=%.6f rows=%d expected_rows=%d dt=%.12g r_at_3s_deg_s=%.9f r_final_deg_s=%.9f peak_abs_r_deg_s=%.9f
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _run_case (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:66)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:42)
+case=%s hz=%d aircraft=%s model_Cmq=%.6f model_CLq=%.6f model_Cnr=%.6f rows=%d expected_rows=%d dt=%.12g r_at_3s_deg_s=%.9f r_final_deg_s=%.9f peak_abs_r_deg_s=%.9f
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _run_case (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:66)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:42)
+case=%s hz=%d aircraft=%s model_Cmq=%.6f model_CLq=%.6f model_Cnr=%.6f rows=%d expected_rows=%d dt=%.12g r_at_3s_deg_s=%.9f r_final_deg_s=%.9f peak_abs_r_deg_s=%.9f
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _run_case (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:66)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:42)
+case=%s hz=%d aircraft=%s model_Cmq=%.6f model_CLq=%.6f model_Cnr=%.6f rows=%d expected_rows=%d dt=%.12g r_at_3s_deg_s=%.9f r_final_deg_s=%.9f peak_abs_r_deg_s=%.9f
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _run_case (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:66)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/rudder_data_matrix.gd:42)
+case=%s hz=%d aircraft=%s model_Cmq=%.6f model_CLq=%.6f model_Cnr=%.6f rows=%d expected_rows=%d dt=%.12g r_at_3s_deg_s=%.9f r_final_deg_s=%.9f peak_abs_r_deg_s=%.9f

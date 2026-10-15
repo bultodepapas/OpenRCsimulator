@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Flight log REC: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-15T13-33-24-4417081.orfl
+Flight log saved: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-15T13-33-24-4417081.orfl (64 ticks)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Flight log REC: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-15T13-33-25-4815323.orfl
+Flight log saved: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-15T13-33-25-4815323.orfl (16 ticks)
+Flight log REC: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-15T13-33-25-4969022.orfl
+Flight log saved: /home/bulto/.local/share/godot/app_userdata/OpenRC Simulator/flight_logs/flight-2026-10-15T13-33-25-4969022.orfl (16 ticks)
+FL-04 production UI: 0 failures

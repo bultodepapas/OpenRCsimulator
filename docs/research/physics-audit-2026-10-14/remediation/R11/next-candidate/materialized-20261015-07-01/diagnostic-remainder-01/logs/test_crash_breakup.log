@@ -1,0 +1,35 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Stik twin prepares
+ok   C2 spinner hit releases only the propeller
+ok   C2 release adds no scatter energy
+ok   C2 nose hit releases only the propeller
+ok   C2 stab-tip hit releases only the tailplane
+ok   C2 fin-top hit releases only the fin
+ok   C2 wing-tip hit keeps the airframe together
+ok   C2 belly hit keeps the airframe together
+ok   C2 geometric fuselage estimate keeps the airframe together
+ok   C2 release conserves the aircraft mass
+ok   C3 left wing-tip hit releases only the left wing
+ok   C3 right wing-tip hit releases only the right wing
+ok   C3 nose hit releases propeller, engine and canopy
+ok   C3 fin hit releases both tail sections and the boom they are glued to
+ok   C3 tail hit: stab, fin and their hinged surfaces ride on the boom as one body
+ok   C3 tail hit: the boom carries its surfaces' mass
+ok   C4 breaks the surfaces off the boom
+ok   C3 inverted canopy hit releases canopy and fin
+ok   C3 belly hit keeps the legacy wings-and-tails set
+ok   C3 records its release set (plus the parts riding with it)
+ok   C4 still releases every section
+ok   the contact point is kept in model space
+     release order: ["aileron_left 0.342 m 0.023 s", "wing_left 0.403 m 0.027 s", "wheel 0.633 m 0.042 s", "gear 0.768 m 0.051 s", "gear 0.842 m 0.056 s", "wheel 0.852 m 0.057 s", "engine 0.869 m 0.058 s", "propeller 0.886 m 0.059 s", "tail_boom 0.914 m 0.061 s", "wheel 0.977 m 0.065 s", "vertical_tail 0.998 m 0.067 s", "horizontal_tail 1.035 m 0.069 s", "gear 1.077 m 0.072 s", "elevator 1.082 m 0.072 s", "rudder 1.111 m 0.074 s", "wing_right 1.128 m 0.075 s", "aileron_right 1.220 m 0.081 s"]
+ok   nearer sections never release later than farther ones
+ok   the left wing releases before the right wing
+ok   release delays stay inside the propagation bounds
+ok   without a contact point the legacy fixed delays remain
+     scatter along 18.19, across 4.16 m/s (summed)
+ok   C4 scatter has energy to distribute
+ok   debris trails along the horizontal momentum
+ok   scatter stays inside its bounded budget
+ok   reset clears the release set and contact
+30 checks, 0 failed

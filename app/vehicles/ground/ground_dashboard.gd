@@ -11,6 +11,8 @@ signal spawn_selected(id: String)
 signal controller_selected(device_id: int)
 
 var menu_visible := true
+var vehicle_name := "Bisonte MT8"
+var nitro := false
 var panel: PanelContainer
 var status: Label
 var telemetry: Label
@@ -56,7 +58,7 @@ func _ready() -> void:
 	root_control.add_child(margin)
 	var top := HBoxContainer.new()
 	margin.add_child(top)
-	status = _label("BISONTE MT8", 24)
+	status = _label(vehicle_name.to_upper(), 24)
 	status.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	top.add_child(status)
 	_menu_button = _button(words("Garage · Esc", "Garaje · Esc"), "menu")
@@ -108,8 +110,12 @@ func _ready() -> void:
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 10)
 	scroll.add_child(column)
-	header.add_child(_label("Bisonte MT8", 28))
-	header.add_child(_label(words("1:8 · Electric 4WD · Experimental", "1:8 · Eléctrico 4×4 · Experimental"), 14))
+	header.add_child(_label(vehicle_name, 28))
+	header.add_child(_label(words("1:8 · Nitro 4WD · Experimental", "1:8 · Nitro 4×4 · Experimental") if nitro else words("1:8 · Electric 4WD · Experimental", "1:8 · Eléctrico 4×4 · Experimental"), 14))
+	if nitro:
+		var nitro_hint := _label(words("Engine starts at idle. No reverse gear. Reset refuels and restarts.", "Motor encendido al ralentí. Sin reversa. Reiniciar reposta y arranca."), 14)
+		nitro_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		column.add_child(nitro_hint)
 	if airfield:
 		column.add_child(_label(words("Airfield · Shared runway", "Aeródromo · Pista de aviones"), 14))
 	if track_available:
@@ -196,7 +202,7 @@ func _ready() -> void:
 	root_control.add_child(gauges)
 	plot = Plot.new()
 	plot.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
-	plot.position = Vector2(24, -250)
+	plot.position = Vector2(24, -300 if nitro else -250)
 	plot.size = Vector2(300, 120)
 	plot.visible = false
 	root_control.add_child(plot)
@@ -240,6 +246,11 @@ func set_controllers(devices: Array, selected: int, needs_selection: bool) -> vo
 			"W/S o ↑/↓: avanzar / reversa · A/D o ←/→: girar · Espacio: frenar\nC: cámara · R: recuperar · Esc: garaje · Enter: continuar")
 		resume_button.text = words("DRIVE · Enter", "CONDUCIR · Enter")
 		_menu_button.text = words("Garage · Esc", "Garaje · Esc")
+	if nitro:
+		if _using_gamepad:
+			control_hint.text = words("Left stick: steer · %s: accelerate · %s: brake · No reverse\n%s: camera · %s: recover · %s: garage / continue", "Palanca izquierda: girar · %s: acelerar · %s: frenar · Sin reversa\n%s: cámara · %s: recuperar · %s: garaje / continuar") % [rt, lt, camera_button, recover_button, start]
+		else:
+			control_hint.text = words("W / ↑: accelerate · A/D / ←/→: steer · Space / S / ↓: brake · No reverse\nC: camera · R: recover · Esc: garage · Enter: continue", "W / ↑: acelerar · A/D / ←/→: girar · Espacio / S / ↓: frenar · Sin reversa\nC: cámara · R: recuperar · Esc: garaje · Enter: continuar")
 	controller_choice.tooltip_text = words("This selection only controls the car. Aircraft settings are preserved.", "Esta selección controla solo el carro. Los ajustes de vuelo se conservan.")
 	update_input_status(false, needs_selection, true)
 
@@ -321,7 +332,7 @@ func update_lights(enabled: bool) -> void:
 
 func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recording: bool, diagnostic: bool) -> void:
 	var speed := float(snapshot.get("speed_m_per_s", 0.0)) * 3.6
-	status.text = "BISONTE MT8  /  " + (words("PAUSED", "PAUSA") if paused else words("DRIVING", "CONDUCIENDO"))
+	status.text = vehicle_name.to_upper() + "  /  " + (words("PAUSED", "PAUSA") if paused else words("DRIVING", "CONDUCIENDO"))
 	var surface := str(snapshot.get("surface_id", ""))
 	var surface_names := {"asphalt": words("Asphalt", "Asfalto"), "grass": words("Grass", "Césped"), "gravel": words("Gravel", "Grava"), "slippery": words("Low grip", "Poco agarre"), "runway": words("Runway", "Pista de aviones"), "mown": words("Mown grass", "Césped corto"), "rough": words("Rough grass", "Césped")}
 	surface_names["rc_dirt"] = words("Dirt circuit", "Circuito de tierra")
@@ -333,6 +344,15 @@ func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recordin
 	if wet:
 		surface_title = words("Wading", "Vadeando") if float(environment.get("body_submersion", 0.0)) < 0.5 else words("Submerged · R: recover", "Sumergido · R: recuperar")
 	telemetry.text = "%.1f km/h  ·  %.1f s  ·  %s%s" % [speed, time_s, surface_title, "  ● REC" if recording else ""]
+	if nitro:
+		var powertrain: Dictionary = snapshot.get("nitro", {})
+		var engagement := float(powertrain.get("clutch_engagement", 0.0))
+		var clutch := words("Clutch open", "Embrague libre")
+		if engagement > 0.01:
+			clutch = words("Clutch %d%%", "Embrague %d%%") % roundi(engagement * 100.0)
+		telemetry.text += "\n%.0f RPM  ·  %s %d%%  ·  %s" % [float(powertrain.get("engine_rpm", 0.0)),
+			words("Fuel", "Combustible"), roundi(100.0 * float(powertrain.get("fuel_fraction", 0.0))),
+			clutch]
 	var damage: Dictionary = snapshot.get("damage", {})
 	var stage := str(damage.get("stage", "intact"))
 	condition_status.visible = stage != "intact"

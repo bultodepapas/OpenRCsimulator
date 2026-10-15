@@ -1,0 +1,16 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   only one active resource and latest queued intent
+ok   broker finishes without blocking get
+ok   obsolete requests never call completion
+ok   obsolete active resource is not retained
+ok   broker finishes without blocking get
+ok   broker finishes without blocking get
+ok   resource cache is bounded to two
+ok   cached resource completes synchronously
+ok   broker finishes without blocking get
+ok   Home exit drains without applying or retaining
+ok   broker finishes without blocking get
+ok   procedural request supersedes older completion
+ok   shutdown drains without callback
+Preview resources: 13 checks, 0 failed

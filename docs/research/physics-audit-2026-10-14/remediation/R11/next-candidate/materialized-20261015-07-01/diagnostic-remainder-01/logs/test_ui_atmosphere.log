@@ -1,0 +1,54 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   v1 preferences retain outer schema 1
+ok   v2 preferences retain outer schema 2
+ok   v3 atmosphere preferences use outer schema 3 and reload exactly
+ok   v1 fixture saves
+ok   opening Atmosphere leaves v1 weather unmodified
+ok   untouched Atmosphere Apply keeps v1 and outer schema 1
+ok   wind-only edit remains v1 and outer schema 1
+ok   v2 fixture saves
+ok   opening Atmosphere leaves v2 weather unmodified
+ok   untouched Atmosphere Apply keeps v2 and outer schema 2
+ok   wind-only edit remains v2 and outer schema 2
+ok   legacy atmosphere fixture saves
+ok   third tab shows Reference without upgrading legacy weather
+ok   reference preview comes from the shared kernel
+ok   dialog panel stays inside 800×600
+ok   Atmosphere focus follows the scroll body at 800×600
+ok   wind validation keeps its existing message
+ok   turbulence validation keeps its existing message
+ok   out-of-range atmosphere input stays in the draft
+ok   custom preview matches the atmosphere kernel
+ok   Apply promotes edited field conditions to v3
+ok   Home shows the density summary and complete field tooltip
+ok   editing turbulence on v3 keeps atmosphere and v3 format
+ok   Reference mode retains the saved custom field values
+ok   Reference mode keeps v3 and the inactive custom values
+ok   Esc discards the atmosphere draft
+ok   Hot and high preset is a v3 atmosphere draft
+ok   Hot and high preset commits
+ok   Cool dense preset is appended after the existing six presets
+ok   Cool dense preset commits
+ok   float64 atmosphere fixture saves
+ok   atmosphere fields display round-tripping decimals
+ok   untouched v3 Apply preserves all atmosphere float64 values
+ok   future schema v3 fixture writes
+settings: settings from a newer version (schema 99): read where valid, never overwritten
+ok   future v3 weather applies for this session
+ok   future v3 save failure appears on Home and preserves the file
+ok   v3 Home-to-flight fixture saves
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home-to-Fly passes v3 configuration to the session
+ok   active flight field uses the kernel density
+ok   custom-density flight trims at the requested 15 m/s TAS
+ok   Home-to-Fly remembers v3 in outer schema 3
+ok   Spanish UI fixture saves
+ok   Spanish translates Atmosphere mode and field controls
+ok   Spanish Home summarizes thin air
+ok   Spanish flight HUD atmosphere line is translated
+ok   Spanish atmosphere validation uses field-specific copy
+ok   Spanish Help includes field atmosphere and fits the existing page
+all UI atmosphere checks passed
+WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

@@ -1,0 +1,11 @@
+# avanti_blender_source_check
+# started_utc=2026-10-15T14:18:51+00:00
+# cwd=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+# timeout_seconds=600
+# expect=zero
+# command=/usr/bin/python3 /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../assets/aircraft/avanti-s-a200/compile_blender.py --check
+# returncode=0
+# timed_out=False
+# engine_error_detected=False
+
+AV-31 Blender asset/source/sections/metadata: PASS

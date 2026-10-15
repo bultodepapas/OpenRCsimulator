@@ -1,0 +1,65 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   strict vehicle source loads  []
+ok   real uneven runway supports a complete zero-speed spawn
+ok   terrain placement preserves model and requested horizontal pose
+ok   all four terrain tires are preloaded without hull support
+ok   runway start settles without a launch or significant drift
+ok   terrain initializer retains flat support altitude
+ok   terrain spawn refuses nonfinite road data
+ok   runway initializer refuses unsupported steep starts
+ok   zero-gravity laboratory starts remain finite
+ok   flat reset produces a 31-value state
+ok   level static reset has finite derivative  max |xdot| 0.000000
+ok   pure 180-degree yaw quaternion remains valid in the derivative path  max |xdot| 0.00000000
+ok   static tire loads support sprung and unsprung weight  [13.5331770000001, 13.5331770000001, 13.5331770000001, 13.5331770000001]
+ok   zero controls keep the supported truck at rest  max rigid-state drift 0.000000
+headless baseline: 240 steps 0.689 ms/tick (165.285 ms simulated / real-time)
+ok   step leaves caller-owned state untouched
+ok   telemetry reports all four tire contacts
+ok   reset altitude is finite and above tire radius
+ok   state layout keeps the rigid-body prefix and append offsets
+ok   checkpoint-visible solver version is explicit
+ok   reference identity pins actual source or remapped bytecode bytes
+ok   debug test override runs both production backend paths and restores automatic selection
+ok   native and GDScript reference agree over a driven, steered, then braked 180-tick trajectory  max state delta 0.000000000; native source 6d4c5eabeb2f8565cf84d08fb6825ab5b1cacc47a7ebc26f215ac97b88ae1c2b
+ok   6-body + 8 local Schur solve matches the full mass matrix  max residual 0.000000000
+ok   energy opt-out preserves acceleration and leaves the energy path available
+ok   adaptive PGS matches fixed-cap reference: driven longitudinal contact  sweeps 124/128, Δa 0.000003, ΔFx 0.000000 N, ΔFy 0.000003 N, ΔTbrake 0.000000 Nm
+ok   adaptive PGS matches fixed-cap reference: braking contact  sweeps 19/128, Δa 0.000000, ΔFx 0.000000 N, ΔFy 0.000000 N, ΔTbrake 0.000000 Nm
+ok   adaptive PGS matches fixed-cap reference: airborne jump braking  sweeps 4/128, Δa 0.000000, ΔFx 0.000000 N, ΔFy 0.000000 N, ΔTbrake 0.000000 Nm
+ok   4WD throttle accelerates forward and spins all wheels forward  u 3.746 m/s, spin FL/RR 109.553 / 72.184 rad/s
+ok   brake torque opposes wheel spin and produces useful tire braking  before 2.000, after -0.041 m/s; u_dot -4.48→0.40 m/s²; FL spin 0.002 (alpha -0.04) rad/s; FL force 0.48 N; brake 0.05 Nm
+ok   brakes stop reverse travel without injecting unbounded reverse speed  before -2.000, after 0.000 m/s, maximum wheel spin 0.000 rad/s
+ok   reverse command drives backward  u -3.743 m/s, wheel spin -39.135 rad/s
+ok   zero-friction surface spins wheels without normal drive acceleration  u 0.000 m/s, wheel spin 119.725 rad/s
+ok   positive steering input turns wheels and yaw right  servo 0.419 rad, yaw rate 1.096 rad/s
+ok   negative steering input mirrors yaw sign  servo -0.419 rad, yaw rate -1.096 rad/s
+ok   bump stop restores compression travel  travel acceleration -734.410 m/s²
+ok   droop stop restores extension travel  travel acceleration 3433.795 m/s²
+ok   suspension responds to a finite-width road bump  max suspension travel change 0.0105 m, max sampled height 0.0245 m, final north 0.700 m
+ok   airborne state has no tire or hull support
+ok   free-fall converts altitude into downward velocity  down -0.8748→-0.5684 m, w 2.443 m/s
+ok   unforced free-flight energy uses the NED gravity sign  energy 47.122188→47.121939 J
+ok   isolated flat-ground-free translation conserves total linear momentum  momentum change 0.000000000 kg m/s
+ok   isolated body/hub/rotor coupling conserves world angular momentum  angular momentum change 0.00000000 N m s
+ok   side-down orientation engages the chassis contact envelope  hull probes 1
+ok   inverted truck remains finite through the chassis impact and rebound  hull contacts 0
+ok   source-annotated experiment creates a valid derived model  []
+ok   experiment mass/CG inertia shifts preserve static balance  max |xdot| 0.000000
+ok   high-load high-stiffness profile equilibrates
+ok   one-tick RK4 stays finite through high-gravity tire and hull impact  down -0.1860 m, vertical speed -0.0000 m/s
+ok   doubled bump-stop stiffness remains restoring
+ok   240 Hz result converges toward two half-size public steps  max body/suspension/spin delta 0.00009
+ok   driven tick/post-step telemetry performance sample completed
+headless driven+telemetry baseline: 60 ticks 0.763 ms/tick (45.800 ms simulated / real-time)
+driven PGS sweep histogram 0..128: [0, 0, 0, 0, 0, 0, 2, 2, 0, 1, 0, 1, 0, 2, 5, 4, 2, 4, 3, 3, 3, 4, 5, 4, 3, 2, 2, 1, 2, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 1, 0, 1, 0, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]
+ok   evaluation-phase performance samples completed
+phase cost: evaluate 1.628 ms, derivative 0.155 ms, telemetry 0.140 ms, step 0.630 ms per call
+ok   solver-stage profiling fixtures are valid  contacts 4
+solver-stage cost (32 samples): geometry 0.043 ms, mass assembly 0.035 ms, Schur factor 0.037 ms, generalized solve 0.011 ms, adaptive PGS 2.031 ms, fixed-cap PGS 2.122 ms
+ok   course sampling profile fixture returns valid surfaces
+course road lookup (320 samples; 10 per evaluate): raw Course.sample 0.019 ms/call, validated _sample_surface 0.026 ms/call
+ok   actual Session.tick_once advances 60 driven ticks  completed 60, fault 
+actual Session.tick_once driven baseline: 60 ticks 2.175 ms/tick (130.526 ms simulated / real-time)
+RCV-05 vehicle dynamics: 55 checks, 0 failures

@@ -134,7 +134,8 @@ def check_metadata(metadata: dict, first: dict) -> None:
         if not metadata.get(key):
             raise ValueError(f'missing flight metadata: {key}')
     for key, allowed in {
-        'aero_model': ('global-derivatives-v1', 'local-surfaces-v1 with bounded attached oracle'),
+        'aero_model': ('global-derivatives-v1', 'local-surfaces-v1 with bounded attached oracle',
+                       'section-plane-source-weighted-wake-velocity-v2 with bounded attached oracle'),
         'propulsion_model': ('propeller-rpm-lag-v1', 'propeller-shaft-balance-v1', 'turbine-ecu-spool-v1',
                              'turbine-rpm-governor-rk4-v1',
                              'propeller-shaft-coupled-rk4-v1', 'electric-fixed-bus-coupled-stop-v1',

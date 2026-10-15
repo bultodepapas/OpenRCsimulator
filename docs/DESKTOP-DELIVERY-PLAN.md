@@ -1,6 +1,6 @@
 # Desktop delivery plan
 
-2026-10-14 · Revision 14 · Step prefix: **DT-**.
+2026-10-15 · Revision 15 · Step prefix: **DT-**.
 
 **Status:** DT-00, DT-00-R1 and DT-00-R2 research is complete. DT-01–DT-12 remain open; initial DT-10/10a measurements and a narrow DT-11a lake geometry reuse repair are recorded through VQ-01c; cold loading and package qualification remain open. The owner acceptance gate DT-13 is open. No fullscreen, installer, public signing/notarization or native Windows/macOS acceptance has shipped through this track.
 
@@ -9,6 +9,8 @@ Research records remain in [DT-00](research/desktop-delivery-investigations/DT-0
 Latest DT-11a evidence: [horizon construction](research/visual-quality-implementation/VQ-01c/loading/horizon-build/README.md). Five native runs preserve complete mesh output; construction median is 68.721→55.027 ms. This does not measure full Home/Fly loading or FPS. A combined native horizon/atmosphere regression test reports four texture shutdown errors on reference and candidate; isolation remains open. [Earlier shadow blur](research/visual-quality-implementation/VQ-01c/loading/shadow-blur/README.md) and [grass-mask loading attempts](research/visual-quality-implementation/VQ-01c/loading/grass-masks/README.md) remain separate evidence. Current-package qualification, cold-load non-regression, loading budgets and production shutdown/soak remain open.
 
 ## Current delivery
+
+DT-11a follow-up (2026-10-15): [fallback shadow pixel reuse](research/visual-quality-implementation/VQ-01c/loading/shadow-mask-cache/README.md) retains one 85.3 KiB CPU mip chain while keeping each image/texture independent. Repeated carrier construction measures 16.266→0.853 ms; the first call still generates the mask and complete Home/Fly loading remains unqualified.
 
 Godot 4.7.2 is pinned, Compatibility is the renderer, physics runs at 240 Hz, and `app/project.godot` sets a 1280×720 viewport. Presets export Linux x86_64, Windows x86_64 and a universal macOS app from the Ubuntu CI job. `app/export.sh` embeds the PCK, creates ZIPs and `SHA256SUMS`, checks the exported Linux binary with a trimmed-flight trace, checks field data in each pack, checks macOS slices for an ad-hoc signature, and checks Windows/macOS numeric version metadata.
 

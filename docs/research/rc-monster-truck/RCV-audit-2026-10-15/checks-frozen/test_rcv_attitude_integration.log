@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   near-unit accepted attitude maps body velocity with normalized quaternion  position-rate error 0.000000000000 m/s
+ok   telemetry speed is independent of tolerated quaternion norm drift  speed 8.062257748299, expected 8.062257748299 m/s
+ok   high-spin reference starts from a unit quaternion and exact world velocity  q norm 1.000000000000000, position-rate error 0.000000000000 m/s
+ok   unit-input RK spin stage normalizes spatial mapping but preserves raw quaternion rate  stage q norm 1.004987562, map error 0.000000000000 m/s, qdot error 0.000000000000
+ok   12 rad/s free-flight translation stays accurate across RK step refinement  2 s position errors at dt=1/30, 1/60, 1/120: 0.049187880, 0.003375948, 0.000218028 m
+ok   wet evaluation reuses exact duplicate coordinates only within its callback scope  callback requests 14 of 19 possible, unique 14, max per exact coordinate 1
+ok   cached center sample is insulated from later callback mutation  first depth 0.100 m, first wall contacts 0
+ok   same-pose next evaluation re-queries mutable road payload  calls 14→28, water depth 0.600 m
+RCV attitude integration: 8 checks, 0 failures

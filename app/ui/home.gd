@@ -23,6 +23,7 @@ const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const BuildInfo := preload("res://app_state/build_info.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const GroundCatalog := preload("res://vehicles/ground/vehicle_catalog.gd")
 const FlightSession := preload("res://sim/flight_session.gd")
 const UpdateNotice := preload("res://ui/update_notice.gd")
 
@@ -65,6 +66,8 @@ var start_button: Button
 
 var fly_button: Button
 var ground_vehicle_button: Button
+var ground_vehicle_choice: OptionButton
+var ground_vehicle_id := GroundCatalog.DEFAULT_ID
 var workshop_button: Button
 var natural_random_button: Button
 var failures_button: Button
@@ -261,7 +264,22 @@ func _init() -> void:
 	failure_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	failures_row.add_child(failure_summary_label)
 	column.add_child(failures_row)
-	ground_vehicle_button = _button("RC cars · Bisonte MT8", "")
+	ground_vehicle_choice = OptionButton.new()
+	ground_vehicle_choice.name = "GroundVehicleChoice"
+	ground_vehicle_choice.tooltip_text = "RC car"
+	ground_vehicle_choice.fit_to_longest_item = false
+	ground_vehicle_choice.custom_minimum_size = Vector2(260, 36)
+	for id: String in GroundCatalog.IDS:
+		ground_vehicle_choice.add_item(GroundCatalog.entry(id).name)
+	ground_vehicle_choice.select(GroundCatalog.IDS.find(ground_vehicle_id))
+	ground_vehicle_choice.item_selected.connect(func(index: int): ground_vehicle_id = GroundCatalog.IDS[index])
+	ground_vehicle_choice.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	ground_vehicle_choice.offset_left = -284
+	ground_vehicle_choice.offset_right = -24
+	ground_vehicle_choice.offset_top = -112
+	ground_vehicle_choice.offset_bottom = -76
+	add_child(ground_vehicle_choice)
+	ground_vehicle_button = _button("RC cars · Open garage", "")
 	ground_vehicle_button.name = "GroundVehicles"
 	ground_vehicle_button.add_theme_font_size_override("font_size", 16)
 	ground_vehicle_button.custom_minimum_size = Vector2(260, 44)
@@ -348,8 +366,10 @@ func _ready() -> void:
 	natural_random_button.focus_neighbor_top = natural_random_button.get_path_to(weather_button)
 	natural_random_button.focus_neighbor_bottom = natural_random_button.get_path_to(failures_button)
 	failures_button.focus_neighbor_top = failures_button.get_path_to(natural_random_button)
-	failures_button.focus_neighbor_bottom = failures_button.get_path_to(ground_vehicle_button)
-	ground_vehicle_button.focus_neighbor_top = ground_vehicle_button.get_path_to(failures_button)
+	failures_button.focus_neighbor_bottom = failures_button.get_path_to(ground_vehicle_choice)
+	ground_vehicle_choice.focus_neighbor_top = ground_vehicle_choice.get_path_to(failures_button)
+	ground_vehicle_choice.focus_neighbor_bottom = ground_vehicle_choice.get_path_to(ground_vehicle_button)
+	ground_vehicle_button.focus_neighbor_top = ground_vehicle_button.get_path_to(ground_vehicle_choice)
 	ground_vehicle_button.focus_neighbor_bottom = ground_vehicle_button.get_path_to(language_button)
 	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button)
 	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)

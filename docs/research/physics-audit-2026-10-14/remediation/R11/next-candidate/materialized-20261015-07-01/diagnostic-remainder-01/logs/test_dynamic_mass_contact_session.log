@@ -1,0 +1,23 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+PASS: real Glow session is flyable and dynamic-mass joint hook is installed
+PASS: deterministic obstacle installs
+PASS: interior-sweep collision start resets
+PASS: Glow contact fixture has a restorable pre-impact checkpoint
+Provisional Glow impact sample: { &"tick": 1, &"obstacle_id": "lamp:r05b-contact:pole", &"fraction": 0.95988416742134, &"properties": { &"ok": true, &"mass_kg": 2.6228986146787, &"cg_body_m": [-0.0000000389088, 0.0, 0.0], &"inertia": [0.11585024176346, 0.32162954506585, 0.4178909549501, -0.0076956, 0.0078543, 0.00060438944289], &"inverse": [8.65666383584595, 3.11414613187292, 2.39604456545525, 0.20743349118279, -0.16300282303596, -0.0084026750853], &"inertia_origin": [0.11585024176346, 0.32162954506585, 0.4178909549501, -0.0076956, 0.0078543, 0.00060438944289] } }
+PASS: real mass-aware filter staged one interior-fraction contact with an event-time sample
+PASS: post-contact projection failure faults before the flight tick commits
+PASS: Glow body, fuel tail, auxiliary and contact history roll back byte-exactly
+PASS: pending impact, crash, scenery damage and accepted event publication are cleared
+CRASH at 119.6 m/s (sink -0.6 m/s, lamp impact (lamp:r05b-contact:pole), normal speed 119.6 m/s) - restarting
+PASS: same Glow state retries and commits exactly one impact
+PASS: accepted retry reuses identical deterministic TOI and sampled properties
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+PASS: Glow checkpoint records the separate mass-contact law
+PASS: Glow restore refuses a checkpoint missing the mass-contact marker
+PASS: Glow restore refuses a different mass-contact marker atomically
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+PASS: non-Glow checkpoint does not claim the Glow mass-contact law
+PASS: non-Glow restore refuses an unexpected mass-contact marker atomically
+R05-B FlightSession integration review: 15 checks, 0 failures

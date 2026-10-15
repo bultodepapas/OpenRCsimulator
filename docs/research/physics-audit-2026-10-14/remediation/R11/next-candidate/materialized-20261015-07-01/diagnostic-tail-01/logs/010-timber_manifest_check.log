@@ -1,0 +1,11 @@
+# timber_manifest_check
+# started_utc=2026-10-15T14:18:53+00:00
+# cwd=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+# timeout_seconds=600
+# expect=zero
+# command=/usr/bin/python3 /home/bulto/openrc-r11-b09-r05b-20261015-07/app/../research/timber/tt01/manifest.py --check
+# returncode=0
+# timed_out=False
+# engine_error_detected=False
+
+Timber r2 delivery: 144 files, 19438463 bytes, visual revision r2-d75ae605aa3a: identical to the manifest

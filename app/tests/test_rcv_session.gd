@@ -122,6 +122,28 @@ func _test_braking_checkpoint_events() -> void:
 	_check("checkpoint with a braking-distance event is restorable",
 		braking_event_seen and not expected_checkpoint.is_empty()
 		and source.can_restore_checkpoint(expected_checkpoint))
+	var out_of_range_event_checkpoint: Dictionary = expected_checkpoint.duplicate(true)
+	var out_of_range_events: Array = out_of_range_event_checkpoint.event_tape.duplicate(true)
+	var changed_event := false
+	for event: Variant in out_of_range_events:
+		if typeof(event) == TYPE_DICTIONARY and str(event.get("type", "")) == "jump":
+			event["speed_m_per_s"] = -1.0
+			changed_event = true
+			break
+	out_of_range_event_checkpoint.event_tape = out_of_range_events
+	out_of_range_event_checkpoint.event_tape_sha256 = source._hash_variant(out_of_range_events)
+	out_of_range_event_checkpoint.checkpoint_sha256 = source._checkpoint_hash(out_of_range_event_checkpoint)
+	_check("self-hashed event with out-of-range speed is rejected",
+		changed_event and not source.can_restore_checkpoint(out_of_range_event_checkpoint))
+	var extra_field_checkpoint: Dictionary = expected_checkpoint.duplicate(true)
+	var extra_field_events: Array = extra_field_checkpoint.event_tape.duplicate(true)
+	if not extra_field_events.is_empty() and typeof(extra_field_events[0]) == TYPE_DICTIONARY:
+		extra_field_events[0]["unexpected"] = true
+	extra_field_checkpoint.event_tape = extra_field_events
+	extra_field_checkpoint.event_tape_sha256 = source._hash_variant(extra_field_events)
+	extra_field_checkpoint.checkpoint_sha256 = source._checkpoint_hash(extra_field_checkpoint)
+	_check("self-hashed event with unexpected fields is rejected",
+		not extra_field_events.is_empty() and not source.can_restore_checkpoint(extra_field_checkpoint))
 	var fork = Session.new()
 	var fork_prepared: bool = fork.prepare_default()
 	var restored := fork_prepared and fork.restore_checkpoint(expected_checkpoint)
@@ -286,6 +308,30 @@ func _test_garage_reverse_checkpoint_replay(session) -> void:
 	foreign_solver_checkpoint.checkpoint_sha256 = session._checkpoint_hash(foreign_solver_checkpoint)
 	_check("checkpoint from a different dynamics solver is rejected",
 		not session.restore_checkpoint(foreign_solver_checkpoint))
+	var integration_identity_checkpoint: Dictionary = checkpoint_before_recovery.duplicate(true)
+	var integration_solver: Dictionary = integration_identity_checkpoint.solver_identity.duplicate(true)
+	var recorded_integration: Dictionary = integration_solver.get("integration_artifact", {}).duplicate(true)
+	var integration_sha: String = str(recorded_integration.get("sha256", ""))
+	_check("checkpoint binds its GDScript dynamics integration artifact",
+		integration_sha.length() == 64
+		and str(recorded_integration.get("kind", "")) in ["gdscript_source", "gdscript_remapped_bytecode"])
+	var changed_sha := ("0" if integration_sha.substr(0, 1) != "0" else "1") + integration_sha.substr(1)
+	recorded_integration["sha256"] = changed_sha
+	integration_solver["integration_artifact"] = recorded_integration
+	integration_identity_checkpoint["solver_identity"] = integration_solver
+	integration_identity_checkpoint["checkpoint_sha256"] = session._checkpoint_hash(integration_identity_checkpoint)
+	_check("checkpoint from changed GDScript integration source is rejected after rehash",
+		integration_sha.length() == 64 and not session.can_restore_checkpoint(integration_identity_checkpoint))
+	var changed_kind_checkpoint: Dictionary = checkpoint_before_recovery.duplicate(true)
+	var changed_kind_solver: Dictionary = changed_kind_checkpoint.solver_identity.duplicate(true)
+	var changed_kind_artifact: Dictionary = changed_kind_solver.get("integration_artifact", {}).duplicate(true)
+	changed_kind_artifact["kind"] = "gdscript_remapped_bytecode" \
+		if str(changed_kind_artifact.get("kind", "")) == "gdscript_source" else "gdscript_source"
+	changed_kind_solver["integration_artifact"] = changed_kind_artifact
+	changed_kind_checkpoint["solver_identity"] = changed_kind_solver
+	changed_kind_checkpoint["checkpoint_sha256"] = session._checkpoint_hash(changed_kind_checkpoint)
+	_check("checkpoint from another source/remapped artifact kind is rejected after rehash",
+		integration_sha.length() == 64 and not session.can_restore_checkpoint(changed_kind_checkpoint))
 	var foreign_backend_checkpoint: Dictionary = checkpoint_before_recovery.duplicate(true)
 	var foreign_backend_solver: Dictionary = foreign_backend_checkpoint.solver_identity
 	var foreign_backend: Dictionary = foreign_backend_solver.backend_identity.duplicate(true)

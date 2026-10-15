@@ -23,6 +23,9 @@ var _body_bounds := AABB()
 var _front_bumper_base := Transform3D.IDENTITY
 var _rear_bumper_base := Transform3D.IDENTITY
 var _last_signature := ""
+var _damage_basis := Basis.IDENTITY
+var _front_offset_basis := Basis.IDENTITY
+var _rear_offset_basis := Basis.IDENTITY
 
 
 func prepare(visual: Dictionary) -> bool:
@@ -40,6 +43,11 @@ func prepare(visual: Dictionary) -> bool:
 	if not source_value is ArrayMesh:
 		return false
 	var source: ArrayMesh = source_value
+	_damage_basis = visual.get("damage_basis", Basis.IDENTITY)
+	if visual.has("damage_basis"):
+		var vehicle_root: Node3D = visual.root
+		_front_offset_basis = front_value.get_parent().global_basis.inverse() * vehicle_root.global_basis
+		_rear_offset_basis = rear_value.get_parent().global_basis.inverse() * vehicle_root.global_basis
 	if source.get_surface_count() <= 0 or source.get_blend_shape_count() > 0:
 		return false
 	var arrays_by_surface: Array = []
@@ -58,6 +66,7 @@ func prepare(visual: Dictionary) -> bool:
 		if vertices.is_empty():
 			return false
 		for vertex in vertices:
+			vertex = _damage_basis * vertex
 			if not has_vertex:
 				bounds = AABB(vertex, Vector3.ZERO)
 				has_vertex = true
@@ -121,10 +130,10 @@ func update(damage: Dictionary) -> bool:
 	var front_damage := float(damage.get("body_front_damage", 0.0))
 	var rear_damage := float(damage.get("body_rear_damage", 0.0))
 	_front_bumper.transform = _bumper_transform(
-		_front_bumper_base, FRONT_BUMPER_SHIFT_M * front_damage, front_damage,
+		_front_bumper_base, FRONT_BUMPER_SHIFT_M * front_damage, front_damage, _front_offset_basis,
 	)
 	_rear_bumper.transform = _bumper_transform(
-		_rear_bumper_base, -REAR_BUMPER_SHIFT_M * rear_damage, rear_damage,
+		_rear_bumper_base, -REAR_BUMPER_SHIFT_M * rear_damage, rear_damage, _rear_offset_basis,
 	)
 	_last_signature = signature
 	return true
@@ -180,6 +189,7 @@ func _make_mesh(
 
 
 func _dent_vertex(vertex: Vector3, damage: PackedFloat64Array) -> Vector3:
+	vertex = _damage_basis * vertex
 	var min_corner := _body_bounds.position
 	var max_corner := _body_bounds.position + _body_bounds.size
 	var span := _body_bounds.size
@@ -204,7 +214,7 @@ func _dent_vertex(vertex: Vector3, damage: PackedFloat64Array) -> Vector3:
 	var magnitude := offset.length()
 	if magnitude > depth:
 		offset *= depth / magnitude
-	return vertex + offset
+	return _damage_basis.inverse() * (vertex + offset)
 
 
 func _recalculate_normals(vertices: PackedVector3Array, indices: PackedInt32Array) -> PackedVector3Array:
@@ -254,9 +264,9 @@ func _falloff(distance: float, radius: float) -> float:
 	return t * t * (3.0 - 2.0 * t)
 
 
-func _bumper_transform(base: Transform3D, local_z_offset: float, damage: float) -> Transform3D:
+func _bumper_transform(base: Transform3D, local_z_offset: float, damage: float, offset_basis: Basis = Basis.IDENTITY) -> Transform3D:
 	var result := base
-	result.origin += Vector3(0.0, -0.003 * damage, local_z_offset)
+	result.origin += offset_basis * Vector3(0.0, -0.003 * damage, local_z_offset)
 	return result
 
 

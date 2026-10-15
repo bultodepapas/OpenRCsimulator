@@ -1,0 +1,48 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: default airplane airfield validates
+PASS: airfield bridge builds from normalized field bytes
+PASS: course identity is content-addressed
+PASS: start is runway centerline at the aircraft field origin
+PASS: runway-end spawn keeps a two-metre runway margin
+PASS: both spawn points use the runway surface
+PASS: airfield road height is the GroundTerrain result
+PASS: airfield road normal uses the GroundTerrain gradient
+PASS: runway material uses dry-pavement truck estimates times field factors
+PASS: rough surface retains its own field friction factors
+PASS: cache test locates the runway row
+PASS: same-length surface mutation changes friction despite cached validation
+PASS: nonfinite mutation fails closed after a valid cached lookup
+PASS: empty surface table fails to resolve a road after cached lookup
+PASS: original complete sample restores after changed and invalid tables
+PASS: custom field translation builds
+PASS: custom start follows the translated runway
+PASS: field content changes the course identity
+PASS: session prepares directly on the airplane airfield
+PASS: airfield initialization keeps float64 state at runway center
+PASS: airfield startup has finite terrain-supported CG altitude
+PASS: airfield session identity matches the bridge
+PASS: runway-end reset uses the second airfield spawn
+PASS: airfield tick-zero checkpoint survives JSON byte roundtrip
+PASS: airfield JSON checkpoint restores the exact supported float64 state
+PASS: second airfield session prepares on a different field identity
+PASS: checkpoint from a different field is rejected atomically
+PASS: airfield suspension experiment prepares from immutable baseline
+PASS: airfield experiment changes model identity and resets support
+PASS: experiment checkpoint JSON roundtrip restores same airfield support
+PASS: experiment reset returns to a supported named runway spawn
+PASS: driving session prepares on the airfield
+PASS: drive starts at runway end
+PASS: airfield session resumes after neutral arming
+PASS: short powered drive leaves runway and samples existing rough field
+PASS: resolved lake joins the airfield terrain source
+PASS: lake-aware road still samples the shared GroundTerrain path
+Lake parity mismatch 102 119 actual={ "height_m": -5.45, "normal_ned": [0.0, 0.0, -1.0], "mu": 0.3, "rolling": 4.5, "surface_id": "mud", "in_bounds": true, "feature_id": "", "feature_ids": [], "track_coverage": 0.0, "walls": [], "wet_zone": true, "water_height_m": -0.45, "water_depth_m": 5.0, "mud_fraction": 1.0 } shared=[-5.45, 0.0, 0.0]
+PASS: bank bounds invalidate on changed contents and preserve stencil-edge decisions
+RCV airfield course: 1 failed
+ERROR: FAIL: dry broadphase and native lake path preserve shared heights/normals over 980 points
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _check (res://tests/test_rcv_airfield_course.gd:249)
+       [1] _test_lake (res://tests/test_rcv_airfield_course.gd:231)
+       [2] _initialize (res://tests/test_rcv_airfield_course.gd:33)

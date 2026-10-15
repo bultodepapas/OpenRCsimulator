@@ -47,6 +47,7 @@ const BRAKE_CONVERGENCE_TORQUE_TOLERANCE_N_M := 0.000001
 const MIN_SLIP_SPEED_M_PER_S := 0.05
 const MATRIX_PIVOT_RELATIVE_TOLERANCE := 1.0e-12
 const MAX_WALL_CONTACT_BOXES := 8
+const PRELOADED_STATIC_STOP_TOLERANCE_M := 0.005
 const WALL_FRICTION_REGULARIZATION_M_PER_S := 0.05
 const BACKEND_GDSCRIPT_REFERENCE := "gdscript_reference"
 const BACKEND_NATIVE := "native"
@@ -399,18 +400,24 @@ static func make_terrain_state(model: Dictionary, pose: Dictionary, road: Callab
 			mean_height += height / float(CORNER_COUNT)
 		var cg_up := mean_height + datum - travel
 		if gravity == 0.0:
-			# Without weight there is no spring/tire preload. Place the relaxed
-			# suspension just clear of the highest tire patch, with no stored energy.
+			# With no weight, keep the free or explicitly preloaded suspension pose
+			# and place it just clear of the highest tire patch.
 			var highest := hub_heights[0]
 			for height in hub_heights: highest = maxf(highest, height)
-			state[POS + 2] = -(highest + datum + 1.0e-9)
+			state[POS + 2] = -(highest + datum - travel + 1.0e-9)
 			return state if _finite_array(state) else PackedFloat64Array()
 		var change := absf(state[POS + 2] + cg_up)
 		state[POS + 2] = -cg_up
 		for corner in CORNER_COUNT:
 			if absf(hub_heights[corner] - mean_height) > 0.02: return PackedFloat64Array()
 			var fitted_travel := travel + hub_heights[corner] - mean_height
-			if fitted_travel < -float(model.travel_droop_m) or fitted_travel > float(model.travel_bump_m):
+			# A preloaded spring can settle a fraction beyond a travel limit against
+			# the model's compliant stop. Permit that small equilibrium deflection
+			# for Nitro vehicles while retaining the strict legacy Bisonte gate.
+			var stop_allowance := PRELOADED_STATIC_STOP_TOLERANCE_M \
+				if float(model.get("suspension_preload_n", 0.0)) > 0.0 else 0.0
+			if fitted_travel < -float(model.travel_droop_m) - stop_allowance \
+				or fitted_travel > float(model.travel_bump_m) + stop_allowance:
 				return PackedFloat64Array()
 			change = maxf(change, absf(state[TRAVEL + corner] - fitted_travel))
 			state[TRAVEL + corner] = fitted_travel
@@ -2086,6 +2093,11 @@ static func _valid_model(model: Dictionary) -> bool:
 	for key in scalars:
 		if not model.has(key) or not is_finite(float(model[key])):
 			return false
+	if model.has("suspension_preload_n"):
+		var suspension_preload: Variant = model["suspension_preload_n"]
+		if typeof(suspension_preload) not in [TYPE_INT, TYPE_FLOAT] \
+				or not is_finite(float(suspension_preload)) or float(suspension_preload) < 0.0:
+			return false
 	var positive := [
 		"sprung_mass_kg", "unsprung_mass_kg", "wheel_spin_inertia_kg_m2", "arm_length_m",
 		"tire_radius_m", "suspension_stiffness_n_per_m", "tire_stiffness_n_per_m",
@@ -2234,10 +2246,25 @@ static func _add_scaled_vector(target: PackedFloat64Array, value: PackedFloat64A
 
 
 static func _static_travel(model: Dictionary) -> float:
-	if float(model["gravity_m_per_s2"]) <= 0.0:
-		return 0.0
-	return float(model["sprung_mass_kg"]) * float(model["gravity_m_per_s2"]) \
-		/ (4.0 * float(model["suspension_stiffness_n_per_m"]))
+	var gravity := float(model["gravity_m_per_s2"])
+	var stiffness := float(model["suspension_stiffness_n_per_m"])
+	var preload_n := float(model.get("suspension_preload_n", 0.0))
+	var corner_load := float(model["sprung_mass_kg"]) * gravity / 4.0
+	if preload_n <= 0.0:
+		if gravity <= 0.0:
+			return 0.0
+		return corner_load / stiffness
+	# The source ride datum includes a fixed spring preload. Solve the linear
+	# spring equilibrium against the same compliant stops used during integration
+	# so lab gravity/spring changes still initialize inside the represented range.
+	var free_travel := (corner_load - preload_n) / stiffness
+	if free_travel > float(model["travel_bump_m"]):
+		var bump_k := float(model["bump_stop_stiffness_n_per_m"])
+		return (corner_load - preload_n + bump_k * float(model["travel_bump_m"])) / (stiffness + bump_k)
+	if free_travel < -float(model["travel_droop_m"]):
+		var droop_k := float(model["droop_stop_stiffness_n_per_m"])
+		return (corner_load - preload_n - droop_k * float(model["travel_droop_m"])) / (stiffness + droop_k)
+	return free_travel
 
 
 static func _check_static_spawn_patch(

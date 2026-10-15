@@ -1,0 +1,39 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   terminal cut equals the CR-08b C2 boundary  
+ok   contact frequency respects ω·dt ≤ 0.25 at 240 Hz  
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   soft contacts are off by default  
+CRASH at 15.0 m/s (sink 0.6 m/s, airframe contact (hull point 2), point speed 15.0 m/s at detected tick) - restarting
+ok   default route: a wingtip brush is still a crash (D9d)  
+ok   hull contact is prepared for the Stik  
+ok   every point is no stiffer than the whole mass at the contact frequency  
+ok   a wingtip (small effective mass) is softer than the belly  tip 668, belly 9702 N/m
+ok   no load above the ground  
+ok   a sunk belly is pushed up (body −z)  
+ok   friction opposes the slide (body −x)  
+ok   friction stays inside the Coulomb bound  
+ok   a damper never pulls into the ground  
+ok   wingtip brush touches the ground  first contact tick 5
+ok   wingtip brush does not end the flight  crashed at -1
+ok   wingtip brush penetrates only a few centimetres  max depth 0.0080 m
+CRASH at 8.9 m/s (sink 9.6 m/s, airframe contact (hull point 3), point speed 8.9 m/s at detected tick) - restarting
+ok   10 m/s vertical nose-in ends the flight  
+ok   the crash names the spinner and the impact rule  spinner impact
+ok   a crush deeper than the backstop is a crash  
+ok   a point already in contact is not graded as a new impact  
+ok   one second of flight away from the ground is bit-identical with soft contacts on  
+ok   a soft contact run repeats exactly  
+ok   legacy trace metadata has no contact-law key  
+ok   soft trace metadata records the contact law  
+ok   soft contacts change the checkpoint configuration  
+ok   a soft-contact checkpoint is refused by a legacy session  
+ok   the same session restores its own checkpoint  
+ok   the contact law names its constants  
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   Avanti session loads  
+ok   belly landing at 1 m/s sink does not end the flight  crashed at -1
+ok   the belly slide brings the airplane to a stop  speed after 6 s 0.08 m/s
+ok   the slide stays finite  
+ok   the belly stays near the surface  deepest point 0.0021 m
+32 checks, 0 failed

@@ -55,6 +55,21 @@ The P-51 ground/handling failures are confirmed **R02 integration regressions**,
 
 Further focused repairs now pass: [accepted-tick Glow crash fixtures](glow-crash-diagnostic/README.md) (179/179 integration and 226/226 pose checks) and the [wing-skin light selector](underwing-light-diagnostic/README.md) (72/72, with old-selector negative controls). The [RCV timeout diagnosis](rcv-powertrain-timeout/README.md) identifies an unstaged native backend in the frozen snapshot. Building/verifying the pinned extension and staging it in a disposable copy makes the unchanged powertrain test pass 9/9 in 3.976 seconds under the original 60-second limit. The old timeout remains evidence of the GDScript fallback workload; it is not relabeled as a passing run.
 
-The canonical Linux `app/test.sh` run and fresh export/package smoke are recorded here when complete. Native focused checks and scenario recordings alone do not close those gates. R05-B1 is [implemented and contact-replay verified](../R05/R05-B-glow-contacts.md); the broader R05-B/R06-B/C/R07/R08 compositions remain separate work. There is no catalog promotion or release claim.
+The next physical Linux candidate (`20261015-07`) contains the exact 41 reviewed overlays: [materialization receipt](next-candidate/materialized-20261015-07-01/materialization-receipt.json). Root independently verified all overlay hashes against its post-copy manifest. Its first canonical attempt aborts during clean-cache resource import before tests; the same import succeeds on retry, without an established crash cause. The second canonical attempt passes all-script parsing and the early suites, then stops at [three atmosphere preference assertions](next-candidate/materialized-20261015-07-01/canonical-app-test-02.log). The [clean-checkout fixture diagnosis and repair](r09-preferences-fixture/README.md) demonstrate an absent scratch directory, without changing preferences or atmospheric physics. The original canonical result remains failed; later diagnostic checks cannot relabel it.
+
+The [sequential diagnostic remainder](next-candidate/materialized-20261015-07-01/diagnostic-remainder-01/results.tsv) then completes all 441 later suites: **435 pass, 6 fail**, with no timeout or engine-error failures. The ordinary failures remain visible:
+
+| Test | Observed failure | Interpretation |
+| --- | --- | --- |
+| `test_p51_envelope.gd` | Power-off stall recovery loses 83 m against 80 m | Separate P51-19 envelope gate. |
+| `test_p51_ground.gd` | Liftoff at 25.2 m/s, 1.61 Vs against the upper 1.5 Vs screen | Open R02 powered-wing/tail integration regression. |
+| `test_p51_handling.gd` | 0.7-stick loop reaches 343° against 360° | Open R02 powered-wing/tail integration regression. |
+| `test_rudder_authority.gd` | Stik doublet has 15.13°/s yaw magnitude at 3 s against 15°/s | [Frozen-source coefficient matrix](rudder-authority-diagnostic/README.md) attributes the crossing to regenerated `Cnr`; the estimated screen and generated derivative are not flight validation. |
+| `test_scenery_build.gd` | Cold build 932.651 ms against 800 ms | Retained timing failure under concurrent external work; no isolated performance verdict. |
+| `test_yaw_damping.gd` | Worst reference discrepancy 7.75% at 11° against 7% | Existing open R02 model-comparison gate. |
+
+The new D11g generator `--check` also [passes against frozen-07](next-candidate/materialized-20261015-07-01/d11g-generator-check-01.log). The newer atmosphere fixture, supplied as an external script without replacing frozen sources, [passes 97/97 checks on that app](next-candidate/materialized-20261015-07-01/atmosphere-column-session-updated-live-test-01.log). These supplementals and the diagnostic remainder do not turn either failed canonical attempt into a pass. The [new D11g CI hook](d11g-root-integration/README.md#failed-attempts-and-remaining-gates) and atmosphere fixture repair are separately identified additions after candidate freezing.
+
+Fresh export/package smoke remains in progress. R05-B1 is [implemented and contact-replay verified](../R05/R05-B-glow-contacts.md); the broader R05-B/R06-B/C/R07/R08 compositions remain separate work. There is no catalog promotion or release claim.
 
 Reproduce the recording batch with [`final_scenarios.py`](../../../../../research/physics-audit-2026-10-14/remediation/final_scenarios.py), a matching immutable `--app`, the pinned `--godot`, and a fresh `--out`. Do not use `--refresh-goldens` for routine verification.

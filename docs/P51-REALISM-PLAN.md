@@ -1,6 +1,6 @@
 # P-51D RC flight realism
 
-2026-10-14 · Revision 3 · **Status: P51-15…18 complete; P51-19…21 implemented; P51-22 diagnosed, shared-law decision open; physical acceptance remains experimental.** Prefix: P51-. This plan owns P51-15…22, following [P51-PLAN](P51-PLAN.md) and the completed [aircraft contract](../AIRCRAFT_CONTRACT.md). Revision 1 completed the audit and implementation plan before code changes; this revision records execution.
+2026-10-14 · Revision 3 · **Status: P51-15…18 complete; P51-19…21 implemented; P51-22 diagnosed and handed to the R02/R06 owner; P51-23 CI check and Linux verification run; physical acceptance remains experimental.** Prefix: P51-. This plan owns P51-15…23, following [P51-PLAN](P51-PLAN.md) and the completed [aircraft contract](../AIRCRAFT_CONTRACT.md). Revision 1 completed the audit and implementation plan before code changes; this revision records execution.
 
 ## Objective and ownership
 
@@ -41,6 +41,7 @@ Baseline: clean commit `df36b44`; Godot 4.7.2 official, native Windows. Existing
 | P51-20 | Planform-specific ground effect | Fit the shared M5-GE-1 law to an image-method VLM of this wing and tail; verify the runtime increments against the VLM and compare takeoff/landing with P51-19 in a clean checkout. |
 | P51-21 | Product runway start | Stiction data through the generator, qualified-list entry, ground fixtures from the product start; runway, prop-strike, UI and lifecycle checks pass. |
 | P51-22 | Diagnose the HEAD lift-off/loop regression | Bisect to the first bad commit; identify the law; quantify a candidate in a disposable checkout; leave shared-law changes to their owner. |
+| P51-23 | CI freshness and fresh-clone verification | `app/test.sh` checks the P-51 generator and VLM table; run the full suite in a fresh LF Linux clone and attribute every failure. |
 | P51-18 | Integration and performance verification | Run P-51 checks, schema/generator checks, all four model contracts, affected shared physics/lifecycle checks and `app/test.sh` in an isolated LF checkout with separate user-data directories. Attribute unrelated failures by reproducing on baseline. Measure trim/stalled/ground tick cost on the same host; investigate >5% repeatable regression, retain timing variability. Review final diff and document all remaining gaps. |
 
 ## Execution and acceptance disposition
@@ -55,6 +56,7 @@ Baseline: clean commit `df36b44`; Godot 4.7.2 official, native Windows. Existing
 | P51-20 | Implemented 2026-10-14. VLM fit: induced c 15.34, e 1.027; tail c 19.59, e 1.145. On the wheels (h/b 0.12) the runtime gives σ 0.65, +11.8 % lift at the same α, and 1.1° more up elevator in the flare. [Evidence](research/p51-realism/P51-20/README.md). |
 | P51-21 | Implemented 2026-10-14. Breakaway 1.25 (E3b1 estimate) and the P-51 is runway-qualified: three-point equilibrium at 14.3°, idle holds still (was 4.3 m creep), prop clearance 0.31 m, exact checkpoint/crash restart. [Evidence](research/p51-realism/P51-21/README.md). |
 | P51-22 | Diagnosed 2026-10-14. Bisection: `5e9dae16` (R02) divides the wing wake by the washed tail speed, so the slipstream carries almost no downwash. The six-line denominator candidate restored lift-off and the loop but was **withdrawn** 2026-10-15: it has a direction-dependent zero-speed force jump (owner review). The fix is the owner's powered wing/tail coupling slice; P-51 lift-off and loop checks stay open until then. [Evidence](research/p51-realism/P51-22/README.md). |
+| P51-23 | Implemented 2026-10-15. CI now checks the P-51 generator and VLM (numeric, cross-platform). Fresh Linux clone of `ed1720a8`: 464/477 steps pass, the new group passes, and the P-51 failures are exactly the three known items with Windows-identical values. The other failures are attributed to their owners. [Evidence](research/p51-realism/P51-23/README.md). |
 
 The root reviewed the final source/data diff, independent inertia math, all contributed reports, failure exits, input saturation and metric definitions. Parallel documentation consolidation changed shared plan files during the work; only narrow navigation additions were made and other tracks' edits were retained. The [audit/results entry point](research/p51-realism/README.md) and [tool instructions](../research/p51/p51-15/README.md) preserve the outcomes and remaining work.
 

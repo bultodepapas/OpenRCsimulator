@@ -1,0 +1,26 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field loads 
+ok   wheel velocity includes rotation, position uses the world frame 
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   240 Hz east completes without crash/fault 
+ok   240 Hz east touches down below 1 m/s at every wheel/recontact 0.32935033372629
+ok   240 Hz east all wheels stay on runway with 0.5 m margin 3.53325001318941
+ok   240 Hz east stops and holds at idle for >=2 s 41.5791666666667
+ok   240 Hz east baseline wash remains off 
+landing: {"compression_m":0.0318283544445203,"eastbound":true,"hz":240,"margin_m":3.53325001318941,"sink_mps":0.329350333726288,"stop_east_m":46.2165347547792,"stop_time_s":41.5791666666667,"touchdown_east_m":-44.2434486129023,"touchdown_time_s":8.6125}
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   240 Hz west completes without crash/fault 
+ok   240 Hz west touches down below 1 m/s at every wheel/recontact 0.32933484791915
+ok   240 Hz west all wheels stay on runway with 0.5 m margin 3.55500841597046
+ok   240 Hz west stops and holds at idle for >=2 s 41.2875
+ok   240 Hz west baseline wash remains off 
+landing: {"compression_m":0.0314632357845459,"eastbound":false,"hz":240,"margin_m":3.55500841597046,"sink_mps":0.329334847919154,"stop_east_m":-46.1947396301698,"stop_time_s":41.2875,"touchdown_east_m":44.1907665609581,"touchdown_time_s":8.61666666666667}
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   480 Hz east completes without crash/fault 
+ok   480 Hz east touches down below 1 m/s at every wheel/recontact 0.3295416328025
+ok   480 Hz east all wheels stay on runway with 0.5 m margin 3.4925154240101
+ok   480 Hz east stops and holds at idle for >=2 s 41.3145833333333
+ok   480 Hz east baseline wash remains off 
+landing: {"compression_m":0.0318480937158793,"eastbound":true,"hz":480,"margin_m":3.4925154240101,"sink_mps":0.329541632802502,"stop_east_m":46.2572157625077,"stop_time_s":41.3145833333333,"touchdown_east_m":-44.1918973607303,"touchdown_time_s":8.61666666666667}
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value

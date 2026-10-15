@@ -1,0 +1,3416 @@
+{
+  "cases": [
+    {
+      "baseline_quadrature_counts": {
+        "adaptive_calls": 3,
+        "x": 768,
+        "y": 96
+      },
+      "determinant": 1.0,
+      "direct_sampler_covariance": {
+        "cases": [
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.6653345369377348e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.938893903907228e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 3.469446951953614e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.938893903907228e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.938893903907228e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.3877787807814457e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.3877787807814457e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.457167719820518e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.0,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.0,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.0,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.0,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          }
+        ],
+        "max_air_velocity_abs_error_mps": 1.7763568394002505e-15,
+        "max_occupancy_abs_error": 0.0,
+        "max_path_coordinate_abs_error_m": 2.220446049250313e-16,
+        "max_weighted_delta_v_abs_error_mps": 0.0,
+        "sample_count": 40
+      },
+      "edge_fraction": 0.0,
+      "incorrect_polar_omega_negative_control": null,
+      "integral_covariance_residuals": {
+        "occupancy_weighted_area_m2": {
+          "l2_residual": 2.7755575615628914e-16,
+          "max_abs_residual": 2.7755575615628914e-16,
+          "relative_l2_residual": 2.7755575615628914e-16
+        },
+        "outer_geometric_area_m2": {
+          "l2_residual": 2.7755575615628914e-16,
+          "max_abs_residual": 2.7755575615628914e-16,
+          "relative_l2_residual": 2.7755575615628914e-16
+        },
+        "raw_first_moment_m3": {
+          "l2_residual": 6.843874359417885e-16,
+          "max_abs_residual": 5.551115123125783e-16,
+          "relative_l2_residual": 6.843874359417885e-16
+        },
+        "raw_second_moment_m4": {
+          "l2_residual": 1.3229834214604202e-15,
+          "max_abs_residual": 1.1102230246251565e-15,
+          "relative_l2_residual": 7.175270283558077e-16
+        },
+        "source_panel_area_m2": {
+          "l2_residual": 2.220446049250313e-16,
+          "max_abs_residual": 2.220446049250313e-16,
+          "relative_l2_residual": 1.9768928501160192e-16
+        },
+        "velocity_first_moment_m3ps": {
+          "l2_residual": 3.9283700765566935e-15,
+          "max_abs_residual": 2.6645352591003757e-15,
+          "relative_l2_residual": 7.607717043726426e-16
+        },
+        "velocity_second_moment_m4ps2": {
+          "l2_residual": 4.75071684047504e-14,
+          "max_abs_residual": 3.197442310920451e-14,
+          "relative_l2_residual": 9.02921431996981e-16
+        },
+        "weighted_first_moment_m3": {
+          "l2_residual": 6.843874359417885e-16,
+          "max_abs_residual": 5.551115123125783e-16,
+          "relative_l2_residual": 6.843874359417885e-16
+        },
+        "weighted_second_moment_m4": {
+          "l2_residual": 1.3229834214604202e-15,
+          "max_abs_residual": 1.1102230246251565e-15,
+          "relative_l2_residual": 7.175270283558077e-16
+        }
+      },
+      "integrated_occupancy_area_m2": 0.4270874445864964,
+      "integrated_raw_area_m2": 0.4270874445864964,
+      "moved_occupancy_area_m2": 0.42708744458649667,
+      "moved_raw_area_m2": 0.42708744458649667,
+      "occupancy_model": "hard",
+      "source_area_m2": 1.1232000000000002,
+      "transform": "proper_rotation",
+      "transformed_quadrature_counts": {
+        "adaptive_calls": 3,
+        "x": 768,
+        "y": 96
+      }
+    },
+    {
+      "baseline_quadrature_counts": {
+        "adaptive_calls": 3,
+        "x": 768,
+        "y": 96
+      },
+      "determinant": -1.0,
+      "direct_sampler_covariance": {
+        "cases": [
+          {
+            "air_velocity_max_abs_error_mps": 2.220446049250313e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 3.469446951953614e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.220446049250313e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 3.469446951953614e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 3.885780586188048e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.245004513516506e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.220446049250313e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.245004513516506e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.220446049250313e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 3.3306690738754696e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.249000902703301e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.6653345369377348e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 3.552713678800501e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.163336342344337e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 4.163336342344337e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.3877787807814457e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.942890293094024e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.457167719820518e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.498001805406602e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 6.661338147750939e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.1102230246251565e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 5.551115123125783e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.996003610813204e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.6653345369377348e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.3877787807814457e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.220446049250313e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.220446049250313e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.7755575615628914e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 3.3306690738754696e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.6653345369377348e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          }
+        ],
+        "max_air_velocity_abs_error_mps": 3.552713678800501e-15,
+        "max_occupancy_abs_error": 0.0,
+        "max_path_coordinate_abs_error_m": 1.6653345369377348e-16,
+        "max_weighted_delta_v_abs_error_mps": 0.0,
+        "sample_count": 40
+      },
+      "edge_fraction": 0.0,
+      "incorrect_polar_omega_negative_control": {
+        "cases": [
+          {
+            "air_velocity_max_abs_error_mps": 0.6586616131784631,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 3.469446951953614e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.6586616131784631,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 3.469446951953614e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.9635917149253692,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.245004513516506e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0926498138510763,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.9635917759113954,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.245004513516506e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.092649900648725,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0032326626095718,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.249000902703301e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.149068328979187,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.6653345369377348e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.6586614561788404,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.6586614561788404,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.9635915579257468,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0926496568514537,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.963591618911773,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 4.163336342344337e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.092649743649102,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.3877787807814457e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0032325056099494,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.457167719820518e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.1490681719795648,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.46241200673678384,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.46241200673678384,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7673421084836896,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.8964002074093971,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7673421694697167,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.8964002942070456,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.8069830561678928,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.6653345369377348e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.9528187225375081,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.26616255729472704,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.26616255729472704,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.571092659041633,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7001507579673396,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.5710927200276597,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7001508447649887,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.610733606725836,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7565692730954512,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.2661624002951051,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.2661624002951051,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.5710925020420108,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7001506009677179,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.42999995700000004,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.5710925630280372,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.430000043,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7001506877653665,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.430000043,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.6107334497262131,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7565691160958288,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.48589999999999994,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          }
+        ],
+        "max_air_velocity_abs_error_mps": 1.149068328979187,
+        "max_occupancy_abs_error": 0.0,
+        "max_path_coordinate_abs_error_m": 1.6653345369377348e-16,
+        "max_weighted_delta_v_abs_error_mps": 0.0,
+        "sample_count": 40
+      },
+      "integral_covariance_residuals": {
+        "occupancy_weighted_area_m2": {
+          "l2_residual": 5.551115123125783e-17,
+          "max_abs_residual": 5.551115123125783e-17,
+          "relative_l2_residual": 5.551115123125783e-17
+        },
+        "outer_geometric_area_m2": {
+          "l2_residual": 5.551115123125783e-17,
+          "max_abs_residual": 5.551115123125783e-17,
+          "relative_l2_residual": 5.551115123125783e-17
+        },
+        "raw_first_moment_m3": {
+          "l2_residual": 2.5438405243138006e-16,
+          "max_abs_residual": 2.220446049250313e-16,
+          "relative_l2_residual": 2.5438405243138006e-16
+        },
+        "raw_second_moment_m4": {
+          "l2_residual": 5.248391470688752e-16,
+          "max_abs_residual": 4.440892098500626e-16,
+          "relative_l2_residual": 2.834105868064794e-16
+        },
+        "source_panel_area_m2": {
+          "l2_residual": 0.0,
+          "max_abs_residual": 0.0,
+          "relative_l2_residual": 0.0
+        },
+        "velocity_first_moment_m3ps": {
+          "l2_residual": 9.42055475210265e-16,
+          "max_abs_residual": 8.881784197001252e-16,
+          "relative_l2_residual": 1.82439315930613e-16
+        },
+        "velocity_second_moment_m4ps2": {
+          "l2_residual": 2.267574472391967e-14,
+          "max_abs_residual": 2.1316282072803006e-14,
+          "relative_l2_residual": 3.7517051231226643e-16
+        },
+        "weighted_first_moment_m3": {
+          "l2_residual": 2.5438405243138006e-16,
+          "max_abs_residual": 2.220446049250313e-16,
+          "relative_l2_residual": 2.5438405243138006e-16
+        },
+        "weighted_second_moment_m4": {
+          "l2_residual": 5.248391470688752e-16,
+          "max_abs_residual": 4.440892098500626e-16,
+          "relative_l2_residual": 2.834105868064794e-16
+        }
+      },
+      "integrated_occupancy_area_m2": 0.4270874445864964,
+      "integrated_raw_area_m2": 0.4270874445864964,
+      "moved_occupancy_area_m2": 0.42708744458649645,
+      "moved_raw_area_m2": 0.42708744458649645,
+      "occupancy_model": "hard",
+      "source_area_m2": 1.1232000000000002,
+      "transform": "mirror",
+      "transformed_quadrature_counts": {
+        "adaptive_calls": 3,
+        "x": 768,
+        "y": 96
+      }
+    },
+    {
+      "baseline_quadrature_counts": {
+        "adaptive_calls": 4,
+        "x": 2560,
+        "y": 128
+      },
+      "determinant": 1.0,
+      "direct_sampler_covariance": {
+        "cases": [
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.245004513516506e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.938893903907228e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.3183898417423734e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 9.71445146547012e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.3877787807814457e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.938893903907228e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 4.163336342344337e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.938893903907228e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.938893903907228e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.6653345369377348e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 1.1102230246251565e-15,
+            "path_coordinate_abs_error_m": 4.163336342344337e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 5.329070518200751e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 2.220446049250313e-16,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 8.881784197001252e-16
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 2.3314683517128287e-15,
+            "path_coordinate_abs_error_m": 1.6653345369377348e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 1.4210854715202004e-14
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 8.881784197001252e-16,
+            "path_coordinate_abs_error_m": 2.0816681711721685e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 5.329070518200751e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 3.3306690738754696e-16,
+            "path_coordinate_abs_error_m": 9.71445146547012e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 1.7763568394002505e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 8.881784197001252e-16,
+            "path_coordinate_abs_error_m": 6.938893903907228e-18,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 5.10702591327572e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.3877787807814457e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 7.771561172376096e-16,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 4.440892098500626e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 2.220446049250313e-16
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 3.3306690738754696e-16,
+            "path_coordinate_abs_error_m": 1.6653345369377348e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 1.3322676295501878e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 4.440892098500626e-16,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 2.220446049250313e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 1.3322676295501878e-15,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 8.215650382226158e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 6.661338147750939e-16,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 3.774758283725532e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.0,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.0,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 7.771561172376096e-16,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 5.329070518200751e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 3.3306690738754696e-16,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 2.6645352591003757e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 4.440892098500626e-16,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 2.220446049250313e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 8.881784197001252e-16,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 5.329070518200751e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 1.2212453270876722e-15,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 7.549516567451064e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 3.3306690738754696e-16,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 1.7763568394002505e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.0,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          }
+        ],
+        "max_air_velocity_abs_error_mps": 1.7763568394002505e-15,
+        "max_occupancy_abs_error": 2.3314683517128287e-15,
+        "max_path_coordinate_abs_error_m": 2.220446049250313e-16,
+        "max_weighted_delta_v_abs_error_mps": 1.4210854715202004e-14,
+        "sample_count": 70
+      },
+      "edge_fraction": 0.14,
+      "incorrect_polar_omega_negative_control": null,
+      "integral_covariance_residuals": {
+        "occupancy_weighted_area_m2": {
+          "l2_residual": 1.1102230246251565e-16,
+          "max_abs_residual": 1.1102230246251565e-16,
+          "relative_l2_residual": 1.1102230246251565e-16
+        },
+        "outer_geometric_area_m2": {
+          "l2_residual": 3.3306690738754696e-16,
+          "max_abs_residual": 3.3306690738754696e-16,
+          "relative_l2_residual": 3.3306690738754696e-16
+        },
+        "raw_first_moment_m3": {
+          "l2_residual": 6.843874359417885e-16,
+          "max_abs_residual": 5.551115123125783e-16,
+          "relative_l2_residual": 6.213951980113588e-16
+        },
+        "raw_second_moment_m4": {
+          "l2_residual": 1.09625739919858e-15,
+          "max_abs_residual": 8.881784197001252e-16,
+          "relative_l2_residual": 5.173717691643303e-16
+        },
+        "source_panel_area_m2": {
+          "l2_residual": 2.220446049250313e-16,
+          "max_abs_residual": 2.220446049250313e-16,
+          "relative_l2_residual": 1.9768928501160192e-16
+        },
+        "velocity_first_moment_m3ps": {
+          "l2_residual": 2.2315206618374916e-15,
+          "max_abs_residual": 1.7763568394002505e-15,
+          "relative_l2_residual": 4.287043007586411e-16
+        },
+        "velocity_second_moment_m4ps2": {
+          "l2_residual": 1.9860273225978185e-14,
+          "max_abs_residual": 1.4210854715202004e-14,
+          "relative_l2_residual": 3.7444831566562146e-16
+        },
+        "weighted_first_moment_m3": {
+          "l2_residual": 2.2887833992611187e-16,
+          "max_abs_residual": 2.220446049250313e-16,
+          "relative_l2_residual": 2.2887833992611187e-16
+        },
+        "weighted_second_moment_m4": {
+          "l2_residual": 4.871083751574258e-16,
+          "max_abs_residual": 4.440892098500626e-16,
+          "relative_l2_residual": 2.6203883643886136e-16
+        }
+      },
+      "integrated_occupancy_area_m2": 0.4305294880382117,
+      "integrated_raw_area_m2": 0.4900886172988944,
+      "moved_occupancy_area_m2": 0.43052948803821184,
+      "moved_raw_area_m2": 0.49008861729889475,
+      "occupancy_model": "smooth cubic in squared radius",
+      "source_area_m2": 1.1232000000000002,
+      "transform": "proper_rotation",
+      "transformed_quadrature_counts": {
+        "adaptive_calls": 4,
+        "x": 2560,
+        "y": 128
+      }
+    },
+    {
+      "baseline_quadrature_counts": {
+        "adaptive_calls": 4,
+        "x": 2560,
+        "y": 128
+      },
+      "determinant": -1.0,
+      "direct_sampler_covariance": {
+        "cases": [
+          {
+            "air_velocity_max_abs_error_mps": 2.220446049250313e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 3.469446951953614e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.220446049250313e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 3.469446951953614e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 3.3306690738754696e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.942890293094024e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.6653345369377348e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 9.020562075079397e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 5.551115123125783e-17,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 5.551115123125783e-17,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.220446049250313e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.3877787807814457e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 3.3306690738754696e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.0408340855860843e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 3.3306690738754696e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.938893903907228e-18,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.220446049250313e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 6.661338147750939e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 3.469446951953614e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 1.4432899320127035e-15,
+            "path_coordinate_abs_error_m": 6.938893903907228e-18,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 1.1546319456101628e-14
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 2.220446049250313e-16,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 8.881784197001252e-16
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 3.774758283725532e-15,
+            "path_coordinate_abs_error_m": 9.020562075079397e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 2.7533531010703882e-14
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 7.771561172376096e-16,
+            "path_coordinate_abs_error_m": 1.3877787807814457e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 7.105427357601002e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 1.887379141862766e-15,
+            "path_coordinate_abs_error_m": 4.163336342344337e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 1.3988810110276972e-14
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.3322676295501878e-15,
+            "occupancy_abs_error": 1.1102230246251565e-15,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 8.215650382226158e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.498001805406602e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.245004513516506e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 5.551115123125783e-17,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 3.3306690738754696e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.220446049250313e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 1.7763568394002505e-15,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 1.3322676295501878e-14
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 7.771561172376096e-16,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 6.217248937900877e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 3.1086244689504383e-15,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 2.3092638912203256e-14
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 4.440892098500626e-16,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 2.6645352591003757e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 6.661338147750939e-16,
+            "occupancy_abs_error": 3.6637359812630166e-15,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 2.7533531010703882e-14
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 3.3306690738754696e-16,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 2.4424906541753444e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 3.3306690738754696e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 6.106226635438361e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.220446049250313e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 7.771561172376096e-16,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 5.329070518200751e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 7.771561172376096e-16,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 6.217248937900877e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 8.881784197001252e-16,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 6.217248937900877e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 8.881784197001252e-16
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 3.3306690738754696e-16,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 2.6645352591003757e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.7763568394002505e-15,
+            "occupancy_abs_error": 5.551115123125783e-16,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 4.440892098500626e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.7755575615628914e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 5.551115123125783e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 3.3306690738754696e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.1102230246251565e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.1102230246251565e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.220446049250313e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 5.551115123125783e-17,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.1102230246251565e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 4.440892098500626e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.1102230246251565e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.7755575615628914e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 2.7755575615628914e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 8.881784197001252e-16,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          }
+        ],
+        "max_air_velocity_abs_error_mps": 1.7763568394002505e-15,
+        "max_occupancy_abs_error": 3.774758283725532e-15,
+        "max_path_coordinate_abs_error_m": 2.220446049250313e-16,
+        "max_weighted_delta_v_abs_error_mps": 2.7533531010703882e-14,
+        "sample_count": 70
+      },
+      "edge_fraction": 0.14,
+      "incorrect_polar_omega_negative_control": {
+        "cases": [
+          {
+            "air_velocity_max_abs_error_mps": 0.6586616131784631,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 3.469446951953614e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.6586616131784631,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 3.469446951953614e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.9209015269047939,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0318915030798992,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.9422466361615884,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 9.020562075079397e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0622706801648998,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.9635917454183822,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0926498572499002,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.9849368546751767,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.3877787807814457e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.123029034334901,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0062819639319711,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.0408340855860843e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.1534082114199016,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0514726095299274,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.938893903907228e-18,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.2177252691912883,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.0399999,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.6586614561788404,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.6586614561788404,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.9209013699051709,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 3.469446951953614e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0318913460802763,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.9422464791619654,
+            "occupancy_abs_error": 1.4432899320127035e-15,
+            "path_coordinate_abs_error_m": 6.938893903907228e-18,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 1.1546319456101628e-14
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0622705231652767,
+            "occupancy_abs_error": 2.220446049250313e-16,
+            "path_coordinate_abs_error_m": 8.326672684688674e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 8.881784197001252e-16
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.9635915884187602,
+            "occupancy_abs_error": 3.774758283725532e-15,
+            "path_coordinate_abs_error_m": 9.020562075079397e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 2.7533531010703882e-14
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0926497002502775,
+            "occupancy_abs_error": 7.771561172376096e-16,
+            "path_coordinate_abs_error_m": 1.3877787807814457e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 7.105427357601002e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.9849366976755549,
+            "occupancy_abs_error": 1.887379141862766e-15,
+            "path_coordinate_abs_error_m": 4.163336342344337e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 1.3988810110276972e-14
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.1230288773352775,
+            "occupancy_abs_error": 1.1102230246251565e-15,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 8.215650382226158e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0062818069323487,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 6.245004513516506e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.1534080544202796,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0514724525303047,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.2177251121916663,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.7755575615628914e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.040000100000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.46241200673678384,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.46241200673678384,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7246519204631146,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.8356418966382197,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7459970297199086,
+            "occupancy_abs_error": 1.7763568394002505e-15,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 1.3322676295501878e-14
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.8660210737232201,
+            "occupancy_abs_error": 7.771561172376096e-16,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 6.217248937900877e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7673421389767026,
+            "occupancy_abs_error": 3.1086244689504383e-15,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 2.3092638912203256e-14
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.8964002508082212,
+            "occupancy_abs_error": 4.440892098500626e-16,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 2.6645352591003757e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.788687248233497,
+            "occupancy_abs_error": 3.6637359812630166e-15,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 2.7533531010703882e-14
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.926779427893222,
+            "occupancy_abs_error": 3.3306690738754696e-16,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 2.4424906541753444e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.8100323574902918,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.9571586049782221,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.855223003088248,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 5.551115123125783e-17,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 1.0214756627496095,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.29000000000000004,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.26616255729472704,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.26616255729472704,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.5284024710210578,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.6393924471961627,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.549747580277852,
+            "occupancy_abs_error": 7.771561172376096e-16,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 5.329070518200751e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.6697716242811627,
+            "occupancy_abs_error": 7.771561172376096e-16,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 6.217248937900877e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.571092689534646,
+            "occupancy_abs_error": 8.881784197001252e-16,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 6.217248937900877e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7001508013661641,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 8.881784197001252e-16
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.5924377987914413,
+            "occupancy_abs_error": 3.3306690738754696e-16,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 2.6645352591003757e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7305299784511647,
+            "occupancy_abs_error": 5.551115123125783e-16,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 4.440892098500626e-15
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.6137829080482349,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7609091555361658,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.658973553646191,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.8252262133075524,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.5399999000000001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.2661624002951051,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.0,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.2661624002951051,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.0,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.5284023140214348,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.639392290196541,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.36979999999999996,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.5497474232782299,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.3999,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.6697714672815412,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.3999,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.5710925325350242,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.43,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7001506443665421,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.43,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.5924376417918182,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 1.1102230246251565e-16,
+            "phase_rad": 0.0,
+            "radial_m": 0.4601,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7305298214515425,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 2.220446049250313e-16,
+            "phase_rad": 1.7,
+            "radial_m": 0.4601,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.6137827510486129,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.4902,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.7609089985365436,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.4902,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.6589733966465691,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 0.0,
+            "radial_m": 0.553926,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          },
+          {
+            "air_velocity_max_abs_error_mps": 0.8252260563079301,
+            "occupancy_abs_error": 0.0,
+            "path_coordinate_abs_error_m": 0.0,
+            "phase_rad": 1.7,
+            "radial_m": 0.553926,
+            "s_m": 0.5400001,
+            "weighted_delta_v_max_abs_error_mps": 0.0
+          }
+        ],
+        "max_air_velocity_abs_error_mps": 1.2177252691912883,
+        "max_occupancy_abs_error": 3.774758283725532e-15,
+        "max_path_coordinate_abs_error_m": 2.220446049250313e-16,
+        "max_weighted_delta_v_abs_error_mps": 2.7533531010703882e-14,
+        "sample_count": 70
+      },
+      "integral_covariance_residuals": {
+        "occupancy_weighted_area_m2": {
+          "l2_residual": 0.0,
+          "max_abs_residual": 0.0,
+          "relative_l2_residual": 0.0
+        },
+        "outer_geometric_area_m2": {
+          "l2_residual": 5.551115123125783e-17,
+          "max_abs_residual": 5.551115123125783e-17,
+          "relative_l2_residual": 5.551115123125783e-17
+        },
+        "raw_first_moment_m3": {
+          "l2_residual": 2.3055512673781017e-16,
+          "max_abs_residual": 2.220446049250313e-16,
+          "relative_l2_residual": 2.162928748526695e-16
+        },
+        "raw_second_moment_m4": {
+          "l2_residual": 2.55987824628e-16,
+          "max_abs_residual": 2.220446049250313e-16,
+          "relative_l2_residual": 1.202274924347205e-16
+        },
+        "source_panel_area_m2": {
+          "l2_residual": 0.0,
+          "max_abs_residual": 0.0,
+          "relative_l2_residual": 0.0
+        },
+        "velocity_first_moment_m3ps": {
+          "l2_residual": 1.047382306668854e-15,
+          "max_abs_residual": 8.881784197001252e-16,
+          "relative_l2_residual": 2.012158377407589e-16
+        },
+        "velocity_second_moment_m4ps2": {
+          "l2_residual": 2.2018272640352333e-14,
+          "max_abs_residual": 2.1316282072803006e-14,
+          "relative_l2_residual": 3.613814936582163e-16
+        },
+        "weighted_first_moment_m3": {
+          "l2_residual": 1.1102230246251565e-16,
+          "max_abs_residual": 1.1102230246251565e-16,
+          "relative_l2_residual": 1.1102230246251565e-16
+        },
+        "weighted_second_moment_m4": {
+          "l2_residual": 1.1123893155135927e-16,
+          "max_abs_residual": 1.1102230246251565e-16,
+          "relative_l2_residual": 5.957810031207767e-17
+        }
+      },
+      "integrated_occupancy_area_m2": 0.4305294880382117,
+      "integrated_raw_area_m2": 0.4900886172988944,
+      "moved_occupancy_area_m2": 0.4305294880382117,
+      "moved_raw_area_m2": 0.49008861729889447,
+      "occupancy_model": "smooth cubic in squared radius",
+      "source_area_m2": 1.1232000000000002,
+      "transform": "mirror",
+      "transformed_quadrature_counts": {
+        "adaptive_calls": 4,
+        "x": 2560,
+        "y": 128
+      }
+    }
+  ],
+  "numpy": "2.4.6",
+  "probe_scope": "synthetic tilted planar panel; proper rotation and mirror; no runtime/data changes",
+  "python": "3.11.9",
+  "scipy": "1.17.1",
+  "source_parameters": {
+    "field": {
+      "ambient": [
+        3.1,
+        -2.6,
+        1.4
+      ],
+      "axis": [
+        0.22028655891110543,
+        0.7910290069989695,
+        0.570742448087864
+      ],
+      "delta_v": [
+        7.5,
+        -1.7,
+        2.2
+      ],
+      "omega": [
+        0.37,
+        -0.29,
+        0.61
+      ],
+      "origin": [
+        0.3562691029728536,
+        -0.6949234978273934,
+        0.12010805101173826
+      ],
+      "radius": 0.43,
+      "s_max": 0.54,
+      "s_min": 0.04
+    },
+    "max_depth": 18,
+    "panel_vertices_body_m": [
+      [
+        -0.3056696631870073,
+        -0.9579923516878093,
+        0.18511018649384473
+      ],
+      [
+        1.0479944497991014,
+        -0.556355746735887,
+        -0.09752297995380435
+      ],
+      [
+        0.9256696631870073,
+        0.11799235168780933,
+        0.27488981350615527
+      ],
+      [
+        -0.4279944497991014,
+        -0.283644253264113,
+        0.5575229799538044
+      ]
+    ],
+    "quadrature_tolerance": 2e-09
+  },
+  "source_sha256": {
+    "candidate_results_preserved": "d44d1a35d3e6958221164a35ed4973546e910ab5948f16dc65763d44d15ff6a4",
+    "kernel": "c9014ea7dbb8a0cee4553f947c118903160a9a9b3aa54dec305ea813022f9a27",
+    "p51_source": "dca91a9ba5f03506d57b54a989ea56ba3f0da31b0d993d8f68b999aaf689d141",
+    "probe": "54ed31c1c2c643e28fb888f691f6ca12db96e4088159fcdab763628074198e35",
+    "readme": "c0a009f3ce366c6de55aed6f6c159767a4a426356b5a6408b7de2c09d2749112",
+    "slipstream_source": "bb810e8e9e93b1b89ad1750cd4db507eb7fe66fad070a5cce51dfd0dce58ab06"
+  },
+  "title": "R02 wing immersion rigid-coordinate covariance probe",
+  "transform_parameters": {
+    "ambient_translation_rule": "ambient_prime = Q*ambient - omega_prime cross translation",
+    "mirror_determinant": -1.0,
+    "mirror_matrix": [
+      [
+        0.7546810854110344,
+        -0.4275558225693401,
+        0.4976469410233303
+      ],
+      [
+        -0.4275558225693401,
+        0.25483128066486427,
+        0.8673275257835186
+      ],
+      [
+        0.4976469410233303,
+        0.8673275257835186,
+        -0.00951236607589867
+      ]
+    ],
+    "mirror_omega_rule": "omega_prime = det(Q) * Q * omega (axial vector)",
+    "proper_rotation_determinant": 1.0,
+    "proper_rotation_matrix": [
+      [
+        0.756633906908126,
+        -0.37007710080254924,
+        -0.5390251110834494
+      ],
+      [
+        0.1351029419552226,
+        0.8951008219431578,
+        -0.42490200473959544
+      ],
+      [
+        0.6397283220180181,
+        0.24867138560410046,
+        0.7272621370522102
+      ]
+    ],
+    "translation_m": [
+      1.35,
+      -0.88,
+      0.46
+    ]
+  }
+}

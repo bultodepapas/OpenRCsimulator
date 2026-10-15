@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Bisonte contact test model loads  []
+ok   flat test state initializes
+ok   sphere contacts report tire and hull wall support
+ok   wall loads stay separate from terrain tire loads
+ok   wall spring energy is included without creating friction power at rest
+ok   empty wall samples stay inactive
+ok   regularized wall friction dissipates while sliding  friction power -648.000000 W
+ok   malformed, inverted, and excessive wall samples fail closed
+ok   4 m/s approach reaches a wall contact before crossing it  north -2.682 m, speed 2.534 m/s
+ok   wall impact remains finite and loses forward speed  speed -2.487 m/s, peak 4.000 m/s
+ok   reverse-speed impact stays finite and does not tunnel through the wall
+ok   shared wall response matches the reference backend  max acceleration delta 0.000000000
+ok   10 m/s rolling wall impact is detected and stays dissipative at 240 Hz  peak load 3100.0 N, energy 315.286→max 315.286 J
+ok   10 m/s rolling wall impact is detected and stays dissipative at 480 Hz  peak load 3037.2 N, energy 315.286→max 315.286 J
+RCV obstacle contacts: 14 checks, 0 failures

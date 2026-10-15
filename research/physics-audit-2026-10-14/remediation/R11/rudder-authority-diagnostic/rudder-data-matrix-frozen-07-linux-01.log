@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+case=D11g current regenerated values hz=240 aircraft=jensen-das-ugly-stik-60 model_Cmq=-8.009000 model_CLq=2.003000 model_Cnr=-0.133500 rows=721 expected_rows=721 dt=0.004166666667 r_at_3s_deg_s=-15.125273050 r_final_deg_s=-15.125273050 peak_abs_r_deg_s=92.579585502
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+case=D11g preserved pre-regeneration values hz=240 aircraft=jensen-das-ugly-stik-60 model_Cmq=-7.944000 model_CLq=1.977000 model_Cnr=-0.135400 rows=721 expected_rows=721 dt=0.004166666667 r_at_3s_deg_s=-14.709714206 r_final_deg_s=-14.709714206 peak_abs_r_deg_s=92.423747900
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+case=new Cmq/CLq with old Cnr hz=240 aircraft=jensen-das-ugly-stik-60 model_Cmq=-8.009000 model_CLq=2.003000 model_Cnr=-0.135400 rows=721 expected_rows=721 dt=0.004166666667 r_at_3s_deg_s=-14.709636698 r_final_deg_s=-14.709636698 peak_abs_r_deg_s=92.423562660
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+case=old Cmq/CLq with new Cnr hz=240 aircraft=jensen-das-ugly-stik-60 model_Cmq=-7.944000 model_CLq=1.977000 model_Cnr=-0.133500 rows=721 expected_rows=721 dt=0.004166666667 r_at_3s_deg_s=-15.125328582 r_final_deg_s=-15.125328582 peak_abs_r_deg_s=92.579773640
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+case=D11g current regenerated values hz=480 aircraft=jensen-das-ugly-stik-60 model_Cmq=-8.009000 model_CLq=2.003000 model_Cnr=-0.133500 rows=1441 expected_rows=1441 dt=0.002083333333 r_at_3s_deg_s=-15.200615853 r_final_deg_s=-15.200615853 peak_abs_r_deg_s=92.579095158
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+case=D11g preserved pre-regeneration values hz=480 aircraft=jensen-das-ugly-stik-60 model_Cmq=-7.944000 model_CLq=1.977000 model_Cnr=-0.135400 rows=1441 expected_rows=1441 dt=0.002083333333 r_at_3s_deg_s=-14.785031197 r_final_deg_s=-14.785031197 peak_abs_r_deg_s=92.426617166
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+case=new Cmq/CLq with old Cnr hz=480 aircraft=jensen-das-ugly-stik-60 model_Cmq=-8.009000 model_CLq=2.003000 model_Cnr=-0.135400 rows=1441 expected_rows=1441 dt=0.002083333333 r_at_3s_deg_s=-14.784939112 r_final_deg_s=-14.784939112 peak_abs_r_deg_s=92.426427457
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+case=old Cmq/CLq with new Cnr hz=480 aircraft=jensen-das-ugly-stik-60 model_Cmq=-7.944000 model_CLq=1.977000 model_Cnr=-0.133500 rows=1441 expected_rows=1441 dt=0.002083333333 r_at_3s_deg_s=-15.200685982 r_final_deg_s=-15.200685982 peak_abs_r_deg_s=92.579287720

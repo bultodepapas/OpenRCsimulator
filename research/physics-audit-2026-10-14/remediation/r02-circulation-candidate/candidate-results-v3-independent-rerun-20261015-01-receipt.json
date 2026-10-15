@@ -1,0 +1,34 @@
+{
+  "baseline_result_sha256": "9867ffdd4e7bb7290b38eee3df2c271c8330e822f739fa677205192dbe580ca1",
+  "dependencies": {
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "identity_metadata_difference_paths": [],
+  "independent_rerun_result_sha256": "9867ffdd4e7bb7290b38eee3df2c271c8330e822f739fa677205192dbe580ca1",
+  "interpreter": {
+    "executable": "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "version": "3.11.9"
+  },
+  "nondeterministic_metadata_difference_paths": [],
+  "post_hashes": {
+    "requirements_sha256": "aac4b057efd278d60500643489f11048a56091c46634f101ad3ed06055b632ad",
+    "source_sha256": "d642014e08b415a5c88fb475bdd7e52ff90aecfb8e738a1f473856d9ded8c1c0"
+  },
+  "pre_hashes": {
+    "requirements_sha256": "aac4b057efd278d60500643489f11048a56091c46634f101ad3ed06055b632ad",
+    "source_sha256": "d642014e08b415a5c88fb475bdd7e52ff90aecfb8e738a1f473856d9ded8c1c0"
+  },
+  "requirements_unchanged": true,
+  "rerun_method": "Imported the unchanged canonical v3 source module, redirected OUT_PATH in memory to the new output file, then called module.main().",
+  "result_identities_match_pre_hashes": {
+    "candidate_source": true,
+    "requirements": true
+  },
+  "result_path": "research/physics-audit-2026-10-14/remediation/r02-circulation-candidate/candidate-results-v3-independent-rerun-20261015-01.json",
+  "schema": "r02-circulation-v3-independent-rerun-receipt-v1",
+  "semantic_difference_paths": [],
+  "semantic_json_identical": true,
+  "serialized_result_byte_identical": true,
+  "source_unchanged": true
+}

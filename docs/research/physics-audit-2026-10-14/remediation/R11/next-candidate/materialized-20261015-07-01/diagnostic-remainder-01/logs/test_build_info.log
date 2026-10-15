@@ -1,0 +1,17 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   parse "v0.1.0-rc2" -> 0.1.0-rc2
+ok   parse "v0.1.0-rc2-5-gabc1234" -> 0.1.0-rc2+5.gabc1234
+ok   parse "v0.1.0-rc2-5-gabc1234-dirty" -> 0.1.0-rc2+5.gabc1234.dirty
+ok   parse "v0.1.0-rc2-dirty" -> 0.1.0-rc2+dirty
+ok   parse "v1.2.3" -> 1.2.3
+ok   parse "v0.2.0-rc.10-12-g0123456789ab" -> 0.2.0-rc.10+12.g0123456789ab
+ok   parse "ee1f7d6" -> 0.1.0+gee1f7d6
+ok   parse "ee1f7d6-dirty" -> 0.1.0+gee1f7d6.dirty
+ok   parse "export-manual" -> 0.1.0+export-manual
+ok   parse "main" -> 0.1.0+main
+ok   parse "" -> 0.1.0
+ok   source tree: development build, numeric version from project.godot (0.1.1)
+ok   exported: label is the SemVer of the describe
+ok   a file of another format is ignored (development)
+all build info checks passed

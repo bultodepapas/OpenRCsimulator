@@ -1,0 +1,39 @@
+FFF
+======================================================================
+FAIL: test_check_refuses_mutated_output_without_repairing_it (__main__.VehicleDataGeneratorTests.test_check_refuses_mutated_output_without_repairing_it)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\.tools\rcv-audit-20261015-frozen\research\rc-monster-truck\test_vehicle_data_generator.py", line 47, in test_check_refuses_mutated_output_without_repairing_it
+    self.assertIn("stale generated vehicle data", result.stderr)
+AssertionError: 'stale generated vehicle data' not found in "usage: build_vehicle_data.py [-h] [--spec SPEC] [--glb GLB] [--out OUT]\n                             [--check]\nbuild_vehicle_data.py: error: 'C:\\\\DEVELOPMENT\\\\OpenRCsimulator\\\\RC CARS\\\\MT8_Bisonte_entrega1_1\\\\MT8_Bisonte\\\\out\\\\mt8_spec.json' is not in the subpath of 'C:\\\\DEVELOPMENT\\\\OpenRCsimulator\\\\.tools\\\\rcv-audit-20261015-frozen' OR one path is relative and the other is absolute.\n"
+
+======================================================================
+FAIL: test_checked_in_data_matches_generator_and_uses_lf (__main__.VehicleDataGeneratorTests.test_checked_in_data_matches_generator_and_uses_lf)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\.tools\rcv-audit-20261015-frozen\research\rc-monster-truck\test_vehicle_data_generator.py", line 32, in test_checked_in_data_matches_generator_and_uses_lf
+    self.run_generator("--check")
+  File "C:\DEVELOPMENT\OpenRCsimulator\.tools\rcv-audit-20261015-frozen\research\rc-monster-truck\test_vehicle_data_generator.py", line 27, in run_generator
+    self.assertEqual(result.returncode == 0, success, result.stdout + result.stderr)
+AssertionError: False != True : usage: build_vehicle_data.py [-h] [--spec SPEC] [--glb GLB] [--out OUT]
+                             [--check]
+build_vehicle_data.py: error: 'C:\\DEVELOPMENT\\OpenRCsimulator\\RC CARS\\MT8_Bisonte_entrega1_1\\MT8_Bisonte\\out\\mt8_spec.json' is not in the subpath of 'C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\rcv-audit-20261015-frozen' OR one path is relative and the other is absolute.
+
+
+======================================================================
+FAIL: test_generator_output_is_byte_identical_to_checked_in_file (__main__.VehicleDataGeneratorTests.test_generator_output_is_byte_identical_to_checked_in_file)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\.tools\rcv-audit-20261015-frozen\research\rc-monster-truck\test_vehicle_data_generator.py", line 54, in test_generator_output_is_byte_identical_to_checked_in_file
+    self.run_generator("--out", str(output))
+  File "C:\DEVELOPMENT\OpenRCsimulator\.tools\rcv-audit-20261015-frozen\research\rc-monster-truck\test_vehicle_data_generator.py", line 27, in run_generator
+    self.assertEqual(result.returncode == 0, success, result.stdout + result.stderr)
+AssertionError: False != True : usage: build_vehicle_data.py [-h] [--spec SPEC] [--glb GLB] [--out OUT]
+                             [--check]
+build_vehicle_data.py: error: 'C:\\DEVELOPMENT\\OpenRCsimulator\\RC CARS\\MT8_Bisonte_entrega1_1\\MT8_Bisonte\\out\\mt8_spec.json' is not in the subpath of 'C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\rcv-audit-20261015-frozen' OR one path is relative and the other is absolute.
+
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.343s
+
+FAILED (failures=3)

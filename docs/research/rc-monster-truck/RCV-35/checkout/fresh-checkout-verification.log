@@ -1,0 +1,106 @@
+RCV-35 scoped fresh-clone verification
+Only disposable repositories were initialized, staged, committed, and cloned; production branch/index were not touched.
+Disposable commit: 729bde8683a09f89a89f468cd275f2f2d83a680a
+
+Fresh-clone path attributes:
+monster car 2/datos_simulacion_1.json: text: unset
+monster car 2/monster_truck_nitro_1.glb: text: unset
+assets/vehicles/monster-car-2/datos_simulacion_1.json: text: unset
+assets/vehicles/monster-car-2/monster_truck_nitro_1.glb: text: unspecified
+app/data/vehicles/ground/monster_car_2.json: text: set
+
+$ "C:\Program Files\Git\cmd\git.EXE" --version
+git version 2.52.0.windows.1
+exit=0
+
+$ "C:\Program Files\Git\cmd\git.EXE" -C C:\Users\bulto\AppData\Local\Temp\openrc-rcv35-checkout-tf_mbh54\snapshot init --quiet
+
+exit=0
+
+$ "C:\Program Files\Git\cmd\git.EXE" -C C:\Users\bulto\AppData\Local\Temp\openrc-rcv35-checkout-tf_mbh54\snapshot config user.name "RCV-35 Checkout Verification"
+
+exit=0
+
+$ "C:\Program Files\Git\cmd\git.EXE" -C C:\Users\bulto\AppData\Local\Temp\openrc-rcv35-checkout-tf_mbh54\snapshot config user.email rcv35-checkout@example.invalid
+
+exit=0
+
+$ "C:\Program Files\Git\cmd\git.EXE" -C C:\Users\bulto\AppData\Local\Temp\openrc-rcv35-checkout-tf_mbh54\snapshot config core.autocrlf true
+
+exit=0
+
+$ "C:\Program Files\Git\cmd\git.EXE" -C C:\Users\bulto\AppData\Local\Temp\openrc-rcv35-checkout-tf_mbh54\snapshot add -- .gitattributes "monster car 2" assets/vehicles/monster-car-2/datos_simulacion_1.json assets/vehicles/monster-car-2/monster_truck_nitro_1.glb app/data/vehicles/ground/monster_car_2.json research/rc-monster-truck/monster-car-2/build_vehicle_data.py research/rc-monster-truck/monster-car-2/test_build_vehicle_data.py
+
+exit=0
+
+$ "C:\Program Files\Git\cmd\git.EXE" -C C:\Users\bulto\AppData\Local\Temp\openrc-rcv35-checkout-tf_mbh54\snapshot commit --quiet -m "RCV-35 disposable source snapshot"
+
+exit=0
+
+$ "C:\Program Files\Git\cmd\git.EXE" -C C:\Users\bulto\AppData\Local\Temp\openrc-rcv35-checkout-tf_mbh54\snapshot rev-parse HEAD
+729bde8683a09f89a89f468cd275f2f2d83a680a
+exit=0
+
+$ "C:\Program Files\Git\cmd\git.EXE" -c core.autocrlf=true clone --quiet C:\Users\bulto\AppData\Local\Temp\openrc-rcv35-checkout-tf_mbh54\snapshot C:\Users\bulto\AppData\Local\Temp\openrc-rcv35-checkout-tf_mbh54\fresh-clone
+
+exit=0
+
+$ "C:\Program Files\Git\cmd\git.EXE" -C C:\Users\bulto\AppData\Local\Temp\openrc-rcv35-checkout-tf_mbh54\fresh-clone check-attr text -- "monster car 2/datos_simulacion_1.json" "monster car 2/monster_truck_nitro_1.glb" assets/vehicles/monster-car-2/datos_simulacion_1.json assets/vehicles/monster-car-2/monster_truck_nitro_1.glb app/data/vehicles/ground/monster_car_2.json
+monster car 2/datos_simulacion_1.json: text: unset
+monster car 2/monster_truck_nitro_1.glb: text: unset
+assets/vehicles/monster-car-2/datos_simulacion_1.json: text: unset
+assets/vehicles/monster-car-2/monster_truck_nitro_1.glb: text: unspecified
+app/data/vehicles/ground/monster_car_2.json: text: set
+exit=0
+
+$ C:\Users\bulto\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe research/rc-monster-truck/monster-car-2/build_vehicle_data.py --check
+Vehicle data is reproducible: C:\Users\bulto\AppData\Local\Temp\openrc-rcv35-checkout-tf_mbh54\fresh-clone\app\data\vehicles\ground\monster_car_2.json
+exit=0
+
+$ C:\Users\bulto\AppData\Local\Microsoft\WindowsApps\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\python.exe research/rc-monster-truck/monster-car-2/test_build_vehicle_data.py
+test_checked_in_vehicle_data_is_fresh (__main__.VehicleDataGeneratorTests.test_checked_in_vehicle_data_is_fresh) ... ok
+test_disposable_source_mutation_changes_geometry_output (__main__.VehicleDataGeneratorTests.test_disposable_source_mutation_changes_geometry_output) ... ok
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.056s
+
+OK
+exit=0
+
+$ "C:\Program Files\Git\cmd\git.EXE" -C C:\Users\bulto\AppData\Local\Temp\openrc-rcv35-checkout-tf_mbh54\fresh-clone status --porcelain
+
+exit=0
+
+Exact SHA-256 before snapshot:
+app/data/vehicles/ground/monster_car_2.json  974ce75e239e6e569004adf7b02cf0940159cf0887af218a51c3a5b12b47f1dc
+assets/vehicles/monster-car-2/datos_simulacion_1.json  510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0
+assets/vehicles/monster-car-2/monster_truck_nitro_1.glb  cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759
+monster car 2/analisis_choques_1.txt  e5302ebd280adb21ab85046a6b7dcd20a88e714ea47ae0eba903a74647f3b0eb
+monster car 2/analisis_mecanico_1.md  c15aad316431a93db5662f8f9967e442aa67beb2e3074bc645ac61b765bd41e8
+monster car 2/datos_simulacion_1.json  510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0
+monster car 2/livery.py  577373699176a8a376a20a3ff3793bec48aa5cca47f0199baea3042e798bc14f
+monster car 2/mecanica_1.json  dabe2642dd16bfe1ec20e40eb8fabb3521f8b4825abd3da1ce4efe6aee116bef
+monster car 2/monster_truck_colisiones_1.glb  daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5
+monster car 2/monster_truck_nitro.py  adea91c90deacbceeee26b4f4333af84964f66b35c57967439859b118e9a2fda
+monster car 2/monster_truck_nitro_1.blend  acae5bfff2227a8b370b5baf31af1df4ac177a27a04b0094f25e3ba44b5ba0bf
+monster car 2/monster_truck_nitro_1.fbx  c621701c210d3bffafa9bcd3035b6a6cbf12fcf0df9dc8bd70dfbaeea6a73037
+monster car 2/monster_truck_nitro_1.glb  cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759
+monster car 2/monster_truck_nitro_LOD1_1.glb  4a2af499c52db5a085be1ee56ba46981a6e9833ce86218c4ab67a162d7126bb4
+
+Exact SHA-256 after fresh checkout and checks:
+app/data/vehicles/ground/monster_car_2.json  974ce75e239e6e569004adf7b02cf0940159cf0887af218a51c3a5b12b47f1dc
+assets/vehicles/monster-car-2/datos_simulacion_1.json  510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0
+assets/vehicles/monster-car-2/monster_truck_nitro_1.glb  cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759
+monster car 2/analisis_choques_1.txt  e5302ebd280adb21ab85046a6b7dcd20a88e714ea47ae0eba903a74647f3b0eb
+monster car 2/analisis_mecanico_1.md  c15aad316431a93db5662f8f9967e442aa67beb2e3074bc645ac61b765bd41e8
+monster car 2/datos_simulacion_1.json  510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0
+monster car 2/livery.py  577373699176a8a376a20a3ff3793bec48aa5cca47f0199baea3042e798bc14f
+monster car 2/mecanica_1.json  dabe2642dd16bfe1ec20e40eb8fabb3521f8b4825abd3da1ce4efe6aee116bef
+monster car 2/monster_truck_colisiones_1.glb  daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5
+monster car 2/monster_truck_nitro.py  adea91c90deacbceeee26b4f4333af84964f66b35c57967439859b118e9a2fda
+monster car 2/monster_truck_nitro_1.blend  acae5bfff2227a8b370b5baf31af1df4ac177a27a04b0094f25e3ba44b5ba0bf
+monster car 2/monster_truck_nitro_1.fbx  c621701c210d3bffafa9bcd3035b6a6cbf12fcf0df9dc8bd70dfbaeea6a73037
+monster car 2/monster_truck_nitro_1.glb  cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759
+monster car 2/monster_truck_nitro_LOD1_1.glb  4a2af499c52db5a085be1ee56ba46981a6e9833ce86218c4ab67a162d7126bb4
+
+PASS: 14 data/spec/GLB paths are byte-identical across checkout; normalized text sources match; generator check and unittest leave the clone clean.

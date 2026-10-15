@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   runway contact uses the abrasion friction and paving restitution
+ok   turf absorbs more than paving
+ok   an unknown surface uses the explicit fallback
+ok   every friction surface has a restitution
+ok   grass sets the wreck ground material
+ok   concrete sets the wreck ground material
+ok   a wreck slides farther on grass than on concrete  grass 4.95 m, concrete 4.17 m
+ok   a dropped wreck rebounds higher from concrete than from grass  concrete 0.939 m/s, grass 0.213 m/s
+ok   concrete rebound limiter returns its restitution  0.880 m/s
+ok   grass rebound limiter returns its restitution  0.200 m/s
+10 checks, 0 failed

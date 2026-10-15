@@ -1,0 +1,59 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   failure defaults are off, non-catastrophic and visible
+ok   failure validator accepts an integer percentage
+ok   failure validator rejects a percentage outside the slider range
+ok   failure validator rejects a floating percentage
+ok   write invalid preference fixture
+ok   invalid failure preference recovers to defaults
+ok   preferences refuse to save invalid failure config
+ok   save valid failure preference
+ok   failure preferences round-trip
+ok   rotorcraft Home disables failure settings
+ok   direct helicopter route rejects --failures=100
+ok   direct fixed-wing route keeps --failures=100 available
+ok   direct helicopter route rejects --catastrophic
+ok   direct fixed-wing route keeps --catastrophic available
+ok   direct helicopter route rejects --failure-notices=false
+ok   direct fixed-wing route keeps --failure-notices=false available
+ok   direct helicopter route rejects --failure-seed=23
+ok   direct fixed-wing route keeps --failure-seed=23 available
+ok   helicopter route without failure options stays available
+ok   probability slider range is integer 0..100 and editable
+ok   probability spin box range is integer 0..100 and editable
+ok   slider updates percentage entry
+ok   percentage entry updates slider
+ok   Home exposes a disabled-by-default failure summary
+ok   Home failure summary fits the 1280×720 viewport
+ok   Home keyboard path reaches Failure settings
+ok   Home opens the Failure screen
+ok   Home failure card fits the 1280×720 viewport
+ok   Home keeps the standard notice explanation
+ok   menu starts on Apply
+ok   Escape returns to Home
+ok   Cancel discarded probability and category
+ok   Enter confirms and returns to Home
+ok   Apply saves probability and catastrophe choice
+ok   Home summarizes the next flight
+ok   Apply persisted failure preferences
+ok   Home focus returns to Fly from Failure settings
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home flight receives the saved failure configuration
+ok   flight notices start from the saved preference
+ok   100% schedules an incident for this flight before it activates
+ok   Pause shows next-flight failure settings
+ok   Pause can render the current incident label and hint
+ok   Pause failure summary fits the 1280×720 viewport
+ok   Pause failure card fits the 1280×720 viewport
+ok   Pause explains current-flight and next-flight setting scopes
+ok   Pause edits do not change notices before Apply
+ok   Pause edits leave preferences and active flight unchanged before Apply
+ok   Cancel discards notice, probability and category edits
+ok   Pause Apply updates flight notices and saves next-flight configuration
+ok   pause summary updates after Apply
+ok   End returns to Home with applied next-flight preference
+ok   End debrief reports a scheduled incident that did not activate
+ok   Home failure debrief fits the 1280×720 viewport
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   next Home flight gets the updated failure plan on a new Main instance
+all failure UI checks passed

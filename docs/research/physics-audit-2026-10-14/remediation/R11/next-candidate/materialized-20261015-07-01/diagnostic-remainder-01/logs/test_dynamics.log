@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   shared loads equal manual aero + propulsion evaluation 
+ok   shared derivative equals manual rigid-body derivative including rotor momentum 
+ok   shared evaluation reports its explicit air/load/rotor context 
+ok   15 m/s level trim exists trimmed
+ok   flight modes expose the full 9×9 Jacobian 
+ok   existing longitudinal and lateral modes use explicit projections (4×4; longitudinal 5×5 with the lag) 
+ok   full Jacobian retains the rotor q→r gyroscopic coupling ΔA[ṙ,q] 0.39070508898250667 vs J⁻¹(0,0,h)z 0.39070508898250667
+7 checks, 0 failed

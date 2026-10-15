@@ -1,0 +1,476 @@
+{
+  "format": "openrc-ground-vehicle",
+  "version": 1,
+  "id": "monster-car-2",
+  "name": "MONSTER CAR 2",
+  "description": "Simulation model for the supplied nitro 4WD monster truck. Chassis geometry, mass inventory, and suspension values come from the supplied authored estimate; engine, clutch, fuel, tire, and brake dynamics remain clearly labeled estimates because no physical measurements or engine datasheet were supplied.",
+  "drive_configuration": "nitro_4wd",
+  "geometry_source": {
+    "spec_path": "assets/vehicles/monster-car-2/datos_simulacion_1.json",
+    "spec_sha256": "510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0",
+    "glb_path": "assets/vehicles/monster-car-2/monster_truck_nitro_1.glb",
+    "glb_sha256": "cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759",
+    "asset_frame": {
+      "right": "+X",
+      "up": "+Y",
+      "forward": "-Z"
+    },
+    "physics_frame": {
+      "forward": "+X",
+      "right": "+Y",
+      "down": "+Z"
+    },
+    "rights_status": "User-supplied geometry and scripts are included in the repository with their original source hashes recorded."
+  },
+  "parameters": {
+    "sprung_mass_kg": {
+      "value": 4.952,
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; mass inventory and inertia are estimated from the supplied Blender geometry/material assumptions. The source is a model-based estimate, not a physical measurement."
+    },
+    "unsprung_mass_kg": {
+      "value": 0.5186,
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; average of the four geometry-derived unsprung corner masses; front/rear differences are collapsed to the solver's symmetric per-wheel value. The source is a model-based estimate, not a physical measurement."
+    },
+    "sprung_inertia_kg_m2": {
+      "value": [
+        0.044862,
+        0.161689,
+        0.153347,
+        0.001672,
+        -0.004444,
+        0.000548
+      ],
+      "unit": "kg m^2",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; suspended inertia tensor transformed into FRD using S = diag(1,-1,-1), flattened as [Jxx,Jyy,Jzz,Jxy,Jxz,Jyz] about the estimated sprung CG. The source is a model-based estimate, not a physical measurement."
+    },
+    "wheel_spin_inertia_kg_m2": {
+      "value": 0.00163535814,
+      "unit": "kg m^2",
+      "kind": "estimated",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; per-wheel tire and rim inventory mass with a 0.65 annular-mass factor; no wheel spin test was supplied. The source is a model-based estimate, not a physical measurement."
+    },
+    "gravity_m_per_s2": {
+      "value": 9.80665,
+      "unit": "m/s^2",
+      "kind": "borrowed",
+      "source": "Standard nominal terrestrial gravitational acceleration."
+    },
+    "corner_x_datum_frd_m": {
+      "value": [
+        0.2,
+        0.2,
+        -0.2,
+        -0.2
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; source wheel-center X coordinates ordered FL, FR, RL, RR. The source is a model-based estimate, not a physical measurement."
+    },
+    "corner_y_datum_frd_m": {
+      "value": [
+        -0.2,
+        0.2,
+        -0.2,
+        0.2
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; source wheel-center Y coordinates converted from left-positive to FRD right-positive and ordered FL, FR, RL, RR. The source is a model-based estimate, not a physical measurement."
+    },
+    "corner_z_datum_frd_m": {
+      "value": [
+        0.0005000000000000004,
+        0.0005000000000000004,
+        0.0005000000000000004,
+        0.0005000000000000004
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; source wheel-center Z coordinates transformed to down-positive from a chassis datum at the 0.087 m rest axle height. The source is a model-based estimate, not a physical measurement."
+    },
+    "cg_forward_from_datum_m": {
+      "value": 0.0021,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; suspended CG X coordinate translated to the chosen rest-axle datum. The source is a model-based estimate, not a physical measurement."
+    },
+    "cg_right_from_datum_m": {
+      "value": 0.0028,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; suspended CG Y coordinate sign-converted to FRD right-positive. The source is a model-based estimate, not a physical measurement."
+    },
+    "cg_height_above_chassis_datum_m": {
+      "value": 0.032600000000000004,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; suspended CG height minus the chosen 0.087 m rest-axle datum. The source is a model-based estimate, not a physical measurement."
+    },
+    "arm_inner_offset_m": {
+      "value": 0.045,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; absolute lateral coordinate of the front lower-arm inboard pivot L0. The source is a model-based estimate, not a physical measurement."
+    },
+    "arm_length_m": {
+      "value": 0.15500000000000003,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; lateral distance from the lower-arm pivot L0 to the wheel center W. The source is a model-based estimate, not a physical measurement."
+    },
+    "wheel_center_rest_below_chassis_datum_m": {
+      "value": 0.0005000000000000004,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; mean rest wheel-center height converted to the selected chassis datum. The source is a model-based estimate, not a physical measurement."
+    },
+    "tire_radius_m": {
+      "value": 0.087,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; supplied rest tire radius. The source is a model-based estimate, not a physical measurement."
+    },
+    "suspension_stiffness_n_per_m": {
+      "value": 236.55,
+      "unit": "N/m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; wheel spring rates and shock damping values are model-derived recommendations. The source is a model-based estimate, not a physical measurement. Averaged front/rear wheel rates."
+    },
+    "suspension_preload_n": {
+      "value": 12.1406327,
+      "unit": "N",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; constant per-corner preload set to one quarter of the estimated 4.952 kg sprung mass times standard nominal gravity, supporting the supplied ride datum; it remains constant when laboratory gravity or spring scale changes, so zero gravity lets the suspension extend toward its droop stop. The source is a model-based estimate, not a physical measurement."
+    },
+    "suspension_damping_n_s_per_m": {
+      "value": 15.399554625000004,
+      "unit": "N s/m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; average front/rear shock compression/rebound damping multiplied by the square of each supplied 0.273 motion ratio; compression and rebound asymmetry is collapsed to one effective wheel coefficient. The source is a model-based estimate, not a physical measurement."
+    },
+    "tire_stiffness_n_per_m": {
+      "value": 6000.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "Simulation estimate; no tire vertical-load, pressure, or deflection test was supplied."
+    },
+    "tire_damping_n_s_per_m": {
+      "value": 20.0,
+      "unit": "N s/m",
+      "kind": "estimated",
+      "source": "Simulation estimate; no tire damping measurement was supplied."
+    },
+    "tire_slip_relaxation_s": {
+      "value": 0.04,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "Simulation estimate; no tire slip-relaxation test was supplied."
+    },
+    "travel_droop_m": {
+      "value": 0.044,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; absolute wheel droop travel. The source is a model-based estimate, not a physical measurement."
+    },
+    "travel_bump_m": {
+      "value": 0.036,
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; wheel compression travel. The source is a model-based estimate, not a physical measurement."
+    },
+    "bump_stop_stiffness_n_per_m": {
+      "value": 34000.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; simulation linearization informed by the model's 80.8 N maximum elastomer force at 2.36 mm crush; actual progressive bumper curve is not represented. The source is a model-based estimate, not a physical measurement."
+    },
+    "bump_stop_damping_n_s_per_m": {
+      "value": 80.0,
+      "unit": "N s/m",
+      "kind": "estimated",
+      "source": "Simulation estimate; no bump-stop damping test was supplied."
+    },
+    "droop_stop_stiffness_n_per_m": {
+      "value": 10000.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "Simulation estimate; no droop-stop force or stiffness measurement was supplied."
+    },
+    "droop_stop_damping_n_s_per_m": {
+      "value": 80.0,
+      "unit": "N s/m",
+      "kind": "estimated",
+      "source": "Simulation estimate; no droop-stop damping test was supplied."
+    },
+    "drive_torque_per_wheel_nm": {
+      "value": 1.05780246,
+      "unit": "N m",
+      "kind": "derived",
+      "source": "Derived placeholder from the estimated engine peak torque, source model gear ratio, and estimated gear efficiency; NitroDynamics replaces it each tick with clutch output torque."
+    },
+    "brake_torque_per_wheel_nm": {
+      "value": 1.2,
+      "unit": "N m",
+      "kind": "estimated",
+      "source": "Simulation estimate for four-wheel mechanical braking; the supplied source contains no brake torque or stopping test."
+    },
+    "brake_front_fraction": {
+      "value": 0.5,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Simulation estimate; no brake split or differential brake measurements were supplied."
+    },
+    "reverse_torque_fraction": {
+      "value": 0.0,
+      "unit": "1",
+      "kind": "derived",
+      "source": "The supplied transmission describes a single first gear and no reverse; NitroDynamics disables reverse drive."
+    },
+    "drive_torque_fade_rad_s": {
+      "value": 1000000000000.0,
+      "unit": "rad/s",
+      "kind": "derived",
+      "source": "Neutralized in NitroDynamics; the estimated combustion curve and centrifugal clutch, not the shared electric torque fade, define propulsion."
+    },
+    "rolling_resistance_coefficient": {
+      "value": 0.035,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Simulation estimate; no measured rolling-resistance test was supplied."
+    },
+    "tire_friction_scale": {
+      "value": 0.9,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Simulation estimate; no tire compound or surface friction test was supplied."
+    },
+    "max_steer_angle_rad": {
+      "value": 0.4269598949153729,
+      "unit": "rad",
+      "kind": "derived",
+      "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; mean of maximum inside/outside source steering-table angles because the shared solver uses parallel front steering. The source is a model-based estimate, not a physical measurement."
+    },
+    "steer_servo_natural_frequency_rad_s": {
+      "value": 18.0,
+      "unit": "rad/s",
+      "kind": "estimated",
+      "source": "Simulation estimate; no steering-servo response measurement was supplied."
+    },
+    "steer_servo_damping_ratio": {
+      "value": 0.9,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Simulation estimate; no steering-servo response measurement was supplied."
+    },
+    "hull_probe_centers_datum_frd_m": {
+      "value": [
+        0.30174216628074646,
+        0.0001404993236064911,
+        -0.009840088411699987,
+        -0.30174216628074646,
+        0.00014049559831619263,
+        -0.009840073510538793,
+        2.060830593109131e-05,
+        0.0025000013411045074,
+        0.021266789660323405,
+        -0.050250001610526424,
+        0.020000000251457095,
+        0.016296570674050593,
+        0.19999999552965164,
+        0.0,
+        0.017266785279382014,
+        -0.19999999552965164,
+        0.0,
+        0.01726679272996261,
+        0.006499990820884705,
+        0.0001623779535293579,
+        -0.22573322199238466,
+        0.006499990820884705,
+        -0.14227331757545472,
+        -0.1682332139457576,
+        0.006499990820884705,
+        0.14259807348251344,
+        -0.1682332139457576
+      ],
+      "unit": "m",
+      "kind": "derived",
+      "source": "Derived nine hull probe centers from supplied collision GLB `monster car 2/monster_truck_colisiones_1.glb` SHA-256 daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5; chassis probes follow the lowest vertex of named source meshes, plus one roof and two lateral shell points; each uses an estimated 20 mm contact sphere."
+    },
+    "hull_probe_radii_m": {
+      "value": [
+        0.02,
+        0.02,
+        0.02,
+        0.02,
+        0.02,
+        0.02,
+        0.02,
+        0.02,
+        0.02
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "Derived nine hull probe centers from supplied collision GLB `monster car 2/monster_truck_colisiones_1.glb` SHA-256 daf1fcc7caedb5115578f6e336af1f6b688921bc530ebdb9e2367bedcda968b5; chassis probes follow the lowest vertex of named source meshes, plus one roof and two lateral shell points; each uses an estimated 20 mm contact sphere."
+    },
+    "hull_contact_stiffness_n_per_m": {
+      "value": 15000.0,
+      "unit": "N/m",
+      "kind": "estimated",
+      "source": "Simulation estimate for the shared point-sphere hull contact solver; no chassis contact test was supplied."
+    },
+    "hull_contact_damping_n_s_per_m": {
+      "value": 150.0,
+      "unit": "N s/m",
+      "kind": "estimated",
+      "source": "Simulation estimate; no chassis contact damping test was supplied."
+    },
+    "hull_contact_friction_scale": {
+      "value": 0.6,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Simulation estimate; no chassis-contact friction test was supplied."
+    }
+  },
+  "powertrain": {
+    "kind": "nitro_single_speed_centrifugal_clutch",
+    "parameters": {
+      "engine_displacement_cm3": {
+        "value": 4.6,
+        "unit": "cm^3",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 single-cylinder nitro engine and centrifugal clutch; the supplied source contains no engine manufacturer, measured RPM curve, clutch map, or fuel-consumption test."
+      },
+      "engine_idle_rpm": {
+        "value": 4500.0,
+        "unit": "rpm",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 single-cylinder nitro engine and centrifugal clutch; the supplied source contains no engine manufacturer, measured RPM curve, clutch map, or fuel-consumption test."
+      },
+      "engine_max_rpm": {
+        "value": 38000.0,
+        "unit": "rpm",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 single-cylinder nitro engine and centrifugal clutch; the supplied source contains no engine manufacturer, measured RPM curve, clutch map, or fuel-consumption test."
+      },
+      "engine_rotor_inertia_kg_m2": {
+        "value": 0.0001,
+        "unit": "kg m^2",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 single-cylinder nitro engine and centrifugal clutch; the supplied source contains no engine manufacturer, measured RPM curve, clutch map, or fuel-consumption test."
+      },
+      "engine_drag_torque_nm": {
+        "value": 0.015,
+        "unit": "N m",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 single-cylinder nitro engine and centrifugal clutch; the supplied source contains no engine manufacturer, measured RPM curve, clutch map, or fuel-consumption test."
+      },
+      "engine_viscous_drag_nm_s_per_rad": {
+        "value": 3e-06,
+        "unit": "N m s/rad",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 single-cylinder nitro engine and centrifugal clutch; the supplied source contains no engine manufacturer, measured RPM curve, clutch map, or fuel-consumption test."
+      },
+      "idle_torque_nm": {
+        "value": 0.045,
+        "unit": "N m",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 single-cylinder nitro engine and centrifugal clutch; the supplied source contains no engine manufacturer, measured RPM curve, clutch map, or fuel-consumption test."
+      },
+      "idle_governor_gain_nm_s_per_rad": {
+        "value": 0.002,
+        "unit": "N m s/rad",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 single-cylinder nitro engine and centrifugal clutch; the supplied source contains no engine manufacturer, measured RPM curve, clutch map, or fuel-consumption test."
+      },
+      "clutch_engage_start_rpm": {
+        "value": 8500.0,
+        "unit": "rpm",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 single-cylinder nitro engine and centrifugal clutch; the supplied source contains no engine manufacturer, measured RPM curve, clutch map, or fuel-consumption test."
+      },
+      "clutch_engage_full_rpm": {
+        "value": 12000.0,
+        "unit": "rpm",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 single-cylinder nitro engine and centrifugal clutch; the supplied source contains no engine manufacturer, measured RPM curve, clutch map, or fuel-consumption test."
+      },
+      "clutch_capacity_nm": {
+        "value": 0.62,
+        "unit": "N m",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 single-cylinder nitro engine and centrifugal clutch; the supplied source contains no engine manufacturer, measured RPM curve, clutch map, or fuel-consumption test."
+      },
+      "clutch_slip_stiffness_nm_s_per_rad": {
+        "value": 0.0025,
+        "unit": "N m s/rad",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 single-cylinder nitro engine and centrifugal clutch; the supplied source contains no engine manufacturer, measured RPM curve, clutch map, or fuel-consumption test."
+      },
+      "gear_efficiency": {
+        "value": 0.82,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "Simulation estimate; source gear ratios are model values and no drivetrain efficiency test was supplied."
+      },
+      "initial_fuel_mass_kg": {
+        "value": 0.1,
+        "unit": "kg",
+        "kind": "estimated",
+        "source": "Simulation estimate of a 100 g starting fuel load. The source models a 118.1 g fuel-tank component but does not specify usable fuel volume, liquid mass, or whether that component includes its contents."
+      },
+      "fuel_specific_consumption_kg_per_j": {
+        "value": 6e-07,
+        "unit": "kg/J",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 single-cylinder nitro engine and centrifugal clutch; the supplied source contains no engine manufacturer, measured RPM curve, clutch map, or fuel-consumption test."
+      },
+      "gear_ratio": {
+        "value": 8.60002,
+        "unit": "1",
+        "kind": "derived",
+        "source": "Derived from supplied estimated geometry data SHA-256 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0; product of the supplied 3.3077 differential and 2.6 first-gear ratios; the source labels these as adjustable model values, not product specifications. The source is a model-based estimate, not a physical measurement."
+      },
+      "engine_curve_rpm": {
+        "value": [
+          0,
+          4000,
+          8000,
+          12000,
+          16000,
+          20000,
+          24000,
+          28000,
+          32000,
+          36000,
+          40000
+        ],
+        "unit": "rpm",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 nitro engine; no measured or manufacturer torque curve was supplied. Curve is a compact smooth approximation, not measured dynamometer data."
+      },
+      "engine_curve_torque_nm": {
+        "value": [
+          0.0,
+          0.12,
+          0.25,
+          0.37,
+          0.47,
+          0.54,
+          0.58,
+          0.6,
+          0.58,
+          0.43,
+          0.0
+        ],
+        "unit": "N m",
+        "kind": "estimated",
+        "source": "Simulation estimate for a generic 4.6 cm^3 nitro engine; no measured or manufacturer torque curve was supplied. Curve is a compact smooth approximation, not measured dynamometer data."
+      }
+    }
+  }
+}

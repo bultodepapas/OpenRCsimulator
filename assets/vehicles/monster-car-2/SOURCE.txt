@@ -1,0 +1,16 @@
+Monster Car 2 source asset provenance
+
+The following files were supplied by the user for the OpenRCsimulator task and
+copied byte-for-byte into this directory:
+
+- monster_truck_nitro_1.glb
+  SHA-256: cd894dd4cc365934626d4b4d45c64a22521d0bc89fb9918b07afe546a7910759
+- datos_simulacion_1.json
+  SHA-256: 510c3c822d4896174e26de930626b8abd6e3b232fd337c3348d7556fdc769ad0
+
+The source Blender file remains preserved at:
+monster car 2/monster_truck_nitro_1.blend
+
+No external model or free-download asset was used. No separate redistribution
+license was supplied with the files; this record documents provenance and does
+not assert public licensing terms.

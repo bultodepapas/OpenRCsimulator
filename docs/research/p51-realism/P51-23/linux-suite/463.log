@@ -1,0 +1,30 @@
+== G2a/G2b: coupled shaft launch, model identity and complete-state FPS independence
+..E..E....
+======================================================================
+ERROR: test_explicit_split_preserves_default_rows (__main__.ShaftCLI.test_explicit_split_preserves_default_rows)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/p51-verify-20261015/app/tests/test_shaft_cli.py", line 72, in test_explicit_split_preserves_default_rows
+    check_calm(path, 0.25, 240)
+  File "/home/bulto/p51-verify-20261015/app/tests/check_trimmed_flight.py", line 516, in check
+    check_metadata(metadata, first)
+  File "/home/bulto/p51-verify-20261015/app/tests/check_trimmed_flight.py", line 145, in check_metadata
+    raise ValueError(f'missing or unsupported {key}')
+ValueError: missing or unsupported aero_model
+
+======================================================================
+ERROR: test_reference_trim_and_model_identity (__main__.ShaftCLI.test_reference_trim_and_model_identity)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/p51-verify-20261015/app/tests/test_shaft_cli.py", line 49, in test_reference_trim_and_model_identity
+    check_calm(path, 0.25, 240)
+  File "/home/bulto/p51-verify-20261015/app/tests/check_trimmed_flight.py", line 516, in check
+    check_metadata(metadata, first)
+  File "/home/bulto/p51-verify-20261015/app/tests/check_trimmed_flight.py", line 145, in check_metadata
+    raise ValueError(f'missing or unsupported {key}')
+ValueError: missing or unsupported aero_model
+
+----------------------------------------------------------------------
+Ran 10 tests in 74.779s
+
+FAILED (errors=2)

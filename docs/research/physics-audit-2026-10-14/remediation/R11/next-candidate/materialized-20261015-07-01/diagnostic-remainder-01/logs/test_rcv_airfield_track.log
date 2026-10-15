@@ -1,0 +1,23 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: default airplane field loads for the track  []
+PASS: default airfield track loads with a source digest
+PASS: validated airfield course includes the default track  []
+RCV airfield track backend: native
+PASS: track loader validation rejects malformed format, inverted boxes, duplicate IDs, and >8 walls
+PASS: hairpin geometry is centered at N45/E0 with 6 m radius and 12 m half-straights
+PASS: south tabletop is a sampled raised feature at E=-4 m  height 0.480 m
+PASS: three N51 rollers add 0.12 m at E=-4/0/+4 m
+PASS: outer eastern hairpin has a banked-turn rise  bank contribution 0.425 m
+PASS: road normal matches finite-difference terrain gradient away from seams  max slope errors N 0.000000218, E 0.000000569
+PASS: track leaves every 1 m runway-grid sample N9–21/E−50–50 unchanged  grid edits 0, walls 0, height error 0.000000000
+PASS: translated/custom fields retain terrain only and receive no track or walls
+PASS: airfield truck session prepares with track metadata
+PASS: all five named runway and dirt-track spawns initialize with finite supported states  spawns ["start", "runway_end", "track_start", "track_technical", "track_rollers"]
+PASS: road wall broadphase returns local slalom boxes and no outside boxes
+PASS: native vehicle step collides with the authored slalom wall  N 44.85 E -6.45, normal 195.0 N
+PASS: controlled-speed south tabletop pass creates a measurable airborne hop  air 110 ticks (0.458 s), E -4.48→-3.01, max gap 0.411 m, peak speed 4.66 m/s
+PASS: tabletop hop lands on track with tire/hull support while upright  land E -3.01, upright cos 0.9579, support true, feature rc_dirt, coverage 1.00, ticks 559
+PASS: closed-loop waypoints carry the truck through the banked western hairpin  banked 288 ticks, path error 0.59 m, coverage 1.00, speed 2.57 m/s, upright 0.936
+PASS: one simulated second completes with finite session state  backend native, 1 simulated s in 0.575 wall s
+RCV airfield track: 19 checks, 0 failures

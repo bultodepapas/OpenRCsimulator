@@ -1,0 +1,7 @@
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\.tools\rcv-audit-20261015-frozen\research\rc-monster-truck\build_visual.py", line 56, in <module>
+    main()
+  File "C:\DEVELOPMENT\OpenRCsimulator\.tools\rcv-audit-20261015-frozen\research\rc-monster-truck\build_visual.py", line 48, in main
+    assert target.is_file() and target.read_bytes() == payload, f'Stale bundle: {relative}'
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: Stale bundle: assets/vehicles/mt8-bisonte/source-manifest.json

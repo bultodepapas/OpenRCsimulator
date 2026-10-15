@@ -1,0 +1,381 @@
+{
+  "checks": {
+    "direct_rate_dependent_matrix_vs_dimensional_g_max_abs_CL_error": 8.881784197001252e-16,
+    "nonuniform_local_flow_quadrature": {
+      "alpha_deg": 4.0,
+      "analytic_profile_integral": {
+        "fx_profile_N": 2.7783004182148106,
+        "yaw_profile_Nm": -0.003576156277057041
+      },
+      "profile_cd0_semantics": "borrowed whole-aircraft CD0 used only to demonstrate q\u00b2 quadrature; not a section coefficient",
+      "sampled_orders": {
+        "1": {
+          "kj_force_z_N": 25.095654133724732,
+          "kj_yaw_Nm": -1.5642716978542248e-06,
+          "profile_force_N": 2.7783002522477327,
+          "profile_force_abs_error_N": 1.6596707785865306e-07,
+          "profile_yaw_Nm": -0.0034768186026943315,
+          "profile_yaw_abs_error_Nm": 9.933767436270946e-05
+        },
+        "2": {
+          "kj_force_z_N": 25.095654133724743,
+          "kj_yaw_Nm": -1.564271697847286e-06,
+          "profile_force_N": 2.7783004182148114,
+          "profile_force_abs_error_N": 8.881784197001252e-16,
+          "profile_yaw_Nm": -0.0035761562770568467,
+          "profile_yaw_abs_error_Nm": 1.942890293094024e-16
+        },
+        "4": {
+          "kj_force_z_N": 25.09565413372473,
+          "kj_yaw_Nm": -1.5642716977813664e-06,
+          "profile_force_N": 2.7783004182148106,
+          "profile_force_abs_error_N": 0.0,
+          "profile_yaw_Nm": -0.0035761562770569993,
+          "profile_yaw_abs_error_Nm": 4.163336342344337e-17
+        },
+        "8": {
+          "kj_force_z_N": 25.095654133724743,
+          "kj_yaw_Nm": -1.564271697859429e-06,
+          "profile_force_N": 2.778300418214811,
+          "profile_force_abs_error_N": 4.440892098500626e-16,
+          "profile_yaw_Nm": -0.003576156277056885,
+          "profile_yaw_abs_error_Nm": 1.5612511283791264e-16
+        }
+      },
+      "yaw_rate_rad_s": 0.05
+    },
+    "production_export_E_max_abs_error": 1.1663357241120664e-07,
+    "uniform_KJ_induced_drag_positive_N": 0.5285012734714707,
+    "uniform_KJ_plus_profile_power_on_airframe_W": -49.48110793056223,
+    "uniform_KJ_power_identity_abs_error_W": 0.0,
+    "uniform_KJ_power_on_airframe_W": -7.908208063975135,
+    "uniform_KJ_power_vs_minus_u_drag_abs_error_W": 5.329070518200751e-15,
+    "uniform_induced_downwash_min_mps": 0.2833016789015988,
+    "uniform_induced_drag_and_power_identity": {
+      "induced_drag_N": 0.5285012734714707,
+      "induced_power_on_airframe_W": -7.908208063975135,
+      "minus_u_times_induced_drag_W": -7.908208063975129
+    },
+    "uniform_zero_yaw_symmetry": {
+      "absolute_integrated_kj_yaw_Nm": 5.723232218007857e-17,
+      "absolute_integrated_total_yaw_Nm": 5.723232218007857e-17,
+      "max_mirrored_center_downwash_gap_mps": 8.215650382226158e-15,
+      "max_mirrored_gamma_gap_m2_s": 2.9976021664879227e-15,
+      "max_mirrored_panel_kj_fx_gap_N": 3.3306690738754696e-16
+    },
+    "variable_chord_direct_matrix_vs_g_max_abs_CL_error": 1.6653345369377348e-16,
+    "variable_chord_fixture_has_finite_E": true,
+    "variable_chord_gamma_equals_half_chord_times_g_max_abs_error_m2_s": 0.0,
+    "velocity_density_similarity": {
+      "base_rho_kg_m3": 1.225,
+      "expected_force_and_moment_ratio": 5.551020408163264,
+      "maximum_absolute_ratio_error": 4.5845993668081064e-11,
+      "observed_ratios": {
+        "fx_kj_n": 5.551020408163251,
+        "fx_profile_n": 5.551020408163266,
+        "fz_kj_n": 5.551020408163266,
+        "yaw_kj_nm": 5.55102040820911,
+        "yaw_profile_nm": 5.551020408163782
+      },
+      "scaled_rho_kg_m3": 1.7,
+      "velocity_and_yaw_rate_scale": 2.0
+    },
+    "zero_camber_D11f_midpoint_rows": [
+      {
+        "absolute_error_nm": 2.1250362580715887e-17,
+        "alpha_deg": 2.0,
+        "candidate_total_yaw_nm": 0.0034831854835156127,
+        "d11f_total_yaw_nm": 0.003483185483515634,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 6.982261990806649e-17,
+        "alpha_deg": 2.0,
+        "candidate_total_yaw_nm": -0.003483185483515564,
+        "d11f_total_yaw_nm": -0.003483185483515634,
+        "rate_rad_s": 0.05
+      },
+      {
+        "absolute_error_nm": 4.119968255444917e-17,
+        "alpha_deg": 4.0,
+        "candidate_total_yaw_nm": 0.00347681860269429,
+        "d11f_total_yaw_nm": 0.003476818602694331,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 4.7271214720367993e-17,
+        "alpha_deg": 4.0,
+        "candidate_total_yaw_nm": -0.0034768186026943176,
+        "d11f_total_yaw_nm": -0.003476818602694365,
+        "rate_rad_s": 0.05
+      },
+      {
+        "absolute_error_nm": 1.691355389077387e-16,
+        "alpha_deg": 8.0,
+        "candidate_total_yaw_nm": 0.00345138985527621,
+        "d11f_total_yaw_nm": 0.003451389855276041,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 1.5612511283791264e-16,
+        "alpha_deg": 8.0,
+        "candidate_total_yaw_nm": -0.0034513898552761546,
+        "d11f_total_yaw_nm": -0.0034513898552759985,
+        "rate_rad_s": 0.05
+      },
+      {
+        "absolute_error_nm": 2.8319360745321376e-16,
+        "alpha_deg": 10.0,
+        "candidate_total_yaw_nm": 0.0034323589696907963,
+        "d11f_total_yaw_nm": 0.0034323589696910795,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 7.806255641895632e-17,
+        "alpha_deg": 10.0,
+        "candidate_total_yaw_nm": -0.003432358969690852,
+        "d11f_total_yaw_nm": -0.003432358969690774,
+        "rate_rad_s": 0.05
+      },
+      {
+        "absolute_error_nm": 1.3010426069826053e-16,
+        "alpha_deg": 11.0,
+        "candidate_total_yaw_nm": 0.0034212737031096285,
+        "d11f_total_yaw_nm": 0.0034212737031094984,
+        "rate_rad_s": -0.05
+      },
+      {
+        "absolute_error_nm": 1.474514954580286e-16,
+        "alpha_deg": 11.0,
+        "candidate_total_yaw_nm": -0.003421273703109351,
+        "d11f_total_yaw_nm": -0.0034212737031094984,
+        "rate_rad_s": 0.05
+      }
+    ],
+    "zero_camber_D11f_midpoint_total_yaw_max_abs_error_Nm": 2.8319360745321376e-16
+  },
+  "counterexamples_and_refusals": {
+    "15deg_stall_limit_rejection": "candidate refuses a geometric section angle at/above the supplied attached limit",
+    "exact_zero_rejection": "candidate refuses stagnant or reverse axial flow: every u_i must be > 0",
+    "near_zero_gamma_max_abs_m2_s": 0.3466912380491092,
+    "near_zero_note": "Illustrates poor conditioning as one panel approaches u=0; no validity claim, and exact u=0 is refused.",
+    "near_zero_positive_axial_max_abs_CL_algebraic_only": 19884.837160373747,
+    "near_zero_positive_axial_rate_rad_s": 23.622023622047244,
+    "near_zero_positive_axial_u_min_mps": 1.4999999999432134e-05,
+    "reverse_flow_rejection": "candidate refuses stagnant or reverse axial flow: every u_i must be > 0"
+  },
+  "domain": {
+    "attached": "user/admission condition; the Stik sweep checks geometric atan2(w,u) below its existing R02 a1; no stall or dynamic-stall model is present",
+    "force_quadrature": "circulation is panelwise at 3/4-chord collocation; external/local flow is sampled along the bound span with Gauss-Legendre quadrature, while the induced trailing-leg downwash is evaluated once at each panel center to avoid endpoint singularities",
+    "positive_axial": "strictly every collocation u_i>0; exact zero/reverse is refused, with no epsilon floor",
+    "rates": "the equality proof is per panel for arbitrary positive u_i and w_i inside this linear attached horseshoe model; sampled evidence uses yaw rate only",
+    "section_flow": "planar u,w only; no spanwise local velocity, sweep, sideslip, rotor wake, or 3-D bound-vortex closure"
+  },
+  "force_quadrature_refinement_alpha4_96_panels": [
+    {
+      "gauss_order_per_panel": 1,
+      "k_j_only_Cnr_alpha4": -4.8008990783369524e-05,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014477869674538959
+    },
+    {
+      "gauss_order_per_panel": 2,
+      "k_j_only_Cnr_alpha4": -4.800899078314683e-05,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014479435584540004
+    },
+    {
+      "gauss_order_per_panel": 4,
+      "k_j_only_Cnr_alpha4": -4.8008990783822036e-05,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.01447943558454459
+    },
+    {
+      "gauss_order_per_panel": 8,
+      "k_j_only_Cnr_alpha4": -4.800899078299432e-05,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014479435584541154
+    },
+    {
+      "gauss_order_per_panel": 16,
+      "k_j_only_Cnr_alpha4": -4.800899078425452e-05,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014479435584545437
+    },
+    {
+      "gauss_order_per_panel": 32,
+      "k_j_only_Cnr_alpha4": -4.8008990781433905e-05,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014479435584539043
+    }
+  ],
+  "identity": {
+    "D11f_source_sha256": "b71405f04f9385a27a733c2b719560ca6032f682289a53d996ed338b8ef737e8",
+    "candidate_source_sha256": "52b0a4684ecaa7429486444ebc1f51c87d9c60846653fae61083a6e1295e0905",
+    "production_aero_source_sha256": "7ac94f6003f2cb7660a56dd94755c6a7d6143d90cc446c6b6c20433038ce38e3",
+    "production_aircraft_data_source_sha256": "75212e145c5278d3a1a56f663418ea719065cb0d9f3761bca08d8bb8b759ed12",
+    "production_aircraft_sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+    "production_input_export_sha256": "e9139e59b16c2deaa5b5b4db8175a7053d4be4ce900fb8a4ff5e587930f076b6"
+  },
+  "interpretation": "Research candidate and software/model-form comparison only; not a promoted runtime law or physical validation.",
+  "model": {
+    "CD0_semantics": "production value is a whole-aircraft polar; used only as the inherited D11f comparison profile term, not asserted as measured wing-section CD0",
+    "alpha_zero_semantics": "M_static * production strip_cl0; equivalent intercept reconstructed from the existing fitted R02 strips, not measured airfoil camber/incidence",
+    "area_m2": 0.464515,
+    "chord_m": 0.3048,
+    "coordinates": "D11f comparison frame: x aft, y right, z up; yaw is \u03a3 y*Fx; body-power sign is negative force dot the D11f air-on-wing velocity",
+    "dimensional_source": "g_i=u_i*CL_i; g=a0*E*(w+u*(alpha_zero+incidence)); Gamma_i=0.5*c_i*g_i",
+    "equivalent_alpha_zero_mean_rad": 0.02342707020770664,
+    "equivalent_alpha_zero_rad": [
+      0.023427071600925664,
+      0.023427069805466157,
+      0.023427069216728102,
+      0.023427069216728113,
+      0.023427069805466154,
+      0.02342707160092567
+    ],
+    "equivalent_alpha_zero_spread_rad": 2.384197568539026e-09,
+    "force_closure": "Kutta\u2013Joukowski on each piecewise-constant bound \u0393 panel; trailing-leg-only induced downwash is evaluated at each panel center to avoid bound-line endpoint singularities, while external flow is sampled along the bound segment; no separate section CL/induced-drag force is added",
+    "geometry_operator": "K_ij=-0.5*c_j*horseshoe_z_ij-\u03b4_ij/(2\u03c0), E=(I+a0*K)^-1; collocation uses the full horseshoe at each 3/4-chord point",
+    "panel_count": 6,
+    "span_m": 1.524,
+    "strip_slope_per_rad": 6.0817546480911915
+  },
+  "panel_refinement_alpha4": [
+    {
+      "force_quadrature_order": 16,
+      "k_j_only_Cnr_alpha4": -6.312543250456732e-06,
+      "panels_per_semispan": 3,
+      "total_panels": 6,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014437739137009705
+    },
+    {
+      "force_quadrature_order": 16,
+      "k_j_only_Cnr_alpha4": -3.528838923993835e-05,
+      "panels_per_semispan": 6,
+      "total_panels": 12,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014466714982999186
+    },
+    {
+      "force_quadrature_order": 16,
+      "k_j_only_Cnr_alpha4": -4.389496156855685e-05,
+      "panels_per_semispan": 12,
+      "total_panels": 24,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014475321555329823
+    },
+    {
+      "force_quadrature_order": 16,
+      "k_j_only_Cnr_alpha4": -4.685365254590828e-05,
+      "panels_per_semispan": 24,
+      "total_panels": 48,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014478280246302778
+    },
+    {
+      "force_quadrature_order": 16,
+      "k_j_only_Cnr_alpha4": -4.800899078425452e-05,
+      "panels_per_semispan": 48,
+      "total_panels": 96,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.014479435584545437
+    },
+    {
+      "force_quadrature_order": 16,
+      "k_j_only_Cnr_alpha4": -4.850576669266978e-05,
+      "panels_per_semispan": 96,
+      "total_panels": 192,
+      "with_D11f_profile_assumption_Cnr_alpha4": -0.01447993236045242
+    }
+  ],
+  "refinement_note": "Panel and line-quadrature sweeps are numerical convergence diagnostics, not physical validation; report values directly and do not treat the coarsest production-strip match as a continuum result.",
+  "schema": "r02-attached-circulation-candidate-v2",
+  "superseded_v1_pointwise_endpoint_probe": {
+    "diagnostic": {
+      "adjacent_circulation_jump_m2_s": -0.05921765360060771,
+      "edge_y_m": -0.254,
+      "pointwise_downwash_samples": [
+        {
+          "epsilon_m": 0.0001,
+          "epsilon_times_left_m2_s": -0.004686069998887663,
+          "epsilon_times_right_m2_s": 0.0047387051663326475,
+          "left_downwash_mps": -46.860699988876625,
+          "right_downwash_mps": 47.387051663326474
+        },
+        {
+          "epsilon_m": 1e-06,
+          "epsilon_times_left_m2_s": -0.004712127968367515,
+          "epsilon_times_right_m2_s": 0.004712654320012592,
+          "left_downwash_mps": -4712.127968367515,
+          "right_downwash_mps": 4712.6543200125925
+        },
+        {
+          "epsilon_m": 1e-08,
+          "epsilon_times_left_m2_s": -0.004712388515142283,
+          "epsilon_times_right_m2_s": 0.004712393778658726,
+          "left_downwash_mps": -471238.8515142282,
+          "right_downwash_mps": 471239.3778658726
+        },
+        {
+          "epsilon_m": 1e-10,
+          "epsilon_times_left_m2_s": -0.004712390728197607,
+          "epsilon_times_right_m2_s": 0.004712390780832771,
+          "left_downwash_mps": -47123907.28197607,
+          "right_downwash_mps": 47123907.80832771
+        }
+      ],
+      "shared_edge_index": 2
+    },
+    "interpretation": "The original pointwise self-wake quadrature is retained in candidate-results-v1 but rejected for continuum inference: trailing-leg velocity on the bound line grows as a panel-edge circulation jump divided by distance. Version 2 holds this discrete induced downwash at the panel center; it does not supply a continuous finite-core wake law.",
+    "source_sha256": "48d0f37a933eff00fb8c1d890dbae4925065f27704835629930e3ad8c4607ada"
+  },
+  "yaw_cnr_model_form_sweep": [
+    {
+      "R02_fixed_E_polar_Cnr": -0.014590311817212771,
+      "alpha_deg": 0.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": -0.0001963835412913884,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": -0.00019638354129138043,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.014663050207958848,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.014261198356106272
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.013316523849314145,
+      "alpha_deg": 2.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": -0.00010140982273079863,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": -0.00010140982273076735,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.014559263786940554,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.014157656732379065
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.011840060751877152,
+      "alpha_deg": 4.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": -6.312551921820272e-06,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": -6.3125519221873554e-06,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.014437739145681068,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.014036866184743335
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.010179457190662067,
+      "alpha_deg": 6.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": 8.879240975780631e-05,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": 8.879240975855623e-05,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.01429862434323621,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.013898973877874426
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.008362403468036014,
+      "alpha_deg": 8.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": 0.00018378919156569092,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": 0.00018378919156630696,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.014142088869563188,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.013744147812308788
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.006425612928218225,
+      "alpha_deg": 10.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": 0.00027856205455559707,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": 0.0002785620545526114,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.013968323439020972,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.013572576619758055
+    },
+    {
+      "R02_fixed_E_polar_Cnr": -0.005426215234117323,
+      "alpha_deg": 11.0,
+      "candidate_KJ_only_Cnr_q16_line_integral": 0.0003258284188184506,
+      "candidate_KJ_only_Cnr_q1_D11f_midpoint_lane": 0.00032582841881676345,
+      "candidate_KJ_plus_D11f_profile_assumption_Cnr_q16_line_integral": -0.013875044835057946,
+      "candidate_KJ_plus_profile_Cnr_q1_D11f_midpoint_lane": -0.013480576133563295
+    }
+  ]
+}

@@ -1,0 +1,86 @@
+{
+  "status": "numerical cross-check only; no statistical or rigorous error bound",
+  "method": "raw-source LE coordinates; deterministic unscrambled 2D Sobol; uniform span and conditional chord sampling",
+  "numeric_environment": {
+    "python": "3.11.9",
+    "numpy": "2.4.6",
+    "scipy": "1.17.1"
+  },
+  "input_sha256_before": {
+    "aircraft": "dca91a9ba5f03506d57b54a989ea56ba3f0da31b0d993d8f68b999aaf689d141",
+    "candidate_results": "d44d1a35d3e6958221164a35ed4973546e910ab5948f16dc65763d44d15ff6a4",
+    "reviewer": "aefa678f615b487e06e591db571e237dd43b32fdc5648657a76ab6b16812b10d"
+  },
+  "input_sha256_after": {
+    "aircraft": "dca91a9ba5f03506d57b54a989ea56ba3f0da31b0d993d8f68b999aaf689d141",
+    "candidate_results": "d44d1a35d3e6958221164a35ed4973546e910ab5948f16dc65763d44d15ff6a4",
+    "reviewer": "aefa678f615b487e06e591db571e237dd43b32fdc5648657a76ab6b16812b10d"
+  },
+  "wake_axis_le": [
+    0.9993813570294788,
+    -0.01744426647499975,
+    0.03053851320982266
+  ],
+  "radius_m": 0.23348441999999997,
+  "strip_edges_le_m": [
+    -1.4100000000000004,
+    -0.8128980574749225,
+    -0.36935066406849626,
+    0.0,
+    0.36935066406849626,
+    0.8128980574749225,
+    1.4100000000000004
+  ],
+  "rows": [
+    {
+      "strip": 0,
+      "samples": 1048576,
+      "hits": 0,
+      "sobol_area_m2": 0.0,
+      "candidate_area_m2": 0.0,
+      "difference_m2": 0.0
+    },
+    {
+      "strip": 1,
+      "samples": 1048576,
+      "hits": 0,
+      "sobol_area_m2": 0.0,
+      "candidate_area_m2": 0.0,
+      "difference_m2": 0.0
+    },
+    {
+      "strip": 2,
+      "samples": 1048576,
+      "hits": 408121,
+      "sobol_area_m2": 0.09316206407543912,
+      "candidate_area_m2": 0.09316023294813035,
+      "difference_m2": 1.8311273087684432e-06
+    },
+    {
+      "strip": 3,
+      "samples": 1048576,
+      "hits": 322252,
+      "sobol_area_m2": 0.07398315722471244,
+      "candidate_area_m2": 0.0739822296078235,
+      "difference_m2": 9.276168889404968e-07
+    },
+    {
+      "strip": 4,
+      "samples": 1048576,
+      "hits": 0,
+      "sobol_area_m2": 0.0,
+      "candidate_area_m2": 0.0,
+      "difference_m2": 0.0
+    },
+    {
+      "strip": 5,
+      "samples": 1048576,
+      "hits": 0,
+      "sobol_area_m2": 0.0,
+      "candidate_area_m2": 0.0,
+      "difference_m2": 0.0
+    }
+  ],
+  "sum_sobol_area_m2": 0.16714522130015155,
+  "max_absolute_difference_m2": 1.8311273087684432e-06
+}
