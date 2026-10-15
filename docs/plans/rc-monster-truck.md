@@ -14,6 +14,8 @@ The [RCV-25/33 effects revision](../research/rc-monster-truck/RCV-effects/README
 
 The [RCV-20/22/24/25/33 strict audit](../research/rc-monster-truck/RCV-audit/README.md) corrects false contact wear, checkpoint/recording consistency, interrupted-save recovery, landing awards and render lifecycle failures. Damage snapshot v2 changes the estimator while preserving its 19-value layout; this is software verification, not completion of the physical validation or performance gates.
 
+The [RCV-10/13/25 water extension](../research/rc-monster-truck/RCV-water/README.md) adds estimated buoyancy, dissipative drag, a mud material band and observational wet effects at the existing lake. The runway remains the default; the garage offers a dry lake-shore entry. Solver v4 and recording v4 identify this change; checkpoints retain format v3 with the new solver/environment identity. Soft-soil deformation, electronics failure and measured water handling remain outside the implemented model.
+
 Build a fictional **1/8-class, four-wheel-drive monster truck**, with the high-clearance stance, exposed suspension and large tires that motivate the user's Traxxas T-Maxx reference. The developer should first search for a suitable freely downloadable model and components with a usable redistribution license, then adapt them. Do not commission a complete new mesh before that audit. Do not imply this is an official Traxxas product or a calibrated replica.
 
 The T-Maxx reference and the requested scale must remain separate: the manufacturer's T-Maxx 3.3 is a **1/10-scale nitro truck**. Its dimensions and mechanisms are reference evidence, not a specification for a 1/8 model. Do not enlarge its mesh by 1.25 and silently reuse its mass, suspension, inertia, gearing or handling. The visual developer proposes the final physical dimensions at RCV-02; the physics owner accepts a separate, sourced mass and mechanism inventory. [Manufacturer sources and limits](../research/rc-monster-truck/README.md#manufacturer-reference).
@@ -28,7 +30,7 @@ Implemented first powertrain: **estimated electric 4WD**, explicitly described a
 | P3: physics laboratory | Run repeatable braking, suspension, CG, slope, material and jump experiments; compare A/B results | Numerical verification plus explicitly listed physical measurements; unmeasured regimes remain experimental |
 | P4: polished release | Clear menus, comfortable camera, readable truck, useful lessons, convincing audio and packaged assets | Target-machine performance and user acceptance; physical validity still bounded by the evidence |
 
-P1 is an early milestone, not completion of the user's request. P2, P3 and P4 are required for the intended combined laboratory/game. No multiplayer, deformable body destruction, tire FEM, granular soil, full CAD editor, new rendering engine or full-scale vehicle model is required for the first release. Water driving, mud excavation and moving debris are later capabilities; the first truck must state that they are unsupported.
+P1 is an early milestone, not completion of the user's request. P2, P3 and P4 are required for the intended combined laboratory/game. No multiplayer, deformable body destruction, tire FEM, granular soil, full CAD editor, new rendering engine or full-scale vehicle model is required for the first release. The later water extension now supports bounded shallow/deep interaction; mud excavation and moving debris remain unsupported.
 
 ## 2. Fit with the repository
 
@@ -245,7 +247,7 @@ Define course dimensions from the selected truck's actual envelope. Start test b
 
 Physical surface records should separate grip curves, rolling resistance, vertical support/compliance, roughness geometry and optional vegetation drag. Soil compaction/moisture and tire construction matter; there is no universal grass coefficient. Provide provisional profiles with uncertainty and a calibration plan, not fabricated measured values. Start with rigid ground plus explicit relief. A later deformable-soil model needs its own soil parameters, contact area and validation; visual tire tracks remain visual until then.
 
-If lake/water/bank work changes nearby ground, require a clear supported boundary and a deterministic out-of-course recovery policy. Do not let a height query claim solid ground beneath a visually open lake. No first-release flotation/submersion model is implied.
+Lake/bank work reuses the actual shared bed, with depth-aware loads above it and explicit recovery to the selected spawn. Bed support is distinct from water support. The later water extension uses estimated displaced volume and drag; it does not establish physical flotation or soft-soil validity.
 
 ## 6. Numerical qualification and performance
 
@@ -393,6 +395,7 @@ The following implementation map supersedes the original pending statuses in the
 | RCV-08 | Symmetric four-wheel drive/braking torque, reverse and wheel/body reaction | Explicit differential/shaft topology, electrical/ESC/battery model and split-grip qualification |
 | RCV-09, 19…20 | Transactional session, identity-bound checkpoints, exact float64 JSON payloads, command tape/replay, neutral arming, disconnect/focus holds, reset and marked manual recovery | Real pistol/stick radio profiles and hardware acceptance; wider failure-injection matrix |
 | RCV-10, 13 | Shared-airfield dirt loop with banks, ramps/rollers and sphere/AABB wall contact for tire hubs and hull probes; synthetic material fixtures retained; [track evidence](../research/rc-monster-truck/RCV-track/README.md) | Finite terrain tire footprint, swept contact, independent impact refinement and 60 s roof/side-rest qualification |
+| RCV-10/13/25 water extension | Shared-lake shallow/deep loads, mud traction/rolling blend, bounded splash/ripple/mud effects, wet HUD and shore entry; [water evidence](../research/rc-monster-truck/RCV-water/README.md) | Measured displacement/drag/soil response, deformable mud, water currents/planing and wet target-hardware performance qualification |
 | RCV-14…17 | Authorized imported GLB/generated rig, CG/datum render adapter, Home RC entry and direct CLI, separate garage/activity with EN/ES controls | General multi-family catalog and persistent vehicle selection are deferred; package qualification is tracked separately |
 | RCV-18, 21…22 | Chase/pilot/orbit and circuit-overview cameras, free driving, tested tabletop hop and upright landing, manual recovery | Longer-jump success-toast qualification, full jump curriculum, camera/rollover scenarios and novice/experienced driver playtests |
 | RCV-23…24 | Bounded gravity/grip/spring/damping/ballast edits with new identity; load/slip/contact overlays, travel plot, CSV recording and reproducible experiment tools | Measured experiment presets and complete automated A/B intervention workflow |

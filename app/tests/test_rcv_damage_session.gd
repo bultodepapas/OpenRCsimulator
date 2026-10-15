@@ -134,7 +134,7 @@ func _run() -> void:
 	if exported.get("ok",false):
 		var metadata: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(exported.metadata_path))
 		var csv := FileAccess.get_file_as_string(exported.csv_path)
-		_check("recording preserves damage and applied control channels", metadata.version == 3
+		_check("recording preserves damage and applied control channels", metadata.version == 4
 			and metadata.damage_state_layout.size() == Damage.SNAPSHOT_SIZE
 			and csv.contains("drive_scale") and csv.contains("applied_controls")
 			and not str(metadata.initial_damage_f64_base64).is_empty())

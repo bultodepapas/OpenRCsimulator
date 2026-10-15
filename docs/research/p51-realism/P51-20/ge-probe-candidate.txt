@@ -1,0 +1,12 @@
+module true, V 20.37 m/s (1.3 Vs), alpha 6.78 deg, CL 0.592, wheel CG height 0.439 m (ARP x 0.121)
+CG 6.000 m  x 2.093  sigma_mean 1.0000  sigma_tail 1.0000  L/Linf 1.0000  D/Dinf 1.0000  dCm +0.0000  = +0.00 deg elevator (+ TE down)
+CG 4.000 m  x 1.384  sigma_mean 0.9900  sigma_tail 0.9924  L/Linf 1.0031  D/Dinf 0.9988  dCm -0.0002  = -0.01 deg elevator (+ TE down)
+CG 3.000 m  x 1.029  sigma_mean 0.9718  sigma_tail 0.9777  L/Linf 1.0089  D/Dinf 0.9965  dCm -0.0006  = -0.04 deg elevator (+ TE down)
+CG 2.000 m  x 0.675  sigma_mean 0.9350  sigma_tail 0.9459  L/Linf 1.0206  D/Dinf 0.9916  dCm -0.0017  = -0.11 deg elevator (+ TE down)
+CG 1.500 m  x 0.497  sigma_mean 0.9011  sigma_tail 0.9145  L/Linf 1.0316  D/Dinf 0.9867  dCm -0.0030  = -0.19 deg elevator (+ TE down)
+CG 1.000 m  x 0.320  sigma_mean 0.8398  sigma_tail 0.8540  L/Linf 1.0519  D/Dinf 0.9768  dCm -0.0058  = -0.37 deg elevator (+ TE down)
+CG 0.750 m  x 0.232  sigma_mean 0.7841  sigma_tail 0.7963  L/Linf 1.0706  D/Dinf 0.9667  dCm -0.0089  = -0.56 deg elevator (+ TE down)
+CG 0.600 m  x 0.178  sigma_mean 0.7326  sigma_tail 0.7410  L/Linf 1.0882  D/Dinf 0.9564  dCm -0.0120  = -0.76 deg elevator (+ TE down)
+CG 0.500 m  x 0.143  sigma_mean 0.6845  sigma_tail 0.6884  L/Linf 1.1047  D/Dinf 0.9458  dCm -0.0151  = -0.96 deg elevator (+ TE down)
+CG 0.439 m  x 0.121  sigma_mean 0.6470  sigma_tail 0.6468  L/Linf 1.1178  D/Dinf 0.9370  dCm -0.0177  = -1.13 deg elevator (+ TE down)
+same lift at the wheels: alpha 6.78 -> 5.95 deg, D/Dinf 0.8845

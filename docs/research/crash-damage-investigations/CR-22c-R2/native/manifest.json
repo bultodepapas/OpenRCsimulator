@@ -1,0 +1,40 @@
+{
+  "inputs": {
+    "shadow": {
+      "reference": "29b14f6bcdf72fb45c4a41053033e049e9dea9b864df496bff57fd9b889544e3",
+      "candidate": "60a219932df4b742a9494651959449f719cc47ebee10ebd2fffaf8cc1f3cb41a"
+    },
+    "scenery": {
+      "reference": "b697cd3850929008ce66af7169ca44c9ef6385989792d49790c654eaebdc04a6",
+      "candidate": "2a9a548aa3d7a2dce9e362b9ad3c254aae0ace5383c3af6899645c52e404faef"
+    }
+  },
+  "commands": [
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\crash-r2\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\crash-damage\\cr-22c-r2\\shadow_bench.gd",
+      "--",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\crash-r2\\repro-native\\shadow.json",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\crash-r2\\repro-native\\shadow-reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\crash-r2\\repro-native\\shadow-candidate.gd"
+    ],
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\crash-r2\\snapshot\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\crash-damage\\cr-22c-r2\\scenery_bench.gd",
+      "--",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\crash-r2\\repro-native\\scenery.json",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\crash-r2\\repro-native\\scenery-reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\crash-r2\\repro-native\\scenery-candidate.gd"
+    ]
+  ]
+}

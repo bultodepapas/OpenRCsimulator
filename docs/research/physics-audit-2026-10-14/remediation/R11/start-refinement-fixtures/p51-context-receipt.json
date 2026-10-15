@@ -1,0 +1,6 @@
+{
+  "source": "\\\\wsl.localhost\\Ubuntu\\home\\bulto\\openrc-r11-b09-r05b-20261014-03\\app\\data\\aircraft\\p51d_mustang_120.json",
+  "before_sha256": "21d5f6dd1951afd91da407289b4a69530b62795af08f60d71c183cdb8b76a008",
+  "after_sha256": "3ef8334ff11ae71d8ce1c14f7674fea440d27b24db0036a37881c1647e553ff2",
+  "purpose": "Reproduce exact frozen Linux P51 data with ground effect; changes only the disposable Windows source copy."
+}

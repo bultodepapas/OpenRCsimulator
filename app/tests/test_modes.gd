@@ -1,5 +1,5 @@
 # D8a: flight modes of the simulated equations (physics/flight_modes.gd) at 10, 15 and 25 m/s. Regression bands (± 3 %
-# around the 2026-10-05 software references, except the three R02-updated values below) plus mode-structure sanity.
+# around the 2026-10-05 software references, except the documented R02/D11g values below) plus mode-structure sanity.
 # A deliberate change to the aero (e.g. a Clp sign flip) moves the modes out of their bands. D11g: the Stik's modes carry
 # the tail's downwash lag as a ninth state; its linear model must predict the nonlinear flight (time-domain check).
 # Run: godot --headless --path . --script res://tests/test_modes.gd
@@ -32,10 +32,13 @@ const RB := preload("res://physics/rigid_body.gd")
 ## phugoid ζ (0.28653927) are updated; all other old bands remain within the existing ±3% tolerance. Targets were
 ## cross-checked with a manually composed Air/Aero/Propulsion/RigidBody Jacobian and SciPy eigenvalues at trim;
 ## step-size and source identity are recorded in docs/research/physics-audit-2026-10-14/remediation/R02-modes/README.md.
+## R11/D11g (2026-10-14): re-derived Cmq/CLq/Cnr move the 25 m/s spiral root to 0.02881546 1/s.
+## Only that center changes; the independent manual Jacobian / SciPy calculation at three steps and the failed
+## old-band control are retained in remediation/R11/d11g-root-integration. The 3% tolerance is unchanged.
 const BANDS := {
 	10.0: [0.90876188, 0.81032621, 0.16589314, 0.06879382, 0.07248863, 0.56864761, 0.30261772, 0.48693354, -11.08888985],
 	15.0: [1.17609159, 1.04149128, 0.09011891, 0.28653927, 0.05132270, 0.74453681, 0.24857131, 0.07693605, -15.42505926],
-	25.0: [1.87181848, 1.10898697, 0.05115836, 0.90280027, 0.03055473, 1.19343671, 0.23424972, 0.02751213, -25.19697216],
+	25.0: [1.87181848, 1.10898697, 0.05115836, 0.90280027, 0.03055473, 1.19343671, 0.23424972, 0.02881546, -25.19697216],
 }
 const TOL := 0.03
 ## Short-period damping floor per speed (default 0.5). D11d had to pin 10 m/s at 0.45 (ζ 0.47 with the tail's Cmq at

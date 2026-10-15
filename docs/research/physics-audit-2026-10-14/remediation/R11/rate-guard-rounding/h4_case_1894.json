@@ -1,0 +1,523 @@
+{
+  "actual_float64_hex": "7ae30666c0aec23f",
+  "air": {
+    "V": 30.0000622756599,
+    "alpha": -0.00100041038199491,
+    "beta": -0.00177507284196617,
+    "qbar": 551.252288632875,
+    "v_air": [
+      30.0,
+      -0.0532522678375244,
+      -0.030012321472168
+    ]
+  },
+  "case": {
+    "aircraft_id": "gp-extra-300s-60",
+    "sample": 1894,
+    "seed": 44117,
+    "test": "app/tests/test_aero_flow.gd"
+  },
+  "current_aero_weight": 0.145957994287325,
+  "deflections": {
+    "aileron_left": 0.0572225570678711,
+    "aileron_right": 0.0242645442485809,
+    "elevator": 0.0258777737617493,
+    "rudder": -0.0203926116228104
+  },
+  "difference_current_minus_expected": 3.33066907387547e-16,
+  "environment": {
+    "rho_kgm3": 1.225,
+    "wind_ned_mps": [
+      0.0,
+      0.0,
+      0.0
+    ]
+  },
+  "expected_float64_hex": "6ee30666c0aec23f",
+  "expected_test_weight": 0.145957994287325,
+  "frozen_reference_weight": 0.0,
+  "independent_guard_multiplication": {
+    "rows": [
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "wing_00",
+        "component_float64_hex": [
+          "67413d33d30708c0",
+          "3fb7ff8419a8aa3f",
+          "5cac0c4145fee83f"
+        ],
+        "component_square_float64_hex": [
+          "f138b4b6be0b2240",
+          "c36028849c34663f",
+          "c58c914d4c85e33f"
+        ],
+        "rate_angle_rad": 0.103104138287491,
+        "rate_components_rad_s": [
+          -3.0038208010739,
+          0.0520637488224183,
+          0.781038882303061
+        ],
+        "rate_speed_float64_hex": "f6db403946d50840",
+        "rate_speed_mps": 3.10413784722504,
+        "squared_speed": 9.63567177457492,
+        "squared_speed_float64_hex": "439455c576452340",
+        "weight": 0.0,
+        "weight_float64_hex": "0000000000000000"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "wing_01",
+        "component_float64_hex": [
+          "ae2a3047d712fbbf",
+          "3fb7ff8419a8aa3f",
+          "f6f09a345ca5da3f"
+        ],
+        "component_square_float64_hex": [
+          "6ba3f95fd6e70640",
+          "c36028849c34663f",
+          "36f463550c30c63f"
+        ],
+        "rate_angle_rad": 0.0580461180558273,
+        "rate_components_rad_s": [
+          -1.69209983642456,
+          0.0520637488224183,
+          0.416342784282974
+        ],
+        "rate_speed_float64_hex": "c2653355bee4fb3f",
+        "rate_speed_mps": 1.74334557801772,
+        "squared_speed": 3.03925380439395,
+        "squared_speed_float64_hex": "c6ec704c64500840",
+        "weight": 0.0,
+        "weight_float64_hex": "0000000000000000"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "wing_02",
+        "component_float64_hex": [
+          "1a0abe32a0cae3bf",
+          "3fb7ff8419a8aa3f",
+          "8e96b022372bbe3f"
+        ],
+        "component_square_float64_hex": [
+          "f78dc88b427bd83f",
+          "c36028849c34663f",
+          "435497bd41718c3f"
+        ],
+        "rate_angle_rad": 0.021055537793453,
+        "rate_components_rad_s": [
+          -0.618484591585289,
+          0.0520637488224183,
+          0.117846914261998
+        ],
+        "rate_speed_float64_hex": "666d6e716237e43f",
+        "rate_speed_mps": 0.63176080851137,
+        "squared_speed": 0.39912171917094,
+        "squared_speed_float64_hex": "5b99bdd2358bd93f",
+        "weight": 0.0,
+        "weight_float64_hex": "0000000000000000"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "wing_03",
+        "component_float64_hex": [
+          "3fff4aa5d57ed63f",
+          "3fb7ff8419a8aa3f",
+          "7df5df114e6fc3bf"
+        ],
+        "component_square_float64_hex": [
+          "ba629ef6b8a0bf3f",
+          "c36028849c34663f",
+          "d3d828b75f9b973f"
+        ],
+        "rate_angle_rad": 0.0128794981472511,
+        "rate_components_rad_s": [
+          0.351491366785911,
+          0.0520637488224183,
+          -0.151834257820081
+        ],
+        "rate_speed_float64_hex": "1e42f4e5e4bad83f",
+        "rate_speed_mps": 0.386407112660011,
+        "squared_speed": 0.149310456714247,
+        "squared_speed_float64_hex": "faed44e49a1cc33f",
+        "weight": 0.0,
+        "weight_float64_hex": "0000000000000000"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "wing_04",
+        "component_float64_hex": [
+          "72e523973ccdf63f",
+          "3fb7ff8419a8aa3f",
+          "12c6de7435d2dcbf"
+        ],
+        "component_square_float64_hex": [
+          "f99094a0573f0040",
+          "c36028849c34663f",
+          "54137d6a42f5c93f"
+        ],
+        "rate_angle_rad": 0.0498077367572051,
+        "rate_components_rad_s": [
+          1.42510661162518,
+          0.0520637488224183,
+          -0.450330127841057
+        ],
+        "rate_speed_float64_hex": "d94b131f74edf73f",
+        "rate_speed_mps": 1.4954720701105,
+        "squared_speed": 2.23643671248059,
+        "squared_speed_float64_hex": "466c5dee38e40140",
+        "weight": 0.0,
+        "weight_float64_hex": "0000000000000000"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "wing_05",
+        "component_float64_hex": [
+          "c91e37db05e50540",
+          "3fb7ff8419a8aa3f",
+          "ea962ee1b114eabf"
+        ],
+        "component_square_float64_hex": [
+          "5fdf1597fdf51d40",
+          "c36028849c34663f",
+          "bdf82170ae41e53f"
+        ],
+        "rate_angle_rad": 0.0949164615542906,
+        "rate_components_rad_s": [
+          2.73682757627453,
+          0.0520637488224183,
+          -0.815026225861144
+        ],
+        "rate_speed_float64_hex": "4de89e7141d90640",
+        "rate_speed_mps": 2.85608185545156,
+        "squared_speed": 8.1572035650396,
+        "squared_speed_float64_hex": "c15155fc7c502040",
+        "weight": 0.0,
+        "weight_float64_hex": "0000000000000000"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "tail_horizontal",
+        "component_float64_hex": [
+          "fe3b633e10f6c83f",
+          "16c2ef670ebf0a40",
+          "64df806e253b0cc0"
+        ],
+        "component_square_float64_hex": [
+          "944e5c777c78a33f",
+          "c4d5e41cec5a2640",
+          "2ecb94d3eee72840"
+        ],
+        "rate_angle_rad": 0.16076807094059,
+        "rate_components_rad_s": [
+          0.195009260618889,
+          3.34328919601854,
+          -3.52887998896397
+        ],
+        "rate_speed_float64_hex": "9fa7e1cdcc751340",
+        "rate_speed_mps": 4.86503907861507,
+        "squared_speed": 23.6686052364518,
+        "squared_speed_float64_hex": "a07e78b629ab3740",
+        "weight": 0.133880082703259,
+        "weight_float64_hex": "35ec6588fb22c13f"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "tail_vertical",
+        "component_float64_hex": [
+          "78f52c877f5ce63f",
+          "fac52324c0180a40",
+          "2f25fd1629ad0cc0"
+        ],
+        "component_square_float64_hex": [
+          "719e46727540df3f",
+          "3509725f4b482540",
+          "2d55b8ecb0b22940"
+        ],
+        "rate_angle_rad": 0.161799017626185,
+        "rate_components_rad_s": [
+          0.698791278853306,
+          3.26208523019954,
+          -3.58455102882421
+        ],
+        "rate_speed_float64_hex": "7b1f1f214f961340",
+        "rate_speed_mps": 4.8967862296339,
+        "squared_speed": 23.9785153787322,
+        "squared_speed_float64_hex": "ab49defb7ffa3740",
+        "weight": 0.145957994287325,
+        "weight_float64_hex": "6ee30666c0aec23f"
+      }
+    ],
+    "square_method": "component*component",
+    "weight": 0.145957994287325
+  },
+  "independent_guard_pow": {
+    "rows": [
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "wing_00",
+        "component_float64_hex": [
+          "67413d33d30708c0",
+          "3fb7ff8419a8aa3f",
+          "5cac0c4145fee83f"
+        ],
+        "component_square_float64_hex": [
+          "f138b4b6be0b2240",
+          "c36028849c34663f",
+          "c58c914d4c85e33f"
+        ],
+        "rate_angle_rad": 0.103104138287491,
+        "rate_components_rad_s": [
+          -3.0038208010739,
+          0.0520637488224183,
+          0.781038882303061
+        ],
+        "rate_speed_float64_hex": "f6db403946d50840",
+        "rate_speed_mps": 3.10413784722504,
+        "squared_speed": 9.63567177457492,
+        "squared_speed_float64_hex": "439455c576452340",
+        "weight": 0.0,
+        "weight_float64_hex": "0000000000000000"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "wing_01",
+        "component_float64_hex": [
+          "ae2a3047d712fbbf",
+          "3fb7ff8419a8aa3f",
+          "f6f09a345ca5da3f"
+        ],
+        "component_square_float64_hex": [
+          "6ba3f95fd6e70640",
+          "c36028849c34663f",
+          "36f463550c30c63f"
+        ],
+        "rate_angle_rad": 0.0580461180558273,
+        "rate_components_rad_s": [
+          -1.69209983642456,
+          0.0520637488224183,
+          0.416342784282974
+        ],
+        "rate_speed_float64_hex": "c2653355bee4fb3f",
+        "rate_speed_mps": 1.74334557801772,
+        "squared_speed": 3.03925380439395,
+        "squared_speed_float64_hex": "c6ec704c64500840",
+        "weight": 0.0,
+        "weight_float64_hex": "0000000000000000"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "wing_02",
+        "component_float64_hex": [
+          "1a0abe32a0cae3bf",
+          "3fb7ff8419a8aa3f",
+          "8e96b022372bbe3f"
+        ],
+        "component_square_float64_hex": [
+          "f78dc88b427bd83f",
+          "c36028849c34663f",
+          "435497bd41718c3f"
+        ],
+        "rate_angle_rad": 0.021055537793453,
+        "rate_components_rad_s": [
+          -0.618484591585289,
+          0.0520637488224183,
+          0.117846914261998
+        ],
+        "rate_speed_float64_hex": "666d6e716237e43f",
+        "rate_speed_mps": 0.63176080851137,
+        "squared_speed": 0.39912171917094,
+        "squared_speed_float64_hex": "5b99bdd2358bd93f",
+        "weight": 0.0,
+        "weight_float64_hex": "0000000000000000"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "wing_03",
+        "component_float64_hex": [
+          "3fff4aa5d57ed63f",
+          "3fb7ff8419a8aa3f",
+          "7df5df114e6fc3bf"
+        ],
+        "component_square_float64_hex": [
+          "ba629ef6b8a0bf3f",
+          "c36028849c34663f",
+          "d3d828b75f9b973f"
+        ],
+        "rate_angle_rad": 0.0128794981472511,
+        "rate_components_rad_s": [
+          0.351491366785911,
+          0.0520637488224183,
+          -0.151834257820081
+        ],
+        "rate_speed_float64_hex": "1e42f4e5e4bad83f",
+        "rate_speed_mps": 0.386407112660011,
+        "squared_speed": 0.149310456714247,
+        "squared_speed_float64_hex": "faed44e49a1cc33f",
+        "weight": 0.0,
+        "weight_float64_hex": "0000000000000000"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "wing_04",
+        "component_float64_hex": [
+          "72e523973ccdf63f",
+          "3fb7ff8419a8aa3f",
+          "12c6de7435d2dcbf"
+        ],
+        "component_square_float64_hex": [
+          "f99094a0573f0040",
+          "c36028849c34663f",
+          "54137d6a42f5c93f"
+        ],
+        "rate_angle_rad": 0.0498077367572051,
+        "rate_components_rad_s": [
+          1.42510661162518,
+          0.0520637488224183,
+          -0.450330127841057
+        ],
+        "rate_speed_float64_hex": "d94b131f74edf73f",
+        "rate_speed_mps": 1.4954720701105,
+        "squared_speed": 2.23643671248059,
+        "squared_speed_float64_hex": "466c5dee38e40140",
+        "weight": 0.0,
+        "weight_float64_hex": "0000000000000000"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "wing_05",
+        "component_float64_hex": [
+          "c91e37db05e50540",
+          "3fb7ff8419a8aa3f",
+          "ea962ee1b114eabf"
+        ],
+        "component_square_float64_hex": [
+          "5fdf1597fdf51d40",
+          "c36028849c34663f",
+          "bdf82170ae41e53f"
+        ],
+        "rate_angle_rad": 0.0949164615542906,
+        "rate_components_rad_s": [
+          2.73682757627453,
+          0.0520637488224183,
+          -0.815026225861144
+        ],
+        "rate_speed_float64_hex": "4de89e7141d90640",
+        "rate_speed_mps": 2.85608185545156,
+        "squared_speed": 8.1572035650396,
+        "squared_speed_float64_hex": "c15155fc7c502040",
+        "weight": 0.0,
+        "weight_float64_hex": "0000000000000000"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "tail_horizontal",
+        "component_float64_hex": [
+          "fe3b633e10f6c83f",
+          "16c2ef670ebf0a40",
+          "64df806e253b0cc0"
+        ],
+        "component_square_float64_hex": [
+          "944e5c777c78a33f",
+          "c4d5e41cec5a2640",
+          "2ecb94d3eee72840"
+        ],
+        "rate_angle_rad": 0.16076807094059,
+        "rate_components_rad_s": [
+          0.195009260618889,
+          3.34328919601854,
+          -3.52887998896397
+        ],
+        "rate_speed_float64_hex": "9fa7e1cdcc751340",
+        "rate_speed_mps": 4.86503907861507,
+        "squared_speed": 23.6686052364518,
+        "squared_speed_float64_hex": "a07e78b629ab3740",
+        "weight": 0.133880082703259,
+        "weight_float64_hex": "35ec6588fb22c13f"
+      },
+      {
+        "air_speed_mps": 30.0000622756599,
+        "arm": "tail_vertical",
+        "component_float64_hex": [
+          "78f52c877f5ce63f",
+          "fac52324c0180a40",
+          "2f25fd1629ad0cc0"
+        ],
+        "component_square_float64_hex": [
+          "719e46727540df3f",
+          "3509725f4b482540",
+          "2e55b8ecb0b22940"
+        ],
+        "rate_angle_rad": 0.161799017626185,
+        "rate_components_rad_s": [
+          0.698791278853306,
+          3.26208523019954,
+          -3.58455102882421
+        ],
+        "rate_speed_float64_hex": "7c1f1f214f961340",
+        "rate_speed_mps": 4.8967862296339,
+        "squared_speed": 23.9785153787322,
+        "squared_speed_float64_hex": "ac49defb7ffa3740",
+        "weight": 0.145957994287325,
+        "weight_float64_hex": "7ae30666c0aec23f"
+      }
+    ],
+    "square_method": "pow(component,2)",
+    "weight": 0.145957994287325
+  },
+  "local_loads_current": [
+    -8.4514463926826,
+    -11.8087012099644,
+    -0.96218803804811,
+    5.68088336246367,
+    7.41024774198864,
+    9.52399133100518
+  ],
+  "model_rate_geometry": {
+    "arp_le_m": [
+      0.086778,
+      0.0,
+      -0.0525
+    ],
+    "attached_limit_rad": 0.139626340159546,
+    "cg_le_m_after_test_jitter": [
+      0.0831439801750183,
+      0.0,
+      -0.0239523534209551
+    ],
+    "horizontal_position_le_m_after_test_jitter": [
+      0.837779,
+      0.0,
+      0.0177494946762919
+    ],
+    "tail_local_limit_rad": 0.20943951023932,
+    "vertical_position_le_m": [
+      0.849684,
+      0.0,
+      0.125481
+    ],
+    "wing_envelope_a1_rad": 0.231730159461479,
+    "wing_station_ys_m": [
+      -0.637924987529398,
+      -0.346397088584127,
+      -0.107787807312729,
+      0.107787807312729,
+      0.346397088584127,
+      0.637924987529398
+    ]
+  },
+  "state_float64": [
+    60.0,
+    -40.0,
+    -30.0,
+    30.0,
+    -0.0532522678375244,
+    -0.030012321472168,
+    0.706327192594101,
+    -0.0331948339675957,
+    0.0331948339675957,
+    0.706327192594101,
+    -1.25098180770874,
+    -4.67627382278442,
+    -4.49946975708008
+  ]
+}

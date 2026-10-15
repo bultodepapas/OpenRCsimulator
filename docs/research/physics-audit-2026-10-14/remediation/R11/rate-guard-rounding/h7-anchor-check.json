@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "scope": "in-memory instrumentation checks; no runtime/source files mutated",
+  "branch_ids": [
+    10,
+    11,
+    14,
+    15,
+    12,
+    13,
+    16,
+    17
+  ],
+  "unrelated_function_unchanged": true,
+  "rejected_source_mutations": {
+    "missing_function": "expected one local_flow_weight function, found 0",
+    "duplicate_function": "expected one local_flow_weight function, found 2",
+    "missing_rate_anchor": "expected one wing rate saturation branch anchor, found 0",
+    "extra_exit": "expected one initial local-flow saturation branch anchor, found 2"
+  },
+  "harness_sha256": "47f58e4df5c3b113e948260f841e169fc29e18521b4d9d8554568d22da13c9be",
+  "harness_lf_sha256": "9715901a3eeb90dd19a357e6abc1f35fdb95b3430167f78c3e87356921e1a43a"
+}

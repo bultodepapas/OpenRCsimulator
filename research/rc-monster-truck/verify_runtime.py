@@ -35,7 +35,7 @@ def main():
                'test_rcv_vehicle_dynamics', 'test_rcv_powertrain', 'test_rcv_handling', 'test_rcv_session', 'test_rcv_activity',
                'test_rcv_presentation', 'test_rcv_menu', 'test_rcv_damage', 'test_rcv_damage_session',
                'test_rcv_ground_effects', 'test_rcv_effects_activity', 'test_rcv_activity_audit',
-               'test_rcv_render_audit']
+               'test_rcv_render_audit', 'test_rcv_wet_effects']
     if args.include_menu:
         scripts += ['test_ui_home', 'test_ui_home_layout']
     for name in scripts:
@@ -44,6 +44,10 @@ def main():
     checks.append(('damage-contact-audit', [str(binary), '--headless', '--path', 'app',
                    '--audio-driver', 'Dummy', '--script',
                    str(ROOT / 'research/rc-monster-truck/audit/damage/audit_damage.gd')]))
+    checks.append(('water-physics', [str(binary), '--headless', '--path', 'app', '--audio-driver', 'Dummy',
+                   '--script', str(ROOT / 'research/rc-monster-truck/water/test_environment.gd')]))
+    checks.append(('water-dispatch', [str(binary), '--headless', '--path', 'app', '--audio-driver', 'Dummy',
+                   '--script', str(ROOT / 'research/rc-monster-truck/water/test_water_dispatch.gd')]))
     if args.only:
         unknown = set(args.only) - {name for name, _ in checks}
         if unknown:

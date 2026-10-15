@@ -1,0 +1,42 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   production flight enables soft hull contacts
+ok   production flight has a crash director
+WARNING: Target and up vectors are colinear. This is not advised as it may cause unwanted rotation around local Z axis.
+   at: looking_at (core/math/basis.cpp:1045)
+   GDScript backtrace (most recent call first):
+       [0] aim (res://render/pilot_camera.gd:66)
+       [1] update (res://render/camera/camera_rig.gd:139)
+       [2] _render_pose (res://main.gd:1809)
+       [3] _run (res://tests/test_soft_contact_feedback.gd:59)
+WARNING: Target and up vectors are colinear. This is not advised as it may cause unwanted rotation around local Z axis.
+   at: looking_at (core/math/basis.cpp:1045)
+   GDScript backtrace (most recent call first):
+       [0] aim (res://render/pilot_camera.gd:66)
+       [1] update (res://render/camera/camera_rig.gd:139)
+       [2] _render_pose (res://main.gd:1809)
+       [3] _run (res://tests/test_soft_contact_feedback.gd:59)
+feedback_repeat_12_frames_us=31
+ok   repeated render frames do not duplicate scuffs
+ok   repeated render frames do not duplicate ground marks
+ok   repeated render frames do not replay touch audio
+ok   a hold does not repeat scuffs or marks
+ok   resume without a new tick does not repeat a touch
+ok   feedback does not change the solver checkpoint
+ok   reset permits another touch at the same tick
+ok   a hold defers an unseen touch
+ok   an unseen touch is delivered on resume
+ok   reset and resume feedback preserve the solver checkpoint
+ok   the repeat-frame regression was exercised
+ok   the wingtip touches in production
+ok   the brush does not end the flight
+ok   the touch leaves a ground mark  2 marks
+ok   the brush scuffs the low wing  1 scuffs
+ok   the touch throws a puff only on soft ground (rough)
+ok   the crash aftermath stays idle
+ok   the source airplane stays visible
+ok   touch feedback stays inside the effects budget
+ok   restart clears the touch marks
+ok   restart removes the airframe scuffs
+23 checks, 0 failed

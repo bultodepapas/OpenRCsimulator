@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+measured trim: p50=1018.0 p95=1075.0 p99=1108.0 max=1308.0
+measured stall: p50=1009.0 p95=1077.0 p99=1212.0 max=1543.0
+measured high_rate: p50=915.0 p95=1236.0 p99=1306.0 max=1339.0
+measured runway: p50=1731.0 p95=1826.0 p99=1901.0 max=2425.0

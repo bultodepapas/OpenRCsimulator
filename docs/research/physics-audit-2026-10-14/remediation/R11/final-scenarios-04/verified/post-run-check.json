@@ -1,0 +1,34 @@
+{
+  "runner_ok": true,
+  "runner_source_drift": 0,
+  "runner_commands": 7,
+  "runner_nonzero_commands": 0,
+  "exact_replays": 2,
+  "csv_comparison_status": [
+    "ok",
+    "ok"
+  ],
+  "csv_comparison_rows": [
+    1441,
+    1441
+  ],
+  "csv_max_abs": 0.0,
+  "catalog_runs": 28.0,
+  "catalog_bad_runs": 0,
+  "h4_exit_code": 0,
+  "h6_guard_exit_code": 0,
+  "h6_self_test_exit_code": 0,
+  "h7_exit_code": 0,
+  "windows_goldens_pass": 4,
+  "app_files_compared": 2320,
+  "expected_app_file_differences": 4,
+  "unallowed_app_differences": 0,
+  "final03_solver": "3877ec2dab0d72194f979ad85c396a2ecc40aa8388cd31b252ea99dd10584123",
+  "final04_solver": "85d0b19b66d118bf4a735e253b4f2d5c0d1d73a7a35f11f6e146dfc16b207a1b",
+  "r05_candidate02_solver": "e987ea81c90e32f7400eae386c02ded31e05de03e6b7205bcd035c66a1efb1a9",
+  "r05_archive_sha256": "cb0d6eab727190cec9295a86d79d0a1f829fa73dc78755a649c6cb6b4d7c8903",
+  "csv_max_abs_and_rmse_metrics_checked": 52,
+  "csv_nonzero_max_abs_or_rmse_metrics": 0,
+  "csv_all_metrics_exactly_zero": true,
+  "final_scenarios_03_solver": "3877ec2dab0d72194f979ad85c396a2ecc40aa8388cd31b252ea99dd10584123"
+}

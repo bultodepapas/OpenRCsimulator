@@ -590,7 +590,12 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 		var flow_x: float = v0 + (q*arm_z - r*station_y)
 		var flow_z: float = v2 + (p*station_y - q*arm_x)
 		var da: float = da_right if y > 0 else da_left
-		var rate_speed := M.sqrt_(M.pow_(q*arm_z-r*station_y, 2) + M.pow_(r*arm_x-p*arm_z, 2) + M.pow_(p*station_y-q*arm_x, 2))
+		# Explicit squares keep this Euclidean norm on basic float64 arithmetic;
+		# generic pow(x, 2) can differ by an ulp across platform math libraries.
+		var rate_x := q*arm_z - r*station_y
+		var rate_y := r*arm_x - p*arm_z
+		var rate_z := p*station_y - q*arm_x
+		var rate_speed := M.sqrt_(rate_x*rate_x + rate_y*rate_y + rate_z*rate_z)
 		blend = maxf(blend, _smoothstep((M.atan2_(rate_speed, float(air.V))-limit)/a1_span))
 		if blend == 1.0:
 			return blend
@@ -610,7 +615,10 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 		var tz: float = -(tail_position[2]-cg[2])
 		var flow_x: float = v0 + (q*tz - r*ty)
 		var component: float = v1 + (r*tx - p*tz) if vertical else v2 + (p*ty - q*tx)
-		var rate_speed := M.sqrt_(M.pow_(q*tz-r*ty, 2) + M.pow_(r*tx-p*tz, 2) + M.pow_(p*ty-q*tx, 2))
+		var rate_x := q*tz - r*ty
+		var rate_y := r*tx - p*tz
+		var rate_z := p*ty - q*tx
+		var rate_speed := M.sqrt_(rate_x*rate_x + rate_y*rate_y + rate_z*rate_z)
 		blend = maxf(blend, _smoothstep((M.atan2_(rate_speed, float(air.V))-limit)/a1_span))
 		if blend == 1.0:
 			return blend

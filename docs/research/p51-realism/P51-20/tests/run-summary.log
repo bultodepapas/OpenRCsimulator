@@ -1,0 +1,19 @@
+baseline ground 240 exit 0
+baseline ground 480 exit 0
+baseline airborne 240 exit 0
+baseline test_p51_handling exit=1 FAIL inside loop at 0.7 stick from 27 m/s: 360° of pitch within 8 s, finite  347° (5.2 s) 15 checks, 1 failed 
+baseline test_p51_envelope exit=1 FAIL power-off stall recovers (stick forward, opposite rudder, wings level, α-limited pull-out) within 80 m, no crash  83 m 15 checks, 1 failed 
+baseline test_p51_ground exit=1 FAIL lift-off between 1.05 and 1.5 Vs (rotation at 1.25 Vs)  25.3 m/s 12 checks, 1 failed 
+baseline test_ground_effect exit=0 50 checks, 0 failed 
+baseline test_aircraft_data exit=0 87 checks, 0 failed 
+baseline test_trim exit=0 14 checks, 0 failed 
+3ef8334ff11ae71d8ce1c14f7674fea440d27b24db0036a37881c1647e553ff2 *app/data/aircraft/p51d_mustang_120.json
+candidate ground 240 exit 0
+candidate ground 480 exit 0
+candidate airborne 240 exit 0
+candidate test_p51_handling exit=1 FAIL inside loop at 0.7 stick from 27 m/s: 360° of pitch within 8 s, finite  343° (5.2 s) 15 checks, 1 failed 
+candidate test_p51_envelope exit=1 FAIL power-off stall recovers (stick forward, opposite rudder, wings level, α-limited pull-out) within 80 m, no crash  83 m 15 checks, 1 failed 
+candidate test_p51_ground exit=1 FAIL lift-off between 1.05 and 1.5 Vs (rotation at 1.25 Vs)  25.2 m/s 12 checks, 1 failed 
+candidate test_ground_effect exit=0 50 checks, 0 failed 
+candidate test_aircraft_data exit=0 87 checks, 0 failed 
+candidate test_trim exit=0 14 checks, 0 failed 

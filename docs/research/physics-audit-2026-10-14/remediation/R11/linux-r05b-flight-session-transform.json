@@ -1,0 +1,14 @@
+{
+  "base_allowlist_line": "const RUNWAY_AIRCRAFT_IDS := [\"jensen-das-ugly-stik-60\", \"turbo-lumber-evolution\", \"stik-glow-55ax-2t\", \"stik-glow-fs64v-4t\", \"stik-glow-61fx-2t\", \"sebart-avanti-s-a200-p100rx\"]",
+  "base_revision": "b09aa20016d3dcc8133073e66424313b9bfbf0d7",
+  "captured_utc": "2026-10-15T01:38:42.126814+00:00",
+  "format": "openrc-r11-r05b-p51-overlay-exclusion-v1",
+  "live_allowlist_line": "const RUNWAY_AIRCRAFT_IDS := [\"jensen-das-ugly-stik-60\", \"turbo-lumber-evolution\", \"stik-glow-55ax-2t\", \"stik-glow-fs64v-4t\", \"stik-glow-61fx-2t\", \"sebart-avanti-s-a200-p100rx\", \"p51d-mustang-120\"]",
+  "live_overlay_sha256": "6ab22b03a16b9a5783931254bcf407c97d6e2a09edeb45a3974c09c2ec199f43",
+  "only_edit": "remove the external p51d-mustang-120 runway allowlist entry so the isolated flight_session and test_runway_start remain consistent with b09",
+  "overlay_path": "/home/bulto/openrc-r11-flight-session-r05b-b09-allowlist.gd",
+  "overlay_sha256": "df45d4bd217e7d54a6d160a46fd9577e01bcc47413014def4dce769e7279e7ae",
+  "overlay_size_bytes": 181819,
+  "path": "app/sim/flight_session.gd",
+  "restored_allowlist_line": "const RUNWAY_AIRCRAFT_IDS := [\"jensen-das-ugly-stik-60\", \"turbo-lumber-evolution\", \"stik-glow-55ax-2t\", \"stik-glow-fs64v-4t\", \"stik-glow-61fx-2t\", \"sebart-avanti-s-a200-p100rx\"]"
+}

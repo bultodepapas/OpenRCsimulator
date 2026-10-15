@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Cannot infer the type of "resource_path" variable because the value doesn't have a set type.
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/research/aero/d11g/derive_rate_derivatives.gd:251)
+ERROR: Failed to load script "C:/DEVELOPMENT/OpenRCsimulator/research/aero/d11g/derive_rate_derivatives.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

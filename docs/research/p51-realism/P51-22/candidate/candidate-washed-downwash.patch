@@ -1,0 +1,58 @@
+diff --git a/app/physics/aero.gd b/app/physics/aero.gd
+index 00995e97..10d612ed 100644
+--- a/app/physics/aero.gd
++++ b/app/physics/aero.gd
+@@ -516,13 +516,13 @@ static func tail_surface_increment(v: PackedFloat64Array, rates: PackedFloat64Ar
+ 
+ static func _tail_surface_from_flow(flow: PackedFloat64Array, arm: PackedFloat64Array, d: Dictionary,
+ 		tail: Dictionary, surfaces: Dictionary, area: float, vertical: bool, rho: float,
+-		downwash_cl: float = 0.0) -> PackedFloat64Array:
++		downwash_cl: float = 0.0, downwash_speed := NAN) -> PackedFloat64Array:
+ 	var control: float = -d.rudder if vertical else d.elevator
+ 	var effective: float
+ 	var slope: float
+ 	if not vertical and tail.has("free_slope"):
+ 		effective = wrapf(M.atan2_(flow[2], flow[0]) - downwash_angle(downwash_cl, float(tail.downwash_per_cl),
+-			M.sqrt_(flow[0]*flow[0] + flow[2]*flow[2]))
++			M.sqrt_(flow[0]*flow[0] + flow[2]*flow[2]) if is_nan(downwash_speed) else downwash_speed)
+ 			+ float(tail.elevator_tau) * control + float(tail.free_incidence), -PI, PI)
+ 		slope = tail.free_slope
+ 	else:
+diff --git a/app/physics/slipstream.gd b/app/physics/slipstream.gd
+index 1a69039b..68f5c00f 100644
+--- a/app/physics/slipstream.gd
++++ b/app/physics/slipstream.gd
+@@ -198,9 +198,10 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
+ 		var arm := M.v3(arm_0, arm_1, arm_2)
+ 		var free := Aero._tail_surface_from_flow(M.v3((v0+0.0)+rate_arm_0, (v1+0.0)+rate_arm_1, (v2+0.0)+rate_arm_2),
+ 			arm, d, tail, surfaces, area, vertical, rho, wing_cl)
++		var free_plane := M.sqrt_(((v0+0.0)+rate_arm_0) * ((v0+0.0)+rate_arm_0) + ((v2+0.0)+rate_arm_2) * ((v2+0.0)+rate_arm_2))
+ 		var washed := Aero._tail_surface_from_flow(M.v3((v0+(wash_0-swirl_0))+rate_arm_0,
+ 			(v1+(wash_1-swirl_1))+rate_arm_1, (v2+(wash_2-swirl_2))+rate_arm_2),
+-			arm, d, tail, surfaces, area, vertical, rho, wing_cl)
++			arm, d, tail, surfaces, area, vertical, rho, wing_cl, free_plane)
+ 		o0 += washed[0] - free[0]
+ 		o1 += washed[1] - free[1]
+ 		o2 += washed[2] - free[2]
+diff --git a/app/physics/swirl_loads.gd b/app/physics/swirl_loads.gd
+index 53a07c03..b289e710 100644
+--- a/app/physics/swirl_loads.gd
++++ b/app/physics/swirl_loads.gd
+@@ -229,7 +229,7 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
+ 		var axial_normal: float = axial_flow_1 if vertical else axial_flow_2
+ 		var axial_effective: float
+ 		if has_downwash:
+-			axial_effective = wrapf(M.atan2_(axial_flow_2, axial_flow_0) - Aero.downwash_angle(downwash_product, 1.0, M.sqrt_(axial_flow_0 * axial_flow_0 + axial_normal * axial_normal))
++			axial_effective = wrapf(M.atan2_(axial_flow_2, axial_flow_0) - Aero.downwash_angle(downwash_product, 1.0, M.sqrt_((v0 + rate_arm_0) * (v0 + rate_arm_0) + (v2 + rate_arm_2) * (v2 + rate_arm_2)))
+ 				+ elevator_tau_control + free_incidence, -PI, PI)
+ 		else:
+ 			axial_effective = wrapf(M.atan2_(axial_normal, axial_flow_0) + control_angle + incidence, -PI, PI)
+@@ -279,7 +279,7 @@ static func _integrate_interval(v0: float, v1: float, v2: float, p: float, q: fl
+ 		var swirl_normal: float = swirl_flow_1 if vertical else swirl_flow_2
+ 		var swirl_effective: float
+ 		if has_downwash:
+-			swirl_effective = wrapf(M.atan2_(swirl_flow_2, swirl_flow_0) - Aero.downwash_angle(downwash_product, 1.0, M.sqrt_(swirl_flow_0 * swirl_flow_0 + swirl_normal * swirl_normal))
++			swirl_effective = wrapf(M.atan2_(swirl_flow_2, swirl_flow_0) - Aero.downwash_angle(downwash_product, 1.0, M.sqrt_((v0 + rate_arm_0) * (v0 + rate_arm_0) + (v2 + rate_arm_2) * (v2 + rate_arm_2)))
+ 				+ elevator_tau_control + free_incidence, -PI, PI)
+ 		else:
+ 			swirl_effective = wrapf(M.atan2_(swirl_normal, swirl_flow_0) + control_angle + incidence, -PI, PI)

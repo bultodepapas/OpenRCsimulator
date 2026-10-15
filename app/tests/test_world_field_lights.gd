@@ -154,25 +154,39 @@ func _initialize() -> void:
 	airplane.root.free()
 
 	# FW-62: under-wing strips on every catalog aircraft, traced on its own lowest vertices.
+	_test_underwing_face_selection()
 	for id: String in [AirplaneBuilder.STIK_ID, AirplaneBuilder.EXTRA_ID, AirplaneBuilder.AVANTI_ID, AirplaneBuilder.P51_ID, AirplaneBuilder.TIMBER_ID]:
 		var plane: Dictionary = AirplaneBuilder.build(id)
 		var pts := AircraftLights.vertices(plane.root)
 		var half := AircraftLights.span_half(pts)
-		var lines := AircraftLights.underwing_lines(AircraftLights.triangles(plane.root), half)
+		var tris := AircraftLights.triangles(plane.root)
+		var lines := AircraftLights.underwing_lines(tris, half)
+		var top_lines := AircraftLights.underwing_lines(tris, half, true)
 		var ok := true
 		var detail := ""
+		var top_ok := true
+		var top_detail := ""
 		for key: String in ["left", "right"]:
 			var line: PackedVector3Array = lines[key]
+			var top_line: PackedVector3Array = top_lines[key]
 			if line.size() != AircraftLights.STRIP_STATIONS:
 				ok = false
 				detail = "%s %s: %d stations" % [id, key, line.size()]
+			if top_line.size() != AircraftLights.STRIP_STATIONS:
+				top_ok = false
+				top_detail = "%s %s: %d stations" % [id, key, top_line.size()]
 			for k in range(1, line.size()):
 				if absf(line[k].y - line[k - 1].y) > 0.06 or absf(line[k].z - line[k - 1].z) > 0.15:
 					ok = false
 					detail = "%s %s: jump %s -> %s" % [id, key, line[k - 1], line[k]]
+			for k in range(1, top_line.size()):
+				if absf(top_line[k].y - top_line[k - 1].y) > 0.06 or absf(top_line[k].z - top_line[k - 1].z) > 0.15:
+					top_ok = false
+					top_detail = "%s %s: jump %s -> %s" % [id, key, top_line[k - 1], top_line[k]]
 		var dressed := AircraftLights.attach(plane.root)
 		ok = ok and dressed.get_node_or_null("strip_left") != null and dressed.get_node_or_null("strip_right") != null
 		_check("%s: smooth under-wing strips on both sides, every station" % id, ok, detail)
+		_check("%s: smooth wing-top strips on both sides, every station" % id, top_ok, top_detail)
 		var tip_ok: bool = (dressed.get_node("nav_right") as Node3D).position.x > half and (dressed.get_node("nav_left") as Node3D).position.x < -half
 		_check("%s: nav lights at the real wing tips (span %.2f m)" % [id, 2.0 * half], tip_ok)
 		plane.root.free()
@@ -248,3 +262,58 @@ func _initialize() -> void:
 	Atmosphere.state = {}
 	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _test_underwing_face_selection() -> void:
+	# The horizontal skin defines y=0 and y=0.02 m; a vertical fence and a collapsed low triangle overlap its chord.
+	# The known skin coordinates must win without depending on triangle selection order.
+	var flat_with_fence := _synthetic_wing(0.0, true, true)
+	var lower: PackedVector3Array = AircraftLights.underwing_lines(flat_with_fence, 1.0).right
+	var upper: PackedVector3Array = AircraftLights.underwing_lines(flat_with_fence, 1.0, true).right
+	var flat_ok := lower.size() == AircraftLights.STRIP_STATIONS and upper.size() == AircraftLights.STRIP_STATIONS
+	for point in lower:
+		flat_ok = flat_ok and absf(point.y + AircraftLights.STRIP_GAP_M) < 1e-6 and absf(point.z - 0.5) < 1e-6
+	for point in upper:
+		flat_ok = flat_ok and absf(point.y - (0.02 + AircraftLights.STRIP_GAP_M)) < 1e-6 and absf(point.z - 0.5) < 1e-6
+	_check("under-wing selectors ignore a lower fence and collapsed face, retaining both known skins", flat_ok,
+		"lower=%s upper=%s" % [str(lower), str(upper)])
+
+	# A 0.5 m/m spanwise slope is a real tilted skin (normal still vertical-dominant), not a flat-plane-only special case.
+	var slope := 0.5
+	var sloped: PackedVector3Array = AircraftLights.underwing_lines(_synthetic_wing(slope, false, false), 1.0).right
+	var slope_ok := sloped.size() == AircraftLights.STRIP_STATIONS
+	for point in sloped:
+		slope_ok = slope_ok and (
+			absf(point.y - (slope * point.x - AircraftLights.STRIP_GAP_M)) < 1e-6
+			and absf(point.z - 0.5) < 1e-6)
+	_check("under-wing selector retains a 26.6-degree spanwise wing slope", slope_ok, str(sloped))
+
+	var degenerate := PackedVector3Array([
+		Vector3(0.48, -0.2, 0.4), Vector3(0.68, -0.2, 0.4), Vector3(0.58, -0.2, 0.4)])
+	var no_skin: Dictionary = AircraftLights.underwing_lines(degenerate, 1.0)
+	_check("zero-area triangles alone create no under-wing stations", no_skin.left.is_empty() and no_skin.right.is_empty(), str(no_skin))
+
+
+func _synthetic_wing(slope: float, include_fence: bool, include_degenerate: bool) -> PackedVector3Array:
+	var triangles := PackedVector3Array()
+	for offset: float in [0.0, 0.02]:
+		var a := Vector3(-1.0, -slope + offset, 0.0)
+		var b := Vector3(1.0, slope + offset, 0.0)
+		var c := Vector3(1.0, slope + offset, 1.0)
+		var d := Vector3(-1.0, -slope + offset, 1.0)
+		triangles.append_array(PackedVector3Array([a, b, c, a, c, d]))
+	if include_fence:
+		var x0 := 0.48
+		var x1 := 0.68
+		var z := 0.5
+		var f0 := Vector3(x0, slope * x0 - 0.1, z)
+		var f1 := Vector3(x1, slope * x1 - 0.1, z)
+		var f2 := Vector3(x1, slope * x1 + 0.12, z)
+		var f3 := Vector3(x0, slope * x0 + 0.12, z)
+		triangles.append_array(PackedVector3Array([f0, f1, f2, f0, f2, f3]))
+	if include_degenerate:
+		triangles.append_array(PackedVector3Array([
+			Vector3(0.48, slope * 0.48 - 0.2, 0.4),
+			Vector3(0.68, slope * 0.68 - 0.2, 0.4),
+			Vector3(0.58, slope * 0.58 - 0.2, 0.4)]))
+	return triangles

@@ -1,0 +1,216 @@
+{
+  "format": "openrc-glow-installation v1",
+  "family": "glow_4t",
+  "profile": "res://data/glow/os_fs_64v_candidate.json",
+  "fuel_inventory": "usable glow premix",
+  "settings": {
+    "idle_admission": {
+      "value": 0.35,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "servo_time_constant_s": {
+      "value": 0.06,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "air_time_constant_s": {
+      "value": 0.075,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "fuel_transport_time_constant_s": {
+      "value": 0.16,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "stall_rpm": {
+      "value": 1500.0,
+      "unit": "rpm",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "minimum_start_rpm": {
+      "value": 2200.0,
+      "unit": "rpm",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "starter_prime_kg": {
+      "value": 1e-05,
+      "unit": "kg",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "temperature_firing_min_k": {
+      "value": 280.0,
+      "unit": "K",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "temperature_firing_full_k": {
+      "value": 360.0,
+      "unit": "K",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "temperature_firing_hot_full_k": {
+      "value": 450.0,
+      "unit": "K",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "temperature_firing_hot_zero_k": {
+      "value": 560.0,
+      "unit": "K",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "lean_misfire_zero_ratio": {
+      "value": 0.2,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "lean_misfire_start_ratio": {
+      "value": 0.6,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "rich_misfire_start_ratio": {
+      "value": 1.25,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "rich_misfire_zero_ratio": {
+      "value": 1.8,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "thermal": {
+      "heat_capacity_j_k": {
+        "value": 165.0,
+        "unit": "J/K",
+        "kind": "estimated",
+        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+      },
+      "head_heat_fraction": {
+        "value": 0.24,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+      },
+      "cooling_base_w_k": {
+        "value": 1.5,
+        "unit": "W/K",
+        "kind": "estimated",
+        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+      },
+      "cooling_airflow_w_s_m_k": {
+        "value": 0.12,
+        "unit": "W/(K m/s)",
+        "kind": "estimated",
+        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+      },
+      "premix_evaporation_j_kg": {
+        "value": 700000.0,
+        "unit": "J/kg",
+        "kind": "estimated",
+        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+      },
+      "evaporation_head_fraction": {
+        "value": 0.08,
+        "unit": "1",
+        "kind": "estimated",
+        "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+      }
+    }
+  },
+  "initial_temperature_k": {
+    "value": 390.0,
+    "unit": "K",
+    "kind": "estimated",
+    "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+  },
+  "propeller": {
+    "max_rpm": {
+      "value": 14615.384615384615,
+      "unit": "rpm",
+      "kind": "derived",
+      "source": "https://www.apcprop.com/technical-information/rpm-limits/; sport 190000/diameter(in)"
+    },
+    "diameter_m": {
+      "value": 0.3302,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "pitch_m": {
+      "value": 0.15239999999999998,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "chord_m": {
+      "value": 0.027857142857142858,
+      "unit": "m",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; independent broad-blade 14x6 surrogate, c/D transfer to 13x6"
+    },
+    "blades": {
+      "value": 2.0,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "lift_slope": {
+      "value": 5.5,
+      "unit": "1/rad",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "cd0": {
+      "value": 0.022,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement"
+    },
+    "induced_drag": {
+      "value": 0.075,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "NITRO-02 experimental installation estimate; no matched hardware measurement; loss coefficient constrained to exceed ideal actuator-disk power by at least 5% over positive-thrust forward flow for both assumed geometries; not measured induced flow; NITRO-02 momentum-bound audit"
+    }
+  },
+  "fuel_feed": {
+    "carburetor_position": {
+      "value": [
+        -0.2,
+        0.0,
+        0.045
+      ],
+      "unit": "m",
+      "kind": "estimated",
+      "source": "NITRO-05 estimate from the engine layout (2T front-housing carburetor, 4T head-fed intake); not measured"
+    },
+    "idle_drive_pressure_pa": {
+      "value": 1000.0,
+      "unit": "Pa",
+      "kind": "estimated",
+      "source": "NITRO-05 estimate: fuel-feed pressure at the spray bar (carburetor suction plus tank pressurization); order of magnitude from modeler practice, no measured pressure for this engine"
+    },
+    "wot_drive_pressure_pa": {
+      "value": 4000.0,
+      "unit": "Pa",
+      "kind": "estimated",
+      "source": "NITRO-05 estimate: fuel-feed pressure at the spray bar (carburetor suction plus tank pressurization); order of magnitude from modeler practice, no measured pressure for this engine"
+    }
+  }
+}

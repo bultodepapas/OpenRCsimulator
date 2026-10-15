@@ -1,0 +1,42 @@
+diff --git a/app/tests/avanti_pullup_base.gd b/app/tests/avanti_pullup_base.gd
+index c0f1a022..f91ab2f7 100644
+--- a/app/tests/avanti_pullup_base.gd
++++ b/app/tests/avanti_pullup_base.gd
+@@ -28,7 +28,7 @@ func run_case(speed: float, hold: float) -> Dictionary:
+ 	var initial: PackedFloat64Array = Trim.state_for(speed, float(trimmed.alpha), deg_to_rad(-45.0), 0.0, M.v3(0,0,-500))
+ 	assert(flight.sim.reset(initial))
+ 	var record := {speed_mps = speed, hold_s = hold, peak_alpha_deg = 0.0, peak_g = 0.0, peak_stall_weight = 0.0,
+-		first_stall_s = -1.0, recovered_s = -1.0, samples = [], completed = false}
++		first_stall_s = -1.0, first_deep_separation_s = -1.0, recovered_s = -1.0, samples = [], completed = false}
+ 	flight.read_raw = func() -> Dictionary:
+ 		# Repeated key taps are a scripted pilot, not a runtime flight assist. Release after reaching level path.
+ 		var press: bool = flight.sim.time() < hold if hold >= 0 else fmod(flight.sim.time(), 0.6) < 0.45 and record.recovered_s < 0
+@@ -56,6 +56,7 @@ func run_case(speed: float, hold: float) -> Dictionary:
+ 		record.peak_g = maxf(record.peak_g, g)
+ 		record.peak_stall_weight = maxf(record.peak_stall_weight, weight)
+ 		if record.first_stall_s < 0.0 and weight >= 0.5: record.first_stall_s = flight.sim.time()
++		if record.first_deep_separation_s < 0.0 and weight > 0.9: record.first_deep_separation_s = flight.sim.time()
+ 		if record.recovered_s < 0.0 and gamma >= 0.0: record.recovered_s = flight.sim.time()
+ 		if tick % (hz / 20) == 0:
+ 			record.samples.append([flight.sim.time(), air.V, rad_to_deg(air.alpha), gamma, g,
+diff --git a/app/tests/test_avanti_keyboard.gd b/app/tests/test_avanti_keyboard.gd
+index 17581599..d00027fa 100644
+--- a/app/tests/test_avanti_keyboard.gd
++++ b/app/tests/test_avanti_keyboard.gd
+@@ -58,7 +58,15 @@ func _initialize() -> void:
+ 	var tap := run_case(45.0, 0.5)
+ 	check("half-second pull no longer over-rotates into stall", tap.completed and tap.peak_alpha_deg < 9.0 and tap.peak_stall_weight < 0.1)
+ 	var held := run_case(45.0, 2.0)
+-	check("sustained over-pull still produces accelerated stall", held.completed and held.first_stall_s > 0.0 and held.peak_stall_weight > 0.9)
++	check("two-second over-pull crosses the model stall onset while held",
++		held.completed and held.first_stall_s > 0.0 and held.first_stall_s < 2.0 and held.peak_stall_weight >= 0.5)
++	# VAL-AUD-R02 changes the response, not keyboard authority. After the one-second
++	# virtual-stick ramp, two more seconds at the endpoint still cause deep separation.
++	# Keep the original >0.9 criterion and require the event before command release.
++	var sustained := run_case(45.0, 3.0)
++	check("sustained endpoint reaches deep model separation before release",
++		sustained.completed and sustained.peak_stall_weight > 0.9
++			and sustained.first_deep_separation_s > 0.0 and sustained.first_deep_separation_s < 3.0)
+ 	# Session sampling activates it only for keyboard normal mode; full profile remains the documented override.
+ 	var session := Flight.new()
+ 	session.setup("res://data/aircraft/sebart_avanti_s_a200.json", "sebart-avanti-s-a200-p100rx")

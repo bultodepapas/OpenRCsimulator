@@ -1,0 +1,22 @@
+[
+  {
+    "path": "tests/test_start_choice.gd",
+    "before_sha256": "346d42fc2d15bc1b14ca2e1875b8b8e93a4cc009e5ad1c68db1818ee15aa73a0",
+    "after_sha256": "f3fe6d8e01aa9876897367f21d3025ff704e0217f66e91e33d41bbe9cc6439a5"
+  },
+  {
+    "path": "tests/test_shaft_refinement.gd",
+    "before_sha256": "208996d5aeaea9f71119a38f01730403fed28cc6b244c43e921f558cb97d057f",
+    "after_sha256": "a84b5c2a77b04e853878166c5f8fea4a9fa143babb841d829c8e8e98be31c9a5"
+  },
+  {
+    "path": "tests/test_ui_home.gd",
+    "before_sha256": "c68274734a240dff081e84a0e032b6b3c3251572eec1deecd0380b67482371e5",
+    "after_sha256": "d4d070b95d68d033fa012461057e12e01ed2ee54b74a72c377dbd0e5a8dfff23"
+  },
+  {
+    "path": "tests/test_wheel_session.gd",
+    "before_sha256": "171ef30a4b67d836d25552bd47323faac680f91162bd143b7100c223f9b41ca2",
+    "after_sha256": "540254b449235f52ad0afb3ab686010561743583a610d6f1f5c846fdcde63357"
+  }
+]

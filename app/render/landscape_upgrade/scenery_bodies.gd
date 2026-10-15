@@ -19,15 +19,16 @@ static func build_near(world: Dictionary, point_ned: PackedFloat64Array) -> Node
 		var margin := maxf(float(proxy.get("radius", 0.0)), maxf(float(proxy.get("half_x", 0.0)), float(proxy.get("half_z", 0.0))))
 		if absf(float(proxy.north) - point_ned[0]) > RANGE_M + margin or absf(float(proxy.east) - point_ned[1]) > RANGE_M + margin:
 			continue
-		candidates.append(proxy)
+		candidates.append({proxy = proxy, distance_squared = _distance_squared(proxy, point_ned)})
 	# Spend the bounded secondary-contact budget near the actual impact, rather than in inventory-ID order.
 	# The local fence bays add proxies; they must not evict the car/trunk/lamp that the wreck just struck.
 	candidates.sort_custom(func(a: Dictionary, b: Dictionary) -> bool:
-		var da := _distance_squared(a, point_ned)
-		var db := _distance_squared(b, point_ned)
-		return str(a.id) < str(b.id) if da == db else da < db)
+		var da: float = a.distance_squared
+		var db: float = b.distance_squared
+		return str(a.proxy.id) < str(b.proxy.id) if da == db else da < db)
 	var count := 0
-	for proxy: Dictionary in candidates:
+	for candidate: Dictionary in candidates:
+		var proxy: Dictionary = candidate.proxy
 		if count >= MAX_BODIES:
 			push_warning("Scenery wreck contact budget reached; farther secondary contacts omitted.")
 			break

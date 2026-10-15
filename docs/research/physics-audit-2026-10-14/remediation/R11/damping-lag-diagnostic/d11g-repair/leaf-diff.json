@@ -1,0 +1,318 @@
+{
+  "schema": "d11g-repair-leaf-diff/v1",
+  "changed_files": [
+    {
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "before_sha256": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+      "after_sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+      "changed_leaf_count": 6,
+      "changes": [
+        {
+          "path": "aero.coefficients.CLq.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim, downwash settled; the wing ahead of the CG loses lift in a pull, so it is below the tail-only closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0034. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.CLq.value",
+          "before": 1.977,
+          "after": 2.003
+        },
+        {
+          "path": "aero.coefficients.Cmq.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -7.741 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CLq lift reproduces it; the downwash lag adds Cmadot -3.59 as a state (E0a2b); closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8033 and CLq=2.0034; ARP Cmq=-8.009 includes the CLq lift arm. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.Cmq.value",
+          "before": -7.944,
+          "after": -8.009
+        },
+        {
+          "path": "aero.coefficients.Cnr.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -0.1318 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CYr side force reproduces it; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.12989; ARP Cnr=-0.1335 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.Cnr.value",
+          "before": -0.1354,
+          "after": -0.1335
+        }
+      ]
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_55ax_2t.json",
+      "before_sha256": "0e12ff3ec366458bd0394ede782d06bebfcbcfd7e7dfe7ac0f4ee1d54f876a48",
+      "after_sha256": "e5494601e2bf3390f95c37f2175bb28b508b2a340c8c9fe55d56b1a7b335c3ae",
+      "changed_leaf_count": 6,
+      "changes": [
+        {
+          "path": "aero.coefficients.CLq.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim, downwash settled; the wing ahead of the CG loses lift in a pull, so it is below the tail-only closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0034. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.CLq.value",
+          "before": 1.977,
+          "after": 2.003
+        },
+        {
+          "path": "aero.coefficients.Cmq.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -7.741 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CLq lift reproduces it; the downwash lag adds Cmadot -3.59 as a state (E0a2b); closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8033 and CLq=2.0034; ARP Cmq=-8.009 includes the CLq lift arm. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.Cmq.value",
+          "before": -7.944,
+          "after": -8.009
+        },
+        {
+          "path": "aero.coefficients.Cnr.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -0.1318 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CYr side force reproduces it; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.12989; ARP Cnr=-0.1335 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.Cnr.value",
+          "before": -0.1354,
+          "after": -0.1335
+        }
+      ]
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json",
+      "before_sha256": "c608f0d4dcc5d61fc4cdf07aedd66c80ee6dd0c444e00fbd52252bd4705754da",
+      "after_sha256": "ac71c4a05cb0375f445b50f68f8fb3ceb2254e5a0ae933c900905b362b046524",
+      "changed_leaf_count": 6,
+      "changes": [
+        {
+          "path": "aero.coefficients.CLq.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim, downwash settled; the wing ahead of the CG loses lift in a pull, so it is below the tail-only closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0034. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.CLq.value",
+          "before": 1.977,
+          "after": 2.003
+        },
+        {
+          "path": "aero.coefficients.Cmq.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -7.741 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CLq lift reproduces it; the downwash lag adds Cmadot -3.59 as a state (E0a2b); closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8033 and CLq=2.0034; ARP Cmq=-8.009 includes the CLq lift arm. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.Cmq.value",
+          "before": -7.944,
+          "after": -8.009
+        },
+        {
+          "path": "aero.coefficients.Cnr.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -0.1318 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CYr side force reproduces it; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.12989; ARP Cnr=-0.1335 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.Cnr.value",
+          "before": -0.1354,
+          "after": -0.1335
+        }
+      ]
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_61fx_2t.json",
+      "before_sha256": "c332b2a5544d3bf52f20f30fc801fae22e70741344b4b51c6311fb16bfab8b74",
+      "after_sha256": "4f50726804a1fbc6dbac3570e4ca4b2b20a270933816ff0032cd0463de7a5177",
+      "changed_leaf_count": 6,
+      "changes": [
+        {
+          "path": "aero.coefficients.CLq.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim, downwash settled; the wing ahead of the CG loses lift in a pull, so it is below the tail-only closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0034. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.CLq.value",
+          "before": 1.977,
+          "after": 2.003
+        },
+        {
+          "path": "aero.coefficients.Cmq.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -7.741 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CLq lift reproduces it; the downwash lag adds Cmadot -3.59 as a state (E0a2b); closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8033 and CLq=2.0034; ARP Cmq=-8.009 includes the CLq lift arm. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.Cmq.value",
+          "before": -7.944,
+          "after": -8.009
+        },
+        {
+          "path": "aero.coefficients.Cnr.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -0.1318 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CYr side force reproduces it; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.12989; ARP Cnr=-0.1335 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.Cnr.value",
+          "before": -0.1354,
+          "after": -0.1335
+        }
+      ]
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_fs64v_4t.json",
+      "before_sha256": "6c1f8a0c51299fd8f2208cbda29824c6735752861468040acf3416895dcfdccf",
+      "after_sha256": "d381fc6c3fb014e2c727410b1c1996c8f7cf35e0ad6af63c0268e11c5b1092af",
+      "changed_leaf_count": 6,
+      "changes": [
+        {
+          "path": "aero.coefficients.CLq.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim, downwash settled; the wing ahead of the CG loses lift in a pull, so it is below the tail-only closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0034. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.CLq.value",
+          "before": 1.977,
+          "after": 2.003
+        },
+        {
+          "path": "aero.coefficients.Cmq.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -7.741 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CLq lift reproduces it; the downwash lag adds Cmadot -3.59 as a state (E0a2b); closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8033 and CLq=2.0034; ARP Cmq=-8.009 includes the CLq lift arm. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.Cmq.value",
+          "before": -7.944,
+          "after": -8.009
+        },
+        {
+          "path": "aero.coefficients.Cnr.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -0.1318 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CYr side force reproduces it; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.12989; ARP Cnr=-0.1335 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.Cnr.value",
+          "before": -0.1354,
+          "after": -0.1335
+        }
+      ]
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
+      "before_sha256": "b216efd58516f7946126f774917ca58bc2cd07986bf5860c1cba5b9766025ee0",
+      "after_sha256": "0f0b06b924eafdf9c4ddd02ee736ea87fcd7c5364b39da4592292fea104cd92e",
+      "changed_leaf_count": 6,
+      "changes": [
+        {
+          "path": "aero.coefficients.CLq.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim, downwash settled; the wing ahead of the CG loses lift in a pull, so it is below the tail-only closed form 2*a_f*(S_t/S)*(l_t/c) = 3.13; the borrowed UltraStick 25e value was 6.1639",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0034. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.CLq.value",
+          "before": 1.977,
+          "after": 2.003
+        },
+        {
+          "path": "aero.coefficients.Cmq.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -7.741 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CLq lift reproduces it; the downwash lag adds Cmadot -3.59 as a state (E0a2b); closed-form tail -7.40; the borrowed UltraStick 25e value -13.5664 lumped both",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8033 and CLq=2.0034; ARP Cmq=-8.009 includes the CLq lift arm. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.Cmq.value",
+          "before": -7.944,
+          "after": -8.009
+        },
+        {
+          "path": "aero.coefficients.Cnr.source",
+          "before": "research/aero/d11g/derive_rate_derivatives.gd (D11g, ARP-referred since D6e-R1): the Stik's verified local model at the 15 m/s level trim gives -0.1318 about the CG, downwash settled; written about the ARP so the oracle's r x F transfer of the CYr side force reproduces it; fin -2*(l_v/b)*Cnb_fin plus wing profile -CD0/3 = -0.1324 (D11f); the borrowed UltraStick 25e value -0.1833 contradicts the fin-derived Cnb",
+          "after": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.12989; ARP Cnr=-0.1335 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+        },
+        {
+          "path": "aero.coefficients.Cnr.value",
+          "before": -0.1354,
+          "after": -0.1335
+        }
+      ]
+    },
+    {
+      "path": "app/data/workshop/jensen-das-ugly-stik-60.json",
+      "before_sha256": "238c3cf5ad8af98d969c75f43a9dc130be95e1349a6c5f08ac48f6a9856d80de",
+      "after_sha256": "1a124b2fcf2a2cadea719edb60002e6bb97755eca3c2b750eb59fb8758e93c3f",
+      "changed_leaf_count": 1,
+      "changes": [
+        {
+          "path": "base_sha256",
+          "before": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6",
+          "after": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723"
+        }
+      ]
+    },
+    {
+      "path": "app/data/workshop/stik-glow-55ax-2t.json",
+      "before_sha256": "0e38e97e66c95a778a0b1acf7544ab4386a1ec1ed88093caabe39b4c293afead",
+      "after_sha256": "38c0eb1e5f786b04826074464aaf4959c4b38c790fdf7a38b76d793e94806c8e",
+      "changed_leaf_count": 1,
+      "changes": [
+        {
+          "path": "base_sha256",
+          "before": "0e12ff3ec366458bd0394ede782d06bebfcbcfd7e7dfe7ac0f4ee1d54f876a48",
+          "after": "e5494601e2bf3390f95c37f2175bb28b508b2a340c8c9fe55d56b1a7b335c3ae"
+        }
+      ]
+    },
+    {
+      "path": "app/data/workshop/stik-glow-61fx-2t.json",
+      "before_sha256": "550ab3e60c9423450c78f49de1c2b83116901e20d9be5c9a762478e3814c2b2f",
+      "after_sha256": "c07cf42587985bbaa825c05223899f18b2b2b6f1086f3b541afe51bbf9c95f1b",
+      "changed_leaf_count": 1,
+      "changes": [
+        {
+          "path": "base_sha256",
+          "before": "c332b2a5544d3bf52f20f30fc801fae22e70741344b4b51c6311fb16bfab8b74",
+          "after": "4f50726804a1fbc6dbac3570e4ca4b2b20a270933816ff0032cd0463de7a5177"
+        }
+      ]
+    },
+    {
+      "path": "app/data/workshop/stik-glow-fs64v-4t.json",
+      "before_sha256": "3e3a6d88ec4a586ae8788bdf8e94fd960cbdef5ea06580447ea150821a54414b",
+      "after_sha256": "3f92b1cbb8ba567a117b1dee13282e933d5fb23b2f76253e8df9a929fbf4f46e",
+      "changed_leaf_count": 1,
+      "changes": [
+        {
+          "path": "base_sha256",
+          "before": "6c1f8a0c51299fd8f2208cbda29824c6735752861468040acf3416895dcfdccf",
+          "after": "d381fc6c3fb014e2c727410b1c1996c8f7cf35e0ad6af63c0268e11c5b1092af"
+        }
+      ]
+    }
+  ],
+  "unchanged_glow_profiles": [
+    {
+      "path": "app/data/glow/stik_55ax_2t.json",
+      "bytes": 7453,
+      "sha256": "d801948451616f8d34cf66097d10f55346eeb8c3cee9f7378d46b24ec63ceec4",
+      "byte_identical_to_before": true
+    },
+    {
+      "path": "app/data/glow/stik_55ax_2t_apc_13x6.json",
+      "bytes": 7442,
+      "sha256": "7a1b9ec00421bafbd894db5b24e9fb781005db43988898ffe83dbad94e576ed0",
+      "byte_identical_to_before": true
+    },
+    {
+      "path": "app/data/glow/stik_61fx_2t.json",
+      "bytes": 7559,
+      "sha256": "e3157d77fe82a02dcac2dfc17faad3bd40b2e099fcecbda21c07c306b3ef7233",
+      "byte_identical_to_before": true
+    },
+    {
+      "path": "app/data/glow/stik_fs64v_4t.json",
+      "bytes": 7757,
+      "sha256": "47c92d49aed4da6b9ea30d50bb7a4a705aab9e0155c8bb95da860671feac1039",
+      "byte_identical_to_before": true
+    },
+    {
+      "path": "app/data/glow/stik_fs64v_4t_apc_13x6.json",
+      "bytes": 7672,
+      "sha256": "679d73b3674ec4842b62fbb5cb9e40d80104467bbf8bfd57b8e4c874f50988ff",
+      "byte_identical_to_before": true
+    }
+  ],
+  "expected_changed_file_count": 10
+}

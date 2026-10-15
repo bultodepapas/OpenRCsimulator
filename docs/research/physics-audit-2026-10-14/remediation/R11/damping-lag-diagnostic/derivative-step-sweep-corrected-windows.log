@@ -1,0 +1,44 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+trim_speed_mps=15.000000000 alpha_deg=4.184144313 rho=1.225000000
+h_rad,Cmq_CG,CLq,Cnr_CG,Cmq_ARP,Cnr_ARP,default_equals_explicit_wake
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (C:/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/derivative_step_sweep.gd:50)
+%.9g,%.12f,%.12f,%.12f,%.12f,%.12f,%s
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (C:/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/derivative_step_sweep.gd:50)
+%.9g,%.12f,%.12f,%.12f,%.12f,%.12f,%s
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (C:/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/derivative_step_sweep.gd:50)
+%.9g,%.12f,%.12f,%.12f,%.12f,%.12f,%s
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (C:/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/derivative_step_sweep.gd:50)
+%.9g,%.12f,%.12f,%.12f,%.12f,%.12f,%s
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (C:/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/derivative_step_sweep.gd:50)
+%.9g,%.12f,%.12f,%.12f,%.12f,%.12f,%s
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (C:/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/derivative_step_sweep.gd:50)
+%.9g,%.12f,%.12f,%.12f,%.12f,%.12f,%s
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (C:/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/derivative_step_sweep.gd:50)
+%.9g,%.12f,%.12f,%.12f,%.12f,%.12f,%s
+ERROR: String formatting error: unsupported format character.
+   at: validated_evaluate (core/variant/variant_op.h:770)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (C:/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/derivative_step_sweep.gd:50)
+%.9g,%.12f,%.12f,%.12f,%.12f,%.12f,%s

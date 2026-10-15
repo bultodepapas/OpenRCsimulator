@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+15 m/s level trim: α 4.184°
+| α° | Cmq | CLq | Cnr |
+| 0 | -7.7624 | 2.1168 | -0.13428 |
+| 2 | -7.7481 | 2.0489 | -0.13317 |
+| 4 | -7.7411 | 1.9828 | -0.13192 |
+| 6 | -7.7412 | 1.9190 | -0.13055 |
+closed form: Cmq_tail -7.4022, CLq_tail 3.1336, Cnr fin + wing profile -0.13238, Cmα̇ -3.5928
+about the CG: Cmq -7.7409, Cnr -0.13180; ARP arm rx 0.0365 m, rz -0.0700 m
+about the ARP at the trim α (write these): Cmq -7.944, CLq 1.977, Cnr -0.1354
+borrowed (UltraStick 25e) before D11g: Cmq -13.5664, CLq 6.1639, Cnr -0.1833

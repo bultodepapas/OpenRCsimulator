@@ -1,0 +1,65 @@
+{
+	"about_arp": {
+		"CLq": 2.00338577135913,
+		"Cmq": -8.00899247941062,
+		"Cnr": -0.133479448467608
+	},
+	"about_cg": {
+		"CLq": 2.00338577135913,
+		"Cmq": -7.80329469719165,
+		"Cnr": -0.129886928782568
+	},
+	"aircraft_id": "jensen-das-ugly-stik-60",
+	"alpha_sensitivity_about_cg": [
+		{
+			"CLq": 2.11609726619718,
+			"Cmq_about_cg": -7.76036897857179,
+			"Cnr_about_cg": -0.133098589871975,
+			"alpha_deg": 0.0
+		},
+		{
+			"CLq": 2.05927535957525,
+			"Cmq_about_cg": -7.77223048902629,
+			"Cnr_about_cg": -0.131752610572876,
+			"alpha_deg": 2.0
+		},
+		{
+			"CLq": 2.0078342546053,
+			"Cmq_about_cg": -7.79995765460049,
+			"Cnr_about_cg": -0.130059661590323,
+			"alpha_deg": 4.0
+		},
+		{
+			"CLq": 1.96226209062067,
+			"Cmq_about_cg": -7.84314386553236,
+			"Cnr_about_cg": -0.128038541355442,
+			"alpha_deg": 6.0
+		}
+	],
+	"condition": {
+		"central_difference_step_rad_s": 0.05,
+		"controls": "neutral",
+		"density_kg_m3": 1.225,
+		"speed_mps": 15.0,
+		"trim_alpha_deg": 4.18414431314593,
+		"trim_alpha_rad": 0.0730270946429931,
+		"wake": "settled instantaneous Aero.wing_wake_velocity output; no ground effect"
+	},
+	"data_check": {
+		"issues": [],
+		"passed": true
+	},
+	"interpretation": "Reproduces this model's rate-derivative contract only; it is not physical validation.",
+	"law": "section-plane-source-weighted-wake-velocity-v2",
+	"provenance": {
+		"CLq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0034. Model-derived, not measured or physically validated.",
+		"Cmq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8033 and CLq=2.0034; ARP Cmq=-8.009 includes the CLq lift arm. Model-derived, not measured or physically validated.",
+		"Cnr": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.12989; ARP Cnr=-0.1335 includes the CYr side-force arm. Model-derived, not measured or physically validated."
+	},
+	"rounded_4_significant_digits": {
+		"CLq": 2.003,
+		"Cmq": -8.009,
+		"Cnr": -0.1335
+	},
+	"schema": "d11g-rate-derivatives-v1"
+}

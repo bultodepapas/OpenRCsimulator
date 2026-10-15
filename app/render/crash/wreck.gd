@@ -103,6 +103,11 @@ var _bodies: Array[RigidBody3D] = []
 var _shape_nodes: Array[CollisionShape3D] = []
 var _shadows: Array[MeshInstance3D] = []
 var _shadow_materials: Array[ShaderMaterial] = []
+## Per-slot inputs to the last projected contact shadow. The pool is fixed at MAX_BODIES,
+## so indexed arrays avoid a Dictionary lookup on every render frame.
+var _shadow_cache_valid := PackedByteArray()
+var _shadow_cache_transforms: Array[Transform3D] = []
+var _shadow_cache_shape_sizes: Array[Vector3] = []
 var _shadow_shader: Shader
 var _shadow_mesh: PlaneMesh
 var _groups: Array[Dictionary] = []
@@ -371,6 +376,7 @@ func reset() -> void:
 	_run_generation += 1
 	_c3_contact_release_pending = false
 	_c3_contact_exposure_index_j = 0.0
+	_invalidate_all_shadow_cache()
 	if _bodies.is_empty():
 		_started = false
 		_paused = false
@@ -553,6 +559,9 @@ func _ensure_pool() -> void:
 		add_child(body)
 		_bodies.append(body)
 		_shape_nodes.append(shape_node)
+		_shadow_cache_valid.append(0)
+		_shadow_cache_transforms.append(Transform3D.IDENTITY)
+		_shadow_cache_shape_sizes.append(Vector3.ZERO)
 		var shadow := MeshInstance3D.new()
 		shadow.name = "WreckContactShadow_%02d" % _shadows.size()
 		shadow.mesh = _shadow_mesh
@@ -1140,24 +1149,46 @@ func _update_contact_shadow(index: int) -> void:
 	var body := _bodies[index]
 	var shadow := _shadows[index]
 	if not body.visible:
-		shadow.visible = false
+		if shadow.visible:
+			shadow.visible = false
+		if _shadow_cache_valid[index] != 0:
+			_shadow_cache_valid[index] = 0
 		return
 	var shape := _shape_nodes[index].shape as BoxShape3D
+	var body_transform := body.global_transform
+	var shape_size := shape.size
+	if _shadow_cache_valid[index] != 0 \
+		and _shadow_cache_transforms[index] == body_transform \
+		and _shadow_cache_shape_sizes[index] == shape_size:
+		return
 	var half := shape.size * 0.5
-	var basis := body.global_transform.basis
+	var basis := body_transform.basis
 	var horizontal_x := absf(basis.x.x) * half.x + absf(basis.y.x) * half.y + absf(basis.z.x) * half.z
 	var horizontal_z := absf(basis.x.z) * half.x + absf(basis.y.z) * half.y + absf(basis.z.z) * half.z
 	var vertical_extent := absf(basis.x.y) * half.x + absf(basis.y.y) * half.y + absf(basis.z.y) * half.z
-	var height := maxf(body.global_position.y - vertical_extent, 0.0)
+	var height := maxf(body_transform.origin.y - vertical_extent, 0.0)
 	var fade := clampf(1.0 - height / SHADOW_FADE_HEIGHT_M, 0.0, 1.0)
 	var shrink := lerpf(1.0, 0.35, clampf(height / SHADOW_FADE_HEIGHT_M, 0.0, 1.0))
 	var alpha := 0.22 * fade
 	shadow.visible = alpha > 0.002
 	shadow.global_transform = Transform3D(
 		Basis.IDENTITY.scaled(Vector3(maxf(horizontal_x * 2.0 + 0.35, 0.65) * shrink, 1.0, maxf(horizontal_z * 2.0 + 0.35, 0.65) * shrink)),
-		Vector3(body.global_position.x, 0.012, body.global_position.z)
+		Vector3(body_transform.origin.x, 0.012, body_transform.origin.z)
 	)
 	_shadow_materials[index].set_shader_parameter("opacity", alpha)
+	_shadow_cache_transforms[index] = body_transform
+	_shadow_cache_shape_sizes[index] = shape_size
+	_shadow_cache_valid[index] = 1
+
+
+func _invalidate_shadow_cache(index: int) -> void:
+	if index >= 0 and index < _shadow_cache_valid.size() and _shadow_cache_valid[index] != 0:
+		_shadow_cache_valid[index] = 0
+
+
+func _invalidate_all_shadow_cache() -> void:
+	for index in range(_shadow_cache_valid.size()):
+		_shadow_cache_valid[index] = 0
 
 
 func _group_names() -> Array[String]:
@@ -1302,6 +1333,7 @@ func _set_shape_bounds(index: int, bounds: AABB) -> void:
 		return
 	var shape := _shape_nodes[index].shape as BoxShape3D
 	shape.size = Vector3(maxf(bounds.size.x, MIN_BOX_EDGE_M), maxf(bounds.size.y, MIN_BOX_EDGE_M), maxf(bounds.size.z, MIN_BOX_EDGE_M))
+	_invalidate_shadow_cache(index)
 
 
 func _limit_ground_rebound(body: RigidBody3D) -> void:

@@ -1,0 +1,21 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default field, lake and surface table load
+ok   default field produces validated ground surfaces
+ok   default lake geometry resource loads
+ok   bake accepts the exact normalized default inputs
+ok   bake source hashes match LF-normalized sources and the generated stamp
+ok   one fresh procedural basin build matches every baked array exactly
+ok   one fresh procedural water build matches every baked array exactly
+ok   missing resource is rejected
+ok   every required metadata omission is rejected without engine errors
+ok   stale format is rejected
+ok   stale Godot engine version is rejected
+ok   stale precision mode is rejected
+ok   stale geometry source hashes are rejected
+ok   corrupt matched arrays are rejected
+ok   missing matched arrays are rejected
+ok   arrays with a stale content digest are rejected
+ok   changed lake inputs invalidate both generated meshes
+ok   ground-only input changes may retain matching baked water
+18 lake geometry bake checks, 0 failed

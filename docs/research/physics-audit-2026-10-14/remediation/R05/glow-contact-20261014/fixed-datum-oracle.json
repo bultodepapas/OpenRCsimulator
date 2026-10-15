@@ -1,0 +1,146 @@
+{
+  "source_sha256": "23989039f36683e772bd75df1af494667b4fcfb800dff166f1a586b1a2af186d",
+  "exit_code": 0,
+  "results": {
+    "oracle": "independent fixed-datum impulse / 6x6 mass-matrix",
+    "scalar_assertions": 56,
+    "restitution_cases": [
+      {
+        "fraction": null,
+        "mass_kg": 12.4,
+        "cg_body_m": [
+          0.23,
+          -0.07,
+          0.11
+        ],
+        "vn_before_mps": -1.648175425547798,
+        "vn_after_mps": 2.220446049250313e-16,
+        "effective_mass_kg": 2.669857231534106,
+        "impulse_n_s_body": [
+          0.9247319363696993,
+          -1.2329759151595991,
+          4.121662344962089
+        ],
+        "delta_v_o_mps_body": [
+          0.2147053340830101,
+          0.03161502494314916,
+          0.12278720397209764
+        ],
+        "delta_omega_rad_s_body": [
+          0.6055066545689008,
+          -1.0956103758323574,
+          -0.2801862368943435
+        ],
+        "delta_k_j": -3.246817494816824,
+        "expected_delta_k_j": -3.2468174948168302,
+        "surface_work_j": 0.37949237274447944,
+        "block_matrix_max_delta": 1.1102230246251565e-16
+      },
+      {
+        "fraction": null,
+        "mass_kg": 12.4,
+        "cg_body_m": [
+          0.23,
+          -0.07,
+          0.11
+        ],
+        "vn_before_mps": -1.648175425547798,
+        "vn_after_mps": 0.609824907452686,
+        "effective_mass_kg": 2.669857231534106,
+        "impulse_n_s_body": [
+          1.2668827528264883,
+          -1.6891770037686513,
+          5.646677412598063
+        ],
+        "delta_v_o_mps_body": [
+          0.29414630769372385,
+          0.04331258417211434,
+          0.16821846944177393
+        ],
+        "delta_omega_rad_s_body": [
+          0.8295441167593942,
+          -1.5009862148903297,
+          -0.38385514454525077
+        ],
+        "delta_k_j": -2.609963496032236,
+        "expected_delta_k_j": -2.6099634960322287,
+        "surface_work_j": 0.519904550659937,
+        "block_matrix_max_delta": 2.220446049250313e-16
+      },
+      {
+        "fraction": null,
+        "mass_kg": 12.4,
+        "cg_body_m": [
+          0.23,
+          -0.07,
+          0.11
+        ],
+        "vn_before_mps": -1.648175425547798,
+        "vn_after_mps": 1.6481754255477985,
+        "effective_mass_kg": 2.669857231534106,
+        "impulse_n_s_body": [
+          1.8494638727393986,
+          -2.4659518303191983,
+          8.243324689924178
+        ],
+        "delta_v_o_mps_body": [
+          0.4294106681660202,
+          0.06323004988629832,
+          0.24557440794419527
+        ],
+        "delta_omega_rad_s_body": [
+          1.2110133091378017,
+          -2.191220751664715,
+          -0.560372473788687
+        ],
+        "delta_k_j": 0.7589847454889593,
+        "expected_delta_k_j": 0.7589847454889589,
+        "surface_work_j": 0.7589847454889589,
+        "block_matrix_max_delta": 2.220446049250313e-16
+      }
+    ],
+    "center_of_mass_contact": {
+      "fraction": null,
+      "mass_kg": 12.4,
+      "cg_body_m": [
+        0.23,
+        -0.07,
+        0.11
+      ],
+      "vn_before_mps": -2.4274596752431963,
+      "vn_after_mps": 1.2137298376215981,
+      "effective_mass_kg": 12.4,
+      "impulse_n_s_body": [
+        9.488320632167563,
+        -12.651094176223417,
+        42.29080053194686
+      ],
+      "delta_v_o_mps_body": [
+        0.7651871477554486,
+        -1.020249530340598,
+        3.410548429995714
+      ],
+      "delta_omega_rad_s_body": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "delta_k_j": -23.506580150908135,
+      "expected_delta_k_j": -23.506580150908125,
+      "surface_work_j": 3.893826057524765,
+      "block_matrix_max_delta": 0.0
+    },
+    "same_fraction_sample": {
+      "event_fraction": 0.37,
+      "event_mass_kg": 9.866,
+      "event_cg_body_m": [
+        0.03780255422663694,
+        -0.009450638556659235,
+        0.01282586661260896
+      ],
+      "start_mass_kg": 9.2,
+      "end_mass_kg": 11.0,
+      "effective_mass_kg": 1.4616744797573045
+    }
+  }
+}

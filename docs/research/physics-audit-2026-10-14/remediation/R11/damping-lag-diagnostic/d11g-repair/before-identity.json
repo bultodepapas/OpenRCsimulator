@@ -1,0 +1,86 @@
+{
+  "schema": "d11g-repair-before/v1",
+  "file_count": 16,
+  "files": [
+    {
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "bytes": 57605,
+      "sha256": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6"
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_55ax_2t.json",
+      "bytes": 56810,
+      "sha256": "0e12ff3ec366458bd0394ede782d06bebfcbcfd7e7dfe7ac0f4ee1d54f876a48"
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json",
+      "bytes": 56798,
+      "sha256": "c608f0d4dcc5d61fc4cdf07aedd66c80ee6dd0c444e00fbd52252bd4705754da"
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_61fx_2t.json",
+      "bytes": 56800,
+      "sha256": "c332b2a5544d3bf52f20f30fc801fae22e70741344b4b51c6311fb16bfab8b74"
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_fs64v_4t.json",
+      "bytes": 56807,
+      "sha256": "6c1f8a0c51299fd8f2208cbda29824c6735752861468040acf3416895dcfdccf"
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
+      "bytes": 56778,
+      "sha256": "b216efd58516f7946126f774917ca58bc2cd07986bf5860c1cba5b9766025ee0"
+    },
+    {
+      "path": "app/data/glow/stik_55ax_2t.json",
+      "bytes": 7453,
+      "sha256": "d801948451616f8d34cf66097d10f55346eeb8c3cee9f7378d46b24ec63ceec4"
+    },
+    {
+      "path": "app/data/glow/stik_55ax_2t_apc_13x6.json",
+      "bytes": 7442,
+      "sha256": "7a1b9ec00421bafbd894db5b24e9fb781005db43988898ffe83dbad94e576ed0"
+    },
+    {
+      "path": "app/data/glow/stik_61fx_2t.json",
+      "bytes": 7559,
+      "sha256": "e3157d77fe82a02dcac2dfc17faad3bd40b2e099fcecbda21c07c306b3ef7233"
+    },
+    {
+      "path": "app/data/glow/stik_fs64v_4t.json",
+      "bytes": 7757,
+      "sha256": "47c92d49aed4da6b9ea30d50bb7a4a705aab9e0155c8bb95da860671feac1039"
+    },
+    {
+      "path": "app/data/glow/stik_fs64v_4t_apc_13x6.json",
+      "bytes": 7672,
+      "sha256": "679d73b3674ec4842b62fbb5cb9e40d80104467bbf8bfd57b8e4c874f50988ff"
+    },
+    {
+      "path": "app/data/workshop/jensen-das-ugly-stik-60.json",
+      "bytes": 1678,
+      "sha256": "238c3cf5ad8af98d969c75f43a9dc130be95e1349a6c5f08ac48f6a9856d80de"
+    },
+    {
+      "path": "app/data/workshop/stik-glow-55ax-2t.json",
+      "bytes": 1701,
+      "sha256": "0e38e97e66c95a778a0b1acf7544ab4386a1ec1ed88093caabe39b4c293afead"
+    },
+    {
+      "path": "app/data/workshop/stik-glow-61fx-2t.json",
+      "bytes": 1701,
+      "sha256": "550ab3e60c9423450c78f49de1c2b83116901e20d9be5c9a762478e3814c2b2f"
+    },
+    {
+      "path": "app/data/workshop/stik-glow-fs64v-4t.json",
+      "bytes": 1702,
+      "sha256": "3e3a6d88ec4a586ae8788bdf8e94fd960cbdef5ea06580447ea150821a54414b"
+    },
+    {
+      "path": "research/aero/d11g/derive_rate_derivatives.gd",
+      "bytes": 4924,
+      "sha256": "a061b0b71c94e0b8d8b0b48c41a2a1e3bd10632e072bc44843ebef2771561075"
+    }
+  ]
+}

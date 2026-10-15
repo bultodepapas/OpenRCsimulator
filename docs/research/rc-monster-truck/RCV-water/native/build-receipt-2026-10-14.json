@@ -1,0 +1,52 @@
+{
+  "abi_version": 1,
+  "backend": "native",
+  "backend_version": "openrc-ground-vehicle-native-evaluate-v3",
+  "format": "openrc-ground-vehicle-native-receipt",
+  "platforms": {
+    "linux": {
+      "abi_version": 1,
+      "architecture": "x86_64",
+      "backend": "native",
+      "backend_version": "openrc-ground-vehicle-native-evaluate-v3",
+      "binary_sha256": "cef08137c1a9de28523caa59ede1bd888a5a206e21b2a2c20bc58dd2e664a5f9",
+      "exception_flags": [
+        "-fexceptions"
+      ],
+      "floating_point_flags": [
+        "-fno-fast-math",
+        "-ffp-contract=off"
+      ],
+      "platform": "linux",
+      "solver_version": "openrc-ground-vehicle-dynamics-rk4-v4",
+      "source_sha256": "7b064e5dca1fc8333d958c073c2dac11eecc96a95b4095117d38be93ae672695",
+      "toolchain": {
+        "compiler_version": "13.3.0"
+      },
+      "toolchain_sha256": "b17d9ebc2e198cf0a48c88788790191483f5479b822df439a70efca52165ed8e"
+    },
+    "windows": {
+      "abi_version": 1,
+      "architecture": "x86_64",
+      "backend": "native",
+      "backend_version": "openrc-ground-vehicle-native-evaluate-v3",
+      "binary_sha256": "0436be7bdc553b0eec29fb41fb9aa18fe94a0921a725bde9eef196dc17999d00",
+      "exception_flags": [
+        "/EHsc"
+      ],
+      "floating_point_flags": [
+        "/fp:strict"
+      ],
+      "platform": "windows",
+      "solver_version": "openrc-ground-vehicle-dynamics-rk4-v4",
+      "source_sha256": "7b064e5dca1fc8333d958c073c2dac11eecc96a95b4095117d38be93ae672695",
+      "toolchain": {
+        "compiler_toolset": "14.51.36231",
+        "sdk_version": "10.0.26100.0",
+        "visual_studio_version": "18.9.12128.139"
+      },
+      "toolchain_sha256": "83608b6cdfcc7d4e8cdf8c0bddf3bc72d7db1615e8054efbec856a00140637af"
+    }
+  },
+  "solver_version": "openrc-ground-vehicle-dynamics-rk4-v4"
+}

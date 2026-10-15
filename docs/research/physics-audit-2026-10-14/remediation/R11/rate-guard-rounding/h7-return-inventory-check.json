@@ -1,0 +1,14 @@
+{
+  "ok": true,
+  "instrumented_current_source_identical_to_prior_harness": true,
+  "rejected_source_mutations": {
+    "new_equivalent_condition_exit": "local-flow return inventory changed; review branch instrumentation",
+    "new_inline_exit": "local-flow return inventory changed; review branch instrumentation",
+    "different_return_expression": "local-flow return inventory changed; review branch instrumentation",
+    "known_condition_respelled": "expected one wing rate saturation branch anchor, found 0"
+  },
+  "harness_windows_sha256": "d31a14be6489fd820a19e4c3adc84e95310bec735ff57ed68d5b4772fc0b1140",
+  "harness_lf_sha256": "f17b160b3056abe587b7c58b689356a75ead834eff33803b99ef27cebc56e02c",
+  "patch_sha256": "5a264e94418dd6fa096aa53f0b4481416f0b54b56b9b4b63bbecea6d26b48f6b",
+  "scope": "source inventory preflight; existing H7 cases, tolerances and emitted runtime instrumentation unchanged"
+}

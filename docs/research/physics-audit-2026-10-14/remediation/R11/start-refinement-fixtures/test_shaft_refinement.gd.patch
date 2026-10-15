@@ -1,0 +1,29 @@
+--- a/app/tests/test_shaft_refinement.gd
++++ b/app/tests/test_shaft_refinement.gd
+@@ -18,9 +18,15 @@
+ 	if not lagged:
+ 		var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(PATH))
+ 		raw.aero.surfaces.horizontal.erase("downwash_gradient")
+-		if not flight._apply(AircraftData.validate_and_derive(raw)) or flight.downwash_index() != -1:
++		# The optional ground-effect closure requires the gradient-derived free-tail law.
++		# Remove both only from this in-memory integrator fixture; production lag/ground effect stay enabled.
++		raw.aero.erase("ground_effect")
++		var candidate := AircraftData.validate_and_derive(raw)
++		if not candidate.ok or not flight._apply(candidate) or flight.downwash_index() != -1:
+ 			failures += 1
+-			printerr("FAIL refinement flight could not drop the downwash lag")
++			printerr("FAIL refinement flight could not drop the downwash lag: ", candidate.get("errors", []))
++			flight.free()
++			return PackedFloat64Array()
+ 		flight.reset()
+ 	flight.input_enabled = false
+ 	flight.sim.inputs[3] += 0.03
+@@ -47,6 +53,8 @@
+ 		var middle: PackedFloat64Array = run_flight(120, c.mode, c.lagged)
+ 		var fine: PackedFloat64Array = run_flight(240, c.mode, c.lagged)
+ 		var reference: PackedFloat64Array = run_flight(1920, c.mode, c.lagged)
++		if coarse.is_empty() or middle.is_empty() or fine.is_empty() or reference.is_empty():
++			continue # Refused candidates already fail; never measure convergence on the retained model.
+ 		var errors: Array[float] = []
+ 		for state: PackedFloat64Array in [coarse, middle, fine]:
+ 			errors.append(absf(state[-1] - reference[-1]))

@@ -3,6 +3,9 @@ extends SceneTree
 const VehicleDynamics := preload("res://physics/ground_vehicle/vehicle_dynamics.gd")
 const VehicleData := preload("res://physics/ground_vehicle/vehicle_data.gd")
 const CourseData := preload("res://physics/ground_vehicle/course.gd")
+const GroundTerrain := preload("res://physics/ground_terrain.gd")
+const LakeSurface := preload("res://physics/lake_surface.gd")
+const LakeLoader := preload("res://data/lake_loader.gd")
 const ABS_TOLERANCE := 2.0e-8
 const REL_TOLERANCE := 2.0e-10
 const FLOAT_OUTPUTS := [
@@ -26,7 +29,8 @@ func _initialize() -> void:
 	_native = ClassDB.instantiate("OpenRCGroundVehicleNative")
 	var identity: Dictionary = _native.backend_identity()
 	if identity.get("backend") != "native" or int(identity.get("abi_version", 0)) != 1 \
-			or identity.get("solver_version") != "openrc-ground-vehicle-dynamics-rk4-v3" \
+			or identity.get("backend_version") != "openrc-ground-vehicle-native-evaluate-v3" \
+			or identity.get("solver_version") != "openrc-ground-vehicle-dynamics-rk4-v4" \
 			or str(identity.get("source_sha256", "")).length() != 64 \
 			or str(identity.get("toolchain_sha256", "")).length() != 64 \
 			or str(identity.get("binary_sha256", "")).length() != 64:
@@ -57,6 +61,8 @@ func _initialize() -> void:
 	_run_randomized(resting, model, road, batch)
 	_run_brake_distribution(resting, model, road, batch)
 	_run_invalids(resting, model, batch)
+	_run_external_generalized_loads(resting, scenarios[1], model, road, batch)
+	_run_lake_terrain_parity()
 	_run_evaluate_profile(scenarios[1], model, road, batch)
 	if _failures == 0:
 		print("OPENRC_NATIVE_PARITY_OK checks=%d" % _checks)
@@ -306,6 +312,232 @@ func _run_invalids(resting: PackedFloat64Array, model: Dictionary, batch: Callab
 	_checks += 1
 	if bool(invalid_flags.get("ok", true)) or str(invalid_flags.get("error", "")).is_empty():
 		_fail("wrong-typed flags did not return a normal native failure")
+
+
+func _run_external_generalized_loads(resting: PackedFloat64Array, scenario: Dictionary,
+		model: Dictionary, road: Callable, batch: Callable) -> void:
+	var combined_force := PackedFloat64Array()
+	combined_force.resize(14)
+	combined_force[0] = 3.0
+	combined_force[1] = -1.2
+	combined_force[2] = 0.8
+	combined_force[3] = 0.4
+	combined_force[4] = -0.3
+	combined_force[5] = 0.2
+	combined_force[6] = 1.5
+	combined_force[7] = -0.7
+	combined_force[8] = 1.2
+	combined_force[9] = -0.8
+	combined_force[10] = 0.08
+	combined_force[11] = -0.05
+	combined_force[12] = 0.06
+	combined_force[13] = -0.03
+	var combined_controls: Dictionary = scenario.controls.duplicate(true)
+	combined_controls["external_generalized_force"] = combined_force
+	_run_case("external_body_moment_suspension_and_wheel_loads", scenario.state,
+		model, combined_controls, road, batch, true, true)
+
+	# A resting vehicle with freely rolling wheels will accelerate under a
+	# horizontal load, but its tire response should oppose that load. Requiring
+	# full hold here would incorrectly assume the brakes are engaged.
+	var static_force := PackedFloat64Array()
+	static_force.resize(14)
+	static_force[0] = 0.05
+	var static_controls: Dictionary = VehicleDynamics.DEFAULT_CONTROLS.duplicate(true)
+	static_controls["external_generalized_force"] = static_force
+	_run_case("external_load_static_tire_response", resting, model, static_controls,
+		road, batch, true, true)
+	var static_reference: Dictionary = VehicleDynamics._evaluate(resting, model,
+		static_controls, road, true, true)
+	_checks += 1
+	if not bool(static_reference.get("ok", false)):
+		_fail("GDScript external-load static-grip reference failed")
+		return
+	var static_acceleration: PackedFloat64Array = static_reference.generalized_acceleration
+	var static_longitudinal: PackedFloat64Array = static_reference.wheel_longitudinal_force_n
+	var total_longitudinal := 0.0
+	for value in static_longitudinal:
+		total_longitudinal += value
+	if total_longitudinal * static_force[0] >= 0.0:
+		_fail("small resting body force did not produce an opposing tire response: acceleration=%s tire_force=%s" % [
+			str(static_acceleration[0]), str(total_longitudinal),
+		])
+
+	var malformed: Array[Variant] = []
+	malformed.append(PackedFloat32Array([0.0]))
+	var short_force := PackedFloat64Array()
+	short_force.resize(13)
+	malformed.append(short_force)
+	var long_force := PackedFloat64Array()
+	long_force.resize(15)
+	malformed.append(long_force)
+	var nan_force := PackedFloat64Array()
+	nan_force.resize(14)
+	nan_force[5] = NAN
+	malformed.append(nan_force)
+	var infinite_force := PackedFloat64Array()
+	infinite_force.resize(14)
+	infinite_force[9] = INF
+	malformed.append(infinite_force)
+	for index in malformed.size():
+		var invalid_controls: Dictionary = VehicleDynamics.DEFAULT_CONTROLS.duplicate(true)
+		invalid_controls["external_generalized_force"] = malformed[index]
+		var reference: Dictionary = VehicleDynamics._evaluate(resting, model,
+			invalid_controls, road, true, true)
+		var candidate: Dictionary = _native.evaluate(resting, model,
+			invalid_controls, batch, true, true)
+		_checks += 1
+		if bool(reference.get("ok", true)) or bool(candidate.get("ok", true)):
+			_fail("malformed external generalized force %d was accepted: gd=%s native=%s" % [
+				index, str(reference.get("ok", true)), str(candidate.get("ok", true)),
+			])
+
+
+func _run_lake_terrain_parity() -> void:
+	var lake_result: Dictionary = LakeLoader.load_from()
+	_checks += 1
+	if not bool(lake_result.get("ok", false)):
+		_fail("lake terrain parity fixture did not load: " + str(lake_result.get("errors", [])))
+		return
+	var lake: Dictionary = lake_result.lake
+	var surface_rects := PackedFloat64Array([-INF, INF, -INF, INF, 1.0, GroundTerrain.ROLLING_ROUGH])
+	var points := PackedFloat64Array()
+	var north_min := INF
+	var north_max := -INF
+	var east_min := INF
+	var east_max := -INF
+	var bank: PackedFloat64Array = lake.bank_ne_m
+	for index in range(0, bank.size(), 2):
+		north_min = minf(north_min, bank[index])
+		north_max = maxf(north_max, bank[index])
+		east_min = minf(east_min, bank[index + 1])
+		east_max = maxf(east_max, bank[index + 1])
+	for north_index in range(17):
+		var north := lerpf(north_min - 1.0, north_max + 1.0, float(north_index) / 16.0)
+		for east_index in range(25):
+			var east := lerpf(east_min - 1.0, east_max + 1.0, float(east_index) / 24.0)
+			_append_lake_terrain_point(points, north, east)
+	for polygon: PackedFloat64Array in [lake.shoreline_ne_m, bank]:
+		var vertex_count := polygon.size() / 2
+		for index in range(vertex_count):
+			var next := (index + 1) % vertex_count
+			var north_a := polygon[index * 2]
+			var east_a := polygon[index * 2 + 1]
+			var north_b := polygon[next * 2]
+			var east_b := polygon[next * 2 + 1]
+			var north_mid := (north_a + north_b) * 0.5
+			var east_mid := (east_a + east_b) * 0.5
+			for point: PackedFloat64Array in [
+				PackedFloat64Array([north_a, east_a]),
+				PackedFloat64Array([north_mid, east_mid]),
+				PackedFloat64Array([north_mid + 1.0e-6, east_mid]),
+				PackedFloat64Array([north_mid - 1.0e-6, east_mid]),
+				PackedFloat64Array([north_mid, east_mid + 1.0e-6]),
+				PackedFloat64Array([north_mid, east_mid - 1.0e-6]),
+			]:
+				_append_lake_terrain_point(points, point[0], point[1])
+	_append_lake_terrain_point(points, float(lake.origin_north_m), float(lake.origin_east_m))
+	_append_lake_terrain_point(points, float(lake.origin_north_m) + 24.0, float(lake.origin_east_m))
+	_append_lake_terrain_point(points, float(lake.origin_north_m), float(lake.origin_east_m) + 36.0)
+	_append_lake_terrain_point(points, float(lake.origin_north_m) - 45.0, float(lake.origin_east_m) + 70.0)
+	var valid_base: PackedFloat64Array = GroundTerrain.sample_validated(110.0, 125.0, surface_rects)
+	var max_error := 0.0
+	var bit_exact_channels := 0
+	var compared_channels := 0
+	var invalid_output_count := 0
+	var worst_sample_index := -1
+	var worst_north := 0.0
+	var worst_east := 0.0
+	var point_count := points.size() / 2
+	for point_index in range(point_count):
+		var north := points[point_index * 2]
+		var east := points[point_index * 2 + 1]
+		var base: PackedFloat64Array = GroundTerrain.sample_validated(north, east, surface_rects)
+		var reference: PackedFloat64Array = GroundTerrain.sample_validated(north, east, surface_rects, lake)
+		var signed_shore := LakeSurface.shore_distance_validated(lake, north, east)
+		var expected := PackedFloat64Array([reference[0], reference[1], reference[2], signed_shore])
+		var actual: PackedFloat64Array = _native.sample_lake_terrain(lake, north, east, base)
+		_checks += 1
+		if actual.size() != 4:
+			invalid_output_count += 1
+			continue
+		var point_error := 0.0
+		for channel in 4:
+			var difference := absf(actual[channel] - expected[channel])
+			point_error = maxf(point_error, difference)
+			compared_channels += 1
+			if difference == 0.0:
+				bit_exact_channels += 1
+		if point_error > max_error:
+			max_error = point_error
+			worst_sample_index = point_index
+			worst_north = north
+			worst_east = east
+	if invalid_output_count > 0:
+		_fail("native lake terrain returned the wrong channel count at %d samples" % invalid_output_count)
+	if max_error > 1.0e-12:
+		_fail("native lake terrain differs at sample %d N=%s E=%s max_error=%s" % [
+			worst_sample_index, str(worst_north), str(worst_east), str(max_error),
+		])
+	var short_base := PackedFloat64Array([0.0, 0.0])
+	var nan_base := PackedFloat64Array([0.0, NAN, 0.0])
+	var malformed_lake: Dictionary = lake.duplicate(true)
+	malformed_lake.bed_profile = [{"inset_m": 0.0, "depth_m": 0.0}]
+	_checks += 5
+	if not _native.sample_lake_terrain(lake, 110.0, 125.0, short_base).is_empty() \
+			or not _native.sample_lake_terrain(lake, 110.0, 125.0, nan_base).is_empty() \
+			or not _native.sample_lake_terrain(malformed_lake, 110.0, 125.0, valid_base).is_empty() \
+			or not _native.sample_lake_terrain(lake, NAN, 125.0, valid_base).is_empty() \
+			or not _native.sample_lake_terrain(lake, 110.0, INF, valid_base).is_empty():
+		_fail("native lake terrain accepted malformed base or unnormalized lake input")
+	print("OPENRC_NATIVE_LAKE_PARITY points=%d channels=%d bit_exact=%d max_abs_error=%s" % [
+		point_count, compared_channels, bit_exact_channels, str(max_error),
+	])
+	_profile_lake_terrain(lake, surface_rects, points)
+
+
+func _append_lake_terrain_point(points: PackedFloat64Array, north: float, east: float) -> void:
+	points.append(north)
+	points.append(east)
+
+
+func _profile_lake_terrain(lake: Dictionary, surface_rects: PackedFloat64Array,
+		points: PackedFloat64Array) -> void:
+	const PROFILE_ROUNDS := 3
+	var point_count := points.size() / 2
+	var sink := 0.0
+	for point_index in range(point_count):
+		var north_warm := points[point_index * 2]
+		var east_warm := points[point_index * 2 + 1]
+		var base_warm: PackedFloat64Array = GroundTerrain.sample_validated(north_warm, east_warm, surface_rects)
+		var warmed: PackedFloat64Array = _native.sample_lake_terrain(lake, north_warm, east_warm, base_warm)
+		sink += warmed[0] + warmed[3]
+		var reference_warm: PackedFloat64Array = GroundTerrain.sample_validated(north_warm, east_warm, surface_rects, lake)
+		sink += reference_warm[0] + LakeSurface.shore_distance_validated(lake, north_warm, east_warm)
+	var before_reference := Time.get_ticks_usec()
+	for _round in PROFILE_ROUNDS:
+		for point_index in range(point_count):
+			var north_reference := points[point_index * 2]
+			var east_reference := points[point_index * 2 + 1]
+			var reference_sample: PackedFloat64Array = GroundTerrain.sample_validated(north_reference, east_reference, surface_rects, lake)
+			var shore_distance := LakeSurface.shore_distance_validated(lake, north_reference, east_reference)
+			sink += reference_sample[0] + shore_distance
+	var reference_usec := Time.get_ticks_usec() - before_reference
+	var before_native := Time.get_ticks_usec()
+	for _round in PROFILE_ROUNDS:
+		for point_index in range(point_count):
+			var north_native := points[point_index * 2]
+			var east_native := points[point_index * 2 + 1]
+			var base_native: PackedFloat64Array = GroundTerrain.sample_validated(north_native, east_native, surface_rects)
+			var native_sample: PackedFloat64Array = _native.sample_lake_terrain(lake, north_native, east_native, base_native)
+			sink += native_sample[0] + native_sample[3]
+	var native_usec := Time.get_ticks_usec() - before_native
+	var reference_ms_per_sample := float(reference_usec) / float(PROFILE_ROUNDS * point_count) / 1000.0
+	var native_ms_per_sample := float(native_usec) / float(PROFILE_ROUNDS * point_count) / 1000.0
+	print("OPENRC_NATIVE_LAKE_PROFILE points=%d rounds=%d gdscript_ms_per_sample=%s native_ms_per_sample=%s speedup=%s check=%s" % [
+		point_count, PROFILE_ROUNDS, str(reference_ms_per_sample), str(native_ms_per_sample),
+		str(reference_ms_per_sample / maxf(native_ms_per_sample, 1.0e-9)), str(sink),
+	])
 
 
 func _run_evaluate_profile(scenario: Dictionary, model: Dictionary, road: Callable, batch: Callable) -> void:

@@ -1,0 +1,14 @@
+{
+  "format": "openrc-r11-overlay-copy-v1",
+  "source_app": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r05b-root\\combined02\\app",
+  "target_app": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-final-scenarios-04\\app",
+  "file_count": 2320,
+  "logical_source_bytes": 99186879,
+  "hardlinked_files": 2319,
+  "copied_files": 1,
+  "excluded_directory": ".godot",
+  "overlay_file": "physics/aero.gd",
+  "overlay_sha256": "7AC94F6003F2CB7660A56DD94755C6A7D6143D90CC446C6B6C20433038CE38E3",
+  "source_aero_sha256": "FED08E735494B6D2597F639CCA118D84C978F75828811F0D09968BFC67A85BE5",
+  "overlay_expected_sha256": "7AC94F6003F2CB7660A56DD94755C6A7D6143D90CC446C6B6C20433038CE38E3"
+}

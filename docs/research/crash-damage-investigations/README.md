@@ -6,6 +6,8 @@
 
 [CR-22c-R1: first-impact stutter](CR-22c-R1/README.md) records the 2026-10-14 native fleet comparison, Compatibility shader warmup and selective emitter startup.
 
+[CR-22c-R2: repeated contact work](CR-22c-R2/README.md) records once-per-tick soft-contact feedback, cached wreck shadows and cached scenery sort distances, with preserved output comparisons and lifecycle regressions.
+
 | # | Report | Scope |
 | --- | --- | --- |
 | 01 | [Damage models in simulators and games](01-simulators-games-damage-models.md) | Crash handling, structural damage patterns, and lessons from RC simulators and other games. |

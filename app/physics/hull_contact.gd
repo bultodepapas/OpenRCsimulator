@@ -112,6 +112,59 @@ static func prepare(hull: PackedFloat64Array, mass: float, inertia: PackedFloat6
 	return prepared
 
 
+## Geometry-only preparation for a body whose mass properties change during flight. It deliberately does no
+## inertia inversion or contact-coefficient work; the stage path can reject distant hulls before building a
+## short-lived coefficient view from its one sampled mass-properties snapshot.
+static func prepare_geometry(hull: PackedFloat64Array, lake: Dictionary = {}) -> Dictionary:
+	if hull.is_empty() or hull.size() % 3 != 0 or not _finite_array(hull) \
+			or (not lake.is_empty() and not LakeSurface.is_valid_definition(lake)):
+		return {}
+	var reach: float = 0.0
+	for i in range(0, hull.size(), 3):
+		reach = maxf(reach, M.norm(hull.slice(i, i + 3)))
+	var geometry := {points = hull.duplicate(), reach = reach, geometry_only = true}
+	if not lake.is_empty():
+		geometry["lake"] = lake.duplicate(true)
+		geometry["lake_bounds_ne_m"] = _polygon_bounds(lake.bank_ne_m)
+	return geometry
+
+
+## Stage loads for live mass properties, returning failure separately from a valid no-contact result.
+## Geometry and output torque arms remain about fixed datum O, matching the state integration contract.
+static func loads_at_properties(s: PackedFloat64Array, geometry: Dictionary, properties: Dictionary) -> Dictionary:
+	var valid: Dictionary = EffectiveMass.validate_properties(properties)
+	if not bool(valid.get("ok", false)):
+		return {ok = false, loads = PackedFloat64Array(), reason = str(valid.get("reason", "invalid_mass_properties"))}
+	if geometry.is_empty() or not bool(geometry.get("geometry_only", false)) \
+			or not geometry.has("points") or not geometry.has("reach"):
+		return {ok = false, loads = PackedFloat64Array(), reason = "invalid_contact_geometry"}
+	if s.size() != RB.SIZE or not _finite_array(s) or -s[RB.POS + 2] > float(geometry.reach):
+		if s.size() != RB.SIZE or not _finite_array(s):
+			return {ok = false, loads = PackedFloat64Array(), reason = "invalid_rigid_body_state"}
+		return {ok = true, loads = PackedFloat64Array(), reason = ""}
+	var hull: PackedFloat64Array = geometry.points
+	var stiffness := PackedFloat64Array()
+	var damping := PackedFloat64Array()
+	var identity := PackedFloat64Array([1.0, 0.0, 0.0, 0.0])
+	for i in range(0, hull.size(), 3):
+		var body_point_o: PackedFloat64Array = hull.slice(i, i + 3)
+		var smallest: float = float(properties.mass_kg)
+		for d: Array in _DIRECTIONS:
+			var effective: Dictionary = EffectiveMass._at_point_properties_validated(identity, body_point_o,
+				PackedFloat64Array([float(d[0]), float(d[1]), float(d[2])]), properties)
+			if not bool(effective.get("ok", false)):
+				return {ok = false, loads = PackedFloat64Array(), reason = str(effective.get("reason", "invalid_effective_mass"))}
+			smallest = minf(smallest, float(effective.effective_mass_kg))
+		stiffness.append(smallest * OMEGA_RAD_S * OMEGA_RAD_S)
+		damping.append(2.0 * ZETA * smallest * OMEGA_RAD_S)
+	var prepared := {points = hull, stiffness = stiffness, damping = damping,
+		reach = float(geometry.reach), mass = float(properties.mass_kg), inertia = properties.inertia}
+	if geometry.has("lake"):
+		prepared["lake"] = geometry.lake
+		prepared["lake_bounds_ne_m"] = geometry.get("lake_bounds_ne_m", PackedFloat64Array())
+	return {ok = true, loads = loads(s, prepared), reason = ""}
+
+
 ## Body loads [Fx, Fy, Fz, Mx, My, Mz] from every touching hull point, or EMPTY when none touches (callers add
 ## nothing, so flight away from the ground is bit-identical).
 static func loads(s: PackedFloat64Array, prepared: Dictionary) -> PackedFloat64Array:
@@ -217,6 +270,70 @@ static func terminal(previous: PackedFloat64Array, s: PackedFloat64Array, prepar
 		if specific >= TERMINAL_J_PER_KG and specific > float(worst.specific_j_per_kg):
 			worst = {index = i / 3, rule = "impact", specific_j_per_kg = specific, normal_speed_mps = v_n, depth_m = depth}
 	return worst
+
+
+## Dynamic terminal test. The sample is specifically for `previous`: existing soft-hull impact energy uses the
+## pre-contact pose/velocity and only the candidate state to establish penetration. A deep-crush result is still
+## mass-independent, but invalid samples fail closed before any candidate is accepted.
+static func terminal_at_properties(previous: PackedFloat64Array, s: PackedFloat64Array,
+		geometry: Dictionary, properties_previous: Dictionary) -> Dictionary:
+	var none := {index = -1, rule = "", specific_j_per_kg = 0.0, normal_speed_mps = 0.0, depth_m = 0.0}
+	var valid: Dictionary = EffectiveMass.validate_properties(properties_previous)
+	if not bool(valid.get("ok", false)):
+		return {ok = false, event = none, reason = str(valid.get("reason", "invalid_mass_properties"))}
+	if geometry.is_empty() or not bool(geometry.get("geometry_only", false)) \
+			or previous.size() != RB.SIZE or s.size() != RB.SIZE \
+			or not _finite_array(previous) or not _finite_array(s):
+		return {ok = false, event = none, reason = "invalid_contact_input"}
+	var q_before: PackedFloat64Array = RB._att(previous)
+	var previous_q_norm_squared: float = q_before[0] * q_before[0] + q_before[1] * q_before[1] \
+		+ q_before[2] * q_before[2] + q_before[3] * q_before[3]
+	if not is_finite(previous_q_norm_squared) or absf(previous_q_norm_squared - 1.0) > 1.0e-9:
+		return {ok = false, event = none, reason = "invalid_previous_attitude"}
+	if -s[RB.POS + 2] > float(geometry.reach):
+		return {ok = true, event = none, reason = ""}
+	var hull: PackedFloat64Array = geometry.points
+	var down_now: PackedFloat64Array = _down_row(s)
+	var down_before: PackedFloat64Array = _down_row(previous)
+	var worst: Dictionary = none.duplicate()
+	var lake: Dictionary = geometry.get("lake", {})
+	for i in range(0, hull.size(), 3):
+		var r: PackedFloat64Array = hull.slice(i, i + 3)
+		if not lake.is_empty():
+			var point_now: PackedFloat64Array = _point_ned(s, r)
+			var terrain_now: Dictionary = _lake_sample(geometry, point_now)
+			if bool(terrain_now.get("covered", false)):
+				var lake_event: Dictionary = _lake_terminal_candidate_properties(previous, s, geometry,
+					i / 3, r, point_now, terrain_now, q_before, properties_previous)
+				if bool(lake_event.get("invalid", false)):
+					return {ok = false, event = none, reason = str(lake_event.get("reason", "invalid_effective_mass"))}
+				if str(lake_event.get("rule", "")) == "depth":
+					return {ok = true, event = lake_event, reason = ""}
+				if not lake_event.is_empty() and float(lake_event.specific_j_per_kg) > float(worst.specific_j_per_kg):
+					worst = lake_event
+				continue
+		var depth: float = s[RB.POS + 2] + down_now[0] * r[0] + down_now[1] * r[1] + down_now[2] * r[2]
+		if depth <= 0.0:
+			continue
+		if depth > CRASH_DEPTH_M:
+			return {ok = true, event = {index = i / 3, rule = "depth", specific_j_per_kg = 0.0,
+				normal_speed_mps = 0.0, depth_m = depth}, reason = ""}
+		var depth_before: float = previous[RB.POS + 2] + down_before[0] * r[0] + down_before[1] * r[1] + down_before[2] * r[2]
+		if depth_before > 0.0:
+			continue
+		var velocity_ned: PackedFloat64Array = M.q_rotate(q_before,
+			M.add(RB._slice3(previous, RB.VEL), M.cross(RB._slice3(previous, RB.RATE), r)))
+		var normal_speed: float = maxf(0.0, velocity_ned[2])
+		var effective: Dictionary = EffectiveMass._at_point_properties_validated(q_before, r,
+			PackedFloat64Array([0.0, 0.0, -1.0]), properties_previous)
+		if not bool(effective.get("ok", false)):
+			return {ok = false, event = none, reason = str(effective.get("reason", "invalid_effective_mass"))}
+		var specific: float = 0.5 * float(effective.effective_mass_kg) * normal_speed * normal_speed \
+			/ float(properties_previous.mass_kg)
+		if specific >= TERMINAL_J_PER_KG and specific > float(worst.specific_j_per_kg):
+			worst = {index = i / 3, rule = "impact", specific_j_per_kg = specific,
+				normal_speed_mps = normal_speed, depth_m = depth}
+	return {ok = true, event = worst, reason = ""}
 
 
 ## Presentation feed: every hull point touching after the step previous → s, as {index, new, depth_m,
@@ -331,6 +448,49 @@ static func _lake_terminal_candidate(previous: PackedFloat64Array, s: PackedFloa
 	return {}
 
 
+static func _lake_terminal_candidate_properties(previous: PackedFloat64Array, s: PackedFloat64Array,
+		geometry: Dictionary, point_index: int, body_point_o: PackedFloat64Array,
+		point_now: PackedFloat64Array, terrain_now: Dictionary, q_before: PackedFloat64Array,
+		properties_previous: Dictionary) -> Dictionary:
+	var normal: PackedFloat64Array = _lake_normal(terrain_now)
+	if normal.is_empty():
+		return {}
+	var normal_length: float = M.norm(PackedFloat64Array([
+		float(terrain_now.slope_north), float(terrain_now.slope_east), 1.0]))
+	var depth: float = (point_now[2] - float(terrain_now.ground_down_m)) / normal_length
+	if depth <= 0.0:
+		return {}
+	if depth > CRASH_DEPTH_M:
+		return {index = point_index, rule = "depth", specific_j_per_kg = 0.0,
+			normal_speed_mps = 0.0, depth_m = depth}
+	var point_before: PackedFloat64Array = _point_ned(previous, body_point_o)
+	var terrain_before: Dictionary = _lake_sample(geometry, point_before)
+	var depth_before: float
+	if bool(terrain_before.get("covered", false)):
+		var before_normal_length: float = M.norm(PackedFloat64Array([
+			float(terrain_before.slope_north), float(terrain_before.slope_east), 1.0]))
+		depth_before = (point_before[2] - float(terrain_before.ground_down_m)) / before_normal_length
+	else:
+		var extrapolated_ground_down: float = float(terrain_now.ground_down_m) \
+			+ float(terrain_now.slope_north) * (point_before[0] - point_now[0]) \
+			+ float(terrain_now.slope_east) * (point_before[1] - point_now[1])
+		depth_before = (point_before[2] - extrapolated_ground_down) / normal_length
+	if depth_before > 0.0:
+		return {}
+	var velocity_ned: PackedFloat64Array = M.q_rotate(q_before, M.add(RB._slice3(previous, RB.VEL),
+		M.cross(RB._slice3(previous, RB.RATE), body_point_o)))
+	var normal_speed: float = maxf(0.0, -M.dot(velocity_ned, normal))
+	var effective: Dictionary = EffectiveMass._at_point_properties_validated(q_before, body_point_o, normal, properties_previous)
+	if not bool(effective.get("ok", false)):
+		return {invalid = true, reason = str(effective.get("reason", "invalid_effective_mass"))}
+	var specific: float = 0.5 * float(effective.effective_mass_kg) * normal_speed * normal_speed \
+		/ float(properties_previous.mass_kg)
+	if specific >= TERMINAL_J_PER_KG:
+		return {index = point_index, rule = "impact", specific_j_per_kg = specific,
+			normal_speed_mps = normal_speed, depth_m = depth}
+	return {}
+
+
 static func _lake_contact_record(previous: PackedFloat64Array, s: PackedFloat64Array,
 	prepared: Dictionary, point_index: int, body_point: PackedFloat64Array, point_now: PackedFloat64Array,
 	terrain_now: Dictionary, q_before: PackedFloat64Array, q_now: PackedFloat64Array) -> Dictionary:
@@ -423,3 +583,10 @@ static func _down_row(s: PackedFloat64Array) -> PackedFloat64Array:
 	var y := s[RB.ATT + 2]
 	var z := s[RB.ATT + 3]
 	return PackedFloat64Array([2.0 * (x * z - w * y), 2.0 * (y * z + w * x), 1.0 - 2.0 * (x * x + y * y)])
+
+
+static func _finite_array(values: PackedFloat64Array) -> bool:
+	for value: float in values:
+		if not is_finite(value):
+			return false
+	return true

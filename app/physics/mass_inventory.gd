@@ -38,6 +38,12 @@ static func rectangular_box_per_kg(center_body_m: PackedFloat64Array,
 		-x * y, -x * z, -y * z])
 
 
+## Public tensor predicate for consumers that receive one validated mass-properties sample and need to
+## verify a derived tensor without reimplementing the physical second-moment constraints.
+static func is_physical_tensor(tensor: Variant) -> bool:
+	return _valid_physical_tensor(tensor)
+
+
 ## Prepare immutable-by-convention geometry. Dry entries have id, mass_kg, center_body_m,
 ## and inertia_centroid_kgm2. Resource entries have id, capacity_mass_kg, center_body_m,
 ## inertia_centroid_at_capacity_kgm2, and distribution_model. Resource tensors are scaled

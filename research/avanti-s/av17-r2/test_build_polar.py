@@ -6,9 +6,11 @@ import math
 import sys
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 
+import build_polar as build_polar_module
 from build_polar import DEFAULT_AIRCRAFT, METHOD, SOURCE_TRANSCRIPTION, _finite_wing_line, build_polar
 
 
@@ -105,6 +107,32 @@ class CandidatePolarTests(unittest.TestCase):
                 self.assertAlmostEqual(row[1], expected_cl, delta=1e-15)
                 self.assertAlmostEqual(row[2], expected_cd, delta=1e-15)
                 self.assertEqual(row[3], 0.0)
+
+    def test_high_angle_rows_are_independent_of_one_ulp_sine_drift(self):
+        cd0 = self.aircraft["aero"]["coefficients"]["CD0"]["value"]
+        cd90 = self.aircraft["aero"]["envelope"]["CD90"]["value"]
+        original_sin = math.sin
+
+        def legacy_rows(sine):
+            rows = []
+            for angle in (45.0, 60.0, 75.0, 90.0):
+                radians = math.radians(angle)
+                lift = 0.5 * cd90 * sine(2.0 * radians) if angle < 90.0 else 0.0
+                drag = cd0 + cd90 * sine(radians) ** 2
+                rows.append([angle, lift, drag])
+            return rows
+
+        legacy_before = legacy_rows(original_sin)
+
+        def next_sine(value):
+            return math.nextafter(original_sin(value), math.inf)
+
+        with patch("build_polar.math.sin", side_effect=next_sine):
+            perturbed = build_polar(self.aircraft)
+            legacy_after = legacy_rows(build_polar_module.math.sin)
+
+        self.assertEqual(perturbed, self.polar)
+        self.assertTrue(all(before != after for before, after in zip(legacy_before, legacy_after)))
 
     def test_builder_is_deterministic_and_does_not_mutate_input(self):
         untouched = copy.deepcopy(self.aircraft)

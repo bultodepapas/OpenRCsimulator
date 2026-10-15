@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+CASE id=gp-extra-300s-60 path=res://data/aircraft/gp_extra_300s_60.json
+  original_ok=true original_lag=0.76396025615157
+  stripped_ok=true stripped_errors=[]
+  stripped_free_slope=absent stripped_lag=absent
+  session_apply=true active_id= lag_index=-1
+CASE id=p51d-mustang-120 path=res://data/aircraft/p51d_mustang_120.json
+  original_ok=true original_lag=1.269625
+  stripped_ok=false stripped_errors=["aero.ground_effect: requires aero.surfaces.horizontal.downwash_gradient (the free tail law whose downwash it reduces)"]
+  session_apply=false active_id= lag_index=13
+CASE id=sebart-avanti-s-a200-p100rx path=res://data/aircraft/sebart_avanti_s_a200.json
+  original_ok=true original_lag=0.880123625
+  stripped_ok=true stripped_errors=[]
+  stripped_free_slope=absent stripped_lag=absent
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+  session_apply=true active_id= lag_index=-1

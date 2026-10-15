@@ -50,6 +50,8 @@ Native configuration identity includes dictionary key types. In Godot 4.7.2, ref
 
 A frozen copy of the old implementation can show that a refactor preserves its behavior, including a bug. Keep an independent physical or analytic oracle for correctness, and a sensitive equivalence check for intentional behavior-preserving changes. If exact replay matters, preserve floating-point operation and accumulation order: even adding zero can change the sign of zero and therefore a bitwise fingerprint. ([H12](../research/simulation-state/H12/README.md), [E0b1](../research/propwash/E0b1/README.md))
 
+Algebraic equality does not guarantee identical platform rounding: a generic `pow(x, 2)` differed from `x*x` by one ULP in a rate-flow norm and by twelve ULP after smoothstep. Diagnose with the input's binary representation and an exact-rational check before changing a comparator. Prefer explicit multiplication for fixed squares, and verify the existing flight and branch references after changing the evaluation. ([VAL-AUD-R11 reproduction](../research/physics-audit-2026-10-14/remediation/R11/rate-guard-rounding/README.md))
+
 Small numerical errors do not prove identical execution paths: a changed early return can leave the entire trajectory bit-identical. Record selected branch decisions separately, verify that instrumentation preserves every-tick state, and test the observer with an actual branch mutation. Adjacent-float sensitivity is evidence for the tested trajectory and functions, not a substitute for native-platform runs. ([E4b](../research/ground-contact/E4b/README.md))
 
 ## Ground and aerodynamic models
@@ -121,6 +123,8 @@ Preserve the source's loading condition when deriving balance. Solving a fuel-lo
 A fuel-loading sweep must retain the same hardware and ballast. Re-running a balance solver for each tank level silently compares different builds; mixing that result's stall/climb estimates with a separately fixed-build CG creates an internally inconsistent table. Derive mass, CG and all reported performance quantities from one inventory per loading case, and state omitted trim-drag effects. ([AV-15 sensitivity correction and independent checks](../research/avanti-realism/README.md))
 
 Equal mass and CG do not establish the correct inertia. A symmetric pair separated by distance L contributes M·L²/4 about its center, whereas a uniform box spanning the gap contributes M·L²/12. Store paired hardware at its separate estimated centers with local component envelopes. Check the tensor delta independently and test principal-moment inequalities, including cross inertia. The P-51 correction increased roll inertia by 13.2% while preserving mass, CG and steady coefficients. ([P51-15 inventory audit](../research/p51-realism/P51-15/physics-audit.md))
+
+Changing fuel mass must reach contact mobility as well as airborne acceleration. Glow used current fuel in flight while collision preparation retained its wet mass and CG arms. With a fixed structural datum, sample mass/CG/inertia at the contact's declared time, subtract current CG from the contact arm, and transform the resulting CG impulse back to datum velocity. Retain that sample through response and publish effects only after the entire step commits. A rigid-body impulse proof does not also qualify a free rotor or post-impact remainder integration. ([VAL-AUD-R05-B1 derivation and rollback evidence](../research/physics-audit-2026-10-14/remediation/R05/R05-B-glow-contacts.md))
 
 ### Test derivatives across blends and against time-domain motion
 

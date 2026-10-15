@@ -1,0 +1,52 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   default is the Ugly Stik and it is in the catalog  
+ok   nine catalog entries, unique IDs  ["jensen-das-ugly-stik-60", "stik-glow-61fx-2t", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution", "xcell-60-research"]
+ok   eight airplane configurations remain available to airplane solvers  
+FAIL airplane visual families are unique, complete, registered, include Timber, and exclude HX-700  ["jensen-das-ugly-stik-60", "gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution"]
+ok   nine simulated entries include the experimental helicopter  ["jensen-das-ugly-stik-60", "stik-glow-61fx-2t", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx", "turbo-lumber-evolution", "xcell-60-research"]
+ok   research helicopter catalog identity and visual family are explicit  
+ok   glow Stik variants are explicitly experimental and identify inferred profiles  
+ok   unknown ID: no entry, cannot fly  
+ok   step wraps both ways  
+ok   the airplane render adapter retains its eight catalog IDs  
+ok   jensen-das-ugly-stik-60: builds root/propeller/hinges  
+ok   jensen-das-ugly-stik-60: surfaces deflect and return through the shared adapter  
+ok   jensen-das-ugly-stik-60: data loads  
+ok   jensen-das-ugly-stik-60: the data file is this aircraft (id matches)  jensen-das-ugly-stik-60
+ok   jensen-das-ugly-stik-60: span of the built model matches the data within 1 %  model 1.5223 m, data 1.5240 m
+ok   jensen-das-ugly-stik-60: CG lands on the root chord in the visual model  model point (0.0, -0.005, 0.0059), LE z -0.1150, chord 0.3048
+ok   stik-glow-61fx-2t: builds root/propeller/hinges  
+ok   stik-glow-61fx-2t: surfaces deflect and return through the shared adapter  
+ok   stik-glow-61fx-2t: data loads  
+ok   stik-glow-61fx-2t: the data file is this aircraft (id matches)  stik-glow-61fx-2t
+ok   stik-glow-61fx-2t: span of the built model matches the data within 1 %  model 1.5223 m, data 1.5240 m
+ok   stik-glow-61fx-2t: CG lands on the root chord in the visual model  model point (-0.0, -0.005, 0.0059), LE z -0.1150, chord 0.3048
+ok   stik-glow-55ax-2t: builds root/propeller/hinges  
+ok   stik-glow-55ax-2t: surfaces deflect and return through the shared adapter  
+ok   stik-glow-55ax-2t: data loads  
+ok   stik-glow-55ax-2t: the data file is this aircraft (id matches)  stik-glow-55ax-2t
+ok   stik-glow-55ax-2t: data carries its explicit glow_2t family  
+ok   stik-glow-55ax-2t: visual and blur radii use the selected model diameter  
+ok   stik-glow-55ax-2t: glow propeller uses the physical shaft spin sign  
+ok   stik-glow-55ax-2t: span of the built model matches the data within 1 %  model 1.5223 m, data 1.5240 m
+ok   stik-glow-55ax-2t: CG lands on the root chord in the visual model  model point (0.0, -0.005, 0.0059), LE z -0.1150, chord 0.3048
+ok   stik-glow-fs64v-4t: builds root/propeller/hinges  
+ok   stik-glow-fs64v-4t: surfaces deflect and return through the shared adapter  
+ok   stik-glow-fs64v-4t: data loads  
+ok   stik-glow-fs64v-4t: the data file is this aircraft (id matches)  stik-glow-fs64v-4t
+ok   stik-glow-fs64v-4t: data carries its explicit glow_4t family  
+ok   stik-glow-fs64v-4t: visual and blur radii use the selected model diameter  
+ok   stik-glow-fs64v-4t: glow propeller uses the physical shaft spin sign  
+ok   stik-glow-fs64v-4t: span of the built model matches the data within 1 %  model 1.5223 m, data 1.5240 m
+ok   stik-glow-fs64v-4t: CG lands on the root chord in the visual model  model point (0.0, -0.005, 0.0059), LE z -0.1150, chord 0.3048
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/extra-300s-60/geometry.json", "authoring source is missing: assets/aircraft/extra-300s-60/geometry.json", "authoring source is missing: assets/aircraft/extra-300s-60/appearance.json"]
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:52)
+       [1] _initialize (res://tests/test_aircraft_catalog.gd:78)
+FAIL gp-extra-300s-60: builds root/propeller/hinges  
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+   at: _initialize (res://tests/test_aircraft_catalog.gd:91)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (res://tests/test_aircraft_catalog.gd:91)

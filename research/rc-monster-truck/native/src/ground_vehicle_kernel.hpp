@@ -721,11 +721,16 @@ inline std::vector<Vec3> query_positions(const std::array<double, kStateSize> &s
 
 inline bool evaluate(const std::array<double, kStateSize> &state, const Model &m,
 		const Controls &controls, const std::vector<Surface> &surfaces,
-		bool calculate_energy, bool adaptive_friction, EvalResult &result) {
+		bool calculate_energy, bool adaptive_friction,
+		const Vec14 *external_generalized_force, EvalResult &result) {
 	result = EvalResult{};
 	std::string error;
 	if (!valid_model(m, error)) { result.error = error; return false; }
 	if (!valid_controls(controls, error)) { result.error = error; return false; }
+	if (external_generalized_force != nullptr && !finite(*external_generalized_force)) {
+		result.error = "external_generalized_force contains a non-finite value";
+		return false;
+	}
 	for (double value : state) {
 		if (!std::isfinite(value)) { result.error = "State contains a non-finite value"; return false; }
 	}
@@ -777,7 +782,16 @@ inline bool evaluate(const std::array<double, kStateSize> &state, const Model &m
 	const Vec3 body_gyro = cross(body_rate, angular_momentum);
 	for (std::size_t axis = 0; axis < 3; ++axis) rhs[3 + axis] -= body_gyro[axis];
 
-	const bool skip_static_friction = is_quiescent_level_state(state, controls);
+	bool external_load_active = false;
+	if (external_generalized_force != nullptr) {
+		for (double value : *external_generalized_force) {
+			if (value != 0.0) {
+				external_load_active = true;
+				break;
+			}
+		}
+	}
+	const bool skip_static_friction = !external_load_active && is_quiescent_level_state(state, controls);
 	const double drive_reverse_factor = controls.reverse ? -m.reverse_torque_fraction : 1.0;
 	const double drive_base = controls.throttle * m.drive_torque_per_wheel_nm * drive_reverse_factor;
 	const double brake_base = controls.brake * m.brake_torque_per_wheel_nm;
@@ -980,6 +994,9 @@ inline bool evaluate(const std::array<double, kStateSize> &state, const Model &m
 			const Vec3 tangent_force = scale(tangent_direction, hull_friction_limit * std::tanh(hull_tangent_speed / 0.02));
 			add_body_force(rhs, add(center, rho_body_hull), rotate(q_conjugate, tangent_force));
 		}
+	}
+	if (external_generalized_force != nullptr) {
+		add_scaled(rhs, *external_generalized_force, 1.0);
 	}
 
 	Factor factor;

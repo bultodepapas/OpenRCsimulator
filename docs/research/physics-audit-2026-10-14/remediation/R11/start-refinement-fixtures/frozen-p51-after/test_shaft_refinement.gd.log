@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok coupled-rk4 without the downwash lag (integrator order) smooth full-session RPM refinement: errors [0.00000129989712, 0.00000007949757, 0.00000000491355] rpm, ratios [16.3514074718134, 16.1792688570106]
+ok coupled-rk4 with the held downwash lag (second order, bounded) smooth full-session RPM refinement: errors [0.00004752368477, 0.00001162895705, 0.00000286319255] rpm, ratios [4.08666783694121, 4.06153510665991]
+ok split smooth full-session RPM refinement: errors [0.95827668392121, 0.46050739918792, 0.21417204962518] rpm, ratios [2.08091484656074, 2.15017505782783]
+G2 refinement: 3 checks, 0 failed

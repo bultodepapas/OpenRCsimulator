@@ -1,0 +1,8 @@
+{
+  "source_app": "tmp\\physics-audit-r11-final-scenarios-04\\verified-app",
+  "copy_app": "tmp\\physics-audit-keyboard-fixture\\app",
+  "single_override": "data/aircraft/sebart_avanti_s_a200.json",
+  "before_sha256": "68d3fd42b28e30bf1dc210b838d945d517f062506749af14f995a5a5f39a83b6",
+  "after_sha256": "74043c9bc1de35de066bc65b971e85f5e099173f2d9cccec065c6988abbb6b9d",
+  "purpose": "isolate source law from analytic polar portability rounding"
+}

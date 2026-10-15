@@ -95,6 +95,10 @@ func _wheels_down(s: PackedFloat64Array) -> int:
 ## throttle } every tick and ticking the session like the game (crash checks included). Returns { rows (Array of
 ## { t, s, rpm, cmd }), crashed (String or ""), state }; rows are sampled every `every` ticks.
 func fly(state: PackedFloat64Array, rpm: float, seconds: float, pilot: Callable, every := 12) -> Dictionary:
+	# P51-21: a ground pose is the product's qualified runway start (park()), whose solved stiction anchors are kept;
+	# every other state starts from the airborne reset, whose anchors all begin sliding as in any session landing.
+	var on_runway := not runway_launch.is_empty() and state == runway_launch
+	session.start_choice = FlightSession.START_RUNWAY if on_runway else FlightSession.START_AIRBORNE
 	session.reset()
 	if not session.is_flyable() or not session.sim.fault_reason.is_empty():
 		var reset_reason := str(session.pause_reason)
@@ -103,8 +107,12 @@ func fly(state: PackedFloat64Array, rpm: float, seconds: float, pilot: Callable,
 		if reset_reason.is_empty():
 			reset_reason = "session is not flyable"
 		return { rows = [], crashed = "session reset failed: " + reset_reason, state = session.sim.state.duplicate() }
-	if session.anchor_count() > 0 or session._weather.has_turbulence():
-		return { rows = [], crashed = "P-51 fixture does not initialize anchored stiction or turbulent weather state", state = session.sim.state.duplicate() }
+	if session._weather.has_turbulence():
+		return { rows = [], crashed = "P-51 fixture does not initialize turbulent weather state", state = session.sim.state.duplicate() }
+	if session.anchor_count() > 0 and not on_runway and _wheels_down(state) > 0:
+		return { rows = [], crashed = "P-51 fixture: ground poses start from the qualified runway start (park())", state = session.sim.state.duplicate() }
+	if on_runway and session.sim.state != runway_launch:
+		return { rows = [], crashed = "P-51 runway start did not reproduce the parked launch: " + session.start_error, state = session.sim.state.duplicate() }
 	session.engine_running = rpm > 0.0
 	session.commands = { roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0 }
 	var first: Dictionary = pilot.call(0.0, state)
@@ -155,26 +163,18 @@ func fly(state: PackedFloat64Array, rpm: float, seconds: float, pilot: Callable,
 	return { rows = rows, crashed = crashed, state = session.sim.state.duplicate() }
 
 
-## Parked at the runway threshold heading east, all three wheels on the grass, settled for 3 s with the engine at
-## idle and the stick held back (the tail wheel stays planted). Returns the settled state.
+## P51-21: the product's qualified runway start: the GroundStart equilibrium at the field's threshold, heading east,
+## at idle with the radio trims, with the solved stiction anchors. Returns the launch state.
+var runway_launch := PackedFloat64Array()
+
+
 func park() -> PackedFloat64Array:
-	var gear: Dictionary = model.landing_gear
-	var main: PackedFloat64Array = gear.contacts[0].position
-	var tail: PackedFloat64Array = gear.contacts[2].position
-	var pitch := atan2(main[2] - tail[2], main[0] - tail[0]) # nose up: the tail wheel is higher in body z
-	var down := -(-main[0] * sin(pitch) + main[2] * cos(pitch)) + 0.005
-	var s := RB.make_state(M.v3(THRESHOLD[0], THRESHOLD[1], down), M.v3(0, 0, 0), M.q_from_euler(PI / 2.0, pitch, 0.0), M.v3(0, 0, 0))
-	var idle: float = Propulsion.steady_rpm(0.0, 0.0, model.propulsion, 1.225)
-	var settle := fly(s, idle, 3.0, func(_t, _s): return { roll = 0.0, pitch = 1.0, yaw = 0.0, throttle = 0.0 })
-	assert(settle.crashed.is_empty(), "P-51 parked fixture settle crashed: %s" % settle.crashed)
-	assert(Sim.state_is_valid(settle.state), "P-51 parked fixture settle returned an invalid state")
-	var out: PackedFloat64Array = settle.state
-	out[RB.POS] = THRESHOLD[0]
-	out[RB.POS + 1] = THRESHOLD[1]
-	for k in 3:
-		out[RB.VEL + k] = 0.0
-		out[RB.RATE + k] = 0.0
-	return out
+	session.start_choice = FlightSession.START_RUNWAY
+	session.reset()
+	assert(session.start_error.is_empty() and session.is_flyable() and session.sim.fault_reason.is_empty(),
+		"P-51 runway start failed: %s" % session.start_error)
+	runway_launch = session.sim.state.duplicate()
+	return runway_launch.duplicate()
 
 
 ## Trimmed level flight at `speed` and `altitude` (m), heading east over the field. Returns { state, rpm, throttle }.
@@ -275,7 +275,7 @@ func takeoff(rudder: bool, seconds := 12.0) -> Dictionary:
 			info.liftoff_v = v
 		var dev := absf(wrapf(_euler(s)[0] - PI / 2.0, -PI, PI))
 		if info.liftoff_t < 0.0:
-			info.max_dev = maxf(info.max_dev, absf(s[RB.POS] - THRESHOLD[0]))
+			info.max_dev = maxf(info.max_dev, absf(s[RB.POS] - parked[RB.POS]))
 			info.max_yaw = maxf(info.max_yaw, dev)
 			info.max_bank = maxf(info.max_bank, absf(_euler(s)[2]))
 			info.rudder_used = maxf(info.rudder_used, c.yaw)

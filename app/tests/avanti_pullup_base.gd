@@ -28,7 +28,7 @@ func run_case(speed: float, hold: float) -> Dictionary:
 	var initial: PackedFloat64Array = Trim.state_for(speed, float(trimmed.alpha), deg_to_rad(-45.0), 0.0, M.v3(0,0,-500))
 	assert(flight.sim.reset(initial))
 	var record := {speed_mps = speed, hold_s = hold, peak_alpha_deg = 0.0, peak_g = 0.0, peak_stall_weight = 0.0,
-		first_stall_s = -1.0, recovered_s = -1.0, samples = [], completed = false}
+		first_stall_s = -1.0, first_deep_separation_s = -1.0, recovered_s = -1.0, samples = [], completed = false}
 	flight.read_raw = func() -> Dictionary:
 		# Repeated key taps are a scripted pilot, not a runtime flight assist. Release after reaching level path.
 		var press: bool = flight.sim.time() < hold if hold >= 0 else fmod(flight.sim.time(), 0.6) < 0.45 and record.recovered_s < 0
@@ -56,6 +56,7 @@ func run_case(speed: float, hold: float) -> Dictionary:
 		record.peak_g = maxf(record.peak_g, g)
 		record.peak_stall_weight = maxf(record.peak_stall_weight, weight)
 		if record.first_stall_s < 0.0 and weight >= 0.5: record.first_stall_s = flight.sim.time()
+		if record.first_deep_separation_s < 0.0 and weight > 0.9: record.first_deep_separation_s = flight.sim.time()
 		if record.recovered_s < 0.0 and gamma >= 0.0: record.recovered_s = flight.sim.time()
 		if tick % (hz / 20) == 0:
 			record.samples.append([flight.sim.time(), air.V, rad_to_deg(air.alpha), gamma, g,

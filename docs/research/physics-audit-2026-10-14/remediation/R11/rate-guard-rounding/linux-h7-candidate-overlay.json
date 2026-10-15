@@ -1,0 +1,15 @@
+{
+  "revision_id": "R11-H7-scoped-local-flow-instrumentation",
+  "files": {
+    "app/tests/check_math_sensitivity.py": {
+      "sha256": "9715901a3eeb90dd19a357e6abc1f35fdb95b3430167f78c3e87356921e1a43a"
+    }
+  },
+  "patches": [
+    {
+      "path": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/rate-guard-rounding/h7-instrumentation.patch",
+      "sha256": "be5ad2056704ad78d1a3063890244fcbbec05860da348e6238fa377e682c1c24"
+    }
+  ],
+  "notes": "Restricts H7 branch instrumentation to the local_flow_weight function, identifies the wing-angle exit with its unique angle update, and records the added wing/tail rate saturation exits independently. No runtime or golden changes."
+}

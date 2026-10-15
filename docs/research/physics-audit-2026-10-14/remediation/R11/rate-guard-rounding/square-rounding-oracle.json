@@ -1,0 +1,23 @@
+{
+  "ok": true,
+  "case_sha256": "4dd949c8229cf174438775576828aa5c45754d9db8e3b1f5ec7c5d202cce5287",
+  "oracle_sha256": "088fd3c91212c5b4c23a89c773668e8cc7982809ee7ede96d7aef58843ddb363",
+  "case": {
+    "aircraft_id": "gp-extra-300s-60",
+    "sample": 1894,
+    "seed": 44117,
+    "test": "app/tests/test_aero_flow.gd"
+  },
+  "component_unit": "m/s",
+  "component_float64_hex": "2f25fd1629ad0cc0",
+  "exact_square_numerator": "65152201069692435376469831360161",
+  "exact_square_denominator": "5070602400912917605986812821504",
+  "correctly_rounded_square_float64_hex": "2d55b8ecb0b22940",
+  "captured_pow_square_float64_hex": "2e55b8ecb0b22940",
+  "direct_absolute_rounding_error": 8.837912929494461e-16,
+  "pow_absolute_rounding_error": 8.925655464508044e-16,
+  "direct_is_unique_nearest_float64": true,
+  "selector_difference_ulps": 12,
+  "selector_difference": 3.3306690738754696e-16,
+  "scope": "exact arithmetic at one captured input; not a universal libm or physical validation"
+}

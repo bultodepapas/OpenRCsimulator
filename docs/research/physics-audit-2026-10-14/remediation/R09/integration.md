@@ -2,6 +2,8 @@
 
 2026-10-14. The [kernel report](README.md) owns constants, source references and independent values. This document describes the production consumers and timing contract.
 
+The [five-family domain-boundary sweep](boundary-sweep-20261014/README.md) verifies both altitude limits, rejection of outward RK stages before commit, unchanged accepted state after rejected starts, and successful interior control steps. Its fixture ground context and failed setup attempts are recorded explicitly.
+
 `FlightSession.environment_at(body)` evaluates geometric altitude as `field_elevation_m - body.down`. Aero, propeller load, wash, gear drag, coupled shaft, electric propeller, turbine capture and Glow cooling/charge use the current RK candidate body. Repeated calls are pure and consume no wind RNG. Components share one body-datum atmosphere at a stage: a 2 m vertical separation corresponds to roughly 0.02% sea-level density change under this lapse rate, which is intentionally omitted. Spatial weather and measured engine corrections are separate work.
 
 Trim evaluates the requested starting altitude rather than the previously accepted flight endpoint. Changing start altitude triggers a refit at that altitude; reset preserves its chosen position. The runway solver queries the environment at each residual pose. A rejected/out-of-domain sample supplies failure or nonfinite sentinel data to the existing bounded transaction, never a silent sea-level fallback. The qualified runway idle policies are prescribed-RPM, turbine idle, or stopped electric/Glow; this does not qualify an arbitrary load-responsive ground equilibrium.

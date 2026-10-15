@@ -1,0 +1,7 @@
+# P51-20 runs (2026-10-14) in a clean detached worktree at 6a7c624dcb0872d9b20bea483290125fd8335435 (contains P51-19); only app/data P-51 JSON and Workshop descriptor overlaid for the candidate.
+candidate (CRLF, main tree) 3ef8334ff11ae71d8ce1c14f7674fea440d27b24db0036a37881c1647e553ff2 *app/data/aircraft/p51d_mustang_120.json
+candidate as overlaid in the worktree: 3ef8334ff11ae71d8ce1c14f7674fea440d27b24db0036a37881c1647e553ff2
+d3c09c71ba6d19d9cbfe101694f15d25ce52868801929a00aba4f9c4b5371a25 *research/p51/p51-20/vlm_ground_effect.json
+35ef95d450782498bd71d8718bebb93fffa6935b7b91d5bebfd2157554fe0038 *research/p51/p51-20/ground_effect_vlm.py
+d2d5944c3036975739f9e81b2a7d86ed2e590c5660542362c3af12b273e9ff6b *research/p51/p51-20/ge_probe.gd
+e43cbaee79c03ae5fa1b48c0b5231c592fd7ad551fe8b48fb1050c5623bf8f2a *research/p51/p51-05/derive_physics.py

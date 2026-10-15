@@ -50,6 +50,7 @@ func _run() -> void:
 	var touched := false
 	var marks_seen := 0
 	var puff_seen := false
+	var repeated_checked := false
 	for t in 60:
 		session._physics_process(session.sim.dt())
 		if not session.soft_contacts.is_empty():
@@ -57,11 +58,46 @@ func _run() -> void:
 		# As main._process does: draw the pose, then let the director read it.
 		main._render_pose(main._current_pose(), session.surfaces(), 0.0)
 		director.update(session.sim.dt())
+		if not repeated_checked and session.soft_contacts.any(func(c): return bool(c.new)):
+			repeated_checked = true
+			var checkpoint: Dictionary = session.sim.checkpoint()
+			var serial: int = director.scuffs._serial
+			var marks_before: int = director.effects._mark_index
+			var sound_state: int = director.audio._rng.state
+			var repeat_clock := Time.get_ticks_usec()
+			for frame in 12: director.update(1.0 / 144.0)
+			print("feedback_repeat_12_frames_us=", Time.get_ticks_usec() - repeat_clock)
+			_check("repeated render frames do not duplicate scuffs", director.scuffs._serial == serial)
+			_check("repeated render frames do not duplicate ground marks", director.effects._mark_index == marks_before)
+			_check("repeated render frames do not replay touch audio", director.audio._rng.state == sound_state)
+			session.hold("scuff-regression")
+			for frame in 12: director.update(1.0 / 60.0)
+			_check("a hold does not repeat scuffs or marks", director.scuffs._serial == serial and director.effects._mark_index == marks_before)
+			session.release("scuff-regression")
+			# Releasing a shell hold deliberately leaves the simulator paused until resume.
+			session.sim.set_paused(false)
+			director.update(1.0 / 60.0)
+			_check("resume without a new tick does not repeat a touch", director.scuffs._serial == serial)
+			_check("feedback does not change the solver checkpoint", session.sim.checkpoint() == checkpoint)
+			director.reset()
+			director.update(session.sim.dt())
+			_check("reset permits another touch at the same tick", director.scuffs._serial == serial + 1 and director.scuffs.marks.size() == 1)
+			director.reset()
+			session.hold("unseen-scuff")
+			director.update(1.0 / 60.0)
+			_check("a hold defers an unseen touch", director.scuffs.marks.is_empty() and director.effects._mark_index == 0)
+			session.release("unseen-scuff")
+			session.sim.set_paused(false)
+			director.update(1.0 / 60.0)
+			_check("an unseen touch is delivered on resume", director.scuffs._serial == serial + 2 and director.scuffs.marks.size() == 1)
+			_check("reset and resume feedback preserve the solver checkpoint", session.sim.checkpoint() == checkpoint)
+
 		marks_seen = maxi(marks_seen, _visible_marks(director.effects))
 		puff_seen = puff_seen or director.effects.touch_dust.emitting
 		if not session.crash.is_empty():
 			break
 		session.sim.step()
+	_check("the repeat-frame regression was exercised", repeated_checked)
 	_check("the wingtip touches in production", touched)
 	_check("the brush does not end the flight", session.crash.is_empty())
 	_check("the touch leaves a ground mark", marks_seen >= 1, "%d marks" % marks_seen)

@@ -1,0 +1,59 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/jensen_ugly_stik_60.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/jensen_ugly_stik_60.orfl (260 ticks)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/jensen_ugly_stik_60.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/jensen_ugly_stik_60.orfl.reset (0 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/jensen_ugly_stik_60.orfl.limit
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/gp_extra_300s_60.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/gp_extra_300s_60.orfl (260 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/gp_extra_300s_60.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/gp_extra_300s_60.orfl.reset (0 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/gp_extra_300s_60.orfl.limit
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/p51d_mustang_120.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/p51d_mustang_120.orfl (260 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/p51d_mustang_120.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/p51d_mustang_120.orfl.reset (0 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/p51d_mustang_120.orfl.limit
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/sebart_avanti_s_a200.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/sebart_avanti_s_a200.orfl (260 ticks)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/sebart_avanti_s_a200.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/sebart_avanti_s_a200.orfl.reset (0 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/sebart_avanti_s_a200.orfl.limit
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/turbo_lumber_evolution.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/turbo_lumber_evolution.orfl (260 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/turbo_lumber_evolution.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/turbo_lumber_evolution.orfl.reset (0 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/turbo_lumber_evolution.orfl.limit
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/stik_glow_61fx_2t.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/stik_glow_61fx_2t.orfl (260 ticks)
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/stik_glow_61fx_2t.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/stik_glow_61fx_2t.orfl.reset (0 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/stik_glow_61fx_2t.orfl.limit
+FL-04 flight logs: 3247 checks, 0 failures; C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/jensen_ugly_stik_60.orfl
+Cannot open flight log (12).
+Flight log byte limit exceeded; file is incomplete.
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/gp_extra_300s_60.orfl
+Cannot open flight log (12).
+Flight log byte limit exceeded; file is incomplete.
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/p51d_mustang_120.orfl
+Cannot open flight log (12).
+Flight log byte limit exceeded; file is incomplete.
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/sebart_avanti_s_a200.orfl
+Cannot open flight log (12).
+Flight log byte limit exceeded; file is incomplete.
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/turbo_lumber_evolution.orfl
+Cannot open flight log (12).
+Flight log byte limit exceeded; file is incomplete.
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r05b-root/combined02/app/../tmp/flight-log-1890373/stik_glow_61fx_2t.orfl
+Cannot open flight log (12).
+Flight log byte limit exceeded; file is incomplete.

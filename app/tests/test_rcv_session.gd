@@ -23,6 +23,8 @@ func _initialize() -> void:
 		_test_faulted_recording(session)
 	session.free()
 	if failures == 0:
+		_test_checkpoint_json_serialization()
+	if failures == 0:
 		_test_native_backend_switch_guards()
 	print("RCV session: %d checks, %d failed" % [checks, failures])
 	quit(0 if failures == 0 else 1)
@@ -281,11 +283,13 @@ func _test_recording_export(session) -> void:
 		var json := FileAccess.open(str(exported.metadata_path), FileAccess.READ)
 		var metadata: Dictionary = JSON.parse_string(json.get_as_text())
 		json.close()
-		_check("CSV declares recording version and state schema", csv_text.begins_with("# openrc-ground-vehicle-recording v3\n")
-			and metadata.get("format") == "openrc-ground-vehicle-recording v3"
-			and metadata.get("version") == 3 and metadata.get("fixed_hz") == 240
+		_check("CSV declares recording version and state schema", csv_text.begins_with("# openrc-ground-vehicle-recording v4\n")
+			and metadata.get("format") == "openrc-ground-vehicle-recording v4"
+			and metadata.get("version") == 4 and metadata.get("fixed_hz") == 240
 			and metadata.get("state_layout", []).size() == 31
-			and metadata.get("sample_width", 0) > 80)
+			and metadata.get("sample_width", 0) > 100
+			and metadata.sample_layout.telemetry_fields.has("environment.power_w")
+			and metadata.sample_layout.telemetry_fields.has("environment.wheel_mud[4]"))
 		_check("recording metadata includes strict identities and integrity hashes",
 			metadata.get("model_identity", {}).has("sha256") and metadata.get("course_identity", {}).has("sha256")
 			and metadata.get("solver_identity", {}).get("solver_version") == VehicleDynamics.SOLVER_VERSION
@@ -436,6 +440,112 @@ func _test_faulted_recording(session) -> void:
 		not session.start_recording() and not session.recording and session.fault_reason == original_fault)
 	session.recording_interrupted.disconnect(on_interruption)
 	session.faulted.disconnect(on_fault)
+
+
+func _test_checkpoint_json_serialization() -> void:
+	var source = Session.new()
+	var prepared: bool = source.prepare_default()
+	_check("checkpoint JSON fixture prepares", prepared)
+	if not prepared:
+		source.free()
+		return
+	var neutral_armed: bool = source.tick_once(_neutral())
+	_check("checkpoint JSON fixture observes neutral armed input", neutral_armed)
+	var resumed: bool = neutral_armed and source.resume()
+	_check("checkpoint JSON fixture resumes", resumed)
+	if not resumed:
+		source.free()
+		return
+	var steering_bytes := PackedByteArray([0x00, 0x20, 0x8f, 0x63, 0xdd, 0xb6, 0x5f, 0xbf])
+	var steering := steering_bytes.to_float64_array()[0]
+	var sample := {"throttle": 0.0, "steering": steering, "brake": 0.0,
+		"reverse": false, "source": "keyboard", "armed": true}
+	_check("checkpoint JSON fixture accepts exact steering byte sample", source.tick_once(sample))
+	var expected_tape := PackedFloat64Array([0.0, steering, 0.0, 0.0])
+	_check("checkpoint JSON fixture preserves authoritative steering bytes",
+		_arrays_equal(source.control_tape_snapshot(), expected_tape))
+	source._event_tape.append({"type": "serialization_fixture", "tick": source.tick,
+		"time_s": source.time_s(), "speed_m_per_s": absf(steering)})
+	var checkpoint: Dictionary = source.checkpoint()
+	_check("checkpoint JSON fixture includes a valid nonempty event tape",
+		not checkpoint.is_empty() and not checkpoint.get("event_tape", []).is_empty()
+		and source._events_are_valid(checkpoint.get("event_tape", []), source.tick)
+		and source._hash_variant(checkpoint.get("event_tape", [])) == checkpoint.get("event_tape_sha256", ""))
+	if checkpoint.is_empty():
+		source.free()
+		return
+	var fork = Session.new()
+	var fork_prepared: bool = fork.prepare_default()
+	_check("checkpoint JSON restore target prepares", fork_prepared)
+	if not fork_prepared:
+		fork.free()
+		source.free()
+		return
+	_check("exact steering checkpoint restores in memory",
+		fork.can_restore_checkpoint(checkpoint) and fork.restore_checkpoint(checkpoint)
+		and _arrays_equal(fork.control_tape_snapshot(), expected_tape))
+	var candidate: Variant = checkpoint
+	var roundtrip_ok := true
+	var json_path := "user://rcv_checkpoint_json_%d.json" % Time.get_ticks_usec()
+	for round_index in range(1, 3):
+		var output := FileAccess.open(json_path, FileAccess.WRITE)
+		if output == null:
+			_check("checkpoint JSON roundtrip %d opens output" % round_index, false)
+			roundtrip_ok = false
+			break
+		output.store_string(JSON.stringify(candidate, "", true, true))
+		output.close()
+		var input := FileAccess.open(json_path, FileAccess.READ)
+		if input == null:
+			_check("checkpoint JSON roundtrip %d opens input" % round_index, false)
+			roundtrip_ok = false
+			break
+		var parsed: Variant = JSON.parse_string(input.get_as_text())
+		input.close()
+		_check("checkpoint JSON roundtrip %d parses a dictionary" % round_index,
+			typeof(parsed) == TYPE_DICTIONARY)
+		if typeof(parsed) != TYPE_DICTIONARY:
+			roundtrip_ok = false
+			break
+		_check("checkpoint JSON roundtrip %d preserves both hashes" % round_index,
+			fork._checkpoint_hash(parsed) == str(parsed.get("checkpoint_sha256", ""))
+			and fork._hash_variant(parsed.get("event_tape", [])) == str(parsed.get("event_tape_sha256", "")))
+		var restored: bool = fork.can_restore_checkpoint(parsed) and fork.restore_checkpoint(parsed)
+		_check("checkpoint JSON roundtrip %d remains restorable with exact control bytes" % round_index,
+			restored and _arrays_equal(fork.control_tape_snapshot(), expected_tape))
+		roundtrip_ok = roundtrip_ok and restored
+		candidate = parsed
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(json_path))
+	_check("two checkpoint JSON disk roundtrips preserve byte-exact steering", roundtrip_ok)
+
+	var large_mirror_edit: Dictionary = checkpoint.duplicate(true)
+	large_mirror_edit.control_tape[1] = float(large_mirror_edit.control_tape[1]) + 0.01
+	large_mirror_edit.checkpoint_sha256 = fork._checkpoint_hash(large_mirror_edit)
+	_check("large control mirror edit is rejected even with outer checkpoint hash recomputed",
+		not fork.can_restore_checkpoint(large_mirror_edit))
+	var changed_authority: Dictionary = checkpoint.duplicate(true)
+	var state_bytes := Marshalls.base64_to_raw(str(changed_authority.state_f64_base64))
+	state_bytes[0] = int(state_bytes[0]) ^ 1
+	changed_authority.state_f64_base64 = Marshalls.raw_to_base64(state_bytes)
+	changed_authority.checkpoint_sha256 = fork._checkpoint_hash(changed_authority)
+	_check("changed authoritative state bytes fail their unchanged inner checksum",
+		not fork.can_restore_checkpoint(changed_authority))
+	var malformed_damage_mirror: Dictionary = checkpoint.duplicate(true)
+	malformed_damage_mirror.damage_state = ["invalid"]
+	malformed_damage_mirror.checkpoint_sha256 = fork._checkpoint_hash(malformed_damage_mirror)
+	_check("malformed damage mirror is rejected after outer hash recomputation",
+		not fork.can_restore_checkpoint(malformed_damage_mirror))
+	var nonfinite_state_mirror: Dictionary = checkpoint.duplicate(true)
+	nonfinite_state_mirror.state[0] = NAN
+	_check("nonfinite state mirror is rejected before hash verification",
+		not fork.can_restore_checkpoint(nonfinite_state_mirror))
+	var malformed_controls_mirror: Dictionary = checkpoint.duplicate(true)
+	malformed_controls_mirror.last_controls.steering = "invalid"
+	malformed_controls_mirror.checkpoint_sha256 = fork._checkpoint_hash(malformed_controls_mirror)
+	_check("malformed last-controls mirror is rejected after outer hash recomputation",
+		not fork.can_restore_checkpoint(malformed_controls_mirror))
+	fork.free()
+	source.free()
 
 
 func _test_native_backend_switch_guards() -> void:

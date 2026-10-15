@@ -1,0 +1,207 @@
+snapshot integrity: PASS; added=0 removed=0 mismatched=0; pinned_godot=PASS archive=PASS
+R11 canonical Linux verification of fixed-commit snapshot
+snapshot_root=/home/bulto/openrc-r11-b09-r05b-20261014-03
+source_manifest=/home/bulto/openrc-r11-b09-r05b-before-20261014-03.json
+synthetic_snapshot_head=7c47c7ba02f7d2c874ec92a381ea73ef967069d6
+source_tree_status_before_run:
+pinned_godot_sha512:
+ac9f3af3d8b62237694bc03e7422b8f7b1a39095cf4eeaa8361b7465f13bc9dbaad47f60ac0ac217c9f0b2b3712be207039cd83953f4c72087214bd0357cabbc  /home/bulto/openrc-r11-b09-r05b-20261014-03/.tools/Godot_v4.7.2-stable_linux.x86_64
+godot_version:
+4.7.2.stable.official.ed1daf0bf
+app/test.sh_sha256:
+eaf0458f3bbfbcf807be2950d49fa05e820a717bf99728499235c8c26f3e5f27  /home/bulto/openrc-r11-b09-r05b-20261014-03/app/test.sh
+== full app/test.sh begins
+== import resource dependencies
+== HELI-03a/04: independent mean-inflow reference stays current
+.................
+----------------------------------------------------------------------
+Ran 17 tests in 0.046s
+
+OK
+oracle check: OK (oracle.json)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI-04 inflow: 4153 checks, 0 failed
+== HELI-04-R1/05: transient flow and main-rotor references stay current
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 27.537s
+
+OK
+................
+----------------------------------------------------------------------
+Ran 16 tests in 0.036s
+
+OK
+dynamic oracle check: OK (dynamic_oracle.json)
+oracle check: OK (main_rotor_oracle.json)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI-04-R1 dynamic inflow: 240 checks, 0 failed
+DYNAMIC_QUALIFICATION=[{"fixture":"hover_target_step","known_seam_refined_peak_error_mps":0.00000199654892085732,"raw_peak_error_mps":0.00552203634030835},{"fixture":"C_increasing","known_seam_refined_peak_error_mps":0.000000136527718908042,"raw_peak_error_mps":0.000194617379269957},{"fixture":"C_decreasing","known_seam_refined_peak_error_mps":0.00000015784688667253,"raw_peak_error_mps":0.000200262391818917},{"fixture":"M_increasing","known_seam_refined_peak_error_mps":0.000108233512221112,"raw_peak_error_mps":0.00979315979599704},{"fixture":"M_decreasing","known_seam_refined_peak_error_mps":0.000376269988705324,"raw_peak_error_mps":0.0115563480526637},{"fixture":"feedback_flow_ramp","known_seam_refined_peak_error_mps":0.000000217608251418255,"raw_peak_error_mps":0.000000217608251418255}]
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI-05 main rotor: 768 checks, 0 failed
+== HELI-06a: linearized tail-rotor reference stays current
+.............
+----------------------------------------------------------------------
+Ran 13 tests in 0.038s
+
+OK
+tail rotor oracle is current
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI-06a tail rotor: 917 checks, 0 failed
+== HELI-06b/c: passive airframe and joint aerodynamic stage
+............
+----------------------------------------------------------------------
+Ran 12 tests in 0.034s
+
+OK
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI-06b airframe: 1799 checks, 0 failed
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI-06c aerodynamic stage: 49 checks, 0 failed
+== HELI-16: generated experimental rotorcraft quantities stay current
+checked /home/bulto/openrc-r11-b09-r05b-20261014-03/app/data/aircraft/xcell_60_research.json
+checked /home/bulto/openrc-r11-b09-r05b-20261014-03/app/data/aircraft/hx700_electric_3d_experimental.json
+checked /home/bulto/openrc-r11-b09-r05b-20261014-03/app/data/schema/openrc-rotorcraft-v2.schema.json
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.003s
+
+OK
+== HELI-25c: articulated inspection source, bindings and copy identity
+{
+  "source_unchanged": true,
+  "bindings": 108,
+  "linkages": 9,
+  "max_source_basis_error": 3.324650580942279e-06,
+  "max_source_position_error_m": 2.741410369822006e-07,
+  "max_rod_error_m": 3.26312243892346e-08,
+  "glb_sha256": "f5f7de25a586b65b0f77ab17497665cc5f47cc409de6c531cadf490676159e47",
+  "profile_sha256": "e3a045e3da856cac11c53bb4a417b020d6737769d9c67a0f7370035bd01539d2"
+}
+== AS-01/02: versioned aircraft contract and migration stay current
+Schema is current: /home/bulto/openrc-r11-b09-r05b-20261014-03/app/data/schema/openrc-aircraft-v2.schema.json
+parameter register is current
+app/data/aircraft/jensen_ugly_stik_60.json: jensen-das-ugly-stik-60 v2, glow_prop, prescribed_fuel
+app/data/aircraft/gp_extra_300s_60.json: gp-extra-300s-60 v2, glow_prop, prescribed_fuel
+app/data/aircraft/p51d_mustang_120.json: p51d-mustang-120 v2, glow_prop, prescribed_fuel
+app/data/aircraft/sebart_avanti_s_a200.json: sebart-avanti-s-a200-p100rx v2, turbine, prescribed_fuel
+app/data/aircraft/synthetic_stik_electric_4s.json: synthetic_stik_electric_4s v2, electric_prop, fixed_voltage
+app/data/aircraft/synthetic_stik_electric_6s.json: synthetic_stik_electric_6s v2, electric_prop, fixed_voltage
+app/data/aircraft/synthetic_stik_electric_4s_battery.json: synthetic_stik_electric_4s_battery v2, electric_prop, ocv_resistance
+app/data/aircraft/synthetic_stik_electric_6s_battery.json: synthetic_stik_electric_6s_battery v2, electric_prop, ocv_resistance
+test_all_known_v1_configs_upgrade_idempotently_with_numeric_parity (__main__.AircraftMigration.test_all_known_v1_configs_upgrade_idempotently_with_numeric_parity) ... ok
+test_check_requires_v2_source_instead_of_upgrading_v1_in_memory (__main__.AircraftMigration.test_check_requires_v2_source_instead_of_upgrading_v1_in_memory) ... ok
+test_current_retractable_jet_v2_is_idempotent_without_changing_v1_policy (__main__.AircraftMigration.test_current_retractable_jet_v2_is_idempotent_without_changing_v1_policy) ... ok
+test_legacy_omissions_become_only_the_reviewed_explicit_defaults (__main__.AircraftMigration.test_legacy_omissions_become_only_the_reviewed_explicit_defaults) ... ok
+test_legacy_projection_removes_v2_physical_identity_metadata (__main__.AircraftMigration.test_legacy_projection_removes_v2_physical_identity_metadata) ... ok
+test_unknown_id_format_and_legacy_conflicts_fail_closed (__main__.AircraftMigration.test_unknown_id_format_and_legacy_conflicts_fail_closed) ... ok
+test_v2_conflicts_are_rejected_without_mutation (__main__.AircraftMigration.test_v2_conflicts_are_rejected_without_mutation) ... ok
+
+----------------------------------------------------------------------
+Ran 7 tests in 0.122s
+
+OK
+.......
+----------------------------------------------------------------------
+Ran 7 tests in 0.008s
+
+OK
+== AS-07/09: shared aircraft modules and generated model bindings
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.269s
+
+OK
+model manifests current (5 visual families)
+..............
+----------------------------------------------------------------------
+Ran 14 tests in 0.806s
+
+OK
+== AE-01: generated Workshop descriptors and exact-byte checkout bindings
+8 Workshop descriptors are current.
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.231s
+
+OK
+== NITRO-02: distinct 2T/4T profiles and finite-fuel installations stay current
+Glow profile generator: current (5 files)
+Glow installations current
+Glow installation schema current; 5 bundled installations read and valid
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.001s
+
+OK
+....
+----------------------------------------------------------------------
+Ran 4 tests in 1.438s
+
+OK
+...........
+----------------------------------------------------------------------
+Ran 11 tests in 1.785s
+
+OK
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.005s
+
+OK
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.011s
+
+OK
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.443s
+
+OK
+test_cli_generates_operator_record_and_separate_masked_cards (__main__.PilotReviewTests.test_cli_generates_operator_record_and_separate_masked_cards) ... ok
+test_condition_order_is_counterbalanced_inside_each_family (__main__.PilotReviewTests.test_condition_order_is_counterbalanced_inside_each_family) ... ok
+test_exact_profiles_props_and_source_hashes_are_recorded (__main__.PilotReviewTests.test_exact_profiles_props_and_source_hashes_are_recorded) ... ok
+test_not_performed_template_cannot_contain_fabricated_ratings (__main__.PilotReviewTests.test_not_performed_template_cannot_contain_fabricated_ratings) ... ok
+test_pilot_cards_do_not_leak_profile_or_audio_condition (__main__.PilotReviewTests.test_pilot_cards_do_not_leak_profile_or_audio_condition) ... ok
+test_schedule_has_exact_family_maneuver_condition_and_repeat_coverage (__main__.PilotReviewTests.test_schedule_has_exact_family_maneuver_condition_and_repeat_coverage) ... ok
+test_seed_range_is_checked (__main__.PilotReviewTests.test_seed_range_is_checked) ... ok
+test_seeded_schedule_is_stable_and_different_seeds_change_order (__main__.PilotReviewTests.test_seeded_schedule_is_stable_and_different_seeds_change_order) ... ok
+test_template_is_not_performed_and_validator_rejects_false_completion (__main__.PilotReviewTests.test_template_is_not_performed_and_validator_rejects_false_completion) ... ok
+
+----------------------------------------------------------------------
+Ran 9 tests in 0.019s
+
+OK
+Wrote 48 randomized trials; status remains not_performed: /tmp/tmpk1o_7tcn/operator.json
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.007s
+
+OK
+== P51-16: separated hardware inventory and physical inertia stay consistent
+P51-15 inventory oracle PASS: mass 21.499999 kg, CG [+0.177763, -0.071146] m, Jxx 3.861834 / Jyy 6.817989 / Jzz 9.946226 kg·m² (ΔJxx/ΔJzz +0.449604)
+== AV-15: independent geometry, inventory and fixed-build sensitivity checks
+...F..
+======================================================================
+FAIL: test_generated_artifacts_match_source_pipeline (__main__.GeometryInventoryTests.test_generated_artifacts_match_source_pipeline)
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261014-03/app/../research/avanti-s/av14/test_geometry_inventory.py", line 248, in test_generated_artifacts_match_source_pipeline
+    self.assertEqual(result.returncode, 0, result.stdout + result.stderr)
+AssertionError: 1 != 0 : stale: app/data/aircraft/sebart_avanti_s_a200.json (run research/avanti-s/av06/derive_physics.py)
+
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.085s
+
+FAILED (failures=1)
+== full app/test.sh exit=1
+post-run source comparison: 0 changed, 22 added, 0 removed; manifest /home/bulto/openrc-r11-b09-r05b-app-test-20261014-03-after.json
+== post-run manifest exit=0

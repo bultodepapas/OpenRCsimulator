@@ -5,6 +5,7 @@ extends SceneTree
 const AircraftData := preload("res://physics/aircraft_data.gd")
 const HullContact := preload("res://physics/hull_contact.gd")
 const ContactContract := preload("res://physics/aircraft_contact_contract.gd")
+const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 
 const AIRCRAFT_DIR := "res://data/aircraft/"
 const STIK_PATH := AIRCRAFT_DIR + "jensen_ugly_stik_60.json"
@@ -25,6 +26,25 @@ func _has_code(result: Dictionary, code: String) -> bool:
 		if str(diagnostic.get("code", "")) == code:
 			return true
 	return false
+
+
+func _fixture_path(stem: String) -> String:
+	return "user://%s_%d_%d.json" % [stem, OS.get_process_id(), Time.get_ticks_usec()]
+
+
+func _write_json_fixture(path: String, value: Dictionary, label: String) -> bool:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	_check("%s fixture file opens" % label, file != null, path)
+	if file == null:
+		return false
+	file.store_string(JSON.stringify(value, "\t", true, true))
+	file.close()
+	return true
+
+
+func _remove_json_fixture(path: String, label: String) -> void:
+	var error := DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
+	_check("%s fixture file is removed" % label, error == OK, "error %d" % error)
 
 
 func _legacy_model(source: Dictionary) -> Dictionary:
@@ -135,11 +155,128 @@ func _fleet() -> void:
 			profile_status_counts["legacy_fallback"] = int(profile_status_counts.get("legacy_fallback", 0)) + 1
 		elif profile_status == "no_gear":
 			profile_status_counts["no_gear"] = int(profile_status_counts.get("no_gear", 0)) + 1
-	_check("current fleet exercises applied, legacy-fallback and no-gear profile states",
-		int(profile_status_counts.get("applied", 0)) > 0
-			and int(profile_status_counts.get("legacy_fallback", 0)) > 0
-			and int(profile_status_counts.get("no_gear", 0)) > 0,
-		str(profile_status_counts))
+	var classified_count := (
+		int(profile_status_counts.get("applied", 0))
+		+ int(profile_status_counts.get("legacy_fallback", 0))
+		+ int(profile_status_counts.get("no_gear", 0))
+	)
+	_check("current fleet is fully classified and includes both geared profile routes",
+		classified_count == names.size()
+			and int(profile_status_counts.get("applied", 0)) > 0
+			and int(profile_status_counts.get("legacy_fallback", 0)) > 0,
+		"%s classified=%d fleet=%d" % [str(profile_status_counts), classified_count, names.size()])
+
+
+func _profile_route_fixtures() -> void:
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(STIK_PATH))
+	var validated: Dictionary = AircraftData.validate_and_derive(raw)
+	_check("profile route source validates without applying a file profile", validated.ok, str(validated.errors))
+	if not validated.ok:
+		return
+	var profile_document: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(WheelProfiles.DEFAULT_PATH))
+	var source_profiles: Dictionary = profile_document.get("profiles", {})
+	var source_id := str(validated.model.get("id", ""))
+	var source_profile: Dictionary = source_profiles.get(source_id, {})
+	_check("profile route fixture has one real source profile to exercise", not source_profile.is_empty(), source_id)
+	if source_profile.is_empty():
+		return
+	var applied_id := "test_contact_contract_applied_profile"
+	var route_path := _fixture_path("contact_contract_profile_routes")
+	var route_document := {
+		"format": WheelProfiles.FORMAT,
+		"profiles": {applied_id: source_profile.duplicate(true)},
+	}
+	if not _write_json_fixture(route_path, route_document, "profile routes"):
+		return
+
+	var applied_input: Dictionary = validated.model.duplicate(true)
+	applied_input.id = applied_id
+	var applied: Dictionary = WheelProfiles.apply_to_model(applied_input, route_path)
+	_check("isolated profile fixture exercises applied route", applied.ok and applied.model.wheel_profile.status == "applied", str(applied.get("errors", [])))
+	if applied.ok:
+		var applied_contract: Dictionary = ContactContract.describe(applied.model, true)
+		_check("contact contract accepts isolated applied profile", applied_contract.ok and applied_contract.wheel_profile.status == "applied", str(applied_contract.errors))
+
+	var fallback_input: Dictionary = _legacy_model(validated.model)
+	fallback_input.id = "test_contact_contract_legacy_fallback"
+	var fallback: Dictionary = WheelProfiles.apply_to_model(fallback_input, route_path)
+	_check("isolated profile fixture exercises legacy fallback route", fallback.ok and fallback.model.wheel_profile.status == "legacy_fallback", str(fallback.get("errors", [])))
+	if fallback.ok:
+		var fallback_contract: Dictionary = ContactContract.describe(fallback.model, true)
+		_check("contact contract accepts isolated legacy fallback", fallback_contract.ok and fallback_contract.wheel_profile.status == "legacy_fallback" and _has_code(fallback_contract, "legacy_wheel_profile_fallback"), str(fallback_contract.errors))
+	_remove_json_fixture(route_path, "profile routes")
+
+
+func _erase_raw_v2_identity(raw: Dictionary) -> void:
+	raw.erase("physical_identity_version")
+	raw.erase("physical_identity")
+	raw.erase("crash_hull_ids")
+	var inventory: Array = raw.get("inventory", [])
+	for item_value in inventory:
+		if typeof(item_value) == TYPE_DICTIONARY:
+			var item: Dictionary = item_value
+			item.erase("id")
+	var propulsion: Dictionary = raw.get("propulsion", {})
+	propulsion.erase("id")
+	raw["propulsion"] = propulsion
+	var controls: Dictionary = raw.get("controls", {})
+	controls.erase("surface_ids")
+	raw["controls"] = controls
+
+
+func _no_gear_loader_fixture() -> void:
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(STIK_PATH))
+	var baseline: Dictionary = AircraftData.validate_and_derive(raw)
+	_check("no-gear fixture source validates before removing optional gear", baseline.ok, str(baseline.errors))
+	if not baseline.ok:
+		return
+	var fixture: Dictionary = raw.duplicate(true)
+	fixture.id = "test_contact_contract_no_gear"
+	fixture.erase("landing_gear")
+	# The v2 contract allows absent landing_gear only for the explicit locked_up capability.
+	var capabilities: Dictionary = fixture.get("capabilities", {})
+	capabilities["gear"] = "locked_up"
+	fixture["capabilities"] = capabilities
+	_erase_raw_v2_identity(fixture)
+	var path := _fixture_path("contact_contract_no_gear")
+	if not _write_json_fixture(path, fixture, "no-gear loader"):
+		return
+	var loaded: Dictionary = AircraftData.load_file(path)
+	_remove_json_fixture(path, "no-gear loader")
+	_check("gearless v2 fixture loads through AircraftData.load_file", loaded.ok, str(loaded.get("errors", [])))
+	if not loaded.ok:
+		return
+	var model: Dictionary = loaded.model
+	var expected_hull: PackedFloat64Array = baseline.model.crash_hull
+	var expected_labels: PackedStringArray = baseline.model.crash_hull_components
+	var hull_before: PackedFloat64Array = model.crash_hull.duplicate()
+	_check("loader preserves normalized source hull geometry in no-gear fixture", model.crash_hull == expected_hull and model.crash_hull_components == expected_labels)
+	_check("no-gear loader route has an empty normalized gear object", typeof(model.get("landing_gear")) == TYPE_DICTIONARY and model.landing_gear.is_empty())
+	_check("file loader assigns explicit no-gear profile state", model.get("wheel_profile", {}).get("status", "") == "no_gear")
+
+	var soft: Dictionary = ContactContract.describe(model, true)
+	_check("contact contract describes gearless soft route", soft.ok, str(soft.errors))
+	if not soft.ok:
+		return
+	_check("gearless fixture has no wheel support points", soft.support_points.is_empty())
+	_check("gearless fixture retains every ordered source hull point", soft.hull_probes.size() == expected_hull.size() / 3)
+	for index in soft.hull_probes.size():
+		var probe: Dictionary = soft.hull_probes[index]
+		var expected_position: PackedFloat64Array = expected_hull.slice(index * 3, index * 3 + 3)
+		var expected_label := str(expected_labels[index]) if not expected_labels.is_empty() else ""
+		_check("gearless fixture hull point %d preserves position and label" % index,
+			probe.point_index == index and probe.position == expected_position and probe.hull_label == expected_label)
+	_check("soft prop-strike policy remains selected for the retained Stik prop disc",
+		not soft.rotor_disc.is_empty() and soft.policy.prop_strike.selected and soft.policy.prop_strike.response == "engine_stop_continue")
+	_check("soft gear-overtravel policy is disabled without supports",
+		not soft.policy.gear_overtravel.selected and soft.policy.gear_overtravel.response == "terminal")
+	_check("contact description does not mutate the no-gear hull", model.crash_hull == hull_before)
+
+	var terminal: Dictionary = ContactContract.describe(model, false)
+	_check("gearless fixture describes terminal route", terminal.ok and terminal.support_points.is_empty(), str(terminal.get("errors", [])))
+	if terminal.ok:
+		_check("terminal no-gear route disables prop-strike and gear-overtravel policies",
+			not terminal.policy.prop_strike.selected and not terminal.policy.gear_overtravel.selected)
 
 
 func _memory_fallback() -> void:
@@ -249,6 +386,8 @@ func _event_lifecycle() -> void:
 
 func _initialize() -> void:
 	_fleet()
+	_profile_route_fixtures()
+	_no_gear_loader_fixture()
 	_memory_fallback()
 	_malformed_models()
 	_event_lifecycle()

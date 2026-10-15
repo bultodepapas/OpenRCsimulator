@@ -40,6 +40,11 @@ var pre_step: Callable = func(a: PackedFloat64Array, _inputs: PackedFloat64Array
 ## before state commit and trace emission, and returns the accepted 13-value float64 body state.
 ## Empty by default; scenery remains outside the physics integrator.
 var post_step: Callable = Callable()
+## Alternative contact boundary for state-dependent mass. Receives detached
+## (previous_body, candidate_body, next_tick, previous_continuous, candidate_continuous).
+## Returns only the accepted body; continuous state remains the validated integrator result.
+## Owners select exactly one post-step callback. Neither may publish before stepped.
+var post_step_joint: Callable = Callable()
 ## rotor_momentum(aux) -> PackedFloat64Array: angular momentum of spinning parts in body axes (N·m·s), or empty.
 var rotor_momentum: Callable = func(_a: PackedFloat64Array) -> PackedFloat64Array:
 	return PackedFloat64Array()
@@ -266,8 +271,10 @@ func step() -> void:
 		_fail_safe("step rejected: integrated state is nonfinite, malformed, or has a degenerate quaternion")
 		return
 	var accepted_body_state: PackedFloat64Array = next_state.slice(0, RB.SIZE)
-	if post_step.is_valid():
-		var filtered: Variant = post_step.call(state.duplicate(), accepted_body_state.duplicate(), tick + 1)
+	if post_step.is_valid() or post_step_joint.is_valid():
+		var filtered: Variant = post_step_joint.call(state.duplicate(), accepted_body_state.duplicate(), tick + 1,
+			continuous.duplicate(), next_state.slice(RB.SIZE)) if post_step_joint.is_valid() else \
+			post_step.call(state.duplicate(), accepted_body_state.duplicate(), tick + 1)
 		# post_step owns only the 13-value rigid body. Continuous states are integrated independently
 		# and remain the already-validated tail of next_state.
 		if not (filtered is PackedFloat64Array) or not state_is_valid(filtered):
@@ -352,6 +359,8 @@ func _loads_are_valid(candidate: Variant) -> bool:
 
 
 func _configuration_is_valid() -> bool:
+	if post_step.is_valid() and post_step_joint.is_valid():
+		return false
 	if not continuous.is_empty() and not continuous_evaluate.is_valid() and (not continuous_loads.is_valid() or not continuous_derivative.is_valid()):
 		return false
 	if not is_finite(mass) or mass <= 0.0 or not is_finite(gravity) or gravity < 0.0 or inertia.size() != 6:

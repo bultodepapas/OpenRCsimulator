@@ -1,0 +1,366 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+radio connected: 0300fa675e040000ff02000000007801|045e:02ff|XInput Controller (gamepad profile)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-candidate.gd:33)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (C:/DEVELOPMENT/OpenRCsimulator/tmp/crash-r2/repro-native/scenery-reference.gd:32)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/crash-damage/cr-22c-r2/scenery_bench.gd:32)
+scenery builds: 120 paired samples; geometry/order/layers/material values and input unchanged: true

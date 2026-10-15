@@ -1,0 +1,81 @@
+{
+  "format": "openrc-numerics-sensitivity v1",
+  "host": {
+    "platform": "Windows-10-10.0.26100-SP0",
+    "machine": "AMD64"
+  },
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "same_machine_wrapper_fingerprints": {
+    "glide_15": "7a322f8ab58034f67ed99bf3cae1137482bc860eed3555978dc53ecbf66ff20d",
+    "pull_throttle": "813c62af901b5428d246b20a5106ed60d73b0549f8718e6bfdeacd6aff77879e",
+    "roll_15": "80794022e8989f9d3625c771410b11ca3f89df68d796c394361adad0859cd277",
+    "rudder_doublet": "c0f9d2aa5469885a8381b37cafdcc7de94c779044a878e2155af6c444b5c0a52"
+  },
+  "same_machine_direct_builtin_fingerprints": {
+    "glide_15": "7a322f8ab58034f67ed99bf3cae1137482bc860eed3555978dc53ecbf66ff20d",
+    "pull_throttle": "813c62af901b5428d246b20a5106ed60d73b0549f8718e6bfdeacd6aff77879e",
+    "roll_15": "80794022e8989f9d3625c771410b11ca3f89df68d796c394361adad0859cd277",
+    "rudder_doublet": "c0f9d2aa5469885a8381b37cafdcc7de94c779044a878e2155af6c444b5c0a52"
+  },
+  "same_machine_fingerprints_match": true,
+  "one_ulp": {
+    "perturbations": [
+      "sin_ next-float-up",
+      "atan2_ next-float-up"
+    ],
+    "max_error_over_tolerance_div_1000": 0.00077715611723761,
+    "per_golden_error_ratios": {
+      "glide_15": 0.00029837243786801104,
+      "pull_throttle": 0.00077715611723761,
+      "roll_15": 0.000111022302462516,
+      "rudder_doublet": 0.000666133814775094
+    },
+    "branch_signatures_match": true,
+    "branch_signature_sha256": {
+      "glide_15": "f2bd2e8c82a266cbb37370c1eda4c85e42c5986908b0d530e345ad3bc5f6695d",
+      "pull_throttle": "c5054193bbc2435d1330712ea8b932a0e468d0ea887032d4c1e384321657f9ab",
+      "roll_15": "cf49606caf0ee7e565ea86f1026599902b0f2249465ed731cd1ea3742a641e9d",
+      "rudder_doublet": "0f59e59f70681aa746d37554fb923e85f8678abe18326e90f39f84d96560a073"
+    }
+  },
+  "adjacent_float_stall_branch_fixture": {
+    "baseline_alpha": 0.463647609000806,
+    "baseline_alpha_bits": 4602023952714414927,
+    "baseline_full_stall": false,
+    "baseline_weight": 0.990026460411154,
+    "perturbed_alpha": 0.463647609000806,
+    "perturbed_alpha_bits": 4602023952714414928,
+    "perturbed_full_stall": true,
+    "perturbed_weight": 1.0,
+    "threshold": 0.463647609000806,
+    "threshold_bits": 4602023952714414928
+  },
+  "controlled_golden_branch_mutation": {
+    "mutation": "aero blend == 0.0 -> blend < 0.0",
+    "goldens_with_branch_signature_divergence": [
+      "glide_15",
+      "pull_throttle",
+      "roll_15",
+      "rudder_doublet"
+    ],
+    "baseline_branch_signature_sha256": {
+      "glide_15": "f2bd2e8c82a266cbb37370c1eda4c85e42c5986908b0d530e345ad3bc5f6695d",
+      "pull_throttle": "c5054193bbc2435d1330712ea8b932a0e468d0ea887032d4c1e384321657f9ab",
+      "roll_15": "cf49606caf0ee7e565ea86f1026599902b0f2249465ed731cd1ea3742a641e9d",
+      "rudder_doublet": "0f59e59f70681aa746d37554fb923e85f8678abe18326e90f39f84d96560a073"
+    },
+    "mutated_branch_signature_sha256": {
+      "glide_15": "5c63e7e13027628ad32e677bc6d3f03c92f3e4216414698990cbd84b08656727",
+      "pull_throttle": "76ede4ea6f9b8db7ece05521bcf3c3b8ab425149bda05fa7c017f5784b439b4d",
+      "roll_15": "362a37cb965ed90ba52f3f0223fab39cb1d67b9f09b9d94909a2d5826d767cbb",
+      "rudder_doublet": "d88f2c2835b1de4c7eb12c724220428fd29942152fbf2d4db47fcc286cb7d5dd"
+    },
+    "max_error_over_tolerance_div_1000": 0.000222044604925031,
+    "per_golden_error_ratios": {
+      "glide_15": 8.67361737988404e-06,
+      "pull_throttle": 0.000222044604925031,
+      "roll_15": 5.551115123125781e-05,
+      "rudder_doublet": 7.80625564189563e-06
+    }
+  }
+}

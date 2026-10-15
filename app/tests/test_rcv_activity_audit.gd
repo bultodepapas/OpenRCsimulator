@@ -155,6 +155,13 @@ func _run() -> void:
 	scene._landing_tick = scene.session.tick - 120
 	scene._update_landing_award()
 	check(scene._best_jump == 0.5 and scene.dashboard.toast.text.contains("Landed!"), "settled supported valid run earns its landing award")
+	scene._event({"type":"jump","time_s":2.6})
+	scene._event({"type":"landing","time_s":3.2})
+	scene._landing_tick = scene.session.tick - 120
+	scene.session._last_telemetry.environment.body_submersion = 1.0
+	scene._update_landing_award()
+	check(scene._best_jump == 0.5 and scene.dashboard.toast.text.contains("Submerged landing"), "submerged bottom contact does not earn a landing award")
+	scene.session._last_telemetry.environment.body_submersion = 0.0
 	scene._event({"type":"jump","time_s":3.0})
 	scene._event({"type":"landing","time_s":4.0})
 	scene._landing_tick = scene.session.tick - 120

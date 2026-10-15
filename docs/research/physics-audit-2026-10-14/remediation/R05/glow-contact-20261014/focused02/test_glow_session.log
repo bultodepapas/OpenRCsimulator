@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+55ax_2t runway at3s [14.6433445430081, -30.5365301640157, -0.23468907682853, 15.7481815543121, -0.02259696293977, -0.42659193619667] rpm 10635.9429136229
+55ax_2t takeoff at6s [19.8670125226029, 17.6126003659046, -33.8076707688312, 23.1188111577526, -0.41337490900012, 0.95150073930565]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+fs64v_4t runway at3s [13.7078968458619, -28.4699030138082, -0.23456424229315, 15.6241539425585, -0.07862035823333, -0.4409180791029] rpm 9262.41669020097
+fs64v_4t takeoff at6s [10.7072146525196, 20.6228166699106, -27.1771005372407, 19.8867838658386, -0.55455717608808, 0.97455645993645]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+55ax_2t_apc_13x6 runway at3s [14.4749497093688, -33.6915752613811, -0.23434301150546, 13.2284842815846, -0.03451051077395, -0.39735898698] rpm 9927.82373045726
+55ax_2t_apc_13x6 takeoff at6s [13.8646555671432, 19.4093154181226, -24.098527407789, 23.3860144363452, -0.49504632105565, 1.15263412442629]
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+fs64v_4t_apc_13x6 runway at3s [13.9762855678151, -23.6825882565834, -0.23607112366767, 18.6839002066609, -0.07042096726436, -0.44003486287792] rpm 10764.815673062
+fs64v_4t_apc_13x6 takeoff at6s [13.5255829036709, 21.6041218759302, -34.5843617689035, 19.251762997959, -0.42315198739536, 0.77614926582112]
+Glow session: 140 checks, 0 failed

@@ -152,8 +152,8 @@ func _setup_session() -> bool:
 	if not session.is_flyable() or not session.sim.fault_reason.is_empty():
 		setup_error = "P-51 session reset failed: " + str(session.pause_reason if not session.pause_reason.is_empty() else session.sim.fault_reason)
 		return false
-	if session.anchor_count() > 0 or session._weather.has_turbulence():
-		setup_error = "probe does not model anchored stiction or turbulent restart state"
+	if session._weather.has_turbulence():
+		setup_error = "probe does not model turbulent restart state"
 		return false
 	model = session.aircraft.model
 	density = session.air_density()
@@ -161,36 +161,29 @@ func _setup_session() -> bool:
 	return is_finite(vs1g) and vs1g > 0.0
 
 
+## P51-21: the parked fixture is the product's qualified runway start (GroundStart equilibrium with the solved
+## stiction anchors) at the field threshold, heading east. Airborne cases keep the airborne reset's sliding anchors.
+var runway_launch := PackedFloat64Array()
+
+
 func _parked_fixture() -> Dictionary:
-	var gear: Dictionary = model.landing_gear
-	var main: PackedFloat64Array = gear.contacts[0].position
-	var tail: PackedFloat64Array = gear.contacts[2].position
-	var pitch := atan2(main[2] - tail[2], main[0] - tail[0])
-	var down := -(-main[0] * sin(pitch) + main[2] * cos(pitch)) + 0.005
-	var initial := RB.make_state(M.v3(THRESHOLD[0], THRESHOLD[1], down), M.v3(0, 0, 0),
-		M.q_from_euler(PI / 2.0, pitch, 0.0), M.v3(0, 0, 0))
-	var idle_rpm: float = Propulsion.steady_rpm(0.0, 0.0, model.propulsion, density)
-	var settled := _run_case("fixture_settle", initial, idle_rpm, true, 3.0,
-		func(_t: float, _s: PackedFloat64Array) -> Dictionary:
-			return { roll = 0.0, pitch = 1.0, yaw = 0.0, throttle = 0.0 })
-	if not settled.get("finite", false) or not settled.get("complete", false) \
-			or not str(settled.get("fault", "")).is_empty() or not str(settled.get("crashed", "")).is_empty():
-		return { ok = false, error = "settle did not complete without crash/fault: " + str(settled.get("fault", settled.get("crashed", ""))) }
-	var out: PackedFloat64Array = settled.final_state
-	out[RB.POS] = THRESHOLD[0]
-	out[RB.POS + 1] = THRESHOLD[1]
-	for axis in 3:
-		out[RB.VEL + axis] = 0.0
-		out[RB.RATE + axis] = 0.0
+	session.start_choice = "runway"
+	session.reset()
+	var ok: bool = session.start_error.is_empty() and session.is_flyable() and session.sim.fault_reason.is_empty()
+	var out: PackedFloat64Array = session.sim.state.duplicate()
+	session.start_choice = "airborne"
+	if not ok:
+		return { ok = false, error = "runway start failed: " + str(session.start_error) }
+	runway_launch = out.duplicate()
 	var contacts := _contact_count(out)
 	return {
 		"ok": contacts == 3 and Sim.state_is_valid(out),
 		"error": "fixture is not a finite three-contact pose" if contacts != 3 or not Sim.state_is_valid(out) else "",
-		"method": "gear-geometry three-point attitude, 3 s idle/tail-back settle, then north/east and body velocity/rates reset",
+		"method": "P51-21 product runway start: GroundStart equilibrium at the field threshold with stiction anchors",
 		"pitch_deg": rad_to_deg(_euler(out)[1]),
 		"contacts": contacts,
-		"settle_complete": settled.get("complete", false),
-		"settle_crash": settled.get("crashed", ""),
+		"settle_complete": true,
+		"settle_crash": "",
 		"state_finite": Sim.state_is_valid(out),
 		"state": out,
 	}
@@ -213,7 +206,14 @@ func _landing_start() -> Dictionary:
 
 
 func _run_case(label: String, initial: PackedFloat64Array, rpm: float, engine_running: bool, seconds: float, pilot: Callable) -> Dictionary:
+	var on_runway := not runway_launch.is_empty() and initial == runway_launch
+	session.start_choice = "runway" if on_runway else "airborne"
 	session.reset()
+	session.start_choice = "airborne"
+	if session.anchor_count() > 0 and not on_runway and _contact_count(initial) > 0:
+		return _failed_case(label, "ground poses start from the qualified runway start")
+	if on_runway and session.sim.state != runway_launch:
+		return _failed_case(label, "runway start did not reproduce the parked launch: " + str(session.start_error))
 	if not session.is_flyable() or not session.sim.fault_reason.is_empty():
 		return _failed_case(label, "session reset failed: " + str(session.pause_reason if not session.pause_reason.is_empty() else session.sim.fault_reason))
 	if not Sim.state_is_valid(initial):

@@ -34,6 +34,8 @@ Experimental delivery evidence:
 | CR-22a | A bounded fuel/hot-turbine/estimated-rupture fire presentation is implemented. It does not model measured fuel burn or validated rupture thresholds. See [CR-22a](research/crash-damage-investigations/CR-22a/README.md). |
 | CR-22c-R1 | Prepared BVHs replace per-contact scuff triangle scans. Compatibility crash shaders are warmed during flight setup; only applicable emitters start at impact. Native ground-impact comparisons cover all eight airplane configurations with unchanged physical impact states. Residual frame spikes and the full class/distance budget remain open. See [crash-stutter evidence](research/crash-damage-investigations/CR-22c-R1/README.md). |
 
+CR-22c-R2 avoids repeated soft-contact feedback at the same simulation tick, reuses unchanged wreck shadow projections and calculates each scenery sort distance once. See [measurements and regressions](research/crash-damage-investigations/CR-22c-R2/README.md).
+
 These slices do not close the broader CR-02/03/04/05 contracts, CR-07–10 structural work, or CR-19/20–27 roadmap work.
 
 ## Remaining work and dependencies

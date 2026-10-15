@@ -23,6 +23,7 @@ extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
 const Integrator := preload("res://physics/integrator.gd")
+const WetPhysics := preload("res://physics/ground_vehicle/vehicle_environment.gd")
 
 const POS := 0
 const VEL := 3
@@ -37,7 +38,7 @@ const STEER_RATE := 30
 const STATE_SIZE := 31
 const CORNER_COUNT := 4
 const GENERALIZED_SIZE := 14
-const SOLVER_VERSION := "openrc-ground-vehicle-dynamics-rk4-v3"
+const SOLVER_VERSION := "openrc-ground-vehicle-dynamics-rk4-v4"
 const SUBSTEPS_PER_TICK := 1
 const WALL_MAX_INTEGRATION_STEP_S := 1.0 / 120.0
 const FRICTION_SWEEPS := 128
@@ -50,7 +51,7 @@ const WALL_FRICTION_REGULARIZATION_M_PER_S := 0.05
 const BACKEND_GDSCRIPT_REFERENCE := "gdscript_reference"
 const BACKEND_NATIVE := "native"
 const BACKEND_ABI_VERSION := 1
-const BACKEND_NATIVE_VERSION := "openrc-ground-vehicle-native-evaluate-v2"
+const BACKEND_NATIVE_VERSION := "openrc-ground-vehicle-native-evaluate-v3"
 const NATIVE_EXTENSION_PATH := "res://native/ground_vehicle/openrc_ground_vehicle.gdextension"
 const NATIVE_RECEIPT_PATH := "res://native/ground_vehicle/build-receipt.json"
 
@@ -182,6 +183,18 @@ static func _load_native_backend() -> Object:
 		return null
 	_native_backend_instance = candidate
 	return _native_backend_instance
+
+
+## Optional exact bathymetry accelerator. Empty means use the shared GDScript sampler.
+## The reference override must cover road sampling as well as the dynamics evaluator.
+static func sample_lake_terrain(lake: Dictionary, north: float, east: float, base: PackedFloat64Array) -> PackedFloat64Array:
+	if _backend_override_for_tests == BACKEND_GDSCRIPT_REFERENCE: return PackedFloat64Array()
+	var native := _load_native_backend()
+	if native == null or not native.has_method("sample_lake_terrain"): return PackedFloat64Array()
+	var result: Variant = native.call("sample_lake_terrain", lake, north, east, base)
+	if typeof(result) != TYPE_PACKED_FLOAT64_ARRAY or result.size() != 4 or not _finite_array(result):
+		return PackedFloat64Array()
+	return result
 
 
 
@@ -432,6 +445,10 @@ static func step(
 		return PackedFloat64Array()
 	var wall_boxes: Array = initial_walls["walls"]
 	var step_substeps := SUBSTEPS_PER_TICK
+	if not WetPhysics.surface_is_valid(initial_wall_surface):
+		return PackedFloat64Array()
+	if bool(initial_wall_surface.get("wet_zone", false)):
+		step_substeps = maxi(step_substeps, ceili(dt / WetPhysics.WET_MAX_STEP_S))
 	if not wall_boxes.is_empty():
 		step_substeps = maxi(step_substeps, ceili(dt / WALL_MAX_INTEGRATION_STEP_S))
 	var cached_north := state[POS]
@@ -558,6 +575,7 @@ static func telemetry(
 		"suspension_travel_m": PackedFloat64Array([state[TRAVEL], state[TRAVEL + 1], state[TRAVEL + 2], state[TRAVEL + 3]]),
 		"suspension_force_n": evaluated["suspension_force_n"],
 		"total_energy_j": evaluated["energy_j"],
+		"environment": evaluated.get("environment", WetPhysics.dry()),
 	}
 
 
@@ -609,16 +627,33 @@ static func _evaluate_active(
 	adaptive_friction: bool = true,
 ) -> Dictionary:
 	var result: Dictionary
+	var center_value: Variant = road.call(state[POS], state[POS + 1])
+	if typeof(center_value) != TYPE_DICTIONARY or not WetPhysics.surface_is_valid(center_value):
+		return _failure("Malformed environmental road sample")
+	var environmental: Dictionary = {}
+	var applied_controls := controls
+	if bool(center_value.get("wet_zone", false)):
+		var geometry := _corner_geometry(state, model, state[STEER], state[STEER_RATE], 0.0)
+		if not geometry.ok: return geometry
+		environmental = WetPhysics.evaluate(state, model, geometry, road, center_value)
+		if not environmental.ok: return environmental
+		applied_controls = controls.duplicate()
+		var external: PackedFloat64Array = environmental.generalized_force.duplicate()
+		if controls.has("external_generalized_force"):
+			if not _valid_external_force(controls): return _failure("Malformed external generalized force")
+			for index in GENERALIZED_SIZE: external[index] += controls.external_generalized_force[index]
+		applied_controls["external_generalized_force"] = external
+		environmental.erase("generalized_force")
 	if _backend_override_for_tests == BACKEND_GDSCRIPT_REFERENCE:
-		result = _evaluate(state, model, controls, road, calculate_energy, adaptive_friction)
+		result = _evaluate(state, model, applied_controls, road, calculate_energy, adaptive_friction)
 	else:
 		var native := _load_native_backend()
 		if native == null:
-			result = _evaluate(state, model, controls, road, calculate_energy, adaptive_friction)
+			result = _evaluate(state, model, applied_controls, road, calculate_energy, adaptive_friction)
 		else:
 			var road_batch := func(coordinates_xy: PackedFloat64Array) -> Dictionary:
 				return _sample_road_batch(road, coordinates_xy)
-			var native_result: Variant = native.call("evaluate", state, model, controls, road_batch,
+			var native_result: Variant = native.call("evaluate", state, model, applied_controls, road_batch,
 				calculate_energy, adaptive_friction)
 			if typeof(native_result) != TYPE_DICTIONARY:
 				return _failure("Native vehicle backend returned a non-dictionary result")
@@ -629,7 +664,8 @@ static func _evaluate_active(
 				return _failure("Native vehicle backend returned malformed evaluation channels")
 	if not bool(result.get("ok", false)):
 		return result
-	return _apply_wall_contacts(state, model, road, result, calculate_energy)
+	if not environmental.is_empty(): result["environment"] = environmental
+	return _apply_wall_contacts(state, model, road, result, calculate_energy, center_value)
 
 
 ## Optional static AABBs are sampled once at the sprung-body center, shared by
@@ -641,6 +677,7 @@ static func _apply_wall_contacts(
 	road: Callable,
 	base_result: Dictionary,
 	calculate_energy: bool,
+	cached_center: Dictionary = {},
 ) -> Dictionary:
 	var result := base_result.duplicate(true)
 	var hull_radii: PackedFloat64Array = model["hull_probe_radii_m"]
@@ -656,7 +693,7 @@ static func _apply_wall_contacts(
 	result["wall_contact_count"] = 0
 	result["wall_normal_load_n"] = 0.0
 	result["wall_friction_power_w"] = 0.0
-	var center_sample: Variant = road.call(state[POS], state[POS + 1])
+	var center_sample: Variant = cached_center if not cached_center.is_empty() else road.call(state[POS], state[POS + 1])
 	if typeof(center_sample) != TYPE_DICTIONARY:
 		return _failure("Road callback must return a Dictionary for wall sampling")
 	var center_surface: Dictionary = center_sample
@@ -963,6 +1000,7 @@ static func _evaluate(
 	calculate_energy: bool = true,
 	adaptive_friction: bool = true,
 ) -> Dictionary:
+	if not _valid_external_force(controls): return _failure("Malformed external generalized force")
 	var q := M.q_normalized(_state_quaternion(state))
 	var q_conjugate := M.q_conj(q)
 	var body_rate := _slice3(state, RATE)
@@ -1053,7 +1091,7 @@ static func _evaluate(
 	var rolling_scale := float(model["rolling_resistance_coefficient"])
 	var tire_mu_scale := float(model["tire_friction_scale"])
 	var gravity := float(model["gravity_m_per_s2"])
-	var can_skip_flat_static_friction := _is_quiescent_level_state(state, controls)
+	var can_skip_flat_static_friction := _is_quiescent_level_state(state, controls) and not _has_external_force(controls)
 	var wheel_angles := PackedFloat64Array()
 	wheel_angles.resize(CORNER_COUNT)
 	var normal_forces_body: Array[PackedFloat64Array] = []
@@ -1297,6 +1335,9 @@ static func _evaluate(
 			var tangent_force := M.scale(tangent_direction, hull_friction_limit * M.tanh_(hull_tangent_speed / 0.02))
 			_add_body_force(rhs, M.add(center, rho_body_hull), M.q_rotate(q_conjugate, tangent_force))
 
+	if controls.has("external_generalized_force"):
+		for index in GENERALIZED_SIZE:
+			rhs[index] += controls.external_generalized_force[index]
 	var factor_result := _factor_generalized_mass_matrix(matrix)
 	if not bool(factor_result["ok"]):
 		return _failure("Coupled generalized mass matrix is singular: " + str(factor_result["error"]))
@@ -2083,6 +2124,7 @@ static func _valid_model(model: Dictionary) -> bool:
 
 
 static func _valid_controls(controls: Dictionary) -> bool:
+	if not _valid_external_force(controls): return false
 	if not controls.has("throttle") or not controls.has("steering") or not controls.has("brake") or not controls.has("reverse"):
 		return false
 	var throttle := float(controls["throttle"])
@@ -2092,6 +2134,19 @@ static func _valid_controls(controls: Dictionary) -> bool:
 		and is_finite(steering) and steering >= -1.0 and steering <= 1.0 \
 		and is_finite(brake) and brake >= 0.0 and brake <= 1.0 \
 		and typeof(controls["reverse"]) == TYPE_BOOL
+
+
+static func _valid_external_force(controls: Dictionary) -> bool:
+	if not controls.has("external_generalized_force"): return true
+	var value: Variant = controls.external_generalized_force
+	return typeof(value) == TYPE_PACKED_FLOAT64_ARRAY and value.size() == GENERALIZED_SIZE and _finite_array(value)
+
+
+static func _has_external_force(controls: Dictionary) -> bool:
+	if not controls.has("external_generalized_force"): return false
+	for value in controls.external_generalized_force:
+		if value != 0.0: return true
+	return false
 
 
 static func _valid_pose(pose: Dictionary) -> bool:

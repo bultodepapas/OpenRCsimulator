@@ -42,11 +42,13 @@ func _run() -> void:
 	var source_identity := Log.solver_identity()
 	var field: Dictionary = Field.load_from().field
 	var report := {format = "openrc-audit-session-cost-v1", source_sha256 = source_identity,
+		harness_sha256 = FileAccess.get_sha256(get_script().resource_path),
+		field_path = Field.DEFAULT_PATH, field_sha256 = FileAccess.get_sha256(Field.DEFAULT_PATH),
 		aircraft_path = path, aircraft_file_sha256 = FileAccess.get_sha256(path), weather = settings,
 		machine = {os = OS.get_name(), processor = OS.get_processor_name(),
 			logical_cpus = OS.get_processor_count(), architecture = Engine.get_architecture_name(),
 			godot = Engine.get_version_info()}, ticks_per_sample = ticks, samples = samples,
-		method = "Individual wall-clock sim.step durations, microsecond clock, restored full checkpoint each sample; no recorder, rendering, input sampling or forced GC. Fresh process first preparation includes loading; later preparations share engine caches. High-rate fixture remains powered, not a validated spin.",
+		method = "Individual wall-clock sim.step durations including synchronous FlightSession subscribers, microsecond clock, byte-verified full checkpoint before each sample. One first-pass sample per regime is reported separately and excluded from repeated-pass timing; all use the same initial checkpoint. No optional recorder, rendering, input sampling or forced GC. Fresh process first preparation includes Flight.new, setup, field selection, altitude selection and reset; process startup and preloaded-script compilation are excluded. Later preparations share engine caches. Fixtures impose angle/rates; stall/high_rate labels are not validated stall/spin states.",
 		memory_scope = "Godot live static-memory delta and process high-water mark; not allocation counts or a bound on transient allocation traffic.",
 		preparation_us = [], regimes = {}}
 	var session: Node = null
@@ -120,12 +122,19 @@ func _measure(session: Node, checkpoint: Dictionary, ticks: int, samples: int) -
 	times.resize(ticks * samples)
 	var initial_body: PackedFloat64Array = session.sim.state.duplicate()
 	var per_sample: Array = []
+	var first_pass := {}
+	var initial_checkpoint_sha256 := _checkpoint_sha256(checkpoint)
 	var fingerprint := ""
 	var count := 0
-	for sample in samples:
+	for sample in range(-1, samples):
 		if not session.restore_checkpoint(checkpoint):
 			error = "checkpoint restore refused"
 			break
+		var restored_sha256 := _checkpoint_sha256(session.checkpoint())
+		if restored_sha256 != initial_checkpoint_sha256:
+			error = "restored complete checkpoint differs from requested initial state"
+			break
+		var first_pass_times := PackedFloat64Array()
 		var first_tick: int = session.sim.tick
 		var memory_before := OS.get_static_memory_usage()
 		var peak_before := OS.get_static_memory_peak_usage()
@@ -136,32 +145,46 @@ func _measure(session: Node, checkpoint: Dictionary, ticks: int, samples: int) -
 			if not session.sim.fault_reason.is_empty() or session.sim.tick != first_tick + tick + 1:
 				error = "incomplete timing sample: " + str(session.sim.fault_reason)
 				break
-			times[count] = elapsed
-			count += 1
+			if sample < 0:
+				first_pass_times.append(elapsed)
+			else:
+				times[count] = elapsed
+				count += 1
 		var memory_after := OS.get_static_memory_usage()
 		var peak_after := OS.get_static_memory_peak_usage()
-		var digest := HashingContext.new()
-		digest.start(HashingContext.HASH_SHA256)
-		digest.update(session.sim.state.to_byte_array())
-		digest.update(session.sim.aux.to_byte_array())
-		digest.update(session.sim.continuous.to_byte_array())
-		digest.update(session.sim.modes.to_byte_array())
-		digest.update(session.sim.last_loads.to_byte_array())
-		var endpoint := digest.finish().hex_encode()
-		if sample > 0 and endpoint != fingerprint: error = "restored samples have different physical endpoints"
+		var endpoint := _checkpoint_sha256(session.checkpoint())
+		if endpoint.is_empty() or (sample >= 0 and endpoint != fingerprint): error = "restored samples have different complete endpoints"
 		fingerprint = endpoint
-		per_sample.append({completed_ticks = session.sim.tick - first_tick, live_memory_delta_bytes = memory_after - memory_before,
-			process_peak_before_bytes = peak_before, process_peak_after_bytes = peak_after, endpoint_sha256 = endpoint})
+		var sample_result := {completed_ticks = session.sim.tick - first_tick, live_memory_delta_bytes = memory_after - memory_before,
+			process_peak_before_bytes = peak_before, process_peak_after_bytes = peak_after, initial_checkpoint_sha256 = restored_sha256,
+			endpoint_checkpoint_sha256 = endpoint}
+		if sample < 0:
+			sample_result.individual_tick_us = first_pass_times
+			if first_pass_times.size() == ticks: sample_result.timing_us = _statistics(first_pass_times)
+			first_pass = sample_result
+		else:
+			per_sample.append(sample_result)
 		if not error.is_empty(): break
 	if count != ticks * samples and error.is_empty(): error = "incomplete tick count"
 	if not error.is_empty(): return {ok = false, error = error, completed_ticks = count, samples = per_sample}
+	return {ok = true, initial_body = initial_body, initial_checkpoint_sha256 = initial_checkpoint_sha256,
+		completed_ticks = count, first_pass = first_pass, samples = per_sample,
+		timing_us = _statistics(times), individual_tick_us = times}
+
+func _checkpoint_sha256(checkpoint: Dictionary) -> String:
+	if checkpoint.is_empty(): return ""
+	var digest := HashingContext.new()
+	digest.start(HashingContext.HASH_SHA256)
+	digest.update(var_to_bytes(checkpoint))
+	return digest.finish().hex_encode()
+
+func _statistics(times: PackedFloat64Array) -> Dictionary:
 	var values := times.duplicate()
 	values.sort()
 	var total := 0.0
 	for value: float in values: total += value
-	return {ok = true, initial_body = initial_body, completed_ticks = count, samples = per_sample,
-		timing_us = {p50 = _percentile(values, 0.50), p95 = _percentile(values, 0.95), p99 = _percentile(values, 0.99),
-			min = values[0], max = values[-1], mean = total / values.size()}, individual_tick_us = times}
+	return {p50 = _percentile(values, 0.50), p95 = _percentile(values, 0.95), p99 = _percentile(values, 0.99),
+		min = values[0], max = values[-1], mean = total / values.size()}
 
 func _percentile(sorted: PackedFloat64Array, fraction: float) -> float:
 	return sorted[maxi(0, int(ceil(fraction * sorted.size())) - 1)]

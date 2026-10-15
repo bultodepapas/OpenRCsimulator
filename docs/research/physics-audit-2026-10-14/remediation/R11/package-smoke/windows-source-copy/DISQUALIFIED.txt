@@ -1,0 +1,1 @@
+This first preliminary run is retained only to document a harness cleanup defect. The smoke checks passed, but the external script attempted to call free() on its RefCounted FlightLog twice, and Godot emitted SCRIPT ERROR after each aircraft. Do not treat probe.json or either ORFL here as the accepted clean-run evidence. The follow-up is in windows-source-copy-clean/.

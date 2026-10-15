@@ -7,6 +7,7 @@ const Config := preload("res://physics/wind_config.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const FIELD_ELEVATION_M := -500.0
+const EDGE_OUTWARD_SPEED_MPS := 0.25
 
 const CASES := [
 	{"id": "stik_prescribed", "path": "jensen_ugly_stik_60", "shaft": false},
@@ -21,7 +22,7 @@ func _initialize() -> void:
 	print(JSON.stringify({kind = "probe", godot = Engine.get_version_info(), hz = Engine.physics_ticks_per_second,
 		config = "v4 standard_column; field_elevation_m=-500; no wind/turbulence overrides", field_elevation_m = FIELD_ELEVATION_M,
 		boundaries_m = [-500.0, 11000.0],
-		dt_s = 1.0 / Engine.physics_ticks_per_second, exact_edge_outward_ned_down_speed_mps = 10.0,
+		dt_s = 1.0 / Engine.physics_ticks_per_second, exact_edge_outward_ned_down_speed_mps = EDGE_OUTWARD_SPEED_MPS,
 		inside_control_ned_down_speed_mps = 0.25,
 		velocity_assignment = "preserve horizontal NED components; rotate requested NED down velocity into body frame"}))
 	for case in CASES:
@@ -39,7 +40,16 @@ func _new_flight(case: Dictionary) -> Dictionary:
 	if case.shaft:
 		shaft_ok = s.setup_shaft_integrator("coupled-rk4")
 		s.reset()
-	return {session = s, weather_ok = weather_ok, shaft_ok = shaft_ok, flyable = s.is_flyable()}
+	var contact_context := {}
+	if s.sim != null:
+		contact_context = {
+			post_step_collision_filter = s.sim.post_step.is_valid(),
+			ground_surfaces_float_count = s.ground_surfaces.size(),
+			wheel_count = s.wheel_count(),
+			anchor_count = s.anchor_count(),
+			soft_hull_contacts = s.soft_hull_contacts,
+		}
+	return {session = s, weather_ok = weather_ok, shaft_ok = shaft_ok, flyable = s.is_flyable(), contact_context = contact_context}
 
 func _at_altitude(s: Flight, altitude_m: float, vertical_speed_mps: float) -> PackedFloat64Array:
 	var body: PackedFloat64Array = s.sim.state.duplicate()
@@ -72,7 +82,8 @@ func _run_case(case: Dictionary, side: String) -> void:
 	var inside_altitude := bound + clearance if side == "lower" else bound - clearance
 	var result: Dictionary = {
 		kind = "family_boundary", family = case.id, aircraft = case.path, side = side,
-		setup = {weather_ok = created.weather_ok, shaft_setup_ok = created.shaft_ok, flyable = created.flyable},
+		setup = {weather_ok = created.weather_ok, shaft_setup_ok = created.shaft_ok, flyable = created.flyable,
+			contact_context = created.contact_context},
 		field_elevation_m = FIELD_ELEVATION_M, bound_m = bound, outside_reset_altitude_m = outside_altitude,
 		inside_reset_altitude_m = inside_altitude, inside_control_ned_down_speed_mps = outward,
 		outside_reset_ned_down_speed_mps = outward,
@@ -112,15 +123,15 @@ func _run_case(case: Dictionary, side: String) -> void:
 		actual_start_ned_down_mps = _ned_down_speed(inside_body),
 	}
 
-	var edge_body := _at_altitude(s, bound, outward * 40.0)
+	var edge_body := _at_altitude(s, bound, outward)
 	var edge_env: Dictionary = s.environment_at(edge_body)
 	var edge_reset_ok: bool = s.sim.reset(edge_body)
 	var edge_start_tick: int = s.sim.tick
 	var edge_pre_body: PackedFloat64Array = s.sim.state.duplicate()
 	var edge_pre_state: PackedByteArray = edge_pre_body.to_byte_array()
 	var edge_pre_altitude: float = _geometric_altitude(s.sim.state)
-	var rk2_altitude: float = bound - outward * 40.0 * s.sim.dt() * 0.5
-	var rk2_body := _at_altitude(s, rk2_altitude, outward * 40.0)
+	var rk2_altitude: float = bound - outward * s.sim.dt() * 0.5
+	var rk2_body := _at_altitude(s, rk2_altitude, outward)
 	var rk2_env: Dictionary = s.environment_at(rk2_body)
 	if edge_reset_ok:
 		s.sim.step()
@@ -129,7 +140,7 @@ func _run_case(case: Dictionary, side: String) -> void:
 		expected_rk2_altitude_m = rk2_altitude, expected_rk2_environment_query_ok = rk2_env.get("ok", false),
 		step_fault = s.sim.fault_reason, tick_before = edge_start_tick, tick_after = s.sim.tick,
 		start_altitude_m = edge_pre_altitude, end_altitude_m = _geometric_altitude(s.sim.state),
-		requested_start_ned_down_mps = outward * 40.0, actual_start_ned_down_mps = _ned_down_speed(edge_pre_body),
+		requested_start_ned_down_mps = outward, actual_start_ned_down_mps = _ned_down_speed(edge_pre_body),
 		state_unchanged_by_failed_step = s.sim.tick == edge_start_tick and s.sim.state.to_byte_array() == edge_pre_state,
 	}
 	print(JSON.stringify(result))

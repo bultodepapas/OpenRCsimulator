@@ -1,0 +1,22 @@
+{
+	"aircraft": [
+		{},
+		{}
+	],
+	"checks": 34,
+	"complete": true,
+	"exact_replay": {
+		"attempted": false,
+		"claim": "not attempted by this smoke probe",
+		"limitation": "Compiled packages without source fingerprints must be analyzed from the matching source checkout; export/format inspection is not an exact replay."
+	},
+	"executable": "C:/DEVELOPMENT/OpenRCsimulator/.tools/Godot_v4.7.2-stable_win64.exe",
+	"failures": 0,
+	"format": "openrc-r11-package-smoke v1",
+	"godot": "4.7.2-stable (official)",
+	"physics_tick_rate_hz": 240,
+	"runner": "windows-physical-source-copy",
+	"solver_fingerprint": "85d0b19b66d118bf4a735e253b4f2d5c0d1d73a7a35f11f6e146dfc16b207a1b",
+	"solver_fingerprint_available": true,
+	"working_directory": "C:/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r11-final-scenarios-04/verified-app"
+}

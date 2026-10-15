@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+measured trim: p50=1097.0 p95=1158.0 p99=1202.0 max=1943.0
+measured stall: p50=1026.0 p95=1201.0 p99=1342.0 max=1985.0
+measured high_rate: p50=956.0 p95=1164.0 p99=1298.0 max=1634.0
+measured runway: p50=1744.0 p95=1832.0 p99=1880.0 max=2111.0

@@ -256,7 +256,7 @@ def run_smoke_test(library: Path, godot_arg: Path | None, lock: dict) -> None:
         '\t\tpush_error("Native probe does not report IEEE-754 float64")\n'
         '\t\tquit(1)\n'
         '\t\treturn\n'
-        '\tif int(info.get("abi_version", 0)) != 1 or str(info.get("solver_version", "")) != "openrc-ground-vehicle-dynamics-rk4-v3":\n'
+        '\tif int(info.get("abi_version", 0)) != 1 or str(info.get("solver_version", "")) != "openrc-ground-vehicle-dynamics-rk4-v4":\n'
         '\t\tpush_error("Native ABI/solver identity mismatch")\n'
         '\t\tquit(1)\n'
         '\t\treturn\n'
@@ -312,9 +312,14 @@ def run_parity_test(library: Path, godot_arg: Path | None, lock: dict) -> None:
         "physics/math3d.gd",
         "physics/rigid_body.gd",
         "physics/integrator.gd",
+        "physics/ground_terrain.gd",
+        "physics/lake_surface.gd",
         "physics/ground_vehicle/vehicle_dynamics.gd",
+        "physics/ground_vehicle/vehicle_environment.gd",
         "physics/ground_vehicle/vehicle_data.gd",
         "physics/ground_vehicle/course.gd",
+        "data/lake_loader.gd",
+        "data/fields/lake.json",
         "data/vehicles/ground/mt8_bisonte.json",
         "data/ground_vehicle/practice.json",
     ])
@@ -357,7 +362,7 @@ def run_parity_test(library: Path, godot_arg: Path | None, lock: dict) -> None:
             f"{result.stdout}"
         )
     for line in result.stdout.strip().splitlines():
-        if line.startswith("OPENRC_NATIVE_EVAL_PROFILE") or line.startswith("OPENRC_NATIVE_PARITY_OK"):
+        if line.startswith(("OPENRC_NATIVE_EVAL_PROFILE", "OPENRC_NATIVE_LAKE_PARITY", "OPENRC_NATIVE_LAKE_PROFILE", "OPENRC_NATIVE_PARITY_OK")):
             print(line)
     print(f"Retained parity stdout and build hashes at {log_path}.")
 

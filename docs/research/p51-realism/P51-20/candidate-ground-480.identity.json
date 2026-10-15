@@ -1,0 +1,25 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+    "--headless",
+    "--path",
+    "C:\\Users\\bulto\\AppData\\Local\\Temp\\claude\\c--DEVELOPMENT-OpenRCsimulator\\c3ab0d35-99ce-43fa-b452-73b16ab870e2\\scratchpad\\wt-clean\\app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "C:\\Users\\bulto\\AppData\\Local\\Temp\\claude\\c--DEVELOPMENT-OpenRCsimulator\\c3ab0d35-99ce-43fa-b452-73b16ab870e2\\scratchpad\\wt-clean\\research\\p51\\p51-15\\ground_probe.gd",
+    "--",
+    "--hz=480",
+    "--output=C:\\Users\\bulto\\AppData\\Local\\Temp\\claude\\c--DEVELOPMENT-OpenRCsimulator\\c3ab0d35-99ce-43fa-b452-73b16ab870e2\\scratchpad\\p51-20\\candidate-ground-480.json"
+  ],
+  "exit_code": 0,
+  "elapsed_seconds": 69.13999999998487,
+  "sha256": {
+    "C:\\Users\\bulto\\AppData\\Local\\Temp\\claude\\c--DEVELOPMENT-OpenRCsimulator\\c3ab0d35-99ce-43fa-b452-73b16ab870e2\\scratchpad\\wt-clean\\research\\p51\\p51-15\\run_probe.py": "bc4c50c3f272ff20fe4af06c64826f0adcb1088c9d32490078eccbe9910e2cfd",
+    "C:\\Users\\bulto\\AppData\\Local\\Temp\\claude\\c--DEVELOPMENT-OpenRCsimulator\\c3ab0d35-99ce-43fa-b452-73b16ab870e2\\scratchpad\\wt-clean\\research\\p51\\p51-15\\ground_probe.gd": "941608c43e22f89b742f4523d010962dd1b56cd20493d35c4119cb23bc914158",
+    "app\\data\\aircraft\\p51d_mustang_120.json": "3ef8334ff11ae71d8ce1c14f7674fea440d27b24db0036a37881c1647e553ff2",
+    "C:\\Users\\bulto\\AppData\\Local\\Temp\\claude\\c--DEVELOPMENT-OpenRCsimulator\\c3ab0d35-99ce-43fa-b452-73b16ab870e2\\scratchpad\\wt-clean\\research\\extra-300\\ex06\\envelope_probe.gd": "5b617e8fcf1dc78ec62ce31eded3c57a28936093c3e797c5a506b8b85bfae4ce",
+    "app\\tests\\p51_envelope_base.gd": "dafd59d27cd9da11dc5b4da33f9de4d7abbdef802eaf2bdd836a7ee510c62d95"
+  },
+  "unchanged_during_run": true
+}

@@ -1,0 +1,24 @@
+expected_bytes=104883 expected_sha256=74043c9bc1de35de066bc65b971e85f5e099173f2d9cccec065c6988abbb6b9d expected_crlf=3393 expected_lf=3393
+regenerated_bytes=104883 regenerated_sha256=c98d8f391e0020aa4dae768f04b45c337e72cee90073f8a8ecfb667bf1abc31d regenerated_crlf=3393 regenerated_lf=3393
+normalized_content_equal=False
+
+--- archive snapshot JSON
++++ disposable regenerated JSON
+@@ -1964,7 +1964,7 @@
+           0.0003247012117209922,
+           45.0,
+           0.606262,
+-          0.6414130000000001,
++          0.6414129999999999,
+           0.0,
+           60.0,
+           0.5250382933491613,
+@@ -2067,7 +2067,7 @@
+           0.0003247012117209922,
+           45.0,
+           0.606262,
+-          0.6414130000000001,
++          0.6414129999999999,
+           0.0,
+           60.0,
+           0.5250382933491613,

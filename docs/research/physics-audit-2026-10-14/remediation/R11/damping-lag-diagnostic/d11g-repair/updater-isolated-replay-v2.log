@@ -1,0 +1,3 @@
+updated leaves: Cmq, CLq, Cnr
+bytes: 57605 -> 57527; only value/source leaves are eligible
+actual=bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723 expected=bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723 equal=True

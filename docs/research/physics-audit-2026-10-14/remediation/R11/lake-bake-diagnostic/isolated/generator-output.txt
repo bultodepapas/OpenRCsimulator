@@ -1,0 +1,3 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Generated lake geometry: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\lake-bake-diagnostic\isolated\default_geometry.res basin=5861457b0ccf5f88f425f7882ae5e018c1b4da940b85e33c427c8e912aaf5def water=666a839db4292064c4bbc1042854f4f67f6adc1ccd65a531f0577d3d13587b55

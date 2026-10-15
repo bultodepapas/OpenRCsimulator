@@ -1,0 +1,67 @@
+diff --git a/app/tests/check_math_sensitivity.py b/app/tests/check_math_sensitivity.py
+index 81085184..1c1fa292 100644
+--- a/app/tests/check_math_sensitivity.py
++++ b/app/tests/check_math_sensitivity.py
+@@ -120,6 +120,42 @@ def replace_once(source: str, old: str, new: str, label: str) -> str:
+     return source.replace(old, new, 1)
+ 
+ 
++def instrument_local_flow_selector(source: str) -> str:
++    """Instrument the four known selector exits, failing on stale/ambiguous code."""
++    functions = list(re.finditer(
++        r"^static func local_flow_weight\(.*?(?=^static func |\Z)", source, re.M | re.S))
++    if len(functions) != 1:
++        raise RuntimeError(f"expected one local_flow_weight function, found {len(functions)}")
++    function = functions[0]
++    selector = function.group(0)
++    selector = replace_once(
++        selector,
++        "\tif blend == 1.0:\n\t\treturn blend\n",
++        "\tif blend == 1.0:\n\t\th7_branch_tape.append(10)\n\t\treturn blend\n\th7_branch_tape.append(11)\n",
++        "initial local-flow saturation branch",
++    )
++    branch = "\t\tif blend == 1.0:\n\t\t\treturn blend\n"
++    wing_angle = "\t\tblend = maxf(blend, _smoothstep((absf(angle)-limit)/(a1_span if angle >= 0.0 else n1_span)))\n"
++    selector = replace_once(
++        selector, wing_angle + branch,
++        wing_angle + "\t\tif blend == 1.0:\n\t\t\th7_branch_tape.append(12)\n\t\t\treturn blend\n\t\th7_branch_tape.append(13)\n",
++        "wing-angle saturation branch",
++    )
++    rate_update = "\t\tblend = maxf(blend, _smoothstep((M.atan2_(rate_speed, float(air.V))-limit)/a1_span))\n"
++    for label, following, taken_id in (
++        ("wing rate", "\t\tvar angle := wrapf(M.atan2_(flow_z, flow_x) + aileron_effect*da, -PI, PI)\n", 14),
++        ("tail rate", "\t\tvar control: float = -float(d.rudder) if vertical else float(d.elevator)\n", 16),
++    ):
++        instrumented = (f"\t\tif blend == 1.0:\n\t\t\th7_branch_tape.append({taken_id})\n"
++                        f"\t\t\treturn blend\n\t\th7_branch_tape.append({taken_id + 1})\n")
++        selector = replace_once(selector, rate_update + branch + following,
++                                rate_update + instrumented + following, label + " saturation branch")
++    # A newly added uninstrumented exit must fail the gate, not silently escape its tape.
++    if re.search(r"(?m)^(\t+)if blend == 1\.0:\n\1\treturn blend\n", selector):
++        raise RuntimeError("uninstrumented local-flow saturation branch")
++    return source[:function.start()] + selector + source[function.end():]
++
++
+ def instrument_branches(project: Path) -> None:
+     aero_path = project / "physics" / "aero.gd"
+     aero = aero_path.read_text(encoding="utf-8")
+@@ -129,18 +165,7 @@ def instrument_branches(project: Path) -> None:
+         "const WING_STATIONS_PER_SIDE := 3\nstatic var h7_branch_tape: Array[int] = []\n",
+         "aero branch tape declaration",
+     )
+-    aero = replace_once(
+-        aero,
+-        "if blend == 1.0:\n\t\treturn blend\n",
+-        "if blend == 1.0:\n\t\th7_branch_tape.append(10)\n\t\treturn blend\n\th7_branch_tape.append(11)\n",
+-        "initial local-flow saturation branch",
+-    )
+-    aero = replace_once(
+-        aero,
+-        "\t\tif blend == 1.0:\n\t\t\treturn blend\n",
+-        "\t\tif blend == 1.0:\n\t\t\th7_branch_tape.append(12)\n\t\t\treturn blend\n\t\th7_branch_tape.append(13)\n",
+-        "wing-strip saturation branch",
+-    )
++    aero = instrument_local_flow_selector(aero)
+     aero = replace_once(
+         aero,
+         "\tif blend == 0.0:\n\t\treturn _global_loads(s, air, d, model, rho, downwash_cl, ge)\n",

@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+night field grid received scene irradiance: p05=0.00000190 p50=0.00000998 p95=0.00005405 p95/p05=28.52; nonzero=1313/1313
+FAIL under-wing selectors ignore a lower fence and collapsed face, retaining both known skins lower=[(0.35, -0.004, 0.5), (0.425, -0.004, 0.5), (0.5, -0.204, 0.5), (0.575, -0.204, 0.5), (0.65, -0.204, 0.5), (0.725, -0.004, 0.5), (0.8, -0.004, 0.5), (0.875, -0.004, 0.5), (0.95, -0.004, 0.5)] upper=[(0.35, 0.024, 0.5), (0.425, 0.024, 0.5), (0.5, 0.124, 0.5), (0.575, 0.124, 0.5), (0.65, 0.124, 0.5), (0.725, 0.024, 0.5), (0.8, 0.024, 0.5), (0.875, 0.024, 0.5), (0.95, 0.024, 0.5)]
+FAIL zero-area triangles alone create no under-wing stations { &"left": [], &"right": [(0.65, -0.204, 0.4)] }
+FAIL sebart-avanti-s-a200-p100rx: smooth under-wing strips on both sides, every station sebart-avanti-s-a200-p100rx right: jump (0.4991, -0.014583, 0.344847) -> (0.573965, -0.07471, 0.32989)
+72 checks, 3 failed
+EXIT_CODE=1

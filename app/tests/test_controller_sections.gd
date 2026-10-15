@@ -41,12 +41,13 @@ func _joy(button: JoyButton, device := 15) -> void:
 		await process_frame
 	await _settle()
 
-func _visible_rows(setup: Node) -> int:
-	var total := 0
+func _visible_actions(setup: Node) -> PackedStringArray:
+	var ids := PackedStringArray()
 	for index in ControllerActions.ACTIONS.size():
 		if (setup.action_grid.get_child(3 + index * 3) as Control).visible:
-			total += 1
-	return total
+			ids.append(str(ControllerActions.ACTIONS[index].id))
+	ids.sort()
+	return ids
 
 func _run() -> void:
 	InputMap.load_from_project_settings()
@@ -99,11 +100,25 @@ func _run() -> void:
 	_check("all three configured AUX editors fit at 1280x720 in Spanish", scroll.get_global_rect().encloses(setup._aux_controls.smoke.axis.get_global_rect()) and scroll.get_global_rect().encloses(setup._aux_controls.gear.button_mode.get_global_rect()))
 	setup._set_draft_profile(original)
 	setup.select_section("buttons")
-	var expected := [29, 7, 9, 5, 8]
+	# Explicit UI membership catches a wrong category even when row counts agree.
+	# Helicopter flight commands were added after the old 29-row fixture.
+	var expected := [
+		[],
+		["trim_left", "trim_right", "trim_up", "trim_down", "overlay_preset", "throttle_cut", "lights_cycle",
+			"helicopter_arm", "helicopter_hold", "helicopter_mode", "helicopter_trainer"],
+		["camera_cycle", "view_reset", "camera_previous", "camera_pilot", "camera_chase", "camera_orbit",
+			"camera_zoom_in", "camera_zoom_out", "camera_auto_zoom"],
+		["smoke_toggle", "flaps_up", "flaps_down", "flaps_cycle", "gear_toggle"],
+		["accept", "back", "navigate_up", "navigate_down", "navigate_left", "navigate_right", "pause", "calibrate"],
+	]
+	for index in range(1, expected.size()):
+		expected[0].append_array(expected[index])
 	for index in expected.size():
 		setup.action_filter.select(index)
 		setup._on_action_filter_selected(index)
-		_check("category %d has the expected rows" % index, _visible_rows(setup) == expected[index])
+		var wanted := PackedStringArray(expected[index])
+		wanted.sort()
+		_check("category %d shows exactly the expected actions" % index, _visible_actions(setup) == wanted)
 	_check("category filters preserve all bindings", setup.current_profile() == original)
 	var remap := setup.find_child("Remap_camera_cycle", true, false) as Button
 	setup._start_capture("camera_cycle", remap)

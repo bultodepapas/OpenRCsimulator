@@ -13,7 +13,7 @@ python research/p51/p51-15/run_probe.py --godot .tools/Godot_v4.7.2-stable_win64
 python research/p51/p51-15/verify_native.py --godot .tools/Godot_v4.7.2-stable_win64_console.exe --app app --out C:/Temp/p51-focused
 ```
 
-Use fresh output paths. Repeat both probes at 480 Hz. Each runner preserves engine output and fails on engine errors even if Godot returns zero. Ground cases must complete, remain finite and pass lifecycle checks; aircraft identity, tick rate and matrix size are checked. `envelope_probe.gd` reuses the existing Extra research reducer/inverted solver by relative path, so retain the repository structure. Ground fixtures construct and settle a P-51 pose; they do not enable the product runway-start capability.
+Use fresh output paths. Repeat both probes at 480 Hz. Each runner preserves engine output and fails on engine errors even if Godot returns zero. Ground cases must complete, remain finite and pass lifecycle checks; aircraft identity, tick rate and matrix size are checked. `envelope_probe.gd` reuses the existing Extra research reducer/inverted solver by relative path, so retain the repository structure. Since P51-21 the ground fixtures use the product runway start (stiction anchors); earlier reports used a constructed, settled pose.
 
 Freeze separate baseline/candidate source trees before comparing flight or cost. `run_benchmarks.py --godot <binary> --baseline <baseline-app> --candidate <candidate-app> --out <fresh-directory>` alternates baseline/candidate/candidate/baseline. Existing trim/stalled/component timings and the new ten-second idle-ground `Simulation.step()` timings exclude rendering and fixture setup. They measure this host; they are not a 500 µs target-hardware certification.
 

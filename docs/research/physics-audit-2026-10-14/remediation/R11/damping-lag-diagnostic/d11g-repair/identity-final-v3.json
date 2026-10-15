@@ -1,0 +1,22 @@
+{
+  "schema": "d11g-repair-yaw-test-identity/v1",
+  "note": "Supplement to identity-final-v2; this manifest intentionally excludes itself and the narrative README.",
+  "prior_manifest_sha256": "87fb3a7bf42f52b58cb054ca92f2bb209224a4073af46766b7542ec042a267f6",
+  "new_files": [
+    {
+      "path": "app/tests/test_yaw_damping.gd",
+      "bytes": 11857,
+      "sha256": "591e526c2a9b87b82cd2f8676fe841bc22c7711e7c4ca182bfa039830ed5d6bb"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/test_yaw_damping-analytic-v2-clean.log",
+      "bytes": 2722,
+      "sha256": "384309170a02fd991cf0bbf9d98234a4c1a221428602cc9e12068e2dcec04d18"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/test_yaw_damping-analytic-v2-R00-negative-control.log",
+      "bytes": 2722,
+      "sha256": "4fac823963baeac0491438cca13caf9bfffda6e0bb23a64c772ed7a6454655c5"
+    }
+  ]
+}

@@ -56,12 +56,27 @@ func _initialize() -> void:
 			other_lag == expected_lag and (not declares_lag or other.sim.aux.size() > other_lag))
 		var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry(id).data))
 		raw.aero.surfaces.horizontal.erase("downwash_gradient")
+		var gradient_free := AD.validate_and_derive(raw.duplicate(true))
 		var stripped := FlightSession.new()
 		stripped.setup(Catalog.entry(id).data)
 		root.add_child(stripped)
 		stripped.expected_aircraft_id = ""
-		_check("%s without the gradient (in memory): applies and has no lag entry" % id,
-			stripped._apply(AD.validate_and_derive(raw)) and stripped.downwash_index() == -1)
+		if raw.aero.has("ground_effect"):
+			var ground_effect_error := "aero.ground_effect: requires aero.surfaces.horizontal.downwash_gradient (the free tail law whose downwash it reduces)"
+			_check("%s rejects ground effect without its free-tail gradient" % id,
+				not gradient_free.ok and gradient_free.errors.has(ground_effect_error), str(gradient_free.errors))
+			var invalid_apply: bool = stripped._apply(gradient_free)
+			_check("%s rejected candidate leaves the active lag allocation unchanged" % id,
+				not invalid_apply and stripped.downwash_index() == other_lag,
+				"apply=%s, active_lag=%d, expected=%d" % [str(invalid_apply), stripped.downwash_index(), other_lag])
+			# This candidate exercises a valid no-gradient/no-lag model. The P-51 ground-effect closure depends on the
+			# gradient-derived free tail law, so remove that optional law from the synthetic in-memory candidate too.
+			raw.aero.erase("ground_effect")
+		var no_gradient := AD.validate_and_derive(raw)
+		var applied: bool = stripped._apply(no_gradient)
+		_check("%s without gradient-dependent laws (in memory): applies and has no lag entry" % id,
+			no_gradient.ok and applied and stripped.downwash_index() == -1,
+			"valid=%s, apply=%s, errors=%s" % [str(no_gradient.ok), str(applied), str(no_gradient.get("errors", PackedStringArray()))])
 		stripped.queue_free()
 		other.queue_free()
 	var start: PackedFloat64Array = _session.sim.state

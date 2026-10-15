@@ -1,0 +1,22 @@
+{
+  "revision_id": "R11-H4-square-rounding-and-AV17-polar-test-hook",
+  "files": {
+    "app/physics/aero.gd": {
+      "sha256": "7ac94f6003f2cb7660a56dd94755c6a7d6143d90cc446c6b6c20433038ce38e3"
+    },
+    "app/test.sh": {
+      "sha256": "dae260326426be613b065b0ae00f040842c310fab217979b537a274b3b36b7d6"
+    }
+  },
+  "patches": [
+    {
+      "path": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/rate-guard-rounding/runtime.patch",
+      "sha256": "8807019ea55dd354f81688745845dc1d02654039639815f42e73436755aa502d"
+    },
+    {
+      "path": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/avanti-generator-portability/canonical-hook.patch",
+      "sha256": "447296ad4a33f7b32c82bdb3eb2b56e51e42287dd9f9c89681c19b8fe006d2d4"
+    }
+  ],
+  "notes": "Derived from the AV-17-R2 candidate. The runtime patch replaces the three pow(component, 2) calls in each rate-speed norm with multiplication; the orchestration patch adds the AV-17-R2 unit test to app/test.sh."
+}

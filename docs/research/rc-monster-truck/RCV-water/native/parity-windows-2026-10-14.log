@@ -1,0 +1,16 @@
+{
+  "binary_sha256": "0436be7bdc553b0eec29fb41fb9aa18fe94a0921a725bde9eef196dc17999d00",
+  "engine_debug_build": true,
+  "extension_target": "template_release",
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "platform": "windows",
+  "source_sha256": "7b064e5dca1fc8333d958c073c2dac11eecc96a95b4095117d38be93ae672695",
+  "toolchain_sha256": "83608b6cdfcc7d4e8cdf8c0bddf3bc72d7db1615e8054efbec856a00140637af"
+}
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+OPENRC_NATIVE_LAKE_PARITY points=669 channels=2676 bit_exact=2676 max_abs_error=0.0
+OPENRC_NATIVE_LAKE_PROFILE points=669 rounds=3 gdscript_ms_per_sample=0.19264125560538 native_ms_per_sample=0.01421026407573 speedup=13.5564866760168 check=-10120.7657219458
+OPENRC_NATIVE_EVAL_PROFILE engine_debug=true extension_target=template_release gdscript_ms=1.6050 native_ms=0.1666 speedup=9.63x iterations=50
+OPENRC_NATIVE_PARITY_OK checks=733

@@ -2539,6 +2539,12 @@
       "kind": "estimated",
       "source": "between a full-size tyre on concrete (JSBSim c172x 0.022) and the Stik's 76 mm wheel (0.04): the 171 mm wheels deform less; per-surface factors (grass) come from the field"
     },
+    "breakaway_factor": {
+      "value": 1.25,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "P51-21, as the Stik and Timber (E3b1): static / rolling resistance of a wheel at rest (bearing and axle friction, tyre flat spot, the small mound in front of a wheel parked on grass); the ground knowledge base (docs/research/roadmap-investigations/04, section 3) brackets it at 1.0-1.5 without a measurement and 1.25 is the middle. A luggage-scale pull on a built model (breakaway force, then the steady rolling force) would measure it"
+    },
     "side_friction": {
       "value": 0.8,
       "unit": "1",

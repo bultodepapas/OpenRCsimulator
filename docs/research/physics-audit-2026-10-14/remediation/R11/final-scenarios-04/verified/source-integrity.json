@@ -1,0 +1,82 @@
+{
+  "format": "openrc-r11-final-scenarios-04-source-integrity-v1",
+  "source_identity": {
+    "final_scenarios_03_solver": "3877ec2dab0d72194f979ad85c396a2ecc40aa8388cd31b252ea99dd10584123",
+    "r05_candidate_02_solver": "e987ea81c90e32f7400eae386c02ded31e05de03e6b7205bcd035c66a1efb1a9",
+    "final_scenarios_04_solver": "85d0b19b66d118bf4a735e253b4f2d5c0d1d73a7a35f11f6e146dfc16b207a1b",
+    "r00_baseline_solver": "f2cd23dd5dd04af0ff51547f45c2ceaea23c05fbd03d59541dcac949dd4bd26e"
+  },
+  "physical_copy": {
+    "destination_app": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-final-scenarios-04\\verified-app",
+    "sample_file_id": {
+      "verified_copy_id": "0x0000000000000000002c0000001520ea",
+      "path": "physics/dynamics.gd",
+      "combined02_id": "0x000000000000000000110000004ee292",
+      "same_content": true
+    },
+    "source_app": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r05b-root\\combined02\\app",
+    "hardlinks": 0,
+    "candidate_cache": ".godot directories excluded from file manifest; generated cache is local to verified copy",
+    "file_count": 2320,
+    "byte_count_after_three_overlays": 99187111,
+    "method": "robocopy /E /COPY:DAT /DCOPY:DAT /R:0 /W:0 /XD .godot, then three explicit file overlays"
+  },
+  "source_manifest": {
+    "post_sha256": "daba633be45907c32cc96fe30514fa97090b424bec7cb241d2985e1ef42270f7",
+    "post_scenario_manifest": "sources-after.json",
+    "pre_scenario_manifest": "sources-before.json",
+    "combined02_aero_preimage_sha256": "fed08e735494b6d2597f639cca118d84c978f75828811f0d09968bfc67a85be5",
+    "combined02_vs_pre_scenario_code_mismatches": 0,
+    "pre_sha256": "daba633be45907c32cc96fe30514fa97090b424bec7cb241d2985e1ef42270f7",
+    "runtime_gd_count": 110,
+    "runtime_source_drift_in_verified_copy": []
+  },
+  "side_by_side_file_hashes": {
+    "all_differences": 4,
+    "difference_paths": [
+      "data/aircraft/sebart_avanti_s_a200.json",
+      "data/workshop/sebart-avanti-s-a200-p100rx.json",
+      "physics/aero.gd",
+      "tests/check_math_sensitivity.py"
+    ],
+    "unallowed_differences": 0,
+    "combined02_count": 2320,
+    "verified_copy_count": 2320,
+    "artifact": "app-tree-hashes.json"
+  },
+  "allowed_overlays": [
+    {
+      "verified_sha256": "7ac94f6003f2cb7660a56dd94755c6a7d6143d90cc446c6b6c20433038ce38e3",
+      "kind": "corrected six explicit square evaluations",
+      "path": "physics/aero.gd",
+      "base_sha256": "fed08e735494b6d2597f639cca118d84c978f75828811f0d09968bfc67a85be5"
+    },
+    {
+      "verified_sha256": "68d3fd42b28e30bf1dc210b838d945d517f062506749af14f995a5a5f39a83b6",
+      "kind": "R11 portability pipeline output",
+      "path": "data/aircraft/sebart_avanti_s_a200.json",
+      "base_sha256": "74043c9bc1de35de066bc65b971e85f5e099173f2d9cccec065c6988abbb6b9d"
+    },
+    {
+      "verified_sha256": "ebcd47a5dc60b6aa401ecf7120fe4cca34485d3185096b611acfde6b2d352743",
+      "kind": "R11 portability pipeline output",
+      "path": "data/workshop/sebart-avanti-s-a200-p100rx.json",
+      "base_sha256": "a20a1908a8aa5fe8820e625dc12294cbb437143eeb50812c99f72a4512587955"
+    },
+    {
+      "verified_sha256": "47f58e4df5c3b113e948260f841e169fc29e18521b4d9d8554568d22da13c9be",
+      "kind": "H7 test-harness instrumentation only; runtime app source is unchanged",
+      "path": "tests/check_math_sensitivity.py",
+      "base_sha256": "fb812c2de04c22d4f031bee3da3d4a1f9590084960dbd0e0267419bc68cf97bc"
+    }
+  ],
+  "r05_e987_reference": {
+    "candidate_02_archive_sha256": "cb0d6eab727190cec9295a86d79d0a1f829fa73dc78755a649c6cb6b4d7c8903",
+    "candidate_02_manifest_path": "docs/research/physics-audit-2026-10-14/remediation/R05/glow-contact-20261014/candidate-02-sources.json",
+    "candidate_02_archive_path": "docs/research/physics-audit-2026-10-14/remediation/R05/glow-contact-20261014/candidate-02-solver-source.tar.gz",
+    "identity_path": "docs/research/physics-audit-2026-10-14/remediation/R05/glow-contact-20261014/identity.json",
+    "identity_file_sha256": "fb50bd27b9c273c18715b4eca779658fae000db4510c4561a9a35da39a232efd",
+    "candidate_02_manifest_sha256": "cbc0c52d36167d9ec973502151fdf7a5cf1eb404c5a0575ebce1c97fac663bef",
+    "solver_fingerprint": "e987ea81c90e32f7400eae386c02ded31e05de03e6b7205bcd035c66a1efb1a9"
+  }
+}

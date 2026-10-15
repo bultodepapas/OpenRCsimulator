@@ -1,0 +1,76 @@
+{
+  "purpose": "Software contact fixture; not physical validation",
+  "scenarios": [
+    {
+      "probe": "foremost",
+      "initial_numeric_state_identical": true,
+      "input_tape": "60 identical [0,0,0,0] post-conditioning commands; see recorder/CSV",
+      "baseline": [
+        {
+          "tick": 1,
+          "fraction": 0.2994381127262491,
+          "mass_effective_kg": 2.6228990766295133,
+          "energy_j": 84.12097420892572,
+          "dissipated_j": 80.75613524056867,
+          "terminal": false,
+          "response": "dissipative_impulse"
+        }
+      ],
+      "candidate": [
+        {
+          "tick": 1,
+          "fraction": 0.2994381127262491,
+          "mass_effective_kg": 2.5328990766303443,
+          "energy_j": 81.23451634015322,
+          "dissipated_j": 77.98513568654708,
+          "terminal": false,
+          "response": "dissipative_impulse"
+        }
+      ],
+      "baseline_solver": "3877ec2dab0d72194f979ad85c396a2ecc40aa8388cd31b252ea99dd10584123",
+      "candidate_solver": "e987ea81c90e32f7400eae386c02ded31e05de03e6b7205bcd035c66a1efb1a9",
+      "baseline_rows": 61,
+      "candidate_rows": 61
+    },
+    {
+      "probe": "rightmost",
+      "initial_numeric_state_identical": true,
+      "input_tape": "60 identical [0,0,0,0] post-conditioning commands; see recorder/CSV",
+      "baseline": [
+        {
+          "tick": 1,
+          "fraction": 0.29944231340068195,
+          "mass_effective_kg": 0.5619076522495725,
+          "energy_j": 18.021061624908008,
+          "dissipated_j": 17.300219159911663,
+          "terminal": false,
+          "response": "dissipative_impulse"
+        }
+      ],
+      "candidate": [
+        {
+          "tick": 1,
+          "fraction": 0.29944231340068195,
+          "mass_effective_kg": 0.5528237929603341,
+          "energy_j": 17.729731212538663,
+          "dissipated_j": 17.020541964037136,
+          "terminal": false,
+          "response": "dissipative_impulse"
+        }
+      ],
+      "baseline_solver": "3877ec2dab0d72194f979ad85c396a2ecc40aa8388cd31b252ea99dd10584123",
+      "candidate_solver": "e987ea81c90e32f7400eae386c02ded31e05de03e6b7205bcd035c66a1efb1a9",
+      "baseline_rows": 61,
+      "candidate_rows": 61
+    }
+  ],
+  "baseline_source": "R11/final-scenarios-03/solver-source.tar.gz and immutable final-native snapshot",
+  "candidate_source_archives": [
+    "candidate-01-solver-source.tar.gz",
+    "candidate-02-solver-source.tar.gz"
+  ],
+  "scripts": {
+    "contact_recording.gd": "5928c9cf4b56b6593592e69d3ae5c03d64aa81d8c4a7eb7f0c9af09d1cc078a8",
+    "fixed_datum_impulse_oracle.py": "23989039f36683e772bd75df1af494667b4fcfb800dff166f1a586b1a2af186d"
+  }
+}

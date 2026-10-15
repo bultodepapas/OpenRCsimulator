@@ -1,0 +1,99 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+E0b6p optimized swirl equivalence: 200 deterministic cases, seed 2601007
+FAIL case 0 equivalence case=0 model=0 component=2 reference=-0.9445515430909741 actual=-1.6026725154008357 abs_error=0.6581209723098616 tolerance=1.9445515430909741e-10
+FAIL case 4 equivalence case=4 model=4 component=2 reference=0.08780745198409667 actual=0.08782754439064011 abs_error=2.0092406543437136e-05 tolerance=1.0878074519840967e-10
+FAIL case 7 equivalence case=7 model=7 component=2 reference=-0.374854394632661 actual=-0.37432198373155845 abs_error=0.0005324109011025646 tolerance=1.3748543946326611e-10
+FAIL case 8 equivalence case=8 model=8 component=2 reference=-0.0042501467900172285 actual=-0.0037125405367277597 abs_error=0.0005376062532894688 tolerance=1.0042501467900173e-10
+FAIL case 12 equivalence case=12 model=12 component=2 reference=-0.4356955701638567 actual=-0.4032961083450905 abs_error=0.032399461818766184 tolerance=1.4356955701638567e-10
+FAIL case 14 equivalence case=14 model=14 component=2 reference=3.7309601099216754 actual=2.4549137756778783 abs_error=1.276046334243797 tolerance=4.730960109921675e-10
+FAIL case 16 equivalence case=16 model=0 component=2 reference=5.076015122235685 actual=5.406237129945012 abs_error=0.3302220077093274 tolerance=6.076015122235685e-10
+FAIL case 20 equivalence case=20 model=4 component=2 reference=0.0925755520331728 actual=0.09447302079713626 abs_error=0.0018974687639634613 tolerance=1.0925755520331728e-10
+FAIL case 22 equivalence case=22 model=6 component=2 reference=-3.756013178630129 actual=-3.836223716222779 abs_error=0.08021053759264962 tolerance=4.756013178630129e-10
+FAIL case 23 equivalence case=23 model=7 component=2 reference=0.014829395379110787 actual=0.015264303830283403 abs_error=0.0004349084511726161 tolerance=1.0148293953791109e-10
+FAIL case 24 equivalence case=24 model=8 component=2 reference=0.0017877890128727425 actual=-0.037880021479049786 abs_error=0.03966781049192253 tolerance=1.0017877890128727e-10
+FAIL case 28 equivalence case=28 model=12 component=2 reference=-0.026192446561449645 actual=-0.02564344923989137 abs_error=0.0005489973215582755 tolerance=1.0261924465614497e-10
+FAIL case 30 equivalence case=30 model=14 component=2 reference=0.45631146355302626 actual=0.4536115468684518 abs_error=0.002699916684574477 tolerance=1.4563114635530263e-10
+FAIL case 31 equivalence case=31 model=15 component=0 reference=-0.003358140837322384 actual=-0.003291609972856038 abs_error=6.653086446634614e-05 tolerance=1.0033581408373224e-10
+FAIL case 32 equivalence case=32 model=0 component=2 reference=1.4934602919146003 actual=1.7625104747426692 abs_error=0.2690501828280689 tolerance=2.4934602919146e-10
+FAIL case 36 equivalence case=36 model=4 component=2 reference=0.08844694259915731 actual=0.08984085708040301 abs_error=0.001393914481245706 tolerance=1.0884469425991574e-10
+FAIL case 39 equivalence case=39 model=7 component=2 reference=0.06308262585391784 actual=0.06304190056055942 abs_error=4.072529335842623e-05 tolerance=1.0630826258539179e-10
+FAIL case 40 equivalence case=40 model=8 component=3 reference=0.004011845269402231 actual=0.004017902740458897 abs_error=6.057471056665313e-06 tolerance=1.0040118452694023e-10
+FAIL case 42 equivalence case=42 model=10 component=2 reference=-0.005601623042817006 actual=-0.005535662426552351 abs_error=6.596061626465508e-05 tolerance=1.005601623042817e-10
+FAIL case 44 equivalence case=44 model=12 component=2 reference=-0.13267882541138332 actual=-0.13602290632253333 abs_error=0.003344080911150016 tolerance=1.1326788254113833e-10
+FAIL case 46 equivalence case=46 model=14 component=2 reference=-0.8074906509786708 actual=-1.9631480163695945 abs_error=1.1556573653909237 tolerance=1.807490650978671e-10
+FAIL case 48 equivalence case=48 model=0 component=2 reference=3.981577299484129 actual=3.31865978441524 abs_error=0.6629175150688891 tolerance=4.98157729948413e-10
+FAIL case 54 equivalence case=54 model=6 component=2 reference=4.297759544499376 actual=6.032886111015856 abs_error=1.7351265665164792 tolerance=5.297759544499377e-10
+FAIL case 55 equivalence case=55 model=7 component=2 reference=-0.01475533988729949 actual=-0.014771862719136634 abs_error=1.6522831837144022e-05 tolerance=1.0147553398872995e-10
+FAIL case 56 equivalence case=56 model=8 component=2 reference=-0.027806973431454343 actual=-0.02959559158377234 abs_error=0.0017886181523179973 tolerance=1.0278069734314544e-10
+FAIL case 58 equivalence case=58 model=10 component=2 reference=-0.008056371896152489 actual=-0.008033421927703979 abs_error=2.294996844851016e-05 tolerance=1.0080563718961525e-10
+FAIL case 60 equivalence case=60 model=12 component=3 reference=0.0018610921629006565 actual=0.0018603852128049616 abs_error=7.069500956948839e-07 tolerance=1.0018610921629006e-10
+FAIL case 62 equivalence case=62 model=14 component=2 reference=-0.5269364866040095 actual=-0.4850831826696491 abs_error=0.041853303934360375 tolerance=1.5269364866040095e-10
+FAIL case 64 equivalence case=64 model=0 component=2 reference=-0.7314015094916537 actual=-1.0599591632655478 abs_error=0.3285576537738941 tolerance=1.7314015094916538e-10
+FAIL case 68 equivalence case=68 model=4 component=3 reference=0.0010048937643241979 actual=-0.001325867568291195 abs_error=0.002330761332615393 tolerance=1.0010048937643242e-10
+FAIL case 70 equivalence case=70 model=6 component=2 reference=0.36604668096421616 actual=0.3601572924028016 abs_error=0.005889388561414577 tolerance=1.366046680964216e-10
+FAIL case 72 equivalence case=72 model=8 component=2 reference=0.0012471988240115306 actual=0.0014629468190002215 abs_error=0.0002157479949886909 tolerance=1.0012471988240115e-10
+FAIL case 75 equivalence case=75 model=11 component=2 reference=0.29121102751242023 actual=0.05493035592584228 abs_error=0.23628067158657795 tolerance=1.29121102751242e-10
+FAIL case 76 equivalence case=76 model=12 component=2 reference=-0.16918209978171905 actual=-0.2099910928569082 abs_error=0.04080899307518915 tolerance=1.169182099781719e-10
+FAIL case 78 equivalence case=78 model=14 component=2 reference=0.740884162948753 actual=0.6984403401290482 abs_error=0.042443822819704824 tolerance=1.7408841629487532e-10
+FAIL case 80 equivalence case=80 model=0 component=2 reference=-1.747747743677234 actual=-1.5874213125792656 abs_error=0.1603264310979684 tolerance=2.747747743677234e-10
+FAIL case 86 equivalence case=86 model=6 component=2 reference=-1.323289152656632 actual=-0.5109809021435336 abs_error=0.8123082505130983 tolerance=2.323289152656632e-10
+FAIL case 88 equivalence case=88 model=8 component=3 reference=0.006912087415551292 actual=0.0069210675765525986 abs_error=8.980161001306483e-06 tolerance=1.0069120874155513e-10
+FAIL case 90 equivalence case=90 model=10 component=2 reference=0.057845189909022404 actual=0.09642743256255029 abs_error=0.03858224265352789 tolerance=1.0578451899090224e-10
+FAIL case 91 equivalence case=91 model=11 component=2 reference=-4.050355820135182 actual=-4.030393509491518 abs_error=0.019962310643663272 tolerance=5.050355820135182e-10
+FAIL case 92 equivalence case=92 model=12 component=2 reference=-0.0929329382421491 actual=-0.09006071988928466 abs_error=0.002872218352864442 tolerance=1.0929329382421491e-10
+FAIL case 94 equivalence case=94 model=14 component=2 reference=1.5336664119840906 actual=1.5399414710954513 abs_error=0.006275059111360726 tolerance=2.533666411984091e-10
+FAIL case 96 equivalence case=96 model=0 component=2 reference=0.4638322531237363 actual=0.39616947587318063 abs_error=0.0676627772505557 tolerance=1.4638322531237365e-10
+FAIL case 100 equivalence case=100 model=4 component=2 reference=0.04276205905327318 actual=0.043408896789867035 abs_error=0.0006468377365938527 tolerance=1.0427620590532733e-10
+FAIL case 102 equivalence case=102 model=6 component=2 reference=-2.5152305205037617 actual=-2.5796129524242875 abs_error=0.06438243192052573 tolerance=3.515230520503762e-10
+FAIL case 103 equivalence case=103 model=7 component=2 reference=-0.5994579526680421 actual=-0.616636052519544 abs_error=0.01717809985150187 tolerance=1.5994579526680422e-10
+FAIL case 104 equivalence case=104 model=8 component=3 reference=0.0043033603800919085 actual=0.004024862161682857 abs_error=0.00027849821840905155 tolerance=1.0043033603800919e-10
+FAIL case 107 equivalence case=107 model=11 component=2 reference=-0.01954228050019277 actual=-0.0033711129080424007 abs_error=0.01617116759215037 tolerance=1.0195422805001928e-10
+FAIL case 108 equivalence case=108 model=12 component=2 reference=-0.02763513102508186 actual=-0.02768209840542224 abs_error=4.696738034037917e-05 tolerance=1.0276351310250818e-10
+FAIL case 112 equivalence case=112 model=0 component=2 reference=-7.798560250868166 actual=-7.699466721333772 abs_error=0.09909352953439399 tolerance=8.798560250868166e-10
+FAIL case 116 equivalence case=116 model=4 component=3 reference=0.007661833708887827 actual=0.007672640316059458 abs_error=1.0806607171631039e-05 tolerance=1.0076618337088879e-10
+FAIL case 120 equivalence case=120 model=8 component=2 reference=-0.0017383138085441674 actual=-0.0016097764967554218 abs_error=0.0001285373117887456 tolerance=1.0017383138085442e-10
+FAIL case 124 equivalence case=124 model=12 component=2 reference=-0.002521701247180201 actual=-0.00252402651153966 abs_error=2.325264359458873e-06 tolerance=1.0025217012471803e-10
+FAIL case 126 equivalence case=126 model=14 component=0 reference=0.09112995669166406 actual=0.06045652579670508 abs_error=0.030673430894958977 tolerance=1.0911299566916641e-10
+FAIL case 127 equivalence case=127 model=15 component=2 reference=-0.02660482908043915 actual=-0.026593338015540854 abs_error=1.1491064898293962e-05 tolerance=1.0266048290804392e-10
+FAIL case 128 equivalence case=128 model=0 component=2 reference=9.26029937983154 actual=9.616095430372802 abs_error=0.3557960505412616 tolerance=1.0260299379831541e-09
+FAIL case 132 equivalence case=132 model=4 component=3 reference=0.010557793593172821 actual=0.010818354356360206 abs_error=0.0002605607631873848 tolerance=1.0105577935931729e-10
+FAIL case 136 equivalence case=136 model=8 component=2 reference=0.0022998633541404523 actual=0.002374895925169207 abs_error=7.503257102875471e-05 tolerance=1.0022998633541405e-10
+FAIL case 138 equivalence case=138 model=10 component=0 reference=-0.006038443760427394 actual=-0.006202986098887262 abs_error=0.00016454233845986793 tolerance=1.0060384437604275e-10
+FAIL case 139 equivalence case=139 model=11 component=3 reference=-0.04439516337463029 actual=-0.04666462364225885 abs_error=0.002269460267628559 tolerance=1.0443951633746303e-10
+FAIL case 140 equivalence case=140 model=12 component=2 reference=1.6835991961031833 actual=1.859985414683078 abs_error=0.17638621857989478 tolerance=2.6835991961031836e-10
+FAIL case 142 equivalence case=142 model=14 component=2 reference=-0.19227575910113098 actual=-0.14265082233764675 abs_error=0.04962493676348423 tolerance=1.192275759101131e-10
+FAIL case 143 equivalence case=143 model=15 component=2 reference=-0.14327940956357005 actual=-0.1434044196949789 abs_error=0.00012501013140886474 tolerance=1.1432794095635701e-10
+FAIL case 144 equivalence case=144 model=0 component=2 reference=2.837229777510336 actual=2.7204832043854337 abs_error=0.11674657312490222 tolerance=3.837229777510336e-10
+FAIL case 148 equivalence case=148 model=4 component=2 reference=0.10519159303184678 actual=0.10699034289184206 abs_error=0.0017987498599952856 tolerance=1.1051915930318468e-10
+FAIL case 152 equivalence case=152 model=8 component=2 reference=-0.1789728988606833 actual=-0.12905516799540334 abs_error=0.04991773086527995 tolerance=1.1789728988606833e-10
+FAIL case 155 equivalence case=155 model=11 component=2 reference=-0.05964258915815607 actual=0.08103849034997435 abs_error=0.1406810795081304 tolerance=1.059642589158156e-10
+FAIL case 156 equivalence case=156 model=12 component=2 reference=-0.040087311344432885 actual=-0.03988466458719525 abs_error=0.00020264675723763448 tolerance=1.0400873113444329e-10
+FAIL case 160 equivalence case=160 model=0 component=2 reference=-0.7497578868649182 actual=-0.7457832919573608 abs_error=0.0039745949075573606 tolerance=1.7497578868649182e-10
+FAIL case 164 equivalence case=164 model=4 component=2 reference=0.007142410017260792 actual=0.007175431251375812 abs_error=3.302123411502017e-05 tolerance=1.0071424100172609e-10
+FAIL case 166 equivalence case=166 model=6 component=2 reference=-1.0954621285674453 actual=-2.453044530008834 abs_error=1.3575824014413886 tolerance=2.0954621285674454e-10
+FAIL case 168 equivalence case=168 model=8 component=2 reference=0.0037165897487569932 actual=0.0039027788312973044 abs_error=0.0001861890825403112 tolerance=1.003716589748757e-10
+FAIL case 170 equivalence case=170 model=10 component=3 reference=0.0024366845981413443 actual=0.0023894379162551203 abs_error=4.7246681886224055e-05 tolerance=1.0024366845981413e-10
+FAIL case 171 equivalence case=171 model=11 component=2 reference=0.007001101610007547 actual=0.006995988883503773 abs_error=5.112726503774499e-06 tolerance=1.0070011016100076e-10
+FAIL case 172 equivalence case=172 model=12 component=2 reference=-0.08740832777123575 actual=-0.08544636989795518 abs_error=0.001961957873280573 tolerance=1.0874083277712358e-10
+FAIL case 174 equivalence case=174 model=14 component=2 reference=0.35183055424756415 actual=0.36817667668589077 abs_error=0.016346122438326616 tolerance=1.3518305542475642e-10
+FAIL case 176 equivalence case=176 model=0 component=2 reference=0.075652202209748 actual=0.07324603419548581 abs_error=0.002406168014262189 tolerance=1.075652202209748e-10
+FAIL case 180 equivalence case=180 model=4 component=2 reference=0.07784342356809737 actual=0.0784847018024607 abs_error=0.0006412782343633294 tolerance=1.0778434235680973e-10
+FAIL case 182 equivalence case=182 model=6 component=2 reference=0.08546854996294534 actual=0.08259999660698997 abs_error=0.002868553355955372 tolerance=1.0854685499629454e-10
+FAIL case 184 equivalence case=184 model=8 component=2 reference=-0.0002362494641226648 actual=-0.00018653283594453895 abs_error=4.971662817812583e-05 tolerance=1.0002362494641227e-10
+FAIL case 187 equivalence case=187 model=11 component=2 reference=-0.004335928933644772 actual=0.0023628603736318855 abs_error=0.006698789307276657 tolerance=1.0043359289336449e-10
+FAIL case 188 equivalence case=188 model=12 component=2 reference=-1.611539111835488 actual=-1.3459988378449983 abs_error=0.26554027399048974 tolerance=2.611539111835488e-10
+FAIL case 191 equivalence case=191 model=15 component=2 reference=0.041568258011033365 actual=0.04150624448002549 abs_error=6.201353100787621e-05 tolerance=1.0415682580110334e-10
+FAIL case 192 equivalence case=192 model=0 component=2 reference=1.8460662814612427 actual=1.6883017968813925 abs_error=0.15776448457985026 tolerance=2.846066281461243e-10
+FAIL case 196 equivalence case=196 model=4 component=2 reference=-0.020413543561754722 actual=-0.020528274352141312 abs_error=0.0001147307903865899 tolerance=1.0204135435617548e-10
+FAIL case 198 equivalence case=198 model=6 component=0 reference=-0.11874888386637651 actual=-0.12463399600287438 abs_error=0.0058851121364978665 tolerance=1.1187488838663766e-10
+ok 200 cases include default and held downwash CL default=100 held=100
+ok 200 cases include both horizontal tail-law modes free_slope/downwash=150 classic/no-free_slope=50
+ok active smooth geometry crosses the regularized vortex core 72 cases
+ok active smooth geometry crosses the inner occupancy edge 94 cases
+ok active smooth geometry crosses the outer occupancy edge 105 cases
+ok forward and reverse fade regimes are all sampled full=140 partial=16 cutoff=44
+FAIL optimized helper matches frozen helper within abs+relative 1e-10 86 mismatches; worst case=54 model=6 component=2 reference=4.297759544499376 actual=6.032886111015856 abs_error=1.7351265665164792 tolerance=5.297759544499377e-10
+E0b6p equivalence worst absolute error=1.7351265665164792, worst error/tolerance=6478677819.720344 (case=54 model=6 component=2 reference=4.297759544499376 actual=6.032886111015856 abs_error=1.7351265665164792 tolerance=5.297759544499377e-10)
+E0b6p equivalence coverage: core=72 inner=94 outer=105 reverse(full/partial/cutoff)=140/16/44 CL(default/held)=100/100 tail_law(downwash/classic)=150/50
+E0b6p optimized swirl equivalence: 93 checks, 87 failed

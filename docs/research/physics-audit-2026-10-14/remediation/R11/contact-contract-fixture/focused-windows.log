@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL gearless v2 fixture loads through AircraftData.load_file ["/landing_gear: is required for the declared gear capability"]
+703 checks, 1 failed

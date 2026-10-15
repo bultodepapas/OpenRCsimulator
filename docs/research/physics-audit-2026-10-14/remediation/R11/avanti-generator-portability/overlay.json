@@ -1,0 +1,9 @@
+{
+  "scope": "R11 cross-platform special-angle polar generation over fixed b09 plus R05B",
+  "files": {
+    "research/avanti-s/av17-r2/build_polar.py": "ca31e8be989cf696f85259b5df3159bf95890953b33a4bddbbcd08c12d6076b2",
+    "research/avanti-s/av17-r2/test_build_polar.py": "532633093c97b929e20e20466be82e5776772ccb4a8f1f1e3b1d4fedf713a3b4",
+    "app/data/aircraft/sebart_avanti_s_a200.json": "68d3fd42b28e30bf1dc210b838d945d517f062506749af14f995a5a5f39a83b6",
+    "app/data/workshop/sebart-avanti-s-a200-p100rx.json": "ebcd47a5dc60b6aa401ecf7120fe4cca34485d3185096b611acfde6b2d352743"
+  }
+}

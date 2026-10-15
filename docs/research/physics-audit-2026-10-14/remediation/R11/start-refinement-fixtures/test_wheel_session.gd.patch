@@ -1,0 +1,43 @@
+--- a/app/tests/test_wheel_session.gd
++++ b/app/tests/test_wheel_session.gd
+@@ -91,8 +91,38 @@
+ 	_check("in-memory validation keeps legacy gear", memory.ok and not memory.model.landing_gear.contacts[0].has("wheel_radius") \
+ 		and not memory.model.has("wheel_profile"))
+ 	var avanti: Dictionary = AircraftData.load_file(AVANTI)
+-	_check("Avanti remains gearless without invented wheel state", avanti.ok and avanti.model.landing_gear.is_empty() \
+-		and avanti.model.wheel_profile.status == "no_gear")
++	_check("Avanti applies its declared retractable gear and sourced wheel profile", avanti.ok \
++		and avanti.model.landing_gear.contacts.size() == 3 \
++		and avanti.model.wheel_profile.status == "applied" \
++		and avanti.model.landing_gear.contacts[0].wheel_radius == 0.04338 \
++		and avanti.model.landing_gear.contacts[2].wheel_radius == 0.03532 \
++		and avanti.model.landing_gear.contacts[0].brake_availability == "available" \
++		and avanti.model.landing_gear.contacts[2].brake_availability == "none",
++		str(avanti.get("model", {}).get("wheel_profile", {})))
++	# No product aircraft is currently gearless. Exercise that route through a valid file-backed v2 fixture.
++	var gearless_raw: Dictionary = raw.duplicate(true)
++	gearless_raw.id = "wheel-profile-gearless-fixture"
++	gearless_raw.erase("landing_gear")
++	gearless_raw.capabilities.gear = "locked_up"
++	var gearless_path := "user://wheel-profile-gearless-%d.json" % OS.get_process_id()
++	var gearless_file := FileAccess.open(gearless_path, FileAccess.WRITE)
++	_check("gearless v2 fixture can be written", gearless_file != null)
++	if gearless_file != null:
++		gearless_file.store_string(JSON.stringify(gearless_raw, "", true, true))
++		gearless_file.close()
++		var gearless: Dictionary = AircraftData.load_file(gearless_path)
++		_check("file-backed gearless fixture preserves the explicit no-gear profile route", gearless.ok \
++			and gearless.model.landing_gear.is_empty() and gearless.model.wheel_profile.status == "no_gear",
++			str(gearless.errors))
++		if gearless.ok:
++			var no_wheels := Session.new()
++			no_wheels.physics_enabled = false
++			no_wheels.input_enabled = false
++			no_wheels.setup(gearless_path)
++			_check("gearless session has no invented wheel slots", no_wheels.aircraft.ok \
++				and no_wheels.wheel_count() == 0 and no_wheels.sim.continuous.is_empty())
++			no_wheels.free()
++		_check("gearless fixture removed", DirAccess.remove_absolute(ProjectSettings.globalize_path(gearless_path)) == OK)
+ 	var fallback_raw: Dictionary = raw.duplicate(true)
+ 	fallback_raw.id = "unlisted-wheel-profile-fixture"
+ 	var fallback_path := "user://wheel-profile-fallback-%d.json" % OS.get_process_id()

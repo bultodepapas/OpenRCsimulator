@@ -85,6 +85,7 @@ python3 "$HERE/../research/p51/p51-15/test_inventory.py"
 echo "== AV-15: independent geometry, inventory and fixed-build sensitivity checks"
 python3 "$HERE/../research/avanti-s/av14/test_geometry_inventory.py"
 python3 "$HERE/../research/avanti-s/av14/test_sensitivity.py"
+python3 "$HERE/../research/avanti-s/av17-r2/test_build_polar.py"
 
 echo "== L6b offline tree placement matches committed positions"
 python3 "$HERE/../tools/trees/place.py" --field "$HERE/data/fields/default.json" --check

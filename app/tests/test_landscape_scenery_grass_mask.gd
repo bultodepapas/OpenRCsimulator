@@ -225,6 +225,15 @@ func _translated_ineligible_field(north_delta: float, east_delta: float) -> Dict
 	for surface: Dictionary in raw.surfaces:
 		_edit_quantity(surface, "center_north", north_delta)
 		_edit_quantity(surface, "center_east", east_delta)
+	# Translate the complete pad geometry with its referenced surface. Leaving
+	# this newer module behind makes the fixture invalid before scenery is tested.
+	if raw.has("rotorcraft_pad"):
+		var pad: Dictionary = raw.rotorcraft_pad
+		_edit_quantity(pad, "north", north_delta)
+		_edit_quantity(pad, "east", east_delta)
+		for keepout: Dictionary in pad.get("keepouts", []):
+			_edit_quantity(keepout, "north", north_delta)
+			_edit_quantity(keepout, "east", east_delta)
 	for cue: Dictionary in raw.get("flight_cues", []):
 		if cue.has("north"):
 			_edit_quantity(cue, "north", north_delta)

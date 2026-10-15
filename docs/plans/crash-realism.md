@@ -4,6 +4,8 @@
 **Owner:** crash track. **Owns:** `app/render/crash/`, `app/tests/test_crash_*.gd`, `docs/research/crash-damage-investigations/`, `research/crash-damage/`.
 
 **2026-10-14 cost follow-up:** [CR-22c-R1](../research/crash-damage-investigations/CR-22c-R1/README.md) implements prepared BVH scuff queries, Compatibility shader warmup and selective emitter startup, with native ground-impact evidence across all eight airplane configurations. The earlier pre-warm action is implemented; residual frame spikes, the full class/distance matrix, LOD and visual acceptance remain open.
+
+**2026-10-14 repeated-work follow-up:** [CR-22c-R2](../research/crash-damage-investigations/CR-22c-R2/README.md) consumes soft-contact feedback once per tick, suppresses it during holds, caches unchanged wreck shadow projections and caches scenery sort distances. This prevents duplicate touch sounds; a continuous held scrape sound remains separate work.
 **Coordinated, not owned:** `app/physics/impact_snapshot.gd` (physics), `app/sim/scenery_collision.gd` (landscape LU-05), `app/sim/flight_session.gd` and `app/main.gd` (main line), aircraft data and generators (model owners, [AIRCRAFT_CONTRACT](../../AIRCRAFT_CONTRACT.md)).
 
 Goal: a crash looks and sounds like what hit, how hard and why. A wingtip brush stays a scuff. A nose-in at full speed destroys the airplane. Fire needs a fuel source, a rupture and an ignition source. Nothing explodes by default. The effects cost scales with what happened and with distance.

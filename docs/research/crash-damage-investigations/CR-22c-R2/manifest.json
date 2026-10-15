@@ -1,0 +1,15 @@
+{
+  "date": "2026-10-14",
+  "baseline_head": "b09aa200",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "timing_scope": "CPU on shared Windows host; sequential Godot runs by this track",
+  "sources": {
+    "app/render/crash/director.gd": "79e9070e5c2dd94db37a1d8fd800ac6310c8bd96c58c9d994af05d25053e8e0f",
+    "app/render/crash/wreck.gd": "60a219932df4b742a9494651959449f719cc47ebee10ebd2fffaf8cc1f3cb41a",
+    "app/render/landscape_upgrade/scenery_bodies.gd": "2a9a548aa3d7a2dce9e362b9ad3c254aae0ace5383c3af6899645c52e404faef",
+    "app/tests/test_soft_contact_feedback.gd": "e6ca79c547860df295c55fae778869b48bd31a515290b942b7e8cb63886e9808",
+    "app/tests/test_wreck_shadow_cache.gd": "6d41da8119f1a406815fbc57643a286db0878d05262ec8f5afcc4e362c2375df"
+  },
+  "benchmark_convention": "variant 0 reference, variant 1 candidate; alternating AB/BA order",
+  "snapshot": "snapshot-sources.json.gz records initial copied source; sources above identify final overrides"
+}

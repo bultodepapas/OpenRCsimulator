@@ -1,0 +1,52 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Cannot open file 'res://.godot/imported/peludo-splash1.wav-4213a32d1f81ce2a2592c776ff45a1c3.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+ERROR: Failed loading resource: res://.godot/imported/peludo-splash1.wav-4213a32d1f81ce2a2592c776ff45a1c3.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/audio/water/peludo-splash1.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Cannot open file 'res://.godot/imported/peludo-splash2.wav-ef5189e65659c2423691182c64e02cc8.sample'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+ERROR: Failed loading resource: res://.godot/imported/peludo-splash2.wav-ef5189e65659c2423691182c64e02cc8.sample.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/audio/water/peludo-splash2.wav.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Cannot open file 'res://.godot/imported/randommind-vistula-short.mp3-1c57b2f71006d9ddf03cda4c0cbd8fd2.mp3str'.
+   at: load (core/io/resource_format_binary.cpp:1156)
+ERROR: Failed loading resource: res://.godot/imported/randommind-vistula-short.mp3-1c57b2f71006d9ddf03cda4c0cbd8fd2.mp3str.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/audio/water/randommind-vistula-short.mp3.
+   at: _load (core/io/resource_loader.cpp:317)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/audio/water/peludo-splash1.wav".
+   at: GDScript::reload (res://render/lake/water_effects.gd:8)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/audio/water/peludo-splash2.wav".
+   at: GDScript::reload (res://render/lake/water_effects.gd:9)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/audio/water/randommind-vistula-short.mp3".
+   at: GDScript::reload (res://render/lake/water_effects.gd:10)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://render/crash/director.gd:0)
+ERROR: Unable to open file: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex.
+   at: _load_data (scene/resources/compressed_texture.cpp:45)
+ERROR: Failed loading resource: res://.godot/imported/detail.png-dced170983857ae341a6125f48cede22.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+ERROR: Failed loading resource: res://assets/landscape/turf/detail.png.
+   at: _load (core/io/resource_loader.cpp:317)
+SCRIPT ERROR: Parse Error: Could not preload resource file "res://assets/landscape/turf/detail.png".
+   at: GDScript::reload (res://render/ground.gd:8)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "TURF_DETAIL" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://render/ground.gd:8)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://main.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tests/test_water_checkpoint.gd:0)
+ERROR: Failed to load script "res://tests/test_water_checkpoint.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+ERROR: Aircraft model contract: ["authoring source is missing: assets/aircraft/model-bindings.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json", "authoring source is missing: assets/aircraft/ugly-stik-60/geometry.json"]
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:52)
+       [1] _build_world (res://main.gd:1719)
+       [2] _ready (res://main.gd:405)
+       [3] _run (res://tests/test_water_checkpoint.gd:31)
+FAIL production Main fixture starts with lake crash director

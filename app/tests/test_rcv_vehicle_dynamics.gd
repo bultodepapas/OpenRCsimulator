@@ -301,7 +301,7 @@ func _initialize() -> void:
 	# hand-authored vertical offset. This checks the reset against tire loads.
 	_check("reset altitude is finite and above tire radius", is_finite(start[DOWN]) and -start[DOWN] > float(model["tire_radius_m"]))
 	_check("state layout keeps the rigid-body prefix and append offsets", Vehicle.POS == 0 and Vehicle.VEL == 3 and Vehicle.ATT == 6 and Vehicle.RATE == 10 and Vehicle.TRAVEL == 13 and Vehicle.TRAVEL_RATE == 17 and Vehicle.WHEEL_SPIN == 21 and Vehicle.WHEEL_ANGLE == 25 and Vehicle.STEER == 29 and Vehicle.STEER_RATE == 30)
-	_check("checkpoint-visible solver version is explicit", Vehicle.SOLVER_VERSION == "openrc-ground-vehicle-dynamics-rk4-v3")
+	_check("checkpoint-visible solver version is explicit", Vehicle.SOLVER_VERSION == "openrc-ground-vehicle-dynamics-rk4-v4")
 	var reference_identity := Vehicle._reference_backend_identity()
 	_check("reference identity pins actual source or remapped bytecode bytes",
 		Vehicle._sha256_is_valid(reference_identity.get("source_sha256", ""))

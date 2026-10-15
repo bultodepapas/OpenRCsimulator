@@ -1,0 +1,17 @@
+--- a/app/tests/check_math_sensitivity.py
++++ b/app/tests/check_math_sensitivity.py
+@@ -128,6 +128,14 @@
+         raise RuntimeError(f"expected one local_flow_weight function, found {len(functions)}")
+     function = functions[0]
+     selector = function.group(0)
++    # This source-level instrumenter accepts only the declared four early returns
++    # and final return. A differently spelled condition or inline/new return must
++    # not escape the known anchors and silently shorten the observed branch set.
++    returns = [code.rstrip() for line in selector.splitlines()
++               if re.search(r"\breturn\b", code := line.split("#", 1)[0])]
++    if returns != ["\t\treturn blend", "\t\t\treturn blend", "\t\t\treturn blend",
++                   "\t\t\treturn blend", "\treturn blend"]:
++        raise RuntimeError("local-flow return inventory changed; review branch instrumentation")
+     selector = replace_once(
+         selector,
+         "\tif blend == 1.0:\n\t\treturn blend\n",

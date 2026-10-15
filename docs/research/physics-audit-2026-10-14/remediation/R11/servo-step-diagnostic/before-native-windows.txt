@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+SERVO_STEP_DIAGNOSTIC {"aircraft_id":"sebart-avanti-s-a200-p100rx","attempted_command":[0.8,-0.4,0.3,0.6],"attempted_command_length":4,"aux_unchanged":true,"before_step_signal_count":0,"continuous_unchanged":true,"declared_input_size_before":6,"fault_reason":"step rejected: input or auxiliary state is nonfinite or malformed","flyable":false,"initialized_input_length":6,"initialized_inputs":[0.0,0.0577039316916437,0.0,0.0859641158022724,0.0,0.0],"input_length_after_rollback":6,"input_size_after":6,"inputs_after_rollback":[0.0,0.0577039316916437,0.0,0.0859641158022724,0.0,0.0],"inputs_restored_exactly":true,"loads_unchanged":true,"modes_unchanged":true,"previous_unchanged":true,"retractable_gear":true,"state_unchanged":true,"tick_after":0,"tick_before":0}

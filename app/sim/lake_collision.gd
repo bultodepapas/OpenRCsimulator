@@ -8,6 +8,7 @@ const SceneryCollision := preload("res://sim/scenery_collision.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const HullContact := preload("res://physics/hull_contact.gd")
 const HullCrossing := preload("res://physics/hull_crossing.gd")
+const EffectiveMass := preload("res://physics/effective_mass.gd")
 
 const MAX_ROTATION_STEP_RAD := 0.03490658503988659 # Match SceneryCollision's 2 degree bound.
 const ROTATION_SUBSTEP_FRACTION := 0.25 # Four smaller chords keep curved probes close to their true shoreline path.
@@ -34,6 +35,39 @@ class WaterEvent:
 static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate: PackedFloat64Array,
 		hull: PackedFloat64Array, gear: Dictionary, tick: int, dt: float, mass: float,
 		inertia: PackedFloat64Array, soft_bank: bool = true, prop_disc: Dictionary = {}) -> WaterEvent:
+	return _first_hit_core(lake, previous, candidate, hull, gear, tick, dt, mass, inertia,
+		soft_bank, prop_disc, Callable(), {})
+
+
+## Dynamic contact path. The pure sampler returns one coherent fixed-datum mass-properties Dictionary for a
+## tick fraction. Invalid samples abort this query explicitly instead of turning into a missed contact.
+static func first_hit_sampled(lake: Dictionary, previous: PackedFloat64Array,
+		candidate: PackedFloat64Array, hull: PackedFloat64Array, gear: Dictionary, tick: int,
+		dt: float, mass_at_fraction: Callable, soft_bank: bool = true,
+		prop_disc: Dictionary = {}) -> Dictionary:
+	if not mass_at_fraction.is_valid():
+		return {ok = false, event = null, reason = "invalid_mass_sampler"}
+	if not LakeSurface.is_valid_definition(lake):
+		return {ok = false, event = null, reason = "invalid_lake"}
+	if not SceneryCollision._state_is_valid(previous) or not SceneryCollision._state_is_valid(candidate):
+		return {ok = false, event = null, reason = "invalid_state"}
+	if hull.is_empty() or hull.size() % 3 != 0 or not SceneryCollision._packed_finite(hull):
+		return {ok = false, event = null, reason = "invalid_hull"}
+	if not is_finite(dt) or dt <= 0.0 or tick < 1:
+		return {ok = false, event = null, reason = "invalid_tick_or_dt"}
+	var failure: Dictionary = {}
+	var unit_inertia := PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
+	var event: WaterEvent = _first_hit_core(lake, previous, candidate, hull, gear, tick, dt,
+		1.0, unit_inertia, soft_bank, prop_disc, mass_at_fraction, failure)
+	if not failure.is_empty():
+		return {ok = false, event = null, reason = str(failure.get("reason", "invalid_mass_properties"))}
+	return {ok = true, event = event, reason = ""}
+
+
+static func _first_hit_core(lake: Dictionary, previous: PackedFloat64Array, candidate: PackedFloat64Array,
+		hull: PackedFloat64Array, gear: Dictionary, tick: int, dt: float, mass: float,
+		inertia: PackedFloat64Array, soft_bank: bool, prop_disc: Dictionary,
+		mass_at_fraction: Callable, sample_failure: Dictionary) -> WaterEvent:
 	if not LakeSurface.is_valid_definition(lake) or not SceneryCollision._state_is_valid(previous) \
 			or not SceneryCollision._state_is_valid(candidate) or hull.is_empty() or hull.size() % 3 != 0 \
 			or not SceneryCollision._packed_finite(hull) or not is_finite(dt) or dt <= 0.0 or tick < 1 \
@@ -145,12 +179,13 @@ static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate:
 						segment_start_time, segment_end_time, waves)
 					if bool(gear_water_hit.get("hit", false)):
 						var gear_water_event: WaterEvent = _event_at(lake, previous, candidate, probe,
-							gear_water_hit, "water", fraction0, fraction1, tick, mass, inertia, soft_bank)
+							gear_water_hit, "water", fraction0, fraction1, tick, mass, inertia, soft_bank,
+							mass_at_fraction, sample_failure, best)
 						if gear_water_event != null and (best == null or _event_precedes(gear_water_event, best)):
 							best = gear_water_event
 					continue
 				var bank_event: WaterEvent = _event_at(lake, previous, candidate, probe, hit, material,
-					fraction0, fraction1, tick, mass, inertia, soft_bank)
+					fraction0, fraction1, tick, mass, inertia, soft_bank, mass_at_fraction, sample_failure, best)
 				if bank_event != null:
 					if best == null or _event_precedes(bank_event, best):
 						best = bank_event
@@ -160,18 +195,19 @@ static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate:
 						segment_start_time, segment_end_time, waves)
 					if bool(water_hit.get("hit", false)):
 						var water_event: WaterEvent = _event_at(lake, previous, candidate, probe,
-							water_hit, "water", fraction0, fraction1, tick, mass, inertia, soft_bank)
+							water_hit, "water", fraction0, fraction1, tick, mass, inertia, soft_bank,
+							mass_at_fraction, sample_failure, best)
 						if water_event != null and (best == null or _event_precedes(water_event, best)):
 							best = water_event
 				continue
 			if material == "water":
 				var water_event: WaterEvent = _event_at(lake, previous, candidate, probe, hit, material,
-					fraction0, fraction1, tick, mass, inertia, soft_bank)
+					fraction0, fraction1, tick, mass, inertia, soft_bank, mass_at_fraction, sample_failure, best)
 				if water_event != null and (best == null or _event_precedes(water_event, best)):
 					best = water_event
 			elif material == "bank_ground" and str(probe.kind) == "hull":
 				var bank_event: WaterEvent = _event_at(lake, previous, candidate, probe, hit, material,
-					fraction0, fraction1, tick, mass, inertia, soft_bank)
+					fraction0, fraction1, tick, mass, inertia, soft_bank, mass_at_fraction, sample_failure, best)
 				if bank_event != null and (best == null or _event_precedes(bank_event, best)):
 					best = bank_event
 			# Once a probe has a terminal event, later pieces of that same probe cannot precede it.
@@ -181,7 +217,7 @@ static func first_hit(lake: Dictionary, previous: PackedFloat64Array, candidate:
 		# A water/bank event from an earlier probe cannot be beaten by this end-of-tick crush check.
 		if str(probe.kind) == "hull" and soft_bank and best == null:
 			var final_event: WaterEvent = _deep_bank_event(lake, previous, candidate, probe,
-				tick, mass, inertia)
+				tick, mass, inertia, mass_at_fraction, sample_failure)
 			if final_event != null and (best == null or _event_precedes(final_event, best)):
 				best = final_event
 	return best
@@ -240,10 +276,17 @@ static func _sweep_water(lake: Dictionary, from_ned: PackedFloat64Array, to_ned:
 
 static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate: PackedFloat64Array,
 	probe: Dictionary, local_hit: Dictionary, material: String, fraction0: float, fraction1: float,
-	tick: int, mass: float, inertia: PackedFloat64Array, soft_bank: bool) -> WaterEvent:
+	tick: int, mass: float, inertia: PackedFloat64Array, soft_bank: bool,
+	mass_at_fraction: Callable, sample_failure: Dictionary, best: WaterEvent) -> WaterEvent:
+	if mass_at_fraction.is_valid() and not sample_failure.is_empty():
+		return null
 	if not bool(local_hit.get("hit", false)) or material not in ["water", "bank_ground"]:
 		return null
 	var fraction: float = lerpf(fraction0, fraction1, float(local_hit.get("fraction", 0.0)))
+	# A later valid event already fixes the accepted TOI; do not request a mass sample for a candidate that
+	# cannot outrank it. This matters when a later fraction is outside a resource sampler's valid domain.
+	if mass_at_fraction.is_valid() and best != null and fraction > best.time_fraction + FRACTION_TIE:
+		return null
 	var state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, candidate, fraction)
 	if state.is_empty():
 		return null
@@ -296,16 +339,41 @@ static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate:
 	var normal_speed: float = maxf(0.0, -normal_component)
 	var inverse_attitude: PackedFloat64Array = PackedFloat64Array([q[0], -q[1], -q[2], -q[3]])
 	var normal_body: PackedFloat64Array = M.q_rotate(inverse_attitude, normal)
-	var angular_arm: PackedFloat64Array = M.cross(body_point, normal_body)
-	var rotational_inverse_mass: float = M.dot(angular_arm,
-		RB.inertia_mul(RB.inertia_inverse(inertia), angular_arm))
-	var inverse_effective_mass: float = 1.0 / mass + rotational_inverse_mass
-	if not is_finite(inverse_effective_mass) or inverse_effective_mass <= 0.0:
-		return null
-	var effective_mass: float = 1.0 / inverse_effective_mass
-	var energy: float = 0.5 * effective_mass * normal_speed * normal_speed
-	var specific: float = energy / mass
+	var effective_mass: float
+	var specific: float
+	var energy: float
+	var dynamic_properties: Dictionary = {}
+	if mass_at_fraction.is_valid():
+		var properties_value: Variant = mass_at_fraction.call(fraction)
+		if typeof(properties_value) != TYPE_DICTIONARY:
+			sample_failure["reason"] = "mass_sampler_returned_non_dictionary"
+			return null
+		dynamic_properties = properties_value
+		var properties_valid: Dictionary = EffectiveMass.validate_properties(dynamic_properties)
+		if not bool(properties_valid.get("ok", false)):
+			sample_failure["reason"] = str(properties_valid.get("reason", "invalid_mass_properties"))
+			return null
+		var effective: Dictionary = EffectiveMass._at_point_properties_validated(q, body_point, normal,
+			dynamic_properties)
+		if not bool(effective.get("ok", false)):
+			sample_failure["reason"] = str(effective.get("reason", "invalid_effective_mass"))
+			return null
+		effective_mass = float(effective.effective_mass_kg)
+	else:
+		var angular_arm: PackedFloat64Array = M.cross(body_point, normal_body)
+		var rotational_inverse_mass: float = M.dot(angular_arm,
+			RB.inertia_mul(RB.inertia_inverse(inertia), angular_arm))
+		var inverse_effective_mass: float = 1.0 / mass + rotational_inverse_mass
+		if not is_finite(inverse_effective_mass) or inverse_effective_mass <= 0.0:
+			return null
+		effective_mass = 1.0 / inverse_effective_mass
+	energy = 0.5 * effective_mass * normal_speed * normal_speed
+	specific = energy / (float(dynamic_properties.mass_kg) if not dynamic_properties.is_empty() else mass)
 	var penetration: float = maxf(0.0, point[2] - surface_down)
+	if not is_finite(energy) or not is_finite(specific):
+		if mass_at_fraction.is_valid():
+			sample_failure["reason"] = "nonfinite_impact_energy"
+		return null
 	if material == "bank_ground" and soft_bank and penetration <= HullContact.CRASH_DEPTH_M \
 			and specific < HullContact.TERMINAL_J_PER_KG:
 		return null
@@ -345,6 +413,8 @@ static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate:
 	out.probe_order = int(probe.order)
 	out.material = "water" if material == "water" else "bank_ground"
 	out.specific_j_per_kg = specific
+	if not dynamic_properties.is_empty():
+		out.contact_mass_properties = dynamic_properties.duplicate(true)
 	var crossing := HullCrossing.Result.new()
 	crossing.available = true
 	crossing.reason = "lake_contact"
@@ -359,7 +429,8 @@ static func _event_at(lake: Dictionary, previous: PackedFloat64Array, candidate:
 
 
 static func _deep_bank_event(lake: Dictionary, previous: PackedFloat64Array, candidate: PackedFloat64Array,
-	probe: Dictionary, tick: int, mass: float, inertia: PackedFloat64Array) -> WaterEvent:
+	probe: Dictionary, tick: int, mass: float, inertia: PackedFloat64Array,
+	mass_at_fraction: Callable, sample_failure: Dictionary) -> WaterEvent:
 	var state: PackedFloat64Array = SceneryCollision.state_at_fraction(previous, candidate, 1.0)
 	var point: PackedFloat64Array = _probe_position(state, probe.body_point)
 	if not LakeSurface._contains(lake.bank_ne_m, point[0], point[1]):
@@ -377,7 +448,7 @@ static func _deep_bank_event(lake: Dictionary, previous: PackedFloat64Array, can
 	# Reuse the event builder's kinematics, then restore the end-of-tick terrain depth. A zero-duration
 	# point event is already on the bank; normal speed cannot suppress the authored crush-depth rule.
 	var out := _event_at(lake, previous, candidate, probe, local_hit, "bank_ground", 0.0, 1.0,
-		tick, mass, inertia, true)
+		tick, mass, inertia, true, mass_at_fraction, sample_failure, null)
 	if out != null:
 		out.time_fraction = 1.0
 		out.depth_m = penetration

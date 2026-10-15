@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+FAIL loader preserves normalized source hull geometry in no-gear fixture 
+FAIL gearless fixture hull point 0 preserves position and label 
+FAIL gearless fixture hull point 1 preserves position and label 
+FAIL gearless fixture hull point 2 preserves position and label 
+FAIL gearless fixture hull point 3 preserves position and label 
+FAIL gearless fixture hull point 4 preserves position and label 
+FAIL gearless fixture hull point 5 preserves position and label 
+FAIL gearless fixture hull point 6 preserves position and label 
+FAIL gearless fixture hull point 7 preserves position and label 
+722 checks, 9 failed

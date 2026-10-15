@@ -1,0 +1,31 @@
+diff --git a/app/tests/test_field_integration.gd b/app/tests/test_field_integration.gd
+index 277b5cdd..b11fdc5d 100644
+--- a/app/tests/test_field_integration.gd
++++ b/app/tests/test_field_integration.gd
+@@ -322,12 +322,23 @@ func _custom_runway_is_present(field_node: Node3D) -> bool:
+ 	if rough == null or field_node.get_node_or_null("runway") != null:
+ 		return false
+ 	var material: ShaderMaterial = rough.material_override as ShaderMaterial
+-	if material == null or material.get_shader_parameter("surface_count") != 1:
++	if material == null:
+ 		return false
+ 	var rects: PackedVector4Array = material.get_shader_parameter("surface_rects")
+ 	var kinds: PackedInt32Array = material.get_shader_parameter("surface_kinds")
+-	return rects.size() == 32 and kinds.size() == 32 \
+-		and rects[0] == Vector4(-11.25, -38.5, 66.0, 9.0) and kinds[0] == 2
++	var count := int(material.get_shader_parameter("surface_count"))
++	if rects.size() != 32 or kinds.size() != 32 or count < 1 or count > 32:
++		return false
++	# The default field also includes a helicopter pad. Find the one runway in
++	# the active priority-ordered rectangles; do not assume it is the sole surface.
++	var runways := 0
++	for index in count:
++		if kinds[index] != 2:
++			continue
++		runways += 1
++		if rects[index] != Vector4(-11.25, -38.5, 66.0, 9.0):
++			return false
++	return runways == 1
+ 
+ 
+ func _field_signature(field_node: Node3D) -> Array[Dictionary]:

@@ -29,6 +29,7 @@ var modes: OptionButton
 var locations: OptionButton
 var airfield := false
 var track_available := false
+var lake_available := false
 var spawn_ids: Array = []
 var lab: VBoxContainer
 var gauges: Label
@@ -140,6 +141,9 @@ func _ready() -> void:
 	if track_available:
 		spawn_ids.append_array(["track_start", "track_technical", "track_rollers"])
 		location_titles.append_array([words("Circuit · Ramps", "Circuito · Rampas"), words("Circuit · Wall slalom", "Circuito · Eslalon de paredes"), words("Circuit · Rollers", "Circuito · Ondulaciones")])
+	if lake_available:
+		spawn_ids.append("lake_shore")
+		location_titles.append(words("Lake · Shallow shore", "Lago · Orilla poco profunda"))
 	for title in location_titles:
 		locations.add_item(title)
 	locations.item_selected.connect(func(index: int): spawn_selected.emit(spawn_ids[index]))
@@ -321,7 +325,14 @@ func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recordin
 	var surface := str(snapshot.get("surface_id", ""))
 	var surface_names := {"asphalt": words("Asphalt", "Asfalto"), "grass": words("Grass", "Césped"), "gravel": words("Gravel", "Grava"), "slippery": words("Low grip", "Poco agarre"), "runway": words("Runway", "Pista de aviones"), "mown": words("Mown grass", "Césped corto"), "rough": words("Rough grass", "Césped")}
 	surface_names["rc_dirt"] = words("Dirt circuit", "Circuito de tierra")
-	telemetry.text = "%.1f km/h  ·  %.1f s  ·  %s%s" % [speed, time_s, words("AIR", "AIRE") if snapshot.get("airborne", false) else surface_names.get(surface, surface), "  ● REC" if recording else ""]
+	surface_names["mud"] = words("Mud", "Barro")
+	var environment: Dictionary = snapshot.get("environment", {})
+	var wet := float(environment.get("body_submersion", 0.0)) > 0.01
+	for fraction in environment.get("wheel_submersion", []): wet = wet or float(fraction) > 0.01
+	var surface_title: String = words("AIR", "AIRE") if snapshot.get("airborne", false) else str(surface_names.get(surface, surface))
+	if wet:
+		surface_title = words("Wading", "Vadeando") if float(environment.get("body_submersion", 0.0)) < 0.5 else words("Submerged · R: recover", "Sumergido · R: recuperar")
+	telemetry.text = "%.1f km/h  ·  %.1f s  ·  %s%s" % [speed, time_s, surface_title, "  ● REC" if recording else ""]
 	var damage: Dictionary = snapshot.get("damage", {})
 	var stage := str(damage.get("stage", "intact"))
 	condition_status.visible = stage != "intact"
@@ -343,4 +354,6 @@ func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recordin
 			text += "\n%s       %6.1f    %5.2f    %6.1f" % [["FL", "FR", "RL", "RR"][i], loads[i], slips[i], float(travels[i])*1000.0]
 		if int(snapshot.get("wall_contact_count", 0)) > 0:
 			text += "\n" + words("Wall contacts: %d · %.0f N", "Contactos con pared: %d · %.0f N") % [int(snapshot.wall_contact_count), float(snapshot.wall_normal_load_n)]
+		if wet:
+			text += "\n" + words("Water %.2f m · Buoyancy %.1f N · Drag %.0f W", "Agua %.2f m · Flotación %.1f N · Resistencia %.0f W") % [float(environment.get("water_depth_m", 0.0)), float(environment.get("buoyancy_n", 0.0)), -float(environment.get("drag_power_w", 0.0))]
 		gauges.text = text

@@ -138,6 +138,9 @@ static func underwing_lines(tris: PackedVector3Array, half: float, top := false)
 		var a := tris[i]
 		var b := tris[i + 1]
 		var c := tris[i + 2]
+		var face_normal := (b - a).cross(c - a)
+		if not _is_vertical_dominant_face_normal(face_normal):
+			continue
 		var lo := minf(a.x, minf(b.x, c.x))
 		var hi := maxf(a.x, maxf(b.x, c.x))
 		if hi - lo < 1e-6:
@@ -196,6 +199,20 @@ static func underwing_lines(tris: PackedVector3Array, half: float, top := false)
 			reordered.append(line[n])
 		lines[key] = reordered
 	return lines
+
+
+## Keep broad upper/lower wing faces (|normal.y| > horizontal normal magnitude, i.e. under 45° from vertical).
+## Side-facing fences and zero-area/non-finite triangles do not define a wing skin station.
+static func _is_vertical_dominant_face_normal(normal: Vector3) -> bool:
+	if not is_finite(normal.x) or not is_finite(normal.y) or not is_finite(normal.z):
+		return false
+	var scale := maxf(absf(normal.x), maxf(absf(normal.y), absf(normal.z)))
+	if scale <= 0.0:
+		return false
+	var vertical := absf(normal.y) / scale
+	var horizontal_x := normal.x / scale
+	var horizontal_z := normal.z / scale
+	return vertical * vertical > horizontal_x * horizontal_x + horizontal_z * horizontal_z
 
 
 ## A ribbon mesh through `line` for render/world/led_strip.gdshader (vertices on the line, NORMAL across, UV.x side).

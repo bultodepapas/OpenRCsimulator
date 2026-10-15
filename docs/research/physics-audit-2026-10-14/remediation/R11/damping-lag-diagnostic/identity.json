@@ -1,0 +1,63 @@
+{
+  "current": [
+    {
+      "path": "app/physics/aero.gd",
+      "sha256": "7AC94F6003F2CB7660A56DD94755C6A7D6143D90CC446C6B6C20433038CE38E3"
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "sha256": "75212E145C5278D3A1A56F663418EA719065CB0D9F3761BCA08D8BB8B759ED12"
+    },
+    {
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "sha256": "5FE8ECE91B7EBE92F304F764F0D50EDC936AE5C4AB1D1C801CF20827EC1EE9B6"
+    },
+    {
+      "path": "app/data/aircraft/p51d_mustang_120.json",
+      "sha256": "DCA91A9BA5F03506D57B54A989EA56BA3F0DA31B0D993D8F68B999AAF689D141"
+    },
+    {
+      "path": "app/tests/test_damping_regimes.gd",
+      "sha256": "59CFBF1CDA1995E5F53BE6BC749BCA1C8893690C21FEFF9092FE825FBCB16DCB"
+    },
+    {
+      "path": "app/tests/test_downwash_lag.gd",
+      "sha256": "B58745042E618322BA58CDE1994EBE3B087FB3E4428AEA6B998FCB5F209EE655"
+    },
+    {
+      "path": "research/aero/d11g/derive_rate_derivatives.gd",
+      "sha256": "A061B0B71C94E0B8D8B0B48C41A2A1E3BD10632E072BC44843EBEF2771561075"
+    },
+    {
+      "path": "research/aero/d11g/output.txt",
+      "sha256": "5306D3115E0B4559AA3EABC5D4F93CCFE26FC69751FF636513A7ACA397F043EB"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/gradient_stripping_probe.gd",
+      "sha256": "0902E04417E55D4E64651C35EBB35DCFBC7FA4A79DB14D02162D233D204D8289"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/gradient-stripping-probe-windows.log",
+      "sha256": "8263FC35C407D61BFF6321894089C57C874425006C8C7CB2DDAA7166B1C10747"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/current-d11g-derivation-windows.log",
+      "sha256": "D84DF24FAEEF6DEA52363DAF8BCAED5DC3D4FB2FEE9F089E40C9CEC98AA34C9A"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/baseline-d11g-derivation-windows.log",
+      "sha256": "60C0D804F4C046FBE5445A52A0DCD084D3C6E917F25586F77215B70B74BB1DE4"
+    }
+  ],
+  "baseline": [
+    {
+      "path": "tmp/physics-audit-baseline-2026-10-14/app/physics/aero.gd",
+      "sha256": "CF034742D69332061EB9414CCD57F7D0B6CB6E1C2F17CC5AE39E70FE26655539"
+    },
+    {
+      "path": "tmp/physics-audit-baseline-2026-10-14/app/data/aircraft/jensen_ugly_stik_60.json",
+      "sha256": "5FE8ECE91B7EBE92F304F764F0D50EDC936AE5C4AB1D1C801CF20827EC1EE9B6"
+    }
+  ],
+  "source_snapshot_log_hash": "not computed; file was open in concurrent append/read run"
+}

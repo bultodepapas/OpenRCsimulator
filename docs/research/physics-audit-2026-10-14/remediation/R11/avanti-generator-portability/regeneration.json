@@ -1,0 +1,65 @@
+{
+  "purpose": "Analytic special-angle generation; no physical retuning",
+  "before_sha256": {
+    "app/data/aircraft/sebart_avanti_s_a200.json": "74043c9bc1de35de066bc65b971e85f5e099173f2d9cccec065c6988abbb6b9d",
+    "app/data/workshop/sebart-avanti-s-a200-p100rx.json": "a20a1908a8aa5fe8820e625dc12294cbb437143eeb50812c99f72a4512587955",
+    "research/avanti-s/av06/derivation.md": "09324351017726d1c479c2f14007f5ff0441245e9651563a4fe995010746c50d"
+  },
+  "after_sha256": {
+    "app/data/aircraft/sebart_avanti_s_a200.json": "68d3fd42b28e30bf1dc210b838d945d517f062506749af14f995a5a5f39a83b6",
+    "app/data/workshop/sebart-avanti-s-a200-p100rx.json": "ebcd47a5dc60b6aa401ecf7120fe4cca34485d3185096b611acfde6b2d352743",
+    "research/avanti-s/av06/derivation.md": "09324351017726d1c479c2f14007f5ff0441245e9651563a4fe995010746c50d"
+  },
+  "numeric_differences": [
+    {
+      "path": "/aero/wing_polar/positive/value/82",
+      "before": 0.6414130000000001,
+      "after": 0.641413,
+      "difference": -1.1102230246251565e-16
+    },
+    {
+      "path": "/aero/wing_polar/positive/value/86",
+      "before": 0.9445439999999998,
+      "after": 0.9445439999999999,
+      "difference": 1.1102230246251565e-16
+    },
+    {
+      "path": "/aero/wing_polar/positive/value/89",
+      "before": 0.30313099999999993,
+      "after": 0.303131,
+      "difference": 5.551115123125783e-17
+    },
+    {
+      "path": "/aero/wing_polar/positive/value/90",
+      "before": 1.1664512933491613,
+      "after": 1.166451293349161,
+      "difference": -2.220446049250313e-16
+    },
+    {
+      "path": "/aero/wing_polar/negative/value/82",
+      "before": 0.6414130000000001,
+      "after": 0.641413,
+      "difference": -1.1102230246251565e-16
+    },
+    {
+      "path": "/aero/wing_polar/negative/value/86",
+      "before": 0.9445439999999998,
+      "after": 0.9445439999999999,
+      "difference": 1.1102230246251565e-16
+    },
+    {
+      "path": "/aero/wing_polar/negative/value/89",
+      "before": 0.30313099999999993,
+      "after": 0.303131,
+      "difference": 5.551115123125783e-17
+    },
+    {
+      "path": "/aero/wing_polar/negative/value/90",
+      "before": 1.1664512933491613,
+      "after": 1.166451293349161,
+      "difference": -2.220446049250313e-16
+    }
+  ],
+  "report_unchanged": true,
+  "report_preflight": "Temporary OUTPUT_DIR changes only report output-path literal; compared after substituting that declared path. Canonical report left untouched."
+}

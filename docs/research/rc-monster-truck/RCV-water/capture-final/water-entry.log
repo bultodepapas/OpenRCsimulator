@@ -1,0 +1,81 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+PASS default remains the aircraft runway
+PASS lake-shore reset is supported
+PASS garage exposes lake entry
+PASS neutral-armed entry starts
+PASS wet recording starts
+ENTRY_PROGRESS 4 145.499355966433
+ENTRY_PROGRESS 484 142.961384893343
+ENTRY_PROGRESS 964 140.065205344283
+PASS capture mud
+PASS capture shallow
+ENTRY_PROGRESS 1444 137.512560021595
+ENTRY_PROGRESS 1924 136.60089294393
+PASS capture deep
+ENTRY_PROGRESS 2404 135.836972899272
+ENTRY_PROGRESS 2884 135.077219378168
+ENTRY_PROGRESS 3364 134.341883627452
+PASS all water-entry ticks accepted
+PASS active entry develops buoyancy and dissipates fluid work
+PASS entry visits mud, shallow and submerged stages
+PASS submerged checkpoint restores
+PASS replay resumes
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS replay tick
+PASS wet replay physical state is byte exact
+PASS wet replay damage state is byte exact
+PASS incompatible water identity rejected
+PASS submerged truck can be recovered to dry staging
+PASS water recording stops
+PASS packed recording retains water channels
+WATER_RESULT {"capture":true,"engine":"4.7.2-stable (official)","final_damage":{"body_bottom_damage":0.0,"body_damage":0.0,"body_front_damage":0.0,"body_left_damage":0.0,"body_rear_damage":0.0,"body_right_damage":0.0,"drive_scale":1.0,"last_impact_energy_j":0.0,"stage":"intact","suspension_damage":0.0,"suspension_damage_by_corner":[0.0,0.0,0.0,0.0]},"final_state":[133.996736954041,125.313125028522,1.0394690329594,0.344630547685561,-0.0200554567980097,0.00782684448955697,-0.00933809880735102,0.0309535856892948,-0.00979125493790977,0.999429240501988,0.00976271245038438,0.0418114295815939,0.0000967560581809981,0.00613251453563048,0.00380215616846362,0.0125576408387307,0.0145295795679938,0.0000506096067938114,-0.00027202468387572,-0.0000480511936582142,0.000386695641451987,67.1592668530781,69.6008516087098,60.1505601410482,57.8451427473691,705.396365291938,713.679162934176,614.244990332288,615.466302797092,0.0123515085652888,0.00196214595314694],"identities":{"course":{"format":"openrc-airfield-course","id":"airfield-default","sha256":"462526c5ba70ea385de6d7b72e79510ff05ac085b1618685474113daf79a3606","version":"1"},"model":{"format":"openrc-ground-vehicle","id":"mt8-bisonte-electric-4wd-estimate-v1","sha256":"425f2a3fe810f82d609ad2b9dd9618b9fb45bcd813df57873cd8bc8759a750a5","version":"1"}},"max_body_submersion":1.0,"max_buoyancy_n":25.44629542,"max_depth_m":0.772485768581367,"minimum_drag_power_w":-161.076802883412,"ok":true,"peak_effects":{"audio_pulses":0.0,"clock_s":15.0,"mud_active_wheels":4.0,"mud_drop_budget":32.0,"mud_instances_visible":26.0,"ring_budget":8.0,"water_active_wheels":4.0,"water_drop_budget":32.0,"water_instances_visible":22.0},"phases":{"deep":{"environment":{"body_submersion":1.0,"buoyancy_n":25.44629542,"drag_power_w":-156.99124561531,"ok":true,"power_w":-159.098319944249,"water_depth_m":0.400043142302013,"wheel_depth_m":[0.449181896621861,0.431950627686117,0.361338270627996,0.34416918846362],"wheel_mud":[1.0,1.0,1.0,1.0],"wheel_submersion":[1.0,1.0,1.0,1.0],"wheel_water_height_m":[-0.45,-0.45,-0.45,-0.45]},"state":[136.149461324712,125.156432537406,0.666033683474743,0.391866185052291,-0.0302194056373704,0.00793643865339377,0.0107151305459091,0.0943553003111262,-0.0216796816172359,0.995244821481406,-0.000335474673879575,-0.000789348220488878,0.01281364656024,0.00538831547688089,0.00500445553077631,0.0131864400145226,0.0127381884732289,0.000144010240838329,-0.000129452554902564,-0.000165975659301413,0.000159385144861301,67.0754415098177,67.468647405686,58.355434623611,58.8083067779978,317.323837616451,317.476561388116,271.249268245315,277.523290444428,0.0357819778793583,-0.0100696714891071],"tick":2208},"mud":{"environment":{"body_submersion":0.0,"buoyancy_n":0.0,"drag_power_w":0.0,"ok":true,"power_w":0.0,"water_depth_m":0.0,"wheel_depth_m":[0.0,0.0,0.0,0.0],"wheel_mud":[0.215545058342603,0.116569997693377,0.0,0.0],"wheel_submersion":[0.0,0.0,0.0,0.0],"wheel_water_height_m":[0.0,0.0,0.0,0.0]},"state":[139.898233207459,125.001678952422,0.227967393350402,1.43393380628845,0.00407480344801009,-0.0113195342640047,0.000618004381741953,0.0464417724987135,-0.00974901702725295,0.998873233450954,0.020901000876407,0.0991650283004164,0.00165775675073011,0.0147327218376477,0.0130746374724729,0.0111594543278438,0.0118021295681338,-0.000129397386117512,0.0000459548125577337,0.000400522015064895,0.000766823057873995,14.5215427911738,14.5139361875589,14.5204369944991,14.5130333774651,70.0199200102986,71.6562421145385,57.3093298822113,57.099716533756,0.000492540384183334,0.000417818001183123],"tick":992},"shallow":{"environment":{"body_submersion":0.0,"buoyancy_n":4.44227959171321,"drag_power_w":-31.2870435820257,"ok":true,"power_w":-31.9197164622212,"water_depth_m":0.0805196959135773,"wheel_depth_m":[0.115475937952263,0.102811964987784,0.058151467840248,0.0486815357597314],"wheel_mud":[1.0,1.0,1.0,1.0],"wheel_submersion":[0.616752061174721,0.525163549651495,0.214059420432862,0.157005771095943],"wheel_water_height_m":[-0.45,-0.45,-0.45,-0.45]},"state":[137.824706440914,125.006278286659,0.355695452117721,1.02103249100393,-0.015045971201156,0.00697675907713198,0.00898042343217665,0.0619952141172373,-0.0134961405677401,0.99794478785718,-0.019831429025386,-0.0632176628912595,-0.140444684303578,0.0109400112130708,0.0122055216764395,0.0148679687301237,0.0133424236685271,-0.00328502382346605,-0.00616990693180996,0.00554793182200844,0.0062264224999855,29.6017383183939,24.9971619576075,16.6589279307926,20.3136745328547,92.2768559316825,93.3268225906655,78.3050334240274,78.3927098316145,0.0058093951199916,0.0955058633407574],"tick":1352}},"physical_validation":false,"scope":"production lake, ordinary controls, no state injection","solver_identity":{"backend_identity":{"abi_version":1.0,"backend":"native","backend_version":"openrc-ground-vehicle-native-evaluate-v3","binary_sha256":"0436be7bdc553b0eec29fb41fb9aa18fe94a0921a725bde9eef196dc17999d00","solver_version":"openrc-ground-vehicle-dynamics-rk4-v4","source_sha256":"7b064e5dca1fc8333d958c073c2dac11eecc96a95b4095117d38be93ae672695","toolchain_sha256":"83608b6cdfcc7d4e8cdf8c0bddf3bc72d7db1615e8054efbec856a00140637af"},"damage_version":2.0,"engine_version":"4.7.2-stable (official)","environment_artifact":{"kind":"gdscript_source","sha256":"06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad"},"environment_version":"openrc-rcv-environment-v1","fixed_hz":240.0,"solver_version":"openrc-ground-vehicle-dynamics-rk4-v4","substeps_per_tick":1.0},"tick_p50_us":13964.0,"tick_p95_us":18187.0,"ticks":3600}
+WARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

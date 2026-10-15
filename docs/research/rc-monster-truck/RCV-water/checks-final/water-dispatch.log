@@ -1,0 +1,41 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: default vehicle model loads  []
+PASS: pinned native v3 backend is available
+PASS: select active backend native
+PASS: active wet/dry derivative resolves at 1 m/s (native)
+PASS: wet buoyancy reduces downward acceleration at 1 m/s (native)  delta_down_accel=-2.868901887 m/s^2, buoyancy=25.446295420 N
+PASS: wet drag reduces forward acceleration at 1 m/s (native)  delta_forward_accel=-15.659363214 m/s^2, drag_power=-88.439008302 W
+PASS: active wet/dry derivative resolves at 8 m/s (native)
+PASS: wet buoyancy reduces downward acceleration at 8 m/s (native)  delta_down_accel=-2.868901887 m/s^2, buoyancy=25.446295420 N
+PASS: wet drag reduces forward acceleration at 8 m/s (native)  delta_forward_accel=-1002.199245707 m/s^2, drag_power=-45280.772250735 W
+PASS: active wet/dry derivative resolves at 20 m/s (native)
+PASS: wet buoyancy reduces downward acceleration at 20 m/s (native)  delta_down_accel=-2.868901887 m/s^2, buoyancy=25.446295420 N
+PASS: wet drag reduces forward acceleration at 20 m/s (native)  delta_forward_accel=-6263.745285671 m/s^2, drag_power=-707512.066417740 W
+PASS: select active backend gdscript_reference
+PASS: active wet/dry derivative resolves at 1 m/s (gdscript_reference)
+PASS: wet buoyancy reduces downward acceleration at 1 m/s (gdscript_reference)  delta_down_accel=-2.868901887 m/s^2, buoyancy=25.446295420 N
+PASS: wet drag reduces forward acceleration at 1 m/s (gdscript_reference)  delta_forward_accel=-15.659363214 m/s^2, drag_power=-88.439008302 W
+PASS: active wet/dry derivative resolves at 8 m/s (gdscript_reference)
+PASS: wet buoyancy reduces downward acceleration at 8 m/s (gdscript_reference)  delta_down_accel=-2.868901887 m/s^2, buoyancy=25.446295420 N
+PASS: wet drag reduces forward acceleration at 8 m/s (gdscript_reference)  delta_forward_accel=-1002.199245707 m/s^2, drag_power=-45280.772250735 W
+PASS: active wet/dry derivative resolves at 20 m/s (gdscript_reference)
+PASS: wet buoyancy reduces downward acceleration at 20 m/s (gdscript_reference)  delta_down_accel=-2.868901887 m/s^2, buoyancy=25.446295420 N
+PASS: wet drag reduces forward acceleration at 20 m/s (gdscript_reference)  delta_forward_accel=-6263.745285671 m/s^2, drag_power=-707512.066417740 W
+PASS: full wet state derivative matches native/reference at 1 m/s  max_abs_delta=0.000000000000, max_tolerance_ratio=0.000000000000
+DISPATCH speed=1 m/s full_state_max_abs_delta=0.000000000000 max_tolerance_ratio=0.000000000000
+PASS: full wet state derivative matches native/reference at 8 m/s  max_abs_delta=0.000000000000, max_tolerance_ratio=0.000000000000
+DISPATCH speed=8 m/s full_state_max_abs_delta=0.000000000000 max_tolerance_ratio=0.000000000000
+PASS: full wet state derivative matches native/reference at 20 m/s  max_abs_delta=0.000000000000, max_tolerance_ratio=0.000000000000
+DISPATCH speed=20 m/s full_state_max_abs_delta=0.000000000000 max_tolerance_ratio=0.000000000000
+PASS: native backend selected for capped-step refinement
+PASS: 480 Hz capped step and two half-steps are finite at 1 m/s
+PASS: 480 Hz capped step agrees with two half-steps at 1 m/s  max_abs_delta=0.000000000000
+TIMESTEP speed=1 m/s capped_vs_two_half_max_abs_delta=0.000000000000 direct_240_finite=true direct_240_vs_capped_max_abs_delta=0.008775441234 direct_240_final_u=0.938715786292 capped_final_u=0.938819069969
+PASS: 480 Hz capped step and two half-steps are finite at 8 m/s
+PASS: 480 Hz capped step agrees with two half-steps at 8 m/s  max_abs_delta=0.000000000000
+TIMESTEP speed=8 m/s capped_vs_two_half_max_abs_delta=0.000000000000 direct_240_finite=true direct_240_vs_capped_max_abs_delta=0.576561431381 direct_240_final_u=5.318984508959 capped_final_u=5.327289340074
+PASS: 480 Hz capped step and two half-steps are finite at 20 m/s
+PASS: 480 Hz capped step agrees with two half-steps at 20 m/s  max_abs_delta=0.000000000000
+TIMESTEP speed=20 m/s capped_vs_two_half_max_abs_delta=0.000000000000 direct_240_finite=true direct_240_vs_capped_max_abs_delta=33.522239479952 direct_240_final_u=8.245243207047 capped_final_u=9.098992720292
+WATER_DISPATCH summary: 32 checks, 0 failures

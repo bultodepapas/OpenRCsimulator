@@ -1,0 +1,42 @@
+{
+  "ok": true,
+  "scope": "Exact CSV values, control bytes and final 31-state JSON values. Timing excluded. Baseline checkpoint defect is not waived for candidate acceptance.",
+  "baseline": "docs\\research\\rc-monster-truck\\RCV-water\\entry-native",
+  "candidate": "docs\\research\\rc-monster-truck\\RCV-water\\entry-final",
+  "baseline_complete_and_stable": true,
+  "baseline_all_gates_passed": false,
+  "candidate_all_gates_passed": true,
+  "rows": 3600,
+  "compared_columns": [
+    "tick",
+    "north_m",
+    "east_m",
+    "down_m",
+    "speed_m_per_s",
+    "water_depth_m",
+    "body_submersion",
+    "buoyancy_n",
+    "drag_power_w",
+    "wheel_submersion_max",
+    "mud_max",
+    "wheel_load_total_n",
+    "body_damage",
+    "suspension_damage"
+  ],
+  "different_cells": 0,
+  "first_differences": [],
+  "control_tape_bytes_equal": true,
+  "final_state_equal": true,
+  "tick_p95_us": [
+    72818.0,
+    17733.0
+  ],
+  "tick_p50_us": [
+    41580.0,
+    13706.0
+  ],
+  "csv_sha256": [
+    "a4f2b11e05e6e9890b2bd2d1dc494c4cc60bc69e61fe0528954fda7068e178f9",
+    "90bb05d2e53819aea4f49525132d1ff3a6f1bfc3c6814b15df7b9289842c8dba"
+  ]
+}

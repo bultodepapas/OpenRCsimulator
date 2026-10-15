@@ -19,6 +19,9 @@ const DATA_ONLY_AIRPLANE_CONFIGS := [
 	{"file": "synthetic_stik_electric_6s.json", "id": "synthetic_stik_electric_6s"},
 	{"file": "synthetic_stik_electric_6s_battery.json", "id": "synthetic_stik_electric_6s_battery"},
 ]
+const DATA_ONLY_ROTORCRAFT_CONFIGS := [
+	{"file": "hx700_electric_3d_experimental.json", "id": "hx700-electric-3d-experimental"},
+]
 const TAIL := ["tail_end", "left_stab_tip", "right_stab_tip", "fin_top"]
 const FORWARD := ["spinner", "propeller", "nose"]
 const CENTRELINE := ["spinner", "nose", "tail_end", "fin_top", "canopy", "belly"]
@@ -81,6 +84,12 @@ func _classify_aircraft_files(files: PackedStringArray) -> Dictionary:
 			not classified.has(path))
 		if not classified.has(path):
 			classified[path] = {id = str(configuration.id), vehicle = "airplane"}
+	for configuration: Dictionary in DATA_ONLY_ROTORCRAFT_CONFIGS:
+		var path := DATA_DIR + str(configuration.file)
+		_check("laboratory rotorcraft stays outside the playable catalog: " + str(configuration.id),
+			not classified.has(path))
+		if not classified.has(path):
+			classified[path] = {id = str(configuration.id), vehicle = "rotorcraft"}
 
 	var discovered: Dictionary = {}
 	for path in files:

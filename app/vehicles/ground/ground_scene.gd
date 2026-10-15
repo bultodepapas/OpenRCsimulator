@@ -27,6 +27,7 @@ const ShaderClock = preload("res://render/shader_clock.gd")
 const Frames = preload("res://render/frames.gd")
 const EngineAudio = preload("res://render/engine_audio.gd")
 const GroundEffects = preload("res://vehicles/ground/ground_effects.gd")
+const GroundWetEffects = preload("res://vehicles/ground/ground_wet_effects.gd")
 const DamageView = preload("res://vehicles/ground/ground_damage_view.gd")
 const ContactDebug = preload("res://vehicles/ground/contact_debug.gd")
 
@@ -46,6 +47,7 @@ var joy_button_reader: Callable = func(id: int, button: JoyButton) -> bool: retu
 var enable_audio := true
 var enable_vehicle_effects := true
 var _effects: Node3D
+var _wet_effects: Node3D
 var _damage_view: RefCounted
 var _effects_time_s := 0.0
 var enable_course_visual := true
@@ -130,6 +132,13 @@ func _ready() -> void:
 			set_physics_process(false)
 			set_process(false)
 			return
+		_wet_effects = GroundWetEffects.new()
+		_wet_effects.audio_enabled = enable_audio
+		if not _wet_effects.prepare(visual, self):
+			startup_error = "Bisonte wet effects bindings are unavailable"
+			set_physics_process(false)
+			set_process(false)
+			return
 	_contact_debug = ContactDebug.new()
 	_contact_debug.visible = false
 	add_child(_contact_debug)
@@ -154,6 +163,8 @@ func _ready() -> void:
 	dashboard = Dashboard.new()
 	dashboard.airfield = not use_practice_fixture
 	dashboard.track_available = _course.has("track")
+	for spawn: Dictionary in _course.get("spawns", []):
+		if spawn.id == "lake_shore": dashboard.lake_available = true
 	add_child(dashboard)
 	dashboard.action_requested.connect(handle_action)
 	dashboard.controller_selected.connect(select_driving_device)
@@ -312,9 +323,12 @@ func _update_landing_award() -> void:
 	for contact in telemetry.get("wheel_in_contact", PackedByteArray()):
 		supported = supported or contact != 0
 	supported = supported and not telemetry.get("airborne", true)
-	if upright and supported and session.run_valid:
+	var submerged := float(telemetry.get("environment", {}).get("body_submersion", 0.0)) >= 0.5
+	if upright and supported and session.run_valid and not submerged:
 		_best_jump = maxf(_best_jump, _airtime)
 		dashboard.message("Landed! %.2f s in the air. Best %.2f s." % [_airtime, _best_jump], "¡Aterrizaje! %.2f s en el aire. Mejor %.2f s." % [_airtime, _best_jump])
+	elif submerged:
+		dashboard.message("Submerged landing: not scored. R recovers the truck.", "Aterrizaje sumergido: sin puntuar. R recupera el carro.")
 	elif not upright:
 		dashboard.message("Rollover. Try less approach speed; R recovers the truck.", "Volcamiento. Prueba con menos velocidad; R recupera el carro.")
 	else:
@@ -509,6 +523,8 @@ func _process(delta: float) -> void:
 		_effects_time_s = session.time_s()
 		var night_weight := 1.0 - smoothstep(0.05, 0.75, float(_lighting.get("sun_energy", 1.0)))
 		_effects.update_render(simulated_delta, telemetry, _last_controls, _render_road, session.paused, night_weight)
+		if _wet_effects != null:
+			_wet_effects.update_render(simulated_delta, telemetry, session.paused, night_weight)
 		dashboard.update_lights(_effects.headlights_enabled)
 	_contact_debug.update_snapshot(drawn, _model, telemetry, _render_road)
 	dashboard.update_snapshot(telemetry, session.paused, session.time_s(), session.recording, _show_diagnostics or mode == 2)
@@ -742,6 +758,7 @@ func _after_reset() -> void:
 	_model = session.model_snapshot()
 	_effects_time_s = session.time_s()
 	if _effects != null: _effects.reset()
+	if _wet_effects != null: _wet_effects.reset()
 	if _damage_view != null:
 		_damage_view.reset()
 		_damage_view.update(session.damage_visual_state())

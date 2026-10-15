@@ -58,7 +58,15 @@ func _initialize() -> void:
 	var tap := run_case(45.0, 0.5)
 	check("half-second pull no longer over-rotates into stall", tap.completed and tap.peak_alpha_deg < 9.0 and tap.peak_stall_weight < 0.1)
 	var held := run_case(45.0, 2.0)
-	check("sustained over-pull still produces accelerated stall", held.completed and held.first_stall_s > 0.0 and held.peak_stall_weight > 0.9)
+	check("two-second over-pull crosses the model stall onset while held",
+		held.completed and held.first_stall_s > 0.0 and held.first_stall_s < 2.0 and held.peak_stall_weight >= 0.5)
+	# VAL-AUD-R02 changes the response, not keyboard authority. After the one-second
+	# virtual-stick ramp, two more seconds at the endpoint still cause deep separation.
+	# Keep the original >0.9 criterion and require the event before command release.
+	var sustained := run_case(45.0, 3.0)
+	check("sustained endpoint reaches deep model separation before release",
+		sustained.completed and sustained.peak_stall_weight > 0.9
+			and sustained.first_deep_separation_s > 0.0 and sustained.first_deep_separation_s < 3.0)
 	# Session sampling activates it only for keyboard normal mode; full profile remains the documented override.
 	var session := Flight.new()
 	session.setup("res://data/aircraft/sebart_avanti_s_a200.json", "sebart-avanti-s-a200-p100rx")

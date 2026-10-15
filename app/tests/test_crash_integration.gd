@@ -6,6 +6,7 @@ const MainScene = preload("res://main.tscn")
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
 const M = preload("res://physics/math3d.gd")
 const RB = preload("res://physics/rigid_body.gd")
+const HullContact = preload("res://physics/hull_contact.gd")
 
 var _count := 0
 var _failures := 0
@@ -93,16 +94,39 @@ func _test_aircraft(aircraft_id: String) -> void:
 	var impact_state: PackedFloat64Array = _place_hull_contact(session)
 	_check("%s: generated state intersects this aircraft's own crash hull" % aircraft_id,
 		session.touches_ground(impact_state))
-	session.sim.state = impact_state.duplicate()
-	session.sim.previous = _tick_before(impact_state)
+	var previous_state: PackedFloat64Array = _tick_before(impact_state)
+	var first_impact_tick: int = session.sim.tick
+	var previous_continuous: PackedFloat64Array = session.sim.continuous.duplicate()
+	session.sim.state = previous_state.duplicate()
+	session.sim.previous = previous_state.duplicate()
 	session.sim.set_paused(false)
-	var before_crash: Dictionary = session.sim.checkpoint()
-	session._physics_process(session.sim.dt())
+	# Exercise the accepted tick. Glow terminals are evaluated inside post_step_joint with the incoming
+	# live mass snapshot; other families classify the same accepted endpoint in FlightSession.
+	session.sim.step()
+	var accepted_checkpoint: Dictionary = session.sim.checkpoint()
+	var accepted_tick: int = session.sim.tick
+	if session.crash.is_empty():
+		session._physics_process(session.sim.dt())
 	var after_crash: Dictionary = session.sim.checkpoint()
 	_check("%s: production detects a typed hull-contact crash" % aircraft_id,
 		not session.crash.is_empty() and session.crash.impact.trigger == "hull_contact")
+	_check("%s: impact commits exactly one fault-free simulation tick" % aircraft_id,
+		accepted_tick == first_impact_tick + 1 and session.sim.tick == accepted_tick
+			and session.sim.fault_reason.is_empty() and session.crash.impact.tick == accepted_tick)
+	_check("%s: accepted production hull event has an available crossing" % aircraft_id,
+		not session.crash.is_empty() and session.crash.impact.crossing != null
+			and session.crash.impact.crossing.available)
 	_check("%s: crash detection preserves the complete simulation checkpoint" % aircraft_id,
-		not before_crash.is_empty() and before_crash == after_crash)
+		not accepted_checkpoint.is_empty() and accepted_checkpoint == after_crash)
+	if session.glow_is_active() and not session.crash.is_empty():
+		var mass_at_tick: Callable = session._contact_mass_sampler(previous_continuous, session.sim.continuous)
+		var incoming_properties: Dictionary = mass_at_tick.call(0.0) if mass_at_tick.is_valid() else {}
+		var incoming_terminal: Dictionary = HullContact.terminal_at_properties(previous_state,
+			session.sim.state, session._hull_contact, incoming_properties)
+		var incoming_event: Dictionary = incoming_terminal.get("event", {})
+		_check("%s: Glow terminal classification uses the documented incoming live-mass snapshot" % aircraft_id,
+			incoming_terminal.get("ok", false) and int(incoming_event.get("index", -1)) == session.crash.impact.point_index
+				and str(incoming_event.get("rule", "")) == session.crash.impact.soft_rule)
 	director.update(session.sim.dt())
 	_check("%s: crash director and disposable wreck presentation become active" % aircraft_id,
 		director.active and director.effects._active and director.wreck.stats().started
@@ -168,11 +192,20 @@ func _test_aircraft(aircraft_id: String) -> void:
 			and source_propeller.get_instance_id() == source_propeller_id and _hinges_match(airplane, hinge_ids))
 
 	var second_state: PackedFloat64Array = _place_hull_contact(session)
-	session.sim.state = second_state.duplicate()
-	session.sim.previous = _tick_before(second_state)
+	var second_previous: PackedFloat64Array = _tick_before(second_state)
+	var second_tick: int = session.sim.tick
+	session.sim.state = second_previous.duplicate()
+	session.sim.previous = second_previous.duplicate()
 	session.sim.set_paused(false)
-	session._physics_process(session.sim.dt())
+	session.sim.step()
+	var second_accepted_tick: int = session.sim.tick
+	if session.crash.is_empty():
+		session._physics_process(session.sim.dt())
 	director.update(session.sim.dt())
+	_check("%s: second hull event follows one accepted fault-free tick" % aircraft_id,
+		second_accepted_tick == second_tick + 1 and session.sim.tick == second_accepted_tick
+			and session.sim.fault_reason.is_empty() and not session.crash.is_empty()
+			and session.crash.impact.trigger == "hull_contact" and session.crash.impact.tick == second_accepted_tick)
 	_check("%s: a second hull crash reuses the prepared wreck body and mesh pools" % aircraft_id,
 		director.active and session.crash.impact.trigger == "hull_contact"
 			and _instance_ids(director.wreck._bodies) == pool_ids

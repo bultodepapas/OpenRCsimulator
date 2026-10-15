@@ -7,6 +7,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const HullCrossing := preload("res://physics/hull_crossing.gd")
 const ImpactSnapshot := preload("res://physics/impact_snapshot.gd")
 const SceneryDamage := preload("res://sim/scenery_damage.gd")
+const EffectiveMass := preload("res://physics/effective_mass.gd")
 
 const WORLD_FORMAT := "openrc-collision-world v1"
 const CELL_SIZE_M := 32.0
@@ -41,6 +42,7 @@ class Event:
 	var impact_energy_j: float = 0.0 # incident normal energy estimate; not structural strength
 	var terminal: bool = true
 	var _state_at_contact: PackedFloat64Array = PackedFloat64Array()
+	var contact_mass_properties: Dictionary = {} # Exact fixed-datum sample at TOI, reused by response.
 	
 	func _init() -> void:
 		trigger = "scenery"
@@ -173,6 +175,45 @@ static func first_hit(previous: PackedFloat64Array, current: PackedFloat64Array,
 		damage: Dictionary = {}) -> Event:
 	var hits := contacts(previous, current, hull, world, tick, mass, inertia, damage)
 	return hits[0] if not hits.is_empty() else null
+
+
+## Dynamic fixed-datum sweep. Geometry is resolved by the unchanged legacy sweep, whose event ordering depends
+## only on contact time, stable obstacle ID, and point index. This candidate hit is then assigned exactly one
+## coherent mass-properties sample at its TOI. The harmless unit-mass proxy below is used only to enter the legacy
+## geometry path; all reported impact energy and subsequent response use the stored sampled properties.
+static func first_hit_sampled(previous: PackedFloat64Array, current: PackedFloat64Array,
+		hull: PackedFloat64Array, world: Dictionary, tick: int, mass_at_fraction: Callable,
+		damage: Dictionary = {}) -> Dictionary:
+	if not mass_at_fraction.is_valid():
+		return {ok = false, event = null, reason = "invalid_mass_sampler"}
+	if not _state_is_valid(previous) or not _state_is_valid(current):
+		return {ok = false, event = null, reason = "invalid_state"}
+	if hull.is_empty() or hull.size() % 3 != 0 or not _packed_finite(hull):
+		return {ok = false, event = null, reason = "invalid_hull"}
+	if not _world_is_valid(world):
+		return {ok = false, event = null, reason = "invalid_world"}
+	var unit_inertia := PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
+	var event: Event = first_hit(previous, current, hull, world, tick, 1.0, unit_inertia, damage)
+	if event == null:
+		return {ok = true, event = null, reason = ""}
+	var properties_value: Variant = mass_at_fraction.call(event.time_fraction)
+	if typeof(properties_value) != TYPE_DICTIONARY:
+		return {ok = false, event = null, reason = "mass_sampler_returned_non_dictionary"}
+	var properties: Dictionary = properties_value
+	var valid: Dictionary = EffectiveMass.validate_properties(properties)
+	if not bool(valid.get("ok", false)):
+		return {ok = false, event = null, reason = str(valid.get("reason", "invalid_mass_properties"))}
+	var state_at: PackedFloat64Array = event.contact_state()
+	var effective: Dictionary = EffectiveMass._at_point_properties_validated(RB._att(state_at), event.body_point,
+		event.normal_ned, properties)
+	if not bool(effective.get("ok", false)):
+		return {ok = false, event = null, reason = str(effective.get("reason", "invalid_effective_mass"))}
+	event.contact_mass_properties = properties.duplicate(true)
+	event.effective_mass_kg = float(effective.effective_mass_kg)
+	event.impact_energy_j = 0.5 * event.effective_mass_kg * event.normal_speed_mps * event.normal_speed_mps
+	if not is_finite(event.impact_energy_j):
+		return {ok = false, event = null, reason = "nonfinite_impact_energy"}
+	return {ok = true, event = event, reason = ""}
 
 
 static func state_at_fraction(previous: PackedFloat64Array, current: PackedFloat64Array, fraction: float) -> PackedFloat64Array:
@@ -312,6 +353,70 @@ static func apply_response(state_at_contact: PackedFloat64Array, event: Event, m
 	}
 
 
+## Fixed-datum impulse response using the exact sample retained by first_hit_sampled(). O is the state datum,
+## `c` points from O to the instantaneous CG, and `body_point` remains measured from O. The surface is stationary.
+static func apply_response_properties(state_at_contact: PackedFloat64Array, event: Event) -> Dictionary:
+	if event == null or event.terminal or not _state_is_valid(state_at_contact) or event.contact_mass_properties.is_empty():
+		return {ok = false, state = state_at_contact.duplicate(), reason = "missing_dynamic_response_sample"}
+	var properties: Dictionary = event.contact_mass_properties
+	var valid: Dictionary = EffectiveMass.validate_properties(properties)
+	if not bool(valid.get("ok", false)):
+		return {ok = false, state = state_at_contact.duplicate(), reason = str(valid.get("reason", "invalid_mass_properties"))}
+	var restitution: float = _restitution_for(event.response_class)
+	if not is_finite(restitution) or restitution < 0.0 or restitution > 1.0:
+		return {ok = false, state = state_at_contact.duplicate(), reason = "unsupported_response_class"}
+	var q: PackedFloat64Array = RB._att(state_at_contact)
+	var inverse_attitude := PackedFloat64Array([q[0], -q[1], -q[2], -q[3]])
+	var normal_body: PackedFloat64Array = M.q_rotate(inverse_attitude, event.normal_ned)
+	var cg: PackedFloat64Array = properties.cg_body_m
+	var arm_c: PackedFloat64Array = M.sub(event.body_point, cg)
+	var inverse_inertia: PackedFloat64Array = properties.inverse
+	var angular_arm: PackedFloat64Array = M.cross(arm_c, normal_body)
+	var beta: float = 1.0 / float(properties.mass_kg) \
+		+ M.dot(angular_arm, RB.inertia_mul(inverse_inertia, angular_arm))
+	if not is_finite(beta) or beta <= 0.0:
+		return {ok = false, state = state_at_contact.duplicate(), reason = "invalid_inverse_effective_mass"}
+	# event.normal_speed_mps is the positive magnitude into the surface; J points outward.
+	var impulse_magnitude: float = (1.0 + restitution) * event.normal_speed_mps / beta
+	if not is_finite(impulse_magnitude) or impulse_magnitude < 0.0:
+		return {ok = false, state = state_at_contact.duplicate(), reason = "invalid_impulse"}
+	var impulse: PackedFloat64Array = M.scale(normal_body, impulse_magnitude)
+	var delta_omega: PackedFloat64Array = RB.inertia_mul(inverse_inertia, M.cross(arm_c, impulse))
+	var out: PackedFloat64Array = state_at_contact.duplicate()
+	var delta_v_o: PackedFloat64Array = M.sub(M.scale(impulse, 1.0 / float(properties.mass_kg)), M.cross(delta_omega, cg))
+	var velocity_o: PackedFloat64Array = M.add(RB._slice3(out, RB.VEL), delta_v_o)
+	var angular_rate: PackedFloat64Array = M.add(RB._slice3(out, RB.RATE), delta_omega)
+	for axis: int in 3:
+		out[RB.VEL + axis] = velocity_o[axis]
+		out[RB.RATE + axis] = angular_rate[axis]
+	var before_energy: float = _kinetic_energy_about_datum(state_at_contact, properties)
+	var after_energy: float = _kinetic_energy_about_datum(out, properties)
+	if not is_finite(before_energy) or not is_finite(after_energy):
+		return {ok = false, state = state_at_contact.duplicate(), reason = "nonfinite_kinetic_energy"}
+	var tolerance: float = maxf(1.0e-9, before_energy * 1.0e-12)
+	if after_energy > before_energy + tolerance:
+		# Keep the existing conservative e=0 fallback, recomputed from the same sampled tensor and datum.
+		restitution = 0.0
+		impulse_magnitude = event.normal_speed_mps / beta
+		impulse = M.scale(normal_body, impulse_magnitude)
+		delta_omega = RB.inertia_mul(inverse_inertia, M.cross(arm_c, impulse))
+		out = state_at_contact.duplicate()
+		delta_v_o = M.sub(M.scale(impulse, 1.0 / float(properties.mass_kg)), M.cross(delta_omega, cg))
+		velocity_o = M.add(RB._slice3(out, RB.VEL), delta_v_o)
+		angular_rate = M.add(RB._slice3(out, RB.RATE), delta_omega)
+		for axis: int in 3:
+			out[RB.VEL + axis] = velocity_o[axis]
+			out[RB.RATE + axis] = angular_rate[axis]
+		after_energy = _kinetic_energy_about_datum(out, properties)
+	if not is_finite(after_energy) or after_energy > before_energy + tolerance:
+		return {ok = false, state = state_at_contact.duplicate(), reason = "response_energy_increased"}
+	for axis: int in 3:
+		out[RB.POS + axis] += event.normal_ned[axis] * CONTACT_SEPARATION_M
+	return {ok = true, state = out, restitution = restitution,
+		kinetic_before_j = before_energy, kinetic_after_j = after_energy,
+		dissipated_energy_j = maxf(0.0, before_energy - after_energy)}
+
+
 static func _is_terminal_response(response_class: String, normal_speed_mps: float) -> bool:
 	match response_class:
 		"soft_foliage_impulse":
@@ -342,6 +447,13 @@ static func _kinetic_energy(state: PackedFloat64Array, mass: float, inertia: Pac
 	var velocity := RB._slice3(state, RB.VEL)
 	var angular_rate := RB._slice3(state, RB.RATE)
 	return 0.5 * mass * M.dot(velocity, velocity) + 0.5 * M.dot(angular_rate, RB.inertia_mul(inertia, angular_rate))
+
+
+static func _kinetic_energy_about_datum(state: PackedFloat64Array, properties: Dictionary) -> float:
+	var cg: PackedFloat64Array = properties.cg_body_m
+	var velocity_c: PackedFloat64Array = M.add(RB._slice3(state, RB.VEL), M.cross(RB._slice3(state, RB.RATE), cg))
+	return 0.5 * float(properties.mass_kg) * M.dot(velocity_c, velocity_c) \
+		+ 0.5 * M.dot(RB._slice3(state, RB.RATE), RB.inertia_mul(properties.inertia, RB._slice3(state, RB.RATE)))
 
 
 static func _segment_proxy(start: PackedFloat64Array, finish: PackedFloat64Array, proxy: Dictionary,

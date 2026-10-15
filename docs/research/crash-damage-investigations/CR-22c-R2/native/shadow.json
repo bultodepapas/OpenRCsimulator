@@ -1,0 +1,677 @@
+{
+	"rows": [
+		{
+			"frames": 300,
+			"repeat": 0,
+			"scenario": "stationary",
+			"usec": 15634,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 0,
+			"scenario": "stationary",
+			"usec": 6138,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 1,
+			"scenario": "stationary",
+			"usec": 6903,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 1,
+			"scenario": "stationary",
+			"usec": 15446,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 2,
+			"scenario": "stationary",
+			"usec": 14574,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 2,
+			"scenario": "stationary",
+			"usec": 5681,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 3,
+			"scenario": "stationary",
+			"usec": 6235,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 3,
+			"scenario": "stationary",
+			"usec": 19823,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 4,
+			"scenario": "stationary",
+			"usec": 17429,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 4,
+			"scenario": "stationary",
+			"usec": 7306,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 5,
+			"scenario": "stationary",
+			"usec": 6769,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 5,
+			"scenario": "stationary",
+			"usec": 14952,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 6,
+			"scenario": "stationary",
+			"usec": 15637,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 6,
+			"scenario": "stationary",
+			"usec": 5727,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 7,
+			"scenario": "stationary",
+			"usec": 6116,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 7,
+			"scenario": "stationary",
+			"usec": 15261,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 8,
+			"scenario": "stationary",
+			"usec": 14815,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 8,
+			"scenario": "stationary",
+			"usec": 5911,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 9,
+			"scenario": "stationary",
+			"usec": 5804,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 9,
+			"scenario": "stationary",
+			"usec": 15096,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 10,
+			"scenario": "stationary",
+			"usec": 15594,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 10,
+			"scenario": "stationary",
+			"usec": 8489,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 11,
+			"scenario": "stationary",
+			"usec": 6223,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 11,
+			"scenario": "stationary",
+			"usec": 15934,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 12,
+			"scenario": "stationary",
+			"usec": 15122,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 12,
+			"scenario": "stationary",
+			"usec": 5691,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 13,
+			"scenario": "stationary",
+			"usec": 5590,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 13,
+			"scenario": "stationary",
+			"usec": 14517,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 14,
+			"scenario": "stationary",
+			"usec": 14512,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 14,
+			"scenario": "stationary",
+			"usec": 5722,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 15,
+			"scenario": "stationary",
+			"usec": 5931,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 15,
+			"scenario": "stationary",
+			"usec": 14567,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 0,
+			"scenario": "moving",
+			"usec": 17105,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 0,
+			"scenario": "moving",
+			"usec": 16766,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 1,
+			"scenario": "moving",
+			"usec": 17073,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 1,
+			"scenario": "moving",
+			"usec": 17072,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 2,
+			"scenario": "moving",
+			"usec": 16951,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 2,
+			"scenario": "moving",
+			"usec": 16751,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 3,
+			"scenario": "moving",
+			"usec": 16982,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 3,
+			"scenario": "moving",
+			"usec": 17214,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 4,
+			"scenario": "moving",
+			"usec": 17757,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 4,
+			"scenario": "moving",
+			"usec": 17397,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 5,
+			"scenario": "moving",
+			"usec": 18433,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 5,
+			"scenario": "moving",
+			"usec": 17994,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 6,
+			"scenario": "moving",
+			"usec": 17611,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 6,
+			"scenario": "moving",
+			"usec": 28736,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 7,
+			"scenario": "moving",
+			"usec": 19774,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 7,
+			"scenario": "moving",
+			"usec": 18663,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 8,
+			"scenario": "moving",
+			"usec": 17207,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 8,
+			"scenario": "moving",
+			"usec": 16827,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 9,
+			"scenario": "moving",
+			"usec": 17251,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 9,
+			"scenario": "moving",
+			"usec": 20150,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 10,
+			"scenario": "moving",
+			"usec": 17806,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 10,
+			"scenario": "moving",
+			"usec": 16957,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 11,
+			"scenario": "moving",
+			"usec": 16553,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 11,
+			"scenario": "moving",
+			"usec": 17038,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 12,
+			"scenario": "moving",
+			"usec": 17068,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 12,
+			"scenario": "moving",
+			"usec": 16959,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 13,
+			"scenario": "moving",
+			"usec": 17172,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 13,
+			"scenario": "moving",
+			"usec": 17363,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 14,
+			"scenario": "moving",
+			"usec": 17326,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 14,
+			"scenario": "moving",
+			"usec": 18192,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 15,
+			"scenario": "moving",
+			"usec": 22604,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 15,
+			"scenario": "moving",
+			"usec": 17586,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 0,
+			"scenario": "hidden",
+			"usec": 3357,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 0,
+			"scenario": "hidden",
+			"usec": 4581,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 1,
+			"scenario": "hidden",
+			"usec": 3462,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 1,
+			"scenario": "hidden",
+			"usec": 3433,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 2,
+			"scenario": "hidden",
+			"usec": 3326,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 2,
+			"scenario": "hidden",
+			"usec": 3585,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 3,
+			"scenario": "hidden",
+			"usec": 5265,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 3,
+			"scenario": "hidden",
+			"usec": 3460,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 4,
+			"scenario": "hidden",
+			"usec": 4248,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 4,
+			"scenario": "hidden",
+			"usec": 3727,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 5,
+			"scenario": "hidden",
+			"usec": 3409,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 5,
+			"scenario": "hidden",
+			"usec": 3422,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 6,
+			"scenario": "hidden",
+			"usec": 3352,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 6,
+			"scenario": "hidden",
+			"usec": 3546,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 7,
+			"scenario": "hidden",
+			"usec": 3388,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 7,
+			"scenario": "hidden",
+			"usec": 3394,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 8,
+			"scenario": "hidden",
+			"usec": 3368,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 8,
+			"scenario": "hidden",
+			"usec": 3553,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 9,
+			"scenario": "hidden",
+			"usec": 5058,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 9,
+			"scenario": "hidden",
+			"usec": 4021,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 10,
+			"scenario": "hidden",
+			"usec": 5042,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 10,
+			"scenario": "hidden",
+			"usec": 3679,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 11,
+			"scenario": "hidden",
+			"usec": 3431,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 11,
+			"scenario": "hidden",
+			"usec": 3373,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 12,
+			"scenario": "hidden",
+			"usec": 4016,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 12,
+			"scenario": "hidden",
+			"usec": 4091,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 13,
+			"scenario": "hidden",
+			"usec": 3461,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 13,
+			"scenario": "hidden",
+			"usec": 3417,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 14,
+			"scenario": "hidden",
+			"usec": 3425,
+			"variant": 0
+		},
+		{
+			"frames": 300,
+			"repeat": 14,
+			"scenario": "hidden",
+			"usec": 3389,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 15,
+			"scenario": "hidden",
+			"usec": 3585,
+			"variant": 1
+		},
+		{
+			"frames": 300,
+			"repeat": 15,
+			"scenario": "hidden",
+			"usec": 3331,
+			"variant": 0
+		}
+	],
+	"valid": true
+}

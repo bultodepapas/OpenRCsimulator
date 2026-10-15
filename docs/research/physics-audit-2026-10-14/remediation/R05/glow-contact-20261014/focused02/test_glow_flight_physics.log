@@ -1,0 +1,85 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   fuel mass model accepts full, partial and dry inventories
+ok   wet fuel mass retains the source mass  got 2.4, expected 2.4 (tol 0.000000002)
+ok   partial-fuel aircraft mass removes only burned fuel  got 2.28, expected 2.28 (tol 0.000000002)
+ok   dry aircraft mass equals the dry structure  got 2.2, expected 2.2 (tol 0.000000002)
+ok   wet CG is at the chosen datum  got 0.0, expected 0.0 (tol 0.000000002)
+ok   partial tank moves CG away from its side of the datum  got -0.01052631578947, expected -0.01052631578947 (tol 0.000000002)
+ok   dry CG settles at the dry structure centre  got -0.01818181818182, expected -0.01818181818182 (tol 0.000000002)
+ok   wet tensor agrees with dry body plus tank geometry  max component error=0
+ok   partial tensor follows the independent mass distribution  max component error=0
+ok   dry tensor returns to dry-body centroidal inertia  max component error=1.3877787807814457e-17
+ok   fuel removal changes the aircraft's inertia tensor
+ok   negative or excess remaining fuel is rejected
+ok   full co-moving mass flux produces no angular spin-up  angular acceleration=[0.0, 0.0, 0.0] rad/s²
+ok   full fixed datum follows CM centripetal geometry  got 0.0, expected 0.0 (tol 0.0000000001)
+ok   partial co-moving mass flux produces no angular spin-up  angular acceleration=[0.0, 0.0, 0.0] rad/s²
+ok   partial fixed datum follows CM centripetal geometry  got -0.26315789473684, expected -0.26315789473684 (tol 0.0000000001)
+ok   dry co-moving mass flux produces no angular spin-up  angular acceleration=[0.0, 0.0, 0.0] rad/s²
+ok   dry fixed datum follows CM centripetal geometry  got -0.45454545454545, expected -0.45454545454545 (tol 0.0000000001)
+ok   2T installed aircraft loads  []
+ok   2T static propeller evaluates
+ok   2T static propeller cannot create mechanical power  QΩ − Tu=150.200787357029 W, blade drag dissipation=150.200787357029 W
+ok   2T static propeller closes to section drag dissipation  power gap=0.0 W
+ok   2T forward propeller evaluates
+ok   2T forward propeller cannot create mechanical power  QΩ − Tu=36.6947909594949 W, blade drag dissipation=36.6947909594949 W
+ok   2T forward propeller closes to section drag dissipation  power gap=0.00000000000002 W
+ok   2T reverse airflow propeller evaluates
+ok   2T reverse airflow propeller cannot create mechanical power  QΩ − Tu=283.307882777076 W, blade drag dissipation=283.307882777076 W
+ok   2T reverse airflow propeller closes to section drag dissipation  power gap=0.00000000000006 W
+ok   2T windmilling propeller evaluates
+ok   2T windmilling propeller cannot create mechanical power  QΩ − Tu=90.9389981017621 W, blade drag dissipation=90.9389981017621 W
+ok   2T windmilling propeller closes to section drag dissipation  power gap=-0.00000000000001 W
+ok   2T windmilling air drives the shaft
+ok   2T stopped in airflow propeller evaluates
+ok   2T stopped in airflow propeller cannot create mechanical power  QΩ − Tu=98.3272060562019 W, blade drag dissipation=98.3272060562019 W
+ok   2T stopped in airflow propeller closes to section drag dissipation  power gap=0.00000000000001 W
+ok   2T stopped in reverse airflow propeller evaluates
+ok   2T stopped in reverse airflow propeller cannot create mechanical power  QΩ − Tu=98.3272060562019 W, blade drag dissipation=98.3272060562019 W
+ok   2T stopped in reverse airflow propeller closes to section drag dissipation  power gap=0.00000000000003 W
+ok   2T rest propeller evaluates
+ok   2T rest propeller cannot create mechanical power  QΩ − Tu=0.0 W, blade drag dissipation=0.0 W
+ok   2T rest propeller closes to section drag dissipation  power gap=0.0 W
+ok   2T stationary propeller at rest has zero flow power
+ok   2T running flight stage evaluates
+ok   2T running body and rotor angular momentum balance  max component error=5.551115123125783e-17
+ok   2T rotating coast stage evaluates
+ok   2T rotating coast body and rotor angular momentum balance  max component error=2.7755575615628914e-17
+ok   2T stopped coast consumes no tank fuel  got 0.0, expected 0.0 (tol 0.000000002)
+ok   2T static stop holds the rotor at rest  [0.0, 0.0, -1.09125, 0.0, 0.0, -0.00097460791652, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+ok   2T forward windmill breaks the stop into positive RPM  [8053.91763540068, 0.0, -3.71025, 0.0, 0.0, -0.00097460791652, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -98.3272060562019, 0.0]
+ok   2T reverse airflow is refused at the one-way stop  []
+ok   4T installed aircraft loads  []
+ok   4T static propeller evaluates
+ok   4T static propeller cannot create mechanical power  QΩ − Tu=292.260107297568 W, blade drag dissipation=292.260107297569 W
+ok   4T static propeller closes to section drag dissipation  power gap=-0.00000000000006 W
+ok   4T forward propeller evaluates
+ok   4T forward propeller cannot create mechanical power  QΩ − Tu=63.8491002422051 W, blade drag dissipation=63.8491002422051 W
+ok   4T forward propeller closes to section drag dissipation  power gap=0.0 W
+ok   4T reverse airflow propeller evaluates
+ok   4T reverse airflow propeller cannot create mechanical power  QΩ − Tu=626.437655534295 W, blade drag dissipation=626.437655534295 W
+ok   4T reverse airflow propeller closes to section drag dissipation  power gap=0.0 W
+ok   4T windmilling propeller evaluates
+ok   4T windmilling propeller cannot create mechanical power  QΩ − Tu=166.090906875019 W, blade drag dissipation=166.090906875019 W
+ok   4T windmilling propeller closes to section drag dissipation  power gap=0.0 W
+ok   4T windmilling air drives the shaft
+ok   4T stopped in airflow propeller evaluates
+ok   4T stopped in airflow propeller cannot create mechanical power  QΩ − Tu=172.090289073982 W, blade drag dissipation=172.090289073982 W
+ok   4T stopped in airflow propeller closes to section drag dissipation  power gap=-0.00000000000003 W
+ok   4T stopped in reverse airflow propeller evaluates
+ok   4T stopped in reverse airflow propeller cannot create mechanical power  QΩ − Tu=172.090289073982 W, blade drag dissipation=172.090289073982 W
+ok   4T stopped in reverse airflow propeller closes to section drag dissipation  power gap=-0.00000000000003 W
+ok   4T rest propeller evaluates
+ok   4T rest propeller cannot create mechanical power  QΩ − Tu=0.0 W, blade drag dissipation=0.0 W
+ok   4T rest propeller closes to section drag dissipation  power gap=0.0 W
+ok   4T stationary propeller at rest has zero flow power
+ok   4T running flight stage evaluates
+ok   4T running body and rotor angular momentum balance  max component error=1.1102230246251565e-16
+ok   4T rotating coast stage evaluates
+ok   4T rotating coast body and rotor angular momentum balance  max component error=4.440892098500626e-16
+ok   4T stopped coast consumes no tank fuel  got 0.0, expected 0.0 (tol 0.000000002)
+ok   4T static stop holds the rotor at rest  [0.0, 0.0, -0.92590909090909, 0.0, 0.0, -0.0004441836592, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
+ok   4T forward windmill breaks the stop into positive RPM  [7007.39528028684, 0.0, -3.14809090909091, 0.0, 0.0, -0.0004441836592, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, -172.090289073982, 0.0]
+ok   4T reverse airflow is refused at the one-way stop  []
+glow flight physics: 82 checks, 0 failed

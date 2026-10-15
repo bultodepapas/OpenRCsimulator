@@ -1,0 +1,30 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Stik: one lagged wing lift-velocity source (m/s) after the anchors
+ok   gp-extra-300s-60 lag allocation follows its derived local-model capability
+ok   gp-extra-300s-60 without gradient-dependent laws (in memory): applies and has no lag entry  valid=true, apply=true, errors=[]
+ok   p51d-mustang-120 lag allocation follows its derived local-model capability
+ok   p51d-mustang-120 rejects ground effect without its free-tail gradient  ["aero.ground_effect: requires aero.surfaces.horizontal.downwash_gradient (the free tail law whose downwash it reduces)"]
+ok   p51d-mustang-120 without gradient-dependent laws (in memory): applies and has no lag entry  valid=true, apply=true, errors=[]
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   sebart-avanti-s-a200-p100rx lag allocation follows its derived local-model capability
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   sebart-avanti-s-a200-p100rx without gradient-dependent laws (in memory): applies and has no lag entry  valid=true, apply=true, errors=[]
+ok   reset starts the lag settled at the start state's wing lift-velocity source (m/s)
+ok   lag = instantaneous wake source reproduces quasi-static local loads byte for byte (2000 stalled/rate/control states)  2000/2000
+ok   D11g: and the quasi-static oracle loads byte for byte (settled lag adds nothing)  2000/2000
+ok   descending α ramp moves actual tail beyond the attached limit  tail -9.593° after 11 ticks
+ok   selector uses lagged m/s source while the static call remains unchanged  static 0.000000, actual 0.349600, expected 0.349600
+ok   Aero.loads applies the lag-aware blend and passes the lag to both load laws  actual pitch 4.993417, lag-weighted 4.993417, static 3.515615 N·m
+ok   FlightSession._loads feeds the held m/s source to the tail (equals Dynamics with it, differs from instantaneous)  pitch -1.8836 vs quasi-static -1.2220 N·m
+ok   step response: exact first-order lag over 24 ticks (τ = l/V = 51.0 ms)  8.881784197001252e-16
+info Cmα̇: quasi-steady theory -3.586, at k 0.02 -3.551; measured -3.413 (240 Hz), -3.484 (480 Hz)
+ok   Cmα̇ from the plunge oscillation -3.413 within 5 % of the lag theory -3.551
+ok   tick refinement: the error to theory halves at 480 Hz (held lag input, first order)  0.1380 → 0.0669
+ok   D11g: the oracle regime's Cmα̇ -3.431 within 3 % of the local regime's -3.413 (one lag, one tail)
+info effective pitch damping: local Cmq -7.80 + Cmα̇ -3.41 = -11.25; oracle Cmq -7.94 + Cmα̇ -3.43 = -11.41
+ok   effective pitch damping Cmq + Cmα̇ -11.25 within 10 % of the geometry estimate −2·a_t·η·V_H·(l_t/c)·(1 + lag) + wing (-11.39)
+ok   checkpoint mid-pull: restore and replay 200 ticks byte-identical, lag included
+21 checks, 0 failed

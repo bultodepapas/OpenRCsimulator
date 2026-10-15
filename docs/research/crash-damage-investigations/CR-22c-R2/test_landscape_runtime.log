@@ -1,0 +1,102 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok production flight installs a nonempty collision world
+ok production inventory includes vehicle
+CRASH at 77.1 m/s (sink -4.8 m/s, vehicle impact (vehicle:cars:00:car_hatch), normal speed 76.9 m/s) - [R] restart
+ok 80 m/s real aircraft reaches scenery crash: vehicle
+ok contact is with requested object type: vehicle
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)
+       [1] _start (res://render/crash/director.gd:189)
+       [2] update (res://render/crash/director.gd:122)
+       [3] _process (res://main.gd:735)
+       [4] _run (res://tests/test_landscape_runtime.gd:76)
+CRASH CAUSE: Hit a vehicle 77.1 m/s
+ok scenery starts existing crash director: vehicle
+ok secondary contacts are present and bounded: vehicle
+ok wall/tree normal reaches severity report: vehicle
+ok impact presentation preserves altitude: vehicle
+ok engine secondary collision shapes answer ray query: vehicle
+ok pause holds crash effect age: vehicle
+ok reset removes scenery contacts and restores aircraft: vehicle
+ok reset clears contact state and retains world identity: vehicle
+ok production inventory includes building
+CRASH at 77.4 m/s (sink -4.1 m/s, building impact (building:pavilion:00:pavilion:main), normal speed 77.3 m/s) - [R] restart
+ok 80 m/s real aircraft reaches scenery crash: building
+ok contact is with requested object type: building
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)
+       [1] _start (res://render/crash/director.gd:189)
+       [2] update (res://render/crash/director.gd:122)
+       [3] _process (res://main.gd:735)
+       [4] _run (res://tests/test_landscape_runtime.gd:76)
+CRASH CAUSE: Hit a building 77.4 m/s
+ok scenery starts existing crash director: building
+ok secondary contacts are present and bounded: building
+ok wall/tree normal reaches severity report: building
+ok impact presentation preserves altitude: building
+ok engine secondary collision shapes answer ray query: building
+ok pause holds crash effect age: building
+ok reset removes scenery contacts and restores aircraft: building
+ok reset clears contact state and retains world identity: building
+ok production inventory includes tree_trunk
+CRASH at 76.3 m/s (sink -6.6 m/s, tree trunk impact (tree:sapling:saplings:00:trunk), normal speed 75.9 m/s) - [R] restart
+ok 80 m/s real aircraft reaches scenery crash: tree_trunk
+ok contact is with requested object type: tree_trunk
+CRASH CAUSE: Hit a tree trunk 76.3 m/s
+ok scenery starts existing crash director: tree_trunk
+ok secondary contacts are present and bounded: tree_trunk
+ok wall/tree normal reaches severity report: tree_trunk
+ok impact presentation preserves altitude: tree_trunk
+ok engine secondary collision shapes answer ray query: tree_trunk
+ok pause holds crash effect age: tree_trunk
+ok reset removes scenery contacts and restores aircraft: tree_trunk
+ok reset clears contact state and retains world identity: tree_trunk
+ok production inventory includes lamp
+CRASH at 76.3 m/s (sink -6.8 m/s, lamp impact (lamp:field_mast:pole), normal speed 75.2 m/s) - [R] restart
+ok 80 m/s real aircraft reaches scenery crash: lamp
+ok contact is with requested object type: lamp
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)
+       [1] _start (res://render/crash/director.gd:189)
+       [2] update (res://render/crash/director.gd:122)
+       [3] _process (res://main.gd:735)
+       [4] _run (res://tests/test_landscape_runtime.gd:76)
+CRASH CAUSE: Hit a lamp 76.3 m/s
+ok scenery starts existing crash director: lamp
+ok secondary contacts are present and bounded: lamp
+ok wall/tree normal reaches severity report: lamp
+ok impact presentation preserves altitude: lamp
+ok engine secondary collision shapes answer ray query: lamp
+ok pause holds crash effect age: lamp
+ok reset removes scenery contacts and restores aircraft: lamp
+ok reset clears contact state and retains world identity: lamp
+ok production inventory includes parked_aircraft
+CRASH at 79.2 m/s (sink -1.1 m/s, parked aircraft impact (fleet:fleet:02:p51d-mustang-120), normal speed 78.0 m/s) - [R] restart
+ok 80 m/s real aircraft reaches scenery crash: parked_aircraft
+ok contact is with requested object type: parked_aircraft
+WARNING: Scenery wreck contact budget reached; farther secondary contacts omitted.
+   at: push_warning (core/variant/variant_utility.cpp:1033)
+   GDScript backtrace (most recent call first):
+       [0] build_near (res://render/landscape_upgrade/scenery_bodies.gd:33)
+       [1] _start (res://render/crash/director.gd:189)
+       [2] update (res://render/crash/director.gd:122)
+       [3] _process (res://main.gd:735)
+       [4] _run (res://tests/test_landscape_runtime.gd:76)
+CRASH CAUSE: Hit a parked aircraft 79.2 m/s
+ok scenery starts existing crash director: parked_aircraft
+ok secondary contacts are present and bounded: parked_aircraft
+ok wall/tree normal reaches severity report: parked_aircraft
+ok impact presentation preserves altitude: parked_aircraft
+ok engine secondary collision shapes answer ray query: parked_aircraft
+ok pause holds crash effect age: parked_aircraft
+ok reset removes scenery contacts and restores aircraft: parked_aircraft
+ok reset clears contact state and retains world identity: parked_aircraft
+56 checks, 0 failures

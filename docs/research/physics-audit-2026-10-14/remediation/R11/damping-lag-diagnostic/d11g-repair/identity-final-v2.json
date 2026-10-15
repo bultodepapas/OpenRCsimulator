@@ -1,0 +1,260 @@
+{
+  "schema": "d11g-repair-final-identity/v1",
+  "note": "This manifest intentionally excludes itself.",
+  "before_identity_sha256": "383bd8d56fd5ac0a33194a1705d860f18ffc19f9a1160f482f8948df33bbdebf",
+  "exact_leaf_diff_sha256": "ece7e53fc319842592fb1dd0850f7dd19550473e7d81ce5d1734be3568559320",
+  "current_law_report_sha256": "8d1b5e3dc31a234b65eac0eaf4bc9ff40528d23315f9df17579942a5ec534094",
+  "normalized_input_sha256": "9df784bcde9beeb82fc810762265067a72b9f6de3fa191a9bcb6fcc7e59048a8",
+  "solver_source_scheme": "sha256-source-files-v1",
+  "solver_sources": [
+    {
+      "path": "app/physics/aero.gd",
+      "sha256": "7ac94f6003f2cb7660a56dd94755c6a7d6143d90cc446c6b6c20433038ce38e3"
+    },
+    {
+      "path": "app/physics/air_data.gd",
+      "sha256": "8c5f96b93e60638f01624d4871a41da07b8b464e1b30e3d79d3fbdb43f325ca2"
+    },
+    {
+      "path": "app/physics/aircraft_contract.gd",
+      "sha256": "9927ac75951db4d1be41a638e534fe72c6dc547f9f9e2aeb516dd7bf3cf26a9b"
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "sha256": "75212e145c5278d3a1a56f663418ea719065cb0d9f3761bca08d8bb8b759ed12"
+    },
+    {
+      "path": "app/physics/control_surfaces.gd",
+      "sha256": "c13215f7186aa827eb4a47e198d3fee04509631e585453fbf69850b3bc50aa93"
+    },
+    {
+      "path": "app/physics/dynamics.gd",
+      "sha256": "5d4d8ea9ae713f36dc977f3ed8dd451bdcc46278e3c68db9f72b2b426046b7f1"
+    },
+    {
+      "path": "app/physics/electric_motor.gd",
+      "sha256": "2b22a95bfb8294655a4fbb48a5a7ba5d2b8ac872e04e4b135a1faecb467725b8"
+    },
+    {
+      "path": "app/physics/electric_supply.gd",
+      "sha256": "60e5dfd91a90b5c87a535d616ea6691d447cd4d91b0897f34019559fa20c7977"
+    },
+    {
+      "path": "app/physics/glow/installation.gd",
+      "sha256": "10065ead86052d324ef8b561e4c4d21612850ef86022ac8430485daf84956b84"
+    },
+    {
+      "path": "app/physics/ground_effect.gd",
+      "sha256": "32c10e2b1c7b60fec2bfba124f373b3af9fee7b33258abd3a0567ba5debe7a98"
+    },
+    {
+      "path": "app/physics/math3d.gd",
+      "sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b"
+    },
+    {
+      "path": "app/physics/physical_identity.gd",
+      "sha256": "c3c7c92ac18b3d20f79c3faaad455d9e04f46524fa284fc6a0ba9e3198d64cb6"
+    },
+    {
+      "path": "app/physics/propulsion.gd",
+      "sha256": "4368f5636a983757e2587eadf92db07677d6283d0fe2b3cb3a43cb83e37ebff5"
+    },
+    {
+      "path": "app/physics/rigid_body.gd",
+      "sha256": "b39f7041b05bf9f9ed8bef9b61eac123627e314cd994dcf529687b52cf4096a3"
+    },
+    {
+      "path": "app/physics/trim.gd",
+      "sha256": "7fa0919ba460c5bdbffc34982fc4d289cae0ddc5aa98fc7d7b5d2edc079596e6"
+    },
+    {
+      "path": "app/physics/wheel_profiles.gd",
+      "sha256": "b9c8995eea9eb500f6c776694c5d607a894493506b7fe4ad66487ed9a17becb5"
+    },
+    {
+      "path": "app/physics/wing_polar.gd",
+      "sha256": "fee5fe7c2f8b13f30e9275675ed421eb6c8a45d62d0d91958ed155b12b4db3be"
+    },
+    {
+      "path": "research/aero/d11g/derive_rate_derivatives.gd",
+      "sha256": "3d08c3618d2e94aca48ec9cb42924f54984e87fd1ef35fa694f02ffa044758d1"
+    }
+  ],
+  "files": [
+    {
+      "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+      "bytes": 57527,
+      "sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723"
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_55ax_2t.json",
+      "bytes": 56732,
+      "sha256": "e5494601e2bf3390f95c37f2175bb28b508b2a340c8c9fe55d56b1a7b335c3ae"
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json",
+      "bytes": 56720,
+      "sha256": "ac71c4a05cb0375f445b50f68f8fb3ceb2254e5a0ae933c900905b362b046524"
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_61fx_2t.json",
+      "bytes": 56722,
+      "sha256": "4f50726804a1fbc6dbac3570e4ca4b2b20a270933816ff0032cd0463de7a5177"
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_fs64v_4t.json",
+      "bytes": 56729,
+      "sha256": "d381fc6c3fb014e2c727410b1c1996c8f7cf35e0ad6af63c0268e11c5b1092af"
+    },
+    {
+      "path": "app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
+      "bytes": 56700,
+      "sha256": "0f0b06b924eafdf9c4ddd02ee736ea87fcd7c5364b39da4592292fea104cd92e"
+    },
+    {
+      "path": "app/data/glow/stik_55ax_2t.json",
+      "bytes": 7453,
+      "sha256": "d801948451616f8d34cf66097d10f55346eeb8c3cee9f7378d46b24ec63ceec4"
+    },
+    {
+      "path": "app/data/glow/stik_55ax_2t_apc_13x6.json",
+      "bytes": 7442,
+      "sha256": "7a1b9ec00421bafbd894db5b24e9fb781005db43988898ffe83dbad94e576ed0"
+    },
+    {
+      "path": "app/data/glow/stik_61fx_2t.json",
+      "bytes": 7559,
+      "sha256": "e3157d77fe82a02dcac2dfc17faad3bd40b2e099fcecbda21c07c306b3ef7233"
+    },
+    {
+      "path": "app/data/glow/stik_fs64v_4t.json",
+      "bytes": 7757,
+      "sha256": "47c92d49aed4da6b9ea30d50bb7a4a705aab9e0155c8bb95da860671feac1039"
+    },
+    {
+      "path": "app/data/glow/stik_fs64v_4t_apc_13x6.json",
+      "bytes": 7672,
+      "sha256": "679d73b3674ec4842b62fbb5cb9e40d80104467bbf8bfd57b8e4c874f50988ff"
+    },
+    {
+      "path": "app/data/workshop/jensen-das-ugly-stik-60.json",
+      "bytes": 1678,
+      "sha256": "1a124b2fcf2a2cadea719edb60002e6bb97755eca3c2b750eb59fb8758e93c3f"
+    },
+    {
+      "path": "app/data/workshop/stik-glow-55ax-2t.json",
+      "bytes": 1701,
+      "sha256": "38c0eb1e5f786b04826074464aaf4959c4b38c790fdf7a38b76d793e94806c8e"
+    },
+    {
+      "path": "app/data/workshop/stik-glow-61fx-2t.json",
+      "bytes": 1701,
+      "sha256": "c07cf42587985bbaa825c05223899f18b2b2b6f1086f3b541afe51bbf9c95f1b"
+    },
+    {
+      "path": "app/data/workshop/stik-glow-fs64v-4t.json",
+      "bytes": 1702,
+      "sha256": "3f92b1cbb8ba567a117b1dee13282e933d5fb23b2f76253e8df9a929fbf4f46e"
+    },
+    {
+      "path": "research/aero/d11g/derive_rate_derivatives.gd",
+      "bytes": 17484,
+      "sha256": "3d08c3618d2e94aca48ec9cb42924f54984e87fd1ef35fa694f02ffa044758d1"
+    },
+    {
+      "path": "research/aero/d11g/apply_rate_derivatives.py",
+      "bytes": 15468,
+      "sha256": "f4f9bf75683bcf57301ab39e9682efed4b2aacd259a7e4b4882c855066f6d044"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/current-law-report-v2.json",
+      "bytes": 5501,
+      "sha256": "8d1b5e3dc31a234b65eac0eaf4bc9ff40528d23315f9df17579942a5ec534094"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/current-law-check-report-v2.json",
+      "bytes": 5555,
+      "sha256": "43e87b9edfde5347658cb1dafc362ada5e44eb23a0c8ef361b546cb0a70dacc6"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/leaf-diff.json",
+      "bytes": 22993,
+      "sha256": "ece7e53fc319842592fb1dd0850f7dd19550473e7d81ce5d1734be3568559320"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_decomposition.gd",
+      "bytes": 9784,
+      "sha256": "e097d7e58c27c14637d6e295db0f669207ede80764ffaefe24a34987f0b50fd6"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_decomposition-current-law.log",
+      "bytes": 9860,
+      "sha256": "da00866a81a4eb40466d9428404a5d5414322cc9baf25ffc3a74f0f70ba443e6"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_decomposition-original-data.log",
+      "bytes": 9860,
+      "sha256": "f21f170eb2de863680eeb4e06061a7e0a542c449934392f5f28469c539190b7c"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_analytic_derivative.gd",
+      "bytes": 8937,
+      "sha256": "48d50d156b28ca1edc09a68a3b2e283e48effc9409ccb5fadff05914f90e0b50"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_analytic_derivative-current-law.log",
+      "bytes": 7051,
+      "sha256": "2983e6871fdd984d6d941f576a1bf0eca61c8a214ba101e68c2adaa1f10848b5"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/test_yaw_damping-R00-local-law.log",
+      "bytes": 1446,
+      "sha256": "39a0fbf76d879c6771d07df637b54235e46d3c2f591d0cf08dcf3a6e88fb471d"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/test_yaw_damping-current-law.log",
+      "bytes": 1446,
+      "sha256": "6e34dc64c82e1499ac9a72dc064e4007827dc1ffc1635ba1b0d8be3d40120292"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/test_damping_regimes.gd.log",
+      "bytes": 2562,
+      "sha256": "cfc5121d340d422c28e7d753ff621a17883a343780bdf2a227d12e5d2ada0ab0"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/test_downwash_lag.gd.log",
+      "bytes": 3347,
+      "sha256": "cbe516d2f26f2cd905af5d208c821430a052491dab282fcc22e9474560a20ab4"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/updater-isolated-replay-v2.log",
+      "bytes": 251,
+      "sha256": "60b240d68452dbda457a9aa3542d442937b00fa2af313c3d3d6abe9f643aabe1"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/updater-stale-input-v2.log",
+      "bytes": 214,
+      "sha256": "10147035dea31460dbd31c71989e20dd2b55a1f5579115f635b5ef45c9e4ec3c"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/updater-stale-source-v2.log",
+      "bytes": 87,
+      "sha256": "a1519c1709dfd50468c2a385cd56a4afae592a0b8ae536502cb0ce91f08c419a"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/updater-missing-source-scheme-v2.log",
+      "bytes": 72,
+      "sha256": "c3e049a08fcd65941f1ae74a42c0a09bf94e4e90fb9c23aebf7b12fc857c09d6"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/updater-bool-value-v2.log",
+      "bytes": 63,
+      "sha256": "f61aa320a70f9fcfb427580fe6afcee578e7e93c2c9e6fd6acb529f278d5e056"
+    },
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/updater-final-check-v2.log",
+      "bytes": 58,
+      "sha256": "2f7cfaf61a1b70e96eb5974fbe964a6028f24381b98fbb0e2c823eb547da7a83"
+    }
+  ]
+}

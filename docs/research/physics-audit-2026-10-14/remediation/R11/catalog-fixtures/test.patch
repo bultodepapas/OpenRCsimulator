@@ -1,0 +1,121 @@
+diff --git a/app/tests/test_controller_sections.gd b/app/tests/test_controller_sections.gd
+index fd6445b6..7cb21891 100644
+--- a/app/tests/test_controller_sections.gd
++++ b/app/tests/test_controller_sections.gd
+@@ -41,12 +41,13 @@ func _joy(button: JoyButton, device := 15) -> void:
+ 		await process_frame
+ 	await _settle()
+ 
+-func _visible_rows(setup: Node) -> int:
+-	var total := 0
++func _visible_actions(setup: Node) -> PackedStringArray:
++	var ids := PackedStringArray()
+ 	for index in ControllerActions.ACTIONS.size():
+ 		if (setup.action_grid.get_child(3 + index * 3) as Control).visible:
+-			total += 1
+-	return total
++			ids.append(str(ControllerActions.ACTIONS[index].id))
++	ids.sort()
++	return ids
+ 
+ func _run() -> void:
+ 	InputMap.load_from_project_settings()
+@@ -99,11 +100,25 @@ func _run() -> void:
+ 	_check("all three configured AUX editors fit at 1280x720 in Spanish", scroll.get_global_rect().encloses(setup._aux_controls.smoke.axis.get_global_rect()) and scroll.get_global_rect().encloses(setup._aux_controls.gear.button_mode.get_global_rect()))
+ 	setup._set_draft_profile(original)
+ 	setup.select_section("buttons")
+-	var expected := [29, 7, 9, 5, 8]
++	# Explicit UI membership catches a wrong category even when row counts agree.
++	# Helicopter flight commands were added after the old 29-row fixture.
++	var expected := [
++		[],
++		["trim_left", "trim_right", "trim_up", "trim_down", "overlay_preset", "throttle_cut", "lights_cycle",
++			"helicopter_arm", "helicopter_hold", "helicopter_mode", "helicopter_trainer"],
++		["camera_cycle", "view_reset", "camera_previous", "camera_pilot", "camera_chase", "camera_orbit",
++			"camera_zoom_in", "camera_zoom_out", "camera_auto_zoom"],
++		["smoke_toggle", "flaps_up", "flaps_down", "flaps_cycle", "gear_toggle"],
++		["accept", "back", "navigate_up", "navigate_down", "navigate_left", "navigate_right", "pause", "calibrate"],
++	]
++	for index in range(1, expected.size()):
++		expected[0].append_array(expected[index])
+ 	for index in expected.size():
+ 		setup.action_filter.select(index)
+ 		setup._on_action_filter_selected(index)
+-		_check("category %d has the expected rows" % index, _visible_rows(setup) == expected[index])
++		var wanted := PackedStringArray(expected[index])
++		wanted.sort()
++		_check("category %d shows exactly the expected actions" % index, _visible_actions(setup) == wanted)
+ 	_check("category filters preserve all bindings", setup.current_profile() == original)
+ 	var remap := setup.find_child("Remap_camera_cycle", true, false) as Button
+ 	setup._start_capture("camera_cycle", remap)
+diff --git a/app/tests/test_crash_energy.gd b/app/tests/test_crash_energy.gd
+index 8fbcc215..ee0193b5 100644
+--- a/app/tests/test_crash_energy.gd
++++ b/app/tests/test_crash_energy.gd
+@@ -26,6 +26,9 @@ const DATA_ONLY_AIRPLANE_TAGS := {
+ 	"synthetic_stik_electric_6s.json": {"id": "synthetic_stik_electric_6s", "tag": ""},
+ 	"synthetic_stik_electric_6s_battery.json": {"id": "synthetic_stik_electric_6s_battery", "tag": ""},
+ }
++const DATA_ONLY_ROTORCRAFT := {
++	"hx700_electric_3d_experimental.json": "hx700-electric-3d-experimental",
++}
+ 
+ var _checks := 0
+ var _failures := 0
+@@ -158,6 +161,11 @@ func _fleet_tags() -> void:
+ 		if not classified.has(path):
+ 			var expected: Dictionary = DATA_ONLY_AIRPLANE_TAGS[file]
+ 			classified[path] = {id = str(expected.id), vehicle = "airplane", source = "data-only"}
++	for file: String in DATA_ONLY_ROTORCRAFT:
++		var path := AIRCRAFT_DATA_DIR + file
++		_check("laboratory rotorcraft remains outside the playable catalog: " + file, not classified.has(path))
++		if not classified.has(path):
++			classified[path] = {id = DATA_ONLY_ROTORCRAFT[file], vehicle = "rotorcraft", source = "data-only"}
+ 
+ 	var discovered: Dictionary = {}
+ 	for file: String in DirAccess.get_files_at(AIRCRAFT_DATA_DIR):
+@@ -172,13 +180,16 @@ func _fleet_tags() -> void:
+ 		var id := str(kind.id)
+ 		if kind.vehicle == "rotorcraft":
+ 			_check("rotorcraft remains outside airplane inventory energy tags: " + id,
+-				id == "xcell-60-research" and not CATALOG_AIRPLANE_TAGS.has(id))
++				not CATALOG_AIRPLANE_TAGS.has(id))
+ 			var rotor_loaded: Dictionary = RotorcraftData.load_file(path)
+ 			_check("%s loads through the rotorcraft schema" % id, rotor_loaded.get("ok", false), str(rotor_loaded.get("errors", [])))
+ 			if rotor_loaded.get("ok", false):
+ 				_check("%s retains its rotorcraft identity without airplane inventory" % id,
+ 					rotor_loaded.get("id", "") == id and rotor_loaded.get("raw", {}).get("vehicle", "") == "rotorcraft"
+ 					and not rotor_loaded.get("raw", {}).has("inventory"))
++				if kind.source == "data-only":
++					_check("%s retains laboratory-only qualification" % id,
++						rotor_loaded.raw.get("release_state", "") == "laboratory_only")
+ 			continue
+ 
+ 		var expected_tags := PackedStringArray()
+diff --git a/app/tests/test_crash_hull_labels.gd b/app/tests/test_crash_hull_labels.gd
+index 263cc48b..d0b11793 100644
+--- a/app/tests/test_crash_hull_labels.gd
++++ b/app/tests/test_crash_hull_labels.gd
+@@ -19,6 +19,9 @@ const DATA_ONLY_AIRPLANE_CONFIGS := [
+ 	{"file": "synthetic_stik_electric_6s.json", "id": "synthetic_stik_electric_6s"},
+ 	{"file": "synthetic_stik_electric_6s_battery.json", "id": "synthetic_stik_electric_6s_battery"},
+ ]
++const DATA_ONLY_ROTORCRAFT_CONFIGS := [
++	{"file": "hx700_electric_3d_experimental.json", "id": "hx700-electric-3d-experimental"},
++]
+ const TAIL := ["tail_end", "left_stab_tip", "right_stab_tip", "fin_top"]
+ const FORWARD := ["spinner", "propeller", "nose"]
+ const CENTRELINE := ["spinner", "nose", "tail_end", "fin_top", "canopy", "belly"]
+@@ -81,6 +84,12 @@ func _classify_aircraft_files(files: PackedStringArray) -> Dictionary:
+ 			not classified.has(path))
+ 		if not classified.has(path):
+ 			classified[path] = {id = str(configuration.id), vehicle = "airplane"}
++	for configuration: Dictionary in DATA_ONLY_ROTORCRAFT_CONFIGS:
++		var path := DATA_DIR + str(configuration.file)
++		_check("laboratory rotorcraft stays outside the playable catalog: " + str(configuration.id),
++			not classified.has(path))
++		if not classified.has(path):
++			classified[path] = {id = str(configuration.id), vehicle = "rotorcraft"}
+ 
+ 	var discovered: Dictionary = {}
+ 	for path in files:

@@ -175,7 +175,11 @@ func _initialize() -> void:
 		and session.is_flyable())
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(reload_path))
 
-	# Missing runway and failed equilibrium are explicit, parked failures; restoring valid inputs retries cleanly.
+	# R04: a rejected replacement is diagnostic and preserves the committed flight. Initial failures above remain parked.
+	var rejection_events := [0, 0, 0]
+	session.resetting.connect(func() -> void: rejection_events[0] += 1)
+	session.sim.stepped.connect(func(_k, _t, _s, _l, _i, _a) -> void: rejection_events[1] += 1)
+	session.sim.faulted.connect(func(_reason) -> void: rejection_events[2] += 1)
 	var saved_field: Dictionary = session._runway_field.duplicate(true)
 	var surfaces: Array = session._runway_field.surfaces.duplicate(true)
 	var no_runway: Array = []
@@ -183,15 +187,24 @@ func _initialize() -> void:
 		if surface.get("type", "") != "runway":
 			no_runway.append(surface)
 	session._runway_field.surfaces = no_runway
+	var before_missing_runway := var_to_bytes([session.sim.checkpoint(), session.sim.paused,
+		session.engine_running, session.commands, session.crash, session.pause_reason, session._launch_metadata])
 	session.reset()
-	_check("field without a runway fails closed with a visible reason", session.start_error.contains("no runway")
-		and session.sim.paused and not session.is_flyable() and not session.engine_running
-		and session.trace_meta().launch_choice == "failed")
+	_check("field without a runway refuses replacement and preserves the exact committed flight",
+		session.start_error.contains("no runway") and not session.runway_start_outcome.ok
+		and before_missing_runway == var_to_bytes([session.sim.checkpoint(), session.sim.paused,
+			session.engine_running, session.commands, session.crash, session.pause_reason, session._launch_metadata])
+		and session.is_flyable() and rejection_events == [0, 0, 0], session.start_error)
 	session._runway_field = saved_field
 	session.sim.gravity = 0.0
+	var before_invalid_gravity := var_to_bytes([session.sim.checkpoint(), session.sim.paused,
+		session.engine_running, session.commands, session.crash, session.pause_reason, session._launch_metadata])
 	session.reset()
-	_check("failed equilibrium input fails closed instead of launching airborne", session.start_error.contains("positive gravity")
-		and session.sim.paused and not session.is_flyable() and not session.engine_running)
+	_check("invalid equilibrium input refuses replacement without publishing a reset or airborne fallback",
+		session.start_error.contains("positive gravity") and not session.runway_start_outcome.ok
+		and before_invalid_gravity == var_to_bytes([session.sim.checkpoint(), session.sim.paused,
+			session.engine_running, session.commands, session.crash, session.pause_reason, session._launch_metadata])
+		and rejection_events == [0, 0, 0], session.start_error)
 	session.sim.gravity = 9.80665
 	session.reset()
 	_check("valid retry after explicit runway failures succeeds", session.start_error.is_empty()
@@ -224,7 +237,10 @@ func _initialize() -> void:
 		and legacy.sim.state == legacy.start.state)
 	_check("legacy failed helper still restores its airborne start",
 		not legacy.reset_on_runway(NAN, start_spot.east, start_spot.heading) and legacy.is_flyable()
-		and legacy.start_error.is_empty() and legacy.sim.state == legacy.start.state)
+		and legacy.sim.state == legacy.start.state and not legacy.start_error.is_empty()
+		and legacy.runway_start_outcome.fallback == "trimmed_airborne"
+		and legacy.trace_meta().launch_kind == "airborne_fallback"
+		and legacy.trace_meta().launch_error == legacy.start_error)
 
 	session.free()
 	unsupported.free()

@@ -374,7 +374,7 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 	_check("write runway preference before aircraft sanitization", _write_preferences(PREFS, 1, "en", STIK, RUNWAY) == OK)
 	app = await _new_app(PREFS)
 	home = app.get("home") as Control
-	for unsupported_aircraft: String in [EXTRA, P51]:
+	for unsupported_aircraft: String in [EXTRA]: # P51-21 qualified the P-51
 		app.call("set_aircraft", unsupported_aircraft)
 		await ui.settle()
 		_check("changing to %s sanitizes runway" % unsupported_aircraft, home.get("aircraft_id") == unsupported_aircraft
@@ -384,6 +384,10 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 	await ui.settle()
 	_check("switching back to the Stik does not restore runway", home.get("start_choice") == AIRBORNE
 		and not home.get("start_button").disabled)
+	app.call("set_aircraft", P51)
+	await ui.settle()
+	_check("qualified P-51 enables the runway selector (P51-21)", home.get("aircraft_id") == P51
+		and home.get("start_choice") == AIRBORNE and not home.get("start_button").disabled)
 	app.call("set_aircraft", TIMBER)
 	await ui.settle()
 	_check("qualified Timber enables the runway selector", home.get("aircraft_id") == TIMBER

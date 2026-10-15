@@ -48,6 +48,8 @@ A further **six-second, 1,441-row** experiment uses the complete [R11 Stik recor
 
 The stopped, transported-wake diagnostic is separate from the stateless candidate. With `rpm=0`, per-piece transported increments `[2, 2, 2] m/s`, zero rates and body axial velocity sampled at `[-1e-8, 0, +1e-8] m/s`, the current branch at [slipstream.gd:57](../../../../../app/physics/slipstream.gd#L57) returns exact zero on the negative side and finite tail loads at zero/positive flow. The one-sided jump is `0.004311 N` force norm and `0.002925 N·m` moment norm; exact-zero loads are `[-0.0014755583, 0, -0.0040502547, 0, -0.0029246083, 0]` in `[Fx,Fy,Fz,Mx,My,Mz]`. The diagnostic identifies the binary `v[0] >= 0` fade as the boundary; it does not change the runtime or select a replacement law. A future transport slice must define the residual wake's behavior under flow reversal and test both one-sided limits with nonzero stored wake before choosing a continuous closure.
 
+A [subsequent source and runtime review](stopped-wake-idle-review.md) also reproduces a separate instantaneous wake-geometry jump at the positive `1e-6 m/s` drift threshold under crossflow. Replacing the axial sign switch alone cannot define the missing center/radius/direction history. The same review distinguishes the extrapolated high-advance-ratio idle values above from an energy-conservation violation: negative thrust with zero shaft torque is not, by itself, such a violation. Both boundaries and the source-range limitation remain explicit prerequisites for R06-B/C.
+
 ## Reproduction
 
 From the repository root:

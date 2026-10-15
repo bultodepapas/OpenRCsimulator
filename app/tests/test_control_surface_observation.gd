@@ -33,7 +33,12 @@ func _initialize() -> void:
 			continue
 		var initial: Dictionary = flight.checkpoint()
 		var initial_angles: Dictionary = flight.surface_angles_deg()
-		flight.sim.inputs = PackedFloat64Array([0.8, -0.4, 0.3, 0.6])
+		var servo_inputs: PackedFloat64Array = flight.sim.inputs.duplicate()
+		servo_inputs[0] = 0.8
+		servo_inputs[1] = -0.4
+		servo_inputs[2] = 0.3
+		servo_inputs[3] = 0.6
+		flight.sim.inputs = servo_inputs
 		flight.sim.step()
 		_check(aircraft_id + " accepts a servo step", flight.sim.tick == 1)
 		var accepted: Dictionary = flight.checkpoint()

@@ -66,7 +66,7 @@ func _run() -> void:
 	check(app.ground_vehicle.lighting_config == home_lighting and app.ground_vehicle.sky_config == home_sky, "Home lighting and sky carry into the truck")
 	var dashboard: CanvasLayer = app.ground_vehicle.dashboard
 	check(dashboard.airfield and dashboard.modes.item_count == 2 and dashboard.modes.get_item_id(1) == 2, "shared airfield exposes free drive and laboratory")
-	check(dashboard.locations.item_count == 5 and dashboard.track_available, "garage offers two runway starts and three obstacle circuit entries")
+	check(dashboard.locations.item_count == 6 and dashboard.track_available and dashboard.lake_available, "garage offers runway, obstacle circuit and shallow lake entries")
 	dashboard.modes.item_selected.emit(1)
 	check(app.ground_vehicle.mode == 2 and dashboard.lab.visible, "laboratory selection keeps its mode ID after removing the practice entry")
 	dashboard.locations.item_selected.emit(1)
@@ -74,6 +74,10 @@ func _run() -> void:
 	for location in range(2, 5):
 		dashboard.locations.item_selected.emit(location)
 		check(app.ground_vehicle.session.spawn_id == dashboard.spawn_ids[location] and app.ground_vehicle.session.paused and dashboard.locations.selected == location, "circuit entry %d resets safely and keeps selection synchronized" % location)
+	dashboard.locations.item_selected.emit(dashboard.spawn_ids.find("lake_shore"))
+	check(app.ground_vehicle.session.spawn_id == "lake_shore" and app.ground_vehicle.session.paused
+		and app.ground_vehicle.session.telemetry_snapshot().environment.water_depth_m == 0.0,
+		"lake entry starts safely paused on the dry staging pad")
 	var before_view: PackedFloat64Array = app.ground_vehicle.session.state_snapshot()
 	app.ground_vehicle.handle_action("track_view")
 	app.ground_vehicle._process(0.0)

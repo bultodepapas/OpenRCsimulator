@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS airfield prepares with the production lake
+PASS default remains the aircraft runway
+PASS lake-shore reset is supported
+PASS neutral-armed entry starts
+PASS wet recording starts
+SCRIPT ERROR: Invalid call. Nonexistent function 'max' in base 'PackedFloat64Array'.
+   at: _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/water/run_water.gd:101)
+   GDScript backtrace (most recent call first):
+       [0] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/water/run_water.gd:101)

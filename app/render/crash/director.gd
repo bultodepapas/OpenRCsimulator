@@ -43,6 +43,7 @@ var _audio_enabled := true
 var _scenery_contacts: Node3D
 ## E3d1: per-point time of the last skid mark, so a slide leaves a trail without a mark every frame.
 var _touch_marks: Dictionary = {}
+var _touch_feedback_tick := -1
 ## E3d2: the prop strike already shown (its tick); US-V11: what the strike changed on the propeller (PropBreak records).
 var _prop_strike_tick := -1
 var _broken_propeller: Array = []
@@ -524,10 +525,20 @@ static func airframe_colors(root: Node) -> Array:
 ## struck point's normal speed; slides leave a trail paced by TOUCH_TRAIL_S. US-V12: each new touch on the field
 ## (not the lake: its records carry normal_ned) also scuffs the airframe. Reads the session feed only.
 func _touch_feedback() -> void:
+	# A render frame is not a new contact observation; holds must not replay its burst/audio.
+	if flight.session.sim.paused or not flight.session.holds.is_empty():
+		return
 	var contacts: Array = flight.session.soft_contacts
 	if contacts.is_empty():
 		_touch_marks.clear()
+		_touch_feedback_tick = -1
 		return
+	var tick: int = flight.session.sim.tick
+	if tick == _touch_feedback_tick:
+		return
+	if tick < _touch_feedback_tick:
+		_touch_marks.clear()
+	_touch_feedback_tick = tick
 	var now := Time.get_ticks_msec() / 1000.0
 	for contact: Dictionary in contacts:
 		var point := Frames.ned_to_render(Array(contact.point_ned))
@@ -584,6 +595,8 @@ func description() -> String:
 	return "%s\nImpact %.1f m/s · %s\nEstimated %s damage%s\n\n[R] Restart flight   [C] Change view\n[Esc] Menu" % [names[clampi(int(report.get("class",0)),0,4)],float(report.get("speed_mps",0.0)),str(report.get("surface","ground")),str(report.get("component","airframe")),cause_line]
 
 func reset() -> void:
+	_touch_feedback_tick = -1
+	_touch_marks.clear()
 	history.clear()
 	_prop_strike_tick = -1
 	PropBreak.restore(_broken_propeller)

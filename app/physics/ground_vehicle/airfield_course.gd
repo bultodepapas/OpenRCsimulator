@@ -10,6 +10,7 @@ const LakeLoader := preload("res://data/lake_loader.gd")
 const LakeSurface := preload("res://physics/lake_surface.gd")
 const VehicleDynamics := preload("res://physics/ground_vehicle/vehicle_dynamics.gd")
 const Track := preload("res://physics/ground_vehicle/airfield_track.gd")
+const WetPhysics := preload("res://physics/ground_vehicle/vehicle_environment.gd")
 const M := preload("res://physics/math3d.gd")
 
 const FORMAT := "openrc-airfield-course"
@@ -98,6 +99,7 @@ static func build(field_result: Dictionary, surface_table_result: Dictionary = {
 		"surface_rows": rows,
 		"surface_table": table,
 		"lake": lake_copy,
+		"wet_bounds": _wet_bounds(lake_copy),
 		"spawns": [
 			{"id": "start", "north_m": north, "east_m": east, "heading_rad": heading,
 				"vehicle_up_m": 0.5},
@@ -120,6 +122,17 @@ static func build(field_result: Dictionary, surface_table_result: Dictionary = {
 		course["track"] = track_result.track
 		track_digest = track_result.sha256
 		course.spawns.append_array(track_result.track.spawns.duplicate(true))
+		if not lake_copy.is_empty():
+			# Dry flat staging pad north of the default lake, facing its shallow bank.
+			var shore := {"id": "lake_shore", "north_m": 145.5, "east_m": 125.0,
+				"heading_rad": PI, "vehicle_up_m": 0.5}
+			var shore_sample := sample(course, shore.north_m, shore.east_m)
+			var entry_sample := sample(course, 138.0, 125.0)
+			if float(shore_sample.get("water_depth_m", 0.0)) == 0.0 \
+					and float(entry_sample.get("water_depth_m", 0.0)) > 0.0 \
+					and float(entry_sample.get("water_depth_m", INF)) < 0.2:
+				shore.vehicle_up_m = float(shore_sample.height_m) + 0.5
+				course.spawns.append(shore)
 
 	var field_digest := _sha256_text(JSON.stringify(field, "", true, true))
 	var surface_source_path := str(table_result.get("source_path", DEFAULT_SURFACE_TABLE_PATH))
@@ -140,6 +153,7 @@ static func build(field_result: Dictionary, surface_table_result: Dictionary = {
 		"lake_identity": lake_digest,
 		"track_sha256": track_digest,
 		"dry_pavement_mu": DRY_PAVEMENT_MU,
+		"environment_version": WetPhysics.VERSION,
 	}
 	var digest := _sha256_text(JSON.stringify(source_manifest, "", true, true))
 	if not _sha256_is_valid(digest) or not _sha256_is_valid(field_digest):
@@ -161,7 +175,16 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 	if typeof(lake_value) != TYPE_DICTIONARY:
 		return _invalid_sample()
 	var lake: Dictionary = lake_value
-	var terrain: PackedFloat64Array = GroundTerrain.sample_validated(north_m, east_m, rects, lake)
+	var terrain := PackedFloat64Array()
+	var sampled_shore_distance := NAN
+	if not lake.is_empty():
+		var base := GroundTerrain.sample_validated(north_m, east_m, rects)
+		terrain = VehicleDynamics.sample_lake_terrain(lake, north_m, east_m, base)
+		if terrain.size() == 4:
+			sampled_shore_distance = terrain[3]
+			terrain = terrain.slice(0, 3)
+	if terrain.is_empty():
+		terrain = GroundTerrain.sample_validated(north_m, east_m, rects, lake)
 	if terrain.size() != 3 or not is_finite(terrain[0]) or not is_finite(terrain[1]) or not is_finite(terrain[2]):
 		return _invalid_sample()
 	var track: Dictionary = course.get("track", {})
@@ -191,6 +214,10 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 	if coverage > 0.0:
 		mu = lerpf(mu, float(track.mu), coverage)
 		rolling = lerpf(rolling, float(track.rolling), coverage)
+	var wet := _wet_sample(course, north_m, east_m, terrain[0], sampled_shore_distance)
+	if not wet.is_empty():
+		mu = lerpf(mu, WetPhysics.MUD_MU, float(wet.mud_fraction))
+		rolling = lerpf(rolling, WetPhysics.MUD_ROLLING, float(wet.mud_fraction))
 	if not is_finite(mu) or mu <= 0.0 or not is_finite(rolling) or rolling < 0.0:
 		return _invalid_sample()
 	var bounds_value: Variant = course.get("bounds", {})
@@ -200,7 +227,7 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 			and north_m <= float(bounds_value.get("north_max_m", -INF)) \
 			and east_m >= float(bounds_value.get("east_min_m", INF)) \
 			and east_m <= float(bounds_value.get("east_max_m", -INF))
-	return {
+	var result := {
 		"height_m": terrain[0],
 		"normal_ned": normal,
 		"mu": mu,
@@ -212,6 +239,34 @@ static func sample(course: Dictionary, north_m: float, east_m: float) -> Diction
 		"track_coverage": coverage,
 		"walls": Track.nearby_walls(track, north_m, east_m),
 	}
+	result.merge(wet)
+	if float(wet.get("mud_fraction", 0.0)) > 0.5: result.surface_id = "mud"
+	return result
+
+
+static func _wet_bounds(lake: Dictionary) -> PackedFloat64Array:
+	if lake.is_empty(): return PackedFloat64Array()
+	var polygon: PackedFloat64Array = lake.shoreline_ne_m
+	var bounds := PackedFloat64Array([INF, -INF, INF, -INF])
+	for index in range(0, polygon.size(), 2):
+		bounds[0] = minf(bounds[0], polygon[index] - WetPhysics.WET_QUERY_MARGIN_M)
+		bounds[1] = maxf(bounds[1], polygon[index] + WetPhysics.WET_QUERY_MARGIN_M)
+		bounds[2] = minf(bounds[2], polygon[index + 1] - WetPhysics.WET_QUERY_MARGIN_M)
+		bounds[3] = maxf(bounds[3], polygon[index + 1] + WetPhysics.WET_QUERY_MARGIN_M)
+	return bounds
+
+
+## The same mean water datum and bed used by lake rendering. Waves are visual only.
+static func _wet_sample(course: Dictionary, north: float, east: float, ground_up: float, sampled_distance: float = NAN) -> Dictionary:
+	var bounds: PackedFloat64Array = course.get("wet_bounds", PackedFloat64Array())
+	if bounds.size() != 4 or north < bounds[0] or north > bounds[1] or east < bounds[2] or east > bounds[3]: return {}
+	var lake: Dictionary = course.lake
+	var distance := sampled_distance if is_finite(sampled_distance) else LakeSurface.shore_distance_validated(lake, north, east)
+	if distance < -WetPhysics.WET_QUERY_MARGIN_M: return {}
+	var water_up := -float(lake.water_level_down_m)
+	var depth := maxf(0.0, water_up - ground_up) if distance > 0.0 else 0.0
+	return {"wet_zone": true, "water_height_m": water_up, "water_depth_m": depth,
+		"mud_fraction": clampf(1.0 + distance / WetPhysics.MUD_BANK_WIDTH_M, 0.0, 1.0)}
 
 
 ## Reuse validation for an unchanged packed table; equality checks the full float64 contents.
@@ -310,6 +365,7 @@ static func _script_artifacts() -> Dictionary:
 		"res://physics/ground_contact.gd",
 		"res://physics/lake_surface.gd",
 		"res://physics/ground_vehicle/vehicle_dynamics.gd",
+		"res://physics/ground_vehicle/vehicle_environment.gd",
 		"res://physics/ground_vehicle/airfield_course.gd",
 		"res://physics/ground_vehicle/airfield_track.gd",
 	]:
@@ -324,6 +380,7 @@ static func _script_artifacts_are_valid(artifacts: Dictionary) -> bool:
 		"res://physics/ground_contact.gd",
 		"res://physics/lake_surface.gd",
 		"res://physics/ground_vehicle/vehicle_dynamics.gd",
+		"res://physics/ground_vehicle/vehicle_environment.gd",
 		"res://physics/ground_vehicle/airfield_course.gd",
 		"res://physics/ground_vehicle/airfield_track.gd",
 	]:

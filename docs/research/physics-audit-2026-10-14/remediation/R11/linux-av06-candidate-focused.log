@@ -1,0 +1,24 @@
+Python: Python 3.12.3
+Snapshot: /home/bulto/openrc-r11-b09-r05b-20261014-03
+== AV-06 generated aircraft --check
+sebart_avanti_s_a200.json and derivation.md are up to date
+== AV-15 generated artifacts test
+......
+----------------------------------------------------------------------
+Ran 6 tests in 0.078s
+
+OK
+== AV-17-R2 polar builder tests
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.015s
+
+OK
+== generated Workshop descriptors --check
+8 Workshop descriptors are current.
+== Workshop exact-byte checkout tests
+........
+----------------------------------------------------------------------
+Ran 8 tests in 0.241s
+
+OK

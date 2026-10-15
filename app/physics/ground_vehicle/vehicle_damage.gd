@@ -339,6 +339,10 @@ func _model_is_valid(model: Dictionary) -> bool:
 
 
 func _telemetry_is_valid(value: Dictionary, hull_count: int) -> bool:
+	if value.has("environment"):
+		var environment: Variant = value.environment
+		if typeof(environment) != TYPE_DICTIONARY or typeof(environment.get("power_w")) not in [TYPE_INT, TYPE_FLOAT] \
+				or not is_finite(float(environment.power_w)): return false
 	if typeof(value.get("ok")) != TYPE_BOOL or not bool(value.ok):
 		return false
 	for key in ["total_energy_j", "wall_normal_load_n", "wall_friction_power_w"]:
@@ -443,7 +447,10 @@ func _contact_energy_loss(
 	var next_energy := float(next_telemetry.total_energy_j)
 	var wall_friction_work_j := -0.5 * float(previous_telemetry.wall_friction_power_w) * dt \
 		- 0.5 * float(next_telemetry.wall_friction_power_w) * dt
-	var energy_loss_j := previous_energy - next_energy - wall_friction_work_j
+	# Fluid work changes mechanical energy without implying a solid-body impact.
+	var environment_work_j := 0.5 * (float(previous_telemetry.get("environment", {}).get("power_w", 0.0)) \
+		+ float(next_telemetry.get("environment", {}).get("power_w", 0.0))) * dt
+	var energy_loss_j := previous_energy - next_energy - wall_friction_work_j + environment_work_j
 	if not is_finite(wall_friction_work_j) or not is_finite(energy_loss_j):
 		return NAN
 	return clampf(energy_loss_j, 0.0, MAX_EPISODE_ENERGY_J)

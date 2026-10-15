@@ -5,10 +5,10 @@ from __future__ import annotations
 
 import argparse
 import hashlib
-import io
 import json
 import os
 from pathlib import Path, PurePosixPath
+import shutil
 import stat
 import subprocess
 import tarfile
@@ -71,6 +71,17 @@ def source_paths(root: Path) -> list[str]:
     return sorted(os.fsdecode(item) for item in raw.split(b"\0") if item)
 
 
+def apply_exclusions(paths: list[str], prefixes: list[str]) -> tuple[list[str], list[str]]:
+    """Return included paths and exact paths omitted by explicit prefix rules."""
+    normalized = [PurePosixPath(prefix.replace("\\", "/")).as_posix().rstrip("/") + "/" for prefix in prefixes]
+    excluded = sorted(
+        path for path in paths
+        if any(path.replace("\\", "/").startswith(prefix) for prefix in normalized)
+    )
+    included = [path for path in paths if path not in set(excluded)]
+    return included, excluded
+
+
 def status_records(root: Path) -> list[str]:
     raw = run_git(root, "status", "--porcelain=v1", "--untracked-files=all", "-z")
     return [os.fsdecode(item) for item in raw.split(b"\0") if item]
@@ -124,18 +135,84 @@ def file_record(root: Path, rel: str, indexed_mode: tuple[int, str] | None) -> t
     return record, normalized_bytes if is_symlink else None
 
 
+def stage_record(root: Path, rel: str, indexed_mode: tuple[int, str] | None, staging: Path) -> dict:
+    """Copy one source entry to immutable staging while hashing the bytes copied."""
+    source = root / Path(rel)
+    try:
+        info = source.lstat()
+    except FileNotFoundError as error:
+        raise FileNotFoundError(f"source disappeared before staging: {rel}") from error
+    is_symlink = stat.S_ISLNK(info.st_mode)
+    destination = staging / Path(rel)
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    is_shell = rel.lower().endswith(".sh")
+    normalized = False
+    if is_symlink:
+        link = os.readlink(source)
+        raw_link = os.fsencode(link)
+        source_hash, source_size = sha(raw_link), len(raw_link)
+        snapshot_hash, snapshot_size = source_hash, source_size
+        os.symlink(link, destination)
+        symlink_target = os.fsdecode(raw_link)
+    elif stat.S_ISREG(info.st_mode):
+        symlink_target = None
+        if is_shell:
+            raw = source.read_bytes()
+            contents = raw.replace(b"\r\n", b"\n")
+            normalized = contents != raw
+            source_hash, source_size = sha(raw), len(raw)
+            snapshot_hash, snapshot_size = sha(contents), len(contents)
+            with destination.open("xb") as output:
+                output.write(contents)
+        else:
+            source_digest = hashlib.sha256()
+            source_size = 0
+            with source.open("rb") as input_stream, destination.open("xb") as output:
+                while block := input_stream.read(1024 * 1024):
+                    source_digest.update(block)
+                    source_size += len(block)
+                    output.write(block)
+            source_hash = source_digest.hexdigest()
+            snapshot_hash, snapshot_size = source_hash, source_size
+        snapshot_mode = 0o755 if is_shell else (indexed_mode[0] & 0o777 if indexed_mode else 0o644)
+        destination.chmod(snapshot_mode)
+    else:
+        raise RuntimeError(f"unsupported source entry type: {rel}")
+
+    if is_symlink:
+        snapshot_mode = indexed_mode[0] & 0o777 if indexed_mode else 0
+    record = {
+        "path": rel.replace("\\", "/"),
+        "source_sha256": source_hash,
+        "source_size_bytes": source_size,
+        "snapshot_sha256": snapshot_hash,
+        "snapshot_size_bytes": snapshot_size,
+        "source_git_mode": oct(indexed_mode[0]) if indexed_mode else None,
+        "source_observed_mode": oct(stat.S_IMODE(info.st_mode)),
+        "source_class": indexed_mode[1] if indexed_mode else "untracked_nonignored",
+        "snapshot_mode": oct(snapshot_mode),
+        "shell_normalized": normalized,
+        "symlink": is_symlink,
+        "symlink_target": symlink_target,
+    }
+    return record
+
+
 def capture(args: argparse.Namespace) -> None:
     root = Path(args.root).resolve()
     archive = Path(args.archive).resolve()
     manifest_path = Path(args.manifest).resolve()
+    staging_base = Path(args.staging).resolve()
     if root == archive or root in archive.parents:
         raise RuntimeError("place the snapshot archive outside the source root")
     if root == manifest_path or root in manifest_path.parents:
         raise RuntimeError("place the capture manifest outside the source root")
+    if root == staging_base or root in staging_base.parents:
+        raise RuntimeError("place capture staging outside the source root")
     if archive == manifest_path:
         raise RuntimeError("archive and manifest paths must differ")
-    if archive.exists() or manifest_path.exists():
-        raise FileExistsError("refusing to overwrite an existing archive or manifest")
+    if archive.exists() or manifest_path.exists() or staging_base.exists():
+        raise FileExistsError("refusing to overwrite an existing archive, manifest, or staging path")
     godot = root / GODOT_REL
     if not godot.is_file():
         raise FileNotFoundError(f"pinned Linux Godot binary not found: {godot}")
@@ -147,16 +224,138 @@ def capture(args: argparse.Namespace) -> None:
             f"sha256={godot_sha256} sha512={godot_sha512}"
         )
 
-    modes = git_modes(root)
-    records: list[dict] = []
     archive.parent.mkdir(parents=True, exist_ok=True)
+    staging_base.parent.mkdir(parents=True, exist_ok=True)
+    drift_attempts: list[dict] = []
+    exclude_prefixes = [PurePosixPath(p.replace("\\", "/")).as_posix().rstrip("/") + "/" for p in args.exclude_prefix]
+    excluded_start_union: set[str] = set()
+    final_records: list[dict] | None = None
+    final_head: str | None = None
+    final_status: list[str] | None = None
+    final_git_metadata: dict | None = None
+    max_attempts = 3
+    for attempt in range(1, max_attempts + 1):
+        staging = staging_base / f"attempt-{attempt}"
+        staging.mkdir(parents=True)
+        raw_start_paths = source_paths(root)
+        start_paths, start_excluded = apply_exclusions(raw_start_paths, exclude_prefixes)
+        excluded_start_union.update(start_excluded)
+        start_modes = git_modes(root)
+        tracked_excluded = sorted(path for path in start_excluded if path in start_modes)
+        if tracked_excluded:
+            raise RuntimeError("exclusion prefix matches tracked paths: " + ", ".join(tracked_excluded))
+        start_head = os.fsdecode(run_git(root, "rev-parse", "HEAD")).strip()
+        records: list[dict] = []
+        stage_errors: list[str] = []
+        for rel in start_paths:
+            try:
+                records.append(stage_record(root, rel, start_modes.get(rel), staging))
+            except (FileNotFoundError, OSError, RuntimeError) as error:
+                stage_errors.append(f"{rel}: {type(error).__name__}: {error}")
+                break
+
+        raw_end_paths = source_paths(root)
+        end_paths, end_excluded = apply_exclusions(raw_end_paths, exclude_prefixes)
+        excluded_start_union.update(end_excluded)
+        end_modes = git_modes(root)
+        tracked_excluded = sorted(path for path in end_excluded if path in end_modes)
+        if tracked_excluded:
+            raise RuntimeError("exclusion prefix matches tracked paths: " + ", ".join(tracked_excluded))
+        end_head = os.fsdecode(run_git(root, "rev-parse", "HEAD")).strip()
+        end_status = status_records(root)
+        start_names, end_names = set(start_paths), set(end_paths)
+        added = sorted(end_names - start_names)
+        removed = sorted(start_names - end_names)
+        changed: list[str] = []
+        if not stage_errors:
+            for record in records:
+                rel = record["path"]
+                try:
+                    current, _unused = file_record(root, rel, end_modes.get(rel))
+                except (FileNotFoundError, OSError, RuntimeError) as error:
+                    changed.append(f"{rel} ({type(error).__name__})")
+                    continue
+                if (
+                    current["source_sha256"] != record["source_sha256"]
+                    or current["source_size_bytes"] != record["source_size_bytes"]
+                    or current["snapshot_sha256"] != record["snapshot_sha256"]
+                    or current["snapshot_size_bytes"] != record["snapshot_size_bytes"]
+                    or current["snapshot_mode"] != record["snapshot_mode"]
+                    or current["symlink"] != record["symlink"]
+                    or current["symlink_target"] != record["symlink_target"]
+                ):
+                    changed.append(rel)
+        godot_now_sha256, godot_now_size = hash_regular_file(godot)
+        godot_now_sha512 = hash_file_sha512(godot)
+        godot_changed = (
+            godot_now_sha256 != godot_sha256
+            or godot_now_sha512 != godot_sha512
+            or godot_now_size != godot_size
+        )
+        git_metadata = {
+            "head_at_attempt_start": start_head,
+            "head_at_final_scan": end_head,
+            "head_changed_during_capture": start_head != end_head,
+            "status_at_final_scan_record_count": len(end_status),
+            "status_at_attempt_start": None,
+            "status_at_attempt_start_note": "not queried separately; path enumeration is authoritative and final dirty status is recorded after reconciliation",
+        }
+        drift = bool(stage_errors or added or removed or changed or godot_changed)
+        if drift:
+            drift_record = {
+                "attempt": attempt,
+                "stage_errors": stage_errors,
+                "added_during_capture": added,
+                "removed_during_capture": removed,
+                "changed_during_capture": changed,
+                "excluded_paths_observed": sorted(set(start_excluded) | set(end_excluded)),
+                "git_metadata": git_metadata,
+                "pinned_godot_changed": godot_changed,
+            }
+            drift_attempts.append(drift_record)
+            print(
+                f"capture attempt {attempt}/{max_attempts} drifted: "
+                f"stage_errors={len(stage_errors)} added={len(added)} removed={len(removed)} "
+                f"changed={len(changed)} godot_changed={godot_changed}"
+            )
+            for field, values in (("stage_errors", stage_errors), ("added", added), ("removed", removed), ("changed", changed)):
+                if values:
+                    print(f"  {field}: " + "; ".join(values))
+            shutil.rmtree(staging)
+            continue
+
+        final_records = records
+        final_head = end_head
+        final_status = end_status
+        final_git_metadata = git_metadata
+        final_stage = staging
+        break
+
+    if final_records is None or final_head is None or final_status is None or final_git_metadata is None:
+        raise RuntimeError(f"source set did not stabilize within {max_attempts} bounded capture attempts")
+
+    godot_stage = final_stage / Path(GODOT_REL)
+    godot_stage.parent.mkdir(parents=True, exist_ok=True)
+    godot_sha256, godot_size = hash_regular_file(godot)
+    godot_sha512 = hash_file_sha512(godot)
+    if godot_sha256 != GODOT_BINARY_SHA256 or godot_sha512 != GODOT_BINARY_SHA512:
+        raise RuntimeError("pinned Godot binary changed after source reconciliation")
+    shutil.copyfile(godot, godot_stage)
+    godot_stage.chmod(0o755)
+    staged_godot_sha256, staged_godot_size = hash_regular_file(godot_stage)
+    staged_godot_sha512 = hash_file_sha512(godot_stage)
+    if (
+        staged_godot_sha256 != godot_sha256
+        or staged_godot_sha512 != godot_sha512
+        or staged_godot_size != godot_size
+    ):
+        raise RuntimeError("pinned Godot bytes changed while being copied to staging")
+
     with tarfile.open(archive, mode="w", format=tarfile.PAX_FORMAT) as tar:
-        for rel in source_paths(root):
-            record, _unused = file_record(root, rel, modes.get(rel))
-            records.append(record)
-            source = root / Path(rel)
-            info = source.lstat()
-            target = PurePosixPath(rel.replace("\\", "/")).as_posix()
+        for record in final_records:
+            rel = record["path"]
+            source = final_stage / Path(rel)
+            target = PurePosixPath(rel).as_posix()
             ti = tarfile.TarInfo(target)
             ti.mtime = 0
             ti.uid = 0
@@ -169,12 +368,8 @@ def capture(args: argparse.Namespace) -> None:
                 ti.linkname = record["symlink_target"]
                 ti.size = 0
                 tar.addfile(ti)
-            elif rel.lower().endswith(".sh"):
-                contents = source.read_bytes().replace(b"\r\n", b"\n")
-                ti.size = len(contents)
-                tar.addfile(ti, io.BytesIO(contents))
             else:
-                ti.size = info.st_size
+                ti.size = source.stat().st_size
                 with source.open("rb") as stream:
                     tar.addfile(ti, stream)
 
@@ -186,18 +381,26 @@ def capture(args: argparse.Namespace) -> None:
         ti.gid = 0
         ti.uname = ""
         ti.gname = ""
-        with godot.open("rb") as stream:
+        with godot_stage.open("rb") as stream:
             tar.addfile(ti, stream)
 
     manifest = {
         "format": "openrc-linux-verification-source-manifest-v1",
         "captured_utc": datetime.now(timezone.utc).isoformat(),
         "source_root": os.fspath(root),
-        "source_head": os.fsdecode(run_git(root, "rev-parse", "HEAD")).strip(),
-        "source_dirty_manifest": status_records(root),
-        "source_file_count": len(records),
-        "shell_files_normalized": [r["path"] for r in records if r["shell_normalized"]],
-        "files": records,
+        "source_head": final_head,
+        "source_dirty_manifest": final_status,
+        "source_file_count": len(final_records),
+        "source_scope": "tracked and nonignored untracked paths except the explicitly listed ephemeral scratch prefix; excluded paths are not asserted as captured",
+        "excluded_prefix_rules": exclude_prefixes,
+        "excluded_paths": sorted(excluded_start_union),
+        "excluded_path_reason": args.exclude_reason,
+        "capture_attempt_count": len(drift_attempts) + 1,
+        "capture_drift_attempts": drift_attempts,
+        "capture_git_metadata": final_git_metadata,
+        "capture_reconciliation": "staged bytes and intended snapshot modes matched a final included-path, size, symlink, and SHA-256 scan before archive creation; Git HEAD/status are identity metadata and do not invalidate matching file bytes",
+        "shell_files_normalized": [r["path"] for r in final_records if r["shell_normalized"]],
+        "files": final_records,
         "pinned_godot": {
             "path": GODOT_REL,
             "sha256": godot_sha256,
@@ -213,7 +416,8 @@ def capture(args: argparse.Namespace) -> None:
     }
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
     manifest_path.write_text(json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"captured {len(records)} source files; normalized {len(manifest['shell_files_normalized'])} shell scripts")
+    print(f"captured {len(final_records)} source files; normalized {len(manifest['shell_files_normalized'])} shell scripts")
+    print(f"capture attempts {manifest['capture_attempt_count']}; drift retries {len(drift_attempts)}; staging {final_stage}")
     print(f"source HEAD {manifest['source_head']}; archive {archive} ({archive.stat().st_size} bytes)")
     print(f"manifest {manifest_path}")
 
@@ -369,6 +573,9 @@ def main() -> None:
     cap.add_argument("--root", required=True)
     cap.add_argument("--archive", required=True)
     cap.add_argument("--manifest", required=True)
+    cap.add_argument("--staging", required=True)
+    cap.add_argument("--exclude-prefix", action="append", default=[])
+    cap.add_argument("--exclude-reason", default="")
     cap.set_defaults(func=capture)
     post = sub.add_parser("after", help="compare snapshot files after the test run")
     post.add_argument("--root", required=True)

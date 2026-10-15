@@ -1,0 +1,54 @@
+[
+  {
+    "path": "assets/aircraft/avanti-s-a200/blender-geometry.json",
+    "sha256": "7a1c7869f4bc7af692b8cdbf9034651e6b265bc56a6ff5ded1afa10c031abf7d"
+  },
+  {
+    "path": "assets/aircraft/avanti-s-a200/source-manifest.json",
+    "sha256": "643997608d4b788f694999e90615c24f27e71ba3410dacde2fd934f29f99884f"
+  },
+  {
+    "path": "assets/aircraft/extra-300s-60/appearance.json",
+    "sha256": "b0a74c80baa99036ff70c92d392ca685dbafe0a84a0059568813b2327e765228"
+  },
+  {
+    "path": "assets/aircraft/extra-300s-60/geometry.json",
+    "sha256": "bccba2f8b2e95b303140ff73683974c9679b8c65bb5938dddcf4b54c5eeea810"
+  },
+  {
+    "path": "assets/aircraft/model-bindings.json",
+    "sha256": "c732504c156e97fd97a969f86e3e46f2faf94bf9aeca0647db86d88e348770db"
+  },
+  {
+    "path": "assets/aircraft/p51d-mustang-120/appearance.json",
+    "sha256": "3dc0c503f9d93ce59165173244a3486ced11b624c01d86aaed05366d980b3da6"
+  },
+  {
+    "path": "assets/aircraft/p51d-mustang-120/geometry.json",
+    "sha256": "2f7d4e26aa4dfef8e823480178817b616ebaebe04c063f46157ee89c70ddb4ab"
+  },
+  {
+    "path": "assets/aircraft/p51d-mustang-120/source.json",
+    "sha256": "590fdbd3b8a3e9b9c16eac515d35db06a47d5e5ac68240481dd6a340afba0a47"
+  },
+  {
+    "path": "assets/aircraft/turbo-lumber-evolution/geometry.json",
+    "sha256": "16a5e6e15e2e5df4e0744d0030818196ae9cd132f1f0bfc87730a87c7f8d9681"
+  },
+  {
+    "path": "assets/aircraft/turbo-lumber-evolution/manual.json",
+    "sha256": "118f98a8fc4628e140c24504c80ca40cf5ee247dc7ab770dacebd2bdf8a1e795"
+  },
+  {
+    "path": "assets/aircraft/turbo-lumber-evolution/mesh-measurements.json",
+    "sha256": "c9f06c66c475763417e364bdcf887685169bc788b777edd2550074279f784f70"
+  },
+  {
+    "path": "assets/aircraft/turbo-lumber-evolution/source-manifest.json",
+    "sha256": "ff2d525adf48b59ca429d33dd4b6c9d72071b3538c7dbaf58e476618b575548a"
+  },
+  {
+    "path": "assets/aircraft/ugly-stik-60/geometry.json",
+    "sha256": "e6b40a32058947b4582eaf171270ea73fd724fcb4d78412d6b27ec93f58244e4"
+  }
+]

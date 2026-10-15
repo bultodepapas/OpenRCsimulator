@@ -1,0 +1,6 @@
+{
+  "source_snapshot_sha256": "21fa890a76d5b4935861bae884734cba31b34582b5e5fe4542dc012acc229146",
+  "source_solver_sha256": "3877ec2dab0d72194f979ad85c396a2ecc40aa8388cd31b252ea99dd10584123",
+  "harness_sha256": "320ea120dfcd980db81530b56bc0414e6f010aba74839351974478722c41a23e",
+  "purpose": "Step refinement of complete session; not physical validation or fourth-order convergence claim"
+}

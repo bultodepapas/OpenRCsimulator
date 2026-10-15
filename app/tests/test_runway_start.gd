@@ -160,7 +160,7 @@ func _physics_checks(session: Node, model: Dictionary, gear: Dictionary, solved:
 
 func _refusals(field: Dictionary) -> void:
 	var spot := GroundStart.threshold(field)
-	for id in ["gp-extra-300s-60", "p51d-mustang-120"]:
+	for id in ["gp-extra-300s-60"]: # P51-21 qualified the P-51 (test_p51_ground.gd)
 		var other := FlightSession.new()
 		other.setup(Catalog.entry(id).data)
 		root.add_child(other)

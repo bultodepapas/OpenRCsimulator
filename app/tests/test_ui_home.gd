@@ -214,8 +214,8 @@ func _run() -> void:
 		home_helicopter_app.home.aircraft_id == "xcell-60-research"
 		and home_helicopter_app.home_scene.airplane.visual_family == "hx-700"
 		and not home_helicopter_app.home.fly_button.disabled)
-	_check("helicopter weather summary explains the turbulence limit",
-		home_helicopter_app.home.weather_button.tooltip_text.contains("Turbulence is not integrated yet"))
+	_check("helicopter weather summary explains its turbulence and altitude-varying atmosphere limits",
+		home_helicopter_app.home.weather_button.tooltip_text.contains("Turbulence and altitude-varying atmosphere are not integrated yet"))
 	home_helicopter_app.home.weather_button.pressed.emit()
 	await ui.settle()
 	var helicopter_weather_dialog: CanvasLayer = home_helicopter_app.weather_dialog

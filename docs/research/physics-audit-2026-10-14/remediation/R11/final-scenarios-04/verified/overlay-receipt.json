@@ -1,0 +1,48 @@
+{
+  "format": "openrc-r11-verified-physical-copy-v1",
+  "source_app": "tmp/physics-audit-r05b-root/combined02/app",
+  "target_app": "tmp/physics-audit-r11-final-scenarios-04/verified-app",
+  "copy_method": "robocopy /E /COPY:DAT /DCOPY:DAT /R:0 /W:0 /XD .godot",
+  "initial_copy_file_count": 2320,
+  "initial_copy_bytes_after_product_data_overlays": 99187111,
+  "hardlinked_files": 0,
+  "excluded_directory": ".godot",
+  "physical_separation_probe": {
+    "path": "physics/dynamics.gd",
+    "source_sha256": "5d4d8ea9ae713f36dc977f3ed8dd451bdcc46278e3c68db9f72b2b426046b7f1",
+    "copy_sha256": "5d4d8ea9ae713f36dc977f3ed8dd451bdcc46278e3c68db9f72b2b426046b7f1",
+    "source_ntfs_file_id": "0x000000000000000000110000004ee292",
+    "copy_ntfs_file_id": "0x0000000000000000002c0000001520ea",
+    "same_file_id": false
+  },
+  "product_and_catalog_overlays_before_recording": [
+    {
+      "path": "physics/aero.gd",
+      "sha256": "7ac94f6003f2cb7660a56dd94755c6a7d6143d90cc446c6b6c20433038ce38e3",
+      "purpose": "R11 six explicit-square portability correction"
+    },
+    {
+      "path": "data/aircraft/sebart_avanti_s_a200.json",
+      "sha256": "68d3fd42b28e30bf1dc210b838d945d517f062506749af14f995a5a5f39a83b6",
+      "purpose": "repaired Avanti generator output; portability receipt R11/avanti-generator-portability/overlay.json"
+    },
+    {
+      "path": "data/workshop/sebart-avanti-s-a200-p100rx.json",
+      "sha256": "ebcd47a5dc60b6aa401ecf7120fe4cca34485d3185096b611acfde6b2d352743",
+      "purpose": "repaired Avanti Workshop generator output; portability receipt R11/avanti-generator-portability/overlay.json"
+    }
+  ],
+  "h7_harness_only_overlay_after_recording": {
+    "path": "tests/check_math_sensitivity.py",
+    "sha256": "47f58e4df5c3b113e948260f841e169fc29e18521b4d9d8554568d22da13c9be",
+    "original_sha256": "fb812c2de04c22d4f031bEE3da3d4a1f9590084960dbd0e0267419bc68cf97bc",
+    "patch_sha256": "be5ad2056704ad78d1a3063890244fcbbec05860da348e6238fa377e682c1c24",
+    "runtime_or_catalog_code_changed": false
+  },
+  "final_side_by_side_hash_check": {
+    "artifact": "app-tree-hashes.json",
+    "files_compared_each_side": 2320,
+    "differences": 4,
+    "unexpected_differences": 0
+  }
+}

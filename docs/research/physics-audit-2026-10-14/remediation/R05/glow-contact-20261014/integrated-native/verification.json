@@ -1,0 +1,50 @@
+{
+  "ok": true,
+  "results": [
+    {
+      "test": "test_dynamic_mass_contact.gd",
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "test": "test_dynamic_mass_contact_session.gd",
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "test": "test_dynamic_mass_contact_boundary.gd",
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "test": "test_water_checkpoint.gd",
+      "ok": true,
+      "exit_code": 0
+    }
+  ],
+  "owned_sources_before": {
+    "app/physics/effective_mass.gd": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+    "app/physics/mass_inventory.gd": "572c37296b8842e6bf64562bbd257fa05e9f0200d7c0cebff7e0184a74b5baf9",
+    "app/physics/hull_contact.gd": "5fa04c9d595fca6f805c8251c86e5062f53a843635e565d602bbb5de254fd43d",
+    "app/sim/scenery_collision.gd": "a89a17d9b2e212f713a6208088e1acb8181dd565ef0b6232919091a8d0fe50f0",
+    "app/sim/lake_collision.gd": "df431f011907fc319d3dd872194da3d0a8aa99b2435b4dc154c233befd12e953",
+    "app/sim/simulation.gd": "545ed43ea3c1bbbfa505e9eb9bac1021cdee32cc7503f83f58931568a45d0ac9",
+    "app/sim/flight_session.gd": "6ab22b03a16b9a5783931254bcf407c97d6e2a09edeb45a3974c09c2ec199f43",
+    "app/tests/test_dynamic_mass_contact.gd": "392f04a4bb75c2bccd13ce08d6ad25f0d2b780dc6fbd598bdc49e6904c0c197d",
+    "app/tests/test_dynamic_mass_contact_session.gd": "1ae6f6b8fe852f84b7f10185b8172b6f850407a02bd01b6ab215f6129191986d",
+    "app/tests/test_dynamic_mass_contact_boundary.gd": "59faea213d38d377a86da55d4082357f86128b934e4dfca42260b79157f663e4"
+  },
+  "owned_sources_after": {
+    "app/physics/effective_mass.gd": "be0d62b25e4a6d360f5a77bbebbb3bce716b16137eb3c10feb36dab0a96c22dc",
+    "app/physics/mass_inventory.gd": "572c37296b8842e6bf64562bbd257fa05e9f0200d7c0cebff7e0184a74b5baf9",
+    "app/physics/hull_contact.gd": "5fa04c9d595fca6f805c8251c86e5062f53a843635e565d602bbb5de254fd43d",
+    "app/sim/scenery_collision.gd": "a89a17d9b2e212f713a6208088e1acb8181dd565ef0b6232919091a8d0fe50f0",
+    "app/sim/lake_collision.gd": "df431f011907fc319d3dd872194da3d0a8aa99b2435b4dc154c233befd12e953",
+    "app/sim/simulation.gd": "545ed43ea3c1bbbfa505e9eb9bac1021cdee32cc7503f83f58931568a45d0ac9",
+    "app/sim/flight_session.gd": "6ab22b03a16b9a5783931254bcf407c97d6e2a09edeb45a3974c09c2ec199f43",
+    "app/tests/test_dynamic_mass_contact.gd": "392f04a4bb75c2bccd13ce08d6ad25f0d2b780dc6fbd598bdc49e6904c0c197d",
+    "app/tests/test_dynamic_mass_contact_session.gd": "1ae6f6b8fe852f84b7f10185b8172b6f850407a02bd01b6ab215f6129191986d",
+    "app/tests/test_dynamic_mass_contact_boundary.gd": "59faea213d38d377a86da55d4082357f86128b934e4dfca42260b79157f663e4"
+  },
+  "owned_source_unchanged": true
+}

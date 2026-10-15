@@ -60,6 +60,8 @@ func _failure_airborne() -> bool:
 
 const ElectricStop: Script = preload("res://physics/electric_stop.gd")
 const GlowFlight: Script = preload("res://physics/glow/flight.gd")
+## Fixed original wet-CG datum; live contact mobility and linear fuel sampling at swept crossing fractions.
+const MASS_CONTACT_LAW := "fixed-datum-live-mass-contact-linear-fuel-v1"
 const BatteryStep: Script = preload("res://physics/electric_battery_step.gd")
 const BATTERY_LAW: String = "electric-ocv-resistance-coupled-events-v1"
 const BATTERY_LAYOUT: String = "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm, remaining charge C, terminal energy J, pack heat J; RK4 coupled"
@@ -369,7 +371,7 @@ const START_RUNWAY := "runway"
 const START_HALF_POWER := "airborne_half_power"
 const PowerTrim := preload("res://physics/cruise_trim.gd")
 ## Aircraft whose runway starts have passed the ground qualification gate (TT-11).
-const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "stik-glow-61fx-2t", "sebart-avanti-s-a200-p100rx"]
+const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "stik-glow-61fx-2t", "sebart-avanti-s-a200-p100rx", "p51d-mustang-120"]
 const RUNWAY_FIELD_ID := "default"
 
 
@@ -556,8 +558,6 @@ func setup(path := Scenarios.AIRCRAFT, expected_id: String = "", frozen_data: Di
 	_frozen_aircraft = frozen_data.duplicate(true)
 	sim = Sim.new()
 	sim.modes = PackedInt64Array([1])
-	if _has_collision_query():
-		sim.post_step = Callable(self, "_resolve_collision_step")
 	sim.faulted.connect(_on_sim_faulted)
 	sim.stepped.connect(_on_sim_stepped)
 	var prepared := _prepare_aircraft(_load_selected_aircraft())
@@ -768,7 +768,7 @@ func set_lake_context(normalized_lake: Dictionary) -> bool:
 	_lake_bank_bounds = _polygon_bounds_ne(_lake.get("bank_ne_m", PackedFloat64Array()))
 	_last_lake_event = null
 	if sim != null and aircraft.get("ok", false):
-		_hull_contact = HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia, _lake)
+		_hull_contact = _prepare_hull_contact()
 	_sync_post_step()
 	return true
 
@@ -807,8 +807,17 @@ func _inside_lake_bank_bounds(north: float, east: float) -> bool:
 
 
 func _sync_post_step() -> void:
-	if sim != null:
-		sim.post_step = Callable(self, "_resolve_collision_step") if _has_collision_query() else Callable()
+	if sim == null:
+		return
+	var dynamic_mass: bool = glow_is_active()
+	sim.post_step = Callable(self, "_resolve_collision_step") if _has_collision_query() and not dynamic_mass else Callable()
+	sim.post_step_joint = Callable(self, "_resolve_mass_contact_step") if dynamic_mass else Callable()
+
+
+func _prepare_hull_contact() -> Dictionary:
+	if glow_is_active():
+		return HullContact.prepare_geometry(aircraft.model.crash_hull, _lake)
+	return HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia, _lake)
 
 
 ## Installs one normalized, detached world at a flight boundary. Proxy data contains scalar NED geometry only.
@@ -1024,12 +1033,13 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	_trim_charge = engine_charge_ratio(start.state)
 	sim.mass = aircraft.model.mass_kg
 	sim.inertia = aircraft.model.inertia.duplicate()
-	_hull_contact = HullContact.prepare(aircraft.model.crash_hull, sim.mass, sim.inertia, _lake)
+	_hull_contact = _prepare_hull_contact()
 	_prop_disc = HullContact.prop_disc(aircraft.model.propulsion)
 	_deflection_key = PackedFloat64Array()
 	_ground_effect_reach = GroundEffect.reach(aircraft.model)
 	sim.loads = _loads
 	_configure_continuous_callbacks()
+	_sync_post_step()
 	sim.pre_step = _pre_step
 	sim.rotor_momentum = rotor_momentum
 	for warning in aircraft.warnings:
@@ -1538,7 +1548,8 @@ func _physics_process(_delta: float) -> void:
 	if physics_enabled and not sim.paused and _flight_ready() and Sim.state_is_valid(sim.state):
 		if soft_hull_contacts:
 			soft_contacts = HullContact.contacts(sim.previous, sim.state, _hull_contact)
-			var hit: Dictionary = HullContact.terminal(sim.previous, sim.state, _hull_contact)
+			# Glow terminal hull decisions already ran with the previous fuel snapshot inside the accepted tick.
+			var hit: Dictionary = {index = -1} if glow_is_active() else HullContact.terminal(sim.previous, sim.state, _hull_contact)
 			if int(hit.index) >= 0:
 				_crash(ImpactSnapshot.hull_point(sim.state, sim.tick, aircraft.model.crash_hull, int(hit.index),
 					sim.previous, str(hit.rule)))
@@ -1635,14 +1646,52 @@ func touches_ground(s: PackedFloat64Array) -> bool:
 	return false
 
 
+## Swept contact interpolates position, velocity and rates plus normalized attitude.
+## Fuel is linearly sampled at the same fraction; this is not event-substep integration.
+## Existing response truncates body motion at impact while continuous state completes the tick.
+## The sampler is pure; rejected candidates publish no contact, damage or continuous-state change.
+func _resolve_mass_contact_step(previous: PackedFloat64Array, candidate: PackedFloat64Array,
+		next_tick: int, previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array) -> PackedFloat64Array:
+	var sampler: Callable = _contact_mass_sampler(previous_values, candidate_values)
+	if not sampler.is_valid():
+		return PackedFloat64Array()
+	return _resolve_collision_step(previous, candidate, next_tick, sampler)
+
+
+func _contact_mass_sampler(previous_values: PackedFloat64Array, candidate_values: PackedFloat64Array) -> Callable:
+	if not glow_is_active() or previous_values.size() != GlowFlight.SIZE + wheel_count() \
+			or candidate_values.size() != previous_values.size():
+		return Callable()
+	var initial_fuel: float = aircraft.model.propulsion.glow.initial_fuel_kg
+	var before: float = previous_values[1]
+	var after: float = candidate_values[1]
+	if not is_finite(before) or not is_finite(after) or before < 0.0 or after < 0.0 \
+			or before > initial_fuel or after > initial_fuel:
+		return Callable()
+	return func(fraction: float) -> Dictionary:
+		if not is_finite(fraction) or fraction < 0.0 or fraction > 1.0:
+			return {ok = false, reason = "contact mass fraction is outside the tick"}
+		return GlowFlight.properties(self, lerpf(before, after, fraction))
+
+
 func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloat64Array,
-		next_tick: int) -> PackedFloat64Array:
+		next_tick: int, mass_at_fraction: Callable = Callable()) -> PackedFloat64Array:
 	_clear_pending_contacts()
 	_pending_contact_tick = next_tick
 	var accepted_scenery: SceneryCollision.Event = _last_scenery_event
 	var accepted_lake: LakeCollision.WaterEvent = _last_lake_event
 	_resolving_contact = true
-	var filtered: PackedFloat64Array = _resolve_collision_candidate(previous, candidate, next_tick)
+	var filtered: PackedFloat64Array = _resolve_collision_candidate(previous, candidate, next_tick, mass_at_fraction)
+	if mass_at_fraction.is_valid() and soft_hull_contacts and _pending_crash == null and Sim.state_is_valid(filtered) \
+			and not _hull_contact.is_empty() and -filtered[RB.POS + 2] <= float(_hull_contact.reach):
+		var properties_previous: Dictionary = mass_at_fraction.call(0.0)
+		var terminal_result: Dictionary = HullContact.terminal_at_properties(previous, filtered, _hull_contact, properties_previous)
+		var hit: Dictionary = terminal_result.get("event", {})
+		if not terminal_result.get("ok", false):
+			filtered = PackedFloat64Array()
+		elif int(hit.index) >= 0:
+			_crash(ImpactSnapshot.hull_point(filtered, next_tick, aircraft.model.crash_hull, int(hit.index),
+				previous, str(hit.rule)), filtered)
 	_resolving_contact = false
 	_pending_scenery_event = _last_scenery_event
 	_pending_lake_event = _last_lake_event
@@ -1652,15 +1701,17 @@ func _resolve_collision_step(previous: PackedFloat64Array, candidate: PackedFloa
 
 
 func _resolve_collision_candidate(previous: PackedFloat64Array, candidate: PackedFloat64Array,
-		next_tick: int) -> PackedFloat64Array:
+		next_tick: int, mass_at_fraction: Callable = Callable()) -> PackedFloat64Array:
 	_clear_pending_scenery_damage()
 	if not _lake.is_empty():
-		return _resolve_collision_step_with_lake(previous, candidate, next_tick)
+		return _resolve_collision_step_with_lake(previous, candidate, next_tick, mass_at_fraction)
 	if _collision_world.is_empty() or _collision_world.proxies.is_empty() or not aircraft.get("ok", false):
 		_last_scenery_event = null
 		return candidate
-	var scenery_hit: SceneryCollision.Event = SceneryCollision.first_hit(previous, candidate,
-		aircraft.model.crash_hull, _collision_world, next_tick, sim.mass, sim.inertia, _scenery_damage)
+	var sampled: Dictionary = _scenery_hit(previous, candidate, next_tick, mass_at_fraction)
+	if not sampled.ok:
+		return PackedFloat64Array()
+	var scenery_hit: SceneryCollision.Event = sampled.event
 	var ground_hit: ImpactSnapshot.Snapshot = null
 	var ground_fraction := INF
 	# E3d1: with soft hull contacts the ground pushes back through the loads; the tick check decides crashes.
@@ -1688,7 +1739,7 @@ func _resolve_collision_candidate(previous: PackedFloat64Array, candidate: Packe
 		scenery_hit.response_status = "terminal"
 		_crash(scenery_hit, contact_state)
 		return contact_state
-	var response: Dictionary = SceneryCollision.apply_response(contact_state, scenery_hit, sim.mass, sim.inertia)
+	var response: Dictionary = _scenery_response(contact_state, scenery_hit)
 	if not response.get("ok", false):
 		scenery_hit.terminal = true
 		scenery_hit.response_status = "response_failed_terminal"
@@ -1701,18 +1752,29 @@ func _resolve_collision_candidate(previous: PackedFloat64Array, candidate: Packe
 
 
 func _resolve_collision_step_with_lake(previous: PackedFloat64Array, candidate: PackedFloat64Array,
-		next_tick: int) -> PackedFloat64Array:
+		next_tick: int, mass_at_fraction: Callable = Callable()) -> PackedFloat64Array:
 	if not aircraft.get("ok", false):
 		_last_scenery_event = null
 		_last_lake_event = null
 		return candidate
 	var scenery_hit: SceneryCollision.Event = null
 	if not _collision_world.is_empty() and not _collision_world.proxies.is_empty():
-		scenery_hit = SceneryCollision.first_hit(previous, candidate, aircraft.model.crash_hull,
-			_collision_world, next_tick, sim.mass, sim.inertia, _scenery_damage)
-	var lake_hit: LakeCollision.WaterEvent = LakeCollision.first_hit(_lake, previous, candidate,
-		aircraft.model.crash_hull, current_landing_gear(), next_tick, sim.dt(), sim.mass,
-		sim.inertia, soft_hull_contacts, _prop_disc)
+		var sampled: Dictionary = _scenery_hit(previous, candidate, next_tick, mass_at_fraction)
+		if not sampled.ok:
+			return PackedFloat64Array()
+		scenery_hit = sampled.event
+	var lake_hit: LakeCollision.WaterEvent
+	if mass_at_fraction.is_valid():
+		var sampled_lake: Dictionary = LakeCollision.first_hit_sampled(_lake, previous, candidate,
+			aircraft.model.crash_hull, current_landing_gear(), next_tick, sim.dt(), mass_at_fraction,
+			soft_hull_contacts, _prop_disc)
+		if not sampled_lake.ok:
+			return PackedFloat64Array()
+		lake_hit = sampled_lake.event
+	else:
+		lake_hit = LakeCollision.first_hit(_lake, previous, candidate,
+			aircraft.model.crash_hull, current_landing_gear(), next_tick, sim.dt(), sim.mass,
+			sim.inertia, soft_hull_contacts, _prop_disc)
 	var ground_hit: ImpactSnapshot.Snapshot = null
 	var ground_fraction: float = INF
 	if not soft_hull_contacts:
@@ -1761,7 +1823,7 @@ func _resolve_collision_step_with_lake(previous: PackedFloat64Array, candidate: 
 		scenery_hit.response_status = "terminal"
 		_crash(scenery_hit, scenery_state)
 		return scenery_state
-	var response: Dictionary = SceneryCollision.apply_response(scenery_state, scenery_hit, sim.mass, sim.inertia)
+	var response: Dictionary = _scenery_response(scenery_state, scenery_hit)
 	if not response.get("ok", false):
 		scenery_hit.terminal = true
 		scenery_hit.response_status = "response_failed_terminal"
@@ -1771,6 +1833,24 @@ func _resolve_collision_step_with_lake(previous: PackedFloat64Array, candidate: 
 	scenery_hit.restitution = float(response.restitution)
 	scenery_hit.dissipated_energy_j = float(response.dissipated_energy_j)
 	return response.state
+
+
+func _scenery_hit(previous: PackedFloat64Array, candidate: PackedFloat64Array,
+		next_tick: int, mass_at_fraction: Callable) -> Dictionary:
+	if mass_at_fraction.is_valid():
+		return SceneryCollision.first_hit_sampled(previous, candidate, aircraft.model.crash_hull,
+			_collision_world, next_tick, mass_at_fraction, _scenery_damage)
+	return {ok = true, event = SceneryCollision.first_hit(previous, candidate, aircraft.model.crash_hull,
+		_collision_world, next_tick, sim.mass, sim.inertia, _scenery_damage)}
+
+
+func _scenery_response(body: PackedFloat64Array, hit: SceneryCollision.Event) -> Dictionary:
+	if glow_is_active():
+		var properties: Dictionary = hit.contact_mass_properties
+		if not properties.get("ok", false):
+			return {ok = false}
+		return SceneryCollision.apply_response_properties(body, hit)
+	return SceneryCollision.apply_response(body, hit, sim.mass, sim.inertia)
 
 
 func _flat_ground_hit_outside_lake(previous: PackedFloat64Array, candidate: PackedFloat64Array,
@@ -2447,7 +2527,24 @@ func _ground_evaluation(s: PackedFloat64Array, aux: PackedFloat64Array, values: 
 	var steer: float = aux[AUX_SERVO + 2]
 	var brake: float = sim.inputs[5] if gear_is_retractable() else 0.0
 	var anchors: PackedFloat64Array = aux.slice(AUX_ANCHORS, AUX_ANCHORS + anchor_count() * Ground.ANCHOR_STRIDE)
-	var hull: PackedFloat64Array = HullContact.loads(s, _hull_contact) if soft_hull_contacts else PackedFloat64Array()
+	var hull: PackedFloat64Array = PackedFloat64Array()
+	if soft_hull_contacts:
+		if glow_is_active():
+			if _hull_contact.is_empty() or values.size() < GlowFlight.SIZE:
+				return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
+			# Geometry reach is independent of fuel; avoid any new mass/contact work in free flight.
+			if -s[RB.POS + 2] <= float(_hull_contact.reach):
+				var sampled: Dictionary = HullContact.loads_at_properties(s, _hull_contact, GlowFlight.properties(self, values[1]))
+				if not sampled.get("ok", false):
+					return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
+				hull = sampled.loads
+				if hull.size() not in [0, 6]:
+					return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
+		else:
+			hull = HullContact.loads(s, _hull_contact)
+		for value: float in hull:
+			if not is_finite(value):
+				return {ok = false, loads = PackedFloat64Array([NAN]), derivative = PackedFloat64Array([NAN])}
 	if gear_is_retractable():
 		hull = _add_loads(hull, RetractableGear.drag_loads(s, stage_air.v_air, aircraft.model.landing_gear, aux[gear_aux_index()], air_density(s)))
 	if wheel_count() == 0:
@@ -3026,6 +3123,9 @@ func trace_meta() -> Dictionary:
 		loads = "Fx..Mz: body-axis loads excluding gravity; tick 0 evaluates reset state/aux; tick k>0 evaluates state k-1 with aux k (after pre_step)",
 		state_timing = "state and aux at tick k; aux advances before RK4 and is held through its stages; cmd_* drives that step (reset commands at tick 0)",
 	}
+	if glow_is_active():
+		metadata.mass_contact_law = MASS_CONTACT_LAW
+		metadata.mass_reference = "mass_kg and inertia_kgm2 are initial wet values; live mass/CG/inertia derive from continuous fuel at fixed initial datum"
 	if soft_hull_contacts:
 		metadata.hull_contact_model = HullContact.law()
 	if not _collision_world.is_empty():
@@ -3199,6 +3299,7 @@ func checkpoint() -> Dictionary:
 	if glow_is_active():
 		boundary.format="openrc-flight-checkpoint v9"
 		boundary.glow_law=GlowFlight.LAW
+		boundary.mass_contact_law = MASS_CONTACT_LAW
 	if wheel_count() > 0:
 		boundary.wheel_state_layout = wheel_state_layout()
 		boundary.wheel_profile_sha256 = str(aircraft.model.wheel_profile.get("profile_sha256", ""))
@@ -3264,7 +3365,9 @@ func _configuration_for_weather(field: WeatherField) -> String:
 		parts.append(electric_law())
 	if turbine_is_continuous():
 		parts.append(Turbine.CONTINUOUS_LAW + "; " + Turbine.CONTINUOUS_LAYOUT)
-	if glow_is_active(): parts.append(GlowFlight.LAW)
+	if glow_is_active():
+		parts.append(GlowFlight.LAW)
+		parts.append(MASS_CONTACT_LAW)
 	if soft_hull_contacts:
 		# E3d1: soft hull contacts change the dynamics near the ground; legacy hashes stay unchanged.
 		parts.append(HullContact.law())
@@ -3326,6 +3429,11 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 				or snapshot.inputs[4] not in [0.0, 1.0] or not RetractableGear.valid_fraction(snapshot.inputs[5]):
 			return false
 	elif candidate.has("gear_law") or candidate.has("gear_aux_index"):
+		return false
+	if glow_is_active():
+		if candidate.get("mass_contact_law") != MASS_CONTACT_LAW:
+			return false
+	elif candidate.has("mass_contact_law"):
 		return false
 	var physics_format: String = str(candidate.get("physics_format", candidate.get("format", "")))
 	if glow_is_active() != (physics_format=="openrc-flight-checkpoint v9") or (glow_is_active() and candidate.get("glow_law")!=GlowFlight.LAW):

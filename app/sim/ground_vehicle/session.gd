@@ -9,9 +9,10 @@ const Course := preload("res://physics/ground_vehicle/course.gd")
 const AirfieldCourse := preload("res://physics/ground_vehicle/airfield_course.gd")
 const Damage := preload("res://physics/ground_vehicle/vehicle_damage.gd")
 const Math3D := preload("res://physics/math3d.gd")
+const WetPhysics := preload("res://physics/ground_vehicle/vehicle_environment.gd")
 
 const FORMAT := "openrc-ground-vehicle-checkpoint v3"
-const RECORDING_FORMAT := "openrc-ground-vehicle-recording v3"
+const RECORDING_FORMAT := "openrc-ground-vehicle-recording v4"
 const FIXED_HZ := 240
 const DT := 1.0 / float(FIXED_HZ)
 const STATE_SIZE := 31
@@ -22,7 +23,9 @@ const CONTROL_LAYOUT := ["throttle", "steering", "brake", "reverse_flag"]
 const RECORD_CONTROLS_OFFSET := 1
 const RECORD_STATE_OFFSET := RECORD_CONTROLS_OFFSET + 4
 const RECORD_TELEMETRY_OFFSET := RECORD_STATE_OFFSET + STATE_SIZE
-const RECORD_TELEMETRY_BASE_WIDTH := 52
+const RECORD_TELEMETRY_BASE_WIDTH := 73
+const ENVIRONMENT_SCALARS := ["body_submersion", "water_depth_m", "buoyancy_n", "drag_power_w", "power_w"]
+const ENVIRONMENT_ARRAYS := ["wheel_submersion", "wheel_water_height_m", "wheel_depth_m", "wheel_mud"]
 const DAMAGE_CHANNELS := ["body_damage", "suspension_damage", "drive_scale", "last_impact_energy_j"]
 const RECORD_TELEMETRY_SPEED_OFFSET := 0
 const RECORD_TELEMETRY_FORWARD_SPEED_OFFSET := 1
@@ -38,6 +41,7 @@ const STATE_LAYOUT := [
 ]
 const CORNERS := ["FL", "FR", "RL", "RR"]
 const NEUTRAL_EPSILON := 1.0e-12
+const CHECKPOINT_DISPLAY_MIRROR_TOLERANCE := 1.0e-12
 const SHA256_EMPTY_HEX := "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
 
 signal tick_advanced(tick: int, time_s: float, state: PackedFloat64Array, telemetry: Dictionary)
@@ -630,9 +634,8 @@ func checkpoint() -> Dictionary:
 	var control_bytes := _control_tape.to_byte_array()
 	var last_control_bytes := _controls_to_packed(_last_controls).to_byte_array()
 	var applied_control_bytes := _controls_to_packed(_last_effective_controls).to_byte_array()
-	# Hash the JSON-representable events, just as the complete checkpoint will
-	# store them. Hashing raw float64 values before that conversion can reject
-	# our own checkpoint when a contact-event scalar rounds during encoding.
+	# Normalize event values for JSON storage. Their digest is computed from the
+	# final canonical checkpoint below, after every nested value has normalized.
 	var canonical_events: Variant = _json_canonical_variant(_json_value(_event_tape))
 	var canonical_braking: Variant = _json_value(_braking_run)
 	var candidate := {
@@ -661,13 +664,14 @@ func checkpoint() -> Dictionary:
 		"applied_controls_f64_base64": _base64_bytes(applied_control_bytes),
 		"recovery_actions": _recovery_actions.duplicate(true),
 		"event_tape": canonical_events,
-		"event_tape_sha256": _hash_variant(canonical_events),
+		"event_tape_sha256": "",
 		"braking_run": canonical_braking,
 		"run_valid": run_valid,
 	}
 	var canonical_candidate: Variant = _json_canonical_variant(candidate)
 	if typeof(canonical_candidate) != TYPE_DICTIONARY:
 		return {}
+	canonical_candidate["event_tape_sha256"] = _hash_variant(canonical_candidate.get("event_tape", []))
 	canonical_candidate["checkpoint_sha256"] = _checkpoint_hash(canonical_candidate)
 	return canonical_candidate
 
@@ -694,14 +698,15 @@ func can_restore_checkpoint(candidate: Variant) -> bool:
 		return false
 	var candidate_damage := _decode_float64_blob(candidate.get("damage_state_f64_base64"), Damage.SNAPSHOT_SIZE)
 	if not _damage.valid_snapshot(candidate_damage) \
-			or _hash_bytes(candidate_damage.to_byte_array()) != str(candidate.get("damage_state_sha256", "")) \
-			or _json_canonical_variant(_json_value(candidate_damage)) != candidate.get("damage_state"):
+			or _hash_bytes(candidate_damage.to_byte_array()) != str(candidate.get("damage_state_sha256", "")):
+		return false
+	if not _checkpoint_float_array_mirror_matches(candidate.get("damage_state"), candidate_damage):
 		return false
 	var candidate_state := _decode_float64_blob(candidate.get("state_f64_base64"), STATE_SIZE)
 	if not _state_is_valid(candidate_state) \
 			or _hash_bytes(candidate_state.to_byte_array()) != str(candidate.get("state_sha256", "")):
 		return false
-	if _json_canonical_variant(_json_value(candidate_state)) != candidate.get("state"):
+	if not _checkpoint_float_array_mirror_matches(candidate.get("state"), candidate_state):
 		return false
 	var controls_value: Variant = candidate.get("control_tape")
 	var actions_value: Variant = candidate.get("recovery_actions")
@@ -713,7 +718,7 @@ func can_restore_checkpoint(candidate: Variant) -> bool:
 			or packed_controls.size() != int(candidate.tick) * 4 \
 			or typeof(actions_value) != TYPE_ARRAY or typeof(events_value) != TYPE_ARRAY:
 		return false
-	if _json_canonical_variant(_json_value(packed_controls)) != controls_value:
+	if not _checkpoint_float_array_mirror_matches(controls_value, packed_controls):
 		return false
 	if not _expand_control_tape(packed_controls).ok:
 		return false
@@ -723,7 +728,7 @@ func can_restore_checkpoint(candidate: Variant) -> bool:
 		return false
 	var parsed_last_controls := _controls_from_packed(last_control_tape)
 	if parsed_last_controls.is_empty() \
-			or _json_canonical_variant(_json_value(parsed_last_controls)) != candidate.get("last_controls") \
+			or not _checkpoint_controls_mirror_matches(candidate.get("last_controls"), parsed_last_controls) \
 			or not _last_controls_match_tape(parsed_last_controls, packed_controls, actions_value, int(candidate.tick)):
 		return false
 	if not _actions_are_valid(actions_value, int(candidate.tick), str(candidate.spawn_id)) \
@@ -904,6 +909,8 @@ func _capture_record_sample(controls: Dictionary) -> bool:
 	for channel in DAMAGE_CHANNELS:
 		_record_samples.append(float(telemetry.damage[channel]))
 	_record_samples.append_array(_controls_to_packed(_last_effective_controls))
+	for key in ENVIRONMENT_SCALARS: _record_samples.append(float(telemetry.environment[key]))
+	for key in ENVIRONMENT_ARRAYS: _record_samples.append_array(telemetry.environment[key])
 	return _record_samples.size() - initial_size == _record_sample_width
 
 
@@ -986,6 +993,15 @@ func _recorded_telemetry(offset: int) -> Dictionary:
 		cursor += 1
 	telemetry["damage"] = damage
 	telemetry["applied_controls"] = _recorded_float_array(cursor, 4)
+	cursor += 4
+	var environment := {"ok": true}
+	for key in ENVIRONMENT_SCALARS:
+		environment[key] = _record_samples[cursor]
+		cursor += 1
+	for key in ENVIRONMENT_ARRAYS:
+		environment[key] = _recorded_float_array(cursor, 4)
+		cursor += 4
+	telemetry["environment"] = environment
 	return telemetry
 
 
@@ -996,6 +1012,7 @@ func _recording_sample_count() -> int:
 
 
 func _recording_sample_is_valid(telemetry: Dictionary, controls: Dictionary) -> bool:
+	if not WetPhysics.telemetry_is_valid(telemetry.get("environment")): return false
 	if _controls_to_packed(controls).size() != 4 or typeof(telemetry.get("ok")) != TYPE_BOOL \
 			or not bool(telemetry.get("ok")):
 		return false
@@ -1070,7 +1087,7 @@ func _json_number(value: float) -> String:
 func _recording_metadata() -> Dictionary:
 	return {
 		"format": RECORDING_FORMAT,
-		"version": 3,
+		"version": 4,
 		"fixed_hz": FIXED_HZ,
 		"dt_s": DT,
 		"state_layout": STATE_LAYOUT.duplicate(),
@@ -1085,7 +1102,10 @@ func _recording_metadata() -> Dictionary:
 				"wheel_slip_ratio[4]", "wheel_slip_angle_rad[4]", "wheel_slip_speed_m_per_s[4]",
 				"wheel_in_contact[4]", "hull_in_contact[N]", "airborne", "suspension_travel_m[4]",
 				"suspension_force_n[4]", "total_energy_j", "damage.body_damage",
-				"damage.suspension_damage", "damage.drive_scale", "damage.last_impact_energy_j", "applied_controls[4]"],
+				"damage.suspension_damage", "damage.drive_scale", "damage.last_impact_energy_j", "applied_controls[4]",
+				"environment.body_submersion", "environment.water_depth_m", "environment.buoyancy_n",
+				"environment.drag_power_w", "environment.power_w", "environment.wheel_submersion[4]",
+				"environment.wheel_water_height_m[4]", "environment.wheel_depth_m[4]", "environment.wheel_mud[4]"],
 		},
 		"sample_width": _record_sample_width,
 		"damage_state_layout": Damage.STATE_LAYOUT.duplicate(),
@@ -1468,6 +1488,8 @@ func _solver_identity() -> Dictionary:
 		else VehicleDynamics.backend_identity()
 	return {
 		"solver_version": VehicleDynamics.SOLVER_VERSION,
+		"environment_version": WetPhysics.VERSION,
+		"environment_artifact": VehicleDynamics._reference_implementation_artifact("res://physics/ground_vehicle/vehicle_environment.gd"),
 		"damage_version": Damage.SNAPSHOT_VERSION,
 		"engine_version": str(engine_version.get("string", "")),
 		"fixed_hz": FIXED_HZ,
@@ -1481,6 +1503,8 @@ func _solver_identity_matches(value: Variant) -> bool:
 		return false
 	var current := _solver_identity()
 	var old_solver_fields_match: bool = value.get("solver_version") == current.solver_version \
+		and value.get("environment_version") == current.environment_version \
+		and value.get("environment_artifact") == current.environment_artifact \
 		and value.get("damage_version") == current.damage_version \
 		and value.get("engine_version") == current.engine_version \
 		and _integer_value_is_valid(value.get("fixed_hz")) \
@@ -1577,6 +1601,7 @@ func _state_is_valid(value: Variant) -> bool:
 func _telemetry_is_valid(value: Variant) -> bool:
 	if typeof(value) != TYPE_DICTIONARY or not value.get("ok", false):
 		return false
+	if not WetPhysics.telemetry_is_valid(value.get("environment")): return false
 	for key in ["speed_m_per_s", "forward_speed_m_per_s"]:
 		var scalar: Variant = value.get(key, NAN)
 		if typeof(scalar) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(scalar)):
@@ -1670,6 +1695,39 @@ func _checkpoint_hash(value: Dictionary) -> String:
 	var content := value.duplicate(true)
 	content.erase("checkpoint_sha256")
 	return _hash_variant(content)
+
+
+## JSON mirrors are for inspection. Float64 blobs and their SHA-256 fields remain
+## authoritative; allow only a small serialization tolerance in their mirrors.
+func _checkpoint_float_array_mirror_matches(display_value: Variant, authoritative: PackedFloat64Array) -> bool:
+	if typeof(display_value) != TYPE_ARRAY or display_value.size() != authoritative.size():
+		return false
+	for index in range(authoritative.size()):
+		var displayed: Variant = display_value[index]
+		if typeof(displayed) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(displayed)):
+			return false
+		var expected := float(authoritative[index])
+		var tolerance := CHECKPOINT_DISPLAY_MIRROR_TOLERANCE * maxf(1.0, absf(expected))
+		if absf(float(displayed) - expected) > tolerance:
+			return false
+	return true
+
+
+func _checkpoint_controls_mirror_matches(display_value: Variant, authoritative: Dictionary) -> bool:
+	if typeof(display_value) != TYPE_DICTIONARY or display_value.size() != authoritative.size():
+		return false
+	for key in ["throttle", "steering", "brake"]:
+		var displayed: Variant = display_value.get(key, NAN)
+		var expected: Variant = authoritative.get(key, NAN)
+		if typeof(displayed) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(displayed)) \
+				or typeof(expected) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(expected)):
+			return false
+		var tolerance := CHECKPOINT_DISPLAY_MIRROR_TOLERANCE * maxf(1.0, absf(float(expected)))
+		if absf(float(displayed) - float(expected)) > tolerance:
+			return false
+	var displayed_reverse: Variant = display_value.get("reverse")
+	return typeof(displayed_reverse) == TYPE_BOOL \
+		and bool(displayed_reverse) == bool(authoritative.get("reverse", false))
 
 
 func _integer_value_is_valid(value: Variant) -> bool:

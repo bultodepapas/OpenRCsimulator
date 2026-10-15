@@ -19,6 +19,7 @@ var _dust_levels := PackedFloat32Array([0.0, 0.0, 0.0, 0.0])
 var _grime_material: ShaderMaterial
 var _grime_materials: Array[ShaderMaterial] = []
 var _grime_amount := 0.0
+var _wet_amount := 0.0
 var _paused := false
 var _last_headlight_energy := 0.0
 var _night_weight := 0.0
@@ -100,37 +101,95 @@ func update_render(
 			_clear_dust_levels()
 			return
 	var speed := absf(float(speed_value))
+	var environment := _accepted_environment(telemetry)
 	var dirt_activity := 0.0
+	var mud_activity := 0.0
+	var wet_target := float(environment.get("body_submersion", 0.0))
+	var water_wash := wet_target
+	var body_wet := wet_target > 0.01
+	if not environment.is_empty():
+		var environment_submersion: PackedFloat64Array = environment.wheel_submersion
+		for i in 4:
+			wet_target = maxf(wet_target, float(environment_submersion[i]))
+			water_wash = maxf(water_wash, float(environment_submersion[i]))
+		body_wet = float(environment.body_submersion) > 0.01
 	for i in 4:
 		var level := 0.0
 		var source := _wheel_nodes[i].global_position
 		var sample_value: Variant = {}
 		if _vector3_is_finite(source):
 			sample_value = road.call(-source.z, source.x)
-		if contacts[i] != 0 and typeof(sample_value) == TYPE_DICTIONARY:
-			var sample: Dictionary = sample_value
-			var surface_factor := _surface_dust_factor(str(sample.get("surface_id", "")))
+		var road_water := 0.0
+		var road_water_depth := 0.0
+		var road_mud := 0.0
+		var road_waterline_active := false
+		if typeof(sample_value) == TYPE_DICTIONARY:
+			var road_sample: Dictionary = sample_value
+			var depth_value: Variant = road_sample.get("water_depth_m", 0.0)
+			if _finite_number(depth_value) and float(depth_value) >= 0.0:
+				road_water_depth = float(depth_value)
+			var height_value: Variant = road_sample.get("water_height_m")
+			if _finite_number(height_value) and _vector3_is_finite(source):
+				var water_height := float(height_value)
+				road_waterline_active = road_water_depth > 0.0 \
+					and water_height >= source.y - _wheel_radii[i] - 0.045 \
+					and water_height <= source.y + _wheel_radii[i] + 0.018
+			var mud_value: Variant = road_sample.get("mud_fraction", 0.0)
+			if _finite_number(mud_value) and float(mud_value) >= 0.0 and float(mud_value) <= 1.0:
+				road_mud = float(mud_value)
+		if road_waterline_active:
+			road_water = clampf(road_water_depth / 0.04, 0.0, 1.0)
+		wet_target = maxf(wet_target, road_water)
+		water_wash = maxf(water_wash, road_water)
+		var wheel_water := 0.0
+		var wheel_mud := road_mud
+		if not environment.is_empty():
+			var environment_submersion: PackedFloat64Array = environment.wheel_submersion
+			var environment_mud: PackedFloat64Array = environment.wheel_mud
+			wheel_water = float(environment_submersion[i])
+			wheel_mud = maxf(wheel_mud, float(environment_mud[i]))
+		wet_target = maxf(wet_target, wheel_water)
+		water_wash = maxf(water_wash, wheel_water)
+		if contacts[i] != 0:
 			var slip_speed := absf(float(slips[i]))
-			var ground_height: Variant = sample.get("height_m", source.y - _wheel_radii[i])
-			var ground_height_valid := typeof(ground_height) in [TYPE_FLOAT, TYPE_INT] \
-				and is_finite(float(ground_height))
-			if surface_factor > 0.0 and ground_height_valid and (speed >= 0.35 or slip_speed >= 0.12):
-				var speed_factor := clampf((speed - 0.35) / 4.5, 0.0, 1.0)
-				var slip_factor := clampf((slip_speed - 0.04) / 1.4, 0.0, 1.0)
-				level = surface_factor * maxf(speed_factor * 0.45, slip_factor)
-				source.y = float(ground_height) + 0.018
-				var emitter := _emitters[i]
-				emitter.global_transform = Transform3D(_vehicle_root.global_basis.orthonormalized(), source)
-				var dust_tint := Color(1.0, 0.92, 0.81).lerp(Color(0.32, 0.38, 0.54), _night_weight)
-				var dust_alpha := 0.8 * sqrt(level) * lerpf(1.0, 0.08, _night_weight)
-				emitter.color = Color(dust_tint.r, dust_tint.g, dust_tint.b, dust_alpha)
+			var over_wet_surface := body_wet or road_waterline_active or wheel_water > 0.01
+			var over_mud := wheel_mud > 0.001
+			if typeof(sample_value) == TYPE_DICTIONARY:
+				var sample: Dictionary = sample_value
+				var surface_factor := _surface_dust_factor(str(sample.get("surface_id", "")))
+				var ground_height: Variant = sample.get("height_m", source.y - _wheel_radii[i])
+				var ground_height_valid := typeof(ground_height) in [TYPE_FLOAT, TYPE_INT] \
+					and is_finite(float(ground_height))
+				if surface_factor > 0.0 and ground_height_valid and not over_wet_surface \
+						and not over_mud and (speed >= 0.35 or slip_speed >= 0.12):
+					var speed_factor := clampf((speed - 0.35) / 4.5, 0.0, 1.0)
+					var slip_factor := clampf((slip_speed - 0.04) / 1.4, 0.0, 1.0)
+					level = surface_factor * maxf(speed_factor * 0.45, slip_factor)
+					source.y = float(ground_height) + 0.018
+					var emitter := _emitters[i]
+					emitter.global_transform = Transform3D(_vehicle_root.global_basis.orthonormalized(), source)
+					var dust_tint := Color(1.0, 0.92, 0.81).lerp(Color(0.32, 0.38, 0.54), _night_weight)
+					var dust_alpha := 0.8 * sqrt(level) * lerpf(1.0, 0.08, _night_weight)
+					emitter.color = Color(dust_tint.r, dust_tint.g, dust_tint.b, dust_alpha)
+			if wheel_mud > 0.0 and (speed >= 0.2 or slip_speed >= 0.04):
+				var mud_motion := maxf(clampf((speed - 0.2) / 2.8, 0.0, 1.0),
+					clampf((slip_speed - 0.03) / 0.9, 0.0, 1.0))
+				mud_activity += wheel_mud * mud_motion
 		_dust_levels[i] = level
 		_emitters[i].emitting = level > 0.015
 		dirt_activity += level
-	if dt > 0.0 and dirt_activity > 0.0:
-		_grime_amount = minf(MAX_GRIME, _grime_amount + dirt_activity * 0.25 * dt * 0.028)
+	if dt > 0.0:
+		if dirt_activity > 0.0:
+			_grime_amount = minf(MAX_GRIME, _grime_amount + dirt_activity * 0.25 * dt * 0.028)
+		if mud_activity > 0.0:
+			_grime_amount = minf(MAX_GRIME, _grime_amount + mud_activity * 0.25 * dt * 0.08)
+		if water_wash > 0.0:
+			_grime_amount = maxf(0.0, _grime_amount - water_wash * dt * 0.006)
+		var wet_rate := 1.5 if wet_target > _wet_amount else 0.22
+		_wet_amount = move_toward(_wet_amount, clampf(wet_target, 0.0, 1.0), wet_rate * dt)
 		for material in _grime_materials:
 			material.set_shader_parameter("dirt_amount", _grime_amount)
+			material.set_shader_parameter("wet_amount", _wet_amount)
 
 
 ## Reset clears only this component's particle buffers and overlay. Body visibility and source
@@ -139,8 +198,10 @@ func reset() -> void:
 	if not _prepared:
 		return
 	_grime_amount = 0.0
+	_wet_amount = 0.0
 	for material in _grime_materials:
 		material.set_shader_parameter("dirt_amount", 0.0)
+		material.set_shader_parameter("wet_amount", 0.0)
 	for i in 4:
 		_dust_levels[i] = 0.0
 		_emitters[i].emitting = false
@@ -170,6 +231,7 @@ func diagnostic_snapshot() -> Dictionary:
 		"particle_budget_per_wheel": PARTICLES_PER_TIRE,
 		"particle_budget_total": _emitters.size() * PARTICLES_PER_TIRE,
 		"grime_amount": _grime_amount,
+		"wet_amount": _wet_amount,
 		"headlights_enabled": headlights_enabled and not _headlight_lights.is_empty(),
 		"headlight_energy": _last_headlight_energy,
 		"brake_lights": _brake_lights,
@@ -201,6 +263,7 @@ func _make_grime_material(shader: Shader, bounds: AABB, full_height: bool) -> Sh
 	var material := ShaderMaterial.new()
 	material.shader = shader
 	material.set_shader_parameter("dirt_amount", 0.0)
+	material.set_shader_parameter("wet_amount", 0.0)
 	if full_height:
 		var margin := maxf(bounds.size.y * 0.04, 0.002)
 		material.set_shader_parameter("dirt_band_bottom", bounds.end.y + margin)
@@ -380,6 +443,43 @@ func _clear_dust_levels() -> void:
 
 static func _vector3_is_finite(value: Vector3) -> bool:
 	return is_finite(value.x) and is_finite(value.y) and is_finite(value.z)
+
+
+func _accepted_environment(telemetry: Dictionary) -> Dictionary:
+	var value: Variant = telemetry.get("environment")
+	if typeof(value) != TYPE_DICTIONARY:
+		return {}
+	var environment: Dictionary = value
+	if environment.get("ok") != true:
+		return {}
+	for key: String in ["body_submersion", "water_depth_m", "buoyancy_n", "drag_power_w", "power_w"]:
+		if not _finite_number(environment.get(key)):
+			return {}
+	if float(environment.body_submersion) < 0.0 or float(environment.body_submersion) > 1.0 \
+			or float(environment.water_depth_m) < 0.0 or float(environment.buoyancy_n) < 0.0 \
+			or float(environment.drag_power_w) > 0.0:
+		return {}
+	var wheel_submersion: Variant = environment.get("wheel_submersion")
+	var wheel_water_height: Variant = environment.get("wheel_water_height_m")
+	var wheel_depth: Variant = environment.get("wheel_depth_m")
+	var wheel_mud: Variant = environment.get("wheel_mud")
+	if typeof(wheel_submersion) != TYPE_PACKED_FLOAT64_ARRAY or wheel_submersion.size() != 4 \
+			or typeof(wheel_water_height) != TYPE_PACKED_FLOAT64_ARRAY or wheel_water_height.size() != 4 \
+			or typeof(wheel_depth) != TYPE_PACKED_FLOAT64_ARRAY or wheel_depth.size() != 4 \
+			or typeof(wheel_mud) != TYPE_PACKED_FLOAT64_ARRAY or wheel_mud.size() != 4:
+		return {}
+	for i in 4:
+		if not _finite_number(wheel_submersion[i]) or float(wheel_submersion[i]) < 0.0 \
+				or float(wheel_submersion[i]) > 1.0 or not _finite_number(wheel_water_height[i]) \
+				or not _finite_number(wheel_depth[i]) or float(wheel_depth[i]) < 0.0 \
+				or not _finite_number(wheel_mud[i]) or float(wheel_mud[i]) < 0.0 \
+				or float(wheel_mud[i]) > 1.0:
+			return {}
+	return environment
+
+
+static func _finite_number(value: Variant) -> bool:
+	return typeof(value) in [TYPE_INT, TYPE_FLOAT] and is_finite(float(value))
 
 
 static func _surface_dust_factor(surface_id: String) -> float:

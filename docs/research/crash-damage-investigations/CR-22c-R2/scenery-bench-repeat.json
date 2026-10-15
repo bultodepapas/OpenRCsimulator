@@ -1,0 +1,1567 @@
+{
+	"proxies": 4980,
+	"rows": [
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 0,
+			"usec": 25596,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 0,
+			"usec": 18304,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 1,
+			"usec": 19724,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 1,
+			"usec": 31973,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 2,
+			"usec": 33941,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 2,
+			"usec": 22825,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 3,
+			"usec": 30308,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 3,
+			"usec": 63235,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 4,
+			"usec": 36559,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 4,
+			"usec": 24784,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 5,
+			"usec": 23062,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 5,
+			"usec": 34217,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 6,
+			"usec": 41988,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 6,
+			"usec": 19312,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 7,
+			"usec": 39961,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 7,
+			"usec": 35969,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 8,
+			"usec": 54644,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 8,
+			"usec": 24277,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 9,
+			"usec": 18874,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 9,
+			"usec": 25186,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 10,
+			"usec": 24430,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 10,
+			"usec": 23759,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 11,
+			"usec": 20696,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "vehicle",
+			"point": [
+				-37.75,
+				-21.0,
+				-0.745000004768372
+			],
+			"repeat": 11,
+			"usec": 23622,
+			"variant": 0
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 0,
+			"usec": 6887,
+			"variant": 0
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 0,
+			"usec": 7697,
+			"variant": 1
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 1,
+			"usec": 8183,
+			"variant": 1
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 1,
+			"usec": 8130,
+			"variant": 0
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 2,
+			"usec": 13371,
+			"variant": 0
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 2,
+			"usec": 10762,
+			"variant": 1
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 3,
+			"usec": 10925,
+			"variant": 1
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 3,
+			"usec": 9803,
+			"variant": 0
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 4,
+			"usec": 9131,
+			"variant": 0
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 4,
+			"usec": 7461,
+			"variant": 1
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 5,
+			"usec": 8163,
+			"variant": 1
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 5,
+			"usec": 7352,
+			"variant": 0
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 6,
+			"usec": 10845,
+			"variant": 0
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 6,
+			"usec": 11064,
+			"variant": 1
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 7,
+			"usec": 10231,
+			"variant": 1
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 7,
+			"usec": 10368,
+			"variant": 0
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 8,
+			"usec": 12059,
+			"variant": 0
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 8,
+			"usec": 9547,
+			"variant": 1
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 9,
+			"usec": 7371,
+			"variant": 1
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 9,
+			"usec": 6927,
+			"variant": 0
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 10,
+			"usec": 6364,
+			"variant": 0
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 10,
+			"usec": 7155,
+			"variant": 1
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 11,
+			"usec": 7227,
+			"variant": 1
+		},
+		{
+			"bodies": 3,
+			"identical": true,
+			"kind": "building",
+			"point": [
+				-164.75,
+				-2093.5,
+				-16.0
+			],
+			"repeat": 11,
+			"usec": 7170,
+			"variant": 0
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 0,
+			"usec": 11843,
+			"variant": 0
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 0,
+			"usec": 10475,
+			"variant": 1
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 1,
+			"usec": 8485,
+			"variant": 1
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 1,
+			"usec": 11705,
+			"variant": 0
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 2,
+			"usec": 11510,
+			"variant": 0
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 2,
+			"usec": 9787,
+			"variant": 1
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 3,
+			"usec": 8625,
+			"variant": 1
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 3,
+			"usec": 10615,
+			"variant": 0
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 4,
+			"usec": 11871,
+			"variant": 0
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 4,
+			"usec": 9144,
+			"variant": 1
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 5,
+			"usec": 10066,
+			"variant": 1
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 5,
+			"usec": 10684,
+			"variant": 0
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 6,
+			"usec": 13029,
+			"variant": 0
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 6,
+			"usec": 9730,
+			"variant": 1
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 7,
+			"usec": 9017,
+			"variant": 1
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 7,
+			"usec": 11086,
+			"variant": 0
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 8,
+			"usec": 10580,
+			"variant": 0
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 8,
+			"usec": 8662,
+			"variant": 1
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 9,
+			"usec": 8471,
+			"variant": 1
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 9,
+			"usec": 9850,
+			"variant": 0
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 10,
+			"usec": 10567,
+			"variant": 0
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 10,
+			"usec": 10828,
+			"variant": 1
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 11,
+			"usec": 8685,
+			"variant": 1
+		},
+		{
+			"bodies": 97,
+			"identical": true,
+			"kind": "tree_trunk",
+			"point": [
+				-66.0,
+				-32.0,
+				-0.738879922916181
+			],
+			"repeat": 11,
+			"usec": 11855,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 0,
+			"usec": 21625,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 0,
+			"usec": 15965,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 1,
+			"usec": 15699,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 1,
+			"usec": 19022,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 2,
+			"usec": 20237,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 2,
+			"usec": 19932,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 3,
+			"usec": 19133,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 3,
+			"usec": 22367,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 4,
+			"usec": 19257,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 4,
+			"usec": 19648,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 5,
+			"usec": 20820,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 5,
+			"usec": 17792,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 6,
+			"usec": 20702,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 6,
+			"usec": 16297,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 7,
+			"usec": 17656,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 7,
+			"usec": 21451,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 8,
+			"usec": 20973,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 8,
+			"usec": 20462,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 9,
+			"usec": 22182,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 9,
+			"usec": 25585,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 10,
+			"usec": 24721,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 10,
+			"usec": 19284,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 11,
+			"usec": 19556,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "lamp",
+			"point": [
+				-8.0,
+				0.0,
+				-6.0
+			],
+			"repeat": 11,
+			"usec": 25867,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 0,
+			"usec": 18194,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 0,
+			"usec": 16668,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 1,
+			"usec": 16202,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 1,
+			"usec": 20999,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 2,
+			"usec": 19467,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 2,
+			"usec": 17220,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 3,
+			"usec": 17195,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 3,
+			"usec": 18794,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 4,
+			"usec": 22178,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 4,
+			"usec": 21096,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 5,
+			"usec": 16956,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 5,
+			"usec": 19937,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 6,
+			"usec": 20878,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 6,
+			"usec": 17651,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 7,
+			"usec": 17355,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 7,
+			"usec": 19310,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 8,
+			"usec": 19551,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 8,
+			"usec": 17384,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 9,
+			"usec": 16664,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 9,
+			"usec": 22042,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 10,
+			"usec": 21135,
+			"variant": 0
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 10,
+			"usec": 15886,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 11,
+			"usec": 17202,
+			"variant": 1
+		},
+		{
+			"bodies": 160,
+			"identical": true,
+			"kind": "parked_aircraft",
+			"point": [
+				-17.6,
+				-38.0,
+				-0.217500001192093
+			],
+			"repeat": 11,
+			"usec": 18652,
+			"variant": 0
+		}
+	],
+	"valid": true,
+	"world_identity": "c26fc412f37ca8487d83847194d5d4e7e8cb15e726fadeae8874f4efe2b5dcd3"
+}

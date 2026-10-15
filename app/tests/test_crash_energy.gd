@@ -26,6 +26,9 @@ const DATA_ONLY_AIRPLANE_TAGS := {
 	"synthetic_stik_electric_6s.json": {"id": "synthetic_stik_electric_6s", "tag": ""},
 	"synthetic_stik_electric_6s_battery.json": {"id": "synthetic_stik_electric_6s_battery", "tag": ""},
 }
+const DATA_ONLY_ROTORCRAFT := {
+	"hx700_electric_3d_experimental.json": "hx700-electric-3d-experimental",
+}
 
 var _checks := 0
 var _failures := 0
@@ -158,6 +161,11 @@ func _fleet_tags() -> void:
 		if not classified.has(path):
 			var expected: Dictionary = DATA_ONLY_AIRPLANE_TAGS[file]
 			classified[path] = {id = str(expected.id), vehicle = "airplane", source = "data-only"}
+	for file: String in DATA_ONLY_ROTORCRAFT:
+		var path := AIRCRAFT_DATA_DIR + file
+		_check("laboratory rotorcraft remains outside the playable catalog: " + file, not classified.has(path))
+		if not classified.has(path):
+			classified[path] = {id = DATA_ONLY_ROTORCRAFT[file], vehicle = "rotorcraft", source = "data-only"}
 
 	var discovered: Dictionary = {}
 	for file: String in DirAccess.get_files_at(AIRCRAFT_DATA_DIR):
@@ -172,13 +180,16 @@ func _fleet_tags() -> void:
 		var id := str(kind.id)
 		if kind.vehicle == "rotorcraft":
 			_check("rotorcraft remains outside airplane inventory energy tags: " + id,
-				id == "xcell-60-research" and not CATALOG_AIRPLANE_TAGS.has(id))
+				not CATALOG_AIRPLANE_TAGS.has(id))
 			var rotor_loaded: Dictionary = RotorcraftData.load_file(path)
 			_check("%s loads through the rotorcraft schema" % id, rotor_loaded.get("ok", false), str(rotor_loaded.get("errors", [])))
 			if rotor_loaded.get("ok", false):
 				_check("%s retains its rotorcraft identity without airplane inventory" % id,
 					rotor_loaded.get("id", "") == id and rotor_loaded.get("raw", {}).get("vehicle", "") == "rotorcraft"
 					and not rotor_loaded.get("raw", {}).has("inventory"))
+				if kind.source == "data-only":
+					_check("%s retains laboratory-only qualification" % id,
+						rotor_loaded.raw.get("release_state", "") == "laboratory_only")
 			continue
 
 		var expected_tags := PackedStringArray()

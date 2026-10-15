@@ -24,8 +24,9 @@ chmod +x "$snapshot_root/.tools/Godot_v4.7.2-stable_linux.x86_64"
 git -C "$snapshot_root" init -b r11-linux-source-snapshot
 git -C "$snapshot_root" config user.name "OpenRC Linux Verification"
 git -C "$snapshot_root" config user.email "linux-verification.invalid"
-git -C "$snapshot_root" add --all
-git -C "$snapshot_root" -c commit.gpgsign=false commit -m "R11 isolated current-source snapshot"
+git -C "$snapshot_root" add --force --all
+git -C "$snapshot_root" rm --cached --force --ignore-unmatch -- .tools/Godot_v4.7.2-stable_linux.x86_64
+git -C "$snapshot_root" -c commit.gpgsign=false commit -m "R11 fixed-commit Linux source snapshot with explicit overlays"
 
 set +e
 python3 "$snapshot_root/$snapshot_helper_rel" verify \
@@ -44,7 +45,7 @@ if [[ $verify_status -ne 0 ]]; then
 fi
 
 {
-  echo "R11 canonical Linux verification"
+  echo "R11 canonical Linux verification of fixed-commit snapshot"
   echo "snapshot_root=$snapshot_root"
   echo "source_manifest=$before_manifest"
   echo "synthetic_snapshot_head=$(git -C "$snapshot_root" rev-parse HEAD)"

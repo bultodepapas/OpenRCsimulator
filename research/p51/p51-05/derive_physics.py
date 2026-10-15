@@ -607,6 +607,8 @@ landing_gear = {
         gear_contact("contact_tail", "tail", tail_pos, k_tail, 0.08, -25.0, "tail-wheel leg travel before the fuselage hits: estimated"),
     ],
     "rolling_resistance": q(0.03, "1", "estimated", "between a full-size tyre on concrete (JSBSim c172x 0.022) and the Stik's 76 mm wheel (0.04): the 171 mm wheels deform less; per-surface factors (grass) come from the field"),
+    # P51-21: stiction (shared E3b1 law), required by the qualified runway start. No P-51-specific measurement exists.
+    "breakaway_factor": q(1.25, "1", "estimated", "P51-21, as the Stik and Timber (E3b1): static / rolling resistance of a wheel at rest (bearing and axle friction, tyre flat spot, the small mound in front of a wheel parked on grass); the ground knowledge base (docs/research/roadmap-investigations/04, section 3) brackets it at 1.0-1.5 without a measurement and 1.25 is the middle. A luggage-scale pull on a built model (breakaway force, then the steady rolling force) would measure it"),
     "side_friction": q(0.8, "1", "borrowed", "JSBSim c172x static_friction 0.8 (as the Stik, E2)"),
     "peak_slip_angle": q(6.0, "deg", "borrowed", "JSBSim FGLGear default Pacejka initial slope (as the Stik, E2)"),
 }
