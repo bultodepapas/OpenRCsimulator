@@ -69,7 +69,7 @@ func _run() -> void:
 	check(prepared.get("particle_emitter_count", 0) == 4 and prepared.get("particle_budget_total", 999) == 96,
 		"dry dust has four fixed-budget contact emitters")
 	for mesh in shell_meshes:
-		check(mesh.material_overlay is ShaderMaterial, "authored body piece receives its own grime overlay")
+		check(mesh.material_overlay is ShaderMaterial, "authored body piece receives a grime overlay")
 		var source: Dictionary = source_materials[mesh]
 		check(mesh.mesh == source.mesh and mesh.material_override == source.override,
 			"overlay leaves authored body mesh and override untouched")
@@ -123,6 +123,36 @@ func _run() -> void:
 	for material: ShaderMaterial in effects._grime_materials:
 		check(is_equal_approx(float(material.get_shader_parameter("dirt_amount")), 0.0), "clean restores each body/tire grime overlay")
 	check(telemetry == original_snapshot, "clean operation leaves physics telemetry unchanged")
+	# RCV-39: sharing is confined to one vehicle. A clean second truck must not
+	# inherit grime, wet sheen or a world-to-vehicle frame from the first.
+	var other_visual: Dictionary = Model.build()
+	world.add_child(other_visual.root)
+	var other_effects := Effects.new()
+	world.add_child(other_effects)
+	check(other_effects.prepare(other_visual, world), "second truck prepares independent effects")
+	effects.update_render(0.05, telemetry, {}, road, false, 0.0)
+	check(other_effects.diagnostic_snapshot().grime_amount == 0.0,
+		"dirtying one truck leaves the other clean")
+	for material: ShaderMaterial in other_effects._grime_materials:
+		check(not effects._grime_materials.has(material)
+			and float(material.get_shader_parameter("dirt_amount")) == 0.0,
+			"no mutable grime material is shared between trucks")
+	var saved_transform: Transform3D = visual.root.transform
+	visual.root.position.x += 0.000001
+	effects.update_render(0.0, telemetry, {}, road, true, 0.0)
+	for material: ShaderMaterial in effects._grime_materials:
+		check(material.get_shader_parameter("vehicle_from_world") == visual.root.global_transform.affine_inverse(),
+			"subpixel movement refreshes the exact grime frame even while paused")
+	world.position.z = 2.0
+	effects.clean_vehicle()
+	for material: ShaderMaterial in effects._grime_materials:
+		check(material.get_shader_parameter("vehicle_from_world") == visual.root.global_transform.affine_inverse()
+			and float(material.get_shader_parameter("dirt_amount")) == 0.0,
+			"clean refreshes a moved ancestor frame and all shared uniforms")
+	world.position.z = 0.0
+	visual.root.transform = saved_transform
+	other_effects.free()
+	other_visual.root.free()
 	effects.update_render(0.05, telemetry, {}, road, false, 0.0)
 	effects.reset()
 	check(is_equal_approx(float(effects.diagnostic_snapshot().grime_amount), 0.0)

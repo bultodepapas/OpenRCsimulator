@@ -502,7 +502,7 @@ func _build() -> void:
 	filter_row.add_child(action_filter)
 	page.add_child(filter_row)
 	page.add_child(_label("Bindings are saved by physical control. A different device cannot trigger them.", "SecondaryLabel", true))
-	page.add_child(_label("Gamepads: B/Circle controls retractable gear and RB/R1 controls an installed smoke pump automatically. Existing assignments take priority. Flaps are not simulated. For other joysticks, use Remap to choose the actual buttons.", "SecondaryLabel", true))
+	page.add_child(_label("Gamepads: B/Circle controls retractable gear and RB/R1 controls an installed smoke pump automatically. Flap actions depend on the selected aircraft. Existing assignments take priority; remap other joysticks to choose their buttons.", "SecondaryLabel", true))
 	action_grid = GridContainer.new()
 	action_grid.name = "SemanticActions"
 	action_grid.columns = 3

@@ -62,6 +62,7 @@ const LatencyPatch = preload("res://input/latency_patch.gd")
 const OverlayManager := preload("res://render/overlays/overlay_manager.gd")
 const WATER_CHECKPOINT_FORMAT := "openrc-visual-water-checkpoint v1"
 const WATER_CHECKPOINT_FIELDS: Array[String] = ["format", "visual", "water_render", "payload_sha256"]
+const FLAP_DETENTS := [0.0, 0.4, 1.0] # SebArt Avanti S: 0°, 20° takeoff, 50° landing.
 
 ## [Esc] outside the calibration wizard: the pilot asks for the pause menu (app_root owns menus; without one, nothing).
 signal pause_requested
@@ -250,7 +251,6 @@ var _wheel_brake_key_held := false
 var _visual_pose: Dictionary = {}
 var _smoke: EngineSmoke
 var _smoke_key_on := false
-var _last_auxiliary_requests := {"flaps": 0}
 var _smoke_assignment: SmokeAssignment
 var _smoke_assignment_was_paused := false
 var _last_render_pose: Dictionary = {}
@@ -730,7 +730,6 @@ func _process(delta: float) -> void:
 	_render_pose(_current_pose(), surfaces, _prop_angle)
 	_update_storm(visual_clock_s, frozen)
 	_update_smoke()
-	_update_auxiliary_requests()
 	if _crash_director != null:
 		_crash_director.update(dt)
 		if _crash_director.active and is_nan(_look.x):
@@ -852,6 +851,20 @@ func _update_hud() -> void:
 			if bool(gear.get("inhibited", false)):
 				gear_line += " — " + tr("retraction blocked while on wheels")
 			lines.append(gear_line)
+		var flaps: Dictionary = session.flap_state()
+		if bool(flaps.get("available", false)):
+			var requested_pct := float(flaps.get("requested", 0.0)) * 100.0
+			var actual_deg := float(flaps.get("angle_deg", 0.0))
+			var target_deg := float(flaps.get("target_deg", 0.0))
+			var flap_line := tr("Flaps: %.0f%% requested · %.1f° actual / %.1f° target") % [requested_pct, actual_deg, target_deg]
+			var flap_limit := float(flaps.get("limit_mps", NAN))
+			if is_finite(flap_limit) and flap_limit > 0.0:
+				flap_line += tr(" · estimated limit %.0f m/s (advisory)") % flap_limit
+			lines.append(flap_line)
+			if bool(flaps.get("overspeed", false)) and is_finite(flap_limit) and flap_limit > 0.0:
+				lines.append(tr("Flaps overspeed advisory: above the estimated limit of %.0f m/s; no automatic retraction.") % flap_limit)
+		else:
+			lines.append(tr("Flaps are unavailable on this aircraft."))
 		if not session.weather_is_calm():
 			var wind: PackedFloat64Array = session.wind_at(session.sim.time())
 			lines.append(_weather_hud_line(s, wind))
@@ -1000,7 +1013,7 @@ func controller_capabilities() -> Dictionary:
 	return {
 		"gear": session != null and session.gear_is_retractable(),
 		"smoke": _smoke != null and _smoke.supports_pump(),
-		"flaps": false, # current aircraft have no admitted flap actuator/aerodynamic consumer
+		"flaps": session != null and session.flaps_available(),
 	}
 
 
@@ -1024,8 +1037,8 @@ func controller_action(action: String) -> bool:
 			elif session.radio.auxiliary_action(action):
 				_note = tr("Smoke pump: on") if session.radio.smoke_amount() > 0.0 else tr("Smoke pump: off")
 		"flaps_up", "flaps_down", "flaps_cycle":
-			if not session.sim.paused and session.radio.auxiliary_action(action):
-				_update_auxiliary_requests(true, "flaps")
+			if not session.sim.paused:
+				_request_flaps_action(action)
 		"gear_toggle":
 			if session.sim.paused: return true
 			if _has_gear_aux_binding():
@@ -1054,14 +1067,60 @@ func controller_action(action: String) -> bool:
 	return true
 
 
-## Keep the current flap request visible. Gear state has its own solver-backed HUD line.
-func _update_auxiliary_requests(force := false, selected_channel := "") -> void:
-	if session == null or session.sim.paused or not session.radio.connected: return
-	var amount: float = session.radio.auxiliary_amount("flaps")
-	var value := roundi(amount * 100.0)
-	if (force and selected_channel == "flaps") or value != int(_last_auxiliary_requests.flaps):
-		_note = tr("Flaps request: %d%% — aircraft flaps are not simulated.") % value
-	_last_auxiliary_requests.flaps = value
+func _flap_detent_after(requested: float, direction: int) -> float:
+	var nearest := 0
+	var distance := INF
+	for i in FLAP_DETENTS.size():
+		var candidate_distance := absf(requested - float(FLAP_DETENTS[i]))
+		if candidate_distance < distance:
+			nearest = i
+			distance = candidate_distance
+	return float(FLAP_DETENTS[posmod(nearest + direction, FLAP_DETENTS.size())])
+
+
+func _request_flaps_amount(amount: float) -> bool:
+	if session == null:
+		return false
+	var state: Dictionary = session.flap_state()
+	if not bool(state.get("available", false)):
+		_note = tr("Flaps are unavailable on this aircraft.")
+		return false
+	if session.sim.paused:
+		return false
+	var normalized := clampf(amount, 0.0, 1.0)
+	if session.radio.connected and not session.radio.set_flaps_action_amount(normalized):
+		_note = tr("Flaps are controlled by the radio AUX input.")
+		return false
+	if not session.set_flaps(normalized):
+		_note = tr("Flaps request was refused.")
+		return false
+	_note = tr("Flaps request accepted.")
+	return true
+
+
+func _request_flaps_action(action: String) -> bool:
+	if session == null:
+		return false
+	var state: Dictionary = session.flap_state()
+	if not bool(state.get("available", false)):
+		_note = tr("Flaps are unavailable on this aircraft.")
+		return false
+	var requested := float(state.get("requested", 0.0))
+	match action:
+		"flaps_up": return _request_flaps_amount(0.0)
+		"flaps_down": return _request_flaps_amount(1.0)
+		"flaps_cycle": return _request_flaps_amount(_flap_detent_after(requested, 1))
+	return false
+
+
+func _step_flaps(direction: int) -> void:
+	if session == null or session.sim.paused:
+		return
+	var state: Dictionary = session.flap_state()
+	if not bool(state.get("available", false)):
+		_note = tr("Flaps are unavailable on this aircraft.")
+		return
+	_request_flaps_amount(_flap_detent_after(float(state.get("requested", 0.0)), direction))
 
 
 func _gear_status_label(gear: Dictionary) -> String:
@@ -1156,6 +1215,9 @@ func _unhandled_input(event: InputEvent) -> void:
 					get_viewport().set_input_as_handled()
 			KEY_G:
 				controller_action("gear_toggle")
+				get_viewport().set_input_as_handled()
+			KEY_F:
+				_step_flaps(-1 if event.shift_pressed else 1)
 				get_viewport().set_input_as_handled()
 			KEY_B:
 				if not session.sim.paused and session.gear_is_retractable() and session.set_wheel_brake(1.0):
@@ -1270,6 +1332,7 @@ func _overlay_snapshot() -> Dictionary:
 		snap.control_guide.equipment_state = {
 			gear = session.gear_state().get("status", "unavailable"),
 			smoke = "on" if _smoke != null and float(_smoke.levels.pump) > 0.0 else "off",
+			flaps = session.flap_state(),
 		}
 	return snap
 
@@ -1815,6 +1878,9 @@ func _render_pose(pose: Dictionary, c: Dictionary, prop_angle: float) -> void:
 	_airplane.root.scale = Vector3.ONE * float(workshop_trial.get("scale", 1.0))
 	_airplane.propeller.rotation.z = prop_angle * float(_airplane.get("propeller_spin_sign", 1.0))
 	AirplaneBuilder.apply_surfaces(_airplane, _surface_rotations_for_render(c))
+	if session != null and session.flaps_available():
+		var flap_state: Dictionary = session.flap_state()
+		AirplaneBuilder.apply_flaps(_airplane, float(flap_state.get("angle_deg", 0.0)))
 	AirplaneBuilder.apply_throttle(_airplane, float(c.get("throttle", 0.0))) # US-V09c carburettor lever, visual only
 	var snapshot_lighting: bool = lighting_config.get("mode", "legacy") != "legacy"
 	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting and _shadow_mode == "sun" else 1.0

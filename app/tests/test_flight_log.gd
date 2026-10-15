@@ -128,7 +128,7 @@ func _controls(flight: Node, tick: int) -> void:
 	if tick == 170:
 		if flight.glow_is_active(): flight.glow_cut()
 		elif not flight.turbine_is_continuous(): flight.engine_running = false
-	if flight.sim.inputs.size() == 6:
+	if flight.gear_is_retractable():
 		flight.sim.inputs[4] = 1.0 if tick > 50 else 0.0
 		flight.sim.inputs[5] = 0.1
 

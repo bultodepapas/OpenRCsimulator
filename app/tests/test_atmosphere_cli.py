@@ -154,8 +154,8 @@ class AtmosphereCLI(unittest.TestCase):
                 with self.subTest(aircraft=aircraft, duration=duration):
                     result = check(self.aircraft_traces[(aircraft, duration)], float(duration))
                     is_retractable = aircraft == 'sebart-avanti-s-a200-p100rx'
-                    self.assertEqual(result['format'], 'openrc-trace v10' if is_retractable else 'openrc-trace v6')
-                    expected_schema = ('openrc-flight-meta v8' if is_retractable
+                    self.assertEqual(result['format'], 'openrc-trace v12' if is_retractable else 'openrc-trace v6')
+                    expected_schema = ('openrc-flight-meta v9' if is_retractable
                                        else 'openrc-flight-meta v6')
                     self.assertEqual(result['metadata_schema'], expected_schema)
                     self.assertEqual((result['rows'], result['first_tick'], result['last_tick']),
@@ -165,7 +165,7 @@ class AtmosphereCLI(unittest.TestCase):
                     self.assertLess(result['max_eas_error_mps'], 1e-6)
                     if is_retractable:
                         _comments, metadata, rows = _read_parts(self.aircraft_traces[(aircraft, duration)])
-                        self.assertEqual(rows[0][-4:], ['gear_extension', 'gear_target_down',
+                        self.assertEqual(rows[0][-7:-3], ['gear_extension', 'gear_target_down',
                                                         'cmd_gear_down', 'cmd_wheel_brake'])
                         self.assertEqual(len(json.loads(metadata['recording_start_gear'])), 2)
                         self.assertEqual(len(rows), result['rows'] + 1)
@@ -236,7 +236,7 @@ class AtmosphereCLI(unittest.TestCase):
         # Gear-v10 requires its v8 contract alongside the complete wheel provenance.
         _comments, avanti_metadata, _rows = _read_parts(
             self.aircraft_traces[('sebart-avanti-s-a200-p100rx', '.1')])
-        self.assertEqual(avanti_metadata.get('metadata_schema'), 'openrc-flight-meta v8')
+        self.assertEqual(avanti_metadata.get('metadata_schema'), 'openrc-flight-meta v9')
         path = self.directory / 'mutated-avanti-wheel-v6.csv'
         _rewrite_trace(self.aircraft_traces[('sebart-avanti-s-a200-p100rx', '.1')], path,
                        {'metadata_schema': 'openrc-flight-meta v6'})

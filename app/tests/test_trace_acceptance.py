@@ -105,18 +105,18 @@ class TraceAcceptance(unittest.TestCase):
                 self.assertEqual(metadata['propulsion_model'], propulsion)
                 self.assertEqual(metadata['propwash_model'], propwash)
                 source = APP / metadata['aircraft'].split('(res://', 1)[1].removesuffix(')')
-                self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v8' if aircraft == 'sebart-avanti-s-a200-p100rx' else 'openrc-flight-meta v6')
+                self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v9' if aircraft == 'sebart-avanti-s-a200-p100rx' else 'openrc-flight-meta v6')
                 if aircraft == 'sebart-avanti-s-a200-p100rx':
-                    self.assertEqual(metadata['format'], 'openrc-trace v10')
+                    self.assertEqual(metadata['format'], 'openrc-trace v12')
                     self.assertEqual(json.loads(metadata['input_layout']),
-                                     ['roll', 'pitch', 'yaw', 'throttle', 'gear_down', 'wheel_brake'])
+                                     ['roll', 'pitch', 'yaw', 'throttle', 'gear_down', 'wheel_brake', 'flaps'])
                     self.assertEqual(metadata['gear_law'], 'retractable-point-gear-v1')
                     self.assertEqual(metadata['gear_trace_schema'], 'openrc-gear-trace v1')
                     self.assertEqual(len(json.loads(metadata['recording_start_gear'])), 2)
                     self.assertEqual(len(json.loads(metadata['recording_start_continuous'])), 4)
                     header = next(csv.reader(line for line in path.read_text().splitlines()
                                              if line and not line.startswith('#')))
-                    self.assertEqual(header[-4:], ['gear_extension', 'gear_target_down',
+                    self.assertEqual(header[-7:-3], ['gear_extension', 'gear_target_down',
                                                    'cmd_gear_down', 'cmd_wheel_brake'])
                 self.assertEqual(metadata['aircraft_input_format'], json.loads(source.read_text())['format'])
                 self.assertEqual(metadata['aircraft_input_sha256'], hashlib.sha256(source.read_bytes()).hexdigest())
@@ -146,6 +146,9 @@ class TraceAcceptance(unittest.TestCase):
         mutations = [
             ('gear schema', [line for line in lines if not line.startswith('# gear_trace_schema:')]),
             ('wheel provenance', [line for line in lines if not line.startswith('# wheel_profile_sha256:')]),
+            ('flap law', [line for line in lines if not line.startswith('# flap_law:')]),
+            ('flap start', [line for line in lines if not line.startswith('# recording_start_flap:')]),
+            ('flap base format', [line for line in lines if not line.startswith('# flap_base_trace_format:')]),
         ]
         for label, changed_lines in mutations:
             with self.subTest(mutation=label):
@@ -155,7 +158,8 @@ class TraceAcceptance(unittest.TestCase):
                     check(candidate, .05, 240)
 
         for column, value in [('gear_extension', '1.01'), ('cmd_gear_down', '.5'),
-                              ('cmd_wheel_brake', '-.01')]:
+                              ('cmd_wheel_brake', '-.01'), ('cmd_flaps', '1.01'),
+                              ('flap_fraction', 'nan'), ('flap_deg', '0.5')]:
             with self.subTest(column=column):
                 changed = [row.copy() for row in table]
                 changed[1][header.index(column)] = value

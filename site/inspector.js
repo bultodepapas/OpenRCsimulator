@@ -13,7 +13,7 @@
   const names = {stik:'Jensen Das Ugly Stik 60',extra:'Great Planes Extra 300S .60',mustang:'P-51D Mustang 1/4',jet:'Ventage Jet',timber:'Turbo Lumber Evolution',heli:'RC Helicopter / HX-700'};
   const detailPanel = document.querySelector('.inspector-details');
   // WEB-04 camera poses come from the native studio capture, in centered GLB coordinates.
-  const jetViews = {};
+  let jetViews = null, viewsRequest = null;
   let returnFocus = launch;
   let viewer = null, ready = false, failed = false, generation = 0, runtime = null, timeout = 0;
 
@@ -22,12 +22,28 @@
     return {perspective:`140deg 68deg ${portrait ? 110 : 75}%`,side:`90deg 78deg ${portrait ? 110 : 85}%`,top:`180deg 0deg ${portrait ? 115 : 100}%`}[key];
   }
 
+  function loadViews() {
+    viewsRequest ??= fetch('assets/cinema/jet-views.json').then(response => {
+      if(!response.ok) throw new Error('Jet views unavailable');
+      return response.json();
+    }).then(views => {
+      for(const key of ['cockpit','wing','tail']) {
+        if(!['target','orbit'].every(property => Array.isArray(views[key]?.[property]) && views[key][property].length === 3 && views[key][property].every(Number.isFinite)) || views[key].orbit[2] <= 0) throw new Error('Invalid jet camera');
+      }
+      return views;
+    }).catch(() => {viewsRequest = null;return null;});
+    return viewsRequest;
+  }
+
   function localize() {
     const en = document.documentElement.lang === 'en';
     document.querySelector('.camera-presets').setAttribute('aria-label',en ? 'Camera views' : 'Vistas de cámara');
     document.querySelector('#inspect-zoom-in').setAttribute('aria-label',en ? 'Zoom in' : 'Acercar');
     document.querySelector('#inspect-zoom-out').setAttribute('aria-label',en ? 'Zoom out' : 'Alejar');
     detailPanel.querySelector('[role=group]').setAttribute('aria-label',en ? 'Jet detail views' : 'Detalles del jet');
+    const detailStatus = document.querySelector('#detail-unavailable');
+    detailStatus.hidden = !ready || select.value !== 'jet' || Boolean(jetViews);
+    detailStatus.textContent = en ? 'Detail views are unavailable. You can still orbit and zoom.' : 'Los encuadres de detalle no están disponibles. Puedes girar y acercarte.';
     state.textContent = failed ? (en ? 'The 3D view could not load. Close to return to the 360° view.' : 'No se pudo cargar el modelo 3D. Cierra para volver a la vista 360°.') : (en ? 'Preparing your aircraft…' : 'Preparando tu aeronave…');
     if (viewer) {
       viewer.alt = `${names[select.value]} — ${en ? 'interactive 3D model' : 'modelo 3D interactivo'}`;
@@ -45,6 +61,7 @@
 
   function controls(enabled) {
     document.querySelectorAll('.camera-presets button,.inspector-zoom button,[data-jet-focus]').forEach(button => {button.disabled = !enabled;});
+    if(!jetViews) document.querySelectorAll('[data-jet-focus]:not([data-jet-focus=overview])').forEach(button => {button.disabled = true;});
   }
   function fail(current) {
     if (current !== generation || !dialog.open) return;
@@ -64,8 +81,9 @@
     timeout = setTimeout(() => fail(current),45000);
     try {
       runtime ??= import('./assets/vendor/model-viewer-4.4.0.min.js').catch(error => {runtime = null;throw error;});
-      await runtime;
+      const [,views] = await Promise.all([runtime,key === 'jet' ? loadViews() : Promise.resolve(jetViews)]);
       if (current !== generation || !dialog.open) return;
+      jetViews = views;
       const ModelViewer = customElements.get('model-viewer');
       ModelViewer.modelCacheSize = 0;
       const element = document.createElement('model-viewer');
@@ -84,7 +102,7 @@
       element.addEventListener('load', () => {
         if(current !== generation || !dialog.open) return;
         clearTimeout(timeout);ready = true;failed = false;loading.hidden = true;
-        controls(true);
+        controls(true);localize();
         if(key === 'jet' && initialDetail !== 'overview') focusDetail(initialDetail);
         else setCamera('perspective');
       });
@@ -99,6 +117,7 @@
 
   function setCamera(key) {
     if(!ready || !viewer) return;
+    viewer.interpolationDecay = reduced.matches ? 0 : 90;
     viewer.fieldOfView = '30deg';viewer.cameraTarget = 'auto auto auto';viewer.cameraOrbit = cameraOrbit(key);
     if(reduced.matches) viewer.jumpCameraToGoal();
     document.querySelectorAll('[data-camera]').forEach(button => button.setAttribute('aria-pressed',String(button.dataset.camera === key)));
@@ -106,10 +125,11 @@
   }
   function focusDetail(key) {
     if(!ready || !viewer || select.value !== 'jet') return;
-    const view = jetViews[key];
+    const view = jetViews?.[key];
     if(!view) {setCamera('perspective');return;}
     const portrait = mount.clientWidth / Math.max(1,mount.clientHeight) < .9;
-    viewer.fieldOfView = '38deg';
+    viewer.interpolationDecay = reduced.matches ? 0 : 125;
+    viewer.fieldOfView = `${Number.isFinite(view.fov) ? view.fov : 38}deg`;
     viewer.cameraTarget = view.target.map(value => `${value}m`).join(' ');
     viewer.cameraOrbit = `${view.orbit[0]}deg ${view.orbit[1]}deg ${view.orbit[2] * (portrait ? 1.55 : 1)}m`;
     if(reduced.matches) viewer.jumpCameraToGoal();

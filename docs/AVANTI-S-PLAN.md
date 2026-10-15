@@ -103,3 +103,26 @@ Primary starting references: [SebArt original A200 manual](https://www.sebart.it
 | AV-17 | Evidence recorded: 47 handling, 27 turbine and 86 corrected crash-pose checks; all four model contracts, actual app trim and FPS independence pass. Both full-suite attempts stop at the same baseline extreme-density reset failure; diagnostic continuation finds no remaining candidate-only failure after the test-only render-roundoff correction. Alternating host timing stays below the 5% regression trigger. A green uninterrupted suite, target-machine/render performance and pilot acceptance remain unclaimed. |
 
 Integration review rejected an intermediate tail-centroid helper that ignored the authored chord-scale sweep, retained the consistent strip-domain fix, and verified the full inertia tensor independently. Lifecycle review replaced an unsupported JSON replay assumption with the production native-byte format and added a non-finite render-basis negative check. No turbine schedule, polar limit, arbitrary stability term, gear/flap behavior or structural limiter was retuned. [Final report, exact deltas, sources, plots and reproduction evidence](research/avanti-realism/README.md).
+
+
+## AV-09-F — operational flaps (2026-10-15)
+
+Implementation sequence: preserve an exact-replayed `.orfl` baseline; extend the optional
+v2 flap capability and generated aircraft sources; connect sampled physical actuator,
+local wing loads/wake and manual elevator mix; expose keyboard/controller/AUX operation
+and accepted hinge angles; verify lifecycle, recorder/replay, aerodynamic trends and
+unchanged clean-flight behavior. Evidence belongs in
+[AV-09 flap evidence](research/avanti-flaps/AV-09/README.md).
+
+The A200 manual specifies 0° clean, 20° takeoff and 50° landing, with 8% and 20%
+down-elevator mixes. Percent mix is interpreted as a fraction of full elevator travel,
+following actual slowed flap travel before physical servo limits and failure effects.
+The wing planform and flap locations use the existing estimated physical surrogate;
+the Blender rig provides presentation only. Extension/retraction time, aerodynamic
+increments and the flap-speed advisory are estimates, not measured A200 limits.
+No automatic retraction, structural damage or closed-loop attitude assistance is implied.
+
+Acceptance requires finite/passive aerodynamic loads, greater useful low-angle lift
+and drag, symmetric deployment, continuous travel and reversal, reset/pause/rollback,
+complete exact replay in transit and explicit numerical comparison reports. Independent
+physical identification and RC pilot landing evaluation remain open.

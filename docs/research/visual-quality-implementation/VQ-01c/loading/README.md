@@ -67,6 +67,11 @@ removes temporary edge arrays, preserving 300 native contour/kit pairs and reduc
 complete-kit pooled medians by 2–8%. Focused lights and Home-cache checks close
 cleanly in this run; the earlier intermittent audio shutdown diagnostic remains open.
 
+2026-10-15 follow-up: [single-pass aircraft light geometry](night-kit/geometry-pass/README.md)
+preserves 300 native geometry/kit pairs and reduces combined extraction by 17–43%.
+Three filter/order/ownership regressions pass. Direct native face extraction is
+rejected for different surface semantics; Home's audio exit diagnostic remains open.
+
 2026-10-14. Implemented a bounded CPU geometry cache in `app/render/lake/lake_terrain.gd`.
 Source baseline `22b3e482`; Godot 4.7.2-stable, Windows, RTX 3090 / Ryzen 9 5900X.
 [Manifest](evidence-manifest.json) pins sources, engine binaries and raw evidence;

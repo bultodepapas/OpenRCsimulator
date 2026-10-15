@@ -27,7 +27,20 @@ FRAME_RATE = 24
 DURATION_SECONDS = 12
 FRAME_COUNT = FRAME_RATE * DURATION_SECONDS
 BACKGROUND = "#101820"
-AIRCRAFT_ID = "jensen-das-ugly-stik-60"
+AIRCRAFT = {
+    "stik": {
+        "id": "jensen-das-ugly-stik-60",
+        "name": "Jensen Das Ugly Stik 60",
+        "prefix": "stik",
+        "manifest": "cinema.json",
+    },
+    "jet": {
+        "id": "sebart-avanti-s-a200-p100rx",
+        "name": "Ventage Jet",
+        "prefix": "jet",
+        "manifest": "jet-cinema.json",
+    },
+}
 ROOT = Path(__file__).resolve().parents[1]
 DEFAULT_ASSET_DIR = ROOT / "site" / "assets" / "cinema"
 DEFAULT_MANIFEST = DEFAULT_ASSET_DIR / "cinema.json"
@@ -35,21 +48,29 @@ SOURCE_FILES = (
     Path("app/project.godot"),
     Path("app/render/airplane.gd"),
     Path("app/app_state/aircraft_catalog.gd"),
+    Path("app/physics/aircraft_data.gd"),
 )
 SOURCE_DIRECTORIES = (
     Path("app/aircraft"),
     Path("app/assets/aircraft"),
     Path("app/data/aircraft"),
+    Path("app/data/aircraft_models"),
 )
 
 
 def parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
+        "--aircraft",
+        choices=sorted(AIRCRAFT),
+        default="stik",
+        help="Catalog model to capture (default: stik)",
+    )
+    parser.add_argument(
         "--capture-dir",
         required=True,
         type=Path,
-        help="Directory produced by site/capture_cinema.gd in video mode",
+        help="Directory produced by site/capture_cinema.gd; jet packaging also reads its details mode captures",
     )
     parser.add_argument(
         "--project-root",
@@ -66,8 +87,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument(
         "--manifest",
         type=Path,
-        default=DEFAULT_MANIFEST,
-        help="Output JSON provenance manifest",
+        help="Output JSON provenance manifest (defaults to the selected aircraft's manifest)",
     )
     parser.add_argument(
         "--ffmpeg",
@@ -107,6 +127,9 @@ def source_inputs(project_root: Path) -> dict[str, str]:
         if not path.is_file():
             raise FileNotFoundError(f"Required cinema pipeline source is missing: {path}")
         paths.add(path)
+    export_script = project_root / "site/export_web_models.gd"
+    if export_script.is_file():
+        paths.add(export_script)
     return {
         path.relative_to(project_root).as_posix(): sha256_file(path)
         for path in sorted(paths, key=lambda item: item.as_posix().casefold())
@@ -195,6 +218,7 @@ def encode_video(
     ffmpeg: Path,
     frames_dir: Path,
     output: Path,
+    aircraft_name: str,
     webm: bool = False,
 ) -> tuple[list[str], dict[str, object]]:
     input_pattern = str(frames_dir / "%04d.png")
@@ -229,7 +253,7 @@ def encode_video(
             "yuv420p",
             "-an",
             "-metadata",
-            "title=OpenRC Jensen Das Ugly Stik studio presentation",
+            f"title=OpenRC {aircraft_name} studio presentation",
             "-metadata",
             "comment=Not gameplay or flight validation",
             str(output),
@@ -265,7 +289,7 @@ def encode_video(
             "+faststart",
             "-an",
             "-metadata",
-            "title=OpenRC Jensen Das Ugly Stik studio presentation",
+            f"title=OpenRC {aircraft_name} studio presentation",
             "-metadata",
             "comment=Not gameplay or flight validation",
             str(output),
@@ -327,19 +351,25 @@ def main() -> int:
         return 2
 
     args = parse_args()
+    aircraft = AIRCRAFT[args.aircraft]
+    aircraft_id = aircraft["id"]
+    aircraft_name = aircraft["name"]
+    prefix = aircraft["prefix"]
     project_root = args.project_root.resolve()
     capture_dir = args.capture_dir.resolve()
     asset_dir = args.asset_dir.resolve()
-    manifest_path = args.manifest.resolve()
+    manifest_path = args.manifest.resolve() if args.manifest else (asset_dir / aircraft["manifest"]).resolve()
     capture_manifest_path = capture_dir / "capture.json"
     if not capture_manifest_path.is_file():
         raise FileNotFoundError(f"Missing Godot capture manifest: {capture_manifest_path}")
     capture = json.loads(capture_manifest_path.read_text(encoding="utf-8"))
     if capture.get("format") != "openrc-cinema-capture-v1":
         raise ValueError("Unsupported cinema capture manifest format")
-    if capture.get("purpose") != "Silent studio model presentation; not gameplay or flight validation":
+    if "not gameplay or flight validation" not in capture.get("purpose", ""):
         raise ValueError("Capture manifest does not state its presentation-only purpose")
-    if capture.get("aircraft_id") != AIRCRAFT_ID:
+    if capture.get("aircraft_key", args.aircraft) != args.aircraft:
+        raise ValueError(f"Capture aircraft key does not match --aircraft={args.aircraft}")
+    if capture.get("aircraft_id") != aircraft_id:
         raise ValueError(f"Unexpected aircraft ID: {capture.get('aircraft_id')!r}")
     if capture.get("frame_size") != list(VIDEO_SIZE):
         raise ValueError(f"Unexpected video frame size: {capture.get('frame_size')!r}")
@@ -370,17 +400,33 @@ def main() -> int:
 
     asset_dir.mkdir(parents=True, exist_ok=True)
     manifest_path.parent.mkdir(parents=True, exist_ok=True)
-    poster_path = asset_dir / "stik-hero.webp"
+    poster_path = asset_dir / f"{prefix}-hero.webp"
     poster_quality = write_poster(poster, poster_path)
-    mp4_path = asset_dir / "stik-hero.mp4"
-    mp4_command, mp4_info = encode_video(ffmpeg, frames_dir, mp4_path)
+    mp4_path = asset_dir / f"{prefix}-hero.mp4"
+    mp4_command, mp4_info = encode_video(ffmpeg, frames_dir, mp4_path, aircraft_name)
     webm_info = None
     webm_command: list[str] | None = None
     if args.webm:
-        webm_path = asset_dir / "stik-hero.webm"
-        webm_command, webm_info = encode_video(ffmpeg, frames_dir, webm_path, webm=True)
+        webm_path = asset_dir / f"{prefix}-hero.webm"
+        webm_command, webm_info = encode_video(ffmpeg, frames_dir, webm_path, aircraft_name, webm=True)
 
     hashes = source_inputs(project_root)
+    jet_source_paths = (
+        Path("app/app_state/aircraft_catalog.gd"),
+        Path("app/render/airplane.gd"),
+        Path("app/aircraft/model_registry.gd"),
+        Path("app/aircraft/imported_model.gd"),
+        Path("app/aircraft/avanti_s_model.gd"),
+        Path("app/aircraft/avanti_s_blender_geometry.gd"),
+        Path("app/data/aircraft_models/sebart-avanti-s-a200-p100rx.json"),
+        Path("app/data/aircraft/sebart_avanti_s_a200.json"),
+        Path("app/assets/aircraft/avanti-s-a200/avanti_s.glb.import"),
+        Path("app/assets/aircraft/avanti-s-a200/avanti_s.glb"),
+        Path("app/physics/aircraft_data.gd"),
+    )
+    missing_sources = [path.as_posix() for path in jet_source_paths if path.as_posix() not in hashes]
+    if args.aircraft == "jet" and missing_sources:
+        raise FileNotFoundError(f"Jet provenance is missing source hashes: {missing_sources}")
     pipeline_hashes = {
         "site/capture_cinema.gd": sha256_file(project_root / "site/capture_cinema.gd"),
         "site/package_cinema.py": sha256_file(project_root / "site/package_cinema.py"),
@@ -400,10 +446,44 @@ def main() -> int:
             **mp4_info,
         },
     }
+    views_path: Path | None = None
+    if args.aircraft == "jet":
+        detail_captures = capture.get("camera", {}).get("detail_shots", {})
+        detail_keys = ("cockpit", "wing", "tail")
+        views: dict[str, dict[str, object]] = {}
+        for key in detail_keys:
+            if key not in detail_captures:
+                raise ValueError(f"Capture manifest is missing the {key} camera preset")
+            detail_image = checked_image(capture_dir / "details" / f"{key}.png", VIDEO_SIZE)
+            detail_path = asset_dir / f"jet-{key}.webp"
+            detail_quality = write_poster(detail_image, detail_path)
+            outputs[key] = {
+                "path": detail_path.relative_to(project_root).as_posix(),
+                "width": VIDEO_SIZE[0],
+                "height": VIDEO_SIZE[1],
+                "format": "WebP",
+                "quality": detail_quality,
+                "bytes": detail_path.stat().st_size,
+                "sha256": sha256_file(detail_path),
+            }
+            camera_record = detail_captures[key]["camera"]
+            orbit = camera_record["model_viewer_orbit_degrees"]
+            views[key] = {
+                "target": camera_record["target_centered_model_m"],
+                "orbit": [orbit["theta"], orbit["phi"], orbit["radius_m"]],
+                "fov": detail_captures[key]["fov_degrees"],
+            }
+        views_path = asset_dir / "jet-views.json"
+        views_path.write_text(json.dumps(views, indent=2, ensure_ascii=False) + "\n", encoding="utf-8")
+        outputs["views"] = {
+            "path": views_path.relative_to(project_root).as_posix(),
+            "bytes": views_path.stat().st_size,
+            "sha256": sha256_file(views_path),
+        }
     if webm_info is not None:
         assert webm_command is not None
         outputs["webm"] = {
-            "path": (asset_dir / "stik-hero.webm").relative_to(project_root).as_posix(),
+            "path": (asset_dir / f"{prefix}-hero.webm").relative_to(project_root).as_posix(),
             **webm_info,
         }
     output_manifest = {
@@ -411,7 +491,9 @@ def main() -> int:
         "purpose": "Studio model presentation; not gameplay or flight validation",
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "git_head": git_revision(project_root),
-        "aircraft_id": AIRCRAFT_ID,
+        "aircraft_key": args.aircraft,
+        "aircraft_id": aircraft_id,
+        "aircraft_name": aircraft_name,
         "engine": capture.get("engine", ""),
         "renderer": capture.get("renderer", ""),
         "capture": capture,
@@ -420,6 +502,11 @@ def main() -> int:
         "ffmpeg": ffmpeg_version,
         "source_tree_sha256": source_tree_digest(hashes),
         "source_files": hashes,
+        "aircraft_source_files": (
+            {path.as_posix(): hashes[path.as_posix()] for path in jet_source_paths}
+            if args.aircraft == "jet"
+            else {}
+        ),
         "pipeline_sha256": pipeline_hashes,
         "encoding": {
             "mp4": {
@@ -441,8 +528,14 @@ def main() -> int:
     print(f"{poster_path.relative_to(project_root)}: {poster_path.stat().st_size:,} bytes, 1600x1000 WebP")
     print(f"{mp4_path.relative_to(project_root)}: {mp4_path.stat().st_size:,} bytes, H.264, silent, 12 s")
     if args.webm:
-        webm_path = asset_dir / "stik-hero.webm"
+        webm_path = asset_dir / f"{prefix}-hero.webm"
         print(f"{webm_path.relative_to(project_root)}: {webm_path.stat().st_size:,} bytes, VP9, silent")
+    if args.aircraft == "jet":
+        for key in ("cockpit", "wing", "tail"):
+            detail_path = asset_dir / f"jet-{key}.webp"
+            print(f"{detail_path.relative_to(project_root)}: {detail_path.stat().st_size:,} bytes, 1280x800 WebP")
+        assert views_path is not None
+        print(f"{views_path.relative_to(project_root)}: model-viewer camera presets")
     print(f"{manifest_path.relative_to(project_root)}: {len(hashes)} source hashes")
     return 0
 

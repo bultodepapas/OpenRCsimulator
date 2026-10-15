@@ -237,7 +237,7 @@ func _test_aircraft_defaults() -> void:
 	var original := profile.duplicate(true)
 	var jet := Actions.effective_bindings(profile, {gear = true, smoke = false, flaps = false})
 	_check("jet automatically maps B/Circle to retractable gear", jet.gear_toggle == {type = "button", button = JOY_BUTTON_B})
-	_check("unsupported jet smoke and flaps remain unbound", jet.smoke_toggle.type == "unbound" and jet.flaps_cycle.type == "unbound")
+	_check("unavailable equipment actions remain unbound", jet.smoke_toggle.type == "unbound" and jet.flaps_cycle.type == "unbound")
 	var stik := Actions.effective_bindings(profile, {gear = false, smoke = true})
 	_check("Stik automatically maps RB/R1 to smoke only", stik.smoke_toggle == {type = "button", button = JOY_BUTTON_RIGHT_SHOULDER} and stik.gear_toggle.type == "unbound")
 	_check("aircraft defaults never mutate a saved profile", profile == original)

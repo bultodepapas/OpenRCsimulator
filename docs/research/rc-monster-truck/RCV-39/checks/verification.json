@@ -1,0 +1,72 @@
+{
+  "step": "RCV-38",
+  "complete": true,
+  "sources": {
+    "app/vehicles/ground/monster_car_2_lights.gd": "6f17f1f0593c301b06b0742a958964bcaf9b95c695d2ef576136ad5cbad24852",
+    "app/vehicles/ground/ground_effects.gd": "2de86bdca45f53ad6abaf28b87dd67e5f6ee5bfa9a6128cb1e4cbf38737121da",
+    "app/vehicles/ground/ground_scene.gd": "82b2b2a99db852e4a23c83b59d3a6841950a33899c9cdd3ab4a3dd26794e28c2",
+    "app/vehicles/ground/ground_dashboard.gd": "e99609ba0453a1da7ac74af513cb2280a80faed8d4b1b3aef117958c4236e72a"
+  },
+  "tests": [
+    {
+      "test": "test_rcv38_lights.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV-38 lights: 108 checks, 0 failures"
+      ],
+      "errors": [],
+      "log": "test_rcv38_lights.log",
+      "log_sha256": "988810a23038cc9717c3f412186a77d9760e7bfa1f393c307dd35735ae8bc0f7",
+      "test_sha256": "5b407ab5b882d6b2ce3624cd599d5c424c4a13a62f6b649cecc9fc50f109196c"
+    },
+    {
+      "test": "test_rcv_ground_effects.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV ground effects: 91 checks, 0 failures"
+      ],
+      "errors": [],
+      "log": "test_rcv_ground_effects.log",
+      "log_sha256": "3979fb21b08d5792274a96d7325a2f22f6c9a2a166b612ec5f38e8b24d752606",
+      "test_sha256": "43956bbe4dd97424dc1c0cc576503f5e308ddf051a35e05f271820eec4742d50"
+    },
+    {
+      "test": "test_rcv36_effects.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV-36 effects: 588 checks, 0 failures"
+      ],
+      "errors": [],
+      "log": "test_rcv36_effects.log",
+      "log_sha256": "a8149fd140b7bba3d5cca1dcdc6f7e91699e79d9cdc8dabffcbc7350cbb39adf",
+      "test_sha256": "cdefe9a7aa043df36db33414f46a2a4666132ad1004d0844e7b13e7e9740897a"
+    },
+    {
+      "test": "test_rcv_nitro_activity.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV nitro activity: 99 checks, 0 failures"
+      ],
+      "errors": [],
+      "log": "test_rcv_nitro_activity.log",
+      "log_sha256": "eec563975aabb50e9d239260fb6f0bc3352a9293f317c9b4ad8449be96162b4e",
+      "test_sha256": "96786e4ea175baa57a48e33e9b8233c4d8d9b02aa820ecc44abab5f078e734b0"
+    },
+    {
+      "test": "test_rcv_activity.gd",
+      "passed": true,
+      "exit_code": 0,
+      "summary": [
+        "RCV activity: 24 checks, 0 failures"
+      ],
+      "errors": [],
+      "log": "test_rcv_activity.log",
+      "log_sha256": "e9385e0cae15a92e5ef8c6fe7fa4f1ec64189e2fe80cdd81ada014548e20bb4e",
+      "test_sha256": "451b307c257b00892faa41711d3c2d6f2f5b00f816be657d56b676f6cb2b70ae"
+    }
+  ]
+}

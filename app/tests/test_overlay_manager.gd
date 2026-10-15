@@ -285,7 +285,13 @@ func _controls_guide() -> void:
 	_check("absolute trigger has its own instructions", _guide_text(guide).contains("Release the trigger for idle throttle.") and _guide_text(guide).contains("R2"))
 	context.capabilities = {gear = true, smoke = false, flaps = false}
 	guide.refresh(context)
-	_check("jet guide shows automatic Circle gear and honest equipment limits", _guide_text(guide).contains("Circle") and _guide_text(guide).contains("Not simulated") and _guide_text(guide).contains("Not available") and not _guide_text(guide).contains("R1"))
+	_check("unavailable equipment is reported honestly", _guide_text(guide).contains("Circle") and _guide_text(guide).contains("Not available") and not _guide_text(guide).contains("Not simulated") and not _guide_text(guide).contains("R1"))
+	profile.actions.flaps_cycle = {type = "button", button = JOY_BUTTON_Y}
+	context.profile = profile
+	context.capabilities = {gear = true, smoke = false, flaps = true}
+	context.equipment_state = {flaps = {requested = 0.4, actual = 0.1, angle_deg = 5.0, target_deg = 20.0, moving = true, overspeed = true}}
+	guide.refresh(context)
+	_check("available flaps show requested and actual state with motion and overspeed", _guide_text(guide).contains("Requested 40% · actual 5.0°") and _guide_text(guide).contains("Moving") and _guide_text(guide).contains("Overspeed advisory"))
 	await process_frame
 	guide.scroll.scroll_vertical = 100
 	var scroll_before: int = guide.scroll.scroll_vertical

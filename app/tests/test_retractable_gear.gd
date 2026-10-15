@@ -92,7 +92,7 @@ func session() -> void:
 	if not flight.is_flyable() or not flight.gear_is_retractable():
 		flight.free()
 		return
-	check("airborne start stows gear", flight.gear_state().extension == 0 and flight.sim.inputs.size() == 6)
+	check("airborne start stows gear", flight.gear_state().extension == 0 and flight.sim.inputs.size() == 7)
 	check("deployment command accepted", flight.set_gear_down(true))
 	flight.input_enabled = false
 	flight.sim.inputs[4] = 1

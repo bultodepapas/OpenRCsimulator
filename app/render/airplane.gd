@@ -18,6 +18,7 @@ const STIK_GLOW_55AX_ID := "stik-glow-55ax-2t"
 const STIK_GLOW_FS64V_ID := "stik-glow-fs64v-4t"
 const STIK_GLOW_61FX_ID := "stik-glow-61fx-2t"
 const X_CELL_ID := "xcell-60-research"
+const AvantiModel := preload("res://aircraft/avanti_s_model.gd")
 
 # Accepted builds populate this small render-only cache. Every new build revalidates dependencies.
 static var _accepted_datums: Dictionary = {}
@@ -150,6 +151,18 @@ static func apply_surfaces(airplane: Dictionary, rotations: Dictionary) -> void:
 static func apply_throttle(airplane: Dictionary, throttle: float) -> void:
 	if airplane.has("controls") and not airplane.get("_finite_glow_visual", false):
 		Controls.set_throttle(airplane.controls, throttle)
+
+
+## Render the session's accepted flap angle through the aircraft's existing visual pose.
+static func apply_flaps(airplane: Dictionary, degrees: float) -> void:
+	if not is_finite(degrees):
+		return
+	if str(airplane.get("aircraft_id", "")) == AVANTI_ID:
+		AvantiModel.set_flaps(airplane, degrees)
+		return
+	var builder: Script = airplane.get("_model_builder")
+	if builder != null and builder.has_method("set_flaps"):
+		builder.call("set_flaps", airplane, degrees)
 
 
 ## The inverse of Commands.hinge_rotations(): trailing-edge deflections in degrees (up for ailerons/elevator,

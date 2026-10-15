@@ -24,6 +24,12 @@ var _emitters: Array[CPUParticles3D] = []
 var _dust_levels := PackedFloat32Array([0.0, 0.0, 0.0, 0.0])
 var _grime_material: ShaderMaterial
 var _grime_materials: Array[ShaderMaterial] = []
+# Bindings remain per mesh; only distinct, vehicle-owned resources need uploads.
+var _grime_update_materials: Array[ShaderMaterial] = []
+var _grime_frame_valid := false
+var _grime_world_frame := Transform3D.IDENTITY
+var _uploaded_grime := 0.0
+var _uploaded_wet := 0.0
 var _full_shell_grime := false
 var _grime_amount := 0.0
 var _wet_amount := 0.0
@@ -227,9 +233,7 @@ func update_render(
 			_grime_amount = maxf(0.0, _grime_amount - water_wash * dt * 0.006)
 		var wet_rate := 1.5 if wet_target > _wet_amount else 0.22
 		_wet_amount = move_toward(_wet_amount, clampf(wet_target, 0.0, 1.0), wet_rate * dt)
-		for material in _grime_materials:
-			material.set_shader_parameter("dirt_amount", _grime_amount)
-			material.set_shader_parameter("wet_amount", _wet_amount)
+		_sync_grime_amounts()
 
 
 ## Reset clears only this component's particle buffers and overlay. Body visibility and source
@@ -256,9 +260,7 @@ func clean_vehicle() -> void:
 	_grime_amount = 0.0
 	_wet_amount = 0.0
 	_sync_grime_frame()
-	for material in _grime_materials:
-		material.set_shader_parameter("dirt_amount", 0.0)
-		material.set_shader_parameter("wet_amount", 0.0)
+	_sync_grime_amounts()
 	_clear_dust_levels()
 	for emitter in _emitters:
 		emitter.restart()
@@ -283,6 +285,7 @@ func diagnostic_snapshot() -> Dictionary:
 		"particle_budget_per_wheel": PARTICLES_PER_TIRE,
 		"particle_budget_total": _emitters.size() * PARTICLES_PER_TIRE,
 		"grime_overlay_count": _grime_materials.size(),
+		"grime_material_count": _grime_update_materials.size(),
 		"grime_shell_mesh_count": _shell_meshes.size(),
 		"full_shell_grime": _full_shell_grime,
 		"grime_amount": _grime_amount,
@@ -303,12 +306,13 @@ func _build_grime_overlay() -> bool:
 	if shader == null:
 		return false
 	var shell_bounds := _body_bounds_in_vehicle_space() if _full_shell_grime else _body_mesh.get_aabb()
+	# MODEL_MATRIX is supplied per draw by Godot. All shell uniforms use the
+	# same vehicle-space bounds, so sharing within this vehicle is exact.
+	_grime_material = _make_grime_material(shader, shell_bounds, false, _full_shell_grime)
+	_grime_update_materials.append(_grime_material)
 	for shell_mesh in _shell_meshes:
-		var material := _make_grime_material(shader, shell_bounds, false, _full_shell_grime)
-		shell_mesh.material_overlay = material
-		_grime_materials.append(material)
-		if shell_mesh == _body_mesh or _grime_material == null:
-			_grime_material = material
+		shell_mesh.material_overlay = _grime_material
+		_grime_materials.append(_grime_material)
 	for wheel_value in _wheel_nodes:
 		var wheel_mesh := wheel_value as MeshInstance3D
 		if wheel_mesh == null:
@@ -317,6 +321,7 @@ func _build_grime_overlay() -> bool:
 		var wheel_material := _make_grime_material(shader, wheel_bounds, true, _full_shell_grime)
 		wheel_mesh.material_overlay = wheel_material
 		_grime_materials.append(wheel_material)
+		_grime_update_materials.append(wheel_material)
 	return true
 
 
@@ -348,9 +353,29 @@ func _append_shell_mesh(mesh: MeshInstance3D) -> void:
 func _sync_grime_frame() -> void:
 	if not _full_shell_grime or _vehicle_root == null:
 		return
-	var vehicle_from_world := _vehicle_root.global_transform.affine_inverse()
-	for material in _grime_materials:
+	var world_frame := _vehicle_root.global_transform
+	if _grime_frame_valid and world_frame == _grime_world_frame:
+		return
+	var vehicle_from_world := world_frame.affine_inverse()
+	for material in _grime_update_materials:
 		material.set_shader_parameter("vehicle_from_world", vehicle_from_world)
+	_grime_world_frame = world_frame
+	_grime_frame_valid = true
+
+
+func _sync_grime_amounts() -> void:
+	# Exact comparison: even the smallest accepted change reaches the shader.
+	var dirt_changed := _grime_amount != _uploaded_grime
+	var wet_changed := _wet_amount != _uploaded_wet
+	if not dirt_changed and not wet_changed:
+		return
+	for material in _grime_update_materials:
+		if dirt_changed:
+			material.set_shader_parameter("dirt_amount", _grime_amount)
+		if wet_changed:
+			material.set_shader_parameter("wet_amount", _wet_amount)
+	_uploaded_grime = _grime_amount
+	_uploaded_wet = _wet_amount
 
 
 func _build_dust_emitters() -> void:

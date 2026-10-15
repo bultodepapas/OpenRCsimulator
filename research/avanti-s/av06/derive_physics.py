@@ -19,6 +19,7 @@ carries its unit, evidence kind and source.
     python3 research/avanti-s/av06/derive_physics.py --check   # fails if either file is stale
 """
 import hashlib
+import argparse
 import json
 import math
 import os
@@ -27,6 +28,17 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
+CLI_ARGS = None
+if __name__ == "__main__":
+    cli = argparse.ArgumentParser(description=__doc__)
+    cli.add_argument("--check", action="store_true", help="check canonical generated outputs without writing")
+    cli.add_argument("--flap-aero-disabled", action="store_true",
+                     help="write a software sensitivity variant with flap aerodynamics zeroed; actuator remains active")
+    cli.add_argument("--output", type=Path, help="JSON output path (primarily for an isolated sensitivity variant)")
+    cli.add_argument("--report-output", type=Path, help="derivation report path")
+    CLI_ARGS = cli.parse_args()
+    if CLI_ARGS.flap_aero_disabled and CLI_ARGS.output is None:
+        cli.error("--flap-aero-disabled requires --output so the canonical aircraft is not overwritten")
 MIGRATOR_DIR = ROOT / "research/aircraft-standardization"
 if str(MIGRATOR_DIR) not in sys.path:
     sys.path.insert(0, str(MIGRATOR_DIR))
@@ -43,8 +55,8 @@ WHEEL_PROFILES = ROOT / "app/data/ground/wheel_profiles.json"
 PROJECT_SETTINGS = ROOT / "app/project.godot"
 OUT_DIR = Path(os.environ.get("OPENRC_AIRCRAFT_OUTPUT_DIR", ROOT / "app/data/aircraft")).resolve()
 REPORT_DIR = Path(os.environ.get("OPENRC_AIRCRAFT_REPORT_DIR", ROOT / "research/avanti-s/av06")).resolve()
-OUT = OUT_DIR / "sebart_avanti_s_a200.json"
-REPORT = REPORT_DIR / "derivation.md"
+OUT = CLI_ARGS.output.resolve() if CLI_ARGS and CLI_ARGS.output else OUT_DIR / "sebart_avanti_s_a200.json"
+REPORT = CLI_ARGS.report_output.resolve() if CLI_ARGS and CLI_ARGS.report_output else REPORT_DIR / "derivation.md"
 RHO = 1.225
 G0 = 9.80665
 NU = 1.46e-5
@@ -1127,6 +1139,30 @@ data["aero"]["wing_polar"] = build_polar(data)
 # that compatibility migration so the legacy record remains evidence of its original locked-up configuration.
 data["capabilities"]["gear"] = "retractable_tricycle"
 data["landing_gear"] = landing_gear
+data["capabilities"]["flaps"] = "simulated"
+if (abs(float(v("flaps.inner_span_m")) - float(g["wing"]["flap_span"][0])) > 1e-9
+		or abs(float(v("flaps.outer_span_m")) - float(g["wing"]["flap_span"][1])) > 1e-9
+		or abs(float(v("flaps.hinge_fraction")) - float(g["wing"]["hinge_fraction"])) > 1e-9):
+	raise ValueError("flap span and hinge inputs must match the AV-02 source geometry")
+flap_gain = 0.0 if CLI_ARGS and CLI_ARGS.flap_aero_disabled else float(v("flaps.aerodynamic_gain"))
+flap_gain_quantity = qi("flaps.aerodynamic_gain", "1")
+if CLI_ARGS and CLI_ARGS.flap_aero_disabled:
+	flap_gain_quantity = q(0.0, "1", "derived",
+		"AV-09 software sensitivity variant: suppresses flap aerodynamic lift/drag/pitch/wake while preserving the same actuator and recorded commands; not an aircraft calibration")
+data["flaps"] = {
+	"max_angle_deg": qi("flaps.max_angle_deg", "deg"),
+	"takeoff_angle_deg": qi("flaps.takeoff_angle_deg", "deg"),
+	"inner_span_m": qi("flaps.inner_span_m", "m"),
+	"outer_span_m": qi("flaps.outer_span_m", "m"),
+	"hinge_fraction": qi("flaps.hinge_fraction", "1"),
+	"extension_time": qi("flaps.extension_time", "s"),
+	"retraction_time": qi("flaps.retraction_time", "s"),
+	"max_speed_mps": qi("flaps.max_speed_mps", "m/s"),
+	"elevator_mix_per_flap_fraction": qi("flaps.elevator_mix_per_flap_fraction", "1"),
+	"aerodynamic_gain": flap_gain_quantity,
+}
+if not CLI_ARGS or not CLI_ARGS.flap_aero_disabled:
+	data["description"] = str(data.get("description", "")).rstrip() + " Hinged trailing-edge flaps use an AV-09 estimated strip-incidence/drag law with manual 20/50-degree settings."
 validate_physical_identity(data)
 text = (json.dumps(data, indent=2, ensure_ascii=False) + "\n").replace("\n", "\r\n")
 rows = ["| Section | Quantity | Value | How |", "| --- | --- | --- | --- |"]

@@ -7,6 +7,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const WeatherField = preload("res://physics/wind_field.gd")
 const Session = preload("res://sim/flight_session.gd")
 const Air = preload("res://physics/air_data.gd")
+const Flaps = preload("res://physics/flaps.gd")
 const GlowFlight = preload("res://physics/glow/flight.gd")
 
 const FORMAT := "openrc-trace v3" # v2: + engine_rpm; v3: + servo (actual surface) positions
@@ -58,6 +59,10 @@ const GEAR_TRACE_SCHEMA: String = "openrc-gear-trace v1"
 const GEAR_LAW: String = "retractable-point-gear-v1"
 const GEAR_INPUT_LAYOUT: Array[String] = ["roll", "pitch", "yaw", "throttle", "gear_down", "wheel_brake"]
 const GEAR_COLUMNS: Array[String] = ["gear_extension", "gear_target_down", "cmd_gear_down", "cmd_wheel_brake"]
+const FLAP_TRACE_SCHEMA: String = "openrc-flap-trace v1"
+const FLAP_LAW: String = Flaps.LAW
+const FLAP_COLUMNS: Array[String] = ["cmd_flaps", "flap_fraction", "flap_deg"]
+const FLAP_BASE_INPUT_LAYOUT: Array[String] = ["roll", "pitch", "yaw", "throttle"]
 var _coupled_shaft: bool = false
 var _continuous_turbine: bool = false
 var _coupled_start_rpm: float = NAN
@@ -74,6 +79,12 @@ var _gear: bool = false
 var _gear_aux_index: int = -1
 var _gear_meta: Dictionary = {}
 var _gear_recording_start: PackedFloat64Array = PackedFloat64Array()
+var _flaps: bool = false
+var _flap_aux_index: int = -1
+var _flap_input_index: int = -1
+var _flap_max_angle_deg: float = NAN
+var _flap_meta: Dictionary = {}
+var _flap_recording_start: float = NAN
 
 
 func clear() -> void:
@@ -104,6 +115,12 @@ func clear() -> void:
 	_gear_aux_index = -1
 	_gear_meta = {}
 	_gear_recording_start = PackedFloat64Array()
+	_flaps = false
+	_flap_aux_index = -1
+	_flap_input_index = -1
+	_flap_max_angle_deg = NAN
+	_flap_meta = {}
+	_flap_recording_start = NAN
 	_atmosphere = {}
 	_turbulence_index = -1
 
@@ -126,6 +143,7 @@ func _prepare_weather() -> void:
 		return
 	if not meta.has("weather_config"):
 		_prepare_gear_metadata()
+		_prepare_flap_metadata()
 		return
 	if typeof(meta.weather_config) != TYPE_STRING or typeof(meta.get("dt_s")) not in [TYPE_FLOAT, TYPE_INT] \
 			or not is_finite(float(meta.dt_s)) or float(meta.dt_s) <= 0.0:
@@ -164,7 +182,8 @@ func _prepare_weather() -> void:
 			or (meta.get("metadata_schema") == "openrc-flight-meta v6" \
 				and meta.get("wheel_state_model") == "relative-wheel-rim-speed-rk4-v1") \
 			or (meta.get("metadata_schema") == "openrc-flight-meta v7" and meta.get("propulsion_model") == GLOW_LAW) \
-			or (meta.get("metadata_schema") == "openrc-flight-meta v8" and _has_gear_metadata_claim())
+			or (meta.get("metadata_schema") == "openrc-flight-meta v8" and _has_gear_metadata_claim()) \
+			or (meta.get("metadata_schema") == "openrc-flight-meta v9" and _has_flap_metadata_claim())
 		if meta.get("atmosphere_model") != _weather.atmosphere_law() \
 				or not supported_metadata_schema or typeof(meta.get("atmosphere_state")) != TYPE_STRING:
 			_invalid_weather = true
@@ -187,6 +206,7 @@ func _prepare_weather() -> void:
 		if _weather.has_vertical_atmosphere():
 			_columns.append_array(COLUMN_ATMOSPHERE_COLUMNS)
 	_prepare_gear_metadata()
+	_prepare_flap_metadata()
 
 
 ## Retractable gear is an opt-in extension to the four legacy command columns.
@@ -200,19 +220,24 @@ func _prepare_gear_metadata() -> void:
 	var raw_start: Variant = meta.get("recording_start_gear")
 	var layout_value: Variant = meta.get("input_layout")
 	var layout: Variant = JSON.parse_string(layout_value) if typeof(layout_value) == TYPE_STRING else null
-	if meta.get("metadata_schema") != "openrc-flight-meta v8" \
+	var has_flap_claim: bool = _has_flap_metadata_claim()
+	var expected_layout_size: int = GEAR_INPUT_LAYOUT.size() + (1 if has_flap_claim else 0)
+	if meta.get("metadata_schema") != ("openrc-flight-meta v9" if has_flap_claim else "openrc-flight-meta v8") \
 			or meta.get("gear_law") != GEAR_LAW or meta.get("gear_trace_schema") != GEAR_TRACE_SCHEMA \
 			or typeof(index) != TYPE_INT or int(index) < 4 \
 			or typeof(dt) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(dt)) or float(dt) <= 0.0 \
 			or typeof(start_tick) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(start_tick)) \
 			or float(start_tick) < 0.0 or float(start_tick) != floor(float(start_tick)) \
-			or typeof(raw_start) != TYPE_STRING or not layout is Array or layout.size() != GEAR_INPUT_LAYOUT.size():
+			or typeof(raw_start) != TYPE_STRING or not layout is Array or layout.size() != expected_layout_size:
 		_invalid_weather = true
 		return
 	for i: int in GEAR_INPUT_LAYOUT.size():
 		if typeof(layout[i]) != TYPE_STRING or layout[i] != GEAR_INPUT_LAYOUT[i]:
 			_invalid_weather = true
 			return
+	if has_flap_claim and (typeof(layout[6]) != TYPE_STRING or layout[6] != "flaps"):
+		_invalid_weather = true
+		return
 	var start: Variant = JSON.parse_string(raw_start)
 	if not start is Array or start.size() != 2:
 		_invalid_weather = true
@@ -227,7 +252,7 @@ func _prepare_gear_metadata() -> void:
 	if meta.has("turbulence_aux_index"):
 		var turbulence_index: Variant = meta.get("turbulence_aux_index")
 		if not meta.has("weather_config") or typeof(turbulence_index) != TYPE_INT \
-				or int(turbulence_index) != int(index) + 2:
+				or int(turbulence_index) != int(index) + 2 + (1 if has_flap_claim else 0):
 			_invalid_weather = true
 			return
 	_gear = true
@@ -249,6 +274,22 @@ func _has_gear_metadata_claim() -> bool:
 		or str(raw_layout).contains("gear_down") or str(raw_layout).contains("wheel_brake")
 
 
+func _has_flap_metadata_claim() -> bool:
+	for key: String in ["flap_law", "flap_aux_index", "flap_input_index", "flap_trace_schema",
+			"flap_max_angle_deg", "recording_start_flap"]:
+		if meta.has(key):
+			return true
+	if not meta.has("input_layout"):
+		return false
+	var raw_layout: Variant = meta.get("input_layout")
+	var parsed_layout: Variant = JSON.parse_string(raw_layout) if typeof(raw_layout) == TYPE_STRING else raw_layout
+	return (parsed_layout is Array and parsed_layout.has("flaps")) or str(raw_layout).contains("flaps")
+
+
+func _expected_input_count() -> int:
+	return 4 + (2 if _gear else 0) + (1 if _flaps else 0)
+
+
 func _gear_sample(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array,
 		inputs: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
 	if not _gear:
@@ -256,8 +297,10 @@ func _gear_sample(tick: int, t: float, state: PackedFloat64Array, loads: PackedF
 	var dt: float = float(_gear_meta.get("dt_s", NAN))
 	var turbulence_index: int = int(_gear_meta.get("turbulence_aux_index", -1))
 	var expected_aux_size: int = turbulence_index + 7 if turbulence_index >= 0 else _gear_aux_index + 2
+	if _flaps:
+		expected_aux_size = maxi(expected_aux_size, _flap_aux_index + 1)
 	if tick < 0 or not is_finite(t) or t < 0.0 or t != float(tick) * dt \
-			or not _state_valid(state) or not _finite(loads, 6) or not _finite(inputs, 6) \
+			or not _state_valid(state) or not _finite(loads, 6) or not _finite(inputs, _expected_input_count()) \
 			or not _finite(aux, expected_aux_size) \
 			or (_last_recorded_tick >= 0 and tick != _last_recorded_tick + 1):
 		_invalid_weather = true
@@ -279,6 +322,83 @@ func _gear_sample(tick: int, t: float, state: PackedFloat64Array, loads: PackedF
 	return PackedFloat64Array([extension, target_down, command_down, wheel_brake])
 
 
+func _prepare_flap_metadata() -> void:
+	if not _has_flap_metadata_claim():
+		return
+	var flap_law: Variant = meta.get("flap_law")
+	var schema: Variant = meta.get("metadata_schema")
+	var trace_schema: Variant = meta.get("flap_trace_schema")
+	var aux_index: Variant = meta.get("flap_aux_index")
+	var input_index: Variant = meta.get("flap_input_index")
+	var max_angle: Variant = meta.get("flap_max_angle_deg")
+	var raw_start: Variant = meta.get("recording_start_flap")
+	var dt: Variant = meta.get("dt_s")
+	var start_tick: Variant = meta.get("recording_start_tick")
+	var raw_layout: Variant = meta.get("input_layout")
+	var layout: Variant = JSON.parse_string(raw_layout) if typeof(raw_layout) == TYPE_STRING else null
+	var has_gear_claim: bool = _has_gear_metadata_claim()
+	var expected_input_index: int = 6 if has_gear_claim else 4
+	var expected_layout: Array[String] = FLAP_BASE_INPUT_LAYOUT.duplicate()
+	if has_gear_claim:
+		expected_layout.append_array(GEAR_INPUT_LAYOUT.slice(4, 6))
+	expected_layout.append("flaps")
+	if schema != "openrc-flight-meta v9" or typeof(flap_law) != TYPE_STRING or flap_law.is_empty() \
+			or flap_law != FLAP_LAW or trace_schema != FLAP_TRACE_SCHEMA or typeof(aux_index) != TYPE_INT or int(aux_index) < 4 \
+			or typeof(input_index) != TYPE_INT or int(input_index) != expected_input_index \
+			or typeof(max_angle) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(max_angle)) or float(max_angle) <= 0.0 \
+			or typeof(raw_start) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(raw_start)) \
+			or float(raw_start) < 0.0 or float(raw_start) > 1.0 \
+			or typeof(dt) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(dt)) or float(dt) <= 0.0 \
+			or typeof(start_tick) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(start_tick)) \
+			or float(start_tick) < 0.0 or float(start_tick) != floor(float(start_tick)) \
+			or not layout is Array or layout.size() != expected_layout.size():
+		_invalid_weather = true
+		return
+	for i: int in expected_layout.size():
+		if typeof(layout[i]) != TYPE_STRING or layout[i] != expected_layout[i]:
+			_invalid_weather = true
+			return
+	if has_gear_claim and (typeof(meta.get("gear_aux_index")) != TYPE_INT \
+			or int(aux_index) != int(meta.gear_aux_index) + 2):
+		_invalid_weather = true
+		return
+	if meta.has("turbulence_aux_index") and (typeof(meta.turbulence_aux_index) != TYPE_INT \
+			or int(meta.turbulence_aux_index) != int(aux_index) + 1):
+		_invalid_weather = true
+		return
+	_flaps = true
+	_flap_aux_index = int(aux_index)
+	_flap_input_index = int(input_index)
+	_flap_max_angle_deg = float(max_angle)
+	_flap_meta = meta.duplicate(true)
+	_flap_recording_start = float(raw_start)
+	_columns.append_array(FLAP_COLUMNS)
+
+
+func _flap_sample(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array,
+		inputs: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
+	if not _flaps:
+		return PackedFloat64Array()
+	var dt: float = float(_flap_meta.get("dt_s", NAN))
+	if tick < 0 or not is_finite(t) or t < 0.0 or t != float(tick) * dt \
+			or not _state_valid(state) or not _finite(loads, 6) or not _finite(inputs, _expected_input_count()) \
+			or aux.size() <= _flap_aux_index or not _finite(aux) \
+			or (_last_recorded_tick >= 0 and tick != _last_recorded_tick + 1):
+		_invalid_weather = true
+		return PackedFloat64Array()
+	var actual: float = aux[_flap_aux_index]
+	var requested: float = inputs[_flap_input_index]
+	if actual < 0.0 or actual > 1.0 or requested < 0.0 or requested > 1.0:
+		_invalid_weather = true
+		return PackedFloat64Array()
+	if _rows.is_empty():
+		if float(tick) != float(_flap_meta.get("recording_start_tick", NAN)) \
+				or not _positive_float64_within_one_ulp(actual, _flap_recording_start):
+			_invalid_weather = true
+			return PackedFloat64Array()
+	return PackedFloat64Array([requested, actual, actual * _flap_max_angle_deg])
+
+
 ## AV-20 adds no CSV columns: engine_rpm is the committed continuous endpoint mirror.
 func _prepare_turbine_metadata() -> void:
 	var wheel_keys: Array[String] = ["wheel_state_model", "wheel_state_layout", "wheel_profile_status",
@@ -288,6 +408,7 @@ func _prepare_turbine_metadata() -> void:
 	for key: String in wheel_keys:
 		has_wheel_metadata = has_wheel_metadata or meta.has(key)
 	var gear_claim: bool = _has_gear_metadata_claim()
+	var flap_claim: bool = _has_flap_metadata_claim()
 	var wheel_count: int = 0
 	var expected_layout: String = Session.Turbine.CONTINUOUS_LAYOUT \
 		+ ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if has_wheel_metadata else "")
@@ -307,7 +428,8 @@ func _prepare_turbine_metadata() -> void:
 		var layout: Variant = JSON.parse_string(str(meta.get("wheel_state_layout", "null")))
 		var launch: Variant = JSON.parse_string(str(meta.get("launch_continuous", "null")))
 		var brakes: Variant = JSON.parse_string(str(meta.get("wheel_brakes", "null")))
-		if not gear_claim or meta.get("metadata_schema") != "openrc-flight-meta v8" \
+		if not gear_claim or (meta.get("metadata_schema") != "openrc-flight-meta v8" \
+				and not (flap_claim and meta.get("metadata_schema") == "openrc-flight-meta v9")) \
 				or meta.get("wheel_state_model") != "relative-wheel-rim-speed-rk4-v1" \
 				or meta.get("wheel_profile_status") != "applied" \
 				or not _is_sha256(str(meta.get("wheel_profile_sha256", ""))) \
@@ -342,7 +464,7 @@ func _prepare_turbine_metadata() -> void:
 			if typeof(component) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(component)):
 				_invalid_weather = true
 				return
-	elif gear_claim:
+	elif gear_claim or flap_claim:
 		_invalid_weather = true
 		return
 	for component: Variant in sampled:
@@ -463,12 +585,14 @@ func _prepare_shaft_metadata() -> void:
 		or meta.has("wheel_profile_status") or meta.has("wheel_profile_sha256") or meta.has("wheel_profile_input_sha256") \
 		or meta.has("wheel_profile_hash_convention") or meta.has("wheel_brakes") or meta.has("launch_continuous")
 	var gear_claim: bool = _has_gear_metadata_claim()
+	var flap_claim: bool = _has_flap_metadata_claim()
 	var base_layout: String = Session.BATTERY_LAYOUT if _battery else "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled"
 	if has_wheel_metadata:
 		var layout: Variant = JSON.parse_string(str(meta.get("wheel_state_layout", "null")))
 		var launch: Variant = JSON.parse_string(str(meta.get("launch_continuous", "null")))
 		if (meta.get("metadata_schema") != "openrc-flight-meta v6" \
-				and not (gear_claim and meta.get("metadata_schema") == "openrc-flight-meta v8")) \
+				and not (gear_claim and meta.get("metadata_schema") == "openrc-flight-meta v8") \
+				and not (flap_claim and meta.get("metadata_schema") == "openrc-flight-meta v9")) \
 				or meta.get("wheel_state_model") != "relative-wheel-rim-speed-rk4-v1" \
 				or meta.get("wheel_profile_status") != "applied" \
 				or not _is_sha256(str(meta.get("wheel_profile_sha256", ""))) \
@@ -506,7 +630,7 @@ func _prepare_shaft_metadata() -> void:
 					or (float(torque) > 0.0 and brake.availability != "available"):
 				_invalid_weather = true
 				return
-	elif gear_claim:
+	elif gear_claim or flap_claim:
 		_invalid_weather = true
 		return
 	if str(meta.get("continuous_layout", "")) != base_layout + ("; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail" if has_wheel_metadata else ""):
@@ -605,10 +729,13 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		_prepare_weather()
 	if _invalid_weather:
 		return
-	if (_gear and inputs.size() != 6) or (not _gear and inputs.size() != 4):
+	if inputs.size() != _expected_input_count():
 		_invalid_weather = true
 		return
 	var gear_row: PackedFloat64Array = _gear_sample(tick, t, s, loads, inputs, aux)
+	if _invalid_weather:
+		return
+	var flap_row: PackedFloat64Array = _flap_sample(tick, t, s, loads, inputs, aux)
 	if _invalid_weather:
 		return
 	if _coupled_shaft and (aux.size() < 4 or not _finite(aux) or aux[0] < 0.0 \
@@ -616,7 +743,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		_invalid_weather = true
 		return
 	if _continuous_turbine and (tick < 0 or not is_finite(t) or t < 0.0 or t != tick * float(_weather_meta.dt_s) \
-			or not _state_valid(s) or not _finite(loads, 6) or not _finite(inputs, 6 if _gear else 4) or aux.size() < 4 or not _finite(aux) \
+			or not _state_valid(s) or not _finite(loads, 6) or not _finite(inputs, _expected_input_count()) or aux.size() < 4 or not _finite(aux) \
 			or aux[0] < 0.0 or (_last_recorded_tick >= 0 and tick != _last_recorded_tick + 1) \
 			or (_rows.is_empty() and (absf(aux[0] - _coupled_start_rpm) > 1e-9 or str(meta.get("recording_start_tick")) != str(tick)))):
 		_invalid_weather = true
@@ -648,7 +775,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 			electric_row.append(1.0 if point.exhausted else 0.0)
 	if _weather != null:
 		if tick < 0 or not is_finite(t) or t < 0.0 or t != tick * float(_weather_meta.dt_s) \
-				or not _state_valid(s) or not _finite(loads, 6) or not _finite(inputs, 6 if _gear else 4) or aux.size() < 4 or not _finite(aux):
+				or not _state_valid(s) or not _finite(loads, 6) or not _finite(inputs, _expected_input_count()) or aux.size() < 4 or not _finite(aux):
 			_invalid_weather = true
 			return
 	if _turbulence_index >= 0:
@@ -696,7 +823,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 		s[RB.RATE], s[RB.RATE + 1], s[RB.RATE + 2],
 	]))
 	_rows.append_array(loads)
-	_rows.append_array(inputs.slice(0, 4) if _gear else inputs)
+	_rows.append_array(inputs.slice(0, 4) if _gear or _flaps else inputs)
 	for i in 4: # [engine_rpm, srv_roll, srv_pitch, srv_yaw]; missing entries record as 0
 		_rows.append(aux[i] if aux.size() > i else 0.0)
 	if _electric:
@@ -735,6 +862,8 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 					atmosphere_loads.rho_kgm3, atmosphere_loads.pressure_pa, atmosphere_loads.temperature_k]))
 	if _gear:
 		_rows.append_array(gear_row)
+	if _flaps:
+		_rows.append_array(flap_row)
 	_previous_recorded = s.duplicate()
 	_last_recorded_tick = tick
 	if _glow:
@@ -833,8 +962,11 @@ func to_csv() -> String:
 	if _invalid_weather:
 		return ""
 	var lines := PackedStringArray()
-	lines.append("# format: %s" % ("openrc-trace v11" if _weather != null and _weather.has_vertical_atmosphere() else ("openrc-trace v10" if _gear else ("openrc-trace v9" if _glow else ("openrc-trace v8" if _battery else ("openrc-trace v7" if _electric else ("openrc-trace v6" if not _atmosphere.is_empty() else ("openrc-trace v5" if _turbulence_index >= 0 else ("openrc-trace v4" if _weather != null else FORMAT)))))))))
-	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft or _continuous_turbine or _glow else meta).duplicate(true)
+	var base_trace_format: String = _base_trace_format()
+	lines.append("# format: %s" % ("openrc-trace v12" if _flaps else base_trace_format))
+	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft or _continuous_turbine or _glow else (_flap_meta if _flaps else meta)).duplicate(true)
+	if _flaps:
+		written_meta.flap_base_trace_format = base_trace_format
 	if _glow:
 		written_meta.glow_trace_schema = GLOW_TRACE_SCHEMA
 		written_meta.glow_stop_reason_codes = JSON.stringify(GlowFlight.REASONS)
@@ -845,7 +977,7 @@ func to_csv() -> String:
 		if meta.has(visual_key):
 			written_meta[visual_key] = meta[visual_key]
 	for key in written_meta:
-		var encoded: String = JSON.stringify(written_meta[key], "", true, true) if (_weather != null or _continuous_turbine or _glow) and key == "dt_s" else str(written_meta[key])
+		var encoded: String = JSON.stringify(written_meta[key], "", true, true) if (_weather != null or _continuous_turbine or _glow or _flaps) and key == "dt_s" else str(written_meta[key])
 		lines.append("# %s: %s" % [key, encoded])
 	lines.append(",".join(_columns))
 	var n := _columns.size()
@@ -856,6 +988,26 @@ func to_csv() -> String:
 			cells.append("%.9f" % _rows[r * n + c])
 		lines.append(",".join(cells))
 	return "\n".join(lines) + "\n"
+
+
+func _base_trace_format() -> String:
+	if _weather != null and _weather.has_vertical_atmosphere():
+		return "openrc-trace v11"
+	if _gear:
+		return "openrc-trace v10"
+	if _glow:
+		return "openrc-trace v9"
+	if _battery:
+		return "openrc-trace v8"
+	if _electric:
+		return "openrc-trace v7"
+	if not _atmosphere.is_empty():
+		return "openrc-trace v6"
+	if _turbulence_index >= 0:
+		return "openrc-trace v5"
+	if _weather != null:
+		return "openrc-trace v4"
+	return FORMAT
 
 
 func save(path: String) -> Error:

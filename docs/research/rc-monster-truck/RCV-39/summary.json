@@ -1,0 +1,130 @@
+{
+  "step": "RCV-39",
+  "complete": true,
+  "solver_changed": false,
+  "trajectory_sha256": "a623719ab8efb4226ebbf59828b15bac5d74a07326718eff2af1de93644e6c52",
+  "unique_grime_materials": [
+    70,
+    5
+  ],
+  "component_cpu": {
+    "moving_dirty": {
+      "baseline_us": 99.5285,
+      "candidate_us": 69.9455,
+      "reduction_percent": 29.72314462691591
+    },
+    "stable_paused": {
+      "baseline_us": 17.437,
+      "candidate_us": 4.6275,
+      "reduction_percent": 73.46160463382463
+    }
+  },
+  "equivalence": {
+    "checks": 206554,
+    "comparison_snapshots": 97,
+    "diagnostic_performance_fields_excluded": [
+      "grime_material_count"
+    ],
+    "failures": 0,
+    "mismatches": [],
+    "overlay_uniform_comparisons": 47530
+  },
+  "focused_checks": 910,
+  "native_callback_measurements": {
+    "baseline-day": {
+      "render_callback_cost": {
+        "maximum_us": 6080.0,
+        "mean_us": 3874.9666666666667,
+        "median_us": 3945.0,
+        "p95_us": 4867.0,
+        "samples": 240
+      },
+      "four_tick_batch_cost": {
+        "maximum_us": 43173.0,
+        "mean_us": 29276.3125,
+        "median_us": 29583.0,
+        "p95_us": 35092.0,
+        "samples": 240
+      },
+      "draw_calls": 1082.0,
+      "primitives": 940813.0
+    },
+    "candidate-day": {
+      "render_callback_cost": {
+        "maximum_us": 5874.0,
+        "mean_us": 3054.2708333333335,
+        "median_us": 2833.0,
+        "p95_us": 4134.0,
+        "samples": 240
+      },
+      "four_tick_batch_cost": {
+        "maximum_us": 35481.0,
+        "mean_us": 24286.825,
+        "median_us": 22571.0,
+        "p95_us": 31785.0,
+        "samples": 240
+      },
+      "draw_calls": 1082.0,
+      "primitives": 940813.0
+    },
+    "baseline-night": {
+      "render_callback_cost": {
+        "maximum_us": 5856.0,
+        "mean_us": 3209.2916666666665,
+        "median_us": 3018.0,
+        "p95_us": 4194.0,
+        "samples": 240
+      },
+      "four_tick_batch_cost": {
+        "maximum_us": 35067.0,
+        "mean_us": 25041.558333333334,
+        "median_us": 24090.0,
+        "p95_us": 31484.0,
+        "samples": 240
+      },
+      "draw_calls": 618.0,
+      "primitives": 617614.0
+    },
+    "candidate-night": {
+      "render_callback_cost": {
+        "maximum_us": 4493.0,
+        "mean_us": 3105.7541666666666,
+        "median_us": 2957.0,
+        "p95_us": 4173.0,
+        "samples": 240
+      },
+      "four_tick_batch_cost": {
+        "maximum_us": 34224.0,
+        "mean_us": 25003.329166666666,
+        "median_us": 23823.0,
+        "p95_us": 31400.0,
+        "samples": 240
+      },
+      "draw_calls": 618.0,
+      "primitives": 617614.0
+    }
+  },
+  "scope": "Component CPU and resource reduction. Native pairs establish same-tape behavior and visual budgets; not an FPS or GPU-time qualification.",
+  "evidence_sha256": {
+    "baseline-day/activity.json": "082fcb46417ae305d947cb6f3ad98d6664e889f9e3fa9340d530b584d5801217",
+    "baseline-day/activity.png": "56a8f6fe72b56b80fb476bbfeacdab6996089302d39b127ca66b919a52e65312",
+    "baseline-day/run.log": "dbbae40a9c87d86a4e92539250625b4ed00901e4a7635fe12eb97aa8b0998652",
+    "baseline-night/activity.json": "b4ae5f8d96491d81b69f2bbddb2068b0c75c1eca1b9378e1704e545cc4e7ee2e",
+    "baseline-night/activity.png": "20d14d7db28b4703f096862b52133289fa374b78fdeb4872df3ecded5ac3f238",
+    "baseline-night/run.log": "dbf88c840b6b267d6ce3f640639350926d680fde9d5119aa8713bba234854201",
+    "candidate-day/activity.json": "92755a5790f23be8b644b62992be5a50f9538d7337c6b74fadf38a20357db084",
+    "candidate-day/activity.png": "6adc21ed462f8771cd7f2108fda6f0148d96bf56b54e84ed430eb3c6353bd21c",
+    "candidate-day/run.log": "4847a678434ea01005eb30b48e98c10ba9830df950ad6b4e1cf1aac1458484de",
+    "candidate-night/activity.json": "3e8a33adc06bf2aa14da0ea2826bf3e0d4b7cc387cd9b545a477a4ff9782600d",
+    "candidate-night/activity.png": "3e5f115bcb5ccca25c16974bfccd950316a3157dea1db9a93b16841edc6cc502",
+    "candidate-night/run.log": "54fc85c200b3813373ffbb5b33e5b2018768f10920f844bcf159a238aa40be9b",
+    "checks/test_rcv36_effects.log": "a8149fd140b7bba3d5cca1dcdc6f7e91699e79d9cdc8dabffcbc7350cbb39adf",
+    "checks/test_rcv38_lights.log": "988810a23038cc9717c3f412186a77d9760e7bfa1f393c307dd35735ae8bc0f7",
+    "checks/test_rcv_activity.log": "e9385e0cae15a92e5ef8c6fe7fa4f1ec64189e2fe80cdd81ada014548e20bb4e",
+    "checks/test_rcv_ground_effects.log": "3979fb21b08d5792274a96d7325a2f22f6c9a2a166b612ec5f38e8b24d752606",
+    "checks/test_rcv_nitro_activity.log": "eec563975aabb50e9d239260fb6f0bc3352a9293f317c9b4ad8449be96162b4e",
+    "checks/verification.json": "e9fcbf84b80bca00c84f04bbdab9d93aafcf1bfea0c59921501d37c2bde12bd7",
+    "effects/receipt.json": "994aced3fee38f1cecda7cea38df57020abd0bffbbf70cccd66801fad3a502d5",
+    "effects/run.log": "1ea293c93621119bae3025de1d7cb88c4e072315bac9482ff3bb46766f88dede"
+  }
+}

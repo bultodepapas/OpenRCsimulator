@@ -154,6 +154,12 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 		result.model.data_sha256 = JSON.stringify(raw, "", true).sha256_text()
 		result.model.capabilities = raw.capabilities.duplicate(true)
 		result.model.convention_id = raw.convention_id
+		if raw.has("flaps"):
+			var flap_errors := PackedStringArray()
+			var flap_model := _flaps(flap_errors, raw.get("flaps"), result.model.reference, result.model.envelope)
+			if not flap_errors.is_empty():
+				return {ok=false,errors=flap_errors,warnings=result.warnings,model={}}
+			result.model.flaps = flap_model
 		if raw.propulsion.get("engine", {}).has("glow_installation"):
 			var installed: Dictionary = GlowInstallation.attach(raw, result.model)
 			if not installed.ok:
@@ -168,6 +174,67 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 			for i in identities.support_ids.size():
 				result.model.landing_gear.contacts[i].id = identities.support_ids[i]
 	return result
+
+
+## AV-09 hinged trailing-edge flap module. Raw inputs remain evidence-bearing quantities;
+## the simulation receives normalized coefficients and a spanwise strip coverage map.
+static func _flaps(errors: PackedStringArray, node: Variant, reference: Dictionary, envelope: Dictionary) -> Dictionary:
+	if typeof(node) == TYPE_DICTIONARY:
+		_reject_unknown_keys(errors, "flaps", node, ["max_angle_deg", "takeoff_angle_deg", "inner_span_m", "outer_span_m",
+			"hinge_fraction", "extension_time", "retraction_time", "max_speed_mps", "elevator_mix_per_flap_fraction", "aerodynamic_gain"])
+	var data := _dictionary(errors, "flaps", node)
+	var max_angle = _q(errors, "flaps.max_angle_deg", data.get("max_angle_deg"), "deg", 5.0, 60.0)
+	var takeoff_angle = _q(errors, "flaps.takeoff_angle_deg", data.get("takeoff_angle_deg"), "deg", 0.0, 60.0)
+	var inner = _q(errors, "flaps.inner_span_m", data.get("inner_span_m"), "m", 0.0, float(reference.b) / 2.0)
+	var outer = _q(errors, "flaps.outer_span_m", data.get("outer_span_m"), "m", 0.0, float(reference.b) / 2.0)
+	var hinge = _q(errors, "flaps.hinge_fraction", data.get("hinge_fraction"), "1", 0.5, 0.95)
+	var extension = _q(errors, "flaps.extension_time", data.get("extension_time"), "s", 0.25, 30.0)
+	var retraction = _q(errors, "flaps.retraction_time", data.get("retraction_time"), "s", 0.25, 30.0)
+	var max_speed = _q(errors, "flaps.max_speed_mps", data.get("max_speed_mps"), "m/s", 5.0, 100.0)
+	var elevator_mix = _q(errors, "flaps.elevator_mix_per_flap_fraction", data.get("elevator_mix_per_flap_fraction"), "1", 0.0, 0.5)
+	var aerodynamic_gain = _q(errors, "flaps.aerodynamic_gain", data.get("aerodynamic_gain"), "1", 0.0, 1.0)
+	if max_angle == null or takeoff_angle == null or inner == null or outer == null or hinge == null \
+			or extension == null or retraction == null or max_speed == null or elevator_mix == null or aerodynamic_gain == null:
+		return {}
+	if max_angle <= 0.0 or takeoff_angle > max_angle:
+		errors.append("flaps: takeoff_angle_deg must be between zero and max_angle_deg")
+	if inner >= outer:
+		errors.append("flaps: inner_span_m must be less than outer_span_m")
+	if errors.size() > 0:
+		return {}
+	var cf: float = 1.0 - float(hinge)
+	var theta := acos(2.0 * cf - 1.0)
+	var effectiveness := 1.0 - (theta - sin(theta)) / PI
+	var edges := station_edges(float(reference.b), reference.chords)
+	var chords: PackedFloat64Array = envelope.get("station_chords", PackedFloat64Array())
+	var coverage := PackedFloat64Array()
+	var root_chord := float(reference.S) / float(reference.b) if reference.chords.is_empty() else float(reference.chords[0])
+	var tip_chord := root_chord if reference.chords.is_empty() else float(reference.chords[1])
+	var half_span := float(reference.b) / 2.0
+	var chord_slope := (tip_chord - root_chord) / half_span
+	var chord_area := func(y: float) -> float:
+		return root_chord * y + chord_slope * y * y / 2.0
+	for i in range(edges.size() - 1):
+		var lo := minf(absf(edges[i]), absf(edges[i + 1]))
+		var hi := maxf(absf(edges[i]), absf(edges[i + 1]))
+		var strip_area := chord_area.call(hi) - chord_area.call(lo)
+		var flap_lo := maxf(lo, float(inner))
+		var flap_hi := minf(hi, float(outer))
+		var flap_area := chord_area.call(flap_hi) - chord_area.call(flap_lo) if flap_hi > flap_lo else 0.0
+		coverage.append(clampf(flap_area / strip_area, 0.0, 1.0) if strip_area > 0.0 else 0.0)
+	return {
+		max_angle_deg = float(max_angle),
+		takeoff_angle_deg = float(takeoff_angle),
+		takeoff_fraction = float(takeoff_angle) / float(max_angle),
+		inner_span_m = float(inner), outer_span_m = float(outer),
+		hinge_fraction = float(hinge), chord_fraction = cf,
+		lift_effectiveness = effectiveness,
+		extension_time = float(extension), retraction_time = float(retraction),
+		max_speed_mps = float(max_speed),
+		elevator_mix_per_flap_fraction = float(elevator_mix),
+		aerodynamic_gain = float(aerodynamic_gain),
+		station_coverage = coverage,
+	}
 
 
 ## Explicit adapter for the shared numerical derivation and historical v1 research fixtures.

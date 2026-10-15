@@ -3,6 +3,7 @@
 Defaults match the three-second, 240 Hz smoke flight. Capture/export callers pass
 --duration explicitly. The initial tick is a sample, not evidence of a flown tick.
 """
+from flap_trace_contract import project as project_flaps
 import argparse
 import csv
 import hashlib
@@ -102,7 +103,7 @@ def check_input_identity(metadata: dict, allow_legacy: bool, aircraft_input: Pat
             raise ValueError('legacy metadata cannot verify --aircraft-input')
         digest_key, convention_key = 'aircraft_data_sha256', 'aircraft_data_hash_convention'
         identity = 'legacy semantic-only metadata; exact input identity unavailable'
-    elif schema in {f'openrc-flight-meta v{version}' for version in range(2, 9)}:
+    elif schema in {f'openrc-flight-meta v{version}' for version in range(2, 10)}:
         if any(key in metadata for key in ('aircraft_data_sha256', 'aircraft_data_hash_convention')):
             raise ValueError('metadata v2 must use explicit input/semantic hash names')
         if metadata.get('aircraft_input_format') not in ('openrc-aircraft v1', 'openrc-aircraft v2'):
@@ -194,7 +195,12 @@ def _has_gear_metadata(metadata: dict) -> bool:
 
 def check_gear_metadata(metadata: dict, first: dict | None = None) -> dict:
     """Validate the opt-in six-input gear contract and, when supplied, its first CSV row."""
-    if (metadata.get('metadata_schema') != 'openrc-flight-meta v8'
+    flaps = metadata.get('metadata_schema') == 'openrc-flight-meta v9'
+    if flaps and (metadata.get('flap_law') != 'controls.flaps.hinged_trailing_edge.v1'
+                  or metadata.get('flap_trace_schema') != 'openrc-flap-trace v1'
+                  or metadata.get('flap_input_index') != '6'):
+        raise ValueError('invalid flap extension of gear metadata')
+    if (metadata.get('metadata_schema') not in ('openrc-flight-meta v8', 'openrc-flight-meta v9')
             or metadata.get('gear_law') != GEAR_LAW
             or metadata.get('gear_trace_schema') != GEAR_TRACE_SCHEMA):
         raise ValueError('missing or unsupported retractable gear trace contract')
@@ -207,7 +213,7 @@ def check_gear_metadata(metadata: dict, first: dict | None = None) -> dict:
     if (not isinstance(index_text, str) or not re.fullmatch(r'(?:0|[1-9][0-9]*)', index_text)
             or int(index_text) < 4):
         raise ValueError('invalid gear_aux_index')
-    if layout != GEAR_INPUT_LAYOUT:
+    if layout != GEAR_INPUT_LAYOUT + (['flaps'] if flaps else []):
         raise ValueError('input_layout disagrees with the six-input gear contract')
     if (not isinstance(start, list) or len(start) != 2
             or any(not _finite_number(value) for value in start)
@@ -216,7 +222,7 @@ def check_gear_metadata(metadata: dict, first: dict | None = None) -> dict:
     if 'turbulence_aux_index' in metadata:
         turbulence_text = metadata['turbulence_aux_index']
         if (not isinstance(turbulence_text, str) or not re.fullmatch(r'(?:0|[1-9][0-9]*)', turbulence_text)
-                or int(turbulence_text) != int(index_text) + 2):
+                or int(turbulence_text) != int(index_text) + 2 + int(flaps)):
             raise ValueError('gear AUX pair is not immediately before turbulence state')
     if first is not None:
         if any(key not in first for key in GEAR_COLUMNS):
@@ -344,7 +350,7 @@ def _check_wheel_metadata(metadata: dict, *, gear: bool = False) -> dict:
         'recording_start_continuous', 'launch_continuous',
     }
     supported_schema = metadata.get('metadata_schema') == 'openrc-flight-meta v6' or (
-        gear and metadata.get('metadata_schema') == 'openrc-flight-meta v8')
+        gear and metadata.get('metadata_schema') in ('openrc-flight-meta v8', 'openrc-flight-meta v9'))
     if not supported_schema or not required.issubset(metadata):
         raise ValueError('incomplete or unsupported wheel-state metadata')
     if metadata.get('wheel_state_model') != WHEEL_STATE_MODEL:
@@ -448,6 +454,9 @@ def check(path: Path, duration: float, hz: int, *, allow_legacy: bool = False,
           aircraft_input: Path | None = None) -> str:
     if not math.isfinite(duration) or duration <= 0 or hz <= 0:
         raise ValueError("duration and tick rate must be finite and positive")
+    handled, projected = project_flaps(path, check, duration, hz, allow_legacy=allow_legacy, aircraft_input=aircraft_input)
+    if handled:
+        return projected
     tick_count = duration * hz
     if not math.isfinite(tick_count) or tick_count >= 2**63:
         raise ValueError("duration exceeds the tick counter")

@@ -394,8 +394,20 @@ func auxiliary_action(action: String) -> bool:
 	match action:
 		"flaps_up": _aux_action_values.flaps = 0.0
 		"flaps_down": _aux_action_values.flaps = 1.0
-		"flaps_cycle": _aux_action_values.flaps = fmod(float(_aux_action_values.flaps) + 0.5, 1.5)
+		"flaps_cycle":
+			var current_flaps := float(_aux_action_values.flaps)
+			_aux_action_values.flaps = 0.4 if current_flaps < 0.2 else (1.0 if current_flaps < 0.7 else 0.0)
 		_: _aux_action_values[channel_name] = 1.0 - float(_aux_action_values[channel_name])
+	return true
+
+
+## Set the semantic action request to an exact detent without taking over a bound radio AUX channel.
+func set_flaps_action_amount(amount: float) -> bool:
+	if not connected or not _profile_ready or not _auxiliary_enabled or not input_error.is_empty() or not profile_error.is_empty():
+		return false
+	if not is_finite(amount) or not _extra_aux.flaps.binding.is_empty():
+		return false
+	_aux_action_values.flaps = clampf(amount, 0.0, 1.0)
 	return true
 
 

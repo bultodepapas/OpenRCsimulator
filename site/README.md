@@ -1,6 +1,6 @@
 # OpenRC project website
 
-WEB-01/02/03 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
+WEB-01/02/03/04 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
 
 ## Design
 
@@ -40,7 +40,7 @@ Additional WEB-02 copy and theme behavior live in `details.js`, presentation in 
 
 WEB-03 presentation lives in `cinema.css`, bounded page/film motion in `cinema.js`, and optional geometry inspection in `inspector.js`. The native modal supports Escape, focus restoration, camera presets, keyboard orbit and explicit zoom. Portrait camera framing differs from landscape framing. Changing aircraft cancels obsolete loads; loading failures preserve access to the existing turntable.
 
-HTML references styles/scripts with a shared release query (`?v=web03-1`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
+HTML references styles/scripts with a shared release query (`?v=web04-1`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
 
 Publication uses a separate `gh-pages` branch with only the static website. GitHub Pages serves `/` from that branch; `.nojekyll` disables processing. The main working tree and its unrelated pending changes are never included in that publication. The website is a project showcase, not a browser build of the simulator.
 

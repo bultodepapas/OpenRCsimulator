@@ -1,6 +1,6 @@
 # Desktop delivery plan
 
-2026-10-15 · Revision 23 · Step prefix: **DT-**.
+2026-10-15 · Revision 24 · Step prefix: **DT-**.
 
 **Status:** DT-00, DT-00-R1 and DT-00-R2 research is complete. DT-01–DT-12 remain open; initial DT-10/10a measurements and a narrow DT-11a lake geometry reuse repair are recorded through VQ-01c; cold loading and package qualification remain open. The owner acceptance gate DT-13 is open. No fullscreen, installer, public signing/notarization or native Windows/macOS acceptance has shipped through this track.
 
@@ -27,6 +27,8 @@ DT-11a continuation (2026-10-15): [bounded fuselage light station scans](researc
 DT-11a continuation (2026-10-15): [bounded wing light station scans](research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-stations/README.md) preserve 300 native skin/kit pairs and reduce measured two-skin construction by 15–28%. Three permanent endpoint/order checks pass; native night-kit checks are clean. Extra's small complete-kit difference is mixed across processes and does not qualify a reliable gain. Home retains the four-object audio shutdown diagnostic. Full loading, lifecycle and isolated package qualification remain open.
 
 DT-11a continuation (2026-10-15): [direct light-contour edge traversal](research/visual-quality-implementation/VQ-01c/loading/night-kit/edge-walk/README.md) removes temporary endpoint arrays while preserving 300 native contour/kit pairs. Complete-kit pooled medians decrease 2–8%; individual process variation is retained. Field, headless/native night-kit and Home-cache checks pass cleanly in this run. The historical audio exit diagnostic and full loading/lifecycle/package gates remain open.
+
+DT-11a continuation (2026-10-15): [single-pass light geometry extraction](research/visual-quality-implementation/VQ-01c/loading/night-kit/geometry-pass/README.md) preserves 300 native geometry/kit pairs and reduces combined extraction by 17–43%, with complete-kit pooled median reductions of 2–5.5%. Three filter/order/ownership regressions pass. A native probe rejects direct `get_faces()` substitution because it includes triangle strips. Home assertions pass with the existing audio shutdown warning; full loading and lifecycle acceptance remain open.
 
 Godot 4.7.2 is pinned, Compatibility is the renderer, physics runs at 240 Hz, and `app/project.godot` sets a 1280×720 viewport. Presets export Linux x86_64, Windows x86_64 and a universal macOS app from the Ubuntu CI job. `app/export.sh` embeds the PCK, creates ZIPs and `SHA256SUMS`, checks the exported Linux binary with a trimmed-flight trace, checks field data in each pack, checks macOS slices for an ad-hoc signature, and checks Windows/macOS numeric version metadata.
 

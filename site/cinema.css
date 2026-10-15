@@ -26,11 +26,12 @@
 .inspector-details button[aria-pressed=true] { border-color:var(--lime); color:var(--lime); }
 .inspector-details button:hover { color:white; background:#243231; }
 .inspector-details button:disabled { opacity:.4; }
+#detail-unavailable { max-width:175px; font-size:10px; line-height:1.5; color:#cad0c6; margin-bottom:12px; }
 .reading-progress { position:fixed; inset:0 0 auto; height:2px; background:var(--lime); z-index:30; transform:scaleX(0); transform-origin:left; pointer-events:none; }
 .hero { isolation:isolate; min-height:610px; }
 .hero h1 { font-size:clamp(155px,20vw,320px); z-index:1; }
 .hero-asterisk { font-size:.2em; margin-top:25px; }
-.hero-aircraft { top:12%; right:-8%; width:83%; max-width:1440px; mix-blend-mode:normal; z-index:0; }
+.hero-aircraft { top:12%; right:0; width:83%; max-width:1440px; mix-blend-mode:normal; z-index:0; }
 .hero-film { position:relative; transform:translate3d(0,var(--hero-drift,0px),0); will-change:transform; mask-image:linear-gradient(90deg,transparent 0%,#000 13%,#000 92%,transparent),linear-gradient(0deg,transparent,#000 12%,#000 88%,transparent); mask-composite:intersect; }
 .hero-film img { width:100%; aspect-ratio:8/5; object-fit:cover; }
 .hero-film video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity 1.2s var(--ease-out); }
@@ -110,7 +111,7 @@ html[data-theme=night] .inspect-launch>span>span { color:#b3beb4; }
 html[data-theme=night] .inspect-launch:hover .inspect-symbol { color:#101820; }
 @keyframes cinema-enter { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
 @keyframes studio-open { from { opacity:0; transform:translateY(15px); } to { opacity:1; transform:none; } }
-@media(min-width:1650px) { .hero-aircraft { right:-3%; top:4%; } }
+@media(min-width:1650px) { .hero-aircraft { right:0; top:4%; } }
 @media(max-width:1050px) {
   .jet-study { gap:4vw; grid-template-columns:minmax(0,1.3fr) minmax(250px,1fr); }
   .hero-aircraft { right:-21%; top:17%; width:103%; }
@@ -146,12 +147,12 @@ html[data-theme=night] .inspect-launch:hover .inspect-symbol { color:#101820; }
   .hero { min-height:620px; max-height:930px; }
   .hero h1 { font-size:30vw; margin-top:26px; }
   .hero-asterisk { margin-top:10px; font-size:.16em; margin-left:7px; }
-  .hero-aircraft { top:22%; right:-9%; width:118%; }
+  .hero-aircraft { top:22%; right:-2%; width:110%; }
   .hero-copy { bottom:84px; }
   .hero-copy h2 { font-size:clamp(29px,8vw,36px); }
   .hero-copy p { font-size:11px; margin:12px 0 17px; }
   .hero-copy .button { padding:14px 18px; }
-  .hero-scene-caption { bottom:90px; right:var(--pad); }
+  .hero-scene-caption { top:52%; bottom:auto; right:var(--pad); }
   .hero-scene-caption .aircraft-note { display:none; }
   #film-toggle { width:38px; height:38px; }
   .hero-bottom { height:56px; }
@@ -176,7 +177,7 @@ html[data-theme=night] .inspect-launch:hover .inspect-symbol { color:#101820; }
   .inspector-footer p:first-child { font-size:9px; }
   .inspector-footer p:last-child { font-size:7px; margin-top:7px; }
 }
-@media(max-width:700px) and (min-height:830px) { .hero-copy { bottom:100px; } .hero-scene-caption { bottom:108px; } }
+@media(max-width:700px) and (min-height:830px) { .hero-copy { bottom:100px; } }
 @media(max-height:530px) and (orientation:landscape) {
   .inspector-details { top:12px; left:22px; }
   .inspector-details>.eyebrow { display:none; }

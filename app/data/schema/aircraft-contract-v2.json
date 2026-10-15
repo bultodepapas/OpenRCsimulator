@@ -30,7 +30,8 @@
       "terminal_hull"
     ],
     "flaps": [
-      "not_simulated"
+      "not_simulated",
+      "simulated"
     ]
   },
   "object_rules": [
@@ -66,6 +67,7 @@
         "crash_hull",
         "crash_hull_components",
         "landing_gear",
+        "flaps",
         "plausibility",
         "controls",
         "aero",
@@ -232,13 +234,25 @@
     },
     {
       "path": "/controls/keyboard",
-      "required": ["pitch_press_time", "pitch_release_time"],
-      "allowed": ["pitch_press_time", "pitch_release_time"]
+      "required": [
+        "pitch_press_time",
+        "pitch_release_time"
+      ],
+      "allowed": [
+        "pitch_press_time",
+        "pitch_release_time"
+      ]
     },
     {
       "path": "/controls/gamepad",
-      "required": ["pitch_scale"],
-      "allowed": ["pitch_scale", "yaw_scale", "yaw_response_time"]
+      "required": [
+        "pitch_scale"
+      ],
+      "allowed": [
+        "pitch_scale",
+        "yaw_scale",
+        "yaw_response_time"
+      ]
     },
     {
       "path": "/controls/rates",
@@ -892,6 +906,33 @@
         "drag_area",
         "drag_center"
       ]
+    },
+    {
+      "path": "/flaps",
+      "required": [
+        "max_angle_deg",
+        "takeoff_angle_deg",
+        "inner_span_m",
+        "outer_span_m",
+        "hinge_fraction",
+        "extension_time",
+        "retraction_time",
+        "max_speed_mps",
+        "elevator_mix_per_flap_fraction",
+        "aerodynamic_gain"
+      ],
+      "allowed": [
+        "max_angle_deg",
+        "takeoff_angle_deg",
+        "inner_span_m",
+        "outer_span_m",
+        "hinge_fraction",
+        "extension_time",
+        "retraction_time",
+        "max_speed_mps",
+        "elevator_mix_per_flap_fraction",
+        "aerodynamic_gain"
+      ]
     }
   ],
   "quantity_paths": [
@@ -941,7 +982,8 @@
     "/landing_gear/retraction/retraction_time",
     "/landing_gear/retraction/drag_area",
     "/landing_gear/retraction/drag_center",
-    "/landing_gear/contacts/*/retraction_path"
+    "/landing_gear/contacts/*/retraction_path",
+    "/flaps/*"
   ],
   "array_rules": [
     {
@@ -1134,7 +1176,8 @@
     {
       "path": "/capabilities/flaps",
       "values": [
-        "not_simulated"
+        "not_simulated",
+        "simulated"
       ]
     },
     {

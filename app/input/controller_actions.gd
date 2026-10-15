@@ -14,7 +14,7 @@ const AUTOMATIC_AUX := {
 	"gear_toggle": {"channel": "gear", "button": JOY_BUTTON_B},
 	"smoke_toggle": {"channel": "smoke", "button": JOY_BUTTON_RIGHT_SHOULDER},
 }
-const SUPPORTED_AUX := {"gear": true, "smoke": true, "flaps": false}
+const SUPPORTED_AUX := {"gear": true, "smoke": true, "flaps": true}
 static var _definition_cache: Dictionary = {}
 
 ## Semantic gamepad actions are data, not synthetic keyboard events. The owning input router

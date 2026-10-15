@@ -1757,8 +1757,8 @@ msgstr "Eje —"
 msgid "AUXILIARY CHANNELS"
 msgstr "CANALES AUXILIARES"
 
-msgid "Optional Smoke, Flaps and Landing gear inputs can use axes or buttons. Flaps and landing gear are requests only; aircraft physics does not simulate them. Axis endpoints need at least 0.5 travel."
-msgstr "Las entradas opcionales de humo, flaps y tren de aterrizaje pueden usar ejes o botones. Los flaps y el tren solo generan solicitudes; la física del avión no los simula. Los extremos del eje requieren un recorrido mínimo de 0,5."
+msgid "Optional Smoke, Flaps and Landing gear inputs can use axes or buttons. Availability and effect depend on the selected aircraft. Axis endpoints need at least 0.5 travel."
+msgstr "Las entradas opcionales de humo, flaps y tren de aterrizaje pueden usar ejes o botones. La disponibilidad y el efecto dependen del avión seleccionado. Los extremos del eje requieren un recorrido mínimo de 0,5."
 
 msgid "Smoke"
 msgstr "Humo"
@@ -1820,8 +1820,35 @@ msgstr "Borrar"
 msgid "Action cleared. Save the profile to keep it."
 msgstr "Acción borrada. Guarda el perfil para conservar el cambio."
 
-msgid "Flaps request: %d%% — aircraft flaps are not simulated."
-msgstr "Solicitud de flaps: %d%% — el avión no simula los flaps."
+msgid "Flaps request accepted."
+msgstr "Solicitud de flaps aceptada."
+
+msgid "Flaps request was refused."
+msgstr "Se rechazó la solicitud de flaps."
+
+msgid "Flaps are unavailable on this aircraft."
+msgstr "Los flaps no están disponibles en este avión."
+
+msgid "Flaps are controlled by the radio AUX input."
+msgstr "Los flaps se controlan con la entrada AUX de la radio."
+
+msgid "Flaps: %.0f%% requested · %.1f° actual / %.1f° target"
+msgstr "Flaps: %.0f%% solicitados · %.1f° reales / %.1f° objetivo"
+
+msgid " · estimated limit %.0f m/s (advisory)"
+msgstr " · límite estimado %.0f m/s (recomendación)"
+
+msgid "Flaps overspeed advisory: above the estimated limit of %.0f m/s; no automatic retraction."
+msgstr "Aviso de exceso de velocidad con flaps: se supera el límite estimado de %.0f m/s; no se retraen automáticamente."
+
+msgid "Requested %.0f%% · actual %.1f°"
+msgstr "Solicitados %.0f%% · reales %.1f°"
+
+msgid "Moving"
+msgstr "En movimiento"
+
+msgid "Overspeed advisory"
+msgstr "Aviso de exceso de velocidad"
 
 msgid "Landing gear request: %s — retraction is not simulated."
 msgstr "Solicitud del tren de aterrizaje: %s — la retracción no se simula."
@@ -2529,8 +2556,11 @@ msgstr "Palanca der. ↔"
 msgid "Right stick ↕"
 msgstr "Palanca der. ↕"
 
-msgid "Gamepads: B/Circle controls retractable gear and RB/R1 controls an installed smoke pump automatically. Existing assignments take priority. Flaps are not simulated. For other joysticks, use Remap to choose the actual buttons."
-msgstr "Mandos de juego: B/Círculo acciona el tren retráctil y RB/R1 la bomba de humo instalada automáticamente. Tus asignaciones tienen prioridad. Los flaps no están simulados. Para otros joysticks, usa Reasignar y elige los botones reales."
+msgid "Gamepads: B/Circle controls retractable gear and RB/R1 controls an installed smoke pump automatically. Flap actions depend on the selected aircraft. Existing assignments take priority; remap other joysticks to choose their buttons."
+msgstr "Mandos de juego: B/Círculo acciona el tren retráctil y RB/R1 controla automáticamente la bomba de humo instalada. Las acciones de flaps dependen del avión seleccionado. Tus asignaciones tienen prioridad; reasigna los botones de otros joysticks."
+
+msgid "Flaps: next position (Shift+F previous)"
+msgstr "Flaps: posición siguiente (Mayús+F anterior)"
 
 msgid "This aircraft"
 msgstr "Este avión"

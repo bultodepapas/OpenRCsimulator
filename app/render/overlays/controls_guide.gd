@@ -155,7 +155,7 @@ func _controller_rows() -> void:
 			prompt.text = tr("Axis %d") % int(binding.axis)
 		elif not gamepad:
 			prompt.text = tr("Button %d") % int(binding.button)
-		_row(tr({ smoke = "Smoke AUX", flaps = "Flaps request", gear = "Gear request" }[channel]), prompt.text)
+		_row(tr({ smoke = "Smoke AUX", flaps = "Flaps", gear = "Gear request" }[channel]), prompt.text)
 	_row(tr("Pause"), Keys.label(KEY_ESCAPE))
 	_row(tr("Restart flight"), Keys.label(KEY_R))
 	_note(tr("Aircraft capabilities determine which auxiliary controls are available."))
@@ -178,7 +178,7 @@ func _equipment_rows(profile: Dictionary, bindings: Dictionary, gamepad: bool, f
 		elif not gamepad and binding.get("type", "") == "button":
 			prompt = {text = tr("Button %d") % int(binding.button), texture_path = ""}
 		if not available:
-			caption += "\n" + tr("Not simulated" if channel == "flaps" else "Not available")
+			caption += "\n" + tr("Not available")
 			if binding.get("type", "unbound") == "unbound":
 				prompt.text = "—"
 		elif binding.get("type", "unbound") == "unbound":
@@ -192,8 +192,17 @@ func _update_equipment_state() -> void:
 	var names := {up = "Up", down = "Down", extending = "Extending", retracting = "Retracting", on = "On", off = "Off"}
 	for channel: String in _equipment_labels:
 		var entry: Dictionary = _equipment_labels[channel]
-		var state := str(_equipment_state.get(channel, ""))
-		entry.label.text = entry.caption + ("\n" + tr(names[state]) if names.has(state) else "")
+		var state: Variant = _equipment_state.get(channel, "")
+		if channel == "flaps" and state is Dictionary:
+			var state_line := tr("Requested %.0f%% · actual %.1f°") % [float(state.get("requested", 0.0)) * 100.0, float(state.get("angle_deg", 0.0))]
+			if bool(state.get("moving", false)):
+				state_line += " · " + tr("Moving")
+			if bool(state.get("overspeed", false)):
+				state_line += " · " + tr("Overspeed advisory")
+			entry.label.text = entry.caption + "\n" + state_line
+			continue
+		var state_name := str(state)
+		entry.label.text = entry.caption + ("\n" + tr(names[state_name]) if names.has(state_name) else "")
 
 
 func _section(caption: String) -> void:
