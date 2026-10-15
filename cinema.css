@@ -1,10 +1,37 @@
 /* WEB-03: studio direction, quiet depth and a deliberate 3D inspection. */
 :root { --ease-out: cubic-bezier(.2,.7,.2,1); }
+.hero-actions { display:flex; gap:24px; align-items:center; flex-wrap:wrap; }
+.hero-inspect { background:none; border:0; border-bottom:1px solid #81928b; color:#dce8ab; font-size:12px; padding:13px 0; display:inline-flex; gap:18px; }
+.hero-inspect>span:last-child { transition:transform .3s var(--ease-out); }
+.hero-inspect:hover>span:last-child { transform:translate(3px,-3px); }
+.jet-study { display:grid; grid-template-columns:minmax(0,1.75fr) minmax(280px,1fr); align-items:center; gap:6vw; background:#101820; color:#f1f0e8; padding-top:90px; padding-bottom:90px; }
+.jet-study-media { position:relative; min-width:0; overflow:hidden; }
+.jet-study-media img { width:100%; height:auto; aspect-ratio:8/5; object-fit:cover; }
+.jet-study-media figcaption { display:flex; justify-content:space-between; gap:16px; margin-top:24px; font-size:8px; letter-spacing:.08em; color:#aebabe; padding-top:20px; border-top:1px solid #ffffff26; }
+.jet-study-copy>.eyebrow { color:#b4c0ac; font-size:9px; }
+.jet-study-copy h2 { font-size:clamp(38px,4vw,62px); margin:24px 0; }
+.jet-study-copy>p:not(.eyebrow):not(.sr-only) { color:#b3c0c1; font-size:12px; max-width:330px; }
+.jet-detail-choices { margin-top:25px; border-top:1px solid #ffffff26; }
+.jet-detail-choices button { display:flex; align-items:center; width:100%; border:0; border-bottom:1px solid #ffffff26; color:#a8b4b8; background:none; padding:15px 0; gap:19px; text-align:left; }
+.jet-detail-choices button strong { font-size:16px; font-weight:500; }
+.jet-detail-choices button>span:first-child { font-family:Barlow,'Arial Narrow',sans-serif; font-size:22px; }
+.jet-detail-choices button>span:last-child { margin-left:auto; opacity:0; transform:translateX(-7px); transition:opacity .25s,transform .25s; }
+.jet-detail-choices button[aria-pressed=true],.jet-detail-choices button:hover { color:var(--lime); }
+.jet-detail-choices button[aria-pressed=true]>span:last-child,.jet-detail-choices button:hover>span:last-child { opacity:1; transform:none; }
+.jet-detail-open { background:none; color:#edf0e8; border:0; border-bottom:1px solid #81928b; margin-top:22px; font-size:11px; gap:18px; }
+.inspector-details { position:absolute; z-index:1; left:var(--pad); top:25px; }
+.inspector-details>.eyebrow { color:#b7c3b5; display:block; font-size:8px; margin-bottom:15px; }
+.inspector-details>div { display:flex; flex-direction:column; align-items:start; gap:3px; }
+.inspector-details button { text-align:left; color:#c2ccca; font-size:11px; background:#101820d9; border:0; border-left:1px solid #56645f; padding:12px 16px; min-width:115px; }
+.inspector-details button[aria-pressed=true] { border-color:var(--lime); color:var(--lime); }
+.inspector-details button:hover { color:white; background:#243231; }
+.inspector-details button:disabled { opacity:.4; }
+#detail-unavailable { max-width:175px; font-size:10px; line-height:1.5; color:#cad0c6; margin-bottom:12px; }
 .reading-progress { position:fixed; inset:0 0 auto; height:2px; background:var(--lime); z-index:30; transform:scaleX(0); transform-origin:left; pointer-events:none; }
 .hero { isolation:isolate; min-height:610px; }
 .hero h1 { font-size:clamp(155px,20vw,320px); z-index:1; }
 .hero-asterisk { font-size:.2em; margin-top:25px; }
-.hero-aircraft { top:12%; right:-8%; width:83%; max-width:1440px; mix-blend-mode:normal; z-index:0; }
+.hero-aircraft { top:12%; right:0; width:83%; max-width:1440px; mix-blend-mode:normal; z-index:0; }
 .hero-film { position:relative; transform:translate3d(0,var(--hero-drift,0px),0); will-change:transform; mask-image:linear-gradient(90deg,transparent 0%,#000 13%,#000 92%,transparent),linear-gradient(0deg,transparent,#000 12%,#000 88%,transparent); mask-composite:intersect; }
 .hero-film img { width:100%; aspect-ratio:8/5; object-fit:cover; }
 .hero-film video { position:absolute; inset:0; width:100%; height:100%; object-fit:cover; opacity:0; transition:opacity 1.2s var(--ease-out); }
@@ -84,9 +111,10 @@ html[data-theme=night] .inspect-launch>span>span { color:#b3beb4; }
 html[data-theme=night] .inspect-launch:hover .inspect-symbol { color:#101820; }
 @keyframes cinema-enter { from { opacity:0; transform:translateY(20px); } to { opacity:1; transform:none; } }
 @keyframes studio-open { from { opacity:0; transform:translateY(15px); } to { opacity:1; transform:none; } }
-@media(min-width:1650px) { .hero-aircraft { right:-3%; top:4%; } }
+@media(min-width:1650px) { .hero-aircraft { right:0; top:4%; } }
 @media(max-width:1050px) {
-  .hero-aircraft { right:-21%; top:17%; width:103%; }
+  .jet-study { gap:4vw; grid-template-columns:minmax(0,1.3fr) minmax(250px,1fr); }
+  .hero-aircraft { right:0; top:17%; width:83%; }
   .hero-scene-caption .aircraft-note { font-size:8px; }
   .hero-scene-caption { gap:15px; }
   .inspector-controls { gap:15px; }
@@ -95,15 +123,36 @@ html[data-theme=night] .inspect-launch:hover .inspect-symbol { color:#101820; }
   .camera-presets button { padding:12px; }
 }
 @media(max-width:700px) {
+  .hero-actions { gap:12px 20px; }
+  .hero-inspect { font-size:11px; }
+  .hero-copy .button { gap:25px; }
+  .jet-study { display:flex; flex-direction:column; align-items:stretch; gap:32px; padding-top:55px; padding-bottom:60px; }
+  .jet-study-copy { display:contents; }
+  .jet-study-copy>.eyebrow { order:-3; font-size:8px; }
+  .jet-study-copy h2 { order:-2; font-size:45px; margin:-12px 0 0; }
+  .jet-study-copy>p:not(.eyebrow):not(.sr-only) { order:-1; font-size:12px; margin-top:-13px; max-width:100%; }
+  .jet-study-media { margin-left:calc(-1*var(--pad)); margin-right:calc(-1*var(--pad)); }
+  .jet-study-media figcaption { margin:10px var(--pad) 0; font-size:7px; }
+  .jet-detail-choices { display:flex; margin:0; border-top:0; gap:18px; }
+  .jet-detail-choices button { display:block; padding:0 0 14px; flex:1; }
+  .jet-detail-choices button strong { font-size:13px; display:block; margin-top:8px; }
+  .jet-detail-choices button>span:first-child { font-size:18px; }
+  .jet-detail-choices button>span:last-child { display:none; }
+  .jet-detail-choices button[aria-pressed=true] { border-color:var(--lime); }
+  .jet-detail-open { margin-top:0; align-self:start; }
+  .inspector-details { top:14px; left:22px; right:22px; }
+  .inspector-details>.eyebrow { display:none; }
+  .inspector-details>div { flex-direction:row; gap:0; justify-content:center; }
+  .inspector-details button { border-left:0; border-bottom:1px solid #56645f; min-width:0; padding:11px 10px; font-size:10px; text-align:center; flex:1; }
   .hero { min-height:620px; max-height:930px; }
   .hero h1 { font-size:30vw; margin-top:26px; }
   .hero-asterisk { margin-top:10px; font-size:.16em; margin-left:7px; }
-  .hero-aircraft { top:22%; right:-9%; width:118%; }
+  .hero-aircraft { top:22%; right:-2%; width:110%; }
   .hero-copy { bottom:84px; }
   .hero-copy h2 { font-size:clamp(29px,8vw,36px); }
   .hero-copy p { font-size:11px; margin:12px 0 17px; }
   .hero-copy .button { padding:14px 18px; }
-  .hero-scene-caption { bottom:90px; right:var(--pad); }
+  .hero-scene-caption { top:52%; bottom:auto; right:var(--pad); }
   .hero-scene-caption .aircraft-note { display:none; }
   #film-toggle { width:38px; height:38px; }
   .hero-bottom { height:56px; }
@@ -128,8 +177,11 @@ html[data-theme=night] .inspect-launch:hover .inspect-symbol { color:#101820; }
   .inspector-footer p:first-child { font-size:9px; }
   .inspector-footer p:last-child { font-size:7px; margin-top:7px; }
 }
-@media(max-width:700px) and (min-height:830px) { .hero-copy { bottom:100px; } .hero-scene-caption { bottom:108px; } }
+@media(max-width:700px) and (min-height:830px) { .hero-copy { bottom:100px; } }
 @media(max-height:530px) and (orientation:landscape) {
+  .inspector-details { top:12px; left:22px; }
+  .inspector-details>.eyebrow { display:none; }
+  .inspector-details button { padding:7px 10px; min-width:95px; font-size:10px; }
   .inspector-top { padding-top:12px; padding-bottom:12px; }
   .inspector-top h2 { font-size:20px; }
   .inspector-top .eyebrow { display:none; }

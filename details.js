@@ -1,4 +1,5 @@
 const websiteCopy = {
+  exploreJet:'Explore the jet',jetStudyKicker:'VENTAGE JET / A CLOSER LOOK',jetStudyHeading:'Ventage Jet.<br>Up close.',jetStudyIntro:'Canopy, wing and empennage. Three views of the model that you can explore in 3D.',jetCockpit:'Canopy',jetWing:'Wing',jetTail:'Empennage',jetOverview:'Overview',jetStudyCta:'Explore this detail in 3D',jetStudyNote:'ACTUAL MODEL · STUDIO RENDER',jetDetailsLabel:'DETAIL VIEWS',
   inspectCta:'Closer. Explore in 3D.',inspectSub:'Orbit freely, change the view and discover the details.',inspectKicker:'THE HANGAR / 3D STUDIO',inspectClose:'Close',inspectAircraft:'Aircraft',viewPerspective:'Perspective',viewSide:'Side',viewTop:'Top',inspectHelp:'Drag to orbit · Scroll or pinch to zoom · Arrow keys to rotate',inspectNote:'PROJECT MODEL · VISUALIZATION, NOT FLIGHT',
   helicopterTab:'Helicopter',
   navPartners:'Partners', supportedBy:'SUPPORTED BY', supportKicker:'THE SUPPORT BEHIND THE PROJECT', mainSponsor:'PRINCIPAL SPONSOR',
