@@ -107,11 +107,11 @@ Integration review rejected an intermediate tail-centroid helper that ignored th
 
 ## AV-09-F — operational flaps (2026-10-15)
 
-Implementation sequence: preserve an exact-replayed `.orfl` baseline; extend the optional
-v2 flap capability and generated aircraft sources; connect sampled physical actuator,
-local wing loads/wake and manual elevator mix; expose keyboard/controller/AUX operation
-and accepted hinge angles; verify lifecycle, recorder/replay, aerodynamic trends and
-unchanged clean-flight behavior. Evidence belongs in
+The implementation preserves an exact-replayed `.orfl` baseline, extends the optional
+v2 flap capability and generated aircraft sources, and connects sampled physical travel,
+local wing loads/wake and the manual elevator mix. Keyboard/controller/AUX operation
+and accepted hinge angles share the same state. Lifecycle, recorder/replay, aerodynamic
+comparisons and remaining limits are recorded in
 [AV-09 flap evidence](research/avanti-flaps/AV-09/README.md).
 
 The A200 manual specifies 0° clean, 20° takeoff and 50° landing, with 8% and 20%
@@ -122,7 +122,7 @@ the Blender rig provides presentation only. Extension/retraction time, aerodynam
 increments and the flap-speed advisory are estimates, not measured A200 limits.
 No automatic retraction, structural damage or closed-loop attitude assistance is implied.
 
-Acceptance requires finite/passive aerodynamic loads, greater useful low-angle lift
-and drag, symmetric deployment, continuous travel and reversal, reset/pause/rollback,
-complete exact replay in transit and explicit numerical comparison reports. Independent
-physical identification and RC pilot landing evaluation remain open.
+Software checks cover finite/dissipative forward-flight loads, low-angle lift and drag,
+symmetric deployment, continuous travel and reversal, reset/pause/rollback and exact
+replay in transit. Independent physical identification and RC pilot landing evaluation
+remain open; a broad-angle model lift peak is not a validated operating stall limit.

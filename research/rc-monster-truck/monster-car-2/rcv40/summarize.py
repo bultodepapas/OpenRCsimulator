@@ -81,7 +81,7 @@ def main():
         check(sha(OUT / "checks" / row["log"]) == row["log_sha256"], "test log changed")
         check(sha(ROOT / "app/tests" / row["test"]) == row["test_sha256"], "test source changed")
         for summary in row["summary"]:
-            match = re.search(r"(\d+) passed", summary)
+            match = re.search(r"(\d+) (?:passed|checks)", summary)
             if match:
                 test_assertions += int(match[1])
     for path in OUT.rglob("*.log"):

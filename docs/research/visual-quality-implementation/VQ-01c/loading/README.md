@@ -1,5 +1,10 @@
 # DT-11a — reuse unchanged lake geometry
 
+2026-10-15 construction follow-up: [native helicopter canopy transforms](heli-canopy/transforms/README.md)
+reduce geometry extraction by 14.6%, preserving 60 real geometry/kit comparisons.
+Non-indexed surfaces now handle Godot's null index slot. Complete-kit timings are
+mixed; full loading, FPS and lifecycle qualification remain open.
+
 2026-10-15 presentation follow-up: [reuse unchanged helicopter optic gains](heli-updates/README.md)
 preserves 5,245 native update-state comparisons and reduces stable-light CPU
 updates by about 19 µs. Six permanent transition checks are added; changing dusk

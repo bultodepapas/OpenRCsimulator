@@ -1,0 +1,84 @@
+{
+	"accepted_start_inputs": [
+		0.0,
+		0.05770393169164367,
+		0.0,
+		0.08596411580227241,
+		0.0,
+		0.0,
+		0.0
+	],
+	"aircraft_id": "sebart-avanti-s-a200-p100rx",
+	"aircraft_input_sha256": "9eec7a8e90db49bc5944d153983724c15ca92465cf650754b0fbf311da6318d7",
+	"aircraft_path": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/avanti-flaps/AV-09/evidence-2026-10-15/models/av09_flaps_aero_disabled.json",
+	"dt_s": 0.004166666666666667,
+	"evidence_step": "AV-09",
+	"flap_aux_index": 16,
+	"flap_input_index": 6,
+	"flap_law": "controls.flaps.hinged_trailing_edge.v1",
+	"interpretation": "The source log contains one accepted command tape. Candidate replay reuses its tick-indexed accepted inputs; it is open-loop and is not an adapted piloted flight.",
+	"physics_ticks_per_second": 240,
+	"recorder_observer_usec": 305216,
+	"recorder_peak_buffer_rows": 240,
+	"rows_including_initial": 5521,
+	"segments": [
+		{
+			"cmd_flaps": 0.0,
+			"duration_s": 3.0,
+			"first_tick": 1,
+			"last_tick": 720,
+			"name": "clean_hold",
+			"pitch_offset_from_trim_command": 0.0
+		},
+		{
+			"cmd_flaps": 0.4,
+			"duration_s": 3.0,
+			"first_tick": 721,
+			"last_tick": 1440,
+			"name": "takeoff_flap_20deg",
+			"pitch_offset_from_trim_command": 0.0
+		},
+		{
+			"cmd_flaps": 1.0,
+			"duration_s": 7.0,
+			"first_tick": 1441,
+			"last_tick": 3120,
+			"name": "landing_flap_50deg",
+			"pitch_offset_from_trim_command": 0.0
+		},
+		{
+			"cmd_flaps": 1.0,
+			"duration_s": 1.5,
+			"first_tick": 3121,
+			"last_tick": 3480,
+			"name": "same_tape_pitch_pulse",
+			"pitch_offset_from_trim_command": 0.15
+		},
+		{
+			"cmd_flaps": 1.0,
+			"duration_s": 2.5,
+			"first_tick": 3481,
+			"last_tick": 4080,
+			"name": "open_loop_recovery",
+			"pitch_offset_from_trim_command": 0.0
+		},
+		{
+			"cmd_flaps": 0.0,
+			"duration_s": 4.0,
+			"first_tick": 4081,
+			"last_tick": 5040,
+			"name": "flap_retraction",
+			"pitch_offset_from_trim_command": 0.0
+		},
+		{
+			"cmd_flaps": 0.0,
+			"duration_s": 2.0,
+			"first_tick": 5041,
+			"last_tick": 5520,
+			"name": "clean_return",
+			"pitch_offset_from_trim_command": 0.0
+		}
+	],
+	"tape_id": "av09-flaps-open-loop-v1",
+	"ticks": 5520
+}

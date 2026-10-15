@@ -1,7 +1,7 @@
 const translations = {
   skip: 'Skip to content', navHangar: 'The hangar', navField: 'The field', navProject: 'The project', download: 'Download',
   heroEyebrow: 'MODEL AVIATION · OPEN SOURCE', renderNote: 'SIMULATOR MODEL · STUDIO VIEW',
-  heroHeading: 'The flying field<br>is open.', heroCopy: 'Your transmitter. Your next flight.<br>An RC simulator we’re building in the open.', heroCta: 'Let’s fly',
+  heroHeading: 'The flying field<br>is open.', heroCopy: 'Your transmitter. Your next flight.<br>An RC simulator we’re building in the open.', heroCta: 'Download',
   platforms: 'WINDOWS / LINUX / macOS', explore: 'EXPLORE THE PROJECT', free: 'FREE. FROM YOUR FIRST FLIGHT.',
   hangarKicker: '01 / THE HANGAR', hangarHeading: 'Every aircraft.<br>A different character.', hangarIntro: 'From a wooden classic to a jet.<br>Five fixed-wing aircraft in current source, each with its own configuration.',
   studio: 'AIRCRAFT STUDY / OPENRC', actualModel: 'ACTUAL PROJECT MODEL', span: 'Wingspan', power: 'Powerplant', gear: 'Landing gear', aircraftDetails: 'Explore the model',

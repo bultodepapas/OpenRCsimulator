@@ -120,7 +120,8 @@ func _run() -> void:
 			"body_rates_radps": [0.0, 0.0, 0.0],
 			"control": "symmetric ailerons/rudder at zero; the authored flap-to-elevator mix is included in the steady elevator command",
 			"trim": "Newton solution of vertical lift = weight and aerodynamic pitch moment = 0, with level flight-path kinematics; drag is reported as required thrust, not solved propulsion trim",
-			"polar": "static fixed-speed alpha sweep from 0 to 70 degrees with zero pilot pitch command; CLmax and implied 1-g stall speed are model-derived only",
+			"polar": "static fixed-speed alpha sweep from 0 to 70 degrees with zero pilot pitch command; the reported maximum is the broad-angle modeled peak, not a measured or usable stall-onset point",
+			"implied_stall_speed": "ideal sqrt(2W/(rho*S*CLmax)) from that broad-angle CL maximum, including post-stall samples; a model sensitivity indicator only, never a landing-speed prescription",
 			"positive_down_flap_moment": "the Glauert quarter-chord flap lift couple is expected negative ΔCm (nose-down) in FRD; full-airplane ΔMy includes tail wake and its sign is reported separately",
 			"flap_gain_0": "software sensitivity control; not the clean aircraft's calibration",
 		},
@@ -219,6 +220,7 @@ func _positive_polar(model: Dictionary, flap_fraction: float, speed: float) -> D
 		"alpha_at_CLmax_deg": rad_to_deg(best_alpha),
 		"CD_at_CLmax": best_cd,
 		"implied_one_g_stall_speed_mps": speed_at_clmax,
+		"implied_one_g_stall_speed_interpretation": "Ideal sqrt(2W/(rho*S*CLmax)) using the global 0-70 degree sweep maximum, including post-stall samples; not measured stall onset or a landing-speed recommendation.",
 	}
 
 

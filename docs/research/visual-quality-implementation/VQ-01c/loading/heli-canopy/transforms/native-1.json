@@ -1,0 +1,151 @@
+{
+	"rows": [
+		{
+			"pair": 0,
+			"usec": 6823,
+			"variant": 0,
+			"workload": "geometry"
+		},
+		{
+			"pair": 0,
+			"usec": 5337,
+			"variant": 1,
+			"workload": "geometry"
+		},
+		{
+			"pair": 1,
+			"usec": 4513,
+			"variant": 1,
+			"workload": "geometry"
+		},
+		{
+			"pair": 1,
+			"usec": 6880,
+			"variant": 0,
+			"workload": "geometry"
+		},
+		{
+			"pair": 2,
+			"usec": 6857,
+			"variant": 0,
+			"workload": "geometry"
+		},
+		{
+			"pair": 2,
+			"usec": 5994,
+			"variant": 1,
+			"workload": "geometry"
+		},
+		{
+			"pair": 3,
+			"usec": 5211,
+			"variant": 1,
+			"workload": "geometry"
+		},
+		{
+			"pair": 3,
+			"usec": 6842,
+			"variant": 0,
+			"workload": "geometry"
+		},
+		{
+			"pair": 4,
+			"usec": 6922,
+			"variant": 0,
+			"workload": "geometry"
+		},
+		{
+			"pair": 4,
+			"usec": 5958,
+			"variant": 1,
+			"workload": "geometry"
+		},
+		{
+			"pair": 5,
+			"usec": 6089,
+			"variant": 1,
+			"workload": "geometry"
+		},
+		{
+			"pair": 5,
+			"usec": 6042,
+			"variant": 0,
+			"workload": "geometry"
+		},
+		{
+			"pair": 0,
+			"usec": 174431,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"pair": 0,
+			"usec": 125059,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"pair": 1,
+			"usec": 142557,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"pair": 1,
+			"usec": 137944,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"pair": 2,
+			"usec": 154637,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"pair": 2,
+			"usec": 146333,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"pair": 3,
+			"usec": 143777,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"pair": 3,
+			"usec": 150255,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"pair": 4,
+			"usec": 165616,
+			"variant": 0,
+			"workload": "kit_build"
+		},
+		{
+			"pair": 4,
+			"usec": 177680,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"pair": 5,
+			"usec": 148817,
+			"variant": 1,
+			"workload": "kit_build"
+		},
+		{
+			"pair": 5,
+			"usec": 146902,
+			"variant": 0,
+			"workload": "kit_build"
+		}
+	],
+	"synthetic_cases": 256,
+	"triangles": 38240,
+	"valid": true
+}

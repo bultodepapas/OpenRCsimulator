@@ -42,7 +42,7 @@ WEB-03 presentation lives in `cinema.css`, bounded page/film motion in `cinema.j
 
 WEB-04 makes the jet the initial catalogue selection and adds direct inspector entries from the opening and the detail study. The study changes only on request; a failed image retains the last displayed view and its matching 3D entry. `assets/cinema/jet-views.json` supplies the three native camera targets in centered model coordinates. Camera moves respect reduced motion, and a failed camera-data request leaves overview, orbit and zoom available. Selecting another aircraft hides the jet-specific controls.
 
-HTML references styles/scripts with a shared release query (`?v=web04-1`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
+HTML references styles/scripts with a shared release query (`?v=web04-2`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
 
 Publication uses a separate `gh-pages` branch with only the static website. GitHub Pages serves `/` from that branch; `.nojekyll` disables processing. The main working tree and its unrelated pending changes are never included in that publication. The website is a project showcase, not a browser build of the simulator.
 
@@ -91,3 +91,5 @@ Camera targets, radii and fields of view were checked in the live viewer, includ
 JavaScript syntax and all 20 local HTML asset references pass. Browser console has no warnings or errors. Lighthouse snapshots score accessibility 100, best practices 100 and SEO 100 on desktop and mobile (38 passed, zero failed); the mobile inspector also scores 100 (27 passed, zero failed). These are not performance audits or physical validation. WEB-04 changes presentation and its native capture pipeline; no simulator runtime or physics files were edited by this track.
 
 Published deployment: `aa2c2cc2b0095b5523646ddc02ea77a3b4e14f3c` ([successful Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38799929595)). A fresh `gh-pages` clone resolves all static references and contains six GLBs, seven jet cinema files and `.nojekyll`, without simulator files. Public HTML, changed styles/scripts and all seven jet files match local SHA-256 values (text line endings normalized). The public opening plays with the jet selected and no initial GLB request; the tail study opens its matching 3D camera, Escape restores focus, and the console remains free of warnings and errors.
+
+CTA follow-up: `web04-2` replaces the opening label with “Descargar” / “Download”, retaining the platform-download target. Both locales were verified locally and publicly. Deployment `b821e2fb152e3201479a91d80588f75a16999811` completed in the [Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38801925068).

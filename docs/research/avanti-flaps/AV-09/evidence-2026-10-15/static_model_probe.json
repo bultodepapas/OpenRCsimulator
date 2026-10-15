@@ -1,0 +1,711 @@
+{
+	"assumptions": {
+		"body_rates_radps": [
+			0.0,
+			0.0,
+			0.0
+		],
+		"control": "symmetric ailerons/rudder at zero; the authored flap-to-elevator mix is included in the steady elevator command",
+		"density_kgm3": 1.225,
+		"flap_gain_0": "software sensitivity control; not the clean aircraft's calibration",
+		"gravity_mps2": 9.80665,
+		"implied_stall_speed": "ideal sqrt(2W/(rho*S*CLmax)) from that broad-angle CL maximum, including post-stall samples; a model sensitivity indicator only, never a landing-speed prescription",
+		"polar": "static fixed-speed alpha sweep from 0 to 70 degrees with zero pilot pitch command; the reported maximum is the broad-angle modeled peak, not a measured or usable stall-onset point",
+		"polar_speed_mps": 30.0,
+		"positive_down_flap_moment": "the Glauert quarter-chord flap lift couple is expected negative ΔCm (nose-down) in FRD; full-airplane ΔMy includes tail wake and its sign is reported separately",
+		"trim": "Newton solution of vertical lift = weight and aerodynamic pitch moment = 0, with level flight-path kinematics; drag is reported as required thrust, not solved propulsion trim",
+		"trim_speeds_mps": [
+			20.0,
+			22.0,
+			24.0,
+			27.0,
+			30.0
+		],
+		"wind_mps": [
+			0.0,
+			0.0,
+			0.0
+		]
+	},
+	"fixed_state_flap_increments": [
+		{
+			"aero_delta_candidate_minus_gain0": {
+				"My_nm": 3.153417025184467,
+				"delta_CD": 0.014359645175397992,
+				"delta_CL": 0.21897239353321651,
+				"delta_Cm_about_cg": 0.028639404531793523,
+				"drag_n": 4.502819502891942,
+				"lift_n": 68.66417325447378,
+				"local_wing_section_couple_and_panel_drag_arm_delta_My_nm": -4.719232485765826,
+				"local_wing_total_delta_My_nm": -2.140071205665052
+			},
+			"angle_deg": 20.0,
+			"flap_fraction": 0.4,
+			"moment_sign_interpretation": "The isolated thin-airfoil quarter-chord flap lift couple is expected negative My (nose-down in FRD); total-airplane delta My also includes induced tail-wake changes and can have the opposite sign.",
+			"net_elevator_te_up_deg": 0.0,
+			"reference_alpha_deg": 7.0,
+			"reference_speed_mps": 27.0
+		},
+		{
+			"aero_delta_candidate_minus_gain0": {
+				"My_nm": 5.2921532974815895,
+				"delta_CD": 0.11740227298364507,
+				"delta_CL": 0.39543785960202993,
+				"delta_Cm_about_cg": 0.048063455584969494,
+				"drag_n": 36.81436679092238,
+				"lift_n": 123.99925517996056,
+				"local_wing_section_couple_and_panel_drag_arm_delta_My_nm": -8.867688528679466,
+				"local_wing_total_delta_My_nm": -4.239858510220033
+			},
+			"angle_deg": 50.0,
+			"flap_fraction": 1.0,
+			"moment_sign_interpretation": "The isolated thin-airfoil quarter-chord flap lift couple is expected negative My (nose-down in FRD); total-airplane delta My also includes induced tail-wake changes and can have the opposite sign.",
+			"net_elevator_te_up_deg": 0.0,
+			"reference_alpha_deg": 7.0,
+			"reference_speed_mps": 27.0
+		}
+	],
+	"method": "AV-09 deterministic static aerodynamic model sensitivity",
+	"models": [
+		{
+			"aircraft_input_sha256": "9eec7a8e90db49bc5944d153983724c15ca92465cf650754b0fbf311da6318d7",
+			"flap_aerodynamic_gain": 0.0,
+			"flap_configurations": [
+				{
+					"flap_angle_deg": 0.0,
+					"flap_fraction": 0.0,
+					"manual_mixer_at_zero_pilot_pitch": {
+						"downward_throw_remaining_fraction": 1.0,
+						"max_elevator_te_down_deg_at_full_down_command": -30.0,
+						"max_elevator_te_up_deg_at_full_up_command": 30.0,
+						"net_elevator_te_up_deg": 0.0,
+						"normalized_pitch_bias": 0.0,
+						"note": "Shows the authored mixer bias and command clamp endpoints; it is not a servo-force or pilot-authority measurement.",
+						"upward_throw_remaining_fraction": 1.0
+					},
+					"one_g_trim_by_speed": [
+						{
+							"one_g_trim": {
+								"CD": 0.07094377770077967,
+								"CL": 0.6671478949071507,
+								"alpha_deg": 8.802699842928885,
+								"iterations": 3,
+								"lift_n": 114.78771553450022,
+								"net_elevator_te_up_deg": 4.071615977841338,
+								"pilot_pitch_command": 0.13572053259471126,
+								"pitch_moment_nm": 7.756131620850759e-07,
+								"required_thrust_n": 12.206400163779687,
+								"status": "converged"
+							},
+							"speed_mps": 20.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.058677586922329744,
+								"CL": 0.5513618752212448,
+								"alpha_deg": 7.1247366460555615,
+								"iterations": 2,
+								"lift_n": 114.78771108003038,
+								"net_elevator_te_up_deg": 3.147508732001142,
+								"pilot_pitch_command": 0.10491695773337141,
+								"pitch_moment_nm": -3.887744977077584e-09,
+								"required_thrust_n": 12.216053008400367,
+								"status": "converged"
+							},
+							"speed_mps": 22.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.05177090407271546,
+								"CL": 0.46329713110819487,
+								"alpha_deg": 5.987648317747935,
+								"iterations": 2,
+								"lift_n": 114.78771104184986,
+								"net_elevator_te_up_deg": 2.656418198677289,
+								"pilot_pitch_command": 0.08854727328924296,
+								"pitch_moment_nm": 7.834266568806925e-11,
+								"required_thrust_n": 12.826894832824653,
+								"status": "converged"
+							},
+							"speed_mps": 24.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.04563304946190039,
+								"CL": 0.36606193075215493,
+								"alpha_deg": 4.732003471635398,
+								"iterations": 2,
+								"lift_n": 114.78771104185019,
+								"net_elevator_te_up_deg": 2.1096468388867966,
+								"pilot_pitch_command": 0.07032156129622655,
+								"pitch_moment_nm": -5.190199381388538e-10,
+								"required_thrust_n": 14.309363677419883,
+								"status": "converged"
+							},
+							"speed_mps": 27.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.04210682917816894,
+								"CL": 0.29651016390924656,
+								"alpha_deg": 3.8337529173914557,
+								"iterations": 2,
+								"lift_n": 114.78771104185063,
+								"net_elevator_te_up_deg": 1.7175435432446315,
+								"pilot_pitch_command": 0.057251451441487716,
+								"pitch_moment_nm": -2.719585889821019e-09,
+								"required_thrust_n": 16.300778620430606,
+								"status": "converged"
+							},
+							"speed_mps": 30.0
+						}
+					],
+					"positive_lift_polar": {
+						"CD_at_CLmax": 0.07928600643661474,
+						"CLmax": 0.7844931337139373,
+						"alpha_at_CLmax_deg": 11.0,
+						"alpha_range_deg": [
+							0.0,
+							70.0
+						],
+						"alpha_step_deg": 0.25,
+						"implied_one_g_stall_speed_interpretation": "Ideal sqrt(2W/(rho*S*CLmax)) using the global 0-70 degree sweep maximum, including post-stall samples; not measured stall onset or a landing-speed recommendation.",
+						"implied_one_g_stall_speed_mps": 18.443633082525523,
+						"samples": 281,
+						"status": "complete"
+					}
+				},
+				{
+					"flap_angle_deg": 20.0,
+					"flap_fraction": 0.4,
+					"manual_mixer_at_zero_pilot_pitch": {
+						"downward_throw_remaining_fraction": 1.0,
+						"max_elevator_te_down_deg_at_full_down_command": -30.0,
+						"max_elevator_te_up_deg_at_full_up_command": 27.599999999999998,
+						"net_elevator_te_up_deg": -2.4000000000000004,
+						"normalized_pitch_bias": -0.08000000000000002,
+						"note": "Shows the authored mixer bias and command clamp endpoints; it is not a servo-force or pilot-authority measurement.",
+						"upward_throw_remaining_fraction": 0.9199999999999999
+					},
+					"one_g_trim_by_speed": [
+						{
+							"one_g_trim": {
+								"CD": 0.07094377771738974,
+								"CL": 0.6671478950809512,
+								"alpha_deg": 8.802699846637196,
+								"iterations": 3,
+								"lift_n": 114.78771556440388,
+								"net_elevator_te_up_deg": 4.071615985159695,
+								"pilot_pitch_command": 0.2157205328386565,
+								"pitch_moment_nm": 7.798105536305222e-07,
+								"required_thrust_n": 12.206400166637572,
+								"status": "converged"
+							},
+							"speed_mps": 20.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.05867758692533232,
+								"CL": 0.551361875254908,
+								"alpha_deg": 7.124736646430831,
+								"iterations": 2,
+								"lift_n": 114.78771108703869,
+								"net_elevator_te_up_deg": 3.1475087315545176,
+								"pilot_pitch_command": 0.18491695771848393,
+								"pitch_moment_nm": -4.5888943222584244e-09,
+								"required_thrust_n": 12.216053009025472,
+								"status": "converged"
+							},
+							"speed_mps": 22.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.05177090407260378,
+								"CL": 0.4632971311081949,
+								"alpha_deg": 5.98764831770286,
+								"iterations": 2,
+								"lift_n": 114.78771104184986,
+								"net_elevator_te_up_deg": 2.6564181982032524,
+								"pilot_pitch_command": 0.16854727327344177,
+								"pitch_moment_nm": -5.509757095012446e-10,
+								"required_thrust_n": 12.826894832796981,
+								"status": "converged"
+							},
+							"speed_mps": 24.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.045633049461725035,
+								"CL": 0.3660619307521546,
+								"alpha_deg": 4.732003471564637,
+								"iterations": 2,
+								"lift_n": 114.78771104185007,
+								"net_elevator_te_up_deg": 2.1096468381426807,
+								"pilot_pitch_command": 0.1503215612714227,
+								"pitch_moment_nm": -1.7692070031216645e-09,
+								"required_thrust_n": 14.309363677364898,
+								"status": "converged"
+							},
+							"speed_mps": 27.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.04210682917799239,
+								"CL": 0.29651016390924567,
+								"alpha_deg": 3.8337529173202074,
+								"iterations": 2,
+								"lift_n": 114.78771104185023,
+								"net_elevator_te_up_deg": 1.7175435424954657,
+								"pilot_pitch_command": 0.13725145141651554,
+								"pitch_moment_nm": -4.273398523935157e-09,
+								"required_thrust_n": 16.30077862036225,
+								"status": "converged"
+							},
+							"speed_mps": 30.0
+						}
+					],
+					"positive_lift_polar": {
+						"CD_at_CLmax": 0.08203176148098067,
+						"CLmax": 0.8029294033109224,
+						"alpha_at_CLmax_deg": 11.0,
+						"alpha_range_deg": [
+							0.0,
+							70.0
+						],
+						"alpha_step_deg": 0.25,
+						"implied_one_g_stall_speed_interpretation": "Ideal sqrt(2W/(rho*S*CLmax)) using the global 0-70 degree sweep maximum, including post-stall samples; not measured stall onset or a landing-speed recommendation.",
+						"implied_one_g_stall_speed_mps": 18.23065893082532,
+						"samples": 281,
+						"status": "complete"
+					}
+				},
+				{
+					"flap_angle_deg": 50.0,
+					"flap_fraction": 1.0,
+					"manual_mixer_at_zero_pilot_pitch": {
+						"downward_throw_remaining_fraction": 1.0,
+						"max_elevator_te_down_deg_at_full_down_command": -30.0,
+						"max_elevator_te_up_deg_at_full_up_command": 24.0,
+						"net_elevator_te_up_deg": -6.0,
+						"normalized_pitch_bias": -0.2,
+						"note": "Shows the authored mixer bias and command clamp endpoints; it is not a servo-force or pilot-authority measurement.",
+						"upward_throw_remaining_fraction": 0.8
+					},
+					"one_g_trim_by_speed": [
+						{
+							"one_g_trim": {
+								"CD": 0.07094377736923889,
+								"CL": 0.667147891425989,
+								"alpha_deg": 8.802699769186463,
+								"iterations": 3,
+								"lift_n": 114.78771493554068,
+								"net_elevator_te_up_deg": 4.071615835566968,
+								"pilot_pitch_command": 0.3357205278522323,
+								"pitch_moment_nm": 6.952900230838832e-07,
+								"required_thrust_n": 12.20640010673565,
+								"status": "converged"
+							},
+							"speed_mps": 20.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.05867758691058583,
+								"CL": 0.5513618750893462,
+								"alpha_deg": 7.124736644591285,
+								"iterations": 3,
+								"lift_n": 114.78771105257047,
+								"net_elevator_te_up_deg": 3.1475087338151493,
+								"pilot_pitch_command": 0.3049169577938383,
+								"pitch_moment_nm": -1.0689201863055275e-09,
+								"required_thrust_n": 12.216053005955409,
+								"status": "converged"
+							},
+							"speed_mps": 22.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.05177090407270106,
+								"CL": 0.4632971311081952,
+								"alpha_deg": 5.987648317742113,
+								"iterations": 3,
+								"lift_n": 114.78771104184995,
+								"net_elevator_te_up_deg": 2.6564181986160107,
+								"pilot_pitch_command": 0.28854727328720037,
+								"pitch_moment_nm": -3.013145288832675e-12,
+								"required_thrust_n": 12.826894832821084,
+								"status": "converged"
+							},
+							"speed_mps": 24.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.045633049461972525,
+								"CL": 0.3660619307521541,
+								"alpha_deg": 4.732003471664523,
+								"iterations": 3,
+								"lift_n": 114.78771104184987,
+								"net_elevator_te_up_deg": 2.1096468391931906,
+								"pilot_pitch_command": 0.2703215613064397,
+								"pitch_moment_nm": -4.239275597228698e-12,
+								"required_thrust_n": 14.309363677442498,
+								"status": "converged"
+							},
+							"speed_mps": 27.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.04210682917847727,
+								"CL": 0.2965101639092448,
+								"alpha_deg": 3.833752917515902,
+								"iterations": 3,
+								"lift_n": 114.78771104184993,
+								"net_elevator_te_up_deg": 1.717543544553557,
+								"pilot_pitch_command": 0.2572514514851186,
+								"pitch_moment_nm": -4.770406292209373e-12,
+								"required_thrust_n": 16.30077862054997,
+								"status": "converged"
+							},
+							"speed_mps": 30.0
+						}
+					],
+					"positive_lift_polar": {
+						"CD_at_CLmax": 0.0871270919784398,
+						"CLmax": 0.8305838077064,
+						"alpha_at_CLmax_deg": 11.0,
+						"alpha_range_deg": [
+							0.0,
+							70.0
+						],
+						"alpha_step_deg": 0.25,
+						"implied_one_g_stall_speed_interpretation": "Ideal sqrt(2W/(rho*S*CLmax)) using the global 0-70 degree sweep maximum, including post-stall samples; not measured stall onset or a landing-speed recommendation.",
+						"implied_one_g_stall_speed_mps": 17.9245935688373,
+						"samples": 281,
+						"status": "complete"
+					}
+				}
+			],
+			"model": "same-tape baseline, flap aerodynamic gain 0"
+		},
+		{
+			"aircraft_input_sha256": "387047f77349b61fe0eb463a93794b50d31ec76c65087f0d3cb3f9fe402f7e75",
+			"flap_aerodynamic_gain": 1.0,
+			"flap_configurations": [
+				{
+					"flap_angle_deg": 0.0,
+					"flap_fraction": 0.0,
+					"manual_mixer_at_zero_pilot_pitch": {
+						"downward_throw_remaining_fraction": 1.0,
+						"max_elevator_te_down_deg_at_full_down_command": -30.0,
+						"max_elevator_te_up_deg_at_full_up_command": 30.0,
+						"net_elevator_te_up_deg": 0.0,
+						"normalized_pitch_bias": 0.0,
+						"note": "Shows the authored mixer bias and command clamp endpoints; it is not a servo-force or pilot-authority measurement.",
+						"upward_throw_remaining_fraction": 1.0
+					},
+					"one_g_trim_by_speed": [
+						{
+							"one_g_trim": {
+								"CD": 0.07094377770077967,
+								"CL": 0.6671478949071507,
+								"alpha_deg": 8.802699842928885,
+								"iterations": 3,
+								"lift_n": 114.78771553450022,
+								"net_elevator_te_up_deg": 4.071615977841338,
+								"pilot_pitch_command": 0.13572053259471126,
+								"pitch_moment_nm": 7.756131620850759e-07,
+								"required_thrust_n": 12.206400163779687,
+								"status": "converged"
+							},
+							"speed_mps": 20.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.058677586922329744,
+								"CL": 0.5513618752212448,
+								"alpha_deg": 7.1247366460555615,
+								"iterations": 2,
+								"lift_n": 114.78771108003038,
+								"net_elevator_te_up_deg": 3.147508732001142,
+								"pilot_pitch_command": 0.10491695773337141,
+								"pitch_moment_nm": -3.887744977077584e-09,
+								"required_thrust_n": 12.216053008400367,
+								"status": "converged"
+							},
+							"speed_mps": 22.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.05177090407271546,
+								"CL": 0.46329713110819487,
+								"alpha_deg": 5.987648317747935,
+								"iterations": 2,
+								"lift_n": 114.78771104184986,
+								"net_elevator_te_up_deg": 2.656418198677289,
+								"pilot_pitch_command": 0.08854727328924296,
+								"pitch_moment_nm": 7.834266568806925e-11,
+								"required_thrust_n": 12.826894832824653,
+								"status": "converged"
+							},
+							"speed_mps": 24.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.04563304946190039,
+								"CL": 0.36606193075215493,
+								"alpha_deg": 4.732003471635398,
+								"iterations": 2,
+								"lift_n": 114.78771104185019,
+								"net_elevator_te_up_deg": 2.1096468388867966,
+								"pilot_pitch_command": 0.07032156129622655,
+								"pitch_moment_nm": -5.190199381388538e-10,
+								"required_thrust_n": 14.309363677419883,
+								"status": "converged"
+							},
+							"speed_mps": 27.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.04210682917816894,
+								"CL": 0.29651016390924656,
+								"alpha_deg": 3.8337529173914557,
+								"iterations": 2,
+								"lift_n": 114.78771104185063,
+								"net_elevator_te_up_deg": 1.7175435432446315,
+								"pilot_pitch_command": 0.057251451441487716,
+								"pitch_moment_nm": -2.719585889821019e-09,
+								"required_thrust_n": 16.300778620430606,
+								"status": "converged"
+							},
+							"speed_mps": 30.0
+						}
+					],
+					"positive_lift_polar": {
+						"CD_at_CLmax": 0.07928600643661474,
+						"CLmax": 0.7844931337139373,
+						"alpha_at_CLmax_deg": 11.0,
+						"alpha_range_deg": [
+							0.0,
+							70.0
+						],
+						"alpha_step_deg": 0.25,
+						"implied_one_g_stall_speed_interpretation": "Ideal sqrt(2W/(rho*S*CLmax)) using the global 0-70 degree sweep maximum, including post-stall samples; not measured stall onset or a landing-speed recommendation.",
+						"implied_one_g_stall_speed_mps": 18.443633082525523,
+						"samples": 281,
+						"status": "complete"
+					}
+				},
+				{
+					"flap_angle_deg": 20.0,
+					"flap_fraction": 0.4,
+					"manual_mixer_at_zero_pilot_pitch": {
+						"downward_throw_remaining_fraction": 1.0,
+						"max_elevator_te_down_deg_at_full_down_command": -30.0,
+						"max_elevator_te_up_deg_at_full_up_command": 27.599999999999998,
+						"net_elevator_te_up_deg": -2.4000000000000004,
+						"normalized_pitch_bias": -0.08000000000000002,
+						"note": "Shows the authored mixer bias and command clamp endpoints; it is not a servo-force or pilot-authority measurement.",
+						"upward_throw_remaining_fraction": 0.9199999999999999
+					},
+					"one_g_trim_by_speed": [
+						{
+							"one_g_trim": {
+								"CD": 0.06982026442902947,
+								"CL": 0.6671478702128276,
+								"alpha_deg": 5.509206113737299,
+								"iterations": 3,
+								"lift_n": 114.78771128565981,
+								"net_elevator_te_up_deg": 0.5274071792472874,
+								"pilot_pitch_command": 0.09758023930824293,
+								"pitch_moment_nm": 1.285327876077158e-08,
+								"required_thrust_n": 12.013091419464686,
+								"status": "converged"
+							},
+							"speed_mps": 20.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.06555364254040863,
+								"CL": 0.5513618769761255,
+								"alpha_deg": 3.3104933551563946,
+								"iterations": 4,
+								"lift_n": 114.78771144537798,
+								"net_elevator_te_up_deg": -1.1234821688387988,
+								"pilot_pitch_command": 0.042550594372040056,
+								"pitch_moment_nm": 2.3236987223285155e-08,
+								"required_thrust_n": 13.647575065201163,
+								"status": "converged"
+							},
+							"speed_mps": 22.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.060033843497467945,
+								"CL": 0.46329713182009413,
+								"alpha_deg": 1.6034821512961521,
+								"iterations": 5,
+								"lift_n": 114.78771121823189,
+								"net_elevator_te_up_deg": -2.429023231095561,
+								"pilot_pitch_command": -0.0009674410365186739,
+								"pitch_moment_nm": 1.2261197446239436e-08,
+								"required_thrust_n": 14.874142353602622,
+								"status": "converged"
+							},
+							"speed_mps": 24.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.05436001109824327,
+								"CL": 0.3660619240928515,
+								"alpha_deg": 0.5122468323471714,
+								"iterations": 3,
+								"lift_n": 114.78770895366203,
+								"net_elevator_te_up_deg": -2.804983556442382,
+								"pilot_pitch_command": -0.01349945188141271,
+								"pitch_moment_nm": -1.7084604830852612e-07,
+								"required_thrust_n": 17.045916884489323,
+								"status": "converged"
+							},
+							"speed_mps": 27.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.050814025959735346,
+								"CL": 0.29651022103033914,
+								"alpha_deg": -0.22530358782589371,
+								"iterations": 3,
+								"lift_n": 114.78773315508742,
+								"net_elevator_te_up_deg": -3.020504821395677,
+								"pilot_pitch_command": -0.020683494046522564,
+								"pitch_moment_nm": 1.1851929745398948e-06,
+								"required_thrust_n": 19.671587819581326,
+								"status": "converged"
+							},
+							"speed_mps": 30.0
+						}
+					],
+					"positive_lift_polar": {
+						"CD_at_CLmax": 0.4119384114863936,
+						"CLmax": 1.1219963981172372,
+						"alpha_at_CLmax_deg": 19.75,
+						"alpha_range_deg": [
+							0.0,
+							70.0
+						],
+						"alpha_step_deg": 0.25,
+						"implied_one_g_stall_speed_interpretation": "Ideal sqrt(2W/(rho*S*CLmax)) using the global 0-70 degree sweep maximum, including post-stall samples; not measured stall onset or a landing-speed recommendation.",
+						"implied_one_g_stall_speed_mps": 15.42216395320359,
+						"samples": 281,
+						"status": "complete"
+					}
+				},
+				{
+					"flap_angle_deg": 50.0,
+					"flap_fraction": 1.0,
+					"manual_mixer_at_zero_pilot_pitch": {
+						"downward_throw_remaining_fraction": 1.0,
+						"max_elevator_te_down_deg_at_full_down_command": -30.0,
+						"max_elevator_te_up_deg_at_full_up_command": 24.0,
+						"net_elevator_te_up_deg": -6.0,
+						"normalized_pitch_bias": -0.2,
+						"note": "Shows the authored mixer bias and command clamp endpoints; it is not a servo-force or pilot-authority measurement.",
+						"upward_throw_remaining_fraction": 0.8
+					},
+					"one_g_trim_by_speed": [
+						{
+							"one_g_trim": {
+								"CD": 0.09603483257406673,
+								"CL": 0.6671479209539773,
+								"alpha_deg": 2.3956599350786565,
+								"iterations": 5,
+								"lift_n": 114.78772001604885,
+								"net_elevator_te_up_deg": -2.7340728732538384,
+								"pilot_pitch_command": 0.1088642375582054,
+								"pitch_moment_nm": 4.6562895492097134e-07,
+								"required_thrust_n": 16.523501201258416,
+								"status": "converged"
+							},
+							"speed_mps": 20.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.09510900498419828,
+								"CL": 0.5513618750722565,
+								"alpha_deg": 1.0918705454171336,
+								"iterations": 5,
+								"lift_n": 114.78771104901259,
+								"net_elevator_te_up_deg": -3.21978116387459,
+								"pilot_pitch_command": 0.09267396120418034,
+								"pitch_moment_nm": 3.623528144203192e-10,
+								"required_thrust_n": 19.80068894109612,
+								"status": "converged"
+							},
+							"speed_mps": 22.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.09266421744303925,
+								"CL": 0.46329714528384636,
+								"alpha_deg": -0.006107432842144137,
+								"iterations": 4,
+								"lift_n": 114.78771455404646,
+								"net_elevator_te_up_deg": -3.762776388085607,
+								"pilot_pitch_command": 0.07457412039714643,
+								"pitch_moment_nm": 2.410968368560251e-07,
+								"required_thrust_n": 22.958729293937115,
+								"status": "converged"
+							},
+							"speed_mps": 24.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.08725339897248148,
+								"CL": 0.3660619315089877,
+								"alpha_deg": -1.7213515090890394,
+								"iterations": 4,
+								"lift_n": 114.78771127917365,
+								"net_elevator_te_up_deg": -5.065419971573632,
+								"pilot_pitch_command": 0.031152667614212277,
+								"pitch_moment_nm": 3.436050072247454e-08,
+								"required_thrust_n": 27.36044670936738,
+								"status": "converged"
+							},
+							"speed_mps": 27.0
+						},
+						{
+							"one_g_trim": {
+								"CD": 0.0833994443538322,
+								"CL": 0.2965101800449553,
+								"alpha_deg": -2.691089489349718,
+								"iterations": 5,
+								"lift_n": 114.78771728845287,
+								"net_elevator_te_up_deg": -5.623232921882922,
+								"pilot_pitch_command": 0.012558902603902628,
+								"pitch_moment_nm": 4.3217601053413546e-07,
+								"required_thrust_n": 32.286351311952615,
+								"status": "converged"
+							},
+							"speed_mps": 30.0
+						}
+					],
+					"positive_lift_polar": {
+						"CD_at_CLmax": 0.3448335205593929,
+						"CLmax": 1.273885645378724,
+						"alpha_at_CLmax_deg": 16.25,
+						"alpha_range_deg": [
+							0.0,
+							70.0
+						],
+						"alpha_step_deg": 0.25,
+						"implied_one_g_stall_speed_interpretation": "Ideal sqrt(2W/(rho*S*CLmax)) using the global 0-70 degree sweep maximum, including post-stall samples; not measured stall onset or a landing-speed recommendation.",
+						"implied_one_g_stall_speed_mps": 14.473575310911517,
+						"samples": 281,
+						"status": "complete"
+					}
+				}
+			],
+			"model": "candidate, flap aerodynamic gain 1"
+		}
+	],
+	"not_physical_validation": true,
+	"scope": "1-g lift and pitch-moment equilibrium across approach speeds plus positive-angle lift polar at fixed speed"
+}

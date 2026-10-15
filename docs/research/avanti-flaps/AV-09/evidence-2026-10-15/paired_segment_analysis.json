@@ -1,0 +1,376 @@
+{
+  "interpretation": "Candidate-minus-baseline comparison of one accepted-input tape. Endpoint deltas accumulate earlier open-loop divergence; segment interval-change deltas compare changes during the named segment.",
+  "segments": [
+    {
+      "aerodynamic_load_delta_candidate_minus_baseline": {
+        "Fx_N": {
+          "max_abs_candidate_minus_baseline": 0.0,
+          "mean_candidate_minus_baseline": 0.0
+        },
+        "Fz_N": {
+          "max_abs_candidate_minus_baseline": 0.0,
+          "mean_candidate_minus_baseline": 0.0
+        },
+        "My_Nm": {
+          "max_abs_candidate_minus_baseline": 0.0,
+          "mean_candidate_minus_baseline": 0.0
+        }
+      },
+      "cmd_flaps": 0.0,
+      "cumulative_open_loop_endpoint_delta_candidate_minus_baseline": {
+        "alpha_rad": 0.0,
+        "down_m": 0.0,
+        "east_m": 0.0,
+        "north_m": 0.0,
+        "tas_mps": 0.0,
+        "u_mps": 0.0,
+        "v_mps": 0.0,
+        "w_mps": 0.0
+      },
+      "duration_s": 3.0,
+      "first_command_tick": 1,
+      "flap_fraction_start_end": {
+        "baseline": [
+          0.0,
+          0.0
+        ],
+        "candidate": [
+          0.0,
+          0.0
+        ]
+      },
+      "last_command_tick": 720,
+      "loads_time_basis": "Loads are k1 interval-start samples; rows are aligned by tick and loads_t_s.",
+      "name": "clean_hold",
+      "pitch_offset_from_trim_command": 0.0,
+      "segment_interval_change_delta_candidate_minus_baseline": {
+        "alpha_rad": 0.0,
+        "down_m": 0.0,
+        "east_m": 0.0,
+        "north_m": 0.0,
+        "tas_mps": 0.0,
+        "u_mps": 0.0,
+        "v_mps": 0.0,
+        "w_mps": 0.0
+      }
+    },
+    {
+      "aerodynamic_load_delta_candidate_minus_baseline": {
+        "Fx_N": {
+          "max_abs_candidate_minus_baseline": 17.29627312910774,
+          "mean_candidate_minus_baseline": 5.368931592653336
+        },
+        "Fz_N": {
+          "max_abs_candidate_minus_baseline": 181.19566967918692,
+          "mean_candidate_minus_baseline": -137.62068946850246
+        },
+        "My_Nm": {
+          "max_abs_candidate_minus_baseline": 2.924045928627077,
+          "mean_candidate_minus_baseline": 0.2663841539040227
+        }
+      },
+      "cmd_flaps": 0.4,
+      "cumulative_open_loop_endpoint_delta_candidate_minus_baseline": {
+        "alpha_rad": 0.0785155385143826,
+        "down_m": -46.260002825921916,
+        "east_m": -12.044162832930084,
+        "north_m": -0.25185993132568285,
+        "tas_mps": -16.16334363486356,
+        "u_mps": -16.21611223856698,
+        "v_mps": -0.013363528050548638,
+        "w_mps": 1.7705802143355958
+      },
+      "duration_s": 3.0,
+      "first_command_tick": 721,
+      "flap_fraction_start_end": {
+        "baseline": [
+          0.0,
+          0.4
+        ],
+        "candidate": [
+          0.0,
+          0.4
+        ]
+      },
+      "last_command_tick": 1440,
+      "loads_time_basis": "Loads are k1 interval-start samples; rows are aligned by tick and loads_t_s.",
+      "name": "takeoff_flap_20deg",
+      "pitch_offset_from_trim_command": 0.0,
+      "segment_interval_change_delta_candidate_minus_baseline": {
+        "alpha_rad": 0.0785155385143826,
+        "down_m": -46.260002825921916,
+        "east_m": -12.044162832930084,
+        "north_m": -0.25185993132568285,
+        "tas_mps": -16.16334363486356,
+        "u_mps": -16.21611223856698,
+        "v_mps": -0.013363528050548638,
+        "w_mps": 1.7705802143355955
+      }
+    },
+    {
+      "aerodynamic_load_delta_candidate_minus_baseline": {
+        "Fx_N": {
+          "max_abs_candidate_minus_baseline": 32.32475180304961,
+          "mean_candidate_minus_baseline": -12.507713579903672
+        },
+        "Fz_N": {
+          "max_abs_candidate_minus_baseline": 694.0797891285966,
+          "mean_candidate_minus_baseline": -446.65485672681655
+        },
+        "My_Nm": {
+          "max_abs_candidate_minus_baseline": 1.7041150694478076,
+          "mean_candidate_minus_baseline": 0.14339143554163813
+        }
+      },
+      "cmd_flaps": 1.0,
+      "cumulative_open_loop_endpoint_delta_candidate_minus_baseline": {
+        "alpha_rad": 0.04859087533180058,
+        "down_m": -46.866142340891514,
+        "east_m": 181.53479507774676,
+        "north_m": 3.016489094756892,
+        "tas_mps": 10.25471061385819,
+        "u_mps": 10.291976176535584,
+        "v_mps": -0.08343174134793854,
+        "w_mps": 0.6918393678419474
+      },
+      "duration_s": 7.0,
+      "first_command_tick": 1441,
+      "flap_fraction_start_end": {
+        "baseline": [
+          0.4,
+          1.0
+        ],
+        "candidate": [
+          0.4,
+          1.0
+        ]
+      },
+      "last_command_tick": 3120,
+      "loads_time_basis": "Loads are k1 interval-start samples; rows are aligned by tick and loads_t_s.",
+      "name": "landing_flap_50deg",
+      "pitch_offset_from_trim_command": 0.0,
+      "segment_interval_change_delta_candidate_minus_baseline": {
+        "alpha_rad": -0.029924663182582023,
+        "down_m": -0.6061395149695912,
+        "east_m": 193.57895791067688,
+        "north_m": 3.268349026082575,
+        "tas_mps": 26.41805424872175,
+        "u_mps": 26.508088415102563,
+        "v_mps": -0.07006821329738991,
+        "w_mps": -1.0787408464936479
+      }
+    },
+    {
+      "aerodynamic_load_delta_candidate_minus_baseline": {
+        "Fx_N": {
+          "max_abs_candidate_minus_baseline": 32.29435577383941,
+          "mean_candidate_minus_baseline": -15.689787033965326
+        },
+        "Fz_N": {
+          "max_abs_candidate_minus_baseline": 307.29939449746854,
+          "mean_candidate_minus_baseline": -267.25722126070195
+        },
+        "My_Nm": {
+          "max_abs_candidate_minus_baseline": 5.45377344331767,
+          "mean_candidate_minus_baseline": 0.36663069997034503
+        }
+      },
+      "cmd_flaps": 1.0,
+      "cumulative_open_loop_endpoint_delta_candidate_minus_baseline": {
+        "alpha_rad": -0.00415490583264376,
+        "down_m": -35.70065508700398,
+        "east_m": 200.04292883040011,
+        "north_m": 2.977581044036924,
+        "tas_mps": 10.983755039852952,
+        "u_mps": 10.940980397936134,
+        "v_mps": -0.09416079235095373,
+        "w_mps": 0.9726184981475925
+      },
+      "duration_s": 1.5,
+      "first_command_tick": 3121,
+      "flap_fraction_start_end": {
+        "baseline": [
+          1.0,
+          1.0
+        ],
+        "candidate": [
+          1.0,
+          1.0
+        ]
+      },
+      "last_command_tick": 3480,
+      "loads_time_basis": "Loads are k1 interval-start samples; rows are aligned by tick and loads_t_s.",
+      "name": "same_tape_pitch_pulse",
+      "pitch_offset_from_trim_command": 0.15,
+      "segment_interval_change_delta_candidate_minus_baseline": {
+        "alpha_rad": -0.05274578116444434,
+        "down_m": 11.165487253887534,
+        "east_m": 18.508133752653322,
+        "north_m": -0.038908050719967946,
+        "tas_mps": 0.7290444259947613,
+        "u_mps": 0.6490042214005491,
+        "v_mps": -0.010729051003015189,
+        "w_mps": 0.2807791303056453
+      }
+    },
+    {
+      "aerodynamic_load_delta_candidate_minus_baseline": {
+        "Fx_N": {
+          "max_abs_candidate_minus_baseline": 20.15799392682207,
+          "mean_candidate_minus_baseline": -13.108973183634749
+        },
+        "Fz_N": {
+          "max_abs_candidate_minus_baseline": 279.26413123085473,
+          "mean_candidate_minus_baseline": -175.73341702345618
+        },
+        "My_Nm": {
+          "max_abs_candidate_minus_baseline": 5.121587776767158,
+          "mean_candidate_minus_baseline": -0.4627119645657703
+        }
+      },
+      "cmd_flaps": 1.0,
+      "cumulative_open_loop_endpoint_delta_candidate_minus_baseline": {
+        "alpha_rad": 0.13970939536802623,
+        "down_m": -93.66184923907447,
+        "east_m": 212.0198884359612,
+        "north_m": 2.6384829166516397,
+        "tas_mps": -15.454300918201472,
+        "u_mps": -15.28334130091353,
+        "v_mps": -0.0119886158443748,
+        "w_mps": 3.900952788048536
+      },
+      "duration_s": 2.5,
+      "first_command_tick": 3481,
+      "flap_fraction_start_end": {
+        "baseline": [
+          1.0,
+          1.0
+        ],
+        "candidate": [
+          1.0,
+          1.0
+        ]
+      },
+      "last_command_tick": 4080,
+      "loads_time_basis": "Loads are k1 interval-start samples; rows are aligned by tick and loads_t_s.",
+      "name": "open_loop_recovery",
+      "pitch_offset_from_trim_command": 0.0,
+      "segment_interval_change_delta_candidate_minus_baseline": {
+        "alpha_rad": 0.14386430120066998,
+        "down_m": -57.96119415207049,
+        "east_m": 11.976959605561092,
+        "north_m": -0.33909812738528444,
+        "tas_mps": -26.438055958054424,
+        "u_mps": -26.224321698849664,
+        "v_mps": 0.08217217650657893,
+        "w_mps": 2.9283342899009432
+      }
+    },
+    {
+      "aerodynamic_load_delta_candidate_minus_baseline": {
+        "Fx_N": {
+          "max_abs_candidate_minus_baseline": 42.024420451885504,
+          "mean_candidate_minus_baseline": 29.116589577228083
+        },
+        "Fz_N": {
+          "max_abs_candidate_minus_baseline": 302.5036404869709,
+          "mean_candidate_minus_baseline": 37.835292660065356
+        },
+        "My_Nm": {
+          "max_abs_candidate_minus_baseline": 2.3647199160480064,
+          "mean_candidate_minus_baseline": -0.5851282849466141
+        }
+      },
+      "cmd_flaps": 0.0,
+      "cumulative_open_loop_endpoint_delta_candidate_minus_baseline": {
+        "alpha_rad": 0.026058136300593296,
+        "down_m": -263.6485998011205,
+        "east_m": 266.56086757822413,
+        "north_m": 1.660685468403635,
+        "tas_mps": -36.283047118354375,
+        "u_mps": -36.279761935119325,
+        "v_mps": 0.02047625895155836,
+        "w_mps": -1.1130098500395607
+      },
+      "duration_s": 4.0,
+      "first_command_tick": 4081,
+      "flap_fraction_start_end": {
+        "baseline": [
+          1.0,
+          0.0
+        ],
+        "candidate": [
+          1.0,
+          0.0
+        ]
+      },
+      "last_command_tick": 5040,
+      "loads_time_basis": "Loads are k1 interval-start samples; rows are aligned by tick and loads_t_s.",
+      "name": "flap_retraction",
+      "pitch_offset_from_trim_command": 0.0,
+      "segment_interval_change_delta_candidate_minus_baseline": {
+        "alpha_rad": -0.11365125906743292,
+        "down_m": -169.98675056204604,
+        "east_m": 54.54097914226291,
+        "north_m": -0.9777974482480047,
+        "tas_mps": -20.828746200152906,
+        "u_mps": -20.99642063420579,
+        "v_mps": 0.03246487479593316,
+        "w_mps": -5.013962638088097
+      }
+    },
+    {
+      "aerodynamic_load_delta_candidate_minus_baseline": {
+        "Fx_N": {
+          "max_abs_candidate_minus_baseline": 42.229247135053875,
+          "mean_candidate_minus_baseline": 40.19770595727092
+        },
+        "Fz_N": {
+          "max_abs_candidate_minus_baseline": 273.46687984036896,
+          "mean_candidate_minus_baseline": 265.22569543187655
+        },
+        "My_Nm": {
+          "max_abs_candidate_minus_baseline": 0.25345482169143346,
+          "mean_candidate_minus_baseline": 0.21268979095006832
+        }
+      },
+      "cmd_flaps": 0.0,
+      "cumulative_open_loop_endpoint_delta_candidate_minus_baseline": {
+        "alpha_rad": 0.010824082349728162,
+        "down_m": -299.3631289216202,
+        "east_m": 213.8315925327327,
+        "north_m": -1.6565073519413644,
+        "tas_mps": -28.279835963765464,
+        "u_mps": -28.264152591811296,
+        "v_mps": 0.007946192345013772,
+        "w_mps": -1.0623505529321196
+      },
+      "duration_s": 2.0,
+      "first_command_tick": 5041,
+      "flap_fraction_start_end": {
+        "baseline": [
+          0.0,
+          0.0
+        ],
+        "candidate": [
+          0.0,
+          0.0
+        ]
+      },
+      "last_command_tick": 5520,
+      "loads_time_basis": "Loads are k1 interval-start samples; rows are aligned by tick and loads_t_s.",
+      "name": "clean_return",
+      "pitch_offset_from_trim_command": 0.0,
+      "segment_interval_change_delta_candidate_minus_baseline": {
+        "alpha_rad": -0.015234053950865134,
+        "down_m": -35.71452912049973,
+        "east_m": -52.72927504549139,
+        "north_m": -3.3171928203449994,
+        "tas_mps": 8.003211154588914,
+        "u_mps": 8.015609343308025,
+        "v_mps": -0.012530066606544588,
+        "w_mps": 0.050659297107441104
+      }
+    }
+  ]
+}

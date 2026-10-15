@@ -144,3 +144,8 @@ The regression commands above remain current. A separate `--runs 1` runner check
 is retained in `batch/runner-check/` and excluded from the measurement table.
 Whole-application loading, steady FPS, exported packages and shutdown ownership
 remain outside this repair's acceptance claims.
+
+2026-10-15 follow-up: [native canopy vertex transforms](transforms/README.md)
+reduce extraction from 7.022 to 5.994 ms, preserving 60 real geometry/kit pairs.
+Complete-kit results are mixed and do not qualify a loading gain. The same slice
+repairs null indices on non-indexed surfaces and adds three permanent regressions.
