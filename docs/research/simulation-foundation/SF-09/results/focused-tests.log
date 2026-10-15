@@ -1,0 +1,13 @@
+PASS test_sf_generalized_coordinates 7 checks, 0 failed
+PASS test_rcv_vehicle_dynamics RCV-05 vehicle dynamics: 53 checks, 0 failures
+PASS test_sf_ground_vehicle_kernel 23 checks, 0 failed
+PASS test_rcv_session RCV session: 162 checks, 0 failed
+PASS test_nitro_dynamics Nitro dynamics: 30 checks, 0 failed
+PASS test_rcv_nitro_session RCV Nitro session: 28 checks, 0 failed
+PASS test_rcv_support RCV-04b: 111 checks, 0 failed
+PASS test_rcv_suspension RCV-04a: 83 checks, 0 failed
+PASS test_rcv_obstacle_contacts RCV obstacle contacts: 14 checks, 0 failures
+PASS test_rcv_handling RCV handling: 21/21 checks passed
+PASS test_rcv_road_batch RCV-42 road batch contract: 55 checks, 0 failures
+PASS test_sf_law_properties SF-06 law properties: 203 checks, 0 failed, 0 exempt
+DONE

@@ -23,6 +23,7 @@ extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
 const Integrator := preload("res://physics/integrator.gd")
+const Generalized := preload("res://physics/generalized_coordinates.gd")
 const WetPhysics := preload("res://physics/ground_vehicle/vehicle_environment.gd")
 
 const POS := 0
@@ -1596,18 +1597,8 @@ static func _hub_jacobian(r: PackedFloat64Array, r_prime: PackedFloat64Array, co
 
 static func _add_gram(matrix: PackedFloat64Array, jacobian: PackedFloat64Array, mass: float, n: int, corner: int) -> void:
 	# Hub Jacobians have seven active generalized coordinates: body translation,
-	# body rotation, and this corner's travel. Skip the seven-by-seven zero rows.
-	var travel_dof := 6 + corner
-	for row_local in 7:
-		var row := row_local if row_local < 6 else travel_dof
-		for column_local in 7:
-			var column := column_local if column_local < 6 else travel_dof
-			var value := (
-				jacobian[row] * jacobian[column]
-				+ jacobian[n + row] * jacobian[n + column]
-				+ jacobian[2 * n + row] * jacobian[2 * n + column]
-			)
-			matrix[row * n + column] += mass * value
+	# body rotation, and this corner's travel. The shared kernel skips the zero rows.
+	Generalized.add_point_mass(matrix, jacobian, mass, n, PackedInt64Array([0, 1, 2, 3, 4, 5, 6 + corner]))
 
 
 static func _add_rotor_inertia(
@@ -1912,200 +1903,34 @@ static func _project_friction_circle(
 
 
 static func _matrix_vector(matrix: PackedFloat64Array, vector: PackedFloat64Array, n: int) -> PackedFloat64Array:
-	var result := PackedFloat64Array()
-	result.resize(n)
-	for row in n:
-		var value := 0.0
-		for column in n:
-			value += matrix[row * n + column] * vector[column]
-		result[row] = value
-	return result
+	return Generalized.matrix_vector(matrix, vector, n)
 
 
 static func _cholesky_factor(matrix: PackedFloat64Array, n: int) -> Dictionary:
-	if matrix.size() != n * n:
-		return {"ok": false, "error": "invalid matrix dimensions"}
-	var lower := PackedFloat64Array()
-	lower.resize(n * n)
-	var scale := 0.0
-	for i in n:
-		scale = maxf(scale, absf(matrix[i * n + i]))
-	if not is_finite(scale) or scale <= 0.0:
-		return {"ok": false, "error": "nonpositive matrix scale"}
-	for row in n:
-		for column in range(row + 1):
-			var value := matrix[row * n + column]
-			if not is_finite(value):
-				return {"ok": false, "error": "non-finite matrix entry"}
-			for k in column:
-				value -= lower[row * n + k] * lower[column * n + k]
-			if row == column:
-				if value <= scale * MATRIX_PIVOT_RELATIVE_TOLERANCE:
-					return {"ok": false, "error": "nonpositive Cholesky pivot"}
-				lower[row * n + column] = M.sqrt_(value)
-			else:
-				lower[row * n + column] = value / lower[column * n + column]
-	return {"ok": true, "lower": lower}
+	return Generalized.cholesky_factor(matrix, n, MATRIX_PIVOT_RELATIVE_TOLERANCE)
 
 
-## Exploit the exact block structure of the generalized mass matrix. The first
-## six coordinates are sprung-body motion; each of the eight remaining local
-## wheel coordinates has a positive diagonal mass and couples only to that
-## six-coordinate block. This Schur factorization is algebraically equivalent
-## to factoring the full 14x14 matrix, while reducing dense work in every RK
-## stage and every tire-contact mobility solve.
+## Exploit the exact block structure of the generalized mass matrix: six sprung-body
+## coordinates and eight local wheel coordinates that couple only to that block
+## (SF-09: physics/generalized_coordinates.gd factor_body_local, moved from here verbatim).
 static func _factor_generalized_mass_matrix(matrix: PackedFloat64Array) -> Dictionary:
-	if matrix.size() != GENERALIZED_SIZE * GENERALIZED_SIZE:
-		return {"ok": false, "error": "invalid matrix dimensions"}
-	var local_mass := PackedFloat64Array()
-	local_mass.resize(8)
-	var coupling := PackedFloat64Array()
-	coupling.resize(6 * 8)
-	for local in 8:
-		var dof := 6 + local
-		var mass := matrix[dof * GENERALIZED_SIZE + dof]
-		if not is_finite(mass) or mass <= 0.0:
-			return {"ok": false, "error": "nonpositive local generalized mass"}
-		local_mass[local] = mass
-		for body in 6:
-			var value := matrix[body * GENERALIZED_SIZE + dof]
-			if not is_finite(value):
-				return {"ok": false, "error": "non-finite generalized coupling"}
-			coupling[body * 8 + local] = value
-	var schur := PackedFloat64Array()
-	schur.resize(6 * 6)
-	for row in 6:
-		for column in 6:
-			var value := matrix[row * GENERALIZED_SIZE + column]
-			if not is_finite(value):
-				return {"ok": false, "error": "non-finite sprung-body mass entry"}
-			for local in 8:
-				value -= coupling[row * 8 + local] * coupling[column * 8 + local] / local_mass[local]
-			schur[row * 6 + column] = value
-	var body_factor := _cholesky_factor(schur, 6)
-	if not bool(body_factor["ok"]):
-		return body_factor
-	return {
-		"ok": true,
-		"body_lower": body_factor["lower"],
-		"coupling": coupling,
-		"local_mass": local_mass,
-	}
+	return Generalized.factor_body_local(matrix, 6, GENERALIZED_SIZE - 6, MATRIX_PIVOT_RELATIVE_TOLERANCE)
 
 
 static func _solve_generalized(factor: Dictionary, rhs: PackedFloat64Array) -> PackedFloat64Array:
-	if rhs.size() != GENERALIZED_SIZE or not factor.has("body_lower") \
-			or not factor.has("coupling") or not factor.has("local_mass"):
-		return PackedFloat64Array()
-	var body_lower: PackedFloat64Array = factor["body_lower"]
-	var coupling: PackedFloat64Array = factor["coupling"]
-	var local_mass: PackedFloat64Array = factor["local_mass"]
-	if body_lower.size() != 36 or coupling.size() != 48 or local_mass.size() != 8:
-		return PackedFloat64Array()
-	var adjusted_body := PackedFloat64Array()
-	adjusted_body.resize(6)
-	for body in 6:
-		adjusted_body[body] = rhs[body]
-	for local in 8:
-		var adjusted_local := rhs[6 + local] / local_mass[local]
-		for body in 6:
-			adjusted_body[body] -= coupling[body * 8 + local] * adjusted_local
-	var body_solution := _solve_cholesky(body_lower, adjusted_body, 6)
-	if body_solution.size() != 6:
-		return PackedFloat64Array()
-	var result := PackedFloat64Array()
-	result.resize(GENERALIZED_SIZE)
-	for body in 6:
-		result[body] = body_solution[body]
-	for local in 8:
-		var value := rhs[6 + local]
-		for body in 6:
-			value -= coupling[body * 8 + local] * body_solution[body]
-		result[6 + local] = value / local_mass[local]
-	return result if _finite_array(result) else PackedFloat64Array()
+	return Generalized.solve_body_local(factor, rhs, 6, GENERALIZED_SIZE - 6)
 
 
 static func _solve_cholesky(lower: PackedFloat64Array, rhs: PackedFloat64Array, n: int) -> PackedFloat64Array:
-	if lower.size() != n * n or rhs.size() != n:
-		return PackedFloat64Array()
-	var forward := PackedFloat64Array()
-	forward.resize(n)
-	for row in n:
-		var value := rhs[row]
-		for column in row:
-			value -= lower[row * n + column] * forward[column]
-		var diagonal := lower[row * n + row]
-		if not is_finite(value) or not is_finite(diagonal) or diagonal <= 0.0:
-			return PackedFloat64Array()
-		forward[row] = value / diagonal
-	var solution := PackedFloat64Array()
-	solution.resize(n)
-	for row in range(n - 1, -1, -1):
-		var value := forward[row]
-		for column in range(row + 1, n):
-			value -= lower[column * n + row] * solution[column]
-		var diagonal := lower[row * n + row]
-		if not is_finite(value) or not is_finite(diagonal) or diagonal <= 0.0:
-			return PackedFloat64Array()
-		solution[row] = value / diagonal
-	return solution
+	return Generalized.solve_cholesky(lower, rhs, n)
 
 
 static func _dot_generalized(a: PackedFloat64Array, b: PackedFloat64Array) -> float:
-	var result := 0.0
-	for i in GENERALIZED_SIZE:
-		result += a[i] * b[i]
-	return result
+	return Generalized.dot(a, b, GENERALIZED_SIZE)
 
 
 static func _invert_matrix(matrix: PackedFloat64Array, n: int) -> Dictionary:
-	if matrix.size() != n * n:
-		return {"ok": false, "error": "invalid matrix dimensions"}
-	var width := 2 * n
-	var augmented := PackedFloat64Array()
-	augmented.resize(n * width)
-	var scale := 0.0
-	for row in n:
-		for column in n:
-			var value := matrix[row * n + column]
-			if not is_finite(value):
-				return {"ok": false, "error": "non-finite matrix entry"}
-			augmented[row * width + column] = value
-			scale = maxf(scale, absf(value))
-		augmented[row * width + n + row] = 1.0
-	if scale <= 0.0:
-		return {"ok": false, "error": "zero matrix"}
-	for pivot_column in n:
-		var pivot_row := pivot_column
-		for row in range(pivot_column + 1, n):
-			if absf(augmented[row * width + pivot_column]) > absf(augmented[pivot_row * width + pivot_column]):
-				pivot_row = row
-		var pivot := augmented[pivot_row * width + pivot_column]
-		if not is_finite(pivot) or absf(pivot) <= scale * MATRIX_PIVOT_RELATIVE_TOLERANCE:
-			return {"ok": false, "error": "pivot is below relative precision threshold"}
-		if pivot_row != pivot_column:
-			for column in width:
-				var swap := augmented[pivot_column * width + column]
-				augmented[pivot_column * width + column] = augmented[pivot_row * width + column]
-				augmented[pivot_row * width + column] = swap
-		pivot = augmented[pivot_column * width + pivot_column]
-		for column in width:
-			augmented[pivot_column * width + column] /= pivot
-		for row in n:
-			if row == pivot_column:
-				continue
-			var factor := augmented[row * width + pivot_column]
-			for column in width:
-				augmented[row * width + column] -= factor * augmented[pivot_column * width + column]
-	var inverse := PackedFloat64Array()
-	inverse.resize(n * n)
-	for row in n:
-		for column in n:
-			var value := augmented[row * width + n + column]
-			if not is_finite(value):
-				return {"ok": false, "error": "inverse became non-finite"}
-			inverse[row * n + column] = value
-	return {"ok": true, "inverse": inverse}
+	return Generalized.invert(matrix, n, MATRIX_PIVOT_RELATIVE_TOLERANCE)
 
 
 static func _travel_stop_force(travel: float, travel_rate: float, model: Dictionary) -> float:
