@@ -1,0 +1,560 @@
+{
+  "backend_identity": {
+    "abi_version": 1,
+    "backend": "native",
+    "backend_version": "openrc-ground-vehicle-native-evaluate-v3",
+    "binary_sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb",
+    "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+    "source_sha256": "6d4c5eabeb2f8565cf84d08fb6825ab5b1cacc47a7ebc26f215ac97b88ae1c2b",
+    "toolchain_sha256": "20011c634359383599e065c970e90e2a0c6612e7481739dbc9d35fe8c8d4a192"
+  },
+  "benchmark": {
+    "center_metadata": {
+      "baseline_full_deep_copy_us": [
+        34190,
+        34464,
+        34673,
+        33871,
+        47678
+      ],
+      "candidate_projection_us": [
+        142727,
+        142860,
+        146731,
+        146817,
+        151543
+      ],
+      "include_center_walls": true
+    },
+    "copies_per_round_each": 10000,
+    "noncenter_metadata": {
+      "baseline_full_deep_copy_us": [
+        30665,
+        31776,
+        32503,
+        22796,
+        41378
+      ],
+      "candidate_projection_us": [
+        126882,
+        123295,
+        171905,
+        102822,
+        96559
+      ],
+      "include_center_walls": false
+    },
+    "order": [
+      "baseline,candidate",
+      "candidate,baseline",
+      "baseline,candidate",
+      "candidate,baseline",
+      "baseline,candidate"
+    ],
+    "rounds": 5,
+    "scope": "copy-only; full deep duplicate(true) versus selected-field projection; real AirfieldCourse samples cycled",
+    "sink": -21816000,
+    "warmup_copies_each": 2000
+  },
+  "complete": true,
+  "course_identity": {
+    "format": "openrc-airfield-course",
+    "id": "airfield-default",
+    "sha256": "6f6a2a0e4dcecc20d664a1b387e8a67bed56c2de66be4ffa09ffe24c03d778ad",
+    "version": "1"
+  },
+  "debug_build": true,
+  "engine": "4.7.2-stable (official)",
+  "failures": [],
+  "format": "openrc-rcv42-road-snapshot-probe-v1",
+  "native_backend_selected": true,
+  "processor": "AMD Ryzen 9 5900X 12-Core Processor",
+  "projection_case_count": 14,
+  "projection_cases": [
+    {
+      "actual_sha256": "5125186071a0130d67039d4cd17ba663f7ac9fcc49ff5b753271e7a3d1d7efc8",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "5125186071a0130d67039d4cd17ba663f7ac9fcc49ff5b753271e7a3d1d7efc8",
+      "include_center_walls": false,
+      "name": "track_start",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "in_bounds",
+        "feature_id",
+        "feature_ids",
+        "track_coverage",
+        "walls"
+      ]
+    },
+    {
+      "actual_sha256": "8686fd26a5cbd8ba07ecf53dec927cd570db0d409cbd4110bddc678c91d3012d",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "8686fd26a5cbd8ba07ecf53dec927cd570db0d409cbd4110bddc678c91d3012d",
+      "include_center_walls": true,
+      "name": "track_start",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "walls"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "in_bounds",
+        "feature_id",
+        "feature_ids",
+        "track_coverage",
+        "walls"
+      ]
+    },
+    {
+      "actual_sha256": "b33dab64807d2d6313d57e8eae32195ff418b1a5d7c8a44989ba00cf5b99be01",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "b33dab64807d2d6313d57e8eae32195ff418b1a5d7c8a44989ba00cf5b99be01",
+      "include_center_walls": false,
+      "name": "wall_center",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "in_bounds",
+        "feature_id",
+        "feature_ids",
+        "track_coverage",
+        "walls"
+      ]
+    },
+    {
+      "actual_sha256": "d8b40a7f899bbcb4dc28f5797544c6eedb5098eef6d797a077a824861e52be91",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "d8b40a7f899bbcb4dc28f5797544c6eedb5098eef6d797a077a824861e52be91",
+      "include_center_walls": true,
+      "name": "wall_center",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "walls"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "in_bounds",
+        "feature_id",
+        "feature_ids",
+        "track_coverage",
+        "walls"
+      ]
+    },
+    {
+      "actual_sha256": "ffbbd174bf959ba1d558ca0e7111e2879e827a605b4292a7907cc21c418979b9",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "ffbbd174bf959ba1d558ca0e7111e2879e827a605b4292a7907cc21c418979b9",
+      "include_center_walls": false,
+      "name": "wet_entry",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "wet_zone",
+        "water_height_m",
+        "water_depth_m",
+        "mud_fraction"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "in_bounds",
+        "feature_id",
+        "feature_ids",
+        "track_coverage",
+        "walls",
+        "wet_zone",
+        "water_height_m",
+        "water_depth_m",
+        "mud_fraction"
+      ]
+    },
+    {
+      "actual_sha256": "efdc3e1d61da87ff98aa399b0dfbf56cec8bf2bb0a370c2bacf5900959b5f1c1",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "efdc3e1d61da87ff98aa399b0dfbf56cec8bf2bb0a370c2bacf5900959b5f1c1",
+      "include_center_walls": true,
+      "name": "wet_entry",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "walls",
+        "wet_zone",
+        "water_height_m",
+        "water_depth_m",
+        "mud_fraction"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "in_bounds",
+        "feature_id",
+        "feature_ids",
+        "track_coverage",
+        "walls",
+        "wet_zone",
+        "water_height_m",
+        "water_depth_m",
+        "mud_fraction"
+      ]
+    },
+    {
+      "actual_sha256": "9374551dda22ee5cee646786f02a6b5f32021516db841bce483f693c5410ba5a",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "9374551dda22ee5cee646786f02a6b5f32021516db841bce483f693c5410ba5a",
+      "include_center_walls": false,
+      "name": "dry_track",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "in_bounds",
+        "feature_id",
+        "feature_ids",
+        "track_coverage",
+        "walls"
+      ]
+    },
+    {
+      "actual_sha256": "34b88e72ed9e82c4a2aa9e07845e06c9a49af595cabe69ad7d58104db06c980d",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "34b88e72ed9e82c4a2aa9e07845e06c9a49af595cabe69ad7d58104db06c980d",
+      "include_center_walls": true,
+      "name": "dry_track",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "walls"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "in_bounds",
+        "feature_id",
+        "feature_ids",
+        "track_coverage",
+        "walls"
+      ]
+    },
+    {
+      "actual_sha256": "9c67fa29d51685067543f01515f53c67edbff4da8ebced0c423016b6e7a67781",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "9c67fa29d51685067543f01515f53c67edbff4da8ebced0c423016b6e7a67781",
+      "include_center_walls": false,
+      "name": "nested_surface_id",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "feature_ids",
+        "walls"
+      ]
+    },
+    {
+      "actual_sha256": "2a7c08861cbdbd48688018f88624f53ab1eaf2eab5ac91202d23f5ee063fe375",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "2a7c08861cbdbd48688018f88624f53ab1eaf2eab5ac91202d23f5ee063fe375",
+      "include_center_walls": true,
+      "name": "nested_surface_id",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "walls"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "feature_ids",
+        "walls"
+      ]
+    },
+    {
+      "actual_sha256": "a1ec1525402695d842a9d01dde69f60607c1cfb540129575c8549513fa2779a1",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "a1ec1525402695d842a9d01dde69f60607c1cfb540129575c8549513fa2779a1",
+      "include_center_walls": false,
+      "name": "malformed_normal",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "walls"
+      ]
+    },
+    {
+      "actual_sha256": "747de3f8b1a16ce9aff472dcdeca939f77409d41e1f0087bce7dd4d4c3ce3a89",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "747de3f8b1a16ce9aff472dcdeca939f77409d41e1f0087bce7dd4d4c3ce3a89",
+      "include_center_walls": true,
+      "name": "malformed_normal",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "walls"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "walls"
+      ]
+    },
+    {
+      "actual_sha256": "609a2984fd6618d2193bdf4217bbdead649ea0b126472a661767b3f032405609",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "609a2984fd6618d2193bdf4217bbdead649ea0b126472a661767b3f032405609",
+      "include_center_walls": false,
+      "name": "malformed_wet_fields",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "wet_zone",
+        "water_height_m",
+        "water_depth_m",
+        "mud_fraction"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "wet_zone",
+        "water_height_m",
+        "water_depth_m",
+        "mud_fraction",
+        "walls"
+      ]
+    },
+    {
+      "actual_sha256": "57f6d123158ca05d8c0207e369fe74c36deafad69718d5f5b90d635f077b430e",
+      "detached_after_source_mutation": true,
+      "exact_filtered_copy": true,
+      "expected_sha256": "57f6d123158ca05d8c0207e369fe74c36deafad69718d5f5b90d635f077b430e",
+      "include_center_walls": true,
+      "name": "malformed_wet_fields",
+      "projected_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "wet_zone",
+        "water_height_m",
+        "water_depth_m",
+        "mud_fraction",
+        "walls"
+      ],
+      "raw_keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "wet_zone",
+        "water_height_m",
+        "water_depth_m",
+        "mud_fraction",
+        "walls"
+      ]
+    }
+  ],
+  "sample_inventory": [
+    {
+      "keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "in_bounds",
+        "feature_id",
+        "feature_ids",
+        "track_coverage",
+        "walls"
+      ],
+      "name": "track_start",
+      "wall_count": 0,
+      "water_depth_m": null,
+      "wet_zone": false
+    },
+    {
+      "keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "in_bounds",
+        "feature_id",
+        "feature_ids",
+        "track_coverage",
+        "walls"
+      ],
+      "name": "wall_center",
+      "wall_count": 1,
+      "water_depth_m": null,
+      "wet_zone": false
+    },
+    {
+      "keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "in_bounds",
+        "feature_id",
+        "feature_ids",
+        "track_coverage",
+        "walls",
+        "wet_zone",
+        "water_height_m",
+        "water_depth_m",
+        "mud_fraction"
+      ],
+      "name": "wet_entry",
+      "wall_count": 0,
+      "water_depth_m": 0.05820784760934644,
+      "wet_zone": true
+    },
+    {
+      "keys": [
+        "height_m",
+        "normal_ned",
+        "mu",
+        "rolling",
+        "surface_id",
+        "in_bounds",
+        "feature_id",
+        "feature_ids",
+        "track_coverage",
+        "walls"
+      ],
+      "name": "dry_track",
+      "wall_count": 0,
+      "water_depth_m": null,
+      "wet_zone": false
+    }
+  ],
+  "source_sha256": {
+    "airfield_course": "7b444694cbb27f79fa87cf8f6ebace8877bceaa94559648a43826b16eb867b1e",
+    "airfield_track": "e741a808b42028057308a6e7f2fb22b47cf9f55523a6a58fcca87cf6086dbef2",
+    "environment": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad",
+    "field_data": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+    "harness": "7ee6db151cae1e6b0589685d852926d31ff618939a003f9455adc2cd78d2b9d2",
+    "lake_data": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+    "lake_loader": "793ade2b5c65695491489bb10cacf3562ca44488353c492fcf8551ddf1da51e6",
+    "session": "1cf7c3312b675e4b12badb733cbadb323c1a7fd98bbae607837f34c02bce38fc",
+    "vehicle_dynamics": "f4328d387528fd9bcf84dba303c5ee872b71485ebaa5554b3f78b3678bf1e679"
+  },
+  "vehicle_id": "monster-car-2"
+}

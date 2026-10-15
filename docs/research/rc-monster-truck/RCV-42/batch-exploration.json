@@ -1,0 +1,34 @@
+{
+	"checks": 4144,
+	"complete": true,
+	"engine": "4.7.2-stable (official)",
+	"iterations": 6000,
+	"rounds_us_per_14_sample_batch": [
+		{
+			"baseline": 45.997166666666665,
+			"fused": 31.558166666666665,
+			"preallocation": 50.759
+		},
+		{
+			"baseline": 45.47233333333333,
+			"fused": 28.520333333333333,
+			"preallocation": 48.63633333333333
+		},
+		{
+			"baseline": 47.71816666666667,
+			"fused": 27.026333333333334,
+			"preallocation": 42.321666666666665
+		},
+		{
+			"baseline": 43.71633333333333,
+			"fused": 27.696166666666667,
+			"preallocation": 43.01466666666666
+		},
+		{
+			"baseline": 42.85166666666667,
+			"fused": 28.5755,
+			"preallocation": 46.34616666666667
+		}
+	],
+	"scope": "Warm alternating component batches; callback returns one existing dictionary, isolating validation and packing."
+}

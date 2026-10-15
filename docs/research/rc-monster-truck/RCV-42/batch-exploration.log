@@ -1,0 +1,3 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{"checks":4144,"complete":true,"engine":"4.7.2-stable (official)","iterations":6000,"rounds_us_per_14_sample_batch":[{"baseline":45.9971666666667,"fused":31.5581666666667,"preallocation":50.759},{"baseline":45.4723333333333,"fused":28.5203333333333,"preallocation":48.6363333333333},{"baseline":47.7181666666667,"fused":27.0263333333333,"preallocation":42.3216666666667},{"baseline":43.7163333333333,"fused":27.6961666666667,"preallocation":43.0146666666667},{"baseline":42.8516666666667,"fused":28.5755,"preallocation":46.3461666666667}],"scope":"Warm alternating component batches; callback returns one existing dictionary, isolating validation and packing."}
