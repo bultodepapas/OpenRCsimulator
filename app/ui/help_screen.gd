@@ -20,6 +20,9 @@ var about_label: Label
 var field_conditions_label: Label
 var radio_help_label: Label
 var _vehicle_type := Reference.AIRPLANE
+var _help_panel: PanelContainer
+var _help_columns: BoxContainer
+var _help_scroll: ScrollContainer
 
 
 func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLANE) -> void:
@@ -30,15 +33,22 @@ func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLA
 	screen.return_focus = return_focus
 	screen.close_requested.connect(close)
 	screen.dim(0.55)
-	var center: CenterContainer = screen.center()
+	var center: CenterContainer = screen.center(24.0)
 	var panel := PanelContainer.new()
+	_help_panel = panel
 	panel.theme_type_variation = "Sidebar"
 	center.add_child(panel)
+	var shell := VBoxContainer.new()
+	shell.add_theme_constant_override("separation", 16)
+	panel.add_child(shell)
 	var scroll := ScrollContainer.new()
+	_help_scroll = scroll
 	scroll.follow_focus = true # keyboard focus must reach what scaling pushes out of view (research 11)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.custom_minimum_size = Vector2(1120, 624) # 704 px including panel padding; the expanded EN/ES reference fits at 720p
-	panel.add_child(scroll)
+	scroll.custom_minimum_size = Vector2(0, 400) # 704 px including panel padding; the expanded EN/ES reference fits at 720p
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.focus_mode = Control.FOCUS_ALL
+	shell.add_child(scroll)
 	var page := VBoxContainer.new()
 	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	page.add_theme_constant_override("separation", 1)
@@ -49,16 +59,19 @@ func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLA
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	# A full-width header line leaves room for the vehicle's startup/radio instructions.
-	header.add_child(_text("Keys are shown as your keyboard layout prints them.", "SecondaryLabel"))
+	
 	close_button = Button.new()
 	close_button.name = "Close"
 	close_button.text = "Close"
 	close_button.custom_minimum_size.x = 120
 	close_button.pressed.connect(close)
 	header.add_child(close_button)
-	page.add_child(header)
+	shell.add_child(header)
+	shell.move_child(header, 0)
+	page.add_child(_text("Keys are shown as your keyboard layout prints them.", "SecondaryLabel", true))
 
-	var columns := HBoxContainer.new()
+	var columns := BoxContainer.new()
+	_help_columns = columns
 	columns.add_theme_constant_override("separation", 48)
 	page.add_child(columns)
 	var left := _column(columns)
@@ -80,7 +93,7 @@ func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLA
 	_update_radio_help_text()
 	right.add_child(radio_help_label)
 	right.add_child(_text("RIGHT NOW", "SectionLabel"))
-	field_conditions_label = _text("Flights start airborne. Configure wind, gusts, turbulence and field air density. Landings are experimental; crashes restart.", "SecondaryLabel", true)
+	field_conditions_label = _text("Choose a runway or airborne start on Home. Configure wind, gusts, turbulence and field air density before flying. Flight models are experimental.", "SecondaryLabel", true)
 	field_conditions_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	_update_field_conditions_text()
 	right.add_child(field_conditions_label)
@@ -90,13 +103,23 @@ func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLA
 	page.add_child(_text("ABOUT", "SectionLabel"))
 	about_label = _text("", "SecondaryLabel", true)
 	about_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr()
-	about_label.custom_minimum_size.x = 1100
+	about_label.custom_minimum_size.x = 0
 	page.add_child(about_label)
+	screen.resized.connect(_resize_help)
 
 
 func _ready() -> void:
 	about_label.text = about_text(BuildInfo.current())
+	_resize_help()
 	close_button.grab_focus.call_deferred()
+
+
+func _resize_help() -> void:
+	if not is_inside_tree(): return
+	var area: Vector2 = get_viewport().get_visible_rect().size
+	_help_panel.custom_minimum_size = Vector2(minf(1200, area.x - 48), area.y - 48)
+	_help_columns.vertical = preload("res://ui/ui_theme.gd").text_scale > 1.25 or area.x < 1180
+	_help_scroll.custom_minimum_size.y = maxf(180, area.y - 240)
 
 
 func _notification(what: int) -> void:
@@ -111,7 +134,7 @@ func _update_field_conditions_text() -> void:
 		if _vehicle_type == Reference.ROTORCRAFT:
 			field_conditions_label.text = tr("Helicopter: ground pad or practice hover. On the pad, center controls at zero pitch, arm with B, release hold with H, wait for RPM, then raise collective. Steady wind and gusts are available; flight validation is pending.")
 		else:
-			field_conditions_label.text = tr("Flights start airborne. Configure wind, gusts, turbulence and field air density. Landings are experimental; crashes restart.")
+			field_conditions_label.text = tr("Choose a runway or airborne start on Home. Configure wind, gusts, turbulence and field air density before flying. Flight models are experimental.")
 
 
 func _update_radio_help_text() -> void:

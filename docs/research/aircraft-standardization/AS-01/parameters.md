@@ -104,11 +104,13 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `flaps.extension_time` | s | ≥0.25, ≤30 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.hinge_fraction` | 1 | ≥0.5, ≤0.95 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.inner_span_m` | m | ≥0, ≤2 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
+| `flaps.lift_reference_offset_m` | m | ≥-0.5, ≤0.5 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.max_angle_deg` | deg | ≥5, ≤60 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.max_speed_mps` | m/s | ≥5, ≤100 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.outer_span_m` | m | ≥0, ≤2 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.profile_drag_coefficient` | 1 | ≥0, ≤1 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.retraction_time` | s | ≥0.25, ≤30 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
+| `flaps.stall_shift_fraction` | 1 | ≥0, ≤1 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `flaps.takeoff_angle_deg` | deg | ≥0, ≤60 | AircraftData._flaps → Flaps.advance normalized actuator / Aero strip incidence, bounded lift, induced and profile drag, thin-airfoil pitch couple, and tail downwash; AV-09 manual-mix and EAS-advisory consumers |
 | `inventory[].mass` | kg | ≥0.001, ≤5 | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
 | `inventory[].position` | m | length 3…3, each(≥-2, ≤2) | AircraftData.inertia_about / mass-CG sum → rigid_body, trim, rotor carrier |
@@ -196,4 +198,4 @@ explains the original consumers. Metadata/capability enums are specified in the 
 | `reference.wing_span` | m | ≥0.3, ≤4 | AircraftData reference/strip derivation → Aero.loads, trim, render datum checks |
 | `start.level_speed` | m/s | ≥5, ≤60 | FlightSession._prepare_aircraft → Scenarios.trimmed_level_across_view |
 
-Total: 182 distinct quantity paths. Shared paths retain branch-dependent ranges.
+Total: 184 distinct quantity paths. Shared paths retain branch-dependent ranges.

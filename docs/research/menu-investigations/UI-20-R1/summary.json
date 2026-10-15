@@ -1,0 +1,1630 @@
+{
+  "date": "2026-10-15",
+  "head": "32ed17e137b3852e9aa72c221d322c52080c3fd6",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "captured_at": "native Windows GPU, borderless window; no OS display mode change",
+  "host": {
+    "screen_size": "(3840, 2160)",
+    "screen_dpi": 144,
+    "screen_scale": 1.0,
+    "content_scale": 1.0,
+    "renderer": "gl_compatibility",
+    "gpu": "NVIDIA GeForce RTX 3090"
+  },
+  "flows": [
+    {
+      "after_escape_home": true,
+      "case": "en-720",
+      "focus_restored": true,
+      "from": "help"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-720",
+      "focus_restored": true,
+      "from": "controls"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-720",
+      "focus_restored": true,
+      "from": "failures"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-720",
+      "focus_restored": true,
+      "from": "natural_random"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-720",
+      "focus_restored": true,
+      "from": "workshop"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-720",
+      "focus_restored": true,
+      "from": "weather"
+    },
+    {
+      "case": "en-720",
+      "pause_open": true,
+      "tick_held": true
+    },
+    {
+      "case": "en-720",
+      "nested_escape_pause": true,
+      "tick_held": true
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-720",
+      "focus_restored": true,
+      "from": "help"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-720",
+      "focus_restored": true,
+      "from": "controls"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-720",
+      "focus_restored": true,
+      "from": "failures"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-720",
+      "focus_restored": true,
+      "from": "natural_random"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-720",
+      "focus_restored": true,
+      "from": "workshop"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-720",
+      "focus_restored": true,
+      "from": "weather"
+    },
+    {
+      "case": "es-720",
+      "pause_open": true,
+      "tick_held": true
+    },
+    {
+      "case": "es-720",
+      "nested_escape_pause": true,
+      "tick_held": true
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-1080",
+      "focus_restored": true,
+      "from": "help"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-1080",
+      "focus_restored": true,
+      "from": "controls"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-1080",
+      "focus_restored": true,
+      "from": "failures"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-1080",
+      "focus_restored": true,
+      "from": "natural_random"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-1080",
+      "focus_restored": true,
+      "from": "workshop"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-1080",
+      "focus_restored": true,
+      "from": "weather"
+    },
+    {
+      "case": "en-1080",
+      "pause_open": true,
+      "tick_held": true
+    },
+    {
+      "case": "en-1080",
+      "nested_escape_pause": true,
+      "tick_held": true
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-1080",
+      "focus_restored": true,
+      "from": "help"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-1080",
+      "focus_restored": true,
+      "from": "controls"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-1080",
+      "focus_restored": true,
+      "from": "failures"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-1080",
+      "focus_restored": true,
+      "from": "natural_random"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-1080",
+      "focus_restored": true,
+      "from": "workshop"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-1080",
+      "focus_restored": true,
+      "from": "weather"
+    },
+    {
+      "case": "es-1080",
+      "pause_open": true,
+      "tick_held": true
+    },
+    {
+      "case": "es-1080",
+      "nested_escape_pause": true,
+      "tick_held": true
+    },
+    {
+      "case": "en-1440",
+      "pause_open": true,
+      "tick_held": true
+    },
+    {
+      "case": "es-1440",
+      "pause_open": true,
+      "tick_held": true
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-2160",
+      "focus_restored": true,
+      "from": "help"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-2160",
+      "focus_restored": true,
+      "from": "controls"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-2160",
+      "focus_restored": true,
+      "from": "failures"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-2160",
+      "focus_restored": true,
+      "from": "natural_random"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-2160",
+      "focus_restored": true,
+      "from": "workshop"
+    },
+    {
+      "after_escape_home": true,
+      "case": "en-2160",
+      "focus_restored": true,
+      "from": "weather"
+    },
+    {
+      "case": "en-2160",
+      "pause_open": true,
+      "tick_held": true
+    },
+    {
+      "case": "en-2160",
+      "nested_escape_pause": true,
+      "tick_held": true
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-2160",
+      "focus_restored": true,
+      "from": "help"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-2160",
+      "focus_restored": true,
+      "from": "controls"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-2160",
+      "focus_restored": true,
+      "from": "failures"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-2160",
+      "focus_restored": true,
+      "from": "natural_random"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-2160",
+      "focus_restored": true,
+      "from": "workshop"
+    },
+    {
+      "after_escape_home": true,
+      "case": "es-2160",
+      "focus_restored": true,
+      "from": "weather"
+    },
+    {
+      "case": "es-2160",
+      "pause_open": true,
+      "tick_held": true
+    },
+    {
+      "case": "es-2160",
+      "nested_escape_pause": true,
+      "tick_held": true
+    }
+  ],
+  "captures": [
+    {
+      "case": "en-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Home/Sidebar/Scroll/Column/@HBoxContainer@58/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-home.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "home",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "en-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Home/Sidebar/Scroll/Column/@HBoxContainer@58/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-home-scroll.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "home-scroll",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "en-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Help/@Control@110/@CenterContainer@112/@PanelContainer@113/@ScrollContainer@116/@VBoxContainer@117/@HBoxContainer@120/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-help.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "help",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "en-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/ControllerSetup/Screen/@CenterContainer@266/ControllerSettingsPanel/@VBoxContainer@267/ControllerSetupScroll/ControllerSetupPage/SectionPage_devices/@GridContainer@274/@OptionButton@296",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-controls.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "controls",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "en-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/FailuresMenu/Screen/@CenterContainer@608/FailureSettingsCard/@VBoxContainer@609/@HBoxContainer@621/Apply",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-failures.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "failures",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "en-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/NaturalRandomScreen/NaturalRandomSurface/BriefingSidebar/@VBoxContainer@632/BriefingActions/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-natural_random.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "natural_random",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "en-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/WorkshopPage/WorkshopScroll/WorkshopColumns/AircraftColumn/BaseAircraftCard/CardContent/BaseAircraft",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-workshop.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "workshop",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "en-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@732/WeatherPanel/@VBoxContainer@733/@HBoxContainer@748/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-weather.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "en-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@732/WeatherPanel/@VBoxContainer@733/@HBoxContainer@748/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-weather-turbulence.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather-turbulence",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "en-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@732/WeatherPanel/@VBoxContainer@733/@HBoxContainer@748/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-weather-atmosphere.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather-atmosphere",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "en-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@1131/PauseScroll/@VBoxContainer@1135/Continue",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-pause.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "pause",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "en-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/TimeOfDayDialog/Modal/@CenterContainer@1246/TimeOfDayPanel/@VBoxContainer@1247/TimeOfDayScroll/@VBoxContainer@1301/TimeOfDayControls/FieldLightingRow/FieldLighting",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-sky-lighting.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "sky-lighting",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "en-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/OverlaysDialog/Modal/@CenterContainer@1372/OverlaysPanel/@VBoxContainer@1373/@HBoxContainer@1376/Preset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-overlays.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "overlays",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "es-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Home/Sidebar/Scroll/Column/@HBoxContainer@1470/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-home.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "home",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "es-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Home/Sidebar/Scroll/Column/@HBoxContainer@1470/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-home-scroll.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "home-scroll",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "es-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Help/@Control@1522/@CenterContainer@1524/@PanelContainer@1525/@ScrollContainer@1528/@VBoxContainer@1529/@HBoxContainer@1532/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-help.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "help",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "es-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/ControllerSetup/Screen/@CenterContainer@1678/ControllerSettingsPanel/@VBoxContainer@1679/ControllerSetupScroll/ControllerSetupPage/SectionPage_devices/@GridContainer@1686/@OptionButton@1708",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-controls.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "controls",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "es-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/FailuresMenu/Screen/@CenterContainer@2020/FailureSettingsCard/@VBoxContainer@2021/@HBoxContainer@2033/Apply",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-failures.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "failures",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "es-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/NaturalRandomScreen/NaturalRandomSurface/BriefingSidebar/@VBoxContainer@2044/BriefingActions/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-natural_random.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "natural_random",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "es-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/WorkshopPage/WorkshopScroll/WorkshopColumns/AircraftColumn/BaseAircraftCard/CardContent/BaseAircraft",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-workshop.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "workshop",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "es-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@2144/WeatherPanel/@VBoxContainer@2145/@HBoxContainer@2160/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-weather.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "es-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@2144/WeatherPanel/@VBoxContainer@2145/@HBoxContainer@2160/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-weather-turbulence.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather-turbulence",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "es-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@2144/WeatherPanel/@VBoxContainer@2145/@HBoxContainer@2160/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-weather-atmosphere.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather-atmosphere",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "es-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@2543/PauseScroll/@VBoxContainer@2547/Continue",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-pause.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "pause",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "es-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/TimeOfDayDialog/Modal/@CenterContainer@2658/TimeOfDayPanel/@VBoxContainer@2659/TimeOfDayScroll/@VBoxContainer@2713/TimeOfDayControls/FieldLightingRow/FieldLighting",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-sky-lighting.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "sky-lighting",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "es-720",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/OverlaysDialog/Modal/@CenterContainer@2784/OverlaysPanel/@VBoxContainer@2785/@HBoxContainer@2788/Preset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-overlays.webp",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "overlays",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "case": "en-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Home/Sidebar/Scroll/Column/@HBoxContainer@2882/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1080-home.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "home",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "en-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Help/@Control@2934/@CenterContainer@2936/@PanelContainer@2937/@ScrollContainer@2940/@VBoxContainer@2941/@HBoxContainer@2944/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1080-help.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "help",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "en-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/ControllerSetup/Screen/@CenterContainer@3090/ControllerSettingsPanel/@VBoxContainer@3091/ControllerSetupScroll/ControllerSetupPage/SectionPage_devices/@GridContainer@3098/@OptionButton@3120",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1080-controls.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "controls",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "en-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/FailuresMenu/Screen/@CenterContainer@3432/FailureSettingsCard/@VBoxContainer@3433/@HBoxContainer@3445/Apply",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1080-failures.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "failures",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "en-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/NaturalRandomScreen/NaturalRandomSurface/BriefingSidebar/@VBoxContainer@3456/BriefingActions/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1080-natural_random.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "natural_random",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "en-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/WorkshopPage/WorkshopScroll/WorkshopColumns/AircraftColumn/BaseAircraftCard/CardContent/BaseAircraft",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1080-workshop.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "workshop",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "en-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@3556/WeatherPanel/@VBoxContainer@3557/@HBoxContainer@3572/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1080-weather.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "en-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@3556/WeatherPanel/@VBoxContainer@3557/@HBoxContainer@3572/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1080-weather-turbulence.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather-turbulence",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "en-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@3556/WeatherPanel/@VBoxContainer@3557/@HBoxContainer@3572/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1080-weather-atmosphere.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather-atmosphere",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "en-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@3955/PauseScroll/@VBoxContainer@3959/Continue",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1080-pause.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "pause",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "en-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/TimeOfDayDialog/Modal/@CenterContainer@4070/TimeOfDayPanel/@VBoxContainer@4071/TimeOfDayScroll/@VBoxContainer@4125/TimeOfDayControls/FieldLightingRow/FieldLighting",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1080-sky-lighting.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "sky-lighting",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "en-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/OverlaysDialog/Modal/@CenterContainer@4196/OverlaysPanel/@VBoxContainer@4197/@HBoxContainer@4200/Preset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1080-overlays.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "overlays",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "es-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Home/Sidebar/Scroll/Column/@HBoxContainer@4294/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1080-home.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "home",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "es-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Help/@Control@4346/@CenterContainer@4348/@PanelContainer@4349/@ScrollContainer@4352/@VBoxContainer@4353/@HBoxContainer@4356/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1080-help.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "help",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "es-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/ControllerSetup/Screen/@CenterContainer@4502/ControllerSettingsPanel/@VBoxContainer@4503/ControllerSetupScroll/ControllerSetupPage/SectionPage_devices/@GridContainer@4510/@OptionButton@4532",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1080-controls.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "controls",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "es-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/FailuresMenu/Screen/@CenterContainer@4844/FailureSettingsCard/@VBoxContainer@4845/@HBoxContainer@4857/Apply",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1080-failures.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "failures",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "es-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/NaturalRandomScreen/NaturalRandomSurface/BriefingSidebar/@VBoxContainer@4868/BriefingActions/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1080-natural_random.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "natural_random",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "es-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/WorkshopPage/WorkshopScroll/WorkshopColumns/AircraftColumn/BaseAircraftCard/CardContent/BaseAircraft",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1080-workshop.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "workshop",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "es-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@4968/WeatherPanel/@VBoxContainer@4969/@HBoxContainer@4984/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1080-weather.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "es-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@4968/WeatherPanel/@VBoxContainer@4969/@HBoxContainer@4984/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1080-weather-turbulence.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather-turbulence",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "es-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@4968/WeatherPanel/@VBoxContainer@4969/@HBoxContainer@4984/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1080-weather-atmosphere.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather-atmosphere",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "es-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@5367/PauseScroll/@VBoxContainer@5371/Continue",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1080-pause.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "pause",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "es-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/TimeOfDayDialog/Modal/@CenterContainer@5482/TimeOfDayPanel/@VBoxContainer@5483/TimeOfDayScroll/@VBoxContainer@5537/TimeOfDayControls/FieldLightingRow/FieldLighting",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1080-sky-lighting.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "sky-lighting",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "es-1080",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/OverlaysDialog/Modal/@CenterContainer@5608/OverlaysPanel/@VBoxContainer@5609/@HBoxContainer@5612/Preset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1080-overlays.webp",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "overlays",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "case": "en-1440",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Home/Sidebar/Scroll/Column/@HBoxContainer@5706/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1440-home.webp",
+      "pixels": [
+        2560,
+        1440
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "home",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(2560, 1440)"
+    },
+    {
+      "case": "en-1440",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@6004/PauseScroll/@VBoxContainer@6008/Continue",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1440-pause.webp",
+      "pixels": [
+        2560,
+        1440
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "pause",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(2560, 1440)"
+    },
+    {
+      "case": "es-1440",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Home/Sidebar/Scroll/Column/@HBoxContainer@6175/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1440-home.webp",
+      "pixels": [
+        2560,
+        1440
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "home",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(2560, 1440)"
+    },
+    {
+      "case": "es-1440",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@6473/PauseScroll/@VBoxContainer@6477/Continue",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1440-pause.webp",
+      "pixels": [
+        2560,
+        1440
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "pause",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(2560, 1440)"
+    },
+    {
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Home/Sidebar/Scroll/Column/@HBoxContainer@6644/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-home.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "home",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Help/@Control@6696/@CenterContainer@6698/@PanelContainer@6699/@ScrollContainer@6702/@VBoxContainer@6703/@HBoxContainer@6706/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-help.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "help",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/ControllerSetup/Screen/@CenterContainer@6852/ControllerSettingsPanel/@VBoxContainer@6853/ControllerSetupScroll/ControllerSetupPage/SectionPage_devices/@GridContainer@6860/@OptionButton@6882",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-controls.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "controls",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/FailuresMenu/Screen/@CenterContainer@7194/FailureSettingsCard/@VBoxContainer@7195/@HBoxContainer@7207/Apply",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-failures.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "failures",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/NaturalRandomScreen/NaturalRandomSurface/BriefingSidebar/@VBoxContainer@7218/BriefingActions/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-natural_random.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "natural_random",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/WorkshopPage/WorkshopScroll/WorkshopColumns/AircraftColumn/BaseAircraftCard/CardContent/BaseAircraft",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-workshop.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "workshop",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@7318/WeatherPanel/@VBoxContainer@7319/@HBoxContainer@7334/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-weather.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@7318/WeatherPanel/@VBoxContainer@7319/@HBoxContainer@7334/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-weather-turbulence.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather-turbulence",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@7318/WeatherPanel/@VBoxContainer@7319/@HBoxContainer@7334/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-weather-atmosphere.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather-atmosphere",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@7717/PauseScroll/@VBoxContainer@7721/Continue",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-pause.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "pause",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/TimeOfDayDialog/Modal/@CenterContainer@7832/TimeOfDayPanel/@VBoxContainer@7833/TimeOfDayScroll/@VBoxContainer@7887/TimeOfDayControls/FieldLightingRow/FieldLighting",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-sky-lighting.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "sky-lighting",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/OverlaysDialog/Modal/@CenterContainer@7958/OverlaysPanel/@VBoxContainer@7959/@HBoxContainer@7962/Preset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-overlays.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "overlays",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Home/Sidebar/Scroll/Column/@HBoxContainer@8056/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-home.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "home",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Help/@Control@8108/@CenterContainer@8110/@PanelContainer@8111/@ScrollContainer@8114/@VBoxContainer@8115/@HBoxContainer@8118/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-help.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "help",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/ControllerSetup/Screen/@CenterContainer@8264/ControllerSettingsPanel/@VBoxContainer@8265/ControllerSetupScroll/ControllerSetupPage/SectionPage_devices/@GridContainer@8272/@OptionButton@8294",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-controls.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "controls",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/FailuresMenu/Screen/@CenterContainer@8606/FailureSettingsCard/@VBoxContainer@8607/@HBoxContainer@8619/Apply",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-failures.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "failures",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/NaturalRandomScreen/NaturalRandomSurface/BriefingSidebar/@VBoxContainer@8630/BriefingActions/Fly",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-natural_random.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "natural_random",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/Workshop/Screen/WorkshopMargins/WorkshopPanel/WorkshopPage/WorkshopScroll/WorkshopColumns/AircraftColumn/BaseAircraftCard/CardContent/BaseAircraft",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-workshop.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "workshop",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@8730/WeatherPanel/@VBoxContainer@8731/@HBoxContainer@8746/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-weather.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@8730/WeatherPanel/@VBoxContainer@8731/@HBoxContainer@8746/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-weather-turbulence.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather-turbulence",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/WeatherDialog/Modal/@CenterContainer@8730/WeatherPanel/@VBoxContainer@8731/@HBoxContainer@8746/WeatherPreset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-weather-atmosphere.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "weather-atmosphere",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@9129/PauseScroll/@VBoxContainer@9133/Continue",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-pause.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "pause",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/TimeOfDayDialog/Modal/@CenterContainer@9244/TimeOfDayPanel/@VBoxContainer@9245/TimeOfDayScroll/@VBoxContainer@9299/TimeOfDayControls/FieldLightingRow/FieldLighting",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-sky-lighting.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "sky-lighting",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "focus": "/root/AppRoot/OverlaysDialog/Modal/@CenterContainer@9370/OverlaysPanel/@VBoxContainer@9371/@HBoxContainer@9374/Preset",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-overlays.webp",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "overlays",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    }
+  ]
+}

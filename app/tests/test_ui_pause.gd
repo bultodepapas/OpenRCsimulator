@@ -75,6 +75,16 @@ func _run() -> void:
 	await ui.tap(KEY_P)
 	_check("R, T and P do nothing behind the menu", session.sim.tick == tick and session.sim.paused and not main.recorder.recording)
 
+	await ui.tap(KEY_DOWN)
+	await ui.tap(KEY_DOWN)
+	_check("Session options follows the primary recovery actions", ui.focus_name() == "SessionOptions", ui.focus_name())
+	await ui.tap(KEY_ENTER)
+	_check("Session options expands its secondary actions", app.pause_menu.session_options_container.visible
+		and app.pause_menu.workshop_button.is_visible_in_tree())
+	_check("Settings stays on the primary pause list", app.pause_menu.settings_button.is_visible_in_tree())
+	await ui.tap(KEY_ESCAPE)
+	_check("Back first closes Session options", app.pause_menu != null and not app.pause_menu.session_options_container.visible
+		and session.holds.has("menu") and session.sim.paused)
 	await ui.tap(KEY_ESCAPE)
 	_check("Esc again: back to the flight", app.pause_menu == null and session.holds.is_empty() and not session.sim.paused)
 	await _wait(0.4)
@@ -156,14 +166,28 @@ func _run() -> void:
 	await _wait(0.3)
 	app.open_pause()
 	await ui.settle()
+	await ui.tap(KEY_DOWN) # Restart
+	await ui.tap(KEY_DOWN) # Session options
+	await ui.tap(KEY_ENTER)
+	var traversed_session_options: Array[String] = []
+	for i in 8:
+		if ui.focus_name() == app.pause_menu.failure_settings_button.name:
+			break
+		await ui.tap(KEY_DOWN)
+		traversed_session_options.append(ui.focus_name())
+	_check("failure settings are reachable by keyboard",
+		ui.focus_name() == app.pause_menu.failure_settings_button.name, str(traversed_session_options))
+	await ui.tap(KEY_ESCAPE) # Session options collapses before the pause screen closes
 	var traversed_pause_controls: Array[String] = []
-	for i in 10:
-		if ui.focus_name() == "End":
+	for i in 8:
+		if ui.focus_name() == app.pause_menu.exit_options_button.name:
 			break
 		await ui.tap(KEY_DOWN)
 		traversed_pause_controls.append(ui.focus_name())
-	_check("failure settings are reachable by keyboard",
-		traversed_pause_controls.has(app.pause_menu.failure_settings_button.name), str(traversed_pause_controls))
+	_check("Exit options are reachable on the primary pause list",
+		ui.focus_name() == app.pause_menu.exit_options_button.name, str(traversed_pause_controls))
+	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_DOWN)
 	_check("End flight reachable by keyboard", ui.focus_name() == "End", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	var note: String = recorder.note

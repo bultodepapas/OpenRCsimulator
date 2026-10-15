@@ -155,7 +155,7 @@
     },
     {
       "path": "res://aircraft/p51d_model.gd",
-      "sha256": "0247041fde1274c10aeae07ab7ab15fa9cf0ea684e4fe960d862a6b8ff28ba4f",
+      "sha256": "7bddd71e86ef03be53ec37844ee1f4fd530a9ac270d2d71314c17df4ff32709d",
       "hash_mode": "lf_text",
       "role": "builder"
     }

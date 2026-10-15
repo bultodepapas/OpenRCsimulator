@@ -15,6 +15,7 @@ var return_focus: Control
 var _active := true
 var _focus_policy: FocusBehaviorRecursive
 var _mouse_policy: MouseBehaviorRecursive
+var _entrance: Tween
 
 
 static func mount(host: CanvasLayer, node_name: String = "") -> Control:
@@ -58,9 +59,16 @@ func fade(width: int) -> TextureRect:
 func open(from: Control = null) -> void:
 	return_focus = from
 	set_active(true)
+	if is_inside_tree() and not ScreenTheme.reduced_motion and not DisplayServer.get_name() == "headless":
+		if _entrance != null: _entrance.kill()
+		modulate.a = 0.0
+		_entrance = create_tween()
+		_entrance.tween_property(self, "modulate:a", 1.0, 0.14)
 
 
 func close(restore_focus := true) -> void:
+	if _entrance != null: _entrance.kill()
+	modulate.a = 1.0
 	if restore_focus and is_instance_valid(return_focus) and return_focus.is_inside_tree() \
 		and return_focus.is_visible_in_tree() and return_focus.focus_mode != Control.FOCUS_NONE:
 		return_focus.grab_focus()
@@ -73,6 +81,7 @@ func set_active(active: bool) -> void:
 	if _active == active:
 		return
 	_active = active
+	visible = active # a child page replaces navigation chrome, retaining the live/frozen 3D scene
 	set_process_input(active)
 	set_process_unhandled_input(active)
 	if not active:

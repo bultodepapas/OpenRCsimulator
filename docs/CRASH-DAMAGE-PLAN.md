@@ -44,6 +44,8 @@ These slices do not close the broader CR-02/03/04/05 contracts, CR-07–10 struc
 
 The active execution plan for proportional outcomes, crash causes, energy-source fire and effects cost is [crash realism](plans/crash-realism.md).
 
+The [component damage and repair economics plan](plans/crash-damage-economics.md) owns **CR-28…38**: Ugly Stik baseline valuation, a reusable sourced USD catalog, per-part damage/inspection/salvage, aircraft authoring dossiers and a prominent accident-cost report. Its [CR-28 research](research/crash-damage-investigations/CR-28/README.md) is a planning/data seed; runtime costing and structural/thermal qualification remain pending. “Cost” in the earlier crash-realism plan means rendering/CPU cost, not repair dollars.
+
 | Area | Remaining scope |
 | --- | --- |
 | Diagnostics | CR-01d named the hull points; finish CR-01 crossing-time kinematics. Preserve explicit unknown values where current model data cannot support a claim. |

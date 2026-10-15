@@ -306,8 +306,12 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 		speeds.append(vp)
 		flap_shifts.append(flap_shift)
 		reference_speed = maxf(reference_speed, M.sqrt_(f0*f0 + f1*f1 + f2*f2))
+	# P51-11a (optional flaps.stall_shift_fraction): a flapped strip's stall onset moves by only this fraction of its
+	# camber shift; absent keeps the whole shift without any added arithmetic.
+	var stall_back := 1.0 - float(flap_model.stall_shift_fraction) if flap_active and flap_model.has("stall_shift_fraction") else 0.0
 	for i in ys.size():
-		sources.append((speeds[i]/reference_speed) * (1.0-stall_weight(angles[i], model.envelope)) if reference_speed > 0.0 else 0.0)
+		var source_angle: float = angles[i] if stall_back == 0.0 else angles[i] - stall_back * flap_shifts[i]
+		sources.append((speeds[i]/reference_speed) * (1.0-stall_weight(source_angle, model.envelope)) if reference_speed > 0.0 else 0.0)
 	return {angles = angles, speeds = speeds, sources = sources, flap_shifts = flap_shifts, reference_speed = reference_speed}
 
 
@@ -399,6 +403,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var flap_model: Dictionary = model.get("flaps", {})
 	var flap_angle: float = float(d.get("flap", 0.0))
 	var flap_active := Flaps.enabled(model) and flap_angle != 0.0 and float(flap_model.get("aerodynamic_gain", 1.0)) != 0.0
+	var stall_back := 1.0 - float(flap_model.stall_shift_fraction) if flap_active and flap_model.has("stall_shift_fraction") else 0.0
 	var flap_coverage: PackedFloat64Array = flap_model.get("station_coverage", PackedFloat64Array())
 	var reference_speed: float = float(wing_flow.reference_speed)
 	var coupled := e_map.size() == stations * stations
@@ -418,8 +423,9 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		var f2: float = v2 + (p*arm_y - q*ax)
 		var effective: float = angles[i]
 		# Stall and the flat plate follow the geometric angle; attached lift uses the induced (effective) angles.
-		var weight := _smoothstep((effective - a1) / a_span) if effective >= 0.0 \
-			else _smoothstep((-effective - n1) / n_span)
+		var stall_angle: float = effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]
+		var weight := _smoothstep((stall_angle - a1) / a_span) if stall_angle >= 0.0 \
+			else _smoothstep((-stall_angle - n1) / n_span)
 		var base: float
 		if coupled:
 			var mapped := 0.0
@@ -526,6 +532,10 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 			var chord_i: float = flap_chords[i] if i < flap_chords.size() else float(ref.c)
 			var lift_q_area: float = lift_q * plane_speed * plane_speed * station_area
 			var flap_couple: float = lift_q_area * chord_i * flap_delta_cl * float(flap_model.thin_airfoil_moment_per_cl)
+			# P51-11a (optional): camber lift acts at the wing section's own quarter chord, this far aft of the strip force
+			# point (the wing-body ARP); absent = no added term.
+			if flap_model.has("lift_reference_offset_m"):
+				flap_couple -= lift_q_area * flap_delta_cl * float(flap_model.lift_reference_offset_m)
 			# Estimated incremental profile/hinge drag acts at the panel centre;
 			# account for its chordwise and deflected-z arms separately.
 			var flap_center := float(flap_model.hinge_fraction) + 0.5 * float(flap_model.chord_fraction) * M.cos_(flap_angle)
@@ -795,6 +805,7 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 	var flap_model: Dictionary = model.get("flaps", {})
 	var flap_angle: float = float(d.get("flap", 0.0))
 	var flap_active := Flaps.enabled(model) and flap_angle != 0.0 and float(flap_model.get("aerodynamic_gain", 1.0)) != 0.0
+	var stall_back := 1.0 - float(flap_model.stall_shift_fraction) if flap_active and flap_model.has("stall_shift_fraction") else 0.0
 	var e_map: PackedFloat64Array = env.get("induced_map", PackedFloat64Array())
 	var coupled := e_map.size() == stations * stations
 	var strip_slope: float = env.get("strip_slope", a.CLa)
@@ -808,8 +819,9 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 	var polar: Dictionary = env.get("wing_polar", {})
 	for i in stations:
 		var effective: float = angles[i]
-		var weight := _smoothstep((effective - a1) / a_span) if effective >= 0.0 \
-			else _smoothstep((-effective - n1) / n_span)
+		var stall_angle: float = effective if stall_back == 0.0 else effective - stall_back * flap_shifts[i]
+		var weight := _smoothstep((stall_angle - a1) / a_span) if stall_angle >= 0.0 \
+			else _smoothstep((-stall_angle - n1) / n_span)
 		var base: float
 		if coupled:
 			var mapped := 0.0

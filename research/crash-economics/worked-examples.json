@@ -1,0 +1,117 @@
+{
+  "format": "openrc-crash-cost-examples v1-research",
+  "generated_by": "research/crash-economics/build_catalog.py",
+  "physical_source_sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+  "costing_source_sha256": "fb4c3135f1706d7e44893cd52c2fd0b315383ef0a8a2d9ea06271cb75661a846",
+  "currency": "USD",
+  "baseline_lines": [
+    {
+      "id": "covered_airframe_and_installation_hardware",
+      "quantity": 1,
+      "unit_minor": 35000,
+      "line_minor": 35000
+    },
+    {
+      "id": "engine_and_muffler",
+      "quantity": 1,
+      "unit_minor": 24999,
+      "line_minor": 24999
+    },
+    {
+      "id": "fuselage_servos",
+      "quantity": 3,
+      "unit_minor": 3399,
+      "line_minor": 10197
+    },
+    {
+      "id": "central_aileron_servo",
+      "quantity": 1,
+      "unit_minor": 3399,
+      "line_minor": 3399
+    },
+    {
+      "id": "receiver",
+      "quantity": 1,
+      "unit_minor": 9999,
+      "line_minor": 9999
+    },
+    {
+      "id": "propeller",
+      "quantity": 1,
+      "unit_minor": 539,
+      "line_minor": 539
+    },
+    {
+      "id": "receiver_battery",
+      "quantity": 1,
+      "unit_minor": 2500,
+      "line_minor": 2500
+    },
+    {
+      "id": "onboard_fuel",
+      "quantity": 1,
+      "unit_minor": 300,
+      "line_minor": 300
+    },
+    {
+      "id": "final_assembly_and_commissioning",
+      "quantity": 1,
+      "unit_minor": 12500,
+      "line_minor": 12500
+    }
+  ],
+  "baseline_complete_build_minor": 99433,
+  "baseline_diy_cash_minor": 86933,
+  "baseline_planning_range_minor": [
+    82734,
+    133134
+  ],
+  "impact": {
+    "mass_kg": 2.8850582910437526,
+    "speed_kph": 150,
+    "speed_mps": 41.666666666666664,
+    "translational_energy_j": 2504.3908776421463,
+    "interpretation": "Input-energy calculation, not a measured structural strength or simulation result."
+  },
+  "conditional_total_loss_examples": [
+    {
+      "reused_servos": 0,
+      "salvage_minor": 0,
+      "net_loss_minor": 99433,
+      "basis": "Conditional reuse avoidance; inspection/refit assumed within commissioning allowance; no other salvage."
+    },
+    {
+      "reused_servos": 2,
+      "salvage_minor": 6798,
+      "net_loss_minor": 92635,
+      "basis": "Conditional reuse avoidance; inspection/refit assumed within commissioning allowance; no other salvage."
+    },
+    {
+      "reused_servos": 4,
+      "salvage_minor": 13596,
+      "net_loss_minor": 85837,
+      "basis": "Conditional reuse avoidance; inspection/refit assumed within commissioning allowance; no other salvage."
+    }
+  ],
+  "propeller_only": {
+    "parts_minor": 539,
+    "full_repair_total_minor": null,
+    "reason": "Inspection/labor/shaft condition unresolved; parts-only quote is not final repair total."
+  },
+  "covering_patch": {
+    "used_area_sq_in": 5.0,
+    "sheet_area_sq_in": 180.0,
+    "consumption_minor": 14,
+    "purchase_minor": 499,
+    "labor_minor": 625,
+    "consumption_plus_labor_minor": 639,
+    "purchase_plus_labor_minor": 1124,
+    "status": "Illustrative recipe using a stale out-of-stock material price."
+  },
+  "fleet_comparisons": {
+    "timber_bnf_plus_4s_reference_minor": 41998,
+    "jet_retract_set_minor": 78000,
+    "jet_turbine_package_minor": 264900,
+    "note": "Commercial reference configurations, not complete installed-fleet valuations."
+  }
+}

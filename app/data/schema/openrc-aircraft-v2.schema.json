@@ -2454,6 +2454,32 @@
               "const": "1"
             }
           }
+        },
+        "stall_shift_fraction": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "unit": {
+              "const": "1"
+            }
+          }
+        },
+        "lift_reference_offset_m": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": -0.5,
+              "maximum": 0.5
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
         }
       },
       "additionalProperties": false

@@ -119,7 +119,13 @@ func _home_and_flight() -> void:
 	app.open_pause()
 	await ui.settle()
 	_check("field-world flights expose a Sky and lighting action", app.pause_menu.time_of_day_button.text == "Sky and lighting")
-	app.open_time_of_day()
+	await ui.tap(KEY_DOWN) # Restart
+	await ui.tap(KEY_DOWN) # Session options
+	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_DOWN) # Workshop
+	await ui.tap(KEY_DOWN) # Sky and lighting
+	_check("Sky and lighting is reachable inside Session options", ui.focus_name() == "TimeOfDay", ui.focus_name())
+	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	var field_dialog: CanvasLayer = app.time_of_day_dialog
 	var controls: VBoxContainer = field_dialog.get("controls") as VBoxContainer

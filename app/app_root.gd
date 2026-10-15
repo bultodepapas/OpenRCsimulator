@@ -48,6 +48,14 @@ const NaturalRandom = preload("res://scenarios/natural_random.gd")
 const ScenarioConfig = preload("res://scenarios/scenario_config.gd")
 const NaturalRandomScreen = preload("res://ui/natural_random_screen.gd")
 const HELICOPTER_MAIN_SCRIPT := "res://helicopter_main.gd"
+const DisplayPreferences := preload("res://app_state/display_preferences.gd")
+const SettingsScreen := preload("res://ui/settings_screen.gd")
+const UiTheme := preload("res://ui/ui_theme.gd")
+var display_preferences: DisplayPreferences
+var _display_window_mode := "windowed"
+var _windowed_size := Vector2i(1280, 720)
+var _windowed_position := Vector2i.ZERO
+var _windowed_borderless := false
 
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
 var user_args: PackedStringArray = OS.get_cmdline_user_args()
@@ -151,6 +159,9 @@ func _ready() -> void:
 		start_flight()
 		return
 	has_home = true
+	preload("res://ui/ui_scale.gd").apply(get_tree().root)
+	display_preferences = DisplayPreferences.new(preferences_path + ".display")
+	_apply_presentation(display_preferences.config)
 	controllers = ControllerService.new()
 	controllers.allow_automatic_selection = func() -> bool:
 		return flight == null and ground_vehicle == null and _workshop_screens.is_empty() \
@@ -255,6 +266,7 @@ func show_home() -> void:
 	home.language_requested.connect(set_language)
 	home.help_requested.connect(open_help)
 	home.controls_requested.connect(open_controls)
+	home.settings_requested.connect(open_settings)
 	home.weather_requested.connect(open_weather)
 	home.time_requested.connect(set_time_of_day)
 	home.failures_requested.connect(open_failures_settings)
@@ -567,8 +579,52 @@ func _create_flight(aircraft_id: String = "") -> Node:
 	return load(route_path).instantiate()
 
 
+func open_settings(from: Control = null) -> void:
+	if not has_home or not (screens.is_top("home") or screens.is_top("pause")):
+		return
+	var settings := SettingsScreen.new(display_preferences, preferences.get("language", "en"))
+	settings.presentation_changed.connect(_apply_presentation)
+	settings.language_changed.connect(set_language)
+	settings.closed.connect(func() -> void:
+		if screens.is_top("settings"): screens.pop())
+	settings.route_requested.connect(func(route: String, opener: Control) -> void:
+		if route == "controls": open_controls(opener)
+		elif route == "about": open_help(opener))
+	screens.push("settings", settings, from)
+
+
+func _apply_presentation(config: Dictionary) -> void:
+	UiTheme.text_scale = float(config.ui_scale)
+	UiTheme.opaque_panels = bool(config.opaque_panels)
+	UiTheme.reduced_motion = bool(config.reduced_motion)
+	_refresh_screen_themes(self)
+	var requested: String = config.window_mode
+	if requested == _display_window_mode or DisplayServer.get_name() == "headless": return
+	if requested == "borderless":
+		_windowed_size = DisplayServer.window_get_size()
+		_windowed_position = DisplayServer.window_get_position()
+		_windowed_borderless = DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_BORDERLESS)
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
+		var monitor := DisplayServer.window_get_current_screen()
+		DisplayServer.window_set_position(DisplayServer.screen_get_position(monitor))
+		DisplayServer.window_set_size(DisplayServer.screen_get_size(monitor))
+	else:
+		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
+		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, _windowed_borderless)
+		DisplayServer.window_set_size(_windowed_size)
+		DisplayServer.window_set_position(_windowed_position)
+	_display_window_mode = requested
+
+
+func _refresh_screen_themes(node: Node) -> void:
+	if node is Control and node.theme != null:
+		node.theme = UiTheme.build()
+	for child: Node in node.get_children(): _refresh_screen_themes(child)
+
+
 func open_controls(from: Control = null) -> void:
-	if controllers == null or not (screens.is_top("home") or screens.is_top("pause")):
+	if controllers == null or not (screens.is_top("home") or screens.is_top("pause") or screens.is_top("settings")):
 		return
 	_clear_controller_actions()
 	var setup := ControllerSetup.new()
@@ -582,6 +638,7 @@ func open_controls(from: Control = null) -> void:
 		if not screens.is_top("controls") or flight == null: return
 		if not setup._save_profile(false): return
 		screens.pop()
+		if screens.is_top("settings"): screens.get_screen("settings").close()
 		if screens.is_top("pause"): _close_pause()
 		if not flight.session.start_calibration(): open_pause())
 	setup.profile_saved.connect(func(profile: Dictionary) -> void:
@@ -878,6 +935,8 @@ func open_pause() -> void:
 	pause_menu.quit_requested.connect(quit_app)
 	pause_menu.help_requested.connect(open_help)
 	pause_menu.controls_requested.connect(open_controls)
+	pause_menu.settings_requested.connect(open_settings)
+	pause_menu.settings_button.visible = has_home
 	pause_menu.controls_button.visible = controllers != null
 	screens.push("pause", pause_menu)
 	var checked_failures: Dictionary = FailureConfig.validate(
@@ -894,7 +953,7 @@ func open_pause() -> void:
 ## shown, invalid data or a fault); keys still held from the menu stay masked until released.
 ## Help over whatever is showing (Home or the pause menu); closing it gives the focus back to `from`.
 func open_help(from: Control = null) -> void:
-	if not (screens.is_top("home") or screens.is_top("pause")):
+	if not (screens.is_top("home") or screens.is_top("pause") or screens.is_top("settings")):
 		return
 	var selected_aircraft: String = home.aircraft_id if home != null else ""
 	if flight != null:

@@ -63,7 +63,10 @@ func _interactive_pause_edit() -> void:
 		and app.pause_menu.time_of_day_button.text == "Sky and lighting")
 	await ui.tap(KEY_DOWN)
 	_check("Down reaches Restart", ui.focus_name() == "Restart", ui.focus_name())
-	for step: int in 6:
+	await ui.tap(KEY_DOWN)
+	_check("Down reaches Session options", ui.focus_name() == "SessionOptions", ui.focus_name())
+	await ui.tap(KEY_ENTER)
+	for step: int in 8:
 		await ui.tap(KEY_DOWN)
 		if ui.focus_name() == "TimeOfDay":
 			break

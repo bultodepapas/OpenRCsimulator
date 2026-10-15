@@ -1,10 +1,6 @@
-# Home screen (MENU-PLAN §3, steps UI-01a/01c/01d/05): one column over the selected airplane (ui/home_scene.gd).
-# Top to bottom: the name and build stage; the aircraft selector and what Fly starts (next to Fly); Fly; Language,
-# Help and Quit; how to control. The aircraft come from app_state/aircraft_catalog.gd; a preview can be looked at but
-# not flown (Fly is disabled and the card says why).
-# Built in code with containers, so it reflows instead of using absolute positions. UI-06d-R1: the column never
-# grows wider than its 440 px panel (long button texts wrap or clip) and scrolls when a long aircraft note or a
-# translation needs more than the window's height; the first-run Home (Stik, default conditions) fits at 720p.
+# Home screen (MENU-PLAN §5, UI-25): next-flight setup, one full-width Fly action, and grouped practice/activity/tools.
+# The selected aircraft and field remain the visual backdrop (ui/home_scene.gd). The catalog owns availability; an
+# aircraft can be previewed without being flyable. Containers keep the sidebar usable when text or the viewport grows.
 # Texts are English source
 # strings: Labels and Buttons translate themselves when the locale changes (res://i18n/*.po); sentences built at
 # runtime use tr() and are rebuilt on NOTIFICATION_TRANSLATION_CHANGED. Proper names are never translated.
@@ -40,6 +36,8 @@ signal language_requested(code: String)
 signal help_requested(from: Control)
 ## The player asked to open controller setup (the owner restores focus to `from` when it closes).
 signal controls_requested(from: Control)
+## The player asked to open Settings (the owner restores focus to `from` when it closes).
+signal settings_requested(from: Control)
 ## The player chose another aircraft (a catalog ID); the owner remembers it and calls set_aircraft().
 signal aircraft_requested(id: String)
 signal start_requested(choice: String)
@@ -78,6 +76,7 @@ var language_button: Button
 var help_button: Button
 var quit_button: Button
 var controls_button: Button
+var settings_button: Button
 var control_label: Label
 var controller_prompt_label: Label
 var keys_legend: GridContainer
@@ -119,14 +118,22 @@ func _init() -> void:
 	sidebar.custom_minimum_size.x = SIDEBAR_WIDTH
 	add_child(sidebar)
 	fade(SIDEBAR_WIDTH)
-	# The column scrolls (wheel, or following the keyboard focus) when the card and the legend need more height than
-	# the window gives; no bar is drawn. With room to spare the column fills the panel and its spacers work as before.
+	# The column scrolls when translated copy or the controls legend needs more height than the window gives; fixed
+	# gaps keep the setup and primary action together. Language and utility actions stay in the pinned footer.
+	var sidebar_content := VBoxContainer.new()
+	sidebar_content.name = "SidebarContent"
+	sidebar_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	sidebar_content.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	sidebar_content.add_theme_constant_override("separation", 4)
+	sidebar.add_child(sidebar_content)
 	var scroll := ScrollContainer.new()
 	scroll.name = "Scroll"
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_NEVER
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_ALWAYS
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.follow_focus = false # until the layout settles (_process): see _settle_frames
-	sidebar.add_child(scroll)
+	sidebar_content.add_child(scroll)
 	_scroll = scroll
 	var column := VBoxContainer.new()
 	column.name = "Column"
@@ -134,6 +141,11 @@ func _init() -> void:
 	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 0)
 	scroll.add_child(column)
+	var utility_footer := VBoxContainer.new()
+	utility_footer.name = "UtilityFooter"
+	utility_footer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	utility_footer.add_theme_constant_override("separation", 4)
+	sidebar_content.add_child(utility_footer)
 
 	var title := _label("OpenRC Simulator", "TitleLabel", false)
 	title.add_theme_font_size_override("font_size", 32) # UI-06d-R1: the column's height budget at 720p
@@ -150,7 +162,7 @@ func _init() -> void:
 	version_label.name = "Version"
 	stage.add_child(version_label)
 	column.add_child(stage)
-	column.add_child(_spacer())
+	column.add_child(_gap(8))
 
 	var heading := HBoxContainer.new()
 	heading.add_theme_constant_override("separation", 8)
@@ -206,136 +218,124 @@ func _init() -> void:
 	column.add_child(card)
 	column.add_child(_gap(6))
 
-	fly_button = _button("FLY", "PrimaryButton")
-	fly_button.name = "Fly"
-	fly_button.custom_minimum_size.y = 66
-	fly_button.pressed.connect(_on_fly)
-	var fly_row := HBoxContainer.new()
-	fly_row.add_theme_constant_override("separation", 12)
-	fly_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	fly_row.add_child(fly_button)
 	weather_button = _button("", "")
 	weather_button.name = "Weather"
-	weather_button.custom_minimum_size = Vector2(190, 66)
-	weather_button.add_theme_font_size_override("font_size", 14) # three lines (title, wind, turbulence) within the Fly row
-	# The summary wraps inside the button instead of widening the column (a Button's minimum width follows its text
-	# unless it wraps or clips); the tooltip carries the complete conditions.
+	weather_button.custom_minimum_size.y = 58
+	weather_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	weather_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	weather_button.clip_text = true
-	weather_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	weather_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # the compact dynamic summary is built with tr()
 	weather_button.pressed.connect(func() -> void: weather_requested.emit(weather_button))
-	fly_row.add_child(weather_button)
-	column.add_child(fly_row)
-	workshop_button = _button("Workshop", "")
-	workshop_button.name = "Workshop"
-	workshop_button.add_theme_font_size_override("font_size", 16)
-	for state: String in ["normal", "hover", "pressed", "disabled"]:
-		var compact: StyleBoxFlat = theme.get_stylebox(state, "Button").duplicate()
-		compact.content_margin_top = 2
-		compact.content_margin_bottom = 2
-		workshop_button.add_theme_stylebox_override(state, compact)
-	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
-	var mode_row := HBoxContainer.new()
-	mode_row.add_theme_constant_override("separation", 8)
-	workshop_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	workshop_button.clip_text = true
-	mode_row.add_child(workshop_button)
-	natural_random_button = _button("Natural Random", "")
-	natural_random_button.name = "NaturalRandom"
-	natural_random_button.add_theme_font_size_override("font_size", 16)
-	natural_random_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	natural_random_button.clip_text = true
-	for state: String in ["normal", "hover", "pressed", "disabled"]:
-		natural_random_button.add_theme_stylebox_override(state, workshop_button.get_theme_stylebox(state))
-	natural_random_button.pressed.connect(func() -> void: natural_random_requested.emit(natural_random_button))
-	mode_row.add_child(natural_random_button)
-	column.add_child(mode_row)
-	var failures_row := HBoxContainer.new()
-	failures_row.add_theme_constant_override("separation", 10)
-	failures_button = _button("Failures", "")
-	failures_button.name = "Failures"
-	failures_button.custom_minimum_size.y = 40
-	failures_button.pressed.connect(func() -> void: failures_requested.emit(failures_button))
-	failures_row.add_child(failures_button)
-	failure_summary_label = _label("", "SecondaryLabel", false)
-	failure_summary_label.name = "FailureSummary"
-	failure_summary_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	failure_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	failures_row.add_child(failure_summary_label)
-	column.add_child(failures_row)
-	ground_vehicle_choice = OptionButton.new()
-	ground_vehicle_choice.name = "GroundVehicleChoice"
-	ground_vehicle_choice.tooltip_text = "RC car"
-	ground_vehicle_choice.fit_to_longest_item = false
-	ground_vehicle_choice.custom_minimum_size = Vector2(260, 36)
-	for id: String in GroundCatalog.IDS:
-		ground_vehicle_choice.add_item(GroundCatalog.entry(id).name)
-	ground_vehicle_choice.select(GroundCatalog.IDS.find(ground_vehicle_id))
-	ground_vehicle_choice.item_selected.connect(func(index: int): ground_vehicle_id = GroundCatalog.IDS[index])
-	ground_vehicle_choice.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	ground_vehicle_choice.offset_left = -284
-	ground_vehicle_choice.offset_right = -24
-	ground_vehicle_choice.offset_top = -112
-	ground_vehicle_choice.offset_bottom = -76
-	add_child(ground_vehicle_choice)
-	ground_vehicle_button = _button("RC cars · Open garage", "")
-	ground_vehicle_button.name = "GroundVehicles"
-	ground_vehicle_button.add_theme_font_size_override("font_size", 16)
-	ground_vehicle_button.custom_minimum_size = Vector2(260, 44)
-	ground_vehicle_button.pressed.connect(func() -> void: ground_vehicle_requested.emit())
-	# Family entry lives over the preview, so another vehicle does not lengthen the flight settings column.
-	ground_vehicle_button.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
-	ground_vehicle_button.offset_left = -284
-	ground_vehicle_button.offset_right = -24
-	ground_vehicle_button.offset_top = -68
-	ground_vehicle_button.offset_bottom = -24
-	add_child(ground_vehicle_button)
-	column.add_child(_gap(6))
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 12)
-	language_button = _button("", "")
-	language_button.name = "Language"
-	language_button.add_theme_font_size_override("font_size", 16)
-	language_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr(); language names stay as they are
-	language_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	language_button.clip_text = true # takes what Help and Quit leave; a long language name is trimmed, never the column widened
-	language_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	language_button.pressed.connect(func() -> void: language_requested.emit(next_language(current_language())))
-	row.add_child(language_button)
-	help_button = _button("Help", "")
-	help_button.name = "Help"
-	help_button.custom_minimum_size.x = 80
-	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
-	row.add_child(help_button)
-	quit_button = _button("Quit", "")
-	quit_button.name = "Quit"
-	quit_button.custom_minimum_size.x = 72
-	quit_button.pressed.connect(func() -> void: quit_requested.emit())
-	row.add_child(quit_button)
-	controls_button = _button("Controls", "")
-	controls_button.name = "ControllerSettings"
-	controls_button.custom_minimum_size.x = 78
-	controls_button.clip_text = true
-	controls_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
-	controls_button.tooltip_text = tr("Controller settings")
-	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
-	row.add_child(controls_button)
-	column.add_child(row)
-	column.add_child(_gap(6))
+	column.add_child(weather_button)
 	time_button = _button("", "")
 	time_button.name = "TimeOfDay"
+	time_button.custom_minimum_size.y = 44
+	time_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	time_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr()
-	time_button.add_theme_font_size_override("font_size", 17) # "Hora del día: Atardecer, el tiempo pasa" fits the column
-	time_button.clip_text = true
-	time_button.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+	time_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	time_button.pressed.connect(func() -> void: time_requested.emit(Conditions.next_home_choice(time_of_day)))
 	column.add_child(time_button)
 	note_label = _label("", "SecondaryLabel", false)
 	note_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note_label.visible = false
 	column.add_child(note_label)
-	column.add_child(_spacer())
+	column.add_child(_gap(6))
+
+	fly_button = _button("FLY", "PrimaryButton")
+	fly_button.name = "Fly"
+	fly_button.custom_minimum_size.y = 66
+	fly_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	fly_button.pressed.connect(_on_fly)
+	column.add_child(fly_button)
+	workshop_button = _button("Workshop", "")
+	workshop_button.name = "Workshop"
+	workshop_button.custom_minimum_size.y = 44
+	workshop_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
+	column.add_child(workshop_button)
+	language_button = _button("", "")
+	language_button.name = "Language"
+	language_button.custom_minimum_size.y = 44
+	language_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	language_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr(); language names stay as they are
+	language_button.pressed.connect(func() -> void: language_requested.emit(next_language(current_language())))
+	utility_footer.add_child(language_button)
+
+	column.add_child(_label("PRACTICE", "SectionLabel"))
+	column.add_child(_gap(4))
+	var practice_row := HBoxContainer.new()
+	practice_row.name = "PracticeActions"
+	practice_row.add_theme_constant_override("separation", 8)
+	natural_random_button = _button("Natural Random", "")
+	natural_random_button.name = "NaturalRandom"
+	natural_random_button.custom_minimum_size.y = 44
+	natural_random_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	natural_random_button.pressed.connect(func() -> void: natural_random_requested.emit(natural_random_button))
+	practice_row.add_child(natural_random_button)
+	failures_button = _button("Failures", "")
+	failures_button.name = "Failures"
+	failures_button.custom_minimum_size = Vector2(112, 44)
+	failures_button.pressed.connect(func() -> void: failures_requested.emit(failures_button))
+	practice_row.add_child(failures_button)
+	column.add_child(practice_row)
+	failure_summary_label = _label("", "SecondaryLabel", false)
+	failure_summary_label.name = "FailureSummary"
+	failure_summary_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	column.add_child(failure_summary_label)
+
+	column.add_child(_gap(4))
+	column.add_child(_label("ACTIVITY", "SectionLabel"))
+	ground_vehicle_choice = OptionButton.new()
+	ground_vehicle_choice.name = "GroundVehicleChoice"
+	ground_vehicle_choice.tooltip_text = "RC car"
+	ground_vehicle_choice.fit_to_longest_item = false
+	ground_vehicle_choice.custom_minimum_size.y = 40
+	ground_vehicle_choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	for id: String in GroundCatalog.IDS:
+		ground_vehicle_choice.add_item(GroundCatalog.entry(id).name)
+	ground_vehicle_choice.select(GroundCatalog.IDS.find(ground_vehicle_id))
+	ground_vehicle_choice.item_selected.connect(func(index: int): ground_vehicle_id = GroundCatalog.IDS[index])
+	column.add_child(ground_vehicle_choice)
+	ground_vehicle_button = _button("RC cars · Open garage", "")
+	ground_vehicle_button.name = "GroundVehicles"
+	ground_vehicle_button.custom_minimum_size.y = 44
+	ground_vehicle_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ground_vehicle_button.pressed.connect(func() -> void: ground_vehicle_requested.emit())
+	column.add_child(ground_vehicle_button)
+
+	column.add_child(_gap(6))
+	var help_quit_row := HBoxContainer.new()
+	help_quit_row.name = "UtilityActions"
+	help_quit_row.add_theme_constant_override("separation", 8)
+	help_button = _button("Help", "")
+	help_button.name = "Help"
+	help_button.custom_minimum_size.y = 44
+	help_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
+	help_quit_row.add_child(help_button)
+	quit_button = _button("Quit", "")
+	quit_button.name = "Quit"
+	quit_button.custom_minimum_size.y = 44
+	quit_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	quit_button.pressed.connect(func() -> void: quit_requested.emit())
+	help_quit_row.add_child(quit_button)
+	utility_footer.add_child(help_quit_row)
+	var settings_row := HBoxContainer.new()
+	settings_row.name = "SettingsActions"
+	settings_row.add_theme_constant_override("separation", 8)
+	controls_button = _button("Controls", "")
+	controls_button.name = "ControllerSettings"
+	controls_button.custom_minimum_size.y = 44
+	controls_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	controls_button.tooltip_text = tr("Controller settings")
+	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
+	settings_row.add_child(controls_button)
+	settings_button = _button("Settings", "")
+	settings_button.name = "Settings"
+	settings_button.custom_minimum_size.y = 44
+	settings_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	settings_button.pressed.connect(func() -> void: settings_requested.emit(settings_button))
+	settings_row.add_child(settings_button)
+	utility_footer.add_child(settings_row)
 
 	column.add_child(_label("CONTROLS", "SectionLabel"))
 	column.add_child(_gap(4))
@@ -356,42 +356,50 @@ func _init() -> void:
 
 
 func _ready() -> void:
-	# Down from Fly lands on the row's first button (geometry alone picks the middle one, Help). Left and right from
-	# Fly reach the aircraft arrows, so changing airplane is two keys away from the start.
+	# Keep the short launch route stable while giving the other groups explicit menu-pad neighbors.
 	fly_button.focus_neighbor_bottom = fly_button.get_path_to(workshop_button)
+	fly_button.focus_neighbor_top = fly_button.get_path_to(weather_button)
+	fly_button.focus_neighbor_left = fly_button.get_path_to(previous_button)
+	fly_button.focus_neighbor_right = fly_button.get_path_to(next_button)
 	workshop_button.focus_neighbor_top = workshop_button.get_path_to(fly_button)
 	workshop_button.focus_neighbor_bottom = workshop_button.get_path_to(language_button)
 	workshop_button.focus_neighbor_right = workshop_button.get_path_to(natural_random_button)
-	natural_random_button.focus_neighbor_left = natural_random_button.get_path_to(workshop_button)
-	natural_random_button.focus_neighbor_top = natural_random_button.get_path_to(weather_button)
+	language_button.focus_neighbor_top = language_button.get_path_to(workshop_button)
+	language_button.focus_neighbor_bottom = language_button.get_path_to(natural_random_button)
+	language_button.focus_neighbor_right = language_button.get_path_to(help_button)
+	help_button.focus_neighbor_top = help_button.get_path_to(fly_button)
+	help_button.focus_neighbor_bottom = help_button.get_path_to(natural_random_button)
+	help_button.focus_neighbor_left = help_button.get_path_to(language_button)
+	help_button.focus_neighbor_right = help_button.get_path_to(quit_button)
+	quit_button.focus_neighbor_top = quit_button.get_path_to(fly_button)
+	quit_button.focus_neighbor_bottom = quit_button.get_path_to(ground_vehicle_choice)
+	quit_button.focus_neighbor_left = quit_button.get_path_to(help_button)
+	quit_button.focus_neighbor_right = quit_button.get_path_to(controls_button)
+	controls_button.focus_neighbor_top = controls_button.get_path_to(fly_button)
+	controls_button.focus_neighbor_bottom = controls_button.get_path_to(ground_vehicle_choice)
+	controls_button.focus_neighbor_left = controls_button.get_path_to(quit_button)
+	controls_button.focus_neighbor_right = controls_button.get_path_to(settings_button)
+	settings_button.focus_neighbor_top = settings_button.get_path_to(fly_button)
+	settings_button.focus_neighbor_bottom = settings_button.get_path_to(ground_vehicle_choice)
+	settings_button.focus_neighbor_left = settings_button.get_path_to(controls_button)
+	settings_button.focus_neighbor_right = settings_button.get_path_to(language_button)
+
+	time_button.focus_neighbor_top = time_button.get_path_to(start_button)
+	time_button.focus_neighbor_bottom = time_button.get_path_to(weather_button)
+	weather_button.focus_neighbor_top = weather_button.get_path_to(time_button)
+	weather_button.focus_neighbor_bottom = weather_button.get_path_to(fly_button)
+	start_button.focus_neighbor_bottom = start_button.get_path_to(time_button)
+	natural_random_button.focus_neighbor_top = natural_random_button.get_path_to(language_button)
 	natural_random_button.focus_neighbor_bottom = natural_random_button.get_path_to(failures_button)
+	natural_random_button.focus_neighbor_left = natural_random_button.get_path_to(workshop_button)
+	natural_random_button.focus_neighbor_right = natural_random_button.get_path_to(failures_button)
 	failures_button.focus_neighbor_top = failures_button.get_path_to(natural_random_button)
 	failures_button.focus_neighbor_bottom = failures_button.get_path_to(ground_vehicle_choice)
+	failures_button.focus_neighbor_left = failures_button.get_path_to(natural_random_button)
 	ground_vehicle_choice.focus_neighbor_top = ground_vehicle_choice.get_path_to(failures_button)
 	ground_vehicle_choice.focus_neighbor_bottom = ground_vehicle_choice.get_path_to(ground_vehicle_button)
 	ground_vehicle_button.focus_neighbor_top = ground_vehicle_button.get_path_to(ground_vehicle_choice)
-	ground_vehicle_button.focus_neighbor_bottom = ground_vehicle_button.get_path_to(language_button)
-	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button)
-	start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
-	fly_button.focus_neighbor_left = fly_button.get_path_to(previous_button)
-	fly_button.focus_neighbor_right = fly_button.get_path_to(next_button)
-	weather_button.focus_neighbor_top = weather_button.get_path_to(fly_button)
-	weather_button.focus_neighbor_bottom = weather_button.get_path_to(language_button)
-	for button: Button in [language_button, help_button, quit_button]:
-		button.focus_neighbor_top = button.get_path_to(fly_button)
-		button.focus_neighbor_bottom = button.get_path_to(time_button)
-	# Left and right along the row are explicit too (UI-06d-R1): inside the scrolling column, geometry alone picked the
-	# full-width Time of day button as the right neighbour of Language when the window was small.
-	language_button.focus_neighbor_right = language_button.get_path_to(help_button)
-	help_button.focus_neighbor_left = help_button.get_path_to(language_button)
-	help_button.focus_neighbor_right = help_button.get_path_to(quit_button)
-	quit_button.focus_neighbor_left = quit_button.get_path_to(help_button)
-	controls_button.focus_neighbor_top = controls_button.get_path_to(fly_button)
-	controls_button.focus_neighbor_bottom = controls_button.get_path_to(time_button)
-	quit_button.focus_neighbor_right = quit_button.get_path_to(controls_button)
-	controls_button.focus_neighbor_left = controls_button.get_path_to(quit_button)
-	controls_button.focus_neighbor_right = controls_button.get_path_to(language_button)
-	time_button.focus_neighbor_top = time_button.get_path_to(language_button)
+	ground_vehicle_button.focus_neighbor_bottom = ground_vehicle_button.get_path_to(controls_button)
 	_update_texts()
 	# Keyboard focus starts on Fly, visible (on the next arrow when the saved aircraft is a preview: Fly is disabled).
 	(fly_button if not fly_button.disabled else next_button).grab_focus.call_deferred()
@@ -801,9 +809,3 @@ static func _arrow_button(button_name: String, direction: String) -> Button:
 
 static func _gap(height: int) -> Control:
 	return Widgets.gap(height)
-
-
-static func _spacer() -> Control:
-	var c := Control.new()
-	c.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	return c

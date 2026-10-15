@@ -186,7 +186,8 @@ static func _flaps(errors: PackedStringArray, node: Variant, reference: Dictiona
 	if typeof(node) == TYPE_DICTIONARY:
 		_reject_unknown_keys(errors, "flaps", node, ["max_angle_deg", "takeoff_angle_deg", "inner_span_m", "outer_span_m",
 			"hinge_fraction", "extension_time", "retraction_time", "max_speed_mps", "elevator_mix_per_flap_fraction",
-			"effective_angle_limit_deg", "profile_drag_coefficient", "aerodynamic_gain"])
+			"effective_angle_limit_deg", "profile_drag_coefficient", "aerodynamic_gain",
+			"stall_shift_fraction", "lift_reference_offset_m"])
 	var data := _dictionary(errors, "flaps", node)
 	var max_angle = _q(errors, "flaps.max_angle_deg", data.get("max_angle_deg"), "deg", 5.0, 60.0)
 	var takeoff_angle = _q(errors, "flaps.takeoff_angle_deg", data.get("takeoff_angle_deg"), "deg", 0.0, 60.0)
@@ -200,6 +201,16 @@ static func _flaps(errors: PackedStringArray, node: Variant, reference: Dictiona
 	var angle_limit = _q(errors, "flaps.effective_angle_limit_deg", data.get("effective_angle_limit_deg"), "deg", 5.0, 30.0)
 	var profile_drag = _q(errors, "flaps.profile_drag_coefficient", data.get("profile_drag_coefficient"), "1", 0.0, 1.0)
 	var aerodynamic_gain = _q(errors, "flaps.aerodynamic_gain", data.get("aerodynamic_gain"), "1", 0.0, 1.0)
+	# P51-11a (optional): a flapped strip's stall onset moves by this fraction of its camber shift (absent = 1, the whole
+	# shift); flap camber lift acts this far aft (m, body x) of the strip force point (absent = 0, at the ARP).
+	var stall_shift = null
+	if data.has("stall_shift_fraction"):
+		stall_shift = _q(errors, "flaps.stall_shift_fraction", data.get("stall_shift_fraction"), "1", 0.0, 1.0)
+		if stall_shift != null and not envelope.get("wing_polar", {}).is_empty():
+			errors.append("flaps.stall_shift_fraction: applies to the strip stall blend only; a tabulated aero.wing_polar sets its own stall")
+	var lift_offset = null
+	if data.has("lift_reference_offset_m"):
+		lift_offset = _q(errors, "flaps.lift_reference_offset_m", data.get("lift_reference_offset_m"), "m", -0.5, 0.5)
 	if max_angle == null or takeoff_angle == null or inner == null or outer == null or hinge == null \
 			or extension == null or retraction == null or max_speed == null or elevator_mix == null or angle_limit == null \
 			or profile_drag == null or aerodynamic_gain == null:
@@ -208,7 +219,7 @@ static func _flaps(errors: PackedStringArray, node: Variant, reference: Dictiona
 		errors.append("flaps: takeoff_angle_deg must be between zero and max_angle_deg")
 	if inner >= outer:
 		errors.append("flaps: inner_span_m must be less than outer_span_m")
-	if errors.size() > 0:
+	if errors.size() > 0 or (data.has("stall_shift_fraction") and stall_shift == null) or (data.has("lift_reference_offset_m") and lift_offset == null):
 		return {}
 	var cf: float = 1.0 - float(hinge)
 	var theta := M.acos_(2.0 * cf - 1.0)
@@ -234,7 +245,7 @@ static func _flaps(errors: PackedStringArray, node: Variant, reference: Dictiona
 		var flap_hi: float = minf(hi, float(outer))
 		var flap_area: float = float(chord_area.call(flap_hi)) - float(chord_area.call(flap_lo)) if flap_hi > flap_lo else 0.0
 		coverage.append(clampf(flap_area / strip_area, 0.0, 1.0) if strip_area > 0.0 else 0.0)
-	return {
+	var flap_out := {
 		max_angle_deg = float(max_angle),
 		takeoff_angle_deg = float(takeoff_angle),
 		takeoff_fraction = float(takeoff_angle) / float(max_angle),
@@ -250,6 +261,11 @@ static func _flaps(errors: PackedStringArray, node: Variant, reference: Dictiona
 		aerodynamic_gain = float(aerodynamic_gain),
 		station_coverage = coverage,
 	}
+	if stall_shift != null:
+		flap_out.stall_shift_fraction = float(stall_shift)
+	if lift_offset != null:
+		flap_out.lift_reference_offset_m = float(lift_offset)
+	return flap_out
 
 
 ## Explicit adapter for the shared numerical derivation and historical v1 research fixtures.

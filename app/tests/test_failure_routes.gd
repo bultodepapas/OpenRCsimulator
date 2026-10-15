@@ -176,7 +176,15 @@ func _run() -> void:
 		_bounds_detail(pause.failure_config_label) + " / " + _bounds_detail(pause.failure_summary_label))
 
 	# All checkbox and percentage edits remain drafts until Apply.
-	pause.failure_settings_button.pressed.emit()
+	await ui.tap(KEY_DOWN) # Restart
+	await ui.tap(KEY_DOWN) # Session options
+	await ui.tap(KEY_ENTER)
+	for step in 8:
+		if ui.focus_name() == "Failures":
+			break
+		await ui.tap(KEY_DOWN)
+	_check("failure settings are reachable inside Session options", ui.focus_name() == "Failures", ui.focus_name())
+	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	menu = app.failure_menu
 	_check("Pause failure card fits the 1280×720 viewport", _card_fits_viewport(menu), _card_bounds_detail(menu))
@@ -196,7 +204,7 @@ func _run() -> void:
 			"probability_percent": 100, "include_catastrophic": true, "notify": true,
 		})
 
-	app.pause_menu.failure_settings_button.pressed.emit()
+	await ui.tap(KEY_ENTER) # focus returns to Failure settings when the editor is cancelled
 	await ui.settle()
 	menu = app.failure_menu
 	menu.probability_spin.value = 64.0

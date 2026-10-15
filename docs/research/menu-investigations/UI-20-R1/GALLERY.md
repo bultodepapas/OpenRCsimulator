@@ -1,0 +1,19 @@
+# Native capture gallery
+
+Generated from `audit.gd` on 2026-10-15. Images are native viewport captures; no rescaling. The complete geometry and focus records are in `geometry.json.gz`.
+
+| Screen | EN 720 | ES 720 | EN 1080 | ES 1080 | EN 1440 | ES 1440 | EN 4K | ES 4K |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| home | [View](captures/en-720-home.webp) | [View](captures/es-720-home.webp) | [View](captures/en-1080-home.webp) | [View](captures/es-1080-home.webp) | [View](captures/en-1440-home.webp) | [View](captures/es-1440-home.webp) | [View](captures/en-2160-home.webp) | [View](captures/es-2160-home.webp) |
+| home-scroll | [View](captures/en-720-home-scroll.webp) | [View](captures/es-720-home-scroll.webp) | — | — | — | — | — | — |
+| help | [View](captures/en-720-help.webp) | [View](captures/es-720-help.webp) | [View](captures/en-1080-help.webp) | [View](captures/es-1080-help.webp) | — | — | [View](captures/en-2160-help.webp) | [View](captures/es-2160-help.webp) |
+| controls | [View](captures/en-720-controls.webp) | [View](captures/es-720-controls.webp) | [View](captures/en-1080-controls.webp) | [View](captures/es-1080-controls.webp) | — | — | [View](captures/en-2160-controls.webp) | [View](captures/es-2160-controls.webp) |
+| failures | [View](captures/en-720-failures.webp) | [View](captures/es-720-failures.webp) | [View](captures/en-1080-failures.webp) | [View](captures/es-1080-failures.webp) | — | — | [View](captures/en-2160-failures.webp) | [View](captures/es-2160-failures.webp) |
+| natural_random | [View](captures/en-720-natural_random.webp) | [View](captures/es-720-natural_random.webp) | [View](captures/en-1080-natural_random.webp) | [View](captures/es-1080-natural_random.webp) | — | — | [View](captures/en-2160-natural_random.webp) | [View](captures/es-2160-natural_random.webp) |
+| workshop | [View](captures/en-720-workshop.webp) | [View](captures/es-720-workshop.webp) | [View](captures/en-1080-workshop.webp) | [View](captures/es-1080-workshop.webp) | — | — | [View](captures/en-2160-workshop.webp) | [View](captures/es-2160-workshop.webp) |
+| weather | [View](captures/en-720-weather.webp) | [View](captures/es-720-weather.webp) | [View](captures/en-1080-weather.webp) | [View](captures/es-1080-weather.webp) | — | — | [View](captures/en-2160-weather.webp) | [View](captures/es-2160-weather.webp) |
+| weather-turbulence | [View](captures/en-720-weather-turbulence.webp) | [View](captures/es-720-weather-turbulence.webp) | [View](captures/en-1080-weather-turbulence.webp) | [View](captures/es-1080-weather-turbulence.webp) | — | — | [View](captures/en-2160-weather-turbulence.webp) | [View](captures/es-2160-weather-turbulence.webp) |
+| weather-atmosphere | [View](captures/en-720-weather-atmosphere.webp) | [View](captures/es-720-weather-atmosphere.webp) | [View](captures/en-1080-weather-atmosphere.webp) | [View](captures/es-1080-weather-atmosphere.webp) | — | — | [View](captures/en-2160-weather-atmosphere.webp) | [View](captures/es-2160-weather-atmosphere.webp) |
+| pause | [View](captures/en-720-pause.webp) | [View](captures/es-720-pause.webp) | [View](captures/en-1080-pause.webp) | [View](captures/es-1080-pause.webp) | [View](captures/en-1440-pause.webp) | [View](captures/es-1440-pause.webp) | [View](captures/en-2160-pause.webp) | [View](captures/es-2160-pause.webp) |
+| sky-lighting | [View](captures/en-720-sky-lighting.webp) | [View](captures/es-720-sky-lighting.webp) | [View](captures/en-1080-sky-lighting.webp) | [View](captures/es-1080-sky-lighting.webp) | — | — | [View](captures/en-2160-sky-lighting.webp) | [View](captures/es-2160-sky-lighting.webp) |
+| overlays | [View](captures/en-720-overlays.webp) | [View](captures/es-720-overlays.webp) | [View](captures/en-1080-overlays.webp) | [View](captures/es-1080-overlays.webp) | — | — | [View](captures/en-2160-overlays.webp) | [View](captures/es-2160-overlays.webp) |

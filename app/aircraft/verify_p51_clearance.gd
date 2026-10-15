@@ -1,4 +1,4 @@
-# P51-04 / V01: clearances of the P-51D's rudder and elevators against their fixed neighbours, with the Extra's generic
+# P51-04 / V01 / P51-11a: clearances of the P-51D's rudder, elevators and flaps against their fixed neighbours, with the Extra's generic
 # mesh-pair checker (EX-04) at the extreme poses: both surfaces at the flown throws (data file) and at 45 deg. Its own
 # script because each pose and pair costs ~5 s on these lofts; test.sh gives every script 60 s.
 # Run: godot --headless --path app --script res://aircraft/verify_p51_clearance.gd
@@ -9,6 +9,8 @@ const Clearance := preload("res://aircraft/extra_clearance.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const Commands := preload("res://input/commands.gd")
 const PAIRS := [["rudder", "fin"], ["elevator_right", "stab"], ["elevator_left", "stab"]]
+const FLAP_PAIRS := [["flap_left", "wing_left_ahead_of_flap"], ["flap_left", "wing_left_root"], ["flap_left", "wing_left_between"],
+	["flap_right", "wing_right_ahead_of_flap"], ["flap_right", "wing_right_root"], ["flap_right", "wing_right_between"]]
 const MINIMUM_GAP_M := 0.0005
 
 var _checks := 0
@@ -39,6 +41,16 @@ func _run() -> void:
 		for pair in pose.pairs:
 			_check("%s vs %s at pitch %+.0f yaw %+.0f (%s): no penetration" % [pair.a, pair.b, pose_case[0], pose_case[1], pose_case[3]], not pair.penetrates)
 			_check("%s vs %s (%s): gap >= %.1f mm" % [pair.a, pair.b, pose_case[3], MINIMUM_GAP_M * 1000.0], pair.gap_m >= MINIMUM_GAP_M, "%.4f m" % pair.gap_m)
+	# P51-11a: each flap against the fixed wing panels around it at the take-off and landing settings (data file).
+	var neutral := {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}
+	for flap_deg: float in [15.0, 45.0]:
+		AirplaneBuilder.apply_flaps(airplane, flap_deg)
+		# The end gaps only close at full travel: the take-off setting checks the cove pairs alone (cost: ~5 s per pair).
+		var flap_pose := Clearance._pose(airplane, table, neutral, flown, FLAP_PAIRS if flap_deg > 15.0 else FLAP_PAIRS.filter(func(pair: Array) -> bool: return str(pair[1]).ends_with("ahead_of_flap")))
+		for pair in flap_pose.pairs:
+			_check("%s vs %s at flaps %.0f deg: no penetration" % [pair.a, pair.b, flap_deg], not pair.penetrates)
+			_check("%s vs %s at flaps %.0f deg: gap >= %.1f mm" % [pair.a, pair.b, flap_deg, MINIMUM_GAP_M * 1000.0], pair.gap_m >= MINIMUM_GAP_M, "%.4f m" % pair.gap_m)
+	AirplaneBuilder.apply_flaps(airplane, 0.0)
 	AirplaneBuilder.apply_surfaces(airplane, Commands.hinge_rotations({roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0}, flown))
 	print("verify_p51_clearance: %d checks, %d failed (%d ms)%s" % [_checks, _failures, Time.get_ticks_msec() - t0, "" if _failures == 0 else " FAIL"])
 	quit(1 if _failures > 0 else 0)

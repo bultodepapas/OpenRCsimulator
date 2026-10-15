@@ -72,6 +72,27 @@ func _run() -> void:
 	# over the worst sky or ground behind them (white and black).
 	var fly: Button = home.fly_button
 	var quit_b: Button = home.quit_button
+	var column: Control = home.get_node("Sidebar/SidebarContent/Scroll/Column")
+	var scroll: ScrollContainer = home.get_node("Sidebar/SidebarContent/Scroll")
+	var footer: Control = home.get_node("Sidebar/SidebarContent/UtilityFooter")
+	_check("Fly is a full-width action in the Home column", fly.get_parent() == column
+		and fly.size_flags_horizontal == Control.SIZE_EXPAND_FILL
+		and absf(fly.size.x - home.weather_button.size.x) < 1.0)
+	_check("garage selector and entry are integrated into the Home column",
+		home.ground_vehicle_choice.get_parent() == column and home.ground_vehicle_button.get_parent() == column)
+	_check("language, Help, Controls and Settings stay in the pinned footer",
+		home.language_button.get_parent() == footer and home.help_button.get_parent().get_parent() == footer
+		and home.controls_button.get_parent().get_parent() == footer and home.settings_button.get_parent().get_parent() == footer)
+	var viewport_height := home.get_viewport_rect().size.y
+	_check("Help and Settings fit in the initial Home viewport",
+		home.help_button.get_global_rect().end.y <= viewport_height
+		and home.settings_button.get_global_rect().end.y <= viewport_height)
+	_check("Home shows a scroll indicator", scroll.vertical_scroll_mode == ScrollContainer.SCROLL_MODE_SHOW_ALWAYS
+		and scroll.get_v_scroll_bar().visible)
+	_check("Language and Controls keep their full labels", not home.language_button.clip_text
+		and not home.controls_button.clip_text
+		and home.language_button.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS
+		and home.controls_button.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS)
 	var panel_bg: Color = (home.get_node("Sidebar") as Control).get_theme_stylebox("panel").bg_color
 	for b in [fly, quit_b]:
 		for state in ["normal", "hover", "pressed"]:
@@ -97,6 +118,15 @@ func _run() -> void:
 	_check("contrast: every Home label >= 4.5:1 on its surface (worst %.2f, \"%s\")" % [worst, worst_name], worst >= 4.5)
 	# AGI "Clear Text": >= 17 px from ascender to descender at 720p.
 	_check("smallest text is %.1f px tall (>= 17 at 1280x720)" % smallest, smallest >= 17.0)
+	TranslationServer.set_locale("es")
+	await process_frame
+	await process_frame
+	_check("Spanish Language and Controls labels fit without clipping",
+		not home.language_button.text.contains("…") and not home.language_button.text.contains("...")
+		and not home.controls_button.text.contains("…") and not home.controls_button.text.contains("...")
+		and home.controls_button.get_minimum_size().x <= home.controls_button.size.x)
+	TranslationServer.set_locale("en")
+	await process_frame
 
 	# Keyboard: focus starts on Fly and is visible; arrows move it; nothing flies while navigating.
 	_check("initial focus on Fly", ui.focus_name() == "Fly", ui.focus_name())
@@ -115,11 +145,18 @@ func _run() -> void:
 
 	# Quit asks to close (the signal only: the test must not quit through it).
 	var quits := [0]
+	var settings_requests := [0]
 	var lone: Control = Home.new()
 	root.add_child(lone)
 	lone.quit_requested.connect(func() -> void: quits[0] += 1)
+	lone.settings_requested.connect(func(from: Control) -> void:
+		if from == lone.settings_button:
+			settings_requests[0] += 1
+	)
 	lone.quit_button.pressed.emit()
 	_check("Quit requests closing the app", quits[0] == 1)
+	lone.settings_button.pressed.emit()
+	_check("Settings exposes its source control for focus restoration", settings_requests[0] == 1)
 	lone.free()
 
 	# Fly: two Enter presses in the same frame still create exactly one flight (research 20: double activation).
