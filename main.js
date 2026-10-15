@@ -81,14 +81,23 @@ document.querySelectorAll('[data-aircraft]').forEach(button => button.addEventLi
   currentAircraft = button.dataset.aircraft;
   renderAircraft();
 }));
-document.querySelectorAll('[data-time]').forEach(button => button.addEventListener('click', () => {
-  currentTime = button.dataset.time;
+let fieldRequest = 0;
+document.querySelectorAll('[data-time]').forEach(button => button.addEventListener('click', async () => {
+  const nextTime = button.dataset.time;
+  const request = ++fieldRequest;
+  if (nextTime === currentTime) return;
+  const next = new Image();
+  next.src = `assets/field-${nextTime}.webp`;
+  try { await next.decode(); } catch { return; }
+  if (request !== fieldRequest) return;
+  currentTime = nextTime;
   const image = document.querySelector('#field-image');
-  image.src = `assets/field-${currentTime}.webp`;
+  image.src = next.src;
   image.dataset.alt = currentTime === 'day' ? 'fieldDayAlt' : 'fieldNightAlt';
   image.alt = alts[image.dataset.alt][language === 'es' ? 0 : 1];
   document.querySelector('#field-index').textContent = currentTime === 'day' ? '01 / 02' : '02 / 02';
   document.querySelectorAll('[data-time]').forEach(el => el.setAttribute('aria-pressed', String(el === button)));
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) image.animate([{opacity:.25},{opacity:1}],{duration:650,easing:'ease-out'});
 }));
 languageButton.hidden = false;
 languageButton.addEventListener('click', () => {

@@ -1,4 +1,5 @@
 const websiteCopy = {
+  inspectCta:'Closer. Explore in 3D.',inspectSub:'Orbit freely, change the view and discover the details.',inspectKicker:'THE HANGAR / 3D STUDIO',inspectClose:'Close',inspectAircraft:'Aircraft',viewPerspective:'Perspective',viewSide:'Side',viewTop:'Top',inspectHelp:'Drag to orbit · Scroll or pinch to zoom · Arrow keys to rotate',inspectNote:'PROJECT MODEL · VISUALIZATION, NOT FLIGHT',
   helicopterTab:'Helicopter',
   navPartners:'Partners', supportedBy:'SUPPORTED BY', supportKicker:'THE SUPPORT BEHIND THE PROJECT', mainSponsor:'PRINCIPAL SPONSOR',
   supportHeading:'Thank you for supporting<br>what we build in the open.', supportCopy:'OpenAI supports this project with a ChatGPT Pro subscription. That support gives us more room to research, build and share OpenRC with the model aviation community.', supportLink:'Thank you, OpenAI ↗',
