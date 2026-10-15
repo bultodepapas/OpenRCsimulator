@@ -89,7 +89,7 @@ Each step is one reviewable change with its proof. Numerical results of existing
 
 Order: SF-00 → SF-01 → SF-02 → SF-03, then SF-06 in parallel with SF-04 → SF-05 → SF-07 → SF-09; SF-08 when target measurements require it. The coupled-shaft default promotion stays with G2 and is a prerequisite for calling the fixed-wing path fourth order.
 
-First new consumers after SF-03: the multirotor ([drone plan](drone-racing.md)) as a single rigid body with four continuous rotor states exercises SF-01/04/07 at the lowest validation cost; a boat follows with the water query of SF-07, a hydrostatic/hydrodynamic hull law run through SF-06 and, if an outboard pivot is modelled, SF-09.
+First new consumers after SF-03: the multirotor ([drone plan](drone-racing.md)) as a single rigid body with four continuous rotor states exercises SF-01/04/07 at the lowest validation cost (delivered research-grade as [DR-04a…06a](../research/drone-racing/DR-04a/README.md) on 2026-10-15); a boat follows with the water query of SF-07, a hydrostatic/hydrodynamic hull law run through SF-06 and, if an outboard pivot is modelled, SF-09.
 
 ## 6. Backend policy (SF-08)
 
