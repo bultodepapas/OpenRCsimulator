@@ -44,6 +44,10 @@ const SURFACE_STRIDE := 6
 ## Upper bound for the side force's damping rate times the tick (see SLIP_FLOOR). RK4's real-axis limit is 2.78;
 ## 0.5 keeps the per-tick error of the decay below 3·10⁻⁴.
 const SIDE_LAMBDA_DT_MAX := 0.5
+## SF-05: most integration substeps a gear may need per tick (aircraft_data.gd derives the count from ω·dt < 0.1).
+const MAX_SUBSTEPS := 8
+## Substeps engage within this margin of the gear's reach, beyond the distance covered in one tick.
+const SUBSTEP_REACH_MARGIN_M := 0.05
 ## E3b1: a sliding wheel re-sticks below this horizontal contact speed (m/s, estimated). Above the E2 creep speed
 ## (≈ 0.9 cm/s at idle on grass), so a creeping wheel is caught; a wheel that just broke free re-sticks at most with
 ## an unloaded anchor and a clamped force, so it still accelerates away.
@@ -380,6 +384,22 @@ static func surface_at(table: PackedFloat64Array, north: float, east: float) -> 
 			return i
 		i += SURFACE_STRIDE
 	return i
+
+
+## SF-05: integration substeps for this tick: the gear's derived count while any contact can touch the ground
+## within the tick (CG within reach plus the distance covered in one tick plus a margin), otherwise 1.
+## A deterministic function of the state and the data, so replay and refinement see the same plan.
+static func substeps(s: PackedFloat64Array, gear: Dictionary, dt: float, surfaces := PackedFloat64Array()) -> int:
+	if gear.is_empty():
+		return 1
+	var count: int = int(gear.get("substeps", 1))
+	if count <= 1:
+		return 1
+	var speed_bound: float = absf(s[RB.VEL]) + absf(s[RB.VEL + 1]) + absf(s[RB.VEL + 2])
+	var terrain: float = 0.0 if surfaces.is_empty() else Terrain.max_height_validated(surfaces)
+	if -s[RB.POS + 2] > float(gear.reach) + terrain + speed_bound * dt + SUBSTEP_REACH_MARGIN_M:
+		return 1
+	return count
 
 
 ## Compression of every contact (m, ≤ 0 when above the ground), in the order of gear.contacts.

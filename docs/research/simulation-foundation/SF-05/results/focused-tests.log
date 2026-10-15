@@ -1,0 +1,23 @@
+PASS test_touchdown 12 checks, 0 failed
+PASS test_ground_contact 22 checks, 0 failed
+PASS test_ground_friction 26 checks, 0 failed
+PASS test_ground_surfaces 29 checks, 0 failed
+PASS test_ground_start_integrity E3b2-R1: 254 checks, 0 failed
+PASS test_ground_start_environment 10 checks, 0 failed
+PASS test_landing_maneuver 28 checks, 0 failed
+PASS test_electric_runway EL2a-E1 electric runway: 177 checks, 0 failed
+PASS test_runway_transaction VAL-AUD-R04 launch transaction: 32 checks, 0 failed
+FAIL test_aircraft_data exit=1 FAIL rejects: gear too stiff for the tick [] 
+SKIP test_aircraft_validation (absent)
+PASS test_golden 
+PASS test_checkpoint H8 checkpoints: 92 checks, 0 failed
+PASS test_session_guards 32 checks, 0 failed
+PASS test_sf_vehicle_model 27 checks, 0 failed
+PASS test_sf_event_protocol 38 checks, 0 failed
+PASS test_sf_ground_vehicle_kernel 23 checks, 0 failed
+PASS test_sf_law_properties SF-06 law properties: 203 checks, 0 failed, 0 exempt
+PASS test_timber_ground TT-11 Timber ground: 23 checks, 0 failed
+FAIL test_p51_ground exit=1 FAIL lift-off between 1.05 and 1.5 Vs (rotation at 1.25 Vs)  25.3 m/s 
+PASS test_retractable_gear AV-09 retractable gear: 68 checks, 0 failed
+PASS test_glow_session Glow session: 140 checks, 0 failed
+DONE

@@ -1,0 +1,14 @@
+ok   Ugly Stik loads with one derived substep 1
+ok   four times stiffer gear loads with two derived substeps (ω·dt 0.194) [] 2
+ok   a hundred times stiffer gear is refused with the substep count in the message ["landing_gear: heave ω·dt = 0.969 (ω 232.5 rad/s at 240 Hz) needs 10 substeps per tick, above the 8 allowed; soften the gear or raise the tick"]
+ok   substeps are one far above the ground 
+ok   substeps engage within reach of the ground 
+ok   a fast sink engages substeps earlier by the distance covered in a tick 
+ok   240 Hz with two substeps equals two 480 Hz ticks byte for byte |Δz| 0
+ok   substeps refine toward the 960 Hz reference better than one stiff step substeps 3.127320152851215e-05, single 9.15395302979288e-05
+ok   the drop never gains energy in a tick (≤ 1e-6 J) 1.7763568394002505e-15 J
+ok   the drop rebounds below its release height 0.2599 m
+ok   the kernel reports the tick's substeps only while in reach 
+ok   the fixed-wing model declares its substep rule and the catalog Stik plans one piece 
+ok   a catalog tick still steps 
+13 checks, 0 failed

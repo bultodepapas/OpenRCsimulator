@@ -145,7 +145,17 @@ func _initialize() -> void:
 	no_gear.erase("landing_gear")
 	var r_no_gear := AD.validate_and_derive(no_gear)
 	_check("without a landing_gear section the data still loads (gear is optional; wheels crash as in D9d)", r_no_gear.ok and r_no_gear.model.landing_gear.is_empty(), str(r_no_gear.errors))
-	_rejects("gear too stiff for the tick", func(d): for c in d.landing_gear.contacts: c.stiffness.value *= 50, "ω·dt")
+	# SF-05: a stiffer gear derives integration substeps (ω·dt < 0.1 per substep) instead of being refused; only a gear
+	# needing more than Ground.MAX_SUBSTEPS is refused, with the count in the message.
+	var stiff := _raw()
+	for c in stiff.landing_gear.contacts:
+		c.stiffness.value *= 50
+		c.damping.value *= sqrt(50.0) # keeps each damping ratio
+	var r_stiff := AD.validate_and_derive(stiff)
+	var expected_substeps: int = int(floor(float(r_stiff.model.landing_gear.heave_omega) / 240.0 / 0.1)) + 1 if r_stiff.ok else -1
+	_check("gear 50× stiffer loads with the derived substeps floor(ω·dt / 0.1) + 1 > 1", r_stiff.ok and int(r_stiff.model.landing_gear.substeps) == expected_substeps and expected_substeps > 1,
+		str(r_stiff.errors) + " substeps %s expected %d" % [str(r_stiff.model.landing_gear.get("substeps") if r_stiff.ok else ""), expected_substeps])
+	_rejects("gear too stiff for the substep cap", func(d): for c in d.landing_gear.contacts: c.stiffness.value *= 200; c.damping.value *= sqrt(200.0), "substeps per tick")
 	_rejects("CG outside the wheelbase", func(d): for c in d.landing_gear.contacts: c.position.value[0] -= 0.2, "cannot stand")
 	_rejects("all wheels on one side", func(d): for c in d.landing_gear.contacts: c.position.value[1] += 0.5, "cannot stand")
 	_check_ground_support(r.model.cg_le)
