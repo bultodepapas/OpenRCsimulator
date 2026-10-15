@@ -60,6 +60,10 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-15 · SF-06 — per-axis passivity at the CG is a pure-translation property
+
+Checking that each gear force opposes the CG velocity axis by axis failed for the P-51 and the Ventage Jet while the laws were right: under body rates a wheel moves at v + ω × r, so a force that opposes the wheel's own velocity can do positive work along a CG axis. Friction's "never adds energy" holds at the contact point; at the CG, test it in pure translation, or sum the power over the contact velocities. [SF-06 evidence](docs/research/simulation-foundation/SF-06/README.md).
+
 ## 2026-10-15 · SF-04 — a stop's known answer needs the locator's continuation, not a kinked derivative
 
 A synthetic "x falls at a constant rate and rests at zero" model located its stop at 0.6 of the tick instead of the analytic 0.5, because a derivative that switches to zero for x ≤ 0 kinks the RK4 trial map that the bracket solves. The locator treats negative trial values as a continuation, so a known-answer model must keep its derivative smooth across zero and rest only at exactly zero; then the secant lands within 1e-12 of the analytic crossing. [SF-04 evidence](docs/research/simulation-foundation/SF-04/README.md).
