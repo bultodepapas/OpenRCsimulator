@@ -151,8 +151,8 @@ func _test_scheduled_shutdown(case: Dictionary) -> void:
 	var rollback_before: PackedByteArray = _rollback_bytes(rejected.sim)
 	var runtime_before: Dictionary = rejected._failures.snapshot()
 	var rejected_tick: int = rejected.sim.tick
-	var original_post_step: Callable = rejected.sim.post_step
-	rejected.sim.post_step = func(previous: PackedFloat64Array, candidate: PackedFloat64Array,
+	var original_post_step: Callable = rejected.sim.model.post_tick
+	rejected.sim.model.post_tick = func(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 			accepted_tick: int) -> PackedFloat64Array:
 		if original_post_step.is_valid():
 			original_post_step.call(previous, candidate, accepted_tick)
@@ -165,7 +165,7 @@ func _test_scheduled_shutdown(case: Dictionary) -> void:
 		and rejected.propulsion_power_enabled() and not rejected.failure_power_cut_active())
 	_check(label + " onset rejection rolls back the staged runtime and emits no notice",
 		rejected._failures.snapshot() == runtime_before and rejected_change_count[0] == 0)
-	rejected.sim.post_step = original_post_step
+	rejected.sim.model.post_tick = original_post_step
 	_check(label + " explicit recovery restores the valid pre-onset boundary",
 		rejected.restore_checkpoint(pre_onset_checkpoint))
 
@@ -232,8 +232,8 @@ func _test_scheduled_shutdown(case: Dictionary) -> void:
 	var post_cut_runtime: Dictionary = flight._failures.snapshot()
 	var post_cut_tick: int = flight.sim.tick
 	var post_cut_notice_count: int = change_count[0]
-	var original_post_cut_callback: Callable = flight.sim.post_step
-	flight.sim.post_step = func(previous: PackedFloat64Array, candidate: PackedFloat64Array,
+	var original_post_cut_callback: Callable = flight.sim.model.post_tick
+	flight.sim.model.post_tick = func(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 			accepted_tick: int) -> PackedFloat64Array:
 		if original_post_cut_callback.is_valid():
 			original_post_cut_callback.call(previous, candidate, accepted_tick)
@@ -250,7 +250,7 @@ func _test_scheduled_shutdown(case: Dictionary) -> void:
 		change_count[0] == post_cut_notice_count
 		and bool(post_cut_checkpoint.get("failure_state", {}).get("active", false))
 		and post_cut_checkpoint.simulation.modes[0] == 0)
-	flight.sim.post_step = original_post_cut_callback
+	flight.sim.model.post_tick = original_post_cut_callback
 	_check(label + " post-cut rejection recovers at the exact active checkpoint",
 		flight.restore_checkpoint(post_cut_checkpoint)
 		and var_to_bytes(flight.checkpoint()) == var_to_bytes(post_cut_checkpoint)

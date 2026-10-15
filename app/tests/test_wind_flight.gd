@@ -238,22 +238,22 @@ func _test_stage_wind_sampling() -> void:
 		return
 	var times: Array[float] = []
 	var samples: Array[PackedFloat64Array] = []
-	if session.sim.continuous_evaluate.is_valid():
-		var previous_evaluate: Callable = session.sim.continuous_evaluate
-		session.sim.continuous_evaluate = func(state: PackedFloat64Array, continuous: PackedFloat64Array,
+	if session.sim.model.stage.is_valid():
+		var previous_evaluate: Callable = session.sim.model.stage
+		session.sim.model.stage = func(state: PackedFloat64Array, continuous: PackedFloat64Array,
 				time_s: float) -> Dictionary:
 			times.append(time_s)
 			samples.append(session.wind_at(time_s))
 			return previous_evaluate.call(state, continuous, time_s)
 	elif session.sim.continuous.is_empty():
-		var previous_loads: Callable = session.sim.loads
-		session.sim.loads = func(state: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
+		var previous_loads: Callable = session.sim.model.loads
+		session.sim.model.loads = func(state: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
 			times.append(time_s)
 			samples.append(session.wind_at(time_s))
 			return previous_loads.call(state, time_s)
 	else:
-		var previous_loads: Callable = session.sim.continuous_loads
-		session.sim.continuous_loads = func(state: PackedFloat64Array, wash: PackedFloat64Array,
+		var previous_loads: Callable = session.sim.model.block_loads
+		session.sim.model.block_loads = func(state: PackedFloat64Array, wash: PackedFloat64Array,
 				time_s: float) -> PackedFloat64Array:
 			times.append(time_s)
 			samples.append(session.wind_at(time_s))
@@ -287,8 +287,8 @@ func _integrate_cosine_gust(hz: int, field: RefCounted) -> float:
 	var sim: Node = Sim.new()
 	sim.gravity = 0.0
 	sim.continuous = PackedFloat64Array([0.0])
-	sim.continuous_loads = _zero_loads
-	sim.continuous_derivative = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array,
+	sim.model.block_loads = _zero_loads
+	sim.model.block_derivative = func(_body: PackedFloat64Array, _continuous: PackedFloat64Array,
 			time_s: float) -> PackedFloat64Array:
 		return PackedFloat64Array([field.sample(time_s)[0]])
 	var initial: PackedFloat64Array = RB.make_state(M.v3(0.0, 0.0, -10.0), M.v3(0.0, 0.0, 0.0),

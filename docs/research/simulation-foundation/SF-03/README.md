@@ -30,6 +30,23 @@ The truck's private RK4 and the kernel's `rk4_step_at` perform the same operatio
 - Telemetry, damage, events and recording remain tick-boundary observers in the session. The per-tick kernel checkpoint that gives them a rollback costs a few microseconds against a millisecond-scale truck tick; moving observers into the kernel transaction is SF-04's event protocol, not this step.
 - The truck's stage reports zero body loads to the kernel: the coupled generalized solve does not separate them, and telemetry owns the forces. Nothing reads that record for the truck.
 - Cost was not re-measured on a quiet host. The evaluation sequence is unchanged; the additions are the per-tick kernel checkpoint and property indirection outside the stage loop.
-- The 27 tests that configure the kernel through the pre-SF-01 properties are still not migrated; the aliases stay until that migration (now listed under SF-03 follow-up in the plan).
+- The 27 tests that configure the kernel through the pre-SF-01 properties were migrated and the aliases deleted on 2026-10-15; see [Alias cleanup](#alias-cleanup).
+
+## Alias cleanup
+
+2026-10-15 · The SF-01 compatibility properties on `Simulation` (`loads`, `input_size`, `pre_step`, `post_step`, `post_step_joint`, `rotor_momentum`, `continuous_loads`, `continuous_derivative`, `continuous_evaluate`, `continuous_rotor_momentum`, `continuous_aux`, `continuous_step`) are deleted. Every caller sets the `VehicleModel` fields through `sim.model`:
+
+| Change | Where |
+| --- | --- |
+| 194 property uses rewritten mechanically (`<sim>.<old>` to `<sim>.model.<new>`; `pre_step` to `pre_tick`, `post_step` to `post_tick`, `continuous_evaluate` to `stage`, `continuous_loads/derivative/aux` to `block_*`, `continuous_rotor_momentum` to `stage_rotor_momentum`, `continuous_step` to `step_policy`) | `app/sim/flight_session.gd` (post-tick filters) and 31 scripts under `app/tests/` |
+| `PropulsionRuntime.CALLBACK_FIELDS` names the model fields; `FlightSession._configure_continuous_callbacks` and the runtime test install them with `sim.model.set` | `app/sim/aircraft_propulsion_runtime.gd`, `app/sim/flight_session.gd`, `app/tests/test_aircraft_propulsion_runtime.gd` |
+| String-keyed loops that cleared the propulsion callbacks use the model names | `app/tests/test_lake_session.gd`, `app/tests/test_aircraft_contact_session.gd` |
+| The three alias-forwarding checks became one retirement check (`sim.get(<old name>) == null` for all twelve) | `app/tests/test_sf_vehicle_model.gd` (25 checks) |
+| 63 lines of forwarding properties and their header comment removed | `app/sim/simulation.gd` |
+
+| Check | Result | Record |
+| --- | --- | --- |
+| Fleet fingerprints, baseline commit `1da9e092` (the commit before the cleanup) versus this tree | **24/24 identical** | [comparison](results/alias-cleanup-fingerprint-comparison.txt), [baseline](results/alias-cleanup-fingerprints-base.json), [cleanup](results/alias-cleanup-fingerprints.json) |
+| Every touched test program plus the kernel, law, multirotor, rotorcraft and ground-vehicle suites | 41 programs: 40 pass; `test_shaft_coupled` fails two trace-metadata checks that fail identically on the untouched baseline tree (pre-existing, see the results file) | [results](results/alias-cleanup-tests.txt) |
 
 Commit message: `SF-03: run the RC ground vehicle on the shared Simulation kernel through its VehicleModel; delete the truck's private RK4; 11/11 vehicle fingerprints byte-identical`

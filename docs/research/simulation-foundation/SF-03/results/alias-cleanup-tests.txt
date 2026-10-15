@@ -1,0 +1,44 @@
+Alias cleanup (2026-10-15): every test program touched by the migration plus the kernel, law, multirotor, rotorcraft and ground-vehicle suites, run one at a time on the migrated tree.
+test_shaft_coupled fails the same two checks on the untouched baseline tree 1da9e092 (G2 coupled shaft: 43 checks, 2 failed there as well): pre-existing, not caused by the cleanup.
+
+RESULT PASS test_aircraft_contact_session 2s AS-13 contact session: 63 checks, 0 failures
+RESULT PASS test_aircraft_propulsion_runtime 9s aircraft propulsion runtime: 214 checks, 0 failed
+RESULT PASS test_atmosphere_column_session 6s M5-ATM-4 session: 97 checks, 0 failed
+RESULT PASS test_checkpoint 4s H8 checkpoints: 92 checks, 0 failed
+RESULT PASS test_checkpoint_integrity 0s H8-R1 checkpoint integrity: 149 checks, 0 failed
+RESULT PASS test_contact_policy 8s 80 checks, 0 failed
+RESULT PASS test_continuous_state 0s continuous state: 42 checks, 0 failed
+RESULT PASS test_crash_integration 37s 179 checks, 0 failed
+RESULT PASS test_dr_multirotor_kernel 1s 15 checks, 0 failed
+RESULT PASS test_dynamic_mass_contact_boundary 0s R05-B independent review fixture: 12 checks, 0 failures
+RESULT PASS test_dynamic_mass_contact_session 4s R05-B FlightSession integration review: 15 checks, 0 failures
+RESULT PASS test_electric_session 15s EL1d electric session: 86 checks, 0 failed
+RESULT PASS test_failure_session 11s Failure session integration: 99 checks, 0 failed
+RESULT PASS test_failure_shutdown 53s Failure power shutdown integration: 206 checks, 0 failed
+RESULT PASS test_glow_coupling 4s glow shaft/prop coupling: 65 checks, 0 failed
+RESULT PASS test_ground_contact 4s 22 checks, 0 failed
+RESULT PASS test_ground_friction 30s 26 checks, 0 failed
+RESULT PASS test_ground_surfaces 15s 29 checks, 0 failed
+RESULT PASS test_heli_startup_kernel 0s HELI low-RPM/startup kernel: 62 checks, 0 failed
+RESULT PASS test_lake_session 2s 35 lake session checks, 0 failed
+RESULT PASS test_landscape_collision_session 3s landscape collision session: 25 checks, 0 failures
+RESULT PASS test_rcv_nitro_service 22s RCV Nitro service: 38 checks, 0 failed
+RESULT PASS test_rcv_vehicle_dynamics 30s RCV-05 vehicle dynamics: 53 checks, 0 failures
+RESULT PASS test_retractable_gear 3s AV-09 retractable gear: 68 checks, 0 failed
+RESULT PASS test_rk_stage_time 0s 22 checks, 0 failed
+RESULT PASS test_rotor_coupling 1s G2 rotor coupling: 17 checks, 0 failed
+RESULT PASS test_scenery_damage_session 3s 51 checks, 0 failed
+RESULT PASS test_session_guards 2s 32 checks, 0 failed
+RESULT PASS test_sf_contact_substeps 3s 13 checks, 0 failed
+RESULT PASS test_sf_environment 2s 27 checks, 0 failed
+RESULT PASS test_sf_event_protocol 6s 38 checks, 0 failed
+RESULT PASS test_sf_ground_vehicle_kernel 6s 23 checks, 0 failed
+RESULT PASS test_sf_law_properties 2s SF-06 law properties: 203 checks, 0 failed, 0 exempt
+RESULT PASS test_sf_vehicle_model 0s 25 checks, 0 failed
+RESULT FAIL test_shaft_coupled 5s exit=0 FAIL coupled traces retain schema and identify the shaft integrator FAIL coupled trace accepts finite negative wash increments with positive RPM 
+RESULT PASS test_timber_ground 8s TT-11 Timber ground: 23 checks, 0 failed
+RESULT PASS test_touchdown 1s 12 checks, 0 failed
+RESULT PASS test_turbine_continuous 4s 46 checks, 0 failed
+RESULT PASS test_turbulence_flight 6s M5-W04a turbulence flight: 160 checks, 0 failed
+RESULT PASS test_wash_transport 5s E0b5 transport: 42 checks, 0 failed
+RESULT PASS test_wind_flight 10s wind flight: 51 checks, 0 failed

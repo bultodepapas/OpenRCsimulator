@@ -47,8 +47,8 @@ func _collision_state() -> PackedFloat64Array:
 func _test_glow_contact_rollback() -> void:
 	var session: Node = _glow_session()
 	_check("real Glow session is flyable and dynamic-mass joint hook is installed",
-		session.is_flyable() and session.glow_is_active() and session.sim.post_step_joint.is_valid()
-		and not session.sim.post_step.is_valid())
+		session.is_flyable() and session.glow_is_active() and session.sim.model.post_tick_joint.is_valid()
+		and not session.sim.model.post_tick.is_valid())
 	if not session.is_flyable():
 		session.free()
 		return
@@ -66,9 +66,9 @@ func _test_glow_contact_rollback() -> void:
 			_loads: PackedFloat64Array, _inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void:
 		step_signals[0] += 1)
 	session.contact_events_changed.connect(func() -> void: contact_signals[0] += 1)
-	var production_filter: Callable = session.sim.post_step_joint
-	var production_aux: Callable = session.sim.continuous_aux
-	session.sim.post_step_joint = func(previous: PackedFloat64Array, candidate: PackedFloat64Array,
+	var production_filter: Callable = session.sim.model.post_tick_joint
+	var production_aux: Callable = session.sim.model.block_aux
+	session.sim.model.post_tick_joint = func(previous: PackedFloat64Array, candidate: PackedFloat64Array,
 			next_tick: int, previous_continuous: PackedFloat64Array,
 			candidate_continuous: PackedFloat64Array) -> PackedFloat64Array:
 			filter_calls.append({tick = next_tick, previous_north = previous[RB.POS], candidate_north = candidate[RB.POS],
@@ -89,7 +89,7 @@ func _test_glow_contact_rollback() -> void:
 	var bad_aux := PackedFloat64Array()
 	for _i in session.sim.aux.size():
 		bad_aux.append(NAN)
-	session.sim.continuous_aux = func(_extra: PackedFloat64Array, _sampled: PackedFloat64Array) -> PackedFloat64Array:
+	session.sim.model.block_aux = func(_extra: PackedFloat64Array, _sampled: PackedFloat64Array) -> PackedFloat64Array:
 		return bad_aux.duplicate()
 	session.sim.step()
 	if staged.size() == 1:
@@ -115,7 +115,7 @@ func _test_glow_contact_rollback() -> void:
 			" event signals=", contact_signals[0]))
 	if staged.size() == 1 and not start_checkpoint.is_empty():
 		var rejected_stage: Dictionary = staged[0].duplicate(true)
-		session.sim.continuous_aux = production_aux
+		session.sim.model.block_aux = production_aux
 		var restore_ok: bool = session.restore_checkpoint(start_checkpoint)
 		session.sim.set_paused(false)
 		staged.clear()

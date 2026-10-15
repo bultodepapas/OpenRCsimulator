@@ -46,7 +46,7 @@ func actuator() -> void:
 
 func input_kernel() -> void:
 	var sim := Sim.new()
-	sim.input_size = 6
+	sim.model.input_size = 6
 	sim.inputs = PackedFloat64Array([0, 0, 0, 0, 1, 0.4])
 	var state := RB.make_state(M.v3(0, 0, -20), M.v3(30, 0, 0), M.q_identity(), M.v3(0, 0, 0))
 	check("six inputs explicitly accepted", sim.reset(state))
@@ -55,7 +55,7 @@ func input_kernel() -> void:
 	sim.step()
 	check("truncated demand fails atomically", sim.tick == 0 and sim.state == state and sim.inputs == cp.inputs and not sim.fault_reason.is_empty())
 	check("extended checkpoint restores", sim.restore_checkpoint(cp))
-	sim.input_size = 4
+	sim.model.input_size = 4
 	check("wrong owner input layout rejects checkpoint", not sim.restore_checkpoint(cp))
 	sim.free()
 
@@ -107,12 +107,12 @@ func session() -> void:
 	flight._physics_process(1.0)
 	check("pause holds actuator and accepted clock", flight.sim.tick == cp.simulation.tick and flight.sim.aux == cp.simulation.aux)
 	flight.release("gear test")
-	var evaluate: Callable = flight.sim.continuous_evaluate
-	flight.sim.continuous_evaluate = func(_s: PackedFloat64Array, _c: PackedFloat64Array, _t: float) -> Dictionary:
+	var evaluate: Callable = flight.sim.model.stage
+	flight.sim.model.stage = func(_s: PackedFloat64Array, _c: PackedFloat64Array, _t: float) -> Dictionary:
 		return {}
 	flight.sim.step()
 	check("rejected RK transaction rolls gear back", flight.sim.aux == cp.simulation.aux and flight.sim.tick == cp.simulation.tick and not flight.sim.fault_reason.is_empty())
-	flight.sim.continuous_evaluate = evaluate
+	flight.sim.model.stage = evaluate
 	check("recover rejected gear step", flight.restore_checkpoint(cp))
 	for i in 120: flight.sim.step()
 	var expected: Dictionary = flight.sim.checkpoint()

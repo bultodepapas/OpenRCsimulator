@@ -67,11 +67,11 @@ func kernel_contract() -> void:
 	for fail_at in [0, 1, 2, 3, 4]:
 		sim.restore_checkpoint(cp)
 		var calls := [0]
-		sim.pre_step = func(a: PackedFloat64Array, _i: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
+		sim.model.pre_tick = func(a: PackedFloat64Array, _i: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
 			sim.modes[0] = 0
 			sim.stop_at_tick = 200
 			return PackedFloat64Array([NAN, 0.0]) if fail_at == 0 else a
-		sim.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+		sim.model.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 			calls[0] += 1
 			return PackedFloat64Array([NAN if calls[0] == fail_at else 0.0, 0, 0, 0, 0, 0])
 		sim.step()

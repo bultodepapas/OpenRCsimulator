@@ -10,8 +10,8 @@ class FaultFlight extends "res://main.gd":
 			session.sim.stepped.disconnect(recorder._on_stepped)
 		else:
 			var failing_tick: int = ticks - 1 if mode == "last_tick" else 0
-			var original: Callable = session.sim.pre_step
-			session.sim.pre_step = func(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
+			var original: Callable = session.sim.model.pre_tick
+			session.sim.model.pre_tick = func(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
 				if session.sim.tick == failing_tick:
 					return PackedFloat64Array([NAN])
 				return original.call(aux, inputs, dt)

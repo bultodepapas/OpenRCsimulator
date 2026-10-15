@@ -209,28 +209,28 @@ func _stage_local_integration() -> void:
 	_check("stage-local fixture resets cleanly", flight.sim.reset(flight.sim.state))
 	var stages: Array = []
 	var legacy_calls := { loads = 0, derivative = 0, rotor = 0 }
-	var real_evaluate: Callable = flight.sim.continuous_evaluate
-	var real_loads: Callable = flight.sim.continuous_loads
-	var real_derivative: Callable = flight.sim.continuous_derivative
-	var real_rotor: Callable = flight.sim.continuous_rotor_momentum
-	flight.sim.continuous_evaluate = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
+	var real_evaluate: Callable = flight.sim.model.stage
+	var real_loads: Callable = flight.sim.model.block_loads
+	var real_derivative: Callable = flight.sim.model.block_derivative
+	var real_rotor: Callable = flight.sim.model.stage_rotor_momentum
+	flight.sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
 		var result: Dictionary = real_evaluate.call(s, z, t)
 		stages.append({rpm = z[shaft_index], time = t, z = z.duplicate(), loads = result.get("loads", null)})
 		return result
-	flight.sim.continuous_loads = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	flight.sim.model.block_loads = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
 		legacy_calls.loads += 1
 		return real_loads.call(s, z, t)
-	flight.sim.continuous_derivative = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	flight.sim.model.block_derivative = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
 		legacy_calls.derivative += 1
 		return real_derivative.call(s, z, t)
-	flight.sim.continuous_rotor_momentum = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	flight.sim.model.stage_rotor_momentum = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
 		legacy_calls.rotor += 1
 		return real_rotor.call(s, z, t)
 	flight.sim.step()
-	flight.sim.continuous_evaluate = real_evaluate
-	flight.sim.continuous_loads = real_loads
-	flight.sim.continuous_derivative = real_derivative
-	flight.sim.continuous_rotor_momentum = real_rotor
+	flight.sim.model.stage = real_evaluate
+	flight.sim.model.block_loads = real_loads
+	flight.sim.model.block_derivative = real_derivative
+	flight.sim.model.stage_rotor_momentum = real_rotor
 	var dt: float = flight.sim.dt()
 	var times_ok: bool = stages.size() == 4
 	if times_ok:
@@ -263,17 +263,17 @@ func _joint_callback_falls_back_to_legacy() -> void:
 		_check("legacy callback fallback fixtures start", false)
 		return
 	var calls := { loads = 0, derivative = 0, rotor = 0 }
-	var original_loads: Callable = fallback.sim.continuous_loads
-	var original_derivative: Callable = fallback.sim.continuous_derivative
-	var original_rotor: Callable = fallback.sim.continuous_rotor_momentum
-	fallback.sim.continuous_evaluate = Callable()
-	fallback.sim.continuous_loads = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	var original_loads: Callable = fallback.sim.model.block_loads
+	var original_derivative: Callable = fallback.sim.model.block_derivative
+	var original_rotor: Callable = fallback.sim.model.stage_rotor_momentum
+	fallback.sim.model.stage = Callable()
+	fallback.sim.model.block_loads = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
 		calls.loads += 1
 		return original_loads.call(s, z, t)
-	fallback.sim.continuous_derivative = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	fallback.sim.model.block_derivative = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
 		calls.derivative += 1
 		return original_derivative.call(s, z, t)
-	fallback.sim.continuous_rotor_momentum = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	fallback.sim.model.stage_rotor_momentum = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
 		calls.rotor += 1
 		return original_rotor.call(s, z, t)
 	fallback.sim.step()
@@ -327,13 +327,13 @@ func _transported_wash_and_replay() -> void:
 	flight.sim.inputs[3] = 1.0
 	flight.engine_running = true
 	var stages: Array[PackedFloat64Array] = []
-	var real_evaluate: Callable = flight.sim.continuous_evaluate
-	flight.sim.continuous_evaluate = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
+	var real_evaluate: Callable = flight.sim.model.stage
+	flight.sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
 		var result: Dictionary = real_evaluate.call(s, z, t)
 		stages.append(z.duplicate())
 		return result
 	flight.sim.step()
-	flight.sim.continuous_evaluate = real_evaluate
+	flight.sim.model.stage = real_evaluate
 	var wash_changed: bool = false
 	var rpm_changed: bool = false
 	if stages.size() == 4:
@@ -397,11 +397,11 @@ func _fault_rollback(kind: String) -> void:
 	var stepped := [0]
 	sim.stepped.connect(func(_tick: int, _time: float, _state: PackedFloat64Array, _loads: PackedFloat64Array,
 			_inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void: stepped[0] += 1)
-	var real_evaluate: Callable = sim.continuous_evaluate
+	var real_evaluate: Callable = sim.model.stage
 	match kind:
 		"stage":
 			var calls := [0]
-			sim.continuous_evaluate = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
+			sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
 				calls[0] += 1
 				var result: Dictionary = real_evaluate.call(s, z, t)
 				if calls[0] == 2:
@@ -410,35 +410,35 @@ func _fault_rollback(kind: String) -> void:
 					result.loads = bad_loads
 				return result
 		"gyro":
-			sim.continuous_evaluate = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
+			sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
 				var result: Dictionary = real_evaluate.call(s, z, t)
 				result.rotor_momentum = PackedFloat64Array([NAN, 0, 0])
 				return result
 		"derivative":
-			sim.continuous_evaluate = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
+			sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
 				var result: Dictionary = real_evaluate.call(s, z, t)
 				result.derivative = PackedFloat64Array([NAN])
 				return result
 		"missing_field":
-			sim.continuous_evaluate = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
+			sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
 				var result: Dictionary = real_evaluate.call(s, z, t)
 				result.erase("derivative")
 				return result
 		"wrong_float32":
-			sim.continuous_evaluate = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
+			sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
 				var result: Dictionary = real_evaluate.call(s, z, t)
 				result.derivative = PackedFloat32Array([0.0])
 				return result
 		"wrong_width":
-			sim.continuous_evaluate = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
+			sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
 				var result: Dictionary = real_evaluate.call(s, z, t)
 				result.derivative = PackedFloat64Array([0.0, 0.0])
 				return result
 		"wrong_type":
-			sim.continuous_evaluate = func(_s: PackedFloat64Array, _z: PackedFloat64Array, _t: float):
+			sim.model.stage = func(_s: PackedFloat64Array, _z: PackedFloat64Array, _t: float):
 				return "invalid joint payload"
 		"projection":
-			sim.continuous_aux = func(_z: PackedFloat64Array, sampled: PackedFloat64Array) -> PackedFloat64Array:
+			sim.model.block_aux = func(_z: PackedFloat64Array, sampled: PackedFloat64Array) -> PackedFloat64Array:
 				var invalid: PackedFloat64Array = sampled.duplicate()
 				invalid[0] = NAN
 				return invalid
@@ -458,8 +458,8 @@ func _reset_joint_payload_rollback() -> void:
 	var stepped := [0]
 	sim.stepped.connect(func(_tick: int, _time: float, _state: PackedFloat64Array, _loads: PackedFloat64Array,
 			_inputs: PackedFloat64Array, _aux: PackedFloat64Array) -> void: stepped[0] += 1)
-	var real_evaluate: Callable = sim.continuous_evaluate
-	sim.continuous_evaluate = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
+	var real_evaluate: Callable = sim.model.stage
+	sim.model.stage = func(s: PackedFloat64Array, z: PackedFloat64Array, t: float) -> Dictionary:
 		var result: Dictionary = real_evaluate.call(s, z, t)
 		result.derivative = PackedFloat32Array([0.0])
 		return result

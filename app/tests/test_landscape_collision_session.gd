@@ -113,17 +113,17 @@ func _new_session(world: Dictionary) -> Node:
 	aircraft.model.crash_hull = PackedFloat64Array([0.0, 0.0, 0.0])
 	session.aircraft = aircraft
 	session.sim.continuous = PackedFloat64Array()
-	session.sim.continuous_loads = Callable()
-	session.sim.continuous_derivative = Callable()
-	session.sim.continuous_evaluate = Callable()
-	session.sim.continuous_rotor_momentum = Callable()
-	session.sim.continuous_aux = Callable()
-	session.sim.continuous_step = Callable()
-	session.sim.pre_step = func(aux: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
+	session.sim.model.block_loads = Callable()
+	session.sim.model.block_derivative = Callable()
+	session.sim.model.stage = Callable()
+	session.sim.model.stage_rotor_momentum = Callable()
+	session.sim.model.block_aux = Callable()
+	session.sim.model.step_policy = Callable()
+	session.sim.model.pre_tick = func(aux: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
 		return aux
-	session.sim.rotor_momentum = func(_aux: PackedFloat64Array) -> PackedFloat64Array:
+	session.sim.model.rotor_momentum = func(_aux: PackedFloat64Array) -> PackedFloat64Array:
 		return PackedFloat64Array()
-	session.sim.loads = func(_state: PackedFloat64Array, _time_s: float) -> PackedFloat64Array:
+	session.sim.model.loads = func(_state: PackedFloat64Array, _time_s: float) -> PackedFloat64Array:
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	session.sim.reset(session.sim.state.duplicate())
 	if not world.is_empty() and not session.set_collision_world(world):

@@ -122,7 +122,7 @@ func _airplane(id: String, data_path: String, cut_tick: int) -> Dictionary:
 			break
 		_absorb(ctx, sim)
 		result.events += _event_count(sim)
-	result.inputs = sim.input_size
+	result.inputs = sim.model.input_size
 	result.continuous = sim.continuous.size()
 	result.aux = sim.aux.size()
 	result.sha256 = ctx.finish().hex_encode()
@@ -169,7 +169,7 @@ func _helicopter(start: String, hold_tick: int) -> Dictionary:
 			break
 		_absorb(ctx, sim)
 		result.events += _event_count(sim)
-	result.inputs = sim.input_size
+	result.inputs = sim.model.input_size
 	result.continuous = sim.continuous.size()
 	result.aux = sim.aux.size()
 	result.sha256 = ctx.finish().hex_encode()

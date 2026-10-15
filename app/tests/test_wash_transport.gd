@@ -100,9 +100,9 @@ func _response(model: Dictionary, speed: float) -> void:
 	var sim: Node = Sim.new()
 	sim.gravity = 0.0
 	sim.continuous = PackedFloat64Array([0, 0, 0])
-	sim.continuous_loads = func(_s: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.block_loads = func(_s: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([0, 0, 0, 0, 0, 0])
-	sim.continuous_derivative = func(_s: PackedFloat64Array, z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.block_derivative = func(_s: PackedFloat64Array, z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return W.derivative(v, rpm, prop, 1.225, z)
 	sim.reset(PackedFloat64Array([0, 0, -100, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0]))
 	var tau: PackedFloat64Array = PackedFloat64Array()
@@ -140,15 +140,15 @@ func _session_checks() -> void:
 	var empty_wash: PackedFloat64Array = PackedFloat64Array([0, 0, 0])
 	check("stage wash state changes actual tail loads", quasi != flight._wash_loads(s, empty_wash, 0.0))
 	var stages: Array = []
-	var real_loads: Callable = flight.sim.continuous_loads
+	var real_loads: Callable = flight.sim.model.block_loads
 	flight.sim.continuous = empty_wash
 	flight.sim.reset(s)
-	flight.sim.continuous_loads = func(body: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	flight.sim.model.block_loads = func(body: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
 		stages.append(z.duplicate())
 		return real_loads.call(body, z, t)
 	flight.sim.step()
 	check("real session loads see changing lag at all RK stages", stages.size() == 4 and stages[0] != stages[1] and stages[1] != stages[2] and stages[2] != stages[3])
-	flight.sim.continuous_loads = real_loads
+	flight.sim.model.block_loads = real_loads
 	var cp: Dictionary = flight.checkpoint()
 	for tick: int in 60:
 		flight.sim.step()
@@ -202,7 +202,7 @@ func _run_refinement(hz: int) -> PackedFloat64Array:
 	configure(flight)
 	# Isolate the body/wash coupling: RPM, servos, downwash and anchors are held. These pre-existing
 	# sampled subsystems have their own lower-order error; they must not mask this coupling's order.
-	flight.sim.pre_step = func(a: PackedFloat64Array, _u: PackedFloat64Array, _dt: float) -> PackedFloat64Array: return a
+	flight.sim.model.pre_tick = func(a: PackedFloat64Array, _u: PackedFloat64Array, _dt: float) -> PackedFloat64Array: return a
 	flight.sim.continuous = PackedFloat64Array([0, 0, 0])
 	flight.sim.reset(flight.sim.state)
 	for tick: int in roundi(hz/5.0):

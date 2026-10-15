@@ -36,8 +36,8 @@ func _new_sim(initial_z := 0.0, initial_u := 1.0) -> Node:
 	sim.continuous = PackedFloat64Array([initial_z])
 	sim.aux = PackedFloat64Array([2.0])
 	sim.modes = PackedInt64Array([1])
-	sim.continuous_loads = _zero_loads
-	sim.continuous_derivative = _zero_derivative
+	sim.model.block_loads = _zero_loads
+	sim.model.block_derivative = _zero_derivative
 	sim.reset(_initial(initial_u))
 	return sim
 
@@ -56,9 +56,9 @@ func _coupled_sim() -> Node:
 	sim.continuous = PackedFloat64Array([0.0])
 	# Unit-mass oscillator: u' = z, z' = -u. Position, velocity and z have exact values
 	# sin(t), cos(t) and -sin(t) from x(0)=0, u(0)=1, z(0)=0.
-	sim.continuous_loads = func(_body: PackedFloat64Array, z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.block_loads = func(_body: PackedFloat64Array, z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([z[0], 0.0, 0.0, 0.0, 0.0, 0.0])
-	sim.continuous_derivative = func(body: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.block_derivative = func(body: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([-body[RB.VEL]])
 	sim.reset(_initial(1.0))
 	return sim
@@ -83,10 +83,10 @@ func _test_stage_time() -> void:
 	sim.continuous = PackedFloat64Array([0.25])
 	var load_times: Array[float] = []
 	var derivative_times: Array[float] = []
-	sim.continuous_loads = func(_body: PackedFloat64Array, _z: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	sim.model.block_loads = func(_body: PackedFloat64Array, _z: PackedFloat64Array, t: float) -> PackedFloat64Array:
 		load_times.append(t)
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-	sim.continuous_derivative = func(_body: PackedFloat64Array, _z: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	sim.model.block_derivative = func(_body: PackedFloat64Array, _z: PackedFloat64Array, t: float) -> PackedFloat64Array:
 		derivative_times.append(t)
 		return PackedFloat64Array([0.0])
 	sim.reset(_initial())
@@ -109,13 +109,13 @@ func _failure_sim(fail_call: int, malformed: bool) -> Node:
 	sim.aux = PackedFloat64Array([2.0])
 	sim.modes = PackedInt64Array([1])
 	sim.inputs = PackedFloat64Array([0.4, 0.0, 0.0, 0.0])
-	sim.continuous_loads = _zero_loads
+	sim.model.block_loads = _zero_loads
 	var calls := [0]
-	sim.pre_step = func(a: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
+	sim.model.pre_tick = func(a: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
 		sim.modes[0] = 0
 		sim.stop_at_tick = 42
 		return PackedFloat64Array([a[0] + 1.0])
-	sim.continuous_derivative = func(_body: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.block_derivative = func(_body: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		calls[0] += 1
 		if calls[0] == fail_call:
 			return PackedFloat64Array() if malformed else PackedFloat64Array([NAN])
@@ -146,15 +146,15 @@ func _load_failure_sim(fail_call: int, malformed: bool) -> Node:
 	sim.inputs = PackedFloat64Array([0.4, 0.0, 0.0, 0.0])
 	var calls := [0]
 	var armed := [false]
-	sim.continuous_loads = func(_body: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.block_loads = func(_body: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		if not armed[0]:
 			return _zero_loads(_body, _z, _t)
 		calls[0] += 1
 		if calls[0] == fail_call:
 			return PackedFloat64Array() if malformed else PackedFloat64Array([NAN, 0.0, 0.0, 0.0, 0.0, 0.0])
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-	sim.continuous_derivative = _zero_derivative
-	sim.pre_step = func(a: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
+	sim.model.block_derivative = _zero_derivative
+	sim.model.pre_tick = func(a: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
 		sim.modes[0] = 0
 		sim.stop_at_tick = 42
 		return PackedFloat64Array([a[0] + 1.0])
@@ -185,9 +185,9 @@ func _test_pre_step_failures() -> void:
 		sim.aux = PackedFloat64Array([2.0])
 		sim.modes = PackedInt64Array([1])
 		sim.inputs = PackedFloat64Array([0.4, 0.0, 0.0, 0.0])
-		sim.continuous_loads = _zero_loads
-		sim.continuous_derivative = _zero_derivative
-		sim.pre_step = func(_a: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
+		sim.model.block_loads = _zero_loads
+		sim.model.block_derivative = _zero_derivative
+		sim.model.pre_tick = func(_a: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
 			sim.modes[0] = 0
 			sim.stop_at_tick = 42
 			return PackedFloat64Array() if malformed else PackedFloat64Array([NAN])
@@ -213,7 +213,7 @@ func _overflow_state_sim(invalid_stage: int) -> Node:
 	Engine.physics_ticks_per_second = 1
 	var sim := _new_sim(1.5e308, 0.0)
 	var calls := [0]
-	sim.continuous_derivative = func(_body: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.block_derivative = func(_body: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		calls[0] += 1
 		var huge := 1.0e308
 		if invalid_stage == 2 and calls[0] == 1:
@@ -251,7 +251,7 @@ func _test_checkpoint_and_reset() -> void:
 	var sim := _coupled_sim()
 	sim.aux = PackedFloat64Array([3.0])
 	sim.modes = PackedInt64Array([1])
-	sim.pre_step = func(a: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
+	sim.model.pre_tick = func(a: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
 		return PackedFloat64Array([a[0] + inputs[0] * dt])
 	sim.reset(_initial(1.0))
 	for i in 12:
@@ -315,8 +315,8 @@ func _test_fixed_layout() -> void:
 
 	# A deliberate reset is the run boundary where a new fixed layout may be installed.
 	sim.continuous = PackedFloat64Array([0.1, 0.2])
-	sim.continuous_loads = _zero_loads
-	sim.continuous_derivative = _zero_derivative
+	sim.model.block_loads = _zero_loads
+	sim.model.block_derivative = _zero_derivative
 	_check("reset establishes a new continuous layout for a new run", sim.reset(_initial()) and sim.continuous.size() == 2)
 	sim.step()
 	_check("the new fixed layout advances after reset", sim.tick == 1 and sim.fault_reason.is_empty() and sim.continuous.size() == 2)

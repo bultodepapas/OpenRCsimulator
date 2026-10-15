@@ -139,18 +139,18 @@ func _initialize() -> void:
 			check("checkpoint mutation refused atomically %s %s" % [path,defect], not destination.restore_checkpoint(bad) and unchanged == var_to_bytes(destination.checkpoint()))
 		destination.free()
 		var pre_fault: Dictionary = s.checkpoint()
-		var loads: Callable = s.sim.continuous_loads
-		var body_loads: Callable = s.sim.loads
-		var joint_evaluate: Callable = s.sim.continuous_evaluate
-		s.sim.loads = func(_state: PackedFloat64Array, _time: float) -> PackedFloat64Array: return PackedFloat64Array([NAN,0,0,0,0,0])
-		s.sim.continuous_loads = func(_state: PackedFloat64Array, _wash: PackedFloat64Array, _time: float) -> PackedFloat64Array: return PackedFloat64Array([NAN,0,0,0,0,0])
+		var loads: Callable = s.sim.model.block_loads
+		var body_loads: Callable = s.sim.model.loads
+		var joint_evaluate: Callable = s.sim.model.stage
+		s.sim.model.loads = func(_state: PackedFloat64Array, _time: float) -> PackedFloat64Array: return PackedFloat64Array([NAN,0,0,0,0,0])
+		s.sim.model.block_loads = func(_state: PackedFloat64Array, _wash: PackedFloat64Array, _time: float) -> PackedFloat64Array: return PackedFloat64Array([NAN,0,0,0,0,0])
 		if joint_evaluate.is_valid():
-			s.sim.continuous_evaluate = func(_state: PackedFloat64Array, _values: PackedFloat64Array, _time: float) -> Dictionary: return {}
+			s.sim.model.stage = func(_state: PackedFloat64Array, _values: PackedFloat64Array, _time: float) -> Dictionary: return {}
 		s.sim.step()
 		check("failed step rolls back OU interval/RNG and body " + path, s.sim.tick == pre_fault.simulation.tick and s.sim.state == pre_fault.simulation.state and s.sim.aux == pre_fault.simulation.aux and s.sim.modes == pre_fault.simulation.modes)
-		s.sim.continuous_loads = loads
-		s.sim.loads = body_loads
-		s.sim.continuous_evaluate = joint_evaluate
+		s.sim.model.block_loads = loads
+		s.sim.model.loads = body_loads
+		s.sim.model.stage = joint_evaluate
 		check("exact recovery after fault " + path, s.restore_checkpoint(pre_fault))
 		s.hold("test")
 		var before_hold: PackedByteArray = var_to_bytes(s.checkpoint())
@@ -232,10 +232,10 @@ func _manufactured_forcing(config: Dictionary) -> void:
 	var s: Session = flight(PATHS[0], config)
 	s.sim.gravity = 0.0
 	s.sim.mass = 2.0
-	s.sim.loads = func(_state: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
+	s.sim.model.loads = func(_state: PackedFloat64Array, time_s: float) -> PackedFloat64Array:
 		return PackedFloat64Array([s.wind_at(time_s)[0],0.0,0.0,0.0,0.0,0.0])
-	if s.sim.continuous_evaluate.is_valid():
-		s.sim.continuous_evaluate = func(_state: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
+	if s.sim.model.stage.is_valid():
+		s.sim.model.stage = func(_state: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
 			var derivative := PackedFloat64Array()
 			derivative.resize(values.size())
 			return {loads = PackedFloat64Array([s.wind_at(time_s)[0],0.0,0.0,0.0,0.0,0.0]), derivative = derivative, rotor_momentum = PackedFloat64Array([0.0,0.0,0.0])}

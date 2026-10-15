@@ -28,11 +28,11 @@ func _initialize() -> void:
 
 func _test_context_and_callback(lake: Dictionary) -> void:
 	var session: Session = _new_session()
-	_check("empty context leaves post-step callback unset", not session.sim.post_step.is_valid())
+	_check("empty context leaves post-step callback unset", not session.sim.model.post_tick.is_valid())
 	_check("lake context accepts normalized geometry and attaches callback", session.set_lake_context(lake)
-		and session.sim.post_step.is_valid())
+		and session.sim.model.post_tick.is_valid())
 	_check("lake-only callback survives empty scenery-world installation",
-		session.set_collision_world({}) and session.sim.post_step.is_valid())
+		session.set_collision_world({}) and session.sim.model.post_tick.is_valid())
 	var detached: Dictionary = session.lake_context()
 	detached["id"] = "mutated"
 	_check("lake getter returns detached geometry", str(session.lake_context().get("id", "")) == str(lake.id))
@@ -41,12 +41,12 @@ func _test_context_and_callback(lake: Dictionary) -> void:
 	_check("stale normalized identity is rejected", not session.set_lake_context(stale)
 		and str(session.lake_context().get("identity", "")) == str(lake.identity))
 	_check("empty context disables callback at tick zero", session.set_lake_context({})
-		and session.lake_context().is_empty() and not session.sim.post_step.is_valid())
+		and session.lake_context().is_empty() and not session.sim.model.post_tick.is_valid())
 
 func _test_water_entry_without_scenery(lake: Dictionary) -> void:
 	var session: Session = _new_session(lake)
 	_check("lake sweep is installed without scenery proxies", session.collision_world().is_empty()
-		and session.sim.post_step.is_valid())
+		and session.sim.model.post_tick.is_valid())
 	_set_direct_state(session, [110.0, 125.0, -1.0], [0.0, 0.0, 480.0])
 	session.sim.step()
 	var event: LakeCollision.WaterEvent = session.last_lake_event()
@@ -98,11 +98,11 @@ func _test_earliest_event(lake: Dictionary) -> void:
 func _accept_sweep(session: Session, previous: PackedFloat64Array, candidate: PackedFloat64Array) -> void:
 	# These fixtures replace the aircraft's geometry; disable propulsion callbacks tied to its original gear.
 	session.sim.continuous = PackedFloat64Array()
-	for field: String in ["continuous_step", "continuous_evaluate", "continuous_loads",
-		"continuous_derivative", "continuous_rotor_momentum", "continuous_aux"]:
-		session.sim.set(field, Callable())
+	for field: String in ["step_policy", "stage", "block_loads", "block_derivative",
+		"stage_rotor_momentum", "block_aux"]:
+		session.sim.model.set(field, Callable())
 	_set_direct_state(session, Array(previous.slice(RB.POS, RB.POS + 3)), Array(previous.slice(RB.VEL, RB.VEL + 3)))
-	session.sim.post_step = func(_previous: PackedFloat64Array, _candidate: PackedFloat64Array, tick: int) -> PackedFloat64Array:
+	session.sim.model.post_tick = func(_previous: PackedFloat64Array, _candidate: PackedFloat64Array, tick: int) -> PackedFloat64Array:
 		var filtered: PackedFloat64Array = session._resolve_collision_step(previous, candidate, tick)
 		_check("unaccepted sweep keeps impact private", session.crash.is_empty()
 			and session.last_lake_event() == null and session.last_scenery_event() == null)
@@ -152,9 +152,9 @@ func _new_collision_session(lake: Dictionary) -> Session:
 
 func _set_direct_state(session: Session, position: Array, velocity: Array) -> void:
 	session.sim.gravity = 0.0
-	session.sim.loads = func(_state_value: PackedFloat64Array, _time_s: float) -> PackedFloat64Array:
+	session.sim.model.loads = func(_state_value: PackedFloat64Array, _time_s: float) -> PackedFloat64Array:
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-	session.sim.pre_step = func(aux: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
+	session.sim.model.pre_tick = func(aux: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
 		return aux.duplicate()
 	var initial: PackedFloat64Array = _state(position, velocity)
 	_check("direct session state resets", session.sim.reset(initial), str(session.sim.fault_reason))

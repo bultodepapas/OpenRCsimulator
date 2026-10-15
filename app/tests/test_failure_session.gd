@@ -123,8 +123,8 @@ func _test_activation_checkpoint_and_rollback() -> void:
 	var onset_before: PackedByteArray = _rollback_bytes(rollback_session.sim)
 	var failure_before_onset: Dictionary = rollback_session._failures.snapshot()
 	var tick_before_onset: int = rollback_session.sim.tick
-	var original_post_step: Callable = rollback_session.sim.post_step
-	rollback_session.sim.post_step = func(previous: PackedFloat64Array, candidate: PackedFloat64Array, tick: int) -> PackedFloat64Array:
+	var original_post_step: Callable = rollback_session.sim.model.post_tick
+	rollback_session.sim.model.post_tick = func(previous: PackedFloat64Array, candidate: PackedFloat64Array, tick: int) -> PackedFloat64Array:
 		if original_post_step.is_valid():
 			original_post_step.call(previous, candidate, tick)
 		return PackedFloat64Array([NAN])
@@ -133,7 +133,7 @@ func _test_activation_checkpoint_and_rollback() -> void:
 	_check("rejected onset candidate restores all simulation state", _rollback_bytes(rollback_session.sim) == onset_before)
 	_check("rejected onset candidate rolls back its staged failure", rollback_session._failures.snapshot() == failure_before_onset and not bool(rollback_session.failure_status().get("active", true)))
 	_check("rejected onset candidate emits no failure notification", rollback_events[0] == 0)
-	rollback_session.sim.post_step = original_post_step
+	rollback_session.sim.model.post_tick = original_post_step
 	_check("valid pre-onset checkpoint explicitly recovers the rejected session", rollback_session.restore_checkpoint(pre_onset_checkpoint))
 	rollback_session.sim.step()
 	source.sim.step()
@@ -192,8 +192,8 @@ func _test_activation_checkpoint_and_rollback() -> void:
 	var rollback_before: PackedByteArray = _rollback_bytes(replay.sim)
 	var failure_before: Dictionary = replay._failures.snapshot()
 	var tick_before_fault: int = replay.sim.tick
-	var replay_post_step: Callable = replay.sim.post_step
-	replay.sim.post_step = func(previous: PackedFloat64Array, candidate: PackedFloat64Array, tick: int) -> PackedFloat64Array:
+	var replay_post_step: Callable = replay.sim.model.post_tick
+	replay.sim.model.post_tick = func(previous: PackedFloat64Array, candidate: PackedFloat64Array, tick: int) -> PackedFloat64Array:
 		if replay_post_step.is_valid():
 			replay_post_step.call(previous, candidate, tick)
 		return PackedFloat64Array([NAN])
@@ -202,7 +202,7 @@ func _test_activation_checkpoint_and_rollback() -> void:
 	_check("physics rollback restores every committed simulation field", _rollback_bytes(replay.sim) == rollback_before)
 	_check("physics rollback clears staged failure changes only", replay._failures.snapshot() == failure_before)
 	_check("rejected candidate does not notify the session", replay_events[0] == 0)
-	replay.sim.post_step = replay_post_step
+	replay.sim.model.post_tick = replay_post_step
 	_check("ordinary checkpoint restores over an active failure", replay.restore_checkpoint(healthy_checkpoint))
 	_check("ordinary checkpoint clears failure state and its v10 wrapper", not replay.failure_status().get("active", true) and replay.checkpoint().get("format") == healthy_checkpoint.format)
 	replay.free()

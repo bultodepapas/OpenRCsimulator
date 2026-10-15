@@ -54,12 +54,12 @@ func _test_late_projection_rollback() -> void:
 	simulation.gravity = 0.0
 	simulation.inertia = PackedFloat64Array([2.0, 3.0, 4.0, 0.0, 0.0, 0.0])
 	simulation.continuous = PackedFloat64Array([0.0])
-	simulation.continuous_loads = func(_body: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	simulation.model.block_loads = func(_body: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-	simulation.continuous_derivative = func(_body: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	simulation.model.block_derivative = func(_body: PackedFloat64Array, _z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([1.0])
 	var fail_projection := [false]
-	simulation.continuous_aux = func(extra: PackedFloat64Array, _sampled: PackedFloat64Array) -> PackedFloat64Array:
+	simulation.model.block_aux = func(extra: PackedFloat64Array, _sampled: PackedFloat64Array) -> PackedFloat64Array:
 		return PackedFloat64Array([NAN]) if fail_projection[0] else PackedFloat64Array([extra[0]])
 	var initial := RB.make_state(M.v3(0.0, 0.0, -10.0), M.v3(0.0, 0.0, 0.0), M.q_identity(), M.v3(0.0, 0.0, 0.0))
 	_check("simulation reset establishes a valid joint boundary", simulation.reset(initial), str(simulation.fault_reason))
@@ -82,7 +82,7 @@ func _test_late_projection_rollback() -> void:
 		pending[0] = false
 	simulation.faulted.connect(fault_listener)
 	simulation.stepped.connect(step_listener)
-	simulation.post_step_joint = func(previous_body: PackedFloat64Array, candidate_body: PackedFloat64Array,
+	simulation.model.post_tick_joint = func(previous_body: PackedFloat64Array, candidate_body: PackedFloat64Array,
 			next_tick: int, previous_continuous: PackedFloat64Array,
 			candidate_continuous: PackedFloat64Array) -> PackedFloat64Array:
 			hook_calls.append({previous = previous_body, candidate = candidate_body, tick = next_tick,

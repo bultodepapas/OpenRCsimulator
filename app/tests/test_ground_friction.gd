@@ -45,7 +45,7 @@ func _bare(model: Dictionary, steer: float, push: Callable) -> Node:
 	var sim: Node = Sim.new()
 	sim.mass = model.mass_kg
 	sim.inertia = model.inertia.duplicate()
-	sim.loads = func(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.loads = func(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		var out := PackedFloat64Array([push.call(s), 0.0, 0.0, 0.0, 0.0, 0.0])
 		var g := Ground.loads(s, gear, steer)
 		for i in g.size():

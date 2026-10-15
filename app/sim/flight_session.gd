@@ -844,8 +844,8 @@ func _sync_post_step() -> void:
 	if sim == null:
 		return
 	var dynamic_mass: bool = glow_is_active()
-	sim.post_step = Callable(self, "_resolve_collision_step") if _has_collision_query() and not dynamic_mass else Callable()
-	sim.post_step_joint = Callable(self, "_resolve_mass_contact_step") if dynamic_mass else Callable()
+	sim.model.post_tick = Callable(self, "_resolve_collision_step") if _has_collision_query() and not dynamic_mass else Callable()
+	sim.model.post_tick_joint = Callable(self, "_resolve_mass_contact_step") if dynamic_mass else Callable()
 
 
 func _prepare_hull_contact() -> Dictionary:
@@ -1093,7 +1093,7 @@ func _configure_continuous_callbacks() -> void:
 		push_error("Cannot prepare aircraft propulsion: " + str(prepared.get("errors", [])))
 		return
 	for field: String in PropulsionRuntime.CALLBACK_FIELDS:
-		sim.set(field, prepared[field])
+		sim.model.set(field, prepared[field])
 	var declared: Array[Dictionary] = []
 	for event: Variant in prepared.get("events", []):
 		declared.append(event)
