@@ -275,9 +275,10 @@ func _assert_modal_bounds(dialog: CanvasLayer, locale: String, size: Vector2i) -
 	await ui.settle()
 	var panel: PanelContainer = dialog.find_child("TimeOfDayPanel", true, false) as PanelContainer
 	var rect: Rect2 = panel.get_global_rect()
-	var fits: bool = rect.position.x >= -1.0 and rect.position.y >= -1.0 \
-		and rect.end.x <= float(size.x) + 1.0 and rect.end.y <= float(size.y) + 1.0
-	_check("%s modal fits %d×%d" % [locale, size.x, size.y], fits, str(rect))
+	var viewport_rect: Rect2 = root.get_visible_rect()
+	var fits: bool = viewport_rect.grow(1.0).encloses(rect)
+	_check("%s modal fits the logical viewport at %d×%d output" % [locale, size.x, size.y], fits,
+		"panel=%s logical_viewport=%s" % [str(rect), str(viewport_rect)])
 
 
 func _select_night(controls: VBoxContainer) -> Dictionary:

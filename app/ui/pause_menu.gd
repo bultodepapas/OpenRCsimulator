@@ -67,7 +67,12 @@ func _init(can_end := true) -> void:
 	panel.set_anchors_preset(Control.PRESET_LEFT_WIDE)
 	panel.custom_minimum_size.x = WIDTH
 	screen.add_child(panel)
-	screen.fade(WIDTH)
+	var sidebar_fade: TextureRect = screen.fade(WIDTH)
+	var sync_sidebar_fade := func() -> void:
+		sidebar_fade.offset_left = panel.size.x
+		sidebar_fade.offset_right = panel.size.x + 32.0
+	panel.resized.connect(sync_sidebar_fade)
+	sync_sidebar_fade.call_deferred()
 	var scroll := ScrollContainer.new()
 	scroll.name = "PauseScroll"
 	scroll.follow_focus = true
@@ -305,7 +310,10 @@ func set_note(text: String) -> void:
 
 
 func _button(text: String, variation: String, node_name: String) -> Button:
-	return Widgets.button(text, variation, node_name)
+	var button := Widgets.button(text, variation, node_name)
+	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	return button
 
 
 func _disclosure_button(text: String, node_name: String) -> Button:
@@ -329,7 +337,7 @@ func _wrapped_label() -> Label:
 	l.theme_type_variation = "SecondaryLabel"
 	l.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr()
 	l.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	l.custom_minimum_size.x = 340
+	l.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	return l
 
 

@@ -126,7 +126,7 @@ func _build() -> void:
 		_scale_picker.add_item("%d%%" % percent)
 		_scale_picker.set_item_metadata(_scale_picker.item_count - 1, float(percent) / 100.0)
 	_scale_picker.item_selected.connect(_scale_selected)
-	_add_row(page, "Interface scale", _scale_picker)
+	_add_row(page, "Text size", _scale_picker)
 
 	_opaque_toggle = CheckBox.new()
 	_opaque_toggle.name = "OpaquePanels"

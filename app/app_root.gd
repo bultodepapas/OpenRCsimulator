@@ -51,11 +51,13 @@ const HELICOPTER_MAIN_SCRIPT := "res://helicopter_main.gd"
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const SettingsScreen := preload("res://ui/settings_screen.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
+const UiSurface := preload("res://ui/screen.gd")
 var display_preferences: DisplayPreferences
 var _display_window_mode := "windowed"
 var _windowed_size := Vector2i(1280, 720)
 var _windowed_position := Vector2i.ZERO
 var _windowed_borderless := false
+var _windowed_mode := DisplayServer.WINDOW_MODE_WINDOWED
 
 ## Set before adding the node to change the route or the settings file (tests never touch the player's files).
 var user_args: PackedStringArray = OS.get_cmdline_user_args()
@@ -604,6 +606,7 @@ func _apply_presentation(config: Dictionary) -> void:
 		_windowed_size = DisplayServer.window_get_size()
 		_windowed_position = DisplayServer.window_get_position()
 		_windowed_borderless = DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_BORDERLESS)
+		_windowed_mode = DisplayServer.window_get_mode()
 		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
 		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
 		var monitor := DisplayServer.window_get_current_screen()
@@ -614,11 +617,12 @@ func _apply_presentation(config: Dictionary) -> void:
 		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, _windowed_borderless)
 		DisplayServer.window_set_size(_windowed_size)
 		DisplayServer.window_set_position(_windowed_position)
+		DisplayServer.window_set_mode(_windowed_mode)
 	_display_window_mode = requested
 
 
 func _refresh_screen_themes(node: Node) -> void:
-	if node is Control and node.theme != null:
+	if node is UiSurface:
 		node.theme = UiTheme.build()
 	for child: Node in node.get_children(): _refresh_screen_themes(child)
 

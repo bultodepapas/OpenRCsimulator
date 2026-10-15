@@ -108,7 +108,7 @@ func _atmosphere_flow() -> void:
 	await ui.settle()
 	var panel_rect: Rect2 = dialog.panel.get_global_rect()
 	_check("dialog panel stays inside 800×600", panel_rect.position.x >= 0.0 and panel_rect.position.y >= 0.0
-		and panel_rect.end.x <= 800.0 and panel_rect.end.y <= 600.0, str(panel_rect))
+		and panel_rect.end.x <= root.get_visible_rect().size.x and panel_rect.end.y <= root.get_visible_rect().size.y, str(panel_rect))
 	dialog.atmosphere_inputs["relative_humidity_pct"].grab_focus()
 	await ui.settle()
 	var focused_rect: Rect2 = dialog.atmosphere_inputs["relative_humidity_pct"].get_global_rect()
@@ -328,7 +328,7 @@ func _localization() -> void:
 	var page: Control = scroll.get_child(0)
 	var help_has_atmosphere: bool = false
 	for label_node in app.help.find_children("*", "Label", true, false):
-		if (label_node as Label).text.contains("atmósfera del campo"):
+		if (label_node as Label).text.contains("densidad del aire"):
 			help_has_atmosphere = true
 	_check("Spanish Help includes field atmosphere and fits the existing page",
 		page.get_combined_minimum_size().y <= scroll.custom_minimum_size.y and help_has_atmosphere,

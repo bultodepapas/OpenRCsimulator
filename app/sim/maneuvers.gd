@@ -84,7 +84,9 @@ static func fly(session: Node, m: Dictionary) -> RefCounted:
 	var sim: Node = session.sim
 	var rec := Recorder.new(sim, session.electrical_state)
 	var metadata: Dictionary = { maneuver = m }
-	if session.electrical_state().get("ok", false):
+	# Electric, flap and retractable-gear sessions record extra inputs/aux; their trace accepts rows only with the
+	# session metadata that declares that layout (P51-11a). Other aircraft keep the bare maneuver metadata.
+	if session.electrical_state().get("ok", false) or session.flaps_available() or session.gear_is_retractable():
 		metadata = session.trace_meta()
 		metadata.maneuver = m
 	rec.start(metadata)

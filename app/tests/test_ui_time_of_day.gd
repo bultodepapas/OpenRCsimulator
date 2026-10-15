@@ -322,7 +322,7 @@ func _localization_and_800_layout() -> void:
 	await ui.settle()
 	var panel_rect: Rect2 = dialog.panel.get_global_rect()
 	_check("five-tab dialog fits inside an 800×600 viewport", panel_rect.position.x >= 0.0
-		and panel_rect.position.y >= 0.0 and panel_rect.end.x <= 800.0 and panel_rect.end.y <= 600.0,
+		and panel_rect.position.y >= 0.0 and panel_rect.end.x <= root.get_visible_rect().size.x and panel_rect.end.y <= root.get_visible_rect().size.y,
 		str(panel_rect))
 	app.set_language("es")
 	await ui.settle()

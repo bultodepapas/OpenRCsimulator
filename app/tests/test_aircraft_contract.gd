@@ -68,7 +68,8 @@ func _initialize() -> void:
 			var profiled_old: Dictionary = AD.WheelProfiles.apply_to_model(old.model)
 			check("legacy wheel profile loads", profiled_old.ok, profiled_old.errors)
 			var comparable: Dictionary = loaded.model.duplicate(true)
-			for key: String in ["capabilities", "convention_id", "data_sha256", "physical_identity"]:
+			# The legacy adapter has no flap module (v2-only, attached after it); flaps have their own law tests.
+			for key: String in ["capabilities", "convention_id", "data_sha256", "physical_identity", "flaps"]:
 				comparable.erase(key)
 			comparable.propulsion.erase("id")
 			comparable.controls.erase("surface_ids")

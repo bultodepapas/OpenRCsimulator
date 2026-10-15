@@ -73,11 +73,14 @@ func _run() -> void:
 	var fly: Button = home.fly_button
 	var quit_b: Button = home.quit_button
 	var column: Control = home.get_node("Sidebar/SidebarContent/Scroll/Column")
+	var primary_actions: Control = home.get_node("Sidebar/SidebarContent/PrimaryActions")
 	var scroll: ScrollContainer = home.get_node("Sidebar/SidebarContent/Scroll")
 	var footer: Control = home.get_node("Sidebar/SidebarContent/UtilityFooter")
-	_check("Fly is a full-width action in the Home column", fly.get_parent() == column
+	_check("Fly is full width in the pinned primary action strip", fly.get_parent() == primary_actions
 		and fly.size_flags_horizontal == Control.SIZE_EXPAND_FILL
-		and absf(fly.size.x - home.weather_button.size.x) < 1.0)
+		and absf(fly.size.x - primary_actions.size.x) < 1.0
+		and primary_actions.get_global_rect().end.y <= footer.get_global_rect().position.y)
+	_check("Workshop stays in the scrollable action route", home.workshop_button.get_parent() == column)
 	_check("garage selector and entry are integrated into the Home column",
 		home.ground_vehicle_choice.get_parent() == column and home.ground_vehicle_button.get_parent() == column)
 	_check("language, Help, Controls and Settings stay in the pinned footer",
@@ -93,6 +96,12 @@ func _run() -> void:
 		and not home.controls_button.clip_text
 		and home.language_button.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS
 		and home.controls_button.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS)
+	_check("footer actions wrap instead of clipping at large text sizes",
+		home.language_button.autowrap_mode != TextServer.AUTOWRAP_OFF
+		and home.help_button.autowrap_mode != TextServer.AUTOWRAP_OFF
+		and home.quit_button.autowrap_mode != TextServer.AUTOWRAP_OFF
+		and home.controls_button.autowrap_mode != TextServer.AUTOWRAP_OFF
+		and home.settings_button.autowrap_mode != TextServer.AUTOWRAP_OFF)
 	var panel_bg: Color = (home.get_node("Sidebar") as Control).get_theme_stylebox("panel").bg_color
 	for b in [fly, quit_b]:
 		for state in ["normal", "hover", "pressed"]:

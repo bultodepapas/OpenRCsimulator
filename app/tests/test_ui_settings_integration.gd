@@ -79,9 +79,11 @@ func _run() -> void:
 	await ui.settle()
 	_check("language selection updates the app and the open Settings screen",
 		TranslationServer.get_locale() == "es" and app.preferences.language == "es"
-		and settings._close_button.text == "Cerrar" and settings._window_picker.get_item_text(0) != "Windowed",
-		"locale=%s, close=%s, mode=%s" % [TranslationServer.get_locale(), settings._close_button.text,
-		settings._window_picker.get_item_text(0)])
+		and settings._window_picker.get_item_text(0) == "En ventana"
+		and settings._close_button.text == "Cerrar"
+		and settings._status.text == "Cambios revertidos. Se restauraron los ajustes guardados.",
+		"locale=%s, close=%s, status=%s, mode=%s" % [TranslationServer.get_locale(), settings._close_button.text,
+		settings._status.text, settings._window_picker.get_item_text(0)])
 
 	# Controls and Help are nested on the same stack; Esc returns to Settings after either route.
 	var controls_button: Button = settings.find_child("Controls", true, false) as Button

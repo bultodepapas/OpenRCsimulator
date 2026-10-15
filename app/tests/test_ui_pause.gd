@@ -55,8 +55,23 @@ func _run() -> void:
 	var session: Node = main.session
 	_check("flying with engine sound", not session.sim.paused and _peak_db() > -100.0, "%.1f dB" % _peak_db())
 
-	# --- UI-02: Esc opens the pause menu and freezes everything.
+	# --- UI-02: Esc opens the pause menu and freezes everything, including the large Spanish text case.
+	var default_presentation: Dictionary = app.display_preferences.config.duplicate(true)
+	var large_spanish_presentation: Dictionary = default_presentation.duplicate(true)
+	large_spanish_presentation.ui_scale = 2.0
+	TranslationServer.set_locale("es")
+	app._apply_presentation(large_spanish_presentation)
+	await ui.settle()
 	await ui.tap(KEY_ESCAPE)
+	await ui.settle()
+	var pause_scroll: ScrollContainer = app.pause_menu.find_child("PauseScroll", true, false) as ScrollContainer
+	_check("200% Spanish opens Pause with Resume focused and visible",
+		ui.focus_name() == "Continue" and pause_scroll.get_global_rect().encloses(app.pause_menu.continue_button.get_global_rect()),
+		"focus=%s scroll=%s resume=%s" % [ui.focus_name(), str(pause_scroll.get_global_rect()),
+		str(app.pause_menu.continue_button.get_global_rect())])
+	TranslationServer.set_locale("en")
+	app._apply_presentation(default_presentation)
+	await ui.settle()
 	_check("Esc opens the pause menu, focus on Continue", app.pause_menu != null and ui.focus_name() == "Continue", ui.focus_name())
 	_check("the session is held and paused", session.holds.has("menu") and session.sim.paused)
 	var tick: int = session.sim.tick

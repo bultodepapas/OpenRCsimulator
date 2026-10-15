@@ -2663,3 +2663,6 @@ msgstr "Cambios revertidos. Se restauraron los ajustes guardados."
 
 msgid "Could not save display settings (error %d)."
 msgstr "No se pudieron guardar los ajustes de pantalla (error %d)."
+
+msgid "Text size"
+msgstr "Tamaño del texto"

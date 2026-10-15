@@ -117,7 +117,9 @@ func _init() -> void:
 	sidebar.set_anchors_preset(Control.PRESET_LEFT_WIDE)
 	sidebar.custom_minimum_size.x = SIDEBAR_WIDTH
 	add_child(sidebar)
-	fade(SIDEBAR_WIDTH)
+	var sidebar_fade := fade(SIDEBAR_WIDTH)
+	sidebar.resized.connect(func() -> void: _sync_sidebar_fade(sidebar, sidebar_fade))
+	_sync_sidebar_fade(sidebar, sidebar_fade)
 	# The column scrolls when translated copy or the controls legend needs more height than the window gives; fixed
 	# gaps keep the setup and primary action together. Language and utility actions stay in the pinned footer.
 	var sidebar_content := VBoxContainer.new()
@@ -141,6 +143,11 @@ func _init() -> void:
 	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 0)
 	scroll.add_child(column)
+	var primary_actions := VBoxContainer.new()
+	primary_actions.name = "PrimaryActions"
+	primary_actions.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	primary_actions.add_theme_constant_override("separation", 4)
+	sidebar_content.add_child(primary_actions)
 	var utility_footer := VBoxContainer.new()
 	utility_footer.name = "UtilityFooter"
 	utility_footer.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -160,26 +167,33 @@ func _init() -> void:
 	var build := BuildInfo.current()
 	var version_label := _label(build.label if build.source == "export" else "development build", "SecondaryLabel", build.source != "export")
 	version_label.name = "Version"
+	version_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	version_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	stage.add_child(version_label)
 	column.add_child(stage)
 	column.add_child(_gap(8))
 
-	var heading := HBoxContainer.new()
-	heading.add_theme_constant_override("separation", 8)
+	var heading := VBoxContainer.new()
+	heading.name = "AircraftHeading"
+	heading.add_theme_constant_override("separation", 2)
 	var section := _label("NEXT FLIGHT", "SectionLabel")
 	section.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	section.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	heading.add_child(section)
+	var aircraft_nav := HBoxContainer.new()
+	aircraft_nav.add_theme_constant_override("separation", 8)
 	aircraft_count_label = _label("", "SecondaryLabel", false) # built with tr()
 	aircraft_count_label.name = "AircraftCount"
+	aircraft_count_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	aircraft_count_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
-	heading.add_child(aircraft_count_label)
+	aircraft_nav.add_child(aircraft_count_label)
 	previous_button = _arrow_button("PreviousAircraft", "left")
 	previous_button.pressed.connect(func() -> void: aircraft_requested.emit(Catalog.step(aircraft_id, -1)))
-	heading.add_child(previous_button)
+	aircraft_nav.add_child(previous_button)
 	next_button = _arrow_button("NextAircraft", "right")
 	next_button.pressed.connect(func() -> void: aircraft_requested.emit(Catalog.step(aircraft_id, 1)))
-	heading.add_child(next_button)
+	aircraft_nav.add_child(next_button)
+	heading.add_child(aircraft_nav)
 	column.add_child(heading)
 	column.add_child(_gap(4))
 	var card := PanelContainer.new()
@@ -245,7 +259,7 @@ func _init() -> void:
 	fly_button.custom_minimum_size.y = 66
 	fly_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	fly_button.pressed.connect(_on_fly)
-	column.add_child(fly_button)
+	primary_actions.add_child(fly_button)
 	workshop_button = _button("Workshop", "")
 	workshop_button.name = "Workshop"
 	workshop_button.custom_minimum_size.y = 44
@@ -288,6 +302,7 @@ func _init() -> void:
 	ground_vehicle_choice.name = "GroundVehicleChoice"
 	ground_vehicle_choice.tooltip_text = "RC car"
 	ground_vehicle_choice.fit_to_longest_item = false
+	ground_vehicle_choice.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # catalog vehicle names are proper names
 	ground_vehicle_choice.custom_minimum_size.y = 40
 	ground_vehicle_choice.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	for id: String in GroundCatalog.IDS:
@@ -336,6 +351,10 @@ func _init() -> void:
 	settings_button.pressed.connect(func() -> void: settings_requested.emit(settings_button))
 	settings_row.add_child(settings_button)
 	utility_footer.add_child(settings_row)
+	for utility_button: Button in [language_button, help_button, quit_button, controls_button, settings_button]:
+		utility_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		utility_button.clip_text = false
+		utility_button.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 
 	column.add_child(_label("CONTROLS", "SectionLabel"))
 	column.add_child(_gap(4))
@@ -360,7 +379,9 @@ func _ready() -> void:
 	fly_button.focus_neighbor_bottom = fly_button.get_path_to(workshop_button)
 	fly_button.focus_neighbor_top = fly_button.get_path_to(weather_button)
 	fly_button.focus_neighbor_left = fly_button.get_path_to(previous_button)
-	fly_button.focus_neighbor_right = fly_button.get_path_to(next_button)
+	fly_button.focus_neighbor_right = fly_button.get_path_to(weather_button)
+	fly_button.focus_next = fly_button.get_path_to(weather_button)
+	weather_button.focus_previous = weather_button.get_path_to(fly_button)
 	workshop_button.focus_neighbor_top = workshop_button.get_path_to(fly_button)
 	workshop_button.focus_neighbor_bottom = workshop_button.get_path_to(language_button)
 	workshop_button.focus_neighbor_right = workshop_button.get_path_to(natural_random_button)
@@ -404,6 +425,12 @@ func _ready() -> void:
 	# Keyboard focus starts on Fly, visible (on the next arrow when the saved aircraft is a preview: Fly is disabled).
 	(fly_button if not fly_button.disabled else next_button).grab_focus.call_deferred()
 	set_process(true)
+
+
+func _sync_sidebar_fade(sidebar: Control, fade_rect: TextureRect) -> void:
+	var right_edge := sidebar.global_position.x + sidebar.size.x
+	fade_rect.offset_left = right_edge
+	fade_rect.offset_right = right_edge + 32.0
 
 
 ## The column opens at the top. Wrapped labels settle over a few frames; following the first focus during those

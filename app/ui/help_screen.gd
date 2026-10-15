@@ -179,6 +179,7 @@ func _key_table(rows: Array, columns := 2, description_width := 340) -> GridCont
 		grid.add_child(caps)
 		var what := _text(row[1], "SecondaryLabel")
 		what.custom_minimum_size.x = description_width
+		what.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		what.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		grid.add_child(what)
 	return grid
