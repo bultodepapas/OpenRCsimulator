@@ -183,9 +183,15 @@ def add_v2_overlay(schema: dict, spec: dict):
         # A generated zero value is used only as a paired software sensitivity control.
         "aerodynamic_gain": flap_quantity("1", 0, 1),
     }
+    # P51-11a optional refinements: stall-onset fraction of the camber shift (strip blend only) and the
+    # flap-lift reference offset aft of the strip force point. Absent keeps the shared law unchanged.
+    flap_optional = {
+        "stall_shift_fraction": flap_quantity("1", 0, 1),
+        "lift_reference_offset_m": flap_quantity("m", -0.5, 0.5),
+    }
     root_props["flaps"] = {
         "type": "object", "required": list(flap_fields),
-        "properties": flap_fields, "additionalProperties": False,
+        "properties": {**flap_fields, **flap_optional}, "additionalProperties": False,
     }
     merge_required(schema, ["id", "frames", "convention_id", "capabilities", "start"])
     schema["additionalProperties"] = False

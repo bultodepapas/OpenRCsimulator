@@ -935,7 +935,9 @@
         "elevator_mix_per_flap_fraction",
         "aerodynamic_gain",
         "effective_angle_limit_deg",
-        "profile_drag_coefficient"
+        "profile_drag_coefficient",
+        "stall_shift_fraction",
+        "lift_reference_offset_m"
       ]
     }
   ],

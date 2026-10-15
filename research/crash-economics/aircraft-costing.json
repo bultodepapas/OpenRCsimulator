@@ -1,0 +1,132 @@
+{
+  "format": "openrc-aircraft-costing-research v1",
+  "observed_on": "2026-10-15",
+  "runtime_supported": false,
+  "currency": "USD",
+  "baseline": {
+    "aircraft_id": "jensen-das-ugly-stik-60",
+    "physical_source": "app/data/aircraft/jensen_ugly_stik_60.json",
+    "valuation_basis": "Reconstructed equivalent assembled-build value; no exact fully assembled Jensen retail quote found. Prices are economic proxies, not a physically qualified shopping list.",
+    "purchasable_complete_build": false,
+    "tax_shipping_included": false,
+    "excluded": ["transmitter", "charger", "field equipment", "external starter/glow driver", "fuel not onboard"],
+    "lines": [
+      {
+        "id": "covered_airframe_and_installation_hardware",
+        "quantity": 1,
+        "estimated_unit_minor": 35000,
+        "range_unit_minor": [28000, 45000],
+        "reference_observation": "stik_airframe_ultra_stick_10cc_arf",
+        "physical_inventory_ids": ["item_wing_airframe", "item_fuselage_front", "item_fuselage_rear", "item_stabilizer_elevator", "item_fin_rudder", "item_nose_gear_assembly", "item_main_gear_assembly", "item_engine_mount", "item_fuel_tank", "item_spinner_main", "item_control_hardware"],
+        "evidence_kind": "estimated",
+        "notes": "One inclusive constructed-airframe allowance, anchored to $279.99 HAN2345 ARF plus $70.01 planning allowance for historical construction/gear/installation differences. Includes film, fixed tricycle gear, tank, mount, spinner, linkage and hardware; no separate bills for those within this full-build value. Not a quote or HAN2345 package-content claim. Range is a planning assumption; exact Jensen replacement or repair recipes need sourcing."
+      },
+      {
+        "id": "engine_and_muffler",
+        "quantity": 1,
+        "price_observation": "os-max55ax-osmg0557",
+        "range_unit_minor": [22500, 35000],
+        "physical_inventory_ids": ["item_engine_main", "item_muffler_main"],
+        "evidence_kind": "price_proxy",
+        "notes": "55AX with included muffler values the historical MAX-61FX/E-4010 group approximately. No actual substitution, mounting or performance compatibility asserted. Range is an estimated replacement-cost uncertainty, not observed market extrema. Backorder prevents an immediate full-build purchase."
+      },
+      {
+        "id": "fuselage_servos",
+        "quantity": 3,
+        "price_observation": "savox-sc0252mgp",
+        "range_unit_minor": [3399, 4399],
+        "physical_inventory_ids": ["item_fuselage_servos"],
+        "evidence_kind": "price_proxy",
+        "notes": "Three generic physical servos valued at the SC-0252MG+ unit offer. CAR application listing and only two units in stock; neither airplane approval nor availability for a complete four-servo set is established. Original hardware remains unchanged."
+      },
+      {
+        "id": "central_aileron_servo",
+        "quantity": 1,
+        "price_observation": "savox-sc0252mgp",
+        "range_unit_minor": [3399, 4399],
+        "physical_inventory_ids": ["item_aileron_servo"],
+        "evidence_kind": "price_proxy",
+        "notes": "One central servo, not one for each aileron. Same economic-only proxy and stock/compatibility limitations as the fuselage group."
+      },
+      {
+        "id": "receiver",
+        "quantity": 1,
+        "price_observation": "receiver_spektrum_ar8360t_plus",
+        "physical_inventory_ids": ["item_receiver_main"],
+        "evidence_kind": "price_proxy",
+        "notes": "Generic receiver valued using a current 8-channel product. Does not enable stabilization, change radio protocol or install this receiver in the simulation."
+      },
+      {
+        "id": "propeller",
+        "quantity": 1,
+        "price_observation": "apc-lp12060",
+        "physical_inventory_ids": ["item_propeller_main"],
+        "evidence_kind": "exact_product_price",
+        "notes": "Matches physical APC 12x6 Sport LP12060; visual wooden finish is not a separate product identity."
+      },
+      {
+        "id": "receiver_battery",
+        "quantity": 1,
+        "estimated_unit_minor": 2500,
+        "range_unit_minor": [2000, 3500],
+        "physical_inventory_ids": ["item_receiver_battery"],
+        "evidence_kind": "estimated",
+        "notes": "Unsourced planning allowance for generic 4.8 V NiMH pack. Exact 600mAh pack quote still needed; no LiPo substitution."
+      },
+      {
+        "id": "onboard_fuel",
+        "quantity": 1,
+        "estimated_unit_minor": 300,
+        "range_unit_minor": [100, 500],
+        "physical_inventory_ids": ["item_fuel_main"],
+        "evidence_kind": "estimated",
+        "notes": "Unsourced allowance: declared 150 ml half-tank contents at assumed $20/litre, not a gallon purchase. No fuel salvage credit."
+      },
+      {
+        "id": "final_assembly_and_commissioning",
+        "quantity": 1,
+        "estimated_unit_minor": 12500,
+        "range_unit_minor": [6000, 21000],
+        "physical_inventory_ids": [],
+        "evidence_kind": "estimated",
+        "notes": "Paid-labor scenario: 5 hours at assumed $25/hour. Low/high assumptions are 3h at $20 and 6h at $35. Electronics/powerplant installation and commissioning, not construction/covering already in the airframe allowance. DIY cash mode excludes this line. No current shop labor quote was found."
+      }
+    ],
+    "inventory_exclusions": [
+      {"physical_inventory_id": "item_balance_mass_virtual", "reason": "Numerical reference-build balancing mass; no purchasable item. Remains part of physical kinetic energy."}
+    ],
+    "unresolved": ["Exact historical completed Jensen quote", "Exact MAX-61FX replacement/repair quote", "Aircraft-qualified installed servo products and individual positions", "NiMH pack and fuel quotes", "Individual airframe repair/replacement recipes", "Shop assembly and post-crash inspection rates"]
+  },
+  "worked_case_inputs": {
+    "speed_kph": 150,
+    "reusable_servo_count_cases": [0, 2, 4],
+    "servo_credit_basis": "Avoided new purchase in the reconstructed component-built replacement only. Conditional simulated inspection passed; no claimed survival probability.",
+    "extra_inspection_labor_minor": 0,
+    "inspection_labor_note": "Example assumes inspection/refit is included in the $125 commissioning allowance. Real service fees remain unsourced, not known to be zero.",
+    "covering_patch": {
+      "price_observation": "topflite-monokote-trim-patch-topq4101",
+      "sheet_inches": [5, 36],
+      "tear_inches": [1, 1],
+      "overlap_inches": 0.5,
+      "waste_multiplier": 1.25,
+      "labor_hours": 0.25,
+      "labor_rate_minor_per_hour": 2500,
+      "notes": "Covering-only arithmetic fixture; no rib/spar damage, one color, no extra adhesive. Stale out-of-stock trim sheet price; not a current procurement quote. Overlap/waste/time are gameplay estimates, not certified repair instructions."
+    }
+  },
+  "fleet": [
+    {"aircraft_id": "jensen-das-ugly-stik-60", "status": "complete_inventory_coverage_with_cost_estimates", "basis": "baseline", "full_cost_verified": false},
+    {"aircraft_id": "stik-glow-61fx-2t", "status": "planned_inherited_baseline", "inherits": "jensen-das-ugly-stik-60", "full_cost_verified": false, "notes": "Same hardware; distinct engine-law identity. Validate inventory before generated inheritance."},
+    {"aircraft_id": "stik-glow-55ax-2t", "status": "partial", "price_observations": ["os-max55ax-osmg0557"], "replacement_total_minor": null, "missing": ["Variant installation BOM/mount/prop bindings", "Inherited airframe coverage qualification"]},
+    {"aircraft_id": "stik-glow-fs64v-4t", "status": "partial", "price_observations": ["os-fs64v-osmg901"], "replacement_total_minor": null, "missing": ["Variant installation BOM/mount/prop bindings", "Four-stroke repair recipes"]},
+    {"aircraft_id": "gp-extra-300s-60", "status": "price_comparison_only", "price_observations": ["extra_60e_pro_arf_price_proxy"], "replacement_total_minor": null, "missing": ["Historical .60 glow airframe quote", "Own complete BOM", "Servo topology and fixed gear"], "notes": "60E electric product with ambiguous variant is not a .60 glow replacement."},
+    {"aircraft_id": "p51d-mustang-120", "status": "partial", "price_observations": ["p51_carf_143_arf_proxy", "p51_engine_da120"], "replacement_total_minor": null, "missing": ["Matched 2.82m airframe", "Retracts/struts/doors", "Servo count and products", "Ignition/power/radio", "Large prop and installation BOM"], "notes": "CARF 1:4.3 50-85cc comparison and DA-120 must not be treated as an approved assembly."},
+    {"aircraft_id": "sebart-avanti-s-a200-p100rx", "status": "partial", "price_observations": ["jet_turbine_jetcat_p100_rx_bl_proxy", "jet_retracts_jp_hobby_er150_avanti"], "replacement_total_minor": null, "missing": ["Exact A200 airframe quote", "Retract unit/repair-kit prices", "Complete electronics and fuel-system BOM", "Turbine inspection/service quote"], "notes": "Do not add ECU/pump/controller again when included in selected sets. Installation fit unverified."},
+    {"aircraft_id": "turbo-lumber-evolution", "status": "partial_reference_product", "price_observations": ["timber_evolution_pnp_aircraft", "timber_evolution_bnf_aircraft", "timber_evolution_replacement_wing", "timber_evolution_replacement_landing_gear", "timber_evolution_battery_proxy"], "replacement_total_minor": null, "missing": ["Fictional-to-commercial configuration mapping", "Installed receiver and servo identities", "Motor/ESC single-part prices", "Foam repair recipes"], "notes": "PNP and BNF are alternative packages; never sum them. Stock floats excluded from onboard loss when not installed."},
+    {"aircraft_id": "xcell-60-research", "status": "unpriced", "replacement_total_minor": null, "missing": ["X-Cell actual physical build BOM", "Rotorcraft-specific components/contract", "Separated HX-700 visual identity"]}
+  ],
+  "research_only_specimens": {
+    "status": "not_market_valued",
+    "notes": "Synthetic electric Stiks, alternate-prop fixtures and noncatalog HX-700 electric experiments need separate installation evidence before any product valuation. Future drones/EDF aircraft use their own contracts, not inferred catalog prices."
+  }
+}

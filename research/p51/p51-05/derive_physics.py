@@ -969,6 +969,62 @@ check_consistency(data)
 
 legacy_data = data
 data = upgrade(legacy_data)
+
+# --- P51-11a: hinged trailing-edge flaps (shared law controls.flaps.hinged_trailing_edge.v1, as the Ventage Jet) ----------
+# Plain flaps (XP-51: plain, 32.22 sq ft, landing 50 deg, take-off/combat 20 deg; NACA MR L-566 dimension table and
+# Tables III/IV). The kit settings are used: 15 deg take-off and 45 deg landing (source.json kit.flaps_deg, CARF manual).
+# Span and chord fraction are the scaled full-size flap of the visual geometry. The runtime bounds the thin-airfoil shift
+# as L*tanh(tau*delta/L); L is fitted here to Roskam's empirical plain-flap correction K' (Airplane Design Part VI,
+# Fig. 8.13, read at c_f/c = 0.21 from the FAST-GA digitization) so the bounded shift follows K'*tau*delta.
+FLAP_KPRIME = [(5, 1.000), (10, 0.999), (15, 0.979), (20, 0.868), (25, 0.728), (30, 0.662), (35, 0.620), (40, 0.588), (45, 0.562)]
+cf_f = W["flap_chord_fraction"]
+_th_f = math.acos(2 * cf_f - 1)
+tau_f = note("flaps", "plain-flap thin-airfoil effectiveness tau", 1 - (_th_f - math.sin(_th_f)) / math.pi, f"Glauert, c_f/c {cf_f:.2f}")
+_flap_err = lambda L: sum((L * math.tanh(tau_f * d / L) - k * tau_f * d) ** 2 for d, k in FLAP_KPRIME)
+flap_limit = note("flaps", "effective angle limit L (deg)", min((x / 100 for x in range(600, 3000)), key=_flap_err),
+                  f"least squares of L*tanh(tau*delta/L) to K'*tau*delta, 5-45 deg (rms {math.sqrt(_flap_err(min((x / 100 for x in range(600, 3000)), key=_flap_err)) / len(FLAP_KPRIME)):.2f} deg)")
+flap_cd = note("flaps", "profile drag coefficient", 0.9 * cf_f ** 1.38, "Raymer eq. 12.61 (after Hoerner), plain/split flap: 0.9 (c_f/c)^1.38 x flapped-area ratio x sin^2(delta)")
+# Advisory only (HUD): the full-size 165 mph IAS full-flap placard mapped to the model at equal lift coefficient
+# (P-51D landing weight 9,000 lb, 233.19 sq ft): the same aerodynamic operating point, not a structural limit of the model.
+_cl_placard = 9000 * 4.4482216 / (0.5 * RHO * (165 * 0.44704) ** 2 * 233.19 * 0.09290304)
+flap_vmax = note("flaps", "flap speed advisory (m/s EAS)", math.sqrt(2 * mass * G0 / (RHO * S * _cl_placard)), f"165 mph placard at CL {_cl_placard:.3f}")
+# P51-11a law refinements (shared optional fields, absent = the Ventage Jet law):
+# - Stall onset: Roskam's plain-flap maximum-lift increment (Airplane Design Part VI, Figs. 8.31-8.33, FAST-GA
+#   digitization; k3 = 1 for plain flaps) is about 0.6-0.7 of the camber increment, so a flapped section stalls at an
+#   angle only kappa = 1 - dClmax/dCl0 of its camber shift earlier. With kappa = 1 (the default) 15 deg of flap lowered
+#   this wing's trimmed CLmax by 10 % (research/p51/p51-11).
+# - Lift reference: flap camber lift acts at the wing section's quarter chord, not at the wing-body ARP that the
+#   fuselage term moved forward.
+ROSKAM_BASE = [(11, 0.861), (12, 0.920), (13, 0.988), (14, 1.080), (15, 1.186), (16, 1.313), (17, 1.431), (18, 1.514)]
+ROSKAM_K1_CF = [(15, 0.810), (20, 0.926), (25, 1.007)]
+ROSKAM_K2 = [(15, 0.457), (20, 0.571), (25, 0.672), (30, 0.759), (35, 0.821), (40, 0.873), (45, 0.912)]
+CL_ALPHA_SECTION = 6.0  # per rad, NACA 66(2)-415 about 0.105/deg (Abbott & von Doenhoff, Theory of Wing Sections)
+_lerp = lambda tab, x: next(y0 + (y1 - y0) * (x - x0) / (x1 - x0) for (x0, y0), (x1, y1) in zip(tab, tab[1:]) if x0 <= x <= x1)
+_ys = [W["flap_inner"] + (W["flap_outer"] - W["flap_inner"]) * (k + 0.5) / 40 for k in range(40)]
+_tc = lambda y: W["root_thickness_ratio"] + (W["tip_thickness_ratio"] - W["root_thickness_ratio"]) * y / (b / 2)
+tc_flap = note("flaps", "flap-span thickness ratio (chord-weighted)", sum(_tc(y) * chord(y) for y in _ys) / sum(chord(y) for y in _ys), "linear root/tip t/c over the flap span")
+_k1 = _lerp(ROSKAM_K1_CF, 100 * cf_f)
+_ratios = [_lerp(ROSKAM_BASE, 100 * tc_flap) * _k1 * k2 / (CL_ALPHA_SECTION * tau_f * dict(FLAP_KPRIME)[d] * math.radians(d)) for d, k2 in ROSKAM_K2]
+flap_kappa = note("flaps", "stall shift fraction kappa", 1 - sum(_ratios) / len(_ratios),
+                  f"mean of 1 - dClmax/dCl0 over 15-45 deg (range {1 - max(_ratios):.2f}-{1 - min(_ratios):.2f}); dClmax = base(t/c) k1(c_f/c) k2(delta), dCl0 = cl_a tau K' delta")
+flap_offset = note("flaps", "flap lift reference offset (m)", x_ac_w - x_arp, "wing 25 % MAC aft of the wing-body ARP (fuselage term)")
+data["capabilities"]["flaps"] = "simulated"
+data["flaps"] = {
+    "max_angle_deg": q(float(KIT["flaps_deg"]["landing"]), "deg", "manual", "landing setting, CARF P-51 1:4.3 manual p. 28 (source.json kit.flaps_deg); full-size P-51 50 deg (NACA MR L-566)"),
+    "takeoff_angle_deg": q(float(KIT["flaps_deg"]["take_off"]), "deg", "manual", "take-off setting, CARF manual p. 28; full-size XP-51 20 deg (NACA MR L-566 Table III)"),
+    "inner_span_m": q(W["flap_inner"], "m", "derived", D("flap inner end from the centreline: full-size 0.5 m x 1/4 (source.json full_size.flap)")),
+    "outer_span_m": q(W["flap_outer"], "m", "derived", D("flap outer end from the centreline: full-size 3.2 m x 1/4; XP-51 flap 32.22 sq ft, chord 23/17 in (NACA MR L-566) agrees")),
+    "hinge_fraction": q(1 - cf_f, "1", "derived", D(f"1 - flap chord fraction {cf_f:.2f} (scaled full-size flap)")),
+    "extension_time": q(2.5, "s", "estimated", "slowed RC flap servo (typical 2-4 s radio setting); the full-size flap took about 15 s"),
+    "retraction_time": q(2.5, "s", "estimated", "as extension"),
+    "max_speed_mps": q(flap_vmax, "m/s", "derived", D(f"advisory: full-size 165 mph IAS full-flap placard (secondary sources) at equal CL {_cl_placard:.3f}, landing weight 9,000 lb; not a simulation clamp")),
+    "elevator_mix_per_flap_fraction": q(0.0, "1", "estimated", "no radio mix: the CARF manual (flap-angle source) specifies none; Hangar 9's 7 %/14 % up mix belongs to a different airframe. The flap pitch response is left to the coupled wing/tail aerodynamics"),
+    "effective_angle_limit_deg": q(flap_limit, "deg", "derived", D(f"fit of the runtime tanh bound to Roskam Part VI Fig. 8.13 K' at c_f/c {cf_f:.2f} (FAST-GA digitization), tau {tau_f:.3f}")),
+    "profile_drag_coefficient": q(flap_cd, "1", "derived", D("Raymer eq. 12.61 (after Hoerner): 0.9 (c_f/c)^1.38")),
+    "aerodynamic_gain": q(1.0, "1", "derived", "full shared flap law (no sensitivity variant)"),
+    "stall_shift_fraction": q(flap_kappa, "1", "derived", D(f"1 - dClmax/dCl0 of a plain flap, Roskam Part VI Figs. 8.31-8.33 (FAST-GA digitization) at t/c {tc_flap:.3f}, c_f/c {cf_f:.2f}, mean over 15-45 deg; section lift slope 6.0/rad")),
+    "lift_reference_offset_m": q(flap_offset, "m", "derived", D("flap camber lift at the wing's 25 % MAC: its distance aft of the wing-body ARP, which the calibrated fuselage term moved forward")),
+}
 validate_physical_identity(data)
 parity = numeric_parity(legacy_data, data)
 text = (json.dumps(data, indent=2, ensure_ascii=False) + "\n").replace("\n", "\r\n")
@@ -982,8 +1038,8 @@ report = f"""# P51-05: P-51D Mustang 120 cc physics derivation
 
 Generated by `{SCRIPT}` from `{GEOMETRY.relative_to(ROOT).as_posix()}` and `source.json`; do not edit (regenerate). Output:
 `{OUT.relative_to(ROOT).as_posix()}`. Textbook methods on the scaled full-size geometry, cross-checked and calibrated against NACA flight
-data and RC-class data (research: docs/research/p51-flight-realism.md); not identified on a real model. Flaps and retracts are
-not simulated; the drag build-up assumes the gear DOWN.
+data and RC-class data (research: docs/research/p51-flight-realism.md); not identified on a real model. Flaps use the shared hinged
+trailing-edge law (P51-11a); retracts are not simulated and the drag build-up assumes the gear DOWN.
 
 The final JSON is upgraded to `openrc-aircraft v2` by the ID-gated standardizer. Migration numeric parity: {parity['preserved_numeric_leaves']} original leaves preserved, {parity['relocated_cladot_numeric_leaves']} relocated CLadot leaves, {parity['added_numeric_leaves']} explicit compatibility-default leaves added, {parity['numeric_differences']} differences.
 
@@ -1019,7 +1075,7 @@ CL_max at Re 13e6 exceeds the model's {CL_max:.2f}). Correction {math.degrees(d_
 - Engine: generic two-stroke torque shape scaled to one static-rpm anchor; carburettor lag, idle instability and fuel use are not modelled.
 - Slipstream: tail only (fin, stab halves), no lag, no wing wash; wash factors borrowed from Selig 2010 (an RC 3D airplane), swirl factor estimated.
 - Propeller normal force and P-factor: McCormick's formulas (via Selig 2010); the near-static jet normal force is omitted.
-- Flaps fixed up; retracts fixed DOWN. No brakes. Tail-wheel spring softer than a real one (240 Hz explicit tick rule).
+- Flaps: shared hinged-trailing-edge law (P51-11a), kit 15/45 deg settings; retracts fixed DOWN. No brakes. Tail-wheel spring softer than a real one (240 Hz explicit tick rule).
 - A full-size report notes 1 deg left fin offset on P-51B/D. This model has no fixed fin-incidence/yaw-bias term; a rudder control trim does not represent that geometry, so the effect is omitted.
 - The neutral point is calibrated to the full-size glide value through one lumped fuselage/scoop/propeller term (K_fus {K_f:.3f}/deg, above Raymer's 0.005-0.015).
 - The tail's zero-alpha flow angle is calibrated to the full-size glide trim curves through one lumped term ({math.degrees(d_inc * (1 - deps)):+.2f} deg at the tail, P51-19); the stabilizer stays at its +2 deg leading-edge-up setting (NACA ACR 4K02 confirms the sign). Reynolds similarity for the RC model is not established.

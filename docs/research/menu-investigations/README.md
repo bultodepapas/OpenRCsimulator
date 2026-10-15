@@ -1,5 +1,7 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
+2026-10-15 visual follow-up: [UI-20-R1 — native Windows menu audit, EN/ES, 720p–4K](UI-20-R1/README.md). Includes 78 native captures, measured text/scale findings, sampled navigation evidence and modern game references. The phased response is [redesign revision 3](../../MENU-REDESIGN-PLAN.md).
+
 2026-10-14 implementation follow-up: [UI-05-R3 — responsive selection and bounded resource loading](UI-05-R3/README.md). Latest-selection ownership, background loading of selected scenes, headless/native lifecycle checks, five-process comparisons and explicit remaining first-visit stalls.
 
 2026-10-14 research follow-up: [26 — faster aircraft selection without hiding stalls](26-menu-responsiveness-loading.md). Godot documentation, pinned engine source, forum and Reddit findings; ordered loading/texture/selection experiments, acceptance gates and rejected shortcuts. Proposals only; no runtime changes in this investigation.

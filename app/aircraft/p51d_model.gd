@@ -711,11 +711,11 @@ static func _wing_skin_point(x: float, xc: float, upper: bool, with_ext := false
 	return Vector3(_panel_x(x), yc + (h if upper else -h), le + f * c)
 
 
-# Aileron hinge point at a projected station: constant chord fraction, on the camber line, in the dihedral frame.
-static func _hinge_point(x: float) -> Vector3:
+# Aileron/flap hinge point at a projected station: constant chord fraction, on the camber line, in the dihedral frame.
+static func _hinge_point(x: float, chord_fraction := -1.0) -> Vector3:
 	var span := absf(x)
 	var c := _chord(span)
-	var h: float = 1.0 - float(D.wing.aileron_chord_fraction)
+	var h: float = 1.0 - (float(D.wing.aileron_chord_fraction) if chord_fraction < 0.0 else chord_fraction)
 	return Vector3(_panel_x(x), 4.0 * D.wing.camber_ratio * h * (1.0 - h) * c, _le_z(span) - D.wing.le_z_root + h * c)
 
 
@@ -728,7 +728,7 @@ static func _hinge(label: String, parent: Node3D, hinges: Dictionary) -> Node3D:
 
 
 # Returns the root-relative transforms of the two dihedral frames (for parts attached to the wing).
-static func _wings(root: Node3D, hinges: Dictionary) -> Dictionary:
+static func _wings(root: Node3D, hinges: Dictionary, flaps: Dictionary) -> Dictionary:
 	var w: Dictionary = D.wing
 	var half: float = w.span / 2.0
 	var wing := Node3D.new()
@@ -756,8 +756,22 @@ static func _wings(root: Node3D, hinges: Dictionary) -> Dictionary:
 			if row[0] > w.flap_inner + 0.005 and row[0] < w.flap_outer - 0.02: ahead_stations.append(row[0])
 		ahead_stations.append(w.flap_outer)
 		_wing_panel("wing_%s_ahead_of_flap" % suffix, [[alu, ahead_stations]], "fixed", frame, sign)
-		# Flap: fixed in the retracted position (no flap channel yet), drawn as its own surface with the hinge gap.
-		_wing_panel("flap_" + suffix, [[plain, [w.flap_inner + END_GAP_M, w.flap_outer - END_GAP_M]]], "moving", frame, sign)
+		# P51-11a: the plain flap on its own hinge (constant chord fraction on the camber line, like the aileron), drawn in
+		# the hinge frame with the hinge gap and driven by set_flaps(); positive rotation.x lowers the trailing edge.
+		var flap_in := _hinge_point(sign * w.flap_inner, float(w.flap_chord_fraction))
+		var flap_out := _hinge_point(sign * w.flap_outer, float(w.flap_chord_fraction))
+		var flap_along: Vector3 = (flap_out - flap_in) * sign
+		var flap_frame := Node3D.new()
+		flap_frame.name = "flap_frame_" + suffix
+		flap_frame.position = (flap_in + flap_out) / 2.0
+		flap_frame.rotation.y = atan2(-flap_along.z, flap_along.x)
+		frame.add_child(flap_frame)
+		var flap_pivot := Node3D.new()
+		flap_pivot.name = "flap_%s_hinge" % suffix
+		flap_frame.add_child(flap_pivot)
+		flaps[suffix] = flap_pivot
+		_wing_panel("flap_" + suffix, [[plain, [w.flap_inner + END_GAP_M, w.flap_outer - END_GAP_M]]], "moving", flap_pivot, sign,
+			flap_frame.transform.affine_inverse())
 		_wing_panel("wing_%s_between" % suffix, [[alu, [w.flap_outer, w.aileron_inner]]], "full", frame, sign)
 		_wing_panel("wing_%s_ahead_of_aileron" % suffix, [[alu, [w.aileron_inner, band]], [yellow, [band, w.aileron_outer]]], "fixed", frame, sign)
 		var tip_stations: Array = [w.aileron_outer]
@@ -1350,9 +1364,18 @@ static func build() -> Dictionary:
 	_carb_intake(root)
 	_canopy(root)
 	_pilot(root)
-	var frames := _wings(root, hinges)
+	var flaps := {}
+	var frames := _wings(root, hinges, flaps)
 	_tail(root, hinges)
 	var gear := _gear(root, frames)
 	_details(root, frames, hinges)
 	var propeller := _propeller(root)
-	return {root = root, propeller = propeller, hinges = hinges, gear = gear, frames = frames}
+	return {root = root, propeller = propeller, hinges = hinges, gear = gear, frames = frames, flaps = flaps}
+
+
+## P51-11a: the session's accepted flap angle (degrees, trailing edge down) on both flap hinges. Rendering only.
+static func set_flaps(airplane: Dictionary, degrees: float) -> void:
+	if not is_finite(degrees):
+		return
+	for pivot: Node3D in airplane.get("flaps", {}).values():
+		pivot.rotation = Vector3(deg_to_rad(clampf(degrees, 0.0, 60.0)), 0.0, 0.0)

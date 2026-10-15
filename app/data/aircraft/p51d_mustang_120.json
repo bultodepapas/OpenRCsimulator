@@ -2571,6 +2571,92 @@
     "propulsion_layout": "single_tractor",
     "energy": "prescribed_fuel",
     "damage": "terminal_hull",
-    "flaps": "not_simulated"
+    "flaps": "simulated"
+  },
+  "flaps": {
+    "max_angle_deg": {
+      "value": 45.0,
+      "unit": "deg",
+      "kind": "manual",
+      "source": "landing setting, CARF P-51 1:4.3 manual p. 28 (source.json kit.flaps_deg); full-size P-51 50 deg (NACA MR L-566)"
+    },
+    "takeoff_angle_deg": {
+      "value": 15.0,
+      "unit": "deg",
+      "kind": "manual",
+      "source": "take-off setting, CARF manual p. 28; full-size XP-51 20 deg (NACA MR L-566 Table III)"
+    },
+    "inner_span_m": {
+      "value": 0.1249,
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/p51/p51-05/derive_physics.py: flap inner end from the centreline: full-size 0.5 m x 1/4 (source.json full_size.flap)"
+    },
+    "outer_span_m": {
+      "value": 0.7996,
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/p51/p51-05/derive_physics.py: flap outer end from the centreline: full-size 3.2 m x 1/4; XP-51 flap 32.22 sq ft, chord 23/17 in (NACA MR L-566) agrees"
+    },
+    "hinge_fraction": {
+      "value": 0.79,
+      "unit": "1",
+      "kind": "derived",
+      "source": "research/p51/p51-05/derive_physics.py: 1 - flap chord fraction 0.21 (scaled full-size flap)"
+    },
+    "extension_time": {
+      "value": 2.5,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "slowed RC flap servo (typical 2-4 s radio setting); the full-size flap took about 15 s"
+    },
+    "retraction_time": {
+      "value": 2.5,
+      "unit": "s",
+      "kind": "estimated",
+      "source": "as extension"
+    },
+    "max_speed_mps": {
+      "value": 21.267191,
+      "unit": "m/s",
+      "kind": "derived",
+      "source": "research/p51/p51-05/derive_physics.py: advisory: full-size 165 mph IAS full-flap placard (secondary sources) at equal CL 0.555, landing weight 9,000 lb; not a simulation clamp"
+    },
+    "elevator_mix_per_flap_fraction": {
+      "value": 0.0,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "no radio mix: the CARF manual (flap-angle source) specifies none; Hangar 9's 7 %/14 % up mix belongs to a different airframe. The flap pitch response is left to the coupled wing/tail aerodynamics"
+    },
+    "effective_angle_limit_deg": {
+      "value": 14.34,
+      "unit": "deg",
+      "kind": "derived",
+      "source": "research/p51/p51-05/derive_physics.py: fit of the runtime tanh bound to Roskam Part VI Fig. 8.13 K' at c_f/c 0.21 (FAST-GA digitization), tau 0.562"
+    },
+    "profile_drag_coefficient": {
+      "value": 0.104449,
+      "unit": "1",
+      "kind": "derived",
+      "source": "research/p51/p51-05/derive_physics.py: Raymer eq. 12.61 (after Hoerner): 0.9 (c_f/c)^1.38"
+    },
+    "aerodynamic_gain": {
+      "value": 1.0,
+      "unit": "1",
+      "kind": "derived",
+      "source": "full shared flap law (no sensitivity variant)"
+    },
+    "stall_shift_fraction": {
+      "value": 0.327623,
+      "unit": "1",
+      "kind": "derived",
+      "source": "research/p51/p51-05/derive_physics.py: 1 - dClmax/dCl0 of a plain flap, Roskam Part VI Figs. 8.31-8.33 (FAST-GA digitization) at t/c 0.149, c_f/c 0.21, mean over 15-45 deg; section lift slope 6.0/rad"
+    },
+    "lift_reference_offset_m": {
+      "value": 0.05371,
+      "unit": "m",
+      "kind": "derived",
+      "source": "research/p51/p51-05/derive_physics.py: flap camber lift at the wing's 25 % MAC: its distance aft of the wing-body ARP, which the calibrated fuselage term moved forward"
+    }
   }
 }

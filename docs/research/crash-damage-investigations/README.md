@@ -4,6 +4,8 @@
 
 ## Reports
 
+[CR-28: component damage and USD repair economics](CR-28/README.md) records the 2026-10-15 source audit, price catalog, reconstructed Stik valuation, crash/salvage examples and fleet coverage gaps. The [active CR-28…38 plan](../../plans/crash-damage-economics.md) owns implementation; prices and gameplay assumptions do not establish physical failure thresholds.
+
 [CR-22c-R1: first-impact stutter](CR-22c-R1/README.md) records the 2026-10-14 native fleet comparison, Compatibility shader warmup and selective emitter startup.
 
 [CR-22c-R2: repeated contact work](CR-22c-R2/README.md) records once-per-tick soft-contact feedback, cached wreck shadows and cached scenery sort distances, with preserved output comparisons and lifecycle regressions.

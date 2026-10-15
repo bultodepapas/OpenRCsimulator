@@ -1,0 +1,41 @@
+{
+  "date": "2026-10-15",
+  "exact_image_sizes": 78,
+  "sampled_flow_records_all_true": 50,
+  "local_links": "pass",
+  "audit_script_errors": 0,
+  "parallel_source_changes_since_snapshot": [
+    {
+      "path": "app/aircraft/p51d_model.gd",
+      "snapshot_sha256": "ab81c7aba2545685a5b9e0bda390d504510a1bbb480e16f299152e95f1a42e7b",
+      "current_sha256": "c75e6c7123aa63223cddf8a65e6201a6edaae4ddddda3ea58c0e2043276085d5"
+    },
+    {
+      "path": "app/data/aircraft/p51d_mustang_120.json",
+      "snapshot_sha256": "50f4c5af096c695935c6dd12942244f53fdeb57f4fe10645386aa82428cc775f",
+      "current_sha256": "4fdd5dd875c16459ccf0a05835ebf49ecba5c2d16bc4c5fcf2fdc88af1668d73"
+    },
+    {
+      "path": "app/data/schema/aircraft-contract-v2.json",
+      "snapshot_sha256": "0c3f71ec4a755f29e758a182c7dcea7674e6e9b34319ea0d2ad54077cfd2ad1c",
+      "current_sha256": "85a0589e014b23821da557642eaa16b7564b31e05967bc23f466486d7ab85257"
+    },
+    {
+      "path": "app/data/schema/openrc-aircraft-v2.schema.json",
+      "snapshot_sha256": "c9e52faeda27d2a5e705e901db2faa05ef481fe5e22cce0702c5f522a950a66a",
+      "current_sha256": "3d68ad385be3b69042f4aa593c8bf5cb147ea69dec53c69a09e5e99e6e3c0238"
+    },
+    {
+      "path": "app/physics/aero.gd",
+      "snapshot_sha256": "05a92681d4ea5c3e926269cc0505097d00ed928e9ca19a5603fcce5f14e56345",
+      "current_sha256": "79231204065bd08ffe5bb576885755a514370ab6767523bdb688397c6097fe44"
+    },
+    {
+      "path": "app/physics/aircraft_data.gd",
+      "snapshot_sha256": "d692bf3feaff7cf4ac406e296685d92b73fe8aab153915b40277990575a6d9fc",
+      "current_sha256": "0451383700f4cc2f10bb27e6ba5e245dfd20b875ced5d19f3c32ccdac70ecd15"
+    }
+  ],
+  "ui_sources_unchanged": true,
+  "note": "Documentation/evidence task; no runtime edits. Parallel source changes are preserved and not qualified by these captures."
+}
