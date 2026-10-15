@@ -1,6 +1,6 @@
 # P51-22: slipstream tail-downwash regression, diagnosis and candidate
 
-2026-10-14 · Revision 1 · **Status: root cause identified, candidate quantified, not applied.** The affected laws are shared physics (`aero.gd`, `slipstream.gd`, `swirl_loads.gd`, VAL-AUD R02) and need their owner's decision. Prefix: P51-22. [Plan](../../../P51-REALISM-PLAN.md)
+2026-10-15 · Revision 2 · **Status: root cause identified; the denominator candidate is withdrawn after the physics-audit review. The fix requires the powered wing/tail coupling that the R02/R06 owner has specified.** Prefix: P51-22. [Plan](../../../P51-REALISM-PLAN.md) · [Owner review](../../physics-audit-2026-10-14/remediation/R11/washed-downwash-diagnostic/README.md)
 
 ## Regression
 
@@ -23,13 +23,13 @@ Only the P-51 declares `propulsion.propeller.slipstream` in the product catalog,
 
 ## Physical evidence
 
-Katzoff, *Longitudinal stability and control with special reference to slipstream effects*, NACA Report 690 (1940, [NTRS 19930091767](https://ntrs.nasa.gov/citations/19930091767)), covers full-scale tunnel tests of eight airplanes. For the single-engine tractor YO-31A: *"Operation of the propeller increases both the effective dynamic pressure and the downwash angle at the tail."* For the multi-engine tractor model, it describes "the slipstream … increasing the rate of increase of downwash angle with angle of attack" and "the increased downwash due to the slipstream". The wing deflects the propeller jet with its own wake, so the flow angle inside the jet is at least the free-stream downwash. It is not the wing's wake velocity diluted by the jet speed.
+Katzoff, *Longitudinal stability and control with special reference to slipstream effects*, NACA Report 690 (1940, [NTRS 19930091767](https://ntrs.nasa.gov/citations/19930091767)), covers full-scale tunnel tests of eight airplanes. For the single-engine tractor YO-31A: *"Operation of the propeller increases both the effective dynamic pressure and the downwash angle at the tail."* For the multi-engine tractor model, it describes "the slipstream … increasing the rate of increase of downwash angle with angle of attack" and "the increased downwash due to the slipstream". The measured configurations show that propeller operation can increase the tail downwash. They do not establish a universal inequality for every jet. Revision 1 said the measurements make free-stream downwash a lower bound for the angle inside the jet; that was an inference, and it is withdrawn.
 
 The R02 law has no wing slipstream: the wing's circulation does not grow with the wash. Under that model, dividing by the washed speed predicts the opposite of what was measured.
 
 ## Candidate and results
 
-The [candidate patch](candidate/candidate-washed-downwash.patch) (6 lines) makes every washed evaluation use the downwash angle at the free-stream tail plane speed. That is the slipstream, slipstream axial-swirl and swirl laws, through an optional `downwash_speed` argument of `Aero._tail_surface_from_flow`. Everything else in R02 stays: the dimensional wake, section-plane forces and bounded angle. "Equal to free stream" is the conservative lower bound of Katzoff's measurement. A disposable worktree at `HEAD` `b09aa200`, with P51-21 applied, gave the following ([logs](candidate/)):
+The [candidate patch](candidate/candidate-washed-downwash.patch) (6 lines) made every washed evaluation use the downwash angle at the free-stream tail plane speed. It was quantified only in a disposable worktree at `HEAD` `b09aa200` with P51-21 applied, and is **withdrawn** ([logs](candidate/)):
 
 | Check | Current `HEAD` | Candidate |
 | --- | --- | --- |
@@ -38,8 +38,16 @@ The [candidate patch](candidate/candidate-washed-downwash.patch) (6 lines) makes
 | `test_p51_envelope` | stall recovery 83 m (P51-19) | 84 m; every other check passes |
 | Trim at 25 m/s and 27 % CG, level minus glide | +1.26° | +0.97°, a partial improvement in the sign of the power effect (P51-19) |
 | `test_slipstream_scalar`, `test_swirl_torque`, `test_wash_transport` | pass | pass |
-| `test_slipstream_downwash`, `test_swirl_accuracy`, `test_swirl_optimization`, `test_wash_profile` | pass | **fail**: their frozen reference implementations (`slipstream_reference.gd`, `swirl_dense_reference.gd`, helper compositions) encode the R02 washed-angle law |
+| `test_slipstream_downwash`, `test_swirl_accuracy`, `test_swirl_optimization`, `test_wash_profile` | pass | **fail**: their references compose the public `Aero.tail_surface_increment` helper, which the candidate left on the R02 law, so production and helper disagreed |
 
-## Decision needed
+## Why the candidate is withdrawn
 
-To apply the candidate, the physics-audit owner would update the four reference oracles to the same law. The R02 law identity and the trace metadata would be versioned (as R02 did), and the change recorded in DECISIONS. A fuller model would also increase the downwash inside the jet, as Katzoff measured: either a wing slipstream, or a downwash factor in the jet with its own evidence. That would further correct the remaining power-on trim sign. Neither change was applied, because shared slipstream changes need the physics owner's coordination ([P51 plan](../../../P51-PLAN.md)).
+The [physics-audit review](../../physics-audit-2026-10-14/remediation/R11/washed-downwash-diagnostic/README.md) shows that the law has no continuous zero-speed extension. The wing proxy is U = V·CL(α), so as V → 0 the angle `atan2(gain·U, V_free)` tends to `atan(gain·CL(α))`, which depends on the approach direction, while at exactly V = 0 it is zero. The propeller jet keeps the tail loaded, so the result is a force jump. With the actual P-51 slipstream pieces at catalog rpm, the jump is up to 1.5 N and 1.8 N·m. The candidate also left the public `Aero.tail_surface_increment` helper on the old law, and it fails the unchanged Stik case in `test_aero_continuity.gd`.
+
+P51-22 also checked a bounded variant that limits U to CL_min·V…CL_max·V. It removes the frozen-lag case after a landing that ends stopped, where the `exp(-dt·V/l)` lag holds U at V = 0. It does not remove the direction-dependent limit, because CL(α) lies inside the bound. Any angle clamp only selects one of these limits.
+
+The physical cause is that the model's wing does not see the slipstream. Only a wing immersed in the jet deflects it, and the downwash it then sends to the tail comes from the jet's own circulation, which stays continuous when the free stream vanishes.
+
+## Path forward
+
+The owner's [required integrated replacement](../../physics-audit-2026-10-14/remediation/R11/washed-downwash-diagnostic/README.md#required-integrated-replacement) is a coupled wing-plus-propeller local-flow source. It needs wing-immersion quadrature, a defined downwash source for powered rest, stopped and reversed propellers, one source/consumer contract with a versioned layout, and continuity and convergence qualification. The P-51's slipstream geometry is the input: the hub, the three authored pieces and the 0.33 m disc radius. P51-22 supplies the regression targets: lift-off at 22.2 m/s and 37 m, a loop completing within 8 s, and the level-minus-glide trim sign. Until that slice lands, the two P-51 checks remain open, documented failures; no tolerance or oracle was changed.

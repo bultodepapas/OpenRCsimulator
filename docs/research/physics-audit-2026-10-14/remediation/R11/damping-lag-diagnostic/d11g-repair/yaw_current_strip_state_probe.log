@@ -1,0 +1,9 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft=jensen-das-ugly-stik-60 law=section-plane-source-weighted-wake-velocity-v2 input={"format":"openrc-aircraft v2","sha256":"bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723"}
+S=0.464515000 b=1.524000000 AR=5.000002153 CL0=0.106800000 CLa=4.580000000 strip_slope=6.081754648 CD0=0.043400000 k_induced=0.081493400 CL_minD=0.230000000
+columns=alpha_deg,mean_CL,mean_VpCL_mps,mean_CD,mean_effective_alpha_deg,strip_CL,strip_CL0,strip_alpha_effective_deg
+SCRIPT ERROR: Trying to assign an array of type "Array" to a variable of type "Array[Dictionary]".
+   at: _initialize (C:/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_current_strip_state_probe.gd:30)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (C:/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_current_strip_state_probe.gd:30)

@@ -175,6 +175,16 @@ def fit(points):
     return best[1], best[2], math.sqrt(best[0] / len(points))
 
 
+def same(a, b, rel=1e-9):
+    if isinstance(a, dict) and isinstance(b, dict):
+        return a.keys() == b.keys() and all(same(a[k], b[k], rel) for k in a)
+    if isinstance(a, list) and isinstance(b, list):
+        return len(a) == len(b) and all(same(x, y, rel) for x, y in zip(a, b))
+    if isinstance(a, (int, float)) and isinstance(b, (int, float)) and not isinstance(a, bool):
+        return abs(a - b) <= rel * max(1.0, abs(a), abs(b))
+    return a == b
+
+
 def main():
     free = solve(None)
     rows = []
@@ -201,7 +211,9 @@ def main():
     }
     text = json.dumps(out, indent=2) + "\n"
     if "--check" in sys.argv:
-        if not OUT.exists() or OUT.read_text() != text:
+        # Numeric comparison: libm sin/cos/atan2 may differ by an ulp between platforms, so the
+        # check tolerates 1e-9 relative on numbers while keys, strings and structure must match.
+        if not OUT.exists() or not same(json.loads(OUT.read_text()), json.loads(text)):
             print(f"stale: {OUT}")
             return 1
         print("current")

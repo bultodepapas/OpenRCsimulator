@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+R11_RCV_BACKEND_IDENTITY {"abi_version":1,"backend":"native","backend_version":"openrc-ground-vehicle-native-evaluate-v2","binary_sha256":"08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3","solver_version":"openrc-ground-vehicle-dynamics-rk4-v3","source_sha256":"e2ae0a5ffebc8d81636302d66238348035ee92bf51d2f40965db7053bb251541","toolchain_sha256":"86c94e45f49cb2c40d81cb2b501865113b974a9a5f25863e313e16d451ab561c"}
+R11_RCV_NATIVE_INSTANCE true

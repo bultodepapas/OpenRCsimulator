@@ -198,6 +198,9 @@ if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "Extra preview contract f
 
 echo "== P-51D finish parameters are not stale (assets/aircraft/p51d-mustang-120/compile_appearance.py --check, V08)"
 python3 "$HERE/../assets/aircraft/p51d-mustang-120/compile_appearance.py" --check || exit 1
+echo "== P-51D physics data and ground-effect table are not stale (research/p51/p51-05/derive_physics.py, p51-20/ground_effect_vlm.py --check)"
+python3 "$HERE/../research/p51/p51-20/ground_effect_vlm.py" --check || exit 1
+python3 "$HERE/../research/p51/p51-05/derive_physics.py" --check || exit 1
 
 echo "== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)"
 run --script res://aircraft/verify_p51.gd 2>&1 | tee "$LOG" | tail -1

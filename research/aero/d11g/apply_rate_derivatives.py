@@ -21,32 +21,31 @@ RATE_KEYS = ("Cmq", "CLq", "Cnr")
 EXPECTED_SCHEMA = "d11g-rate-derivatives-v2"
 EXPECTED_LAW = "section-plane-source-weighted-wake-velocity-v2"
 FINGERPRINT_SCHEME = "utf8-source-text-v1"
-SOURCE_IDENTITY_SCHEME = "sha256-source-files-v1"
+SOURCE_IDENTITY_SCHEME = "sha256-app-physics-gd-recursive-v2"
 EXCLUDED_OUTPUT_LEAVES = tuple(
     f"aero.coefficients.{key}.{leaf}"
     for key in RATE_KEYS
     for leaf in ("value", "source")
 )
-SOLVER_SOURCE_PATHS = (
-    "app/physics/aero.gd",
-    "app/physics/air_data.gd",
-    "app/physics/aircraft_contract.gd",
-    "app/physics/aircraft_data.gd",
-    "app/physics/control_surfaces.gd",
-    "app/physics/dynamics.gd",
-    "app/physics/electric_motor.gd",
-    "app/physics/electric_supply.gd",
-    "app/physics/glow/installation.gd",
-    "app/physics/ground_effect.gd",
-    "app/physics/math3d.gd",
-    "app/physics/physical_identity.gd",
-    "app/physics/propulsion.gd",
-    "app/physics/rigid_body.gd",
-    "app/physics/trim.gd",
-    "app/physics/wheel_profiles.gd",
-    "app/physics/wing_polar.gd",
+SOLVER_SOURCE_INPUTS = (
+    "app/data/ground/wheel_profiles.json",
+    "app/project.godot",
     "research/aero/d11g/derive_rate_derivatives.gd",
 )
+
+
+def solver_source_paths() -> tuple[str, ...]:
+    """Inventory every app physics GDScript plus direct file-backed load inputs.
+
+    This deliberately includes more than the current preload closure, so a new or newly
+    reachable physics helper cannot silently escape stale-source detection.
+    """
+    physics = ROOT / "app/physics"
+    if not physics.is_dir():
+        raise ValueError(f"cannot enumerate solver source directory: {physics}")
+    paths = {path.relative_to(ROOT).as_posix() for path in physics.rglob("*.gd") if path.is_file()}
+    paths.update(SOLVER_SOURCE_INPUTS)
+    return tuple(sorted(paths))
 
 
 def object_end(text: str, open_index: int) -> int:
@@ -140,9 +139,10 @@ def validated_report(path: Path) -> dict:
     if derivation_identity.get("solver_source_scheme") != SOURCE_IDENTITY_SCHEME:
         raise ValueError("report solver source identity scheme is unsupported")
     solver_sources = derivation_identity.get("solver_sources")
-    if not isinstance(solver_sources, list) or len(solver_sources) != len(SOLVER_SOURCE_PATHS):
+    expected_source_paths = solver_source_paths()
+    if not isinstance(solver_sources, list) or len(solver_sources) != len(expected_source_paths):
         raise ValueError("report solver source identity has an unexpected file inventory")
-    for expected_path, entry in zip(SOLVER_SOURCE_PATHS, solver_sources, strict=True):
+    for expected_path, entry in zip(expected_source_paths, solver_sources, strict=True):
         if not isinstance(entry, dict) or entry.get("path") != expected_path:
             raise ValueError("report solver source identity has an unexpected file inventory/order")
         if not isinstance(entry.get("sha256"), str) or not re.fullmatch(r"[0-9a-f]{64}", entry["sha256"]):

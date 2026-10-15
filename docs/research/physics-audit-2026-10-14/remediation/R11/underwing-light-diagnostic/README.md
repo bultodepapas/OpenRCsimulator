@@ -2,7 +2,7 @@
 
 2026-10-14 · The Avanti underwing strip jumped 60.127 mm at adjacent span stations, just over the existing 60 mm limit. At x=0.573965 m its merged chord piece included the `paint_fence_lower` edge at y=−0.070710 m; the neighboring point followed the wing skin. The original diagnosis and component evidence are in [`component-slice-probe.txt`](component-slice-probe.txt) and [`surface-detail-probe.txt`](surface-detail-probe.txt).
 
-`AircraftLights.underwing_lines()` now accepts a triangle only when its geometric normal has a larger vertical component than its horizontal magnitude: `abs(n.y) > sqrt(n.x² + n.z²)`. This is a strict, winding-independent 45° face-normal criterion. The comparison is scaled before squaring, and zero-area or non-finite normals are skipped. It applies only to bottom/top strip slicing; belly and landing-light geometry retain their prior inputs. Station locations, chord-piece selection, 60 mm vertical bound and 150 mm chordwise bound are unchanged ([`aircraft_lights.gd`](../../../../../../app/render/world/aircraft_lights.gd:124)).
+`AircraftLights.underwing_lines()` now accepts a triangle only when its geometric normal has a larger vertical component than its horizontal magnitude: `abs(n.y) > sqrt(n.x² + n.z²)`. This is a strict, winding-independent 45° face-normal criterion. The comparison is scaled before squaring, and zero-area or non-finite normals are skipped. It applies only to bottom/top strip slicing; belly and landing-light geometry retain their prior inputs. Station locations, chord-piece selection, 60 mm vertical bound and 150 mm chordwise bound are unchanged ([`aircraft_lights.gd`](../../../../../../app/render/world/aircraft_lights.gd)). The catalog bounds and synthetic `_test_underwing_face_selection()` cases live in [`test_world_field_lights.gd`](../../../../../../app/tests/test_world_field_lights.gd).
 
 Before production edits, the exact criterion was evaluated over all five catalog meshes, with the existing selector run on the filtered triangles. Every aircraft retained 9/9 bottom and top stations on each side. Every maximum step remained within the test's existing bounds:
 
@@ -35,6 +35,7 @@ Before: `64 checks, 1 failed`, reproducing only the Avanti continuity bound ([`b
 | Corrected `aircraft_lights.gd` | `D0363990BD3A6933BE97DFCB5639DCBFBA91422BBF1E91C7515B3C1B5AC93893` |
 | Original `test_world_field_lights.gd` | `E2F1495C738E74EB93D32168A4405546C1B5077084F3120EF7B8E7B1C04057B7` |
 | Corrected `test_world_field_lights.gd` | `6281250C79FC6205B261D225A6A9C59FFA22911050D059795F3353A5658648FD` |
+| `selector-correction.patch` | `EF23C2AB95157C64C15745A681D874F4AF1FA00D7630A347D0D6A3B722A3DFE6` |
 | Avanti imported GLB | `803D293D597D88D94CEBE1C191E6453E5D108ACA4D6E5D5EAABFA0A387CF0F36` |
 | Exact 45° probe script | `F86C6F368E73E3AA57807D91A913EDD1A64E39FD8266D7F5E6B6E5EB13498056` |
 | Exact 45° probe output | `4DA28DC7DA8634EAFC654D127BC4A3D081B5C4DE1006CD7E26AC8D48AF0F9848` |

@@ -1,0 +1,23 @@
+{
+  "reason": "D11g: regenerate the Stik's stored Cmq, CLq and Cnr through its rate-derivative pipeline under the current R02 law; no force-law, input tape or tolerance change. Regression reference only; open R02 physical-model discrepancies remain open.",
+  "integrated": [
+    {
+      "path": "app/tests/golden/roll_15.json",
+      "before_sha256": "ea34444c72f4734977ea7205f1680aa0f29fb25333912776e41517865b938721",
+      "after_sha256": "a556a84d9fee23ef6640e96e1aa42f75ab364019d0d99e47959b858bfb458eb7"
+    },
+    {
+      "path": "app/tests/golden/pull_throttle.json",
+      "before_sha256": "0daf4ecce987740b54e00cd40b83fa1048f2559a18af84485e79668745931eb6",
+      "after_sha256": "50b0839b3445fbb0c3849812e3d695f7a17c959f2a63eb5ff92d47aaf9d89f83"
+    },
+    {
+      "path": "app/tests/golden/rudder_doublet.json",
+      "before_sha256": "0263d8fd227be29fc80dcce336644e0bf8cb65b19b2e70d7969a926ebf530eab",
+      "after_sha256": "500b4e81190f886075a1fe55489c0af7b2b3b167499a8363fa06181561d67696"
+    }
+  ],
+  "preserved_glide_sha256": "54efde306f014145c4276cf9a0edec25de985fd6f753af4fb0896dfc3b24ee6e",
+  "glide_reason": "Already passes unchanged policy; generated difference is at roundoff scale. Preserve prior accepted bytes.",
+  "build_label_note": "Isolated app inherits the enclosing working repository Git label; full source_before/source_after receipts identify the tested snapshot."
+}

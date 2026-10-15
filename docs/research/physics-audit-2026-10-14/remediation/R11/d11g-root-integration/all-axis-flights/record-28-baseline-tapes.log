@@ -1,0 +1,89 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-neutral-neutral.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-neutral-neutral.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-normal-neutral-neutral completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-roll-negative.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-roll-negative.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-normal-roll-negative completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-roll-positive.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-roll-positive.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-normal-roll-positive completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-pitch-negative.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-pitch-negative.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-normal-pitch-negative completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-pitch-positive.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-pitch-positive.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-normal-pitch-positive completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-yaw-negative.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-yaw-negative.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-normal-yaw-negative completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-yaw-positive.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-normal-yaw-positive.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-normal-yaw-positive completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-neutral-neutral.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-neutral-neutral.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-full-neutral-neutral completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-roll-negative.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-roll-negative.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-full-roll-negative completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-roll-positive.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-roll-positive.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-full-roll-positive completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-pitch-negative.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-pitch-negative.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-full-pitch-negative completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-pitch-positive.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-pitch-positive.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-full-pitch-positive completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-yaw-negative.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-yaw-negative.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-full-yaw-negative completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-yaw-positive.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/stik-full-yaw-positive.orfl (1440 ticks)
+PULSE_CASE_COMPLETE stik-full-yaw-positive completed=true tick=1440 fault= crash={  }
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-neutral-neutral.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-neutral-neutral.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-normal-neutral-neutral completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-roll-negative.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-roll-negative.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-normal-roll-negative completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-roll-positive.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-roll-positive.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-normal-roll-positive completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-pitch-negative.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-pitch-negative.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-normal-pitch-negative completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-pitch-positive.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-pitch-positive.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-normal-pitch-positive completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-yaw-negative.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-yaw-negative.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-normal-yaw-negative completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-yaw-positive.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-normal-yaw-positive.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-normal-yaw-positive completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-neutral-neutral.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-neutral-neutral.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-full-neutral-neutral completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-roll-negative.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-roll-negative.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-full-roll-negative completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-roll-positive.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-roll-positive.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-full-roll-positive completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-pitch-negative.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-pitch-negative.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-full-pitch-negative completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-pitch-positive.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-pitch-positive.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-full-pitch-positive completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-yaw-negative.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-yaw-negative.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-full-yaw-negative completed=true tick=1440 fault= crash={  }
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-yaw-positive.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\d11g-root-integration\all-axis-flights\records/jet-full-yaw-positive.orfl (1440 ticks)
+PULSE_CASE_COMPLETE jet-full-yaw-positive completed=true tick=1440 fault= crash={  }
+ALL_AXIS_PULSE_RECORDING_COMPLETE failures=0 aircraft=2

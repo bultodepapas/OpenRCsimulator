@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+recorded roll_15: 600 ticks, 3 input changes, 11 checkpoints
+recorded pull_throttle: 720 ticks, 3 input changes, 13 checkpoints
+recorded rudder_doublet: 720 ticks, 4 input changes, 13 checkpoints
+recorded glide_15: 1200 ticks, 1 input changes, 21 checkpoints

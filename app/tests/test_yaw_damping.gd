@@ -1,10 +1,10 @@
-# D11f: yaw damping through the oracle/local transition. The local fin's velocity, force and moment arm are consistent:
-# its yaw-rate damping equals the invariant −2·(l_v/b)·Cnβ_fin of the same fin data (the data's Cnβ is derived from it
-# and checked by the loader). The wing's physical yaw damping is profile drag, −CD0/3·(1 − 1/(4n²)) for n equal strips per
-# side (independent Weissinger reference with Kutta–Joukowski forces: the lift-induced part is +0.0004·CL²,
-# research/aero/d11f/wing_yaw_damping.py). Acceptance: across α 0–11° the local Cnr is within 7 % of that
-# Stik-consistent value (fin invariant + wing profile). The borrowed oracle Cnr (UltraStick 25e, −0.1833) was
-# inconsistent with the oracle's own fin-derived Cnβ; D11g replaced it with the Stik's own, checked here too.
+# D11f/D11g: check the fin's yaw-rate invariant, the borrowed oracle's Cnβ consistency, and a separately derived complete
+# attached-section Cnr derivative for the current local law. The original 7% fin-plus-wing-profile estimate is retained
+# over α=0–11° as an open R02 integration gate; the independent D11f discrepancy is not resolved by code consistency.
+# The chain-rule checks below verify implementation only, not physical validity.
+# The independent derivative preconditions require mirrored strips, symmetric section inputs and attached flow.
+# The borrowed oracle Cnr (UltraStick 25e, −0.1833) was inconsistent with the oracle's own fin-derived Cnβ; D11g
+# replaced it with the Stik's own, checked here too.
 # Run: godot --headless --path . --script res://tests/test_yaw_damping.gd
 extends SceneTree
 
@@ -48,8 +48,18 @@ func _initialize() -> void:
 	_check("D11g: the oracle's Cnr about the CG %.4f within 2 %% of the Stik-consistent value" % oracle_cnr,
 		absf(oracle_cnr / consistent - 1.0) < 0.02)
 	var analytic_inputs_ok := _analytic_preconditions(model)
-	_check("independent Cnr derivative preconditions: symmetric attached strips, centered datums, no polar or ground effect",
+	_check("independent Cnr derivative preconditions: mirrored sections, centered datums, no polar or ground effect",
 		analytic_inputs_ok)
+	var asymmetric_cl := model.duplicate(true)
+	var asymmetric_cl0: PackedFloat64Array = asymmetric_cl.envelope.strip_cl0
+	asymmetric_cl0[0] += 1.0e-6
+	asymmetric_cl.envelope.strip_cl0 = asymmetric_cl0
+	var asymmetric_map := model.duplicate(true)
+	var asymmetric_e: PackedFloat64Array = asymmetric_map.envelope.induced_map
+	asymmetric_e[0] += 1.0e-6
+	asymmetric_map.envelope.induced_map = asymmetric_e
+	_check("analytic fixture rejects asymmetric strip CL0 or non-centrosymmetric induced map",
+		not _analytic_preconditions(asymmetric_cl) and not _analytic_preconditions(asymmetric_map))
 	if not analytic_inputs_ok:
 		print("%d checks, %d failed" % [_count, _failures])
 		quit(1)
@@ -58,10 +68,19 @@ func _initialize() -> void:
 	var worst_cnb := 0.0
 	var worst_analytic_h005 := 0.0
 	var worst_analytic_h00125 := 0.0
+	var worst_consistency := 0.0
+	var worst_consistency_alpha := 0.0
 	var every_refinement_converged := true
 	var alpha0_local_cnr := NAN
 	for deg in [0.0, 2.0, 4.0, 6.0, 8.0, 10.0, 11.0]:
 		var a := deg_to_rad(deg)
+		var attached_h005 := _finite_difference_pair_attached(model, a, 0.05)
+		var attached_h00125 := _finite_difference_pair_attached(model, a, 0.0125)
+		var finite_domain_ok := bool(attached_h005.get("ok", false)) and bool(attached_h00125.get("ok", false))
+		_check("actual ±h strip angles remain attached at α %.1f° (h=.05 and .0125)" % deg, finite_domain_ok,
+			str(attached_h005.get("reason", "")) + " " + str(attached_h00125.get("reason", "")))
+		if not finite_domain_ok:
+			continue
 		var total := _cnr(model, a, 0.05)
 		var refined := _cnr(model, a, 0.0125)
 		var analytic: Dictionary = _analytic_cnr(model, a)
@@ -76,6 +95,10 @@ func _initialize() -> void:
 			every_refinement_converged = false
 		var fin_part := total - _cnr(no_fin, a)
 		var cnb := _cnb(model, a)
+		var consistency_error := absf(total / consistent - 1.0)
+		if consistency_error > worst_consistency:
+			worst_consistency = consistency_error
+			worst_consistency_alpha = deg
 		print("info α %4.1f: Cnr h=.05 %.9f, h=.0125 %.9f, analytic %.9f; fin lift %.9f + fin profile %.9f + wing profile %.9f + induced %.9f + lift projection %.9f; Cnβ %.4f" % [
 			deg, total, refined, analytic.total_cnr, analytic.fin_lift_cnr, analytic.fin_profile_cnr,
 			analytic.wing_profile_cnr, analytic.wing_induced_cnr, analytic.wing_lift_cnr, cnb])
@@ -90,6 +113,8 @@ func _initialize() -> void:
 		"worst %.2f %%" % (100.0 * worst_cnb))
 	_check("α=0 local Cnr within 7 %% of the fin-plus-wing-profile approximation %.4f" % consistent,
 		absf(alpha0_local_cnr / consistent - 1.0) < 0.07, "local %.6f" % alpha0_local_cnr)
+	_check("OPEN R02 INTEGRATION GATE: local Cnr remains within 7% of fin-plus-wing-profile estimate over α 0–11°",
+		worst_consistency < 0.07, "worst %.2f %% at α %.1f°; current-law result retained as a failure pending like-for-like physical comparison" % [100.0 * worst_consistency, worst_consistency_alpha])
 	_check("local Cnr h=0.05 matches the complete independent attached-law derivative over α 0–11°",
 		worst_analytic_h005 < 1.0e-5, "worst absolute Cnr error %.9f" % worst_analytic_h005)
 	_check("local Cnr h=0.0125 converges to the complete independent derivative over α 0–11°",
@@ -116,6 +141,12 @@ func _analytic_preconditions(model: Dictionary) -> bool:
 	for i in n:
 		if absf(float(ys[i]) + float(ys[n - 1 - i])) > 1.0e-12:
 			return false
+	var strip_cl0: PackedFloat64Array = model.envelope.get("strip_cl0", PackedFloat64Array())
+	if strip_cl0.size() != n:
+		return false
+	for i in n:
+		if absf(float(strip_cl0[i]) - float(strip_cl0[n - 1 - i])) > 1.0e-12:
+			return false
 	var polar: Dictionary = model.envelope.get("wing_polar", {})
 	if not polar.is_empty() or model.aero.has("ground_effect"):
 		return false
@@ -126,10 +157,14 @@ func _analytic_preconditions(model: Dictionary) -> bool:
 		for incidence in twist:
 			if absf(float(incidence)) > 1.0e-12:
 				return false
-	if model.envelope.get("induced_map", PackedFloat64Array()).size() != n * n:
+	var induced_map: PackedFloat64Array = model.envelope.get("induced_map", PackedFloat64Array())
+	if induced_map.size() != n * n:
 		return false
-	if model.envelope.get("strip_cl0", PackedFloat64Array()).size() != n:
-		return false
+	for i in n:
+		for j in n:
+			var mirror_index := (n - 1 - i) * n + (n - 1 - j)
+			if absf(float(induced_map[i * n + j]) - float(induced_map[mirror_index])) > 1.0e-12:
+				return false
 	var fin: Dictionary = model.surfaces.vertical
 	var horizontal: Dictionary = model.surfaces.horizontal
 	if absf(float(fin.position[1]) - float(model.cg_le[1])) > 1.0e-12:
@@ -139,6 +174,23 @@ func _analytic_preconditions(model: Dictionary) -> bool:
 	if absf(float(fin.incidence)) > 1.0e-12:
 		return false
 	return true
+
+
+func _finite_difference_pair_attached(model: Dictionary, alpha: float, h: float) -> Dictionary:
+	var controls := {elevator = 0.0, aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0}
+	for rate in [h, -h]:
+		var state := PackedFloat64Array([0, 0, -100, V * cos(alpha), 0, V * sin(alpha), 1, 0, 0, 0, 0, 0, rate])
+		var air: Dictionary = Air.compute(state, PackedFloat64Array([0, 0, 0]), RHO)
+		var strip_rows: Array[Dictionary] = []
+		Aero._local_loads(state, air, controls, model, RHO, NAN, strip_rows)
+		if strip_rows.size() != model.envelope.station_ys.size():
+			return {ok = false, reason = "r=%s produced an incomplete strip diagnostic" % str(rate)}
+		for i in strip_rows.size():
+			var strip_alpha: float = float(strip_rows[i].alpha_geometric_rad)
+			var limit: float = float(model.envelope.a1) if strip_alpha >= 0.0 else float(model.envelope.n1)
+			if absf(strip_alpha) >= limit or float(strip_rows[i].stall_weight) != 0.0:
+				return {ok = false, reason = "r=%s strip=%d alpha=%s stall_weight=%s" % [str(rate), i, str(strip_alpha), str(strip_rows[i].stall_weight)]}
+	return {ok = true, reason = ""}
 
 
 ## Chain rule for the current attached section-plane law, derived independently of Aero._local_loads.

@@ -1,0 +1,16 @@
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\damping-lag-diagnostic\d11g-repair\yaw_r02_vs_kj_comparison.py", line 352, in <module>
+    main()
+  File "C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\damping-lag-diagnostic\d11g-repair\yaw_r02_vs_kj_comparison.py", line 245, in main
+    production = _load_production_rows()
+                 ^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\damping-lag-diagnostic\d11g-repair\yaw_r02_vs_kj_comparison.py", line 70, in _load_production_rows
+    for line in PRODUCTION_LOG.read_text(encoding="utf-8").splitlines():
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\pathlib.py", line 1058, in read_text
+    with self.open(mode='r', encoding=encoding, errors=errors) as f:
+         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Program Files\WindowsApps\PythonSoftwareFoundation.Python.3.11_3.11.2544.0_x64__qbz5n2kfra8p0\Lib\pathlib.py", line 1044, in open
+    return io.open(self, mode, buffering, encoding, errors, newline)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\damping-lag-diagnostic\\yaw_decomposition-current-law.log'

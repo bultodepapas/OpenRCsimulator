@@ -1,0 +1,45 @@
+{
+  "reference_path": "research/aero/d11f/wing_yaw_damping.py",
+  "reference_sha256": "b71405f04f9385a27a733c2b719560ca6032f682289a53d996ed338b8ef737e8",
+  "method": "unchanged D11f Weissinger/horseshoe model; central yaw-rate difference",
+  "rate_step_rad_s": 0.05,
+  "normalization": "q*S*b^2/(2*V)",
+  "inputs": {
+    "speed_mps": 15.0,
+    "area_m2": 0.4645152,
+    "span_m": 1.524,
+    "aspect_ratio": 5.0,
+    "strips_per_side": 3,
+    "section_slope_per_rad": 6.0818,
+    "profile_CD0": 0.0434,
+    "camber_or_strip_CL0": "none in original reference",
+    "induced_force": "circulation and trailing downwash in Kutta-Joukowski load"
+  },
+  "rows": [
+    {
+      "alpha_deg": 4.0,
+      "wing_CL": 0.29364556324847285,
+      "Cnr_total": -0.01403055363282133,
+      "Cnr_profile_formula": -0.014064814814814815,
+      "Cnr_lift_induced_residual": 3.4261181993485226e-05,
+      "lift_induced_over_CL_squared": 0.0003973337490402093
+    },
+    {
+      "alpha_deg": 10.0,
+      "wing_CL": 0.7216387142081981,
+      "Cnr_total": -0.013851138674311083,
+      "Cnr_profile_formula": -0.014064814814814815,
+      "Cnr_lift_induced_residual": 0.00021367614050373136,
+      "lift_induced_over_CL_squared": 0.0004103140445950737
+    },
+    {
+      "alpha_deg": 11.0,
+      "wing_CL": 0.7903938574435526,
+      "Cnr_total": -0.013806404552380096,
+      "Cnr_profile_formula": -0.014064814814814815,
+      "Cnr_lift_induced_residual": 0.00025841026243471864,
+      "lift_induced_over_CL_squared": 0.00041364010927171657
+    }
+  ],
+  "interpretation": "This isolates the retained reference output; it does not make its camber, drag-vector, or induced-force assumptions identical to the current R02 model."
+}

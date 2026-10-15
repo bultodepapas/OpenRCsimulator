@@ -17,31 +17,15 @@ const V := 15.0
 const RHO := 1.225
 const H := 0.05
 const COEFFICIENT_KEYS := ["Cmq", "CLq", "Cnr"]
-const SOURCE_FILES := [
-	"app/physics/aero.gd",
-	"app/physics/air_data.gd",
-	"app/physics/aircraft_contract.gd",
-	"app/physics/aircraft_data.gd",
-	"app/physics/control_surfaces.gd",
-	"app/physics/dynamics.gd",
-	"app/physics/electric_motor.gd",
-	"app/physics/electric_supply.gd",
-	"app/physics/glow/installation.gd",
-	"app/physics/ground_effect.gd",
-	"app/physics/math3d.gd",
-	"app/physics/physical_identity.gd",
-	"app/physics/propulsion.gd",
-	"app/physics/rigid_body.gd",
-	"app/physics/trim.gd",
-	"app/physics/wheel_profiles.gd",
-	"app/physics/wing_polar.gd",
+## Conservative solver inventory: every physics GDScript can be reached through the loader,
+## trim/dynamics, or their transitive preloads. The file-backed inputs read during file loading
+## are added explicitly; the aircraft JSON itself has a separate normalized input fingerprint.
+const SOURCE_INPUT_FILES := [
+	"app/data/ground/wheel_profiles.json",
+	"app/project.godot",
 	"research/aero/d11g/derive_rate_derivatives.gd",
 ]
-const PROVENANCE := {
-	"Cmq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=-7.8033 and CLq=2.0034; ARP Cmq=-8.009 includes the CLq lift arm. Model-derived, not measured or physically validated.",
-	"CLq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=2.0034. Model-derived, not measured or physically validated.",
-	"Cnr": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=-0.12989; ARP Cnr=-0.1335 includes the CYr side-force arm. Model-derived, not measured or physically validated.",
-}
+const SOURCE_IDENTITY_SCHEME := "sha256-app-physics-gd-recursive-v2"
 
 
 func _initialize() -> void:
@@ -76,6 +60,11 @@ func _initialize() -> void:
 		push_error("--report-file requires an absolute destination path")
 		quit(2)
 		return
+	var source_before := _source_identity()
+	if not bool(source_before.get("ok", false)):
+		push_error("Cannot derive D11g rates: source identity failed before load: %s" % str(source_before.get("reason", "unknown")))
+		quit(1)
+		return
 	var loaded: Dictionary = AD.load_file(PATH)
 	if not bool(loaded.get("ok", false)):
 		push_error("Cannot derive D11g rates: %s" % "; ".join(loaded.get("errors", PackedStringArray())))
@@ -102,11 +91,17 @@ func _initialize() -> void:
 		"CLq": _round_significant(at_trim.CLq),
 		"Cnr": _round_significant(cnr_arp),
 	}
-	var source_identity := _source_identity()
-	if not bool(source_identity.get("ok", false)):
-		push_error("Cannot derive D11g rates: source identity failed: %s" % str(source_identity.get("reason", "unknown")))
+	var provenance := _provenance(at_trim, rounded)
+	var source_after := _source_identity()
+	if not bool(source_after.get("ok", false)):
+		push_error("Cannot derive D11g rates: source identity failed after derivation: %s" % str(source_after.get("reason", "unknown")))
 		quit(1)
 		return
+	if source_before.get("scheme") != source_after.get("scheme") or source_before.get("files") != source_after.get("files"):
+		push_error("Cannot derive D11g rates: solver or generator source changed during load/derivation")
+		quit(1)
+		return
+	var source_identity: Dictionary = source_after
 	var target_bytes: PackedByteArray = FileAccess.get_file_as_bytes(PATH)
 	if target_bytes.is_empty():
 		push_error("Cannot fingerprint D11g inputs: cannot reread aircraft JSON")
@@ -162,13 +157,13 @@ func _initialize() -> void:
 			"Cnr": cnr_arp,
 		},
 		"rounded_4_significant_digits": rounded,
-		"provenance": PROVENANCE,
+		"provenance": provenance,
 		"alpha_sensitivity_about_cg": sensitivity,
 		"interpretation": "Reproduces this model's rate-derivative contract only; it is not physical validation.",
 	}
 	var check_issues := PackedStringArray()
 	if check_data:
-		check_issues = _check_stored_rates(rounded)
+		check_issues = _check_stored_rates(rounded, provenance)
 		report["data_check"] = {"passed": check_issues.is_empty(), "issues": check_issues}
 	if not report_file.is_empty():
 		if FileAccess.file_exists(report_file):
@@ -220,7 +215,7 @@ func _local(model: Dictionary, alpha: float, axis: int, rate: float) -> PackedFl
 	return Aero._local_loads(state, air, controls, model, RHO, settled_wake)
 
 
-func _check_stored_rates(rounded: Dictionary) -> PackedStringArray:
+func _check_stored_rates(rounded: Dictionary, provenance: Dictionary) -> PackedStringArray:
 	var issues := PackedStringArray()
 	var text := FileAccess.get_file_as_string(PATH)
 	var raw: Variant = JSON.parse_string(text)
@@ -240,14 +235,34 @@ func _check_stored_rates(rounded: Dictionary) -> PackedStringArray:
 			issues.append("aero.coefficients.%s.unit must remain 1/rad" % key)
 		if entry.get("kind", "") != "derived":
 			issues.append("aero.coefficients.%s.kind must remain derived" % key)
-		if entry.get("source", "") != PROVENANCE[key]:
+		if entry.get("source", "") != provenance[key]:
 			issues.append("aero.coefficients.%s.source does not match current-law provenance" % key)
 	return issues
 
 
+func _provenance(about_cg: Dictionary, rounded: Dictionary) -> Dictionary:
+	var cmq_cg := _format_significant(float(about_cg.Cmq), 5)
+	var clq_cg := _format_significant(float(about_cg.CLq), 5)
+	var cnr_cg := _format_significant(float(about_cg.Cnr), 5)
+	var cmq_arp := _format_significant(float(rounded.Cmq), 4)
+	var cnr_arp := _format_significant(float(rounded.Cnr), 4)
+	return {
+		"Cmq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cmq=%s and CLq=%s; ARP Cmq=%s includes the CLq lift arm. Model-derived, not measured or physically validated." % [cmq_cg, clq_cg, cmq_arp],
+		"CLq": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG CLq=%s. Model-derived, not measured or physically validated." % clq_cg,
+		"Cnr": "research/aero/d11g/derive_rate_derivatives.gd (D11g/R02, ARP-referred since D6e-R1): current section-plane-source-weighted-wake-velocity-v2 local-law central difference at the 15 m/s level trim, controls neutral and dimensional wake settled. About-CG Cnr=%s; ARP Cnr=%s includes the CYr side-force arm. Model-derived, not measured or physically validated." % [cnr_cg, cnr_arp],
+	}
+
+
 func _source_identity() -> Dictionary:
 	var files: Array[Dictionary] = []
-	for relative_path in SOURCE_FILES:
+	var relative_paths: Array[String] = []
+	var inventory_error := _collect_physics_sources("res://physics", "app/physics", relative_paths)
+	if not inventory_error.is_empty():
+		return {ok = false, reason = inventory_error}
+	for relative_path in SOURCE_INPUT_FILES:
+		relative_paths.append(relative_path)
+	relative_paths.sort()
+	for relative_path in relative_paths:
 		var resource_path: String = "res://" + relative_path.substr(4) if relative_path.begins_with("app/") \
 			else "res://../" + relative_path
 		var absolute_path: String = ProjectSettings.globalize_path(resource_path)
@@ -260,7 +275,23 @@ func _source_identity() -> Dictionary:
 		digest.start(HashingContext.HASH_SHA256)
 		digest.update(bytes)
 		files.append({path = relative_path, sha256 = digest.finish().hex_encode()})
-	return {ok = true, scheme = "sha256-source-files-v1", files = files}
+	return {ok = true, scheme = SOURCE_IDENTITY_SCHEME, files = files}
+
+
+func _collect_physics_sources(resource_directory: String, report_directory: String,
+		out: Array[String]) -> String:
+	var directory := DirAccess.open(resource_directory)
+	if directory == null:
+		return "cannot enumerate solver source directory %s" % resource_directory
+	for file_name in directory.get_files():
+		if file_name.get_extension().to_lower() == "gd":
+			out.append(report_directory.path_join(file_name))
+	for child_name in directory.get_directories():
+		var child_error := _collect_physics_sources(resource_directory.path_join(child_name),
+			report_directory.path_join(child_name), out)
+		if not child_error.is_empty():
+			return child_error
+	return ""
 
 
 func _normalized_input_fingerprint(text: String) -> Dictionary:
@@ -368,7 +399,11 @@ func _json_object_end(text: String, open_index: int) -> int:
 
 
 func _round_significant(value: float) -> float:
-	return float(String.num(value, 4 - _digits(value)))
+	return float(_format_significant(value, 4))
+
+
+func _format_significant(value: float, significant_digits: int) -> String:
+	return String.num(value, significant_digits - _digits(value))
 
 
 func _digits(value: float) -> int:

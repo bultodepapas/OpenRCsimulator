@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\damping-lag-diagnostic\d11g-repair\yaw_r02_vs_kj_comparison.py", line 356, in <module>
+    main()
+  File "C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\damping-lag-diagnostic\d11g-repair\yaw_r02_vs_kj_comparison.py", line 233, in main
+    data, ys, e, a0, identity, a_static, m_static, camber_alpha = _setup()
+                                                                  ^^^^^^^^
+  File "C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\damping-lag-diagnostic\d11g-repair\yaw_r02_vs_kj_comparison.py", line 98, in _setup
+    return data, ys, e, a0, identity, a_static, m_static, camber_alpha
+                            ^^^^^^^^
+NameError: name 'identity' is not defined

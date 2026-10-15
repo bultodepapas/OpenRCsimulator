@@ -1,0 +1,32 @@
+{
+  "candidate_root": "/home/bulto/openrc-r11-b09-r05b-20261014-03",
+  "command": [
+    "timeout",
+    "60",
+    "/home/bulto/openrc-r11-b09-r05b-20261014-03/.tools/Godot_v4.7.2-stable_linux.x86_64",
+    "--headless",
+    "--path",
+    "/tmp/openrc-r11-rcv-powertrain-native-diag-20261015-01/app",
+    "--audio-driver",
+    "Dummy",
+    "--script",
+    "res://tests/test_rcv_powertrain.gd"
+  ],
+  "cwd": "/mnt/c/DEVELOPMENT/OpenRCsimulator",
+  "diagnostic_app_copy": "/tmp/openrc-r11-rcv-powertrain-native-diag-20261015-01/app",
+  "diagnostic_test_sha256": "6f7aa16278b83e9f6146d29f980279d5542de5281763ffe1f7f952209e72bfe3",
+  "elapsed_seconds": 3.976035162981134,
+  "engine_errors": [],
+  "exit_code": 0,
+  "format": "openrc-rcv-powertrain-native-bounded-run-v1",
+  "frozen_test_sha256": "6f7aa16278b83e9f6146d29f980279d5542de5281763ffe1f7f952209e72bfe3",
+  "godot_path": "/home/bulto/openrc-r11-b09-r05b-20261014-03/.tools/Godot_v4.7.2-stable_linux.x86_64",
+  "godot_sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+  "inner_timeout_seconds": 60,
+  "native_library_sha256": "08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3",
+  "outer_safety_timeout_seconds": 65,
+  "outer_timed_out": false,
+  "stage_receipt_sha256": "d88d8c81b29f40d778301a279155706b40e73740e62e17bf30d5dd08ab1f70c9",
+  "stdout_path": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/rcv-powertrain-timeout/native-build-01/test_rcv_powertrain-native-60s.log",
+  "stdout_sha256": "7f7ac9b6b8b04f37af4fe54088b84a8dcf7fc5419b35f42676a1b517629bc992"
+}

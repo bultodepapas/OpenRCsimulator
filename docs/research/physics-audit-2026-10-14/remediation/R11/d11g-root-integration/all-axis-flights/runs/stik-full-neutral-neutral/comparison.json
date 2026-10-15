@@ -1,0 +1,100 @@
+{
+  "base": "flight.csv",
+  "candidate": "flight.csv",
+  "differences": {
+    "angular_rate_radps": {
+      "components": {
+        "p_radps": {
+          "max_abs": 8.206535604098028e-17,
+          "rmse": 4.214488206346065e-17
+        },
+        "q_radps": {
+          "max_abs": 2.626817164385534e-16,
+          "rmse": 5.181055894039048e-17
+        },
+        "r_radps": {
+          "max_abs": 8.067230304434377e-17,
+          "rmse": 3.675275730826071e-17
+        }
+      },
+      "max_abs": 2.626817164385534e-16,
+      "max_at": {
+        "component": "q_radps",
+        "t_s": 3.933333333333333,
+        "tick": 944
+      },
+      "rmse": 4.40124613854554e-17,
+      "unit": "rad/s"
+    },
+    "position_m": {
+      "components": {
+        "down_m": {
+          "max_abs": 0.0,
+          "rmse": 0.0
+        },
+        "east_m": {
+          "max_abs": 0.0,
+          "rmse": 0.0
+        },
+        "north_m": {
+          "max_abs": 0.0,
+          "rmse": 0.0
+        }
+      },
+      "max_abs": 0.0,
+      "rmse": 0.0,
+      "unit": "m"
+    },
+    "quaternion_angle_rad": {
+      "max_abs": 1.3597399555105182e-16,
+      "max_at": {
+        "t_s": 4.095833333333333,
+        "tick": 983
+      },
+      "rmse": 7.421170914936612e-17,
+      "unit": "rad"
+    },
+    "velocity_mps": {
+      "components": {
+        "u_mps": {
+          "max_abs": 0.0,
+          "rmse": 0.0
+        },
+        "v_mps": {
+          "max_abs": 2.8449465006019636e-16,
+          "rmse": 1.4860363001625206e-16
+        },
+        "w_mps": {
+          "max_abs": 2.220446049250313e-16,
+          "rmse": 2.188629521321228e-17
+        }
+      },
+      "max_abs": 2.8449465006019636e-16,
+      "max_at": {
+        "component": "v_mps",
+        "t_s": 4.3125,
+        "tick": 1035
+      },
+      "rmse": 8.67218710825342e-17,
+      "unit": "m/s"
+    }
+  },
+  "first_divergence": {
+    "metrics": [
+      "angular_rate_radps"
+    ],
+    "t_s": 0.004166666666666667,
+    "tick": 1
+  },
+  "rows": 1441,
+  "status": "ok",
+  "tick": {
+    "first": 0,
+    "last": 1440
+  },
+  "time_s": {
+    "duration": 6.0,
+    "first": 0.0,
+    "last": 6.0
+  }
+}

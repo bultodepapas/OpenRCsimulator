@@ -1,0 +1,345 @@
+{
+  "domain": {
+    "alpha_deg": [
+      0.0,
+      2.0,
+      4.0,
+      6.0,
+      8.0,
+      10.0,
+      11.0
+    ],
+    "axial_flow": "positive throughout; attached R02 local law",
+    "central_difference_rad_s": 0.05,
+    "density_kg_m3": 1.225,
+    "speed_mps": 15.0
+  },
+  "identity": {
+    "aero_source_sha256": "7ac94f6003f2cb7660a56dd94755c6a7d6143d90cc446c6b6c20433038ce38e3",
+    "aircraft_input_sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+    "d11f_source_sha256": "b71405f04f9385a27a733c2b719560ca6032f682289a53d996ed338b8ef737e8",
+    "input_export_sha256": "e9139e59b16c2deaa5b5b4db8175a7053d4be4ce900fb8a4ff5e587930f076b6",
+    "production_decomposition_sha256": "da00866a81a4eb40466d9428404a5d5414322cc9baf25ffc3a74f0f70ba443e6"
+  },
+  "interpretation": "Software and model-form sensitivity only; no physical validation or universal force-law claim.",
+  "model_inputs": {
+    "CD0": 0.0434,
+    "D11f_static_operator_max_abs_error_vs_production_E": 1.454012164558982e-07,
+    "area_m2": 0.464515,
+    "camber_alpha0_semantics": "fixed incidence vector chosen so the zero-rate Weissinger system reproduces production strip_cl0; not measured airfoil camber",
+    "camber_equivalent_alpha0_rad": [
+      0.02342706662407872,
+      0.023427066624078726,
+      0.023427066624078702,
+      0.023427066624078723,
+      0.02342706662407873,
+      0.02342706662407871
+    ],
+    "induced_map_E_max_abs_error_vs_D11d_kernel": 1.1663357241120664e-07,
+    "mean_chord_m": 0.3048,
+    "span_m": 1.524,
+    "strip_CL_intercept_mean": 0.09885845882264294,
+    "strip_CL_intercepts": [
+      0.08335296360428138,
+      0.10335291684557127,
+      0.10986949601807616,
+      0.10986949601807618,
+      0.10335291684557127,
+      0.08335296360428139
+    ],
+    "strip_slope_per_rad": 6.0817546480911915,
+    "whole_aircraft_CL0": 0.1068,
+    "whole_aircraft_CL_minD": 0.23,
+    "whole_aircraft_k_induced": 0.0814934
+  },
+  "rows": [
+    {
+      "alpha_deg": 0.0,
+      "dynamic_vs_g_identity_max_abs_CL": 2.7755575615628914e-17,
+      "production_check": {
+        "GDScript_wing_Cnr_h005": -0.0145903118,
+        "R02_python_current_Cnr": -0.01459031181721266,
+        "absolute_error": 1.7212660116672218e-11,
+        "components_GDScript": {
+          "induced": -0.000525497,
+          "lift_projection": 0.0,
+          "profile": -0.0140648148
+        },
+        "components_python": {
+          "induced": -0.0005254970023979438,
+          "lift": 0.0,
+          "profile": -0.014064814814814716,
+          "total": -0.01459031181721266
+        }
+      },
+      "variants_Cnr": {
+        "D11f_KJ_force_with_R02_fixed_E_CL": -0.014320987136190092,
+        "D11f_matched_CL_with_R02_section_force": -0.014667089968326686,
+        "D11f_matched_strip_intercept_current_a0": -0.014261204511303754,
+        "D11f_original_zero_camber_authored_a0": -0.014064820870513764,
+        "D11f_zero_camber_current_a0": -0.01406482087051377,
+        "R02_CD0_force_x_only": -0.014590311817212659,
+        "R02_CL_minD_zero": -0.014277528169507734,
+        "R02_current_fixed_E_weighted": -0.014590311817212659,
+        "R02_dimensional_g_exact_Weissinger_rhs": -0.014667089968326713,
+        "R02_dimensional_g_u_times_atan2_approx": -0.014667089968326713,
+        "R02_dynamic_matched_camber_CL_with_R02_force": -0.014667089968326686,
+        "R02_fixed_E_unweighted": -0.014590311817212659,
+        "R02_k_induced_zero": -0.014064814814814716,
+        "R02_rate_dependent_operator_angle_rhs": -0.014667089968326686,
+        "R02_zero_strip_intercept": -0.015461898426851781
+      },
+      "zero_rate_CL_means": {
+        "D11f_matched_intercept": 0.09885845882264294,
+        "R02_current": 0.09885845882264294
+      }
+    },
+    {
+      "alpha_deg": 2.0,
+      "dynamic_vs_g_identity_max_abs_CL": 1.6653345369377348e-16,
+      "production_check": {
+        "GDScript_wing_Cnr_h005": -0.0133165238,
+        "R02_python_current_Cnr": -0.013316523803320728,
+        "absolute_error": 3.3207273736346465e-12,
+        "components_GDScript": {
+          "induced": -3.21768e-05,
+          "lift_projection": 0.0007719025,
+          "profile": -0.0140562495
+        },
+        "components_python": {
+          "induced": -3.217682360967601e-05,
+          "lift": 0.0007719025396244894,
+          "profile": -0.014056249519335541,
+          "total": -0.013316523803320728
+        }
+      },
+      "variants_Cnr": {
+        "D11f_KJ_force_with_R02_fixed_E_CL": -0.014254485788421247,
+        "D11f_matched_CL_with_R02_section_force": -0.013707939612048456,
+        "D11f_matched_strip_intercept_current_a0": -0.014157662890088442,
+        "D11f_original_zero_camber_authored_a0": -0.014056252961658392,
+        "D11f_zero_camber_current_a0": -0.01405625296165811,
+        "R02_CD0_force_x_only": -0.013316521193633945,
+        "R02_CL_minD_zero": -0.014098268418649716,
+        "R02_current_fixed_E_weighted": -0.013316523803320726,
+        "R02_dimensional_g_exact_Weissinger_rhs": -0.013707939612048397,
+        "R02_dimensional_g_u_times_atan2_approx": -0.013707688444092451,
+        "R02_dynamic_matched_camber_CL_with_R02_force": -0.013707939612048456,
+        "R02_fixed_E_unweighted": -0.013406892423247984,
+        "R02_k_induced_zero": -0.013284346979711053,
+        "R02_rate_dependent_operator_angle_rhs": -0.013707688444092361,
+        "R02_zero_strip_intercept": -0.014261049811542435
+      },
+      "zero_rate_CL_means": {
+        "D11f_matched_intercept": 0.246218497885609,
+        "R02_current": 0.24615864177674415
+      }
+    },
+    {
+      "alpha_deg": 4.0,
+      "dynamic_vs_g_identity_max_abs_CL": 1.6653345369377348e-16,
+      "production_check": {
+        "GDScript_wing_Cnr_h005": -0.0118400607,
+        "R02_python_current_Cnr": -0.011840060724788758,
+        "absolute_error": 2.4788757851945675e-11,
+        "components_GDScript": {
+          "induced": 0.0001196382,
+          "lift_projection": 0.0020708965,
+          "profile": -0.0140305954
+        },
+        "components_python": {
+          "induced": 0.0001196381615674243,
+          "lift": 0.002070896476024663,
+          "profile": -0.014030595362380846,
+          "total": -0.011840060724788758
+        }
+      },
+      "variants_Cnr": {
+        "D11f_KJ_force_with_R02_fixed_E_CL": -0.014031695577127554,
+        "D11f_matched_CL_with_R02_section_force": -0.012744835855381201,
+        "D11f_matched_strip_intercept_current_a0": -0.014036872337462916,
+        "D11f_original_zero_camber_authored_a0": -0.014030559673768825,
+        "D11f_zero_camber_current_a0": -0.0140305596737689,
+        "R02_CD0_force_x_only": -0.011840018995228761,
+        "R02_CL_minD_zero": -0.0137131137525413,
+        "R02_current_fixed_E_weighted": -0.011840060724788758,
+        "R02_dimensional_g_exact_Weissinger_rhs": -0.01274483585538135,
+        "R02_dimensional_g_u_times_atan2_approx": -0.0127414155836975,
+        "R02_dynamic_matched_camber_CL_with_R02_force": -0.012744835855381201,
+        "R02_fixed_E_unweighted": -0.012084271637316697,
+        "R02_k_induced_zero": -0.011959698886356182,
+        "R02_rate_dependent_operator_angle_rhs": -0.01274141558369746,
+        "R02_zero_strip_intercept": -0.012855434382958579
+      },
+      "zero_rate_CL_means": {
+        "D11f_matched_intercept": 0.3939383751452045,
+        "R02_current": 0.3934588247308454
+      }
+    },
+    {
+      "alpha_deg": 6.0,
+      "dynamic_vs_g_identity_max_abs_CL": 2.220446049250313e-16,
+      "production_check": {
+        "GDScript_wing_Cnr_h005": -0.0101794573,
+        "R02_python_current_Cnr": -0.010179457249739197,
+        "absolute_error": 5.02608024643969e-11,
+        "components_GDScript": {
+          "induced": -6.98237e-05,
+          "lift_projection": 0.0038783438,
+          "profile": -0.0139879773
+        },
+        "components_python": {
+          "induced": -6.982373104128506e-05,
+          "lift": 0.0038783438104019025,
+          "profile": -0.013987977329099816,
+          "total": -0.010179457249739197
+        }
+      },
+      "variants_Cnr": {
+        "D11f_KJ_force_with_R02_fixed_E_CL": -0.013647007380652915,
+        "D11f_matched_CL_with_R02_section_force": -0.011805617134583954,
+        "D11f_matched_strip_intercept_current_a0": -0.013898980018107802,
+        "D11f_original_zero_camber_authored_a0": -0.013987772310158878,
+        "D11f_zero_camber_current_a0": -0.013987772310158445,
+        "R02_CD0_force_x_only": -0.010179246208273192,
+        "R02_CL_minD_zero": -0.013137035181170402,
+        "R02_current_fixed_E_weighted": -0.0101794572497392,
+        "R02_dimensional_g_exact_Weissinger_rhs": -0.0118056171345838,
+        "R02_dimensional_g_u_times_atan2_approx": -0.011789215140965682,
+        "R02_dynamic_matched_camber_CL_with_R02_force": -0.011805617134583954,
+        "R02_fixed_E_unweighted": -0.010640528406957917,
+        "R02_k_induced_zero": -0.010109633518697914,
+        "R02_rate_dependent_operator_angle_rhs": -0.01178921514096548,
+        "R02_zero_strip_intercept": -0.011262558354529032
+      },
+      "zero_rate_CL_means": {
+        "D11f_matched_intercept": 0.5423814521545435,
+        "R02_current": 0.5407590076849466
+      }
+    },
+    {
+      "alpha_deg": 8.0,
+      "dynamic_vs_g_identity_max_abs_CL": 3.3306690738754696e-16,
+      "production_check": {
+        "GDScript_wing_Cnr_h005": -0.0083624037,
+        "R02_python_current_Cnr": -0.008362403684342535,
+        "absolute_error": 1.5657464907947727e-11,
+        "components_GDScript": {
+          "induced": -0.0005987901,
+          "lift_projection": 0.0061649894,
+          "profile": -0.0139286031
+        },
+        "components_python": {
+          "induced": -0.0005987901080033511,
+          "lift": 0.006164989475034537,
+          "profile": -0.01392860305137372,
+          "total": -0.008362403684342535
+        }
+      },
+      "variants_Cnr": {
+        "D11f_KJ_force_with_R02_fixed_E_CL": -0.01309108837168105,
+        "D11f_matched_CL_with_R02_section_force": -0.010933660715804873,
+        "D11f_matched_strip_intercept_current_a0": -0.013744153932575335,
+        "D11f_original_zero_camber_authored_a0": -0.01392794300063967,
+        "D11f_zero_camber_current_a0": -0.013927943000640217,
+        "R02_CD0_force_x_only": -0.008361737636843425,
+        "R02_CL_minD_zero": -0.012394235233984285,
+        "R02_current_fixed_E_weighted": -0.008362403684342533,
+        "R02_dimensional_g_exact_Weissinger_rhs": -0.010933660715805881,
+        "R02_dimensional_g_u_times_atan2_approx": -0.01088292192137873,
+        "R02_dynamic_matched_camber_CL_with_R02_force": -0.010933660715804873,
+        "R02_fixed_E_unweighted": -0.009102867996320544,
+        "R02_k_induced_zero": -0.007763613576339183,
+        "R02_rate_dependent_operator_angle_rhs": -0.010882921921378226,
+        "R02_zero_strip_intercept": -0.009509081885078603
+      },
+      "zero_rate_CL_means": {
+        "D11f_matched_intercept": 0.6919182107442138,
+        "R02_current": 0.6880591906390475
+      }
+    },
+    {
+      "alpha_deg": 10.0,
+      "dynamic_vs_g_identity_max_abs_CL": 3.3306690738754696e-16,
+      "production_check": {
+        "GDScript_wing_Cnr_h005": -0.0064256134,
+        "R02_python_current_Cnr": -0.006425613378059964,
+        "absolute_error": 2.1940036593059986e-11,
+        "components_GDScript": {
+          "induced": -0.0014640546,
+          "lift_projection": 0.008891203,
+          "profile": -0.0138527618
+        },
+        "components_python": {
+          "induced": -0.0014640546293612864,
+          "lift": 0.008891203047536524,
+          "profile": -0.013852761796235201,
+          "total": -0.006425613378059964
+        }
+      },
+      "variants_Cnr": {
+        "D11f_KJ_force_with_R02_fixed_E_CL": -0.012350746694613899,
+        "D11f_matched_CL_with_R02_section_force": -0.010188343326975552,
+        "D11f_matched_strip_intercept_current_a0": -0.01357258271259889,
+        "D11f_original_zero_camber_authored_a0": -0.013851144638010284,
+        "D11f_zero_camber_current_a0": -0.01385114463800976,
+        "R02_CD0_force_x_only": -0.006423990256135361,
+        "R02_CL_minD_zero": -0.011518053514674262,
+        "R02_current_fixed_E_weighted": -0.006425613378059964,
+        "R02_dimensional_g_exact_Weissinger_rhs": -0.010188343326975328,
+        "R02_dimensional_g_u_times_atan2_approx": -0.01006517870934567,
+        "R02_dynamic_matched_camber_CL_with_R02_force": -0.010188343326975552,
+        "R02_fixed_E_unweighted": -0.007507471431596575,
+        "R02_k_induced_zero": -0.004961558748698678,
+        "R02_rate_dependent_operator_angle_rhs": -0.010065178709344943,
+        "R02_zero_strip_intercept": -0.00763068315797707
+      },
+      "zero_rate_CL_means": {
+        "D11f_matched_intercept": 0.8429299997202323,
+        "R02_current": 0.8353593735931488
+      }
+    },
+    {
+      "alpha_deg": 11.0,
+      "dynamic_vs_g_identity_max_abs_CL": 2.220446049250313e-16,
+      "production_check": {
+        "GDScript_wing_Cnr_h005": -0.0054262159,
+        "R02_python_current_Cnr": -0.005426215831370387,
+        "absolute_error": 6.862961240972076e-11,
+        "components_GDScript": {
+          "induced": -0.0020214434,
+          "lift_projection": 0.0104040059,
+          "profile": -0.0138087784
+        },
+        "components_python": {
+          "induced": -0.002021443402338031,
+          "lift": 0.010404006002393953,
+          "profile": -0.013808778431426309,
+          "total": -0.005426215831370387
+        }
+      },
+      "variants_Cnr": {
+        "D11f_KJ_force_with_R02_fixed_E_CL": -0.011906196415769963,
+        "D11f_matched_CL_with_R02_section_force": -0.009886267232342502,
+        "D11f_matched_strip_intercept_current_a0": -0.013480582209907492,
+        "D11f_original_zero_camber_authored_a0": -0.013806410496818727,
+        "D11f_zero_camber_current_a0": -0.013806410496818805,
+        "R02_CD0_force_x_only": -0.005423841952323798,
+        "R02_CL_minD_zero": -0.01104282945736143,
+        "R02_current_fixed_E_weighted": -0.005426215831370387,
+        "R02_dimensional_g_exact_Weissinger_rhs": -0.009886267232342335,
+        "R02_dimensional_g_u_times_atan2_approx": -0.009705769977463134,
+        "R02_dynamic_matched_camber_CL_with_R02_force": -0.009886267232342502,
+        "R02_fixed_E_unweighted": -0.006701835417932358,
+        "R02_k_induced_zero": -0.0034047724290323564,
+        "R02_rate_dependent_operator_angle_rhs": -0.009705769977463918,
+        "R02_zero_strip_intercept": -0.006658211183988444
+      },
+      "zero_rate_CL_means": {
+        "D11f_matched_intercept": 0.9191121463702377,
+        "R02_current": 0.9090094650701994
+      }
+    }
+  ],
+  "schema": "d11g-r02-vs-d11f-matched-yaw-sensitivity-v1"
+}
