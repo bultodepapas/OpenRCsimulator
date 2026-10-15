@@ -10,9 +10,10 @@
   const toggle = document.querySelector('#spin-toggle');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let selected = '', modelName = '', frame = 4, sheet = null, metadata = null;
-  let visible = false, playing = !reduced.matches, request = 0, lastFrameTime = 0;
-  let generation = 0, drag = null, metadataRequest = null, failed = false, inspecting = false;
+  let visible = false, playing = !reduced.matches, request = 0, animationTimer = 0, lastFrameTime = 0;
+  let generation = 0, drag = null, metadataRequest = null, activeLoad = null, failed = false, inspecting = false;
   const images = new Map();
+  const frameInterval = 125;
   mode.hidden = true;
   degrees.setAttribute('aria-live','off');
 
@@ -22,8 +23,15 @@
     toggle.innerHTML = `<span>${caption}</span><span aria-hidden="true">${reduced.matches ? '→' : playing ? 'Ⅱ' : '↻'}</span>`;
     toggle.removeAttribute('aria-pressed');
     canvas.setAttribute('aria-label',`${modelName} — ${english ? '360 degree studio view' : 'vista de estudio de 360 grados'}`);
-    slider.setAttribute('aria-valuetext',`${frame * 10} ${english ? 'degrees' : 'grados'}`);
     document.querySelector('#viewer-hint').textContent = failed ? (english ? 'Static model view. The 360° view could not load.' : 'Vista estática del modelo. No se pudo cargar la vista 360°.') : (english ? 'Drag to explore · Use the slider to change the angle.' : 'Arrastra para explorar · Usa el control para cambiar de ángulo.');
+    updateFrameUI();
+  }
+
+  function updateFrameUI() {
+    const english = document.documentElement.lang === 'en';
+    slider.value = String(frame);
+    slider.setAttribute('aria-valuetext',`${Math.round(frame * 360 / (metadata?.frame_count || 36))} ${english ? 'degrees' : 'grados'}`);
+    degrees.value = `${String(Math.round(frame * 360 / (metadata?.frame_count || 36))).padStart(3,'0')}°`;
   }
 
   function draw() {
@@ -31,61 +39,111 @@
     const {frame_width:w, frame_height:h, columns, frame_count:count} = metadata;
     frame = ((frame % count) + count) % count;
     context.drawImage(sheet,(frame % columns)*w,Math.floor(frame/columns)*h,w,h,0,0,canvas.width,canvas.height);
-    slider.value = String(frame);
-    degrees.value = `${String(Math.round(frame * 360 / count)).padStart(3,'0')}°`;
-    localize();
+    updateFrameUI();
   }
 
-  function animate(time) {
-    request = 0;
-    if (!playing || !visible || !sheet || document.hidden || reduced.matches || inspecting) return;
-    if (time-lastFrameTime >= 125) {frame++;draw();lastFrameTime=time;}
-    request = requestAnimationFrame(animate);
+  function canAnimate() {
+    return playing && visible && sheet && !document.hidden && !reduced.matches && !inspecting;
+  }
+
+  function cancelAnimation() {
+    if(animationTimer) clearTimeout(animationTimer);
+    if(request) cancelAnimationFrame(request);
+    animationTimer=0;request=0;
+  }
+
+  function scheduleNextFrame() {
+    if(!canAnimate() || animationTimer || request) return;
+    const delay=Math.max(0,frameInterval-(performance.now()-lastFrameTime));
+    animationTimer=setTimeout(() => {
+      animationTimer=0;
+      if(!canAnimate()) return;
+      request=requestAnimationFrame(time => {
+        request=0;
+        if(!canAnimate()) return;
+        frame++;draw();lastFrameTime=time;
+        scheduleNextFrame();
+      });
+    },delay);
   }
 
   function synchronize() {
-    if(request) cancelAnimationFrame(request);
-    request = 0;
+    cancelAnimation();
     localize();
-    if(playing && visible && sheet && !document.hidden && !reduced.matches && !inspecting) request=requestAnimationFrame(animate);
+    scheduleNextFrame();
+  }
+
+  function cancelActiveLoad() {
+    const load=activeLoad;
+    if(!load) return;
+    activeLoad=null;
+    if(load.image) {
+      // Removing src cancels a pending image request without starting an empty-URL request.
+      load.image.removeAttribute('src');
+      load.image=null;
+    }
+  }
+
+  function isCurrentLoad(load) {
+    return activeLoad===load && load.generation===generation && selected===load.key && visible && !inspecting;
+  }
+
+  function cacheImage(key, asset) {
+    images.delete(key);
+    images.set(key,asset);
+    while(images.size>2) images.delete(images.keys().next().value);
   }
 
   async function load() {
-    if(!context || !selected) return;
-    const current = ++generation;
+    if(!context || !selected || !visible || inspecting) return;
     const key = selected;
+    if(sheet || activeLoad?.key===key && activeLoad.generation===generation) return;
+    const current = generation;
+    const loadState={key,generation:current,image:null};
+    activeLoad=loadState;
+    failed=false;
+    localize();
     try {
       metadataRequest ??= fetch('assets/turntables.json').then(response => {
         if(!response.ok) throw new Error('Turntable metadata unavailable');
         return response.json();
       }).catch(error => {metadataRequest=null;throw error;});
       metadata = await metadataRequest;
+      if(!isCurrentLoad(loadState)) return;
       const model = metadata.models[key];
       if(!model) throw new Error('Model unavailable');
       let asset = images.get(key);
-      if(!asset) {
-        asset = new Image();asset.src = model.src;await asset.decode();
-        images.set(key,asset);
-        // Bound decoded image memory; network responses remain browser-cacheable.
-        while(images.size>2) images.delete(images.keys().next().value);
+      if(asset) {
+        cacheImage(key,asset);
+      } else {
+        if(!isCurrentLoad(loadState)) return;
+        asset = new Image();loadState.image=asset;asset.src = model.src;await asset.decode();
+        if(!isCurrentLoad(loadState)) return;
+        cacheImage(key,asset);
+        loadState.image=null;
       }
-      if(current !== generation) return;
+      if(!isCurrentLoad(loadState)) return;
       sheet = asset;frame=4;failed=false;
       canvas.width=metadata.frame_width;canvas.height=metadata.frame_height;
       slider.max=metadata.frame_count-1;
+      lastFrameTime=performance.now();
       draw();poster.hidden=true;canvas.hidden=false;controls.hidden=false;mode.hidden=false;
       synchronize();
     } catch {
-      if(current !== generation) return;
+      if(!isCurrentLoad(loadState)) return;
+      if(loadState.image) {loadState.image.removeAttribute('src');loadState.image=null;}
       sheet=null;failed=true;canvas.hidden=true;poster.hidden=false;controls.hidden=true;mode.hidden=true;localize();
+    } finally {
+      if(activeLoad===loadState) activeLoad=null;
     }
   }
 
   window.OpenRCViewer = {
     select(key,name) {
       modelName=name;
-      if(selected===key){localize();return;}
-      selected=key;generation++;sheet=null;failed=false;synchronize();
+      if(selected===key){localize();if(visible && !inspecting && !sheet && !activeLoad) load();return;}
+      generation++;cancelActiveLoad();
+      selected=key;sheet=null;failed=false;synchronize();
       canvas.hidden=true;poster.hidden=false;controls.hidden=true;mode.hidden=true;
       if(visible && !inspecting) load();
     }
@@ -110,10 +168,23 @@
   const endDrag=()=>{drag=null;canvas.classList.remove('is-dragging');};
   canvas.addEventListener('pointerup',endDrag);canvas.addEventListener('pointercancel',endDrag);canvas.addEventListener('lostpointercapture',endDrag);
   document.addEventListener('visibilitychange',synchronize);
-  document.addEventListener('openrc-inspection',event=>{inspecting=event.detail.open;if(!inspecting && visible && !sheet)load();synchronize();});
+  document.addEventListener('openrc-inspection',event=>{
+    inspecting=event.detail.open;
+    if(inspecting && activeLoad) {generation++;cancelActiveLoad();}
+    if(!inspecting && visible && !sheet) load();
+    synchronize();
+  });
   document.addEventListener('openrc-language',localize);
   reduced.addEventListener('change',()=>{if(reduced.matches)playing=false;synchronize();});
   if('IntersectionObserver' in window){
-    new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible&&!sheet&&!inspecting)load();synchronize();},{rootMargin:'160px',threshold:0}).observe(canvas.parentElement);
+    new IntersectionObserver(entries=>{
+      const nextVisible=entries[0].isIntersecting;
+      if(visible===nextVisible) return;
+      visible=nextVisible;
+      if(!visible && activeLoad) {generation++;cancelActiveLoad();}
+      if(visible && !sheet && !inspecting) load();
+      synchronize();
+    },{rootMargin:'160px',threshold:0}).observe(canvas.parentElement);
   }else{visible=true;}
+  localize();
 })();

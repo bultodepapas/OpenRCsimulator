@@ -3,12 +3,17 @@
   const hero = document.querySelector('.hero');
   const field = document.querySelector('.field');
   const film = document.querySelector('#hero-video');
+  const heroFilm = document.querySelector('.hero-film');
+  const fieldImage = document.querySelector('#field-image');
   const toggle = document.querySelector('#film-toggle');
   const progress = document.querySelector('.reading-progress');
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   const connection = navigator.connection;
-  let visible = false, started = false, allowed = !reduced.matches && !connection?.saveData;
+  const slowConnection = () => /^(slow-2g|2g|3g)$/.test(connection?.effectiveType);
+  let visible = false, started = false, allowed = !reduced.matches && !connection?.saveData && !slowConnection();
   let requested = 0, playback = 0, inspection = false;
+  let pageReady = document.readyState === 'complete', explicitPlayback = false;
+  let geometry = null, measureRequested = 0;
 
   function filmLabel() {
     const english = document.documentElement.lang === 'en';
@@ -19,7 +24,7 @@
 
   async function synchronizeFilm() {
     const request = ++playback;
-    if (!allowed || !visible || document.hidden || inspection) {
+    if (!allowed || !visible || document.hidden || inspection || (!pageReady && !explicitPlayback)) {
       film.pause();filmLabel();return;
     }
     if (!started) { film.src = film.dataset.src; started = true; }
@@ -33,6 +38,7 @@
 
   toggle.hidden = false;
   toggle.addEventListener('click', () => {
+    explicitPlayback = true;
     allowed = film.paused;
     synchronizeFilm();
   });
@@ -43,13 +49,13 @@
   film.addEventListener('pause', filmLabel);
   document.addEventListener('openrc-language', filmLabel);
   document.addEventListener('visibilitychange', synchronizeFilm);
-  document.addEventListener('openrc-inspection', event => {inspection = event.detail.open;synchronizeFilm();});
+  document.addEventListener('openrc-inspection', event => {inspection = event.detail.open;synchronizeFilm();schedule();});
   reduced.addEventListener('change', () => {
     if (reduced.matches) allowed = false;
-    synchronizeFilm();schedule();
+    synchronizeFilm();updateDepth();
   });
   connection?.addEventListener('change', () => {
-    if (connection.saveData) allowed = false;
+    if (connection.saveData || slowConnection()) allowed = false;
     synchronizeFilm();
   });
   if ('IntersectionObserver' in window) {
@@ -58,30 +64,48 @@
       synchronizeFilm();
     }, {threshold:.05}).observe(hero);
   } else { visible = true;synchronizeFilm(); }
+  // Let the poster and critical fonts paint before optional film work begins.
+  if(!pageReady) window.addEventListener('load', () => {
+    requestAnimationFrame(() => requestAnimationFrame(() => {pageReady = true;synchronizeFilm();}));
+  }, {once:true});
 
+  function measureDepth() {
+    measureRequested = 0;
+    const viewport = window.innerHeight;
+    const height = Math.max(0,document.documentElement.scrollHeight - viewport);
+    const top = window.scrollY;
+    const heroRect = hero.getBoundingClientRect();
+    const fieldRect = field.getBoundingClientRect();
+    // All layout reads happen together, only when geometry changes.
+    geometry = {viewport,height,heroTop:heroRect.top+top,heroHeight:heroRect.height,fieldTop:fieldRect.top+top,fieldHeight:fieldRect.height};
+    updateDepth();
+  }
   function updateDepth() {
     requested = 0;
-    const viewport = window.innerHeight;
-    const height = document.documentElement.scrollHeight - viewport;
-    progress.style.transform = `scaleX(${height > 0 ? Math.min(1,scrollY / height) : 0})`;
+    if(!geometry || inspection) return;
+    const {viewport,height,heroTop,heroHeight,fieldTop,fieldHeight} = geometry;
+    const top = window.scrollY;
+    progress.style.transform = `scaleX(${height > 0 ? Math.max(0,Math.min(1,top / height)) : 0})`;
     if (reduced.matches) {
-      hero.style.removeProperty('--hero-drift');field.style.removeProperty('--field-drift');return;
+      heroFilm.style.removeProperty('--hero-drift');fieldImage.style.removeProperty('--field-drift');return;
     }
-    const heroRect = hero.getBoundingClientRect();
-    if (heroRect.bottom > 0 && heroRect.top < viewport) {
-      hero.style.setProperty('--hero-drift',`${Math.max(-50,Math.min(70,-heroRect.top * .12))}px`);
+    const heroY = heroTop - top, fieldY = fieldTop - top;
+    if (heroY + heroHeight > 0 && heroY < viewport) {
+      heroFilm.style.setProperty('--hero-drift',`${Math.max(-50,Math.min(70,-heroY * .12))}px`);
     }
-    const fieldRect = field.getBoundingClientRect();
-    if (fieldRect.bottom > 0 && fieldRect.top < viewport) {
-      const offset = (viewport / 2 - fieldRect.top - fieldRect.height / 2) * .08;
-      field.style.setProperty('--field-drift',`${Math.max(-45,Math.min(45,offset))}px`);
+    if (fieldY + fieldHeight > 0 && fieldY < viewport) {
+      const offset = (viewport / 2 - fieldY - fieldHeight / 2) * .08;
+      fieldImage.style.setProperty('--field-drift',`${Math.max(-45,Math.min(45,offset))}px`);
     }
   }
-  function schedule() { if (!requested) requested = requestAnimationFrame(updateDepth); }
+  function schedule() { if (!requested && !reduced.matches && !document.hidden && !inspection) requested = requestAnimationFrame(updateDepth); }
+  function scheduleMeasure() { if(!measureRequested) measureRequested = requestAnimationFrame(measureDepth); }
   window.addEventListener('scroll', schedule, {passive:true});
-  window.addEventListener('resize', schedule, {passive:true});
-  if ('ResizeObserver' in window) new ResizeObserver(schedule).observe(document.body);
-  schedule();filmLabel();
+  window.addEventListener('resize', scheduleMeasure, {passive:true});
+  document.addEventListener('openrc-language',scheduleMeasure);
+  if ('ResizeObserver' in window) new ResizeObserver(measureDepth).observe(document.body);
+  else window.addEventListener('load',measureDepth,{once:true});
+  filmLabel();
 })();
 
 /* One view at a time: a deliberate, keyboard-friendly study of the featured jet. */

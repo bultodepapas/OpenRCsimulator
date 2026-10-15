@@ -1,5 +1,9 @@
 /* WEB-03: studio direction, quiet depth and a deliberate 3D inspection. */
 :root { --ease-out: cubic-bezier(.2,.7,.2,1); }
+/* Keep distant editorial sections out of the initial layout/paint work. */
+.project,.inventory,.partners,.development,.community { content-visibility:auto; contain-intrinsic-block-size:auto 900px; }
+.partners { contain-intrinsic-block-size:auto 430px; }
+.community { contain-intrinsic-block-size:auto 280px; }
 .hero-actions { display:flex; gap:24px; align-items:center; flex-wrap:wrap; }
 .hero-inspect { background:none; border:0; border-bottom:1px solid #81928b; color:#dce8ab; font-size:12px; padding:13px 0; display:inline-flex; gap:18px; }
 .hero-inspect>span:last-child { transition:transform .3s var(--ease-out); }
@@ -67,7 +71,6 @@
 .field>img { transform:translate3d(0,var(--field-drift,0px),0) scale(1.12); will-change:transform; transition:opacity .45s; }
 .field-shade { background:linear-gradient(90deg,#071e16d9,#0a20173d 70%,#0a201710),linear-gradient(0deg,#0819129c,transparent 30%); }
 .field-content h2 { text-wrap:balance; }
-.field.is-changing>img { opacity:.35; }
 .field-footer { z-index:1; }
 .asset-spread img { transition:filter .4s; }
 .asset-spread article:hover img { filter:brightness(1.05); }
@@ -123,6 +126,11 @@ html[data-theme=night] .inspect-launch:hover .inspect-symbol { color:#101820; }
   .camera-presets button { padding:12px; }
 }
 @media(max-width:700px) {
+  .project { contain-intrinsic-block-size:auto 2300px; }
+  .inventory { contain-intrinsic-block-size:auto 1500px; }
+  .partners { contain-intrinsic-block-size:auto 640px; }
+  .development { contain-intrinsic-block-size:auto 960px; }
+  .community { contain-intrinsic-block-size:auto 350px; }
   .hero-actions { gap:12px 20px; }
   .hero-inspect { font-size:11px; }
   .hero-copy .button { gap:25px; }
