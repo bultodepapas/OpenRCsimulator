@@ -1,6 +1,6 @@
 test_body_directional exit=0 P51-25 body directional: 14 checks, 0 failed 
 verify_p51 exit=0 verify_p51: 248 checks, 0 failed 
-test_p51_handling exit=0 15 checks, 0 failed 
+test_p51_handling exit=1 FAIL inside loop is a loop: pitch attitude passes the vertical (> 80°) and |β| stays below 10°  pitch max 46°, |β| max 20.1° 16 checks, 1 failed (rerun after the P51-25 loop-check correction)
 test_p51_envelope exit=1 FAIL power-off stall recovers (stick forward, opposite rudder, wings level, α-limited pull-out) within 80 m, no crash  81 m 15 checks, 1 failed 
 test_p51_ground exit=1 FAIL lift-off between 1.05 and 1.5 Vs (rotation at 1.25 Vs)  25.3 m/s 12 checks, 1 failed 
 test_runway_start exit=0 18 checks, 0 failed 

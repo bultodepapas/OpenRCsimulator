@@ -23,6 +23,9 @@ var status: Label
 var telemetry: Label
 var condition_status: Label
 var headlights_button: Button
+var auxiliary_button: Button
+var neon_button: Button
+var _last_lights_state := -1
 var toast: Label
 var resume_button: Button
 var controller_choice: OptionButton
@@ -189,6 +192,11 @@ func _ready() -> void:
 	column.add_child(_button(words("Clean vehicle", "Limpiar carro"), "clean"))
 	headlights_button = _button(words("Headlights on · L", "Faros encendidos · L"), "lights")
 	column.add_child(headlights_button)
+	if nitro:
+		auxiliary_button = _button(words("Auxiliary lights off · K", "Exploradoras apagadas · K"), "aux_lights")
+		column.add_child(auxiliary_button)
+		neon_button = _button(words("Neon on · N", "Neón encendido · N"), "neon")
+		column.add_child(neon_button)
 	record_button = _button(words("Record telemetry", "Grabar telemetría"), "record")
 	column.add_child(record_button)
 	var saves := HBoxContainer.new()
@@ -346,9 +354,16 @@ func select_spawn(id: String) -> void:
 func message(english: String, spanish: String) -> void:
 	toast.text = words(english, spanish)
 
-func update_lights(enabled: bool) -> void:
+func update_lights(enabled: bool, auxiliary: bool = false, neon: bool = true) -> void:
 	if headlights_button == null: return
+	var state := int(enabled) | (int(auxiliary) << 1) | (int(neon) << 2)
+	if state == _last_lights_state: return
+	_last_lights_state = state
 	headlights_button.text = words("Headlights on · L", "Faros encendidos · L") if enabled else words("Headlights off · L", "Faros apagados · L")
+	if auxiliary_button != null:
+		auxiliary_button.text = words("Auxiliary lights on · K", "Exploradoras encendidas · K") if auxiliary else words("Auxiliary lights off · K", "Exploradoras apagadas · K")
+	if neon_button != null:
+		neon_button.text = words("Neon on · N", "Neón encendido · N") if neon else words("Neon off · N", "Neón apagado · N")
 
 
 func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recording: bool, diagnostic: bool) -> void:

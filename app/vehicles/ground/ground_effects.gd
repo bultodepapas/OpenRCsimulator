@@ -4,6 +4,7 @@ extends Node3D
 const CORNERS := ["FL", "FR", "RL", "RR"]
 const SMOKE_TEXTURE: Texture2D = preload("res://assets/crash/smoke.png")
 const GRIME_SHADER_PATH := "res://vehicles/ground/ground_grime_overlay.gdshader"
+const NitroLights = preload("res://vehicles/ground/monster_car_2_lights.gd")
 const PARTICLES_PER_TIRE := 24
 const MAX_GRIME := 0.46
 const TIRE_RADIUS_FALLBACK_M := 0.061
@@ -11,8 +12,10 @@ const FULL_SHELL_GRIME_OPACITY_GAIN := 1.8
 
 var _prepared := false
 var headlights_enabled := true
+var auxiliary_enabled := false
+var neon_enabled := true
+var _nitro_lights: Node3D
 var _vehicle_root: Node3D
-var _authored_lights := {}
 var _body_mesh: MeshInstance3D
 var _shell_meshes: Array[MeshInstance3D] = []
 var _wheel_nodes: Array[Node3D] = []
@@ -38,6 +41,18 @@ var _reverse_materials: Array[StandardMaterial3D] = []
 var _reverse_lens_colors: Array[Color] = []
 
 
+func _exit_tree() -> void:
+	# Detach our overlays before their resources and the vehicle are released.
+	# This also avoids stale shader-parameter queries in Godot's dummy renderer.
+	for mesh in _shell_meshes:
+		if is_instance_valid(mesh) and _grime_materials.has(mesh.material_overlay):
+			mesh.material_overlay = null
+	for wheel in _wheel_nodes:
+		if is_instance_valid(wheel) and wheel is MeshInstance3D \
+				and _grime_materials.has(wheel.material_overlay):
+			wheel.material_overlay = null
+
+
 ## Build all per-instance visuals once. `visual` is the read-only result from mt8_model.build().
 func prepare(visual: Dictionary, scene_parent: Node = null) -> bool:
 	if _prepared:
@@ -54,12 +69,6 @@ func prepare(visual: Dictionary, scene_parent: Node = null) -> bool:
 		checked_wheels.append(wheel as Node3D)
 	var body_value: Variant = nodes_value.get("Body")
 	_vehicle_root = root_value as Node3D
-	if visual.has("headlight_positions"):
-		_authored_lights = {
-			"positions": visual.headlight_positions,
-			"heads": visual.get("headlight_nodes", []),
-			"tails": visual.get("brake_light_nodes", []),
-		}
 	_wheel_nodes = checked_wheels
 	_body_mesh = body_value as MeshInstance3D if body_value is MeshInstance3D else null
 	var authored_body_value: Variant = visual.get("body_nodes", [])
@@ -80,7 +89,8 @@ func prepare(visual: Dictionary, scene_parent: Node = null) -> bool:
 	if scene_parent != null and get_parent() == null:
 		scene_parent.add_child(self)
 	_build_dust_emitters()
-	_build_vehicle_lights()
+	if not _build_vehicle_lights(visual):
+		return false
 	_prepared = true
 	return true
 
@@ -233,7 +243,10 @@ func reset() -> void:
 		emitter.speed_scale = 1.0
 	_brake_lights = false
 	_reverse_lights = false
-	_apply_tail_light_state()
+	if _nitro_lights != null:
+		_update_lights({}, {}, _night_weight)
+	else:
+		_apply_tail_light_state()
 
 
 ## Clean only render-side grime, wet sheen and particle buffers.
@@ -278,6 +291,7 @@ func diagnostic_snapshot() -> Dictionary:
 		"headlight_energy": _last_headlight_energy,
 		"brake_lights": _brake_lights,
 		"reverse_lights": _reverse_lights,
+		"lighting": _nitro_lights.diagnostic_snapshot() if _nitro_lights != null else {},
 		"paused": _paused,
 	}
 
@@ -386,22 +400,16 @@ func _build_dust_emitters() -> void:
 		_emitters.append(particles)
 
 
-func _build_vehicle_lights() -> void:
-	if not _authored_lights.is_empty():
-		_bind_lamp_materials(_authored_lights.heads, _headlight_materials, _headlight_lens_colors)
-		_bind_lamp_materials(_authored_lights.tails, _tail_materials, _tail_lens_colors)
-		for point: Vector3 in _authored_lights.positions:
-			var spot := SpotLight3D.new()
-			spot.name = "HeadlightBeam"
-			spot.position = point
-			spot.spot_range = 8.0
-			spot.spot_angle = 22.0
-			spot.rotation.x = deg_to_rad(-6.0)
-			spot.shadow_enabled = false
-			_vehicle_root.add_child(spot)
-			_headlight_lights.append(spot)
+func _build_vehicle_lights(visual: Dictionary) -> bool:
+	if visual.has("headlight_positions"):
+		_nitro_lights = NitroLights.new()
+		if not _nitro_lights.prepare(visual):
+			_nitro_lights.free()
+			_nitro_lights = null
+			return false
+		_headlight_lights = _nitro_lights.headlights
 		_update_lights({}, {}, _night_weight)
-		return
+		return true
 	var bounds := _body_bounds_in_vehicle_space()
 	var half_width := clampf(bounds.size.x * 0.34, 0.075, 0.15)
 	var body_y := bounds.position.y + bounds.size.y * 0.53
@@ -442,22 +450,7 @@ func _build_vehicle_lights() -> void:
 		_reverse_lens_colors.append(reverse_color)
 		_add_lens(sphere, reverse_material, tail_position + Vector3(-side * 0.018, 0.0, 0.0), Vector3(0.48, 0.38, 0.28), "ReverseLightLens")
 	_update_lights({}, {}, _night_weight)
-
-
-## Copy authored lens materials per instance; keep the supplied textures and geometry.
-func _bind_lamp_materials(nodes: Array, materials: Array[StandardMaterial3D], colors: Array[Color]) -> void:
-	for node: MeshInstance3D in nodes:
-		for surface in node.mesh.get_surface_count():
-			var source := node.get_active_material(surface) as StandardMaterial3D
-			if source == null:
-				continue
-			var material: StandardMaterial3D = source.duplicate()
-			material.emission_enabled = true
-			if material.emission.is_equal_approx(Color.BLACK):
-				material.emission = material.albedo_color
-			node.set_surface_override_material(surface, material)
-			materials.append(material)
-			colors.append(material.albedo_color)
+	return true
 
 
 func _body_bounds_in_vehicle_space() -> AABB:
@@ -533,6 +526,12 @@ func _make_lens_material(color: Color, initial_energy: float) -> StandardMateria
 func _update_lights(telemetry: Dictionary, controls: Dictionary, night_weight: float) -> void:
 	var night := clampf(night_weight, 0.0, 1.0) if is_finite(night_weight) else 0.0
 	_night_weight = night
+	if _nitro_lights != null:
+		_nitro_lights.observe(controls, night, headlights_enabled, auxiliary_enabled, neon_enabled)
+		_last_headlight_energy = _headlight_lights[0].light_energy
+		_brake_lights = _nitro_lights._last_brake
+		_reverse_lights = false
+		return
 	_last_headlight_energy = lerpf(0.18, 2.4, night) if headlights_enabled else 0.0
 	for i in _headlight_lights.size():
 		_headlight_lights[i].light_energy = _last_headlight_energy

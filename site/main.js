@@ -29,7 +29,7 @@ const aircraft = {
 Object.assign(translations, websiteCopy);
 aircraft.heli = {name:'RC Helicopter<br>Research Trainer',image:'turntables/heli-poster',span:'HX-700',power:'X-Cell .60',guide:'HELICOPTER',category:['ALAS QUE GIRAN','ROTATING WINGS'],description:['Visual HX-700 y física de referencia X-Cell .60 SE. Un entrenador experimental con arranque en plataforma, vuelo estacionario y kit nocturno; no es un modelo HX-700 calibrado.','HX-700 visuals with X-Cell .60 SE reference physics. An experimental trainer with ground-pad startup, hover practice and a night kit; not a calibrated HX-700 flight model.'],gear:['Patines','Skids']};
 
-const labels = {navigation:['Principal','Main navigation'],aircraftSelect:['Seleccionar avión','Select an aircraft'],fieldSwitch:['Iluminación del campo','Field lighting']};
+const labels = {navigation:['Principal','Main navigation'],aircraftSelect:['Seleccionar avión','Select an aircraft'],fieldSwitch:['Iluminación del campo','Field lighting'],savoxPartner:['Savox, aliados','Savox, project partners']};
 const alts = {heroAlt:['Modelo rojo y blanco del Jensen Das Ugly Stik 60','Red and white Jensen Das Ugly Stik 60 simulator model'],fieldDayAlt:['Vista aérea del campo de vuelo de OpenRC, con pista de césped y zona de pilotos','Aerial view of the OpenRC flying field, grass runway and pilot area'],fieldNightAlt:['Umbral de la pista y club iluminados de noche en OpenRC','Illuminated runway threshold and club at night in OpenRC']};
 alts.clubAlt = ['Club de aeromodelismo, boxes, pilotos y vehículos en OpenRC','OpenRC model flying club, pits, pilots and parked vehicles'];
 alts.truckAlt = ['Render del modelo naranja Bisonte MT8 con suspensión y neumáticos todoterreno','Orange Bisonte MT8 model render with suspension and off-road tires'];
@@ -69,6 +69,10 @@ function renderLanguage() {
   languageButton.textContent = index ? 'ES' : 'EN';
   languageButton.setAttribute('aria-label', index ? 'Cambiar a español' : 'Switch to English');
   document.title = index ? 'OpenRC Simulator — The flying field is open.' : 'OpenRC Simulator — El campo de vuelo está abierto.';
+  document.querySelector('meta[property="og:title"]').content = document.title;
+  const description = index ? 'An open-source RC simulator. Explore six aircraft in 360°, discover the simulation and download OpenRC for Windows, Linux and macOS.' : 'Un simulador RC de código abierto. Explora seis aeronaves en 360°, descubre la simulación y descarga OpenRC para Windows, Linux y macOS.';
+  document.querySelector('meta[name="description"]').content = description;
+  document.querySelector('meta[property="og:description"]').content = description;
   renderAircraft();
   document.dispatchEvent(new CustomEvent('openrc-language'));
 }
@@ -77,14 +81,23 @@ document.querySelectorAll('[data-aircraft]').forEach(button => button.addEventLi
   currentAircraft = button.dataset.aircraft;
   renderAircraft();
 }));
-document.querySelectorAll('[data-time]').forEach(button => button.addEventListener('click', () => {
-  currentTime = button.dataset.time;
+let fieldRequest = 0;
+document.querySelectorAll('[data-time]').forEach(button => button.addEventListener('click', async () => {
+  const nextTime = button.dataset.time;
+  const request = ++fieldRequest;
+  if (nextTime === currentTime) return;
+  const next = new Image();
+  next.src = `assets/field-${nextTime}.webp`;
+  try { await next.decode(); } catch { return; }
+  if (request !== fieldRequest) return;
+  currentTime = nextTime;
   const image = document.querySelector('#field-image');
-  image.src = `assets/field-${currentTime}.webp`;
+  image.src = next.src;
   image.dataset.alt = currentTime === 'day' ? 'fieldDayAlt' : 'fieldNightAlt';
   image.alt = alts[image.dataset.alt][language === 'es' ? 0 : 1];
   document.querySelector('#field-index').textContent = currentTime === 'day' ? '01 / 02' : '02 / 02';
   document.querySelectorAll('[data-time]').forEach(el => el.setAttribute('aria-pressed', String(el === button)));
+  if (!matchMedia('(prefers-reduced-motion: reduce)').matches) image.animate([{opacity:.25},{opacity:1}],{duration:650,easing:'ease-out'});
 }));
 languageButton.hidden = false;
 languageButton.addEventListener('click', () => {

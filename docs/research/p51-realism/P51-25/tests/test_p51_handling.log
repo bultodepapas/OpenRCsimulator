@@ -10,9 +10,10 @@ ok   hands-off 30 s: altitude within 2 m, speed within 0.3 m/s  Δalt -0.0000 m,
 ok   coordinated roll at 25 m/s: 113°/s ± 7 % (single-axis prediction)  114.9°/s
 ok   coordinated roll at 27 m/s: 122°/s ± 7 % (single-axis prediction)  121.9°/s
 ok   inside loop at 0.7 stick from 27 m/s: 360° of pitch within 8 s, finite  434° (5.4 s)
+FAIL inside loop is a loop: pitch attitude passes the vertical (> 80°) and |β| stays below 10°  pitch max 46°, |β| max 20.1°
 ok   inside loop: faster than the 1-g stall speed over the top  min 27.0 m/s (1-g stall 15.7)
 ok   full-up power-off: α passes the stall start, finite  α max 21.4° (stall start 11.9°)
 ok   spin: right rudder + full up yaws right  r max 2.72 rad/s
 ok   spin recovery: yaw rate below 0.5 rad/s 3 s after recovery input, finite  0.25 rad/s
 ok   spin: still above the ground at the end  59 m
-15 checks, 0 failed
+16 checks, 1 failed

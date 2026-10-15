@@ -17,7 +17,7 @@ The current project [README](../README.md) says OpenAI provides a ChatGPT Pro su
 
 No separate ChatGPT or Codex product icon was included in the official OpenAI logo package, so none is bundled here.
 
-The website uses the official OpenAI Blossom beside the ChatGPT product name. The `>_` beside Codex is a generic terminal symbol, not a recreated or purported official Codex logo. Product names link to their official pages. The main sponsor credit describes the subscription support rather than manufacturer certification of this simulator.
+The website uses the official OpenAI Blossom beside the ChatGPT product name. Codex is credited by name, without inventing a product mark. Product names link to their official pages. The main sponsor credit describes the subscription support rather than manufacturer certification of this simulator.
 
 ## Savox
 

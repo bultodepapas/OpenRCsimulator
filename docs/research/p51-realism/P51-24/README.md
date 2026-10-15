@@ -1,6 +1,6 @@
 # P51-24: lateral-directional audit against P-51 flight data; rudder area corrected
 
-2026-10-15 · Revision 1 · **Status: rudder area corrected in the physics and verified. Directional stability remains about 2–3.5× too high relative to rudder power, and the remaining fix is a shared fuselage term. The visual rudder outline is still narrow.** Prefix: P51-24. [Plan](../../../P51-REALISM-PLAN.md)
+2026-10-15 · Revision 1 · **Status: rudder area corrected in the physics and verified. Directional stability remains about 2–3.5× too high relative to rudder power, and the remaining fix is a shared fuselage term. The visual rudder outline is still narrow.** The fuselage term followed in [P51-25](../P51-25/README.md). Prefix: P51-24. [Plan](../../../P51-REALISM-PLAN.md)
 
 ## Method
 
@@ -37,7 +37,7 @@ The P-51 geometry put the hinge at 6.64 m. That was an unmeasured constant in `a
 
 ### Cause 2, open: directional stability without a fuselage term
 
-The model's Cnβ = 0.1397 is the fin alone. The shared surface-consistency rule (`AircraftData`, "inconsistent with vertical surface force/arm") requires Cnβ to equal the fin's contribution, so the generator's DATCOM fuselage estimate (−0.023/rad) is computed but omitted for every fixed-wing aircraft. To bring rudder per sideslip to 0.5–0.85 with the corrected rudder, total Cnβ must be about 0.04–0.06/rad, a reduction of about 0.08–0.10. The fuselage estimate supplies about a quarter of that. The rest comes from the bubble-canopy fuselage, the large spinner and the propeller in sideslip at climb power, which the full-size data include. A supported fuselage side-force and yaw element, applied consistently in the attached oracle and the local model, is a shared contract change for the aircraft-standardization and physics owners. It is proposed here, not implemented.
+The model's Cnβ = 0.1397 is the fin alone. The shared surface-consistency rule (`AircraftData`, "inconsistent with vertical surface force/arm") requires Cnβ to equal the fin's contribution, so the generator's DATCOM fuselage estimate (−0.023/rad) is computed but omitted for every fixed-wing aircraft. To bring rudder per sideslip to 0.5–0.85 with the corrected rudder, total Cnβ must be about 0.04–0.06/rad, a reduction of about 0.08–0.10. The fuselage estimate supplies about a quarter of that. The rest comes from the bubble-canopy fuselage, the large spinner and the propeller in sideslip at climb power, which the full-size data include. A supported fuselage side-force and yaw element, applied consistently in the attached oracle and the local model, is a shared contract change for the aircraft-standardization and physics owners. It is proposed here, not implemented. **Follow-up:** implemented as the opt-in `aero.surfaces.body_cn_beta` in [P51-25](../P51-25/README.md), calibrated about the CG.
 
 ## Runtime evidence
 

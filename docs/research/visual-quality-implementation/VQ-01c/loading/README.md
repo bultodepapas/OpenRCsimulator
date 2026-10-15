@@ -62,6 +62,11 @@ preserve 300 native skin/kit pairs and reduce two-skin construction by 15–28%.
 Three endpoint/order regressions pass. Extra's small full-kit difference remains
 inconclusive across processes; Home still reports four audio objects at shutdown.
 
+2026-10-15 follow-up: [direct light-contour edge traversal](night-kit/edge-walk/README.md)
+removes temporary edge arrays, preserving 300 native contour/kit pairs and reducing
+complete-kit pooled medians by 2–8%. Focused lights and Home-cache checks close
+cleanly in this run; the earlier intermittent audio shutdown diagnostic remains open.
+
 2026-10-14. Implemented a bounded CPU geometry cache in `app/render/lake/lake_terrain.gd`.
 Source baseline `22b3e482`; Godot 4.7.2-stable, Windows, RTX 3090 / Ryzen 9 5900X.
 [Manifest](evidence-manifest.json) pins sources, engine binaries and raw evidence;

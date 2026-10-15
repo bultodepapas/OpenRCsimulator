@@ -11,7 +11,7 @@
   const reduced = matchMedia('(prefers-reduced-motion: reduce)');
   let selected = '', modelName = '', frame = 4, sheet = null, metadata = null;
   let visible = false, playing = !reduced.matches, request = 0, lastFrameTime = 0;
-  let generation = 0, drag = null, metadataRequest = null, failed = false;
+  let generation = 0, drag = null, metadataRequest = null, failed = false, inspecting = false;
   const images = new Map();
   mode.hidden = true;
   degrees.setAttribute('aria-live','off');
@@ -20,7 +20,7 @@
     const english = document.documentElement.lang === 'en';
     const caption = reduced.matches ? (english ? 'Next view' : 'Avanzar') : playing ? (english ? 'Pause' : 'Pausar') : (english ? 'Rotate' : 'Girar');
     toggle.innerHTML = `<span>${caption}</span><span aria-hidden="true">${reduced.matches ? '→' : playing ? 'Ⅱ' : '↻'}</span>`;
-    toggle.setAttribute('aria-pressed', String(playing));
+    toggle.removeAttribute('aria-pressed');
     canvas.setAttribute('aria-label',`${modelName} — ${english ? '360 degree studio view' : 'vista de estudio de 360 grados'}`);
     slider.setAttribute('aria-valuetext',`${frame * 10} ${english ? 'degrees' : 'grados'}`);
     document.querySelector('#viewer-hint').textContent = failed ? (english ? 'Static model view. The 360° view could not load.' : 'Vista estática del modelo. No se pudo cargar la vista 360°.') : (english ? 'Drag to explore · Use the slider to change the angle.' : 'Arrastra para explorar · Usa el control para cambiar de ángulo.');
@@ -38,7 +38,7 @@
 
   function animate(time) {
     request = 0;
-    if (!playing || !visible || !sheet || document.hidden || reduced.matches) return;
+    if (!playing || !visible || !sheet || document.hidden || reduced.matches || inspecting) return;
     if (time-lastFrameTime >= 125) {frame++;draw();lastFrameTime=time;}
     request = requestAnimationFrame(animate);
   }
@@ -47,7 +47,7 @@
     if(request) cancelAnimationFrame(request);
     request = 0;
     localize();
-    if(playing && visible && sheet && !document.hidden && !reduced.matches) request=requestAnimationFrame(animate);
+    if(playing && visible && sheet && !document.hidden && !reduced.matches && !inspecting) request=requestAnimationFrame(animate);
   }
 
   async function load() {
@@ -58,7 +58,7 @@
       metadataRequest ??= fetch('assets/turntables.json').then(response => {
         if(!response.ok) throw new Error('Turntable metadata unavailable');
         return response.json();
-      });
+      }).catch(error => {metadataRequest=null;throw error;});
       metadata = await metadataRequest;
       const model = metadata.models[key];
       if(!model) throw new Error('Model unavailable');
@@ -87,7 +87,7 @@
       if(selected===key){localize();return;}
       selected=key;generation++;sheet=null;failed=false;synchronize();
       canvas.hidden=true;poster.hidden=false;controls.hidden=true;mode.hidden=true;
-      if(visible) load();
+      if(visible && !inspecting) load();
     }
   };
   toggle.addEventListener('click', () => {
@@ -110,9 +110,10 @@
   const endDrag=()=>{drag=null;canvas.classList.remove('is-dragging');};
   canvas.addEventListener('pointerup',endDrag);canvas.addEventListener('pointercancel',endDrag);canvas.addEventListener('lostpointercapture',endDrag);
   document.addEventListener('visibilitychange',synchronize);
+  document.addEventListener('openrc-inspection',event=>{inspecting=event.detail.open;if(!inspecting && visible && !sheet)load();synchronize();});
   document.addEventListener('openrc-language',localize);
   reduced.addEventListener('change',()=>{if(reduced.matches)playing=false;synchronize();});
   if('IntersectionObserver' in window){
-    new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible&&!sheet)load();synchronize();},{rootMargin:'160px',threshold:0}).observe(canvas.parentElement);
+    new IntersectionObserver(entries=>{visible=entries[0].isIntersecting;if(visible&&!sheet&&!inspecting)load();synchronize();},{rootMargin:'160px',threshold:0}).observe(canvas.parentElement);
   }else{visible=true;}
 })();

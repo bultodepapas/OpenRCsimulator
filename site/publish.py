@@ -9,7 +9,7 @@ import tempfile
 SITE = Path(__file__).resolve().parent
 REPOSITORY = "bultodepapas/OpenRCsimulator"
 REMOTE = f"https://github.com/{REPOSITORY}.git"
-FILES = ("index.html", "style.css", "details.css", "main.js", "details.js", "viewer.js", "favicon.svg", ".nojekyll")
+FILES = ("index.html", "style.css", "details.css", "cinema.css", "main.js", "details.js", "viewer.js", "cinema.js", "inspector.js", "favicon.svg", ".nojekyll")
 
 
 def run(*args, cwd=None):

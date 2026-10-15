@@ -182,6 +182,8 @@ func _ready() -> void:
 		var sun := Atmosphere.create_sun(self, _lighting)
 		sun.directional_shadow_max_distance = 35.0
 		if enable_course_visual: CourseView.build(self, _course)
+	if _vehicle_entry.get("nitro", false) and enable_vehicle_effects:
+		GroundEffects.NitroLights.configure_environment(_environment)
 	camera = Camera3D.new()
 	camera.near = 0.01
 	camera.far = Spec.CAMERA.far
@@ -572,7 +574,7 @@ func _process(delta: float) -> void:
 		if _wet_effects != null:
 			_wet_effects.audio_enabled = enable_audio
 			_wet_effects.update_render(simulated_delta, telemetry, session.paused, night_weight)
-		dashboard.update_lights(_effects.headlights_enabled)
+		dashboard.update_lights(_effects.headlights_enabled, _effects.auxiliary_enabled, _effects.neon_enabled)
 	_contact_debug.update_snapshot(drawn, _model, telemetry, _render_road)
 	dashboard.update_snapshot(telemetry, session.paused, session.time_s(), session.recording, _show_diagnostics or mode == 2)
 	dashboard.update_input_status(_controls_ready(_last_controls), _controller_requires_selection, _focused)
@@ -686,7 +688,12 @@ func handle_action(action: String) -> void:
 		"lights":
 			if _effects != null:
 				_effects.headlights_enabled = not _effects.headlights_enabled
-				dashboard.update_lights(_effects.headlights_enabled)
+				dashboard.update_lights(_effects.headlights_enabled, _effects.auxiliary_enabled, _effects.neon_enabled)
+		"aux_lights", "neon":
+			if _effects != null and _vehicle_entry.get("nitro", false):
+				if action == "aux_lights": _effects.auxiliary_enabled = not _effects.auxiliary_enabled
+				else: _effects.neon_enabled = not _effects.neon_enabled
+				dashboard.update_lights(_effects.headlights_enabled, _effects.auxiliary_enabled, _effects.neon_enabled)
 		"record":
 			if session.recording:
 				_finish_recording()
@@ -917,6 +924,8 @@ func _unhandled_input(event: InputEvent) -> void:
 			KEY_ENTER: handle_action("resume")
 			KEY_C: handle_action("camera")
 			KEY_L: handle_action("lights")
+			KEY_K: handle_action("aux_lights")
+			KEY_N: handle_action("neon")
 			KEY_R: handle_action("recover")
 			KEY_F9: handle_action("record")
 			_: return
