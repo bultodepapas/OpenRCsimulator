@@ -34,6 +34,8 @@ The [migration comparison](../AS-02/numeric-parity.json) preserves all **2,815 o
 
 Final freshness checks passed for the schema, parameter register, all eight migrations and all three generated aircraft/reports; migration unit tests passed 5/5. Three generated research polar candidates also migrated through their existing pipeline, preserving [all 1,023 original numeric leaves](../AS-02/polar-candidate-parity.json); freshness, schema and experimental-flight CLI checks passed. The combustion propeller [range auditor](../AS-04/focused-final/range-audit-v2-compatibility.md) now accepts v2 with exact source-format/hash checks (23 tests).
 
+2026-10-15 maintenance: the P-51 flap probe gave the P-51 a complete `flaps` module with `capabilities.flaps = simulated`, and `migrate.py --check-known` refused it because its simulated-flaps exemption named only the Avanti (AV-09); the stock suite stopped at AS-01/02 from merge `f78901b9` on. The exemption is now what the [contract](../../../../AIRCRAFT_CONTRACT.md) states for every v2 source: `simulated` exactly when the closed `flaps` object is present, with the module required to carry at least the twelve AV-09 fields (`FLAPS_REQUIRED`); further reviewed fields are the schema's business. Proof: all five AS-01/02 commands pass on the fixed tree, migration unit tests 8/8 including the new P-51 idempotence case; the same `--check-known` fails at `1da9e092` and passes at `d16ed71a`, the commit before that merge.
+
 ## Remaining gates and ownership
 
 | Gap | Owner and completion evidence |

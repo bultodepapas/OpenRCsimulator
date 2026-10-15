@@ -55,6 +55,20 @@ class AircraftMigration(unittest.TestCase):
         with self.assertRaisesRegex(ValueError, "flaps data requires"):
             upgrade(bad_flaps)
 
+    def test_current_p51_flaps_v2_is_idempotent_without_changing_v1_policy(self):
+        source = json.loads((ROOT / "app/data/aircraft/p51d_mustang_120.json").read_text(encoding="utf-8"))
+        self.assertEqual(upgrade(source), source)
+        self.assertEqual(source["capabilities"]["flaps"], "simulated")
+        self.assertEqual(POLICIES[source["id"]]["gear"], "locked_down_taildragger")
+        incomplete = deepcopy(source)
+        del incomplete["flaps"]["aerodynamic_gain"]
+        with self.assertRaisesRegex(ValueError, "complete flaps module"):
+            upgrade(incomplete)
+        bad_flaps = deepcopy(source)
+        bad_flaps["capabilities"]["flaps"] = "not_simulated"
+        with self.assertRaisesRegex(ValueError, "flaps data requires"):
+            upgrade(bad_flaps)
+
     def test_legacy_projection_removes_v2_physical_identity_metadata(self) -> None:
         source = json.loads(
             (ROOT / "app/data/aircraft/turbo_lumber_evolution.json").read_text(encoding="utf-8")
