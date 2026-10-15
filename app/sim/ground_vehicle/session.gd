@@ -12,6 +12,7 @@ const Math3D := preload("res://physics/math3d.gd")
 const WetPhysics := preload("res://physics/ground_vehicle/vehicle_environment.gd")
 const Sim := preload("res://sim/simulation.gd")
 const VehicleModel := preload("res://sim/vehicle_model.gd")
+const SimEnvironment := preload("res://sim/environment.gd")
 const NitroDynamics := preload("res://physics/ground_vehicle/nitro_dynamics.gd")
 
 const FORMAT := "openrc-ground-vehicle-checkpoint v3"
@@ -103,6 +104,8 @@ var _vehicle_id := ""
 var _course_identity: Dictionary = {}
 var _prepared_backend_identity: Dictionary = {}
 var _road: Callable
+## SF-07: the environment contract; the course sampler is its `road`, gravity its `gravity`.
+var environment: SimEnvironment = SimEnvironment.new()
 var _initial_state := PackedFloat64Array()
 var _spawn_up_delta_m := 0.0
 var spawn_id := ""
@@ -220,7 +223,7 @@ func _stage_session(vehicle_result: Dictionary, course_result: Dictionary, reque
 	if not is_finite(pose_up_delta_m):
 		return {"ok": false, "errors": PackedStringArray(["spawn CG-height adjustment must be finite"])}
 	var spawn_pose: Dictionary = staged_spawn.pose.duplicate(true)
-	var road := _make_road(course_copy)
+	var road := SimEnvironment.course_road(course_copy)
 	var initial: Variant = _make_spawn_state(model_copy, course_copy, spawn_pose, road, pose_up_delta_m)
 	if not _state_is_valid_for_model(initial, model_copy):
 		return {"ok": false, "errors": PackedStringArray(["vehicle kernel could not initialize the selected course spawn"])}
@@ -263,6 +266,8 @@ func _commit_prepared(staged: Dictionary) -> void:
 	_course_identity = staged.course_identity
 	_prepared_backend_identity = staged.backend_identity
 	_road = staged.road
+	environment.road = _road
+	environment.gravity = float(_model.get("gravity_m_per_s2", 9.80665))
 	_initial_state = staged.initial_state
 	_spawn_up_delta_m = float(staged.spawn_up_delta_m)
 	_damage.reset()
@@ -1608,14 +1613,6 @@ func _expand_control_tape(value: Variant) -> Dictionary:
 	return {"ok": true, "controls": staged}
 
 
-func _make_road(course_value: Dictionary) -> Callable:
-	if str(course_value.get("sampler", "")) == AirfieldCourse.FORMAT:
-		return func(north_m: float, east_m: float) -> Dictionary:
-			return AirfieldCourse.sample(course_value, north_m, east_m)
-	return func(north_m: float, east_m: float) -> Dictionary:
-		return Course.sample(course_value, north_m, east_m)
-
-
 func _load_vehicle(vehicle_id: String) -> Dictionary:
 	if vehicle_id == "mt8-bisonte":
 		return VehicleData.load_default()
@@ -1688,7 +1685,7 @@ func _support_altitude_delta(experiment: Dictionary, baseline: Dictionary,
 	if str(course_value.get("sampler", "")) == AirfieldCourse.FORMAT:
 		# make_terrain_state solves support from the current model and real wheel patches each prepare/reset.
 		return {"ok": true, "delta_m": 0.0}
-	var road := _make_road(course_value.duplicate(true))
+	var road := SimEnvironment.course_road(course_value.duplicate(true))
 	var experiment_support: Dictionary = _initialize_model(experiment_model, road, 0.0, 0.0)
 	var baseline_support: Dictionary = _initialize_model(baseline_model, road, 0.0, 0.0)
 	if not experiment_support.get("ok", false) or not baseline_support.get("ok", false):

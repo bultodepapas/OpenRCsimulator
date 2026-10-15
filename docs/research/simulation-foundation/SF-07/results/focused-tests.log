@@ -1,0 +1,24 @@
+PASS test_wind_flight wind flight: 51 checks, 0 failed
+PASS test_turbulence_flight M5-W04a turbulence flight: 160 checks, 0 failed
+PASS test_atmosphere_column_session M5-ATM-4 session: 97 checks, 0 failed
+PASS test_atmosphere 47 checks, 0 failed
+PASS test_ground_surfaces 29 checks, 0 failed
+PASS test_field_integration all field integration checks passed
+PASS test_lake_session 
+PASS test_water_checkpoint LU-27 water checkpoint: 16 checks, 0 failed
+PASS test_heli_session HELI-16 generated preset/session: 42 checks, 0 failed
+PASS test_heli_ground_session HELI-20 ground session: 56 checks, 0 failed
+PASS test_rcv_session RCV session: 162 checks, 0 failed
+PASS test_rcv_nitro_session RCV Nitro session: 28 checks, 0 failed
+PASS test_rcv_airfield_track RCV airfield track: 19 checks, 0 failures
+PASS test_sf_vehicle_model 27 checks, 0 failed
+PASS test_sf_event_protocol 38 checks, 0 failed
+PASS test_sf_ground_vehicle_kernel 23 checks, 0 failed
+PASS test_sf_contact_substeps 13 checks, 0 failed
+PASS test_sf_law_properties SF-06 law properties: 203 checks, 0 failed, 0 exempt
+PASS test_checkpoint H8 checkpoints: 92 checks, 0 failed
+PASS test_checkpoint_integrity H8-R1 checkpoint integrity: 149 checks, 0 failed
+PASS test_golden 
+PASS test_glow_session Glow session: 140 checks, 0 failed
+PASS test_electric_session (rerun on the final tree; the batch run coincided with a transient edit of the truck evaluator) EL1d electric session: 86 checks, 0 failed
+DONE

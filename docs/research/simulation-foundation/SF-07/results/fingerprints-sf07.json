@@ -1,0 +1,272 @@
+{
+	"format": "openrc-vehicle-fingerprints v1",
+	"godot": "4.7.2-stable (official)",
+	"heli_ticks": 1200,
+	"method": "SHA-256 over state, continuous, aux, var_to_bytes(modes) and last_loads after reset and after every tick; fixed input schedule. Ground vehicle: SHA-256 over state_snapshot() after each accepted tick of a fixed control schedule.",
+	"ticks": 960,
+	"vehicles": [
+		{
+			"aux": 14,
+			"continuous": 3,
+			"events": 0,
+			"fault": "",
+			"id": "jensen-das-ugly-stik-60",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "6d7594a9390caf3c12f4076a6833a12b7874348c814a6b2910dd201eb795027d",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 3,
+			"events": 0,
+			"fault": "",
+			"id": "jensen-das-ugly-stik-60/cut",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "5fb09382b78efd8e9d5b7041c173ee3823cb5d8688f7468a2aa838e21acd2481",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 17,
+			"events": 0,
+			"fault": "",
+			"id": "stik-glow-61fx-2t",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "a974bd15d095bf03aba483dd3ef754107402c0ce52072dbf03c9688c04271d00",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 17,
+			"events": 0,
+			"fault": "",
+			"id": "stik-glow-61fx-2t/cut",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "c4b566c4b322916298eb330b9394a3fafc083a49ad62b1f7a253e2a6f4b8d3d2",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 17,
+			"events": 0,
+			"fault": "",
+			"id": "stik-glow-55ax-2t",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "7ec157b10abd7896dd466f8f62bf5325064e1f58c88312de23a0c964353ceffb",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 17,
+			"events": 0,
+			"fault": "",
+			"id": "stik-glow-55ax-2t/cut",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "968220bb40549cc6b457e8579bba41b4e722daa36dbe6b88f082f76ddde6bb2f",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 17,
+			"events": 0,
+			"fault": "",
+			"id": "stik-glow-fs64v-4t",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "e542ac154a68e6a8d932123937ef5804735b75ea69fbc4c761b8d222b9ca62f5",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 17,
+			"events": 0,
+			"fault": "",
+			"id": "stik-glow-fs64v-4t/cut",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "0ae7d0d7d6c2bf20e5aaa942c013c30886a4f60a130bba8026637f9edcb07912",
+			"ticks": 960
+		},
+		{
+			"aux": 5,
+			"continuous": 3,
+			"events": 0,
+			"fault": "",
+			"id": "gp-extra-300s-60",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "199a3652339d2003ce1984068b605371d297aca560ab28607ee57043a1c841cd",
+			"ticks": 960
+		},
+		{
+			"aux": 5,
+			"continuous": 3,
+			"events": 0,
+			"fault": "",
+			"id": "gp-extra-300s-60/cut",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "c4534c5622169a9a8e3d06b92055ad8ee7bb7cbc1f4887a834a9d913b781ccd0",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 3,
+			"events": 0,
+			"fault": "",
+			"id": "p51d-mustang-120",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "88fc4001e475016b05ab109e7019477c5de7490f72e3b6ade762b9b860e78d58",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 3,
+			"events": 0,
+			"fault": "",
+			"id": "p51d-mustang-120/cut",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "13c6d276d94af612c80e089fbc45bf23828e885772f1ab365e1dad4f4843354f",
+			"ticks": 960
+		},
+		{
+			"aux": 17,
+			"continuous": 4,
+			"events": 0,
+			"fault": "",
+			"id": "sebart-avanti-s-a200-p100rx",
+			"inputs": 7,
+			"kind": "fixed-wing",
+			"sha256": "da1187e6a69bbc1c62e999408a98839b926d95bf150c1933acbd38db6304c3fb",
+			"ticks": 960
+		},
+		{
+			"aux": 17,
+			"continuous": 4,
+			"events": 0,
+			"fault": "tick 300: step rejected: joint stage evaluation is nonfinite or malformed",
+			"id": "sebart-avanti-s-a200-p100rx/cut",
+			"inputs": 7,
+			"kind": "fixed-wing",
+			"sha256": "ad516348ee601f646c207a264f49344ef8526e141c78f89a9687247fcbffd4d5",
+			"ticks": 301
+		},
+		{
+			"aux": 14,
+			"continuous": 4,
+			"events": 0,
+			"fault": "",
+			"id": "turbo-lumber-evolution",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "cbb362ffe861a4bcd9624d0751e85b0d83d96b32ae862a0fe569f5f312cfe5fe",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 4,
+			"events": 0,
+			"fault": "",
+			"id": "turbo-lumber-evolution/cut",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "15fff27e2a71ad81c722cbad55bb12696f8c8390d5e1a0cab4c5d94d8a33ce1d",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 4,
+			"events": 0,
+			"fault": "",
+			"id": "synthetic_stik_electric_4s",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "bb7a43f9b23410afdcdf5cdd0db604ce9f492de70a4384274ca26fb0d4fd5c31",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 4,
+			"events": 0,
+			"fault": "",
+			"id": "synthetic_stik_electric_4s/cut",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "49e47bb60b081fbd438154bbb66185849356f8139cb17df3fb9d1af63ed590b6",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 7,
+			"events": 0,
+			"fault": "",
+			"id": "synthetic_stik_electric_4s_battery",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "edfbf3c8fcbdd5afbf4396ffa5e825a4c665f954a3e9629f11c7652f068268a6",
+			"ticks": 960
+		},
+		{
+			"aux": 14,
+			"continuous": 7,
+			"events": 0,
+			"fault": "",
+			"id": "synthetic_stik_electric_4s_battery/cut",
+			"inputs": 4,
+			"kind": "fixed-wing",
+			"sha256": "73d9e22c82d766d62bebb5ce5149a48342abb99012d24dbbc05d28528c5a6a4c",
+			"ticks": 960
+		},
+		{
+			"aux": 1,
+			"continuous": 6,
+			"events": 0,
+			"fault": "",
+			"id": "helicopter/airborne",
+			"inputs": 4,
+			"kind": "rotorcraft",
+			"sha256": "6dd21915b882ddea325f8be3bd0762f99005f8b39ad8e9f2393566b02623a2cf",
+			"ticks": 1200
+		},
+		{
+			"aux": 1,
+			"continuous": 6,
+			"events": 0,
+			"fault": "",
+			"id": "helicopter/airborne-hold",
+			"inputs": 4,
+			"kind": "rotorcraft",
+			"sha256": "89474c773d9962e32d71f31f2ace011afd0ac73719213524e91452c78865a161",
+			"ticks": 1200
+		},
+		{
+			"aux": 1,
+			"continuous": 14,
+			"events": 0,
+			"fault": "",
+			"id": "helicopter/ground",
+			"inputs": 4,
+			"kind": "rotorcraft",
+			"sha256": "c9f2661466e2cab905f6f85c2dfda8289d17d2d8694e95af598d0d4f6afcfe24",
+			"ticks": 1200
+		},
+		{
+			"aux": 0,
+			"continuous": 18,
+			"fault": "",
+			"id": "ground-vehicle/default",
+			"inputs": 4,
+			"kind": "ground-vehicle",
+			"sha256": "0dd293ffa0a84119d8985c70e3a0016683d78c93a43db0de34ab6991b4269e12",
+			"ticks": 960
+		}
+	]
+}

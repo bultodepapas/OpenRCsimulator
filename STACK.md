@@ -34,7 +34,7 @@ Simulation positions use NED (north/east/down), body vectors use FRD (forward/ri
 
 The Workshop compiler builds a detached candidate from validated aircraft data, exposes only operations supported by that aircraft's modules, and freezes the accepted candidate for a test flight. Natural Random resolves an airplane, start, physical weather and visual conditions into a repeatable scenario. Optional failure practice is currently a fixed-wing session feature; its saved settings default to off.
 
-The renderer composes the field, sky, lighting and scenery. Physical weather controls air velocity/density; visual lighting has its own configuration and history. Visual time changes do not change flight weather. Collision proxies are scalar geometry consumed by the simulation, with scenery rendering and response kept separate.
+The renderer composes the field, sky, lighting and scenery. Physical weather controls air velocity/density; each session queries wind, air, terrain, water and course through one environment contract (`app/sim/environment.gd`). Visual lighting has its own configuration and history. Visual time changes do not change flight weather. Collision proxies are scalar geometry consumed by the simulation, with scenery rendering and response kept separate.
 
 ## Repository layout
 
