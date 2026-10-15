@@ -1,0 +1,87 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{
+  "ok": true,
+  "output": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-37/checks/identity.json",
+  "results": [
+    {
+      "artifact": {
+        "kind": "gdscript_source",
+        "sha256": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa"
+      },
+      "calls_per_method_per_trial": 40,
+      "case": "nitro_adapter",
+      "median_speedup_percent": 6.937813875627752,
+      "paired_trial_order": "reference-first on even trials; candidate-first on odd trials",
+      "path": "res://physics/ground_vehicle/nitro_dynamics.gd",
+      "reference_trial_us_per_call": [
+        443.975,
+        403.225,
+        383.2,
+        393.325,
+        406.325
+      ],
+      "reference_us_per_call": {
+        "maximum_us": 443.975,
+        "mean_us": 406.01000000000005,
+        "median_us": 403.225,
+        "minimum_us": 383.2,
+        "samples": 5
+      },
+      "single_open_trial_us_per_call": [
+        384.35,
+        378.8,
+        375.25,
+        373.625,
+        362.15
+      ],
+      "single_open_us_per_call": {
+        "maximum_us": 384.35,
+        "mean_us": 374.83500000000004,
+        "median_us": 375.25,
+        "minimum_us": 362.15,
+        "samples": 5
+      }
+    },
+    {
+      "artifact": {
+        "kind": "gdscript_source",
+        "sha256": "75355709c0f813b64c8127899494c3980253cdc16d73a9e480b0204c709e17f5"
+      },
+      "calls_per_method_per_trial": 40,
+      "case": "body_adapter",
+      "median_speedup_percent": 8.196529992997736,
+      "paired_trial_order": "reference-first on even trials; candidate-first on odd trials",
+      "path": "res://physics/ground_vehicle/vehicle_dynamics.gd",
+      "reference_trial_us_per_call": [
+        636.45,
+        669.1,
+        637.975,
+        670.4,
+        642.65
+      ],
+      "reference_us_per_call": {
+        "maximum_us": 670.4,
+        "mean_us": 651.315,
+        "median_us": 642.65,
+        "minimum_us": 636.45,
+        "samples": 5
+      },
+      "single_open_trial_us_per_call": [
+        598.975,
+        590.375,
+        571.7,
+        589.975,
+        589.875
+      ],
+      "single_open_us_per_call": {
+        "maximum_us": 598.975,
+        "mean_us": 588.1800000000001,
+        "median_us": 589.975,
+        "minimum_us": 571.7,
+        "samples": 5
+      }
+    }
+  ],
+  "semantic_match": true
+}

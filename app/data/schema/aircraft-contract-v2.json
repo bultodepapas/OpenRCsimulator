@@ -423,6 +423,7 @@
         "wing_aileron_effectiveness",
         "wing_station_incidence",
         "wing_section_cm_ac",
+        "body_cn_beta",
         "attached_limit",
         "tail_local_limit",
         "tail_stall_end",

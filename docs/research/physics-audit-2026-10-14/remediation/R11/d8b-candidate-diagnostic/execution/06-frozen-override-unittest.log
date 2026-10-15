@@ -1,0 +1,10 @@
+test_candidate_trace_uses_exact_input_bytes (frozen_07_test_pullup_cli.PullupCandidateCli.test_candidate_trace_uses_exact_input_bytes) ... ok
+test_cli_rejects_bad_json_types_and_reference_changes (frozen_07_test_pullup_cli.PullupCandidateCli.test_cli_rejects_bad_json_types_and_reference_changes) ... ok
+test_cli_rejects_noncandidate_launch_contexts (frozen_07_test_pullup_cli.PullupCandidateCli.test_cli_rejects_noncandidate_launch_contexts) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 37.690s
+
+OK
+RUN_IDENTITY {"app_from_frozen_module": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app", "candidate_override_only": "/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r11-d8b-candidate-repro-02/research/flight-robustness/d8b-r2/candidates/intermediate.json", "candidate_override_sha256": "add61d572414a0eb2915f34b100f77f5b77f1ba2c27021bf26f7357758a9370c", "expected_app": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app", "format": "d8b-r2-frozen-pullup-candidate-override-run-v1", "godot_exists": true, "godot_from_OPENRC_TEST_GODOT": "/home/bulto/openrc-r11-b09-r05b-20261015-07/.tools/Godot_v4.7.2-stable_linux.x86_64", "original_candidate_from_frozen_module": "/home/bulto/openrc-r11-b09-r05b-20261015-07/research/flight-robustness/d8b-r2/candidates/intermediate.json", "reference_from_frozen_module": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/data/aircraft/jensen_ugly_stik_60.json", "reference_sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723", "test_module": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_pullup_cli.py", "test_module_sha256": "bb2af28dc23e599ec70818cd97180119dde5b103e065e06091be2c02b6f4526e"}
+RUN_RESULT {"errors": 0, "failures": 0, "skipped": 0, "tests_run": 3, "was_successful": true}

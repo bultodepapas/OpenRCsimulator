@@ -1,0 +1,16 @@
+# fixed_step_timber_30fps
+# started_utc=2026-10-15T14:30:28+00:00
+# cwd=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+# timeout_seconds=75
+# expect=zero
+# command=/usr/bin/timeout 60 /home/bulto/openrc-r11-b09-r05b-20261015-07/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/bulto/openrc-r11-b09-r05b-20261015-07/app --audio-driver Dummy --fixed-fps 30 --script res://tests/run_fixed_step.gd -- --aircraft=turbo-lumber-evolution
+# returncode=0
+# timed_out=False
+# engine_error_detected=False
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+flight_sha256=0f4a826d058b8bf70f18fd58921c45e41ccdfed1a73ba75e4e8eeda1158dd0fb
+ticks=480 frames=61 throttle=0.6600 state_sha256=c2dcdc5f0bb019b6b2ea1af3223ff748a822aeb447b12451ef45ffac7722fe1c
+WARNING: 24 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

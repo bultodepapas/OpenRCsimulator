@@ -79,6 +79,18 @@ func _initialize() -> void:
 			driven[ENGINE_SPEED] * NitroDynamics.RPM_PER_RAD_S if not driven.is_empty() else NAN,
 			driven[FUEL_MASS] if not driven.is_empty() else NAN,
 		])
+	_check("Nitro effect telemetry reports accepted throttle, bounded fuel flow, and signed slip",
+		bool(drive_telemetry.get("ok", false))
+		and float(drive_telemetry.get("nitro", {}).get("throttle_fraction", -1.0)) == 1.0
+		and float(drive_telemetry.get("nitro", {}).get("fuel_flow_kg_per_s", INF)) >= 0.0
+		and float(drive_telemetry.get("nitro", {}).get("fuel_flow_kg_per_s", INF)) <= driven[FUEL_MASS] / DT_240
+		and absf(float(drive_telemetry.get("nitro", {}).get("clutch_slip", 2.0))) <= 1.0
+		and float(drive_telemetry.get("nitro", {}).get("clutch_slip", 2.0)) > 0.0,
+		"throttle=%.3f, flow=%.7f kg/s, slip=%.4f" % [
+			float(drive_telemetry.get("nitro", {}).get("throttle_fraction", NAN)),
+			float(drive_telemetry.get("nitro", {}).get("fuel_flow_kg_per_s", NAN)),
+			float(drive_telemetry.get("nitro", {}).get("clutch_slip", NAN)),
+		])
 
 	var braked := _run(driven, model, _controls(0.0, 0.0, 1.0), road, DT_240, 120)
 	_check("four-wheel braking reduces speed after the sustained run",
@@ -117,6 +129,7 @@ func _initialize() -> void:
 		"Δu=%.4f m/s, ΔRPM=%.1f" % [speed_delta, rpm_delta])
 
 	_test_fuel_limits(model, start, road)
+	_test_bidirectional_clutch(model, start, road)
 	print("Nitro dynamics: %d checks, %d failed" % [_checks, _failures])
 	quit(0 if _failures == 0 else 1)
 
@@ -183,6 +196,17 @@ func _test_fuel_limits(model: Dictionary, start: PackedFloat64Array, road: Calla
 	var available_j := tiny_fuel / float(model.powertrain.fuel_specific_consumption_kg_per_j)
 	_check("near-empty fuel caps combustion work to available chemical energy",
 		combustion_work_j >= 0.0 and combustion_work_j <= available_j * (1.0 + 1.0e-9))
+	var near_empty := start.duplicate()
+	near_empty[FUEL_MASS] = tiny_fuel
+	var limited_telemetry := NitroDynamics.telemetry(near_empty, model, road, _controls(1.0), DT_240)
+	_check("effect telemetry throttle and fuel flow reflect the near-empty accepted limit",
+		bool(limited_telemetry.get("ok", false))
+		and float(limited_telemetry.get("nitro", {}).get("throttle_fraction", 1.0)) < 1.0
+		and float(limited_telemetry.get("nitro", {}).get("fuel_flow_kg_per_s", INF)) <= tiny_fuel / DT_240,
+		"throttle=%.8f, flow=%.12f kg/s" % [
+			float(limited_telemetry.get("nitro", {}).get("throttle_fraction", NAN)),
+			float(limited_telemetry.get("nitro", {}).get("fuel_flow_kg_per_s", NAN)),
+		])
 	var depleted := start.duplicate()
 	depleted[FUEL_MASS] = tiny_fuel
 	depleted = NitroDynamics.step(depleted, model, _controls(1.0), DT_240, road)
@@ -197,10 +221,70 @@ func _test_fuel_limits(model: Dictionary, start: PackedFloat64Array, road: Calla
 	var telemetry := NitroDynamics.telemetry(depleted, model, road)
 	_check("stalled engine does not auto-restart while fuel remains",
 		after.size() == NitroDynamics.STATE_SIZE and after[ENGINE_SPEED] == 0.0)
+	var throttled_stall := NitroDynamics.step(stopped, model, _controls(1.0), DT_240, road)
+	var stalled_telemetry := NitroDynamics.telemetry(stopped, model, road, _controls(1.0), DT_240)
+	_check("full throttle cannot restart a stopped engine or consume fuel",
+		throttled_stall.size() == NitroDynamics.STATE_SIZE
+		and throttled_stall[ENGINE_SPEED] == 0.0
+		and throttled_stall[FUEL_MASS] == stopped[FUEL_MASS]
+		and bool(stalled_telemetry.get("ok", false))
+		and not bool(stalled_telemetry.get("nitro", {}).get("engine_running", true))
+		and float(stalled_telemetry.get("nitro", {}).get("throttle_fraction", -1.0)) == 0.0
+		and float(stalled_telemetry.get("nitro", {}).get("fuel_flow_kg_per_s", INF)) == 0.0,
+		"rpm=%.1f, fuel delta=%.9f kg, flow=%.9f kg/s" % [
+			throttled_stall[ENGINE_SPEED] * NitroDynamics.RPM_PER_RAD_S if throttled_stall.size() == NitroDynamics.STATE_SIZE else NAN,
+			(stopped[FUEL_MASS] - throttled_stall[FUEL_MASS]) if throttled_stall.size() == NitroDynamics.STATE_SIZE else NAN,
+			float(stalled_telemetry.get("nitro", {}).get("fuel_flow_kg_per_s", NAN)),
+		])
 	_check("empty tank telemetry reports no combustion and zero fuel fraction",
 		bool(telemetry.get("ok", false))
 		and float(telemetry.get("nitro", {}).get("fuel_fraction", 1.0)) == 0.0
 		and float(telemetry.get("nitro", {}).get("engine_torque_nm", INF)) == 0.0)
+
+
+func _test_bidirectional_clutch(model: Dictionary, start: PackedFloat64Array, road: Callable) -> void:
+	var powertrain: Dictionary = model.powertrain
+	var ratio := float(powertrain.gear_ratio)
+	var rotor_inertia := float(powertrain.engine_rotor_inertia_kg_m2)
+	var wheel_inertia := float(model.wheel_spin_inertia_kg_m2)
+	var dt := 1.0 / 30.0
+	for case in [
+		{"label": "engine-leading clutch transfers forward torque without net energy", "engine_speed": 1200.0, "slip": 10.0, "drive_sign": 1.0},
+		{"label": "wheel overrun back-drives engine with dissipative negative torque", "engine_speed": 1200.0, "slip": -10.0, "drive_sign": -1.0},
+	]:
+		var engine_speed := float(case.engine_speed)
+		var wheel_speed := (engine_speed - float(case.slip)) / ratio
+		var rates: Dictionary = NitroDynamics._engine_rates(
+			engine_speed, 0.1, 0.0, wheel_speed, powertrain, true, INF, dt, wheel_inertia)
+		var clutch_torque := float(rates.clutch_torque_nm)
+		var clutch_power_w := -clutch_torque * engine_speed \
+			+ float(rates.wheel_drive_torque_nm) * wheel_speed
+		var engine_next := engine_speed + dt * float(rates.speed_rate_rad_s2)
+		var wheel_next := wheel_speed + dt * float(rates.wheel_drive_torque_nm) / (4.0 * wheel_inertia)
+		var slip_next := engine_next - ratio * wheel_next
+		var direction_ok := signf(clutch_torque) == float(case.drive_sign)
+		var no_cross := float(case.drive_sign) > 0.0 and slip_next >= -1.0e-8 \
+			or float(case.drive_sign) < 0.0 and slip_next <= 1.0e-8
+		_check(str(case.label), direction_ok and clutch_power_w <= 1.0e-9 and no_cross,
+			"T=%.6f Nm, Pnet=%.7f W, slip %.3f→%.6f rad/s" % [clutch_torque, clutch_power_w, float(case.slip), slip_next])
+	var overrun_state := start.duplicate()
+	overrun_state[ENGINE_SPEED] = 1200.0
+	var overrun_wheel_speed := (overrun_state[ENGINE_SPEED] + 100.0) / ratio
+	for corner in 4:
+		overrun_state[NitroDynamics.WHEEL_SPIN + corner] = overrun_wheel_speed
+	var telemetry := NitroDynamics.telemetry(overrun_state, model, road, _controls(), DT_240)
+	_check("overrun telemetry reports negative normalized slip and back-drive torque",
+		bool(telemetry.get("ok", false))
+		and float(telemetry.get("nitro", {}).get("clutch_slip", 0.0)) < 0.0
+		and float(telemetry.get("nitro", {}).get("clutch_slip", 0.0)) >= -1.0
+		and float(telemetry.get("nitro", {}).get("clutch_slip_rad_s", 0.0)) < 0.0
+		and float(telemetry.get("nitro", {}).get("clutch_torque_nm", 0.0)) < 0.0
+		and float(telemetry.get("nitro", {}).get("wheel_drive_torque_nm", 0.0)) < 0.0,
+		"slip=%.4f, torque=%.5f Nm, wheel=%.5f Nm" % [
+			float(telemetry.get("nitro", {}).get("clutch_slip", NAN)),
+			float(telemetry.get("nitro", {}).get("clutch_torque_nm", NAN)),
+			float(telemetry.get("nitro", {}).get("wheel_drive_torque_nm", NAN)),
+		])
 
 
 func _run(state: PackedFloat64Array, model: Dictionary, controls: Dictionary, road: Callable, dt: float, count: int) -> PackedFloat64Array:

@@ -1,0 +1,22 @@
+{
+  "commands": [
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\aircraft-light-transforms\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-transforms-runner-check\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-transforms-runner-check\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\aircraft-light-transforms-runner-check\\native-1.json"
+    ]
+  ],
+  "sha256": {
+    "reference.gd": "d0363990bd3a6933be97dfcb5639dcbfba91422bbf1e91c7515b3c1b5ac93893",
+    "candidate.gd": "3a03244089054004998276dcb0acee8be76250b7465c40948e191d623a878594",
+    "compare.gd": "b905143b71490a5ef343e83d3300300fd453a1613cdc5ed2cc16c9d472601ed4"
+  }
+}

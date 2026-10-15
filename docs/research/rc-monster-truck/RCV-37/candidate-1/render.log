@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+RCV37 activity: {"baseline":false,"combined":{"maximum_us":34191.0,"mean_us":24640.2083333333,"median_us":24157.0,"p95_us":28130.0,"samples":240},"complete":true,"presentation":{"maximum_us":4676.0,"mean_us":2951.02916666667,"median_us":2864.0,"p95_us":3568.0,"samples":240}}

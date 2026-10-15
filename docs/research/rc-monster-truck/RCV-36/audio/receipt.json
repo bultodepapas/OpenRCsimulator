@@ -1,0 +1,45 @@
+{
+  "step": "RCV-36",
+  "track": "rc-monster-truck",
+  "scope": "nitro-audio-voice-and-generator",
+  "created_utc_date": "2026-10-15",
+  "validation": {
+    "command": ".\\.tools\\Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_rcv_nitro_audio.gd",
+    "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+    "checks": 23,
+    "failures": 0,
+    "log": {
+      "path": "nitro_audio_test.log",
+      "sha256": "b1600231addf2412c1a77149728031d411f27f136b786e136da4e4871e77960b"
+    }
+  },
+  "preview": {
+    "path": "nitro_engine_preview.wav",
+    "duration_seconds": 4.0,
+    "sample_rate_hz": 22050,
+    "channels": 2,
+    "sample_format": "signed 16-bit PCM little-endian",
+    "peak": 0.272766,
+    "rms": 0.091649,
+    "sha256": "b0c4a64580d7c774fad703be8129412ee4d6eeff052a6e1ba7e04d1892633f73"
+  },
+  "sources": [
+    {
+      "path": "app/audio/nitro_voice.gd",
+      "sha256": "90c6b09ead74def34d7485d319e27a6f0e1469bd7527b283619639f601351ce5"
+    },
+    {
+      "path": "app/audio/nitro_engine_audio.gd",
+      "sha256": "641de54c4afc04ab73b1740a54b0d00cb820aa096bb0d495cc6a29e7690ee662"
+    },
+    {
+      "path": "app/tests/test_rcv_nitro_audio.gd",
+      "sha256": "d890ee13022e6a640dc581cf92b59517827195bc3aba41e4e49797bd47d15064"
+    }
+  ],
+  "asset_intake": {
+    "third_party_recording_imported": false,
+    "existing_generic_combustion_asset_reused": false,
+    "note": "Preview is rendered from the Nitro voice. Existing MIT motor_combustion.wav is a generic procedural 100 Hz firing cycle and lacks Nitro vehicle telemetry layers."
+  }
+}

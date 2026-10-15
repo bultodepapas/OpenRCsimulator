@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Aircraft model contract: ["SHA-256 mismatch for C:/DEVELOPMENT/OpenRCsimulator/app/../assets/aircraft/p51d-mustang-120/geometry.json", "SHA-256 mismatch for C:/DEVELOPMENT/OpenRCsimulator/app/../assets/aircraft/p51d-mustang-120/geometry.json", "SHA-256 mismatch for C:/DEVELOPMENT/OpenRCsimulator/app/../assets/aircraft/p51d-mustang-120/source.json", "SHA-256 mismatch for C:/DEVELOPMENT/OpenRCsimulator/app/aircraft/p51d_geometry.gd"]
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:52)
+       [1] _test_neutral_geometry_on_catalog_models (res://tests/test_projected_shadow.gd:240)
+       [2] _run (res://tests/test_projected_shadow.gd:351)
+FAIL p51d-mustang-120 builder returned a root 
+Projected shadow regression: 35 checks, 1 failed

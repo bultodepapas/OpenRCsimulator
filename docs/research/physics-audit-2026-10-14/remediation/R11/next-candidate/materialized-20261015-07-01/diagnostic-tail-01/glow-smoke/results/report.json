@@ -1,0 +1,49 @@
+{
+  "format": "openrc-glow-cli-proof v1",
+  "passed": true,
+  "scope": "source project CLI",
+  "runtime": "/home/bulto/openrc-r11-b09-r05b-20261015-07/.tools/Godot_v4.7.2-stable_linux.x86_64",
+  "runtime_sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+  "engine_binary_sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+  "pack_sha256": null,
+  "checker_sha256": "4f6858eff4318e114777228321d7f1992b0b30204e3ca8b67628337391d17348",
+  "cases": [
+    {
+      "aircraft": "stik-glow-55ax-2t",
+      "family": "glow_2t",
+      "rows": 721,
+      "identity": {
+        "format": "openrc-glow-installation v1",
+        "profile": {
+          "format": "openrc-glow-engine v1",
+          "sha256": "7cb92109c5e0f3f578c4b92eac21564d9e8a2761d98dafabcc8f295b91a18258"
+        },
+        "sha256": "d801948451616f8d34cf66097d10f55346eeb8c3cee9f7378d46b24ec63ceec4"
+      },
+      "initial_rpm": 8107.722533824,
+      "final_rpm": 8103.681328139,
+      "consumed_fuel_kg": 0.00034006099999998873,
+      "successful_fires": 405.0,
+      "trace_sha256": "b2b979a340263d1772e7039470a99eb92e3c652fcee06853feaedf5fdcfca64e"
+    },
+    {
+      "aircraft": "stik-glow-fs64v-4t",
+      "family": "glow_4t",
+      "rows": 721,
+      "identity": {
+        "format": "openrc-glow-installation v1",
+        "profile": {
+          "format": "openrc-glow-engine v1",
+          "sha256": "8f72dbcc3a81dd55d2de19dc0f7342cd6250ba88bc392fb0328e7bbb12edfd39"
+        },
+        "sha256": "47c92d49aed4da6b9ea30d50bb7a4a705aab9e0155c8bb95da860671feac1039"
+      },
+      "initial_rpm": 8642.632075364,
+      "final_rpm": 8639.823752291,
+      "consumed_fuel_kg": 0.00026169499999999235,
+      "successful_fires": 216.0,
+      "trace_sha256": "c1370116bb6a99c0e87ae58e674316d7c2c16a5e13cf8eca76221c92e78ecced"
+    }
+  ],
+  "claim": "Resource/CLI software smoke, not physical, acoustic or release-performance acceptance"
+}

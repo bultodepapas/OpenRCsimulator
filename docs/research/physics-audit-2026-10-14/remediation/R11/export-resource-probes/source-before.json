@@ -1,0 +1,12 @@
+[
+  {
+    "path": "app/export.sh",
+    "sha256": "31912228e581f024c842dfa2512b75839eae577a93ccc3fc46c8cfee64a8a2ef",
+    "size_bytes": 5987
+  },
+  {
+    "path": "research/aircraft-standardization/rotorcraft_package_smoke.gd",
+    "sha256": "24d95e1e62e70a3ea30456d9aba72575d83e0b9200d38394c5c982faf3a9b5a5",
+    "size_bytes": 2462
+  }
+]

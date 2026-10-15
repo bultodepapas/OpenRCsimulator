@@ -2471,3 +2471,87 @@ msgstr "Carros RC · Abrir garaje"
 
 msgid "RC car"
 msgstr "Carro RC"
+
+msgid "Control guide"
+msgstr "Mandos"
+
+msgid "Controller"
+msgstr "Control"
+
+msgid "Reopen: Esc → Flight overlays"
+msgstr "Abrir: Esc → Overlays de vuelo"
+
+msgid "Keyboard shortcuts remain available."
+msgstr "Los atajos de teclado siguen disponibles."
+
+msgid "Active input · Keyboard"
+msgstr "Entrada activa · Teclado"
+
+msgid "Shortcuts"
+msgstr "Atajos"
+
+msgid "↓ pulls the nose up. W adds power; S reduces it."
+msgstr "↓ levanta el morro. W aumenta potencia; S la reduce."
+
+msgid "Flight axes use the selected controller."
+msgstr "Los ejes de vuelo usan el control seleccionado."
+
+msgid "Throttle holds when you release the stick."
+msgstr "La potencia se mantiene al soltar la palanca."
+
+msgid "Release the trigger for idle throttle."
+msgstr "Suelta el gatillo para dejar el motor al mínimo."
+
+msgid "Smoke AUX"
+msgstr "AUX de humo"
+
+msgid "Flaps request"
+msgstr "Solicitud de flaps"
+
+msgid "Gear request"
+msgstr "Solicitud de tren"
+
+msgid "Use the Keyboard tab for flight shortcuts."
+msgstr "Consulta los atajos en la pestaña Teclado."
+
+msgid "Aircraft capabilities determine which auxiliary controls are available."
+msgstr "Los mandos auxiliares disponibles dependen del avión."
+
+msgid "Left stick ↔"
+msgstr "Palanca izq. ↔"
+
+msgid "Left stick ↕"
+msgstr "Palanca izq. ↕"
+
+msgid "Right stick ↔"
+msgstr "Palanca der. ↔"
+
+msgid "Right stick ↕"
+msgstr "Palanca der. ↕"
+
+msgid "Gamepads: B/Circle controls retractable gear and RB/R1 controls an installed smoke pump automatically. Existing assignments take priority. Flaps are not simulated. For other joysticks, use Remap to choose the actual buttons."
+msgstr "Mandos de juego: B/Círculo acciona el tren retráctil y RB/R1 la bomba de humo instalada automáticamente. Tus asignaciones tienen prioridad. Los flaps no están simulados. Para otros joysticks, usa Reasignar y elige los botones reales."
+
+msgid "This aircraft"
+msgstr "Este avión"
+
+msgid "Not simulated"
+msgstr "No simulado"
+
+msgid "Not available"
+msgstr "No disponible"
+
+msgid "Assign in Controller settings"
+msgstr "Asignar en Ajustes del control"
+
+msgid "On"
+msgstr "Encendido"
+
+msgid "Checking controller input. If it does not respond, open Controller settings."
+msgstr "Comprobando el mando. Si no responde, abre Configuración de controles."
+
+msgid "Flight controller: %s. Review your bindings in Controller settings."
+msgstr "Control de vuelo: %s. Revisa las asignaciones en Configuración de controles."
+
+msgid "Trigger throttle: left X yaw, right X roll, right Y pitch, RT/R2 throttle (axis 5)."
+msgstr "Acelerador en gatillo: X izquierdo guiñada, X derecho alabeo, Y derecho cabeceo, RT/R2 acelerador (eje 5)."

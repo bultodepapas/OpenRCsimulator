@@ -1,0 +1,31 @@
+{
+  "sha256": {
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/candidate.gd.gz": "bc4e52616cfbfb6114341e571ed814c1dc1c9cb652d986ee1668f26f1a1bc519",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/native-1.json": "d72df04d07b4ab8b10b73727e8590a09634a9ed4112241c382a2d66a9dc003ad",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/native-1.log": "f97689174f1cb9a76d143944b55aebe8e06f5e0534a06d953114c953fdb49491",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/native-2.json": "b54982366827b0e22818b0a629ed45e6c692b67ff7c30206ff9b9163d9fdebbd",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/native-2.log": "f97689174f1cb9a76d143944b55aebe8e06f5e0534a06d953114c953fdb49491",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/native-3.json": "d38b2bbfd25a64d2f6522d542a2f0bc6bb866556384ae4ac8584b90db15e2b0f",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/native-3.log": "f97689174f1cb9a76d143944b55aebe8e06f5e0534a06d953114c953fdb49491",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/native-4.json": "b78a53150d66d233b067d5acda3100a6211578817f0da0d522e0472ef3f49351",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/native-4.log": "f97689174f1cb9a76d143944b55aebe8e06f5e0534a06d953114c953fdb49491",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/native-5.json": "091ffed8517bda70fcfc1b52b65ea0fa3ee48fb3534a7568c2deb50ea04c1be5",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/native-5.log": "f97689174f1cb9a76d143944b55aebe8e06f5e0534a06d953114c953fdb49491",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/README.md": "db82b74ba42e467376a255a42689e0d8f0c58b994e15e287bdd88abb022298be",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/reference.gd.gz": "2541aa8d78e94c1bc5e0ad27ec736853cbe65ad3c30d86f923da7124ef084d16",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/source-after.json": "8e981b56b4aaf36a8831c35b24a76df825e13eccc677d1a3e774755e09afb7f2",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/source-before.json": "c88e035d9497aef0638e913f8ad9ce8113514eff32e21235bc2771bde9c57a3a",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/summary.json": "0c30d8e52333ebb744998064669b7e6b0c91abbb442fcec53704ca96ee094d8e",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/test-before.gd.gz": "9c32c7cd16804885c59720e800088266d863a7b1c1325b164e7e5be806c186c0",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/test-candidate.gd.gz": "40e968275931dc424d369ff5c3dde7c908fecb7274d7124840eaa9f028d265fa",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/test_night_kit-headless.log": "2e77368f4449937b93e5d819363eae0a848ecb58d76c79a861122b6019675ea8",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/test_night_kit-native.log": "c6636b8033503ea2cf73460fe46eacaf6759f01363609650b329e9306a95b352",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/test_ui_home_preview_cache-headless.log": "a301f9ce2046c86607cdd3ed56f9782205001658dd681f00bb30abe60744446c",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/test_world_field_lights-headless.log": "19be298f266add2f515cb3bfd44fd91811ddb8af21e1456fccd87360dea39561",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/runner-check/manifest.json": "92e1a03e214cf79f033285ca040eac85b6e40f54027ba099402c20b053b6669b",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/runner-check/native-1.json": "eff342a9f55e13735f0111075f490a8461604a6f6f475b7bb49692f27db4079d",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/runner-check/native-1.log": "f97689174f1cb9a76d143944b55aebe8e06f5e0534a06d953114c953fdb49491",
+    "research/visual-quality/wing-light-slices/run.py": "3c5a70975f37bcb908846a4ab7989149729f49cf36429a707f1134e3c8feb67a",
+    "research/visual-quality/wing-light-slices/compare.gd": "9f5f10a808415909fcf99a7b4f94e2d1a2ac5a2f731ed6cd20417b2b09184e30"
+  }
+}

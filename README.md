@@ -1,5 +1,7 @@
 # OpenRC Simulator
 
+**[Explore the project website](https://bultodepapas.github.io/OpenRCsimulator/)** — aircraft, field, downloads and project details in English and Spanish.
+
 > [!NOTE]
 > **Thank you, OpenAI, for supporting open source.**
 >

@@ -1,0 +1,6 @@
+test_continuous_turbine_metadata_rejects_mixed_sampling (live_test_trace_acceptance.TraceAcceptance.test_continuous_turbine_metadata_rejects_mixed_sampling) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 10.808s
+
+OK

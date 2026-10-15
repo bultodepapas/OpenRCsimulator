@@ -1,0 +1,31 @@
+test_active_aircraft_metadata (frozen_test_trace_acceptance.TraceAcceptance.test_active_aircraft_metadata) ... ok
+test_active_avanti_gear_contract_rejects_incomplete_metadata_and_rows (frozen_test_trace_acceptance.TraceAcceptance.test_active_avanti_gear_contract_rejects_incomplete_metadata_and_rows) ... ok
+test_checkpoint_wheel_state_keeps_unknown_launch_explicit (frozen_test_trace_acceptance.TraceAcceptance.test_checkpoint_wheel_state_keeps_unknown_launch_explicit) ... ok
+test_clock_and_schema_mutations_fail (frozen_test_trace_acceptance.TraceAcceptance.test_clock_and_schema_mutations_fail) ... ok
+test_complete_real_flight_passes (frozen_test_trace_acceptance.TraceAcceptance.test_complete_real_flight_passes) ... ok
+test_continuous_turbine_metadata_rejects_mixed_sampling (frozen_test_trace_acceptance.TraceAcceptance.test_continuous_turbine_metadata_rejects_mixed_sampling) ... 
+  test_continuous_turbine_metadata_rejects_mixed_sampling (frozen_test_trace_acceptance.TraceAcceptance.test_continuous_turbine_metadata_rejects_mixed_sampling) (key='wheel_profile_status', value='applied') ... FAIL
+test_default_duration_and_fractional_tick_rounding (frozen_test_trace_acceptance.TraceAcceptance.test_default_duration_and_fractional_tick_rounding) ... ok
+test_exact_input_artifact_verification (frozen_test_trace_acceptance.TraceAcceptance.test_exact_input_artifact_verification) ... ok
+test_faults_and_missing_samples_fail_without_overwriting (frozen_test_trace_acceptance.TraceAcceptance.test_faults_and_missing_samples_fail_without_overwriting) ... ok
+test_invalid_checker_request_fails (frozen_test_trace_acceptance.TraceAcceptance.test_invalid_checker_request_fails) ... ok
+test_invalid_duration_and_path_fail_without_output (frozen_test_trace_acceptance.TraceAcceptance.test_invalid_duration_and_path_fail_without_output) ... ok
+test_legacy_metadata_is_explicit_and_cannot_verify_file_bytes (frozen_test_trace_acceptance.TraceAcceptance.test_legacy_metadata_is_explicit_and_cannot_verify_file_bytes) ... ok
+test_missing_or_inconsistent_flight_metadata_fails (frozen_test_trace_acceptance.TraceAcceptance.test_missing_or_inconsistent_flight_metadata_fails) ... ok
+test_nonfinite_any_column_any_time_fails (frozen_test_trace_acceptance.TraceAcceptance.test_nonfinite_any_column_any_time_fails) ... ok
+test_partial_and_extra_samples_fail (frozen_test_trace_acceptance.TraceAcceptance.test_partial_and_extra_samples_fail) ... ok
+test_timber_electric_endpoint_equations_reject_corruption (frozen_test_trace_acceptance.TraceAcceptance.test_timber_electric_endpoint_equations_reject_corruption) ... ok
+test_write_failure_is_nonzero (frozen_test_trace_acceptance.TraceAcceptance.test_write_failure_is_nonzero) ... ok
+
+======================================================================
+FAIL: test_continuous_turbine_metadata_rejects_mixed_sampling (frozen_test_trace_acceptance.TraceAcceptance.test_continuous_turbine_metadata_rejects_mixed_sampling) (key='wheel_profile_status', value='applied')
+----------------------------------------------------------------------
+Traceback (most recent call last):
+  File "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_trace_acceptance.py", line 196, in test_continuous_turbine_metadata_rejects_mixed_sampling
+    with self.assertRaises(ValueError):
+AssertionError: ValueError not raised
+
+----------------------------------------------------------------------
+Ran 17 tests in 144.946s
+
+FAILED (failures=1)

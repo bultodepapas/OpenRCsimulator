@@ -1,0 +1,59 @@
+{
+  "format": "openrc-r11-independent-package-artifact-review-v1",
+  "captured_utc": "2026-10-15T15:27:05.688576+00:00",
+  "candidate": "/home/bulto/openrc-r11-package-20261015-09",
+  "source_manifest_sha256": "bd9cc04069b725b1317bb3125c5f06bb0d338336d1f5e41b93c81e552ce3eebc",
+  "export_log_sha256": "c34f4657792d7c17ff30969e951539a181b00c39719731901203b3696a7e3f68",
+  "sha256sums_sha256": "ead1d0da6a6c6cc805fe3422b01599885baa882d6b197f0e52b4a02fde295478",
+  "archives": {
+    "linux": {
+      "archive": "/home/bulto/openrc-r11-package-20261015-09/dist/openrc-simulator-7c47c7b-dirty-linux-x86_64.zip",
+      "archive_sha256": "4a71dbba9a3834a870a1b074fdd186eb02471523698f6c086cf6a630e0cdd9c7",
+      "size_bytes": 101703597,
+      "entries": [
+        "openrc-simulator.x86_64",
+        "libopenrc_ground_vehicle.so"
+      ],
+      "validated_native_artifacts": {
+        "openrc-simulator.x86_64": "9512f631d21865def4579e66665973669dfdedad4a6c052df11a09b79acc10ed",
+        "libopenrc_ground_vehicle.so": "08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3"
+      },
+      "zip_crc_valid": true
+    },
+    "windows": {
+      "archive": "/home/bulto/openrc-r11-package-20261015-09/dist/openrc-simulator-7c47c7b-dirty-windows-x86_64.zip",
+      "archive_sha256": "bd45461b0afb031524676044dbe5393003f600bea2055a5980a23f192b63d567",
+      "size_bytes": 111084563,
+      "entries": [
+        "openrc_ground_vehicle.dll",
+        "OpenRC Simulator.exe"
+      ],
+      "validated_native_artifacts": {
+        "OpenRC Simulator.exe": "250f8c234644ee353b7c6a7616cce0c3bc4bb3fffb2e134292ffd793360ad564",
+        "openrc_ground_vehicle.dll": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c"
+      },
+      "zip_crc_valid": true
+    },
+    "macos": {
+      "archive": "/home/bulto/openrc-r11-package-20261015-09/dist/openrc-simulator-7c47c7b-dirty-macos-universal.zip",
+      "archive_sha256": "5f86318f54030a7eb66e14517cb102a54b1d0dec058c606b0455ed2a51586380",
+      "size_bytes": 133585222,
+      "entries": [
+        "OpenRC Simulator.app/Contents/_CodeSignature/CodeResources",
+        "OpenRC Simulator.app/Contents/PkgInfo",
+        "OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator",
+        "OpenRC Simulator.app/Contents/Resources/es.lproj/InfoPlist.strings",
+        "OpenRC Simulator.app/Contents/Resources/icon.icns",
+        "OpenRC Simulator.app/Contents/Resources/PrivacyInfo.xcprivacy",
+        "OpenRC Simulator.app/Contents/Resources/en.lproj/InfoPlist.strings",
+        "OpenRC Simulator.app/Contents/Resources/OpenRC Simulator.pck",
+        "OpenRC Simulator.app/Contents/Info.plist"
+      ],
+      "validated_native_artifacts": {},
+      "zip_crc_valid": true
+    }
+  },
+  "linux_native_marker_valid": true,
+  "scope": "Read-only independent hashes, ZIP integrity and packaged native artifact identity. No new Godot invocation or physical/performance validation.",
+  "passed": true
+}

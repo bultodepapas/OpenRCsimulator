@@ -2,7 +2,7 @@
 
 2026-10-12 · **Status: P51-15…18 audit, correction and verification complete; aircraft physical acceptance remains experimental.** [Plan](../../P51-REALISM-PLAN.md) · [Reproduction tools](../../../research/p51/p51-15/README.md)
 
-Later steps: [P51-19 trim calibration to the XP-51 flight data](P51-19/README.md) · [P51-20 planform ground effect](P51-20/README.md) · [P51-21 runway start](P51-21/README.md) · [P51-22 slipstream downwash regression](P51-22/README.md) · [P51-23 CI and Linux verification](P51-23/README.md).
+Later steps: [P51-19 trim calibration to the XP-51 flight data](P51-19/README.md) · [P51-20 planform ground effect](P51-20/README.md) · [P51-21 runway start](P51-21/README.md) · [P51-22 slipstream downwash regression](P51-22/README.md) · [P51-23 CI and Linux verification](P51-23/README.md) · [P51-24 lateral-directional audit](P51-24/README.md).
 
 ## Delivered correction
 

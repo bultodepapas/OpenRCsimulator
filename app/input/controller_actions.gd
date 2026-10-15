@@ -8,6 +8,13 @@ const OPTIONAL_ACTION_IDS: PackedStringArray = [
 	"helicopter_arm", "helicopter_hold", "helicopter_mode", "helicopter_trainer",
 ]
 const AUX_CHANNEL_IDS: PackedStringArray = ["smoke", "flaps", "gear"]
+## Product defaults on standardized gamepads, scoped to implemented aircraft equipment.
+## Profile/setup validation reserves both candidates; flight passes its actual capabilities.
+const AUTOMATIC_AUX := {
+	"gear_toggle": {"channel": "gear", "button": JOY_BUTTON_B},
+	"smoke_toggle": {"channel": "smoke", "button": JOY_BUTTON_RIGHT_SHOULDER},
+}
+const SUPPORTED_AUX := {"gear": true, "smoke": true, "flaps": false}
 static var _definition_cache: Dictionary = {}
 
 ## Semantic gamepad actions are data, not synthetic keyboard events. The owning input router
@@ -104,7 +111,7 @@ static func validate(bindings: Dictionary) -> Dictionary:
 
 ## Resolve saved overrides against the current defaults. Only inherited flight-only defaults
 ## that alias a configured auxiliary control are silenced; explicit actions and recovery paths stay.
-static func effective_bindings(profile: Dictionary) -> Dictionary:
+static func effective_bindings(profile: Dictionary, capabilities: Dictionary = SUPPORTED_AUX) -> Dictionary:
 	var bindings := default_bindings()
 	var explicit_actions: Variant = _dict_value(profile, "actions", {})
 	var explicit_ids: Dictionary = {}
@@ -135,7 +142,33 @@ static func effective_bindings(profile: Dictionary) -> Dictionary:
 			if _same_aux_control(bindings.pause, aux_entry.binding):
 				bindings.pause = {"type": "key", "physical_keycode": KEY_ESCAPE}
 				break
+	_add_automatic_aux(profile, bindings, explicit_ids, aux_bindings, capabilities)
 	return bindings
+
+
+## Additive only: a saved Clear is intentional, and AUX/other actions always own their source.
+## Unknown joysticks/radios have no standardized button layout and never gain inferred buttons.
+static func _add_automatic_aux(profile: Dictionary, bindings: Dictionary, explicit_ids: Dictionary,
+		aux_bindings: Array[Dictionary], capabilities: Dictionary) -> void:
+	if str(_dict_value(profile, "kind", "")) != "gamepad":
+		return
+	var definitions := _definition_map()
+	for action_id: String in AUTOMATIC_AUX:
+		var entry: Dictionary = AUTOMATIC_AUX[action_id]
+		if explicit_ids.has(action_id) or not bool(capabilities.get(entry.channel, false)):
+			continue
+		var candidate := {"type": "button", "button": int(entry.button)}
+		var reserved := false
+		for aux_entry in aux_bindings:
+			if aux_entry.name == entry.channel or _same_aux_control(candidate, aux_entry.binding):
+				reserved = true
+		for other_id: Variant in bindings:
+			if not definitions.has(str(other_id)) or not _valid_binding(bindings[other_id]) or _is_unbound(bindings[other_id]):
+				continue
+			if _contexts_overlap("flight", str(definitions[other_id].context)) and _same_binding(candidate, bindings[other_id]):
+				reserved = true
+		if not reserved:
+			bindings[action_id] = candidate
 
 
 ## Validate the whole calibrated profile's semantic bindings and reserved AUX sources.

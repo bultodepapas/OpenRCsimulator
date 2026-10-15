@@ -1,0 +1,40 @@
+{
+  "format": "R11 actual-trace wheel mutation review v1",
+  "captured_utc": "2026-10-15T14:30:49.717587+00:00",
+  "trace": {
+    "path": "docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/trace-avanti.csv",
+    "sha256": "3eaf76c7e68d56618694b4c272d778e4bdda7eeb11a9fc445247954a3fa01b44",
+    "size_bytes": 341365
+  },
+  "checker": {
+    "path": "app/tests/check_trimmed_flight.py",
+    "sha256": "bcaa40377bda39fc8e8e7a2be6753fc41441bf2901b0ca60d8c5feb11c203d81",
+    "size_bytes": 33447
+  },
+  "repaired_test": {
+    "path": "app/tests/test_trace_acceptance.py",
+    "sha256": "77a9dab563051458cdbfad029e6b453dd2e583a55ee2bae05a7ed0064a1aea93",
+    "size_bytes": 23573
+  },
+  "metadata": {
+    "format": "openrc-trace v10",
+    "metadata_schema": "openrc-flight-meta v8",
+    "propulsion_model": "turbine-rpm-governor-rk4-v1",
+    "wheel_profile_status": "applied",
+    "gear_law": "retractable-point-gear-v1"
+  },
+  "cases": {
+    "baseline": {
+      "accepted": true
+    },
+    "previous_applied_mutation": {
+      "accepted": true
+    },
+    "new_not_applied_mutation": {
+      "accepted": false,
+      "error": "wheel profile is not applied"
+    }
+  },
+  "scope": "Pure metadata checker over retained frozen-07 actual Jet CSV. Not an additional runtime flight or full test-suite pass.",
+  "ok": true
+}

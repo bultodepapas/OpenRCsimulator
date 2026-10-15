@@ -5,6 +5,7 @@ extends SceneTree
 
 const Builder := preload("res://render/airplane.gd")
 const Kit := preload("res://render/world/aircraft_lights.gd")
+const ShaderClock := preload("res://render/shader_clock.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const WreckScript := preload("res://render/crash/wreck.gd")
 const Geometry := preload("res://aircraft/ugly_stik_geometry.gd")
@@ -25,6 +26,9 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	# Standalone native runs must register globals before model materials compile.
+	ShaderClock.register()
+	_belly_station_boundaries()
 	# Fleet: every catalog aircraft gets top strips on both wings.
 	for id in Catalog.ids():
 		var plane: Dictionary = Builder.build(id)
@@ -97,3 +101,26 @@ func _run() -> void:
 	_check("in the wreck the left strip rides on the left wing", on_wing)
 	print("FW-35b night kit: %d checks, %d failed" % [_checks, _failed])
 	quit(1 if _failed > 0 else 0)
+
+
+func _belly_station_boundaries() -> void:
+	# All 14 stations coincide at z=0. Either triangle endpoint must be inclusive.
+	for endpoint in [-1.0, 1.0]:
+		var triangle := PackedVector3Array([Vector3(-1, 0, 0), Vector3(1, 0, 0), Vector3(0, 0, endpoint)])
+		var line := Kit.belly_line(triangle, AABB())
+		var correct := line.size() == Kit.BELLY_STATIONS
+		for point in line:
+			correct = correct and point == Vector3(0, -Kit.STRIP_GAP_M, 0)
+		_check("coincident belly stations include triangle endpoint %s" % endpoint, correct)
+	# A continuous flat floor gives a known height even with descending stations.
+	var floor_tris := PackedVector3Array([Vector3(-2, -.3, -2), Vector3(2, -.3, -2), Vector3(2, -.3, 2),
+		Vector3(-2, -.3, -2), Vector3(2, -.3, 2), Vector3(-2, -.3, 2)])
+	var descending := Kit.belly_line(floor_tris, AABB(Vector3(0, 0, 1), Vector3(1, 1, -2)))
+	var floor_ok := descending.size() == Kit.BELLY_STATIONS
+	for index in descending.size():
+		floor_ok = floor_ok and absf(descending[index].y + .3 + Kit.STRIP_GAP_M) < 1e-6
+		if index > 0:
+			floor_ok = floor_ok and descending[index].z < descending[index - 1].z
+	_check("descending belly stations retain the continuous floor", floor_ok)
+	_check("belly stations outside the mesh stay empty", Kit.belly_line(floor_tris,
+		AABB(Vector3(0, 0, 10), Vector3.ONE)).is_empty())

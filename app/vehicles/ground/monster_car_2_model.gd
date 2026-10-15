@@ -14,6 +14,20 @@ const STATE_TRAVEL_START := 13
 const STATE_WHEEL_ANGLE_START := 25
 const STEER_STATE_INDEX := 29
 const ENGINE_PHASE_KEY := "engine_phase_rad"
+const TRAVEL_INPUT_NAMES := ["h_FL", "h_FR", "h_RL", "h_RR"]
+
+
+class TrackSampler extends RefCounted:
+	var axis_names := PackedStringArray()
+	var low_values := PackedFloat64Array()
+	var steps := PackedFloat64Array()
+	var counts := PackedInt32Array()
+	var low_indices := PackedInt32Array()
+	var high_indices := PackedInt32Array()
+	var fractions := PackedFloat64Array()
+	var offset := 0
+	var correction := Transform3D.IDENTITY
+	var values := PackedFloat32Array()
 
 
 static func build() -> Dictionary:
@@ -104,6 +118,42 @@ static func build() -> Dictionary:
 	var base_transforms := {}
 	for name: String in mesh_nodes:
 		base_transforms[name] = (mesh_nodes[name] as MeshInstance3D).transform
+	var draw_tracks: Array[Dictionary] = []
+	for name: String in track_nodes:
+		if name.begins_with("@wheel_"):
+			continue
+		draw_tracks.append({
+			"mesh": mesh_nodes[name] as MeshInstance3D,
+			"sampler": _compile_track(track_nodes[name]),
+		})
+	var draw_wheel_groups: Array[Dictionary] = []
+	var wheel_groups: Dictionary = bindings.get("wheel_groups", {})
+	for corner in CORNERS:
+		var group: Dictionary = wheel_groups.get(corner, {})
+		var pivot_track := str(group.get("pivot_track", ""))
+		var draw_meshes: Array[Dictionary] = []
+		for name_value in group.get("mesh_nodes", []):
+			var name := str(name_value)
+			draw_meshes.append({
+				"mesh": mesh_nodes[name] as MeshInstance3D,
+				"animated": track_nodes.has(name),
+				"base": base_transforms[name],
+			})
+		draw_wheel_groups.append({
+			"sampler": _compile_track(track_nodes[pivot_track]),
+			"spin_sign": float(group.get("spin_sign", 1.0)),
+			"meshes": draw_meshes,
+		})
+	var draw_engine_nodes: Array[Dictionary] = []
+	for engine_mesh: MeshInstance3D in engine_nodes:
+		var name := str(engine_mesh.name)
+		draw_engine_nodes.append({
+			"mesh": engine_mesh,
+			"animated": track_nodes.has(name),
+			"base": base_transforms[name],
+			"bell": name == "Campana_Embrague",
+		})
+	var engine_pivot := _transform_from_floats(bindings.engine_pivot_gltf)
 	var headlight_positions: Array[Vector3] = []
 	for raw_position: Array in bindings.get("headlight_positions", []):
 		if raw_position.size() != 3:
@@ -141,7 +191,12 @@ static func build() -> Dictionary:
 		"_imported": imported,
 		"_base_transforms": base_transforms,
 		"_animated_names": track_nodes,
-		"_engine_pivot": _transform_from_floats(bindings.engine_pivot_gltf),
+		"_engine_pivot": engine_pivot,
+		"_engine_pivot_inverse": engine_pivot.affine_inverse(),
+		"_draw_tracks": draw_tracks,
+		"_draw_wheel_groups": draw_wheel_groups,
+		"_draw_engine_nodes": draw_engine_nodes,
+		"_draw_inputs": {"h_FL": 0.0, "h_FR": 0.0, "h_RL": 0.0, "h_RR": 0.0, "steer": 0.0},
 	}
 	return visual
 
@@ -315,14 +370,13 @@ static func draw(visual: Dictionary, state: PackedFloat64Array, cg_height_m: flo
 		return false
 	root.transform = Frames.root_transform(rotation, position, cg_offset as Vector3)
 
-	var travel := {}
-	var inputs := {}
+	var inputs: Dictionary = visual.get("_draw_inputs", {})
+	if inputs.is_empty():
+		return false
 	var outside := false
 	for corner_index in CORNERS.size():
-		var corner: String = CORNERS[corner_index]
 		var authored_travel := clampf(state[STATE_TRAVEL_START + corner_index], -0.044, 0.036)
-		travel[corner] = authored_travel
-		inputs["h_" + corner] = authored_travel
+		inputs[TRAVEL_INPUT_NAMES[corner_index]] = authored_travel
 		outside = outside or absf(authored_travel - state[STATE_TRAVEL_START + corner_index]) > 0.000001
 	var manifest: Dictionary = visual.get("_manifest", {})
 	var steer_map: Array = manifest.get("steer_inverse_map", [])
@@ -334,99 +388,112 @@ static func draw(visual: Dictionary, state: PackedFloat64Array, cg_height_m: flo
 	outside = outside or absf(source_angle_limit - requested_source_wheel_angle) > 0.000001
 	visual.travel_outside_art = outside
 
-	var track_index: Dictionary = manifest.get("tracks", {})
 	var rig_bytes: PackedByteArray = visual.get("_rig_bytes", PackedByteArray())
-	var mesh_nodes: Dictionary = visual.get("_mesh_nodes", {})
-	for name: String in track_index:
-		if name.begins_with("@wheel_"):
-			continue
-		var mesh: MeshInstance3D = mesh_nodes[name] as MeshInstance3D
-		var transform_value: Variant = _sample_track(track_index[name], rig_bytes, inputs)
+	for track_item: Dictionary in visual.get("_draw_tracks", []):
+		var mesh: MeshInstance3D = track_item.get("mesh") as MeshInstance3D
+		var transform_value: Variant = _sample_compiled_track(track_item.get("sampler") as TrackSampler, rig_bytes, inputs)
 		if not transform_value is Transform3D:
 			return false
 		mesh.transform = transform_value
 
-	var bindings: Dictionary = manifest.get("bindings", {})
-	var wheel_groups: Dictionary = bindings.get("wheel_groups", {})
-	var base_transforms: Dictionary = visual.get("_base_transforms", {})
-	var animated_names: Dictionary = visual.get("_animated_names", {})
+	var draw_wheel_groups: Array = visual.get("_draw_wheel_groups", [])
 	for corner_index in CORNERS.size():
-		var corner: String = CORNERS[corner_index]
-		var group: Dictionary = wheel_groups.get(corner, {})
-		var pivot_track: String = str(group.get("pivot_track", ""))
-		var pivot_value: Variant = _sample_track(track_index[pivot_track], rig_bytes, inputs)
+		var group: Dictionary = draw_wheel_groups[corner_index]
+		var pivot_value: Variant = _sample_compiled_track(group.get("sampler") as TrackSampler, rig_bytes, inputs)
 		if not pivot_value is Transform3D:
 			return false
 		var pivot: Transform3D = pivot_value
-		var spin_sign := float(group.get("spin_sign", 1.0))
+		var spin_sign := float(group.spin_sign)
 		var angle := spin_sign * state[STATE_WHEEL_ANGLE_START + corner_index]
 		var wheel_spin := pivot * Transform3D(Basis(Vector3.FORWARD, angle), Vector3.ZERO) * pivot.affine_inverse()
-		for name: String in group.get("mesh_nodes", []):
-			var wheel_mesh := mesh_nodes[name] as MeshInstance3D
-			var base: Transform3D = wheel_mesh.transform if animated_names.has(name) else base_transforms[name]
+		for mesh_item: Dictionary in group.meshes:
+			var wheel_mesh := mesh_item.mesh as MeshInstance3D
+			var base: Transform3D = wheel_mesh.transform if mesh_item.animated else mesh_item.base
 			wheel_mesh.transform = wheel_spin * base
 
 	var engine_phase := float(visual.get(ENGINE_PHASE_KEY, 0.0))
 	if not is_finite(engine_phase):
 		return false
 	var engine_pivot: Transform3D = visual.get("_engine_pivot", Transform3D.IDENTITY)
-	var engine_spin := engine_pivot * Transform3D(Basis(Vector3.FORWARD, engine_phase), Vector3.ZERO) * engine_pivot.affine_inverse()
-	for engine_mesh: MeshInstance3D in _mesh_bindings(bindings.get("engine_nodes", []), mesh_nodes):
-		var base: Transform3D = engine_mesh.transform if animated_names.has(str(engine_mesh.name)) else base_transforms[str(engine_mesh.name)]
-		engine_mesh.transform = engine_spin * base
+	var engine_pivot_inverse: Transform3D = visual["_engine_pivot_inverse"]
+	var engine_spin := engine_pivot * Transform3D(Basis(Vector3.FORWARD, engine_phase), Vector3.ZERO) * engine_pivot_inverse
+	# The authored bell shares the crank pivot but belongs to the transmission
+	# output. At idle it stays still while the flywheel rotates inside it.
+	var bell_phase := 0.0
+	for corner_index in 4: bell_phase += state[STATE_WHEEL_ANGLE_START + corner_index] * 0.25
+	bell_phase *= float(visual.get("gear_ratio", 0.0))
+	var bell_spin := engine_pivot * Transform3D(Basis(Vector3.FORWARD, fposmod(bell_phase, TAU)), Vector3.ZERO) * engine_pivot.affine_inverse()
+	for engine_item: Dictionary in visual.get("_draw_engine_nodes", []):
+		var engine_mesh := engine_item.mesh as MeshInstance3D
+		var base: Transform3D = engine_mesh.transform if engine_item.animated else engine_item.base
+		engine_mesh.transform = (bell_spin if engine_item.bell else engine_spin) * base
 	return true
 
 
-static func _sample_track(track: Dictionary, bytes: PackedByteArray, inputs: Dictionary) -> Variant:
+static func _compile_track(track: Dictionary) -> TrackSampler:
+	var sampler := TrackSampler.new()
 	var axes: Array = track.get("axes", [])
 	var ranges: Array = track.get("ranges", [])
-	if axes.size() != ranges.size() or axes.size() > 4 or bytes.is_empty():
-		return null
-	var lows: Array[int] = []
-	var highs: Array[int] = []
-	var fractions: Array[float] = []
+	sampler.axis_names.resize(axes.size())
+	sampler.low_values.resize(axes.size())
+	sampler.steps.resize(axes.size())
+	sampler.counts.resize(axes.size())
+	sampler.low_indices.resize(axes.size())
+	sampler.high_indices.resize(axes.size())
+	sampler.fractions.resize(axes.size())
 	for axis_index in axes.size():
 		var range_values: Array = ranges[axis_index]
-		if range_values.size() != 4:
-			return null
-		var count := int(range_values[3])
+		sampler.axis_names[axis_index] = str(axes[axis_index])
+		sampler.low_values[axis_index] = float(range_values[0])
+		sampler.steps[axis_index] = float(range_values[2])
+		sampler.counts[axis_index] = int(range_values[3])
+	sampler.offset = int(track.get("offset", 0))
+	sampler.correction = _transform_from_floats(track.get("correction", []))
+	sampler.values.resize(12)
+	return sampler
+
+
+static func _sample_compiled_track(sampler: TrackSampler, bytes: PackedByteArray, inputs: Dictionary) -> Variant:
+	if sampler == null or bytes.is_empty():
+		return null
+	var axis_count := sampler.axis_names.size()
+	sampler.values.fill(0.0)
+	for axis_index in axis_count:
+		var count := sampler.counts[axis_index]
 		if count < 1:
 			return null
 		if count == 1:
-			lows.append(0)
-			highs.append(0)
-			fractions.append(0.0)
+			sampler.low_indices[axis_index] = 0
+			sampler.high_indices[axis_index] = 0
+			sampler.fractions[axis_index] = 0.0
 			continue
-		var value := float(inputs.get(str(axes[axis_index]), 0.0))
-		var grid_position := clampf((value - float(range_values[0])) / float(range_values[2]), 0.0, float(count - 1))
+		var value := float(inputs.get(sampler.axis_names[axis_index], 0.0))
+		var grid_position := clampf(
+			(value - sampler.low_values[axis_index]) / sampler.steps[axis_index],
+			0.0,
+			float(count - 1),
+		)
 		var lower := int(floor(grid_position))
 		var upper := mini(lower + 1, count - 1)
-		lows.append(lower)
-		highs.append(upper)
-		fractions.append(grid_position - float(lower))
-	var values := PackedFloat32Array()
-	values.resize(12)
-	for mask in (1 << axes.size()):
-		var indices: Array[int] = []
+		sampler.low_indices[axis_index] = lower
+		sampler.high_indices[axis_index] = upper
+		sampler.fractions[axis_index] = grid_position - float(lower)
+	for mask in (1 << axis_count):
 		var weight := 1.0
-		for axis_index in axes.size():
+		var flat_index := 0
+		for axis_index in axis_count:
 			var choose_upper := (mask & (1 << axis_index)) != 0
-			indices.append(highs[axis_index] if choose_upper else lows[axis_index])
-			weight *= fractions[axis_index] if choose_upper else 1.0 - fractions[axis_index]
+			var sample_index := sampler.high_indices[axis_index] if choose_upper else sampler.low_indices[axis_index]
+			weight *= sampler.fractions[axis_index] if choose_upper else 1.0 - sampler.fractions[axis_index]
+			flat_index = flat_index * sampler.counts[axis_index] + sample_index
 		if weight <= 0.0:
 			continue
-		var flat_index := 0
-		for axis_index in axes.size():
-			flat_index = flat_index * int(ranges[axis_index][3]) + indices[axis_index]
-		var sample_offset := int(track.get("offset", 0)) + flat_index * 12 * 4
+		var sample_offset := sampler.offset + flat_index * 12 * 4
 		if sample_offset < 0 or sample_offset + 48 > bytes.size():
 			return null
 		for component in 12:
-			values[component] += bytes.decode_float(sample_offset + component * 4) * weight
-	var correction: Variant = track.get("correction", [])
-	if not _matrix_is_valid(correction):
-		return null
-	return _transform_from_floats(correction) * _transform_from_floats(values)
+			sampler.values[component] += bytes.decode_float(sample_offset + component * 4) * weight
+	return sampler.correction * _transform_from_floats(sampler.values)
 
 
 static func _inverse_steer_map(steer_map: Array, wheel_angle_rad: float) -> float:

@@ -1,0 +1,26 @@
+{
+  "sha256": {
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/candidate.gd.gz": "de2c8027ddabe77a708b4712603d1e3d6e3b2df70a8d3b6dd241755532336e50",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/field-shadows-headless.log": "4ba57287fc66e1c42988261a5908853352c4f6e905eabe1cb9990ed4881599de",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/field-shadows-native.log": "d80351f093b88d3811e2f2487fddc1add907e3bb190d10e42a8d3f05490fff0a",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/home-preview-cache.log": "a301f9ce2046c86607cdd3ed56f9782205001658dd681f00bb30abe60744446c",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/home-ui.log": "b968aeb63a08b3840a102222d5b1d74f584b03b0845602aa3a4e63f9eed1730d",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/native-1.json": "4277f4258de47bd203eb802ea20e3d6c7f7481a4f2729dc3d58a18edab29defe",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/native-1.log": "cd7d6fb10462ea7e480d422099be49b369fda77e66fd659f686b15bf56ab6e27",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/native-2.json": "cb7eecc805d6a4bbad7b87550c882c6c73a672a31bd0538c094198a78248e0cf",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/native-2.log": "cd7d6fb10462ea7e480d422099be49b369fda77e66fd659f686b15bf56ab6e27",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/native-3.json": "fc3a0dc550972ac64507e16c89a2fe49c5bf7f8bd3e1054a7dae9a832b14794f",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/native-3.log": "cd7d6fb10462ea7e480d422099be49b369fda77e66fd659f686b15bf56ab6e27",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/projected-shadow.log": "3545d1a2432f8b7c7db4e4461f000ad33e1a5eec219075e5bb400eae1aaaafa9",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/README.md": "b808fab5001432b90eb2063d521723f747690efa750e68b83cf524588af98793",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/reference.gd.gz": "2234c145094e88553373e45835f829ff3b79160ed09bf901bc4b5e5a6188c14b",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/source-after.json": "a30a4dedc4f51f5e63f9fee4b0e35ecd37ff89edf2eb0bb999640a593715f261",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/source-before.json": "5bccff2988d93339c82df8ff126b29ed577b21cb775489d3af16a365e9666e3f",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/summary.json": "fb47d56b653121231d671d46fab6a4e3c9810b4cc3b55b9f895678c07d9b9633",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/runner-check/manifest.json": "430282ff9665f7099de10bdfe983f0b579adc90276cd2c9a92baef0bf0a477e6",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/runner-check/native-1.json": "ee79cc874d4518acabcd931a31b715cd556ca55c6fbbf113270ad1e577709232",
+    "docs/research/visual-quality-implementation/VQ-01c/loading/population-shadow/runner-check/native-1.log": "cd7d6fb10462ea7e480d422099be49b369fda77e66fd659f686b15bf56ab6e27",
+    "research/visual-quality/population-shadow/run.py": "c5bc418683edfc63522d96c3653fad44607c8746b7fd455e6017ec6d2a311786",
+    "research/visual-quality/population-shadow/compare.gd": "e12ce21c087b4c29751544c53b28c290ac2c0365e0f8a2ae00bb965ee4b1296f"
+  }
+}

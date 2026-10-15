@@ -1,0 +1,33 @@
+--- reference.gd
++++ candidate.gd
+@@ -272,6 +272,11 @@
+ 	var zs := PackedFloat64Array()
+ 	for k in BELLY_STATIONS:
+ 		zs.append(all.position.z + all.size.z * lerpf(BELLY_FROM, BELLY_TO, float(k) / float(BELLY_STATIONS - 1)))
++	# Binary bounds include both triangle endpoints and repeated stations. Retain
++	# the scan for descending/non-finite caller bounds, where bsearch is invalid.
++	var ordered := true
++	for j in zs.size():
++		ordered = ordered and is_finite(zs[j]) and (j == 0 or zs[j] >= zs[j - 1])
+ 	var crossings: Array = []
+ 	for z in zs:
+ 		crossings.append(PackedFloat64Array())
+@@ -281,9 +286,16 @@
+ 		var c := tris[i + 2]
+ 		var lo := minf(a.z, minf(b.z, c.z))
+ 		var hi := maxf(a.z, maxf(b.z, c.z))
+-		for j in zs.size():
++		if hi - lo < 1e-9:
++			continue
++		var first := 0
++		var stop := zs.size()
++		if ordered and is_finite(lo) and is_finite(hi):
++			first = zs.bsearch(lo)
++			stop = zs.bsearch(hi, false)
++		for j in range(first, stop):
+ 			var z := zs[j]
+-			if z < lo or z > hi or hi - lo < 1e-9:
++			if z < lo or z > hi:
+ 				continue
+ 			var hits: Array[Vector3] = []
+ 			for e: Array in [[a, b], [b, c], [c, a]]:

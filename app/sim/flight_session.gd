@@ -579,9 +579,20 @@ func _ready() -> void:
 	Input.joy_connection_changed.connect(_on_joy_connection_changed)
 	if external_controller_selection:
 		return
+	radio.confirmed_gamepad_connection = _confirmed_direct_gamepad
 	var pads := Input.get_connected_joypads()
 	if not pads.is_empty():
 		_on_joy_connection_changed(pads[0], true)
+
+
+## Technical/direct flights have no ControllerService to certify live polling.
+func _confirmed_direct_gamepad(id: int) -> bool:
+	if external_controller_selection or not is_inside_tree() or not get_window().has_focus():
+		return false
+	if id != radio.device_id or not Input.get_connected_joypads().has(id) or not Input.is_joy_known(id):
+		return false
+	var info: Dictionary = device_info.call(id)
+	return RcInput.key_for(id, info) == radio.device_key
 
 
 func _input(event: InputEvent) -> void:
@@ -695,7 +706,7 @@ func apply_controller_selection(device: int, info: Dictionary, profile: Dictiona
 	radio.connect_device(device, info, profile)
 	if radio.is_rate_throttle():
 		_pending_controller_start = staged_throttle
-		pause_reason = "Centre and release controls, then continue at %d%% throttle." % roundi(staged_throttle * 100.0)
+		pause_reason = "Continue at %d%% throttle." % roundi(staged_throttle * 100.0)
 	return true
 
 
@@ -713,7 +724,7 @@ func controller_focus_lost() -> void:
 		radio.set_auxiliary_enabled(false)
 		radio.require_neutral(true, true)
 		sim.set_paused(true)
-		pause_reason = "Focus lost. Release controls and continue explicitly."
+		pause_reason = "Focus lost. Select Continue to resume."
 
 
 func controller_throttle_cut() -> void:

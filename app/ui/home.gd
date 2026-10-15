@@ -763,7 +763,7 @@ func _update_control() -> void:
 	if _flight_device_name.is_empty():
 		control_label.text = tr("Flight: keyboard (no controller selected).")
 	else:
-		control_label.text = tr("Flight controller: %s. Follow the arming prompt.") % _flight_device_name
+		control_label.text = tr("Flight controller: %s. Review your bindings in Controller settings.") % _flight_device_name
 	if _menu_device_name.is_empty():
 		controller_prompt_label.text = tr("Press A / Cross to claim gamepad menu controls.")
 	else:

@@ -1,0 +1,12 @@
+candidate=/home/bulto/openrc-r11-package-20261015-08
+godot=/home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64
+probe=/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/frozen_merged_receipt_type_probe.gd
+receipt=/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/native-package-staging/receipt-merge-20261015-02/build-receipt.json
+cef8f456d7300fee201cee2481adf2e8d60b6431c8f050cab0a9754c170303c4  /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/frozen_merged_receipt_type_probe.gd
+8718896783cb792f949732a5a4d74c6d08a1bde0bd52c43f9d1982efb3fd9ff7  /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/native-package-staging/receipt-merge-20261015-02/build-receipt.json
+8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e  /home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64
+command=/home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/bulto/openrc-r11-package-20261015-08/app --script /mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/package-smoke/frozen_merged_receipt_type_probe.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+R11_FROZEN_MERGED_RECEIPT_JSON_TYPE {"linux_abi_typeof":3,"linux_abi_value":1.0,"receipt_path":"/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/native-package-staging/receipt-merge-20261015-02/build-receipt.json","receipt_sha256":"8718896783cb792f949732a5a4d74c6d08a1bde0bd52c43f9d1982efb3fd9ff7","root_abi_typeof":3,"root_abi_value":1.0,"type_float":3,"type_int":2,"windows_abi_typeof":3,"windows_abi_value":1.0}
+exit=0

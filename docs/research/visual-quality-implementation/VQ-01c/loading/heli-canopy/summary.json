@@ -1,0 +1,30 @@
+{
+  "warm_pairs_per_variant": 25,
+  "real_line_kit_pairs": 60,
+  "synthetic_cases_per_run": 256,
+  "processes": 5,
+  "results": {
+    "four_lines": {
+      "warm_median_us": [
+        1764332,
+        487226
+      ],
+      "first_pair_median_us": [
+        1565748,
+        473123
+      ],
+      "warm_reduction_percent": 72.38467590000069
+    },
+    "kit_build": {
+      "warm_median_us": [
+        1752928,
+        494424
+      ],
+      "first_pair_median_us": [
+        1842108,
+        522721
+      ],
+      "warm_reduction_percent": 71.79439201153727
+    }
+  }
+}

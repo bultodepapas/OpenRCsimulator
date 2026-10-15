@@ -84,11 +84,13 @@ func _build() -> void:
  var canopy: MeshInstance3D=root.find_child("Carenado",true,false) as MeshInstance3D
  if canopy!=null:
   var triangles: PackedVector3Array=_triangles(root,canopy)
+  var lines: Array=_canopy_lines(triangles,[[-1.0,.43],[-1.0,.83],[1.0,.43],[1.0,.83]])
   for side: float in [-1.0,1.0]:
+   var line_index: int=0 if side<0 else 2
    var side_name: String="port" if side<0 else "starboard"
-   var line: PackedVector3Array=canopy_line(triangles,side,.43)
+   var line: PackedVector3Array=lines[line_index]
    _add_strip("canopy_"+side_name,line,PORT if side<0 else STARBOARD,Vector3(side,0,0))
-   _add_strip("canopy_crown_"+side_name,canopy_line(triangles,side,.83),WARM,Vector3(side,.6,0).normalized(),.006)
+   _add_strip("canopy_crown_"+side_name,lines[line_index+1],WARM,Vector3(side,.6,0).normalized(),.006)
  _add_strip("skid_port",PackedVector3Array([Vector3(-.096,.01,-.205),Vector3(-.096,.01,.185)]),BELLY,Vector3(-1,-.3,0).normalized())
  _add_strip("skid_starboard",PackedVector3Array([Vector3(.096,.01,-.205),Vector3(.096,.01,.185)]),BELLY,Vector3(1,-.3,0).normalized())
  for side: float in [-1.0,1.0]:
@@ -180,13 +182,24 @@ static func _triangles(root: Node3D,node: MeshInstance3D) -> PackedVector3Array:
 
 ## Slice actual canopy triangles; no floating outline based on its bounding box.
 static func canopy_line(triangles: PackedVector3Array,side: float,height_fraction: float) -> PackedVector3Array:
- var line: PackedVector3Array=[]
+ return _canopy_lines(triangles,[[side,height_fraction]])[0]
+
+## Each profile is [side, height_fraction]. Share station intersections only within
+## this call; preserve float64 profile values and independent packed output lines.
+static func _canopy_lines(triangles: PackedVector3Array,profiles: Array) -> Array:
+ var lines: Array=[]
+ for profile: Array in profiles: lines.append(PackedVector3Array())
  for station: int in 17:
   var z: float=lerpf(-.355,.045,float(station)/16.0)
   var segments: Array=[]
   var lo: float=INF
   var hi: float=-INF
   for i: int in range(0,triangles.size()-2,3):
+   # A triangle wholly on one side cannot intersect this station's plane.
+   var az: float=triangles[i].z
+   var bz: float=triangles[i+1].z
+   var cz: float=triangles[i+2].z
+   if (az<z and bz<z and cz<z) or (az>z and bz>z and cz>z): continue
    var points: PackedVector3Array=[]
    for edge: int in 3:
     var a: Vector3=triangles[i+edge]
@@ -196,12 +209,18 @@ static func canopy_line(triangles: PackedVector3Array,side: float,height_fractio
     points.append(p); lo=minf(lo,p.y); hi=maxf(hi,p.y)
    if points.size()>=2: segments.append(points)
   if segments.is_empty(): continue
-  var y: float=lerpf(lo,hi,height_fraction)
-  var x: float=-INF
-  for segment: PackedVector3Array in segments:
-   var a: Vector3=segment[0]
-   var b: Vector3=segment[1]
-   if (a.y-y)*(b.y-y)>0 or absf(a.y-b.y)<1e-8: continue
-   x=maxf(x,side*lerpf(a.x,b.x,(y-a.y)/(b.y-a.y)))
-  if is_finite(x): line.append(Vector3(side*(x+.002),y,z))
- return line
+  for index: int in profiles.size():
+   var side: float=profiles[index][0]
+   var height_fraction: float=profiles[index][1]
+   var y: float=lerpf(lo,hi,height_fraction)
+   var x: float=-INF
+   for segment: PackedVector3Array in segments:
+    var a: Vector3=segment[0]
+    var b: Vector3=segment[1]
+    if (a.y-y)*(b.y-y)>0 or absf(a.y-b.y)<1e-8: continue
+    x=maxf(x,side*lerpf(a.x,b.x,(y-a.y)/(b.y-a.y)))
+   if is_finite(x):
+    var line: PackedVector3Array=lines[index]
+    line.append(Vector3(side*(x+.002),y,z))
+    lines[index]=line
+ return lines

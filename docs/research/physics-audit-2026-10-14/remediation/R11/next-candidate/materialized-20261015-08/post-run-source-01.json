@@ -1,0 +1,3455 @@
+{
+  "added": [
+    {
+      "kind": "file",
+      "mode": "0o644",
+      "path": "app/native/ground_vehicle/openrc_ground_vehicle.gdextension.uid",
+      "sha256": "aa79a6e4136d7e3aaaa5d8aa62eb409d79a0688d27a2b36f0836d6a8dedd4b0c",
+      "size_bytes": 20
+    }
+  ],
+  "baseline_entry_count": 14923,
+  "baseline_manifest": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/native-package-staging/derived-package-20261015-08/candidate-after-overlays.json",
+  "baseline_manifest_sha256": "f61830ce291e789a76d43d059a5d6253ffa2d367e8857a9fa322ebc1e2b4f5f4",
+  "baseline_tree_sha256": "84fdc89552592750909ab85407b4e7ded9aa18327d8dd22da6e3c7d3d69a51a1",
+  "candidate": "08",
+  "captured_utc": "2026-10-15T14:47:51.190131+00:00",
+  "changed": [],
+  "excluded_generated_or_support_paths": {
+    ".git": [
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "COMMIT_EDITMSG",
+        "sha256": "e939ad44f5204a49ca5ebe8dbd6dba876a01cfa80aa87510e604ec35965bd5b8",
+        "size_bytes": 62
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "HEAD",
+        "sha256": "a81bcc669d6b9a753394b05ee7cbccec96bba70cbff4802d2a7e4e4cb4f0d9df",
+        "size_bytes": 42
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "config",
+        "sha256": "7fe1127379588217f4fab525a9595be61b6ae0a839396800b0031a00a695f809",
+        "size_bytes": 169
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "description",
+        "sha256": "85ab6c163d43a17ea9cf7788308bca1466f1b0a8d1cc92e26e9bf63da4062aee",
+        "size_bytes": 73
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/applypatch-msg.sample",
+        "sha256": "0223497a0b8b033aa58a3a521b8629869386cf7ab0e2f101963d328aa62193f7",
+        "size_bytes": 478
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/commit-msg.sample",
+        "sha256": "1f74d5e9292979b573ebd59741d46cb93ff391acdd083d340b94370753d92437",
+        "size_bytes": 896
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/fsmonitor-watchman.sample",
+        "sha256": "e0549964e93897b519bd8e333c037e51fff0f88ba13e086a331592bf801fa1d0",
+        "size_bytes": 4726
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/post-update.sample",
+        "sha256": "81765af2daef323061dcbc5e61fc16481cb74b3bac9ad8a174b186523586f6c5",
+        "size_bytes": 189
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/pre-applypatch.sample",
+        "sha256": "e15c5b469ea3e0a695bea6f2c82bcf8e62821074939ddd85b77e0007ff165475",
+        "size_bytes": 424
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/pre-commit.sample",
+        "sha256": "f9af7d95eb1231ecf2eba9770fedfa8d4797a12b02d7240e98d568201251244a",
+        "size_bytes": 1643
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/pre-merge-commit.sample",
+        "sha256": "d3825a70337940ebbd0a5c072984e13245920cdf8898bd225c8d27a6dfc9cb53",
+        "size_bytes": 416
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/pre-push.sample",
+        "sha256": "ecce9c7e04d3f5dd9d8ada81753dd1d549a9634b26770042b58dda00217d086a",
+        "size_bytes": 1374
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/pre-rebase.sample",
+        "sha256": "4febce867790052338076f4e66cc47efb14879d18097d1d61c8261859eaaa7b3",
+        "size_bytes": 4898
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/pre-receive.sample",
+        "sha256": "a4c3d2b9c7bb3fd8d1441c31bd4ee71a595d66b44fcf49ddb310252320169989",
+        "size_bytes": 544
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/prepare-commit-msg.sample",
+        "sha256": "e9ddcaa4189fddd25ed97fc8c789eca7b6ca16390b2392ae3276f0c8e1aa4619",
+        "size_bytes": 1492
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/push-to-checkout.sample",
+        "sha256": "a53d0741798b287c6dd7afa64aee473f305e65d3f49463bb9d7408ec3b12bf5f",
+        "size_bytes": 2783
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/sendemail-validate.sample",
+        "sha256": "44ebfc923dc5466bc009602f0ecf067b9c65459abfe8868ddc49b78e6ced7a92",
+        "size_bytes": 2308
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "hooks/update.sample",
+        "sha256": "8d5f2fa83e103cf08b57eaa67521df9194f45cbdbcb37da52ad586097a14d106",
+        "size_bytes": 3650
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "index",
+        "sha256": "a3767c2ca1a2d3d339dbd8f115ef6f2e40318269bf4c16030ac14185b5af08c1",
+        "size_bytes": 1999559
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "info/exclude",
+        "sha256": "6671fe83b7a07c8932ee89164d1f2793b2318058eb8b98dc5c06ee0a5a3b0ec1",
+        "size_bytes": 240
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "info/refs",
+        "sha256": "d877a1a8f92b3db9a5f4384ab4faf86b10eae3df207f735fa45958c687adb567",
+        "size_bytes": 78
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "logs/HEAD",
+        "sha256": "d721d53ea780ee1396301287438b7d721fe0d7815b3d9253b1a43578abde4d9c",
+        "size_bytes": 234
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "logs/refs/heads/r11-linux-source-snapshot",
+        "sha256": "d721d53ea780ee1396301287438b7d721fe0d7815b3d9253b1a43578abde4d9c",
+        "size_bytes": 234
+      },
+      {
+        "kind": "file",
+        "mode": "0o444",
+        "path": "objects/26/b7c661083bb773895206c75f4f9b711e8083fb",
+        "sha256": "ebc9d91c06bb3f903722b04023908f69ceb71f4593d7a6068cc7d50fa421799d",
+        "size_bytes": 82417719
+      },
+      {
+        "kind": "file",
+        "mode": "0o444",
+        "path": "objects/info/commit-graph",
+        "sha256": "b37af1466f7a9be8a321c4e36a2f5ebbf10d9d27b23338a1cd8cd4ee9d6c4cf1",
+        "size_bytes": 1172
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "objects/info/packs",
+        "sha256": "2945fd4e03953b812914a0d0dfe2dc02f2f6a04ca6f6620076d236cf7f7bfaa7",
+        "size_bytes": 54
+      },
+      {
+        "kind": "file",
+        "mode": "0o444",
+        "path": "objects/pack/pack-1a582b926aa48fc8f31ad6735b0655f91537de15.idx",
+        "sha256": "7e1551f59a318b03fd3ec4d3083ee88a4c2e048b6658701acd1a64c833155656",
+        "size_bytes": 376832
+      },
+      {
+        "kind": "file",
+        "mode": "0o444",
+        "path": "objects/pack/pack-1a582b926aa48fc8f31ad6735b0655f91537de15.pack",
+        "sha256": "e98f62a8410fb90b6ec7cac9a446b5488217fbdbf368de3e57acf05d26ca0d0e",
+        "size_bytes": 1495130827
+      },
+      {
+        "kind": "file",
+        "mode": "0o444",
+        "path": "objects/pack/pack-1a582b926aa48fc8f31ad6735b0655f91537de15.rev",
+        "sha256": "a0894d2466c3348d4d2185d64f6b0b263cb421d0bfd8a42b19246832fb46324c",
+        "size_bytes": 53732
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "packed-refs",
+        "sha256": "660084600d902365b8afee190990532241a6ec8e24983e23fdbd8855362dcffd",
+        "size_bytes": 124
+      }
+    ],
+    ".tools": [
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "Godot_v4.7.2-stable_linux.x86_64",
+        "sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+        "size_bytes": 146414384
+      }
+    ],
+    "app/.godot": [
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": ".gdignore",
+        "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+        "size_bytes": 1
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/Bush_Common.gltf-0f588a0629eff29de809f2ac0b6e2873.scn-folding-c681283d501c118cea395573fc4f7bdc.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/Bush_Common_Flowers.gltf-643600e369714c782fa0031321113ea0.scn-folding-f0e2af17995c17264e722046de58b2e3.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/Clover_1.gltf-720834edb4524bd441c2aad1a64ff6fc.scn-folding-35413088baaf8672e109658f989cfe11.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/CommonTree_1.gltf-272007b09f00de3f6135f6e6ae7c8158.scn-folding-d292ee726c7582ab0f1018af48a263a8.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/CommonTree_3.gltf-bbff1f85eb21b0413f98a2d334ce4925.scn-folding-3271528baa2bb27dbb159952206350c1.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/Corn_4.obj-45a3391544b7ad685ae22b82922757a8.mesh-folding-a3757c0f37053294d74baf734f5aa386.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/Fern_1.gltf-8408317c172591bbebc72d68094373c7.scn-folding-270649447dd7bcfe585e7139f4623e4f.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/Flower_3_Group.gltf-ccfcab329a805813503a1bba1e513e81.scn-folding-dadf0455a8cf9dec737615bd075bce84.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/Flower_4_Group.gltf-9cddf6c6cded07d6c33eb2f995dbe133.scn-folding-e4d9fb4d4f7eb7a189e15806b7f795b8.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/Grass_Common_Short.gltf-876bbbf048b395985b2a294d9faf1abf.scn-folding-60e6386d16579498ecb0d02e6a8a4827.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/Grass_Common_Tall.gltf-d0e949d6b4cbfe9660497b3aa3f1d888.scn-folding-3ec741b0760093e01120d4fbbaf38ab7.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/Grass_Wispy_Tall.gltf-47448376d02a5391e52cae693c124e04.scn-folding-2d6480db605a8e9e899123e07aaad3c7.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/MT8_Bisonte.glb-4806ba838cf35b315b9000624859ba7e.scn-folding-3d981b1e5d9f60872fcaf60c80cebb25.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/Pine_1.gltf-e0cb0bbe723504e29f0268031ef9b4e0.scn-folding-aea283dc327a0a07bc6285c2a1c0d6e8.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/Wheat_4.obj-645d0d651afebd3a9ec7bc3c22f0a7a4.mesh-folding-25cc29c91316c7d4213dbdac25d20b6e.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample-folding-18cfb204b44a68eb49f87ac6fdfbfc50.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/app_root.tscn-folding-70b3b309845972d23dddaebec948a984.cfg",
+        "sha256": "fb8543239054fd159ba9adbda789f885f15ee6becc5a083e91cfbbb19d34cf33",
+        "size_bytes": 90
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/avanti_s.glb-fc7a5a1dc6035541eb3b14179dea3924.scn-folding-a06bc994322e162c511e54e0df7957db.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample-folding-0aaa7cdb066f202c45723e664244b58b.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample-folding-7e3633cf4cc78e0b11f2828ef7bbdc5b.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample-folding-6e654e51ebd6563b2568420112f215c7.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample-folding-535c1f890993686a6681951e396ab893.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample-folding-d3f2ac2ce950c01ae092ae7880edfacc.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample-folding-f10e9790776abe9fd2eab644582cf86b.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample-folding-a90ea65c6eb1c61e8131c813f0e634a1.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample-folding-a362856eacd888e0024912dac8cedb22.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample-folding-c31f1af908df6a8815ff5c6959bad638.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample-folding-9cb168a62fef035863e922276b4a3d4b.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/campfire-pit.glb-b525844a605935f12dbf3d6e43e99fa1.scn-folding-d66c6ec8eb6244a68ba9f036ddea250e.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample-folding-167c0b8d48d092b5b965795ba73f8f3a.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample-folding-28f6c9d7150efdafc56b540a83636edf.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/cricket_01.wav-654310c6fe72b4b672c32afcfae543b6.sample-folding-30bb79428c527fe16a5fc9453ba1ef39.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/cricket_02.wav-4f15d8eb3285d8a5ec5f61de9a9a8ca5.sample-folding-b6b53fb23eab3bd0409fdb46d6973bd4.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/crossover.glb-32e7122d5e3de4101b9d92e905729cd3.scn-folding-26ba086e8a1aae3b99b7a4667c51ad54.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample-folding-e840f69e3fe10077bc9176c1098f32cd.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample-folding-2e46615c40bdd0deb7255969aaeecab5.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample-folding-f022046a827759a9ca0e0a7fb54abbe5.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample-folding-ffb5eab6ecefe952f7655ab39b7f15ac.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample-folding-6951ba5773c789ee591acdcd66cd2178.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample-folding-1ad50d19d210b925071516d0ac45af7a.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample-folding-79af7b3b82d4112a3799d4b51f4a6d2b.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample-folding-96502c7e0f2e3a5eaa208a662b9608e9.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/export-2bff9838d58640dc61512b2c9b76d936-helicopter_main.scn-folding-fa5c84409c020e498356d23ced51ce24.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/export-3070c538c03ee49b7677ff960a3f5195-main.scn-folding-a944da49341e1e0a5ff3d39c72060b2d.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/export-70b3b309845972d23dddaebec948a984-app_root.scn-folding-baca6940116ad919028e632c37135f40.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/filesystem_cache10",
+        "sha256": "469198c68c1130aaf0f62be285ed77d85020fcedd7c2f2ffebe599fec039f61c",
+        "size_bytes": 151245
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample-folding-a115be7976742973aab4dc33d3021e84.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/foliage.wav-f1431420170f8c2831d1af1171cba189.sample-folding-682c12294bfcd2d31cdbedc4cef756c1.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/hatch.glb-97b0207543d52fefc036088ec7ba9c08.scn-folding-b1e53f2dd99f1988e00af0dd2f662dba.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/hx-700.glb-397bb47da050d028a1ba0c9221fdcc7f.scn-folding-ac848bde397fd36f936eb579ad652e24.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/hx-700.glb-bea79a3baf396e7f8b8cef49eb665c6e.scn-folding-c5e0cfc60b6a0f0cb459e02d0e661447.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample-folding-1cc6659c5c74800717607c471396dcc9.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample-folding-8202db1471f752ea4d02a8cb336f7be3.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample-folding-d6d5d06aeb4656abffbf8b57c2f2b195.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn-folding-049fba2e922286e9216d72b52e9c42fd.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample-folding-8bad4f21ae6d99abb46afc33d3873cf2.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/motor_electric.wav-8d96140b70d4ac3a7344de391aebdf2f.sample-folding-4f9daecd23dac937fd6311b8cef02aca.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample-folding-1ab7bed8abdb3d7708f75ce909caee89.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample-folding-24ab753919c106003a9368cae38e786e.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample-folding-226c0d478cfe686c8451f725c003cc4c.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/owl_03.wav-292e853723565aab4e71006945d5f409.sample-folding-d84bfbf194ecd7569229e921b2dc5d4a.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/peludo-splash1.wav-4213a32d1f81ce2a2592c776ff45a1c3.sample-folding-5cf1509364b13b5088181ed5b56627ee.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/peludo-splash2.wav-ef5189e65659c2423691182c64e02cc8.sample-folding-ab50fb3d0967c155bbe5c834e60efac7.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/pilot.glb-89740728232196ca73f8cd9b7390f758.scn-folding-e286a14018701d603b527b3ec29855d1.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/project_metadata.cfg",
+        "sha256": "71abc4557dca197d0abc25cca70ce82bdb7866d851796f229f7d8be814b519c6",
+        "size_bytes": 196
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/randommind-vistula-short.mp3-1c57b2f71006d9ddf03cda4c0cbd8fd2.mp3str-folding-a46c752c1db448daa1df18b4c2392b4c.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/reed.obj-6447901ba401c4ab445beb38d4e3b0a1.mesh-folding-f04cfd54f93366234d4eca8f51fdfbde.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample-folding-cd209e76bb1c922221b760dd08e52919.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample-folding-00c4fa537940e4aa5fdf428acc620612.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/sedan.glb-f232efc5a5bf129ff6438b65285f66aa.scn-folding-fa8cc5f3e2928570acd69f1c9d59814d.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/sitting.glb-c0b6804321cbcc07a783a05192aeeed9.scn-folding-80d7bb0036ecdde6fb71fbda649a2eaa.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/standing.glb-3d2db20a525321499495f9d901e53356.scn-folding-62b6a423c3e030c1dba3ff21cecf8f45.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample-folding-24feea3cba290c67bc3d596ce690e810.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/thunder_01.ogg-5ca43bf5d6f3a316706bcd4cecbf26b2.oggvorbisstr-folding-7b2eb4f0a7a982894bde304bfabfc78c.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/timber.glb-449a28c452d4e5961641c23545d6074c.scn-folding-c14841511818f6f840e1002db12a971c.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/turbine_roar.wav-cfbd2f46a9b1a021c74a1c92ad69e5ac.sample-folding-59dc48736eb39f2e2303a9a9d51a9855.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample-folding-36c6b55f043d5848df68f79253205805.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/turbine_whine.wav-b154500d0f2040c95b59f88340b61dbc.sample-folding-f588b4dbed2f0d0a56926a52e3172483.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample-folding-644282053429026692aff883d58205a9.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "editor/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample-folding-7d54baa7b4af6fabd325c1b0c18117a4.cfg",
+        "sha256": "fa44dfbae9b3b64980c44d9922acdad9b34ea46c85cce8a917708577229c27f6",
+        "size_bytes": 49
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "exported/133200997/export-2bff9838d58640dc61512b2c9b76d936-helicopter_main.scn",
+        "sha256": "ac2300c8e1fa811370783840bf233f96474898dc30d709714b44dca9010d175a",
+        "size_bytes": 692
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "exported/133200997/export-3070c538c03ee49b7677ff960a3f5195-main.scn",
+        "sha256": "4e91fb71a797cf4fee8e06ac9e8a1bfa3d8719cf75f0ae358c7f1ac390dfe636",
+        "size_bytes": 669
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "exported/133200997/export-70b3b309845972d23dddaebec948a984-app_root.scn",
+        "sha256": "18c71bed1def608d64915021b26c88272066e97f0dc7d7c4aa87daba473b1d88",
+        "size_bytes": 674
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "exported/133200997/file_cache",
+        "sha256": "8d9c73241aadbdb20abc81db1f8dd6aca47c2e5a5e95d338070bc2c5db8ad357",
+        "size_bytes": 462
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "extension_list.cfg",
+        "sha256": "8bd8375a4d7a8ddf4aa56921caa31455c5e646bfb548e31e2dff26f09d8480d5",
+        "size_bytes": 62
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "global_script_class_cache.cfg",
+        "sha256": "6b62e0604ae2803dcf620bb0f20e13e648235d039eb1a20e463f994c59085c14",
+        "size_bytes": 4773
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png-c242f96b10a52383a8a635b59be06f41.ctex",
+        "sha256": "142b85498939feb02b2459aec3077d563aefa2035031f2367a2940eeadb08faf",
+        "size_bytes": 19070
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png-c242f96b10a52383a8a635b59be06f41.md5",
+        "sha256": "de569801aee56c9d95d7acb36056682666581754cf2bc4125a44566ccc727503",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png-35c61d584a1353abe1f1e01c2ae03e24.ctex",
+        "sha256": "c0965014c809cf723971a23c25a7feeda9418b6b73204e05099468b08347a7a4",
+        "size_bytes": 198
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png-35c61d584a1353abe1f1e01c2ae03e24.md5",
+        "sha256": "ff9fe9831c3cbde9f07c1c8ecbca5a9115d03a7ce3f5a748a5ae62840b078400",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png-e7c7fa5a444acec8eb7938c4695a0ac3.ctex",
+        "sha256": "5bb3aefaa787728be2a72ad4761b15d0bcb1a82c808fab416fffc842d4710ecd",
+        "size_bytes": 198
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png-e7c7fa5a444acec8eb7938c4695a0ac3.md5",
+        "sha256": "bf1060eb92009544585c2f3d5deb4727f54bb9e0ad2fe8614fb0a906b9eb53ca",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png-d622270794504620d5a83bf45bb7f0e7.ctex",
+        "sha256": "dd66bb759836cc0a6052cd26430ef02257564bc6877b0fa30834a084bb5a715c",
+        "size_bytes": 196
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png-d622270794504620d5a83bf45bb7f0e7.md5",
+        "sha256": "458196654fa825d8a5f64e1eca4a204b8b8f0218dea505aea3c496aee45a5eaf",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png-aeffcf87c65dfb8905a4b804384e678f.ctex",
+        "sha256": "2125b711df9b0c84f0ce5b04021f8273ca4a2e80fa2b6ef17f02e5b5673ed186",
+        "size_bytes": 196
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png-aeffcf87c65dfb8905a4b804384e678f.md5",
+        "sha256": "c379b0eed1e4e19fdaa3c66405f6b294f049b483a96b21920d58b7b13fd3a89e",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png-6a39999e6d4382f4041c6e1a949db640.ctex",
+        "sha256": "c8e6748d2f7e0f67b1fd61338e38c6fd3ae708c242e9477349a883fada304525",
+        "size_bytes": 402016
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png-6a39999e6d4382f4041c6e1a949db640.md5",
+        "sha256": "3b118f9e0ec846dc66a91059d8e951ff353f547f7f7a3316697e59a4aca5e202",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png-d82c44aaeaeb1afeb8162ca6bf4cc48f.ctex",
+        "sha256": "b43559022a593d48879d273b3b56cc3675bd007a2ce1f85cd459e3a950fc46de",
+        "size_bytes": 198
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png-d82c44aaeaeb1afeb8162ca6bf4cc48f.md5",
+        "sha256": "4057343d177e095b74aeb7ecb4fabacfd2938f3eb759c32a2f48b17751c02002",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png-6464f14e3a680930a180b04fbc40a3e9.ctex",
+        "sha256": "c159d7bb05c1459659e013c7e0638ed058a423ee92ccd8ee2d7ce09d33779534",
+        "size_bytes": 196
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png-6464f14e3a680930a180b04fbc40a3e9.md5",
+        "sha256": "74e257876ffa453132c8ad8838f98cc875659eebd1caab924d3ce264ad9bb285",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png-4d046b6974e4991f8d697000fe29eed6.ctex",
+        "sha256": "7b116b27d546239088ee5685a2b3c090f281bffbafdd18ff83ca9555025afdad",
+        "size_bytes": 198
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png-4d046b6974e4991f8d697000fe29eed6.md5",
+        "sha256": "3c196a711e7066b290a9bbde0b79fad9b0b4f1ab7012702ab47a2aa631474cea",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Bark_NormalTree.png-df6bfd0e8f4c8146c86e65e43df4294e.ctex",
+        "sha256": "5bd3fb15c61cd95061a5a93f044119e4e52640003eca3472600c0f57fa55a32e",
+        "size_bytes": 2470456
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Bark_NormalTree.png-df6bfd0e8f4c8146c86e65e43df4294e.md5",
+        "sha256": "826114347856212e994c8137f2eb3bfa31d8383be53ba617624713b342c20e50",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Bark_NormalTree_Normal.png-e701b5b4217b1999fc694b3375a1be4e.ctex",
+        "sha256": "78b480bfbb0720b9f01c4c60fb744870481a07ce18eb3caecf4fc32f5a452f29",
+        "size_bytes": 3331308
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Bark_NormalTree_Normal.png-e701b5b4217b1999fc694b3375a1be4e.md5",
+        "sha256": "74fc5f6fcb43e365e7d64805a1938c7e15d23319552dbb85d782cc97cf0e6392",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Bush_Common.gltf-0f588a0629eff29de809f2ac0b6e2873.md5",
+        "sha256": "5c00677005ff45d293a3baaf63b40cebbeaf3493df41188a7a76750229ca6b0b",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Bush_Common.gltf-0f588a0629eff29de809f2ac0b6e2873.scn",
+        "sha256": "6c85e5f33df8f1d109dc5b995b18e99ff91bbf9d6e68f3700b697361a6ff1352",
+        "size_bytes": 49050
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Bush_Common_Flowers.gltf-643600e369714c782fa0031321113ea0.md5",
+        "sha256": "3bc81936aeb3868f05a1685f3f6e17e6e7cae2731368846312cc910863ea43f2",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Bush_Common_Flowers.gltf-643600e369714c782fa0031321113ea0.scn",
+        "sha256": "638d759b4b05aa0c1650da64467e4750287c546b33029df4f5cf27f145559293",
+        "size_bytes": 65684
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Clover_1.gltf-720834edb4524bd441c2aad1a64ff6fc.md5",
+        "sha256": "51c602df26d3ac0f6b4465cea55cf905f6739d44a00b7bc05477fb2038244434",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Clover_1.gltf-720834edb4524bd441c2aad1a64ff6fc.scn",
+        "sha256": "f8a415e6c7b8855e0a0180c208f865bbf235474f4c60549c71246b94f900e94f",
+        "size_bytes": 13238
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/CommonTree_1.gltf-272007b09f00de3f6135f6e6ae7c8158.md5",
+        "sha256": "9156edcb2db00bf937892f30c2512449178a73c4d4a014d59fe2db7a7b45605b",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/CommonTree_1.gltf-272007b09f00de3f6135f6e6ae7c8158.scn",
+        "sha256": "dbcb397f0b81e2eb31efe02bf5112ae2bad0c96a1b73548e882cad8d868764df",
+        "size_bytes": 263955
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/CommonTree_3.gltf-bbff1f85eb21b0413f98a2d334ce4925.md5",
+        "sha256": "0e3432ea07057210f63d5ea3b6de399cf883f6d77bbcf2b7864dad90a6d0e682",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/CommonTree_3.gltf-bbff1f85eb21b0413f98a2d334ce4925.scn",
+        "sha256": "0ac09c0e2311df69f18dc1e961a1e0bed9f8cbc25a4872c913edcb7bcc532b69",
+        "size_bytes": 154804
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Corn_4.obj-45a3391544b7ad685ae22b82922757a8.md5",
+        "sha256": "5f11c72e1374a2967135415ec9bb4bbff710aeec13fcf0b9693eeb783298c636",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Corn_4.obj-45a3391544b7ad685ae22b82922757a8.mesh",
+        "sha256": "cd62dfe6cea6651275b8053a140de1be162592c54ddfb3c23911332b5034ed07",
+        "size_bytes": 54468
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/FX_CloudAlpha03.png-e06504eecc0dd910830ca9b51e3e9be4.ctex",
+        "sha256": "623410527816ff6e03d00a725f9b368776ee69539d28a4d49e58b3fae635e0e4",
+        "size_bytes": 2211040
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/FX_CloudAlpha03.png-e06504eecc0dd910830ca9b51e3e9be4.md5",
+        "sha256": "7b6a8f26bae051a46c02dad9e3f4229f6aaab7cca1520fd9fa8558592bdf2bde",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/FX_CloudAlpha06.png-f56d58e08de2068a50f28063c6626645.ctex",
+        "sha256": "d732bee347b84804e2e832bab36a3b16cdcdbc36f514e0200613ae426d66d0c0",
+        "size_bytes": 2464232
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/FX_CloudAlpha06.png-f56d58e08de2068a50f28063c6626645.md5",
+        "sha256": "be2d196eacbf4f3fe4456c5246f4cad627afce6944d63e73887e017ab5c1ed26",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Fern_1.gltf-8408317c172591bbebc72d68094373c7.md5",
+        "sha256": "d034307a95d07da062218130ceddc53a7779c2f4a1313dd05a65ac85a692c662",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Fern_1.gltf-8408317c172591bbebc72d68094373c7.scn",
+        "sha256": "99da090e8881b7e4330b7af3737369f6ad6ad68b2755f6eb8b9e45f0293518b4",
+        "size_bytes": 10731
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Flower_3_Group.gltf-ccfcab329a805813503a1bba1e513e81.md5",
+        "sha256": "41bf0623a5a5ae8438088e26ddeb255d7bb4559984076ea660f8475e057f4e1f",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Flower_3_Group.gltf-ccfcab329a805813503a1bba1e513e81.scn",
+        "sha256": "3d4cc70e33ca0b42ce04ccfc3deb7c8c944cd2292e178bbfc2bd26f785875b74",
+        "size_bytes": 25128
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Flower_4_Group.gltf-9cddf6c6cded07d6c33eb2f995dbe133.md5",
+        "sha256": "9f425a469dbc9c7b37277c5fe79aa3153be394fe32015dbe11ad800653611b2b",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Flower_4_Group.gltf-9cddf6c6cded07d6c33eb2f995dbe133.scn",
+        "sha256": "5b0201c3a8d36da8ebfc9b6d2b8ad21c1a14432413d7774f23b392da267ecaeb",
+        "size_bytes": 51157
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Flowers.png-646ddc610b3a5e1e88ea7934ccf9d804.ctex",
+        "sha256": "7847702fce89eb41a5a20f8f2fe08df4a039835d82a0847a5d0640dd8fc27455",
+        "size_bytes": 333208
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Flowers.png-646ddc610b3a5e1e88ea7934ccf9d804.md5",
+        "sha256": "b0bfb81947a6fe691289ca69eaa78c87ad1a0cd2f4c856452000a8f351a244ef",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Grass.png-0f8c4704eafceedf3c661e0f69e7b564.ctex",
+        "sha256": "cc85651ec442d255cdf671c6d69eafccb71d4875cfe92ad91fd8f0fe546ebd77",
+        "size_bytes": 20218
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Grass.png-0f8c4704eafceedf3c661e0f69e7b564.md5",
+        "sha256": "861c83b3ac05b7f8ca67253eaa459795a2bdebabe82ddd1049e5bb9076ef828e",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Grass_Common_Short.gltf-876bbbf048b395985b2a294d9faf1abf.md5",
+        "sha256": "0d7967e0d87a49308f8e6ba675dac370d26cde7bfde21cb35cfa68bd1d456a07",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Grass_Common_Short.gltf-876bbbf048b395985b2a294d9faf1abf.scn",
+        "sha256": "c5900847a04cc07e6b505742b140b5357e1ba3c467a77b05500487da85416c48",
+        "size_bytes": 6937
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Grass_Common_Tall.gltf-d0e949d6b4cbfe9660497b3aa3f1d888.md5",
+        "sha256": "ad50b200115a9b06bf41264643892abb49a53f4d31ff2fb2bd008e9c1f8e99e9",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Grass_Common_Tall.gltf-d0e949d6b4cbfe9660497b3aa3f1d888.scn",
+        "sha256": "fff6976b49beb593e5e2ce02ad49c40ce92573c12a5ef38fe6a18b83f0fe8dfe",
+        "size_bytes": 13755
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Grass_Wispy_Tall.gltf-47448376d02a5391e52cae693c124e04.md5",
+        "sha256": "03a11d11d5ec3bc70a2ffd608712829c4b98331364dc88996a3ac955922871ca",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Grass_Wispy_Tall.gltf-47448376d02a5391e52cae693c124e04.scn",
+        "sha256": "c18ec48ed1cc7274629a50bdb1176d7910a6a23c0dc019825246498a9c7a6649",
+        "size_bytes": 23751
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Leaf_Pine_C.png-016dab428dc30ce651e3cfdbe4017841.ctex",
+        "sha256": "8c44f015bb763af06f3fe28c1d9bdb02761173a5e5db9f3d6b2e1b5669b48494",
+        "size_bytes": 24944
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Leaf_Pine_C.png-016dab428dc30ce651e3cfdbe4017841.md5",
+        "sha256": "8ea9aca0359936f96938f3897097ed8f1193b25be211839d5e817f83dbbdbb60",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Leaves.png-a573ffb4f4f874222087bdbc6b92f7b8.ctex",
+        "sha256": "2bbafd3a1348ec4b99005e197b76966ecfcc01f9d13eafea7376b5d3c391c2e6",
+        "size_bytes": 1919646
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Leaves.png-a573ffb4f4f874222087bdbc6b92f7b8.md5",
+        "sha256": "88ef364ee5f09a1d08efc2835b7e67977805efaabbeb8d00be9b36fc8e6ccf63",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Leaves_NormalTree_C.png-adc42005f213f2d18702805b22ad557e.ctex",
+        "sha256": "5866f045e997361c0252c088d0c11fa94f8332c8079d3fdbd831c8079a7c8d23",
+        "size_bytes": 110304
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Leaves_NormalTree_C.png-adc42005f213f2d18702805b22ad557e.md5",
+        "sha256": "a5c5c3e56e18f21093b5f35d96de9bb599155e4cf63cac35125434f99be89128",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Leaves_TwistedTree_C.png-c9a7e5d8a166f375df2bbebcaa52fb7f.ctex",
+        "sha256": "b5166391eb7f7052a9f6e42bdb18507d5133f65fb19b1f0b0e6dbf1b0f9a94f6",
+        "size_bytes": 32970
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Leaves_TwistedTree_C.png-c9a7e5d8a166f375df2bbebcaa52fb7f.md5",
+        "sha256": "6de1d8549bc455b9cfcfcc059aeffc149f34e2f5850fb1dcf81ab510f5c7e756",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/MT8_Bisonte.glb-4806ba838cf35b315b9000624859ba7e.md5",
+        "sha256": "2eaff60e490eeabd4327ed5eff16352d9ab3bd9e614a1fdee301ed994c4a17b3",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/MT8_Bisonte.glb-4806ba838cf35b315b9000624859ba7e.scn",
+        "sha256": "45986ee60a5abd178a450288b2a54cd398c133cf32b7cccd6618bf3593389413",
+        "size_bytes": 1806084
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Pine_1.gltf-e0cb0bbe723504e29f0268031ef9b4e0.md5",
+        "sha256": "504cdd812b9fca9cea471cae585fd132b279a169233b99c941d16b8718bbb64b",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Pine_1.gltf-e0cb0bbe723504e29f0268031ef9b4e0.scn",
+        "sha256": "536033f57d899751cc41a428aa6387ffda49359066aa66460f9ca557eb301119",
+        "size_bytes": 150209
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Wheat_4.obj-645d0d651afebd3a9ec7bc3c22f0a7a4.md5",
+        "sha256": "06e9ad4f5fed182ebf9e7dc5c28c065cce26912ff5855dd6365f0c45e06e2eb7",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/Wheat_4.obj-645d0d651afebd3a9ec7bc3c22f0a7a4.mesh",
+        "sha256": "4485fc3d1a18dcf0b3c71868cacedb7c3e8398a0b050c780793b4d2893cdfd1e",
+        "size_bytes": 8707
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png-79cf26cc367e0aef2be0a8cc07a2a6ac.ctex",
+        "sha256": "27da960302fb059c47d71e6cf3dba9f141d15e41e3cf5447750c3d87bc88de03",
+        "size_bytes": 39954
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png-79cf26cc367e0aef2be0a8cc07a2a6ac.md5",
+        "sha256": "f7da385c37f9e8d9432a51a9bbaaba60e109de7e3d90e1239a38219b9d19ecbe",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png-9d6adb8a3a1c0d5adcc05525efbd42ee.ctex",
+        "sha256": "b44741e4d37e7f0386e1626ab36c6a272985c8619baf9fbd50f9df69e4fa70ff",
+        "size_bytes": 198
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png-9d6adb8a3a1c0d5adcc05525efbd42ee.md5",
+        "sha256": "b8e2e4bf407e0fa6f852bc7af7da8b97f8da1c436f6169abdffc04eaa82b5326",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.md5",
+        "sha256": "bfd647b9186a2ca78f026b3fc23b70c57e869ce54bc7519ea698380b65f9279e",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/airframe.wav-dae4cdc3363d3fda2b9d770e970dbe5b.sample",
+        "sha256": "5abb1bed815d200021b3c50ba1afa3d558bd5c24fe8125c317053f1983b9192a",
+        "size_bytes": 309083
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/atlas.png-e794760107a74004a77d4848f95892ed.ctex",
+        "sha256": "1e51035be6a1121ef48421f8aef4df3e2a09dccb5454b4e16202dbc0bac39e8b",
+        "size_bytes": 116050
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/atlas.png-e794760107a74004a77d4848f95892ed.md5",
+        "sha256": "ed1c6ef8c11e5d556f0865a16a954cb46a6d90c43236f6588159900ee09f4b87",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/avanti_s.glb-fc7a5a1dc6035541eb3b14179dea3924.md5",
+        "sha256": "21b6ab020be97f7d02e874c0cb93cd17ecf59aa33544daabc917f5ec5f3832e1",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/avanti_s.glb-fc7a5a1dc6035541eb3b14179dea3924.scn",
+        "sha256": "2dbaa2c824e243ee8f93bd543e695da0d953aaae4bf82fd4db7fd396113b43bd",
+        "size_bytes": 8720864
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png-ed7294581163d3b6ce9dde8ebb25b793.ctex",
+        "sha256": "dd4a0f67306fa46833c5df705136879a1a3bdef66a65b874967397fe55444582",
+        "size_bytes": 198
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png-ed7294581163d3b6ce9dde8ebb25b793.md5",
+        "sha256": "ff054fd1688d6d3c49eebb573c3ff5cd04c338649de76fef8fc95d002ec7db94",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png-f07a31f1e2860128e78953523f5c2e15.ctex",
+        "sha256": "8e364f05c96380b4d268c0edfe03ba09f6b044b4a2a6c689505782359145edf8",
+        "size_bytes": 718898
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png-f07a31f1e2860128e78953523f5c2e15.md5",
+        "sha256": "320ffd3a2de9d357c2c3e55f70bfeb0fd1bdf63b48580cecb4fd234ee93123dc",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/back.svg-36d7440869f269a0b1409d5e0b3cbe29.ctex",
+        "sha256": "a2fb49480a99e05b907391c331e5bee03582843b98d6055d57827af73030f050",
+        "size_bytes": 530
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/back.svg-36d7440869f269a0b1409d5e0b3cbe29.md5",
+        "sha256": "33c572439a3780c0eeb65e5d82bf1ab34b19a727ab29d37ca4ed1ec9044a44ff",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/back.svg-51f7209926d9f818b01d6601b0e820fc.ctex",
+        "sha256": "c5718330f7a2d29994a7ab399a3e2d996b0834543461d88d1c374b37c37236a2",
+        "size_bytes": 504
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/back.svg-51f7209926d9f818b01d6601b0e820fc.md5",
+        "sha256": "1412fb17ee81b8211edeb876c7ed2f037c7b4123f71723c0a245e1ade80172af",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/back.svg-5d5042910dc56871f1cac77e98dea5fd.ctex",
+        "sha256": "b8bed4adf8c357ae0b25396769462637020d6c534e2d8a285bcd30b867fe4c4d",
+        "size_bytes": 420
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/back.svg-5d5042910dc56871f1cac77e98dea5fd.md5",
+        "sha256": "6ccb41b1dd10333ee137cbc060d5258d35ec63e33c9d463c067cd7dc88e3c52d",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.md5",
+        "sha256": "2531054fe47062c438eab9e0cd0eee1baf83ded14f38c04fde17820410dcc418",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/bird_01.wav-a4ed304c043301ee6b2f8974183ece96.sample",
+        "sha256": "7672ac3d1f525f9048ebb0c9e1d36e293787eee6d688453122aaea13ae7e6de3",
+        "size_bytes": 53303
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.md5",
+        "sha256": "594a8a771d7efd1425a4f36b956a01e04722a3cf0aeca03bee717a9f0153ca2a",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/bird_02.wav-45a63bb544822c11c16c9605cd27acf3.sample",
+        "sha256": "22d2c09e84faed3b48f2eae869cef99943552aa2488aa56fa268203d832904eb",
+        "size_bytes": 62123
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.md5",
+        "sha256": "2ec033be78ca50b869e85ce6f0768cc5c183b3cdcc1a6e83e91205d505c9a87c",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/bird_03.wav-1dc66871686b8399f21851ffc2da7f76.sample",
+        "sha256": "b3420a10e02023e69840bcda9dc1ef51a41f0fc9d408a2c5c8d14f7d79142a90",
+        "size_bytes": 70943
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.md5",
+        "sha256": "118e03327ace4654c49e8be7337d7cef82e14dee40bab5e3703d1b2d28f2b0a7",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/bird_04.wav-df7cfc5fe96a972b71703f77c2785d95.sample",
+        "sha256": "053d578b69fcbe796ef0e6bf9c65156889c148deddda91d0e99391768cc65bd0",
+        "size_bytes": 77559
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.md5",
+        "sha256": "0f553268b6682392f00179d74dc096695f2e661a11afc87efbab804e8da20075",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/birds_01.wav-f7d1e84b64549360c4284145fd9b6b4e.sample",
+        "sha256": "11ac9e24538e07a6145c130658be178231d8576b0df6023e25c83b681710652c",
+        "size_bytes": 106223
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.md5",
+        "sha256": "775249941061726ea95e0e800ee7781610d6e3a844a396fc6c444645ec0817f8",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/birds_02.wav-533403995dccbde41505a4a6dd8d343f.sample",
+        "sha256": "4f11152a80632cd671bd23ba1841608954b2b37e4142673d237c6e2c675538f1",
+        "size_bytes": 84175
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.md5",
+        "sha256": "c9b91cf442064b1ecbf3d56896c336c0f38729185d7388c3641a7cd4fa4aa834",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/birds_03.wav-fe409a1430a4052e59dc873706e8647c.sample",
+        "sha256": "1609fac72bdf9a4f1f99e88f8836e847fd6ce02a16e4d9d24032e40654c9913b",
+        "size_bytes": 122099
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.md5",
+        "sha256": "d8f6790f22e0a3e6d7ec0f46363bea61b9a9ecf091dec28c4a6f2027e98ee256",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/birds_04.wav-0daeee828b1ea8c13ccb9b35544e6a31.sample",
+        "sha256": "c7f4305c0d53416d9b67b7f98ac520d599e977335b2b470f0cc02eb83786b561",
+        "size_bytes": 101815
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.md5",
+        "sha256": "eba17a0c679d2ceb88cfc1df7debdbe87acef60a761f9139a8accdec56a39545",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/birds_05.wav-496b4703631efdca283f09a3bd93b5d8.sample",
+        "sha256": "4012b4c77f70408c19db8c2a8c79e99fed9721f5af4b1acd74ce9aab72315c64",
+        "size_bytes": 113279
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.md5",
+        "sha256": "9b2ad2d0e1b196664799905d18a6487f5e36d27e32e0d19b7b777e6c132a7885",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/birds_06.wav-bc2549c6174b3da978e3557ff1386bd5.sample",
+        "sha256": "26117d47ba662b449dc22e25c1432373ca2486f667e70a49d3f5a175662e3c83",
+        "size_bytes": 76235
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/broken.png-d75afbe2db91870397cd5b12836f8307.ctex",
+        "sha256": "4c419edac2b7aaf882373b91794feaefa50901fb282f4a379d60d4ecc40c2e36",
+        "size_bytes": 83570
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/broken.png-d75afbe2db91870397cd5b12836f8307.md5",
+        "sha256": "4b8528e9dbf4bb3f3795ab33dc383ad6ec32e743b06c7dc58d93f795f84906c5",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/bush_common_4view.png-627343b2530261ce7e954ccb845f8042.ctex",
+        "sha256": "0f24799a421e0c8e9aeae983c38d20710c74ce4680d107a41dd33418243966f1",
+        "size_bytes": 79206
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/bush_common_4view.png-627343b2530261ce7e954ccb845f8042.md5",
+        "sha256": "90d6090df346dea20f149fab3dff8603f9057e3cb51c63284a3277a262c2f04d",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/bush_common_flowers_4view.png-dc10a4cfb048bb02e62177041552fb0f.ctex",
+        "sha256": "9e30bed7646d98189e2c47d307c6da0a96cc95ec8ce09d5736466925cfa88309",
+        "size_bytes": 120822
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/bush_common_flowers_4view.png-dc10a4cfb048bb02e62177041552fb0f.md5",
+        "sha256": "2931749c63246c49d8d1b4a71a29ddcb1a899a76c20bfb0895822f33dbc51ace",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/button.svg-e3b4bd6369731554b336765aa58c15ce.ctex",
+        "sha256": "4d295e0e63ff5d99cb11fd7bf808e4dd28b3a0087d6e1018e14c446c6aeb6260",
+        "size_bytes": 714
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/button.svg-e3b4bd6369731554b336765aa58c15ce.md5",
+        "sha256": "a22a3ea07def77044566a27a0fadc690012f188a247356fbc4d5c1e121e64f53",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/campfire-pit.glb-b525844a605935f12dbf3d6e43e99fa1.md5",
+        "sha256": "cdf217c348fecb39bdce8c667e457c7178ca87c2871893cd0c0a588194c0fcf3",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/campfire-pit.glb-b525844a605935f12dbf3d6e43e99fa1.scn",
+        "sha256": "71cd96c1d8dc907546b4b0f17c8bc1f92b246f929b116554e979dc2e1619f478",
+        "size_bytes": 8908
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/cirrus.png-ea98ae69017d466709b7fc3322197e9a.ctex",
+        "sha256": "041762bbde8ffb7229976e13c3be8f023af616879394617687f272725c70b9c2",
+        "size_bytes": 60486
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/cirrus.png-ea98ae69017d466709b7fc3322197e9a.md5",
+        "sha256": "936abecfefaa0c322f7d22b6d9c6404599e6dffba3313219cc0ec5e7764bd6d2",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/classic.png-652b6856ff3a958ba6bbe1c676dab526.ctex",
+        "sha256": "5e6650bba716eed7bbddf42438e48d330328161c72c632c35feca00f3fb61060",
+        "size_bytes": 64614
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/classic.png-652b6856ff3a958ba6bbe1c676dab526.md5",
+        "sha256": "2b6433b3b4c1257ae3d4c2aae6d8a9c7e829dbc472509c67f4bb3c6f94b98726",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/clear.png-930f06db0fc7bb1459fdde3456e37a8f.ctex",
+        "sha256": "51faf29a88d27c935f5e088c3674d83169024aecd70af4d3fdc9d6e4ac0ae998",
+        "size_bytes": 40256
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/clear.png-930f06db0fc7bb1459fdde3456e37a8f.md5",
+        "sha256": "6c0fc6a364c01dadbee1c62c7581f348204733f05120dab0c10ca46040547239",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/colormap.png-d53b5897cf9a82dae5b4ec3145b7b195.ctex",
+        "sha256": "7c16df505e6062cec2019a4c188f79a1bf2f6f88525b5896aa5aef7e318a5544",
+        "size_bytes": 5846
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/colormap.png-d53b5897cf9a82dae5b4ec3145b7b195.md5",
+        "sha256": "e3383cca1a7c8fca2a54430a09960ecac882daea5518908c2aaf010e84c0da0c",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.md5",
+        "sha256": "75a379599727ab5a3006a28fc0322ca2c3b1839f8ac7c181c22cd3a4ce59bfb9",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/crack_heavy.wav-e02e65843deff1e21814e316e9eeedf3.sample",
+        "sha256": "d8a66ab8b0dca61f344034c4bceedc9c37b1ff6a78fbfd0d58bca73ed5ae0398",
+        "size_bytes": 2735
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.md5",
+        "sha256": "57d34146564a88fb918565d83d78592214adeb87ce35ea481b21e1453ba079fa",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/crack_light.wav-28aa3a5d55c0dbebb16b9785871ac141.sample",
+        "sha256": "eb74d1391e4095c12a38ec163b11890324ba3f5cbd8f0541c56ade4348060de9",
+        "size_bytes": 1831
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/cricket_01.wav-654310c6fe72b4b672c32afcfae543b6.md5",
+        "sha256": "3fcb0bf63c2cd45ce861619bb7bdb34ca88519d92339355da19768725619ca1e",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/cricket_01.wav-654310c6fe72b4b672c32afcfae543b6.sample",
+        "sha256": "34b01c6ad4c224913c1c53891e87fea252bd31220a7cfedc3c2a8fcdbfaf298c",
+        "size_bytes": 750083
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/cricket_02.wav-4f15d8eb3285d8a5ec5f61de9a9a8ca5.md5",
+        "sha256": "7d133142aacd6bf85d61ecdff2550354e2dd1511a90b3fdde0824d3323a11b39",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/cricket_02.wav-4f15d8eb3285d8a5ec5f61de9a9a8ca5.sample",
+        "sha256": "e43cb746f0913b65cd62efb4f8734f689d020c4c390d65112f32d98cda322d65",
+        "size_bytes": 838283
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/crossover.glb-32e7122d5e3de4101b9d92e905729cd3.md5",
+        "sha256": "dc33ba8fa216bd03e6f7363aa68f1e2c11b1183212a16824f6406cd2a788e1ad",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/crossover.glb-32e7122d5e3de4101b9d92e905729cd3.scn",
+        "sha256": "e97035a44c27c88a05690e15718842b21b83ab9de17f014c576ac0345619cf7f",
+        "size_bytes": 610650
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.md5",
+        "sha256": "446663fe6b6fa96d1295abb7d780f5509fd9e5f095963392e16f261e4a333bc5",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/crow_01.wav-80aee787dd6f764cbb7e9145c3fd9490.sample",
+        "sha256": "7f3a6354ae2980a47fb94630ec1114b9cb759b7d9136f8cf835a740ae6d4c9d4",
+        "size_bytes": 66535
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.md5",
+        "sha256": "5ae63b04cde1a8df1c13c813a63ad5170c0552ab944ec45fb77b2b16ddf0bca4",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/crow_02.wav-8b2b54ac79b46a76bf6d90a004043292.sample",
+        "sha256": "8610fd9b1ea863302e7a5e75509d8301a9807debb2bc4eaa213e3fa36ecb646c",
+        "size_bytes": 73147
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.md5",
+        "sha256": "d4eee603243c7183d94e1f6cddc670ffdacffca1257199526140b8816673cfbb",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/crow_03.wav-b0828c038329d588fd9c69079b3abaec.sample",
+        "sha256": "7d15607e7cfd87f6b0fccfb5dcea8767126f050c37961333fcedb998d210b251",
+        "size_bytes": 62123
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png-e96a8a8a8ca9a5147f04d8f2904c0825.ctex",
+        "sha256": "1bf4e8dfa0754b2782bb11f854098f71be6fe303f1471e8ff2c0a5a02e49a668",
+        "size_bytes": 606728
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png-e96a8a8a8ca9a5147f04d8f2904c0825.md5",
+        "sha256": "18145cb0fb8df32ffa8aeb3404b3fde319d62373d3b117a84959a399a5d15361",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.md5",
+        "sha256": "d9f57637df53366a2b8ba70d3afa2759b397fd2ac1619748c6a849f44cd96bde",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/debris.wav-7ff20ec3edf91bddd56b5decdd2cb42f.sample",
+        "sha256": "9ead75acb2d083c2b5fd4c167546e185c995bce0956fdbbe5a8c29e92c1ba518",
+        "size_bytes": 10943
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/detail.png-dced170983857ae341a6125f48cede22.ctex",
+        "sha256": "c1b2c891ab0658cd51e1c2edd17821158d56ab90a068c17b2af0517d0488cdf0",
+        "size_bytes": 2583918
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/detail.png-dced170983857ae341a6125f48cede22.md5",
+        "sha256": "4a03cd0c541f9cbc4324892a279b612e108a67a35238dd79b2e690e08a2eb100",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/distant_storm.png-eea6fb872a61706abc35911352403146.ctex",
+        "sha256": "0b141f39642e20a4c6578b4b053b12a59bb714ec225e807a353753ac083a7249",
+        "size_bytes": 41682
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/distant_storm.png-eea6fb872a61706abc35911352403146.md5",
+        "sha256": "25e661455cd4b57e1fb4def93234c6fd9344c910e03122ccd4b340b67589d6c5",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.md5",
+        "sha256": "56cd3054cead4bb82b9eb74847f65268ebd9a7d7f990358043a9bfca743dee94",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dog_01.wav-a3a046f5ba63f2a12384bf29e1b92599.sample",
+        "sha256": "423f34c0e45c06d2a8736aac7b69fbf3f45d508c262c01a0c94f9de8d14da2ca",
+        "size_bytes": 59919
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.md5",
+        "sha256": "70c469c176340f2c202243d25e582262f0ace84a2b375468a53100507c59976c",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dog_02.wav-352ae68b2a73160d87576b3bc54eb6a2.sample",
+        "sha256": "240ffe4d3a6116cd3ca8841427edb8f3be9e9faab9bd63c9a2e562e17c38fb61",
+        "size_bytes": 68739
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.md5",
+        "sha256": "937c5a3f0a57c3107dd392e864570d2c717d2c92d6612ef8a0e9e9c0f056dd29",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dog_03.wav-39930a61502c1fcf72c5ea3846a339df.sample",
+        "sha256": "f30df4dfdcff14417c2b23adc37c26b5042e1dbf79bc1b2b289370e87d4cb9b9",
+        "size_bytes": 75355
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_down.svg-295a0a58438258980dd3cc261d45468a.ctex",
+        "sha256": "0924238985bf95663397937420abd83d2829124ed92b7ba74f5f5f35124af14a",
+        "size_bytes": 440
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_down.svg-295a0a58438258980dd3cc261d45468a.md5",
+        "sha256": "ec2bead2d5a849949ddd14fbe46e041ed71353eda01310bb85d87b3a87bc4482",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_down.svg-87ac5be4504ab30f6a6339a982bdc88e.ctex",
+        "sha256": "cb4afccc521ebee313a476c90d0a9f61a091dbbdfa97409e928b4e20989746d5",
+        "size_bytes": 330
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_down.svg-87ac5be4504ab30f6a6339a982bdc88e.md5",
+        "sha256": "33aade4c0e7782c5447f5cc5278c4f66ad11868fc665849aa0fe5e0528fecf71",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_down.svg-e488d1b77edcc7a38e9c83f482eda536.ctex",
+        "sha256": "2de823555c9318fe84877f52e866d7574a7b9bd5755f074314cf144c452dffff",
+        "size_bytes": 600
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_down.svg-e488d1b77edcc7a38e9c83f482eda536.md5",
+        "sha256": "0847b1ca47d1f0520e12e0b7fb42c7bce07ba381288c9df28785a38fcd3b0541",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_left.svg-52cc304704e745a1a5c40680b380e3c8.ctex",
+        "sha256": "6819e8571a4c29bfa3111cc5fd09092045aed64ebfef11083986fcaac30c515a",
+        "size_bytes": 336
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_left.svg-52cc304704e745a1a5c40680b380e3c8.md5",
+        "sha256": "154b170b7bd662de8017298540a39543b267968aed223f5cecc9f4599a3c4644",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_left.svg-caf193241455a27463501577166ff175.ctex",
+        "sha256": "3d91e997db2aa7e5d2ed0063b0ec56cc84dae9a8c8ea7c634deef3ec851c682e",
+        "size_bytes": 598
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_left.svg-caf193241455a27463501577166ff175.md5",
+        "sha256": "33e5c379eff0cd574eceb1f2d8b90f9b09b24995cb09c7d09ea3fdb53a6e9abb",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_left.svg-f1c44f6d28ce503da52e6bcc995aca7b.ctex",
+        "sha256": "eb45ad7406d85577fd9bb177a7b8d5fffd714b23d24884d5171107b6f43455b2",
+        "size_bytes": 446
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_left.svg-f1c44f6d28ce503da52e6bcc995aca7b.md5",
+        "sha256": "347f8750104c57f583fbdb6476759a02cfa26da2f5cffb1292630454bac5d533",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_right.svg-2e8c306b9e3826c8665c93ac6e68037f.ctex",
+        "sha256": "24539b5cffa97d59b9edf4336462bb1ef9af3ca37368bbb10a8ce85469bcd1fd",
+        "size_bytes": 436
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_right.svg-2e8c306b9e3826c8665c93ac6e68037f.md5",
+        "sha256": "d79cb38e1776f45855e5a6e217b01c734c674bcff86cea4c257ec38acc88812f",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_right.svg-816a14f33abf2975b3eeb67d0137e5c6.ctex",
+        "sha256": "79ebc26761be9ab37b2fb8d3b190823a90affca854ac7eb546d04a3a3143fb5c",
+        "size_bytes": 598
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_right.svg-816a14f33abf2975b3eeb67d0137e5c6.md5",
+        "sha256": "2b67a379ccdfe468c30606a32556a6b9811f82bee0da7d048a362c6c1efb794d",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_right.svg-fe9a5c23b808d8ccdd336ea668475190.ctex",
+        "sha256": "0da67881cda60fd0dcdfc06e821bc9f4962bfe8fcd8496c3bcf473ada6a0de58",
+        "size_bytes": 336
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_right.svg-fe9a5c23b808d8ccdd336ea668475190.md5",
+        "sha256": "5d854460cd969c8fe00faf4924237de3c9e3da234d43116144c79bb51d8603c6",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_up.svg-3b056d184cb861c05c6f2a0f22c8e882.ctex",
+        "sha256": "6365f83f462ad8a5d09a15abd4b48f5713ebd465c76c10e85bca36a34f24d2bc",
+        "size_bytes": 326
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_up.svg-3b056d184cb861c05c6f2a0f22c8e882.md5",
+        "sha256": "e9fabfc142d501ffda366558f6be7cca799bd9c1ce361df0b4610f89ca0ae763",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_up.svg-9565e4535e5500d46979dae5c3eef704.ctex",
+        "sha256": "37412d0ee6acebb59e8ee19dc1bba0834ec144bd93aca38ac0f883fadccda046",
+        "size_bytes": 448
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_up.svg-9565e4535e5500d46979dae5c3eef704.md5",
+        "sha256": "003e6d386933b5aaf8b8efa03e7af1078fe029bcff9c8aab7b649d7b6ff929bf",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_up.svg-b18b809c079087fd0405892ba9034317.ctex",
+        "sha256": "cb16de2288452884bdc8f7312e4a8b4d4c9fe74be6dde21b12ea18e0b4beb0cd",
+        "size_bytes": 594
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/dpad_up.svg-b18b809c079087fd0405892ba9034317.md5",
+        "sha256": "861b1da09b1598b46bc912e3e74a3be1d2b331090d4441be6571a1cd66027514",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png-050e3a69db0c393e61a58baa6a52c46c.ctex",
+        "sha256": "4f4490cb7b7cf992f8d09641821a7d7f39b360798aef8d13e991dbeaba5c340b",
+        "size_bytes": 186872
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png-050e3a69db0c393e61a58baa6a52c46c.md5",
+        "sha256": "31a31a6fdcbfe7236742eb7cb4f9fe911b3bf3da38962ca43b6214d8dadea516",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png-627d64227fc589815b43d4ad721d9a57.ctex",
+        "sha256": "2ce5efab1f76331721f49227e3bb9c2f99a263764073f453b1869700c6e0713b",
+        "size_bytes": 198
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png-627d64227fc589815b43d4ad721d9a57.md5",
+        "sha256": "b6af580fdd0ed4e61e0583fbbe82b42210109924454f775189ac4ff542baee2d",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png-9e99dc6340a612be7d3a7b6b6d6d08c6.ctex",
+        "sha256": "8df398cde9587096735099efc5d737c0d343378cabf2a1c1d99bd59c9745300c",
+        "size_bytes": 992196
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png-9e99dc6340a612be7d3a7b6b6d6d08c6.md5",
+        "sha256": "22ccc109b7bb18b07fbdc0a778d88214bd2bab2c1b0d2100b52cb7638c7c60c8",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/electrical_storm.png-69c08e6e9abe1eb14d41b374fbec88d6.ctex",
+        "sha256": "a10e4a3593b96af877add48d4182f5ea413848614a123720c642e9fc4fcf3536",
+        "size_bytes": 38212
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/electrical_storm.png-69c08e6e9abe1eb14d41b374fbec88d6.md5",
+        "sha256": "cbfbfcc9238710e74ad3ed3c67206fbb3219a82ea0264428206cfc1367d22c7d",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.md5",
+        "sha256": "f7f6c95824b30958808a3573805c8481971652de90357021a73a7bf09b43c4e9",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/engine_cut.wav-afb58a3a460f6b1db16994f1baf42711.sample",
+        "sha256": "6779b01e821c6515eec23717bb76762b58aa4480f350d130359adc0d284b2152",
+        "size_bytes": 8431
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png-5f8eb4ce079de1908a8be452640f7e05.ctex",
+        "sha256": "5132fac4e21949ba09ba8431d6234d5028b3c3ac137c5df007f420811023092e",
+        "size_bytes": 196
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png-5f8eb4ce079de1908a8be452640f7e05.md5",
+        "sha256": "f5df1e15157fa0b48a71e3b469dd0dd9b235d405621a0ed1cace996f5c24d356",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png-918f716c903a4226b842681db67a56bd.ctex",
+        "sha256": "10b8fe0567c8de279dd2642036b1bd1419b6d38332f24c36a905852fa0ccddb8",
+        "size_bytes": 196
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png-918f716c903a4226b842681db67a56bd.md5",
+        "sha256": "b71525d8c8d1854ddbed1c46b8189784a70958ad57b7a59b0a5feed0ee55d4d6",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_bottom.svg-c2b50e010e62677e8f8cb2e72400cfdb.ctex",
+        "sha256": "a5e08f76539cc583e2d0ecad79d29fd3a8dbb88dcdec5205c29e1e0fb8789ed1",
+        "size_bytes": 624
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_bottom.svg-c2b50e010e62677e8f8cb2e72400cfdb.md5",
+        "sha256": "c2563ccc7213deaf695eeb3a3d8ea12d8cca2d866ef70446596c64c4ee3b764a",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_bottom.svg-d54e2442d61db180c07e8469a14fd449.ctex",
+        "sha256": "5f5478c48ac340876131ef1e6204aeb0c3076b641d176e1b168cc8ec1cd067ee",
+        "size_bytes": 602
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_bottom.svg-d54e2442d61db180c07e8469a14fd449.md5",
+        "sha256": "381e12465fc89e2d57ee67968af94ad273b60ce6a90817f4bd6668422fe7226d",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_bottom.svg-f8d48bcd3951f97d9c9d186b10d1d96f.ctex",
+        "sha256": "aede3dd4db715df4532d9ead10db1ed3dacf1453dde498b411d979ea3167ddb9",
+        "size_bytes": 622
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_bottom.svg-f8d48bcd3951f97d9c9d186b10d1d96f.md5",
+        "sha256": "4fa06d79f8434373c33515b1c4f60bf0364dc807c468a7c1605e2894b14b8664",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_left.svg-8406cdafe4eaa30196431321e135eb5f.ctex",
+        "sha256": "86c2a3f1ab6646686a013929a2aa0fda515e7730e0ca232a085fe04c74de1ffe",
+        "size_bytes": 630
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_left.svg-8406cdafe4eaa30196431321e135eb5f.md5",
+        "sha256": "7dced5b6c196961ba48dd4e1fa5d1df9796a3f237ec2562b8dcf6c917c03f553",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_left.svg-aada6e9dae465cfabea3badc2670431d.ctex",
+        "sha256": "d993b82801459092cc1b2e5b93badf381203b475f951481bf6ade48dfc9a9e47",
+        "size_bytes": 684
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_left.svg-aada6e9dae465cfabea3badc2670431d.md5",
+        "sha256": "3707303c93a0d9e67e1ac9c22cf9df603882c73192aba693917fce06a90135aa",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_left.svg-d0f99c81af52856294ae49a5aba79228.ctex",
+        "sha256": "57e8b104a735c68768a811f34cea29318e1133837f20020c7ce61828d22e06c5",
+        "size_bytes": 530
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_left.svg-d0f99c81af52856294ae49a5aba79228.md5",
+        "sha256": "db4a6bb05a9cd1f6cd3c3c9cc31c9e0d75b00c713d2c3370e00904834fbb4a04",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_right.svg-1a6d36d58d2a06476f181c9df69cd658.ctex",
+        "sha256": "5f5478c48ac340876131ef1e6204aeb0c3076b641d176e1b168cc8ec1cd067ee",
+        "size_bytes": 602
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_right.svg-1a6d36d58d2a06476f181c9df69cd658.md5",
+        "sha256": "381e12465fc89e2d57ee67968af94ad273b60ce6a90817f4bd6668422fe7226d",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_right.svg-21ae14f36ca45f500eee7a7cea246779.ctex",
+        "sha256": "a5e08f76539cc583e2d0ecad79d29fd3a8dbb88dcdec5205c29e1e0fb8789ed1",
+        "size_bytes": 624
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_right.svg-21ae14f36ca45f500eee7a7cea246779.md5",
+        "sha256": "c2563ccc7213deaf695eeb3a3d8ea12d8cca2d866ef70446596c64c4ee3b764a",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_right.svg-f9bfc433ff9598f6d38caaf16b6447c8.ctex",
+        "sha256": "f056e41957fcf2c12638527ec64b3bcf3bbd2d99d9301b221c25a5eb382dc036",
+        "size_bytes": 770
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_right.svg-f9bfc433ff9598f6d38caaf16b6447c8.md5",
+        "sha256": "5a188e2e0778d53c692adeb012f9ef93ad04eceabba7ba978196e822893d49a4",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_top.svg-451382a8dd1f29283f56677b5467a4b5.ctex",
+        "sha256": "d993b82801459092cc1b2e5b93badf381203b475f951481bf6ade48dfc9a9e47",
+        "size_bytes": 684
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_top.svg-451382a8dd1f29283f56677b5467a4b5.md5",
+        "sha256": "3707303c93a0d9e67e1ac9c22cf9df603882c73192aba693917fce06a90135aa",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_top.svg-4f413cf3518baca86d4ac0bfda5779e1.ctex",
+        "sha256": "86c2a3f1ab6646686a013929a2aa0fda515e7730e0ca232a085fe04c74de1ffe",
+        "size_bytes": 630
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_top.svg-4f413cf3518baca86d4ac0bfda5779e1.md5",
+        "sha256": "7dced5b6c196961ba48dd4e1fa5d1df9796a3f237ec2562b8dcf6c917c03f553",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_top.svg-75fa0c044bb1a0cd2906790fd6bf18ec.ctex",
+        "sha256": "697d3c07eb7035273f0da41298172a04ef1275f2f04bea5f9e558f460baac96b",
+        "size_bytes": 726
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/face_top.svg-75fa0c044bb1a0cd2906790fd6bf18ec.md5",
+        "sha256": "4b0c603728a1c30e524373d08ee7573cdee1628d64d9c734ce9ae36809f9a891",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/fair_cumulus.png-b269c42b083b8fccf35c47cf4dc7b2c0.ctex",
+        "sha256": "22d796948797feb712d39833649add22163468e579cced272a687314d934cb69",
+        "size_bytes": 73982
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/fair_cumulus.png-b269c42b083b8fccf35c47cf4dc7b2c0.md5",
+        "sha256": "ae4a9978229902bf75e258695584b2f61e242c5e10e272279515aa0e1b1de3f5",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.md5",
+        "sha256": "a7dc7bc57848f84d4a16c07a0b3d1fae3d34023aa4d2f80bd614a3650a15f1d1",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/fire_loop.wav-dd200a11f17ac1f81e546eed052ef9a1.sample",
+        "sha256": "ce20e49c752953961f1f449285b96c5f0044b2650a9bc2e19f257e3a64bad406",
+        "size_bytes": 36103
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/flame.png-c9be4f398a55057b1572d4c7f0610b01.ctex",
+        "sha256": "1973b2c12ceb35c843b5d227dd7daf042e251fbe57ff74708398a9ab65fc5bd8",
+        "size_bytes": 168382
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/flame.png-c9be4f398a55057b1572d4c7f0610b01.md5",
+        "sha256": "a5ef36b6c6f008eee92f09e6cef1f0ae2e127682e20e21e619e5fbdbf84b2b15",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/flames-8x10.png-c7891dcc5db811a602cbb6d0542ed9fd.ctex",
+        "sha256": "e629d4c140470590690e394537615be2a6b5fcc7ee0044a34c9002610b5f7d82",
+        "size_bytes": 789824
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/flames-8x10.png-c7891dcc5db811a602cbb6d0542ed9fd.md5",
+        "sha256": "a287bb00dd8439eb9737aeb18f4ec77f8620c664995e2aeabf03bf21cd43aee7",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/foliage.wav-f1431420170f8c2831d1af1171cba189.md5",
+        "sha256": "68209649c539b0d989e1c847e537704b987ceb8738733572f32ca0355435661c",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/foliage.wav-f1431420170f8c2831d1af1171cba189.sample",
+        "sha256": "99f6cf3b7f7071e441d98f84081c97e6511c27d2f65e90c2116a5070f5bf7ec3",
+        "size_bytes": 1014683
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hatch.glb-97b0207543d52fefc036088ec7ba9c08.md5",
+        "sha256": "3ea7642a2fbdde9716e5a64032443dbba8730898edfd02285dd8b3b227141a50",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hatch.glb-97b0207543d52fefc036088ec7ba9c08.scn",
+        "sha256": "960a1e9b26134a4e5c7b8d4e03e61f97f3340cf601f759e3d4b227d6c5127bfc",
+        "size_bytes": 582140
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700.glb-397bb47da050d028a1ba0c9221fdcc7f.md5",
+        "sha256": "48c987db76030d419d758209c3a86af3be9d37f58b607ba3d1543593d05138ff",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700.glb-397bb47da050d028a1ba0c9221fdcc7f.scn",
+        "sha256": "fe2c4a7cc1614736fb5296e46d33e9327cc8389a35bab20f5c5ed9cae9ab9ed6",
+        "size_bytes": 2760400
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700.glb-bea79a3baf396e7f8b8cef49eb665c6e.md5",
+        "sha256": "853ed07602475ae243e60c155b727772b74881b5197c19af011ec4e3733413ca",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700.glb-bea79a3baf396e7f8b8cef49eb665c6e.scn",
+        "sha256": "9c04eb83df77d4960f283c32ba262060eafc170873b1afe823ad0e7d834fe3f6",
+        "size_bytes": 9295044
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700_hx700_botalon_mascaras.png-29706ae174ec2105c045252f0bc6b772.ctex",
+        "sha256": "51350bd6ee4850c90635c366c2cebfa67804e45501de958bd63b49acfee1326e",
+        "size_bytes": 39108
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700_hx700_botalon_mascaras.png-29706ae174ec2105c045252f0bc6b772.md5",
+        "sha256": "5b176da886a2ed1c45d6bebc62d634175f95551e5114a2820a6326030970f1e3",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700_hx700_botalon_mascaras.png-575960d4e7693e32016dff5699c59f5d.ctex",
+        "sha256": "51350bd6ee4850c90635c366c2cebfa67804e45501de958bd63b49acfee1326e",
+        "size_bytes": 39108
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700_hx700_botalon_mascaras.png-575960d4e7693e32016dff5699c59f5d.md5",
+        "sha256": "5b176da886a2ed1c45d6bebc62d634175f95551e5114a2820a6326030970f1e3",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700_hx700_carenado_mascaras.png-460cbe3a5330a6c7a3722f31e0572751.ctex",
+        "sha256": "7ec5de3297ff91c5c09e9f4e1b8d406e9b0a483856cc6b75d27c3ce9b48ca3c6",
+        "size_bytes": 44546
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700_hx700_carenado_mascaras.png-460cbe3a5330a6c7a3722f31e0572751.md5",
+        "sha256": "747af70d6b89e00dd8d0cd3665bf5f7ff669e93b2690753cf4d32cab877a130a",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700_hx700_carenado_mascaras_2.png-d88d4bf9dc1fdf9aaf08d7bc25db8257.ctex",
+        "sha256": "fc75e4ab3d3559b592be42ec7128a88054cf4915c89b7719e365de0512608205",
+        "size_bytes": 9974
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700_hx700_carenado_mascaras_2.png-d88d4bf9dc1fdf9aaf08d7bc25db8257.md5",
+        "sha256": "a6f861ecb6e4221edb3925cd12ac6a505be311656a8cbb4c7ed96c303e42361c",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700_hx700_carenado_v7_A.png-4459483f49526af4271046b1d1e674b4.ctex",
+        "sha256": "ec9979e11f4540f834fe10ffb59e5a4dcecf5b87e48eebca105bb2590fab81b7",
+        "size_bytes": 446726
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700_hx700_carenado_v7_A.png-4459483f49526af4271046b1d1e674b4.md5",
+        "sha256": "7121d23b148c8fffdc2294c064624585b155e317dfe543cfcc72553e68669e7d",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700_hx700_carenado_v7_A_2.png-993d8c2dec43439984dd1cd851dbf20d.ctex",
+        "sha256": "1b7bb3062e61e50d133d1e9312beaa6bd8f03525847954415b80befb2259d88b",
+        "size_bytes": 81166
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/hx-700_hx700_carenado_v7_A_2.png-993d8c2dec43439984dd1cd851dbf20d.md5",
+        "sha256": "8bfae01939c6e01b062a734970421bb433139fbc7ee292d35d222b8e5cf97612",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.md5",
+        "sha256": "bd38c6cb3d578f003bf4f61c247286c18df29bcc695a0128f8f7c9e4c58118f3",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/impact_dirt.wav-6df01ff6ceeb2d7fdc7b2e5f84de5c1b.sample",
+        "sha256": "2b86da8a33c3d3577176230407784ee37d111fecb513bd1ebb601ec9c98a7c3b",
+        "size_bytes": 3439
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.md5",
+        "sha256": "4d5a23b9a15afd4efd78b36d2bc64f2a5ecb3fbb64e1ecded8643c8ac856ff50",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/impact_grass.wav-4affc7cff168f5f3a01208b604475eed.sample",
+        "sha256": "b740cb609b1202371848f3ec1ee1ddcb5881c80f9f1f17f7bc75255a83c50629",
+        "size_bytes": 3791
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.md5",
+        "sha256": "3d342376ffad960c4dc70b45dbb29f4798fec6246787a3242efac4b95f025e7f",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/impact_hard.wav-5f81ed2c03d0b4c1dd443c9d4c399a9c.sample",
+        "sha256": "adf860168ca4d9ba98416d791b6542fcc5754dce5e80bbb36db2bcf79c7f0bc0",
+        "size_bytes": 3087
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.md5",
+        "sha256": "e402823c3823b78716491f589bb15a94d88f906fb8593bd52a1eb1abf540d0f0",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/lamp-head.glb-4800819ed60e30b1a042fba0404c5766.scn",
+        "sha256": "5b2d6efcddccf447022963748a3f5291319bb9227b39db32eece2e23adcce49c",
+        "size_bytes": 71952
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/livery.svg-79a78d6ba8cdd4feacb5a7883e8198bc.ctex",
+        "sha256": "9e8823cd9d6fa8efc55b5ef3da6c2eb2e9620dca5e3a6e330106bdf0760b45d6",
+        "size_bytes": 88656
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/livery.svg-79a78d6ba8cdd4feacb5a7883e8198bc.md5",
+        "sha256": "0111bc95f984566d048be5a635cfb6615b474a0aab33429962dfea37062528b0",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/menu.svg-56714ce96eb304c28b4125f00f6e4a5a.ctex",
+        "sha256": "9b8214c5914835d7115fffb70e0b4bd8631f8903c317461ce95bba3ebbb3f76b",
+        "size_bytes": 356
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/menu.svg-56714ce96eb304c28b4125f00f6e4a5a.md5",
+        "sha256": "e538356ef5e77f1400ebfcd20e66468801553d36aea5c0e70985378b05d7ea04",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/menu.svg-92d9436eb8126445774d1fe1ec893482.ctex",
+        "sha256": "8741e86b1726b4fec281304e11df4a6dbf9fe8c0e919c706eb845ad9f7ce3053",
+        "size_bytes": 510
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/menu.svg-92d9436eb8126445774d1fe1ec893482.md5",
+        "sha256": "3046479ab6d1267490d8760b0cb7f09ec0a8dab3b2f116d93cd9c741fa521787",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/menu.svg-9e5b492f1fc86a1b4674f9fc8f7bd176.ctex",
+        "sha256": "c66ae70472ddc1a6c0c0b48cb84c01056b52fc9a25292d23f8884bf25b2b0b92",
+        "size_bytes": 510
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/menu.svg-9e5b492f1fc86a1b4674f9fc8f7bd176.md5",
+        "sha256": "1bf4bc731a1351cd5af74977ce4930a6450c1d0c797ece49cb35b5f6dee5adc0",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.md5",
+        "sha256": "6b18784c61a753c0b10def5f258855107a81f2a5396b76993c3481a98332096b",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/motor_combustion.wav-a11f8b46f00e243d34bb1dd74393b33a.sample",
+        "sha256": "001e0ecc3358d98de5201606de7ce4fe97b17d59ac3fae808db0f956de93b11a",
+        "size_bytes": 44483
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/motor_electric.wav-8d96140b70d4ac3a7344de391aebdf2f.md5",
+        "sha256": "af8b8a85a2e9506238d77f26eea305f3edd4fdd0d1d069bc27fcaf5da6eedf5d",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/motor_electric.wav-8d96140b70d4ac3a7344de391aebdf2f.sample",
+        "sha256": "1037e992e58b7ab12e0668b6625556a15c0eaf1acacdb33a32756179c9f611e7",
+        "size_bytes": 44483
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.md5",
+        "sha256": "ba3adbcb69668d3e7fed6ada1f4d4c2a84f1b5cd56bb8304a30527f43cc3ba09",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/motor_propeller.wav-9b65b1d5dab7b70be797d85de9178fbb.sample",
+        "sha256": "4be6b355ecd71158efc8da2edf24ffbd35c94f097569af6058656eb4fdd3de56",
+        "size_bytes": 44483
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/overcast.png-734d133e9f79c7a37ce56b699041d9ef.ctex",
+        "sha256": "55aba64b8b43190cf88b206f886d6dbd4391d5962f873c811ee818694d7d8f00",
+        "size_bytes": 47316
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/overcast.png-734d133e9f79c7a37ce56b699041d9ef.md5",
+        "sha256": "0e3d5317a076617ab8a101be7b5b93210cea7b25a0d594e41bf243d307c4a3ba",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.md5",
+        "sha256": "72a53854534f2ecd051de17bdca6828241942e57efd427d05a84f5222dbd8294",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/owl_01.wav-751a466fb0ab8a94e5b6738b33849493.sample",
+        "sha256": "3c824265cf92ceae93b909286a79c4cd01b08cc794ae67ace956e0d836c30b65",
+        "size_bytes": 81967
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.md5",
+        "sha256": "c6c9705526e1a1b9245f0936e4744ebee0c5e3ed216a3ed432308704fe488bda",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/owl_02.wav-691fb4e5e8f8cd8a892b5990c66a05a6.sample",
+        "sha256": "8eefe5ad929203ea14042c432e525caa4c55a351760ebb49a424ed0d87e3b083",
+        "size_bytes": 90787
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/owl_03.wav-292e853723565aab4e71006945d5f409.md5",
+        "sha256": "cab438add9a1e6b3cb05cac86553505e0037ea09ae3f5f0c2f06c77d1651e033",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/owl_03.wav-292e853723565aab4e71006945d5f409.sample",
+        "sha256": "7f774e58dac13b25560bf6211629f0ac7414e447edca7124459261d90da1ae26",
+        "size_bytes": 97403
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/peludo-splash1.wav-4213a32d1f81ce2a2592c776ff45a1c3.md5",
+        "sha256": "836dad27cddb462ac1f9d2299906281f5db7b90f0eeeda0e3144dee6cea2b22d",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/peludo-splash1.wav-4213a32d1f81ce2a2592c776ff45a1c3.sample",
+        "sha256": "3bc9432b15a1d48d437aea3a5981df7c823dcda4e065cfd03c3ae3ad2260575d",
+        "size_bytes": 46003
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/peludo-splash2.wav-ef5189e65659c2423691182c64e02cc8.md5",
+        "sha256": "bd4dcdf0c786b442c70c454b63d262938a880ceee49a96423c6d4066d3447894",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/peludo-splash2.wav-ef5189e65659c2423691182c64e02cc8.sample",
+        "sha256": "e3989e59bac2dbb88d4687304d999fdeec13eb68d38c614355f8b0c01d9d67d7",
+        "size_bytes": 30851
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/pilot.glb-89740728232196ca73f8cd9b7390f758.md5",
+        "sha256": "a39c667884e38ed6b537a0657dffb06dd816ec0b017bd6040d70efa48476d857",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/pilot.glb-89740728232196ca73f8cd9b7390f758.scn",
+        "sha256": "654b93ba6daf8e0cd44b6ce2247f9d23f8e28f4bb1d9940b37b962296fa80e52",
+        "size_bytes": 157761
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/prestorm.png-95f7613d130274d333dbed6b7126a6f6.ctex",
+        "sha256": "da146600dd8efd03b731ae7fc2fdee232fc90d3beae1b7a8f7fddfb30fb5fee6",
+        "size_bytes": 65708
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/prestorm.png-95f7613d130274d333dbed6b7126a6f6.md5",
+        "sha256": "648c789184cab5993c02b438d6d6d2be6344bcd1580255c6ab7b2325efec2353",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/randommind-vistula-short.mp3-1c57b2f71006d9ddf03cda4c0cbd8fd2.md5",
+        "sha256": "a221744245e286e9eb92e44478c3225e47970e31612708d40813b646bd726ff7",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/randommind-vistula-short.mp3-1c57b2f71006d9ddf03cda4c0cbd8fd2.mp3str",
+        "sha256": "ff050043825827d0a8a5fcb23a397f8d08d61c8c80c1971c3ffcfd1122c73ab6",
+        "size_bytes": 12004743
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/reed.obj-6447901ba401c4ab445beb38d4e3b0a1.md5",
+        "sha256": "7f74fa772e75a7480b5859a1c996e8cb17f97bfe15d8ec09c841f42fefdb6596",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/reed.obj-6447901ba401c4ab445beb38d4e3b0a1.mesh",
+        "sha256": "90000e53f14aac60a8baae32f7997b4d7d202e70e4699f22ba2bed57ad74b294",
+        "size_bytes": 35059
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.md5",
+        "sha256": "f5256eaabbf79aee58bec7d911ac344f725d75eb1cf5f67ba5211b8726d27efe",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/scrape.wav-9be11552bd4983e55b95b8a20e02d1d9.sample",
+        "sha256": "0334720f62c62c2055f699b57f0d30cfb48b89895bc16ac6d7d86c56767f04e7",
+        "size_bytes": 7727
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.md5",
+        "sha256": "6c9f8d3d5e3ce131b8d30074acb13b74f616027b48d9e36295fa600b589c9833",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/secondary_hit.wav-e89e08627fcc92c450a51e057f173120.sample",
+        "sha256": "75cf474aa2dd76a6cce30e3ff88f1ffa9accb6dd35cba054a1d892ec04c52fb8",
+        "size_bytes": 2359
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/sedan.glb-f232efc5a5bf129ff6438b65285f66aa.md5",
+        "sha256": "be63b3628953cfffc57e16d46314b56f02057b4f04df84c2ef6e3cdbcd0d6768",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/sedan.glb-f232efc5a5bf129ff6438b65285f66aa.scn",
+        "sha256": "d7af9a212541fc27181a2cba986537dc7706f477dc60bbcc6188429ec5052308",
+        "size_bytes": 631022
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_left.svg-17c04cd7bcf26ac0cdccce63741e5c53.ctex",
+        "sha256": "4d76b6828006230105665ffb52e1b64e600c4eee56e0975e2bf44e8ea8cf2702",
+        "size_bytes": 334
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_left.svg-17c04cd7bcf26ac0cdccce63741e5c53.md5",
+        "sha256": "333633dbc4f3c14419363d9b34466e4b708c5c29b45873e42dacef116e248c1d",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_left.svg-6593a14e7db315ff3dbbc2a4f27c2a6d.ctex",
+        "sha256": "3b22f9fa4128d0ea037524bbbfbd3e29f746c2e40bfd38960433762eba2f9ae1",
+        "size_bytes": 322
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_left.svg-6593a14e7db315ff3dbbc2a4f27c2a6d.md5",
+        "sha256": "388b26e2b342cf513dcdc9953e0bf996d408c1efe5ad5dd06c251946465144e8",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_left.svg-cf3f3d3e8cbaab46b085b2d17681ec68.ctex",
+        "sha256": "5d563eb68d9dc5337e9c1714f1e58ae9079a962f8d4729fad043790d6f6f1153",
+        "size_bytes": 384
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_left.svg-cf3f3d3e8cbaab46b085b2d17681ec68.md5",
+        "sha256": "f4b897f162d45f271518ca328d636c066385eb8481f85afde159a3f32701dfb1",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_left.svg-ea82204ce16ee88efef2e8f92c64d253.ctex",
+        "sha256": "80745728e1122985b2f2ba9baf3ddd0720e14137808626a70526db388b51314b",
+        "size_bytes": 296
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_left.svg-ea82204ce16ee88efef2e8f92c64d253.md5",
+        "sha256": "c9483492020cba9e1e7fd13a7e6cb7fd2d3653315f7f179174c1f7ed529d83ae",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_right.svg-0e485b8e9e21792b1ab964d7b63b6851.ctex",
+        "sha256": "2ba867b4532e93fad888cc26acfadbb31928c462da0cc1dae24b5bc235704e79",
+        "size_bytes": 458
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_right.svg-0e485b8e9e21792b1ab964d7b63b6851.md5",
+        "sha256": "a7c6490d28aae6e1c26f67170baee4579eea912dce42945b5c14702da257fcab",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_right.svg-4b0b66cd7636da913c10d3f0f4317209.ctex",
+        "sha256": "6b0cf811dcbc5375d5948d8832341753ca0b8535ed702152dcb80b6f7fbeb11f",
+        "size_bytes": 376
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_right.svg-4b0b66cd7636da913c10d3f0f4317209.md5",
+        "sha256": "abaeeb3c79d26771627bcd08b97d9fbbec64faedc7edd86e23b13530eb2a1e9a",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_right.svg-5cb8795a4f095e77ffc20a6d7cedf4e3.ctex",
+        "sha256": "fcdacdd46551ae009d7bb5506f350e12e027ab38a1c9d538813ddf34fff0769b",
+        "size_bytes": 354
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_right.svg-5cb8795a4f095e77ffc20a6d7cedf4e3.md5",
+        "sha256": "d247ff78da7bb31989039f2e531f53cab5c263dff2f5b0109fda70da9ca3dce8",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_right.svg-b851d4ed4bbc09669910fa9a94108ed0.ctex",
+        "sha256": "3fea4d1bd1d27d742610c9783ab0573b23d8d4aeb68a359309d35785772b3b6e",
+        "size_bytes": 394
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/shoulder_right.svg-b851d4ed4bbc09669910fa9a94108ed0.md5",
+        "sha256": "704844c859cea7d392f8dd4b922ce78ed7e096f9d58c1c30e6848deb8defa71a",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/sitting.glb-c0b6804321cbcc07a783a05192aeeed9.md5",
+        "sha256": "2effcfeafd0b2fc636802e96b1cfe19836909068782c0484f8c1b56b16ab7f9a",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/sitting.glb-c0b6804321cbcc07a783a05192aeeed9.scn",
+        "sha256": "01be8e9237e779bbc3969500c58666a572c861fd7d85598a3984fa0df3a858c7",
+        "size_bytes": 142187
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/slider_grabber.svg-4cd5cdcc96619b15b7619cc1fa30c789.ctex",
+        "sha256": "7be219c6c9031847e6bf3ea4463b7bc3ff0cc21801481506d3058f29fe6a2add",
+        "size_bytes": 726
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/slider_grabber.svg-4cd5cdcc96619b15b7619cc1fa30c789.md5",
+        "sha256": "d4162aa238615a232e08e368dcaf6fd3576ed6517fcdc26eaf119cf7b386729e",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/smoke.png-3b719d9bcffc7f00302b7968245033a1.ctex",
+        "sha256": "330a778a49275f684f8a15faab961c8a32187e250ffece695fb69f28169e48cd",
+        "size_bytes": 74384
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/smoke.png-3b719d9bcffc7f00302b7968245033a1.md5",
+        "sha256": "f3875fbdb5b5a7b0612e47d304f79c33fde930f1388204a98cc9887e35d8303e",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/standing.glb-3d2db20a525321499495f9d901e53356.md5",
+        "sha256": "6653c33d0f92a8e08361b576850a5dd328b7ec413f518ff379010a4710ebe76f",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/standing.glb-3d2db20a525321499495f9d901e53356.scn",
+        "sha256": "8ee48c3e8d0c158a8467244c7227bd62b711fbf0b32884473038b1d9017ea339",
+        "size_bytes": 143418
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_left_press.svg-6e72aaa036dc3c5ab7fe1ae5e311544f.ctex",
+        "sha256": "52c7367018c8a459ec59bf4dc7c311ccf54d490165a25b99a94ae7424186c1a1",
+        "size_bytes": 966
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_left_press.svg-6e72aaa036dc3c5ab7fe1ae5e311544f.md5",
+        "sha256": "6e64b45403bdcf8b605ca14a0aae8e1f4b55bcec74810b22068c8b1dd48a425f",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_left_press.svg-77494cff6e88cb467fa181d79e2e5b8d.ctex",
+        "sha256": "52c7367018c8a459ec59bf4dc7c311ccf54d490165a25b99a94ae7424186c1a1",
+        "size_bytes": 966
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_left_press.svg-77494cff6e88cb467fa181d79e2e5b8d.md5",
+        "sha256": "6e64b45403bdcf8b605ca14a0aae8e1f4b55bcec74810b22068c8b1dd48a425f",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_left_press.svg-f120fc2fa9239215a3f8a45a54d4faed.ctex",
+        "sha256": "52c7367018c8a459ec59bf4dc7c311ccf54d490165a25b99a94ae7424186c1a1",
+        "size_bytes": 966
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_left_press.svg-f120fc2fa9239215a3f8a45a54d4faed.md5",
+        "sha256": "6e64b45403bdcf8b605ca14a0aae8e1f4b55bcec74810b22068c8b1dd48a425f",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_press.svg-c15274598a949a4e661cc60f7677ad7c.ctex",
+        "sha256": "c3c51068517617f38d815ec727791e0647b22c192ec2488427ea2507c7401ebf",
+        "size_bytes": 960
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_press.svg-c15274598a949a4e661cc60f7677ad7c.md5",
+        "sha256": "55409b19fd683d7a045adc863f585d959cd0823c99a448599743eb82b33c3945",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_right_press.svg-21d001e38eb4a5b1e7c0edeabe85566b.ctex",
+        "sha256": "1da97026f3700a72f77d435eedadd6ed689c23c9a6b356d5bb03b2957df269e1",
+        "size_bytes": 1016
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_right_press.svg-21d001e38eb4a5b1e7c0edeabe85566b.md5",
+        "sha256": "3550a4c7172637f2e19b0d416175c50a82ddefa468083fe0f5a25d629bc3d251",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_right_press.svg-3455de32e41e1b6e11cdb59c72f0253d.ctex",
+        "sha256": "1da97026f3700a72f77d435eedadd6ed689c23c9a6b356d5bb03b2957df269e1",
+        "size_bytes": 1016
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_right_press.svg-3455de32e41e1b6e11cdb59c72f0253d.md5",
+        "sha256": "3550a4c7172637f2e19b0d416175c50a82ddefa468083fe0f5a25d629bc3d251",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_right_press.svg-4a805ff6691c30ca0903ecb6893bfed8.ctex",
+        "sha256": "1da97026f3700a72f77d435eedadd6ed689c23c9a6b356d5bb03b2957df269e1",
+        "size_bytes": 1016
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/stick_right_press.svg-4a805ff6691c30ca0903ecb6893bfed8.md5",
+        "sha256": "3550a4c7172637f2e19b0d416175c50a82ddefa468083fe0f5a25d629bc3d251",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.md5",
+        "sha256": "85a603874f1dbe5fd37c5669c748375cffdd386d85f71f89e43129cf81907da8",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/tear.wav-5850928d0116b3e31a9d73ff76fd02be.sample",
+        "sha256": "b722ba042b1be4ade0277c44176b027b6c36f915a04e3a8dcf1ffb4dc6fd44ce",
+        "size_bytes": 5935
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/thunder_01.ogg-5ca43bf5d6f3a316706bcd4cecbf26b2.md5",
+        "sha256": "8cd45a80256447661fa6f40d8552d63599f2d90472359b9ac36ed5e8c15ab9cd",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/thunder_01.ogg-5ca43bf5d6f3a316706bcd4cecbf26b2.oggvorbisstr",
+        "sha256": "5abd6a4731abe9859b0606dd7464093b9846a449ace935f0ae95c1c494f8c02b",
+        "size_bytes": 54140
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/timber.glb-449a28c452d4e5961641c23545d6074c.md5",
+        "sha256": "a1516ed1caecadb750713398794d6803101ced6a3ba8ca267ca2156c222cea0f",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/timber.glb-449a28c452d4e5961641c23545d6074c.scn",
+        "sha256": "cf552a3512e50ca02795503e03c979d012c0693a83dab0249120111612f3611c",
+        "size_bytes": 1338790
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/turbine_roar.wav-cfbd2f46a9b1a021c74a1c92ad69e5ac.md5",
+        "sha256": "2391517d376c2094abcb0fa1b85c8f5765a57bdfd937ac7e232a67fe64ccdc28",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/turbine_roar.wav-cfbd2f46a9b1a021c74a1c92ad69e5ac.sample",
+        "sha256": "b20accca69a5fa620c1a0a6256ce81d8865eb29a1df83b565a09869de64d44a8",
+        "size_bytes": 441383
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.md5",
+        "sha256": "0384b6dfc8054860bcabb6e08a7e8c5fdeb8bdd7a399836d16de90735877f974",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/turbine_spool.wav-dc9dc1e4dc6ffa6998e085918d57e48c.sample",
+        "sha256": "cce19305ac19296e821f32f7dfd8a9ec2ab7ccc045feaf1a6eb5eebd20c1f6c6",
+        "size_bytes": 53935
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/turbine_whine.wav-b154500d0f2040c95b59f88340b61dbc.md5",
+        "sha256": "5454efd1240a889cd3c4589b20c083b4f8968a6e47e602c373be2aa14758804f",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/turbine_whine.wav-b154500d0f2040c95b59f88340b61dbc.sample",
+        "sha256": "8ba3b730ebbde0a9dbd83469cb821994c037e40ad27b88b4c09377598438e312",
+        "size_bytes": 353183
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/visual-gear-extra.png-248099f803cbaa8b7bb643ea2addcac1.ctex",
+        "sha256": "5960ee2293c3f5f3e2a5f174e6cc4be9849015b1ce970483cf400b68d5598ff4",
+        "size_bytes": 770450
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/visual-gear-extra.png-248099f803cbaa8b7bb643ea2addcac1.md5",
+        "sha256": "7d9d7d3dc8672931545d22b1ec75adeca730d3fc868e423f14aa2b66ed1ddb6f",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/visual-gear-p51.png-94e47be2ddb3672ccab99e97403e6386.ctex",
+        "sha256": "2b9704ea81b44df4431f584d46a261936d2f7e16682739cec32918c15268df95",
+        "size_bytes": 699886
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/visual-gear-p51.png-94e47be2ddb3672ccab99e97403e6386.md5",
+        "sha256": "e6829d2ef67c6fbe0ad961b7a20725a2581565653eab7fa65100d14fd27eed9d",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/visual-gear-stik.png-212e3245a4bbe5a17c5e94a7d4ec8a80.ctex",
+        "sha256": "6dc043c423bf5d449a9f3e5a4c3fb22d7bdf2184caa3cee250f426ad6473e2ce",
+        "size_bytes": 767060
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/visual-gear-stik.png-212e3245a4bbe5a17c5e94a7d4ec8a80.md5",
+        "sha256": "b39a5bfdab1e35fe4a3d5f7ce359f4e346070997f68fd0109f2af4522551c4d9",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.md5",
+        "sha256": "1228bdf6a3d8b1a4b0707067cbdafa1d86cadd118fb24d38933aee6a304db538",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/wind_high.wav-3e6d3f0f426e3380ac3a30f5c38cca36.sample",
+        "sha256": "6438b4ea64ded53e37a2d492542360de410cb02ea71394d4a88675079436dcb3",
+        "size_bytes": 1367483
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.md5",
+        "sha256": "6891483a398df32e4ebeaa10540b5d4b6d67737da1d40fc5af64872b680f0206",
+        "size_bytes": 91
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "imported/wind_low.wav-19d09323958987800ce8c4d5dbaa90b2.sample",
+        "sha256": "963f32e4a813705a62b7913fee8649fb7ab859322afbd78f0e80a986dcdbb847",
+        "size_bytes": 1279283
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "uid_cache.bin",
+        "sha256": "0de092f13eb7b4b9f26e0f90efc0723fa8ff1f61d7a8266d5b011a6a6c197909",
+        "size_bytes": 54029
+      }
+    ],
+    "dist": [
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "linux/libopenrc_ground_vehicle.so",
+        "sha256": "08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3",
+        "size_bytes": 979304
+      },
+      {
+        "kind": "file",
+        "mode": "0o755",
+        "path": "linux/openrc-simulator.x86_64",
+        "sha256": "89042d0be5cf9813e6cbeb1d3fb5f47f9ec881eae0a9ab565c39c55b1ddb049d",
+        "size_bytes": 158725584
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "macos/OpenRC Simulator.zip",
+        "sha256": "1ce5ca017f6d3cf989b4d06566ad0df71aa0ad29773505a195086fdaa0c54590",
+        "size_bytes": 133585806
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "windows/OpenRC Simulator.exe",
+        "sha256": "854c42136d75124963cf817fde465aa633fddd374706947ba7965fc034ff7b8c",
+        "size_bytes": 194333856
+      },
+      {
+        "kind": "file",
+        "mode": "0o644",
+        "path": "windows/openrc_ground_vehicle.dll",
+        "sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c",
+        "size_bytes": 445952
+      }
+    ]
+  },
+  "format": "openrc-r11-postrun-source-reconciliation-v1",
+  "git_state_after_run": {
+    "head": "7c47c7ba02f7d2c874ec92a381ea73ef967069d6",
+    "index_sha256": "a9c184442f10eef1dead0a3dbdb9cd1a47ab083231441e605794983beda80817",
+    "staged_diff_exit": 0,
+    "status_exit": 0,
+    "status_porcelain_v1_untracked_all": [
+      " M app/assets/landscape/lake/default_geometry.res",
+      " M app/data/aircraft/jensen_ugly_stik_60.json",
+      " M app/data/aircraft/sebart_avanti_s_a200.json",
+      " M app/data/aircraft/stik_glow_55ax_2t.json",
+      " M app/data/aircraft/stik_glow_55ax_2t_apc_13x6.json",
+      " M app/data/aircraft/stik_glow_61fx_2t.json",
+      " M app/data/aircraft/stik_glow_fs64v_4t.json",
+      " M app/data/aircraft/stik_glow_fs64v_4t_apc_13x6.json",
+      " M app/data/workshop/jensen-das-ugly-stik-60.json",
+      " M app/data/workshop/sebart-avanti-s-a200-p100rx.json",
+      " M app/data/workshop/stik-glow-55ax-2t.json",
+      " M app/data/workshop/stik-glow-61fx-2t.json",
+      " M app/data/workshop/stik-glow-fs64v-4t.json",
+      " M app/physics/aero.gd",
+      " M app/render/lake/generated_geometry_stamp.gd",
+      " M app/render/world/aircraft_lights.gd",
+      " M app/test.sh",
+      " M app/tests/avanti_pullup_base.gd",
+      " M app/tests/check_math_sensitivity.py",
+      " M app/tests/check_trimmed_flight.py",
+      " M app/tests/golden/pull_throttle.json",
+      " M app/tests/golden/roll_15.json",
+      " M app/tests/golden/rudder_doublet.json",
+      " M app/tests/test_aircraft_contact_contract.gd",
+      " M app/tests/test_avanti_keyboard.gd",
+      " M app/tests/test_control_surface_observation.gd",
+      " M app/tests/test_controller_sections.gd",
+      " M app/tests/test_crash_energy.gd",
+      " M app/tests/test_crash_hull_labels.gd",
+      " M app/tests/test_crash_integration.gd",
+      " M app/tests/test_crash_pose.gd",
+      " M app/tests/test_downwash_lag.gd",
+      " M app/tests/test_field_integration.gd",
+      " M app/tests/test_landscape_scenery_grass_mask.gd",
+      " M app/tests/test_modes.gd",
+      " M app/tests/test_shaft_refinement.gd",
+      " M app/tests/test_start_choice.gd",
+      " M app/tests/test_ui_home.gd",
+      " M app/tests/test_wheel_session.gd",
+      " M app/tests/test_world_field_lights.gd",
+      " M app/tests/test_yaw_damping.gd",
+      " M research/aero/d11g/derive_rate_derivatives.gd",
+      " M research/avanti-s/av17-r2/build_polar.py",
+      " M research/avanti-s/av17-r2/test_build_polar.py",
+      "?? app/physics/ground_vehicle/vehicle_damage.gd.uid",
+      "?? app/physics/mass_inventory.gd.uid",
+      "?? app/tests/test_aero_continuity.gd.uid",
+      "?? app/tests/test_atmosphere_column.gd.uid",
+      "?? app/tests/test_atmosphere_column_session.gd.uid",
+      "?? app/tests/test_dynamic_mass_contact.gd.uid",
+      "?? app/tests/test_dynamic_mass_contact_boundary.gd.uid",
+      "?? app/tests/test_dynamic_mass_contact_session.gd.uid",
+      "?? app/tests/test_ground_start_environment.gd.uid",
+      "?? app/tests/test_heli_crash_relaunch.gd.uid",
+      "?? app/tests/test_mass_inventory.gd.uid",
+      "?? app/tests/test_rcv_activity_audit.gd.uid",
+      "?? app/tests/test_rcv_damage.gd.uid",
+      "?? app/tests/test_rcv_damage_session.gd.uid",
+      "?? app/tests/test_rcv_effects_activity.gd.uid",
+      "?? app/tests/test_rcv_ground_effects.gd.uid",
+      "?? app/tests/test_rcv_render_audit.gd.uid",
+      "?? app/tests/test_runway_transaction.gd.uid",
+      "?? app/tests/test_ui_standard_column.gd.uid",
+      "?? app/vehicles/ground/ground_damage_view.gd.uid",
+      "?? app/vehicles/ground/ground_effects.gd.uid",
+      "?? app/vehicles/ground/ground_grime_overlay.gdshader.uid",
+      "?? research/aero/d11g/apply_rate_derivatives.py"
+    ]
+  },
+  "missing": [],
+  "postrun_source_entry_count": 14924,
+  "postrun_source_tree_sha256": "61ffadc5f456ee4ff1f5c1005eaa5240813ce265ed88848cd91c5c3857806ab7",
+  "root": "/home/bulto/openrc-r11-package-20261015-08",
+  "source_match": false
+}

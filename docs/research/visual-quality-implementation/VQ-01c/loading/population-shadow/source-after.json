@@ -1,0 +1,12 @@
+{
+  "sha256": {
+    "app/render/field_projected_shadows.gd": "a9fe03fa9e0a15404ae5eabaa3d79c3fabf96a987432c69e325623fc640efc91",
+    "app/render/projected_shadow.gd": "0c5bc46ac42116d5b0dd9194695dbd3a2a29a95fe640ed6382575cc7b166a992",
+    "app/scenery/scenery.gd": "831fec7a25a310815947b89de820172cf25dca4384fa30c909681278055cec5e",
+    "app/project.godot": "176399ac913ea694682334cf9ff29150236c3958c1aa544299e217bac844a6df"
+  },
+  "changed": [
+    "app/render/field_projected_shadows.gd"
+  ],
+  "scope": "Only the four monitored dependency paths; other tracks are changing the shared tree."
+}

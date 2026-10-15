@@ -1,0 +1,10 @@
+{
+  "sha256": {
+    "app/ui/home_scene.gd": "7b1f2cb0d12007025109f34fb28d9bd1cfda67fa70b517487d92e353f2b3fe20",
+    "app/tests/test_heli_night_lights.gd": "8a83846954ea879fc120cad6f93d15bd91f1aefd06b875078bfe26162951f21b",
+    "app/tests/test_heli_night_rotor.gd": "7dbceb390cc2233c7715a1e4ac84fd0755d1e39a2deb2b6bd6b890b3a256ba6f",
+    "app/tests/test_heli_crash_presentation.gd": "2b0900d74c648a3e5c1d9145ca62ebd0c9a405985a4cee7f7502bba868bf0dcb",
+    "app/tests/test_ui_home_preview_cache.gd": "282d2a71e7ca8abe11e784b73898a6b0472c0974b08ba31e8803a0b5e753ec33"
+  },
+  "baseline_routing": "Baseline test and Home copies replace only the night-light preload path; the baseline light copy redirects its self-load. No production file is reverted."
+}

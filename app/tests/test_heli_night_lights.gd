@@ -13,6 +13,7 @@ func check(label: String,ok: bool) -> void:
  if not ok: failures+=1; printerr("FAIL ",label)
 func _initialize() -> void: run.call_deferred()
 func run() -> void:
+ _check_canopy_profiles()
  check("invalid aircraft has no kit",Lights.attach({})==null)
  var model: Dictionary=Model.build()
  root.add_child(model.root)
@@ -89,3 +90,33 @@ func run() -> void:
  Conditions.session_preset=""
  print("HELI night lights: %d checks, %d failed"%[checks,failures])
  quit(0 if failures==0 else 1)
+
+func _check_canopy_profiles() -> void:
+ # Two rectangular skins: every station has exactly y=[0,1], x=[-.25,.25].
+ var triangles: PackedVector3Array=[]
+ for x: float in [-.25,.25]:
+  triangles.append_array(PackedVector3Array([Vector3(x,0,-1),Vector3(x,1,-1),Vector3(x,1,1),Vector3(x,0,-1),Vector3(x,1,1),Vector3(x,0,1)]))
+ var profiles: Array=[[1.0,.83],[-1.0,.43],[1.0,.83],[-1.0,0.0],[1.0,1.0]]
+ var original: PackedByteArray=var_to_bytes([triangles,profiles])
+ var lines: Array=Lights._canopy_lines(triangles,profiles)
+ var matches: bool=lines.size()==profiles.size()
+ var single_matches: bool=true
+ for index: int in profiles.size():
+  var line: PackedVector3Array=lines[index]
+  matches=matches and line.size()==17
+  for station: int in line.size():
+   var expected: Vector3=Vector3(profiles[index][0]*.252,profiles[index][1],lerpf(-.355,.045,float(station)/16.0))
+   matches=matches and line[station].is_equal_approx(expected)
+  single_matches=single_matches and var_to_bytes(line)==var_to_bytes(Lights.canopy_line(triangles,profiles[index][0],profiles[index][1]))
+ check("batched contours preserve profile order, duplicates, sides and skin boundaries",matches)
+ check("single-line API agrees with independently batched profiles",single_matches)
+ check("contour requests and source triangles remain unchanged",original==var_to_bytes([triangles,profiles]))
+ var modified: PackedVector3Array=lines[0]
+ modified[0]=Vector3(99,99,99)
+ lines[0]=modified
+ check("editing one returned contour leaves its duplicate independent",lines[2][0].is_equal_approx(Vector3(.252,.83,-.355)))
+ check("an empty profile batch returns no lines",Lights._canopy_lines(triangles,[]).is_empty())
+ var empty_lines: Array=Lights._canopy_lines(PackedVector3Array(),profiles)
+ var empty_ok: bool=empty_lines.size()==profiles.size()
+ for line: PackedVector3Array in empty_lines: empty_ok=empty_ok and line.is_empty()
+ check("empty geometry preserves the requested empty-line count",empty_ok)

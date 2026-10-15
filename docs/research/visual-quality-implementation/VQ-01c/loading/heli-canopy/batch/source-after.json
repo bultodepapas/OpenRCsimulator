@@ -1,0 +1,14 @@
+{
+  "sha256": {
+    "app/render/rotor/heli_night_lights.gd": "bf37c54714070847adb29b72e9d56e0e0e834b248cea9129b75477f24b573119",
+    "app/render/rotor/heli_night_rotor.gd": "6aa86f962e9011894fe64289ab65714994baaa92276040aae17188efd95bde55",
+    "app/aircraft/hx700_model.gd": "01d038424b21174b42b374d28bb03fc8915cbe3fa964e3ededa11f0c1a57c457",
+    "app/project.godot": "176399ac913ea694682334cf9ff29150236c3958c1aa544299e217bac844a6df"
+  },
+  "additional_inputs_sha256": {
+    "app/assets/aircraft/hx-700/hx-700.glb": "88424432c8cbfbc7c7278aa9c72e2188e138aa3551c2c1cf815494db281ce764",
+    ".tools/Godot_v4.7.2-stable_win64.exe": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+    "app/tests/test_heli_night_lights.gd": "95003c79a013aac898b1123807fb2f240e1dc499f78863ff6321ec1ce1f207e2"
+  },
+  "scope": "Four monitored runtime paths plus the updated test; unrelated working-tree changes preserved."
+}

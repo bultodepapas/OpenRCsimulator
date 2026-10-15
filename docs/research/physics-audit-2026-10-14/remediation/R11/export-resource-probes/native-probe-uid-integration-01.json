@@ -1,0 +1,13 @@
+{
+  "format": "openrc-r11-native-probe-uid-integration-v1",
+  "captured_utc": "2026-10-15T15:34:42.661107+00:00",
+  "generator": "Pinned Godot 4.7.2 official import in frozen candidate -09",
+  "source": "/home/bulto/openrc-r11-package-20261015-09/app/tests/check_native_pack.gd.uid",
+  "target": "app/tests/check_native_pack.gd.uid",
+  "uid": "uid://bk2ciq21h5ggc",
+  "uid_sha256": "4c8ab00399609dfad1b292bc167c82295577b9858cc2386949e466e881550605",
+  "script_sha256": "2249f62dfa8a4c8ffdabe78cab853a6247044be329d94c382c612e91f516d3ba",
+  "method": "Copy exact engine-generated UID bytes into the live source pair, matching existing tracked GDScript UID convention. Do not edit frozen source manifests or runtime artifact files.",
+  "source_bytes_unchanged": true,
+  "passed": true
+}

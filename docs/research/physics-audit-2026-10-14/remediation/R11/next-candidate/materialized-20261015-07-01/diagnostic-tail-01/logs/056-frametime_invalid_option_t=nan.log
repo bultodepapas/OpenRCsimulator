@@ -1,0 +1,18 @@
+# frametime_invalid_option_t=nan
+# started_utc=2026-10-15T14:29:58+00:00
+# cwd=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+# timeout_seconds=75
+# expect=nonzero
+# command=/usr/bin/timeout 60 /home/bulto/openrc-r11-b09-r05b-20261015-07/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/bulto/openrc-r11-b09-r05b-20261015-07/app --audio-driver Dummy -- --frametimes=/dev/null --t=nan
+# returncode=31
+# timed_out=False
+# engine_error_detected=False
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: --t requires a finite number
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _ready (res://main.gd:334)
+       [1] start_flight (res://app_root.gd:498)
+       [2] _ready (res://app_root.gd:155)

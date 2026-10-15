@@ -32,15 +32,14 @@ func _run() -> void:
 	ticks(reader, 60)
 	check("unconfirmed polled zero still cannot arm", not reader.armed)
 	reader.confirmed_gamepad_connection = func(id: int) -> bool: return id == 15
-	ticks(reader, 47, {1: 0.03084})
-	check("confirmed resting pad still waits for full neutral dwell", not reader.armed)
 	ticks(reader, 1, {1: 0.03084})
+	check("confirmed resting pad is ready on the first poll", reader.armed)
 	check("resting pad arms without motion events despite normal stick drift", reader.armed and reader.throttle_position() == 0.0)
 	reader.require_neutral(false)
 	ticks(reader, 60, {1: -0.5})
-	check("raised throttle stick blocks confirmed polling", not reader.armed and reader.throttle_position() == 0.0)
+	check("held stick does not block Continue or advance paused throttle", reader.armed and reader.throttle_position() == 0.0)
 	ticks(reader, 60, {}, true)
-	check("held button blocks confirmed polling", not reader.armed)
+	check("held menu button does not block flight readiness", reader.armed)
 	ticks(reader, 48)
 	check("released controls recover without another motion event", reader.armed)
 	reader.require_neutral(true, true)
@@ -56,7 +55,7 @@ func _run() -> void:
 	check("nonfinite input cannot be cleared by confirmed polling alone", not reader.armed and not reader.input_error.is_empty())
 	reader.use_profile(Profile.defaults("gamepad", "trigger_absolute"), "test")
 	ticks(reader, 60, {5: 0.7})
-	check("pressed absolute trigger cannot arm", not reader.armed)
+	check("absolute trigger is ready with its actual staged value", reader.armed and is_equal_approx(reader.throttle_position(), 0.7))
 	ticks(reader, 48)
 	check("released absolute trigger arms from confirmed polling", reader.armed)
 	var extended := Profile.defaults()
@@ -70,6 +69,10 @@ func _run() -> void:
 	reader.disconnect_device()
 	ticks(reader, 60)
 	check("disconnected reader cannot arm", not reader.armed)
+	reader.connect_device(15, {"known": true, "name": "Test mapped pad"}, Profile.defaults())
+	reader.poll(func(_id: int, axis: int) -> float: return 0.5 if axis == 2 else 0.0, DT,
+		func(_id: int, _button: int) -> bool: return false, true)
+	check("direct active flight accepts a live pad without moving every axis", reader.armed and reader.sticks().roll > 0.0)
 
 	for suffix in ["", ".controllers", ".controllers.rollback", ".legacy_rc"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + suffix))
@@ -94,7 +97,9 @@ func _run() -> void:
 	await ui.tap(KEY_ENTER)
 	check("Continue works without any synthetic axis events", app.pause_menu == null and not session.sim.paused)
 	app.open_pause()
+	session.read_axis = func(_id: int, axis: int) -> float: return 0.5 if axis == 2 else 0.0
 	await create_timer(0.35).timeout
+	check("moving a stick in Pause does not revoke Continue", session.radio.armed and session.sim.paused)
 	app.pause_menu.restart_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	check("Restart resets and visibly acknowledges the restart", app.pause_menu != null and session.sim.paused and app.pause_menu.note_label.text == tr("Flight restarted. Select Continue when the controls are ready."))

@@ -1,0 +1,42 @@
+{
+  "exit_code": 0,
+  "working_directory": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\empty_project",
+  "report_marker_found": true,
+  "timeout_seconds": 60,
+  "engine_error_lines": [],
+  "godot_version": "4.7.2.stable.official.ed1daf0bf",
+  "format": "R11 windows native main-pack probe v1",
+  "stderr_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\next-candidate\\materialized-20261015-09\\windows-native-01\\stderr.log",
+  "stdout_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\next-candidate\\materialized-20261015-09\\windows-native-01\\stdout.log",
+  "timed_out": false,
+  "command": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\Godot_v4.7.2-stable_win64_console.exe --headless --path \"C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\empty_project\" --audio-driver Dummy --main-pack \"C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\OpenRC Simulator.exe\" --script \"C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\check_native_pack.gd\"",
+  "runner": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01",
+  "inputs": [
+    {
+      "sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\Godot_v4.7.2-stable_win64_console.exe",
+      "size_bytes": 198152
+    },
+    {
+      "sha256": "ab1824f85bfd8e0e4128182c000c4003a3e042245b2967848d089b2a04b22424",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\Godot_v4.7.2-stable_win64.exe",
+      "size_bytes": 180858888
+    },
+    {
+      "sha256": "250f8c234644ee353b7c6a7616cce0c3bc4bb3fffb2e134292ffd793360ad564",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\OpenRC Simulator.exe",
+      "size_bytes": 194334688
+    },
+    {
+      "sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\openrc_ground_vehicle.dll",
+      "size_bytes": 445952
+    },
+    {
+      "sha256": "2249f62dfa8a4c8ffdabe78cab853a6247044be329d94c382c612e91f516d3ba",
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\check_native_pack.gd",
+      "size_bytes": 8926
+    }
+  ],
+  "candidate": "/home/bulto/openrc-r11-package-20261015-09"
+}

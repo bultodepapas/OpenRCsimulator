@@ -1,0 +1,390 @@
+{
+  "format": "R11 diagnostic tail outcome audit v1",
+  "evidence": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01",
+  "step_count": 72,
+  "runner_summary": {
+    "passed": 63,
+    "failed": 9
+  },
+  "negative_controls": [
+    {
+      "index": 49,
+      "name": "unknown_aircraft_refused_no-such-aircraft",
+      "returncode": 1,
+      "runner_timed_out": false,
+      "real_nonzero_refusal": true,
+      "log_has_error_marker": true,
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/049-unknown_aircraft_refused_no-such-aircraft.log"
+    },
+    {
+      "index": 55,
+      "name": "frametime_invalid_option_t=0",
+      "returncode": 31,
+      "runner_timed_out": false,
+      "real_nonzero_refusal": true,
+      "log_has_error_marker": true,
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/055-frametime_invalid_option_t=0.log"
+    },
+    {
+      "index": 56,
+      "name": "frametime_invalid_option_t=nan",
+      "returncode": 31,
+      "runner_timed_out": false,
+      "real_nonzero_refusal": true,
+      "log_has_error_marker": true,
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/056-frametime_invalid_option_t=nan.log"
+    },
+    {
+      "index": 57,
+      "name": "frametime_invalid_option_warmup=-1",
+      "returncode": 31,
+      "runner_timed_out": false,
+      "real_nonzero_refusal": true,
+      "log_has_error_marker": true,
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/057-frametime_invalid_option_warmup=-1.log"
+    },
+    {
+      "index": 58,
+      "name": "frametime_invalid_option_capture",
+      "returncode": 31,
+      "runner_timed_out": false,
+      "real_nonzero_refusal": true,
+      "log_has_error_marker": true,
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/058-frametime_invalid_option_capture.log"
+    },
+    {
+      "index": 59,
+      "name": "frametime_invalid_option_trace=_dev_null",
+      "returncode": 31,
+      "runner_timed_out": false,
+      "real_nonzero_refusal": true,
+      "log_has_error_marker": true,
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/059-frametime_invalid_option_trace=_dev_null.log"
+    },
+    {
+      "index": 60,
+      "name": "frametime_output_write_failure",
+      "returncode": 1,
+      "runner_timed_out": false,
+      "real_nonzero_refusal": true,
+      "log_has_error_marker": true,
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/060-frametime_output_write_failure.log"
+    }
+  ],
+  "negative_controls_all_real_refusals": true,
+  "inner_timeout_or_signal_codes": [],
+  "direct_godot_commands": [
+    {
+      "index": 3,
+      "name": "aircraft_model_contract",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/003-aircraft_model_contract.log"
+    },
+    {
+      "index": 4,
+      "name": "extra_model_contract",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/004-extra_model_contract.log"
+    },
+    {
+      "index": 6,
+      "name": "p51_model_contract",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/006-p51_model_contract.log"
+    },
+    {
+      "index": 7,
+      "name": "p51_clearance_contract",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/007-p51_clearance_contract.log"
+    },
+    {
+      "index": 9,
+      "name": "avanti_visual_contract",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/009-avanti_visual_contract.log"
+    },
+    {
+      "index": 11,
+      "name": "timber_mesh_measurement_check",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/011-timber_mesh_measurement_check.log"
+    },
+    {
+      "index": 18,
+      "name": "timber_model_contract",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/018-timber_model_contract.log"
+    },
+    {
+      "index": 20,
+      "name": "D8b_candidate_generator_check",
+      "expect": "zero",
+      "returncode": 1,
+      "status": "FAIL",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/020-D8b_candidate_generator_check.log"
+    },
+    {
+      "index": 29,
+      "name": "app_trace_stik",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/029-app_trace_stik.log"
+    },
+    {
+      "index": 31,
+      "name": "app_trace_extra",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/031-app_trace_extra.log"
+    },
+    {
+      "index": 34,
+      "name": "app_trace_p51",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/034-app_trace_p51.log"
+    },
+    {
+      "index": 37,
+      "name": "app_trace_avanti",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/037-app_trace_avanti.log"
+    },
+    {
+      "index": 40,
+      "name": "app_trace_timber",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/040-app_trace_timber.log"
+    },
+    {
+      "index": 49,
+      "name": "unknown_aircraft_refused_no-such-aircraft",
+      "expect": "nonzero",
+      "returncode": 1,
+      "status": "PASS",
+      "engine_error_lines": [
+        "ERROR: aircraft 'no-such-aircraft' refused: not in the catalog (jensen-das-ugly-stik-60, stik-glow-61fx-2t, stik-glow-55ax-2t, stik-glow-fs64v-4t, gp-extra-300s-60, p51d-mustang-120, sebart-avanti-s-a200-p100rx, turbo-lumber-evolution, xcell-60-research)"
+      ],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/049-unknown_aircraft_refused_no-such-aircraft.log"
+    },
+    {
+      "index": 50,
+      "name": "glow_packaged_smoke",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/050-glow_packaged_smoke.log"
+    },
+    {
+      "index": 51,
+      "name": "frametime_live_logger",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/051-frametime_live_logger.log"
+    },
+    {
+      "index": 53,
+      "name": "frametime_scripted_logger",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/053-frametime_scripted_logger.log"
+    },
+    {
+      "index": 55,
+      "name": "frametime_invalid_option_t=0",
+      "expect": "nonzero",
+      "returncode": 31,
+      "status": "PASS",
+      "engine_error_lines": [
+        "ERROR: --t must be greater than 0 and at most 300 seconds"
+      ],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/055-frametime_invalid_option_t=0.log"
+    },
+    {
+      "index": 56,
+      "name": "frametime_invalid_option_t=nan",
+      "expect": "nonzero",
+      "returncode": 31,
+      "status": "PASS",
+      "engine_error_lines": [
+        "ERROR: --t requires a finite number"
+      ],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/056-frametime_invalid_option_t=nan.log"
+    },
+    {
+      "index": 57,
+      "name": "frametime_invalid_option_warmup=-1",
+      "expect": "nonzero",
+      "returncode": 31,
+      "status": "PASS",
+      "engine_error_lines": [
+        "ERROR: --warmup must be between 0 and 3600 seconds"
+      ],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/057-frametime_invalid_option_warmup=-1.log"
+    },
+    {
+      "index": 58,
+      "name": "frametime_invalid_option_capture",
+      "expect": "nonzero",
+      "returncode": 31,
+      "status": "PASS",
+      "engine_error_lines": [
+        "ERROR: --frametimes cannot be combined with --trace or --capture"
+      ],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/058-frametime_invalid_option_capture.log"
+    },
+    {
+      "index": 59,
+      "name": "frametime_invalid_option_trace=_dev_null",
+      "expect": "nonzero",
+      "returncode": 31,
+      "status": "PASS",
+      "engine_error_lines": [
+        "ERROR: --frametimes cannot be combined with --trace or --capture"
+      ],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/059-frametime_invalid_option_trace=_dev_null.log"
+    },
+    {
+      "index": 60,
+      "name": "frametime_output_write_failure",
+      "expect": "nonzero",
+      "returncode": 1,
+      "status": "PASS",
+      "engine_error_lines": [
+        "ERROR: Cannot write frame-time report '/home/bulto/openrc-r11-b09-r05b-20261015-07/app': Can't open file"
+      ],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/060-frametime_output_write_failure.log"
+    },
+    {
+      "index": 61,
+      "name": "fixed_step_default_30fps",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/061-fixed_step_default_30fps.log"
+    },
+    {
+      "index": 62,
+      "name": "fixed_step_default_60fps",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/062-fixed_step_default_60fps.log"
+    },
+    {
+      "index": 63,
+      "name": "fixed_step_default_144fps",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/063-fixed_step_default_144fps.log"
+    },
+    {
+      "index": 65,
+      "name": "fixed_step_timber_30fps",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/065-fixed_step_timber_30fps.log"
+    },
+    {
+      "index": 66,
+      "name": "fixed_step_timber_60fps",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/066-fixed_step_timber_60fps.log"
+    },
+    {
+      "index": 67,
+      "name": "fixed_step_timber_144fps",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/067-fixed_step_timber_144fps.log"
+    },
+    {
+      "index": 69,
+      "name": "propwash_e0b5_frame_invariance",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/069-propwash_e0b5_frame_invariance.log"
+    },
+    {
+      "index": 70,
+      "name": "propwash_e0b6p_frame_invariance",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/070-propwash_e0b6p_frame_invariance.log"
+    },
+    {
+      "index": 71,
+      "name": "ground_contact_e5a",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/071-ground_contact_e5a.log"
+    },
+    {
+      "index": 72,
+      "name": "ground_contact_e5b",
+      "expect": "zero",
+      "returncode": 0,
+      "status": "PASS",
+      "engine_error_lines": [],
+      "log": "/mnt/c/DEVELOPMENT/OpenRCsimulator/docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/diagnostic-tail-01/logs/072-ground_contact_e5b.log"
+    }
+  ],
+  "positive_direct_godot_with_engine_errors": []
+}

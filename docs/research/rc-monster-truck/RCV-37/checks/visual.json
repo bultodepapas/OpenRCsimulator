@@ -1,0 +1,943 @@
+{
+	"baseline_sha256": "9eb05dc91d757fc61a4b3fab9757a0e4f05a2e6912c8614677cbe2f1a8296db7",
+	"candidate_sha256": "cd19dec6f75f0fbdb929206a3988da157df3b18bbcf066a91e9aca58e2714a73",
+	"complete": true,
+	"gear_ratio": 8.60002,
+	"harness_sha256": "b3b4ab73b8ee19808e33af77ac739507551ab2f7eb51f2adfb2b570db52fc8c1",
+	"parity": {
+		"passed": true,
+		"poses": [
+			{
+				"mesh_sha256": "190601b6e604a46a00fecd080890ad07be7dca8d750c72e5fd81b7efdf49afe5",
+				"name": "neutral",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "c8598de98253b9e036ed5c789f6ebd6b54e1b0b9ee829a0abd14a903947eb29c",
+				"name": "droop_FL",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "51a22d923a8b283dee85e5c3ce78c449e6e30ad5ece1f83381a13e0f23d2f8d8",
+				"name": "bump_FL",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "95405c4d184f2760b4a844de6f141584951d6e6c060465201412cf1626d9874b",
+				"name": "droop_FR",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "47f2469759bac1c5425f63f0ce21723a5982d9790f410811be8c13d804da6619",
+				"name": "bump_FR",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "ae50452232d0f2b455af3d688dfde2210a7b71f32aea8f6c4f7cdf38e5e4c05f",
+				"name": "droop_RL",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "12791d2cb7ddda797b7a186549d500b9610250a5e9a1ff2b626b111c530450b9",
+				"name": "bump_RL",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "846fd101fa48260a0882fc0adfcfbef06a99ed1bc8e76c79755480baab126b14",
+				"name": "droop_RR",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "18895a1236dbcd100a8556bce00ae87a073191b8456af0e56b6f47f1026529fb",
+				"name": "bump_RR",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "b4f851a025596b0d4c1380e4719d396c541767c3fdde5c7345851b406c3f550b",
+				"name": "all_droop",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "205eb1bca4a920f92c015f3bb4269b88928d18e2d41bee9c1c21e4e46d2629a7",
+				"name": "all_bump",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "c5c118117c22ab51ceb81e16eab7183646dcb939e0689fa8e34109252af1736a",
+				"name": "opposed_corners",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "db71dc59c72a17b9ee7d50b5888c7a976a27a34c3318bcad7b3bb8c30bd02bd3",
+				"name": "mixed_interior_right",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "bf3bcd2c3007223cad893e667500d10ee2cc1ec51f0480c4b02afe2f7d8b8d4e",
+				"name": "mixed_interior_left",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "569eeca10e6223367b994bf729c48e350f60bc0c8acc433cb82968fdc2d288d7",
+				"name": "steer_right_limit",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "56b9d14ac7662e2a7f79e193186c0c76b3aef9b235341ad5781633815eb17869",
+				"name": "steer_left_limit",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "09460932b14d378ac2a8149656732f7942306d61d2e747009fc88788f8bc07c8",
+				"name": "spin_opposite_phase",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "c5bbb6d76082c0b3c1a28f47778ed988e6d68ee89e4b594b2035bf55bbb91ed7",
+				"name": "spin_same_phase",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "83845490050e246ae679de316db2d3bdafca514d668478937236222b7e70cb24",
+				"name": "boundary_00",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "13a282914c6a218400ae1939719f3c0872c52e6b8583e86724644dd511bf60bb",
+				"name": "boundary_01",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "f21b0964ce36b0c46438f468a1c5b564f553a840a1bb7a4e11285c2e819217fa",
+				"name": "boundary_02",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "d0c8593b181a5060290b421700bbbc5bd2dd276ce50fae15543684fb5f9515a2",
+				"name": "boundary_03",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "eeeb7d1b97e67e68cab47188c900471d5f3e397473f0f77e309ff356e95ee881",
+				"name": "boundary_04",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "d8149fb99a76acfe051fdc2ba7cc0fa22992ca066f19697654695c263eefd73c",
+				"name": "boundary_05",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "e80aa553ec9e12d501f82676d6c0d467d5871e9bcf6c8918f82895479d741100",
+				"name": "boundary_06",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "ad576dc45e206db0cbddc91ca7271547f6a38a9fee8c313dd0469244aceadebd",
+				"name": "boundary_07",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "1b983a2818593cdc8beb6a6a1c42753d79e4883f2c7ae0f47e97001f44b5056e",
+				"name": "boundary_08",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "a8ffcc458eb0992c1319fcf56b0b9f78d9d3fdde9d325de117c96223429a81c1",
+				"name": "boundary_09",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "8082e07ba5b4fa06adde0ba2d26cfb08f682913c432ae41a51ad6a59a61f5f51",
+				"name": "boundary_10",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "8de851c1d4f5f3edd66c1bbd8b38a4a4ae2527bdb7a7496c67b34f107bcc5a7a",
+				"name": "boundary_11",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "09cb179be7c9b85e947b4d45a32f03d99174f80bbaab97f9209d7c83e2d82dc2",
+				"name": "boundary_12",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "663693e5e6372f9cfa49ea27394b969afc077929c33ba0f7f2e0b6565b03f53b",
+				"name": "boundary_13",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "726fd908b396abe0982282c6c20abf38bee9fdd3d55d42b41a8814caea2bef0d",
+				"name": "boundary_14",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "385c00f56274062122017b498c05098da743eec66e8b932e812f13ce6a5ddaeb",
+				"name": "boundary_15",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "a0f62efba7bd555be3e30974c2574f4c4cfde36c2a82b9061cbd6f8ff0deeaa6",
+				"name": "out_of_art_FL_below",
+				"travel_outside_art": true
+			},
+			{
+				"mesh_sha256": "c786af0b252f251063a0bbb8b6ec60db2a2899d72d6e2eacbf589fa0502c5115",
+				"name": "out_of_art_FL_above",
+				"travel_outside_art": true
+			},
+			{
+				"mesh_sha256": "ca4f8741dba4d7301cb251e644feec4f7465ba8faf4ddc814a6607622c206ded",
+				"name": "out_of_art_FR_below",
+				"travel_outside_art": true
+			},
+			{
+				"mesh_sha256": "eb457f1efb25b48169a15e6d9e986840addce9226b47d89dea928b43ef33f70f",
+				"name": "out_of_art_FR_above",
+				"travel_outside_art": true
+			},
+			{
+				"mesh_sha256": "adf9f55fbff9f9e308be0bc4534c1d0cc26828addae9206868b7e00ff9eb2979",
+				"name": "out_of_art_RL_below",
+				"travel_outside_art": true
+			},
+			{
+				"mesh_sha256": "ef3a44c1dedcae92628533197dd6ee720732f34040d4994de8eda53e7317bbde",
+				"name": "out_of_art_RL_above",
+				"travel_outside_art": true
+			},
+			{
+				"mesh_sha256": "efce6adfeb7d94bf89f3db31bad30d34dc958d30533e981d8dcb3e5c8e902cfd",
+				"name": "out_of_art_RR_below",
+				"travel_outside_art": true
+			},
+			{
+				"mesh_sha256": "dac4a4df5bbea1c64089663e9d62906e415821a0cc005696df84f46243b4d0e6",
+				"name": "out_of_art_RR_above",
+				"travel_outside_art": true
+			},
+			{
+				"mesh_sha256": "4c4b177ff4e0991c10f54117c363a8899b1cbbbab4dab71eae2b94f9925b4cc1",
+				"name": "out_of_art_steer_right",
+				"travel_outside_art": true
+			},
+			{
+				"mesh_sha256": "902a6f06149cc47a1631ab5a9ae0b15916051c01ad4a7936e57e4f841ce390fa",
+				"name": "out_of_art_steer_left",
+				"travel_outside_art": true
+			},
+			{
+				"mesh_sha256": "a4f9837015dc463d8a6ed026386c72d51f9559a4f8b5e8aa76d49dc8ce829f4e",
+				"name": "out_of_art_combined",
+				"travel_outside_art": true
+			},
+			{
+				"mesh_sha256": "801501dcbc176cd2fc40ce1d1d8a0fad85cd29ad1251c0010029c3d765ae93cc",
+				"name": "seeded_interior_000",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "6ac2badc2fc14abcfae2a47396a97fd819e956d61c5c3f3278644a949555dcd0",
+				"name": "seeded_interior_001",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "45cdb8cae6011db49227fae257bca2d7f41526e01df039868f2811580e5c29f5",
+				"name": "seeded_interior_002",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "b45f6f8e46480996158328fc7c386eca03b62790fa87c1659139a42baad75ced",
+				"name": "seeded_interior_003",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "3f0092f429c68e4738df7d70e62b55cc640e855447762d14b4d8a4a9a922fecd",
+				"name": "seeded_interior_004",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "ba520d65482d7688f1f5a4ba7756864e4442fc7ad7a1568f178c795c97434188",
+				"name": "seeded_interior_005",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "17024368d9bd466bcb036162efae030bcd1348f3b040d6082adc2195b010a8de",
+				"name": "seeded_interior_006",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "f27e9d2b13db1cf09b0015b3a057c2605dd79c3fdc905f83b0bcc52cf5b9cb0d",
+				"name": "seeded_interior_007",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "a2fc726cf948fc76c9d012960cf8780107c48def568047accc240f9e214c482b",
+				"name": "seeded_interior_008",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "0ddf91489f1604ec3dd258a303d69dab60d9d3ecb11c0c15823473372f8fc7db",
+				"name": "seeded_interior_009",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "3382033ef155afaa8a86b04e0dfb7d7b79894e2c0a87f5ebce5787610f1afa66",
+				"name": "seeded_interior_010",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "8b43afdaf9a124819a228bbe7ef970d15687ffc5aa643f84f6b112735e743211",
+				"name": "seeded_interior_011",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "396952fccf9848bc9b4622575e67b31edaa56e74775a8a90ce89e824a90347d2",
+				"name": "seeded_interior_012",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "bf4796593e432ec4b73129b2ba417491b6574441aa929befeed774d8084e2e72",
+				"name": "seeded_interior_013",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "d8a06df375d935ff8c0334290fb6295af1920392481e425cfa1bfd5f897c7fb4",
+				"name": "seeded_interior_014",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "619af54ce2527a773309f39e1d6fe843a680df91915fbd317114e1a3e8d06e2b",
+				"name": "seeded_interior_015",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "6e8310b8787a8016f11dd13224c0efe9c04b84ecc7d48497d3d6cfdccf16380d",
+				"name": "seeded_interior_016",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "a8cc6501933d7c5284c081b3ea75665bf6274f9d2fda8a769d09bd57935e6166",
+				"name": "seeded_interior_017",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "9ac0ae1c35b5fa9acc1083d70821f9eb4ec5c2f960fc6a5d7ec88a01143f74eb",
+				"name": "seeded_interior_018",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "db19f1fcdaae4d11b75c43a1c422dc024bbabb94f6f042f50a203472061fad5f",
+				"name": "seeded_interior_019",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "11dcf08a8e1bad971a76b9b0f12d51232759d58b30ce413c6fe7a77ba1d559a9",
+				"name": "seeded_interior_020",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "fa95ad2e76b043ecf3d6112a0f80c88282e94422c20327a592fc5d6791a0288c",
+				"name": "seeded_interior_021",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "54aa5434e64a4dc56fcc7c198b0b5c8158ddc7606fda09ecdd8a8a2f5855d9e7",
+				"name": "seeded_interior_022",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "5b9c0a4716f216d8ededc8df2de96b2d6475300a344409cae551cee69815868c",
+				"name": "seeded_interior_023",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "31f1748f50187e1dc320e481ee36949668d2fd6e50e815da4649c13dc5407c9f",
+				"name": "seeded_interior_024",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "5955bd80dafb5894a0a00f7d41752c0cbb160eda91c4060e3187dfe7ca194488",
+				"name": "seeded_interior_025",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "5810d8765811abe92f6ea1890fca7783896e12abe227e356f0c211352936504a",
+				"name": "seeded_interior_026",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "0cf9aeffb95188acf9b55a4882967cdc409e05281a5551767fcd6e855d0aea7e",
+				"name": "seeded_interior_027",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "64bbfa813ee4608976ab1b2eaa69ea46fd00bb1093dd4dfc0db1ad18d3fc07d8",
+				"name": "seeded_interior_028",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "fbcdb9ad7b54796235f7a89a625bb4a0e8c6c6018d34b0ed3ee8b05f36d04222",
+				"name": "seeded_interior_029",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "cdda938ed2add7b62375c44f3f3ce20f0667a6e990d5a7e91134b2b9f40aa516",
+				"name": "seeded_interior_030",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "cfb45fc92ba095f37672944f9d0e2e8a75e5d15654c8cf03b1f3aeebffa5db20",
+				"name": "seeded_interior_031",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "48cf907667247c864f522e43749216cfc38e03b26749e9346699dfb75cfcda9b",
+				"name": "seeded_interior_032",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "5eef6fbc8cd79e71cef94ddfae99cf832f22b0875f2207f0f7b3beea7bdcce97",
+				"name": "seeded_interior_033",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "1871bea17ba83b9ee86bfdd939f0e1fbd47bc45beab1745541c9a585f90f2254",
+				"name": "seeded_interior_034",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "b394578a2b8a7438b6368ead22d327257b902d6e3ed253617023a1970fc45290",
+				"name": "seeded_interior_035",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "4b42d034df247ee98979cefd01bcb5486940e1001c114d24777772d1d9ecafb8",
+				"name": "seeded_interior_036",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "b13dbcd09c9918915d55e7a78fd7fdcff874b5693ba0c118ff732533415cb5d3",
+				"name": "seeded_interior_037",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "caa4ef3f62888d65c9b0652221e413142798c5cc933c1e23f32d3df9c6609640",
+				"name": "seeded_interior_038",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "19e25706c88567cd27886578a970db624010a0039b44736a2b88db0f4516270e",
+				"name": "seeded_interior_039",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "1fe1465621424afc2f6f1c7bc33180e9f22ea6a6e20ebd18b47d9b6fe5d6cca7",
+				"name": "seeded_interior_040",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "294433f0fc42b16a5b0df80d4a00dbe3fb14bc46d2df4a43cf34d59ad3c8112c",
+				"name": "seeded_interior_041",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "5b716894fcdfd7c865e962e217919ed392ef72ea2d5f75ed70e8651575deee16",
+				"name": "seeded_interior_042",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "f05fd2b6a44dabb44ed3e435a33ec855735279eaeeb8117b55ee9265b747c490",
+				"name": "seeded_interior_043",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "902b32c7b8578916270ce8d5a6bc319e6e573747b30c89a1fadca3ad848839e6",
+				"name": "seeded_interior_044",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "2c6152df65bb9e658462dc30b4717f62dcea73de8d468ef53f4bb897cf560879",
+				"name": "seeded_interior_045",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "38208c5a49e469373ed198314618b1f6a38f0a37fa1f1fb0cf3c1d53f5db87b4",
+				"name": "seeded_interior_046",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "428d8e0fabd1959e51a6c7983e3a8b63aa5cf1132d8fffe2f20e8a94c74ed751",
+				"name": "seeded_interior_047",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "35137c9f12b2148f4e077e5454235d0c7b62c0b9765590cf9c26c7964ffbde90",
+				"name": "seeded_interior_048",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "e70a8bf972933f3353e237724a6067874cb7183199c95dc8d57a39e48d0d327f",
+				"name": "seeded_interior_049",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "6e95a732ef9c656f615721a52cfeba1d45e713a4be3d30525d10d4c31e2cb7d9",
+				"name": "seeded_interior_050",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "1fd203e1850850a69731ac0a178463df90c914baf284af0e84be88a1ed981beb",
+				"name": "seeded_interior_051",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "64790bbb0441a5dd15ab9c42ec8f05b1a78b53f4765d08e7f74208c201661fc2",
+				"name": "seeded_interior_052",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "1e1451c4301cc23db38e9a6d8caff6efbe5fa8a59f2be81d8ea1a415ef194192",
+				"name": "seeded_interior_053",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "fab5486d3084baf8d321fc760baa57a8fabaaab701533c7a774410dd3126d24f",
+				"name": "seeded_interior_054",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "ee248c5539d943b7284bc2c838693800ed132217230424f6f52f172916348bd6",
+				"name": "seeded_interior_055",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "bd81a90587ceacbc5c3f9e8d67602b1c36e2eb8afc5142a2b9bd971c1e5f7b31",
+				"name": "seeded_interior_056",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "d9dd3c97d2eff0d996155d9e0306fbde03faae4f24beba559bf504da73f3e1d5",
+				"name": "seeded_interior_057",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "ca4916243e8bef4674ec599318e78ccd2db8e69dfe1680717a670a0bc9cfa322",
+				"name": "seeded_interior_058",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "3d566aaea65d192c1e9f2ecd5b4d244df89e5f9b275725b0b0f675c8aeb881e0",
+				"name": "seeded_interior_059",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "3d3a6a4d2546da5a8368acdb9d7a1c588d0b1f616b0e657a5bdca7fe3a56451b",
+				"name": "seeded_interior_060",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "33dd9fe61f3382a93221c47029088a42c5b498cf71b9298ada53fd44f8550ebf",
+				"name": "seeded_interior_061",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "ee01036b18d623bddadd710fad4eb4559eb6cf3095f522eb17f5fee39f162f3e",
+				"name": "seeded_interior_062",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "8b0d909664738fb7c04f5ebf841598c34d4b4a6f7de4d241968e80855fe9fa7f",
+				"name": "seeded_interior_063",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "33c098ba66a8534bea92919e159643ddc9183a383db70eafc8ee6e0cc99aa2b1",
+				"name": "seeded_interior_064",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "7a2f4889ff7ff527ef7dd902fa0bdb9f71ed4c8b758ab31f42c351c3b289eb01",
+				"name": "seeded_interior_065",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "eb0b34f2869c9ef9b3e7ba6a30ed4f79fb045e6ba65b7fba9d0841f155b79bc1",
+				"name": "seeded_interior_066",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "e7096cdef63ad5b3619fbd1cba6618f26dc4013b7a919573049b2037e1dd8d1f",
+				"name": "seeded_interior_067",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "ef40580732535612b96e5730e34b559437243571b4531a8dc49a0bb649b19848",
+				"name": "seeded_interior_068",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "689fee216410bc44a9d8de16d7da4726cc4d27262693758bb9314401287a6b07",
+				"name": "seeded_interior_069",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "a38b997278030799bdc6ec65425b593740e44aa4ac9813d23efdc4efe27f288c",
+				"name": "seeded_interior_070",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "c4f044bbd83af868cb5f1c5288e5f44134a205cc6aa9b75d4971a43b8da8aef5",
+				"name": "seeded_interior_071",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "e6bd9ee19cb0c98907792676fcb63c39f4534481b156afe567b1a5ebca465f2e",
+				"name": "seeded_interior_072",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "e520129f4925764c7215ae3f081c929659cdce3d8d17b10980a3f5b2fa07aa74",
+				"name": "seeded_interior_073",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "8f83c568c62a2d4c15dd1183062262ba20610852df062087affa926b5b66f215",
+				"name": "seeded_interior_074",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "2c545746375887d77df35391f8922a916e651184bccd765884eeb6d1cdbd1cfe",
+				"name": "seeded_interior_075",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "269a9cf9d75810124f7596821fb5e00a911a8b754b9e55adedf506846f845b37",
+				"name": "seeded_interior_076",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "641ff32e03e9797d28f16172f97d1c99692a159a594b67aaa2911a07ece8a479",
+				"name": "seeded_interior_077",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "10e0816654fc43fef3f8ecdaf3cc2ae5b269d427568a01a7e44ae8b94e617075",
+				"name": "seeded_interior_078",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "d95c636ddb3a639d199c541ed578f2912ceba76ba33619da984294c1cdc6d872",
+				"name": "seeded_interior_079",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "903bdb8c8631cedc9c82412b0a5f202862ed4a733bcc22d2e1072cd83eb42d89",
+				"name": "seeded_interior_080",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "bee8cae62b62c723c12841c1a093007fb8aa14fd2aec67ce44db30ee3405ee26",
+				"name": "seeded_interior_081",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "0708f4e432f42a69b995204b2aea4b9713f490da834e30fe1f4d7dd3a73d916c",
+				"name": "seeded_interior_082",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "1390e32331193bb77a5c0127c0395ecf0f2b85802c165a49eeb273616c47c932",
+				"name": "seeded_interior_083",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "3eddfa71762c5585d354cc35b68abb4f1c42e24c571ab4ed4d8c4be8a8fab4ec",
+				"name": "seeded_interior_084",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "1832ddb03a4892d0c2bcf66739183f11ba139493c0af4c886640a20e6fe6e39d",
+				"name": "seeded_interior_085",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "c255f0128d633b8c1b72e2500e9daa7d5c1dec37c20f33acd6defd33622b4f8d",
+				"name": "seeded_interior_086",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "af3062dda6f17a8e8088394a7cb7cef638cb33c20c544021b5bcf68cb2a2cd15",
+				"name": "seeded_interior_087",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "86d2aad697c38c24c3d40a330d4b6a6380540d74ed8b4ac81aeeb1bf65296989",
+				"name": "seeded_interior_088",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "9d790a8b8d0e91e2773b48f591b518c75a9ea9fe498147fd2de6d3eecf4ee80d",
+				"name": "seeded_interior_089",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "c182d7904c249fbb9746ec4dd7a8b87637d839054091adad984a325ca502cc75",
+				"name": "seeded_interior_090",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "451dfe8661558b50a4e8b5e04c9aa4d6abc4119a62fc034ce446495187da22c8",
+				"name": "seeded_interior_091",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "3dd5913d5124940b122546d3e70b626759ce5be905e43ceb04cd38d3a60c44a8",
+				"name": "seeded_interior_092",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "67c6566d90c1d2722b8aaab84a582be55aa7e3e63de5d52d9d6d1d75073ce5f8",
+				"name": "seeded_interior_093",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "8fe219464f3373136b71d84e8ba2b9947046b2ba66b610c3802885c7a913e689",
+				"name": "seeded_interior_094",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "a9c464cb2992124467c127345cd7dc18a86bd42477d40bf885233c0688cb6818",
+				"name": "seeded_interior_095",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "8d29ff4151ef92cb29a01fa535ed626d78103d670b2d44108bb17ac46454d954",
+				"name": "seeded_interior_096",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "eef9ff6c1e9956619f24ecaff28aa75f7f65bb87253b30847f58372ce3babe28",
+				"name": "seeded_interior_097",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "fe3a2e267cdaefb7cc90ed7d11443546ac0bb60b619c8a7daf0612a466249f98",
+				"name": "seeded_interior_098",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "4ab3692d16cb8477eb8a16ad456bcd26d692a248c495025e9077149012aba342",
+				"name": "seeded_interior_099",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "e301451c7a0160df54ac0ee9a157e84e63150d1f6e957f09dfbfc41a9866dfc2",
+				"name": "seeded_interior_100",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "257859a8388b8bc1f2daaf758014e62a9e7e2e3116d0b6643449305169c5636d",
+				"name": "seeded_interior_101",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "c4a6db5a1dada115a5ad2128d2f87b7c1e4a0a7a1696db223791a9a7a2a04964",
+				"name": "seeded_interior_102",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "9e7c25c3132493fe9b0d1a485830c831fbeb1c53f606cd4b0418c363ed6382e3",
+				"name": "seeded_interior_103",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "46d4b64b8c5873ee3450ef764e4b00bba707f0a14eb325f12f610fe3b739bfa0",
+				"name": "seeded_interior_104",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "7740a7513eeb940b303c928aa502dbe84ba106ab353b563a92bf72b60a230656",
+				"name": "seeded_interior_105",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "5262d80451c14ad4aa7364dc1c8a928bc0e939be0d38c7daf06ea339259fb35a",
+				"name": "seeded_interior_106",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "da2bf63a2d6101327174d888246619c9f8134c5cf4ef0e8125b8e05f69e255df",
+				"name": "seeded_interior_107",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "07b41198109899ebe1d311a854cc0369e7cacdce9c0fb9554a1dd2812318f760",
+				"name": "seeded_interior_108",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "2e3454263573eb0d4c994c80d7209e05d2bf4881379bcd26bac36bb5335d9b33",
+				"name": "seeded_interior_109",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "f8db87798856252e61e9a821f6a9071642d9fef7c8d08c030fd3b18aea272d4d",
+				"name": "seeded_interior_110",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "9f03b331e5295e798f7962ce140141d288dd68bba3111ef9b38c7bb9bd02cfbd",
+				"name": "seeded_interior_111",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "4b4c09433b6dd57c6696229f00bc9a5611d5979a1da7d4673bb06d6188b1ce8b",
+				"name": "seeded_interior_112",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "4804d32e8629ab375e952095329d7ba66de54a741563fd8f8d76a44a28d068d0",
+				"name": "seeded_interior_113",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "da47c4188ee03785c5d6c1d3aac7f144034314120ad13f9a6b55f469372a01db",
+				"name": "seeded_interior_114",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "ea251d546d7fa02a247b0e389820a05acfe763882ed85ebaf33df13625997e99",
+				"name": "seeded_interior_115",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "c16dbb6fd96ef52ec9a402f352b4505f7911d848003dcdef8a5e58b404f339e9",
+				"name": "seeded_interior_116",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "62094cc0e9f95c035d4996af7bc0af3aedb0b2ff23e38a83b604339d870088f1",
+				"name": "seeded_interior_117",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "c6337b532a99a653f0a289047e0ce3cd4f13110fea1754e84ef9f31adc9e039d",
+				"name": "seeded_interior_118",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "53598d30a87c65e2a714307aff6c5b0dad2f511815e879199fc5dd07b336cd4d",
+				"name": "seeded_interior_119",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "b91c5f5a9833fa7148d32ed251111987bf260ab8a5db5689246a1bc6f6ca5c9c",
+				"name": "seeded_interior_120",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "a9852af0bc7ae32b94257762bea8fbb5905b91ef70859b4a61fbd1c2a8823fbc",
+				"name": "seeded_interior_121",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "7cdaa83401a18fdf65639c9b3e5b6beb0210dcc7ca00c62342e2e8fd7f3d117b",
+				"name": "seeded_interior_122",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "8a4c6463703510a3874e74eebcc5d2c7e32f35932956142aaa5e3a7f615f53b7",
+				"name": "seeded_interior_123",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "6e9d6a64d40faafa109ea2703bf178e8eae249ff95741f845958ea9d9fe5ac59",
+				"name": "seeded_interior_124",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "3e6cf224f028cc8fd74471d249b1ce7e8e76d6325c9ba1c34aa128298ad411e0",
+				"name": "seeded_interior_125",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "0e0e089f74df40737b73fbf718af32c4797b2717a20fa5ebbe1f39eb2312f94f",
+				"name": "seeded_interior_126",
+				"travel_outside_art": false
+			},
+			{
+				"mesh_sha256": "d6b0da05879661a7d47f8d2ee9b11f2a547e86d5908cc0d4c3738a5b1260cd36",
+				"name": "seeded_interior_127",
+				"travel_outside_art": false
+			}
+		],
+		"seed": 935395310,
+		"seeded_interior_pose_count": 128,
+		"timing_pose_count": 18,
+		"total_pose_count": 173
+	},
+	"pinned_baseline_sha256": "9eb05dc91d757fc61a4b3fab9757a0e4f05a2e6912c8614677cbe2f1a8296db7",
+	"pinned_baseline_sha256_check": true,
+	"schema": "rcv37-monster-car-2-visual-bench-v1",
+	"timing": {
+		"measured_passes_per_round": 40,
+		"pose_count": 18,
+		"round_count": 3,
+		"rounds": [
+			{
+				"baseline": {
+					"draw_calls": 720,
+					"elapsed_usec": 1217263,
+					"usec_per_draw": 1690.6430555555555
+				},
+				"candidate": {
+					"draw_calls": 720,
+					"elapsed_usec": 928205,
+					"usec_per_draw": 1289.173611111111
+				},
+				"order": [
+					"baseline",
+					"candidate"
+				],
+				"round": 1
+			},
+			{
+				"baseline": {
+					"draw_calls": 720,
+					"elapsed_usec": 1273763,
+					"usec_per_draw": 1769.1152777777777
+				},
+				"candidate": {
+					"draw_calls": 720,
+					"elapsed_usec": 869471,
+					"usec_per_draw": 1207.598611111111
+				},
+				"order": [
+					"candidate",
+					"baseline"
+				],
+				"round": 2
+			},
+			{
+				"baseline": {
+					"draw_calls": 720,
+					"elapsed_usec": 1227901,
+					"usec_per_draw": 1705.4180555555556
+				},
+				"candidate": {
+					"draw_calls": 720,
+					"elapsed_usec": 967487,
+					"usec_per_draw": 1343.7319444444445
+				},
+				"order": [
+					"baseline",
+					"candidate"
+				],
+				"round": 3
+			}
+		],
+		"warmup_passes": 6
+	}
+}

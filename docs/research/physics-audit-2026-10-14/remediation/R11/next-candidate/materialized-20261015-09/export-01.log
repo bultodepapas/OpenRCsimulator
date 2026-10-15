@@ -1,0 +1,2099 @@
+candidate=/home/bulto/openrc-r11-package-20261015-09
+started_utc=2026-10-15T15:22:03Z
+source_manifest_sha256=bd9cc04069b725b1317bb3125c5f06bb0d338336d1f5e41b93c81e552ce3eebc
+support_manifest_sha256=389ddeda2485a9481570c5b6323757de00c2971bfa8dcf5360fdbd6db9ee54d8
+dd7230a202a0ca01f805a6797963c37ece39306d8fbed956f5ed8d733c2a75e4  /home/bulto/openrc-r11-package-20261015-09/app/export.sh
+2249f62dfa8a4c8ffdabe78cab853a6247044be329d94c382c612e91f516d3ba  /home/bulto/openrc-r11-package-20261015-09/app/tests/check_native_pack.gd
+8718896783cb792f949732a5a4d74c6d08a1bde0bd52c43f9d1982efb3fd9ff7  /home/bulto/openrc-r11-package-20261015-09/app/native/ground_vehicle/build-receipt.json
+8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e  /home/bulto/openrc-r11-package-20261015-09/.tools/Godot_v4.7.2-stable_linux.x86_64
+== build identity: 7c47c7b-dirty (commit 7c47c7ba02f7d2c874ec92a381ea73ef967069d6, 2026-10-14T20:55:41-05:00), numeric 0.1.1
+== import (a fresh clone has no .godot cache)
+== export Linux
+== export Windows
+== export macOS
+== native package artifacts: verify both platform rows against exported binaries
+{"abi_version": 1, "backend": "native", "backend_version": "openrc-ground-vehicle-native-evaluate-v2", "format": "openrc-native-export-artifacts-v1", "platforms": {"linux": {"binary": "/home/bulto/openrc-r11-package-20261015-09/dist/linux/libopenrc_ground_vehicle.so", "binary_sha256": "08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3", "toolchain_sha256": "86c94e45f49cb2c40d81cb2b501865113b974a9a5f25863e313e16d451ab561c"}, "windows": {"binary": "/home/bulto/openrc-r11-package-20261015-09/dist/windows/openrc_ground_vehicle.dll", "binary_sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c", "toolchain_sha256": "78bdd21d315683b45eee37c24b84716430cdba2a9b24066f59a68df476585b4d"}}, "solver_version": "openrc-ground-vehicle-dynamics-rk4-v3", "source_sha256": "e2ae0a5ffebc8d81636302d66238348035ee92bf51d2f40965db7053bb251541"}
+== prepare empty-project host probe with the exact Linux editor sidecar
+host editor 8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e; Linux sidecar 08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3
+== smoke test: the exported Linux binary flies trimmed level flight
+trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)
+exported binary reports build 7c47c7b-dirty
+== macOS bundle: universal and ad-hoc signed
+macOS export: OpenRC Simulator.app/Contents/MacOS/OpenRC Simulator mode 0o755, slices x86_64 ad-hoc signed, arm64 ad-hoc signed
+== version fields: .exe VERSIONINFO and Info.plist carry config/version 0.1.1
+version fields: .exe 0.1.1.0 (FileVersion, ProductVersion), Info.plist 0.1.1 (short and bundle version)
+== default field and compiled loader are present in all three packs (empty-project smoke)
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 6682f4c9a326fbbdccd3a7731f824399a404e3a574ffd48fe1e0c283fde0474d
+Pack default lake geometry and compiled source stamp validated
+WARNING: 'res://assets/landscape/vegetation/models/Pine_1.gltf': In external resource #0, invalid UID: 'uid://c0q7wmsydqmpw' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Pine_1.gltf': In external resource #1, invalid UID: 'uid://g18e3bx1mudu' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Pine_1.gltf': In external resource #2, invalid UID: 'uid://dfx51gd3k2keh' - using text path instead: 'res://assets/landscape/vegetation/models/Leaf_Pine_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_3.gltf': In external resource #0, invalid UID: 'uid://c0q7wmsydqmpw' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_3.gltf': In external resource #1, invalid UID: 'uid://g18e3bx1mudu' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_3.gltf': In external resource #2, invalid UID: 'uid://0rvagyjf5jn1' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_1.gltf': In external resource #0, invalid UID: 'uid://c0q7wmsydqmpw' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_1.gltf': In external resource #1, invalid UID: 'uid://g18e3bx1mudu' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_1.gltf': In external resource #2, invalid UID: 'uid://0rvagyjf5jn1' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf': In external resource #0, invalid UID: 'uid://0rvagyjf5jn1' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf': In external resource #1, invalid UID: 'uid://dxfu6yeh20vm' - using text path instead: 'res://assets/landscape/vegetation/models/Flowers.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Bush_Common.gltf': In external resource #0, invalid UID: 'uid://b401fuevjdhy6' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves_TwistedTree_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Clover_1.gltf': In external resource #0, invalid UID: 'uid://ccwk0tgqpko8j' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Flower_4_Group.gltf': In external resource #0, invalid UID: 'uid://ccwk0tgqpko8j' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Flower_4_Group.gltf': In external resource #1, invalid UID: 'uid://dxfu6yeh20vm' - using text path instead: 'res://assets/landscape/vegetation/models/Flowers.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Flower_3_Group.gltf': In external resource #0, invalid UID: 'uid://ccwk0tgqpko8j' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Flower_3_Group.gltf': In external resource #1, invalid UID: 'uid://dxfu6yeh20vm' - using text path instead: 'res://assets/landscape/vegetation/models/Flowers.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #0, invalid UID: 'uid://twyl4jb1gq' - using text path instead: 'res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #1, invalid UID: 'uid://d2nt21xv3d7fo' - using text path instead: 'res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #2, invalid UID: 'uid://bmguwhc5ykcse' - using text path instead: 'res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #3, invalid UID: 'uid://bdonasxl4xy6' - using text path instead: 'res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #4, invalid UID: 'uid://c2xgi68p7kq8l' - using text path instead: 'res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #5, invalid UID: 'uid://dabfxyil4yngo' - using text path instead: 'res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #6, invalid UID: 'uid://d3lpt16ynuvrl' - using text path instead: 'res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #0, invalid UID: 'uid://twyl4jb1gq' - using text path instead: 'res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #1, invalid UID: 'uid://d2nt21xv3d7fo' - using text path instead: 'res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #2, invalid UID: 'uid://bmguwhc5ykcse' - using text path instead: 'res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #3, invalid UID: 'uid://bdonasxl4xy6' - using text path instead: 'res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #4, invalid UID: 'uid://c2xgi68p7kq8l' - using text path instead: 'res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #5, invalid UID: 'uid://dabfxyil4yngo' - using text path instead: 'res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #6, invalid UID: 'uid://d3lpt16ynuvrl' - using text path instead: 'res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #0, invalid UID: 'uid://twyl4jb1gq' - using text path instead: 'res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #1, invalid UID: 'uid://d2nt21xv3d7fo' - using text path instead: 'res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #2, invalid UID: 'uid://bmguwhc5ykcse' - using text path instead: 'res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #3, invalid UID: 'uid://bdonasxl4xy6' - using text path instead: 'res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #4, invalid UID: 'uid://c2xgi68p7kq8l' - using text path instead: 'res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #5, invalid UID: 'uid://dabfxyil4yngo' - using text path instead: 'res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #6, invalid UID: 'uid://d3lpt16ynuvrl' - using text path instead: 'res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #0, invalid UID: 'uid://sqbq7c34ouxv' - using text path instead: 'res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #1, invalid UID: 'uid://vlie8w3jojkp' - using text path instead: 'res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #2, invalid UID: 'uid://cva3lqdirklsv' - using text path instead: 'res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #3, invalid UID: 'uid://hx60ouxxbnpu' - using text path instead: 'res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #4, invalid UID: 'uid://bgl5g80penoyf' - using text path instead: 'res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #5, invalid UID: 'uid://c2gt5tqgh68pw' - using text path instead: 'res://assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #6, invalid UID: 'uid://d2pyavp8587f5' - using text path instead: 'res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #7, invalid UID: 'uid://krk0vlfr3vl2' - using text path instead: 'res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #8, invalid UID: 'uid://pthxjuftypte' - using text path instead: 'res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #9, invalid UID: 'uid://dli31cpqeoj3e' - using text path instead: 'res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #0, invalid UID: 'uid://sqbq7c34ouxv' - using text path instead: 'res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #1, invalid UID: 'uid://vlie8w3jojkp' - using text path instead: 'res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #2, invalid UID: 'uid://cva3lqdirklsv' - using text path instead: 'res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #3, invalid UID: 'uid://hx60ouxxbnpu' - using text path instead: 'res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #4, invalid UID: 'uid://bgl5g80penoyf' - using text path instead: 'res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #5, invalid UID: 'uid://bko1682b05ipb' - using text path instead: 'res://assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #6, invalid UID: 'uid://d2pyavp8587f5' - using text path instead: 'res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #7, invalid UID: 'uid://krk0vlfr3vl2' - using text path instead: 'res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #8, invalid UID: 'uid://pthxjuftypte' - using text path instead: 'res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #9, invalid UID: 'uid://dli31cpqeoj3e' - using text path instead: 'res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #0, invalid UID: 'uid://sqbq7c34ouxv' - using text path instead: 'res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #1, invalid UID: 'uid://vlie8w3jojkp' - using text path instead: 'res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #2, invalid UID: 'uid://cva3lqdirklsv' - using text path instead: 'res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #3, invalid UID: 'uid://hx60ouxxbnpu' - using text path instead: 'res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #4, invalid UID: 'uid://bgl5g80penoyf' - using text path instead: 'res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #5, invalid UID: 'uid://c150u80endwhg' - using text path instead: 'res://assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #6, invalid UID: 'uid://d2pyavp8587f5' - using text path instead: 'res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #7, invalid UID: 'uid://krk0vlfr3vl2' - using text path instead: 'res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #8, invalid UID: 'uid://pthxjuftypte' - using text path instead: 'res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #9, invalid UID: 'uid://dli31cpqeoj3e' - using text path instead: 'res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/botanical_habitats.gd:181)
+         [4] build (res://scenery/scenery.gd:387)
+         [5] attach (res://scenery/scenery.gd:171)
+         [6] build (res://render/field.gd:82)
+         [7] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Fern_1.gltf': In external resource #0, invalid UID: 'uid://ccwk0tgqpko8j' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/botanical_habitats.gd:181)
+         [4] build (res://scenery/scenery.gd:387)
+         [5] attach (res://scenery/scenery.gd:171)
+         [6] build (res://render/field.gd:82)
+         [7] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/botanical_habitats.gd:181)
+         [4] build (res://scenery/scenery.gd:387)
+         [5] attach (res://scenery/scenery.gd:171)
+         [6] build (res://render/field.gd:82)
+         [7] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/botanical_habitats.gd:181)
+         [4] build (res://scenery/scenery.gd:387)
+         [5] attach (res://scenery/scenery.gd:171)
+         [6] build (res://render/field.gd:82)
+         [7] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a imported grass and 150 clumps validated
+Pack L10a calm windsock validated
+Pack L10b pilot station validated
+Pack L10c barrier and L10d contact shadows validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+host-side resource check on Linux editor; this does not execute the target OS binary: /home/bulto/openrc-r11-package-20261015-09/dist/linux/openrc-simulator.x86_64
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Rotorcraft package smoke: 8 checks, 0 failures
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 6682f4c9a326fbbdccd3a7731f824399a404e3a574ffd48fe1e0c283fde0474d
+Pack default lake geometry and compiled source stamp validated
+WARNING: 'res://assets/landscape/vegetation/models/Pine_1.gltf': In external resource #0, invalid UID: 'uid://c0q7wmsydqmpw' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Pine_1.gltf': In external resource #1, invalid UID: 'uid://g18e3bx1mudu' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Pine_1.gltf': In external resource #2, invalid UID: 'uid://dfx51gd3k2keh' - using text path instead: 'res://assets/landscape/vegetation/models/Leaf_Pine_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_3.gltf': In external resource #0, invalid UID: 'uid://c0q7wmsydqmpw' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_3.gltf': In external resource #1, invalid UID: 'uid://g18e3bx1mudu' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_3.gltf': In external resource #2, invalid UID: 'uid://0rvagyjf5jn1' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_1.gltf': In external resource #0, invalid UID: 'uid://c0q7wmsydqmpw' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_1.gltf': In external resource #1, invalid UID: 'uid://g18e3bx1mudu' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_1.gltf': In external resource #2, invalid UID: 'uid://0rvagyjf5jn1' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf': In external resource #0, invalid UID: 'uid://0rvagyjf5jn1' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf': In external resource #1, invalid UID: 'uid://dxfu6yeh20vm' - using text path instead: 'res://assets/landscape/vegetation/models/Flowers.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Bush_Common.gltf': In external resource #0, invalid UID: 'uid://b401fuevjdhy6' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves_TwistedTree_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Clover_1.gltf': In external resource #0, invalid UID: 'uid://ccwk0tgqpko8j' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Flower_4_Group.gltf': In external resource #0, invalid UID: 'uid://ccwk0tgqpko8j' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Flower_4_Group.gltf': In external resource #1, invalid UID: 'uid://dxfu6yeh20vm' - using text path instead: 'res://assets/landscape/vegetation/models/Flowers.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Flower_3_Group.gltf': In external resource #0, invalid UID: 'uid://ccwk0tgqpko8j' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Flower_3_Group.gltf': In external resource #1, invalid UID: 'uid://dxfu6yeh20vm' - using text path instead: 'res://assets/landscape/vegetation/models/Flowers.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #0, invalid UID: 'uid://twyl4jb1gq' - using text path instead: 'res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #1, invalid UID: 'uid://d2nt21xv3d7fo' - using text path instead: 'res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #2, invalid UID: 'uid://bmguwhc5ykcse' - using text path instead: 'res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #3, invalid UID: 'uid://bdonasxl4xy6' - using text path instead: 'res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #4, invalid UID: 'uid://c2xgi68p7kq8l' - using text path instead: 'res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #5, invalid UID: 'uid://dabfxyil4yngo' - using text path instead: 'res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #6, invalid UID: 'uid://d3lpt16ynuvrl' - using text path instead: 'res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #0, invalid UID: 'uid://twyl4jb1gq' - using text path instead: 'res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #1, invalid UID: 'uid://d2nt21xv3d7fo' - using text path instead: 'res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #2, invalid UID: 'uid://bmguwhc5ykcse' - using text path instead: 'res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #3, invalid UID: 'uid://bdonasxl4xy6' - using text path instead: 'res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #4, invalid UID: 'uid://c2xgi68p7kq8l' - using text path instead: 'res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #5, invalid UID: 'uid://dabfxyil4yngo' - using text path instead: 'res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #6, invalid UID: 'uid://d3lpt16ynuvrl' - using text path instead: 'res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #0, invalid UID: 'uid://twyl4jb1gq' - using text path instead: 'res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #1, invalid UID: 'uid://d2nt21xv3d7fo' - using text path instead: 'res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #2, invalid UID: 'uid://bmguwhc5ykcse' - using text path instead: 'res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #3, invalid UID: 'uid://bdonasxl4xy6' - using text path instead: 'res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #4, invalid UID: 'uid://c2xgi68p7kq8l' - using text path instead: 'res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #5, invalid UID: 'uid://dabfxyil4yngo' - using text path instead: 'res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #6, invalid UID: 'uid://d3lpt16ynuvrl' - using text path instead: 'res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #0, invalid UID: 'uid://sqbq7c34ouxv' - using text path instead: 'res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #1, invalid UID: 'uid://vlie8w3jojkp' - using text path instead: 'res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #2, invalid UID: 'uid://cva3lqdirklsv' - using text path instead: 'res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #3, invalid UID: 'uid://hx60ouxxbnpu' - using text path instead: 'res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #4, invalid UID: 'uid://bgl5g80penoyf' - using text path instead: 'res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #5, invalid UID: 'uid://c2gt5tqgh68pw' - using text path instead: 'res://assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #6, invalid UID: 'uid://d2pyavp8587f5' - using text path instead: 'res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #7, invalid UID: 'uid://krk0vlfr3vl2' - using text path instead: 'res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #8, invalid UID: 'uid://pthxjuftypte' - using text path instead: 'res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #9, invalid UID: 'uid://dli31cpqeoj3e' - using text path instead: 'res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #0, invalid UID: 'uid://sqbq7c34ouxv' - using text path instead: 'res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #1, invalid UID: 'uid://vlie8w3jojkp' - using text path instead: 'res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #2, invalid UID: 'uid://cva3lqdirklsv' - using text path instead: 'res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #3, invalid UID: 'uid://hx60ouxxbnpu' - using text path instead: 'res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #4, invalid UID: 'uid://bgl5g80penoyf' - using text path instead: 'res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #5, invalid UID: 'uid://bko1682b05ipb' - using text path instead: 'res://assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #6, invalid UID: 'uid://d2pyavp8587f5' - using text path instead: 'res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #7, invalid UID: 'uid://krk0vlfr3vl2' - using text path instead: 'res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #8, invalid UID: 'uid://pthxjuftypte' - using text path instead: 'res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #9, invalid UID: 'uid://dli31cpqeoj3e' - using text path instead: 'res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #0, invalid UID: 'uid://sqbq7c34ouxv' - using text path instead: 'res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #1, invalid UID: 'uid://vlie8w3jojkp' - using text path instead: 'res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #2, invalid UID: 'uid://cva3lqdirklsv' - using text path instead: 'res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #3, invalid UID: 'uid://hx60ouxxbnpu' - using text path instead: 'res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #4, invalid UID: 'uid://bgl5g80penoyf' - using text path instead: 'res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #5, invalid UID: 'uid://c150u80endwhg' - using text path instead: 'res://assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #6, invalid UID: 'uid://d2pyavp8587f5' - using text path instead: 'res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #7, invalid UID: 'uid://krk0vlfr3vl2' - using text path instead: 'res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #8, invalid UID: 'uid://pthxjuftypte' - using text path instead: 'res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #9, invalid UID: 'uid://dli31cpqeoj3e' - using text path instead: 'res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/botanical_habitats.gd:181)
+         [4] build (res://scenery/scenery.gd:387)
+         [5] attach (res://scenery/scenery.gd:171)
+         [6] build (res://render/field.gd:82)
+         [7] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Fern_1.gltf': In external resource #0, invalid UID: 'uid://ccwk0tgqpko8j' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/botanical_habitats.gd:181)
+         [4] build (res://scenery/scenery.gd:387)
+         [5] attach (res://scenery/scenery.gd:171)
+         [6] build (res://render/field.gd:82)
+         [7] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/botanical_habitats.gd:181)
+         [4] build (res://scenery/scenery.gd:387)
+         [5] attach (res://scenery/scenery.gd:171)
+         [6] build (res://render/field.gd:82)
+         [7] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/botanical_habitats.gd:181)
+         [4] build (res://scenery/scenery.gd:387)
+         [5] attach (res://scenery/scenery.gd:171)
+         [6] build (res://render/field.gd:82)
+         [7] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a imported grass and 150 clumps validated
+Pack L10a calm windsock validated
+Pack L10b pilot station validated
+Pack L10c barrier and L10d contact shadows validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+host-side resource check on Linux editor; this does not execute the target OS binary: /home/bulto/openrc-r11-package-20261015-09/dist/windows/OpenRC Simulator.exe
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Rotorcraft package smoke: 8 checks, 0 failures
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Pack field validated, SHA-256 6682f4c9a326fbbdccd3a7731f824399a404e3a574ffd48fe1e0c283fde0474d
+Pack default lake geometry and compiled source stamp validated
+WARNING: 'res://assets/landscape/vegetation/models/Pine_1.gltf': In external resource #0, invalid UID: 'uid://c0q7wmsydqmpw' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Pine_1.gltf': In external resource #1, invalid UID: 'uid://g18e3bx1mudu' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Pine_1.gltf': In external resource #2, invalid UID: 'uid://dfx51gd3k2keh' - using text path instead: 'res://assets/landscape/vegetation/models/Leaf_Pine_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_3.gltf': In external resource #0, invalid UID: 'uid://c0q7wmsydqmpw' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_3.gltf': In external resource #1, invalid UID: 'uid://g18e3bx1mudu' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_3.gltf': In external resource #2, invalid UID: 'uid://0rvagyjf5jn1' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_1.gltf': In external resource #0, invalid UID: 'uid://c0q7wmsydqmpw' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_1.gltf': In external resource #1, invalid UID: 'uid://g18e3bx1mudu' - using text path instead: 'res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/CommonTree_1.gltf': In external resource #2, invalid UID: 'uid://0rvagyjf5jn1' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf': In external resource #0, invalid UID: 'uid://0rvagyjf5jn1' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves_NormalTree_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Bush_Common_Flowers.gltf': In external resource #1, invalid UID: 'uid://dxfu6yeh20vm' - using text path instead: 'res://assets/landscape/vegetation/models/Flowers.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Bush_Common.gltf': In external resource #0, invalid UID: 'uid://b401fuevjdhy6' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves_TwistedTree_C.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Clover_1.gltf': In external resource #0, invalid UID: 'uid://ccwk0tgqpko8j' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Flower_4_Group.gltf': In external resource #0, invalid UID: 'uid://ccwk0tgqpko8j' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Flower_4_Group.gltf': In external resource #1, invalid UID: 'uid://dxfu6yeh20vm' - using text path instead: 'res://assets/landscape/vegetation/models/Flowers.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Flower_3_Group.gltf': In external resource #0, invalid UID: 'uid://ccwk0tgqpko8j' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Flower_3_Group.gltf': In external resource #1, invalid UID: 'uid://dxfu6yeh20vm' - using text path instead: 'res://assets/landscape/vegetation/models/Flowers.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/scenery.gd:377)
+         [4] attach (res://scenery/scenery.gd:171)
+         [5] build (res://render/field.gd:82)
+         [6] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #0, invalid UID: 'uid://twyl4jb1gq' - using text path instead: 'res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #1, invalid UID: 'uid://d2nt21xv3d7fo' - using text path instead: 'res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #2, invalid UID: 'uid://bmguwhc5ykcse' - using text path instead: 'res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #3, invalid UID: 'uid://bdonasxl4xy6' - using text path instead: 'res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #4, invalid UID: 'uid://c2xgi68p7kq8l' - using text path instead: 'res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #5, invalid UID: 'uid://dabfxyil4yngo' - using text path instead: 'res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/pilot.glb': In external resource #6, invalid UID: 'uid://d3lpt16ynuvrl' - using text path instead: 'res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #0, invalid UID: 'uid://twyl4jb1gq' - using text path instead: 'res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #1, invalid UID: 'uid://d2nt21xv3d7fo' - using text path instead: 'res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #2, invalid UID: 'uid://bmguwhc5ykcse' - using text path instead: 'res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #3, invalid UID: 'uid://bdonasxl4xy6' - using text path instead: 'res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #4, invalid UID: 'uid://c2xgi68p7kq8l' - using text path instead: 'res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #5, invalid UID: 'uid://dabfxyil4yngo' - using text path instead: 'res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/standing.glb': In external resource #6, invalid UID: 'uid://d3lpt16ynuvrl' - using text path instead: 'res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #0, invalid UID: 'uid://twyl4jb1gq' - using text path instead: 'res://assets/scenery/population/textures/10c8ff3ac95bcfdcd65d6a0e24f69c626898871b572df4588ed78d3c6adece03.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #1, invalid UID: 'uid://d2nt21xv3d7fo' - using text path instead: 'res://assets/scenery/population/textures/a37e1a54f61ec20d0a00b962ee75a620260eb686319f61463a479440eda902b7.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #2, invalid UID: 'uid://bmguwhc5ykcse' - using text path instead: 'res://assets/scenery/population/textures/b87763c35dc9c0242d7eb4addb7d0f856b4f161357903a071bacd257fa0b5b90.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #3, invalid UID: 'uid://bdonasxl4xy6' - using text path instead: 'res://assets/scenery/population/textures/d2c5fa34f5909af635400fb03fc366c202761e0ead4d04165b6cd82565035826.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #4, invalid UID: 'uid://c2xgi68p7kq8l' - using text path instead: 'res://assets/scenery/population/textures/3eda9d7a08e5eb7f786bf00e88d0f33bc2dd764c89a5754ae03aaf77e47714a6.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #5, invalid UID: 'uid://dabfxyil4yngo' - using text path instead: 'res://assets/scenery/population/textures/efef94ea34b0e0c2283095cb47a9e0389b55449c61a4f4972d0ad4d2bf06b4f0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sitting.glb': In external resource #6, invalid UID: 'uid://d3lpt16ynuvrl' - using text path instead: 'res://assets/scenery/population/textures/e6bd9c9c0c30d9d2a0aa576a84672671d0a81c005488c71027121e07937be50a.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #0, invalid UID: 'uid://sqbq7c34ouxv' - using text path instead: 'res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #1, invalid UID: 'uid://vlie8w3jojkp' - using text path instead: 'res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #2, invalid UID: 'uid://cva3lqdirklsv' - using text path instead: 'res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #3, invalid UID: 'uid://hx60ouxxbnpu' - using text path instead: 'res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #4, invalid UID: 'uid://bgl5g80penoyf' - using text path instead: 'res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #5, invalid UID: 'uid://c2gt5tqgh68pw' - using text path instead: 'res://assets/scenery/population/textures/b5e7423f9328d5d4c0087944b729db3161c0e1310aa1299b5b749921880ec23a.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #6, invalid UID: 'uid://d2pyavp8587f5' - using text path instead: 'res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #7, invalid UID: 'uid://krk0vlfr3vl2' - using text path instead: 'res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #8, invalid UID: 'uid://pthxjuftypte' - using text path instead: 'res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/hatch.glb': In external resource #9, invalid UID: 'uid://dli31cpqeoj3e' - using text path instead: 'res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #0, invalid UID: 'uid://sqbq7c34ouxv' - using text path instead: 'res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #1, invalid UID: 'uid://vlie8w3jojkp' - using text path instead: 'res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #2, invalid UID: 'uid://cva3lqdirklsv' - using text path instead: 'res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #3, invalid UID: 'uid://hx60ouxxbnpu' - using text path instead: 'res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #4, invalid UID: 'uid://bgl5g80penoyf' - using text path instead: 'res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #5, invalid UID: 'uid://bko1682b05ipb' - using text path instead: 'res://assets/scenery/population/textures/f7febd142101fb41e524d38fed097330e75ff7c09d57bc0c13a0de3dc34c0b36.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #6, invalid UID: 'uid://d2pyavp8587f5' - using text path instead: 'res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #7, invalid UID: 'uid://krk0vlfr3vl2' - using text path instead: 'res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #8, invalid UID: 'uid://pthxjuftypte' - using text path instead: 'res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/crossover.glb': In external resource #9, invalid UID: 'uid://dli31cpqeoj3e' - using text path instead: 'res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #0, invalid UID: 'uid://sqbq7c34ouxv' - using text path instead: 'res://assets/scenery/population/textures/9f711cb90662f168c363313635237b293305f952e85d9b8aab9d3c177d42eb59.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #1, invalid UID: 'uid://vlie8w3jojkp' - using text path instead: 'res://assets/scenery/population/textures/ab86ea01ace182ed83c51fe5f606b0362e7d88f0e9b74e41f366952ae5ce3e52.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #2, invalid UID: 'uid://cva3lqdirklsv' - using text path instead: 'res://assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #3, invalid UID: 'uid://hx60ouxxbnpu' - using text path instead: 'res://assets/scenery/population/textures/8ec37aa2f1c327c850cd51016641d89f5d1399c269ca27482457e5a004d5a0cf.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #4, invalid UID: 'uid://bgl5g80penoyf' - using text path instead: 'res://assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #5, invalid UID: 'uid://c150u80endwhg' - using text path instead: 'res://assets/scenery/population/textures/1378ca82c299dfea07686596d13a4a80583081a3a7bb436ba00c9894c10bf2bf.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #6, invalid UID: 'uid://d2pyavp8587f5' - using text path instead: 'res://assets/scenery/population/textures/ee59a04be3fb4dacc766a1d0b59c4c619750aa0520caf52018114ef8ca76c9bd.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #7, invalid UID: 'uid://krk0vlfr3vl2' - using text path instead: 'res://assets/scenery/population/textures/f4993edc4d1129f136a6d12b3119d3eeb9045604b99409700662f1170fb3927f.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #8, invalid UID: 'uid://pthxjuftypte' - using text path instead: 'res://assets/scenery/population/textures/12a3d374853b3258a7bfcc26ed6203e763aa12b5fbd1e3001bb471a5a1cbbc87.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/scenery/population/sedan.glb': In external resource #9, invalid UID: 'uid://dli31cpqeoj3e' - using text path instead: 'res://assets/scenery/population/textures/62ae4fa1ac6d4a10fa205dff41984db50c36cc7a15b19689c9f2ee664fabc6a5.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _source (res://scenery/population.gd:116)
+         [1] build (res://scenery/population.gd:36)
+         [2] build (res://scenery/scenery.gd:381)
+         [3] attach (res://scenery/scenery.gd:171)
+         [4] build (res://render/field.gd:82)
+         [5] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Grass_Common_Short.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/botanical_habitats.gd:181)
+         [4] build (res://scenery/scenery.gd:387)
+         [5] attach (res://scenery/scenery.gd:171)
+         [6] build (res://render/field.gd:82)
+         [7] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Fern_1.gltf': In external resource #0, invalid UID: 'uid://ccwk0tgqpko8j' - using text path instead: 'res://assets/landscape/vegetation/models/Leaves.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/botanical_habitats.gd:181)
+         [4] build (res://scenery/scenery.gd:387)
+         [5] attach (res://scenery/scenery.gd:171)
+         [6] build (res://render/field.gd:82)
+         [7] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Grass_Common_Tall.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/botanical_habitats.gd:181)
+         [4] build (res://scenery/scenery.gd:387)
+         [5] attach (res://scenery/scenery.gd:171)
+         [6] build (res://render/field.gd:82)
+         [7] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+WARNING: 'res://assets/landscape/vegetation/models/Grass_Wispy_Tall.gltf': In external resource #0, invalid UID: 'uid://om7kym5cxpy1' - using text path instead: 'res://assets/landscape/vegetation/models/Grass.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+         [1] get_parts (res://scenery/imported_vegetation.gd:63)
+         [2] build (res://scenery/imported_vegetation.gd:119)
+         [3] build (res://scenery/botanical_habitats.gd:181)
+         [4] build (res://scenery/scenery.gd:387)
+         [5] attach (res://scenery/scenery.gd:171)
+         [6] build (res://render/field.gd:82)
+         [7] _initialize (/home/bulto/openrc-r11-package-20261015-09/app/tests/check_field_pack.gd:76)
+Pack L7 hill profile checksum and rendered relief validated
+Pack L11a imported grass and 150 clumps validated
+Pack L10a calm windsock validated
+Pack L10b pilot station validated
+Pack L10c barrier and L10d contact shadows validated
+Pack tree catalog, imported atlas, license and 1680-tree field validated
+host-side resource check on Linux editor; this does not execute the target OS binary: /tmp/tmp.7yEGWC5cPs/macos.pck
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Rotorcraft package smoke: 8 checks, 0 failures
+== exported Linux pack selects its exact host-native implementation from an empty project
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+R11_NATIVE_PACKAGE_SMOKE {"abi":{"abi_version":1,"float_bytes":8,"ieee754":true,"solver":"openrc-ground-vehicle-native-evaluate-v2","solver_version":"openrc-ground-vehicle-dynamics-rk4-v3"},"abi_is_float64_ieee754":true,"class_present":true,"errors":[],"executable":"/tmp/tmp.I2sk0CITrD/Godot_v4.7.2-stable_linux.x86_64","format":"openrc-r11-host-native-package-smoke-v1","godot":"4.7.2-stable (official)","host_platform":"linux","native_identity":{"abi_version":1,"backend":"native","backend_version":"openrc-ground-vehicle-native-evaluate-v2","binary_sha256":"08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3","solver_version":"openrc-ground-vehicle-dynamics-rk4-v3","source_sha256":"e2ae0a5ffebc8d81636302d66238348035ee92bf51d2f40965db7053bb251541","toolchain_sha256":"86c94e45f49cb2c40d81cb2b501865113b974a9a5f25863e313e16d451ab561c"},"passed":true,"platform_rows_consistent":true,"receipt_host_row":{"abi_version":1.0,"architecture":"x86_64","backend":"native","backend_version":"openrc-ground-vehicle-native-evaluate-v2","binary_sha256":"08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3","exception_flags":["-fexceptions"],"floating_point_flags":["-fno-fast-math","-ffp-contract=off"],"platform":"linux","solver_version":"openrc-ground-vehicle-dynamics-rk4-v3","source_sha256":"e2ae0a5ffebc8d81636302d66238348035ee92bf51d2f40965db7053bb251541","toolchain":{"compiler_version":"13.3.0"},"toolchain_sha256":"86c94e45f49cb2c40d81cb2b501865113b974a9a5f25863e313e16d451ab561c"},"receipt_path":"res://native/ground_vehicle/build-receipt.json","scope":"host-matched native package smoke; not cross-platform target execution","selected_identity":{"abi_version":1,"backend":"native","backend_version":"openrc-ground-vehicle-native-evaluate-v2","binary_sha256":"08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3","solver_version":"openrc-ground-vehicle-dynamics-rk4-v3","source_sha256":"e2ae0a5ffebc8d81636302d66238348035ee92bf51d2f40965db7053bb251541","toolchain_sha256":"86c94e45f49cb2c40d81cb2b501865113b974a9a5f25863e313e16d451ab561c"},"sidecar_path":"/tmp/tmp.I2sk0CITrD/libopenrc_ground_vehicle.so","sidecar_sha256":"08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3"}
+== packages
+4a71dbba9a3834a870a1b074fdd186eb02471523698f6c086cf6a630e0cdd9c7  openrc-simulator-7c47c7b-dirty-linux-x86_64.zip
+5f86318f54030a7eb66e14517cb102a54b1d0dec058c606b0455ed2a51586380  openrc-simulator-7c47c7b-dirty-macos-universal.zip
+bd45461b0afb031524676044dbe5393003f600bea2055a5980a23f192b63d567  openrc-simulator-7c47c7b-dirty-windows-x86_64.zip
+-rw-r--r-- 1 bulto bulto 101703597 Oct 15 10:22 openrc-simulator-7c47c7b-dirty-linux-x86_64.zip
+-rw-r--r-- 1 bulto bulto 133585222 Oct 15 10:23 openrc-simulator-7c47c7b-dirty-macos-universal.zip
+-rw-r--r-- 1 bulto bulto 111084563 Oct 15 10:23 openrc-simulator-7c47c7b-dirty-windows-x86_64.zip
+finished_utc=2026-10-15T15:23:08Z
+exit=0

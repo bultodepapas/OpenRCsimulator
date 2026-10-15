@@ -60,6 +60,33 @@ func _run() -> void:
 	check(activity.dashboard.control_hint.text.contains("No reverse"), "controls describe forward-only nitro transmission")
 	check(activity._effects != null and activity._wet_effects != null and activity._nitro_exhaust != null, "shared effects and nitro exhaust exist")
 	check(activity._effects._headlight_lights.size() >= 2, "authored headlights have runtime beams")
+	activity.handle_action("sound")
+	check(activity._nitro_sound != null and activity._sound == null, "nitro uses its dedicated spatial voice")
+	activity.handle_action("sound")
+	var service_body: PackedFloat64Array = activity.session.state_snapshot().slice(0, 31)
+	activity.handle_action("engine_stop")
+	activity._process(0.0)
+	check(activity.session.state_snapshot()[31] == 0.0 and activity.dashboard.telemetry.text.contains("Engine off"), "garage stops engine and reports off state")
+	check(not activity.dashboard.refuel_button.disabled and not activity.dashboard.engine_start_button.disabled, "stopped engine permits refuel and restart")
+	activity.handle_action("refuel")
+	activity.handle_action("engine_start")
+	activity._process(0.0)
+	check(activity.session.telemetry_snapshot().nitro.engine_running and activity.dashboard.refuel_button.disabled, "restart uses fuel and prevents running refuel")
+	check(service_body.to_byte_array() == activity.session.state_snapshot().slice(0, 31).to_byte_array(), "garage engine service preserves chassis pose")
+	var bell: MeshInstance3D = activity.visual._mesh_nodes.Campana_Embrague
+	var flywheel: MeshInstance3D = activity.visual._mesh_nodes.Volante_Motor
+	var bell_rest := bell.transform
+	var flywheel_rest := flywheel.transform
+	activity.visual.engine_phase_rad = 0.7
+	activity._process(0.0)
+	check(bell.transform.is_equal_approx(bell_rest) and not flywheel.transform.is_equal_approx(flywheel_rest), "idle flywheel rotates independently of clutch bell")
+	var rolling: PackedFloat64Array = activity.session.state_snapshot()
+	for wheel in 4: rolling[25 + wheel] = 0.1
+	activity._visual_adapter.draw(activity.visual, rolling, activity._model.cg_height_above_chassis_datum_m)
+	check(not bell.transform.is_equal_approx(bell_rest), "clutch bell follows wheel transmission phase")
+	activity._process(0.0)
+	activity.handle_action("clean")
+	check(service_body.to_byte_array() == activity.session.state_snapshot().slice(0, 31).to_byte_array(), "cleaning never changes physical state")
 	activity.session.tick_once(NEUTRAL)
 	activity.handle_action("resume")
 	check(not activity.session.paused, "explicit neutral resume")

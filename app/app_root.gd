@@ -600,8 +600,11 @@ func _update_controller_calibration_button(setup: Node) -> void:
 	setup.calibrate_button.disabled = not available
 
 
-func _controller_bindings(id: int) -> Dictionary:
+func _controller_bindings(id: int, flight_context := false) -> Dictionary:
 	if controllers != null and id >= 0:
+		if flight_context:
+			var capabilities: Dictionary = flight.controller_capabilities() if flight != null and flight.has_method("controller_capabilities") else {}
+			return ControllerActions.effective_bindings(controllers.profile_for_device(id), capabilities)
 		return ControllerActions.effective_bindings(controllers.profile_for_device(id))
 	return ControllerActions.default_bindings()
 
@@ -668,7 +671,7 @@ func _input(event: InputEvent) -> void:
 	var source := ControllerActions.event_source(event)
 	if source.is_empty(): return
 	var previous: PackedStringArray = _controller_action_edges.get(source, PackedStringArray())
-	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id), id, "menu" if in_menu or calibrating else "flight", previous)
+	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id, not in_menu and not calibrating), id, "menu" if in_menu or calibrating else "flight", previous)
 	if actions.is_empty(): _controller_action_edges.erase(source)
 	else: _controller_action_edges[source] = actions
 	if flight != null and flight.session.has_method("set_controller_cut"):
@@ -678,6 +681,8 @@ func _input(event: InputEvent) -> void:
 		flight.session.set_controller_cut(held)
 	for action: String in actions:
 		if previous.has(action): continue
+		# A held Back/Accept button cannot become an aircraft command when a menu closes.
+		if event is InputEventJoypadButton and not previous.is_empty(): continue
 		if in_menu:
 			if action == "calibrate" and (screens.is_top("home") or screens.is_top("pause")):
 				open_controls()
@@ -1339,7 +1344,7 @@ func continue_flight() -> void:
 	if not session.is_flyable():
 		return # nothing to go back to: the menu stays, Continue is disabled and says why
 	if controllers != null and (session._controller_lost or (session.radio.connected and not session.radio.armed)):
-		pause_menu.set_note(tr("Release the controls to neutral before continuing; use Controls to select a disconnected device."))
+		pause_menu.set_note(pause_menu.status_text(flight.session))
 		return
 	_close_pause()
 	session.resume()

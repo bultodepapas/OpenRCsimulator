@@ -1,0 +1,15 @@
+# fixed_step_default_30fps
+# started_utc=2026-10-15T14:30:14+00:00
+# cwd=/home/bulto/openrc-r11-b09-r05b-20261015-07/app
+# timeout_seconds=75
+# expect=zero
+# command=/usr/bin/timeout 60 /home/bulto/openrc-r11-b09-r05b-20261015-07/.tools/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/bulto/openrc-r11-b09-r05b-20261015-07/app --audio-driver Dummy --fixed-fps 30 --script res://tests/run_fixed_step.gd
+# returncode=0
+# timed_out=False
+# engine_error_detected=False
+
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+flight_sha256=81ce5fba537906929004bc75aba7efbc492e18a96afea673bc839c2e5a930db5
+ticks=480 frames=61 throttle=0.5321 state_sha256=36fa5c0b0e4549ef4f363b8788ba6fa9ccaee2f867859d2134ccddbc83626630

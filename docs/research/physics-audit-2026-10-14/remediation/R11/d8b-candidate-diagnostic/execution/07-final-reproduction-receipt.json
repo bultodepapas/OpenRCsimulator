@@ -1,0 +1,104 @@
+{
+  "format": "d8b-r2-regeneration-and-frozen-cli-receipt-v2",
+  "date": "2026-10-15",
+  "scope": "disposable candidate regeneration plus frozen-07 runtime qualification; no frozen/live source writes",
+  "source_manifest": "docs/research/physics-audit-2026-10-14/remediation/R11/next-candidate/materialized-20261015-07-01/post-overlay-initial.json",
+  "source_manifest_sha256": "7f7d14b202a18d270dbb1cc8c04aaad6471318a0f0a3a9f9b75e21a4cce804f6",
+  "copy_history": {
+    "scratch_01": {
+      "status": "prepared but never executed",
+      "issue": "Broad initial copy accidentally included app/.godot; no import, generator, or test command ran there."
+    },
+    "scratch_02": {
+      "status": "executed disposable copy",
+      "path": "tmp/physics-audit-r11-d8b-candidate-repro-02",
+      "app_dot_godot_excluded_at_copy": true,
+      "godot_import_generated_cache_files": 435,
+      "import_generated_support_file": "app/native/ground_vehicle/openrc_ground_vehicle.gdextension.uid",
+      "source_manifest_hash_matches": true
+    }
+  },
+  "pinned_input_hashes": {
+    "app/data/aircraft/jensen_ugly_stik_60.json": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+    "app/physics/aircraft_data.gd": "40a574c5c049179941372d7c355cb53f1ede4588154201070618c8108bd353b9",
+    "app/tests/wing_polar_fixture.gd": "13d9f43b6cbbb1e70a1ceac4a7bc8c87b982faf8a1722d09df34f011fc68e88b",
+    "app/tests/test_pullup_cli.py": "bb2af28dc23e599ec70818cd97180119dde5b103e065e06091be2c02b6f4526e",
+    "app/project.godot": "272cdc12ae91e6255df584bd8c0008051fca280f0cc526625e4dbe1a21f3120a",
+    "research/flight-robustness/d8b-r2/make_candidates.gd": "636f0bcf8c4c1166bac90b450bc18a01e8e131d3c6ae6595231f5131a126e4b2"
+  },
+  "generator_runs": [
+    {
+      "step": "Godot import in scratch_02 only",
+      "binary": "/home/bulto/openrc-r11-b09-r05b-20261015-07/.tools/Godot_v4.7.2-stable_linux.x86_64",
+      "exit_code": 0,
+      "log": "execution/00-import.log",
+      "log_sha256": "6d8d36ee1a2273ebd6bd58c68f39cf07218579bf31f2d85076cacb6b02977c7d"
+    },
+    {
+      "step": "make_candidates.gd write mode in scratch_02",
+      "exit_code": 0,
+      "stdout": "3 synthetic polar candidates generated; NONE selected for production",
+      "log": "execution/01-generate.log",
+      "log_sha256": "8d2a8ababc96923cd2004711635f462b22d51be12d32a94f154a61898cbffb62"
+    },
+    {
+      "step": "make_candidates.gd -- --check in scratch_02",
+      "exit_code": 0,
+      "stdout": "3 synthetic polar candidates verified; NONE selected for production",
+      "log": "execution/02-check.log",
+      "log_sha256": "0cd37fca7d5050a4536e6c466365d48c7d79b7a4b527e32356c3986037764be9"
+    }
+  ],
+  "regenerated_candidates": {
+    "research/flight-robustness/d8b-r2/candidates/steep.json": "861fe08ccafbb0750ee60f3adae9a2d54cca4f606e343b8851b30b09d0fb7a25",
+    "research/flight-robustness/d8b-r2/candidates/intermediate.json": "add61d572414a0eb2915f34b100f77f5b77f1ba2c27021bf26f7357758a9370c",
+    "research/flight-robustness/d8b-r2/candidates/retained.json": "76f38ee2e9cf5f9d540e5df050d1f00b0abedf4b3c904bb2097e5c0120b5a2bd",
+    "all_three_polar_subtrees_unchanged_from_frozen_candidates": true,
+    "python_lexeme_difference": {
+      "path": "/aero/coefficients/Cldr/value",
+      "frozen_catalog_json_text": "0.00045123687978342573",
+      "generated_json_text": "0.00045123687978342",
+      "python_static_comparison_matches": false,
+      "runtime_interpretation": "representation-only difference; not a Godot dictionary mismatch"
+    }
+  },
+  "godot_parser_probe": {
+    "binary_version": "4.7.2-stable (official), ed1daf0bf001b61586d9930840f2f1394092c079",
+    "script": "execution/parse_precision_probe.gd",
+    "script_sha256": "b466e24cc0d77819b993af277b1c2a05e6b0ecaa063e6c0624d48588db58619f",
+    "log": "execution/05-godot-cldr-parse-probe.log",
+    "log_sha256": "b96f6872adedd53f1474c74c357b3a15a0863c99dcff21bf61439b4ea476b1d4",
+    "catalog_and_candidate_parse_to_same_cldr_value": 0.00045123687978342,
+    "validation_mutates_cldr": false,
+    "fixture_serialization_preserves_runtime_cldr": true,
+    "nonpolar_dictionary_equal_after_removing_wing_polar": true
+  },
+  "frozen_pullup_cli": {
+    "runner": "execution/run_frozen_pullup_override.py",
+    "runner_sha256": "662787c7108a40a75d524a96f4d99db7b31a95354a3cf3141f337e4a0b3f07fe",
+    "test_module": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/tests/test_pullup_cli.py",
+    "test_module_sha256": "bb2af28dc23e599ec70818cd97180119dde5b103e065e06091be2c02b6f4526e",
+    "test_bodies_modified": false,
+    "app": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app",
+    "reference": "/home/bulto/openrc-r11-b09-r05b-20261015-07/app/data/aircraft/jensen_ugly_stik_60.json",
+    "reference_sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+    "sole_module_override": "CANDIDATE=/mnt/c/DEVELOPMENT/OpenRCsimulator/tmp/physics-audit-r11-d8b-candidate-repro-02/research/flight-robustness/d8b-r2/candidates/intermediate.json",
+    "candidate_sha256": "add61d572414a0eb2915f34b100f77f5b77f1ba2c27021bf26f7357758a9370c",
+    "godot": "/home/bulto/openrc-r11-b09-r05b-20261015-07/.tools/Godot_v4.7.2-stable_linux.x86_64",
+    "outer_timeout_seconds": 360,
+    "test_internal_subprocess_timeout_seconds": 30,
+    "elapsed_seconds": 37.69,
+    "tests_run": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "execution/06-frozen-override-unittest.log",
+    "log_sha256": "899f898a59843b5c803ebe9aec1131a706edfc70e69494e5ccbb77a3e2618b98"
+  },
+  "superseded_incomplete_run": {
+    "log": "execution/03-pullup-cli.log",
+    "log_sha256": "fd0a559e715a134218c73276dc57d463cc4ff1a7d81f21846d6cfb65f8a23e9c",
+    "status": "inconclusive; output ends F. without unittest summary or traceback; no cause inferred"
+  },
+  "mutation_boundary": "Only scratch_02 candidate JSON outputs, imported cache/support files, and this evidence folder were written. Frozen -07 and live source files were not changed."
+}

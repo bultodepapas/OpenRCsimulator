@@ -995,6 +995,15 @@ func _pose_of(s: PackedFloat64Array) -> Dictionary:
 
 
 ## Semantic gamepad actions share operations with keyboard shortcuts.
+## This presentation/routing contract advertises only implemented aircraft equipment.
+func controller_capabilities() -> Dictionary:
+	return {
+		"gear": session != null and session.gear_is_retractable(),
+		"smoke": _smoke != null and _smoke.supports_pump(),
+		"flaps": false, # current aircraft have no admitted flap actuator/aerodynamic consumer
+	}
+
+
 func controller_action(action: String) -> bool:
 	if session == null: return false
 	match action:
@@ -1255,7 +1264,14 @@ func _overlay_snapshot() -> Dictionary:
 		return {}
 	var forward: Vector3 = -_camera.global_transform.basis.z
 	var view_heading: float = OverlayManager.Telemetry.heading_of_render_forward(forward.x, forward.z)
-	return OverlayManager.snapshot(session, field.pilot, _extent.x, not _experimental_aircraft_path.is_empty(), view_heading)
+	var snap := OverlayManager.snapshot(session, field.pilot, _extent.x, not _experimental_aircraft_path.is_empty(), view_heading)
+	if snap.has("control_guide"):
+		snap.control_guide.capabilities = controller_capabilities()
+		snap.control_guide.equipment_state = {
+			gear = session.gear_state().get("status", "unavailable"),
+			smoke = "on" if _smoke != null and float(_smoke.levels.pump) > 0.0 else "off",
+		}
+	return snap
 
 
 ## Shows or hides the flight's text overlays (input panel and HUD). A menu hides them: the paused picture then

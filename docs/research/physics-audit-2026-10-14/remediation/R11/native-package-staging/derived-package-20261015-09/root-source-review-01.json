@@ -1,0 +1,14 @@
+{
+  "format": "R11 independent derived-source review v1",
+  "captured_utc": "2026-10-15T15:20:31.696860+00:00",
+  "candidate": "/home/bulto/openrc-r11-package-20261015-09",
+  "manifest_sha256": "bd9cc04069b725b1317bb3125c5f06bb0d338336d1f5e41b93c81e552ce3eebc",
+  "tree_sha256": "28f30fec6d54b54d6b8606a3c28381ee5b14695f434d65fe44306c80df3678fb",
+  "files_checked": 14924,
+  "bytes_checked": 2097084555,
+  "method": "Read every manifested file and compare SHA-256/size/mode; require regular files and nlink=1. Independently compare all paths excluding separately copied .git before runtime/tool staging.",
+  "extra_source_paths": [],
+  "missing_source_paths": [],
+  "failures": [],
+  "ok": true
+}

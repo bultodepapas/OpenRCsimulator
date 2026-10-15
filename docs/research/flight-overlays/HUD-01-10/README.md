@@ -79,3 +79,15 @@ Eleven software-OpenGL captures (Xvfb, llvmpipe) of real flights: Pilot/Full/Dev
 | The default Home latency marker (centre right) covered Telemetry and the Transmitter title | `LatencyPatch.left_side` on overlay flights: top left at y = 120; legacy/CLI unchanged | marker rect intersects no Pilot overlay; F6a tests 533 + 5 + 26 checks pass |
 
 `test_overlay_manager`: 77 checks. Developer-preset overlap with long diagnostic lines remains accepted. Full suite after the repairs: 239 of 241 GDScript tests pass (the two scenery-count tests above stay red) and all 30 later `test.sh` stages run, red only for the same two shaft-CLI cases.
+
+## Controls guide (2026-10-15, HUD-11-R2)
+
+Added the default-open Control guide using the existing overlay frame, keyboard reference, effective controller bindings and bundled Kenney glyphs. It follows the selected flight device, preserves a manual tab choice during refresh, and returns to keyboard on disconnect. Named presets include it; custom visibility and closing still persist through the existing settings path. The Home latency marker moves beside it (x = 332, y = 180) to keep both readable.
+
+Native Windows, Godot 4.7.2, Compatibility renderer on NVIDIA RTX 3090:
+
+- `test_overlay_manager`: 90 checks pass, including default visibility, all keyboard reference entries, Mode 1 axes, remapped and unbound buttons, trigger/rate throttle instructions, disconnect, actual × click without focus capture, reopening, settings/dialog integration and English/Spanish layout at 720p (also English at 1080p).
+- `test_controls_reference`, `test_controller_prompts` (137), `test_overlay_units` (29), `test_overlay_telemetry` (38), `test_latency_patch` (533), and `test_latency_patch_route` (5) pass.
+- Real-flight 1280×720 Spanish viewport captures reviewed for keyboard, a simulated DualSense profile with remapped camera, and scrolled controller commands. Captures use fixture metadata, not a hardware-input acceptance claim. Scratch PNGs and capture harness are local outputs.
+
+No physics, control mapping or simulation state changed. This focused verification does not rerun the full physics suite or close HUD-12 pilot acceptance.

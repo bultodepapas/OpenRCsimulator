@@ -28,7 +28,8 @@ const RECORD_TELEMETRY_BASE_WIDTH := 73
 const ENVIRONMENT_SCALARS := ["body_submersion", "water_depth_m", "buoyancy_n", "drag_power_w", "power_w"]
 const ENVIRONMENT_ARRAYS := ["wheel_submersion", "wheel_water_height_m", "wheel_depth_m", "wheel_mud"]
 const DAMAGE_CHANNELS := ["body_damage", "suspension_damage", "drive_scale", "last_impact_energy_j"]
-const NITRO_TELEMETRY_FIELDS := ["engine_rpm", "fuel_kg", "fuel_fraction", "clutch_engaged", "clutch_engagement"]
+const NITRO_TELEMETRY_FIELDS := ["engine_rpm", "fuel_kg", "fuel_fraction", "clutch_engaged", "clutch_engagement",
+	"throttle_fraction", "fuel_flow_kg_per_s", "clutch_slip", "clutch_torque_nm", "wheel_drive_torque_nm"]
 const RECORD_TELEMETRY_SPEED_OFFSET := 0
 const RECORD_TELEMETRY_FORWARD_SPEED_OFFSET := 1
 const RECORD_TELEMETRY_LOAD_OFFSET := 2
@@ -525,6 +526,70 @@ func advance(frame_dt: float, sample: Dictionary, max_ticks: int = 8) -> int:
 	return count
 
 
+## Explicit pit service changes only the two powertrain state values. It does
+## not recover, repair, teleport or advance the vehicle. Actions are replayed.
+func service_nitro(action: String) -> bool:
+	if not prepared or not _uses_nitro(_model) or not paused or recording \
+			or _has_unexported_recording() or not fault_reason.is_empty() \
+			or not _active_backend_matches_prepared():
+		load_error = "Nitro service requires a paused, healthy session with recordings saved"
+		return false
+	if action not in ["start", "stop", "refuel"]:
+		load_error = "Unknown nitro service action"
+		return false
+	# A pause can freeze a moving vehicle; it is not evidence of a stationary pit stop.
+	if not nitro_service_stationary():
+		load_error = "Stop the vehicle before servicing it"
+		return false
+	var running := _state[NitroDynamics.ENGINE_SPEED] > NitroDynamics.ENGINE_STALL_SPEED_RAD_S
+	var candidate := _state.duplicate()
+	match action:
+		"stop":
+			if not running:
+				load_error = "Engine is already stopped"
+				return false
+			candidate[NitroDynamics.ENGINE_SPEED] = 0.0
+		"start":
+			if running or candidate[NitroDynamics.FUEL_MASS] <= 0.0:
+				load_error = "Starting requires fuel and a stopped engine"
+				return false
+			candidate[NitroDynamics.ENGINE_SPEED] = float(_model.powertrain.engine_idle_speed_rad_s)
+		"refuel":
+			if running:
+				load_error = "Stop the engine before refuelling"
+				return false
+			candidate[NitroDynamics.FUEL_MASS] = float(_model.powertrain.initial_fuel_mass_kg)
+	var observed := _telemetry_for_model(candidate, _model, _road, _neutral_controls())
+	if not _state_is_valid(candidate) or not _telemetry_is_valid(observed):
+		load_error = "Nitro service produced invalid state"
+		return false
+	_state = candidate
+	# External starter/fuel service is explicit assistance, as with recovery.
+	run_valid = false
+	observed["damage"] = _damage.visual_state()
+	_last_telemetry = observed
+	_last_controls = _neutral_controls()
+	_last_effective_controls = _neutral_controls()
+	_last_sample_is_neutral_armed = false
+	_braking_run.clear()
+	var event := {"type": "nitro_service", "tick": tick, "time_s": time_s(), "action": action}
+	_event_tape.append(event)
+	_recovery_actions.append({"type": "nitro_service", "tick": tick, "action": action})
+	if not _suppress_signals: event_added.emit(event.duplicate(true))
+	load_error = ""
+	return true
+
+
+func nitro_service_stationary() -> bool:
+	if not prepared or not _uses_nitro(_model): return false
+	var speed_squared := 0.0
+	for index in range(3, 6): speed_squared += _state[index] * _state[index]
+	if speed_squared > 0.01: return false
+	for index in range(21, 25):
+		if absf(_state[index]) > 0.5: return false
+	return true
+
+
 func manual_recovery() -> bool:
 	if not prepared:
 		return false
@@ -584,16 +649,10 @@ func replay(controls: Variant, actions: Array = []) -> bool:
 		return false
 	var staged_controls: Array[Dictionary] = controls_result.controls
 	var staged_actions: Array[Dictionary] = []
-	var previous_action_tick := -1
-	for item in actions:
-		if typeof(item) != TYPE_DICTIONARY or item.get("type") != "manual_recovery" \
-				or not _integer_value_is_valid(item.get("tick")) or int(item.tick) < previous_action_tick \
-				or int(item.tick) < 0 or int(item.tick) > staged_controls.size() \
-				or str(item.get("spawn_id", "")) != spawn_id:
-			load_error = "replay actions are malformed or refer to another spawn"
-			return false
-		previous_action_tick = int(item.tick)
-		staged_actions.append(item.duplicate(true))
+	if not _actions_are_valid(actions, staged_controls.size(), spawn_id):
+		load_error = "Replay actions are malformed or refer to another spawn"
+		return false
+	for item in actions: staged_actions.append(item.duplicate(true))
 	var before := checkpoint()
 	if before.is_empty():
 		load_error = "current session cannot produce a replay rollback checkpoint"
@@ -622,11 +681,23 @@ func _replay_validated(controls: Array[Dictionary], actions: Array[Dictionary]) 
 	var action_index := 0
 	for index in range(controls.size() + 1):
 		while action_index < actions.size() and int(actions[action_index].tick) == tick:
-			if not manual_recovery():
+			var action: Dictionary = actions[action_index]
+			var applied := false
+			if action.type == "nitro_service":
+				pause("replay service")
+				applied = service_nitro(str(action.action))
+			else:
+				applied = manual_recovery()
+			if not applied:
 				_suppress_signals = false
 				return false
 			action_index += 1
 		if index < controls.size():
+			if paused and action_index > 0 and actions[action_index - 1].type == "nitro_service":
+				tick_once({"throttle": 0.0, "steering": 0.0, "brake": 0.0, "reverse": false, "armed": true})
+				if not resume():
+					_suppress_signals = false
+					return false
 			if not tick_once(controls[index]):
 				_suppress_signals = false
 				return false
@@ -803,7 +874,7 @@ func restore_checkpoint(candidate: Variant) -> bool:
 	_control_tape = _decode_float64_blob(candidate.control_tape_f64_base64, int(candidate.tick) * 4)
 	_last_controls = restored_controls
 	_last_effective_controls = restored_effective_controls
-	_recovery_actions = _dictionary_array(candidate.recovery_actions)
+	_recovery_actions = _event_array(candidate.recovery_actions)
 	_event_tape = _event_array(candidate.event_tape)
 	_braking_run = candidate.braking_run.duplicate(true)
 	_last_telemetry = next_telemetry
@@ -1097,11 +1168,17 @@ func _recording_sample_is_valid(telemetry: Dictionary, controls: Dictionary) -> 
 func _nitro_telemetry_is_valid(value: Variant) -> bool:
 	if typeof(value) != TYPE_DICTIONARY:
 		return false
-	for key in ["engine_rpm", "fuel_kg", "fuel_fraction", "clutch_engagement"]:
+	for key in NITRO_TELEMETRY_FIELDS:
+		if key == "clutch_engaged": continue
 		var item: Variant = value.get(key, NAN)
 		if typeof(item) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(item)):
 			return false
-	return float(value.fuel_kg) >= 0.0 and typeof(value.get("clutch_engaged")) == TYPE_BOOL
+	return float(value.engine_rpm) >= 0.0 and float(value.fuel_kg) >= 0.0 \
+		and float(value.fuel_fraction) >= 0.0 and float(value.fuel_fraction) <= 1.0 \
+		and float(value.clutch_engagement) >= 0.0 and float(value.clutch_engagement) <= 1.0 \
+		and float(value.throttle_fraction) >= 0.0 and float(value.throttle_fraction) <= 1.0 \
+		and float(value.fuel_flow_kg_per_s) >= 0.0 and absf(float(value.clutch_slip)) <= 1.0 \
+		and typeof(value.get("clutch_engaged")) == TYPE_BOOL
 
 
 func _finish_recording() -> void:
@@ -1536,7 +1613,7 @@ func _damage_observer_state(state_value: PackedFloat64Array) -> PackedFloat64Arr
 func _telemetry_for_model(state_value: PackedFloat64Array, model: Dictionary, road: Callable,
 		controls: Dictionary) -> Dictionary:
 	if _uses_nitro(model):
-		return NitroDynamics.telemetry(state_value, model, road, controls)
+		return NitroDynamics.telemetry(state_value, model, road, controls, DT)
 	return VehicleDynamics.telemetry(state_value, model, road, controls)
 
 
@@ -1789,50 +1866,33 @@ func _telemetry_is_valid_for_model(value: Variant, model: Dictionary) -> bool:
 func _actions_are_valid(actions: Array, max_tick: int, expected_spawn: String) -> bool:
 	var last_tick := -1
 	for item in actions:
-		if typeof(item) != TYPE_DICTIONARY or item.get("type") != "manual_recovery" \
-				or not _integer_value_is_valid(item.get("tick")) or int(item.tick) < last_tick \
-				or int(item.tick) < 0 or int(item.tick) > max_tick \
-				or str(item.get("spawn_id", "")) != expected_spawn:
+		if typeof(item) != TYPE_DICTIONARY or not _event_tick_is_valid(item.get("tick"), max_tick) \
+				or int(item.tick) < last_tick:
 			return false
+		match str(item.get("type", "")):
+			"manual_recovery":
+				if not _event_has_exact_keys(item, ["type", "tick", "spawn_id"]) \
+						or str(item.get("spawn_id", "")) != expected_spawn: return false
+			"nitro_service":
+				if not _uses_nitro(_model) or not _event_has_exact_keys(item, ["type", "tick", "action"]) \
+						or item.get("action") not in ["start", "stop", "refuel"]: return false
+			_: return false
 		last_tick = int(item.tick)
 	return true
 
 
 func _recovery_history_is_consistent(actions: Array, events: Array) -> bool:
-	var counts_by_tick: Dictionary = {}
+	# Order matters when stop/refuel/start share a tick.
+	var index := 0
 	for item in events:
-		if typeof(item) != TYPE_DICTIONARY:
-			return false
-		if item.get("type") != "manual_recovery":
-			continue
-		if not _integer_value_is_valid(item.get("tick")) or typeof(item.get("spawn_id")) != TYPE_STRING:
-			return false
-		var event_tick := int(item.tick)
-		if not counts_by_tick.has(event_tick):
-			counts_by_tick[event_tick] = {}
-		var spawn_counts: Dictionary = counts_by_tick[event_tick]
-		var spawn_id: String = item.spawn_id
-		spawn_counts[spawn_id] = int(spawn_counts.get(spawn_id, 0)) + 1
-		counts_by_tick[event_tick] = spawn_counts
-	for action in actions:
-		if typeof(action) != TYPE_DICTIONARY or not _integer_value_is_valid(action.get("tick")) \
-				or typeof(action.get("spawn_id")) != TYPE_STRING:
-			return false
-		var action_tick := int(action.tick)
-		if not counts_by_tick.has(action_tick):
-			return false
-		var spawn_counts: Dictionary = counts_by_tick[action_tick]
-		var spawn_id: String = action.spawn_id
-		var count := int(spawn_counts.get(spawn_id, 0))
-		if count <= 0:
-			return false
-		spawn_counts[spawn_id] = count - 1
-	for tick_key in counts_by_tick:
-		var spawn_counts: Dictionary = counts_by_tick[tick_key]
-		for count_value in spawn_counts.values():
-			if int(count_value) != 0:
-				return false
-	return true
+		if typeof(item) != TYPE_DICTIONARY: return false
+		if item.get("type") not in ["manual_recovery", "nitro_service"]: continue
+		if index >= actions.size(): return false
+		var projected: Dictionary = item.duplicate(true)
+		projected.erase("time_s")
+		if projected != actions[index]: return false
+		index += 1
+	return index == actions.size()
 
 
 func _events_are_valid(events: Array, max_tick: int) -> bool:
@@ -1883,6 +1943,12 @@ func _events_are_valid(events: Array, max_tick: int) -> bool:
 						or not _event_number_in_range(item.get("end_speed_m_per_s"), 0.0, INF):
 					return false
 				event_tick = int(item.end_tick)
+			"nitro_service":
+				if not _uses_nitro(_model) or not _event_has_exact_keys(item, ["type", "tick", "time_s", "action"]) \
+						or not _event_tick_is_valid(item.get("tick"), max_tick) \
+						or not _event_time_matches_tick(item.get("time_s"), int(item.tick)) \
+						or item.get("action") not in ["start", "stop", "refuel"]: return false
+				event_tick = int(item.tick)
 			"manual_recovery":
 				if not _event_has_exact_keys(item, ["type", "tick", "time_s", "spawn_id"]) \
 						or not _event_tick_is_valid(item.get("tick"), max_tick) \

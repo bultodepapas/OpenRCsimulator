@@ -12,7 +12,7 @@ var above: bool = false
 var sampled_tick: int = -1
 var status: String = "waiting for radio"
 ## Set before adding: the flight overlays hold the right-hand side (Telemetry, Transmitter), so their flights show the
-## marker on the left, above Flight data. The legacy route keeps it centre right.
+## marker beside the controls guide, above Flight data. The legacy route keeps it centre right.
 var left_side: bool = false
 var marker: ColorRect
 var caption: Label
@@ -50,8 +50,8 @@ func _ready() -> void:
 	margin.mouse_filter = Control.MOUSE_FILTER_IGNORE
 	if left_side:
 		margin.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
-		margin.offset_left = 16
-		margin.offset_top = 120 # ≈ 260 px tall: clear of Flight data (top ≈ 470 px at 720p)
+		margin.offset_left = 332 # beside the controls guide; keep both readable
+		margin.offset_top = 180 # clear of wrapped warnings; ends above Flight data at 720p
 	else:
 		margin.set_anchors_and_offsets_preset(Control.PRESET_CENTER_RIGHT)
 		margin.grow_horizontal = Control.GROW_DIRECTION_BEGIN

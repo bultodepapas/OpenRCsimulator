@@ -1,0 +1,129 @@
+{
+  "complete": true,
+  "scope": "RCV-36 scoped source-runtime verification",
+  "full_repository_suite": false,
+  "new_release_export": false,
+  "scripts": [
+    {
+      "path": "app/audio/nitro_engine_audio.gd",
+      "sha256": "641de54c4afc04ab73b1740a54b0d00cb820aa096bb0d495cc6a29e7690ee662",
+      "parse": "pass"
+    },
+    {
+      "path": "app/audio/nitro_voice.gd",
+      "sha256": "90c6b09ead74def34d7485d319e27a6f0e1469bd7527b283619639f601351ce5",
+      "parse": "pass"
+    },
+    {
+      "path": "app/physics/ground_vehicle/nitro_dynamics.gd",
+      "sha256": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa",
+      "parse": "pass"
+    },
+    {
+      "path": "app/sim/ground_vehicle/session.gd",
+      "sha256": "2eb5bc12fa3f73d3cbc25aea6f109115bf541054027c585ad185491d6c7653e0",
+      "parse": "pass"
+    },
+    {
+      "path": "app/vehicles/ground/ground_scene.gd",
+      "sha256": "1e8acf57ebf04005e0b9a15cd241284e4e3fdac1475f57223b990fdbcca6abbb",
+      "parse": "pass"
+    },
+    {
+      "path": "app/vehicles/ground/ground_dashboard.gd",
+      "sha256": "dc8dca570a65e2e34343203768f0fb30b7d85633847ba8f7ef546fd2ec732d5e",
+      "parse": "pass"
+    },
+    {
+      "path": "app/vehicles/ground/ground_effects.gd",
+      "sha256": "8274d05f57351c6a358d56b070179f947bfd39c2e77c4b9e452652e491c2de69",
+      "parse": "pass"
+    },
+    {
+      "path": "app/vehicles/ground/nitro_exhaust.gd",
+      "sha256": "ab02ff296ec33a5b2d54910e7f94ba40132f90599aea537b88cf906c68ebe791",
+      "parse": "pass"
+    },
+    {
+      "path": "app/vehicles/ground/monster_car_2_model.gd",
+      "sha256": "9eb05dc91d757fc61a4b3fab9757a0e4f05a2e6912c8614677cbe2f1a8296db7",
+      "parse": "pass"
+    },
+    {
+      "path": "app/tests/test_nitro_dynamics.gd",
+      "sha256": "22fc924189a5d462d988d4cfed21087df26289f7075d88431ec418ef1a22dd0c",
+      "parse": "pass"
+    },
+    {
+      "path": "app/tests/test_rcv_nitro_activity.gd",
+      "sha256": "96786e4ea175baa57a48e33e9b8233c4d8d9b02aa820ecc44abab5f078e734b0",
+      "parse": "pass"
+    },
+    {
+      "path": "app/tests/test_rcv_nitro_service.gd",
+      "sha256": "b1974d1b3d62696d22342198bcf19d75c904300edc87df5b05fda7cb09cfc186",
+      "parse": "pass"
+    },
+    {
+      "path": "app/tests/test_rcv_nitro_audio.gd",
+      "sha256": "d890ee13022e6a640dc581cf92b59517827195bc3aba41e4e49797bd47d15064",
+      "parse": "pass"
+    },
+    {
+      "path": "app/tests/test_rcv36_effects.gd",
+      "sha256": "0387278c0278404f738f75251c5a71665113689c9cc20eea480dc52afefe08b3",
+      "parse": "pass"
+    }
+  ],
+  "integration_logs": [
+    {
+      "path": "checks/nitro-service.log",
+      "sha256": "414d6a1017e74f4dc1672a1464e75283d8afe306fbe570c0289bcc42e2935707",
+      "result": "38 checks, 0 failed"
+    },
+    {
+      "path": "checks/nitro-session.log",
+      "sha256": "c8c0bec92706a16a9467d323de27e07acdded7b25e64c4ea8a8478519d4ecf15",
+      "result": "28 checks, 0 failed"
+    },
+    {
+      "path": "checks/nitro-activity.log",
+      "sha256": "eec563975aabb50e9d239260fb6f0bc3352a9293f317c9b4ad8449be96162b4e",
+      "result": "99 checks, 0 failures"
+    },
+    {
+      "path": "checks/bisonte-session.log",
+      "sha256": "55bbe4f48db0770570ce7e8ead23b54dc5b0ce049b7aa2f3490fb72d9c3da60b",
+      "result": "136 checks, 0 failed"
+    },
+    {
+      "path": "checks/bisonte-activity.log",
+      "sha256": "e9385e0cae15a92e5ef8c6fe7fa4f1ec64189e2fe80cdd81ada014548e20bb4e",
+      "result": "24 checks, 0 failures"
+    },
+    {
+      "path": "checks/menu.log",
+      "sha256": "fd7a96e7bd0f4d0bcb9899a18010919951c472315961d831af8d82df4f12c060",
+      "result": "27 checks, 0 failures"
+    },
+    {
+      "path": "checks/nitro-visual.log",
+      "sha256": "3de72d3263b054f38b8adf903e8a879cb6eaa7fd06c143ee51351a02e62fd393",
+      "result": "Monster Car 2 visual test passed"
+    }
+  ],
+  "grime_shader_sha256": "828f63afa0a9ee1d3f08bb9aa79ea3e8ddd09cf4c3c19384b92b03ed0aa5a70d",
+  "capture_driver_sha256": "aefaecd198abda21d961d632dfe7d534d40b0e2cbc1249e4b264f042b7488fc5",
+  "capture_images": {
+    "clean-body.png": "260d3ae685af1d6b1a0b526a6049d0bbc09fcff2b6f821df07af7fed80b8515b",
+    "dirty-body.png": "e33f0b43b4eb1b56a65a52699372ba6bcec179e4081d2486b6bdcf1693784109",
+    "driving-dust-exhaust.png": "6804bf1d93be2676846c9bd441b9e6f25eb8c49f0f997642848e75b7e89e6f78",
+    "garage-engine-off.png": "ae128cdf65c0f300364320498d77bb55e3d1ef54c9d49b36f8c6c6be4815aadc",
+    "garage-fuelled.png": "1ea57a1d220a73f7ca19e3a688971e5d03b4cd1d676c70c99df07971e556b64f",
+    "grime-material-probe.png": "8dd2b29ddd629f2b946bb99804021132b3268c328fd2cec86e78cf6d9eaa90d4",
+    "mechanics.png": "26e8c95488eaadedbaff344716fd6301418d9bd16d34611cc40d6a13540aec0c"
+  },
+  "capture_sha256": "d7f395a9b392e457acf2b5378cbb36cbfcd145580d80f9e1b0ff2c32743c4b6f",
+  "audio_receipt_sha256": "ce8241841bec6bd95471b9a8d362cc81fc6cae00b860bf6d1ebbd1625e8aa0b0",
+  "physics_comparison_sha256": "676935382548c780e499cea7a8bd3cbe4877b679989f63e3787a668b0193ef0e"
+}

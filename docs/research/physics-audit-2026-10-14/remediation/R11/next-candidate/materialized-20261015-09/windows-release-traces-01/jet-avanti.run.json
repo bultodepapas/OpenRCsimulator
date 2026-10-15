@@ -1,0 +1,29 @@
+{
+  "timed_out": false,
+  "exit_code": 0,
+  "stderr_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\next-candidate\\materialized-20261015-09\\windows-release-traces-01\\jet-avanti.stderr.log",
+  "stdout_path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\next-candidate\\materialized-20261015-09\\windows-release-traces-01\\jet-avanti.stdout.log",
+  "timeout_seconds": 120,
+  "format": "R11 windows exported-app trace v1",
+  "csv": {
+    "size_bytes": 341368,
+    "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\next-candidate\\materialized-20261015-09\\windows-release-traces-01\\jet-avanti.csv",
+    "sha256": "db0c961b9df1d4ac3a4ccccc952d5f4d2dc2103ece0974a21981d1fb28df3287"
+  },
+  "command": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\OpenRC Simulator.exe --headless --audio-driver Dummy -- --aircraft=sebart-avanti-s-a200-p100rx --trace=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\next-candidate\\materialized-20261015-09\\windows-release-traces-01\\jet-avanti.csv --t=3",
+  "engine_error_lines": [],
+  "candidate": "/home/bulto/openrc-r11-package-20261015-09",
+  "aircraft": "sebart-avanti-s-a200-p100rx",
+  "inputs": [
+    {
+      "size_bytes": 194334688,
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\OpenRC Simulator.exe",
+      "sha256": "250f8c234644ee353b7c6a7616cce0c3bc4bb3fffb2e134292ffd793360ad564"
+    },
+    {
+      "size_bytes": 445952,
+      "path": "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-r11-09-windows-native-01\\editor\\openrc_ground_vehicle.dll",
+      "sha256": "adafd1f9682dff147e538fdb7686329c009edf255c639789ac28dc403bc6e65c"
+    }
+  ]
+}

@@ -1,4 +1,4 @@
-# Flight overlays (docs/plans/flight-overlays.md): one CanvasLayer holding seven independent overlays, their presets
+# Flight overlays (docs/plans/flight-overlays.md): one CanvasLayer holding independent overlays, their presets
 # and the player's settings. Reads the session only; it never writes to it, so traces are unaffected.
 # main.gd creates it on the Home route (or with --hud=overlays); automation keeps the legacy labels.
 extends CanvasLayer
@@ -14,6 +14,7 @@ const TelemetryPanel := preload("res://render/overlays/telemetry_panel.gd")
 const WarningsBar := preload("res://render/overlays/warnings_bar.gd")
 const GroundTerrain := preload("res://physics/ground_terrain.gd")
 const Settings := preload("res://render/overlays/overlay_settings.gd")
+const ControlsGuide := preload("res://render/overlays/controls_guide.gd")
 
 ## Emitted after any change the player makes (X, key, dialog); the owner saves it to the preferences.
 signal settings_changed(settings: Dictionary)
@@ -73,6 +74,8 @@ func _build() -> void:
 	var telemetry := TelemetryPanel.new()
 	_place(telemetry, Control.PRESET_CENTER_RIGHT)
 	_place(WarningsBar.new(), Control.PRESET_CENTER_TOP)
+	var controls := ControlsGuide.new()
+	_place(controls, Control.PRESET_TOP_LEFT)
 
 
 func _place(overlay: Control, preset: Control.LayoutPreset) -> void:
@@ -193,6 +196,8 @@ func refresh_numbers(snap: Dictionary) -> void:
 		frames.telemetry.refresh(_last_telemetry, float(snap.get("rpm", 0.0)))
 	if frames.transmitter.visible:
 		frames.transmitter.footer.text = str(snap.get("radio_status", ""))
+	if frames.controls.visible:
+		frames.controls.refresh(snap.get("control_guide", {}))
 	_warning_codes = snap.get("warnings", PackedStringArray())
 	frames.warnings.visible = frames.warnings.refresh(_warning_codes) and is_overlay_visible("warnings")
 
@@ -241,6 +246,10 @@ static func snapshot(session: Node, pilot: Dictionary, span: float, experimental
 	return {
 		telemetry = t, warnings = warnings, view_heading_deg = view_heading_deg, rpm = sim.aux[0],
 		radio_status = radio_status(session),
+		control_guide = {
+			connected = radio.connected, profile = radio.profile,
+			device_name = radio.device_name, device_info = { name = radio.device_name },
+		},
 	}
 
 
@@ -266,6 +275,7 @@ static func radio_status(session: Node) -> String:
 	else:
 		var kind: String = "Gamepad" if radio.profile.get("kind", "radio") == "gamepad" else "Radio"
 		parts.append(TranslationServer.translate(kind))
-		parts.append(TranslationServer.translate("ARMED") if radio.armed else TranslationServer.translate("SAFE"))
+		if kind == "Radio":
+			parts.append(TranslationServer.translate("ARMED") if radio.armed else TranslationServer.translate("SAFE"))
 	parts.append(TranslationServer.translate("Rates: normal") if session.rates_active() else TranslationServer.translate("Rates: full"))
 	return " · ".join(parts)

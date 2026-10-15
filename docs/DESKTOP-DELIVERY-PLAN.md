@@ -1,6 +1,6 @@
 # Desktop delivery plan
 
-2026-10-15 · Revision 15 · Step prefix: **DT-**.
+2026-10-15 · Revision 21 · Step prefix: **DT-**.
 
 **Status:** DT-00, DT-00-R1 and DT-00-R2 research is complete. DT-01–DT-12 remain open; initial DT-10/10a measurements and a narrow DT-11a lake geometry reuse repair are recorded through VQ-01c; cold loading and package qualification remain open. The owner acceptance gate DT-13 is open. No fullscreen, installer, public signing/notarization or native Windows/macOS acceptance has shipped through this track.
 
@@ -11,6 +11,18 @@ Latest DT-11a evidence: [horizon construction](research/visual-quality-implement
 ## Current delivery
 
 DT-11a follow-up (2026-10-15): [fallback shadow pixel reuse](research/visual-quality-implementation/VQ-01c/loading/shadow-mask-cache/README.md) retains one 85.3 KiB CPU mip chain while keeping each image/texture independent. Repeated carrier construction measures 16.266→0.853 ms; the first call still generates the mask and complete Home/Fly loading remains unqualified.
+
+DT-11a follow-up (2026-10-15): [batch population shadow transforms](research/visual-quality-implementation/VQ-01c/loading/population-shadow/README.md) preserves exact geometry and reduces repeated three-cell collection from 29.990 to 27.708 ms. Field regressions pass headless/native; a P-51 contract failure and Home shutdown warning in wider checks remain separately recorded. Full loading and lifecycle qualification stay open.
+
+DT-11a follow-up (2026-10-15): [helicopter canopy intersection rejection](research/visual-quality-implementation/VQ-01c/loading/heli-canopy/README.md) preserves contour/kit geometry and reduces measured kit construction from 1.753 to 0.494 s. Headless lights/rotor/crash/Home-cache checks pass. The native night-light test reproduces two texture shutdown errors on reference and candidate; full loading and lifecycle qualification remain open.
+
+DT-11a continuation (2026-10-15): [reuse canopy cuts across four profiles](research/visual-quality-implementation/VQ-01c/loading/heli-canopy/README.md#follow-up-reuse-cuts-for-four-profiles) reduces kit construction from 465.734 to 127.429 ms against the already optimized collector. Sixty real output pairs and 1,280 synthetic pairs agree exactly; six permanent contour checks are added. The existing native texture shutdown diagnostic remains open.
+
+DT-11a continuation (2026-10-15): [native fixed-wing light transforms](research/visual-quality-implementation/VQ-01c/loading/night-kit/transforms/README.md) reduce measured geometry extraction by 15–49% across five families, with 300 exact native geometry/kit pairs. Full-kit median reductions are 1.755–18.277 ms on a shared host; loading qualification stays open. Corrected standalone night-kit initialization passes 30 checks headless/native without shader warnings.
+
+DT-11a continuation (2026-10-15): [shared upper/lower wing cuts](research/visual-quality-implementation/VQ-01c/loading/night-kit/wing-slices/README.md) preserve complete kit output in 300 native fleet pairs and reduce kit construction by 25–33% in the paired campaign. Three permanent shared-data checks are added; field/night-kit/Home-cache regressions pass. Full loading, isolated timing and package qualification remain open.
+
+DT-11a continuation (2026-10-15): [bounded fuselage light station scans](research/visual-quality-implementation/VQ-01c/loading/night-kit/belly-stations/README.md) preserve 300 native contour/kit pairs and reduce measured complete-kit construction by 15–23%. Four endpoint/range regressions are added; field and headless/native night-kit tests pass cleanly. Home cache assertions pass but four audio ObjectDB shutdown leaks reproduce with reference and candidate. Lifecycle, full loading and package qualification remain open.
 
 Godot 4.7.2 is pinned, Compatibility is the renderer, physics runs at 240 Hz, and `app/project.godot` sets a 1280×720 viewport. Presets export Linux x86_64, Windows x86_64 and a universal macOS app from the Ubuntu CI job. `app/export.sh` embeds the PCK, creates ZIPs and `SHA256SUMS`, checks the exported Linux binary with a trimmed-flight trace, checks field data in each pack, checks macOS slices for an ad-hoc signature, and checks Windows/macOS numeric version metadata.
 

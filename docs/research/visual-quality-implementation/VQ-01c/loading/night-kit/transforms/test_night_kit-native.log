@@ -1,0 +1,514 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+ok   jensen-das-ugly-stik-60 has white top strips on both wings 
+ok   jensen-das-ugly-stik-60 top strip runs above the underside strip 
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+ok   stik-glow-61fx-2t has white top strips on both wings 
+ok   stik-glow-61fx-2t top strip runs above the underside strip 
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+ok   stik-glow-55ax-2t has white top strips on both wings 
+ok   stik-glow-55ax-2t top strip runs above the underside strip 
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:30)
+ok   stik-glow-fs64v-4t has white top strips on both wings 
+ok   stik-glow-fs64v-4t top strip runs above the underside strip 
+ok   gp-extra-300s-60 has white top strips on both wings 
+ok   gp-extra-300s-60 top strip runs above the underside strip 
+ok   p51d-mustang-120 has white top strips on both wings 
+ok   p51d-mustang-120 top strip runs above the underside strip 
+ok   sebart-avanti-s-a200-p100rx has white top strips on both wings 
+ok   sebart-avanti-s-a200-p100rx top strip runs above the underside strip 
+ok   turbo-lumber-evolution has white top strips on both wings 
+ok   turbo-lumber-evolution top strip runs above the underside strip 
+ok   xcell-60-research has white top strips on both wings 
+ok   xcell-60-research top strip runs above the underside strip 
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:42)
+ok   Stik has a cyan belly strip 
+ok   belly strip lies on the fuselage underside, not on a gear leg (y -0.057..-0.054) 
+ok   belly strip runs along the fuselage (0.88 m) 
+ok   landing light sits in the left wing's leading edge (-0.273978, 0.041402, -0.105) 
+ok   landing beam clears the propeller disc (0.035 m beyond its 0.152 m radius) 
+ok   NAV mode keeps navigation lights and strobes only 
+ok   OFF mode hides the kit 
+ok   ALL mode shows every light 
+ok   kit lights name their host part and stay out of crash boxes 
+ok   the left underside strip is mounted on the left wing (wing_frame_left/wing_left_1) 
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:82)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:82)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:82)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:82)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:82)
+WARNING: Shader uses global parameter 'sim_clock', but it was removed at some point. Material will not display correctly.
+   at: update_uniform_buffer (drivers/gles3/storage/material_storage.cpp:735)
+   GDScript backtrace (most recent call first):
+       [0] _elevator_mesh (res://aircraft/ugly_stik_model.gd:458)
+       [1] _tail (res://aircraft/ugly_stik_model.gd:470)
+       [2] build (res://aircraft/ugly_stik_model.gd:490)
+       [3] build (res://render/airplane.gd:64)
+       [4] _run (res://tests/test_night_kit.gd:82)
+ok   night kit does not inflate the wreck's airframe box [P: (-0.176653, -0.073004, -0.384385), S: (0.353306, 0.150726, 1.163181)] vs [P: (-0.176653, -0.073004, -0.384385), S: (0.353306, 0.150726, 1.163181)]
+ok   in the wreck the left strip rides on the left wing 
+FW-35b night kit: 30 checks, 0 failed

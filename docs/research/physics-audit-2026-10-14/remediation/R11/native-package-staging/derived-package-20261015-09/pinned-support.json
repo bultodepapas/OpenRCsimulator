@@ -1,0 +1,48 @@
+{
+  "format": "R11 pinned engine/template support receipt v1",
+  "candidate": "/home/bulto/openrc-r11-package-20261015-09",
+  "excluded_from_source_manifest": true,
+  "copy_method": "physical cp --reflink=never from frozen -08; no hardlink",
+  "source": {
+    "path": "/home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64",
+    "sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+    "size_bytes": 146414384,
+    "mode_octal": "0o755",
+    "inode": 547502,
+    "device": 2128,
+    "nlink": 1
+  },
+  "candidate_support": {
+    "path": "/home/bulto/openrc-r11-package-20261015-09/.tools/Godot_v4.7.2-stable_linux.x86_64",
+    "sha256": "8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e",
+    "size_bytes": 146414384,
+    "mode_octal": "0o755",
+    "inode": 631154,
+    "device": 2128,
+    "nlink": 1
+  },
+  "source_target_distinct_inode": true,
+  "source_target_equal_sha256": true,
+  "template_directory": "/home/bulto/.local/share/godot/export_templates/4.7.2.stable",
+  "templates_installed": true,
+  "template_version": "4.7.2.stable",
+  "templates": {
+    "linux_release.x86_64": {
+      "size_bytes": 73519416,
+      "sha256": "d9f79ab89b5ae369aeed11c6052d402e8218cd503bf85b4a235f9c30c46a7c63"
+    },
+    "windows_release_x86_64.exe": {
+      "size_bytes": 109268480,
+      "sha256": "d34d36f3be1a6c49c56525ae86469b92e4f417ddf0b43cf00dd80c385c4b0562"
+    },
+    "macos.zip": {
+      "size_bytes": 123597580,
+      "sha256": "88df5e2e6fee99088699be66e6d42e4da4fb0c5619d054297d755a49558a4792"
+    },
+    "version.txt": {
+      "size_bytes": 13,
+      "sha256": "38885c88f75abbc797a1db7559719800279a00cfb9fa8b2e2868a7f6f84bad2e"
+    }
+  },
+  "template_hashes_match_prior_pinned_support": true
+}

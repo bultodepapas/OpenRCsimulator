@@ -1,0 +1,22 @@
+{
+  "commands": [
+    [
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+      "--path",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+      "--audio-driver",
+      "Dummy",
+      "--script",
+      "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\visual-quality\\heli-canopy\\compare.gd",
+      "--",
+      "--reference=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-canopy-runner-check\\reference.gd",
+      "--candidate=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-canopy-runner-check\\candidate.gd",
+      "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-canopy-runner-check\\native-1.json"
+    ]
+  ],
+  "sha256": {
+    "reference.gd": "dc978bd2099d3868b0b1dfdee91b1309f80d9715f5d6c88096c93334184f0984",
+    "candidate.gd": "780b5193e1e25cb06b18e8cdf9c55a50d260e7d07f72c4f2ae4514a8546dba59",
+    "compare.gd": "ab4fc64bb9207fbdc26dfbff0dca6158194836995bbc60fee6963e288cff33c3"
+  }
+}

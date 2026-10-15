@@ -145,7 +145,7 @@ func _test_setup_draft_and_single_save() -> void:
 	setup._apply_preset("mode1")
 	_check("Mode 1 preset updates channel mapping", setup.current_profile().pitch.axis == 1 and setup.current_profile().throttle.axis == 3)
 	setup._apply_preset("trigger_absolute")
-	_check("trigger help names separate roll and pitch axes and release-to-arm", setup.preset_help_label.text.contains("right X roll, right Y pitch") and setup.preset_help_label.text.contains("RT/R2") and setup.preset_help_label.text.contains("Release"))
+	_check("trigger help names flight axes without the removed arming step", setup.preset_help_label.text.contains("right X roll, right Y pitch") and setup.preset_help_label.text.contains("RT/R2") and not setup.preset_help_label.text.contains("Release"))
 	setup._apply_preset("mode1")
 	setup._on_flight_device_selected(setup.flight_device_picker.get_item_index(7))
 	_check("unknown joystick exposes an explicit kind choice and starts unconfigured", setup.profile_kind_picker.visible and setup.current_profile().kind == "joystick" and setup.current_profile().preset == "radio_custom" and not setup.current_profile().configured)

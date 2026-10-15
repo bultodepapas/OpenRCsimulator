@@ -456,6 +456,13 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		mx_sum += result[3]
 		my_sum += result[4]
 		mz_sum += result[5]
+	# P51-25 (optional): the fuselage's destabilizing yaw as a Munk-type pure couple ½ρ·S·b·Cnβ_B·u·v (body-axis air
+	# velocity). Linear in β at small angles, where the oracle's Cnb carries the same term; zero at zero flow and broadside.
+	# Calibrated on attached crossflow at small β, it fades out over the aircraft's declared linear-sideslip range
+	# (envelope b1→b2) instead of extrapolating Munk's sin 2β peak to 45° past a stalled fin.
+	var body_cn: float = surfaces.get("body_cn_beta", 0.0)
+	if body_cn != 0.0:
+		mz_sum += 0.5 * rho * float(ref.S) * float(ref.b) * body_cn * v0 * v1 * (1.0 - sideslip_weight(air.beta, env))
 	return PackedFloat64Array([fx_sum, fy_sum, fz_sum, mx_sum, my_sum, mz_sum])
 
 

@@ -1733,6 +1733,12 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 		var cm_ac = _q(errors, "aero.surfaces.wing_section_cm_ac", node.get("wing_section_cm_ac"), "1", -0.3, 0.1)
 		if cm_ac != null:
 			out.wing_cm_ac = float(cm_ac)
+	# Optional (P51-25): the fuselage's destabilizing yaw derivative about the ARP, a Munk-type pure couple in the local
+	# model (Aero._local_loads). The oracle's Cnb then carries fin + body; absent = 0 = no couple, byte-identical.
+	if node.has("body_cn_beta"):
+		var body_cn = _q(errors, "aero.surfaces.body_cn_beta", node.get("body_cn_beta"), "1/rad", -0.5, 0.0)
+		if body_cn != null:
+			out.body_cn_beta = float(body_cn)
 	for name in ["horizontal", "vertical"]:
 		var tail := _dictionary(errors, "aero.surfaces." + name, node.get(name, {}))
 		var label: String = "aero.surfaces." + name
@@ -1761,8 +1767,8 @@ static func _surfaces(errors: PackedStringArray, node: Variant, aero: Dictionary
 		errors.append("aero.surfaces.vertical: tail must be aft of the aerodynamic reference")
 	var cy: float = fin.lift_slope*fin.area/area*fin.control_effectiveness
 	var expected := {CYdr = cy, Cndr = -cy*arm/span, Cldr = cy*(fin.position[2]-arp[2])/span,
-		Cnb = fin.lift_slope*fin.area/area*arm/span}
+		Cnb = fin.lift_slope*fin.area/area*arm/span + float(out.get("body_cn_beta", 0.0))}
 	for key in expected:
 		if absf(aero[key]-expected[key]) > 1e-8:
-			errors.append("aero.coefficients.%s: inconsistent with vertical surface force/arm (expected %.8f)" % [key, expected[key]])
+			errors.append("aero.coefficients.%s: inconsistent with vertical surface force/arm and body_cn_beta (expected %.8f)" % [key, expected[key]])
 	return out

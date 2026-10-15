@@ -11,10 +11,11 @@ Use the existing [track registry](../README.md#tracks-plans-and-step-ids). Input
 | Steps | Implemented source contract | Acceptance still open |
 | --- | --- | --- |
 | D6-GP-01/02 | Radio-only calibration, V2 profiles, legacy preservation, validated transactional persistence | Physical calibration/restart recovery; damaged storage and failed activation regression checks remain mandatory |
-| F3-GP-01/02/03 | Automatic startup/Home defaults, manual flight/UI overrides, connection generations, loss/focus/neutral gates, separate activity semantics | Physical startup/hot-plug, sparse events, sleep and two-device fault cycles |
+| F3-GP-01/02/03 | Automatic startup/Home defaults, manual flight/UI overrides, connection generations, loss/focus recovery, immediate verified gamepad readiness, separate activity semantics | Physical startup/hot-plug, sparse events, sleep and two-device fault cycles |
 | D6-GP-03 | Scalar shaping, Mode 1/2 rate throttle and fixed-wing absolute-trigger preset | Physical endpoint, drift and independent-trigger checks; no automatic hardware suitability certification |
 | UI-10-GP-01 / UI-15-GP-01 | Draft setup, channel mapping, remap, conflict checks and explicit Save/Cancel | Native primary flow, remap release isolation, dirty-draft and error recovery |
-| D6-GP-06 / UI-15-GP-02 | Three typed AUX requests and optional camera/light/smoke/flap/gear actions; source conflicts and preview | Physical high-index controls; flap aerodynamics/retractable contacts are separate unimplemented aircraft capabilities |
+| D6-GP-06 / UI-15-GP-02 | Three typed AUX requests and optional camera/light/smoke/flap/gear actions; source conflicts and preview | Physical high-index controls; flaps remain unsimulated; jet retractable gear is implemented by the aircraft/ground owners |
+| D6-GP-06-R1 / HUD-11-R2 | Aircraft-scoped B/Circle gear and RB/R1 smoke defaults; preserved remaps/AUX, held-menu-button isolation, equipment availability/status in the guide | [Software evidence](../research/controller-support-2026-10-14/README.md#aircraft-auxiliary-defaults-2026-10-15-d6-gp-06-r1); physical controller qualification remains open |
 | UI-12-GP-01 | Selected-gamepad menu routing, EN/ES prompts, free Kenney glyphs and family override | Keyboard-free flow on physical Xbox/DualSense; app-wide navigation beyond the primary flow |
 | F1-GP-01 | Bounded button/axis reports and metadata | Native reports with actual devices, model/firmware/transport recorded |
 | F6-GP-01 | Native baseline/current input-seam cost comparison | Full-session/display and filmed physical latency; rerun seam measurements if conditioning changes materially |
@@ -23,13 +24,13 @@ Scope is one flight controller plus an optional separate menu gamepad. Startup/H
 
 Four primary flight axes and smoke/flaps/gear AUX requests are available within Godot's 10 axis and 128 button slots. These are API limits, not a promise of physical channels. Camera/light/smoke operations use existing fixed-wing capabilities; helicopter camera actions work, but throttle cut, lights, smoke and flap/gear behavior are not shared flight capabilities. Ground driving retains its own steering/RT/LT/reverse scheme. The guide states which requests have no aircraft implementation.
 
-The input path is registry -> selected profile -> scalar conditioning/neutral gate -> activity commands; the shell separately routes flight/menu/calibration/capture actions. Simulation state stays float64. No solver, actuator law, aircraft dataset, trace ordering or golden flight changes belong to this plan.
+The input path is registry -> selected profile -> scalar conditioning/device readiness -> activity commands; the shell separately routes flight/menu/calibration/capture actions. Simulation state stays float64. No solver, actuator law, aircraft dataset, trace ordering or golden flight changes belong to this plan.
 
 ## Remaining work, in order
 
 | Priority / step | Concrete work | Completion evidence |
 | --- | --- | --- |
-| Ongoing regression gate / D6-GP-02, F3-GP-02, UI-15-GP-01 | Preserve the completed audit fixes: calibration settings, corrupt-store rejection, activation rollback, stable draft/capture ownership, fresh neutral readiness and key-chord validation | Focused audit tests and existing suites pass; whole-app parse and final changed-file parses pass. Recheck these contracts on later input changes; dated evidence records the limits of repository-wide testing. |
+| Ongoing regression gate / D6-GP-02, F3-GP-02, UI-15-GP-01 | Preserve the completed audit fixes: calibration settings, corrupt-store rejection, activation rollback, stable draft/capture ownership, verified gamepad readiness, radio arming and key-chord validation | Focused audit tests and existing suites pass; whole-app parse and final changed-file parses pass. Recheck these contracts on later input changes; dated evidence records the limits of repository-wide testing. |
 | P1 / F1-GP-01 + D6-GP-03 | Inspect each available physical device and record all expected axes/buttons. Test RT/LT individually and together at 0/50/100%, stick direction/range and 30-second idle drift | Native F1 report, exact model/firmware/transport, profile revision and observed range table |
 | P1 / UI-12-GP-01 | Complete Home -> Controls -> select/configure/test -> aircraft -> launch -> pause -> settings -> resume -> Home -> quit without keyboard/mouse | EN/ES focus/scroll/cancel record on each primary controller; slider, selector, popup and remap cases included |
 | P1 / F3-GP-02 + F4-GP-01 | Run the fault protocol below on Windows source and exported package | Ten reconnect cycles per primary path; focus, suspend, stale device ID and two-device isolation results; no automatic resume or thrust |
@@ -43,11 +44,11 @@ Do not estimate the already delivered core again. Windows qualification effort d
 ### Explicit gaps and acceptance rules
 
 - The trigger preset is user-selectable today; the application does not prove independent analog hardware automatically. The test view and native report must establish this before qualifying a row. Combined/digital triggers use a rate-stick preset or another explicitly validated source. Automatic observation-based preset eligibility is a separate enhancement, not a completed gate.
-- A gamepad requires fresh mapped flight-axis samples, released buttons and a configured neutral dwell. Readiness while paused must be revoked if controls leave neutral. Untouched polled zero is not fresh evidence; test sparse-event hardware with move-and-return instructions.
+- A recognized standard gamepad is ready from its first valid live poll, including direct fixed-wing launches. No neutral dwell, button-release gate or axis-motion gesture is required. Paused stick movement does not revoke readiness; Continue remains explicit and rate throttle stays frozen until resume. Unknown/raw layouts retain their evidence gate. Radios retain low-throttle arming. See [readiness evidence](../research/controller-support-2026-10-14/README.md#gamepad-readiness-2026-10-15-f3-gp-02-r2).
 - Ordinary menus freeze virtual rate throttle and show it before explicit resume. Focus loss invalidates physical sample evidence, including radio low-throttle evidence. Lost continuity/profile changes return to the activity's safe held state; helicopter collective policy remains distinct.
 - Saving preflights the selected activity and reports failure without closing setup. Recalibration changes calibrated ranges/AUX only, retaining other V2 settings. An unreadable store is an error, not an empty installation eligible for automatic defaults.
 - Capture owns the chosen device and consumes the matching release before returning to navigation. Device loss cancels capture. Dirty profile edits must not disappear through profile/device selection.
-- Flap/retract requests do not establish aerodynamic or contact behavior. A separate aircraft capability change must validate physical behavior before the UI can claim operational flaps/retracts.
+- Input requests alone do not establish aerodynamic or contact behavior. Runtime capability checks admit the jet's implemented retractable gear and installed Stik smoke pump; flaps and jet smoke remain unavailable. Adding those systems belongs to their aircraft/physics/render owners, not to the button preset.
 - The former source findings and architecture proposal are retained as dated evidence, not represented as current defects or unbuilt classes. Source completion is independent of the physical release gates below.
 
 ### Automated verification

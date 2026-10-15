@@ -278,6 +278,25 @@ func _test_underwing_face_selection() -> void:
 	_check("under-wing selectors ignore a lower fence and collapsed face, retaining both known skins", flat_ok,
 		"lower=%s upper=%s" % [str(lower), str(upper)])
 
+	var skins := AircraftLights.wing_skin_lines(flat_with_fence, 1.0)
+	_check("batched wing skins preserve independent single-skin results",
+		var_to_bytes(skins.lower) == var_to_bytes(AircraftLights.underwing_lines(flat_with_fence, 1.0))
+		and var_to_bytes(skins.upper) == var_to_bytes(AircraftLights.underwing_lines(flat_with_fence, 1.0, true)))
+	var sections := AircraftLights._wing_sections(flat_with_fence, 1.0)
+	var saved_sections := var_to_bytes(sections)
+	var upper_first := AircraftLights._wing_lines_from_sections(sections, true)
+	var lower_second := AircraftLights._wing_lines_from_sections(sections, false)
+	_check("wing selectors leave shared cuts unchanged and ignore selection order",
+		saved_sections == var_to_bytes(sections) and var_to_bytes(upper_first) == var_to_bytes(skins.upper)
+		and var_to_bytes(lower_second) == var_to_bytes(skins.lower))
+	var saved_upper := var_to_bytes(skins.upper)
+	var changed: PackedVector3Array = skins.lower.right
+	changed[0] = Vector3(99, 99, 99)
+	skins.lower.right = changed
+	_check("editing a lower strip cannot change the upper strip or later builds",
+		saved_upper == var_to_bytes(skins.upper)
+		and var_to_bytes(lower_second) == var_to_bytes(AircraftLights.wing_skin_lines(flat_with_fence, 1.0).lower))
+
 	# A 0.5 m/m spanwise slope is a real tilted skin (normal still vertical-dominant), not a flat-plane-only special case.
 	var slope := 0.5
 	var sloped: PackedVector3Array = AircraftLights.underwing_lines(_synthetic_wing(slope, false, false), 1.0).right

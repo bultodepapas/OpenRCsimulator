@@ -2,6 +2,7 @@ extends SceneTree
 const Shell := preload("res://app_root.gd")
 const Registry := preload("res://input/controller_registry.gd")
 const Profile := preload("res://input/controller_profile.gd")
+const Actions := preload("res://input/controller_actions.gd")
 var failures := 0
 var checks := 0
 
@@ -12,7 +13,12 @@ class FakeSession extends Node:
 
 class FakeFlight extends Node:
 	var session: Node
-	func controller_action(_action: String) -> bool: return false
+	var capabilities := {gear = true, smoke = false, flaps = false}
+	var received: Array[String] = []
+	func controller_capabilities() -> Dictionary: return capabilities.duplicate()
+	func controller_action(action: String) -> bool:
+		received.append(action)
+		return false
 
 class FakeService extends Node:
 	var registry = Registry.new()
@@ -62,6 +68,40 @@ func _initialize() -> void:
 	shell._release_controller_holds()
 	check("menu transition releases flight holds", not session.cut and not shell._controller_action_edges.has("key:75"))
 	check("menu transition retains pause edge against held repeat", shell._controller_action_edges["1:button:6"] == PackedStringArray(["pause"]))
+	flight.received.clear()
+	var equipment := InputEventJoypadButton.new()
+	equipment.device = 1
+	equipment.button_index = JOY_BUTTON_B
+	equipment.pressed = true
+	shell._input(equipment)
+	shell._input(equipment)
+	check("automatic jet gear dispatches once per press through the shell", flight.received == ["gear_toggle"])
+	equipment.pressed = false
+	shell._input(equipment)
+	flight.capabilities = {gear = false, smoke = true}
+	equipment.pressed = true
+	shell._input(equipment)
+	check("changing to fixed gear removes the automatic action", flight.received == ["gear_toggle"])
+	equipment.button_index = JOY_BUTTON_RIGHT_SHOULDER
+	shell._input(equipment)
+	check("installed smoke picks up the standard shoulder button", flight.received == ["gear_toggle", "smoke_toggle"])
+	equipment.pressed = false
+	shell._input(equipment)
+	flight.capabilities = {}
+	equipment.pressed = true
+	shell._input(equipment)
+	check("unsupported activities never inherit automatic equipment", flight.received == ["gear_toggle", "smoke_toggle"])
+	flight.capabilities = {gear = true, smoke = false}
+	flight.received.clear()
+	equipment.button_index = JOY_BUTTON_B
+	shell._controller_action_edges[Actions.event_source(equipment)] = PackedStringArray(["back"])
+	shell._input(equipment)
+	check("held menu Back cannot turn into a gear toggle after resume", flight.received.is_empty())
+	equipment.pressed = false
+	shell._input(equipment)
+	equipment.pressed = true
+	shell._input(equipment)
+	check("gear works after releasing and pressing Back again in flight", flight.received == ["gear_toggle"])
 	shell.free()
 	flight.free()
 	session.free()

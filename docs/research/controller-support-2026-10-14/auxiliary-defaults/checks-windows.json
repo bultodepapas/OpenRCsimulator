@@ -1,0 +1,5541 @@
+{
+  "date": "2026-10-15",
+  "engine": "Godot 4.7.2 stable",
+  "platform": "Windows native",
+  "tests": {
+    "count": 28,
+    "total": 28,
+    "seconds": 81.7,
+    "results": [
+      {
+        "path": "tests/test_controller_actions.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_auto_defaults.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_aux_runtime.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_aux_setup.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_binding_audit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_car.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_conditioning.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_extended_actions.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_flight_actions.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_ground.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_integration.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_menu.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_pause_recovery.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_persistence.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_profile.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_profile_hardening.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_prompts.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_registry.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_routing_audit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_sections.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_settings_save.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_setup.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_setup_safety.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_store.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controls_reference.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_engine_smoke.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_overlay_manager.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_smoke_aux.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      }
+    ]
+  },
+  "parse": {
+    "count": 886,
+    "total": 886,
+    "seconds": 377.0,
+    "results": [
+      {
+        "path": "addons/aircraft_contract/export_plugin.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "addons/aircraft_contract/plugin.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "addons/build_info/export_plugin.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "addons/build_info/plugin.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/avanti_s_blender_geometry.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/avanti_s_geometry.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/avanti_s_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/extra_300s_appearance.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/extra_300s_finish.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/extra_300s_geometry.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/extra_300s_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/extra_clearance.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/hx700_articulated_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/hx700_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/imported_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/imported_model_contract.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/inspect_extra.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/inspect_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/inspect_p51.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/inspect_timber.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/model_clearance.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/model_manifest.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/model_registry.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/p51d_appearance.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/p51d_finish.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/p51d_geometry.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/p51d_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/retractable_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/timber_crash_sections.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/timber_geometry.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/timber_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/ugly_stik_appearance.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/ugly_stik_controls.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/ugly_stik_equipment.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/ugly_stik_finish.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/ugly_stik_fracture.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/ugly_stik_gear_flex.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/ugly_stik_geometry.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/ugly_stik_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/verify_avanti.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/verify_controls.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/verify_extra.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/verify_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/verify_p51.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/verify_p51_clearance.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/verify_timber.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/verify_timber_clearance.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "aircraft/visual_checks.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "app_root.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "app_state/aircraft_catalog.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "app_state/build_info.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "app_state/preferences.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "app_state/sky_checkpoint.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "app_state/update_check.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "app_state/update_checker.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "app_state/visual_checkpoint.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "audio/flight_audio.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "audio/glow_voice.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "audio/nitro_engine_audio.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "audio/nitro_voice.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "audio/soundscape.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "audio/soundscape_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "audio/storm_audio.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "audio/wildlife.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "data/field_loader.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "data/lake_loader.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "environment/sky_appearance_config.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "environment/solar_clock.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "environment/solar_position.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "environment/storm_events.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "environment/time_of_day_config.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "environment/visual_timeline.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "failures/catalog.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "failures/config.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "failures/runtime.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "helicopter_main.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/commands.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/controller_actions.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/controller_profile.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/controller_profile_store.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/controller_registry.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/controller_service.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/ground_vehicle_input.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/input_report.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/input_report_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/keyboard.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/latency_patch.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/rc_calibration.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/rc_input.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "input/smoke_aux.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "main.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/aero.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/air_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/aircraft_contact_contract.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/aircraft_contract.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/aircraft_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/aircraft_modules.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/atmosphere.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/control_actuators.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/control_surfaces.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/cruise_trim.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/dynamics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/effective_mass.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/electric_battery_step.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/electric_motor.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/electric_stop.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/electric_supply.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/event_bracket.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/flight_modes.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/glow/flight.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/glow/four_stroke.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/glow/fuel_feed.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/glow/fuel_mass.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/glow/installation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/glow/lifecycle.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/glow/operating_point.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/glow/profile.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/glow/propeller.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/glow/source.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/glow/thermal.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/glow/two_stroke.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/glow/vibration.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_contact.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_effect.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_start.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_surfaces.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_terrain.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_vehicle/airfield_course.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_vehicle/airfield_track.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_vehicle/course.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_vehicle/four_corner.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_vehicle/nitro_dynamics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_vehicle/quarter_car.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_vehicle/support_bench_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_vehicle/suspension_bench_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_vehicle/vehicle_damage.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_vehicle/vehicle_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_vehicle/vehicle_dynamics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_vehicle/vehicle_environment.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/ground_wheels.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/hull_contact.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/hull_crossing.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/impact_snapshot.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/integrator.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/lake_surface.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/linearize.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/mass_inventory.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/math3d.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/physical_identity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/propulsion.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/retractable_gear.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rigid_body.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotor_coupling.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/aerodynamic_stage.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/airframe.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/drive.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/dynamic_inflow.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/electronics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/flight_dynamics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/geared_coupling.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/ground_start.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/impact_detector.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/inflow.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/lifecycle.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/main_rotor.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/main_rotor_stage.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/performance_context.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/simulation_step_adapter.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/skid_contact.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/swash.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/tail_rotor.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft/trim.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/rotorcraft_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/slipstream.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/swirl_loads.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/trim.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/turbine.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/wash_transport.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/wheel_profiles.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/wind_config.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/wind_field.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/wind_turbulence.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "physics/wing_polar.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/airplane.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/atmosphere.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/camera/camera_math.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/camera/camera_rig.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/camera/chase_view.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/camera/orbit_view.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/crash/airframe_scuffs.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/crash/cause.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/crash/crash_audio.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/crash/director.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/crash/effects.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/crash/prop_break.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/crash/scenery_damage.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/crash/section_splitter.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/crash/severity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/crash/shader_warmup.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/crash/wreck.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/engine_audio.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/engine_sound.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/engine_voice.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/field.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/field_projected_shadows.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/flight_cue_shadows.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/flightline_barrier.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/frame_samples.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/frames.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/ground.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/ground_gear.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/horizon.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/hud.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/lake/generated_geometry_stamp.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/lake/lake_reflection.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/lake/lake_terrain.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/lake/lake_world.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/lake/water_effects.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/lake/water_material.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/landscape_upgrade/airfield_lighting.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/landscape_upgrade/options.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/landscape_upgrade/ridges.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/landscape_upgrade/scenery_bodies.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/landscape_upgrade/scenery_grass_mask.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/landscape_upgrade/sun_glare.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/landscape_upgrade/twilight_palette.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/near_grass.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/overlays/controls_guide.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/overlays/flight_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/overlays/overlay_frame.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/overlays/overlay_manager.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/overlays/overlay_settings.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/overlays/telemetry.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/overlays/telemetry_panel.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/overlays/transmitter.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/overlays/units.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/overlays/warnings_bar.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/overlays/wind.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/panel.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/pilot_camera.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/pilot_station.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/projected_shadow.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/propeller_blur.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/rotor/heli_crash_presentation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/rotor/heli_night_lights.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/rotor/heli_night_rotor.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/rotor/heli_rotor_blur.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/rotor/heli_rotor_visual.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/rotor/heli_wreck.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/shader_clock.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/shadow.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/smoke/exhaust.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/time_of_day_lighting.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/tree_assets.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/treeline.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/visual_evidence.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/weather/cloud_transport.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/weather/lightning.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/weather/sky_appearance.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/weather/storm_bank.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/weather/storm_cell.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/windsock.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/world/aircraft_lights.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/world/campfire.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/world/conditions.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/world/ephemeris.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/world/exposure.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/world/field_lights.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/world/sky_state.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/world/stars.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "render/world/world.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenarios/natural_random.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenarios/scenario_config.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/ambience.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/ambience_player.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/birds.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/botanical_habitats.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/capture_views.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/collision_setup.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/collision_world.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/damage_batches.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/fence_parts.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/fleet.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/flowers.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/ground_features.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/imported_hedge.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/imported_near_grass.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/imported_vegetation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/mesh_kit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/models.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/palette.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/people.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/population.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/postcards.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/prefabs.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/runway_scenario.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/scenery.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/scenery_loader.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/support_surfaces.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/takeoff_pilot.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/vegetation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "scenery/vegetation_placement.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/aircraft_contact_events.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/aircraft_propulsion_runtime.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/flight_log.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/flight_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/ground_vehicle/session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/helicopter_flight_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/lake_collision.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/landing_maneuver.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/maneuvers.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/recorder.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/rotorcraft_recorder.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/scenarios.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/scenery_collision.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/scenery_damage.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/scripted.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/simulation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "sim/trace.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "spec.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/aero_flow_reference.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/attached_flow_reference.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/avanti_gamepad_base.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/avanti_pullup_base.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/avanti_rudder_base.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/bench_heli_performance.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/bench_lake_session_airborne.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/bench_physics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/bench_radio_events.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/bench_regimes.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/bench_wind.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/benchmark_landscape_collision.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/capture_aircraft_lights.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/capture_controller_settings.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/capture_engine_smoke.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/capture_ground_terrain.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/capture_lake_entry.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/capture_landscape_upgrade.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/capture_population_assets.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/capture_propeller_blur.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/capture_time_of_day_dialog.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/capture_ui.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/check_field_pack.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/check_native_pack.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/fake_releases.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/fixtures/atmosphere_field.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/fixtures/scenery_collision_reference.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/golden_flights.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/landing_test_driver.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/p51_envelope_base.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/probe_field_failure.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/probe_trace_failure.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/propulsion_reference.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/record_golden.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/replay_policy.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/run_fixed_step.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/slipstream_reference.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/swirl_dense_reference.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/swirl_e0b6_reference.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aero.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aero_continuity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aero_flow.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_air_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_air_density.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aircraft_catalog.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aircraft_contact_contract.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aircraft_contact_events.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aircraft_contact_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aircraft_contract.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aircraft_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aircraft_model_manifest.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aircraft_modules.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aircraft_package_proofs.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aircraft_physical_identity_contacts.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aircraft_propulsion_runtime.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_aircraft_render_contract.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_airframe_scuff_cache.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_airframe_scuffs.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_atmosphere.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_atmosphere_column.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_atmosphere_column_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_atmosphere_flight.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_attached_flow.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_avanti_gamepad.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_avanti_gamepad_flight.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_avanti_handling.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_avanti_keyboard.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_avanti_rudder.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_avanti_yaw_flight.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_body_directional.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_botanical_habitats.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_build_info.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_camera_math.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_camera_route.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_camera_views.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_campfire.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_checkpoint.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_checkpoint_integrity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_cloud_transport.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_contact_policy.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_continuous_state.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_control_actuators.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_control_surface_observation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_control_surfaces.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_actions.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_auto_defaults.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_aux_runtime.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_aux_setup.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_binding_audit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_car.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_conditioning.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_extended_actions.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_flight_actions.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_ground.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_integration.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_menu.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_pause_recovery.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_persistence.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_profile.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_profile_hardening.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_prompts.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_registry.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_routing_audit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_sections.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_settings_save.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_setup.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_setup_safety.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controller_store.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controls.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_controls_reference.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_audio.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_breakup.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_cause.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_effects.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_energy.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_fracture.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_hull_labels.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_integration.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_masses.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_pose.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_presentation_ladder.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_proportional.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_sections.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_severity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_snapshot.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_warmup.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_wreck.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_crash_wreck_surface.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_cruise_trim.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_damping_regimes.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_downloaded_habitats.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_downwash_lag.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_dynamic_mass_contact.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_dynamic_mass_contact_boundary.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_dynamic_mass_contact_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_dynamics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_e2e_input.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_e2e_radio.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_battery_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_battery_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_battery_step.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_dynamics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_event_localization.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_input.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_motor.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_motor_compact.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_propulsion.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_runway.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_stop.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electric_supply.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_electrical_bank.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_engine_audio.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_engine_smoke.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_engine_sound.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_engine_voice.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_envelope.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_envelope_integrity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_extra_handling.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_extra_installation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_failure_availability_ui.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_failure_launch.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_failure_power.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_failure_profiles.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_failure_routes.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_failure_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_failure_shutdown.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_failure_ui.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_failures.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_far_forest.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_field_integration.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_field_light_contract.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_field_loader.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_field_projected_shadows.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_field_surfaces.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_flight_cue_shadows.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_flight_log.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_flight_log_ui.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_flightline_barrier.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_flightline_barrier_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_frame_samples.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_frames.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_gear_flex.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_audio.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_coupling.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_equilibrium.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_flight_physics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_four_stroke.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_fuel_feed.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_hub_inflow.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_installation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_lifecycle.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_oracle.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_prepared.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_profiles.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_propeller_momentum.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_propeller_prepared.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_stage_reuse.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_thermal.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_trace.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_two_stroke.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_glow_vibration.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_golden.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_grass_mask_bounds.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ground_contact.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ground_effect.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ground_friction.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ground_image_cache.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ground_physics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ground_start_environment.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ground_start_integrity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ground_stiction.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ground_surfaces.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ground_terrain.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_gyro.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_half_power_start.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_handling.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_3d_controller.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_aerodynamic_stage.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_airframe.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_construction.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_contact_audit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_control_actions.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_coupling.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_crash_presentation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_crash_relaunch.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_crash_visual.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_disc_normal_audit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_drive.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_dynamic_inflow.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_electronics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_electronics_prepared.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_flight.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_ground_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_ground_start.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_impact_detector.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_inflow.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_lifecycle.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_main_rotor.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_main_rotor_stage.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_night_lights.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_night_rotor.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_performance_context.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_prepared_context_audit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_render_audit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_skid_bristles.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_startup_kernel.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_state_audit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_swash.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_tail_rotor.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_trim.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_heli_visual.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_horizon.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_hull_crossing.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_imported_aircraft_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_imported_hedge.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_imported_near_grass.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_imported_vegetation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_induced_integrity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_input_report.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_input_report_buttons.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_input_report_cli.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_input_report_e2e.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_integrator.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_lake_collision.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_lake_geometry_bake.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_lake_ground_contact.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_lake_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_lake_surface.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_lake_world.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landing_maneuver.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landing_variations.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_architecture.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_checkpoint.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_collision.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_collision_coverage.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_collision_oracle.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_collision_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_collision_setup.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_collision_support.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_collision_world.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_gravel.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_ground_lu18.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_horizon.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_lighting.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_marker_optics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_population.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_population_assets.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_runtime.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_scenery_eligibility.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_scenery_grass_mask.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_tree_bounds.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_twilight.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_landscape_vegetation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_latency_patch.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_latency_patch_cli.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_latency_patch_route.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_mass_inventory.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_math3d.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_modes.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_natural_random_config.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_natural_random_flight.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_natural_random_generator.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_natural_random_screen.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_near_grass.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_night_kit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_nitro_dynamics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_overlay_manager.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_overlay_telemetry.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_overlay_units.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_p51_envelope.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_p51_ground.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_p51_handling.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_physical_envelope.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_physical_identity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_pilot_aids.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_pilot_station.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_pilot_station_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_pilot_trim.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_projected_shadow.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_prop_strike.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_prop_strike_feedback.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_propeller_blur.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_propeller_wake.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_propulsion.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_propulsion_scalar.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_pullup_invariants.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rates.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rc_axis_history.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rc_calibration.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rc_fault_boundaries.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rc_input.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rc_profile_validation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rc_rearm.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv36_effects.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_activity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_activity_audit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_airfield_course.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_airfield_track.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_attitude_integration.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_course.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_damage.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_damage_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_effects_activity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_ground_effects.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_handling.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_input.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_menu.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_nitro_activity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_nitro_audio.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_nitro_service.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_nitro_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_nitro_visual.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_obstacle_contacts.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_powertrain.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_presentation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_render_audit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_support.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_suspension.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_track_view.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_vehicle_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_vehicle_dynamics.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rcv_wet_effects.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_regime_consistency.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_replay_integrity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_replay_policy.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_retractable_gear.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_retractable_gear_ground.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_retractable_gear_input.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_retractable_gear_trace.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rigid_body.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rk_stage_time.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rotor_coupling.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_rudder_authority.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_runway_checkpoint_metadata.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_runway_start.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_runway_transaction.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_scenery_ambience.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_scenery_build.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_scenery_damage_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_scenery_destruction.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_scenery_destruction_runtime.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_scenery_ground_lu08.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_scenery_loader.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_scenery_scenario.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_scenery_trace.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_servo.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_session_guards.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_shader_clock.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_shadow_blur.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_shadow_collection.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_shaft_coupled.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_shaft_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_shaft_equilibrium.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_shaft_refinement.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_simulation.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_sky_appearance_config.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_sky_checkpoint.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_sky_preferences.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_sky_render.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_sky_routes.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_slipstream_downwash.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_slipstream_scalar.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_smoke_aux.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_soft_contact_feedback.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_soft_contacts.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_soundscape.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_spin.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_stall_solver.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_start_choice.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_stik_grain.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_storm_bank.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_storm_cell.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_storm_events.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_strip_induced.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_swirl_accuracy.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_swirl_optimization.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_swirl_torque.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_tail_downwash.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_takeoff_roll.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_timber_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_timber_ground.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_timber_handling.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_time_of_day_checkpoint.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_time_of_day_checkpoint_v2.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_time_of_day_clock.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_time_of_day_config.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_time_of_day_edit.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_time_of_day_render.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_time_of_day_render_update.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_time_of_day_scenery_update.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_time_of_day_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_time_of_day_solar.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_time_of_day_timeline.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_touchdown.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_trace.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_trace_metadata.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_tree_assets.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_tree_wind.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_treeline.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_treeline_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_trim.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_trim_density.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_trim_integrity.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_turbine.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_turbine_continuous.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_turbulence_flight.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_aircraft.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_atmosphere.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_field_world_time_of_day.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_flight_capture.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_help.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_home.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_home_layout.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_home_legend.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_home_preview_cache.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_home_start_layout.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_input.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_language.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_natural_random.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_pause.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_preview_requests.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_preview_resources.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_runway.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_screen_stack.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_sky.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_standard_column.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_time_of_day.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_time_of_day_pause.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_turbulence.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_update_notice.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_weather.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_ui_weather_sliders.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_update_check.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_vegetation_collision_proxies.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_visual_checkpoint.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_visual_evidence.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_visual_timeline.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_wash_profile.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_wash_transport.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_water_checkpoint.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_water_director.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_water_effects.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_wheel_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_wildlife.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_wind_field.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_wind_flight.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_wind_hud.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_wind_trace.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_wind_turbulence.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_windsock.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_windsock_data.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_wing_polar.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_wing_polar_session.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_workshop_compiler.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_workshop_descriptor.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_workshop_integration.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_workshop_store.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_workshop_trial.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_workshop_ui.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_world_ephemeris.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_world_field_lights.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_world_flow.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_world_presentation_context.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_world_sky.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_world_stars.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_wreck_shadow_cache.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/test_yaw_damping.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/ui_driver.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tests/wing_polar_fixture.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "tools/flight_log_cli.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/controller_prompts.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/controller_setup.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/controls_reference.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/failures_menu.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/field_error.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/first_flight_hint.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/held_keys.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/help_screen.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/home.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/home_preview_resources.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/home_scene.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/key_cap.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/key_labels.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/natural_random_screen.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/overlays_dialog.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/pause_menu.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/screen.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/screen_stack.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/sky_controls.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/smoke_aux_assignment.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/time_of_day_controls.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/time_of_day_dialog.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/ui_input.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/ui_theme.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/update_notice.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/weather_dialog.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/widgets.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/workshop.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "ui/workshop_preview.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/airfield_track_view.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/contact_debug.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/course_view.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/ground_camera.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/ground_damage_view.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/ground_dashboard.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/ground_effects.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/ground_scene.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/ground_wet_effects.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/monster_car_2_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/mt8_model.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/mt8_rig.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/nitro_exhaust.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/telemetry_plot.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "vehicles/ground/vehicle_catalog.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "workshop/compiler.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "workshop/dependencies.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "workshop/descriptor.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "workshop/parameters.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "workshop/store.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      },
+      {
+        "path": "workshop/trial.gd",
+        "exit": 0,
+        "errors": false,
+        "pass": true
+      }
+    ]
+  },
+  "limitations": [
+    "Software tests with synthetic input; no physical controller qualification.",
+    "Not a complete app/test.sh run."
+  ],
+  "sources": [
+    {
+      "sha256": "6e20ba7edc0caee87a7fef7b23e4187f04772124274132c14bc6f61bbe426cd3",
+      "path": "app/input/controller_actions.gd"
+    },
+    {
+      "sha256": "b04f9abde1e36c5451f407b330c660296f7223b297605caf71f9a3d51d949399",
+      "path": "app/app_root.gd"
+    },
+    {
+      "sha256": "d90905627b180788ef78606f5a170ba664cd280f3e48ae820801b40c862fe05e",
+      "path": "app/main.gd"
+    },
+    {
+      "sha256": "70bba94f6f9a064443de69090755cbaabfe333927639ad7bf07265c26a6689aa",
+      "path": "app/render/overlays/controls_guide.gd"
+    },
+    {
+      "sha256": "c8374b3e09dd1bf2ee9d5c14b8a293b2acbabea73111a72f453831539777f3b8",
+      "path": "app/ui/controller_setup.gd"
+    },
+    {
+      "sha256": "a198a2cfd70414bb59b2122ea5261afb18d6e54552673b7fae7945afabcbe0b0",
+      "path": "app/tests/test_controller_extended_actions.gd"
+    },
+    {
+      "sha256": "7968132f891fc1402ed4d943e92d461a8ce6aeeceb1fb473ed3785be69c14b27",
+      "path": "app/tests/test_controller_routing_audit.gd"
+    },
+    {
+      "sha256": "e8de5f4582908d5a5dad1ce1df84ae55ac7be2dd69afc8f2f3c441a9e6926fc4",
+      "path": "app/tests/test_overlay_manager.gd"
+    }
+  ]
+}

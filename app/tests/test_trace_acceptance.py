@@ -179,7 +179,7 @@ class TraceAcceptance(unittest.TestCase):
         for key, value in [
             ('metadata_schema', 'openrc-flight-meta v6'),
             ('wheel_state_layout', '[]'),
-            ('wheel_profile_status', 'applied'),
+            ('wheel_profile_status', 'not-applied'),
             ('turbine_integrator', 'sampled'),
             ('continuous_layout', 'none'),
             ('recording_start_continuous', '[true]'),
@@ -193,6 +193,7 @@ class TraceAcceptance(unittest.TestCase):
             ('propulsion_model', 'turbine-ecu-spool-v1'),
         ]:
             with self.subTest(key=key, value=value):
+                self.assertNotEqual(metadata.get(key), value, 'mutation must alter the valid trace')
                 with self.assertRaises(ValueError):
                     check_coupled_metadata({**metadata, key: value})
         for key in ['turbine_integrator', 'recording_start_continuous']:

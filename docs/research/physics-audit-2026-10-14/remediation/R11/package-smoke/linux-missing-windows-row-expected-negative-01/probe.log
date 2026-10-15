@@ -1,0 +1,35 @@
+candidate=/home/bulto/openrc-r11-package-20261015-08
+runner=/home/bulto/openrc-r11-08-missing-windows-receipt-20261015-01
+empty_path=/home/bulto/openrc-r11-08-missing-windows-receipt-20261015-01/empty_project
+pack=/home/bulto/openrc-r11-package-20261015-08/dist/linux/openrc-simulator.x86_64
+probe=/mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd
+receipt_source=/home/bulto/openrc-r11-package-20261015-08/app/native/ground_vehicle/build-receipt.json
+8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e  /home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64
+8d106cbe6144c2dc7e881d61d2429c1a8a76e6b22ef48bd5e48dcf934953f71e  /home/bulto/openrc-r11-08-missing-windows-receipt-20261015-01/Godot_v4.7.2-stable_linux.x86_64
+08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3  /home/bulto/openrc-r11-package-20261015-08/dist/linux/libopenrc_ground_vehicle.so
+08c8c08e74bd9c9465d1c0f732b082fc23829dcf243287eac51f25ed4e98f3a3  /home/bulto/openrc-r11-08-missing-windows-receipt-20261015-01/libopenrc_ground_vehicle.so
+89042d0be5cf9813e6cbeb1d3fb5f47f9ec881eae0a9ab565c39c55b1ddb049d  /home/bulto/openrc-r11-package-20261015-08/dist/linux/openrc-simulator.x86_64
+fcd9fa2bc2546164a5368bfd00363522d36b2a0bb74210f26c0971b2dd0afe5a  /mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd
+be1d0b04910c8a98b630b0db6616f650d5c61e8bc60900cf4b4af48a43e306ec  /home/bulto/openrc-r11-package-20261015-08/app/native/ground_vehicle/build-receipt.json
+/home/bulto/openrc-r11-package-20261015-08/.tools/Godot_v4.7.2-stable_linux.x86_64 size=146414384 mode=755 inode=547502 nlink=1
+/home/bulto/openrc-r11-08-missing-windows-receipt-20261015-01/Godot_v4.7.2-stable_linux.x86_64 size=146414384 mode=755 inode=564829 nlink=1
+/home/bulto/openrc-r11-package-20261015-08/dist/linux/libopenrc_ground_vehicle.so size=979304 mode=644 inode=564824 nlink=1
+/home/bulto/openrc-r11-08-missing-windows-receipt-20261015-01/libopenrc_ground_vehicle.so size=979304 mode=644 inode=564830 nlink=1
+/home/bulto/openrc-r11-package-20261015-08/dist/linux/openrc-simulator.x86_64 size=158725584 mode=755 inode=564812 nlink=1
+receipt platform rows: linux 
+receipt abi: 1
+command=/home/bulto/openrc-r11-08-missing-windows-receipt-20261015-01/Godot_v4.7.2-stable_linux.x86_64 --headless --path /home/bulto/openrc-r11-08-missing-windows-receipt-20261015-01/empty_project --audio-driver Dummy --main-pack /home/bulto/openrc-r11-package-20261015-08/dist/linux/openrc-simulator.x86_64 --script /mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Can't free a RefCounted object.
+   at: callp (core/object/object.cpp:781)
+   GDScript backtrace (most recent call first):
+       [0] _inspect_host_package (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd:97)
+       [1] _initialize (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd:16)
+SCRIPT ERROR: Attempted to free a RefCounted object.
+          at: _inspect_host_package (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd:97)
+          GDScript backtrace (most recent call first):
+              [0] _inspect_host_package (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd:97)
+              [1] _initialize (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/physics-audit-2026-10-14/remediation/native_package_smoke.gd:16)
+R11_NATIVE_PACKAGE_SMOKE {}
+exit=1

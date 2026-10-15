@@ -14,8 +14,8 @@ const FUEL_MASS := BODY_STATE_SIZE + 1
 const STATE_SIZE := BODY_STATE_SIZE + 2
 const SUBSTEPS_PER_TICK := 1
 const SOURCE_PATH := "res://physics/ground_vehicle/nitro_dynamics.gd"
-const BACKEND_VERSION := "openrc-nitro-ground-vehicle-composite-v1"
-const SOLVER_VERSION := "openrc-nitro-powertrain-midpoint-v1"
+const BACKEND_VERSION := "openrc-nitro-ground-vehicle-composite-v2"
+const SOLVER_VERSION := "openrc-nitro-powertrain-midpoint-v2"
 const RPM_PER_RAD_S := 30.0 / PI
 const ENGINE_STALL_SPEED_RAD_S := 1.0
 
@@ -102,16 +102,18 @@ static func step(
 	# A nitro model has no reverse gear. Treat an unadapted reverse request as
 	# neutral power; the owning UI maps its reverse input to the brake control.
 	var throttle := float(controls["throttle"]) if not bool(controls["reverse"]) else 0.0
-	var wheel_speed := _forward_wheel_speed(state)
+	var wheel_speed := _mean_wheel_speed(state)
 	var initial_rates := _engine_rates(
 		state[ENGINE_SPEED], state[FUEL_MASS], throttle, wheel_speed,
-		model.powertrain, not bool(controls["reverse"]), state[FUEL_MASS] / dt,
+		model.powertrain, not bool(controls["reverse"]), state[FUEL_MASS] / dt, dt,
+		float(model.wheel_spin_inertia_kg_m2),
 	)
 	var middle_speed := clampf(state[ENGINE_SPEED] + 0.5 * dt * float(initial_rates.speed_rate_rad_s2), 0.0, float(model.powertrain.engine_max_speed_rad_s))
 	var middle_fuel := maxf(0.0, state[FUEL_MASS] - 0.5 * dt * float(initial_rates.fuel_flow_kg_per_s))
 	var middle_rates := _engine_rates(
 		middle_speed, middle_fuel, throttle, wheel_speed,
-		model.powertrain, not bool(controls["reverse"]), state[FUEL_MASS] / dt,
+		model.powertrain, not bool(controls["reverse"]), state[FUEL_MASS] / dt, dt,
+		float(model.wheel_spin_inertia_kg_m2),
 	)
 	var engine_speed_next := clampf(
 		state[ENGINE_SPEED] + dt * float(middle_rates.speed_rate_rad_s2),
@@ -125,6 +127,7 @@ static func step(
 		controls,
 		float(middle_rates.wheel_drive_torque_nm) > 0.0,
 		float(model.get("suspension_preload_n", 0.0)),
+		minf(0.0, float(middle_rates.wheel_drive_torque_nm)),
 	)
 	var body_next: PackedFloat64Array = VehicleDynamics.step(_body_state(state), body_model, body_controls, dt, road)
 	if body_next.size() != BODY_STATE_SIZE:
@@ -143,22 +146,25 @@ static func telemetry(
 	model: Dictionary,
 	road: Callable,
 	controls: Dictionary = VehicleDynamics.DEFAULT_CONTROLS,
+	dt_s: float = 1.0 / 240.0,
 ) -> Dictionary:
-	if not _valid_state(state, model) or not VehicleDynamics._valid_controls(controls) or not road.is_valid():
+	if not _valid_state(state, model) or not VehicleDynamics._valid_controls(controls) \
+			or not road.is_valid() or not is_finite(dt_s) or dt_s <= 0.0 or dt_s > 1.0 / 30.0:
 		return {"ok": false, "error": "Invalid nitro telemetry input"}
-	# Telemetry reports the instantaneous steady-state curve/clutch request. It
-	# has no tick duration, so it cannot apply the per-step fuel-flow work budget
-	# that step() uses to prevent a nearly empty tank from releasing excess work.
+	# This is a bounded instantaneous estimate at the requested fixed-step size.
+	# It is stateless and does not claim to reproduce the prior step's midpoint rate.
 	var current_rates := _engine_rates(
 		state[ENGINE_SPEED], state[FUEL_MASS],
 		float(controls["throttle"]) if not bool(controls["reverse"]) else 0.0,
-		_forward_wheel_speed(state), model.powertrain, not bool(controls["reverse"]),
+		_mean_wheel_speed(state), model.powertrain, not bool(controls["reverse"]),
+		state[FUEL_MASS] / dt_s, dt_s, float(model.wheel_spin_inertia_kg_m2),
 	)
 	var body_model := _body_model_with_drive_torque(model, float(current_rates.wheel_drive_torque_nm))
 	var body_controls := _body_controls(
 		controls,
 		float(current_rates.wheel_drive_torque_nm) > 0.0,
 		float(model.get("suspension_preload_n", 0.0)),
+		minf(0.0, float(current_rates.wheel_drive_torque_nm)),
 	)
 	var result: Dictionary = VehicleDynamics.telemetry(_body_state(state), body_model, road, body_controls)
 	if not bool(result.get("ok", false)):
@@ -177,15 +183,26 @@ static func telemetry(
 	var initial_fuel := float(model.powertrain.initial_fuel_mass_kg)
 	var remaining_fuel := clampf(state[FUEL_MASS], 0.0, initial_fuel)
 	var engagement := _clutch_engagement(state[ENGINE_SPEED], model.powertrain)
+	var engine_spinning := state[ENGINE_SPEED] > ENGINE_STALL_SPEED_RAD_S
+	var combustion_torque := float(current_rates.engine_combustion_torque_nm)
+	var reflected_wheel_speed := _mean_wheel_speed(state) * float(model.powertrain.gear_ratio)
+	var clutch_slip_rad_s := state[ENGINE_SPEED] - reflected_wheel_speed
+	var clutch_slip_scale := maxf(1.0, maxf(state[ENGINE_SPEED], absf(reflected_wheel_speed)))
 	result["nitro"] = {
 		"engine_rpm": state[ENGINE_SPEED] * RPM_PER_RAD_S,
 		"engine_speed_rad_s": state[ENGINE_SPEED],
-		"engine_running": remaining_fuel > 0.0 and state[ENGINE_SPEED] > 1.0,
+		"engine_running": remaining_fuel > 0.0 and engine_spinning,
+		"engine_spinning": engine_spinning,
+		"combustion_active": combustion_torque > 0.0,
 		"fuel_kg": remaining_fuel,
 		"fuel_fraction": remaining_fuel / initial_fuel,
+		"throttle_fraction": float(current_rates.accepted_throttle_fraction),
+		"fuel_flow_kg_per_s": float(current_rates.fuel_flow_kg_per_s),
 		"clutch_engaged": engagement >= 0.5,
 		"clutch_engagement": engagement,
-		"engine_torque_nm": float(current_rates.engine_combustion_torque_nm),
+		"clutch_slip": clampf(clutch_slip_rad_s / clutch_slip_scale, -1.0, 1.0),
+		"clutch_slip_rad_s": clutch_slip_rad_s,
+		"engine_torque_nm": combustion_torque,
 		"clutch_torque_nm": float(current_rates.clutch_torque_nm),
 		"wheel_drive_torque_nm": float(current_rates.wheel_drive_torque_nm),
 	}
@@ -218,11 +235,12 @@ static func _body_controls(
 	controls: Dictionary,
 	engine_delivers_torque: bool,
 	suspension_preload_n: float = 0.0,
+	wheel_braking_torque_nm: float = 0.0,
 ) -> Dictionary:
 	var result := controls.duplicate(true)
 	result["throttle"] = 1.0 if engine_delivers_torque else 0.0
 	result["reverse"] = false
-	if controls.has("external_generalized_force") or suspension_preload_n > 0.0:
+	if controls.has("external_generalized_force") or suspension_preload_n > 0.0 or wheel_braking_torque_nm < 0.0:
 		var external := PackedFloat64Array()
 		external.resize(VehicleDynamics.GENERALIZED_SIZE)
 		if controls.has("external_generalized_force"):
@@ -233,6 +251,9 @@ static func _body_controls(
 			# A positive preload stores its generalized spring load in the same
 			# compression coordinate, so it enters the body RHS with negative sign.
 			external[6 + corner] -= suspension_preload_n
+			# A negative signed clutch output is wheel-overrun engine braking.
+			# The shared generalized-force API takes one torque per wheel-spin DOF.
+			external[10 + corner] += wheel_braking_torque_nm * 0.25
 		result["external_generalized_force"] = external
 	return result
 
@@ -245,6 +266,8 @@ static func _engine_rates(
 	powertrain: Dictionary,
 	drive_enabled: bool = true,
 	fuel_flow_limit_kg_per_s: float = INF,
+	dt_s: float = INF,
+	wheel_spin_inertia_kg_m2: float = 0.0,
 ) -> Dictionary:
 	var speed := maxf(0.0, engine_speed_rad_s)
 	var fuel := maxf(0.0, fuel_mass_kg)
@@ -260,17 +283,25 @@ static func _engine_rates(
 			float(powertrain.idle_torque_nm),
 			drag + idle_error * float(powertrain.idle_governor_gain_nm_s_per_rad),
 		)
-	var combustion := (curve_torque * throttle + idle_torque) if fuel > 0.0 else 0.0
+	# Fuel does not make a starter: throttle is ineffective below the stall
+	# threshold. An explicit service start action must seed the engine state.
+	var combustion := (curve_torque * throttle + idle_torque) \
+		if fuel > 0.0 and speed > ENGINE_STALL_SPEED_RAD_S else 0.0
+	var requested_combustion := combustion
 	var engagement := _clutch_engagement(speed, powertrain)
-	var clutch_slip := maxf(0.0, speed - forward_wheel_speed_rad_s * float(powertrain.gear_ratio))
-	var requested_clutch := minf(
-		float(powertrain.clutch_capacity_nm) * engagement,
+	var gear_ratio := float(powertrain.gear_ratio)
+	var efficiency := float(powertrain.gear_efficiency)
+	var clutch_slip := speed - forward_wheel_speed_rad_s * gear_ratio
+	var requested_clutch := clampf(
 		float(powertrain.clutch_slip_stiffness_nm_s_per_rad) * clutch_slip * engagement,
+		-float(powertrain.clutch_capacity_nm) * engagement,
+		float(powertrain.clutch_capacity_nm) * engagement,
 	)
-	# Clutch load may draw on stored flywheel energy. Positive torque only flows
-	# while engine speed exceeds the reflected wheel speed, so the gear train
-	# cannot inject energy back into the engine or wheels.
+	# Torque follows signed slip: engine-leading torque drives the wheels; wheel
+	# overrun torque back-drives the flywheel. Apply gearbox losses in the power
+	# flow direction so clutch plus gear never create mechanical energy.
 	var clutch_torque := requested_clutch if drive_enabled else 0.0
+	var wheel_torque_ratio := gear_ratio * (efficiency if clutch_torque >= 0.0 else 1.0 / efficiency)
 	var specific_consumption := float(powertrain.fuel_specific_consumption_kg_per_j)
 	var fuel_flow := combustion * speed * specific_consumption
 	if fuel_flow > fuel_flow_limit_kg_per_s and speed > 1.0e-12:
@@ -279,16 +310,37 @@ static func _engine_rates(
 		# full tick of engine work. The model smears the cutoff over this tick.
 		combustion = maxf(0.0, fuel_flow_limit_kg_per_s / (speed * specific_consumption))
 		fuel_flow = combustion * speed * specific_consumption
+	var accepted_throttle := 0.0
+	if requested_combustion > 0.0 and throttle > 0.0:
+		accepted_throttle = clampf(throttle * combustion / requested_combustion, 0.0, 1.0)
+	if is_finite(dt_s) and dt_s > 0.0 and wheel_spin_inertia_kg_m2 > 0.0 and clutch_torque != 0.0:
+		# Limit clutch impulse to the remaining slip after the engine's free
+		# combustion/drag change. Uncoupled wheel rotors provide a lower bound on
+		# reflected wheel inertia, so the transfer cannot reverse slip mid-tick.
+		var engine_inertia := float(powertrain.engine_rotor_inertia_kg_m2)
+		var free_slip_next := clutch_slip + dt_s * (combustion - drag) / engine_inertia
+		var slip_budget := 0.0
+		if clutch_slip * free_slip_next > 0.0:
+			slip_budget = minf(absf(clutch_slip), absf(free_slip_next))
+		var effective_inverse_inertia := 1.0 / engine_inertia \
+			+ gear_ratio * wheel_torque_ratio / (4.0 * wheel_spin_inertia_kg_m2)
+		if not is_finite(effective_inverse_inertia) or effective_inverse_inertia <= 0.0 or slip_budget <= 0.0:
+			clutch_torque = 0.0
+		else:
+			var impulse_safe_torque := slip_budget / (dt_s * effective_inverse_inertia)
+			clutch_torque = signf(clutch_torque) * minf(absf(clutch_torque), impulse_safe_torque)
 	var speed_rate := (combustion - drag - clutch_torque) / float(powertrain.engine_rotor_inertia_kg_m2)
 	if speed <= 0.0 and speed_rate < 0.0:
 		speed_rate = 0.0
-	var wheel_drive_torque := clutch_torque * float(powertrain.gear_ratio) * float(powertrain.gear_efficiency)
+	var wheel_drive_torque := clutch_torque * wheel_torque_ratio
 	return {
 		"speed_rate_rad_s2": speed_rate,
 		"fuel_flow_kg_per_s": fuel_flow,
 		"engine_combustion_torque_nm": combustion,
+		"accepted_throttle_fraction": accepted_throttle,
 		"clutch_torque_nm": clutch_torque,
 		"wheel_drive_torque_nm": wheel_drive_torque,
+		"clutch_slip_rad_s": clutch_slip,
 	}
 
 
@@ -311,10 +363,10 @@ static func _clutch_engagement(engine_speed_rad_s: float, powertrain: Dictionary
 	return fraction * fraction * (3.0 - 2.0 * fraction)
 
 
-static func _forward_wheel_speed(state: PackedFloat64Array) -> float:
+static func _mean_wheel_speed(state: PackedFloat64Array) -> float:
 	var sum := 0.0
 	for corner in 4:
-		sum += maxf(0.0, state[WHEEL_SPIN + corner]) * 0.25
+		sum += state[WHEEL_SPIN + corner] * 0.25
 	return sum
 
 

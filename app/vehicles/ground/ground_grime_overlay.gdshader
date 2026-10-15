@@ -2,14 +2,20 @@ shader_type spatial;
 render_mode blend_mix, depth_draw_never;
 
 uniform float dirt_amount : hint_range(0.0, 0.46) = 0.0;
+uniform float dirt_opacity_gain : hint_range(1.0, 2.0) = 1.0;
 uniform float wet_amount : hint_range(0.0, 1.0) = 0.0;
 uniform float dirt_band_bottom = -0.02;
 uniform float dirt_band_top = 0.08;
+uniform bool use_vehicle_space = false;
+uniform mat4 vehicle_from_world;
 
 varying float model_height;
 
 void vertex() {
 	model_height = VERTEX.y;
+	if (use_vehicle_space) {
+		model_height = (vehicle_from_world * MODEL_MATRIX * vec4(VERTEX, 1.0)).y;
+	}
 }
 
 float hash21(vec2 p) {
@@ -23,7 +29,11 @@ void fragment() {
 	float broad = hash21(floor(UV * vec2(18.0, 12.0)));
 	float grit = hash21(floor(UV * vec2(107.0, 83.0)));
 	float pattern = 0.2 + 0.52 * broad + 0.28 * grit;
-	float dirt_alpha = clamp(dirt_amount * vertical_mask * pattern, 0.0, 0.24);
+	float dirt_alpha = clamp(
+		dirt_amount * vertical_mask * pattern * dirt_opacity_gain,
+		0.0,
+		0.24 * dirt_opacity_gain
+	);
 	if (wet_amount <= 0.0) {
 		ALBEDO = vec3(0.22, 0.13, 0.065);
 		ROUGHNESS = 1.0;

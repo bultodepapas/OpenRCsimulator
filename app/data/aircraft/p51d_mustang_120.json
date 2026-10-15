@@ -1416,7 +1416,7 @@
         "source": "research/p51/p51-05/derive_physics.py: fin behind the CG"
       },
       "CYdr": {
-        "value": 0.12780793946618982,
+        "value": 0.1518295430912164,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: fin slope x Sv/S x rudder effectiveness (must equal the vertical surface)"
@@ -1452,7 +1452,7 @@
         "source": "research/p51/p51-05/derive_physics.py: strip theory"
       },
       "Cldr": {
-        "value": 0.016572746737866396,
+        "value": 0.019687607636005612,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: rudder side force x fin height above the ARP"
@@ -1488,10 +1488,10 @@
         "source": "research/p51/p51-05/derive_physics.py: aileron lift increment at its thin-airfoil centre, arm from the ARP"
       },
       "Cnb": {
-        "value": 0.1394867577485912,
+        "value": 0.05647975774859121,
         "unit": "1/rad",
         "kind": "derived",
-        "source": "research/p51/p51-05/derive_physics.py: vertical-fin contribution only; shared surface-consistency rule requires Cnb to equal the modeled vertical surface"
+        "source": "research/p51/p51-05/derive_physics.py: vertical-fin contribution plus the flight-calibrated body term aero.surfaces.body_cn_beta (P51-25); the shared rule requires Cnb = fin + body"
       },
       "Cnp": {
         "value": -0.024817,
@@ -1518,7 +1518,7 @@
         "source": "research/p51/p51-05/derive_physics.py: adverse yaw"
       },
       "Cndr": {
-        "value": -0.06265856747472914,
+        "value": -0.07443529494468497,
         "unit": "1/rad",
         "kind": "derived",
         "source": "research/p51/p51-05/derive_physics.py: rudder side force x fin arm from the ARP (must equal the vertical surface)"
@@ -1649,7 +1649,7 @@
           "source": "research/p51/p51-05/derive_physics.py: Helmbold (end-plated AR) x DATCOM sidewash/eta"
         },
         "control_effectiveness": {
-          "value": 0.449208,
+          "value": 0.533637,
           "unit": "1",
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: thin-airfoil tau x 0.8 / sidewash factor"
@@ -1660,6 +1660,12 @@
           "kind": "estimated",
           "source": "symmetric fin; engine side thrust not modelled"
         }
+      },
+      "body_cn_beta": {
+        "value": -0.083007,
+        "unit": "1/rad",
+        "kind": "derived",
+        "source": "research/p51/p51-05/derive_physics.py: CALIBRATED (P51-25): destabilizing body yaw about the ARP so the oracle steady sideslip, balanced about the CG, needs 0.55 deg rudder per deg sideslip, the production P-51D value at 200 mph (NACA RM L6J25 Table I, ntrs.nasa.gov/citations/20050019329; approximate slopes over +-1 deg, climb power); DATCOM fuselage alone -0.0232. Lumps fuselage, spinner, canopy and propeller in yaw; geometric scaling does not establish it for the RC model"
       }
     },
     "ground_effect": {

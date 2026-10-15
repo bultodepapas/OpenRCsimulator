@@ -1,0 +1,30 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Compile Error: Identifier not found: HeliRotorBlur
+          at: GDScript::reload (res://render/rotor/heli_rotor_blur.gd:43)
+          GDScript backtrace (most recent call first):
+              [0] _initialize (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/aircraft-standardization/rotorcraft_package_smoke.gd:18)
+ERROR: Failed to load script "res://render/rotor/heli_rotor_blur.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+   GDScript backtrace (most recent call first):
+       [0] _initialize (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/aircraft-standardization/rotorcraft_package_smoke.gd:18)
+FAIL: exported rotorcraft configuration remains accepted by its strict reader ["skid geometry or fixed-step stiffness exceeds the supported envelope"]
+WARNING: 'res://assets/aircraft/hx-700/hx-700.glb': In external resource #0, invalid UID: 'uid://cjg4mlaix8p5m' - using text path instead: 'res://assets/aircraft/hx-700/hx-700_hx700_botalon_mascaras.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] build (res://aircraft/hx700_model.gd:29)
+         [1] _initialize (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/aircraft-standardization/rotorcraft_package_smoke.gd:36)
+WARNING: 'res://assets/aircraft/hx-700/hx-700.glb': In external resource #1, invalid UID: 'uid://lec8h7imohqc' - using text path instead: 'res://assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] build (res://aircraft/hx700_model.gd:29)
+         [1] _initialize (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/aircraft-standardization/rotorcraft_package_smoke.gd:36)
+WARNING: 'res://assets/aircraft/hx-700/hx-700.glb': In external resource #2, invalid UID: 'uid://kmdjed5nhx45' - using text path instead: 'res://assets/aircraft/hx-700/hx-700_hx700_carenado_mascaras_2.png'.
+     at: open (core/io/resource_format_binary.cpp:1025)
+     GDScript backtrace (most recent call first):
+         [0] build (res://aircraft/hx700_model.gd:29)
+         [1] _initialize (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/aircraft-standardization/rotorcraft_package_smoke.gd:36)
+SCRIPT ERROR: Invalid call. Nonexistent function 'measured_profile' in base 'GDScript'.
+          at: _initialize (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/aircraft-standardization/rotorcraft_package_smoke.gd:42)
+          GDScript backtrace (most recent call first):
+              [0] _initialize (/mnt/c/DEVELOPMENT/OpenRCsimulator/research/aircraft-standardization/rotorcraft_package_smoke.gd:42)

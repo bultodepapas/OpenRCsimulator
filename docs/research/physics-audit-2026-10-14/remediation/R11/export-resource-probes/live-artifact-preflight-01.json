@@ -1,0 +1,31 @@
+{
+  "format": "openrc-r11-live-native-artifact-preflight-v1",
+  "captured_utc": "2026-10-15T15:23:23.313003+00:00",
+  "scope": "Read-only compatibility of the new export preflight with the concurrently maintained live native-v3/RK4-v5 artifact contract; no Godot or package execution, no qualification of the full live tree.",
+  "command": [
+    "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\package-smoke\\export-preflight-01\\preflight.py",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\native\\ground_vehicle\\build-receipt.json",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\native\\ground_vehicle\\libopenrc_ground_vehicle.so",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\native\\ground_vehicle\\openrc_ground_vehicle.dll"
+  ],
+  "backend_version": "openrc-ground-vehicle-native-evaluate-v3",
+  "solver_version": "openrc-ground-vehicle-dynamics-rk4-v5",
+  "before": {
+    "docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\package-smoke\\export-preflight-01\\preflight.py": "724f14787ca7c91228c3fdc99c7f1d1a1716c6f9b5fd3a4a38e3ccf5c6f5d258",
+    "app\\native\\ground_vehicle\\build-receipt.json": "87e642a636c6152b56a9f9efda38cb399fe9ae4800ef38661ac46bd8cb6ab0fb",
+    "app\\native\\ground_vehicle\\libopenrc_ground_vehicle.so": "fd0be43f0afaa061ef27f8633b89d2f1496a47244246ff8bfb687d7677dca3c2",
+    "app\\native\\ground_vehicle\\openrc_ground_vehicle.dll": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb"
+  },
+  "after": {
+    "docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\package-smoke\\export-preflight-01\\preflight.py": "724f14787ca7c91228c3fdc99c7f1d1a1716c6f9b5fd3a4a38e3ccf5c6f5d258",
+    "app\\native\\ground_vehicle\\build-receipt.json": "87e642a636c6152b56a9f9efda38cb399fe9ae4800ef38661ac46bd8cb6ab0fb",
+    "app\\native\\ground_vehicle\\libopenrc_ground_vehicle.so": "fd0be43f0afaa061ef27f8633b89d2f1496a47244246ff8bfb687d7677dca3c2",
+    "app\\native\\ground_vehicle\\openrc_ground_vehicle.dll": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb"
+  },
+  "source_unchanged": true,
+  "exit_code": 0,
+  "stdout": "{\"abi_version\": 1, \"backend\": \"native\", \"backend_version\": \"openrc-ground-vehicle-native-evaluate-v3\", \"format\": \"openrc-native-export-artifacts-v1\", \"platforms\": {\"linux\": {\"binary\": \"C:\\\\DEVELOPMENT\\\\OpenRCsimulator\\\\app\\\\native\\\\ground_vehicle\\\\libopenrc_ground_vehicle.so\", \"binary_sha256\": \"fd0be43f0afaa061ef27f8633b89d2f1496a47244246ff8bfb687d7677dca3c2\", \"toolchain_sha256\": \"618f0077afe942de5a31b55670c8b2036624d9c60ae9c410f32ea42d4af3c864\"}, \"windows\": {\"binary\": \"C:\\\\DEVELOPMENT\\\\OpenRCsimulator\\\\app\\\\native\\\\ground_vehicle\\\\openrc_ground_vehicle.dll\", \"binary_sha256\": \"01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb\", \"toolchain_sha256\": \"20011c634359383599e065c970e90e2a0c6612e7481739dbc9d35fe8c8d4a192\"}}, \"solver_version\": \"openrc-ground-vehicle-dynamics-rk4-v5\", \"source_sha256\": \"6d4c5eabeb2f8565cf84d08fb6825ab5b1cacc47a7ebc26f215ac97b88ae1c2b\"}\n",
+  "stderr": "",
+  "passed": true
+}

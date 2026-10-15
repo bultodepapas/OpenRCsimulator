@@ -26,6 +26,7 @@ const Atmosphere = preload("res://render/atmosphere.gd")
 const ShaderClock = preload("res://render/shader_clock.gd")
 const Frames = preload("res://render/frames.gd")
 const EngineAudio = preload("res://render/engine_audio.gd")
+const NitroAudio = preload("res://audio/nitro_engine_audio.gd")
 const GroundEffects = preload("res://vehicles/ground/ground_effects.gd")
 const GroundWetEffects = preload("res://vehicles/ground/ground_wet_effects.gd")
 const DamageView = preload("res://vehicles/ground/ground_damage_view.gd")
@@ -71,6 +72,7 @@ var _course := {}
 var _model := {}
 var _focused := true
 var _sound: AudioStreamPlayer3D
+var _nitro_sound: NitroAudio
 var checkpoint_path := "user://rcv/checkpoint.json"
 var _checkpoint := {}
 var _checkpoint_backup_path := ""
@@ -138,6 +140,7 @@ func _ready() -> void:
 		set_process(false)
 		return
 	add_child(visual.root)
+	if _vehicle_entry.nitro: visual["gear_ratio"] = float(_model.powertrain.gear_ratio)
 	_damage_view = DamageView.new()
 	if not _damage_view.prepare(visual):
 		startup_error = "Vehicle damage bindings are unavailable"
@@ -313,6 +316,10 @@ func _prepare_airfield() -> bool:
 	return session.prepare_airfield(loaded, {}, lake.lake, vehicle_id)
 
 func _build_audio() -> void:
+	if _vehicle_entry.nitro:
+		_nitro_sound = NitroAudio.create(self)
+		_nitro_sound.observe(session.telemetry_snapshot(), {}, true, enable_audio)
+		return
 	_sound = EngineAudio.new()
 	var stream := AudioStreamGenerator.new()
 	stream.mix_rate = 22050.0
@@ -553,12 +560,13 @@ func _process(delta: float) -> void:
 	World.update(_environment, 37.0 + session.time_s(), Vector3.ZERO, target, camera)
 	var telemetry: Dictionary = session.telemetry_snapshot()
 	telemetry.surface_id = _render_road.call(drawn[0], drawn[1]).surface_id
+	telemetry["service_stationary"] = session.nitro_service_stationary()
 	_damage_view.update(session.damage_visual_state())
+	var simulated_delta := maxf(0.0, session.time_s() - _effects_time_s)
+	_effects_time_s = session.time_s()
 	if _nitro_exhaust != null:
-		_nitro_exhaust.observe(telemetry, session.paused)
+		_nitro_exhaust.observe(telemetry, session.paused, simulated_delta)
 	if _effects != null:
-		var simulated_delta := maxf(0.0, session.time_s() - _effects_time_s)
-		_effects_time_s = session.time_s()
 		var night_weight := 1.0 - smoothstep(0.05, 0.75, float(_lighting.get("sun_energy", 1.0)))
 		_effects.update_render(simulated_delta, telemetry, _last_controls, _render_road, session.paused, night_weight)
 		if _wet_effects != null:
@@ -576,19 +584,20 @@ func _process(delta: float) -> void:
 		if _sound.stream_paused:
 			_audio_was_paused = true
 		else:
-			# Nitro observes its shaft state; the electric model retains its gearbox harmonic.
+			# The electric model retains its gearbox harmonic.
 			var rpm := 0.0
 			var max_rpm := 18000.0
 			for i in 4:
 				rpm += absf(_snapshot[21 + i]) * 60.0 / TAU * 8.0 / 4.0
-			if _vehicle_entry.nitro:
-				rpm = float(telemetry.get("nitro", {}).get("engine_rpm", 0.0))
-				max_rpm = float(_model.powertrain.engine_max_speed_rad_s) * 60.0 / TAU
 			if _audio_was_paused:
 				_sound.restart_voice()
 				_sound.voice.reset(rpm, max_rpm)
 				_audio_was_paused = false
 			_sound.refill(rpm, max_rpm)
+	if _nitro_sound != null:
+		_nitro_sound.global_position = target
+		_nitro_sound.observe(telemetry, _last_controls, session.paused, enable_audio)
+		_nitro_sound.refill()
 
 func open_garage() -> void:
 	if dashboard == null:
@@ -638,6 +647,21 @@ func handle_action(action: String) -> void:
 		"reset":
 			if not _finish_recording(): return
 			if session.reset(): _after_reset()
+		"engine_start", "engine_stop", "refuel":
+			if not _finish_recording(): return
+			var service := action.trim_prefix("engine_")
+			if session.service_nitro(service):
+				_snapshot = session.state_snapshot()
+				_previous = _snapshot.duplicate()
+				_last_controls = {}
+				_audio_was_paused = true
+				dashboard.message("Engine service complete. Release controls to continue.", "Motor atendido. Suelta los controles para continuar.")
+			else:
+				dashboard.message("Stop the car and engine before refuelling; fuel is needed to start.", "Detén el carro y apaga el motor antes de repostar; necesitas combustible para arrancar.")
+		"clean":
+			if _effects != null: _effects.clean_vehicle()
+			if _wet_effects != null: _wet_effects.reset()
+			dashboard.message("Vehicle cleaned.", "Carro limpio.")
 		"recover":
 			if session.manual_recovery():
 				_after_reset()
@@ -656,7 +680,9 @@ func handle_action(action: String) -> void:
 		"contacts":
 			_show_diagnostics = not _show_diagnostics
 			_contact_debug.visible = _show_diagnostics
-		"sound": enable_audio = not enable_audio
+		"sound":
+			enable_audio = not enable_audio
+			if enable_audio and _sound == null and _nitro_sound == null: _build_audio()
 		"lights":
 			if _effects != null:
 				_effects.headlights_enabled = not _effects.headlights_enabled

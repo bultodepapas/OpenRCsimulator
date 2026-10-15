@@ -83,8 +83,8 @@ static func warnings(t: Dictionary, ctx: Dictionary) -> PackedStringArray:
 		out.append("controller_lost")
 	elif str(ctx.get("pause_reason", "")) == "radio disconnected":
 		out.append("failsafe")
-	if ctx.get("radio_connected", false) and not ctx.get("armed", false):
-		out.append("gamepad_safe" if ctx.get("controller_kind", "radio") == "gamepad" else "safe")
+	if ctx.get("radio_connected", false) and not ctx.get("armed", false) and ctx.get("controller_kind", "radio") != "gamepad":
+		out.append("safe")
 	var airborne: bool = float(t.height_agl) > AIRBORNE_HEIGHT
 	var stall_pos: float = float(ctx.get("stall_pos_deg", NAN))
 	var stall_neg: float = float(ctx.get("stall_neg_deg", NAN))

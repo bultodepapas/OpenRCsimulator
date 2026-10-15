@@ -14,6 +14,8 @@ const Preferences := preload("res://app_state/preferences.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 const OverlaysDialog := preload("res://ui/overlays_dialog.gd")
 const WarningsBar := preload("res://render/overlays/warnings_bar.gd")
+const Guide := preload("res://render/overlays/controls_guide.gd")
+const Profile := preload("res://input/controller_profile.gd")
 const PREFS := "user://test_overlay_settings.cfg"
 
 var _failures := 0
@@ -48,6 +50,7 @@ func _run() -> void:
 	await _manager()
 	await _dialog()
 	await _spanish_layout()
+	await _controls_guide()
 	await _flight_scene()
 	await _pause_preview()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
@@ -57,7 +60,7 @@ func _run() -> void:
 
 func _settings() -> void:
 	_check("defaults: Pilot preset, units by language, Mode 2", Settings.validate(null) == Settings.DEFAULTS)
-	_check("pilot preset is flight, transmitter, warnings, wind", Settings.DEFAULTS.visible == ["flight", "transmitter", "warnings", "wind"])
+	_check("pilot preset is flight, transmitter, warnings, wind", Settings.DEFAULTS.visible == ["flight", "transmitter", "warnings", "wind", "controls"])
 	var bad := Settings.validate({ preset = 3, visible = "all", units = "furlongs", stick_mode = 3 })
 	_check("wrong types and ranges fall back to defaults", bad == Settings.DEFAULTS, str(bad))
 	_check("a named preset defines the visible set", Settings.validate({ preset = "full", visible = ["performance"] }).visible == Settings.PRESETS.full)
@@ -124,7 +127,7 @@ func _manager() -> void:
 	manager.update(snap, 1.0)
 	await process_frame
 	await process_frame
-	_check("Pilot preset shows its four overlays", _shown(manager) == ["flight", "transmitter", "warnings", "wind"], str(_shown(manager)))
+	_check("Pilot preset shows its five overlays", _shown(manager) == ["flight", "transmitter", "warnings", "wind", "controls"], str(_shown(manager)))
 	_check("imperial for English: 20 m/s = 45 mph", manager.frames.flight.values.airspeed.text == "45 mph", manager.frames.flight.values.airspeed.text)
 	_check("height above ground in ft", manager.frames.flight.values.height.text == "98 ft", manager.frames.flight.values.height.text)
 	_check("two warning chips", manager.frames.warnings.chips.get_child_count() == 2)
@@ -161,8 +164,8 @@ func _manager() -> void:
 		click.global_position = centre
 		root.get_viewport().push_input(click)
 	await process_frame
-	_check("× hides only that overlay", _shown(manager) == ["flight", "transmitter", "warnings"], str(_shown(manager)))
-	_check("× makes the set custom and announces it", manager.settings.preset == "custom" and changes.size() == 1 and changes[0].visible == ["flight", "transmitter", "warnings"])
+	_check("× hides only that overlay", _shown(manager) == ["flight", "transmitter", "warnings", "controls"], str(_shown(manager)))
+	_check("× makes the set custom and announces it", manager.settings.preset == "custom" and changes.size() == 1 and changes[0].visible == ["flight", "transmitter", "warnings", "controls"])
 	_check("× took no keyboard focus", root.get_viewport().gui_get_focus_owner() == null)
 	var ui := UiDriver.new(self)
 	await ui.tap(KEY_UP)
@@ -249,6 +252,76 @@ func _spanish_layout() -> void:
 	manager.queue_free()
 	TranslationServer.set_locale("en")
 	await process_frame
+
+
+func _controls_guide() -> void:
+	var manager: CanvasLayer = Manager.new({}, "en")
+	root.add_child(manager)
+	await process_frame
+	var guide: Control = manager.frames.controls
+	_check("guide opens by default with keyboard commands", guide.visible and _guide_text(guide).contains("Roll") and _guide_text(guide).contains("W / S"))
+	_check("guide lists every shared keyboard shortcut", Guide.Reference.SHORTCUTS.all(func(row: Array) -> bool: return _guide_text(guide).contains(tr(row[1]))))
+	var profile: Dictionary = Profile.defaults("gamepad", "mode1")
+	profile.presentation.glyph_family = "playstation"
+	profile.actions.camera_cycle = { type = "button", button = JOY_BUTTON_RIGHT_SHOULDER }
+	var context := { connected = true, device_name = "DualSense", device_info = {name = "DualSense"}, profile = profile }
+	guide.refresh(context)
+	await process_frame
+	_check("selected gamepad automatically opens its guide", guide.controller_button.button_pressed and guide.source_label.text == "DualSense")
+	_check("controller guide reflects a remapped camera button", _guide_text(guide).contains("R1") and not _guide_text(guide).contains("Triangle"))
+	_check("Mode 1 shows the actual pitch axis", Guide.axis_text(profile.pitch, true, "playstation", {}) == "Left stick ↕")
+	_check("Mode 1 shows the actual throttle axis", Guide.axis_text(profile.throttle, true, "playstation", {}) == "Right stick ↕")
+	_check("rate throttle explains its hold behavior", _guide_text(guide).contains("Throttle holds when you release the stick."))
+	guide.keyboard_button.pressed.emit()
+	guide.refresh(context)
+	_check("refresh preserves a manual keyboard-tab choice", guide.keyboard_button.button_pressed and _guide_text(guide).contains("Flight axes use the selected controller."))
+	profile.actions.camera_cycle = { type = "unbound" }
+	guide.refresh(context)
+	guide.controller_button.pressed.emit()
+	_check("unbound camera action is not advertised", not _guide_text(guide).contains("Cycle camera"))
+	profile = Profile.defaults("gamepad", "trigger_absolute")
+	context.profile = profile
+	guide.refresh(context)
+	_check("absolute trigger has its own instructions", _guide_text(guide).contains("Release the trigger for idle throttle.") and _guide_text(guide).contains("R2"))
+	context.capabilities = {gear = true, smoke = false, flaps = false}
+	guide.refresh(context)
+	_check("jet guide shows automatic Circle gear and honest equipment limits", _guide_text(guide).contains("Circle") and _guide_text(guide).contains("Not simulated") and _guide_text(guide).contains("Not available") and not _guide_text(guide).contains("R1"))
+	await process_frame
+	guide.scroll.scroll_vertical = 100
+	var scroll_before: int = guide.scroll.scroll_vertical
+	context.equipment_state = {gear = "extending", smoke = "off"}
+	guide.refresh(context)
+	_check("live gear status updates without resetting the reader's scroll", _guide_text(guide).contains("Extending") and guide.scroll.scroll_vertical == scroll_before)
+	context.capabilities = {gear = false, smoke = true, flaps = false}
+	guide.refresh(context)
+	_check("aircraft switch updates equipment prompts", _guide_text(guide).contains("R1") and not _guide_text(guide).contains("Circle"))
+	profile.actions.smoke_toggle = {type = "unbound"}
+	guide.refresh(context)
+	_check("guide explains how to bind an available but cleared function", _guide_text(guide).contains("Assign in Controller settings") and not _guide_text(guide).contains("R1"))
+	guide.refresh({})
+	_check("disconnect returns to keyboard and disables stale device tab", guide.keyboard_button.button_pressed and guide.controller_button.disabled)
+	var ui := UiDriver.new(self)
+	await process_frame
+	var centre: Vector2 = guide.close_button.get_global_rect().get_center()
+	for pressed in [true, false]:
+		var click := InputEventMouseButton.new()
+		click.button_index = MOUSE_BUTTON_LEFT
+		click.pressed = pressed
+		click.position = centre
+		click.global_position = centre
+		root.get_viewport().push_input(click)
+	_check("guide close preserves other overlays and takes no focus", not manager.is_overlay_visible("controls") and manager.is_overlay_visible("flight") and root.gui_get_focus_owner() == null)
+	manager.set_preset("pilot")
+	_check("Pilot preset reopens the guide", guide.visible)
+	manager.queue_free()
+	await ui.settle()
+
+
+func _guide_text(guide: Control) -> String:
+	var parts := PackedStringArray()
+	for label: Node in guide.find_children("*", "Label", true, false):
+		parts.append(label.text)
+	return "\n".join(parts)
 
 
 func _flight_scene() -> void:

@@ -13,6 +13,11 @@ signal controller_selected(device_id: int)
 var menu_visible := true
 var vehicle_name := "Bisonte MT8"
 var nitro := false
+var fuel_status: Label
+var fuel_gauge: ProgressBar
+var engine_start_button: Button
+var engine_stop_button: Button
+var refuel_button: Button
 var panel: PanelContainer
 var status: Label
 var telemetry: Label
@@ -113,7 +118,22 @@ func _ready() -> void:
 	header.add_child(_label(vehicle_name, 28))
 	header.add_child(_label(words("1:8 · Nitro 4WD · Experimental", "1:8 · Nitro 4×4 · Experimental") if nitro else words("1:8 · Electric 4WD · Experimental", "1:8 · Eléctrico 4×4 · Experimental"), 14))
 	if nitro:
-		var nitro_hint := _label(words("Engine starts at idle. No reverse gear. Reset refuels and restarts.", "Motor encendido al ralentí. Sin reversa. Reiniciar reposta y arranca."), 14)
+		fuel_status = _label("", 15)
+		fuel_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		column.add_child(fuel_status)
+		fuel_gauge = ProgressBar.new()
+		fuel_gauge.custom_minimum_size.y = 8
+		fuel_gauge.show_percentage = false
+		column.add_child(fuel_gauge)
+		var engine_row := HBoxContainer.new()
+		engine_start_button = _button(words("Start engine", "Arrancar"), "engine_start")
+		engine_stop_button = _button(words("Stop engine", "Apagar"), "engine_stop")
+		engine_row.add_child(engine_start_button)
+		engine_row.add_child(engine_stop_button)
+		column.add_child(engine_row)
+		refuel_button = _button(words("Refuel nitro tank", "Repostar combustible nitro"), "refuel")
+		column.add_child(refuel_button)
+		var nitro_hint := _label(words("Stop the vehicle for engine service. Switch off before refuelling. No reverse gear.", "Detén el carro para atender el motor. Apágalo antes de repostar. Sin reversa."), 14)
 		nitro_hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		column.add_child(nitro_hint)
 	if airfield:
@@ -166,6 +186,7 @@ func _ready() -> void:
 	toggles.add_child(_button(words("Contacts", "Contactos"), "contacts"))
 	toggles.add_child(_button(words("Sound", "Sonido"), "sound"))
 	column.add_child(toggles)
+	column.add_child(_button(words("Clean vehicle", "Limpiar carro"), "clean"))
 	headlights_button = _button(words("Headlights on · L", "Faros encendidos · L"), "lights")
 	column.add_child(headlights_button)
 	record_button = _button(words("Record telemetry", "Grabar telemetría"), "record")
@@ -346,11 +367,23 @@ func update_snapshot(snapshot: Dictionary, paused: bool, time_s: float, recordin
 	telemetry.text = "%.1f km/h  ·  %.1f s  ·  %s%s" % [speed, time_s, surface_title, "  ● REC" if recording else ""]
 	if nitro:
 		var powertrain: Dictionary = snapshot.get("nitro", {})
+		var fuel := float(powertrain.get("fuel_kg", 0.0))
+		var running := bool(powertrain.get("engine_running", false))
+		var spinning := float(powertrain.get("engine_rpm", 0.0)) > 30.0 / PI
+		var stationary := bool(snapshot.get("service_stationary", false))
+		fuel_status.text = words("Nitro fuel · %.1f g · %.2f g/min", "Combustible nitro · %.1f g · %.2f g/min") % [
+			fuel * 1000.0, float(powertrain.get("fuel_flow_kg_per_s", 0.0)) * 60000.0]
+		fuel_gauge.value = 100.0 * float(powertrain.get("fuel_fraction", 0.0))
+		engine_start_button.disabled = not paused or not stationary or spinning or fuel <= 0.0
+		engine_stop_button.disabled = not paused or not stationary or not spinning
+		refuel_button.disabled = not paused or not stationary or spinning
 		var engagement := float(powertrain.get("clutch_engagement", 0.0))
 		var clutch := words("Clutch open", "Embrague libre")
 		if engagement > 0.01:
 			clutch = words("Clutch %d%%", "Embrague %d%%") % roundi(engagement * 100.0)
-		telemetry.text += "\n%.0f RPM  ·  %s %d%%  ·  %s" % [float(powertrain.get("engine_rpm", 0.0)),
+		var engine_text := "%.0f RPM" % float(powertrain.get("engine_rpm", 0.0)) if running else words("Engine off", "Motor apagado")
+		if fuel <= 0.0: engine_text = words("Tank empty", "Tanque vacío")
+		telemetry.text += "\n%s  ·  %s %d%%  ·  %s" % [engine_text,
 			words("Fuel", "Combustible"), roundi(100.0 * float(powertrain.get("fuel_fraction", 0.0))),
 			clutch]
 	var damage: Dictionary = snapshot.get("damage", {})

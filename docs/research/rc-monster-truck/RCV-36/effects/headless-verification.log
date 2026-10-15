@@ -1,0 +1,24 @@
+== test_rcv36_effects.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+RCV-36 effects: 376 checks, 0 failures
+== test_rcv_ground_effects.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+RCV ground effects: 91 checks, 0 failures
+== test_rcv_wet_effects.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+RCV wet effects: 79 checks, 0 failures
+== test_rcv_effects_activity.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+RCV effects activity: 19 checks, 0 failures
+== test_rcv_nitro_activity.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+RCV nitro activity: 91 checks, 0 failures
+== test_rcv_nitro_visual.gd
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Monster Car 2 visual test passed: bindings, datum fit, four-wheel positive roll, independent wheel poses, suspension, symmetric steering limits, and flywheel phase
