@@ -41,7 +41,9 @@ func _run() -> void:
 	await create_timer(0.25).timeout
 	check("first A on Fly launches using the automatic pad and neutral gate", app.flight != null and app.pause_menu != null and app.flight.session.radio.device_id == 15 and not app.flight.session.radio.armed and app.flight.session.sim.paused)
 	check("automatic launch creates no saved controller profile", app.controllers.store.load_all().profiles.is_empty())
-	app.pause_menu.end_button.grab_focus()
+	app.pause_menu.exit_options_button.grab_focus()
+	await button(JOY_BUTTON_A) # reveal End inside Exit options
+	await button(JOY_BUTTON_DPAD_DOWN)
 	await button(JOY_BUTTON_A)
 	check("automatic-controller flight can return Home", app.flight == null and app.screens.is_top("home"))
 	observed.append({"id": 14, "name": "Fake EdgeTX", "kind": "radio", "known": true})
@@ -90,7 +92,20 @@ func _run() -> void:
 	var trim: float = session.trims.roll
 	await button(JOY_BUTTON_DPAD_RIGHT)
 	check("menu D-pad cannot trim aircraft", session.trims.roll == trim)
-	app.pause_menu.controls_button.grab_focus()
+	app.pause_menu.session_options_button.grab_focus()
+	await button(JOY_BUTTON_A) # open Session options
+	await button(JOY_BUTTON_B)
+	check("Back closes Session options without resuming the flight",
+		app.pause_menu != null and app.pause_menu.session_options_container.visible == false and session.sim.paused)
+	app.pause_menu.session_options_button.grab_focus()
+	await button(JOY_BUTTON_A)
+	var controls_reachable := false
+	for step in 8:
+		if ui.focus_name() == "ControllerSettings":
+			controls_reachable = true
+			break
+		await button(JOY_BUTTON_DPAD_DOWN)
+	check("Controller settings is reachable inside Session options", controls_reachable)
 	await button(JOY_BUTTON_A)
 	check("Controls is reachable from Pause", app.screens.is_top("controls"))
 	setup = app.screens.top()
@@ -107,7 +122,9 @@ func _run() -> void:
 	check("selected menu pad advances radio wizard", session.calibration != null and session.calibration.step == 1)
 	await button(JOY_BUTTON_B)
 	check("wizard cancel restores Pause without resuming", session.calibration == null and app.screens.is_top("pause") and session.sim.paused)
-	app.pause_menu.end_button.grab_focus()
+	app.pause_menu.exit_options_button.grab_focus()
+	await button(JOY_BUTTON_A) # reveal End inside Exit options
+	await button(JOY_BUTTON_DPAD_DOWN)
 	await button(JOY_BUTTON_A)
 	check("gamepad can end flight and return Home", app.flight == null and app.screens.is_top("home"))
 	app.free()

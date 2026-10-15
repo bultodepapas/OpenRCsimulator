@@ -38,6 +38,11 @@ const NOSE_BAND_M := 0.1 # red band: first 0.1 m of the cowl behind the spinner
 const SILL_DEPTH_M := 0.045 # canopy sill below the deck line
 const TIP_ROUND_M := 0.03 # elliptical thickness fade at the wing tips
 const END_GAP_M := 0.002 # spanwise clearance at the ends of moving surfaces
+## P51-11a: flap nose wedge 2:1 (about 27 deg) so the plain flap clears its cove through the 45 deg landing setting.
+const FLAP_BEVEL_RATIO := 2.0
+## P51-11a: extra cove gap ahead of the flap nose (m): the swept hinge carries the nose apex at the flap's ends ~0.5 mm
+## forward at 40-45 deg; with the hinge gap this keeps >= 0.5 mm clearance at the landing setting.
+const FLAP_COVE_M := 0.003
 const PROP_TIP_M := 0.03 # yellow blade tips
 const HORN_CLEARANCE_M := 0.002 # spanwise gap between the stab's horn cut and the elevator horn (V01)
 const STEP_M := 0.0005 # half-length of the near-vertical span step at the horn cut
@@ -590,11 +595,11 @@ static func _half_thickness(x: float) -> float:
 
 # Closed section ring in an abstract (s, y, z) frame: s spanwise, y thickness, z chordwise (LE at le, TE at le + c).
 # x0, x1 chord fractions; bevel_nose puts the nose on the camber line at x0 and starts the skin 45 deg behind it so a
-# deflecting surface turns about its own nose. shrink scales the thickness (tip rounding). `map` relabels axes.
-static func _foil_ring(s: float, le: float, c: float, t_max: float, camber: float, x0: float, x1: float, bevel_nose := false, shrink := 1.0, map := Basis.IDENTITY) -> Array[Vector3]:
+# deflecting surface turns about its own nose (bevel_ratio 2: a 27 deg wedge that clears up to ~60 deg, used by the flaps). shrink scales the thickness (tip rounding). `map` relabels axes.
+static func _foil_ring(s: float, le: float, c: float, t_max: float, camber: float, x0: float, x1: float, bevel_nose := false, shrink := 1.0, map := Basis.IDENTITY, bevel_ratio := 1.0) -> Array[Vector3]:
 	var tr := shrink * t_max / c
 	var start := x0
-	if bevel_nose: start = x0 + _half_thickness(x0) * tr
+	if bevel_nose: start = x0 + bevel_ratio * _half_thickness(x0) * tr
 	var upper: Array[Vector3] = []
 	var lower: Array[Vector3] = []
 	for k in CHORD_SAMPLES + 1:
@@ -661,7 +666,7 @@ static func _panel_x(x_projected: float) -> float:
 # x0, x1 are fractions of the BASE chord (straight LE to TE), so hinge lines never move. with_ext: the ring's leading
 # edge moves forward by the root extension (fixed panels only; its thickness stays that of the base chord). The tip
 # rounding shrinks the planform about mid chord.
-static func _wing_ring(x: float, x0: float, x1: float, bevel_nose := false, with_ext := false) -> Array[Vector3]:
+static func _wing_ring(x: float, x0: float, x1: float, bevel_nose := false, with_ext := false, bevel_ratio := 1.0) -> Array[Vector3]:
 	var span := absf(x)
 	var c_b := _chord(span)
 	var le_b: float = _le_z(span) - D.wing.le_z_root
@@ -673,7 +678,7 @@ static func _wing_ring(x: float, x0: float, x1: float, bevel_nose := false, with
 	var f0: float = (le_b + x0 * c_b - le) / c if x0 > 0.0 else 0.0
 	var f1: float = (le_b + x1 * c_b - le) / c if x1 < 1.0 else 1.0
 	return _foil_ring(_panel_x(x), le, c, c_b * float(tip[1]) * _thickness_ratio(span), D.wing.camber_ratio, f0, f1, bevel_nose,
-		_round_factor(D.wing.span / 2.0 - span, TIP_ROUND_M))
+		_round_factor(D.wing.span / 2.0 - span, TIP_ROUND_M), Basis.IDENTITY, bevel_ratio)
 
 
 # Wing panel between spanwise stations, as lofts per material group ([[material, [stations...]], ...], consecutive
@@ -691,6 +696,7 @@ static func _wing_panel(label: String, groups: Array, part: String, parent: Node
 				"full": ring = _wing_ring(sign * station, 0.0, 1.0, false, true)
 				"fixed": ring = _wing_ring(sign * station, 0.0, h - g / c, false, true)
 				"moving": ring = _wing_ring(sign * station, h + g / c, 1.0, true)
+				"flap": ring = _wing_ring(sign * station, h + (g + FLAP_COVE_M) / c, 1.0, true, false, FLAP_BEVEL_RATIO)
 			var local: Array[Vector3] = []
 			for p in ring: local.append(to_local * p)
 			rings.append(local)
@@ -770,7 +776,7 @@ static func _wings(root: Node3D, hinges: Dictionary, flaps: Dictionary) -> Dicti
 		flap_pivot.name = "flap_%s_hinge" % suffix
 		flap_frame.add_child(flap_pivot)
 		flaps[suffix] = flap_pivot
-		_wing_panel("flap_" + suffix, [[plain, [w.flap_inner + END_GAP_M, w.flap_outer - END_GAP_M]]], "moving", flap_pivot, sign,
+		_wing_panel("flap_" + suffix, [[plain, [w.flap_inner + END_GAP_M, w.flap_outer - END_GAP_M]]], "flap", flap_pivot, sign,
 			flap_frame.transform.affine_inverse())
 		_wing_panel("wing_%s_between" % suffix, [[alu, [w.flap_outer, w.aileron_inner]]], "full", frame, sign)
 		_wing_panel("wing_%s_ahead_of_aileron" % suffix, [[alu, [w.aileron_inner, band]], [yellow, [band, w.aileron_outer]]], "fixed", frame, sign)

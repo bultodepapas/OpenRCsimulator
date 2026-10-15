@@ -90,7 +90,9 @@ func _run() -> void:
 		await ui.tap(KEY_ESCAPE)
 		_check("closing Help keeps Pause and its hold (%d)" % cycle, app.pause_menu != null
 			and session.holds.has("menu") and session.sim.paused)
-		app.pause_menu.end_button.grab_focus()
+		app.pause_menu.exit_options_button.grab_focus()
+		await ui.tap(KEY_ENTER) # reveal End inside Exit options
+		await ui.tap(KEY_DOWN)
 		await ui.tap(KEY_ENTER)
 		await ui.settle()
 		_check("End returns to one Home without node growth (%d, %d nodes)" % [cycle, _count(app)],

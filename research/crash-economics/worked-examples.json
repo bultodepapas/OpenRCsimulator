@@ -2,7 +2,7 @@
   "format": "openrc-crash-cost-examples v1-research",
   "generated_by": "research/crash-economics/build_catalog.py",
   "physical_source_sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
-  "costing_source_sha256": "38aa6d999720658e71f851a47ad4a5989f62c665b3640abe21ab63a19f6682a4",
+  "costing_source_sha256": "fb4c3135f1706d7e44893cd52c2fd0b315383ef0a8a2d9ea06271cb75661a846",
   "currency": "USD",
   "baseline_lines": [
     {

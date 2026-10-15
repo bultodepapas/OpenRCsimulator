@@ -6,7 +6,7 @@
 extends RefCounted
 
 const PANEL := Color("#17252a") # reading surface
-const SIDEBAR := Color("#17252a", 0.97) # Home's column: barely translucent (at 0.94 the horizon split it in two tones)
+const SIDEBAR := Color("#17252a", 0.94) # Controlled translucency; opaque mode is available in Settings.
 const CARD := Color("#203238") # a grouped block on the panel (next flight)
 const TEXT := Color("#f5f2e9") # 14.06:1 on PANEL
 const TEXT_2 := Color("#bbc8c6") # secondary text, 9.13:1 on PANEL
@@ -22,15 +22,19 @@ const SIZE := { title = 36, card_title = 22, body = 18, small = 16, section = 13
 const FOCUS_WIDTH := 3
 const RADIUS := 6
 
+static var text_scale := 1.0
+static var opaque_panels := false
+static var reduced_motion := false
+
 
 static func build() -> Theme:
 	var t := Theme.new()
-	t.default_font_size = SIZE.body # the engine's default font (Open Sans SemiBold, OFL) until UI-09c
+	t.default_font_size = roundi(SIZE.body * text_scale)
 	t.set_color("font_color", "Label", TEXT)
 
 	t.set_stylebox("panel", "PanelContainer", _box(PANEL, 24))
 	t.set_type_variation("Sidebar", "PanelContainer")
-	var sidebar := _box(SIDEBAR, 0)
+	var sidebar := _box(Color(SIDEBAR, 1.0) if opaque_panels else SIDEBAR, 0)
 	sidebar.set_corner_radius_all(0)
 	sidebar.content_margin_left = 40
 	sidebar.content_margin_right = 40
@@ -85,13 +89,14 @@ static func build() -> Theme:
 	_label(t, "SecondaryLabel", TEXT_2, SIZE.small)
 	_label(t, "SectionLabel", TEXT_2, SIZE.section)
 	_label(t, "KeyLabel", TEXT, SIZE.key)
+	_controls(t)
 	return t
 
 
 static func _label(t: Theme, variation: String, color: Color, font_size: int) -> void:
 	t.set_type_variation(variation, "Label")
 	t.set_color("font_color", variation, color)
-	t.set_font_size("font_size", variation, font_size)
+	t.set_font_size("font_size", variation, roundi(font_size * text_scale))
 
 
 static func _button(t: Theme, type: String, bg: Dictionary, border: Color, border_width: int, font_size: int) -> void:
@@ -100,7 +105,7 @@ static func _button(t: Theme, type: String, bg: Dictionary, border: Color, borde
 		box.set_border_width_all(border_width)
 		box.border_color = border
 		t.set_stylebox(state, type, box)
-	t.set_font_size("font_size", type, font_size)
+	t.set_font_size("font_size", type, roundi(font_size * text_scale))
 	for c in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color", "font_hover_pressed_color"]:
 		t.set_color(c, type, TEXT)
 	t.set_color("font_disabled_color", type, DISABLED_TEXT)
@@ -113,6 +118,44 @@ static func _button(t: Theme, type: String, bg: Dictionary, border: Color, borde
 		focus.set_corner_radius_all(RADIUS + FOCUS_WIDTH)
 		focus.set_expand_margin_all(FOCUS_WIDTH + 1)
 		t.set_stylebox("focus", type, focus)
+
+
+static func _controls(t: Theme) -> void:
+	# Selectors and fields share the same surface and focus language as navigation.
+	_button(t, "OptionButton", BUTTON, EDGE, 1, SIZE.button)
+	for type in ["OptionButton", "CheckButton", "CheckBox", "LineEdit", "TextEdit"]:
+		t.set_stylebox("focus", type, t.get_stylebox("focus", "Button"))
+		for key in ["font_color", "font_hover_color", "font_pressed_color", "font_focus_color"]:
+			t.set_color(key, type, TEXT)
+		t.set_color("font_disabled_color", type, DISABLED_TEXT)
+	for type in ["LineEdit", "TextEdit"]:
+		for state in ["normal", "read_only"]:
+			var field := _box(BUTTON.normal, 10)
+			field.set_border_width_all(1)
+			field.border_color = EDGE
+			t.set_stylebox(state, type, field)
+		t.set_color("caret_color", type, FOCUS)
+		t.set_color("selection_color", type, Color("#52656b"))
+	for type in ["PopupMenu", "TooltipPanel"]:
+		t.set_stylebox("panel", type, _box(PANEL, 12))
+		t.set_color("font_color", type, TEXT)
+		t.set_font_size("font_size", type, roundi(SIZE.body * text_scale))
+	t.set_stylebox("hover", "PopupMenu", _box(BUTTON.hover, 8))
+	t.set_color("font_hover_color", "PopupMenu", TEXT)
+	t.set_color("font_disabled_color", "PopupMenu", DISABLED_TEXT)
+	for type in ["TabBar", "TabContainer"]:
+		for state in ["tab_selected", "tab_unselected", "tab_hovered", "tab_disabled"]:
+			var tab := _box(CARD if state == "tab_selected" else PANEL, 12)
+			tab.border_width_bottom = 3 if state == "tab_selected" else 1
+			tab.border_color = FOCUS if state == "tab_selected" else EDGE
+			t.set_stylebox(state, type, tab)
+		for state in ["font_selected_color", "font_unselected_color", "font_hovered_color"]:
+			t.set_color(state, type, TEXT)
+		t.set_color("font_disabled_color", type, DISABLED_TEXT)
+		t.set_stylebox("tab_focus", type, t.get_stylebox("focus", "Button"))
+	t.set_color("font_color", "RichTextLabel", TEXT)
+	t.set_color("default_color", "RichTextLabel", TEXT)
+	t.set_stylebox("panel", "TabContainer", _box(PANEL, 12))
 
 
 static func _box(color: Color, padding: int) -> StyleBoxFlat:

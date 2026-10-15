@@ -16,6 +16,7 @@ signal overlays_requested(from: Control)
 signal end_requested
 signal help_requested(from: Control)
 signal controls_requested(from: Control)
+signal settings_requested(from: Control)
 signal quit_requested
 
 const LAYER := 10 # above the flight's HUD/panel CanvasLayers
@@ -23,6 +24,9 @@ const WIDTH := 400
 
 var continue_button: Button
 var restart_button: Button
+var session_options_button: Button
+var settings_button: Button
+var exit_options_button: Button
 var workshop_button: Button
 var time_of_day_button: Button
 var failure_settings_button: Button
@@ -31,6 +35,8 @@ var end_button: Button
 var help_button: Button
 var controls_button: Button
 var quit_button: Button
+var session_options_container: VBoxContainer
+var exit_options_container: VBoxContainer
 var status_label: Label
 var controller_value_label: Label
 var collective_control := false
@@ -42,6 +48,7 @@ var _failure_config: Dictionary = {}
 var _failure_notifications_enabled := true
 var _failure_summary_disclosed := false
 var _controller_status_elapsed := 0.0
+var _open_group := ""
 
 
 ## `can_end`: whether "End flight" (back to Home) is offered; the direct route (`--` arguments) has no Home.
@@ -50,7 +57,9 @@ func _init(can_end := true) -> void:
 	layer = LAYER
 	var screen := Screen.mount(self, "Screen")
 	screen.kind = Screen.Kind.SIDEBAR
-	screen.close_requested.connect(func() -> void: continue_requested.emit())
+	screen.escape_before_gui = true
+	screen.dismiss_option_popup_first = true
+	screen.close_requested.connect(_on_back_requested)
 	screen.dim(0.25) # keep the frozen pilot view readable
 	# A column on the left, like Home: the airplane, centred by the pilot camera, stays in view.
 	var panel := PanelContainer.new()
@@ -95,33 +104,46 @@ func _init(can_end := true) -> void:
 	restart_button = _button("Restart flight", "", "Restart")
 	restart_button.pressed.connect(func() -> void: restart_requested.emit())
 	column.add_child(restart_button)
+	session_options_button = _disclosure_button("Session options", "SessionOptions")
+	session_options_button.pressed.connect(func() -> void: _toggle_group("session"))
+	column.add_child(session_options_button)
+	session_options_container = _option_group("SessionOptionsGroup", column)
+	settings_button = _button("Settings", "", "Settings")
+	settings_button.pressed.connect(func() -> void: settings_requested.emit(settings_button))
+	column.add_child(settings_button)
+
 	workshop_button = _button("Aircraft Workshop", "", "Workshop")
 	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
-	column.add_child(workshop_button)
+	session_options_container.add_child(workshop_button)
 	time_of_day_button = _button("Time of day", "", "TimeOfDay")
 	time_of_day_button.pressed.connect(func() -> void: time_of_day_requested.emit(time_of_day_button))
-	column.add_child(time_of_day_button)
+	session_options_container.add_child(time_of_day_button)
 	failure_settings_button = _button("Failure settings · next flight", "", "Failures")
 	failure_settings_button.pressed.connect(func() -> void: failure_settings_requested.emit(failure_settings_button))
 	failure_settings_button.visible = false # the direct route has no next Home flight
-	column.add_child(failure_settings_button)
-	help_button = _button("Help", "", "Help")
-	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
-	column.add_child(help_button)
+	session_options_container.add_child(failure_settings_button)
 	controls_button = _button("Controller settings", "", "ControllerSettings")
 	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
-	column.add_child(controls_button)
+	session_options_container.add_child(controls_button)
 	overlays_button = _button("Flight overlays", "", "Overlays") # HUD-06; hidden when the flight has none
 	overlays_button.pressed.connect(func() -> void: overlays_requested.emit(overlays_button))
 	overlays_button.visible = false
-	column.add_child(overlays_button)
+	session_options_container.add_child(overlays_button)
+
+	help_button = _button("Help", "", "Help")
+	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
+	column.add_child(help_button)
+	exit_options_button = _disclosure_button("Exit options", "ExitOptions")
+	exit_options_button.pressed.connect(func() -> void: _toggle_group("exit"))
+	column.add_child(exit_options_button)
+	exit_options_container = _option_group("ExitOptionsGroup", column)
 	end_button = _button("End flight", "", "End")
 	end_button.pressed.connect(func() -> void: end_requested.emit())
 	end_button.visible = can_end
-	column.add_child(end_button)
+	exit_options_container.add_child(end_button)
 	quit_button = _button("Quit", "", "Quit")
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
-	column.add_child(quit_button)
+	exit_options_container.add_child(quit_button)
 	note_label = _wrapped_label()
 	note_label.visible = false
 	column.add_child(note_label)
@@ -192,6 +214,33 @@ func _ready() -> void:
 	Input.joy_connection_changed.connect(_on_joy_changed) # disconnected automatically when the menu is freed
 
 
+func _unhandled_input(event: InputEvent) -> void:
+	# Screen handles Escape before GUI input. This covers the menu-pad Back/ui_cancel action.
+	if not get_node("Screen")._active or not event.is_action_pressed("ui_cancel"):
+		return
+	get_viewport().set_input_as_handled()
+	_on_back_requested()
+
+
+func _on_back_requested() -> void:
+	if not _open_group.is_empty():
+		_toggle_group("")
+		return
+	continue_requested.emit()
+
+
+func _toggle_group(group_name: String) -> void:
+	var previous_group := _open_group
+	var next_group := "" if _open_group == group_name else group_name
+	_open_group = next_group
+	session_options_container.visible = _open_group == "session"
+	exit_options_container.visible = _open_group == "exit"
+	session_options_button.button_pressed = _open_group == "session"
+	exit_options_button.button_pressed = _open_group == "exit"
+	if previous_group != "" and _open_group == "":
+		(session_options_button if previous_group == "session" else exit_options_button).grab_focus()
+
+
 func _process(delta: float) -> void:
 	_controller_status_elapsed += delta
 	if _controller_status_elapsed >= 0.1 and is_instance_valid(_session):
@@ -257,6 +306,22 @@ func set_note(text: String) -> void:
 
 func _button(text: String, variation: String, node_name: String) -> Button:
 	return Widgets.button(text, variation, node_name)
+
+
+func _disclosure_button(text: String, node_name: String) -> Button:
+	var button := _button(text, "", node_name)
+	button.toggle_mode = true
+	return button
+
+
+func _option_group(node_name: String, parent: VBoxContainer) -> VBoxContainer:
+	var group := VBoxContainer.new()
+	group.name = node_name
+	group.visible = false
+	group.add_theme_constant_override("separation", 8)
+	group.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	parent.add_child(group)
+	return group
 
 
 func _wrapped_label() -> Label:

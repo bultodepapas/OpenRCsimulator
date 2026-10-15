@@ -52,7 +52,7 @@ func _run() -> void:
 func _check_layout(home: Control, label: String) -> void:
 	var sidebar: Control = home.get_node("Sidebar")
 	var button: Button = home.start_button
-	var card: Control = home.get_node("Sidebar/Scroll/Column/AircraftCard")
+	var card: Control = home.get_node("Sidebar/SidebarContent/Scroll/Column/AircraftCard")
 	_check(label + " sidebar remains 440 px", is_equal_approx(sidebar.size.x, 440.0))
 	_check(label + " button stays inside its card", button.global_position.x >= card.global_position.x and button.global_position.x + button.size.x <= card.global_position.x + card.size.x)
 	_check(label + " full button height fits its content", button.size.y >= button.get_combined_minimum_size().y - 0.5)

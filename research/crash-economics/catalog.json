@@ -5,7 +5,7 @@
   "generated_by": "research/crash-economics/build_catalog.py",
   "source_hashes": {
     "price-research-components.json": "c347bcf8c2ea1cef0a15166ddc1fddee0f8582e8889e46726a89c329d52f53d3",
-    "price-research-fleet.json": "6098619ec3c9a9d6f8b74053909b8b8a999d39a743ed6963b1090942d5f9c572"
+    "price-research-fleet.json": "5e3d13fd7cdedfdbad33d68a4ef29b44709e26a7e683618bd0d3358c97ceca0e"
   },
   "policy": {
     "currency": "USD",
@@ -386,7 +386,7 @@
       "source_url": "https://www.tmhobby.com/jp-hobby-er-150-control-box-v1-v2-electric-retract-landing-gear-set-for-sebart-2-0m-avanti-s-2-1m-avanti-s-fc-airplane.html",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-15. Includes two main retracts with 86mm brake wheels, steerable nose retract/wheel and brake/control box; 2S LiPo operation, listed for 18–20kg aircraft and Sebart 2.0m Avanti S. Fit to the specific simulated Avanti A200/Ventage airframe is unconfirmed."
+      "notes": "Observed 2026-10-15. Direct TM Hobby product-page fetch (Firecrawl maxAge=0, HTTP 200) confirmed the US$780.00 price and In stock status on this date. Includes two main retracts with 86mm brake wheels, steerable nose retract/wheel and brake/control box; 2S LiPo operation, listed for 18–20kg aircraft and Sebart 2.0m Avanti S. Fit to the specific simulated Avanti A200/Ventage airframe is unconfirmed."
     },
     {
       "id": "jet_turbine_jetcat_p100_rx_bl_proxy",
@@ -406,7 +406,7 @@
       "source_url": "https://www.chiefrc.com/products/p100-rx-bl-turbine-engine-with-brushless-pump-22-5-lbs-thrust-from-jetcat",
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
-      "notes": "Observed 2026-10-15. Current 100 N brushless-pump P100-RX variant is a price proxy for the simulated P100-RX; it is not a 200 N-class P200. Listing includes starter, ECU, pump and installation accessories; the recommended 3S LiFePO4 battery is separate."
+      "notes": "Observed 2026-10-15. Direct Chief RC product-page fetch (Firecrawl maxAge=0, HTTP 200) confirmed the listed US$2,649.00 price and Backordered status on this date. Current 100 N brushless-pump P100-RX variant is a price proxy for the simulated P100-RX; it is not a 200 N-class P200. Listing includes starter, ECU, pump and installation accessories; the recommended 3S LiFePO4 battery is separate."
     },
     {
       "id": "os-fs64v-osmg901",

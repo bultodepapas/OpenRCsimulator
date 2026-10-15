@@ -2579,3 +2579,87 @@ msgstr "Control de vuelo: %s. Revisa las asignaciones en Configuración de contr
 
 msgid "Trigger throttle: left X yaw, right X roll, right Y pitch, RT/R2 throttle (axis 5)."
 msgstr "Acelerador en gatillo: X izquierdo guiñada, X derecho alabeo, Y derecho cabeceo, RT/R2 acelerador (eje 5)."
+
+msgid "Settings"
+msgstr "Ajustes"
+
+msgid "PRACTICE"
+msgstr "PRÁCTICA"
+
+msgid "ACTIVITY"
+msgstr "ACTIVIDAD"
+
+msgid "Session options"
+msgstr "Opciones de la sesión"
+
+msgid "Hide session options"
+msgstr "Ocultar opciones de la sesión"
+
+msgid "Exit options"
+msgstr "Opciones de salida"
+
+msgid "Return to Home"
+msgstr "Volver al inicio"
+
+msgid "Choose a runway or airborne start on Home. Configure wind, gusts, turbulence and field air density before flying. Flight models are experimental."
+msgstr "Elige en Inicio si despegar desde la pista o comenzar en el aire. Configura el viento, las ráfagas, la turbulencia y la densidad del aire antes de volar. Los modelos de vuelo son experimentales."
+
+msgid "Display"
+msgstr "Pantalla"
+
+msgid "Window mode"
+msgstr "Modo de ventana"
+
+msgid "Windowed"
+msgstr "En ventana"
+
+msgid "Borderless fullscreen"
+msgstr "Pantalla completa sin bordes"
+
+msgid "Interface scale"
+msgstr "Tamaño del texto"
+
+msgid "Panel background"
+msgstr "Fondo de los paneles"
+
+msgid "Use opaque panels"
+msgstr "Usar paneles opacos"
+
+msgid "Accessibility"
+msgstr "Accesibilidad"
+
+msgid "Reduce interface motion"
+msgstr "Reducir animaciones"
+
+msgid "Language"
+msgstr "Idioma"
+
+msgid "Interface language"
+msgstr "Idioma de la interfaz"
+
+msgid "Help & About"
+msgstr "Ayuda y acerca de"
+
+msgid "Revert"
+msgstr "Revertir"
+
+msgid "Keep changes"
+msgstr "Conservar cambios"
+
+msgid "Changes apply immediately. Keep saves them; Revert or Back restores saved display settings."
+msgstr "Vista previa inmediata. Conservar guarda los cambios; Revertir o Volver restaura los ajustes de pantalla guardados."
+
+msgid "Keep the display test within %d seconds."
+msgstr "Confirma la pantalla antes de %d segundos."
+
+msgid "Display test expired. Saved settings restored."
+msgstr "La prueba caducó. Se restauraron los ajustes guardados."
+
+msgid "Display settings saved."
+msgstr "Ajustes de pantalla guardados."
+
+msgid "Changes reverted. Saved display settings restored."
+msgstr "Cambios revertidos. Se restauraron los ajustes guardados."
+
+msgid "Could not save display settings (error %d)."
+msgstr "No se pudieron guardar los ajustes de pantalla (error %d)."
