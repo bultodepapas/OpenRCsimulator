@@ -1,0 +1,21 @@
+PASS test_integrator 9 checks, 0 failed
+PASS test_rigid_body 15 checks, 0 failed
+PASS test_checkpoint H8 checkpoints: 92 checks, 0 failed
+PASS test_session_guards 32 checks, 0 failed
+PASS test_continuous_state continuous state: 42 checks, 0 failed
+PASS test_rk_stage_time 22 checks, 0 failed
+PASS test_retractable_gear AV-09 retractable gear: 68 checks, 0 failed
+PASS test_aircraft_propulsion_runtime aircraft propulsion runtime: 214 checks, 0 failed
+PASS test_shaft_coupled G2 coupled shaft: 43 checks, 0 failed
+PASS test_turbine_continuous 46 checks, 0 failed
+PASS test_glow_coupling glow shaft/prop coupling: 65 checks, 0 failed
+PASS test_wash_transport E0b5 transport: 42 checks, 0 failed
+PASS test_golden 
+PASS test_checkpoint_integrity H8-R1 checkpoint integrity: 149 checks, 0 failed
+PASS test_replay_integrity H9-R1 replay integrity: 153 checks, 0 failed
+PASS test_heli_session HELI-16 generated preset/session: 42 checks, 0 failed
+PASS test_failure_shutdown Failure power shutdown integration: 206 checks, 0 failed
+PASS test_touchdown 12 checks, 0 failed
+PASS test_ground_contact 22 checks, 0 failed
+PASS test_heli_ground_session (after the per-start layout fix) HELI-20 ground session: 56 checks, 0 failed
+PASS test_heli_session (rerun after the fix) HELI-16 generated preset/session: 42 checks, 0 failed

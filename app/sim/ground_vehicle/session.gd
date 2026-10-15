@@ -10,12 +10,15 @@ const AirfieldCourse := preload("res://physics/ground_vehicle/airfield_course.gd
 const Damage := preload("res://physics/ground_vehicle/vehicle_damage.gd")
 const Math3D := preload("res://physics/math3d.gd")
 const WetPhysics := preload("res://physics/ground_vehicle/vehicle_environment.gd")
+const Sim := preload("res://sim/simulation.gd")
+const VehicleModel := preload("res://sim/vehicle_model.gd")
 
 const FORMAT := "openrc-ground-vehicle-checkpoint v3"
 const RECORDING_FORMAT := "openrc-ground-vehicle-recording v4"
 const FIXED_HZ := 240
 const DT := 1.0 / float(FIXED_HZ)
 const STATE_SIZE := 31
+const BODY_SIZE := 13 # the physics/rigid_body.gd state at the front of the 31 values
 const MAX_FRAME_DT_S := 2.0
 const MAX_RECORDING_DURATION_TICKS := FIXED_HZ * 60 * 10
 const MAX_RECORDING_SAMPLES := MAX_RECORDING_DURATION_TICKS + 1024
@@ -53,11 +56,22 @@ signal recording_interrupted(reason: String, sample_count: int)
 
 var prepared := false
 var paused := true
-var tick := 0
-var _state := PackedFloat64Array()
+## SF-03: the shared Simulation kernel (sim/simulation.gd) owns the 13-value body, the 18 coupled values and the
+## tick clock; this session installs its VehicleModel and keeps controls, damage, events, recording and replay.
+var sim: Node = Sim.new()
+var tick: int:
+	get:
+		return sim.tick
+var _state: PackedFloat64Array:
+	get:
+		return _combined_state()
 var state: PackedFloat64Array:
 	get:
-		return _state.duplicate()
+		return _combined_state()
+## Controls, cached road closure and substep count of the tick being integrated; every RK stage reads them.
+var _tick_controls: Dictionary = {"throttle": 0.0, "steering": 0.0, "brake": 0.0, "reverse": false}
+var _tick_road: Callable
+var _tick_substeps: int = 1
 var _last_telemetry: Dictionary = {}
 var last_telemetry: Dictionary:
 	get:
@@ -236,7 +250,6 @@ func _commit_prepared(staged: Dictionary) -> void:
 	_road = staged.road
 	_initial_state = staged.initial_state
 	_spawn_up_delta_m = float(staged.spawn_up_delta_m)
-	_state = _initial_state.duplicate()
 	_damage.reset()
 	_last_telemetry = staged.telemetry
 	_last_telemetry["damage"] = _damage.visual_state()
@@ -246,7 +259,6 @@ func _commit_prepared(staged: Dictionary) -> void:
 	_last_effective_controls = _neutral_controls()
 	spawn_id = staged.spawn_id
 	prepared = true
-	tick = 0
 	pause_reason = "prepared"
 	_event_tape.clear()
 	_control_tape.clear()
@@ -270,6 +282,8 @@ func _commit_prepared(staged: Dictionary) -> void:
 	slowdown_detected = false
 	_last_sample_is_neutral_armed = false
 	_set_paused(true)
+	if not _install_kernel(_initial_state):
+		_fail_safe("ground-vehicle kernel refused the prepared state: " + str(sim.fault_reason))
 
 
 func reset(selected_spawn_id: String = "") -> bool:
@@ -409,6 +423,14 @@ func resume() -> bool:
 	return true
 
 
+func _init() -> void:
+	sim.name = "Simulation"
+	# Ticks come only from tick_once(); the engine's physics loop never steps this kernel.
+	sim.process_mode = Node.PROCESS_MODE_DISABLED
+	add_child(sim)
+	sim.faulted.connect(func(reason: String) -> void: _fail_safe("ground-vehicle kernel: " + reason))
+
+
 func _notification(what: int) -> void:
 	if what == NOTIFICATION_APPLICATION_FOCUS_OUT:
 		add_pause_hold("focus")
@@ -436,30 +458,46 @@ func tick_once(sample: Dictionary) -> bool:
 		return false
 	# Record the requested controls; damage only reduces propulsion authority.
 	var effective_controls: Dictionary = _damage.effective_controls(parsed.controls)
-	var next_state: PackedFloat64Array = VehicleDynamics.step(_state, _model, effective_controls, DT, _road)
-	if not _state_is_valid(next_state):
+	var previous_state: PackedFloat64Array = _state
+	# SF-03: the kernel integrates this tick's plan. Damage, events and recording stay tick-boundary observers
+	# here, so an observer that rejects the tick rolls the kernel back to the state it had committed.
+	var plan: Dictionary = VehicleDynamics.begin_tick(previous_state, _model, effective_controls, DT, _road)
+	if not bool(plan.get("ok", false)):
+		_fail_safe("ground-vehicle kernel rejected the tick or returned nonfinite state")
+		return false
+	var rollback: Dictionary = sim.checkpoint()
+	if rollback.is_empty():
+		_fail_safe("ground-vehicle kernel cannot checkpoint the tick it is about to integrate")
+		return false
+	_tick_controls = effective_controls
+	_tick_road = plan["road"]
+	_tick_substeps = int(plan["substeps"])
+	sim.inputs = _controls_to_packed(parsed.controls)
+	sim.step()
+	var next_state: PackedFloat64Array = _state
+	if not sim.fault_reason.is_empty() or not _state_is_valid(next_state):
 		_fail_safe("ground-vehicle kernel rejected the tick or returned nonfinite state")
 		return false
 	var next_telemetry: Dictionary = VehicleDynamics.telemetry(next_state, _model, _road, effective_controls)
 	if not _telemetry_is_valid(next_telemetry):
+		sim.restore_checkpoint(rollback)
 		_fail_safe(str(next_telemetry.get("error", "ground-vehicle telemetry failed")))
 		return false
 	var previous_damage: Dictionary = _damage.visual_state()
-	if not _damage.advance(_state, next_state, _last_telemetry, next_telemetry, _model, DT):
+	if not _damage.advance(previous_state, next_state, _last_telemetry, next_telemetry, _model, DT):
+		sim.restore_checkpoint(rollback)
 		_fail_safe("ground-vehicle damage observer rejected the tick")
 		return false
 	var next_damage: Dictionary = _damage.visual_state()
 	next_telemetry["damage"] = next_damage
-	var next_tick := tick + 1
+	var next_tick := tick # the kernel has already committed this tick
 	var new_events: Array[Dictionary] = []
 	if next_damage.stage != previous_damage.stage:
 		new_events.append({"type": "damage", "tick": next_tick, "time_s": float(next_tick) * DT,
 			"stage": next_damage.stage, "body_damage": next_damage.body_damage,
 			"suspension_damage": next_damage.suspension_damage, "drive_scale": next_damage.drive_scale})
 	var next_braking := _braking_run.duplicate(true)
-	_observe_events(_state, next_state, _last_telemetry, next_telemetry, parsed.controls, next_tick, new_events, next_braking)
-	_state = next_state
-	tick = next_tick
+	_observe_events(previous_state, next_state, _last_telemetry, next_telemetry, parsed.controls, next_tick, new_events, next_braking)
 	_last_telemetry = next_telemetry
 	_last_controls = parsed.controls.duplicate(true)
 	_last_effective_controls = effective_controls.duplicate(true)
@@ -528,7 +566,9 @@ func manual_recovery() -> bool:
 	if not _telemetry_is_valid(telemetry):
 		load_error = str(telemetry.get("error", "manual recovery telemetry failed"))
 		return false
-	_state = recovered
+	if not _restore_kernel_state(recovered, tick):
+		load_error = "manual recovery pose was rejected by the kernel"
+		return false
 	_damage.reset() # Recovery is an explicit repair and already invalidates the run.
 	telemetry["damage"] = _damage.visual_state()
 	_last_telemetry = telemetry
@@ -768,9 +808,9 @@ func restore_checkpoint(candidate: Variant) -> bool:
 	next_telemetry["damage"] = next_damage.visual_state()
 	if not _telemetry_is_valid(next_telemetry):
 		return false
-	_state = next_state
+	if not _restore_kernel_state(next_state, int(candidate.tick)):
+		return false
 	_damage = next_damage
-	tick = int(candidate.tick)
 	spawn_id = str(candidate.spawn_id)
 	_control_tape = _decode_float64_blob(candidate.control_tape_f64_base64, int(candidate.tick) * 4)
 	_last_controls = restored_controls
@@ -1863,6 +1903,76 @@ func _result_errors(result: Dictionary, fallback: String) -> PackedStringArray:
 			errors.append(str(item))
 		return errors
 	return PackedStringArray([fallback])
+
+
+func _combined_state() -> PackedFloat64Array:
+	var combined: PackedFloat64Array = sim.state.duplicate()
+	combined.append_array(sim.continuous)
+	return combined
+
+
+## Install this vehicle into the kernel and reset it to `initial` (31 values) at tick 0.
+func _install_kernel(initial: PackedFloat64Array) -> bool:
+	if initial.size() != STATE_SIZE:
+		return false
+	var vehicle: VehicleModel = VehicleModel.new()
+	vehicle.input_size = CONTROL_LAYOUT.size()
+	vehicle.aux_size = 0
+	vehicle.modes_size = 0
+	vehicle.continuous_size = STATE_SIZE - BODY_SIZE
+	vehicle.identity = {"vehicle": "ground-vehicle", "solver": VehicleDynamics.SOLVER_VERSION,
+		"state_layout": STATE_LAYOUT.duplicate()}
+	vehicle.stage = _stage
+	vehicle.step_policy = _tick_policy
+	if not sim.set_model(vehicle):
+		return false
+	# Kernel configuration only: the coupled generalized solve supplies the body derivative itself.
+	sim.mass = float(_model["sprung_mass_kg"])
+	sim.inertia = PackedFloat64Array(_model["sprung_inertia_kg_m2"]).duplicate()
+	sim.gravity = float(_model["gravity_m_per_s2"])
+	sim.aux = PackedFloat64Array()
+	sim.modes = PackedInt64Array()
+	sim.inputs = _controls_to_packed(_neutral_controls())
+	_tick_controls = _neutral_controls()
+	_tick_road = _road
+	_tick_substeps = 1
+	sim.continuous = initial.slice(BODY_SIZE)
+	return sim.reset(initial.slice(0, BODY_SIZE))
+
+
+## Replace the kernel's committed state at `at_tick` without emitting a tick (manual recovery, checkpoint restore).
+func _restore_kernel_state(combined: PackedFloat64Array, at_tick: int) -> bool:
+	if combined.size() != STATE_SIZE or at_tick < 0:
+		return false
+	var body: PackedFloat64Array = combined.slice(0, BODY_SIZE)
+	var snapshot: Dictionary = {
+		"format": Sim.CHECKPOINT_FORMAT, "tick": at_tick, "dt": sim.dt(), "state": body, "previous": body.duplicate(),
+		"aux": PackedFloat64Array(), "inputs": sim.inputs.duplicate(), "modes": PackedInt64Array(),
+		"last_loads": PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]), "mass": sim.mass,
+		"inertia": sim.inertia.duplicate(), "gravity": sim.gravity, "stop_at_tick": -1,
+		"continuous": combined.slice(BODY_SIZE),
+	}
+	return sim.restore_checkpoint(snapshot)
+
+
+## VehicleModel stage: the 31-value derivative of this tick's plan, split for the kernel. The coupled generalized
+## solve does not separate body loads; telemetry owns the forces, so the kernel's load record is zero here.
+func _stage(body: PackedFloat64Array, continuous: PackedFloat64Array, _t: float) -> Dictionary:
+	var combined: PackedFloat64Array = body.duplicate()
+	combined.append_array(continuous)
+	var rate: PackedFloat64Array = VehicleDynamics.stage_derivative(combined, _model, _tick_controls, _tick_road)
+	if rate.size() != STATE_SIZE:
+		return {}
+	return {
+		"loads": PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0]),
+		"derivative": rate.slice(BODY_SIZE),
+		"rotor_momentum": PackedFloat64Array([0.0, 0.0, 0.0]),
+		"body_derivative": rate.slice(0, BODY_SIZE),
+	}
+
+
+func _tick_policy(combined: PackedFloat64Array, t: float, dt: float, f: Callable, k1: PackedFloat64Array) -> PackedFloat64Array:
+	return VehicleDynamics.tick_policy(combined, t, dt, f, k1, _tick_substeps)
 
 
 func _set_paused(value: bool) -> void:

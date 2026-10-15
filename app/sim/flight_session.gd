@@ -58,7 +58,7 @@ func _failure_airborne() -> bool:
 			return false
 	return true
 
-const ElectricStop: Script = preload("res://physics/electric_stop.gd")
+const EventStep: Script = preload("res://physics/event_step.gd")
 const GlowFlight: Script = preload("res://physics/glow/flight.gd")
 ## Fixed original wet-CG datum; live contact mobility and linear fuel sampling at swept crossing fractions.
 const MASS_CONTACT_LAW := "fixed-datum-live-mass-contact-linear-fuel-v1"
@@ -337,6 +337,7 @@ const Keyboard := preload("res://input/keyboard.gd")
 const RcInput := preload("res://input/rc_input.gd")
 const RcCalibration := preload("res://input/rc_calibration.gd")
 const Sim := preload("res://sim/simulation.gd")
+const VehicleModel := preload("res://sim/vehicle_model.gd")
 const Scenarios := preload("res://sim/scenarios.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const M := preload("res://physics/math3d.gd")
@@ -1020,7 +1021,16 @@ func _apply(data: Dictionary) -> bool:
 
 func _commit_aircraft(prepared: Dictionary) -> void:
 	aircraft = prepared.data
-	sim.input_size = 6 if gear_is_retractable() else 4
+	# SF-01: the session installs one VehicleModel. Propulsion and contact callbacks are configured on it below
+	# through the kernel's compatibility properties; the laws themselves still live in this session.
+	var vehicle: VehicleModel = VehicleModel.new()
+	vehicle.input_size = 6 if gear_is_retractable() else 4
+	vehicle.identity = { vehicle = "fixed-wing", loads_law = Aero.LOADS_LAW }
+	vehicle.loads = _loads
+	vehicle.pre_tick = _pre_step
+	vehicle.rotor_momentum = rotor_momentum
+	if not sim.set_model(vehicle):
+		push_error("Cannot install the fixed-wing vehicle model")
 	_gear_cache.clear()
 	_gear_cache_fraction = -1.0
 	_contact_bindings = ContactContract.describe(aircraft.model, soft_hull_contacts)
@@ -1037,11 +1047,8 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	_prop_disc = HullContact.prop_disc(aircraft.model.propulsion)
 	_deflection_key = PackedFloat64Array()
 	_ground_effect_reach = GroundEffect.reach(aircraft.model)
-	sim.loads = _loads
 	_configure_continuous_callbacks()
 	_sync_post_step()
-	sim.pre_step = _pre_step
-	sim.rotor_momentum = rotor_momentum
 	for warning in aircraft.warnings:
 		print("aircraft data warning: ", warning)
 
@@ -1053,6 +1060,10 @@ func _configure_continuous_callbacks() -> void:
 		return
 	for field: String in PropulsionRuntime.CALLBACK_FIELDS:
 		sim.set(field, prepared[field])
+	var declared: Array[Dictionary] = []
+	for event: Variant in prepared.get("events", []):
+		declared.append(event)
+	sim.model.events = declared
 
 
 ## Family-independent accepted-endpoint observation; never called from a force evaluation.
@@ -2800,18 +2811,21 @@ func _shaft_rate(s: PackedFloat64Array, rpm: float, time_s: float) -> float:
 	return result.rpm_rate if result.ok else NAN
 
 
-## EL1d: locate the first stop, conserve momentum through the numerical boundary projection,
-## then resume the remaining tick with static friction. Only accepted state is published.
+## EL1d/EL2a: locate the first stop, conserve momentum through the numerical boundary projection, then resume
+## the remaining tick with static friction. Only accepted state is published; located events are reported to
+## the kernel (SF-04). The fixed-bus route declares its event instead and does not use this policy.
 func _electric_step(combined: PackedFloat64Array, at: float, dt: float, derivative: Callable,
-		first: PackedFloat64Array) -> PackedFloat64Array:
+		first: PackedFloat64Array) -> Variant:
 	var result: Dictionary
 	if battery_is_dynamic():
 		result = BatteryStep.advance(combined, at, dt, derivative, first,
 			RB.SIZE + _rotor_index(), RB.SIZE + _rotor_index() + 1, _project_electric_stop)
 	else:
-		result = ElectricStop.advance(combined, at, dt, derivative, first,
-			RB.SIZE + _rotor_index(), _project_electric_stop)
-	return result.state if result.ok else PackedFloat64Array([NAN])
+		result = EventStep.advance(combined, at, dt, derivative, first,
+			RB.SIZE + _rotor_index(), _project_electric_stop, "rotor_stop")
+	if not result.get("ok", false):
+		return PackedFloat64Array([NAN])
+	return {state = result.state, events = result.events}
 
 
 func _project_electric_stop(values: PackedFloat64Array, index: int) -> PackedFloat64Array:

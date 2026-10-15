@@ -1,6 +1,6 @@
 # Repository guidance
 
-Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. Keep each change small, working and independently reviewable. Use Luna Max sub-agents when useful and assign clear file boundaries.
+Build an RC airplane simulator incrementally. Prioritize robust physics, realistic flight behavior and evidence over feature breadth. The simulation kernel is a platform for every vehicle type, aircraft first: vehicle breadth enters only through the shared kernel and its contracts ([foundation plan](docs/plans/simulation-foundation.md)), and each vehicle keeps its own validation gates. Keep each change small, working and independently reviewable. Use Luna Max sub-agents when useful and assign clear file boundaries.
 
 
 do not creat thing that you can free download
@@ -33,6 +33,7 @@ Keep aircraft node/hinge names (`airplane`, `propeller`, `*_hinge`) stable. Gene
 - State in `app/sim/` and `app/physics/` uses 64-bit GDScript `float` and packed float64 arrays. Do not use `Vector3`, `Basis`, `Quaternion` or `Transform3D` for simulation state. Rendering converts at the boundary.
 - Aircraft data uses `openrc-aircraft v2`; quantities carry `{value, unit, kind, source}`. Capabilities and conditional modules are explicit. Invalid data cannot fly. V1 is an explicit historical-research path.
 - Do not name constants after built-in classes such as `Panel` or `Label`.
+- A session installs one `VehicleModel` (`app/sim/vehicle_model.gd`) into `Simulation`; the kernel reads layout and evaluators only from that model. Do not add vehicle-specific branches or callbacks to the kernel.
 - Keep drafts outside `app/` until they parse. `app/test.sh` parses every GDScript file; validate scripts before integration and run the relevant checks after integration. Run deliberate mutations on disposable copies.
 - Re-record golden flights only for an intentional, explained physics change. Software verification does not establish physical validation.
 - For flight-feel, controls or aircraft-physics tuning, use the [flight logging workflow](docs/FLIGHT-LOGGING.md): preserve a baseline `.orfl`, verify exact replay, then compare one explicit candidate using the same tick/input tape. Retain source/config identities, markers, CSV and reports with the owning track's evidence. Check `solver_changed` and `complete`; recovered prefixes and candidate runs never establish exact equivalence or physical realism. Keep the recorder read-only and bounded; use existing free plotting tools for visualization.

@@ -1,0 +1,28 @@
+ok   default model is valid 
+ok   input_size 0 is rejected 
+ok   input_size 5 is accepted: the kernel no longer hard-codes 4 or 6 
+ok   aux_size below -1 is rejected 
+ok   post_tick and post_tick_joint together are rejected 
+ok   one post-tick filter is accepted 
+ok   no loads, stage or block route is rejected 
+ok   a joint stage route satisfies the evaluator requirement 
+ok   null is rejected 
+ok   a plain RefCounted is rejected 
+ok   set_model accepts a valid model 
+ok   set_model refuses an invalid model and keeps the current one 
+ok   set_model refuses a non-model object 
+ok   sim.loads forwards to model.loads 
+ok   sim.input_size forwards to model.input_size 
+ok   Object.set on a compatibility property reaches the model 
+ok   reset accepts five inputs 
+ok   zero-load model falls at g·t after one second w 9.806650000000 expected 9.806650000000
+ok   forward speed is unchanged in free fall 
+ok   checkpoint with five inputs restores 
+ok   model with declared aux layout installs 
+ok   reset refuses aux that disagrees with the declared layout reset rejected: auxiliary, mode or continuous state disagrees with the vehicle model's declared layout
+ok   reset accepts aux matching the declared layout 
+ok   checkpoint is produced 
+ok   restore refuses a checkpoint that disagrees with the declared layout 
+ok   undeclared size keeps the H8 rule: arrays fix the layout 
+ok   declared continuous size without a continuous array is refused at reset 
+27 checks, 0 failed

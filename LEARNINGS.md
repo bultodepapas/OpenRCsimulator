@@ -60,6 +60,18 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-15 · SF-04 — a stop's known answer needs the locator's continuation, not a kinked derivative
+
+A synthetic "x falls at a constant rate and rests at zero" model located its stop at 0.6 of the tick instead of the analytic 0.5, because a derivative that switches to zero for x ≤ 0 kinks the RK4 trial map that the bracket solves. The locator treats negative trial values as a continuation, so a known-answer model must keep its derivative smooth across zero and rest only at exactly zero; then the secant lands within 1e-12 of the analytic crossing. [SF-04 evidence](docs/research/simulation-foundation/SF-04/README.md).
+
+## 2026-10-15 · SF-03 — a kernel transaction does not cover observers that run after its commit
+
+Moving the truck onto the shared kernel left telemetry, damage, events and recording in the session, after `sim.step()` has committed. Before, a rejected observation left the state untouched; after, the kernel had already advanced. Keep the old transaction by taking a kernel checkpoint before the step and restoring it when an observer rejects the tick, until the observers join the kernel's own event protocol. [SF-03 evidence](docs/research/simulation-foundation/SF-03/README.md).
+
+## 2026-10-15 · SF-02 — a vehicle's coupled-state layout belongs to the start, not the vehicle
+
+Declaring the helicopter's continuous block as six rotor states refused every ground start: a pad start appends four elastic skid-friction pairs, so the same vehicle integrates 14 coupled values. A layout declaration must be made where the start is resolved and held fixed for the run; the kernel then enforces it at reset and restore. [SF-01/02 evidence](docs/research/simulation-foundation/SF-01/README.md).
+
 ## 2026-10-15 · P51-22 — a consistent law can drop a measured effect; fix the source, not the denominator
 
 R02 rewrote tail downwash as a wake velocity divided by the local tail speed. This is consistent in units, but inside the propeller jet it divided by the washed speed and almost removed the downwash. NACA Report 690 measured propeller operation increasing tail downwash on the tested aircraft. The P-51, the only catalog aircraft with tail wash, now rotated 3 m/s later and snap-rolled out of a test loop. The shared suites still passed, because their reference oracles encoded the new law. When you refactor a shared law, run every aircraft that declares the module and compare known qualitative effects from primary data. Bisect regressions in a clean worktree with that aircraft's tests. Do not patch the consumer instead of the missing source: replacing the washed denominator with the free-stream speed restored the tests but created a direction-dependent zero-speed force jump. The missing physics was the wing's immersion in the jet ([owner review](docs/research/physics-audit-2026-10-14/remediation/R11/washed-downwash-diagnostic/README.md)). [P51-22](docs/research/p51-realism/P51-22/README.md)

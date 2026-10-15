@@ -1,0 +1,25 @@
+PASS test_rcv_activity RCV activity: 24 checks, 0 failures
+PASS test_rcv_activity_audit RCV activity audit: 40 checks, 0 failures
+FAIL test_rcv_airfield_course exit=1 ERROR: FAIL: dry broadphase and native lake path preserve shared heights/normals over 980 points ERROR: FAIL: bank bounds invalidate on changed contents and preserve stencil-edge decisions 
+PASS test_rcv_airfield_track RCV airfield track: 19 checks, 0 failures
+PASS test_rcv_attitude_integration RCV attitude integration: 6 checks, 0 failures
+PASS test_rcv_course 
+PASS test_rcv_damage RCV damage: 175 checks, 0 failures
+PASS test_rcv_damage_session RCV damage Session: 19/19 checks passed
+PASS test_rcv_effects_activity RCV effects activity: 19 checks, 0 failures
+PASS test_rcv_ground_effects RCV ground effects: 91 checks, 0 failures
+PASS test_rcv_handling RCV handling: 21/21 checks passed
+PASS test_rcv_input RCV input: 32 checks, 0 failed
+PASS test_rcv_menu RCV menu: 27 checks, 0 failures
+PASS test_rcv_obstacle_contacts RCV obstacle contacts: 14 checks, 0 failures
+PASS test_rcv_powertrain RCV powertrain: 9/9 checks passed
+PASS test_rcv_presentation RCV presentation: 16 checks, 0 failures
+PASS test_rcv_render_audit RCV render audit: 34 checks, 0 failures
+PASS test_rcv_session RCV session: 125 checks, 0 failed
+PASS test_rcv_support RCV-04b: 111 checks, 0 failed
+PASS test_rcv_suspension RCV-04a: 83 checks, 0 failed
+PASS test_rcv_track_view 
+PASS test_rcv_vehicle_data 
+FAIL test_rcv_vehicle_dynamics exit=1 SCRIPT ERROR: Parse Error: Static function "_rk4_step()" not found in base "res://physics/ground_vehicle/vehicle_dynamics.gd". ERROR: Failed to load script "res://tests/test_rcv_vehicle_dynamics.gd" with error "Parse error". 
+PASS test_rcv_wet_effects RCV wet effects: 79 checks, 0 failures
+DONE

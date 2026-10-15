@@ -1,71 +1,113 @@
 # Fixed-step owner of the rigid-body state. 64-bit floats only (guarded by test.sh).
 # Steps in _physics_process at the project's fixed tick (240 Hz), independent of rendering.
 # Rendering reads interpolated() with Engine.get_physics_interpolation_fraction().
+# SF-01: the kernel steps exactly one VehicleModel (sim/vehicle_model.gd): it declares the state layout and
+# supplies the read-only stage evaluators. The compatibility properties below forward to that model, so
+# sessions and tests that still configure callbacks one by one keep working until they install a model.
 extends Node
 
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const RK := preload("res://physics/integrator.gd")
+const VehicleModel := preload("res://sim/vehicle_model.gd")
+const EventStep := preload("res://physics/event_step.gd")
 
 signal paused_changed(paused: bool)
 ## Emitted when a numerical or input-integrity guard stops the simulation.
 signal faulted(reason: String)
 ## Read-only observer boundary after input guards, before any tick transition. FL replay records sparse external edits here.
 signal before_step(tick: int)
+## SF-04: emitted before `stepped` when the accepted tick located discrete events ({type, time_s, ...} each).
+signal events_located(tick: int, events: Array[Dictionary])
 ## Emitted after every physics step (and once on reset, with tick 0), for recorders and telemetry.
 signal stepped(tick: int, t: float, state: PackedFloat64Array, loads: PackedFloat64Array, inputs: PackedFloat64Array, aux: PackedFloat64Array)
 
 var mass := 1.0
 var inertia := PackedFloat64Array([1.0, 1.0, 1.0, 0.0, 0.0, 0.0])
 var gravity := 9.80665
-## loads(state, t) -> PackedFloat64Array [Fx, Fy, Fz, Mx, My, Mz], body axes, gravity excluded.
-var loads: Callable = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
-	return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-
-## Pilot commands, set by the game each frame: [roll, pitch, yaw, throttle] (−1…1, throttle 0…1).
+## The stepped vehicle. Sessions build a VehicleModel and install it with set_model(); the kernel reads only this
+## object for layout and evaluators. Mass, inertia and gravity stay here because they roll back with the tick.
+var model: VehicleModel = VehicleModel.new()
+## Pilot commands, set by the game each frame: model.input_size values (legacy layout [roll, pitch, yaw, throttle],
+## −1…1 and throttle 0…1; retractable-gear sessions append deployment target and wheel-brake demand).
 var inputs := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
-## Explicit owner-selected layout. Legacy sessions retain four primary controls;
-## retractable-gear sessions append deployment target and wheel-brake demand.
-var input_size: int = 4
 ## Loads at the start of the latest step (the RK4 k1 evaluation), for traces.
 var last_loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 ## Auxiliary states advanced once per tick, before integration (e.g. [engine_rpm]). Held constant during RK4.
 var aux := PackedFloat64Array([0.0])
 ## Discrete modes belong to the tick transaction, never the RK derivative. Layout owned by the session.
 var modes := PackedInt64Array()
-## pre_step(aux, inputs, dt) -> PackedFloat64Array: new aux values. Runs at the fixed tick, so it stays deterministic.
-var pre_step: Callable = func(a: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
-	return a
-## Optional deterministic tick-boundary contact filter. Receives (previous_body, candidate_body, next_tick)
-## before state commit and trace emission, and returns the accepted 13-value float64 body state.
-## Empty by default; scenery remains outside the physics integrator.
-var post_step: Callable = Callable()
-## Alternative contact boundary for state-dependent mass. Receives detached
-## (previous_body, candidate_body, next_tick, previous_continuous, candidate_continuous).
-## Returns only the accepted body; continuous state remains the validated integrator result.
-## Owners select exactly one post-step callback. Neither may publish before stepped.
-var post_step_joint: Callable = Callable()
-## rotor_momentum(aux) -> PackedFloat64Array: angular momentum of spinning parts in body axes (N·m·s), or empty.
-var rotor_momentum: Callable = func(_a: PackedFloat64Array) -> PackedFloat64Array:
-	return PackedFloat64Array()
-
 ## E0b5: coupled float64 state, packed after the body only inside RK4. Empty on legacy aircraft.
-## Callbacks receive (body_state, continuous_state, stage_time); both are read-only.
 var continuous: PackedFloat64Array = PackedFloat64Array()
-var continuous_loads: Callable
-var continuous_derivative: Callable
-## G2a stage-cost slice: one pure evaluation may supply all three stage results together.
-## {loads: float64[6], derivative: float64[continuous.size], rotor_momentum: float64[3]}.
-## An unset Callable retains the separate-callback path; no stage result survives the tick.
-var continuous_evaluate: Callable
-## G2a: optional stage-local spinning momentum and pure endpoint projection into sampled telemetry.
-## Empty callbacks retain the legacy sampled-rotor policy. Projection is validated before any commit.
-var continuous_rotor_momentum: Callable
-var continuous_aux: Callable
-## EL1d: optional pure bounded integration policy for a continuous-state event.
-## (combined, t, dt, derivative, k1) -> float64 combined state; failure returns nonfinite state.
-var continuous_step: Callable
 var _last_valid_continuous: PackedFloat64Array = PackedFloat64Array()
+## SF-04: events the latest accepted tick located, in tick order. A diagnostic record, not state: it is not part
+## of the checkpoint and is cleared by reset and restore.
+var last_events: Array[Dictionary] = []
+## Located event times may land one rounding step outside the tick window; wider than that is malformed.
+const EVENT_TIME_SLACK_S := 1e-9
+
+## Compatibility properties (SF-01): each forwards to the installed model under its pre-SF-01 name.
+## New code sets `model` fields directly; these are retired once every caller installs a VehicleModel.
+var loads: Callable:
+	set(value):
+		model.loads = value
+	get:
+		return model.loads
+var input_size: int:
+	set(value):
+		model.input_size = value
+	get:
+		return model.input_size
+var pre_step: Callable:
+	set(value):
+		model.pre_tick = value
+	get:
+		return model.pre_tick
+var post_step: Callable:
+	set(value):
+		model.post_tick = value
+	get:
+		return model.post_tick
+var post_step_joint: Callable:
+	set(value):
+		model.post_tick_joint = value
+	get:
+		return model.post_tick_joint
+var rotor_momentum: Callable:
+	set(value):
+		model.rotor_momentum = value
+	get:
+		return model.rotor_momentum
+var continuous_loads: Callable:
+	set(value):
+		model.block_loads = value
+	get:
+		return model.block_loads
+var continuous_derivative: Callable:
+	set(value):
+		model.block_derivative = value
+	get:
+		return model.block_derivative
+var continuous_evaluate: Callable:
+	set(value):
+		model.stage = value
+	get:
+		return model.stage
+var continuous_rotor_momentum: Callable:
+	set(value):
+		model.stage_rotor_momentum = value
+	get:
+		return model.stage_rotor_momentum
+var continuous_aux: Callable:
+	set(value):
+		model.block_aux = value
+	get:
+		return model.block_aux
+var continuous_step: Callable:
+	set(value):
+		model.step_policy = value
+	get:
+		return model.step_policy
 
 var state := PackedFloat64Array()
 var previous := PackedFloat64Array()
@@ -96,6 +138,24 @@ const CHECKPOINT_FORMAT := "openrc-simulation-checkpoint v1"
 const MIN_QUATERNION_NORM_SQ := 1e-24
 
 
+## Install the vehicle to step. The contract's static shape is validated here (VehicleModel.validate); agreement
+## with the live arrays is checked at reset and restore. An invalid candidate leaves the current model untouched.
+func set_model(candidate: Variant) -> bool:
+	if not (candidate is VehicleModel):
+		return false
+	if not VehicleModel.validate(candidate).ok:
+		return false
+	model = candidate
+	return true
+
+
+## Declared sizes (>= 0) must match the arrays; -1 keeps the H8 rule that the arrays at reset fix the layout.
+func _layout_matches_model(sampled: PackedFloat64Array, discrete: PackedInt64Array, extra: PackedFloat64Array) -> bool:
+	return (model.aux_size < 0 or sampled.size() == model.aux_size) \
+		and (model.modes_size < 0 or discrete.size() == model.modes_size) \
+		and (model.continuous_size < 0 or extra.size() == model.continuous_size)
+
+
 func reset(initial: PackedFloat64Array) -> bool:
 	var candidate := prepare_reset(initial)
 	if not candidate.ok:
@@ -113,8 +173,13 @@ func prepare_reset(initial: PackedFloat64Array) -> Dictionary:
 		return {ok = false, message = "reset rejected: initial state is nonfinite, malformed, or has a degenerate quaternion"}
 	if not _configuration_is_valid():
 		return {ok = false, message = "reset rejected: mass, gravity, or inertia is invalid"}
-	if input_size not in [4, 6] or not _array_is_finite(inputs, input_size) or not _array_is_finite(aux) or not _array_is_finite(continuous):
+	var contract: Dictionary = VehicleModel.validate(model)
+	if not contract.ok:
+		return {ok = false, message = "reset rejected: " + str(contract.message)}
+	if not _array_is_finite(inputs, model.input_size) or not _array_is_finite(aux) or not _array_is_finite(continuous):
 		return {ok = false, message = "reset rejected: input or auxiliary state is nonfinite or malformed"}
+	if not _layout_matches_model(aux, modes, continuous):
+		return {ok = false, message = "reset rejected: auxiliary, mode or continuous state disagrees with the vehicle model's declared layout"}
 	if not _continuous_aux_matches(continuous, aux):
 		return {ok = false, message = "reset rejected: continuous and auxiliary states disagree"}
 	var next_state := initial.duplicate()
@@ -143,6 +208,7 @@ func commit_prepared_reset(candidate: Dictionary) -> void:
 	_inertia_inv = candidate.inertia_inverse.duplicate()
 	_inertia_cache = inertia.duplicate()
 	last_loads = candidate.loads.duplicate()
+	last_events = []
 	fault_reason = ""
 	_remember_valid_state()
 	stepped.emit(tick, time(), state, last_loads, inputs, aux)
@@ -186,21 +252,21 @@ func step() -> void:
 		return
 	if not _refresh_inertia_inverse():
 		return
-	if input_size != _last_valid_inputs.size() or not _array_is_finite(inputs, input_size) or not _array_is_finite(aux, _last_valid_aux.size()) or modes.size() != _last_valid_modes.size() \
+	if model.input_size != _last_valid_inputs.size() or not _array_is_finite(inputs, model.input_size) or not _array_is_finite(aux, _last_valid_aux.size()) or modes.size() != _last_valid_modes.size() \
 			or not _array_is_finite(continuous, _last_valid_continuous.size()):
 		_fail_safe("step rejected: input or auxiliary state is nonfinite or malformed")
 		return
 	before_step.emit(tick)
 	var old_aux := aux.duplicate()
-	var next_aux: Variant = pre_step.call(old_aux, inputs, dt())
+	var next_aux: Variant = model.pre_tick.call(old_aux, inputs, dt())
 	if not _array_is_finite(next_aux) or next_aux.size() != old_aux.size():
 		_fail_safe("step rejected: pre-step produced nonfinite or malformed auxiliary state")
 		return
 	aux = next_aux
 	var combined: PackedFloat64Array = _packed_state(state)
 	var current_joint: Dictionary = {}
-	if not continuous.is_empty() and continuous_evaluate.is_valid():
-		var candidate: Variant = continuous_evaluate.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t)
+	if not continuous.is_empty() and model.stage.is_valid():
+		var candidate: Variant = model.stage.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t)
 		if not _joint_stage_is_valid(candidate):
 			aux = old_aux
 			_fail_safe("step rejected: joint stage evaluation is nonfinite or malformed")
@@ -211,7 +277,7 @@ func step() -> void:
 		aux = old_aux
 		_fail_safe("step rejected: aircraft returned nonfinite or malformed loads")
 		return
-	var rotor: Variant = rotor_momentum.call(aux) # held constant during RK4, like aux
+	var rotor: Variant = model.rotor_momentum.call(aux) # held constant during RK4, like aux
 	if not _array_is_finite(rotor) or (not rotor.is_empty() and rotor.size() != 3):
 		aux = old_aux
 		_fail_safe("step rejected: rotor momentum is nonfinite or malformed")
@@ -222,8 +288,8 @@ func step() -> void:
 		var stage_h: PackedFloat64Array = h
 		if not joint.is_empty():
 			stage_h = joint.rotor_momentum
-		elif not continuous.is_empty() and continuous_rotor_momentum.is_valid():
-			var candidate_h: Variant = continuous_rotor_momentum.call(s.slice(0, RB.SIZE), s.slice(RB.SIZE), stage_t)
+		elif not continuous.is_empty() and model.stage_rotor_momentum.is_valid():
+			var candidate_h: Variant = model.stage_rotor_momentum.call(s.slice(0, RB.SIZE), s.slice(RB.SIZE), stage_t)
 			if not _array_is_finite(candidate_h, 3):
 				stage_error.message = "RK rotor momentum is nonfinite or malformed"
 				return _zero_derivative()
@@ -234,7 +300,7 @@ func step() -> void:
 			stage_error.message = "RK stage derivative is nonfinite or malformed"
 			return _zero_derivative()
 		if not continuous.is_empty():
-			var extra: Variant = joint.derivative if not joint.is_empty() else continuous_derivative.call(s.slice(0, RB.SIZE), s.slice(RB.SIZE), stage_t)
+			var extra: Variant = joint.derivative if not joint.is_empty() else model.block_derivative.call(s.slice(0, RB.SIZE), s.slice(RB.SIZE), stage_t)
 			if not _array_is_finite(extra, continuous.size()):
 				stage_error.message = "RK continuous derivative is nonfinite or malformed"
 				return _zero_derivative()
@@ -247,8 +313,8 @@ func step() -> void:
 			stage_error.message = "RK stage state is nonfinite, malformed, or has a degenerate quaternion"
 			return _zero_derivative()
 		var joint: Dictionary = {}
-		if not continuous.is_empty() and continuous_evaluate.is_valid():
-			var candidate: Variant = continuous_evaluate.call(s.slice(0, RB.SIZE), s.slice(RB.SIZE), stage_t)
+		if not continuous.is_empty() and model.stage.is_valid():
+			var candidate: Variant = model.stage.call(s.slice(0, RB.SIZE), s.slice(RB.SIZE), stage_t)
 			if not _joint_stage_is_valid(candidate):
 				stage_error.message = "RK joint stage evaluation is nonfinite or malformed"
 				return _zero_derivative()
@@ -260,30 +326,56 @@ func step() -> void:
 		return derive.call(s, l, stage_t, joint)
 	# H2: the loads are a pure function of (state, aux, t), so stage 1 reuses the tick's own evaluation.
 	var first: PackedFloat64Array = derive.call(combined, current_loads, t, current_joint)
-	var next_state: PackedFloat64Array = continuous_step.call(combined, t, dt(), f, first) if continuous_step.is_valid() \
-		else RK.rk4_step_at(combined, t, dt(), f, first)
+	# SF-04: one tick policy. A declared event runs the kernel's locator; a model policy may return the combined
+	# state alone or {state, events}; located events are validated against the tick window and recorded.
+	var policy_result: Variant
+	if model.step_policy.is_valid():
+		policy_result = model.step_policy.call(combined, t, dt(), f, first)
+	elif not model.events.is_empty():
+		var declared: Dictionary = model.events[0]
+		var located: Dictionary = EventStep.advance(combined, t, dt(), f, first, int(declared.index), declared.transition, str(declared.type))
+		policy_result = {state = located.state, events = located.events} if located.get("ok", false) else null
+	else:
+		policy_result = RK.rk4_step_at(combined, t, dt(), f, first)
 	if not stage_error.message.is_empty():
 		aux = old_aux
 		_fail_safe("step rejected: " + stage_error.message)
+		return
+	var tick_events: Array[Dictionary] = []
+	var next_state: PackedFloat64Array = PackedFloat64Array()
+	if policy_result is Dictionary:
+		var unpacked: Dictionary = _unpack_policy_result(policy_result, t)
+		if not unpacked.ok:
+			aux = old_aux
+			_fail_safe("step rejected: " + str(unpacked.message))
+			return
+		next_state = unpacked.state
+		tick_events = unpacked.events
+	elif policy_result is PackedFloat64Array:
+		next_state = policy_result
+	else:
+		aux = old_aux
+		_fail_safe("step rejected: the event locator could not bound the tick" if policy_result == null \
+			else "step rejected: step policy returned a malformed result")
 		return
 	if not _stage_state_is_valid(next_state):
 		aux = old_aux
 		_fail_safe("step rejected: integrated state is nonfinite, malformed, or has a degenerate quaternion")
 		return
 	var accepted_body_state: PackedFloat64Array = next_state.slice(0, RB.SIZE)
-	if post_step.is_valid() or post_step_joint.is_valid():
-		var filtered: Variant = post_step_joint.call(state.duplicate(), accepted_body_state.duplicate(), tick + 1,
-			continuous.duplicate(), next_state.slice(RB.SIZE)) if post_step_joint.is_valid() else \
-			post_step.call(state.duplicate(), accepted_body_state.duplicate(), tick + 1)
-		# post_step owns only the 13-value rigid body. Continuous states are integrated independently
+	if model.post_tick.is_valid() or model.post_tick_joint.is_valid():
+		var filtered: Variant = model.post_tick_joint.call(state.duplicate(), accepted_body_state.duplicate(), tick + 1,
+			continuous.duplicate(), next_state.slice(RB.SIZE)) if model.post_tick_joint.is_valid() else \
+			model.post_tick.call(state.duplicate(), accepted_body_state.duplicate(), tick + 1)
+		# post_tick owns only the 13-value rigid body. Continuous states are integrated independently
 		# and remain the already-validated tail of next_state.
 		if not (filtered is PackedFloat64Array) or not state_is_valid(filtered):
 			aux = old_aux
 			_fail_safe("step rejected: post-step contact filter returned a malformed body state")
 			return
 		accepted_body_state = filtered.duplicate()
-	if not continuous.is_empty() and continuous_aux.is_valid():
-		var projected: Variant = continuous_aux.call(next_state.slice(RB.SIZE), aux.duplicate())
+	if not continuous.is_empty() and model.block_aux.is_valid():
+		var projected: Variant = model.block_aux.call(next_state.slice(RB.SIZE), aux.duplicate())
 		if not _array_is_finite(projected, aux.size()):
 			aux = old_aux
 			_fail_safe("step rejected: continuous auxiliary projection is nonfinite or malformed")
@@ -294,9 +386,12 @@ func step() -> void:
 		continuous = next_state.slice(RB.SIZE)
 	state = accepted_body_state
 	last_loads = current_loads
+	last_events = tick_events
 	tick += 1
 	step_usec = lerpf(step_usec, float(Time.get_ticks_usec() - started), 0.05) if step_usec > 0.0 else float(Time.get_ticks_usec() - started)
 	_remember_valid_state()
+	if not tick_events.is_empty():
+		events_located.emit(tick, tick_events)
 	stepped.emit(tick, time(), state, last_loads, inputs, aux)
 
 
@@ -359,10 +454,16 @@ func _loads_are_valid(candidate: Variant) -> bool:
 
 
 func _configuration_is_valid() -> bool:
-	if post_step.is_valid() and post_step_joint.is_valid():
+	if model.post_tick.is_valid() and model.post_tick_joint.is_valid():
 		return false
-	if not continuous.is_empty() and not continuous_evaluate.is_valid() and (not continuous_loads.is_valid() or not continuous_derivative.is_valid()):
+	if not continuous.is_empty() and not model.stage.is_valid() and (not model.block_loads.is_valid() or not model.block_derivative.is_valid()):
 		return false
+	if not model.events.is_empty():
+		if model.step_policy.is_valid() or model.events.size() != 1:
+			return false
+		var declared_index: int = int(model.events[0].get("index", -1))
+		if declared_index < RB.SIZE or declared_index >= RB.SIZE + continuous.size():
+			return false
 	if not is_finite(mass) or mass <= 0.0 or not is_finite(gravity) or gravity < 0.0 or inertia.size() != 6:
 		return false
 	for value in inertia:
@@ -398,10 +499,30 @@ func _same_array(left: PackedFloat64Array, right: PackedFloat64Array) -> bool:
 
 
 func _continuous_aux_matches(extra: PackedFloat64Array, sampled: PackedFloat64Array) -> bool:
-	if not continuous_aux.is_valid():
+	if not model.block_aux.is_valid():
 		return true
-	var projected: Variant = continuous_aux.call(extra.duplicate(), sampled.duplicate())
+	var projected: Variant = model.block_aux.call(extra.duplicate(), sampled.duplicate())
 	return _array_is_finite(projected, sampled.size()) and _same_array(projected, sampled)
+
+
+## A policy's {state, events} result: the state is validated by the caller; events need a type and a time inside
+## the tick window (plus rounding slack). Events are copied, so a policy cannot alias the record.
+func _unpack_policy_result(result: Dictionary, t: float) -> Dictionary:
+	if typeof(result.get("state")) != TYPE_PACKED_FLOAT64_ARRAY:
+		return {ok = false, message = "step policy returned no state"}
+	var raw: Variant = result.get("events", [])
+	if typeof(raw) != TYPE_ARRAY:
+		return {ok = false, message = "step policy returned malformed events"}
+	var events: Array[Dictionary] = []
+	var earliest: float = t - EVENT_TIME_SLACK_S
+	var latest: float = t + dt() + EVENT_TIME_SLACK_S
+	for item: Variant in raw:
+		if typeof(item) != TYPE_DICTIONARY or typeof(item.get("type")) != TYPE_STRING or str(item.type).is_empty() \
+				or typeof(item.get("time_s")) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(item.time_s)) \
+				or float(item.time_s) < earliest or float(item.time_s) > latest:
+			return {ok = false, message = "step policy returned malformed events"}
+		events.append(item.duplicate(true))
+	return {ok = true, state = result.state, events = events}
 
 
 func _zero_derivative() -> PackedFloat64Array:
@@ -438,8 +559,8 @@ func _restore_last_valid() -> void:
 		previous = _last_valid_previous.duplicate() if state_is_valid(_last_valid_previous) else state.duplicate()
 		if _array_is_finite(_last_valid_aux):
 			aux = _last_valid_aux.duplicate()
-		if _last_valid_inputs.size() in [4, 6] and _array_is_finite(_last_valid_inputs):
-			input_size = _last_valid_inputs.size()
+		if _last_valid_inputs.size() > 0 and _array_is_finite(_last_valid_inputs):
+			model.input_size = _last_valid_inputs.size()
 			inputs = _last_valid_inputs.duplicate()
 		if _loads_are_valid(_last_valid_loads):
 			last_loads = _last_valid_loads.duplicate()
@@ -469,7 +590,7 @@ func checkpoint() -> Dictionary:
 
 ## Validate before changing anything. Restoring across a layout, timestep or mass configuration is refused.
 func can_restore_checkpoint(candidate: Dictionary, expected_aux_size: int = -1, expected_modes_size: int = -1) -> bool:
-	if input_size not in [4, 6]:
+	if not VehicleModel.validate(model).ok:
 		return false
 	for key in ["format", "tick", "dt", "state", "previous", "aux", "inputs", "modes", "last_loads", "mass", "inertia", "gravity", "stop_at_tick"]:
 		if not candidate.has(key):
@@ -488,11 +609,12 @@ func can_restore_checkpoint(candidate: Dictionary, expected_aux_size: int = -1, 
 	if not _checkpoint_state_is_valid(candidate.state) or not _checkpoint_state_is_valid(candidate.previous):
 		return false
 	return _array_is_finite(candidate.get("continuous", PackedFloat64Array()), continuous.size()) \
-		and _array_is_finite(candidate.aux, aux.size() if expected_aux_size < 0 else expected_aux_size) and _array_is_finite(candidate.inputs, input_size) \
+		and _array_is_finite(candidate.aux, aux.size() if expected_aux_size < 0 else expected_aux_size) and _array_is_finite(candidate.inputs, model.input_size) \
 		and _loads_are_valid(candidate.last_loads) and typeof(candidate.modes) == TYPE_PACKED_INT64_ARRAY \
 		and candidate.modes.size() == (modes.size() if expected_modes_size < 0 else expected_modes_size) and _configuration_is_valid() \
 		and _array_is_finite(RB.inertia_inverse(inertia), 6) \
-		and _continuous_aux_matches(candidate.get("continuous", PackedFloat64Array()), candidate.aux)
+		and _continuous_aux_matches(candidate.get("continuous", PackedFloat64Array()), candidate.aux) \
+		and _layout_matches_model(candidate.aux, candidate.modes, candidate.get("continuous", PackedFloat64Array()))
 
 
 ## Explicit recovery restores all dynamic state and pauses. No tick/trace sample is emitted.
@@ -512,6 +634,7 @@ func restore_checkpoint(candidate: Dictionary) -> bool:
 	_inertia_inv = RB.inertia_inverse(inertia)
 	_inertia_cache = inertia.duplicate()
 	fault_reason = ""
+	last_events = []
 	_remember_valid_state()
 	set_paused(true)
 	return true
@@ -548,11 +671,11 @@ func _packed_state(body: PackedFloat64Array) -> PackedFloat64Array:
 
 func _stage_loads(combined: PackedFloat64Array, stage_t: float) -> Variant:
 	if continuous.is_empty():
-		return loads.call(combined, stage_t)
-	if continuous_evaluate.is_valid():
-		var candidate: Variant = continuous_evaluate.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), stage_t)
+		return model.loads.call(combined, stage_t)
+	if model.stage.is_valid():
+		var candidate: Variant = model.stage.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), stage_t)
 		return candidate.loads if _joint_stage_is_valid(candidate) else PackedFloat64Array([NAN])
-	return continuous_loads.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), stage_t)
+	return model.block_loads.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), stage_t)
 
 
 func _joint_stage_is_valid(candidate: Variant) -> bool:

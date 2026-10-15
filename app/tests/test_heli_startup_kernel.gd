@@ -3,6 +3,11 @@ extends SceneTree
 
 const MainRotor = preload("res://physics/rotorcraft/main_rotor.gd")
 const Adapter = preload("res://physics/rotorcraft/simulation_step_adapter.gd")
+
+
+## SF-04: the adapter returns {state, events}; a failure stays an empty array.
+func _adapter_state(result: Variant) -> PackedFloat64Array:
+	return result.get("state", PackedFloat64Array()) if result is Dictionary else result
 const M = preload("res://physics/math3d.gd")
 const Coupling = preload("res://physics/rotorcraft/geared_coupling.gd")
 const Tail = preload("res://physics/rotorcraft/tail_rotor.gd")
@@ -129,7 +134,7 @@ func _event_full_tick() -> void:
 		return result
 	var dt: float = 1.0 / 240.0
 	var first: PackedFloat64Array = derivative.call(state, 0.0)
-	var result: PackedFloat64Array = Adapter.step(state, 0.0, dt, derivative, first)
+	var result: PackedFloat64Array = _adapter_state(Adapter.step(state, 0.0, dt, derivative, first))
 	check("event adapter consumes the whole tick and returns the full state", result.size() == 19)
 	if result.size() != 19:
 		return
@@ -147,8 +152,8 @@ func _event_full_tick() -> void:
 		values[1] = 1.0 if stage[OMEGA] > 0.0 else 0.0
 		values[OMEGA] = -1.0 - 10.0 * stage[OMEGA] if stage[OMEGA] > 0.0 else 0.0
 		return values
-	var replay: PackedFloat64Array = Adapter.step(state, 0.0, dt, replay_derivative,
-		replay_derivative.call(state, 0.0))
+	var replay: PackedFloat64Array = _adapter_state(Adapter.step(state, 0.0, dt, replay_derivative,
+		replay_derivative.call(state, 0.0)))
 	check("event integration deterministically replays", replay.size() == result.size()
 		and replay.to_byte_array() == result.to_byte_array())
 
@@ -257,8 +262,8 @@ func _flight_wind_start() -> void:
 			and _finite(tail_tiny.loads) and tail_load_magnitude < 1.0e-12)
 	if not first_evaluation.ok:
 		return
-	var advanced: PackedFloat64Array = Adapter.step(state, 0.0, 1.0 / 240.0,
-		evaluator, first_evaluation.state_derivative)
+	var advanced: PackedFloat64Array = _adapter_state(Adapter.step(state, 0.0, 1.0 / 240.0,
+		evaluator, first_evaluation.state_derivative))
 	check("held low-RPM rotor stops cleanly within a complete wind tick", advanced.size() == Flight.STATE_SIZE
 		and advanced[Flight.OMEGA] == 0.0 and not invalid_stage[0])
 	check("zero-speed coupled stages report a finite unilateral stop reaction",

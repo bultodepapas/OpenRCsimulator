@@ -1,0 +1,36 @@
+bench_regimes.gd fingerprints (sha256 over state/aux/loads, 960 ticks), HEAD tree vs SF-01 tree, same host.
+Timing medians are from a loaded development VM with concurrent suites: not a cost claim.
+'fault' rows: bench_regimes.gd predates continuous-state propulsion and cannot fixture those aircraft; identical before and after.
+same jensen-das-ugly-stik-60        ground  7ec8dc512b7c71e3b42d8de149ebf70e1c8a3271e6c54b0ca05cb02f9ff5c79a
+same jensen-das-ugly-stik-60        spin    3bc67772f658ff0ffbf27d7818aa316691769cacd856e65d8f6f7b7c9970bb78
+same jensen-das-ugly-stik-60        stall   dfe253d2dc7e346923ec58515c6b232c903f1324f441c6bed8953921e773b5eb
+same jensen-das-ugly-stik-60        trim    3e6a3d26dcd8a23b8633d750e3129de73cf5c9395dc4b2073e7d994767dcbe3a
+same stik-glow-61fx-2t              ground  fault: reset rejected: continuous and auxiliary states disagree
+same stik-glow-61fx-2t              spin    fault: reset rejected: continuous and auxiliary states disagree
+same stik-glow-61fx-2t              stall   fault: reset rejected: aircraft returned nonfinite or malformed loa
+same stik-glow-61fx-2t              trim    fault: reset rejected: aircraft returned nonfinite or malformed loa
+same stik-glow-55ax-2t              ground  fault: reset rejected: continuous and auxiliary states disagree
+same stik-glow-55ax-2t              spin    fault: reset rejected: continuous and auxiliary states disagree
+same stik-glow-55ax-2t              stall   fault: reset rejected: aircraft returned nonfinite or malformed loa
+same stik-glow-55ax-2t              trim    fault: reset rejected: aircraft returned nonfinite or malformed loa
+same stik-glow-fs64v-4t             ground  fault: reset rejected: continuous and auxiliary states disagree
+same stik-glow-fs64v-4t             spin    fault: reset rejected: continuous and auxiliary states disagree
+same stik-glow-fs64v-4t             stall   fault: reset rejected: aircraft returned nonfinite or malformed loa
+same stik-glow-fs64v-4t             trim    fault: reset rejected: aircraft returned nonfinite or malformed loa
+same gp-extra-300s-60               ground  11984f4db95f0454643f2391ce3254423e1357269275258819c42d552cb3bc1f
+same gp-extra-300s-60               spin    35287a0f4f5bbd4bb5ad3d46063a98a9b78ccce090fbf54398717fd19b735c61
+same gp-extra-300s-60               stall   441ac28e4bca4d853a8ca747c677bef3539c103ceffbcdefe1d61251a180625e
+same gp-extra-300s-60               trim    eef84affe06ab1108842c2bf1a515354910d4ce9e15e7424b62dd3e899f2830b
+same p51d-mustang-120               ground  4044f42031d7d9e79dd43c49175c0f1d19b5e1a3333297ac57ea5ab5fc02a8ae
+same p51d-mustang-120               spin    3879de7bfe7ffa3e6553f4ae01db16e982a6cf9a2f3ab71f4524ace9c4791a46
+same p51d-mustang-120               stall   17877f6dcdc82df6c98fba5e275f76617a6e0fdf2a73eb2063039f4deaf815ef
+same p51d-mustang-120               trim    43c54cc0b3ee0656dd527b3a0ccbd9d08c7cdbd7703e2981a7a157271e1bc65b
+same sebart-avanti-s-a200-p100rx    ground  fault: reset rejected: continuous and auxiliary states disagree
+same sebart-avanti-s-a200-p100rx    spin    fault: reset rejected: continuous and auxiliary states disagree
+same sebart-avanti-s-a200-p100rx    stall   fault: reset rejected: aircraft returned nonfinite or malformed loa
+same sebart-avanti-s-a200-p100rx    trim    fault: reset rejected: aircraft returned nonfinite or malformed loa
+same turbo-lumber-evolution         ground  fault: reset rejected: continuous and auxiliary states disagree
+same turbo-lumber-evolution         spin    fault: reset rejected: continuous and auxiliary states disagree
+same turbo-lumber-evolution         stall   84994452221c8d39084ceb64a7d3b74d8619f5e281c3850d5ee0871d3d0e0b12
+same turbo-lumber-evolution         trim    ea535e5b2a696d393389ed78512edfecf1c922601a1085c546299bb51f2d3c76
+32/32 identical

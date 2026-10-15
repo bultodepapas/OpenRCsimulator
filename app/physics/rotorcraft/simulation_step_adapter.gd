@@ -1,5 +1,6 @@
 # HELI-17b: consume one complete Simulation fixed tick around a rotor-stop event.
-# The callback contract matches Simulation.continuous_step(state,t,dt,f,first).
+# The callback contract matches VehicleModel.step_policy(state,t,dt,f,first); since SF-04 the accepted result is
+# {state, events} so the kernel records each located rotor stop ({type, time_s, time_error_bound_s}).
 extends RefCounted
 
 const RK = preload("res://physics/integrator.gd")
@@ -13,7 +14,7 @@ const MAX_EVENT_COUNT: int = 4
 ## Return one fully advanced combined state. A malformed/error state returns an
 ## empty array so Simulation rejects the tick and restores its saved snapshot.
 static func step(state: PackedFloat64Array, time: float, dt: float, f: Callable,
-		first: PackedFloat64Array) -> PackedFloat64Array:
+		first: PackedFloat64Array) -> Variant:
 	if state.size() <= OMEGA or first.size() != state.size() or not is_finite(time) \
 			or not is_finite(dt) or dt <= 0.0 or not f.is_valid() or not _finite(state) or not _finite(first):
 		return PackedFloat64Array()
@@ -22,6 +23,7 @@ static func step(state: PackedFloat64Array, time: float, dt: float, f: Callable,
 	var current: PackedFloat64Array = state.duplicate()
 	var elapsed: float = 0.0
 	var event_count: int = 0
+	var events: Array[Dictionary] = []
 	var substeps: int = 0
 	var derivative: PackedFloat64Array = first.duplicate()
 	while elapsed < dt:
@@ -52,6 +54,8 @@ static func step(state: PackedFloat64Array, time: float, dt: float, f: Callable,
 						current = RK.normalize_attitude(current)
 						elapsed += float(event.elapsed_s)
 						event_count += 1
+						var bracket: PackedFloat64Array = event.get("event_bracket_s", PackedFloat64Array([0.0, 0.0]))
+						events.append({"type": "rotor_stop", "time_s": time + elapsed, "time_error_bound_s": bracket[1] - bracket[0]})
 						continue
 					if not event.get("ok", false):
 						return PackedFloat64Array()
@@ -79,7 +83,9 @@ static func step(state: PackedFloat64Array, time: float, dt: float, f: Callable,
 			return PackedFloat64Array()
 		if dt - elapsed <= maxf(1.0e-15, dt * 1.0e-14):
 			elapsed = dt
-	return current if _finite(current) else PackedFloat64Array()
+	if not _finite(current):
+		return PackedFloat64Array()
+	return {"state": current, "events": events}
 
 
 static func _rk4_guarded(state: PackedFloat64Array, time: float, h: float,

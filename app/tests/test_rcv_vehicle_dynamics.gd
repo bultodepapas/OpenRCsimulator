@@ -71,7 +71,10 @@ func _diagnose_tick(state: PackedFloat64Array, model: Dictionary, controls: Dict
 		var k4 := Vehicle.derivative(stage_4, model, controls, road)
 		if k4.is_empty():
 			return "substep %d k4 %s" % [substep, str(Vehicle._evaluate(stage_4, model, controls, road).get("error", ""))]
-		current = Vehicle._rk4_step(current, model, controls, road, dt)
+		# SF-03: the truck has no private RK4 any more; replay the final combination through the shared policy.
+		var stage := func(stage_state: PackedFloat64Array, _stage_t: float) -> PackedFloat64Array:
+			return Vehicle.derivative(stage_state, model, controls, road)
+		current = Vehicle.tick_policy(current, 0.0, dt, stage, k1, 1)
 		if current.is_empty():
 			return "substep %d final-combination" % substep
 	return "not reproducible in stage replay"
