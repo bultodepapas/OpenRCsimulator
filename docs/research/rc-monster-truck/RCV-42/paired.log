@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+RCV42 paired round: {"baseline":{"mean_us":5685.978125,"median_us":5762.0,"p95_us":7081.0,"samples":960},"candidate":{"mean_us":5473.12604166667,"median_us":5543.0,"p95_us":6778.0,"samples":960}}
+RCV42 paired round: {"baseline":{"mean_us":5754.21666666667,"median_us":5889.0,"p95_us":7045.0,"samples":960},"candidate":{"mean_us":5517.80104166667,"median_us":5638.0,"p95_us":6801.0,"samples":960}}
+RCV42 paired round: {"baseline":{"mean_us":5562.83645833333,"median_us":5600.0,"p95_us":6969.0,"samples":960},"candidate":{"mean_us":5414.6875,"median_us":5444.0,"p95_us":6832.0,"samples":960}}

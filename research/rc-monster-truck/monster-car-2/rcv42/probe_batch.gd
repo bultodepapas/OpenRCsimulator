@@ -73,8 +73,8 @@ func _run() -> void:
 		rounds.append(row)
 	var report := {"complete": true, "checks": checks, "rounds_us_per_14_sample_batch": rounds, "iterations": ITERATIONS,
 		"engine": Engine.get_version_info().string, "scope": "Warm alternating component batches; callback returns one existing dictionary, isolating validation and packing.",
-		"source_sha256": {"baseline": FileAccess.get_sha256(Before.resource_path), "preallocation": FileAccess.get_sha256(Prealloc.resource_path),
-			"fused": FileAccess.get_sha256(Candidate.resource_path), "append": FileAccess.get_sha256(Append.resource_path),
+		"source_sha256": {"baseline": FileAccess.get_sha256("res://../research/rc-monster-truck/monster-car-2/rcv42/baseline_batch.gd"), "preallocation": FileAccess.get_sha256("res://../research/rc-monster-truck/monster-car-2/rcv42/prealloc_batch.gd"),
+			"fused": FileAccess.get_sha256("res://physics/ground_vehicle/vehicle_dynamics.gd"), "append": FileAccess.get_sha256("res://../research/rc-monster-truck/monster-car-2/rcv42/append_batch.gd"),
 			"harness": FileAccess.get_sha256(get_script().resource_path)}}
 	var file := FileAccess.open(output, FileAccess.WRITE)
 	file.store_string(JSON.stringify(report, "\t", true, true) + "\n")

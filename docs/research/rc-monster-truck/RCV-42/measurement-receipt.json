@@ -1,0 +1,58 @@
+{
+  "complete": true,
+  "sources": {
+    "app/physics/ground_vehicle/airfield_course.gd": "7b444694cbb27f79fa87cf8f6ebace8877bceaa94559648a43826b16eb867b1e",
+    "app/physics/ground_vehicle/airfield_track.gd": "e741a808b42028057308a6e7f2fb22b47cf9f55523a6a58fcca87cf6086dbef2",
+    "app/physics/ground_vehicle/course.gd": "313b43fe7e4816c54d4647c21644a2337640e1510536dcaaa95794f884bf0ca6",
+    "app/physics/ground_vehicle/four_corner.gd": "cb86d370d047c1e6c5f55c4b1b3815181a17d16dc4785d79847357a7a9f04436",
+    "app/physics/ground_vehicle/nitro_dynamics.gd": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa",
+    "app/physics/ground_vehicle/quarter_car.gd": "5a141caa4dba4628990df398f98043469f2868cc6dc959fb7f252c2943f56605",
+    "app/physics/ground_vehicle/support_bench_data.gd": "4b10e7215952bae418d1a1c3f722d377b0071c241bcfaf102b12420d629ef289",
+    "app/physics/ground_vehicle/suspension_bench_data.gd": "f8acfb63497530b9d9ddc5799356d41b2d956b87f51e9260b3e8902392880dcb",
+    "app/physics/ground_vehicle/vehicle_damage.gd": "682a41701ec516f55cf8250f0ef6755efdddb5ad77538f8cc7b62fc725f0ae56",
+    "app/physics/ground_vehicle/vehicle_data.gd": "d83ac301435403fba95317e5b691f93c249ba105a224201a5978b3723421c7ae",
+    "app/physics/ground_vehicle/vehicle_dynamics.gd": "ca6f302b69dd23db1a4b048beea0132753ab7c31de212513d8206ac11024e924",
+    "app/physics/ground_vehicle/vehicle_environment.gd": "06cc677241aae081be431ec4348fa8366cffb5cdf8b234262fe6d964910c38ad",
+    "app/physics/math3d.gd": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b",
+    "app/sim/ground_vehicle/session.gd": "1cf7c3312b675e4b12badb733cbadb323c1a7fd98bbae607837f34c02bce38fc",
+    "research/rc-monster-truck/monster-car-2/rcv42/append_batch.gd": "7e435fb5b702121dcf681c22633d4825bb1b48952619de8c8aedf7f2568915c6",
+    "research/rc-monster-truck/monster-car-2/rcv42/baseline_batch.gd": "1fe7d22783af9dfb168abf399c6168285bfacc4621fec97a45d44b89d02c9de2",
+    "research/rc-monster-truck/monster-car-2/rcv42/baseline_nitro_dynamics.gd": "6277ed60de8f83fe178db891bdfbe00fa8914ae6ddad9e6c9cd08ccb2ffa8a67",
+    "research/rc-monster-truck/monster-car-2/rcv42/baseline_session.gd": "2419e7cdb618c9d90eef4e596288c6ed69f7d94c514011e1b2ecd69977a2aed5",
+    "research/rc-monster-truck/monster-car-2/rcv42/baseline_vehicle_dynamics.gd": "f4328d387528fd9bcf84dba303c5ee872b71485ebaa5554b3f78b3678bf1e679",
+    "research/rc-monster-truck/monster-car-2/rcv42/bench_pair.gd": "1d507084b49bbe21f9659a71b5156f42de6cdde20e46641ab19d13f70d4e3b03",
+    "research/rc-monster-truck/monster-car-2/rcv42/candidate_batch.gd": "e3389dae39a0d01ff8f4c409cba34b99f61a53eface420861e28c60fa4cc8a0b",
+    "research/rc-monster-truck/monster-car-2/rcv42/prealloc_batch.gd": "ff06bd55ee06aaa14fbfae7af0ac7b2d70bc0e6c72fc610ca6214600d56a8550",
+    "research/rc-monster-truck/monster-car-2/rcv42/probe_batch.gd": "2c6ad127710ea521e826e6c746d0a18ec83e3a9501de6eec37577f854983e2a3",
+    "research/rc-monster-truck/monster-car-2/rcv42/probe_snapshot.gd": "7ee6db151cae1e6b0589685d852926d31ff618939a003f9455adc2cd78d2b9d2"
+  },
+  "measurements": [
+    {
+      "name": "batch",
+      "exit_code": 0,
+      "errors": [],
+      "report_sha256": "74f026f4beb5e101cdbe73e5025003ddbb671e1e53d4c94b1dd7a5507497fa48",
+      "log_sha256": "2ba02c46ba80b57ca61a2c2feae02257a5c757ab10d209bb8145270c30539ac3",
+      "script": "research/rc-monster-truck/monster-car-2/rcv42/probe_batch.gd",
+      "script_sha256": "2c6ad127710ea521e826e6c746d0a18ec83e3a9501de6eec37577f854983e2a3"
+    },
+    {
+      "name": "paired",
+      "exit_code": 0,
+      "errors": [],
+      "report_sha256": "0d403e19a11bde3f91371f5d36d9c3535b726a08fee8e059a7d1c0c50c323e64",
+      "log_sha256": "dc0c7c62956ae20072c97042da32ec4d044c1a07bc24c688d316433bb7097b48",
+      "script": "research/rc-monster-truck/monster-car-2/rcv42/bench_pair.gd",
+      "script_sha256": "1d507084b49bbe21f9659a71b5156f42de6cdde20e46641ab19d13f70d4e3b03"
+    },
+    {
+      "name": "candidate",
+      "exit_code": 0,
+      "errors": [],
+      "report_sha256": "84c806c912113c552e4f45544d1ed3d391fdfe3893424af9208e76a61ace2391",
+      "log_sha256": "0a604757bd8cda8cec8093cbb34a0be4dfa0ca9c4b4d548577c37c4daabbd718",
+      "script": "research/rc-monster-truck/monster-car-2/rcv41/bench_session.gd",
+      "script_sha256": "02199dbe0b4e12c87f9933199a3f2fb24fa2f2d3189709d09411682624d68570"
+    }
+  ]
+}

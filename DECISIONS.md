@@ -366,3 +366,7 @@ Use the existing estimated physical planform for spanwise camber, induced/profil
 ### 2026-10-15 — Reuse RC artifact digests only after exact content reads (RCV-41)
 
 Keep every artifact content read in the live Nitro identity guard. Reuse SHA-256 only after exact equality with the new byte buffer, retaining at most two files of 256 KiB each; larger files use streaming hashing. Preserve source/remap precedence, strict digest grammar and existing checkpoint identity guards. This reduces repeated hashing without relying on timestamps, sizes or relaxed source verification. Source identities still change when implementation changes. [Experiment, paired equivalence and limits](docs/research/rc-monster-truck/RCV-41/README.md).
+
+### 2026-10-15 — Share road validation across native batch and reference paths (RCV-42)
+
+Return an empty error String on successful road validation, preserving the ordinary sample API while eliminating its temporary success Dictionary inside native batches. Reserve and fill the existing six-channel float64 transport buffer directly. Retain per-query validity checks, error ordering, callback ownership and exact sample coordinates. Keep full deep snapshots after the selected-field GDScript alternative measured slower. Source identity changes continue to reject historical pinned saves. [Paired CPU measurements, equivalence and limits](docs/research/rc-monster-truck/RCV-42/README.md).

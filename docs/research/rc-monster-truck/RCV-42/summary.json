@@ -1,0 +1,48 @@
+{
+  "step": "RCV-42",
+  "complete": true,
+  "whole_session": {
+    "baseline_us": 5685.978125,
+    "candidate_us": 5473.126041666666,
+    "reduction_percent": 3.7434558954328234,
+    "baseline_p95_us": 7045.0,
+    "candidate_p95_us": 6801.0,
+    "round_reductions_percent": [
+      3.7434558954328234,
+      4.108563140653365,
+      2.663190971782037
+    ]
+  },
+  "component": {
+    "baseline_us_per_14_samples": 54.95633333333333,
+    "candidate_us_per_14_samples": 38.04216666666667,
+    "reduction_percent": 30.777465745531295,
+    "exact_comparisons": 6216
+  },
+  "verification": {
+    "suites": 9,
+    "numbered_checks": 407,
+    "exact_paired_ticks": 3060,
+    "trajectory_sha256": "d2c255aee62148ea79908da716d1c1c6279b20b22e5b1a88bc9e261597908eb8"
+  },
+  "solver_changed": true,
+  "course_changed": true,
+  "native_binary_changed": false,
+  "equations_changed": false,
+  "road_queries_per_tick": 70.0,
+  "real_time_gate_closed": false,
+  "scope": "Windows headless source-runtime CPU comparison on a shared host. No FPS/GPU, packaged-runtime or physical qualification claim.",
+  "evidence_sha256": {
+    "baseline.json": "609748d4e2a96388dd925ca8918ceb3bcdbb50cc9958a539915ba6e67d4d3399",
+    "batch-exploration.json": "909716a05f676064647677d619358439324586ec8c5bdd4267bd067d9c8845ce",
+    "batch-preserved-guards.json": "4248341d62df3138be282c9611ec3ceb91d7032f14df47e67a2ca986c03eefd4",
+    "batch-variants.json": "720e9005863f912faeef332fbe660c2dfe7503f8ef31b827f81aefab59d1b984",
+    "batch.json": "74f026f4beb5e101cdbe73e5025003ddbb671e1e53d4c94b1dd7a5507497fa48",
+    "candidate.json": "84c806c912113c552e4f45544d1ed3d391fdfe3893424af9208e76a61ace2391",
+    "checks/verification.json": "75cfdff62a6f2272fa792355ee40cefc3c219c18dae4c09c9d781bca75c62604",
+    "measurement-receipt.json": "ee474801dc39017700683ac035049992211a6371b72dfc6aa81e3eb503d77103",
+    "paired-draft.json": "931f20deb010d35cee506c521e5ad9d6d14a5db35e23a573036b3a391ffd9273",
+    "paired.json": "0d403e19a11bde3f91371f5d36d9c3535b726a08fee8e059a7d1c0c50c323e64",
+    "snapshot-exploration.json": "154d8609f7b404f42be82beaa498030129e909de94fccaceee5a15e367591b09"
+  }
+}
