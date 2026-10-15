@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="theme-color" content="#101820">
+  <title>OpenRC Simulator — El campo de vuelo está abierto.</title>
+  <meta name="description" content="Un simulador de aeromodelismo libre y de código abierto. Explora los aviones, conoce el proyecto y descarga OpenRC para Windows, Linux y macOS.">
+  <meta property="og:title" content="OpenRC Simulator — El campo de vuelo está abierto.">
+  <meta property="og:description" content="Aeromodelismo. Código abierto. Un campo para seguir aprendiendo. Descubre OpenRC Simulator.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://bultodepapas.github.io/OpenRCsimulator/">
+  <meta property="og:image" content="https://bultodepapas.github.io/OpenRCsimulator/assets/ugly-stik.webp">
+  <link rel="canonical" href="https://bultodepapas.github.io/OpenRCsimulator/">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="style.css">
+  <script src="main.js" defer></script>
+</head>
+<body>
+  <a class="skip" href="#main" data-i18n="skip">Saltar al contenido</a>
+  <header class="header">
+    <a href="#" class="wordmark">OPENRC<span>SIMULATOR</span></a>
+    <nav aria-label="Principal" data-label="navigation">
+      <a href="#hangar" data-i18n="navHangar">El hangar</a>
+      <a href="#field" data-i18n="navField">El campo</a>
+      <a href="#project" data-i18n="navProject">El proyecto</a>
+    </nav>
+    <div class="header-actions"><button class="language" type="button" aria-label="Switch to English" hidden>EN</button><a class="nav-download" href="#download"><span data-i18n="download">Descargar</span> <span aria-hidden="true">↗</span></a></div>
+  </header>
+  <main id="main">
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="hero-top"><span class="eyebrow" data-i18n="heroEyebrow">AEROMODELISMO · CÓDIGO ABIERTO</span><span class="alpha"><i></i> EARLY ALPHA / 0.1.1</span></div>
+      <h1 id="hero-title">OpenRC<span class="hero-asterisk" aria-hidden="true">✳</span></h1>
+      <div class="hero-aircraft"><img src="assets/ugly-stik.webp" alt="Modelo rojo y blanco del Jensen Das Ugly Stik 60" data-alt="heroAlt" width="960" height="540" fetchpriority="high"><span class="aircraft-note">FIG. 01 &nbsp; JENSEN DAS UGLY STIK 60<br><span data-i18n="renderNote">MODELO DEL SIMULADOR · VISTA DE ESTUDIO</span></span></div>
+      <div class="hero-copy"><h2 data-i18n="heroHeading">El campo de vuelo<br>está abierto.</h2><p data-i18n="heroCopy">Tu emisora. Tu próximo vuelo.<br>Un simulador RC que construimos en abierto.</p><a class="button button-light" href="#download"><span data-i18n="heroCta">Vamos a volar</span><span aria-hidden="true">↗</span></a></div>
+      <div class="hero-bottom"><span data-i18n="platforms">WINDOWS / LINUX / macOS</span><a href="#hangar"><span data-i18n="explore">EXPLORA EL PROYECTO</span><span aria-hidden="true">↓</span></a><span class="hero-bottom-end" data-i18n="free">LIBRE. DESDE EL PRIMER VUELO.</span></div>
+    </section>
+
+    <section id="hangar" class="hangar section-pad" aria-labelledby="hangar-title">
+      <div class="section-heading reveal"><p class="eyebrow" data-i18n="hangarKicker">01 / EL HANGAR</p><h2 id="hangar-title" data-i18n="hangarHeading">Cada avión,<br>otro carácter.</h2><p class="section-intro" data-i18n="hangarIntro">Del clásico de madera al jet.<br>Cinco aviones de ala fija en el código actual, cada uno con su propia configuración.</p></div>
+      <div class="aircraft-selector" role="group" aria-label="Seleccionar avión" data-label="aircraftSelect">
+        <button type="button" data-aircraft="stik" aria-pressed="true"><span>01</span> Ugly Stik</button>
+        <button type="button" data-aircraft="extra" aria-pressed="false"><span>02</span> Extra 300S</button>
+        <button type="button" data-aircraft="mustang" aria-pressed="false"><span>03</span> P-51D</button>
+        <button type="button" data-aircraft="jet" aria-pressed="false"><span>04</span> Ventage Jet</button>
+        <button type="button" data-aircraft="timber" aria-pressed="false"><span>05</span> Turbo Lumber</button>
+      </div>
+      <div class="hangar-display">
+        <figure class="aircraft-stage"><span class="stage-caption" data-i18n="studio">ESTUDIO DE AERONAVES / OPENRC</span><img id="aircraft-image" src="assets/ugly-stik.webp" alt="Jensen Das Ugly Stik 60, vista de estudio" width="960" height="540" loading="lazy"><figcaption><span id="aircraft-number">01 / 05</span><span data-i18n="actualModel">MODELO REAL DEL PROYECTO</span><span aria-hidden="true">+</span></figcaption></figure>
+        <div class="aircraft-info" aria-live="polite" aria-atomic="true"><p id="aircraft-category" class="eyebrow">EL CLÁSICO</p><h3 id="aircraft-name">Jensen Das<br>Ugly Stik 60</h3><p id="aircraft-description">Ala alta, líneas sencillas y toda la personalidad del aeromodelismo. El avión de referencia con el que empieza OpenRC.</p><dl><div><dt data-i18n="span">Envergadura</dt><dd id="aircraft-span">1.52 m</dd></div><div><dt data-i18n="power">Propulsión</dt><dd id="aircraft-power">.61 glow</dd></div><div><dt data-i18n="gear">Tren</dt><dd id="aircraft-gear">Triciclo</dd></div></dl><span class="status" id="aircraft-status">Referencia · en evaluación</span><a id="aircraft-link" class="text-link" href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/UGLY-STIK-PLAN.md"><span data-i18n="aircraftDetails">Conoce el modelo</span><span aria-hidden="true">↗</span></a></div>
+      </div>
+      <noscript><p>El catálogo completo está en <a href="https://github.com/bultodepapas/OpenRCsimulator#aircraft">GitHub / Full aircraft catalogue</a>.</p></noscript>
+      <p class="source-note" data-i18n="sourceNote">CATÁLOGO DEL CÓDIGO ACTUAL. Los modelos son experimentales y todavía requieren mediciones y validación de pilotos. La descarga v0.1.1 corresponde a su propia versión publicada.</p>
+    </section>
+
+    <section id="field" class="field" aria-labelledby="field-title">
+      <img id="field-image" src="assets/field-day.webp" alt="Vista aérea del campo de vuelo de OpenRC, con pista de césped y zona de pilotos" data-alt="fieldDayAlt" width="1600" height="900" loading="lazy">
+      <div class="field-shade"></div>
+      <div class="field-content"><p class="eyebrow" data-i18n="fieldKicker">02 / NOS VEMOS EN LA PISTA</p><h2 id="field-title" data-i18n="fieldHeading">Ese lugar<br>al que siempre<br>quieres volver.</h2><p data-i18n="fieldCopy">La pista de césped. Los árboles al fondo.<br>Vuela desde la posición del piloto o sigue el avión con las cámaras de vuelo.</p></div>
+      <div class="field-footer"><span data-i18n="capture">CAPTURA DEL SIMULADOR · GODOT</span><div class="field-switch" role="group" aria-label="Iluminación del campo" data-label="fieldSwitch"><button type="button" data-time="day" aria-pressed="true" data-i18n="day">Día</button><button type="button" data-time="night" aria-pressed="false" data-i18n="night">Noche</button></div><span id="field-index">01 / 02</span></div>
+    </section>
+
+    <section id="project" class="project section-pad">
+      <div class="project-lead reveal"><p class="eyebrow" data-i18n="projectKicker">03 / BAJO EL CAPÓ</p><h2 data-i18n="projectHeading">La física importa.<br>La evidencia también.</h2><p data-i18n="projectIntro">Construimos un simulador de aeromodelismo paso a paso. Con código que puedes leer, vuelos que puedes repetir y preguntas que aún estamos resolviendo.</p><a class="text-link" href="https://github.com/bultodepapas/OpenRCsimulator"><span data-i18n="source">Explora el código</span><span aria-hidden="true">↗</span></a></div>
+      <div class="project-details"><p class="eyebrow source-kicker" data-i18n="sourceKicker">IMPLEMENTADO EN EL CÓDIGO ACTUAL</p><article><span class="detail-number">240<span>Hz</span></span><div><h3 data-i18n="physicsHeading">Un motor de vuelo propio.</h3><p data-i18n="physicsCopy">Seis grados de libertad y cálculo en float64. Cargas aerodinámicas locales, dinámica de servos y propulsión según cada avión.</p></div></article><article><span class="detail-number detail-word">USB</span><div><h3 data-i18n="radioHeading">Tus mandos, en el circuito.</h3><p data-i18n="radioCopy">Emisora USB, gamepad o teclado. Calibración guardada, armado de motor y respuesta segura al desconectar.</p></div></article><article><span class="detail-number detail-word">↺</span><div><h3 data-i18n="replayHeading">Volar. Registrar. Comparar.</h3><p data-i18n="replayCopy">Registros de vuelo, reproducción exacta y exportación CSV para estudiar el comportamiento con las mismas entradas.</p></div></article></div>
+      <aside class="honesty"><span class="eyebrow">EARLY ALPHA</span><p data-i18n="honesty">El software se comprueba. El realismo se demuestra. La validación física independiente y la evaluación de pilotos siguen abiertas.</p><a href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/ROADMAP.md" class="text-link"><span data-i18n="roadmap">Ver lo que sigue</span> ↗</a></aside>
+    </section>
+
+    <section id="download" class="download section-pad" aria-labelledby="download-title">
+      <div class="download-top"><p class="eyebrow" data-i18n="downloadKicker">04 / TU PRÓXIMO DESPEGUE</p><span class="release-tag">v0.1.1 / EARLY ALPHA</span></div>
+      <h2 id="download-title" data-i18n="downloadHeading">Menos mirar.<br>Más volar.</h2><p class="download-intro" data-i18n="downloadIntro">Descarga, extrae el ZIP y abre el simulador.<br>No necesitas instalar Godot.</p>
+      <div class="download-links">
+        <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.1/openrc-simulator-v0.1.1-windows-x86_64.zip"><span class="os-symbol" aria-hidden="true">⊞</span><strong>Windows</strong><span>x86_64 · 92.7 MB</span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.1/openrc-simulator-v0.1.1-linux-x86_64.zip"><span class="os-symbol" aria-hidden="true">⌘</span><strong>Linux</strong><span>x86_64 · 83.1 MB</span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.1/openrc-simulator-v0.1.1-macos-universal.zip"><span class="os-symbol" aria-hidden="true">⌥</span><strong>macOS</strong><span>Universal · 115.3 MB</span><span class="download-arrow" aria-hidden="true">↓</span></a>
+      </div>
+      <div class="download-help"><p data-i18n="downloadNote">Versión publicada v0.1.1. Paquetes sin firma de desarrollador.<br>Las novedades del código actual pueden no estar incluidas.</p><div><a href="https://github.com/bultodepapas/OpenRCsimulator/blob/v0.1.1/docs/FIRST-LAUNCH.md" data-i18n="firstFlight">Guía del primer vuelo ↗</a><a href="https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1" data-i18n="releaseNotes">Notas de la versión ↗</a><a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.1/SHA256SUMS">SHA256SUMS ↗</a></div></div>
+    </section>
+    <section class="community section-pad"><p class="eyebrow" data-i18n="communityKicker">UN PROYECTO ABIERTO, UN TRABAJO COMPARTIDO.</p><h2 data-i18n="communityHeading">El próximo avance<br>puede empezar contigo.</h2><div><p data-i18n="communityCopy">Una prueba con tu emisora. Una medición real. Una mejora en el código. Cada contribución ayuda a construir el siguiente vuelo.</p><a class="text-link" href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/CONTRIBUTING.md"><span data-i18n="contribute">Participa en GitHub</span> ↗</a><a class="text-link" href="https://github.com/bultodepapas/OpenRCsimulator/issues/new?template=pilot_feedback.md"><span data-i18n="feedback">Comparte tu experiencia</span> ↗</a></div></section>
+  </main>
+  <footer class="footer"><div class="footer-top"><a class="wordmark" href="#">OPENRC<span>SIMULATOR</span></a><p data-i18n="thanks">Con el apoyo de OpenAI al desarrollo.<br>Gracias a Savox por autorizar la representación de sus productos.</p><a href="https://github.com/bultodepapas/OpenRCsimulator">GitHub ↗</a></div><div class="footer-bottom"><span data-i18n="license">CÓDIGO MIT · LOS ASSETS CONSERVAN SUS LICENCIAS</span><a href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/media/README.md" data-i18n="credits">Imágenes del proyecto y créditos ↗</a><a href="#" data-i18n="backTop">Volver arriba ↑</a></div></footer>
+</body>
+</html>
