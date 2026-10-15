@@ -450,15 +450,15 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
 ## Landing gear (E1): optional. Without it every hull point, wheels included, is a crash (D9d). With it, each contact
 ## is a spring-damper on its compression; the wheel points must then be absent from the crash hull.
 ## Rules: at least 3 contacts, on both sides, with the CG inside their footprint (the airplane stands on its wheels);
-## the heave frequency ω = sqrt(Σk / m) must satisfy ω·dt < 0.1 at the project's physics tick (ROADMAP E1: an
-## explicit integrator resolves the spring instead of exciting it); each damping ratio ζ = c / (2·sqrt(k·m/n)) in
+## the heave frequency ω = sqrt(Σk / m) must satisfy ω·dt < 0.1 per integration substep at the project's physics tick
+## (ROADMAP E1: an explicit integrator resolves the spring instead of exciting it; SF-05 derives the substep count); each damping ratio ζ = c / (2·sqrt(k·m/n)) in
 ## 0.05–2 (a wire leg and a tyre, not a shock absorber, and never negative).
 ## E2: tyre friction is required with the gear (a gear without it slides forever): rolling_resistance C_rr (0–0.3),
 ## side_friction μ (0.1–1.5), peak_slip_angle (1–30°), and per contact an optional max_steering (−45–45°, default 0;
 ## negative for a tail wheel, which turns against the rudder's trailing edge: right rudder points its front left).
 ## The side force's low-speed damping rate must satisfy μ·g·dt / (tan α_peak · SLIP_FLOOR) ≤ SIDE_LAMBDA_DT_MAX.
 ## Returns { contacts: [{ name, position (body FRD about the CG), stiffness, damping, max_compression, max_steering
-## (rad) }], reach, heave_omega, static_sag, rolling_resistance, side_friction, tan_peak_slip } or {} when absent.
+## (rad) }], reach, heave_omega, static_sag, rolling_resistance, side_friction, tan_peak_slip, substeps } or {} when absent.
 static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFloat64Array, mass: float) -> Dictionary:
 	if node == null:
 		return {}
@@ -508,8 +508,14 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 			% [-float(rest.margin), str(rest.facet), rad_to_deg(rest.tilt)])
 	var dt := 1.0 / float(ProjectSettings.get_setting("physics/common/physics_ticks_per_second", 60))
 	var omega := M.sqrt_(total_k / mass)
+	# SF-05: a stiffer gear integrates in substeps that keep the E1 rule ω·dt < 0.1 per substep. The kernel runs them
+	# only while a wheel is within reach of the ground (ground_contact.gd substeps()); a bounded count keeps the tick's
+	# cost bounded. The current fleet derives one substep, so its integration is unchanged.
+	var substeps: int = 1
 	if omega * dt >= 0.1:
-		errors.append("landing_gear: heave ω·dt = %.3f (ω %.1f rad/s at %.0f Hz) is not < 0.1; soften the gear or raise the tick" % [omega * dt, omega, 1.0 / dt])
+		substeps = int(floor(omega * dt / 0.1)) + 1
+	if substeps > Ground.MAX_SUBSTEPS:
+		errors.append("landing_gear: heave ω·dt = %.3f (ω %.1f rad/s at %.0f Hz) needs %d substeps per tick, above the %d allowed; soften the gear or raise the tick" % [omega * dt, omega, 1.0 / dt, substeps, Ground.MAX_SUBSTEPS])
 	var c_rr = _q(errors, "landing_gear.rolling_resistance", gear.get("rolling_resistance"), "1", 0.0, 0.3)
 	var mu = _q(errors, "landing_gear.side_friction", gear.get("side_friction"), "1", 0.1, 1.5)
 	var peak = _q(errors, "landing_gear.peak_slip_angle", gear.get("peak_slip_angle"), "deg", 1.0, 30.0)
@@ -520,7 +526,7 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 	if not errors.is_empty():
 		return {}
 	var tan_peak := M.tan_(deg_to_rad(peak))
-	var side_lambda_dt: float = mu * 9.80665 * dt / (tan_peak * Ground.SLIP_FLOOR)
+	var side_lambda_dt: float = mu * 9.80665 * (dt / float(substeps)) / (tan_peak * Ground.SLIP_FLOOR)
 	if side_lambda_dt > Ground.SIDE_LAMBDA_DT_MAX:
 		errors.append("landing_gear: side-force damping λ·dt = %.2f (μ·g / (tan α_peak · %.1f m/s) at %.0f Hz) is above %.1f; raise peak_slip_angle or the tick" % [side_lambda_dt, Ground.SLIP_FLOOR, 1.0 / dt, Ground.SIDE_LAMBDA_DT_MAX])
 		return {}
@@ -532,7 +538,7 @@ static func _landing_gear(errors: PackedStringArray, node: Variant, cg: PackedFl
 			share = static_shares[rest.facet.find(i)]
 		contacts[i].damping_onset = Ground.DAMPING_ONSET_FRACTION * share * mass * 9.80665 / float(contacts[i].stiffness)
 	var derived := { contacts = contacts, reach = reach, heave_omega = omega, static_sag = mass * 9.80665 / total_k,
-		rolling_resistance = float(c_rr), side_friction = float(mu), tan_peak_slip = tan_peak }
+		rolling_resistance = float(c_rr), side_friction = float(mu), tan_peak_slip = tan_peak, substeps = substeps }
 	if breakaway != null:
 		# Numerical anchor springs at a fixed frequency (ground_contact.gd ANCHOR_OMEGA), not tyre data.
 		if Ground.ANCHOR_OMEGA * dt >= 0.1:

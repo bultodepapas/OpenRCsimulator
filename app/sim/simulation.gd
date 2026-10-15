@@ -45,6 +45,8 @@ var _last_valid_continuous: PackedFloat64Array = PackedFloat64Array()
 var last_events: Array[Dictionary] = []
 ## Located event times may land one rounding step outside the tick window; wider than that is malformed.
 const EVENT_TIME_SLACK_S := 1e-9
+## SF-05: bound on a model's declared substeps per tick.
+const MAX_SUBSTEPS := 16
 
 ## Compatibility properties (SF-01): each forwards to the installed model under its pre-SF-01 name.
 ## New code sets `model` fields directly; these are retired once every caller installs a VehicleModel.
@@ -328,15 +330,25 @@ func step() -> void:
 	var first: PackedFloat64Array = derive.call(combined, current_loads, t, current_joint)
 	# SF-04: one tick policy. A declared event runs the kernel's locator; a model policy may return the combined
 	# state alone or {state, events}; located events are validated against the tick window and recorded.
+	# SF-05: a model may ask for n substeps this tick (stiff contacts within reach); the kernel's own RK4 and the
+	# declared-event locator then integrate n pieces of dt/n, re-evaluating k1 at each piece. A policy owns its tick.
+	var substeps: int = 1
+	if model.substeps.is_valid():
+		var declared_substeps: Variant = model.substeps.call(combined.slice(0, RB.SIZE), combined.slice(RB.SIZE), t)
+		if typeof(declared_substeps) != TYPE_INT or declared_substeps < 1 or declared_substeps > MAX_SUBSTEPS:
+			aux = old_aux
+			_fail_safe("step rejected: substep count is not an integer within 1..%d" % MAX_SUBSTEPS)
+			return
+		substeps = declared_substeps
 	var policy_result: Variant
 	if model.step_policy.is_valid():
 		policy_result = model.step_policy.call(combined, t, dt(), f, first)
 	elif not model.events.is_empty():
-		var declared: Dictionary = model.events[0]
-		var located: Dictionary = EventStep.advance(combined, t, dt(), f, first, int(declared.index), declared.transition, str(declared.type))
-		policy_result = {state = located.state, events = located.events} if located.get("ok", false) else null
-	else:
+		policy_result = _locate_substeps(combined, t, dt(), f, first, model.events[0], substeps)
+	elif substeps == 1:
 		policy_result = RK.rk4_step_at(combined, t, dt(), f, first)
+	else:
+		policy_result = _rk4_substeps(combined, t, dt(), f, first, substeps)
 	if not stage_error.message.is_empty():
 		aux = old_aux
 		_fail_safe("step rejected: " + stage_error.message)
@@ -503,6 +515,37 @@ func _continuous_aux_matches(extra: PackedFloat64Array, sampled: PackedFloat64Ar
 		return true
 	var projected: Variant = model.block_aux.call(extra.duplicate(), sampled.duplicate())
 	return _array_is_finite(projected, sampled.size()) and _same_array(projected, sampled)
+
+
+## n full RK4 pieces of dt/n with the same inputs; the first piece reuses the tick's k1, later pieces re-evaluate it.
+func _rk4_substeps(combined: PackedFloat64Array, t: float, dt_tick: float, f: Callable, first: PackedFloat64Array, n: int) -> PackedFloat64Array:
+	var current: PackedFloat64Array = combined
+	var piece: float = dt_tick / float(n)
+	var elapsed: float = 0.0
+	for i in n:
+		var k1: PackedFloat64Array = first if i == 0 else f.call(current, t + elapsed)
+		current = RK.rk4_step_at(current, t + elapsed, piece, f, k1)
+		elapsed += piece
+	return current
+
+
+## The declared-event locator over n pieces of dt/n; events keep their absolute times. null = the locator failed.
+func _locate_substeps(combined: PackedFloat64Array, t: float, dt_tick: float, f: Callable, first: PackedFloat64Array,
+		declared: Dictionary, n: int) -> Variant:
+	var current: PackedFloat64Array = combined
+	var piece: float = dt_tick / float(n)
+	var elapsed: float = 0.0
+	var events: Array[Dictionary] = []
+	for i in n:
+		var located: Dictionary = EventStep.advance(current, t + elapsed, piece, f, first if i == 0 else PackedFloat64Array(),
+			int(declared.index), declared.transition, str(declared.type))
+		if not located.get("ok", false):
+			return null
+		current = located.state
+		for event: Dictionary in located.events:
+			events.append(event)
+		elapsed += piece
+	return {state = current, events = events}
 
 
 ## A policy's {state, events} result: the state is validated by the caller; events need a type and a time inside

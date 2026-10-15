@@ -1042,6 +1042,7 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	vehicle.loads = _loads
 	vehicle.pre_tick = _pre_step
 	vehicle.rotor_momentum = rotor_momentum
+	vehicle.substeps = _substeps
 	if not sim.set_model(vehicle):
 		push_error("Cannot install the fixed-wing vehicle model")
 	_gear_cache.clear()
@@ -2956,6 +2957,13 @@ func rotor_momentum(aux: PackedFloat64Array) -> PackedFloat64Array:
 ## Once per physics tick, before integration (deterministic): engine rpm follows the throttle with its lag (D5), or
 ## the shaft torque balance when the aircraft declares one (P51-06);
 ## each servo slews toward its command at the servo's rate (D6c), a full throw in servo_full_throw_time.
+## SF-05: the gear's derived substep count while a wheel is within reach of the ground, otherwise one.
+func _substeps(body: PackedFloat64Array, _continuous: PackedFloat64Array, _t: float) -> int:
+	if not aircraft.get("ok", false) or not (aircraft.model.get("landing_gear") is Dictionary):
+		return 1
+	return Ground.substeps(body, current_landing_gear(), sim.dt(), ground_surfaces)
+
+
 func _pre_step(aux: PackedFloat64Array, inputs: PackedFloat64Array, dt: float) -> PackedFloat64Array:
 	if _weather_pending_reset or _shaft_pending_reset:
 		return PackedFloat64Array([NAN]) # configure→reset boundary cannot advance an old layout/RNG

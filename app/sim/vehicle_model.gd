@@ -56,6 +56,10 @@ var step_policy: Callable
 ## runs the locator when no step_policy is set and exactly one event is declared; a model composing several
 ## boundaries keeps its own step_policy and reports its events through it.
 var events: Array[Dictionary] = []
+## SF-05: substeps(body, continuous, t) -> int in 1..Simulation.MAX_SUBSTEPS, evaluated once per tick. The kernel
+## integrates its own RK4 and the declared-event locator in that many substeps of dt/n (stiff contacts within
+## reach). A step_policy owns the whole tick and receives no substeps. Unset = 1.
+var substeps: Callable
 
 
 ## Static shape of the contract. Checks that depend on the live state (continuous size, array finiteness)
@@ -72,7 +76,7 @@ static func validate(candidate: Variant) -> Dictionary:
 	if typeof(candidate.identity) != TYPE_DICTIONARY:
 		return {ok = false, message = "vehicle model identity must be a dictionary"}
 	for field: String in ["loads", "stage", "block_loads", "block_derivative", "stage_rotor_momentum",
-			"rotor_momentum", "pre_tick", "post_tick", "post_tick_joint", "block_aux", "step_policy"]:
+			"rotor_momentum", "pre_tick", "post_tick", "post_tick_joint", "block_aux", "step_policy", "substeps"]:
 		if typeof(candidate.get(field)) != TYPE_CALLABLE:
 			return {ok = false, message = "vehicle model %s must be a Callable" % field}
 	if candidate.post_tick.is_valid() and candidate.post_tick_joint.is_valid():
