@@ -1,0 +1,58 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   signed-zero fixture carries the negative float64 sign bit
+ok   two valid coordinates pack six exact float64 values each, including signed zero  calls 2 values 12
+ok   valid batch preserves callback coordinate order
+ok   zero-length batch succeeds empty without invoking the road
+ok   invalid Callable is rejected even for an empty batch  ok=true error=Native road batch request is malformed samples_type=PackedFloat64Array samples_size=0
+ok   invalid Callable makes no road calls
+ok   odd coordinate count is rejected before callback  ok=true error=Native road batch request is malformed samples_type=PackedFloat64Array samples_size=0
+ok   non-finite coordinate is rejected before callback  ok=true error=Native road batch request is malformed samples_type=PackedFloat64Array samples_size=0
+ok   malformed coordinate buffers do not call the road
+ok   non-Dictionary raw callback result  ok=true error=Road callback must return a Dictionary samples_type=PackedFloat64Array samples_size=0
+ok   non-Dictionary raw callback result invokes one callback  calls 1
+ok   missing height_m is rejected  ok=true error=Road callback omitted height, normal, friction, or rolling resistance samples_type=PackedFloat64Array samples_size=0
+ok   missing height_m is rejected invokes one callback  calls 1
+ok   missing normal_ned is rejected  ok=true error=Road callback omitted height, normal, friction, or rolling resistance samples_type=PackedFloat64Array samples_size=0
+ok   missing normal_ned is rejected invokes one callback  calls 1
+ok   missing mu is rejected  ok=true error=Road callback omitted height, normal, friction, or rolling resistance samples_type=PackedFloat64Array samples_size=0
+ok   missing mu is rejected invokes one callback  calls 1
+ok   missing rolling is rejected  ok=true error=Road callback omitted height, normal, friction, or rolling resistance samples_type=PackedFloat64Array samples_size=0
+ok   missing rolling is rejected invokes one callback  calls 1
+ok   Array normal has the wrong type  ok=true error=Road normal must be a PackedFloat64Array samples_type=PackedFloat64Array samples_size=0
+ok   Array normal has the wrong type invokes one callback  calls 1
+ok   PackedFloat32Array normal has the wrong type  ok=true error=Road normal must be a PackedFloat64Array samples_type=PackedFloat64Array samples_size=0
+ok   PackedFloat32Array normal has the wrong type invokes one callback  calls 1
+ok   short normal is rejected  ok=true error=Road normal must contain three finite NED values samples_type=PackedFloat64Array samples_size=0
+ok   short normal is rejected invokes one callback  calls 1
+ok   long normal is rejected  ok=true error=Road normal must contain three finite NED values samples_type=PackedFloat64Array samples_size=0
+ok   long normal is rejected invokes one callback  calls 1
+ok   NaN normal component is rejected  ok=true error=Road normal must contain three finite NED values samples_type=PackedFloat64Array samples_size=0
+ok   NaN normal component is rejected invokes one callback  calls 1
+ok   infinite normal component is rejected  ok=true error=Road normal must contain three finite NED values samples_type=PackedFloat64Array samples_size=0
+ok   infinite normal component is rejected invokes one callback  calls 1
+ok   normal outside unit tolerance is rejected  ok=true error=Road normal must be unit length samples_type=PackedFloat64Array samples_size=0
+ok   normal outside unit tolerance is rejected invokes one callback  calls 1
+ok   normal within unit-length tolerance is accepted
+ok   NaN height_m is rejected  ok=true error=Road height/friction/rolling values must be finite and nonnegative where applicable samples_type=PackedFloat64Array samples_size=0
+ok   NaN height_m is rejected invokes one callback  calls 1
+ok   infinite height_m is rejected  ok=true error=Road height/friction/rolling values must be finite and nonnegative where applicable samples_type=PackedFloat64Array samples_size=0
+ok   infinite height_m is rejected invokes one callback  calls 1
+ok   NaN mu is rejected  ok=true error=Road height/friction/rolling values must be finite and nonnegative where applicable samples_type=PackedFloat64Array samples_size=0
+ok   NaN mu is rejected invokes one callback  calls 1
+ok   infinite mu is rejected  ok=true error=Road height/friction/rolling values must be finite and nonnegative where applicable samples_type=PackedFloat64Array samples_size=0
+ok   infinite mu is rejected invokes one callback  calls 1
+ok   NaN rolling is rejected  ok=true error=Road height/friction/rolling values must be finite and nonnegative where applicable samples_type=PackedFloat64Array samples_size=0
+ok   NaN rolling is rejected invokes one callback  calls 1
+ok   infinite rolling is rejected  ok=true error=Road height/friction/rolling values must be finite and nonnegative where applicable samples_type=PackedFloat64Array samples_size=0
+ok   infinite rolling is rejected invokes one callback  calls 1
+ok   negative mu is rejected  ok=true error=Road height/friction/rolling values must be finite and nonnegative where applicable samples_type=PackedFloat64Array samples_size=0
+ok   negative mu is rejected invokes one callback  calls 1
+ok   negative rolling is rejected  ok=true error=Road height/friction/rolling values must be finite and nonnegative where applicable samples_type=PackedFloat64Array samples_size=0
+ok   negative rolling is rejected invokes one callback  calls 1
+ok   invalid second result aborts without returning a partial buffer  ok=true error=Road callback omitted height, normal, friction, or rolling resistance samples_type=PackedFloat64Array samples_size=0
+ok   batch aborts in order and never calls the third coordinate  calls 2
+ok   reused Dictionary and Packed normal produce independent per-query values  calls 3 values 18
+ok   coordinates invalidated by callback are rechecked before the next query  ok=true error=Invalid road sample request samples_type=PackedFloat64Array samples_size=0
+ok   callback mutation stops before a second road call  calls 1
+RCV-42 road batch contract: 55 checks, 0 failures

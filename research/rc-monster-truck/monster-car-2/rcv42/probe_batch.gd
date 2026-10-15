@@ -1,7 +1,8 @@
 extends SceneTree
 const Before = preload("res://../research/rc-monster-truck/monster-car-2/rcv42/baseline_batch.gd")
-const Candidate = preload("res://../research/rc-monster-truck/monster-car-2/rcv42/candidate_batch.gd")
+const Candidate = preload("res://physics/ground_vehicle/vehicle_dynamics.gd")
 const Prealloc = preload("res://../research/rc-monster-truck/monster-car-2/rcv42/prealloc_batch.gd")
+const Append = preload("res://../research/rc-monster-truck/monster-car-2/rcv42/append_batch.gd")
 const ROUNDS = 5
 const ITERATIONS = 6000
 var output := ""
@@ -13,7 +14,7 @@ func _initialize() -> void:
 func _run() -> void:
 	for argument in OS.get_cmdline_user_args():
 		if argument.begins_with("--output="): output = argument.trim_prefix("--output=")
-	var implementations := [Before, Prealloc, Candidate]
+	var implementations := [Before, Prealloc, Candidate, Append]
 	var coordinates := PackedFloat64Array()
 	for i in 14: coordinates.append_array(PackedFloat64Array([i * 0.15, i * -0.12]))
 	var sample := {"height_m": 0.2, "normal_ned": PackedFloat64Array([0.0, 0.0, -1.0]), "mu": 0.82, "rolling": 1.0}
@@ -62,16 +63,19 @@ func _run() -> void:
 	for implementation in implementations:
 		for i in 200: implementation._sample_road_batch(road, coordinates)
 	for round_index in ROUNDS:
-		var order := [0, 1, 2] if round_index % 2 == 0 else [2, 1, 0]
+		var order := [0, 1, 2, 3] if round_index % 2 == 0 else [3, 2, 1, 0]
 		var row := {}
 		for index in order:
 			var implementation = implementations[index]
 			var start := Time.get_ticks_usec()
 			for i in ITERATIONS: implementation._sample_road_batch(road, coordinates)
-			row[["baseline", "preallocation", "fused"][index]] = float(Time.get_ticks_usec() - start) / ITERATIONS
+			row[["baseline", "preallocation", "fused", "fused_append"][index]] = float(Time.get_ticks_usec() - start) / ITERATIONS
 		rounds.append(row)
 	var report := {"complete": true, "checks": checks, "rounds_us_per_14_sample_batch": rounds, "iterations": ITERATIONS,
-		"engine": Engine.get_version_info().string, "scope": "Warm alternating component batches; callback returns one existing dictionary, isolating validation and packing."}
+		"engine": Engine.get_version_info().string, "scope": "Warm alternating component batches; callback returns one existing dictionary, isolating validation and packing.",
+		"source_sha256": {"baseline": FileAccess.get_sha256(Before.resource_path), "preallocation": FileAccess.get_sha256(Prealloc.resource_path),
+			"fused": FileAccess.get_sha256(Candidate.resource_path), "append": FileAccess.get_sha256(Append.resource_path),
+			"harness": FileAccess.get_sha256(get_script().resource_path)}}
 	var file := FileAccess.open(output, FileAccess.WRITE)
 	file.store_string(JSON.stringify(report, "\t", true, true) + "\n")
 	file.close()
