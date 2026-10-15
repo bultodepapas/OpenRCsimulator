@@ -1,6 +1,6 @@
 # Desktop delivery plan
 
-2026-10-15 · Revision 27 · Step prefix: **DT-**.
+2026-10-15 · Revision 28 · Step prefix: **DT-**.
 
 **Status:** DT-00, DT-00-R1 and DT-00-R2 research is complete. DT-01–DT-12 remain open; initial DT-10/10a measurements and a narrow DT-11a lake geometry reuse repair are recorded through VQ-01c; cold loading and package qualification remain open. The owner acceptance gate DT-13 is open. No fullscreen, installer, public signing/notarization or native Windows/macOS acceptance has shipped through this track.
 
@@ -9,6 +9,8 @@ Research records remain in [DT-00](research/desktop-delivery-investigations/DT-0
 Latest DT-11a evidence: [horizon construction](research/visual-quality-implementation/VQ-01c/loading/horizon-build/README.md). Five native runs preserve complete mesh output; construction median is 68.721→55.027 ms. This does not measure full Home/Fly loading or FPS. A combined native horizon/atmosphere regression test reports four texture shutdown errors on reference and candidate; isolation remains open. [Earlier shadow blur](research/visual-quality-implementation/VQ-01c/loading/shadow-blur/README.md) and [grass-mask loading attempts](research/visual-quality-implementation/VQ-01c/loading/grass-masks/README.md) remain separate evidence. Current-package qualification, cold-load non-regression, loading budgets and production shutdown/soak remain open.
 
 ## Current delivery
+
+DT-11a continuation (2026-10-15): [projected-shadow framing reuse](research/visual-quality-implementation/VQ-01c/loading/shadow-framing/README.md) reduces measured shadow-update CPU time by 20–49% across steady, translating, rotating and changing-light workloads. All 5,250 native state pairs and 4,096 standalone framing cases agree exactly; six new regressions accompany clean 43-check headless/native shadow and 18-check Home runs. The initial cache-only candidate was rejected for slower changing-input updates. Whole-game FPS and prior lifecycle qualification remain open.
 
 DT-11a continuation (2026-10-15): [bounded canopy station scans](research/visual-quality-implementation/VQ-01c/loading/heli-canopy/stations/README.md) reduce four-contour construction from 88.701 to 20.501 ms and complete helicopter night-kit construction from 96.207 to 28.519 ms. Sixty real geometry pairs and 1,280 synthetic case evaluations agree exactly; five boundary/order/ownership checks are added. The per-call workspace retains about 670 KiB on the real canopy. Whole loading/FPS and the existing native texture shutdown issue remain unqualified.
 

@@ -2,8 +2,9 @@
 """Regenerate the prepared OpenRC Simulator WebP image assets.
 
 Requires Pillow==12.3.0. Source PNGs remain untouched. Aircraft studio renders
-are saved losslessly; the two field captures are reduced to at most 1600 pixels
-wide and encoded as WebP at quality 85.
+are saved losslessly; field captures are reduced to at most 1600 pixels wide
+and encoded as WebP at quality 85. Savox display copies are resized to 768 pixels
+wide and encoded losslessly; --brands-only rebuilds just those derivatives.
 """
 
 from __future__ import annotations

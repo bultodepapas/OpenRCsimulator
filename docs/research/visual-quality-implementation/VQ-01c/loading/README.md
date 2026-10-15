@@ -1,5 +1,10 @@
 # DT-11a — reuse unchanged lake geometry
 
+2026-10-15 presentation follow-up: [projected-shadow framing reuse](shadow-framing/README.md)
+preserves 5,250 native state pairs and reduces shadow-update CPU time by 20–49%
+across four workloads. Headless/native shadow and Home checks exit cleanly;
+whole-game FPS and historical lifecycle issues remain separate acceptance gates.
+
 2026-10-15 construction follow-up: [bounded helicopter canopy station scans](heli-canopy/stations/README.md)
 preserve 60 real contour/kit geometry pairs and reduce complete night-kit
 construction from 96.207 to 28.519 ms. Five permanent edge-case checks pass;
