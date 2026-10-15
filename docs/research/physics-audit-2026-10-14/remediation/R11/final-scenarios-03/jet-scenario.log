@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Flight log REC: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\final-scenarios-03\jet/candidate.orfl
+Flight log saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R11\final-scenarios-03\jet/candidate.orfl (1440 ticks)
+{"complete":true,"error":"","rows":1441,"status":"ok"}

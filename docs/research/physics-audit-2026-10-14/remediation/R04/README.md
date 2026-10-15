@@ -76,7 +76,7 @@ The session sweep logs are `session-direction-magnitude-sweep-diagnostics.log` a
 
 | Current source at final session sweep | SHA-256 |
 | --- | --- |
-| `app/physics/ground_start.gd` | `DDA14919AE3C5B6D9AC094E287F2DDA10D1E78B61BF14510E837BD0AB227307F` |
+| `app/physics/ground_start.gd` (post-H6 line-search expression) | `A92D9350480BEC581D14C2A066E709344BD1D4472476EE4A1245317104B76BF6` |
 | `app/sim/flight_session.gd` | `303ADE91ADFE18FCE11364D5E965B8554A37FF17CA72D8CF23AC8B83E11A9B96` |
 | `app/physics/aero.gd` | `FED08E735494B6D2597F639CCA118D84C978F75828811F0D09968BFC67A85BE5` |
 | `app/physics/turbine.gd` | `A7577B8D2DDFE7DAEC69CF2992E8C566688F5B6C89CF6461C5B462ABEB1CA702` |
@@ -88,5 +88,7 @@ The session sweep logs are `session-direction-magnitude-sweep-diagnostics.log` a
 | Stik aircraft data | `5FE8ECE91B7EBE92F304F764F0D50EDC936AE5C4AB1D1C801CF20827EC1EE9B6` |
 | Jet aircraft data | `74043C9BC1DE35DE066BC65B971E85F5E099173F2D9CCCEC065C6988ABBB6B9D` |
 | Session sweep script | `8E8A504463C262A31814D918E0B3B0D4CC96295DE3A358C931B1A3B680AA34A0` |
+
+After the recorded session/force sweeps, H6 review found one bare `pow(0.5, backtrack)` in the line-search backtracking factor. It was replaced with the exact reciprocal power-of-two expression `1.0 / float(1 << backtrack)`; the bounded factors remain unchanged for the integer backtrack indices used. The historical numerical logs above retain their original source identity. The post-H6 source passed environment (10/10), ground-start integrity (254/254), and runway transaction (32/32) focused checks and is the source to be captured by the R11 Linux verification manifest.
 
 The real-session sweep used the current `A757…` turbine and current `Dynamics` sources. The old-Newton 2×2 and direct magnitude probe used the explicitly identified immutable F02 turbine candidate. The force/moment probe ran in the disposable shadow with `GroundStart` hash `DDA14919AE3C5B6D9AC094E287F2DDA10D1E78B61BF14510E837BD0AB227307F`, final aero hash `FED08E735494B6D2597F639CCA118D84C978F75828811F0D09968BFC67A85BE5`, F02 turbine hash `0603A1C38C9F8350F12C5E212489F5180B6B96FC95504A97BB428D57BDE03DC5`, and untouched-baseline `Dynamics` hash `313851831BAA6CCF9769A2A4A28220DE96650FF3B64C60DC5275857DA89806D3`. Current `Dynamics` hash `5D4D8EA9AE713F36DC977F3ED8DD451BDCC46278E3C68DB9F72B2B426046B7F1` was used by the later FlightSession sweep, not by the saved force/moment probe. Therefore the independent force/moment residuals verify the recorded shadow snapshot and must not be read as a force-balance measurement of the later F07 propulsion coupling. The 2×2 is controlled source isolation; the session sweep records integrated runtime stationarity.

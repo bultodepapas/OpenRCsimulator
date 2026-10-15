@@ -1,0 +1,64 @@
+{
+  "purpose": "software regression, not physical validation",
+  "results": [
+    {
+      "name": "golden",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_golden.gd"
+      ],
+      "exit_code": 1,
+      "seconds": 5.797,
+      "ok": false,
+      "errors": [
+        "FAIL golden roll_15 replays (600 ticks): worst error: position 0.027919051129696726 m, velocity 0.015500965755423257 m/s, attitude 0.0016021610058782054, rate 0.007132916225676911 rad/s; auxiliary/discrete mismatch",
+        "FAIL golden pull_throttle replays (720 ticks): worst error: position 0.6547973814485175 m, velocity 0.1065330603828194 m/s, attitude 0.018239660943137476, rate 0.03164870156360089 rad/s; auxiliary/discrete mismatch",
+        "FAIL golden rudder_doublet replays (720 ticks): worst error: position 0.14232179231089503 m, velocity 0.20526851189726703 m/s, attitude 0.005645705612524199, rate 0.0456813710602213 rad/s; auxiliary/discrete mismatch",
+        "FAIL golden glide_15 replays (1200 ticks): worst error: position 5.7198690228688065e-12 m, velocity 2.7924329515371937e-12 m/s, attitude 4.838143774499315e-14, rate 9.463998269974134e-14 rad/s; auxiliary/discrete mismatch"
+      ]
+    },
+    {
+      "name": "attached_flow",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_attached_flow.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 5.985,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "slipstream_scalar",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_slipstream_scalar.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 6.078,
+      "ok": true,
+      "errors": []
+    }
+  ],
+  "source_drift": [],
+  "stable_source": true,
+  "ok": false
+}

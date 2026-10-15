@@ -26,15 +26,25 @@ The control-authority measurements below use calm air at `rho=1.225 kg/m3`, zero
 | Speed | RPM case | Baseline `dMy/dδe` | Candidate `dMy/dδe` | Wash addition | Baseline `dMz/dδr` | Candidate `dMz/dδr` | Wash addition |
 |---:|---|---:|---:|---:|---:|---:|---:|
 | 0 m/s | Engine off, 0 rpm | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 | 0.000000 |
+| 0 m/s | Estimated idle, 2,800 rpm | 0.000000 | -0.467638 | -0.467638 | 0.000000 | -0.298233 | -0.298233 |
 | 0 m/s | Rated-static, 11,149 rpm | 0.000000 | -7.414214 | -7.414214 | 0.000000 | -4.728371 | -4.728371 |
 | 5 m/s | Engine off, 0 rpm | -1.815667 | -1.815667 | 0.000000 | -0.723931 | -0.723931 | 0.000000 |
+| 5 m/s | Estimated idle, 2,800 rpm | -1.815667 | -2.967124 | -1.151457 | -0.723931 | -1.394023 | -0.670092 |
 | 5 m/s | Rated-static, 11,149 rpm | -1.815667 | -13.990806 | -12.175139 | -0.723931 | -8.265441 | -7.541511 |
 | 15 m/s | Engine off, 0 rpm | -16.341003 | -16.341003 | 0.000000 | -6.515378 | -6.515378 | 0.000000 |
+| 15 m/s | Estimated idle, 2,800 rpm | -16.341003 | -15.292491 | +1.048511 | -6.515378 | -5.939615 | +0.575763 |
 | 15 m/s | Rated-static, 11,149 rpm | -16.341003 | -33.949584 | -17.608581 | -6.515378 | -16.932072 | -10.416694 |
+| 29 m/s | Engine off, 0 rpm | -61.079038 | -61.079038 | 0.000000 | -24.353035 | -24.353035 | 0.000000 |
+| 29 m/s | Estimated idle, 2,800 rpm | -61.079038 | -59.340385 | +1.738652 | -24.353035 | -23.393073 | +0.959963 |
+| 29 m/s | Rated-static, 11,149 rpm | -61.079038 | -74.069965 | -12.990928 | -24.353035 | -31.721208 | -7.368173 |
 
 The signed slopes follow the current surface sign convention: positive elevator is trailing-edge down and positive rudder is trailing-edge left. The `0 m/s` engine-on result is a steady axial-wash calculation with prescribed RPM; it does not model an engine actually starting at rest.
 
+The [extended probe](authority-extended.log) adds the authored estimated idle RPM and 29 m/s cases: **37 checks, 0 failed**. At idle and high advance speed, the modeled wash reduces tail-authority magnitude; the test requires finite response rather than assuming every spinning-prop condition increases authority. These values do not qualify the propeller's windmilling quadrant or measured idle installation behavior. The original 27-check log and its source identities remain historical evidence.
+
 One 240-tick/1-second same-input session pair also ran through `FlightSession`. Both started from the baseline's fresh 15 m/s trim and had byte-equal initial body, input, auxiliary and continuous arrays; the candidate had the same input/continuous-state layout and received the baseline input vector `[0.0203603743602471, 0.081665568916526, 0.0249785446538168, 0.282148546613114]` at every tick. Initial RPM was `5,155.658216`. Both remained finite. Across the run, the largest baseline/candidate deltas were `0.08235 m` position, `0.06802 m/s` velocity, `0.01757 rad` attitude and `0.02030 rad/s` angular rate. This open-loop comparison isolates the candidate law under a shared start and command; it is not exact replay, retrimmed-candidate equivalence or physical validation.
+
+A further **six-second, 1,441-row** experiment uses the complete [R11 Stik recording](../R11/final-scenarios-03/stik/candidate.orfl), whose own exact replay passed, and changes only to this generated candidate. The [candidate replay report](same-tape-6s/replay.json) records `mode=candidate`, `status=ok`, `complete=true`, and `solver_changed=false`; baseline and candidate use solver SHA-256 `3877ec2dab0d72194f979ad85c396a2ecc40aa8388cd31b252ea99dd10584123`. It preserves every input tick and the complete baseline initial state. [Comparison](same-tape-6s/comparison.json): maximum position component difference `2.339964 m`, velocity component `0.654389 m/s`, angular-rate component `0.142508 rad/s`, and attitude angle `0.045076 rad`. These component maxima differ from the vector norms in the short probe above. They quantify the effect of the wash assumptions; they do not demonstrate an improvement in real-flight prediction or a newly trimmed candidate.
 
 The stopped, transported-wake diagnostic is separate from the stateless candidate. With `rpm=0`, per-piece transported increments `[2, 2, 2] m/s`, zero rates and body axial velocity sampled at `[-1e-8, 0, +1e-8] m/s`, the current branch at [slipstream.gd:57](../../../../../app/physics/slipstream.gd#L57) returns exact zero on the negative side and finite tail loads at zero/positive flow. The one-sided jump is `0.004311 N` force norm and `0.002925 N·m` moment norm; exact-zero loads are `[-0.0014755583, 0, -0.0040502547, 0, -0.0029246083, 0]` in `[Fx,Fy,Fz,Mx,My,Mz]`. The diagnostic identifies the binary `v[0] >= 0` fade as the boundary; it does not change the runtime or select a replacement law. A future transport slice must define the residual wake's behavior under flow reversal and test both one-sided limits with nonzero stored wake before choosing a continuous closure.
 

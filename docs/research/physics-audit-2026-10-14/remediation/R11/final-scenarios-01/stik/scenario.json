@@ -1,0 +1,63 @@
+{
+	"aircraft_identity": {
+		"format": "openrc-aircraft v2",
+		"sha256": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6"
+	},
+	"baseline_sha256": "8e4c9c1c81d74a12930988291bb8bad9115cdac0a18663960d533c0a648987d7",
+	"baseline_solver_sha256": "f2cd23dd5dd04af0ff51547f45c2ceaea23c05fbd03d59541dcac949dd4bd26e",
+	"baseline_tape": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R00\\session\\stik-normal-yaw.orfl",
+	"candidate_sha256": "245535bb0091789d56f70e64d055ae91b8f6fe8ac937721746a3ba243b575d73",
+	"command_tape_sha256": "10e81981797195ec97e96e6a3e2f41be8ee1a1fb85b7ef86fcf947f676edcf84",
+	"complete": true,
+	"current_solver_sha256": "fb0c4c7b758ef634d287aa2b4ef71b46ba0363c637104288de9ad76288933e6d",
+	"error": "",
+	"final_tick": 1440,
+	"format": "openrc-audit-law-change-scenario-v1",
+	"method": "Same accepted aircraft snapshot, body, initial RPM/servos and post-conditioning commands. Fresh production reset settles current wake. This is a versioned scenario, not exact replay or an arbitrary mid-flight migration.",
+	"new_initial_aux": [
+		5155.658215672891,
+		0.02036037436024705,
+		0.08166556891652603,
+		0.02497854465381676,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		6.105284981554723
+	],
+	"new_initial_continuous": [
+		0.0,
+		0.0,
+		0.0
+	],
+	"old_initial_aux": [
+		5155.658215672891,
+		0.02036037436024705,
+		0.08166556891652603,
+		0.02497854465381676,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.40702107023902157
+	],
+	"old_initial_continuous": [
+		0.0,
+		0.0,
+		0.0
+	],
+	"rows": 1441,
+	"solver_changed": true,
+	"status": "ok",
+	"wake_state_unit": "m/s (equal-area mean of section Vp*CL)"
+}

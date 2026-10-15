@@ -1,0 +1,31 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: default practice course loads
+PASS: course identity binds exact file bytes
+PASS: course is renderer-ready
+PASS: safe start is flat asphalt
+PASS: flat ground normal points Up in NED
+PASS: gravel pad has a stable material ID
+PASS: grass pad has a stable material ID
+PASS: slippery pad overrides asphalt by priority
+PASS: out-of-bounds road is flat deterministic fallback
+PASS: road sampling is deterministic
+PASS: tabletop renderer and physics share its peak height
+PASS: tabletop top normal is level and unit length
+PASS: tabletop approach is a smooth positive slope
+PASS: bump lane exposes a continuous analytic bump
+PASS: wedge is sampled at its analytic center
+PASS: long slope shares its feature record with renderer
+PASS: feature shoulder falls smoothly to the flat plane
+PASS: feature has finite lateral boundary
+PASS: sloped feature normal is finite unit upward
+PASS: sloped feature normal is finite unit upward
+PASS: sloped feature normal is finite unit upward
+PASS: sloped feature normal is finite unit upward
+PASS: sloped feature normal is finite unit upward
+PASS: default spawn matches kernel pose packet
+PASS: practice and material test spawns are available
+PASS: checkpoints remain within the shared north-forward field
+PASS: practice-course fixture parses as JSON
+PASS: invalid physical units reject course atomically
+PASS: unknown course fields reject course atomically

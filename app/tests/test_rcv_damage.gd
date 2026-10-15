@@ -46,10 +46,19 @@ func _telemetry(
 	wall_contact: bool = false,
 	energy_j: float = 100.0,
 	wall_friction_power_w: float = 0.0,
+	hull_wall_contact: bool = false,
+	wheel_wall_corner: int = 0,
 ) -> Dictionary:
-	var hull_contacts := PackedByteArray([1 if hull_contact else 0, 0])
-	var wall_contacts := PackedByteArray([1 if wall_contact else 0, 0, 0, 0])
-	var wheel_wall_loads := PackedFloat64Array([10.0 if wall_contact else 0.0, 0.0, 0.0, 0.0])
+	var hull_contacts := PackedByteArray([1 if hull_contact or hull_wall_contact else 0, 0])
+	var wall_contacts := PackedByteArray([0, 0, 0, 0])
+	var wheel_wall_loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0])
+	var hull_wall_loads := PackedFloat64Array([0.0, 0.0])
+	if wall_contact:
+		if hull_wall_contact:
+			hull_wall_loads[0] = 10.0
+		else:
+			wall_contacts[wheel_wall_corner] = 1
+			wheel_wall_loads[wheel_wall_corner] = 10.0
 	return {
 		"ok": true,
 		"total_energy_j": energy_j,
@@ -59,7 +68,7 @@ func _telemetry(
 		"hull_in_contact": hull_contacts,
 		"wheel_wall_in_contact": wall_contacts,
 		"wheel_wall_load_n": wheel_wall_loads,
-		"hull_wall_load_n": PackedFloat64Array([0.0, 0.0]),
+		"hull_wall_load_n": hull_wall_loads,
 		"suspension_travel_m": PackedFloat64Array([0.0, 0.0, 0.0, 0.0]),
 		"suspension_force_n": PackedFloat64Array([0.0, 0.0, 0.0, 0.0]),
 	}
@@ -73,9 +82,9 @@ func _run() -> void:
 	_check(damage.snapshot().size() == Damage.SNAPSHOT_SIZE
 		and Damage.STATE_SIZE == 19 and Damage.SNAPSHOT_SIZE == 19
 		and Damage.STATE_LAYOUT.size() == Damage.SNAPSHOT_SIZE
-		and Damage.SNAPSHOT_VERSION == 1
+		and Damage.SNAPSHOT_VERSION == 2
 		and typeof(damage.snapshot()) == TYPE_PACKED_FLOAT64_ARRAY,
-		"snapshot keeps the version-1 19-float64 layout")
+		"snapshot v2 preserves the 19-float64 layout")
 	_test_snapshot_contract()
 
 	# Static supported contact may show small energy chatter. It must not turn
@@ -131,6 +140,68 @@ func _run() -> void:
 	_check(damage_after_second[Damage.DRIVE] > 0.0,
 		"hull damage reduces propulsion authority")
 
+	# Total mechanical-energy loss includes ordinary dissipation. A constant-speed
+	# wall scrape must not turn rolling loss into body, drive, or suspension wear.
+	var scrape_damage := Damage.new()
+	var scrape_state := _state(2.0)
+	var scrape_before := _telemetry(false, false, 100.0)
+	var scrape_contact := _telemetry(false, true, 99.0, 0.0, false, 1)
+	var scrape_sustain := _telemetry(false, true, 98.0, 0.0, false, 1)
+	_check(scrape_damage.advance(scrape_state, scrape_state, scrape_before,
+		scrape_contact, model, dt)
+		and scrape_damage.advance(scrape_state, scrape_state, scrape_contact,
+			scrape_sustain, model, dt),
+		"supported wheel-only scrape telemetry is accepted")
+	var scrape_snapshot := scrape_damage.snapshot()
+	_check(scrape_snapshot[Damage.BODY_FRONT] == 0.0
+		and scrape_snapshot[Damage.DRIVE] == 0.0
+		and scrape_snapshot[Damage.SUSPENSION_BASE] == 0.0
+		and scrape_snapshot[Damage.SUSPENSION_BASE + 1] == 0.0
+		and scrape_snapshot[Damage.SUSPENSION_BASE + 2] == 0.0
+		and scrape_snapshot[Damage.SUSPENSION_BASE + 3] == 0.0
+		and scrape_snapshot[Damage.WALL_EPISODE_ENERGY] == 0.0,
+		"rolling energy loss during a tangent wheel scrape causes no wear")
+	var hull_scrape := Damage.new()
+	var supported_before := _state(2.0)
+	var supported_after := _state(2.0)
+	supported_after[Damage.STATE_VEL + 2] = 0.08175
+	var hull_scrape_contact := _telemetry(false, true, 99.0, 0.0, true)
+	_check(hull_scrape.advance(supported_before, supported_after, scrape_before,
+		hull_scrape_contact, model, dt)
+		and hull_scrape.snapshot()[Damage.BODY_FRONT] == 0.0
+		and hull_scrape.snapshot()[Damage.DRIVE] == 0.0
+		and hull_scrape.snapshot()[Damage.WALL_EPISODE_ENERGY] == 0.0,
+		"supported hull-wall scrape and gravity-aligned speed change cause no body wear")
+
+	# A wheel-only impact is assigned to the contacting corner, while a hull-wall
+	# impact remains eligible for body and propulsion wear.
+	var wheel_impact := Damage.new()
+	var wheel_contact := _telemetry(false, true, 92.0, 0.0, false, 1)
+	_check(wheel_impact.advance(_state(2.0), _state(1.0), scrape_before,
+		wheel_contact, model, dt), "wheel-only impact control is accepted")
+	var wheel_impact_snapshot := wheel_impact.snapshot()
+	_check(wheel_impact_snapshot[Damage.BODY_FRONT] == 0.0
+		and wheel_impact_snapshot[Damage.DRIVE] == 0.0
+		and wheel_impact_snapshot[Damage.SUSPENSION_BASE] == 0.0
+		and wheel_impact_snapshot[Damage.SUSPENSION_BASE + 1] > 0.0
+		and wheel_impact_snapshot[Damage.SUSPENSION_BASE + 2] == 0.0
+		and wheel_impact_snapshot[Damage.SUSPENSION_BASE + 3] == 0.0,
+		"wheel-only impact damages only its contacting suspension corner")
+	var hull_wall_impact := Damage.new()
+	var hull_wall := _telemetry(false, true, 92.0, 0.0, true)
+	_check(hull_wall_impact.advance(_state(2.0), _state(1.0), scrape_before,
+		hull_wall, model, dt)
+		and hull_wall_impact.snapshot()[Damage.BODY_FRONT] > 0.0
+		and hull_wall_impact.snapshot()[Damage.DRIVE] > 0.0,
+		"hull-wall impact control retains body and drive damage")
+
+	var wall_episode_end := _telemetry(false, false, 97.0)
+	_check(scrape_damage.advance(scrape_state, scrape_state, scrape_sustain,
+		wall_episode_end, model, dt)
+		and scrape_damage.snapshot()[Damage.WALL_ACTIVE] == 0.0
+		and scrape_damage.snapshot()[Damage.WALL_EPISODE_ENERGY] == 0.0,
+		"wall episode clears on contact separation")
+
 	var controls := {"throttle": 0.8, "steering": 0.3, "brake": 0.2, "reverse": false}
 	var applied: Dictionary = damage.effective_controls(controls)
 	_check(not applied.is_empty()
@@ -154,6 +225,27 @@ func _run() -> void:
 	_check(not damage.advance(moving_before, moving_during, clear, first_hit, model, 0.0)
 		and damage.snapshot().to_byte_array() == before_invalid_advance,
 		"invalid advance leaves the prior snapshot byte-equal")
+	var zero_quaternion := moving_before.duplicate()
+	for index in 4:
+		zero_quaternion[6 + index] = 0.0
+	_check(not damage.advance(zero_quaternion, moving_during, clear, first_hit, model, dt)
+		and damage.snapshot().to_byte_array() == before_invalid_advance,
+		"zero-quaternion input is rejected transactionally")
+	var bad_contact := _telemetry(false, true, 100.0)
+	bad_contact["wheel_wall_load_n"][0] = -1.0
+	_check(not damage.advance(moving_before, moving_during, bad_contact, first_hit, model, dt)
+		and damage.snapshot().to_byte_array() == before_invalid_advance,
+		"negative contact load is rejected transactionally")
+	var mismatched_contact := _telemetry(false, true, 100.0)
+	mismatched_contact["wall_contact_count"] = 0
+	_check(not damage.advance(moving_before, moving_during, mismatched_contact, first_hit, model, dt)
+		and damage.snapshot().to_byte_array() == before_invalid_advance,
+		"contradictory wall contact evidence is rejected transactionally")
+	var bad_model := model.duplicate(true)
+	bad_model["hull_probe_radii_m"][0] = 0.0
+	_check(not damage.advance(moving_before, moving_during, clear, first_hit, bad_model, dt)
+		and damage.snapshot().to_byte_array() == before_invalid_advance,
+		"non-positive hull radius is rejected transactionally")
 	damage.reset()
 	var repaired_values := damage.snapshot()
 	var repair_cleared_damage := true
@@ -189,6 +281,12 @@ func _run() -> void:
 		no_contact, no_contact, model, dt)
 		and ordinary_landing.snapshot()[Damage.SUSPENSION_BASE] == 0.0,
 		"ordinary suspension travel stays undamaged")
+	var extending_overtravel := Damage.new()
+	_check(extending_overtravel.advance(_state(0.0, 0.061, -1.0),
+		_state(0.0, 0.062, -1.1), no_contact, no_contact, model, dt)
+		and extending_overtravel.snapshot()[Damage.SUSPENSION_BASE] == 0.0
+		and extending_overtravel.snapshot()[Damage.BOTTOMING_LATCH_BASE] == 0.0,
+		"pre-existing overtravel while extending does not create bottoming wear")
 
 	_test_view()
 	print("RCV damage: %d checks, %d failures" % [_checks, _failures])
@@ -326,6 +424,10 @@ func _test_snapshot_contract() -> void:
 		maximum[Damage.BOTTOMING_LATCH_BASE + corner] = 1.0
 	maximum[Damage.LAST_IMPACT_ENERGY] = Damage.MAX_LAST_IMPACT_ENERGY_J
 	_check(Damage.valid_snapshot(maximum), "declared upper bounds are valid")
+	var inactive_episode_energy := zero.duplicate()
+	inactive_episode_energy[Damage.HULL_EPISODE_ENERGY] = 1.0
+	_check(not Damage.valid_snapshot(inactive_episode_energy),
+		"inactive contact cannot retain hidden episode energy")
 	var short_snapshot := zero.slice(0, Damage.SNAPSHOT_SIZE - 1)
 	var long_snapshot := zero.duplicate()
 	long_snapshot.append(0.0)

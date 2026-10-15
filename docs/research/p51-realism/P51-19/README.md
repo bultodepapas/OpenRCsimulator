@@ -41,6 +41,18 @@ Godot 4.7.2 official, native Windows, 240 Hz unless stated. XP-51 values are lin
 
 The [P51-15 probes](../../../../research/p51/p51-15/README.md) compared baseline with candidate ([summary](compare-240.md)). All 34 airborne and 5 ground cases completed at 240 and 480 Hz with no crash or fault, and ground numerics and lifecycle checks passed. Level trims keep α within 0.01°; trim throttle falls by 1–2 % because the trim drag is lower. The trim stick command at 25 m/s falls from 0.437 to 0.163. Inverted hands-off flight now needs 0.9° of down elevator instead of 3.2° up. Nonlinear cases change as expected: a lower effective tail incidence lets full up elevator reach a higher angle of attack. The full-up pulse peak goes from 17.7° to 20.7° and the idle stall entry from 18.9° to 21.5°. Takeoff and landing events change by less than 1 %.
 
+## Test outcomes
+
+The P-51 tests were run on a clean `HEAD` worktree (`5e9dae16`) with the baseline and candidate data ([logs](tests/); working-tree identity in [identity.txt](identity.txt)):
+
+| Check | Baseline | Candidate | Reading |
+| --- | --- | --- | --- |
+| `test_p51_handling` inside loop, 0.7 stick from 27 m/s, 360° within 8 s | **fails**, 307° | **fails**, 347° | Already failing at `HEAD`; not caused here. The stick is added to the trim, so baseline flew it at the clipped full-up command (P51-15 documents the clipping). |
+| `test_p51_ground` lift-off 1.05–1.5 Vs | **fails**, 25.2 m/s | **fails**, 25.3 m/s | Already failing at `HEAD`; not caused here. |
+| `test_p51_envelope` power-off stall recovery < 80 m | 65 m | **83 m** | Caused by this change. Every other envelope check changes by less than 1 %. |
+
+Without the spurious nose-down moment, full up elevator reaches a deeper stall (α 21.5° instead of 18.9°), as in the XP-51, whose elevator had about 8° in hand beyond the stall (Section I-D of the report). The scripted recovery's altitude loss depends little on the push: 82–90 m for absolute −0.4 or −0.6 and stick-relative −0.4 or −0.6, except 75 m for absolute −0.6. The 80 m band is a P51-08 software band with no external source. It was neither widened nor met by retuning the stimulus; the owner decides. All other affected native tests pass, except two unrelated failures that also occur at `HEAD` (HX700 energy classification, Avanti wheel state).
+
 ## Limits and open items
 
 - **Power effect sign.** With power the model needs about 1.2° more up elevator than in glide; the full-size airplane needed 0.3–1.8° less. The RC installation differs: 1.75° kit down-thrust, CG 71 mm below the thrust line, gear-down drag, and a four-blade fixed-pitch propeller instead of a three-blade constant-speed one. It was not calibrated. Measured RC trim with and without power would decide it.

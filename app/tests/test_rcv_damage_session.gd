@@ -77,6 +77,26 @@ func _run() -> void:
 	_check("same input tape replays body state and damage exactly", impact.replay(tape)
 		and impact.state_snapshot().to_byte_array() == final_state.to_byte_array()
 		and impact.damage_snapshot().to_byte_array() == final_damage.to_byte_array())
+	var checkpoint_command := NEUTRAL.duplicate()
+	checkpoint_command.throttle = 0.8
+	_check("damaged checkpoint fixture accepts requested throttle", _resume(impact)
+		and impact.tick_once(checkpoint_command))
+	var control_checkpoint: Dictionary = impact.checkpoint()
+	var checkpoint_applied := impact._decode_float64_blob(control_checkpoint.get("applied_controls_f64_base64", ""), 4)
+	var tampered_applied := control_checkpoint.duplicate(true)
+	if checkpoint_applied.size() == 4:
+		checkpoint_applied[0] = 0.0
+		tampered_applied.applied_controls_f64_base64 = impact._base64_bytes(checkpoint_applied.to_byte_array())
+		tampered_applied.checkpoint_sha256 = impact._checkpoint_hash(tampered_applied)
+	var checkpoint_state_before_tamper: PackedFloat64Array = impact.state_snapshot()
+	var checkpoint_damage_before_tamper: PackedFloat64Array = impact.damage_snapshot()
+	_check("checkpoint rejects impossible applied throttle after rehash", checkpoint_applied.size() == 4
+		and not impact.can_restore_checkpoint(tampered_applied)
+		and not impact.restore_checkpoint(tampered_applied)
+		and impact.state_snapshot().to_byte_array() == checkpoint_state_before_tamper.to_byte_array()
+		and impact.damage_snapshot().to_byte_array() == checkpoint_damage_before_tamper.to_byte_array())
+	_check("post-impact checkpoint remains internally consistent", impact.can_restore_checkpoint(control_checkpoint)
+		and impact.restore_checkpoint(control_checkpoint))
 	var fork = ImpactSession.new()
 	_check("checkpoint includes active impact episode", not contact_checkpoint.is_empty() and fork.prepare_default()
 		and fork.restore_checkpoint(contact_checkpoint) and _resume(fork))

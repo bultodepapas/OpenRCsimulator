@@ -727,21 +727,25 @@ func can_restore_checkpoint(candidate: Variant) -> bool:
 			or not _last_controls_match_tape(parsed_last_controls, packed_controls, actions_value, int(candidate.tick)):
 		return false
 	if not _actions_are_valid(actions_value, int(candidate.tick), str(candidate.spawn_id)) \
-			or not _events_are_valid(events_value, int(candidate.tick)):
+			or not _events_are_valid(events_value, int(candidate.tick)) \
+			or not _recovery_history_is_consistent(actions_value, events_value):
 		return false
 	if _hash_bytes(packed_controls.to_byte_array()) != str(candidate.get("control_tape_sha256", "")) \
 			or _hash_variant(events_value) != str(candidate.get("event_tape_sha256", "")):
 		return false
 	if typeof(candidate.get("run_valid")) != TYPE_BOOL or typeof(candidate.get("braking_run")) != TYPE_DICTIONARY:
 		return false
+	if bool(candidate.run_valid) and not actions_value.is_empty():
+		return false
 	if not _braking_state_is_valid(candidate.braking_run, int(candidate.tick)):
 		return false
 	if _checkpoint_hash(candidate) != str(candidate.get("checkpoint_sha256", "")):
 		return false
 	var applied_controls := _controls_from_packed(_decode_float64_blob(candidate.get("applied_controls_f64_base64"), 4))
-	if not _applied_controls_are_valid(applied_controls, parsed_last_controls): return false
 	var damage_candidate = Damage.new()
 	if not damage_candidate.restore_snapshot(candidate_damage): return false
+	var post_tick_drive_scale := float(damage_candidate.visual_state().drive_scale)
+	if not _applied_controls_are_valid(applied_controls, parsed_last_controls, post_tick_drive_scale): return false
 	var telemetry: Dictionary = VehicleDynamics.telemetry(candidate_state, _model, _road, applied_controls)
 	return _telemetry_is_valid(telemetry)
 
@@ -791,7 +795,8 @@ func restore_checkpoint(candidate: Variant) -> bool:
 
 
 func start_recording() -> bool:
-	if not prepared or not _active_backend_matches_prepared() or recording or _has_unexported_recording():
+	if not prepared or not _active_backend_matches_prepared() or not fault_reason.is_empty() \
+			or recording or _has_unexported_recording():
 		return false
 	var hull_radii: Variant = _model.get("hull_probe_radii_m", PackedFloat64Array())
 	if typeof(hull_radii) != TYPE_PACKED_FLOAT64_ARRAY:
@@ -1043,6 +1048,8 @@ func _stop_recording_at_limit() -> void:
 
 
 func _interrupt_recording(reason: String) -> void:
+	if not recording:
+		return
 	_recording_events.append({"type": "recording_interrupted", "tick": tick,
 		"time_s": time_s(), "reason": reason})
 	_recording_run_valid = false
@@ -1442,9 +1449,15 @@ func _identity_equal(left: Variant, right: Dictionary) -> bool:
 
 
 ## A damage modifier may reduce requested throttle only. Braking and steering stay driver-owned.
-func _applied_controls_are_valid(applied: Dictionary, requested: Dictionary) -> bool:
+func _applied_controls_are_valid(applied: Dictionary, requested: Dictionary, minimum_drive_scale: float) -> bool:
 	if _controls_to_packed(applied).size() != 4: return false
+	if not is_finite(minimum_drive_scale) or minimum_drive_scale < 0.0 or minimum_drive_scale > 1.0:
+		return false
+	# Drive damage is monotone during a run. The pre-tick scale may be higher than
+	# this post-tick scale, so this lower bound checks internal consistency only.
+	var throttle_floor := float(requested.throttle) * minimum_drive_scale
 	return float(applied.throttle) <= float(requested.throttle) \
+		and float(applied.throttle) + 1.0e-12 >= throttle_floor \
 		and applied.steering == requested.steering and applied.brake == requested.brake \
 		and applied.reverse == requested.reverse
 
@@ -1591,6 +1604,43 @@ func _actions_are_valid(actions: Array, max_tick: int, expected_spawn: String) -
 	return true
 
 
+func _recovery_history_is_consistent(actions: Array, events: Array) -> bool:
+	var counts_by_tick: Dictionary = {}
+	for item in events:
+		if typeof(item) != TYPE_DICTIONARY:
+			return false
+		if item.get("type") != "manual_recovery":
+			continue
+		if not _integer_value_is_valid(item.get("tick")) or typeof(item.get("spawn_id")) != TYPE_STRING:
+			return false
+		var event_tick := int(item.tick)
+		if not counts_by_tick.has(event_tick):
+			counts_by_tick[event_tick] = {}
+		var spawn_counts: Dictionary = counts_by_tick[event_tick]
+		var spawn_id: String = item.spawn_id
+		spawn_counts[spawn_id] = int(spawn_counts.get(spawn_id, 0)) + 1
+		counts_by_tick[event_tick] = spawn_counts
+	for action in actions:
+		if typeof(action) != TYPE_DICTIONARY or not _integer_value_is_valid(action.get("tick")) \
+				or typeof(action.get("spawn_id")) != TYPE_STRING:
+			return false
+		var action_tick := int(action.tick)
+		if not counts_by_tick.has(action_tick):
+			return false
+		var spawn_counts: Dictionary = counts_by_tick[action_tick]
+		var spawn_id: String = action.spawn_id
+		var count := int(spawn_counts.get(spawn_id, 0))
+		if count <= 0:
+			return false
+		spawn_counts[spawn_id] = count - 1
+	for tick_key in counts_by_tick:
+		var spawn_counts: Dictionary = counts_by_tick[tick_key]
+		for count_value in spawn_counts.values():
+			if int(count_value) != 0:
+				return false
+	return true
+
+
 func _events_are_valid(events: Array, max_tick: int) -> bool:
 	for item in events:
 		if typeof(item) != TYPE_DICTIONARY or typeof(item.get("type")) != TYPE_STRING \
@@ -1669,7 +1719,12 @@ func _set_paused(value: bool) -> void:
 
 
 func _fail_safe(reason: String) -> void:
+	if not fault_reason.is_empty():
+		return
 	fault_reason = reason
+	load_error = reason
 	_set_paused(true)
+	if recording:
+		_interrupt_recording(reason)
 	if not _suppress_signals:
 		faulted.emit(reason)

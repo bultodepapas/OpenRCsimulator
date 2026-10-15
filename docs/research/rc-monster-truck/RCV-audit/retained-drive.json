@@ -1,0 +1,7 @@
+{
+  "csv": "docs/research/rc-monster-truck/RCV-audit/drive-final.csv",
+  "csv_sha256": "778e742bf179d5957f1a436112f61bc73240b2c72288542bc22393dd0404c89a",
+  "compressed_csv": "docs/research/rc-monster-truck/RCV-audit/drive-final.csv.gz",
+  "compressed_sha256": "6381e4dc11ad2c1c8ab589aab015433fed64ba03d9f6437317759aed76a78e10",
+  "decompressed_bytes_verified": true
+}

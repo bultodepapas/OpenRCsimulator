@@ -120,14 +120,13 @@ func _run() -> void:
 	var bad_slips := {
 		"wheel_in_contact": PackedByteArray([1, 1, 1, 1]),
 		"wheel_slip_speed_m_per_s": PackedFloat64Array([NAN, INF, -INF, 0.6]),
-		"speed_m_per_s": 0.0,
+		"speed_m_per_s": 0.6,
 	}
 	effects.update_render(0.05, bad_slips, {}, road, false, 0.0)
 	var slip_state: Dictionary = effects.diagnostic_snapshot()
-	var slip_levels: PackedFloat32Array = slip_state.dust_emission_levels
-	check(slip_state.dust_active_wheels == 1 and is_zero_approx(slip_levels[0]) \
-		and is_zero_approx(slip_levels[1]) and is_zero_approx(slip_levels[2]) and slip_levels[3] > 0.0,
-		"non-finite per-wheel slip is ignored without contaminating other tire effects")
+	check(slip_state.dust_active_wheels == 0 \
+		and is_equal_approx(float(slip_state.grime_amount), float(baseline.grime_amount)),
+		"any non-finite wheel slip fails closed before dust or grime can use the malformed frame")
 	var grime_before_invalid := float(slip_state.grime_amount)
 	for invalid_speed in [NAN, INF, -INF]:
 		var invalid := _telemetry(invalid_speed, 0.6)

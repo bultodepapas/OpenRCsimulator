@@ -102,6 +102,13 @@ candidates are rejected. An external starter/cut/mixture intervention replays it
 recorded state edit at the same tick. Treat such intervals carefully when comparing
 different propulsion configurations.
 
+In particular, the R02 wing-wake state changed from a coefficient to velocity in
+m/s. Equal array lengths do not make those checkpoints compatible. Use the original
+source for historical exact replay. A new-law experiment must prepare a valid new
+initial wake explicitly and retain the shared body/command scenario, as in the
+[physics-audit comparison](research/physics-audit-2026-10-14/remediation/R11/README.md).
+That experiment does not reconstruct an unrecorded mid-flight wake history.
+
 Reports identify baseline/current solver fingerprints and whether they differ.
 For an aircraft-only experiment require `solver_changed: false`; for a solver
 experiment hold aircraft data fixed. Change one cause at a time. Do not label a

@@ -26,6 +26,8 @@ var _last_signature := ""
 
 
 func prepare(visual: Dictionary) -> bool:
+	if _prepared:
+		return false
 	if not bool(visual.get("ok", false)) or typeof(visual.get("nodes")) != TYPE_DICTIONARY:
 		return false
 	var nodes: Dictionary = visual.nodes

@@ -34,12 +34,16 @@ def main():
                'test_rcv_airfield_track', 'test_rcv_obstacle_contacts', 'test_rcv_track_view', 'test_rcv_input',
                'test_rcv_vehicle_dynamics', 'test_rcv_powertrain', 'test_rcv_handling', 'test_rcv_session', 'test_rcv_activity',
                'test_rcv_presentation', 'test_rcv_menu', 'test_rcv_damage', 'test_rcv_damage_session',
-               'test_rcv_ground_effects', 'test_rcv_effects_activity']
+               'test_rcv_ground_effects', 'test_rcv_effects_activity', 'test_rcv_activity_audit',
+               'test_rcv_render_audit']
     if args.include_menu:
         scripts += ['test_ui_home', 'test_ui_home_layout']
     for name in scripts:
         checks.append((name, [str(binary), '--headless', '--path', 'app', '--audio-driver', 'Dummy',
                              '--script', f'res://tests/{name}.gd']))
+    checks.append(('damage-contact-audit', [str(binary), '--headless', '--path', 'app',
+                   '--audio-driver', 'Dummy', '--script',
+                   str(ROOT / 'research/rc-monster-truck/audit/damage/audit_damage.gd')]))
     if args.only:
         unknown = set(args.only) - {name for name, _ in checks}
         if unknown:

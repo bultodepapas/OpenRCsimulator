@@ -19,6 +19,8 @@ func _initialize() -> void:
 		_test_experiment_and_reset(session)
 	if failures == 0:
 		_test_recording_export(session)
+	if failures == 0:
+		_test_faulted_recording(session)
 	session.free()
 	if failures == 0:
 		_test_native_backend_switch_guards()
@@ -129,6 +131,44 @@ func _test_garage_reverse_checkpoint_replay(session) -> void:
 	_check("recovery is represented by an event and replay action",
 		not session.event_tape_snapshot().is_empty() and session.recovery_actions_snapshot().size() == 1)
 	var recovered_state: PackedFloat64Array = session.state_snapshot()
+	var falsely_valid_checkpoint: Dictionary = checkpoint_after_recovery.duplicate(true)
+	falsely_valid_checkpoint.run_valid = true
+	falsely_valid_checkpoint.checkpoint_sha256 = session._checkpoint_hash(falsely_valid_checkpoint)
+	_check("self-hashed checkpoint cannot label a manual-recovery run valid",
+		not session.can_restore_checkpoint(falsely_valid_checkpoint))
+	var missing_recovery_event: Dictionary = checkpoint_after_recovery.duplicate(true)
+	missing_recovery_event.event_tape = []
+	missing_recovery_event.event_tape_sha256 = session._hash_variant([])
+	missing_recovery_event.checkpoint_sha256 = session._checkpoint_hash(missing_recovery_event)
+	_check("checkpoint recovery actions must have matching history events",
+		not session.can_restore_checkpoint(missing_recovery_event))
+	var malformed_recovery_event: Dictionary = checkpoint_after_recovery.duplicate(true)
+	malformed_recovery_event.event_tape = [42]
+	malformed_recovery_event.event_tape_sha256 = session._hash_variant(malformed_recovery_event.event_tape)
+	malformed_recovery_event.checkpoint_sha256 = session._checkpoint_hash(malformed_recovery_event)
+	_check("malformed recovery history entries remain rejected",
+		not session.can_restore_checkpoint(malformed_recovery_event))
+	_check("same-tick duplicate manual recoveries succeed", session.manual_recovery()
+		and session.recovery_actions_snapshot().size() == 2)
+	var duplicate_recovery_checkpoint: Dictionary = session.checkpoint()
+	var duplicate_recovery_event_count := 0
+	for event: Variant in duplicate_recovery_checkpoint.get("event_tape", []):
+		if typeof(event) == TYPE_DICTIONARY and event.get("type") == "manual_recovery":
+			duplicate_recovery_event_count += 1
+	_check("duplicate same-tick recovery actions match duplicate events",
+		duplicate_recovery_event_count == 2 and session.can_restore_checkpoint(duplicate_recovery_checkpoint))
+	var missing_duplicate_event: Dictionary = duplicate_recovery_checkpoint.duplicate(true)
+	var shortened_events: Array = missing_duplicate_event.event_tape.duplicate(true)
+	for event_index in range(shortened_events.size() - 1, -1, -1):
+		var event: Variant = shortened_events[event_index]
+		if typeof(event) == TYPE_DICTIONARY and event.get("type") == "manual_recovery":
+			shortened_events.remove_at(event_index)
+			break
+	missing_duplicate_event.event_tape = shortened_events
+	missing_duplicate_event.event_tape_sha256 = session._hash_variant(shortened_events)
+	missing_duplicate_event.checkpoint_sha256 = session._checkpoint_hash(missing_duplicate_event)
+	_check("duplicate recovery count mismatch is rejected after rehash",
+		duplicate_recovery_event_count == 2 and not session.can_restore_checkpoint(missing_duplicate_event))
 	_check("strict checkpoint restore succeeds", session.restore_checkpoint(checkpoint_before_recovery))
 	var checkpoint_state_bytes: PackedFloat64Array = session._decode_float64_blob(
 		checkpoint_before_recovery.state_f64_base64, 31)
@@ -338,6 +378,64 @@ func _test_recording_interruption(session) -> void:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(str(interrupted_export.csv_path)))
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(str(interrupted_export.metadata_path)))
 	session.recording_interrupted.disconnect(on_interrupted)
+
+
+func _test_faulted_recording(session) -> void:
+	_check("fault recording fixture resets to a clean session", session.reset())
+	_check("recording before a fault starts", session.start_recording())
+	_check("recording fault fixture resumes after a fresh neutral sample",
+		session.tick_once(_neutral()) and session.resume())
+	var before_state: PackedFloat64Array = session.state_snapshot()
+	var before_tick: int = session.tick
+	var interruptions: Array = []
+	var faults: Array = []
+	var on_interruption := func(reason: String, sample_count: int) -> void:
+		interruptions.append([reason, sample_count])
+	var on_fault := func(reason: String) -> void:
+		faults.append(reason)
+	session.recording_interrupted.connect(on_interruption)
+	session.faulted.connect(on_fault)
+	var invalid := {"throttle": NAN, "steering": 0.0, "brake": 0.0, "reverse": false, "armed": true}
+	_check("nonfinite control faults and interrupts an active recording",
+		not session.tick_once(invalid) and session.paused and not session.recording
+		and session.tick == before_tick and _arrays_equal(session.state_snapshot(), before_state))
+	var interruption_events := 0
+	for event in session._recording_events:
+		if str(event.get("type", "")) == "recording_interrupted": interruption_events += 1
+	_check("fault preserves an exportable prefix and labels it interrupted",
+		session._has_unexported_recording() and session._recording_sample_count() == 1
+		and not session._recording_run_valid and interruption_events == 1
+		and interruptions.size() == 1 and interruptions[0][1] == 1
+		and faults.size() == 1 and session.load_error == session.fault_reason)
+	var original_fault: String = session.fault_reason
+	var second_failure_rejected: bool = not session.tick_once(invalid)
+	session._fail_safe("repeated failure")
+	_check("repeated fail-safe remains idempotent after another rejected tick",
+		second_failure_rejected and session.fault_reason == original_fault
+		and session._recording_sample_count() == 1
+		and session._recording_events.size() == 1 and interruptions.size() == 1 and faults.size() == 1)
+	_check("faulted session cannot start another recording", not session.start_recording())
+	var name := "rcv_fault_test_%d" % Time.get_ticks_usec()
+	var exported: Dictionary = session.export_recording(name)
+	_check("fault-interrupted prefix exports after the failure", exported.get("ok", false))
+	if exported.get("ok", false):
+		var metadata_file := FileAccess.open(str(exported.metadata_path), FileAccess.READ)
+		var metadata: Dictionary = JSON.parse_string(metadata_file.get_as_text())
+		metadata_file.close()
+		var has_fault := false
+		for event: Variant in metadata.get("events", []):
+			if typeof(event) == TYPE_DICTIONARY and str(event.get("type", "")) == "recording_interrupted" \
+					and str(event.get("reason", "")) == original_fault:
+				has_fault = true
+		_check("export metadata keeps the valid prefix and fault reason",
+			not metadata.get("run_valid", true) and metadata.get("recorded_tick_count") == 0
+			and metadata.get("sample_count") == 1 and has_fault)
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(str(exported.csv_path)))
+		DirAccess.remove_absolute(ProjectSettings.globalize_path(str(exported.metadata_path)))
+	_check("export does not clear the fault or permit a false new recording",
+		not session.start_recording() and not session.recording and session.fault_reason == original_fault)
+	session.recording_interrupted.disconnect(on_interruption)
+	session.faulted.disconnect(on_fault)
 
 
 func _test_native_backend_switch_guards() -> void:

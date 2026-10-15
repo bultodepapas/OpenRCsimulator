@@ -1,0 +1,65 @@
+{
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "results": [
+    {
+      "path": "app/physics/ground_vehicle/vehicle_damage.gd",
+      "sha256": "abb5599fecd0623a358b14a493c9d11e1b0b236ede85c35125b70b83a8792197",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/sim/ground_vehicle/session.gd",
+      "sha256": "c7b94a52f4912b241b170351fa3fa26719bbb87ae5340f7b1bf4d5049a5a70cf",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/vehicles/ground/ground_scene.gd",
+      "sha256": "92c3e254c2ee1477968a7a6c4548d360d69a172ed852ee6e8c9b7d23ad6a893c",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/vehicles/ground/ground_effects.gd",
+      "sha256": "4b2a4fac94dd70a8b0f4ccbae8a9699787b3fa0c10f371f0dfafabc3307d654b",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/vehicles/ground/ground_damage_view.gd",
+      "sha256": "dc43d6b86c2947bc3367e248d12634fc62d986239fdb9b666b15b74c3c32c31e",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_rcv_damage.gd",
+      "sha256": "58e64a0fdf8cce748b1a9f0cef8083619937aeb061d743da020544e7acc8143e",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_rcv_session.gd",
+      "sha256": "a3d1c1b40ae952b2d68ef1dd8fecd60bc0e628c9290407f137582cf630280c70",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_rcv_damage_session.gd",
+      "sha256": "16c176a4edf681263ba309d28d838e9892ef0a02012ab00616cf3107bcbd8287",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_rcv_activity_audit.gd",
+      "sha256": "c583a3b5405579e994afe2bb7e007d493502e7c6d9c5f47d0d4795a7d53d0a90",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_rcv_render_audit.gd",
+      "sha256": "6fd2c86db5f8d2bed08778dcca5c3d978349c579995367228bcaee5fcfbd5cff",
+      "source_stable": true,
+      "ok": true
+    }
+  ]
+}

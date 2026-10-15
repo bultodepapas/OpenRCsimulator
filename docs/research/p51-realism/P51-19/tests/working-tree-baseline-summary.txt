@@ -1,0 +1,5 @@
+test_p51_handling exit=1 FAIL inside loop at 0.7 stick from 27 m/s: 360° of pitch within 8 s, finite  307° (5.4 s) 
+test_p51_envelope exit=0 
+test_p51_ground exit=1 FAIL lift-off between 1.05 and 1.5 Vs (rotation at 1.25 Vs)  25.2 m/s 
+test_crash_energy exit=1 FAIL aircraft data file has an explicit energy-test classification: hx700_electric_3d_experimental.json 
+test_wheel_session exit=1 FAIL Avanti remains gearless without invented wheel state  

@@ -1,0 +1,39 @@
+verify_p51 exit=0 errs=0
+verify_p51_clearance exit=0 errs=0
+test_p51_handling exit=1 errs=1
+test_p51_envelope exit=1 errs=1
+test_p51_ground exit=1 errs=1
+test_aircraft_data exit=0 errs=0
+test_aircraft_modules exit=0 errs=0
+test_aircraft_propulsion_runtime exit=0 errs=0
+test_atmosphere_flight exit=0 errs=0
+test_checkpoint exit=0 errs=0
+test_crash_energy exit=1 errs=1
+test_crash_proportional exit=0 errs=0
+test_downwash_lag exit=0 errs=0
+test_envelope_integrity exit=0 errs=0
+test_induced_integrity exit=0 errs=0
+test_rates exit=0 errs=0
+test_runway_start exit=0 errs=0
+test_shaft_coupled exit=0 errs=0
+test_shaft_data exit=0 errs=0
+test_shaft_equilibrium exit=0 errs=0
+test_shaft_refinement exit=0 errs=0
+test_trace_metadata exit=0 errs=0
+test_trim_density exit=0 errs=0
+test_turbulence_flight exit=0 errs=0
+test_wheel_session exit=1 errs=1
+test_wind_flight exit=0 errs=0
+test_natural_random_flight exit=0 errs=0
+test_ground_effect exit=0 errs=0
+test_trim exit=0 errs=0
+test_aircraft_catalog exit=0 errs=0
+test_flight_log exit=0 errs=0
+test_ui_aircraft exit=0 errs=0
+test_propeller_blur exit=0 errs=0
+test_engine_audio exit=0 errs=0
+test_engine_voice exit=0 errs=0
+p51d_mustang_120.json and derivation.md are up to date
+P51-15 inventory oracle PASS: mass 21.499999 kg, CG [+0.177763, -0.071146] m, Jxx 3.861834 / Jyy 6.817989 / Jzz 9.946226 kg·m² (ΔJxx/ΔJzz +0.449604)
+8 Workshop descriptors are current.
+overall fail=1

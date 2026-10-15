@@ -70,7 +70,7 @@ The frozen prototype's separate CI job runs `npm ci`, `npm run typecheck`, `npm 
 
 Callback timestamps are not USB polling intervals or physical stick-to-screen latency. Hardware claims require original device/display observations.
 
-Weather and time controls: [wind](research/wind-implementation/README.md), [atmosphere](research/atmosphere/M5-ATM-2/README.md), [time of day](research/time-of-day-investigations/TOD-05/README.md). Direct examples: `--weather=gusty`, `--weather=turbulent`, `--weather=hot-high`, or `--time-of-day=05:45 --date=2026-03-20`. Home edits persist; direct routes do not use preferences. `app/tests/check_wind_trace.py` and `check_atmosphere_trace.py` validate the corresponding trace formats.
+Weather and time controls: [wind](research/wind-implementation/README.md), [atmosphere](research/atmosphere/M5-ATM-2/README.md), [time of day](research/time-of-day-investigations/TOD-05/README.md). Direct examples: `--weather=gusty`, `--weather=turbulent`, `--weather=hot-high`, or `--time-of-day=05:45 --date=2026-03-20`. Home edits persist; direct routes do not use preferences. `app/tests/check_wind_trace.py` and `check_atmosphere_trace.py` validate the corresponding trace formats. For direct v11 standard-column reading, run `python3 app/tests/check_atmosphere_trace.py TRACE.csv --column`; this lane accepts only the calm preset (zero wind, gust and turbulence), not arbitrary weather-v4 settings. Without `--column`, the atmosphere reader retains its custom-atmosphere v6/v10 path.
 
 ## Aircraft measurement reducers
 

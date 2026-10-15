@@ -612,7 +612,7 @@ static func _bounded_scaled_newton(residual: Callable, x0: PackedFloat64Array, v
 				if attempts >= MAX_BACKTRACK_TRIALS:
 					break
 				attempts += 1
-				var alpha := pow(0.5, backtrack)
+				var alpha := 1.0 / float(1 << backtrack)
 				var trial := x.duplicate()
 				for i in n:
 					trial[i] += alpha * direction[i] * variable_scales[i]

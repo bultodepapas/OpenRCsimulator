@@ -1,0 +1,8 @@
+# Working-tree identity during P51-19 runs (2026-10-14). Baseline = HEAD data; candidate = regenerated data.
+HEAD 6a7c624dcb0872d9b20bea483290125fd8335435
+baseline p51 json (CRLF as generated) 04f69687f7ea73a4235bf223360f38b2634ddc11933abdea8ff01aee7ebda619 *app/data/aircraft/p51d_mustang_120.json
+candidate 21d5f6dd1951afd91da407289b4a69530b62795af08f60d71c183cdb8b76a008 *app/data/aircraft/p51d_mustang_120.json
+foreign uncommitted edits present for working-tree runs (not part of P51-19):
+bb810e8e9e93b1b89ad1750cd4db507eb7fe66fad070a5cce51dfd0dce58ab06 *app/physics/slipstream.gd
+ee2d8dd00ea47a431ab90e0a44f183ef82d16abfe1c6527b2d264a80eebc845a *app/sim/flight_session.gd
+a8a63dcbe145215ee0882d18a0bc0772575a745e761414c5bd79124d9c044055 *app/sim/simulation.gd

@@ -1,5 +1,5 @@
-# D8a: flight modes of the real equations (physics/flight_modes.gd) at 10, 15 and 25 m/s. Regression bands (± 3 %
-# around the values recorded on 2026-10-05) plus physical sanity: oscillatory/roll modes damped and the measured numerical spiral root retained.
+# D8a: flight modes of the simulated equations (physics/flight_modes.gd) at 10, 15 and 25 m/s. Regression bands (± 3 %
+# around the 2026-10-05 software references, except the three R02-updated values below) plus mode-structure sanity.
 # A deliberate change to the aero (e.g. a Clp sign flip) moves the modes out of their bands. D11g: the Stik's modes carry
 # the tail's downwash lag as a ninth state; its linear model must predict the nonlinear flight (time-domain check).
 # Run: godot --headless --path . --script res://tests/test_modes.gd
@@ -13,7 +13,7 @@ const FlightSession := preload("res://sim/flight_session.gd")
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
 
-## V → [short period Hz, ζ; phugoid Hz, ζ; roll τ s; dutch roll Hz, ζ; spiral eigenvalue 1/s], recorded 2026-10-06 after D9-R/D1-R1; see flight-repair-implementation.md.
+## V → [short period Hz, ζ; phugoid Hz, ζ; roll τ s; dutch roll Hz, ζ; spiral eigenvalue 1/s], initially recorded 2026-10-06 after D9-R/D1-R1; see flight-repair-implementation.md.
 ## 10 m/s re-recorded 2026-10-07 by D11d: it trims at α 12.2°, in the local strip model, where the wing's induced-flow
 ## map removed the strip-theory over-damping (roll τ 0.048 → 0.092 s) and the lift-slope bump that had masked the
 ## local tail's weak pitch damping (short period ζ 0.61 → 0.47, E0a2) and fin yaw damping (spiral 0.34 → 0.59, D11f).
@@ -27,9 +27,14 @@ const RB := preload("res://physics/rigid_body.gd")
 ## (static margin at the CG 18.9 % → 6.9 %, ARP-referred D11g rates, local tail incidence). Less pitch stiffness with the
 ## same damping: short period 1.43/2.30 → 1.18/1.87 Hz at 15/25 m/s and just overdamped (ζ 1.04/1.11, two real roots);
 ## phugoid ζ 0.21/0.64 → 0.30/0.90; 10 m/s short period ζ 0.60 → 0.81. Report: climb-trim root-cause review.
+## R02 (2026-10-14): the dimensional section-plane wake source and m/s tail-lag state intentionally change three
+## previous modal references. Only 10 m/s phugoid ζ (0.06879382), 10 m/s spiral λ (0.48693354 1/s), and 15 m/s
+## phugoid ζ (0.28653927) are updated; all other old bands remain within the existing ±3% tolerance. Targets were
+## cross-checked with a manually composed Air/Aero/Propulsion/RigidBody Jacobian and SciPy eigenvalues at trim;
+## step-size and source identity are recorded in docs/research/physics-audit-2026-10-14/remediation/R02-modes/README.md.
 const BANDS := {
-	10.0: [0.90876188, 0.81032621, 0.16589314, 0.08278454, 0.07248863, 0.56864761, 0.30261772, 0.45051607, -11.08888985],
-	15.0: [1.17609159, 1.04149128, 0.09011891, 0.30299182, 0.05132270, 0.74453681, 0.24857131, 0.07693605, -15.42505926],
+	10.0: [0.90876188, 0.81032621, 0.16589314, 0.06879382, 0.07248863, 0.56864761, 0.30261772, 0.48693354, -11.08888985],
+	15.0: [1.17609159, 1.04149128, 0.09011891, 0.28653927, 0.05132270, 0.74453681, 0.24857131, 0.07693605, -15.42505926],
 	25.0: [1.87181848, 1.10898697, 0.05115836, 0.90280027, 0.03055473, 1.19343671, 0.23424972, 0.02751213, -25.19697216],
 }
 const TOL := 0.03

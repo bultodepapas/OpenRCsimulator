@@ -1662,6 +1662,32 @@
         }
       }
     },
+    "ground_effect": {
+      "induced_coefficient": {
+        "value": 15.336747,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/p51/p51-20/ground_effect_vlm.py: least-squares fit of the faded runtime law to the same-CL induced-drag ratio of an image-method Weissinger VLM of this wing (taper, 5 deg dihedral, washout), x = ARP height / span 0.06-1.5, rms 0.010; ratio 0.63 at x 0.12 (wheels) where Raymer's 33x^1.5 gives 0.58. No fuselage; not measured"
+      },
+      "induced_exponent": {
+        "value": 1.027222,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/p51/p51-20/ground_effect_vlm.py: least-squares fit of the faded runtime law to the same-CL induced-drag ratio of an image-method Weissinger VLM of this wing (taper, 5 deg dihedral, washout), x = ARP height / span 0.06-1.5, rms 0.010; ratio 0.63 at x 0.12 (wheels) where Raymer's 33x^1.5 gives 0.58. No fuselage; not measured"
+      },
+      "downwash_coefficient": {
+        "value": 19.587553,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/p51/p51-20/ground_effect_vlm.py: least-squares fit of the faded runtime law to the VLM's tail downwash ratio per unit wing lift over the stabilizer quarter-chord line (0.26 m above and 1.28 m behind the ARP), rms 0.015; ratio 0.62 at x 0.12, where the Stik's low-tail fit 25x^2 gives 0.27. No fuselage; not measured"
+      },
+      "downwash_exponent": {
+        "value": 1.144958,
+        "unit": "1",
+        "kind": "derived",
+        "source": "research/p51/p51-20/ground_effect_vlm.py: least-squares fit of the faded runtime law to the VLM's tail downwash ratio per unit wing lift over the stabilizer quarter-chord line (0.26 m above and 1.28 m behind the ARP), rms 0.015; ratio 0.62 at x 0.12, where the Stik's low-tail fit 25x^2 gives 0.27. No fuselage; not measured"
+      }
+    },
     "reference_coefficients": {
       "CLadot": {
         "value": 1.402689,

@@ -64,7 +64,9 @@ var _course := {}
 var _model := {}
 var _focused := true
 var _sound: AudioStreamPlayer3D
+var checkpoint_path := "user://rcv/checkpoint.json"
 var _checkpoint := {}
+var _checkpoint_backup_path := ""
 var _jump_time := -1.0
 var _jump_origin := Vector2.ZERO
 var _airtime := 0.0
@@ -296,16 +298,27 @@ func _physics_process(_delta: float) -> void:
 	if not controls.get("armed", false) and not session.paused:
 		open_garage()
 		dashboard.message("Controls unavailable. Release them and check the selected device.", "Controles no disponibles. Suéltalos y revisa el dispositivo seleccionado.")
-	session.tick_once(controls)
-	if _landing_pending and session.tick >= _landing_tick + 120:
-		_landing_pending = false
-		var state: PackedFloat64Array = session.state_snapshot()
-		var upright := Frames.quat_to_render(state.slice(6, 10)).y.dot(Vector3.UP) > 0.65
-		if upright and session.run_valid:
-			_best_jump = maxf(_best_jump, _airtime)
-			dashboard.message("Landed! %.2f s in the air. Best %.2f s." % [_airtime, _best_jump], "¡Aterrizaje! %.2f s en el aire. Mejor %.2f s." % [_airtime, _best_jump])
-		else:
-			dashboard.message("Rollover. Try less approach speed; R recovers the truck.", "Volcamiento. Prueba con menos velocidad; R recupera el carro.")
+	if session.tick_once(controls):
+		_update_landing_award()
+
+func _update_landing_award() -> void:
+	if not _landing_pending or session.tick < _landing_tick + 120:
+		return
+	_landing_pending = false
+	var state: PackedFloat64Array = session.state_snapshot()
+	var upright := Frames.quat_to_render(state.slice(6, 10)).y.dot(Vector3.UP) > 0.65
+	var telemetry: Dictionary = session.telemetry_snapshot()
+	var supported := false
+	for contact in telemetry.get("wheel_in_contact", PackedByteArray()):
+		supported = supported or contact != 0
+	supported = supported and not telemetry.get("airborne", true)
+	if upright and supported and session.run_valid:
+		_best_jump = maxf(_best_jump, _airtime)
+		dashboard.message("Landed! %.2f s in the air. Best %.2f s." % [_airtime, _best_jump], "¡Aterrizaje! %.2f s en el aire. Mejor %.2f s." % [_airtime, _best_jump])
+	elif not upright:
+		dashboard.message("Rollover. Try less approach speed; R recovers the truck.", "Volcamiento. Prueba con menos velocidad; R recupera el carro.")
+	else:
+		dashboard.message("Landing not scored: settle on the wheels in an unassisted run.", "Aterrizaje sin puntuar: apoya las ruedas en un recorrido sin asistencia.")
 
 func _read_controls() -> Dictionary:
 	var joy: Dictionary = _registry_joy_controls() if controller_registry != null else {"connected": false}
@@ -590,33 +603,109 @@ func handle_action(action: String) -> void:
 			if session.recording:
 				_finish_recording()
 			elif not _record_export_pending:
-				session.start_recording()
-				dashboard.record_button.text = dashboard.words("Stop and save recording", "Detener y guardar grabación")
+				if session.start_recording():
+					dashboard.record_button.text = dashboard.words("Stop and save recording", "Detener y guardar grabación")
+				else:
+					dashboard.message("Recording could not start. Reset the run and try again.", "No se pudo iniciar la grabación. Reinicia el recorrido e inténtalo de nuevo.")
 			else:
 				_finish_recording()
 		"save":
-			_checkpoint = session.checkpoint()
-			var directory := ProjectSettings.globalize_path("user://rcv")
-			DirAccess.make_dir_recursive_absolute(directory)
-			var file := FileAccess.open(directory.path_join("checkpoint.json"), FileAccess.WRITE)
-			if file != null:
-				file.store_string(JSON.stringify(_checkpoint, "\t", true, true))
-				file.close()
-				dashboard.message("State saved in user://rcv/checkpoint.json", "Estado guardado en user://rcv/checkpoint.json")
+			if _save_checkpoint():
+				dashboard.message("State saved in " + checkpoint_path, "Estado guardado en " + checkpoint_path)
+			elif not _checkpoint_backup_path.is_empty():
+				dashboard.message("Save failed. Previous file kept at: " + _checkpoint_backup_path, "Falló el guardado. Archivo anterior conservado en: " + _checkpoint_backup_path)
 			else:
-				dashboard.message("Could not save state to disk.", "No se pudo guardar el estado en disco.")
+				dashboard.message("Could not save state. Previous save kept.", "No se pudo guardar el estado. Se conservó el guardado anterior.")
 		"restore":
 			if not _finish_recording(): return
-			if _checkpoint.is_empty() and FileAccess.file_exists("user://rcv/checkpoint.json"):
-				var parsed = JSON.parse_string(FileAccess.get_file_as_string("user://rcv/checkpoint.json"))
-				if parsed is Dictionary: _checkpoint = parsed
-			if session.restore_checkpoint(_checkpoint):
+			var restored: bool = session.restore_checkpoint(_checkpoint) if not _checkpoint.is_empty() else _restore_checkpoint_file()
+			if restored:
 				_after_reset()
 				dashboard.message("Saved state restored. Press Enter to continue.", "Estado restaurado. Pulsa Enter para continuar.")
 			else:
 				dashboard.message("State does not match this vehicle and course.", "El estado no corresponde a este vehículo y pista.")
 		"home":
 			if _finish_recording(): home_requested.emit()
+
+func _restore_checkpoint_file() -> bool:
+	var destination := ProjectSettings.globalize_path(checkpoint_path)
+	var candidates: Array[String] = [destination]
+	var backups: Array[String] = []
+	if not DirAccess.dir_exists_absolute(destination.get_base_dir()): return false
+	var prefix := destination.get_file() + ".tmp-"
+	for name in DirAccess.get_files_at(destination.get_base_dir()):
+		if name.begins_with(prefix) and name.ends_with(".previous"):
+			backups.append(destination.get_base_dir().path_join(name))
+	backups.sort_custom(func(a: String, b: String) -> bool:
+		var a_time := FileAccess.get_modified_time(a)
+		var b_time := FileAccess.get_modified_time(b)
+		return a > b if a_time == b_time else a_time > b_time)
+	candidates.append_array(backups)
+	for path in candidates:
+		if not FileAccess.file_exists(path): continue
+		var parsed: Variant = JSON.parse_string(FileAccess.get_file_as_string(path))
+		if not parsed is Dictionary or not session.restore_checkpoint(parsed): continue
+		_checkpoint = parsed
+		if path != destination:
+			_checkpoint_backup_path = path
+			if not FileAccess.file_exists(destination) and _move_checkpoint_file(path, destination) == OK:
+				_checkpoint_backup_path = ""
+		return true
+	return false
+
+## Commit both disk and cache only after a complete, verified sibling-temp write.
+## This handles reported I/O failure; it does not promise power-loss durability.
+func _save_checkpoint() -> bool:
+	var candidate: Dictionary = session.checkpoint()
+	if candidate.is_empty():
+		return false
+	var destination := ProjectSettings.globalize_path(checkpoint_path)
+	if DirAccess.make_dir_recursive_absolute(destination.get_base_dir()) != OK:
+		return false
+	var temporary := destination + ".tmp-%d-%d" % [OS.get_process_id(), Time.get_ticks_usec()]
+	var contents := JSON.stringify(candidate, "\t", true, true)
+	var error := _write_checkpoint_temp(temporary, contents)
+	if error == OK:
+		var verify := FileAccess.open(temporary, FileAccess.READ)
+		if verify == null:
+			error = ERR_FILE_CANT_READ
+		else:
+			var bytes := contents.to_utf8_buffer()
+			if verify.get_length() != bytes.size() or verify.get_buffer(bytes.size()) != bytes or verify.get_error() != OK:
+				error = ERR_FILE_CORRUPT
+			verify.close()
+	var backup := temporary + ".previous"
+	# Godot 4.7.2 on Windows deletes an existing rename destination before moving.
+	# Move the old save aside first, so even a failed commit cannot destroy it.
+	if error == OK and FileAccess.file_exists(destination):
+		error = _move_checkpoint_file(destination, backup)
+	if error == OK:
+		error = _move_checkpoint_file(temporary, destination)
+	if error != OK:
+		if FileAccess.file_exists(backup):
+			if _move_checkpoint_file(backup, destination) != OK:
+				_checkpoint_backup_path = backup
+		if FileAccess.file_exists(temporary): DirAccess.remove_absolute(temporary)
+		return false
+	if FileAccess.file_exists(backup): DirAccess.remove_absolute(backup)
+	if not _checkpoint_backup_path.is_empty() and FileAccess.file_exists(_checkpoint_backup_path):
+		DirAccess.remove_absolute(_checkpoint_backup_path)
+	_checkpoint_backup_path = ""
+	_checkpoint = candidate
+	return true
+
+func _move_checkpoint_file(from: String, to: String) -> Error:
+	return DirAccess.rename_absolute(from, to)
+
+func _write_checkpoint_temp(path: String, contents: String) -> Error:
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	if file == null:
+		return FileAccess.get_open_error()
+	file.store_string(contents)
+	file.flush()
+	var error := file.get_error()
+	file.close()
+	return error
 
 func _finish_recording() -> bool:
 	if session.recording:
@@ -687,6 +776,8 @@ func _event(event: Dictionary) -> void:
 		elif event.stage == "damaged":
 			dashboard.message("Impact damage. Check the truck or recover with R.", "Daños por impacto. Revisa el carro o recupéralo con R.")
 	elif event.type == "jump":
+		# A bounce starts a new flight; the previous landing is no longer settled.
+		_landing_pending = false
 		_jump_time = event.time_s
 		var state: PackedFloat64Array = session.state_snapshot()
 		_jump_origin = Vector2(state[0], state[1])

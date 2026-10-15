@@ -1,0 +1,57 @@
+{
+  "ok": false,
+  "error": "stik-compare failed; see retained log",
+  "source_drift": [],
+  "purpose": "software scenarios and exact replay; not physical validation",
+  "commands": [
+    {
+      "label": "stik-scenario",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-final-native-2026-10-14\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\physics-audit-2026-10-14\\remediation\\compare_scenario.gd",
+        "--",
+        "--baseline=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R00\\session\\stik-normal-yaw.orfl",
+        "--out=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\final-scenarios-02\\stik"
+      ],
+      "exit_code": 0
+    },
+    {
+      "label": "stik-exact",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\physics-audit-final-native-2026-10-14\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tools/flight_log_cli.gd",
+        "--",
+        "--log=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\final-scenarios-02\\stik\\candidate.orfl",
+        "--csv=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\final-scenarios-02\\stik\\exact\\flight.csv",
+        "--report=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\final-scenarios-02\\stik\\exact\\replay.json",
+        "--replay"
+      ],
+      "exit_code": 0
+    },
+    {
+      "label": "stik-compare",
+      "command": [
+        "C:\\Users\\bulto\\AppData\\Local\\Microsoft\\WindowsApps\\PythonSoftwareFoundation.Python.3.11_qbz5n2kfra8p0\\python.exe",
+        "tools/flight_log/flight_log.py",
+        "compare",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\physics-audit-2026-10-14\\remediation\\R00\\stik-exact\\flight.csv",
+        "docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\final-scenarios-02\\stik\\exact\\flight.csv",
+        "--out",
+        "docs\\research\\physics-audit-2026-10-14\\remediation\\R11\\final-scenarios-02\\stik\\comparison.json"
+      ],
+      "exit_code": 2
+    }
+  ]
+}

@@ -77,14 +77,14 @@ func _initialize() -> void:
 				if failures <= 5:
 					printerr("FAIL ", id, " sample ", sample, ": ", actual, " != ", expected)
 		flight.free()
-	# The comparison is not vacuous: a one-ulp change in a single component must be rejected.
+	# Exercise the comparator actually used above, at its declared reduction tolerance.
 	var one := PackedFloat64Array([1.0, 2.0, 3.0, 4.0, 5.0, 6.0])
 	var moved := one.duplicate()
-	moved[2] = 3.0000000000000004
+	moved[2] += 1e-9
 	checks += 1
-	if moved.to_byte_array() == one.to_byte_array():
+	if _close_loads(moved, one):
 		failures += 1
-		printerr("FAIL comparator accepted a one-ulp change")
+		printerr("FAIL projected-load comparator accepted an above-tolerance change")
 	if aircraft == 0 or washed < 5000 or static_air < 1000 or stopped < 300:
 		failures += 1
 		printerr("FAIL coverage: %d aircraft, %d washed, %d static, %d stopped" % [aircraft, washed, static_air, stopped])

@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+trace saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R09\cli\glow-standard-column.csv (25 rows)

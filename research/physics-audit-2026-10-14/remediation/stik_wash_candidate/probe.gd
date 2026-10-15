@@ -99,8 +99,9 @@ func _moment_slope(model: Dictionary, speed_mps: float, rpm: float, control: Str
 
 
 func _authority_sweep(base_model: Dictionary, candidate_model: Dictionary) -> void:
-	var rpm_values := {"engine_off": 0.0, "engine_on_rated_static": float(base_model.propulsion.max_rpm)}
-	for speed_mps in [0.0, 5.0, 15.0]:
+	var rpm_values := {"engine_off": 0.0, "estimated_idle": float(base_model.propulsion.idle_rpm),
+		"engine_on_rated_static": float(base_model.propulsion.max_rpm)}
+	for speed_mps in [0.0, 5.0, 15.0, 29.0]:
 		for operating_point: String in rpm_values:
 			var rpm: float = rpm_values[operating_point]
 			var record := {record="authority", alpha_deg=0.0, speed_mps=speed_mps,
@@ -117,7 +118,7 @@ func _authority_sweep(base_model: Dictionary, candidate_model: Dictionary) -> vo
 				if rpm == 0.0:
 					_check("engine-off free-flow response preserved: %s %s m/s" % [control, str(speed_mps)],
 						candidate_slope == base_slope)
-				else:
+				elif operating_point == "engine_on_rated_static":
 					_check("running-prop wash changes modeled authority: %s %s m/s" % [control, str(speed_mps)],
 						absf(candidate_slope - base_slope) > 1e-6)
 			_check("finite control moment slopes %s m/s %s" % [str(speed_mps), operating_point],

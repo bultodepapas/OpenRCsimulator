@@ -680,6 +680,17 @@ inc_eff = note("aero", "tail effective incidence (rad)", inc_geo + d_inc, "geome
 CL0, Cm0 = zero_alpha_terms(inc_eff)
 note("aero", "CL0", CL0, "wing at its mean incidence with camber + calibrated tail at zero body alpha")
 note("aero", "Cm0 about ARP", Cm0, "UIUC NAA 45-100 camber-line thin-airfoil wing Cm_ac x0.8 correction + calibrated tail at zero body alpha")
+# --- P51-20: ground effect constants of this planform (research/p51/p51-20/ground_effect_vlm.py writes the table) ---
+GE = json.load(open(ROOT / "research/p51/p51-20/vlm_ground_effect.json"))
+_ge_row = lambda x, key: next(r[key] for r in GE["rows"] if abs(r["x"] - x) < 1e-9)
+GE_SRC_I = (f"research/p51/p51-20/ground_effect_vlm.py: least-squares fit of the faded runtime law to the same-CL induced-drag ratio of an "
+            f"image-method Weissinger VLM of this wing (taper, 5 deg dihedral, washout), x = ARP height / span 0.06-1.5, rms {GE['fit_induced']['rms']:.3f}; "
+            f"ratio {_ge_row(0.12, 'cdi_ratio_same_cl'):.2f} at x 0.12 (wheels) where Raymer's 33x^1.5 gives 0.58. No fuselage; not measured")
+GE_SRC_T = (f"research/p51/p51-20/ground_effect_vlm.py: least-squares fit of the faded runtime law to the VLM's tail downwash ratio per unit wing lift "
+            f"over the stabilizer quarter-chord line (0.26 m above and 1.28 m behind the ARP), rms {GE['fit_tail']['rms']:.3f}; "
+            f"ratio {_ge_row(0.12, 'tail_downwash_ratio_per_lift'):.2f} at x 0.12, where the Stik's low-tail fit 25x^2 gives 0.27. No fuselage; not measured")
+note("ground effect", "induced c, e; tail c, e (VLM fit)", [GE["fit_induced"]["coefficient"], GE["fit_induced"]["exponent"], GE["fit_tail"]["coefficient"], GE["fit_tail"]["exponent"]],
+     "P51-20 image-method VLM of this planform, faded runtime law; ARP 0.34 m above the main-wheel contact in a level attitude (x 0.12)")
 fig10_rows = [f"| {p[0]} | {100 * p[1]:.1f} | {p[2]:.3f} | {p[3]:.2f} | {glide_elevator_up(inc_geo, p[1], p[2]):.2f} | {glide_elevator_up(inc_eff, p[1], p[2]):.2f} | {'fit' if p in fit_pts else ''} |"
               for p in fig10 if p[0] == "glide"]
 D = lambda how: f"{SCRIPT}: {how}"
@@ -833,6 +844,13 @@ data = {
                 "incidence": q(0.0, "rad", "estimated", "symmetric fin; engine side thrust not modelled"),
             },
         },
+        # P51-20: the shared M5-GE-1 module with constants fitted to this planform and tail (image-method VLM).
+        "ground_effect": {
+            "induced_coefficient": q(GE["fit_induced"]["coefficient"], "1", "derived", GE_SRC_I),
+            "induced_exponent": q(GE["fit_induced"]["exponent"], "1", "derived", GE_SRC_I),
+            "downwash_coefficient": q(GE["fit_tail"]["coefficient"], "1", "derived", GE_SRC_T),
+            "downwash_exponent": q(GE["fit_tail"]["exponent"], "1", "derived", GE_SRC_T),
+        },
     },
     "propulsion": {
         "id": "propulsion_main",
@@ -954,6 +972,8 @@ CL_max at Re 13e6 exceeds the model's {CL_max:.2f}). Correction {math.degrees(d_
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;
   Clp and detailed spanwise attached/post-stall loading remain model predictions at the current strip resolution.
 - CL-dependent cross terms (Clb wing part, Clr, Cnp, adverse yaw) are frozen at CL_ref = {CL_ref:.2f}.
+- Ground effect (P51-20): the shared M5-GE-1 law with constants fitted to an image-method VLM of this wing and tail; no fuselage or
+  bound-vortex image in the runtime law, separated flow unchanged, not measured on a model.
 """
 
 if "--dry" in sys.argv:  # print the intermediate table, write nothing

@@ -37,8 +37,6 @@ var _reverse_lens_colors: Array[Color] = []
 func prepare(visual: Dictionary, scene_parent: Node = null) -> bool:
 	if _prepared:
 		return false
-	if scene_parent != null and get_parent() == null:
-		scene_parent.add_child(self)
 	var root_value: Variant = visual.get("root")
 	var nodes_value: Variant = visual.get("nodes")
 	if not root_value is Node3D or typeof(nodes_value) != TYPE_DICTIONARY:
@@ -58,6 +56,8 @@ func prepare(visual: Dictionary, scene_parent: Node = null) -> bool:
 		_wheel_nodes.clear()
 		_body_mesh = null
 		return false
+	if scene_parent != null and get_parent() == null:
+		scene_parent.add_child(self)
 	_build_dust_emitters()
 	_build_vehicle_lights()
 	_prepared = true
@@ -95,6 +95,10 @@ func update_render(
 			or not is_finite(float(speed_value)):
 		_clear_dust_levels()
 		return
+	for slip_value in slips:
+		if not is_finite(float(slip_value)):
+			_clear_dust_levels()
+			return
 	var speed := absf(float(speed_value))
 	var dirt_activity := 0.0
 	for i in 4:
@@ -106,7 +110,7 @@ func update_render(
 		if contacts[i] != 0 and typeof(sample_value) == TYPE_DICTIONARY:
 			var sample: Dictionary = sample_value
 			var surface_factor := _surface_dust_factor(str(sample.get("surface_id", "")))
-			var slip_speed := absf(float(slips[i])) if is_finite(float(slips[i])) else 0.0
+			var slip_speed := absf(float(slips[i]))
 			var ground_height: Variant = sample.get("height_m", source.y - _wheel_radii[i])
 			var ground_height_valid := typeof(ground_height) in [TYPE_FLOAT, TYPE_INT] \
 				and is_finite(float(ground_height))

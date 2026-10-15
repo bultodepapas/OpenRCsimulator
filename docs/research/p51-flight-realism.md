@@ -79,7 +79,7 @@ Pilot technique matters as on the real model: pulling to 16° at 17 m/s after to
 
 ## Findings
 
-- **Pitch trim needs 6° of up elevator at 25 m/s** (41 % of the high-rate throw) with the measured full-size rigging (wing +1°, stab +2°) and the aft-loaded section's Cm_ac. RC designers rig with positive decalage (Ziroli: wing +2.5°, stab +1°); a builder would reduce the stab incidence. Kept full-size; revisit with a pilot (Gate 2).
+- **Pitch trim needs 6° of up elevator at 25 m/s** (41 % of the high-rate throw) with the measured full-size rigging (wing +1°, stab +2°) and the aft-loaded section's Cm_ac. RC designers rig with positive decalage (Ziroli: wing +2.5°, stab +1°); a builder would reduce the stab incidence. Kept full-size; revisit with a pilot (Gate 2). *Superseded 2026-10-14 by [P51-19](p51-realism/P51-19/README.md): the full-size XP-51 trims with about 0–1.5° at this CL, so the excess came from the model's tail flow, not the rigging.*
 - **Cruise needs little power:** 14 % throttle holds 25 m/s (drag ~30 N). The throttle maps linearly to admitted power; a real carburettor is more progressive.
 - **Idle creeps** on the grass strip (19 N of idle thrust against 16 N of rolling resistance); no brakes are simulated.
 - The **4-blade 26x12 is heavy for a 120 cc** (Biela rates it for 150-160 cc; the DA-120 list gives 3-blade 26x12 / 27x12). Kept for the scale look; changing the propeller is a data change (`source.json` → `fit_mejzlik.py` already covers 2- and 3-blade).

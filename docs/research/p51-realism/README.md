@@ -2,6 +2,8 @@
 
 2026-10-12 · **Status: P51-15…18 audit, correction and verification complete; aircraft physical acceptance remains experimental.** [Plan](../../P51-REALISM-PLAN.md) · [Reproduction tools](../../../research/p51/p51-15/README.md)
 
+Later steps: [P51-19 trim calibration to the XP-51 flight data](P51-19/README.md) · [P51-20 planform ground effect](P51-20/README.md).
+
 ## Delivered correction
 
 The quarter-scale P-51 inventory treated separated pairs of servos and main landing gear as continuous boxes through the empty space between them. The generator now creates individual left/right components. Their locations and local dimensions remain explicitly estimated. This corrects the mass-distribution equations without inventing measured hardware data.

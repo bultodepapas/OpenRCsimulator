@@ -1,8 +1,10 @@
 # VAL-AUD-2026-10-14 — Jet and Ugly Stik physics audit
 
-**Date:** 2026-10-14. **Scope:** current production `app/`, using the Ventage Jet (SebArt Avanti S A200 / JetCat P100-RX) and baseline Jensen Das Ugly Stik 60. **Disposition:** audit and reproducible evidence only; no production fixes, parameter tuning, or golden-flight replacement.
+**Date:** 2026-10-14. **Scope:** the audited production `app/` snapshot, using the Ventage Jet (SebArt Avanti S A200 / JetCat P100-RX) and baseline Jensen Das Ugly Stik 60. **Original disposition:** audit and reproducible evidence only; no production fixes, parameter tuning, or golden-flight replacement in that snapshot.
 
 **Planning follow-up, 2026-10-14:** the [remediation plan](#remediation-plan) below defines proposed repairs, integration boundaries, dependencies, and acceptance gates for all eleven findings. It does not change the audit results or mark any repair implemented. The original artifact manifest remains the pre-plan snapshot; [remediation-plan-manifest.json](remediation-plan-manifest.json) records the document amendments.
+
+**Implementation follow-up, 2026-10-14:** authorized repairs and their current verification status are recorded in the [remediation implementation report](remediation/README.md). The numerical findings below describe the preserved baseline, not the repaired solver. Implementation is partial: finite-fuel family integration, an identified Stik shaft/windmilling installation, physical flaps, and physical validation remain open. Historical audit and planning manifests remain unchanged.
 
 The audit reproduced **two force-law discontinuities, one broken regression comparison, and a Jet runway-initialization failure under mild crosswind**. It also verified material omissions in the two selected aircraft configurations. The rigid-body equations, gravity, inertia realizability, and tested integration paths passed the numerical checks. Those passes do not establish aircraft realism: important parameters remain estimates, and no independent flight-identification campaign supports either complete aircraft model.
 

@@ -1,0 +1,30 @@
+{
+  "glide_15.json": {
+    "previous_sha256": "676aca7b2b4fae78ea3337e9c8269e2241912b6cf58cb1e490d1e569dd31a3b9",
+    "current_sha256": "54efde306f014145c4276cf9a0edec25de985fd6f753af4fb0896dfc3b24ee6e",
+    "input_tape_identical": true,
+    "ticks": 1200,
+    "reason": "R02 section-plane forces, source-weighted induced flow and bounded dimensional wake; auxiliary wake unit changes from CL to m/s."
+  },
+  "pull_throttle.json": {
+    "previous_sha256": "3dd2a46ff98b513888617e6644e46eab91d6aef115b778e744b524608cb5b439",
+    "current_sha256": "0daf4ecce987740b54e00cd40b83fa1048f2559a18af84485e79668745931eb6",
+    "input_tape_identical": true,
+    "ticks": 720,
+    "reason": "R02 section-plane forces, source-weighted induced flow and bounded dimensional wake; auxiliary wake unit changes from CL to m/s."
+  },
+  "roll_15.json": {
+    "previous_sha256": "3a897bc509a4f3b27a90c1a3edda18a991cdf0d7fd1a83a9508dd7354244295f",
+    "current_sha256": "ea34444c72f4734977ea7205f1680aa0f29fb25333912776e41517865b938721",
+    "input_tape_identical": true,
+    "ticks": 600,
+    "reason": "R02 section-plane forces, source-weighted induced flow and bounded dimensional wake; auxiliary wake unit changes from CL to m/s."
+  },
+  "rudder_doublet.json": {
+    "previous_sha256": "21144307efb33301a3ebc10b7708049b8b4acd1dc72b7c6b52f21d8e33599fdb",
+    "current_sha256": "0263d8fd227be29fc80dcce336644e0bf8cb65b19b2e70d7969a926ebf530eab",
+    "input_tape_identical": true,
+    "ticks": 720,
+    "reason": "R02 section-plane forces, source-weighted induced flow and bounded dimensional wake; auxiliary wake unit changes from CL to m/s."
+  }
+}

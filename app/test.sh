@@ -242,6 +242,9 @@ OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_turbulence_cli.py"
 echo "== M5-ATM: independent atmosphere, EAS and environment replay checks"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_atmosphere_cli.py"
 
+echo "== M5-ATM-4 / VAL-AUD-R09: complete v11 standard-column CLI traces and endpoint/k1 ISA reader"
+OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/test_atmosphere_column_cli.py"
+
 echo "== TOD-09a: independent Gregorian clock fixtures stay current"
 python3 "$HERE/../research/time-of-day/tod-09a/calendar_oracles.py" --check
 

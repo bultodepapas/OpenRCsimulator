@@ -4,6 +4,7 @@ const Session = preload("res://sim/ground_vehicle/session.gd")
 const VehicleDynamics = preload("res://physics/ground_vehicle/vehicle_dynamics.gd")
 const Damage = preload("res://physics/ground_vehicle/vehicle_damage.gd")
 const NEUTRAL := {"throttle": 0.0, "steering": 0.0, "brake": 0.0, "reverse": false, "armed": true}
+var failures := 0
 
 class ImpactSession extends Session:
 	var entry_speed := 8.0
@@ -30,6 +31,11 @@ func _initialize() -> void:
 
 func _report(label: String, value: Variant) -> void:
 	print(label, ": ", value)
+
+func _check(label: String, passed: bool) -> void:
+	print(("PASS: " if passed else "FAIL: ") + label)
+	if not passed:
+		failures += 1
 
 func _run() -> void:
 	var source = ImpactSession.new()
@@ -70,24 +76,8 @@ func _run() -> void:
 	_report("original_applied", original_applied)
 	_report("tampered_applied", changed_applied)
 	_report("restore_original_and_tampered", [restored_original, accepts_changed, restored_changed])
-	if restored_original and restored_changed:
-		var same := true
-		var first_difference_tick := -1
-		var original_wall_power := float(reference.last_telemetry.get("wall_friction_power_w", 0.0))
-		var altered_wall_power := float(altered.last_telemetry.get("wall_friction_power_w", 0.0))
-		for i in 120:
-			var control := {"throttle": 0.8, "steering": 0.0, "brake": 0.0, "reverse": false, "armed": true}
-			if not reference.tick_once(control) or not altered.tick_once(control):
-				same = false
-				first_difference_tick = i
-				break
-			if reference.damage_snapshot().to_byte_array() != altered.damage_snapshot().to_byte_array():
-				same = false
-				first_difference_tick = i + 1
-				break
-		_report("wall_friction_power_restored", [original_wall_power, altered_wall_power])
-		_report("damage_identical_after_120_ticks", same)
-		_report("first_damage_difference_after_checkpoint_ticks", first_difference_tick)
+	_check("original checkpoint restores while rehashed under-bound throttle is rejected",
+		restored_original and not accepts_changed and not restored_changed)
 	reference.free()
 	altered.free()
 	source.free()
@@ -99,8 +89,18 @@ func _run() -> void:
 	var remains_recording: bool = recording_session.recording
 	var faulted_metadata: Dictionary = recording_session._recording_metadata()
 	_report("fault_recording_setup_rejected_sample_active", [recording_prepared, armed, rejected, remains_recording])
-	_report("fault_recording_export_status_before_fix", [faulted_metadata.get("run_valid"), faulted_metadata.get("events"),
+	_report("fault_interrupted_prefix", [faulted_metadata.get("run_valid"), faulted_metadata.get("events"),
 		faulted_metadata.get("recorded_tick_count"), faulted_metadata.get("sample_count")])
+	var events: Variant = faulted_metadata.get("events", [])
+	var interrupted := false
+	for event: Variant in events:
+		if typeof(event) == TYPE_DICTIONARY and event.get("type") == "recording_interrupted":
+			interrupted = true
+	_check("fail-safe stops recording and preserves an invalid interrupted prefix",
+		recording_prepared and armed and rejected and not remains_recording
+		and not bool(faulted_metadata.get("run_valid", true))
+		and int(faulted_metadata.get("recorded_tick_count", -1)) == 0
+		and int(faulted_metadata.get("sample_count", 0)) == 1 and interrupted)
 	recording_session.free()
 	var recovered = Session.new()
 	var recovered_ok := recovered.prepare_default() and recovered.tick_once(NEUTRAL) and recovered.manual_recovery()
@@ -110,5 +110,14 @@ func _run() -> void:
 	relabeled_checkpoint.checkpoint_sha256 = recovered._checkpoint_hash(relabeled_checkpoint)
 	_report("recovery_checkpoint_provenance", [recovered_ok, recovered_checkpoint.get("run_valid"),
 		recovered_checkpoint.get("recovery_actions", []), recovered.can_restore_checkpoint(relabeled_checkpoint)])
+	_check("manual recovery cannot be relabeled as a valid run",
+		recovered_ok and not recovered.can_restore_checkpoint(relabeled_checkpoint))
+	var missing_event := recovered_checkpoint.duplicate(true)
+	missing_event.event_tape = []
+	missing_event.event_tape_sha256 = recovered._hash_variant([])
+	missing_event.checkpoint_sha256 = recovered._checkpoint_hash(missing_event)
+	_check("manual recovery action must remain in checkpoint history",
+		recovered_ok and not recovered.can_restore_checkpoint(missing_event))
 	recovered.free()
-	quit(0)
+	_report("checks", [3 - failures, 3])
+	quit(1 if failures else 0)

@@ -1,0 +1,4 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+Integrated RC capture: true ticks=720 effects={ "prepared": true, "dust_emission_levels": [0.0, 0.0, 0.0, 0.0], "dust_active_wheels": 0, "particle_emitter_count": 4, "particle_budget_per_wheel": 24, "particle_budget_total": 96, "grime_amount": 0.02830517551477, "headlights_enabled": true, "headlight_energy": 0.18, "brake_lights": false, "reverse_lights": false, "paused": false }
