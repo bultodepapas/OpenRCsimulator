@@ -20,7 +20,8 @@
     const english = document.documentElement.lang === 'en';
     const caption = reduced.matches ? (english ? 'Next view' : 'Avanzar') : playing ? (english ? 'Pause' : 'Pausar') : (english ? 'Rotate' : 'Girar');
     toggle.innerHTML = `<span>${caption}</span><span aria-hidden="true">${reduced.matches ? '→' : playing ? 'Ⅱ' : '↻'}</span>`;
-    toggle.setAttribute('aria-pressed', String(playing));
+    if(reduced.matches) toggle.removeAttribute('aria-pressed');
+    else toggle.setAttribute('aria-pressed', String(playing));
     canvas.setAttribute('aria-label',`${modelName} — ${english ? '360 degree studio view' : 'vista de estudio de 360 grados'}`);
     slider.setAttribute('aria-valuetext',`${frame * 10} ${english ? 'degrees' : 'grados'}`);
     document.querySelector('#viewer-hint').textContent = failed ? (english ? 'Static model view. The 360° view could not load.' : 'Vista estática del modelo. No se pudo cargar la vista 360°.') : (english ? 'Drag to explore · Use the slider to change the angle.' : 'Arrastra para explorar · Usa el control para cambiar de ángulo.');
