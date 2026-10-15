@@ -1,0 +1,179 @@
+--- app/physics/slipstream.gd	2026-10-14 18:55:04.034217700 -0500
++++ app/physics/slipstream.gd	2026-10-15 15:49:03.315006400 -0500
+@@ -104,6 +104,23 @@
+ 	var o3 := 0.0
+ 	var o4 := 0.0
+ 	var o5 := 0.0
++	# P51-26 CANDIDATE: Ribner (NACA ARR L4I12a, 1944) eq. (8) far-wake sidewash in momentum form. The jet crossflow
++	# becomes h(a)*v_c + 0.5*g(a)*N/mdot; the existing shaft-axis wash already supplies v_c, so only the difference is added.
++	var rib_0 := 0.0
++	var rib_1 := 0.0
++	var rib_2 := 0.0
++	if not prop.get("normal_force", PackedFloat64Array()).is_empty() and transported_dv.is_empty():
++		var a_ind: float = w.w / maxf(w.u, 1e-6)
++		var k2: float = 1.0 + 2.0 * a_ind
++		var den: float = 1.0 + k2 * k2
++		var g_a: float = 2.0 * (1.0 + a_ind) * k2 / den
++		var h_a: float = k2 * (2.0 + 2.0 * a_ind) / den
++		var mdot: float = rho * PI * 0.25 * float(prop.diameter) * float(prop.diameter) * maxf(w.u + w.w, SWIRL_SPEED_FLOOR)
++		var nf := Propulsion.normal_force(v, rpm, prop, rho)
++		var along_c: float = v0 * ax[0] + v1 * ax[1] + v2 * ax[2]
++		rib_0 = 0.5 * g_a * nf[0] / mdot + (h_a - 1.0) * (v0 - ax[0] * along_c)
++		rib_1 = 0.5 * g_a * nf[1] / mdot + (h_a - 1.0) * (v1 - ax[1] * along_c)
++		rib_2 = 0.5 * g_a * nf[2] / mdot + (h_a - 1.0) * (v2 - ax[2] * along_c)
+ 	for piece_index in ss.pieces.size():
+ 		var piece: Dictionary = ss.pieces[piece_index]
+ 		if not transported_dv.is_empty():
+@@ -133,6 +150,7 @@
+ 		var immersed: float
+ 		var full: float
+ 		var eta: float
++		var segments: Array = []
+ 		if smooth:
+ 			var moments: PackedFloat64Array = profile_moments(piece.profile, along, d2, rs, ss.edge_fraction)
+ 			immersed = moments[0]
+@@ -161,52 +179,98 @@
+ 			var moment_b: float = 0.5 * c0 * b * b + slope * b * b * b / 3.0
+ 			var moment_a: float = 0.5 * c0 * a * a + slope * a * a * a / 3.0
+ 			eta = (moment_b - moment_a) / immersed
+-		var point_0: float = root[0] + e[0] * eta
+-		var point_1: float = root[1] + e[1] * eta
+-		var point_2: float = root[2] + e[2] * eta
+-		var tail: Dictionary = surfaces[piece.surface]
+-		var tail_pos: PackedFloat64Array = tail.position
+-		var shift_1: float = point_1 - tail_pos[1]
+-		var shift_2: float = -(point_2 - tail_pos[2])
+-		# The neutral coverage plane is distinct from the established aerodynamic load plane (Stik: 5 mm).
+-		if smooth and piece.surface == "horizontal":
+-			shift_2 = 0.0
+-		var radial_body_0: float = -(point_0 - centre_0)
+-		var radial_body_1: float = point_1 - centre_1
+-		var radial_body_2: float = -(point_2 - centre_2)
+-		var axial_projection: float = radial_body_0 * ax[0] + radial_body_1 * ax[1] + radial_body_2 * ax[2]
+-		radial_body_0 -= ax[0] * axial_projection
+-		radial_body_1 -= ax[1] * axial_projection
+-		radial_body_2 -= ax[2] * axial_projection
+-		var radius: float = maxf(M.sqrt_(radial_body_0 * radial_body_0 + radial_body_1 * radial_body_1 + radial_body_2 * radial_body_2), core)
+-		var swirl_scale: float = swirl_strength / (radius * radius)
+-		var swirl_0: float = (ax[1] * radial_body_2 - ax[2] * radial_body_1) * swirl_scale
+-		var swirl_1: float = (ax[2] * radial_body_0 - ax[0] * radial_body_2) * swirl_scale
+-		var swirl_2: float = (ax[0] * radial_body_1 - ax[1] * radial_body_0) * swirl_scale
+-		var piece_area: float = piece.area
+-		var area: float = piece_area * immersed / full
+-		if area <= 0.0:
+-			continue
+-		# --- Aero.tail_surface_increment(): washed minus free load on the immersed area ---
+-		var vertical: bool = piece.surface == "vertical"
+-		var arm_0: float = -(tail_pos[0]-cg[0]) + 0.0
+-		var arm_1: float = tail_pos[1]-cg[1] + shift_1
+-		var arm_2: float = -(tail_pos[2]-cg[2]) + shift_2
+-		var rate_arm_0: float = q * arm_2 - r * arm_1
+-		var rate_arm_1: float = r * arm_0 - p * arm_2
+-		var rate_arm_2: float = p * arm_1 - q * arm_0
+-		var arm := M.v3(arm_0, arm_1, arm_2)
+-		var free := Aero._tail_surface_from_flow(M.v3((v0+0.0)+rate_arm_0, (v1+0.0)+rate_arm_1, (v2+0.0)+rate_arm_2),
+-			arm, d, tail, surfaces, area, vertical, rho, wing_cl)
+-		var washed := Aero._tail_surface_from_flow(M.v3((v0+(wash_0-swirl_0))+rate_arm_0,
+-			(v1+(wash_1-swirl_1))+rate_arm_1, (v2+(wash_2-swirl_2))+rate_arm_2),
+-			arm, d, tail, surfaces, area, vertical, rho, wing_cl)
+-		o0 += washed[0] - free[0]
+-		o1 += washed[1] - free[1]
+-		o2 += washed[2] - free[2]
+-		o3 += washed[3] - free[3]
+-		o4 += washed[4] - free[4]
+-		o5 += washed[5] - free[5]
++			# P51-26 CANDIDATE: segments split where the span line crosses the vortex core and at the jet centre; each gets
++			# its exact area/centroid and its GL5 area-weighted mean swirl (one tail evaluation per segment).
++			var cuts: Array[float] = [a, b]
++			if core * core > d2:
++				var hc := M.sqrt_(core * core - d2)
++				if -along - hc > a and -along - hc < b:
++					cuts.append(-along - hc)
++				if -along + hc > a and -along + hc < b:
++					cuts.append(-along + hc)
++			if -along > a and -along < b:
++				cuts.append(-along)
++			cuts.sort()
++			for j in cuts.size() - 1:
++				var lo: float = cuts[j]
++				var hi: float = cuts[j + 1]
++				var seg_area: float = (c0 * hi + 0.5 * slope * hi * hi) - (c0 * lo + 0.5 * slope * lo * lo)
++				if seg_area <= 0.0:
++					continue
++				var seg_eta: float = ((0.5 * c0 * hi * hi + slope * hi * hi * hi / 3.0) - (0.5 * c0 * lo * lo + slope * lo * lo * lo / 3.0)) / seg_area
++				var sw0 := 0.0
++				var sw1 := 0.0
++				var sw2 := 0.0
++				var wsum := 0.0
++				for gi in 5:
++					var sx: float = 0.5 * (lo + hi) + 0.5 * (hi - lo) * PROFILE_X[gi]
++					var wt: float = (c0 + slope * sx) * PROFILE_W[gi]
++					var rb0: float = -(root[0] + e[0] * sx - centre_0)
++					var rb1: float = root[1] + e[1] * sx - centre_1
++					var rb2: float = -(root[2] + e[2] * sx - centre_2)
++					var pj: float = rb0 * ax[0] + rb1 * ax[1] + rb2 * ax[2]
++					rb0 -= ax[0] * pj
++					rb1 -= ax[1] * pj
++					rb2 -= ax[2] * pj
++					var rr: float = maxf(M.sqrt_(rb0 * rb0 + rb1 * rb1 + rb2 * rb2), core)
++					var scn: float = swirl_strength / (rr * rr) * wt
++					sw0 += (ax[1] * rb2 - ax[2] * rb1) * scn
++					sw1 += (ax[2] * rb0 - ax[0] * rb2) * scn
++					sw2 += (ax[0] * rb1 - ax[1] * rb0) * scn
++					wsum += wt
++				segments.append([seg_area, seg_eta, sw0 / wsum, sw1 / wsum, sw2 / wsum])
++		if segments.is_empty():
++			segments = [[]]
++		for seg: Array in segments:
++			if not seg.is_empty():
++				immersed = seg[0]
++				eta = seg[1]
++			var point_0: float = root[0] + e[0] * eta
++			var point_1: float = root[1] + e[1] * eta
++			var point_2: float = root[2] + e[2] * eta
++			var tail: Dictionary = surfaces[piece.surface]
++			var tail_pos: PackedFloat64Array = tail.position
++			var shift_1: float = point_1 - tail_pos[1]
++			var shift_2: float = -(point_2 - tail_pos[2])
++			# The neutral coverage plane is distinct from the established aerodynamic load plane (Stik: 5 mm).
++			if smooth and piece.surface == "horizontal":
++				shift_2 = 0.0
++			var radial_body_0: float = -(point_0 - centre_0)
++			var radial_body_1: float = point_1 - centre_1
++			var radial_body_2: float = -(point_2 - centre_2)
++			var axial_projection: float = radial_body_0 * ax[0] + radial_body_1 * ax[1] + radial_body_2 * ax[2]
++			radial_body_0 -= ax[0] * axial_projection
++			radial_body_1 -= ax[1] * axial_projection
++			radial_body_2 -= ax[2] * axial_projection
++			var radius: float = maxf(M.sqrt_(radial_body_0 * radial_body_0 + radial_body_1 * radial_body_1 + radial_body_2 * radial_body_2), core)
++			var swirl_scale: float = swirl_strength / (radius * radius)
++			var swirl_0: float = (ax[1] * radial_body_2 - ax[2] * radial_body_1) * swirl_scale if seg.is_empty() else float(seg[2])
++			var swirl_1: float = (ax[2] * radial_body_0 - ax[0] * radial_body_2) * swirl_scale if seg.is_empty() else float(seg[3])
++			var swirl_2: float = (ax[0] * radial_body_1 - ax[1] * radial_body_0) * swirl_scale if seg.is_empty() else float(seg[4])
++			var piece_area: float = piece.area
++			var area: float = piece_area * immersed / full
++			if area <= 0.0:
++				continue
++			# --- Aero.tail_surface_increment(): washed minus free load on the immersed area ---
++			var vertical: bool = piece.surface == "vertical"
++			var arm_0: float = -(tail_pos[0]-cg[0]) + 0.0
++			var arm_1: float = tail_pos[1]-cg[1] + shift_1
++			var arm_2: float = -(tail_pos[2]-cg[2]) + shift_2
++			var rate_arm_0: float = q * arm_2 - r * arm_1
++			var rate_arm_1: float = r * arm_0 - p * arm_2
++			var rate_arm_2: float = p * arm_1 - q * arm_0
++			var arm := M.v3(arm_0, arm_1, arm_2)
++			var free := Aero._tail_surface_from_flow(M.v3((v0+0.0)+rate_arm_0, (v1+0.0)+rate_arm_1, (v2+0.0)+rate_arm_2),
++				arm, d, tail, surfaces, area, vertical, rho, wing_cl)
++			var washed := Aero._tail_surface_from_flow(M.v3((v0+(wash_0-swirl_0+rib_0))+rate_arm_0,
++				(v1+(wash_1-swirl_1+rib_1))+rate_arm_1, (v2+(wash_2-swirl_2+rib_2))+rate_arm_2),
++				arm, d, tail, surfaces, area, vertical, rho, wing_cl)
++			o0 += washed[0] - free[0]
++			o1 += washed[1] - free[1]
++			o2 += washed[2] - free[2]
++			o3 += washed[3] - free[3]
++			o4 += washed[4] - free[4]
++			o5 += washed[5] - free[5]
+ 	if smooth:
+ 		var result: PackedFloat64Array = PackedFloat64Array([o0*fade, o1*fade, o2*fade, o3*fade, o4*fade, o5*fade])
+ 		if w.swirl != 0.0:

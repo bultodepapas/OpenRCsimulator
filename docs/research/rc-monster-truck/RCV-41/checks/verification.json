@@ -1,6 +1,6 @@
 {
   "step": "RCV-41",
-  "complete": false,
+  "complete": true,
   "sources": {
     "app/physics/ground_vehicle/vehicle_dynamics.gd": "f4328d387528fd9bcf84dba303c5ee872b71485ebaa5554b3f78b3678bf1e679",
     "app/physics/ground_vehicle/nitro_dynamics.gd": "4d63af121921040b267cead6da5ee3e95ee8edaee732c37fb2f7ff58978478aa",
@@ -82,9 +82,11 @@
     },
     {
       "test": "test_rcv_damage_session.gd",
-      "passed": false,
+      "passed": true,
       "exit_code": 0,
-      "summary": [],
+      "summary": [
+        "RCV damage Session: 19/19 checks passed"
+      ],
       "errors": [],
       "log": "test_rcv_damage_session.log",
       "log_sha256": "446a4f2f37da6bda5f9a49594d89715300cafccaafa34a6aac922a9f34956257",

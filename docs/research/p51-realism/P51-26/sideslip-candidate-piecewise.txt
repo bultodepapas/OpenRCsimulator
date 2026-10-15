@@ -1,0 +1,10 @@
+level V 20.0 d(rudder)/d(beta) 0.738  d(aileron)/d(beta) -0.292  d(bank)/d(beta) 0.733  
+level V 25.7 d(rudder)/d(beta) 0.716  d(aileron)/d(beta) -0.296  d(bank)/d(beta) 1.162  
+level V 28.6 d(rudder)/d(beta) 0.719  d(aileron)/d(beta) -0.297  d(bank)/d(beta) 1.428  
+level V 35.0 d(rudder)/d(beta) 0.715  d(aileron)/d(beta) -0.297  d(bank)/d(beta) 2.120  
+level V 45.0 d(rudder)/d(beta) 0.716  d(aileron)/d(beta) -0.297  d(bank)/d(beta) 3.493  
+glide V 20.0 d(rudder)/d(beta) 0.546  d(aileron)/d(beta) -0.279  d(bank)/d(beta) 0.649  
+glide V 25.7 d(rudder)/d(beta) 0.550  d(aileron)/d(beta) -0.281  d(bank)/d(beta) 1.030  
+glide V 28.6 d(rudder)/d(beta) 0.551  d(aileron)/d(beta) -0.282  d(bank)/d(beta) 1.270  
+glide V 35.0 d(rudder)/d(beta) 0.552  d(aileron)/d(beta) -0.282  d(bank)/d(beta) 1.915  
+glide V 45.0 d(rudder)/d(beta) 0.552  d(aileron)/d(beta) -0.283  d(bank)/d(beta) 3.312  

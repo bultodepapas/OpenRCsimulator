@@ -99,8 +99,10 @@
     }
   }
   function schedule() { if (!requested && !reduced.matches && !document.hidden && !inspection) requested = requestAnimationFrame(updateDepth); }
+  function scheduleMeasure() { if(!measureRequested) measureRequested = requestAnimationFrame(measureDepth); }
   window.addEventListener('scroll', schedule, {passive:true});
-  window.addEventListener('resize', () => {if(!measureRequested) measureRequested = requestAnimationFrame(measureDepth);}, {passive:true});
+  window.addEventListener('resize', scheduleMeasure, {passive:true});
+  document.addEventListener('openrc-language',scheduleMeasure);
   if ('ResizeObserver' in window) new ResizeObserver(measureDepth).observe(document.body);
   else window.addEventListener('load',measureDepth,{once:true});
   filmLabel();

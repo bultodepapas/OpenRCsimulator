@@ -148,35 +148,45 @@ func _strip_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 				for c_: float in [-along - hc, -along + hc]:
 					if c_ > a and c_ < b:
 						cuts.append(c_)
+			if n <= -100 and -along > a and -along < b:
+				cuts.append(-along)
 			cuts.sort()
-			var gx: Array = GL[5 if n == -100 else -n][0]
-			var gw: Array = GL[5 if n == -100 else -n][1]
+			var gx: Array = GL[5 if n <= -100 else -n][0]
+			var gw: Array = GL[5 if n <= -100 else -n][1]
 			for j in cuts.size() - 1:
 				var lo: float = cuts[j]
 				var hi: float = cuts[j + 1]
 				for i in gx.size():
 					var sx: float = 0.5 * (lo + hi) + 0.5 * (hi - lo) * float(gx[i])
-					nodes.append([(c0 + slope * sx) * 0.5 * (hi - lo) * float(gw[i]), sx])
-		var mean_sw := PackedFloat64Array()
-		if n == -100:
-			# Area-weighted mean swirl velocity over the immersed span (GL5 split at the core), applied once at the
-			# legacy area centroid: exact for a tail law linear in the local crossflow.
-			var sw_sum := M.v3(0, 0, 0)
-			var a_sum := 0.0
+					nodes.append([(c0 + slope * sx) * 0.5 * (hi - lo) * float(gw[i]), sx, j])
+		# Mean-swirl modes. -100: one tail evaluation per piece with the area-weighted mean swirl (GL5, core cuts);
+		# -101: one evaluation per sub-interval (cuts at the core crossings and the jet centre) with its own mean swirl.
+		var seg_sw: Array = []
+		if n == -100 or n == -101:
+			var groups := {}
 			for node: Array in nodes:
+				var key: int = int(node[2]) if n == -101 else 0
+				if not groups.has(key):
+					groups[key] = [M.v3(0, 0, 0), 0.0, 0.0]
 				var ptn := M.v3(root[0] + e[0] * float(node[1]), root[1] + e[1] * float(node[1]), root[2] + e[2] * float(node[1]))
 				var rbn := M.v3(-(ptn[0] - c0_), ptn[1] - c1_, -(ptn[2] - c2_))
 				var pj: float = M.dot(rbn, ax)
 				rbn = M.v3(rbn[0] - ax[0] * pj, rbn[1] - ax[1] * pj, rbn[2] - ax[2] * pj)
 				var rr: float = maxf(sqrt(M.dot(rbn, rbn)), w.core)
 				var scn: float = w.swirl / (rr * rr) * float(node[0])
-				sw_sum = M.v3(sw_sum[0] + (ax[1] * rbn[2] - ax[2] * rbn[1]) * scn, sw_sum[1] + (ax[2] * rbn[0] - ax[0] * rbn[2]) * scn,
-					sw_sum[2] + (ax[0] * rbn[1] - ax[1] * rbn[0]) * scn)
-				a_sum += float(node[0])
-			mean_sw = M.v3(sw_sum[0] / a_sum, sw_sum[1] / a_sum, sw_sum[2] / a_sum)
-			var a_tot: float = (c0 * b + 0.5 * slope * b * b) - (c0 * a + 0.5 * slope * a * a)
-			nodes = [[a_tot, ((0.5 * c0 * b * b + slope * b * b * b / 3.0) - (0.5 * c0 * a * a + slope * a * a * a / 3.0)) / a_tot]]
+				var g: Array = groups[key]
+				g[0] = M.v3(g[0][0] + (ax[1] * rbn[2] - ax[2] * rbn[1]) * scn, g[0][1] + (ax[2] * rbn[0] - ax[0] * rbn[2]) * scn,
+					g[0][2] + (ax[0] * rbn[1] - ax[1] * rbn[0]) * scn)
+				g[1] = float(g[1]) + float(node[0])
+				g[2] = float(g[2]) + float(node[0]) * float(node[1])
+			nodes = []
+			for key in groups:
+				var g: Array = groups[key]
+				nodes.append([g[1], float(g[2]) / float(g[1])])
+				seg_sw.append(M.v3(g[0][0] / g[1], g[0][1] / g[1], g[0][2] / g[1]))
+		var node_index := -1
 		for node: Array in nodes:
+			node_index += 1
 			var area_s: float = node[0]
 			var eta: float = node[1]
 			var pt := M.v3(root[0] + e[0] * eta, root[1] + e[1] * eta, root[2] + e[2] * eta)
@@ -186,8 +196,8 @@ func _strip_loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 			var radius: float = maxf(sqrt(M.dot(rb, rb)), w.core)
 			var sc: float = w.swirl / (radius * radius)
 			var sw := M.v3((ax[1] * rb[2] - ax[2] * rb[1]) * sc, (ax[2] * rb[0] - ax[0] * rb[2]) * sc, (ax[0] * rb[1] - ax[1] * rb[0]) * sc)
-			if not mean_sw.is_empty():
-				sw = mean_sw
+			if not seg_sw.is_empty():
+				sw = seg_sw[node_index]
 			var area: float = float(piece.area) * area_s / full
 			var arm := M.v3(-(tail_pos[0] - cg[0]), tail_pos[1] - cg[1] + (pt[1] - tail_pos[1]), -(tail_pos[2] - cg[2]) - (pt[2] - tail_pos[2]))
 			var ra := M.v3(q * arm[2] - r * arm[1], r * arm[0] - p * arm[2], p * arm[1] - q * arm[0])
@@ -230,13 +240,13 @@ func _initialize() -> void:
 		var e1 := _eval(x, V, 0.0, model, 0.0, 1)
 		print("level V %.1f (solved %s): runtime vs 1-strip difference Cl %s Cn %s" % [V, base.ok,
 			String.num_scientific(e0[0] - e1[0]), String.num_scientific(e0[1] - e1[1])])
-		for n: int in [0, 1024, -5, -100]:
+		for n: int in [0, 1024, -5, -100, -101]:
 			var bp := _eval(x, V, h, model, 0.0, n)
 			var bm := _eval(x, V, -h, model, 0.0, n)
 			var rp := _eval(x, V, 0.0, model, h, n)
 			var rm := _eval(x, V, 0.0, model, -h, n)
 			var z := _eval(x, V, 0.0, model, 0.0, n)
 			print("  %-8s slipstream dCl/dbeta %+.5f dCn/dbeta %+.5f  dCl/drudder %+.5f dCn/drudder %+.5f  trim Cl %+.5f Cn %+.5f" % [
-				"runtime" if n == 0 else ("%d strip" % n if n > 0 else ("mean-swirl" if n == -100 else "GL%d/cut" % -n)), (bp[0] - bm[0]) / (2 * h), (bp[1] - bm[1]) / (2 * h),
+				"runtime" if n == 0 else ("%d strip" % n if n > 0 else ("mean-swirl" if n == -100 else ("piecewise" if n == -101 else "GL%d/cut" % -n))), (bp[0] - bm[0]) / (2 * h), (bp[1] - bm[1]) / (2 * h),
 				(rp[0] - rm[0]) / (2 * h), (rp[1] - rm[1]) / (2 * h), z[0], z[1]])
 	quit(0)

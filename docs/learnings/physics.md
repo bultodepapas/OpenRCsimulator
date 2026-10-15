@@ -222,6 +222,8 @@ Include invalidation and return ownership in a cache's measured cost. The EL2a-P
 
 Preserve signed zero when inlining float64 helpers. In RCV-40, replacing runtime negation of a zero ramp slope with a negative-zero literal changed 89 serialized boundary results even though ordinary numeric values compared equal. Keep the original runtime sign/division and compare bytes at flat decks and transition endpoints before accepting the optimization. ([RCV-40](../research/rc-monster-truck/RCV-40/README.md))
 
+A faster native validator may accept a broader grammar. Godot's hexadecimal parser accepts optional signs, while a canonical SHA-256 identity requires 64 lowercase ASCII hex digits. RCV-41 keeps type, length, case and explicit sign checks around the native call, with malformed, Unicode and empty-policy tests. Digest reuse remains content-keyed after a full file read; unchanged size/time is not proof of unchanged bytes. ([RCV-41](../research/rc-monster-truck/RCV-41/README.md))
+
 ### A prepared model needs an explicit ownership boundary
 
 A copied native model stays unchanged when its source dictionary is edited, which protects its memory but can mix stale geometry with freshly computed GDScript propulsion inputs. Dictionary identity detects replacement, not nested edits. Invalidate generations on every preparation attempt, including failure; require explicit rebuild after edits and test backend invalidation through the adapter so stateless fallback cannot hide a stale handle. Moving decoding outside ticks does not remove this ownership obligation. ([E0b6p prepared-model evidence](../research/propwash/E0b6p/prepared-model/README.md))

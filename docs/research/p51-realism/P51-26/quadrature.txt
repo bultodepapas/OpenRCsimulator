@@ -1,0 +1,30 @@
+level V 20.0 (solved true): runtime vs 1-strip difference Cl 0 Cn 0
+  runtime  slipstream dCl/dbeta -0.00263 dCn/dbeta +0.01635  dCl/drudder +0.00461 dCn/drudder -0.01842  trim Cl +0.00180 Cn -0.00432
+  1024 strip slipstream dCl/dbeta -0.00850 dCn/dbeta +0.03091  dCl/drudder +0.00460 dCn/drudder -0.01837  trim Cl +0.00102 Cn -0.00083
+  GL5/cut  slipstream dCl/dbeta -0.00850 dCn/dbeta +0.03090  dCl/drudder +0.00460 dCn/drudder -0.01837  trim Cl +0.00102 Cn -0.00083
+  mean-swirl slipstream dCl/dbeta -0.01063 dCn/dbeta +0.03024  dCl/drudder +0.00457 dCn/drudder -0.01826  trim Cl +0.00076 Cn -0.00084
+  piecewise slipstream dCl/dbeta -0.00763 dCn/dbeta +0.03088  dCl/drudder +0.00460 dCn/drudder -0.01835  trim Cl +0.00104 Cn -0.00083
+level V 25.7 (solved true): runtime vs 1-strip difference Cl 0 Cn 0
+  runtime  slipstream dCl/dbeta -0.01125 dCn/dbeta +0.05814  dCl/drudder +0.00354 dCn/drudder -0.01415  trim Cl +0.00188 Cn -0.00427
+  1024 strip slipstream dCl/dbeta -0.00743 dCn/dbeta +0.02705  dCl/drudder +0.00353 dCn/drudder -0.01408  trim Cl +0.00124 Cn -0.00242
+  GL5/cut  slipstream dCl/dbeta -0.00743 dCn/dbeta +0.02703  dCl/drudder +0.00353 dCn/drudder -0.01408  trim Cl +0.00124 Cn -0.00242
+  mean-swirl slipstream dCl/dbeta -0.00991 dCn/dbeta +0.02673  dCl/drudder +0.00352 dCn/drudder -0.01406  trim Cl +0.00121 Cn -0.00242
+  piecewise slipstream dCl/dbeta -0.00693 dCn/dbeta +0.02699  dCl/drudder +0.00352 dCn/drudder -0.01407  trim Cl +0.00131 Cn -0.00242
+level V 28.6 (solved true): runtime vs 1-strip difference Cl 0 Cn 0
+  runtime  slipstream dCl/dbeta -0.00690 dCn/dbeta +0.04159  dCl/drudder +0.00329 dCn/drudder -0.01317  trim Cl +0.00172 Cn -0.00363
+  1024 strip slipstream dCl/dbeta -0.00731 dCn/dbeta +0.02675  dCl/drudder +0.00328 dCn/drudder -0.01314  trim Cl +0.00126 Cn -0.00270
+  GL5/cut  slipstream dCl/dbeta -0.00732 dCn/dbeta +0.02678  dCl/drudder +0.00328 dCn/drudder -0.01314  trim Cl +0.00126 Cn -0.00270
+  mean-swirl slipstream dCl/dbeta -0.00992 dCn/dbeta +0.02654  dCl/drudder +0.00328 dCn/drudder -0.01313  trim Cl +0.00127 Cn -0.00270
+  piecewise slipstream dCl/dbeta -0.00689 dCn/dbeta +0.02674  dCl/drudder +0.00328 dCn/drudder -0.01313  trim Cl +0.00133 Cn -0.00270
+level V 35.0 (solved true): runtime vs 1-strip difference Cl 0 Cn 0
+  runtime  slipstream dCl/dbeta -0.00384 dCn/dbeta +0.03024  dCl/drudder +0.00285 dCn/drudder -0.01171  trim Cl +0.00151 Cn -0.00301
+  1024 strip slipstream dCl/dbeta -0.00679 dCn/dbeta +0.02579  dCl/drudder +0.00284 dCn/drudder -0.01172  trim Cl +0.00121 Cn -0.00281
+  GL5/cut  slipstream dCl/dbeta -0.00679 dCn/dbeta +0.02578  dCl/drudder +0.00284 dCn/drudder -0.01172  trim Cl +0.00121 Cn -0.00281
+  mean-swirl slipstream dCl/dbeta -0.00946 dCn/dbeta +0.02561  dCl/drudder +0.00285 dCn/drudder -0.01171  trim Cl +0.00125 Cn -0.00281
+  piecewise slipstream dCl/dbeta -0.00651 dCn/dbeta +0.02575  dCl/drudder +0.00284 dCn/drudder -0.01171  trim Cl +0.00129 Cn -0.00281
+level V 45.0 (solved true): runtime vs 1-strip difference Cl 0 Cn 0
+  runtime  slipstream dCl/dbeta -0.00272 dCn/dbeta +0.02453  dCl/drudder +0.00257 dCn/drudder -0.01082  trim Cl +0.00137 Cn -0.00264
+  1024 strip slipstream dCl/dbeta -0.00645 dCn/dbeta +0.02544  dCl/drudder +0.00257 dCn/drudder -0.01085  trim Cl +0.00115 Cn -0.00277
+  GL5/cut  slipstream dCl/dbeta -0.00645 dCn/dbeta +0.02545  dCl/drudder +0.00257 dCn/drudder -0.01085  trim Cl +0.00115 Cn -0.00277
+  mean-swirl slipstream dCl/dbeta -0.00922 dCn/dbeta +0.02532  dCl/drudder +0.00257 dCn/drudder -0.01084  trim Cl +0.00120 Cn -0.00277
+  piecewise slipstream dCl/dbeta -0.00628 dCn/dbeta +0.02542  dCl/drudder +0.00257 dCn/drudder -0.01084  trim Cl +0.00123 Cn -0.00277
