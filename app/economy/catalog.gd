@@ -35,7 +35,7 @@ static func load_for(aircraft_id: String, physical_source_hash: String = "") -> 
 	if typeof(catalog_json.data) != TYPE_DICTIONARY:
 		return _failure(["economics catalog root must be an object"], catalog_hash)
 	var doc: Dictionary = catalog_json.data
-	errors.append_array(_validate_document(doc))
+	errors.append_array(_validate_document(doc, aircraft_id))
 	var aircraft_bytes: PackedByteArray = FileAccess.get_file_as_bytes(data_path)
 	if aircraft_bytes.is_empty():
 		errors.append("cannot read aircraft source: " + data_path)
@@ -110,7 +110,7 @@ static func _find_dossier(doc: Dictionary, aircraft_id: String) -> Dictionary:
 	return {}
 
 
-static func _validate_document(node: Variant) -> Array[String]:
+static func _validate_document(node: Variant, verify_physical_aircraft_id: String = "") -> Array[String]:
 	var errors: Array[String] = []
 	if typeof(node) != TYPE_DICTIONARY:
 		errors.append("catalog root must be an object")
@@ -216,16 +216,17 @@ static func _validate_document(node: Variant) -> Array[String]:
 		var source_ok := false
 		var entry: Dictionary = AircraftCatalog.entry(aircraft_id)
 		var data_path: String = str(entry.get("data", ""))
-		if _is_aircraft_data_path(data_path):
+		var verify_source := verify_physical_aircraft_id.is_empty() or verify_physical_aircraft_id == aircraft_id
+		if verify_source and _is_aircraft_data_path(data_path):
 			var source_bytes: PackedByteArray = FileAccess.get_file_as_bytes(data_path)
 			if not source_bytes.is_empty():
 				var source_json := JSON.new()
 				if source_json.parse(source_bytes.get_string_from_utf8()) == OK and typeof(source_json.data) == TYPE_DICTIONARY:
 					source = source_json.data
 					source_ok = true
-		if not source_ok:
+		if verify_source and not source_ok:
 			errors.append(path + " physical aircraft source cannot be loaded")
-		else:
+		elif source_ok:
 			if str(source.get("id", "")) != aircraft_id:
 				errors.append(path + " physical source ID does not match route")
 			if _sha256(FileAccess.get_file_as_bytes(data_path)) != str(item.get("source_sha256", "")):
@@ -308,7 +309,7 @@ static func _validate_document(node: Variant) -> Array[String]:
 							errors.append(component_path + " has duplicate physical inventory ID '%s'" % physical_id)
 						else:
 							local_ids[physical_id] = true
-						if not physical_ids.has(physical_id):
+						if source_ok and not physical_ids.has(physical_id):
 							errors.append(component_path + " references unknown physical inventory ID '%s'" % physical_id)
 						if bound_ids.has(physical_id):
 							errors.append(path + " allocates physical inventory ID more than once: '%s'" % physical_id)
@@ -355,7 +356,7 @@ static func _validate_document(node: Variant) -> Array[String]:
 							errors.append(exclusion_path + " has duplicate physical inventory ID '%s'" % physical_id)
 						else:
 							local_ids[physical_id] = true
-						if not physical_ids.has(physical_id):
+						if source_ok and not physical_ids.has(physical_id):
 							errors.append(exclusion_path + " references unknown physical inventory ID '%s'" % physical_id)
 						if bound_ids.has(physical_id) or excluded_ids.has(physical_id):
 							errors.append(path + " allocates physical inventory ID more than once: '%s'" % physical_id)
@@ -414,7 +415,7 @@ static func _validate_document(node: Variant) -> Array[String]:
 		elif not str(propeller_component).is_empty():
 			if not component_ids.has(str(propeller_component)):
 				errors.append(path + ".propeller_component_id references unknown component")
-			if not source_ok or not _source_has_propeller(source):
+			if source_ok and not _source_has_propeller(source):
 				errors.append(path + ".propeller_component_id requires a physical propeller")
 		var inspection_ids: Variant = item.get("propeller_inspection_ids")
 		if typeof(inspection_ids) != TYPE_ARRAY:

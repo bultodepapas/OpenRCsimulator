@@ -102,7 +102,7 @@ func _test_bounds(session: Variant) -> void:
 	ledger.begin("jensen-das-ugly-stik-60", str(session.aircraft.input_identity.sha256))
 	var bindings: Dictionary = session.contact_contract()
 	for tick in range(1, Incident.MAX_EVENTS + 3):
-		var strike := {tick = tick, rpm = 4000.0, point_ned = [0.0, 0.0, 0.0], velocity_ned = [1.0, 0.0, 0.0]}
+		var strike := {tick = tick, rpm = 4000.0, point_ned = PackedFloat64Array([0.0, 0.0, 0.0]), velocity_ned = PackedFloat64Array([1.0, 0.0, 0.0])}
 		var event := Events.strike_event(strike, tick, HullContact.law(), bindings)
 		ledger.observe({tick = tick, events = [event]}, bindings, false)
 	check("contact journal is bounded and duplicate parts stay one purchase", ledger.journal.size() == Incident.MAX_EVENTS and ledger.report.get("known_subtotal_minor") == 539)

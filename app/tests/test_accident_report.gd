@@ -194,6 +194,18 @@ func _report_behavior() -> void:
 	low_repair.lines = [{"id": "propeller", "quantity": 1, "action": "replace", "amount_minor": 539}]
 	report.show_assessment(low_repair, true)
 	_check("small repair headline preserves cents", report.find_child("ReportAmount", true, false).text == "US$5.39")
+	var missing_complete_total: Dictionary = low_repair.duplicate(true)
+	missing_complete_total.total_minor = null
+	report.show_assessment(missing_complete_total, true)
+	_check("missing complete total falls back to a clearly partial subtotal", report.find_child("ReportAmount", true, false).text == "US$5.39"
+		and (report.find_child("ReportColumn", true, false).get_child(1) as Label).text == "KNOWN SUBTOTAL · INCOMPLETE")
+	var invalid_total: Dictionary = missing_complete_total.duplicate(true)
+	invalid_total.known_subtotal_minor = null
+	invalid_total.lines = []
+	invalid_total.total_minor = NAN
+	report.show_assessment(invalid_total, true)
+	_check("non-finite total is shown as unavailable instead of NaN", report.find_child("ReportAmount", true, false).text == "Amount unavailable"
+		and not report.find_child("ReportAmount", true, false).text.to_lower().contains("nan"))
 	report.show_assessment(complete, true)
 	await _ui.settle()
 	var breakdown_button := report.find_child("DamageBreakdown", true, false) as Button
@@ -221,7 +233,9 @@ func _report_behavior() -> void:
 		and not reopen_button.visible and report.wants_controller_menu())
 	_check("controller navigation aliases move through the report actions", report.controller_action("navigate_down")
 		and _ui.focus_name() == "DamageBreakdown"
-		and report.controller_action("navigate_right") and _ui.focus_name() == "RestartFlight")
+		and report.controller_action("navigate_right") and _ui.focus_name() == "RestartFlight"
+		and report.controller_action("navigate_up") and _ui.focus_name() == "DamageBreakdown"
+		and report.controller_action("navigate_left") and _ui.focus_name() == "InspectWreck")
 	_check("controller back collapses to the reopen control and yields the menu", report.controller_action("back")
 		and reopen_button.visible and not report.wants_controller_menu())
 	_check("controller accept restores a collapsed report", report.controller_action("accept")

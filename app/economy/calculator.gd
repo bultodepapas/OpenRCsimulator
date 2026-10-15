@@ -94,6 +94,8 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 				else:
 					aggregate_ceiling += int(upper_product["value"])
 			components_by_id[component_id] = component
+	if source_complete and components.is_empty():
+		errors.append("dossier.components: a complete dossier must cover at least one component")
 
 	var raw_missing: Variant = dossier.get("missing", [])
 	if typeof(raw_missing) != TYPE_ARRAY:
@@ -393,23 +395,11 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 				calculation_complete = false
 			lines.append(_line(component, quantity, action, line_amount, extra.merged({"low_minor": line_low, "high_minor": line_high})))
 
-		if terminal and source_complete and (saw_inspection or not unresolved.is_empty()):
-			var complete_build_high: int = 0
-			var complete_build_high_known: bool = true
-			for component_value: Variant in components:
-				var component: Dictionary = component_value
-				var component_high: Variant = component["high_unit_minor"] if component["high_unit_minor"] != null else component["unit_minor"]
-				if component_high == null:
-					complete_build_high_known = false
-					break
-				var product: Dictionary = _multiply_minor(component_high, component["quantity"])
-				if not bool(product["ok"]):
-					complete_build_high_known = false
-					break
-				complete_build_high += int(product["value"])
-			if complete_build_high_known:
-				high_total = maxi(high_total, complete_build_high)
-				report["range_basis"] = "complete_build_replacement_quote_ceiling"
+		if terminal and source_complete:
+			var replacement_quote: Dictionary = _complete_build_replacement_quote(components)
+			report["replacement_quote_low_minor"] = replacement_quote["low"]
+			report["replacement_quote_high_minor"] = replacement_quote["high"]
+			report["replacement_quote_scope"] = "complete_build_replacement_quote_comparison"
 
 		report["replacement_minor"] = replacement_total if replacement_complete else null
 		report["salvage_minor"] = 0
@@ -453,6 +443,9 @@ static func _empty_report() -> Dictionary:
 		"replacement_minor": null,
 		"unresolved": [],
 		"range_basis": "component_price_bounds",
+		"replacement_quote_low_minor": null,
+		"replacement_quote_high_minor": null,
+		"replacement_quote_scope": "",
 		"price_date": "",
 	}
 
@@ -488,6 +481,38 @@ static func _price_for_quantity(unit: Variant, low_unit: Variant, high_unit: Var
 		if bool(high_product["ok"]):
 			high = high_product["value"]
 	return {"amount": amount, "low": low, "high": high}
+
+
+static func _complete_build_replacement_quote(components: Array) -> Dictionary:
+	var low_total: int = 0
+	var high_total: int = 0
+	var low_possible: bool = true
+	var high_possible: bool = true
+	for component_value: Variant in components:
+		var component: Dictionary = component_value
+		var unit: Variant = component["unit_minor"]
+		var low_unit: Variant = component["low_unit_minor"] if component["low_unit_minor"] != null else unit
+		var high_unit: Variant = component["high_unit_minor"] if component["high_unit_minor"] != null else unit
+		if low_unit == null:
+			low_possible = false
+		else:
+			var low_product: Dictionary = _multiply_minor(low_unit, component["quantity"])
+			if not bool(low_product["ok"]) or int(low_product["value"]) > MAX_MINOR - low_total:
+				low_possible = false
+			else:
+				low_total += int(low_product["value"])
+		if high_unit == null:
+			high_possible = false
+		else:
+			var high_product: Dictionary = _multiply_minor(high_unit, component["quantity"])
+			if not bool(high_product["ok"]) or int(high_product["value"]) > MAX_MINOR - high_total:
+				high_possible = false
+			else:
+				high_total += int(high_product["value"])
+	return {
+		"low": low_total if low_possible else null,
+		"high": high_total if high_possible else null,
+	}
 
 
 static func _multiply_minor(value: Variant, quantity: int) -> Dictionary:

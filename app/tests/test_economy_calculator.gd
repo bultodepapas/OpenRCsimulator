@@ -8,6 +8,7 @@ var _failures: int = 0
 
 func _initialize() -> void:
 	_test_total_loss_and_salvage()
+	_test_accounting_invariants_and_ordering()
 	_test_no_duplicate_charge()
 	_test_prop_only_with_engine_inspection()
 	_test_unknown_price_and_known_zero()
@@ -52,6 +53,26 @@ func _test_no_duplicate_charge() -> void:
 	duplicate["components"] = duplicate_components
 	var invalid: Dictionary = Calculator.calculate(duplicate, assessment)
 	_check("overlapping physical coverage is rejected before duplicate billing", not invalid["ok"] and _has_error(invalid, "already covered"), str(invalid["errors"]))
+	var empty_complete: Dictionary = _dossier()
+	empty_complete["components"] = []
+	var empty_result: Dictionary = Calculator.calculate(empty_complete, _assessment(false))
+	_check("an empty complete dossier cannot produce a zero-cost total", not empty_result["ok"] and _has_error(empty_result, "must cover at least one component"), str(empty_result["errors"]))
+
+
+func _test_accounting_invariants_and_ordering() -> void:
+	var dossier: Dictionary = _dossier()
+	var assessment: Dictionary = _assessment(true)
+	assessment["components"] = {"fuselage_servos": {"disposition": "reuse", "quantity": 2}}
+	var result: Dictionary = Calculator.calculate(dossier, assessment)
+	_check("exact total stays within reported bounds", result["low_minor"] <= result["total_minor"] and result["total_minor"] <= result["high_minor"], str(result))
+	_check("replacement less explicit salvage reconciles with exact total", result["replacement_minor"] - result["salvage_minor"] == result["total_minor"], str(result))
+	_check("known line amounts reconcile with subtotal including signed salvage", _line_amount_sum(result) == result["known_subtotal_minor"], str(result))
+	var reordered: Dictionary = dossier.duplicate(true)
+	var reversed_components: Array = (dossier["components"] as Array).duplicate(true)
+	reversed_components.reverse()
+	reordered["components"] = reversed_components
+	var reordered_result: Dictionary = Calculator.calculate(reordered, assessment)
+	_check("component order does not alter economics", result["total_minor"] == reordered_result["total_minor"] and result["low_minor"] == reordered_result["low_minor"] and result["high_minor"] == reordered_result["high_minor"], str(reordered_result))
 
 
 func _test_prop_only_with_engine_inspection() -> void:
@@ -67,7 +88,22 @@ func _test_prop_only_with_engine_inspection() -> void:
 	terminal["terminal"] = true
 	terminal["components"] = {"propeller": {"disposition": "inspect"}}
 	var terminal_result: Dictionary = Calculator.calculate(_dossier(), terminal)
-	_check("terminal uncertainty uses the full-build quote only as a labeled ceiling", terminal_result["outcome"] == "inspection" and terminal_result["high_minor"] == 133134 and terminal_result["range_basis"] == "complete_build_replacement_quote_ceiling", str(terminal_result))
+	_check("terminal replacement comparison stays separate from assessed cost bounds", terminal_result["outcome"] == "inspection" and terminal_result["high_minor"] == 539 and terminal_result["range_basis"] == "component_price_bounds" and terminal_result["replacement_quote_low_minor"] == 82734 and terminal_result["replacement_quote_high_minor"] == 133134 and terminal_result["replacement_quote_scope"] == "complete_build_replacement_quote_comparison", str(terminal_result))
+	var unknown_quote_dossier: Dictionary = _dossier()
+	var unknown_quote_components: Array = unknown_quote_dossier["components"]
+	for index: int in range(unknown_quote_components.size()):
+		var component: Dictionary = unknown_quote_components[index]
+		if component["id"] == "receiver":
+			component["unit_minor"] = null
+			component["low_unit_minor"] = null
+			component["high_unit_minor"] = null
+		unknown_quote_components[index] = component
+	unknown_quote_dossier["components"] = unknown_quote_components
+	var unknown_quote_assessment: Dictionary = _assessment(false)
+	unknown_quote_assessment["terminal"] = true
+	unknown_quote_assessment["components"] = {"receiver": {"disposition": "inspect"}}
+	var unknown_quote: Dictionary = Calculator.calculate(unknown_quote_dossier, unknown_quote_assessment)
+	_check("unknown inspection condition keeps assessed high and replacement quote unknown", unknown_quote["high_minor"] == null and unknown_quote["replacement_quote_high_minor"] == null and unknown_quote["total_minor"] == null, str(unknown_quote))
 
 
 func _test_unknown_price_and_known_zero() -> void:
@@ -188,6 +224,16 @@ func _line_count_action(report: Dictionary, action: String) -> int:
 		if (line_value as Dictionary).get("action") == action:
 			count += 1
 	return count
+
+
+func _line_amount_sum(report: Dictionary) -> int:
+	var total: int = 0
+	for line_value: Variant in report.get("lines", []):
+		var amount: Variant = (line_value as Dictionary).get("amount_minor")
+		if typeof(amount) != TYPE_INT:
+			return -1
+		total += amount
+	return total
 
 
 func _has_error(report: Dictionary, needle: String) -> bool:

@@ -141,4 +141,10 @@ func _test_document_integrity_checks() -> void:
 	var unknown_contact: Dictionary = raw.duplicate(true)
 	unknown_contact["aircraft"][0]["contact_components"]["not_a_real_contact"] = ["propeller"]
 	_check("unknown physical contact reference is rejected", _has_error(Catalog._validate_document(unknown_contact), "unknown physical contact"))
+	var stale_unrelated_route: Dictionary = raw.duplicate(true)
+	for dossier: Variant in stale_unrelated_route["aircraft"]:
+		if typeof(dossier) == TYPE_DICTIONARY and dossier.get("aircraft_id") == "p51d-mustang-120":
+			dossier["source_sha256"] = "0".repeat(64)
+	_check("unrelated aircraft source drift does not invalidate the selected route", Catalog._validate_document(stale_unrelated_route, "jensen-das-ugly-stik-60").is_empty())
+	_check("selected aircraft source drift remains rejected", _has_error(Catalog._validate_document(stale_unrelated_route, "p51d-mustang-120"), "source_sha256 is stale"))
 

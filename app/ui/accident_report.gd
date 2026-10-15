@@ -410,6 +410,12 @@ func _headline_state(report: Dictionary) -> Dictionary:
 			"amount": tr("Cost unavailable"),
 			"caption": tr("No complete amount or priced subtotal is available."),
 		}
+	if subtotal != null and (int(subtotal) != 0 or _has_priced_action(report)):
+		return {
+			"status": tr("KNOWN SUBTOTAL · INCOMPLETE"),
+			"amount": _format_headline_money(int(subtotal), currency),
+			"caption": tr("Known subtotal only. It is not the complete cost."),
+		}
 	return {
 		"status": _complete_status(str(report.get("outcome", "unavailable"))),
 		"amount": tr("Amount unavailable"),
