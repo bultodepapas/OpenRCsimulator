@@ -1,0 +1,128 @@
+{
+  "unit": "microseconds per update",
+  "pooled_warm_medians": {
+    "steady": [
+      7.0995,
+      3.5865
+    ],
+    "translation": [
+      6.81775,
+      3.7825
+    ],
+    "rotation": [
+      8.7315,
+      6.65825
+    ],
+    "light": [
+      7.661,
+      6.1315
+    ]
+  },
+  "processes": [
+    {
+      "file": "native-1.json",
+      "medians": {
+        "steady": [
+          7.01275,
+          3.31025
+        ],
+        "translation": [
+          7.27825,
+          3.7825
+        ],
+        "rotation": [
+          8.5505,
+          5.9695
+        ],
+        "light": [
+          7.1415,
+          5.5755
+        ]
+      }
+    },
+    {
+      "file": "native-2.json",
+      "medians": {
+        "steady": [
+          7.0995,
+          3.5855
+        ],
+        "translation": [
+          5.96575,
+          3.4275
+        ],
+        "rotation": [
+          6.92375,
+          5.7215
+        ],
+        "light": [
+          8.24175,
+          5.89725
+        ]
+      }
+    },
+    {
+      "file": "native-3.json",
+      "medians": {
+        "steady": [
+          7.1525,
+          3.5865
+        ],
+        "translation": [
+          7.6355,
+          3.935
+        ],
+        "rotation": [
+          8.82775,
+          6.89925
+        ],
+        "light": [
+          7.29825,
+          6.79975
+        ]
+      }
+    },
+    {
+      "file": "native-4.json",
+      "medians": {
+        "steady": [
+          7.0405,
+          3.6815
+        ],
+        "translation": [
+          7.05125,
+          3.97225
+        ],
+        "rotation": [
+          8.508,
+          6.88725
+        ],
+        "light": [
+          8.40225,
+          6.7055
+        ]
+      }
+    },
+    {
+      "file": "native-5.json",
+      "medians": {
+        "steady": [
+          7.18525,
+          3.76875
+        ],
+        "translation": [
+          6.301,
+          3.7585
+        ],
+        "rotation": [
+          9.0405,
+          6.65825
+        ],
+        "light": [
+          7.51775,
+          5.98625
+        ]
+      }
+    }
+  ]
+}

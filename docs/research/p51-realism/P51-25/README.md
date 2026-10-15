@@ -76,7 +76,7 @@ Godot 4.7.2, native Windows ([logs](tests/), [summary](tests/summary.txt)).
 
 ## Open items
 
-1. **Powered directional stiffness (next step).** In level flight the slipstream adds Cnβ +0.042 and Cndr −0.013 about the CG, so rudder per sideslip rises to 0.68–1.0. The full-size trend runs the other way: 0.46 at 103 mph, the highest thrust coefficient. [`slipstream.gd`](../../../../app/physics/slipstream.gd) adds the wash along the shaft axis and states that the transported direction is not modelled. A propeller in sideslip also turns its jet toward its axis and reduces the angle the fin sees. That sidewash is the probable missing term. It belongs to the slipstream module and needs primary power-on data before any change.
+1. **Powered directional stiffness: diagnosed in [P51-26](../P51-26/README.md).** In level flight the slipstream adds Cnβ +0.042 and Cndr −0.013 about the CG, so rudder per sideslip rises to 0.68–1.0. The full-size trend runs the other way: 0.46 at 103 mph, the highest thrust coefficient. [`slipstream.gd`](../../../../app/physics/slipstream.gd) adds the wash along the shaft axis and states that the transported direction is not modelled. A propeller in sideslip also turns its jet toward its axis and reduces the angle the fin sees. That sidewash is the probable missing term. It belongs to the slipstream module and needs primary power-on data before any change.
 2. **Loop departure and lift-off:** P51-22, owned by the R02/R06 powered wing/tail slice.
 3. **kz/b of the full-size airplane** is unknown, so the Dutch-roll comparison assumes equal kz/b. The model's is 0.241.
 

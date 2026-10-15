@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Cannot find member "AVANTI_ID" in base "res://render/airplane.gd".
+   at: GDScript::reload (C:/DEVELOPMENT/OpenRCsimulator/tmp/shadow-framing/test-candidate.gd:236)
+ERROR: Failed to load script "C:/DEVELOPMENT/OpenRCsimulator/tmp/shadow-framing/test-candidate.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
