@@ -16,7 +16,8 @@ const NIGHT_FIELD_LIGHTING_CHOICES: Array[String] = ["club", "airfield", "off"]
 const NIGHT_DEFAULTS := {"field_lighting": "club", "campfire": false}
 
 const DEFAULT_PATH := "user://settings.cfg"
-const SCHEMA := 4
+const SCHEMA := 5
+const LIGHTING_SCHEMA := 4
 const LEGACY_SCHEMA := 1
 ## Interface languages: code -> name in that language (never translated). English is the default and the source
 ## language of every text; others come from res://i18n/<code>.po. The order is the order the Home button cycles.
@@ -164,9 +165,9 @@ static func save_to(path: String, prefs: Dictionary) -> Error:
 	if typeof(time_of_day) != TYPE_STRING or not Conditions.HOME_CHOICES.has(time_of_day):
 		return ERR_INVALID_DATA
 	var cfg := ConfigFile.new()
-	var weather_schema: int = 3 if checked_weather.config.format == WeatherSettings.ATMOSPHERE_FORMAT \
-		else (2 if checked_weather.config.format == WeatherSettings.TURBULENCE_FORMAT else LEGACY_SCHEMA)
-	var schema: int = SCHEMA if checked_lighting.config != TimeOfDay.defaults() else weather_schema
+	var weather_schema: int = 5 if checked_weather.config.format == WeatherSettings.COLUMN_FORMAT else (3 if checked_weather.config.format == WeatherSettings.ATMOSPHERE_FORMAT \
+		else (2 if checked_weather.config.format == WeatherSettings.TURBULENCE_FORMAT else LEGACY_SCHEMA))
+	var schema: int = maxi(LIGHTING_SCHEMA, weather_schema) if checked_lighting.config != TimeOfDay.defaults() else weather_schema
 	cfg.set_value("meta", "schema", schema)
 	cfg.set_value("ui", "language", prefs.language)
 	cfg.set_value("ui", "first_flight_hint_seen", prefs.get("first_flight_hint_seen", false))

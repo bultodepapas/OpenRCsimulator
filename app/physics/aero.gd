@@ -348,7 +348,7 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var mx_sum := 0.0
 	var my_sum := 0.0
 	var mz_sum := 0.0
-	var wing_cl := 0.0 # E0a2: the strips' mean section lift coefficient (equal areas) sets the tail's downwash
+	var wing_cl := 0.0 # Historical local name: dimensional mean Vp*CL, m/s.
 	# D11d: geometric strip angles first, then the induced-flow map (AircraftData._induced_map) couples them.
 	var wing_flow := _wing_flow(s, air, d, model)
 	var angles: PackedFloat64Array = wing_flow.angles
@@ -408,7 +408,8 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 			if strip_diagnostics != null:
 				strip_diagnostics.append({y_m = y, alpha_geometric_rad = effective,
 					alpha_effective_rad = (base - strip_cl0[i]) / strip_slope if coupled else effective,
-					stall_weight = weight, cl = cl, cd = cd, speed_mps = speed, plane_speed_mps = plane_speeds[i], degenerate_section = true, lift_n = 0.0, drag_n = 0.0,
+					stall_weight = weight, cl = cl, cd = cd, speed_mps = speed, plane_speed_mps = plane_speeds[i], degenerate_section = true, pressure_convention = "section-plane",
+					lift_velocity_mps = 0.0, section_pitch_couple_nm = 0.0, lift_n = 0.0, drag_n = 0.0,
 					force_body_n = PackedFloat64Array([0., 0., 0.]), moment_body_nm = PackedFloat64Array([0., 0., 0.])})
 			continue # the oracle adds +0.0, which never changes a sum that starts at +0.0
 		var plane_speed := M.sqrt_(f0*f0 + f2*f2)
@@ -426,17 +427,20 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		mx_sum += arm_y * fz - az * fy
 		my_sum += az * fx - ax * fz
 		mz_sum += ax * fy - arm_y * fx
+		var section_my := 0.0
 		if cm_ac != 0.0 and plane_speed > 0.0:
-			my_sum += lift_q * plane_speed * plane_speed * station_area * station_chords[i] * cm_ac
+			section_my = lift_q * plane_speed * plane_speed * station_area * station_chords[i] * cm_ac
+			my_sum += section_my
 		if strip_diagnostics != null:
 			strip_diagnostics.append({y_m = y, alpha_geometric_rad = effective,
 				alpha_effective_rad = (base - strip_cl0[i]) / strip_slope if coupled else effective,
 				stall_weight = weight, cl = cl, cd = cd, speed_mps = speed,
 				plane_speed_mps = plane_speed, degenerate_section = false,
+				pressure_convention = "section-plane", lift_velocity_mps = plane_speed*cl, section_pitch_couple_nm = section_my,
 				lift_n = lift_q * plane_speed * plane_speed * station_area * cl,
 				drag_n = -drag_q * plane_speed * plane_speed * station_area * cd,
 				force_body_n = PackedFloat64Array([fx, fy, fz]),
-				moment_body_nm = PackedFloat64Array([arm_y * fz - az * fy, az * fx - ax * fz, ax * fy - arm_y * fx])})
+				moment_body_nm = PackedFloat64Array([arm_y * fz - az * fy, az * fx - ax * fz + section_my, ax * fy - arm_y * fx])})
 	var wake: float = wing_cl if is_nan(downwash_cl) else downwash_cl
 	if ge_active:
 		wake *= ge[stations + 1]
@@ -469,8 +473,9 @@ static func wing_strip_loads(s: PackedFloat64Array, air: Dictionary, d: Dictiona
 
 ## One tail surface's load about the CG with the law of _local_loads, on `area` (m2), its arm moved by `shift` and
 ## its velocity through the air changed by `extra` (both body axes). For the slipstream increment (E0b, opt-in).
-## E0b3a: downwash_cl is the wing CL supplied by the caller (held lag or instantaneous). The default means zero
+## downwash_cl is the dimensional wing lift-velocity supplied by the caller (held or instantaneous). The default means zero
 ## wing downwash, not a quasi-static solve: this helper has no wing state. Legacy tails ignore it.
+## VAL-AUD-R02: historical downwash_cl argument carries the m/s source, not a coefficient.
 static func tail_surface_load(v: PackedFloat64Array, rates: PackedFloat64Array, d: Dictionary, model: Dictionary,
 		name: String, area: float, shift: PackedFloat64Array, extra: PackedFloat64Array, rho: float,
 		downwash_cl: float = 0.0) -> PackedFloat64Array:
@@ -625,8 +630,8 @@ static func local_flow_weight(s: PackedFloat64Array, air: Dictionary, d: Diction
 	return blend
 
 
-## E0a2b: the wing strips' mean section lift coefficient at state s (the quantity whose lag drives the tail's
-## downwash), with exactly _local_loads' strip law; test_downwash_lag.gd pins the two together.
+## Coefficient diagnostic only. It is undefined physically at zero section flow;
+## do not use this normalized value as a wake state. wing_wake_velocity is the dynamic source.
 ## ground_up: M5-GE-1 ground height under the CG (m above the NED datum); NAN = out of ground effect.
 static func wing_lift_coefficient(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary,
 		ground_up := NAN) -> float:

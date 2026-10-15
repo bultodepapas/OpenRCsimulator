@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+HELI-33 PROFILE ground obstacles=false tick p50/p95=2511/2912 detector p50/p95=1169/1354
+HELI-33 PROFILE ground obstacles=true tick p50/p95=3293/4294 detector p50/p95=1918/2460
+HELI-33 PROFILE airborne obstacles=false tick p50/p95=986/1304 detector p50/p95=134/194
+HELI-33 PROFILE airborne obstacles=true tick p50/p95=3200/5922 detector p50/p95=1532/2644

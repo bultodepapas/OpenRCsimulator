@@ -1,0 +1,12 @@
+{
+  "source": "M. D. White, H. H. Hoover, H. W. Garris, Flying Qualities and Stalling Characteristics of North American XP-51 Airplane, NACA MR (Wartime Report L-566), April 1943, Figure 10 'Static longitudinal-stability characteristics ... in cruising and gliding condition', https://ntrs.nasa.gov/citations/19930092575, PDF page 62, read 2026-10-14",
+  "method": "Points read by eye from a 220 dpi raster of the figure on its printed grid (cruise panel 19.7 px/deg, about 4.8 px/mph; glide panel 26.4 px/deg, 6.3 px/mph). Reading uncertainty about +-0.3 deg elevator and +-3 mph. Elevator trim tab 0. Airspeed is 'correct indicated airspeed', taken as equivalent airspeed (Mach <= 0.33).",
+  "units": {"ias": "mph", "elevator_up": "deg (trailing edge up, relative to the stabilizer)", "weight": "lb", "cg": "fraction of MAC"},
+  "airplane": {"wing_area_ft2": 235.75, "stabilizer_setting_deg": 2.0, "wing_root_incidence_deg": 1.0, "gear": "up", "flaps": "up"},
+  "series": [
+    {"condition": "glide", "cg": 0.245, "weight": 7630, "points": [[96, 9.1], [99, 7.2], [111, 5.6], [123, 4.2], [143, 3.3], [191, 1.25], [229, 0.83]]},
+    {"condition": "glide", "cg": 0.292, "weight": 7660, "points": [[99, 2.3], [127, 1.1], [146, 0.7], [195, -0.1], [249, -0.3]]},
+    {"condition": "cruise", "cg": 0.245, "weight": 7410, "points": [[91, 6.3], [94, 4.9], [103, 3.8], [111, 2.8], [124, 2.8], [148, 1.5], [169, 1.3], [204, 0.76], [227, 0.4]]},
+    {"condition": "cruise", "cg": 0.292, "weight": 7620, "points": [[92, 1.1], [106, 0.36], [120, 0.0], [146, 0.0], [192, -0.15], [239, -0.15]]}
+  ]
+}

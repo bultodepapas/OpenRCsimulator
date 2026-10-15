@@ -672,8 +672,20 @@ func _update_weather_text() -> void:
 			summary = tr("Turbulence")
 		else:
 			summary += " + " + tr("Turbulence")
-	if weather_config.get("format", "") == WeatherSettings.ATMOSPHERE_FORMAT:
-		if WeatherSettings.has_atmosphere(weather_config):
+	if weather_config.get("format", "") in [WeatherSettings.ATMOSPHERE_FORMAT, WeatherSettings.COLUMN_FORMAT]:
+		if WeatherSettings.has_vertical_atmosphere(weather_config):
+			var column_air: Dictionary = WeatherSettings.atmosphere(weather_config)
+			if column_air.get("ok", false):
+				var atmosphere_summary: String = tr("Standard atmosphere")
+				parts.append(tr("Standard ISA at field %s m · density %s kg/m³") % [
+					String.num(float(weather_config.field_elevation_m), 1),
+					String.num(float(column_air.rho_kgm3), 3),
+				])
+				if speed == 0.0 and gust == 0.0 and gust_up == 0.0 and not turbulence:
+					summary = atmosphere_summary
+				else:
+					summary += " + " + atmosphere_summary
+		elif WeatherSettings.has_atmosphere(weather_config):
 			var air: Dictionary = WeatherSettings.atmosphere(weather_config)
 			if air.get("ok", false):
 				var atmosphere_summary: String = tr("Thin air") if float(air.rho_kgm3) < 1.225 else tr("Custom air")
@@ -704,8 +716,20 @@ func _update_weather_text() -> void:
 	weather_button.text = "%s · %s\n%s" % [tr("Weather"), sky_label, summary if lighting_brief == "" else "%s · %s" % [summary, lighting_brief]]
 	weather_button.clip_text = true
 	var weather_help: String = tr("Uniform wind and repeating gusts with optional seeded turbulence. Field atmosphere sets modeled air density.")
+	var standard_column_active: bool = WeatherSettings.has_vertical_atmosphere(weather_config)
+	if standard_column_active:
+		weather_help += "\n" + tr("Standard dry ISA density varies with geometric altitude from −500 to 11,000 m. This is a reference profile, not measured weather.")
+	var helicopter_weather_eligible: bool = not turbulence and not standard_column_active
 	if Catalog.is_rotorcraft(aircraft_id):
-		weather_help = tr("Helicopter weather uses steady wind and repeating gusts. Turbulence is not integrated yet.")
+		if not helicopter_weather_eligible:
+			var unsupported: PackedStringArray = []
+			if turbulence:
+				unsupported.append(tr("Turbulence"))
+			if standard_column_active:
+				unsupported.append(tr("Standard atmosphere by altitude"))
+			weather_help = tr("Helicopter weather does not support %s. Use steady wind and repeating gusts.") % ", ".join(unsupported)
+		else:
+			weather_help = tr("Helicopter weather uses steady wind and repeating gusts. Turbulence and altitude-varying atmosphere are not integrated yet.")
 	weather_button.tooltip_text = "%s\n%s\n%s" % [
 		weather_help,
 		" · ".join(parts) if not parts.is_empty() else tr("Calm"),

@@ -18,6 +18,7 @@ def main():
     parser.add_argument('--godot', type=Path, required=True)
     parser.add_argument('--out', type=Path, required=True)
     parser.add_argument('--include-menu', action='store_true')
+    parser.add_argument('--only', nargs='+', help='Run named checks from the configured suite')
     args = parser.parse_args()
     if args.out.exists():
         parser.error('--out must be a new directory; evidence is never overwritten')
@@ -32,15 +33,22 @@ def main():
     scripts = ['test_rcv_vehicle_data', 'test_rcv_course', 'test_rcv_airfield_course',
                'test_rcv_airfield_track', 'test_rcv_obstacle_contacts', 'test_rcv_track_view', 'test_rcv_input',
                'test_rcv_vehicle_dynamics', 'test_rcv_powertrain', 'test_rcv_handling', 'test_rcv_session', 'test_rcv_activity',
-               'test_rcv_presentation', 'test_rcv_menu']
+               'test_rcv_presentation', 'test_rcv_menu', 'test_rcv_damage', 'test_rcv_damage_session',
+               'test_rcv_ground_effects', 'test_rcv_effects_activity']
     if args.include_menu:
         scripts += ['test_ui_home', 'test_ui_home_layout']
     for name in scripts:
         checks.append((name, [str(binary), '--headless', '--path', 'app', '--audio-driver', 'Dummy',
                              '--script', f'res://tests/{name}.gd']))
+    if args.only:
+        unknown = set(args.only) - {name for name, _ in checks}
+        if unknown:
+            parser.error('unknown checks: ' + ', '.join(sorted(unknown)))
+        checks = [check for check in checks if check[0] in args.only]
     started = datetime.now(timezone.utc)
     report = {'format': 'openrc-rcv-runtime-verification', 'date': started.date().isoformat(),
               'started_utc': started.isoformat(),
+              'selection': args.only or 'full',
               'godot': str(binary), 'godot_sha256': hashlib.sha256(binary.read_bytes()).hexdigest(),
               'checks': [], 'physical_validation': False}
     def source_identity():

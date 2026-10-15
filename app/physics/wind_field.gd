@@ -4,9 +4,11 @@ extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
 const Config := preload("res://physics/wind_config.gd")
+const Atmosphere := preload("res://physics/atmosphere.gd")
 
 var _atmosphere: Dictionary = {}
-var _custom_air := false
+var _atmosphere_active := false
+var _vertical_air := false
 var _rho := 1.225
 var _engine_charge := 1.0
 var _config: Dictionary = {}
@@ -78,7 +80,8 @@ func sample(time_s: float) -> PackedFloat64Array:
 func _apply_config(config: Dictionary) -> void:
 	_config = config.duplicate(true)
 	_atmosphere = Config.atmosphere(_config)
-	_custom_air = Config.has_atmosphere(_config)
+	_atmosphere_active = Config.has_atmosphere(_config)
+	_vertical_air = Config.has_vertical_atmosphere(_config)
 	_rho = _atmosphere.rho_kgm3
 	_engine_charge = _atmosphere.engine_charge_ratio
 	_turbulent = Config.has_turbulence(_config)
@@ -130,16 +133,38 @@ func turbulence_seed() -> int:
 
 
 func has_atmosphere() -> bool:
-	return _custom_air
+	return _atmosphere_active
 
 
-func atmosphere() -> Dictionary:
+func has_vertical_atmosphere() -> bool:
+	return _vertical_air
+
+
+func atmosphere_law() -> String:
+	if _vertical_air:
+		return Atmosphere.STANDARD_COLUMN_LAW
+	return "uniform-field-qnh-isa-buck-liquid-v1"
+
+
+func atmosphere(down_m: float = 0.0) -> Dictionary:
+	if _vertical_air:
+		return Atmosphere.standard_column(float(_config.field_elevation_m) - down_m)
 	return _atmosphere.duplicate(true)
 
 
-func air_density() -> float:
+func air_density(down_m: float = 0.0) -> float:
+	if _vertical_air:
+		var air: Dictionary = atmosphere(down_m)
+		if not air.ok:
+			return NAN
+		return float(air.rho_kgm3)
 	return _rho
 
 
-func engine_charge_ratio() -> float:
+func engine_charge_ratio(down_m: float = 0.0) -> float:
+	if _vertical_air:
+		var air: Dictionary = atmosphere(down_m)
+		if not air.ok:
+			return NAN
+		return float(air.engine_charge_ratio)
 	return _engine_charge

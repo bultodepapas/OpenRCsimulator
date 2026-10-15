@@ -92,18 +92,26 @@ const MIN_QUATERNION_NORM_SQ := 1e-24
 
 
 func reset(initial: PackedFloat64Array) -> bool:
+	var candidate := prepare_reset(initial)
+	if not candidate.ok:
+		_fail_safe(str(candidate.message))
+		return false
+	commit_prepared_reset(candidate)
+	return true
+
+
+## Evaluate a detached reset candidate in the owner's supplied callback context.
+## No state, fault, clock, RNG, or observer event is changed on rejection.
+## The owner must keep that context fixed until commit_prepared_reset().
+func prepare_reset(initial: PackedFloat64Array) -> Dictionary:
 	if not state_is_valid(initial):
-		_fail_safe("reset rejected: initial state is nonfinite, malformed, or has a degenerate quaternion")
-		return false
+		return {ok = false, message = "reset rejected: initial state is nonfinite, malformed, or has a degenerate quaternion"}
 	if not _configuration_is_valid():
-		_fail_safe("reset rejected: mass, gravity, or inertia is invalid")
-		return false
+		return {ok = false, message = "reset rejected: mass, gravity, or inertia is invalid"}
 	if input_size not in [4, 6] or not _array_is_finite(inputs, input_size) or not _array_is_finite(aux) or not _array_is_finite(continuous):
-		_fail_safe("reset rejected: input or auxiliary state is nonfinite or malformed")
-		return false
+		return {ok = false, message = "reset rejected: input or auxiliary state is nonfinite or malformed"}
 	if not _continuous_aux_matches(continuous, aux):
-		_fail_safe("reset rejected: continuous and auxiliary states disagree")
-		return false
+		return {ok = false, message = "reset rejected: continuous and auxiliary states disagree"}
 	var next_state := initial.duplicate()
 	var a := RB.ATT
 	var quaternion_norm_sq := next_state[a] * next_state[a] + next_state[a + 1] * next_state[a + 1] \
@@ -112,23 +120,27 @@ func reset(initial: PackedFloat64Array) -> bool:
 		RK.normalize_attitude(next_state)
 	var next_inertia_inv := RB.inertia_inverse(inertia)
 	if not _array_is_finite(next_inertia_inv, 6):
-		_fail_safe("reset rejected: inertia inverse is nonfinite")
-		return false
+		return {ok = false, message = "reset rejected: inertia inverse is nonfinite"}
 	var reset_loads: Variant = _stage_loads(_packed_state(next_state), 0.0)
 	if not _loads_are_valid(reset_loads):
-		_fail_safe("reset rejected: aircraft returned nonfinite or malformed loads")
-		return false
-	state = next_state
-	previous = next_state.duplicate()
+		return {ok = false, message = "reset rejected: aircraft returned nonfinite or malformed loads"}
+	return {ok = true, state = next_state, inertia_inverse = next_inertia_inv, loads = reset_loads}
+
+
+## Only accepts a successful preparation from this owner with unchanged context.
+## This is the sole publication boundary for a prepared reset.
+func commit_prepared_reset(candidate: Dictionary) -> void:
+	assert(candidate.get("ok", false))
+	state = candidate.state.duplicate()
+	previous = state.duplicate()
 	tick = 0
 	_fixed_dt = 1.0 / Engine.physics_ticks_per_second
-	_inertia_inv = next_inertia_inv
+	_inertia_inv = candidate.inertia_inverse.duplicate()
 	_inertia_cache = inertia.duplicate()
-	last_loads = reset_loads
+	last_loads = candidate.loads.duplicate()
 	fault_reason = ""
 	_remember_valid_state()
 	stepped.emit(tick, time(), state, last_loads, inputs, aux)
-	return true
 
 
 func dt() -> float:

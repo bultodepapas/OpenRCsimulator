@@ -250,8 +250,10 @@ func _selector_uses_ground_effect_tail(model: Dictionary) -> void:
 	var d := { aileron_right = 0.0, aileron_left = 0.0, elevator = 0.0, rudder = 0.0 }
 	var factors: PackedFloat64Array = GroundEffect.factors(s, model, 0.0)
 	var tail: Dictionary = model.surfaces.horizontal
-	var cl_ge: float = Aero.wing_lift_coefficient(s, air, d, model, 0.0)
-	var actual_tail: float = atan2(air.v_air[2], air.v_air[0]) - float(tail.downwash_per_cl) * factors[factors.size() - 1] * cl_ge \
+	var wake_ge: float = Aero.wing_wake_velocity(s, air, d, model, 0.0)
+	var tail_plane_speed: float = sqrt(air.v_air[0] * air.v_air[0] + air.v_air[2] * air.v_air[2])
+	var actual_tail: float = atan2(air.v_air[2], air.v_air[0]) \
+		- Aero.downwash_angle(wake_ge * factors[factors.size() - 1], float(tail.downwash_per_cl), tail_plane_speed) \
 		+ float(tail.elevator_tau) * d.elevator + float(tail.free_incidence)
 	var x := clampf((absf(actual_tail) - float(model.surfaces.attached_limit))
 		/ (float(model.surfaces.tail_local_limit) - float(model.surfaces.attached_limit)), 0.0, 1.0)
@@ -338,10 +340,11 @@ func _session_path(session: Node) -> void:
 	var actual: PackedFloat64Array = session._loads(s, 0.0)
 	_check("the session's load path carries the ground (airborne wheels add nothing)", actual.to_byte_array() == expected.to_byte_array())
 	_check("… and differs from the out-of-ground-effect evaluation", actual != free)
-	var cl_ge := Aero.wing_lift_coefficient(s, session.air_data(s, 0.0), d, model, ground_up)
-	var cl_free := Aero.wing_lift_coefficient(s, session.air_data(s, 0.0), d, model)
-	_check("the lagged downwash state starts settled on the in-ground-effect wing CL", absf(a[lag] - cl_ge) < 1e-12 and cl_ge > cl_free,
-		"CL %.5f in ground effect, %.5f free" % [cl_ge, cl_free])
+	var wake_ge := Aero.wing_wake_velocity(s, session.air_data(s, 0.0), d, model, ground_up)
+	var wake_free := Aero.wing_wake_velocity(s, session.air_data(s, 0.0), d, model)
+	_check("the lagged downwash state starts settled on the in-ground-effect wing lift-velocity source",
+		absf(a[lag] - wake_ge) < 1e-12 and wake_ge > wake_free,
+		"m/s source %.5f in ground effect, %.5f free" % [wake_ge, wake_free])
 	_check("trace metadata names the ground-effect law", str(session.trace_meta().ground_effect_model).begins_with("image-induced-factor-v1"))
 	var faulted := false
 	for i in 48: # 0.2 s of real stepping at 0.6 m: no fault, no crash

@@ -1,0 +1,104 @@
+{
+  "generator": "research/p51/p51-20/ground_effect_vlm.py",
+  "geometry": "assets/aircraft/p51d-mustang-120/geometry.json",
+  "method": "image-method Weissinger VLM, 80 cosine-spaced panels, alpha 4.0 deg, ground plane parallel to the free stream, x = aero-reference-point height / span; no fuselage",
+  "free_air": {
+    "CL": 0.3145575336008233,
+    "CLa_per_rad": 4.505704772342939,
+    "e_trefftz": 1.0037097978347964,
+    "tail_downwash_per_CL": 0.12138828733910782
+  },
+  "rows": [
+    {
+      "x": 0.06,
+      "cl_ratio_same_alpha": 1.4814662007418873,
+      "cdi_ratio_same_cl": 0.4825951067500764,
+      "tail_downwash_ratio_per_lift": 0.4710961267681186
+    },
+    {
+      "x": 0.08,
+      "cl_ratio_same_alpha": 1.3305398679851612,
+      "cdi_ratio_same_cl": 0.5374202507802507,
+      "tail_downwash_ratio_per_lift": 0.5245254064147495
+    },
+    {
+      "x": 0.1,
+      "cl_ratio_same_alpha": 1.2459881592789694,
+      "cdi_ratio_same_cl": 0.5849032760830661,
+      "tail_downwash_ratio_per_lift": 0.5736736403972826
+    },
+    {
+      "x": 0.12,
+      "cl_ratio_same_alpha": 1.193050994827371,
+      "cdi_ratio_same_cl": 0.6261037609138446,
+      "tail_downwash_ratio_per_lift": 0.6183561847199592
+    },
+    {
+      "x": 0.15,
+      "cl_ratio_same_alpha": 1.1432678114108132,
+      "cdi_ratio_same_cl": 0.6781971249688933,
+      "tail_downwash_ratio_per_lift": 0.6768707623304984
+    },
+    {
+      "x": 0.2,
+      "cl_ratio_same_alpha": 1.0968575794622728,
+      "cdi_ratio_same_cl": 0.7452760379598374,
+      "tail_downwash_ratio_per_lift": 0.753677983092915
+    },
+    {
+      "x": 0.25,
+      "cl_ratio_same_alpha": 1.0707400132513964,
+      "cdi_ratio_same_cl": 0.7947340837185071,
+      "tail_downwash_ratio_per_lift": 0.8096797610067488
+    },
+    {
+      "x": 0.3,
+      "cl_ratio_same_alpha": 1.0541684604850445,
+      "cdi_ratio_same_cl": 0.8319858776670466,
+      "tail_downwash_ratio_per_lift": 0.8505507147753548
+    },
+    {
+      "x": 0.4,
+      "cl_ratio_same_alpha": 1.0347349771101948,
+      "cdi_ratio_same_cl": 0.8828353514080863,
+      "tail_downwash_ratio_per_lift": 0.9032401600078678
+    },
+    {
+      "x": 0.5,
+      "cl_ratio_same_alpha": 1.0240877841029825,
+      "cdi_ratio_same_cl": 0.9145657971721066,
+      "tail_downwash_ratio_per_lift": 0.9335983991383859
+    },
+    {
+      "x": 0.75,
+      "cl_ratio_same_alpha": 1.0118371608395857,
+      "cdi_ratio_same_cl": 0.9551477040852739,
+      "tail_downwash_ratio_per_lift": 0.9686356361679419
+    },
+    {
+      "x": 1.0,
+      "cl_ratio_same_alpha": 1.0069475557059775,
+      "cdi_ratio_same_cl": 0.9728081414648971,
+      "tail_downwash_ratio_per_lift": 0.9821932827126463
+    },
+    {
+      "x": 1.5,
+      "cl_ratio_same_alpha": 1.0031919370648346,
+      "cdi_ratio_same_cl": 0.9871033336818315,
+      "tail_downwash_ratio_per_lift": 0.992170009170591
+    }
+  ],
+  "fit_induced": {
+    "coefficient": 15.33674686838558,
+    "exponent": 1.0272216796875,
+    "rms": 0.010284486603997554,
+    "range": "x 0.06-1.5, faded runtime law"
+  },
+  "fit_tail": {
+    "coefficient": 19.587553084851148,
+    "exponent": 1.14495849609375,
+    "rms": 0.014970697275991082,
+    "range": "x 0.06-1.5, faded runtime law"
+  },
+  "raymer_33_1.5_faded_max_abs_error_to_x_0.25": 0.15421442822602865
+}

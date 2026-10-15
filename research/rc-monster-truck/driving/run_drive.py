@@ -25,6 +25,7 @@ SOURCE_FILES = (
     Path("research/rc-monster-truck/driving/run_drive.py"),
     Path("app/sim/ground_vehicle/session.gd"),
     Path("app/physics/ground_vehicle/vehicle_dynamics.gd"),
+    Path("app/physics/ground_vehicle/vehicle_damage.gd"),
     Path("app/physics/ground_vehicle/airfield_course.gd"),
     Path("app/physics/ground_vehicle/airfield_track.gd"),
     Path("app/physics/ground_vehicle/vehicle_data.gd"),

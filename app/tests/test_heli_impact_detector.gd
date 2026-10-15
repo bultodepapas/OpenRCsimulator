@@ -122,6 +122,11 @@ func _run() -> void:
 	malformed = _evaluate(rest, rest, context, skids, surfaces, continuous, phase, stale_cache)
 	_check("cache tied to another contact layout fails closed", not bool(malformed.get("ok", true))
 		and malformed.impact.is_empty(), str(malformed))
+	var corrupt_reach: Dictionary = prepared.duplicate(true)
+	corrupt_reach.hull_reach_m += 0.1
+	malformed = _evaluate(rest, rest, context, skids, surfaces, continuous, phase, corrupt_reach)
+	_check("mutable prepared reach cache is revalidated", not bool(malformed.get("ok", true))
+		and malformed.impact.is_empty(), str(malformed))
 
 	_test_rotor_and_rollover(context, skids, surfaces, rest, phase)
 	_test_rotor_scenery(context, skids, surfaces, rest)
@@ -223,6 +228,9 @@ func _test_rotor_scenery(context: Dictionary, skids: Dictionary, surfaces: Packe
 		rotor_center[1] - radius * sin(gap_angle), rotor_center[2],
 	])
 	var high_world: Dictionary = _capsule_world(gap_point, "fence_between_spokes")
+	var high_gate: Dictionary = Detector._scenery_candidate_gate(state, state, high_world, prepared, scene_context)
+	_check("shared scenery broadphase routes rotor-only obstacles without hull work",
+		high_gate.body.is_empty() and not high_gate.rotors.is_empty(), str(high_gate))
 	var high_continuous := PackedFloat64Array([168.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	var phase := PackedFloat64Array([0.0, 0.0])
 	var high_result: Dictionary = Detector.evaluate(state, state, high_continuous,
@@ -268,6 +276,11 @@ func _test_rotor_scenery(context: Dictionary, skids: Dictionary, surfaces: Packe
 		scene_context, skids, surfaces, phase, empty_world, prepared)
 	_check("empty scenery bins return without a false rotor impact",
 		bool(empty_result.get("ok", false)) and empty_result.get("impact", {}).is_empty(), str(empty_result))
+	var distant_world: Dictionary = _capsule_world(PackedFloat64Array([500.0, 500.0, 500.0]), "distant_fence")
+	var distant_gate: Dictionary = Detector._scenery_candidate_gate(state, state,
+		distant_world, prepared, scene_context)
+	_check("shared scenery broadphase rejects distant proxies before probe sweeps",
+		distant_gate.body.is_empty() and distant_gate.rotors.is_empty(), str(distant_gate))
 
 
 func _capsule_world(point: PackedFloat64Array, obstacle_id: String) -> Dictionary:

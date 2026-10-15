@@ -121,7 +121,8 @@ func _initialize() -> void:
 		var lag_cl := NAN
 		if size == 9:
 			var trimmed := _state_from_mode_x(x0)
-			lag_cl = Aero.wing_lift_coefficient(trimmed, Air.compute(trimmed, M.v3(0, 0, 0)), trim_d, model)
+			# R02: the held wake state now has units m/s, matching FlightModes.
+			lag_cl = Aero.wing_wake_velocity(trimmed, Air.compute(trimmed, M.v3(0, 0, 0)), trim_d, model)
 		var no_gyro := L.jacobian(func(x: PackedFloat64Array) -> PackedFloat64Array:
 			return _mode_output_no_rotor(x, model, trim_d, trim.rpm, lag_cl), x0)
 		var expected_gyro := RB.inertia_mul(RB.inertia_inverse(model.inertia),

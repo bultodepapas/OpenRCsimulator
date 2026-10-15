@@ -1,0 +1,28 @@
+{
+  "purpose": "Controlled 2x2 force-law cause isolation using the preserved original Newton solver.",
+  "source_snapshot": "tmp/physics-audit-baseline-2026-10-14/app, identified by remediation/R00/baseline-identity.json",
+  "solver_source": "R04 ground_start_candidate.gd; _newton is preserved from the baseline and called directly by baseline_solver_probe.gd.",
+  "probe": "R04/baseline_solver_probe.gd",
+  "cells": [
+    {
+      "name": "original-aero_original-turbine",
+      "aero_sha256": "CF034742D69332061EB9414CCD57F7D0B6CB6E1C2F17CC5AE39E70FE26655539",
+      "turbine_sha256": "1B9559219E1F3542821C6C56C7C62A9B3CBF79D35668175D6C8BEE1EF87B8E2C"
+    },
+    {
+      "name": "original-aero_f02-turbine",
+      "aero_sha256": "CF034742D69332061EB9414CCD57F7D0B6CB6E1C2F17CC5AE39E70FE26655539",
+      "turbine_sha256": "0603A1C38C9F8350F12C5E212489F5180B6B96FC95504A97BB428D57BDE03DC5"
+    },
+    {
+      "name": "final-aero_original-turbine",
+      "aero_sha256": "FED08E735494B6D2597F639CCA118D84C978F75828811F0D09968BFC67A85BE5",
+      "turbine_sha256": "1B9559219E1F3542821C6C56C7C62A9B3CBF79D35668175D6C8BEE1EF87B8E2C"
+    },
+    {
+      "name": "final-aero_f02-turbine",
+      "aero_sha256": "FED08E735494B6D2597F639CCA118D84C978F75828811F0D09968BFC67A85BE5",
+      "turbine_sha256": "0603A1C38C9F8350F12C5E212489F5180B6B96FC95504A97BB428D57BDE03DC5"
+    }
+  ]
+}

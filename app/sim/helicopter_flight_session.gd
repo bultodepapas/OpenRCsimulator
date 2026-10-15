@@ -170,6 +170,9 @@ func set_field(field: Dictionary) -> bool:
 
 func setup_weather(settings: Variant) -> bool:
  var result: Dictionary=WeatherField.build(settings)
+ if result.ok and result.field.has_vertical_atmosphere():
+  weather_error="Rotorcraft vertical atmosphere integration is not qualified; choose reference or uniform field conditions."
+  return false
  if not result.ok or result.field.has_turbulence():
   weather_error="; ".join(result.errors) if not result.ok else "Rotorcraft turbulence integration is not qualified; choose calm, steady wind or gusts."
   return false

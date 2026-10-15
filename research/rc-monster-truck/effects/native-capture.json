@@ -1,4 +1,5 @@
 {
+	"capture_command": "Godot_v4.7.2-stable_win64.exe --rendering-method gl_compatibility --audio-driver Dummy --path app --script res://../research/rc-monster-truck/effects/capture_ground_effects.gd",
 	"captures": [
 		{
 			"effects": {
@@ -55,7 +56,7 @@
 					0.0,
 					0.0
 				],
-				"grime_amount": 0.42000000000000126,
+				"grime_amount": 0.0,
 				"headlight_energy": 2.4,
 				"headlights_enabled": true,
 				"particle_budget_per_wheel": 24,
@@ -89,7 +90,7 @@
 					0.0,
 					0.0
 				],
-				"grime_amount": 0.42000000000000126,
+				"grime_amount": 0.0,
 				"headlight_energy": 2.4,
 				"headlights_enabled": true,
 				"particle_budget_per_wheel": 24,
@@ -110,11 +111,7 @@
 		}
 	],
 	"fixture_note": "Dust telemetry is staged for visual review only; this capture does not show driving or validate vehicle behavior.",
-	"format": "rcv-ground-effects-native-capture v1",
-	"immutable_source_sha256": {
-		"mt8_glb": "7967bb46673ae5b4178a3d40ad8c3b8e1a9d0350b1cc73e2084f52ab496bb0a6",
-		"smoke_png": "33f894c2279bee9f77874dbfa3c0e9f071a0ee5e1a7065dcc40196029d699f58"
-	},
+	"format": "rcv-ground-effects-native-capture v2",
 	"model_builder": "res://vehicles/ground/mt8_model.gd Model.build()",
 	"ok": true,
 	"renderer": {
@@ -122,10 +119,17 @@
 		"driver": "opengl3",
 		"godot": "4.7.2-stable (official)",
 		"method": "gl_compatibility",
-		"size": [
+		"requested_window_size": [
 			1280,
 			720
 		]
 	},
-	"rig_pose": "imported MT8 rig initialized in rest pose, grounded by its measured wheel bounds, then 8-degree steer and small wheel spin through rig setters"
+	"rig_pose": "imported MT8 rig initialized in rest pose, grounded by its measured wheel bounds, then 8-degree steer and small wheel spin through rig setters",
+	"source_sha256": {
+		"capture_script": "e98284a1950c03870cc6b3034fecd035c1f5f3ce5ff4252ea47e32348f7b8fd9",
+		"ground_effects_gd": "89a9bce7ecb1d0e1dc44618acb447c1e1aeb64a1230bc8c3ef74e9d0a77bcc7f",
+		"ground_grime_overlay_gdshader": "05d1ba1b11fe7d6b69550ee4d852117be33cc63905f492ee43a8e9efacdbe987",
+		"mt8_glb": "7967bb46673ae5b4178a3d40ad8c3b8e1a9d0350b1cc73e2084f52ab496bb0a6",
+		"smoke_png": "33f894c2279bee9f77874dbfa3c0e9f071a0ee5e1a7065dcc40196029d699f58"
+	}
 }

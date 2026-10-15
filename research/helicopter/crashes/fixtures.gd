@@ -11,6 +11,7 @@ static func trigger(session: Node, scenario: String) -> bool:
   "tail": height=.65; pitch=.4; roll=PI; speed=2.5
   "hard": height=.16; pitch=-.06; roll=0.0; speed=9.0
   "nose": height=.50; pitch=-1.2; roll=0.0; speed=4.0
+  "severe": height=.8; pitch=-1.55; roll=0.0; speed=32.0
  session.sim.state[0]=6.0; session.sim.state[1]=0.0; session.sim.state[2]=-height
  var q: PackedFloat64Array=M.q_from_euler(0,pitch,roll)
  for i: int in 4: session.sim.state[6+i]=q[i]
@@ -18,7 +19,7 @@ static func trigger(session: Node, scenario: String) -> bool:
  for i: int in 3:
   session.sim.state[3+i]=velocity[i]
   session.sim.state[10+i]=0.0
- if scenario=="nose":
+ if scenario in ["nose","severe"]:
   session.sim.continuous[0]=0.0
   session.power.armed=false
   session.zero_drive_hold=true

@@ -1,0 +1,146 @@
+{
+  "purpose": "software regression, not physical validation",
+  "results": [
+    {
+      "name": "ground_start_integrity",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ground_start_integrity.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 1.953,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "retractable_gear_ground",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_retractable_gear_ground.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 10.375,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "runway_transaction",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_runway_transaction.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 2.047,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "simulation",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_simulation.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 0.282,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "checkpoint",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_checkpoint.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 2.5,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "replay_integrity",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_replay_integrity.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 9.0,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "flight_log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_log.gd"
+      ],
+      "exit_code": 1,
+      "seconds": 6.5,
+      "ok": false,
+      "errors": [
+        "SCRIPT ERROR: Parse Error: Function \"_valid_physical_tensor()\" not found in base self.",
+        "SCRIPT ERROR: Parse Error: Function \"_valid_physical_tensor()\" not found in base self.",
+        "SCRIPT ERROR: Parse Error: Function \"_valid_physical_tensor()\" not found in base self.",
+        "SCRIPT ERROR: Parse Error: Function \"_scaled_spd_inverse()\" not found in base self.",
+        "SCRIPT ERROR: Parse Error: Function \"_valid_physical_tensor()\" not found in base self.",
+        "SCRIPT ERROR: Parse Error: Function \"_valid_physical_tensor()\" not found in base self.",
+        "SCRIPT ERROR: Parse Error: Function \"_valid_physical_tensor()\" not found in base self.",
+        "SCRIPT ERROR: Compile Error: Failed to compile depended scripts.",
+        "SCRIPT ERROR: Compile Error: Failed to compile depended scripts.",
+        "SCRIPT ERROR: Compile Error: Failed to compile depended scripts.",
+        "SCRIPT ERROR: Compile Error: Failed to compile depended scripts.",
+        "ERROR: Failed to load script \"res://tests/test_flight_log.gd\" with error \"Compilation failed\".",
+        "SCRIPT ERROR: Invalid call. Nonexistent function 'rectangular_box_per_kg' in base 'GDScript'.",
+        "SCRIPT ERROR: Invalid call. Nonexistent function 'rectangular_box_per_kg' in base 'GDScript'.",
+        "SCRIPT ERROR: Out of bounds get index '0' (on base: 'PackedFloat64Array')",
+        "FAIL prepared res://data/aircraft/stik_glow_61fx_2t.json"
+      ]
+    }
+  ],
+  "source_drift": [
+    "physics/mass_inventory.gd"
+  ],
+  "stable_source": false,
+  "ok": false
+}

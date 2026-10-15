@@ -1,0 +1,14 @@
+[
+  {
+    "original": "drive-circuit.csv",
+    "retained": "drive-circuit.csv.gz",
+    "csv_sha256": "b877a402454750b95d7b664b1616a409dda6a4fc845964445ec97be7d41a272f",
+    "gzip_sha256": "f79c251d0f9b4bb9ee0be6c190f1e41bd9e859889cb256705c0c2c9294dfddda"
+  },
+  {
+    "original": "drive-final.csv",
+    "retained": "drive-final.csv.gz",
+    "csv_sha256": "cbe1da003793f047281aaf78fafb7cb020fdda827c2632b576a762c25062e294",
+    "gzip_sha256": "79e76c2ca09e2cdf90f7569f54629e729aeaa3e99fdcb7509e0564f866c264a6"
+  }
+]

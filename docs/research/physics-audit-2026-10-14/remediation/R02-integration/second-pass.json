@@ -1,0 +1,67 @@
+[
+  {
+    "name": "test_slipstream_scalar",
+    "exit": 0,
+    "summary": [
+      "H13/R02 slipstream: 10001 projected-load comparisons (1 aircraft, 6082 washed, 1429 static air, 448 stopped), 0 failed"
+    ]
+  },
+  {
+    "name": "test_swirl_optimization",
+    "exit": 0,
+    "summary": [
+      "E0b6p optimized swirl equivalence: 7 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_swirl_accuracy",
+    "exit": 0,
+    "summary": [
+      "E0b6 swirl accuracy: 41 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_swirl_torque",
+    "exit": 0,
+    "summary": [
+      "E0b6 torque: 23 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_ground_start",
+    "exit": 1,
+    "summary": [
+      "ERROR: Attempt to open script 'res://tests/test_ground_start.gd' resulted in error 'File not found'.",
+      "ERROR: Failed loading resource: res://tests/test_ground_start.gd.",
+      "ERROR: Can't load script: res://tests/test_ground_start.gd"
+    ]
+  },
+  {
+    "name": "test_ground_start_integrity",
+    "exit": 0,
+    "summary": [
+      "E3b2-R1: 254 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_retractable_gear_ground",
+    "exit": 0,
+    "summary": [
+      "26 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_checkpoint",
+    "exit": 0,
+    "summary": [
+      "H8 checkpoints: 92 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_flight_log",
+    "exit": 0,
+    "summary": [
+      "FL-04 flight logs: 3247 checks, 0 failures; C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1418056"
+    ]
+  }
+]

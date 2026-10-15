@@ -1,0 +1,2 @@
+direct transcendental calls found outside physics/math3d.gd:
+physics/ground_vehicle/vehicle_damage.gd:403: bare sqrt( call

@@ -1,0 +1,14 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: inertia: Jyy = 0.3872 kg·m2 is 2.11× the scaled UltraStick25e value
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+H13 slipstream: 10001 byte-exact comparisons (1 aircraft, 6082 washed, 1429 static air, 448 stopped), 6082 failed
+FAIL p51d-mustang-120 sample 0: [-0.00017235489667, -0.00008233196799, 0.00021476116886, -0.00002627315244, 0.00028894624244, 0.00010504647302] != [-0.00021681251727, -0.00005896950914, -0.00049563092371, -0.00000886331475, -0.0006311804048, 0.00006357231788]
+FAIL p51d-mustang-120 sample 1: [-5.03352273593265, 7.33607671786435, 10.8846775979624, 1.1469051714305, 14.0593174658725, -9.86170607042544] != [-5.04292246215424, 7.65667819258496, 10.8430607011551, 1.19852189228794, 14.0061447573437, -10.2494710407122]
+FAIL p51d-mustang-120 sample 2: [0.15085659556096, -0.18227525135177, 0.18054000442896, -0.31444443766258, 0.1791040392675, 0.24370109237212] != [0.15067873632567, -0.18237337672945, 0.18857143765408, -0.31446276064591, 0.18966308537009, 0.24383617403497]
+FAIL p51d-mustang-120 sample 3: [0.08491190391047, 20.0390678037867, 5.72955328365974, 5.72354842954881, 6.73082882337861, -26.3618110249423] != [0.0327052849259, 20.1552121835366, 6.21578842670597, 5.7415440684471, 7.38676659326081, -26.4990727125671]
+FAIL p51d-mustang-120 sample 4: [0.24248456936302, 0.0, 0.59593814202056, -0.12936722535834, 0.67847638709139, 0.05265418608526] != [0.2433748040706, -0.02986157787179, 0.59579654753553, -0.13412279401864, 0.67816321529146, 0.08880118463559]

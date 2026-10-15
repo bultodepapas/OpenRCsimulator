@@ -1,0 +1,81 @@
+{
+  "format": "openrc-audit-r06-slice-a-identities-v1",
+  "engine": "Godot_v4.7.2-stable_win64_console.exe (4.7.2.stable.official.ed1daf0bf)",
+  "candidate": {
+    "path": "research/physics-audit-2026-10-14/remediation/stik_wash_candidate/aircraft_v2.json",
+    "sha256": "dfd289f5c8f392fb12e247b1cb14803feafd337339f1baf372154d2c53cedb20"
+  },
+  "candidate_generator": {
+    "path": "research/physics-audit-2026-10-14/remediation/stik_wash_candidate/derive_candidate.py",
+    "sha256": "5229fdc58c4ad5c540378192bb43e58c0276e7edce0198472bb7ada29f5ae5a2"
+  },
+  "probe": {
+    "path": "research/physics-audit-2026-10-14/remediation/stik_wash_candidate/probe.gd",
+    "sha256": "007abeecf982d9e81839991daf9126c880679a68536c20af11fa0d305471e279"
+  },
+  "baseline_aircraft": {
+    "path": "app/data/aircraft/jensen_ugly_stik_60.json",
+    "sha256": "5fe8ece91b7ebe92f304f764f0d50edc936ae5c4ab1d1c801cf20827ec1ee9b6"
+  },
+  "e0b2": {
+    "generator": {
+      "path": "research/propwash/e0b2/derive_geometry.py",
+      "sha256": "62ddd0b19d6256d60e9b83585937ac2aa0d96a4221af60690088f1d51a15fd6c"
+    },
+    "visual_geometry": {
+      "path": "assets/aircraft/ugly-stik-60/geometry.json",
+      "sha256": "e6b40a32058947b4582eaf171270ea73fd724fcb4d78412d6b27ec93f58244e4"
+    },
+    "compiled_geometry": {
+      "path": "app/aircraft/ugly_stik_geometry.gd",
+      "sha256": "a7b5555500a5059ebdf9ad29ec63a5a5c463733b8cb80e5a688250d5ce22b01f"
+    },
+    "handoff": {
+      "path": "docs/research/propwash/E0b2/geometry.json",
+      "sha256": "a5e1d2d95fd0bb70a4ddcd2c7c0ca27ea6c4ac13d5340eb0e0395ba4b6d03add"
+    },
+    "strict_check_exit_code": 1,
+    "strict_check_reason": "last-digit float JSON serialization mismatch; the semantic comparison in the candidate generator passes at absolute numeric tolerance 2e-12"
+  },
+  "e0b3b": {
+    "generator": {
+      "path": "research/propwash/e0b3b/derive_profile.py",
+      "sha256": "54fedc0105be5c36245edc9f6567f144dce2c68b335420c2841807bf386a8219"
+    },
+    "generated_geometry": {
+      "path": "docs/research/propwash/E0b3b/geometry.json",
+      "sha256": "80d445d87671243ba5e97021f46dd117d2bb23119c688b4cd70709dbae0691b4"
+    },
+    "test_fixture": {
+      "path": "app/tests/fixtures/stik_wash_profile.json",
+      "sha256": "118a727f3bee8621223389911a2a4d977f5652fccd60e0683386f71de1e47828"
+    },
+    "coefficient_fixture": {
+      "path": "app/tests/test_wash_profile.gd",
+      "sha256": "810cbbd836b0b0c157f282ff7e5a3defeb5e927bff4c3ab46fa6e00295e77831"
+    },
+    "strict_check_exit_code": 0
+  },
+  "current_runtime": {
+    "aircraft_data": {
+      "path": "app/physics/aircraft_data.gd",
+      "sha256": "75212e145c5278d3a1a56f663418ea719065cb0d9f3761bca08d8bb8b759ed12"
+    },
+    "slipstream": {
+      "path": "app/physics/slipstream.gd",
+      "sha256": "bb810e8e9e93b1b89ad1750cd4db507eb7fe66fad070a5cce51dfd0dce58ab06"
+    },
+    "aero": {
+      "path": "app/physics/aero.gd",
+      "sha256": "fed08e735494b6d2597f639cca118d84c978f75828811f0d09968bfc67a85be5"
+    },
+    "dynamics": {
+      "path": "app/physics/dynamics.gd",
+      "sha256": "5d4d8ea9ae713f36dc977f3ed8dd451bdcc46278e3c68db9f72b2b426046b7f1"
+    },
+    "flight_session": {
+      "path": "app/sim/flight_session.gd",
+      "sha256": "303ade91adfe18fce11364d5e965b8554a37ff17ca72d8cf23ac8b83e11a9b96"
+    }
+  }
+}

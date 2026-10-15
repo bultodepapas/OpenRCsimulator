@@ -198,8 +198,8 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 		var arm := M.v3(arm_0, arm_1, arm_2)
 		var free := Aero._tail_surface_from_flow(M.v3((v0+0.0)+rate_arm_0, (v1+0.0)+rate_arm_1, (v2+0.0)+rate_arm_2),
 			arm, d, tail, surfaces, area, vertical, rho, wing_cl)
-		var washed := Aero._tail_surface_from_flow(M.v3((v0+wash_0-swirl_0)+rate_arm_0,
-			(v1+wash_1-swirl_1)+rate_arm_1, (v2+wash_2-swirl_2)+rate_arm_2),
+		var washed := Aero._tail_surface_from_flow(M.v3((v0+(wash_0-swirl_0))+rate_arm_0,
+			(v1+(wash_1-swirl_1))+rate_arm_1, (v2+(wash_2-swirl_2))+rate_arm_2),
 			arm, d, tail, surfaces, area, vertical, rho, wing_cl)
 		o0 += washed[0] - free[0]
 		o1 += washed[1] - free[1]

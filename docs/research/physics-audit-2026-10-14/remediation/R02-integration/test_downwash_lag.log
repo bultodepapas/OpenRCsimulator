@@ -1,0 +1,29 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Stik: one lagged wing CL after the anchors
+ok   gp-extra-300s-60 (downwash gradient declared): one lagged wing CL after the anchors
+ok   gp-extra-300s-60 without the gradient (in memory): applies and has no lag entry
+ok   p51d-mustang-120 (downwash gradient declared): one lagged wing CL after the anchors
+ok   p51d-mustang-120 without the gradient (in memory): applies and has no lag entry
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+FAIL sebart-avanti-s-a200-p100rx (downwash gradient declared): one lagged wing CL after the anchors
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   sebart-avanti-s-a200-p100rx without the gradient (in memory): applies and has no lag entry
+ok   reset starts the lag settled at the start state's wing CL
+FAIL lag = instantaneous wing CL reproduces the quasi-static local loads byte for byte (2000 states incl. stall, rates, controls)  0/2000
+FAIL D11g: and the quasi-static oracle loads byte for byte (settled lag adds nothing)  0/2000
+ok   descending α ramp moves actual tail beyond the attached limit  tail -9.596° after 11 ticks
+FAIL selector uses lagged CL while the static call remains unchanged  static 0.000000, actual 0.000000, expected 0.350453
+FAIL Aero.loads applies the lag-aware blend and passes the lag to both load laws  actual pitch 3.290046, lag-weighted 3.576939, static 3.515615 N·m
+ok   FlightSession._loads feeds the lagged CL to the tail (equals Dynamics with it, differs from quasi-static)  pitch -1.2659 vs quasi-static -1.2220 N·m
+ok   step response: exact first-order lag over 24 ticks (τ = l/V = 51.0 ms)  8.881784197001252e-16
+info Cmα̇: quasi-steady theory -3.593, at k 0.02 -3.557; measured -3.413 (240 Hz), -3.484 (480 Hz)
+ok   Cmα̇ from the plunge oscillation -3.413 within 5 % of the lag theory -3.557
+ok   tick refinement: the error to theory halves at 480 Hz (held lag input, first order)  0.1445 → 0.0733
+ok   D11g: the oracle regime's Cmα̇ -3.431 within 3 % of the local regime's -3.413 (one lag, one tail)
+info effective pitch damping: local Cmq -7.70 + Cmα̇ -3.41 = -11.15; oracle Cmq -7.94 + Cmα̇ -3.43 = -11.41
+ok   effective pitch damping Cmq + Cmα̇ -11.15 within 10 % of the geometry estimate −2·a_t·η·V_H·(l_t/c)·(1 + lag) + wing (-11.30)
+ok   checkpoint mid-pull: restore and replay 200 ticks byte-identical, lag included
+20 checks, 5 failed

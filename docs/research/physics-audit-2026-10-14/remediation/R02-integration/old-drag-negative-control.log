@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+info jensen-das-ugly-stik-60 spanwise boundary epsilon/V ratio 1e-6: force-moment 0.044811905, wake 0.000001977
+FAIL jensen-das-ugly-stik-60 Cartesian approach 0 force/moment converges at epsilon/V ratio 1e-9 normalized=0.044811905
+FAIL jensen-das-ugly-stik-60 Cartesian approach 1 force/moment converges at epsilon/V ratio 1e-9 normalized=0.043400000
+FAIL jensen-das-ugly-stik-60 Cartesian approach 2 force/moment converges at epsilon/V ratio 1e-9 normalized=1.243400000
+FAIL jensen-das-ugly-stik-60 Cartesian approach 3 force/moment converges at epsilon/V ratio 1e-9 normalized=1.243400000
+info sebart-avanti-s-a200-p100rx spanwise boundary epsilon/V ratio 1e-6: force-moment 0.035291676, wake 0.000000089
+FAIL sebart-avanti-s-a200-p100rx Cartesian approach 0 force/moment converges at epsilon/V ratio 1e-9 normalized=0.035291676
+FAIL sebart-avanti-s-a200-p100rx Cartesian approach 1 force/moment converges at epsilon/V ratio 1e-9 normalized=0.035474297
+FAIL sebart-avanti-s-a200-p100rx Cartesian approach 2 force/moment converges at epsilon/V ratio 1e-9 normalized=1.247277133
+FAIL sebart-avanti-s-a200-p100rx Cartesian approach 3 force/moment converges at epsilon/V ratio 1e-9 normalized=1.247277133
+R02 continuity: 64 checks, 8 failed

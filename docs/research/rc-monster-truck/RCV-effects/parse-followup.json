@@ -1,0 +1,71 @@
+{
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "results": [
+    {
+      "path": "app/physics/aero.gd",
+      "sha256": "fed08e735494b6d2597f639cca118d84c978f75828811f0d09968bfc67a85be5",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/physics/mass_inventory.gd",
+      "sha256": "72f9f503630dc9fdd1c3bcffad06de83b23c1abde8e805bdb30ec8b110a28789",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/physics/glow/fuel_mass.gd",
+      "sha256": "08ac0a434a51d3ee7e862643ba41ca516eba7da51596883c5e45a95a989a28d0",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/physics/ground_vehicle/vehicle_damage.gd",
+      "sha256": "2ad8835a01ae61835b624db721dc631d67d25b5244e47b5330a797c10aede408",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/physics/rotorcraft/impact_detector.gd",
+      "sha256": "0199ac4659386eda6f608169f671df2527bc3da4204cfe29bfe095ae741b6141",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_aero_continuity.gd",
+      "sha256": "14eb4e1801c231e78993d0bab28191de681f4e4abd1b7183d6efcadd67b92f46",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_aero_flow.gd",
+      "sha256": "7db6ab897ee5c6bc7e95081ee59a863c5e5322d5c3cb2ecb99e3fd67e783d45d",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_mass_inventory.gd",
+      "sha256": "dcf09e930e817daac4be96a3564b2af2a67fd39f0acf2b3463e71b37ee39597a",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_rcv_ground_effects.gd",
+      "sha256": "e0c33be8cb874490d42cf515dd3726a492a50c5898751e38715103b67f5fef17",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_runway_transaction.gd",
+      "sha256": "c4981b96e1759b0fe8039ca8ac3618bf18ab3063dd1c86ef76ada834374d083b",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/vehicles/ground/ground_effects.gd",
+      "sha256": "4d1147249bb0b1fd6272c04a6ff5ce73802b2064200ef379985ff52668217f60",
+      "source_stable": true,
+      "ok": true
+    }
+  ]
+}

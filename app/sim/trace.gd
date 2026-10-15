@@ -28,6 +28,7 @@ const WEATHER_COLUMNS = ["wind_north_mps", "wind_east_mps", "wind_down_mps", "ta
 const TURBULENCE_COLUMNS = ["turbulence_north_mps", "turbulence_east_mps", "turbulence_down_mps", "loads_turbulence_north_mps", "loads_turbulence_east_mps", "loads_turbulence_down_mps"]
 var _turbulence_index: int = -1
 const ATMOSPHERE_COLUMNS = ["rho_kgm3", "density_ratio", "equivalent_airspeed_mps", "density_altitude_m", "pressure_pa", "temperature_k", "engine_charge_ratio"]
+const COLUMN_ATMOSPHERE_COLUMNS = ["geometric_altitude_m", "loads_rho_kgm3", "loads_pressure_pa", "loads_temperature_k"]
 var _atmosphere: Dictionary = {}
 var _columns: Array = COLUMNS.duplicate()
 var _weather: WeatherField
@@ -162,8 +163,9 @@ func _prepare_weather() -> void:
 		var supported_metadata_schema: bool = meta.get("metadata_schema") == "openrc-flight-meta v5" \
 			or (meta.get("metadata_schema") == "openrc-flight-meta v6" \
 				and meta.get("wheel_state_model") == "relative-wheel-rim-speed-rk4-v1") \
+			or (meta.get("metadata_schema") == "openrc-flight-meta v7" and meta.get("propulsion_model") == GLOW_LAW) \
 			or (meta.get("metadata_schema") == "openrc-flight-meta v8" and _has_gear_metadata_claim())
-		if meta.get("atmosphere_model") != "uniform-field-qnh-isa-buck-liquid-v1" \
+		if meta.get("atmosphere_model") != _weather.atmosphere_law() \
 				or not supported_metadata_schema or typeof(meta.get("atmosphere_state")) != TYPE_STRING:
 			_invalid_weather = true
 			return
@@ -182,6 +184,8 @@ func _prepare_weather() -> void:
 				return
 		_atmosphere = calculated
 		_columns.append_array(ATMOSPHERE_COLUMNS)
+		if _weather.has_vertical_atmosphere():
+			_columns.append_array(COLUMN_ATMOSPHERE_COLUMNS)
 	_prepare_gear_metadata()
 
 
@@ -673,6 +677,14 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 	if _weather != null and not _state_valid(force_state):
 		_invalid_weather = true
 		return
+	var atmosphere_endpoint: Dictionary = _atmosphere
+	var atmosphere_loads: Dictionary = _atmosphere
+	if _weather != null and _weather.has_vertical_atmosphere():
+		atmosphere_endpoint = _weather.atmosphere(s[RB.POS + 2])
+		atmosphere_loads = _weather.atmosphere(force_state[RB.POS + 2])
+		if not atmosphere_endpoint.get("ok", false) or not atmosphere_loads.get("ok", false):
+			_invalid_weather = true
+			return
 	var q := M.quat(s[RB.ATT], s[RB.ATT + 1], s[RB.ATT + 2], s[RB.ATT + 3])
 	var e := M.q_to_euler(q)
 	var speed := M.sqrt_(s[RB.VEL] ** 2 + s[RB.VEL + 1] ** 2 + s[RB.VEL + 2] ** 2)
@@ -698,7 +710,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 			noise = Session.turbulence_at(aux, _turbulence_index, t, float(_weather_meta.dt_s))
 			for axis: int in 3:
 				wind[axis] += noise[axis]
-		var air: Dictionary = Air.compute(s, wind, _weather.air_density())
+		var air: Dictionary = Air.compute(s, wind, _weather.air_density(s[RB.POS + 2]))
 		var velocity_ned: PackedFloat64Array = M.q_rotate(q, M.v3(s[RB.VEL], s[RB.VEL + 1], s[RB.VEL + 2]))
 		var load_time: float = max(0, tick - 1) * float(_weather_meta.dt_s)
 		var load_wind: PackedFloat64Array = _weather.sample(load_time)
@@ -707,7 +719,7 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 			load_noise = Session.turbulence_at(aux, _turbulence_index, load_time, float(_weather_meta.dt_s))
 			for axis: int in 3:
 				load_wind[axis] += load_noise[axis]
-		var load_air: Dictionary = Air.compute(force_state, load_wind, _weather.air_density())
+		var load_air: Dictionary = Air.compute(force_state, load_wind, _weather.air_density(force_state[RB.POS + 2]))
 		_rows.append_array(PackedFloat64Array([wind[0], wind[1], wind[2], air.V,
 			M.sqrt_(velocity_ned[0] * velocity_ned[0] + velocity_ned[1] * velocity_ned[1]), load_time,
 			load_wind[0], load_wind[1], load_wind[2], load_air.V]))
@@ -715,9 +727,12 @@ func record(tick: int, t: float, s: PackedFloat64Array, loads: PackedFloat64Arra
 			_rows.append_array(noise)
 			_rows.append_array(load_noise)
 		if not _atmosphere.is_empty():
-			_rows.append_array(PackedFloat64Array([_atmosphere.rho_kgm3, _atmosphere.sigma,
-				air.V * M.sqrt_(_atmosphere.sigma), _atmosphere.density_altitude_m, _atmosphere.pressure_pa,
-				_atmosphere.temperature_k, _atmosphere.engine_charge_ratio]))
+			_rows.append_array(PackedFloat64Array([atmosphere_endpoint.rho_kgm3, atmosphere_endpoint.sigma,
+				air.V * M.sqrt_(atmosphere_endpoint.sigma), atmosphere_endpoint.density_altitude_m, atmosphere_endpoint.pressure_pa,
+				atmosphere_endpoint.temperature_k, atmosphere_endpoint.engine_charge_ratio]))
+			if _weather.has_vertical_atmosphere():
+				_rows.append_array(PackedFloat64Array([float(_weather.configuration().field_elevation_m) - s[RB.POS + 2],
+					atmosphere_loads.rho_kgm3, atmosphere_loads.pressure_pa, atmosphere_loads.temperature_k]))
 	if _gear:
 		_rows.append_array(gear_row)
 	_previous_recorded = s.duplicate()
@@ -818,7 +833,7 @@ func to_csv() -> String:
 	if _invalid_weather:
 		return ""
 	var lines := PackedStringArray()
-	lines.append("# format: %s" % ("openrc-trace v10" if _gear else ("openrc-trace v9" if _glow else ("openrc-trace v8" if _battery else ("openrc-trace v7" if _electric else ("openrc-trace v6" if not _atmosphere.is_empty() else ("openrc-trace v5" if _turbulence_index >= 0 else ("openrc-trace v4" if _weather != null else FORMAT))))))))
+	lines.append("# format: %s" % ("openrc-trace v11" if _weather != null and _weather.has_vertical_atmosphere() else ("openrc-trace v10" if _gear else ("openrc-trace v9" if _glow else ("openrc-trace v8" if _battery else ("openrc-trace v7" if _electric else ("openrc-trace v6" if not _atmosphere.is_empty() else ("openrc-trace v5" if _turbulence_index >= 0 else ("openrc-trace v4" if _weather != null else FORMAT)))))))))
 	var written_meta: Dictionary = (_weather_meta if _weather != null or _coupled_shaft or _continuous_turbine or _glow else meta).duplicate(true)
 	if _glow:
 		written_meta.glow_trace_schema = GLOW_TRACE_SCHEMA

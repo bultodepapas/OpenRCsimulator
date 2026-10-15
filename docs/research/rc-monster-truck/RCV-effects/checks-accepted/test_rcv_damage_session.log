@@ -1,0 +1,20 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: supported intact fixture prepares
+PASS: damage observer preserves intact trajectory byte-for-byte
+PASS: ordinary supported acceleration does not wear the truck
+PASS: rolling wall-impact fixture prepares
+PASS: real wall impact is finite and accumulates damage
+Wall damage after one second: { "body_damage": 0.63001373340233, "body_front_damage": 0.63001373340233, "body_rear_damage": 0.0057147671201, "body_left_damage": 0.0, "body_right_damage": 0.0, "body_bottom_damage": 0.02708188043809, "suspension_damage": 0.0, "suspension_damage_by_corner": [0.0, 0.0, 0.0, 0.0], "drive_scale": 0.60231377142368, "stage": "damaged", "last_impact_energy_j": 0.11888840488184 }
+PASS: same input tape replays body state and damage exactly
+PASS: checkpoint includes active impact episode
+PASS: active contact checkpoint matches uninterrupted continuation
+PASS: invalid damage checkpoint is rejected transactionally
+PASS: damaged session recording starts
+PASS: damaged session resumes
+PASS: damage never adds throttle, braking or steering
+PASS: damage recording exports
+PASS: recording preserves damage and applied control channels
+PASS: recovery repairs and marks the run assisted
+PASS: reset restores intact initial condition
+RCV damage Session: 16/16 checks passed

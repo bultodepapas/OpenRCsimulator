@@ -1,0 +1,17 @@
+{
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "results": [
+    {
+      "path": "app/vehicles/ground/ground_effects.gd",
+      "sha256": "89a9bce7ecb1d0e1dc44618acb447c1e1aeb64a1230bc8c3ef74e9d0a77bcc7f",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_rcv_ground_effects.gd",
+      "sha256": "43956bbe4dd97424dc1c0cc576503f5e308ddf051a35e05f271820eec4742d50",
+      "source_stable": true,
+      "ok": true
+    }
+  ]
+}

@@ -1,0 +1,59 @@
+{
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "results": [
+    {
+      "path": "app/helicopter_main.gd",
+      "sha256": "cad3125e62f158933c9df9db63fa73d4a55abd487707f853739f118d95f04ad7",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/sim/helicopter_flight_session.gd",
+      "sha256": "00c179339975ba074376ecdfddacaa5d1999b12f417aa3b6c75da99062686d4d",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/physics/rotorcraft/impact_detector.gd",
+      "sha256": "9f2bda0bea24955765251b04a6e5f98d48b4321596d9c18bdac66a70b48fb5f6",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/render/rotor/heli_wreck.gd",
+      "sha256": "0b92cd2c8efa50de076ce1f7c7a63380ddd7fd627662c285654d504afad453c7",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/render/rotor/heli_crash_presentation.gd",
+      "sha256": "3485f4db0ff66b1274a85c6f0ad310eb8b298a7523640271de14153f4fb53ea4",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_heli_impact_detector.gd",
+      "sha256": "221e3df22fe70ce6271cd7f988cd245a4921996db48973395eb593d7b1043a17",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_heli_crash_visual.gd",
+      "sha256": "f20da66f9bd3245553694945b8af3f6a6b0d9b09fe8ba1296756c4362dcb1720",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_heli_crash_presentation.gd",
+      "sha256": "2b0900d74c648a3e5c1d9145ca62ebd0c9a405985a4cee7f7502bba868bf0dcb",
+      "source_stable": true,
+      "ok": true
+    },
+    {
+      "path": "app/tests/test_heli_crash_relaunch.gd",
+      "sha256": "41f6e8ae585d4d4dc3a291d280de3cd685540e08cbd25c072f27d0549720464e",
+      "source_stable": true,
+      "ok": true
+    }
+  ]
+}

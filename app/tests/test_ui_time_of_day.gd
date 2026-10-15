@@ -288,7 +288,7 @@ func _future_schema_is_read_only() -> void:
 	var lighting_result: Dictionary = TimeOfDay.preset(TimeOfDay.defaults(), "night")
 	var lighting: Dictionary = lighting_result.config
 	var cfg: ConfigFile = ConfigFile.new()
-	cfg.set_value("meta", "schema", 5)
+	cfg.set_value("meta", "schema", Preferences.SCHEMA + 1)
 	cfg.set_value("ui", "language", "en")
 	cfg.set_value("flight", "weather_config", WeatherSettings.defaults())
 	cfg.set_value("flight", "lighting_config", lighting)
@@ -296,7 +296,7 @@ func _future_schema_is_read_only() -> void:
 	_check("future schema fixture saves", cfg.save(PREFS) == OK)
 	var original: String = FileAccess.get_file_as_string(PREFS)
 	var app: Node = await _app()
-	_check("schema 5 reads valid lighting and remains read-only", not app.preferences.writable
+	_check("future schema reads valid lighting and remains read-only", not app.preferences.writable
 		and app.preferences.lighting_config == lighting)
 	await _open_weather(app)
 	var dialog: CanvasLayer = app.weather_dialog

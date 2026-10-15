@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+info 15 m/s w-kick: peak q 0.063 rad/s; linear error with the lag state 0.70 %, quasi-static 52.6 %
+42 checks, 3 failed
+FAIL 10 m/s phugoid ζ 0.0688 vs 0.0828
+FAIL 10 m/s signed spiral eigenvalue 0.4869 vs 0.4505
+FAIL 15 m/s phugoid ζ 0.2865 vs 0.3030

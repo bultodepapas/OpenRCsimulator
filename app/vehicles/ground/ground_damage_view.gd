@@ -73,7 +73,7 @@ func prepare(visual: Dictionary) -> bool:
 	if not has_vertex or bounds.size.x <= 0.0 or bounds.size.y <= 0.0 or bounds.size.z <= 0.0:
 		return false
 	var working := _make_mesh(source, arrays_by_surface, primitives, formats, names, materials,
-		deformable, [0.0, 0.0, 0.0, 0.0, 0.0])
+		deformable, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0]))
 	if working == null:
 		return false
 	_body = body_value
@@ -119,10 +119,10 @@ func update(damage: Dictionary) -> bool:
 	var front_damage := float(damage.get("body_front_damage", 0.0))
 	var rear_damage := float(damage.get("body_rear_damage", 0.0))
 	_front_bumper.transform = _bumper_transform(
-		_front_bumper_base, -FRONT_BUMPER_SHIFT_M * front_damage, front_damage,
+		_front_bumper_base, FRONT_BUMPER_SHIFT_M * front_damage, front_damage,
 	)
 	_rear_bumper.transform = _bumper_transform(
-		_rear_bumper_base, REAR_BUMPER_SHIFT_M * rear_damage, rear_damage,
+		_rear_bumper_base, -REAR_BUMPER_SHIFT_M * rear_damage, rear_damage,
 	)
 	_last_signature = signature
 	return true
@@ -152,7 +152,7 @@ func _make_mesh(
 	names: Array[String],
 	materials: Array[Material],
 	deformable: Array[bool],
-	damage: Array,
+	damage: PackedFloat64Array,
 ) -> ArrayMesh:
 	var result := ArrayMesh.new()
 	result.resource_name = source.resource_name + " Damage Copy"
@@ -177,7 +177,7 @@ func _make_mesh(
 	return result
 
 
-func _dent_vertex(vertex: Vector3, damage: Array) -> Vector3:
+func _dent_vertex(vertex: Vector3, damage: PackedFloat64Array) -> Vector3:
 	var min_corner := _body_bounds.position
 	var max_corner := _body_bounds.position + _body_bounds.size
 	var span := _body_bounds.size

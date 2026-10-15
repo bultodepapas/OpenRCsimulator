@@ -69,6 +69,10 @@ func _run() -> void:
 	var prepared: Dictionary = effects.diagnostic_snapshot()
 	check(prepared.get("particle_emitter_count", 0) == 4, "one bounded emitter per tire")
 	check(prepared.get("particle_budget_total", 999) == 96, "dust budget capped at 96 particles")
+	var dust_quad := effects._emitters[0].mesh as QuadMesh
+	check(dust_quad != null and dust_quad.material is StandardMaterial3D
+		and (dust_quad.material as StandardMaterial3D).vertex_color_use_as_albedo,
+		"particle vertex tint and opacity affect the dust material")
 	check(prepared.get("headlights_enabled", false), "two projected headlights prepared")
 	check(body.material_overlay is ShaderMaterial, "body grime uses an overlay above the source livery")
 	check(effects._headlight_lights.size() == 2, "headlights use two projected lights")
@@ -83,6 +87,7 @@ func _run() -> void:
 	var telemetry := _telemetry(PackedByteArray([1, 1, 1, 1]), PackedFloat64Array([0.6, 0.6, 0.6, 0.6]), 6.0)
 	effects.update_render(1.0, telemetry, {"brake": 0.0, "reverse": false}, road, false, 0.0)
 	var dirty_run: Dictionary = effects.diagnostic_snapshot()
+	var day_dust_color: Color = effects._emitters[0].color
 	check(dirty_run.dust_active_wheels == 4, "grounded dirt tires emit dust")
 	check(float(dirty_run.grime_amount) > 0.0 and float(dirty_run.grime_amount) < 0.02, "grime accrual clamps render elapsed to 0.1 seconds")
 	check(sampled_north.size() == 4 and sampled_east.size() == 4, "road sampled once at each actual tire location")
@@ -92,6 +97,7 @@ func _run() -> void:
 			check(is_equal_approx(sampled_east[i], wheel_meshes[i].global_position.x), "road sample maps render x to NED east")
 			check(is_equal_approx(effects._emitters[i].global_position.y, 0.018), "dust originates at sampled tire bottom")
 			check(not effects._emitters[i].local_coords, "emitted puffs remain in world coordinates")
+	check(effects._emitters[0].color.a > 0.0 and effects._emitters[0].color.a <= 0.8, "moving tire dust has bounded translucent opacity")
 	var paused_grime := float(dirty_run.grime_amount)
 	effects.update_render(0.1, telemetry, {"brake": 0.0, "reverse": false}, road, true, 0.0)
 	var paused_run: Dictionary = effects.diagnostic_snapshot()
@@ -115,17 +121,51 @@ func _run() -> void:
 	road_surface = "mown"
 	effects.update_render(0.05, telemetry, {"brake": 1.0, "reverse": false}, road, false, 0.0)
 	var day_lights: Dictionary = effects.diagnostic_snapshot()
-	check(day_lights.brake_lights and not day_lights.reverse_lights, "braking lights follow accepted controls")
-	check(is_equal_approx(float(day_lights.headlight_energy), 0.18), "headlights remain dim in daylight")
+	check(day_lights.brake_lights and not day_lights.reverse_lights
+		and effects._tail_materials[0].albedo_color == effects._tail_lens_colors[0]
+		and is_equal_approx(effects._tail_materials[0].emission_energy_multiplier, 2.1),
+		"braking lights restore their red lens color and emission")
+	check(is_equal_approx(float(day_lights.headlight_energy), 0.18)
+		and effects._headlight_materials[0].albedo_color == effects._headlight_lens_colors[0]
+		and is_equal_approx(effects._headlight_materials[0].emission_energy_multiplier, 0.28),
+		"daylight headlights retain their warm lens color and low emission")
+	check(effects._reverse_materials[0].albedo_color == effects._reverse_lens_colors[0] * 0.10
+		and is_equal_approx(effects._reverse_materials[0].emission_energy_multiplier, 0.0),
+		"inactive reverse lenses are visibly dim")
 	effects.update_render(0.05, telemetry, {"brake": 0.0, "reverse": true}, road, false, 1.0)
 	var night_lights: Dictionary = effects.diagnostic_snapshot()
-	check(not night_lights.brake_lights and night_lights.reverse_lights, "reverse lamp follows accepted reverse control")
-	check(float(night_lights.headlight_energy) > float(day_lights.headlight_energy), "headlights brighten at night")
+	var night_dust_color: Color = effects._emitters[0].color
+	check(not night_lights.brake_lights and night_lights.reverse_lights
+		and effects._reverse_materials[0].albedo_color == effects._reverse_lens_colors[0]
+		and is_equal_approx(effects._reverse_materials[0].emission_energy_multiplier, 1.25),
+		"reverse control restores the pale lens color and emission")
+	check(float(night_lights.headlight_energy) > float(day_lights.headlight_energy)
+		and effects._headlight_materials[0].albedo_color == effects._headlight_lens_colors[0]
+		and is_equal_approx(effects._headlight_materials[0].emission_energy_multiplier, 1.9)
+		and effects._tail_materials[0].albedo_color == effects._tail_lens_colors[0] * 0.14
+		and is_equal_approx(effects._tail_materials[0].emission_energy_multiplier, 0.24),
+		"night headlights brighten while inactive brake lenses dim")
+	check(night_dust_color.r < night_dust_color.b
+		and night_dust_color.a < day_dust_color.a * 0.1,
+		"night dust is cool tinted and dimmed")
 	effects.headlights_enabled = false
 	effects.update_render(0.05, telemetry, {"brake": 0.0, "reverse": true}, road, false, 1.0)
 	var lights_off: Dictionary = effects.diagnostic_snapshot()
-	check(not lights_off.headlights_enabled and lights_off.headlight_energy == 0.0, "headlights obey the public garage toggle")
-	check(lights_off.reverse_lights, "reverse lamp remains active with headlights off")
+	check(not lights_off.headlights_enabled and lights_off.headlight_energy == 0.0
+		and effects._headlight_materials[0].albedo_color == effects._headlight_lens_colors[0] * 0.12
+		and is_equal_approx(effects._headlight_materials[0].emission_energy_multiplier, 0.0),
+		"headlight toggle darkens both lens albedo and emission")
+	check(lights_off.reverse_lights
+		and effects._reverse_materials[0].albedo_color == effects._reverse_lens_colors[0]
+		and is_equal_approx(effects._reverse_materials[0].emission_energy_multiplier, 1.25),
+		"reverse lamp remains lit with headlights off")
+	effects.headlights_enabled = true
+	effects.update_render(0.05, telemetry, {"brake": 0.0, "reverse": false}, road, false, 0.0)
+	check(effects._headlight_materials[0].albedo_color == effects._headlight_lens_colors[0]
+		and is_equal_approx(effects._headlight_materials[0].emission_energy_multiplier, 0.28)
+		and effects._emitters[0].color.r > effects._emitters[0].color.b
+		and effects._emitters[0].color.a > night_dust_color.a * 10.0,
+		"daylight restores headlight color and bright dust tint")
 	effects.reset()
 	var reset_state: Dictionary = effects.diagnostic_snapshot()
 	check(is_equal_approx(float(reset_state.grime_amount), 0.0), "reset clears accumulated grime")

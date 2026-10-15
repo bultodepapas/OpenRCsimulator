@@ -1,0 +1,24 @@
+{
+  "stik": {
+    "status": "ok",
+    "mode": "exact",
+    "complete": true,
+    "solver_changed": false,
+    "rows": 1441,
+    "first_tick": 0,
+    "final_tick": 1440,
+    "source_sha256": "8e4c9c1c81d74a12930988291bb8bad9115cdac0a18663960d533c0a648987d7",
+    "current_solver_sha256": "f2cd23dd5dd04af0ff51547f45c2ceaea23c05fbd03d59541dcac949dd4bd26e"
+  },
+  "jet": {
+    "status": "ok",
+    "mode": "exact",
+    "complete": true,
+    "solver_changed": false,
+    "rows": 1441,
+    "first_tick": 0,
+    "final_tick": 1440,
+    "source_sha256": "4939cb01fd4271a196a1897eabe50ee4cf96cfadd74a18c3dacc1799108779f5",
+    "current_solver_sha256": "f2cd23dd5dd04af0ff51547f45c2ceaea23c05fbd03d59541dcac949dd4bd26e"
+  }
+}

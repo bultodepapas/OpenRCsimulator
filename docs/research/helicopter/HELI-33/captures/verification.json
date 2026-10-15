@@ -1,0 +1,27 @@
+{
+  "ok": true,
+  "images": 48,
+  "source_stable": true,
+  "source_sha256": {
+    "app/helicopter_main.gd": "cad3125e62f158933c9df9db63fa73d4a55abd487707f853739f118d95f04ad7",
+    "app/sim/helicopter_flight_session.gd": "00c179339975ba074376ecdfddacaa5d1999b12f417aa3b6c75da99062686d4d",
+    "app/sim/simulation.gd": "a8a63dcbe145215ee0882d18a0bc0772575a745e761414c5bd79124d9c044055",
+    "app/physics/rotorcraft/impact_detector.gd": "9f2bda0bea24955765251b04a6e5f98d48b4321596d9c18bdac66a70b48fb5f6",
+    "app/render/rotor/heli_wreck.gd": "0b92cd2c8efa50de076ce1f7c7a63380ddd7fd627662c285654d504afad453c7",
+    "app/render/rotor/heli_crash_presentation.gd": "3485f4db0ff66b1274a85c6f0ad310eb8b298a7523640271de14153f4fb53ea4",
+    "app/render/crash/wreck.gd": "29b14f6bcdf72fb45c4a41053033e049e9dea9b864df496bff57fd9b889544e3",
+    "app/render/crash/effects.gd": "9675a5435eacfe9d9f8dae68f3130675f4c31be360fb4490f03819826767ae0b",
+    "research/helicopter/crashes/capture.gd": "22b3110819469f5f1e788ead6dc8af95ccbeb46e2b2263ec4b594fc9d0f9b3cd",
+    "research/helicopter/crashes/fixtures.gd": "e8ab3be1fa0f5ad7d2a31d9e53a3eb3d3f2c8caf6074cdad95a1973dd98db960"
+  },
+  "errors": [],
+  "renderer": "Godot 4.7.2 Compatibility/OpenGL 3.3 on RTX 3090",
+  "cases": [
+    "main rotor strike",
+    "tail rotor strike",
+    "hard skid landing",
+    "nose impact",
+    "fence collision",
+    "severe nose impact with C4 breakup"
+  ]
+}

@@ -1,10 +1,12 @@
-# H4: allocation removal must retain exact blend decisions, including live geometry edits.
-# H12: the scalar local loads must equal the frozen vector-form loads byte for byte.
+# H4: the frozen selector stays byte-exact where unchanged; R02's independent rate-angle guard is tested in the same
+# randomized rate domain and must only raise that selector's weight.
+# H12: the scalar local loads stay byte-exact in the attached, planar domain where the frozen force map is unchanged.
 extends SceneTree
 const Flight := preload("res://sim/flight_session.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Air := preload("res://physics/air_data.gd")
 const Aero := preload("res://physics/aero.gd")
+const M := preload("res://physics/math3d.gd")
 const Reference := preload("res://tests/aero_flow_reference.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const TIMBER := "turbo-lumber-evolution"
@@ -43,14 +45,15 @@ func _initialize() -> void:
 				model.cg_le[0] += rng.randf_range(-0.01, 0.01)
 				model.surfaces.horizontal.position[2] += rng.randf_range(-0.01, 0.01)
 			var air: Dictionary = Air.compute(state, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL)
-			var expected: float = Reference.local_flow_weight(state, air, d, model)
+			var frozen_expected: float = Reference.local_flow_weight(state, air, d, model)
+			var expected: float = maxf(frozen_expected, _rate_guard_weight(state, air, model))
 			var actual: float = Aero.local_flow_weight(state, air, d, model)
 			checks += 1
 			if PackedFloat64Array([actual]).to_byte_array() != PackedFloat64Array([expected]).to_byte_array():
 				failures += 1
 				printerr("FAIL ", id, " sample ", sample, ": ", actual, " != ", expected)
 		flight.free()
-	print("H4 local flow: %d byte-exact comparisons, %d failed" % [checks, failures])
+	print("H4 local flow: %d byte-exact comparisons, %d failed (legacy frozen weight plus independently evaluated R02 rate guard)" % [checks, failures])
 	_check_local_loads()
 	_check_wing_section_couple()
 	quit(1 if failures else 0)
@@ -61,6 +64,7 @@ func _check_local_loads() -> void:
 	rng.seed = 51212
 	var load_checks := 0
 	var load_failures := 0
+	var attached_checks := 0
 	var stalled := 0
 	var zero_flow := 0
 	for id in Catalog.airplane_flyable_ids(): # TT-06: previews carry no data file
@@ -90,19 +94,17 @@ func _check_local_loads() -> void:
 		var state: PackedFloat64Array = flight.sim.state.duplicate()
 		var d: Dictionary = flight._deflections(flight.sim.aux).duplicate()
 		for sample in 2500:
-			# Forward, stalled, sideslipping and reverse flow, with spin-like body rates.
-			state[RB.VEL] = rng.randf_range(-40.0, 40.0)
-			state[RB.VEL+1] = rng.randf_range(-15.0, 15.0)
-			state[RB.VEL+2] = rng.randf_range(-25.0, 25.0)
+			# R02 changes the force map for cross-span flow and its source map for separated strips. Keep frozen byte parity
+			# on the common old-law domain: attached, planar, forward flight with no angular rate (Vp == full speed).
+			state[RB.VEL] = rng.randf_range(12.0, 40.0)
+			state[RB.VEL+1] = 0.0
+			state[RB.VEL+2] = 0.0
 			for axis in 3:
-				state[RB.RATE+axis] = rng.randf_range(-6.0, 6.0)
-			for control in d:
-				d[control] = rng.randf_range(-0.6, 0.6)
-			if sample % 5 == 0: # still air, no rotation: every surface takes the zero-flow branch
-				for axis in 3:
-					state[RB.VEL+axis] = 0.0
-					state[RB.RATE+axis] = 0.0
-				zero_flow += 1
+				state[RB.RATE+axis] = 0.0
+			d.elevator = rng.randf_range(-0.02, 0.02)
+			d.aileron_right = rng.randf_range(-0.02, 0.02)
+			d.aileron_left = rng.randf_range(-0.02, 0.02)
+			d.rudder = rng.randf_range(-0.02, 0.02)
 			if sample % 50 == 0:
 				var cg_x_delta: float = rng.randf_range(-0.01, 0.01)
 				var cg_z_delta: float = rng.randf_range(-0.005, 0.005)
@@ -114,8 +116,15 @@ func _check_local_loads() -> void:
 					model.surfaces.horizontal.position[2] += horizontal_z_delta
 					model.surfaces.vertical.position[0] += vertical_x_delta
 			var air: Dictionary = Air.compute(state, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL)
-			if absf(air.alpha) > actual_model.envelope.a1:
-				stalled += 1
+			var strips: Array = Aero.wing_strip_loads(state, air, d, actual_model, Air.RHO_SEA_LEVEL)
+			var attached := true
+			for row: Dictionary in strips:
+				attached = attached and float(row.stall_weight) == 0.0
+			if not attached:
+				load_failures += 1
+				printerr("FAIL H12 domain escaped attached wing at ", id, " sample ", sample)
+			else:
+				attached_checks += 1
 			var expected: PackedFloat64Array = Reference.local_loads(state, air, d, oracle_model, Air.RHO_SEA_LEVEL)
 			var actual: PackedFloat64Array = Aero._local_loads(state, air, d, actual_model, Air.RHO_SEA_LEVEL)
 			load_checks += 1
@@ -132,11 +141,11 @@ func _check_local_loads() -> void:
 	if moved.to_byte_array() == one.to_byte_array():
 		load_failures += 1
 		printerr("FAIL comparator accepted a one-ulp change")
-	if stalled < 1000 or zero_flow < 1000:
+	if attached_checks != load_checks - 1:
 		load_failures += 1
-		printerr("FAIL coverage: %d stalled, %d zero-flow samples" % [stalled, zero_flow])
-	print("H12 local loads: %d byte-exact comparisons (%d stalled, %d zero-flow), %d failed"
-		% [load_checks, stalled, zero_flow, load_failures])
+		printerr("FAIL H12 compatibility-domain coverage: %d attached cases for %d comparisons" % [attached_checks, load_checks - 1])
+	print("H12 local loads: %d comparisons in attached planar forward domain, %d samples verified attached, %d failed"
+		% [load_checks, attached_checks, load_failures])
 	failures += load_failures
 
 
@@ -187,3 +196,45 @@ func _check_wing_section_couple() -> void:
 		printerr("FAIL Timber wing-section Cm_ac analytic strip sum: ", moment_increment, " != ", expected_moment)
 	print("D11j Timber section moment: ΔMy %.12f Nm, analytic %.12f Nm, Cm_ac %.6f" % [moment_increment, expected_moment, cm_ac])
 	flight.free()
+
+
+## Independent R02 rate-angle guard. The frozen selector has no rate-only envelope guard; this reproduces the added
+## physical rate-flow angle from the documented body-rate cross-product at every wing station and both tailplanes.
+func _rate_guard_weight(s: PackedFloat64Array, air: Dictionary, model: Dictionary) -> float:
+	var p: float = s[RB.RATE]
+	var q: float = s[RB.RATE + 1]
+	var r: float = s[RB.RATE + 2]
+	var limit: float = float(model.surfaces.attached_limit)
+	var span: float = float(model.envelope.a1) - limit
+	var position: PackedFloat64Array = model.reference.arp_le
+	var cg: PackedFloat64Array = model.cg_le
+	var arm_x: float = -(position[0] - cg[0])
+	var arm_y: float = position[1] - cg[1]
+	var arm_z: float = -(position[2] - cg[2])
+	var blend := 0.0
+	for y_offset: float in model.envelope.station_ys:
+		var station_y := arm_y + y_offset
+		var dx := q * arm_z - r * station_y
+		var dy := r * arm_x - p * arm_z
+		var dz := p * station_y - q * arm_x
+		var rate_speed := sqrt(dx * dx + dy * dy + dz * dz)
+		blend = maxf(blend, _smoothstep((atan2(rate_speed, float(air.V)) - limit) / span))
+	for name: String in ["horizontal", "vertical"]:
+		var surface: Dictionary = model.surfaces[name]
+		var tx: float = -(float(surface.position[0]) - cg[0])
+		var ty: float = float(surface.position[1]) - cg[1]
+		var tz: float = -(float(surface.position[2]) - cg[2])
+		var dx := q * tz - r * ty
+		var dy := r * tx - p * tz
+		var dz := p * ty - q * tx
+		var rate_speed := sqrt(dx * dx + dy * dy + dz * dz)
+		blend = maxf(blend, _smoothstep((atan2(rate_speed, float(air.V)) - limit) / span))
+	return blend
+
+
+func _smoothstep(x: float) -> float:
+	if x <= 0.0:
+		return 0.0
+	if x >= 1.0:
+		return 1.0
+	return x * x * (3.0 - 2.0 * x)

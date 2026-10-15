@@ -46,9 +46,8 @@ Propeller: static 4951 rpm, static thrust 235 N (24.0 kgf), thrust/weight 1.12; 
 | aero | Cma about the CG (1/rad, c_ref) | -0.3265 | what the pilot feels |
 | aero | wing zero-lift angle (deg) | -1.366 | thin-airfoil over the UIUC NAA 45-100 camber lines: root -1.48, tip -1.22 deg (section.json) |
 | aero | section Cm_ac | -0.02863 | thin-airfoil root -0.0396, tip -0.0309 (aft-loaded camber) x 0.8 (theory/measured, NACA TN 1945) |
-| aero | tail effective incidence (rad) | 0.04117 | (i_h - eps0) / (1 - deps/dalpha): the local tail model sees body alpha |
-| aero | CL0 | 0.1216 | wing at its mean incidence with camber + tail at zero body alpha |
-| aero | Cm0 about ARP | -0.06682 | UIUC NAA 45-100 camber-line thin-airfoil wing Cm_ac x0.8 correction + tail at zero body alpha |
+| aero | tail geometric effective incidence (rad) | 0.04117 | (i_h - eps0) / (1 - deps/dalpha) with the +2 deg leading-edge-up stabilizer setting: the local tail model sees body alpha; P51-19 adds a calibrated local-flow correction below |
+| aero | CL0, Cm0 geometric (before P51-19) | 0.1216, -0.06682 | wing at its mean incidence with camber + tail at zero body alpha; the geometric tail trims 4-5 deg of up elevator away from the full-size flight data |
 | controls | aileron (deg) | 18 | Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329) |
 | controls | elevator (deg) | 15 | Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329) |
 | controls | rudder (deg) | 30 | Hangar 9 Mustang 1.50 (80 in) manual, high rate (low: aileron 14, elevator 12, rudder 20 deg); full-size P-51D rudder +-30 deg (NACA RM L6J25, ntrs.nasa.gov/citations/20050019329) |
@@ -96,12 +95,16 @@ Propeller: static 4951 rpm, static thrust 235 N (24.0 kgf), thrust/weight 1.12; 
 | propulsion | solidity; C_N, C_M at J 0.3 and 0.5 | 0.1117, 0.004424, 0.007707, 0.01248, 0.01225 | per rad; x rho n2 D4 and x rho n2 D5 |
 | propulsion | thrust angles down, right (deg) | 1.75, 1 | down 1.75 deg: Top Flite Giant P-51D manual (geometry.json visual down thrust); right 1 deg: Ziroli 98 in plans (ziroligiantscaleplans.com, 1 deg right and 1 deg down); the full-size thrust line angles are not published |
 | gear | tail-wheel load share, sum k (N/m), static sag (mm) | 0.1215, 1.003e+04, 21.02 |  |
+| aero | tail local-flow correction (deg at the tail) | -2.304 | CALIBRATED (P51-19): least squares over 6 XP-51 glide trim points at CL <= 0.75 and CG 24.5/29.2 % MAC (NACA MR L-566 Fig. 10, ntrs.nasa.gov/citations/19930092575); elevator rms 4.10 -> 0.27 deg. Lumps fuselage/wing-root flow at the tail and any airframe zero-lift moment the textbook terms miss; geometric scaling does not establish it for the RC model |
+| aero | tail effective incidence (rad) | -0.0305 | geometric (i_h - eps0)/(1 - deps/dalpha) + the calibrated local-flow correction |
+| aero | CL0 | 0.0971 | wing at its mean incidence with camber + calibrated tail at zero body alpha |
+| aero | Cm0 about ARP | -0.002601 | UIUC NAA 45-100 camber-line thin-airfoil wing Cm_ac x0.8 correction + calibrated tail at zero body alpha |
 
 ## Coefficients written (c_ref = S/b; moments about the ARP = wing-body ac)
 
 | Coefficient | Value | Kind |
 | --- | --- | --- |
-| CL0 | 0.12157 | derived |
+| CL0 | 0.097099 | derived |
 | CLa | 4.3377 | derived |
 | CLq | 5.4506 | derived |
 | CLde | 0.34403 | derived |
@@ -122,7 +125,7 @@ Propeller: static 4951 rpm, static thrust 235 N (24.0 kgf), thrust/weight 1.12; 
 | Clda_right | -0.098712 | derived |
 | Clda_left | 0.098712 | derived |
 | Cldr | 0.016573 | derived |
-| Cm0 | -0.066816 | derived |
+| Cm0 | -0.002601 | derived |
 | Cma | -0.8959 | derived |
 | Cmq | -8.3234 | derived |
 | Cmde | -0.90297 | derived |
@@ -133,6 +136,27 @@ Propeller: static 4951 rpm, static thrust 235 N (24.0 kgf), thrust/weight 1.12; 
 | Cnda_right | 0.011884 | derived |
 | Cnda_left | -0.011884 | derived |
 | Cndr | -0.062659 | derived |
+
+## P51-19: trim against the full-size XP-51 (NACA MR L-566 Fig. 10, glide, tab 0, gear up)
+
+Up elevator (deg) at the same nominal CL = W/(qS) and CG; the model columns are this generator's attached-oracle glide equilibrium with the
+gear-down drag removed. Fitted points lie inside the attached oracle (CL <= 0.75); the others are reported only (the full-size
+CL_max at Re 13e6 exceeds the model's 1.02). Correction -2.304 deg at the tail, Cm0 -0.06682 -> -0.00260, CL0 0.12157 -> 0.09710.
+
+| Condition | CG (% MAC) | CL | NACA | Geometric tail | Calibrated tail | Use |
+| --- | --- | --- | --- | --- | --- | --- |
+| glide | 24.5 | 1.374 | 9.10 | 9.04 | 4.96 |  |
+| glide | 24.5 | 1.292 | 7.20 | 8.91 | 4.82 |  |
+| glide | 24.5 | 1.028 | 5.60 | 8.31 | 4.23 |  |
+| glide | 24.5 | 0.837 | 4.20 | 7.71 | 3.63 |  |
+| glide | 24.5 | 0.619 | 3.30 | 6.85 | 2.76 | fit |
+| glide | 24.5 | 0.347 | 1.25 | 5.49 | 1.40 | fit |
+| glide | 24.5 | 0.241 | 0.83 | 4.87 | 0.78 | fit |
+| glide | 29.2 | 1.297 | 2.30 | 4.67 | 0.59 |  |
+| glide | 29.2 | 0.788 | 1.10 | 4.91 | 0.82 |  |
+| glide | 29.2 | 0.596 | 0.70 | 4.75 | 0.66 | fit |
+| glide | 29.2 | 0.334 | -0.10 | 4.29 | 0.20 | fit |
+| glide | 29.2 | 0.205 | -0.30 | 3.96 | -0.13 | fit |
 
 ## Propeller tables (blade-element/momentum, 4-blade 26x12)
 
@@ -170,6 +194,7 @@ Propeller: static 4951 rpm, static thrust 235 N (24.0 kgf), thrust/weight 1.12; 
 - Flaps fixed up; retracts fixed DOWN. No brakes. Tail-wheel spring softer than a real one (240 Hz explicit tick rule).
 - A full-size report notes 1 deg left fin offset on P-51B/D. This model has no fixed fin-incidence/yaw-bias term; a rudder control trim does not represent that geometry, so the effect is omitted.
 - The neutral point is calibrated to the full-size glide value through one lumped fuselage/scoop/propeller term (K_fus 0.033/deg, above Raymer's 0.005-0.015).
+- The tail's zero-alpha flow angle is calibrated to the full-size glide trim curves through one lumped term (-2.30 deg at the tail, P51-19); the stabilizer stays at its +2 deg leading-edge-up setting (NACA ACR 4K02 confirms the sign). Reynolds similarity for the RC model is not established.
 - Fuselage directional destabilization is omitted because the shared surface-consistency rule requires Cnb to equal the modeled vertical-fin contribution.
 - The induced-flow strip map calibrates section slope and offsets so integrated wing-plus-horizontal-tail lift slope and
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;

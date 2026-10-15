@@ -20,6 +20,7 @@ const BOTTOMING_TRIGGER_RATIO := 0.96
 const BOTTOMING_RELEASE_RATIO := 0.72
 const MIN_OVERTRAVEL_DAMAGE_M := 0.004
 const CONTACT_POWER_CAP_W := 10000.0
+const M := preload("res://physics/math3d.gd")
 
 const STATE_LAYOUT := [
 	"body_front_damage_fraction",
@@ -400,7 +401,7 @@ func _above_episode_threshold(energy_before: float, energy_after: float) -> floa
 
 
 func _linear_speed(state: PackedFloat64Array) -> float:
-	return sqrt(state[STATE_VEL] * state[STATE_VEL]
+	return M.sqrt_(state[STATE_VEL] * state[STATE_VEL]
 		+ state[STATE_VEL + 1] * state[STATE_VEL + 1]
 		+ state[STATE_VEL + 2] * state[STATE_VEL + 2])
 

@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+RCV effects activity: 17 checks, 2 failures
+FAIL: ordinary circuit spawn resumes
+FAIL: accepted dirt drive emits dust and collects grime

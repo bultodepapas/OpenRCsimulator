@@ -1,0 +1,44 @@
+{
+  "ok": true,
+  "healthy": {
+    "controls": {
+      "ticks": 720,
+      "exact_hashes": true,
+      "exact_final_body": true,
+      "no_impact": true
+    },
+    "ground": {
+      "ticks": 720,
+      "exact_hashes": true,
+      "exact_final_body": true,
+      "no_impact": true
+    },
+    "hover": {
+      "ticks": 720,
+      "exact_hashes": true,
+      "exact_final_body": true,
+      "no_impact": true
+    }
+  },
+  "cycle": {
+    "exact_samples": true,
+    "samples": 84,
+    "exact_cycles": true,
+    "exact_configuration": true,
+    "seconds": 84.92083333333333,
+    "final_checkpoint_same": false,
+    "checkpoint_difference_expected": "v4 binds obstacle identity; baseline predates that contact boundary"
+  },
+  "tests_passed": 12,
+  "tests": 12,
+  "parse_files": 9,
+  "engine_errors": [],
+  "evidence_sha256": {
+    "baseline.json": "ecd12890bff26b2ef7e6106fc83ba1728a356c3d25a519afc9e80f1face92aac",
+    "candidate.json": "ecd12890bff26b2ef7e6106fc83ba1728a356c3d25a519afc9e80f1face92aac",
+    "baseline-cycle.json": "d083f093f6c64b2479ba7463aacc44e46ab6f304b53044c0fafa7116c795092a",
+    "candidate-cycle.json": "ffbb6f345d955ddd8229746be4f66fedb66e09b59e97a236a7f1ab80d6db9ded",
+    "checks/final/verification.json": "eca165e5888156d5143a09967dd46c2ec7d7be8727c320f9cc4e5031f51feb3c",
+    "checks/final/parse.json": "b8dfcef568b146ebef19ab97d3d7dd055fbfd2ff4ba34654bb6d41defdc2ae12"
+  }
+}

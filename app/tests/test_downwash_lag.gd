@@ -1,5 +1,6 @@
-# E0a2b: the tail's downwash lag (FlightSession aux, advanced in _pre_step). Layout and settled start; the lag input
-# equals the loads' own wing CL (byte-exact quasi-static identity); exact first-order step response; Cmα̇ measured by a
+# E0a2b/R02: the tail's downwash lag (FlightSession aux, advanced in _pre_step) holds a dimensional wing lift-velocity
+# proxy in m/s. Layout and settled start; the lag input equals the loads' own wake source (byte-exact quasi-static identity);
+# exact first-order step response; Cmα̇ measured by a
 # forced plunge oscillation through the real _pre_step and local loads against the delay theory from the model's
 # geometry; tick refinement; checkpoint replay. D11g: the oracle (attached-flow) regime carries the same lag, so its
 # Cmα̇ equals the local one; reports the effective pitch damping Cmq + Cmα̇ in both regimes.
@@ -39,16 +40,20 @@ func _initialize() -> void:
 	_session.input_enabled = false
 	var model: Dictionary = _session.aircraft.model
 	var lag: int = _session.downwash_index()
-	_check("Stik: one lagged wing CL after the anchors", lag == FlightSession.AUX_ANCHORS + 9 and _session.sim.aux.size() == lag + 1)
-	# E0a2c: the generated aircraft declare their downwash gradient too, so each carries the lag after its anchors; the
-	# same data without the gradient (in memory) has no lag entry, which keeps the layout rule explicit.
+	_check("Stik: one lagged wing lift-velocity source (m/s) after the anchors", lag == FlightSession.AUX_ANCHORS + 9 and _session.sim.aux.size() == lag + 1)
+	# The lag is an explicit local-model capability. The Avanti oracle path does not receive an unused lag entry.
+
 	for id in ["gp-extra-300s-60", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx"]:
 		var other := FlightSession.new()
 		other.setup(Catalog.entry(id).data)
 		root.add_child(other)
+		var other_model: Dictionary = other.aircraft.model
+		var declares_lag: bool = not other_model.get("envelope", {}).is_empty() \
+			and other_model.get("surfaces", {}).get("horizontal", {}).has("downwash_lag_length")
 		var other_lag: int = other.downwash_index()
-		_check("%s (downwash gradient declared): one lagged wing CL after the anchors" % id,
-			other_lag == FlightSession.AUX_ANCHORS + other.anchor_count() * Ground.ANCHOR_STRIDE and other.sim.aux.size() == other_lag + 1)
+		var expected_lag: int = FlightSession.AUX_ANCHORS + other.anchor_count() * Ground.ANCHOR_STRIDE if declares_lag else -1
+		_check("%s lag allocation follows its derived local-model capability" % id,
+			other_lag == expected_lag and (not declares_lag or other.sim.aux.size() > other_lag))
 		var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry(id).data))
 		raw.aero.surfaces.horizontal.erase("downwash_gradient")
 		var stripped := FlightSession.new()
@@ -60,7 +65,7 @@ func _initialize() -> void:
 		stripped.queue_free()
 		other.queue_free()
 	var start: PackedFloat64Array = _session.sim.state
-	_check("reset starts the lag settled at the start state's wing CL", _session.sim.aux[lag] == _session._wing_cl(start, _session.sim.aux))
+	_check("reset starts the lag settled at the start state's wing lift-velocity source (m/s)", _session.sim.aux[lag] == _session._wing_cl(start, _session.sim.aux))
 	_identity(model)
 	_selector_uses_lagged_tail()
 	_session_path(model, lag)
@@ -103,14 +108,15 @@ func _selector_uses_lagged_tail() -> void:
 	var alpha := start_alpha
 	var s := RB.make_state(M.v3(0.0, 0.0, -20.0), M.v3(V * cos(alpha), 0.0, V * sin(alpha)), M.q_identity(), M.v3(0.0, 0.0, 0.0))
 	var air := Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]), RHO)
-	var lag: float = Aero.wing_lift_coefficient(s, air, d, model)
+	var lag: float = Aero.wing_wake_velocity(s, air, d, model)
 	for k in range(1, ticks + 1):
 		alpha = maxf(0.0, start_alpha + rate * k * dt)
 		s = RB.make_state(M.v3(0.0, 0.0, -20.0), M.v3(V * cos(alpha), 0.0, V * sin(alpha)), M.q_identity(), M.v3(0.0, 0.0, 0.0))
 		air = Air.compute(s, PackedFloat64Array([0.0, 0.0, 0.0]), RHO)
-		var cl_now: float = Aero.wing_lift_coefficient(s, air, d, model)
-		lag = cl_now + (lag - cl_now) * exp(-dt * V / float(tail.downwash_lag_length))
-	var actual_tail: float = atan2(air.v_air[2], air.v_air[0]) - float(tail.downwash_per_cl) * lag \
+		var wake_now: float = Aero.wing_wake_velocity(s, air, d, model)
+		lag = wake_now + (lag - wake_now) * exp(-dt * V / float(tail.downwash_lag_length))
+	var tail_plane_speed: float = sqrt(air.v_air[0] * air.v_air[0] + air.v_air[2] * air.v_air[2])
+	var actual_tail: float = atan2(air.v_air[2], air.v_air[0]) - Aero.downwash_angle(lag, float(tail.downwash_per_cl), tail_plane_speed) \
 		+ float(tail.elevator_tau) * d.elevator + float(tail.free_incidence)
 	var x := clampf((absf(actual_tail) - float(model.surfaces.attached_limit))
 		/ (float(model.surfaces.tail_local_limit) - float(model.surfaces.attached_limit)), 0.0, 1.0)
@@ -119,7 +125,7 @@ func _selector_uses_lagged_tail() -> void:
 	var actual_blend: float = Aero.local_flow_weight(s, air, d, model, lag)
 	_check("descending α ramp moves actual tail beyond the attached limit", absf(actual_tail) > float(model.surfaces.attached_limit),
 		"tail %.3f° after %d ticks" % [rad_to_deg(actual_tail), ticks])
-	_check("selector uses lagged CL while the static call remains unchanged",
+	_check("selector uses lagged m/s source while the static call remains unchanged",
 		static_blend == 0.0 and expected_blend > 0.0 and absf(actual_blend - expected_blend) < 1e-12,
 		"static %.6f, actual %.6f, expected %.6f" % [static_blend, actual_blend, expected_blend])
 	var global_loads: PackedFloat64Array = Aero._global_loads(s, air, d, model, RHO, lag)
@@ -135,7 +141,7 @@ func _selector_uses_lagged_tail() -> void:
 		"actual pitch %.6f, lag-weighted %.6f, static %.6f N·m" % [actual_loads[4], expected_loads[4], static_loads[4]])
 
 
-## With the lag equal to the instantaneous wing CL the local loads are the quasi-static ones, byte for byte.
+## With the lag equal to the instantaneous wing lift-velocity source the local loads are quasi-static, byte for byte.
 func _identity(model: Dictionary) -> void:
 	var rng := RandomNumberGenerator.new()
 	rng.seed = 51616
@@ -148,39 +154,39 @@ func _identity(model: Dictionary) -> void:
 			rng.randf_range(-3, 3), rng.randf_range(-3, 3), rng.randf_range(-3, 3)])
 		var d := { elevator = rng.randf_range(-0.4, 0.4), aileron_right = rng.randf_range(-0.4, 0.4), aileron_left = rng.randf_range(-0.4, 0.4), rudder = 0.0 }
 		var air := Air.compute(s, PackedFloat64Array([0, 0, 0]), RHO)
-		var cl := Aero.wing_lift_coefficient(s, air, d, model)
-		if Aero._local_loads(s, air, d, model, RHO, cl).to_byte_array() == Aero._local_loads(s, air, d, model, RHO).to_byte_array():
+		var wake := Aero.wing_wake_velocity(s, air, d, model)
+		if Aero._local_loads(s, air, d, model, RHO, wake).to_byte_array() == Aero._local_loads(s, air, d, model, RHO).to_byte_array():
 			same += 1
-		if Aero._global_loads(s, air, d, model, RHO, cl).to_byte_array() == Aero._global_loads(s, air, d, model, RHO).to_byte_array():
+		if Aero._global_loads(s, air, d, model, RHO, wake).to_byte_array() == Aero._global_loads(s, air, d, model, RHO).to_byte_array():
 			same_oracle += 1
-	_check("lag = instantaneous wing CL reproduces the quasi-static local loads byte for byte (2000 states incl. stall, rates, controls)", same == 2000, "%d/2000" % same)
+	_check("lag = instantaneous wake source reproduces quasi-static local loads byte for byte (2000 stalled/rate/control states)", same == 2000, "%d/2000" % same)
 	_check("D11g: and the quasi-static oracle loads byte for byte (settled lag adds nothing)", same_oracle == 2000, "%d/2000" % same_oracle)
 
 
-## The simulator's own loads callback must feed the lag to the tail: with the lag displaced from the instantaneous CL
+## The simulator's own loads callback must feed the lag to the tail: with the held m/s source displaced from the instantaneous source
 ## in the blend regime (α 11°), FlightSession._loads equals Dynamics with that lag and differs from the quasi-static one.
 func _session_path(model: Dictionary, lag: int) -> void:
 	const Dynamics := preload("res://physics/dynamics.gd")
 	var alpha := deg_to_rad(11.0)
 	var s := PackedFloat64Array([0, 0, -100, V * cos(alpha), 0, V * sin(alpha), 1, 0, 0, 0, 0, 0, 0])
 	var aux: PackedFloat64Array = _session.sim.aux.duplicate()
-	aux[lag] = _session._wing_cl(s, aux) - 0.2
+	aux[lag] = _session._wing_cl(s, aux) - 3.0 # m/s, corresponding to a 0.2 CL offset at this 15 m/s condition
 	_session.sim.aux = aux
 	var through_session: PackedFloat64Array = _session._loads(s, 0.0)
 	var d: Dictionary = _session._deflections(aux)
 	var with_lag := Dynamics.loads(s, model, d, aux[0], RHO, PackedFloat64Array([0, 0, 0]), aux[lag])
 	var quasi := Dynamics.loads(s, model, d, aux[0], RHO, PackedFloat64Array([0, 0, 0]))
-	_check("FlightSession._loads feeds the lagged CL to the tail (equals Dynamics with it, differs from quasi-static)",
+	_check("FlightSession._loads feeds the held m/s source to the tail (equals Dynamics with it, differs from instantaneous)",
 		through_session == with_lag and through_session != quasi, "pitch %.4f vs quasi-static %.4f N·m" % [through_session[4], quasi[4]])
 	_session.reset()
 
 
-## Fixed state, lag displaced: after n ticks it is CL + (x0 − CL)·exp(−n·dt·V/l).
+## Fixed state, lag displaced: after n ticks it is U_L + (x0 − U_L)·exp(−n·dt·V/l).
 func _step_response(lag: int) -> void:
 	var s: PackedFloat64Array = _session.sim.state.duplicate()
 	var aux: PackedFloat64Array = _session.sim.aux.duplicate()
-	var cl: float = _session._wing_cl(s, aux)
-	var x0 := cl + 0.3
+	var wake: float = _session._wing_cl(s, aux)
+	var x0 := wake + 0.3
 	aux[lag] = x0
 	var dt := 1.0 / 240.0
 	var speed: float = Air.compute(s, PackedFloat64Array([0, 0, 0]), RHO).V
@@ -188,7 +194,7 @@ func _step_response(lag: int) -> void:
 	var worst := 0.0
 	for n in range(1, 25):
 		aux = _session._pre_step(aux, _session.sim.inputs, dt)
-		var expected := cl + (x0 - cl) * exp(-n * dt * speed / length)
+		var expected := wake + (x0 - wake) * exp(-n * dt * speed / length)
 		worst = maxf(worst, absf(aux[lag] - expected))
 	_check("step response: exact first-order lag over 24 ticks (τ = l/V = %.1f ms)" % (1000.0 * length / speed), worst < 1e-12,
 		String.num_scientific(worst))
@@ -224,13 +230,36 @@ func _plunge(model: Dictionary, lag: int, dt: float, oracle := false) -> float:
 	return in_quadrature / (AMPLITUDE * omega * c / (2.0 * V))
 
 
-## Delay theory: Cmα̇ = (∂Cm/∂tail angle)·(dε/dα)·(l_lag/V)·(2V/c), with ∂Cm/∂tail angle = −a_t·η·(S_t/S)·(l_arm/c).
+## Delay theory for ε = atan2(g·U_L, V_t): calculate dU_L/dα from the attached induced map, then apply the analytic
+## atan2 derivative and first-order lag factor. This fixture has no optional post-stall polar at 4°.
 func _theory(model: Dictionary) -> float:
 	var tail: Dictionary = model.surfaces.horizontal
 	var c: float = model.reference.c
 	var arm: float = float(tail.position[0]) - float(model.cg_le[0])
 	var dcm_dtail: float = -float(tail.free_slope) * float(tail.area) / float(model.reference.S) * arm / c
-	return dcm_dtail * float(tail.downwash_gradient) * float(tail.downwash_lag_length) * 2.0 / c
+	var env: Dictionary = model.envelope
+	var station_count: int = env.station_ys.size()
+	var strip_slope: float = float(env.get("strip_slope", model.aero.CLa))
+	var wake_slope := V * float(model.aero.CLa)
+	var e_map: PackedFloat64Array = env.get("induced_map", PackedFloat64Array())
+	if e_map.size() == station_count * station_count:
+		wake_slope = 0.0
+		for i in station_count:
+			var row_sum := 0.0
+			for j in station_count:
+				row_sum += e_map[i * station_count + j]
+			wake_slope += V * strip_slope * row_sum / station_count
+	var alpha := deg_to_rad(4.0)
+	var state := RB.make_state(M.v3(0.0, 0.0, -100.0), M.v3(V * cos(alpha), 0.0, V * sin(alpha)),
+		M.q_identity(), M.v3(0.0, 0.0, 0.0))
+	var air: Dictionary = Air.compute(state, PackedFloat64Array([0.0, 0.0, 0.0]), RHO)
+	var d := { elevator = 0.0, aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0 }
+	var wake: float = Aero.wing_wake_velocity(state, air, d, model)
+	var tail_speed := V # alpha changes direction at fixed speed and there are no tail rates in this analytic state
+	var d_epsilon_d_wake: float = float(tail.downwash_per_cl) * tail_speed \
+		/ (tail_speed * tail_speed + pow(float(tail.downwash_per_cl) * wake, 2.0))
+	var d_epsilon_d_alpha: float = d_epsilon_d_wake * wake_slope
+	return dcm_dtail * d_epsilon_d_alpha * float(tail.downwash_lag_length) / V * 2.0 * V / c
 
 
 ## Geometry estimate of Cmq + Cmα̇: the measured local Cmq (tail and wing) plus the delay theory.
@@ -248,7 +277,7 @@ func _cmq_local(model: Dictionary, lag: int) -> float:
 	for q in [h, -h]:
 		var s := PackedFloat64Array([0, 0, -100, V * cos(alpha), 0, V * sin(alpha), 1, 0, 0, 0, 0, q, 0])
 		var air := Air.compute(s, PackedFloat64Array([0, 0, 0]), RHO)
-		m.append(Aero._local_loads(s, air, d, model, RHO, Aero.wing_lift_coefficient(s, air, d, model))[4])
+		m.append(Aero._local_loads(s, air, d, model, RHO, Aero.wing_wake_velocity(s, air, d, model))[4])
 	return (m[0] - m[1]) / (2.0 * h) / (0.5 * RHO * V * V * float(model.reference.S) * c * c / (2.0 * V))
 
 

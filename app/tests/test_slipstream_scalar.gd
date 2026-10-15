@@ -1,5 +1,7 @@
-# H13: the scalar slipstream loads must equal the frozen vector/dictionary oracle byte for byte.
+# H13 / VAL-AUD-R02: frozen geometry plus independently projected section-flow reference.
+# Full 3D legacy drag is intentionally obsolete; zero loads and unchanged wake retain exact comparisons.
 extends SceneTree
+const M := preload("res://physics/math3d.gd")
 const Flight := preload("res://sim/flight_session.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Air := preload("res://physics/air_data.gd")
@@ -59,7 +61,7 @@ func _initialize() -> void:
 				model.surfaces.horizontal.position[2] += rng.randf_range(-0.01, 0.01)
 				model.surfaces.vertical.position[1] += rng.randf_range(-0.005, 0.005)
 			var air: Dictionary = Air.compute(state, PackedFloat64Array([0.0, 0.0, 0.0]), Air.RHO_SEA_LEVEL)
-			var expected: PackedFloat64Array = Reference.loads(state, air, d, model, rpm, Air.RHO_SEA_LEVEL)
+			var expected: PackedFloat64Array = _projected_reference(state, air, d, model, rpm, Air.RHO_SEA_LEVEL)
 			var actual: PackedFloat64Array = Slipstream.loads(state, air, d, model, rpm, Air.RHO_SEA_LEVEL)
 			checks += 1
 			var zero := expected == PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
@@ -70,7 +72,7 @@ func _initialize() -> void:
 					printerr("FAIL stopped propeller washed the tail: ", expected)
 			elif not zero:
 				washed += 1
-			if actual.to_byte_array() != expected.to_byte_array():
+			if not _close_loads(actual, expected):
 				failures += 1
 				if failures <= 5:
 					printerr("FAIL ", id, " sample ", sample, ": ", actual, " != ", expected)
@@ -86,6 +88,44 @@ func _initialize() -> void:
 	if aircraft == 0 or washed < 5000 or static_air < 1000 or stopped < 300:
 		failures += 1
 		printerr("FAIL coverage: %d aircraft, %d washed, %d static, %d stopped" % [aircraft, washed, static_air, stopped])
-	print("H13 slipstream: %d byte-exact comparisons (%d aircraft, %d washed, %d static air, %d stopped), %d failed"
+	print("H13/R02 slipstream: %d projected-load comparisons (%d aircraft, %d washed, %d static air, %d stopped), %d failed"
 		% [checks, aircraft, washed, static_air, stopped, failures])
 	quit(1 if failures else 0)
+
+
+## The old section oracle is evaluated with the velocity projected geometrically
+## before pressure is formed. Wake and immersion retain their frozen reference.
+func _projected_reference(state: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rpm: float, rho: float) -> PackedFloat64Array:
+	var out := PackedFloat64Array([0., 0., 0., 0., 0., 0.])
+	if rpm < Propulsion.STOPPED_RPM:
+		return out
+	var prop: Dictionary = model.propulsion
+	var tq := Propulsion.thrust_torque(air.v_air, rpm, prop, rho)
+	var wake := Reference.wake(air.v_air, tq[0], tq[1], prop, rho)
+	var axis := Propulsion.axis(prop)
+	var wash := M.scale(axis, wake.dv)
+	var rates := state.slice(RB.RATE, RB.RATE+3)
+	for piece in prop.slipstream.pieces:
+		var im := Reference.immersion(piece, wake, prop.slipstream.hub, prop, air.v_air, air.V, model, axis)
+		if im.area <= 0.0:
+			continue
+		var tail: Dictionary = model.surfaces[piece.surface]
+		var arm := M.add(Reference._arm(tail.position, model.cg_le), im.shift)
+		var rate_flow := M.cross(rates, arm)
+		var free_flow := M.add(air.v_air, rate_flow)
+		var washed_flow := M.add(M.add(air.v_air, M.sub(wash, im.swirl)), rate_flow)
+		var vertical: bool = piece.surface == "vertical"
+		free_flow[2 if vertical else 1] = 0.0
+		washed_flow[2 if vertical else 1] = 0.0
+		var free := Reference._tail_surface_from_flow(free_flow, arm, d, tail, model.surfaces, im.area, vertical, rho)
+		var washed := Reference._tail_surface_from_flow(washed_flow, arm, d, tail, model.surfaces, im.area, vertical, rho)
+		for i in 6:
+			out[i] += washed[i]-free[i]
+	return out
+
+
+func _close_loads(actual: PackedFloat64Array, expected: PackedFloat64Array) -> bool:
+	for i in 6:
+		if not is_finite(actual[i]) or absf(actual[i]-expected[i]) > 1e-11*(1.0+absf(expected[i])):
+			return false
+	return true

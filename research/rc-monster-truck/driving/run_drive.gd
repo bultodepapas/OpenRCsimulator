@@ -538,6 +538,8 @@ func _csv_header() -> String:
 	])
 	for state_name in Vehicle.STATE_LAYOUT:
 		names.append("state_" + str(state_name))
+	for channel in Session.DAMAGE_CHANNELS:
+		names.append("damage_" + str(channel))
 	return ",".join(names)
 
 
@@ -556,6 +558,8 @@ func _csv_row(tick: int, time_s: float, state: PackedFloat64Array, report: Dicti
 	])
 	for value in state:
 		columns.append(_f(float(value)))
+	for channel in Session.DAMAGE_CHANNELS:
+		columns.append(_f(float(report.damage[channel])))
 	return ",".join(columns)
 
 
@@ -584,6 +588,8 @@ func _write_results(run_result: Dictionary, vehicle_result: Dictionary, course_r
 		"course_identity": course_result.identity.duplicate(true),
 		"backend_identity": backend.duplicate(true),
 		"solver_version": Vehicle.SOLVER_VERSION,
+		"damage": _session.damage_visual_state(),
+		"damage_state": Array(_session.damage_snapshot()),
 		"fixed_hz": FIXED_HZ,
 		"max_seconds": _max_seconds,
 		"complete": bool(run_result.complete),

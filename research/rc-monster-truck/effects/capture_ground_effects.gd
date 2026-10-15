@@ -64,12 +64,17 @@ func _run() -> void:
 	await process_frame
 
 	await _capture_day_dust(output)
+	_effects.reset()
 	await _capture_night_headlights(output)
 	await _capture_night_rear_lamps(output)
+	var captures_ok := _captures.size() == 3
+	for capture in _captures:
+		captures_ok = captures_ok and bool(capture.get("ok", false))
 	var manifest := {
-		"format": "rcv-ground-effects-native-capture v1",
-		"ok": _captures.size() == 3,
+		"format": "rcv-ground-effects-native-capture v2",
+		"ok": captures_ok,
 		"fixture_note": "Dust telemetry is staged for visual review only; this capture does not show driving or validate vehicle behavior.",
+		"capture_command": "Godot_v4.7.2-stable_win64.exe --rendering-method gl_compatibility --audio-driver Dummy --path app --script res://../research/rc-monster-truck/effects/capture_ground_effects.gd",
 		"model_builder": "res://vehicles/ground/mt8_model.gd Model.build()",
 		"rig_pose": "imported MT8 rig initialized in rest pose, grounded by its measured wheel bounds, then 8-degree steer and small wheel spin through rig setters",
 		"renderer": {
@@ -77,11 +82,14 @@ func _run() -> void:
 			"method": RenderingServer.get_current_rendering_method(),
 			"driver": RenderingServer.get_current_rendering_driver_name(),
 			"adapter": RenderingServer.get_video_adapter_name(),
-			"size": [VIEW_SIZE.x, VIEW_SIZE.y],
+			"requested_window_size": [VIEW_SIZE.x, VIEW_SIZE.y],
 		},
-		"immutable_source_sha256": {
+		"source_sha256": {
 			"mt8_glb": FileAccess.get_sha256(MODEL_SOURCE),
 			"smoke_png": FileAccess.get_sha256(SMOKE_SOURCE),
+			"ground_effects_gd": FileAccess.get_sha256("res://vehicles/ground/ground_effects.gd"),
+			"ground_grime_overlay_gdshader": FileAccess.get_sha256("res://vehicles/ground/ground_grime_overlay.gdshader"),
+			"capture_script": FileAccess.get_sha256("res://../research/rc-monster-truck/effects/capture_ground_effects.gd"),
 		},
 		"captures": _captures,
 	}
@@ -173,7 +181,7 @@ func _capture_day_dust(output: String) -> void:
 
 func _capture_night_headlights(output: String) -> void:
 	_set_night()
-	_set_camera_pose(Vector3(-0.10, 0.22, -0.76))
+	_set_camera_pose(Vector3(-0.10, 0.30, -1.22))
 	_effects.update_render(0.0, {}, {"brake": 0.0, "reverse": false}, Callable(), false, 1.0)
 	for _frame in 5:
 		await process_frame
@@ -183,7 +191,7 @@ func _capture_night_headlights(output: String) -> void:
 
 
 func _capture_night_rear_lamps(output: String) -> void:
-	_set_camera_pose(Vector3(0.11, 0.22, 0.76))
+	_set_camera_pose(Vector3(0.11, 0.30, 1.22))
 	_effects.update_render(0.0, {}, {"brake": 1.0, "reverse": true}, Callable(), false, 1.0)
 	for _frame in 5:
 		await process_frame
@@ -203,9 +211,9 @@ func _set_day() -> void:
 func _set_night() -> void:
 	_environment.background_color = Color("080f1b")
 	_environment.ambient_light_color = Color("223048")
-	_environment.ambient_light_energy = 0.14
+	_environment.ambient_light_energy = 0.28
 	_key.light_energy = 0.0
-	_fill.light_energy = 0.0
+	_fill.light_energy = 0.04
 
 
 func _set_camera_pose(offset: Vector3) -> void:

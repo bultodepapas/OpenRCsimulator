@@ -21,12 +21,16 @@ var _grime_materials: Array[ShaderMaterial] = []
 var _grime_amount := 0.0
 var _paused := false
 var _last_headlight_energy := 0.0
+var _night_weight := 0.0
 var _brake_lights := false
 var _reverse_lights := false
 var _headlight_lights: Array[SpotLight3D] = []
 var _headlight_materials: Array[StandardMaterial3D] = []
+var _headlight_lens_colors: Array[Color] = []
 var _tail_materials: Array[StandardMaterial3D] = []
+var _tail_lens_colors: Array[Color] = []
 var _reverse_materials: Array[StandardMaterial3D] = []
+var _reverse_lens_colors: Array[Color] = []
 
 
 ## Build all per-instance visuals once. `visual` is the read-only result from mt8_model.build().
@@ -87,7 +91,8 @@ func update_render(
 	var speed_value: Variant = telemetry.get("speed_m_per_s", 0.0)
 	if not road.is_valid() or typeof(contacts) != TYPE_PACKED_BYTE_ARRAY \
 			or contacts.size() != 4 or typeof(slips) != TYPE_PACKED_FLOAT64_ARRAY \
-			or slips.size() != 4 or typeof(speed_value) not in [TYPE_FLOAT, TYPE_INT]:
+			or slips.size() != 4 or typeof(speed_value) not in [TYPE_FLOAT, TYPE_INT] \
+			or not is_finite(float(speed_value)):
 		_clear_dust_levels()
 		return
 	var speed := absf(float(speed_value))
@@ -95,19 +100,26 @@ func update_render(
 	for i in 4:
 		var level := 0.0
 		var source := _wheel_nodes[i].global_position
-		var sample_value: Variant = road.call(-source.z, source.x)
+		var sample_value: Variant = {}
+		if _vector3_is_finite(source):
+			sample_value = road.call(-source.z, source.x)
 		if contacts[i] != 0 and typeof(sample_value) == TYPE_DICTIONARY:
 			var sample: Dictionary = sample_value
 			var surface_factor := _surface_dust_factor(str(sample.get("surface_id", "")))
 			var slip_speed := absf(float(slips[i])) if is_finite(float(slips[i])) else 0.0
-			if surface_factor > 0.0 and (speed >= 0.35 or slip_speed >= 0.12):
+			var ground_height: Variant = sample.get("height_m", source.y - _wheel_radii[i])
+			var ground_height_valid := typeof(ground_height) in [TYPE_FLOAT, TYPE_INT] \
+				and is_finite(float(ground_height))
+			if surface_factor > 0.0 and ground_height_valid and (speed >= 0.35 or slip_speed >= 0.12):
 				var speed_factor := clampf((speed - 0.35) / 4.5, 0.0, 1.0)
 				var slip_factor := clampf((slip_speed - 0.04) / 1.4, 0.0, 1.0)
 				level = surface_factor * maxf(speed_factor * 0.45, slip_factor)
-				var ground_up := float(sample.get("height_m", source.y - _wheel_radii[i]))
-				source.y = ground_up + 0.018
+				source.y = float(ground_height) + 0.018
 				var emitter := _emitters[i]
 				emitter.global_transform = Transform3D(_vehicle_root.global_basis.orthonormalized(), source)
+				var dust_tint := Color(1.0, 0.92, 0.81).lerp(Color(0.32, 0.38, 0.54), _night_weight)
+				var dust_alpha := 0.8 * sqrt(level) * lerpf(1.0, 0.08, _night_weight)
+				emitter.color = Color(dust_tint.r, dust_tint.g, dust_tint.b, dust_alpha)
 		_dust_levels[i] = level
 		_emitters[i].emitting = level > 0.015
 		dirt_activity += level
@@ -199,13 +211,14 @@ func _build_dust_emitters() -> void:
 	var dust_material := StandardMaterial3D.new()
 	dust_material.shading_mode = BaseMaterial3D.SHADING_MODE_UNSHADED
 	dust_material.transparency = BaseMaterial3D.TRANSPARENCY_ALPHA
-	dust_material.albedo_color = Color(0.79, 0.68, 0.53, 0.5)
+	dust_material.vertex_color_use_as_albedo = true
+	dust_material.albedo_color = Color(0.79, 0.68, 0.53, 0.34)
 	dust_material.albedo_texture = SMOKE_TEXTURE
 	dust_material.billboard_mode = BaseMaterial3D.BILLBOARD_ENABLED
 	dust_material.depth_draw_mode = BaseMaterial3D.DEPTH_DRAW_DISABLED
 	dust_material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
 	var dust_quad := QuadMesh.new()
-	dust_quad.size = Vector2(0.31, 0.31)
+	dust_quad.size = Vector2(0.20, 0.20)
 	dust_quad.material = dust_material
 	for i in 4:
 		var wheel := _wheel_nodes[i] as MeshInstance3D
@@ -231,9 +244,9 @@ func _build_dust_emitters() -> void:
 		particles.initial_velocity_max = 0.82
 		particles.linear_accel_min = 0.03
 		particles.linear_accel_max = 0.22
-		particles.scale_amount_min = 0.42
-		particles.scale_amount_max = 1.05
-		particles.color = Color(1.0, 0.92, 0.81, 0.6)
+		particles.scale_amount_min = 0.35
+		particles.scale_amount_max = 0.8
+		particles.color = Color(1.0, 0.92, 0.81, 0.45)
 		particles.visibility_aabb = AABB(Vector3(-2.5, -1.0, -2.5), Vector3(5.0, 4.0, 5.0))
 		add_child(particles)
 		_emitters.append(particles)
@@ -252,8 +265,10 @@ func _build_vehicle_lights() -> void:
 	sphere.rings = 6
 	for side in [-1.0, 1.0]:
 		var head_position := Vector3(side * half_width, body_y, front_z)
-		var head_material := _make_lens_material(Color(1.0, 0.79, 0.48), 0.25)
+		var head_color := Color(1.0, 0.79, 0.48)
+		var head_material := _make_lens_material(head_color, 0.25)
 		_headlight_materials.append(head_material)
+		_headlight_lens_colors.append(head_color)
 		_add_lens(sphere, head_material, head_position, Vector3(0.88, 0.7, 0.55), "HeadlightLens")
 		var spot := SpotLight3D.new()
 		spot.name = "HeadlightBeam"
@@ -267,12 +282,17 @@ func _build_vehicle_lights() -> void:
 		_vehicle_root.add_child(spot)
 		_headlight_lights.append(spot)
 		var tail_position := Vector3(side * half_width * 0.83, body_y, rear_z)
-		var tail_material := _make_lens_material(Color(1.0, 0.025, 0.012), 0.18)
+		var tail_color := Color(1.0, 0.025, 0.012)
+		var tail_material := _make_lens_material(tail_color, 0.18)
 		_tail_materials.append(tail_material)
+		_tail_lens_colors.append(tail_color)
 		_add_lens(sphere, tail_material, tail_position, Vector3(0.78, 0.65, 0.55), "TailLightLens")
-		var reverse_material := _make_lens_material(Color(0.78, 0.83, 0.93), 0.0)
+		var reverse_color := Color(0.78, 0.83, 0.93)
+		var reverse_material := _make_lens_material(reverse_color, 0.0)
 		_reverse_materials.append(reverse_material)
+		_reverse_lens_colors.append(reverse_color)
 		_add_lens(sphere, reverse_material, tail_position + Vector3(-side * 0.018, 0.0, 0.0), Vector3(0.48, 0.38, 0.28), "ReverseLightLens")
+	_update_lights({}, {}, _night_weight)
 
 
 func _body_bounds_in_vehicle_space() -> AABB:
@@ -327,10 +347,12 @@ func _make_lens_material(color: Color, initial_energy: float) -> StandardMateria
 
 func _update_lights(telemetry: Dictionary, controls: Dictionary, night_weight: float) -> void:
 	var night := clampf(night_weight, 0.0, 1.0) if is_finite(night_weight) else 0.0
+	_night_weight = night
 	_last_headlight_energy = lerpf(0.18, 2.4, night) if headlights_enabled else 0.0
 	for i in _headlight_lights.size():
 		_headlight_lights[i].light_energy = _last_headlight_energy
 		_headlight_materials[i].emission_energy_multiplier = lerpf(0.28, 1.9, night) if headlights_enabled else 0.0
+		_headlight_materials[i].albedo_color = _headlight_lens_colors[i] if headlights_enabled else _headlight_lens_colors[i] * 0.12
 	var brake_value: Variant = controls.get("brake", 0.0)
 	_brake_lights = typeof(brake_value) in [TYPE_FLOAT, TYPE_INT] and float(brake_value) >= 0.08
 	_reverse_lights = bool(controls.get("reverse", false))
@@ -338,16 +360,22 @@ func _update_lights(telemetry: Dictionary, controls: Dictionary, night_weight: f
 
 
 func _apply_tail_light_state() -> void:
-	for material in _tail_materials:
-		material.emission_energy_multiplier = 2.1 if _brake_lights else 0.24
-	for material in _reverse_materials:
-		material.emission_energy_multiplier = 1.25 if _reverse_lights else 0.0
+	for i in _tail_materials.size():
+		_tail_materials[i].emission_energy_multiplier = 2.1 if _brake_lights else 0.24
+		_tail_materials[i].albedo_color = _tail_lens_colors[i] if _brake_lights else _tail_lens_colors[i] * 0.14
+	for i in _reverse_materials.size():
+		_reverse_materials[i].emission_energy_multiplier = 1.25 if _reverse_lights else 0.0
+		_reverse_materials[i].albedo_color = _reverse_lens_colors[i] if _reverse_lights else _reverse_lens_colors[i] * 0.10
 
 
 func _clear_dust_levels() -> void:
 	for i in 4:
 		_dust_levels[i] = 0.0
 		_emitters[i].emitting = false
+
+
+static func _vector3_is_finite(value: Vector3) -> bool:
+	return is_finite(value.x) and is_finite(value.y) and is_finite(value.z)
 
 
 static func _surface_dust_factor(surface_id: String) -> float:

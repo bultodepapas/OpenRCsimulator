@@ -1,0 +1,42 @@
+[
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\helicopter_main.gd",
+    "Hash": "CAD3125E62F158933C9DF9DB63FA73D4A55ABD487707F853739F118D95F04AD7"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\sim\\helicopter_flight_session.gd",
+    "Hash": "00C179339975BA074376ECDFDDACAA5D1999B12F417AA3B6C75DA99062686D4D"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\sim\\simulation.gd",
+    "Hash": "A8A63DCBE145215EE0882D18A0BC0772575A745E761414C5BD79124D9C044055"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\physics\\rotorcraft\\impact_detector.gd",
+    "Hash": "9F2BDA0BEA24955765251B04A6E5F98D48B4321596D9C18BDAC66A70B48FB5F6"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\rotor\\heli_wreck.gd",
+    "Hash": "0B92CD2C8EFA50DE076CE1F7C7A63380DDD7FD627662C285654D504AFAD453C7"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\rotor\\heli_crash_presentation.gd",
+    "Hash": "3485F4DB0FF66B1274A85C6F0AD310EB8B298A7523640271DE14153F4FB53EA4"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\crash\\wreck.gd",
+    "Hash": "29B14F6BCDF72FB45C4A41053033E049E9DEA9B864DF496BFF57FD9B889544E3"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\app\\render\\crash\\effects.gd",
+    "Hash": "9675A5435EACFE9D9F8DAE68F3130675F4C31BE360FB4490F03819826767AE0B"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\helicopter\\crashes\\capture.gd",
+    "Hash": "22B3110819469F5F1E788EAD6DC8AF95CCBEB46E2B2263EC4B594FC9D0F9B3CD"
+  },
+  {
+    "Path": "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\helicopter\\crashes\\fixtures.gd",
+    "Hash": "E8AB3BE1FA0F5AD7D2A31D9E53A3EB3D3F2C8CAF6074CDAD95A1973DD98DB960"
+  }
+]

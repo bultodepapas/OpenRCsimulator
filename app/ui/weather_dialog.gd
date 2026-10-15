@@ -1,4 +1,4 @@
-# Draft-only flight conditions dialog. Legacy v1/v2 weather stays unchanged until its controls are edited.
+# Draft-only flight conditions dialog. Legacy weather keeps its source format until its controls are edited.
 extends CanvasLayer
 
 const Screen := preload("res://ui/screen.gd")
@@ -215,7 +215,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	atmosphere_page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	atmosphere_page.visible = false
 	page_stack.add_child(atmosphere_page)
-	atmosphere_page.add_child(_label("Field atmosphere is uniform for the flight. Reference air uses a fixed 1.225 kg/m³ baseline.", "SecondaryLabel", true))
+	atmosphere_page.add_child(_label("Reference and custom field atmosphere are uniform; standard ISA changes with altitude.", "SecondaryLabel", true))
 	var atmosphere_mode_row: HBoxContainer = HBoxContainer.new()
 	atmosphere_mode_row.add_theme_constant_override("separation", 18)
 	atmosphere_mode_row.add_child(_label("Atmosphere mode", "SecondaryLabel"))
@@ -225,6 +225,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	atmosphere_mode_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	atmosphere_mode_picker.add_item(tr("Reference air"))
 	atmosphere_mode_picker.add_item(tr("Custom field conditions"))
+	atmosphere_mode_picker.add_item(tr("Standard atmosphere by altitude"))
 	_set_atmosphere_mode_titles()
 	atmosphere_mode_picker.item_selected.connect(_on_atmosphere_mode_selected)
 	atmosphere_mode_row.add_child(atmosphere_mode_picker)
@@ -336,10 +337,31 @@ func _set_tab_titles() -> void:
 
 
 func _set_atmosphere_mode_titles() -> void:
-	if atmosphere_mode_picker == null or atmosphere_mode_picker.item_count < 2:
+	if atmosphere_mode_picker == null or atmosphere_mode_picker.item_count < 3:
 		return
 	atmosphere_mode_picker.set_item_text(0, tr("Reference air"))
 	atmosphere_mode_picker.set_item_text(1, tr("Custom field conditions"))
+	atmosphere_mode_picker.set_item_text(2, tr("Standard atmosphere by altitude"))
+
+
+func _atmosphere_mode_index(mode: String) -> int:
+	match mode:
+		"custom":
+			return 1
+		"standard_column":
+			return 2
+		_:
+			return 0
+
+
+func _selected_atmosphere_mode() -> String:
+	match atmosphere_mode_picker.selected:
+		1:
+			return "custom"
+		2:
+			return "standard_column"
+		_:
+			return "reference"
 
 
 func _set_atmosphere_field_labels() -> void:
@@ -404,7 +426,9 @@ func _set_fields(config: Dictionary, selected_preset: int = 0) -> void:
 	_initial_turbulence_text["seed"] = seed_text
 	_initial_turbulence_enabled = WeatherSettings.has_turbulence(_base_config)
 	turbulence_enabled.set_pressed_no_signal(_initial_turbulence_enabled)
-	_atmosphere_source_config = _base_config.duplicate(true) if _base_config.get("format") == WeatherSettings.ATMOSPHERE_FORMAT else WeatherSettings.upgrade_atmosphere(_base_config)
+	var source_format: String = String(_base_config.get("format", ""))
+	_atmosphere_source_config = _base_config.duplicate(true) if source_format in [WeatherSettings.ATMOSPHERE_FORMAT, WeatherSettings.COLUMN_FORMAT] \
+		else WeatherSettings.upgrade_atmosphere(_base_config)
 	_initial_atmosphere_mode = String(_atmosphere_source_config.get("atmosphere_mode", "reference"))
 	_atmosphere_touched = false
 	_initial_atmosphere_text.clear()
@@ -414,7 +438,7 @@ func _set_fields(config: Dictionary, selected_preset: int = 0) -> void:
 		atmosphere_edit.text = atmosphere_text
 		_initial_atmosphere_text[key] = atmosphere_text
 		_sync_slider_from_text(atmosphere_sliders[key], atmosphere_text)
-	atmosphere_mode_picker.select(1 if _initial_atmosphere_mode == "custom" else 0)
+	atmosphere_mode_picker.select(_atmosphere_mode_index(_initial_atmosphere_mode))
 	_update_atmosphere_controls()
 	_update_atmosphere_preview()
 	if preset_picker != null:
@@ -495,6 +519,9 @@ func _on_atmosphere_mode_selected(_index: int) -> void:
 func _on_atmosphere_field_changed(_text: String, _key: String) -> void:
 	if _setting_fields:
 		return
+	var mode: String = _selected_atmosphere_mode()
+	if mode == "reference" or (mode == "standard_column" and _key != "field_elevation_m"):
+		return
 	if atmosphere_sliders.has(_key):
 		_sync_slider_from_text(atmosphere_sliders[_key], _text)
 	_atmosphere_touched = true
@@ -508,26 +535,48 @@ func _on_atmosphere_field_changed(_text: String, _key: String) -> void:
 func _update_atmosphere_controls() -> void:
 	if atmosphere_mode_picker == null or atmosphere_page == null:
 		return
-	var custom: bool = atmosphere_mode_picker.selected == 1
+	var mode: String = _selected_atmosphere_mode()
+	var custom: bool = mode == "custom"
+	var standard_column: bool = mode == "standard_column"
 	for key: String in ATMOSPHERE_EDITED_KEYS:
 		var edit: LineEdit = atmosphere_inputs[key]
-		edit.editable = custom
+		var active: bool = custom or (standard_column and key == "field_elevation_m")
+		edit.editable = active
+		edit.modulate = Color.WHITE if active else Color(0.72, 0.76, 0.75, 1.0)
 		var slider: HSlider = atmosphere_sliders[key]
-		slider.focus_mode = Control.FOCUS_ALL if custom else Control.FOCUS_NONE
-		slider.mouse_filter = Control.MOUSE_FILTER_STOP if custom else Control.MOUSE_FILTER_IGNORE
-		slider.modulate = Color.WHITE if custom else Color(0.72, 0.76, 0.75, 1.0)
-	atmosphere_note.text = tr("Custom field conditions set the modeled air density for this flight.") if custom \
-		else tr("Reference air keeps the modeled density at 1.225 kg/m³.")
+		if key == "field_elevation_m":
+			# The configured field datum remains bounded to −500..4000 m. The selected
+			# standard column is sampled at aircraft geometric altitude through 11000 m.
+			slider.max_value = float(SLIDER_SPECS[key].max)
+			slider.min_value = float(SLIDER_SPECS[key].min)
+			_sync_slider_from_text(slider, edit.text)
+		slider.focus_mode = Control.FOCUS_ALL if active else Control.FOCUS_NONE
+		slider.mouse_filter = Control.MOUSE_FILTER_STOP if active else Control.MOUSE_FILTER_IGNORE
+		slider.modulate = Color.WHITE if active else Color(0.72, 0.76, 0.75, 1.0)
+	if custom:
+		atmosphere_note.text = tr("Custom field conditions set the modeled air density for this flight.")
+	elif standard_column:
+		atmosphere_note.text = tr("Standard dry ISA density varies with geometric altitude from −500 to 11,000 m. This is a reference profile, not measured weather.")
+	else:
+		atmosphere_note.text = tr("Reference air keeps the modeled density at 1.225 kg/m³.")
 
 
 func _update_atmosphere_preview() -> void:
 	if atmosphere_preview == null or atmosphere_mode_picker == null:
 		return
-	var changes: Dictionary = { "atmosphere_mode": "custom" if atmosphere_mode_picker.selected == 1 else "reference" }
+	var mode: String = _selected_atmosphere_mode()
+	var changes: Dictionary = { "atmosphere_mode": mode }
 	for key: String in ATMOSPHERE_EDITED_KEYS:
 		var edit: LineEdit = atmosphere_inputs[key]
-		changes[key] = edit.text.to_float() if edit.text.is_valid_float() else edit.text
-	var draft: Dictionary = WeatherSettings.upgrade_atmosphere(_base_config, changes)
+		var active: bool = mode == "custom" or (mode == "standard_column" and key == "field_elevation_m")
+		if not active:
+			changes[key] = _atmosphere_source_config[key]
+		else:
+			changes[key] = edit.text.to_float() if edit.text.is_valid_float() else edit.text
+	var keep_column: bool = _base_config.get("format", "") == WeatherSettings.COLUMN_FORMAT \
+		or mode == "standard_column"
+	var draft: Dictionary = WeatherSettings.upgrade_column(_base_config, changes) if keep_column \
+		else WeatherSettings.upgrade_atmosphere(_base_config, changes)
 	var air: Dictionary = WeatherSettings.atmosphere(draft)
 	if not air.get("ok", false):
 		atmosphere_preview.text = tr("Density preview is unavailable until all field values are valid.")
@@ -622,25 +671,36 @@ func _on_apply() -> void:
 			changed_turbulence = true
 	turbulence_enabled.set_pressed_no_signal(any_rms)
 	var base_is_atmosphere: bool = _base_config.get("format", "") == WeatherSettings.ATMOSPHERE_FORMAT
-	if base_is_atmosphere or _base_config.get("format", "") == WeatherSettings.TURBULENCE_FORMAT or any_rms or changed_turbulence:
-		raw["format"] = WeatherSettings.ATMOSPHERE_FORMAT if base_is_atmosphere else WeatherSettings.TURBULENCE_FORMAT
+	var base_is_column: bool = _base_config.get("format", "") == WeatherSettings.COLUMN_FORMAT
+	if base_is_atmosphere or base_is_column or _base_config.get("format", "") == WeatherSettings.TURBULENCE_FORMAT \
+			or any_rms or changed_turbulence:
+		if base_is_column:
+			raw["format"] = WeatherSettings.COLUMN_FORMAT
+		elif base_is_atmosphere:
+			raw["format"] = WeatherSettings.ATMOSPHERE_FORMAT
+		else:
+			raw["format"] = WeatherSettings.TURBULENCE_FORMAT
 		raw["turbulence_rms_mps"] = sigma
 		raw["turbulence_tau_s"] = tau
 		raw["turbulence_seed"] = seed
-	if _atmosphere_touched or _base_config.get("format", "") == WeatherSettings.ATMOSPHERE_FORMAT:
-		var atmosphere_changes: Dictionary = {
-			"atmosphere_mode": "custom" if atmosphere_mode_picker.selected == 1 else "reference",
-		}
+	if _atmosphere_touched or base_is_atmosphere or base_is_column:
+		var mode: String = _selected_atmosphere_mode()
+		var atmosphere_changes: Dictionary = {"atmosphere_mode": mode}
 		for key: String in ATMOSPHERE_EDITED_KEYS:
 			var edit: LineEdit = atmosphere_inputs[key]
-			if edit.text == String(_initial_atmosphere_text[key]):
+			var active: bool = mode == "custom" or (mode == "standard_column" and key == "field_elevation_m")
+			if not active:
+				atmosphere_changes[key] = _atmosphere_source_config[key]
+			elif edit.text == String(_initial_atmosphere_text[key]):
 				atmosphere_changes[key] = _atmosphere_source_config[key]
 			elif not edit.text.is_valid_float():
 				_show_error()
 				return
 			else:
 				atmosphere_changes[key] = edit.text.to_float()
-		raw = WeatherSettings.upgrade_atmosphere(raw, atmosphere_changes)
+		var keep_column: bool = base_is_column or mode == "standard_column"
+		raw = WeatherSettings.upgrade_column(raw, atmosphere_changes) if keep_column \
+			else WeatherSettings.upgrade_atmosphere(raw, atmosphere_changes)
 	var checked: Dictionary = WeatherSettings.validate(raw)
 	if not checked.ok:
 		_show_error()

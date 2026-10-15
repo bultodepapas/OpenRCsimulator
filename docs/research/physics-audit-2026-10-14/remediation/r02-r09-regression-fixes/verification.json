@@ -1,0 +1,59 @@
+{
+  "purpose": "software regression, not physical validation",
+  "results": [
+    {
+      "name": "tail_downwash",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_tail_downwash.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 0.937,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "dynamics",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_dynamics.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 1.14,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "wind_field",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wind_field.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 0.359,
+      "ok": true,
+      "errors": []
+    }
+  ],
+  "source_drift": [],
+  "stable_source": true,
+  "ok": true
+}

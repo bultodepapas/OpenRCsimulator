@@ -1,0 +1,121 @@
+[
+  {
+    "name": "test_aero",
+    "exit": 0,
+    "s": 1.08,
+    "summary": [
+      "23 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_aero_flow",
+    "exit": 1,
+    "s": 9.7,
+    "summary": [
+      "FAIL turbo-lumber-evolution sample 2248: 0.00734629845977 != 0.0",
+      "FAIL turbo-lumber-evolution sample 2266: 0.00007019393993 != 0.0",
+      "FAIL turbo-lumber-evolution sample 2280: 0.00063054517947 != 0.0",
+      "FAIL turbo-lumber-evolution sample 2312: 0.01762048058534 != 0.0",
+      "FAIL turbo-lumber-evolution sample 2348: 0.01991146410369 != 0.0",
+      "FAIL turbo-lumber-evolution sample 2372: 0.01272903070544 != 0.0",
+      "FAIL turbo-lumber-evolution sample 2416: 0.00438267359391 != 0.0",
+      "FAIL turbo-lumber-evolution sample 2436: 0.00835135358139 != 0.0",
+      "FAIL turbo-lumber-evolution sample 2454: 0.03333596887568 != 0.0",
+      "FAIL turbo-lumber-evolution sample 2460: 0.02309942521357 != 0.0",
+      "FAIL local loads jensen-das-ugly-stik-60 sample 1: [63.3153745126484, 7.01503560635108, -314.72093897485, 26.2424914677355, -51.0140245910649, 0.22892737823632] != [73.4402466289301, 79.1919429387803, -321.119837351359, 28.75086892539, -53.2596714713429, -14.1879836746134]",
+      "FAIL local loads jensen-das-ugly-stik-60 sample 2: [-82.1252720985116, -21.0034440970958, -463.980761786083, 5.66007299105898, -54.7321830760111, 19.7903275911568] != [-92.8447685033068, -113.921300347586, -472.748434642999, 2.10207133014145, -56.6982356245618, 34.6611481642405]",
+      "FAIL local loads jensen-das-ugly-stik-60 sample 3: [-8.1605633776716, 24.9245780230877, -329.14586387063, 36.2026445084793, -36.813710742689, -4.84879820508591] != [-12.8460292915871, 56.5994415736304, -335.842745077405, 36.6850745394287, -41.0266370069548, -12.5721111778461]",
+      "FAIL local loads jensen-das-ugly-stik-60 sample 4: [57.5805603592344, 33.3352868937881, -259.407279470804, 18.4629656473083, -41.451897199461, -22.5026138425557] != [72.203846177724, 109.097817772699, -275.701404156002, 20.6366208409342, -51.0796988945352, -42.5253240950341]",
+      "FAIL local loads jensen-das-ugly-stik-60 sample 6: [11.8906759850527, -0.59395664025058, 65.255520207803, 1.46365094881011, -4.24283489734998, -0.20164274004045] != [13.7957428311914, -12.1137840330546, 65.8362349668993, 0.64837807586087, -4.34413815507405, -0.31934294112194]"
+    ]
+  },
+  {
+    "name": "test_downwash_lag",
+    "exit": 1,
+    "s": 5.44,
+    "summary": [
+      "FAIL sebart-avanti-s-a200-p100rx (downwash gradient declared): one lagged wing CL after the anchors",
+      "FAIL lag = instantaneous wing CL reproduces the quasi-static local loads byte for byte (2000 states incl. stall, rates, controls)  0/2000",
+      "FAIL D11g: and the quasi-static oracle loads byte for byte (settled lag adds nothing)  0/2000",
+      "FAIL selector uses lagged CL while the static call remains unchanged  static 0.000000, actual 0.000000, expected 0.350453",
+      "FAIL Aero.loads applies the lag-aware blend and passes the lag to both load laws  actual pitch 3.290046, lag-weighted 3.576939, static 3.515615 N\u00b7m",
+      "20 checks, 5 failed"
+    ]
+  },
+  {
+    "name": "test_slipstream_downwash",
+    "exit": 1,
+    "s": 2.11,
+    "summary": [
+      "ok tail helper matches existing local tail in 300 held-lag/rate/stall cases worst 2.1316282072803006e-14",
+      "FAIL NAN solves instantaneous wing CL exactly ",
+      "E0b3a: 15 checks, 1 failed"
+    ]
+  },
+  {
+    "name": "test_slipstream_scalar",
+    "exit": 1,
+    "s": 4.94,
+    "summary": [
+      "FAIL p51d-mustang-120 sample 0: [-0.00017235489667, -0.00008233196799, 0.00021476116886, -0.00002627315244, 0.00028894624244, 0.00010504647302] != [-0.00021681251727, -0.00005896950914, -0.00049563092371, -0.00000886331475, -0.0006311804048, 0.00006357231788]",
+      "FAIL p51d-mustang-120 sample 1: [-5.03352273593265, 7.33607671786435, 10.8846775979624, 1.1469051714305, 14.0593174658725, -9.86170607042544] != [-5.04292246215424, 7.65667819258496, 10.8430607011551, 1.19852189228794, 14.0061447573437, -10.2494710407122]",
+      "FAIL p51d-mustang-120 sample 2: [0.15085659556096, -0.18227525135177, 0.18054000442896, -0.31444443766258, 0.1791040392675, 0.24370109237212] != [0.15067873632567, -0.18237337672945, 0.18857143765408, -0.31446276064591, 0.18966308537009, 0.24383617403497]",
+      "FAIL p51d-mustang-120 sample 3: [0.08491190391047, 20.0390678037867, 5.72955328365974, 5.72354842954881, 6.73082882337861, -26.3618110249423] != [0.0327052849259, 20.1552121835366, 6.21578842670597, 5.7415440684471, 7.38676659326081, -26.4990727125671]",
+      "FAIL p51d-mustang-120 sample 4: [0.24248456936302, 0.0, 0.59593814202056, -0.12936722535834, 0.67847638709139, 0.05265418608526] != [0.2433748040706, -0.02986157787179, 0.59579654753553, -0.13412279401864, 0.67816321529146, 0.08880118463559]"
+    ]
+  },
+  {
+    "name": "test_swirl_loads",
+    "exit": 1,
+    "s": 0.22,
+    "summary": [
+      "ERROR: Attempt to open script 'res://tests/test_swirl_loads.gd' resulted in error 'File not found'.",
+      "ERROR: Failed loading resource: res://tests/test_swirl_loads.gd.",
+      "ERROR: Can't load script: res://tests/test_swirl_loads.gd"
+    ]
+  },
+  {
+    "name": "test_wing_polar",
+    "exit": 0,
+    "s": 1.25,
+    "summary": [
+      "D8b-R2 polar: 111 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_wing_polar_session",
+    "exit": 0,
+    "s": 4.56,
+    "summary": [
+      "D8b-R2 session: 8 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_ground_effect",
+    "exit": 1,
+    "s": 2.28,
+    "summary": [
+      "FAIL h/b 0.05: default selector retains its static result but explicit ground factors select local flow  static 0.000000, actual 0.002535, expected 0.002530",
+      "FAIL Aero.loads applies the ground-aware tail blend",
+      "FAIL the lagged downwash state starts settled on the in-ground-effect wing CL  CL 0.42183 in ground effect, 0.40702 free",
+      "50 checks, 3 failed"
+    ]
+  },
+  {
+    "name": "test_checkpoint",
+    "exit": 0,
+    "s": 3.16,
+    "summary": [
+      "H8 checkpoints: 92 checks, 0 failed"
+    ]
+  },
+  {
+    "name": "test_turbine_continuous",
+    "exit": 0,
+    "s": 3.26,
+    "summary": [
+      "ok all planned checks executed ",
+      "46 checks, 0 failed"
+    ]
+  }
+]

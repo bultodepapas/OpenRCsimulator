@@ -3,14 +3,10 @@
 extends RefCounted
 const M := preload("res://physics/math3d.gd")
 const RB := preload("res://physics/rigid_body.gd")
+const MassInventory := preload("res://physics/mass_inventory.gd")
 
 static func tensor_per_kg(position: PackedFloat64Array, size: PackedFloat64Array) -> PackedFloat64Array:
-	var x: float = position[0]
-	var y: float = position[1]
-	var z: float = position[2]
-	return PackedFloat64Array([(size[1]*size[1]+size[2]*size[2])/12.0+y*y+z*z,
-		(size[0]*size[0]+size[2]*size[2])/12.0+x*x+z*z,
-		(size[0]*size[0]+size[1]*size[1])/12.0+x*x+y*y, -x*y, -x*z, -y*z])
+	return MassInventory.rectangular_box_per_kg(position, size)
 
 static func evaluate(wet_mass: float, wet_inertia: PackedFloat64Array, initial_fuel: float,
 		remaining: float, tank_position: PackedFloat64Array, tank_size: PackedFloat64Array) -> Dictionary:

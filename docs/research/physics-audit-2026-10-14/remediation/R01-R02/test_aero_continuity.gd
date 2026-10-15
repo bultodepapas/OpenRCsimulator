@@ -14,6 +14,7 @@ const AVANTI := "sebart-avanti-s-a200-p100rx"
 const RHO := 1.225
 const SPEED := 20.0
 const ZERO := { elevator = 0.0, aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0 }
+const WASH_PIECES := [["horizontal", 1.0], ["horizontal", -1.0], ["vertical", 1.0]]
 
 var checks := 0
 var failures := 0
@@ -129,7 +130,7 @@ func _test_cartesian_boundary(id: String, authored: Dictionary) -> void:
 	var boundary_state := _state(M.v3(0.0, SPEED, 0.0), zero_rates)
 	var boundary_air := _air(boundary_state)
 	var reference: PackedFloat64Array = Aero._local_loads(boundary_state, boundary_air, ZERO, model, RHO)
-	var reference_wake: float = Aero.wing_lift_coefficient(boundary_state, boundary_air, ZERO, model)
+	var reference_wake: float = Aero.wing_wake_velocity(boundary_state, boundary_air, ZERO, model)
 	var rows: Array = Aero.wing_strip_loads(boundary_state, boundary_air, ZERO, model, RHO)
 	check("%s exact spanwise boundary is finite and retains all wing strips" % id,
 		_all_finite(reference) and rows.size() == model.envelope.station_ys.size(), str(reference))
@@ -148,7 +149,7 @@ func _test_cartesian_boundary(id: String, authored: Dictionary) -> void:
 			var state := _state(velocity, zero_rates)
 			var air := _air(state)
 			var actual: PackedFloat64Array = Aero._local_loads(state, air, ZERO, model, RHO)
-			var wake: float = Aero.wing_lift_coefficient(state, air, ZERO, model)
+			var wake: float = Aero.wing_wake_velocity(state, air, ZERO, model)
 			var error := _scaled_error(actual, reference, model, SPEED)
 			var wake_scale: float = maxf(1.0, absf(reference_wake))
 			var wake_error: float = absf(wake - reference_wake) / wake_scale
@@ -180,17 +181,21 @@ func _test_mixed_stagnant_strip(id: String, authored: Dictionary) -> void:
 	var base_state := _state(stagnant_velocity, rates)
 	var base_air := _air(base_state)
 	var base_rows: Array = Aero.wing_strip_loads(base_state, base_air, ZERO, model, RHO)
-	var base_wake: float = Aero.wing_lift_coefficient(base_state, base_air, ZERO, model)
+	var base_wake: float = Aero.wing_wake_velocity(base_state, base_air, ZERO, model)
 	var target_row: Dictionary = base_rows[target]
 	check("%s mixed case has one numerically stagnant station" % id,
-		float(target_row.speed_mps) < 1e-8 and float(target_row.lift_n) == 0.0 and float(target_row.drag_n) == 0.0,
-		"station=%d speed=%.9f" % [target, target_row.speed_mps])
+		float(target_row.plane_speed_mps) < 1e-12 and float(target_row.lift_n) == 0.0 and float(target_row.drag_n) == 0.0,
+		"station=%d plane speed=%.9f" % [target, target_row.plane_speed_mps])
 	var loaded_count := 0
+	var expected_wake := 0.0
 	for i in base_rows.size():
+		expected_wake += float(base_rows[i].plane_speed_mps) * float(base_rows[i].cl) / float(base_rows.size())
 		if i != target and float(base_rows[i].speed_mps) > 1e-4:
 			loaded_count += 1
 	check("%s mixed case retains loaded wing stations around the stagnant one" % id, loaded_count >= 2,
 		"loaded=%d" % loaded_count)
+	check("%s mixed wake is equal-area mean Vp times the force-producing strip CL" % id,
+		absf(base_wake - expected_wake) < 1e-12, "wake=%.9f expected=%.9f m/s" % [base_wake, expected_wake])
 	var q_s: float = 0.5 * RHO * SPEED * SPEED * float(model.reference.S)
 	var q_s_c: float = q_s * float(model.reference.c)
 	for path in [0, 1]:
@@ -210,7 +215,7 @@ func _test_mixed_stagnant_strip(id: String, authored: Dictionary) -> void:
 					absf(rows[i].force_body_n[axis] - base_rows[i].force_body_n[axis]) / q_s)
 				max_moment_error = maxf(max_moment_error,
 					absf(rows[i].moment_body_nm[axis] - base_rows[i].moment_body_nm[axis]) / q_s_c)
-		var wake: float = Aero.wing_lift_coefficient(state, air, ZERO, model)
+		var wake: float = Aero.wing_wake_velocity(state, air, ZERO, model)
 		var wake_error: float = absf(wake - base_wake) / maxf(1.0, absf(base_wake))
 		check("%s mixed stagnant/loaded path %d leaves loaded strips continuous" % [id, path],
 			max_force_error < 1e-7 and max_moment_error < 1e-7,
@@ -300,19 +305,58 @@ func _test_tail_wash_continuity(id: String, model: Dictionary) -> void:
 			_all_finite(reference) and max_error < 1e-7, "normalized=%.9f" % max_error)
 
 
-func _test_propwashed_tail_continuity(model: Dictionary) -> void:
-	var boundary := M.v3(0.0, SPEED, 0.0)
+static func _quantity(value: Variant, unit: String) -> Dictionary:
+	return {value = value, unit = unit, kind = "estimated", source = "R02 continuity fixture; geometry is manufactured, not a Stik wash calibration"}
+
+
+func _propwashed_test_model() -> Dictionary:
+	var raw: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry(STIK).data))
+	var prop: Dictionary = raw.propulsion.propeller
+	prop.thrust_angles = _quantity([0.0, 0.0], "deg")
+	var pieces: Array = []
+	for entry: Array in WASH_PIECES:
+		var vertical: bool = entry[0] == "vertical"
+		var tail: Dictionary = raw.aero.surfaces[entry[0]]
+		pieces.append({surface = entry[0], area = _quantity(0.016, "m2"),
+			root = _quantity([tail.position.value[0], 0.0, 0.0 if vertical else -0.04064], "m"),
+			span_dir = _quantity([0.0, 0.0, 1.0] if vertical else [0.0, entry[1], 0.0], "1"),
+			span = _quantity(0.08, "m"), chords = _quantity([0.2, 0.2], "m")})
+	prop.slipstream = {hub = _quantity([-0.293276, 0.0, 0.0], "m"),
+		wash_factor = _quantity([1.0, 1.0], "1"), swirl_factor = _quantity(0.0, "1"),
+		vertical_drift = _quantity(0.0, "1"), pieces = pieces}
+	var result: Dictionary = AD.validate_and_derive(raw)
+	check("manufactured active wash fixture validates", bool(result.get("ok", false)), str(result.get("errors", [])))
+	return result.model if result.get("ok", false) else {}
+
+
+func _test_propwashed_tail_continuity(_model: Dictionary) -> void:
+	var model := _propwashed_test_model()
+	if model.is_empty():
+		return
+	var boundary := M.v3(0.0, 0.0, 0.0)
 	var state := _state(boundary, zero_rates)
 	var air := _air(state)
-	var rpm := 6000.0
+	var rpm: float = model.propulsion.max_rpm
 	var reference: PackedFloat64Array = Slipstream.loads(state, air, ZERO, model, rpm, RHO)
-	for path in [0, 2]:
+	var reference_norm := 0.0
+	for value in reference:
+		reference_norm += value * value
+	check("synthetic active propwash produces a nonzero washed-minus-free load at zero ambient flow", sqrt(reference_norm) > 1e-6,
+		"load=%s" % str(reference))
+	for path in [0, 1, 2, 3]:
 		var epsilon: float = SPEED * 1e-9
 		var velocity := boundary.duplicate()
-		velocity[0 if path == 0 else 2] = epsilon
+		if path == 0:
+			velocity[0] = epsilon
+		elif path == 1:
+			velocity[0] = -epsilon
+		elif path == 2:
+			velocity[2] = epsilon
+		else:
+			velocity[2] = -epsilon
 		var candidate_state := _state(velocity, zero_rates)
 		var candidate_air := _air(candidate_state)
 		var actual: PackedFloat64Array = Slipstream.loads(candidate_state, candidate_air, ZERO, model, rpm, RHO)
 		var error := _scaled_error(actual, reference, model, SPEED)
-		check("Stik active propwash output remains continuous at a cross-flow boundary %d" % path,
+		check("Stik active propwash output remains continuous at zero ambient flow, approach %d" % path,
 			_all_finite(actual) and error < 1e-7, "normalized=%.9f" % error)

@@ -1,4 +1,4 @@
-# E0b3a: one E0a2 tail law for free and washed flow, using the session's held wing CL.
+# E0b3a/R02: one E0a2 tail law for free and washed flow, using the session's held wing lift-velocity source (m/s).
 # Manufactured rectangular wash pieces exercise compatibility, NOT a Stik geometry or wash calibration.
 extends SceneTree
 const AD = preload("res://physics/aircraft_data.gd")
@@ -119,7 +119,7 @@ func _authority(model: Dictionary) -> void:
 	var d: Dictionary = _deflections()
 	var tail: Dictionary = model.surfaces.horizontal
 	var v: PackedFloat64Array = M.v3(15, 0, 0)
-	var lag: float = float(tail.free_incidence) / float(tail.downwash_per_cl)
+	var lag: float = 15.0 * tan(float(tail.free_incidence)) / float(tail.downwash_per_cl)
 	var h: float = 1e-6
 	d.elevator = h
 	var plus: PackedFloat64Array = Aero.tail_surface_load(v, M.v3(0, 0, 0), d, model, "horizontal", tail.area, M.v3(0, 0, 0), M.v3(0, 0, 0), RHO, lag)
@@ -157,7 +157,7 @@ func _scalar_agreement(model: Dictionary) -> void:
 		d.elevator = rng.randf_range(-0.15, 0.15)
 		d.rudder = rng.randf_range(-0.15, 0.15)
 		var air: Dictionary = Air.compute(s, M.v3(0, 0, 0), RHO)
-		var lag: float = rng.randf_range(-0.4, 0.8)
+		var lag: float = rng.randf_range(-0.4, 0.8) * air.V # held wake velocity, preserving the former CL-scale range
 		var prop: Dictionary = model.propulsion
 		var tq: PackedFloat64Array = Propulsion.thrust_torque(air.v_air, prop.max_rpm, prop, RHO)
 		var w: Dictionary = Slipstream.wake(air.v_air, tq[0], tq[1], prop, RHO)
@@ -173,10 +173,10 @@ func _scalar_agreement(model: Dictionary) -> void:
 			for k in 6:
 				expected[k] += inc[k]
 		worst = maxf(worst, _error(Slipstream.loads(s, air, d, model, prop.max_rpm, RHO, lag), expected))
-		var cl: float = Aero.wing_lift_coefficient(s, air, d, model)
-		quasi_same = quasi_same and Slipstream.loads(s, air, d, model, prop.max_rpm, RHO).to_byte_array() == Slipstream.loads(s, air, d, model, prop.max_rpm, RHO, cl).to_byte_array()
+		var wake: float = Aero.wing_wake_velocity(s, air, d, model)
+		quasi_same = quasi_same and Slipstream.loads(s, air, d, model, prop.max_rpm, RHO).to_byte_array() == Slipstream.loads(s, air, d, model, prop.max_rpm, RHO, wake).to_byte_array()
 	_check("scalar washed-minus-free loads match the tested tail law", worst < 1e-10 and immersed > 500, "worst %s; %d immersed pieces" % [String.num_scientific(worst), immersed])
-	_check("NAN solves instantaneous wing CL exactly", quasi_same)
+	_check("NAN solves instantaneous wing lift-velocity source exactly", quasi_same)
 
 
 func _session_lag(model: Dictionary) -> void:
@@ -201,7 +201,7 @@ func _session_lag(model: Dictionary) -> void:
 	for k in 6:
 		expected[k] += propulsion[k]
 		expected[k] += wash[k]
-	_check("real session feeds held lag to both aero and wash", _error(flight._loads(s, 0.0), expected) < 1e-12)
+	_check("real session feeds held m/s wake source to both aero and wash", _error(flight._loads(s, 0.0), expected) < 1e-12)
 	var quasi: PackedFloat64Array = Slipstream.loads(s, air, d, model, aux[0], RHO)
 	_check("lag plumbing test is not vacuous", _error(wash, quasi) > 0.01)
 	var disabled: Dictionary = model.duplicate(true)

@@ -1,0 +1,62 @@
+{
+  "constants": {
+    "dry_air_gas_constant_j_kg_k": 287.05287,
+    "effective_earth_radius_m": 6356766.0,
+    "sea_level_pressure_pa": 101325.0,
+    "sea_level_temperature_k": 288.15,
+    "standard_gravity_mps2": 9.80665,
+    "troposphere_lapse_k_per_m": 0.0065
+  },
+  "method": "independent standard-atmosphere equations; no app imports",
+  "rows": [
+    {
+      "dry_density_kgm3": 1.2848954220068014,
+      "geometric_altitude_m": -500.0,
+      "geopotential_altitude_m": -500.03933126776,
+      "pressure_pa": 107478.0067549874,
+      "sigma_against_legacy_1_225": 1.0488942220463684,
+      "temperature_k": 291.40025565324044
+    },
+    {
+      "dry_density_kgm3": 1.225000018124288,
+      "geometric_altitude_m": 0.0,
+      "geopotential_altitude_m": 0.0,
+      "pressure_pa": 101325.0,
+      "sigma_against_legacy_1_225": 1.000000014795337,
+      "temperature_k": 288.15
+    },
+    {
+      "dry_density_kgm3": 1.2191306776782016,
+      "geometric_altitude_m": 50.0,
+      "geopotential_altitude_m": 49.99960672135232,
+      "pressure_pa": 100725.78723718651,
+      "sigma_against_legacy_1_225": 0.9952087164720013,
+      "temperature_k": 287.8250025563112
+    },
+    {
+      "dry_density_kgm3": 1.1672732849512553,
+      "geometric_altitude_m": 500.0,
+      "geopotential_altitude_m": 499.9606749190611,
+      "pressure_pa": 95461.28549146843,
+      "sigma_against_legacy_1_225": 0.9528761509806165,
+      "temperature_k": 284.9002556130261
+    },
+    {
+      "dry_density_kgm3": 1.111659673699691,
+      "geometric_altitude_m": 1000.0,
+      "geopotential_altitude_m": 999.8427120469674,
+      "pressure_pa": 89876.27760234236,
+      "sigma_against_legacy_1_225": 0.907477284652809,
+      "temperature_k": 281.6510223716947
+    },
+    {
+      "dry_density_kgm3": 0.36480143683538274,
+      "geometric_altitude_m": 11000.0,
+      "geopotential_altitude_m": 10980.99804546838,
+      "pressure_pa": 22699.936837004112,
+      "sigma_against_legacy_1_225": 0.29779709129418996,
+      "temperature_k": 216.77351270445553
+    }
+  ],
+  "sea_level_density_minus_legacy_literal_kgm3": 1.8124287848308995e-08
+}

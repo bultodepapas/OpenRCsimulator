@@ -1,0 +1,834 @@
+{
+  "purpose": "software regression, not physical validation",
+  "results": [
+    {
+      "name": "aero",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aero.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 1.109,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "aero_flow",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aero_flow.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 12.515,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "aero_continuity",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_aero_continuity.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 1.187,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "wing_polar",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wing_polar.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 1.641,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "wing_polar_session",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wing_polar_session.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 4.75,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "downwash_lag",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_downwash_lag.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 5.828,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "tail_downwash",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_tail_downwash.gd"
+      ],
+      "exit_code": 1,
+      "seconds": 0.797,
+      "ok": false,
+      "errors": [
+        "FAIL no rates, \u03b1 \u22122\u20266\u00b0, elevator \u00b10.05 rad: lift identical to the former law (static CL\u03b1, Cm\u03b1, Cmde kept)  worst relative 7.841412930978617e-05"
+      ]
+    },
+    {
+      "name": "ground_effect",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ground_effect.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 2.594,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "dynamics",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_dynamics.gd"
+      ],
+      "exit_code": 1,
+      "seconds": 1.047,
+      "ok": false,
+      "errors": [
+        "FAIL full Jacobian retains the rotor q\u2192r gyroscopic coupling \u0394A[r\u0307,q] 0.39075169523680275 vs J\u207b\u00b9(0,0,h)z 0.39070508898250667"
+      ]
+    },
+    {
+      "name": "propulsion",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_propulsion.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 0.969,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "propulsion_scalar",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_propulsion_scalar.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 5.156,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "propeller_wake",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_propeller_wake.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 1.046,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "slipstream_scalar",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_slipstream_scalar.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 5.25,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "slipstream_downwash",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_slipstream_downwash.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 2.25,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "wash_profile",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wash_profile.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 1.453,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "wash_transport",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wash_transport.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 5.594,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "swirl_accuracy",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_swirl_accuracy.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 3.11,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "swirl_optimization",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_swirl_optimization.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 2.172,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "swirl_torque",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_swirl_torque.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 1.172,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "turbine",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_turbine.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 0.875,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "turbine_continuous",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_turbine_continuous.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 3.734,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "avanti_handling",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_avanti_handling.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 21.844,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "ground_start_integrity",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ground_start_integrity.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 2.5,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "ground_start_environment",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ground_start_environment.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 1.359,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "retractable_gear_ground",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_retractable_gear_ground.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 14.485,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "runway_transaction",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_runway_transaction.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 2.797,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "simulation",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_simulation.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 0.328,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "checkpoint",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_checkpoint.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 3.578,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "replay_integrity",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_replay_integrity.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 12.875,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "flight_log",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_flight_log.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 11.875,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "modes",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_modes.gd"
+      ],
+      "exit_code": 1,
+      "seconds": 2.671,
+      "ok": false,
+      "errors": [
+        "FAIL 10 m/s phugoid \u03b6 0.0688 vs 0.0828",
+        "FAIL 10 m/s signed spiral eigenvalue 0.4869 vs 0.4505",
+        "FAIL 15 m/s phugoid \u03b6 0.2865 vs 0.3030"
+      ]
+    },
+    {
+      "name": "rigid_body",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rigid_body.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 0.703,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "rotor_coupling",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_rotor_coupling.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 0.813,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "shaft_equilibrium",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_shaft_equilibrium.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 1.313,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "shaft_data",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_shaft_data.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 4.031,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "mass_inventory",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_mass_inventory.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 0.312,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "glow_flight_physics",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_glow_flight_physics.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 1.282,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "glow_installation",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_glow_installation.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 1.172,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "atmosphere",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_atmosphere.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 0.609,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "atmosphere_column",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_atmosphere_column.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 0.344,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "atmosphere_flight",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_atmosphere_flight.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 8.828,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "atmosphere_column_session",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_atmosphere_column_session.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 6.406,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "wind_field",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wind_field.gd"
+      ],
+      "exit_code": 1,
+      "seconds": 0.312,
+      "ok": false,
+      "errors": [
+        "FAIL required preset set "
+      ]
+    },
+    {
+      "name": "wind_turbulence",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_wind_turbulence.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 1.281,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "ui_standard_column",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_standard_column.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 3.203,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "ui_atmosphere",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_atmosphere.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 21.047,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "ui_weather",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_weather.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 19.031,
+      "ok": true,
+      "errors": []
+    },
+    {
+      "name": "ui_time_of_day",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64_console.exe",
+        "--headless",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--script",
+        "res://tests/test_ui_time_of_day.gd"
+      ],
+      "exit_code": 0,
+      "seconds": 24.39,
+      "ok": true,
+      "errors": []
+    }
+  ],
+  "source_drift": [],
+  "stable_source": true,
+  "ok": false
+}

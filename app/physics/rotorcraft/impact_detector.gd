@@ -53,7 +53,7 @@ static func prepare(context: Dictionary, skids: Dictionary) -> Dictionary:
 	for probe: Dictionary in probes:
 		hull.append_array(probe.point)
 	return {"ok": true, "version": 1, "probes": probes, "hull": hull,
-		"max_reach_m": _maximum_reach(probes, main, tail),
+		"hull_reach_m": _maximum_probe_reach(probes), "max_reach_m": _maximum_reach(probes, main, tail),
 		"source_skids": skids.points_body_frd_m.duplicate(),
 		"source_main_geometry": _main_geometry(main), "source_tail_geometry": _tail_geometry(tail)}
 
@@ -92,14 +92,19 @@ static func evaluate(previous_body: PackedFloat64Array, body: PackedFloat64Array
 		if not best.is_empty() and not bool(best.get("ok", true)):
 			return {"ok": false, "impact": {}, "error": str(best.get("error", "terrain sampling failed"))}
 	if not world.is_empty():
-		var scenery: Dictionary = _first_scenery_contact(previous_body, body, world, context, prepared,
-			rotor_speeds, best)
-		if not scenery.is_empty() and float(scenery.time_fraction) < float(best.get("time_fraction", INF)):
-			best = scenery
-		var rotor_scenery: Dictionary = _first_rotor_scenery_contact(previous_body, body, continuous,
-			context, phase, world, prepared, int(sweep.steps), rotor_speeds, best)
-		if not rotor_scenery.is_empty() and float(rotor_scenery.time_fraction) < float(best.get("time_fraction", INF)):
-			best = rotor_scenery
+		var nearby: Dictionary = _scenery_candidate_gate(previous_body, body, world, prepared, context)
+		var body_candidates: Array[int] = nearby.body
+		var rotor_candidates: Array[int] = nearby.rotors
+		if not body_candidates.is_empty():
+			var scenery: Dictionary = _first_scenery_contact(previous_body, body, world, context, prepared,
+				rotor_speeds, best)
+			if not scenery.is_empty() and float(scenery.time_fraction) < float(best.get("time_fraction", INF)):
+				best = scenery
+		if not rotor_candidates.is_empty():
+			var rotor_scenery: Dictionary = _first_rotor_scenery_contact(previous_body, body, continuous,
+				context, phase, world, prepared, int(sweep.steps), rotor_speeds, best, rotor_candidates)
+			if not rotor_scenery.is_empty() and float(rotor_scenery.time_fraction) < float(best.get("time_fraction", INF)):
+				best = rotor_scenery
 	return {"ok": true, "impact": best, "error": ""}
 
 
@@ -146,6 +151,7 @@ static func _prepared_error(prepared: Dictionary, context: Dictionary, skids: Di
 	if int(prepared.get("version", 0)) != 1 or not prepared.get("probes") is Array \
 			or not prepared.get("hull") is PackedFloat64Array or prepared.hull.is_empty() \
 			or prepared.hull.size() % 3 != 0 or not _finite(prepared.hull) \
+		or not _finite_number(prepared.get("hull_reach_m", NAN)) or float(prepared.hull_reach_m) <= 0.0 \
 			or not _finite_number(prepared.get("max_reach_m", NAN)) or float(prepared.max_reach_m) <= 0.0:
 		return "prepared impact geometry cache is malformed"
 	if not _same_packed(prepared.get("source_skids", PackedFloat64Array()), skids.points_body_frd_m) \
@@ -155,6 +161,7 @@ static func _prepared_error(prepared: Dictionary, context: Dictionary, skids: Di
 	var probes: Array = prepared.probes
 	if probes.size() != prepared.hull.size() / 3:
 		return "prepared impact probe and hull counts differ"
+	var hull_reach: float = 0.0
 	for index: int in probes.size():
 		if not probes[index] is Dictionary or not probes[index].get("point") is PackedFloat64Array \
 				or probes[index].point.size() != 3 or not _finite(probes[index].point) \
@@ -166,6 +173,17 @@ static func _prepared_error(prepared: Dictionary, context: Dictionary, skids: Di
 		for axis: int in 3:
 			if probes[index].point[axis] != prepared.hull[index * 3 + axis]:
 				return "prepared impact hull does not match its probes"
+		hull_reach = maxf(hull_reach, M.norm(probes[index].point))
+	if not is_equal_approx(hull_reach, float(prepared.hull_reach_m)):
+		return "prepared impact hull reach does not match its probes"
+	var expected_max_reach: float = maxf(hull_reach,
+		M.norm(M.v3(float(context.main_model.hub_x_m), float(context.main_model.hub_y_m),
+			float(context.main_model.hub_z_m))) + float(context.main_model.rotor_radius_m))
+	expected_max_reach = maxf(expected_max_reach,
+		M.norm(M.v3(-float(context.tail_model.hub_distance_aft_m), 0.0,
+			-float(context.tail_model.hub_height_above_cg_m))) + float(context.tail_model.tail_rotor_radius_m))
+	if not is_equal_approx(expected_max_reach, float(prepared.max_reach_m)):
+		return "prepared impact maximum reach does not match its geometry"
 	return ""
 
 
@@ -270,6 +288,13 @@ static func _maximum_reach(probes: Array[Dictionary], main: Dictionary, tail: Di
 	return reach
 
 
+static func _maximum_probe_reach(probes: Array[Dictionary]) -> float:
+	var reach: float = 0.0
+	for probe: Dictionary in probes:
+		reach = maxf(reach, M.norm(probe.point))
+	return reach
+
+
 static func _sweep_plan(previous: PackedFloat64Array, current: PackedFloat64Array,
 		max_reach: float, max_height: float) -> Dictionary:
 	var position_delta: PackedFloat64Array = M.sub(current.slice(0, 3), previous.slice(0, 3))
@@ -362,11 +387,26 @@ static func _terrain_contact(previous: PackedFloat64Array, current: PackedFloat6
 
 static func _measure_body_probe(state: PackedFloat64Array, probe: Dictionary,
 		surfaces: PackedFloat64Array, max_height: float) -> Dictionary:
+	var down: float = _point_down_without_allocation(state, probe.point)
+	if down + max_height <= float(probe.threshold_m):
+		return {"ok": true, "possible": false, "depth_m": -INF}
 	var q: PackedFloat64Array = state.slice(RB.ATT, RB.ATT + 4)
 	var position: PackedFloat64Array = state.slice(RB.POS, RB.POS + 3)
 	var offset: PackedFloat64Array = M.q_rotate(q, probe.point)
 	var point: PackedFloat64Array = M.add(position, offset)
 	return _terrain_sample(point, probe.point, surfaces, max_height, float(probe.threshold_m))
+
+
+static func _point_down_without_allocation(state: PackedFloat64Array, body_point: PackedFloat64Array) -> float:
+	var w: float = state[RB.ATT]
+	var x: float = state[RB.ATT + 1]
+	var y: float = state[RB.ATT + 2]
+	var z: float = state[RB.ATT + 3]
+	var down_x: float = 2.0 * (x * z - w * y)
+	var down_y: float = 2.0 * (y * z + w * x)
+	var down_z: float = 1.0 - 2.0 * (x * x + y * y)
+	return state[RB.POS + 2] + down_x * body_point[0] + down_y * body_point[1] \
+		+ down_z * body_point[2]
 
 
 static func _measure_rotor(state: PackedFloat64Array, continuous: PackedFloat64Array,
@@ -394,6 +434,22 @@ static func _measure_rotor(state: PackedFloat64Array, continuous: PackedFloat64A
 		component = "tail_rotor"
 	axis_body = M.scale(axis_body, 1.0 / M.norm(axis_body))
 	var center: PackedFloat64Array = M.add(state.slice(RB.POS, RB.POS + 3), M.q_rotate(q, hub))
+	var axis_down: float = _point_down_without_allocation(state, axis_body) - state[RB.POS + 2]
+	axis_down = clampf(axis_down, -1.0, 1.0)
+	var blade_half_chord: float = maxf(chord * 0.5, 0.0)
+	var vertical_support_m: float = (radius + blade_half_chord) \
+		* M.sqrt_(maxf(0.0, 1.0 - axis_down * axis_down))
+	# The whole blade, including stopped-rotor chord, lies inside this vertical support bound.
+	# max_height bounds every accepted terrain surface, so safely elevated rotors need no point samples.
+	if center[2] + vertical_support_m + max_height <= -1.0e-12:
+		var safe_method: String = "analytic_rotating_disc_local_support_v1" \
+			if absf(signed_omega) >= FULL_DISC_SPEED_RAD_S \
+			else "finite_two_blade_chord_at_tick_end_proxy_v1"
+		return {"ok": true, "possible": false, "depth_m": -INF,
+			"point_world_ned": center, "point_body_frd": hub,
+			"component": component, "method": safe_method,
+			"rotating_envelope": absf(signed_omega) >= FULL_DISC_SPEED_RAD_S,
+			"rotor_phase_model": "phase_at_tick_end; no_intra_tick_phase_interpolation"}
 	if absf(signed_omega) >= FULL_DISC_SPEED_RAD_S:
 		method = "analytic_rotating_disc_local_support_v1"
 		var down: PackedFloat64Array = M.v3(0.0, 0.0, 1.0)
@@ -438,7 +494,6 @@ static func _measure_rotor(state: PackedFloat64Array, continuous: PackedFloat64A
 	var basis_v: PackedFloat64Array = M.cross(axis_body, basis_u)
 	var angle: float = phase[rotor_index] if phase.size() == 2 else 0.0
 	var best: Dictionary = {}
-	var blade_half_chord: float = maxf(chord * 0.5, 0.0)
 	for blade: int in 2:
 		var blade_angle: float = angle + float(blade) * PI
 		var radial: PackedFloat64Array = M.add(M.scale(basis_u, M.cos_(blade_angle)),
@@ -449,6 +504,8 @@ static func _measure_rotor(state: PackedFloat64Array, continuous: PackedFloat64A
 				var blade_arm: PackedFloat64Array = M.add(M.scale(radial, radius_at),
 					M.scale(chord_axis, chord_sign * blade_half_chord))
 				var point_body: PackedFloat64Array = M.add(hub, blade_arm)
+				if _point_down_without_allocation(state, point_body) + max_height <= 0.0:
+					continue
 				var point_world: PackedFloat64Array = M.add(state.slice(RB.POS, RB.POS + 3), M.q_rotate(q, point_body))
 				var measured: Dictionary = _terrain_sample(point_world, point_body, surfaces, max_height)
 				if not bool(measured.get("ok", true)):
@@ -462,6 +519,9 @@ static func _measure_rotor(state: PackedFloat64Array, continuous: PackedFloat64A
 				measured["rotor_phase_model"] = "phase_at_tick_end; no_intra_tick_phase_interpolation"
 				if best.is_empty() or float(measured.depth_m) > float(best.depth_m):
 					best = measured
+	if best.is_empty():
+		best = {"ok": true, "possible": false, "depth_m": -INF,
+			"point_world_ned": center, "point_body_frd": hub}
 	return best
 
 
@@ -651,6 +711,59 @@ static func _first_scenery_contact(previous: PackedFloat64Array, current: Packed
 	return {}
 
 
+## One bin query gates both the hull and rotor tests. In particular, skip SceneryCollision.contacts()
+## when no proxy overlaps the swept hull AABB; that routine otherwise builds all probe sweeps even
+## when its broadphase has no overlapping proxies.
+static func _scenery_candidate_gate(previous: PackedFloat64Array, current: PackedFloat64Array,
+		world: Dictionary, prepared: Dictionary, context: Dictionary) -> Dictionary:
+	var hull_reach: float = float(prepared.hull_reach_m)
+	var q_start: PackedFloat64Array = previous.slice(RB.ATT, RB.ATT + 4)
+	var q_end: PackedFloat64Array = current.slice(RB.ATT, RB.ATT + 4)
+	var hull_padding: float = SceneryCollision._rotational_chord_padding(q_start, q_end, hull_reach)
+	var body_reach: float = hull_reach + hull_padding
+	var max_rotor_radius: float = maxf(float(context.main_model.rotor_radius_m),
+		float(context.tail_model.tail_rotor_radius_m))
+	var max_chord_half: float = maxf(float(context.main_model.get("blade_chord_m", 0.0)),
+		float(context.tail_model.get("blade_chord_m", 0.0))) * 0.5
+	var rotor_padding: float = max_chord_half \
+		+ max_rotor_radius * M.sin_(PI / (2.0 * float(ROTOR_SCENE_FULL_DISC_SPOKES))) \
+		+ ROTOR_SCENE_HALF_TICK_SWEEP_M
+	var rotor_reach: float = float(prepared.max_reach_m) + rotor_padding
+	var union_reach: float = maxf(body_reach, rotor_reach)
+	var min_n: float = minf(previous[RB.POS], current[RB.POS]) - union_reach
+	var max_n: float = maxf(previous[RB.POS], current[RB.POS]) + union_reach
+	var min_e: float = minf(previous[RB.POS + 1], current[RB.POS + 1]) - union_reach
+	var max_e: float = maxf(previous[RB.POS + 1], current[RB.POS + 1]) + union_reach
+	var min_d: float = minf(previous[RB.POS + 2], current[RB.POS + 2]) - union_reach
+	var max_d: float = maxf(previous[RB.POS + 2], current[RB.POS + 2]) + union_reach
+	var candidates: Array[int] = SceneryCollision._candidate_indices(world, min_n, max_n,
+		min_e, max_e, min_d, max_d)
+	candidates = SceneryCollision._active_candidate_indices(world, candidates, world.get("damage", {}))
+	var body_candidates: Array[int] = []
+	var rotor_candidates: Array[int] = []
+	var body_min_n: float = minf(previous[RB.POS], current[RB.POS]) - body_reach
+	var body_max_n: float = maxf(previous[RB.POS], current[RB.POS]) + body_reach
+	var body_min_e: float = minf(previous[RB.POS + 1], current[RB.POS + 1]) - body_reach
+	var body_max_e: float = maxf(previous[RB.POS + 1], current[RB.POS + 1]) + body_reach
+	var body_min_d: float = minf(previous[RB.POS + 2], current[RB.POS + 2]) - body_reach
+	var body_max_d: float = maxf(previous[RB.POS + 2], current[RB.POS + 2]) + body_reach
+	var rotor_min_n: float = minf(previous[RB.POS], current[RB.POS]) - rotor_reach
+	var rotor_max_n: float = maxf(previous[RB.POS], current[RB.POS]) + rotor_reach
+	var rotor_min_e: float = minf(previous[RB.POS + 1], current[RB.POS + 1]) - rotor_reach
+	var rotor_max_e: float = maxf(previous[RB.POS + 1], current[RB.POS + 1]) + rotor_reach
+	var rotor_min_d: float = minf(previous[RB.POS + 2], current[RB.POS + 2]) - rotor_reach
+	var rotor_max_d: float = maxf(previous[RB.POS + 2], current[RB.POS + 2]) + rotor_reach
+	for proxy_index: int in candidates:
+		var proxy: Dictionary = world.proxies[proxy_index]
+		if SceneryCollision._aabb_overlap(proxy, body_min_n, body_max_n, body_min_e,
+			body_max_e, body_min_d, body_max_d):
+			body_candidates.append(proxy_index)
+		if SceneryCollision._aabb_overlap(proxy, rotor_min_n, rotor_max_n, rotor_min_e,
+			rotor_max_e, rotor_min_d, rotor_max_d):
+			rotor_candidates.append(proxy_index)
+	return {"body": body_candidates, "rotors": rotor_candidates}
+
+
 ## Sweeps rotor blade segments against nearby static scenery without adding them to the body hull.
 ## At high RPM, 32 diameter spokes cover the full swept disc; the proxy is inflated by the
 ## half-angle chord bound, half blade chord, and half the body-sweep spacing. Low RPM uses only
@@ -658,7 +771,7 @@ static func _first_scenery_contact(previous: PackedFloat64Array, current: Packed
 static func _first_rotor_scenery_contact(previous: PackedFloat64Array, current: PackedFloat64Array,
 		continuous: PackedFloat64Array, context: Dictionary, phase: PackedFloat64Array,
 		world: Dictionary, prepared: Dictionary, steps: int, rotor_speeds: PackedFloat64Array,
-		incumbent: Dictionary) -> Dictionary:
+		incumbent: Dictionary, shared_candidates: Array[int] = []) -> Dictionary:
 	if int(steps) < 1 or int(steps) > MAX_SWEEP_STEPS:
 		return {}
 	if float(incumbent.get("time_fraction", INF)) <= 0.0:
@@ -677,9 +790,11 @@ static func _first_rotor_scenery_contact(previous: PackedFloat64Array, current: 
 	var max_e: float = maxf(previous[RB.POS + 1], current[RB.POS + 1]) + reach
 	var min_d: float = minf(previous[RB.POS + 2], current[RB.POS + 2]) - reach
 	var max_d: float = maxf(previous[RB.POS + 2], current[RB.POS + 2]) + reach
-	var candidates: Array[int] = SceneryCollision._candidate_indices(world,
-		min_n, max_n, min_e, max_e, min_d, max_d)
-	candidates = SceneryCollision._active_candidate_indices(world, candidates, world.get("damage", {}))
+	var candidates: Array[int] = shared_candidates
+	if candidates.is_empty():
+		candidates = SceneryCollision._candidate_indices(world,
+			min_n, max_n, min_e, max_e, min_d, max_d)
+		candidates = SceneryCollision._active_candidate_indices(world, candidates, world.get("damage", {}))
 	if candidates.is_empty():
 		return {}
 	var overlapping: Array[int] = []

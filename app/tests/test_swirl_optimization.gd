@@ -2,6 +2,7 @@
 # Geometry fixtures are schema-validated, synthetic perturbations of the E0b3b test profile, not aircraft calibration.
 extends SceneTree
 
+const Aero = preload("res://physics/aero.gd")
 const Fixture = preload("res://tests/test_wash_profile.gd")
 const AircraftData = preload("res://physics/aircraft_data.gd")
 const AirData = preload("res://physics/air_data.gd")
@@ -82,8 +83,11 @@ func _initialize() -> void:
 		else:
 			classic_tail_law_cases += 1
 
+		# Frozen quadrature calls the live tail law; supply the versioned dimensional
+		# source explicitly so its historical CL fallback is never reinterpreted.
+		var resolved_wake: float = Aero.wing_wake_velocity(state, air, controls, model) if is_nan(downwash_cl) else downwash_cl
 		var expected: PackedFloat64Array = FrozenReference.correction(
-			state, air, controls, model, wake, fade, rho, downwash_cl)
+			state, air, controls, model, wake, fade, rho, resolved_wake)
 		var actual: PackedFloat64Array = SwirlLoads.correction(
 			state, air, controls, model, wake, fade, rho, downwash_cl)
 		_compare_case(case_index, model_index, expected, actual)

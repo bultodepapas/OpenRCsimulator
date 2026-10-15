@@ -20,6 +20,9 @@ const MIN_QNH_HPA: float = 870.0
 const MAX_QNH_HPA: float = 1085.0
 const MIN_RELATIVE_HUMIDITY_PERCENT: float = 0.0
 const MAX_RELATIVE_HUMIDITY_PERCENT: float = 100.0
+const STANDARD_COLUMN_MIN_ALTITUDE_M: float = -500.0
+const STANDARD_COLUMN_MAX_ALTITUDE_M: float = 11000.0
+const STANDARD_COLUMN_LAW := "standard-column-dry-isa-troposphere-v1"
 
 
 ## Literal reference state retained for existing flight behavior and goldens.
@@ -88,6 +91,48 @@ static func evaluate(field_elevation_m: Variant, temp_c: Variant, qnh_hpa: Varia
 		"dry_air_density_kgm3": dry_air_density_kgm3,
 		"sigma": sigma,
 		"engine_charge_ratio": engine_charge_ratio,
+		"density_altitude_m": density_altitude_m,
+	}
+
+
+## Dry standard troposphere evaluated at geometric altitude. This controlled profile is
+## separate from the legacy literal reference state and the uniform weather evaluator.
+static func standard_column(geometric_altitude_m: Variant) -> Dictionary:
+	var errors: Array[String] = []
+	var altitude_m: float = _read_number(geometric_altitude_m, "geometric_altitude_m",
+		STANDARD_COLUMN_MIN_ALTITUDE_M, STANDARD_COLUMN_MAX_ALTITUDE_M, errors)
+	if not errors.is_empty():
+		return _failure(errors)
+
+	var geopotential_altitude_m: float = _to_geopotential_m(altitude_m)
+	var temperature_k: float = SEA_LEVEL_TEMPERATURE_K \
+		- TROPOSPHERE_LAPSE_KPM * geopotential_altitude_m
+	var pressure_base: float = temperature_k / SEA_LEVEL_TEMPERATURE_K
+	if not is_finite(temperature_k) or temperature_k <= 0.0 \
+			or not is_finite(pressure_base) or pressure_base <= 0.0:
+		return _failure(["geometric_altitude_m produces an invalid standard-column temperature."])
+	var pressure_exponent: float = STANDARD_GRAVITY_MPS2 \
+		/ (DRY_AIR_GAS_CONSTANT_J_KG_K * TROPOSPHERE_LAPSE_KPM)
+	var pressure_pa: float = SEA_LEVEL_PRESSURE_PA * M.pow_(pressure_base, pressure_exponent)
+	var dry_air_density_kgm3: float = pressure_pa \
+		/ (DRY_AIR_GAS_CONSTANT_J_KG_K * temperature_k)
+	var sigma: float = dry_air_density_kgm3 / SEA_LEVEL_DENSITY_KGM3
+	var density_altitude_m: float = _density_altitude_geometric_m(dry_air_density_kgm3)
+	if not is_finite(pressure_pa) or pressure_pa <= 0.0 \
+			or not is_finite(dry_air_density_kgm3) or dry_air_density_kgm3 <= 0.0 \
+			or not is_finite(sigma) or not is_finite(density_altitude_m):
+		return _failure(["Derived standard-column values are not finite and positive."])
+
+	return {
+		"ok": true,
+		"errors": [],
+		"pressure_pa": pressure_pa,
+		"temperature_k": temperature_k,
+		"vapor_pressure_pa": 0.0,
+		"rho_kgm3": dry_air_density_kgm3,
+		"dry_air_density_kgm3": dry_air_density_kgm3,
+		"sigma": sigma,
+		"engine_charge_ratio": sigma,
 		"density_altitude_m": density_altitude_m,
 	}
 

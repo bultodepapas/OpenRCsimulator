@@ -141,8 +141,8 @@ msgstr "Viento y rachas"
 msgid "Atmosphere"
 msgstr "Atmósfera"
 
-msgid "Field atmosphere is uniform for the flight. Reference air uses a fixed 1.225 kg/m³ baseline."
-msgstr "La atmósfera del campo es uniforme durante el vuelo. El aire de referencia usa una densidad fija de 1,225 kg/m³."
+msgid "Reference and custom field atmosphere are uniform; standard ISA changes with altitude."
+msgstr "La atmósfera de referencia y la personalizada son uniformes; la ISA estándar cambia con la altitud."
 
 msgid "Atmosphere mode"
 msgstr "Modo de atmósfera"
@@ -150,11 +150,29 @@ msgstr "Modo de atmósfera"
 msgid "Custom field conditions"
 msgstr "Condiciones de campo personalizadas"
 
+msgid "Standard atmosphere by altitude"
+msgstr "Atmósfera estándar por altitud"
+
 msgid "Reference air keeps the modeled density at 1.225 kg/m³."
 msgstr "El aire de referencia mantiene la densidad modelada en 1,225 kg/m³."
 
 msgid "Custom field conditions set the modeled air density for this flight."
 msgstr "Las condiciones de campo personalizadas definen la densidad modelada del aire durante este vuelo."
+
+msgid "Standard dry ISA density varies with geometric altitude from −500 to 11,000 m. This is a reference profile, not measured weather."
+msgstr "La densidad ISA seca estándar varía con la altitud geométrica entre −500 y 11.000 m. Es un perfil de referencia, no meteorología medida."
+
+msgid "Standard atmosphere"
+msgstr "Atmósfera estándar"
+
+msgid "Standard ISA at field %s m · density %s kg/m³"
+msgstr "ISA estándar en el campo a %s m · densidad %s kg/m³"
+
+msgid "Helicopter weather does not support %s. Use steady wind and repeating gusts."
+msgstr "El clima del helicóptero no admite %s. Usa viento constante y rachas periódicas."
+
+msgid "Helicopter weather uses steady wind and repeating gusts. Turbulence and altitude-varying atmosphere are not integrated yet."
+msgstr "El clima del helicóptero usa viento constante y rachas periódicas. La turbulencia y la atmósfera variable con la altitud aún no están integradas."
 
 msgid "Air density: %s kg/m³ · density altitude: %s m"
 msgstr "Densidad del aire: %s kg/m³ · altitud de densidad: %s m"

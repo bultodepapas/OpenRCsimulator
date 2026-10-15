@@ -1,0 +1,229 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   malformed direct attachment is refused without an exception
+ok   2T generated aircraft JSON parses
+ok   2T aircraft mass and propulsion derive  []
+ok   2T generated installation JSON parses
+ok   2T generated install includes explicit starter prime quantity
+ok   2T generated installation attaches before flight  []
+ok   2T installed profile family matches its 2T/4T data
+ok   2T installed identity hashes exact source bytes
+ok   2T installed propeller has a unit runtime axis
+ok   2T attachment does not mutate its input model
+ok   2T full aircraft loader completes glow validation before flight  []
+ok   2T omitted thrust angles resolve to the documented +x runtime rotor axis  []
+ok   2T pure validator accepts generated candidate value  []
+ok   2T pure validator returns a detached normalized install
+ok   2T accepts zero heat partitions and cooling terms at their inclusive domain boundary  []
+ok   2T accepts a zero starter prime when no priming fuel is used  []
+ok   2T rejects unknown root field  ["Malformed glow installation root"]
+ok   2T rejects unknown lifecycle setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   2T rejects missing starter prime setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   2T rejects unsupported installation wash table  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects profile traversal  ["Glow profile must identify a bundled res://data/glow JSON file"]
+ok   2T rejects unknown family  ["Unsupported glow installation format or family"]
+ok   2T rejects profile family mismatch  ["Invalid or mismatched glow engine profile"]
+ok   2T rejects quantity unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects boolean quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects blank provenance  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects nonfinite quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects transport time constant below integrator envelope  ["Glow transport time constants must be in [0.02, 5] s"]
+ok   2T rejects idle admission upper bound  ["idle_admission must be strictly between zero and one"]
+ok   2T rejects cold full temperature crosses hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   2T rejects hot full temperature below cold full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   2T rejects hot zero temperature equals hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   2T rejects lean threshold reaches nominal mixture  ["Lean misfire ratios must satisfy 0 ≤ zero < start < nominal"]
+ok   2T rejects rich threshold is unordered  ["Rich misfire ratios must satisfy nominal < start < zero ≤ 4"]
+ok   2T rejects starter prime mass upper bound  ["starter_prime_kg must be in [0, 0.001] kg"]
+ok   2T rejects starter prime unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects negative starter prime mass  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects thermal partition above one  ["Glow head heat capacity or combustion heat fraction is outside its domain"]
+ok   2T rejects negative thermal cooling coefficient  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects zero thermal capacity  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T rejects unsupported blade count  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   2T rejects blade chord exceeds diameter  ["Glow propeller pitch or chord is outside its geometric domain"]
+ok   2T rejects propeller lift slope domain  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   2T rejects aircraft and install propeller diameter mismatch  ["Glow installation and aircraft propeller diameters disagree"]
+ok   2T rejects initial head temperature above installation bound  ["Initial glow temperature must be finite and in [200, 600] K"]
+ok   2T rejects unmatched fuel inventory name  ["Glow fuel tank must name one explicit glow_fuel inventory item"]
+ok   2T refuses a non-glow energy source tank
+ok   2T refuses malformed tank geometry quantity
+ok   2T refuses ambiguous duplicate glow fuel inventory names
+ok   2T refuses a non-unit rotor axis
+ok   2T rejects rotor inertia above the axis-projected dry carrier even below Jxx  ["Subtracting the glow rotor leaves nonpositive dry carrier inertia along its axis"]
+ok   2T accepts rotor inertia below the axis-projected dry carrier limit  []
+ok   2T rejects unsupported optional propeller module normal_force
+ok   2T rejects unsupported optional propeller module pfactor_moment
+ok   2T rejects unsupported optional propeller module slipstream
+ok   2T rejects mixed legacy shaft module
+ok   4T generated aircraft JSON parses
+ok   4T aircraft mass and propulsion derive  []
+ok   4T generated installation JSON parses
+ok   4T generated install includes explicit starter prime quantity
+ok   4T generated installation attaches before flight  []
+ok   4T installed profile family matches its 2T/4T data
+ok   4T installed identity hashes exact source bytes
+ok   4T installed propeller has a unit runtime axis
+ok   4T attachment does not mutate its input model
+ok   4T full aircraft loader completes glow validation before flight  []
+ok   4T omitted thrust angles resolve to the documented +x runtime rotor axis  []
+ok   4T pure validator accepts generated candidate value  []
+ok   4T pure validator returns a detached normalized install
+ok   4T accepts zero heat partitions and cooling terms at their inclusive domain boundary  []
+ok   4T accepts a zero starter prime when no priming fuel is used  []
+ok   4T rejects unknown root field  ["Malformed glow installation root"]
+ok   4T rejects unknown lifecycle setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   4T rejects missing starter prime setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   4T rejects unsupported installation wash table  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects profile traversal  ["Glow profile must identify a bundled res://data/glow JSON file"]
+ok   4T rejects unknown family  ["Unsupported glow installation format or family"]
+ok   4T rejects profile family mismatch  ["Invalid or mismatched glow engine profile"]
+ok   4T rejects quantity unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects boolean quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects blank provenance  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects nonfinite quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects transport time constant below integrator envelope  ["Glow transport time constants must be in [0.02, 5] s"]
+ok   4T rejects idle admission upper bound  ["idle_admission must be strictly between zero and one"]
+ok   4T rejects cold full temperature crosses hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   4T rejects hot full temperature below cold full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   4T rejects hot zero temperature equals hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   4T rejects lean threshold reaches nominal mixture  ["Lean misfire ratios must satisfy 0 ≤ zero < start < nominal"]
+ok   4T rejects rich threshold is unordered  ["Rich misfire ratios must satisfy nominal < start < zero ≤ 4"]
+ok   4T rejects starter prime mass upper bound  ["starter_prime_kg must be in [0, 0.001] kg"]
+ok   4T rejects starter prime unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects negative starter prime mass  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects thermal partition above one  ["Glow head heat capacity or combustion heat fraction is outside its domain"]
+ok   4T rejects negative thermal cooling coefficient  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects zero thermal capacity  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T rejects unsupported blade count  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   4T rejects blade chord exceeds diameter  ["Glow propeller pitch or chord is outside its geometric domain"]
+ok   4T rejects propeller lift slope domain  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   4T rejects aircraft and install propeller diameter mismatch  ["Glow installation and aircraft propeller diameters disagree"]
+ok   4T rejects initial head temperature above installation bound  ["Initial glow temperature must be finite and in [200, 600] K"]
+ok   4T rejects unmatched fuel inventory name  ["Glow fuel tank must name one explicit glow_fuel inventory item"]
+ok   4T refuses a non-glow energy source tank
+ok   4T refuses malformed tank geometry quantity
+ok   4T refuses ambiguous duplicate glow fuel inventory names
+ok   4T refuses a non-unit rotor axis
+ok   4T rejects rotor inertia above the axis-projected dry carrier even below Jxx  ["Subtracting the glow rotor leaves nonpositive dry carrier inertia along its axis"]
+ok   4T accepts rotor inertia below the axis-projected dry carrier limit  []
+ok   4T rejects unsupported optional propeller module normal_force
+ok   4T rejects unsupported optional propeller module pfactor_moment
+ok   4T rejects unsupported optional propeller module slipstream
+ok   4T rejects mixed legacy shaft module
+ok   2T APC variant generated aircraft JSON parses
+ok   2T APC variant aircraft mass and propulsion derive  []
+ok   2T APC variant generated installation JSON parses
+ok   2T APC variant generated install includes explicit starter prime quantity
+ok   2T APC variant generated installation attaches before flight  []
+ok   2T APC variant installed profile family matches its 2T/4T data
+ok   2T APC variant installed identity hashes exact source bytes
+ok   2T APC variant installed propeller has a unit runtime axis
+ok   2T APC variant attachment does not mutate its input model
+ok   2T APC variant full aircraft loader completes glow validation before flight  []
+ok   2T APC variant omitted thrust angles resolve to the documented +x runtime rotor axis  []
+ok   2T APC variant pure validator accepts generated candidate value  []
+ok   2T APC variant pure validator returns a detached normalized install
+ok   2T APC variant accepts zero heat partitions and cooling terms at their inclusive domain boundary  []
+ok   2T APC variant accepts a zero starter prime when no priming fuel is used  []
+ok   2T APC variant rejects unknown root field  ["Malformed glow installation root"]
+ok   2T APC variant rejects unknown lifecycle setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   2T APC variant rejects missing starter prime setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   2T APC variant rejects unsupported installation wash table  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects profile traversal  ["Glow profile must identify a bundled res://data/glow JSON file"]
+ok   2T APC variant rejects unknown family  ["Unsupported glow installation format or family"]
+ok   2T APC variant rejects profile family mismatch  ["Invalid or mismatched glow engine profile"]
+ok   2T APC variant rejects quantity unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects boolean quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects blank provenance  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects nonfinite quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects transport time constant below integrator envelope  ["Glow transport time constants must be in [0.02, 5] s"]
+ok   2T APC variant rejects idle admission upper bound  ["idle_admission must be strictly between zero and one"]
+ok   2T APC variant rejects cold full temperature crosses hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   2T APC variant rejects hot full temperature below cold full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   2T APC variant rejects hot zero temperature equals hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   2T APC variant rejects lean threshold reaches nominal mixture  ["Lean misfire ratios must satisfy 0 ≤ zero < start < nominal"]
+ok   2T APC variant rejects rich threshold is unordered  ["Rich misfire ratios must satisfy nominal < start < zero ≤ 4"]
+ok   2T APC variant rejects starter prime mass upper bound  ["starter_prime_kg must be in [0, 0.001] kg"]
+ok   2T APC variant rejects starter prime unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects negative starter prime mass  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects thermal partition above one  ["Glow head heat capacity or combustion heat fraction is outside its domain"]
+ok   2T APC variant rejects negative thermal cooling coefficient  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects zero thermal capacity  ["Invalid glow installation quantity, unit or provenance"]
+ok   2T APC variant rejects unsupported blade count  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   2T APC variant rejects blade chord exceeds diameter  ["Glow propeller pitch or chord is outside its geometric domain"]
+ok   2T APC variant rejects propeller lift slope domain  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   2T APC variant rejects aircraft and install propeller diameter mismatch  ["Glow installation and aircraft propeller diameters disagree"]
+ok   2T APC variant rejects initial head temperature above installation bound  ["Initial glow temperature must be finite and in [200, 600] K"]
+ok   2T APC variant rejects unmatched fuel inventory name  ["Glow fuel tank must name one explicit glow_fuel inventory item"]
+ok   2T APC variant refuses a non-glow energy source tank
+ok   2T APC variant refuses malformed tank geometry quantity
+ok   2T APC variant refuses ambiguous duplicate glow fuel inventory names
+ok   2T APC variant refuses a non-unit rotor axis
+ok   2T APC variant rejects rotor inertia above the axis-projected dry carrier even below Jxx  ["Subtracting the glow rotor leaves nonpositive dry carrier inertia along its axis"]
+ok   2T APC variant accepts rotor inertia below the axis-projected dry carrier limit  []
+ok   2T APC variant rejects unsupported optional propeller module normal_force
+ok   2T APC variant rejects unsupported optional propeller module pfactor_moment
+ok   2T APC variant rejects unsupported optional propeller module slipstream
+ok   2T APC variant rejects mixed legacy shaft module
+ok   4T APC variant generated aircraft JSON parses
+ok   4T APC variant aircraft mass and propulsion derive  []
+ok   4T APC variant generated installation JSON parses
+ok   4T APC variant generated install includes explicit starter prime quantity
+ok   4T APC variant generated installation attaches before flight  []
+ok   4T APC variant installed profile family matches its 2T/4T data
+ok   4T APC variant installed identity hashes exact source bytes
+ok   4T APC variant installed propeller has a unit runtime axis
+ok   4T APC variant attachment does not mutate its input model
+ok   4T APC variant full aircraft loader completes glow validation before flight  []
+ok   4T APC variant omitted thrust angles resolve to the documented +x runtime rotor axis  []
+ok   4T APC variant pure validator accepts generated candidate value  []
+ok   4T APC variant pure validator returns a detached normalized install
+ok   4T APC variant accepts zero heat partitions and cooling terms at their inclusive domain boundary  []
+ok   4T APC variant accepts a zero starter prime when no priming fuel is used  []
+ok   4T APC variant rejects unknown root field  ["Malformed glow installation root"]
+ok   4T APC variant rejects unknown lifecycle setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   4T APC variant rejects missing starter prime setting  ["Glow lifecycle settings are missing or contain unknown fields"]
+ok   4T APC variant rejects unsupported installation wash table  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects profile traversal  ["Glow profile must identify a bundled res://data/glow JSON file"]
+ok   4T APC variant rejects unknown family  ["Unsupported glow installation format or family"]
+ok   4T APC variant rejects profile family mismatch  ["Invalid or mismatched glow engine profile"]
+ok   4T APC variant rejects quantity unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects boolean quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects blank provenance  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects nonfinite quantity  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects transport time constant below integrator envelope  ["Glow transport time constants must be in [0.02, 5] s"]
+ok   4T APC variant rejects idle admission upper bound  ["idle_admission must be strictly between zero and one"]
+ok   4T APC variant rejects cold full temperature crosses hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   4T APC variant rejects hot full temperature below cold full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   4T APC variant rejects hot zero temperature equals hot full  ["Firing temperature thresholds must satisfy 200 K ≤ cold minimum < cold full < hot full < hot zero ≤ 1000 K"]
+ok   4T APC variant rejects lean threshold reaches nominal mixture  ["Lean misfire ratios must satisfy 0 ≤ zero < start < nominal"]
+ok   4T APC variant rejects rich threshold is unordered  ["Rich misfire ratios must satisfy nominal < start < zero ≤ 4"]
+ok   4T APC variant rejects starter prime mass upper bound  ["starter_prime_kg must be in [0, 0.001] kg"]
+ok   4T APC variant rejects starter prime unit mismatch  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects negative starter prime mass  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects thermal partition above one  ["Glow head heat capacity or combustion heat fraction is outside its domain"]
+ok   4T APC variant rejects negative thermal cooling coefficient  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects zero thermal capacity  ["Invalid glow installation quantity, unit or provenance"]
+ok   4T APC variant rejects unsupported blade count  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   4T APC variant rejects blade chord exceeds diameter  ["Glow propeller pitch or chord is outside its geometric domain"]
+ok   4T APC variant rejects propeller lift slope domain  ["Glow installation supports a bounded two-blade annular propeller model"]
+ok   4T APC variant rejects aircraft and install propeller diameter mismatch  ["Glow installation and aircraft propeller diameters disagree"]
+ok   4T APC variant rejects initial head temperature above installation bound  ["Initial glow temperature must be finite and in [200, 600] K"]
+ok   4T APC variant rejects unmatched fuel inventory name  ["Glow fuel tank must name one explicit glow_fuel inventory item"]
+ok   4T APC variant refuses a non-glow energy source tank
+ok   4T APC variant refuses malformed tank geometry quantity
+ok   4T APC variant refuses ambiguous duplicate glow fuel inventory names
+ok   4T APC variant refuses a non-unit rotor axis
+ok   4T APC variant rejects rotor inertia above the axis-projected dry carrier even below Jxx  ["Subtracting the glow rotor leaves nonpositive dry carrier inertia along its axis"]
+ok   4T APC variant accepts rotor inertia below the axis-projected dry carrier limit  []
+ok   4T APC variant rejects unsupported optional propeller module normal_force
+ok   4T APC variant rejects unsupported optional propeller module pfactor_moment
+ok   4T APC variant rejects unsupported optional propeller module slipstream
+ok   4T APC variant rejects mixed legacy shaft module
+ok   unsafe glow install path rejected: user://install.json
+ok   unsafe glow install path rejected: res://data/glow/../stik_55ax_2t.json
+ok   unsafe glow install path rejected: res://data/glow/sub/install.json
+ok   unsafe glow install path rejected: res://data/glow/install.json.bak
+ok   unsafe glow install path rejected: 5
+glow installation contract: 226 checks, 0 failed

@@ -1,0 +1,5 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+Landing pending after supported event: true
+BUG: landing pending after new takeoff: true
+BUG: rejected recorder state=false before=Record telemetry after=Stop and save recording

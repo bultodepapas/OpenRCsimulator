@@ -1,0 +1,23 @@
+[
+  {
+    "test": "heli_crash_visual",
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.89,
+    "sha256": "f20da66f9bd3245553694945b8af3f6a6b0d9b09fe8ba1296756c4362dcb1720"
+  },
+  {
+    "test": "heli_crash_presentation",
+    "ok": true,
+    "exit": 0,
+    "seconds": 2.266,
+    "sha256": "2b0900d74c648a3e5c1d9145ca62ebd0c9a405985a4cee7f7502bba868bf0dcb"
+  },
+  {
+    "test": "heli_crash_relaunch",
+    "ok": true,
+    "exit": 0,
+    "seconds": 0.953,
+    "sha256": "41f6e8ae585d4d4dc3a291d280de3cd685540e08cbd25c072f27d0549720464e"
+  }
+]

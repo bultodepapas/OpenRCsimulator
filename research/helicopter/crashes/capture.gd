@@ -28,12 +28,14 @@ func run() -> void:
   flight.set_process(false)
   flight.session.physics_enabled=false
   flight.session.input_enabled=false
-  for scenario: String in (["nose","fence"] if quick else ["main","tail","hard","nose","fence"]):
+  for scenario: String in (["nose","fence"] if quick else ["main","tail","hard","nose","fence","severe"]):
    var hit: bool=Fixtures.trigger(flight.session,scenario)
    print("FIXTURE ",hour," ",scenario," hit=",hit," reason=",flight.session.pause_reason)
    if not hit: ok=false; continue
    flight._hud_layer.visible=false
    flight._present(0.0,1.0)
+   if scenario=="severe" and int(flight._crash_presentation.wreck.severity.get("class",0))!=4:
+    ok=false; print("FAIL severe fixture did not exercise C4 breakup")
    print("CAPTURE_START ",scenario," report=",flight.session.crash.body.slice(0,3)," core=",flight._crash_presentation.focus_position())
    if quick:
     var core: RigidBody3D=flight._crash_presentation.wreck._core_body

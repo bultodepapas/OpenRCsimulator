@@ -1,0 +1,114 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/jensen_ugly_stik_60.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/jensen_ugly_stik_60.orfl (260 ticks)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/jensen_ugly_stik_60.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/jensen_ugly_stik_60.orfl.reset (0 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/jensen_ugly_stik_60.orfl.limit
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/gp_extra_300s_60.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/gp_extra_300s_60.orfl (260 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/gp_extra_300s_60.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/gp_extra_300s_60.orfl.reset (0 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/gp_extra_300s_60.orfl.limit
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/p51d_mustang_120.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/p51d_mustang_120.orfl (260 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/p51d_mustang_120.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/p51d_mustang_120.orfl.reset (0 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/p51d_mustang_120.orfl.limit
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/sebart_avanti_s_a200.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/sebart_avanti_s_a200.orfl (260 ticks)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/sebart_avanti_s_a200.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/sebart_avanti_s_a200.orfl.reset (0 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/sebart_avanti_s_a200.orfl.limit
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/turbo_lumber_evolution.orfl
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/turbo_lumber_evolution.orfl (260 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/turbo_lumber_evolution.orfl.reset
+Flight log saved: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/turbo_lumber_evolution.orfl.reset (0 ticks)
+Flight log REC: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/turbo_lumber_evolution.orfl.limit
+FL-04 flight logs: 2707 checks, 1 failures; C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048
+SCRIPT ERROR: Parse Error: Function "_valid_physical_tensor()" not found in base self.
+   at: GDScript::reload (res://physics/mass_inventory.gd:81)
+SCRIPT ERROR: Parse Error: Function "_valid_physical_tensor()" not found in base self.
+   at: GDScript::reload (res://physics/mass_inventory.gd:139)
+SCRIPT ERROR: Parse Error: Function "_valid_physical_tensor()" not found in base self.
+   at: GDScript::reload (res://physics/mass_inventory.gd:146)
+SCRIPT ERROR: Parse Error: Function "_scaled_spd_inverse()" not found in base self.
+   at: GDScript::reload (res://physics/mass_inventory.gd:148)
+SCRIPT ERROR: Parse Error: Function "_valid_physical_tensor()" not found in base self.
+   at: GDScript::reload (res://physics/mass_inventory.gd:175)
+SCRIPT ERROR: Parse Error: Function "_valid_physical_tensor()" not found in base self.
+   at: GDScript::reload (res://physics/mass_inventory.gd:192)
+SCRIPT ERROR: Parse Error: Function "_valid_physical_tensor()" not found in base self.
+   at: GDScript::reload (res://physics/mass_inventory.gd:237)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://physics/glow/fuel_mass.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://physics/glow/flight.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://sim/flight_session.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tests/test_flight_log.gd:0)
+ERROR: Failed to load script "res://tests/test_flight_log.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/jensen_ugly_stik_60.orfl
+Cannot open flight log (12).
+Flight log byte limit exceeded; file is incomplete.
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/gp_extra_300s_60.orfl
+Cannot open flight log (12).
+Flight log byte limit exceeded; file is incomplete.
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/p51d_mustang_120.orfl
+Cannot open flight log (12).
+Flight log byte limit exceeded; file is incomplete.
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/sebart_avanti_s_a200.orfl
+Cannot open flight log (12).
+Flight log byte limit exceeded; file is incomplete.
+Flight log already exists: C:/DEVELOPMENT/OpenRCsimulator/app/../tmp/flight-log-1390048/turbo_lumber_evolution.orfl
+Cannot open flight log (12).
+Flight log byte limit exceeded; file is incomplete.
+SCRIPT ERROR: Invalid call. Nonexistent function 'rectangular_box_per_kg' in base 'GDScript'.
+   at: tensor_per_kg (res://physics/glow/fuel_mass.gd:9)
+   GDScript backtrace (most recent call first):
+       [0] tensor_per_kg (res://physics/glow/fuel_mass.gd:9)
+       [1] evaluate (res://physics/glow/fuel_mass.gd:27)
+       [2] _fuel_tank (res://physics/glow/installation.gd:279)
+       [3] prepare_value (res://physics/glow/installation.gd:142)
+       [4] attach (res://physics/glow/installation.gd:85)
+       [5] validate_and_derive (res://physics/aircraft_data.gd:158)
+       [6] load_file (res://physics/aircraft_data.gd:62)
+       [7] _load_selected_aircraft (res://sim/flight_session.gd:559)
+       [8] setup (res://sim/flight_session.gd:547)
+       [9] _flight (res://tests/test_flight_log.gd:45)
+       [10] _run (res://tests/test_flight_log.gd:34)
+SCRIPT ERROR: Invalid call. Nonexistent function 'rectangular_box_per_kg' in base 'GDScript'.
+   at: tensor_per_kg (res://physics/glow/fuel_mass.gd:9)
+   GDScript backtrace (most recent call first):
+       [0] tensor_per_kg (res://physics/glow/fuel_mass.gd:9)
+       [1] evaluate (res://physics/glow/fuel_mass.gd:28)
+       [2] _fuel_tank (res://physics/glow/installation.gd:279)
+       [3] prepare_value (res://physics/glow/installation.gd:142)
+       [4] attach (res://physics/glow/installation.gd:85)
+       [5] validate_and_derive (res://physics/aircraft_data.gd:158)
+       [6] load_file (res://physics/aircraft_data.gd:62)
+       [7] _load_selected_aircraft (res://sim/flight_session.gd:559)
+       [8] setup (res://sim/flight_session.gd:547)
+       [9] _flight (res://tests/test_flight_log.gd:45)
+       [10] _run (res://tests/test_flight_log.gd:34)
+SCRIPT ERROR: Out of bounds get index '0' (on base: 'PackedFloat64Array')
+   at: evaluate (res://physics/glow/fuel_mass.gd:31)
+   GDScript backtrace (most recent call first):
+       [0] evaluate (res://physics/glow/fuel_mass.gd:31)
+       [1] _fuel_tank (res://physics/glow/installation.gd:279)
+       [2] prepare_value (res://physics/glow/installation.gd:142)
+       [3] attach (res://physics/glow/installation.gd:85)
+       [4] validate_and_derive (res://physics/aircraft_data.gd:158)
+       [5] load_file (res://physics/aircraft_data.gd:62)
+       [6] _load_selected_aircraft (res://sim/flight_session.gd:559)
+       [7] setup (res://sim/flight_session.gd:547)
+       [8] _flight (res://tests/test_flight_log.gd:45)
+       [9] _run (res://tests/test_flight_log.gd:34)
+aircraft data invalid: Glow dry fuel carrier mass properties are invalid
+FAIL prepared res://data/aircraft/stik_glow_61fx_2t.json

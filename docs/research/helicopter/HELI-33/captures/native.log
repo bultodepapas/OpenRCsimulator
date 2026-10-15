@@ -12,12 +12,12 @@ FIXTURE 12 nose hit=true reason=fuselage ground strike · R: restart
 CAPTURE_START nose report=[6.0643334740217, 0.0, -0.36597058937946] core=(0.0, 0.558121, -6.066533)
 FIXTURE 12 fence hit=true reason=main rotor scenery impact (barrier:flightline_barrier:post:00) · R: restart
 CAPTURE_START fence report=[3.71000000089407, -23.9599990844727, -0.32499998807907] core=(-23.96026, 0.396801, -3.39924)
-FAIL wreck teleported fence at=0.04166666666667 focus=(-0.000013, 0.165652, -6.364474)
-CAPTURE_FENCE 0.04 (-0.000013, 0.165652, -6.364474)
-FAIL wreck teleported fence at=0.24166666666667 focus=(-0.000013, -0.144899, -10.74762)
-CAPTURE_FENCE 0.24 (-0.000013, -0.144899, -10.74762)
-CAPTURE_FENCE 0.8 (0.048218, -0.060404, -15.60411)
-CAPTURE_FENCE 2.0 (0.083538, -0.035083, -16.46503)
+CAPTURE_FENCE 0.04 (-23.9685, 0.388195, -3.753589)
+CAPTURE_FENCE 0.24 (-24.02568, 0.232065, -3.597979)
+CAPTURE_FENCE 0.8 (-24.07115, 0.219717, -3.602441)
+CAPTURE_FENCE 2.0 (-24.06391, 0.215509, -3.602593)
+FIXTURE 12 severe hit=true reason=fuselage ground strike · R: restart
+CAPTURE_START severe report=[6.02564263914849, 0.0, -0.38722315077394] core=(0.0, 0.766214, -6.124109)
 HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
 FIXTURE 0 main hit=true reason=main rotor ground strike · R: restart
 CAPTURE_START main report=[6.02329923666741, 0.0006530831658, -0.31359967796423] core=(0.046711, 0.368338, -5.912755)
@@ -29,10 +29,10 @@ FIXTURE 0 nose hit=true reason=fuselage ground strike · R: restart
 CAPTURE_START nose report=[6.0643334740217, 0.0, -0.36597058937946] core=(0.0, 0.558121, -6.066533)
 FIXTURE 0 fence hit=true reason=main rotor scenery impact (barrier:flightline_barrier:post:00) · R: restart
 CAPTURE_START fence report=[3.71000000089407, -23.9599990844727, -0.32499998807907] core=(-23.96026, 0.396801, -3.39924)
-FAIL wreck teleported fence at=0.04166666666667 focus=(-0.000011, 0.22639, -6.384652)
-CAPTURE_FENCE 0.04 (-0.000011, 0.22639, -6.384652)
-FAIL wreck teleported fence at=0.24166666666667 focus=(-0.000011, -0.075163, -10.70306)
-CAPTURE_FENCE 0.24 (-0.000011, -0.075163, -10.70306)
-CAPTURE_FENCE 0.8 (0.039604, -0.060103, -15.60683)
-CAPTURE_FENCE 2.0 (0.07437, -0.033298, -16.51642)
-HELI-33 CAPTURES false
+CAPTURE_FENCE 0.04 (-23.9685, 0.388195, -3.753589)
+CAPTURE_FENCE 0.24 (-24.02599, 0.231758, -3.597072)
+CAPTURE_FENCE 0.8 (-24.06693, 0.217697, -3.601761)
+CAPTURE_FENCE 2.0 (-24.06166, 0.214015, -3.60186)
+FIXTURE 0 severe hit=true reason=fuselage ground strike · R: restart
+CAPTURE_START severe report=[6.02564263914849, 0.0, -0.38722315077394] core=(0.0, 0.766214, -6.124109)
+HELI-33 CAPTURES true

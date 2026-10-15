@@ -219,9 +219,15 @@ cm_ac = note("aero", "section Cm_ac", 0.8 * cmean(lambda e: rs_["cm_ac"] + (ts_[
 CL0_w = CLa_w * (i_w - math.radians(alpha0))
 eps0 = 2 * CL0_w / (math.pi * AR)
 i_h = math.radians(T["stab_incidence_deg"])
-inc_eff = note("aero", "tail effective incidence (rad)", (i_h - eps0) / (1 - deps), "(i_h - eps0) / (1 - deps/dalpha): the local tail model sees body alpha")
-CL0 = note("aero", "CL0", CL0_w + slope_h * Sh / S * inc_eff, "wing at its mean incidence with camber + tail at zero body alpha")
-Cm0 = note("aero", "Cm0 about ARP", cm_ac * mac / c_ref - slope_h * Sh / S * l_h / c_ref * inc_eff, "UIUC NAA 45-100 camber-line thin-airfoil wing Cm_ac x0.8 correction + tail at zero body alpha")
+inc_geo = note("aero", "tail geometric effective incidence (rad)", (i_h - eps0) / (1 - deps), "(i_h - eps0) / (1 - deps/dalpha) with the +2 deg leading-edge-up stabilizer setting: the local tail model sees body alpha; P51-19 adds a calibrated local-flow correction below")
+
+
+def zero_alpha_terms(inc):
+    """CL0 and Cm0 about the ARP for an effective tail incidence inc (rad)."""
+    return CL0_w + slope_h * Sh / S * inc, cm_ac * mac / c_ref - slope_h * Sh / S * l_h / c_ref * inc
+
+
+note("aero", "CL0, Cm0 geometric (before P51-19)", list(zero_alpha_terms(inc_geo)), "wing at its mean incidence with camber + tail at zero body alpha; the geometric tail trims 4-5 deg of up elevator away from the full-size flight data")
 
 # Controls (kit placeholder throws, degrees).
 # Throws (P51-09): degrees, high rate, from the Hangar 9 Mustang 1.50 manual (80 in; astramodel.cz/manualy/hangar9/
@@ -607,10 +613,79 @@ landing_gear = {
 
 # --- Assemble -----------------------------------------------------------------------------------------------------
 stik = legacy_input(json.load(open(STIK)))
+
+# --- P51-19: tail local-flow correction calibrated to the full-size trim curves -------------------------------------
+# The geometric tail (+2 deg stabilizer, elliptic downwash) trims with 4-5 deg more up elevator than the XP-51 flew at
+# the same CL and CG (NACA MR L-566 Fig. 10, tab 0) while the trim gradient agrees. One effective tail flow angle, the
+# same lumped-calibration method as K_fus, is fitted to the glide points inside the attached oracle (CL <= 0.75), with
+# the gear-down drag removed because the XP-51 flew gear up. The glide equilibrium below is the runtime's attached
+# oracle (Aero._global_loads about the ARP, r x F to the CG, no propulsion): research/p51/p51-19/README.md.
+FIG10 = json.load(open(ROOT / "research/p51/p51-19/naca_xp51_fig10.json"))
+FIT_CL_MAX = 0.75
+CDde_ = stik["aero"]["coefficients"]["CDde"]["value"]
+CD0_clean = CD0 - 1.1 * parts["gear down: wheels, struts, doors"] / S
+mac_le_x = mac_le_z - LE0
+
+
+def glide_elevator_up(inc, cg_frac, cl_nominal):
+    """Up elevator (deg) of a steady wings-level glide at the nominal CL W/(qS), XP-51 gear-up drag."""
+    cl0_, cm0_ = zero_alpha_terms(inc)
+    cg_x, cg_z = mac_le_x + cg_frac * mac, cg[2]
+    rx, rz = -(x_arp - LE0 - cg_x), -(arp_y - cg_z)
+    V_ = math.sqrt(2 * mass * G0 / (RHO * S * cl_nominal))
+    qS = 0.5 * RHO * V_ * V_ * S
+
+    def res(x):
+        al, de, gam = x
+        cl = cl0_ + CLa * al + CLde * de
+        cd = CD0_clean + k_ind * (cl - 0.5 * CL0_w) ** 2 + abs(CDde_ * de)
+        fx = -math.cos(al) * qS * cd + math.sin(al) * qS * cl
+        fz = -math.sin(al) * qS * cd - math.cos(al) * qS * cl
+        my = qS * c_ref * (cm0_ + Cma * al + Cmde * de) + rz * fx - rx * fz
+        return [fx - mass * G0 * math.sin(gam + al), fz + mass * G0 * math.cos(gam + al), my]
+
+    x = [0.05, -0.05, -0.1]
+    for _ in range(50):
+        r = res(x)
+        jac = [[(res([x[j] + (1e-7 if j == k else 0.0) for j in range(3)])[i] - r[i]) / 1e-7 for k in range(3)] for i in range(3)]
+        m = [jac[i] + [-r[i]] for i in range(3)]
+        for p in range(3):
+            piv = max(range(p, 3), key=lambda i: abs(m[i][p]))
+            m[p], m[piv] = m[piv], m[p]
+            for i in range(3):
+                if i != p:
+                    m[i] = [m[i][j] - m[i][p] / m[p][p] * m[p][j] for j in range(4)]
+        x = [x[i] + m[i][3] / m[i][i] for i in range(3)]
+        if max(abs(m[i][3] / m[i][i]) for i in range(3)) < 1e-13:
+            break
+    return -math.degrees(x[1])
+
+
+fig10 = []
+for series in FIG10["series"]:
+    for ias_mph, up_deg in series["points"]:
+        cl_n = 2 * series["weight"] * LB * G0 / (RHO * (ias_mph * 0.44704) ** 2 * FIG10["airplane"]["wing_area_ft2"] * (12 * IN) ** 2)
+        fig10.append((series["condition"], series["cg"], cl_n, up_deg))
+fit_pts = [p for p in fig10 if p[0] == "glide" and p[2] <= FIT_CL_MAX]
+sse = lambda dinc: sum((glide_elevator_up(inc_geo + dinc, p[1], p[2]) - p[3]) ** 2 for p in fit_pts)
+lo_d, hi_d = -0.2, 0.1
+for _ in range(90):
+    m1, m2 = lo_d + (hi_d - lo_d) / 3, hi_d - (hi_d - lo_d) / 3
+    lo_d, hi_d = (lo_d, m2) if sse(m1) < sse(m2) else (m1, hi_d)
+d_inc = 0.5 * (lo_d + hi_d)
+rms_geo, rms_cal = (math.sqrt(sse(x) / len(fit_pts)) for x in (0.0, d_inc))
+note("aero", "tail local-flow correction (deg at the tail)", math.degrees(d_inc * (1 - deps)),
+     f"CALIBRATED (P51-19): least squares over {len(fit_pts)} XP-51 glide trim points at CL <= {FIT_CL_MAX} and CG 24.5/29.2 % MAC (NACA MR L-566 Fig. 10, ntrs.nasa.gov/citations/19930092575); elevator rms {rms_geo:.2f} -> {rms_cal:.2f} deg. Lumps fuselage/wing-root flow at the tail and any airframe zero-lift moment the textbook terms miss; geometric scaling does not establish it for the RC model")
+inc_eff = note("aero", "tail effective incidence (rad)", inc_geo + d_inc, "geometric (i_h - eps0)/(1 - deps/dalpha) + the calibrated local-flow correction")
+CL0, Cm0 = zero_alpha_terms(inc_eff)
+note("aero", "CL0", CL0, "wing at its mean incidence with camber + calibrated tail at zero body alpha")
+note("aero", "Cm0 about ARP", Cm0, "UIUC NAA 45-100 camber-line thin-airfoil wing Cm_ac x0.8 correction + calibrated tail at zero body alpha")
+fig10_rows = [f"| {p[0]} | {100 * p[1]:.1f} | {p[2]:.3f} | {p[3]:.2f} | {glide_elevator_up(inc_geo, p[1], p[2]):.2f} | {glide_elevator_up(inc_eff, p[1], p[2]):.2f} | {'fit' if p in fit_pts else ''} |"
+              for p in fig10 if p[0] == "glide"]
 D = lambda how: f"{SCRIPT}: {how}"
 coeff = lambda v, unit, kind, how: q(float(v), unit, kind, D(how) if kind == "derived" else how)
 coefficients = {
-    "CL0": coeff(CL0, "1", "derived", "cambered wing at +1 deg incidence + tail at zero body alpha"),
+    "CL0": coeff(CL0, "1", "derived", "cambered wing at +1 deg incidence + tail at zero body alpha, tail flow angle calibrated to the XP-51 trim curves (P51-19)"),
     "CLa": coeff(CLa, "1/rad", "derived", "Helmbold wing x cos2(dihedral) + downwashed tail"),
     "CLadot": coeff(CLadot, "1/rad", "derived", "2 eta CLa_h Sh/S l_h/c deps/dalpha"),
     "CLq": coeff(CLq, "1/rad", "derived", "tail volume + DATCOM wing term"),
@@ -632,7 +707,7 @@ coefficients = {
     "Clda_right": coeff(Clda, "1/rad", "derived", "strip theory"),
     "Clda_left": coeff(-Clda, "1/rad", "derived", "strip theory"),
     "Cldr": coeff(Cldr, "1/rad", "derived", "rudder side force x fin height above the ARP"),
-    "Cm0": coeff(Cm0, "1", "derived", "wing Cm_ac from the UIUC NAA 45-100 camber lines using thin-airfoil theory x0.8 correction, plus tail at zero body alpha, about the ARP"),
+    "Cm0": coeff(Cm0, "1", "derived", "wing Cm_ac from the UIUC NAA 45-100 camber lines using thin-airfoil theory x0.8 correction, plus tail at zero body alpha with its flow angle CALIBRATED to the XP-51 glide trim curves (NACA MR L-566 Fig. 10; P51-19), about the ARP"),
     "Cma": coeff(Cma, "1/rad", "derived", "tail about the wing-body ac; the CG transfer gives the static margin"),
     "Cmq": coeff(Cmq, "1/rad", "derived", "tail damping about the CG (undownwashed tail slope) x1.1 for wing/fuselage"),
     "Cmde": coeff(Cmde, "1/rad", "derived", "elevator lift x tail arm from the ARP"),
@@ -744,7 +819,7 @@ data = {
                 "position": q(le(xh_ac, T["stab_y"]), "m", "derived", D("quarter chord of the stab MAC")),
                 "lift_slope": q(slope_h, "1/rad", "derived", D("Helmbold x eta 0.9 x (1 - deps/dalpha)")),
                 "control_effectiveness": q(ce_h, "1", "derived", D("thin-airfoil tau x 0.8 / (1 - deps/dalpha)")),
-                "incidence": q(inc_eff, "rad", "derived", D("(stab incidence - eps0) / (1 - deps/dalpha)")),
+                "incidence": q(inc_eff, "rad", "derived", D(f"(stab incidence - eps0) / (1 - deps/dalpha) with the +2 deg leading-edge-up setting, plus a {math.degrees(d_inc * (1 - deps)):+.2f} deg local-flow correction CALIBRATED to the XP-51 glide trim curves (NACA MR L-566 Fig. 10, elevator rms {rms_geo:.2f} -> {rms_cal:.2f} deg; P51-19)")),
                 # E0a2c: the loader derives the free tail law from this (free slope CLa_h eta, physical elevator tau,
                 # downwash as the lagged wing lift); without it the local tail would use the downwashed slope for pitch
                 # rate and the inflated tau for its stall (docs/plans/elevator-flight-dynamics-repair.md).
@@ -850,6 +925,16 @@ Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({th
 
 {chr(10).join(coef_rows)}
 
+## P51-19: trim against the full-size XP-51 (NACA MR L-566 Fig. 10, glide, tab 0, gear up)
+
+Up elevator (deg) at the same nominal CL = W/(qS) and CG; the model columns are this generator's attached-oracle glide equilibrium with the
+gear-down drag removed. Fitted points lie inside the attached oracle (CL <= {FIT_CL_MAX}); the others are reported only (the full-size
+CL_max at Re 13e6 exceeds the model's {CL_max:.2f}). Correction {math.degrees(d_inc * (1 - deps)):+.3f} deg at the tail, Cm0 {zero_alpha_terms(inc_geo)[1]:.5f} -> {Cm0:.5f}, CL0 {zero_alpha_terms(inc_geo)[0]:.5f} -> {CL0:.5f}.
+
+| Condition | CG (% MAC) | CL | NACA | Geometric tail | Calibrated tail | Use |
+| --- | --- | --- | --- | --- | --- | --- |
+{chr(10).join(fig10_rows)}
+
 ## Propeller tables (blade-element/momentum, 4-blade {KIT['propeller']['diameter_in']:.0f}x{KIT['propeller']['pitch_in']:.0f})
 
 {chr(10).join(prop_rows)}
@@ -863,6 +948,7 @@ Propeller: static {rpm_static:.0f} rpm, static thrust {thrust_static:.0f} N ({th
 - Flaps fixed up; retracts fixed DOWN. No brakes. Tail-wheel spring softer than a real one (240 Hz explicit tick rule).
 - A full-size report notes 1 deg left fin offset on P-51B/D. This model has no fixed fin-incidence/yaw-bias term; a rudder control trim does not represent that geometry, so the effect is omitted.
 - The neutral point is calibrated to the full-size glide value through one lumped fuselage/scoop/propeller term (K_fus {K_f:.3f}/deg, above Raymer's 0.005-0.015).
+- The tail's zero-alpha flow angle is calibrated to the full-size glide trim curves through one lumped term ({math.degrees(d_inc * (1 - deps)):+.2f} deg at the tail, P51-19); the stabilizer stays at its +2 deg leading-edge-up setting (NACA ACR 4K02 confirms the sign). Reynolds similarity for the RC model is not established.
 - Fuselage directional destabilization is omitted because the shared surface-consistency rule requires Cnb to equal the modeled vertical-fin contribution.
 - The induced-flow strip map calibrates section slope and offsets so integrated wing-plus-horizontal-tail lift slope and
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;

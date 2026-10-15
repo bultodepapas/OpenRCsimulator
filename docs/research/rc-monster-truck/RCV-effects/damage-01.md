@@ -1,0 +1,15 @@
+# RCV damage-01: estimated gameplay wear and shell deformation
+
+**Date:** 2026-10-14. **Status:** focused software checks and a native implementation capture are complete; physical damage calibration remains open. **Scope:** the current Bisonte damage sidecar and its render-only body view. This evidence does not complete RCV-33's later physical capability gates.
+
+`GroundVehicleDamage` observes accepted vehicle state and contact telemetry. It stores a fixed 19-element `PackedFloat64Array` snapshot, accumulates bounded hull-contact energy and latches severe suspension bottoming events. The only operational effect is throttle derating; steering, braking, wheels, contact forces and the vehicle solver are unchanged. Static supported contact produces no wear, and hull wear starts only after the contact episode exceeds its two-joule onset threshold.
+
+`GroundDamageView` works on a private copy of the supplied MT8 body mesh. Its local deformation and bumper offsets preserve source mesh arrays, imported materials and external body visibility. Repair restores the original mesh and bumper transforms. Front and rear bumper motion follows the MT8 rig's local axes: front is negative Z, so its impact moves inward along positive Z; rear impact moves inward along negative Z.
+
+The damage energy scales, the 14 mm maximum shell dent and the 18 mm bumper shift are gameplay estimates. No material crush, fracture or wear measurements calibrate them. Software checks establish the controller and render-copy behavior only; they do not establish material destruction, physical validity or handling realism.
+
+The [native impact capture](runtime-impact.png) shows an ordinary steering run contacting a slalom wall over 720 ticks (3.0 seconds). The runtime reported body damage 0.1925 and propulsion scale 0.8843, with slight dents visible on the truck. This is a small gameplay impact under the estimated model, not a severe-impact or material-failure result.
+
+**Verification:** the damage modules and focused test were first parsed from their research drafts in a temporary Godot project. The focused test then passed with Godot 4.7.2: `RCV damage: 162 checks, 0 failures`. Command: `.tools/Godot_v4.7.2-stable_win64_console.exe --headless --audio-driver Dummy --path app --script res://tests/test_rcv_damage.gd`.
+
+The headless checks cover snapshot validation, the energy-onset threshold, controller repair, vertex direction, every material binding, source-array immutability, hidden-body visibility, bumper direction, invalid visual-state rejection and render repair. The native capture confirms the current implementation is visible in the driving scene; its modest effect does not calibrate damage realism. Implementation: [damage controller](../../../../app/physics/ground_vehicle/vehicle_damage.gd), [damage view](../../../../app/vehicles/ground/ground_damage_view.gd), and [focused test](../../../../app/tests/test_rcv_damage.gd). The [RCV effects note](effects-01.md) covers dust, grime and vehicle lighting.

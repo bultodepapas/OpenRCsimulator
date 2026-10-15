@@ -1332,10 +1332,10 @@
     },
     "coefficients": {
       "CL0": {
-        "value": 0.121565,
+        "value": 0.097099,
         "unit": "1",
         "kind": "derived",
-        "source": "research/p51/p51-05/derive_physics.py: cambered wing at +1 deg incidence + tail at zero body alpha"
+        "source": "research/p51/p51-05/derive_physics.py: cambered wing at +1 deg incidence + tail at zero body alpha, tail flow angle calibrated to the XP-51 trim curves (P51-19)"
       },
       "CLa": {
         "value": 4.337736,
@@ -1458,10 +1458,10 @@
         "source": "research/p51/p51-05/derive_physics.py: rudder side force x fin height above the ARP"
       },
       "Cm0": {
-        "value": -0.066816,
+        "value": -0.002601,
         "unit": "1",
         "kind": "derived",
-        "source": "research/p51/p51-05/derive_physics.py: wing Cm_ac from the UIUC NAA 45-100 camber lines using thin-airfoil theory x0.8 correction, plus tail at zero body alpha, about the ARP"
+        "source": "research/p51/p51-05/derive_physics.py: wing Cm_ac from the UIUC NAA 45-100 camber lines using thin-airfoil theory x0.8 correction, plus tail at zero body alpha with its flow angle CALIBRATED to the XP-51 glide trim curves (NACA MR L-566 Fig. 10; P51-19), about the ARP"
       },
       "Cma": {
         "value": -0.895896,
@@ -1613,10 +1613,10 @@
           "source": "research/p51/p51-05/derive_physics.py: thin-airfoil tau x 0.8 / (1 - deps/dalpha)"
         },
         "incidence": {
-          "value": 0.041173,
+          "value": -0.030504,
           "unit": "rad",
           "kind": "derived",
-          "source": "research/p51/p51-05/derive_physics.py: (stab incidence - eps0) / (1 - deps/dalpha)"
+          "source": "research/p51/p51-05/derive_physics.py: (stab incidence - eps0) / (1 - deps/dalpha) with the +2 deg leading-edge-up setting, plus a -2.30 deg local-flow correction CALIBRATED to the XP-51 glide trim curves (NACA MR L-566 Fig. 10, elevator rms 4.10 -> 0.27 deg; P51-19)"
         },
         "downwash_gradient": {
           "value": 0.439098,

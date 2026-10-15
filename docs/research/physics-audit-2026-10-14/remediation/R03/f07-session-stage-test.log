@@ -1,0 +1,11 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+ok   fixture is the authored continuous turbine branch
+ok   actual RK callback accepts the supplied stage
+ok   actual RK callback uses this stage's RPM and independently derived local intake flow  rpm 112420.000 differs from committed 92100.644; axial local 38.056360100 m/s; load delta 0.0 N/N·m
+ok   actual RK callback spool derivative uses stage RPM  got -50798.388771575228; expected -50798.388771575228 rpm/s
+ok   actual RK callback gyro uses stage RPM
+ok   accepted telemetry reports the accepted RPM and local intake vector  rpm 93940.000; local axial 38.056360100 m/s
+ok   accepted telemetry thrust/flow are calculated from local axial airspeed
+F07 FlightSession continuous stage and telemetry: 7 checks, 0 failed

@@ -8,7 +8,7 @@ v_intake = v_CG + omega_body × r_intake_body
 
 The authored intake arm is `[aft, right, up]`; the runtime converts it to body FRD as `[-aft, right, -up]`. `Turbine.intake_offset_body()` is shared by the velocity and captured-air moment calculations, so the point velocity and force arm use the same datum/arm. `Dynamics._components_from_air()` supplies the current stage's body rates to the common turbine path; generic and stage-air routes therefore evaluate the same local kinematics. The law identity is `turbine-capture-vector-signed-axial-local-intake-v3` (`Turbine.LOADS_LAW`), distinct from the continuous spool-state law.
 
-Implementation references: [turbine.gd](../../../../../app/physics/turbine.gd#L147) lines 147–180 and [dynamics.gd](../../../../../app/physics/dynamics.gd#L81) lines 81–94.
+Implementation references: [turbine.gd](../../../../../app/physics/turbine.gd#L147) lines 147–180, [dynamics.gd](../../../../../app/physics/dynamics.gd#L81) lines 81–94, and [flight_session.gd](../../../../../app/sim/flight_session.gd#L2230) lines 2230–2282.
 
 ## Verification
 
@@ -32,7 +32,15 @@ Result: `27 checks, 0 failed`; see [f07-existing-turbine-test.log](f07-existing-
 & .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_avanti_handling.gd
 ```
 
-Result: `47 checks, 0 failed`; see [f07-avanti-handling-regression.log](f07-avanti-handling-regression.log). Both aircraft-loading runs emitted the existing experimental wing-polar provenance warning; the suites completed successfully.
+Result: `47 checks, 0 failed`; the pre-FlightSession integration run is [f07-avanti-handling-regression.log](f07-avanti-handling-regression.log), and the final run is [f07-avanti-handling-final.log](f07-avanti-handling-final.log). Both aircraft-loading runs emitted the existing experimental wing-polar provenance warning; the suites completed successfully.
+
+An additional fixture exercises the actual continuous `FlightSession._turbine_evaluate()` callback and accepted-endpoint `turbine_state()` observer:
+
+```powershell
+& .tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script C:\DEVELOPMENT\OpenRCsimulator\docs\research\physics-audit-2026-10-14\remediation\R03\f07_session_stage_test.gd
+```
+
+Result: `F07 FlightSession continuous stage and telemetry: 7 checks, 0 failed`; see [f07-session-stage-test.log](f07-session-stage-test.log). It supplies `112420 rpm` to a stage while the committed RPM is `92100.644`, independently derives local inlet velocity from that stage's body rates, and finds zero load difference against the actual session callback. The stage spool derivative and rotor momentum match that supplied RPM. The accepted observer likewise reports the local intake vector and derives its axial flow, captured-air mass flow and thrust from the accepted RPM/state.
 
 F02's captured-air continuity fixture was rerun against the final F07 implementation (which leaves the `Turbine.loads` force law intact): `F02 captured-air continuity: 9 checks, 0 failed`; see [f02-post-f07-regression.log](f02-post-f07-regression.log). The separately preserved F02-only source checkpoint is [f02-only-turbine.gd](f02-only-turbine.gd), SHA-256 `0603a1c38c9f8350f12c5e212489f5180b6b96fc95504a97bb428d57bde03dc5`; the earlier F02-only evidence remains [F02-capture-vector.md](F02-capture-vector.md).
 
