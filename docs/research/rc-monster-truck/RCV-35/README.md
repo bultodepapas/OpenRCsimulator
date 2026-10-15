@@ -16,7 +16,7 @@ Home selects either Bisonte MT8 or MONSTER CAR 2. The second car uses the delive
 | Bisonte regressions | [Data checks](checks/test_rcv_vehicle_data.gd.final.log), [powertrain 9/9](checks/test_rcv_powertrain.gd.log), [session 136/136](session/verification.log), [menu 27/27](checks/test_rcv_menu.gd.final.log) |
 | Shared presentation | [Damage 175/175](checks/test_rcv_damage.gd.final.log), [ground effects 91/91](checks/test_rcv_ground_effects.gd.final.log), [water effects 79/79](checks/test_rcv_wet_effects.gd.log), [Home layout](checks/test_ui_home_layout.gd.log) |
 | Fresh checkout | [Scoped data/source clone](checkout/fresh-checkout-verification.json) and [visual bundle clone](checkout/visual-checkout-verification.json) with `core.autocrlf=true`; source/generated hashes and source/runtime copies preserved |
-| Windows release | [Export passed](checks/windows-release-export.log); [exported executable startup](checks/windows-release-startup.log) exited 0 after 60 frames with `--vehicle=monster-car-2`, no script/resource errors |
+| Windows release | [Export passed](checks/windows-release-export.log); [exported executable startup](checks/windows-release-startup.log) exited 0 after 60 frames with `--vehicle=monster-car-2`, no script/resource errors; [binary receipt](checks/windows-release-receipt.json) |
 
 `app/test.sh` now includes the data/bundle checks and discovers the new Godot tests. This was a focused integration run; the complete application suite and full application release qualification were not rerun.
 
@@ -26,7 +26,7 @@ The [session receipt](session/nitro_session_receipt.json) reports `complete=true
 
 Native Compatibility rendering on an NVIDIA RTX 3090 was inspected at 1280×720: [garage](captures/garage.png), [body removed](captures/mechanics.png), [driving with exhaust](captures/driving.png). The [capture receipt](captures/capture-receipt.json) records the accepted 360-tick run and native solver identity. Wheels sit on the terrain, the original shell and linkage geometry remain present, the body toggle exposes the mechanism, and the nitro HUD and suspension plot do not overlap. These are source-project render captures; the exported executable received a separate headless startup check.
 
-The source/runtime rig binary is 3,553,104 bytes, SHA-256 `4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d`. A fresh Blender bake into a temporary output matched both binary and manifest. The [asset manifest](../../../../assets/vehicles/monster-car-2/source-manifest.json) pins the editable Blender source, GLBs, simulation metadata, bake generator and derived outputs. Godot remaps the GLB to its imported scene during export; raw source hashes are checked before export, while runtime validates the bake hash, ranges, samples and required scene bindings.
+The source/runtime rig binary is 3,553,104 bytes, SHA-256 `4127dc26b64ed2b4ddacd230cc073ec7bab273bb7a624416587264592bfb573d`. A fresh Blender bake into a temporary output [matched both binary and manifest](checks/regenerated-visual-bundle.log). The [asset manifest](../../../../assets/vehicles/monster-car-2/source-manifest.json) pins the editable Blender source, GLBs, simulation metadata, bake generator and derived outputs. Godot remaps the GLB to its imported scene during export; raw source hashes are checked before export, while runtime validates the bake hash, ranges, samples and required scene bindings.
 
 ## Qualification limits
 

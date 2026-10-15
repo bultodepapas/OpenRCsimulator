@@ -1,0 +1,20 @@
+{
+  "date": "2026-10-15",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "preset": "Windows",
+  "export_mode": "release",
+  "export_exit_code": 0,
+  "startup_exit_code": 0,
+  "startup_args": [
+    "--headless",
+    "--quit-after",
+    "60",
+    "--vehicle=monster-car-2"
+  ],
+  "startup_frames": 60,
+  "binary_path": "tmp/monster-car-2/package/OpenRC-Nitro.exe",
+  "binary_bytes": 229311768,
+  "binary_sha256": "fc94df6f6e7a23854b6a9b615262d897a83c1c0291dfff0cc3c84689e14d8b73",
+  "native_binary_sha256": "01b7803853a1f8b219bb4fbdd91ab33c0fde2b7aba1a7aa9d780951d854501bb",
+  "scope": "Local Windows release export and paused nitro startup; no published release or hardware performance qualification"
+}
