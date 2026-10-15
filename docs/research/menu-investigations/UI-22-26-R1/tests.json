@@ -1,0 +1,102 @@
+[
+  {
+    "test": "test_ui_language",
+    "passed": true,
+    "seconds": 14.9
+  },
+  {
+    "test": "test_ui_help",
+    "passed": true,
+    "seconds": 18.1
+  },
+  {
+    "test": "test_ui_weather",
+    "passed": true,
+    "seconds": 18.6
+  },
+  {
+    "test": "test_ui_turbulence",
+    "passed": true,
+    "seconds": 14.5
+  },
+  {
+    "test": "test_ui_atmosphere",
+    "passed": true,
+    "seconds": 23.7
+  },
+  {
+    "test": "test_ui_time_of_day",
+    "passed": true,
+    "seconds": 20.2
+  },
+  {
+    "test": "test_ui_sky",
+    "passed": true,
+    "seconds": 2.8
+  },
+  {
+    "test": "test_ui_input",
+    "passed": true,
+    "seconds": 6.4
+  },
+  {
+    "test": "test_controller_setup",
+    "passed": true,
+    "seconds": 3.2
+  },
+  {
+    "test": "test_workshop_ui",
+    "passed": true,
+    "seconds": 13.5
+  },
+  {
+    "test": "test_ui_natural_random",
+    "passed": true,
+    "seconds": 20.9
+  },
+  {
+    "test": "test_ui_home_preview_cache",
+    "passed": true,
+    "seconds": 8.1
+  },
+  {
+    "test": "test_settings_ui",
+    "passed": true,
+    "seconds": 0.5
+  },
+  {
+    "test": "test_ui_home",
+    "passed": true,
+    "seconds": 20.6
+  },
+  {
+    "test": "test_ui_home_layout",
+    "passed": true,
+    "seconds": 13.5
+  },
+  {
+    "test": "test_ui_pause",
+    "passed": true,
+    "seconds": 46.7
+  },
+  {
+    "test": "test_ui_screen_stack",
+    "passed": true,
+    "seconds": 22.3
+  },
+  {
+    "test": "test_ui_time_of_day_pause",
+    "passed": true,
+    "seconds": 14.6
+  },
+  {
+    "test": "test_ui_settings_integration",
+    "passed": true,
+    "seconds": 11.7
+  },
+  {
+    "test": "test_ui_scale",
+    "passed": true,
+    "seconds": 0.5
+  }
+]

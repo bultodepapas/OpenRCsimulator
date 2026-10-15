@@ -106,6 +106,10 @@ On the Stik, **J** opens a separate smoke-pump assignment: keep the control OFF,
 
 ## Current source
 
+**Menu/display changes (2026-10-15 source):** Home pins Fly and the utility actions; scroll the setup area for Workshop, practice and RC cars. Settings is available from Home and Pause. It offers windowed/borderless display, 100–200% themed text, opaque panels, reduced motion, language, Controls and Help/About. Display previews revert after 15 seconds unless kept. Close/Back discards unkept display changes; language is saved immediately. These display preferences are separate from aircraft and controller profiles.
+
+Pause groups secondary actions under **Session options** and **Exit options**. Esc closes the top page or open group first; returning from Settings keeps the flight paused. Large text uses scrolling with focus following the selected action. The interactive UI scales automatically through native 4K without lowering 3D resolution. [Verification and remaining qualification](research/menu-investigations/UI-22-26-R1/README.md).
+
 Fresh Home preferences also select gentle wind/gusts/turbulence, **Evening (time passing)**, scenery, birds, engine shadows and the live diagnostic marker. Saved choices take precedence. Direct command-line flights ignore saved settings and default to airborne, calm/reference weather and fixed daylight.
 
 **Flight overlays.** Home flights show separate overlays instead of the diagnostic text: flight data (airspeed, ground speed, height above ground, vertical speed, throttle, distance from you, flight time), the transmitter's sticks and trims, short warnings (radio safe, failsafe, stall, sinking low, too far, battery), the wind seen from where you stand, and a **Control guide**. The guide opens by default and follows the selected keyboard/controller; its tabs show keyboard shortcuts or the active profile's axes, remapped buttons and AUX assignments. Scroll inside it for more commands. Close it with × and reopen it under Pause → **Flight overlays**, or select the Pilot preset with **F2**. Closing is remembered with the other overlay choices.

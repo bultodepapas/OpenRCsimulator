@@ -21,10 +21,14 @@ func _initialize() -> void:
 	check("mouth matches hollow mesh endpoint", anchor.position.is_equal_approx(Vector3(0.064, e.shaft_y - 0.018, z + 0.041)))
 	var direction := Vector3(0.008, -0.009, 0.011).normalized()
 	check("gas exits hollow outlet axis", anchor.direction.is_equal_approx(direction))
-	for id in [Builder.EXTRA_ID, Builder.AVANTI_ID, Builder.P51_ID, Builder.TIMBER_ID]:
+	for id in [Builder.EXTRA_ID, Builder.AVANTI_ID, Builder.TIMBER_ID]:
 		var model := Builder.build(id)
 		check(id + " has no guessed RC outlet", model.exhausts.is_empty())
 		model.root.free()
+	# P51-V12: the P-51 publishes its kit installation's canister outlet (CARF manual; location estimated at the radiator exit).
+	var p51 := Builder.build(Builder.P51_ID)
+	check("P-51 declares one estimated canister outlet with a pump", p51.exhausts.size() == 1 and Smoke.valid_anchor(p51.exhausts[0]) and p51.exhausts[0].pump)
+	p51.root.free()
 	var bad := anchor.duplicate()
 	bad.position = Vector3(NAN, 0, 0)
 	check("invalid mouth refused", not Smoke.valid_anchor(bad))

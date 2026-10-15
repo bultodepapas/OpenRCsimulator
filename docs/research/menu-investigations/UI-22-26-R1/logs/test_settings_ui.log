@@ -1,0 +1,26 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   fresh display settings use validated defaults
+ok   valid range and window mode accepted
+ok   scale below 100% rejected
+ok   scale outside the 5% steps rejected
+ok   unknown window mode rejected
+ok   wrong accessibility value type rejected
+ok   invalid settings cannot be saved
+ok   valid settings save
+ok   display preferences round-trip
+ok   new store instance reloads saved values
+ok   newer settings file is read-only
+ok   newer settings are never overwritten
+ok   unreadable settings are preserved for recovery
+ok   Close receives initial keyboard focus
+ok   larger text stacks settings rows
+ok   window change starts a 15-second trial
+ok   expired preview emits the saved display configuration
+ok   expired preview does not persist the tested window mode
+ok   language applies immediately through the host signal
+ok   locale refresh rebuilds status and window picker labels
+ok   Controls and Help/About expose host routes
+ok   Keep persists accessibility and scale changes
+ok   Back/close restores the last kept display configuration
+all Settings checks passed

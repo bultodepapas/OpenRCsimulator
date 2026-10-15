@@ -602,22 +602,22 @@ func _apply_presentation(config: Dictionary) -> void:
 	_refresh_screen_themes(self)
 	var requested: String = config.window_mode
 	if requested == _display_window_mode or DisplayServer.get_name() == "headless": return
+	var window := get_window()
 	if requested == "borderless":
 		_windowed_size = DisplayServer.window_get_size()
 		_windowed_position = DisplayServer.window_get_position()
 		_windowed_borderless = DisplayServer.window_get_flag(DisplayServer.WINDOW_FLAG_BORDERLESS)
 		_windowed_mode = DisplayServer.window_get_mode()
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, true)
-		var monitor := DisplayServer.window_get_current_screen()
-		DisplayServer.window_set_position(DisplayServer.screen_get_position(monitor))
-		DisplayServer.window_set_size(DisplayServer.screen_get_size(monitor))
+		# Use the Window state machine: manually sizing a borderless window to the
+		# monitor can promote it to exclusive fullscreen behind Window's cached mode.
+		window.mode = Window.MODE_FULLSCREEN
 	else:
-		DisplayServer.window_set_mode(DisplayServer.WINDOW_MODE_WINDOWED)
-		DisplayServer.window_set_flag(DisplayServer.WINDOW_FLAG_BORDERLESS, _windowed_borderless)
-		DisplayServer.window_set_size(_windowed_size)
-		DisplayServer.window_set_position(_windowed_position)
-		DisplayServer.window_set_mode(_windowed_mode)
+		window.mode = Window.MODE_WINDOWED
+		window.borderless = _windowed_borderless
+		window.size = _windowed_size
+		window.position = _windowed_position
+		if _windowed_mode != DisplayServer.WINDOW_MODE_WINDOWED:
+			window.mode = _windowed_mode as Window.Mode
 	_display_window_mode = requested
 
 
@@ -726,13 +726,15 @@ func _input(event: InputEvent) -> void:
 	if event is InputEventKey and event.echo: return
 	var in_menu := screens.top() != null
 	var calibrating: bool = flight != null and flight.session != null and flight.session.calibration != null
-	if in_menu or calibrating: _release_controller_holds()
-	var id: int = controllers.registry.selected_device_id("ui" if in_menu or calibrating else "flight")
+	var accident_menu: bool = not in_menu and flight != null and flight.has_method("accident_menu_active") and flight.accident_menu_active()
+	var menu_context := in_menu or calibrating or accident_menu
+	if menu_context: _release_controller_holds()
+	var id: int = controllers.registry.selected_device_id("ui" if menu_context else "flight")
 	if id < 0: return
 	var source := ControllerActions.event_source(event)
 	if source.is_empty(): return
 	var previous: PackedStringArray = _controller_action_edges.get(source, PackedStringArray())
-	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id, not in_menu and not calibrating), id, "menu" if in_menu or calibrating else "flight", previous)
+	var actions: PackedStringArray = ControllerActions.resolve_event(event, _controller_bindings(id, not menu_context), id, "menu" if menu_context else "flight", previous)
 	if actions.is_empty(): _controller_action_edges.erase(source)
 	else: _controller_action_edges[source] = actions
 	if flight != null and flight.session.has_method("set_controller_cut"):

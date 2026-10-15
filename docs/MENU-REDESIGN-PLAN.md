@@ -1,6 +1,6 @@
 # OpenRC Simulator — menu and shell redesign
 
-**Revision 3 · 2026-10-15 · Owner: product shell · UI-20…29.** UI-20/21 and UI-20-R1 are delivered. UI-22…26/28/29 below are proposed. This revision changes documentation and evidence only. The [UI-20-R1 report](research/menu-investigations/UI-20-R1/README.md) owns dated observations, screenshots, sources and limitations.
+**Revision 4 · 2026-10-15 · Owner: product shell · UI-20…29.** UI-20/21 and UI-20-R1 are delivered. The first implementation of UI-22…26/28 is in source; release qualification and the remaining work below are open. [Implementation evidence](research/menu-investigations/UI-22-26-R1/README.md). The [UI-20-R1 report](research/menu-investigations/UI-20-R1/README.md) owns dated observations, screenshots, sources and limitations.
 
 Build a clear, attractive game interface that works from 720p to native 4K in English and Spanish. Prioritize readable scale and a short route to flight, then visual polish. Reuse the aircraft, field, screen stack, controller support and free licensed resources already available.
 
@@ -13,6 +13,16 @@ Preserve `Screen`, `ScreenStack` and `Widgets`: named session holds, top-screen 
 The October 11 audit is historical. Current source already includes controller configuration/menu routing, Workshop, Natural Random, failure settings, garage entry, sky/cloud tabs and configurable flight overlays. Do not schedule these features as absent. General Settings and coherent display/UI scaling remain pending. Physical controller qualification stays with its owner.
 
 Retain delivered maintenance: [UI-05-R1 legend reuse](research/menu-investigations/UI-05-R1/README.md), [UI-05-R2 preview cache](research/menu-investigations/UI-05-R2/README.md), [UI-05-R3 selected-resource loading](research/menu-investigations/UI-05-R3/README.md), [UI-06d-R2 launch captions](research/menu-investigations/UI-06d-R2/README.md), and [UI-16 update notices](research/menu-investigations/UI-16/README.md). Loading follow-ups remain in [investigation 26](research/menu-investigations/26-menu-responsiveness-loading.md).
+
+## Current implementation milestone
+
+- Interactive Home uses native `canvas_items` scaling with a 1280×720 logical base and expanded aspect ratio: 1×/1.5×/2×/3× at 720p/1080p/1440p/4K. Technical CLI launches retain their existing route.
+- Home pins Fly and language/help/quit/controls/settings; setup, Workshop, practice and the integrated RC-car activity scroll with visible overflow. Full labels wrap. Existing aircraft preview and launch contracts remain.
+- Pause has Session options and Exit options disclosures, plus Settings and Help. Back collapses an open disclosure before resuming; child pages return to Pause without advancing simulation ticks. Readiness and recording recovery messages remain in the scrollable pause content.
+- Settings previews window/borderless mode with a 15-second real-time Keep/Revert deadline, themed text at 100–200%, opaque panels and reduced motion. Language applies immediately through the existing store; display/accessibility preferences are separate. Controls and Help/About are nested destinations.
+- The shared theme covers selectors, fields, popups and tabs; panels use 0.94 opacity or an opaque fallback. Pages replace lower navigation chrome and fade in for 140 ms unless reduced motion is selected. Help has a pinned Close header and correct runway/airborne guidance.
+
+The accessibility adjustment currently enlarges **themed text**, not the entire logical viewport; this avoids shrinking legacy modal space. Local font overrides and glyph ink bounds still need the complete typography audit. Native evidence covers representative dense pages at 200%, not every advanced tab, pseudo-locale or platform. Audio controls, safe-margin controls, a thumbnail catalog, staged paused weather, full page-by-page refinement, timing budgets and formative user testing remain open. Do not treat this milestone as completion of UI-29.
 
 ## 2. Audit findings that determine priority
 
@@ -158,13 +168,13 @@ Each phase leaves a usable app; split work into small commits with evidence. Est
 | --- | --- | --- | --- |
 | 0 · UI-20-R1 | Native visual audit and game references | [78 captures, 50 sampled flow records, layout test, measured defects/limits](research/menu-investigations/UI-20-R1/README.md) | Done 2026-10-15 |
 | Foundation · UI-21 | Shared screen/stack/widgets | [Parity and lifecycle proof](research/menu-investigations/UI-21/README.md) | Delivered; retain |
-| 1a · UI-23 · 3–5 days | Scale policy, compact reflow, native 4K and aspect ratios; isolate technical routes | Home/Pause+dense dialog, EN/ES, four resolutions, 100/150/200%; geometry, text and focus proof; deterministic simulation unchanged | Proposed; first implementation |
-| 1b · UI-22 · 3–5 days | Material/type prototype, tokens, complete control states and free assets | Two reviewed Home/Pause/Conditions compositions; selected system passes glyph/contrast tests and opaque fallback | Proposed; agree scale contract with 1a |
-| 2 · UI-24 · 3–5 days | Settings, display Keep/Revert, accessibility/language and persistence | Relaunch/reversion/migration/error tests; existing profile/calibration preserved; 4K click alignment | Proposed; after phase 1 |
-| 3 · UI-25 · 3–5 days | Home, catalog, activity navigation and practice choices | Full EN/ES labels; initial Fly visible; one-key launch; immediate selection; no NR/RCV/HELI/Workshop regression | Proposed; after phase 2 |
-| 4 · UI-26 · 4–6 days | Compact pause, Session options, conditions scope, Help and dense pages | Nested Back/Esc, trace failure, staged/immediate edits, controller tabs, Workshop return, 720p Spanish stress captures | Proposed; coordinate affected owners |
+| 1a · UI-23 · 3–5 days | Scale policy, compact reflow, native 4K and aspect ratios; isolate technical routes | Home/Pause+dense dialog, EN/ES, four resolutions, 100/150/200%; geometry, text and focus proof; deterministic simulation unchanged | Core implemented; full qualification open |
+| 1b · UI-22 · 3–5 days | Material/type prototype, tokens, complete control states and free assets | Two reviewed Home/Pause/Conditions compositions; selected system passes glyph/contrast tests and opaque fallback | Shared theme implemented; typography/assets qualification open |
+| 2 · UI-24 · 3–5 days | Settings, display Keep/Revert, accessibility/language and persistence | Relaunch/reversion/migration/error tests; existing profile/calibration preserved; 4K click alignment | Display/accessibility/language implemented; audio and safe margins open |
+| 3 · UI-25 · 3–5 days | Home, catalog, activity navigation and practice choices | Full EN/ES labels; initial Fly visible; one-key launch; immediate selection; no NR/RCV/HELI/Workshop regression | Pinned Home/activity grouping implemented; catalog redesign open |
+| 4 · UI-26 · 4–6 days | Compact pause, Session options, conditions scope, Help and dense pages | Nested Back/Esc, trace failure, staged/immediate edits, controller tabs, Workshop return, 720p Spanish stress captures | Compact Pause/Help implemented; dense-page and conditions follow-ups open |
 | HUD · UI-27 | Shared styling only; functionality belongs to HUD-00…12 | [Overlay plan](plans/flight-overlays.md) | Superseded by HUD track |
-| 5 · UI-28 · 1–2 days | Motion, loading feedback, toasts; optional measured blur | Reduced-motion parity, no focus/hold delay, bounded same-host p95 cost, paused audio rules | Proposed; after function/layout |
+| 5 · UI-28 · 1–2 days | Motion, loading feedback, toasts; optional measured blur | Reduced-motion parity, no focus/hold delay, bounded same-host p95 cost, paused audio rules | Reduced-motion entrance implemented; performance qualification open |
 | 6 · UI-29 · 2–4 days + hardware | Matrix, exports, usability and handover | Gates below; untested platforms/hardware explicit; guides/screenshots updated | Proposed |
 
 Critical path: 1 → 2 → 3 → 4 → 5 → 6. Theme/scaling can proceed independently only after agreeing coordinates/type. First useful milestone: readable, untruncated Home/Pause at 1080p/4K. Test 720p Spanish throughout, not just at the end.

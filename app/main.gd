@@ -25,6 +25,8 @@ const FlightSession := preload("res://sim/flight_session.gd")
 const FailureConfig := preload("res://failures/config.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const CrashDirector = preload("res://render/crash/director.gd")
+const AccidentIncident = preload("res://economy/incident.gd")
+const AccidentReport = preload("res://ui/accident_report.gd")
 const SceneryDamageDirector = preload("res://render/crash/scenery_damage.gd")
 const ImpactSnapshot = preload("res://physics/impact_snapshot.gd")
 const Recorder := preload("res://sim/recorder.gd")
@@ -213,6 +215,15 @@ var _soundscape_audio: FlightAudio
 var _lake_ambience: AudioStreamPlayer3D
 ## Technical fixtures can retain the original diagnostic freeze route.
 var crash_effects_enabled := true
+## CR-30/32: independent from visual effects; technical fixtures can opt out.
+var accident_reports_enabled := true
+var accident_archive_path := "user://last_accident.json"
+var _accident_incident: RefCounted
+var _accident_report: CanvasLayer
+var _accident_restored := false
+var _accident_bindings: Dictionary = {}
+var _accident_source_hash := ""
+var _accident_archive_error := OK
 var _crash_director: CrashDirector
 var _scenery_damage_director: SceneryDamageDirector
 var _cg_model := Vector3.ZERO
@@ -640,6 +651,21 @@ func _ready() -> void:
 	# E3d1: interactive flights get soft hull contacts (a wingtip brush or belly slide continues); scripted, capture
 	# and trace routes keep "any hull contact is a crash". -- --soft-contacts=off restores it interactively.
 	session.soft_hull_contacts = not _scripted and not args.has("capture") and str(args.get("soft-contacts", "on")) != "off"
+	if accident_reports_enabled and not _scripted and not args.has("capture") and not args.has("trace") \
+		and str(args.get("accident-report", "on")) != "off":
+		_accident_incident = AccidentIncident.new()
+		_accident_incident.archive_path = accident_archive_path
+		_begin_accident_ledger()
+		_accident_report = AccidentReport.new()
+		_accident_report.name = "AccidentReport"
+		add_child(_accident_report)
+		_accident_incident.assessment_changed.connect(_on_accident_assessment)
+		_accident_report.restart_requested.connect(session.reset)
+		session.contact_events_changed.connect(_on_accident_contacts)
+		var archived: Dictionary = _accident_incident.load_archive()
+		if not archived.is_empty():
+			_accident_report.show_archived(archived)
+		session.crash_auto_restart = false
 	flight_log = FlightLog.new(session)
 	if args.has("flight-log"):
 		if typeof(args["flight-log"]) != TYPE_STRING or str(args["flight-log"]).is_empty() or _scripted or args.has("capture"):
@@ -679,6 +705,12 @@ func _ready() -> void:
 
 
 func _process(delta: float) -> void:
+	if _accident_report != null:
+		_accident_report.suspend(not session.holds.is_empty())
+		var archive_result: int = _accident_incident.flush()
+		if archive_result != OK and archive_result != _accident_archive_error:
+			_note = tr("Accident report could not be saved; it remains available for this session.")
+		_accident_archive_error = archive_result
 	if flight_log != null and _flight_log_label != null:
 		_update_flight_log_label()
 	if _capturing:
@@ -1013,8 +1045,14 @@ func controller_capabilities() -> Dictionary:
 	}
 
 
+func accident_menu_active() -> bool:
+	return _accident_report != null and _accident_report.wants_controller_menu() and session.holds.is_empty()
+
+
 func controller_action(action: String) -> bool:
 	if session == null: return false
+	if _accident_report != null and _accident_report.controller_action(action):
+		return true
 	match action:
 		"camera_cycle": _rig.cycle(1)
 		"camera_previous": _rig.cycle(-1)
@@ -1709,13 +1747,43 @@ func _update_flight_log_label() -> void:
 	_flight_log_label.tooltip_text = flight_log.note
 
 
+## CR-30: only accepted contact evidence enters costs. VFX severity never enters this path.
+func _on_accident_contacts() -> void:
+	if _accident_incident == null:
+		return
+	if _accident_source_hash != str(session.aircraft.get("input_identity", {}).get("sha256", "")):
+		_accident_incident.archive()
+		_begin_accident_ledger() # A developer reload cannot keep prices bound to an earlier aircraft.
+	_accident_restored = _accident_restored or session.pause_reason == "checkpoint restored (recorded inputs)"
+	_accident_incident.observe(session.contact_events(), _accident_bindings, not session.crash.is_empty(), _accident_restored)
+
+
+func _begin_accident_ledger() -> void:
+	_accident_source_hash = str(session.aircraft.get("input_identity", {}).get("sha256", ""))
+	_accident_bindings = session.contact_contract()
+	_accident_incident.begin(aircraft_id, _accident_source_hash)
+	_accident_restored = false
+
+
+func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:
+	_accident_report.show_assessment(report, terminal)
+
+
 func _exit_tree() -> void:
+	if _accident_incident != null:
+		_accident_incident.archive()
 	if flight_log != null:
 		flight_log.stop("flight closed")
 
 
 ## One file never mixes two flights.
 func _on_resetting() -> void:
+	if _accident_incident != null:
+		var archived: Dictionary = _accident_incident.archive()
+		_begin_accident_ledger()
+		_accident_report.clear_report()
+		if not archived.is_empty():
+			_accident_report.show_archived(archived)
 	_sky_edits.clear()
 	Atmosphere.configure_appearance(sky_config, SkyConfig.mean_wind_ned(session.weather_configuration()))
 	if _storm_fx != null:

@@ -1,0 +1,15 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   P-51 data loads with simulated flaps
+ok   kit settings: 15 deg take-off, 45 deg landing (CARF manual)
+ok   scaled full-size flap span and chord
+ok   refinements present and derived  kappa 0.328 offset 0.0537 m
+ok   kappa 1 and offset 0 are byte-identical to the absent fields (300 states)
+ok   flaps raise the maximum lift monotonically (0 / 15 / 45 deg)  1.009 / 1.120 / 1.212
+ok   the unrefined law (kappa 1, offset 0) lowered the take-off-flap maximum lift (P51-11a diagnosis)  0.930 vs clean 1.009
+ok   at fixed alpha, flaps add lift (5 deg: 0 < 15 < 45 deg)
+ok   session exposes the flap channel
+ok   full flaps reach 45 deg within the 2.5 s travel, about half way at mid travel  45.0 deg at end, 22.6 deg half way
+ok   two flap hinges outside the control-surface hinges
+ok   45 deg lowers the flap trailing edge and 0 restores it  0.089 m lower
+P51-11a flaps: 12 checks, 0 failed

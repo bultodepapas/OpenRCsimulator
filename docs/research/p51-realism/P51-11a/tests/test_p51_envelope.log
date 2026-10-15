@@ -1,0 +1,29 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   data loads, trims, and the field's surfaces apply  trimmed 
+info mass 21.50 kg, 1-g stall (CL_max 1.02) 15.7 m/s
+info modes at 20.4 m/s: short period 0.58 Hz ζ 1.08; phugoid 0.113 Hz ζ 0.07; roll τ 0.103 s; dutch roll 0.42 Hz ζ 0.31; spiral τ 260.9 s
+ok   modes at 20.4 m/s: short period ζ > 0.3, dutch roll ζ > 0.05, roll τ < 0.3 s, phugoid ζ > -0.05, spiral doubles slower than 4 s (MIL-F-8785C Level 3)  spiral time to double inf s (stable)
+info modes at 25.0 m/s: short period 0.74 Hz ζ 1.02; phugoid 0.109 Hz ζ 0.14; roll τ 0.083 s; dutch roll 0.68 Hz ζ 0.24; spiral τ -32.6 s
+ok   modes at 25.0 m/s: short period ζ > 0.3, dutch roll ζ > 0.05, roll τ < 0.3 s, phugoid ζ > -0.05, spiral doubles slower than 4 s (MIL-F-8785C Level 3)  spiral time to double 22.6 s (Level 1)
+info modes at 40.0 m/s: short period 1.31 Hz ζ 0.91; phugoid 0.096 Hz ζ 0.38; roll τ 0.052 s; dutch roll 0.86 Hz ζ 0.26; spiral τ 106.0 s
+ok   modes at 40.0 m/s: short period ζ > 0.3, dutch roll ζ > 0.05, roll τ < 0.3 s, phugoid ζ > -0.05, spiral doubles slower than 4 s (MIL-F-8785C Level 3)  spiral time to double inf s (stable)
+info full-throttle level: 51.7 m/s (186 km/h, 116 mph) at 7103 rpm, still accelerating 0.05 m/s over the last 5 s
+ok   maximum level speed 38-56 m/s (gear down; P51-09 envelope)  51.7 m/s
+ok   the propeller unloads in flight: full-throttle rpm at top speed above the static rpm  7103 rpm
+info full-throttle climb at 21.9 m/s: 14.1 m/s (40°)
+ok   full-throttle climb at 1.4 Vs: 5-16 m/s (thrust/weight 1.1 static: a giant warbird climbs steeply)  14.1 m/s
+info idle glide at 21.9 m/s: sink 3.01 m/s, L/D 7.3, propeller at 2563 rpm
+ok   idle glide L/D 4-8.5: below the clean airframe's 8.7 (windmilling propeller drag)  7.3
+info power-off stall: 15.6 m/s (Vs 15.7), wing drop to +20° bank in 1.5 s at full up, 81 m lost in the recovery
+ok   power-off 1-g stall within 0.85-1.1 Vs (CL_max from NACA TN 1945 section data at the model's Reynolds numbers)  15.6 m/s
+FAIL power-off stall recovers (stick forward, opposite rudder, wings level, α-limited pull-out) within 80 m, no crash  81 m
+info power-on (30 %) stall: 13.9 m/s, wing drop to -20° bank in 1.5 s at full up, 38 m lost
+ok   power-on stall is slower than power-off (thrust and slipstream)  13.9 vs 15.6 m/s
+ok   power-on stall drops the LEFT wing (torque and P-factor; RC reports: early lift-off stalls the left wing)  -20°
+ok   power-on stall recovers within 80 m, no crash  38 m
+info full-aileron roll rate (high rate, coordinated) at 20.4 / 25 / 35 m/s: 101 / 118 / 152 °/s
+ok   roll rate grows with airspeed and stays scale-like (60-250 °/s)  [100.608318385259, 117.706170815906, 151.782676479431]
+info 60° level turn from 30 m/s, full throttle: 48.9 m/s after 10 s, altitude lost 5.2 m
+ok   60° bank 2-g level turn sustained at full throttle (speed above 1.45 Vs, altitude within 8 m)  48.9 m/s, 5.2 m
+15 checks, 1 failed

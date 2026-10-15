@@ -1,0 +1,31 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   write isolated preferences
+ok   ordinary Home still opens with Fly focused
+ok   Home opens briefing without a flight
+ok   prepared draw can fly
+ok   Another flight consumes exactly one seed
+ok   draft and reroll do not change Home or preferences
+ok   radio does not navigate briefing
+ok   cancel restores focus to Home action
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   late launch failure keeps the briefing and Home
+ok   late failure restores flowing Home world
+ok   late failure does not change normal preferences
+ok   briefing launches one accepted random flight
+ok   accepted stock scenario has valid provenance
+ok   actual physical conditions match the accepted draw
+ok   random launch preserved saved normal-flight defaults
+ok   fixed random lighting retired the Home clock
+ok   trace contains the complete accepted scenario
+ok   Restart keeps the draw and turbulence seed
+ok   pause lighting edit becomes a customized scenario
+ok   random pause edit never writes normal preferences
+ok   recording preserves initial scenario and records the lighting edit at its tick
+ok   edited lighting is the restart selection
+ok   End flight restores ordinary Home selections
+ok   Repeat last flight does not draw a new seed
+ok   Repeat launches the accepted customized selection
+ok   legacy paired checkpoint clears unrecorded random provenance
+ok   checkpoint restore preserves normal preference isolation
+NR UI: 27 checks, 0 failures

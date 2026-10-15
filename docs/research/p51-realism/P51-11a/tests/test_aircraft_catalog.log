@@ -1,0 +1,8 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Cannot find member "AVANTI_ID" in base "res://render/airplane.gd".
+   at: GDScript::reload (res://tests/test_aircraft_catalog.gd:43)
+SCRIPT ERROR: Parse Error: Cannot find member "AVANTI_ID" in base "res://render/airplane.gd".
+   at: GDScript::reload (res://tests/test_aircraft_catalog.gd:74)
+ERROR: Failed to load script "res://tests/test_aircraft_catalog.gd" with error "Parse error".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)

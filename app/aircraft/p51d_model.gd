@@ -43,6 +43,9 @@ const FLAP_BEVEL_RATIO := 2.0
 ## P51-11a: extra cove gap ahead of the flap nose (m): the swept hinge carries the nose apex at the flap's ends ~0.5 mm
 ## forward at 40-45 deg; with the hinge gap this keeps >= 0.5 mm clearance at the landing setting.
 const FLAP_COVE_M := 0.003
+## P51-V12: estimated canister outlet radius (an MTW 110-class outlet, about 16 mm bore) and its height above the door edge.
+const EXHAUST_OUTLET_RADIUS_M := 0.008
+const EXHAUST_LIP_M := 0.005
 const PROP_TIP_M := 0.03 # yellow blade tips
 const HORN_CLEARANCE_M := 0.002 # spanwise gap between the stab's horn cut and the elevator horn (V01)
 const STEP_M := 0.0005 # half-length of the near-vertical span step at the horn cut
@@ -411,6 +414,13 @@ static func _scoop(root: Node3D) -> void:
 			ring.append(end + Vector3(corner[0] * hw_door, corner[1], 0))
 		door.append(ring)
 	_instance("scoop_exit_door", _loft(door, _skin(Finish.PLAIN)), root)
+	# P51-V12 / SM-01: the RC exhaust outlet. The CARF 1:4.3 manual (pp. 11-13) installs the gas engine with a wrap-around
+	# header and an MTW canister inside the fuselage, in a plywood tunnel along the floor, and opens the radiator exit for the
+	# cooling air; it does not state where the canister outlet leaves. Estimated here at that exit: the door's trailing edge,
+	# pointing along the open door. The smoke pump is optional presentation equipment (not in the mass inventory).
+	var hinge_point := Vector3(0, y_hinge, z_hinge)
+	root.set_meta("exhausts", [{position = free + Vector3(0, EXHAUST_LIP_M, 0), direction = (free - hinge_point).normalized(),
+		radius_m = EXHAUST_OUTLET_RADIUS_M, kind = "glow_prop", pump = true}])
 
 
 # Height profile of the carburettor intake along its length (0..1): a short rise, a plateau and a long fade into the

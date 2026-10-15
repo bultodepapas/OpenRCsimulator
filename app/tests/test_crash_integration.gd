@@ -235,6 +235,7 @@ func _make_main(aircraft_id: String, effects_enabled: bool, node_name: String) -
 	scene.name = node_name
 	scene.set("aircraft_id", aircraft_id)
 	scene.set("crash_effects_enabled", effects_enabled)
+	scene.set("accident_reports_enabled", false) # This fixture isolates the legacy VFX-on/off contract.
 	root.add_child(scene)
 	return scene
 

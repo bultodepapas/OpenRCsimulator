@@ -1,0 +1,27 @@
+ERROR: Cannot open file 'res://i18n/es.po'.
+   at: load (core/io/translation_loader_po.cpp:356)
+ERROR: Failed loading resource: res://i18n/es.po.
+   at: _load (core/io/resource_loader.cpp:317)
+Trimmed CLmax, power off, V = 20 m/s (alpha sweep 0-24 deg, elevator for zero pitch moment):
+  flaps  0.0 deg: CLmax_trim 0.989 at alpha 12.3 deg (elevator -3.2 deg); ratio to clean 1.000; 1-g stall 15.92 m/s
+  flaps 15.0 deg: CLmax_trim 1.072 at alpha 10.6 deg (elevator -2.4 deg); ratio to clean 1.083; 1-g stall 15.30 m/s
+  flaps 20.0 deg: CLmax_trim 1.092 at alpha 10.2 deg (elevator -2.4 deg); ratio to clean 1.104; 1-g stall 15.16 m/s
+  flaps 45.0 deg: CLmax_trim 1.155 at alpha 12.6 deg (elevator -6.0 deg); ratio to clean 1.168; 1-g stall 14.73 m/s
+  flaps 50.0 deg: CLmax_trim 1.165 at alpha 12.6 deg (elevator -6.2 deg); ratio to clean 1.177; 1-g stall 14.67 m/s
+  XP-51 flight (MR L-566): gliding clean 1.5, landing flaps 50 deg 1.6 -> ratio 1.067
+Level trim at CL 0.853 (V 17.15 m/s), power on:
+  flaps  0.0: ok true alpha 10.00 deg elevator -3.60 deg (change +0.00 deg, negative = more up) throttle 0.067
+  flaps 15.0: ok true alpha 6.64 deg elevator -2.85 deg (change +0.75 deg, negative = more up) throttle 0.073
+  flaps 20.0: ok true alpha 5.83 deg elevator -2.77 deg (change +0.83 deg, negative = more up) throttle 0.077
+  flaps 45.0: ok true alpha 4.04 deg elevator -2.97 deg (change +0.64 deg, negative = more up) throttle 0.100
+  XP-51 Table III, 120 mph take-off: flaps 20 deg needs 1.0 deg more up elevator
+Level trim at equal CL/CLmax 0.57: CL 0.562 (V 21.12 m/s), power on:
+  flaps  0.0: ok true alpha 6.23 deg elevator -2.80 deg (change +0.00 deg, negative = more up) throttle 0.095
+  flaps 15.0: ok true alpha 2.82 deg elevator -1.90 deg (change +0.90 deg, negative = more up) throttle 0.105
+  flaps 20.0: ok true alpha 2.01 deg elevator -1.72 deg (change +1.08 deg, negative = more up) throttle 0.111
+  flaps 45.0: ok true alpha 0.23 deg elevator -1.68 deg (change +1.12 deg, negative = more up) throttle 0.152
+Glide trim (engine stopped) at the same CL 0.562 (V 21.12 m/s):
+  flaps  0.0: ok true alpha 6.23 deg elevator -1.70 deg (change +0.00 deg, negative = more up) glide angle -6.51 deg
+  flaps 15.0: ok true alpha 2.72 deg elevator -0.59 deg (change +1.11 deg, negative = more up) glide angle -7.14 deg
+  flaps 20.0: ok true alpha 1.88 deg elevator -0.37 deg (change +1.33 deg, negative = more up) glide angle -7.57 deg
+  flaps 45.0: ok true alpha -0.06 deg elevator -0.18 deg (change +1.52 deg, negative = more up) glide angle -10.21 deg

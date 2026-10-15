@@ -10,7 +10,7 @@
 
 The Stik's authored hollow muffler mouth emits faint oil-bearing glow exhaust while RPM indicates firing. An optional presentation smoke pump adds a white trail at sufficient operating load. Turning it off stops births immediately; existing puffs expand, drift and fade. RPM and throttle gates are estimates, not engine temperature or smoke-oil measurements. Smoke never writes flight state, AETR commands, aircraft data or traces.
 
-Only the Stik currently declares an RC exhaust mouth. The Extra has no authored outlet; the P-51's decorative full-size stacks do not establish its installed RC gasoline exhaust. The healthy Ventage Jet turbine, electric Timber and electric Stik conversions stay clear. No exhaust is inferred at the model origin. Home and static `--capture` routes have no operating engine/history and remain smoke-free.
+The Stik declares its authored RC exhaust mouth. The P-51 declares an estimated canister outlet from its kit installation (CARF manual: internal MTW canister in a tunnel; outlet at the radiator exit is an estimate, [P51-11a](research/p51-realism/P51-11a/README.md#engine-smoke-p51-v12)), not its decorative full-size stacks. The Extra has no authored outlet. The healthy Ventage Jet turbine, electric Timber and electric Stik conversions stay clear. No exhaust is inferred at the model origin. Home and static `--capture` routes have no operating engine/history and remain smoke-free.
 
 Controls and assignment are documented in [FIRST-LAUNCH](FIRST-LAUNCH.md#3-fly); reproducible commands live in [tools/smoke](../tools/smoke/README.md). `--smoke=off` disables the feature; `--smoke-pump=on` is an explicit technical flight/profile request.
 

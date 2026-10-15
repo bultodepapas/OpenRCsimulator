@@ -1,0 +1,51 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   write the explicit fixed-day editor fixture
+ok   interactive route starts on Home
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   pause menu offers a Sky and lighting action
+ok   Down reaches Restart
+ok   Down reaches Session options
+ok   keyboard reaches Sky and lighting
+ok   time editor opens over the still-paused flight
+ok   paused conditions expose three compact field profiles and a separate campfire toggle
+ok   option popups use native windows only when supported
+ok   radio axes cannot move focus in the pause editor
+ok   en modal fits the logical viewport at 800×600 output
+ok   es modal fits the logical viewport at 800×600 output
+ok   en modal fits the logical viewport at 1280×720 output
+ok   es modal fits the logical viewport at 1280×720 output
+ok   Spanish modal title and actions are translated
+ok   keyboard focus scrolls the advanced location field into view at 800×600
+ok   time preset produces a valid draft
+ok   Esc cancels without resuming or changing lighting
+ok   Cancel restores focus to the pause action
+ok   invalid local time leaves the editor open with an error
+ok   flight staging errors also keep the modal open
+ok   Esc after an error still only cancels the draft
+ok   preset popup route starts on the lighting control
+ok   Tab reaches the time preset
+ok   Enter opens the time preset list
+ok   Esc closes the preset list and keeps the editor paused
+ok   a second Esc cancels the editor but keeps Pause open
+ok   Down keys navigate the open preset list
+ok   Enter applies the selected preset to the draft
+ok   preset mode change refreshes the keyboard focus chain
+ok   valid Apply changes lighting and leaves the pause menu held
+ok   Apply preserves tick, state and live controls
+ok   paused Apply updates both visual options without changing the session
+ok   interactive Apply saves the configured start light
+ok   interactive Apply persists field lighting and campfire choices
+ok   Apply returns focus to Time of day
+ok   Restart reuses the applied start lighting
+ok   Restart reuses the saved night presentation choices
+ok   End flight returns Home with the accepted selection
+ok   direct-route sentinel fixture opens
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   time preset produces a valid draft
+ok   direct CLI route applies lighting without Home
+ok   direct route starts from club lighting and campfire-off defaults
+ok   direct route does not read or write the preference file
+all TOD-08b pause UI checks passed
+WARNING: 24 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

@@ -70,3 +70,5 @@
 /assets/vehicles/monster-car-2/*.json -text
 /assets/vehicles/monster-car-2/SOURCE.txt text eol=lf
 /research/rc-monster-truck/monster-car-2/visual_bake.py text eol=lf
+/app/data/economy/*.json text eol=lf
+/app/data/economy/**/*.json text eol=lf

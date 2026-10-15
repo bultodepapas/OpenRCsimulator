@@ -1,0 +1,50 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   schema 1 migration fixture saves
+ok   schema 1 receives legacy lighting defaults
+ok   schema 1 remains weather-derived when lighting is untouched
+ok   schema 2 migration fixture saves
+ok   schema 2 receives legacy lighting defaults
+ok   schema 2 remains weather-derived when lighting is untouched
+ok   schema 3 migration fixture saves
+ok   schema 3 receives legacy lighting defaults
+ok   schema 3 remains weather-derived when lighting is untouched
+ok   invalid lighting fixture saves
+ok   invalid lighting falls back to legacy daylight and retains weather
+settings: invalid time-of-day settings; using legacy daylight
+ok   Home visibly reports invalid saved lighting
+ok   float64 coordinate fixture saves as schema 4
+ok   opening and reading untouched coordinates preserves their exact float64 values
+ok   Cancel leaves the stored coordinate selection untouched
+ok   legacy v1 weather fixture saves unchanged
+ok   Home begins with the legacy daylight selection
+ok   weather dialog keeps the time and sky tabs
+ok   time slider spans every whole minute and typed field supports seconds
+ok   radio axes cannot move menu focus
+ok   initial weather object remains the original v1 schema
+ok   Noon preset builds a validated astronomical draft
+ok   night limitation is hidden for the daylight preset
+ok   night limitation appears when solar elevation falls below −6°
+ok   night limitation hides again when the selected solar elevation is above −6°
+ok   preset selection does not touch saved lighting or weather
+ok   cancel leaves both preferences unchanged
+ok   slider selects an exact whole minute
+ok   typed seconds and advanced fixed location round-trip
+ok   an invalid date blocks preset selection with an inline message
+ok   invalid fixed date blocks Apply and keeps both saved objects unchanged
+ok   Apply saves fixed solar selection as schema 4 without changing legacy weather
+ok   Home keeps a compact phase and local-time summary while the tooltip shows full context
+ok   preset remains a draft before Apply
+ok   Apply commits the Noon preset and preserves weather
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Home to flight passes the selected lighting snapshot
+ok   End flight returns Home to the configured start time
+ok   failed Home rebuild retains the previous view and reports the failure
+ok   future schema fixture saves
+settings: settings from a newer version (schema 6): read where valid, never overwritten
+ok   future schema reads valid lighting and remains read-only
+ok   future schema Apply takes effect in memory
+ok   future schema settings stay byte-for-byte unchanged and the failure is visible
+ok   five-tab dialog fits inside an 800×600 viewport
+ok   Spanish translates the time tab, mode, date and night limitation
+all UI time-of-day checks passed

@@ -142,6 +142,7 @@ func _run() -> void:
 	await ui.tap(KEY_UP)
 	await ui.tap(KEY_UP)
 	await ui.tap(KEY_UP)
+	await ui.tap(KEY_UP)
 	_check("Home focus returns to Fly from Failure settings", ui.focus_name() == "Fly", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	await ui.settle()

@@ -1,0 +1,724 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 720p: sidebar exactly 440 px wide
+ok   en jensen-das-ugly-stik-60 720p: Fly visible above the pinned footer, focus on Fly
+ok   en jensen-das-ugly-stik-60 720p: opens at the top, title visible
+ok   en jensen-das-ugly-stik-60 720p: pinned Language, Help and Settings remain visible
+ok   en jensen-das-ugly-stik-60 720p: Language and Controls labels cannot ellipsize
+ok   en jensen-das-ugly-stik-60 720p: scroll indicator stays visible
+ok   en jensen-das-ugly-stik-60 720p: overflow remains scrollable
+ok   en jensen-das-ugly-stik-60 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 1080p: sidebar exactly 440 px wide
+ok   en jensen-das-ugly-stik-60 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en jensen-das-ugly-stik-60 1080p: opens at the top, title visible
+ok   en jensen-das-ugly-stik-60 1080p: pinned Language, Help and Settings remain visible
+ok   en jensen-das-ugly-stik-60 1080p: Language and Controls labels cannot ellipsize
+ok   en jensen-das-ugly-stik-60 1080p: scroll indicator stays visible
+ok   en jensen-das-ugly-stik-60 1080p: overflow remains scrollable
+ok   en jensen-das-ugly-stik-60 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 defaults 720p: sidebar exactly 440 px wide
+ok   en jensen-das-ugly-stik-60 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en jensen-das-ugly-stik-60 defaults 720p: opens at the top, title visible
+ok   en jensen-das-ugly-stik-60 defaults 720p: pinned Language, Help and Settings remain visible
+ok   en jensen-das-ugly-stik-60 defaults 720p: Language and Controls labels cannot ellipsize
+ok   en jensen-das-ugly-stik-60 defaults 720p: scroll indicator stays visible
+ok   en jensen-das-ugly-stik-60 defaults 720p: overflow remains scrollable
+ok   en jensen-das-ugly-stik-60 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 defaults 1080p: sidebar exactly 440 px wide
+ok   en jensen-das-ugly-stik-60 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en jensen-das-ugly-stik-60 defaults 1080p: opens at the top, title visible
+ok   en jensen-das-ugly-stik-60 defaults 1080p: pinned Language, Help and Settings remain visible
+ok   en jensen-das-ugly-stik-60 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en jensen-das-ugly-stik-60 defaults 1080p: scroll indicator stays visible
+ok   en jensen-das-ugly-stik-60 defaults 1080p: overflow remains scrollable
+ok   en jensen-das-ugly-stik-60 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t 720p: sidebar exactly 440 px wide
+ok   en stik-glow-61fx-2t 720p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-61fx-2t 720p: opens at the top, title visible
+ok   en stik-glow-61fx-2t 720p: pinned Language, Help and Settings remain visible
+ok   en stik-glow-61fx-2t 720p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-61fx-2t 720p: scroll indicator stays visible
+ok   en stik-glow-61fx-2t 720p: overflow remains scrollable
+ok   en stik-glow-61fx-2t 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t 1080p: sidebar exactly 440 px wide
+ok   en stik-glow-61fx-2t 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-61fx-2t 1080p: opens at the top, title visible
+ok   en stik-glow-61fx-2t 1080p: pinned Language, Help and Settings remain visible
+ok   en stik-glow-61fx-2t 1080p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-61fx-2t 1080p: scroll indicator stays visible
+ok   en stik-glow-61fx-2t 1080p: overflow remains scrollable
+ok   en stik-glow-61fx-2t 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t defaults 720p: sidebar exactly 440 px wide
+ok   en stik-glow-61fx-2t defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-61fx-2t defaults 720p: opens at the top, title visible
+ok   en stik-glow-61fx-2t defaults 720p: pinned Language, Help and Settings remain visible
+ok   en stik-glow-61fx-2t defaults 720p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-61fx-2t defaults 720p: scroll indicator stays visible
+ok   en stik-glow-61fx-2t defaults 720p: overflow remains scrollable
+ok   en stik-glow-61fx-2t defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t defaults 1080p: sidebar exactly 440 px wide
+ok   en stik-glow-61fx-2t defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-61fx-2t defaults 1080p: opens at the top, title visible
+ok   en stik-glow-61fx-2t defaults 1080p: pinned Language, Help and Settings remain visible
+ok   en stik-glow-61fx-2t defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-61fx-2t defaults 1080p: scroll indicator stays visible
+ok   en stik-glow-61fx-2t defaults 1080p: overflow remains scrollable
+ok   en stik-glow-61fx-2t defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t 720p: sidebar exactly 440 px wide
+ok   en stik-glow-55ax-2t 720p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-55ax-2t 720p: opens at the top, title visible
+ok   en stik-glow-55ax-2t 720p: pinned Language, Help and Settings remain visible
+ok   en stik-glow-55ax-2t 720p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-55ax-2t 720p: scroll indicator stays visible
+ok   en stik-glow-55ax-2t 720p: overflow remains scrollable
+ok   en stik-glow-55ax-2t 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t 1080p: sidebar exactly 440 px wide
+ok   en stik-glow-55ax-2t 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-55ax-2t 1080p: opens at the top, title visible
+ok   en stik-glow-55ax-2t 1080p: pinned Language, Help and Settings remain visible
+ok   en stik-glow-55ax-2t 1080p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-55ax-2t 1080p: scroll indicator stays visible
+ok   en stik-glow-55ax-2t 1080p: overflow remains scrollable
+ok   en stik-glow-55ax-2t 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t defaults 720p: sidebar exactly 440 px wide
+ok   en stik-glow-55ax-2t defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-55ax-2t defaults 720p: opens at the top, title visible
+ok   en stik-glow-55ax-2t defaults 720p: pinned Language, Help and Settings remain visible
+ok   en stik-glow-55ax-2t defaults 720p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-55ax-2t defaults 720p: scroll indicator stays visible
+ok   en stik-glow-55ax-2t defaults 720p: overflow remains scrollable
+ok   en stik-glow-55ax-2t defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t defaults 1080p: sidebar exactly 440 px wide
+ok   en stik-glow-55ax-2t defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-55ax-2t defaults 1080p: opens at the top, title visible
+ok   en stik-glow-55ax-2t defaults 1080p: pinned Language, Help and Settings remain visible
+ok   en stik-glow-55ax-2t defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-55ax-2t defaults 1080p: scroll indicator stays visible
+ok   en stik-glow-55ax-2t defaults 1080p: overflow remains scrollable
+ok   en stik-glow-55ax-2t defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t 720p: sidebar exactly 440 px wide
+ok   en stik-glow-fs64v-4t 720p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-fs64v-4t 720p: opens at the top, title visible
+ok   en stik-glow-fs64v-4t 720p: pinned Language, Help and Settings remain visible
+ok   en stik-glow-fs64v-4t 720p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-fs64v-4t 720p: scroll indicator stays visible
+ok   en stik-glow-fs64v-4t 720p: overflow remains scrollable
+ok   en stik-glow-fs64v-4t 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t 1080p: sidebar exactly 440 px wide
+ok   en stik-glow-fs64v-4t 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-fs64v-4t 1080p: opens at the top, title visible
+ok   en stik-glow-fs64v-4t 1080p: pinned Language, Help and Settings remain visible
+ok   en stik-glow-fs64v-4t 1080p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-fs64v-4t 1080p: scroll indicator stays visible
+ok   en stik-glow-fs64v-4t 1080p: overflow remains scrollable
+ok   en stik-glow-fs64v-4t 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t defaults 720p: sidebar exactly 440 px wide
+ok   en stik-glow-fs64v-4t defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-fs64v-4t defaults 720p: opens at the top, title visible
+ok   en stik-glow-fs64v-4t defaults 720p: pinned Language, Help and Settings remain visible
+ok   en stik-glow-fs64v-4t defaults 720p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-fs64v-4t defaults 720p: scroll indicator stays visible
+ok   en stik-glow-fs64v-4t defaults 720p: overflow remains scrollable
+ok   en stik-glow-fs64v-4t defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t defaults 1080p: sidebar exactly 440 px wide
+ok   en stik-glow-fs64v-4t defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en stik-glow-fs64v-4t defaults 1080p: opens at the top, title visible
+ok   en stik-glow-fs64v-4t defaults 1080p: pinned Language, Help and Settings remain visible
+ok   en stik-glow-fs64v-4t defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en stik-glow-fs64v-4t defaults 1080p: scroll indicator stays visible
+ok   en stik-glow-fs64v-4t defaults 1080p: overflow remains scrollable
+ok   en stik-glow-fs64v-4t defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 720p: sidebar exactly 440 px wide
+ok   en gp-extra-300s-60 720p: Fly visible above the pinned footer, focus on Fly
+ok   en gp-extra-300s-60 720p: opens at the top, title visible
+ok   en gp-extra-300s-60 720p: pinned Language, Help and Settings remain visible
+ok   en gp-extra-300s-60 720p: Language and Controls labels cannot ellipsize
+ok   en gp-extra-300s-60 720p: scroll indicator stays visible
+ok   en gp-extra-300s-60 720p: overflow remains scrollable
+ok   en gp-extra-300s-60 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 1080p: sidebar exactly 440 px wide
+ok   en gp-extra-300s-60 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en gp-extra-300s-60 1080p: opens at the top, title visible
+ok   en gp-extra-300s-60 1080p: pinned Language, Help and Settings remain visible
+ok   en gp-extra-300s-60 1080p: Language and Controls labels cannot ellipsize
+ok   en gp-extra-300s-60 1080p: scroll indicator stays visible
+ok   en gp-extra-300s-60 1080p: overflow remains scrollable
+ok   en gp-extra-300s-60 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 defaults 720p: sidebar exactly 440 px wide
+ok   en gp-extra-300s-60 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en gp-extra-300s-60 defaults 720p: opens at the top, title visible
+ok   en gp-extra-300s-60 defaults 720p: pinned Language, Help and Settings remain visible
+ok   en gp-extra-300s-60 defaults 720p: Language and Controls labels cannot ellipsize
+ok   en gp-extra-300s-60 defaults 720p: scroll indicator stays visible
+ok   en gp-extra-300s-60 defaults 720p: overflow remains scrollable
+ok   en gp-extra-300s-60 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 defaults 1080p: sidebar exactly 440 px wide
+ok   en gp-extra-300s-60 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en gp-extra-300s-60 defaults 1080p: opens at the top, title visible
+ok   en gp-extra-300s-60 defaults 1080p: pinned Language, Help and Settings remain visible
+ok   en gp-extra-300s-60 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en gp-extra-300s-60 defaults 1080p: scroll indicator stays visible
+ok   en gp-extra-300s-60 defaults 1080p: overflow remains scrollable
+ok   en gp-extra-300s-60 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 720p: sidebar exactly 440 px wide
+ok   en p51d-mustang-120 720p: Fly visible above the pinned footer, focus on Fly
+ok   en p51d-mustang-120 720p: opens at the top, title visible
+ok   en p51d-mustang-120 720p: pinned Language, Help and Settings remain visible
+ok   en p51d-mustang-120 720p: Language and Controls labels cannot ellipsize
+ok   en p51d-mustang-120 720p: scroll indicator stays visible
+ok   en p51d-mustang-120 720p: overflow remains scrollable
+ok   en p51d-mustang-120 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 1080p: sidebar exactly 440 px wide
+ok   en p51d-mustang-120 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en p51d-mustang-120 1080p: opens at the top, title visible
+ok   en p51d-mustang-120 1080p: pinned Language, Help and Settings remain visible
+ok   en p51d-mustang-120 1080p: Language and Controls labels cannot ellipsize
+ok   en p51d-mustang-120 1080p: scroll indicator stays visible
+ok   en p51d-mustang-120 1080p: overflow remains scrollable
+ok   en p51d-mustang-120 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 defaults 720p: sidebar exactly 440 px wide
+ok   en p51d-mustang-120 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en p51d-mustang-120 defaults 720p: opens at the top, title visible
+ok   en p51d-mustang-120 defaults 720p: pinned Language, Help and Settings remain visible
+ok   en p51d-mustang-120 defaults 720p: Language and Controls labels cannot ellipsize
+ok   en p51d-mustang-120 defaults 720p: scroll indicator stays visible
+ok   en p51d-mustang-120 defaults 720p: overflow remains scrollable
+ok   en p51d-mustang-120 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 defaults 1080p: sidebar exactly 440 px wide
+ok   en p51d-mustang-120 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en p51d-mustang-120 defaults 1080p: opens at the top, title visible
+ok   en p51d-mustang-120 defaults 1080p: pinned Language, Help and Settings remain visible
+ok   en p51d-mustang-120 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en p51d-mustang-120 defaults 1080p: scroll indicator stays visible
+ok   en p51d-mustang-120 defaults 1080p: overflow remains scrollable
+ok   en p51d-mustang-120 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx 720p: sidebar exactly 440 px wide
+ok   en sebart-avanti-s-a200-p100rx 720p: Fly visible above the pinned footer, focus on Fly
+ok   en sebart-avanti-s-a200-p100rx 720p: opens at the top, title visible
+ok   en sebart-avanti-s-a200-p100rx 720p: pinned Language, Help and Settings remain visible
+ok   en sebart-avanti-s-a200-p100rx 720p: Language and Controls labels cannot ellipsize
+ok   en sebart-avanti-s-a200-p100rx 720p: scroll indicator stays visible
+ok   en sebart-avanti-s-a200-p100rx 720p: overflow remains scrollable
+ok   en sebart-avanti-s-a200-p100rx 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx 1080p: sidebar exactly 440 px wide
+ok   en sebart-avanti-s-a200-p100rx 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en sebart-avanti-s-a200-p100rx 1080p: opens at the top, title visible
+ok   en sebart-avanti-s-a200-p100rx 1080p: pinned Language, Help and Settings remain visible
+ok   en sebart-avanti-s-a200-p100rx 1080p: Language and Controls labels cannot ellipsize
+ok   en sebart-avanti-s-a200-p100rx 1080p: scroll indicator stays visible
+ok   en sebart-avanti-s-a200-p100rx 1080p: overflow remains scrollable
+ok   en sebart-avanti-s-a200-p100rx 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: sidebar exactly 440 px wide
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: opens at the top, title visible
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: pinned Language, Help and Settings remain visible
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: Language and Controls labels cannot ellipsize
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: scroll indicator stays visible
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: overflow remains scrollable
+ok   en sebart-avanti-s-a200-p100rx defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: sidebar exactly 440 px wide
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: opens at the top, title visible
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: pinned Language, Help and Settings remain visible
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: scroll indicator stays visible
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: overflow remains scrollable
+ok   en sebart-avanti-s-a200-p100rx defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution 720p: sidebar exactly 440 px wide
+ok   en turbo-lumber-evolution 720p: Fly visible above the pinned footer, focus on Fly
+ok   en turbo-lumber-evolution 720p: opens at the top, title visible
+ok   en turbo-lumber-evolution 720p: pinned Language, Help and Settings remain visible
+ok   en turbo-lumber-evolution 720p: Language and Controls labels cannot ellipsize
+ok   en turbo-lumber-evolution 720p: scroll indicator stays visible
+ok   en turbo-lumber-evolution 720p: overflow remains scrollable
+ok   en turbo-lumber-evolution 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution 1080p: sidebar exactly 440 px wide
+ok   en turbo-lumber-evolution 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en turbo-lumber-evolution 1080p: opens at the top, title visible
+ok   en turbo-lumber-evolution 1080p: pinned Language, Help and Settings remain visible
+ok   en turbo-lumber-evolution 1080p: Language and Controls labels cannot ellipsize
+ok   en turbo-lumber-evolution 1080p: scroll indicator stays visible
+ok   en turbo-lumber-evolution 1080p: overflow remains scrollable
+ok   en turbo-lumber-evolution 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution defaults 720p: sidebar exactly 440 px wide
+ok   en turbo-lumber-evolution defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en turbo-lumber-evolution defaults 720p: opens at the top, title visible
+ok   en turbo-lumber-evolution defaults 720p: pinned Language, Help and Settings remain visible
+ok   en turbo-lumber-evolution defaults 720p: Language and Controls labels cannot ellipsize
+ok   en turbo-lumber-evolution defaults 720p: scroll indicator stays visible
+ok   en turbo-lumber-evolution defaults 720p: overflow remains scrollable
+ok   en turbo-lumber-evolution defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution defaults 1080p: sidebar exactly 440 px wide
+ok   en turbo-lumber-evolution defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en turbo-lumber-evolution defaults 1080p: opens at the top, title visible
+ok   en turbo-lumber-evolution defaults 1080p: pinned Language, Help and Settings remain visible
+ok   en turbo-lumber-evolution defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en turbo-lumber-evolution defaults 1080p: scroll indicator stays visible
+ok   en turbo-lumber-evolution defaults 1080p: overflow remains scrollable
+ok   en turbo-lumber-evolution defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research 720p: sidebar exactly 440 px wide
+ok   en xcell-60-research 720p: Fly visible above the pinned footer, focus on Fly
+ok   en xcell-60-research 720p: opens at the top, title visible
+ok   en xcell-60-research 720p: pinned Language, Help and Settings remain visible
+ok   en xcell-60-research 720p: Language and Controls labels cannot ellipsize
+ok   en xcell-60-research 720p: scroll indicator stays visible
+ok   en xcell-60-research 720p: overflow remains scrollable
+ok   en xcell-60-research 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research 1080p: sidebar exactly 440 px wide
+ok   en xcell-60-research 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en xcell-60-research 1080p: opens at the top, title visible
+ok   en xcell-60-research 1080p: pinned Language, Help and Settings remain visible
+ok   en xcell-60-research 1080p: Language and Controls labels cannot ellipsize
+ok   en xcell-60-research 1080p: scroll indicator stays visible
+ok   en xcell-60-research 1080p: overflow remains scrollable
+ok   en xcell-60-research 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research defaults 720p: sidebar exactly 440 px wide
+ok   en xcell-60-research defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   en xcell-60-research defaults 720p: opens at the top, title visible
+ok   en xcell-60-research defaults 720p: pinned Language, Help and Settings remain visible
+ok   en xcell-60-research defaults 720p: Language and Controls labels cannot ellipsize
+ok   en xcell-60-research defaults 720p: scroll indicator stays visible
+ok   en xcell-60-research defaults 720p: overflow remains scrollable
+ok   en xcell-60-research defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research defaults 1080p: sidebar exactly 440 px wide
+ok   en xcell-60-research defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   en xcell-60-research defaults 1080p: opens at the top, title visible
+ok   en xcell-60-research defaults 1080p: pinned Language, Help and Settings remain visible
+ok   en xcell-60-research defaults 1080p: Language and Controls labels cannot ellipsize
+ok   en xcell-60-research defaults 1080p: scroll indicator stays visible
+ok   en xcell-60-research defaults 1080p: overflow remains scrollable
+ok   en xcell-60-research defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 720p: sidebar exactly 440 px wide
+ok   es jensen-das-ugly-stik-60 720p: Fly visible above the pinned footer, focus on Fly
+ok   es jensen-das-ugly-stik-60 720p: opens at the top, title visible
+ok   es jensen-das-ugly-stik-60 720p: pinned Language, Help and Settings remain visible
+ok   es jensen-das-ugly-stik-60 720p: Language and Controls labels cannot ellipsize
+ok   es jensen-das-ugly-stik-60 720p: scroll indicator stays visible
+ok   es jensen-das-ugly-stik-60 720p: overflow remains scrollable
+ok   es jensen-das-ugly-stik-60 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 1080p: sidebar exactly 440 px wide
+ok   es jensen-das-ugly-stik-60 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es jensen-das-ugly-stik-60 1080p: opens at the top, title visible
+ok   es jensen-das-ugly-stik-60 1080p: pinned Language, Help and Settings remain visible
+ok   es jensen-das-ugly-stik-60 1080p: Language and Controls labels cannot ellipsize
+ok   es jensen-das-ugly-stik-60 1080p: scroll indicator stays visible
+ok   es jensen-das-ugly-stik-60 1080p: overflow remains scrollable
+ok   es jensen-das-ugly-stik-60 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 defaults 720p: sidebar exactly 440 px wide
+ok   es jensen-das-ugly-stik-60 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es jensen-das-ugly-stik-60 defaults 720p: opens at the top, title visible
+ok   es jensen-das-ugly-stik-60 defaults 720p: pinned Language, Help and Settings remain visible
+ok   es jensen-das-ugly-stik-60 defaults 720p: Language and Controls labels cannot ellipsize
+ok   es jensen-das-ugly-stik-60 defaults 720p: scroll indicator stays visible
+ok   es jensen-das-ugly-stik-60 defaults 720p: overflow remains scrollable
+ok   es jensen-das-ugly-stik-60 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 defaults 1080p: sidebar exactly 440 px wide
+ok   es jensen-das-ugly-stik-60 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es jensen-das-ugly-stik-60 defaults 1080p: opens at the top, title visible
+ok   es jensen-das-ugly-stik-60 defaults 1080p: pinned Language, Help and Settings remain visible
+ok   es jensen-das-ugly-stik-60 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es jensen-das-ugly-stik-60 defaults 1080p: scroll indicator stays visible
+ok   es jensen-das-ugly-stik-60 defaults 1080p: overflow remains scrollable
+ok   es jensen-das-ugly-stik-60 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t 720p: sidebar exactly 440 px wide
+ok   es stik-glow-61fx-2t 720p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-61fx-2t 720p: opens at the top, title visible
+ok   es stik-glow-61fx-2t 720p: pinned Language, Help and Settings remain visible
+ok   es stik-glow-61fx-2t 720p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-61fx-2t 720p: scroll indicator stays visible
+ok   es stik-glow-61fx-2t 720p: overflow remains scrollable
+ok   es stik-glow-61fx-2t 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t 1080p: sidebar exactly 440 px wide
+ok   es stik-glow-61fx-2t 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-61fx-2t 1080p: opens at the top, title visible
+ok   es stik-glow-61fx-2t 1080p: pinned Language, Help and Settings remain visible
+ok   es stik-glow-61fx-2t 1080p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-61fx-2t 1080p: scroll indicator stays visible
+ok   es stik-glow-61fx-2t 1080p: overflow remains scrollable
+ok   es stik-glow-61fx-2t 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t defaults 720p: sidebar exactly 440 px wide
+ok   es stik-glow-61fx-2t defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-61fx-2t defaults 720p: opens at the top, title visible
+ok   es stik-glow-61fx-2t defaults 720p: pinned Language, Help and Settings remain visible
+ok   es stik-glow-61fx-2t defaults 720p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-61fx-2t defaults 720p: scroll indicator stays visible
+ok   es stik-glow-61fx-2t defaults 720p: overflow remains scrollable
+ok   es stik-glow-61fx-2t defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t defaults 1080p: sidebar exactly 440 px wide
+ok   es stik-glow-61fx-2t defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-61fx-2t defaults 1080p: opens at the top, title visible
+ok   es stik-glow-61fx-2t defaults 1080p: pinned Language, Help and Settings remain visible
+ok   es stik-glow-61fx-2t defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-61fx-2t defaults 1080p: scroll indicator stays visible
+ok   es stik-glow-61fx-2t defaults 1080p: overflow remains scrollable
+ok   es stik-glow-61fx-2t defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t 720p: sidebar exactly 440 px wide
+ok   es stik-glow-55ax-2t 720p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-55ax-2t 720p: opens at the top, title visible
+ok   es stik-glow-55ax-2t 720p: pinned Language, Help and Settings remain visible
+ok   es stik-glow-55ax-2t 720p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-55ax-2t 720p: scroll indicator stays visible
+ok   es stik-glow-55ax-2t 720p: overflow remains scrollable
+ok   es stik-glow-55ax-2t 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t 1080p: sidebar exactly 440 px wide
+ok   es stik-glow-55ax-2t 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-55ax-2t 1080p: opens at the top, title visible
+ok   es stik-glow-55ax-2t 1080p: pinned Language, Help and Settings remain visible
+ok   es stik-glow-55ax-2t 1080p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-55ax-2t 1080p: scroll indicator stays visible
+ok   es stik-glow-55ax-2t 1080p: overflow remains scrollable
+ok   es stik-glow-55ax-2t 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t defaults 720p: sidebar exactly 440 px wide
+ok   es stik-glow-55ax-2t defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-55ax-2t defaults 720p: opens at the top, title visible
+ok   es stik-glow-55ax-2t defaults 720p: pinned Language, Help and Settings remain visible
+ok   es stik-glow-55ax-2t defaults 720p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-55ax-2t defaults 720p: scroll indicator stays visible
+ok   es stik-glow-55ax-2t defaults 720p: overflow remains scrollable
+ok   es stik-glow-55ax-2t defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t defaults 1080p: sidebar exactly 440 px wide
+ok   es stik-glow-55ax-2t defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-55ax-2t defaults 1080p: opens at the top, title visible
+ok   es stik-glow-55ax-2t defaults 1080p: pinned Language, Help and Settings remain visible
+ok   es stik-glow-55ax-2t defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-55ax-2t defaults 1080p: scroll indicator stays visible
+ok   es stik-glow-55ax-2t defaults 1080p: overflow remains scrollable
+ok   es stik-glow-55ax-2t defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t 720p: sidebar exactly 440 px wide
+ok   es stik-glow-fs64v-4t 720p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-fs64v-4t 720p: opens at the top, title visible
+ok   es stik-glow-fs64v-4t 720p: pinned Language, Help and Settings remain visible
+ok   es stik-glow-fs64v-4t 720p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-fs64v-4t 720p: scroll indicator stays visible
+ok   es stik-glow-fs64v-4t 720p: overflow remains scrollable
+ok   es stik-glow-fs64v-4t 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t 1080p: sidebar exactly 440 px wide
+ok   es stik-glow-fs64v-4t 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-fs64v-4t 1080p: opens at the top, title visible
+ok   es stik-glow-fs64v-4t 1080p: pinned Language, Help and Settings remain visible
+ok   es stik-glow-fs64v-4t 1080p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-fs64v-4t 1080p: scroll indicator stays visible
+ok   es stik-glow-fs64v-4t 1080p: overflow remains scrollable
+ok   es stik-glow-fs64v-4t 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t defaults 720p: sidebar exactly 440 px wide
+ok   es stik-glow-fs64v-4t defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-fs64v-4t defaults 720p: opens at the top, title visible
+ok   es stik-glow-fs64v-4t defaults 720p: pinned Language, Help and Settings remain visible
+ok   es stik-glow-fs64v-4t defaults 720p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-fs64v-4t defaults 720p: scroll indicator stays visible
+ok   es stik-glow-fs64v-4t defaults 720p: overflow remains scrollable
+ok   es stik-glow-fs64v-4t defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t defaults 1080p: sidebar exactly 440 px wide
+ok   es stik-glow-fs64v-4t defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es stik-glow-fs64v-4t defaults 1080p: opens at the top, title visible
+ok   es stik-glow-fs64v-4t defaults 1080p: pinned Language, Help and Settings remain visible
+ok   es stik-glow-fs64v-4t defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es stik-glow-fs64v-4t defaults 1080p: scroll indicator stays visible
+ok   es stik-glow-fs64v-4t defaults 1080p: overflow remains scrollable
+ok   es stik-glow-fs64v-4t defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 720p: sidebar exactly 440 px wide
+ok   es gp-extra-300s-60 720p: Fly visible above the pinned footer, focus on Fly
+ok   es gp-extra-300s-60 720p: opens at the top, title visible
+ok   es gp-extra-300s-60 720p: pinned Language, Help and Settings remain visible
+ok   es gp-extra-300s-60 720p: Language and Controls labels cannot ellipsize
+ok   es gp-extra-300s-60 720p: scroll indicator stays visible
+ok   es gp-extra-300s-60 720p: overflow remains scrollable
+ok   es gp-extra-300s-60 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 1080p: sidebar exactly 440 px wide
+ok   es gp-extra-300s-60 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es gp-extra-300s-60 1080p: opens at the top, title visible
+ok   es gp-extra-300s-60 1080p: pinned Language, Help and Settings remain visible
+ok   es gp-extra-300s-60 1080p: Language and Controls labels cannot ellipsize
+ok   es gp-extra-300s-60 1080p: scroll indicator stays visible
+ok   es gp-extra-300s-60 1080p: overflow remains scrollable
+ok   es gp-extra-300s-60 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 defaults 720p: sidebar exactly 440 px wide
+ok   es gp-extra-300s-60 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es gp-extra-300s-60 defaults 720p: opens at the top, title visible
+ok   es gp-extra-300s-60 defaults 720p: pinned Language, Help and Settings remain visible
+ok   es gp-extra-300s-60 defaults 720p: Language and Controls labels cannot ellipsize
+ok   es gp-extra-300s-60 defaults 720p: scroll indicator stays visible
+ok   es gp-extra-300s-60 defaults 720p: overflow remains scrollable
+ok   es gp-extra-300s-60 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 defaults 1080p: sidebar exactly 440 px wide
+ok   es gp-extra-300s-60 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es gp-extra-300s-60 defaults 1080p: opens at the top, title visible
+ok   es gp-extra-300s-60 defaults 1080p: pinned Language, Help and Settings remain visible
+ok   es gp-extra-300s-60 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es gp-extra-300s-60 defaults 1080p: scroll indicator stays visible
+ok   es gp-extra-300s-60 defaults 1080p: overflow remains scrollable
+ok   es gp-extra-300s-60 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 720p: sidebar exactly 440 px wide
+ok   es p51d-mustang-120 720p: Fly visible above the pinned footer, focus on Fly
+ok   es p51d-mustang-120 720p: opens at the top, title visible
+ok   es p51d-mustang-120 720p: pinned Language, Help and Settings remain visible
+ok   es p51d-mustang-120 720p: Language and Controls labels cannot ellipsize
+ok   es p51d-mustang-120 720p: scroll indicator stays visible
+ok   es p51d-mustang-120 720p: overflow remains scrollable
+ok   es p51d-mustang-120 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 1080p: sidebar exactly 440 px wide
+ok   es p51d-mustang-120 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es p51d-mustang-120 1080p: opens at the top, title visible
+ok   es p51d-mustang-120 1080p: pinned Language, Help and Settings remain visible
+ok   es p51d-mustang-120 1080p: Language and Controls labels cannot ellipsize
+ok   es p51d-mustang-120 1080p: scroll indicator stays visible
+ok   es p51d-mustang-120 1080p: overflow remains scrollable
+ok   es p51d-mustang-120 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 defaults 720p: sidebar exactly 440 px wide
+ok   es p51d-mustang-120 defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es p51d-mustang-120 defaults 720p: opens at the top, title visible
+ok   es p51d-mustang-120 defaults 720p: pinned Language, Help and Settings remain visible
+ok   es p51d-mustang-120 defaults 720p: Language and Controls labels cannot ellipsize
+ok   es p51d-mustang-120 defaults 720p: scroll indicator stays visible
+ok   es p51d-mustang-120 defaults 720p: overflow remains scrollable
+ok   es p51d-mustang-120 defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 defaults 1080p: sidebar exactly 440 px wide
+ok   es p51d-mustang-120 defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es p51d-mustang-120 defaults 1080p: opens at the top, title visible
+ok   es p51d-mustang-120 defaults 1080p: pinned Language, Help and Settings remain visible
+ok   es p51d-mustang-120 defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es p51d-mustang-120 defaults 1080p: scroll indicator stays visible
+ok   es p51d-mustang-120 defaults 1080p: overflow remains scrollable
+ok   es p51d-mustang-120 defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx 720p: sidebar exactly 440 px wide
+ok   es sebart-avanti-s-a200-p100rx 720p: Fly visible above the pinned footer, focus on Fly
+ok   es sebart-avanti-s-a200-p100rx 720p: opens at the top, title visible
+ok   es sebart-avanti-s-a200-p100rx 720p: pinned Language, Help and Settings remain visible
+ok   es sebart-avanti-s-a200-p100rx 720p: Language and Controls labels cannot ellipsize
+ok   es sebart-avanti-s-a200-p100rx 720p: scroll indicator stays visible
+ok   es sebart-avanti-s-a200-p100rx 720p: overflow remains scrollable
+ok   es sebart-avanti-s-a200-p100rx 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx 1080p: sidebar exactly 440 px wide
+ok   es sebart-avanti-s-a200-p100rx 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es sebart-avanti-s-a200-p100rx 1080p: opens at the top, title visible
+ok   es sebart-avanti-s-a200-p100rx 1080p: pinned Language, Help and Settings remain visible
+ok   es sebart-avanti-s-a200-p100rx 1080p: Language and Controls labels cannot ellipsize
+ok   es sebart-avanti-s-a200-p100rx 1080p: scroll indicator stays visible
+ok   es sebart-avanti-s-a200-p100rx 1080p: overflow remains scrollable
+ok   es sebart-avanti-s-a200-p100rx 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: sidebar exactly 440 px wide
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: opens at the top, title visible
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: pinned Language, Help and Settings remain visible
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: Language and Controls labels cannot ellipsize
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: scroll indicator stays visible
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: overflow remains scrollable
+ok   es sebart-avanti-s-a200-p100rx defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: sidebar exactly 440 px wide
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: opens at the top, title visible
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: pinned Language, Help and Settings remain visible
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: scroll indicator stays visible
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: overflow remains scrollable
+ok   es sebart-avanti-s-a200-p100rx defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution 720p: sidebar exactly 440 px wide
+ok   es turbo-lumber-evolution 720p: Fly visible above the pinned footer, focus on Fly
+ok   es turbo-lumber-evolution 720p: opens at the top, title visible
+ok   es turbo-lumber-evolution 720p: pinned Language, Help and Settings remain visible
+ok   es turbo-lumber-evolution 720p: Language and Controls labels cannot ellipsize
+ok   es turbo-lumber-evolution 720p: scroll indicator stays visible
+ok   es turbo-lumber-evolution 720p: overflow remains scrollable
+ok   es turbo-lumber-evolution 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution 1080p: sidebar exactly 440 px wide
+ok   es turbo-lumber-evolution 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es turbo-lumber-evolution 1080p: opens at the top, title visible
+ok   es turbo-lumber-evolution 1080p: pinned Language, Help and Settings remain visible
+ok   es turbo-lumber-evolution 1080p: Language and Controls labels cannot ellipsize
+ok   es turbo-lumber-evolution 1080p: scroll indicator stays visible
+ok   es turbo-lumber-evolution 1080p: overflow remains scrollable
+ok   es turbo-lumber-evolution 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution defaults 720p: sidebar exactly 440 px wide
+ok   es turbo-lumber-evolution defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es turbo-lumber-evolution defaults 720p: opens at the top, title visible
+ok   es turbo-lumber-evolution defaults 720p: pinned Language, Help and Settings remain visible
+ok   es turbo-lumber-evolution defaults 720p: Language and Controls labels cannot ellipsize
+ok   es turbo-lumber-evolution defaults 720p: scroll indicator stays visible
+ok   es turbo-lumber-evolution defaults 720p: overflow remains scrollable
+ok   es turbo-lumber-evolution defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution defaults 1080p: sidebar exactly 440 px wide
+ok   es turbo-lumber-evolution defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es turbo-lumber-evolution defaults 1080p: opens at the top, title visible
+ok   es turbo-lumber-evolution defaults 1080p: pinned Language, Help and Settings remain visible
+ok   es turbo-lumber-evolution defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es turbo-lumber-evolution defaults 1080p: scroll indicator stays visible
+ok   es turbo-lumber-evolution defaults 1080p: overflow remains scrollable
+ok   es turbo-lumber-evolution defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research 720p: sidebar exactly 440 px wide
+ok   es xcell-60-research 720p: Fly visible above the pinned footer, focus on Fly
+ok   es xcell-60-research 720p: opens at the top, title visible
+ok   es xcell-60-research 720p: pinned Language, Help and Settings remain visible
+ok   es xcell-60-research 720p: Language and Controls labels cannot ellipsize
+ok   es xcell-60-research 720p: scroll indicator stays visible
+ok   es xcell-60-research 720p: overflow remains scrollable
+ok   es xcell-60-research 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research 1080p: sidebar exactly 440 px wide
+ok   es xcell-60-research 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es xcell-60-research 1080p: opens at the top, title visible
+ok   es xcell-60-research 1080p: pinned Language, Help and Settings remain visible
+ok   es xcell-60-research 1080p: Language and Controls labels cannot ellipsize
+ok   es xcell-60-research 1080p: scroll indicator stays visible
+ok   es xcell-60-research 1080p: overflow remains scrollable
+ok   es xcell-60-research 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research defaults 720p: sidebar exactly 440 px wide
+ok   es xcell-60-research defaults 720p: Fly visible above the pinned footer, focus on Fly
+ok   es xcell-60-research defaults 720p: opens at the top, title visible
+ok   es xcell-60-research defaults 720p: pinned Language, Help and Settings remain visible
+ok   es xcell-60-research defaults 720p: Language and Controls labels cannot ellipsize
+ok   es xcell-60-research defaults 720p: scroll indicator stays visible
+ok   es xcell-60-research defaults 720p: overflow remains scrollable
+ok   es xcell-60-research defaults 720p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research defaults 1080p: sidebar exactly 440 px wide
+ok   es xcell-60-research defaults 1080p: Fly visible above the pinned footer, focus on Fly
+ok   es xcell-60-research defaults 1080p: opens at the top, title visible
+ok   es xcell-60-research defaults 1080p: pinned Language, Help and Settings remain visible
+ok   es xcell-60-research defaults 1080p: Language and Controls labels cannot ellipsize
+ok   es xcell-60-research defaults 1080p: scroll indicator stays visible
+ok   es xcell-60-research defaults 1080p: overflow remains scrollable
+ok   es xcell-60-research defaults 1080p: controls legend stays reachable in the scroll viewport
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   en jensen-das-ugly-stik-60 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en jensen-das-ugly-stik-60 720p 200%: 200% text leaves a usable scroll body
+ok   en jensen-das-ugly-stik-60 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   en stik-glow-61fx-2t 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en stik-glow-61fx-2t 720p 200%: 200% text leaves a usable scroll body
+ok   en stik-glow-61fx-2t 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   en stik-glow-55ax-2t 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en stik-glow-55ax-2t 720p 200%: 200% text leaves a usable scroll body
+ok   en stik-glow-55ax-2t 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   en stik-glow-fs64v-4t 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en stik-glow-fs64v-4t 720p 200%: 200% text leaves a usable scroll body
+ok   en stik-glow-fs64v-4t 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   en gp-extra-300s-60 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en gp-extra-300s-60 720p 200%: 200% text leaves a usable scroll body
+ok   en gp-extra-300s-60 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   en p51d-mustang-120 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en p51d-mustang-120 720p 200%: 200% text leaves a usable scroll body
+ok   en p51d-mustang-120 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   en sebart-avanti-s-a200-p100rx 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en sebart-avanti-s-a200-p100rx 720p 200%: 200% text leaves a usable scroll body
+ok   en sebart-avanti-s-a200-p100rx 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   en turbo-lumber-evolution 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en turbo-lumber-evolution 720p 200%: 200% text leaves a usable scroll body
+ok   en turbo-lumber-evolution 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   en xcell-60-research 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   en xcell-60-research 720p 200%: 200% text leaves a usable scroll body
+ok   en xcell-60-research 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (jensen-das-ugly-stik-60)
+ok   es jensen-das-ugly-stik-60 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es jensen-das-ugly-stik-60 720p 200%: 200% text leaves a usable scroll body
+ok   es jensen-das-ugly-stik-60 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (stik-glow-61fx-2t)
+ok   es stik-glow-61fx-2t 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es stik-glow-61fx-2t 720p 200%: 200% text leaves a usable scroll body
+ok   es stik-glow-61fx-2t 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (stik-glow-55ax-2t)
+ok   es stik-glow-55ax-2t 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es stik-glow-55ax-2t 720p 200%: 200% text leaves a usable scroll body
+ok   es stik-glow-55ax-2t 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (stik-glow-fs64v-4t)
+ok   es stik-glow-fs64v-4t 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es stik-glow-fs64v-4t 720p 200%: 200% text leaves a usable scroll body
+ok   es stik-glow-fs64v-4t 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (gp-extra-300s-60)
+ok   es gp-extra-300s-60 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es gp-extra-300s-60 720p 200%: 200% text leaves a usable scroll body
+ok   es gp-extra-300s-60 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (p51d-mustang-120)
+ok   es p51d-mustang-120 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es p51d-mustang-120 720p 200%: 200% text leaves a usable scroll body
+ok   es p51d-mustang-120 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (sebart-avanti-s-a200-p100rx)
+ok   es sebart-avanti-s-a200-p100rx 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es sebart-avanti-s-a200-p100rx 720p 200%: 200% text leaves a usable scroll body
+ok   es sebart-avanti-s-a200-p100rx 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (turbo-lumber-evolution)
+ok   es turbo-lumber-evolution 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es turbo-lumber-evolution 720p 200%: 200% text leaves a usable scroll body
+ok   es turbo-lumber-evolution 720p 200%: utility labels fit without clipping or ellipses
+ok   scroll follows the focus once settled (xcell-60-research)
+ok   es xcell-60-research 720p 200%: pinned Fly and utility footer fit above the bottom edge
+ok   es xcell-60-research 720p 200%: 200% text leaves a usable scroll body
+ok   es xcell-60-research 720p 200%: utility labels fit without clipping or ellipses
+worst 720p overflow: 558 px (es xcell-60-research defaults 720p)
+all UI home layout checks passed

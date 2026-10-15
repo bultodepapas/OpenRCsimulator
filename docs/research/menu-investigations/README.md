@@ -1,6 +1,8 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
-2026-10-15 visual follow-up: [UI-20-R1 — native Windows menu audit, EN/ES, 720p–4K](UI-20-R1/README.md). Includes 78 native captures, measured text/scale findings, sampled navigation evidence and modern game references. The phased response is [redesign revision 3](../../MENU-REDESIGN-PLAN.md).
+2026-10-15 implementation follow-up: [UI-22–26-R1 — scalable shell, Settings and compact Pause](UI-22-26-R1/README.md). Native EN/ES captures, 200% text, aspect ratios and display recovery checks.
+
+2026-10-15 visual follow-up: [UI-20-R1 — native Windows menu audit, EN/ES, 720p–4K](UI-20-R1/README.md). Includes 78 native captures, measured text/scale findings, sampled navigation evidence and modern game references. The phased response is [redesign plan](../../MENU-REDESIGN-PLAN.md).
 
 2026-10-14 implementation follow-up: [UI-05-R3 — responsive selection and bounded resource loading](UI-05-R3/README.md). Latest-selection ownership, background loading of selected scenes, headless/native lifecycle checks, five-process comparisons and explicit remaining first-visit stalls.
 

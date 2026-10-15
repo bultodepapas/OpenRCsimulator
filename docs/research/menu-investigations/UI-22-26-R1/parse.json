@@ -1,0 +1,202 @@
+[
+  {
+    "file": "app/app_root.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/controller_prompts.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/controller_setup.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/controls_reference.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/failures_menu.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/field_error.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/first_flight_hint.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/held_keys.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/help_screen.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/home.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/home_preview_resources.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/home_scene.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/key_cap.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/key_labels.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/natural_random_screen.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/overlays_dialog.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/pause_menu.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/screen.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/screen_stack.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/settings_screen.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/sky_controls.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/smoke_aux_assignment.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/time_of_day_controls.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/time_of_day_dialog.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/ui_input.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/ui_scale.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/ui_theme.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/update_notice.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/weather_dialog.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/widgets.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/workshop.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/ui/workshop_preview.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/app_state/aircraft_catalog.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/app_state/build_info.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/app_state/display_preferences.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/app_state/preferences.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/app_state/sky_checkpoint.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/app_state/update_check.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/app_state/update_checker.gd",
+    "passed": true,
+    "errors": ""
+  },
+  {
+    "file": "app/app_state/visual_checkpoint.gd",
+    "passed": true,
+    "errors": ""
+  }
+]

@@ -120,8 +120,7 @@ func _init() -> void:
 	var sidebar_fade := fade(SIDEBAR_WIDTH)
 	sidebar.resized.connect(func() -> void: _sync_sidebar_fade(sidebar, sidebar_fade))
 	_sync_sidebar_fade(sidebar, sidebar_fade)
-	# The column scrolls when translated copy or the controls legend needs more height than the window gives; fixed
-	# gaps keep the setup and primary action together. Language and utility actions stay in the pinned footer.
+	# Setup and tools scroll when translated copy needs more height. The Fly action and utility footer remain pinned.
 	var sidebar_content := VBoxContainer.new()
 	sidebar_content.name = "SidebarContent"
 	sidebar_content.size_flags_horizontal = Control.SIZE_EXPAND_FILL

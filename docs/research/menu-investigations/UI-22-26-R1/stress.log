@@ -1,0 +1,36 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+SHOT es-720-200-home
+SHOT es-720-200-settings
+SHOT es-720-200-help
+SHOT es-720-200-weather
+SHOT es-720-200-controls
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+SHOT es-720-200-pause
+SHOT es-1024x576-home
+SHOT es-1024x576-settings
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+SHOT es-1024x576-pause
+SHOT es-1280x800-home
+SHOT es-1280x800-settings
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+SHOT es-1280x800-pause
+SHOT es-1920x1200-home
+SHOT es-1920x1200-settings
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+SHOT es-1920x1200-pause
+SHOT es-3440x1440-home
+SHOT es-3440x1440-settings
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+SHOT es-3440x1440-pause
+SHOT es-3840x2160-home
+SHOT es-3840x2160-settings
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+SHOT es-3840x2160-pause
