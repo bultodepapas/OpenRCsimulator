@@ -382,13 +382,14 @@ def add_v2_overlay(schema: dict, spec: dict):
     for battery_kind, energy in [("fixed_voltage", "fixed_voltage"), ("ocv_resistance", "ocv_resistance")]:
         condition = {"properties": {"propulsion": {"properties": {"kind": {"const": "electric_prop"}, "battery": {"properties": {"kind": {"const": battery_kind}}}}}}}
         rules.append({"if": condition, "then": {"properties": {"capabilities": {"properties": {"propulsion_layout": {"const": "single_tractor"}, "energy": {"const": energy}}}}}})
-    for gear_kind in ["fixed_tricycle", "fixed_taildragger", "locked_down_taildragger", "retractable_tricycle"]:
+    for gear_kind in ["fixed_tricycle", "fixed_taildragger", "locked_down_taildragger", "retractable_tricycle", "retractable_taildragger"]:
         rules.append({"if": {"properties": {"capabilities": {"properties": {"gear": {"const": gear_kind}}}}}, "then": {"required": ["landing_gear"]}})
     rules.append({"if": {"properties": {"capabilities": {"properties": {"gear": {"const": "locked_up"}}}}}, "then": {"not": {"required": ["landing_gear"]}}})
     rules.append({"if": branch_condition(["capabilities", "flaps"], "simulated"),
                   "then": {"required": ["flaps"]},
                   "else": {"not": {"required": ["flaps"]}}})
-    rules.append({"if": branch_condition(["capabilities", "gear"], "retractable_tricycle"),
+    retractable_gear = {"properties": {"capabilities": {"properties": {"gear": {"enum": ["retractable_tricycle", "retractable_taildragger"]}}}}}
+    rules.append({"if": retractable_gear,
                   "then": {"properties": {"landing_gear": {"required": ["retraction"], "properties": {
                       "contacts": {"items": {"required": ["retraction_path"]}}}}}},
                   "else": {"properties": {"landing_gear": {"not": {"required": ["retraction"]}, "properties": {

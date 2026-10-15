@@ -20,6 +20,8 @@ var _ui: RefCounted
 
 
 func _initialize() -> void:
+	root.size = Vector2i(1280, 720)
+	root.content_scale_size = Vector2i(1280, 720)
 	TranslationServer.set_locale("en")
 	_ui = UiDriver.new(self)
 	_run()
@@ -108,8 +110,7 @@ func _report_behavior() -> void:
 		and report.find_child("DamageBreakdown", true, false).text == "Show damage breakdown"
 		and (report.find_child("ReportColumn", true, false).get_child(1) as Label).text == "KNOWN SUBTOTAL · INCOMPLETE")
 	_check("incomplete total_minor is never presented as a total", not report.find_child("ReportAmount", true, false).text.contains("12,345"))
-	_check("non-finite line amounts are shown as unpriced", _details_text(report).contains("Not priced")
-		and not _details_text(report).to_lower().contains("nan"), _details_text(report))
+	_check("non-finite amounts do not leak into the collapsed headline", not report.find_child("ReportAmount", true, false).text.to_lower().contains("nan"))
 	_check("the report reads its snapshot without mutating the source", partial.lines.size() == original_line_count
 		and partial.total_minor == 1234567 and is_nan(float(partial.lines[1].amount_minor)))
 	var range_report: Dictionary = partial.duplicate(true)
@@ -121,24 +122,33 @@ func _report_behavior() -> void:
 		and (report.find_child("ReportColumn", true, false).get_child(1) as Label).text == "INCOMPLETE ESTIMATE RANGE")
 	var replacement_ceiling := range_report.duplicate(true)
 	replacement_ceiling.known_subtotal_minor = null
-	replacement_ceiling.range_basis = "complete_build_replacement_quote_ceiling"
+	replacement_ceiling.low_minor = null
+	replacement_ceiling.high_minor = null
+	replacement_ceiling.replacement_quote_low_minor = 120000
 	replacement_ceiling.replacement_quote_high_minor = 133134
-	report.show_assessment(replacement_ceiling, false)
+	replacement_ceiling.replacement_quote_scope = "complete_build_replacement_quote_comparison"
+	report.show_assessment(replacement_ceiling, true)
+	report.controller_action("details")
 	_check("replacement quote ceiling is never presented as a repair estimate", report.find_child("ReportAmount", true, false).text == "Cost unavailable"
 		and not report.find_child("ReportAmount", true, false).text.contains("Up to")
-		and _details_text(report).contains("Replacement quote ceiling") and _details_text(report).contains("US$1,331.34"), _details_text(report))
+		and _details_text(report).contains("Complete-build replacement quote comparison")
+		and _details_text(report).contains("US$1,200.00") and _details_text(report).contains("US$1,331.34"), _details_text(report))
 	var unknown: Dictionary = range_report.duplicate(true)
 	unknown.low_minor = null
 	unknown.high_minor = null
 	unknown.total_minor = null
 	report.show_assessment(unknown, false)
+	external_focus.grab_focus()
 	_check("missing values are reported as unknown instead of zero", report.find_child("ReportAmount", true, false).text == "Cost unavailable"
 		and not report.find_child("ReportAmount", true, false).text.contains("$0"))
 	var zero_without_actions: Dictionary = unknown.duplicate(true)
 	zero_without_actions.known_subtotal_minor = 0
+	zero_without_actions.low_minor = 0
+	zero_without_actions.high_minor = 0
 	zero_without_actions.lines = []
 	report.show_assessment(zero_without_actions, false)
-	_check("an unsupported zero subtotal is reported as unknown", report.find_child("ReportAmount", true, false).text == "Cost unavailable")
+	_check("an unsupported zero subtotal and zero range are reported as unknown", report.find_child("ReportAmount", true, false).text == "Cost unavailable"
+		and (report.find_child("ReportColumn", true, false).get_child(1) as Label).text == "AMOUNT UNKNOWN")
 	report._process(6.0)
 	_check("expired nonterminal toast leaves a persistent view-only reopen control", report.find_child("ReopenAccidentReport", true, false).visible
 		and not report.find_child("AccidentToast", true, false).visible
@@ -150,6 +160,8 @@ func _report_behavior() -> void:
 		and not report.find_child("InspectWreck", true, false).visible
 		and not report.find_child("RestartFlight", true, false).visible
 		and report.wants_controller_menu())
+	_check("expanded view marks non-finite line amounts as unpriced", report.controller_action("details")
+		and _details_text(report).contains("Not priced") and not _details_text(report).to_lower().contains("nan"), _details_text(report))
 	_check("view-only damage report can return to its reopen control", report.controller_action("cancel")
 		and report.find_child("ReopenAccidentReport", true, false).visible
 		and not report.wants_controller_menu())
@@ -180,14 +192,10 @@ func _report_behavior() -> void:
 	}
 	report.show_assessment(complete, true)
 	await _ui.settle()
+	_check_live_panel_bounds(report, "collapsed terminal card")
 	_check("terminal report takes keyboard focus on Inspect and owns controller menu", _ui.focus_name() == "InspectWreck"
 		and report.wants_controller_menu(), _ui.focus_name())
 	_check("complete total uses rounded whole dollars as the headline", report.find_child("ReportAmount", true, false).text == "US$1,251")
-	_check("expanded breakdown retains cents, price date, and estimate caveat", _details_text(report).contains("US$1,250.50")
-		and _details_text(report).contains("2026-10-15") and _details_text(report).contains("Market prices")
-		and _details_text(report).contains("Aircraft: trainer-v2") and _details_text(report).contains("Incident: evt-007")
-		and _details_text(report).contains("Replacement") and _details_text(report).contains("Salvage credit")
-		and _details_text(report).contains("× 2"), _details_text(report))
 	var low_repair: Dictionary = complete.duplicate(true)
 	low_repair.total_minor = 539
 	low_repair.known_subtotal_minor = 539
@@ -212,6 +220,13 @@ func _report_behavior() -> void:
 	_check("controller navigation reaches the details action", report.controller_action("next") and _ui.focus_name() == "DamageBreakdown")
 	_check("controller accept expands the breakdown", report.controller_action("accept")
 		and report.find_child("DamageDetailsScroll", true, false).visible)
+	await _ui.settle()
+	_check_live_panel_bounds(report, "expanded terminal card")
+	_check("expanded breakdown retains cents, price date, estimate caveat, identity, quantity, and actions", _details_text(report).contains("US$1,250.50")
+		and _details_text(report).contains("2026-10-15") and _details_text(report).contains("Market prices")
+		and _details_text(report).contains("Aircraft: trainer-v2") and _details_text(report).contains("Incident: evt-007")
+		and _details_text(report).contains("Replacement") and _details_text(report).contains("Salvage credit")
+		and _details_text(report).contains("× 2"), _details_text(report))
 	_check("expanded details switch to the collapse action", report.find_child("DamageDetailsScroll", true, false).visible
 		and breakdown_button.text == "Hide damage breakdown")
 	var restart_button := report.find_child("RestartFlight", true, false) as Button
@@ -292,6 +307,16 @@ func _details_text(report: Node) -> String:
 		if node is Label:
 			parts.append((node as Label).text)
 	return " ".join(parts)
+
+
+func _check_live_panel_bounds(report: Node, label: String) -> void:
+	var panel := report.find_child("AccidentReportCard", true, false) as Control
+	var rect := panel.get_global_rect()
+	var viewport_size := report.get_viewport().get_visible_rect().size
+	_check("%s actual bounds fit the live viewport" % label,
+		rect.position.x >= 0.0 and rect.position.y >= 0.0
+		and rect.end.x <= viewport_size.x and rect.end.y <= viewport_size.y,
+		"panel=%s viewport=%s" % [str(rect), str(viewport_size)])
 
 
 func _collect_nodes(parent: Node) -> Array[Node]:

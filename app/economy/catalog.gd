@@ -5,7 +5,7 @@ const AircraftCatalog := preload("res://app_state/aircraft_catalog.gd")
 
 const FORMAT := "openrc-aircraft-economics v1"
 const CATALOG_PATH := "res://data/economy/catalog.json"
-const MAX_MINOR := 2147483647
+const MAX_MINOR := 9000000000000000
 const MAX_QUANTITY := 1000000
 const PRICE_BASES := ["estimated", "price_proxy", "exact_product_price"]
 const TOP_KEYS := ["format", "currency", "price_date", "generated_from", "products", "offers", "aircraft"]

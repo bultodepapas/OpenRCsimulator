@@ -62,6 +62,11 @@ OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/../research/aircraft-standardization/t
 python3 "$HERE/../research/aircraft-standardization/build_models.py" --check
 python3 "$HERE/../research/aircraft-standardization/test_models.py"
 
+echo "== CR-29: sourced economics catalog and aircraft coverage stay current"
+python3 "$HERE/../research/crash-economics/build_catalog.py" --check
+python3 "$HERE/../research/crash-economics/build_runtime.py" --check
+python3 "$HERE/../research/crash-economics/test_runtime_data.py"
+
 echo "== AE-01: generated Workshop descriptors and exact-byte checkout bindings"
 python3 "$HERE/../research/aircraft-editor/build_descriptors.py" --check
 python3 "$HERE/../research/aircraft-editor/test_descriptor_checkout.py"

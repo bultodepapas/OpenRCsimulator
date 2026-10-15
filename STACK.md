@@ -11,7 +11,7 @@ Status: current implementation, checked 2026-10-14. Runtime settings live in [pr
 | Simulation | Custom float64 six-degree-of-freedom solver and RK4 at 240 Hz; Godot rigid-body nodes do not solve flight |
 | Aircraft | Catalog JSON `openrc-aircraft v2` with strict validation, per-quantity units/evidence/source and derived mass/CG/inertia; historical v1 is explicit compatibility; [contract](AIRCRAFT_CONTRACT.md) |
 | Input | Physical keyboard keys and raw joystick axes, device calibration and throttle arming |
-| Product shell | Home, Help, pause and conditions editors; shared screen stack; English source text and Spanish gettext catalog |
+| Product shell | Home, Settings, Help, pause and conditions editors; shared screen stack and native canvas UI scaling; English source text and Spanish gettext catalog |
 | Audio | Positional engine sources plus wind/foliage/wildlife soundscape; original PCM assets and procedural mixing |
 | Delivery | Windows x86_64, Linux x86_64 and macOS universal ZIP exports; build identity embedded by an export plugin |
 | Checks | Headless GDScript tests, Python schema/trace/tool checks, golden flights, rendered captures and package smoke checks |
@@ -59,6 +59,6 @@ The renderer composes the field, sky, lighting and scenery. Physical weather con
 
 The engine permits at most 12 catch-up ticks per rendered frame. Below about 20 fps, simulation slows instead of accumulating unlimited work. The 500 µs physics budget on the target machine remains an acceptance gate, not a guaranteed maximum. Aircraft-specific calibration, pilot handling/readability and platform/GPU qualification remain open in [ROADMAP](ROADMAP.md).
 
-Current exports are unsigned ZIPs; installers, fullscreen defaults, web/mobile delivery and a new settings UI are not shipped. Active proposals are indexed separately in the [documentation map](docs/README.md).
+Current exports are unsigned ZIPs; installers, fullscreen defaults and web/mobile delivery are not shipped. Current source includes reversible display/accessibility Settings and automatic menu scaling; [menu evidence](docs/research/menu-investigations/UI-22-26-R1/README.md) records its qualification limits. Active proposals are indexed separately in the [documentation map](docs/README.md).
 
 For an engine upgrade, change the pin and hash deliberately, then run app tests, inspect captures and verify exports/CI. Preserve numerical and render baselines unless the change intentionally explains their replacement. The original platform investigation is retained in the [research notebook](docs/research/initial-notebook.md); it does not describe today's dependencies.

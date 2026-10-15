@@ -179,9 +179,9 @@ static func _validate_gear_relations(root: Dictionary, gear_kind: String, issues
 	var gear: Variant = root.get("landing_gear")
 	if not gear is Dictionary:
 		return
-	var retractable := gear_kind == "retractable_tricycle"
+	var retractable := gear_kind in ["retractable_tricycle", "retractable_taildragger"]
 	if retractable != gear.has("retraction"):
-		_issue(issues, "/landing_gear/retraction", "must be present exactly for retractable_tricycle")
+		_issue(issues, "/landing_gear/retraction", "must be present exactly for retractable gear (tricycle or taildragger)")
 	var contacts: Variant = gear.get("contacts", [])
 	if not contacts is Array:
 		return

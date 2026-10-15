@@ -4,6 +4,8 @@
 
 ## Godot execution and test isolation
 
+- **Verify display reversion against the native window, not just a Settings signal.** Manually sizing a borderless window to the monitor promoted it to fullscreen on Windows while Godot’s Window state stayed stale; the timer said it reverted but the physical window stayed at 4K. Use the Window mode state machine and verify size/mode after the real deadline. Headless signal tests cannot establish display recovery. [UI-22–26-R1](../research/menu-investigations/UI-22-26-R1/README.md#native-display-recovery).
+
 - **Exit status alone misses engine failures.** A runtime format error printed `ERROR:` while a test exited zero; a scene parse failure left headless Godot running without anyone reaching `quit()`. Parse scripts before integration, inspect engine/script/shader error logs, and bound process lifetime. Negative loader tests need the same log checks: an `ok=false` result can hide a broken rejection diagnostic. Avoid built-in class names for constants, infer no type from an untyped Dictionary, and use `String.num_scientific()` instead of unsupported `%e`/`%g` (or `%s` for ordinary value text). [Runner](../../app/test.sh), [C7-R1](../research/trace-integrity/C7-R1/README.md), [DATA-4b](../research/aircraft-validation/DATA-4b/README.md).
 
 - **Wait for completed work, not elapsed wall time.** A short timer expired before a radio test's first physics update. `physics_frame` fires before the tick, and UI presentation follows separately; wait for the required completed ticks and a rendered/process frame before asserting. Inject real events through `Input.parse_input_event` to test routing. [Input tests](../../app/tests/test_e2e_input.gd), [radio tests](../../app/tests/test_e2e_radio.gd).

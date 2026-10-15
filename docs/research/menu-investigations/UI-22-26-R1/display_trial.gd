@@ -44,4 +44,5 @@ func run() -> void:
  f.store_string(JSON.stringify(result,"  "))
  print(result)
  app.free()
- quit()
+ var passed = result.full_monitor and result.restored and result.not_persisted and result.still_settings and result.flight_held
+ quit(0 if passed else 1)

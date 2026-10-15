@@ -112,6 +112,17 @@ class RuntimeEconomicsTests(unittest.TestCase):
         with self.assertRaisesRegex(build_runtime.ContractError, "unknown component ID"):
             build_runtime.validate_runtime_document(damaged_mapping, self.context)
 
+    def test_minor_units_are_bounded_integer_cents(self) -> None:
+        fractional = copy.deepcopy(self.document)
+        fractional["offers"][0]["amount_minor"] = 1.5
+        with self.assertRaisesRegex(build_runtime.ContractError, "integer"):
+            build_runtime.validate_runtime_document(fractional, self.context)
+
+        overflow = copy.deepcopy(self.document)
+        overflow["offers"][0]["amount_minor"] = build_runtime.MAX_MINOR + 1
+        with self.assertRaisesRegex(build_runtime.ContractError, "within|integer"):
+            build_runtime.validate_runtime_document(overflow, self.context)
+
     def test_stale_physical_source_hash_and_missing_route_are_rejected(self) -> None:
         damaged_hash = copy.deepcopy(self.document)
         baseline = next(row for row in damaged_hash["aircraft"] if row["aircraft_id"] == "jensen-das-ugly-stik-60")

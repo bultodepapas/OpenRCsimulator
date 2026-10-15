@@ -2247,7 +2247,8 @@
             "fixed_taildragger",
             "locked_down_taildragger",
             "locked_up",
-            "retractable_tricycle"
+            "retractable_tricycle",
+            "retractable_taildragger"
           ]
         },
         "propulsion_layout": {
@@ -5222,6 +5223,24 @@
           "capabilities": {
             "properties": {
               "gear": {
+                "const": "retractable_taildragger"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "landing_gear"
+        ]
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "capabilities": {
+            "properties": {
+              "gear": {
                 "const": "locked_up"
               }
             }
@@ -5267,7 +5286,10 @@
           "capabilities": {
             "properties": {
               "gear": {
-                "const": "retractable_tricycle"
+                "enum": [
+                  "retractable_tricycle",
+                  "retractable_taildragger"
+                ]
               }
             }
           }

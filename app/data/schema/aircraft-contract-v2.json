@@ -14,7 +14,8 @@
       "fixed_taildragger",
       "locked_down_taildragger",
       "locked_up",
-      "retractable_tricycle"
+      "retractable_tricycle",
+      "retractable_taildragger"
     ],
     "propulsion_layout": [
       "single_tractor",
@@ -1154,7 +1155,8 @@
         "fixed_taildragger",
         "locked_down_taildragger",
         "locked_up",
-        "retractable_tricycle"
+        "retractable_tricycle",
+        "retractable_taildragger"
       ]
     },
     {

@@ -76,6 +76,8 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 					errors.append("dossier.components[%s]: missing '%s'" % [component_id, price_key])
 				elif component[price_key] != null and not _is_minor(component[price_key]):
 					errors.append("dossier.components[%s].%s: expected null or a nonnegative integer minor-unit amount" % [component_id, price_key])
+			if (component.get("low_unit_minor") == null) != (component.get("high_unit_minor") == null):
+				errors.append("dossier.components[%s]: low/high bounds must both be null or integers" % component_id)
 			if _is_minor(component.get("low_unit_minor")) and _is_minor(component.get("high_unit_minor")) and component["low_unit_minor"] > component["high_unit_minor"]:
 				errors.append("dossier.components[%s]: low_unit_minor exceeds high_unit_minor" % component_id)
 			if _is_minor(component.get("unit_minor")) and _is_minor(component.get("low_unit_minor")) and component["unit_minor"] < component["low_unit_minor"]:
@@ -172,6 +174,9 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 	var salvage_complete: bool = true
 	var saw_inspection: bool = false
 	var lines: Array = []
+	if components.is_empty():
+		low_possible = false
+		high_possible = false
 	if not unresolved.is_empty():
 		saw_inspection = true
 
@@ -267,7 +272,7 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 				high_total += inspection_amount
 				lines.append(_line(component, 1, "inspection", inspection_amount, {}))
 
-		if not replacement_complete:
+		if not replacement_complete or not source_complete:
 			report["replacement_minor"] = null
 		else:
 			report["replacement_minor"] = replacement_total

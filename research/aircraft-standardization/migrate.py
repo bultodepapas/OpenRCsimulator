@@ -228,6 +228,30 @@ def _check_v2(data: dict[str, Any], policy: dict[str, Any]) -> None:
         expected_capabilities["flaps"] = "simulated"
     elif data.get("id") == "sebart-avanti-s-a200-p100rx" and "flaps" in data:
         raise ValueError("AV-09 flaps data requires the simulated capability")
+    # P51-11a/b extend the P-51 source with a complete flap module (the shared law plus its two optional refinements)
+    # and retractable taildragger gear. As for AV-09, only a reviewed, complete v2 module is accepted.
+    if data.get("id") == "p51d-mustang-120" and data.get("capabilities", {}).get("flaps") == "simulated":
+        flaps = _require_dict(data, "flaps", "flaps")
+        required = {
+            "max_angle_deg", "takeoff_angle_deg", "inner_span_m", "outer_span_m", "hinge_fraction",
+            "extension_time", "retraction_time", "max_speed_mps", "elevator_mix_per_flap_fraction",
+            "effective_angle_limit_deg", "profile_drag_coefficient", "aerodynamic_gain",
+            "stall_shift_fraction", "lift_reference_offset_m",
+        }
+        if set(flaps) != required:
+            raise ValueError("P51-11a requires its complete flaps module")
+        expected_capabilities["flaps"] = "simulated"
+    elif data.get("id") == "p51d-mustang-120" and "flaps" in data:
+        raise ValueError("P51-11a flaps data requires the simulated capability")
+    if data.get("id") == "p51d-mustang-120" and data.get("capabilities", {}).get("gear") == "retractable_taildragger":
+        gear = _require_dict(data, "landing_gear", "landing_gear")
+        retraction = _require_dict(gear, "retraction", "landing_gear.retraction")
+        if set(retraction) != {"extension_time", "retraction_time", "drag_area", "drag_center"}:
+            raise ValueError("P51-11b requires its complete retraction module")
+        contacts = gear.get("contacts", [])
+        if not isinstance(contacts, list) or len(contacts) != 3 or any(not isinstance(c, dict) or not isinstance(c.get("retraction_path"), dict) for c in contacts):
+            raise ValueError("P51-11b requires three declared retraction contact paths")
+        expected_capabilities["gear"] = "retractable_taildragger"
     if data.get("capabilities") != expected_capabilities:
         raise ValueError(f"{data.get('id')}: v2 capabilities do not match its explicit existing-model policy")
     if data.get("format") != FORMAT_V2:

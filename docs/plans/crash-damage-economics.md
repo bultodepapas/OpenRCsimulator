@@ -1,6 +1,6 @@
 # Component damage, accident assessment and repair economics
 
-2026-10-15 · **Owner:** crash track, **CR-28…38**, under [Crash and damage](../CRASH-DAMAGE-PLAN.md). **Status:** research and planning; the price catalog is a research seed, not a runtime feature. Physical calibration, runtime damage, cost display and fleet qualification remain pending.
+2026-10-15 · **Owner:** crash track, **CR-28…38**, under [Crash and damage](../CRASH-DAMAGE-PLAN.md). **Status:** first playable economics slice implemented: generated USD sidecar, accepted-contact observer, integer-cent calculator and persistent accident report. Structural/thermal assessment, complete fleet valuation and physical qualification remain pending. See [CR-29…32 evidence](../research/crash-damage-investigations/CR-29-32/README.md).
 
 ## 1. Product outcome and boundaries
 
@@ -8,9 +8,9 @@ After an accident, show a prominent **estimated repair cost or total loss in USD
 
 Start with the Jensen Das Ugly Stik 60. Deliver a small complete loop first: prop strike → one damaged propeller → sourced replacement cost → readable report. Extend the same component and event contracts to landing gear, structure, electronics, powerplants and thermal damage. Do not reduce this to speed multiplied by aircraft price, or price multiplied by the current C0–C4 visual class.
 
-The [dated research](../research/crash-damage-investigations/CR-28/README.md) owns sources, prices and worked examples. The [JSON catalog](../../research/crash-economics/catalog.json) owns reusable offers; the [baseline and fleet data](../../research/crash-economics/aircraft-costing.json) owns the initial valuation assumptions and missing coverage. These are offline research assets. No shopping, live pricing request or payment occurs during play. Reuse manufacturer manuals, parts diagrams, free plotting tools and existing crash assets before creating replacements.
+The [dated research](../research/crash-damage-investigations/CR-28/README.md) owns sources, prices and worked examples. The [JSON catalog](../../research/crash-economics/catalog.json) owns reusable offers; the [baseline and fleet data](../../research/crash-economics/aircraft-costing.json) owns valuation assumptions and missing coverage. The runtime sidecar is generated from these offline sources. No shopping, live pricing request or payment occurs during play. Reuse manufacturer manuals, parts diagrams, free plotting tools and existing crash assets before creating replacements.
 
-**Ownership:** CR owns assessment, research and proposed `app/damage/` and `app/economy/` modules; those directories do not exist as part of this delivery. SF/physics owns accepted contact/state integration; AS owns contract/schema and identities; D6-SAV owns servo products/specifications; AE owns installed Workshop configurations; GP/aircraft owners own gear and generated data; EM owns initiating failures; UI/HUD owns report presentation; CAM/AUD/model tracks consume the accepted result. CR-11–15 still owns damaged flight. This plan does not independently close those steps or Gate CR.
+**Ownership:** CR owns assessment, research and `app/economy/`; `app/damage/` remains proposed. SF/physics owns accepted contact/state integration; AS owns contract/schema and identities; D6-SAV owns servo products/specifications; AE owns installed Workshop configurations; GP/aircraft owners own gear and generated data; EM owns initiating failures; UI/HUD owns report presentation; CAM/AUD/model tracks consume the accepted result. CR-11–15 still owns damaged flight. This plan does not independently close those steps or Gate CR.
 
 ## 2. Existing behavior to preserve and improve
 
@@ -215,10 +215,10 @@ Buttons: inspect wreck, damage breakdown, replay incident, restart. Preserve the
 | ID | Work | Proof/status |
 | --- | --- | --- |
 | CR-28 | Source audit, USD catalog seed, Stik BOM, worked examples and fleet gaps | This planning delivery; observed prices are not checkout guarantees. Validator checks IDs, citations, dates and arithmetic. |
-| CR-29 | AS/AE/SAV economic sidecar, coverage schema, versioning and compatibility rules | Pending. Valid/invalid fixtures, orphan/duplicate coverage rejection, pack and unknown-price handling, new-aircraft authoring checks. |
-| CR-30 | Read-only incident accumulator and prop-only first release | Pending. Accepted strike billed once, nonterminal continuation, reset/pause/rejected-step/replay invariants; healthy flight unchanged. |
-| CR-31 | Stik repair and salvage calculator | Pending. Cent-exact known-answer cases, package alternatives, labor modes, unavailable parts and salvage eligibility. No price-driven physics. |
-| CR-32 | Large report UI and persistent incident record | Pending. 720p/1080p/4K and supported scale captures, English/Spanish, controller/mouse, interrupted aftermath and restart tests; owner readability review. |
+| CR-29 | AS/AE/SAV economic sidecar, coverage schema, versioning and compatibility rules | Implemented first schema/loader: all nine routes represented, exact physical source binding, duplicate/orphan/unknown-price checks. Full compatible BOMs remain CR-36. |
+| CR-30 | Read-only incident accumulator and prop-only first release | Implemented accepted prop strike, bounded deduplicated history, reset/checkpoint and healthy-state parity. Automatic landing promotion and full damage replay remain pending; the nonterminal report can be reopened. |
+| CR-31 | Stik repair and salvage calculator | Implemented integer-cent repair/replacement comparison, conditional salvage and incomplete estimates. Full package optimizer, labor-mode selection and physically qualified salvage assessments remain pending. |
+| CR-32 | Large report UI and persistent incident record | Implemented large English/Spanish report, breakdown, inspect/restart, controller hooks and bounded latest-report archive. See evidence for tested viewports; owner readability and target-host qualification remain open. |
 | CR-33 | CR-07 structural evidence and component resolver | Pending. Joint/material data, explicit uncertainty, isolated impact/abrasion/rotor cases, energy accounting and threshold sensitivity. No acceptance from self-fit fixtures alone. |
 | CR-34 | Fixed/retract gear, secondary impacts, scenery and water | Pending. GP/LU/SF integration; asymmetric/locked/retracted gear, mount failure, swept 150 km/h obstacle contacts, cartwheel and retrieval cases. |
 | CR-35 | Fuel/electric thermal damage and post-fire salvage | Pending. Source-budget bounds, no-source/no-ignition cases, delayed/absent LiPo ignition, remote component survival, skip/LOD/frame-rate independence. |

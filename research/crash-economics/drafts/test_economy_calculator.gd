@@ -1,6 +1,7 @@
 extends SceneTree
 
 const Calculator = preload("res://economy/calculator.gd")
+const Catalog = preload("res://economy/catalog.gd")
 
 var _checks: int = 0
 var _failures: int = 0
@@ -15,6 +16,7 @@ func _initialize() -> void:
 	_test_repair_competes_with_replacement()
 	_test_invalid_quantity_and_fractional_cents()
 	_test_inputs_are_not_mutated()
+	_test_loaded_catalog_contract()
 	print("%d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -154,6 +156,14 @@ func _test_invalid_quantity_and_fractional_cents() -> void:
 	too_large["components"] = [_component("propeller", 1, 9000000000000001, null, null, ["item_propeller_main"], "estimated")]
 	var overflow_result: Dictionary = Calculator.calculate(too_large, _assessment(false))
 	_check("amounts beyond the supported integer-cent bound are rejected", not overflow_result["ok"] and _has_error(overflow_result, "integer minor-unit amount"), str(overflow_result["errors"]))
+	var partial_bounds: Dictionary = _dossier()
+	var bounded_components: Array = partial_bounds["components"]
+	var propeller: Dictionary = bounded_components[5]
+	propeller["high_unit_minor"] = null
+	bounded_components[5] = propeller
+	partial_bounds["components"] = bounded_components
+	var partial_bounds_result: Dictionary = Calculator.calculate(partial_bounds, _assessment(false))
+	_check("one-sided price bounds are rejected", not partial_bounds_result["ok"] and _has_error(partial_bounds_result, "low/high bounds must both be null"), str(partial_bounds_result["errors"]))
 
 
 func _test_inputs_are_not_mutated() -> void:
@@ -165,6 +175,25 @@ func _test_inputs_are_not_mutated() -> void:
 	Calculator.calculate(dossier, assessment)
 	_check("calculator leaves dossier input unchanged", dossier == dossier_before)
 	_check("calculator leaves assessment input unchanged", assessment == assessment_before)
+
+
+func _test_loaded_catalog_contract() -> void:
+	var loaded: Dictionary = Catalog.load_for("jensen-das-ugly-stik-60")
+	_check("calculator consumes the normalized runtime baseline dossier", bool(loaded.get("ok", false)), str(loaded.get("errors", [])))
+	if bool(loaded.get("ok", false)):
+		var dossier: Dictionary = loaded["dossier"]
+		var propeller: Dictionary = {}
+		for component_value: Variant in dossier["components"]:
+			var component: Dictionary = component_value
+			if component.get("id") == "propeller":
+				propeller = component
+		_check("loaded quantity and price fields are int minor-units", typeof(propeller.get("quantity")) == TYPE_INT and typeof(propeller.get("unit_minor")) == TYPE_INT and propeller.get("unit_minor") == 539)
+		var total_loss: Dictionary = Calculator.calculate(dossier, _assessment(true))
+		_check("actual baseline catalog produces the accepted integer-cent sum", total_loss.get("total_minor") == 99433 and total_loss.get("replacement_minor") == 99433, str(total_loss))
+	var incomplete: Dictionary = Catalog.load_for("stik-glow-55ax-2t")
+	if bool(incomplete.get("ok", false)):
+		var partial_report: Dictionary = Calculator.calculate(incomplete["dossier"], _assessment(true))
+		_check("runtime incomplete route cannot produce a total or zero replacement quote", not partial_report["complete"] and partial_report["total_minor"] == null and partial_report["replacement_minor"] == null and partial_report["low_minor"] == null and partial_report["high_minor"] == null and not partial_report["unresolved"].is_empty(), str(partial_report))
 
 
 func _assessment(total_loss: bool) -> Dictionary:

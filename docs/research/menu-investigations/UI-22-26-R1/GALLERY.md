@@ -117,3 +117,10 @@ The 3840×2160 stress cases use 200% themed text; other aspect-ratio stress case
 | es-720-200-pause | [Native image](stress/es-720-200-pause.webp) |
 | es-720-200-settings | [Native image](stress/es-720-200-settings.webp) |
 | es-720-200-weather | [Native image](stress/es-720-200-weather.webp) |
+
+## Display recovery
+
+| Case | Capture |
+| --- | --- |
+| 4K preview | [Native image](display/borderless-preview.webp) |
+| Automatic revert | [Native image](display/automatic-revert.webp) |

@@ -1,0 +1,6 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+{ "cached_size": "(1280, 720)", "cached_mode": 0, "before_mode": 0, "after_mode": 0, "before": "(1280, 720)", "preview": "(3840, 2160)", "after": "(1280, 720)", "elapsed_ms": 16633, "full_monitor": true, "restored": true, "not_persisted": true, "still_settings": true, "flight_held": true }

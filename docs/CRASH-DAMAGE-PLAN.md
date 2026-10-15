@@ -1,6 +1,6 @@
 # Crash, damage and destruction
 
-2026-10-14 · Revision 9 · Step prefix: **CR-** · Gate: **CR**
+2026-10-15 · Revision 10 · Step prefix: **CR-** · Gate: **CR**
 
 **Status:** CR-01 diagnostics remain partial. Owner-prioritized experimental crash audio, particles, severity estimate, wreck presentation, ground marks and fire are implemented in bounded slices. Physical failure thresholds, calibrated damage, damaged flight and Gate CR remain open.
 
@@ -42,9 +42,19 @@ These slices do not close the broader CR-02/03/04/05 contracts, CR-07–10 struc
 
 ## Remaining work and dependencies
 
+### Accident costs in the current game
+
+Interactive airplane flights now have a separate economic report even with `--crash-effects=off`. A confirmed baseline Ugly Stik propeller strike adds **US$5.39** once and leaves the complete repair total pending engine/shaft/mount inspection. The compact notification does not stop flight; its report can be reopened. A terminal contact opens a large persistent report with a parts breakdown, inspection status, inspection view and explicit restart. Pause temporarily hides the report. `--accident-report=off` disables this feature for technical fixtures; scripted/capture/trace routes do not create reports.
+
+The latest report is saved to `user://last_accident.json` outside physics tick callbacks, including frozen aircraft/catalog identities and bounded contact evidence. It survives reset and can be reopened read-only; a new flight does not inherit its charges. A restored physical checkpoint carries no complete accident ledger, so the report explicitly marks missing earlier history. There is no campaign wallet or payment. The archive retains one latest report, not an unlimited flight history.
+
+The calculator supports repair versus replacement and conditional reuse credits. The configured full Stik build is an **estimated US$994.33**, not a sourced retail RTF offer. Its two complete economic dossiers are the baseline and reconciled 61FX route; other catalog routes remain explicitly incomplete. Market price or visual destruction never establishes component survival. Fire, tree impacts and gear damage still require the component assessment stages below; these incidents currently show inspection/unknown costs rather than a fabricated complete bill. See [CR-29…32 implementation and checks](research/crash-damage-investigations/CR-29-32/README.md).
+
+### Remaining scope
+
 The active execution plan for proportional outcomes, crash causes, energy-source fire and effects cost is [crash realism](plans/crash-realism.md).
 
-The [component damage and repair economics plan](plans/crash-damage-economics.md) owns **CR-28…38**: Ugly Stik baseline valuation, a reusable sourced USD catalog, per-part damage/inspection/salvage, aircraft authoring dossiers and a prominent accident-cost report. Its [CR-28 research](research/crash-damage-investigations/CR-28/README.md) is a planning/data seed; runtime costing and structural/thermal qualification remain pending. “Cost” in the earlier crash-realism plan means rendering/CPU cost, not repair dollars.
+The [component damage and repair economics plan](plans/crash-damage-economics.md) owns **CR-28…38**: Ugly Stik baseline valuation, a reusable sourced USD catalog, per-part damage/inspection/salvage, aircraft authoring dossiers and the accident-cost report. Its [CR-28 research](research/crash-damage-investigations/CR-28/README.md) remains the dated source record; the plan's step table distinguishes implemented economics from remaining structural/thermal qualification. “Cost” in the earlier crash-realism plan means rendering/CPU cost, not repair dollars.
 
 | Area | Remaining scope |
 | --- | --- |

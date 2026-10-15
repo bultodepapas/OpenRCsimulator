@@ -1,0 +1,15 @@
+{
+  "after": "(1280, 720)",
+  "after_mode": 0,
+  "before": "(1280, 720)",
+  "before_mode": 0,
+  "cached_mode": 0,
+  "cached_size": "(1280, 720)",
+  "elapsed_ms": 16633,
+  "flight_held": true,
+  "full_monitor": true,
+  "not_persisted": true,
+  "preview": "(3840, 2160)",
+  "restored": true,
+  "still_settings": true
+}

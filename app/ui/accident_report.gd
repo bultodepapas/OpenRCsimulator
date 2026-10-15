@@ -36,6 +36,7 @@ var _minimized := false
 var _suspended := false
 var _content_visible := false
 var _toast_remaining := 0.0
+var _layout_retry_frames := 0
 
 
 func _init() -> void:
@@ -72,9 +73,11 @@ func show_assessment(report: Dictionary, terminal: bool = true) -> void:
 	_restore_button.visible = false
 	_details_button.button_pressed = false
 	_details_scroll.visible = false
+	_details_scroll.custom_minimum_size.y = 0.0
 	_surface.mouse_filter = Control.MOUSE_FILTER_STOP if terminal else Control.MOUSE_FILTER_IGNORE
 	_surface.visible = not _suspended
 	_layout()
+	_layout_retry_frames = 2
 	if terminal and not _suspended:
 		_focus_inspect.call_deferred()
 
@@ -100,6 +103,7 @@ func show_archived(report: Dictionary) -> void:
 	_surface.visible = not _suspended
 	_apply_action_visibility()
 	_layout()
+	_layout_retry_frames = 2
 
 
 ## Removes the current report after an intentional caller action, such as restarting the incident.
@@ -120,6 +124,7 @@ func clear_report() -> void:
 		_restore_button.visible = false
 		_details_button.button_pressed = false
 		_details_scroll.visible = false
+		_details_scroll.custom_minimum_size.y = 0.0
 		for child: Node in _details_content.get_children():
 			_details_content.remove_child(child)
 			child.queue_free()
@@ -146,9 +151,13 @@ func suspend(on: bool) -> void:
 		_surface.visible = _content_visible
 		_surface.mouse_filter = Control.MOUSE_FILTER_STOP if _terminal else Control.MOUSE_FILTER_IGNORE
 		_layout()
+		_layout_retry_frames = 2
 
 
 func _process(delta: float) -> void:
+	if not _suspended and _content_visible and _layout_retry_frames > 0:
+		_layout()
+		_layout_retry_frames -= 1
 	if _suspended or _terminal or _toast_remaining <= 0.0:
 		return
 	_toast_remaining = maxf(0.0, _toast_remaining - delta)
@@ -304,6 +313,7 @@ func _layout() -> void:
 	var gutter := float(metrics.gutter)
 	var width := float(metrics.panel_width)
 	_report_panel.custom_minimum_size.x = width
+	_details_scroll.custom_minimum_size.y = float(metrics.details_max_height) if _expanded else 0.0
 	_details_scroll.custom_maximum_size.y = float(metrics.details_max_height)
 	_report_panel.size = _report_panel.get_combined_minimum_size()
 	_report_panel.size.x = width
@@ -361,6 +371,7 @@ func _render_report() -> void:
 	_rebuild_details()
 	_apply_action_visibility()
 	_layout()
+	_layout_retry_frames = 2
 
 
 func _headline_state(report: Dictionary) -> Dictionary:
@@ -370,8 +381,7 @@ func _headline_state(report: Dictionary) -> Dictionary:
 	var low: Variant = _valid_minor(report.get("low_minor"))
 	var high: Variant = _valid_minor(report.get("high_minor"))
 	var subtotal: Variant = _valid_minor(report.get("known_subtotal_minor"))
-	var range_basis := str(report.get("range_basis", ""))
-	var replacement_quote_ceiling := range_basis == "complete_build_replacement_quote_ceiling"
+	var has_priced_action := _has_priced_action(report)
 	if complete and total != null:
 		return {
 			"status": _complete_status(str(report.get("outcome", "unavailable"))),
@@ -379,7 +389,7 @@ func _headline_state(report: Dictionary) -> Dictionary:
 			"caption": tr("Estimated total. Expand for cents, line items, and price assumptions."),
 		}
 	if not complete:
-		if not replacement_quote_ceiling and low != null and high != null:
+		if low != null and high != null and (int(low) != 0 or int(high) != 0 or has_priced_action):
 			var low_value := mini(int(low), int(high))
 			var high_value := maxi(int(low), int(high))
 			return {
@@ -387,13 +397,13 @@ func _headline_state(report: Dictionary) -> Dictionary:
 				"amount": "%s – %s" % [_format_headline_money(low_value, currency), _format_headline_money(high_value, currency)],
 				"caption": tr("Range only. Some required costs or inspection results are unresolved."),
 			}
-		if not replacement_quote_ceiling and low != null:
+		if low != null and (int(low) != 0 or has_priced_action):
 			return {
 				"status": tr("INCOMPLETE ESTIMATE · LOWER BOUND"),
 				"amount": tr("At least %s") % _format_headline_money(int(low), currency),
 				"caption": tr("This is a lower bound; unresolved costs are excluded."),
 			}
-		if not replacement_quote_ceiling and high != null:
+		if high != null and (int(high) != 0 or has_priced_action):
 			return {
 				"status": tr("INCOMPLETE ESTIMATE · UPPER BOUND"),
 				"amount": tr("Up to %s") % _format_headline_money(int(high), currency),
@@ -445,6 +455,8 @@ func _rebuild_details() -> void:
 	for child: Node in _details_content.get_children():
 		_details_content.remove_child(child)
 		child.queue_free()
+	if not _expanded:
+		return
 	var currency := _currency_code(_report.get("currency", "USD"))
 	var identity_value: Variant = _report.get("identity", {})
 	var identity: Dictionary = identity_value if identity_value is Dictionary else {}
@@ -465,10 +477,14 @@ func _rebuild_details() -> void:
 		_add_detail_money(tr("Complete estimated total"), _report.get("total_minor"), currency)
 	_add_detail_money(tr("Salvage value reported"), _report.get("salvage_minor"), currency)
 	_add_detail_money(tr("Replacement reference reported"), _report.get("replacement_minor"), currency)
-	var replacement_quote_ceiling_value: Variant = _report.get("replacement_quote_high_minor")
-	if replacement_quote_ceiling_value == null and str(_report.get("range_basis", "")) == "complete_build_replacement_quote_ceiling":
-		replacement_quote_ceiling_value = _report.get("high_minor")
-	_add_detail_money(tr("Replacement quote ceiling (reference only)"), replacement_quote_ceiling_value, currency)
+	var replacement_quote_low: Variant = _valid_minor(_report.get("replacement_quote_low_minor"))
+	var replacement_quote_high: Variant = _valid_minor(_report.get("replacement_quote_high_minor"))
+	if replacement_quote_low != null or replacement_quote_high != null:
+		_add_detail_section(tr("Complete-build replacement quote comparison (reference only)"))
+		if replacement_quote_low != null:
+			_add_detail_money(tr("Low reference"), replacement_quote_low, currency)
+		if replacement_quote_high != null:
+			_add_detail_money(tr("High reference"), replacement_quote_high, currency)
 	_add_detail_section(tr("Parts and actions"))
 	var lines: Variant = _report.get("lines", [])
 	var line_count := 0
@@ -533,8 +549,10 @@ func _set_expanded(expanded: bool) -> void:
 	if _details_scroll == null:
 		return
 	_details_scroll.visible = expanded
-	_details_button.text = tr("Hide damage breakdown") if expanded else tr("Show damage breakdown")
+	_rebuild_details()
 	_layout()
+	_details_button.text = tr("Hide damage breakdown") if expanded else tr("Show damage breakdown")
+	_layout_retry_frames = 2
 
 
 func _on_inspect_pressed() -> void:

@@ -2666,3 +2666,187 @@ msgstr "No se pudieron guardar los ajustes de pantalla (error %d)."
 
 msgid "Text size"
 msgstr "Tamaño del texto"
+
+# CR-32: accident economics report.
+msgid "ACCIDENT REPORT"
+msgstr "INFORME DEL ACCIDENTE"
+
+msgid "AMOUNT UNKNOWN"
+msgstr "IMPORTE DESCONOCIDO"
+
+msgid "Aircraft: %s"
+msgstr "Avión: %s"
+
+msgid "Incident: %s"
+msgstr "Incidente: %s"
+
+msgid "Price date: %s"
+msgstr "Fecha de precios: %s"
+
+msgid "Valuation: %s"
+msgstr "Valoración: %s"
+
+msgid "All amounts are estimates. Market prices, labor, and repair outcomes may differ."
+msgstr "Todos los importes son estimados. Los precios, la mano de obra y el resultado de la reparación pueden variar."
+
+msgid "A complete amount was not supplied for this assessment."
+msgstr "Esta evaluación no dispone de un importe completo."
+
+msgid "Amount unavailable"
+msgstr "Importe no disponible"
+
+msgid "Cost unavailable"
+msgstr "Coste no disponible"
+
+msgid "COST UNAVAILABLE"
+msgstr "COSTE NO DISPONIBLE"
+
+msgid "Assumptions"
+msgstr "Supuestos"
+
+msgid "At least %s"
+msgstr "Al menos %s"
+
+msgid "Up to %s"
+msgstr "Hasta %s"
+
+msgid "Complete estimated total"
+msgstr "Total estimado completo"
+
+msgid "Credit"
+msgstr "Descuento"
+
+msgid "DAMAGE REPORTED"
+msgstr "DAÑOS REGISTRADOS"
+
+msgid "ESTIMATED LOSS"
+msgstr "PÉRDIDA ESTIMADA"
+
+msgid "Estimated total. Expand for cents, line items, and price assumptions."
+msgstr "Total estimado. Abre el desglose para ver céntimos, partidas y supuestos de precios."
+
+msgid "Hide accident report"
+msgstr "Ocultar informe del accidente"
+
+msgid "Hide damage breakdown"
+msgstr "Ocultar desglose de daños"
+
+msgid "Show damage breakdown"
+msgstr "Mostrar desglose de daños"
+
+msgid "INCOMPLETE ESTIMATE RANGE"
+msgstr "INTERVALO ESTIMADO INCOMPLETO"
+
+msgid "INCOMPLETE ESTIMATE · LOWER BOUND"
+msgstr "ESTIMACIÓN INCOMPLETA · MÍNIMO"
+
+msgid "INCOMPLETE ESTIMATE · UPPER BOUND"
+msgstr "ESTIMACIÓN INCOMPLETA · MÁXIMO"
+
+msgid "INSPECTION REQUIRED"
+msgstr "INSPECCIÓN NECESARIA"
+
+msgid "Inspect"
+msgstr "Inspeccionar"
+
+msgid "Inspect wreck"
+msgstr "Inspeccionar restos"
+
+msgid "KNOWN SUBTOTAL · INCOMPLETE"
+msgstr "SUBTOTAL CONOCIDO · INCOMPLETO"
+
+msgid "Known subtotal"
+msgstr "Subtotal conocido"
+
+msgid "Known subtotal only. It is not the complete cost."
+msgstr "Solo incluye el subtotal conocido. No es el coste completo."
+
+msgid "No complete amount or priced subtotal is available."
+msgstr "No hay un importe completo ni un subtotal con precios disponibles."
+
+msgid "No priced line items were supplied."
+msgstr "No se dispone de partidas con precio."
+
+msgid "Not priced"
+msgstr "Sin precio"
+
+msgid "OUTCOME · INSPECTION"
+msgstr "RESULTADO · INSPECCIÓN"
+
+msgid "OUTCOME · REPAIR"
+msgstr "RESULTADO · REPARACIÓN"
+
+msgid "OUTCOME · TOTAL LOSS"
+msgstr "RESULTADO · PÉRDIDA TOTAL"
+
+msgid "OUTCOME · UNAVAILABLE"
+msgstr "RESULTADO · NO DISPONIBLE"
+
+msgid "Parts and actions"
+msgstr "Piezas y acciones"
+
+msgid "REPAIR ESTIMATE"
+msgstr "REPARACIÓN ESTIMADA"
+
+msgid "Range only. Some required costs or inspection results are unresolved."
+msgstr "Intervalo orientativo. Quedan costes o resultados de inspección por determinar."
+
+msgid "Repair"
+msgstr "Reparar"
+
+msgid "Replace"
+msgstr "Sustituir"
+
+msgid "Replacement"
+msgstr "Sustitución"
+
+msgid "Replacement quote ceiling (reference only)"
+msgstr "Máximo del presupuesto de sustitución (solo referencia)"
+
+msgid "Replacement reference reported"
+msgstr "Referencia de sustitución"
+
+msgid "Salvage"
+msgstr "Recuperación"
+
+msgid "Salvage credit"
+msgstr "Descuento por piezas recuperadas"
+
+msgid "Salvage value reported"
+msgstr "Valor de piezas recuperadas"
+
+msgid "Show accident report"
+msgstr "Mostrar informe del accidente"
+
+msgid "View archived accident report"
+msgstr "Ver informe del accidente anterior"
+
+msgid "View damage report"
+msgstr "Ver informe de daños"
+
+msgid "Some costs or inspection results remain unresolved."
+msgstr "Quedan costes o resultados de inspección por determinar."
+
+msgid "This is a lower bound; unresolved costs are excluded."
+msgstr "Este es el mínimo conocido; no incluye costes pendientes."
+
+msgid "This is an upper bound; unresolved costs may change the result."
+msgstr "Este es un máximo estimado; los costes pendientes pueden cambiar el resultado."
+
+msgid "Unresolved item"
+msgstr "Partida pendiente"
+
+msgid "Unresolved items"
+msgstr "Partidas pendientes"
+
+msgid "Unspecified item"
+msgstr "Partida sin especificar"
+
+msgid "method unavailable"
+msgstr "método no disponible"
+
+msgid "unavailable"
+msgstr "no disponible"
+
+msgid "Accident report could not be saved; it remains available for this session."
+msgstr "No se pudo guardar el informe del accidente; sigue disponible durante esta sesión."

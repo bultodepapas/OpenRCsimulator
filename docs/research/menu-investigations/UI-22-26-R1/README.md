@@ -12,7 +12,7 @@ Date: 2026-10-15. First implementation milestone for the [menu redesign](../../.
 
 ## Native visual evidence
 
-[Gallery](GALLERY.md): **113 lossless native WebP images** before the separate display-recovery pair:
+[Gallery](GALLERY.md): **115 lossless native WebP images**, including the separate display-recovery pair:
 
 - 92 captures across EN/ES at 1280×720, 1920×1080, 2560×1440 and 3840×2160. Home, Pause and Settings at each resolution; dense screens at 720p/1080p/4K. Included pages: Help, controller Devices, failures, Natural Random, Workshop, wind/turbulence/atmosphere, lighting and overlays.
 - 21 stress captures: ES at 200% themed text (720p Home/Pause/Settings/Help/Controls/conditions and 4K Home/Pause/Settings), plus Home/Pause/Settings at 1024×576, 1280×800, 1920×1200 and 3440×1440.
@@ -22,6 +22,12 @@ Windows, Godot 4.7.2 `ed1daf0bf`, Compatibility/OpenGL 3.3, RTX 3090, NVIDIA 610
 At default size the Home column is 440 logical px, hence 1320 physical px at 4K. At 200% text it may grow to accommodate the pinned controls; its fade follows the real panel edge. Dense text uses intentional vertical scrolling. At 200% Pause, focus reveals Resume and some status text is above the initial scroll position; this is not a claim of a permanently visible safety-status region.
 
 `geometry.json.gz` contains control rectangles, fonts, text-fit observations, actual image sizes and **56 passing sampled flow records**. These use production routes plus the existing event driver; they are not physical keyboard/gamepad qualification. Captures of one tab do not qualify every tab. The new Settings integration test separately uses real injected key events through selector popups and nested routes.
+
+## Native display recovery
+
+The production Settings route was opened over a paused flight. A real native window preview changed 1280×720 to 3840×2160; the 15-second wall-clock deadline restored 1280×720 and window mode 0. No display preference file was written, Settings stayed open, and the flight tick stayed unchanged. [Result](display/result.json), [native log](display/display.log), [4K preview](display/borderless-preview.webp), [automatic revert](display/automatic-revert.webp).
+
+The first native experiment rejected an implementation that manually resized a borderless window: Windows/Godot promoted it to mode 4 while the Window object still held its old state, so the timeout changed the label without restoring the physical window. The accepted implementation uses `Window.MODE_FULLSCREEN` and restores through the Window state machine. Unit signal tests alone could not detect this defect.
 
 ## Checks and reproduction
 
@@ -42,6 +48,6 @@ $Godot = '.tools/Godot_v4.7.2-stable_win64_console.exe'
 
 ## Identity and boundaries
 
-The shared checkout changed during this work, including unrelated aircraft, physics and accident/economy work and external commits. We did not stage or commit. `sources.json` records the menu-source snapshot; normal capture/test logs predate later accident-report integration. The final display experiment uses detached base `ad8ea65b` plus the menu follow-up changes, with a copied Godot import cache, so unrelated in-progress flight edits cannot invalidate its result. This is a source-run check, not a fresh export proof.
+The shared checkout changed during this work, including unrelated aircraft, physics and accident/economy work and external commits. We did not stage or commit. `sources.json` records the menu-source snapshot; normal capture/test logs predate later accident-report integration. The final display experiment uses detached base `ad8ea65b` plus the menu follow-up changes, with a copied Godot import cache and existing native extension artifacts, so unrelated in-progress flight edits cannot invalidate its result. This is a source-run check, not a fresh export proof.
 
 Remaining gates: the complete advanced-tab/pseudo-locale matrix; every Windows DPI mode and monitor transition; real gamepad/radio hardware; rendered ink bounds and all composited contrast states; performance p95; signed/exported builds and other OSes; first-time user studies. Audio/safe-margin settings, thumbnail catalog, paused-weather staging and the rest of the page refinement remain in the active plan. No new aircraft geometry, physics tuning, recording changes, downloaded commercial screenshots or generated UI art were introduced.
