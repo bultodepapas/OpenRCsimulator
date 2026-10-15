@@ -1202,7 +1202,7 @@
         ]
       ],
       "well_doors": {
-        "inner_x": 1.0,
+        "inner_x": 0.2,
         "z0": -0.1,
         "length": 1.45
       },
@@ -1211,7 +1211,28 @@
         "length": 0.9,
         "width": 0.26,
         "open_deg": 80.0,
-        "aft_fraction": 0.6
+        "aft_fraction": 0.2
+      },
+      "retraction": {
+        "main_trunnion": [
+          1.6924,
+          -0.5758,
+          0.2566
+        ],
+        "main_hinge_axis_right": [
+          -0.203428,
+          0.197039,
+          -0.959058
+        ],
+        "main_stow_deg": 97.6,
+        "tail_pivot": [
+          -0.3595,
+          5.25
+        ],
+        "tail_stow_deg": 85.0,
+        "door_phase": 0.2,
+        "inner_door_open_deg": 85.0,
+        "note": "P51-11b: right main trunnion [x, y, z] (the builder's deployed leg top; left mirrors x), its inclined hinge axis (model frame, right side; left mirrors to [x, -y, -z]) and stow swing, solved so the wheel lies flat inside the wing root ahead of the spar (research/p51/p51-11, fit: all 48 tyre sample points inside the airframe); tail wheel pivot [y, z] on the symmetry plane, 30 mm (model) above and aft of the steering point and forward swing (CARF 1:4.3 manual p. 14: tail-wheel doors forward of the mount). door_phase: fraction of the travel at each end for the sequenced doors (CARF: Ultra Precision UP-2/UP-4 sequencer valves, air-cylinder doors); estimated"
       }
     },
     "pilot": {

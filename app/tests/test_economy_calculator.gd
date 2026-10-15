@@ -12,6 +12,7 @@ func _initialize() -> void:
 	_test_accounting_invariants_and_ordering()
 	_test_no_duplicate_charge()
 	_test_prop_only_with_engine_inspection()
+	_test_known_inspection_fee_has_no_upper_bound()
 	_test_unknown_price_and_known_zero()
 	_test_repair_competes_with_replacement()
 	_test_invalid_quantity_and_fractional_cents()
@@ -27,6 +28,10 @@ func _test_total_loss_and_salvage() -> void:
 	_check("complete baseline loss uses integer cents", zero_salvage["ok"] and zero_salvage["total_minor"] == 99433 and typeof(zero_salvage["total_minor"]) == TYPE_INT, str(zero_salvage))
 	_check("baseline low and high bounds are retained", zero_salvage["low_minor"] == 82734 and zero_salvage["high_minor"] == 133134, str(zero_salvage))
 	_check("complete-build replacement is counted once", _line_count(zero_salvage, "final_assembly_and_commissioning") == 1 and zero_salvage["replacement_minor"] == 99433)
+	var total_loss_inspection: Dictionary = _assessment(true)
+	total_loss_inspection["components"] = {"engine_and_muffler": {"disposition": "inspect", "inspection_minor": 250}}
+	var inspected_loss: Dictionary = Calculator.calculate(dossier, total_loss_inspection)
+	_check("pending total-loss salvage has no unsupported net bounds", inspected_loss["known_subtotal_minor"] == 99683 and inspected_loss["high_minor"] == null and inspected_loss["low_minor"] == null and inspected_loss["total_minor"] == null, str(inspected_loss))
 	var two_servos: Dictionary = _assessment(true)
 	two_servos["components"] = {"fuselage_servos": {"disposition": "reuse", "quantity": 2}}
 	var two_result: Dictionary = Calculator.calculate(dossier, two_servos)
@@ -82,15 +87,16 @@ func _test_prop_only_with_engine_inspection() -> void:
 	assessment["components"] = {
 		"propeller": {"disposition": "replace"},
 		"engine_and_muffler": {"disposition": "inspect"},
+		"covered_airframe_and_installation_hardware": {"disposition": "inspect"},
 	}
 	var result: Dictionary = Calculator.calculate(_dossier(), assessment)
 	_check("prop strike keeps exact prop subtotal while engine inspection blocks total", result["ok"] and result["known_subtotal_minor"] == 539 and result["total_minor"] == null and not result["complete"], str(result))
-	_check("prop and engine bounds remain visible", result["low_minor"] == 539 and result["high_minor"] == 35539 and result["outcome"] == "inspection", str(result))
+	_check("prop plus engine and airframe inspection retain only the known lower bound", result["low_minor"] == 539 and result["high_minor"] == null and result["outcome"] == "inspection", str(result))
 	var terminal: Dictionary = _assessment(false)
 	terminal["terminal"] = true
 	terminal["components"] = {"propeller": {"disposition": "inspect"}}
 	var terminal_result: Dictionary = Calculator.calculate(_dossier(), terminal)
-	_check("terminal replacement comparison stays separate from assessed cost bounds", terminal_result["outcome"] == "inspection" and terminal_result["high_minor"] == 539 and terminal_result["range_basis"] == "component_price_bounds" and terminal_result["replacement_quote_low_minor"] == 82734 and terminal_result["replacement_quote_high_minor"] == 133134 and terminal_result["replacement_quote_scope"] == "complete_build_replacement_quote_comparison", str(terminal_result))
+	_check("terminal replacement comparison stays separate from unbounded assessed costs", terminal_result["outcome"] == "inspection" and terminal_result["high_minor"] == null and terminal_result["range_basis"] == "component_price_bounds" and terminal_result["replacement_quote_low_minor"] == 82734 and terminal_result["replacement_quote_high_minor"] == 133134 and terminal_result["replacement_quote_scope"] == "complete_build_replacement_quote_comparison", str(terminal_result))
 	var unknown_quote_dossier: Dictionary = _dossier()
 	var unknown_quote_components: Array = unknown_quote_dossier["components"]
 	for index: int in range(unknown_quote_components.size()):
@@ -106,6 +112,17 @@ func _test_prop_only_with_engine_inspection() -> void:
 	unknown_quote_assessment["components"] = {"receiver": {"disposition": "inspect"}}
 	var unknown_quote: Dictionary = Calculator.calculate(unknown_quote_dossier, unknown_quote_assessment)
 	_check("unknown inspection condition keeps assessed high and replacement quote unknown", unknown_quote["high_minor"] == null and unknown_quote["replacement_quote_high_minor"] == null and unknown_quote["total_minor"] == null, str(unknown_quote))
+
+
+func _test_known_inspection_fee_has_no_upper_bound() -> void:
+	var assessment: Dictionary = _assessment(false)
+	assessment["components"] = {
+		"propeller": {"disposition": "replace"},
+		"engine_and_muffler": {"disposition": "inspect", "inspection_minor": 250},
+		"covered_airframe_and_installation_hardware": {"disposition": "inspect", "inspection_minor": 100},
+	}
+	var result: Dictionary = Calculator.calculate(_dossier(), assessment)
+	_check("known inspection fees add to subtotal but do not bound repair costs", result["known_subtotal_minor"] == 889 and result["low_minor"] == 889 and result["high_minor"] == null and result["total_minor"] == null, str(result))
 
 
 func _test_unknown_price_and_known_zero() -> void:
@@ -190,7 +207,22 @@ func _test_loaded_catalog_contract() -> void:
 		_check("loaded quantity and price fields are int minor-units", typeof(propeller.get("quantity")) == TYPE_INT and typeof(propeller.get("unit_minor")) == TYPE_INT and propeller.get("unit_minor") == 539)
 		var total_loss: Dictionary = Calculator.calculate(dossier, _assessment(true))
 		_check("actual baseline catalog produces the accepted integer-cent sum", total_loss.get("total_minor") == 99433 and total_loss.get("replacement_minor") == 99433, str(total_loss))
-	var incomplete: Dictionary = Catalog.load_for("stik-glow-55ax-2t")
+	for spec: Array in [["stik-glow-55ax-2t", 99433, 539], ["stik-glow-fs64v-4t", 130059, 1165]]:
+		var variant := Catalog.load_for(spec[0])
+		_check("variant economic dossier loads: " + spec[0], variant.get("ok", false))
+		if not variant.get("ok", false):
+			continue
+		var loss := Calculator.calculate(variant.dossier, _assessment(true))
+		_check("variant replacement includes its engine and prop once: " + spec[0], loss.get("total_minor") == spec[1] and _line_count(loss, "engine_and_muffler") == 1 and _line_count(loss, "propeller") == 1, str(loss))
+		var inspected := _assessment(false)
+		inspected.components = {"propeller": {"disposition": "replace"}, "engine_and_muffler": {"disposition": "inspect"}}
+		var repair := Calculator.calculate(variant.dossier, inspected)
+		_check("variant prop-only subtotal retains unknown engine inspection: " + spec[0], repair.get("known_subtotal_minor") == spec[2] and repair.get("total_minor") == null and repair.get("high_minor") == null)
+		var salvage := _assessment(true)
+		salvage.components = {"fuselage_servos": {"disposition": "reuse", "quantity": 2}}
+		var reused := Calculator.calculate(variant.dossier, salvage)
+		_check("variant conditional two-servo credit remains the installed baseline value: " + spec[0], reused.get("salvage_minor") == 6798 and reused.get("total_minor") == spec[1] - 6798)
+	var incomplete: Dictionary = Catalog.load_for("gp-extra-300s-60")
 	if bool(incomplete.get("ok", false)):
 		var partial_report: Dictionary = Calculator.calculate(incomplete["dossier"], _assessment(true))
 		_check("runtime incomplete route cannot produce a total or zero replacement quote", not partial_report["complete"] and partial_report["total_minor"] == null and partial_report["replacement_minor"] == null and partial_report["low_minor"] == null and partial_report["high_minor"] == null and not partial_report["unresolved"].is_empty(), str(partial_report))

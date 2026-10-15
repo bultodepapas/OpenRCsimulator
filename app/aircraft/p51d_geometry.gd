@@ -1389,7 +1389,7 @@ const DATA := {
 			]
 		],
 		"well_doors": {
-			"inner_x": 0.2499,
+			"inner_x": 0.05,
 			"z0": -0.025,
 			"length": 0.3623
 		},
@@ -1398,7 +1398,27 @@ const DATA := {
 			"length": 0.2249,
 			"width": 0.065,
 			"open_deg": 80.0,
-			"aft_fraction": 0.6
+			"aft_fraction": 0.2
+		},
+		"retraction": {
+			"main_trunnion": [
+				0.4229,
+				-0.1439,
+				0.0641
+			],
+			"main_hinge_axis_right": [
+				-0.203428,
+				0.197039,
+				-0.959058
+			],
+			"main_stow_deg": 97.6,
+			"tail_pivot": [
+				-0.0898,
+				1.3118
+			],
+			"tail_stow_deg": 85.0,
+			"door_phase": 0.2,
+			"inner_door_open_deg": 85.0
 		}
 	},
 	"propeller": {

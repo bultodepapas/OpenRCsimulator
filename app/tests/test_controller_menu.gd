@@ -87,6 +87,17 @@ func _run() -> void:
 	check("other controller cannot change camera", app.flight._rig.view == old_view)
 	await button(JOY_BUTTON_Y)
 	check("selected controller changes camera", app.flight._rig.view != old_view)
+	# CR-32: the accident card is a menu context even though it is outside ScreenStack.
+	var accident: Node = app.flight._accident_report
+	accident.show_assessment({complete = false, outcome = "inspection", currency = "USD",
+		known_subtotal_minor = 539, total_minor = null, lines = [], unresolved = ["inspection required"]}, true)
+	await ui.settle()
+	var accident_trim: float = session.trims.roll
+	await button(JOY_BUTTON_DPAD_RIGHT)
+	check("accident navigation does not trim the aircraft", session.trims.roll == accident_trim and root.gui_get_focus_owner() == accident._details_button)
+	await button(JOY_BUTTON_A)
+	check("selected menu pad opens the accident breakdown", accident._details_scroll.visible)
+	accident.clear_report()
 	await button(JOY_BUTTON_START)
 	check("Menu opens Pause", app.pause_menu != null and session.sim.paused)
 	var trim: float = session.trims.roll

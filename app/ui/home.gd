@@ -1,4 +1,4 @@
-# Home screen (MENU-PLAN §5, UI-25): next-flight setup, one full-width Fly action, and grouped practice/activity/tools.
+# Home screen (UI-25): focused flight setup, separate practice/garage/details pages, pinned Fly and utility bar.
 # The selected aircraft and field remain the visual backdrop (ui/home_scene.gd). The catalog owns availability; an
 # aircraft can be previewed without being flyable. Containers keep the sidebar usable when text or the viewport grows.
 # Texts are English source
@@ -94,6 +94,8 @@ var update_notice: Control
 var _fly_sent := false
 ## UI-06d-R1: frames before the column's scroll follows the keyboard focus (see _process).
 var _settle_frames := 3
+var _pages: Array[VBoxContainer] = []
+var _page_buttons: Array[Button] = []
 var _scroll: ScrollContainer
 var _flight_device_name := ""
 var _menu_device_name := ""
@@ -113,7 +115,7 @@ func _init() -> void:
 
 	var sidebar := PanelContainer.new()
 	sidebar.name = "Sidebar"
-	sidebar.theme_type_variation = "Sidebar"
+	sidebar.theme_type_variation = "HomeSidebar"
 	sidebar.set_anchors_preset(Control.PRESET_LEFT_WIDE)
 	sidebar.custom_minimum_size.x = SIDEBAR_WIDTH
 	add_child(sidebar)
@@ -130,7 +132,7 @@ func _init() -> void:
 	var scroll := ScrollContainer.new()
 	scroll.name = "Scroll"
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_SHOW_ALWAYS
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.follow_focus = false # until the layout settles (_process): see _settle_frames
@@ -370,60 +372,105 @@ func _init() -> void:
 	keys_legend.add_theme_constant_override("h_separation", 18)
 	keys_legend.add_theme_constant_override("v_separation", 6)
 	column.add_child(keys_legend)
+	# Compose separate destinations instead of one ever-growing setup document.
+	sidebar.offset_bottom = -72
+	sidebar_content.add_theme_constant_override("separation", 12)
+	title.reparent(sidebar_content)
+	sidebar_content.move_child(title, 0)
+	stage.reparent(sidebar_content)
+	sidebar_content.move_child(stage, 1)
+	var page_nav := HBoxContainer.new()
+	page_nav.name = "HomeSections"
+	page_nav.add_theme_constant_override("separation", 0)
+	sidebar_content.add_child(page_nav)
+	sidebar_content.move_child(page_nav, 2)
+	var page_names := ["Flight", "Practice", "Garage", "Details"]
+	for index in page_names.size():
+		var page := VBoxContainer.new()
+		page.name = page_names[index] + "Page"
+		page.add_theme_constant_override("separation", 12)
+		page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		column.add_child(page)
+		_pages.append(page)
+		var tab := _button(page_names[index], "HomeTab")
+		tab.toggle_mode = true
+		tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tab.pressed.connect(_select_page.bind(index))
+		page_nav.add_child(tab)
+		_page_buttons.append(tab)
+	heading.reparent(_pages[0])
+	aircraft_name_label.reparent(_pages[0])
+	start_button.reparent(_pages[0])
+	weather_button.reparent(_pages[0])
+	time_button.reparent(_pages[0])
+	workshop_button.reparent(_pages[0])
+	note_label.reparent(_pages[0])
+	aircraft_preview_label.reparent(_pages[0])
+	practice_row.reparent(_pages[1])
+	failure_summary_label.reparent(_pages[1])
+	ground_vehicle_choice.reparent(_pages[2])
+	ground_vehicle_button.reparent(_pages[2])
+	for detail in [aircraft_summary_label, aircraft_status_label, limits_label, control_label, controller_prompt_label, keys_legend]:
+		detail.reparent(_pages[3])
+	# Remove the old duplicate headings, empty card and decorative gaps.
+	for child in column.get_children():
+		if not child is VBoxContainer or child not in _pages:
+			column.remove_child(child)
+			child.queue_free()
+	var footer := PanelContainer.new()
+	footer.name = "HomeFooter"
+	footer.set_anchors_preset(Control.PRESET_BOTTOM_WIDE)
+	footer.offset_top = -64
+	add_child(footer)
+	var utility_row := HFlowContainer.new()
+	utility_row.add_theme_constant_override("h_separation", 16)
+	footer.add_child(utility_row)
+	footer.resized.connect(func() -> void:
+		footer.offset_top = -footer.size.y
+		sidebar.offset_bottom = -footer.size.y - 8.0
+	)
+	for utility in [language_button, controls_button, settings_button, help_button, quit_button]:
+		utility.reparent(utility_row)
+		utility.theme_type_variation = "QuietButton"
+		utility.size_flags_horizontal = Control.SIZE_FILL
+		utility.autowrap_mode = TextServer.AUTOWRAP_OFF
+		utility.custom_minimum_size.y = 36
+	utility_footer.get_parent().remove_child(utility_footer)
+	utility_footer.queue_free()
+	for action in [start_button, weather_button, time_button, workshop_button]:
+		action.theme_type_variation = "HomeAction"
+		action.alignment = HORIZONTAL_ALIGNMENT_LEFT
+		fly_button.custom_minimum_size.y = 56
+	_select_page(0)
 	set_aircraft(aircraft_id) # the card is never empty; the owner sets the saved choice before adding Home
 
 
 func _ready() -> void:
-	# Keep the short launch route stable while giving the other groups explicit menu-pad neighbors.
-	fly_button.focus_neighbor_bottom = fly_button.get_path_to(workshop_button)
-	fly_button.focus_neighbor_top = fly_button.get_path_to(weather_button)
-	fly_button.focus_neighbor_left = fly_button.get_path_to(previous_button)
-	fly_button.focus_neighbor_right = fly_button.get_path_to(weather_button)
-	fly_button.focus_next = fly_button.get_path_to(weather_button)
-	weather_button.focus_previous = weather_button.get_path_to(fly_button)
-	workshop_button.focus_neighbor_top = workshop_button.get_path_to(fly_button)
-	workshop_button.focus_neighbor_bottom = workshop_button.get_path_to(language_button)
-	workshop_button.focus_neighbor_right = workshop_button.get_path_to(natural_random_button)
-	language_button.focus_neighbor_top = language_button.get_path_to(workshop_button)
-	language_button.focus_neighbor_bottom = language_button.get_path_to(natural_random_button)
-	language_button.focus_neighbor_right = language_button.get_path_to(help_button)
-	help_button.focus_neighbor_top = help_button.get_path_to(fly_button)
-	help_button.focus_neighbor_bottom = help_button.get_path_to(natural_random_button)
-	help_button.focus_neighbor_left = help_button.get_path_to(language_button)
-	help_button.focus_neighbor_right = help_button.get_path_to(quit_button)
-	quit_button.focus_neighbor_top = quit_button.get_path_to(fly_button)
-	quit_button.focus_neighbor_bottom = quit_button.get_path_to(ground_vehicle_choice)
-	quit_button.focus_neighbor_left = quit_button.get_path_to(help_button)
-	quit_button.focus_neighbor_right = quit_button.get_path_to(controls_button)
-	controls_button.focus_neighbor_top = controls_button.get_path_to(fly_button)
-	controls_button.focus_neighbor_bottom = controls_button.get_path_to(ground_vehicle_choice)
-	controls_button.focus_neighbor_left = controls_button.get_path_to(quit_button)
-	controls_button.focus_neighbor_right = controls_button.get_path_to(settings_button)
-	settings_button.focus_neighbor_top = settings_button.get_path_to(fly_button)
-	settings_button.focus_neighbor_bottom = settings_button.get_path_to(ground_vehicle_choice)
-	settings_button.focus_neighbor_left = settings_button.get_path_to(controls_button)
-	settings_button.focus_neighbor_right = settings_button.get_path_to(language_button)
-
-	time_button.focus_neighbor_top = time_button.get_path_to(start_button)
-	time_button.focus_neighbor_bottom = time_button.get_path_to(weather_button)
-	weather_button.focus_neighbor_top = weather_button.get_path_to(time_button)
-	weather_button.focus_neighbor_bottom = weather_button.get_path_to(fly_button)
-	start_button.focus_neighbor_bottom = start_button.get_path_to(time_button)
-	natural_random_button.focus_neighbor_top = natural_random_button.get_path_to(language_button)
-	natural_random_button.focus_neighbor_bottom = natural_random_button.get_path_to(failures_button)
-	natural_random_button.focus_neighbor_left = natural_random_button.get_path_to(workshop_button)
-	natural_random_button.focus_neighbor_right = natural_random_button.get_path_to(failures_button)
-	failures_button.focus_neighbor_top = failures_button.get_path_to(natural_random_button)
-	failures_button.focus_neighbor_bottom = failures_button.get_path_to(ground_vehicle_choice)
-	failures_button.focus_neighbor_left = failures_button.get_path_to(natural_random_button)
-	ground_vehicle_choice.focus_neighbor_top = ground_vehicle_choice.get_path_to(failures_button)
-	ground_vehicle_choice.focus_neighbor_bottom = ground_vehicle_choice.get_path_to(ground_vehicle_button)
-	ground_vehicle_button.focus_neighbor_top = ground_vehicle_button.get_path_to(ground_vehicle_choice)
-	ground_vehicle_button.focus_neighbor_bottom = ground_vehicle_button.get_path_to(controls_button)
+	_select_page(0)
+	var utilities := [language_button, controls_button, settings_button, help_button, quit_button]
+	for i in utilities.size():
+		utilities[i].focus_neighbor_top = utilities[i].get_path_to(fly_button)
+		utilities[i].focus_neighbor_left = utilities[i].get_path_to(utilities[posmod(i - 1, utilities.size())])
+		utilities[i].focus_neighbor_right = utilities[i].get_path_to(utilities[(i + 1) % utilities.size()])
 	_update_texts()
 	# Keyboard focus starts on Fly, visible (on the next arrow when the saved aircraft is a preview: Fly is disabled).
 	(fly_button if not fly_button.disabled else next_button).grab_focus.call_deferred()
 	set_process(true)
+
+
+func _select_page(index: int) -> void:
+	for i in _pages.size():
+		_pages[i].visible = i == index
+		_page_buttons[i].set_pressed_no_signal(i == index)
+	_scroll.scroll_vertical = 0
+	# Explicit neighbors only target controls in the selected section.
+	if is_inside_tree():
+		fly_button.focus_neighbor_top = fly_button.get_path_to(_page_buttons[index])
+		fly_button.focus_neighbor_bottom = fly_button.get_path_to(language_button)
+		fly_button.focus_next = fly_button.get_path_to(language_button)
+		var first_controls := [previous_button, natural_random_button, ground_vehicle_choice, fly_button]
+		for tab in _page_buttons:
+			tab.focus_neighbor_bottom = tab.get_path_to(first_controls[index])
 
 
 func _sync_sidebar_fade(sidebar: Control, fade_rect: TextureRect) -> void:

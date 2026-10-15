@@ -75,8 +75,51 @@ func _report_behavior() -> void:
 	var report := AccidentReport.new()
 	root.add_child(report)
 	await _ui.settle()
-	_check("no report panel appears before an assessment", not report.find_child("AccidentReportSurface", true, false).visible
+	var report_surface := report.find_child("AccidentReportSurface", true, false) as Control
+	report_surface.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	report_surface.size = Vector2(1280.0, 720.0)
+	report._layout()
+	_check("no report panel appears before an assessment", not report_surface.visible
 		and not report.find_child("AccidentReportCard", true, false).visible)
+	var settled_report: Dictionary = {
+		"currency": "USD",
+		"known_subtotal_minor": 125050,
+		"total_minor": 125050,
+		"complete": true,
+		"outcome": "repair",
+		"lines": [],
+	}
+	report.show_settled(settled_report)
+	await _ui.settle()
+	var settled_card := report.find_child("AccidentReportCard", true, false) as Control
+	var settled_title := ((report.find_child("ReportColumn", true, false) as VBoxContainer).get_child(0).get_child(0) as Label)
+	var settled_amount := report.find_child("ReportAmount", true, false) as Label
+	var settled_surface := report.find_child("AccidentReportSurface", true, false) as Control
+	_check("settled incident shows a prominent damage report without a terminal state", settled_card.visible
+		and not report.find_child("AccidentToast", true, false).visible
+		and settled_title.text == "DAMAGE REPORT" and settled_amount.text == "US$1,251"
+		and settled_amount.get_theme_font_size("font_size") >= 48 and not report._terminal)
+	_check("settled report is read-only and leaves flight input available", not report.find_child("InspectWreck", true, false).visible
+		and not report.find_child("RestartFlight", true, false).visible
+		and report.find_child("HideArchivedReport", true, false).text == "Hide damage report"
+		and settled_surface.mouse_filter == Control.MOUSE_FILTER_IGNORE
+		and not report.controller_action("inspect") and not report.controller_action("restart"))
+	_check("flight keyboard input reaches the aircraft while settled report is visible", await _key_reaches_probe(probe, KEY_G))
+	report.dismiss_settled()
+	_check("automatic dismissal leaves a passive reopen control and retains the report", not settled_card.visible
+		and report.find_child("ReopenAccidentReport", true, false).visible
+		and not report.wants_controller_menu())
+	_check("manual reopen is not collapsed by a later automatic dismissal", report.controller_action("reopen")
+		and settled_card.visible)
+	report.dismiss_settled()
+	_check("manual reopen retains its read-only report", settled_card.visible
+		and not report.find_child("RestartFlight", true, false).visible)
+	_check("settled report details can be hidden and reopened", report.controller_action("details")
+		and report.controller_action("cancel") and not settled_card.visible
+		and report.find_child("ReopenAccidentReport", true, false).visible)
+	probe.key_count = 0
+	external_focus.grab_focus()
+	await _ui.settle()
 
 	var partial: Dictionary = {
 		"currency": "USD",
@@ -88,7 +131,12 @@ func _report_behavior() -> void:
 		"valuation_kind": "catalog_snapshot",
 		"outcome": "repair",
 		"lines": [
-			{"id": "propeller", "quantity": 1, "action": "replace", "amount_minor": 125050},
+			{
+				"id": "propeller", "quantity": 1, "action": "replace", "amount_minor": 125050,
+				"price_basis": "price_proxy", "observed_on": "2026-10-15",
+				"source_url": "https://www.apcprop.com/product/11x7/?v=84de8e2b14bb",
+				"notes": "Candidate price only; physical fit is not established.",
+			},
 			{"id": "thermal_review", "quantity": 1, "action": "inspect", "amount_minor": NAN},
 		],
 		"salvage_minor": null,
@@ -181,20 +229,29 @@ func _report_behavior() -> void:
 		"valuation_kind": "catalog_snapshot",
 		"outcome": "repair",
 		"lines": [
-			{"id": "propeller", "quantity": 1, "action": "replace", "amount_minor": 125050},
+			{
+				"id": "propeller", "quantity": 1, "action": "replace", "amount_minor": 125050,
+				"price_basis": "price_proxy", "observed_on": "2026-10-15",
+				"source_url": "https://www.apcprop.com/product/11x7/?v=84de8e2b14bb",
+				"notes": "Candidate price only; physical fit is not established.",
+			},
+			{"id": "covered_airframe_and_installation_hardware", "quantity": 1, "action": "inspect", "amount_minor": null},
+			{"id": "unknown_test_component", "quantity": 1, "action": "inspect", "amount_minor": null},
 			{"id": "spare_motor", "quantity": 2, "action": "replacement", "amount_minor": 0},
 			{"id": "servo", "quantity": 1, "action": "salvage_credit", "amount_minor": -500},
 		],
 		"salvage_minor": null,
 		"replacement_minor": null,
-		"unresolved": [],
+		"unresolved": ["covered_airframe_and_installation_hardware: inspection required"],
 		"price_date": "2026-10-15",
 	}
 	report.show_assessment(complete, true)
 	await _ui.settle()
 	_check_live_panel_bounds(report, "collapsed terminal card")
 	_check("terminal report takes keyboard focus on Inspect and owns controller menu", _ui.focus_name() == "InspectWreck"
-		and report.wants_controller_menu(), _ui.focus_name())
+		and report.wants_controller_menu()
+		and ((report.find_child("ReportColumn", true, false) as VBoxContainer).get_child(0).get_child(0) as Label).text == "ACCIDENT REPORT"
+		and report.find_child("RestartFlight", true, false).visible, _ui.focus_name())
 	_check("complete total uses rounded whole dollars as the headline", report.find_child("ReportAmount", true, false).text == "US$1,251")
 	var low_repair: Dictionary = complete.duplicate(true)
 	low_repair.total_minor = 539
@@ -224,9 +281,45 @@ func _report_behavior() -> void:
 	_check_live_panel_bounds(report, "expanded terminal card")
 	_check("expanded breakdown retains cents, price date, estimate caveat, identity, quantity, and actions", _details_text(report).contains("US$1,250.50")
 		and _details_text(report).contains("2026-10-15") and _details_text(report).contains("Market prices")
-		and _details_text(report).contains("Aircraft: trainer-v2") and _details_text(report).contains("Incident: evt-007")
+		and _details_text(report).contains("Aircraft: Trainer v2") and _details_text(report).contains("Incident: evt-007")
 		and _details_text(report).contains("Replacement") and _details_text(report).contains("Salvage credit")
-		and _details_text(report).contains("× 2"), _details_text(report))
+		and _details_text(report).contains("× 2")
+		and _details_text(report).contains("Airframe and installation hardware · inspection required")
+		and _details_text(report).contains("Unknown test component")
+		and _details_text(report).contains("Price basis: Price proxy")
+		and _details_text(report).contains("Observed: 2026-10-15")
+		and _details_text(report).contains("Source: https://www.apcprop.com/product/11x7/?v=84de8e2b14bb")
+		and _details_text(report).contains("Candidate price only; physical fit is not established."), _details_text(report))
+	var spanish_report: Dictionary = complete.duplicate(true)
+	spanish_report.complete = false
+	spanish_report.total_minor = null
+	spanish_report.low_minor = null
+	spanish_report.high_minor = null
+	spanish_report.lines.append({"id": "engine_and_muffler", "quantity": 1, "action": "inspection", "amount_minor": null})
+	spanish_report.unresolved = [
+		"Propeller strike: inspect the powertrain, shaft and mount before return to service.",
+		"engine_and_muffler: condition is pending inspection",
+	]
+	TranslationServer.set_locale("es")
+	report.show_assessment(spanish_report, true)
+	report.controller_action("details")
+	await _ui.settle()
+	var spanish_details := _details_text(report)
+	_check("unresolved notes use whole-sentence translations before ID humanization",
+		spanish_details.contains("Golpe de hélice: inspeccionar la propulsión")
+		and spanish_details.contains("Motor y silenciador · estado pendiente de inspección")
+		and spanish_details.contains("Motor y silenciador · Inspección × 1")
+		and not spanish_details.contains("engine_and_muffler"), spanish_details)
+	report.show_settled(spanish_report)
+	var spanish_title := ((report.find_child("ReportColumn", true, false) as VBoxContainer).get_child(0).get_child(0) as Label)
+	_check("settled damage report and hide action are translated into Spanish", spanish_title.text == "INFORME DE DAÑOS"
+		and report.find_child("HideArchivedReport", true, false).text == "Ocultar informe de daños")
+	report.dismiss_settled()
+	_check("Spanish damage report keeps a translated reopen control", report.find_child("ReopenAccidentReport", true, false).text == "Ver informe de daños")
+	TranslationServer.set_locale("en")
+	report.show_assessment(complete, true)
+	report.controller_action("details")
+	await _ui.settle()
 	_check("expanded details switch to the collapse action", report.find_child("DamageDetailsScroll", true, false).visible
 		and breakdown_button.text == "Hide damage breakdown")
 	var restart_button := report.find_child("RestartFlight", true, false) as Button
@@ -306,17 +399,40 @@ func _details_text(report: Node) -> String:
 	for node: Node in _collect_nodes(details):
 		if node is Label:
 			parts.append((node as Label).text)
+		elif node is RichTextLabel:
+			parts.append((node as RichTextLabel).get_parsed_text())
 	return " ".join(parts)
 
 
 func _check_live_panel_bounds(report: Node, label: String) -> void:
 	var panel := report.find_child("AccidentReportCard", true, false) as Control
 	var rect := panel.get_global_rect()
-	var viewport_size := report.get_viewport().get_visible_rect().size
+	var surface := report.find_child("AccidentReportSurface", true, false) as Control
+	var surface_rect := surface.get_global_rect()
 	_check("%s actual bounds fit the live viewport" % label,
-		rect.position.x >= 0.0 and rect.position.y >= 0.0
-		and rect.end.x <= viewport_size.x and rect.end.y <= viewport_size.y,
-		"panel=%s viewport=%s" % [str(rect), str(viewport_size)])
+		rect.position.x >= surface_rect.position.x and rect.position.y >= surface_rect.position.y
+		and rect.end.x <= surface_rect.end.x and rect.end.y <= surface_rect.end.y,
+		"panel=%s surface=%s" % [str(rect), str(surface_rect)])
+	var action_bounds_fit := true
+	var action_report := PackedStringArray()
+	for action_name: String in ["InspectWreck", "DamageBreakdown", "RestartFlight", "HideArchivedReport"]:
+		var action := report.find_child(action_name, true, false) as Control
+		if action == null or not action.visible:
+			continue
+		var action_rect := action.get_global_rect()
+		var action_fits := action_rect.position.x >= rect.position.x and action_rect.position.y >= rect.position.y \
+			and action_rect.end.x <= rect.end.x and action_rect.end.y <= rect.end.y
+		action_bounds_fit = action_bounds_fit and action_fits
+		if not action_fits:
+			action_report.append("%s=%s" % [action_name, str(action_rect)])
+	_check("%s visible actions stay inside the card" % label, action_bounds_fit, ", ".join(action_report))
+	var details := report.find_child("DamageDetailsScroll", true, false) as Control
+	if details != null and details.visible:
+		var details_rect := details.get_global_rect()
+		_check("%s expanded details stay inside the card" % label,
+			details_rect.position.x >= rect.position.x and details_rect.position.y >= rect.position.y
+			and details_rect.end.x <= rect.end.x and details_rect.end.y <= rect.end.y,
+			"details=%s card=%s" % [str(details_rect), str(rect)])
 
 
 func _collect_nodes(parent: Node) -> Array[Node]:

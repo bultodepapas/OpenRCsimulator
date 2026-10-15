@@ -1,0 +1,11 @@
+test_night_kit exit=0  FW-35b night kit: 34 checks, 0 failed
+verify_p51 exit=0  verify_p51: 249 checks, 0 failed
+verify_p51_clearance exit=0  verify_p51_clearance: 28 checks, 0 failed (34852 ms)
+test_p51_retracts exit=0  P51-11b retracts: 14 checks, 0 failed
+test_p51_flaps exit=0  P51-11a flaps: 12 checks, 0 failed
+test_prop_strike exit=0  34 checks, 0 failed
+test_crash_masses exit=0  27 checks, 0 failed
+test_wheel_session exit=0  GP-02 wheel session: 46 checks, 0 failed
+test_aircraft_contract exit=0  AS aircraft contract: 2940 checks, 0 failures
+test_retractable_gear exit=0  AV-09 retractable gear: 68 checks, 0 failed
+test_runway_start exit=0  18 checks, 0 failed

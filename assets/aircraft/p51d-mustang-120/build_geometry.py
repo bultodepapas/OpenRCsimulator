@@ -134,6 +134,16 @@ def main():
             "well_doors": {k: L(v) for k, v in g["well_doors"].items()},
             "hub_spokes": g["hub_spokes"],
             "tailwheel_doors": {"length": L(g["tailwheel_doors"]["length"]), "width": L(g["tailwheel_doors"]["width"]), "open_deg": g["tailwheel_doors"]["open_deg"], "aft_fraction": g["tailwheel_doors"]["aft_fraction"]},
+            # P51-11b: retraction kinematics (lengths scaled; angles, unit axis and phase fractions unchanged).
+            "retraction": {
+                "main_trunnion": [L(v) for v in g["retraction"]["main_trunnion"]],
+                "main_hinge_axis_right": g["retraction"]["main_hinge_axis_right"],
+                "main_stow_deg": g["retraction"]["main_stow_deg"],
+                "tail_pivot": [L(v) for v in g["retraction"]["tail_pivot"]],
+                "tail_stow_deg": g["retraction"]["tail_stow_deg"],
+                "door_phase": g["retraction"]["door_phase"],
+                "inner_door_open_deg": g["retraction"]["inner_door_open_deg"],
+            },
         },
         "propeller": {
             "diameter": r(kit["propeller"]["diameter_in"] * IN),

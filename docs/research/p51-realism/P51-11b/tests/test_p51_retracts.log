@@ -1,0 +1,14 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   data loads as a retractable taildragger  []
+ok   retraction module: 4 s each way, drag area 0.022 m2 (the gear-down build-up item)
+ok   three 129-sample contact paths ending at the deployed contacts
+ok   airborne start: gear up and locked  { &"available": true, &"extension": 0.0, &"target_down": false, &"status": "up", &"brake": 0.0, &"inhibited": false }
+ok   gear-down request accepted in flight
+ok   extension reaches down and locked in the authored 4 s (0.2 at 0.8 s, 0.5 at 2 s)  0.201 0.501 down
+ok   gear-down drag is 1/2 rho V2 CdA; half extension half of it; stowed none  8.4354 N vs 8.4353 N
+ok   runway start is down and locked on three wheels  { &"available": true, &"extension": 1.0, &"target_down": true, &"status": "down", &"brake": 0.0, &"inhibited": false }
+ok   retraction on the wheels is refused by the interlock
+ok   animated wheel bottoms follow the physics contact paths (9 samples x 3 wheels)  worst 7.66224388826231e-07 m
+ok   doors: closed stowed, open in transit; down: inner doors closed, tail doors open, legs at the built pose
+P51-11b retracts: 11 checks, 0 failed

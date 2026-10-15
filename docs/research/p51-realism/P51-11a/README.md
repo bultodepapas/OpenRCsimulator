@@ -74,6 +74,7 @@ Godot 4.7.2, native Windows ([logs](tests/)).
 - **Shared fixes needed by this step:**
   - `Maneuvers.fly` now passes the session's trace metadata for flap and retractable-gear sessions. Before, the trace silently dropped every row of a flap-equipped scripted flight.
   - `test_aircraft_contract` excludes the v2-only flap module from its legacy-adapter comparison, as it already excludes capabilities.
+- **Found later:** the migrator's `--check-known` rejected the new flap capability. It is fixed in [P51-11b](../P51-11b/README.md#shared-changes-made-by-this-step-owner-review-requested).
 - **Known failures, unchanged:** the P-51 loop (P51-22 departure), lift-off speed and the 80 m stall band.
 - **Blocked by another track:** `test_aircraft_catalog` and `test_engine_smoke` do not parse. Commit `932c308d` removed `AirplaneBuilder.AVANTI_ID`, and 19 test references remain. The smoke test's P-51 assertion is updated and will run once that is resolved.
 

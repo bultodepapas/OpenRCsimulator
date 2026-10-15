@@ -222,5 +222,33 @@
     "url": "https://www.horizonhobby.com/product/trim-monokote-missile-red/TOPQ4101.html",
     "evidence_quality": "Horizon Hobby direct product page snapshot gives price and out-of-stock status but is stale; current price and availability are unverified.",
     "notes": "Observed 2026-10-15 from a page snapshot showing $4.99. This is adhesive-backed trim material, distinct from the heat-activated roll. Top Flite's MonoKote guidance discusses trim sheet as a field patch material; it does not establish repair success rates or full-airframe repair cost."
+  },
+  {
+    "id": "apc-lp12070",
+    "brand": "APC Propellers",
+    "product": "12x7 Sport propeller",
+    "sku": "LP12070",
+    "category": "propeller",
+    "amount_usd": 5.39,
+    "price_kind": "live_manufacturer_direct_price",
+    "availability": "APC product page shows Add to Cart; inventory count is not shown",
+    "quantity": "1 propeller",
+    "url": "https://www.apcprop.com/product/12x7/?v=84de8e2b14bb",
+    "evidence_quality": "Direct manufacturer product page opened 2026-10-15; LP12070, Sport 12x7, USD price and cart control are explicit.",
+    "notes": "Observed 2026-10-15. Exact named propeller for the experimental Stik 55AX configuration. Source lists 1.52 oz and a 1/4-inch shaft. This is a component valuation, not a performance or installation qualification; no physics data changed."
+  },
+  {
+    "id": "ma-k14x6",
+    "brand": "Master Airscrew",
+    "product": "K Series 14x6 propeller",
+    "sku": "MAS1460",
+    "category": "propeller",
+    "amount_usd": 11.65,
+    "price_kind": "live_manufacturer_displayed_price",
+    "availability": "Manufacturer product page says Sold out",
+    "quantity": "1 propeller",
+    "url": "https://www.masterairscrew.com/products/k-series-14x6-propeller",
+    "evidence_quality": "Direct manufacturer page opened 2026-10-15 names K Series 14x6, shows USD 11.65 and Sold out. Manufacturer SKU is not displayed; MAS1460 is a retailer identifier.",
+    "notes": "Observed 2026-10-15. Exact named model for experimental Stik FS-64V; not a currently available purchase. Manufacturer labels the amount Sale price but shows no comparison price. MAS1460 identity is corroborated by https://www.amainhobbies.com/master-airscrew-14x6-kseries-propeller-mas1460/p97682 (its June 2026 backorder date is stale and is not used for availability). Manufacturer lists 58.1 g; modeled 60 g remains an installation estimate and is not modified. No installation or performance qualification implied."
   }
 ]

@@ -39,6 +39,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 ## The production crash path hands the inventory to the wreck: a real crash through main.tscn uses inventory masses.
 func _production() -> void:
 	var main: Variant = MainScene.instantiate()
+	main.set("accident_reports_enabled", false) # Wreck mass fixture has no economic archive.
 	main.set("aircraft_id", "jensen-das-ugly-stik-60")
 	root.add_child(main)
 	await process_frame

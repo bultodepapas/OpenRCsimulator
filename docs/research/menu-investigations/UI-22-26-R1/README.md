@@ -51,3 +51,19 @@ $Godot = '.tools/Godot_v4.7.2-stable_win64_console.exe'
 The shared checkout changed during this work, including unrelated aircraft, physics and accident/economy work and external commits. We did not stage or commit. `sources.json` records the menu-source snapshot; normal capture/test logs predate later accident-report integration. The final display experiment uses detached base `ad8ea65b` plus the menu follow-up changes, with a copied Godot import cache and existing native extension artifacts, so unrelated in-progress flight edits cannot invalidate its result. This is a source-run check, not a fresh export proof.
 
 Remaining gates: the complete advanced-tab/pseudo-locale matrix; every Windows DPI mode and monitor transition; real gamepad/radio hardware; rendered ink bounds and all composited contrast states; performance p95; signed/exported builds and other OSes; first-time user studies. Audio/safe-margin settings, thumbnail catalog, paused-weather staging and the rest of the page refinement remain in the active plan. No new aircraft geometry, physics tuning, recording changes, downloaded commercial screenshots or generated UI art were introduced.
+
+
+### Settings composition correction — 2026-10-15
+
+The initial Settings layout was too wide and rendered accessibility options as large boxed buttons. The correction bounds the panel to 800 logical pixels, uses compact selectors, unboxed switches, quiet help links and a normal-sized save action. At default text size all settings fit without scrolling. At 200%, selectors stack while switches remain in compact rows; the header and recovery actions stay pinned. The title scales less than body text to preserve reading space.
+
+Native captures: [Spanish, 720p](settings-refinement/es-720-settings.webp), [Spanish, 4K](settings-refinement/es-2160-settings.webp), [200% text, lower content](settings-refinement/es-720-settings-large-bottom.webp). The `settings-refinement/audit.json` records 16 EN/ES captures at 720p, 1080p, 1440p and 2160p, including 200% text at 720p and 2160p. Settings persistence/recovery, nested navigation/pause integration and Home theme/navigation checks passed. This correction addresses Settings; it does not claim a new aesthetic review of every other screen.
+
+
+### Home composition correction — 2026-10-15
+
+The previous Home stacked setup, long aircraft notes, practice, garage and controller instructions in one scrolling sidebar. Home now separates Flight, Practice, Garage and Details. Flight contains aircraft selection, launch position, weather, time and Workshop; Fly remains pinned. Aircraft limitations and controller reference remain available under Details. Language, Controls, Settings, Help and Quit occupy a separate bottom utility bar. Secondary actions use quiet text treatments rather than repeated boxed buttons.
+
+Evidence: [English fullscreen 4K](home-refinement/en-2160-home.webp), [Spanish fullscreen 4K](home-refinement/es-2160-home.webp). `home-refinement/audit.json` records 24 native captures of all four sections in EN/ES at 720p, 1080p and 2160p; 2160p uses actual Window fullscreen mode. The Avanti/Ventage jet reproduces the long-copy case in the reported screenshot. Default-text Flight fits without scrolling for all nine catalog aircraft in both languages. At 200% text, scrolling remains available while Fly and the utility bar stay pinned.
+
+Validation: Home routes, contrast, keyboard section activation and all-catalog layout checks passed; Settings integration passed; controller menu checks passed 33/33. Logs and reproducible capture script are alongside the images. No simulation behavior was changed by this UI correction.

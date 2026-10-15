@@ -94,7 +94,9 @@ func _wheels_down(s: PackedFloat64Array) -> int:
 ## kept from the in-air trim (a pilot's radio trims). Then flies `seconds`, calling pilot(t, s) -> { roll, pitch, yaw,
 ## throttle } every tick and ticking the session like the game (crash checks included). Returns { rows (Array of
 ## { t, s, rpm, cmd }), crashed (String or ""), state }; rows are sampled every `every` ticks.
-func fly(state: PackedFloat64Array, rpm: float, seconds: float, pilot: Callable, every := 12) -> Dictionary:
+## gear_down (P51-11b): start with the retractable gear down and locked, as a pilot would on approach or for a
+## gear-down envelope case; airborne starts are otherwise stowed.
+func fly(state: PackedFloat64Array, rpm: float, seconds: float, pilot: Callable, every := 12, gear_down := false) -> Dictionary:
 	# P51-21: a ground pose is the product's qualified runway start (park()), whose solved stiction anchors are kept;
 	# every other state starts from the airborne reset, whose anchors all begin sliding as in any session landing.
 	var on_runway := not runway_launch.is_empty() and state == runway_launch
@@ -114,6 +116,8 @@ func fly(state: PackedFloat64Array, rpm: float, seconds: float, pilot: Callable,
 	if on_runway and session.sim.state != runway_launch:
 		return { rows = [], crashed = "P-51 runway start did not reproduce the parked launch: " + session.start_error, state = session.sim.state.duplicate() }
 	session.engine_running = rpm > 0.0
+	if gear_down and session.gear_is_retractable():
+		session._gear_requested_down = true
 	session.commands = { roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = 0.0 }
 	var first: Dictionary = pilot.call(0.0, state)
 	session.commands = first
@@ -128,6 +132,9 @@ func fly(state: PackedFloat64Array, rpm: float, seconds: float, pilot: Callable,
 	aux[1] = i[0]
 	aux[2] = i[1]
 	aux[3] = i[2]
+	if gear_down and session.gear_is_retractable():
+		aux[session.gear_aux_index()] = 1.0 # extension: down and locked
+		aux[session.gear_aux_index() + 1] = 1.0 # accepted target: down
 	if session.downwash_index() >= 0:
 		aux[session.downwash_index()] = session._wing_cl(state, aux, 0.0)
 	session.sim.aux = aux
@@ -318,7 +325,7 @@ func _mean_rate(rows: Array, t0: float, t1: float) -> float:
 func _performance() -> void:
 	# Maximum level speed: full throttle from 30 m/s, altitude and heading held, 40 s.
 	var a := airborne(40.0, 100.0)
-	var vmax := fly(a.state, a.rpm, 25.0, func(_t, s): return { roll = wings_level(s), pitch = hold_altitude(s, 100.0), yaw = hold_heading(s, PI / 2.0), throttle = 1.0 })
+	var vmax := fly(a.state, a.rpm, 25.0, func(_t, s): return { roll = wings_level(s), pitch = hold_altitude(s, 100.0), yaw = hold_heading(s, PI / 2.0), throttle = 1.0 }, 12, true)
 	var rows: Array = vmax.rows
 	var v_end := _speed(vmax.state)
 	var v_5 := _speed(rows[rows.size() - 100].s)
@@ -327,6 +334,14 @@ func _performance() -> void:
 	# 12), so the unloaded propeller is no limit near 40 m/s; a Top Flite Giant owner expected ~115 mph (51 m/s) flat
 	# out (research synthesis, P51-09). Gear down (retracts are not simulated).
 	_check("maximum level speed 38-56 m/s (gear down; P51-09 envelope)", vmax.crashed == "" and v_end > 38.0 and v_end < 56.0, "%.1f m/s" % v_end)
+	# P51-11b: gear up the drag area of the retraction module is gone; the speed rises until the propeller unloads
+	# (zero thrust at J 0.76-0.81, Mejzlik tables): faster than gear down and below the J 0.81 speed at the top rpm.
+	var clean_run := fly(a.state, a.rpm, 25.0, func(_t, s): return { roll = wings_level(s), pitch = hold_altitude(s, 100.0), yaw = hold_heading(s, PI / 2.0), throttle = 1.0 })
+	var v_clean := _speed(clean_run.state)
+	var j_limit: float = 0.81 * clean_run.rows[-1].rpm / 60.0 * float(model.propulsion.diameter)
+	print("info full-throttle level, gear up: %.1f m/s at %.0f rpm (J 0.81 speed %.1f m/s)" % [v_clean, clean_run.rows[-1].rpm, j_limit])
+	_check("gear up: faster than gear down and below the propeller's zero-thrust speed (J 0.81)", clean_run.crashed == "" and v_clean > v_end and v_clean < j_limit,
+		"%.1f vs %.1f m/s, limit %.1f m/s" % [v_clean, v_end, j_limit])
 	_check("the propeller unloads in flight: full-throttle rpm at top speed above the static rpm", rows[-1].rpm > Propulsion.steady_rpm(1.0, 0.0, model.propulsion, 1.225), "%.0f rpm" % rows[-1].rpm)
 	# Climb at 1.4 Vs, full throttle, speed held by the elevator.
 	var vc := 1.4 * vs1g
@@ -337,11 +352,19 @@ func _performance() -> void:
 	_check("full-throttle climb at 1.4 Vs: 5-16 m/s (thrust/weight 1.1 static: a giant warbird climbs steeply)", climb.crashed == "" and roc > 5.0 and roc < 16.0, "%.1f m/s" % roc)
 	# Idle glide at 1.4 Vs: the windmilling 4-blade brakes.
 	a = airborne(vc, 150.0)
-	var glide := fly(a.state, a.rpm, 16.0, func(_t, s): return { roll = wings_level(s), pitch = hold_speed(s, vc, deg_to_rad(-6.0)), yaw = hold_heading(s, PI / 2.0), throttle = 0.0 })
+	var glide := fly(a.state, a.rpm, 16.0, func(_t, s): return { roll = wings_level(s), pitch = hold_speed(s, vc, deg_to_rad(-6.0)), yaw = hold_heading(s, PI / 2.0), throttle = 0.0 }, 12, true)
 	var sink := -_mean_rate(glide.rows, 8.0, 15.5)
 	print("info idle glide at %.1f m/s: sink %.2f m/s, L/D %.1f, propeller at %.0f rpm" % [vc, sink, vc / sink, glide.rows[-1].rpm])
-	var clean := 1.0 / (2.0 * sqrt(float(model.aero.CD0) * float(model.aero.k_induced)))
-	_check("idle glide L/D 4-8.5: below the clean airframe's %.1f (windmilling propeller drag)" % clean, glide.crashed == "" and vc / sink > 4.0 and vc / sink < minf(8.5, clean), "%.1f" % (vc / sink))
+	# The band was set for the gear-down airframe (P51-08); its clean L/D adds the gear's drag area back.
+	var gear_cd: float = float(model.landing_gear.retraction.drag_area) / float(model.reference.S) if model.landing_gear.has("retraction") else 0.0
+	var clean := 1.0 / (2.0 * sqrt((float(model.aero.CD0) + gear_cd) * float(model.aero.k_induced)))
+	_check("idle glide L/D 4-8.5, gear down: below the gear-down airframe's %.1f (windmilling propeller drag)" % clean, glide.crashed == "" and vc / sink > 4.0 and vc / sink < minf(8.5, clean), "%.1f" % (vc / sink))
+	# P51-11b: gear up the glide flattens, still below the clean airframe's maximum L/D.
+	var glide_up := fly(a.state, a.rpm, 16.0, func(_t, s): return { roll = wings_level(s), pitch = hold_speed(s, vc, deg_to_rad(-6.0)), yaw = hold_heading(s, PI / 2.0), throttle = 0.0 })
+	var sink_up := -_mean_rate(glide_up.rows, 8.0, 15.5)
+	var clean_up := 1.0 / (2.0 * sqrt(float(model.aero.CD0) * float(model.aero.k_induced)))
+	_check("idle glide gear up: flatter than gear down, below the clean airframe's %.1f" % clean_up, glide_up.crashed == "" and vc / sink_up > vc / sink and vc / sink_up < clean_up,
+		"%.1f vs %.1f" % [vc / sink_up, vc / sink])
 
 
 # --- Stalls -------------------------------------------------------------------------------------------------------
@@ -460,7 +483,7 @@ func _landing() -> void:
 			if t > info.td_t + 0.3 and down == 0 and h > 0.3:
 				info.bounced = true
 			info.max_yaw = maxf(info.max_yaw, absf(wrapf(_euler(s)[0] - PI / 2.0, -PI, PI)))
-		return c)
+		return c, 12, true) # P51-11b: gear down on approach
 	info.stop_x = r.state[RB.POS + 1]
 	var v_end := _speed(r.state)
 	print("info landing: touchdown %.1f m/s, sink %.2f m/s, %.0f m past the threshold; bounced %s; rollout to %.1f m/s %.0f m past touchdown; heading error max %.1f°; crashed '%s'" %

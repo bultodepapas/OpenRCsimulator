@@ -8,6 +8,17 @@ signal inspect_requested
 const LAYER := 9 # above the flight HUD; the pause menu and report screens stay above it
 const TOAST_SECONDS := 5.0
 const MAX_MINOR_AMOUNT := 9000000000000000000
+const COMPONENT_LABELS := {
+	"central_aileron_servo": "Central aileron servo",
+	"covered_airframe_and_installation_hardware": "Airframe and installation hardware",
+	"engine_and_muffler": "Engine and muffler",
+	"final_assembly_and_commissioning": "Final assembly and commissioning",
+	"fuselage_servos": "Fuselage servos",
+	"onboard_fuel": "Onboard fuel system",
+	"propeller": "Propeller",
+	"receiver": "Receiver",
+	"receiver_battery": "Receiver battery",
+}
 
 var _surface: Control
 var _report_panel: PanelContainer
@@ -30,6 +41,8 @@ var _toast_amount: Label
 var _report: Dictionary = {}
 var _terminal := false
 var _archived := false
+var _settled_report := false
+var _auto_settled := false
 var _reopen_only := false
 var _expanded := false
 var _minimized := false
@@ -62,6 +75,8 @@ func show_assessment(report: Dictionary, terminal: bool = true) -> void:
 	_report = report.duplicate(true)
 	_terminal = terminal
 	_archived = false
+	_settled_report = false
+	_auto_settled = false
 	_reopen_only = false
 	_expanded = false
 	_minimized = false
@@ -89,6 +104,8 @@ func show_archived(report: Dictionary) -> void:
 	_report = report.duplicate(true)
 	_terminal = false
 	_archived = true
+	_settled_report = false
+	_auto_settled = false
 	_reopen_only = true
 	_expanded = false
 	_minimized = true
@@ -106,12 +123,50 @@ func show_archived(report: Dictionary) -> void:
 	_layout_retry_frames = 2
 
 
+## Shows a prominent read-only report when a nonterminal incident settles on the ground.
+func show_settled(report: Dictionary) -> void:
+	if _surface == null:
+		_build_ui()
+	_report = report.duplicate(true)
+	_terminal = false
+	_archived = false
+	_settled_report = true
+	_auto_settled = true
+	_reopen_only = true
+	_expanded = false
+	_minimized = false
+	_content_visible = true
+	_toast_remaining = 0.0
+	_render_report()
+	_report_panel.visible = true
+	_toast_panel.visible = false
+	_restore_button.visible = false
+	_release_report_focus()
+	_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
+	_surface.visible = not _suspended
+	_apply_action_visibility()
+	_layout()
+	_layout_retry_frames = 2
+
+
+## Collapses only the automatically presented settled card and keeps its passive reopen control.
+func dismiss_settled() -> void:
+	if not _auto_settled:
+		return
+	_auto_settled = false
+	if not _settled_report or not _reopen_only or _report_panel == null or not _report_panel.visible:
+		return
+	_hide_read_only_report()
+
+
 ## Removes the current report after an intentional caller action, such as restarting the incident.
 func clear_report() -> void:
 	_report.clear()
 	_content_visible = false
 	_terminal = false
 	_archived = false
+	_settled_report = false
+	_auto_settled = false
 	_reopen_only = false
 	_expanded = false
 	_minimized = false
@@ -268,7 +323,7 @@ func _build_ui() -> void:
 	_details_content.add_theme_constant_override("separation", _scaled(6))
 	_details_scroll.add_child(_details_content)
 
-	var estimate_note := _label("Estimated prices and repair outcomes may differ.", UiTheme.TEXT_2, _scaled(14))
+	var estimate_note := _label(tr("Estimated prices and repair outcomes may differ."), UiTheme.TEXT_2, _scaled(14))
 	estimate_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	column.add_child(estimate_note)
 
@@ -336,7 +391,9 @@ static func layout_metrics(viewport_size: Vector2, ui_scale: float = 1.0) -> Dic
 	var gutter := clampf(28.0 * safe_scale, 20.0, 48.0)
 	var max_width := minf(920.0 * safe_scale, maxf(0.0, viewport_size.x - gutter * 2.0))
 	var max_height := maxf(0.0, viewport_size.y - gutter * 2.0)
-	var details_height := minf(180.0 * safe_scale, maxf(96.0, viewport_size.y * 0.24))
+	# Keep the details pane scrollable on short displays so the full card and its actions fit.
+	var details_capacity := 108.0 + maxf(0.0, viewport_size.y - 720.0) * 0.25
+	var details_height := minf(180.0 * safe_scale, maxf(96.0, details_capacity))
 	return {
 		"panel_width": max_width,
 		"gutter": gutter,
@@ -349,7 +406,7 @@ static func layout_metrics(viewport_size: Vector2, ui_scale: float = 1.0) -> Dic
 func _render_report() -> void:
 	if _surface == null:
 		return
-	_title_label.text = tr("ACCIDENT REPORT")
+	_title_label.text = tr("DAMAGE REPORT") if _settled_report else tr("ACCIDENT REPORT")
 	var state := _headline_state(_report)
 	_outcome_label.text = _outcome_text(_report.get("outcome", "unavailable"))
 	_status_label.text = state.status
@@ -357,9 +414,9 @@ func _render_report() -> void:
 	_amount_label.add_theme_font_size_override("font_size", int(layout_metrics(_surface.size, UiTheme.text_scale).headline_size))
 	_caption_label.text = state.caption
 	_details_button.text = tr("Hide damage breakdown") if _expanded else tr("Show damage breakdown")
-	_inspect_button.text = tr("Inspect wreck")
+	_inspect_button.text = tr("Inspect aircraft") if _settled_report else tr("Inspect wreck")
 	_restart_button.text = tr("Restart flight")
-	_hide_archived_button.text = tr("Hide accident report")
+	_hide_archived_button.text = tr("Hide damage report") if _settled_report else tr("Hide accident report")
 	if _archived:
 		_restore_button.text = tr("View archived accident report")
 	elif _reopen_only:
@@ -463,10 +520,10 @@ func _rebuild_details() -> void:
 	var price_date: Variant = _report.get("price_date")
 	_add_detail_text(tr("Price date: %s") % (str(price_date) if price_date != null and str(price_date) != "" else tr("unavailable")), true)
 	var valuation: Variant = _report.get("valuation_kind")
-	_add_detail_text(tr("Valuation: %s") % (str(valuation) if valuation != null and str(valuation) != "" else tr("method unavailable")), true)
+	_add_detail_text(tr("Valuation: %s") % (_humanize_identifier(str(valuation)) if valuation != null and str(valuation) != "" else tr("method unavailable")), true)
 	var aircraft_name := str(_report.get("aircraft_name", identity.get("aircraft_id", "")))
 	if aircraft_name != "":
-		_add_detail_text(tr("Aircraft: %s") % aircraft_name, true)
+		_add_detail_text(tr("Aircraft: %s") % _display_identifier(aircraft_name), true)
 	var incident_id := str(_report.get("incident_id", identity.get("incident_id", "")))
 	if incident_id != "":
 		_add_detail_text(tr("Incident: %s") % incident_id, true)
@@ -493,7 +550,8 @@ func _rebuild_details() -> void:
 			if not line_value is Dictionary:
 				continue
 			var line: Dictionary = line_value
-			var descriptor := str(line.get("id", tr("Unspecified item")))
+			var raw_id := str(line.get("id", ""))
+			var descriptor := _humanize_identifier(raw_id) if raw_id != "" else tr("Unspecified item")
 			var action := _action_text(line.get("action", ""))
 			if action != "":
 				descriptor += " · " + action
@@ -501,6 +559,18 @@ func _rebuild_details() -> void:
 			if quantity != "":
 				descriptor += " × " + quantity
 			_add_detail_money(descriptor, line.get("amount_minor"), currency)
+			var price_basis := str(line.get("price_basis", ""))
+			if price_basis != "":
+				_add_detail_text(tr("Price basis: %s") % _humanize_identifier(price_basis), true)
+			var observed_on := str(line.get("observed_on", ""))
+			if observed_on != "":
+				_add_detail_text(tr("Observed: %s") % observed_on, true)
+			var source_url := str(line.get("source_url", ""))
+			if source_url.begins_with("https://"):
+				_add_detail_source(source_url)
+			var notes := str(line.get("notes", ""))
+			if notes != "":
+				_add_detail_text(notes, true)
 			line_count += 1
 	if line_count == 0:
 		_add_detail_text(tr("No priced line items were supplied."), true)
@@ -515,7 +585,7 @@ func _rebuild_details() -> void:
 	if assumptions is Array and not assumptions.is_empty():
 		_add_detail_section(tr("Assumptions"))
 		for assumption: Variant in assumptions:
-			_add_detail_text("• " + str(assumption), true)
+			_add_detail_text("• " + _unresolved_text(assumption), true)
 
 
 func _add_detail_section(text: String) -> void:
@@ -527,6 +597,18 @@ func _add_detail_section(text: String) -> void:
 func _add_detail_text(text: String, secondary: bool) -> void:
 	var label := _label(text, UiTheme.TEXT_2 if secondary else UiTheme.TEXT, _scaled(15))
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_details_content.add_child(label)
+
+
+func _add_detail_source(source_url: String) -> void:
+	var label := RichTextLabel.new()
+	label.text = tr("Source: %s") % source_url
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	label.selection_enabled = true
+	label.scroll_active = false
+	label.fit_content = true
+	label.add_theme_color_override("default_color", UiTheme.TEXT_2)
+	label.add_theme_font_size_override("normal_font_size", _scaled(14))
 	_details_content.add_child(label)
 
 
@@ -570,6 +652,7 @@ func _on_inspect_pressed() -> void:
 func _reopen_report() -> void:
 	if (not _terminal and not _reopen_only) or _suspended:
 		return
+	_auto_settled = false
 	_minimized = false
 	_restore_button.visible = false
 	_report_panel.visible = true
@@ -585,11 +668,12 @@ func _reopen_report() -> void:
 func _hide_read_only_report() -> void:
 	if not _reopen_only:
 		return
+	_auto_settled = false
 	_minimized = true
 	_report_panel.visible = false
 	_restore_button.visible = true
 	_surface.mouse_filter = Control.MOUSE_FILTER_IGNORE
-	_hide_archived_button.release_focus()
+	_release_report_focus()
 	_layout()
 
 
@@ -852,6 +936,7 @@ func _action_text(value: Variant) -> String:
 		"replace": return tr("Replace")
 		"replacement": return tr("Replacement")
 		"inspect": return tr("Inspect")
+		"inspection": return tr("Inspection")
 		"salvage": return tr("Salvage")
 		"credit": return tr("Credit")
 		"salvage_credit": return tr("Salvage credit")
@@ -862,13 +947,42 @@ func _unresolved_text(value: Variant) -> String:
 	if value is Dictionary:
 		var item_id: String = str(value.get("id", ""))
 		var reason: String = str(value.get("reason", ""))
-		if item_id != "" and reason != "":
-			return "%s · %s" % [item_id, reason]
-		if item_id != "":
-			return item_id
 		if reason != "":
-			return reason
+			var localized_reason := _localize_reason(reason)
+			if item_id != "":
+				var item_label := _humanize_identifier(item_id)
+				if not localized_reason.begins_with(item_label + " · "):
+					return "%s · %s" % [item_label, localized_reason]
+			return localized_reason
+		if item_id != "":
+			return _humanize_identifier(item_id)
 		return tr("Unresolved item")
 	if str(value).strip_edges() == "":
 		return tr("Unresolved item")
-	return str(value)
+	return _localize_reason(str(value))
+
+
+func _localize_reason(value: String) -> String:
+	var translated := tr(value)
+	if translated != value:
+		return translated
+	var parts := value.split(": ", true, 1)
+	if parts.size() == 2:
+		return "%s · %s" % [_humanize_identifier(parts[0]), tr(parts[1])]
+	return translated
+
+
+func _humanize_identifier(value: String) -> String:
+	var identifier := value.strip_edges()
+	if identifier.is_empty():
+		return tr("Unresolved item")
+	var display := str(COMPONENT_LABELS.get(identifier, identifier.replace("_", " ").replace("-", " ")))
+	if not display.is_empty():
+		display = display.left(1).to_upper() + display.substr(1)
+	return tr(display)
+
+
+func _display_identifier(value: String) -> String:
+	if value.contains("_") or (value.contains("-") and not value.contains(" ")):
+		return _humanize_identifier(value)
+	return value

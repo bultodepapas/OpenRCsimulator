@@ -4,6 +4,7 @@
 extends Node
 
 const Retraction := preload("res://aircraft/retractable_model.gd")
+const NightKit := preload("res://render/world/aircraft_lights.gd")
 
 var _session: Node
 var _airplane: Dictionary
@@ -58,6 +59,15 @@ func _process(_dt: float) -> void:
 	var contacts: Array = _session.current_landing_gear().contacts
 	var rig: Dictionary = _airplane.get("gear_retraction", {})
 	if not rig.is_empty(): Retraction.apply(rig, _session.gear_state().extension)
+	elif _session.gear_is_retractable():
+		# P51-11b: procedural builders pose their own gear legs and doors from the accepted extension.
+		var builder: Script = _airplane.get("_model_builder")
+		if builder != null and builder.has_method("set_gear"):
+			builder.call("set_gear", _airplane, _session.gear_state().extension)
+	# P51-V13: night-kit lights anchored on moving parts follow them; gear-gated lamps work only down and locked.
+	var model: Node3D = _airplane.get("root")
+	if model != null and model.has_node("NightKit"):
+		NightKit.update_dynamic(model.get_node("NightKit"), model, _session.gear_state().extension if _session.gear_is_retractable() else 1.0)
 	var compression: PackedFloat64Array = _session.gear_compressions(_session.sim.interpolated(Engine.get_physics_interpolation_fraction()))
 	var steer: float = _session.sim.aux[_session.AUX_SERVO + 2]
 	var gear: Dictionary = _airplane.get("gear", {})

@@ -27,6 +27,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	var main: Variant = MainScene.instantiate()
+	main.set("accident_reports_enabled", false) # Isolated visual feedback fixture; do not overwrite player history.
 	main.set("aircraft_id", "jensen-das-ugly-stik-60")
 	root.add_child(main)
 	await process_frame

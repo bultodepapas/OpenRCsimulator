@@ -485,8 +485,9 @@ parts = {
     "gear down: wheels, struts, doors": 0.020,
     "cooling flow, exhausts, cowl leaks": 0.006,
 }
-D_q = sum(parts.values()) * 1.1
-CD0 = note("drag", "CD0", D_q / S, f"skin friction (30 % laminar on surfaces) x form factors (Raymer ch. 12) + scoop + gear DOWN + cooling, x1.1 excrescences: " + ", ".join(f"{k} {v:.4f} m2" for k, v in parts.items()))
+GEAR_CDA = note("drag", "gear drag area (m2)", 1.1 * parts["gear down: wheels, struts, doors"], "gear-down item x1.1 excrescences: carried by the retractable-gear module (P51-11b), not CD0")
+D_q = (sum(parts.values()) - parts["gear down: wheels, struts, doors"]) * 1.1
+CD0 = note("drag", "CD0", D_q / S, f"gear UP (P51-11b: the gear drag area is the retraction module's); skin friction (30 % laminar on surfaces) x form factors (Raymer ch. 12) + scoop + cooling, x1.1 excrescences: " + ", ".join(f"{k} {v:.4f} m2" for k, v in parts.items()))
 e_osw = note("drag", "Oswald e", 0.75, "full-size P-51D 0.70-0.75 (Loftin, NASA SP-468: L/D max 14.6 with CD0 0.0163); no measured value")
 k_ind = 1 / (math.pi * e_osw * AR)
 
@@ -666,6 +667,75 @@ landing_gear = {
     "peak_slip_angle": q(6.0, "deg", "borrowed", "JSBSim FGLGear default Pacejka initial slope (as the Stik, E2)"),
 }
 
+# --- P51-11b: retractable taildragger gear (shared retractable-point-gear-v1 law) ----------------------------------------
+# Kinematics from geometry.json gear.retraction, the same numbers the builder animates (app/aircraft/p51d_model.gd): each
+# main leg swings about its inclined trunnion axis through main_stow_deg, the tail wheel forward about the lateral axis
+# through tail_stow_deg; the sequenced doors take door_phase of the travel at each end, so the legs move only in between
+# (smoothstep, as Godot's). Each contact path is the deployed wheel-bottom point carried rigidly by its leg, sampled
+# uniformly in extension from stowed (0) to down and locked (1).
+RT = GEAR["retraction"]
+_D = lambda how: f"{SCRIPT}: {how}"
+N_PATH = 129
+
+
+def _smooth(a, b, x):
+    t = min(max((x - a) / (b - a), 0.0), 1.0)
+    return t * t * (3 - 2 * t)
+
+
+def _rotate(point, origin, axis, angle):
+    """Rodrigues rotation of a model-frame point about the axis through origin."""
+    n = math.sqrt(sum(c * c for c in axis))
+    k_ = [c / n for c in axis]
+    v = [point[i] - origin[i] for i in range(3)]
+    c, s_ = math.cos(angle), math.sin(angle)
+    dot = sum(k_[i] * v[i] for i in range(3))
+    cross = [k_[1] * v[2] - k_[2] * v[1], k_[2] * v[0] - k_[0] * v[2], k_[0] * v[1] - k_[1] * v[0]]
+    return [origin[i] + v[i] * c + cross[i] * s_ + k_[i] * dot * (1 - c) for i in range(3)]
+
+
+def _legs(e):
+    p_ = RT["door_phase"]
+    return _smooth(p_, 1 - p_, e)
+
+
+def _gear_path(deployed, origin, axis, stow_deg):
+    pts = []
+    for i in range(N_PATH):
+        e = i / (N_PATH - 1)
+        m = _rotate(deployed, origin, axis, math.radians(stow_deg) * (1 - _legs(e)))
+        pts.append(le(m[2], m[1], m[0]))
+    pts[-1] = le(deployed[2], deployed[1], deployed[0])  # exactly the deployed contact
+    return pts
+
+
+_ax_r = RT["main_hinge_axis_right"]
+gear_paths = {}
+for s_ in (-1, 1):
+    deployed = [s_ * GEAR["track"] / 2, GEAR["main_axle"][1] - main_r, GEAR["main_axle"][0]]
+    trunnion = [s_ * RT["main_trunnion"][0], RT["main_trunnion"][1], RT["main_trunnion"][2]]
+    axis = _ax_r if s_ > 0 else [_ax_r[0], -_ax_r[1], -_ax_r[2]]
+    gear_paths["main_right" if s_ > 0 else "main_left"] = _gear_path(deployed, trunnion, axis, RT["main_stow_deg"])
+gear_paths["tail"] = _gear_path([0.0, GEAR["tail_axle"][1] - tail_r, GEAR["tail_axle"][0]], [0.0, RT["tail_pivot"][0], RT["tail_pivot"][1]], [1.0, 0.0, 0.0], RT["tail_stow_deg"])
+for c_ in landing_gear["contacts"]:
+    path = gear_paths[c_["name"]]
+    assert max(abs(a - b) for a, b in zip(path[-1], c_["position"]["value"])) < 1e-12, c_["name"]
+    stowed = path[0]
+    note("gear", f"{c_['name']} stowed contact point (le m)", stowed, "rigid leg rotation of the deployed wheel bottom")
+    c_["retraction_path"] = q([v for pt in path for v in pt], "m", "derived",
+                              _D(f"{N_PATH} uniform extension samples of the wheel-bottom point: the geometry.json gear.retraction kinematics (inclined main trunnion axis, forward tail swing) with sequenced doors (door_phase {RT['door_phase']}); the builder animates the same numbers"))
+_wts = {"main_left": 0.45, "main_right": 0.45, "tail": 0.10}
+gear_drag_center = [sum(_wts[c_["name"]] * c_["position"]["value"][i] for c_ in landing_gear["contacts"]) for i in range(3)]
+landing_gear["description"] = ("P51-11b: retractable taildragger: two main wheels and a steerable tail wheel (E1 spring-dampers, E2 tyre friction, "
+                               "E3 field surfaces) on the shared retractable-point-gear-v1 law. Pneumatic RC retracts with sequenced air-cylinder doors "
+                               "(CARF 1:4.3 manual); kinematics, timing and drag are estimates, not measured on a built model.")
+landing_gear["retraction"] = {
+    "extension_time": q(4.0, "s", "estimated", "pneumatic RC retracts with a sequencer valve (CARF manual: Ultra Precision UP-2/UP-4): doors, about 2 s of leg travel, doors; the full-size gear took 10-15 s"),
+    "retraction_time": q(4.0, "s", "estimated", "as extension"),
+    "drag_area": q(GEAR_CDA, "m²", "derived", _D("the gear-down item of the drag build-up (wheels, struts, doors 0.020 m2) x1.1 excrescences, removed from CD0")),
+    "drag_center": q(gear_drag_center, "m", "estimated", _D("deployed wheel-bottom points weighted 0.45/0.45/0.10 (main legs and wheels dominate the frontal area); an estimated drag moment arm")),
+}
+
 # --- Assemble -----------------------------------------------------------------------------------------------------
 stik = legacy_input(json.load(open(STIK)))
 
@@ -678,7 +748,7 @@ stik = legacy_input(json.load(open(STIK)))
 FIG10 = json.load(open(ROOT / "research/p51/p51-19/naca_xp51_fig10.json"))
 FIT_CL_MAX = 0.75
 CDde_ = stik["aero"]["coefficients"]["CDde"]["value"]
-CD0_clean = CD0 - 1.1 * parts["gear down: wheels, struts, doors"] / S
+CD0_clean = CD0  # gear up since P51-11b (the XP-51 flew gear up)
 mac_le_x = mac_le_z - LE0
 
 
@@ -757,7 +827,7 @@ coefficients = {
     "CLq": coeff(CLq, "1/rad", "derived", "tail volume + DATCOM wing term"),
     "CLde": coeff(CLde, "1/rad", "derived", "tail slope x elevator effectiveness"),
     "CLda_each": coeff(CLda_each, "1/rad", "derived", "strip theory over the aileron span"),
-    "CD0": coeff(CD0, "1", "derived", f"component drag build-up at {V_start} m/s with the gear DOWN (retracts not simulated), see derivation.md"),
+    "CD0": coeff(CD0, "1", "derived", f"component drag build-up at {V_start} m/s with the gear UP; the gear-down drag area is landing_gear.retraction (P51-11b), see derivation.md"),
     "CL_minD": coeff(CL0_w * 0.5, "1", "estimated", "cambered laminar section: minimum drag near half the zero-alpha wing lift"),
     "k_induced": coeff(k_ind, "1", "derived", "1/(pi e AR), e 0.75 estimated"),
     "CDda_each": q(stik["aero"]["coefficients"]["CDda_each"]["value"], "1/rad", "borrowed", "OpenFlightSim UltraStick25e (via the Stik data file); second-order control drag"),
@@ -1009,6 +1079,7 @@ flap_kappa = note("flaps", "stall shift fraction kappa", 1 - sum(_ratios) / len(
                   f"mean of 1 - dClmax/dCl0 over 15-45 deg (range {1 - max(_ratios):.2f}-{1 - min(_ratios):.2f}); dClmax = base(t/c) k1(c_f/c) k2(delta), dCl0 = cl_a tau K' delta")
 flap_offset = note("flaps", "flap lift reference offset (m)", x_ac_w - x_arp, "wing 25 % MAC aft of the wing-body ARP (fuselage term)")
 data["capabilities"]["flaps"] = "simulated"
+data["capabilities"]["gear"] = "retractable_taildragger"  # P51-11b
 data["flaps"] = {
     "max_angle_deg": q(float(KIT["flaps_deg"]["landing"]), "deg", "manual", "landing setting, CARF P-51 1:4.3 manual p. 28 (source.json kit.flaps_deg); full-size P-51 50 deg (NACA MR L-566)"),
     "takeoff_angle_deg": q(float(KIT["flaps_deg"]["take_off"]), "deg", "manual", "take-off setting, CARF manual p. 28; full-size XP-51 20 deg (NACA MR L-566 Table III)"),
@@ -1039,7 +1110,7 @@ report = f"""# P51-05: P-51D Mustang 120 cc physics derivation
 Generated by `{SCRIPT}` from `{GEOMETRY.relative_to(ROOT).as_posix()}` and `source.json`; do not edit (regenerate). Output:
 `{OUT.relative_to(ROOT).as_posix()}`. Textbook methods on the scaled full-size geometry, cross-checked and calibrated against NACA flight
 data and RC-class data (research: docs/research/p51-flight-realism.md); not identified on a real model. Flaps use the shared hinged
-trailing-edge law (P51-11a); retracts are not simulated and the drag build-up assumes the gear DOWN.
+trailing-edge law (P51-11a); the gear retracts (P51-11b; its drag area is the retraction module's, CD0 is gear up).
 
 The final JSON is upgraded to `openrc-aircraft v2` by the ID-gated standardizer. Migration numeric parity: {parity['preserved_numeric_leaves']} original leaves preserved, {parity['relocated_cladot_numeric_leaves']} relocated CLadot leaves, {parity['added_numeric_leaves']} explicit compatibility-default leaves added, {parity['numeric_differences']} differences.
 
@@ -1075,7 +1146,7 @@ CL_max at Re 13e6 exceeds the model's {CL_max:.2f}). Correction {math.degrees(d_
 - Engine: generic two-stroke torque shape scaled to one static-rpm anchor; carburettor lag, idle instability and fuel use are not modelled.
 - Slipstream: tail only (fin, stab halves), no lag, no wing wash; wash factors borrowed from Selig 2010 (an RC 3D airplane), swirl factor estimated.
 - Propeller normal force and P-factor: McCormick's formulas (via Selig 2010); the near-static jet normal force is omitted.
-- Flaps: shared hinged-trailing-edge law (P51-11a), kit 15/45 deg settings; retracts fixed DOWN. No brakes. Tail-wheel spring softer than a real one (240 Hz explicit tick rule).
+- Flaps: shared hinged-trailing-edge law (P51-11a), kit 15/45 deg settings; retractable gear (P51-11b), airborne starts stowed. Main-wheel brakes from the GP-03 wheel profile (P51-11c; limited by the shared tyre-slip law). Tail-wheel spring softer than a real one (240 Hz explicit tick rule).
 - A full-size report notes 1 deg left fin offset on P-51B/D. This model has no fixed fin-incidence/yaw-bias term; a rudder control trim does not represent that geometry, so the effect is omitted.
 - The neutral point is calibrated to the full-size glide value through one lumped fuselage/scoop/propeller term (K_fus {K_f:.3f}/deg, above Raymer's 0.005-0.015).
 - The tail's zero-alpha flow angle is calibrated to the full-size glide trim curves through one lumped term ({math.degrees(d_inc * (1 - deps)):+.2f} deg at the tail, P51-19); the stabilizer stays at its +2 deg leading-edge-up setting (NACA ACR 4K02 confirms the sign). Reynolds similarity for the RC model is not established.

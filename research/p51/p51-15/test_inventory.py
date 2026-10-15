@@ -145,7 +145,8 @@ def main() -> None:
     sentinels = (
         (model["aero"]["coefficients"]["CLa"]["value"], 4.337736, "CLa"),
         (model["aero"]["coefficients"]["Cma"]["value"], -0.895896, "Cma"),
-        (model["aero"]["coefficients"]["CD0"]["value"], 0.044672, "CD0"),
+        # P51-11b: CD0 is gear up; the gear-down drag area moved to landing_gear.retraction (was 0.044672 with the gear).
+        (model["aero"]["coefficients"]["CD0"]["value"], 0.028643, "CD0"),
         (model["aero"]["envelope"]["CL_max"]["value"], 1.021297, "CL_max"),
         (model["aero"]["coefficients"]["k_induced"]["value"], 0.073249, "k_induced"),
         (model["propulsion"]["propeller"]["diameter"]["value"], 0.6604, "propeller diameter"),

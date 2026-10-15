@@ -46,6 +46,8 @@ const FLAP_COVE_M := 0.003
 ## P51-V12: estimated canister outlet radius (an MTW 110-class outlet, about 16 mm bore) and its height above the door edge.
 const EXHAUST_OUTLET_RADIUS_M := 0.008
 const EXHAUST_LIP_M := 0.005
+## P51-V13: landing-lamp lens radius, an estimated 24 mm RC LED lamp.
+const LANDING_LAMP_RADIUS_M := 0.012
 const PROP_TIP_M := 0.03 # yellow blade tips
 const HORN_CLEARANCE_M := 0.002 # spanwise gap between the stab's horn cut and the elevator horn (V01)
 const STEP_M := 0.0005 # half-length of the near-vertical span step at the horn cut
@@ -1100,46 +1102,78 @@ static func _plate(rows: Array, normal: Vector3, along: Vector3, thickness: floa
 	return _loft(rings, mat)
 
 
-static func _gear(root: Node3D, frames: Dictionary) -> Dictionary:
+static func _gear(root: Node3D, frames: Dictionary, rig: Dictionary) -> Dictionary:
 	var g: Dictionary = D.gear
+	var rt: Dictionary = g.retraction
 	var gear := {}
+	rig.merge({mains = {}, inner_doors = {}, tail_doors = {}})
 	var rake := deg_to_rad(float(g.rake_deg))
 	for sgn in [-1.0, 1.0]:
 		var suffix := "right" if sgn > 0 else "left"
 		var x_strut: float = sgn * (g.track / 2.0 - 0.03)
 		var to_root: Transform3D = frames[suffix]
 		var axle := Vector3(sgn * g.track / 2.0, g.main_axle[1], g.main_axle[0])
-		# Leg top inside the wing: the lower skin at the chord station that gives the data rake (axle forward of the top).
-		var le: Vector3 = to_root * _wing_skin_point(x_strut, 0.0, false)
-		var te: Vector3 = to_root * _wing_skin_point(x_strut, 1.0, false)
-		var top: Vector3 = to_root * _wing_skin_point(x_strut, 0.12, false) + Vector3(0, 0.01, 0)
-		for _pass in 3: # the skin height depends on the station; converges in two passes
-			var top_z: float = axle.z + (top.y - axle.y) * tan(rake)
-			var xc: float = clampf((top_z - le.z) / (te.z - le.z), 0.03, 0.5)
-			top = to_root * _wing_skin_point(x_strut, xc, false) + Vector3(0, 0.01, 0)
+		# P51-11b: the leg hangs from its trunnion (source data, the deployed leg top inside the wing) on a pivot that swings
+		# about the inclined hinge axis; the parts are drawn deployed in root coordinates under an offset node.
+		var top := Vector3(sgn * float(rt.main_trunnion[0]), float(rt.main_trunnion[1]), float(rt.main_trunnion[2]))
+		var pivot := Node3D.new()
+		pivot.name = "main_gear_%s_pivot" % suffix
+		pivot.position = top
+		root.add_child(pivot)
+		var parts := Node3D.new()
+		parts.name = "main_gear_%s_parts" % suffix
+		parts.position = -top
+		pivot.add_child(parts)
+		var axis := Vector3(float(rt.main_hinge_axis_right[0]), float(rt.main_hinge_axis_right[1]), float(rt.main_hinge_axis_right[2]))
+		if sgn < 0.0:
+			axis = Vector3(axis.x, -axis.y, -axis.z) # mirror image of the right hinge
+		rig.mains[suffix] = {pivot = pivot, axis = axis.normalized()}
 		var bottom := Vector3(x_strut, axle.y, axle.z)
 		var leg := bottom - top
-		_strut("main_strut_" + suffix, top, bottom, g.strut_radius * 0.8, root) # polished piston
-		_strut("main_oleo_" + suffix, top, top + leg * 0.55, g.strut_radius * 1.5, root) # outer cylinder
-		_strut("axle_" + suffix, bottom, axle, g.strut_radius * 0.6, root)
+		_strut("main_strut_" + suffix, top, bottom, g.strut_radius * 0.8, parts) # polished piston
+		_strut("main_oleo_" + suffix, top, top + leg * 0.55, g.strut_radius * 1.5, parts) # outer cylinder
+		_strut("axle_" + suffix, bottom, axle, g.strut_radius * 0.6, parts)
 		# Torque scissor behind the leg: two short links meeting at a knee offset aft.
 		var aft := Vector3(0, 0, 1)
 		var sc: Dictionary = g.scissor
 		var upper_pin: Vector3 = top + leg * 0.55 + aft * g.strut_radius * 1.5
 		var lower_pin: Vector3 = top + leg.normalized() * (leg.length() * 0.55 + float(sc.length)) + aft * g.strut_radius * 0.8
 		var knee: Vector3 = (upper_pin + lower_pin) / 2.0 + aft * float(sc.offset)
-		_strut("scissor_upper_" + suffix, upper_pin, knee, g.strut_radius * 0.35, root)
-		_strut("scissor_lower_" + suffix, knee, lower_pin, g.strut_radius * 0.35, root)
-		gear[suffix] = _wheel("wheel_" + suffix, g.main_wheel_diameter, g.main_wheel_width, axle, root, int(g.hub_spokes))
-		# Strut door: shaped plate inboard of the leg, following its rake; outline [u along the leg, half width].
+		_strut("scissor_upper_" + suffix, upper_pin, knee, g.strut_radius * 0.35, parts)
+		_strut("scissor_lower_" + suffix, knee, lower_pin, g.strut_radius * 0.35, parts)
+		gear[suffix] = _wheel("wheel_" + suffix, g.main_wheel_diameter, g.main_wheel_width, axle, parts, int(g.hub_spokes))
+		if sgn < 0.0:
+			# P51-V13: the P-51D's landing light lowers from the left wheel well and works only with the gear down. Here a
+			# forward-facing lens on the front of the left oleo, so it is stowed in the well with the leg (estimate).
+			var lamp_at: Vector3 = top + leg * 0.3 + Vector3(0, 0, -(g.strut_radius * 1.5 + LANDING_LAMP_RADIUS_M * 0.5))
+			var lamp := _cylinder("landing_lamp_left", LANDING_LAMP_RADIUS_M, 0.006, Color("f2f0e6"), parts, 12)
+			lamp.rotation.x = PI / 2.0
+			lamp.position = lamp_at
+			rig["landing_lamp"] = {node = parts, face = lamp_at + Vector3(0, 0, -0.0035)}
+		# Strut cover: shaped plate inboard of the leg, following its rake; it travels with the leg and closes the slot.
 		var door_x: float = x_strut - sgn * (g.strut_radius * 1.5 + 0.004)
 		var rows := []
 		for row in g.strut_door:
 			var at: Vector3 = top + leg * float(row[0])
 			rows.append([Vector3(door_x, at.y - 0.012 * (1.0 - float(row[0])), at.z), float(row[1])])
-		_instance("gear_door_" + suffix, _plate(rows, Vector3.RIGHT, Vector3.BACK, 0.003, _skin(Finish.PLAIN)), root)
-		# Inner well doors (closed): a panel 1.5 mm proud of the lower wing skin from the fuselage side to the leg.
+		_instance("gear_door_" + suffix, _plate(rows, Vector3.RIGHT, Vector3.BACK, 0.003, _skin(Finish.PLAIN)), parts)
+		# Inner gear door: a panel 1.5 mm proud of the lower wing skin from inner_x to the leg, hinged along its inner edge;
+		# it opens for the sequenced transit and is closed with the gear down and up (CARF: air-cylinder doors).
 		var wd: Dictionary = g.well_doors
+		var hinge_z: float = float(wd.z0) + float(wd.length) * 0.5
+		var hinge_x: float = sgn * float(wd.inner_x)
+		var hinge_le: Vector3 = to_root * _wing_skin_point(hinge_x, 0.0, false)
+		var hinge_te: Vector3 = to_root * _wing_skin_point(hinge_x, 1.0, false)
+		var hinge_point: Vector3 = to_root * _wing_skin_point(hinge_x, clampf((hinge_z - hinge_le.z) / (hinge_te.z - hinge_le.z), 0.0, 1.0), false) + Vector3(0, -0.0015, 0)
+		var door_pivot := Node3D.new()
+		door_pivot.name = "inner_door_%s_hinge" % suffix
+		door_pivot.position = hinge_point
+		root.add_child(door_pivot)
+		var door_parts := Node3D.new()
+		door_parts.name = "inner_door_%s_parts" % suffix
+		door_parts.position = -hinge_point
+		door_pivot.add_child(door_parts)
+		rig.inner_doors[suffix] = {pivot = door_pivot, sign = sgn}
 		var grid := []
 		for i in 5:
 			var z: float = float(wd.z0) + float(wd.length) * float(i) / 4.0
@@ -1151,28 +1185,78 @@ static func _gear(root: Node3D, frames: Dictionary) -> Dictionary:
 				var fx: float = clampf((z - le_x.z) / (te_x.z - le_x.z), 0.0, 1.0)
 				line.append(to_root * _wing_skin_point(x, fx, false) + Vector3(0, -0.0015, 0))
 			grid.append(line)
-		_instance("well_door_" + suffix, _strip(grid, _skin(Finish.PLAIN)), root)
-	# Tail wheel: steering pivot (about +Y) on the tail cone bottom above the axle, short strut down to it.
+		_instance("well_door_" + suffix, _strip(grid, _skin(Finish.PLAIN)), door_parts)
+	# Tail wheel: a retraction pivot above and aft of the steering point (source data) swings the steering unit forward
+	# into the tail cone; the steering pivot (about +Y) carries the short strut and the wheel.
+	var steer_point := Vector3(0, skin_y(g.tail_axle[0], 0.0, false) + 0.006, g.tail_axle[0])
+	var tail_pivot_point := Vector3(0, float(rt.tail_pivot[0]), float(rt.tail_pivot[1]))
+	var tail_pivot := Node3D.new()
+	tail_pivot.name = "tail_gear_pivot"
+	tail_pivot.position = tail_pivot_point
+	root.add_child(tail_pivot)
+	rig.tail = tail_pivot
 	var steering := Node3D.new()
 	steering.name = "tail_steering"
-	steering.position = Vector3(0, skin_y(g.tail_axle[0], 0.0, false) + 0.006, g.tail_axle[0])
-	root.add_child(steering)
-	var axle_local := Vector3(0, g.tail_axle[1], g.tail_axle[0]) - steering.position
+	steering.position = steer_point - tail_pivot_point
+	tail_pivot.add_child(steering)
+	var axle_local := Vector3(0, g.tail_axle[1], g.tail_axle[0]) - steer_point
 	_strut("tail_strut", Vector3(0, 0.004, 0), axle_local + Vector3(0, 0.004, 0), 0.006, steering)
 	gear["tail"] = _wheel("wheel_tail", g.tail_wheel_diameter, 0.02, axle_local, steering)
 	gear["steering"] = steering
-	# Tail-wheel doors (V06): two plates hinged on the belly either side of the well, hanging open.
+	# Tail-wheel doors (V06, P51-11b): two plates hinged on the belly either side of the well, drawn closed and opened
+	# about their hinge lines; the well lies forward of the mount (CARF manual p. 14).
 	var td: Dictionary = g.tailwheel_doors
 	for sgn in [-1.0, 1.0]:
 		var hinge_x: float = sgn * 0.02
-		var open := deg_to_rad(float(td.open_deg))
-		var hang := Vector3(sgn * cos(open), -sin(open), 0) * float(td.width)
+		var z_front: float = g.tail_axle[0] - float(td.length) * (1.0 - float(td.aft_fraction))
+		var z_back: float = g.tail_axle[0] + float(td.length) * float(td.aft_fraction)
+		var z_mid: float = (z_front + z_back) / 2.0
+		var hinge := Vector3(hinge_x, skin_y(z_mid, hinge_x, false) - 0.002, z_mid)
+		var door_pivot := Node3D.new()
+		door_pivot.name = "tail_door_%s_hinge" % ("right" if sgn > 0 else "left")
+		door_pivot.position = hinge
+		root.add_child(door_pivot)
+		rig.tail_doors["right" if sgn > 0 else "left"] = {pivot = door_pivot, sign = sgn}
 		var rows := []
-		for z in [g.tail_axle[0] - float(td.length) * (1.0 - float(td.aft_fraction)), g.tail_axle[0] + float(td.length) * float(td.aft_fraction)]:
-			var hinge := Vector3(hinge_x, skin_y(float(z), hinge_x, false) - 0.002, float(z))
-			rows.append([hinge + hang / 2.0, float(td.width) / 2.0])
-		_instance("tail_door_" + ("right" if sgn > 0 else "left"), _plate(rows, Vector3(sin(open), sgn * cos(open), 0), hang.normalized(), 0.003, _skin(Finish.PLAIN)), root)
+		for z in [z_front, z_back]:
+			var h := Vector3(0, skin_y(float(z), hinge_x, false) - 0.002 - hinge.y, float(z) - z_mid)
+			rows.append([h + Vector3(sgn * float(td.width) / 2.0, 0, 0), float(td.width) / 2.0])
+		_instance("tail_door_" + ("right" if sgn > 0 else "left"), _plate(rows, Vector3(0, sgn, 0), Vector3(sgn, 0, 0), 0.003, _skin(Finish.PLAIN)), door_pivot)
 	return gear
+
+
+## P51-11b: the sequenced gear fractions of the session's accepted extension e (0 stowed, 1 down and locked). Doors move
+## in the first and last door_phase of the travel, the legs in between; the inner doors are closed at both ends, the
+## tail-wheel doors stay open with the gear down. The physics contact paths use the same leg fraction.
+static func gear_phases(extension: float) -> Dictionary:
+	var p: float = float(D.gear.retraction.door_phase)
+	var e := clampf(extension, 0.0, 1.0)
+	var legs := smoothstep(p, 1.0 - p, e)
+	var inner := smoothstep(0.0, p, e) if e <= 0.5 else 1.0 - smoothstep(1.0 - p, 1.0, e)
+	return {legs = legs, inner_doors = inner, tail_doors = smoothstep(0.0, p, e)}
+
+
+## P51-11b: render the session's accepted gear extension. Rendering only; simulation owns deployment and loads.
+static func set_gear(airplane: Dictionary, extension: float) -> void:
+	if not is_finite(extension):
+		return
+	var rig: Dictionary = airplane.get("gear_rig", {})
+	if rig.is_empty():
+		return
+	var rt: Dictionary = D.gear.retraction
+	var ph := gear_phases(extension)
+	var stow: float = 1.0 - float(ph.legs)
+	for side in rig.mains:
+		var m: Dictionary = rig.mains[side]
+		var angle: float = deg_to_rad(float(rt.main_stow_deg)) * stow
+		(m.pivot as Node3D).basis = Basis(m.axis, angle)
+	(rig.tail as Node3D).rotation = Vector3(deg_to_rad(float(rt.tail_stow_deg)) * stow, 0.0, 0.0)
+	for side in rig.inner_doors:
+		var d: Dictionary = rig.inner_doors[side]
+		(d.pivot as Node3D).rotation = Vector3(0, 0, -float(d.sign) * deg_to_rad(float(rt.inner_door_open_deg)) * float(ph.inner_doors))
+	for side in rig.tail_doors:
+		var t: Dictionary = rig.tail_doors[side]
+		(t.pivot as Node3D).rotation = Vector3(0, 0, -float(t.sign) * deg_to_rad(float(D.gear.tailwheel_doors.open_deg)) * float(ph.tail_doors))
 
 
 # One blade along +X in the propeller frame (shaft along Z, flight toward -Z); sections twist to atan(P / 2 pi r).
@@ -1383,10 +1467,40 @@ static func build() -> Dictionary:
 	var flaps := {}
 	var frames := _wings(root, hinges, flaps)
 	_tail(root, hinges)
-	var gear := _gear(root, frames)
+	var gear_rig := {}
+	var gear := _gear(root, frames, gear_rig)
+	set_gear({gear_rig = gear_rig}, 1.0) # the built (rest) pose is down and locked: tail doors open, inner doors closed
 	_details(root, frames, hinges)
+	_light_anchors(root, hinges, gear_rig)
 	var propeller := _propeller(root)
-	return {root = root, propeller = propeller, hinges = hinges, gear = gear, frames = frames, flaps = flaps}
+	return {root = root, propeller = propeller, hinges = hinges, gear = gear, frames = frames, flaps = flaps, gear_rig = gear_rig}
+
+
+## P51-V13: tell the FW-35 night kit where this model's own lenses are, so its lights shine from them: the wing-tip
+## lenses (each light just outboard of its lens), the tail light on the rudder (followed as the rudder moves) and the
+## landing lamp on the left gear leg, gated on the gear down and locked. Model-local positions, nose −Z.
+static func _light_anchors(root: Node3D, hinges: Dictionary, rig: Dictionary) -> void:
+	var r: float = float(D.details.nav_lights.radius)
+	var anchors := {}
+	for side in ["left", "right"]:
+		var lens := root.get_node("nav_light_" + side) as Node3D
+		anchors["nav_" + side] = {position = lens.position + Vector3((-1.0 if side == "left" else 1.0) * (r + 0.003), 0, 0)}
+	var tail := (hinges.rudder as Node3D).get_node("tail_light") as Node3D
+	var tail_offset := tail.position + Vector3(0, 0, 0.008 + 0.003)
+	anchors["nav_tail"] = {position = _root_point(hinges.rudder, root) * tail_offset, follow = str(root.get_path_to(hinges.rudder)), follow_offset = tail_offset}
+	var lamp: Dictionary = rig.landing_lamp
+	anchors["landing"] = {position = _root_point(lamp.node, root) * Vector3(lamp.face), follow = str(root.get_path_to(lamp.node)),
+		follow_offset = lamp.face, gear_gated = true}
+	root.set_meta("light_anchors", anchors)
+
+
+static func _root_point(node: Node3D, root: Node3D) -> Transform3D:
+	var t := Transform3D.IDENTITY
+	var n: Node = node
+	while n != null and n != root:
+		t = (n as Node3D).transform * t
+		n = n.get_parent()
+	return t
 
 
 ## P51-11a: the session's accepted flap angle (degrees, trailing edge down) on both flap hinges. Rendering only.

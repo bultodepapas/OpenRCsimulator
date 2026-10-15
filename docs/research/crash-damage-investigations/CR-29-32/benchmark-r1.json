@@ -1,0 +1,34 @@
+{
+  "correctness_passed": true,
+  "cpu": "AMD Ryzen 9 5900X 12-Core Processor",
+  "date": "2026-10-15",
+  "format": "openrc-incident-benchmark-v1",
+  "godot": "4.7.2-stable (official)",
+  "healthy_ingestion": {
+    "max_us": 3.15625,
+    "median_us": 2.25,
+    "p95_us": 2.75
+  },
+  "ingestion_batch_size": 64,
+  "limits": "Isolated ingestion and report construction. Excludes source loading, session snapshot/ground queries, solver, UI and disk; not full 500 us tick qualification. Synthetic 100-part BOM is not a retail aircraft.",
+  "new_contact_ingestion": {
+    "max_us": 45.28125,
+    "median_us": 31.328125,
+    "p95_us": 42.53125
+  },
+  "os": "Windows",
+  "overflow_ingestion": {
+    "max_us": 42.828125,
+    "median_us": 32.203125,
+    "p95_us": 39.703125
+  },
+  "rendering": "headless",
+  "report_100_parts": {
+    "max_us": 4175.0,
+    "median_us": 2716.0,
+    "p95_us": 3720.0
+  },
+  "samples": 100,
+  "timing_unit": "microseconds_per_operation",
+  "warmup_batches": 10
+}

@@ -1,0 +1,49 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   first stable sample establishes the timer origin
+ok   settlement does not fire before two seconds
+ok   two seconds between accepted samples emits one edge
+ok   settled detector emits no second edge
+ok   edge remains once-only while still resting
+ok   pause fixture starts without settlement
+ok   repeated tick is inert
+ok   repeated ticks add no stable time
+ok   settles after two accepted seconds after pause
+ok   unsafe duplicate does not emit or advance
+ok   first safe tick after unsafe duplicate establishes a new baseline
+ok   unsafe duplicate reset cannot settle early
+ok   unsafe duplicate requires a full new stable interval
+ok   linear motion clears a pending stable interval
+ok   post-motion sample restarts the interval
+ok   airborne bounce clears a pending stable interval
+ok   landing after bounce starts a new interval
+ok   go-around or bounce cannot settle early
+ok   full grounded interval after bounce settles
+ok   forward tick gap starts a fresh window
+ok   backward tick discontinuity starts a fresh window
+ok   post-discontinuity interval remains pending
+ok   settles only after full stable interval following discontinuity
+ok   invalid dt clears the pending window
+ok   invalid dt cannot be counted
+ok   invalid dt clears the pending window
+ok   invalid dt cannot be counted
+ok   invalid dt clears the pending window
+ok   invalid dt cannot be counted
+ok   invalid dt clears the pending window
+ok   invalid dt cannot be counted
+ok   invalid dt clears the pending window
+ok   invalid dt cannot be counted
+ok   invalid linear speed clears the pending window
+ok   invalid angular speed clears the pending window
+ok   invalid linear speed clears the pending window
+ok   invalid angular speed clears the pending window
+ok   invalid linear speed clears the pending window
+ok   invalid angular speed clears the pending window
+ok   speed boundaries are accepted as low speed
+ok   angular movement above its policy threshold clears stability
+ok   shared stability policy accepts its inclusive thresholds
+ok   shared stability policy rejects airborne samples
+ok   reset clears an in-progress interval
+ok   reset accepts a new baseline
+ok   reset requires a complete new duration
+accident settlement: 46 checks, 0 failed

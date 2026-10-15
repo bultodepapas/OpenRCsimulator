@@ -75,11 +75,12 @@ func _initialize() -> void:
 		and extra.model.landing_gear.rolling_reference_radius == 0.034925 \
 		and extra.model.landing_gear.contacts[2].brake_availability == "none")
 	var p51: Dictionary = AircraftData.load_file(P51)
-	_check("P-51 profile uses its geometry-derived wheel sizes and unspecified brakes", p51.ok \
+	_check("P-51 profile uses its geometry-derived wheel sizes, main-wheel brakes and an unbraked tail wheel (P51-11c)", p51.ok \
 		and p51.model.landing_gear.contacts[0].wheel_radius == 0.0857 \
 		and p51.model.landing_gear.contacts[2].wheel_radius == 0.03975 \
 		and p51.model.landing_gear.rolling_reference_radius == 0.0857 \
-		and p51.model.landing_gear.contacts[0].brake_availability == "unspecified")
+		and p51.model.landing_gear.contacts[0].brake_availability == "available" \
+		and p51.model.landing_gear.contacts[2].brake_availability == "none")
 	for variant in ["synthetic_stik_electric_4s", "synthetic_stik_electric_4s_battery",
 		"synthetic_stik_electric_6s", "synthetic_stik_electric_6s_battery"]:
 		var loaded: Dictionary = AircraftData.load_file("res://data/aircraft/%s.json" % variant)

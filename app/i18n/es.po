@@ -2719,14 +2719,23 @@ msgstr "Descuento"
 msgid "DAMAGE REPORTED"
 msgstr "DAÑOS REGISTRADOS"
 
+msgid "DAMAGE REPORT"
+msgstr "INFORME DE DAÑOS"
+
 msgid "ESTIMATED LOSS"
 msgstr "PÉRDIDA ESTIMADA"
 
 msgid "Estimated total. Expand for cents, line items, and price assumptions."
 msgstr "Total estimado. Abre el desglose para ver céntimos, partidas y supuestos de precios."
 
+msgid "Estimated prices and repair outcomes may differ."
+msgstr "Los precios estimados y los resultados de reparación pueden variar."
+
 msgid "Hide accident report"
 msgstr "Ocultar informe del accidente"
+
+msgid "Hide damage report"
+msgstr "Ocultar informe de daños"
 
 msgid "Hide damage breakdown"
 msgstr "Ocultar desglose de daños"
@@ -2751,6 +2760,9 @@ msgstr "Inspeccionar"
 
 msgid "Inspect wreck"
 msgstr "Inspeccionar restos"
+
+msgid "Inspect aircraft"
+msgstr "Inspeccionar aeronave"
 
 msgid "KNOWN SUBTOTAL · INCOMPLETE"
 msgstr "SUBTOTAL CONOCIDO · INCOMPLETO"
@@ -2850,3 +2862,144 @@ msgstr "no disponible"
 
 msgid "Accident report could not be saved; it remains available for this session."
 msgstr "No se pudo guardar el informe del accidente; sigue disponible durante esta sesión."
+
+msgid "Complete-build replacement quote comparison (reference only)"
+msgstr "Presupuesto de sustitución del avión completo (solo referencia)"
+
+msgid "Low reference"
+msgstr "Referencia mínima"
+
+msgid "High reference"
+msgstr "Referencia máxima"
+
+msgid "Price basis: %s"
+msgstr "Base del precio: %s"
+
+msgid "Observed: %s"
+msgstr "Consultado: %s"
+
+msgid "Source: %s"
+msgstr "Fuente: %s"
+
+msgid "Central aileron servo"
+msgstr "Servo central de alerones"
+
+msgid "Airframe and installation hardware"
+msgstr "Estructura y accesorios de montaje"
+
+msgid "Engine and muffler"
+msgstr "Motor y silenciador"
+
+msgid "Final assembly and commissioning"
+msgstr "Montaje final y puesta a punto"
+
+msgid "Fuselage servos"
+msgstr "Servos del fuselaje"
+
+msgid "Onboard fuel system"
+msgstr "Sistema de combustible a bordo"
+
+msgid "Receiver battery"
+msgstr "Batería del receptor"
+
+msgid "Price proxy"
+msgstr "Precio de referencia de otro producto"
+
+msgid "Catalog snapshot"
+msgstr "Versión del catálogo"
+
+msgid "inspection required"
+msgstr "inspección necesaria"
+
+msgid "Inspection"
+msgstr "Inspección"
+
+msgid "Contact evidence is invalid; inspection required."
+msgstr "Los datos del contacto no son válidos; se necesita una inspección."
+
+msgid "Contact journal limit reached; inspection required."
+msgstr "Se alcanzó el límite del registro de contactos; se necesita una inspección."
+
+msgid "Impact or surface contact requires structural inspection."
+msgstr "El impacto o roce requiere una inspección estructural."
+
+msgid "Water exposure requires inspection of electronics and powertrain."
+msgstr "El contacto con agua requiere inspeccionar la electrónica y la propulsión."
+
+msgid "Session restored or aircraft reloaded: earlier damage history is unavailable."
+msgstr "Sesión restaurada o avión recargado: no se dispone del historial de daños anterior."
+
+msgid "Crash inspection pending; component survival is not yet established."
+msgstr "Inspección del accidente pendiente; aún no se sabe qué piezas pueden recuperarse."
+
+msgid "A propeller strike was recorded; no compatible replacement price is available."
+msgstr "Se registró un golpe de hélice; no hay un precio de sustitución compatible."
+
+msgid "Propeller strike: inspect the powertrain, shaft and mount before return to service."
+msgstr "Golpe de hélice: inspeccionar la propulsión, el eje y la bancada antes de volver a volar."
+
+msgid "Compatible aircraft cost dossier is unavailable."
+msgstr "No hay una ficha de costes compatible con este avión."
+
+msgid "USD prices exclude tax, shipping and transmitter/field equipment."
+msgstr "Los precios en USD no incluyen impuestos, envío, emisora ni equipo de campo."
+
+msgid "Propeller"
+msgstr "Hélice"
+
+msgid "Receiver"
+msgstr "Receptor"
+
+msgid "Estimated"
+msgstr "Estimado"
+
+msgid "Exact product price"
+msgstr "Precio del producto identificado"
+
+msgid "Complete inventory coverage with cost estimates"
+msgstr "Inventario completo con costes estimados"
+
+msgid "Incomplete aircraft valuation"
+msgstr "Valoración incompleta del avión"
+
+msgid "condition is pending inspection"
+msgstr "estado pendiente de inspección"
+
+msgid "condition is unknown"
+msgstr "estado desconocido"
+
+msgid "salvage or condition is pending inspection"
+msgstr "recuperación o estado pendiente de inspección"
+
+msgid "replacement price is unknown"
+msgstr "precio de sustitución desconocido"
+
+msgid "replacement price range is still uncertain"
+msgstr "intervalo de precio de sustitución aún incierto"
+
+msgid "repair and replacement costs cannot be ranked exactly"
+msgstr "no es posible comparar con exactitud los costes de reparación y sustitución"
+
+msgid "repair quote is unknown"
+msgstr "presupuesto de reparación desconocido"
+
+msgid "no physical inventory binding; reuse cannot be credited"
+msgstr "sin correspondencia en el inventario físico; no se puede descontar su reutilización"
+
+msgid "reuse has no exact baseline unit price"
+msgstr "la reutilización no tiene un precio unitario de referencia definido"
+
+msgid "terminal incident: component assessment is pending"
+msgstr "Accidente final: evaluación de componentes pendiente"
+
+msgid "Changes apply immediately. Close to revert."
+msgstr "Los cambios se aplican al instante. Cierra para revertirlos."
+
+msgid "Practice"
+msgstr "Práctica"
+
+msgid "Garage"
+msgstr "Garaje"
+
+msgid "Details"
+msgstr "Detalles"

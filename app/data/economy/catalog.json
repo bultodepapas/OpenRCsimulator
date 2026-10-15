@@ -3,11 +3,11 @@
   "currency": "USD",
   "price_date": "2026-10-15",
   "generated_from": {
-    "price_catalog_sha256": "d6232e8ad7ee01bb05c71edd9da0fc61fb8f79890b1489c685bdb69f2f707881",
-    "aircraft_costing_sha256": "fb4c3135f1706d7e44893cd52c2fd0b315383ef0a8a2d9ea06271cb75661a846",
-    "aircraft_catalog_sha256": "ddc427ef77eb3d70b00021e1f36026552c4262f81e1da78f5f6ffcef9d91c0ad",
-    "price_research_components_sha256": "c347bcf8c2ea1cef0a15166ddc1fddee0f8582e8889e46726a89c329d52f53d3",
-    "price_research_fleet_sha256": "5e3d13fd7cdedfdbad33d68a4ef29b44709e26a7e683618bd0d3358c97ceca0e"
+    "price_catalog_sha256": "58ade6aa478c00d59a95f8a45de78dcacba3e7f058eb921f19f144706b6bc903",
+    "aircraft_costing_sha256": "90839f3e65c9b309cce63b5f9360d0fe5689e6cc80a75d2b6a62523463d976b5",
+    "aircraft_catalog_sha256": "e0790acb9b1a5097d9d3cbcb564e72f074940a3813b52f70edf1c44dae5bc60c",
+    "price_research_components_sha256": "52aca914b95cf375e8ef3d3e12fe1c2a70d0d762a663e8dc01a039255f123cd9",
+    "price_research_fleet_sha256": "07345414daf3b8e6f1252e0b060e51af37f0ed3349c7d57ddc99ac7745886fc9"
   },
   "products": [
     {
@@ -24,6 +24,15 @@
       "brand": "APC Propellers",
       "sku": "LP12060",
       "name": "12x6 Sport propeller",
+      "category": "propeller",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "apc_propellers_lp12070",
+      "brand": "APC Propellers",
+      "sku": "LP12070",
+      "name": "12x7 Sport propeller",
       "category": "propeller",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
@@ -142,6 +151,15 @@
       "sku": "JP EROLEB-150SA",
       "name": "ER-150 electric retract and brake set for 2.0m Avanti S",
       "category": "retracts",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "master_airscrew_mas1460",
+      "brand": "Master Airscrew",
+      "sku": "MAS1460",
+      "name": "K Series 14x6 propeller",
+      "category": "propeller",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     },
@@ -337,6 +355,24 @@
       "notes": "Observed 2026-10-15. APC lists 12-inch diameter, 6-inch pitch, 1/4-inch shaft, grey Sport prop. This is the prop size named with the repository's MAX-61FX inventory. O.S. lists 12x6-8 for the 61FX and FS-64V and 12x6 for the 65AX; the engine maker says prop selection depends on model/use and may require trial and error."
     },
     {
+      "id": "apc-lp12070",
+      "product_id": "apc_propellers_lp12070",
+      "amount_minor": 539,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.apcprop.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_manufacturer_direct_price",
+      "availability": "APC product page shows Add to Cart; inventory count is not shown",
+      "sold_package_quantity": 1,
+      "package_description": "1 propeller",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.apcprop.com/product/12x7/?v=84de8e2b14bb",
+      "evidence_quality": "Direct manufacturer product page opened 2026-10-15; LP12070, Sport 12x7, USD price and cart control are explicit.",
+      "notes": "Observed 2026-10-15. Exact named propeller for the experimental Stik 55AX configuration. Source lists 1.52 oz and a 1/4-inch shaft. This is a component valuation, not a performance or installation qualification; no physics data changed."
+    },
+    {
       "id": "extra_60e_pro_arf_price_proxy",
       "product_id": "flex_innovations_fpm26",
       "amount_minor": 44999,
@@ -389,6 +425,24 @@
       "source_url": "https://www.chiefrc.com/products/p100-rx-bl-turbine-engine-with-brushless-pump-22-5-lbs-thrust-from-jetcat",
       "evidence_quality": "high",
       "notes": "Observed 2026-10-15. Direct Chief RC product-page fetch (Firecrawl maxAge=0, HTTP 200) confirmed the listed US$2,649.00 price and Backordered status on this date. Current 100 N brushless-pump P100-RX variant is a price proxy for the simulated P100-RX; it is not a 200 N-class P200. Listing includes starter, ECU, pump and installation accessories; the recommended 3S LiFePO4 battery is separate."
+    },
+    {
+      "id": "ma-k14x6",
+      "product_id": "master_airscrew_mas1460",
+      "amount_minor": 1165,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.masterairscrew.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_manufacturer_displayed_price",
+      "availability": "Manufacturer product page says Sold out",
+      "sold_package_quantity": 1,
+      "package_description": "1 propeller",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.masterairscrew.com/products/k-series-14x6-propeller",
+      "evidence_quality": "Direct manufacturer page opened 2026-10-15 names K Series 14x6, shows USD 11.65 and Sold out. Manufacturer SKU is not displayed; MAS1460 is a retailer identifier.",
+      "notes": "Observed 2026-10-15. Exact named model for experimental Stik FS-64V; not a currently available purchase. Manufacturer labels the amount Sale price but shows no comparison price. MAS1460 identity is corroborated by https://www.amainhobbies.com/master-airscrew-14x6-kseries-propeller-mas1460/p97682 (its June 2026 backorder date is stale and is not used for availability). Manufacturer lists 58.1 g; modeled 60 g remains an installation estimate and is not modified. No installation or performance qualification implied."
     },
     {
       "id": "os-fs64v-osmg901",
@@ -1296,8 +1350,135 @@
       "source_sha256": "e5494601e2bf3390f95c37f2175bb28b508b2a340c8c9fe55d56b1a7b335c3ae",
       "currency": "USD",
       "price_date": "2026-10-15",
-      "valuation_kind": "partial",
-      "components": [],
+      "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
+      "components": [
+        {
+          "id": "covered_airframe_and_installation_hardware",
+          "quantity": 1,
+          "unit_minor": 35000,
+          "low_unit_minor": 28000,
+          "high_unit_minor": 45000,
+          "physical_inventory_ids": [
+            "item_wing_airframe",
+            "item_fuselage_front",
+            "item_fuselage_rear",
+            "item_stabilizer_elevator",
+            "item_fin_rudder",
+            "item_nose_gear_assembly",
+            "item_main_gear_assembly",
+            "item_engine_mount",
+            "item_fuel_tank",
+            "item_spinner_main",
+            "item_control_hardware"
+          ],
+          "price_basis": "estimated",
+          "offer_id": "stik_airframe_ultra_stick_10cc_arf",
+          "notes": "One inclusive constructed-airframe allowance, anchored to $279.99 HAN2345 ARF plus $70.01 planning allowance for historical construction/gear/installation differences. Includes film, fixed tricycle gear, tank, mount, spinner, linkage and hardware; no separate bills for those within this full-build value. Not a quote or HAN2345 package-content claim. Range is a planning assumption; exact Jensen replacement or repair recipes need sourcing."
+        },
+        {
+          "id": "engine_and_muffler",
+          "quantity": 1,
+          "unit_minor": 24999,
+          "low_unit_minor": 22500,
+          "high_unit_minor": 35000,
+          "physical_inventory_ids": [
+            "item_engine_main",
+            "item_muffler_main"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "os-max55ax-osmg0557",
+          "notes": "One MAX-55AX package includes an E-3071 muffler; do not charge another silencer. Engine model matches, but the authored 121 g stock-silencer mass is borrowed from a tested assembly and E-3071 revision pairing remains unverified, so this whole coverage group stays a price proxy. Backorder November 2026. The inherited cost interval is an assumption, not observed market extrema."
+        },
+        {
+          "id": "fuselage_servos",
+          "quantity": 3,
+          "unit_minor": 3399,
+          "low_unit_minor": 3399,
+          "high_unit_minor": 4399,
+          "physical_inventory_ids": [
+            "item_fuselage_servos"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "savox-sc0252mgp",
+          "notes": "Three generic physical servos valued at the SC-0252MG+ unit offer. CAR application listing and only two units in stock; neither airplane approval nor availability for a complete four-servo set is established. Original hardware remains unchanged."
+        },
+        {
+          "id": "central_aileron_servo",
+          "quantity": 1,
+          "unit_minor": 3399,
+          "low_unit_minor": 3399,
+          "high_unit_minor": 4399,
+          "physical_inventory_ids": [
+            "item_aileron_servo"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "savox-sc0252mgp",
+          "notes": "One central servo, not one for each aileron. Same economic-only proxy and stock/compatibility limitations as the fuselage group."
+        },
+        {
+          "id": "receiver",
+          "quantity": 1,
+          "unit_minor": 9999,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_receiver_main"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "receiver_spektrum_ar8360t_plus",
+          "notes": "Generic receiver valued using a current 8-channel product. Does not enable stabilization, change radio protocol or install this receiver in the simulation."
+        },
+        {
+          "id": "propeller",
+          "quantity": 1,
+          "unit_minor": 539,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_propeller_main"
+          ],
+          "price_basis": "exact_product_price",
+          "offer_id": "apc-lp12070",
+          "notes": "Matches authored APC Sport LP12070 12x7. Replaces the baseline LP12060 12x6 price identity; equal current prices do not make these the same installed part. Propeller performance remains the existing experimental annular surrogate."
+        },
+        {
+          "id": "receiver_battery",
+          "quantity": 1,
+          "unit_minor": 2500,
+          "low_unit_minor": 2000,
+          "high_unit_minor": 3500,
+          "physical_inventory_ids": [
+            "item_receiver_battery"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unsourced planning allowance for generic 4.8 V NiMH pack. Exact 600mAh pack quote still needed; no LiPo substitution."
+        },
+        {
+          "id": "onboard_fuel",
+          "quantity": 1,
+          "unit_minor": 300,
+          "low_unit_minor": 100,
+          "high_unit_minor": 500,
+          "physical_inventory_ids": [
+            "item_fuel_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unsourced allowance: declared 150 ml half-tank contents at assumed $20/litre, not a gallon purchase. No fuel salvage credit."
+        },
+        {
+          "id": "final_assembly_and_commissioning",
+          "quantity": 1,
+          "unit_minor": 12500,
+          "low_unit_minor": 6000,
+          "high_unit_minor": 21000,
+          "physical_inventory_ids": [],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Paid-labor scenario: 5 hours at assumed $25/hour. Low/high assumptions are 3h at $20 and 6h at $35. Electronics/powerplant installation and commissioning, not construction/covering already in the airframe allowance. DIY cash mode excludes this line. No current shop labor quote was found."
+        }
+      ],
       "exclusions": [
         {
           "id": "item_balance_mass_virtual",
@@ -1305,19 +1486,51 @@
           "physical_inventory_ids": [
             "item_balance_mass_virtual"
           ],
-          "reason": "Virtual reference-build balancing mass; it is not a purchasable component."
+          "reason": "Numerical reference-build balancing mass; no purchasable item. Remains part of physical kinetic energy."
+        },
+        {
+          "id": "transmitter",
+          "scope": "outside_build",
+          "physical_inventory_ids": [],
+          "reason": "Excluded from the reconstructed crash-loss build: transmitter."
+        },
+        {
+          "id": "charger",
+          "scope": "outside_build",
+          "physical_inventory_ids": [],
+          "reason": "Excluded from the reconstructed crash-loss build: charger."
+        },
+        {
+          "id": "field_equipment",
+          "scope": "outside_build",
+          "physical_inventory_ids": [],
+          "reason": "Excluded from the reconstructed crash-loss build: field equipment."
+        },
+        {
+          "id": "external_starter_glow_driver",
+          "scope": "outside_build",
+          "physical_inventory_ids": [],
+          "reason": "Excluded from the reconstructed crash-loss build: external starter/glow driver."
+        },
+        {
+          "id": "fuel_not_onboard",
+          "scope": "outside_build",
+          "physical_inventory_ids": [],
+          "reason": "Excluded from the reconstructed crash-loss build: fuel not onboard."
         }
       ],
-      "missing": [
-        "Variant installation BOM/mount/prop bindings",
-        "Inherited airframe coverage qualification",
-        "Candidate offer references are not attached to a component until physical fit and package coverage are reconciled: os-max55ax-osmg0557.",
-        "No reconciled economic component coverage for physical inventory IDs: item_engine_main, item_muffler_main, item_propeller_main, item_spinner_main, item_engine_mount, item_fuel_tank, item_fuel_main, item_receiver_battery, item_receiver_main, item_fuselage_servos, item_aileron_servo, item_nose_gear_assembly, item_main_gear_assembly, item_wing_airframe, item_fuselage_front, item_fuselage_rear, item_stabilizer_elevator, item_fin_rudder, item_control_hardware."
-      ],
-      "complete": false,
-      "contact_components": {},
-      "propeller_component_id": "",
-      "propeller_inspection_ids": []
+      "missing": [],
+      "complete": true,
+      "contact_components": {
+        "propeller/propulsion_main": [
+          "propeller"
+        ]
+      },
+      "propeller_component_id": "propeller",
+      "propeller_inspection_ids": [
+        "engine_and_muffler",
+        "covered_airframe_and_installation_hardware"
+      ]
     },
     {
       "format": "openrc-aircraft-economics v1",
@@ -1325,8 +1538,135 @@
       "source_sha256": "d381fc6c3fb014e2c727410b1c1996c8f7cf35e0ad6af63c0268e11c5b1092af",
       "currency": "USD",
       "price_date": "2026-10-15",
-      "valuation_kind": "partial",
-      "components": [],
+      "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
+      "components": [
+        {
+          "id": "covered_airframe_and_installation_hardware",
+          "quantity": 1,
+          "unit_minor": 35000,
+          "low_unit_minor": 28000,
+          "high_unit_minor": 45000,
+          "physical_inventory_ids": [
+            "item_wing_airframe",
+            "item_fuselage_front",
+            "item_fuselage_rear",
+            "item_stabilizer_elevator",
+            "item_fin_rudder",
+            "item_nose_gear_assembly",
+            "item_main_gear_assembly",
+            "item_engine_mount",
+            "item_fuel_tank",
+            "item_spinner_main",
+            "item_control_hardware"
+          ],
+          "price_basis": "estimated",
+          "offer_id": "stik_airframe_ultra_stick_10cc_arf",
+          "notes": "One inclusive constructed-airframe allowance, anchored to $279.99 HAN2345 ARF plus $70.01 planning allowance for historical construction/gear/installation differences. Includes film, fixed tricycle gear, tank, mount, spinner, linkage and hardware; no separate bills for those within this full-build value. Not a quote or HAN2345 package-content claim. Range is a planning assumption; exact Jensen replacement or repair recipes need sourcing."
+        },
+        {
+          "id": "engine_and_muffler",
+          "quantity": 1,
+          "unit_minor": 54999,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_engine_main",
+            "item_muffler_main"
+          ],
+          "price_basis": "exact_product_price",
+          "offer_id": "os-fs64v-osmg901",
+          "notes": "One FS-64V plus included F-4051 silencer package, counted once. Official O.S. 442 g engine/44 g silencer agrees with authored inventory. Horizon SKU OSMG901; O.S. model 3AY00. Price identity does not qualify the experimental installation or its 14x6 performance."
+        },
+        {
+          "id": "fuselage_servos",
+          "quantity": 3,
+          "unit_minor": 3399,
+          "low_unit_minor": 3399,
+          "high_unit_minor": 4399,
+          "physical_inventory_ids": [
+            "item_fuselage_servos"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "savox-sc0252mgp",
+          "notes": "Three generic physical servos valued at the SC-0252MG+ unit offer. CAR application listing and only two units in stock; neither airplane approval nor availability for a complete four-servo set is established. Original hardware remains unchanged."
+        },
+        {
+          "id": "central_aileron_servo",
+          "quantity": 1,
+          "unit_minor": 3399,
+          "low_unit_minor": 3399,
+          "high_unit_minor": 4399,
+          "physical_inventory_ids": [
+            "item_aileron_servo"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "savox-sc0252mgp",
+          "notes": "One central servo, not one for each aileron. Same economic-only proxy and stock/compatibility limitations as the fuselage group."
+        },
+        {
+          "id": "receiver",
+          "quantity": 1,
+          "unit_minor": 9999,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_receiver_main"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "receiver_spektrum_ar8360t_plus",
+          "notes": "Generic receiver valued using a current 8-channel product. Does not enable stabilization, change radio protocol or install this receiver in the simulation."
+        },
+        {
+          "id": "propeller",
+          "quantity": 1,
+          "unit_minor": 1165,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "item_propeller_main"
+          ],
+          "price_basis": "exact_product_price",
+          "offer_id": "ma-k14x6",
+          "notes": "Matches authored Master Airscrew K Series 14x6. Manufacturer listed price, sold out; availability is not inferred from the complete BOM. MAS1460 is a retailer code, not a manufacturer SKU verified on that page. Manufacturer 58.1 g versus authored 60 g estimate is retained without changing simulation data."
+        },
+        {
+          "id": "receiver_battery",
+          "quantity": 1,
+          "unit_minor": 2500,
+          "low_unit_minor": 2000,
+          "high_unit_minor": 3500,
+          "physical_inventory_ids": [
+            "item_receiver_battery"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unsourced planning allowance for generic 4.8 V NiMH pack. Exact 600mAh pack quote still needed; no LiPo substitution."
+        },
+        {
+          "id": "onboard_fuel",
+          "quantity": 1,
+          "unit_minor": 300,
+          "low_unit_minor": 100,
+          "high_unit_minor": 500,
+          "physical_inventory_ids": [
+            "item_fuel_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unsourced allowance: declared 150 ml half-tank contents at assumed $20/litre, not a gallon purchase. No fuel salvage credit."
+        },
+        {
+          "id": "final_assembly_and_commissioning",
+          "quantity": 1,
+          "unit_minor": 12500,
+          "low_unit_minor": 6000,
+          "high_unit_minor": 21000,
+          "physical_inventory_ids": [],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Paid-labor scenario: 5 hours at assumed $25/hour. Low/high assumptions are 3h at $20 and 6h at $35. Electronics/powerplant installation and commissioning, not construction/covering already in the airframe allowance. DIY cash mode excludes this line. No current shop labor quote was found."
+        }
+      ],
       "exclusions": [
         {
           "id": "item_balance_mass_virtual",
@@ -1334,19 +1674,51 @@
           "physical_inventory_ids": [
             "item_balance_mass_virtual"
           ],
-          "reason": "Virtual reference-build balancing mass; it is not a purchasable component."
+          "reason": "Numerical reference-build balancing mass; no purchasable item. Remains part of physical kinetic energy."
+        },
+        {
+          "id": "transmitter",
+          "scope": "outside_build",
+          "physical_inventory_ids": [],
+          "reason": "Excluded from the reconstructed crash-loss build: transmitter."
+        },
+        {
+          "id": "charger",
+          "scope": "outside_build",
+          "physical_inventory_ids": [],
+          "reason": "Excluded from the reconstructed crash-loss build: charger."
+        },
+        {
+          "id": "field_equipment",
+          "scope": "outside_build",
+          "physical_inventory_ids": [],
+          "reason": "Excluded from the reconstructed crash-loss build: field equipment."
+        },
+        {
+          "id": "external_starter_glow_driver",
+          "scope": "outside_build",
+          "physical_inventory_ids": [],
+          "reason": "Excluded from the reconstructed crash-loss build: external starter/glow driver."
+        },
+        {
+          "id": "fuel_not_onboard",
+          "scope": "outside_build",
+          "physical_inventory_ids": [],
+          "reason": "Excluded from the reconstructed crash-loss build: fuel not onboard."
         }
       ],
-      "missing": [
-        "Variant installation BOM/mount/prop bindings",
-        "Four-stroke repair recipes",
-        "Candidate offer references are not attached to a component until physical fit and package coverage are reconciled: os-fs64v-osmg901.",
-        "No reconciled economic component coverage for physical inventory IDs: item_engine_main, item_muffler_main, item_propeller_main, item_spinner_main, item_engine_mount, item_fuel_tank, item_fuel_main, item_receiver_battery, item_receiver_main, item_fuselage_servos, item_aileron_servo, item_nose_gear_assembly, item_main_gear_assembly, item_wing_airframe, item_fuselage_front, item_fuselage_rear, item_stabilizer_elevator, item_fin_rudder, item_control_hardware."
-      ],
-      "complete": false,
-      "contact_components": {},
-      "propeller_component_id": "",
-      "propeller_inspection_ids": []
+      "missing": [],
+      "complete": true,
+      "contact_components": {
+        "propeller/propulsion_main": [
+          "propeller"
+        ]
+      },
+      "propeller_component_id": "propeller",
+      "propeller_inspection_ids": [
+        "engine_and_muffler",
+        "covered_airframe_and_installation_hardware"
+      ]
     },
     {
       "format": "openrc-aircraft-economics v1",
@@ -1381,7 +1753,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "p51d-mustang-120",
-      "source_sha256": "4fdd5dd875c16459ccf0a05835ebf49ecba5c2d16bc4c5fcf2fdc88af1668d73",
+      "source_sha256": "e1e24f742a24204cd2875e42eb64760d3b0da5796fc74c3ca4b32834ffa2c544",
       "currency": "USD",
       "price_date": "2026-10-15",
       "valuation_kind": "partial",

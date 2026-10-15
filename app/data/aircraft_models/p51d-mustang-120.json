@@ -27,7 +27,7 @@
     "script": "res://aircraft/p51d_geometry.gd",
     "source": {
       "path": "assets/aircraft/p51d-mustang-120/geometry.json",
-      "sha256": "fee3e65d024bf63cc6e7ba26e2818ce35bb6f8d3db8932f96293837565e9bd30",
+      "sha256": "aaa5e778832937c62fca81b23b22ce17f4096e72e2ef7b288042db997d9d4ba4",
       "hash_mode": "lf_text"
     },
     "revision": "p51d-mustang-120-v1",
@@ -117,13 +117,13 @@
   "authoring_sources": [
     {
       "path": "assets/aircraft/p51d-mustang-120/geometry.json",
-      "sha256": "fee3e65d024bf63cc6e7ba26e2818ce35bb6f8d3db8932f96293837565e9bd30",
+      "sha256": "aaa5e778832937c62fca81b23b22ce17f4096e72e2ef7b288042db997d9d4ba4",
       "hash_mode": "lf_text",
       "role": "geometry"
     },
     {
       "path": "assets/aircraft/p51d-mustang-120/source.json",
-      "sha256": "df5ec9c65e3660fc9370ca8bf812b3324b85a6198eb845a2a46153f0d2518d0d",
+      "sha256": "59752d375a2bd7d48be4c80b36f81c5ef9ff00d71acedb6f667f41e207d6df83",
       "hash_mode": "lf_text",
       "role": "geometry_input"
     },
@@ -149,13 +149,13 @@
     },
     {
       "path": "res://aircraft/p51d_geometry.gd",
-      "sha256": "9c2d2ea44c112b12a83ba83e6950f456b0db44dd482e12ad7a792f6a62f15704",
+      "sha256": "7e91ebb2a542d03cf29987449ac324794be222d61cee808249b4e7b4ac1fc220",
       "hash_mode": "lf_text",
       "role": "generated_geometry"
     },
     {
       "path": "res://aircraft/p51d_model.gd",
-      "sha256": "e8c4a97a90917124e0e00ec6b2324113174b59a8dc94e0d050cb915b0f61a306",
+      "sha256": "76cf8d56d0688bbfdd2c467a90c5bdabecb0bc90da7f958522b3943d19cca493",
       "hash_mode": "lf_text",
       "role": "builder"
     }

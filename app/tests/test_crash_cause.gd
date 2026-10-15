@@ -96,6 +96,7 @@ func _formatting() -> void:
 
 func _real_flights() -> void:
 	var main: Variant = MainScene.instantiate()
+	main.set("accident_reports_enabled", false) # Visual cause fixture has no economic archive.
 	main.set("aircraft_id", "jensen-das-ugly-stik-60")
 	root.add_child(main)
 	await process_frame

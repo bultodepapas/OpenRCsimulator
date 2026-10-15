@@ -44,12 +44,14 @@ func _test_all_routes_and_baseline() -> void:
 	var routes: PackedStringArray = AircraftCatalog.ids()
 	_check("all nine live aircraft routes represented", routes.size() == 9)
 	var loaded_by_id: Dictionary = {}
+	var offer_sources_by_id: Dictionary = {}
 	for aircraft_id: String in routes:
 		var result: Dictionary = Catalog.load_for(aircraft_id)
 		_check("route loads " + aircraft_id, bool(result.get("ok", false)), str(result.get("errors", [])))
 		if bool(result.get("ok", false)):
 			var dossier: Dictionary = result["dossier"]
 			loaded_by_id[aircraft_id] = dossier
+			offer_sources_by_id[aircraft_id] = result.get("offer_sources", {})
 			_check("returned dossier matches route " + aircraft_id, dossier.get("aircraft_id") == aircraft_id)
 			_check("catalog hash is lowercase SHA-256 " + aircraft_id, str(result.get("catalog_hash", "")).length() == 64)
 	var baseline_id := "jensen-das-ugly-stik-60"
@@ -62,6 +64,20 @@ func _test_all_routes_and_baseline() -> void:
 	for row: Variant in components:
 		if typeof(row) == TYPE_DICTIONARY:
 			by_component[str(row.get("id", ""))] = row
+	var baseline_sources: Dictionary = offer_sources_by_id.get(baseline_id, {})
+	var propeller_offer_id: String = str(by_component.get("propeller", {}).get("offer_id", ""))
+	var source_descriptor: Dictionary = baseline_sources.get(propeller_offer_id, {})
+	var raw_offer: Dictionary = {}
+	for offer_value: Variant in _raw_catalog().get("offers", []):
+		if typeof(offer_value) == TYPE_DICTIONARY and str(offer_value.get("id", "")) == propeller_offer_id:
+			raw_offer = offer_value
+			break
+	var source_fields: Array[String] = ["source_url", "observed_on", "seller_domain", "availability", "price_kind"]
+	var source_matches: bool = source_descriptor.size() == source_fields.size() and not raw_offer.is_empty()
+	for field: String in source_fields:
+		source_matches = source_matches and source_descriptor.get(field) == raw_offer.get(field)
+	_check("baseline returns validated offer source details", source_matches, str(source_descriptor))
+	_check("offer source details stay outside the closed dossier", not baseline.has("offer_sources"))
 	_check("three fuselage servos remain one grouped row", by_component.has("fuselage_servos") and int(by_component.get("fuselage_servos", {}).get("quantity", -1)) == 3)
 	_check("fourth physical servo is separate", by_component.has("central_aileron_servo") and int(by_component.get("central_aileron_servo", {}).get("quantity", -1)) == 1)
 	_check("servos total four physical units", int(by_component.get("fuselage_servos", {}).get("quantity", 0)) + int(by_component.get("central_aileron_servo", {}).get("quantity", 0)) == 4)
@@ -93,7 +109,7 @@ func _test_missing_prices_do_not_gate_routes() -> void:
 			incomplete_count += 1
 			_check("unpriced route has explicit missing reasons " + aircraft_id, not (dossier.get("missing", []) as Array).is_empty())
 			_check("unpriced route invents no component prices " + aircraft_id, (dossier.get("components", []) as Array).is_empty())
-	_check("other seven fleet routes remain economically incomplete", incomplete_count == 7, str(incomplete_count))
+	_check("other five fleet routes remain economically incomplete", incomplete_count == 5, str(incomplete_count))
 
 
 func _test_rejects_unknown_or_stale_sources() -> void:

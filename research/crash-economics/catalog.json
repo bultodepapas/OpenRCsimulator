@@ -4,8 +4,8 @@
   "observed_on": "2026-10-15",
   "generated_by": "research/crash-economics/build_catalog.py",
   "source_hashes": {
-    "price-research-components.json": "c347bcf8c2ea1cef0a15166ddc1fddee0f8582e8889e46726a89c329d52f53d3",
-    "price-research-fleet.json": "5e3d13fd7cdedfdbad33d68a4ef29b44709e26a7e683618bd0d3358c97ceca0e"
+    "price-research-components.json": "52aca914b95cf375e8ef3d3e12fe1c2a70d0d762a663e8dc01a039255f123cd9",
+    "price-research-fleet.json": "07345414daf3b8e6f1252e0b060e51af37f0ed3349c7d57ddc99ac7745886fc9"
   },
   "policy": {
     "currency": "USD",
@@ -32,6 +32,15 @@
       "brand": "APC Propellers",
       "sku": "LP12060",
       "name": "12x6 Sport propeller",
+      "category": "propeller",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "apc_propellers_lp12070",
+      "brand": "APC Propellers",
+      "sku": "LP12070",
+      "name": "12x7 Sport propeller",
       "category": "propeller",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
@@ -150,6 +159,15 @@
       "sku": "JP EROLEB-150SA",
       "name": "ER-150 electric retract and brake set for 2.0m Avanti S",
       "category": "retracts",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "master_airscrew_mas1460",
+      "brand": "Master Airscrew",
+      "sku": "MAS1460",
+      "name": "K Series 14x6 propeller",
+      "category": "propeller",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     },
@@ -349,6 +367,26 @@
       "notes": "Observed 2026-10-15. APC lists 12-inch diameter, 6-inch pitch, 1/4-inch shaft, grey Sport prop. This is the prop size named with the repository's MAX-61FX inventory. O.S. lists 12x6-8 for the 61FX and FS-64V and 12x6 for the 65AX; the engine maker says prop selection depends on model/use and may require trial and error."
     },
     {
+      "id": "apc-lp12070",
+      "product_id": "apc_propellers_lp12070",
+      "amount_minor": 539,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.apcprop.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_manufacturer_direct_price",
+      "availability": "APC product page shows Add to Cart; inventory count is not shown",
+      "sold_package_quantity": 1,
+      "package_description": "1 propeller",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.apcprop.com/product/12x7/?v=84de8e2b14bb",
+      "source_file": "price-research-components.json",
+      "evidence_quality": "Direct manufacturer product page opened 2026-10-15; LP12070, Sport 12x7, USD price and cart control are explicit.",
+      "notes": "Observed 2026-10-15. Exact named propeller for the experimental Stik 55AX configuration. Source lists 1.52 oz and a 1/4-inch shaft. This is a component valuation, not a performance or installation qualification; no physics data changed."
+    },
+    {
       "id": "extra_60e_pro_arf_price_proxy",
       "product_id": "flex_innovations_fpm26",
       "amount_minor": 44999,
@@ -407,6 +445,26 @@
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
       "notes": "Observed 2026-10-15. Direct Chief RC product-page fetch (Firecrawl maxAge=0, HTTP 200) confirmed the listed US$2,649.00 price and Backordered status on this date. Current 100 N brushless-pump P100-RX variant is a price proxy for the simulated P100-RX; it is not a 200 N-class P200. Listing includes starter, ECU, pump and installation accessories; the recommended 3S LiFePO4 battery is separate."
+    },
+    {
+      "id": "ma-k14x6",
+      "product_id": "master_airscrew_mas1460",
+      "amount_minor": 1165,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.masterairscrew.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_manufacturer_displayed_price",
+      "availability": "Manufacturer product page says Sold out",
+      "sold_package_quantity": 1,
+      "package_description": "1 propeller",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.masterairscrew.com/products/k-series-14x6-propeller",
+      "source_file": "price-research-components.json",
+      "evidence_quality": "Direct manufacturer page opened 2026-10-15 names K Series 14x6, shows USD 11.65 and Sold out. Manufacturer SKU is not displayed; MAS1460 is a retailer identifier.",
+      "notes": "Observed 2026-10-15. Exact named model for experimental Stik FS-64V; not a currently available purchase. Manufacturer labels the amount Sale price but shows no comparison price. MAS1460 identity is corroborated by https://www.amainhobbies.com/master-airscrew-14x6-kseries-propeller-mas1460/p97682 (its June 2026 backorder date is stale and is not used for availability). Manufacturer lists 58.1 g; modeled 60 g remains an installation estimate and is not modified. No installation or performance qualification implied."
     },
     {
       "id": "os-fs64v-osmg901",

@@ -32,8 +32,8 @@ var _rows: Array[BoxContainer] = []
 var _localized_controls: Array[Dictionary] = []
 var _window_picker: OptionButton
 var _scale_picker: OptionButton
-var _opaque_toggle: CheckBox
-var _motion_toggle: CheckBox
+var _opaque_toggle: CheckButton
+var _motion_toggle: CheckButton
 var _language_picker: OptionButton
 var _status: Label
 var _keep_button: Button
@@ -83,7 +83,7 @@ func _build() -> void:
 	_surface.dim(0.58)
 	var center: CenterContainer = _surface.center(24.0)
 	_layout_panel = PanelContainer.new()
-	_layout_panel.theme_type_variation = "Sidebar"
+	_layout_panel.theme_type_variation = "SettingsPanel"
 	_layout_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_layout_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	center.add_child(_layout_panel)
@@ -91,10 +91,10 @@ func _build() -> void:
 	_layout_shell.add_theme_constant_override("separation", 12)
 	_layout_panel.add_child(_layout_shell)
 	var heading := HBoxContainer.new()
-	var title := _label("Settings", "TitleLabel")
+	var title := _label("Settings", "SettingsTitle")
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	heading.add_child(title)
-	_close_button = _button("Close", "", "Close")
+	_close_button = _button("Close", "QuietButton", "Close")
 	_close_button.pressed.connect(close)
 	heading.add_child(_close_button)
 	_layout_shell.add_child(heading)
@@ -107,9 +107,9 @@ func _build() -> void:
 	_layout_shell.add_child(_scroll)
 	var page := VBoxContainer.new()
 	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	page.add_theme_constant_override("separation", 12)
+	page.add_theme_constant_override("separation", 10)
 	_scroll.add_child(page)
-	page.add_child(_label("Display", "CardTitle"))
+	page.add_child(_label("Display", "SectionLabel"))
 
 	_window_picker = OptionButton.new()
 	_window_picker.name = "WindowMode"
@@ -128,19 +128,23 @@ func _build() -> void:
 	_scale_picker.item_selected.connect(_scale_selected)
 	_add_row(page, "Text size", _scale_picker)
 
-	_opaque_toggle = CheckBox.new()
+	page.add_child(HSeparator.new())
+	page.add_child(_label("Accessibility", "SectionLabel"))
+	_opaque_toggle = CheckButton.new()
 	_opaque_toggle.name = "OpaquePanels"
-	_opaque_toggle.text = tr("Use opaque panels")
+	_opaque_toggle.theme_type_variation = "SettingsToggle"
+	_opaque_toggle.tooltip_text = tr("Use opaque panels")
 	_opaque_toggle.toggled.connect(_opaque_toggled)
-	_add_row(page, "Panel background", _opaque_toggle)
+	_add_row(page, "Use opaque panels", _opaque_toggle)
 
-	_motion_toggle = CheckBox.new()
+	_motion_toggle = CheckButton.new()
 	_motion_toggle.name = "ReducedMotion"
-	_motion_toggle.text = tr("Reduce interface motion")
+	_motion_toggle.theme_type_variation = "SettingsToggle"
+	_motion_toggle.tooltip_text = tr("Reduce interface motion")
 	_motion_toggle.toggled.connect(_motion_toggled)
-	_add_row(page, "Accessibility", _motion_toggle)
+	_add_row(page, "Reduce interface motion", _motion_toggle)
 
-	page.add_child(_label("Language", "CardTitle"))
+	page.add_child(HSeparator.new())
 	_language_picker = OptionButton.new()
 	_language_picker.name = "Language"
 	_language_picker.add_item("English")
@@ -150,13 +154,13 @@ func _build() -> void:
 	_language_picker.item_selected.connect(_language_selected)
 	_add_row(page, "Interface language", _language_picker)
 
-	page.add_child(_label("Help", "CardTitle"))
+	page.add_child(HSeparator.new())
 	var destinations := HBoxContainer.new()
 	destinations.add_theme_constant_override("separation", 12)
-	var controls_button := _button("Controls", "", "Controls")
+	var controls_button := _button("Controls", "QuietButton", "Controls")
 	controls_button.pressed.connect(func() -> void: _request_route("controls", controls_button))
 	destinations.add_child(controls_button)
-	var about_button := _button("Help & About", "", "HelpAbout")
+	var about_button := _button("Help & About", "QuietButton", "HelpAbout")
 	about_button.pressed.connect(func() -> void: _request_route("about", about_button))
 	destinations.add_child(about_button)
 	page.add_child(destinations)
@@ -170,7 +174,7 @@ func _build() -> void:
 	_revert_button = _button("Revert", "", "Revert")
 	_revert_button.pressed.connect(_revert)
 	actions.add_child(_revert_button)
-	_keep_button = _button("Keep changes", "PrimaryButton", "Keep")
+	_keep_button = _button("Keep changes", "SettingsAction", "Keep")
 	_keep_button.pressed.connect(keep_changes)
 	actions.add_child(_keep_button)
 	_layout_shell.add_child(actions)
@@ -182,13 +186,14 @@ func _add_row(parent: Control, caption: String, input: Control) -> void:
 	var row := BoxContainer.new()
 	row.vertical = _should_stack_rows()
 	row.add_theme_constant_override("separation", 12 if row.vertical else 20)
-	var label := _label(caption, "SecondaryLabel")
+	var label := _label(caption, "")
 	label.custom_minimum_size.x = 0
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	row.add_child(label)
 	input.custom_minimum_size.x = 0
-	input.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	input.size_flags_horizontal = Control.SIZE_SHRINK_END
+	input.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(input)
 	parent.add_child(row)
 	_rows.append(row)
@@ -295,11 +300,17 @@ func _update_layout() -> void:
 	if _surface == null or _layout_panel == null:
 		return
 	var available: Vector2 = _surface.size - Vector2(48.0, 48.0)
-	_layout_panel.custom_minimum_size = Vector2(maxf(0.0, available.x - 80.0), maxf(0.0, available.y - 80.0))
+	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(640.0, maxf(0.0, available.y)))
 	var stack_rows := _should_stack_rows()
 	for row: BoxContainer in _rows:
 		row.vertical = stack_rows
-		row.add_theme_constant_override("separation", 12 if stack_rows else 20)
+		row.add_theme_constant_override("separation", 8 if stack_rows else 24)
+		var input := row.get_child(1) as Control
+		if input is OptionButton:
+			input.custom_minimum_size.x = minf(300.0 * ScreenTheme.text_scale, _layout_panel.custom_minimum_size.x - 64.0)
+			input.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN if stack_rows else Control.SIZE_SHRINK_END
+		else:
+			row.vertical = false
 
 
 func _refresh_shared_theme() -> void:
@@ -317,9 +328,9 @@ func _refresh_translated_text() -> void:
 		_window_picker.set_item_text(0, tr("Windowed"))
 		_window_picker.set_item_text(1, tr("Borderless fullscreen"))
 	if _opaque_toggle != null:
-		_opaque_toggle.text = tr("Use opaque panels")
+		_opaque_toggle.tooltip_text = tr("Use opaque panels")
 	if _motion_toggle != null:
-		_motion_toggle.text = tr("Reduce interface motion")
+		_motion_toggle.tooltip_text = tr("Reduce interface motion")
 	if _status != null:
 		_refresh_status_text()
 
@@ -354,7 +365,7 @@ func _refresh_status_text() -> void:
 		"saved": _status.text = tr("Display settings saved.")
 		"reverted": _status.text = tr("Changes reverted. Saved display settings restored.")
 		"save_error": _status.text = tr("Could not save display settings (error %d).") % int(_status_value)
-		_: _status.text = tr("Changes apply immediately. Keep saves them; Revert or Back restores saved display settings.")
+		_: _status.text = tr("Changes apply immediately. Close to revert.")
 
 
 func _select_metadata(picker: OptionButton, value: Variant) -> void:

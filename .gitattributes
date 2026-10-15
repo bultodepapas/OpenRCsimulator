@@ -72,3 +72,4 @@
 /research/rc-monster-truck/monster-car-2/visual_bake.py text eol=lf
 /app/data/economy/*.json text eol=lf
 /app/data/economy/**/*.json text eol=lf
+/research/crash-economics/*.json text eol=lf

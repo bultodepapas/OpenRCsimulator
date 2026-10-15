@@ -1,0 +1,98 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   route: no user arguments -> Home
+ok   route: --trace -> direct flight
+ok   route: --quick-flight -> direct flight
+ok   airplane selection preserves the current flight scene
+ok   research helicopter selects the dedicated flight script
+ok   direct CLI selector finds a helicopter catalog ID
+ok   airplane Home keeps the existing stick labels
+ok   Home switches the legend to cyclic, yaw and collective
+ok   research helicopter Home offers Fly from the pad
+ok   helicopter Home explains startup sequence
+ok   explicit practice hover remains selectable
+ok   airplane Workshop and Natural Random are disabled for the rotorcraft
+ok   Home shown, no flight scene, no simulation
+ok   Home backdrop: our airplane, its camera current
+ok   Fly is full width in the pinned primary action strip
+ok   Workshop stays in the scrollable action route
+ok   garage selector and entry are integrated into the Home column
+ok   language, Help, Controls and Settings stay in the pinned footer
+ok   Help and Settings fit in the initial Home viewport
+ok   Default flight page fits without scrolling
+ok   Language and Controls keep their full labels
+ok   footer flows controls into rows rather than wrapping button text
+ok   contrast: Fly normal text 5.38:1 >= 4.5
+ok   contrast: Fly hover text 6.06:1 >= 4.5
+ok   contrast: Fly pressed text 7.38:1 >= 4.5
+ok   contrast: Quit normal text 14.06:1 >= 4.5
+ok   contrast: Quit hover text 8.34:1 >= 4.5
+ok   contrast: Quit pressed text 12.17:1 >= 4.5
+ok   Fly inherits Button's focus outline, without fill
+ok   contrast: focus outline on panel 8.25:1 >= 3
+ok   contrast: every Home label >= 4.5:1 on its surface (worst 7.66, "ALPHA")
+ok   smallest text is 18.0 px tall (>= 17 at 1280x720)
+ok   Spanish Language and Controls labels fit without clipping
+ok   initial focus on Fly
+ok   focus outline visible (keyboard focus)
+ok   Down -> Language
+ok   Right -> Controls
+ok   Right -> Settings
+ok   Up -> Fly
+ok   keyboard opens section 0 without launching
+ok   keyboard opens section 1 without launching
+ok   keyboard opens section 2 without launching
+ok   keyboard opens section 3 without launching
+ok   flight page fits jensen-das-ugly-stik-60 / en without scrolling
+ok   flight page fits stik-glow-61fx-2t / en without scrolling
+ok   flight page fits stik-glow-55ax-2t / en without scrolling
+ok   flight page fits stik-glow-fs64v-4t / en without scrolling
+ok   flight page fits gp-extra-300s-60 / en without scrolling
+ok   flight page fits p51d-mustang-120 / en without scrolling
+ok   flight page fits sebart-avanti-s-a200-p100rx / en without scrolling
+ok   flight page fits turbo-lumber-evolution / en without scrolling
+ok   flight page fits xcell-60-research / en without scrolling
+ok   flight page fits jensen-das-ugly-stik-60 / es without scrolling
+ok   flight page fits stik-glow-61fx-2t / es without scrolling
+ok   flight page fits stik-glow-55ax-2t / es without scrolling
+ok   flight page fits stik-glow-fs64v-4t / es without scrolling
+ok   flight page fits gp-extra-300s-60 / es without scrolling
+ok   flight page fits p51d-mustang-120 / es without scrolling
+ok   flight page fits sebart-avanti-s-a200-p100rx / es without scrolling
+ok   flight page fits turbo-lumber-evolution / es without scrolling
+ok   flight page fits xcell-60-research / es without scrolling
+ok   navigating did not start a flight
+ok   Quit requests closing the app
+ok   Settings exposes its source control for focus restoration
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   Enter on Fly starts the flight
+ok   double Enter -> exactly one flight session
+ok   Home and its backdrop freed after Fly
+ok   the flight's camera is the one in use
+ok   Fly saves the selected default runway start
+ok   fresh Home flight uses gentle turbulent wind
+ok   fresh Home flight has passing evening and latency diagnostics
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+ok   direct --aircraft=xcell-60-research creates the dedicated helicopter main
+ok   direct helicopter night arguments reach the validated world startup
+ok   helicopter night setter applies options to the live world
+ok   helicopter night setter rejects an unknown profile without changing it
+ok   direct helicopter route completes setup and starts on the pad
+ok   saved fixed-wing weather fixture starts with turbulence
+ok   test settings fixture saves
+ok   Home loads the saved turbulent weather before vehicle selection
+ok   helicopter preview finishes asynchronously
+ok   helicopter selection clears only turbulence and preserves steady wind/gusts
+ok   Home selects the HX-700 visual and keeps Fly enabled
+ok   helicopter weather summary explains its turbulence and altitude-varying atmosphere limits
+ok   reopened Weather editor starts from the supported helicopter selection
+ok   Weather Apply clears unsupported turbulence and keeps the visible summary truthful
+HELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.
+ok   Home Fly starts on the configured pad on helicopter_main.gd
+ok   Home helicopter startup validates and applies its saved night options
+ok   first-flight hint accepts the rotorcraft session and shows collective
+ok   pause menu hides airplane Workshop, time-of-day and absent overlays
+ok   Continue resumes the same helicopter session
+ok   Restart returns the helicopter to the pad with motor disarmed
+ok   End flight returns to Home with the research helicopter selected
+all UI home checks passed

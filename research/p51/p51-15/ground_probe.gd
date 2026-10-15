@@ -221,6 +221,10 @@ func _run_case(label: String, initial: PackedFloat64Array, rpm: float, engine_ru
 	session.engine_running = engine_running
 	var first: Dictionary = pilot.call(0.0, initial)
 	_set_commands(first)
+	# P51-11b: an airborne case of a retractable aircraft (the approach) flies with the gear down and locked.
+	var gear_down: bool = session.gear_is_retractable() and not on_runway
+	if gear_down:
+		session._gear_requested_down = true
 	session.sim.inputs = session._inputs()
 	var aux: PackedFloat64Array = session.sim.aux.duplicate()
 	if aux.size() < 4:
@@ -229,6 +233,9 @@ func _run_case(label: String, initial: PackedFloat64Array, rpm: float, engine_ru
 	aux[1] = session.sim.inputs[0]
 	aux[2] = session.sim.inputs[1]
 	aux[3] = session.sim.inputs[2]
+	if gear_down:
+		aux[session.gear_aux_index()] = 1.0
+		aux[session.gear_aux_index() + 1] = 1.0
 	if session.downwash_index() >= 0:
 		aux[session.downwash_index()] = session._wing_cl(initial, aux, 0.0)
 	session.sim.aux = aux

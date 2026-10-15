@@ -81,6 +81,20 @@
             "present": true
           }
         ]
+      },
+      "retractable_taildragger": {
+        "module": "gear.retractable_taildragger.v1",
+        "law": "gear.retractable_point_contacts.v1",
+        "presence_relations": [
+          {
+            "path": "landing_gear",
+            "present": true
+          },
+          {
+            "path": "landing_gear.retraction",
+            "present": true
+          }
+        ]
       }
     },
     "propulsion_layout": {

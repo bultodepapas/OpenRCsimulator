@@ -31,6 +31,24 @@ class RuntimeEconomicsTests(unittest.TestCase):
             self.assertEqual(route["source_sha256"], exact_hash, aircraft_id)
             self.assertEqual(self.dossiers[aircraft_id]["source_sha256"], exact_hash, aircraft_id)
 
+    def test_aircraft_catalog_discovery_identity_normalizes_line_endings(self) -> None:
+        source = (
+            'const ENTRIES := [\n'
+            '\t{\n'
+            '\t\tid = "example-aircraft",\n'
+            '\t\tdata = "res://data/aircraft/example-aircraft.json",\n'
+            '\t},\n'
+            ']\n'
+        ).encode("utf-8")
+        crlf_source = source.replace(b"\n", b"\r\n")
+
+        lf_hash, lf_routes = build_runtime._aircraft_catalog_discovery_identity(source)
+        crlf_hash, crlf_routes = build_runtime._aircraft_catalog_discovery_identity(crlf_source)
+
+        self.assertEqual(crlf_hash, lf_hash)
+        self.assertEqual(crlf_routes, lf_routes)
+        self.assertEqual(lf_routes, {"example-aircraft": "res://data/aircraft/example-aircraft.json"})
+
     def test_stik_bom_covers_real_inventory_and_keeps_four_servos_separate(self) -> None:
         dossier = self.dossiers["jensen-das-ugly-stik-60"]
         self.assertTrue(dossier["complete"])
@@ -74,7 +92,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
 
     def test_all_other_routes_stay_explicitly_incomplete(self) -> None:
         for aircraft_id, dossier in self.dossiers.items():
-            if aircraft_id in {"jensen-das-ugly-stik-60", "stik-glow-61fx-2t"}:
+            if aircraft_id in {"jensen-das-ugly-stik-60", "stik-glow-61fx-2t", "stik-glow-55ax-2t", "stik-glow-fs64v-4t"}:
                 continue
             self.assertFalse(dossier["complete"], aircraft_id)
             self.assertTrue(dossier["missing"], aircraft_id)
@@ -82,8 +100,80 @@ class RuntimeEconomicsTests(unittest.TestCase):
             self.assertEqual(dossier["propeller_component_id"], "", aircraft_id)
             self.assertEqual(dossier["propeller_inspection_ids"], [], aircraft_id)
 
+    def test_variant_groups_replace_donor_parts_once(self) -> None:
+        base = {row["id"]: row for row in self.dossiers["jensen-das-ugly-stik-60"]["components"]}
+        cases = {
+            "stik-glow-55ax-2t": ("os-max55ax-osmg0557", "apc-lp12070"),
+            "stik-glow-fs64v-4t": ("os-fs64v-osmg901", "ma-k14x6"),
+        }
+        for aircraft_id, (engine_offer, prop_offer) in cases.items():
+            with self.subTest(aircraft_id=aircraft_id):
+                dossier = self.dossiers[aircraft_id]
+                parts = {row["id"]: row for row in dossier["components"]}
+                self.assertTrue(dossier["complete"])
+                self.assertFalse(dossier["missing"])
+                self.assertEqual(len(parts), 9)
+                self.assertEqual(parts["engine_and_muffler"]["offer_id"], engine_offer)
+                self.assertEqual(parts["propeller"]["offer_id"], prop_offer)
+                self.assertEqual(parts["propeller"]["unit_minor"], self.context["offer_by_id"][prop_offer]["amount_minor"])
+                for component_id in base.keys() - {"engine_and_muffler", "propeller"}:
+                    self.assertEqual(parts[component_id], base[component_id])
+                self.assertEqual(dossier["contact_components"], {"propeller/propulsion_main": ["propeller"]})
+                self.assertEqual(parts["engine_and_muffler"]["physical_inventory_ids"], ["item_engine_main", "item_muffler_main"])
+
+    def test_variant_identity_guards_refuse_unreviewed_hardware(self) -> None:
+        aircraft_id = "stik-glow-55ax-2t"
+        for item_id, field in [("item_engine_main", "name"), ("item_propeller_main", "mass"),
+                               ("item_muffler_main", "position"), ("item_wing_airframe", "name")]:
+            with self.subTest(item_id=item_id, field=field):
+                changed = copy.deepcopy(self.context)
+                row = next(row for row in changed["route_sources"][aircraft_id]["source"]["inventory"] if row["id"] == item_id)
+                if field == "name":
+                    row["name"] = "unreviewed hardware"
+                elif field == "mass":
+                    row["mass"]["value"] += 0.001
+                else:
+                    row["position"]["value"][0] += 0.001
+                with self.assertRaisesRegex(build_runtime.ContractError, "identity mismatch|unreviewed inherited"):
+                    build_runtime._build_dossiers(changed)
+        changed = copy.deepcopy(self.context)
+        changed["route_sources"][aircraft_id]["source"]["propulsion"]["propeller"]["name"] = "unreviewed rotor"
+        with self.assertRaisesRegex(build_runtime.ContractError, "expected_propulsion"):
+            build_runtime._build_dossiers(changed)
+
+    def test_variant_authoring_rejects_partial_or_duplicate_overrides(self) -> None:
+        aircraft_id = "stik-glow-fs64v-4t"
+        mutations = [
+            lambda row: row.pop("expected_propulsion"),
+            lambda row: row["expected_inventory"].pop(),
+            lambda row: row["expected_inventory"].append(copy.deepcopy(row["expected_inventory"][0])),
+            lambda row: row["component_overrides"].append(copy.deepcopy(row["component_overrides"][0])),
+            lambda row: row["component_overrides"][0]["physical_inventory_ids"].pop(),
+            lambda row: row["component_overrides"][0].update(quantity=2),
+            lambda row: row["component_overrides"][0].update(price_observation="unknown-offer"),
+            lambda row: row.pop("inherits"),
+        ]
+        for index, mutate in enumerate(mutations):
+            with self.subTest(mutation=index):
+                changed = copy.deepcopy(self.context)
+                mutate(changed["fleet"][aircraft_id])
+                with self.assertRaises(build_runtime.ContractError):
+                    build_runtime._build_dossiers(changed)
+
+    def test_variant_price_refresh_keeps_physical_identity_and_baseline(self) -> None:
+        changed = copy.deepcopy(self.context)
+        changed["offer_by_id"]["ma-k14x6"]["amount_minor"] += 100
+        dossiers = {row["aircraft_id"]: row for row in build_runtime._build_dossiers(changed)}
+        aircraft_id = "stik-glow-fs64v-4t"
+        before = self.dossiers[aircraft_id]
+        after = dossiers[aircraft_id]
+        self.assertEqual(after["source_sha256"], before["source_sha256"])
+        self.assertEqual(dossiers["jensen-das-ugly-stik-60"], self.dossiers["jensen-das-ugly-stik-60"])
+        self.assertEqual(next(r for r in after["components"] if r["id"] == "propeller")["unit_minor"],
+                         next(r for r in before["components"] if r["id"] == "propeller")["unit_minor"] + 100)
+
     def test_stik_propeller_event_bindings_resolve_to_component_ids(self) -> None:
-        for aircraft_id in ("jensen-das-ugly-stik-60", "stik-glow-61fx-2t"):
+        for aircraft_id in ("jensen-das-ugly-stik-60", "stik-glow-61fx-2t", "stik-glow-55ax-2t", "stik-glow-fs64v-4t"):
             dossier = self.dossiers[aircraft_id]
             self.assertEqual(dossier["contact_components"], {"propeller/propulsion_main": ["propeller"]})
             self.assertEqual(dossier["propeller_component_id"], "propeller")

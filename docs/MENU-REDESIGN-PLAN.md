@@ -1,211 +1,319 @@
-# OpenRC Simulator — menu and shell redesign
+# OpenRC Simulator — cinematic menu and experience redesign
 
-**Revision 4 · 2026-10-15 · Owner: product shell · UI-20…29.** UI-20/21 and UI-20-R1 are delivered. The first implementation of UI-22…26/28 is in source; release qualification and the remaining work below are open. [Implementation evidence](research/menu-investigations/UI-22-26-R1/README.md). The [UI-20-R1 report](research/menu-investigations/UI-20-R1/README.md) owns dated observations, screenshots, sources and limitations.
+**Revision 5 · 2026-10-15 · Owner: product shell · UI-20…29.**
 
-Build a clear, attractive game interface that works from 720p to native 4K in English and Spanish. Prioritize readable scale and a short route to flight, then visual polish. Reuse the aircraft, field, screen stack, controller support and free licensed resources already available.
+**Status: detailed implementation plan.** The earlier shell/scaling implementation and Home/Settings repairs exist in source, but the owner rejected their aesthetic result. This revision replaces the previous visual direction and delivery sequence. The new composition, camera, materials and scaling policy below are **proposed**, not implemented.
 
-## 1. Scope and foundation
+Build an aircraft-led RC club experience: a believable field, a well-lit model, a clear route to flight and a restrained interface that leaves the world visible. The [dated visual/resource investigation](research/menu-investigations/UI-20-R2/README.md) owns the current-screen diagnosis, reference analysis, Godot/GitHub research and source licenses.
 
-Owns `app/app_root.*`, `app/ui/`, `app/app_state/`, `app/i18n/`, UI tests/captures and proposed `app/assets/ui/`. Coordinate display settings with DT, weather with M5, sky/lighting with TOD/FW, Workshop with AE, failures with EM, controllers with the [controller track](plans/controller-support.md), overlays with [HUD](plans/flight-overlays.md), and garage with RCV. No simulation-kernel or aircraft-data changes. [Ownership registry](README.md#tracks-plans-and-step-ids).
+## 1. Outcome, scope and retained work
 
-Preserve `Screen`, `ScreenStack` and `Widgets`: named session holds, top-screen input isolation, focus restoration, held-input release rules, validation before flight and trace-save recovery. Preserve the technical CLI route. [UI-21 proof](research/menu-investigations/UI-21/README.md).
+The first screen must immediately communicate **which aircraft is selected, where the session takes place and how to start**. It must work at native 1080p and fullscreen 4K without a page scrollbar at normal text size. Aircraft, runway and club must share a convincing space; the menu must not consume a third of the image simply because the screen is large.
 
-The October 11 audit is historical. Current source already includes controller configuration/menu routing, Workshop, Natural Random, failure settings, garage entry, sky/cloud tabs and configurable flight overlays. Do not schedule these features as absent. General Settings and coherent display/UI scaling remain pending. Physical controller qualification stays with its owner.
+UI owns `app/app_root.*`, `app/ui/`, shell preferences/localization, UI tests and proposed UI assets. Coordinate field/scenery/material work with [SC](SCENERY-PLAN.md), [L/LU](LANDSCAPE-PLAN.md), [FW](FIELD-WORLD-PLAN.md), [TOD](TIME-OF-DAY-PLAN.md) and [VQ](plans/global-performance-visual-quality.md); controllers with [D6-GP](plans/controller-support.md), Workshop with AE, failures with EM, garage with RCV, overlays with HUD and display/export with DT. [Ownership registry](README.md#tracks-plans-and-step-ids).
 
-Retain delivered maintenance: [UI-05-R1 legend reuse](research/menu-investigations/UI-05-R1/README.md), [UI-05-R2 preview cache](research/menu-investigations/UI-05-R2/README.md), [UI-05-R3 selected-resource loading](research/menu-investigations/UI-05-R3/README.md), [UI-06d-R2 launch captions](research/menu-investigations/UI-06d-R2/README.md), and [UI-16 update notices](research/menu-investigations/UI-16/README.md). Loading follow-ups remain in [investigation 26](research/menu-investigations/26-menu-responsiveness-loading.md).
+Preserve these implemented foundations:
 
-## Current implementation milestone
+- `Screen`, `ScreenStack` and widgets: top-screen input isolation, focus restoration, named session holds and held-input release. [UI-21 proof](research/menu-investigations/UI-21/README.md).
+- Catalog validation, latest-request preview ownership, bounded model cache and selected-resource loading. [UI-05-R2](research/menu-investigations/UI-05-R2/README.md), [UI-05-R3](research/menu-investigations/UI-05-R3/README.md), [remaining loading work](research/menu-investigations/26-menu-responsiveness-loading.md).
+- Native fullscreen Keep/Revert with a 15-second wall-clock deadline, separate display/accessibility preferences, live language, opaque panels and reduced motion. Retain `Window` state-machine recovery; do not return to manually resizing a borderless window. [Implementation/recovery evidence](research/menu-investigations/UI-22-26-R1/README.md).
+- Existing controller/radio setup, Natural Random, failure practice, Workshop trials, car activity, Help, recording recovery and technical CLI routes. These are real features to reorganize, not future placeholder tiles.
+- Home sectioning and compact Settings repairs as functional baselines. Their [native captures](research/menu-investigations/UI-22-26-R1/README.md) do not close visual acceptance.
 
-- Interactive Home uses native `canvas_items` scaling with a 1280×720 logical base and expanded aspect ratio: 1×/1.5×/2×/3× at 720p/1080p/1440p/4K. Technical CLI launches retain their existing route.
-- Home pins Fly and language/help/quit/controls/settings; setup, Workshop, practice and the integrated RC-car activity scroll with visible overflow. Full labels wrap. Existing aircraft preview and launch contracts remain.
-- Pause has Session options and Exit options disclosures, plus Settings and Help. Back collapses an open disclosure before resuming; child pages return to Pause without advancing simulation ticks. Readiness and recording recovery messages remain in the scrollable pause content.
-- Settings previews window/borderless mode with a 15-second real-time Keep/Revert deadline, themed text at 100–200%, opaque panels and reduced motion. Language applies immediately through the existing store; display/accessibility preferences are separate. Controls and Help/About are nested destinations.
-- The shared theme covers selectors, fields, popups and tabs; panels use 0.94 opacity or an opaque fallback. Pages replace lower navigation chrome and fade in for 140 ms unless reduced motion is selected. Help has a pinned Close header and correct runway/airborne guidance.
+No flight-model tuning, aircraft-geometry edits, new gameplay modes, recording changes or golden-flight rerecording belongs to this redesign. Presentation poses never change accepted simulation state. Close-up assets, if justified, come from existing or freely downloadable licensed sources and their documented pipelines.
 
-The accessibility adjustment currently enlarges **themed text**, not the entire logical viewport; this avoids shrinking legacy modal space. Local font overrides and glyph ink bounds still need the complete typography audit. Native evidence covers representative dense pages at 200%, not every advanced tab, pseudo-locale or platform. Audio controls, safe-margin controls, a thumbnail catalog, staged paused weather, full page-by-page refinement, timing budgets and formative user testing remain open. Do not treat this milestone as completion of UI-29.
+## 2. Diagnosis and design thesis
 
-## 2. Audit findings that determine priority
+| Current finding | Required response |
+| --- | --- |
+| 440 logical pixels of sidebar in a 1280-wide design; approximately 1320 physical pixels at 4K | Separate readable type scale from panel proportions; substantially narrow and bound navigation. |
+| Fixed 12° vertical FOV, airborne pose, distant background | Compose a ground-level view with foreground, aircraft, runway and recognizable club buildings. Adjust position, aim and lens together. |
+| Dark aircraft in the reviewed sunset capture | Establish exposure and material separation before adding effects. Canopy, wings and fuselage must remain readable. |
+| Repeated boxes, wide controls and persistent bottom slab | Use quiet rows, compact actions and less surface area. Give space to the scene. |
+| Long weather/time descriptions on Home | Show an operational summary; put specifications, limitations and advanced controls in explicit destinations. Keep blocking reasons visible. |
+| Layout tests pass while the owner rejects the result | Require native visual review with concrete composition gates, separately from functional verification. |
 
-Native Windows evidence comprises **78 captures**: Home/Pause at 1280×720, 1920×1080, 2560×1440 and 3840×2160 in EN/ES; dense screens also at 720p, 1080p and 4K. The actual monitor is 3840×2160; Godot 4.7.2 uses Compatibility on RTX 3090. [Complete gallery](research/menu-investigations/UI-20-R1/GALLERY.md).
+**Visual thesis:** a believable RC club photographed with care, framed by charcoal translucent surfaces, warm white type and a restrained amber selection/action accent.
 
-| Priority | Observed problem | Required response |
-| --- | --- | --- |
-| P0 | Home stays 440 physical pixels wide at every resolution; utility text stays 16/19 px | Automatic scaling. At 4K the sidebar occupies 11.5% of width and navigation is tiny. UI-23 |
-| P0 | Language and Controls truncate in both languages at every tested size | Full labels and reflow; extra screen area must reach the content. UI-22/25 |
-| P1 | Ten pause actions form one long list; End/Quit are below the initial 720p viewport | Compact action groups and a discoverable exit route. UI-26 |
-| P1 | Weather competes with Fly; Workshop and a mode share a row; garage sits in the opposite corner | Distinguish activity, setup, tools and preferences. UI-25 |
-| P1 | Conditions, Controls, Workshop and Help differ in density, tabs and footer treatment | Shared page structure, bounded reading width and predictable scrolling. UI-24/26 |
-| P1 | Home/pause expose different environment controls; some changes affect a later flight | Explicit current-flight/next-flight scope before Apply. UI-26 |
-| P1 | Help says the flight starts in the air while default Home selects runway | Review dynamic claims and capability-aware help, not just translated strings. UI-26 |
-| P2 | Nearly opaque sidebar, many boxed controls and mixed widget styling | Cohesive material, typography, fewer boxes and restrained motion. UI-22/28 |
+**Content plan:** world and aircraft first; compact activity navigation; selected aircraft and next-flight summary; one primary action; detail on request.
 
-Existing Home layout tests pass for the catalog at 720p/1080p. They do not detect clipped labels or establish 4K readability. The audit's 50 sampled flow records passed using the existing event driver; native physical input, all tabs and accessibility scaling remain qualification work. [Evidence and limits](research/menu-investigations/UI-20-R1/README.md).
+**Interaction thesis:** immediate focus feedback, a short panel transition and a deliberate camera move when changing presentation context. Motion settles and never delays input. Reduced motion uses the same final compositions without camera travel.
 
-## 3. Art direction: a modern flying field
+Use the supplied airfield direction discussed around references 7–8 as the preferred composition; the wider concept around reference 6 informs horizontal organization with fewer lower-screen modules. Use Forza's grounded vehicle/space relationship, Cyberpunk's identity/focus hierarchy, MSFS's aircraft thumbnails and GT7's concise pause principle. [Reference inspection and limits](research/menu-investigations/UI-20-R2/README.md#reference-interpretation).
 
-**Visual thesis:** an aircraft-led, calm flight interface with dark translucent instrument surfaces, warm readable text, restrained red emphasis and precise amber focus.
+Avoid literal neon-city/fantasy dressing, airline-scale terminals that make RC models look full-size, marketplace panels, decorative telemetry, mirror-like dry pavement and copied commercial branding. This is an October 2026 design synthesis, not a claim that a universal trend requires glass or animation.
 
-**Content hierarchy:** aircraft/field as the visual anchor; current activity and next-session summary; one dominant Fly/Drive/Resume action; secondary tools/preferences. Each page answers one question.
+## 3. Home composition
 
-**Interaction thesis:** immediate focus/selection feedback, a short fade and 6–8 logical-pixel translation between screens, and contextual detail revealed on focus. Keep a still background by default. Animation never delays input isolation or simulation holds.
+### Desktop arrangement
 
-| Visual reference | Adopt | Avoid |
-| --- | --- | --- |
-| [Cyberpunk 2077 menus](https://interfaceingame.com/games/cyberpunk-2077/) | Strong identity, short lateral navigation, atmosphere and consistent input prompts | Tiny red text, glitch effects and copied branding |
-| [Microsoft Flight Simulator 2024 menu](https://www.helisimmer.com/articles/initial-impressions-msfs-2024-not-impressed) | World as protagonist and distinct activities | Marketplace-sized tile density for a small RC simulator |
-| [Forza Horizon 6, 2026 accessibility review](https://caniplaythat.com/2026/06/03/forza-horizon-6-accessibility-review/) | Vehicle context, unmistakable selection and adjustable presentation; [official feature description](https://forza.net/news/forza-horizon-6-radio) | Promotional badges and many equally loud destinations |
-| [Gran Turismo 7 pause](https://www.gran-turismo.com/us/gt7/manual/race/05) | Brief action hierarchy over a frozen dimmed scene | Rigid horizontal navigation when Spanish/large text needs vertical reflow |
+At the 1920×1080 reference composition, start with a 48-pixel safe inset, a **304–340-pixel navigation column**, and a dominant open scene. Numbers in this plan are prototype targets until measured. Controls should occupy no more than approximately 25% of image area; the readability scrim may extend beyond them.
 
-These are specific references, not proof of a universal “2026 trend.” Established Cyberpunk/GT7 examples complement FH6 and current guidance. [Image links, dates and observations](research/menu-investigations/UI-20-R1/README.md#external-visual-references).
-
-### Material and visual system
-
-- Keep charcoal/blue-green surfaces, cream text, red primary actions and amber focus. Error/warning/success also need words or symbols. Prefer quiet rows/dividers; use cards for aircraft selection or genuinely grouped information.
-- Prototype panel opacity **0.90–0.96**, with **1.0** as the high-contrast option. This range is proposed, not a measured guarantee. Protect text with a controlled scrim; test noon sky, clouds, vegetation, sunset and night. Do not lower today's 0.97 opacity globally without proof. Optional local blur follows a measured Compatibility experiment; crisp translucency is the baseline.
-- Atkinson Hyperlegible Next 400/700 remains the proposed free OFL font; compare against bundled Open Sans. Reuse existing Kenney controller glyphs and keycaps. Add only necessary labelled Lucide icons, recording source/version/hash/licence. Do not draw replacements for suitable free assets.
-- At the 720p design size, prototype title 32–36, section 24–28, body/control 22–24 and secondary 18–20 nominal font sizes. Select final values from **rendered glyph measurements**. Smaller metadata must not be necessary to operate the screen.
-- Use 4/8/12/16/24/32/48 spacing, modest 6–10 radii, 1 px quiet borders and a distinct focus outline. Start with 48–56 logical-pixel controls, 64 px primary actions and 8 px separation. Increase height for wrapping/large text.
-- Theme buttons, selectors/popups, tabs, sliders, spin boxes, text fields, checks, scrollbars, tooltips and errors in every state. Explain disabled actions on focus as well as hover.
-- Start with 120–180 ms transitions and 80–120 ms hover feedback. Provide reduced motion; persistent recovery messages must not disappear as toasts. Update notices never steal focus.
-
-Target text contrast ≥4.5:1, focus/essential boundaries ≥3:1 and inactive text ≥3:1 over the **composited background**, not only token pairs. [XAG 102](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/102). These are project gates, not accessibility certification.
-
-## 4. Resolution, scaling and localization contract
-
-### One automatic scale plus user adjustment
-
-Prototype `canvas_items`, a 1280×720 design area and `expand` aspect. Keep 3D rendering at the selected native window size; do not stretch a 720p render texture to 4K. Audit every CanvasLayer/overlay. [Godot resolution guidance](https://docs.godotengine.org/en/stable/tutorials/rendering/multiple_resolutions.html); verify behavior on the pinned engine.
-
-| Output | Nominal automatic factor, 16:9 | 400–440 logical-pixel column becomes | Main gate |
-| --- | --- | --- | --- |
-| 1280×720 | 1.0 | 400–440 physical px | Compact layout, Spanish strings, reachable actions |
-| 1920×1080 | 1.5 | 600–660 px | Main composition and reading distance |
-| 2560×1440 | 2.0 | 800–880 px | Intermediate/fractional styling |
-| 3840×2160 | 3.0 | 1200–1320 px | Native 4K, including dialogs/popups |
-
-This is a prototype target. A 100–200% **accessibility adjustment** is separate; “200% maximum” must not cap 4K automatic scale at 2×. Do not multiply by Windows DPI again and scale twice. Define effective scale once and log it. The audit measured 144 DPI but `screen_get_scale()` returned 1.0 on Windows; that getter alone is insufficient.
-
-At default scale target rendered body-letter height ≥17 px at 720p, 26 at 1080p, 35 at 1440p and 52 at 4K. These deliberately favor game/controller reading distance. [XAG 101](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/101) distinguishes console 26/52 from PC 18/36 at 1080p/4K; 720p/1440p values here are project scaling targets. Measure ink bounds, including letters inside input glyphs. Support 200% text without lost actions or meaning.
-
-### Reflow before truncation
-
-Choose compact layouts from available **logical** dimensions. High scale/small windows use one column, a scrolling body and pinned header/footer. Keep Fly/Resume, Back and Apply/Cancel reachable. Do not shrink text to fit. Ordinary settings must not require horizontal scrolling. Show overflow cues; focus must reveal the entire control and its label.
-
-Keep Home's brand, setup and actions close together as height grows; remove the expanding-spacer composition that scatters them at 4K. Wider aspect ratios reveal more scene, not longer paragraphs. Bound reading panels, clamp tooltips/popups to a safe inset and allow Workshop two columns only when both remain useful. Start with 24 logical pixels of safe inset; provide extra TV margins.
-
-Normal minimum is 1280×720. Test 1024×576 as a recovery/compact case and document limitations if necessary. Add 1280×800/1920×1200, 2560×1080/3440×1440, live resizing and maximize/restore. Four 16:9 screenshots do not establish “all resolutions.”
-
-### English and Spanish
-
-Primary actions must show complete labels: no `Languag`, `Idioma:` without its value or `Cont`. Use `Language / Idioma` with `English / Español`; retain a discoverable Home language entry after moving preferences into Settings. Allow two-line option values and detail views for long descriptions. Optional identifiers may ellipsize only when their full value is keyboard/mouse accessible.
-
-Test real EN/ES plus 30–40% pseudolocalization; accents, punctuation, `%`, `°`, `±`, `μ`, units, long device/aircraft names, errors and disabled reasons. Preserve proper names. Live language changes must preserve focus and drafts. Numeric parsing/formatting must round-trip without changing units or saved values.
-
-Adopt consistent labels: `Resume / Continuar`, `Restart flight / Reiniciar vuelo`, `Return to Home / Volver al inicio`, `Quit to desktop / Salir al escritorio`, `Settings / Ajustes`, `Controls / Controles`, `Flight conditions / Condiciones de vuelo`. Resolve `Taller` versus `Laboratorio de aviones` in one glossary while retaining experimental status.
-
-## 5. Information architecture and flows
-
-```mermaid
-flowchart TD
-    H[Home: next session] --> F[Fly / open activity]
-    H --> A[Aircraft / vehicle selection]
-    H --> C[Conditions and practice]
-    H --> T[Workshop]
-    H --> S[Settings]
-    H --> Q[Help]
-    F --> P[Pause: frozen session]
-    P --> R[Resume]
-    P --> J[Restart]
-    P --> E[Session options]
-    P --> S
-    P --> Q
-    P --> H
-    E --> C
-    E --> O[Flight overlays]
-    E --> T
-    S --> D[Display / Audio / Accessibility / Controls / Language / About]
+```text
+┌───────────────────────────────────────────────────────────────────────┐
+│ OPENRC SIMULATOR                                 Language · Settings   │
+│                                                                       │
+│ Flight                                                                │
+│ Aircraft                 CLUB / SHELTERS        DISTANT LANDSCAPE       │
+│ Practice                                                              │
+│ Workshop                           SELECTED AIRCRAFT                   │
+│ RC garage                          on apron / suitable stand           │
+│                                   ╱                                   │
+│                          RUNWAY / FIELD EDGE                          │
+│                                                                       │
+│ Aircraft name             Start · Conditions · Input status            │
+│ [ FLY ]                   concise editable session summary            │
+│                                                                       │
+│ Help · Quit                                        Select / Back      │
+└───────────────────────────────────────────────────────────────────────┘
 ```
 
-### Home and aircraft selection
+This is a spatial wireframe, not a full-width bottom card. Keep the summary in one bounded strip or two short rows. Keep the aircraft clear of navigation, summary and safe margins. The wordmark is recognizable without consuming the top quarter. Full build identity belongs in About; a small Alpha/experimental indication remains where relevant.
 
-Brand and concise activity navigation at top left; a bounded next-session block below; aircraft/field across the remaining canvas; a quiet input-hint footer. Keep the primary action visible without scrolling at default scale. Preserve Enter-to-fly when Fly owns focus; typing in a field must never launch.
+Five real destinations: Flight, Aircraft, Practice, Workshop and RC garage. Flight presents the prepared session and Fly without a mandatory wizard. Settings/language/Help are quieter but easy to find. Quit stays explicit and keyboard/controller reachable.
 
-Next-session rows: aircraft/status, launch method, conditions, practice mode and input readiness. **Fly spans the action area**, instead of competing with Weather. Conditions owns wind, atmosphere, time and sky; advanced physical parameters retain units and explanations behind Advanced.
+| Visible item | Budget and behavior |
+| --- | --- |
+| Aircraft name | One or two lines; full name accessible without widening the whole menu. |
+| Aircraft status | One short status plus Details for complete limitations. Blocking reasons remain next to Fly. |
+| Start | Compact labeled selector/edit row; only supported launch methods. |
+| Conditions | Short wind/time summary; advanced turbulence/atmosphere behind Conditions. |
+| Input | Device/profile and actionable readiness; no duplicate full control legend. |
+| Primary action | One Fly button, initially 220–280×56–64 reference pixels; grow/reflow for language/text needs. No full-sidebar red slab. |
+| Utility prompts | Quiet edge row; no opaque full-width footer by default. Essential prompt labels remain readable. |
 
-One labelled activity entry reaches flight and RC cars. A car selection changes the action to Open garage/Drive as appropriate. Remove the detached far-corner family selector. Helicopters remain in the existing catalog, exposing only supported actions. No empty future Drone/Multiplayer/Career destinations.
+Aircraft selection is one action from Home. Fly launches the accepted configuration without another confirmation when there is no loss or unresolved validation. Enter/Accept activates the focused control; typing or changing a selector never launches.
 
-Natural Random becomes an explicit practice choice with its existing briefing/reroll/repeat. Failure practice is a scoped option. Workshop remains a separate tool; trial changes never overwrite stock choices. Aircraft selection uses a catalog-driven list or selectable image rows with one preview and clear availability. Reuse model/loading/cache work; add captured thumbnails only when useful. Selection/focus feedback is immediate while resources load; preview failure and flight validity remain distinct.
+### Compact arrangement
+
+Below approximately 1500×850 available logical pixels, reduce gaps, move the summary below navigation and move nonessential description behind Details. Use measured content fit for final breakpoints. Preserve selected aircraft, Start, Conditions and Fly.
+
+At 720p choose fewer simultaneous rows over smaller text. At 200% text use section pages and bounded detail scrolling; primary actions and exits remain reachable. Catalog/help/dense settings may scroll inside their body. **Home and Pause at default text must fit without page scrolling**, including fullscreen 4K.
+
+## 4. Scene, camera and materials
+
+### Compose the field before decorating the menu
+
+Reuse the real field. [Existing postcards](research/scenery-implementation/SC-03/README.md) and `app/scenery/postcards.gd` provide club/pavilion/pits viewpoints. Show a runway diagonal leading into the scene and a recognizable shelter/pavilion in the middle distance. Trees and distant terrain provide depth rather than a wall directly behind the aircraft.
+
+The first experiment compares three shots:
+
+| Shot | Purpose | Starting parameters and checks |
+| --- | --- | --- |
+| A — runway and club | Recommended default Home | Three-quarter aircraft view; camera roughly 0.5–1.2 m above local ground; test 36–46° vertical FOV. Runway diagonal and club landmark visible. |
+| B — pits presentation | Aircraft/Workshop context | Existing shelter/table/stand setting; test 32–42° FOV. Familiar objects establish RC scale without obscuring the model. |
+| C — club overview | Optional field preview | Start from existing 38° club postcard. Use only if useful for context; not default when the selected aircraft becomes too small. |
+
+Test the reported jet, a trainer and helicopter before generalizing. A single fixed camera transform that fits one model is insufficient.
+
+### Framing contract
+
+- Target approximately **38–48% screen width** for the aircraft at 16:9, centered around 65–72% of width. Retain nose/wing/tail/rotor clearance; verify actual bounds for the catalog.
+- Project presentation geometry bounds into the free scene rectangle after reserving UI. Fit by camera position/aim/lens, never by changing model scale.
+- Reframe on aircraft, aspect or UI-layout changes. Cache bounds; no per-frame complete mesh traversal. Preserve preview cancellation and cache limits.
+- Keep contact, runway and a club landmark visible. Avoid sun, trunks or building edges behind labels or crossing the aircraft silhouette.
+- Start with `Camera3D.KEEP_HEIGHT` for landscape aspect; verify 16:10/21:9. Wider screens reveal more world, not wider paragraphs. [Camera3D](https://docs.godotengine.org/en/4.7/classes/class_camera3d.html).
+- Respect authored origins, CG mapping, gear and rotor extents. Do not change hinge names or model geometry to solve framing.
+
+### Grounding and truthful preview
+
+Prefer a parked pose where current bindings support it. Derive wheel/skid contact from visual/gear metadata with the model owner; a mesh bounding-box minimum is insufficient when a propeller or rotor defines it. Shadows follow the actual pose/light.
+
+For unsupported parked visuals, use a suitable existing/free display stand or an intentional separate in-flight presentation. Never invent operational gear or imply ground capability from a display pose. The preview remains observational: no physics ticks, random incidents or input-driven motion. Display pose and session launch selection remain separate.
+
+### Lighting and material priorities
+
+Start with clear daytime/late-afternoon studies. Preserve chosen flight conditions; distinguish a fixed catalog presentation-light preset from next-flight weather/time if both exist.
+
+Prioritize ground contact, restrained roughness/specular separation, readable canopy, coherent sun/sky and building depth. Fix exposure before bloom. Inspect wing/glass/foliage edges at actual 4K size, not just reduced thumbnails.
+
+Inventory existing close-up assets first. Improve only surfaces proven weak in the chosen shot: apron/runway edge, one pavilion/shelter, aircraft highlights and nearby vegetation. Source free compatible PBR materials when needed. Keep texel scale, color, normal strength and roughness coherent. No wholesale scenery replacement is required.
+
+### Renderer policy
+
+Keep Compatibility as baseline. Godot 4.7 documents support for reflection probes, fog, SSAO, glow and tonemapping; DOF, volumetric fog, SSR and CompositorEffects have different support. [Renderer comparison](https://docs.godotengine.org/en/4.7/tutorials/rendering/renderers.html).
+
+A bounded reflection-probe experiment must account for the existing lake and two-slot atlas. Measure update cost and memory before changing atlas capacity. Do not add another full-resolution world viewport solely for glass. Any Forward+ comparison is an isolated VQ/FW experiment with flight-material, sky, water, shadow and export regressions; it cannot silently change production rendering.
+
+## 5. Visual system
+
+### Color and surfaces
+
+Prototype charcoal `#111A20`, warm white `#F3F1EB`, secondary gray `#B8C4C9` and amber `#EABF66`. These are candidate tokens, not certified contrast pairs. Reserve red for destructive/error states; normal Fly/Resume no longer uses a large danger-colored area.
+
+Use local scrims and limited translucent surfaces. Start opacity near 0.86–0.94, increasing it where measured contrast requires; opaque mode is 1.0. Start with quiet 1-pixel edges and 6–8-pixel radii. Avoid borders around every row and nested cards. Focus uses an outline/shape as well as color and remains distinguishable from selection.
+
+### Type, spacing and controls
+
+Compare existing type with Atkinson Hyperlegible Next in real EN/ES screenshots. Prefer one readable family; verify accents, long names, units, numerals and prompts. Pin/download only after comparison and retain its license. [Resource matrix](research/menu-investigations/UI-20-R2/README.md#free-resources-and-github-candidates).
+
+At the 1920×1080 reference scale, begin with brand 42–48, title 34–40, navigation 28–30, body/control 26 and supporting text 22–24. Measure rendered glyphs; nominal font size is not the legibility result. Supporting type cannot carry essential actions if its ink is too small. Body text honors user scaling independently of decorative titles.
+
+Spacing: 4/8/12/16/24/32/48. Base rows 48–56 high; primary actions 56–64, growing for wrapping. Dense pages use aligned labels and bounded values. Settings selectors initially 240–320 wide, adapted to translated values and available space; switches are compact controls in labeled rows.
+
+Theme normal/hover/pressed/focused/disabled/selected states of buttons, selectors/popups, sliders, spin boxes, fields, switches, tabs, scrollbars, tooltips and errors. Disabled reasons work with keyboard focus. Tooltips supplement visible labels.
+
+### Glass and motion
+
+Prototype one shared scene-blur pass below menu content. Keep text/focus sharp; include blur padding, intentional back-buffer ordering and nested-dialog/canopy tests. No separate screen-copy shader per row. [Screen-reading shaders](https://docs.godotengine.org/en/4.7/tutorials/shaders/screen-reading_shaders.html).
+
+Start focus feedback at 100–140 ms, panel transitions at 160–220 ms, optional camera changes at 500–700 ms. Camera movement settles; no constant orbit or mouse parallax is required. Input isolation changes immediately, and animation never delays Fly, Back or errors.
+
+Reduced motion removes camera travel/movement reveals. Opaque mode remains equally coherent. If blur exceeds budget, retain the composed scrim/opaque treatment; effects are optional, composition is not.
+
+## 6. Resolution and localization contract
+
+### A desktop composition with real compact reflow
+
+The present 1280×720 canvas becomes 3× at 4K and preserves its oversized proportions. Test a **1920×1080 desktop composition**, with a compact layout below that size. This is a proposed policy, not a direct constant substitution.
+
+```text
+s = max(1.0, min(physical_width / 1920, physical_height / 1080))
+available_logical_size = physical_size / s
+```
+
+Apply the result once through Godot native canvas scaling; test rounding, resize and pointer alignment. Text scaling stays separate at 100–200%. Do not multiply by Windows DPI again. Keep native 3D resolution independent. [Godot resolution guidance](https://docs.godotengine.org/en/4.7/tutorials/rendering/multiple_resolutions.html).
+
+| Physical output | Candidate factor | Logical area | Navigation width, physical pixels |
+| --- | --- | --- | --- |
+| 1280×720 | 1.0 | 1280×720 compact | 280–304, summary reflows |
+| 1920×1080 | 1.0 | 1920×1080 | 304–340 |
+| 2560×1440 | 1.333… | 1920×1080 | approximately 405–453 |
+| 3840×2160 | 2.0 | 1920×1080 | 608–680; present sidebar approximately 1320 |
+| 3440×1440 | 1.333… | 2580×1080 | Same bounded navigation; more world |
+
+At 1024×576 use a recovery layout with less simultaneous content; document limits. Choose breakpoints from content fit. Audit all CanvasLayers, popups, Help, Workshop, HUD and ground-vehicle screens before adopting a root-window policy; Home must not break flight UI.
+
+Use the PC reading-distance baseline in [XAG 101](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/101): essential rendered character height approximately 18 px at 1080p and 36 at 4K, with larger type available. Project target at 720p: at least 17 px. Measure ink, including prompt labels. A couch/TV presentation requires larger text and separate assessment.
+
+### English, Spanish and text growth
+
+Test EN/ES and 30–40% pseudolocalization, long aircraft/device names, units, degree/percent signs, punctuation and errors. Live switching preserves focus, draft and selection. Numeric editing retains current units/validation.
+
+Use `Fly / Volar`, `Resume / Continuar`, `Aircraft / Aeronaves`, `Practice / Práctica`, `Workshop / Taller`, `RC garage / Garaje RC`, `Conditions / Condiciones`, `Settings / Ajustes`, `Return to Home / Volver al inicio`, `Quit to desktop / Salir al escritorio`. Keep `Language / Idioma` discoverable with its value spelled out.
+
+At 150–200%, stack labels/values, narrow page scope, wrap buttons and scroll only detail bodies with pinned actions. Do not promise that all dense content fits without scrolling at 200%; require complete operability. Default-text no-scroll Home/Pause is a separate hard gate.
+
+## 7. Screen flows and behavior
+
+```mermaid
+flowchart LR
+    H[Home / prepared flight] --> F[Fly]
+    H --> A[Aircraft catalog]
+    H --> C[Conditions]
+    H --> P[Practice]
+    H --> W[Workshop]
+    H --> G[RC garage]
+    H --> S[Settings / Controls / Help]
+    F --> PA[Pause]
+    PA --> R[Resume]
+    PA --> O[Session options]
+    PA --> S
+    PA --> E[Restart / Return / Quit]
+    O --> C
+    O --> W
+```
+
+| Screen | Composition and required behavior |
+| --- | --- |
+| Aircraft catalog | Native-model thumbnails, bounded list/grid and one main preview. Generate thumbnails from accepted models, not stock photos. Show current catalog without empty categories; filters only when useful. Selection/name/focus update immediately, loading separately. Preserve latest-request-wins/cache; preview failure and flight validity stay distinct. Keep experimental/surrogate limits and supported starts accessible. |
+| Practice | Natural Random and failure practice with existing briefing/reroll/repeat/availability. No invented career or achievements. |
+| Conditions | Presets/summary first; Wind, Atmosphere, Time/Sky, Advanced with units. Home edits mean next flight; paused lighting retains explicit current-session semantics. Physical-weather staging remains owner-coordinated work. Cancel preserves accepted state; edits cannot silently reroll active failures. |
+| Workshop | Preview, stock/variant identity, undo/redo, pinned trial action and return. Two columns only when useful; AE owns validation. No overwriting stock data. |
+| RC garage | Clear activity identity and accepted vehicle selection; preserve its dedicated session/controls. Do not imply airplane actions apply to cars. |
+| Help | First flight, input, recovery, limits, About; launch-aware instructions from shared references. Pinned header and readable body. |
+| Overlays | Preserve live preview/autosave semantics and avoid obscuring the edited overlay. HUD owns behavior. |
+| Reports/errors | Preserve incident/economic uncertainty and source identity. Long errors stay recoverable; styling cannot turn estimates into confirmed facts. Nonblocking updates never cover Fly or steal focus. |
 
 ### Pause
 
-Keep the frozen pilot view and a compact left panel: title, aircraft/session identity, concise readiness status. Group **Resume**, **Restart**, **Session options**, **Settings**, **Help**, **Return to Home**. Provide Quit to desktop in the exit group/confirmation, with a direct secondary option where space permits. Avoid today's ten undifferentiated buttons.
+Keep the real frozen pilot view; do not replace it with Home or move the flight camera. Use a controlled scrim and compact panel with session identity. Resume is dominant; Restart, Session options, Settings and Help are secondary. A separated exit group contains Home/Quit. Default Pause fits without scrolling.
 
-Resume is first/default when permitted. Otherwise show the reason and focus recovery. Preserve throttle-on-resume and device-loss warnings. Esc/Back closes the top layer only: popup → page → pause; a subsequent explicit Resume returns to flight. Focus loss never resumes automatically. RC transmitter axes never navigate; only the selected menu gamepad does.
+Readiness/disconnection reasons are visible and actionable. Preserve current radio/gamepad differences; do not reintroduce obsolete gamepad arming gestures. Transmitter axes never navigate menus. Children retain named holds; Esc/Back closes only the top layer. Focus loss never resumes automatically.
 
-Restart preserves accepted launch/conditions. Confirm actual loss such as an active recording/trial; ordinary Resume needs no dialog. Return/Quit preserve trace-save failure and explicit discard. During trials say Return to Workshop. Suppress unrelated first-flight hints and lower-screen interactive chrome under blocking screens.
+Confirm restart/exit only for real loss, such as active recording/trial. Preserve trace-save failure recovery and explicit discard. During a trial, the return destination says Workshop. Resume needs no decorative confirmation.
 
-### Shared screens and transaction semantics
+### Settings and Controls
 
-| Screen | Proposed structure and behavior |
-| --- | --- |
-| Settings | Stable sections: Display, Audio, Accessibility, Controls, Language, About; one scroll body and shared header/footer. Integrate the existing controller subsystem. |
-| Display | Window/borderless fullscreen, UI/text scale, safe margins, supported VSync. Keep/Revert with 15 s real-time timeout, visible recovery and persistence only after Keep. |
-| Conditions | Summary/presets first; Wind, Atmosphere, Lighting/Sky, Advanced. Scope labels: Home = next flight; pause lighting = current flight; paused wind/atmosphere proposed as staged for restart, pending owner transaction design. Cancel never applies a draft. |
-| Failure practice | Preserve next-flight settings and current-flight notice semantics. Keep availability/exclusions explicit; edits cannot silently reroll the active incident. |
-| Controls | Retain Devices/Profile/Axes/AUX/Buttons, Save/Cancel, calibration and held-input isolation. Restyle/reflow every tab. Explain flight versus menu device; place live preview near edited channels. |
-| Help | First flight, Keyboard, Controller/radio, Recovery, Known limits, About. Generate applicable controls from the shared reference; remove stale claims. Pinned header, scrollable content. |
-| Workshop | Retain preview, undo/redo, stock/variant identity and trial return. Fold numeric detail; pin the trial action; one column when compact. AE owns behavior. |
-| Overlays | Retain live preview and preset/individual switches. Match shared typography/focus; do not obscure the overlay being edited. Immediate settings use Done and disclose autosave. HUD owns behavior. |
-| Update/errors/confirmations | Shared type/safe inset/focus rules. Notices never cover Fly or steal focus. Blocking errors give recovery. About owns full version/licences; experimental model status remains near selection. |
+Use a bounded workspace with category navigation and one readable editing column: Display, Audio when supported, Accessibility, Controls, Language, About. Existing nested destinations are valid where their stores/transactions require them. No dummy sliders.
 
-Do not force Apply/Cancel onto immediate overlay settings or silently make drafts immediate. Visual consistency must preserve controller profiles/calibration, Workshop variants, overlay preferences and application settings in their respective stores.
+Default Display/Accessibility fits at 1080p/4K without scrolling; longer bodies scroll independently with title, Back and Keep/Revert pinned. Retain 15-second real-time display recovery, including while paused. Persist display changes only after Keep.
 
-## 6. Delivery phases
+Controls retain Devices/Profile/Axes/AUX/Buttons, calibration and Save/Cancel. Put live channel feedback next to edited channels. Preserve capture/profile ownership; consistent visuals do not mean combining unrelated stores.
 
-Each phase leaves a usable app; split work into small commits with evidence. Estimates are focused engineering days, excluding unavailable hardware/owner review. Reuse UI step IDs; repairs use their existing substep conventions.
+All popups/confirmations fit safe bounds and restore focus. Loading states respond immediately and expose Back when cancellation is supported. Enter/Accept never leaks through a modal into Fly/Resume.
 
-| Phase / ID | Work | Exit evidence | Status |
+## 8. Implementation seams and resources
+
+| Area | Existing seam | Planned change and boundary |
+| --- | --- | --- |
+| Home | `app/ui/home.gd` | Build explicit navigation/summary/action regions directly; avoid accumulating reparenting patches. Preserve public signals/routes. |
+| Presentation | `app/ui/home_scene.gd`, postcards | Authored shot data, render-only pose and projected-bounds framing; reuse builders/cache. Prefer a small helper/resource over a new framework. |
+| Theme | `app/ui/ui_theme.gd` | Central type/color/spacing/states and named variations; avoid scattered one-off overrides. |
+| Scaling | `app/ui/ui_scale.gd`, `app_root.gd` | One scale, measured breakpoints, resize-safe focus/popups; technical route/native 3D preserved. |
+| Lifecycle | Screen/ScreenStack | Preserve holds, cancellation, input and focus; add only needed presentation hooks. |
+| World context | Shared World presentation state | Building Home can mutate shared state. Do not create another active world in Pause; preserve/restore context across retained Home/trial/error paths. |
+| Evidence | UI driver/capture tooling | Native composition cases, meaningful bounds/input checks, actual mode/size/build/renderer records. |
+
+Preferred resources: native Controls/Camera3D/Tween, existing Kenney prompts, a small Lucide SVG subset if needed, one tested font family. Phantom Camera is optional if shot authoring outgrows the native solution. Maaack's Menus Template is a reference; replacing OpenRC's loading/settings/input architecture is not proposed. [Primary sources, licenses and decisions](research/menu-investigations/UI-20-R2/README.md#free-resources-and-github-candidates).
+
+Download only identified missing free assets. Pin exact version/commit/hash, retain license and record transforms/import settings. Existing scenery/provenance comes first; Poly Haven/ambientCG are material candidates. Commercial reference screenshots never become runtime assets. Do not generate replacements for suitable downloadable fonts/icons/textures/props.
+
+## 9. Phased implementation
+
+Each phase leaves a working, reviewable app. Do not style all screens before Home's scene and density are convincing. Visual review means assessing a concrete native result; it is not an extra permission requirement to prepare that result.
+
+| Phase / step | Delivery | Exit evidence | Status |
 | --- | --- | --- | --- |
-| 0 · UI-20-R1 | Native visual audit and game references | [78 captures, 50 sampled flow records, layout test, measured defects/limits](research/menu-investigations/UI-20-R1/README.md) | Done 2026-10-15 |
-| Foundation · UI-21 | Shared screen/stack/widgets | [Parity and lifecycle proof](research/menu-investigations/UI-21/README.md) | Delivered; retain |
-| 1a · UI-23 · 3–5 days | Scale policy, compact reflow, native 4K and aspect ratios; isolate technical routes | Home/Pause+dense dialog, EN/ES, four resolutions, 100/150/200%; geometry, text and focus proof; deterministic simulation unchanged | Core implemented; full qualification open |
-| 1b · UI-22 · 3–5 days | Material/type prototype, tokens, complete control states and free assets | Two reviewed Home/Pause/Conditions compositions; selected system passes glyph/contrast tests and opaque fallback | Shared theme implemented; typography/assets qualification open |
-| 2 · UI-24 · 3–5 days | Settings, display Keep/Revert, accessibility/language and persistence | Relaunch/reversion/migration/error tests; existing profile/calibration preserved; 4K click alignment | Display/accessibility/language implemented; audio and safe margins open |
-| 3 · UI-25 · 3–5 days | Home, catalog, activity navigation and practice choices | Full EN/ES labels; initial Fly visible; one-key launch; immediate selection; no NR/RCV/HELI/Workshop regression | Pinned Home/activity grouping implemented; catalog redesign open |
-| 4 · UI-26 · 4–6 days | Compact pause, Session options, conditions scope, Help and dense pages | Nested Back/Esc, trace failure, staged/immediate edits, controller tabs, Workshop return, 720p Spanish stress captures | Compact Pause/Help implemented; dense-page and conditions follow-ups open |
-| HUD · UI-27 | Shared styling only; functionality belongs to HUD-00…12 | [Overlay plan](plans/flight-overlays.md) | Superseded by HUD track |
-| 5 · UI-28 · 1–2 days | Motion, loading feedback, toasts; optional measured blur | Reduced-motion parity, no focus/hold delay, bounded same-host p95 cost, paused audio rules | Reduced-motion entrance implemented; performance qualification open |
-| 6 · UI-29 · 2–4 days + hardware | Matrix, exports, usability and handover | Gates below; untested platforms/hardware explicit; guides/screenshots updated | Proposed |
+| 0 · UI-20-R2 | Diagnosis, references/resources, revised plan | Dated report, real baseline, source-linked choices and limits | Research/plan delivered; new runtime work pending |
+| 1 · UI-25-R2a | Three scene studies: runway/club, pits, overview | Same jet/trainer/helicopter at 1080p/4K; UI-off captures plus overlay masks; grounding/landmarks visible | Pending |
+| 2 · UI-22-R2 / UI-23-R2 | One complete slice: selected scene + Home + tokens + scale | Native EN/ES 720/1080/1440/4K; old/new comparison; no default scroll; panel/type/model bounds and click alignment | Pending; after phase 1 |
+| 3 · UI-25-R2b | Catalog, prepared-flight summary, Practice/garage entry | All catalog capabilities; rapid selection/loading/error; mouse/keyboard/pad route to flight | Pending; after phase 2 |
+| 4 · UI-26-R2a | Pause and nested session navigation | Frozen tick/camera, Resume/Restart/Home/Quit, trial return, device loss and recording/save failure | Pending; after phase 2 |
+| 5 · UI-24-R2 / UI-26-R2b | Settings/Controls/Conditions/Help/dense screens | Every tab EN/ES 100/200%; display recovery, drafts/focus/persistence, long labels | Pending; shared phase 2 foundation |
+| 6 · UI-28-R2 | Optional glass, settled camera transitions, loading/sound polish | Reduced-motion/opaque parity; same-host GPU/CPU/memory evidence; immediate input/holds | Pending; after composition passes |
+| 7 · UI-29-R2 | Acceptance matrix, fresh exports, operating docs | Native Windows 4K package flows/captures; explicit other-platform status; user tasks and visual review | Pending |
 
-Critical path: 1 → 2 → 3 → 4 → 5 → 6. Theme/scaling can proceed independently only after agreeing coordinates/type. First useful milestone: readable, untruncated Home/Pause at 1080p/4K. Test 720p Spanish throughout, not just at the end.
+**Next task: phase 1.** Its useful result is a substantially better native scene, not another palette on the existing 12° airborne view. Phase 2 is the first end-to-end visual milestone. Fix the shot before expanding the styling to secondary screens.
 
-## 7. Acceptance matrix and release gates
+Prior work remains in [UI-20-R1](research/menu-investigations/UI-20-R1/README.md), [UI-21](research/menu-investigations/UI-21/README.md) and [UI-22–26-R1](research/menu-investigations/UI-22-26-R1/README.md). UI-27 functionality belongs to [HUD](plans/flight-overlays.md). Audio/safe-margin settings, paused-weather staging and loading performance remain explicit open tasks, not implicitly completed by this plan.
+
+## 10. Acceptance and completion
+
+### Visual gates
+
+1. Home/Pause default text has **no page scrollbar** at 720p/1080p/1440p/true fullscreen 4K. Selected model, primary action and exit/back remain visible.
+2. Bounded navigation at 1080p/4K replaces the one-third-screen sidebar and full-width utility slab. Full EN/ES action labels remain visible.
+3. Aircraft is completely framed and grounded in the chosen presentation; runway and club landmark are identifiable with UI visible. No wing/rotor/tail intersects a panel or screen edge.
+4. Day/sunset/night retain readable canopy/fuselage/wings. No black silhouette, excessive bloom, broken transparency or floating shadows.
+5. One dominant action and coherent spacing/type remain with opaque panels/reduced motion. Routine settings do not become nested boxes.
+6. Review full frames, 100% crops and a navigation recording at actual display size/normal distance. Code checks cannot substitute for this assessment.
+
+### Behavior, accessibility and coverage
+
+Measure contrast on the composited scene: target ≥4.5:1 text and ≥3:1 focus/essential boundaries, with state communicated beyond color. Apply [XAG 102](https://learn.microsoft.com/en-us/xbox/accessibility/xbox-accessibility-guidelines/102) as guidance, not a certification claim. Include bright clouds, vegetation, sunset/night, dropdowns and disabled states.
 
 | Axis | Required cases |
 | --- | --- |
-| Display | 720/1080/1440/native 4K, 16:10, 21:9, 1024×576 recovery, live resize |
-| Scaling | Automatic ×100/125/150/200% user adjustment; Windows 100/125/150/200% display scale; window/borderless, monitor movement where available |
-| Language | EN, ES, 30–40% pseudo-locale, live switching, long identifiers/errors |
-| Screens | Home/catalog, pause, all Settings/conditions/controller tabs, Help, failures/details, NR/details, Workshop/trial return, overlays, updates/confirmations/errors |
-| Input | Mouse, keyboard only, selected Xbox/DualSense; popups/sliders/text capture; hot-plug/focus loss; RC radio isolation |
-| Background | Noon/bright clouds, sunset, night/lamps, vegetation; translucent and opaque modes |
-| Activity/state | Fixed wing, helicopter, garage; busy/invalid preview, unsupported capability, crash, disconnected controller, dirty draft, recording/save failure |
+| Resolution/aspect | 1280×720, 1920×1080, 2560×1440, actual 3840×2160; 1280×800/1920×1200; 2560×1080/3440×1440; 1024×576 recovery |
+| Window/scale | Window, maximize/restore, fullscreen/revert, live resize; text 100/125/150/200%; Windows DPI 100/125/150/200%, monitor movement where available |
+| Language | EN/ES, 30–40% pseudo-locale, live switching, long identifiers/errors, accents/units |
+| Screens | Home/catalog, Pause branches, Settings/Controls/Conditions tabs, Practice, Workshop/trial, garage entry, Help, overlays, reports/errors |
+| Input | Mouse, keyboard only, selected Xbox/DualSense; text/slider/popup capture; hot-plug/focus loss; radio isolation |
+| State | Whole current catalog, helicopter surrogate, ground activity; pending/failed preview, unsupported capability, dirty draft, recording/save failure, crash, disconnected controller |
 
-Run every screen/locale at 720p/4K; Home/Pause/Settings and densest tabs at intermediate/aspect cases. Use pairwise coverage elsewhere, retaining 720p+ES+200% and 4K+ES+200%. Record actual image/window size, effective scale, DPI, input device, build and renderer. A clamped requested 4K window is not a 4K pass.
+Every screen at 720p/4K in EN/ES; densest pages also at 200%. Pairwise coverage elsewhere, retaining 720p+ES+200% and 4K+ES+200%. Log actual pixels/mode/logical size/UI and text scales/DPI/renderer/GPU/source identity/isolated preferences. A requested 4K window clamped by Windows is not a pass.
 
-1. **Geometry/comprehension:** no lost primary labels, overlaps, clipped focus, unreachable footers or horizontal settings scroll. One primary action. Full text/disabled reasons available without hover. Distinguish intentional scroll from defects.
-2. **Legibility:** measured rendered-letter targets, composited contrast, complete glyphs and crisp fractional scaling. Human reading at normal distance on the target monitor remains necessary.
-3. **Navigation:** Home → setup → Fly → Pause → settings → Resume → Home by keyboard and supported menu pads; focus restoration; cancellation never unpauses/commits unintentionally; display reversion works while paused.
-4. **State:** presentation does not alter physics, checkpoints or recording. Preserve holds and deterministic replay. Relevant UI/controller/session tests pass; invalid drafts leave accepted state intact. Never re-record golden flights for UI work.
-5. **Performance:** baseline/candidate measured alone on the same host/resolution/scene; ≥300 warm frames, median/p95 and loading feedback. Provisional effect budget ≤1 ms menu p95 regression; simplify/disable effects when exceeded. This audit did not measure that budget.
-6. **Delivery/usability:** fresh-checkout Windows source/export proof, then Linux/macOS under DT. At least three first-time users select aircraft, find controls, switch language, edit conditions and leave pause. Record wrong turns, task time and assistance. Target ≥90% unassisted completion; critical errors block release. This is formative evidence, not population validation.
+Exercise Home → aircraft → conditions → Fly → Pause → Settings → Resume → Home using keyboard and menu pad. Check paused ticks, focus and accepted weather/profile/recording/trial state. Reuse relevant UI/controller/session/Workshop tests. No physics baseline regeneration.
 
-Use existing [tooling](TOOLS.md), event driver, `test_ui_*.gd`, controller/NR/Workshop checks and capture tooling. Add meaningful text-fit/focus/scale checks. Screenshots do not replace interaction tests; scene-time differences are not automatically layout regressions.
+### Performance and release
 
-## 8. Boundaries and qualification still open
+Measure baseline/candidate alone on the same host/scene/resolution: warm median/p95 frame time, cold/warm selection stalls, time to first feedback, peak memory and steady cache. Use ≥300 warm frames and separate shader warmup/loading. Target ≤1 ms p95 **incremental effect** cost for optional glass/motion; assess total scene cost separately against the agreed desktop frame budget. These are proposed gates, not measured results.
 
-No new aircraft/terrain, paid UI kit, generated background art, custom icon library or replacement navigation framework. Reuse/download suitable free assets with provenance. Commercial screenshots remain inspiration links, never shipped textures. No changes to physical models, weather meaning or recording formats.
+Do not rebuild the field on selection or Pause. Bound retained resources. Headless CPU timing does not establish native GPU cost. Quality reductions preserve composition and interaction.
 
-The audit establishes four native resolutions and sampled behavior on one Windows host. It does not establish NVDA/accessibility conformance, complete physical-controller navigation, every DPI mode, ultrawide, effect performance or other-platform acceptance. Fullscreen defaults/blur must pass recovery/performance gates before shipping. The interrupted manual Windows inspection is reported separately from completed automated evidence.
+Run relevant [TOOLS](TOOLS.md) checks, inspect engine errors and exit status, then verify a fresh Windows export at native 4K. Other OSes and physical controllers stay explicit until tested. Isolate preferences and run native display experiments sequentially.
 
-When complete, consolidate operating instructions into current guides, retain required evidence and remove this completed plan under the [documentation conventions](README.md#conventions-for-documents).
+Formative tasks: select aircraft, edit conditions, find Controls, change language, return from Pause. Record assistance/wrong turns/failures with at least three first-time users; target ≥90% unassisted completion across recorded tasks and zero critical loss/resume errors. This is formative evidence, not population validation.
+
+Completion requires both native visual acceptance and behavior gates. Consolidate operating instructions into [MENU-PLAN](MENU-PLAN.md), retain dated evidence/provenance, and remove this active plan when complete under the [documentation conventions](README.md#conventions-for-documents).

@@ -90,6 +90,8 @@ static func build() -> Theme:
 	_label(t, "SectionLabel", TEXT_2, SIZE.section)
 	_label(t, "KeyLabel", TEXT, SIZE.key)
 	_controls(t)
+	_settings(t)
+	_home(t)
 	return t
 
 
@@ -182,3 +184,55 @@ static func contrast(a: Color, b: Color) -> float:
 static func _luminance(c: Color) -> float:
 	var lin := func(v: float) -> float: return v / 12.92 if v <= 0.04045 else pow((v + 0.055) / 1.055, 2.4)
 	return 0.2126 * lin.call(c.r) + 0.7152 * lin.call(c.g) + 0.0722 * lin.call(c.b)
+
+
+# Settings uses a bounded dialog and quiet utility controls, independently of the flight CTA.
+static func _settings(t: Theme) -> void:
+	_label(t, "SettingsTitle", TEXT, SIZE.title)
+	t.set_font_size("font_size", "SettingsTitle", roundi(SIZE.title * minf(text_scale, 1.33)))
+	t.set_type_variation("SettingsPanel", "PanelContainer")
+	var panel := _box(Color(PANEL, 1.0 if opaque_panels else 0.97), 32)
+	panel.content_margin_top = 24
+	panel.content_margin_bottom = 24
+	panel.set_border_width_all(1)
+	panel.border_color = EDGE
+	panel.shadow_color = Color(0, 0, 0, 0.28)
+	panel.shadow_size = 20
+	t.set_stylebox("panel", "SettingsPanel", panel)
+	t.set_type_variation("SettingsAction", "Button")
+	_button(t, "SettingsAction", PRIMARY, PRIMARY.normal, 0, SIZE.button)
+	t.set_type_variation("QuietButton", "Button")
+	var quiet := {normal = Color.TRANSPARENT, hover = BUTTON.hover, pressed = BUTTON.pressed, disabled = Color.TRANSPARENT}
+	_button(t, "QuietButton", quiet, Color.TRANSPARENT, 0, SIZE.small)
+	t.set_type_variation("SettingsToggle", "CheckButton")
+	for state in ["normal", "pressed", "disabled", "hover", "hover_pressed"]:
+		t.set_stylebox(state, "SettingsToggle", _box(BUTTON.hover if state.begins_with("hover") else Color.TRANSPARENT, 8))
+	var separator := StyleBoxLine.new()
+	separator.color = Color(EDGE, 0.45)
+	separator.thickness = 1
+	t.set_stylebox("separator", "HSeparator", separator)
+	t.set_constant("separation", "HSeparator", 12)
+
+	for checked in [false, true]:
+		var svg := '<svg xmlns="http://www.w3.org/2000/svg" width="44" height="24"><rect x="1" y="1" width="42" height="22" rx="11" fill="%s" stroke="%s"/><circle cx="%d" cy="12" r="7" fill="%s"/></svg>' % ["#f5c65d" if checked else "#203238", "#f5c65d" if checked else "#8e9b99", 32 if checked else 12, "#17252a" if checked else "#f5f2e9"]
+		var bitmap := Image.new()
+		bitmap.load_svg_from_string(svg, text_scale)
+		t.set_icon("checked" if checked else "unchecked", "SettingsToggle", ImageTexture.create_from_image(bitmap))
+
+
+static func _home(t: Theme) -> void:
+	t.set_type_variation("HomeSidebar", "PanelContainer")
+	var surface := t.get_stylebox("panel", "Sidebar").duplicate() as StyleBoxFlat
+	surface.content_margin_top = 12
+	surface.content_margin_bottom = 8
+	t.set_stylebox("panel", "HomeSidebar", surface)
+	t.set_type_variation("HomeAction", "Button")
+	var quiet := {normal = Color.TRANSPARENT, hover = BUTTON.hover, pressed = BUTTON.pressed, disabled = Color.TRANSPARENT}
+	_button(t, "HomeAction", quiet, Color.TRANSPARENT, 0, SIZE.button)
+	t.set_type_variation("HomeTab", "Button")
+	_button(t, "HomeTab", quiet, Color.TRANSPARENT, 0, SIZE.small)
+	var selected := _box(Color.TRANSPARENT, 10)
+	selected.border_width_bottom = 2
+	selected.border_color = FOCUS
+	t.set_stylebox("pressed", "HomeTab", selected)
+	t.set_stylebox("hover_pressed", "HomeTab", selected)

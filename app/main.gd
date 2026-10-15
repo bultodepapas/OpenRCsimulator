@@ -26,6 +26,7 @@ const FailureConfig := preload("res://failures/config.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const CrashDirector = preload("res://render/crash/director.gd")
 const AccidentIncident = preload("res://economy/incident.gd")
+const AccidentSettlement = preload("res://economy/settlement.gd")
 const AccidentReport = preload("res://ui/accident_report.gd")
 const SceneryDamageDirector = preload("res://render/crash/scenery_damage.gd")
 const ImpactSnapshot = preload("res://physics/impact_snapshot.gd")
@@ -224,6 +225,10 @@ var _accident_restored := false
 var _accident_bindings: Dictionary = {}
 var _accident_source_hash := ""
 var _accident_archive_error := OK
+var _accident_settlement: RefCounted
+var _accident_settled_pending := false
+var _accident_ground_stable := false
+var _accident_reload_pending := false
 var _crash_director: CrashDirector
 var _scenery_damage_director: SceneryDamageDirector
 var _cg_model := Vector3.ZERO
@@ -654,6 +659,7 @@ func _ready() -> void:
 	if accident_reports_enabled and not _scripted and not args.has("capture") and not args.has("trace") \
 		and str(args.get("accident-report", "on")) != "off":
 		_accident_incident = AccidentIncident.new()
+		_accident_settlement = AccidentSettlement.new()
 		_accident_incident.archive_path = accident_archive_path
 		_begin_accident_ledger()
 		_accident_report = AccidentReport.new()
@@ -707,10 +713,7 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	if _accident_report != null:
 		_accident_report.suspend(not session.holds.is_empty())
-		var archive_result: int = _accident_incident.flush()
-		if archive_result != OK and archive_result != _accident_archive_error:
-			_note = tr("Accident report could not be saved; it remains available for this session.")
-		_accident_archive_error = archive_result
+		_update_accident_report()
 	if flight_log != null and _flight_log_label != null:
 		_update_flight_log_label()
 	if _capturing:
@@ -1752,10 +1755,56 @@ func _on_accident_contacts() -> void:
 	if _accident_incident == null:
 		return
 	if _accident_source_hash != str(session.aircraft.get("input_identity", {}).get("sha256", "")):
-		_accident_incident.archive()
-		_begin_accident_ledger() # A developer reload cannot keep prices bound to an earlier aircraft.
+		_accident_reload_pending = true
+		return # Rebind at the frame boundary; no catalog or archive I/O in an accepted callback.
 	_accident_restored = _accident_restored or session.pause_reason == "checkpoint restored (recorded inputs)"
 	_accident_incident.observe(session.contact_events(), _accident_bindings, not session.crash.is_empty(), _accident_restored)
+	if _accident_incident.has_damage() and not _accident_incident.terminal:
+		_observe_accident_settlement()
+
+
+func _observe_accident_settlement() -> void:
+	var state: PackedFloat64Array = session.sim.state
+	var speed_squared := 0.0
+	var rate_squared := 0.0
+	for axis in 3:
+		speed_squared += state[RB.VEL + axis] * state[RB.VEL + axis]
+		rate_squared += state[RB.RATE + axis] * state[RB.RATE + axis]
+	var grounded := false
+	for compression: float in session.gear_compressions(state):
+		grounded = grounded or compression > 0.00001
+	if not grounded:
+		grounded = session.touches_ground(state) # A belly slide can settle with its wheels clear.
+	var speed := sqrt(speed_squared)
+	var rate := sqrt(rate_squared)
+	_accident_ground_stable = AccidentSettlement.is_stable(grounded, speed, rate)
+	if _accident_settlement.observe(session.sim.tick, session.sim.dt(), grounded, speed, rate):
+		_accident_settled_pending = true
+	if not _accident_ground_stable:
+		if _accident_settled_pending:
+			_accident_settlement.reset() # Nothing was shown; a later landing can earn a fresh dwell.
+		_accident_settled_pending = false # A go-around before the next frame cannot open a stale card.
+
+
+## All valuation, UI publication and persistence run outside accepted simulation callbacks.
+func _update_accident_report() -> void:
+	if _accident_reload_pending:
+		var archived: Dictionary = _accident_incident.archive()
+		_begin_accident_ledger()
+		_accident_report.clear_report()
+		if not archived.is_empty():
+			_accident_report.show_archived(archived)
+		_accident_restored = true # Earlier contacts under the changed identity were not retained.
+		_on_accident_contacts()
+	var archive_result: int = _accident_incident.flush()
+	if archive_result != OK and archive_result != _accident_archive_error:
+		_note = tr("Accident report could not be saved; it remains available for this session.")
+	_accident_archive_error = archive_result
+	if _accident_settled_pending and not _accident_incident.terminal:
+		_accident_report.show_settled(_accident_incident.report)
+		_accident_settled_pending = false
+	elif not _accident_ground_stable:
+		_accident_report.dismiss_settled()
 
 
 func _begin_accident_ledger() -> void:
@@ -1763,6 +1812,10 @@ func _begin_accident_ledger() -> void:
 	_accident_bindings = session.contact_contract()
 	_accident_incident.begin(aircraft_id, _accident_source_hash)
 	_accident_restored = false
+	_accident_settlement.reset()
+	_accident_settled_pending = false
+	_accident_ground_stable = false
+	_accident_reload_pending = false
 
 
 func _on_accident_assessment(report: Dictionary, terminal: bool) -> void:

@@ -35,6 +35,8 @@ The current research has gaps and source-quality limits documented in each repor
 
 ## Implementation evidence
 
+[CR-29–32](CR-29-32/README.md) records the first playable accident-cost slice: generated USD dossiers, accepted-contact accumulation, conditional repair/salvage calculations, large persistent report, exact healthy-state parity and honest unknown costs. [CR-28](CR-28/README.md) remains the dated price/source record.
+
 [CR-01a](CR-01a/README.md) records the bounded tick-boundary snapshot: detector ordering, rigid hull-point kinematics, explicit unknown gear velocity, lifecycle checks and unchanged ordinary-flight traces. [CR-01b](CR-01b/README.md) verifies crossing reconstruction along the existing pose interpolation, numerical unknown cases and unchanged flight traces. Component labels and crossing-time kinematics remain CR-01; the rendered handoff is covered by CR-01c below.
 
 [CR-01c](CR-01c/README.md) records the production-scene crossing-pose handoff, fallback behavior, lifecycle checks and paired rendered evidence. [CR-01d](CR-01d/README.md) names every crash-hull point in the aircraft data and uses the name in crash presentation. Later 2026-10-13 slices: [CR-01e causes](CR-01e/README.md), [CR-03b effects and sound](CR-03b/README.md), [CR-09b breakup](CR-09b/README.md), [CR-09c real parts for imported models](CR-09c/README.md), [CR-22b energy sources](CR-22b/README.md) with its [source review](CR-22b/research.md), [CR-22c cost](CR-22c/README.md), [E3d1 soft contacts](E3d1/README.md), [E3d2 prop strike](E3d2/README.md) [CR-09d1 inventory masses](CR-09d/README.md) and [CR-09e/f physical parts, broken structure and bare wood](CR-09e/README.md).

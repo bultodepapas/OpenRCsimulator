@@ -1,0 +1,5109 @@
+{
+  "captures": [
+    {
+      "automatic_scale": 1.0,
+      "case": "en-720",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@115/@Label@114",
+          "rect": [
+            272.0,
+            64.0,
+            662.0,
+            50.0
+          ],
+          "text": "Settings",
+          "type": "Label"
+        },
+        {
+          "available_width": 42.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@115/Close",
+          "rect": [
+            938.0,
+            64.0,
+            70.0,
+            50.0
+          ],
+          "text": "Close",
+          "text_width": 42.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            439.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@Label@120",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            18.0
+          ],
+          "text": "Display",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@132/@Label@131",
+          "rect": [
+            272.0,
+            163.0,
+            412.0,
+            26.0
+          ],
+          "text": "Window mode",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@132/WindowMode",
+          "rect": [
+            708.0,
+            154.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "Windowed",
+          "text_width": 98.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@144/@Label@143",
+          "rect": [
+            272.0,
+            217.0,
+            412.0,
+            26.0
+          ],
+          "text": "Text size",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@144/UiScale",
+          "rect": [
+            708.0,
+            208.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "100%",
+          "text_width": 49.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@Label@146",
+          "rect": [
+            272.0,
+            284.0,
+            736.0,
+            18.0
+          ],
+          "text": "Accessibility",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@148/@Label@147",
+          "rect": [
+            272.0,
+            316.0,
+            652.0,
+            26.0
+          ],
+          "text": "Use opaque panels",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@148/OpaquePanels",
+          "rect": [
+            948.0,
+            312.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@150/@Label@149",
+          "rect": [
+            272.0,
+            360.0,
+            652.0,
+            26.0
+          ],
+          "text": "Reduce interface motion",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@150/ReducedMotion",
+          "rect": [
+            948.0,
+            356.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@163/@Label@162",
+          "rect": [
+            272.0,
+            431.0,
+            412.0,
+            26.0
+          ],
+          "text": "Interface language",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@163/Language",
+          "rect": [
+            708.0,
+            422.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "English",
+          "text_width": 66.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 66.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@HBoxContainer@165/Controls",
+          "rect": [
+            272.0,
+            498.0,
+            94.0,
+            40.0
+          ],
+          "text": "Controls",
+          "text_width": 66.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 103.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@HBoxContainer@165/HelpAbout",
+          "rect": [
+            378.0,
+            498.0,
+            131.0,
+            40.0
+          ],
+          "text": "Help & About",
+          "text_width": 103.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/Status",
+          "rect": [
+            272.0,
+            577.0,
+            736.0,
+            23.0
+          ],
+          "text": "Changes apply immediately. Close to revert.",
+          "type": "Label"
+        },
+        {
+          "available_width": 60.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@166/Revert",
+          "rect": [
+            753.0,
+            612.0,
+            88.0,
+            44.0
+          ],
+          "text": "Revert",
+          "text_width": 60.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 127.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@166/Keep",
+          "rect": [
+            853.0,
+            612.0,
+            155.0,
+            44.0
+          ],
+          "text": "Keep changes",
+          "text_width": 127.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@115/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-settings.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "automatic_scale": 1.0,
+      "case": "en-720",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 48,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@115/@Label@114",
+          "rect": [
+            272.0,
+            64.0,
+            621.0,
+            67.0
+          ],
+          "text": "Settings",
+          "type": "Label"
+        },
+        {
+          "available_width": 83.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@115/Close",
+          "rect": [
+            897.0,
+            64.0,
+            111.0,
+            67.0
+          ],
+          "text": "Close",
+          "text_width": 83.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118",
+          "rect": [
+            272.0,
+            143.0,
+            736.0,
+            374.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@Label@120",
+          "rect": [
+            272.0,
+            143.0,
+            728.0,
+            36.0
+          ],
+          "text": "Display",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@132/@Label@131",
+          "rect": [
+            272.0,
+            189.0,
+            728.0,
+            50.0
+          ],
+          "text": "Window mode",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@132/WindowMode",
+          "rect": [
+            272.0,
+            247.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "Windowed",
+          "text_width": 194.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@144/@Label@143",
+          "rect": [
+            272.0,
+            327.0,
+            728.0,
+            50.0
+          ],
+          "text": "Text size",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@144/UiScale",
+          "rect": [
+            272.0,
+            385.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "200%",
+          "text_width": 98.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@Label@146",
+          "rect": [
+            272.0,
+            487.0,
+            728.0,
+            36.0
+          ],
+          "text": "Accessibility",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@148/@Label@147",
+          "rect": [
+            272.0,
+            537.0,
+            616.0,
+            50.0
+          ],
+          "text": "Use opaque panels",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@148/OpaquePanels",
+          "rect": [
+            896.0,
+            533.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@150/@Label@149",
+          "rect": [
+            272.0,
+            605.0,
+            616.0,
+            50.0
+          ],
+          "text": "Reduce interface motion",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@150/ReducedMotion",
+          "rect": [
+            896.0,
+            601.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@163/@Label@162",
+          "rect": [
+            272.0,
+            691.0,
+            728.0,
+            50.0
+          ],
+          "text": "Interface language",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@163/Language",
+          "rect": [
+            272.0,
+            749.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "English",
+          "text_width": 130.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 131.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@HBoxContainer@165/Controls",
+          "rect": [
+            272.0,
+            851.0,
+            159.0,
+            62.0
+          ],
+          "text": "Controls",
+          "text_width": 131.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 205.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@HBoxContainer@165/HelpAbout",
+          "rect": [
+            443.0,
+            851.0,
+            233.0,
+            62.0
+          ],
+          "text": "Help & About",
+          "text_width": 205.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/Status",
+          "rect": [
+            272.0,
+            529.0,
+            736.0,
+            45.0
+          ],
+          "text": "Changes apply immediately. Close to revert.",
+          "type": "Label"
+        },
+        {
+          "available_width": 120.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@166/Revert",
+          "rect": [
+            567.0,
+            586.0,
+            148.0,
+            70.0
+          ],
+          "text": "Revert",
+          "text_width": 120.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 253.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@166/Keep",
+          "rect": [
+            727.0,
+            586.0,
+            281.0,
+            70.0
+          ],
+          "text": "Keep changes",
+          "text_width": 253.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@115/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-settings-large.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings-large",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "automatic_scale": 1.0,
+      "case": "en-720",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 48,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@115/@Label@114",
+          "rect": [
+            272.0,
+            64.0,
+            621.0,
+            67.0
+          ],
+          "text": "Settings",
+          "type": "Label"
+        },
+        {
+          "available_width": 83.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@115/Close",
+          "rect": [
+            897.0,
+            64.0,
+            111.0,
+            67.0
+          ],
+          "text": "Close",
+          "text_width": 83.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118",
+          "rect": [
+            272.0,
+            143.0,
+            736.0,
+            374.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@Label@120",
+          "rect": [
+            272.0,
+            -253.0,
+            728.0,
+            36.0
+          ],
+          "text": "Display",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@132/@Label@131",
+          "rect": [
+            272.0,
+            -207.0,
+            728.0,
+            50.0
+          ],
+          "text": "Window mode",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@132/WindowMode",
+          "rect": [
+            272.0,
+            -149.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "Windowed",
+          "text_width": 194.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@144/@Label@143",
+          "rect": [
+            272.0,
+            -69.0,
+            728.0,
+            50.0
+          ],
+          "text": "Text size",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@144/UiScale",
+          "rect": [
+            272.0,
+            -11.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "200%",
+          "text_width": 98.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@Label@146",
+          "rect": [
+            272.0,
+            91.0,
+            728.0,
+            36.0
+          ],
+          "text": "Accessibility",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@148/@Label@147",
+          "rect": [
+            272.0,
+            141.0,
+            616.0,
+            50.0
+          ],
+          "text": "Use opaque panels",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@148/OpaquePanels",
+          "rect": [
+            896.0,
+            137.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@150/@Label@149",
+          "rect": [
+            272.0,
+            209.0,
+            616.0,
+            50.0
+          ],
+          "text": "Reduce interface motion",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@150/ReducedMotion",
+          "rect": [
+            896.0,
+            205.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@163/@Label@162",
+          "rect": [
+            272.0,
+            295.0,
+            728.0,
+            50.0
+          ],
+          "text": "Interface language",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@BoxContainer@163/Language",
+          "rect": [
+            272.0,
+            353.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "English",
+          "text_width": 130.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 131.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@HBoxContainer@165/Controls",
+          "rect": [
+            272.0,
+            455.0,
+            159.0,
+            62.0
+          ],
+          "text": "Controls",
+          "text_width": 131.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 205.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@ScrollContainer@118/@VBoxContainer@119/@HBoxContainer@165/HelpAbout",
+          "rect": [
+            443.0,
+            455.0,
+            233.0,
+            62.0
+          ],
+          "text": "Help & About",
+          "text_width": 205.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/Status",
+          "rect": [
+            272.0,
+            529.0,
+            736.0,
+            45.0
+          ],
+          "text": "Changes apply immediately. Close to revert.",
+          "type": "Label"
+        },
+        {
+          "available_width": 120.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@166/Revert",
+          "rect": [
+            567.0,
+            586.0,
+            148.0,
+            70.0
+          ],
+          "text": "Revert",
+          "text_width": 120.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 253.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@166/Keep",
+          "rect": [
+            727.0,
+            586.0,
+            281.0,
+            70.0
+          ],
+          "text": "Keep changes",
+          "text_width": 253.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@109/@CenterContainer@111/@PanelContainer@112/@VBoxContainer@113/@HBoxContainer@115/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-720-settings-large-bottom.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings-large-bottom",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "automatic_scale": 1.0,
+      "case": "es-720",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@280/@Label@279",
+          "rect": [
+            272.0,
+            64.0,
+            654.0,
+            50.0
+          ],
+          "text": "Ajustes",
+          "type": "Label"
+        },
+        {
+          "available_width": 50.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@280/Close",
+          "rect": [
+            930.0,
+            64.0,
+            78.0,
+            50.0
+          ],
+          "text": "Cerrar",
+          "text_width": 50.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            439.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@Label@285",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            18.0
+          ],
+          "text": "Pantalla",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@297/@Label@296",
+          "rect": [
+            272.0,
+            163.0,
+            402.0,
+            26.0
+          ],
+          "text": "Modo de ventana",
+          "type": "Label"
+        },
+        {
+          "available_width": 282.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@297/WindowMode",
+          "rect": [
+            698.0,
+            154.0,
+            310.0,
+            43.7999992370605
+          ],
+          "text": "En ventana",
+          "text_width": 103.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@309/@Label@308",
+          "rect": [
+            272.0,
+            217.0,
+            412.0,
+            26.0
+          ],
+          "text": "Tamaño del texto",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@309/UiScale",
+          "rect": [
+            708.0,
+            208.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "100%",
+          "text_width": 49.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@Label@311",
+          "rect": [
+            272.0,
+            284.0,
+            736.0,
+            18.0
+          ],
+          "text": "Accesibilidad",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@313/@Label@312",
+          "rect": [
+            272.0,
+            316.0,
+            652.0,
+            26.0
+          ],
+          "text": "Usar paneles opacos",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@313/OpaquePanels",
+          "rect": [
+            948.0,
+            312.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@315/@Label@314",
+          "rect": [
+            272.0,
+            360.0,
+            652.0,
+            26.0
+          ],
+          "text": "Reducir animaciones",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@315/ReducedMotion",
+          "rect": [
+            948.0,
+            356.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@328/@Label@327",
+          "rect": [
+            272.0,
+            431.0,
+            412.0,
+            26.0
+          ],
+          "text": "Idioma de la interfaz",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@328/Language",
+          "rect": [
+            708.0,
+            422.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "Español",
+          "text_width": 72.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 75.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@HBoxContainer@330/Controls",
+          "rect": [
+            272.0,
+            498.0,
+            103.0,
+            40.0
+          ],
+          "text": "Controles",
+          "text_width": 75.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 140.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@HBoxContainer@330/HelpAbout",
+          "rect": [
+            387.0,
+            498.0,
+            168.0,
+            40.0
+          ],
+          "text": "Ayuda y acerca de",
+          "text_width": 140.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/Status",
+          "rect": [
+            272.0,
+            577.0,
+            736.0,
+            23.0
+          ],
+          "text": "Los cambios se aplican al instante. Cierra para revertirlos.",
+          "type": "Label"
+        },
+        {
+          "available_width": 74.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@331/Revert",
+          "rect": [
+            691.0,
+            612.0,
+            102.0,
+            44.0
+          ],
+          "text": "Revertir",
+          "text_width": 74.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 175.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@331/Keep",
+          "rect": [
+            805.0,
+            612.0,
+            203.0,
+            44.0
+          ],
+          "text": "Conservar cambios",
+          "text_width": 175.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@280/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-settings.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "automatic_scale": 1.0,
+      "case": "es-720",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 48,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@280/@Label@279",
+          "rect": [
+            272.0,
+            64.0,
+            605.0,
+            67.0
+          ],
+          "text": "Ajustes",
+          "type": "Label"
+        },
+        {
+          "available_width": 99.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@280/Close",
+          "rect": [
+            881.0,
+            64.0,
+            127.0,
+            67.0
+          ],
+          "text": "Cerrar",
+          "text_width": 99.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283",
+          "rect": [
+            272.0,
+            143.0,
+            736.0,
+            326.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@Label@285",
+          "rect": [
+            272.0,
+            143.0,
+            728.0,
+            36.0
+          ],
+          "text": "Pantalla",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@297/@Label@296",
+          "rect": [
+            272.0,
+            189.0,
+            728.0,
+            50.0
+          ],
+          "text": "Modo de ventana",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@297/WindowMode",
+          "rect": [
+            272.0,
+            247.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "En ventana",
+          "text_width": 204.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@309/@Label@308",
+          "rect": [
+            272.0,
+            327.0,
+            728.0,
+            50.0
+          ],
+          "text": "Tamaño del texto",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@309/UiScale",
+          "rect": [
+            272.0,
+            385.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "200%",
+          "text_width": 98.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@Label@311",
+          "rect": [
+            272.0,
+            487.0,
+            728.0,
+            36.0
+          ],
+          "text": "Accesibilidad",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@313/@Label@312",
+          "rect": [
+            272.0,
+            537.0,
+            616.0,
+            50.0
+          ],
+          "text": "Usar paneles opacos",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@313/OpaquePanels",
+          "rect": [
+            896.0,
+            533.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@315/@Label@314",
+          "rect": [
+            272.0,
+            605.0,
+            616.0,
+            50.0
+          ],
+          "text": "Reducir animaciones",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@315/ReducedMotion",
+          "rect": [
+            896.0,
+            601.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@328/@Label@327",
+          "rect": [
+            272.0,
+            691.0,
+            728.0,
+            50.0
+          ],
+          "text": "Idioma de la interfaz",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@328/Language",
+          "rect": [
+            272.0,
+            749.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "Español",
+          "text_width": 143.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 149.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@HBoxContainer@330/Controls",
+          "rect": [
+            272.0,
+            851.0,
+            177.0,
+            62.0
+          ],
+          "text": "Controles",
+          "text_width": 149.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 278.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@HBoxContainer@330/HelpAbout",
+          "rect": [
+            461.0,
+            851.0,
+            306.0,
+            62.0
+          ],
+          "text": "Ayuda y acerca de",
+          "text_width": 278.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/Status",
+          "rect": [
+            272.0,
+            481.0,
+            736.0,
+            93.0
+          ],
+          "text": "Los cambios se aplican al instante. Cierra para revertirlos.",
+          "type": "Label"
+        },
+        {
+          "available_width": 147.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@331/Revert",
+          "rect": [
+            443.0,
+            586.0,
+            175.0,
+            70.0
+          ],
+          "text": "Revertir",
+          "text_width": 147.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 350.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@331/Keep",
+          "rect": [
+            630.0,
+            586.0,
+            378.0,
+            70.0
+          ],
+          "text": "Conservar cambios",
+          "text_width": 350.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@280/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-settings-large.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings-large",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "automatic_scale": 1.0,
+      "case": "es-720",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 48,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@280/@Label@279",
+          "rect": [
+            272.0,
+            64.0,
+            605.0,
+            67.0
+          ],
+          "text": "Ajustes",
+          "type": "Label"
+        },
+        {
+          "available_width": 99.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@280/Close",
+          "rect": [
+            881.0,
+            64.0,
+            127.0,
+            67.0
+          ],
+          "text": "Cerrar",
+          "text_width": 99.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283",
+          "rect": [
+            272.0,
+            143.0,
+            736.0,
+            326.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@Label@285",
+          "rect": [
+            272.0,
+            -301.0,
+            728.0,
+            36.0
+          ],
+          "text": "Pantalla",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@297/@Label@296",
+          "rect": [
+            272.0,
+            -255.0,
+            728.0,
+            50.0
+          ],
+          "text": "Modo de ventana",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@297/WindowMode",
+          "rect": [
+            272.0,
+            -197.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "En ventana",
+          "text_width": 204.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@309/@Label@308",
+          "rect": [
+            272.0,
+            -117.0,
+            728.0,
+            50.0
+          ],
+          "text": "Tamaño del texto",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@309/UiScale",
+          "rect": [
+            272.0,
+            -59.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "200%",
+          "text_width": 98.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@Label@311",
+          "rect": [
+            272.0,
+            43.0,
+            728.0,
+            36.0
+          ],
+          "text": "Accesibilidad",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@313/@Label@312",
+          "rect": [
+            272.0,
+            93.0,
+            616.0,
+            50.0
+          ],
+          "text": "Usar paneles opacos",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@313/OpaquePanels",
+          "rect": [
+            896.0,
+            89.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@315/@Label@314",
+          "rect": [
+            272.0,
+            161.0,
+            616.0,
+            50.0
+          ],
+          "text": "Reducir animaciones",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@315/ReducedMotion",
+          "rect": [
+            896.0,
+            157.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@328/@Label@327",
+          "rect": [
+            272.0,
+            247.0,
+            728.0,
+            50.0
+          ],
+          "text": "Idioma de la interfaz",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@BoxContainer@328/Language",
+          "rect": [
+            272.0,
+            305.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "Español",
+          "text_width": 143.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 149.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@HBoxContainer@330/Controls",
+          "rect": [
+            272.0,
+            407.0,
+            177.0,
+            62.0
+          ],
+          "text": "Controles",
+          "text_width": 149.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 278.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@ScrollContainer@283/@VBoxContainer@284/@HBoxContainer@330/HelpAbout",
+          "rect": [
+            461.0,
+            407.0,
+            306.0,
+            62.0
+          ],
+          "text": "Ayuda y acerca de",
+          "text_width": 278.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/Status",
+          "rect": [
+            272.0,
+            481.0,
+            736.0,
+            93.0
+          ],
+          "text": "Los cambios se aplican al instante. Cierra para revertirlos.",
+          "type": "Label"
+        },
+        {
+          "available_width": 147.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@331/Revert",
+          "rect": [
+            443.0,
+            586.0,
+            175.0,
+            70.0
+          ],
+          "text": "Revertir",
+          "text_width": 147.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 350.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@331/Keep",
+          "rect": [
+            630.0,
+            586.0,
+            378.0,
+            70.0
+          ],
+          "text": "Conservar cambios",
+          "text_width": 350.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@274/@CenterContainer@276/@PanelContainer@277/@VBoxContainer@278/@HBoxContainer@280/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-720-settings-large-bottom.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        1280,
+        720
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings-large-bottom",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1280, 720)"
+    },
+    {
+      "automatic_scale": 1.5,
+      "case": "en-1080",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@HBoxContainer@445/@Label@444",
+          "rect": [
+            272.0,
+            64.0,
+            662.0,
+            50.0
+          ],
+          "text": "Settings",
+          "type": "Label"
+        },
+        {
+          "available_width": 42.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@HBoxContainer@445/Close",
+          "rect": [
+            938.0,
+            64.0,
+            70.0,
+            50.0
+          ],
+          "text": "Close",
+          "text_width": 42.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            439.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@Label@450",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            18.0
+          ],
+          "text": "Display",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@BoxContainer@462/@Label@461",
+          "rect": [
+            272.0,
+            163.0,
+            412.0,
+            26.0
+          ],
+          "text": "Window mode",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@BoxContainer@462/WindowMode",
+          "rect": [
+            708.0,
+            154.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "Windowed",
+          "text_width": 98.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@BoxContainer@474/@Label@473",
+          "rect": [
+            272.0,
+            217.0,
+            412.0,
+            26.0
+          ],
+          "text": "Text size",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@BoxContainer@474/UiScale",
+          "rect": [
+            708.0,
+            208.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "100%",
+          "text_width": 49.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@Label@476",
+          "rect": [
+            272.0,
+            284.0,
+            736.0,
+            18.0
+          ],
+          "text": "Accessibility",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@BoxContainer@478/@Label@477",
+          "rect": [
+            272.0,
+            316.0,
+            652.0,
+            26.0
+          ],
+          "text": "Use opaque panels",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@BoxContainer@478/OpaquePanels",
+          "rect": [
+            948.0,
+            312.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@BoxContainer@480/@Label@479",
+          "rect": [
+            272.0,
+            360.0,
+            652.0,
+            26.0
+          ],
+          "text": "Reduce interface motion",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@BoxContainer@480/ReducedMotion",
+          "rect": [
+            948.0,
+            356.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@BoxContainer@493/@Label@492",
+          "rect": [
+            272.0,
+            431.0,
+            412.0,
+            26.0
+          ],
+          "text": "Interface language",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@BoxContainer@493/Language",
+          "rect": [
+            708.0,
+            422.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "English",
+          "text_width": 66.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 66.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@HBoxContainer@495/Controls",
+          "rect": [
+            272.0,
+            498.0,
+            94.0,
+            40.0
+          ],
+          "text": "Controls",
+          "text_width": 66.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 103.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@ScrollContainer@448/@VBoxContainer@449/@HBoxContainer@495/HelpAbout",
+          "rect": [
+            378.0,
+            498.0,
+            131.0,
+            40.0
+          ],
+          "text": "Help & About",
+          "text_width": 103.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/Status",
+          "rect": [
+            272.0,
+            577.0,
+            736.0,
+            23.0
+          ],
+          "text": "Changes apply immediately. Close to revert.",
+          "type": "Label"
+        },
+        {
+          "available_width": 60.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@HBoxContainer@496/Revert",
+          "rect": [
+            753.0,
+            612.0,
+            88.0,
+            44.0
+          ],
+          "text": "Revert",
+          "text_width": 60.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 127.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@HBoxContainer@496/Keep",
+          "rect": [
+            853.0,
+            612.0,
+            155.0,
+            44.0
+          ],
+          "text": "Keep changes",
+          "text_width": 127.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@439/@CenterContainer@441/@PanelContainer@442/@VBoxContainer@443/@HBoxContainer@445/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1080-settings.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "automatic_scale": 1.5,
+      "case": "es-1080",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@HBoxContainer@610/@Label@609",
+          "rect": [
+            272.0,
+            64.0,
+            654.0,
+            50.0
+          ],
+          "text": "Ajustes",
+          "type": "Label"
+        },
+        {
+          "available_width": 50.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@HBoxContainer@610/Close",
+          "rect": [
+            930.0,
+            64.0,
+            78.0,
+            50.0
+          ],
+          "text": "Cerrar",
+          "text_width": 50.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            439.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@Label@615",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            18.0
+          ],
+          "text": "Pantalla",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@BoxContainer@627/@Label@626",
+          "rect": [
+            272.0,
+            163.0,
+            402.0,
+            26.0
+          ],
+          "text": "Modo de ventana",
+          "type": "Label"
+        },
+        {
+          "available_width": 282.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@BoxContainer@627/WindowMode",
+          "rect": [
+            698.0,
+            154.0,
+            310.0,
+            43.7999992370605
+          ],
+          "text": "En ventana",
+          "text_width": 103.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@BoxContainer@639/@Label@638",
+          "rect": [
+            272.0,
+            217.0,
+            412.0,
+            26.0
+          ],
+          "text": "Tamaño del texto",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@BoxContainer@639/UiScale",
+          "rect": [
+            708.0,
+            208.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "100%",
+          "text_width": 49.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@Label@641",
+          "rect": [
+            272.0,
+            284.0,
+            736.0,
+            18.0
+          ],
+          "text": "Accesibilidad",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@BoxContainer@643/@Label@642",
+          "rect": [
+            272.0,
+            316.0,
+            652.0,
+            26.0
+          ],
+          "text": "Usar paneles opacos",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@BoxContainer@643/OpaquePanels",
+          "rect": [
+            948.0,
+            312.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@BoxContainer@645/@Label@644",
+          "rect": [
+            272.0,
+            360.0,
+            652.0,
+            26.0
+          ],
+          "text": "Reducir animaciones",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@BoxContainer@645/ReducedMotion",
+          "rect": [
+            948.0,
+            356.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@BoxContainer@658/@Label@657",
+          "rect": [
+            272.0,
+            431.0,
+            412.0,
+            26.0
+          ],
+          "text": "Idioma de la interfaz",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@BoxContainer@658/Language",
+          "rect": [
+            708.0,
+            422.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "Español",
+          "text_width": 72.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 75.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@HBoxContainer@660/Controls",
+          "rect": [
+            272.0,
+            498.0,
+            103.0,
+            40.0
+          ],
+          "text": "Controles",
+          "text_width": 75.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 140.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@ScrollContainer@613/@VBoxContainer@614/@HBoxContainer@660/HelpAbout",
+          "rect": [
+            387.0,
+            498.0,
+            168.0,
+            40.0
+          ],
+          "text": "Ayuda y acerca de",
+          "text_width": 140.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/Status",
+          "rect": [
+            272.0,
+            577.0,
+            736.0,
+            23.0
+          ],
+          "text": "Los cambios se aplican al instante. Cierra para revertirlos.",
+          "type": "Label"
+        },
+        {
+          "available_width": 74.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@HBoxContainer@661/Revert",
+          "rect": [
+            691.0,
+            612.0,
+            102.0,
+            44.0
+          ],
+          "text": "Revertir",
+          "text_width": 74.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 175.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@HBoxContainer@661/Keep",
+          "rect": [
+            805.0,
+            612.0,
+            203.0,
+            44.0
+          ],
+          "text": "Conservar cambios",
+          "text_width": 175.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@604/@CenterContainer@606/@PanelContainer@607/@VBoxContainer@608/@HBoxContainer@610/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1080-settings.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        1920,
+        1080
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(1920, 1080)"
+    },
+    {
+      "automatic_scale": 2.0,
+      "case": "en-1440",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@HBoxContainer@775/@Label@774",
+          "rect": [
+            272.0,
+            64.0,
+            662.0,
+            50.0
+          ],
+          "text": "Settings",
+          "type": "Label"
+        },
+        {
+          "available_width": 42.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@HBoxContainer@775/Close",
+          "rect": [
+            938.0,
+            64.0,
+            70.0,
+            50.0
+          ],
+          "text": "Close",
+          "text_width": 42.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            439.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@Label@780",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            18.0
+          ],
+          "text": "Display",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@BoxContainer@792/@Label@791",
+          "rect": [
+            272.0,
+            163.0,
+            412.0,
+            26.0
+          ],
+          "text": "Window mode",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@BoxContainer@792/WindowMode",
+          "rect": [
+            708.0,
+            154.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "Windowed",
+          "text_width": 98.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@BoxContainer@804/@Label@803",
+          "rect": [
+            272.0,
+            217.0,
+            412.0,
+            26.0
+          ],
+          "text": "Text size",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@BoxContainer@804/UiScale",
+          "rect": [
+            708.0,
+            208.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "100%",
+          "text_width": 49.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@Label@806",
+          "rect": [
+            272.0,
+            284.0,
+            736.0,
+            18.0
+          ],
+          "text": "Accessibility",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@BoxContainer@808/@Label@807",
+          "rect": [
+            272.0,
+            316.0,
+            652.0,
+            26.0
+          ],
+          "text": "Use opaque panels",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@BoxContainer@808/OpaquePanels",
+          "rect": [
+            948.0,
+            312.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@BoxContainer@810/@Label@809",
+          "rect": [
+            272.0,
+            360.0,
+            652.0,
+            26.0
+          ],
+          "text": "Reduce interface motion",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@BoxContainer@810/ReducedMotion",
+          "rect": [
+            948.0,
+            356.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@BoxContainer@823/@Label@822",
+          "rect": [
+            272.0,
+            431.0,
+            412.0,
+            26.0
+          ],
+          "text": "Interface language",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@BoxContainer@823/Language",
+          "rect": [
+            708.0,
+            422.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "English",
+          "text_width": 66.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 66.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@HBoxContainer@825/Controls",
+          "rect": [
+            272.0,
+            498.0,
+            94.0,
+            40.0
+          ],
+          "text": "Controls",
+          "text_width": 66.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 103.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@ScrollContainer@778/@VBoxContainer@779/@HBoxContainer@825/HelpAbout",
+          "rect": [
+            378.0,
+            498.0,
+            131.0,
+            40.0
+          ],
+          "text": "Help & About",
+          "text_width": 103.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/Status",
+          "rect": [
+            272.0,
+            577.0,
+            736.0,
+            23.0
+          ],
+          "text": "Changes apply immediately. Close to revert.",
+          "type": "Label"
+        },
+        {
+          "available_width": 60.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@HBoxContainer@826/Revert",
+          "rect": [
+            753.0,
+            612.0,
+            88.0,
+            44.0
+          ],
+          "text": "Revert",
+          "text_width": 60.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 127.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@HBoxContainer@826/Keep",
+          "rect": [
+            853.0,
+            612.0,
+            155.0,
+            44.0
+          ],
+          "text": "Keep changes",
+          "text_width": 127.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@769/@CenterContainer@771/@PanelContainer@772/@VBoxContainer@773/@HBoxContainer@775/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-1440-settings.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        2560,
+        1440
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(2560, 1440)"
+    },
+    {
+      "automatic_scale": 2.0,
+      "case": "es-1440",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@HBoxContainer@940/@Label@939",
+          "rect": [
+            272.0,
+            64.0,
+            654.0,
+            50.0
+          ],
+          "text": "Ajustes",
+          "type": "Label"
+        },
+        {
+          "available_width": 50.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@HBoxContainer@940/Close",
+          "rect": [
+            930.0,
+            64.0,
+            78.0,
+            50.0
+          ],
+          "text": "Cerrar",
+          "text_width": 50.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            439.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@Label@945",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            18.0
+          ],
+          "text": "Pantalla",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@BoxContainer@957/@Label@956",
+          "rect": [
+            272.0,
+            163.0,
+            402.0,
+            26.0
+          ],
+          "text": "Modo de ventana",
+          "type": "Label"
+        },
+        {
+          "available_width": 282.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@BoxContainer@957/WindowMode",
+          "rect": [
+            698.0,
+            154.0,
+            310.0,
+            43.7999992370605
+          ],
+          "text": "En ventana",
+          "text_width": 103.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@BoxContainer@969/@Label@968",
+          "rect": [
+            272.0,
+            217.0,
+            412.0,
+            26.0
+          ],
+          "text": "Tamaño del texto",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@BoxContainer@969/UiScale",
+          "rect": [
+            708.0,
+            208.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "100%",
+          "text_width": 49.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@Label@971",
+          "rect": [
+            272.0,
+            284.0,
+            736.0,
+            18.0
+          ],
+          "text": "Accesibilidad",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@BoxContainer@973/@Label@972",
+          "rect": [
+            272.0,
+            316.0,
+            652.0,
+            26.0
+          ],
+          "text": "Usar paneles opacos",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@BoxContainer@973/OpaquePanels",
+          "rect": [
+            948.0,
+            312.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@BoxContainer@975/@Label@974",
+          "rect": [
+            272.0,
+            360.0,
+            652.0,
+            26.0
+          ],
+          "text": "Reducir animaciones",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@BoxContainer@975/ReducedMotion",
+          "rect": [
+            948.0,
+            356.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@BoxContainer@988/@Label@987",
+          "rect": [
+            272.0,
+            431.0,
+            412.0,
+            26.0
+          ],
+          "text": "Idioma de la interfaz",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@BoxContainer@988/Language",
+          "rect": [
+            708.0,
+            422.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "Español",
+          "text_width": 72.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 75.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@HBoxContainer@990/Controls",
+          "rect": [
+            272.0,
+            498.0,
+            103.0,
+            40.0
+          ],
+          "text": "Controles",
+          "text_width": 75.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 140.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@ScrollContainer@943/@VBoxContainer@944/@HBoxContainer@990/HelpAbout",
+          "rect": [
+            387.0,
+            498.0,
+            168.0,
+            40.0
+          ],
+          "text": "Ayuda y acerca de",
+          "text_width": 140.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/Status",
+          "rect": [
+            272.0,
+            577.0,
+            736.0,
+            23.0
+          ],
+          "text": "Los cambios se aplican al instante. Cierra para revertirlos.",
+          "type": "Label"
+        },
+        {
+          "available_width": 74.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@HBoxContainer@991/Revert",
+          "rect": [
+            691.0,
+            612.0,
+            102.0,
+            44.0
+          ],
+          "text": "Revertir",
+          "text_width": 74.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 175.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@HBoxContainer@991/Keep",
+          "rect": [
+            805.0,
+            612.0,
+            203.0,
+            44.0
+          ],
+          "text": "Conservar cambios",
+          "text_width": 175.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@934/@CenterContainer@936/@PanelContainer@937/@VBoxContainer@938/@HBoxContainer@940/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-1440-settings.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        2560,
+        1440
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(2560, 1440)"
+    },
+    {
+      "automatic_scale": 3.0,
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1105/@Label@1104",
+          "rect": [
+            272.0,
+            64.0,
+            662.0,
+            50.0
+          ],
+          "text": "Settings",
+          "type": "Label"
+        },
+        {
+          "available_width": 42.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1105/Close",
+          "rect": [
+            938.0,
+            64.0,
+            70.0,
+            50.0
+          ],
+          "text": "Close",
+          "text_width": 42.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            439.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@Label@1110",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            18.0
+          ],
+          "text": "Display",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1122/@Label@1121",
+          "rect": [
+            272.0,
+            163.0,
+            412.0,
+            26.0
+          ],
+          "text": "Window mode",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1122/WindowMode",
+          "rect": [
+            708.0,
+            154.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "Windowed",
+          "text_width": 98.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1134/@Label@1133",
+          "rect": [
+            272.0,
+            217.0,
+            412.0,
+            26.0
+          ],
+          "text": "Text size",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1134/UiScale",
+          "rect": [
+            708.0,
+            208.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "100%",
+          "text_width": 49.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@Label@1136",
+          "rect": [
+            272.0,
+            284.0,
+            736.0,
+            18.0
+          ],
+          "text": "Accessibility",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1138/@Label@1137",
+          "rect": [
+            272.0,
+            316.0,
+            652.0,
+            26.0
+          ],
+          "text": "Use opaque panels",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1138/OpaquePanels",
+          "rect": [
+            948.0,
+            312.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1140/@Label@1139",
+          "rect": [
+            272.0,
+            360.0,
+            652.0,
+            26.0
+          ],
+          "text": "Reduce interface motion",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1140/ReducedMotion",
+          "rect": [
+            948.0,
+            356.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1153/@Label@1152",
+          "rect": [
+            272.0,
+            431.0,
+            412.0,
+            26.0
+          ],
+          "text": "Interface language",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1153/Language",
+          "rect": [
+            708.0,
+            422.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "English",
+          "text_width": 66.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 66.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@HBoxContainer@1155/Controls",
+          "rect": [
+            272.0,
+            498.0,
+            94.0,
+            40.0
+          ],
+          "text": "Controls",
+          "text_width": 66.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 103.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@HBoxContainer@1155/HelpAbout",
+          "rect": [
+            378.0,
+            498.0,
+            131.0,
+            40.0
+          ],
+          "text": "Help & About",
+          "text_width": 103.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/Status",
+          "rect": [
+            272.0,
+            577.0,
+            736.0,
+            23.0
+          ],
+          "text": "Changes apply immediately. Close to revert.",
+          "type": "Label"
+        },
+        {
+          "available_width": 60.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1156/Revert",
+          "rect": [
+            753.0,
+            612.0,
+            88.0,
+            44.0
+          ],
+          "text": "Revert",
+          "text_width": 60.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 127.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1156/Keep",
+          "rect": [
+            853.0,
+            612.0,
+            155.0,
+            44.0
+          ],
+          "text": "Keep changes",
+          "text_width": 127.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1105/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-settings.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "automatic_scale": 3.0,
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 48,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1105/@Label@1104",
+          "rect": [
+            272.0,
+            64.0,
+            621.0,
+            67.0
+          ],
+          "text": "Settings",
+          "type": "Label"
+        },
+        {
+          "available_width": 83.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1105/Close",
+          "rect": [
+            897.0,
+            64.0,
+            111.0,
+            67.0
+          ],
+          "text": "Close",
+          "text_width": 83.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108",
+          "rect": [
+            272.0,
+            143.0,
+            736.0,
+            374.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@Label@1110",
+          "rect": [
+            272.0,
+            143.0,
+            728.0,
+            36.0
+          ],
+          "text": "Display",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1122/@Label@1121",
+          "rect": [
+            272.0,
+            189.0,
+            728.0,
+            50.0
+          ],
+          "text": "Window mode",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1122/WindowMode",
+          "rect": [
+            272.0,
+            247.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "Windowed",
+          "text_width": 194.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1134/@Label@1133",
+          "rect": [
+            272.0,
+            327.0,
+            728.0,
+            50.0
+          ],
+          "text": "Text size",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1134/UiScale",
+          "rect": [
+            272.0,
+            385.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "200%",
+          "text_width": 98.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@Label@1136",
+          "rect": [
+            272.0,
+            487.0,
+            728.0,
+            36.0
+          ],
+          "text": "Accessibility",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1138/@Label@1137",
+          "rect": [
+            272.0,
+            537.0,
+            616.0,
+            50.0
+          ],
+          "text": "Use opaque panels",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1138/OpaquePanels",
+          "rect": [
+            896.0,
+            533.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1140/@Label@1139",
+          "rect": [
+            272.0,
+            605.0,
+            616.0,
+            50.0
+          ],
+          "text": "Reduce interface motion",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1140/ReducedMotion",
+          "rect": [
+            896.0,
+            601.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1153/@Label@1152",
+          "rect": [
+            272.0,
+            691.0,
+            728.0,
+            50.0
+          ],
+          "text": "Interface language",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1153/Language",
+          "rect": [
+            272.0,
+            749.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "English",
+          "text_width": 130.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 131.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@HBoxContainer@1155/Controls",
+          "rect": [
+            272.0,
+            851.0,
+            159.0,
+            62.0
+          ],
+          "text": "Controls",
+          "text_width": 131.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 205.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@HBoxContainer@1155/HelpAbout",
+          "rect": [
+            443.0,
+            851.0,
+            233.0,
+            62.0
+          ],
+          "text": "Help & About",
+          "text_width": 205.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/Status",
+          "rect": [
+            272.0,
+            529.0,
+            736.0,
+            45.0
+          ],
+          "text": "Changes apply immediately. Close to revert.",
+          "type": "Label"
+        },
+        {
+          "available_width": 120.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1156/Revert",
+          "rect": [
+            567.0,
+            586.0,
+            148.0,
+            70.0
+          ],
+          "text": "Revert",
+          "text_width": 120.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 253.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1156/Keep",
+          "rect": [
+            727.0,
+            586.0,
+            281.0,
+            70.0
+          ],
+          "text": "Keep changes",
+          "text_width": 253.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1105/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-settings-large.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings-large",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "automatic_scale": 3.0,
+      "case": "en-2160",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 48,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1105/@Label@1104",
+          "rect": [
+            272.0,
+            64.0,
+            621.0,
+            67.0
+          ],
+          "text": "Settings",
+          "type": "Label"
+        },
+        {
+          "available_width": 83.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1105/Close",
+          "rect": [
+            897.0,
+            64.0,
+            111.0,
+            67.0
+          ],
+          "text": "Close",
+          "text_width": 83.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108",
+          "rect": [
+            272.0,
+            143.0,
+            736.0,
+            374.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@Label@1110",
+          "rect": [
+            272.0,
+            -253.0,
+            728.0,
+            36.0
+          ],
+          "text": "Display",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1122/@Label@1121",
+          "rect": [
+            272.0,
+            -207.0,
+            728.0,
+            50.0
+          ],
+          "text": "Window mode",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1122/WindowMode",
+          "rect": [
+            272.0,
+            -149.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "Windowed",
+          "text_width": 194.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1134/@Label@1133",
+          "rect": [
+            272.0,
+            -69.0,
+            728.0,
+            50.0
+          ],
+          "text": "Text size",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1134/UiScale",
+          "rect": [
+            272.0,
+            -11.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "200%",
+          "text_width": 98.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@Label@1136",
+          "rect": [
+            272.0,
+            91.0,
+            728.0,
+            36.0
+          ],
+          "text": "Accessibility",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1138/@Label@1137",
+          "rect": [
+            272.0,
+            141.0,
+            616.0,
+            50.0
+          ],
+          "text": "Use opaque panels",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1138/OpaquePanels",
+          "rect": [
+            896.0,
+            137.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1140/@Label@1139",
+          "rect": [
+            272.0,
+            209.0,
+            616.0,
+            50.0
+          ],
+          "text": "Reduce interface motion",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1140/ReducedMotion",
+          "rect": [
+            896.0,
+            205.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1153/@Label@1152",
+          "rect": [
+            272.0,
+            295.0,
+            728.0,
+            50.0
+          ],
+          "text": "Interface language",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@BoxContainer@1153/Language",
+          "rect": [
+            272.0,
+            353.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "English",
+          "text_width": 130.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 131.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@HBoxContainer@1155/Controls",
+          "rect": [
+            272.0,
+            455.0,
+            159.0,
+            62.0
+          ],
+          "text": "Controls",
+          "text_width": 131.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 205.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@ScrollContainer@1108/@VBoxContainer@1109/@HBoxContainer@1155/HelpAbout",
+          "rect": [
+            443.0,
+            455.0,
+            233.0,
+            62.0
+          ],
+          "text": "Help & About",
+          "text_width": 205.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/Status",
+          "rect": [
+            272.0,
+            529.0,
+            736.0,
+            45.0
+          ],
+          "text": "Changes apply immediately. Close to revert.",
+          "type": "Label"
+        },
+        {
+          "available_width": 120.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1156/Revert",
+          "rect": [
+            567.0,
+            586.0,
+            148.0,
+            70.0
+          ],
+          "text": "Revert",
+          "text_width": 120.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 253.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1156/Keep",
+          "rect": [
+            727.0,
+            586.0,
+            281.0,
+            70.0
+          ],
+          "text": "Keep changes",
+          "text_width": 253.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@1099/@CenterContainer@1101/@PanelContainer@1102/@VBoxContainer@1103/@HBoxContainer@1105/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "en-2160-settings-large-bottom.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings-large-bottom",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "automatic_scale": 3.0,
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1270/@Label@1269",
+          "rect": [
+            272.0,
+            64.0,
+            654.0,
+            50.0
+          ],
+          "text": "Ajustes",
+          "type": "Label"
+        },
+        {
+          "available_width": 50.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1270/Close",
+          "rect": [
+            930.0,
+            64.0,
+            78.0,
+            50.0
+          ],
+          "text": "Cerrar",
+          "text_width": 50.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            439.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@Label@1275",
+          "rect": [
+            272.0,
+            126.0,
+            736.0,
+            18.0
+          ],
+          "text": "Pantalla",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1287/@Label@1286",
+          "rect": [
+            272.0,
+            163.0,
+            402.0,
+            26.0
+          ],
+          "text": "Modo de ventana",
+          "type": "Label"
+        },
+        {
+          "available_width": 282.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1287/WindowMode",
+          "rect": [
+            698.0,
+            154.0,
+            310.0,
+            43.7999992370605
+          ],
+          "text": "En ventana",
+          "text_width": 103.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1299/@Label@1298",
+          "rect": [
+            272.0,
+            217.0,
+            412.0,
+            26.0
+          ],
+          "text": "Tamaño del texto",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1299/UiScale",
+          "rect": [
+            708.0,
+            208.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "100%",
+          "text_width": 49.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 13,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@Label@1301",
+          "rect": [
+            272.0,
+            284.0,
+            736.0,
+            18.0
+          ],
+          "text": "Accesibilidad",
+          "type": "Label"
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1303/@Label@1302",
+          "rect": [
+            272.0,
+            316.0,
+            652.0,
+            26.0
+          ],
+          "text": "Usar paneles opacos",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1303/OpaquePanels",
+          "rect": [
+            948.0,
+            312.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1305/@Label@1304",
+          "rect": [
+            272.0,
+            360.0,
+            652.0,
+            26.0
+          ],
+          "text": "Reducir animaciones",
+          "type": "Label"
+        },
+        {
+          "available_width": 44.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1305/ReducedMotion",
+          "rect": [
+            948.0,
+            356.0,
+            60.0,
+            33.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 18,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1318/@Label@1317",
+          "rect": [
+            272.0,
+            431.0,
+            412.0,
+            26.0
+          ],
+          "text": "Idioma de la interfaz",
+          "type": "Label"
+        },
+        {
+          "available_width": 272.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1318/Language",
+          "rect": [
+            708.0,
+            422.0,
+            300.0,
+            43.7999992370605
+          ],
+          "text": "Español",
+          "text_width": 72.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 75.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@HBoxContainer@1320/Controls",
+          "rect": [
+            272.0,
+            498.0,
+            103.0,
+            40.0
+          ],
+          "text": "Controles",
+          "text_width": 75.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 140.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@HBoxContainer@1320/HelpAbout",
+          "rect": [
+            387.0,
+            498.0,
+            168.0,
+            40.0
+          ],
+          "text": "Ayuda y acerca de",
+          "text_width": 140.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 16,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/Status",
+          "rect": [
+            272.0,
+            577.0,
+            736.0,
+            23.0
+          ],
+          "text": "Los cambios se aplican al instante. Cierra para revertirlos.",
+          "type": "Label"
+        },
+        {
+          "available_width": 74.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1321/Revert",
+          "rect": [
+            691.0,
+            612.0,
+            102.0,
+            44.0
+          ],
+          "text": "Revertir",
+          "text_width": 74.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 175.0,
+          "clip_text": false,
+          "disabled": true,
+          "font_size": 19,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1321/Keep",
+          "rect": [
+            805.0,
+            612.0,
+            203.0,
+            44.0
+          ],
+          "text": "Conservar cambios",
+          "text_width": 175.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1270/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-settings.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "automatic_scale": 3.0,
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 48,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1270/@Label@1269",
+          "rect": [
+            272.0,
+            64.0,
+            605.0,
+            67.0
+          ],
+          "text": "Ajustes",
+          "type": "Label"
+        },
+        {
+          "available_width": 99.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1270/Close",
+          "rect": [
+            881.0,
+            64.0,
+            127.0,
+            67.0
+          ],
+          "text": "Cerrar",
+          "text_width": 99.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273",
+          "rect": [
+            272.0,
+            143.0,
+            736.0,
+            326.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@Label@1275",
+          "rect": [
+            272.0,
+            143.0,
+            728.0,
+            36.0
+          ],
+          "text": "Pantalla",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1287/@Label@1286",
+          "rect": [
+            272.0,
+            189.0,
+            728.0,
+            50.0
+          ],
+          "text": "Modo de ventana",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1287/WindowMode",
+          "rect": [
+            272.0,
+            247.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "En ventana",
+          "text_width": 204.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1299/@Label@1298",
+          "rect": [
+            272.0,
+            327.0,
+            728.0,
+            50.0
+          ],
+          "text": "Tamaño del texto",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1299/UiScale",
+          "rect": [
+            272.0,
+            385.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "200%",
+          "text_width": 98.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@Label@1301",
+          "rect": [
+            272.0,
+            487.0,
+            728.0,
+            36.0
+          ],
+          "text": "Accesibilidad",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1303/@Label@1302",
+          "rect": [
+            272.0,
+            537.0,
+            616.0,
+            50.0
+          ],
+          "text": "Usar paneles opacos",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1303/OpaquePanels",
+          "rect": [
+            896.0,
+            533.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1305/@Label@1304",
+          "rect": [
+            272.0,
+            605.0,
+            616.0,
+            50.0
+          ],
+          "text": "Reducir animaciones",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1305/ReducedMotion",
+          "rect": [
+            896.0,
+            601.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1318/@Label@1317",
+          "rect": [
+            272.0,
+            691.0,
+            728.0,
+            50.0
+          ],
+          "text": "Idioma de la interfaz",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1318/Language",
+          "rect": [
+            272.0,
+            749.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "Español",
+          "text_width": 143.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 149.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@HBoxContainer@1320/Controls",
+          "rect": [
+            272.0,
+            851.0,
+            177.0,
+            62.0
+          ],
+          "text": "Controles",
+          "text_width": 149.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 278.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@HBoxContainer@1320/HelpAbout",
+          "rect": [
+            461.0,
+            851.0,
+            306.0,
+            62.0
+          ],
+          "text": "Ayuda y acerca de",
+          "text_width": 278.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/Status",
+          "rect": [
+            272.0,
+            481.0,
+            736.0,
+            93.0
+          ],
+          "text": "Los cambios se aplican al instante. Cierra para revertirlos.",
+          "type": "Label"
+        },
+        {
+          "available_width": 147.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1321/Revert",
+          "rect": [
+            443.0,
+            586.0,
+            175.0,
+            70.0
+          ],
+          "text": "Revertir",
+          "text_width": 147.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 350.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1321/Keep",
+          "rect": [
+            630.0,
+            586.0,
+            378.0,
+            70.0
+          ],
+          "text": "Conservar cambios",
+          "text_width": 350.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1270/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-settings-large.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings-large",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    },
+    {
+      "automatic_scale": 3.0,
+      "case": "es-2160",
+      "content_scale": 1.0,
+      "controls": [
+        {
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267",
+          "rect": [
+            240.0,
+            40.0,
+            800.0,
+            640.0
+          ],
+          "type": "PanelContainer"
+        },
+        {
+          "font_size": 48,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1270/@Label@1269",
+          "rect": [
+            272.0,
+            64.0,
+            605.0,
+            67.0
+          ],
+          "text": "Ajustes",
+          "type": "Label"
+        },
+        {
+          "available_width": 99.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1270/Close",
+          "rect": [
+            881.0,
+            64.0,
+            127.0,
+            67.0
+          ],
+          "text": "Cerrar",
+          "text_width": 99.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273",
+          "rect": [
+            272.0,
+            143.0,
+            736.0,
+            326.0
+          ],
+          "type": "ScrollContainer"
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@Label@1275",
+          "rect": [
+            272.0,
+            -301.0,
+            728.0,
+            36.0
+          ],
+          "text": "Pantalla",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1287/@Label@1286",
+          "rect": [
+            272.0,
+            -255.0,
+            728.0,
+            50.0
+          ],
+          "text": "Modo de ventana",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1287/WindowMode",
+          "rect": [
+            272.0,
+            -197.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "En ventana",
+          "text_width": 204.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1299/@Label@1298",
+          "rect": [
+            272.0,
+            -117.0,
+            728.0,
+            50.0
+          ],
+          "text": "Tamaño del texto",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1299/UiScale",
+          "rect": [
+            272.0,
+            -59.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "200%",
+          "text_width": 98.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 26,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@Label@1301",
+          "rect": [
+            272.0,
+            43.0,
+            728.0,
+            36.0
+          ],
+          "text": "Accesibilidad",
+          "type": "Label"
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1303/@Label@1302",
+          "rect": [
+            272.0,
+            93.0,
+            616.0,
+            50.0
+          ],
+          "text": "Usar paneles opacos",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1303/OpaquePanels",
+          "rect": [
+            896.0,
+            89.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1305/@Label@1304",
+          "rect": [
+            272.0,
+            161.0,
+            616.0,
+            50.0
+          ],
+          "text": "Reducir animaciones",
+          "type": "Label"
+        },
+        {
+          "available_width": 88.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1305/ReducedMotion",
+          "rect": [
+            896.0,
+            157.0,
+            104.0,
+            57.5999984741211
+          ],
+          "text": "",
+          "text_width": 0.0,
+          "type": "CheckButton",
+          "wrap": 0
+        },
+        {
+          "font_size": 36,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1318/@Label@1317",
+          "rect": [
+            272.0,
+            247.0,
+            728.0,
+            50.0
+          ],
+          "text": "Idioma de la interfaz",
+          "type": "Label"
+        },
+        {
+          "available_width": 572.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@BoxContainer@1318/Language",
+          "rect": [
+            272.0,
+            305.0,
+            600.0,
+            69.8000030517578
+          ],
+          "text": "Español",
+          "text_width": 143.0,
+          "type": "OptionButton",
+          "wrap": 0
+        },
+        {
+          "available_width": 149.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@HBoxContainer@1320/Controls",
+          "rect": [
+            272.0,
+            407.0,
+            177.0,
+            62.0
+          ],
+          "text": "Controles",
+          "text_width": 149.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 278.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@ScrollContainer@1273/@VBoxContainer@1274/@HBoxContainer@1320/HelpAbout",
+          "rect": [
+            461.0,
+            407.0,
+            306.0,
+            62.0
+          ],
+          "text": "Ayuda y acerca de",
+          "text_width": 278.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "font_size": 32,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/Status",
+          "rect": [
+            272.0,
+            481.0,
+            736.0,
+            93.0
+          ],
+          "text": "Los cambios se aplican al instante. Cierra para revertirlos.",
+          "type": "Label"
+        },
+        {
+          "available_width": 147.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1321/Revert",
+          "rect": [
+            443.0,
+            586.0,
+            175.0,
+            70.0
+          ],
+          "text": "Revertir",
+          "text_width": 147.0,
+          "type": "Button",
+          "wrap": 0
+        },
+        {
+          "available_width": 350.0,
+          "clip_text": false,
+          "disabled": false,
+          "font_size": 38,
+          "path": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1321/Keep",
+          "rect": [
+            630.0,
+            586.0,
+            378.0,
+            70.0
+          ],
+          "text": "Conservar cambios",
+          "text_width": 350.0,
+          "type": "Button",
+          "wrap": 0
+        }
+      ],
+      "focus": "/root/AppRoot/Settings/@Control@1264/@CenterContainer@1266/@PanelContainer@1267/@VBoxContainer@1268/@HBoxContainer@1270/Close",
+      "gpu": "NVIDIA GeForce RTX 3090",
+      "image": "es-2160-settings-large-bottom.webp",
+      "logical_size": "(1280.0, 720.0)",
+      "pixels": [
+        3840,
+        2160
+      ],
+      "renderer": "gl_compatibility",
+      "screen": "settings-large-bottom",
+      "screen_dpi": 144,
+      "screen_scale": 1.0,
+      "screen_size": "(3840, 2160)",
+      "window_size": "(3840, 2160)"
+    }
+  ],
+  "flows": []
+}

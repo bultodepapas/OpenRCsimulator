@@ -75,37 +75,34 @@ func _run() -> void:
 	var column: Control = home.get_node("Sidebar/SidebarContent/Scroll/Column")
 	var primary_actions: Control = home.get_node("Sidebar/SidebarContent/PrimaryActions")
 	var scroll: ScrollContainer = home.get_node("Sidebar/SidebarContent/Scroll")
-	var footer: Control = home.get_node("Sidebar/SidebarContent/UtilityFooter")
+	var footer: Control = home.get_node("HomeFooter")
 	_check("Fly is full width in the pinned primary action strip", fly.get_parent() == primary_actions
 		and fly.size_flags_horizontal == Control.SIZE_EXPAND_FILL
 		and absf(fly.size.x - primary_actions.size.x) < 1.0
 		and primary_actions.get_global_rect().end.y <= footer.get_global_rect().position.y)
-	_check("Workshop stays in the scrollable action route", home.workshop_button.get_parent() == column)
+	_check("Workshop stays in the scrollable action route", home.workshop_button.get_parent() == home._pages[0])
 	_check("garage selector and entry are integrated into the Home column",
-		home.ground_vehicle_choice.get_parent() == column and home.ground_vehicle_button.get_parent() == column)
+		home.ground_vehicle_choice.get_parent() == home._pages[2] and home.ground_vehicle_button.get_parent() == home._pages[2])
 	_check("language, Help, Controls and Settings stay in the pinned footer",
-		home.language_button.get_parent() == footer and home.help_button.get_parent().get_parent() == footer
+		home.language_button.get_parent().get_parent() == footer and home.help_button.get_parent().get_parent() == footer
 		and home.controls_button.get_parent().get_parent() == footer and home.settings_button.get_parent().get_parent() == footer)
 	var viewport_height := home.get_viewport_rect().size.y
 	_check("Help and Settings fit in the initial Home viewport",
 		home.help_button.get_global_rect().end.y <= viewport_height
 		and home.settings_button.get_global_rect().end.y <= viewport_height)
-	_check("Home shows a scroll indicator", scroll.vertical_scroll_mode == ScrollContainer.SCROLL_MODE_SHOW_ALWAYS
-		and scroll.get_v_scroll_bar().visible)
+	_check("Default flight page fits without scrolling", scroll.vertical_scroll_mode == ScrollContainer.SCROLL_MODE_AUTO
+		and not scroll.get_v_scroll_bar().visible)
 	_check("Language and Controls keep their full labels", not home.language_button.clip_text
 		and not home.controls_button.clip_text
 		and home.language_button.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS
 		and home.controls_button.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS)
-	_check("footer actions wrap instead of clipping at large text sizes",
-		home.language_button.autowrap_mode != TextServer.AUTOWRAP_OFF
-		and home.help_button.autowrap_mode != TextServer.AUTOWRAP_OFF
-		and home.quit_button.autowrap_mode != TextServer.AUTOWRAP_OFF
-		and home.controls_button.autowrap_mode != TextServer.AUTOWRAP_OFF
-		and home.settings_button.autowrap_mode != TextServer.AUTOWRAP_OFF)
+	_check("footer flows controls into rows rather than wrapping button text",
+		home.language_button.get_parent() is HFlowContainer and home.language_button.autowrap_mode == TextServer.AUTOWRAP_OFF)
 	var panel_bg: Color = (home.get_node("Sidebar") as Control).get_theme_stylebox("panel").bg_color
 	for b in [fly, quit_b]:
 		for state in ["normal", "hover", "pressed"]:
 			var bg: Color = b.get_theme_stylebox(state).bg_color
+			if bg.a == 0.0: bg = UiTheme.PANEL
 			var fg: Color = b.get_theme_color("font_color" if state == "normal" else "font_%s_color" % state)
 			var r := UiTheme.contrast(fg, bg)
 			_check("contrast: %s %s text %.2f:1 >= 4.5" % [b.name, state, r], r >= 4.5)
@@ -141,15 +138,30 @@ func _run() -> void:
 	_check("initial focus on Fly", ui.focus_name() == "Fly", ui.focus_name())
 	_check("focus outline visible (keyboard focus)", fly.has_focus(true))
 	await ui.tap(KEY_DOWN)
-	_check("Down -> Workshop", ui.focus_name() == "Workshop", ui.focus_name())
-	await ui.tap(KEY_DOWN)
 	_check("Down -> Language", ui.focus_name() == "Language", ui.focus_name())
 	await ui.tap(KEY_RIGHT)
-	_check("Right -> Help", ui.focus_name() == "Help", ui.focus_name())
+	_check("Right -> Controls", ui.focus_name() == "ControllerSettings", ui.focus_name())
 	await ui.tap(KEY_RIGHT)
-	_check("Right -> Quit", ui.focus_name() == "Quit", ui.focus_name())
+	_check("Right -> Settings", ui.focus_name() == "Settings", ui.focus_name())
 	await ui.tap(KEY_UP)
 	_check("Up -> Fly", ui.focus_name() == "Fly", ui.focus_name())
+	for section in range(4):
+		home._page_buttons[section].grab_focus()
+		await ui.tap(KEY_ENTER)
+		_check("keyboard opens section %d without launching" % section, home._pages[section].visible
+			and home._pages.filter(func(page): return page.visible).size() == 1 and app.flight == null)
+	home._select_page(0)
+	var saved_aircraft: String = home.aircraft_id
+	for locale in ["en", "es"]:
+		TranslationServer.set_locale(locale)
+		for aircraft in Catalog.ids():
+			home.set_aircraft(aircraft)
+			for frame in 4: await process_frame
+			_check("flight page fits %s / %s without scrolling" % [aircraft, locale], not scroll.get_v_scroll_bar().visible
+				and home.workshop_button.get_global_rect().end.y <= scroll.get_global_rect().end.y)
+	TranslationServer.set_locale("en")
+	home.set_aircraft(saved_aircraft)
+	fly.grab_focus()
 	_check("navigating did not start a flight", app.flight == null and _sessions(root) == 0)
 
 	# Quit asks to close (the signal only: the test must not quit through it).

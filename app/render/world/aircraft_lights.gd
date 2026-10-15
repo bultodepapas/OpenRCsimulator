@@ -404,8 +404,61 @@ static func set_mode(kit: Node3D, mode: String) -> void:
 	for child in kit.get_children():
 		var name := String(child.name)
 		var nav := name.begins_with("nav_") or name.begins_with("strobe_")
-		(child as Node3D).visible = mode == "all" or nav
+		(child as Node3D).visible = (mode == "all" or nav) and bool(child.get_meta("gate_open", true))
 	kit.set_meta("mode", mode)
+
+
+## P51-V13: the anchored position of one kit light, or the bounds-derived fallback.
+static func _anchor_position(anchors: Dictionary, key: String, fallback: Vector3) -> Vector3:
+	var anchor: Variant = anchors.get(key)
+	return (anchor as Dictionary).position if anchor is Dictionary and (anchor as Dictionary).get("position") is Vector3 else fallback
+
+
+## P51-V13: copy an anchor's follow node (path from the model root) and gear gate onto a kit light. The offset is in the
+## followed node's frame so the light rides a moving part (a rudder, a lowering lamp).
+static func _anchored(light: Node3D, anchors: Dictionary, key: String) -> Node3D:
+	var anchor: Variant = anchors.get(key)
+	if not anchor is Dictionary:
+		return light
+	if (anchor as Dictionary).has("follow"):
+		light.set_meta("follow", NodePath(str(anchor.follow)))
+		light.set_meta("follow_offset", Vector3(anchor.get("follow_offset", Vector3.ZERO)))
+	if bool((anchor as Dictionary).get("gear_gated", false)):
+		light.set_meta("gear_gated", true)
+	return light
+
+
+## P51-V13: per presented frame, move following lights onto their parts and open gear-gated lamps only with the gear
+## down and locked (extension 1). Rendering only; kits without anchored lights are untouched.
+static func update_dynamic(kit: Node3D, root: Node3D, gear_extension: float) -> void:
+	if kit == null or not is_instance_valid(kit) or root == null or not bool(kit.get_meta("dynamic", false)):
+		return
+	var regate := false
+	for child in kit.get_children():
+		var light := child as Node3D
+		if light == null:
+			continue
+		if light.has_meta("follow"):
+			var target := root.get_node_or_null(light.get_meta("follow")) as Node3D
+			if target != null:
+				light.position = _root_local(target, root) * Vector3(light.get_meta("follow_offset", Vector3.ZERO))
+		if light.has_meta("gear_gated"):
+			var open := is_finite(gear_extension) and gear_extension >= 1.0
+			if bool(light.get_meta("gate_open", true)) != open:
+				light.set_meta("gate_open", open)
+				regate = true
+	if regate:
+		set_mode(kit, str(kit.get_meta("mode", "all")))
+
+
+static func _root_local(node: Node3D, root: Node3D) -> Transform3D:
+	var t := Transform3D.IDENTITY
+	var n: Node = node
+	while n != null and n != root:
+		if n is Node3D:
+			t = (n as Node3D).transform * t
+		n = n.get_parent()
+	return t
 
 
 ## Half the wingspan from the model's vertices (the widest single mesh is not the wing on every model: the Extra's
@@ -475,9 +528,12 @@ static func attach(root: Node3D) -> Node3D:
 	var lines: Dictionary = skins.lower
 	var left := tip(points, half, -1.0)
 	var right := tip(points, half, 1.0)
-	kit.add_child(sprite("nav_left", Color(1.0, 0.06, 0.04), left.centre, NAV_SIZE_M))
-	kit.add_child(sprite("nav_right", Color(0.08, 1.0, 0.25), right.centre, NAV_SIZE_M))
-	kit.add_child(sprite("nav_tail", Color(1.0, 1.0, 1.0), Vector3(0.0, all.position.y + all.size.y * 0.6, all.end.z + 0.01), NAV_SIZE_M))
+	# P51-V13 (optional): a model may publish "light_anchors" (model-local positions of its own lenses, an optional node to
+	# follow, a gear gate for a lamp that only works with the gear down and locked); absent keeps the bounds-derived kit.
+	var anchors: Dictionary = root.get_meta("light_anchors", {}) if root.has_meta("light_anchors") else {}
+	kit.add_child(_anchored(sprite("nav_left", Color(1.0, 0.06, 0.04), _anchor_position(anchors, "nav_left", left.centre), NAV_SIZE_M), anchors, "nav_left"))
+	kit.add_child(_anchored(sprite("nav_right", Color(0.08, 1.0, 0.25), _anchor_position(anchors, "nav_right", right.centre), NAV_SIZE_M), anchors, "nav_right"))
+	kit.add_child(_anchored(sprite("nav_tail", Color(1.0, 1.0, 1.0), _anchor_position(anchors, "nav_tail", Vector3(0.0, all.position.y + all.size.y * 0.6, all.end.z + 0.01)), NAV_SIZE_M), anchors, "nav_tail"))
 	kit.add_child(sprite("strobe_left", Color(1.0, 1.0, 1.0), left.trailing, NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE))
 	kit.add_child(sprite("strobe_right", Color(1.0, 1.0, 1.0), right.trailing, NAV_SIZE_M * 1.4, LED_RADIANCE, STROBE))
 	Exposure.register()
@@ -496,11 +552,15 @@ static func attach(root: Node3D) -> Node3D:
 	landing.name = "landing_light"
 	# In the left wing's leading edge, below the skin: the beam clears the propeller disc it used to light up.
 	var piece := wing_piece(tris, -LANDING_SPAN * half)
-	if piece.is_empty():
+	if anchors.has("landing"):
+		landing.position = anchors.landing.position
+	elif piece.is_empty():
 		landing.position = Vector3(0.0, (left.centre.y + right.centre.y) / 2.0, minf(left.leading_z, right.leading_z))
 	else:
 		landing.position = Vector3(-LANDING_SPAN * half, float(piece[2]) - 0.003, float(piece[0]) + 0.01)
-	kit.add_child(sprite("landing_lamp", Color("#fff4e0"), landing.position + Vector3(0, 0, -0.012), NAV_SIZE_M))
+	var lamp_ahead := Vector3.ZERO if anchors.has("landing") else Vector3(0, 0, -0.012) # an anchor is the lens face itself
+	kit.add_child(_anchored(sprite("landing_lamp", Color("#fff4e0"), landing.position + lamp_ahead, NAV_SIZE_M), anchors, "landing"))
+	_anchored(landing, anchors, "landing")
 	landing.rotation = Vector3(deg_to_rad(-6.0), 0.0, 0.0) # aimed a little down from the nose (−z)
 	landing.light_energy = LANDING_ENERGY
 	landing.spot_range = LANDING_RANGE_M
@@ -509,6 +569,8 @@ static func attach(root: Node3D) -> Node3D:
 	landing.shadow_enabled = false
 	kit.add_child(landing)
 	_mark_hosts(root, kit)
+	if not anchors.is_empty():
+		kit.set_meta("dynamic", true) # update_dynamic() has following or gated lights to serve
 	root.add_child(kit)
 	set_mode(kit, "all")
 	return kit

@@ -179,6 +179,7 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 		high_possible = false
 	if not unresolved.is_empty():
 		saw_inspection = true
+		high_possible = false
 
 	if is_total_loss:
 		for component_value: Variant in components:
@@ -234,10 +235,12 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 					lines.append(_line(component, 1, "inspection", inspection_fee, {}))
 			if decision.get("disposition") == "inspect":
 				saw_inspection = true
+				high_possible = false
 				_append_one(unresolved, "%s: salvage or condition is pending inspection" % component_id)
 				calculation_complete = false
 			if decision.get("disposition") == "unknown":
 				_append_one(unresolved, "%s: condition is unknown" % component_id)
+				high_possible = false
 				calculation_complete = false
 
 			var gross_result: Dictionary = _multiply_minor(price, component_quantity) if price != null else {"ok": false, "value": 0}
@@ -360,17 +363,19 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 				action = "inspection"
 				base_amount = null
 				base_low = 0
-				base_high = replacement["high"]
+				base_high = null
 				row_incomplete = true
 				replacement_complete = false
+				high_possible = false
 				saw_inspection = true
 				_append_one(unresolved, "%s: condition is pending inspection" % component_id)
 			elif disposition == "unknown":
 				base_amount = null
 				base_low = 0
-				base_high = replacement["high"]
+				base_high = null
 				row_incomplete = true
 				replacement_complete = false
+				high_possible = false
 				saw_inspection = true
 				_append_one(unresolved, "%s: condition is unknown" % component_id)
 
@@ -418,6 +423,9 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 
 	if not unresolved.is_empty():
 		calculation_complete = false
+		if is_total_loss:
+			# Pending salvage can reduce the net bill; gross replacement is not a lower bound.
+			low_possible = false
 	report["ok"] = true
 	report["errors"] = []
 	report["known_subtotal_minor"] = known_subtotal

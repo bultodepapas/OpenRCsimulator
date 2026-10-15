@@ -140,6 +140,17 @@ def _parse_aircraft_routes(text: str) -> dict[str, str]:
     return routes
 
 
+def _aircraft_catalog_discovery_identity(source_bytes: bytes) -> tuple[str, dict[str, str]]:
+    """Hash UTF-8 catalog text with canonical LF endings and discover its fixed routes."""
+    try:
+        text = source_bytes.decode("utf-8")
+    except UnicodeDecodeError as exc:
+        _fail(f"cannot read aircraft catalog source: {exc}")
+    normalized_text = text.replace("\r\n", "\n").replace("\r", "\n")
+    normalized_bytes = normalized_text.encode("utf-8")
+    return _sha256(normalized_bytes), _parse_aircraft_routes(normalized_text)
+
+
 def _inventory_rows(source: dict[str, Any], aircraft_id: str) -> list[dict[str, Any]]:
     raw = source.get("inventory", [])
     if not isinstance(raw, list):
@@ -390,6 +401,85 @@ def _baseline_exclusions(baseline: dict[str, Any]) -> list[dict[str, Any]]:
     return result
 
 
+def _variant_components(
+    aircraft_id: str, entry: dict[str, Any], source: dict[str, Any],
+    base_source: dict[str, Any], base_components: list[dict[str, Any]],
+    offers: dict[str, dict[str, Any]],
+) -> list[dict[str, Any]]:
+    """Replace whole economic groups only after explicit physical identity reconciliation."""
+    overrides = _baseline_components({"lines": entry["component_overrides"]}, offers)
+    if not overrides:
+        _fail(f"{aircraft_id}: component_overrides must not be empty")
+    base_by_id = {row["id"]: row for row in base_components}
+    override_by_id = {row["id"]: row for row in overrides}
+    replaced_inventory: set[str] = set()
+    for component in overrides:
+        component_id = component["id"]
+        if component_id not in base_by_id:
+            _fail(f"{aircraft_id}: unknown override component {component_id}")
+        original = base_by_id[component_id]
+        physical_ids = set(component["physical_inventory_ids"])
+        if not physical_ids or physical_ids != set(original["physical_inventory_ids"]):
+            _fail(f"{aircraft_id}: override {component_id} must retain its complete physical coverage group")
+        if component["quantity"] != original["quantity"]:
+            _fail(f"{aircraft_id}: override {component_id} changes installed quantity; author a separate BOM")
+        if replaced_inventory & physical_ids:
+            _fail(f"{aircraft_id}: overlapping override coverage")
+        replaced_inventory.update(physical_ids)
+
+    expected_rows = entry.get("expected_inventory")
+    if not isinstance(expected_rows, list):
+        _fail(f"{aircraft_id}: expected_inventory must explicitly pin every replaced physical item")
+    actual_rows = {row["id"]: row for row in _inventory_rows(source, aircraft_id)}
+    expected_ids: set[str] = set()
+    for row in expected_rows:
+        keys = {"id", "name", "mass_kg", "position_m", "energy_source"}
+        if not isinstance(row, dict) or set(row) != keys:
+            _fail(f"{aircraft_id}: expected_inventory row must have exactly {sorted(keys)}")
+        item_id = _require_string(row["id"], f"{aircraft_id}.expected_inventory.id")
+        if item_id in expected_ids or item_id not in replaced_inventory:
+            _fail(f"{aircraft_id}: duplicate or unbound expected inventory {item_id}")
+        expected_ids.add(item_id)
+        actual = actual_rows.get(item_id, {})
+        mass = actual.get("mass", {})
+        position = actual.get("position", {})
+        if mass.get("unit") != "kg" or position.get("unit") != "m":
+            _fail(f"{aircraft_id}: override inventory {item_id} requires kg/m source quantities")
+        expected_mass = row["mass_kg"]
+        expected_position = row["position_m"]
+        if type(expected_mass) not in (int, float) or expected_mass <= 0 \
+                or not isinstance(expected_position, list) or len(expected_position) != 3 \
+                or any(type(value) not in (int, float) for value in expected_position):
+            _fail(f"{aircraft_id}: expected_inventory requires numeric mass and three position coordinates")
+        if row["name"] != actual.get("name") or expected_mass != mass.get("value") \
+                or expected_position != position.get("value") \
+                or row["energy_source"] != actual.get("energy_source", ""):
+            _fail(f"{aircraft_id}: override inventory identity mismatch for {item_id}")
+    if expected_ids != replaced_inventory:
+        _fail(f"{aircraft_id}: expected_inventory must cover every replaced physical item")
+
+    base_signature = _inventory_signature(base_source, "baseline")
+    variant_signature = _inventory_signature(source, aircraft_id)
+    if set(base_signature) != set(variant_signature):
+        _fail(f"{aircraft_id}: variant inventory additions/removals require a separate BOM")
+    for item_id in base_signature.keys() - replaced_inventory:
+        if base_signature[item_id] != variant_signature[item_id]:
+            _fail(f"{aircraft_id}: unreviewed inherited inventory difference for {item_id}")
+
+    expected_propulsion = entry.get("expected_propulsion")
+    propulsion = source.get("propulsion", {})
+    actual_propulsion = {
+        "id": propulsion.get("id"), "kind": propulsion.get("kind"),
+        "engine_name": propulsion.get("engine", {}).get("name"),
+        "propeller_name": propulsion.get("propeller", {}).get("name"),
+    }
+    if expected_propulsion != actual_propulsion \
+            or propulsion.get("id") != base_source.get("propulsion", {}).get("id"):
+        _fail(f"{aircraft_id}: expected_propulsion identity/contact binding mismatch")
+    # Replacement by component ID prevents donor engine/propeller double-counting.
+    return [json.loads(json.dumps(override_by_id.get(row["id"], row))) for row in base_components]
+
+
 def _other_exclusions(source: dict[str, Any], aircraft_id: str) -> list[dict[str, Any]]:
     result: list[dict[str, Any]] = []
     for row in _inventory_rows(source, aircraft_id):
@@ -491,10 +581,9 @@ def _load_context(root: Path) -> dict[str, Any]:
     catalog_path = root / AIRCRAFT_CATALOG_PATH
     try:
         catalog_bytes = catalog_path.read_bytes()
-        catalog_text = catalog_bytes.decode("utf-8")
-    except (OSError, UnicodeDecodeError) as exc:
+    except OSError as exc:
         _fail(f"cannot read aircraft catalog source: {exc}")
-    routes = _parse_aircraft_routes(catalog_text)
+    aircraft_catalog_sha256, routes = _aircraft_catalog_discovery_identity(catalog_bytes)
     route_sources: dict[str, dict[str, Any]] = {}
     for aircraft_id, data_uri in routes.items():
         relative = PurePosixPath(data_uri.removeprefix("res://"))
@@ -546,7 +635,7 @@ def _load_context(root: Path) -> dict[str, Any]:
         "price_date": price_date,
         "price_catalog_sha256": _sha256(price_bytes),
         "costing_sha256": _sha256(costing_bytes),
-        "aircraft_catalog_sha256": _sha256(catalog_bytes),
+        "aircraft_catalog_sha256": aircraft_catalog_sha256,
         "research_source_hashes": research_source_hashes,
         "routes": routes,
         "route_sources": route_sources,
@@ -612,12 +701,18 @@ def _build_dossiers(context: dict[str, Any]) -> list[dict[str, Any]]:
         route = context["route_sources"][aircraft_id]
         source = route["source"]
         inherited_from = fleet_entry.get("inherits")
+        override_fields = {"component_overrides", "expected_inventory", "expected_propulsion"}
+        if inherited_from is None and override_fields & fleet_entry.keys():
+            _fail(f"{aircraft_id}: component override fields require explicit baseline inheritance")
         if inherited_from is not None:
             if inherited_from != baseline_id:
                 _fail(f"{aircraft_id}: unsupported inheritance parent {inherited_from}")
             baseline_signature = _inventory_signature(base_source, baseline_id)
             candidate_signature = _inventory_signature(source, aircraft_id)
-            if baseline_signature != candidate_signature:
+            has_overrides = bool(override_fields & fleet_entry.keys())
+            if has_overrides and not override_fields <= fleet_entry.keys():
+                _fail(f"{aircraft_id}: component overrides require expected_inventory and expected_propulsion")
+            if not has_overrides and baseline_signature != candidate_signature:
                 raise ContractError(
                     f"{aircraft_id}: declared inherited inventory is not reconciled with {baseline_id}; refusing BOM inheritance"
                 )
@@ -625,6 +720,11 @@ def _build_dossiers(context: dict[str, Any]) -> list[dict[str, Any]]:
             inherited["aircraft_id"] = aircraft_id
             inherited["source_sha256"] = route["source_sha256"]
             inherited["valuation_kind"] = "inherited_complete_inventory_coverage_with_cost_estimates"
+            if has_overrides:
+                inherited["components"] = _variant_components(
+                    aircraft_id, fleet_entry, source, base_source, components, context["offer_by_id"]
+                )
+                inherited["valuation_kind"] = "reconciled_variant_inventory_coverage_with_cost_estimates"
             dossiers[aircraft_id] = inherited
             continue
 
