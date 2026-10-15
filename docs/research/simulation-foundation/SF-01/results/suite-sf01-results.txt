@@ -1,0 +1,467 @@
+RESULT PASS test_aero.gd 23 checks, 0 failed
+RESULT PASS test_aero_continuity.gd R02 continuity: 64 checks, 0 failed
+RESULT PASS test_aero_flow.gd H12 local loads: 20001 comparisons in attached planar forward domain, 20000 samples verified attached, 0 failed
+RESULT PASS test_air_data.gd 11 checks, 0 failed
+RESULT PASS test_air_density.gd 29 checks, 0 failed
+RESULT PASS test_aircraft_catalog.gd 98 checks, 0 failed
+RESULT PASS test_aircraft_contact_contract.gd 722 checks, 0 failed
+RESULT PASS test_aircraft_contact_events.gd 49 checks, 0 failed
+RESULT PASS test_aircraft_contact_session.gd AS-13 contact session: 63 checks, 0 failures
+RESULT PASS test_aircraft_contract.gd AS aircraft contract: 2903 checks, 0 failures
+RESULT PASS test_aircraft_data.gd 87 checks, 0 failed
+RESULT PASS test_aircraft_model_manifest.gd Aircraft model manifest: 75 checks, 0 failures
+RESULT PASS test_aircraft_modules.gd Aircraft modules: 69 checks, 0 failures
+RESULT PASS test_aircraft_package_proofs.gd Aircraft package proofs: 29 checks, 0 failures
+RESULT PASS test_aircraft_physical_identity_contacts.gd 15 checks, 0 failures
+RESULT PASS test_aircraft_propulsion_runtime.gd aircraft propulsion runtime: 214 checks, 0 failed
+RESULT PASS test_aircraft_render_contract.gd AS render contract: 330 checks, 0 failures
+RESULT PASS test_airframe_scuff_cache.gd airframe scuff cache: 18 checks, 0 failed
+RESULT PASS test_airframe_scuffs.gd US-V12 airframe scuffs: 14 checks, 0 failed
+RESULT PASS test_atmosphere.gd 47 checks, 0 failed
+RESULT PASS test_atmosphere_column.gd R09 atmosphere column: 83 checks, 0 failed
+RESULT PASS test_atmosphere_column_session.gd M5-ATM-4 session: 96 checks, 0 failed
+RESULT PASS test_atmosphere_flight.gd M5-ATM flight: 142 checks, 0 failed
+RESULT PASS test_attached_flow.gd H15 attached flow: 20000 air-data and 20000 global-load byte-exact comparisons (10000 windy, 16326 stalled, 4000 without
+RESULT PASS test_avanti_gamepad.gd AV-17-R2 gamepad contract and input shaping: 29 checks, 0 failed
+RESULT PASS test_avanti_gamepad_flight.gd AV-17-R2 gamepad flight: 22 checks, 0 failed
+RESULT PASS test_avanti_handling.gd 47 checks, 0 failed
+RESULT PASS test_avanti_keyboard.gd AV-17-R1 keyboard and dive recovery: 39 checks, 0 failed
+RESULT PASS test_avanti_rudder.gd AV-17-R3 rudder checks: 33 checks, 0 failures
+RESULT PASS test_avanti_yaw_flight.gd AV-17-R3 yaw flight: 28 checks, 0 failed
+RESULT PASS test_botanical_habitats.gd downloaded vegetation scene checks: 13 checks, 0 failures
+RESULT PASS test_build_info.gd all build info checks passed
+RESULT PASS test_camera_math.gd all 21 camera math checks passed
+RESULT PASS test_camera_route.gd camera route: 19 checks, 0 failed
+RESULT PASS test_camera_views.gd all 39 camera view checks passed
+RESULT PASS test_campfire.gd FW-67 campfire: 24 checks, 0 failed
+RESULT PASS test_checkpoint.gd H8 checkpoints: 92 checks, 0 failed
+RESULT PASS test_checkpoint_integrity.gd H8-R1 checkpoint integrity: 149 checks, 0 failed
+RESULT PASS test_cloud_transport.gd cloud transport: 20 checks, 0 failed
+RESULT PASS test_contact_policy.gd 80 checks, 0 failed
+RESULT PASS test_continuous_state.gd continuous state: 42 checks, 0 failed
+RESULT PASS test_control_actuators.gd Control actuator kernel and isolated surface fixtures: 47 checks, 0 failures
+RESULT PASS test_control_surface_observation.gd Control surface observation: 50 checks, 0 failed
+RESULT PASS test_control_surfaces.gd Control surfaces: 26 checks, 0 failures
+RESULT PASS test_controller_actions.gd all controller action checks passed
+RESULT PASS test_controller_auto_defaults.gd Controller automatic defaults: 35/35 checks passed
+RESULT PASS test_controller_aux_runtime.gd Controller auxiliary runtime: 38/38 checks passed
+RESULT PASS test_controller_aux_setup.gd all controller auxiliary setup checks passed
+RESULT PASS test_controller_binding_audit.gd controller binding audit: 14 checks, 0 failures
+RESULT PASS test_controller_car.gd Car controller audit: 31/31 checks passed
+RESULT PASS test_controller_conditioning.gd Controller conditioning: 30 checks, 0 failed
+RESULT PASS test_controller_extended_actions.gd PASS extended controller actions: 77 checks
+RESULT PASS test_controller_flight_actions.gd controller flight actions: 27 checks, 0 failures
+RESULT PASS test_controller_ground.gd Ground controller integration: 22/22 checks passed
+RESULT PASS test_controller_integration.gd Controller integration: 27/27 checks passed
+RESULT PASS test_controller_menu.gd Controller menu: 29/29 checks passed
+RESULT PASS test_controller_pause_recovery.gd Controller pause recovery: 22/22 checks passed
+RESULT PASS test_controller_persistence.gd Controller persistence: 25 checks, 0 failures
+RESULT PASS test_controller_profile.gd Controller profile: 49 checks, 0 failed
+RESULT PASS test_controller_profile_hardening.gd Controller profile hardening: 30 checks, 0 failures
+RESULT PASS test_controller_prompts.gd PASS controller prompts: 137 checks
+RESULT PASS test_controller_registry.gd Controller registry: 27 checks, 0 failed
+RESULT PASS test_controller_routing_audit.gd controller routing audit: 6 checks, 0 failures
+RESULT PASS test_controller_sections.gd Controller sections: 105/105 checks passed
+RESULT PASS test_controller_settings_save.gd Controller settings save: 25/25 checks passed
+RESULT PASS test_controller_setup.gd all controller setup checks passed
+RESULT PASS test_controller_setup_safety.gd 
+RESULT PASS test_controller_store.gd Controller profile store: 36 checks, 0 failed
+RESULT PASS test_controls.gd 17 checks, 0 failed
+RESULT PASS test_controls_reference.gd all controls reference checks passed
+RESULT PASS test_crash.gd 12 checks, 0 failed
+RESULT PASS test_crash_audio.gd 12 checks, 0 failed
+RESULT PASS test_crash_breakup.gd 30 checks, 0 failed
+RESULT PASS test_crash_cause.gd 29 checks, 0 failed
+RESULT PASS test_crash_effects.gd 66 checks, 0 failures
+RESULT PASS test_crash_energy.gd 212 checks, 0 failed
+RESULT PASS test_crash_fracture.gd CR-09e fracture: 24 checks, 0 failed
+RESULT PASS test_crash_hull_labels.gd 240 checks, 0 failed
+RESULT PASS test_crash_integration.gd 179 checks, 0 failed
+RESULT PASS test_crash_masses.gd 27 checks, 0 failed
+RESULT PASS test_crash_pose.gd 226 checks, 0 failed
+RESULT PASS test_crash_presentation_ladder.gd 43 checks, 0 failed
+RESULT PASS test_crash_proportional.gd 49 checks, 0 failed
+RESULT PASS test_crash_sections.gd 37 checks, 0 failed
+RESULT PASS test_crash_severity.gd 44 checks, 0 failed
+RESULT PASS test_crash_snapshot.gd 42 checks, 0 failed
+RESULT PASS test_crash_warmup.gd 18 checks, 0 failed
+RESULT PASS test_crash_wreck.gd 277 checks, 0 failed
+RESULT PASS test_crash_wreck_surface.gd 10 checks, 0 failed
+RESULT PASS test_cruise_trim.gd 22 checks, 0 failed
+RESULT PASS test_damping_regimes.gd 20 checks, 0 failed
+RESULT PASS test_downloaded_habitats.gd downloaded habitat checks: 258 checks, 0 failures
+RESULT PASS test_downwash_lag.gd 22 checks, 0 failed
+RESULT PASS test_dynamic_mass_contact.gd R05-B draft: 34 checks, 0 failures
+RESULT PASS test_dynamic_mass_contact_boundary.gd R05-B independent review fixture: 12 checks, 0 failures
+RESULT PASS test_dynamic_mass_contact_session.gd R05-B FlightSession integration review: 15 checks, 0 failures
+RESULT PASS test_dynamics.gd 7 checks, 0 failed
+RESULT PASS test_e2e_input.gd all e2e checks passed
+RESULT PASS test_e2e_radio.gd all e2e radio checks passed
+RESULT PASS test_electric_battery_data.gd EL2a electric battery data: 67 checks passed
+RESULT PASS test_electric_battery_session.gd EL2a battery session: 103 checks, 0 failed
+RESULT PASS test_electric_battery_step.gd EL2a electric battery step: 63 checks, 0 failed
+RESULT PASS test_electric_data.gd EL1b electric aircraft data: 43 checks passed
+RESULT PASS test_electric_dynamics.gd EL2a-P1 electric dynamics: 74 checks, 0 failed
+RESULT PASS test_electric_event_localization.gd EL2a-P2 event localization: 2946 checks, 0 failed; max linear calls=20, nonlinear=155
+RESULT PASS test_electric_input.gd EL1e electric session defaults: 6 checks, 0 failed
+RESULT PASS test_electric_motor.gd EL1a electric source: 1057 checks, 0 failed
+RESULT PASS test_electric_motor_compact.gd EL2a-P3 compact motor: 13 checks, 0 failed
+RESULT PASS test_electric_propulsion.gd 20 checks, 0 failed
+RESULT PASS test_electric_runway.gd EL2a-E1 electric runway: 177 checks, 0 failed
+RESULT PASS test_electric_session.gd EL1d electric session: 86 checks, 0 failed
+RESULT PASS test_electric_stop.gd EL1d electric stop: 37 checks, 0 failed
+RESULT PASS test_electric_supply.gd EL2a electric supply: 95 checks, 0 failed
+RESULT PASS test_electrical_bank.gd electrical bank checks=32 failures=0
+RESULT PASS test_engine_audio.gd 146 checks, 0 failed
+RESULT PASS test_engine_smoke.gd SM engine smoke: 56 checks, 0 failures
+RESULT PASS test_engine_sound.gd 12 checks, 0 failed
+RESULT PASS test_engine_voice.gd 70 checks, 0 failed
+RESULT PASS test_envelope.gd 15 checks, 0 failed
+RESULT PASS test_envelope_integrity.gd D1-R4: 64 checks, 0 failed
+RESULT PASS test_extra_handling.gd 12 checks, 0 failed
+RESULT PASS test_extra_installation.gd 17 checks, 0 failed
+RESULT PASS test_failure_availability_ui.gd Failure availability UI: 62 checks, 0 failed
+RESULT PASS test_failure_launch.gd failure launch/notice: 24 checks, 0 failed
+RESULT PASS test_failure_power.gd Failure power adapter: 88 checks, 0 failed
+RESULT PASS test_failure_profiles.gd Failure profile contract: 119 checks, 0 failed
+RESULT PASS test_failure_routes.gd all failure UI checks passed
+RESULT PASS test_failure_session.gd Failure session integration: 99 checks, 0 failed
+RESULT PASS test_failure_shutdown.gd Failure power shutdown integration: 206 checks, 0 failed
+RESULT PASS test_failure_ui.gd all standalone failure UI checks passed
+RESULT PASS test_failures.gd 5150 checks, 0 failed
+RESULT PASS test_far_forest.gd L7 far forest: 10 checks, 0 failed; 480 near, 1200 far; sector counts [200, 100, 100, 217, 83, 200, 200, 100]
+RESULT PASS test_field_integration.gd all field integration checks passed
+RESULT PASS test_field_light_contract.gd 0 failures
+RESULT PASS test_field_loader.gd 178 checks, 0 failed
+RESULT PASS test_field_projected_shadows.gd Field projected-shadow regression: 57 checks, 0 failed
+RESULT PASS test_field_surfaces.gd 19 checks, 0 failed
+RESULT PASS test_flight_cue_shadows.gd 20 checks, 0 failed
+RESULT PASS test_flight_log.gd FL-04 flight logs: 3247 checks, 0 failures; /tmp/claude-1000/-home-bulto-OpenRCsimulator/dbdf7a77-90b3-4c80-9120-d9456a6
+RESULT PASS test_flight_log_ui.gd FL-04 production UI: 0 failures
+RESULT PASS test_flightline_barrier.gd 48 checks, 0 failed
+RESULT PASS test_flightline_barrier_data.gd 144 checks, 0 failed
+RESULT PASS test_frame_samples.gd 43 checks, 0 failed
+RESULT PASS test_frames.gd 18 checks, 0 failed
+RESULT PASS test_gear_flex.gd US-V10 gear flex: 27 checks, 0 failed
+RESULT PASS test_glow_audio.gd 42 checks, 0 failed
+RESULT PASS test_glow_coupling.gd glow shaft/prop coupling: 65 checks, 0 failed
+RESULT PASS test_glow_equilibrium.gd Glow equilibria: 196 checks, 0 failed
+RESULT PASS test_glow_flight_physics.gd glow flight physics: 82 checks, 0 failed
+RESULT PASS test_glow_four_stroke.gd 304 checks, 0 failed
+RESULT PASS test_glow_fuel_feed.gd NITRO-05 fuel feed: 28 checks, 0 failed
+RESULT PASS test_glow_hub_inflow.gd Glow hub inflow: 168 checks, 0 failed
+RESULT PASS test_glow_installation.gd glow installation contract: 226 checks, 0 failed
+RESULT PASS test_glow_lifecycle.gd NITRO lifecycle: 47 checks, 0 failed
+RESULT PASS test_glow_oracle.gd 723 checks, 0 failed (36 oracle vectors)
+RESULT PASS test_glow_prepared.gd NITRO prepared evaluator: 580 checks, 0 failed
+RESULT PASS test_glow_profiles.gd NITRO profiles: 53 checks, 0 failed
+RESULT PASS test_glow_propeller_momentum.gd glow propeller momentum: 63 checks, 0 failed
+RESULT PASS test_glow_propeller_prepared.gd glow propeller prepared: 38 checks, 0 failed
+RESULT PASS test_glow_session.gd Glow session: 140 checks, 0 failed
+RESULT PASS test_glow_stage_reuse.gd Glow stage reuse: 2005 comparisons, 0 failed (2000 byte-exact load checks)
+RESULT PASS test_glow_thermal.gd NITRO thermal: 15 checks, 0 failed
+RESULT PASS test_glow_trace.gd NITRO-TRACE: 276 checks, 0 failed
+RESULT PASS test_glow_two_stroke.gd 50 checks, 0 failed
+RESULT PASS test_glow_vibration.gd NITRO vibration source observer: 37 checks, 0 failed
+RESULT PASS test_golden.gd 4 golden flights, 0 failed
+RESULT PASS test_grass_mask_bounds.gd grass mask bounds: 23 checks, 0 failed
+RESULT PASS test_ground_contact.gd 22 checks, 0 failed
+RESULT PASS test_ground_effect.gd 50 checks, 0 failed
+RESULT PASS test_ground_friction.gd 26 checks, 0 failed
+RESULT PASS test_ground_image_cache.gd ground image cache: 16 checks, 0 failed
+RESULT PASS test_ground_physics.gd 28 checks, 0 failed
+RESULT PASS test_ground_start_environment.gd 10 checks, 0 failed
+RESULT PASS test_ground_start_integrity.gd E3b2-R1: 254 checks, 0 failed
+RESULT PASS test_ground_stiction.gd 25 checks, 0 failed
+RESULT PASS test_ground_surfaces.gd 29 checks, 0 failed
+RESULT PASS test_ground_terrain.gd 21 checks, 0 failed
+RESULT PASS test_gyro.gd 6 checks, 0 failed
+RESULT PASS test_half_power_start.gd HALF_POWER_CHECKS 14 failures=0
+RESULT PASS test_handling.gd 9 checks, 0 failed
+RESULT PASS test_heli_3d_controller.gd HELI-15b/36a FBL profile: 36 checks, 0 failed
+RESULT PASS test_heli_aerodynamic_stage.gd HELI-06c aerodynamic stage: 49 checks, 0 failed
+RESULT PASS test_heli_airframe.gd HELI-06b airframe: 768 checks, 0 failed
+RESULT PASS test_heli_construction.gd 38 checks, 0 failed
+RESULT PASS test_heli_contact_audit.gd HELI contact audit: 8 checks, 0 failed
+RESULT PASS test_heli_control_actions.gd HELI-20 controller actions: 17 checks, 0 failed
+RESULT PASS test_heli_coupling.gd HELI-08 geared coupling: 23 checks, 0 failed
+RESULT PASS test_heli_crash_presentation.gd HELI-33 crash presentation: 44 checks, 0 failed
+RESULT PASS test_heli_crash_relaunch.gd HELI-33 crash relaunch: 66 checks, 0 failed
+RESULT PASS test_heli_crash_visual.gd HELI-33 visual: 33 checks, 0 failed
+RESULT PASS test_heli_disc_normal_audit.gd HELI disc normal audit: 5 checks, 0 failed
+RESULT PASS test_heli_drive.gd HELI-07 finite drive proxy: 22 checks, 0 failed
+RESULT PASS test_heli_dynamic_inflow.gd HELI-04-R1 dynamic inflow: 32 checks, 0 failed
+RESULT PASS test_heli_electronics.gd HELI-15 source-mapped electronics: 33 checks, 0 failed
+RESULT PASS test_heli_electronics_prepared.gd HELI-09 prepared electronics: 1034 checks, 0 failed
+RESULT PASS test_heli_flight.gd HELI-16 flight equations: 41 checks, 0 failed
+RESULT PASS test_heli_ground_session.gd HELI-20 ground session: 56 checks, 0 failed
+RESULT PASS test_heli_ground_start.gd 14 checks, 0 failed
+RESULT PASS test_heli_impact_detector.gd HELI impact detector: 26 checks, 0 failed
+RESULT PASS test_heli_inflow.gd HELI-04 inflow: 3949 checks, 0 failed
+RESULT PASS test_heli_lifecycle.gd HELI-07b lifecycle: 19 checks, 0 failed
+RESULT PASS test_heli_main_rotor.gd HELI-05 main rotor: 65 checks, 0 failed
+RESULT PASS test_heli_main_rotor_stage.gd HELI-05a main stage: 25 checks, 0 failed
+RESULT PASS test_heli_night_lights.gd HELI night lights: 27 checks, 0 failed
+RESULT PASS test_heli_night_rotor.gd heli night rotor: 18 checks, 0 failed
+RESULT PASS test_heli_performance_context.gd HELI-09 performance context: 1087 checks, 0 failed
+RESULT PASS test_heli_prepared_context_audit.gd HELI prepared-context audit: 13 checks, 0 failed
+RESULT PASS test_heli_render_audit.gd 32 checks, 0 failed
+RESULT PASS test_heli_session.gd HELI-16 generated preset/session: 42 checks, 0 failed
+RESULT PASS test_heli_skid_bristles.gd 15 checks, 0 failed
+RESULT PASS test_heli_startup_kernel.gd HELI low-RPM/startup kernel: 62 checks, 0 failed
+RESULT PASS test_heli_state_audit.gd HELI state audit: 49 checks, 0 failed
+RESULT PASS test_heli_swash.gd 46 checks, 0 failed
+RESULT PASS test_heli_tail_rotor.gd HELI-06a tail rotor: 162 checks, 0 failed
+RESULT PASS test_heli_trim.gd HELI-18 airborne hover trim: 62 checks, 0 failed
+RESULT PASS test_heli_visual.gd 25 checks, 0 failed
+RESULT PASS test_horizon.gd 19 checks, 0 failed
+RESULT PASS test_hull_crossing.gd 40 checks, 0 failed
+RESULT PASS test_imported_aircraft_model.gd Imported aircraft model: 68 checks, 0 failures
+RESULT PASS test_imported_hedge.gd 31 imported-hedge checks, 0 failed
+RESULT PASS test_imported_near_grass.gd 27 downloaded near-grass checks, 0 failed
+RESULT PASS test_imported_vegetation.gd 
+RESULT PASS test_induced_integrity.gd D1-R5 integration: 177 checks, 0 failed
+RESULT PASS test_input_report.gd F1 data/options: 53 checks, 0 failed
+RESULT PASS test_input_report_buttons.gd F1 button data: 15 checks, 0 failed
+RESULT PASS test_input_report_cli.gd F1 CLI: 45 checks, 0 failed
+RESULT PASS test_input_report_e2e.gd F1 e2e: 23 checks, 0 failed
+RESULT PASS test_integrator.gd 9 checks, 0 failed
+RESULT PASS test_lake_collision.gd all lake collision checks passed
+RESULT PASS test_lake_geometry_bake.gd 18 lake geometry bake checks, 0 failed
+RESULT PASS test_lake_ground_contact.gd all lake ground contact checks passed
+RESULT PASS test_lake_session.gd 35 lake session checks, 0 failed
+RESULT PASS test_lake_surface.gd all lake surface checks passed
+RESULT PASS test_lake_world.gd 27 lake world checks, 0 failed
+RESULT PASS test_landing_maneuver.gd 28 checks, 0 failed
+RESULT PASS test_landing_variations.gd 9 checks, 0 failed
+RESULT PASS test_landscape_architecture.gd all architecture checks passed
+RESULT PASS test_landscape_checkpoint.gd landscape checkpoint: 18 checks, 0 failed
+RESULT PASS test_landscape_collision.gd landscape collision: 51 checks, 0 failures
+RESULT PASS test_landscape_collision_coverage.gd landscape collision coverage: 54 checks, 0 failures
+RESULT PASS test_landscape_collision_oracle.gd landscape collision oracle: 326 checks, 0 failures
+RESULT PASS test_landscape_collision_session.gd landscape collision session: 25 checks, 0 failures
+RESULT PASS test_landscape_collision_setup.gd landscape collision setup: 22 checks, 0 failures
+RESULT PASS test_landscape_collision_support.gd landscape collision support: 0 failures
+RESULT PASS test_landscape_collision_world.gd landscape collision production: 0 failures
+RESULT PASS test_landscape_gravel.gd landscape gravel: 6 checks, 0 failures
+RESULT PASS test_landscape_ground_lu18.gd LU-18 ground: 27 checks, 0 failures
+RESULT PASS test_landscape_horizon.gd LU-16 horizon integration: 37 checks, 0 failed
+RESULT PASS test_landscape_lighting.gd 54 checks, 0 failed
+RESULT PASS test_landscape_marker_optics.gd LU-09: 33 checks, 0 failed
+RESULT PASS test_landscape_population.gd all landscape population checks passed
+RESULT PASS test_landscape_population_assets.gd all population asset checks passed
+RESULT PASS test_landscape_runtime.gd 56 checks, 0 failures
+RESULT PASS test_landscape_scenery_eligibility.gd landscape scenery eligibility: 7 checks, 0 failed
+RESULT PASS test_landscape_scenery_grass_mask.gd LU-18 scenery grass mask: 34 checks, 0 failures
+RESULT PASS test_landscape_tree_bounds.gd LU08 trees: 192 seeded/theme builds, deterministic replay, finite bounds incl. 6cm wind; max static triangles=1679/1700 
+RESULT PASS test_landscape_twilight.gd landscape twilight: 394 checks, 0 failures
+RESULT PASS test_landscape_vegetation.gd LU-17 vegetation: 36 checks, 0 failures
+RESULT PASS test_latency_patch.gd F6a: 533 checks, 0 failed; 240 same-tick marker updates and exact checkpoint pairs
+RESULT PASS test_latency_patch_cli.gd F6a CLI: 39 checks, 0 failed
+RESULT PASS test_latency_patch_route.gd F6a route: 5 checks, 0 failed
+RESULT PASS test_mass_inventory.gd R05-A mass inventory geometry: 65 checks, 0 failed
+RESULT PASS test_math3d.gd 11 checks, 0 failed
+RESULT PASS test_modes.gd 42 checks, 0 failed
+RESULT PASS test_natural_random_config.gd all Natural Random config checks passed
+RESULT PASS test_natural_random_flight.gd NR-03 numerical flight qualification: 576 checks, 0 failed
+RESULT PASS test_natural_random_generator.gd all Natural Random generator checks passed
+RESULT PASS test_natural_random_screen.gd all Natural Random screen checks passed
+RESULT PASS test_near_grass.gd 38 near-grass checks, 0 failed
+RESULT PASS test_night_kit.gd FW-35b night kit: 30 checks, 0 failed
+RESULT PASS test_overlay_manager.gd overlay manager: 77 checks, 0 failed
+RESULT PASS test_overlay_telemetry.gd overlay telemetry: 38 checks, 0 failed
+RESULT PASS test_overlay_units.gd overlay units: 29 checks, 0 failed
+RESULT FAIL test_p51_envelope.gd 15 checks, 1 failed
+RESULT FAIL test_p51_ground.gd 12 checks, 1 failed
+RESULT FAIL test_p51_handling.gd 15 checks, 1 failed
+RESULT PASS test_physical_envelope.gd 
+RESULT PASS test_physical_identity.gd physical identity: 273 checks, 0 failures
+RESULT PASS test_pilot_aids.gd 22 checks, 0 failed
+RESULT PASS test_pilot_station.gd 36 checks, 0 failed
+RESULT PASS test_pilot_station_data.gd 163 checks, 0 failed
+RESULT PASS test_pilot_trim.gd 110 checks, 0 failed
+RESULT PASS test_projected_shadow.gd Projected shadow regression: 37 checks, 0 failed
+RESULT PASS test_prop_strike.gd 34 checks, 0 failed
+RESULT PASS test_prop_strike_feedback.gd 16 checks, 0 failed
+RESULT PASS test_propeller_blur.gd propeller blur: 114 checks, 0 failures
+RESULT PASS test_propeller_wake.gd E0b1 wake: 19 checks, 0 failed
+RESULT PASS test_propulsion.gd 16 checks, 0 failed
+RESULT PASS test_propulsion_scalar.gd H14 propulsion: 25001 byte-exact comparisons (19070 tilted-shaft, 16331 with crossflow, 3575 still air, 1157 stopped), 0
+RESULT PASS test_pullup_invariants.gd D8b-R2c: 41 checks, 0 failed
+RESULT PASS test_rates.gd 28 checks, 0 failed
+RESULT PASS test_rc_axis_history.gd F3b: 9252 checks, 0 failed; all 1024 axis-history combinations
+RESULT PASS test_rc_calibration.gd 19 checks, 0 failed
+RESULT PASS test_rc_fault_boundaries.gd RC fault boundaries: 26/26 checks passed
+RESULT PASS test_rc_input.gd 41 checks, 0 failed
+RESULT PASS test_rc_profile_validation.gd D6b-R1: 720 checks, 0 failed
+RESULT PASS test_rc_rearm.gd D6b-R2: 368 checks, 0 failed
+RESULT PASS test_rcv_activity.gd RCV activity: 24 checks, 0 failures
+RESULT PASS test_rcv_activity_audit.gd RCV activity audit: 40 checks, 0 failures
+RESULT FAIL test_rcv_airfield_course.gd RCV airfield course: 2 failed
+RESULT PASS test_rcv_airfield_track.gd RCV airfield track: 19 checks, 0 failures
+RESULT PASS test_rcv_attitude_integration.gd RCV attitude integration: 6 checks, 0 failures
+RESULT PASS test_rcv_course.gd 
+RESULT PASS test_rcv_damage.gd RCV damage: 175 checks, 0 failures
+RESULT PASS test_rcv_damage_session.gd RCV damage Session: 19/19 checks passed
+RESULT PASS test_rcv_effects_activity.gd RCV effects activity: 19 checks, 0 failures
+RESULT PASS test_rcv_ground_effects.gd RCV ground effects: 91 checks, 0 failures
+RESULT PASS test_rcv_handling.gd RCV handling: 21/21 checks passed
+RESULT PASS test_rcv_input.gd RCV input: 32 checks, 0 failed
+RESULT PASS test_rcv_menu.gd RCV menu: 27 checks, 0 failures
+RESULT PASS test_rcv_obstacle_contacts.gd RCV obstacle contacts: 14 checks, 0 failures
+RESULT FAIL test_rcv_powertrain.gd 
+RESULT PASS test_rcv_presentation.gd RCV presentation: 16 checks, 0 failures
+RESULT PASS test_rcv_render_audit.gd RCV render audit: 34 checks, 0 failures
+RESULT PASS test_rcv_session.gd RCV session: 125 checks, 0 failed
+RESULT PASS test_rcv_support.gd RCV-04b: 111 checks, 0 failed
+RESULT PASS test_rcv_suspension.gd RCV-04a: 83 checks, 0 failed
+RESULT PASS test_rcv_track_view.gd RCV track view: 0 failures
+RESULT PASS test_rcv_vehicle_data.gd 
+RESULT PASS test_rcv_vehicle_dynamics.gd RCV-05 vehicle dynamics: 53 checks, 0 failures
+RESULT PASS test_rcv_wet_effects.gd RCV wet effects: 79 checks, 0 failures
+RESULT PASS test_regime_consistency.gd 80 checks, 0 failed
+RESULT PASS test_replay_integrity.gd H9-R1 replay integrity: 153 checks, 0 failed
+RESULT PASS test_replay_policy.gd H9 replay policy: 50 checks, 0 failed
+RESULT PASS test_retractable_gear.gd AV-09 retractable gear: 68 checks, 0 failed
+RESULT PASS test_retractable_gear_ground.gd 26 checks, 0 failed
+RESULT PASS test_retractable_gear_input.gd retractable gear input: 8 checks, 0 failures
+RESULT PASS test_retractable_gear_trace.gd AV-09 retractable gear trace: 19 checks, 0 failed
+RESULT PASS test_rigid_body.gd 15 checks, 0 failed
+RESULT PASS test_rk_stage_time.gd 22 checks, 0 failed
+RESULT PASS test_rotor_coupling.gd G2 rotor coupling: 17 checks, 0 failed
+RESULT FAIL test_rudder_authority.gd 26 checks, 1 failed
+RESULT PASS test_runway_checkpoint_metadata.gd UI-06a-R1: 14 checks, 0 failed
+RESULT PASS test_runway_start.gd 18 checks, 0 failed
+RESULT PASS test_runway_transaction.gd VAL-AUD-R04 launch transaction: 32 checks, 0 failed
+RESULT PASS test_scenery_ambience.gd all scenery ambience checks passed
+RESULT PASS test_scenery_build.gd all scenery build checks passed
+RESULT PASS test_scenery_damage_session.gd 51 checks, 0 failed
+RESULT PASS test_scenery_destruction.gd scenery destruction: 78 checks, 0 failures
+RESULT PASS test_scenery_destruction_runtime.gd scenery destruction runtime: 8 checks, 0 failures
+RESULT PASS test_scenery_ground_lu08.gd LU08 scenery ground checks passed
+RESULT PASS test_scenery_loader.gd all scenery loader checks passed
+RESULT PASS test_scenery_scenario.gd all scenery scenario checks passed
+RESULT PASS test_scenery_trace.gd all scenery trace checks passed
+RESULT PASS test_servo.gd 6 checks, 0 failed
+RESULT PASS test_session_guards.gd 32 checks, 0 failed
+RESULT PASS test_sf_vehicle_model.gd 27 checks, 0 failed
+RESULT PASS test_shader_clock.gd 7 checks, 0 failed
+RESULT PASS test_shadow_blur.gd shadow blur: 50 checks, 0 failed
+RESULT PASS test_shadow_collection.gd shadow collection: 77 checks, 0 failed
+RESULT PASS test_shaft_coupled.gd G2 coupled shaft: 43 checks, 0 failed
+RESULT PASS test_shaft_data.gd D1-R2: 121 checks, 0 failed
+RESULT PASS test_shaft_equilibrium.gd G2-R1: 46 checks, 0 failed
+RESULT PASS test_shaft_refinement.gd G2 refinement: 3 checks, 0 failed
+RESULT PASS test_simulation.gd 11 checks, 0 failed
+RESULT PASS test_sky_appearance_config.gd sky appearance config checks=77 failures=0
+RESULT PASS test_sky_checkpoint.gd sky checkpoint checks=45 failures=0
+RESULT PASS test_sky_preferences.gd sky preferences checks=20 failures=0
+RESULT PASS test_sky_render.gd sky render contract: 30 checks, 0 failed
+RESULT PASS test_sky_routes.gd sky route checks=15 failures=0
+RESULT PASS test_slipstream_downwash.gd E0b3a: 15 checks, 0 failed
+RESULT PASS test_slipstream_scalar.gd H13/R02 slipstream: 10001 projected-load comparisons (1 aircraft, 6082 washed, 1429 static air, 448 stopped), 0 failed
+RESULT PASS test_smoke_aux.gd SM-03/04: 60 checks, 0 failed
+RESULT PASS test_soft_contact_feedback.gd 23 checks, 0 failed
+RESULT PASS test_soft_contacts.gd 32 checks, 0 failed
+RESULT PASS test_soundscape.gd 124 checks, 0 failed
+RESULT PASS test_spin.gd 8 checks, 0 failed
+RESULT PASS test_stall_solver.gd DATA-2: 571 checks, 0 failed
+RESULT PASS test_start_choice.gd UI-06a: 36 checks, 0 failed
+RESULT PASS test_stik_grain.gd 7 Stik grain checks, 0 failed
+RESULT PASS test_storm_bank.gd storm bank: 38 checks, 0 failed
+RESULT PASS test_storm_cell.gd storm cell checks=19 failures=0
+RESULT PASS test_storm_events.gd storm event checks=22 failures=0
+RESULT PASS test_strip_induced.gd 37 checks, 0 failed
+RESULT PASS test_swirl_accuracy.gd E0b6 swirl accuracy: 41 checks, 0 failed
+RESULT PASS test_swirl_optimization.gd E0b6p optimized swirl equivalence: 7 checks, 0 failed
+RESULT PASS test_swirl_torque.gd E0b6 torque: 23 checks, 0 failed
+RESULT PASS test_tail_downwash.gd 8 checks, 0 failed
+RESULT PASS test_takeoff_roll.gd 8 checks, 0 failed
+RESULT PASS test_timber_data.gd TT-07 Timber data: 10 checks, 0 failed
+RESULT PASS test_timber_ground.gd TT-11 Timber ground: 23 checks, 0 failed
+RESULT PASS test_timber_handling.gd TT-09 Timber handling: 36 checks, 0 failed
+RESULT PASS test_time_of_day_checkpoint.gd TOD-08a Main: 48 checks, 0 failed
+RESULT PASS test_time_of_day_checkpoint_v2.gd 36 checks, 0 failed
+RESULT PASS test_time_of_day_clock.gd TOD-09a solar clock: 1656 checks, 0 failed
+RESULT PASS test_time_of_day_config.gd 75 checks, 0 failed
+RESULT PASS test_time_of_day_edit.gd TOD-08b Main lighting edit: 57 checks, 0 failed
+RESULT PASS test_time_of_day_render.gd 203 checks, 0 failed
+RESULT PASS test_time_of_day_render_update.gd TOD-09b render update: 94 checks, 0 failed; scenery=true
+RESULT PASS test_time_of_day_scenery_update.gd 25 scenery lighting checks, 0 failed
+RESULT PASS test_time_of_day_session.gd 9 checks, 0 failed
+RESULT PASS test_time_of_day_solar.gd 42 checks, 0 failed
+RESULT PASS test_time_of_day_timeline.gd TOD-09c1 visual timeline: 55 checks, 0 failed
+RESULT PASS test_touchdown.gd 12 checks, 0 failed
+RESULT PASS test_trace.gd 37 checks, 0 failed
+RESULT PASS test_trace_metadata.gd C7-R2 / DATA-3: 341 checks, 0 failed
+RESULT PASS test_tree_assets.gd 60 checks, 0 failed
+RESULT PASS test_tree_wind.gd L15b wind bounds: 122643 checks, 0 failed; maximum chord 0.288530m
+RESULT PASS test_treeline.gd L7 tree runtime: 28626 checks, 0 failed; species [565, 586, 529]
+RESULT PASS test_treeline_data.gd 116 checks, 0 failed
+RESULT PASS test_trim.gd 14 checks, 0 failed
+RESULT PASS test_trim_density.gd M5-ATM-2 trim density: 35 checks, 0 failed
+RESULT PASS test_trim_integrity.gd D4-R2 trim integrity: 700 checks, 0 failed
+RESULT PASS test_turbine.gd 27 checks, 0 failed
+RESULT PASS test_turbine_continuous.gd 46 checks, 0 failed
+RESULT PASS test_turbulence_flight.gd M5-W04a turbulence flight: 160 checks, 0 failed
+RESULT PASS test_ui_aircraft.gd all UI aircraft checks passed
+RESULT PASS test_ui_atmosphere.gd all UI atmosphere checks passed
+RESULT PASS test_ui_field_world_time_of_day.gd all UI time-of-day checks passed
+RESULT PASS test_ui_flight_capture.gd all UI flight capture checks passed
+RESULT PASS test_ui_help.gd all UI help checks passed
+RESULT PASS test_ui_home.gd all UI home checks passed
+RESULT PASS test_ui_home_layout.gd all UI home layout checks passed
+RESULT PASS test_ui_home_legend.gd Home legend: 23 checks, 0 failed
+RESULT PASS test_ui_home_preview_cache.gd Home preview cache: 18 checks, 0 failed
+RESULT PASS test_ui_home_start_layout.gd Home launch layout: 44 checks, 0 failed
+RESULT PASS test_ui_input.gd all UI input checks passed
+RESULT PASS test_ui_language.gd all UI language checks passed
+RESULT PASS test_ui_natural_random.gd NR UI: 27 checks, 0 failures
+RESULT PASS test_ui_pause.gd all UI pause checks passed
+RESULT PASS test_ui_preview_requests.gd Preview requests: 23 checks, 0 failed
+RESULT PASS test_ui_preview_resources.gd Preview resources: 13 checks, 0 failed
+RESULT PASS test_ui_runway.gd all UI runway checks passed
+RESULT PASS test_ui_screen_stack.gd all UI screen stack checks passed
+RESULT PASS test_ui_sky.gd sky UI checks=24 failures=0
+RESULT PASS test_ui_standard_column.gd all standard-column UI checks passed
+RESULT PASS test_ui_time_of_day.gd all UI time-of-day checks passed
+RESULT PASS test_ui_time_of_day_pause.gd all TOD-08b pause UI checks passed
+RESULT PASS test_ui_turbulence.gd all UI turbulence checks passed
+RESULT PASS test_ui_update_notice.gd all UI update notice checks passed
+RESULT PASS test_ui_weather.gd all UI weather checks passed
+RESULT PASS test_ui_weather_sliders.gd all UI weather slider checks passed
+RESULT PASS test_update_check.gd all update check checks passed
+RESULT PASS test_vegetation_collision_proxies.gd vegetation collision proxies: 18 checks, 0 failures
+RESULT PASS test_visual_checkpoint.gd 40 checks, 0 failed
+RESULT PASS test_visual_evidence.gd visual evidence: 97 checks, 0 failed
+RESULT PASS test_visual_timeline.gd 53 checks, 0 failed
+RESULT PASS test_wash_profile.gd E0b3b: 20 checks, 0 failed
+RESULT PASS test_wash_transport.gd E0b5 transport: 42 checks, 0 failed
+RESULT PASS test_water_checkpoint.gd LU-27 water checkpoint: 16 checks, 0 failed
+RESULT PASS test_water_director.gd 15 checks, 0 failed
+RESULT PASS test_water_effects.gd 39 checks, 0 failures
+RESULT PASS test_wheel_session.gd GP-02 wheel session: 46 checks, 0 failed
+RESULT PASS test_wildlife.gd 26 checks, 0 failed
+RESULT PASS test_wind_field.gd wind field: 59 checks, 0 failed
+RESULT PASS test_wind_flight.gd wind flight: 51 checks, 0 failed
+RESULT PASS test_wind_hud.gd wind HUD: 9 checks, 0 failed
+RESULT PASS test_wind_trace.gd wind trace: 29 checks, 0 failed
+RESULT PASS test_wind_turbulence.gd wind turbulence kernel: 29 checks, 0 failed
+RESULT PASS test_windsock.gd 16 checks, 0 failed
+RESULT PASS test_windsock_data.gd 121 checks, 0 failed
+RESULT PASS test_wing_polar.gd D8b-R2 polar: 111 checks, 0 failed
+RESULT PASS test_wing_polar_session.gd D8b-R2 session: 8 checks, 0 failed
+RESULT PASS test_workshop_compiler.gd Workshop compiler: 314 checks, 0 failures
+RESULT PASS test_workshop_descriptor.gd 102 checks, 0 failed
+RESULT PASS test_workshop_integration.gd Workshop integration: 0 failed
+RESULT PASS test_workshop_store.gd 105 checks, 0 failed
+RESULT PASS test_workshop_trial.gd Workshop trial: 36 checks, 0 failed
+RESULT PASS test_workshop_ui.gd Workshop UI: 0 failed
+RESULT PASS test_world_ephemeris.gd 28 checks, 0 failed
+RESULT PASS test_world_field_lights.gd 72 checks, 0 failed
+RESULT PASS test_world_flow.gd 26 checks, 0 failed
+RESULT PASS test_world_presentation_context.gd world presentation context checks=17 failures=0
+RESULT PASS test_world_sky.gd 38 checks, 0 failed
+RESULT PASS test_world_stars.gd 22 checks, 0 failed
+RESULT PASS test_wreck_shadow_cache.gd 11 checks, 0 failures
+RESULT FAIL test_yaw_damping.gd 17 checks, 1 failed

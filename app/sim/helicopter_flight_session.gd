@@ -1,6 +1,7 @@
 # HELI-16: rotorcraft lifecycle on the common fixed-step Simulation owner.
 extends Node
 const Sim = preload("res://sim/simulation.gd")
+const VehicleModel = preload("res://sim/vehicle_model.gd")
 const Data = preload("res://physics/rotorcraft_data.gd")
 const ControllerProfile = preload("res://input/controller_profile.gd")
 const Flight = preload("res://physics/rotorcraft/flight_dynamics.gd")
@@ -75,9 +76,16 @@ func _init() -> void:
  sim.name="Simulation"
  sim.process_physics_priority=10
  add_child(sim)
- sim.continuous_evaluate=_stage
- sim.continuous_step=StepAdapter.step
- sim.continuous_aux=func(c: PackedFloat64Array,_a: PackedFloat64Array) -> PackedFloat64Array: return PackedFloat64Array([c[0]*60.0/(2.0*PI)])
+ # SF-02: the rotorcraft installs its VehicleModel with a declared layout (one sampled rpm, six coupled states).
+ var vehicle: VehicleModel=VehicleModel.new()
+ vehicle.input_size=4
+ vehicle.aux_size=1
+ vehicle.continuous_size=Flight.STATE_SIZE-13 # hover layout; reset() redeclares a ground start
+ vehicle.identity={"vehicle":"rotorcraft","state_layout":Flight.STATE_LAYOUT}
+ vehicle.stage=_stage
+ vehicle.step_policy=StepAdapter.step
+ vehicle.block_aux=func(c: PackedFloat64Array,_a: PackedFloat64Array) -> PackedFloat64Array: return PackedFloat64Array([c[0]*60.0/(2.0*PI)])
+ if not sim.set_model(vehicle): push_error("Cannot install the rotorcraft vehicle model")
  sim.faulted.connect(func(reason: String) -> void: pause_reason=reason+(" · "+_stage_failure if not _stage_failure.is_empty() else ""))
  sim.stepped.connect(_on_stepped)
 
@@ -273,6 +281,8 @@ func reset() -> bool:
  _phase_omega=PackedFloat64Array([0.0,0.0])
  crash={}
  sim.inputs=PackedFloat64Array([0,0,0,commands.throttle])
+ # SF-02: six rotor states in hover; a ground start adds four N/E elastic skid-friction pairs. Declared per start, fixed for the run.
+ sim.model.continuous_size=Flight.STATE_SIZE-13+(8 if start_choice=="ground" else 0)
  sim.continuous=solved.state.slice(13)
  sim.aux=PackedFloat64Array([solved.state[13]*60.0/(2.0*PI)])
  _ready_to_fly=sim.reset(solved.state.slice(0,13))

@@ -161,7 +161,7 @@ for f in $SHADER_FILES; do
 done
 
 echo "== parse check: every script"
-(cd "$HERE" && find . -name '*.gd' -not -path './.godot/*' | sort) | while read -r f; do
+(cd "$HERE" && find . -name '*.gd' -not -path './.godot/*' -not -path './captures/*' | sort) | while read -r f; do
   run --check-only --script "res://${f#./}" > /dev/null || { echo "parse error in $f"; exit 1; }
 done
 

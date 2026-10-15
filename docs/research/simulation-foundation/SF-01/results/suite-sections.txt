@@ -1,0 +1,41 @@
+# Sections run by the stock app/test.sh before its test loop (identical list on the HEAD, SF-01/02 and SF-03 copies); the loop and the post-loop sections were run by the continue-on-failure variant.
+== import resource dependencies
+== HELI-03a/04: independent mean-inflow reference stays current
+== HELI-04-R1/05: transient flow and main-rotor references stay current
+== HELI-06a: linearized tail-rotor reference stays current
+== HELI-06b/c: passive airframe and joint aerodynamic stage
+== HELI-16: generated experimental rotorcraft quantities stay current
+== HELI-25c: articulated inspection source, bindings and copy identity
+== AS-01/02: versioned aircraft contract and migration stay current
+== AS-07/09: shared aircraft modules and generated model bindings
+== AE-01: generated Workshop descriptors and exact-byte checkout bindings
+== NITRO-02: distinct 2T/4T profiles and finite-fuel installations stay current
+== P51-16: separated hardware inventory and physical inertia stay consistent
+== AV-15: independent geometry, inventory and fixed-build sensitivity checks
+== L6b offline tree placement matches committed positions
+== L11a offline grass placement matches committed offsets
+== L9e packed turf data matches its deterministic generator
+== L7 offline hill profile matches committed heights
+== FW-21/FW-24 sky table and star list match their generators
+== E0b2: Stik hub and neutral tail geometry stay current
+== E0b3b: neutral Stik wash profiles stay current
+== RCV-04a: independent suspension reference and headless bench exports
+== RCV-04b: coupled support reference and headless experiments
+== RCV-14a: supplied MT8 visual intake and isolated inspector
+== float64 guard: no 32-bit math types in simulation code
+== H6: transcendental calls stay behind math3d
+== shaders never read TIME (LANDSCAPE-PLAN L0d: animation runs on sim_clock, so captures repeat)
+== parse check: every script
+
+# Post-loop sections reached by the continue-on-failure variant (identical on all three copies); it stopped at the Turbo Lumber Evolution asset identity check, which needs the external delivery folder the copies exclude.
+== resume: programs already recorded are skipped
+== H7: exact one-ulp math sensitivity and golden branch signatures
+== L5: invalid field files fail before Home or flight can start
+== aircraft model contract (aircraft/verify_model.gd, owned by the model team)
+== Extra 300S .60 model contract (aircraft/verify_extra.gd: geometry, finish, articulation clearances)
+== P-51D finish parameters are not stale (assets/aircraft/p51d-mustang-120/compile_appearance.py --check, V08)
+== P-51D physics data and ground-effect table are not stale (research/p51/p51-05/derive_physics.py, p51-20/ground_effect_vlm.py --check)
+== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geometry, articulation, determinism)
+== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01: rudder and elevators at the flown throws and 45 deg)
+== Ventage Jet Blender source and visual contract (AV-31: imported geometry, controls, sections, no propeller)
+== Turbo Lumber Evolution asset identity and generated geometry (TT-01/02/03: manifest, mesh measurements, geometry, constants)

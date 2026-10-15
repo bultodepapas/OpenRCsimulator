@@ -278,12 +278,15 @@ static func project_stop(values: PackedFloat64Array,index: int,owner: Node) -> P
 	out[index]=0.0
 	return out
 
-static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative: Callable,first: PackedFloat64Array,owner: Node) -> PackedFloat64Array:
+## SF-04: the accepted result is {state, events}: the bounded rotor-stop and tank-exhaustion boundaries, then
+## a `glow_stopped` lifecycle transition with its reason when a running engine stops within the tick.
+static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative: Callable,first: PackedFloat64Array,owner: Node) -> Variant:
 	var bounded: Dictionary=Boundary.advance(combined,time_s,dt,derivative,first,RB.SIZE,RB.SIZE+1,project_stop.bind(owner))
 	if not bounded.ok: return PackedFloat64Array([NAN])
 	var install: Dictionary=owner.aircraft.model.propulsion.glow
 	var values: PackedFloat64Array=bounded.state.slice(RB.SIZE)
 	var before: Dictionary=unpack(combined.slice(RB.SIZE),install)
+	var was_running: bool=bool(before.running)
 	if not owner.engine_running:
 		before=Life.cut(before).state
 	var candidate: Dictionary=unpack(values,install)
@@ -304,7 +307,14 @@ static func step(combined: PackedFloat64Array,time_s: float,dt: float,derivative
 	values=put_state(values,accepted.state)
 	var out: PackedFloat64Array=bounded.state.slice(0,RB.SIZE)
 	out.append_array(values)
-	return out
+	var events: Array[Dictionary]=[]
+	for event: Dictionary in bounded.events:
+		var reported: Dictionary=event.duplicate(true)
+		if reported.get("type","")=="battery_exhausted": reported.type="fuel_exhausted"
+		events.append(reported)
+	if was_running and not bool(accepted.state.running):
+		events.append({"type":"glow_stopped","reason":str(accepted.state.get("stop_reason","")),"time_s":time_s+dt})
+	return {"state":out,"events":events}
 
 static func telemetry(owner: Node) -> Dictionary:
 	var values: PackedFloat64Array=owner.sim.continuous

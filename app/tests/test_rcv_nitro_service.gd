@@ -4,6 +4,15 @@ const Session = preload("res://sim/ground_vehicle/session.gd")
 var checks := 0
 var failures := 0
 
+
+## SF-03: the session reads its state from the shared kernel, so a test places state through the kernel
+## (combined index: 13-value body first, then the coupled block).
+func _poke(session: Node, index: int, value: float) -> void:
+	if index < 13:
+		session.sim.state[index] = value
+	else:
+		session.sim.continuous[index - 13] = value
+
 func _initialize() -> void:
 	call_deferred("_run")
 
@@ -80,16 +89,16 @@ func _run() -> void:
 	session.free()
 	var moving = Session.new()
 	_check("moving session prepares", moving.prepare_default({}, "monster-car-2"))
-	moving._state[3] = 2.0
+	_poke(moving, 3, 2.0)
 	var moving_before: PackedFloat64Array = moving.state_snapshot()
 	_check("paused moving vehicle refuses refuel/stop", not moving.service_nitro("stop")
 		and moving.state_snapshot().to_byte_array() == moving_before.to_byte_array())
-	moving._state[3] = 0.0
-	moving._state[21] = 2.0
+	_poke(moving, 3, 0.0)
+	_poke(moving, 21, 2.0)
 	_check("spinning wheel refuses service", not moving.service_nitro("stop"))
-	moving._state[21] = 0.0
-	moving._state[32] = 0.0
-	moving._state[31] = 0.0
+	_poke(moving, 21, 0.0)
+	_poke(moving, 32, 0.0)
+	_poke(moving, 31, 0.0)
 	_check("empty tank cannot start", not moving.service_nitro("start"))
 	_check("empty tank can refuel then start", moving.service_nitro("refuel") and moving.service_nitro("start"))
 	moving.free()

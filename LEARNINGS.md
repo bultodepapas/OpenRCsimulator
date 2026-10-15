@@ -60,6 +60,17 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-15 · SF-04 — a stop's known answer needs the locator's continuation, not a kinked derivative
+
+A synthetic "x falls at a constant rate and rests at zero" model located its stop at 0.6 of the tick instead of the analytic 0.5, because a derivative that switches to zero for x ≤ 0 kinks the RK4 trial map that the bracket solves. The locator treats negative trial values as a continuation, so a known-answer model must keep its derivative smooth across zero and rest only at exactly zero; then the secant lands within 1e-12 of the analytic crossing. [SF-04 evidence](docs/research/simulation-foundation/SF-04/README.md).
+
+## 2026-10-15 · SF-03 — a kernel transaction does not cover observers that run after its commit
+
+Moving the truck onto the shared kernel left telemetry, damage, events and recording in the session, after `sim.step()` has committed. Before, a rejected observation left the state untouched; after, the kernel had already advanced. Keep the old transaction by taking a kernel checkpoint before the step and restoring it when an observer rejects the tick, until the observers join the kernel's own event protocol. [SF-03 evidence](docs/research/simulation-foundation/SF-03/README.md).
+
+## 2026-10-15 · SF-02 — a vehicle's coupled-state layout belongs to the start, not the vehicle
+
+Declaring the helicopter's continuous block as six rotor states refused every ground start: a pad start appends four elastic skid-friction pairs, so the same vehicle integrates 14 coupled values. A layout declaration must be made where the start is resolved and held fixed for the run; the kernel then enforces it at reset and restore. [SF-01/02 evidence](docs/research/simulation-foundation/SF-01/README.md).
 ## 2026-10-15 · P51-26 — distrust a perfect match, and point-sample nothing singular
 
 A first propeller-sidewash candidate hit the P-51D's measured 0.55 °/° almost exactly; re-deriving Ribner's relation in the model's own terms showed it counted the axial-wash deflection twice and diverged at static thrust. The correct form gives 0.72. Before accepting a result that lands on the target, rewrite the source equation in the code's variables and check the limits. In the same step, a free-vortex swirl sampled at one centroid per tail piece made a stability derivative wrong by up to 2× in either direction as speed changed. Integrate any profile with a core or edge kink across its kinks (split there, then low-order Gauss) and compare with a dense reference before trusting its derivatives. [Evidence](docs/research/p51-realism/P51-26/README.md).

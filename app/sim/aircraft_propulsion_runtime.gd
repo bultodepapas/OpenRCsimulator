@@ -3,6 +3,7 @@ extends RefCounted
 const Propulsion: Script = preload("res://physics/propulsion.gd")
 const Turbine: Script = preload("res://physics/turbine.gd")
 const GlowFlight: Script = preload("res://physics/glow/flight.gd")
+const RB: Script = preload("res://physics/rigid_body.gd")
 
 const CALLBACK_FIELDS: PackedStringArray = [
 	"continuous_step",
@@ -23,6 +24,8 @@ static func prepare_callbacks(session: Node) -> Dictionary:
 	var result: Dictionary = _base_description(context)
 	for field: String in CALLBACK_FIELDS:
 		result[field] = Callable()
+	var declared_events: Array[Dictionary] = []
+	result.events = declared_events
 
 	# Match FlightSession._configure_continuous_callbacks selection and early-return order.
 	if context.glow_active:
@@ -38,7 +41,13 @@ static func prepare_callbacks(session: Node) -> Dictionary:
 	var coupled: bool = bool(session.call("shaft_is_coupled"))
 	var has_wheels: bool = int(session.call("wheel_count")) > 0
 	if context.electric:
-		result.continuous_step = Callable(session, "_electric_step")
+		if context.family == "electric_finite_battery":
+			# Two composed boundaries (rotor stop inside battery exhaustion) keep their own policy.
+			result.continuous_step = Callable(session, "_electric_step")
+		else:
+			# SF-04: the fixed-bus rotor stop is a declared kernel event, located by physics/event_step.gd.
+			declared_events.append({"type": "rotor_stop", "index": RB.SIZE + int(session.call("_rotor_index")),
+				"transition": Callable(session, "_project_electric_stop")})
 	result.continuous_evaluate = Callable(session, "_coupled_evaluate") if coupled else (
 		Callable(session, "_wheel_evaluate") if has_wheels else Callable())
 	result.continuous_loads = Callable(session, "_coupled_loads") if coupled else Callable(session, "_wash_loads")

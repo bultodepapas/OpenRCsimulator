@@ -469,30 +469,33 @@ static func make_terrain_state(model: Dictionary, pose: Dictionary, road: Callab
 ## controls stay constant through all RK stages. Input arrays are never edited.
 ## Returns an empty array on malformed inputs, road samples, or a singular
 ## generalized mass matrix so a Session can reject the tick transactionally.
-static func step(
+## SF-03: validate one tick's inputs and resolve its integration plan: the initial road sample is cached for
+## every stage that lands on the start position, and the substep count follows the wet zone and wall boxes.
+## Returns {ok: true, substeps, road} or {ok: false}. The road closure is valid for this one tick only.
+static func begin_tick(
 	state: PackedFloat64Array,
 	model: Dictionary,
 	controls: Dictionary,
 	dt: float,
 	road: Callable,
-) -> PackedFloat64Array:
+) -> Dictionary:
 	if state.size() != STATE_SIZE or not _valid_model(model) or not _valid_controls(controls):
-		return PackedFloat64Array()
+		return {"ok": false}
 	if not road.is_valid() or not is_finite(dt) or dt <= 0.0 or dt > 1.0 / 30.0:
-		return PackedFloat64Array()
+		return {"ok": false}
 	if not _finite_array(state) or not _valid_attitude(state):
-		return PackedFloat64Array()
+		return {"ok": false}
 	var initial_wall_sample: Variant = road.call(state[POS], state[POS + 1])
 	if typeof(initial_wall_sample) != TYPE_DICTIONARY:
-		return PackedFloat64Array()
+		return {"ok": false}
 	var initial_wall_surface: Dictionary = initial_wall_sample
 	var initial_walls := _validated_walls(initial_wall_surface)
 	if not bool(initial_walls.get("ok", false)):
-		return PackedFloat64Array()
+		return {"ok": false}
 	var wall_boxes: Array = initial_walls["walls"]
 	var step_substeps := SUBSTEPS_PER_TICK
 	if not WetPhysics.surface_is_valid(initial_wall_surface):
-		return PackedFloat64Array()
+		return {"ok": false}
 	if bool(initial_wall_surface.get("wet_zone", false)):
 		step_substeps = maxi(step_substeps, ceili(dt / WetPhysics.WET_MAX_STEP_S))
 	if not wall_boxes.is_empty():
@@ -503,17 +506,78 @@ static func step(
 		if north == cached_north and east == cached_east:
 			return initial_wall_surface
 		return road.call(north, east)
+	return {"ok": true, "substeps": step_substeps, "road": integration_road}
+
+
+## One complete fixed tick for oracles, parity tests and source-only callers. The session integrates the same
+## plan through the Simulation kernel (SF-03); both paths share tick_policy and physics/integrator.gd.
+static func step(
+	state: PackedFloat64Array,
+	model: Dictionary,
+	controls: Dictionary,
+	dt: float,
+	road: Callable,
+) -> PackedFloat64Array:
+	var plan := begin_tick(state, model, controls, dt, road)
+	if not bool(plan.get("ok", false)):
+		return PackedFloat64Array()
+	var integration_road: Callable = plan["road"]
+	var failed := {"value": false}
+	var f := func(stage_state: PackedFloat64Array, _stage_t: float) -> PackedFloat64Array:
+		var stage_rate := _derivative_core(stage_state, model, controls, integration_road)
+		if stage_rate.is_empty():
+			failed["value"] = true
+			var zero := PackedFloat64Array()
+			zero.resize(STATE_SIZE)
+			return zero
+		return stage_rate
+	var k1: PackedFloat64Array = f.call(state, 0.0)
+	if failed["value"]:
+		return PackedFloat64Array()
+	var next := tick_policy(state, 0.0, dt, f, k1, int(plan["substeps"]))
+	if failed["value"]:
+		return PackedFloat64Array()
+	return next
+
+
+## Derivative for one RK stage of an already validated tick (begin_tick), for the session's VehicleModel stage.
+## `derivative` below keeps the per-call validation for independent oracles.
+static func stage_derivative(
+	state: PackedFloat64Array,
+	model: Dictionary,
+	controls: Dictionary,
+	road: Callable,
+) -> PackedFloat64Array:
+	return _derivative_core(state, model, controls, road)
+
+
+## Whole-tick integration policy shared by step() and the Simulation kernel (VehicleModel.step_policy).
+## f(state, stage_t) returns the 31-value derivative; k1 is f(state, t) already evaluated by the caller.
+## Each substep restarts from its own derivative. An exactly zero derivative returns the state unchanged, so a
+## vehicle at rest is never renormalized. Each substep is classic RK4 through physics/integrator.gd.
+static func tick_policy(
+	state: PackedFloat64Array,
+	t: float,
+	dt: float,
+	f: Callable,
+	k1: PackedFloat64Array,
+	substeps: int,
+) -> PackedFloat64Array:
+	if state.size() != STATE_SIZE or substeps <= 0 or not is_finite(dt) or dt <= 0.0:
+		return PackedFloat64Array()
 	var next := state.duplicate()
-	var substep_dt := dt / float(step_substeps)
-	for substep in step_substeps:
-		var initial_derivative := _derivative_core(next, model, controls, integration_road)
-		if initial_derivative.is_empty():
+	var substep_dt := dt / float(substeps)
+	var elapsed := 0.0
+	for substep in substeps:
+		var initial: PackedFloat64Array = k1 if substep == 0 else f.call(next, t + elapsed)
+		if initial.size() != STATE_SIZE or not _finite_array(initial):
 			return PackedFloat64Array()
-		if _derivative_is_exactly_zero(initial_derivative):
+		if _derivative_is_exactly_zero(initial):
 			return next
-		next = _rk4_step(next, model, controls, integration_road, substep_dt, initial_derivative)
-		if next.is_empty():
+		next = Integrator.rk4_step_at(next, t + elapsed, substep_dt, f, initial)
+		if next.size() != STATE_SIZE or not _finite_array(next):
 			return PackedFloat64Array()
+		elapsed += substep_dt
 	return next
 
 
@@ -626,43 +690,6 @@ static func telemetry(
 		"total_energy_j": evaluated["energy_j"],
 		"environment": evaluated.get("environment", WetPhysics.dry()),
 	}
-
-
-static func _rk4_step(
-	state: PackedFloat64Array,
-	model: Dictionary,
-	controls: Dictionary,
-	road: Callable,
-	dt: float,
-	initial_derivative: PackedFloat64Array = PackedFloat64Array(),
-) -> PackedFloat64Array:
-	var k1 := initial_derivative
-	if k1.size() != STATE_SIZE:
-		k1 = _derivative_core(state, model, controls, road)
-	if k1.is_empty():
-		return PackedFloat64Array()
-	var stage_2 := Integrator.axpy(state, 0.5 * dt, k1)
-	var k2 := _derivative_core(stage_2, model, controls, road)
-	if k2.is_empty():
-		return PackedFloat64Array()
-	var stage_3 := Integrator.axpy(state, 0.5 * dt, k2)
-	var k3 := _derivative_core(stage_3, model, controls, road)
-	if k3.is_empty():
-		return PackedFloat64Array()
-	var stage_4 := Integrator.axpy(state, dt, k3)
-	var k4 := _derivative_core(stage_4, model, controls, road)
-	if k4.is_empty():
-		return PackedFloat64Array()
-	var weighted := Integrator.axpy(k1, 2.0, k2)
-	weighted = Integrator.axpy(weighted, 2.0, k3)
-	weighted = Integrator.axpy(weighted, 1.0, k4)
-	var next := Integrator.axpy(state, dt / 6.0, weighted)
-	if not _finite_array(next):
-		return PackedFloat64Array()
-	var attitude := M.q_normalized(_state_quaternion(next))
-	for i in 4:
-		next[ATT + i] = attitude[i]
-	return next
 
 
 ## Runtime evaluation dispatch. `_evaluate` below remains the independent GDScript
