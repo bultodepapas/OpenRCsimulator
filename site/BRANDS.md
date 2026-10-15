@@ -1,6 +1,6 @@
 # Brand assets
 
-The files under `assets/brands/` are unchanged copies from official brand downloads. They remain the property of their respective owners and are not covered by the simulator's MIT code license.
+Original SVG/PNG files under `assets/brands/` are unchanged copies from official brand downloads. Savox WebP display derivatives are described below. All marks remain the property of their respective owners and are not covered by the simulator's MIT code license.
 
 ## OpenAI
 
@@ -27,5 +27,7 @@ The Savox monochrome PNGs came from the official [Savox Logos Package](https://w
 | --- | --- |
 | `assets/brands/savox/TeamSavox-Logo-Mono-Black.png` | SAVOX wordmark, black |
 | `assets/brands/savox/TeamSavox-Logo-Mono-White.png` | SAVOX wordmark, white |
+
+WEB-05 serves transparent 768×261 WebP derivatives (`Black.webp` / `White.webp`, using the same full filename stem). `python site/prepare_assets.py --brands-only` creates them with Pillow 12.3.0, proportional Lanczos resizing and lossless WebP encoding. The originals are retained; the mark, colors and transparency are preserved. Each display copy is about 10.2 kB instead of 86–91 kB, and its decoded RGBA footprint is about 0.8 MB instead of 23.6 MB. The display width is at most 240 CSS pixels, so the derivatives cover 3× pixel density.
 
 The project [README](../README.md#partners) records Savox's authorization to include representations of its products in OpenRC Simulator. The permission record in [D6-SAV-00](../docs/research/servos/D6-SAV-00/README.md) quotes the manufacturer's scope: “You have our permission to use Savox product representations in your project.” Keep the partner acknowledgment within that scope; do not imply manufacturer certification of simulator behavior. SAVOX marks remain Savox's property.

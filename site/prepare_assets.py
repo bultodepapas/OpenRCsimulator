@@ -9,6 +9,7 @@ wide and encoded as WebP at quality 85.
 from __future__ import annotations
 
 from pathlib import Path
+import argparse
 import sys
 
 from PIL import Image, __version__ as pillow_version
@@ -18,6 +19,7 @@ PINNED_PILLOW_VERSION = "12.3.0"
 ROOT = Path(__file__).resolve().parents[1]
 ASSET_DIR = Path(__file__).resolve().parent / "assets"
 MAX_FIELD_WIDTH = 1600
+MAX_BRAND_WIDTH = 768
 
 STUDIO_IMAGES = (
     "ugly-stik.png",
@@ -121,7 +123,24 @@ def convert_field_images() -> None:
         report(source, destination, size, "WebP quality 85")
 
 
+def convert_brand_images() -> None:
+    """Preserve official PNG originals; size transparent web copies for 3x display."""
+    for variant in ("Black", "White"):
+        source = ASSET_DIR / "brands" / "savox" / f"TeamSavox-Logo-Mono-{variant}.png"
+        destination = source.with_suffix(".webp")
+        with Image.open(source) as opened:
+            require_supported_source_mode(opened, source)
+            image = opened.copy()
+            image.thumbnail((MAX_BRAND_WIDTH, MAX_BRAND_WIDTH), Image.Resampling.LANCZOS)
+            image.save(destination, format="WEBP", lossless=True, exact=True, method=6, **metadata_for_webp(opened))
+            size = image.size
+        report(source, destination, size, "resized lossless WebP")
+
+
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--brands-only", action="store_true", help="Only rebuild the Savox web derivatives.")
+    args = parser.parse_args()
     if pillow_version != PINNED_PILLOW_VERSION:
         print(
             f"This asset script requires Pillow=={PINNED_PILLOW_VERSION}; "
@@ -135,8 +154,10 @@ def main() -> int:
         return 2
 
     ASSET_DIR.mkdir(parents=True, exist_ok=True)
-    convert_studio_images()
-    convert_field_images()
+    if not args.brands_only:
+        convert_studio_images()
+        convert_field_images()
+    convert_brand_images()
     return 0
 
 

@@ -34,7 +34,9 @@ function applyTheme() {
   themeButton.firstElementChild.textContent = night ? '☀' : '☾';
   themeButton.setAttribute('aria-label', english ? (night ? 'Switch to day theme' : 'Switch to night theme') : (night ? 'Activar modo día' : 'Activar modo noche'));
   document.querySelectorAll('img[src*="brands/"]').forEach(img => {
-    img.src = img.getAttribute('src').replace(night ? 'Black' : 'White', night ? 'White' : 'Black');
+    const source = img.getAttribute('src');
+    const next = source.replace(night ? 'Black' : 'White', night ? 'White' : 'Black');
+    if(source !== next) img.src = next;
   });
 }
 themeButton.hidden = false;

@@ -1,6 +1,6 @@
 # OpenRC project website
 
-WEB-01/02/03/04 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
+WEB-01/02/03/04/05 own `site/` and the isolated `gh-pages` deployment. No simulator runtime files are changed.
 
 ## Design
 
@@ -42,7 +42,7 @@ WEB-03 presentation lives in `cinema.css`, bounded page/film motion in `cinema.j
 
 WEB-04 makes the jet the initial catalogue selection and adds direct inspector entries from the opening and the detail study. The study changes only on request; a failed image retains the last displayed view and its matching 3D entry. `assets/cinema/jet-views.json` supplies the three native camera targets in centered model coordinates. Camera moves respect reduced motion, and a failed camera-data request leaves overview, orbit and zoom available. Selecting another aircraft hides the jet-specific controls.
 
-HTML references styles/scripts with a shared release query (`?v=web04-2`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
+HTML references styles/scripts with a shared release query (`?v=web05-1`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
 
 Publication uses a separate `gh-pages` branch with only the static website. GitHub Pages serves `/` from that branch; `.nojekyll` disables processing. The main working tree and its unrelated pending changes are never included in that publication. The website is a project showcase, not a browser build of the simulator.
 

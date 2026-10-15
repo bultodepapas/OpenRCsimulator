@@ -72,7 +72,7 @@
       "cmd_flaps": 0.4,
       "cumulative_open_loop_endpoint_delta_candidate_minus_baseline": {
         "alpha_rad": 0.0785155385143826,
-        "down_m": -46.260002825921916,
+        "down_m": -46.26000282592105,
         "east_m": -12.044162832930084,
         "north_m": -0.25185993132568285,
         "tas_mps": -16.16334363486356,
@@ -94,11 +94,11 @@
       },
       "last_command_tick": 1440,
       "loads_time_basis": "Loads are k1 interval-start samples; rows are aligned by tick and loads_t_s.",
-      "name": "takeoff_flap_20deg",
+      "name": "flap_20deg_hold",
       "pitch_offset_from_trim_command": 0.0,
       "segment_interval_change_delta_candidate_minus_baseline": {
         "alpha_rad": 0.0785155385143826,
-        "down_m": -46.260002825921916,
+        "down_m": -46.26000282592105,
         "east_m": -12.044162832930084,
         "north_m": -0.25185993132568285,
         "tas_mps": -16.16334363486356,
@@ -125,7 +125,7 @@
       "cmd_flaps": 1.0,
       "cumulative_open_loop_endpoint_delta_candidate_minus_baseline": {
         "alpha_rad": 0.04859087533180058,
-        "down_m": -46.866142340891514,
+        "down_m": -46.86614234089433,
         "east_m": 181.53479507774676,
         "north_m": 3.016489094756892,
         "tas_mps": 10.25471061385819,
@@ -147,11 +147,11 @@
       },
       "last_command_tick": 3120,
       "loads_time_basis": "Loads are k1 interval-start samples; rows are aligned by tick and loads_t_s.",
-      "name": "landing_flap_50deg",
+      "name": "full_flap_50deg_hold",
       "pitch_offset_from_trim_command": 0.0,
       "segment_interval_change_delta_candidate_minus_baseline": {
         "alpha_rad": -0.029924663182582023,
-        "down_m": -0.6061395149695912,
+        "down_m": -0.6061395149732789,
         "east_m": 193.57895791067688,
         "north_m": 3.268349026082575,
         "tas_mps": 26.41805424872175,
@@ -178,7 +178,7 @@
       "cmd_flaps": 1.0,
       "cumulative_open_loop_endpoint_delta_candidate_minus_baseline": {
         "alpha_rad": -0.00415490583264376,
-        "down_m": -35.70065508700398,
+        "down_m": -35.70065508700685,
         "east_m": 200.04292883040011,
         "north_m": 2.977581044036924,
         "tas_mps": 10.983755039852952,
@@ -204,7 +204,7 @@
       "pitch_offset_from_trim_command": 0.15,
       "segment_interval_change_delta_candidate_minus_baseline": {
         "alpha_rad": -0.05274578116444434,
-        "down_m": 11.165487253887534,
+        "down_m": 11.165487253887477,
         "east_m": 18.508133752653322,
         "north_m": -0.038908050719967946,
         "tas_mps": 0.7290444259947613,
@@ -231,7 +231,7 @@
       "cmd_flaps": 1.0,
       "cumulative_open_loop_endpoint_delta_candidate_minus_baseline": {
         "alpha_rad": 0.13970939536802623,
-        "down_m": -93.66184923907447,
+        "down_m": -93.66184923907889,
         "east_m": 212.0198884359612,
         "north_m": 2.6384829166516397,
         "tas_mps": -15.454300918201472,
@@ -257,7 +257,7 @@
       "pitch_offset_from_trim_command": 0.0,
       "segment_interval_change_delta_candidate_minus_baseline": {
         "alpha_rad": 0.14386430120066998,
-        "down_m": -57.96119415207049,
+        "down_m": -57.96119415207204,
         "east_m": 11.976959605561092,
         "north_m": -0.33909812738528444,
         "tas_mps": -26.438055958054424,
@@ -284,7 +284,7 @@
       "cmd_flaps": 0.0,
       "cumulative_open_loop_endpoint_delta_candidate_minus_baseline": {
         "alpha_rad": 0.026058136300593296,
-        "down_m": -263.6485998011205,
+        "down_m": -263.64859980112425,
         "east_m": 266.56086757822413,
         "north_m": 1.660685468403635,
         "tas_mps": -36.283047118354375,
@@ -310,7 +310,7 @@
       "pitch_offset_from_trim_command": 0.0,
       "segment_interval_change_delta_candidate_minus_baseline": {
         "alpha_rad": -0.11365125906743292,
-        "down_m": -169.98675056204604,
+        "down_m": -169.98675056204536,
         "east_m": 54.54097914226291,
         "north_m": -0.9777974482480047,
         "tas_mps": -20.828746200152906,
@@ -337,7 +337,7 @@
       "cmd_flaps": 0.0,
       "cumulative_open_loop_endpoint_delta_candidate_minus_baseline": {
         "alpha_rad": 0.010824082349728162,
-        "down_m": -299.3631289216202,
+        "down_m": -299.3631289216239,
         "east_m": 213.8315925327327,
         "north_m": -1.6565073519413644,
         "tas_mps": -28.279835963765464,
@@ -363,7 +363,7 @@
       "pitch_offset_from_trim_command": 0.0,
       "segment_interval_change_delta_candidate_minus_baseline": {
         "alpha_rad": -0.015234053950865134,
-        "down_m": -35.71452912049973,
+        "down_m": -35.714529120499634,
         "east_m": -52.72927504549139,
         "north_m": -3.3171928203449994,
         "tas_mps": 8.003211154588914,

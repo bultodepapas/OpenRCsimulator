@@ -1818,10 +1818,9 @@ func _sha256_field_is_valid(value: Variant, allow_empty: bool) -> bool:
 		return allow_empty
 	if digest.length() != 64 or digest.to_lower() != digest:
 		return false
-	for character in digest:
-		if not str(character) in "0123456789abcdef":
-			return false
-	return true
+	# Native hexadecimal parsing accepts a sign; the identity contract does not.
+	var first := digest.unicode_at(0)
+	return first != 43 and first != 45 and digest.is_valid_hex_number(false)
 
 
 func _state_is_valid(value: Variant) -> bool:

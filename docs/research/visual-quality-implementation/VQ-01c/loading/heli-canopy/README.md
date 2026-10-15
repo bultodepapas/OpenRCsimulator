@@ -149,3 +149,8 @@ remain outside this repair's acceptance claims.
 reduce extraction from 7.022 to 5.994 ms, preserving 60 real geometry/kit pairs.
 Complete-kit results are mixed and do not qualify a loading gain. The same slice
 repairs null indices on non-indexed surfaces and adds three permanent regressions.
+
+2026-10-15 follow-up: [bounded station scans](stations/README.md) visit only planes
+inside each triangle's closed Z range, preserving float64 planes and exact contour
+order. The paired campaign measures complete-kit construction at 96.207→28.519 ms;
+five regression checks and the temporary workspace cost are retained in the report.

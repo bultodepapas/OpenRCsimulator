@@ -4,6 +4,9 @@ extends SceneTree
 
 const Flight := preload("res://sim/flight_session.gd")
 const FlightLog := preload("res://sim/flight_log.gd")
+const RB := preload("res://physics/rigid_body.gd")
+
+const INITIAL_ALTITUDE_M := 500.0
 
 var _out_path: String = ""
 var _aircraft_path: String = ""
@@ -53,6 +56,14 @@ func _run() -> void:
 		quit(1)
 		return
 	_base_inputs = _flight.sim.inputs.duplicate()
+	# Keep the open-loop comparison well above the flat sea-level runway datum,
+	# even if the gain-0 sensitivity control develops an uncommanded descent.
+	var initial_state: PackedFloat64Array = _flight.sim.state.duplicate()
+	initial_state[RB.POS + 2] = -INITIAL_ALTITUDE_M
+	_flight.sim.state = initial_state
+	var previous_state: PackedFloat64Array = _flight.sim.previous.duplicate()
+	previous_state[RB.POS + 2] = -INITIAL_ALTITUDE_M
+	_flight.sim.previous = previous_state
 	_logger = FlightLog.new(_flight)
 	if _logger.start(_out_path) != OK:
 		printerr("FlightLog refused the AV-09 sensitivity tape: ", _logger.failure)
@@ -62,8 +73,8 @@ func _run() -> void:
 	var dt: float = _flight.sim.dt()
 	var tick_plan: Array[Dictionary] = [
 		{"name": "clean_hold", "seconds": 3.0, "flap": 0.0, "pitch_delta": 0.0},
-		{"name": "takeoff_flap_20deg", "seconds": 3.0, "flap": 0.4, "pitch_delta": 0.0},
-		{"name": "landing_flap_50deg", "seconds": 7.0, "flap": 1.0, "pitch_delta": 0.0},
+		{"name": "flap_20deg_hold", "seconds": 3.0, "flap": 0.4, "pitch_delta": 0.0},
+		{"name": "full_flap_50deg_hold", "seconds": 7.0, "flap": 1.0, "pitch_delta": 0.0},
 		{"name": "same_tape_pitch_pulse", "seconds": 1.5, "flap": 1.0, "pitch_delta": 0.15},
 		{"name": "open_loop_recovery", "seconds": 2.5, "flap": 1.0, "pitch_delta": 0.0},
 		{"name": "flap_retraction", "seconds": 4.0, "flap": 0.0, "pitch_delta": 0.0},
@@ -90,6 +101,8 @@ func _run() -> void:
 		"aircraft_input_sha256": _flight.aircraft.get("input_identity", {}).get("sha256", "unavailable"),
 		"dt_s": dt,
 		"physics_ticks_per_second": Engine.physics_ticks_per_second,
+		"initial_altitude_m_above_flat_runway_datum": INITIAL_ALTITUDE_M,
+		"scope": "high-altitude open-loop actuator/aerodynamic response comparison; not a takeoff, approach or landing profile",
 		"ticks": _flight.sim.tick,
 		"rows_including_initial": _flight.sim.tick + 1,
 		"flap_input_index": _flap_index,

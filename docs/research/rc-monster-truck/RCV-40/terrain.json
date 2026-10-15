@@ -2,23 +2,23 @@
   "baseline_path": "res://../research/rc-monster-truck/monster-car-2/rcv40/baseline_terrain.gd",
   "benchmark": {
     "baseline_elapsed_us": [
-      23083.0,
-      26797.0,
-      24979.0,
-      35960.0,
-      27991.0
+      26009.0,
+      28655.0,
+      25812.0,
+      24498.0,
+      25084.0
     ],
-    "baseline_median_us": 26797.0,
+    "baseline_median_us": 25812.0,
     "calls_per_timed_pass": 3072,
     "candidate_elapsed_us": [
-      14997.0,
-      16807.0,
-      15433.0,
-      15819.0,
-      15719.0
+      14642.0,
+      15666.0,
+      18988.0,
+      15026.0,
+      14731.0
     ],
-    "candidate_median_us": 15719.0,
-    "candidate_over_baseline": 0.5865955144232563,
+    "candidate_median_us": 15026.0,
+    "candidate_over_baseline": 0.5821323415465675,
     "order_by_round": [
       "baseline,candidate",
       "candidate,baseline",
@@ -4162,7 +4162,7 @@
   "course_identity": {
     "format": "openrc-airfield-course",
     "id": "airfield-default",
-    "sha256": "e4c9920f320e4158175a9143cfbe50c33b38e8898c4ca70b3e73858d9eb41a65",
+    "sha256": "6f4b7e0512dd77013d3a5eb6d27203e91785ec61af01f19ac5a0883ff691824c",
     "version": "1"
   },
   "course_source_manifest": {
@@ -4191,7 +4191,7 @@
       },
       "res://physics/ground_vehicle/airfield_track.gd": {
         "kind": "gdscript_source",
-        "sha256": "08efe15de45136ce066b2c212163ef41e36199f662baa5eb6bbcc8e640e4bd30"
+        "sha256": "e741a808b42028057308a6e7f2fb22b47cf9f55523a6a58fcca87cf6086dbef2"
       },
       "res://physics/ground_vehicle/vehicle_dynamics.gd": {
         "kind": "gdscript_source",
@@ -4239,7 +4239,7 @@
   "source_sha256": {
     "baseline": "1c650cf179c7ccdca62dfd4b908e34dbc7adfe66700753ca6648af36bf5f2358",
     "candidate": "42e9f30e155c8b710dbc3f0219da5b7ba72776fe5123132752a8f13dee260a90",
-    "harness": "ce371e17885f3f8ebec048717f197effbf8d98926e06d178a007460d3f810b36",
+    "harness": "183fc8852e30388f5cea52a3e3cb7cd85a5b5e8973b15cb83e693df08d34fea4",
     "production": "42e9f30e155c8b710dbc3f0219da5b7ba72776fe5123132752a8f13dee260a90"
   },
   "suite_case_counts": {

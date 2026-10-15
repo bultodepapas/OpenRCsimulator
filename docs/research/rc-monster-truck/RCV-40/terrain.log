@@ -1,35 +1,25 @@
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
-ERROR: Condition "len == 0" is true. Returning: FAILED
-   at: update (core/crypto/hashing_context.cpp:54)
-   GDScript backtrace (most recent call first):
-       [0] _sha256 (res://../research/rc-monster-truck/monster-car-2/rcv40/bench_terrain.gd:336)
-       [1] _run (res://../research/rc-monster-truck/monster-car-2/rcv40/bench_terrain.gd:64)
-ERROR: Condition "len == 0" is true. Returning: FAILED
-   at: update (core/crypto/hashing_context.cpp:54)
-   GDScript backtrace (most recent call first):
-       [0] _input_hash (res://../research/rc-monster-truck/monster-car-2/rcv40/bench_terrain.gd:327)
-       [1] _run (res://../research/rc-monster-truck/monster-car-2/rcv40/bench_terrain.gd:64)
 {
   "benchmark": {
     "baseline_elapsed_us": [
-      23083.0,
-      26797.0,
-      24979.0,
-      35960.0,
-      27991.0
+      26009.0,
+      28655.0,
+      25812.0,
+      24498.0,
+      25084.0
     ],
-    "baseline_median_us": 26797.0,
+    "baseline_median_us": 25812.0,
     "calls_per_timed_pass": 3072,
     "candidate_elapsed_us": [
-      14997.0,
-      16807.0,
-      15433.0,
-      15819.0,
-      15719.0
+      14642.0,
+      15666.0,
+      18988.0,
+      15026.0,
+      14731.0
     ],
-    "candidate_median_us": 15719.0,
-    "candidate_over_baseline": 0.5865955144232563,
+    "candidate_median_us": 15026.0,
+    "candidate_over_baseline": 0.5821323415465675,
     "order_by_round": [
       "baseline,candidate",
       "candidate,baseline",

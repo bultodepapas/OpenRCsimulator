@@ -56,6 +56,11 @@ const BACKEND_NATIVE_VERSION := "openrc-ground-vehicle-native-evaluate-v3"
 const NATIVE_EXTENSION_PATH := "res://native/ground_vehicle/openrc_ground_vehicle.gdextension"
 const NATIVE_RECEIPT_PATH := "res://native/ground_vehicle/build-receipt.json"
 
+## Content-keyed digest reuse: files are reopened and fully read on every lookup.
+## Bound retained bytes to 2 * 256 KiB; larger artifacts use streaming SHA-256.
+const MAX_CACHED_ARTIFACT_BYTES := 262144
+const MAX_CACHED_ARTIFACTS := 2
+static var _artifact_content_cache: Dictionary = {}
 static var _backend_identity_cache: Dictionary = {}
 static var _reference_backend_identity_cache: Dictionary = {}
 static var _native_backend_instance: Object
@@ -133,7 +138,7 @@ static func _reference_backend_identity() -> Dictionary:
 
 static func _reference_implementation_artifact(source_path: String) -> Dictionary:
 	if FileAccess.file_exists(source_path):
-		var source_sha256 := FileAccess.get_sha256(source_path)
+		var source_sha256 := _content_checked_file_sha256(source_path)
 		if _sha256_is_valid(source_sha256):
 			return {"sha256": source_sha256, "kind": "gdscript_source"}
 	var remap_path := source_path + ".remap"
@@ -148,10 +153,45 @@ static func _reference_implementation_artifact(source_path: String) -> Dictionar
 	var bytecode_path := str(target_value)
 	if not FileAccess.file_exists(bytecode_path):
 		return {"sha256": "", "kind": ""}
-	var bytecode_sha256 := FileAccess.get_sha256(bytecode_path)
+	var bytecode_sha256 := _content_checked_file_sha256(bytecode_path)
 	if not _sha256_is_valid(bytecode_sha256):
 		return {"sha256": "", "kind": ""}
 	return {"sha256": bytecode_sha256, "kind": "gdscript_remapped_bytecode"}
+
+
+## Reuse only the digest of identical bytes, never file metadata or an unread file.
+## The returned string is detached; cached byte buffers are private and bounded.
+static func _content_checked_file_sha256(path: String) -> String:
+	var file := FileAccess.open(path, FileAccess.READ)
+	if file == null:
+		_artifact_content_cache.erase(path)
+		return ""
+	var length := file.get_length()
+	if length > MAX_CACHED_ARTIFACT_BYTES:
+		file.close()
+		_artifact_content_cache.erase(path)
+		return FileAccess.get_sha256(path)
+	var bytes := file.get_buffer(length)
+	var complete := bytes.size() == length and file.get_error() == OK and file.get_length() == length
+	file.close()
+	if not complete:
+		_artifact_content_cache.erase(path)
+		return ""
+	var previous: Dictionary = _artifact_content_cache.get(path, {})
+	if not previous.is_empty() and previous.bytes == bytes:
+		return previous.sha256
+	var context := HashingContext.new()
+	if context.start(HashingContext.HASH_SHA256) != OK:
+		_artifact_content_cache.erase(path)
+		return ""
+	if not bytes.is_empty() and context.update(bytes) != OK:
+		_artifact_content_cache.erase(path)
+		return ""
+	var digest := context.finish().hex_encode()
+	if not _artifact_content_cache.has(path) and _artifact_content_cache.size() >= MAX_CACHED_ARTIFACTS:
+		_artifact_content_cache.erase(_artifact_content_cache.keys()[0])
+	_artifact_content_cache[path] = {"bytes": bytes, "sha256": digest}
+	return digest
 
 
 static func _load_native_backend() -> Object:
@@ -283,10 +323,9 @@ static func _sha256_is_valid(value: Variant) -> bool:
 	var digest := str(value)
 	if digest.length() != 64 or digest.to_lower() != digest:
 		return false
-	for character in digest:
-		if not str(character) in "0123456789abcdef":
-			return false
-	return true
+	# Native hexadecimal parsing accepts a sign; the identity contract does not.
+	var first := digest.unicode_at(0)
+	return first != 43 and first != 45 and digest.is_valid_hex_number(false)
 
 
 ## Construct a level, zero-speed supported state for a spawn point. Spawns must

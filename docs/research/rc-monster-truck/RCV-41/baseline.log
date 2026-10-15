@@ -1,0 +1,33 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+{
+  "accepted_control_tape_sha256": "9dbef48a5be74e68351e3df4095c3b160f5171afcfb0b632fdc0baceb704feb4",
+  "backend_identity_cost": {
+    "maximum_us": 1418.0,
+    "mean_us": 1018.6333333333333,
+    "median_us": 985.0,
+    "minimum_us": 930.0,
+    "p95_us": 1237.0,
+    "samples": 120
+  },
+  "exact_replay": true,
+  "ok": true,
+  "output": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-41/baseline.json",
+  "paused_guard_cost": {
+    "maximum_us": 1625.0,
+    "mean_us": 1119.0166666666667,
+    "median_us": 1074.0,
+    "minimum_us": 1006.0,
+    "p95_us": 1399.0,
+    "samples": 120
+  },
+  "tick_cost": {
+    "maximum_us": 13515.0,
+    "mean_us": 5620.190625,
+    "median_us": 5250.0,
+    "minimum_us": 4282.0,
+    "p95_us": 8070.0,
+    "samples": 960
+  },
+  "trajectory_sha256": "d2c255aee62148ea79908da716d1c1c6279b20b22e5b1a88bc9e261597908eb8"
+}

@@ -324,7 +324,7 @@ func _input_hash(table: PackedFloat64Array, points: Array[PackedFloat64Array]) -
 	var hash := HashingContext.new()
 	if hash.start(HashingContext.HASH_SHA256) != OK:
 		return ""
-	hash.update(table.to_byte_array())
+	if not table.is_empty(): hash.update(table.to_byte_array())
 	for point: PackedFloat64Array in points:
 		hash.update(point.to_byte_array())
 	return hash.finish().hex_encode()
@@ -333,7 +333,7 @@ func _sha256(bytes: PackedByteArray) -> String:
 	var hash := HashingContext.new()
 	if hash.start(HashingContext.HASH_SHA256) != OK:
 		return ""
-	hash.update(bytes)
+	if not bytes.is_empty(): hash.update(bytes)
 	return hash.finish().hex_encode()
 
 func _median(values: PackedFloat64Array) -> float:

@@ -11,6 +11,7 @@ var failures := 0
 
 
 func _initialize() -> void:
+	_test_sha256_contract()
 	var session = Session.new()
 	_test_prepare_and_transaction(session)
 	if failures == 0:
@@ -42,6 +43,26 @@ func _check(label: String, passed: bool) -> void:
 func _neutral(armed: bool = true) -> Dictionary:
 	return {"throttle": 0.0, "steering": 0.0, "brake": 0.0, "reverse": false,
 		"source": "keyboard", "armed": armed}
+
+
+func _test_sha256_contract() -> void:
+	var session := Session.new()
+	var digest := "0123456789abcdef".repeat(4)
+	var invalid: Array = [null, true, 64, StringName(digest), digest.to_upper(),
+		"+" + digest.substr(1), "-" + digest.substr(1), "0x" + digest.substr(2),
+		" " + digest.substr(1), digest.substr(0, 63) + "\n", "１" + digest.substr(1),
+		digest.substr(0, 31) + "g" + digest.substr(32), digest.substr(1), digest + "0"]
+	_check("native SHA validator accepts a canonical digest", VehicleDynamics._sha256_is_valid(digest))
+	_check("Session accepts canonical digest", session._sha256_field_is_valid(digest, false))
+	_check("SHA empty remains invalid", not VehicleDynamics._sha256_is_valid(""))
+	_check("Session empty requires explicit allowance", not session._sha256_field_is_valid("", false)
+		and session._sha256_field_is_valid("", true))
+	for index in invalid.size():
+		_check("SHA rejects malformed digest %d" % index, not VehicleDynamics._sha256_is_valid(invalid[index]))
+		_check("Session rejects malformed digest regardless of empty allowance %d" % index,
+			not session._sha256_field_is_valid(invalid[index], false)
+			and not session._sha256_field_is_valid(invalid[index], true))
+	session.free()
 
 
 func _test_prepare_and_transaction(session) -> void:

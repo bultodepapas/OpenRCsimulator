@@ -69,6 +69,26 @@ def main():
     for key in before["source_identities"]:
         if key != "airfield_track_script_sha256":
             check(before["source_identities"][key] == after["source_identities"][key], f"unexpected source change: {key}")
+    # Validate every measured current source, not only equality of historical receipts.
+    profile_source_paths = {
+        "field_loader_script_sha256": "app/data/field_loader.gd",
+        "field_data_sha256": "app/data/fields/default.json",
+        "vehicle_data_sha256": "app/data/vehicles/ground/monster_car_2.json",
+        "vehicle_data_script_sha256": "app/physics/ground_vehicle/vehicle_data.gd",
+        "session_script_sha256": "app/sim/ground_vehicle/session.gd",
+        "nitro_dynamics_script_sha256": "app/physics/ground_vehicle/nitro_dynamics.gd",
+        "vehicle_dynamics_script_sha256": "app/physics/ground_vehicle/vehicle_dynamics.gd",
+        "vehicle_environment_script_sha256": "app/physics/ground_vehicle/vehicle_environment.gd",
+        "damage_observer_script_sha256": "app/physics/ground_vehicle/vehicle_damage.gd",
+        "airfield_course_script_sha256": "app/physics/ground_vehicle/airfield_course.gd",
+        "airfield_track_script_sha256": "app/physics/ground_vehicle/airfield_track.gd",
+        "native_kernel_source_sha256": "research/rc-monster-truck/native/src/ground_vehicle_kernel.hpp",
+        "native_wrapper_source_sha256": "research/rc-monster-truck/native/src/ground_vehicle_native.cpp",
+    }
+    for key, path in profile_source_paths.items():
+        check(after["source_identities"][key] == sha(ROOT / path), f"profile source changed: {path}")
+    check(after["backend_identity"]["binary_sha256"] == sha(ROOT / "app/native/ground_vehicle/openrc_ground_vehicle.dll"), "native binary changed")
+    check(track["source_sha256"]["track_data"] == sha(ROOT / "app/data/ground_vehicle/airfield_track.json"), "track data changed")
     check(before["source_identities"]["airfield_track_script_sha256"] == sha(HERE / "baseline_track.gd"), "track reference is not the baseline")
     for report in [before, after]:
         check(report["source_identities"]["profile_script_sha256"] == sha(HERE / "bench_session.gd"), "session harness changed")
@@ -108,6 +128,7 @@ def main():
         "regression_suites_passed": len(checks["tests"]), "reported_numbered_assertions_passed": test_assertions,
         "baseline_course_identity": before["course_identity"], "candidate_course_identity": after["course_identity"],
         "current_source_sha256": {str(path.relative_to(ROOT)).replace("\\", "/"): sha(path) for path in source_paths.values()},
+        "profile_source_sha256": {path: sha(ROOT / path) for path in profile_source_paths.values()},
         "evidence_sha256": {str(path.relative_to(OUT)).replace("\\", "/"): sha(path)
                             for path in sorted(OUT.rglob("*")) if path.is_file() and path.suffix in [".json", ".log"] and path.name != "summary.json"},
         "validator_sha256": sha(Path(__file__)),

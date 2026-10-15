@@ -16,11 +16,13 @@
 	"flap_aux_index": 16,
 	"flap_input_index": 6,
 	"flap_law": "controls.flaps.hinged_trailing_edge.v1",
+	"initial_altitude_m_above_flat_runway_datum": 500.0,
 	"interpretation": "The source log contains one accepted command tape. Candidate replay reuses its tick-indexed accepted inputs; it is open-loop and is not an adapted piloted flight.",
 	"physics_ticks_per_second": 240,
-	"recorder_observer_usec": 305216,
+	"recorder_observer_usec": 234268,
 	"recorder_peak_buffer_rows": 240,
 	"rows_including_initial": 5521,
+	"scope": "high-altitude open-loop actuator/aerodynamic response comparison; not a takeoff, approach or landing profile",
 	"segments": [
 		{
 			"cmd_flaps": 0.0,
@@ -35,7 +37,7 @@
 			"duration_s": 3.0,
 			"first_tick": 721,
 			"last_tick": 1440,
-			"name": "takeoff_flap_20deg",
+			"name": "flap_20deg_hold",
 			"pitch_offset_from_trim_command": 0.0
 		},
 		{
@@ -43,7 +45,7 @@
 			"duration_s": 7.0,
 			"first_tick": 1441,
 			"last_tick": 3120,
-			"name": "landing_flap_50deg",
+			"name": "full_flap_50deg_hold",
 			"pitch_offset_from_trim_command": 0.0
 		},
 		{

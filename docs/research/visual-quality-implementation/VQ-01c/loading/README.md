@@ -1,5 +1,10 @@
 # DT-11a — reuse unchanged lake geometry
 
+2026-10-15 construction follow-up: [bounded helicopter canopy station scans](heli-canopy/stations/README.md)
+preserve 60 real contour/kit geometry pairs and reduce complete night-kit
+construction from 96.207 to 28.519 ms. Five permanent edge-case checks pass;
+temporary workspace and the existing native shutdown issue are recorded separately.
+
 2026-10-15 construction follow-up: [native helicopter canopy transforms](heli-canopy/transforms/README.md)
 reduce geometry extraction by 14.6%, preserving 60 real geometry/kit comparisons.
 Non-indexed surfaces now handle Godot's null index slot. Complete-kit timings are

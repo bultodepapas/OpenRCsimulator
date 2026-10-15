@@ -23,6 +23,13 @@ TAPE_SCRIPT = ROOT / "research" / "avanti-s" / "av09-flaps" / "record_tape.gd"
 PROBE_SCRIPT = ROOT / "research" / "avanti-s" / "av09-flaps" / "polar_probe.gd"
 REFINE_REPLAY_SCRIPT = ROOT / "research" / "avanti-s" / "av09-flaps" / "refine_replay.gd"
 FLIGHT_LOG = ROOT / "tools" / "flight_log" / "flight_log.py"
+PRECHANGE_ROOT = ROOT / "docs" / "research" / "avanti-flaps" / "AV-09" / "evidence-2026-10-15" / "historical_prechange"
+if not (PRECHANGE_ROOT / "sebart_avanti_s_a200.orfl").is_file():
+    PRECHANGE_ROOT = ROOT / "tmp" / "av09-flaps-baseline"  # First capture, before evidence is retained.
+PRECHANGE_LOG = PRECHANGE_ROOT / "sebart_avanti_s_a200.orfl"
+PRECHANGE_MODEL = PRECHANGE_ROOT / "aircraft-before.json"
+PRECHANGE_EXPORT = PRECHANGE_ROOT / "export"
+PRECHANGE_EXACT = PRECHANGE_ROOT / "exact"
 
 
 def sha256(path: Path) -> str:
@@ -265,6 +272,43 @@ def refinement_analysis(csvs: dict[int, tuple[Path, Path]], tapes: dict[int, dic
     }
 
 
+def altitude_envelope(path: Path, minimum_agl_m: float = 100.0) -> dict[str, float]:
+    with path.open(newline="", encoding="utf-8-sig") as stream:
+        rows = list(csv.DictReader(stream))
+    if not rows:
+        raise ValueError(f"cannot assess empty trajectory {path}")
+    # Trace NED down is positive; the selected flat sea-level runway datum is zero.
+    altitudes = [-float(row["down_m"]) for row in rows]
+    result = {"minimum_agl_m": min(altitudes), "maximum_agl_m": max(altitudes), "initial_agl_m": altitudes[0]}
+    if result["minimum_agl_m"] < minimum_agl_m:
+        raise ValueError(f"trajectory {path} violates the {minimum_agl_m:.1f} m minimum AGL evidence margin: {result['minimum_agl_m']:.3f} m")
+    return result
+
+
+def compare_legacy_channels(baseline_csv: Path, candidate_csv: Path) -> dict[str, Any]:
+    with baseline_csv.open(newline="", encoding="utf-8-sig") as stream:
+        base_reader = csv.DictReader(stream)
+        base_fields = base_reader.fieldnames or []
+        base_rows = list(base_reader)
+    with candidate_csv.open(newline="", encoding="utf-8-sig") as stream:
+        candidate_reader = csv.DictReader(stream)
+        candidate_fields = candidate_reader.fieldnames or []
+        candidate_rows = list(candidate_reader)
+    if base_fields != candidate_fields or len(base_rows) != len(candidate_rows):
+        raise ValueError("prechange/current-solver clean comparison changed the legacy CSV layout or row count")
+    command_columns = [name for name in ["cmd_roll", "cmd_pitch", "cmd_yaw", "cmd_throttle", "cmd_gear_down", "cmd_wheel_brake"] if name in base_fields]
+    if not {"tick", "t_s", "cmd_roll", "cmd_pitch", "cmd_yaw", "cmd_throttle"}.issubset(base_fields) or "cmd_flaps" in base_fields:
+        raise ValueError("prechange trace should retain the old non-flap command layout")
+    for base, candidate in zip(base_rows, candidate_rows, strict=True):
+        if base["tick"] != candidate["tick"] or base["t_s"] != candidate["t_s"]:
+            raise ValueError(f"prechange/current-solver clean comparison time mismatch at tick {base['tick']}")
+        for name in command_columns:
+            if float(base[name]) != float(candidate[name]):
+                raise ValueError(f"prechange/current-solver accepted command mismatch at tick {base['tick']} in {name}")
+    return {"rows": len(base_rows), "layout_matches": True, "accepted_legacy_command_channels_match": command_columns,
+        "commands_match_bitwise_numeric": True, "no_flap_column": True}
+
+
 def main() -> int:
     global CURRENT_OUT
     parser = argparse.ArgumentParser(description=__doc__)
@@ -315,6 +359,68 @@ def main() -> int:
 
     def flight_log(name: str, *command: str, timeout: float | None = None) -> None:
         run(name, [sys.executable, str(FLIGHT_LOG), *command], timeout=timeout or args.timeout)
+
+    required_prechange = [PRECHANGE_LOG, PRECHANGE_MODEL, PRECHANGE_EXPORT / "export.json",
+        PRECHANGE_EXPORT / "flight.csv", PRECHANGE_EXACT / "replay.json", PRECHANGE_EXACT / "flight.csv"]
+    if any(not path.is_file() for path in required_prechange):
+        raise FileNotFoundError("the preserved prechange Avanti ORFL, source JSON, export and exact replay are required")
+    expected_prechange_model_sha256 = "68d3fd42b28e30bf1dc210b838d945d517f062506749af14f995a5a5f39a83b6"
+    if sha256(PRECHANGE_MODEL) != expected_prechange_model_sha256:
+        raise ValueError("prechange Avanti source JSON hash does not match the preserved baseline identity")
+    if (PRECHANGE_EXPORT / "flight.csv").read_bytes() != (PRECHANGE_EXACT / "flight.csv").read_bytes():
+        raise ValueError("prechange baseline exact replay CSV is not identical to its preserved export")
+    historical_dir = CURRENT_OUT / "historical_prechange"
+    historical_dir.mkdir()
+    historical_log = historical_dir / PRECHANGE_LOG.name
+    historical_model = historical_dir / PRECHANGE_MODEL.name
+    shutil.copy2(PRECHANGE_LOG, historical_log)
+    shutil.copy2(PRECHANGE_MODEL, historical_model)
+    for source_dir_name in ["export", "exact"]:
+        copied_dir = historical_dir / source_dir_name
+        copied_dir.mkdir()
+        for filename in (["export.json", "flight.csv"] if source_dir_name == "export" else ["replay.json", "flight.csv"]):
+            shutil.copy2(PRECHANGE_ROOT / source_dir_name / filename, copied_dir / filename)
+    historical_candidate_dir = historical_dir / "current_solver_oldraw_candidate"
+    flight_log("prechange_oldraw_candidate_replay", "replay", str(historical_log), "--candidate", str(historical_model),
+        "--out", str(historical_candidate_dir), "--godot", str(godot))
+    flight_log("prechange_oldraw_compare", "compare", str(historical_dir / "exact" / "flight.csv"),
+        str(historical_candidate_dir / "flight.csv"), "--out", str(historical_dir / "current_solver_comparison.json"))
+    historical_exact = read_json(historical_dir / "exact" / "replay.json")
+    historical_candidate = read_json(historical_candidate_dir / "replay.json")
+    historical_comparison = read_json(historical_dir / "current_solver_comparison.json")
+    if historical_exact.get("status") != "ok" or not historical_exact.get("complete") \
+            or historical_exact.get("mode") != "exact" or historical_exact.get("solver_changed"):
+        raise RuntimeError("preserved prechange source must retain its complete exact replay report")
+    if historical_candidate.get("status") != "ok" or not historical_candidate.get("complete") \
+            or historical_candidate.get("mode") != "candidate" or not historical_candidate.get("solver_changed"):
+        raise RuntimeError("prechange source under current solver must be an explicitly solver-changed candidate replay")
+    if historical_comparison.get("status") != "ok":
+        raise RuntimeError("prechange/current-solver clean comparison failed")
+    legacy_command_check = compare_legacy_channels(historical_dir / "exact" / "flight.csv",
+        historical_candidate_dir / "flight.csv")
+    historical_csv_byte_identical = (historical_dir / "exact" / "flight.csv").read_bytes() == (historical_candidate_dir / "flight.csv").read_bytes()
+    if not historical_csv_byte_identical:
+        raise RuntimeError("current-solver old-raw clean candidate differs from the preserved prechange exact CSV")
+    shutil.copy2(PRECHANGE_ROOT / "verification.json", historical_dir / "prechange_verification.json")
+    historical_info = {
+        "interpretation": "Preserved before the flap feature, then replayed against the current solver using the same original raw aircraft JSON. The replay is intentionally candidate mode with solver_changed=true; it is a clean-model regression probe, not current-solver exact equivalence.",
+        "source_orfl": {"path": str(historical_log.relative_to(ROOT)), "sha256": sha256(historical_log), "bytes": historical_log.stat().st_size},
+        "source_aircraft_json": {"path": str(historical_model.relative_to(ROOT)), "sha256": sha256(historical_model)},
+        "prechange_exact": {"status": historical_exact.get("status"), "complete": historical_exact.get("complete"),
+            "mode": historical_exact.get("mode"), "solver_changed": historical_exact.get("solver_changed"),
+            "report_path": "historical_prechange/exact/replay.json", "report_sha256": sha256(historical_dir / "exact" / "replay.json")},
+        "current_solver_candidate": {"status": historical_candidate.get("status"), "complete": historical_candidate.get("complete"),
+            "mode": historical_candidate.get("mode"), "solver_changed": historical_candidate.get("solver_changed"),
+            "report_path": str((historical_candidate_dir / "replay.json").relative_to(ROOT))},
+        "comparison": historical_comparison,
+        "legacy_layout_and_commands": legacy_command_check,
+        "current_solver_candidate_csv_byte_identical_to_prechange_exact": historical_csv_byte_identical,
+        "copied_prechange_export_sha256": sha256(historical_dir / "export" / "flight.csv"),
+        "copied_prechange_exact_csv_sha256": sha256(historical_dir / "exact" / "flight.csv"),
+        "source_json_expected_prechange_sha256": "68d3fd42b28e30bf1dc210b838d945d517f062506749af14f995a5a5f39a83b6",
+    }
+    (historical_dir / "historical_comparison.json").write_text(
+        json.dumps(historical_info, indent=2, sort_keys=True, allow_nan=False) + "\n", encoding="utf-8")
 
     flight_log("baseline_export", "export", str(log_path), "--out", str(CURRENT_OUT / "baseline_export"), "--godot", str(godot))
     flight_log("baseline_exact_replay", "replay", str(log_path), "--out", str(CURRENT_OUT / "exact_replay"), "--godot", str(godot))
@@ -419,6 +525,18 @@ def main() -> int:
     if int(exact_480_report.get("rows", -1)) != csv_check_480["rows"] \
             or int(candidate_480_report.get("rows", -1)) != csv_check_480["rows"]:
         raise RuntimeError("480 Hz replay report and CSV row counts differ")
+    if float(tape.get("initial_altitude_m_above_flat_runway_datum", 0.0)) != 500.0 \
+            or float(tape_480.get("initial_altitude_m_above_flat_runway_datum", 0.0)) != 500.0:
+        raise RuntimeError("both rate logs must start at the declared 500 m runway-datum altitude")
+    altitude_margin = {
+        "runway_datum_altitude_m": 0.0,
+        "minimum_required_agl_m": 100.0,
+        "240_hz_gain0": altitude_envelope(CURRENT_OUT / "baseline_export" / "flight.csv"),
+        "240_hz_candidate": altitude_envelope(CURRENT_OUT / "candidate_replay" / "flight.csv"),
+        "480_hz_gain0": altitude_envelope(exact_480_dir / "flight.csv"),
+        "480_hz_candidate": altitude_envelope(candidate_480_dir / "flight.csv"),
+        "interpretation": "The tape is a high-altitude open-loop response study above a flat sea-level datum. A 100 m floor is enforced for every baseline and candidate trace; it is not a landing-path experiment.",
+    }
     segment_analysis_480 = paired_segments(exact_480_dir / "flight.csv", candidate_480_dir / "flight.csv",
         tape_480, int(flap_metadata_480["flap_aux_index"]))
     segment_analysis_480_path = refinement_dir / "paired_segment_analysis.json"
@@ -478,6 +596,7 @@ def main() -> int:
             "analysis_sha256": sha256(refinement_path),
             "paired_480_hz_segment_path": str(segment_analysis_480_path.relative_to(ROOT)),
             "paired_480_hz_segment_sha256": sha256(segment_analysis_480_path),
+            "altitude_margin": altitude_margin,
         },
         "static_probe": {"path": str(probe_path.relative_to(ROOT)), "sha256": sha256(probe_path),
             "method": probe.get("method"), "not_physical_validation": probe.get("not_physical_validation")},

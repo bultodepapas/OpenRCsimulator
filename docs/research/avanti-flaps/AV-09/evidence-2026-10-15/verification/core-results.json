@@ -1,0 +1,77 @@
+[
+  {
+    "test": "test_simulation",
+    "ok": true,
+    "seconds": 0.344
+  },
+  {
+    "test": "test_integrator",
+    "ok": true,
+    "seconds": 1.328
+  },
+  {
+    "test": "test_checkpoint",
+    "ok": true,
+    "seconds": 3.953
+  },
+  {
+    "test": "test_checkpoint_integrity",
+    "ok": true,
+    "seconds": 0.5
+  },
+  {
+    "test": "test_golden",
+    "ok": true,
+    "seconds": 5.782
+  },
+  {
+    "test": "test_control_surfaces",
+    "ok": true,
+    "seconds": 1.172
+  },
+  {
+    "test": "test_control_actuators",
+    "ok": true,
+    "seconds": 1.89
+  },
+  {
+    "test": "test_downwash_lag",
+    "ok": true,
+    "seconds": 6.844
+  },
+  {
+    "test": "test_ground_effect",
+    "ok": true,
+    "seconds": 2.641
+  },
+  {
+    "test": "test_aero",
+    "ok": true,
+    "seconds": 1.25
+  },
+  {
+    "test": "test_aero_continuity",
+    "ok": true,
+    "seconds": 1.328
+  },
+  {
+    "test": "test_aero_flow",
+    "ok": true,
+    "seconds": 13.265
+  },
+  {
+    "test": "test_wing_polar",
+    "ok": true,
+    "seconds": 1.61
+  },
+  {
+    "test": "test_turbine",
+    "ok": true,
+    "seconds": 0.89
+  },
+  {
+    "test": "test_turbine_continuous",
+    "ok": true,
+    "seconds": 4.282
+  }
+]

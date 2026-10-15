@@ -14,6 +14,7 @@ func check(label: String,ok: bool) -> void:
 func _initialize() -> void: run.call_deferred()
 func run() -> void:
  _check_canopy_profiles()
+ _check_canopy_station_bounds()
  _check_canopy_triangle_collection()
  _check_optic_gain_updates()
  check("invalid aircraft has no kit",Lights.attach({})==null)
@@ -179,3 +180,21 @@ func _check_canopy_triangle_collection() -> void:
  var moved: PackedVector3Array=Lights._triangles(body,skin)
  check("canopy collection immediately reflects a moved parent",not moved.is_empty() and moved[0]==(pivot.transform*skin.transform)*points[2] and moved!=expected)
  body.free()
+
+func _check_canopy_station_bounds() -> void:
+ var triangles:=PackedVector3Array([Vector3(-1,0,-.25),Vector3(1,1,0),Vector3(-1,1,0),Vector3(-1,0,0),Vector3(1,1,.25),Vector3(-1,1,.25),Vector3(0,0,2),Vector3(1,0,2),Vector3(0,1,2)])
+ var before:=var_to_bytes(triangles)
+ var sections: Array=Lights._canopy_sections(triangles,PackedFloat64Array([-.25,0,.25]))
+ check("canopy station bounds include both endpoints and reject outside triangles",sections[0].segments.size()==1 and sections[1].segments.size()==2 and sections[2].segments.size()==1 and sections[1].lo==0 and sections[1].hi==1)
+ check("canopy sections preserve triangle and edge order",sections[1].segments[0]==PackedVector3Array([Vector3(1,1,0),Vector3(-1,1,0)]) and sections[1].segments[1]==PackedVector3Array([Vector3(-1,0,0),Vector3(-1,0,0)]))
+ sections[0].segments.clear()
+ check("station workspaces are independent and leave source geometry unchanged",sections[1].segments.size()==2 and var_to_bytes(triangles)==before)
+ var boundary: float=Vector3(0,0,.1).z
+ var narrow:=PackedVector3Array([Vector3(0,0,boundary),Vector3(1,1,.2),Vector3(-1,1,.2)])
+ var narrow_sections: Array=Lights._canopy_sections(narrow,PackedFloat64Array([boundary-1e-10,boundary,boundary+1e-10]))
+ check("canopy binary bounds retain sub-float32 station precision",narrow_sections[0].segments.is_empty() and narrow_sections[1].segments.size()==1 and narrow_sections[2].segments.size()==1)
+ var invalid:=PackedVector3Array([Vector3(0,0,NAN),Vector3(1,1,-1),Vector3(-1,-1,1)])
+ var fallback: Array=Lights._canopy_sections(invalid,PackedFloat64Array([-.25,0,.25]))
+ var fallback_ok:=true
+ for section: Dictionary in fallback: fallback_ok=fallback_ok and section.segments.size()==1 and section.segments[0].size()==3
+ check("non-finite triangle coordinates retain the exhaustive edge path",fallback_ok)

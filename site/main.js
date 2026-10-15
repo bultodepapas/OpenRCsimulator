@@ -44,7 +44,8 @@ function renderAircraft() {
   const model = aircraft[currentAircraft];
   const index = language === 'es' ? 0 : 1;
   const image = document.querySelector('#aircraft-image');
-  image.src = `assets/turntables/${currentAircraft}-poster.webp`;
+  const source = `assets/turntables/${currentAircraft}-poster.webp`;
+  if(image.getAttribute('src') !== source) image.src = source;
   image.alt = `${model.name.replace('<br>',' ')} — ${index ? 'studio view' : 'vista de estudio'}`;
   document.querySelector('#aircraft-name').innerHTML = model.name;
   document.querySelector('#aircraft-category').textContent = model.category[index];
@@ -64,7 +65,10 @@ function renderAircraft() {
 function renderLanguage() {
   const index = language === 'es' ? 0 : 1;
   document.documentElement.lang = language;
-  originalCopy.forEach((value, el) => {el.innerHTML = index ? translations[el.dataset.i18n] : value;});
+  originalCopy.forEach((value, el) => {
+    const copy = index ? translations[el.dataset.i18n] : value;
+    if(el.innerHTML !== copy) el.innerHTML = copy;
+  });
   document.querySelectorAll('[data-label]').forEach(el => el.setAttribute('aria-label',labels[el.dataset.label][index]));
   document.querySelectorAll('[data-alt]').forEach(el => {el.alt = alts[el.dataset.alt][index];});
   languageButton.textContent = index ? 'ES' : 'EN';

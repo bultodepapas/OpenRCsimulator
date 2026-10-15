@@ -36,12 +36,12 @@
 			"tick": 0
 		},
 		{
-			"detail": "takeoff_flap_20deg",
+			"detail": "flap_20deg_hold",
 			"kind": "marker",
 			"tick": 720
 		},
 		{
-			"detail": "landing_flap_50deg",
+			"detail": "full_flap_50deg_hold",
 			"kind": "marker",
 			"tick": 1440
 		},
@@ -87,7 +87,7 @@
 		"aux_layout": "[\"engine_rpm\",\"srv_roll\",\"srv_pitch\",\"srv_yaw\"]",
 		"configuration": "virtual-balanced-reference-v1",
 		"continuous_layout": "turbine shaft rpm; RK4 coupled; prescribed fuel mass; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail",
-		"created_utc": "2026-10-15T20:26:18",
+		"created_utc": "2026-10-15T20:36:12",
 		"dt_s": 0.004166666666666667,
 		"engine": "Godot 4.7.2-stable (official)",
 		"engine_rpm_semantics": "turbine spool rpm",
@@ -146,12 +146,12 @@
 		"wing_polar_model": "tabulated-wing-v1 (experimental finite-wing strip reference)"
 	},
 	"mode": "exact",
-	"observer_usec": 305216,
+	"observer_usec": 234268,
 	"peak_buffer_rows": 240,
 	"recovery_reason": "",
 	"rows": 5521,
 	"solver_changed": false,
 	"source": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\avanti-flaps\\AV-09\\evidence-2026-10-15\\recording\\av09_flaps_open_loop.orfl",
-	"source_sha256": "ae00e125f213102a2bb1fda3c449212ba335c88e001e0c33942ab53a51fcc0eb",
+	"source_sha256": "10bc456f6d2f5d25aeff431f5ca8d8871614553c8df1e3965c1742d12968be25",
 	"status": "ok"
 }
