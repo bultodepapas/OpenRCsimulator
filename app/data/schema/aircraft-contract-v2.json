@@ -919,7 +919,9 @@
         "retraction_time",
         "max_speed_mps",
         "elevator_mix_per_flap_fraction",
-        "aerodynamic_gain"
+        "aerodynamic_gain",
+        "effective_angle_limit_deg",
+        "profile_drag_coefficient"
       ],
       "allowed": [
         "max_angle_deg",
@@ -931,7 +933,9 @@
         "retraction_time",
         "max_speed_mps",
         "elevator_mix_per_flap_fraction",
-        "aerodynamic_gain"
+        "aerodynamic_gain",
+        "effective_angle_limit_deg",
+        "profile_drag_coefficient"
       ]
     }
   ],

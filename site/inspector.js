@@ -93,7 +93,7 @@
         'environment-image':'neutral','shadow-intensity':'.8','shadow-softness':'1',
         'exposure':'1','tone-mapping':'neutral','camera-orbit':cameraOrbit('perspective'),
         'min-camera-orbit':'auto 0deg 25%','max-camera-orbit':'auto 180deg 180%',
-        'field-of-view':'30deg','loading':'eager','reveal':'auto',
+        'field-of-view':'30deg','min-field-of-view':'15deg','max-field-of-view':'45deg','loading':'eager','reveal':'auto',
         'interpolation-decay':reduced.matches ? '0' : '70'
       })) element.setAttribute(name,value);
       element.addEventListener('progress', event => {

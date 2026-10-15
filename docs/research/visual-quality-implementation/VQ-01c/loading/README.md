@@ -1,5 +1,11 @@
 # DT-11a — reuse unchanged lake geometry
 
+2026-10-15 presentation follow-up: [reuse unchanged helicopter optic gains](heli-updates/README.md)
+preserves 5,245 native update-state comparisons and reduces stable-light CPU
+updates by about 19 µs. Six permanent transition checks are added; changing dusk
+has mixed process results. Native integration retains the two texture shutdown
+errors reproduced on the reference. This is separate from loading and FPS claims.
+
 Follow-up: [generated default buffers reduce cold loading](cold/README.md). The
 measurements and manifest below remain the original in-memory-cache campaign.
 Next follow-up: [exact grain precomputation and package repairs](grain/README.md).

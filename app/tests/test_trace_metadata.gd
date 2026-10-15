@@ -70,7 +70,9 @@ func _initialize() -> void:
 		var glow_profiled: bool = session.glow_is_active()
 		var wheel_profiled: bool = session.wheel_count() > 0
 		var expected_schema: String = "openrc-flight-meta v7" if glow_profiled else ("openrc-flight-meta v6" if wheel_profiled else "openrc-flight-meta v2")
-		if session.gear_is_retractable():
+		if session.flaps_available():
+			expected_schema = "openrc-flight-meta v9" # optional flap layout follows the gear channels
+		elif session.gear_is_retractable():
 			expected_schema = "openrc-flight-meta v8" # published gear/input/extension metadata contract
 		_check("metadata schema " + entry.id, meta.metadata_schema == expected_schema)
 		if wheel_profiled:

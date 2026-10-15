@@ -1,0 +1,32 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+radio connected: 0300fa675e040000ff02000000007801|045e:02ff|XInput Controller (gamepad profile)
+ok   production Avanti scene starts with a flap-capable session
+ok   controller capability follows the available Avanti
+ok   new flight starts with flaps retracted
+ok   F requests the 40% takeoff detent
+ok   F advances to the 100% landing detent
+ok   F cycles from landing back to retracted
+ok   Shift+F steps backward from retracted to landing
+ok   flight reset clears the flap request
+ok   controller cycle requests 40% takeoff flaps
+ok   English HUD shows actual and requested target flap angles
+ok   Spanish HUD localizes actual and target flap angles
+ok   controller down/up actions request landing and retracted positions
+ok   session reports a flap actuator between endpoints while moving
+ok   production render applies the actual in-transit angle to both flap hinges
+ok   overspeed advisory names the estimated equivalent airspeed limit
+ok   overspeed advisory leaves the landing flap request intact
+ok   reset restores the actual flap state and rendered hinges to neutral
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+ok   fixed-gear Stik does not advertise flaps
+ok   unavailable aircraft show the flap capability message
+ok   capture session accepts full landing flap request
+ok   capture reaches full actual flap deployment
+ok   capture viewport is 1280x720
+ok   native rendered full-flap capture saves
+ok   capture runtime sidecar saves
+flaps capture saved: C:\DEVELOPMENT\OpenRCsimulator\docs\research\avanti-flaps\AV-09\ui\full-flaps.png; renderer=gl_compatibility
+flaps UI: 24 checks, 0 failures

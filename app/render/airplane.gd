@@ -11,14 +11,12 @@ const HX700 := preload("res://aircraft/hx700_model.gd")
 
 const STIK_ID := "jensen-das-ugly-stik-60"
 const EXTRA_ID := "gp-extra-300s-60"
-const AVANTI_ID := "sebart-avanti-s-a200-p100rx"
 const P51_ID := "p51d-mustang-120"
 const TIMBER_ID := "turbo-lumber-evolution"
 const STIK_GLOW_55AX_ID := "stik-glow-55ax-2t"
 const STIK_GLOW_FS64V_ID := "stik-glow-fs64v-4t"
 const STIK_GLOW_61FX_ID := "stik-glow-61fx-2t"
 const X_CELL_ID := "xcell-60-research"
-const AvantiModel := preload("res://aircraft/avanti_s_model.gd")
 
 # Accepted builds populate this small render-only cache. Every new build revalidates dependencies.
 static var _accepted_datums: Dictionary = {}
@@ -156,9 +154,6 @@ static func apply_throttle(airplane: Dictionary, throttle: float) -> void:
 ## Render the session's accepted flap angle through the aircraft's existing visual pose.
 static func apply_flaps(airplane: Dictionary, degrees: float) -> void:
 	if not is_finite(degrees):
-		return
-	if str(airplane.get("aircraft_id", "")) == AVANTI_ID:
-		AvantiModel.set_flaps(airplane, degrees)
 		return
 	var builder: Script = airplane.get("_model_builder")
 	if builder != null and builder.has_method("set_flaps"):

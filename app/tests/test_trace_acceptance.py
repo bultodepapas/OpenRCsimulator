@@ -149,6 +149,7 @@ class TraceAcceptance(unittest.TestCase):
             ('flap law', [line for line in lines if not line.startswith('# flap_law:')]),
             ('flap start', [line for line in lines if not line.startswith('# recording_start_flap:')]),
             ('flap base format', [line for line in lines if not line.startswith('# flap_base_trace_format:')]),
+            ('gear aux index', [line for line in lines if not line.startswith('# gear_aux_index:')]),
         ]
         for label, changed_lines in mutations:
             with self.subTest(mutation=label):

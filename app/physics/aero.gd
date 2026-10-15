@@ -14,6 +14,7 @@ const RB := preload("res://physics/rigid_body.gd")
 const ControlSurfaces := preload("res://physics/control_surfaces.gd")
 const WingPolar := preload("res://physics/wing_polar.gd")
 const GroundEffect := preload("res://physics/ground_effect.gd")
+const Flaps := preload("res://physics/flaps.gd")
 
 ## Equal-area elements per wing side (numerical resolution, not an aircraft parameter).
 const WING_STATIONS_PER_SIDE := 3
@@ -275,6 +276,11 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 	var angles := PackedFloat64Array()
 	var speeds := PackedFloat64Array()
 	var sources := PackedFloat64Array()
+	var flap_shifts := PackedFloat64Array()
+	var flap_model: Dictionary = model.get("flaps", {})
+	var flap_angle: float = float(d.get("flap", 0.0))
+	var flap_active := Flaps.enabled(model) and flap_angle != 0.0 and float(flap_model.get("aerodynamic_gain", 1.0)) != 0.0
+	var flap_coverage: PackedFloat64Array = flap_model.get("station_coverage", PackedFloat64Array())
 	var reference_speed := 0.0
 	for i in ys.size():
 		var y: float = arm[1] + ys[i]
@@ -286,18 +292,52 @@ static func _wing_flow(s: PackedFloat64Array, air: Dictionary, d: Dictionary, mo
 		var angle := wrapf(M.atan2_(f2, f0) + float(model.surfaces.wing_aileron_effectiveness)*control, -PI, PI)
 		if not twist.is_empty():
 			angle = wrapf(angle + twist[i], -PI, PI)
+		var flap_shift := 0.0
+		if flap_active and i < flap_coverage.size():
+			# A plain flap changes section camber only while air flows over the wing's forward-facing plane.
+			# Thin-airfoil effectiveness is smoothly limited beyond small deflections before area coverage is applied.
+			# The strip stall/polar and induced-flow laws see this shift; reverse flow sees none.
+			var limit := deg_to_rad(float(flap_model.effective_angle_limit_deg))
+			var raw_shift := flap_angle * float(flap_model.lift_effectiveness)
+			var bounded_shift := limit * M.tanh_(raw_shift / limit)
+			flap_shift = bounded_shift * flap_coverage[i] * float(flap_model.aerodynamic_gain) * maxf(M.cos_(angle), 0.0)
+			angle = wrapf(angle + flap_shift, -PI, PI)
 		angles.append(angle)
 		speeds.append(vp)
+		flap_shifts.append(flap_shift)
 		reference_speed = maxf(reference_speed, M.sqrt_(f0*f0 + f1*f1 + f2*f2))
 	for i in ys.size():
 		sources.append((speeds[i]/reference_speed) * (1.0-stall_weight(angles[i], model.envelope)) if reference_speed > 0.0 else 0.0)
-	return {angles = angles, speeds = speeds, sources = sources}
+	return {angles = angles, speeds = speeds, sources = sources, flap_shifts = flap_shifts, reference_speed = reference_speed}
 
 
 static func _tail_curve(alpha: float, slope: float, surfaces: Dictionary) -> float:
 	# Continuous periodic flat-plate blend. No raw alpha survives the reverse-flow seam.
 	var blend := _smoothstep((absf(alpha) - surfaces.tail_local_limit)/(surfaces.tail_stall_end - surfaces.tail_local_limit))
 	return (1.0 - blend)*slope*alpha + blend*0.5*float(surfaces.tail_CD90)*M.sin_(2.0*alpha)
+
+
+## Existing local section law evaluated at a clean reference angle. Flap moments use this independent
+## coefficient difference so the pressure increment and its application point stay consistent.
+static func _section_coefficients(alpha: float, base: float, env: Dictionary, polar: Dictionary,
+		cd0: float, cd90: float, k_induced: float, cl_min_d: float, induced_scale: float) -> PackedFloat64Array:
+	var a1: float = env.a1
+	var a_span: float = env.a2 - env.a1
+	var n1: float = env.n1
+	var n_span: float = env.n2 - env.n1
+	var weight := _smoothstep((alpha - a1) / a_span) if alpha >= 0.0 \
+		else _smoothstep((-alpha - n1) / n_span)
+	var cl: float
+	var cd: float
+	if not polar.is_empty():
+		var sample := WingPolar.evaluate(alpha, base, polar)
+		cl = sample[0]
+		weight = 1.0 - sample[2]
+		cd = sample[1] + sample[2] * induced_scale * k_induced * M.pow_(cl - cl_min_d, 2)
+	else:
+		cl = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * alpha)
+		cd = cd0 + (1.0-weight)*induced_scale*k_induced*M.pow_(cl-cl_min_d, 2) + weight*cd90*M.pow_(M.sin_(alpha), 2)
+	return PackedFloat64Array([cl, cd, weight])
 
 
 ## Local section law. H12 parity applies only in its unchanged planar legacy domain.
@@ -355,9 +395,16 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 	var plane_speeds: PackedFloat64Array = wing_flow.speeds
 	var source_weights: PackedFloat64Array = wing_flow.sources
 	var e_map: PackedFloat64Array = env.get("induced_map", PackedFloat64Array())
+	var flap_shifts: PackedFloat64Array = wing_flow.flap_shifts
+	var flap_model: Dictionary = model.get("flaps", {})
+	var flap_angle: float = float(d.get("flap", 0.0))
+	var flap_active := Flaps.enabled(model) and flap_angle != 0.0 and float(flap_model.get("aerodynamic_gain", 1.0)) != 0.0
+	var flap_coverage: PackedFloat64Array = flap_model.get("station_coverage", PackedFloat64Array())
+	var reference_speed: float = float(wing_flow.reference_speed)
 	var coupled := e_map.size() == stations * stations
 	var strip_slope: float = env.get("strip_slope", cla)
 	var strip_cl0: PackedFloat64Array = env.get("strip_cl0", PackedFloat64Array())
+	var flap_chords: PackedFloat64Array = env.get("station_chords", PackedFloat64Array())
 	var polar: Dictionary = env.get("wing_polar", {})
 	# D11j: the section's pitching moment about its aerodynamic centre as a pure couple per strip (q_i·S_i·c_i·Cm_ac);
 	# 0 (absent) adds no arithmetic, so aircraft without it stay byte-identical to the frozen oracle.
@@ -402,6 +449,47 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 				cl = sample[0]
 				weight = 1.0-sample[2]
 				cd = sample[1] + sample[2]*k_induced*M.pow_(cl-cl_min_d, 2)
+		var flap_lift_delta := 0.0
+		var flap_profile_drag := 0.0
+		var flap_delta_cl := 0.0
+		if flap_active and i < flap_shifts.size() and i < flap_coverage.size() and flap_shifts[i] != 0.0:
+			# Increase the separated positive lift plateau with flap camber. The smooth stall blend
+			# retains this bounded gain past stall, while cos(alpha) removes it at edge-on/reverse flow.
+			# `weight` is separation for both laws: the tabulated polar's attached fraction
+			# is converted to 1 - attached immediately above.
+			flap_lift_delta = strip_slope * flap_shifts[i] * weight * maxf(M.cos_(effective), 0.0)
+			var pre_extension_cl: float = cl
+			cl += flap_lift_delta
+			var induced_factor: float = ge[i] if ge_active else 1.0
+			# The post-stall extension is added after the clean polar/plate blend; carry its
+			# incremental induced cost through the same separation fraction and GE factor.
+			var induced_cl_delta: float = M.pow_(cl - cl_min_d, 2) - M.pow_(pre_extension_cl - cl_min_d, 2)
+			cd += maxf(induced_cl_delta, 0.0) * (1.0 - weight) * induced_factor * k_induced
+			# Hinge/pressure drag estimate, quadratic with deflection and absent at zero.
+			# The coefficient is normalized to covered wing-strip reference area, not panel surface area.
+			flap_profile_drag = float(flap_model.profile_drag_coefficient) * flap_coverage[i] * float(flap_model.aerodynamic_gain) \
+				* M.pow_(M.sin_(flap_angle), 2) * maxf(M.cos_(effective), 0.0)
+			cd += flap_profile_drag
+			# Independently evaluate the same strip with flap camber removed so pitch
+			# follows the actual nonlinear ΔCL after coupling, stall, and separation.
+			var clean_effective: float = effective - flap_shifts[i]
+			var clean_base: float
+			if coupled:
+				var clean_mapped := 0.0
+				for k in stations:
+					var clean_angle_k: float = angles[k] - flap_shifts[k]
+					var clean_weight_k := _smoothstep((clean_angle_k - a1) / a_span) if clean_angle_k >= 0.0 \
+						else _smoothstep((-clean_angle_k - n1) / n_span)
+					var clean_source_k: float = (plane_speeds[k] / reference_speed) * (1.0 - clean_weight_k) if reference_speed > 0.0 else 0.0
+					clean_mapped += e_map[i * stations + k] * clean_angle_k * (1.0 if k == i else clean_source_k)
+				clean_base = strip_cl0[i] + strip_slope * clean_mapped
+			else:
+				clean_base = cl0 + cla * clean_effective
+			if ge_active:
+				clean_base += (1.0 - ge[i]) * (strip_slope * (clean_effective + float(env.strip_alpha_zero)) - clean_base)
+			var clean_coeff := _section_coefficients(clean_effective, clean_base, env, polar, cd0, cd90,
+				k_induced, cl_min_d, induced_factor)
+			flap_delta_cl = cl - clean_coeff[0]
 		wing_cl += (plane_speeds[i] * cl) / stations
 		var speed := M.sqrt_(f0 * f0 + f1 * f1 + f2 * f2)
 		if plane_speeds[i] == 0.0:
@@ -431,6 +519,24 @@ static func _local_loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, 
 		if cm_ac != 0.0 and plane_speed > 0.0:
 			section_my = lift_q * plane_speed * plane_speed * station_area * station_chords[i] * cm_ac
 			my_sum += section_my
+		if flap_active and plane_speed > 0.0 and i < flap_shifts.size() and flap_shifts[i] != 0.0:
+			# Thin-airfoil theory treats flap lift increment as a pressure change over
+			# the section, not as whole-wing Δlift acting at the aft panel. Apply the
+			# Glauert quarter-chord ΔCm/ΔCL to actual nonlinear ΔCL as a pure couple.
+			var chord_i: float = flap_chords[i] if i < flap_chords.size() else float(ref.c)
+			var lift_q_area: float = lift_q * plane_speed * plane_speed * station_area
+			var flap_couple: float = lift_q_area * chord_i * flap_delta_cl * float(flap_model.thin_airfoil_moment_per_cl)
+			# Estimated incremental profile/hinge drag acts at the panel centre;
+			# account for its chordwise and deflected-z arms separately.
+			var flap_center := float(flap_model.hinge_fraction) + 0.5 * float(flap_model.chord_fraction) * M.cos_(flap_angle)
+			var arm_x := -(flap_center - 0.25) * chord_i
+			var arm_z := 0.5 * float(flap_model.chord_fraction) * chord_i * M.sin_(flap_angle)
+			var profile_drag_scale: float = drag_q * plane_speed * station_area * flap_profile_drag
+			var profile_drag_fx := f0 * profile_drag_scale
+			var profile_drag_fz := f2 * profile_drag_scale
+			flap_couple += arm_z * profile_drag_fx - arm_x * profile_drag_fz
+			section_my += flap_couple
+			my_sum += flap_couple
 		if strip_diagnostics != null:
 			strip_diagnostics.append({y_m = y, alpha_geometric_rad = effective,
 				alpha_effective_rad = (base - strip_cl0[i]) / strip_slope if coupled else effective,
@@ -685,6 +791,10 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 	var angles: PackedFloat64Array = wing_flow.angles
 	var plane_speeds: PackedFloat64Array = wing_flow.speeds
 	var source_weights: PackedFloat64Array = wing_flow.sources
+	var flap_shifts: PackedFloat64Array = wing_flow.flap_shifts
+	var flap_model: Dictionary = model.get("flaps", {})
+	var flap_angle: float = float(d.get("flap", 0.0))
+	var flap_active := Flaps.enabled(model) and flap_angle != 0.0 and float(flap_model.get("aerodynamic_gain", 1.0)) != 0.0
 	var e_map: PackedFloat64Array = env.get("induced_map", PackedFloat64Array())
 	var coupled := e_map.size() == stations * stations
 	var strip_slope: float = env.get("strip_slope", a.CLa)
@@ -712,7 +822,12 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 			base += (1.0 - ge[i]) * (strip_slope * (effective + float(env.strip_alpha_zero)) - base)
 		var cl: float = base if weight == 0.0 else (1.0 - weight) * base + weight * 0.5 * cd90 * M.sin_(2.0 * effective)
 		if not polar.is_empty():
-			cl = WingPolar.evaluate(effective, base, polar)[0]
+			var sample := WingPolar.evaluate(effective, base, polar)
+			cl = sample[0]
+			weight = 1.0 - sample[2]
+		if flap_active and i < flap_shifts.size():
+			# Match the strip's bounded separated-lift extension when producing the dimensional wake state.
+			cl += strip_slope * flap_shifts[i] * weight * maxf(M.cos_(effective), 0.0)
 		wing_cl += (plane_speeds[i] * cl if dimensional else cl) / stations
 	return wing_cl
 
@@ -721,6 +836,25 @@ static func _wing_lift_coefficient_with(s: PackedFloat64Array, air: Dictionary, 
 ## NAN (trim, linearisation, static solves, aircraft without the module) leaves every path byte-identical.
 static func loads(s: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rho: float,
 		downwash_cl := NAN, ground_up := NAN) -> PackedFloat64Array:
+	# Keep the clean-aircraft path and its arithmetic exactly intact. Flap increments are local,
+	# strip-resolved differences from that clean path, so they remain active in the small-angle oracle
+	# domain without changing any aircraft that has no simulated flap command.
+	var flap_config: Dictionary = model.get("flaps", {})
+	if Flaps.enabled(model) and float(d.get("flap", 0.0)) != 0.0 \
+			and float(flap_config.get("aerodynamic_gain", 1.0)) != 0.0 \
+			and not model.get("envelope", {}).is_empty():
+		var clean_d := d.duplicate(true)
+		clean_d.erase("flap")
+		var ge_flap := GroundEffect.factors(s, model, ground_up)
+		var blend_clean: float = local_flow_weight(s, air, clean_d, model, downwash_cl, ge_flap)
+		if blend_clean == 1.0:
+			return _local_loads(s, air, d, model, rho, downwash_cl, null, ge_flap)
+		var loads_clean := _global_loads(s, air, clean_d, model, rho, downwash_cl, ge_flap)
+		var local_clean := _local_loads(s, air, clean_d, model, rho, downwash_cl, null, ge_flap)
+		var local_flapped := _local_loads(s, air, d, model, rho, downwash_cl, null, ge_flap)
+		for i in 6:
+			loads_clean[i] = local_flapped[i] + (1.0 - blend_clean) * (loads_clean[i] - local_clean[i])
+		return loads_clean
 	if model.get("envelope", {}).is_empty():
 		return _global_loads(s, air, d, model, rho)
 	var ge := GroundEffect.factors(s, model, ground_up)

@@ -114,7 +114,7 @@ html[data-theme=night] .inspect-launch:hover .inspect-symbol { color:#101820; }
 @media(min-width:1650px) { .hero-aircraft { right:0; top:4%; } }
 @media(max-width:1050px) {
   .jet-study { gap:4vw; grid-template-columns:minmax(0,1.3fr) minmax(250px,1fr); }
-  .hero-aircraft { right:-21%; top:17%; width:103%; }
+  .hero-aircraft { right:0; top:17%; width:83%; }
   .hero-scene-caption .aircraft-note { font-size:8px; }
   .hero-scene-caption { gap:15px; }
   .inspector-controls { gap:15px; }

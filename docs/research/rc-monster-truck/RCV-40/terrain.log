@@ -1,0 +1,49 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ERROR: Condition "len == 0" is true. Returning: FAILED
+   at: update (core/crypto/hashing_context.cpp:54)
+   GDScript backtrace (most recent call first):
+       [0] _sha256 (res://../research/rc-monster-truck/monster-car-2/rcv40/bench_terrain.gd:336)
+       [1] _run (res://../research/rc-monster-truck/monster-car-2/rcv40/bench_terrain.gd:64)
+ERROR: Condition "len == 0" is true. Returning: FAILED
+   at: update (core/crypto/hashing_context.cpp:54)
+   GDScript backtrace (most recent call first):
+       [0] _input_hash (res://../research/rc-monster-truck/monster-car-2/rcv40/bench_terrain.gd:327)
+       [1] _run (res://../research/rc-monster-truck/monster-car-2/rcv40/bench_terrain.gd:64)
+{
+  "benchmark": {
+    "baseline_elapsed_us": [
+      23083.0,
+      26797.0,
+      24979.0,
+      35960.0,
+      27991.0
+    ],
+    "baseline_median_us": 26797.0,
+    "calls_per_timed_pass": 3072,
+    "candidate_elapsed_us": [
+      14997.0,
+      16807.0,
+      15433.0,
+      15819.0,
+      15719.0
+    ],
+    "candidate_median_us": 15719.0,
+    "candidate_over_baseline": 0.5865955144232563,
+    "order_by_round": [
+      "baseline,candidate",
+      "candidate,baseline",
+      "baseline,candidate",
+      "candidate,baseline",
+      "baseline,candidate"
+    ],
+    "points_per_pass": 1024,
+    "repeats_per_pass": 3,
+    "rounds_each": 5,
+    "warmup_calls_each": 200
+  },
+  "bit_comparisons": 18256,
+  "differences": 0,
+  "ok": true,
+  "output": "C:/DEVELOPMENT/OpenRCsimulator/docs/research/rc-monster-truck/RCV-40/terrain.json"
+}

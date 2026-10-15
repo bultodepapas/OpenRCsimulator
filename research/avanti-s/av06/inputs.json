@@ -1213,6 +1213,18 @@
       "unit": "1",
       "kind": "derived",
       "source": "Nominal unit scale for the authored flap aerodynamic law; 0 is reserved for a generated software sensitivity control and is not an aircraft calibration"
+    },
+    "effective_angle_limit_deg": {
+      "value": 17.0,
+      "unit": "deg",
+      "kind": "estimated",
+      "source": "Estimated cap on thin-airfoil effective flap incidence beyond the small-deflection range; bounds high-deflection lift, no Avanti section test"
+    },
+    "profile_drag_coefficient": {
+      "value": 0.16,
+      "unit": "1",
+      "kind": "estimated",
+      "source": "Estimated plain-flap hinge/pressure drag coefficient per covered wing-strip reference area, multiplying spanwise coverage and sin²(deflection); not panel-surface-area-normalized and no aircraft-specific flap polar"
     }
   }
 }

@@ -22,6 +22,8 @@ var _rotors: Array[Dictionary]=[]
 var _landing: SpotLight3D
 var _frame_fill: OmniLight3D
 var _beacon: MeshInstance3D
+# Owned optic materials change gain only with the exact dusk factor.
+var _last_optic_factor: float=NAN
 
 static func attach(aircraft: Dictionary) -> Node3D:
  if not aircraft.get("root") is Node3D: return null
@@ -58,10 +60,15 @@ func update_visual(sun_deg: float, exposure: float, telemetry: Dictionary={}, ma
  active_mode="off" if mode=="off" or factor<=0.0 else ("nav" if mode=="nav" else "all")
  visible=active_mode!="off"
  var safe_exposure: float=maxf(exposure,.001) if is_finite(exposure) else .6
- for optic: Dictionary in _optics:
-  optic.node.visible=active_mode=="all" or (active_mode=="nav" and optic.nav)
-  optic.material.set_shader_parameter("radiance",float(optic.radiance)*factor)
-  optic.material.set_shader_parameter("display_cap",float(optic.cap)*factor)
+ if factor!=_last_optic_factor:
+  for optic: Dictionary in _optics:
+   optic.node.visible=active_mode=="all" or (active_mode=="nav" and optic.nav)
+   optic.material.set_shader_parameter("radiance",float(optic.radiance)*factor)
+   optic.material.set_shader_parameter("display_cap",float(optic.cap)*factor)
+  _last_optic_factor=factor
+ else:
+  for optic: Dictionary in _optics:
+   optic.node.visible=active_mode=="all" or (active_mode=="nav" and optic.nav)
  _beacon.visible=active_mode!="off" and armed
  _landing.visible=active_mode=="all"
  _frame_fill.visible=active_mode=="all"
@@ -137,6 +144,7 @@ func _build() -> void:
 func _add_sprite(label: String,color: Color,point: Vector3,size_m: float,nav: bool,flash: Vector4=Vector4(1,0,0,0)) -> MeshInstance3D:
  var node: MeshInstance3D=AircraftLights.sprite(label,color,point,size_m,1.2,flash,3.5,1.4)
  add_child(node)
+ _last_optic_factor=NAN
  _optics.append({node=node,material=node.mesh.material,nav=nav,radiance=1.2,cap=.65})
  return node
 
@@ -165,6 +173,7 @@ func _add_strip(label: String,line: PackedVector3Array,color: Color,face: Vector
  node.cast_shadow=GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
  node.extra_cull_margin=.15
  add_child(node)
+ _last_optic_factor=NAN
  _optics.append({node=node,material=material,nav=false,radiance=STRIP_RADIANCE,cap=.65})
 
 static func _triangles(root: Node3D,node: MeshInstance3D) -> PackedVector3Array:
@@ -173,11 +182,13 @@ static func _triangles(root: Node3D,node: MeshInstance3D) -> PackedVector3Array:
  for s: int in node.mesh.get_surface_count():
   var arrays: Array=node.mesh.surface_get_arrays(s)
   var vertices: PackedVector3Array=arrays[Mesh.ARRAY_VERTEX]
-  var indices: PackedInt32Array=arrays[Mesh.ARRAY_INDEX]
+  var indices: PackedInt32Array=arrays[Mesh.ARRAY_INDEX] if arrays[Mesh.ARRAY_INDEX]!=null else PackedInt32Array()
+  # Transform each source vertex once in native code, then preserve face order.
+  var transformed: PackedVector3Array=transform_value*vertices
   if indices.is_empty():
-   for point: Vector3 in vertices: result.append(transform_value*point)
+   result.append_array(transformed)
   else:
-   for index: int in indices: result.append(transform_value*vertices[index])
+   for index: int in indices: result.append(transformed[index])
  return result
 
 ## Slice actual canopy triangles; no floating outline based on its bounding box.

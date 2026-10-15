@@ -6,6 +6,16 @@ import re
 
 ROOT = Path(__file__).resolve().parents[4]
 EVIDENCE = ROOT / "docs/research/rc-monster-truck/RCV-39"
+HARNESS = Path(__file__).resolve().parent
+SOURCE_PATHS = {
+    "bench_effects.gd": HARNESS / "bench_effects.gd",
+    "baseline_effects.gd": HARNESS / "baseline_effects.gd",
+    "candidate_effects.gd": ROOT / "app/vehicles/ground/ground_effects.gd",
+    "production_ground_effects.gd": ROOT / "app/vehicles/ground/ground_effects.gd",
+    "monster_car_2_model.gd": ROOT / "app/vehicles/ground/monster_car_2_model.gd",
+    "ground_grime_overlay.gdshader": ROOT / "app/vehicles/ground/ground_grime_overlay.gdshader",
+    "test_rcv36_effects.gd": ROOT / "app/tests/test_rcv36_effects.gd",
+}
 
 
 def digest(path):
@@ -28,10 +38,9 @@ def main():
     assert effects["verification"]["overlay_uniform_comparisons"] > 40000
     assert effects["structure"]["unique_overlay_materials"] == [70, 5]
     clean_log("effects/run.log")
-    for source in effects["source_hashes"].values():
-        # Receipts retain their original absolute paths; verify against this checkout.
-        suffix = source["path"].replace("\\", "/").split("/OpenRCsimulator/", 1)[1]
-        assert digest(ROOT / suffix) == source["sha256"], suffix
+    for name, source in effects["source_hashes"].items():
+        # Resolve in this checkout regardless of the measurement machine's path.
+        assert digest(SOURCE_PATHS[name]) == source["sha256"], name
     checks = read("checks/verification.json")
     assert checks["complete"]
     for source, sha256 in checks["sources"].items():

@@ -1,0 +1,14 @@
+{
+  "command": [
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+    "--headless",
+    "--path",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+    "--script",
+    "C:\\DEVELOPMENT\\OpenRCsimulator\\tmp\\heli-light-updates\\aero-parse-candidate.gd",
+    "--check-only"
+  ],
+  "before_sha256": "f6abf18a543786ea5d1dbea68c05e382508f454e6a2fed0f7371fcef17543e39",
+  "after_sha256": "d264897bcb685f034cc56cdd7e4488e462814c135f4380666e1eadd51eb1ad13",
+  "change": "One missing tab after else; surrounding concurrent flap changes preserved."
+}

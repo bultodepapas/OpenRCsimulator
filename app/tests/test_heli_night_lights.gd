@@ -14,6 +14,8 @@ func check(label: String,ok: bool) -> void:
 func _initialize() -> void: run.call_deferred()
 func run() -> void:
  _check_canopy_profiles()
+ _check_canopy_triangle_collection()
+ _check_optic_gain_updates()
  check("invalid aircraft has no kit",Lights.attach({})==null)
  var model: Dictionary=Model.build()
  root.add_child(model.root)
@@ -120,3 +122,60 @@ func _check_canopy_profiles() -> void:
  var empty_ok: bool=empty_lines.size()==profiles.size()
  for line: PackedVector3Array in empty_lines: empty_ok=empty_ok and line.is_empty()
  check("empty geometry preserves the requested empty-line count",empty_ok)
+
+func _check_optic_gain_updates() -> void:
+ var body:=Node3D.new()
+ var kit: Node3D=Lights.attach({root=body})
+ var nav: ShaderMaterial=kit.get_node("nav_port").mesh.material
+ check("first daylight update initializes body uniforms to zero",nav.get_shader_parameter("radiance")==0.0 and nav.get_shader_parameter("display_cap")==0.0)
+ kit.update_visual(-.5,.6)
+ var dusk: float=Lights.night_factor(-.5)
+ check("dusk updates both body intensity limits",nav.get_shader_parameter("radiance")==1.2*dusk and nav.get_shader_parameter("display_cap")==.65*dusk)
+ kit.update_visual(-.5000000001,.6)
+ var close_dusk: float=Lights.night_factor(-.5000000001)
+ check("sub-epsilon dusk change still reaches the material",close_dusk!=dusk and nav.get_shader_parameter("radiance")==1.2*close_dusk)
+ kit.set_mode("all"); kit.update_visual(-20,.6,{},0,0,true)
+ kit.set_mode("nav"); kit.update_visual(-20,2000,{},0,0,false)
+ check("unchanged gain preserves mode, exposure and arming updates",kit.get_node("nav_port").visible and not kit.get_node("skid_port").visible and not kit._beacon.visible and kit._landing.light_energy<.001 and nav.get_shader_parameter("radiance")==1.2)
+ kit.set_mode("auto"); kit.update_visual(-.5,.6)
+ var late: MeshInstance3D=kit._add_sprite("late_sprite",Color.WHITE,Vector3.ZERO,.01,true)
+ kit._add_strip("late_strip",PackedVector3Array([Vector3.ZERO,Vector3.RIGHT]),Color.WHITE,Vector3.UP)
+ kit.update_visual(-.5,.6)
+ var strip: ShaderMaterial=kit.get_node("late_strip").mesh.surface_get_material(0)
+ check("late optics receive the unchanged dusk gain",late.mesh.material.get_shader_parameter("radiance")==1.2*dusk and strip.get_shader_parameter("radiance")==Lights.STRIP_RADIANCE*dusk)
+ kit.update_visual(NAN,.6)
+ check("invalid sun clears previously illuminated body materials",not kit.visible and nav.get_shader_parameter("radiance")==0.0)
+ body.free()
+
+func _check_canopy_triangle_collection() -> void:
+ var body:=Node3D.new()
+ var pivot:=Node3D.new()
+ var skin:=MeshInstance3D.new()
+ body.add_child(pivot); pivot.add_child(skin)
+ body.position=Vector3(100,200,300)
+ pivot.transform=Transform3D(Basis.from_euler(Vector3(.2,-.4,.7)).scaled(Vector3(-2,.5,1.3)),Vector3(.1,-.2,.3))
+ skin.transform=Transform3D(Basis.from_euler(Vector3(-.1,.3,.2)).scaled(Vector3(.3,2,1)),Vector3(-.4,.5,-.6))
+ var mesh:=ArrayMesh.new()
+ var points:=PackedVector3Array([Vector3.ZERO,Vector3.RIGHT,Vector3.UP,Vector3(99,99,99)])
+ var arrays: Array=[]
+ arrays.resize(Mesh.ARRAY_MAX)
+ arrays[Mesh.ARRAY_VERTEX]=points
+ arrays[Mesh.ARRAY_INDEX]=PackedInt32Array([2,1,0,0,1,2])
+ mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
+ arrays[Mesh.ARRAY_VERTEX]=PackedVector3Array([Vector3.FORWARD,Vector3.LEFT,Vector3.DOWN])
+ arrays[Mesh.ARRAY_INDEX]=null
+ mesh.add_surface_from_arrays(Mesh.PRIMITIVE_TRIANGLES,arrays)
+ skin.mesh=mesh
+ var original: Array=[var_to_bytes(mesh.surface_get_arrays(0)),var_to_bytes(mesh.surface_get_arrays(1))]
+ var local: Transform3D=pivot.transform*skin.transform
+ var expected:=PackedVector3Array()
+ for index: int in [2,1,0,0,1,2]: expected.append(local*points[index])
+ for point: Vector3 in [Vector3.FORWARD,Vector3.LEFT,Vector3.DOWN]: expected.append(local*point)
+ var actual: PackedVector3Array=Lights._triangles(body,skin)
+ check("canopy extraction preserves indexed order and unindexed surfaces in root coordinates",var_to_bytes(actual)==var_to_bytes(expected))
+ if not actual.is_empty(): actual[0]=Vector3(42,42,42)
+ check("canopy output edits leave source surfaces and subsequent collections independent",original==[var_to_bytes(mesh.surface_get_arrays(0)),var_to_bytes(mesh.surface_get_arrays(1))] and var_to_bytes(Lights._triangles(body,skin))==var_to_bytes(expected))
+ pivot.position.x+=.125
+ var moved: PackedVector3Array=Lights._triangles(body,skin)
+ check("canopy collection immediately reflects a moved parent",not moved.is_empty() and moved[0]==(pivot.transform*skin.transform)*points[2] and moved!=expected)
+ body.free()

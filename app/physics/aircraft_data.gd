@@ -179,9 +179,14 @@ static func validate_and_derive(raw: Dictionary) -> Dictionary:
 ## AV-09 hinged trailing-edge flap module. Raw inputs remain evidence-bearing quantities;
 ## the simulation receives normalized coefficients and a spanwise strip coverage map.
 static func _flaps(errors: PackedStringArray, node: Variant, reference: Dictionary, envelope: Dictionary) -> Dictionary:
+	var strip_ys: PackedFloat64Array = envelope.get("station_ys", PackedFloat64Array())
+	if envelope.is_empty() or strip_ys.size() != Aero.WING_STATIONS_PER_SIDE * 2:
+		errors.append("flaps: simulated flap law requires the validated local wing-strip envelope")
+		return {}
 	if typeof(node) == TYPE_DICTIONARY:
 		_reject_unknown_keys(errors, "flaps", node, ["max_angle_deg", "takeoff_angle_deg", "inner_span_m", "outer_span_m",
-			"hinge_fraction", "extension_time", "retraction_time", "max_speed_mps", "elevator_mix_per_flap_fraction", "aerodynamic_gain"])
+			"hinge_fraction", "extension_time", "retraction_time", "max_speed_mps", "elevator_mix_per_flap_fraction",
+			"effective_angle_limit_deg", "profile_drag_coefficient", "aerodynamic_gain"])
 	var data := _dictionary(errors, "flaps", node)
 	var max_angle = _q(errors, "flaps.max_angle_deg", data.get("max_angle_deg"), "deg", 5.0, 60.0)
 	var takeoff_angle = _q(errors, "flaps.takeoff_angle_deg", data.get("takeoff_angle_deg"), "deg", 0.0, 60.0)
@@ -192,9 +197,12 @@ static func _flaps(errors: PackedStringArray, node: Variant, reference: Dictiona
 	var retraction = _q(errors, "flaps.retraction_time", data.get("retraction_time"), "s", 0.25, 30.0)
 	var max_speed = _q(errors, "flaps.max_speed_mps", data.get("max_speed_mps"), "m/s", 5.0, 100.0)
 	var elevator_mix = _q(errors, "flaps.elevator_mix_per_flap_fraction", data.get("elevator_mix_per_flap_fraction"), "1", 0.0, 0.5)
+	var angle_limit = _q(errors, "flaps.effective_angle_limit_deg", data.get("effective_angle_limit_deg"), "deg", 5.0, 30.0)
+	var profile_drag = _q(errors, "flaps.profile_drag_coefficient", data.get("profile_drag_coefficient"), "1", 0.0, 1.0)
 	var aerodynamic_gain = _q(errors, "flaps.aerodynamic_gain", data.get("aerodynamic_gain"), "1", 0.0, 1.0)
 	if max_angle == null or takeoff_angle == null or inner == null or outer == null or hinge == null \
-			or extension == null or retraction == null or max_speed == null or elevator_mix == null or aerodynamic_gain == null:
+			or extension == null or retraction == null or max_speed == null or elevator_mix == null or angle_limit == null \
+			or profile_drag == null or aerodynamic_gain == null:
 		return {}
 	if max_angle <= 0.0 or takeoff_angle > max_angle:
 		errors.append("flaps: takeoff_angle_deg must be between zero and max_angle_deg")
@@ -203,24 +211,28 @@ static func _flaps(errors: PackedStringArray, node: Variant, reference: Dictiona
 	if errors.size() > 0:
 		return {}
 	var cf: float = 1.0 - float(hinge)
-	var theta := acos(2.0 * cf - 1.0)
-	var effectiveness := 1.0 - (theta - sin(theta)) / PI
+	var theta := M.acos_(2.0 * cf - 1.0)
+	var effectiveness := 1.0 - (theta - M.sin_(theta)) / PI
+	# Glauert thin-airfoil plain-flap relation, applied below to the actual bounded ΔCL.
+	var moment_per_lift := 0.25 * (M.sin_(2.0 * theta) - 2.0 * M.sin_(theta)) / (2.0 * PI * effectiveness)
 	var edges := station_edges(float(reference.b), reference.chords)
-	var chords: PackedFloat64Array = envelope.get("station_chords", PackedFloat64Array())
+	if edges.size() != strip_ys.size() + 1:
+		errors.append("flaps: local wing-strip edge/centre topology is inconsistent")
+		return {}
 	var coverage := PackedFloat64Array()
-	var root_chord := float(reference.S) / float(reference.b) if reference.chords.is_empty() else float(reference.chords[0])
-	var tip_chord := root_chord if reference.chords.is_empty() else float(reference.chords[1])
-	var half_span := float(reference.b) / 2.0
-	var chord_slope := (tip_chord - root_chord) / half_span
+	var root_chord: float = float(reference.S) / float(reference.b) if reference.chords.is_empty() else float(reference.chords[0])
+	var tip_chord: float = root_chord if reference.chords.is_empty() else float(reference.chords[1])
+	var half_span: float = float(reference.b) / 2.0
+	var chord_slope: float = (tip_chord - root_chord) / half_span
 	var chord_area := func(y: float) -> float:
 		return root_chord * y + chord_slope * y * y / 2.0
 	for i in range(edges.size() - 1):
-		var lo := minf(absf(edges[i]), absf(edges[i + 1]))
-		var hi := maxf(absf(edges[i]), absf(edges[i + 1]))
-		var strip_area := chord_area.call(hi) - chord_area.call(lo)
-		var flap_lo := maxf(lo, float(inner))
-		var flap_hi := minf(hi, float(outer))
-		var flap_area := chord_area.call(flap_hi) - chord_area.call(flap_lo) if flap_hi > flap_lo else 0.0
+		var lo: float = minf(absf(edges[i]), absf(edges[i + 1]))
+		var hi: float = maxf(absf(edges[i]), absf(edges[i + 1]))
+		var strip_area: float = float(chord_area.call(hi)) - float(chord_area.call(lo))
+		var flap_lo: float = maxf(lo, float(inner))
+		var flap_hi: float = minf(hi, float(outer))
+		var flap_area: float = float(chord_area.call(flap_hi)) - float(chord_area.call(flap_lo)) if flap_hi > flap_lo else 0.0
 		coverage.append(clampf(flap_area / strip_area, 0.0, 1.0) if strip_area > 0.0 else 0.0)
 	return {
 		max_angle_deg = float(max_angle),
@@ -229,9 +241,12 @@ static func _flaps(errors: PackedStringArray, node: Variant, reference: Dictiona
 		inner_span_m = float(inner), outer_span_m = float(outer),
 		hinge_fraction = float(hinge), chord_fraction = cf,
 		lift_effectiveness = effectiveness,
+		thin_airfoil_moment_per_cl = moment_per_lift,
 		extension_time = float(extension), retraction_time = float(retraction),
 		max_speed_mps = float(max_speed),
 		elevator_mix_per_flap_fraction = float(elevator_mix),
+		effective_angle_limit_deg = float(angle_limit),
+		profile_drag_coefficient = float(profile_drag),
 		aerodynamic_gain = float(aerodynamic_gain),
 		station_coverage = coverage,
 	}
@@ -244,6 +259,7 @@ static func legacy_v1_input(raw: Dictionary) -> Dictionary:
 	out.format = LEGACY_FORMAT
 	out.erase("capabilities")
 	out.erase("convention_id")
+	out.erase("flaps")
 	# Identity metadata belongs to v2; the shared historical numerical parser
 	# keeps its closed propulsion shape and receives only its original inputs.
 	out.erase("physical_identity_version")

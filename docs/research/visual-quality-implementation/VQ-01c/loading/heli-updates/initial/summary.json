@@ -1,0 +1,128 @@
+{
+  "unit": "microseconds per update",
+  "pooled_warm_medians": {
+    "changing_dusk": [
+      37.055,
+      35.59275
+    ],
+    "day": [
+      35.0475,
+      18.4195
+    ],
+    "fixed_dusk": [
+      34.6875,
+      18.3775
+    ],
+    "night": [
+      32.875,
+      18.73625
+    ]
+  },
+  "processes": [
+    {
+      "file": "native-1.json",
+      "medians": {
+        "changing_dusk": [
+          36.99,
+          35.59275
+        ],
+        "day": [
+          32.96325,
+          17.22275
+        ],
+        "fixed_dusk": [
+          36.781,
+          18.3775
+        ],
+        "night": [
+          40.96075,
+          21.87975
+        ]
+      }
+    },
+    {
+      "file": "native-2.json",
+      "medians": {
+        "changing_dusk": [
+          38.64125,
+          42.68525
+        ],
+        "day": [
+          36.80025,
+          19.31875
+        ],
+        "fixed_dusk": [
+          34.54025,
+          18.85925
+        ],
+        "night": [
+          38.5955,
+          20.667
+        ]
+      }
+    },
+    {
+      "file": "native-3.json",
+      "medians": {
+        "changing_dusk": [
+          38.172,
+          39.22
+        ],
+        "day": [
+          37.40175,
+          20.54425
+        ],
+        "fixed_dusk": [
+          38.41875,
+          21.7825
+        ],
+        "night": [
+          32.179,
+          16.61575
+        ]
+      }
+    },
+    {
+      "file": "native-4.json",
+      "medians": {
+        "changing_dusk": [
+          35.25175,
+          35.034
+        ],
+        "day": [
+          35.0475,
+          19.351
+        ],
+        "fixed_dusk": [
+          30.80675,
+          17.24125
+        ],
+        "night": [
+          31.2505,
+          18.307
+        ]
+      }
+    },
+    {
+      "file": "native-5.json",
+      "medians": {
+        "changing_dusk": [
+          30.94875,
+          32.3255
+        ],
+        "day": [
+          27.06475,
+          14.21
+        ],
+        "fixed_dusk": [
+          26.34975,
+          14.2705
+        ],
+        "night": [
+          27.333,
+          13.9205
+        ]
+      }
+    }
+  ]
+}

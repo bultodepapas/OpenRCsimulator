@@ -213,6 +213,21 @@ def _check_v2(data: dict[str, Any], policy: dict[str, Any]) -> None:
         if not isinstance(contacts, list) or len(contacts) != 3 or any(not isinstance(c, dict) or not isinstance(c.get("retraction_path"), dict) for c in contacts):
             raise ValueError("AV-09 requires three declared retraction contact paths")
         expected_capabilities["gear"] = "retractable_tricycle"
+    # AV-09 extends the current Avanti source with a complete flap module.
+    # Historical v1 migration still defaults to not_simulated; this exception
+    # only keeps a reviewed v2 source with explicit flap data idempotent.
+    if data.get("id") == "sebart-avanti-s-a200-p100rx" and data.get("capabilities", {}).get("flaps") == "simulated":
+        flaps = _require_dict(data, "flaps", "flaps")
+        required = {
+            "max_angle_deg", "takeoff_angle_deg", "inner_span_m", "outer_span_m", "hinge_fraction",
+            "extension_time", "retraction_time", "max_speed_mps", "elevator_mix_per_flap_fraction",
+            "effective_angle_limit_deg", "profile_drag_coefficient", "aerodynamic_gain",
+        }
+        if set(flaps) != required:
+            raise ValueError("AV-09 requires its complete flaps module")
+        expected_capabilities["flaps"] = "simulated"
+    elif data.get("id") == "sebart-avanti-s-a200-p100rx" and "flaps" in data:
+        raise ValueError("AV-09 flaps data requires the simulated capability")
     if data.get("capabilities") != expected_capabilities:
         raise ValueError(f"{data.get('id')}: v2 capabilities do not match its explicit existing-model policy")
     if data.get("format") != FORMAT_V2:
@@ -328,6 +343,7 @@ def legacy_input(raw: dict[str, Any]) -> dict[str, Any]:
     data["format"] = FORMAT_V1
     data.pop("convention_id", None)
     data.pop("capabilities", None)
+    data.pop("flaps", None)
     # Authored physical identities are a v2-only module. Keep this compatibility
     # view in the historical v1 shape; callers retain the original v2 object.
     data.pop("physical_identity_version", None)

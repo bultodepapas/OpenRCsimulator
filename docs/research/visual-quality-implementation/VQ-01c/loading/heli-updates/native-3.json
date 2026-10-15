@@ -1,0 +1,294 @@
+{
+	"exact_pairs": 1049,
+	"rows": [
+		{
+			"pair": 0,
+			"usec_per_update": 42.8325,
+			"variant": 0,
+			"workload": "night"
+		},
+		{
+			"pair": 0,
+			"usec_per_update": 25.1145,
+			"variant": 1,
+			"workload": "night"
+		},
+		{
+			"pair": 1,
+			"usec_per_update": 21.90075,
+			"variant": 1,
+			"workload": "night"
+		},
+		{
+			"pair": 1,
+			"usec_per_update": 44.26575,
+			"variant": 0,
+			"workload": "night"
+		},
+		{
+			"pair": 2,
+			"usec_per_update": 41.07775,
+			"variant": 0,
+			"workload": "night"
+		},
+		{
+			"pair": 2,
+			"usec_per_update": 26.14,
+			"variant": 1,
+			"workload": "night"
+		},
+		{
+			"pair": 3,
+			"usec_per_update": 25.85,
+			"variant": 1,
+			"workload": "night"
+		},
+		{
+			"pair": 3,
+			"usec_per_update": 39.524,
+			"variant": 0,
+			"workload": "night"
+		},
+		{
+			"pair": 4,
+			"usec_per_update": 40.19075,
+			"variant": 0,
+			"workload": "night"
+		},
+		{
+			"pair": 4,
+			"usec_per_update": 22.20675,
+			"variant": 1,
+			"workload": "night"
+		},
+		{
+			"pair": 5,
+			"usec_per_update": 24.63525,
+			"variant": 1,
+			"workload": "night"
+		},
+		{
+			"pair": 5,
+			"usec_per_update": 42.26325,
+			"variant": 0,
+			"workload": "night"
+		},
+		{
+			"pair": 0,
+			"usec_per_update": 45.6075,
+			"variant": 0,
+			"workload": "day"
+		},
+		{
+			"pair": 0,
+			"usec_per_update": 25.21475,
+			"variant": 1,
+			"workload": "day"
+		},
+		{
+			"pair": 1,
+			"usec_per_update": 22.488,
+			"variant": 1,
+			"workload": "day"
+		},
+		{
+			"pair": 1,
+			"usec_per_update": 42.44825,
+			"variant": 0,
+			"workload": "day"
+		},
+		{
+			"pair": 2,
+			"usec_per_update": 41.70675,
+			"variant": 0,
+			"workload": "day"
+		},
+		{
+			"pair": 2,
+			"usec_per_update": 25.009,
+			"variant": 1,
+			"workload": "day"
+		},
+		{
+			"pair": 3,
+			"usec_per_update": 25.07525,
+			"variant": 1,
+			"workload": "day"
+		},
+		{
+			"pair": 3,
+			"usec_per_update": 41.55125,
+			"variant": 0,
+			"workload": "day"
+		},
+		{
+			"pair": 4,
+			"usec_per_update": 39.44975,
+			"variant": 0,
+			"workload": "day"
+		},
+		{
+			"pair": 4,
+			"usec_per_update": 21.621,
+			"variant": 1,
+			"workload": "day"
+		},
+		{
+			"pair": 5,
+			"usec_per_update": 20.80125,
+			"variant": 1,
+			"workload": "day"
+		},
+		{
+			"pair": 5,
+			"usec_per_update": 47.4795,
+			"variant": 0,
+			"workload": "day"
+		},
+		{
+			"pair": 0,
+			"usec_per_update": 39.96325,
+			"variant": 0,
+			"workload": "fixed_dusk"
+		},
+		{
+			"pair": 0,
+			"usec_per_update": 26.44275,
+			"variant": 1,
+			"workload": "fixed_dusk"
+		},
+		{
+			"pair": 1,
+			"usec_per_update": 23.206,
+			"variant": 1,
+			"workload": "fixed_dusk"
+		},
+		{
+			"pair": 1,
+			"usec_per_update": 42.0025,
+			"variant": 0,
+			"workload": "fixed_dusk"
+		},
+		{
+			"pair": 2,
+			"usec_per_update": 51.72775,
+			"variant": 0,
+			"workload": "fixed_dusk"
+		},
+		{
+			"pair": 2,
+			"usec_per_update": 23.461,
+			"variant": 1,
+			"workload": "fixed_dusk"
+		},
+		{
+			"pair": 3,
+			"usec_per_update": 29.829,
+			"variant": 1,
+			"workload": "fixed_dusk"
+		},
+		{
+			"pair": 3,
+			"usec_per_update": 47.42325,
+			"variant": 0,
+			"workload": "fixed_dusk"
+		},
+		{
+			"pair": 4,
+			"usec_per_update": 40.962,
+			"variant": 0,
+			"workload": "fixed_dusk"
+		},
+		{
+			"pair": 4,
+			"usec_per_update": 25.122,
+			"variant": 1,
+			"workload": "fixed_dusk"
+		},
+		{
+			"pair": 5,
+			"usec_per_update": 26.18275,
+			"variant": 1,
+			"workload": "fixed_dusk"
+		},
+		{
+			"pair": 5,
+			"usec_per_update": 42.18025,
+			"variant": 0,
+			"workload": "fixed_dusk"
+		},
+		{
+			"pair": 0,
+			"usec_per_update": 45.36925,
+			"variant": 0,
+			"workload": "changing_dusk"
+		},
+		{
+			"pair": 0,
+			"usec_per_update": 48.3385,
+			"variant": 1,
+			"workload": "changing_dusk"
+		},
+		{
+			"pair": 1,
+			"usec_per_update": 42.89825,
+			"variant": 1,
+			"workload": "changing_dusk"
+		},
+		{
+			"pair": 1,
+			"usec_per_update": 43.81025,
+			"variant": 0,
+			"workload": "changing_dusk"
+		},
+		{
+			"pair": 2,
+			"usec_per_update": 48.9415,
+			"variant": 0,
+			"workload": "changing_dusk"
+		},
+		{
+			"pair": 2,
+			"usec_per_update": 44.05025,
+			"variant": 1,
+			"workload": "changing_dusk"
+		},
+		{
+			"pair": 3,
+			"usec_per_update": 40.201,
+			"variant": 1,
+			"workload": "changing_dusk"
+		},
+		{
+			"pair": 3,
+			"usec_per_update": 42.7185,
+			"variant": 0,
+			"workload": "changing_dusk"
+		},
+		{
+			"pair": 4,
+			"usec_per_update": 44.1445,
+			"variant": 0,
+			"workload": "changing_dusk"
+		},
+		{
+			"pair": 4,
+			"usec_per_update": 43.047,
+			"variant": 1,
+			"workload": "changing_dusk"
+		},
+		{
+			"pair": 5,
+			"usec_per_update": 41.22725,
+			"variant": 1,
+			"workload": "changing_dusk"
+		},
+		{
+			"pair": 5,
+			"usec_per_update": 41.505,
+			"variant": 0,
+			"workload": "changing_dusk"
+		}
+	],
+	"valid": true
+}

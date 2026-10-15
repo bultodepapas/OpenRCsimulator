@@ -43,6 +43,8 @@ def project(path, validator, *args, **kwargs):
         maximum = float(metadata['flap_max_angle_deg'])
         initial = float(metadata['recording_start_flap'])
         layout = json.loads(metadata['input_layout'])
+        gear_aux = int(metadata['gear_aux_index']) if 'gear_law' in metadata else None
+        turbulence_aux = int(metadata['turbulence_aux_index']) if 'turbulence_aux_index' in metadata else None
     except (KeyError, ValueError, TypeError) as error:
         raise ValueError('invalid flap metadata') from error
     gear = 'gear_law' in metadata
@@ -54,10 +56,10 @@ def project(path, validator, *args, **kwargs):
             or not math.isfinite(initial) or not 0 <= initial <= 1):
         raise ValueError('invalid flap layout or start state')
     if gear and (base_schema != 'openrc-flight-meta v8'
-                 or aux_index != int(metadata['gear_aux_index']) + 2):
+                 or aux_index != gear_aux + 2):
         raise ValueError('flap state must follow the complete gear pair')
-    if 'turbulence_aux_index' in metadata:
-        if int(metadata['turbulence_aux_index']) != aux_index + 1:
+    if turbulence_aux is not None:
+        if turbulence_aux != aux_index + 1:
             raise ValueError('turbulence must follow the flap state')
     reader = csv.DictReader(lines)
     columns = reader.fieldnames or []

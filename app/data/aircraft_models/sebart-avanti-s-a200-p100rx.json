@@ -20,7 +20,7 @@
   "root_node": "airplane",
   "source_registry": {
     "path": "assets/aircraft/model-bindings.json",
-    "sha256": "a007b27c44b63165588bf5c0782742a0c19fdd4f2e7badf06e4e45696efe640f",
+    "sha256": "1533b885aa0128acef19ca1b9be509db0964ff4ae0fd2faad9e1c4ac9ec78195",
     "hash_mode": "lf_text"
   },
   "geometry": {
@@ -100,7 +100,7 @@
         ]
       },
       "flap_left": {
-        "visual_only": true,
+        "visual_only": false,
         "hinges": [
           {
             "key": "flap_left",
@@ -111,7 +111,7 @@
         ]
       },
       "flap_right": {
-        "visual_only": true,
+        "visual_only": false,
         "hinges": [
           {
             "key": "flap_right",
@@ -167,7 +167,7 @@
     },
     {
       "path": "res://aircraft/imported_model.gd",
-      "sha256": "eb3c482b8e7f63a81babde86ed218e871c817af2ca10b5fbdafd07663b4ccf50",
+      "sha256": "5efe6b1b40d707bbe5e8288819044fccbcc75bccc3984ef37b47ab277bb04295",
       "hash_mode": "lf_text",
       "role": "builder"
     },

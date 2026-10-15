@@ -971,7 +971,7 @@ data = {
         "aircraft and gear-up collision witnesses use the imported Blender geometry; wheel positions and radii are "
         "source-mesh-derived, while gear contact mechanics and actuator/drag values are provisional estimates. Optional "
         "main-wheel brakes are assumed installed; this is not a calibrated physical gear or turbine installation. "
-        "Flaps remain visual-only; gear is retractable_tricycle."
+        "AV-09 models hinged trailing-edge flaps; gear is retractable_tricycle."
     ),
     "frames": {
         "le_frame": "positions in metres from the root wing leading edge beside the fuselage (model z 0) on the root wing mid-plane (model y 0): [x_aft, y_right, z_up]",
@@ -1144,7 +1144,6 @@ if (abs(float(v("flaps.inner_span_m")) - float(g["wing"]["flap_span"][0])) > 1e-
 		or abs(float(v("flaps.outer_span_m")) - float(g["wing"]["flap_span"][1])) > 1e-9
 		or abs(float(v("flaps.hinge_fraction")) - float(g["wing"]["hinge_fraction"])) > 1e-9):
 	raise ValueError("flap span and hinge inputs must match the AV-02 source geometry")
-flap_gain = 0.0 if CLI_ARGS and CLI_ARGS.flap_aero_disabled else float(v("flaps.aerodynamic_gain"))
 flap_gain_quantity = qi("flaps.aerodynamic_gain", "1")
 if CLI_ARGS and CLI_ARGS.flap_aero_disabled:
 	flap_gain_quantity = q(0.0, "1", "derived",
@@ -1159,10 +1158,11 @@ data["flaps"] = {
 	"retraction_time": qi("flaps.retraction_time", "s"),
 	"max_speed_mps": qi("flaps.max_speed_mps", "m/s"),
 	"elevator_mix_per_flap_fraction": qi("flaps.elevator_mix_per_flap_fraction", "1"),
+	"effective_angle_limit_deg": qi("flaps.effective_angle_limit_deg", "deg"),
+	"profile_drag_coefficient": qi("flaps.profile_drag_coefficient", "1"),
 	"aerodynamic_gain": flap_gain_quantity,
 }
-if not CLI_ARGS or not CLI_ARGS.flap_aero_disabled:
-	data["description"] = str(data.get("description", "")).rstrip() + " Hinged trailing-edge flaps use an AV-09 estimated strip-incidence/drag law with manual 20/50-degree settings."
+data["description"] = str(data.get("description", "")).rstrip() + " Hinged trailing-edge flaps use an AV-09 estimated strip-incidence/drag law with manual 20/50-degree settings."
 validate_physical_identity(data)
 text = (json.dumps(data, indent=2, ensure_ascii=False) + "\n").replace("\n", "\r\n")
 rows = ["| Section | Quantity | Value | How |", "| --- | --- | --- | --- |"]
@@ -1282,15 +1282,41 @@ as separate equipment. The simulation assumes optional brakes on both main wheel
 the manual gives no brake torque or actuator cycle time. It routes the existing rudder-to-nosewheel mix to steering rather
 than modeling a separate steering-servo channel.
 
+## Flaps (AV-09)
+
+The SebArt manual (intro PDF, p.4) specifies 0° for normal flight, 20° for start and 50° for landing. AV-02's estimated
+visual hinge and span stations define six-strip coverage. The plain-flap thin-airfoil effectiveness is
+`tau = 1 - (theta_h - sin(theta_h))/pi`, `theta_h = acos(1 - 2*x_h/c)`; the resulting ideal incidence is smoothly
+saturated at the authored {v('flaps.effective_angle_limit_deg'):.0f}° estimate before the area coverage is applied. The local
+finite-wing polar blends attached lift into its measured-proxy stall law; a bounded flap lift increment follows the
+separated fraction, and its induced-drag cost is evaluated from the resulting CL. The estimated profile/hinge drag is
+`CD_profile = {v('flaps.profile_drag_coefficient'):.2f} * flap_coverage * aerodynamic_gain * sin(delta)^2 * max(cos(alpha), 0)`;
+coverage here is the covered fraction of each wing strip's planform reference area, not the flap panel's wetted area.
+Lift increment produces the Glauert thin-airfoil quarter-chord couple
+`dCm/dCL = 0.25*(sin(2*theta_h) - 2*sin(theta_h))/(2*pi*tau)`; it is applied to actual bounded strip ΔCL instead of
+moving the whole wing lift to the aft flap panel. Only the estimated profile drag uses the flap-panel-centre lever.
+Strip ΔCL also changes the horizontal-tail downwash, so the net aircraft pitch response emerges from the coupled wing
+and tail loads and is not fixed to the section-couple sign. This is an estimated plain-flap model, not a measured Avanti
+section polar or flight-identified pitch curve. Full
+extension and retraction each take {v('flaps.extension_time'):.1f} s as an estimated effective slowed installed actuator
+system; the manual publishes no transit time. The {v('flaps.max_speed_mps'):.0f} m/s value is an estimated equivalent-airspeed
+advisory at reference density, not a certified limit and not a simulation clamp. The manual's 8%/20% down-elevator mixes
+are represented by the separate normalized pilot mix, linear in accepted flap fraction; it uses {v('flaps.elevator_mix_per_flap_fraction'):.0%}
+of full elevator travel at maximum flap and derives {v('flaps.takeoff_angle_deg') / v('flaps.max_angle_deg') * v('flaps.elevator_mix_per_flap_fraction'):.0%}
+at the start setting. This manual mix is not a hidden aerodynamic trim correction.
+
+The section basis is the Glauert extension of thin-airfoil theory summarized in [NACA RM L8D09](https://ntrs.nasa.gov/api/citations/20050080791/downloads/20050080791.pdf), pp. 4–7. The moment/lift ratio is also consistent with the thin-airfoil quarter-chord plain-flap result in [NACA Report 938](https://ntrs.nasa.gov/api/citations/19930092003/downloads/19930092003.pdf), p. 8; [NACA RM A51D02](https://ntrs.nasa.gov/api/citations/19930086603/downloads/19930086603.pdf), appendix B, reports a 0.40c incremental lift centre for a 0.30c flap. These are theory/other-airfoil references, not measurements of the Avanti's section. The `aerodynamic_gain=0` generated control retains configuration and actuator but disables flap aerodynamic effects for same-input software sensitivity comparisons; it is not a candidate aircraft calibration.
+
 ## Known simplifications
 
 - Physical mass, aerodynamic, inertia and thrust-line estimates continue to use the AV-02 geometry.json physical surrogate
   (estimated sections); see the inputs' scale factors and sources. The imported Blender model provides the new visual shape,
   gear-up collision probes and source-mesh wheel geometry, but does not calibrate aircraft mass, aero, turbine installation,
   strut compliance, wheel inertia or braking torque.
-- Flaps remain visual-only. Gear paths and wheel radii follow the imported visual model; ground spring/damper behavior,
-  rolling friction, steering limit, brake torque, actuator time and incremental drag are model assumptions that require
-  AV-09 software regression and aircraft-specific physical data before they can be called calibrated.
+- The AV-09 flap law uses the visual-blockout hinge/span, bounded plain-flap section approximation and manual-derived
+  elevator mix; section lift/drag, hinge moments and transit timing are not measured for this aircraft. Gear paths and wheel radii follow
+  imported visual geometry; spring/damper behavior, rolling friction, steering limit, brake torque, actuator time and
+  incremental gear drag remain estimates pending aircraft-specific physical data.
 - Fuel mass fixed at the declared state (no burn, AV-10). The session has a discrete on/off state; it does not model ECU
   ignition/autostart, a physical spool-down transient, restart behavior or flameout dynamics.
 - Fuselage directional destabilization omitted (v1 contract: Cnb equals the fin term), as for every aircraft.

@@ -14,8 +14,8 @@ static func enabled(model: Dictionary) -> bool:
 ## Advance normalized position toward a normalized request. Extension/retraction times
 ## describe the effective installed system's full-scale travel, not naked servo speed.
 static func advance(value: float, target: float, dt: float, config: Dictionary) -> float:
-	var current := clampf(value, 0.0, 1.0)
-	var requested := clampf(target, 0.0, 1.0)
+	var current := clampf(value, 0.0, 1.0) if is_finite(value) else 0.0
+	var requested := clampf(target, 0.0, 1.0) if is_finite(target) else current
 	if not is_finite(dt) or dt <= 0.0 or current == requested:
 		return current
 	var key := "extension_time" if requested > current else "retraction_time"

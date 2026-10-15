@@ -74,23 +74,27 @@ static func sample(track: Dictionary, north: float, east: float) -> Dictionary:
 	var cn := strip[1] * radial_n
 	var ce := strip[1] * radial_e
 	var feature := "dirt_loop" if coverage > 0.0 else ""
-	var technical_n := _band(n, float(track.technical_width_m) * 0.5, shoulder)
-	var technical_e := _band(e, length + radius, shoulder)
-	var technical := technical_n[0] * technical_e[0]
-	if technical > coverage:
-		coverage = technical
-		cn = technical_n[1] * technical_e[0]
-		ce = technical_n[0] * technical_e[1]
-		feature = "wall_slalom"
-	var access: Dictionary = track.access
-	var access_n := _band(north - (float(access.north_min_m) + float(access.north_max_m)) * 0.5, (float(access.north_max_m) - float(access.north_min_m)) * 0.5, shoulder)
-	var access_e := _band(east - float(access.east_m), float(access.width_m) * 0.5, shoulder)
-	var access_mask := access_n[0] * access_e[0]
-	if access_mask > coverage:
-		coverage = access_mask
-		cn = access_n[1] * access_e[0]
-		ce = access_n[0] * access_e[1]
-		feature = "access"
+	# Coverage masks are bounded by one and only a strict increase wins.
+	# Preserve tie precedence and slopes without evaluating losing masks.
+	if coverage < 1.0:
+		var technical_n := _band(n, float(track.technical_width_m) * 0.5, shoulder)
+		var technical_e := _band(e, length + radius, shoulder)
+		var technical := technical_n[0] * technical_e[0]
+		if technical > coverage:
+			coverage = technical
+			cn = technical_n[1] * technical_e[0]
+			ce = technical_n[0] * technical_e[1]
+			feature = "wall_slalom"
+	if coverage < 1.0:
+		var access: Dictionary = track.access
+		var access_n := _band(north - (float(access.north_min_m) + float(access.north_max_m)) * 0.5, (float(access.north_max_m) - float(access.north_min_m)) * 0.5, shoulder)
+		var access_e := _band(east - float(access.east_m), float(access.width_m) * 0.5, shoulder)
+		var access_mask := access_n[0] * access_e[0]
+		if access_mask > coverage:
+			coverage = access_mask
+			cn = access_n[1] * access_e[0]
+			ce = access_n[0] * access_e[1]
+			feature = "access"
 	var height := float(track.pad_height_m) * coverage
 	var dn := float(track.pad_height_m) * cn
 	var de := float(track.pad_height_m) * ce
@@ -128,13 +132,39 @@ static func sample(track: Dictionary, north: float, east: float) -> Dictionary:
 	if turn_value * strip[0] > 0.05: feature = "banked_turn"
 	for group in ["ramps", "rollers"]:
 		for ramp: Dictionary in track[group]:
-			var along := _ramp(east - float(ramp.east_m), float(ramp.approach_m), float(ramp.deck_m), float(ramp.descent_m))
-			if along[0] == 0.0: continue
+			# Same _ramp arithmetic, without a temporary packed array for every
+			# distant obstacle. Keep the exact zero test before cross-band work.
+			var offset := east - float(ramp.east_m)
+			var deck := float(ramp.deck_m)
+			var along_value := 0.0
+			var along_slope := 0.0
+			if offset < -deck * 0.5:
+				var approach := float(ramp.approach_m)
+				var t := (offset + deck * 0.5 + approach) / approach
+				if t <= 0.0: continue
+				if t >= 1.0:
+					along_value = 1.0
+				else:
+					along_value = t * t * (3.0 - 2.0 * t)
+					along_slope = 6.0 * t * (1.0 - t) / approach
+			else:
+				var descent := float(ramp.descent_m)
+				var t := (offset - deck * 0.5) / descent
+				var down_slope := 0.0
+				if t >= 1.0: continue
+				if t <= 0.0:
+					along_value = 1.0
+				else:
+					along_value = 1.0 - t * t * (3.0 - 2.0 * t)
+					down_slope = 6.0 * t * (1.0 - t)
+				# Negate the runtime value to preserve the original signed zero.
+				along_slope = -down_slope / descent
+			if along_value == 0.0: continue
 			var cross := _band(north - float(ramp.north_m), float(ramp.width_m) * 0.5, shoulder)
 			var h := float(ramp.height_m)
-			height += h * along[0] * cross[0]
-			dn += h * along[0] * cross[1]
-			de += h * along[1] * cross[0]
+			height += h * along_value * cross[0]
+			dn += h * along_value * cross[1]
+			de += h * along_slope * cross[0]
 			if cross[0] > 0.0: feature = str(ramp.id)
 	return {"height_m": height, "dn": dn, "de": de, "coverage": coverage, "feature_id": feature}
 

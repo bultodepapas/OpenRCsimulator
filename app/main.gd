@@ -62,7 +62,6 @@ const LatencyPatch = preload("res://input/latency_patch.gd")
 const OverlayManager := preload("res://render/overlays/overlay_manager.gd")
 const WATER_CHECKPOINT_FORMAT := "openrc-visual-water-checkpoint v1"
 const WATER_CHECKPOINT_FIELDS: Array[String] = ["format", "visual", "water_render", "payload_sha256"]
-const FLAP_DETENTS := [0.0, 0.4, 1.0] # SebArt Avanti S: 0°, 20° takeoff, 50° landing.
 
 ## [Esc] outside the calibration wizard: the pilot asks for the pause menu (app_root owns menus; without one, nothing).
 signal pause_requested
@@ -853,16 +852,13 @@ func _update_hud() -> void:
 			lines.append(gear_line)
 		var flaps: Dictionary = session.flap_state()
 		if bool(flaps.get("available", false)):
-			var requested_pct := float(flaps.get("requested", 0.0)) * 100.0
 			var actual_deg := float(flaps.get("angle_deg", 0.0))
 			var target_deg := float(flaps.get("target_deg", 0.0))
-			var flap_line := tr("Flaps: %.0f%% requested · %.1f° actual / %.1f° target") % [requested_pct, actual_deg, target_deg]
+			var flap_line := tr("Flaps: %.1f° actual → %.1f° target") % [actual_deg, target_deg]
 			var flap_limit := float(flaps.get("limit_mps", NAN))
-			if is_finite(flap_limit) and flap_limit > 0.0:
-				flap_line += tr(" · estimated limit %.0f m/s (advisory)") % flap_limit
 			lines.append(flap_line)
 			if bool(flaps.get("overspeed", false)) and is_finite(flap_limit) and flap_limit > 0.0:
-				lines.append(tr("Flaps overspeed advisory: above the estimated limit of %.0f m/s; no automatic retraction.") % flap_limit)
+				lines.append(tr("Flaps above estimated speed limit: %.0f m/s EAS") % flap_limit)
 		else:
 			lines.append(tr("Flaps are unavailable on this aircraft."))
 		if not session.weather_is_calm():
@@ -1066,16 +1062,26 @@ func controller_action(action: String) -> bool:
 		_: return false
 	return true
 
+## Keyboard detents follow the active model's full-down angle and recommended takeoff fraction.
+func _flap_detents() -> Array[float]:
+	var takeoff_fraction: float = float(session.aircraft.model.flaps.get("takeoff_fraction", 0.4))
+	var detents: Array[float] = [0.0]
+	if takeoff_fraction > 0.0 and takeoff_fraction < 1.0:
+		detents.append(takeoff_fraction)
+	detents.append(1.0)
+	return detents
+
 
 func _flap_detent_after(requested: float, direction: int) -> float:
+	var detents := _flap_detents()
 	var nearest := 0
 	var distance := INF
-	for i in FLAP_DETENTS.size():
-		var candidate_distance := absf(requested - float(FLAP_DETENTS[i]))
+	for i in detents.size():
+		var candidate_distance := absf(requested - detents[i])
 		if candidate_distance < distance:
 			nearest = i
 			distance = candidate_distance
-	return float(FLAP_DETENTS[posmod(nearest + direction, FLAP_DETENTS.size())])
+	return detents[posmod(nearest + direction, detents.size())]
 
 
 func _request_flaps_amount(amount: float) -> bool:

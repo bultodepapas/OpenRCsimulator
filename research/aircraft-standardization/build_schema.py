@@ -178,6 +178,8 @@ def add_v2_overlay(schema: dict, spec: dict):
         "retraction_time": flap_quantity("s", 0.25, 30),
         "max_speed_mps": flap_quantity("m/s", 5, 100),
         "elevator_mix_per_flap_fraction": flap_quantity("1", 0, 0.5),
+        "effective_angle_limit_deg": flap_quantity("deg", 5, 30),
+        "profile_drag_coefficient": flap_quantity("1", 0, 1),
         # A generated zero value is used only as a paired software sensitivity control.
         "aerodynamic_gain": flap_quantity("1", 0, 1),
     }

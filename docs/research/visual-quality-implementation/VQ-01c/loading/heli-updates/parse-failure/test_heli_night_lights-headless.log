@@ -1,0 +1,177 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Could not preload resource script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:20)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:20)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "Aero" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://physics/aircraft_data.gd:20)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:653)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:681)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:1787)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://physics/ground_surfaces.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://physics/rotorcraft/ground_start.gd:0)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/dynamics.gd:10)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "Aero" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://physics/dynamics.gd:10)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "aero_loads" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://physics/dynamics.gd:84)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "total" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://physics/dynamics.gd:95)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://physics/trim.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://sim/scenarios.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://input/commands.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://sim/helicopter_flight_session.gd:0)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:345)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "Aero" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://sim/flight_session.gd:345)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "deflections" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://sim/flight_session.gd:1116)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3180)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3348)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3349)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3374)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3375)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3457)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3457)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3524)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3524)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://app_state/preferences.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://helicopter_main.gd:0)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://tests/test_heli_night_lights.gd:0)
+ERROR: Failed to load script "res://tests/test_heli_night_lights.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+HELI night update mean us: 24.819
+SCRIPT ERROR: Invalid call. Nonexistent function '_q' in base 'GDScript'.
+   at: validate (res://physics/ground_surfaces.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] validate (res://physics/ground_surfaces.gd:48)
+       [1] load_table (res://physics/ground_surfaces.gd:30)
+       [2] _surface_rects (res://scenery/botanical_habitats.gd:245)
+       [3] layout (res://scenery/botanical_habitats.gd:92)
+       [4] build (res://scenery/botanical_habitats.gd:140)
+       [5] build (res://scenery/scenery.gd:387)
+       [6] attach (res://scenery/scenery.gd:171)
+       [7] build (res://render/field.gd:82)
+       [8] build (res://render/world/world.gd:262)
+       [9] _init (res://ui/home_scene.gd:92)
+       [10] run (res://tests/test_heli_night_lights.gd:82)
+SCRIPT ERROR: Invalid call. Nonexistent function '_q' in base 'GDScript'.
+   at: validate (res://physics/ground_surfaces.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] validate (res://physics/ground_surfaces.gd:48)
+       [1] load_table (res://physics/ground_surfaces.gd:30)
+       [2] attach (res://render/lake/lake_world.gd:51)
+       [3] build (res://render/field.gd:83)
+       [4] build (res://render/world/world.gd:262)
+       [5] _init (res://ui/home_scene.gd:92)
+       [6] run (res://tests/test_heli_night_lights.gd:82)
+SCRIPT ERROR: Invalid access to property or key 'ok' on a base object of type 'Dictionary'.
+   at: attach (res://render/lake/lake_world.gd:52)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://render/lake/lake_world.gd:52)
+       [1] build (res://render/field.gd:83)
+       [2] build (res://render/world/world.gd:262)
+       [3] _init (res://ui/home_scene.gd:92)
+       [4] run (res://tests/test_heli_night_lights.gd:82)
+SCRIPT ERROR: Invalid call. Nonexistent function 'load_file' in base 'GDScript'.
+   at: build (res://render/airplane.gd:73)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:73)
+       [1] show_aircraft (res://ui/home_scene.gd:132)
+       [2] run (res://tests/test_heli_night_lights.gd:86)
+FAIL cached helicopter is hidden
+HELI night lights: 39 checks, 1 failed
+ERROR: Pages in use exist at exit in PagedAllocator: N20RasterizerSceneDummy21GeometryInstanceDummyE
+   at: ~PagedAllocator (./core/templates/paged_allocator.h:170)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storageERROR: 15 RID allocations of type 'N13RendererDummy15MaterialStorage13DummyMaterialE' were leaked at exit.
+ERROR: 3 RID allocations of type 'N13RendererDummy15MaterialStorage11DummyShaderE' were leaked at exit.
+ERROR: 31 RID allocations of type 'N13RendererDummy9DummyMeshE' were leaked at exit.
+ERROR: 32 RID allocations of type 'N17RendererSceneCull8InstanceE' were leaked at exit.
+/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: Leaked instance dependency: Bug - did not call instance_notify_deleted when freeing.
+   at: ~Dependency (servers/rendering/storage/utilities.cpp:56)
+WARNING: 97 ObjectDB instances were leaked at exit (run with `--verbose` for details).
+   at: cleanup (core/object/object.cpp:2536)

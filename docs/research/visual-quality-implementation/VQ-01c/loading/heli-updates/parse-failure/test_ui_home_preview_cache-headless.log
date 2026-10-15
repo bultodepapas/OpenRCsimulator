@@ -1,0 +1,133 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+SCRIPT ERROR: Parse Error: Could not preload resource script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:20)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:20)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "Aero" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://physics/aircraft_data.gd:20)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:653)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:681)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://physics/aircraft_data.gd:1787)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://render/airplane.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:345)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "Aero" constant because the value doesn't have a set type.
+   at: GDScript::reload (res://sim/flight_session.gd:345)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Cannot infer the type of "deflections" variable because the value doesn't have a set type.
+   at: GDScript::reload (res://sim/flight_session.gd:1116)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3180)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3348)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3349)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3374)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3375)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3457)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3457)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3524)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Parse Error: Could not resolve script "res://physics/aero.gd".
+   at: GDScript::reload (res://sim/flight_session.gd:3524)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://app_state/preferences.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Compile Error: Failed to compile depended scripts.
+   at: GDScript::reload (res://ui/home_scene.gd:0)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+ERROR: Failed to load script "res://ui/home_scene.gd" with error "Compilation failed".
+   at: load (modules/gdscript/gdscript_resource_format.cpp:46)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:8)
+SCRIPT ERROR: Invalid call. Nonexistent function '_q' in base 'GDScript'.
+   at: validate (res://physics/ground_surfaces.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] validate (res://physics/ground_surfaces.gd:48)
+       [1] load_table (res://physics/ground_surfaces.gd:30)
+       [2] _surface_rects (res://scenery/botanical_habitats.gd:245)
+       [3] layout (res://scenery/botanical_habitats.gd:92)
+       [4] build (res://scenery/botanical_habitats.gd:140)
+       [5] build (res://scenery/scenery.gd:387)
+       [6] attach (res://scenery/scenery.gd:171)
+       [7] build (res://render/field.gd:82)
+       [8] build (res://render/world/world.gd:262)
+       [9] _init (res://ui/home_scene.gd:92)
+       [10] _run (res://tests/test_ui_home_preview_cache.gd:11)
+SCRIPT ERROR: Invalid call. Nonexistent function '_q' in base 'GDScript'.
+   at: validate (res://physics/ground_surfaces.gd:48)
+   GDScript backtrace (most recent call first):
+       [0] validate (res://physics/ground_surfaces.gd:48)
+       [1] load_table (res://physics/ground_surfaces.gd:30)
+       [2] attach (res://render/lake/lake_world.gd:51)
+       [3] build (res://render/field.gd:83)
+       [4] build (res://render/world/world.gd:262)
+       [5] _init (res://ui/home_scene.gd:92)
+       [6] _run (res://tests/test_ui_home_preview_cache.gd:11)
+SCRIPT ERROR: Invalid access to property or key 'ok' on a base object of type 'Dictionary'.
+   at: attach (res://render/lake/lake_world.gd:52)
+   GDScript backtrace (most recent call first):
+       [0] attach (res://render/lake/lake_world.gd:52)
+       [1] build (res://render/field.gd:83)
+       [2] build (res://render/world/world.gd:262)
+       [3] _init (res://ui/home_scene.gd:92)
+       [4] _run (res://tests/test_ui_home_preview_cache.gd:11)
+SCRIPT ERROR: Invalid call. Nonexistent function 'load_file' in base 'GDScript'.
+   at: build (res://render/airplane.gd:73)
+   GDScript backtrace (most recent call first):
+       [0] build (res://render/airplane.gd:73)
+       [1] show_aircraft (res://ui/home_scene.gd:132)
+       [2] _init (res://ui/home_scene.gd:95)
+       [3] _run (res://tests/test_ui_home_preview_cache.gd:11)
+SCRIPT ERROR: Invalid access to property or key 'root' on a base object of type 'Dictionary'.
+   at: _run (res://tests/test_ui_home_preview_cache.gd:14)
+   GDScript backtrace (most recent call first):
+       [0] _run (res://tests/test_ui_home_preview_cache.gd:14)

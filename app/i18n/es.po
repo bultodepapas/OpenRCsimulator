@@ -1832,14 +1832,11 @@ msgstr "Los flaps no están disponibles en este avión."
 msgid "Flaps are controlled by the radio AUX input."
 msgstr "Los flaps se controlan con la entrada AUX de la radio."
 
-msgid "Flaps: %.0f%% requested · %.1f° actual / %.1f° target"
-msgstr "Flaps: %.0f%% solicitados · %.1f° reales / %.1f° objetivo"
+msgid "Flaps: %.1f° actual → %.1f° target"
+msgstr "Flaps: %.1f° reales → %.1f° objetivo"
 
-msgid " · estimated limit %.0f m/s (advisory)"
-msgstr " · límite estimado %.0f m/s (recomendación)"
-
-msgid "Flaps overspeed advisory: above the estimated limit of %.0f m/s; no automatic retraction."
-msgstr "Aviso de exceso de velocidad con flaps: se supera el límite estimado de %.0f m/s; no se retraen automáticamente."
+msgid "Flaps above estimated speed limit: %.0f m/s EAS"
+msgstr "Flaps por encima del límite de velocidad estimado: %.0f m/s EAS"
 
 msgid "Requested %.0f%% · actual %.1f°"
 msgstr "Solicitados %.0f%% · reales %.1f°"
@@ -2564,9 +2561,6 @@ msgstr "Flaps: posición siguiente (Mayús+F anterior)"
 
 msgid "This aircraft"
 msgstr "Este avión"
-
-msgid "Not simulated"
-msgstr "No simulado"
 
 msgid "Not available"
 msgstr "No disponible"

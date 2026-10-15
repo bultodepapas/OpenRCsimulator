@@ -1,0 +1,102 @@
+{
+  "baseline_path": "res://../research/rc-monster-truck/monster-car-2/rcv40/baseline_track.gd",
+  "benchmark": {
+    "global_mixed": {
+      "baseline_elapsed_us": [
+        25435.0,
+        27680.0,
+        29946.0,
+        26165.0,
+        26240.0
+      ],
+      "baseline_median_us": 26240.0,
+      "calls_per_timed_pass": 3000,
+      "candidate_elapsed_us": [
+        19364.0,
+        20435.0,
+        20615.0,
+        22214.0,
+        21666.0
+      ],
+      "candidate_median_us": 20615.0,
+      "candidate_over_baseline": 0.7856326219512195,
+      "order_by_round": [
+        "baseline,candidate",
+        "candidate,baseline",
+        "baseline,candidate",
+        "candidate,baseline",
+        "baseline,candidate"
+      ],
+      "points_per_pass": 3000,
+      "rounds_each": 5,
+      "warmup_calls_each": 200
+    },
+    "inside_course_lane": {
+      "baseline_elapsed_us": [
+        47963.0,
+        39127.0,
+        38569.0,
+        40500.0,
+        39139.0
+      ],
+      "baseline_median_us": 39139.0,
+      "calls_per_timed_pass": 3000,
+      "candidate_elapsed_us": [
+        25678.0,
+        22622.0,
+        22435.0,
+        19982.0,
+        20121.0
+      ],
+      "candidate_median_us": 22435.0,
+      "candidate_over_baseline": 0.5732134188405427,
+      "order_by_round": [
+        "baseline,candidate",
+        "candidate,baseline",
+        "baseline,candidate",
+        "candidate,baseline",
+        "baseline,candidate"
+      ],
+      "points_per_pass": 3000,
+      "rounds_each": 5,
+      "warmup_calls_each": 200
+    }
+  },
+  "benchmark_input_sha256": {
+    "global_mixed": "93e7a7ee05a19adf7274b6a9373626e62a773b5563a277ad5ce6423f7efef922",
+    "inside_course_lane": "b02be0c228d64feea205c7119fe8ee60e0d716ee78a14134d5b28ed722a186ab"
+  },
+  "candidate_path": "res://physics/ground_vehicle/airfield_track.gd",
+  "case_input_sha256": {
+    "default": "48fc15e0cc58e234132f1b7e704518525227822e7e05a240c27dc254b17d6c4f",
+    "empty_track_stable": "c90365bebad270461a46829d491a24a46d12c828e5a408617c4c30032b7d96f0",
+    "modified_valid_features": "292135d85d787aa190d0f61b775485899c047c8ba23fc3417c45dcafe41b191c",
+    "shifted_valid_geometry": "05f2c7ed3140d96efe87ed6a2b7569a0abc7ef91f00054d1596403f5398b9c41",
+    "valid_no_jumps": "db82f186e5db0f2dbe955f61292b16160aa64a8876cfced573e4e2c461f8ae59"
+  },
+  "case_point_counts": {
+    "default": 11656,
+    "empty_track_stable": 6,
+    "modified_valid_features": 11656,
+    "shifted_valid_geometry": 11597,
+    "valid_no_jumps": 10681
+  },
+  "complete": true,
+  "debug_build": true,
+  "difference_count": 0,
+  "differences": [],
+  "engine": "4.7.2-stable (official)",
+  "exact_comparisons": 45596,
+  "exact_result_encoding": "var_to_bytes(Dictionary)",
+  "format": "openrc-rcv40-track-sampler-benchmark-v1",
+  "processor": "AMD Ryzen 9 5900X 12-Core Processor",
+  "source_sha256": {
+    "baseline": "08efe15de45136ce066b2c212163ef41e36199f662baa5eb6bbcc8e640e4bd30",
+    "candidate": "e741a808b42028057308a6e7f2fb22b47cf9f55523a6a58fcca87cf6086dbef2",
+    "harness": "1956c3675f5e9d1a47bae4eb73d6bc9bb84f4309763e1bf9b140cb9f5e8bf30c",
+    "production": "e741a808b42028057308a6e7f2fb22b47cf9f55523a6a58fcca87cf6086dbef2",
+    "track_data": "b178c5c22dd77160a48bd72d2e473f52e66a65c52843d25770b224f6cebbba81"
+  },
+  "track_data_sha256": "b178c5c22dd77160a48bd72d2e473f52e66a65c52843d25770b224f6cebbba81",
+  "track_id": "bisonte-dirt-circuit"
+}

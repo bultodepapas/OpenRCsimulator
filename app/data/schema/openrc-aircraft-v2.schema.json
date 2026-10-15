@@ -2275,8 +2275,185 @@
         "flaps": {
           "type": "string",
           "enum": [
-            "not_simulated"
+            "not_simulated",
+            "simulated"
           ]
+        }
+      },
+      "additionalProperties": false
+    },
+    "flaps": {
+      "type": "object",
+      "required": [
+        "max_angle_deg",
+        "takeoff_angle_deg",
+        "inner_span_m",
+        "outer_span_m",
+        "hinge_fraction",
+        "extension_time",
+        "retraction_time",
+        "max_speed_mps",
+        "elevator_mix_per_flap_fraction",
+        "effective_angle_limit_deg",
+        "profile_drag_coefficient",
+        "aerodynamic_gain"
+      ],
+      "properties": {
+        "max_angle_deg": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 5,
+              "maximum": 60
+            },
+            "unit": {
+              "const": "deg"
+            }
+          }
+        },
+        "takeoff_angle_deg": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 60
+            },
+            "unit": {
+              "const": "deg"
+            }
+          }
+        },
+        "inner_span_m": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        },
+        "outer_span_m": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 2
+            },
+            "unit": {
+              "const": "m"
+            }
+          }
+        },
+        "hinge_fraction": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.5,
+              "maximum": 0.95
+            },
+            "unit": {
+              "const": "1"
+            }
+          }
+        },
+        "extension_time": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.25,
+              "maximum": 30
+            },
+            "unit": {
+              "const": "s"
+            }
+          }
+        },
+        "retraction_time": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.25,
+              "maximum": 30
+            },
+            "unit": {
+              "const": "s"
+            }
+          }
+        },
+        "max_speed_mps": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 5,
+              "maximum": 100
+            },
+            "unit": {
+              "const": "m/s"
+            }
+          }
+        },
+        "elevator_mix_per_flap_fraction": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 0.5
+            },
+            "unit": {
+              "const": "1"
+            }
+          }
+        },
+        "effective_angle_limit_deg": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 5,
+              "maximum": 30
+            },
+            "unit": {
+              "const": "deg"
+            }
+          }
+        },
+        "profile_drag_coefficient": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "unit": {
+              "const": "1"
+            }
+          }
+        },
+        "aerodynamic_gain": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "unit": {
+              "const": "1"
+            }
+          }
         }
       },
       "additionalProperties": false
@@ -5029,6 +5206,31 @@
         "not": {
           "required": [
             "landing_gear"
+          ]
+        }
+      }
+    },
+    {
+      "if": {
+        "properties": {
+          "capabilities": {
+            "properties": {
+              "flaps": {
+                "const": "simulated"
+              }
+            }
+          }
+        }
+      },
+      "then": {
+        "required": [
+          "flaps"
+        ]
+      },
+      "else": {
+        "not": {
+          "required": [
+            "flaps"
           ]
         }
       }

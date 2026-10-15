@@ -66,11 +66,11 @@ const JET_DETAIL_SHOTS: Array[Dictionary] = [
 	},
 	{
 		"id": "tail",
-		"target": [0.0, 0.10, 0.71],
-		"azimuth_degrees": 145.0,
+		"target": [0.0, 0.10, 0.83],
+		"azimuth_degrees": 128.0,
 		"elevation_degrees": 18.0,
-		"radius_m": 1.65,
-		"fov_degrees": 35.0,
+		"radius_m": 1.28,
+		"fov_degrees": 34.0,
 	},
 ]
 
