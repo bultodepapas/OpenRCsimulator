@@ -3,6 +3,7 @@ extends SceneTree
 const Session = preload("res://sim/ground_vehicle/session.gd")
 const Vehicle = preload("res://physics/ground_vehicle/vehicle_dynamics.gd")
 const Damage = preload("res://physics/ground_vehicle/vehicle_damage.gd")
+const SimEnvironment = preload("res://sim/environment.gd")
 const NEUTRAL := {"throttle":0.0, "steering":0.0, "brake":0.0, "reverse":false, "armed":true}
 var checks := 0
 var failures := 0
@@ -12,13 +13,37 @@ var failures := 0
 class ImpactSession extends Session:
 	var entry_speed := 8.0
 	var barrier := true
-	func _make_road(_course_value: Dictionary) -> Callable:
-		return func(_north: float, _east: float) -> Dictionary:
-			return {"height_m":0.0, "normal_ned":PackedFloat64Array([0.0,0.0,-1.0]),
-				"mu":0.85, "rolling":1.0, "surface_id":"asphalt", "walls": [{
-					"id":"impact-fixture", "north_min_m":4.0, "north_max_m":4.5,
-					"east_min_m":-5.0, "east_max_m":5.0, "bottom_up_m":0.0,
-					"top_up_m":1.0, "mu":0.5}] if barrier else []}
+	func _make_road(course_value: Dictionary) -> Callable:
+		var course_road: Callable = SimEnvironment.course_road(course_value)
+		return func(north: float, east: float) -> Dictionary:
+			var sample: Dictionary = course_road.call(north, east)
+			sample["walls"] = [{"id":"impact-fixture", "north_min_m":4.0,
+				"north_max_m":4.5, "east_min_m":-5.0, "east_max_m":5.0,
+				"bottom_up_m":0.0, "top_up_m":1.0, "mu":0.5}] if barrier else []
+			return sample
+
+	func _stage_session(vehicle_result: Dictionary, course_result: Dictionary, requested_spawn: String,
+			baseline_vehicle_result: Dictionary, pose_up_delta_m: float) -> Dictionary:
+		var staged: Dictionary = super._stage_session(vehicle_result, course_result, requested_spawn,
+			baseline_vehicle_result, pose_up_delta_m)
+		if not bool(staged.get("ok", false)):
+			return staged
+		var road: Callable = _make_road(staged.course)
+		var spawn_result: Dictionary = _find_spawn(staged.course, str(staged.spawn_id))
+		if not bool(spawn_result.get("ok", false)):
+			return {"ok": false, "errors": PackedStringArray([str(spawn_result.get("error", "fixture spawn is invalid"))])}
+		var initial: PackedFloat64Array = _make_spawn_state(staged.model, staged.course,
+			spawn_result.pose, road, pose_up_delta_m)
+		if not _state_is_valid_for_model(initial, staged.model):
+			return {"ok": false, "errors": PackedStringArray(["fixture spawn state is invalid"])}
+		var telemetry: Dictionary = _telemetry_for_model(initial, staged.model, road, _neutral_controls())
+		if not _telemetry_is_valid_for_model(telemetry, staged.model):
+			return {"ok": false, "errors": PackedStringArray([str(telemetry.get("error", "fixture spawn telemetry is invalid"))])}
+		staged.road = road
+		staged.initial_state = initial
+		staged.telemetry = telemetry
+		return staged
+
 	func _make_spawn_state(model: Dictionary, _course_value: Dictionary, _pose: Dictionary,
 			road: Callable, _pose_up_delta_m: float) -> PackedFloat64Array:
 		var initialized: Dictionary = VehicleDynamics.initialize(model, road, 0.0, 0.0)
