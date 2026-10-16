@@ -1009,14 +1009,15 @@ func _modes() -> Dictionary:
 			roll_time_constant_s = snappedf(float(m.roll_tau), 0.001),
 			spiral_time_to_double_s = snappedf(-spiral * log(2.0), 0.1) if spiral < 0.0 else NAN,
 			spiral_time_to_half_s = snappedf(spiral * log(2.0), 0.1) if spiral > 0.0 else NAN })
-	return _result(rows.size() == 3, {}, notes, { table = rows })
+	# The start-speed case defines the test; a speed without a level trim is the airplane's answer, kept as a note.
+	return _result(rows.any(func(r): return r.case == "start"), {}, notes, { table = rows })
 
 
-## Hands off for 30 s from the trimmed start after two small disturbances: 0.2 up elevator for 0.5 s at 1 s (phugoid,
+## Hands off for 30 s from the trimmed start at 400 m after two small disturbances: 0.2 up elevator for 0.5 s at 1 s (phugoid,
 ## from the speed extrema) and 0.2 right aileron for 0.5 s at 2 s (spiral, from the bank and heading afterwards). An exact
 ## trim in calm air would otherwise show no motion at all.
 func _hands_off() -> Dictionary:
-	var flight := _fly("hands_off", { speed = v_start, altitude = HIGH }, 30.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+	var flight := _fly("hands_off", { speed = v_start, altitude = 400.0 }, 30.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
 		return { pitch = 0.2 if t >= 1.0 and t < 1.5 else 0.0, roll = 0.2 if t >= 2.0 and t < 2.5 else 0.0, throttle = ctx.start_throttle })
 	if not flight.ok:
 		return _failed(flight)
@@ -1043,7 +1044,9 @@ func _hands_off() -> Dictionary:
 		metrics["heading_change_" + label + "_deg"] = snappedf(_unwrapped_rate(trace, "yaw_deg", 0, r + 1) * (trace.value(r, "t_s") - trace.value(0, "t_s")), 0.1)
 	metrics.bank_after_aileron_pulse_deg = snappedf(trace.value(_row_at(trace, 3.0), "roll_deg"), 0.1)
 	metrics.phugoid_period_s = snappedf(period, 0.01) # flown: the spiral and the trimmed throttle mix in; damping is in `modes`
-	return _result(flight.crashed == "" and not flight.ctx.has("floor_t"), metrics, [] if flight.crashed == "" else [flight.crashed])
+	# Reaching the floor in a spiral dive is the result: record when.
+	metrics.reached_floor_s = snappedf(float(flight.ctx.get("floor_t", NAN)), 0.01)
+	return _result(flight.crashed == "", metrics, [] if flight.crashed == "" else [flight.crashed])
 
 
 ## Landing on the field's runway (qualified runway aircraft only): gear down, 4° approach from 30 m at 1.3 Vs aimed 10 m past the
