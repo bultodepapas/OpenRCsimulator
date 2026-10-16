@@ -1,0 +1,278 @@
+{
+  "format": "openrc-stable-rudder-baseline-receipt v1",
+  "recorded_on": "2026-10-16",
+  "scope": "diagnostic baseline and exact software replay; not physical qualification",
+  "source": {
+    "commit": "f1ee9e7851ef2508e65fc6d90e8dae13c3705a03",
+    "short_commit": "f1ee9e78",
+    "tree": "cd3ee0c185508b9d43dc727abb54bd1ee8766f52",
+    "original_workspace": "D:\\OpenRC-release-v012-temp\\stable-rudder-baseline-f1ee9e78",
+    "aircraft_input_sha256_windows_checkout_bytes": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
+    "aircraft_git_blob_sha256": "8d493a9e05fdeff059a98c83c5e99bb875703930e98eb65c71bfb3348f629838",
+    "aircraft_checkout_eol": "CRLF per repository attributes",
+    "solver_sha256": "5d70fa999ce9a328f7d8d8f7f8434d0f81be577af2994c6a9f04193b92353fed"
+  },
+  "engine": {
+    "version": "4.7.2.stable.official.ed1daf0bf",
+    "reported_build": "Godot 4.7.2-stable (official)",
+    "binary_name": "Godot_v4.7.2-stable_win64_console.exe",
+    "binary_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+  },
+  "acceptance_screen": {
+    "estimated_software_limit_abs_r_deg_s": 15.0,
+    "samples_at_3_seconds": [
+      {
+        "recording": "flights/rudder-240hz-3s-right.orfl",
+        "rate_hz": 240,
+        "tick": 720,
+        "time_s": 3.0,
+        "r_radps": -0.2639858149855952,
+        "r_deg_s": -15.125273049996006,
+        "exceedance_deg_s_over_abs_15_screen": 0.12527304999600553
+      },
+      {
+        "recording": "flights/rudder-480hz-3s-right.orfl",
+        "rate_hz": 480,
+        "tick": 1440,
+        "time_s": 3.0,
+        "r_radps": -0.26530079496647163,
+        "r_deg_s": -15.20061585304442,
+        "exceedance_deg_s_over_abs_15_screen": 0.20061585304441998
+      }
+    ],
+    "result": "still fails at both rates; no coefficient or threshold changed",
+    "twelve_second_recordings": "diagnostic extension only; not an acceptance result"
+  },
+  "replay_verification": {
+    "successful_exports": 4,
+    "successful_matched_rate_replays": 4,
+    "all_complete": true,
+    "all_solver_changed_false": true,
+    "all_status_ok": true,
+    "all_comparisons_exact": true,
+    "all_export_csvs_byte_equal_matched_replay_csvs": true,
+    "negative_control": {
+      "report": "replays/negative-control/rudder-480hz-rejected-at-240hz.json",
+      "sha256": "8a9bb3a01ee23d0f6bac1209ffb527c4658fbc549f283fbfbce2aab9366bb1d4",
+      "status": "error",
+      "complete": true,
+      "solver_changed": false,
+      "error": "Physics tick rate differs.",
+      "expected": "480 Hz input correctly rejected when replayed at 240 Hz"
+    },
+    "cases": [
+      {
+        "recording": "flights/rudder-240hz-12s-left.orfl",
+        "recording_sha256": "f8c12be37945852be110734101d6656b957c125209520b45e855fe2522c1a699",
+        "rate_hz": 240,
+        "duration_s": 12.0,
+        "ticks": 2880,
+        "export_report": "exports/rudder-240hz-12s-left/export.json",
+        "export_report_sha256": "9c07b6eeabb11483dc3d5c5a374a6e474167504d872ce25c9f630973cf154270",
+        "export_csv": "exports/rudder-240hz-12s-left/flight.csv",
+        "export_csv_sha256": "077cb473c78ba87487900d63c7ea287ccc22e7aef3d12be1a9c459de083566eb",
+        "matched_replay_report": "replays/rudder-240hz-12s-left-exact.json",
+        "matched_replay_report_sha256": "1347bff3d1aed7d722b42cc34f68a67046ca194e22cc01f62c6b363fb5284909",
+        "matched_replay_csv_sha256_not_copied": "077cb473c78ba87487900d63c7ea287ccc22e7aef3d12be1a9c459de083566eb",
+        "comparison_report": "comparisons/rudder-240hz-12s-left-comparison.json",
+        "comparison_report_sha256": "1dcdd46a2bf4ac003a3156a1f99429d221584ba66aabacf1b45230b18c015b85",
+        "complete": true,
+        "solver_changed": false,
+        "status": "ok",
+        "comparison_first_divergence": null,
+        "comparison_all_max_abs_and_rmse_zero": true
+      },
+      {
+        "recording": "flights/rudder-240hz-12s-right.orfl",
+        "recording_sha256": "526c492e966831101ed5602ec1c1e2ec30927623640fceeaa4bebd4919f60140",
+        "rate_hz": 240,
+        "duration_s": 12.0,
+        "ticks": 2880,
+        "export_report": "exports/rudder-240hz-12s-right/export.json",
+        "export_report_sha256": "9a2ec208d7c829495747a788fff6182e77df1a0902c8c92bbce49b4042e0a011",
+        "export_csv": "exports/rudder-240hz-12s-right/flight.csv",
+        "export_csv_sha256": "092defd4e864343590ad076a65a773e73804fdff0a36da933874fda7c354e598",
+        "matched_replay_report": "replays/rudder-240hz-12s-right-exact.json",
+        "matched_replay_report_sha256": "b57c318ba36b27e02a9dbee8319c151d05ab99d1e0edae946de88d9bc242c400",
+        "matched_replay_csv_sha256_not_copied": "092defd4e864343590ad076a65a773e73804fdff0a36da933874fda7c354e598",
+        "comparison_report": "comparisons/rudder-240hz-12s-right-comparison.json",
+        "comparison_report_sha256": "1dcdd46a2bf4ac003a3156a1f99429d221584ba66aabacf1b45230b18c015b85",
+        "complete": true,
+        "solver_changed": false,
+        "status": "ok",
+        "comparison_first_divergence": null,
+        "comparison_all_max_abs_and_rmse_zero": true
+      },
+      {
+        "recording": "flights/rudder-240hz-3s-right.orfl",
+        "recording_sha256": "ff2fd35be45e1dd439c3c973341730b7dd5791b14f92b17c14355a4292b8cf02",
+        "rate_hz": 240,
+        "duration_s": 3.0,
+        "ticks": 720,
+        "export_report": "exports/rudder-240hz-3s-right/export.json",
+        "export_report_sha256": "b8b8ac675f008a4da495c24abf744104e8b56773514e05194d9ae5c0d5cea42a",
+        "export_csv": "exports/rudder-240hz-3s-right/flight.csv",
+        "export_csv_sha256": "36601463ace441467639226bcb111bbe922de2093dbcf4c8e4168500c398180a",
+        "matched_replay_report": "replays/rudder-240hz-3s-right-exact.json",
+        "matched_replay_report_sha256": "06a2eaa90069c87ff7b6f691eb3c42dfac3a1b74e31b3aa1531e54b2e46e11f7",
+        "matched_replay_csv_sha256_not_copied": "36601463ace441467639226bcb111bbe922de2093dbcf4c8e4168500c398180a",
+        "comparison_report": "comparisons/rudder-240hz-3s-right-comparison.json",
+        "comparison_report_sha256": "404a2ed86b1917bd987948ff0284fb4db45b4899145130c345c347c854f51672",
+        "complete": true,
+        "solver_changed": false,
+        "status": "ok",
+        "comparison_first_divergence": null,
+        "comparison_all_max_abs_and_rmse_zero": true
+      },
+      {
+        "recording": "flights/rudder-480hz-3s-right.orfl",
+        "recording_sha256": "5cd284e2ef0c8bf19bcd260d9d9d7d8fbb88b562b02de40d8081a70fa7962ff7",
+        "rate_hz": 480,
+        "duration_s": 3.0,
+        "ticks": 1440,
+        "export_report": "exports/rudder-480hz-3s-right/export.json",
+        "export_report_sha256": "6e68b9aac45928d0deabd91a34271a4177742e4dff0b54ce40fc976cf05a1159",
+        "export_csv": "exports/rudder-480hz-3s-right/flight.csv",
+        "export_csv_sha256": "7e451e6f94319643c4ffc9a0fad734ba731110d8951dc3500be02b579638e30b",
+        "matched_replay_report": "replays/rudder-480hz-3s-right-exact.json",
+        "matched_replay_report_sha256": "b0e90dc645b484d7113eb22674f0eef98726622b6d6608390e0979fe59c49173",
+        "matched_replay_csv_sha256_not_copied": "7e451e6f94319643c4ffc9a0fad734ba731110d8951dc3500be02b579638e30b",
+        "comparison_report": "comparisons/rudder-480hz-3s-right-comparison.json",
+        "comparison_report_sha256": "754d6abeb54a2e7b298d5edb8fada8f45fa96a1ba1f8a9cffefaa73096089718",
+        "complete": true,
+        "solver_changed": false,
+        "status": "ok",
+        "comparison_first_divergence": null,
+        "comparison_all_max_abs_and_rmse_zero": true
+      }
+    ]
+  },
+  "inventory": {
+    "file_count_excluding_receipt": 24,
+    "receipt_excludes_its_own_hash": true,
+    "csv_count": 4,
+    "replay_csv_duplicates_omitted": true,
+    "files": [
+      {
+        "path": "comparisons/rudder-240hz-12s-left-comparison.json",
+        "size_bytes": 1441,
+        "sha256": "1dcdd46a2bf4ac003a3156a1f99429d221584ba66aabacf1b45230b18c015b85"
+      },
+      {
+        "path": "comparisons/rudder-240hz-12s-right-comparison.json",
+        "size_bytes": 1441,
+        "sha256": "1dcdd46a2bf4ac003a3156a1f99429d221584ba66aabacf1b45230b18c015b85"
+      },
+      {
+        "path": "comparisons/rudder-240hz-3s-right-comparison.json",
+        "size_bytes": 1437,
+        "sha256": "404a2ed86b1917bd987948ff0284fb4db45b4899145130c345c347c854f51672"
+      },
+      {
+        "path": "comparisons/rudder-480hz-3s-right-comparison.json",
+        "size_bytes": 1439,
+        "sha256": "754d6abeb54a2e7b298d5edb8fada8f45fa96a1ba1f8a9cffefaa73096089718"
+      },
+      {
+        "path": "exports/rudder-240hz-12s-left/export.json",
+        "size_bytes": 5949,
+        "sha256": "9c07b6eeabb11483dc3d5c5a374a6e474167504d872ce25c9f630973cf154270"
+      },
+      {
+        "path": "exports/rudder-240hz-12s-left/flight.csv",
+        "size_bytes": 2175310,
+        "sha256": "077cb473c78ba87487900d63c7ea287ccc22e7aef3d12be1a9c459de083566eb"
+      },
+      {
+        "path": "exports/rudder-240hz-12s-right/export.json",
+        "size_bytes": 5950,
+        "sha256": "9a2ec208d7c829495747a788fff6182e77df1a0902c8c92bbce49b4042e0a011"
+      },
+      {
+        "path": "exports/rudder-240hz-12s-right/flight.csv",
+        "size_bytes": 2164862,
+        "sha256": "092defd4e864343590ad076a65a773e73804fdff0a36da933874fda7c354e598"
+      },
+      {
+        "path": "exports/rudder-240hz-3s-right/export.json",
+        "size_bytes": 5945,
+        "sha256": "b8b8ac675f008a4da495c24abf744104e8b56773514e05194d9ae5c0d5cea42a"
+      },
+      {
+        "path": "exports/rudder-240hz-3s-right/flight.csv",
+        "size_bytes": 537111,
+        "sha256": "36601463ace441467639226bcb111bbe922de2093dbcf4c8e4168500c398180a"
+      },
+      {
+        "path": "exports/rudder-480hz-3s-right/export.json",
+        "size_bytes": 5950,
+        "sha256": "6e68b9aac45928d0deabd91a34271a4177742e4dff0b54ce40fc976cf05a1159"
+      },
+      {
+        "path": "exports/rudder-480hz-3s-right/flight.csv",
+        "size_bytes": 1074628,
+        "sha256": "7e451e6f94319643c4ffc9a0fad734ba731110d8951dc3500be02b579638e30b"
+      },
+      {
+        "path": "flights/rudder-240hz-12s-left.orfl",
+        "size_bytes": 2136376,
+        "sha256": "f8c12be37945852be110734101d6656b957c125209520b45e855fe2522c1a699"
+      },
+      {
+        "path": "flights/rudder-240hz-12s-right.orfl",
+        "size_bytes": 2136376,
+        "sha256": "526c492e966831101ed5602ec1c1e2ec30927623640fceeaa4bebd4919f60140"
+      },
+      {
+        "path": "flights/rudder-240hz-3s-right.orfl",
+        "size_bytes": 554212,
+        "sha256": "ff2fd35be45e1dd439c3c973341730b7dd5791b14f92b17c14355a4292b8cf02"
+      },
+      {
+        "path": "flights/rudder-480hz-3s-right.orfl",
+        "size_bytes": 1081600,
+        "sha256": "5cd284e2ef0c8bf19bcd260d9d9d7d8fbb88b562b02de40d8081a70fa7962ff7"
+      },
+      {
+        "path": "README.md",
+        "size_bytes": 2648,
+        "sha256": "07615d97ea865e8b555767ce2769eb69c464f6ceb056e56668f66abec0af1911"
+      },
+      {
+        "path": "replays/negative-control/rudder-480hz-rejected-at-240hz.json",
+        "size_bytes": 5960,
+        "sha256": "8a9bb3a01ee23d0f6bac1209ffb527c4658fbc549f283fbfbce2aab9366bb1d4"
+      },
+      {
+        "path": "replays/rudder-240hz-12s-left-exact.json",
+        "size_bytes": 6224,
+        "sha256": "1347bff3d1aed7d722b42cc34f68a67046ca194e22cc01f62c6b363fb5284909"
+      },
+      {
+        "path": "replays/rudder-240hz-12s-right-exact.json",
+        "size_bytes": 6225,
+        "sha256": "b57c318ba36b27e02a9dbee8319c151d05ab99d1e0edae946de88d9bc242c400"
+      },
+      {
+        "path": "replays/rudder-240hz-3s-right-exact.json",
+        "size_bytes": 6220,
+        "sha256": "06a2eaa90069c87ff7b6f691eb3c42dfac3a1b74e31b3aa1531e54b2e46e11f7"
+      },
+      {
+        "path": "replays/rudder-480hz-3s-right-exact.json",
+        "size_bytes": 6222,
+        "sha256": "b0e90dc645b484d7113eb22674f0eef98726622b6d6608390e0979fe59c49173"
+      },
+      {
+        "path": "scripts/record_rudder.gd",
+        "size_bytes": 2153,
+        "sha256": "3d49513b4fb381e71c6e4461e78d63a8f1ca801eeb0996da6d782c8b40112569"
+      },
+      {
+        "path": "scripts/replay_480.gd",
+        "size_bytes": 129,
+        "sha256": "e00124b544d6f8d9b9d90dba086e16848babb86187b19bf1c30951a50752b5dd"
+      }
+    ]
+  }
+}

@@ -1,8 +1,12 @@
 # R11 rudder recovery gate diagnostic
 
-## Prerelease status — 2026-10-16
+## Current stable-target finding — 2026-10-16
 
-The release owner explicitly deferred this physical acceptance item for `v0.1.2-rc.1`. `app/test.sh` supplies `--allow-known-stik-rudder-recovery` to this test; direct invocation remains strict. Only the right-first reference 240 Hz recovery bound is deferred. The required recovery sample must exist and be finite; missing and NaN sample probes fail with zero pending results. No coefficient, equation or acceptance threshold changed. A pending result is not a pass and does not establish physical validation.
+The identified `f1ee9e78` baseline still fails the estimated 15°/s software screen: `r@3 s` is `−15.125273°/s` at 240 Hz and `−15.200616°/s` at 480 Hz. The preserved records and exact-replay receipts are in [stable-20261016](stable-20261016/README.md). The 12-second extensions are diagnostic only, not acceptance results. The `v0.1.2-rc.1` disposition below is historical and does not defer the stable gate.
+
+## Historical prerelease disposition — 2026-10-16
+
+At the time, the release owner explicitly deferred this physical acceptance item for `v0.1.2-rc.1`; that candidate-specific disposition is historical and does not defer the stable gate. `app/test.sh` supplies `--allow-known-stik-rudder-recovery` to this test; direct invocation remains strict. For that candidate, only the right-first reference 240 Hz recovery bound was deferred. The required recovery sample must exist and be finite; missing and NaN sample probes fail with zero pending results. No coefficient, equation or acceptance threshold changed. A pending result is not a pass and does not establish physical validation.
 
 The hardened reporting checks produce [27 checks, one failure in strict mode](prerelease-20261016/review-rudder-strict.log) and [27 checks, one pending and zero failures in prerelease mode](prerelease-20261016/review-rudder-pending.log) on native Godot 4.7.2. Unrelated-failure probes still exit 1 with the flag enabled. The diagnosis below is retained as the physical basis; its original requirement to resolve the gate still applies to physical acceptance.
 
