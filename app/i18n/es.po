@@ -3283,3 +3283,7 @@ msgstr "Producto: %s"
 #: ui/accident_report.gd
 msgid "Source note: %s"
 msgstr "Nota de la fuente: %s"
+
+# P51-22: known physical acceptance remains pending.
+msgid "Experimental: P51-22 pending. Powered takeoff and loop behavior do not yet meet acceptance criteria; not flight-validated."
+msgstr "Experimental: P51-22 pendiente. El despegue y el looping con potencia aún no cumplen los criterios de aceptación; sin validar en vuelo."
