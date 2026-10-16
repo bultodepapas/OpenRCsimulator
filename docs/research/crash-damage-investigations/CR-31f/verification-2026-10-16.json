@@ -1,0 +1,217 @@
+{
+  "date": "2026-10-16",
+  "engine": "Godot 4.7.2.stable.official.ed1daf0bf",
+  "platform": "Windows x86_64",
+  "scope": "CR-31f positive assessment counts and itemized comparison archives; CR-38a offline price audit; five SAVOX/O.S. service offers; focused regressions",
+  "godot_suites": [
+    {
+      "test": "economy_replacement_quote",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_economy_replacement_quote.gd",
+      "checks": 45,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 0.735,
+      "output_sha256": "665bbee69b1c0328c944c4de4e0bfe85ea219c739cce0077bcce1d907a5a9923",
+      "summary": "CR-31e replacement quote: 45 checks, 0 failures"
+    },
+    {
+      "test": "economy_component_resolver",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_economy_component_resolver.gd",
+      "checks": 35,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 0.187,
+      "output_sha256": "cffc0a148628852c4ff37477db2d7fbd178b55f06f549f934e696137fc39511b",
+      "summary": "ComponentResolver: 35 checks, 0 failed"
+    },
+    {
+      "test": "economy_package_optimizer",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_economy_package_optimizer.gd",
+      "checks": 40,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 0.188,
+      "output_sha256": "ad78fb37237442ca24a95536ea240228afc8e7c93a9e66cc16082a0fac9d4ed0",
+      "summary": "CR-31d package optimizer: 40 checks, 0 failures"
+    },
+    {
+      "test": "economy_catalog",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_economy_catalog.gd",
+      "checks": 74,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 0.656,
+      "output_sha256": "a89f32b0d7abf058622a39fb11cd403dbe6e045baa8ec766ccbac9f266fce17b",
+      "summary": "74 checks, 0 failed"
+    },
+    {
+      "test": "economy_calculator",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_economy_calculator.gd",
+      "checks": 55,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 0.359,
+      "output_sha256": "1131bc2d9d700e4160e57cdcf93678ac4b68cba69677f55db22909b64467248f",
+      "summary": "55 checks, 0 failed"
+    },
+    {
+      "test": "economy_inspection",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_economy_inspection.gd",
+      "checks": 46,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 0.75,
+      "output_sha256": "fc4febb30b51ea885f6666c21d6e784a050e33cd1bc50c2f60dd15cdce66ef03",
+      "summary": "46 checks, 0 failed"
+    },
+    {
+      "test": "economy_repair_planner",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_economy_repair_planner.gd",
+      "checks": 50,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 0.282,
+      "output_sha256": "e80e45da724459453e38c1a0b6ccdf8cf61696a1ad141d0262bcc1304149419d",
+      "summary": "50 checks, 0 failed"
+    },
+    {
+      "test": "economy_impact_budget",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_economy_impact_budget.gd",
+      "checks": 36,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 0.281,
+      "output_sha256": "da3733d5a4182f94604bf91abfba93f9fd1dfa5faab5f1eb901ca94e379d5d0a",
+      "summary": "36 checks, 0 failed"
+    },
+    {
+      "test": "economy_thermal_budget",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_economy_thermal_budget.gd",
+      "checks": 68,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 0.187,
+      "output_sha256": "3a054231bf5d54a101321cda0b4f5ef7009521ba1b058e6f9c6bd7bdaf0905b8",
+      "summary": "ThermalBudget tests passed: 68 checks"
+    },
+    {
+      "test": "economy_checkpoint",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_economy_checkpoint.gd",
+      "checks": 63,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 5.735,
+      "output_sha256": "06853883661c7ef7e1ac248c40c7245f1da7db448123e5b566eb8dba7d738543",
+      "summary": "economics checkpoint: 63 checks, 0 failed"
+    },
+    {
+      "test": "accident_integration",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_accident_integration.gd",
+      "checks": 65,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 13.422,
+      "output_sha256": "7692adb61b7c530918ecff1e0ea31765c908d0368f23b349083f0e6706bbea69",
+      "summary": "CR-30/32: 65 checks, 0 failed"
+    },
+    {
+      "test": "accident_report",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_accident_report.gd",
+      "checks": 88,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 0.547,
+      "output_sha256": "0c8aa86f0a062ef915bd6f4c84391d579f2a06565126a43d461613ddc4536e39",
+      "summary": "accident report: 88 checks, 0 failed"
+    },
+    {
+      "test": "accident_settlement",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_accident_settlement.gd",
+      "checks": 46,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 0.187,
+      "output_sha256": "0507cc1c7af52f888d25c91ef0ea820221aeaeaae23cd615fe7ec7ec4cd13995",
+      "summary": "accident settlement: 46 checks, 0 failed"
+    },
+    {
+      "test": "visual_checkpoint",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_visual_checkpoint.gd",
+      "checks": 40,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 0.375,
+      "output_sha256": "2506d05eaaf4544f47cb3d7432b323a0e7d0194e8392c69092e39e4331267c35",
+      "summary": "40 checks, 0 failed"
+    },
+    {
+      "test": "sky_checkpoint",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_sky_checkpoint.gd",
+      "checks": 45,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 6.125,
+      "output_sha256": "f2f0f8bec71af3224e6dcfe0100949d2292ad0750d38cf5ed95e17a2c8089e2b",
+      "summary": "sky checkpoint checks=45 failures=0"
+    },
+    {
+      "test": "sky_routes",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_sky_routes.gd",
+      "checks": 15,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 8.875,
+      "output_sha256": "2ae5fbdd78ea79a1de673b8fb6d103d1aaa14b57a5d4a8a150c4e3d5ef89af24",
+      "summary": "sky route checks=15 failures=0"
+    },
+    {
+      "test": "water_checkpoint",
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --script res://tests/test_water_checkpoint.gd",
+      "checks": 16,
+      "failed": 0,
+      "exit_code": 0,
+      "seconds": 5.859,
+      "output_sha256": "afa4cac754035ea3a97daa40f7102e5bf6f2c44db8cde66413c096f96f05c8f6",
+      "summary": "LU-27 water checkpoint: 16 checks, 0 failed"
+    }
+  ],
+  "python_and_generation": [
+    {
+      "command": "python -m unittest discover -s research/crash-economics -p test_*.py",
+      "exit_code": 0,
+      "output": ".......................................\n----------------------------------------------------------------------\nRan 39 tests in 0.277s\n\nOK"
+    },
+    {
+      "command": "python research/crash-economics/build_catalog.py --check",
+      "exit_code": 0,
+      "output": "CR-28: offers, integer cents, baseline coverage, fleet IDs, examples and generated freshness OK"
+    },
+    {
+      "command": "python research/crash-economics/build_runtime.py --check",
+      "exit_code": 0,
+      "output": "runtime economics sidecar is current (9 aircraft routes)"
+    }
+  ],
+  "python_tests": 39,
+  "godot_checks": 827,
+  "source_sha256": {
+    "app/economy/calculator.gd": "6c4918b50ec7f9da5730052ef34c09708dcbfe12a0d0aeefd99ff96fa5513b6c",
+    "research/crash-economics/audit_prices.py": "6fd0c011f7af416492b06e7c0ad312c10b1db0033c6de3f8db52ed7bb367512f",
+    "research/crash-economics/price-research-components.json": "df0055da490b492f193f97021cf6639f01dc525a1793027bd68ed812f5fda494",
+    "app/i18n/es.po": "a349a38ce58d945ac1e5820f1a459b44013b5215448bcd3d3a625a4bd0f82399",
+    "app/economy/replacement_quote.gd": "db8d1cc1f557338baecbbf25d1551c618a632afa9c4ec63c62dec09d79cc4a3b",
+    "app/economy/component_resolver.gd": "ac8038a471de6b258d3a91e919288101665a868c6fb283ee2c291fca246a53fc",
+    "app/economy/incident.gd": "5f1ffed5abc90e349480aafaba58ac89f2e1be898b736656f952fd61a13785a9",
+    "app/ui/accident_report.gd": "e093cbcb63a1b564bea3ad31d8f26ab62d4feac1b1cf2d2b3fa547567509a1ca",
+    "app/data/economy/catalog.json": "f8b778eca352e2e33eeba8a878a404124728f7dc288337cd44eeacfa19c1ca1b",
+    "research/crash-economics/aircraft-costing.json": "0488f842e50962f703840e0be8a1b4bdbc624b87c276f0af658d088b1a2530a2",
+    "research/crash-economics/price-research-fleet.json": "85026093f0172a0692e6b1c3c1813b2e8770ba0b13dbf04f033923223a002f13"
+  },
+  "limits": [
+    "Focused suites, not the complete application test matrix.",
+    "No physical validation, calibrated impact/fire thresholds or return-to-service qualification.",
+    "Default replacement quotes are frozen valuation estimates, not verified stock/fit or purchases.",
+    "Service-part offers are not installed BOM additions or qualified repair recipes.",
+    "Archive checks establish internal consistency, not authentication or independently verified optimality."
+  ]
+}

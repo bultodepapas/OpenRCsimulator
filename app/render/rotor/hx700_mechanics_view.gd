@@ -6,6 +6,12 @@ const Mechanism := preload("res://render/rotor/hx700_mechanism.gd")
 const Motion := preload("res://render/rotor/hx700_inspection_motion.gd")
 const Flex := preload("res://physics/rotorcraft/hx700_flex_bench.gd")
 const ElasticSkin := preload("res://render/rotor/hx700_elastic_skin.gd")
+const PANEL_WIDTH := 316.0
+const PANEL_LEFT := 20.0
+const CLEAR_GAP := 20.0
+const CLEAR_RIGHT_MARGIN := 20.0
+const REFERENCE_VIEW_HEIGHT := 900.0
+const REFERENCE_CLEAR_WIDTH := 1064.0
 var motion := Motion.new()
 var flex := Flex.new()
 var elastic_skin := ElasticSkin.new()
@@ -35,6 +41,7 @@ var _blades_toggle: CheckBox
 var _canopy_toggle: CheckBox
 var _busy := false
 var _canvas: CanvasLayer
+var _panel: PanelContainer
 var _mechanical_controls: VBoxContainer
 var _elastic_controls: VBoxContainer
 var _load_sliders: Array[HSlider] = []
@@ -44,6 +51,7 @@ var _elastic_mode := false
 var _mode_buttons: Array[Button] = []
 var _hint: Label
 var _shortcuts: Label
+var _layout_zoom_scale := 1.0
 
 
 func _ready() -> void:
@@ -67,7 +75,8 @@ func _ready() -> void:
 	_show_canopy(false)
 	_show_main_blades(false)
 	_technical_materials(true)
-	_update_camera()
+	get_viewport().size_changed.connect(_on_viewport_size_changed)
+	_on_viewport_size_changed()
 	_apply_pose()
 
 
@@ -105,6 +114,7 @@ func _build_stage() -> void:
 	add_child(floor_mesh)
 	camera = Camera3D.new()
 	camera.fov = 36
+	camera.keep_aspect = Camera3D.KEEP_HEIGHT
 	camera.near = 0.005
 	camera.far = 20
 	add_child(camera)
@@ -114,12 +124,12 @@ func _build_stage() -> void:
 func _build_ui() -> void:
 	_canvas = CanvasLayer.new()
 	add_child(_canvas)
-	var panel := PanelContainer.new()
-	panel.set_anchors_and_offsets_preset(Control.PRESET_LEFT_WIDE)
-	panel.offset_left = 20
-	panel.offset_top = 20
-	panel.offset_right = 336
-	panel.offset_bottom = -20
+	_panel = PanelContainer.new()
+	_panel.set_anchors_and_offsets_preset(Control.PRESET_LEFT_WIDE)
+	_panel.offset_left = PANEL_LEFT
+	_panel.offset_top = 20
+	_panel.offset_right = PANEL_LEFT + PANEL_WIDTH
+	_panel.offset_bottom = -20
 	var style := StyleBoxFlat.new()
 	style.bg_color = Color("101925")
 	style.border_color = Color("30455e")
@@ -129,11 +139,12 @@ func _build_ui() -> void:
 	style.content_margin_right = 20
 	style.content_margin_top = 18
 	style.content_margin_bottom = 18
-	panel.add_theme_stylebox_override("panel", style)
-	_canvas.add_child(panel)
+	_panel.add_theme_stylebox_override("panel", style)
+	_canvas.add_child(_panel)
 	var scroll := ScrollContainer.new()
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	panel.add_child(scroll)
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
+	_panel.add_child(scroll)
 	var column := VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 4)
@@ -245,12 +256,13 @@ func _build_ui() -> void:
 	_readout = _label(column, "", 13, Color("bbcce0"))
 	_status = _label(column, "", 12, Color("8fdbb2"))
 	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_shortcuts = _label(column, "Arrastre derecho: orbitar · Rueda: zoom\nEspacio: pausar todo · R: neutro", 12, Color("9cacbf"))
+	_shortcuts = _label(column, "Arrastre derecho: orbitar · Rueda: zoom\nP: pausa global · Espacio: pausa sin botón enfocado\nR: neutro", 12, Color("9cacbf"))
+	_shortcuts.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	var hint := Label.new()
 	hint.text = "HX-700 articulado  /  servos, plato y transmisión"
 	hint.add_theme_font_size_override("font_size", 15)
 	hint.add_theme_color_override("font_color", Color("9fb5ce"))
-	hint.position = Vector2(365, 24)
+	hint.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	_canvas.add_child(hint)
 	_hint = hint
 	_refresh_flex()
@@ -309,7 +321,7 @@ func _set_elastic_mode(enabled: bool) -> void:
 	_mode_buttons[0].set_pressed_no_signal(not enabled)
 	_mode_buttons[1].set_pressed_no_signal(enabled)
 	_hint.text = "HX-700 articulado  /  flexión de patines y carenado" if enabled else "HX-700 articulado  /  servos, plato y transmisión"
-	_shortcuts.text = "Arrastre derecho: orbitar · Rueda: zoom\nEspacio: pausar todo · R: " + ("soltar cargas" if enabled else "neutro")
+	_shortcuts.text = "Arrastre derecho: orbitar · Rueda: zoom\nP: pausa global · Espacio: pausa sin botón enfocado\nR: " + ("soltar cargas" if enabled else "neutro")
 	if enabled:
 		_camera_preset("Patines")
 
@@ -400,6 +412,9 @@ func _phase_changed(value: float) -> void:
 		return
 	var previous := motion.capture_state()
 	if not motion.seek_azimuth(value):
+		_restore_motion(previous)
+		_status.text = "Azimut fuera del rango de inspección; se conserva la pose válida."
+		_status.add_theme_color_override("font_color", Color("ffb49d"))
 		return
 	speed_rpm = 0
 	_speed.set_value_no_signal(0)
@@ -492,49 +507,77 @@ func _preset(choice: String) -> void:
 
 
 func _camera_preset(choice: String) -> void:
+	var preset_distance := 0.52
 	match choice:
 		"Cabeza":
 			focus = Vector3(0, 0.27, 0)
-			distance = 0.52
 			yaw = 0.85
 			elevation = 0.23
 		"Cola":
 			focus = Vector3(-0.94, 0.19, 0.025)
-			distance = 0.32
+			preset_distance = 0.32
 			yaw = 0.65
 			elevation = 0.17
 		"Completo":
 			focus = Vector3(-0.25, 0.20, 0)
-			distance = 2.5
+			preset_distance = 2.5
 			yaw = 0.8
 			elevation = 0.28
 		"Patines":
 			focus = Vector3(0.02, 0.055, 0)
-			distance = 0.92
+			preset_distance = 0.92
 			yaw = 1.2
 			elevation = 0.08
 			_show_canopy(false)
 		"Carenado":
 			focus = Vector3(0.16, 0.19, 0)
-			distance = 1.0
+			preset_distance = 1.0
 			yaw = 0.75
 			elevation = 0.38
 			_show_canopy(true)
+	distance = preset_distance * _layout_zoom_scale
 	_blades_toggle.button_pressed = choice == "Completo"
 	_update_camera()
 
 
 func _update_camera() -> void:
+	var viewport_size := get_viewport().get_visible_rect().size
+	var clear_bounds := _clear_horizontal_bounds(viewport_size.x)
+	var clear_center_x := (clear_bounds.x + clear_bounds.y) * 0.5
+	var focal_pixels := viewport_size.y / (2.0 * tan(deg_to_rad(camera.fov) * 0.5))
+	var shift_pixels := clear_center_x - viewport_size.x * 0.5
+	camera.h_offset = -distance * shift_pixels / maxf(focal_pixels, 1.0)
 	camera.position = focus + distance * Vector3(sin(yaw) * cos(elevation), sin(elevation), cos(yaw) * cos(elevation))
 	camera.look_at(focus)
-	# Frame the model in the clear area to the right of the control panel.
-	camera.h_offset = -distance * 0.105
+
+
+func _clear_horizontal_bounds(viewport_width: float) -> Vector2:
+	var panel_right := _panel.get_global_rect().end.x
+	var left := minf(panel_right + CLEAR_GAP, maxf(0.0, viewport_width - CLEAR_RIGHT_MARGIN))
+	var right := maxf(left, viewport_width - CLEAR_RIGHT_MARGIN)
+	return Vector2(left, right)
+
+
+func _on_viewport_size_changed() -> void:
+	if camera == null or _panel == null or _hint == null:
+		return
+	var viewport_size := get_viewport().get_visible_rect().size
+	var clear_bounds := _clear_horizontal_bounds(viewport_size.x)
+	var clear_width := maxf(1.0, clear_bounds.y - clear_bounds.x)
+	_hint.position = Vector2(clear_bounds.x, 24)
+	_hint.size = Vector2(clear_width, 48)
+	_hint.visible = clear_width >= 160.0
+	var next_scale := clampf((viewport_size.y / REFERENCE_VIEW_HEIGHT) * (REFERENCE_CLEAR_WIDTH / clear_width), 0.25, 8.0)
+	if not is_equal_approx(next_scale, _layout_zoom_scale):
+		distance *= next_scale / _layout_zoom_scale
+		_layout_zoom_scale = next_scale
+	_update_camera()
 
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
 		if event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
-			distance = clampf(distance * (0.9 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.1), 0.12, 4)
+			distance = clampf(distance * (0.9 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.1), 0.12, 12)
 			_update_camera()
 	if event is InputEventMouseMotion and (event.button_mask & MOUSE_BUTTON_MASK_RIGHT) != 0:
 		yaw -= event.relative.x * 0.006
@@ -543,16 +586,21 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _input(event: InputEvent) -> void:
-	# Shortcuts also work after a slider/button receives keyboard focus.
+	# P always pauses. Space remains the normal activation key for focused buttons.
 	if rig != null and event is InputEventKey and event.pressed and not event.echo:
-		if event.physical_keycode == KEY_R:
+		if event.physical_keycode == KEY_P:
+			_toggle_pause()
+			get_viewport().set_input_as_handled()
+		elif event.physical_keycode == KEY_SPACE:
+			if get_viewport().gui_get_focus_owner() is BaseButton:
+				return
+			_toggle_pause()
+			get_viewport().set_input_as_handled()
+		elif event.physical_keycode == KEY_R:
 			if _elastic_mode:
 				_load_preset("Soltar cargas")
 			else:
 				_preset("Neutro")
-			get_viewport().set_input_as_handled()
-		elif event.physical_keycode == KEY_SPACE:
-			_toggle_pause()
 			get_viewport().set_input_as_handled()
 
 

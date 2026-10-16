@@ -4,7 +4,6 @@ extends VBoxContainer
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const Solar := preload("res://environment/solar_position.gd")
 const Preferences := preload("res://app_state/preferences.gd")
-const ResponsiveGrid := preload("res://ui/responsive_grid.gd")
 
 const PRESET_IDS: Array[String] = ["", "legacy", "dawn", "noon", "sunset", "night"]
 const PRESET_LABELS: Array[String] = ["Custom", "Legacy daylight", "Dawn", "Noon", "Sunset", "Night"]
@@ -215,10 +214,11 @@ func _update_responsive_layout() -> void:
 		return
 	for grid: GridContainer in _responsive_grids:
 		var previous_columns: int = grid.columns
-		var two_column_width: float = ResponsiveGrid.two_column_minimum_width(grid)
-		var desired_columns: int = 1 if two_column_width > available_width else 2
-		if previous_columns != desired_columns:
-			grid.columns = desired_columns
+		grid.columns = 2
+		var two_column_width: float = grid.get_combined_minimum_size().x
+		grid.columns = 1 if two_column_width > available_width else 2
+		if previous_columns != grid.columns:
+			grid.update_minimum_size()
 
 
 func _add_text_field(label_text: String, field_name: String, width: float, max_length: int) -> LineEdit:

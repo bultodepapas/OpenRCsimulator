@@ -150,6 +150,20 @@ class RuntimeEconomicsTests(unittest.TestCase):
         self.assertEqual(old_offer["observed_on"], "2026-10-15")
         self.assertEqual(old_offer["amount_minor"], 278000)
 
+    def test_service_parts_do_not_duplicate_whole_engine_or_servo_costs(self) -> None:
+        records = build_catalog.read(build_catalog.HERE / "price-research-components.json")
+        parts = [row for row in records if "service_compatibility" in row]
+        self.assertEqual(len(parts), 5)
+        installed_offers = {row["offer_id"] for dossier in self.dossiers.values() for row in dossier["components"]}
+        for part in parts:
+            with self.subTest(part=part["id"]):
+                self.assertNotIn(part["id"], installed_offers)
+                offer = self.context["offer_by_id"][part["id"]]
+                self.assertEqual(offer["amount_minor"], build_catalog.cents(part["amount_usd"]))
+                self.assertEqual(offer["observed_on"], "2026-10-16")
+                self.assertIn(part["whole_unit_reference"], self.context["offer_by_id"])
+                self.assertTrue(part["service_compatibility"]["target_model"])
+
     def test_packaged_repair_recipes_match_authored_snapshot(self) -> None:
         self.assertEqual((build_runtime.ROOT / build_runtime.REPAIR_OUTPUT_PATH).read_bytes(),
                          build_runtime.render_repair_book())

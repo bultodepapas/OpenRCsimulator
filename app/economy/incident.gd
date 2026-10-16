@@ -333,7 +333,7 @@ func _recalculate() -> void:
 	var comparison := compare_replacements()
 	if comparison.get("status") in ["optimal", "unknown_cost", "search_limit", "infeasible", "cost_out_of_range"]:
 		comparison.erase("candidate_catalog") # Freeze only the selected comparison, not every alternative.
-		comparison["format"] = "openrc-replacement-comparison v1"
+		comparison["format"] = "openrc-replacement-comparison v2"
 		comparison["catalog_hash"] = _catalog_hash
 		report["replacement_comparison"] = comparison
 	report["format"] = "openrc-accident-report v1"
@@ -440,7 +440,7 @@ func load_archive() -> Dictionary:
 
 
 static func _valid_comparison_archive(value: Variant, catalog_hash: Variant) -> bool:
-	if not value is Dictionary or value.get("format") != "openrc-replacement-comparison v1" \
+	if not value is Dictionary or value.get("format") not in ["openrc-replacement-comparison v1", "openrc-replacement-comparison v2"] \
 		or value.get("coverage_scope") != "replacements_only" or value.get("catalog_hash") != catalog_hash \
 		or value.get("status") not in ["optimal", "unknown_cost", "search_limit", "infeasible", "cost_out_of_range"]:
 		return false
@@ -473,4 +473,47 @@ static func _valid_comparison_archive(value: Variant, catalog_hash: Variant) -> 
 			or source.get("candidate_id") not in value.selected_candidate_ids or provenance_ids.has(source.get("candidate_id")):
 			return false
 		provenance_ids[source.candidate_id] = true
+	if value.get("format") == "openrc-replacement-comparison v2":
+		return _valid_selection_archive(value)
 	return true
+
+
+## Checks stored arithmetic and exact unit coverage; this is not file authentication
+## or an independent proof of optimizer optimality / physical package compatibility.
+static func _valid_selection_archive(value: Dictionary) -> bool:
+	var selected: Variant = value.get("selected_lines")
+	if not selected is Array or selected.size() != value.selected_candidate_ids.size() or value.required_unit_ids.is_empty():
+		return false
+	if (value.status == "search_limit") == bool(value.search_complete):
+		return false
+	if value.status not in ["unknown_cost", "search_limit"] and value.unknown_cost_alternative_found:
+		return false
+	if value.status == "unknown_cost" and not value.unknown_cost_alternative_found:
+		return false
+	if value.status in ["infeasible", "cost_out_of_range"] and value.total_cost_cents != null:
+		return false
+	if selected.is_empty():
+		return value.total_cost_cents == null and value.status != "optimal"
+	if value.total_cost_cents == null:
+		return false
+	var ids := {}
+	var covered := {}
+	var total: int = 0
+	for row: Variant in selected:
+		if not row is Dictionary or row.size() != 3 or row.get("candidate_id") not in value.selected_candidate_ids \
+			or ids.has(row.get("candidate_id")) or not row.get("coverage_ids") is Array \
+			or row.coverage_ids.is_empty() or row.coverage_ids.size() > ReplacementQuote.MAX_REQUIRED_UNITS:
+			return false
+		ids[row.candidate_id] = true
+		var cost: Variant = row.get("cost_cents")
+		if typeof(cost) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(cost)) \
+			or float(cost) < 0.0 or float(cost) > 9000000000000000.0 or float(cost) != floor(float(cost)):
+			return false
+		if int(cost) > 9000000000000000 - total:
+			return false
+		total += int(cost)
+		for unit: Variant in row.coverage_ids:
+			if not unit is String or unit not in value.required_unit_ids or covered.has(unit):
+				return false
+			covered[unit] = true
+	return covered.size() == value.required_unit_ids.size() and total == int(value.total_cost_cents)

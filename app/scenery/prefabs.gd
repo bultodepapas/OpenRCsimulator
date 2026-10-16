@@ -7,6 +7,7 @@ extends RefCounted
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Palette = preload("res://scenery/palette.gd")
 const Furniture = preload("res://scenery/club_furniture.gd")
+const ClubSign = preload("res://scenery/club_sign.gd")
 const People = preload("res://scenery/people.gd")
 const Vegetation = preload("res://scenery/vegetation.gd")
 
@@ -394,17 +395,7 @@ static func _flagpole(k: MeshKit) -> Array:
 
 
 static func _club_sign(k: MeshKit) -> void:
-	for x: float in [-1.0, 1.0]:
-		k.block(Vector3(0.12, 2.2, 0.12), Vector3(x, 0, 0), _c("wood_dark"))
-	k.box(Vector3(2.4, 1.1, 0.08), Vector3(0, 1.55, 0), _c("sign_board"), true)
-	k.box(Vector3(2.5, 0.06, 0.1), Vector3(0, 2.13, 0), _c("trim"), true)
-	k.box(Vector3(2.5, 0.06, 0.1), Vector3(0, 0.97, 0), _c("trim"), true)
-	# the club emblem: a white high-wing silhouette over a red stripe, on the field side (−Z)
-	var z := -0.05
-	k.box(Vector3(2.2, 0.08, 0.02), Vector3(0, 1.2, z), _c("flag_red"), true)
-	k.box(Vector3(1.0, 0.07, 0.02), Vector3(0, 1.72, z), _c("trim"), true) # wing
-	k.box(Vector3(0.12, 0.42, 0.02), Vector3(0.05, 1.6, z), _c("trim"), true) # fuselage (seen from above)
-	k.box(Vector3(0.42, 0.06, 0.02), Vector3(0.05, 1.42, z), _c("trim"), true) # stabiliser
+	ClubSign.build(k)
 
 
 # ---------------- hay and vegetation ----------------

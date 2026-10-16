@@ -1,0 +1,18 @@
+{
+  "head": "e1bfbe821091be43297e60536b426630ec646aab",
+  "date": "2026-10-16",
+  "host": "Windows, Godot4.7.2 ed1daf0bf, 3840x2160 DPI144, RTX3090 NVIDIA610.88",
+  "source_sha256": {
+    "app/app_root.gd": "eae0cd901fa72ce6aeaadaca9606afc639a5c6f12adac5110277dbb1085450c2",
+    "app/ui/home.gd": "0264742bde460ffad09fa3ed9ed1df517525fbc02a669998c2c14322d7afa6f2",
+    "app/tests/test_ui_home.gd": "dc74b00d6901fb098992ad46567847806f1fc372db563bac47bd8378de340c73",
+    "app/tests/test_ui_settings_integration.gd": "ec31ce630410c53e5c210ab7cc8adf6143ee03111d95fdb5ffee07867b563d88",
+    "app/tests/test_settings_ui.gd": "9533d25f845467daf4746d2cb9ad6d94def49630f5ddfe734e175df957375ed5",
+    "app/tests/test_ui_scale.gd": "bf2b3c7e2b4afa272cd004f0a4894e52c5745923b42fbcf0ba33a2cfc5c491ae",
+    "app/tests/test_conditions_responsive.gd": "11db1aae49260fb63ee2c6d6fb9467526c3b61ac8dec0cb22c7e238aafbcdf99",
+    "app/tests/test_ui_time_of_day.gd": "c3f09625279d836aa9dc108db9cd1432cc1af0257d84c4eaccbfb5a785e8bb3f",
+    "app/tests/test_ui_weather_sliders.gd": "1c24c1a38e9c96e75abd4651f58f061da6c470afd8430b9104a188fcb1d497c7",
+    "app/tests/test_ui_modal_responsive.gd": "816779060d854ef0dd2f980cc8591accf4ba4badff80999bdf7b5aef5952800e",
+    "app/tests/test_menu_audio.gd": "834a0ad90d57468455fb8a8e07e8cce45ec7b6c708707581651277e585faaf2f"
+  }
+}

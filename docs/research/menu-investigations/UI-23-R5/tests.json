@@ -1,0 +1,92 @@
+[
+  {
+    "test": "test_ui_home",
+    "exit": 0,
+    "errors": [],
+    "checks": 240,
+    "summary": [
+      "all UI home checks passed"
+    ],
+    "log": "logs/test_ui_home.log"
+  },
+  {
+    "test": "test_ui_settings_integration",
+    "exit": 0,
+    "errors": [
+      "ERROR: 2 resources still in use at exit (run with --verbose for details)."
+    ],
+    "checks": 25,
+    "summary": [
+      "all Settings integration checks passed"
+    ],
+    "log": "logs/test_ui_settings_integration.log"
+  },
+  {
+    "test": "test_settings_ui",
+    "exit": 0,
+    "errors": [],
+    "checks": 40,
+    "summary": [
+      "all Settings checks passed"
+    ],
+    "log": "logs/test_settings_ui.log"
+  },
+  {
+    "test": "test_ui_scale",
+    "exit": 0,
+    "errors": [],
+    "checks": 72,
+    "summary": [],
+    "log": "logs/test_ui_scale.log"
+  },
+  {
+    "test": "test_conditions_responsive",
+    "exit": 0,
+    "errors": [],
+    "checks": 0,
+    "summary": [
+      "all responsive conditions checks passed"
+    ],
+    "log": "logs/test_conditions_responsive.log"
+  },
+  {
+    "test": "test_ui_time_of_day",
+    "exit": 0,
+    "errors": [],
+    "checks": 44,
+    "summary": [
+      "all UI time-of-day checks passed"
+    ],
+    "log": "logs/test_ui_time_of_day.log"
+  },
+  {
+    "test": "test_ui_weather_sliders",
+    "exit": 0,
+    "errors": [
+      "ERROR: 2 resources still in use at exit (run with --verbose for details)."
+    ],
+    "checks": 32,
+    "summary": [
+      "all UI weather slider checks passed"
+    ],
+    "log": "logs/test_ui_weather_sliders.log"
+  },
+  {
+    "test": "test_ui_modal_responsive",
+    "exit": 0,
+    "errors": [],
+    "checks": 0,
+    "summary": [
+      "Responsive modals: 560 cases, 0 failures"
+    ],
+    "log": "logs/test_ui_modal_responsive.log"
+  },
+  {
+    "test": "test_menu_audio",
+    "exit": 0,
+    "errors": [],
+    "checks": 26,
+    "summary": [],
+    "log": "logs/test_menu_audio.log"
+  }
+]

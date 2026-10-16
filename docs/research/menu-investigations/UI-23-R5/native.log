@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+HOST display=(3840, 2160) dpi=144
+CAPTURE en-1280x720-100-home.webp mode=0
+CAPTURE en-1280x720-100-sound.webp mode=0
+CAPTURE en-1280x720-100-weather.webp mode=0
+CAPTURE en-1280x720-100-time.webp mode=0
+CAPTURE en-1280x720-100-sky.webp mode=0
+FLOW en-1280x720-100 volume themes stable, live gain updated, return=true
+CAPTURE es-960x540-200-home.webp mode=0
+CAPTURE es-960x540-200-sound.webp mode=0
+CAPTURE es-960x540-200-weather.webp mode=0
+CAPTURE es-960x540-200-time.webp mode=0
+CAPTURE es-960x540-200-sky.webp mode=0
+FLOW es-960x540-200 volume themes stable, live gain updated, return=true
+CAPTURE es-3840x2160-100-home.webp mode=3
+CAPTURE es-3840x2160-100-sound.webp mode=3
+CAPTURE es-3840x2160-100-weather.webp mode=3
+CAPTURE es-3840x2160-100-time.webp mode=3
+CAPTURE es-3840x2160-100-sky.webp mode=3
+FLOW es-3840x2160-100 volume themes stable, live gain updated, return=true

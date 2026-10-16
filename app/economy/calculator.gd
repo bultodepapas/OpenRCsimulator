@@ -127,8 +127,8 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 			var decision: Dictionary = decision_value
 			if not DISPOSITIONS.has(decision.get("disposition", "")):
 				errors.append("assessment.components[%s].disposition: expected a supported disposition" % key_value)
-			if decision.has("quantity") and not _is_quantity(decision["quantity"]):
-				errors.append("assessment.components[%s].quantity: expected an integer in 0..%d" % [key_value, MAX_QUANTITY])
+			if decision.has("quantity") and (not _is_quantity(decision["quantity"]) or int(decision["quantity"]) == 0):
+				errors.append("assessment.components[%s].quantity: expected an integer in 1..%d" % [key_value, MAX_QUANTITY])
 			if decision.has("repair_minor") and not _is_minor(decision["repair_minor"]):
 				errors.append("assessment.components[%s].repair_minor: expected a nonnegative integer minor-unit amount" % key_value)
 			if decision.has("inspection_minor") and not _is_minor(decision["inspection_minor"]):

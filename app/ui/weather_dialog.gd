@@ -10,7 +10,6 @@ const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const SkyControls := preload("res://ui/sky_controls.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Preferences := preload("res://app_state/preferences.gd")
-const ResponsiveGrid := preload("res://ui/responsive_grid.gd")
 const SLIDER_GRABBER: Texture2D = preload("res://ui/slider_grabber.svg")
 
 signal applied(config: Dictionary)
@@ -425,9 +424,10 @@ func _update_scroll_height() -> void:
 			responsive_layout_changed = true
 	for grid: GridContainer in [wind_grid, turbulence_grid, atmosphere_grid, atmosphere_mode_row]:
 		var previous_columns: int = grid.columns
-		var two_column_width: float = ResponsiveGrid.two_column_minimum_width(grid)
+		grid.columns = 2
+		var two_column_width: float = grid.get_combined_minimum_size().x
 		var desired_columns: int = 1 if two_column_width > content_width else 2
-		if previous_columns != desired_columns:
+		if grid.columns != desired_columns:
 			grid.columns = desired_columns
 		if previous_columns != desired_columns:
 			responsive_layout_changed = true

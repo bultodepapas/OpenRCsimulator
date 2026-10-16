@@ -45,6 +45,8 @@ The current research has gaps and source-quality limits documented in each repor
 
 [CR-31e](CR-31e/README.md) connects replacement-only package comparison to incident reports and archives. [CR-33c](CR-33c/resolver-contract.md) implements declared-capacity interval comparisons without production billing or serviceability clearance. [CR-36e](CR-36e/fleet.md) records exact exhaust variants and their remaining installation limits.
 
+[CR-31f](CR-31f/README.md) adds selected-package archive consistency checks, positive affected counts, historical price availability and SAVOX/O.S. service parts. [CR-36f](CR-36f/gear.md) records gear-package overlap and remaining pneumatic jet gaps. [CR-38a](CR-38a/README.md) provides the offline dated price-review queue and per-aircraft coverage audit.
+
 [CR-35a](CR-35a/README.md) verifies finite source budgets, explicit ignition ticks and analytic component heating/cooling. Its parameters and thresholds remain caller-declared; it is not connected to aircraft damage or visual fire.
 
 [CR-36a](CR-36a/README.md) extends the economic dossier to the 55AX and FS-64V Stik configurations with exact propeller offers, explicit engine/silencer coverage substitutions, guarded inventory inheritance and production contact-to-report checks. Complete cost coverage remains separate from physical installation qualification.

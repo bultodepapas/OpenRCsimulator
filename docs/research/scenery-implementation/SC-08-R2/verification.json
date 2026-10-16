@@ -1,0 +1,52 @@
+{
+  "step": "SC-08-R2",
+  "date": "2026-10-16",
+  "complete": true,
+  "godot": "4.7.2.stable",
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "renderer": "gl_compatibility",
+  "tests": {
+    "scenery_build": {
+      "checks": 126,
+      "passed": true
+    },
+    "scenery_destruction": {
+      "checks": 78,
+      "passed": true
+    },
+    "field_projected_shadows": {
+      "checks": 57,
+      "passed": true
+    }
+  },
+  "views": {
+    "front": {
+      "draws_before": 82,
+      "draws_after": 82,
+      "matched_camera": true
+    },
+    "detail": {
+      "draws_before": 81,
+      "draws_after": 81,
+      "matched_camera": true
+    },
+    "rear": {
+      "draws_before": 144,
+      "draws_after": 144,
+      "matched_camera": true
+    },
+    "pilot": {
+      "draws_before": 114,
+      "draws_after": 114,
+      "matched_camera": true
+    }
+  },
+  "scenery_triangles": 630559,
+  "sources_sha256": {
+    "app/scenery/club_sign.gd": "e72f60207dadc07ba162cdff11a5e7f5d41f947f418aa0d7cc6d5eb475874361",
+    "app/scenery/prefabs.gd": "4eb981a710ab23f6e8574724e1d7ee680aaf0763665636346d1c42f95663c7d1",
+    "app/scenery/mesh_kit.gd": "ca1d755d09fe8c3a1526339aeca4024e308d21fdc4e9c2e4a857b9051c7139dc",
+    "tools/ground/capture_club_sign.gd": "4acb8e599797451174430ba3bea3df950dc03151806bcb25affd9f0cc4a6ead9"
+  },
+  "scope": "Native matched-camera field renders and focused scenery regressions. No new draw nodes, placement or physics changes. No target-device frame-time qualification."
+}

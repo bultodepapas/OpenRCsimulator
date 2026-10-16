@@ -1,6 +1,7 @@
 extends SceneTree
 
 const View := preload("res://render/rotor/hx700_mechanics_view.gd")
+const MIN_NATIVE_WINDOW_SIZE := Vector2i(640, 480)
 var view: Node3D
 
 
@@ -10,6 +11,7 @@ func _initialize() -> void:
 
 func _start() -> void:
 	root.title = "HX-700 · Mecánica avanzada"
+	root.min_size = MIN_NATIVE_WINDOW_SIZE
 	root.size = Vector2i(1440, 900)
 	root.msaa_3d = Viewport.MSAA_4X
 	view = View.new()

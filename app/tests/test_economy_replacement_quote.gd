@@ -1,6 +1,7 @@
 extends SceneTree
 
 const ReplacementQuote = preload("res://economy/replacement_quote.gd")
+const Incident = preload("res://economy/incident.gd")
 
 var _failures := 0
 var _checks := 0
@@ -16,6 +17,7 @@ func _initialize() -> void:
 	_test_total_loss_and_invalid_assessment()
 	_test_package_candidate_preflight()
 	_test_determinism_and_input_purity()
+	_test_selection_archive()
 	print("CR-31e replacement quote: %d checks, %d failures" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
 
@@ -25,6 +27,46 @@ func _check(label: String, ok: bool, detail: String = "") -> void:
 	print(("ok   " if ok else "FAIL ") + label + ("  " + detail if not ok and not detail.is_empty() else ""))
 	if not ok:
 		_failures += 1
+
+
+func _test_selection_archive() -> void:
+	var dossier := _dossier([_component("servo", 2, 1000)])
+	var assessment := _assessment({"servo": {"disposition": "replace"}})
+	var result := ReplacementQuote.quote(dossier, assessment, [_package("servo-pair", ["servo:1", "servo:0"], 1500)])
+	result["format"] = "openrc-replacement-comparison v2"
+	result["catalog_hash"] = "frozen-test-catalog"
+	_check("selected package snapshot records sorted exact coverage and price once", result.selected_lines == [{"candidate_id": "servo-pair", "coverage_ids": ["servo:0", "servo:1"], "cost_cents": 1500}])
+	_check("valid package cover remains verifiable after JSON round trip", Incident._valid_comparison_archive(JSON.parse_string(JSON.stringify(result)), "frozen-test-catalog"))
+	for defect: String in ["sum", "missing_unit", "overlap", "foreign_unit", "foreign_candidate", "fractional_cost", "missing_rows", "unknown_optimum", "unfinished_optimum"]:
+		var changed := result.duplicate(true)
+		match defect:
+			"sum": changed.total_cost_cents = 0
+			"missing_unit": changed.selected_lines[0].coverage_ids.pop_back()
+			"overlap": changed.selected_lines[0].coverage_ids.append("servo:0")
+			"foreign_unit": changed.selected_lines[0].coverage_ids[0] = "wing:0"
+			"foreign_candidate": changed.selected_lines[0].candidate_id = "unknown"
+			"fractional_cost": changed.selected_lines[0].cost_cents = 1500.5
+			"missing_rows": changed.erase("selected_lines")
+			"unknown_optimum": changed.unknown_cost_alternative_found = true
+			"unfinished_optimum": changed.search_complete = false
+		_check("inconsistent selected archive rejected: " + defect, not Incident._valid_comparison_archive(changed, "frozen-test-catalog"))
+	for mode: String in ["unknown", "limited"]:
+		var pending := ReplacementQuote.quote(_dossier([_component("servo", 1, null if mode == "unknown" else 1000)]),
+			_assessment({"servo": {"disposition": "replace"}}), [], 1 if mode == "limited" else 100000)
+		pending["format"] = "openrc-replacement-comparison v2"
+		pending["catalog_hash"] = "frozen-test-catalog"
+		_check("unresolved selection remains null through archive: " + mode, pending.total_cost_cents == null
+			and Incident._valid_comparison_archive(pending, "frozen-test-catalog"))
+		if mode == "unknown":
+			for contradictory_status: String in ["infeasible", "cost_out_of_range"]:
+				var contradictory := pending.duplicate(true)
+				contradictory.status = contradictory_status
+				_check("completed unknown cover cannot claim " + contradictory_status,
+					not Incident._valid_comparison_archive(contradictory, "frozen-test-catalog"))
+	var legacy := result.duplicate(true)
+	legacy.format = "openrc-replacement-comparison v1"
+	legacy.erase("selected_lines")
+	_check("legacy view-only comparison is still readable", Incident._valid_comparison_archive(legacy, "frozen-test-catalog"))
 
 
 func _component(

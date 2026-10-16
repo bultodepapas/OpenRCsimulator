@@ -3172,3 +3172,12 @@ msgstr "Quedan pendientes otros daños o costos de inspección."
 #: ui/accident_report.gd
 msgid "Catalog estimates; availability and physical fit require confirmation."
 msgstr "Estimaciones del catálogo; se deben confirmar la disponibilidad y la compatibilidad física."
+
+msgid "Catalog snapshot: %s"
+msgstr "Fecha del catálogo: %s"
+
+msgid "Availability when observed: %s"
+msgstr "Disponibilidad en la fecha consultada: %s"
+
+msgid "Historical estimate; itemized package coverage was not saved."
+msgstr "Estimación histórica; no se guardó el detalle de las piezas incluidas."

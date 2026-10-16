@@ -55,6 +55,13 @@ func _comparison_behavior() -> void:
 	_check("parts optimum does not resolve other inspection costs", details.contains("Other damage or inspection costs remain unresolved.")
 		and details.contains("physical fit require confirmation"), details)
 	_check_live_panel_bounds(report, "parts comparison details")
+	assessment.replacement_comparison["format"] = "openrc-replacement-comparison v1"
+	report.show_assessment(assessment, true)
+	report.controller_action("details")
+	details = _details_text(report)
+	_check("legacy comparison is labeled historical without a cheapest-option claim", details.contains("Historical estimate")
+		and details.contains("Provisional parts estimate") and not details.contains("Lowest priced combination"))
+	assessment.replacement_comparison.erase("format")
 	for status: String in ["unknown_cost", "search_limit", "infeasible", "cost_out_of_range"]:
 		assessment.replacement_comparison.status = status
 		assessment.replacement_comparison.optimality_proven = false
@@ -183,6 +190,7 @@ func _report_behavior() -> void:
 				"price_basis": "price_proxy", "observed_on": "2026-10-15",
 				"source_url": "https://www.apcprop.com/product/11x7/?v=84de8e2b14bb",
 				"notes": "Candidate price only; physical fit is not established.",
+				"availability": "Backorder; no delivery date confirmed",
 			},
 			{"id": "thermal_review", "quantity": 1, "action": "inspect", "amount_minor": NAN},
 		],
@@ -281,6 +289,7 @@ func _report_behavior() -> void:
 				"price_basis": "price_proxy", "observed_on": "2026-10-15",
 				"source_url": "https://www.apcprop.com/product/11x7/?v=84de8e2b14bb",
 				"notes": "Candidate price only; physical fit is not established.",
+				"availability": "Backorder; no delivery date confirmed",
 			},
 			{"id": "covered_airframe_and_installation_hardware", "quantity": 1, "action": "inspect", "amount_minor": null},
 			{"id": "unknown_test_component", "quantity": 1, "action": "inspect", "amount_minor": null},
@@ -337,6 +346,9 @@ func _report_behavior() -> void:
 		and _details_text(report).contains("Observed: 2026-10-15")
 		and _details_text(report).contains("Source: https://www.apcprop.com/product/11x7/?v=84de8e2b14bb")
 		and _details_text(report).contains("Candidate price only; physical fit is not established."), _details_text(report))
+	_check("catalog snapshot date is distinguished from each observed offer date", _details_text(report).contains("Catalog snapshot: 2026-10-15")
+		and not _details_text(report).contains("Price date:"))
+	_check("historical availability is visible without claiming live stock", _details_text(report).contains("Availability when observed: Backorder; no delivery date confirmed"))
 	var spanish_report: Dictionary = complete.duplicate(true)
 	spanish_report.complete = false
 	spanish_report.total_minor = null
@@ -352,6 +364,8 @@ func _report_behavior() -> void:
 	report.controller_action("details")
 	await _ui.settle()
 	var spanish_details := _details_text(report)
+	_check("price snapshot and dated availability labels are localized", spanish_details.contains("Fecha del catálogo: 2026-10-15")
+		and spanish_details.contains("Disponibilidad en la fecha consultada: Backorder; no delivery date confirmed"))
 	_check("unresolved notes use whole-sentence translations before ID humanization",
 		spanish_details.contains("Golpe de hélice: inspeccionar la propulsión")
 		and spanish_details.contains("Motor y silenciador · estado pendiente de inspección")

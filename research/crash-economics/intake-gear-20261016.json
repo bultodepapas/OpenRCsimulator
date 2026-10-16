@@ -1,0 +1,181 @@
+{
+  "format": "openrc-crash-economics-gear-intake v1",
+  "observed_on": "2026-10-16",
+  "scope": "Current replacement-part offers for the fleet's unresolved landing-gear rows and the Avanti P100-RX thrust tube. Exact compatibility and package scope are required before allocation.",
+  "existing_offers_rechecked": [
+    {
+      "offer_id": "timber_evolution_replacement_landing_gear_horizon_20261015",
+      "source_file": "research/crash-economics/price-research-fleet.json",
+      "brand": "E-flite",
+      "product": "Complete Updated Landing Gear Set with Heavy Duty Springs: Turbo Timber Evolution 1.5m",
+      "sku": "EFL-1249",
+      "seller": "Horizon Hobby",
+      "amount_usd": 16.99,
+      "availability": "In stock",
+      "quantity": "1 landing-gear set",
+      "url": "https://www.horizonhobby.com/product/e-flite-complete-updated-landing-gear-set-with-heavy-duty-springs-turbo-timber-evolution-1.5m/EFL-1249.html",
+      "verification": "Live product-page fetch on 2026-10-16 confirmed price, stock, exact product name and compatibility with Turbo Timber Evolution 1.5m PNP EFL105275B and BNF EFL105250B.",
+      "coverage_limit": "The page does not enumerate the set contents. It does not establish inclusion of the two main wheels or the separate tailwheel and fork. Already catalogued; do not add a duplicate offer record."
+    },
+    {
+      "offer_id": "timber_evolution_wheel_set_efl5258_horizon_20261016",
+      "source_file": "research/crash-economics/price-research-fleet.json",
+      "brand": "E-flite",
+      "product": "Wheel Set: Timber",
+      "sku": "EFL5258",
+      "seller": "Horizon Hobby",
+      "amount_usd": 19.99,
+      "availability": "In stock",
+      "quantity": "1 set: two 108 mm main wheels and one tailwheel",
+      "url": "https://www.horizonhobby.com/product/wheel-set-timber/EFL5258.html",
+      "verification": "Live product-page fetch on 2026-10-16 confirmed price, stock and box contents. The Turbo Timber Evolution manual names EFL5258 as a replacement part.",
+      "coverage_limit": "This single package spans the modeled gear_main and gear_tail rows; the tail fork is not included in the page description. Count the offer once and keep it unallocated across those rows until a commercial-to-fictional inventory crosswalk is accepted. Already catalogued; do not add a duplicate offer record."
+    },
+    {
+      "offer_id": "timber_evolution_landing_gear_efl105254_horizon_20261016",
+      "source_file": "research/crash-economics/price-research-fleet.json",
+      "brand": "E-flite",
+      "product": "Landing Gear: Turbo Timber Evolution 1.5m",
+      "sku": "EFL105254",
+      "seller": "Horizon Hobby",
+      "amount_usd": 16.99,
+      "availability": "In stock in the existing observation",
+      "quantity": "1 replacement part; contents not stated",
+      "url": "https://www.horizonhobby.com/product/landing-gear-turbo-timber-evolution-1.5m/EFL105254.html",
+      "coverage_limit": "This is a separately catalogued SKU at the same price as EFL-1249. No source establishes whether it is a different revision or overlapping package. Do not sum it with EFL-1249 or infer wheel/spring/retainer contents."
+    }
+  ],
+  "new_current_observations": [
+    {
+      "id": "avanti_p100rx_thrust_tube_a20013_imi_20261016",
+      "brand": "SebArt",
+      "product": "P100RX dual-wall exhaust pipe / thrust tube",
+      "sku": "SA-A200-13",
+      "category": "thrust_tube",
+      "amount_eur": 139.0,
+      "currency": "EUR",
+      "price_basis": "Retailer gross price, 23% VAT included; displayed net price is EUR 113.01",
+      "availability": "No stock",
+      "quantity": "1 product listing for the P100RX dual-wall pipe; no extra mounting kit contents are stated",
+      "seller": "IMI Hobby",
+      "url": "https://w.iminitra.sk/jet-exhaust-pipes--vyfukove-potrubie-pre-turbinu/produkt/7693/510",
+      "observed_on": "2026-10-16",
+      "evidence_quality": "Direct live retailer-page fetch. The page shows manufacturer SebArt, code SA-A200-13, the P100RX dual-wall pipe variant, gross/net EUR amounts and No Stock status.",
+      "allocation": "Not allocated. This is a foreign-currency, out-of-stock listing, not a current USD procurement offer. The physical Avanti thrust_tube row names this exact P100-RX-specific part, but no available USD offer was found."
+    }
+  ],
+  "official_price_references_not_current_usd_offers": [
+    {
+      "id": "sebart_a200_pneumatic_gear_2014_historical_list",
+      "brand": "SebArt / Krill",
+      "source_type": "Official historical price list",
+      "document_date": "2014-09",
+      "url": "https://www.sebart.it/download/2014-09%20JET%20PRICELIST%20KRILL%20F.C.%20EUROPE%20final%20customer.pdf",
+      "currency": "EUR",
+      "price_basis": "List marks prices VAT included and gives EUR 170 factory-to-Italy shipping separately.",
+      "variants": [
+        {
+          "sku": "A200-11",
+          "product": "Aluminum landing-gear set (2+1) plus air tanks; listed as parts 11a+11b+11c",
+          "amount_eur": 1000.0
+        },
+        {
+          "sku": "A200-11a",
+          "product": "Pneumatic mechanics (2+1) plus air tanks",
+          "amount_eur": 290.0
+        },
+        {
+          "sku": "A200-11b",
+          "product": "Aluminum landing-gear legs and wheels (2+1)",
+          "amount_eur": 490.0
+        },
+        {
+          "sku": "A200-11c",
+          "product": "Wheel set (2+1)",
+          "amount_eur": 225.0
+        }
+      ],
+      "availability": "Not stated; this 2014 document is not evidence of a current offer or stock.",
+      "coverage_limit": "Historical scope reference only. The component prices total EUR 1005 while the listed A200-11 bundle is EUR 1000; do not add the bundle and its component options. The list says legs and wheels but does not establish brake contents, current availability, or the valve/line contents required by the modeled pneumatic_system row. Keep foreign currency separate and do not map this as current USD."
+    },
+    {
+      "id": "sebart_a200_electric_gear_2026_list_comparator",
+      "brand": "SebArt",
+      "source_type": "Current official price-list comparator",
+      "document_date": "2026",
+      "url": "https://sebart.it/download/sebart-pricelist.pdf",
+      "currency": "EUR",
+      "price_basis": "Official list states 20% VAT; stock and lead time are not stated.",
+      "variants": [
+        {
+          "sku": "A200-EL set",
+          "product": "Complete electric landing-gear set for Avanti S 2.3 m",
+          "amount_eur": 650.0
+        },
+        {
+          "sku": "A200-EL-1",
+          "product": "Electric mechanics set only",
+          "amount_eur": 452.0
+        },
+        {
+          "sku": "A200-EL-2",
+          "product": "Electric legs (2+1) and wheel set only",
+          "amount_eur": 387.0
+        },
+        {
+          "sku": "A200-EL-3",
+          "product": "Electric wheel set (2+1)",
+          "amount_eur": 199.0
+        },
+        {
+          "sku": "A200-EL-7",
+          "product": "Landing-gear and brakes control box",
+          "amount_eur": 46.0
+        }
+      ],
+      "availability": "Price list does not state stock or lead time.",
+      "coverage_limit": "Electric-only comparator for the 2.3 m listing. It does not price the authored 2.0 m Avanti's pneumatic retracts or air system and is kept in EUR. The current list does not show A200-11 or A200-13; absence from the list does not establish discontinuation."
+    }
+  ],
+  "already_catalogued_comparators_not_allocated": [
+    {
+      "offer_id": "jet_retracts_jp_hobby_er150_avanti",
+      "source_file": "research/crash-economics/price-research-fleet.json",
+      "sku": "JP EROLEB-150SA",
+      "amount_usd": 780.0,
+      "availability": "In stock at TM Hobby in the 2026-10-15 observation",
+      "reason_not_allocated": "Electric gear and brake set for 2.0 m Avanti S; the authored Avanti uses pneumatic retracts and a separate pneumatic system. This compatible-size electric product cannot price those pneumatic rows."
+    },
+    {
+      "offer_id": "sebart-avanti-a200-arf-electric-gear-comparator-gator",
+      "source_file": "research/crash-economics/price-research-fleet.json",
+      "sku": "SEBA227-Yellow",
+      "amount_usd": 3124.95,
+      "availability": "Only 3 left at Gator RC in the 2026-10-15 observation",
+      "reason_not_allocated": "Whole-aircraft ARF with electric gear/brakes, not a pneumatic retract set. The aircraft package is already catalogued and must not be added to component prices."
+    }
+  ],
+  "unresolved_exact_price_gaps": [
+    {
+      "aircraft_id": "sebart-avanti-s-a200-p100rx",
+      "inventory_ids": ["gear_main_left", "gear_main_right", "gear_nose", "pneumatic_system", "thrust_tube"],
+      "gap": "No current in-stock USD offer was verified for the exact pneumatic A200-11 gear set and the P100-RX A200-13 thrust tube. The only exact tube retailer listing found is EUR 139 and out of stock. The SebArt manual says the pneumatic gear's dual air valve is not included; complete valves/lines scope remains separate."
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "inventory_ids": ["gear_main_left", "gear_main_right", "gear_tail"],
+      "gap": "No current exact 2.82 m P-51 retract/strut/door offer was identified. The physical inventory does not identify an installed manufacturer or SKU; smaller P-51 kits and general retracts are not substituted."
+    },
+    {
+      "aircraft_id": "gp-extra-300s-60",
+      "inventory_ids": ["landing_gear_main", "landing_gear_tail"],
+      "gap": "No current aircraft-specific USD replacement offer was verified for the fixed main assembly or tailwheel. General 60-inch Extra gear and marketplace listings are not treated as exact replacements for the Great Planes .60 inventory."
+    }
+  ],
+  "integration_recommendations": [
+    "Keep existing Turbo Timber gear_main and gear_tail economic amounts null until the fiction-to-commercial parts crosswalk and one-time allocation of EFL5258 across the two groups are explicit.",
+    "Do not add EFL-1249 and EFL105254 together; both are listed at USD 16.99, and their relationship and package contents are not established.",
+    "Keep Avanti pneumatic gear, pneumatic_system, and thrust_tube unpriced in USD. Preserve EUR observations separately; do not substitute the current electric ER-150 or electric ARF package.",
+    "Retain unknown amounts for P-51 and GP Extra gear until an exact installed part identity or a clearly labeled economic proxy is supported by a current source."
+  ]
+}

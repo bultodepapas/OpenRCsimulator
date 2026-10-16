@@ -518,7 +518,7 @@ func _rebuild_details() -> void:
 	var identity_value: Variant = _report.get("identity", {})
 	var identity: Dictionary = identity_value if identity_value is Dictionary else {}
 	var price_date: Variant = _report.get("price_date")
-	_add_detail_text(tr("Price date: %s") % (str(price_date) if price_date != null and str(price_date) != "" else tr("unavailable")), true)
+	_add_detail_text(tr("Catalog snapshot: %s") % (str(price_date) if price_date != null and str(price_date) != "" else tr("unavailable")), true)
 	var valuation: Variant = _report.get("valuation_kind")
 	_add_detail_text(tr("Valuation: %s") % (_humanize_identifier(str(valuation)) if valuation != null and str(valuation) != "" else tr("method unavailable")), true)
 	var aircraft_name := str(_report.get("aircraft_name", identity.get("aircraft_id", "")))
@@ -566,6 +566,9 @@ func _rebuild_details() -> void:
 			var observed_on := str(line.get("observed_on", ""))
 			if observed_on != "":
 				_add_detail_text(tr("Observed: %s") % observed_on, true)
+			var availability := str(line.get("availability", ""))
+			if availability != "":
+				_add_detail_text(tr("Availability when observed: %s") % availability, true)
 			var source_url := str(line.get("source_url", ""))
 			if source_url.begins_with("https://"):
 				_add_detail_source(source_url)
@@ -599,6 +602,8 @@ func _add_replacement_comparison(currency: String) -> void:
 	_add_detail_section(tr("Replacement parts comparison"))
 	_add_detail_text(tr("Parts only. Inspection, repairs and labor are separate; this comparison is not added to the accident total."), true)
 	var proven: bool = value.get("optimality_proven") == true and status == "optimal" and _valid_minor(value.get("total_cost_cents")) != null
+	var legacy: bool = value.get("format") == "openrc-replacement-comparison v1"
+	proven = proven and not legacy
 	_add_detail_money(tr("Lowest priced combination for these parts") if proven else tr("Provisional parts estimate"), value.get("total_cost_cents"), currency)
 	if not proven:
 		var explanation := tr("Some package prices are unknown; the cheapest option is unresolved.")
@@ -608,6 +613,8 @@ func _add_replacement_comparison(currency: String) -> void:
 			explanation = tr("No compatible combination covers all requested parts.")
 		elif status == "cost_out_of_range":
 			explanation = tr("Parts estimate exceeds the supported amount range.")
+		if legacy:
+			explanation = tr("Historical estimate; itemized package coverage was not saved.")
 		_add_detail_text(explanation, true)
 	if value.get("assessment_complete") != true:
 		_add_detail_text(tr("Other damage or inspection costs remain unresolved."), true)

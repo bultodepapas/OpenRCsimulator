@@ -181,6 +181,15 @@ static func quote(
 		candidate_catalog.clear()
 		catalog_omitted = true
 	var selected_provenance: Dictionary = _bounded_selected_provenance(optimized.get("selected_provenance", []))
+	var selected_lines: Array = []
+	for candidate: Dictionary in optimizer_candidates:
+		if candidate.id in optimized.get("selected_candidate_ids", []):
+			var coverage: Array = candidate.coverage_ids.duplicate()
+			coverage.sort()
+			selected_lines.append({"candidate_id": candidate.id, "coverage_ids": coverage, "cost_cents": candidate.cost_cents})
+	selected_lines.sort_custom(func(left: Dictionary, right: Dictionary) -> bool:
+		return String(left.candidate_id) < String(right.candidate_id)
+	)
 	return {
 		"status": optimizer_status,
 		"optimizer_status": optimizer_status,
@@ -194,6 +203,7 @@ static func quote(
 		"total_cost_cents": optimized.get("total_cost_cents"),
 		"required_unit_ids": required_unit_ids,
 		"selected_candidate_ids": optimized.get("selected_candidate_ids", []).duplicate(true),
+		"selected_lines": selected_lines,
 		"selected_provenance": selected_provenance.entries,
 		"selected_provenance_truncated": selected_provenance.truncated,
 		"candidate_catalog": candidate_catalog,
@@ -297,6 +307,7 @@ static func _base_result(
 		"total_cost_cents": total_cost_cents,
 		"required_unit_ids": required_unit_ids.duplicate(true),
 		"selected_candidate_ids": [],
+		"selected_lines": [],
 		"selected_provenance": [],
 		"selected_provenance_truncated": false,
 		"candidate_catalog": [],

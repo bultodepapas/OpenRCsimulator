@@ -261,6 +261,10 @@ Download only identified missing free assets. Pin exact version/commit/hash, ret
 
 ## 9. Phased implementation
 
+### Delivered refinement · UI-23-R5 · measured menu cost
+
+Volume preview no longer rebuilds screen themes, and unchanged Home layout passes reuse their font overrides and gradients. Five alternating reference/candidate runs, functional regressions and native 720p/540p/4K captures are retained in [UI-23-R5](research/menu-investigations/UI-23-R5/README.md). These are CPU handler measurements; no general flight-FPS improvement is claimed.
+
 ### Delivered refinement · UI-23-R4 · resolution and reflow
 
 1. **Measure:** exercise EN/ES at 100% and 200% text, from 960×540 through 4K, including 4:3, 16:10 and ultrawide canvases. Resize the same open screen from wide to narrow and back; distinguish physical pixels from the logical canvas.

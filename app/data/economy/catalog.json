@@ -3,10 +3,10 @@
   "currency": "USD",
   "price_date": "2026-10-16",
   "generated_from": {
-    "price_catalog_sha256": "5efacc93c3a13a523bd815f3a75fe845f601340d101161009df7909d4b3b2720",
+    "price_catalog_sha256": "159b5cff7b59e40895b503c371d87b9e287f9b37e348a5c4faa42b5b533b9414",
     "aircraft_costing_sha256": "0488f842e50962f703840e0be8a1b4bdbc624b87c276f0af658d088b1a2530a2",
     "aircraft_catalog_sha256": "e0790acb9b1a5097d9d3cbcb564e72f074940a3813b52f70edf1c44dae5bc60c",
-    "price_research_components_sha256": "4f562870b5a7148dc1663f7598fbeba0de20e925456d3cf8367c88d1a4f4f996",
+    "price_research_components_sha256": "df0055da490b492f193f97021cf6639f01dc525a1793027bd68ed812f5fda494",
     "price_research_fleet_sha256": "85026093f0172a0692e6b1c3c1813b2e8770ba0b13dbf04f033923223a002f13"
   },
   "products": [
@@ -308,6 +308,33 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "o_s_engines_25702000",
+      "brand": "O.S. Engines",
+      "sku": "25702000",
+      "name": "MAX-55AX crankshaft",
+      "category": "engine_crankshaft",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "o_s_engines_40625010",
+      "brand": "O.S. Engines",
+      "sku": "40625010",
+      "name": "F-4051 silencer for FS-64V",
+      "category": "engine_silencer",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "o_s_engines_4ay02000",
+      "brand": "O.S. Engines",
+      "sku": "4AY02000",
+      "name": "FS-64V crankshaft",
+      "category": "engine_crankshaft",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "o_s_engines_osmg0557",
       "brand": "O.S. Engines",
       "sku": "OSMG0557",
@@ -351,6 +378,15 @@
       "category": "receiver",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
+    },
+    {
+      "id": "savox_csc0254mg",
+      "brand": "Savox",
+      "sku": "CSC0254MG",
+      "name": "Top and bottom servo case set with screws",
+      "category": "servo_replacement_case",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "representation_permission_recorded"
     },
     {
       "id": "savox_sa1230sgp",
@@ -411,6 +447,15 @@
       "brand": "Savox",
       "sku": "SGSA1258TG",
       "name": "SA1258 servo gear set with bearings",
+      "category": "servo_replacement_gears",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "representation_permission_recorded"
+    },
+    {
+      "id": "savox_sgsb2270sg",
+      "brand": "Savox",
+      "sku": "SGSB2270SG",
+      "name": "Servo gear set with bearings",
       "category": "servo_replacement_gears",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "representation_permission_recorded"
@@ -706,6 +751,42 @@
       "notes": "Observed 2026-10-15. Exact named model for experimental Stik FS-64V; not a currently available purchase. Manufacturer labels the amount Sale price but shows no comparison price. MAS1460 identity is corroborated by https://www.amainhobbies.com/master-airscrew-14x6-kseries-propeller-mas1460/p97682 (its June 2026 backorder date is stale and is not used for availability). Manufacturer lists 58.1 g; modeled 60 g remains an installation estimate and is not modified. No installation or performance qualification implied."
     },
     {
+      "id": "os-fs64v-crankshaft-4ay02000",
+      "product_id": "o_s_engines_4ay02000",
+      "amount_minor": 5499,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.towerhobbies.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_us_retailer_listing_price",
+      "availability": "In Stock; quantity control and Add to Cart are displayed.",
+      "sold_package_quantity": 1,
+      "package_description": "1 crankshaft.",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.towerhobbies.com/product/crankshaft-o.s.-fs-64v/OSMG903.html",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. Candidate internal-engine repair part for FS-64V only. Retailer product entry names FS-64V and identifies manufacturer part 4AY02000; O.S. lists the FS-64V manual as the engine parts reference. No compatibility is inferred to FS-62V, FS-70, MAX-55AX, or another engine family. No crash-repair likelihood, inspection cost, or labor is included. Price excludes tax and shipping."
+    },
+    {
+      "id": "os-fs64v-f4051-silencer-40625010",
+      "product_id": "o_s_engines_40625010",
+      "amount_minor": 4499,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.towerhobbies.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_us_retailer_listing_price",
+      "availability": "Add to Cart is displayed; the page does not state an explicit stock quantity or state.",
+      "sold_package_quantity": 1,
+      "package_description": "1 F-4051 silencer.",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.towerhobbies.com/product/f-4051-silencer-o.s.-fs-64v/OSMG906.html",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. Candidate exhaust-part repair/replacement price for FS-64V only. Retailer entry names F-4051 and FS-64V and identifies manufacturer part 40625010; O.S. describes F-4051 as the FS-V-series silencer on its FS-64V page. Does not imply that a damaged engine needs a silencer replacement or that another O.S. silencer fits. No crash-repair likelihood, inspection cost, or labor is included. Price excludes tax and shipping."
+    },
+    {
       "id": "os-fs64v-osmg901",
       "product_id": "o_s_engines_osmg901",
       "amount_minor": 54999,
@@ -740,6 +821,24 @@
       "source_url": "https://www.horizonhobby.com/product/fs-95v-ringed-4-stroke-.95-airplane-glow-engine/OSMG0900.html",
       "evidence_quality": "Horizon Hobby product page content observed 2026-10-15; page lists $484.99 and November backorder. An older search result showed a different price, so refresh before purchase.",
       "notes": "Observed 2026-10-15. Fuel is needed separately. Horizon lists sport/aerobatic prop sizes 13x7-9 and 14x6-8, or scale 15x6-8; these values are engine guidance, not a quantified crash-damage relationship."
+    },
+    {
+      "id": "os-max55ax-crankshaft-25702000",
+      "product_id": "o_s_engines_25702000",
+      "amount_minor": 4999,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.towerhobbies.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_us_retailer_listing_price",
+      "availability": "In Stock; quantity control and Add to Cart are displayed.",
+      "sold_package_quantity": 1,
+      "package_description": "1 crankshaft.",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.towerhobbies.com/product/crankshaft-55ax/OSMG4467.html",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. Candidate internal-engine repair part for MAX-55AX only. Exact model and part-number match in the O.S. MAX-55AX parts diagram/list. The MAX-55AX is an economic replacement-price proxy for the historical MAX-61FX group; this crankshaft is not cross-compatible evidence for a MAX-61FX. No crash-repair likelihood, inspection cost, or labor is included. Price excludes tax and shipping."
     },
     {
       "id": "os-max55ax-osmg0557",
@@ -958,6 +1057,24 @@
       "notes": "Observed 2026-10-15. Nitro Hobbies lists $134.19. SavoxUSA's cached manufacturer listing showed $134.19 sale / $159.49 comparison and Sold Out, crawled about 4 months earlier (https://www.savoxusa.com/products/savsb2270sgp-high-voltage-brushless-digital). Team Savox specs at https://www.teamsavox.com/product/sb-2270sgp/ list 6.0-8.4 V and CAR/AIRPLANE application; this is a high-torque candidate, not a jet-specific certification. The baseline receiver pack is generic 4.8 V, so this is only a price proxy; no compatibility is asserted."
     },
     {
+      "id": "savox-sb2270sgp-gear-set-sgsb2270sg",
+      "product_id": "savox_sgsb2270sg",
+      "amount_minor": 3899,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "servos.net",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_us_retailer_listing_price",
+      "availability": "Add to cart is displayed; on-hand quantity is not shown.",
+      "sold_package_quantity": 1,
+      "package_description": "1 gear-set package with bearings; individual package contents are not itemized.",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://servos.net/collections/replacement-parts/products/savsgsb2270sg-gear-set-with-bearings",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. Candidate gear-repair part price, separate from the complete-servo replacement price. Manufacturer SB2270SGP product page lists SGSB2270SG in its Spare Parts section. Does not establish that impact-damaged electronics, motor, bearings, or case are serviceable. Does not establish installation compatibility with a project aircraft position. Price excludes tax and shipping."
+    },
+    {
       "id": "savox-sc0252mgp",
       "product_id": "savox_savsc0252mgp",
       "amount_minor": 3399,
@@ -1010,6 +1127,24 @@
       "source_url": "https://nitrohobbies.com/sc0254mgp/",
       "evidence_quality": "Direct US retailer product page lists exact Plus SKU, price, and out-of-stock status; official SavoxUSA product snippet is cached.",
       "notes": "Observed 2026-10-15. Nitro Hobbies lists $34.99 and out of stock. SavoxUSA's cached manufacturer listing showed $38.49 sale / $43.99 comparison and Sold Out, crawled about 3 months earlier (https://www.savoxusa.com/products/savsc0254mgp-standard-digital-servo-0-14sec). Candidate price only: four generic servos are present in the project baseline; no Savox installation or compatibility qualification is implied."
+    },
+    {
+      "id": "savox-sc0254mgp-case-csc0254mg",
+      "product_id": "savox_csc0254mg",
+      "amount_minor": 549,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "servos.net",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_us_retailer_listing_price",
+      "availability": "Add to cart is displayed; on-hand quantity is not shown.",
+      "sold_package_quantity": 1,
+      "package_description": "1 top-and-bottom case set with screws; screw count is not specified on the listing.",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://servos.net/products/savcsc0254mg-top-bottom-servo-case-with-4",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. Candidate case-repair part price, separate from the complete-servo replacement price. Manufacturer product page lists CSC0254MG in the SC0254MGP Spare Parts section. Does not establish that a crashed servo remains repairable or that a case swap restores its calibration or service life. Does not establish installation compatibility with a project aircraft position. Price excludes tax and shipping."
     },
     {
       "id": "savox-sh0255mgp",

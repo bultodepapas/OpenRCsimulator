@@ -1,0 +1,57 @@
+[
+  {
+    "file": "app/app_root.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "file": "app/ui/home.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "file": "app/tests/test_ui_home.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "file": "app/tests/test_ui_settings_integration.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "file": "app/tests/test_settings_ui.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "file": "app/tests/test_ui_scale.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "file": "app/tests/test_conditions_responsive.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "file": "app/tests/test_ui_time_of_day.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "file": "app/tests/test_ui_weather_sliders.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "file": "app/tests/test_ui_modal_responsive.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "file": "app/tests/test_menu_audio.gd",
+    "exit": 0,
+    "diagnostics": []
+  }
+]

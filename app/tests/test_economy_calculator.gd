@@ -156,6 +156,16 @@ func _test_repair_competes_with_replacement() -> void:
 
 
 func _test_invalid_quantity_and_fractional_cents() -> void:
+	var empty_assessment: Dictionary = Calculator.calculate(_dossier(), _assessment(false))
+	_check("empty assessment remains a valid no-damage result", empty_assessment["ok"] and empty_assessment["complete"] and empty_assessment["total_minor"] == 0 and empty_assessment["lines"].is_empty(), str(empty_assessment))
+	var positive_quantity: Dictionary = _assessment(false)
+	positive_quantity["components"] = {"propeller": {"disposition": "replace", "quantity": 1}}
+	var positive_result: Dictionary = Calculator.calculate(_dossier(), positive_quantity)
+	_check("positive affected quantity remains billable", positive_result["ok"] and positive_result["complete"] and positive_result["total_minor"] == 539 and positive_result["lines"][0]["quantity"] == 1, str(positive_result))
+	var zero_quantity: Dictionary = _assessment(false)
+	zero_quantity["components"] = {"propeller": {"disposition": "replace", "quantity": 0}}
+	var zero_result: Dictionary = Calculator.calculate(_dossier(), zero_quantity)
+	_check("zero affected quantity cannot produce a complete free replacement", not zero_result["ok"] and _has_error(zero_result, "expected an integer in 1.."), str(zero_result["errors"]))
 	var assessment: Dictionary = _assessment(false)
 	assessment["components"] = {"propeller": {"disposition": "replace", "quantity": 2}}
 	var quantity_result: Dictionary = Calculator.calculate(_dossier(), assessment)

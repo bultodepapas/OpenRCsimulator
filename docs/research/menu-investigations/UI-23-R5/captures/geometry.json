@@ -1,0 +1,137 @@
+[
+  {
+    "image": "en-1280x720-100-home.webp",
+    "logical": "(1280.0, 720.0)",
+    "pixels": [
+      1280,
+      720
+    ],
+    "window_mode": 0
+  },
+  {
+    "image": "en-1280x720-100-sound.webp",
+    "logical": "(1280.0, 720.0)",
+    "pixels": [
+      1280,
+      720
+    ],
+    "window_mode": 0
+  },
+  {
+    "image": "en-1280x720-100-weather.webp",
+    "logical": "(1280.0, 720.0)",
+    "pixels": [
+      1280,
+      720
+    ],
+    "window_mode": 0
+  },
+  {
+    "image": "en-1280x720-100-time.webp",
+    "logical": "(1280.0, 720.0)",
+    "pixels": [
+      1280,
+      720
+    ],
+    "window_mode": 0
+  },
+  {
+    "image": "en-1280x720-100-sky.webp",
+    "logical": "(1280.0, 720.0)",
+    "pixels": [
+      1280,
+      720
+    ],
+    "window_mode": 0
+  },
+  {
+    "image": "es-960x540-200-home.webp",
+    "logical": "(960.0, 540.0)",
+    "pixels": [
+      960,
+      540
+    ],
+    "window_mode": 0
+  },
+  {
+    "image": "es-960x540-200-sound.webp",
+    "logical": "(960.0, 540.0)",
+    "pixels": [
+      960,
+      540
+    ],
+    "window_mode": 0
+  },
+  {
+    "image": "es-960x540-200-weather.webp",
+    "logical": "(960.0, 540.0)",
+    "pixels": [
+      960,
+      540
+    ],
+    "window_mode": 0
+  },
+  {
+    "image": "es-960x540-200-time.webp",
+    "logical": "(960.0, 540.0)",
+    "pixels": [
+      960,
+      540
+    ],
+    "window_mode": 0
+  },
+  {
+    "image": "es-960x540-200-sky.webp",
+    "logical": "(960.0, 540.0)",
+    "pixels": [
+      960,
+      540
+    ],
+    "window_mode": 0
+  },
+  {
+    "image": "es-3840x2160-100-home.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      3840,
+      2160
+    ],
+    "window_mode": 3
+  },
+  {
+    "image": "es-3840x2160-100-sound.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      3840,
+      2160
+    ],
+    "window_mode": 3
+  },
+  {
+    "image": "es-3840x2160-100-weather.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      3840,
+      2160
+    ],
+    "window_mode": 3
+  },
+  {
+    "image": "es-3840x2160-100-time.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      3840,
+      2160
+    ],
+    "window_mode": 3
+  },
+  {
+    "image": "es-3840x2160-100-sky.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      3840,
+      2160
+    ],
+    "window_mode": 3
+  }
+]

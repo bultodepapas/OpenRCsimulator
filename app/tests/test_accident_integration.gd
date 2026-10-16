@@ -97,12 +97,16 @@ func _run() -> void:
 	check("archive preserves the comparison snapshot without repricing", archived_comparison.get("total_cost_cents") == comparison.total_cost_cents
 		and archived_comparison.get("status") == comparison.status and archived_comparison.get("selected_provenance") == comparison.selected_provenance
 		and archived_comparison.get("required_unit_ids") == comparison.required_unit_ids and archived_comparison.get("catalog_hash") == comparison.catalog_hash)
-	for defect: String in ["negative_amount", "wrong_catalog", "false_complete"]:
+	for defect: String in ["negative_amount", "wrong_catalog", "false_complete", "zero_sum", "empty_coverage"]:
 		var malformed: Dictionary = incident.report.duplicate(true)
 		if defect == "negative_amount":
 			malformed.replacement_comparison.total_cost_cents = -1
 		elif defect == "wrong_catalog":
 			malformed.replacement_comparison.catalog_hash = "different-catalog"
+		elif defect == "zero_sum":
+			malformed.replacement_comparison.total_cost_cents = 0
+		elif defect == "empty_coverage":
+			malformed.replacement_comparison.selected_lines[0].coverage_ids = []
 		else:
 			malformed.replacement_comparison.complete = true
 		var file := FileAccess.open(ARCHIVE, FileAccess.WRITE)

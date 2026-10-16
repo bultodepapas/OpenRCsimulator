@@ -21,6 +21,7 @@ func _capture() -> void:
 	var expanded := false
 	var scroll_to_bottom := false
 	var show_parts_comparison := false
+	var show_price_sources := false
 	var settled := false
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--out="):
@@ -41,6 +42,9 @@ func _capture() -> void:
 		elif argument == "--parts-comparison":
 			expanded = true
 			show_parts_comparison = true
+		elif argument == "--price-sources":
+			expanded = true
+			show_price_sources = true
 		elif argument == "--settled":
 			settled = true
 		elif argument == "--details-bottom":
@@ -120,6 +124,7 @@ func _capture() -> void:
 			var source: Dictionary = offer_sources[offer_id]
 			line["source_url"] = str(source.get("source_url", ""))
 			line["observed_on"] = str(source.get("observed_on", ""))
+			line["availability"] = str(source.get("availability", ""))
 		enriched_lines.append(line)
 	report_data["lines"] = enriched_lines
 	report_data["aircraft_name"] = "Jensen Das Ugly Stik 60"
@@ -174,10 +179,11 @@ func _capture() -> void:
 		var details_bar := details_scroll.get_v_scroll_bar()
 		details_scroll.scroll_vertical = int(details_bar.max_value)
 		await process_frame
-	elif show_parts_comparison:
+	elif show_parts_comparison or show_price_sources:
 		var details_scroll := report.find_child("DamageDetailsScroll", true, false) as ScrollContainer
+		var target_text: String = report.tr("Observed: %s") % "2026-10-15" if show_price_sources else report.tr("Replacement parts comparison")
 		for child: Node in report._details_content.get_children():
-			if child is Label and child.text == report.tr("Replacement parts comparison"):
+			if child is Label and child.text == target_text:
 				details_scroll.scroll_vertical = int(child.position.y)
 				break
 		await process_frame
@@ -216,6 +222,7 @@ func _capture() -> void:
 		"details_expanded": expanded,
 		"details_scrolled_to_bottom": scroll_to_bottom,
 		"parts_comparison": report_data.get("replacement_comparison", {}),
+		"price_sources_visible": show_price_sources,
 		"aircraft_id": "jensen-das-ugly-stik-60",
 		"known_subtotal_minor": report_data.get("known_subtotal_minor"),
 		"complete": report_data.get("complete"),

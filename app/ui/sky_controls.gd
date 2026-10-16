@@ -3,7 +3,6 @@ extends VBoxContainer
 
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Widgets := preload("res://ui/widgets.gd")
-const ResponsiveGrid := preload("res://ui/responsive_grid.gd")
 signal focus_order_changed
 signal night_requested
 
@@ -234,7 +233,8 @@ func _update_responsive_layout() -> void:
 		return
 	for grid: GridContainer in _responsive_grids:
 		var previous_columns: int = grid.columns
-		var two_column_width: float = ResponsiveGrid.two_column_minimum_width(grid)
-		var desired_columns: int = 1 if two_column_width > available_width else 2
-		if previous_columns != desired_columns:
-			grid.columns = desired_columns
+		grid.columns = 2
+		var two_column_width: float = grid.get_combined_minimum_size().x
+		grid.columns = 1 if two_column_width > available_width else 2
+		if previous_columns != grid.columns:
+			grid.update_minimum_size()
