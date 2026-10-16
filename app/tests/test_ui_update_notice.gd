@@ -110,8 +110,7 @@ func _route() -> void:
 	root.add_child(plain)
 	await ui.settle()
 	_check("development run: no checker, no request", plain.update_checker == null and plain.find_child("UpdateChecker", true, false) == null)
-	plain.queue_free()
-	await ui.settle()
+	await ui.close_app(plain)
 
 	var server := FakeReleases.new()
 	if not server.start(FileAccess.get_file_as_string(FIXTURE)):
@@ -133,7 +132,7 @@ func _route() -> void:
 	_check("Fly keeps the focus while the notice appears", ui.focus_name() == "Fly", ui.focus_name())
 	if notice == null:
 		server.stop()
-		app.queue_free()
+		await ui.close_app(app)
 		return
 	notice.download_button.grab_focus()
 	await ui.tap(KEY_ENTER)
@@ -172,8 +171,7 @@ func _route() -> void:
 	app.end_flight()
 	await ui.settle()
 	_check("after hiding, the rebuilt Home has no card", app.home != null and app.home.update_notice == null)
-	app.queue_free()
-	await ui.settle()
+	await ui.close_app(app)
 	# Opt-out in the settings file: no checker at all.
 	var prefs: Dictionary = Preferences.load_from(PREFS)
 	prefs.check_updates = false
@@ -186,8 +184,7 @@ func _route() -> void:
 	await ui.settle()
 	_check("[updates] check=false: no checker, no request, no card", quiet.update_checker == null and server.requests.size() == 1
 		and quiet.home.update_notice == null)
-	quiet.queue_free()
-	await ui.settle()
+	await ui.close_app(quiet)
 	server.stop()
 
 

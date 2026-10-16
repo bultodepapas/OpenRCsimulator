@@ -2,6 +2,7 @@ extends SceneTree
 
 const Activity = preload("res://vehicles/ground/ground_scene.gd")
 const AppRoot = preload("res://app_root.gd")
+const UiDriver = preload("res://tests/ui_driver.gd")
 const NEUTRAL := {"throttle": 0.0, "steering": 0.0, "brake": 0.0, "reverse": false, "armed": true}
 var checks := 0
 var failures := 0
@@ -22,6 +23,7 @@ func _factory() -> Node3D:
 	return activity
 
 func _run() -> void:
+	var ui: RefCounted = UiDriver.new(self)
 	TranslationServer.set_locale("en")
 	var app := AppRoot.new()
 	app.user_args = PackedStringArray()
@@ -33,7 +35,7 @@ func _run() -> void:
 	await process_frame
 	check(app.home != null, "Home opens")
 	if app.home == null:
-		app.free()
+		await ui.close_app(app)
 		quit(1)
 		return
 	var aircraft_id: String = app.home.aircraft_id
@@ -47,7 +49,7 @@ func _run() -> void:
 	var activity: Node3D = app.ground_vehicle
 	check(activity != null, "Home launches MONSTER CAR 2")
 	if activity == null:
-		app.free()
+		await ui.close_app(app)
 		quit(1)
 		return
 	activity.set_physics_process(false)
@@ -126,8 +128,7 @@ func _run() -> void:
 	await process_frame
 	check(app.home != null and app.home.aircraft_id == aircraft_id, "return preserves aircraft selection")
 	check(app.home != null and app.home.ground_vehicle_id == "monster-car-2", "return remembers chosen car")
-	app.free()
-	await process_frame
+	await ui.close_app(app)
 	var direct := AppRoot.new()
 	direct.user_args = PackedStringArray(["--vehicle=monster-car-2"])
 	direct.ground_vehicle_factory = _factory
@@ -135,7 +136,6 @@ func _run() -> void:
 	await process_frame
 	await process_frame
 	check(direct.ground_vehicle != null and direct.ground_vehicle.vehicle_id == "monster-car-2", "CLI selects nitro car")
-	direct.free()
-	await process_frame
+	await ui.close_app(direct)
 	print("RCV nitro activity: %d checks, %d failures" % [checks, failures])
 	quit(0 if failures == 0 else 1)

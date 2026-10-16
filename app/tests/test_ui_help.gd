@@ -182,8 +182,7 @@ func _run() -> void:
 	await ui.tap(KEY_ESCAPE)
 	_check("Esc again continues the flight", app.pause_menu == null and not session.sim.paused)
 
-	app.queue_free()
-	await ui.settle()
+	await ui.close_app(app)
 
 	# First-flight hint: once, three items, no keyboard focus, only flown time counts, remembered.
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
@@ -223,8 +222,7 @@ func _run() -> void:
 	await ui.tap(KEY_ENTER) # Fly again
 	await ui.settle()
 	_check("next flight: no hint", app.flight.find_children("FirstFlightHint", "", true, false).is_empty())
-	app.queue_free()
-	await ui.settle()
+	await ui.close_app(app)
 	var direct: Node = load("res://app_root.tscn").instantiate()
 	direct.user_args = PackedStringArray(["--quick-flight"])
 	direct.preferences_path = "user://test_ui_help_never_written.cfg"
@@ -232,8 +230,7 @@ func _run() -> void:
 	await ui.settle()
 	_check("direct route: no hint, no settings", direct.flight.find_children("FirstFlightHint", "", true, false).is_empty()
 		and not FileAccess.file_exists("user://test_ui_help_never_written.cfg"))
-	direct.queue_free()
-	await ui.settle()
+	await ui.close_app(direct)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	print("all UI help checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)

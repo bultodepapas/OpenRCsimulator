@@ -117,7 +117,7 @@ func _default_and_switch() -> void:
 			untranslated.append(c.text)
 	_check("every Home text resolves from English or matches an explicit Spanish translation", untranslated.is_empty(), str(untranslated))
 	_check("choice saved", Preferences.load_from(PREFS).language == "es")
-	app.free()
+	await ui.close_app(app)
 
 	var again := _app(PackedStringArray())
 	root.add_child(again)
@@ -126,7 +126,7 @@ func _default_and_switch() -> void:
 	again.home.language_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	_check("and cycles back to English", TranslationServer.get_locale() == "en" and Preferences.load_from(PREFS).language == "en")
-	again.free()
+	await ui.close_app(again)
 
 
 func _direct_route() -> void:
@@ -137,7 +137,7 @@ func _direct_route() -> void:
 	await ui.settle()
 	_check("direct flight: English, no settings file created", TranslationServer.get_locale() == "en" and not FileAccess.file_exists(PREFS)
 		and app.flight != null and app.home == null)
-	app.free()
+	await ui.close_app(app)
 	_write("[meta]\nschema=1\n[ui]\nlanguage=\"es\"\n")
 	var before := FileAccess.get_file_as_string(PREFS)
 	# A live quick flight verifies the direct route does not read or rewrite saved UI preferences.
@@ -146,7 +146,7 @@ func _direct_route() -> void:
 	await ui.settle()
 	_check("direct flight ignores a saved Spanish preference and leaves the file alone",
 		TranslationServer.get_locale() == "en" and FileAccess.get_file_as_string(PREFS) == before)
-	app.free()
+	await ui.close_app(app)
 
 
 func _app(args: PackedStringArray) -> Node:

@@ -159,7 +159,7 @@ func _run() -> void:
 	await button(JOY_BUTTON_A)
 	check("gamepad can end flight and return Home", app.flight == null and app.screens.is_top("home"))
 	await _test_helicopter_flow()
-	app.free()
+	await ui.close_app(app)
 	for suffix in ["", ".controllers", ".controllers.rollback", ".legacy_rc"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + suffix))
 	print("Controller menu: %d/%d checks passed" % [checks - failures, checks])

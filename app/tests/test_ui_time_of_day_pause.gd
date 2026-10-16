@@ -233,8 +233,7 @@ func _interactive_pause_edit() -> void:
 	_check("End flight returns Home with the accepted selection", app.flight == null and app.home != null
 		and app.home.lighting_config == night_draft and app.home_scene.lighting_config == night_draft
 		and Preferences.load_from(PREFS).lighting_config == night_draft)
-	app.queue_free()
-	await process_frame
+	await ui.close_app(app)
 
 
 func _direct_route_never_touches_preferences() -> void:
@@ -265,8 +264,7 @@ func _direct_route_never_touches_preferences() -> void:
 		app.flight.night_options == Preferences.NIGHT_DEFAULTS)
 	_check("direct route does not read or write the preference file", _read_text(DIRECT_PREFS) == SENTINEL
 		and not FileAccess.file_exists(DIRECT_PREFS + ".bad"), _read_text(DIRECT_PREFS))
-	app.queue_free()
-	await process_frame
+	await ui.close_app(app)
 
 
 func _assert_modal_bounds(dialog: CanvasLayer, locale: String, size: Vector2i) -> void:

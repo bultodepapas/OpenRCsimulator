@@ -420,9 +420,7 @@ func _new_app(preferences_path: String, field_path: String = FieldLoader.DEFAULT
 
 func _close_app(app: Node) -> void:
 	if app != null and is_instance_valid(app):
-		app.queue_free()
-	await process_frame
-	await process_frame
+		await ui.close_app(app)
 
 
 func _write_preferences(path: String, schema: int, language: String, aircraft: String, start_choice: String,

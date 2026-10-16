@@ -361,8 +361,7 @@ func _run() -> void:
 		and app.flight.session.weather_configuration() == saved.weather_config)
 	_check("fresh Home flight has passing evening and latency diagnostics", saved.time_of_day == "evening"
 		and app.flight._field_world_lighting and app.flight.get_node_or_null("LatencyPatch") != null)
-	app.queue_free()
-	await process_frame
+	await ui.close_app(app)
 	for path in [PREFS, PREFS + ".bad"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
@@ -396,8 +395,7 @@ func _run() -> void:
 		helicopter_flight != null and helicopter_flight.startup_error.is_empty()
 		and helicopter_session != null and helicopter_session.has_method("is_flyable")
 		and helicopter_session.is_flyable() and helicopter_flight.start_choice == "runway" and helicopter_session.start_choice == "ground" and not helicopter_session.power.armed)
-	helicopter_app.queue_free()
-	await process_frame
+	await ui.close_app(helicopter_app)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + ".bad"))
 
@@ -489,8 +487,7 @@ func _run() -> void:
 			home_helicopter_app.flight == null and home_helicopter_app.home != null
 			and home_helicopter_app.home.aircraft_id == "xcell-60-research"
 			and home_helicopter_app.home_scene.airplane.visual_family == "hx-700")
-	home_helicopter_app.queue_free()
-	await process_frame
+	await ui.close_app(home_helicopter_app)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + ".bad"))
 	print("all UI home checks passed" if _failures == 0 else "%d failed" % _failures)

@@ -120,8 +120,7 @@ func _run() -> void:
 		_check("End returns to one Home without node growth (%d, %d nodes)" % [cycle, _count(app)],
 			app.flight == null and app.screens.size() == 1 and _count(app) == initial_nodes
 			and root.gui_get_focus_owner() == app.home.fly_button)
-	app.queue_free()
-	await ui.settle()
+	await ui.close_app(app)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	print("all UI screen stack checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(0 if _failures == 0 else 1)

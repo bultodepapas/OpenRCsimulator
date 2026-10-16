@@ -3,6 +3,7 @@ const AppRoot = preload("res://app_root.gd")
 const Activity = preload("res://vehicles/ground/ground_scene.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
 const Frames = preload("res://render/frames.gd")
+const UiDriver = preload("res://tests/ui_driver.gd")
 var failures := 0
 var checks := 0
 
@@ -26,6 +27,7 @@ func _factory() -> Node3D:
 	return activity
 
 func _run() -> void:
+	var ui: RefCounted = UiDriver.new(self)
 	var app := AppRoot.new()
 	app.user_args = PackedStringArray()
 	app.preferences_path = "user://test_rcv_menu_settings.cfg"
@@ -35,7 +37,7 @@ func _run() -> void:
 	await process_frame # Deferred focus settles before a user can activate an entry.
 	check(app.home != null, "Home prepares")
 	if app.home == null:
-		app.free()
+		await ui.close_app(app)
 		quit(1)
 		return
 	var initial_aircraft: String = app.home.aircraft_id
@@ -59,7 +61,7 @@ func _run() -> void:
 	await process_frame
 	check(app.ground_vehicle != null and app.flight == null and app.home == null, "Home routes to ground session only")
 	if app.ground_vehicle == null:
-		app.free()
+		await ui.close_app(app)
 		quit(1)
 		return
 	app.ground_vehicle.set_physics_process(false)
@@ -93,8 +95,7 @@ func _run() -> void:
 	check(app.ground_vehicle == null and app.home != null, "truck returns to Home")
 	check(app.UiInput.selected_gamepad_id() == app.controllers.registry.selected_device_id("ui"), "returning Home restores its controller navigation ownership")
 	check(app.home.aircraft_id == initial_aircraft, "aircraft selection survives RC visit")
-	app.free()
-	await process_frame
+	await ui.close_app(app)
 	var direct := AppRoot.new()
 	# A shifted field makes hard-coded default terrain/spawn/pilot coordinates observable.
 	var custom: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(FieldLoader.DEFAULT_PATH))
@@ -129,8 +130,7 @@ func _run() -> void:
 		check(absf(pose[0] - 135.0) < 0.01 and absf(pose[1] + 90.0) < 0.01, "truck spawns at the shifted runway center")
 		check(truck.camera_rig.pilot_position.is_equal_approx(Frames.ned_to_render([120.0, -90.0, -1.7])), "driver camera uses the shared pilot station")
 	check(direct.preferences.is_empty() and not FileAccess.file_exists(direct.preferences_path), "direct route bypasses aircraft preferences")
-	direct.free()
-	await process_frame
+	await ui.close_app(direct)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(custom_path))
 	print("RCV menu: %d checks, %d failures" % [checks, failures])
 	quit(0 if failures == 0 else 1)

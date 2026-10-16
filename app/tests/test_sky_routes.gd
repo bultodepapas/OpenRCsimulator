@@ -1,5 +1,6 @@
 ## FW-78/82: the actual Home and paused-flight routes commit one detached sky selection.
 extends SceneTree
+const UiDriver := preload("res://tests/ui_driver.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Atmosphere := preload("res://render/atmosphere.gd")
@@ -18,6 +19,7 @@ func check(label: String, passed: bool) -> void:
 		printerr("FAIL " + label)
 
 func _run() -> void:
+	var ui: RefCounted = UiDriver.new(self)
 	var settings: Dictionary = Preferences.DEFAULTS.duplicate(true)
 	settings.time_of_day = "day"
 	settings.language = "en"
@@ -78,8 +80,7 @@ func _run() -> void:
 	# Avoid writing an unrelated flight recording on fixture teardown.
 	flight.recorder.detach()
 	flight.recorder.recording = false
-	root.remove_child(app)
-	app.free()
+	await ui.close_app(app)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	print("sky route checks=%d failures=%d" % [checks, failures])
 	quit(1 if failures else 0)

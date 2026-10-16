@@ -108,7 +108,7 @@ func _run() -> void:
 	var practice_reachable_from_home := await _tab_until("NavPractice")
 	_check("Home Practice tab is keyboard reachable", practice_reachable_from_home, ui.focus_name())
 	if not practice_reachable_from_home:
-		app.queue_free()
+		await ui.close_app(app)
 		ui = null
 		for _frame in 10:
 			await process_frame
@@ -126,8 +126,7 @@ func _run() -> void:
 	var menu: CanvasLayer = app.failure_menu
 	_check("Home opens the Failure screen", menu != null and app.screens.is_top("failures"))
 	if menu == null:
-		app.queue_free()
-		await process_frame
+		await ui.close_app(app)
 		quit(1)
 		return
 	_check("Home failure card fits the 1280×720 viewport", _card_fits_viewport(menu), _card_bounds_detail(menu))
@@ -159,7 +158,7 @@ func _run() -> void:
 	var fly_reachable := await _tab_until("Fly")
 	_check("Home Fly action is keyboard reachable after failure settings", fly_reachable, ui.focus_name())
 	if not fly_reachable:
-		app.queue_free()
+		await ui.close_app(app)
 		ui = null
 		for _frame in 10:
 			await process_frame
@@ -172,8 +171,7 @@ func _run() -> void:
 		main != null and main.failure_config == app.preferences.failure_config)
 	_check("flight notices start from the saved preference", main != null and main.failure_notifications)
 	if main == null:
-		app.queue_free()
-		await process_frame
+		await ui.close_app(app)
 		quit(1)
 		return
 	var scheduled_status: Dictionary = main.session.failure_status()
@@ -248,7 +246,7 @@ func _run() -> void:
 	var practice_reachable := await _tab_until("NavPractice")
 	_check("Home Practice page is keyboard reachable after flight end", practice_reachable, ui.focus_name())
 	if not practice_reachable:
-		app.queue_free()
+		await ui.close_app(app)
 		ui = null
 		for _frame in 10:
 			await process_frame
@@ -262,7 +260,7 @@ func _run() -> void:
 	fly_reachable = await _tab_until("Fly")
 	_check("Next flight Fly action is keyboard reachable", fly_reachable, ui.focus_name())
 	if not fly_reachable:
-		app.queue_free()
+		await ui.close_app(app)
 		ui = null
 		for _frame in 10:
 			await process_frame
@@ -274,7 +272,7 @@ func _run() -> void:
 	_check("next Home flight gets the updated failure plan on a new Main instance",
 		next_main != null and next_main != main and next_main.failure_config == app.preferences.failure_config)
 
-	app.queue_free()
+	await ui.close_app(app)
 	ui = null
 	for _frame in 10:
 		await process_frame

@@ -119,6 +119,5 @@ func transition() -> void:
 		var active: Node3D = flight.get_node("Field/treeline")
 		check("Home and flight use identical identities, positions and bounds", signature(active) == expected)
 		check("transition owns a fresh multimesh", active.get_child(0).multimesh.get_instance_id() != old_id)
-	app.queue_free()
-	await ui.settle()
+	await ui.close_app(app)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))

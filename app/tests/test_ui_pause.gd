@@ -254,8 +254,7 @@ func _run() -> void:
 	_check("5 cycles: no session, engine sound or pause menu left", _count(root, "FlightSession") == 0
 		and root.find_children("engine_sound", "", true, false).is_empty() and root.find_children("PauseMenu", "", true, false).is_empty())
 
-	app.queue_free()
-	await process_frame
+	await ui.close_app(app)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	print("all UI pause checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)

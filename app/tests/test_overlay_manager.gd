@@ -455,5 +455,4 @@ func _pause_preview() -> void:
 	await ui.tap(KEY_ESCAPE) # Continue
 	await ui.settle()
 	_check("continue shows them at the flight layer", overlays.visible and overlays.layer == Manager.FLIGHT_LAYER)
-	app.queue_free()
-	await process_frame
+	await ui.close_app(app)

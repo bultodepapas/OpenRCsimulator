@@ -38,7 +38,7 @@ func _run() -> void:
 	var home: Control = app.get("home")
 	_check("interactive app starts on Home", home != null and app.get("flight") == null)
 	if home == null:
-		app.queue_free()
+		await _ui.close_app(app)
 		quit(1)
 		return
 	_check("Home Fly is the focused real button", home.get("fly_button").has_focus())
@@ -50,7 +50,7 @@ func _run() -> void:
 	_check("exactly one Camera3D remains under the viewport", _count_nodes(root.get_viewport(), "Camera3D") == 1, str(_count_nodes(root.get_viewport(), "Camera3D")))
 	_check("exactly one WorldEnvironment remains under the viewport", _count_nodes(root.get_viewport(), "WorldEnvironment") == 1, str(_count_nodes(root.get_viewport(), "WorldEnvironment")))
 	if flight == null:
-		app.queue_free()
+		await _ui.close_app(app)
 		quit(1)
 		return
 	_check("aircraft shadow mask owns an isolated 3D world",
@@ -68,8 +68,7 @@ func _run() -> void:
 	_check("fixed capture state is exactly 1.5 simulation seconds", is_equal_approx(float(sim.call("time")), 1.5), str(sim.call("time")))
 	await _ui.settle()
 	_check("disabled simulation stays frozen without showing the pause state", int(sim.get("tick")) == CAPTURE_TICKS and not bool(sim.get("paused")))
-	app.queue_free()
-	await process_frame
+	await _ui.close_app(app)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	print("all UI flight capture checks passed" if _failures == 0 else "%d UI flight capture checks failed" % _failures)
 	quit(1 if _failures > 0 else 0)

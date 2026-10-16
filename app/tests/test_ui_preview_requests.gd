@@ -1,5 +1,6 @@
 # UI-05-R3: real Home/builders with manually ordered resource completions.
 extends SceneTree
+const UiDriver := preload("res://tests/ui_driver.gd")
 const STIK := "jensen-das-ugly-stik-60"
 const EXTRA := "gp-extra-300s-60"
 const JET := "sebart-avanti-s-a200-p100rx"
@@ -30,6 +31,7 @@ func _check(label: String, ok: bool) -> void:
 func _frames(count := 4) -> void:
 	for i in count: await process_frame
 func _run() -> void:
+	var ui: RefCounted = UiDriver.new(self)
 	TranslationServer.set_locale("en")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	var app: Node = load("res://app_root.tscn").instantiate()
@@ -100,8 +102,7 @@ func _run() -> void:
 	_check("immediate Fly uses latest model and physics exactly once", flight != null and app.flight == flight and flight._airplane.aircraft_id == STIK and flight.session.aircraft.model.id == STIK)
 	await _frames()
 	_check("successful Fly frees Home and invalidates callbacks", app.home_scene == null and not detached_callback.is_valid())
-	app.queue_free()
-	await _frames()
+	await ui.close_app(app)
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	var rejected := RejectingApp.new()
 	rejected.user_args = PackedStringArray()
@@ -121,8 +122,7 @@ func _run() -> void:
 	_check("rollback replaces Home and invalidates old callbacks", previous_scene.get_ref() == null and not obsolete.is_valid())
 	_check("restored preview matches card without stale loading state", rejected.home_scene.airplane.aircraft_id == JET and not rejected.home.aircraft_preview_label.visible)
 	_check("preview restoration preserves launch failure message", rejected.home.note_label.text.contains("Intentional startup rejection"))
-	rejected.queue_free()
-	await _frames()
+	await ui.close_app(rejected)
 	TranslationServer.set_locale("en")
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	print("Preview requests: %d checks, %d failed" % [checks, failures])

@@ -69,7 +69,7 @@ func _run() -> void:
 	app.preferences_path = "user://test_ui_input_settings.cfg" # never the player's own settings
 	root.add_child(app)
 	_check("app_root isolates joypads at startup", UiInput.joypad_ui_events().is_empty(), "\n".join(UiInput.joypad_ui_events()))
-	app.free()
+	await ui.close_app(app)
 
 	print("all UI input checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)

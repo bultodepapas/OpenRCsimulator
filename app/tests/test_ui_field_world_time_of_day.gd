@@ -104,7 +104,7 @@ func _home_and_flight() -> void:
 	var time_reachable := await _tab_until("TimeOfDay")
 	_check("time-of-day action is keyboard reachable", time_reachable, ui.focus_name())
 	if not time_reachable:
-		app.queue_free()
+		await ui.close_app(app)
 		for _frame in 10:
 			await process_frame
 		return
@@ -166,6 +166,6 @@ func _home_and_flight() -> void:
 	_check("field-lighting Apply leaves the paused simulation untouched",
 		app.flight.session.sim.paused and app.flight.session.sim.tick == paused_tick
 		and app.flight.session.sim.state == paused_state)
-	app.queue_free()
+	await ui.close_app(app)
 	for _frame in 10:
 		await process_frame

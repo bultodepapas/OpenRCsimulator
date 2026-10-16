@@ -398,18 +398,7 @@ func _apply(dialog: CanvasLayer) -> void:
 
 
 func _close(app: Node) -> void:
-	if app.flight != null:
-		app.flight.set_process(false)
-		app.flight.set_physics_process(false)
-		var sound: AudioStreamPlayer3D = app.flight.get("_engine_audio")
-		if sound != null:
-			sound.stop()
-			sound.stream = null
-			await ui.settle()
-	if app.get_parent() == root:
-		root.remove_child(app)
-	app.free()
-	await ui.settle()
+	await ui.close_app(app)
 
 
 func _remove_prefs() -> void:

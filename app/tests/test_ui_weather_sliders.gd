@@ -256,10 +256,7 @@ func _apply(dialog: CanvasLayer) -> void:
 
 
 func _close(app: Node) -> void:
-	if app.get_parent() == root:
-		root.remove_child(app)
-	app.free()
-	await ui.settle()
+	await ui.close_app(app)
 
 
 func _remove_prefs() -> void:
