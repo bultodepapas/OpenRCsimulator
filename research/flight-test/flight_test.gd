@@ -1046,8 +1046,9 @@ func _hands_off() -> Dictionary:
 	return _result(flight.crashed == "" and not flight.ctx.has("floor_t"), metrics, [] if flight.crashed == "" else [flight.crashed])
 
 
-## Landing on the field's runway (qualified runway aircraft only): gear down, 4° approach at 1.3 Vs aimed 10 m past the
-## threshold, speed with the elevator and path with the throttle, heading with the rudder; flare one second of approach
+## Landing on the field's runway (qualified runway aircraft only): gear down, 4° approach from 30 m at 1.3 Vs aimed 10 m past the
+## threshold; the elevator flies the path and the throttle the speed (a coupled approach); rudder holds the runway
+## heading; flare one second of approach
 ## sink above the wheels with the throttle closed, raising the nose from the approach attitude until the sink follows the
 ## height down (0.3 m/s + 0.6/s × height); after touchdown the attitude is held
 ## until 0.7 Vs, then the stick comes back. No brakes.
@@ -1059,10 +1060,10 @@ func _landing() -> Dictionary:
 	var threshold := 15.0 # m north of the field origin; the runway runs east from -45 m (app/data/fields)
 	var threshold_east := -45.0
 	var aim := threshold_east + 10.0
-	var h0 := 15.0
+	var h0 := 30.0 # a stabilized final: about 430 m of 4° path before the flare
 	# Flare one second of approach sink above the wheels (constant time to touchdown, as a pilot judges it).
 	var flare := clampf(v_app * tan(gamma) * 1.0, 0.5, 3.0)
-	var flight := _fly("landing", { speed = v_app, altitude = h0, north = threshold, east = aim - h0 / tan(gamma), gear_down = true, floor = -INF }, 40.0,
+	var flight := _fly("landing", { speed = v_app, altitude = h0, north = threshold, east = aim - h0 / tan(gamma), gear_down = true, floor = -INF }, 60.0,
 			func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
 		var k := P.schedule(s, v_start)
 		var h := _wheel_height(s)
@@ -1075,18 +1076,24 @@ func _landing() -> Dictionary:
 			ctx.td_pitch = P.euler(s)[1]
 		if not ctx.has("td_t"):
 			if h > flare:
+				# Coupled approach: the elevator flies the path (a sink-rate target that closes on the glide path) and the
+				# throttle holds the speed, which also suits engines with spool lag.
+				if not ctx.has("app_pitch0"):
+					ctx.app_pitch0 = P.euler(s)[1]
 				var h_path := (aim - s[RB.POS + 1]) * tan(gamma)
-				ctx.path_i = clampf(float(ctx.get("path_i", 0.0)) + (h_path - h) / 240.0, -20.0, 20.0)
-				c.pitch = P.hold_speed(s, v_app, k, ctx, 1.0 / 240.0)
-				c.throttle = clampf(0.5 * float(ctx.start_throttle) + 0.1 * (h_path - h) + 0.02 * float(ctx.path_i)
-					+ 0.15 * (-v_app * tan(gamma) - P.climb_rate(s)), 0.0, 0.8)
+				var climb_error: float = (-v_app * tan(gamma) + 0.3 * (h_path - h)) - P.climb_rate(s)
+				ctx.climb_i = clampf(float(ctx.get("climb_i", 0.0)) + climb_error / 240.0, -10.0, 10.0)
+				var wanted: float = float(ctx.app_pitch0) + 0.03 * climb_error + 0.02 * float(ctx.climb_i)
+				c.pitch = P.pitch(s, clampf(wanted, deg_to_rad(-15.0), a1 - deg_to_rad(3.0)), k, ctx, 1.0 / 240.0)
+				ctx.speed_i = clampf(float(ctx.get("speed_i", 0.0)) + (v_app - P.speed(s)) / 240.0, -20.0, 20.0)
+				c.throttle = clampf(0.5 * float(ctx.start_throttle) + 0.1 * (v_app - P.speed(s)) + 0.03 * float(ctx.speed_i), 0.0, 1.0)
 			else:
 				# Flare: from the approach attitude, raise the nose until the sink follows the height down (PI on sink).
 				if not ctx.has("flare_pitch0"):
 					ctx.flare_pitch0 = P.euler(s)[1]
 				var sink_error: float = -P.climb_rate(s) - (0.3 + 0.6 * h)
 				ctx.flare_i = clampf(float(ctx.get("flare_i", 0.0)) + sink_error / 240.0, -2.0, 2.0)
-				var wanted: float = float(ctx.flare_pitch0) + 0.1 * sink_error + 0.3 * float(ctx.flare_i)
+				var wanted: float = float(ctx.flare_pitch0) + 0.08 * sink_error + 0.15 * float(ctx.flare_i)
 				c.pitch = P.pitch(s, clampf(wanted, deg_to_rad(-2.0), minf(deg_to_rad(12.0), a1 - deg_to_rad(2.0))), k, ctx, 1.0 / 240.0)
 		else:
 			c.pitch = P.pitch(s, float(ctx.td_pitch), 1.0, ctx, 1.0 / 240.0) if P.speed(s) > 0.7 * vs else clampf((0.7 * vs - P.speed(s)) / 3.0, 0.0, 1.0)
