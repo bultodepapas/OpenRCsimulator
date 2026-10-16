@@ -16,7 +16,6 @@ import math
 import os
 from pathlib import Path
 import re
-import signal
 import shutil
 import subprocess
 import sys
@@ -43,6 +42,8 @@ VIEWS = {
 VERTICAL_SHIFT_VIEWS = {"runway_oblique_100", "runway_oblique_300"}
 EDGE_CONTRAST_FLOOR = 0.05
 GODOT_ERROR = re.compile(r"^\s*(?:(?:SCRIPT|SHADER)\s+)?ERROR:", re.M)
+# Python reports a POSIX child terminated by SIGABRT as return code -6.
+SIGABRT_RETURN_CODE = -6
 IMPORT_RETRY_CORE_MARKER = "timeout: the monitored command dumped core"
 
 
@@ -107,7 +108,7 @@ def checked_run(command: list[str], log_path: Path, env: dict[str, str], timeout
 
 def _completed_import_abort(returncode: int, log: str) -> bool:
     """Recognize only the observed late Godot import SIGABRT signature."""
-    if returncode != -signal.SIGABRT or GODOT_ERROR.search(log):
+    if returncode != SIGABRT_RETURN_CODE or GODOT_ERROR.search(log):
         return False
     lines = [line.strip() for line in log.splitlines()]
     if not lines or lines[-1] != IMPORT_RETRY_CORE_MARKER:
