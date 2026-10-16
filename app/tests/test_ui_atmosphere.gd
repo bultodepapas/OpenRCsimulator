@@ -29,6 +29,7 @@ func _initialize() -> void:
 
 func _run() -> void:
 	TranslationServer.set_locale("en")
+	root.size = Vector2i(1280, 720)
 	_preferences_contract()
 	await _legacy_preservation()
 	await _atmosphere_flow()
@@ -36,6 +37,9 @@ func _run() -> void:
 	await _home_to_flight_v3()
 	await _localization()
 	_remove_prefs()
+	ui = null
+	for _frame in 10:
+		await process_frame
 	print("all UI atmosphere checks passed" if _failures == 0 else "%d UI atmosphere checks failed" % _failures)
 	quit(1 if _failures > 0 else 0)
 
@@ -159,10 +163,11 @@ func _atmosphere_flow() -> void:
 	var saved: Dictionary = Preferences.load_from(PREFS).weather_config
 	_check("Apply promotes edited field conditions to v3", saved == expected and _saved_schema() == 3,
 		str(saved))
-	_check("Home shows the density summary and complete field tooltip",
-		app.home.weather_button.text.contains("Thin air")
-		and app.home.weather_button.tooltip_text.contains("1450.5 m")
-		and app.home.weather_button.tooltip_text.contains("density altitude"))
+	var home_field_detail := _field_weather_detail(expected)
+	_check("Home Weather tooltip contains the complete custom field-density summary",
+		app.home.weather_button.text.begins_with(tr("Weather"))
+		and app.home.weather_button.tooltip_text.contains(home_field_detail),
+		app.home.weather_button.tooltip_text)
 
 	dialog = await _open_weather(app)
 	dialog.tab_container.current_tab = 1
@@ -308,8 +313,12 @@ func _localization() -> void:
 		and (dialog.find_child("field_elevation_mLabel", true, false) as Label).text == "Elevación del campo (−500 a 4000 m)",
 		"tab=%s modes=%s/%s field=%s" % [dialog.tab_container.get_tab_title(2), dialog.atmosphere_mode_picker.get_item_text(0),
 			dialog.atmosphere_mode_picker.get_item_text(1), (dialog.find_child("field_elevation_mLabel", true, false) as Label).text])
-	_check("Spanish Home summarizes thin air", app.home.weather_button.text.contains("Aire poco denso")
-		and app.home.weather_button.tooltip_text.contains("altitud de densidad"))
+	_check("Spanish Home exposes custom field density in the Weather tooltip",
+		app.home.weather_button.text.begins_with("Clima")
+		and app.home.weather_button.tooltip_text.contains(_field_weather_detail(app.home.weather_config))
+		and app.home.weather_button.tooltip_text.contains("Campo 1500.0 m")
+		and app.home.weather_button.tooltip_text.contains("altitud de densidad"),
+		app.home.weather_button.tooltip_text)
 	_check("Spanish flight HUD atmosphere line is translated",
 		TranslationServer.translate("EAS %.1f m/s  air %.3f kg/m³  density altitude %.0f m")
 		== "EAS %.1f m/s  aire %.3f kg/m³  altitud de densidad %.0f m")
@@ -324,18 +333,34 @@ func _localization() -> void:
 	await ui.tap(KEY_ESCAPE)
 	app.open_help(null)
 	await ui.settle()
-	var scroll: ScrollContainer = app.help.find_children("*", "ScrollContainer", true, false)[0]
+	var scroll: ScrollContainer = app.help._help_scroll
 	var page: Control = scroll.get_child(0)
+	var panel_rect: Rect2 = app.help._help_panel.get_global_rect()
+	var viewport_rect: Rect2 = root.get_visible_rect()
 	var help_has_atmosphere: bool = false
 	for label_node in app.help.find_children("*", "Label", true, false):
 		if (label_node as Label).text.contains("densidad del aire"):
 			help_has_atmosphere = true
-	_check("Spanish Help includes field atmosphere and fits the existing page",
-		page.get_combined_minimum_size().y <= scroll.custom_minimum_size.y and help_has_atmosphere,
-		"page=%s scroll=%s has=%s" % [str(page.get_combined_minimum_size()), str(scroll.custom_minimum_size), str(help_has_atmosphere)])
+	_check("Spanish Help includes field atmosphere in the bounded scroll body",
+		help_has_atmosphere and scroll.size.x >= 600.0 and scroll.size.y >= 300.0
+		and viewport_rect.encloses(panel_rect),
+		"page=%s scroll=%s panel=%s viewport=%s has=%s" % [str(page.get_combined_minimum_size()),
+			str(scroll.size), str(panel_rect), str(viewport_rect), str(help_has_atmosphere)])
 	await ui.tap(KEY_ESCAPE)
 	await _close(app)
 	TranslationServer.set_locale("en")
+
+
+func _field_weather_detail(config: Dictionary) -> String:
+	var air: Dictionary = WeatherSettings.atmosphere(config)
+	return tr("Field %s m · %s °C · QNH %s hPa · RH %s%% · density %s kg/m³ · density altitude %s m") % [
+		String.num(float(config.field_elevation_m), 1),
+		String.num(float(config.temperature_c), 1),
+		String.num(float(config.qnh_hpa), 1),
+		String.num(float(config.relative_humidity_pct), 0),
+		String.num(float(air.rho_kgm3), 3),
+		String.num(float(air.density_altitude_m), 0),
+	]
 
 
 func _set_mode(dialog: CanvasLayer, index: int) -> void:
@@ -353,6 +378,8 @@ func _app() -> Node:
 	app.user_args = PackedStringArray()
 	app.preferences_path = PREFS
 	root.add_child(app)
+	await ui.settle()
+	root.size = Vector2i(1280, 720)
 	await ui.settle()
 	return app
 

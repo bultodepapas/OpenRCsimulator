@@ -29,6 +29,7 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	root.size = Vector2i(1280, 720)
 	_preference_cases()
 	await _home_and_flight()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
@@ -68,6 +69,14 @@ func _preference_cases() -> void:
 	Conditions.session_preset = ""
 
 
+func _tab_until(target: String, max_presses := 32) -> bool:
+	for _step in max_presses:
+		if ui.focus_name() == target:
+			return true
+		await ui.tap(KEY_TAB)
+	return ui.focus_name() == target
+
+
 func _home_and_flight() -> void:
 	var cfg := ConfigFile.new()
 	cfg.set_value("meta", "schema", 1)
@@ -82,19 +91,26 @@ func _home_and_flight() -> void:
 	app.set("preferences_path", PREFS)
 	root.add_child(app)
 	await ui.settle()
+	root.size = Vector2i(1280, 720)
+	await ui.settle()
 	var home: Control = app.get("home")
 	var button: Button = home.get("time_button")
-	_check("Home shows the saved choice", button.text == "Time of day: Night, no moon", button.text)
+	_check("Home shows the saved compact choice", button.text == "Time of day\nNew moon", button.text)
 	_check("Home backdrop receives the saved field-lighting profile and campfire",
 		app.home_scene.night_options == {"field_lighting": "airfield", "campfire": true})
 	_check("the backdrop is night: stars and field lights", app.home_scene.get_node_or_null("Stars") != null
 		and app.home_scene.get_node_or_null("FieldLights") != null)
 
-	button.grab_focus()
-	await ui.settle()
-	button.pressed.emit() # next choice after night_dark wraps to day
-	await ui.settle()
-	_check("the button advances and wraps to day", home.get("time_of_day") == "day" and button.text == "Time of day: Day", button.text)
+	var time_reachable := await _tab_until("TimeOfDay")
+	_check("time-of-day action is keyboard reachable", time_reachable, ui.focus_name())
+	if not time_reachable:
+		app.queue_free()
+		for _frame in 10:
+			await process_frame
+		return
+	await ui.tap(KEY_ENTER) # next choice after night_dark wraps to day
+	_check("the button advances and wraps to day",
+		home.get("time_of_day") == "day" and button.text == "Time of day\nDay", button.text)
 	_check("day backdrop: calibrated fixed sun, no stars", Atmosphere.state.is_empty() and app.home_scene.get_node_or_null("Stars") == null)
 	_check("one backdrop, drawn under the menu", app.get_children().filter(func(n: Node) -> bool: return n.name == "HomeScene").size() == 1
 		and app.home_scene.get_index() < home.get_index())
@@ -105,7 +121,7 @@ func _home_and_flight() -> void:
 	_check("choice saved at once", Preferences.load_from(PREFS).time_of_day == "sunset")
 	TranslationServer.set_locale("es")
 	await ui.settle()
-	_check("Spanish label", button.text == "Hora del día: Atardecer", button.text)
+	_check("Spanish compact label", button.text == "Hora del día\nAtardecer", button.text)
 	TranslationServer.set_locale("en")
 	await ui.settle()
 
@@ -151,5 +167,5 @@ func _home_and_flight() -> void:
 		app.flight.session.sim.paused and app.flight.session.sim.tick == paused_tick
 		and app.flight.session.sim.state == paused_state)
 	app.queue_free()
-	await process_frame
-	await process_frame
+	for _frame in 10:
+		await process_frame
