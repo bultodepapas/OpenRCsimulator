@@ -111,3 +111,14 @@ All six aircraft load. Deferred-manifest rapid selection requested only the fina
 Desktop 1440×1000 and mobile 390×844 were reviewed. At 320×740, both languages × both themes have no horizontal overflow or missing copy among 184 translated elements; the opening keeps “Descargar” / “Download” and its download target. Native technical/partner/download anchors remain aligned after deferred section rendering; field switching and scroll depth work. JavaScript syntax, the asset-preparation Python syntax, all 22 local HTML references and transparent Savox variants pass. Clean-page console checks report no warnings or errors. Desktop/mobile Lighthouse snapshots score 100 for accessibility, best practices and SEO (38 passed, zero failed); these are not performance scores.
 
 Published deployment: `7fb6ee884f36370c1efa30a5aa0fd331de0550a5` ([successful Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38805787288)). A fresh `gh-pages` clone resolves all 22 static HTML references and contains six GLBs and `.nojekyll`, without simulator files. Public HTML, all five scripts, all three stylesheets and both Savox WebP files match local SHA-256 values (text line endings normalized). The public jet film plays, then pauses outside the opening; its turntable advances and holds its angle on pause. Both locales, night-theme logo and download label work, with no initial GLB/module request or console warnings/errors.
+
+Release-status update, 2026-10-16: source `0fd2632b` keeps v0.1.1 downloads and
+identifies the Stik recovery, R02 yaw and experimental P51-22 checks as open work
+toward v0.1.2. The draft-notes link replaces the unpublished release link. Local
+390×844 and 1280×900 checks cover both languages, no horizontal overflow and no
+console errors; the desktop notice was visually reviewed. Deployment
+`658611dbb1590978c2ed334ac453953a1cb560d4` passed the
+[Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38946280463).
+The public page serves `source-20261016-release-work`, displays the Spanish status
+notice, has no unpublished v0.1.2 asset/tag links, and reports no console errors.
+This publishes website status only, not a simulator release or physical qualification.
