@@ -204,8 +204,7 @@ func _run() -> void:
 		and not session.sim.paused and app.menu_audio.cue_count(&"accept") == accepted_before + 1
 		and app.menu_audio.cue_count(&"back") == backs_before)
 
-	app.queue_free()
-	await ui.settle()
+	await ui.close_app(app)
 	_clean_preferences()
 	print("all Settings integration checks passed" if _failures == 0 else "%d Settings integration checks failed" % _failures)
 	quit(0 if _failures == 0 else 1)
