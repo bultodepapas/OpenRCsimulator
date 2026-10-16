@@ -30,9 +30,6 @@ func _initialize() -> void:
 func _run() -> void:
 	TranslationServer.set_locale("en")
 	root.size = Vector2i(1280, 720)
-	root.content_scale_mode = Window.CONTENT_SCALE_MODE_CANVAS_ITEMS
-	root.content_scale_size = Vector2i(1280, 720)
-	DisplayServer.window_set_size(root.size)
 	await process_frame
 	var defaults := FailureConfig.defaults()
 	_check("failure defaults are off, non-catastrophic and visible", defaults == {
@@ -103,17 +100,36 @@ func _run() -> void:
 	app.preferences_path = PREFS
 	root.add_child(app)
 	await ui.settle()
-	_check("Home exposes a disabled-by-default failure summary", app.home.failure_summary_label.text == "Off")
+	# AppRoot can restore the headless dummy window's 64×64 size during startup.
+	root.size = Vector2i(1280, 720)
+	await ui.settle()
+	_check("Home exposes a disabled-by-default failure summary",
+		app.home.failure_summary_label.text.contains("Next flight failures: Off"))
+	var practice_reachable_from_home := await _tab_until("NavPractice")
+	_check("Home Practice tab is keyboard reachable", practice_reachable_from_home, ui.focus_name())
+	if not practice_reachable_from_home:
+		app.queue_free()
+		ui = null
+		for _frame in 10:
+			await process_frame
+		quit(1)
+		return
+	await ui.tap(KEY_ENTER) # Practice page
+	await ui.settle()
 	_check("Home failure summary fits the 1280×720 viewport", _fits_viewport(app.home.failure_summary_label),
 		_bounds_detail(app.home.failure_summary_label))
-	await ui.tap(KEY_DOWN)
-	await ui.tap(KEY_RIGHT)
-	await ui.tap(KEY_DOWN)
-	_check("Home keyboard path reaches Failure settings", ui.focus_name() == "Failures", ui.focus_name())
+	await ui.tap(KEY_DOWN) # Natural Random
+	await ui.tap(KEY_DOWN) # Failure practice
+	_check("Home keyboard path reaches Failure practice", ui.focus_name() == "Failures", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	var menu: CanvasLayer = app.failure_menu
 	_check("Home opens the Failure screen", menu != null and app.screens.is_top("failures"))
+	if menu == null:
+		app.queue_free()
+		await process_frame
+		quit(1)
+		return
 	_check("Home failure card fits the 1280×720 viewport", _card_fits_viewport(menu), _card_bounds_detail(menu))
 	_check("Home keeps the standard notice explanation", not menu.current_flight_settings
 		and "Turning notices off hides labels" in menu.notice_hint_label.text)
@@ -124,7 +140,7 @@ func _run() -> void:
 	_check("Escape returns to Home", app.failure_menu == null and app.screens.is_top("home"))
 	_check("Cancel discarded probability and category", app.preferences.failure_config == defaults)
 
-	app.home.failures_button.pressed.emit()
+	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	menu = app.failure_menu
 	menu.probability_spin.value = 100.0
@@ -135,15 +151,20 @@ func _run() -> void:
 	_check("Apply saves probability and catastrophe choice", app.preferences.failure_config == {
 		"probability_percent": 100, "include_catastrophic": true, "notify": true,
 	})
-	_check("Home summarizes the next flight", app.home.failure_summary_label.text == "100% · Catastrophic enabled")
+	_check("Home summarizes the next flight",
+		app.home.failure_summary_label.text.contains("Next flight failures: 100% · Catastrophic enabled"))
 	_check("Apply persisted failure preferences", Preferences.load_from(PREFS).failure_config == app.preferences.failure_config)
 
 	# Normal fixed-wing Home route passes validated settings into Main before it enters the tree.
-	await ui.tap(KEY_UP)
-	await ui.tap(KEY_UP)
-	await ui.tap(KEY_UP)
-	await ui.tap(KEY_UP)
-	_check("Home focus returns to Fly from Failure settings", ui.focus_name() == "Fly", ui.focus_name())
+	var fly_reachable := await _tab_until("Fly")
+	_check("Home Fly action is keyboard reachable after failure settings", fly_reachable, ui.focus_name())
+	if not fly_reachable:
+		app.queue_free()
+		ui = null
+		for _frame in 10:
+			await process_frame
+		quit(1)
+		return
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	var main: Node = app.flight
@@ -221,12 +242,32 @@ func _run() -> void:
 	app.end_flight()
 	await ui.settle()
 	_check("End returns to Home with applied next-flight preference", app.flight == null
-		and app.home.failure_summary_label.text == "64% · Standard")
+		and app.home.failure_summary_label.text.contains("Next flight failures: 64% · Standard"))
 	_check("End debrief reports a scheduled incident that did not activate",
 		"Flight ended before the scheduled failure." in app.home.note_label.text)
+	var practice_reachable := await _tab_until("NavPractice")
+	_check("Home Practice page is keyboard reachable after flight end", practice_reachable, ui.focus_name())
+	if not practice_reachable:
+		app.queue_free()
+		ui = null
+		for _frame in 10:
+			await process_frame
+		quit(1)
+		return
+	await ui.tap(KEY_ENTER) # Practice page contains the failure summary.
+	await ui.settle()
 	_check("Home failure debrief fits the 1280×720 viewport", _fits_viewport(app.home.note_label)
 		and _fits_viewport(app.home.failure_summary_label),
 		_bounds_detail(app.home.note_label) + " / " + _bounds_detail(app.home.failure_summary_label))
+	fly_reachable = await _tab_until("Fly")
+	_check("Next flight Fly action is keyboard reachable", fly_reachable, ui.focus_name())
+	if not fly_reachable:
+		app.queue_free()
+		ui = null
+		for _frame in 10:
+			await process_frame
+		quit(1)
+		return
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	var next_main: Node = app.flight
@@ -234,13 +275,21 @@ func _run() -> void:
 		next_main != null and next_main != main and next_main.failure_config == app.preferences.failure_config)
 
 	app.queue_free()
-	await process_frame
-	await process_frame
 	ui = null
+	for _frame in 10:
+		await process_frame
 	for path in [PREFS, PREFS + ".bad"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 	print("all failure UI checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)
+
+
+func _tab_until(target: String, max_presses := 32) -> bool:
+	for _step in max_presses:
+		if ui.focus_name() == target:
+			return true
+		await ui.tap(KEY_TAB)
+	return ui.focus_name() == target
 
 
 func _fits_viewport(control: Control) -> bool:

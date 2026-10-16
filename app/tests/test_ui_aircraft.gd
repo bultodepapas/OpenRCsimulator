@@ -42,6 +42,9 @@ func _app() -> Node:
 	app.preferences_path = PREFS # never the player's own settings
 	root.add_child(app)
 	await ui.settle()
+	# The headless SceneTree starts at 64×64; use the Home layout that keyboard focus was designed for.
+	root.size = Vector2i(1280, 720)
+	await ui.settle()
 	return app
 
 
@@ -59,7 +62,20 @@ func _preview(app: Node) -> void:
 	_check("preview preparation completes", app.home_scene == null or not app.home_scene.preview_pending)
 
 
+func _tab_until(target: String, max_presses := 32) -> bool:
+	for _step in max_presses:
+		if ui.focus_name() == target:
+			return true
+		await ui.tap(KEY_TAB)
+	return ui.focus_name() == target
+
+
 func _aircraft_counter(id: String) -> String:
+	var ids: PackedStringArray = Catalog.ids()
+	return "%d / %d" % [ids.find(id) + 1, ids.size()]
+
+
+func _aircraft_counter_tooltip(id: String) -> String:
 	var ids: PackedStringArray = Catalog.ids()
 	return tr("Aircraft %d of %d") % [ids.find(id) + 1, ids.size()]
 
@@ -75,36 +91,47 @@ func _run() -> void:
 	_check("default: the Ugly Stik on the card and in the backdrop", home.aircraft_id == STIK and home.aircraft_name_label.text == Catalog.entry(STIK).name
 		and app.home_scene.airplane.aircraft_id == STIK)
 	_check("default: Fly enabled and focused, catalog counter", not home.fly_button.disabled and ui.focus_name() == "Fly"
-		and home.aircraft_count_label.text == _aircraft_counter(STIK),
+		and home.aircraft_count_label.text == _aircraft_counter(STIK)
+		and home.aircraft_count_label.tooltip_text == _aircraft_counter_tooltip(STIK),
 		home.aircraft_count_label.text)
 
-	# Right from Fly reaches the next arrow; Enter visits each inferred glow variant before the Extra.
-	await ui.tap(KEY_RIGHT)
-	_check("Right from Fly -> next aircraft arrow", ui.focus_name() == "NextAircraft", ui.focus_name())
+	# Keep aircraft selection on the real keyboard route even when headless focus order differs by viewport.
+	var next_reachable := await _tab_until("NextAircraft")
+	_check("Next aircraft arrow is keyboard reachable", next_reachable, ui.focus_name())
+	if not next_reachable:
+		await _close(app)
+		quit(1)
+		return
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("MAX-61FX Stik: experimental 2-stroke on card and backdrop", home.aircraft_id == GLOW_61FX
 		and home.aircraft_count_label.text == _aircraft_counter(GLOW_61FX)
-		and home.aircraft_name_label.text == Catalog.entry(GLOW_61FX).name
+		and home.aircraft_name_label.text.contains("61FX")
+		and home.aircraft_name_label.tooltip_text == tr(Catalog.entry(GLOW_61FX).name)
 		and app.home_scene.airplane.aircraft_id == GLOW_61FX and not home.fly_button.disabled
 		and home.aircraft_status_label.text.contains("MAX-61FX") and home.aircraft_status_label.text.contains("not flight-validated"),
-		home.aircraft_status_label.text)
+		"%s / %s / %s / %s" % [home.aircraft_id, home.aircraft_name_label.text,
+			home.aircraft_name_label.tooltip_text, home.aircraft_status_label.text])
 	_check("MAX-61FX selection does not start a flight", app.flight == null)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("55AX glow Stik: experimental 2-stroke on card and backdrop", home.aircraft_id == GLOW_55AX
-		and home.aircraft_name_label.text == Catalog.entry(GLOW_55AX).name
+		and home.aircraft_name_label.text.contains("55AX")
+		and home.aircraft_name_label.tooltip_text == tr(Catalog.entry(GLOW_55AX).name)
 		and app.home_scene.airplane.aircraft_id == GLOW_55AX and not home.fly_button.disabled
 		and home.aircraft_status_label.text.contains("inferred") and home.aircraft_status_label.text.contains("2-stroke"),
-		home.aircraft_status_label.text)
+		"%s / %s / %s / %s" % [home.aircraft_id, home.aircraft_name_label.text,
+			home.aircraft_name_label.tooltip_text, home.aircraft_status_label.text])
 	_check("55AX selection does not start a flight", app.flight == null)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
 	_check("FS-64V glow Stik: experimental true 4-stroke on card and backdrop", home.aircraft_id == GLOW_FS64V
-		and home.aircraft_name_label.text == Catalog.entry(GLOW_FS64V).name
+		and home.aircraft_name_label.text.contains("FS-64V")
+		and home.aircraft_name_label.tooltip_text == tr(Catalog.entry(GLOW_FS64V).name)
 		and app.home_scene.airplane.aircraft_id == GLOW_FS64V and not home.fly_button.disabled
 		and home.aircraft_status_label.text.contains("inferred") and home.aircraft_status_label.text.contains("4-stroke"),
-		home.aircraft_status_label.text)
+		"%s / %s / %s / %s" % [home.aircraft_id, home.aircraft_name_label.text,
+			home.aircraft_name_label.tooltip_text, home.aircraft_status_label.text])
 	_check("FS-64V selection does not start a flight", app.flight == null)
 	await ui.tap(KEY_ENTER)
 	await _preview(app)
@@ -164,9 +191,12 @@ func _run() -> void:
 	await ui.settle()
 	# Labels keep the English source and translate when drawn (auto-translate), so read them the way they are drawn.
 	var status: Label = home.aircraft_status_label
-	_check("Spanish: catalog counter and status translated", home.aircraft_count_label.text == _aircraft_counter(AVANTI) and status.can_auto_translate()
+	_check("Spanish: catalog counter and status translated", home.aircraft_count_label.text == _aircraft_counter(AVANTI)
+		and home.aircraft_count_label.tooltip_text == _aircraft_counter_tooltip(AVANTI)
 		and status.atr(status.text).begins_with("Experimental: primera estimación física (turbina") and home.aircraft_summary_label.atr(home.aircraft_summary_label.text).begins_with("Reactor deportivo"),
-		"%s / %s" % [home.aircraft_count_label.text, status.atr(status.text)])
+		"count=%s tooltip=%s expected=%s status=%s summary=%s" % [home.aircraft_count_label.text,
+			home.aircraft_count_label.tooltip_text, _aircraft_counter_tooltip(AVANTI), status.atr(status.text),
+			home.aircraft_summary_label.atr(home.aircraft_summary_label.text)])
 	# The Timber's fictional name is the one translated aircraft name (TT-06); the other names pass through tr() unchanged.
 	app.set_aircraft(TIMBER)
 	await ui.settle()
@@ -215,15 +245,18 @@ func _run() -> void:
 		and not timber_session.sim.paused and timber_session.aircraft.model.id == TIMBER and timber_session.sim.time() < 0.25,
 		"t=%.3f s" % timber_session.sim.time())
 
-	# End returns Home with the aircraft selected and persisted; choosing Fly again makes a clean session.
+	# End returns Home with the aircraft selected and persisted; Exit options now discloses End flight.
 	await ui.tap(KEY_ESCAPE)
+	await ui.tap(KEY_DOWN) # Restart
+	await ui.tap(KEY_DOWN) # Session options
+	await ui.tap(KEY_DOWN) # Settings
+	await ui.tap(KEY_DOWN) # Help
+	await ui.tap(KEY_DOWN) # Exit options
+	_check("Exit options is keyboard reachable", ui.focus_name() == "ExitOptions", ui.focus_name())
+	await ui.tap(KEY_ENTER)
+	await ui.tap(KEY_DOWN)
 	var end_reachable: bool = ui.focus_name() == "End"
-	for _step in 12: # Walk the actual menu order so optional entries do not make the test's count stale.
-		if end_reachable:
-			break
-		await ui.tap(KEY_DOWN)
-		end_reachable = ui.focus_name() == "End"
-	_check("End flight is keyboard reachable", end_reachable, ui.focus_name())
+	_check("End flight is keyboard reachable inside Exit options", end_reachable, ui.focus_name())
 	if not end_reachable:
 		await _close(app)
 		print("all UI aircraft checks failed to reach End flight")
