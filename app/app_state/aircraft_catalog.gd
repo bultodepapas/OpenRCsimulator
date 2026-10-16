@@ -70,7 +70,7 @@ const ENTRIES := [
 		name = "P-51D Mustang 1/4",
 		summary = "Giant-scale warbird · 2.82 m · 120 cc gasoline",
 		status = EXPERIMENTAL,
-		status_note = "Experimental: P51-22 pending. Powered takeoff and loop behavior do not yet meet acceptance criteria; not flight-validated.",
+		status_note = "Experimental: P51-22 pending. Powered takeoff and loop acceptance remain open.",
 		data = "res://data/aircraft/p51d_mustang_120.json",
 	},
 	{

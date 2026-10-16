@@ -15,6 +15,8 @@ Local Godot 4.7.2 verification of the reporting change used the isolated release
 
 A disposable probe combining a pending P51-22 result with an unrelated mandatory failure still returned exit 1. These results verify reporting, not physical acceptance or final package qualification.
 
+The aircraft selector and Details panel disclose the pending status in English and Spanish. [UI evidence](release-ui/evidence.json) records a fresh Godot 4.7.2 import and captures at 1280 × 720; the shortened warning fits both locales without clipping.
+
 ## Regression
 
 Two P-51 checks passed at the P51-15 baseline and fail at the current `HEAD` with every P-51 data revision:

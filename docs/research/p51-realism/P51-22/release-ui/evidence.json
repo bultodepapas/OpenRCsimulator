@@ -1,0 +1,150 @@
+[
+  {
+    "aircraft_id": "p51d-mustang-120",
+    "catalog_row_inside_scroll_view": true,
+    "catalog_row_rect_px": [
+      24.0,
+      502.0,
+      296.0,
+      77.0
+    ],
+    "catalog_row_text": "P-51D Mustang 1/4\nExperimental",
+    "catalog_tooltip": "Giant-scale warbird · 2.82 m · 120 cc gasoline\nExperimental: P51-22 pending. Powered takeoff and loop acceptance remain open.",
+    "content_scroll_rect_px": [
+      24.0,
+      235.0,
+      304.0,
+      344.0
+    ],
+    "image": "en-catalog.png",
+    "language": "en",
+    "locale": "en",
+    "pixels": [
+      1280,
+      720
+    ],
+    "status_clip_text": false,
+    "status_fully_inside_scroll_view": false,
+    "status_line_count": 69,
+    "status_note": "Experimental: P51-22 pending. Powered takeoff and loop acceptance remain open.",
+    "status_rect_px": [
+      24.0,
+      -179.0,
+      1.0,
+      2274.0
+    ],
+    "status_visible": false,
+    "status_visible_line_count": 69
+  },
+  {
+    "aircraft_id": "p51d-mustang-120",
+    "catalog_row_inside_scroll_view": false,
+    "catalog_row_rect_px": [
+      24.0,
+      733.0,
+      296.0,
+      77.0
+    ],
+    "catalog_row_text": "P-51D Mustang 1/4\nExperimental",
+    "catalog_tooltip": "Giant-scale warbird · 2.82 m · 120 cc gasoline\nExperimental: P51-22 pending. Powered takeoff and loop acceptance remain open.",
+    "content_scroll_rect_px": [
+      24.0,
+      235.0,
+      304.0,
+      344.0
+    ],
+    "image": "en-details.png",
+    "language": "en",
+    "locale": "en",
+    "pixels": [
+      1280,
+      720
+    ],
+    "status_clip_text": false,
+    "status_fully_inside_scroll_view": true,
+    "status_line_count": 4,
+    "status_note": "Experimental: P51-22 pending. Powered takeoff and loop acceptance remain open.",
+    "status_rect_px": [
+      24.0,
+      450.0,
+      296.0,
+      129.0
+    ],
+    "status_visible": true,
+    "status_visible_line_count": 4
+  },
+  {
+    "aircraft_id": "p51d-mustang-120",
+    "catalog_row_inside_scroll_view": true,
+    "catalog_row_rect_px": [
+      24.0,
+      502.0,
+      296.0,
+      77.0
+    ],
+    "catalog_row_text": "P-51D Mustang 1/4\nExperimental",
+    "catalog_tooltip": "Giant-scale warbird · 2.82 m · 120 cc gasoline\nExperimental: P51-22 pendiente. Falta validar el despegue y el looping con potencia.",
+    "content_scroll_rect_px": [
+      24.0,
+      235.0,
+      304.0,
+      344.0
+    ],
+    "image": "es-catalog.png",
+    "language": "es",
+    "locale": "es",
+    "pixels": [
+      1280,
+      720
+    ],
+    "status_clip_text": false,
+    "status_fully_inside_scroll_view": false,
+    "status_line_count": 74,
+    "status_note": "Experimental: P51-22 pendiente. Falta validar el despegue y el looping con potencia.",
+    "status_rect_px": [
+      24.0,
+      -216.0,
+      1.0,
+      2439.0
+    ],
+    "status_visible": false,
+    "status_visible_line_count": 74
+  },
+  {
+    "aircraft_id": "p51d-mustang-120",
+    "catalog_row_inside_scroll_view": false,
+    "catalog_row_rect_px": [
+      24.0,
+      770.0,
+      296.0,
+      77.0
+    ],
+    "catalog_row_text": "P-51D Mustang 1/4\nExperimental",
+    "catalog_tooltip": "Giant-scale warbird · 2.82 m · 120 cc gasoline\nExperimental: P51-22 pendiente. Falta validar el despegue y el looping con potencia.",
+    "content_scroll_rect_px": [
+      24.0,
+      235.0,
+      306.0,
+      344.0
+    ],
+    "image": "es-details.png",
+    "language": "es",
+    "locale": "es",
+    "pixels": [
+      1280,
+      720
+    ],
+    "status_clip_text": false,
+    "status_fully_inside_scroll_view": true,
+    "status_line_count": 4,
+    "status_note": "Experimental: P51-22 pendiente. Falta validar el despegue y el looping con potencia.",
+    "status_rect_px": [
+      24.0,
+      450.0,
+      298.0,
+      129.0
+    ],
+    "status_visible": true,
+    "status_visible_line_count": 4
+  }
+]
