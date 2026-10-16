@@ -23,7 +23,7 @@ def run(command, log, expected_missing_texture=False, expected_test_failures=())
         failures = re.findall(r"^FAIL (.*)$", result.stdout, re.MULTILINE)
         completed = re.search(r"\d+ checks, " + str(len(expected_test_failures)) + r" failed;", result.stdout)
         if result.returncode != 1 or errors or failures != list(expected_test_failures) or not completed:
-            raise RuntimeError("Rotation defect did not reach the expected assertions: " + str(log))
+            raise RuntimeError("Negative fixture did not reach the expected assertions: " + str(log))
         return result.stdout
     resource_path = r"res://(?:\.godot/imported/[^/]+\.(?:ctex|scn)|assets/aircraft/hx-700/articulated/[^/]+\.(?:png|glb))"
     expected_error = r"ERROR: (?:(?:Unable to open file|Failed loading resource): " + resource_path + r"\.|(?:Can't load dependency|Error loading resource): '" + resource_path + r"'\.)"
@@ -77,6 +77,7 @@ def main():
     run([sys.executable, HERE / "compile_hx700_articulated.py"], out / "compiler.log")
     if args.motion:
         run([sys.executable, HERE / "compile_hx700_motion.py", "--check"], out / "motion-compiler.log")
+        run([sys.executable, HERE / "test_compile_hx700_motion.py"], out / "motion-source-integrity.log")
         run([godot, "--headless", "--path", REPO / "app", "--audio-driver", "Dummy", "--script",
              "res://tests/test_heli_mechanism.gd"], out / "motion-native-tests.log")
         run([godot, "--headless", "--path", REPO / "app", "--audio-driver", "Dummy", "--script",
@@ -113,6 +114,14 @@ def main():
     if args.motion:
         run([godot, "--headless", "--path", project, "--audio-driver", "Dummy", "--script",
              "res://tests/test_heli_mechanism.gd", "--", "--oracle=" + str(oracle)], out / "motion-fresh-tests.log")
+        for defect in ("missing", "changed"):
+            bad_oracle = out / (defect + "-oracle.json")
+            if defect == "changed":
+                bad_oracle.write_bytes(oracle.read_bytes() + b"\n")
+            run([godot, "--headless", "--path", project, "--audio-driver", "Dummy", "--script",
+                 "res://tests/test_heli_mechanism.gd", "--", "--oracle=" + str(bad_oracle)],
+                out / (defect + "-oracle-rejected.log"), expected_test_failures=(
+                    "independent oracle bytes match the reviewed snapshot",))
         run([godot, "--headless", "--path", project, "--audio-driver", "Dummy", "--script",
              "res://tests/test_heli_mechanics_view.gd"], out / "motion-ui-fresh-tests.log")
         run([godot, "--headless", "--path", project, "--audio-driver", "Dummy", "--script",
@@ -150,7 +159,7 @@ def main():
               "production_export_qualified": False, "captured": args.capture}
     if args.motion:
         reject_world_neutral_rotation(godot, project, oracle, out)
-        report.update(step="HELI-26a", motion_native="pass", motion_fresh_import="pass", motion_package="pass", motion_ui="pass", motion_timing="pass", elasticity="pass", world_neutral_rotation_rejected=True)
+        report.update(step="HELI-26a", motion_native="pass", motion_fresh_import="pass", motion_package="pass", motion_ui="pass", motion_timing="pass", elasticity="pass", world_neutral_rotation_rejected=True, missing_or_changed_oracle_rejected=True, motion_source_integrity="pass")
     (out / "verification.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 

@@ -2,6 +2,7 @@ extends SceneTree
 
 const Model := preload("res://aircraft/hx700_articulated_model.gd")
 const Mechanism := preload("res://render/rotor/hx700_mechanism.gd")
+const ORACLE_SHA256 := "da7888a45377d4f1628d9cbe2495804c1d6e4da2a863dbd82edc819a14b3d6d7"
 var checks := 0
 var failures := 0
 
@@ -29,6 +30,14 @@ func _run() -> void:
 	for arg: String in OS.get_cmdline_user_args():
 		if arg.begins_with("--oracle="):
 			oracle_path = arg.trim_prefix("--oracle=")
+	var oracle_admitted := FileAccess.file_exists(oracle_path) and FileAccess.get_sha256(oracle_path) == ORACLE_SHA256
+	_check("independent oracle bytes match the reviewed snapshot", oracle_admitted)
+	if not oracle_admitted:
+		print("Missing or changed independent motion oracle: ", oracle_path)
+		preview.root.free()
+		print("%d checks, %d failed; oracle admission rejected" % [checks, failures])
+		quit(1)
+		return
 	var oracle: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(oracle_path))
 	_check("oracle pins the same immutable Blender source", oracle.source_sha256 == Model.SOURCE_SHA256)
 	var max_position := 0.0
@@ -79,6 +88,17 @@ func _run() -> void:
 					for step in 12:
 						extreme_ok = rig.apply(PackedFloat64Array([collective, roll, pitch, tail, step * TAU / 12])).ok and extreme_ok
 	_check("full travel and combined cyclic ring limits close over 972 poses", extreme_ok)
+	var random := RandomNumberGenerator.new()
+	random.seed = 260116
+	var long_phase_ok := true
+	for i in 1000:
+		var phase := random.randf_range(-1e6, 1e6)
+		if i < 2:
+			phase = -1e6 if i == 0 else 1e6
+		var request := PackedFloat64Array([random.randf_range(-13, 13), random.randf_range(-10, 10), random.randf_range(-10, 10), random.randf_range(-20, 20), phase])
+		long_phase_ok = rig.apply(request).ok and long_phase_ok
+	_check("1000 mixed poses close throughout the full accumulated phase range", long_phase_ok)
+	_check_configuration(rig, preview)
 	for tail: float in [-15, 15]:
 		rig.apply(PackedFloat64Array([0, 0, 0, tail, 0]))
 		_check("tail collective retains its signed source pitch %.0f" % tail, absf(rig.pose.blade_pitch[2] - deg_to_rad(tail)) < 1e-4)
@@ -133,6 +153,33 @@ func _same(rig: RefCounted, before: Dictionary) -> bool:
 		if rig.bindings[id].transform != before[id]:
 			return false
 	return true
+
+
+func _check_configuration(rig: RefCounted, preview: Dictionary) -> void:
+	rig.apply(PackedFloat64Array([0, 0, 0, 0, 0]))
+	var neutral: Dictionary = {}
+	for id: String in rig.bindings:
+		neutral[id] = rig.bindings[id].transform
+	rig.apply(PackedFloat64Array([9, -6, 4, 15, 7.3]))
+	var articulated: Dictionary = {}
+	for id: String in rig.bindings:
+		articulated[id] = rig.bindings[id].transform
+	var accepted_pose: Dictionary = rig.pose.duplicate(true)
+	_check("failed admission preserves the previous configuration", not rig.configure({"ok": false}) and _same(rig, articulated) and rig.pose == accepted_pose)
+	var broken := preview.duplicate()
+	broken.bindings = preview.bindings.duplicate()
+	broken.bindings.erase("main.shaft")
+	broken.bindings["unknown"] = preview.root
+	_check("missing driven binding rejects without disabling the accepted rig", not rig.configure(broken) and _same(rig, articulated) and rig.pose == accepted_pose)
+	broken.bindings = preview.bindings.duplicate()
+	broken.bindings["visual.carenado"] = 7
+	_check("invalid static binding rejects before dereferencing it", not rig.configure(broken) and _same(rig, articulated) and rig.pose == accepted_pose)
+	_check("reconfiguring an articulated rig restores authored neutral frames", rig.configure(preview) and _same(rig, neutral))
+	var exported_bindings: Dictionary = preview.bindings
+	var exported_node: Node3D = exported_bindings["main.shaft"]
+	exported_bindings.erase("main.shaft")
+	_check("configured binding map is independent of its caller", rig.bindings.has("main.shaft") and rig.apply(PackedFloat64Array([3, 2, -1, 5, 0.2])).ok)
+	exported_bindings["main.shaft"] = exported_node
 
 
 func _check_rotating_terminals(rig: RefCounted) -> void:

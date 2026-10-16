@@ -31,7 +31,7 @@ func configure(preview: Dictionary) -> bool:
 	candidate.bindings = preview.bindings.duplicate()
 	for record: Dictionary in profile.bindings:
 		var node: Variant = candidate.bindings.get(record.id)
-		if not is_instance_valid(node) or not node is Node3D:
+		if typeof(node) != TYPE_OBJECT or not is_instance_valid(node) or not node is Node3D:
 			return false
 		candidate._rest[record.id] = Model._parse_transform(record.rest_transform).transform
 		candidate._parents[record.id] = String(record.parent_id)

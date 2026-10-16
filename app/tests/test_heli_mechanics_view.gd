@@ -28,6 +28,12 @@ func _run() -> void:
 	_check("Space activates a focused visibility checkbox without pausing", view._canopy_toggle.button_pressed and view.paused == pause_before_key)
 	_key(KEY_SPACE)
 	await process_frame
+	view._mode_buttons[1].grab_focus()
+	_key(KEY_SPACE)
+	await process_frame
+	_check("Space activates a focused mode button without pausing", view._elastic_mode and not view.paused)
+	_key(KEY_SPACE)
+	await process_frame
 	var canopy_before_p := view._canopy_toggle.button_pressed
 	_key(KEY_P)
 	await process_frame
@@ -105,6 +111,57 @@ func _run() -> void:
 	var accepted: Transform3D = view.preview.bindings["swash.fixed"].transform
 	view.inputs[0] = 14
 	_check("invalid UI pose reports rejection and retains visible mechanism", not view._apply_pose() and view._status.text.begins_with("Pose rechazada") and view.preview.bindings["swash.fixed"].transform == accepted)
+	var before_limited_seek: Dictionary = view.motion.capture_state()
+	var limited_state: Dictionary = before_limited_seek.duplicate(true)
+	var limited_inputs: PackedFloat64Array = limited_state.inputs
+	limited_inputs[4] = Motion.PHASE_LIMIT
+	limited_state.inputs = limited_inputs
+	view.motion.restore_state(limited_state)
+	view.inputs = view.motion.inputs.duplicate()
+	view.phase = view.inputs[4]
+	var accepted_azimuth := fposmod(rad_to_deg(view.phase), 360.0)
+	view._phase_label.text = "Azimut · %.0f°" % accepted_azimuth
+	view._phase_slider.set_value_no_signal(accepted_azimuth)
+	view._phase_slider.value = fposmod(accepted_azimuth + 90.0, 360.0)
+	var expected_slider := roundf(accepted_azimuth)
+	_check("rejected azimuth seek restores the accepted slider, label, and state", absf(view._phase_slider.value - expected_slider) < 0.01 and view._phase_label.text == "Azimut · %.0f°" % accepted_azimuth and view.motion.capture_state() == limited_state and view._status.text.begins_with("Azimut fuera"))
+	view.motion.restore_state(before_limited_seek)
+	view.inputs = view.motion.inputs.duplicate()
+	view.phase = view.inputs[4]
+	view._apply_pose()
+	root.size = Vector2i(640, 480)
+	await process_frame
+	await process_frame
+	var panel_rect: Rect2 = view._panel.get_global_rect()
+	_check("640x480 keeps the readable control panel inside the window", absf(panel_rect.size.x - 316.0) < 0.01 and panel_rect.position.x >= 0 and panel_rect.end.x <= root.size.x)
+	var hint_rect: Rect2 = view._hint.get_global_rect()
+	_check("640x480 hides the title when it would cover the focused geometry", not view._hint.visible and hint_rect.position.x >= 356 and hint_rect.end.x <= 620)
+	var scroll := view._panel.get_child(0) as ScrollContainer
+	var scroll_rect: Rect2 = scroll.get_global_rect()
+	scroll.scroll_vertical = 100000
+	await process_frame
+	var footer_rect: Rect2 = view._shortcuts.get_global_rect()
+	_check("640x480 scroll reaches the bottom help text", scroll.scroll_vertical > 0 and footer_rect.position.y >= scroll_rect.position.y - 1 and footer_rect.end.y <= scroll_rect.end.y + 1)
+	scroll.scroll_vertical = 0
+	await process_frame
+	var first_control_rect: Rect2 = view._sliders[0].get_global_rect()
+	_check("640x480 scroll returns to the first mechanical control", first_control_rect.position.y >= scroll_rect.position.y - 1 and first_control_rect.end.y <= scroll_rect.end.y + 1)
+	var clear_left := 356.0
+	var clear_right := 620.0
+	var focus_in_clear_area := true
+	for choice in ["Cabeza", "Cola", "Completo", "Patines", "Carenado"]:
+		view._camera_preset(choice)
+		await process_frame
+		var focus_screen: Vector2 = view.camera.unproject_position(view.focus)
+		focus_in_clear_area = focus_in_clear_area and focus_screen.x >= clear_left and focus_screen.x <= clear_right and absf(focus_screen.x - (clear_left + clear_right) * 0.5) < 2.0
+	_check("all camera presets keep their focus in the visible render region after resize", focus_in_clear_area)
+	root.size = Vector2i(800, 600)
+	await process_frame
+	await process_frame
+	var medium_hint_rect: Rect2 = view._hint.get_global_rect()
+	_check("800x600 restores the wrapped title within the clear render region", view._hint.visible and medium_hint_rect.position.x >= 356 and medium_hint_rect.end.x <= 780)
+	root.size = original_window_size
+	await process_frame
 	view.queue_free()
 	await process_frame
 	print("%d checks, %d failed" % [checks, failures])

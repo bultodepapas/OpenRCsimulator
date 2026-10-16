@@ -52,6 +52,7 @@ var _mode_buttons: Array[Button] = []
 var _hint: Label
 var _shortcuts: Label
 var _layout_zoom_scale := 1.0
+var _camera_coverage := 0.25
 
 
 func _ready() -> void:
@@ -511,30 +512,36 @@ func _camera_preset(choice: String) -> void:
 	match choice:
 		"Cabeza":
 			focus = Vector3(0, 0.27, 0)
+			_camera_coverage = 0.25
 			yaw = 0.85
 			elevation = 0.23
 		"Cola":
 			focus = Vector3(-0.94, 0.19, 0.025)
 			preset_distance = 0.32
+			_camera_coverage = 0.40
 			yaw = 0.65
 			elevation = 0.17
 		"Completo":
 			focus = Vector3(-0.25, 0.20, 0)
 			preset_distance = 2.5
+			_camera_coverage = 0.60
 			yaw = 0.8
 			elevation = 0.28
 		"Patines":
 			focus = Vector3(0.02, 0.055, 0)
 			preset_distance = 0.92
+			_camera_coverage = 0.40
 			yaw = 1.2
 			elevation = 0.08
 			_show_canopy(false)
 		"Carenado":
 			focus = Vector3(0.16, 0.19, 0)
 			preset_distance = 1.0
+			_camera_coverage = 0.60
 			yaw = 0.75
 			elevation = 0.38
 			_show_canopy(true)
+	_layout_zoom_scale = _layout_zoom_scale_for_size(get_viewport().get_visible_rect().size)
 	distance = preset_distance * _layout_zoom_scale
 	_blades_toggle.button_pressed = choice == "Completo"
 	_update_camera()
@@ -566,12 +573,20 @@ func _on_viewport_size_changed() -> void:
 	var clear_width := maxf(1.0, clear_bounds.y - clear_bounds.x)
 	_hint.position = Vector2(clear_bounds.x, 24)
 	_hint.size = Vector2(clear_width, 48)
-	_hint.visible = clear_width >= 160.0
-	var next_scale := clampf((viewport_size.y / REFERENCE_VIEW_HEIGHT) * (REFERENCE_CLEAR_WIDTH / clear_width), 0.25, 8.0)
+	_hint.visible = clear_width >= 360.0
+	var next_scale := _layout_zoom_scale_for_size(viewport_size)
 	if not is_equal_approx(next_scale, _layout_zoom_scale):
 		distance *= next_scale / _layout_zoom_scale
 		_layout_zoom_scale = next_scale
 	_update_camera()
+
+
+func _layout_zoom_scale_for_size(viewport_size: Vector2) -> float:
+	var clear_bounds := _clear_horizontal_bounds(viewport_size.x)
+	var clear_width := maxf(1.0, clear_bounds.y - clear_bounds.x)
+	var height_scale := viewport_size.y / REFERENCE_VIEW_HEIGHT
+	var width_scale := height_scale * (REFERENCE_CLEAR_WIDTH / clear_width) * _camera_coverage
+	return clampf(maxf(height_scale, width_scale), 0.25, 8.0)
 
 
 func _unhandled_input(event: InputEvent) -> void:

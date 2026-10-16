@@ -5,6 +5,7 @@ const Data = preload("res://physics/rotorcraft_data.gd")
 const Electronics = preload("res://physics/rotorcraft/electronics.gd")
 const Flight = preload("res://physics/rotorcraft/flight_dynamics.gd")
 const FlightFixture = preload("res://tests/test_heli_flight.gd")
+const HelicopterFlightSession = preload("res://sim/helicopter_flight_session.gd")
 const M = preload("res://physics/math3d.gd")
 
 var checks: int = 0
@@ -36,8 +37,21 @@ func _initialize() -> void:
 	check("HX-700 stays explicitly unqualified for release",
 		hx700.release_gate.state == "laboratory_only"
 		and not hx700.release_gate.flight_qualified
-		and hx700.release_gate.missing_capabilities.has("freewheel_and_power_off_energy")
-		and hx700.release_gate.missing_capabilities.has("achieved_servo_states"))
+		and hx700.release_gate.missing_capabilities == [
+			"identified_fbl_rotor_dynamics", "achieved_servo_states",
+			"freewheel_and_power_off_energy", "signed_inversion_envelope",
+			"ground_start_lifecycle", "HX700_flight_response_validation",
+		])
+	var blocked_session = HelicopterFlightSession.new()
+	var session_started: bool = blocked_session.setup(
+		"res://data/aircraft/hx700_electric_3d_experimental.json",
+		"hx700-electric-3d-experimental",
+	)
+	check("helicopter flight session refuses the laboratory-only HX-700 candidate",
+		not session_started
+		and blocked_session.start_error.contains("laboratory-only")
+		and blocked_session.start_error.contains("HX700_flight_response_validation"))
+	blocked_session.free()
 	check("trainer retains the exact heading-hold law", trainer.controller_law == Electronics.TRAINER_LAW)
 
 	var model: Dictionary = hx700.context.electronics_model
