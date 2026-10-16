@@ -1,4 +1,5 @@
 ## AV-09 real-session regression for retractable tricycle gear and source-derived Avanti contacts.
+## The seven-input layout includes an explicit zero flap request in these gear-only scenarios.
 ## Run with the pinned Godot binary from the repository root:
 ##   godot --headless --path app --script res://tests/test_retractable_gear_ground.gd
 extends SceneTree
@@ -60,7 +61,7 @@ func _engine_off(session: Node) -> void:
 	if not continuous.is_empty():
 		continuous[0] = 0.0
 	session.sim.continuous = continuous
-	session.sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, 0.0])
+	session.sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0])
 
 
 func _set_rim_speed(session: Node, speed: float) -> void:
@@ -113,7 +114,7 @@ func _roll_to_stop(session: Node, brake: float, max_seconds: float) -> Dictionar
 	var stopped := false
 	var elapsed := 0.0
 	for index in roundi(max_seconds / dt):
-		session.sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, brake])
+		session.sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, brake, 0.0])
 		session._physics_process(dt)
 		if not session.crash.is_empty():
 			break
@@ -212,7 +213,7 @@ func _initialize() -> void:
 	airborne.input_enabled = false
 	var extension_time: float = airborne.aircraft.model.landing_gear.retraction.extension_time
 	var actuator_throttle: float = float(airborne.start.get("throttle", 0.0))
-	var extended := _step(airborne, extension_time, PackedFloat64Array([0.0, 0.0, 0.0, actuator_throttle, 1.0, 0.0]))
+	var extended := _step(airborne, extension_time, PackedFloat64Array([0.0, 0.0, 0.0, actuator_throttle, 1.0, 0.0, 0.0]))
 	_check("extension reaches the exact downlock endpoint in its configured time",
 		extended.fault.is_empty() and airborne.gear_state().extension == 1.0 and airborne.gear_state().status == "down",
 		str(airborne.gear_state()))
@@ -222,7 +223,7 @@ func _initialize() -> void:
 	airborne.input_enabled = false
 	airborne.sim.inputs = airborne._inputs()
 	var retraction_time: float = airborne.aircraft.model.landing_gear.retraction.retraction_time
-	var retracted := _step(airborne, retraction_time, PackedFloat64Array([0.0, 0.0, 0.0, actuator_throttle, 0.0, 0.0]))
+	var retracted := _step(airborne, retraction_time, PackedFloat64Array([0.0, 0.0, 0.0, actuator_throttle, 0.0, 0.0, 0.0]))
 	_check("retraction returns to exact stowed endpoint without fault",
 		retracted.fault.is_empty() and airborne.gear_state().extension == 0.0 and airborne.gear_state().status == "up",
 		str(airborne.gear_state()))
@@ -248,7 +249,7 @@ func _initialize() -> void:
 	_check("runway rest solves positive load-bearing compression on mains and nose", all_touching, str(start_compressions))
 	_engine_off(parked)
 	parked.input_enabled = false
-	var rest := _step(parked, 2.0, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, 0.0]))
+	var rest := _step(parked, 2.0, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0]))
 	_check("engine-off runway rest stays level on all three wheels without drift or fault",
 		rest.crash.is_empty() and rest.fault.is_empty() and rest.speed < 0.01 and rest.displacement < 0.002,
 		"speed %.4f m/s, drift %.4f m, fault %s" % [rest.speed, rest.displacement, rest.fault])
@@ -262,7 +263,7 @@ func _initialize() -> void:
 		var windy: Node = windy_setup.session
 		windy.input_enabled = false
 		var wind: PackedFloat64Array = windy.wind_at(0.0)
-		var windy_rest := _step(windy, 2.0, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, 0.0]))
+		var windy_rest := _step(windy, 2.0, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0]))
 		_check("crosswind runway rest remains stationary with matching gear-drag loads",
 			M.norm(wind) >= 1.49 and windy_rest.crash.is_empty() and windy_rest.fault.is_empty()
 			and windy_rest.speed < 0.01 and windy_rest.displacement < 0.002,
@@ -310,7 +311,7 @@ func _initialize() -> void:
 		_set_rim_speed(taxi, 0.5)
 		taxi.input_enabled = false
 		var before_yaw := _yaw(taxi_state)
-		var taxi_result := _step(taxi, 2.5, PackedFloat64Array([0.0, 0.0, 0.45, 0.2, 1.0, 0.0]))
+		var taxi_result := _step(taxi, 2.5, PackedFloat64Array([0.0, 0.0, 0.45, 0.2, 1.0, 0.0, 0.0]))
 		var yaw_change := wrapf(_yaw(taxi_result.state) - before_yaw, -PI, PI)
 		var taxi_contacts: PackedFloat64Array = taxi.gear_compressions(taxi_result.state)
 		var contact_count_ok := taxi_contacts.size() == 3
@@ -343,7 +344,7 @@ func _initialize() -> void:
 		braking.sim.inputs = braking._inputs()
 		braking.input_enabled = false
 		_check("wheel brake command %.1f is accepted" % demand, accepted)
-		var braking_result := _step(braking, 0.5, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, demand]))
+		var braking_result := _step(braking, 0.5, PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 1.0, demand, 0.0]))
 		brake_speeds.append(braking_result.speed)
 		_check("brake run has no crash or numerical fault", braking_result.crash.is_empty() and braking_result.fault.is_empty(), braking_result.fault)
 		braking.queue_free()
