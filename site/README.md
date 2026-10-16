@@ -134,3 +134,12 @@ release-notes link returned HTTP 200. Deployment
 `0e56ef4ad43d736dbb273344402d61ee6f9a0daf` passed the
 [Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38956887159).
 The v0.1.2 stable packages are now published; the preparation-page deployment is retained above as history.
+
+Published v0.1.2 refresh, 2026-10-16: deployment
+`fdda436a6f53058fb7af09bc3b35ffa08beba9a6` passed the
+[Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38965585237).
+The public page serves `stable-v012-20261016`, links all three platform packages
+and `SHA256SUMS` to v0.1.2, and identifies the remaining experimental-aircraft
+limits in both languages. Public browser checks at 1280×900 and 390×844 in
+English and Spanish found no horizontal overflow, console warnings or errors.
+A cache-refresh request returned HTTP 200 with the published release links.
