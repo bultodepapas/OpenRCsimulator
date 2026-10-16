@@ -60,7 +60,7 @@ func _initialize() -> void:
 		for tick: int in 240:
 			s.sim.step()
 		check("hot/high 1s level hold "+path, s.sim.tick==240 and s.is_flyable() and absf(s.sim.state[RB.POS+2]+30.0)<1e-6 and absf(s.air_data(s.sim.state).V-s.start.V)<1e-6)
-		var trace_version: String = "v10" if s.gear_is_retractable() else "v6"
+		var trace_version: String = "v12" if s.flaps_available() else ("v10" if s.gear_is_retractable() else "v6")
 		check("versioned trace keeps constant field density and EAS",r.trace.to_csv().begins_with("# format: openrc-trace " + trace_version + "\n") and r.trace.value(240,"rho_kgm3")==s.air_density() and absf(r.trace.value(240,"equivalent_airspeed_mps")-s.air_data(s.sim.state).V*M.sqrt_(s.air_density()/1.225))<1e-12)
 		check("golden v1 refuses changed atmosphere",Golden.record(s,"roll_15").is_empty() and not Golden.replay(s,{}).ok)
 		r.detach()
