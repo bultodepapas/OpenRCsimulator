@@ -1,0 +1,11 @@
+verify_p51 exit=0  verify_p51: 251 checks, 0 failed
+verify_p51_clearance exit=0  verify_p51_clearance: 72 checks, 0 failed (71093 ms)
+test_p51_flaps exit=0  P51-11a flaps: 12 checks, 0 failed
+test_p51_lights exit=0  P51-V13 lights: 13 checks, 0 failed
+test_night_kit exit=0  FW-35b night kit: 34 checks, 0 failed
+test_p51_retracts exit=0  P51-11b retracts: 14 checks, 0 failed
+test_crash_masses exit=0  27 checks, 0 failed
+test_crash_hull_labels exit=0  240 checks, 0 failed
+test_airframe_scuffs exit=0  US-V12 airframe scuffs: 14 checks, 0 failed
+test_prop_strike exit=0  34 checks, 0 failed
+test_flaps_session exit=0  AV-09 flaps session: 36 checks, 0 failures

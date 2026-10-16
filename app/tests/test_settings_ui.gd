@@ -28,6 +28,14 @@ func _run() -> void:
 	await process_frame
 	var store := DisplayPreferences.new(PREFS)
 	_check("fresh display settings use validated defaults", store.config == DisplayPreferences.DEFAULTS and store.writable)
+	var legacy := DisplayPreferences.DEFAULTS.duplicate(true)
+	legacy.erase("menu_volume")
+	_check("legacy display settings receive the default menu volume", DisplayPreferences.validate(legacy).ok
+		and DisplayPreferences.validate(legacy).config.menu_volume == DisplayPreferences.DEFAULTS.menu_volume)
+	for invalid_volume: Variant in [-0.1, 1.1, NAN, INF, "quiet"]:
+		var invalid_audio := DisplayPreferences.DEFAULTS.duplicate(true)
+		invalid_audio.menu_volume = invalid_volume
+		_check("invalid menu volume rejected: %s" % str(invalid_volume), not DisplayPreferences.validate(invalid_audio).ok)
 
 	var candidate := DisplayPreferences.DEFAULTS.duplicate(true)
 	candidate.window_mode = "borderless"
@@ -74,7 +82,7 @@ func _run() -> void:
 	test_viewport.add_child(default_settings)
 	await process_frame
 	await process_frame
-	_check("default 1080p/4K Settings keeps Display and Accessibility on one visible page",
+	_check("default 1080p/4K Settings Display page fits without scrolling",
 		not default_settings._scroll.get_v_scroll_bar().visible,
 		"scrollbar=%s viewport=%s surface=%s page=%s panel=%s" % [
 		str(default_settings._scroll.get_v_scroll_bar().visible), str(test_viewport.size),
@@ -82,6 +90,25 @@ func _run() -> void:
 		str(default_settings._scroll.get_child(0).size), str(default_settings._layout_panel.size)])
 	_check("default Settings workspace is bounded on a wide viewport",
 		default_settings._layout_panel.size.x <= 800.0)
+	for category: int in 3:
+		default_settings._show_category(category)
+		await process_frame
+		await process_frame
+		_check("default Settings category %d fits without scrolling" % category,
+			not default_settings._scroll.get_v_scroll_bar().visible)
+	default_settings._volume_changed(0.0)
+	_check("muted preview disables Test sound", default_settings._test_sound_button.disabled
+		and default_settings._volume_value.text == tr("Muted"))
+	default_settings.keep_changes()
+	_check("Keep persists menu mute", DisplayPreferences.load_from(PREFS).menu_volume == 0.0)
+	default_settings._volume_changed(0.75)
+	default_settings._revert()
+	_check("Revert restores the kept volume and slider", default_settings._draft.menu_volume == 0.0
+		and default_settings._volume_slider.value == 0.0 and default_settings._test_sound_button.disabled)
+	default_settings._volume_changed(0.75)
+	default_settings.close()
+	_check("Close restores the kept volume", default_settings._draft.menu_volume == 0.0
+		and DisplayPreferences.load_from(PREFS).menu_volume == 0.0)
 	default_settings.queue_free()
 	await process_frame
 

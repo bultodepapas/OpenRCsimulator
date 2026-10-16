@@ -92,6 +92,7 @@ func _run() -> void:
 	_check("Fly is full width in the pinned primary action strip", fly.get_parent() == primary_actions
 		and fly.size_flags_horizontal == Control.SIZE_EXPAND_FILL
 		and absf(fly.size.x - primary_actions.size.x) < 1.0
+		and fly.visible and not home.ground_vehicle_button.visible
 		and primary_actions.get_global_rect().end.y <= utilities.get_global_rect().position.y)
 	_check("aircraft arrows stay in the compact Flight destination",
 		home.previous_button.get_parent() == home.get_node("HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading")
@@ -99,8 +100,36 @@ func _run() -> void:
 	_check("Aircraft destination lists every catalog entry with proper-name capability text",
 		home.get_node("HomeRail/HomeContentScroll/HomePages/AircraftPage/AircraftCatalog").get_child_count() == Catalog.ids().size()
 		and home._catalog_buttons.size() == Catalog.ids().size())
+	var selected_catalog_index: int = home._catalog_ids.find(home.aircraft_id)
+	var selected_catalog_button: Button = home._catalog_buttons[selected_catalog_index]
+	var selected_catalog_style := selected_catalog_button.get_theme_stylebox("pressed") as StyleBoxFlat
+	var selected_catalog_entry: Dictionary = Catalog.entry(home.aircraft_id)
+	_check("catalog rows show a model and capability while keeping detail in the tooltip",
+		selected_catalog_button.text.split("\n").size() == 2
+		and selected_catalog_button.text.contains(home.tr(selected_catalog_entry.name))
+		and selected_catalog_button.text.contains(home.tr("Flyable"))
+		and selected_catalog_button.tooltip_text.contains(home.tr(selected_catalog_entry.summary))
+		and selected_catalog_button.tooltip_text.contains(home.tr(selected_catalog_entry.status_note)))
+	_check("selected catalog row has a persistent accent and pressed state",
+		selected_catalog_button.button_pressed and selected_catalog_style.border_width_left >= 3
+		and selected_catalog_style.border_color == UiTheme.FOCUS)
 	_check("garage selector and entry are integrated into the Home column",
-		home.ground_vehicle_choice.get_parent() == home._pages[3] and home.ground_vehicle_button.get_parent() == home._pages[3])
+		home.ground_vehicle_choice.get_parent() == home._pages[3] and home.ground_vehicle_button.get_parent() == primary_actions)
+	var practice_summary: Label = home.get_node("HomeRail/HomeContentScroll/HomePages/PracticePage/PracticeSummary")
+	_check("Practice distinguishes random setups from next-flight failure practice",
+		practice_summary.text.contains("Natural Random") and practice_summary.text.contains("Failure practice")
+		and practice_summary.text.contains("next flight")
+		and home.failure_summary_label.text.contains("Next flight failures: Off"))
+	_check("flight details disclosure starts collapsed with a right caret",
+		not home._flight_details.visible and home._details_button.text == "More flight details"
+		and home._details_chevron.direction == "right")
+	home._details_button.pressed.emit()
+	_check("flight details disclosure expands and points down",
+		home._flight_details.visible and home._details_button.text == "Hide flight details"
+		and home._details_chevron.direction == "down")
+	home._details_button.pressed.emit()
+	_check("flight details disclosure collapses and points right",
+		not home._flight_details.visible and home._details_chevron.direction == "right")
 	_check("Language and Settings stay in the top-right header",
 		home.language_button.get_parent() == header_actions and home.settings_button.get_parent() == header_actions)
 	_check("Controls, Help and Quit stay directly accessible in the quiet bottom row",
@@ -226,10 +255,49 @@ func _run() -> void:
 	home._page_buttons[1].grab_focus()
 	await ui.tap(KEY_DOWN)
 	_check("catalog navigation enters on the selected aircraft", selected_catalog.has_focus())
+	var requested_catalog_id: String = home._catalog_ids[home._catalog_ids.size() - 1]
+	var requested_catalog_index: int = home._catalog_ids.find(requested_catalog_id)
+	var requested_catalog_button: Button = home._catalog_buttons[requested_catalog_index]
+	var requested_ids := PackedStringArray()
+	home.aircraft_requested.connect(func(id: String) -> void: requested_ids.append(id))
+	requested_catalog_button.grab_focus()
+	home._request_aircraft(requested_catalog_id)
+	_check("catalog request immediately selects and focuses its row", requested_catalog_button.has_focus()
+		and requested_catalog_button.button_pressed and requested_ids == PackedStringArray([requested_catalog_id]))
+	await process_frame # model preview may still be loading when the aircraft choice is committed
+	home.set_aircraft(requested_catalog_id)
+	await process_frame
+	_check("asynchronous aircraft selection keeps its row focused and revealed",
+		requested_catalog_button.has_focus() and requested_catalog_button.button_pressed
+		and scroll.get_global_rect().encloses(requested_catalog_button.get_global_rect()))
 	home._select_page(0)
 	home.set_aircraft(saved_aircraft)
 	fly.grab_focus()
 	_check("navigating did not start a flight", app.flight == null and _sessions(root) == 0)
+
+	# The Garage destination swaps the pinned action and keeps the keyboard route on the car signal.
+	var garage_home: Control = Home.new()
+	root.add_child(garage_home)
+	await ui.settle()
+	var garage_requests := [0]
+	var garage_flight_requests := [0]
+	garage_home.ground_vehicle_requested.connect(func() -> void: garage_requests[0] += 1)
+	garage_home.fly_requested.connect(func() -> void: garage_flight_requests[0] += 1)
+	garage_home._page_buttons[3].grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("Garage replaces the pinned FLY action with Open garage",
+		garage_home._pages[3].visible and garage_home.ground_vehicle_button.visible
+		and not garage_home.fly_button.visible and garage_home.ground_vehicle_button.text == "Open garage")
+	await ui.tap(KEY_DOWN)
+	_check("Garage keyboard navigation enters on the vehicle choice", garage_home.ground_vehicle_choice.has_focus())
+	await ui.tap(KEY_DOWN)
+	_check("Garage keyboard navigation reaches Open garage", garage_home.ground_vehicle_button.has_focus())
+	await ui.tap(KEY_ENTER)
+	_check("keyboard Open garage emits the car route without emitting Fly",
+		garage_requests[0] == 1 and garage_flight_requests[0] == 0)
+	garage_home.free()
+	await process_frame
+	fly.grab_focus()
 
 	# Quit asks to close (the signal only: the test must not quit through it).
 	var quits := [0]

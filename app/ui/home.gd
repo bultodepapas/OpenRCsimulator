@@ -118,6 +118,8 @@ var _catalog_ids: PackedStringArray = []
 var _flight_status_label: Label
 var _flight_details: VBoxContainer
 var _details_button: Button
+var _details_chevron
+var _requested_aircraft_id := ""
 
 
 func _init() -> void:
@@ -325,11 +327,22 @@ func _init() -> void:
 	note_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	note_label.visible = false
 	flight_page.add_child(note_label)
+	var disclosure_row := HBoxContainer.new()
+	disclosure_row.name = "FlightDetailsDisclosure"
+	disclosure_row.add_theme_constant_override("separation", 4)
+	_details_chevron = KeyCap.Arrow.new()
+	_details_chevron.name = "FlightDetailsChevron"
+	_details_chevron.custom_minimum_size = Vector2(12, 12)
+	_details_chevron.direction = "right"
+	disclosure_row.add_child(_details_chevron)
 	_details_button = _button("More flight details", "QuietButton")
 	_details_button.name = "FlightDetailsToggle"
 	_details_button.custom_minimum_size.y = 32
+	_details_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_details_button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	_details_button.pressed.connect(_toggle_flight_details)
-	flight_page.add_child(_details_button)
+	disclosure_row.add_child(_details_button)
+	flight_page.add_child(disclosure_row)
 	_flight_details = VBoxContainer.new()
 	_flight_details.name = "FlightDetails"
 	_flight_details.add_theme_constant_override("separation", 4)
@@ -379,13 +392,21 @@ func _init() -> void:
 		item.name = "Aircraft_%s" % id.replace("-", "_")
 		item.toggle_mode = true
 		item.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		item.custom_minimum_size.y = 76
+		item.custom_minimum_size.y = 54
 		item.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		item.alignment = HORIZONTAL_ALIGNMENT_LEFT
 		item.clip_text = false
 		item.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		item.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-		item.tooltip_text = tr(entry.status_note)
+		var selected_style := item.get_theme_stylebox("pressed").duplicate() as StyleBoxFlat
+		selected_style.bg_color = Color(UiTheme.FOCUS, 0.12)
+		selected_style.border_width_left = 3
+		selected_style.border_color = UiTheme.FOCUS
+		item.add_theme_stylebox_override("pressed", selected_style)
+		item.add_theme_stylebox_override("hover_pressed", selected_style)
+		item.add_theme_color_override("font_pressed_color", UiTheme.FOCUS)
+		item.add_theme_color_override("font_hover_pressed_color", UiTheme.FOCUS)
+		item.tooltip_text = "%s\n%s" % [tr(entry.summary), tr(entry.status_note)]
 		item.pressed.connect(_request_aircraft.bind(id))
 		catalog_list.add_child(item)
 		_catalog_buttons.append(item)
@@ -399,6 +420,13 @@ func _init() -> void:
 	_page_host.add_child(practice_page)
 	_pages.append(practice_page)
 	practice_page.add_child(_label("Practice", "SectionTitle"))
+	var practice_intro := _label(
+		"Natural Random creates a flight setup to review. Failure practice schedules system faults for your next flight.",
+		"SecondaryLabel"
+	)
+	practice_intro.name = "PracticeSummary"
+	practice_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	practice_page.add_child(practice_intro)
 	var practice_row := HBoxContainer.new()
 	practice_row.name = "PracticeActions"
 	practice_row.add_theme_constant_override("separation", 6)
@@ -409,7 +437,7 @@ func _init() -> void:
 	natural_random_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	natural_random_button.pressed.connect(func() -> void: natural_random_requested.emit(natural_random_button))
 	practice_row.add_child(natural_random_button)
-	failures_button = _button("Failures", "HomeAction")
+	failures_button = _button("Failure practice", "HomeAction")
 	failures_button.name = "Failures"
 	failures_button.custom_minimum_size.y = 42
 	failures_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -446,7 +474,6 @@ func _init() -> void:
 	ground_vehicle_button.custom_minimum_size.y = 44
 	ground_vehicle_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	ground_vehicle_button.pressed.connect(func() -> void: ground_vehicle_requested.emit())
-	garage_page.add_child(ground_vehicle_button)
 
 	var primary_actions := VBoxContainer.new()
 	primary_actions.name = "PrimaryActions"
@@ -459,6 +486,8 @@ func _init() -> void:
 	fly_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	fly_button.pressed.connect(_on_fly)
 	primary_actions.add_child(fly_button)
+	ground_vehicle_button.text = tr("Open garage")
+	primary_actions.add_child(ground_vehicle_button)
 	var utility_row := HBoxContainer.new()
 	utility_row.name = "HomeUtilities"
 	utility_row.add_theme_constant_override("separation", 4)
@@ -510,6 +539,15 @@ func _nav_button(label: String, node_name: String, page_index: int) -> Button:
 
 
 func _request_aircraft(id: String) -> void:
+	if not Catalog.has(id):
+		return
+	_requested_aircraft_id = id
+	_update_catalog_texts()
+	var selected_index := _catalog_ids.find(id)
+	if selected_index >= 0 and is_inside_tree():
+		_catalog_buttons[selected_index].grab_focus()
+	if is_inside_tree() and _pages[1].visible:
+		_schedule_selected_aircraft_reveal()
 	aircraft_requested.emit(id)
 
 
@@ -536,14 +574,15 @@ static func _gradient_rect(rect_name: String, vertical: bool) -> TextureRect:
 
 
 func _update_catalog_texts() -> void:
+	var selected_id := _requested_aircraft_id if not _requested_aircraft_id.is_empty() else aircraft_id
 	for index in _catalog_ids.size():
 		var id: String = _catalog_ids[index]
 		var item := _catalog_buttons[index]
 		var entry: Dictionary = Catalog.entry(id)
 		var capability := tr("Flyable") if entry.status == Catalog.FLYABLE else tr("Experimental") if entry.status == Catalog.EXPERIMENTAL else tr("Preview only")
-		item.text = "%s\n%s\n%s" % [tr(entry.name), tr(entry.summary), capability]
-		item.tooltip_text = tr(entry.status_note)
-		item.set_pressed_no_signal(id == aircraft_id)
+		item.text = "%s\n%s" % [tr(entry.name), capability]
+		item.tooltip_text = "%s\n%s" % [tr(entry.summary), tr(entry.status_note)]
+		item.set_pressed_no_signal(id == selected_id)
 
 
 func _aircraft_display_name() -> String:
@@ -575,7 +614,13 @@ func _update_flight_capability() -> void:
 
 func _toggle_flight_details() -> void:
 	_flight_details.visible = not _flight_details.visible
+	_update_details_disclosure()
+
+
+func _update_details_disclosure() -> void:
 	_details_button.text = tr("Hide flight details") if _flight_details.visible else tr("More flight details")
+	_details_chevron.direction = "down" if _flight_details.visible else "right"
+	_details_chevron.queue_redraw()
 
 
 func _ready() -> void:
@@ -602,6 +647,12 @@ func _ready() -> void:
 	fly_button.focus_neighbor_top = fly_button.get_path_to(start_button if not fly_button.disabled else _page_buttons[0])
 	fly_button.focus_neighbor_bottom = fly_button.get_path_to(controls_button)
 	fly_button.focus_neighbor_right = fly_button.get_path_to(language_button)
+	ground_vehicle_choice.focus_neighbor_bottom = ground_vehicle_choice.get_path_to(ground_vehicle_button)
+	ground_vehicle_choice.focus_next = ground_vehicle_choice.get_path_to(ground_vehicle_button)
+	ground_vehicle_button.focus_neighbor_top = ground_vehicle_button.get_path_to(ground_vehicle_choice)
+	ground_vehicle_button.focus_previous = ground_vehicle_button.get_path_to(ground_vehicle_choice)
+	ground_vehicle_button.focus_neighbor_bottom = ground_vehicle_button.get_path_to(controls_button)
+	ground_vehicle_button.focus_next = ground_vehicle_button.get_path_to(controls_button)
 	get_viewport().size_changed.connect(_apply_responsive_layout)
 	_update_texts()
 	# Keyboard focus starts on Fly and remains usable when the selected aircraft is preview-only.
@@ -625,18 +676,23 @@ func _select_page(index: int) -> void:
 	_page_host.queue_sort()
 	_scroll.queue_sort()
 	_scroll.scroll_vertical = 0
-	if selected == 1 and is_inside_tree():
-		if not get_tree().process_frame.is_connected(_reveal_selected_aircraft):
-			get_tree().process_frame.connect(_reveal_selected_aircraft, CONNECT_ONE_SHOT)
+	fly_button.visible = selected != 3
+	ground_vehicle_button.visible = selected == 3
+	if selected == 1:
+		_schedule_selected_aircraft_reveal()
 	# Focus stays on the selected destination's content; it never skips into another section.
 	if is_inside_tree():
-		var fly_previous: Control = start_button if selected == 0 and not fly_button.disabled else _page_buttons[selected]
-		fly_button.focus_neighbor_top = fly_button.get_path_to(fly_previous)
+		var primary_action: Control = ground_vehicle_button if selected == 3 else fly_button
+		var action_previous: Control = ground_vehicle_choice if selected == 3 else start_button if selected == 0 and not fly_button.disabled else _page_buttons[selected]
+		primary_action.focus_neighbor_top = primary_action.get_path_to(action_previous)
 		if selected == 0 and not fly_button.disabled:
 			start_button.focus_neighbor_bottom = start_button.get_path_to(fly_button)
 		var catalog_selection := maxi(0, _catalog_ids.find(aircraft_id))
 		var first_controls: Array[Control] = [previous_button, _catalog_buttons[catalog_selection], natural_random_button, ground_vehicle_choice]
 		_page_buttons[selected].focus_neighbor_bottom = _page_buttons[selected].get_path_to(first_controls[selected])
+		if selected == 3:
+			ground_vehicle_choice.focus_neighbor_bottom = ground_vehicle_choice.get_path_to(ground_vehicle_button)
+			ground_vehicle_choice.focus_next = ground_vehicle_choice.get_path_to(ground_vehicle_button)
 		if has_focus():
 			_page_buttons[selected].grab_focus()
 
@@ -646,6 +702,13 @@ func _reveal_selected_aircraft() -> void:
 	var selected := _catalog_ids.find(aircraft_id)
 	if selected >= 0:
 		_scroll.ensure_control_visible(_catalog_buttons[selected])
+
+
+func _schedule_selected_aircraft_reveal() -> void:
+	if not is_inside_tree() or not _pages[1].visible:
+		return
+	if not get_tree().process_frame.is_connected(_reveal_selected_aircraft):
+		get_tree().process_frame.connect(_reveal_selected_aircraft, CONNECT_ONE_SHOT)
 
 
 func _apply_responsive_layout() -> void:
@@ -736,8 +799,14 @@ func _process(_delta: float) -> void:
 ## Shows `id` on the card and enables Fly only for an aircraft that can fly. Unknown IDs fall back to the default
 ## (a stale preference must never leave Home without a valid airplane).
 func set_aircraft(id: String) -> void:
+	var focused_catalog_index := -1
+	for index in _catalog_buttons.size():
+		if _catalog_buttons[index].has_focus():
+			focused_catalog_index = index
+			break
 	var entering_rotorcraft: bool = Catalog.is_rotorcraft(id) and not Catalog.is_rotorcraft(aircraft_id)
 	aircraft_id = id if Catalog.has(id) else Catalog.DEFAULT_ID
+	_requested_aircraft_id = ""
 	if entering_rotorcraft:
 		start_choice = "runway"
 	set_start_choice(start_choice)
@@ -752,6 +821,8 @@ func set_aircraft(id: String) -> void:
 	aircraft_status_label.text = tr(e.status_note)
 	_update_flight_capability()
 	_update_catalog_texts()
+	if focused_catalog_index >= 0 and focused_catalog_index < _catalog_buttons.size():
+		_catalog_buttons[focused_catalog_index].grab_focus()
 	limits_label.visible = flyable
 	fly_button.disabled = _fly_sent or not flyable
 	fly_button.focus_mode = Control.FOCUS_ALL if flyable else Control.FOCUS_NONE
@@ -775,6 +846,8 @@ func set_aircraft(id: String) -> void:
 		next_button.grab_focus()
 	if is_node_ready():
 		_update_texts()
+	if is_inside_tree():
+		_schedule_selected_aircraft_reveal()
 
 
 ## Kept separate from save/launch errors. Label auto-translation stays live.
@@ -941,15 +1014,15 @@ func _update_failure_summary() -> void:
 	if failure_summary_label == null:
 		return
 	if Catalog.is_rotorcraft(aircraft_id):
-		failure_summary_label.text = tr("Airplanes only")
+		failure_summary_label.text = tr("Next flight failures: Airplanes only")
 		return
 	var probability := clampi(int(failure_config.get("probability_percent", 0)), 0, 100)
 	if probability == 0:
-		failure_summary_label.text = tr("Off")
+		failure_summary_label.text = tr("Next flight failures: Off")
 	elif bool(failure_config.get("include_catastrophic", false)):
-		failure_summary_label.text = tr("%d%% · Catastrophic enabled") % probability
+		failure_summary_label.text = tr("Next flight failures: %d%% · Catastrophic enabled") % probability
 	else:
-		failure_summary_label.text = tr("%d%% · Standard") % probability
+		failure_summary_label.text = tr("Next flight failures: %d%% · Standard") % probability
 
 
 ## UI-16: a small card at the top right over the backdrop (outside the column, so nothing moves) saying that the
@@ -997,7 +1070,7 @@ func _update_texts() -> void:
 	aircraft_status_label.text = tr(Catalog.entry(aircraft_id).status_note)
 	_update_flight_capability()
 	_update_catalog_texts()
-	_details_button.text = tr("Hide flight details") if _flight_details.visible else tr("More flight details")
+	_update_details_disclosure()
 	previous_button.tooltip_text = tr("Previous aircraft")
 	next_button.tooltip_text = tr("Next aircraft")
 	_update_weather_text()

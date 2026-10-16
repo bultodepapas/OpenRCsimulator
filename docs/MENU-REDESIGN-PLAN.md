@@ -1,6 +1,6 @@
 # OpenRC Simulator — cinematic menu and experience redesign
 
-**Revision 6 · 2026-10-15 · Owner: product shell · UI-20…29.**
+**Revision 7 · 2026-10-15 · Owner: product shell · UI-20…29.**
 
 **Status: core redesign implemented; extended acceptance remains open.** The grounded Home composition, bounded navigation, 1920×1080 reference scaling, amber/charcoal theme, compact Pause, Settings and Conditions refinements are now in source. [UI-22–26-R2 evidence](research/menu-investigations/UI-25-R2/README.md) records the native EN/ES 720p–4K matrix and behavior checks. This revision retains the wider design targets below; thumbnails, optional effects, release packages and human visual acceptance are not implicitly complete.
 
@@ -260,6 +260,17 @@ Preferred resources: native Controls/Camera3D/Tween, existing Kenney prompts, a 
 Download only identified missing free assets. Pin exact version/commit/hash, retain license and record transforms/import settings. Existing scenery/provenance comes first; Poly Haven/ambientCG are material candidates. Commercial reference screenshots never become runtime assets. Do not generate replacements for suitable downloadable fonts/icons/textures/props.
 
 ## 9. Phased implementation
+
+### Active refinement · UI-28-R3
+
+The next slice improves feedback and decisions inside the delivered compact shell:
+
+1. **Home flow:** give the garage its own primary drive action; shorten catalog rows; explain Practice choices and retain selected-entry keyboard focus. Keep Flight free of scrolling at default text size.
+2. **Settings:** separate Display, Interface and Sound into compact categories with pinned Close/Keep/Revert. Preview and persist menu volume, including mute; explicitly explain the existing immediate-save language behavior.
+3. **Feedback:** use a small, pinned CC0 Kenney sound subset for navigation, selection and back. Observe only active menu controls, silence automatic focus, debounce repeats and limit simultaneous voices. Reduced motion keeps immediate input and the same final layout.
+4. **Verification:** test route cues, mute/preview/revert/persistence, garage intent, nested focus and paused ticks. Capture EN/ES at 720p, 1080p and native fullscreen 4K, plus the densest Settings page at 200%. Retain audio provenance and distinguish native rendering from headless behavioral checks.
+
+Optional blur, moving cameras and catalog thumbnails stay outside this slice. Native results and any remaining limits belong in the existing menu evidence track.
 
 Each phase leaves a working, reviewable app. Do not style all screens before Home's scene and density are convincing. Visual review means assessing a concrete native result; it is not an extra permission requirement to prepare that result.
 

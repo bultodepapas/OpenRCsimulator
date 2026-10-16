@@ -1,0 +1,51 @@
+{
+  "format": "openrc-cr36b-verification-v1",
+  "date": "2026-10-15",
+  "host": "Windows",
+  "godot": "4.7.2-stable",
+  "scope": "Focused generation, independent partial dossier and controlled production contact-to-report integration; not full suite or physical validation.",
+  "runtime_sha256": "131a562b47ecda63cb4328d1c6dd8e166494c8bdb5f398392ed7565dc21ef32d",
+  "checks": [
+    {
+      "command": "python research/crash-economics/build_catalog.py --check",
+      "exit_code": 0,
+      "engine_errors": false,
+      "output": "CR-28: offers, integer cents, baseline coverage, fleet IDs, examples and generated freshness OK"
+    },
+    {
+      "command": "python research/crash-economics/build_runtime.py --check",
+      "exit_code": 0,
+      "engine_errors": false,
+      "output": "runtime economics sidecar is current (9 aircraft routes)"
+    },
+    {
+      "command": "python research/crash-economics/test_runtime_data.py",
+      "exit_code": 0,
+      "engine_errors": false,
+      "output": "...................\n----------------------------------------------------------------------\nRan 19 tests in 0.618s\n\nOK"
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_economy_catalog.gd",
+      "exit_code": 0,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n71 checks, 0 failed"
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_economy_calculator.gd",
+      "exit_code": 0,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n46 checks, 0 failed"
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_accident_integration.gd",
+      "exit_code": 0,
+      "engine_errors": false,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nok   report exists independently of VFX and holds crash for deliberate restart\nok   read-only economics preserves healthy float64 state exactly\nok   healthy flight has no accident report\nPROP STRIKE at 9158 rpm, 2.1 m/s: engine stopped\nok   production prop strike continues flight with engine stopped\nok   accepted contact does not calculate, publish or save a report\nok   confirmed propeller is priced once at USD 5.39\nok   priced part freezes its source and compatibility notes\nok   shaft and engine inspection prevents a false total or upper cost bound\nok   repeated notification cannot bill the prop twice\nok   snapshot persists outside accepted physics callbacks\nok   stored report reopens with frozen catalog identity\nok   invalid checkpoint cannot discard current costs\nok   valid physics checkpoint restores\nok   restored prop latch is costed once with explicit missing-history caveat\nok   settlement queues presentation without opening UI inside accepted ticks\nok   movement before publication cancels a stale landed card\nok   nonterminal prop damage opens a large report after supported rest\nok   landing presentation preserves the inspection subtotal and no restart action\nok   renewed movement collapses automatic report without clearing costs or changing physics\nCRASH at 20.0 m/s (sink 12.0 m/s, airframe contact (hull point 8), point speed 20.0 m/s at detected tick) - [R] restart\nok   terminal production contact opens persistent report\nok   unknown structural damage does not invent total loss or servo salvage\nok   source changes quarantine contacts without catalog, publication or archive work in callback\nok   frame-boundary rebind refuses stale prices for a changed aircraft\nok   restart clears only current ledger and keeps archived report\nok   archived report reopening is view-only\nok   contact journal is bounded and duplicate parts stay one purchase\nok   late prop strike survives a full journal with bounded separate evidence\nok   overflow strike duplicates cannot change valuation or grow dedup memory\nok   lake fixture uses valid accepted-event contract (bank_ground)\nok   lake-bank ground impact does not invent water exposure\nok   lake fixture uses valid accepted-event contract (water)\nok   late water exposure survives full history and retains its evidence\nok   journal overflow remains explicit incomplete evidence\nok   source mismatch cannot misprice a modified aircraft\nok   archive failure is reported without repeated per-frame writes\nok   explicit archival retries a previous failed write\nok   invalid contact evidence still presents a terminal inspection report\nok   malformed saved report is refused\nok   reset/archive publishes pending accepted damage without needing a frame\nok   30/60/144 Hz publication keeps amounts, evidence, tick and revision identical (30 Hz)\nok   30/60/144 Hz publication keeps amounts, evidence, tick and revision identical (60 Hz)\nok   30/60/144 Hz publication keeps amounts, evidence, tick and revision identical (144 Hz)\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\nok   variant glow start accepts the configured runway state: stik-glow-55ax-2t\nPROP STRIKE at 2200 rpm, 4.0 m/s: engine stopped\nok   variant production prop strike remains nonterminal: stik-glow-55ax-2t\nok   variant prices its own propeller once: stik-glow-55ax-2t\nok   variant retains selected source identity and inspection uncertainty: stik-glow-55ax-2t\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\nok   variant glow start accepts the configured runway state: stik-glow-fs64v-4t\nPROP STRIKE at 2200 rpm, 4.0 m/s: engine stopped\nok   variant production prop strike remains nonterminal: stik-glow-fs64v-4t\nok   variant prices its own propeller once: stik-glow-fs64v-4t\nok   variant retains selected source identity and inspection uncertainty: stik-glow-fs64v-4t\nok   sold-out manufacturer offer stays labeled in report\nok   Extra prescribed propulsion is running at runway start\nPROP STRIKE at 5782 rpm, 4.0 m/s: engine stopped\nok   variant production prop strike remains nonterminal: gp-extra-300s-60\nok   variant prices its own propeller once: gp-extra-300s-60\nok   variant retains selected source identity and inspection uncertainty: gp-extra-300s-60\nCR-30/32: 55 checks, 0 failed"
+    }
+  ],
+  "checks_summary": {
+    "python_tests": 19,
+    "godot_checks": 172,
+    "failed": 0
+  }
+}

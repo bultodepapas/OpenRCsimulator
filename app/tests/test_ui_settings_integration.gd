@@ -72,6 +72,9 @@ func _run() -> void:
 		and is_equal_approx(DisplayPreferences.load_from(PREFS + ".display").ui_scale, 1.0))
 
 	# Choose Spanish through the live language selector; the root persists it immediately and refreshes open screens.
+	settings._category_buttons[1].grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
 	settings._language_picker.grab_focus()
 	await ui.tap(KEY_ENTER)
 	await ui.tap(KEY_DOWN) # Español
@@ -126,6 +129,9 @@ func _run() -> void:
 		and session.sim.paused)
 
 	settings = app.screens.get_screen("settings") as CanvasLayer
+	settings._category_buttons[1].grab_focus()
+	await ui.tap(KEY_ENTER)
+	await ui.settle()
 	controls_button = settings.find_child("Controls", true, false) as Button
 	controls_button.grab_focus()
 	await ui.tap(KEY_ENTER)

@@ -3,6 +3,8 @@
 extends RefCounted
 
 const Screen := preload("res://ui/screen.gd")
+signal surface_opened(surface: Control, id: String)
+signal surface_closed(id: String, restoring_focus: bool)
 var _host: Node
 var _entries: Array[Dictionary] = []
 var _session: Node
@@ -57,6 +59,7 @@ func push(id: String, node: Node, from: Control = null) -> bool:
 	_sync_hold() # a pause screen holds the flight before it enters the tree
 	_host.add_child(node)
 	surface.open(from)
+	surface_opened.emit(surface, id)
 	return true
 
 
@@ -71,6 +74,7 @@ func pop(dispose := true, restore_focus := true) -> Node:
 		_entries.back().surface.set_active(true)
 	entry.surface.close(restore_focus)
 	_sync_hold()
+	surface_closed.emit(str(entry.id), restore_focus)
 	if dispose:
 		entry.node.queue_free()
 	return entry.node

@@ -37,7 +37,7 @@ Godot 4.7.2, native Windows ([logs](tests/)).
 
 - `verify_p51`: 251/251.
 - `verify_p51_clearance`: 72/72 in 71 s, including the 12 new aileron checks; flaps pass at 15° and 45° with the corrected chord.
-- **Other tests:** see the [summary](tests/summary.txt).
+- **Other tests:** P-51 flaps, lights, night kit, retracts, crash masses, hull labels, airframe scuffs, propeller strike and the flaps session all pass ([summary](tests/summary.txt)).
 - **Data:** physics data unchanged. Model manifests and Workshop descriptors regenerated through their generators.
 
 ## Limits

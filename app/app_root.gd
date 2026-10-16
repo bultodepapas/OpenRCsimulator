@@ -53,6 +53,8 @@ const SettingsScreen := preload("res://ui/settings_screen.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const UiScale := preload("res://ui/ui_scale.gd")
 const UiSurface := preload("res://ui/screen.gd")
+const MenuSounds := preload("res://ui/menu_audio.gd")
+var menu_audio: Node
 var _popup_realign_pending := false
 var display_preferences: DisplayPreferences
 var _display_window_mode := "windowed"
@@ -168,6 +170,15 @@ func _ready() -> void:
 	UiTheme.compact_layout = bool(initial_ui_scale.compact)
 	ui_window.size_changed.connect(_on_ui_window_resized)
 	display_preferences = DisplayPreferences.new(preferences_path + ".display")
+	menu_audio = MenuSounds.attach(self, func() -> Control:
+		return ScreenStack._surface(screens.top()) if screens.top() != null else null)
+	screens.surface_opened.connect(func(surface: Control, id: String) -> void:
+		menu_audio.observe(surface)
+		if id != "home":
+			menu_audio.play(&"accept"))
+	screens.surface_closed.connect(func(id: String, restoring_focus: bool) -> void:
+		if restoring_focus and id != "home":
+			menu_audio.play(&"back"))
 	_apply_presentation(display_preferences.config)
 	controllers = ControllerService.new()
 	controllers.allow_automatic_selection = func() -> bool:
@@ -592,6 +603,7 @@ func open_settings(from: Control = null) -> void:
 	var settings := SettingsScreen.new(display_preferences, preferences.get("language", "en"))
 	settings.presentation_changed.connect(_apply_presentation)
 	settings.language_changed.connect(set_language)
+	settings.sound_preview_requested.connect(func() -> void: menu_audio.play(&"accept"))
 	settings.closed.connect(func() -> void:
 		if screens.is_top("settings"): screens.pop())
 	settings.route_requested.connect(func(route: String, opener: Control) -> void:
@@ -601,6 +613,8 @@ func open_settings(from: Control = null) -> void:
 
 
 func _apply_presentation(config: Dictionary) -> void:
+	if is_instance_valid(menu_audio):
+		menu_audio.set_volume(float(config.get("menu_volume", DisplayPreferences.DEFAULTS.menu_volume)))
 	UiTheme.text_scale = float(config.ui_scale)
 	UiTheme.opaque_panels = bool(config.opaque_panels)
 	UiTheme.reduced_motion = bool(config.reduced_motion)

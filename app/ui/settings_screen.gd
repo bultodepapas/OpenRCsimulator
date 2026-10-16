@@ -11,6 +11,7 @@ signal closed
 signal presentation_changed(config: Dictionary)
 signal language_changed(language: String)
 signal route_requested(route: String, from: Control)
+signal sound_preview_requested
 
 const DISPLAY_TEST_SECONDS := 15
 const LANGUAGE_CODES: Array[String] = ["en", "es"]
@@ -36,6 +37,11 @@ var _scale_picker: OptionButton
 var _opaque_toggle: CheckButton
 var _motion_toggle: CheckButton
 var _language_picker: OptionButton
+var _category_buttons: Array[Button] = []
+var _pages: Array[VBoxContainer] = []
+var _volume_slider: HSlider
+var _volume_value: Label
+var _test_sound_button: Button
 var _status: Label
 var _keep_button: Button
 var _revert_button: Button
@@ -99,6 +105,18 @@ func _build() -> void:
 	_close_button.pressed.connect(close)
 	heading.add_child(_close_button)
 	_layout_shell.add_child(heading)
+	var categories := HBoxContainer.new()
+	categories.add_theme_constant_override("separation", 8)
+	var category_group := ButtonGroup.new()
+	for caption: String in ["Display", "Interface", "Sound"]:
+		var tab := _button(caption, "HomeTab", caption + "Category")
+		tab.toggle_mode = true
+		tab.button_group = category_group
+		tab.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		tab.pressed.connect(_show_category.bind(_category_buttons.size()))
+		_category_buttons.append(tab)
+		categories.add_child(tab)
+	_layout_shell.add_child(categories)
 	_scroll = ScrollContainer.new()
 	_scroll.follow_focus = true
 	_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -110,7 +128,16 @@ func _build() -> void:
 	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	page.add_theme_constant_override("separation", 10)
 	_scroll.add_child(page)
-	page.add_child(_label("Display", "SectionLabel"))
+	for index: int in 3:
+		var category := VBoxContainer.new()
+		category.name = "Category%d" % index
+		category.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		category.add_theme_constant_override("separation", 16)
+		page.add_child(category)
+		_pages.append(category)
+	var display_page := _pages[0]
+	var interface_page := _pages[1]
+	var sound_page := _pages[2]
 
 	_window_picker = OptionButton.new()
 	_window_picker.name = "WindowMode"
@@ -119,7 +146,7 @@ func _build() -> void:
 	_window_picker.add_item(tr("Borderless fullscreen"))
 	_window_picker.set_item_metadata(1, "borderless")
 	_window_picker.item_selected.connect(_window_mode_selected)
-	_add_row(page, "Window mode", _window_picker)
+	_add_row(display_page, "Window mode", _window_picker)
 
 	_scale_picker = OptionButton.new()
 	_scale_picker.name = "UiScale"
@@ -127,25 +154,23 @@ func _build() -> void:
 		_scale_picker.add_item("%d%%" % percent)
 		_scale_picker.set_item_metadata(_scale_picker.item_count - 1, float(percent) / 100.0)
 	_scale_picker.item_selected.connect(_scale_selected)
-	_add_row(page, "Text size", _scale_picker)
+	_add_row(display_page, "Text size", _scale_picker)
+	display_page.add_child(_label("Fullscreen changes have a 15-second safety timer.", "SecondaryLabel", true))
 
-	page.add_child(HSeparator.new())
-	page.add_child(_label("Accessibility", "SectionLabel"))
 	_opaque_toggle = CheckButton.new()
 	_opaque_toggle.name = "OpaquePanels"
 	_opaque_toggle.theme_type_variation = "SettingsToggle"
 	_opaque_toggle.tooltip_text = tr("Use opaque panels")
 	_opaque_toggle.toggled.connect(_opaque_toggled)
-	_add_row(page, "Use opaque panels", _opaque_toggle)
+	_add_row(interface_page, "Use opaque panels", _opaque_toggle)
 
 	_motion_toggle = CheckButton.new()
 	_motion_toggle.name = "ReducedMotion"
 	_motion_toggle.theme_type_variation = "SettingsToggle"
 	_motion_toggle.tooltip_text = tr("Reduce interface motion")
 	_motion_toggle.toggled.connect(_motion_toggled)
-	_add_row(page, "Reduce interface motion", _motion_toggle)
+	_add_row(interface_page, "Reduce interface motion", _motion_toggle)
 
-	page.add_child(_label("Language", "SectionLabel"))
 	_language_picker = OptionButton.new()
 	_language_picker.name = "Language"
 	_language_picker.add_item("English")
@@ -153,9 +178,33 @@ func _build() -> void:
 	_language_picker.add_item("Español")
 	_language_picker.set_item_metadata(1, "es")
 	_language_picker.item_selected.connect(_language_selected)
-	_add_row(page, "Interface language", _language_picker)
+	_add_row(interface_page, "Interface language", _language_picker)
+	interface_page.add_child(_label("Language is saved immediately.", "SecondaryLabel", true))
 
-	page.add_child(HSeparator.new())
+	var volume_control := HBoxContainer.new()
+	volume_control.name = "VolumeControl"
+	volume_control.add_theme_constant_override("separation", 12)
+	_volume_slider = HSlider.new()
+	_volume_slider.name = "MenuVolume"
+	_volume_slider.min_value = 0.0
+	_volume_slider.max_value = 1.0
+	_volume_slider.step = 0.05
+	_volume_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_volume_slider.custom_minimum_size.y = 48.0
+	_volume_slider.value_changed.connect(_volume_changed)
+	volume_control.add_child(_volume_slider)
+	_volume_value = _label("", "SecondaryLabel")
+	_volume_value.name = "VolumeValue"
+	_volume_value.custom_minimum_size.x = 78.0
+	_volume_value.horizontal_alignment = HORIZONTAL_ALIGNMENT_RIGHT
+	volume_control.add_child(_volume_value)
+	_add_row(sound_page, "Menu volume", volume_control)
+	sound_page.add_child(_label("Subtle cues for focus, selection and navigation.", "SecondaryLabel", true))
+	_test_sound_button = _button("Test sound", "QuietButton", "TestSound")
+	_test_sound_button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+	_test_sound_button.pressed.connect(func() -> void: sound_preview_requested.emit())
+	sound_page.add_child(_test_sound_button)
+
 	_destinations = BoxContainer.new()
 	_destinations.add_theme_constant_override("separation", 12)
 	var controls_button := _button("Controls", "QuietButton", "Controls")
@@ -164,7 +213,7 @@ func _build() -> void:
 	var about_button := _button("Help & About", "QuietButton", "HelpAbout")
 	about_button.pressed.connect(func() -> void: _request_route("about", about_button))
 	_destinations.add_child(about_button)
-	page.add_child(_destinations)
+	interface_page.add_child(_destinations)
 
 	_status = Widgets.label("", "SecondaryLabel", true)
 	_status.name = "Status"
@@ -181,6 +230,28 @@ func _build() -> void:
 	_layout_shell.add_child(actions)
 	_set_status("instructions")
 	_sync_controls()
+	_show_category(0)
+
+
+func _show_category(index: int) -> void:
+	for page_index: int in _pages.size():
+		_pages[page_index].visible = page_index == index
+		_category_buttons[page_index].set_pressed_no_signal(page_index == index)
+	_scroll.scroll_vertical = 0
+
+
+func _volume_changed(value: float) -> void:
+	_draft.menu_volume = value
+	_refresh_volume_text()
+	_emit_presentation()
+	_sync_action_buttons()
+
+
+func _refresh_volume_text() -> void:
+	if _volume_value == null:
+		return
+	_volume_value.text = tr("Muted") if float(_draft.menu_volume) <= 0.0 else "%d%%" % roundi(float(_draft.menu_volume) * 100.0)
+	_test_sound_button.disabled = float(_draft.menu_volume) <= 0.0
 
 
 func _add_row(parent: Control, caption: String, input: Control) -> void:
@@ -282,6 +353,8 @@ func _sync_controls() -> void:
 	_opaque_toggle.set_pressed_no_signal(bool(_draft.opaque_panels))
 	_motion_toggle.set_pressed_no_signal(bool(_draft.reduced_motion))
 	_select_metadata(_language_picker, _language)
+	_volume_slider.set_value_no_signal(float(_draft.menu_volume))
+	_refresh_volume_text()
 	_sync_action_buttons()
 
 
@@ -289,6 +362,8 @@ func _sync_action_buttons() -> void:
 	var dirty := _draft != _saved
 	_keep_button.disabled = not dirty
 	_revert_button.disabled = not dirty
+	if dirty and _trial_deadline_msec <= 0 and _status_state in ["saved", "reverted", "expired"]:
+		_set_status("instructions")
 	if _trial_deadline_msec <= 0 and _status_state == "trial":
 		_set_status("instructions")
 
@@ -301,14 +376,14 @@ func _update_layout() -> void:
 	if _surface == null or _layout_panel == null:
 		return
 	var available: Vector2 = _surface.size - Vector2(48.0, 48.0)
-	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(720.0, maxf(0.0, available.y)))
+	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(600.0, maxf(0.0, available.y)))
 	var stack_rows := _should_stack_rows()
 	_destinations.vertical = stack_rows
 	for row: BoxContainer in _rows:
 		row.vertical = stack_rows
 		row.add_theme_constant_override("separation", 8 if stack_rows else 24)
 		var input := row.get_child(1) as Control
-		if input is OptionButton:
+		if input is OptionButton or input.name == "VolumeControl":
 			input.custom_minimum_size.x = minf(300.0 * ScreenTheme.text_scale, _layout_panel.custom_minimum_size.x - 64.0)
 			input.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN if stack_rows else Control.SIZE_SHRINK_END
 		else:
@@ -335,6 +410,7 @@ func _refresh_translated_text() -> void:
 		_motion_toggle.tooltip_text = tr("Reduce interface motion")
 	if _status != null:
 		_refresh_status_text()
+	_refresh_volume_text()
 
 
 func _label(source: String, variation: String, wrap := false) -> Label:
@@ -364,9 +440,9 @@ func _refresh_status_text() -> void:
 	match _status_state:
 		"trial": _status.text = tr("Keep the display test within %d seconds.") % int(_status_value)
 		"expired": _status.text = tr("Display test expired. Saved settings restored.")
-		"saved": _status.text = tr("Display settings saved.")
-		"reverted": _status.text = tr("Changes reverted. Saved display settings restored.")
-		"save_error": _status.text = tr("Could not save display settings (error %d).") % int(_status_value)
+		"saved": _status.text = tr("Settings saved.")
+		"reverted": _status.text = tr("Changes reverted. Saved settings restored.")
+		"save_error": _status.text = tr("Could not save settings (error %d).") % int(_status_value)
 		_: _status.text = tr("Changes apply immediately. Close to revert.")
 
 

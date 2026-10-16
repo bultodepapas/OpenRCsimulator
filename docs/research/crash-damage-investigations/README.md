@@ -4,6 +4,8 @@
 
 ## Reports
 
+[CR-36b: independent Extra 300S costs](CR-36b/README.md) records partial aircraft-specific inventory coverage, five servo proxies, prop-strike valuation and guarded independent dossier authoring.
+
 [CR-28: component damage and USD repair economics](CR-28/README.md) records the 2026-10-15 source audit, price catalog, reconstructed Stik valuation, crash/salvage examples and fleet coverage gaps. The [active CR-28…38 plan](../../plans/crash-damage-economics.md) owns implementation; prices and gameplay assumptions do not establish physical failure thresholds.
 
 [CR-22c-R1: first-impact stutter](CR-22c-R1/README.md) records the 2026-10-14 native fleet comparison, Compatibility shader warmup and selective emitter startup.
