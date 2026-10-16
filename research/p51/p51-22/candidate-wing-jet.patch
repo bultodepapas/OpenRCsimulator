@@ -1,0 +1,619 @@
+diff --git a/app/data/aircraft/p51d_mustang_120.json b/app/data/aircraft/p51d_mustang_120.json
+index af07bb23..9bcbeb05 100644
+--- a/app/data/aircraft/p51d_mustang_120.json
++++ b/app/data/aircraft/p51d_mustang_120.json
+@@ -2283,6 +2283,12 @@
+           "kind": "derived",
+           "source": "research/p51/p51-05/derive_physics.py: 1 - d(eps)/d(alpha): the wake drifts with the downwashed flow"
+         },
++        "wing_vortex_core": {
++          "value": 0.2,
++          "unit": "1",
++          "kind": "estimated",
++          "source": "enables the wing inside the jet (app/physics/wing_jet.gd, P51-22: Selig AIAA 2010-7938 applies the propwash to every element in the slipstream, including the wing); trailing-vortex core radius of the jet circulation increment per wake radius, a numerical regulariser: 0.05-0.5 changes the tail downwash inside the jet by < 0.1 deg (docs/research/p51-realism/P51-22)"
++        },
+         "pieces": [
+           {
+             "surface": "vertical",
+diff --git a/app/data/schema/aircraft-contract-v2.json b/app/data/schema/aircraft-contract-v2.json
+index 03a8b266..63c459b6 100644
+--- a/app/data/schema/aircraft-contract-v2.json
++++ b/app/data/schema/aircraft-contract-v2.json
+@@ -766,7 +766,8 @@
+         "pieces",
+         "transport_speed_floor",
+         "edge_fraction",
+-        "reverse_fade"
++        "reverse_fade",
++        "wing_vortex_core"
+       ]
+     },
+     {
+diff --git a/app/data/schema/openrc-aircraft-v2.schema.json b/app/data/schema/openrc-aircraft-v2.schema.json
+index 841a3450..ba504f10 100644
+--- a/app/data/schema/openrc-aircraft-v2.schema.json
++++ b/app/data/schema/openrc-aircraft-v2.schema.json
+@@ -3475,6 +3475,19 @@
+               "const": "m/s"
+             }
+           }
++        },
++        "wing_vortex_core": {
++          "$ref": "#/$defs/evidence",
++          "properties": {
++            "value": {
++              "type": "number",
++              "minimum": 0.01,
++              "maximum": 0.5
++            },
++            "unit": {
++              "const": "1"
++            }
++          }
+         }
+       },
+       "allOf": [
+@@ -3564,6 +3577,29 @@
+               }
+             }
+           }
++        },
++        {
++          "if": {
++            "required": [
++              "wing_vortex_core"
++            ]
++          },
++          "then": {
++            "not": {
++              "anyOf": [
++                {
++                  "required": [
++                    "edge_fraction"
++                  ]
++                },
++                {
++                  "required": [
++                    "transport_speed_floor"
++                  ]
++                }
++              ]
++            }
++          }
+         }
+       ],
+       "unevaluatedProperties": false
+diff --git a/app/physics/aircraft_contract.gd b/app/physics/aircraft_contract.gd
+index 78d6d644..46d46520 100644
+--- a/app/physics/aircraft_contract.gd
++++ b/app/physics/aircraft_contract.gd
+@@ -266,6 +266,8 @@ static func _validate_slipstream_relations(propulsion: Dictionary, issues: Packe
+ 		_issue(issues, "/propulsion/propeller/slipstream/reverse_fade", "is required when edge_fraction is present")
+ 	if not edge_active and slipstream.has("reverse_fade"):
+ 		_issue(issues, "/propulsion/propeller/slipstream/reverse_fade", "requires edge_fraction")
++	if slipstream.has("wing_vortex_core") and (edge_active or slipstream.has("transport_speed_floor")):
++		_issue(issues, "/propulsion/propeller/slipstream/wing_vortex_core", "requires the legacy slipstream (no edge_fraction or transport_speed_floor)")
+ 	var pieces: Variant = slipstream.get("pieces", [])
+ 	if not pieces is Array:
+ 		return
+diff --git a/app/physics/aircraft_data.gd b/app/physics/aircraft_data.gd
+index 83e21c34..eac01442 100644
+--- a/app/physics/aircraft_data.gd
++++ b/app/physics/aircraft_data.gd
+@@ -390,6 +390,13 @@ static func _validate_legacy(raw: Dictionary) -> Dictionary:
+ 		if not ground_effect.is_empty():
+ 			envelope.ground_effect = ground_effect
+ 	var prop := _propulsion(errors, raw.get("propulsion"))
++	if errors.is_empty() and prop.get("slipstream", {}).has("wing_vortex_core"):
++		# P51-22: the jet increment uses the calibrated strip map and adds its downwash to the free tail law's wake.
++		if not envelope.has("induced_map"):
++			errors.append("propulsion.propeller.slipstream.wing_vortex_core: requires the calibrated local wing (aero.envelope and the strip induced map)")
++		if not surfaces.get("horizontal", {}).has("free_slope"):
++			errors.append("propulsion.propeller.slipstream.wing_vortex_core: requires aero.surfaces.horizontal.downwash_gradient (the free tail law)")
++		prop.slipstream.wing_strip_edges = station_edges(span, chords)
+ 	var hull := _crash_hull(errors, raw.get("crash_hull"))
+ 	var hull_components := _crash_hull_components(errors, raw.get("crash_hull_components"), hull.size() / 3)
+ 	var controls := _controls(errors, raw.get("controls"))
+@@ -1294,6 +1301,11 @@ static func _slipstream(errors: PackedStringArray, node: Variant) -> Dictionary:
+ 		out.transport_speed_floor = _q(errors, "slipstream.transport_speed_floor", ss.get("transport_speed_floor"), "m/s", 0.1, 5.0)
+ 		if not smooth or out.swirl_factor != 0.0:
+ 			errors.append("slipstream.transport_speed_floor: axial transport requires smooth profiles and zero swirl (E0b5)")
++	# P51-22 opt-in: the wing in the jet (physics/wing_jet.gd); the value is its trailing-vortex core per wake radius.
++	if ss.has("wing_vortex_core"):
++		out.wing_vortex_core = _q(errors, "slipstream.wing_vortex_core", ss.get("wing_vortex_core"), "1", 0.01, 0.5)
++		if smooth or ss.has("transport_speed_floor"):
++			errors.append("slipstream.wing_vortex_core: the wing in the jet requires the legacy slipstream (no edge_fraction or transport_speed_floor)")
+ 	var raw := _array(errors, "propulsion.propeller.slipstream.pieces", ss.get("pieces"))
+ 	if smooth and (raw.is_empty() or raw.size() > 8):
+ 		errors.append("slipstream.pieces: smooth profile needs 1..8 pieces")
+diff --git a/app/physics/slipstream.gd b/app/physics/slipstream.gd
+index 1a69039b..ac3d2c8e 100644
+--- a/app/physics/slipstream.gd
++++ b/app/physics/slipstream.gd
+@@ -11,7 +11,8 @@
+ # INCREMENT  F(local tail law with the washed flow) − F(same law with the free stream), so the free-stream tail
+ # (oracle or local model) is untouched. A stopped propeller adds nothing in the quasi-static path;
+ # E0b5 can supply a decaying residual axial speed from its continuous state.
+-# Not modelled: wing in the slipstream, fuselage scrubbing drag, transported direction/radius. 64-bit floats only (guarded).
++# Not modelled: fuselage scrubbing drag, transported direction/radius. The wing in the slipstream is the opt-in
++# wing_jet.gd (P51-22, legacy path only). 64-bit floats only (guarded).
+ extends RefCounted
+ 
+ const M := preload("res://physics/math3d.gd")
+@@ -19,6 +20,7 @@ const RB := preload("res://physics/rigid_body.gd")
+ const Aero := preload("res://physics/aero.gd")
+ const Propulsion := preload("res://physics/propulsion.gd")
+ const SwirlLoads = preload("res://physics/swirl_loads.gd")
++const WingJet = preload("res://physics/wing_jet.gd")
+ 
+ ## The mass-flow speed u + w used for the swirl never falls below this (m/s).
+ const SWIRL_SPEED_FLOOR := 1.0
+@@ -104,6 +106,21 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
+ 	var o3 := 0.0
+ 	var o4 := 0.0
+ 	var o5 := 0.0
++	# P51-22 (opt-in, legacy path only): the wing inside the jet adds its own load increment, and its circulation
++	# increment's downwash reaches the immersed horizontal tail pieces in their washed evaluation.
++	var jet := {}
++	if ss.has("wing_vortex_core"):
++		var drift := PackedFloat64Array([v1 * lean_ratio / speed, v2 * lean_ratio * vertical_drift / speed]) if drifts \
++			else PackedFloat64Array([0.0, 0.0])
++		jet = WingJet.evaluate(state, air, d, model, w, ax, dv, hub, drift, swirl_strength, core, rho)
++		if not jet.is_empty():
++			var jet_loads: PackedFloat64Array = jet.loads
++			o0 += jet_loads[0]
++			o1 += jet_loads[1]
++			o2 += jet_loads[2]
++			o3 += jet_loads[3]
++			o4 += jet_loads[4]
++			o5 += jet_loads[5]
+ 	for piece_index in ss.pieces.size():
+ 		var piece: Dictionary = ss.pieces[piece_index]
+ 		if not transported_dv.is_empty():
+@@ -198,9 +215,14 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
+ 		var arm := M.v3(arm_0, arm_1, arm_2)
+ 		var free := Aero._tail_surface_from_flow(M.v3((v0+0.0)+rate_arm_0, (v1+0.0)+rate_arm_1, (v2+0.0)+rate_arm_2),
+ 			arm, d, tail, surfaces, area, vertical, rho, wing_cl)
++		# Inside the jet the wing wake is the free wing's plus the jet circulation's downwash (m/s through the R02 gain).
++		var washed_wake: float = wing_cl
++		if not jet.is_empty() and not vertical:
++			var induced := WingJet.induced_velocity(jet, PackedFloat64Array([point_0, point_1, point_2]))
++			washed_wake = wing_cl - induced[2] / float(tail.downwash_per_cl)
+ 		var washed := Aero._tail_surface_from_flow(M.v3((v0+(wash_0-swirl_0))+rate_arm_0,
+ 			(v1+(wash_1-swirl_1))+rate_arm_1, (v2+(wash_2-swirl_2))+rate_arm_2),
+-			arm, d, tail, surfaces, area, vertical, rho, wing_cl)
++			arm, d, tail, surfaces, area, vertical, rho, washed_wake)
+ 		o0 += washed[0] - free[0]
+ 		o1 += washed[1] - free[1]
+ 		o2 += washed[2] - free[2]
+diff --git a/app/physics/wing_jet.gd b/app/physics/wing_jet.gd
+new file mode 100644
+index 00000000..81f08860
+--- /dev/null
++++ b/app/physics/wing_jet.gd
+@@ -0,0 +1,203 @@
++# P51-22 (opt-in per aircraft: propulsion.propeller.slipstream.wing_vortex_core): the wing inside the propeller jet.
++# The planar wing is cut by the jet circle at the aerodynamic reference point (the same circle, centre, drift, axial
++# increment and swirl that the tail pieces see), and JET_INTERVALS midpoint strips cover the immersed span. Each strip
++# adds  F(section law in the washed flow) − F(section law in the free flow), as the tail increment does (Selig,
++# AIAA 2010-7938: the propwash acts on every surface element inside the slipstream). The section law is the wing
++# strip's own: the free section keeps its converged Weissinger induced angle, which inside the jet is the same induced
++# velocity at a higher speed (angle × Vp/Vp_jet). By lifting-line superposition the circulation increment is a lifting
++# band as wide as the immersed span; its self-induction uses Helmbold's low-aspect-ratio slope, so the increment fades
++# as the jet leaves the wing. Its cross-induction on the outer strips is omitted.
++# The circulation increment ΔΓ = ½·c·(Vp·CL)|washed − ½·c·(Vp·CL)|free is a horseshoe system (bound line at the ARP,
++# straight trailing legs aft along the body axis with a Scully core). Its induced downwash at each immersed horizontal
++# tail piece is added to the R02 wing wake in the washed tail evaluation only: without the wing in the jet, a passive jet
++# divides the free wing's downwash by its higher speed, so the tail inside the jet saw almost none (NACA Report 690
++# measured more). Every term is a continuous function of the air velocity and vanishes with the axial increment and
++# swirl, so the zero-flow limit is unique. No new state: the jet increment is quasi-static (wing-to-tail transport in the
++# jet takes ~0.06 s on the P-51) while the free-wing wake keeps its R02 lag.
++# Not modelled: ground effect on the increment, flap stall shift and post-stall flap extension inside the jet, jet
++# sidewash on the fin, fuselage blockage of the jet core, jet radius growth between disc and wing. Legacy hard-edge
++# slipstream only (the loader rejects smooth profiles and axial transport). 64-bit floats only.
++extends RefCounted
++
++const M := preload("res://physics/math3d.gd")
++const RB := preload("res://physics/rigid_body.gd")
++const Aero := preload("res://physics/aero.gd")
++const Flaps := preload("res://physics/flaps.gd")
++
++## Midpoint strips across the immersed span (numerical resolution, not an aircraft parameter). The integrand is smooth
++## inside one wing strip; test_wing_jet.gd checks convergence against 256 strips.
++const JET_INTERVALS := 8
++const LAW := "wing-in-jet-horseshoe-v1"
++
++
++static func enabled(model: Dictionary) -> bool:
++	return model.propulsion.get("slipstream", {}).has("wing_vortex_core")
++
++
++## The immersed wing's load increment about the CG and its horseshoe system, or {} when the jet misses the wing.
++## centre: the jet centre at the propeller hub, drift: [lateral, vertical] metres of drift per metre behind the hub
++## (the slipstream's lean), w: Slipstream.wake(), ax: shaft axis (body), swirl: free-vortex strength (m²/s),
++## core: the swirl's solid core (m); intervals only for convergence checks.
++## Returns { loads [Fx..Mz], gammas (ΔΓ per strip, m²/s), y_lo, dy, x, z (le), core (m) }.
++static func evaluate(state: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, w: Dictionary,
++		ax: PackedFloat64Array, dv: float, hub: PackedFloat64Array, drift: PackedFloat64Array, swirl: float,
++		core: float, rho: float, intervals: int = JET_INTERVALS) -> Dictionary:
++	var ref: Dictionary = model.reference
++	var env: Dictionary = model.envelope
++	var surfaces: Dictionary = model.surfaces
++	var ss: Dictionary = model.propulsion.slipstream
++	var arp: PackedFloat64Array = ref.arp_le
++	var cg: PackedFloat64Array = model.cg_le
++	var v: PackedFloat64Array = air.v_air
++	# Jet centre in the ARP plane: along the shaft from the hub, then drifted exactly as Slipstream.immersion().
++	var dist: float = arp[0] - hub[0]
++	var shaft_scale: float = dist / -ax[0]
++	var centre_0: float = hub[0] + -ax[0] * shaft_scale
++	var centre_1: float = hub[1] + ax[1] * shaft_scale - drift[0] * dist
++	var centre_2: float = hub[2] + -ax[2] * shaft_scale + drift[1] * dist
++	var rs: float = w.rs
++	var dz: float = arp[2] - centre_2
++	if dz * dz >= rs * rs:
++		return {}
++	var half_chord_of_circle: float = M.sqrt_(rs * rs - dz * dz)
++	var h: float = 0.5 * float(ref.b)
++	var y_lo: float = maxf(centre_1 - half_chord_of_circle, -h)
++	var y_hi: float = minf(centre_1 + half_chord_of_circle, h)
++	if y_hi <= y_lo:
++		return {}
++	var band: float = y_hi - y_lo
++	var dy: float = band / intervals
++	var chords: PackedFloat64Array = ref.chords
++	var cr: float = chords[0] if not chords.is_empty() else float(ref.S) / float(ref.b)
++	var ct: float = chords[1] if not chords.is_empty() else cr
++	var flow: Dictionary = Aero._wing_flow(state, air, d, model)
++	var angles: PackedFloat64Array = flow.angles
++	var sources: PackedFloat64Array = flow.sources
++	# Flap camber magnitude per strip, gated by each section's own forward flow exactly as Aero._wing_flow gates it.
++	var flap_model: Dictionary = model.get("flaps", {})
++	var flap_angle: float = float(d.get("flap", 0.0))
++	var flap_camber := 0.0
++	if Flaps.enabled(model) and flap_angle != 0.0 and float(flap_model.get("aerodynamic_gain", 1.0)) != 0.0:
++		var limit := deg_to_rad(float(flap_model.effective_angle_limit_deg))
++		flap_camber = limit * M.tanh_(flap_angle * float(flap_model.lift_effectiveness) / limit) * float(flap_model.aerodynamic_gain)
++	var flap_coverage: PackedFloat64Array = flap_model.get("station_coverage", PackedFloat64Array())
++	var edges: PackedFloat64Array = ss.wing_strip_edges
++	var stations: int = angles.size()
++	var e_map: PackedFloat64Array = env.induced_map
++	var a0: float = env.strip_slope
++	var cl0s: PackedFloat64Array = env.strip_cl0
++	var twist: PackedFloat64Array = surfaces.get("station_incidence", PackedFloat64Array())
++	var polar: Dictionary = env.get("wing_polar", {})
++	var a: Dictionary = model.aero
++	var aileron_effect: float = surfaces.wing_aileron_effectiveness
++	var p: float = state[RB.RATE]
++	var q: float = state[RB.RATE + 1]
++	var r: float = state[RB.RATE + 2]
++	var arm_x: float = -(arp[0] - cg[0])
++	var arm_y0: float = arp[1] - cg[1]
++	var arm_z: float = -(arp[2] - cg[2])
++	var wash_0: float = ax[0] * dv
++	var wash_1: float = ax[1] * dv
++	var wash_2: float = ax[2] * dv
++	var loads := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
++	var gammas := PackedFloat64Array()
++	gammas.resize(intervals)
++	for k in intervals:
++		var y: float = y_lo + (float(k) + 0.5) * dy
++		var chord: float = cr + (ct - cr) * absf(y) / h
++		var i := 0
++		while i < stations - 1 and y > edges[i + 1]:
++			i += 1
++		var arm_y: float = arm_y0 + y
++		var f0: float = v[0] + (q * arm_z - r * arm_y)
++		var f1: float = v[1] + (r * arm_x - p * arm_z)
++		var f2: float = v[2] + (p * arm_y - q * arm_x)
++		# Free-vortex swirl at the strip, body axes, exactly as at a tail piece.
++		var rb0: float = -(arp[0] - centre_0)
++		var rb1: float = y - centre_1
++		var rb2: float = -(arp[2] - centre_2)
++		var axial: float = rb0 * ax[0] + rb1 * ax[1] + rb2 * ax[2]
++		rb0 -= ax[0] * axial
++		rb1 -= ax[1] * axial
++		rb2 -= ax[2] * axial
++		var radius: float = maxf(M.sqrt_(rb0 * rb0 + rb1 * rb1 + rb2 * rb2), core)
++		var swirl_scale: float = swirl / (radius * radius)
++		var j0: float = f0 + wash_0 - (ax[1] * rb2 - ax[2] * rb1) * swirl_scale
++		var j1: float = f1 + wash_1 - (ax[2] * rb0 - ax[0] * rb2) * swirl_scale
++		var j2: float = f2 + wash_2 - (ax[0] * rb1 - ax[1] * rb0) * swirl_scale
++		var control: float = d.aileron_right if y > 0.0 else d.aileron_left
++		var offset: float = aileron_effect * control
++		if not twist.is_empty():
++			offset += twist[i]
++		var alpha_free: float = wrapf(M.atan2_(f2, f0) + offset, -PI, PI)
++		var alpha_jet: float = wrapf(M.atan2_(j2, j0) + offset, -PI, PI)
++		if flap_camber != 0.0 and i < flap_coverage.size():
++			alpha_free = wrapf(alpha_free + flap_camber * flap_coverage[i] * maxf(M.cos_(alpha_free), 0.0), -PI, PI)
++			alpha_jet = wrapf(alpha_jet + flap_camber * flap_coverage[i] * maxf(M.cos_(alpha_jet), 0.0), -PI, PI)
++		# Free section: the strip's converged induced angle (its map row, exactly _local_loads' base at the strip centre).
++		var mapped := 0.0
++		for m in stations:
++			mapped += e_map[i * stations + m] * angles[m] * (1.0 if m == i else sources[m])
++		var induced: float = angles[i] - mapped
++		var base_free: float = cl0s[i] + a0 * (alpha_free - induced)
++		# Jet section: the free wing's induced flow is a velocity, so its angle falls by Vp/Vp_jet; the circulation increment
++		# is a lifting band as wide as the immersed span, limited by its own induction with Helmbold's low-aspect slope.
++		var plane_free: float = M.sqrt_(f0 * f0 + f2 * f2)
++		var plane_jet: float = M.sqrt_(j0 * j0 + j2 * j2)
++		var ratio: float = plane_free / plane_jet if plane_jet > 0.0 else 1.0
++		var k_band: float = a0 * chord / (PI * band)
++		var band_relief: float = M.sqrt_(1.0 + k_band * k_band) + k_band
++		var base_jet: float = base_free * ratio + (cl0s[i] + a0 * (alpha_jet - induced * ratio) - base_free * ratio) / band_relief
++		var free := Aero._section_coefficients(alpha_free, base_free, env, polar, a.CD0, env.CD90, a.k_induced, a.CL_minD, 1.0)
++		var jet := Aero._section_coefficients(alpha_jet, base_jet, env, polar, a.CD0, env.CD90, a.k_induced, a.CL_minD, 1.0)
++		var arm := M.v3(arm_x, arm_y, arm_z)
++		var area: float = chord * dy
++		var load_free := Aero._surface_with_flow(M.v3(f0, f1, f2), arm, area, free[0], free[1], false, rho)
++		var load_jet := Aero._surface_with_flow(M.v3(j0, j1, j2), arm, area, jet[0], jet[1], false, rho)
++		for c in 6:
++			loads[c] += load_jet[c] - load_free[c]
++		gammas[k] = 0.5 * chord * (plane_jet * jet[0] - plane_free * free[0])
++	return { loads = loads, gammas = gammas, y_lo = y_lo, dy = dy, x = arp[0], z = arp[2],
++		core = float(ss.wing_vortex_core) * rs }
++
++
++## Velocity (le frame [aft, right, up], m/s) induced at point P (le) by the horseshoe system of evaluate().
++## Positive ΔΓ (more lift) gives downwash behind the bound line. Scully-regularised Biot–Savart (core from the data).
++static func induced_velocity(jet: Dictionary, P: PackedFloat64Array) -> PackedFloat64Array:
++	var gammas: PackedFloat64Array = jet.gammas
++	var n: int = gammas.size()
++	var dy: float = jet.dy
++	var y_lo: float = jet.y_lo
++	var core2: float = float(jet.core) * float(jet.core)
++	var r0: float = P[0] - float(jet.x)
++	var r2: float = P[2] - float(jet.z)
++	var u0 := 0.0
++	var u1 := 0.0
++	var u2 := 0.0
++	# Trailing legs at the n + 1 strip edges, from the bound line to infinity along +x (aft); net strength
++	# Γ_left − Γ_right, so a single uniform horseshoe has −Γ on its left and +Γ on its right leg.
++	for e in n + 1:
++		var strength: float = (gammas[e - 1] if e > 0 else 0.0) - (gammas[e] if e < n else 0.0)
++		if strength == 0.0:
++			continue
++		var r1: float = P[1] - (y_lo + float(e) * dy)
++		var distance := M.sqrt_(r0 * r0 + r1 * r1 + r2 * r2)
++		var factor: float = strength / (4.0 * PI) * (1.0 + r0 / distance) / (r1 * r1 + r2 * r2 + core2)
++		u1 -= r2 * factor
++		u2 += r1 * factor
++	# Bound segments along +y.
++	for k in n:
++		if gammas[k] == 0.0:
++			continue
++		var a1: float = P[1] - (y_lo + float(k) * dy)
++		var b1: float = a1 - dy
++		# (P − A) × (P − B) with A, B on the bound line: x = r0, z = r2 for both.
++		var c0: float = a1 * r2 - r2 * b1
++		var c2: float = r0 * b1 - a1 * r0
++		var cross2: float = c0 * c0 + c2 * c2 + core2 * dy * dy
++		var la := M.sqrt_(r0 * r0 + a1 * a1 + r2 * r2)
++		var lb := M.sqrt_(r0 * r0 + b1 * b1 + r2 * r2)
++		var factor: float = gammas[k] / (4.0 * PI) * dy * (a1 / la - b1 / lb) / cross2
++		u0 += c0 * factor
++		u2 += c2 * factor
++	return M.v3(u0, u1, u2)
+diff --git a/app/tests/test_wing_jet.gd b/app/tests/test_wing_jet.gd
+new file mode 100644
+index 00000000..776b9148
+--- /dev/null
++++ b/app/tests/test_wing_jet.gd
+@@ -0,0 +1,204 @@
++# P51-22: the wing inside the propeller jet (physics/wing_jet.gd) on the P-51 data. Loader gates, an independent
++# Biot–Savart oracle, quadrature convergence, exact vanishing with the jet, zero-flow continuity from every direction,
++# lateral symmetry and the physical signs (more lift, tail downwash, swirl roll against the torque reaction).
++# Software verification of the stated law only; no measured blown-wing or tail-downwash data is claimed.
++extends SceneTree
++const AD = preload("res://physics/aircraft_data.gd")
++const Air = preload("res://physics/air_data.gd")
++const Slipstream = preload("res://physics/slipstream.gd")
++const WingJet = preload("res://physics/wing_jet.gd")
++const Propulsion = preload("res://physics/propulsion.gd")
++const M = preload("res://physics/math3d.gd")
++const RB = preload("res://physics/rigid_body.gd")
++const PATH := "res://data/aircraft/p51d_mustang_120.json"
++const RHO: float = 1.225
++const D0 := { elevator = 0.0, aileron_right = 0.0, aileron_left = 0.0, rudder = 0.0 }
++var _checks: int = 0
++var _failed: int = 0
++
++
++func _check(label: String, condition: bool, detail: String = "") -> void:
++	_checks += 1
++	print("%s %s %s" % ["ok" if condition else "FAIL", label, detail])
++	if not condition:
++		_failed += 1
++
++
++func _initialize() -> void:
++	var loaded: Dictionary = AD.load_file(PATH)
++	_check("P-51 loads with the wing in the jet", loaded.ok and WingJet.enabled(loaded.model), str(loaded.get("errors", "")))
++	if not loaded.ok:
++		quit(1)
++		return
++	var model: Dictionary = loaded.model
++	_check("loader derives the strip edges", model.propulsion.slipstream.wing_strip_edges.size() == model.envelope.station_ys.size() + 1)
++	_loader_gates()
++	_biot_savart_oracle()
++	_vanishes_without_jet(model)
++	_convergence(model)
++	_zero_flow_continuity(model)
++	_symmetry(model)
++	_signs(model)
++	print("P51-22 wing jet: %d checks, %d failed" % [_checks, _failed])
++	quit(1 if _failed else 0)
++
++
++static func _raw() -> Dictionary:
++	return JSON.parse_string(FileAccess.get_file_as_string(PATH))
++
++
++func _loader_gates() -> void:
++	var raw := _raw()
++	raw.propulsion.propeller.slipstream.wing_vortex_core.value = 0.0
++	var out: Dictionary = AD.validate_and_derive(raw)
++	_check("loader rejects a core outside 0.01..0.5", not out.ok and str(out.errors).contains("wing_vortex_core"), str(out.errors))
++	raw = _raw()
++	raw.propulsion.propeller.slipstream.transport_speed_floor = {value = 1.0, unit = "m/s", kind = "estimated", source = "test"}
++	out = AD.validate_and_derive(raw)
++	_check("loader rejects the wing jet with axial transport", not out.ok and str(out.errors).contains("wing_vortex_core"), str(out.errors))
++	raw = _raw()
++	raw.aero.surfaces.horizontal.erase("downwash_gradient")
++	raw.aero.erase("ground_effect")
++	out = AD.validate_and_derive(raw)
++	_check("loader rejects the wing jet without the free tail law", not out.ok and str(out.errors).contains("wing_vortex_core"), str(out.errors))
++
++
++## Independent oracle: generic vector Biot–Savart over finite segments, trailing legs truncated at 1e6 m.
++static func _segment(a: PackedFloat64Array, b: PackedFloat64Array, p: PackedFloat64Array, gamma: float) -> PackedFloat64Array:
++	var r1 := M.sub(p, a)
++	var r2 := M.sub(p, b)
++	var c := M.cross(r1, r2)
++	var c2 := M.dot(c, c)
++	var r0 := M.sub(b, a)
++	var k := gamma / (4.0 * PI) / c2 * M.dot(r0, M.sub(M.scale(r1, 1.0 / M.norm(r1)), M.scale(r2, 1.0 / M.norm(r2))))
++	return M.scale(c, k)
++
++
++func _biot_savart_oracle() -> void:
++	var jet := { gammas = PackedFloat64Array([0.3, 0.7, 1.1, 0.9]), y_lo = -0.21, dy = 0.1, x = 0.11, z = -0.17, core = 0.0 }
++	var worst := 0.0
++	for p: PackedFloat64Array in [M.v3(1.39, 0.15, 0.09), M.v3(1.39, -0.31, 0.09), M.v3(0.6, 0.02, -0.4), M.v3(-0.3, 0.5, 0.2)]:
++		var want := M.v3(0, 0, 0)
++		var far := 1.0e6
++		for k in 4:
++			var ya: float = jet.y_lo + k * jet.dy
++			var yb: float = ya + jet.dy
++			var g: float = jet.gammas[k]
++			var a := M.v3(jet.x, ya, jet.z)
++			var b := M.v3(jet.x, yb, jet.z)
++			want = M.add(want, _segment(M.v3(jet.x + far, ya, jet.z), a, p, g))
++			want = M.add(want, _segment(a, b, p, g))
++			want = M.add(want, _segment(b, M.v3(jet.x + far, yb, jet.z), p, g))
++		var got := WingJet.induced_velocity(jet, p)
++		worst = maxf(worst, M.norm(M.sub(got, want)) / M.norm(want))
++	_check("horseshoe velocity matches an independent vector Biot–Savart sum (relative < 1e-5)", worst < 1e-5, str(worst))
++	# Uniform loading, far downstream on the centre line: the two-vortex result Γ·s/(π(s² + rc²)) downward.
++	var s := 0.2
++	var rc := 0.05
++	var uniform := { gammas = PackedFloat64Array([1.0, 1.0, 1.0, 1.0]), y_lo = -s, dy = 0.1, x = 0.0, z = 0.0, core = rc }
++	var down: float = -WingJet.induced_velocity(uniform, M.v3(1.0e7, 0.0, 0.0))[2]
++	var exact := s / (PI * (s * s + rc * rc))
++	_check("uniform horseshoe far wake: two-vortex downwash with the Scully core", absf(down - exact) < 1e-9 * exact, "%.12f vs %.12f" % [down, exact])
++
++
++static func _state(V: float, alpha: float, beta: float = 0.0) -> PackedFloat64Array:
++	return RB.make_state(M.v3(0, 0, -100), M.v3(V * cos(alpha) * cos(beta), V * sin(beta), V * sin(alpha) * cos(beta)),
++		M.q_identity(), M.v3(0, 0, 0))
++
++
++## The jet pieces exactly as Slipstream.loads computes them for this state at full throttle.
++static func _jet(model: Dictionary, s: PackedFloat64Array, dv_scale := 1.0, swirl_scale := 1.0, intervals := WingJet.JET_INTERVALS) -> Dictionary:
++	var prop: Dictionary = model.propulsion
++	var air := Air.compute(s, M.v3(0, 0, 0), RHO)
++	var ax := Propulsion.axis(prop)
++	var rpm := Propulsion.steady_rpm(1.0, M.dot(air.v_air, ax), prop, RHO, 1.0)
++	var tq := Propulsion.thrust_torque(air.v_air, rpm, prop, RHO)
++	var w := Slipstream.wake(air.v_air, tq[0], tq[1], prop, RHO)
++	var speed := M.norm(air.v_air)
++	var drift := PackedFloat64Array([0.0, 0.0])
++	if speed > 1e-6 and w.vs > 1e-6:
++		var lean: float = minf(speed / (w.u + w.w), 1.0) / speed
++		drift = PackedFloat64Array([air.v_air[1] * lean, air.v_air[2] * lean * float(prop.slipstream.vertical_drift)])
++	return WingJet.evaluate(s, air, D0, model, w, ax, w.dv * dv_scale, prop.slipstream.hub, drift, w.swirl * swirl_scale,
++		w.core, RHO, intervals)
++
++
++func _vanishes_without_jet(model: Dictionary) -> void:
++	var jet := _jet(model, _state(18.0, deg_to_rad(6.0)), 0.0, 0.0)
++	var zero := not jet.is_empty()
++	for c in 6:
++		zero = zero and jet.loads[c] == 0.0
++	for g in jet.gammas:
++		zero = zero and g == 0.0
++	_check("no axial increment and no swirl: loads and circulation are exactly zero", zero)
++
++
++func _convergence(model: Dictionary) -> void:
++	var worst_load := 0.0
++	var worst_wash := 0.0
++	var where := ""
++	var stab := M.v3(1.3913, 0.15, 0.0875)
++	for V: float in [0.0, 12.0, 27.0]:
++		for a_deg: float in [0.0, 8.0, 14.0]:
++			var s := _state(V, deg_to_rad(a_deg))
++			var coarse := _jet(model, s)
++			var fine := _jet(model, s, 1.0, 1.0, 256)
++			worst_load = maxf(worst_load, absf(coarse.loads[2] - fine.loads[2]) / maxf(absf(fine.loads[2]), 1.0))
++			var wc: float = WingJet.induced_velocity(coarse, stab)[2]
++			var wf: float = WingJet.induced_velocity(fine, stab)[2]
++			var error_wash: float = absf(wc - wf) / maxf(absf(wf), 0.05)
++			if error_wash > worst_wash:
++				worst_wash = error_wash
++				where = "V %.0f α %.0f: %.4f vs %.4f m/s" % [V, a_deg, wc, wf]
++	_check("8 strips: lift increment within 0.5 % of 256", worst_load < 5e-3, str(worst_load))
++	_check("8 strips: tail downwash within 2 % of 256", worst_wash < 2e-2, "%s (%s)" % [worst_wash, where])
++
++
++func _zero_flow_continuity(model: Dictionary) -> void:
++	var prop: Dictionary = model.propulsion
++	var rpm := Propulsion.steady_rpm(1.0, 0.0, prop, RHO, 1.0)
++	var at_rest := _loads(model, M.v3(0, 0, 0), rpm)
++	var worst := 0.0
++	for direction: PackedFloat64Array in [M.v3(1, 0, 0), M.v3(-1, 0, 0), M.v3(0, 0, 1), M.v3(0, 0, -1), M.v3(0, 1, 0),
++			M.v3(0.6, 0.0, 0.8), M.v3(-0.6, 0.0, 0.8), M.v3(0.577, -0.577, 0.577)]:
++		var near := _loads(model, M.scale(direction, 1e-8), rpm)
++		for c in 6:
++			worst = maxf(worst, absf(near[c] - at_rest[c]))
++	_check("full-power zero-flow limit is unique from every direction (|Δ| < 1e-6 N, N·m)", worst < 1e-6, str(worst))
++
++
++static func _loads(model: Dictionary, v_body: PackedFloat64Array, rpm: float) -> PackedFloat64Array:
++	var s := RB.make_state(M.v3(0, 0, -100), v_body, M.q_identity(), M.v3(0, 0, 0))
++	return Slipstream.loads(s, Air.compute(s, M.v3(0, 0, 0), RHO), D0, model, rpm, RHO)
++
++
++func _symmetry(model: Dictionary) -> void:
++	var sym: Dictionary = model.duplicate(true)
++	var down: float = asin(sym.propulsion.axis[2])
++	sym.propulsion.axis = PackedFloat64Array([cos(down), 0.0, sin(down)])
++	var jet := _jet(sym, _state(20.0, deg_to_rad(7.0)), 1.0, 0.0)
++	var lateral: float = absf(jet.loads[1]) + absf(jet.loads[3]) + absf(jet.loads[5])
++	_check("symmetric jet without swirl: no side force, roll or yaw (< 1e-9)", lateral < 1e-9, str(lateral))
++
++
++func _signs(model: Dictionary) -> void:
++	var s := _state(18.0, deg_to_rad(6.0))
++	var jet := _jet(model, s)
++	var total := 0.0
++	for g in jet.gammas:
++		total += g
++	_check("the jet adds wing lift and circulation", jet.loads[2] < 0.0 and total > 0.0, "ΔFz %.1f N" % jet.loads[2])
++	# P51-22 finding: the band carries almost the free circulation at the jet speed, so its own downwash is small.
++	var down: float = -WingJet.induced_velocity(jet, M.v3(1.3913, 0.15, 0.0875))[2]
++	_check("its downwash at the immersed stabilizer stays below 0.1 m/s (lift, not circulation)", absf(down) < 0.1, "%.3f m/s" % down)
++	var prop: Dictionary = model.propulsion
++	var air := Air.compute(s, M.v3(0, 0, 0), RHO)
++	var rpm := Propulsion.steady_rpm(1.0, M.dot(air.v_air, Propulsion.axis(prop)), prop, RHO, 1.0)
++	var torque_roll: float = Propulsion.loads(air.v_air, rpm, prop, RHO)[3]
++	var swirl_roll: float = jet.loads[3] - _jet(model, s, 1.0, 0.0).loads[3]
++	_check("the swirl on the wing rolls against the propeller torque reaction", signf(swirl_roll) == -signf(torque_roll) and torque_roll != 0.0,
++		"swirl %.2f N·m, torque %.2f N·m" % [swirl_roll, torque_roll])
++	var at_rest := _jet(model, _state(0.0, 0.0))
++	var static_thrust: float = Propulsion.thrust_torque(M.v3(0, 0, 0), Propulsion.steady_rpm(1.0, 0.0, prop, RHO, 1.0), prop, RHO)[0]
++	_check("static blown-wing lift stays below the static thrust (momentum bound)", -at_rest.loads[2] < static_thrust,
++		"%.1f N vs %.1f N" % [-at_rest.loads[2], static_thrust])
+diff --git a/research/p51/p51-05/derive_physics.py b/research/p51/p51-05/derive_physics.py
+index c2c4743d..afdec808 100644
+--- a/research/p51/p51-05/derive_physics.py
++++ b/research/p51/p51-05/derive_physics.py
+@@ -1014,6 +1014,7 @@ data = {
+                 "wash_factor": q([0.8, 1.8], "1", "borrowed", "velocity added at the tail per disc induced velocity w (Selig, AIAA 2010-7938, eqs. 17-19, m = V/(V + w)): 0.8 at m = 0 and 1.8 at m >= 0.75, read off the plot of Fig. 5 (approximate); the text gives ~1 at static thrust (free-jet theory) and 'approaches but does not reach 2' (ideal) away from it because of the fuselage"),
+                 "swirl_factor": q(0.6, "1", "estimated", "part of the propeller's angular momentum that reaches the tail (wing and fuselage straighten the rest): research synthesis 0.5-0.8; Selig: the swirl offsets ~40 % of the torque roll"),
+                 "vertical_drift": q(1 - deps, "1", "derived", D("1 - d(eps)/d(alpha): the wake drifts with the downwashed flow")),
++                "wing_vortex_core": q(0.2, "1", "estimated", "enables the wing inside the jet (app/physics/wing_jet.gd, P51-22: Selig AIAA 2010-7938 applies the propwash to every element in the slipstream, including the wing); trailing-vortex core radius of the jet circulation increment per wake radius, a numerical regulariser: 0.05-0.5 changes the tail downwash inside the jet by < 0.1 deg (docs/research/p51-realism/P51-22)"),
+                 "pieces": [{k: (q(v, "m2" if k == "area" else ("1" if k == "span_dir" else "m"), "derived", D("tail piece from geometry.json")) if k != "surface" else v) for k, v in pc.items()} for pc in slip_pieces],
+             },
+         },

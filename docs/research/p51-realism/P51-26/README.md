@@ -1,6 +1,26 @@
 # P51-26: powered directional stiffness — slipstream quadrature and propeller sidewash
 
-2026-10-15 · Revision 1 · **Status: diagnosed, with a quantified candidate for the slipstream owner. No runtime or aircraft-data change.** Two defects in the shared legacy slipstream path make the P-51's powered rudder per sideslip erratic in speed (0.68–1.0 °/°). Corrected, it is a smooth ≈ 0.72 °/°, still about 0.17 above the P-51D's 0.55. Prefix: P51-26. [Plan](../../../P51-REALISM-PLAN.md) · [Tools](../../../../research/p51/p51-26/README.md)
+2026-10-16 · Revision 2 · **Status: implemented in the runtime as the P-51's opt-in `propeller_sidewash` slipstream law. Powered rudder per sideslip is now a smooth 0.62–0.68 °/° (was 0.52–0.89), against the P-51D's 0.46–0.55.** Revision 1 (2026-10-15) diagnosed two defects in the shared legacy slipstream path and left a candidate for the slipstream owner; it is kept below. Prefix: P51-26. [Plan](../../../P51-REALISM-PLAN.md) · [Tools](../../../../research/p51/p51-26/README.md)
+
+## Runtime implementation — 2026-10-16
+
+Godot 4.7.2 official, native Windows, 240 Hz; base commit `1516cb77` with the P51-22 test-pilot corrections. Logs and probe output: [runtime-20261016](runtime-20261016/).
+
+`propulsion.propeller.slipstream.propeller_sidewash` (value 1, Ribner's published relation) selects the law on the legacy pieces; without it the legacy centroid arithmetic is unchanged, and `test_slipstream_scalar.gd` still matches its frozen oracle in 10001 comparisons. The P51-05 generator writes the field; the v1 schema source, the contract and the loader reject it with smooth profiles or axial transport. Each immersed piece is split at the swirl-core crossings and the jet centre. Every segment gets its exact area and centroid and its chord-weighted five-point Gauss mean swirl. The jet crossflow follows Ribner's eq. (8) in both planes; without a normal-force table only the h(a) term remains. The tail law inside the segments is an allocation-free copy of `Aero._tail_surface_from_flow` (equal to 0 relative error in the test).
+
+| Quantity (level flight unless stated) | HEAD `1516cb77` | Implemented | Reference |
+| --- | --- | --- | --- |
+| Rudder per sideslip, ±1° / ±2°, 20 m/s | 0.520 / 0.777 | 0.678 / 0.645 | P-51D 0.46 at 103 mph, 0.55 at 200 mph (RM L6J25) |
+| Same, 25.7 / 28.6 / 35 / 45 m/s (±1°) | 0.892 / 0.757 / 0.664 / 0.617 | 0.642 / 0.639 / 0.632 / 0.631 | as above |
+| Glide (stopped propeller), all speeds | 0.546–0.552 | unchanged | 0.55 |
+| Power-on minus glide elevator, 22–45 m/s | −0.79 to −0.82° | −0.41 to −0.52° | XP-51: +0.3 to +1.8° (MR L-566 Fig. 10) |
+| Takeoff run without rudder, heading after 3 s | −57.7° | −30.6° | manuals: strong left swing |
+| Takeoff with the heading pilot: right rudder, heading error | 0.48, 7.4° | 0.32, 5.1° | — |
+| α-held loop: pitch max, \|β\| max | 81°, 9.6° | 90°, 6.2° | gate > 80°, < 10° |
+
+Convergence ([probe](../../../../research/p51/p51-26/convergence_probe.gd)): against 256 subdivisions per segment, the slipstream yaw per sideslip is within 1.05 % at 18 m/s and 0.19 % at 45 m/s, falling about 3× per halving. The legacy centroid is off by up to 120 %. `test_slipstream_sidewash.gd` checks ≤ 1.5 % and ≥ 2.5× convergence; it first used 1 %, which was set before measuring and missed by 0.05 %. The zero-flow limit is unique to 5e-8 N, N·m from eight directions; Ribner's g and h stay within 1.0–1.21; the term vanishes without crossflow. All P-51 checks pass: 14 ground, 18 handling, 17 envelope.
+
+**Cost.** `Slipstream.loads` takes 87 µs against 46 µs for the centroid law ([breakdown](../../../../research/p51/p51-26/cost_breakdown.gd)); the P-51 tick rises from 1189 to 1392–1415 µs (+18 %; 1628–1655 µs before the allocation-free tail law). The 500 µs target remains open for this aircraft (P51-18). **Still open:** powered rudder per sideslip remains ≈ 0.1 °/° above the P-51D, and the power-on trim change keeps the wrong sign at half its former size; P51-26's caveats on the estimated 1° right thrust and the unshielded free vortex apply. These are not calibrated away.
 
 ## Question
 

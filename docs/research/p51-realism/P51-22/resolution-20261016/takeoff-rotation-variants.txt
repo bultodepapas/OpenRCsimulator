@@ -1,0 +1,8 @@
+P51-22 resolution, 2026-10-16. Godot 4.7.2 official, native Windows, 240 Hz. test_p51_ground.gd rudder takeoff.
+HEAD pilot (attitude loop 3.0/rad, 0.6 per rad/s): after rotation at 1.25 Vs (19.6 m/s) the commanded 8 deg settles at
+3.3 deg with 0.25 stick; lift-off 26.7 m/s, 57 m (head-ground.log). Same loop plus 6.0 x integral of the attitude error,
+in disposable copies of app/:
+  HEAD law                          : lift-off 21.9 m/s, 36 m, 4.0 s
+  + wing-in-jet candidate           : lift-off 21.6 m/s, 35 m, 3.9 s
+  + wing-in-jet + Ribner eq. (8)     : lift-off 21.6 m/s, 35 m, 3.9 s
+P51-15 baseline (df36b44): 22.2 m/s, 37 m. Band 1.05-1.5 Vs = 16.5-23.6 m/s.

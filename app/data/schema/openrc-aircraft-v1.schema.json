@@ -2702,6 +2702,19 @@
               "const": "m/s"
             }
           }
+        },
+        "propeller_sidewash": {
+          "$ref": "#/$defs/evidence",
+          "properties": {
+            "value": {
+              "type": "number",
+              "minimum": 0.0,
+              "maximum": 1.0
+            },
+            "unit": {
+              "const": "1"
+            }
+          }
         }
       },
       "allOf": [
@@ -2789,6 +2802,29 @@
                   }
                 }
               }
+            }
+          }
+        },
+        {
+          "if": {
+            "required": [
+              "propeller_sidewash"
+            ]
+          },
+          "then": {
+            "not": {
+              "anyOf": [
+                {
+                  "required": [
+                    "edge_fraction"
+                  ]
+                },
+                {
+                  "required": [
+                    "transport_speed_floor"
+                  ]
+                }
+              ]
             }
           }
         }

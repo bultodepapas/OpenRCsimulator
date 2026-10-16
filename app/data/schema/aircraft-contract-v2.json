@@ -766,7 +766,8 @@
         "pieces",
         "transport_speed_floor",
         "edge_fraction",
-        "reverse_fade"
+        "reverse_fade",
+        "propeller_sidewash"
       ]
     },
     {

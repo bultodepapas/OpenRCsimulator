@@ -12,6 +12,9 @@
 # (oracle or local model) is untouched. A stopped propeller adds nothing in the quasi-static path;
 # E0b5 can supply a decaying residual axial speed from its continuous state.
 # Not modelled: wing in the slipstream, fuselage scrubbing drag, transported direction/radius. 64-bit floats only (guarded).
+# P51-26 opt-in (propeller_sidewash, legacy path): each immersed piece is split at the swirl core crossings and the jet
+# centre; every segment gets its own area, centroid and chord-weighted Gauss mean swirl, and the jet crossflow follows
+# Ribner's far-wake relation instead of keeping the free-stream crossflow.
 extends RefCounted
 
 const M := preload("res://physics/math3d.gd")
@@ -44,8 +47,10 @@ const PROFILE_W: Array[float] = [0.236926885056189, 0.478628670499366, 0.5688888
 ## test_slipstream_scalar.gd compares bytes for legacy tails. E0b3a adds the E0a2 free-tail law with the same wing
 ## downwash in the two passes. downwash_cl = NAN uses instantaneous wing CL; the session passes its held lag.
 ## transported_dv: optional per-piece axial speed (m/s) at the RK stage; empty uses the equilibrium wake.
+## swirl_subdivisions: P51-26 convergence checks only; splits each swirl segment into equal parts (1 = runtime).
 static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, model: Dictionary, rpm: float,
-		rho: float, downwash_cl: float = NAN, transported_dv: PackedFloat64Array = PackedFloat64Array()) -> PackedFloat64Array:
+		rho: float, downwash_cl: float = NAN, transported_dv: PackedFloat64Array = PackedFloat64Array(),
+		swirl_subdivisions: int = 1) -> PackedFloat64Array:
 	var prop: Dictionary = model.propulsion
 	if (rpm < Propulsion.STOPPED_RPM and transported_dv.is_empty()) or prop.get("slipstream", {}).is_empty():
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
@@ -104,6 +109,11 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 	var o3 := 0.0
 	var o4 := 0.0
 	var o5 := 0.0
+	# P51-26 (opt-in, legacy path only): piecewise swirl quadrature and Ribner's propeller sidewash.
+	var segmented: bool = ss.has("propeller_sidewash")
+	var crossflow := PackedFloat64Array([0.0, 0.0, 0.0])
+	if segmented:
+		crossflow = sidewash(v, rpm, prop, w, ax, rho, float(ss.propeller_sidewash))
 	for piece_index in ss.pieces.size():
 		var piece: Dictionary = ss.pieces[piece_index]
 		if not transported_dv.is_empty():
@@ -152,6 +162,18 @@ static func loads(state: PackedFloat64Array, air: Dictionary, d: Dictionary, mod
 			var chords: PackedFloat64Array = piece.chords
 			var c0: float = chords[0]
 			var slope: float = (chords[1] - c0) / span
+			if segmented:
+				var segment_loads := _segmented_increment(piece, surfaces[piece.surface], a, b, c0, slope, along, d2,
+					PackedFloat64Array([centre_0, centre_1, centre_2]), ax, core, swirl_strength,
+					PackedFloat64Array([wash_0 + crossflow[0], wash_1 + crossflow[1], wash_2 + crossflow[2]]), state, v, d, model,
+					rho, wing_cl, swirl_subdivisions)
+				o0 += segment_loads[0]
+				o1 += segment_loads[1]
+				o2 += segment_loads[2]
+				o3 += segment_loads[3]
+				o4 += segment_loads[4]
+				o5 += segment_loads[5]
+				continue
 			var area_b: float = c0 * b + 0.5 * slope * b * b
 			var area_a: float = c0 * a + 0.5 * slope * a * a
 			immersed = area_b - area_a
@@ -390,3 +412,150 @@ static func profile_moments(profile: PackedFloat64Array, along: float, d2: float
 					total += strip
 					moment += eta*strip
 	return PackedFloat64Array([total, moment])
+
+
+## P51-26: Ribner's far-wake crossflow correction (NACA ARR L4I12a, eq. 8, in momentum form), body axes, m/s. The jet's
+## crossflow becomes h(a)·v_c + ½·g(a)·N/ṁ; the shaft-axis wash already carries v_c, so only the difference is returned.
+## a = w/u is the disc inflow factor; g and h stay within 1.0–1.2 for every a ≥ 0, and ṁ uses the swirl's speed floor,
+## so the term is bounded at static thrust and vanishes with the crossflow. gain 1 is the published relation. Without a
+## normal_force table N is zero and only the h(a) term remains.
+static func sidewash(v: PackedFloat64Array, rpm: float, prop: Dictionary, w: Dictionary, ax: PackedFloat64Array, rho: float,
+		gain: float) -> PackedFloat64Array:
+	var inflow: float = w.w / maxf(w.u, 1e-6)
+	var k: float = 1.0 + 2.0 * inflow
+	var denominator: float = 1.0 + k * k
+	var g: float = 2.0 * (1.0 + inflow) * k / denominator
+	var h: float = k * (2.0 + 2.0 * inflow) / denominator
+	var mass_flow: float = rho * PI * 0.25 * float(prop.diameter) * float(prop.diameter) * maxf(w.u + w.w, SWIRL_SPEED_FLOOR)
+	var normal := Propulsion.normal_force(v, rpm, prop, rho)
+	var along: float = v[0] * ax[0] + v[1] * ax[1] + v[2] * ax[2]
+	var out := PackedFloat64Array([0.0, 0.0, 0.0])
+	for c in 3:
+		out[c] = gain * (0.5 * g * normal[c] / mass_flow + (h - 1.0) * (v[c] - ax[c] * along))
+	return out
+
+
+## P51-26: washed-minus-free load of one legacy piece's immersed interval [a, b] (m along its span), split at the swirl
+## core crossings and the jet centre so each segment's free-vortex swirl is smooth. Each segment uses its exact area and
+## centroid and its chord-weighted 5-point Gauss mean swirl. wash: axial wash plus the Ribner crossflow (body).
+static func _segmented_increment(piece: Dictionary, tail: Dictionary, a: float, b: float, c0: float, slope: float,
+		along: float, d2: float, centre: PackedFloat64Array, ax: PackedFloat64Array, core: float, swirl: float,
+		wash: PackedFloat64Array, state: PackedFloat64Array, v: PackedFloat64Array, d: Dictionary, model: Dictionary,
+		rho: float, wing_cl: float, subdivisions: int = 1) -> PackedFloat64Array:
+	var cuts: Array[float] = [a, b]
+	if core * core > d2:
+		var core_half := M.sqrt_(core * core - d2)
+		for cut: float in [-along - core_half, -along + core_half]:
+			if cut > a and cut < b:
+				cuts.append(cut)
+	if -along > a and -along < b:
+		cuts.append(-along)
+	cuts.sort()
+	if subdivisions > 1:
+		var fine: Array[float] = []
+		for j in cuts.size() - 1:
+			for k in subdivisions:
+				fine.append(cuts[j] + (cuts[j + 1] - cuts[j]) * float(k) / subdivisions)
+		fine.append(cuts[-1])
+		cuts = fine
+	var root: PackedFloat64Array = piece.root
+	var e: PackedFloat64Array = piece.span_dir
+	var span: float = piece.span
+	var full: float = c0 * span + 0.5 * slope * span * span
+	var cg: PackedFloat64Array = model.cg_le
+	var tail_pos: PackedFloat64Array = tail.position
+	var law := _tail_law(tail, model.surfaces, d, piece.surface == "vertical", wing_cl, rho)
+	var p: float = state[RB.RATE]
+	var q: float = state[RB.RATE + 1]
+	var r: float = state[RB.RATE + 2]
+	var out := PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
+	for j in cuts.size() - 1:
+		var lo: float = cuts[j]
+		var hi: float = cuts[j + 1]
+		var segment_area: float = (c0 * hi + 0.5 * slope * hi * hi) - (c0 * lo + 0.5 * slope * lo * lo)
+		if segment_area <= 0.0:
+			continue
+		var eta: float = ((0.5 * c0 * hi * hi + slope * hi * hi * hi / 3.0) - (0.5 * c0 * lo * lo + slope * lo * lo * lo / 3.0)) / segment_area
+		var s0 := 0.0
+		var s1 := 0.0
+		var s2 := 0.0
+		var weights := 0.0
+		for k in 5:
+			var x: float = 0.5 * (lo + hi) + 0.5 * (hi - lo) * PROFILE_X[k]
+			var weight: float = (c0 + slope * x) * PROFILE_W[k]
+			var rb0: float = -(root[0] + e[0] * x - centre[0])
+			var rb1: float = root[1] + e[1] * x - centre[1]
+			var rb2: float = -(root[2] + e[2] * x - centre[2])
+			var axial: float = rb0 * ax[0] + rb1 * ax[1] + rb2 * ax[2]
+			rb0 -= ax[0] * axial
+			rb1 -= ax[1] * axial
+			rb2 -= ax[2] * axial
+			var radius: float = maxf(M.sqrt_(rb0 * rb0 + rb1 * rb1 + rb2 * rb2), core)
+			var scale: float = swirl / (radius * radius) * weight
+			s0 += (ax[1] * rb2 - ax[2] * rb1) * scale
+			s1 += (ax[2] * rb0 - ax[0] * rb2) * scale
+			s2 += (ax[0] * rb1 - ax[1] * rb0) * scale
+			weights += weight
+		s0 /= weights
+		s1 /= weights
+		s2 /= weights
+		# Segment centroid on the span line; its arm follows the legacy piece convention (shift from the surface position).
+		var arm_0: float = -(tail_pos[0] - cg[0])
+		var arm_1: float = tail_pos[1] - cg[1] + (root[1] + e[1] * eta - tail_pos[1])
+		var arm_2: float = -(tail_pos[2] - cg[2]) - (root[2] + e[2] * eta - tail_pos[2])
+		var rate_0: float = q * arm_2 - r * arm_1
+		var rate_1: float = r * arm_0 - p * arm_2
+		var rate_2: float = p * arm_1 - q * arm_0
+		var area: float = float(piece.area) * segment_area / full
+		_add_tail_load(out, law, 1.0, v[0] + (wash[0] - s0) + rate_0, v[1] + (wash[1] - s1) + rate_1, v[2] + (wash[2] - s2) + rate_2,
+			arm_0, arm_1, arm_2, area)
+		_add_tail_load(out, law, -1.0, v[0] + rate_0, v[1] + rate_1, v[2] + rate_2, arm_0, arm_1, arm_2, area)
+	return out
+
+
+## The tail law of Aero._tail_surface_from_flow with its per-surface constants resolved once:
+## [vertical, slope, angle offset, downwash gain (0 = none), wake, limit, stall span, CD0, k, CD90, ½ρ].
+static func _tail_law(tail: Dictionary, surfaces: Dictionary, d: Dictionary, vertical: bool, wake: float,
+		rho: float) -> PackedFloat64Array:
+	var control: float = -d.rudder if vertical else d.elevator
+	var free_law: bool = not vertical and tail.has("free_slope")
+	var slope: float = tail.free_slope if free_law else tail.lift_slope
+	var offset: float = float(tail.elevator_tau) * control + float(tail.free_incidence) if free_law 		else tail.control_effectiveness * control + tail.incidence
+	var gain: float = float(tail.downwash_per_cl) if free_law else 0.0
+	return PackedFloat64Array([1.0 if vertical else 0.0, slope, offset, gain, wake if free_law else 0.0,
+		surfaces.tail_local_limit, surfaces.tail_stall_end - surfaces.tail_local_limit, surfaces.tail_CD0, surfaces.tail_k,
+		surfaces.tail_CD90, 0.5 * rho])
+
+
+## Adds sign × the tail law's load for body flow f at arm (about the CG) to out, without allocating. Same expressions as
+## Aero._tail_surface_from_flow / _tail_curve / _surface_with_flow; test_slipstream_sidewash.gd compares the two.
+static func _add_tail_load(out: PackedFloat64Array, law: PackedFloat64Array, sign: float, f0: float, f1: float, f2: float,
+		arm_0: float, arm_1: float, arm_2: float, area: float) -> void:
+	var vertical: bool = law[0] == 1.0
+	var normal: float = f1 if vertical else f2
+	var plane: float = M.sqrt_(f0 * f0 + normal * normal)
+	if plane == 0.0:
+		return
+	var angle: float = M.atan2_(normal, f0)
+	if law[3] != 0.0 and law[4] != 0.0:
+		angle -= M.atan2_(law[3] * law[4], plane)
+	var effective: float = wrapf(angle + law[2], -PI, PI)
+	var blend: float = clampf((absf(effective) - law[5]) / law[6], 0.0, 1.0)
+	blend = blend * blend * (3.0 - 2.0 * blend)
+	var cl: float = (1.0 - blend) * law[1] * effective + blend * 0.5 * law[9] * M.sin_(2.0 * effective)
+	var cd: float = law[7] + law[8] * cl * cl + law[9] * M.pow_(M.sin_(effective), 2)
+	var force_scale: float = -law[10] * plane * area * cd
+	var lift: float = law[10] * plane * plane * area * cl
+	var fx: float = f0 * force_scale + lift * normal / plane
+	var fy := 0.0
+	var fz := 0.0
+	if vertical:
+		fy = normal * force_scale - lift * f0 / plane
+	else:
+		fz = normal * force_scale - lift * f0 / plane
+	out[0] += sign * fx
+	out[1] += sign * fy
+	out[2] += sign * fz
+	out[3] += sign * (arm_1 * fz - arm_2 * fy)
+	out[4] += sign * (arm_2 * fx - arm_0 * fz)
+	out[5] += sign * (arm_0 * fy - arm_1 * fx)

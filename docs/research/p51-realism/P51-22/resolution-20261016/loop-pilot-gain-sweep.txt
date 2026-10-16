@@ -1,0 +1,13 @@
+P51-22 resolution, 2026-10-16. Godot 4.7.2 official, native Windows, 240 Hz.
+Final test_p51_handling.gd loop pilot in a disposable copy of app/ with two gains read from the environment:
+KR = aileron roll-rate damping (stick per rad/s), DA = alpha target below the solved stall start (deg).
+Committed values: KR 1.0, DA 2.0 (chosen before this sweep). Thresholds: 360 deg within 8 s, pitch max > 80 deg, |beta| max < 10 deg.
+KR 0.5 DA 1.5: 405° (7.4 s) pitch max 78°, |β| max 9.9°
+KR 0.5 DA 2.0: 386° (7.7 s) pitch max 77°, |β| max 9.4°
+KR 0.5 DA 2.5: 366° (7.9 s) pitch max 76°, |β| max 8.9°
+KR 1.0 DA 1.5: 404° (7.4 s) pitch max 82°, |β| max 10.0°
+KR 1.0 DA 2.0: 384° (7.7 s) pitch max 81°, |β| max 9.6°
+KR 1.0 DA 2.5: 364° (8.0 s) pitch max 80°, |β| max 9.1°
+KR 2.0 DA 1.5: 403° (7.4 s) pitch max 85°, |β| max 10.2°
+KR 2.0 DA 2.0: 383° (7.7 s) pitch max 84°, |β| max 9.7°
+KR 2.0 DA 2.5: 363° (8.0 s) pitch max 84°, |β| max 9.3°

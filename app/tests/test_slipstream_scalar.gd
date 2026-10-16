@@ -35,6 +35,8 @@ func _initialize() -> void:
 		for key in ["downwash_gradient", "free_slope", "elevator_tau", "downwash_per_cl", "free_incidence", "wing_cl0"]:
 			model.surfaces.horizontal.erase(key)
 		model.surfaces.erase("wing_cm_ac")
+		# P51-26: the oracle is the legacy centroid swirl; the opt-in segmented law has its own test_slipstream_sidewash.gd.
+		model.propulsion.slipstream.erase("propeller_sidewash")
 		aircraft += 1
 		var state: PackedFloat64Array = flight.sim.state.duplicate()
 		var d: Dictionary = flight._deflections(flight.sim.aux).duplicate()

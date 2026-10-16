@@ -266,6 +266,8 @@ static func _validate_slipstream_relations(propulsion: Dictionary, issues: Packe
 		_issue(issues, "/propulsion/propeller/slipstream/reverse_fade", "is required when edge_fraction is present")
 	if not edge_active and slipstream.has("reverse_fade"):
 		_issue(issues, "/propulsion/propeller/slipstream/reverse_fade", "requires edge_fraction")
+	if slipstream.has("propeller_sidewash") and (edge_active or slipstream.has("transport_speed_floor")):
+		_issue(issues, "/propulsion/propeller/slipstream/propeller_sidewash", "requires the legacy slipstream (no edge_fraction or transport_speed_floor)")
 	var pieces: Variant = slipstream.get("pieces", [])
 	if not pieces is Array:
 		return

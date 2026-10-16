@@ -218,11 +218,10 @@ for t in "$HERE"/tests/test_*.gd; do
     test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;
   esac
   test_args=()
-  # Only these three named physical gates are pending for explicitly experimental aircraft behavior.
+  # Only these two named physical gates are pending for explicitly experimental aircraft behavior.
   # Stable software releases may include these disclosed experimental limits (release policy, 2026-10-16).
   # Direct script invocation without its matching flag remains strict; all other checks stay mandatory.
   case "$(basename "$t")" in
-    test_p51_ground.gd|test_p51_handling.gd) test_args=(-- --allow-known-p51-22) ;;
     test_rudder_authority.gd) test_args=(-- --allow-known-stik-rudder-recovery) ;;
     test_yaw_damping.gd) test_args=(-- --allow-known-r02-yaw-alpha11) ;;
   esac

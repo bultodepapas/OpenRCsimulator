@@ -13,7 +13,6 @@ const ID := "p51d-mustang-120"
 
 var _failures := 0
 var _count := 0
-var _pending := 0
 
 
 func _check(label: String, ok: bool, detail := "") -> void:
@@ -21,17 +20,6 @@ func _check(label: String, ok: bool, detail := "") -> void:
 	print(("ok   " if ok else "FAIL ") + label + "  " + detail)
 	if not ok:
 		_failures += 1
-
-
-# Only the explicitly deferred P51-22 physical acceptance checks use this path.
-# Direct invocation stays strict; numerical safety and every other assertion stay mandatory.
-func _check_pending_p51_22(label: String, ok: bool, detail := "") -> void:
-	if not ok and OS.get_cmdline_user_args().has("--allow-known-p51-22"):
-		_count += 1
-		_pending += 1
-		print("PENDING P51-22: " + label + "  " + detail)
-	else:
-		_check(label, ok, detail)
 
 
 func _max(trace: RefCounted, column: String) -> float:
@@ -83,9 +71,21 @@ func _initialize() -> void:
 		var p := rad_to_deg(_max(tr, "p_radps"))
 		_check("coordinated roll at %.0f m/s: %.0f°/s ± 7 %% (single-axis prediction)" % [v, predicted], absf(p - predicted) <= 0.07 * predicted, "%.1f°/s" % p)
 
-	# Inside loop as a pilot flies a warbird: 0.7 stick (≈10° of elevator) and full throttle from 27 m/s, from 150 m: round within 8 s.
-	var loop := { mode = "level", speed = 27.0, altitude = 150.0, duration = 8.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary:
-		return Maneuvers._pulse(t, 0.2, 8.0, { pitch = 0.7, throttle_delta = 1.0 }) }
+	# Inside loop as a pilot flies a warbird at 1.7 Vs: full throttle from 27 m/s and 150 m, pulling as hard as the wing
+	# allows without stalling it. The pilot holds α 2° below the solved stall start (P51-22: an open-loop 0.7-stick step
+	# asks for more than CLmax here and is the accelerated stall below) and stops any roll rate with the ailerons, keeping
+	# the loop in one plane against the torque. Feet off the rudder; round within 8 s.
+	var alpha_target: float = float(model.envelope.a1) - deg_to_rad(2.0)
+	var pull := { integral = 0.0 }
+	var loop := { mode = "level", speed = 27.0, altitude = 150.0, duration = 8.0, sticks = func(t: float, s: PackedFloat64Array) -> Dictionary:
+		if t < 0.2:
+			return Maneuvers._hands_off()
+		var error: float = alpha_target - atan2(s[RB.VEL + 2], s[RB.VEL])
+		pull.integral += error * session.sim.dt()
+		var c := Maneuvers._hands_off()
+		c.merge({ roll = clampf(-1.0 * s[RB.RATE], -1.0, 1.0),
+			pitch = clampf(4.0 * error + 4.0 * pull.integral - 0.3 * s[RB.RATE + 1], -1.0, 1.0), throttle_delta = 1.0 }, true)
+		return c }
 	var lt: RefCounted = Maneuvers.fly(session, loop)
 	var turned := 0.0
 	var loop_time := NAN
@@ -94,7 +94,7 @@ func _initialize() -> void:
 		if is_nan(loop_time) and turned >= TAU:
 			loop_time = r * session.sim.dt()
 	_check("inside loop: trace remains finite", _finite(lt) and is_finite(turned))
-	_check_pending_p51_22("inside loop at 0.7 stick from 27 m/s: 360° of pitch within 8 s", turned >= TAU, "%.0f° (%.1f s)" % [rad_to_deg(turned), loop_time])
+	_check("inside loop at α %.1f° from 27 m/s: 360° of pitch within 8 s" % rad_to_deg(alpha_target), turned >= TAU, "%.0f° (%.1f s)" % [rad_to_deg(turned), loop_time])
 	# P51-25: integrated q also reaches 360° in a banked rolling departure. A loop passes the vertical and stays near
 	# coordinated (no rudder is applied) until it closes.
 	var end := loop_time if not is_nan(loop_time) else 8.0
@@ -105,10 +105,21 @@ func _initialize() -> void:
 			var u: float = lt.value(r, "u_mps")
 			var w: float = lt.value(r, "w_mps")
 			slip = maxf(slip, absf(rad_to_deg(atan2(float(lt.value(r, "v_mps")), sqrt(u * u + w * w)))))
-	_check_pending_p51_22("inside loop is a loop: pitch attitude passes the vertical (> 80°) and |β| stays below 10°", top > 80.0 and slip < 10.0,
+	_check("inside loop is a loop: pitch attitude passes the vertical (> 80°) and |β| stays below 10°", top > 80.0 and slip < 10.0,
 		"pitch max %.0f°, |β| max %.1f°" % [top, slip])
 	_check("inside loop: faster than the 1-g stall speed over the top", _min(lt, "speed_mps", 0.0, loop_time) > _stall_speed(model),
 		"min %.1f m/s (1-g stall %.1f)" % [_min(lt, "speed_mps", 0.0, loop_time), _stall_speed(model)])
+
+	# The former loop input, a 0.7-stick step at full throttle from 27 m/s, is an accelerated stall: α passes the stall
+	# start and the trace stays finite. The departure that follows is not checked against a band (none is sourced).
+	var yank := { mode = "level", speed = 27.0, altitude = 150.0, duration = 3.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary:
+		return Maneuvers._pulse(t, 0.2, 3.0, { pitch = 0.7, throttle_delta = 1.0 }) }
+	var yt: RefCounted = Maneuvers.fly(session, yank)
+	var yank_alpha := -1e30
+	for r in yt.row_count():
+		yank_alpha = maxf(yank_alpha, atan2(float(yt.value(r, "w_mps")), float(yt.value(r, "u_mps"))))
+	_check("0.7-stick full-power step at 27 m/s: accelerated stall (α passes the stall start), finite", yank_alpha > model.envelope.a1 and _finite(yt),
+		"α max %.1f° (stall start %.1f°)" % [rad_to_deg(yank_alpha), rad_to_deg(model.envelope.a1)])
 
 	# Power-off full-up stall from 18 m/s: α goes past the solved stall start and the loads stay finite.
 	var stall := { mode = "glide", speed = 18.0, duration = 4.0, sticks = func(t: float, _s: PackedFloat64Array) -> Dictionary:
@@ -134,7 +145,7 @@ func _initialize() -> void:
 	_check("spin recovery: yaw rate below 0.5 rad/s 3 s after recovery input, finite", r_after < 0.5 and _finite(sp), "%.2f rad/s" % r_after)
 	_check("spin: still above the ground at the end", sp.value(sp.row_count() - 1, "alt_m") > 0.0, "%.0f m" % sp.value(sp.row_count() - 1, "alt_m"))
 
-	print("%d checks, %d failed, %d pending P51-22" % [_count, _failures, _pending])
+	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
 

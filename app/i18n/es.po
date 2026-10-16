@@ -3287,6 +3287,6 @@ msgstr "Producto: %s"
 msgid "Source note: %s"
 msgstr "Nota de la fuente: %s"
 
-# P51-22: known physical acceptance remains pending.
-msgid "Experimental: P51-22 pending. Powered takeoff and loop acceptance remain open."
-msgstr "Experimental: P51-22 pendiente. Falta validar el despegue y el looping con potencia."
+# P51-22 closed in software (2026-10-16); the P-51 remains an unvalidated estimate.
+msgid "Experimental: estimated quarter-scale physics, not yet flight-tested."
+msgstr "Experimental: física estimada a escala 1/4, aún sin contrastar en vuelo."

@@ -1,0 +1,5 @@
+test_slipstream_sidewash exit 0
+test_slipstream_scalar exit 0
+test_p51_handling exit 0
+test_p51_ground exit 0
+test_p51_envelope exit 0

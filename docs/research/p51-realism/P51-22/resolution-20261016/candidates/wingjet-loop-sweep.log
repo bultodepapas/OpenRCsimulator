@@ -1,0 +1,13 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+V 27 stick 0.3 | turned  117 t  nan | alpha max   7.6 beta max   2.2 pitch max   39 vmin 27.0
+V 27 stick 0.4 | turned  296 t  nan | alpha max  11.3 beta max   8.2 pitch max   88 vmin 20.9
+V 27 stick 0.5 | turned  499 t  6.5 | alpha max  15.9 beta max   8.7 pitch max   38 vmin 26.7
+V 27 stick 0.6 | turned  380 t  7.3 | alpha max  17.0 beta max  17.3 pitch max   42 vmin 27.0
+V 27 stick 0.7 | turned  316 t  nan | alpha max  18.5 beta max  22.4 pitch max   49 vmin 27.0
+V 32 stick 0.3 | turned   97 t  nan | alpha max   6.9 beta max   2.1 pitch max   53 vmin 26.9
+V 32 stick 0.4 | turned  384 t  7.7 | alpha max  11.8 beta max   7.2 pitch max   84 vmin 24.5
+V 32 stick 0.5 | turned  542 t  6.0 | alpha max  15.1 beta max   7.9 pitch max   45 vmin 30.2
+V 32 stick 0.6 | turned  567 t  6.1 | alpha max  16.7 beta max   9.3 pitch max   36 vmin 30.9
+V 32 stick 0.7 | turned  355 t  nan | alpha max  17.7 beta max  12.9 pitch max   60 vmin 28.1
+CRASH at 54.0 m/s (sink 52.3 m/s, airframe contact (hull point 1), point speed 54.1 m/s at detected tick) - restarting

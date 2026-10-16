@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+level V 20.0 beta +-1 deg: d(rudder)/d(beta) 0.678  d(aileron)/d(beta) -0.293  d(bank)/d(beta) 0.706  throttle 0.064  rudder0 -1.24 deg
+level V 20.0 beta +-2 deg: d(rudder)/d(beta) 0.645  d(aileron)/d(beta) -0.298  d(bank)/d(beta) 0.707  throttle 0.064  rudder0 -1.24 deg
+level V 25.7 beta +-1 deg: d(rudder)/d(beta) 0.642  d(aileron)/d(beta) -0.298  d(bank)/d(beta) 1.117  throttle 0.106  rudder0 -1.68 deg
+level V 25.7 beta +-2 deg: d(rudder)/d(beta) 0.646  d(aileron)/d(beta) -0.301  d(bank)/d(beta) 1.118  throttle 0.106  rudder0 -1.68 deg
+level V 28.6 beta +-1 deg: d(rudder)/d(beta) 0.639  d(aileron)/d(beta) -0.298  d(bank)/d(beta) 1.372  throttle 0.138  rudder0 -1.66 deg
+level V 28.6 beta +-2 deg: d(rudder)/d(beta) 0.644  d(aileron)/d(beta) -0.301  d(bank)/d(beta) 1.372  throttle 0.138  rudder0 -1.66 deg
+level V 35.0 beta +-1 deg: d(rudder)/d(beta) 0.632  d(aileron)/d(beta) -0.298  d(bank)/d(beta) 2.036  throttle 0.235  rudder0 -1.54 deg
+level V 35.0 beta +-2 deg: d(rudder)/d(beta) 0.633  d(aileron)/d(beta) -0.300  d(bank)/d(beta) 2.038  throttle 0.235  rudder0 -1.54 deg
+level V 45.0 beta +-1 deg: d(rudder)/d(beta) 0.631  d(aileron)/d(beta) -0.298  d(bank)/d(beta) 3.353  throttle 0.469  rudder0 -1.40 deg
+level V 45.0 beta +-2 deg: d(rudder)/d(beta) 0.623  d(aileron)/d(beta) -0.299  d(bank)/d(beta) 3.359  throttle 0.469  rudder0 -1.40 deg
+glide V 20.0 beta +-1 deg: d(rudder)/d(beta) 0.546  d(aileron)/d(beta) -0.282  d(bank)/d(beta) 0.624  throttle nan  rudder0 0.00 deg
+glide V 20.0 beta +-2 deg: d(rudder)/d(beta) 0.546  d(aileron)/d(beta) -0.282  d(bank)/d(beta) 0.625  throttle nan  rudder0 0.00 deg
+glide V 25.7 beta +-1 deg: d(rudder)/d(beta) 0.550  d(aileron)/d(beta) -0.284  d(bank)/d(beta) 0.986  throttle nan  rudder0 0.00 deg
+glide V 25.7 beta +-2 deg: d(rudder)/d(beta) 0.550  d(aileron)/d(beta) -0.284  d(bank)/d(beta) 0.987  throttle nan  rudder0 0.00 deg
+glide V 28.6 beta +-1 deg: d(rudder)/d(beta) 0.551  d(aileron)/d(beta) -0.285  d(bank)/d(beta) 1.212  throttle nan  rudder0 0.00 deg
+glide V 28.6 beta +-2 deg: d(rudder)/d(beta) 0.551  d(aileron)/d(beta) -0.285  d(bank)/d(beta) 1.213  throttle nan  rudder0 0.00 deg
+glide V 35.0 beta +-1 deg: d(rudder)/d(beta) 0.552  d(aileron)/d(beta) -0.285  d(bank)/d(beta) 1.810  throttle nan  rudder0 0.00 deg
+glide V 35.0 beta +-2 deg: d(rudder)/d(beta) 0.552  d(aileron)/d(beta) -0.285  d(bank)/d(beta) 1.813  throttle nan  rudder0 0.00 deg
+glide V 45.0 beta +-1 deg: d(rudder)/d(beta) 0.552  d(aileron)/d(beta) -0.285  d(bank)/d(beta) 3.042  throttle nan  rudder0 0.00 deg
+glide V 45.0 beta +-2 deg: d(rudder)/d(beta) 0.552  d(aileron)/d(beta) -0.285  d(bank)/d(beta) 3.049  throttle nan  rudder0 0.00 deg

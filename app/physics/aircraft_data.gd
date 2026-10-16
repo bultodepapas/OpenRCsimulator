@@ -1294,6 +1294,11 @@ static func _slipstream(errors: PackedStringArray, node: Variant) -> Dictionary:
 		out.transport_speed_floor = _q(errors, "slipstream.transport_speed_floor", ss.get("transport_speed_floor"), "m/s", 0.1, 5.0)
 		if not smooth or out.swirl_factor != 0.0:
 			errors.append("slipstream.transport_speed_floor: axial transport requires smooth profiles and zero swirl (E0b5)")
+	# P51-26 opt-in: piecewise swirl quadrature and Ribner's sidewash on the legacy pieces (1 = the published relation).
+	if ss.has("propeller_sidewash"):
+		out.propeller_sidewash = _q(errors, "slipstream.propeller_sidewash", ss.get("propeller_sidewash"), "1", 0.0, 1.0)
+		if smooth or ss.has("transport_speed_floor"):
+			errors.append("slipstream.propeller_sidewash: requires the legacy slipstream (no edge_fraction or transport_speed_floor)")
 	var raw := _array(errors, "propulsion.propeller.slipstream.pieces", ss.get("pieces"))
 	if smooth and (raw.is_empty() or raw.size() > 8):
 		errors.append("slipstream.pieces: smooth profile needs 1..8 pieces")

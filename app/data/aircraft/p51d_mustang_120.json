@@ -2283,6 +2283,12 @@
           "kind": "derived",
           "source": "research/p51/p51-05/derive_physics.py: 1 - d(eps)/d(alpha): the wake drifts with the downwashed flow"
         },
+        "propeller_sidewash": {
+          "value": 1.0,
+          "unit": "1",
+          "kind": "borrowed",
+          "source": "Ribner, NACA ARR L4I12a (1944) eq. 8: far-wake crossflow of a propeller at incidence, h(a)*v_c + g(a)*N/(2*mdot), applied as published (1); also selects the piecewise swirl quadrature of the legacy pieces (P51-26: the single-centroid swirl was off by up to x2.15 against 1024-strip integration)"
+        },
         "pieces": [
           {
             "surface": "vertical",

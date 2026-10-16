@@ -1014,6 +1014,7 @@ data = {
                 "wash_factor": q([0.8, 1.8], "1", "borrowed", "velocity added at the tail per disc induced velocity w (Selig, AIAA 2010-7938, eqs. 17-19, m = V/(V + w)): 0.8 at m = 0 and 1.8 at m >= 0.75, read off the plot of Fig. 5 (approximate); the text gives ~1 at static thrust (free-jet theory) and 'approaches but does not reach 2' (ideal) away from it because of the fuselage"),
                 "swirl_factor": q(0.6, "1", "estimated", "part of the propeller's angular momentum that reaches the tail (wing and fuselage straighten the rest): research synthesis 0.5-0.8; Selig: the swirl offsets ~40 % of the torque roll"),
                 "vertical_drift": q(1 - deps, "1", "derived", D("1 - d(eps)/d(alpha): the wake drifts with the downwashed flow")),
+                "propeller_sidewash": q(1.0, "1", "borrowed", "Ribner, NACA ARR L4I12a (1944) eq. 8: far-wake crossflow of a propeller at incidence, h(a)*v_c + g(a)*N/(2*mdot), applied as published (1); also selects the piecewise swirl quadrature of the legacy pieces (P51-26: the single-centroid swirl was off by up to x2.15 against 1024-strip integration)"),
                 "pieces": [{k: (q(v, "m2" if k == "area" else ("1" if k == "span_dir" else "m"), "derived", D("tail piece from geometry.json")) if k != "surface" else v) for k, v in pc.items()} for pc in slip_pieces],
             },
         },

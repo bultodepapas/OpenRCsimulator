@@ -19,7 +19,6 @@ const THRESHOLD := [15.0, -45.0]
 
 var _failures := 0
 var _count := 0
-var _pending := 0
 var session: Node
 var model: Dictionary
 var vs1g := 0.0
@@ -30,17 +29,6 @@ func _check(label: String, ok: bool, detail := "") -> void:
 	print(("ok   " if ok else "FAIL ") + label + ("" if detail.is_empty() else "  " + detail))
 	if not ok:
 		_failures += 1
-
-
-# Only the explicitly deferred P51-22 physical acceptance checks use this path.
-# Direct invocation stays strict; numerical safety and every other assertion stay mandatory.
-func _check_pending_p51_22(label: String, ok: bool, detail := "") -> void:
-	if not ok and OS.get_cmdline_user_args().has("--allow-known-p51-22"):
-		_count += 1
-		_pending += 1
-		print("PENDING P51-22: " + label + "  " + detail)
-	else:
-		_check(label, ok, detail)
 
 
 func _initialize() -> void:
@@ -67,7 +55,7 @@ func _run() -> void:
 
 
 func _finish() -> void:
-	print("%d checks, %d failed, %d pending P51-22" % [_count, _failures, _pending])
+	print("%d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures > 0 else 0)
 
 
@@ -275,7 +263,8 @@ func _ground() -> void:
 ## comes up to a level attitude, rotation at 1.25 Vs to 8°; ailerons hold the wings level; rudder holds the runway
 ## heading unless `rudder` is false. Returns the summary.
 func takeoff(rudder: bool, seconds := 12.0) -> Dictionary:
-	var info := { liftoff_t = -1.0, liftoff_x = 0.0, liftoff_v = 0.0, max_dev = 0.0, max_yaw = 0.0, max_bank = 0.0, rudder_used = 0.0, heading_at_tail_up = 0.0, tail_up_t = -1.0 }
+	var info := { liftoff_t = -1.0, liftoff_x = 0.0, liftoff_v = 0.0, max_dev = 0.0, max_yaw = 0.0, max_bank = 0.0, rudder_used = 0.0, heading_at_tail_up = 0.0, tail_up_t = -1.0,
+		rotation_t = -1.0, rotation_pitch = -1e9, rotation_integral = 0.0 }
 	var x0: float = parked[RB.POS + 1]
 	var pilot := func(t: float, s: PackedFloat64Array) -> Dictionary:
 		var v := _speed(s)
@@ -287,7 +276,14 @@ func takeoff(rudder: bool, seconds := 12.0) -> Dictionary:
 			if info.tail_up_t < 0.0 and _euler(s)[1] < deg_to_rad(4.0):
 				info.tail_up_t = t
 		else:
-			c.pitch = hold_pitch(s, deg_to_rad(8.0))
+			# P51-22: rotation as a pilot flies it, pulling until the nose reaches 8°. The attitude loop alone settles
+			# short of its target against the full-power slipstream moment; the integral removes that offset.
+			if info.rotation_t < 0.0:
+				info.rotation_t = t
+			info.rotation_integral += (deg_to_rad(8.0) - _euler(s)[1]) * session.sim.dt()
+			c.pitch = clampf(hold_pitch(s, deg_to_rad(8.0)) + 6.0 * info.rotation_integral, -1.0, 1.0)
+			if t - info.rotation_t <= 1.5:
+				info.rotation_pitch = maxf(info.rotation_pitch, _euler(s)[1])
 		if _wheels_down(s) == 0 and info.liftoff_t < 0.0:
 			info.liftoff_t = t
 			info.liftoff_x = s[RB.POS + 1] - x0
@@ -317,7 +313,8 @@ func _takeoff() -> void:
 	_check("takeoff with rudder: no crash, airborne within 10 s", to.crashed == "" and to.liftoff_t > 0.0 and to.liftoff_t < 10.0, "%s %.1f s" % [to.crashed, to.liftoff_t])
 	_check("ground roll 15-60 m (research: 20-50 m class estimate; Top Flite review ~60 ft for a smaller model)", to.liftoff_x > 15.0 and to.liftoff_x < 60.0, "%.0f m" % to.liftoff_x)
 	_check("lift-off speed is finite", is_finite(to.liftoff_v))
-	_check_pending_p51_22("lift-off between 1.05 and 1.5 Vs (rotation at 1.25 Vs)", to.liftoff_v > 1.05 * vs1g and to.liftoff_v < 1.5 * vs1g, "%.1f m/s" % to.liftoff_v)
+	_check("the pilot rotates: the nose reaches 7° within 1.5 s of rotation (8° commanded)", rad_to_deg(to.rotation_pitch) >= 7.0, "%.1f°" % rad_to_deg(to.rotation_pitch))
+	_check("lift-off between 1.05 and 1.5 Vs (rotation at 1.25 Vs)", to.liftoff_v > 1.05 * vs1g and to.liftoff_v < 1.5 * vs1g, "%.1f m/s" % to.liftoff_v)
 	_check("the pilot needs right rudder (> 20 %) and keeps the heading within 10° and on the 12 m strip", to.rudder_used > 0.2 and rad_to_deg(to.max_yaw) < 10.0 and to.max_dev < 6.0,
 		"rudder %.2f, %.1f°, %.1f m" % [to.rudder_used, rad_to_deg(to.max_yaw), to.max_dev])
 
