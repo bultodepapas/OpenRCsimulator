@@ -9,6 +9,7 @@ const Palette = preload("res://scenery/palette.gd")
 const Furniture = preload("res://scenery/club_furniture.gd")
 const ClubSign = preload("res://scenery/club_sign.gd")
 const ClubShed = preload("res://scenery/club_shed.gd")
+const PitChair = preload("res://scenery/pit_chair.gd")
 const People = preload("res://scenery/people.gd")
 const Vegetation = preload("res://scenery/vegetation.gd")
 
@@ -199,16 +200,7 @@ static func _fuel_jug(k: MeshKit, at: Vector3, seed: int) -> void:
 
 
 static func _folding_chair(k: MeshKit, at: Vector3, yaw: float, seed: int) -> void:
-	var saved := k.xf
-	k.xf = k.xf * Transform3D(Basis(Vector3.UP, yaw), at)
-	var fabric: Color = Palette.pick([_c("fabric_green"), _c("fabric_blue"), _c("flag_red"), _c("box_black")], seed)
-	k.block(Vector3(0.5, 0.05, 0.45), Vector3(0, 0.42, 0), fabric)
-	k.quad(Vector3(-0.25, 0.45, 0.22), Vector3(0.25, 0.45, 0.22), Vector3(0.25, 0.92, 0.3), Vector3(-0.25, 0.92, 0.3), fabric)
-	k.quad(Vector3(0.25, 0.45, 0.23), Vector3(-0.25, 0.45, 0.23), Vector3(-0.25, 0.92, 0.31), Vector3(0.25, 0.92, 0.31), fabric.darkened(0.2))
-	for sx: float in [-0.24, 0.24]:
-		k.beam(Vector3(sx, 0, -0.2), Vector3(sx, 0.45, 0.2), 0.025, _c("steel_dark"))
-		k.beam(Vector3(sx, 0, 0.2), Vector3(sx, 0.45, -0.2), 0.025, _c("steel_dark"))
-	k.xf = saved
+	PitChair.build(k,at,yaw,seed)
 
 
 ## The club pavilion: white walls with windows and a door, hip roof, veranda toward the field (−Z).

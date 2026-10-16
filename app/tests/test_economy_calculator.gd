@@ -26,13 +26,40 @@ func _initialize() -> void:
 func _test_total_loss_and_salvage() -> void:
 	var dossier: Dictionary = _dossier()
 	var zero_salvage: Dictionary = Calculator.calculate(dossier, _assessment(true))
-	_check("complete baseline loss uses integer cents", zero_salvage["ok"] and zero_salvage["total_minor"] == 99433 and typeof(zero_salvage["total_minor"]) == TYPE_INT, str(zero_salvage))
+	_check("complete baseline loss uses integer cents", zero_salvage["ok"] and zero_salvage["total_minor"] == 99433 and typeof(zero_salvage["total_minor"]) == TYPE_INT and zero_salvage["salvage_minor"] == 0, str(zero_salvage))
 	_check("baseline low and high bounds are retained", zero_salvage["low_minor"] == 82734 and zero_salvage["high_minor"] == 133134, str(zero_salvage))
 	_check("complete-build replacement is counted once", _line_count(zero_salvage, "final_assembly_and_commissioning") == 1 and zero_salvage["replacement_minor"] == 99433)
 	var total_loss_inspection: Dictionary = _assessment(true)
 	total_loss_inspection["components"] = {"engine_and_muffler": {"disposition": "inspect", "inspection_minor": 250}}
 	var inspected_loss: Dictionary = Calculator.calculate(dossier, total_loss_inspection)
-	_check("pending total-loss salvage has no unsupported net bounds", inspected_loss["known_subtotal_minor"] == 99683 and inspected_loss["high_minor"] == null and inspected_loss["low_minor"] == null and inspected_loss["total_minor"] == null, str(inspected_loss))
+	_check("pending known-price total-loss salvage remains unknown", inspected_loss["known_subtotal_minor"] == 99683 and inspected_loss["high_minor"] == null and inspected_loss["low_minor"] == null and inspected_loss["total_minor"] == null and inspected_loss["salvage_minor"] == null, str(inspected_loss))
+	var unknown_price: Dictionary = dossier.duplicate(true)
+	for index: int in range((unknown_price["components"] as Array).size()):
+		var component: Dictionary = unknown_price["components"][index]
+		if component["id"] == "engine_and_muffler":
+			component["unit_minor"] = null
+			component["low_unit_minor"] = null
+			component["high_unit_minor"] = null
+			unknown_price["components"][index] = component
+	var unknown_price_inspection: Dictionary = _assessment(true)
+	unknown_price_inspection["components"] = {"engine_and_muffler": {"disposition": "inspect"}}
+	var unknown_price_pending: Dictionary = Calculator.calculate(unknown_price, unknown_price_inspection)
+	_check("pending salvage stays unknown when the inspected component has no price", unknown_price_pending["ok"] and unknown_price_pending["salvage_minor"] == null and unknown_price_pending["total_minor"] == null, str(unknown_price_pending))
+	var unknown_condition: Dictionary = _assessment(true)
+	unknown_condition["components"] = {"engine_and_muffler": {"disposition": "unknown"}}
+	var unknown_condition_result: Dictionary = Calculator.calculate(dossier, unknown_condition)
+	_check("unknown total-loss condition leaves salvage unknown", unknown_condition_result["salvage_minor"] == null and unknown_condition_result["total_minor"] == null, str(unknown_condition_result))
+	var mixed_pending: Dictionary = _assessment(true)
+	mixed_pending["components"] = {
+		"fuselage_servos": {"disposition": "reuse", "quantity": 2},
+		"engine_and_muffler": {"disposition": "inspect"},
+	}
+	var mixed_pending_result: Dictionary = Calculator.calculate(dossier, mixed_pending)
+	_check("pending inspection makes mixed confirmed and possible salvage unknown", mixed_pending_result["salvage_minor"] == null and mixed_pending_result["total_minor"] == null and mixed_pending_result["known_subtotal_minor"] == 92635, str(mixed_pending_result))
+	var blocked_salvage: Dictionary = _assessment(true)
+	blocked_salvage["components"] = {"engine_and_muffler": {"disposition": "inspect", "salvage_eligible": false}}
+	var blocked_salvage_result: Dictionary = Calculator.calculate(dossier, blocked_salvage)
+	_check("explicitly blocked pending component contributes known zero salvage", blocked_salvage_result["salvage_minor"] == 0 and blocked_salvage_result["total_minor"] == null, str(blocked_salvage_result))
 	var two_servos: Dictionary = _assessment(true)
 	two_servos["components"] = {"fuselage_servos": {"disposition": "reuse", "quantity": 2}}
 	var two_result: Dictionary = Calculator.calculate(dossier, two_servos)

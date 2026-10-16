@@ -3,6 +3,12 @@
 2026-10-14. Source snapshot: `22b3e4825ec97289b76666ca9e942eaa7a8f703d` plus the existing working tree. Scope: Xbox, PlayStation DualSense and other controllers, with Windows prioritized by the owner. The [implementation plan](../../plans/controller-support.md) owns proposed work and acceptance; this report owns the dated findings and sources.
 
 
+## GameSir and advanced inspection (2026-10-16, F1 / HELI-26a)
+
+The owner's generic Xbox-style GameSir is observed natively as a known `XInput Controller` / `Xbox One Controller` and receives the existing Mode 2 stick-rate profile. The advanced HX-700 inspector now consumes that shared profile through an explicit hardware-input mode. A focused native inspector run confirms live readiness and rejection of resting axis drift by the existing deadzone. Full stick/button travel, transport, unplug/reconnect and physical radio qualification remain open. [Canonical integration evidence and raw observations](../helicopter/HELI-26a/README.md#controller-integration--2026-10-16).
+
+The shared audit fixed `ControllerService.select_devices()` accepting IDs below `-1`: rejection now occurs before either role changes. Two atomicity regressions pass with the existing registry, profile-store, automatic-selection, persistence and integration suites. Controller setup/menu routing remains shared; inspector panel navigation intentionally uses mouse/keyboard.
+
 ## Helicopter and car buttons (2026-10-16, D6-GP-06-R3, RCV-05-R2)
 
 The helicopter now inherits arm/disarm, rotor hold, flight curve and trainer buttons only in its activity context. Home and Pause settings resolve the same defaults as flight; saving an untouched helicopter profile does not freeze defaults into explicit assignments or erase fixed-wing equipment defaults. Explicit remaps and Clear persist. The HUD names the actual saved bindings, including radio channels. [Helicopter controls](../../HELICOPTER.md#historical-playable-reference-start-and-controls) owns the button list.

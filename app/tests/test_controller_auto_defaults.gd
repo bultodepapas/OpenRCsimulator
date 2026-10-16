@@ -115,6 +115,8 @@ func _run() -> void:
 	service = service_for(observed)
 	service.refresh()
 	check("explicit alternate pad selection succeeds", service.select_devices(8, 6))
+	check("invalid UI ID is rejected without changing either role", not service.select_devices(6, -2) and roles(service, 8, 6))
+	check("invalid flight ID is rejected without changing either role", not service.select_devices(-2, -1) and roles(service, 8, 6))
 	observed.append(device(1, "radio"))
 	service.refresh()
 	check("new connections cannot replace a manual Home choice", roles(service, 8, 6))

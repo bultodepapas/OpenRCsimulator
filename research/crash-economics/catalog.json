@@ -4,8 +4,8 @@
   "observed_on": "2026-10-16",
   "generated_by": "research/crash-economics/build_catalog.py",
   "source_hashes": {
-    "price-research-components.json": "0336b25047195ceafc4e3afc864b7a01502dfe5b1d063697215d89a887828652",
-    "price-research-fleet.json": "66d0a319869ca158aa947783143fb2807497c42decb0c834eb84e6642198392d"
+    "price-research-components.json": "91ed036786f2ffc6bbd82761634ea3029dea62cdb4588767b9db92a6e7a3d075",
+    "price-research-fleet.json": "85026093f0172a0692e6b1c3c1813b2e8770ba0b13dbf04f033923223a002f13"
   },
   "policy": {
     "currency": "USD",
@@ -235,6 +235,15 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "futaba_01102306_1",
+      "brand": "Futaba",
+      "sku": "01102306-1",
+      "name": "R3006SB T-FHSS telemetry 6-channel plus S.Bus receiver",
+      "category": "receiver",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "futaba_01102381_1",
       "brand": "Futaba",
       "sku": "01102381-1",
@@ -325,6 +334,24 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "o_s_engines_25704000",
+      "brand": "O.S. Engines",
+      "sku": "25704000",
+      "name": "MAX-55AX cylinder head",
+      "category": "engine_cylinder_head",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "o_s_engines_25714000",
+      "brand": "O.S. Engines",
+      "sku": "25714000",
+      "name": "MAX-55AX gasket set",
+      "category": "engine_gasket_set",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "o_s_engines_40625010",
       "brand": "O.S. Engines",
       "sku": "40625010",
@@ -388,6 +415,15 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "radiomaster_hp0157_rx_er6_g",
+      "brand": "RadioMaster",
+      "sku": "HP0157.RX-ER6-G",
+      "name": "ER6G 2.4 GHz ELRS PWM receiver, without vario",
+      "category": "receiver",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "radiomaster_hp0157_rx_er8",
       "brand": "RadioMaster",
       "sku": "HP0157.RX-ER8",
@@ -395,6 +431,15 @@
       "category": "receiver",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
+    },
+    {
+      "id": "savox_csc0252mg",
+      "brand": "Savox",
+      "sku": "CSC0252MG",
+      "name": "Top & bottom servo case with screws for SC0252MG",
+      "category": "servo_replacement_case",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "representation_permission_recorded"
     },
     {
       "id": "savox_csc0254mg",
@@ -536,6 +581,15 @@
       "brand": "Spektrum",
       "sku": "SPM-1033",
       "name": "AR8360T+ DSMX 8-channel AS3X+ and SAFE telemetry receiver",
+      "category": "receiver",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "spektrum_spmar620",
+      "brand": "Spektrum",
+      "sku": "SPMAR620",
+      "name": "AR620 DSMX 6-channel sport receiver",
       "category": "receiver",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
@@ -937,6 +991,46 @@
       "notes": "Observed 2026-10-15. This is a .65 replacement-cost proxy for a MAX-61FX, not the same engine or a verified equivalent. Horizon's detail listing gives prop sizes 12x6, 13x6-7, or 14x6; fuel is needed separately."
     },
     {
+      "id": "os_max55ax_cylinder_head_25704000_20261016",
+      "product_id": "o_s_engines_25704000",
+      "amount_minor": 1914,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.activepowersports.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_us_retailer_sale_price",
+      "availability": "Active Powersports displays a quantity control and Add to Cart, but its Current Stock field is blank; exact stock state and quantity are unknown.",
+      "sold_package_quantity": 1,
+      "package_description": "1 cylinder head.",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.activepowersports.com/os-engines-25704000-cylinder-head-55ax-g5036/",
+      "source_file": "price-research-components.json",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. One cylinder head; seller lists USD 19.14 sale price and USD 24.99 comparison price. Unallocated. No repair inspection or identification of a damaged cylinder head is recorded. The source does not establish repair need, repair success, labor, diagnosis, or installed-engine identity. Do not apply this part to the MAX-61FX, FS-64V, or other engines. Tax and shipping are excluded. Dated source detail: intake-service-20261016.json."
+    },
+    {
+      "id": "os_max55ax_gasket_set_25714000_20261016",
+      "product_id": "o_s_engines_25714000",
+      "amount_minor": 762,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.activepowersports.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_us_retailer_sale_price",
+      "availability": "Active Powersports displays a quantity control and Add to Cart, but its Current Stock field is blank; exact stock state and quantity are unknown.",
+      "sold_package_quantity": 1,
+      "package_description": "1 gasket set; the seller page does not itemize gasket contents.",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.activepowersports.com/os-engines-25714000-gasket-set-55ax-g6133/",
+      "source_file": "price-research-components.json",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. One gasket-set package; seller lists USD 7.62 sale price and USD 9.99 comparison price. Unallocated. No repair inspection or identification of a damaged gasket is recorded. The source does not establish repair need, repair success, labor, diagnosis, or installed-engine identity. Do not apply this part to the MAX-61FX, FS-64V, or other engines. Tax and shipping are excluded. Dated source detail: intake-service-20261016.json."
+    },
+    {
       "id": "p51_carf_143_arf_proxy",
       "product_id": "carf_models_422000",
       "amount_minor": 241000,
@@ -1017,6 +1111,26 @@
       "notes": "Observed 2026-10-15. Listed at $44.99 USD, but the direct manufacturer-region store marks it sold out. Supports FrSky ACCESS and ACCST D16; fleet transmitter/protocol match is unknown."
     },
     {
+      "id": "receiver_futaba_r3006sb_futabausa_20261016",
+      "product_id": "futaba_01102306_1",
+      "amount_minor": 6599,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "futabausa.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_manufacturer_store_price",
+      "availability": "In stock; page offers Add to Cart",
+      "sold_package_quantity": 1,
+      "package_description": "1 receiver unit listed; in-box contents are not enumerated on the product page",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://futabausa.com/product/r3006sb/",
+      "source_file": "price-research-components.json",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. T-FHSS Air telemetry; S.Bus2 output feature; Six-channel receiver with S.Bus2; the product page names six channels and S.Bus but does not separately label the servo signal as PWM; receiver supply Rated 4.8-7.4 V; operating 4.0-8.4 V. Package: One receiver listing; the manufacturer store page does not list accessories or other box contents. Not allocated. The listing does not establish an installed R3006SB, receiver-to-transmitter compatibility for any fleet aircraft, or aircraft fit. Tax and shipping are not included in the listed product price. Keep rated and operating voltage ranges distinct. No accessory contents are assumed from the unit listing. Technical sources and exact variant details: intake-radio-20261016.json."
+    },
+    {
       "id": "receiver_futaba_r7208sb",
       "product_id": "futaba_01102381_1",
       "amount_minor": 21499,
@@ -1037,6 +1151,26 @@
       "notes": "Observed 2026-10-15. Receiver uses Futaba FASSTest/S.Bus2; compatible transmitter and fleet fit are unknown."
     },
     {
+      "id": "receiver_radiomaster_er6g_radiomaster_20261016",
+      "product_id": "radiomaster_hp0157_rx_er6_g",
+      "amount_minor": 2999,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "radiomasterrc.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_manufacturer_store_price",
+      "availability": "Available; the ER6G variant is marked available and the page offers Add to Cart",
+      "sold_package_quantity": 1,
+      "package_description": "1 ER6G receiver package",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://radiomasterrc.com/products/er6g-er6gv-2-4ghz-elrs-pwm-receiver",
+      "source_file": "price-research-components.json",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. 2.4 GHz ExpressLRS 3.3.0 pre-installed; 6 PWM outputs; receiver supply DC 3.5-8.4 V. Package: 1 ER6G receiver, 1 Type-A voltage telemetry wire, 2 heat-shrink tubes, and 1 user card Not allocated. The listing does not establish an installed ER6G, an ExpressLRS transmitter or module in any fleet, or aircraft fit. The ER6G variant is selected and recorded; the separate ER6GV variant costs USD 34.99 and adds a vario, so it is not part of this offer. Tax and shipping are calculated separately at checkout. Technical sources and exact variant details: intake-radio-20261016.json."
+    },
+    {
       "id": "receiver_radiomaster_er8_elrs",
       "product_id": "radiomaster_hp0157_rx_er8",
       "amount_minor": 3499,
@@ -1055,6 +1189,26 @@
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
       "notes": "Observed 2026-10-15. Eight PWM channels; requires a compatible ExpressLRS transmitter or module. Fleet transmitter/protocol match is unknown."
+    },
+    {
+      "id": "receiver_spektrum_ar620_horizon_20261016",
+      "product_id": "spektrum_spmar620",
+      "amount_minor": 3799,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_direct_seller_listing_price",
+      "availability": "In stock; page offers Add to Cart",
+      "sold_package_quantity": 1,
+      "package_description": "1 receiver unit listed; included accessories are not enumerated on the sale page",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/spektrum-ar620-dsmx-6-channel-sport-receiver/SPMAR620.html",
+      "source_file": "price-research-components.json",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. 2.4 GHz DSMX; Spektrum documentation also states DSM2 compatibility; Six servo ports; port 1 also serves as the DATA port; receiver supply 3.5-9 V. Package: One standalone receiver listing. The seller page does not enumerate included leads or other accessories. Not allocated. The listing does not establish an installed AR620, receiver-to-transmitter compatibility for any fleet aircraft, or aircraft fit. Tax and shipping are not included in the listed product price. Treat DSM2/DSMX as the receiver's documented protocols only; no installed radio identity is inferred. Technical sources and exact variant details: intake-radio-20261016.json."
     },
     {
       "id": "receiver_spektrum_ar8360t_plus",
@@ -1275,6 +1429,26 @@
       "source_file": "price-research-components.json",
       "evidence_quality": "Direct US retailer product listing, crawled about 2 weeks before observation; exact retailer SKU is shown, stock state is unclear. SavoxUSA manufacturer snippet is cached.",
       "notes": "Observed 2026-10-15. RCSuperstore lists $40.99 for SAVSH0255MGP. SavoxUSA's cached manufacturer listing showed $34.99 and Sold Out, crawled about 4 months earlier; current manufacturer-store price/stock was not verified (https://www.savoxusa.com/collections/micro-servos). Candidate price only: four generic servos are present in the project baseline and no Savox installation is confirmed."
+    },
+    {
+      "id": "savox_sc0252mg_case_csc0252mg_20261016",
+      "product_id": "savox_csc0252mg",
+      "amount_minor": 549,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "servos.net",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_us_retailer_listing_price",
+      "availability": "Servos.net product page displays Add to Cart and a quantity control; it does not state an on-hand quantity. Savox USA's indexed case collection marks this SKU Sold Out, but that collection result is several months old, so present stock is unresolved.",
+      "sold_package_quantity": 1,
+      "package_description": "1 top-and-bottom case set with screws.",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://servos.net/products/savcsc0252mg-top-bottom-servo-case-with-4",
+      "source_file": "price-research-components.json",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. 1 top-and-bottom case set with screws; the page does not specify screw count. Unallocated. No Savox SC0252MGP installation or aircraft position is established. A case set price does not establish that an impact-damaged servo can be repaired or that its electronics, motor, gears, or calibration remain serviceable. Tax and shipping are excluded. Dated source detail: intake-service-20261016.json."
     },
     {
       "id": "sebart-a200-16-kero-smoke-tank-gator",
@@ -2058,6 +2232,30 @@
       "automatic_repair_selection": false
     },
     {
+      "part_offer_id": "os_max55ax_cylinder_head_25704000_20261016",
+      "whole_unit_offer_id": "os-max55ax-osmg0557",
+      "compatibility_evidence": {
+        "manufacturer_parts_manual_url": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/pdf/15612_55AX.pdf",
+        "status": "O.S. Engines' official MAX-55AX parts list identifies part 25704000 as Cylinder Head 55AX. This supports the MAX-55AX model crosswalk; it does not imply fitment to another engine family.",
+        "target_model": "O.S. MAX-55AX (15612)"
+      },
+      "scope": "named_product_family_only",
+      "aircraft_applicability": "not_established",
+      "automatic_repair_selection": false
+    },
+    {
+      "part_offer_id": "os_max55ax_gasket_set_25714000_20261016",
+      "whole_unit_offer_id": "os-max55ax-osmg0557",
+      "compatibility_evidence": {
+        "manufacturer_parts_manual_url": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/pdf/15612_55AX.pdf",
+        "status": "O.S. Engines' official MAX-55AX parts list identifies part 25714000 as Gasket Set 55AX,BE. This supports the MAX-55AX model crosswalk; it does not imply fitment to another engine family.",
+        "target_model": "O.S. MAX-55AX (15612)"
+      },
+      "scope": "named_product_family_only",
+      "aircraft_applicability": "not_established",
+      "automatic_repair_selection": false
+    },
+    {
       "part_offer_id": "savox-sb2270sgp-gear-set-sgsb2270sg",
       "whole_unit_offer_id": "savox-sb2270sgp",
       "compatibility_evidence": {
@@ -2078,6 +2276,19 @@
         "part_listing_names_base_model": "SC0254MG",
         "status": "Manufacturer product page lists CSC0254MG in the SC0254MGP Spare Parts section.",
         "target_model": "SC0254MGP"
+      },
+      "scope": "named_product_family_only",
+      "aircraft_applicability": "not_established",
+      "automatic_repair_selection": false
+    },
+    {
+      "part_offer_id": "savox_sc0252mg_case_csc0252mg_20261016",
+      "whole_unit_offer_id": "savox-sc0252mgp",
+      "compatibility_evidence": {
+        "manufacturer_source_url": "https://servos.net/products/savsc0252mgp-standard-digital-servo",
+        "part_listing_names_base_model": "CSC0252MG - Top & Bottom Servo Case with Screws, for SC0252MG",
+        "status": "The Savox SC0252MGP product page explicitly lists CSC0252MG in its Spare Parts section. Its listed part name is for the base SC0252MG; the documented placement on the SC0252MGP product page is the exact model crosswalk used here.",
+        "target_model": "Savox SC0252MGP"
       },
       "scope": "named_product_family_only",
       "aircraft_applicability": "not_established",

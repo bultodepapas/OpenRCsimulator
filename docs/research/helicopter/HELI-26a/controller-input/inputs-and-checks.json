@@ -1,0 +1,57 @@
+{
+  "step": "HELI-26a / F1",
+  "date": "2026-10-16",
+  "platform": "Windows",
+  "engine": "4.7.2-stable",
+  "source_sha256": {
+    "app/render/rotor/hx700_controller_input.gd": "873fe30cd063b93db1d83a08c407928114ca336c14ace1a439467c637ab5ed01",
+    "app/render/rotor/hx700_mechanics_view.gd": "fb4b978e355861a358e75d67f440b8fd7f8987a0aabea9d37231135ad15ea0ff",
+    "app/tests/test_heli_inspection_controller.gd": "a42df0737face0797e0df9682aa2897e9c22f90089795fc43f36a9924bbc2403",
+    "app/tests/test_heli_mechanics_view.gd": "3ed91dbf8c91f9e7f1287dc404d46e4c89f3a16babb4ec11b7a4077b79c0655a",
+    "app/input/controller_service.gd": "65706d4b45f2e115a4f62dc9ec9b3c4969047cd42f2cee15540909b6a65f6375",
+    "app/input/controller_registry.gd": "50d29fcc33f66b8ec3f1671f60429f6c8477f110b4a994aa60bf77cf65f4160d",
+    "app/input/controller_profile_store.gd": "76dc5220b73fd09869620622c6571dd66b51cd2d4a62f5143bc95ded42e33458",
+    "app/input/controller_profile.gd": "98de55e098d66e811bd4dfbed12debbbf7131ea7b7c8f0d94108c9a2aebc8d4b",
+    "app/input/controller_actions.gd": "2c72610e642339354bf7ae332af3dd35d3fb651bc588cd542d27929d2c864a9f",
+    "app/input/rc_input.gd": "c4c63bc039d8e10afaf18a555f874ab180826be6798620e54baff3171139b69d",
+    "app/input/rc_calibration.gd": "6f0eac083c6eb207784e1198ce5bab1d80970b9812d177757506aa087021758c",
+    "app/input/smoke_aux.gd": "07649da097d4c56fadccaddbc9bdd833719fbd358254fde0ffd14848e45bf83f",
+    "research/helicopter/assets/pack_hx700_preview.gd": "8a1ab3d8d16b8ee2ba8b8bd92dd07a0ca7716b7359db2472035809280ad75f98",
+    "research/helicopter/assets/verify_hx700_articulated.py": "96c92767fa8daf4665bbf70bb447ecf35889970d6023ad67b11aae18b2cc0200",
+    "app/tests/test_controller_auto_defaults.gd": "14df514b687dc0fd3cd645b5645f78c6466de9a9a310cdf29d420c19f50292cc"
+  },
+  "checks": {
+    "construction": 38,
+    "mechanism": 78,
+    "view": 45,
+    "timing": 20,
+    "elasticity": 26,
+    "controller_adapter": 36
+  },
+  "fresh_matches_tested_app": true,
+  "native_gamepad": {
+    "samples": 40,
+    "focused_enabled_ready": 40,
+    "raw_left_y_min": 0.0316014289855957,
+    "raw_left_y_max": 0.0330357551574707,
+    "all_poses_neutral": true,
+    "transport_observed": false,
+    "full_stick_travel_observed": false,
+    "buttons_exercised": false
+  },
+  "limits": [
+    "Synthetic input tests do not establish physical controller coverage or flight realism.",
+    "Full repository suite not run; this is the advanced inspector gate plus focused shared controller tests.",
+    "No physical radio, Bluetooth/USB transport identification, unplug/reconnect or latency qualification."
+  ],
+  "shared_controller_regressions": {
+    "evidence": "Native Godot tool-session output; individual logs were not retained.",
+    "passed": {
+      "test_controller_registry.gd": 27,
+      "test_controller_store.gd": 36,
+      "test_controller_auto_defaults.gd": 37,
+      "test_controller_persistence.gd": 27,
+      "test_controller_integration.gd": 27
+    }
+  }
+}

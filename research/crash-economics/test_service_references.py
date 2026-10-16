@@ -62,7 +62,7 @@ class ServiceReferenceTests(unittest.TestCase):
         document, context = build_runtime.build_runtime_data()
         result = audit_prices.build_audit(document, context, "2026-10-16")
         parts = result["service_parts"]
-        self.assertEqual(len(parts), 5)
+        self.assertEqual(len(parts), 8)
         selected = {row["offer_id"] for aircraft in document["aircraft"] for row in aircraft["components"]}
         for row in parts:
             self.assertNotIn(row["part_offer_id"], selected)

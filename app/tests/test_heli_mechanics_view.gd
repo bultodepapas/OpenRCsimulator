@@ -189,10 +189,82 @@ func _run() -> void:
 	_check("800x600 restores the wrapped title within the clear render region", view._hint.visible and medium_hint_rect.position.x >= 356 and medium_hint_rect.end.x <= 780)
 	root.size = original_window_size
 	await process_frame
+	await _controller_flow(view)
 	view.queue_free()
 	await process_frame
 	print("%d checks, %d failed" % [checks, failures])
 	quit(0 if failures == 0 else 1)
+
+
+func _controller_flow(view: Node3D) -> void:
+	var controller = view.controller
+	var observations: Array = [{"id": 71, "guid": "heli-view-test", "name": "Test Xbox pad", "known": true}]
+	var axes := PackedFloat64Array([0, -1, 0.5, -0.6, 0, 0, 0, 0, 0, 0])
+	var focus_state := {"focused": true}
+	var unused_path := "user://heli-view-%d/missing.cfg" % Time.get_ticks_usec()
+	controller.service.store = controller.service.Store.new(unused_path, unused_path + ".legacy")
+	controller.service.enumerate_devices = func() -> Array: return observations
+	controller.focus_reader = func() -> bool: return focus_state.focused
+	controller.read_axis = func(_id: int, axis: int) -> float: return axes[axis]
+	controller.read_button = func(_id: int, _button: int) -> bool: return false
+	controller.service.refresh()
+	view._controller_selected(1)
+	view._set_paused(false)
+	view._smooth_toggle.button_pressed = false
+	view._speed.value = 0
+	view._preset("Neutro")
+	view._process(0.1)
+	_check("connected hardware cannot move the inspector until explicitly enabled", not controller.enabled and view.motion.demand == PackedFloat64Array([0, 0, 0, 0]))
+	view._controller_enabled(true)
+	controller.radio.confirmed_gamepad_connection = func(_id: int) -> bool: return true
+	view._process(0.1)
+	_check("controller reaches the idle rig through shared shaped axes and collective rate", controller.enabled and view.rig.pose.inputs[0] > 0 and view.rig.pose.inputs[1] > 0 and view.rig.pose.inputs[2] < 0 and not view._sliders[0].editable)
+	var frozen_pose: PackedFloat64Array = view.rig.pose.inputs.duplicate()
+	var frozen_demand: PackedFloat64Array = view.motion.demand.duplicate()
+	view._set_paused(true)
+	view._process(2.0)
+	_check("pause holds both the visible rig and hardware demand", view.rig.pose.inputs == frozen_pose and view.motion.demand == frozen_demand)
+	view._step()
+	_check("controller single step integrates exactly one frame of collective", view.paused and absf(view.rig.pose.inputs[0] - frozen_pose[0] - 26.0 * 0.5 / 60.0) < 1e-10)
+	view._canopy_toggle.grab_focus()
+	var visible_before: bool = view._canopy_toggle.button_pressed
+	var button := InputEventJoypadButton.new()
+	button.device = 71
+	button.button_index = JOY_BUTTON_A
+	InputMap.action_add_event("ui_accept", button)
+	button.pressed = true
+	Input.parse_input_event(button)
+	button = button.duplicate()
+	button.pressed = false
+	Input.parse_input_event(button)
+	await process_frame
+	InputMap.action_erase_event("ui_accept", button)
+	_check("selected controller buttons cannot activate focused inspection controls", view._canopy_toggle.button_pressed == visible_before)
+	view._set_paused(false)
+	frozen_pose = view.rig.pose.inputs.duplicate()
+	focus_state.focused = false
+	view._process(0.1)
+	_check("focus loss pauses inspection, disables the source and preserves the last pose", view.paused and not controller.enabled and view.rig.pose.inputs == frozen_pose and view._sliders[0].editable)
+	focus_state.focused = true
+	view._controller_enabled(true)
+	controller.radio.confirmed_gamepad_connection = func(_id: int) -> bool: return true
+	observations.clear()
+	controller.service.refresh()
+	_check("disconnect releases hardware ownership and clears the selector", not controller.enabled and view.paused and controller.selected_id() == -1 and view._controller_devices.selected == 0)
+	observations.append({"id": 71, "guid": "heli-view-test", "name": "Test Xbox pad", "known": true})
+	controller.service.refresh()
+	_check("reconnect does not reclaim the mechanism automatically", not controller.enabled and controller.selected_id() == -1)
+	view._controller_selected(1)
+	view._controller_enabled(true)
+	view._preset("+Colectivo")
+	_check("manual preset explicitly releases controller ownership", not controller.enabled and view._sliders[0].editable and view.motion.demand[0] == 10)
+	observations.append({"id": 72, "guid": "raw-joystick", "name": "Unconfigured joystick", "known": false})
+	controller.service.refresh()
+	view._controller_selected(2)
+	view._set_paused(true)
+	view._preset("Neutro")
+	view._step()
+	_check("unconfigured joystick cannot block manual single stepping", not controller.enabled and view.rig.pose.inputs.slice(0, 4) == PackedFloat64Array([0, 0, 0, 0]))
 
 
 func _key(code: Key) -> void:

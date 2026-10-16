@@ -10,6 +10,8 @@ from pathlib import Path
 
 import build_runtime
 
+SALE_PRICE_KINDS = {"live_retailer_sale_price", "live_us_retailer_sale_price"}
+
 
 def observation_age(observed_on: str, as_of: str, review_days: int, stale_days: int) -> dict:
     """Thresholds are inclusive; future observations are invalid evidence as of that date."""
@@ -79,6 +81,8 @@ def build_audit(document: dict, context: dict, as_of: str) -> dict:
         product = products[offer["product_id"]]
         observations.append({"offer_id": offer["id"], "product": product["name"], "brand": product["brand"],
             "sku": product["sku"], "amount_minor": offer["amount_minor"], "currency": offer["currency"],
+            **{key: offer[key] for key in ("price_kind", "condition", "market", "tax_shipping")},
+            "sale_recheck_required": bool(policy.get("sale_price_requires_refresh", False)) and offer["price_kind"] in SALE_PRICE_KINDS,
             "observed_on": offer["observed_on"], **observation_age(offer["observed_on"], as_of, review, stale),
             "availability_at_observation": offer["availability"], "package_description": offer["package_description"],
             "source_url": offer["source_url"], "uses": sorted(usage[offer["id"]], key=lambda row: (row["aircraft_id"], row["component_id"], row["role"]))})
@@ -96,6 +100,7 @@ def build_audit(document: dict, context: dict, as_of: str) -> dict:
         "summary": {"observations": len(observations), "aircraft_routes": len(aircraft),
                     "review_status_counts": {key: counts[key] for key in priority},
                     "unmapped_observations": sum(not row["uses"] for row in observations),
+                    "sale_observations_requiring_recheck": sum(row["sale_recheck_required"] for row in observations),
                     "incomplete_aircraft": sum(not row["inventory_cost_coverage_complete"] for row in aircraft)},
         "aircraft": aircraft, "observations": observations,
         "service_parts": copy.deepcopy(context["price_catalog"].get("service_parts", []))}
@@ -108,6 +113,10 @@ def _cell(value: str) -> str:
 def render_markdown(audit: dict) -> str:
     lines = ["# Price review queue", "", f"As of {audit['as_of']}; catalog snapshot {audit['catalog_snapshot_date']}. Offline review only.", ""]
     lines.extend("- " + note for note in audit["limits"])
+    sale_rows = [row for row in audit["observations"] if row.get("sale_recheck_required")]
+    if sale_rows:
+        lines += ["", "## Sale quotes requiring recheck", "", "Sale expiry is not established by the observation date. Recheck these quotes before relying on them; the age status below remains a separate calendar measure.", ""]
+        lines.extend(f"- [{_cell(row['offer_id'])}]({row['source_url']}): recorded sale price; availability remains as observed." for row in sale_rows)
     lines += ["", "## Aircraft cost coverage", "", "| Aircraft | Priced rows | Known subtotal (USD) | Coverage | Unpriced rows |", "| --- | ---: | ---: | --- | --- |"]
     for row in audit["aircraft"]:
         known = row["known_subtotal_minor"]

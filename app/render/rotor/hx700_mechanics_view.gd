@@ -6,6 +6,7 @@ const Mechanism := preload("res://render/rotor/hx700_mechanism.gd")
 const Motion := preload("res://render/rotor/hx700_inspection_motion.gd")
 const Flex := preload("res://physics/rotorcraft/hx700_flex_bench.gd")
 const ElasticSkin := preload("res://render/rotor/hx700_elastic_skin.gd")
+const ControllerInput := preload("res://render/rotor/hx700_controller_input.gd")
 const PANEL_WIDTH := 316.0
 const PANEL_LEFT := 20.0
 const CLEAR_GAP := 20.0
@@ -15,6 +16,10 @@ const REFERENCE_CLEAR_WIDTH := 1064.0
 var motion := Motion.new()
 var flex := Flex.new()
 var elastic_skin := ElasticSkin.new()
+var controller := ControllerInput.new()
+var _controller_devices: OptionButton
+var _controller_toggle: CheckBox
+var _controller_status: Label
 var paused := false
 var rig: RefCounted
 var preview: Dictionary = {}
@@ -71,8 +76,12 @@ func _ready() -> void:
 		push_error("Advanced HX-700 elastic geometry admission failed.")
 		get_tree().quit(1)
 		return
+	add_child(controller)
 	_build_stage()
 	_build_ui()
+	controller.devices_changed.connect(_refresh_controller_devices)
+	controller.interrupted.connect(_controller_interrupted)
+	_refresh_controller_devices()
 	_show_canopy(false)
 	_show_main_blades(false)
 	_technical_materials(true)
@@ -173,6 +182,7 @@ func _build_ui() -> void:
 		button.button_pressed = choice == "Mecánica"
 		_mode_buttons.append(button)
 		modes.add_child(button)
+	_build_controller_controls(column)
 	var common := column
 	_mechanical_controls = VBoxContainer.new()
 	_mechanical_controls.add_theme_constant_override("separation", 4)
@@ -267,6 +277,88 @@ func _build_ui() -> void:
 	_canvas.add_child(hint)
 	_hint = hint
 	_refresh_flex()
+
+
+func _build_controller_controls(column: VBoxContainer) -> void:
+	_controller_devices = OptionButton.new()
+	_controller_devices.fit_to_longest_item = false
+	_controller_devices.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_controller_devices.tooltip_text = "Seleccione la radio, mando o joystick conectado."
+	_controller_devices.item_selected.connect(_controller_selected)
+	column.add_child(_controller_devices)
+	_controller_toggle = CheckBox.new()
+	_controller_toggle.text = "Usar mando"
+	_controller_toggle.toggled.connect(_controller_enabled)
+	column.add_child(_controller_toggle)
+	_controller_status = _label(column, "", 12, Color("aabbd0"))
+	_controller_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	_controller_status.tooltip_text = "Perfiles y calibración: Inicio → Controller settings. En Mode 2: stick izquierdo, colectivo y cola; stick derecho, cíclico. El colectivo conserva su posición al centrar el stick."
+
+
+func _refresh_controller_devices() -> void:
+	_controller_devices.clear()
+	_controller_devices.add_item("Panel manual", 0)
+	_controller_devices.set_item_metadata(0, -1)
+	var selected := 0
+	for info: Dictionary in controller.service.registry.get_devices():
+		if not bool(info.get("connected", false)):
+			continue
+		var index := _controller_devices.item_count
+		_controller_devices.add_item(str(info.get("name", "Joystick")))
+		_controller_devices.set_item_metadata(index, int(info.id))
+		if int(info.id) == controller.selected_id():
+			selected = index
+	_controller_devices.select(selected)
+	_refresh_controller_state(str(controller.sample(0.0, true).status))
+
+
+func _controller_selected(index: int) -> void:
+	controller.select_device(int(_controller_devices.get_item_metadata(index)))
+	_refresh_controller_devices()
+
+
+func _controller_enabled(enabled: bool) -> void:
+	if enabled:
+		controller.enable(inputs[0])
+	else:
+		controller.disable()
+	_refresh_controller_state(str(controller.sample(0.0, true).status))
+
+
+func _refresh_controller_state(message: String) -> void:
+	_controller_toggle.set_pressed_no_signal(controller.enabled)
+	_controller_toggle.disabled = controller.selected_id() < 0
+	var preset := str(controller.radio.profile.get("preset", ""))
+	_controller_toggle.text = "Usar mando" + (" · Mode " + preset.right(1) if preset in ["mode1", "mode2"] else "")
+	_controller_status.text = message
+	for slider in _sliders:
+		slider.editable = not controller.enabled
+
+
+func _controller_interrupted(reason: String) -> void:
+	controller.disable()
+	_set_paused(true)
+	_refresh_controller_state(reason)
+
+
+func _sample_controller(delta: float, hold: bool) -> bool:
+	var result: Dictionary = controller.sample(delta, hold)
+	_refresh_controller_state(str(result.status))
+	if not result.ok or not result.active:
+		return bool(result.ok)
+	if motion.set_controls(result.inputs):
+		for i in 4:
+			_sliders[i].set_value_no_signal(motion.demand[i])
+		_refresh_demand()
+		return true
+	_controller_interrupted("Mando fuera del rango mecánico")
+	return false
+
+
+func _manual_controls() -> void:
+	if controller.enabled:
+		controller.disable()
+		_refresh_controller_state("Panel manual · mando desactivado")
 
 
 func _build_elastic_controls(column: VBoxContainer) -> void:
@@ -365,6 +457,8 @@ func _label(parent: Node, text_value: String, size: int, color: Color) -> Label:
 
 
 func _process(delta: float) -> void:
+	if rig != null:
+		_sample_controller(delta, paused)
 	if rig == null or paused or (not motion.needs_advance() and not flex.needs_advance()):
 		return
 	_advance(delta)
@@ -400,6 +494,7 @@ func _advance(delta: float) -> void:
 func _control_changed(value: float, index: int) -> void:
 	if _busy:
 		return
+	_manual_controls()
 	var values := motion.demand.duplicate()
 	values[index] = value
 	motion.set_controls(values)
@@ -471,6 +566,9 @@ func _toggle_pause() -> void:
 
 func _step() -> void:
 	if paused:
+		var had_controller: bool = controller.enabled
+		if not _sample_controller(1.0 / 60.0, false) and had_controller:
+			return
 		motion.set_smooth(_smooth_toggle.button_pressed)
 		_advance(1.0 / 60.0)
 
@@ -492,6 +590,7 @@ func _apply_pose() -> bool:
 
 
 func _preset(choice: String) -> void:
+	_manual_controls()
 	var values := PackedFloat64Array([0, 0, 0, 0, phase])
 	match choice:
 		"+Colectivo": values[0] = 10
@@ -601,6 +700,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _input(event: InputEvent) -> void:
+	if event is InputEventJoypadMotion or event is InputEventJoypadButton:
+		controller.handle_event(event)
+		# Flight axes and radio switches must not activate whichever GUI control has focus.
+		get_viewport().set_input_as_handled()
+		return
 	# P always pauses. Space remains the normal activation key for focused buttons.
 	if rig != null and event is InputEventKey and event.pressed and not event.echo:
 		if event.physical_keycode == KEY_P:

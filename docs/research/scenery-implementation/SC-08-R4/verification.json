@@ -1,0 +1,54 @@
+{
+  "step": "SC-08-R4",
+  "date": "2026-10-16",
+  "complete": true,
+  "godot": "4.7.2.stable",
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "renderer": "gl_compatibility",
+  "tests": {
+    "scenery_build": {
+      "checks": 126,
+      "passed": true
+    },
+    "scenery_destruction": {
+      "checks": 78,
+      "passed": true
+    },
+    "field_projected_shadows": {
+      "checks": 57,
+      "passed": true
+    }
+  },
+  "views": {
+    "front": {
+      "draws_before": 23,
+      "draws_after": 23,
+      "matched_camera": true
+    },
+    "detail": {
+      "draws_before": 22,
+      "draws_after": 22,
+      "matched_camera": true
+    },
+    "rear": {
+      "draws_before": 131,
+      "draws_after": 131,
+      "matched_camera": true
+    },
+    "context": {
+      "draws_before": 47,
+      "draws_after": 47,
+      "matched_camera": true
+    }
+  },
+  "scenery_triangles": 647131,
+  "sources_sha256": {
+    "app/scenery/pit_chair.gd": "9400ac33839945aa97bb737dd3789400eb75da69d03edf4e3023507bfab224fc",
+    "app/scenery/prefabs.gd": "ec73d2ebe780e77decb02c5ec857e73f6fd2334d8dfe1900eba8a7985873f227",
+    "app/scenery/mesh_kit.gd": "ca1d755d09fe8c3a1526339aeca4024e308d21fdc4e9c2e4a857b9051c7139dc",
+    "tools/ground/capture_pit_chairs.gd": "c2b9089797fc4ad2345796d3290c588acfd3fe70551c5768934ee3b131debe87",
+    "app/assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg": "e4d03bf5210d01b4b21a846b0256b5d322104094688a7f2f7babb84e8140a20a",
+    "app/assets/landscape/windsock/PROVENANCE.json": "ca8664515567b7ca0a87a9a1ea47e7f2216552f2b70a2bc97d913235fe72e312"
+  },
+  "scope": "Matched native field captures and focused scenery regressions. Rear view is partly occluded by the existing table. Reuses CC0 Fabric001 as filtered vertex colours. No placement, physics or new draw nodes. No target frame-time acceptance."
+}

@@ -1,0 +1,655 @@
+{
+  "format": "openrc-ground-closeup-timing-aggregate-v1",
+  "created_utc": "2026-10-16T15:50:07.296712+00:00",
+  "decision": "inconclusive",
+  "scope": "native offscreen render-loop timing of the production Bisonte ground scene; render-only and not physical validation",
+  "hardware_context": {
+    "godot": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org",
+    "renderer": "OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090"
+  },
+  "configuration": {
+    "resolution": [
+      1280,
+      720
+    ],
+    "vehicles": [
+      "mt8-bisonte"
+    ],
+    "cases": [
+      "mt8-bisonte__start__chase__day",
+      "mt8-bisonte__track_start__chase__day"
+    ],
+    "camera": "chase",
+    "lighting": "day",
+    "measured_frames_per_case": 240,
+    "warmup_frames_per_case": 120,
+    "preconditioning_ticks": 0,
+    "pair_count_run": 5,
+    "run_order": "alternating baseline-first and candidate-first"
+  },
+  "source_integrity": {
+    "harness_SOURCE_FILES_count": 23,
+    "all_run_sources_stable_within_each_run": true,
+    "same_harness_source_hashes_across_all_runs": true,
+    "source_fingerprint_sha256": "68ce1cc0c060d87af2fcca18ec443fa1f757a7b0415775664443477c2e64a2ec",
+    "unhashed_shared_tree_context": [
+      {
+        "path": "app/scenery/prefabs.gd",
+        "included_in_harness_SOURCE_FILES": false,
+        "mtime_utc_at_aggregate": "2026-10-16T15:40:39.216719+00:00",
+        "sha256_at_aggregate": "ec73d2ebe780e77decb02c5ec857e73f6fd2334d8dfe1900eba8a7985873f227"
+      },
+      {
+        "path": "app/scenery/pit_chair.gd",
+        "included_in_harness_SOURCE_FILES": false,
+        "mtime_utc_at_aggregate": "2026-10-16T15:42:08.785977+00:00",
+        "sha256_at_aggregate": "9400ac33839945aa97bb737dd3789400eb75da69d03edf4e3023507bfab224fc"
+      },
+      {
+        "path": "tools/ground/capture_pit_chairs.gd",
+        "included_in_harness_SOURCE_FILES": false,
+        "mtime_utc_at_aggregate": "2026-10-16T15:37:21.059836+00:00",
+        "sha256_at_aggregate": "c2b9089797fc4ad2345796d3290c588acfd3fe70551c5768934ee3b131debe87"
+      }
+    ],
+    "interference_note": "Other shared-tree scenery files changed during the timing sequence. They are outside the harness SOURCE_FILES list, so their historical contents were not captured in each run manifest. Within-pair mesh geometry and draw-call arrays were checked; pair2 failed draw-call equality and was rejected."
+  },
+  "superseded_timing_directories": {
+    "excluded": [
+      "ground-closeup-timing-final3-pair1-baseline/candidate",
+      "ground-closeup-timing-final3-pair2-baseline/candidate"
+    ],
+    "reason": "their recorded app/vehicles/ground/ground_scene.gd source hash differs from the current source; pair2 baseline is also incomplete"
+  },
+  "pairs": [
+    {
+      "pair_id": 1,
+      "run_order": "baseline_then_candidate",
+      "baseline_directory": "docs/research/rc-ground-implementation-2026-10-15/verification/ground-closeup-timing-final3-material-pair1-baseline",
+      "candidate_directory": "docs/research/rc-ground-implementation-2026-10-15/verification/ground-closeup-timing-final3-material-pair1-candidate",
+      "baseline_created_utc": "2026-10-16T15:41:36.067269+00:00",
+      "candidate_created_utc": "2026-10-16T15:41:50.752596+00:00",
+      "baseline_render_success": true,
+      "candidate_render_success": true,
+      "source_hashes_stable_during_each_run": true,
+      "same_source_hashes_across_pair": true,
+      "physical_and_geometry_parity_all": true,
+      "draw_call_arrays_equal_all": true,
+      "accepted_for_descriptive_summary": true,
+      "rejection_reason": null,
+      "cases": [
+        {
+          "case_id": "mt8-bisonte__start__chase__day",
+          "baseline_complete": true,
+          "candidate_complete": true,
+          "baseline_timing_samples": 240,
+          "candidate_timing_samples": 240,
+          "baseline_p50_ms": 3.566,
+          "candidate_p50_ms": 3.6609999999999996,
+          "paired_p50_delta_ms": 0.09499999999999975,
+          "paired_p50_delta_percent": 2.6640493550196265,
+          "baseline_p95_ms": 4.4430499999999995,
+          "candidate_p95_ms": 4.6846,
+          "paired_p95_delta_ms": 0.24155000000000015,
+          "paired_p95_delta_percent": 5.436580727203166,
+          "baseline_draw_call_p50": 431.0,
+          "candidate_draw_call_p50": 431.0,
+          "draw_call_sample_arrays_equal": true,
+          "baseline_mesh_geometry_sha256": "49c88859fdb92427fcb679cece7a4cb62b5a1b093f299c58573fae259fdc9c56",
+          "candidate_mesh_geometry_sha256": "49c88859fdb92427fcb679cece7a4cb62b5a1b093f299c58573fae259fdc9c56",
+          "mesh_geometry_equal": true,
+          "baseline_state_unchanged_during_render": true,
+          "candidate_state_unchanged_during_render": true,
+          "state_exact": true,
+          "model_exact": true,
+          "identities_exact": true,
+          "solver_identity_exact": true,
+          "parity_mesh_geometry_exact": true,
+          "baseline_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 1,
+            "track_surface_slots": 0,
+            "legacy_track_slots": 1,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          },
+          "candidate_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 2,
+            "track_surface_slots": 1,
+            "legacy_track_slots": 0,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          }
+        },
+        {
+          "case_id": "mt8-bisonte__track_start__chase__day",
+          "baseline_complete": true,
+          "candidate_complete": true,
+          "baseline_timing_samples": 240,
+          "candidate_timing_samples": 240,
+          "baseline_p50_ms": 3.0380000000000003,
+          "candidate_p50_ms": 2.9314999999999998,
+          "paired_p50_delta_ms": -0.10650000000000048,
+          "paired_p50_delta_percent": -3.5055957867017984,
+          "baseline_p95_ms": 3.8084,
+          "candidate_p95_ms": 3.7122499999999996,
+          "paired_p95_delta_ms": -0.09615000000000018,
+          "paired_p95_delta_percent": -2.524682281272983,
+          "baseline_draw_call_p50": 420.0,
+          "candidate_draw_call_p50": 420.0,
+          "draw_call_sample_arrays_equal": true,
+          "baseline_mesh_geometry_sha256": "49c88859fdb92427fcb679cece7a4cb62b5a1b093f299c58573fae259fdc9c56",
+          "candidate_mesh_geometry_sha256": "49c88859fdb92427fcb679cece7a4cb62b5a1b093f299c58573fae259fdc9c56",
+          "mesh_geometry_equal": true,
+          "baseline_state_unchanged_during_render": true,
+          "candidate_state_unchanged_during_render": true,
+          "state_exact": true,
+          "model_exact": true,
+          "identities_exact": true,
+          "solver_identity_exact": true,
+          "parity_mesh_geometry_exact": true,
+          "baseline_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 1,
+            "track_surface_slots": 0,
+            "legacy_track_slots": 1,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          },
+          "candidate_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 2,
+            "track_surface_slots": 1,
+            "legacy_track_slots": 0,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          }
+        }
+      ]
+    },
+    {
+      "pair_id": 2,
+      "run_order": "candidate_then_baseline",
+      "baseline_directory": "docs/research/rc-ground-implementation-2026-10-15/verification/ground-closeup-timing-final3-material-pair2-baseline",
+      "candidate_directory": "docs/research/rc-ground-implementation-2026-10-15/verification/ground-closeup-timing-final3-material-pair2-candidate",
+      "baseline_created_utc": "2026-10-16T15:42:41.706961+00:00",
+      "candidate_created_utc": "2026-10-16T15:42:14.026828+00:00",
+      "baseline_render_success": true,
+      "candidate_render_success": true,
+      "source_hashes_stable_during_each_run": true,
+      "same_source_hashes_across_pair": true,
+      "physical_and_geometry_parity_all": true,
+      "draw_call_arrays_equal_all": false,
+      "accepted_for_descriptive_summary": false,
+      "rejection_reason": "Bisonte start candidate had 432 draw calls in all 240 samples while its baseline had 431; per-frame draw-call arrays differ.",
+      "cases": [
+        {
+          "case_id": "mt8-bisonte__start__chase__day",
+          "baseline_complete": true,
+          "candidate_complete": true,
+          "baseline_timing_samples": 240,
+          "candidate_timing_samples": 240,
+          "baseline_p50_ms": 3.7925,
+          "candidate_p50_ms": 3.607,
+          "paired_p50_delta_ms": -0.18549999999999978,
+          "paired_p50_delta_percent": -4.891232696110737,
+          "baseline_p95_ms": 5.293849999999998,
+          "candidate_p95_ms": 5.004199999999998,
+          "paired_p95_delta_ms": -0.28964999999999996,
+          "paired_p95_delta_percent": -5.4714432785213045,
+          "baseline_draw_call_p50": 431.0,
+          "candidate_draw_call_p50": 432.0,
+          "draw_call_sample_arrays_equal": false,
+          "baseline_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "candidate_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "mesh_geometry_equal": true,
+          "baseline_state_unchanged_during_render": true,
+          "candidate_state_unchanged_during_render": true,
+          "state_exact": true,
+          "model_exact": true,
+          "identities_exact": true,
+          "solver_identity_exact": true,
+          "parity_mesh_geometry_exact": true,
+          "baseline_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 1,
+            "track_surface_slots": 0,
+            "legacy_track_slots": 1,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          },
+          "candidate_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 2,
+            "track_surface_slots": 1,
+            "legacy_track_slots": 0,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          }
+        },
+        {
+          "case_id": "mt8-bisonte__track_start__chase__day",
+          "baseline_complete": true,
+          "candidate_complete": true,
+          "baseline_timing_samples": 240,
+          "candidate_timing_samples": 240,
+          "baseline_p50_ms": 3.1695,
+          "candidate_p50_ms": 3.457,
+          "paired_p50_delta_ms": 0.28749999999999964,
+          "paired_p50_delta_percent": 9.070831361413468,
+          "baseline_p95_ms": 3.9372,
+          "candidate_p95_ms": 4.132449999999998,
+          "paired_p95_delta_ms": 0.19524999999999793,
+          "paired_p95_delta_percent": 4.959107995529766,
+          "baseline_draw_call_p50": 420.0,
+          "candidate_draw_call_p50": 420.0,
+          "draw_call_sample_arrays_equal": true,
+          "baseline_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "candidate_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "mesh_geometry_equal": true,
+          "baseline_state_unchanged_during_render": true,
+          "candidate_state_unchanged_during_render": true,
+          "state_exact": true,
+          "model_exact": true,
+          "identities_exact": true,
+          "solver_identity_exact": true,
+          "parity_mesh_geometry_exact": true,
+          "baseline_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 1,
+            "track_surface_slots": 0,
+            "legacy_track_slots": 1,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          },
+          "candidate_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 2,
+            "track_surface_slots": 1,
+            "legacy_track_slots": 0,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          }
+        }
+      ]
+    },
+    {
+      "pair_id": 3,
+      "run_order": "baseline_then_candidate",
+      "baseline_directory": "docs/research/rc-ground-implementation-2026-10-15/verification/ground-closeup-timing-final3-material-pair3-baseline",
+      "candidate_directory": "docs/research/rc-ground-implementation-2026-10-15/verification/ground-closeup-timing-final3-material-pair3-candidate",
+      "baseline_created_utc": "2026-10-16T15:43:11.177165+00:00",
+      "candidate_created_utc": "2026-10-16T15:43:26.139646+00:00",
+      "baseline_render_success": true,
+      "candidate_render_success": true,
+      "source_hashes_stable_during_each_run": true,
+      "same_source_hashes_across_pair": true,
+      "physical_and_geometry_parity_all": true,
+      "draw_call_arrays_equal_all": true,
+      "accepted_for_descriptive_summary": true,
+      "rejection_reason": null,
+      "cases": [
+        {
+          "case_id": "mt8-bisonte__start__chase__day",
+          "baseline_complete": true,
+          "candidate_complete": true,
+          "baseline_timing_samples": 240,
+          "candidate_timing_samples": 240,
+          "baseline_p50_ms": 3.4290000000000003,
+          "candidate_p50_ms": 3.178,
+          "paired_p50_delta_ms": -0.25100000000000033,
+          "paired_p50_delta_percent": -7.319918343540399,
+          "baseline_p95_ms": 5.309049999999996,
+          "candidate_p95_ms": 4.2626,
+          "paired_p95_delta_ms": -1.0464499999999957,
+          "paired_p95_delta_percent": -19.710682702178296,
+          "baseline_draw_call_p50": 431.0,
+          "candidate_draw_call_p50": 431.0,
+          "draw_call_sample_arrays_equal": true,
+          "baseline_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "candidate_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "mesh_geometry_equal": true,
+          "baseline_state_unchanged_during_render": true,
+          "candidate_state_unchanged_during_render": true,
+          "state_exact": true,
+          "model_exact": true,
+          "identities_exact": true,
+          "solver_identity_exact": true,
+          "parity_mesh_geometry_exact": true,
+          "baseline_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 1,
+            "track_surface_slots": 0,
+            "legacy_track_slots": 1,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          },
+          "candidate_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 2,
+            "track_surface_slots": 1,
+            "legacy_track_slots": 0,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          }
+        },
+        {
+          "case_id": "mt8-bisonte__track_start__chase__day",
+          "baseline_complete": true,
+          "candidate_complete": true,
+          "baseline_timing_samples": 240,
+          "candidate_timing_samples": 240,
+          "baseline_p50_ms": 3.1435,
+          "candidate_p50_ms": 3.31,
+          "paired_p50_delta_ms": 0.1665000000000001,
+          "paired_p50_delta_percent": 5.296643868299666,
+          "baseline_p95_ms": 4.3764,
+          "candidate_p95_ms": 4.2921,
+          "paired_p95_delta_ms": -0.08430000000000071,
+          "paired_p95_delta_percent": -1.9262407458184971,
+          "baseline_draw_call_p50": 420.0,
+          "candidate_draw_call_p50": 420.0,
+          "draw_call_sample_arrays_equal": true,
+          "baseline_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "candidate_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "mesh_geometry_equal": true,
+          "baseline_state_unchanged_during_render": true,
+          "candidate_state_unchanged_during_render": true,
+          "state_exact": true,
+          "model_exact": true,
+          "identities_exact": true,
+          "solver_identity_exact": true,
+          "parity_mesh_geometry_exact": true,
+          "baseline_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 1,
+            "track_surface_slots": 0,
+            "legacy_track_slots": 1,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          },
+          "candidate_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 2,
+            "track_surface_slots": 1,
+            "legacy_track_slots": 0,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          }
+        }
+      ]
+    },
+    {
+      "pair_id": 4,
+      "run_order": "candidate_then_baseline",
+      "baseline_directory": "docs/research/rc-ground-implementation-2026-10-15/verification/ground-closeup-timing-final3-material-pair4-baseline",
+      "candidate_directory": "docs/research/rc-ground-implementation-2026-10-15/verification/ground-closeup-timing-final3-material-pair4-candidate",
+      "baseline_created_utc": "2026-10-16T15:44:09.053700+00:00",
+      "candidate_created_utc": "2026-10-16T15:43:41.706722+00:00",
+      "baseline_render_success": true,
+      "candidate_render_success": true,
+      "source_hashes_stable_during_each_run": true,
+      "same_source_hashes_across_pair": true,
+      "physical_and_geometry_parity_all": true,
+      "draw_call_arrays_equal_all": true,
+      "accepted_for_descriptive_summary": true,
+      "rejection_reason": null,
+      "cases": [
+        {
+          "case_id": "mt8-bisonte__start__chase__day",
+          "baseline_complete": true,
+          "candidate_complete": true,
+          "baseline_timing_samples": 240,
+          "candidate_timing_samples": 240,
+          "baseline_p50_ms": 3.1559999999999997,
+          "candidate_p50_ms": 3.359,
+          "paired_p50_delta_ms": 0.2030000000000003,
+          "paired_p50_delta_percent": 6.432192648922697,
+          "baseline_p95_ms": 4.1419999999999995,
+          "candidate_p95_ms": 4.91645,
+          "paired_p95_delta_ms": 0.7744500000000007,
+          "paired_p95_delta_percent": 18.697489135683277,
+          "baseline_draw_call_p50": 431.0,
+          "candidate_draw_call_p50": 431.0,
+          "draw_call_sample_arrays_equal": true,
+          "baseline_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "candidate_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "mesh_geometry_equal": true,
+          "baseline_state_unchanged_during_render": true,
+          "candidate_state_unchanged_during_render": true,
+          "state_exact": true,
+          "model_exact": true,
+          "identities_exact": true,
+          "solver_identity_exact": true,
+          "parity_mesh_geometry_exact": true,
+          "baseline_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 1,
+            "track_surface_slots": 0,
+            "legacy_track_slots": 1,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          },
+          "candidate_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 2,
+            "track_surface_slots": 1,
+            "legacy_track_slots": 0,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          }
+        },
+        {
+          "case_id": "mt8-bisonte__track_start__chase__day",
+          "baseline_complete": true,
+          "candidate_complete": true,
+          "baseline_timing_samples": 240,
+          "candidate_timing_samples": 240,
+          "baseline_p50_ms": 2.6035000000000004,
+          "candidate_p50_ms": 2.8425000000000002,
+          "paired_p50_delta_ms": 0.23899999999999988,
+          "paired_p50_delta_percent": 9.179950067217192,
+          "baseline_p95_ms": 3.006,
+          "candidate_p95_ms": 3.43205,
+          "paired_p95_delta_ms": 0.42605000000000004,
+          "paired_p95_delta_percent": 14.173320026613446,
+          "baseline_draw_call_p50": 420.0,
+          "candidate_draw_call_p50": 420.0,
+          "draw_call_sample_arrays_equal": true,
+          "baseline_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "candidate_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "mesh_geometry_equal": true,
+          "baseline_state_unchanged_during_render": true,
+          "candidate_state_unchanged_during_render": true,
+          "state_exact": true,
+          "model_exact": true,
+          "identities_exact": true,
+          "solver_identity_exact": true,
+          "parity_mesh_geometry_exact": true,
+          "baseline_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 1,
+            "track_surface_slots": 0,
+            "legacy_track_slots": 1,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          },
+          "candidate_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 2,
+            "track_surface_slots": 1,
+            "legacy_track_slots": 0,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          }
+        }
+      ]
+    },
+    {
+      "pair_id": 5,
+      "run_order": "baseline_then_candidate",
+      "baseline_directory": "docs/research/rc-ground-implementation-2026-10-15/verification/ground-closeup-timing-final3-material-pair5-baseline",
+      "candidate_directory": "docs/research/rc-ground-implementation-2026-10-15/verification/ground-closeup-timing-final3-material-pair5-candidate",
+      "baseline_created_utc": "2026-10-16T15:44:29.325321+00:00",
+      "candidate_created_utc": "2026-10-16T15:44:43.375944+00:00",
+      "baseline_render_success": true,
+      "candidate_render_success": true,
+      "source_hashes_stable_during_each_run": true,
+      "same_source_hashes_across_pair": true,
+      "physical_and_geometry_parity_all": true,
+      "draw_call_arrays_equal_all": true,
+      "accepted_for_descriptive_summary": true,
+      "rejection_reason": null,
+      "cases": [
+        {
+          "case_id": "mt8-bisonte__start__chase__day",
+          "baseline_complete": true,
+          "candidate_complete": true,
+          "baseline_timing_samples": 240,
+          "candidate_timing_samples": 240,
+          "baseline_p50_ms": 3.086,
+          "candidate_p50_ms": 3.6135,
+          "paired_p50_delta_ms": 0.5275000000000003,
+          "paired_p50_delta_percent": 17.09332469215814,
+          "baseline_p95_ms": 4.640799999999998,
+          "candidate_p95_ms": 4.658149999999999,
+          "paired_p95_delta_ms": 0.01735000000000131,
+          "paired_p95_delta_percent": 0.3738579555249366,
+          "baseline_draw_call_p50": 431.0,
+          "candidate_draw_call_p50": 431.0,
+          "draw_call_sample_arrays_equal": true,
+          "baseline_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "candidate_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "mesh_geometry_equal": true,
+          "baseline_state_unchanged_during_render": true,
+          "candidate_state_unchanged_during_render": true,
+          "state_exact": true,
+          "model_exact": true,
+          "identities_exact": true,
+          "solver_identity_exact": true,
+          "parity_mesh_geometry_exact": true,
+          "baseline_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 1,
+            "track_surface_slots": 0,
+            "legacy_track_slots": 1,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          },
+          "candidate_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 2,
+            "track_surface_slots": 1,
+            "legacy_track_slots": 0,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          }
+        },
+        {
+          "case_id": "mt8-bisonte__track_start__chase__day",
+          "baseline_complete": true,
+          "candidate_complete": true,
+          "baseline_timing_samples": 240,
+          "candidate_timing_samples": 240,
+          "baseline_p50_ms": 2.6525,
+          "candidate_p50_ms": 2.949,
+          "paired_p50_delta_ms": 0.2965,
+          "paired_p50_delta_percent": 11.178133836003767,
+          "baseline_p95_ms": 3.1811999999999996,
+          "candidate_p95_ms": 3.5820999999999996,
+          "paired_p95_delta_ms": 0.40090000000000003,
+          "paired_p95_delta_percent": 12.602162705897157,
+          "baseline_draw_call_p50": 420.0,
+          "candidate_draw_call_p50": 420.0,
+          "draw_call_sample_arrays_equal": true,
+          "baseline_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "candidate_mesh_geometry_sha256": "efbe915da99e0596e71de469f24db571c94923f01d83e7684e12545ca5f8cb10",
+          "mesh_geometry_equal": true,
+          "baseline_state_unchanged_during_render": true,
+          "candidate_state_unchanged_during_render": true,
+          "state_exact": true,
+          "model_exact": true,
+          "identities_exact": true,
+          "solver_identity_exact": true,
+          "parity_mesh_geometry_exact": true,
+          "baseline_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 1,
+            "track_surface_slots": 0,
+            "legacy_track_slots": 1,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          },
+          "candidate_variant_setup": {
+            "ok": true,
+            "ground_shader_slots": 2,
+            "track_surface_slots": 1,
+            "legacy_track_slots": 0,
+            "effective_mismatch_slots": 0,
+            "legacy_track_mismatch_slots": 0
+          }
+        }
+      ]
+    }
+  ],
+  "rejected_pairs": [
+    2
+  ],
+  "accepted_for_descriptive_summary": [
+    1,
+    3,
+    4,
+    5
+  ],
+  "aggregate_paired_deltas": [
+    {
+      "case_id": "mt8-bisonte__start__chase__day",
+      "accepted_pair_ids": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "accepted_pair_count": 4,
+      "p50_delta_percent_median": 4.548121001971161,
+      "p50_delta_percent_range": [
+        -7.319918343540399,
+        17.09332469215814
+      ],
+      "p95_delta_percent_median": 2.9052193413640515,
+      "p95_delta_percent_range": [
+        -19.710682702178296,
+        18.697489135683277
+      ],
+      "interpretation": "descriptive paired runs; the spread crosses zero and is too noisy for a performance pass"
+    },
+    {
+      "case_id": "mt8-bisonte__track_start__chase__day",
+      "accepted_pair_ids": [
+        1,
+        3,
+        4,
+        5
+      ],
+      "accepted_pair_count": 4,
+      "p50_delta_percent_median": 7.238296967758429,
+      "p50_delta_percent_range": [
+        -3.5055957867017984,
+        11.178133836003767
+      ],
+      "p95_delta_percent_median": 5.33796098003933,
+      "p95_delta_percent_range": [
+        -2.524682281272983,
+        14.173320026613446
+      ],
+      "interpretation": "descriptive paired runs; the spread crosses zero and is too noisy for a performance pass"
+    }
+  ],
+  "limitations": [
+    "Pair2 was rejected after a persistent one-draw-call difference in the Bisonte start case; no sixth pair was run.",
+    "The four remaining pairs have broad P50/P95 variation, with both metric ranges crossing zero; treat the medians as noisy descriptive evidence only.",
+    "Measurements cover paused render-loop frame intervals on one RTX 3090/OpenGL Compatibility host. They do not qualify full gameplay cost, other GPUs, or physical realism.",
+    "The harness SOURCE_FILES list does not include the concurrently changed scenery files shown above."
+  ]
+}

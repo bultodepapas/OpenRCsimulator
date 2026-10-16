@@ -1,0 +1,6 @@
+{
+  "ffmpeg": null,
+  "encoded": [],
+  "unencoded_sequences": [],
+  "note": "ffmpeg not found; bounded PNG pan sequences are retained."
+}

@@ -1,0 +1,984 @@
+{
+	"device": {
+		"ambiguous": false,
+		"backend": "SDL3",
+		"connected": true,
+		"generation": 1,
+		"guid": "0300fa675e040000ff02000000007801",
+		"id": 0,
+		"kind": "gamepad",
+		"known": true,
+		"name": "XInput Controller",
+		"platform": "Windows",
+		"product_id": 767,
+		"profile_id": "",
+		"raw_name": "Xbox One Controller",
+		"serial_number": "",
+		"transport": "",
+		"vendor_id": 1118
+	},
+	"preset": "mode2",
+	"samples": [
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0317845344543457,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0323643684387207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0328526496887207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0318760871887207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0324559211730957,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0325779914855957,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0326390266418457,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0321202278137207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0326695442199707,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0323643684387207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0324559211730957,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0326085090637207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0323643684387207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0326085090637207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0330357551574707,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0323643684387207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0328221321105957,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0321202278137207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0320286750793457,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0320897102355957,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0324559211730957,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0320286750793457,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0328831672668457,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0326085090637207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0330357551574707,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0323948860168457,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0327000617980957,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0324864387512207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0328526496887207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0324559211730957,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0323948860168457,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0324559211730957,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0316014289855957,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0323643684387207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0327000617980957,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0328831672668457,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0326390266418457,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0328526496887207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0326085090637207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		},
+		{
+			"enabled": true,
+			"focused": true,
+			"pose_deg": [
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"raw_axes": [
+				0.0,
+				0.0329747200012207,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0,
+				0.0
+			],
+			"ready": true,
+			"status": "Mando activo; colectivo 0.0°."
+		}
+	],
+	"throttle_mode": "stick_rate"
+}

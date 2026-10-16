@@ -1,0 +1,7 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok advanced HX-700 admitted
+ok mechanical adapter configures neutral
+FAIL independent oracle bytes match the reviewed snapshot
+Missing or changed independent motion oracle: C:\DEVELOPMENT\OpenRCsimulator\.tools\heli26a-controller-final\changed-oracle.json
+3 checks, 1 failed; oracle admission rejected

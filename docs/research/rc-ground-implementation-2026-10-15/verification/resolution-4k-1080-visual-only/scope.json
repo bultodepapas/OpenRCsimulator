@@ -1,0 +1,5 @@
+{
+  "scope": "Visual-only original 4K maps; uncompressed ImageTexture with generated mips. Not a GPU cost comparison.",
+  "reference_2k": "../resolution-2k-reference",
+  "script_sha256": "211bca29aa21dcce9d0a5863dbe57aa76157fb20e6b2be51e3c13ebdb8a94123"
+}

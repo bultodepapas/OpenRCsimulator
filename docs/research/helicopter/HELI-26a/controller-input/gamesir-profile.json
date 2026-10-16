@@ -1,0 +1,73 @@
+{
+	"channels": {
+		"pitch": {
+			"axis": 3,
+			"center": 0.0,
+			"deadzone": 0.08,
+			"expo": 0.3,
+			"invert": false,
+			"max": 1.0,
+			"min": -1.0,
+			"range_kind": "centered"
+		},
+		"roll": {
+			"axis": 2,
+			"center": 0.0,
+			"deadzone": 0.08,
+			"expo": 0.3,
+			"invert": false,
+			"max": 1.0,
+			"min": -1.0,
+			"range_kind": "centered"
+		},
+		"throttle": {
+			"axis": 1,
+			"center": 0.0,
+			"deadzone": 0.08,
+			"expo": 0.3,
+			"invert": true,
+			"max": 1.0,
+			"min": -1.0,
+			"range_kind": "centered"
+		},
+		"yaw": {
+			"axis": 0,
+			"center": 0.0,
+			"deadzone": 0.08,
+			"expo": 0.3,
+			"invert": false,
+			"max": 1.0,
+			"min": -1.0,
+			"range_kind": "centered"
+		}
+	},
+	"device_name": "XInput Controller",
+	"focused": false,
+	"known": true,
+	"normalized_sticks": {
+		"pitch": 0.0,
+		"roll": 0.0,
+		"throttle": 0.0,
+		"yaw": 0.0
+	},
+	"preset": "mode2",
+	"profile_available": true,
+	"profile_kind": "gamepad",
+	"raw_axes": [
+		0.0,
+		0.0329747200012207,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0,
+		0.0
+	],
+	"raw_name": "Xbox One Controller",
+	"ready": false,
+	"selected_connection": 0,
+	"store_ok": true,
+	"throttle_mode": "stick_rate"
+}

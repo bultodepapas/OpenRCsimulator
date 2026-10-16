@@ -1,0 +1,13 @@
+# Aircraft receiver price intake
+
+Observed 2026-10-16. Three direct USD receiver offers were recorded from current manufacturer-store or direct-seller pages. They are unallocated price references: no offer establishes the installed receiver, a fleet transmitter protocol match, or aircraft fit. Full offer and duplicate-check details are in [`intake-radio-20261016.json`](../../../../research/crash-economics/intake-radio-20261016.json).
+
+| Receiver offer | Protocol and channels | Supply voltage | Listed package | USD and stock |
+| --- | --- | --- | --- | --- |
+| Spektrum AR620, SPMAR620 | 2.4 GHz DSMX; DSM2-compatible; 6 servo outputs (port 1 also carries DATA) | 3.5-9 V | 1 listed receiver; Horizon does not enumerate included accessories | $37.99; in stock at Horizon Hobby |
+| Futaba R3006SB, 01102306-1 | T-FHSS Air telemetry; 6 channels plus S.Bus2 | Rated 4.8-7.4 V; operating 4.0-8.4 V | 1 listed receiver; FutabaUSA does not enumerate box contents | $65.99; in stock at FutabaUSA |
+| RadioMaster ER6G, HP0157.RX-ER6-G | 2.4 GHz ExpressLRS 3.3.0; 6 PWM outputs | DC 3.5-8.4 V | Receiver, Type-A voltage telemetry wire, two heat-shrink tubes, user card | $29.99; ER6G available at RadioMaster |
+
+The direct seller pages establish price and availability for [Spektrum AR620](https://www.horizonhobby.com/product/spektrum-ar620-dsmx-6-channel-sport-receiver/SPMAR620.html), [Futaba R3006SB](https://futabausa.com/product/r3006sb/), and [RadioMaster ER6G](https://radiomasterrc.com/products/er6g-er6gv-2-4ghz-elrs-pwm-receiver). Spektrum's [manufacturer specifications](https://my.spektrumrc.com/Products/Default.aspx?ProdId=SPMAR620) and [manual](https://www.spektrumrc.com/ProdInfo/Files/SPMAR620-Manual-EN.pdf) specify DSM2/DSMX, six channels, 3.5-9 V, and six servo ports. Futaba's [manufacturer listing](https://futabausa.com/product/r3006sb/) states the SKU, T-FHSS/S.Bus2, six channels, rated voltage, and operating voltage. RadioMaster's [manufacturer page](https://radiomasterrc.com/products/er6g-er6gv-2-4ghz-elrs-pwm-receiver) states the selected ER6G SKU, price, availability, protocol, PWM count, voltage, and box contents.
+
+Existing component and fleet price files were checked before capture. They already contain Spektrum SPM-1033 and SPM-1032, Futaba 01102381-1, FrSky 03020110, and RadioMaster HP0157.RX-ER8; none of the three SKUs above is a duplicate. The three observations are now included in the generated catalog as separate, unallocated options; [CR-38b](../CR-38b/README.md) records the revision. Do not infer that an aircraft uses any listed brand or protocol, or sum a receiver offer with an aircraft package that may include a receiver.

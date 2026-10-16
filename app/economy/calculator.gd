@@ -247,6 +247,8 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 				_append_one(unresolved, "%s: condition is unknown" % component_id)
 				high_possible = false
 				calculation_complete = false
+			if decision.get("disposition") in ["inspect", "unknown"] and decision.get("salvage_eligible", true):
+				salvage_complete = false
 
 			var gross_result: Dictionary = _multiply_minor(price, component_quantity) if price != null else {"ok": false, "value": 0}
 			var low_result: Dictionary = _multiply_minor(low_price, component_quantity) if low_price != null else {"ok": false, "value": 0}

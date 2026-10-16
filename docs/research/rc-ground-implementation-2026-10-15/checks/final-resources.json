@@ -1,0 +1,52 @@
+[
+  {
+    "name": "asset-probe",
+    "exit_code": 0,
+    "seconds": 0.2649999999557622,
+    "errors": []
+  },
+  {
+    "name": "resolution-4k",
+    "exit_code": 0,
+    "seconds": 12.40600000001723,
+    "errors": []
+  },
+  {
+    "name": "windows-pack-export",
+    "exit_code": 0,
+    "seconds": 7.48499999998603,
+    "errors": []
+  },
+  {
+    "name": "packed-asset-probe",
+    "exit_code": 0,
+    "seconds": 0.28100000001722947,
+    "errors": [
+      "ERROR: Condition \"!FileAccess::exists(path)\" is true. Returning: ERR_FILE_NOT_FOUND",
+      "ERROR: GDExtension dynamic library not found: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'.",
+      "ERROR: Error loading extension: 'res://native/ground_vehicle/openrc_ground_vehicle.gdextension'."
+    ]
+  },
+  {
+    "name": "resolution-4k-1080",
+    "exit_code": 0,
+    "seconds": 16.26600000000326,
+    "errors": []
+  },
+  {
+    "name": "material-current",
+    "exit_code": 0,
+    "seconds": 10.578000000037719,
+    "errors": []
+  },
+  {
+    "name": "windows-executable-export",
+    "exit_code": 1,
+    "seconds": 6.561999999976251,
+    "errors": [
+      "ERROR: Failed to open ''.",
+      "ERROR: Prepare Template: Failed to copy export template.",
+      "ERROR: Project export for preset \"Windows\" failed."
+    ]
+  }
+]

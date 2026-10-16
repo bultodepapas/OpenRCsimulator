@@ -1,0 +1,5 @@
+{
+  "scope": "Visual-only original 4K sources; uncompressed ImageTexture with generated mips. This is not a fair GPU cost comparison against 2K compressed imports.",
+  "script_sha256": "211bca29aa21dcce9d0a5863dbe57aa76157fb20e6b2be51e3c13ebdb8a94123",
+  "reference_2k": "../ground-closeup-final3-candidate-720"
+}

@@ -82,6 +82,19 @@ class PriceAuditTests(unittest.TestCase):
         self.assertEqual(offer["uses"], [])
         self.assertIn("not a live stock", audit_prices.render_markdown(result))
 
+    def test_sale_quotes_require_recheck_even_inside_the_age_window(self):
+        document, context = copy.deepcopy(self.document), copy.deepcopy(self.context)
+        document["offers"][0]["price_kind"] = "live_us_retailer_sale_price"
+        result = audit_prices.build_audit(document, context, "2026-10-16")
+        row = next(row for row in result["observations"] if row["offer_id"] == document["offers"][0]["id"])
+        self.assertTrue(row["sale_recheck_required"])
+        self.assertEqual(row["review_status"], "within_review_window")
+        self.assertEqual(row["condition"], "new_listing")
+        self.assertIn("Sale quotes requiring recheck", audit_prices.render_markdown(result))
+        context["price_catalog"]["policy"]["sale_price_requires_refresh"] = False
+        result = audit_prices.build_audit(document, context, "2026-10-16")
+        self.assertEqual(result["summary"]["sale_observations_requiring_recheck"], 0)
+
     def test_output_cannot_overwrite_unrelated_json_or_markdown(self):
         with tempfile.TemporaryDirectory() as directory:
             output = Path(directory) / "report.json"

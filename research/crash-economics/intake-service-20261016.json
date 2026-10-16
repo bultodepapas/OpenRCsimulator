@@ -1,0 +1,99 @@
+{
+  "format": "openrc-crash-economics-service-intake v1",
+  "observed_on": "2026-10-16",
+  "scope": "Three new USD service-part price observations for Savox SC0252MGP and O.S. MAX-55AX. Seller offers and exact model crosswalks are recorded separately from installation identity, crash repairability, allocation, and repair outcomes.",
+  "usd_observations": [
+    {
+      "id": "savox_sc0252mg_case_csc0252mg_20261016",
+      "brand": "Savox",
+      "product": "Top & bottom servo case with screws for SC0252MG",
+      "sku": "CSC0252MG",
+      "category": "servo_replacement_case",
+      "amount_usd": 5.49,
+      "currency": "USD",
+      "price_kind": "live_us_retailer_listing_price",
+      "price_basis": "1 top-and-bottom case set with screws; the page does not specify screw count.",
+      "availability": "Servos.net product page displays Add to Cart and a quantity control; it does not state an on-hand quantity. Savox USA's indexed case collection marks this SKU Sold Out, but that collection result is several months old, so present stock is unresolved.",
+      "quantity": "1 top-and-bottom case set with screws.",
+      "seller": "Servos.net (Savox USA storefront)",
+      "url": "https://servos.net/products/savcsc0252mg-top-bottom-servo-case-with-4",
+      "observed_on": "2026-10-16",
+      "evidence_quality": "Direct seller product page fetched 2026-10-16 shows the exact part name, USD 5.49 price, quantity control, and Add to Cart. Current stock quantity is not disclosed; an older Savox USA collection snapshot says Sold Out.",
+      "service_compatibility": {
+        "target_model": "Savox SC0252MGP",
+        "status": "The Savox SC0252MGP product page explicitly lists CSC0252MG in its Spare Parts section. Its listed part name is for the base SC0252MG; the documented placement on the SC0252MGP product page is the exact model crosswalk used here.",
+        "manufacturer_source_url": "https://servos.net/products/savsc0252mgp-standard-digital-servo",
+        "part_listing_name": "CSC0252MG - Top & Bottom Servo Case with Screws, for SC0252MG"
+      },
+      "whole_unit_reference": "savox-sc0252mgp",
+      "allocation": "Unallocated. No Savox SC0252MGP installation or aircraft position is established.",
+      "limitations": "A case set price does not establish that an impact-damaged servo can be repaired or that its electronics, motor, gears, or calibration remain serviceable. Tax and shipping are excluded."
+    },
+    {
+      "id": "os_max55ax_gasket_set_25714000_20261016",
+      "brand": "O.S. Engines",
+      "product": "MAX-55AX gasket set",
+      "sku": "25714000",
+      "retailer_sku": "ROH-OSMG6133",
+      "upc": "4531028140127",
+      "category": "engine_gasket_set",
+      "amount_usd": 7.62,
+      "currency": "USD",
+      "price_kind": "live_us_retailer_sale_price",
+      "price_basis": "One gasket-set package; seller lists USD 7.62 sale price and USD 9.99 comparison price.",
+      "availability": "Active Powersports displays a quantity control and Add to Cart, but its Current Stock field is blank; exact stock state and quantity are unknown.",
+      "quantity": "1 gasket set; the seller page does not itemize gasket contents.",
+      "seller": "Active Powersports",
+      "url": "https://www.activepowersports.com/os-engines-25714000-gasket-set-55ax-g6133/",
+      "observed_on": "2026-10-16",
+      "evidence_quality": "Direct US seller product page fetched 2026-10-16 confirms product name, manufacturer part number in the title, retailer SKU, UPC, sale/comparison prices, and Add to Cart control. Stock field is blank.",
+      "service_compatibility": {
+        "target_model": "O.S. MAX-55AX (15612)",
+        "status": "O.S. Engines' official MAX-55AX parts list identifies part 25714000 as Gasket Set 55AX,BE. This supports the MAX-55AX model crosswalk; it does not imply fitment to another engine family.",
+        "manufacturer_parts_source_url": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/pdf/15612_55AX.pdf"
+      },
+      "whole_unit_reference": "os-max55ax-osmg0557",
+      "allocation": "Unallocated. No repair inspection or identification of a damaged gasket is recorded.",
+      "limitations": "The source does not establish repair need, repair success, labor, diagnosis, or installed-engine identity. Do not apply this part to the MAX-61FX, FS-64V, or other engines. Tax and shipping are excluded."
+    },
+    {
+      "id": "os_max55ax_cylinder_head_25704000_20261016",
+      "brand": "O.S. Engines",
+      "product": "MAX-55AX cylinder head",
+      "sku": "25704000",
+      "retailer_sku": "ROH-OSMG5036",
+      "upc": "4531028140103",
+      "category": "engine_cylinder_head",
+      "amount_usd": 19.14,
+      "currency": "USD",
+      "price_kind": "live_us_retailer_sale_price",
+      "price_basis": "One cylinder head; seller lists USD 19.14 sale price and USD 24.99 comparison price.",
+      "availability": "Active Powersports displays a quantity control and Add to Cart, but its Current Stock field is blank; exact stock state and quantity are unknown.",
+      "quantity": "1 cylinder head.",
+      "seller": "Active Powersports",
+      "url": "https://www.activepowersports.com/os-engines-25704000-cylinder-head-55ax-g5036/",
+      "observed_on": "2026-10-16",
+      "evidence_quality": "Direct US seller product page fetched 2026-10-16 confirms product name, manufacturer part number in the title, retailer SKU, UPC, sale/comparison prices, and Add to Cart control. Stock field is blank.",
+      "service_compatibility": {
+        "target_model": "O.S. MAX-55AX (15612)",
+        "status": "O.S. Engines' official MAX-55AX parts list identifies part 25704000 as Cylinder Head 55AX. This supports the MAX-55AX model crosswalk; it does not imply fitment to another engine family.",
+        "manufacturer_parts_source_url": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/pdf/15612_55AX.pdf"
+      },
+      "whole_unit_reference": "os-max55ax-osmg0557",
+      "allocation": "Unallocated. No repair inspection or identification of a damaged cylinder head is recorded.",
+      "limitations": "The source does not establish repair need, repair success, labor, diagnosis, or installed-engine identity. Do not apply this part to the MAX-61FX, FS-64V, or other engines. Tax and shipping are excluded."
+    }
+  ],
+  "excluded_candidate": {
+    "part": "Savox SGSC0252MG gear set with bearings",
+    "reason": "Savox SC0252MGP lists SGSC0252MG under Spare Parts, but Savox USA's replacement-parts listing marks the gear-set offer Sold Out. No current available USD offer was verified, so it is not one of the three price candidates.",
+    "manufacturer_source_url": "https://servos.net/products/savsc0252mgp-standard-digital-servo",
+    "seller_listing_url": "https://www.savoxusa.com/collections/replacement-parts?page=5"
+  },
+  "integration_limits": [
+    "These are price candidates only. Add a service-part offer to a repair calculation only after inspection identifies the damaged part and the matching installed model.",
+    "Keep service-part prices separate from complete-unit replacement prices; do not charge both for the same component.",
+    "No aircraft allocation, repair probability, labor, inspection fee, serviceability finding, or salvage credit is supported by these listings.",
+    "Do not transfer MAX-55AX part fit to the historical MAX-61FX or to FS-64V. The Savox crosswalk applies only to SC0252MGP as explicitly listed on that model's Spare Parts section."
+  ]
+}

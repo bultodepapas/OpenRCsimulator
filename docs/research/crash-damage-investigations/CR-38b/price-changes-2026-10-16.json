@@ -1,0 +1,190 @@
+{
+  "format": "openrc-price-changes v1",
+  "currency": "USD",
+  "before_as_of": "2026-10-16",
+  "after_as_of": "2026-10-16",
+  "summary": {
+    "before_offers": 71,
+    "after_offers": 77,
+    "changed_offers": 6,
+    "unchanged_offers": 71,
+    "change_counts": {
+      "added": 6
+    }
+  },
+  "limits": [
+    "Offline comparison of recorded observations; no live stock or fit check.",
+    "Delta requires matching recorded product, package, seller and commercial terms; it is not a complete repair or an inflation measure.",
+    "Availability remains dated seller text; a comparable price does not mean a purchasable offer.",
+    "Aircraft uses identify references, not automatic installation or a new accident charge.",
+    "No catalog, dossier, inventory, incident or historical bill is changed."
+  ],
+  "changes": [
+    {
+      "offer_id": "os_max55ax_cylinder_head_25704000_20261016",
+      "change": "added",
+      "changed_fields": [],
+      "same_offer_price_comparable": false,
+      "price_delta_minor": null,
+      "comparison_limits": [
+        "No paired observation; missing prices are not zero"
+      ],
+      "before": null,
+      "after": {
+        "brand": "O.S. Engines",
+        "sku": "25704000",
+        "product": "MAX-55AX cylinder head",
+        "currency": "USD",
+        "package_description": "1 cylinder head.",
+        "source_url": "https://www.activepowersports.com/os-engines-25704000-cylinder-head-55ax-g5036/",
+        "observed_on": "2026-10-16",
+        "availability_at_observation": "Active Powersports displays a quantity control and Add to Cart, but its Current Stock field is blank; exact stock state and quantity are unknown.",
+        "amount_minor": 1914,
+        "price_kind": "live_us_retailer_sale_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": []
+      }
+    },
+    {
+      "offer_id": "os_max55ax_gasket_set_25714000_20261016",
+      "change": "added",
+      "changed_fields": [],
+      "same_offer_price_comparable": false,
+      "price_delta_minor": null,
+      "comparison_limits": [
+        "No paired observation; missing prices are not zero"
+      ],
+      "before": null,
+      "after": {
+        "brand": "O.S. Engines",
+        "sku": "25714000",
+        "product": "MAX-55AX gasket set",
+        "currency": "USD",
+        "package_description": "1 gasket set; the seller page does not itemize gasket contents.",
+        "source_url": "https://www.activepowersports.com/os-engines-25714000-gasket-set-55ax-g6133/",
+        "observed_on": "2026-10-16",
+        "availability_at_observation": "Active Powersports displays a quantity control and Add to Cart, but its Current Stock field is blank; exact stock state and quantity are unknown.",
+        "amount_minor": 762,
+        "price_kind": "live_us_retailer_sale_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": []
+      }
+    },
+    {
+      "offer_id": "receiver_futaba_r3006sb_futabausa_20261016",
+      "change": "added",
+      "changed_fields": [],
+      "same_offer_price_comparable": false,
+      "price_delta_minor": null,
+      "comparison_limits": [
+        "No paired observation; missing prices are not zero"
+      ],
+      "before": null,
+      "after": {
+        "brand": "Futaba",
+        "sku": "01102306-1",
+        "product": "R3006SB T-FHSS telemetry 6-channel plus S.Bus receiver",
+        "currency": "USD",
+        "package_description": "1 receiver unit listed; in-box contents are not enumerated on the product page",
+        "source_url": "https://futabausa.com/product/r3006sb/",
+        "observed_on": "2026-10-16",
+        "availability_at_observation": "In stock; page offers Add to Cart",
+        "amount_minor": 6599,
+        "price_kind": "live_manufacturer_store_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": []
+      }
+    },
+    {
+      "offer_id": "receiver_radiomaster_er6g_radiomaster_20261016",
+      "change": "added",
+      "changed_fields": [],
+      "same_offer_price_comparable": false,
+      "price_delta_minor": null,
+      "comparison_limits": [
+        "No paired observation; missing prices are not zero"
+      ],
+      "before": null,
+      "after": {
+        "brand": "RadioMaster",
+        "sku": "HP0157.RX-ER6-G",
+        "product": "ER6G 2.4 GHz ELRS PWM receiver, without vario",
+        "currency": "USD",
+        "package_description": "1 ER6G receiver package",
+        "source_url": "https://radiomasterrc.com/products/er6g-er6gv-2-4ghz-elrs-pwm-receiver",
+        "observed_on": "2026-10-16",
+        "availability_at_observation": "Available; the ER6G variant is marked available and the page offers Add to Cart",
+        "amount_minor": 2999,
+        "price_kind": "live_manufacturer_store_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": []
+      }
+    },
+    {
+      "offer_id": "receiver_spektrum_ar620_horizon_20261016",
+      "change": "added",
+      "changed_fields": [],
+      "same_offer_price_comparable": false,
+      "price_delta_minor": null,
+      "comparison_limits": [
+        "No paired observation; missing prices are not zero"
+      ],
+      "before": null,
+      "after": {
+        "brand": "Spektrum",
+        "sku": "SPMAR620",
+        "product": "AR620 DSMX 6-channel sport receiver",
+        "currency": "USD",
+        "package_description": "1 receiver unit listed; included accessories are not enumerated on the sale page",
+        "source_url": "https://www.horizonhobby.com/product/spektrum-ar620-dsmx-6-channel-sport-receiver/SPMAR620.html",
+        "observed_on": "2026-10-16",
+        "availability_at_observation": "In stock; page offers Add to Cart",
+        "amount_minor": 3799,
+        "price_kind": "live_direct_seller_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": []
+      }
+    },
+    {
+      "offer_id": "savox_sc0252mg_case_csc0252mg_20261016",
+      "change": "added",
+      "changed_fields": [],
+      "same_offer_price_comparable": false,
+      "price_delta_minor": null,
+      "comparison_limits": [
+        "No paired observation; missing prices are not zero"
+      ],
+      "before": null,
+      "after": {
+        "brand": "Savox",
+        "sku": "CSC0252MG",
+        "product": "Top & bottom servo case with screws for SC0252MG",
+        "currency": "USD",
+        "package_description": "1 top-and-bottom case set with screws.",
+        "source_url": "https://servos.net/products/savcsc0252mg-top-bottom-servo-case-with-4",
+        "observed_on": "2026-10-16",
+        "availability_at_observation": "Servos.net product page displays Add to Cart and a quantity control; it does not state an on-hand quantity. Savox USA's indexed case collection marks this SKU Sold Out, but that collection result is several months old, so present stock is unresolved.",
+        "amount_minor": 549,
+        "price_kind": "live_us_retailer_listing_price",
+        "condition": "new_listing",
+        "market": "USD storefront; destination charges not assessed",
+        "tax_shipping": "excluded_from_model; verify seller/destination charges",
+        "uses": []
+      }
+    }
+  ],
+  "snapshot_sha256": {
+    "before": "8bad3bf3d73e658a65075942a78641aad8d196954258d63bd1728878ed22b196",
+    "after": "8e85e54e542eb62909049d88a20fed60a680526529e5ca6a74beeddad125b5cf"
+  }
+}

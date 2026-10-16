@@ -1,0 +1,39 @@
+{
+  "format": "openrc-ground-closeup-physical-parity-v1",
+  "baseline_dir": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\ground-closeup-final3-drive240-baseline",
+  "candidate_case_count": 2,
+  "matched_case_count": 2,
+  "state_exact_all": true,
+  "model_exact_all": true,
+  "identities_exact_all": true,
+  "solver_identity_exact_all": true,
+  "mesh_geometry_exact_all": true,
+  "cases": [
+    {
+      "case_id": "monster-car-2__track_start__chase__day",
+      "matched": true,
+      "state_exact": true,
+      "model_exact": true,
+      "identities_exact": true,
+      "solver_identity_exact": true,
+      "mesh_geometry_exact": true,
+      "baseline_state_sha256": "ab14426d70f18ba1eb57b46db2b0d4d273a1e6083ea70315e1cfe70b33a986e1",
+      "candidate_state_sha256": "ab14426d70f18ba1eb57b46db2b0d4d273a1e6083ea70315e1cfe70b33a986e1",
+      "baseline_tick": 240,
+      "candidate_tick": 240
+    },
+    {
+      "case_id": "mt8-bisonte__track_start__chase__day",
+      "matched": true,
+      "state_exact": true,
+      "model_exact": true,
+      "identities_exact": true,
+      "solver_identity_exact": true,
+      "mesh_geometry_exact": true,
+      "baseline_state_sha256": "8965c15b7f3b27443b4844b331523ce62f5108d8a10aa2257f7d2a6036f6dcd0",
+      "candidate_state_sha256": "8965c15b7f3b27443b4844b331523ce62f5108d8a10aa2257f7d2a6036f6dcd0",
+      "baseline_tick": 240,
+      "candidate_tick": 240
+    }
+  ]
+}

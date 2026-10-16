@@ -49,6 +49,8 @@ The current research has gaps and source-quality limits documented in each repor
 
 [CR-31g](CR-31g/README.md) preserves noncomparable repair choices, shows current material/labor/inspection details and validates service-part crosswalks through generation and audit. [CR-36g](CR-36g/power.md) records receiver-power and fuel candidates with explicit currency, package and installation gaps.
 
+[CR-31h](CR-31h/README.md) keeps pending total-loss salvage unknown. [CR-38b](CR-38b/README.md) compares frozen price revisions and flags sale quotes for recheck; [CR-36h](CR-36h/radio.md) and [CR-36i](CR-36i/service.md) add distinct receiver and service-part offers with unresolved fit/stock explicit.
+
 [CR-35a](CR-35a/README.md) verifies finite source budgets, explicit ignition ticks and analytic component heating/cooling. Its parameters and thresholds remain caller-declared; it is not connected to aircraft damage or visual fire.
 
 [CR-36a](CR-36a/README.md) extends the economic dossier to the 55AX and FS-64V Stik configurations with exact propeller offers, explicit engine/silencer coverage substitutions, guarded inventory inheritance and production contact-to-report checks. Complete cost coverage remains separate from physical installation qualification.

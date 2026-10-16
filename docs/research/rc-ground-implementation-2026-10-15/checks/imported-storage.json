@@ -1,0 +1,67 @@
+{
+	"anisotropic_level_setting": 2,
+	"engine": "4.7.2-stable (official)",
+	"license_exists": true,
+	"license_sha256": "7d6fc5d02a30d4e6bc5a10322f7bb37f276b001adfff88634c53fd8ad6cdde61",
+	"manifest_exists": true,
+	"manifest_sha256": "25ca1133b743f41674de0d733a6bf33617f150f9e5190d9d900a854003477358",
+	"maps": [
+		{
+			"bytes": 2796216,
+			"compressed": true,
+			"format": 17,
+			"height": 2048,
+			"mip_count": 11,
+			"path": "res://assets/landscape/rc-ground/dirt-albedo.jpg",
+			"width": 2048
+		},
+		{
+			"bytes": 5592432,
+			"compressed": true,
+			"format": 21,
+			"height": 2048,
+			"mip_count": 11,
+			"path": "res://assets/landscape/rc-ground/dirt-normal.jpg",
+			"width": 2048
+		},
+		{
+			"bytes": 2796216,
+			"compressed": true,
+			"format": 17,
+			"height": 2048,
+			"mip_count": 11,
+			"path": "res://assets/landscape/rc-ground/dirt-roughness.jpg",
+			"width": 2048
+		},
+		{
+			"bytes": 2796216,
+			"compressed": true,
+			"format": 17,
+			"height": 2048,
+			"mip_count": 11,
+			"path": "res://assets/landscape/rc-ground/grass-albedo.jpg",
+			"width": 2048
+		},
+		{
+			"bytes": 5592432,
+			"compressed": true,
+			"format": 21,
+			"height": 2048,
+			"mip_count": 11,
+			"path": "res://assets/landscape/rc-ground/grass-normal.jpg",
+			"width": 2048
+		},
+		{
+			"bytes": 2796216,
+			"compressed": true,
+			"format": 17,
+			"height": 2048,
+			"mip_count": 11,
+			"path": "res://assets/landscape/rc-ground/grass-roughness.jpg",
+			"width": 2048
+		}
+	],
+	"scope": "Imported compressed image payload including mips; not total driver residency",
+	"total_bytes": 22369728,
+	"within_64_mib": true
+}

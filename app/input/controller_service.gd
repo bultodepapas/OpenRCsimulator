@@ -155,6 +155,8 @@ func _bind_gamepad_confirmation(id: int) -> void:
 
 func select_devices(flight_id: int, ui_id: int) -> bool:
 	# Check both before making either selection; UI navigation is never assigned to an RC transmitter.
+	if flight_id < -1 or ui_id < -1:
+		return false
 	for id: int in [flight_id, ui_id]:
 		if id >= 0 and not registry.device_for_id(id).get("connected", false): return false
 	if ui_id >= 0 and not is_ui_gamepad(ui_id): return false

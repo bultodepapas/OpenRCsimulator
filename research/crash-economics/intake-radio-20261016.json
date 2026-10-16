@@ -1,0 +1,136 @@
+{
+  "format": "openrc-crash-economics-radio-intake v1",
+  "observed_on": "2026-10-16",
+  "scope": "Three current USD direct-seller aircraft receiver offers, captured as unallocated market references. Protocol, PWM channels, supply voltage, sale unit/package scope, price, and stock are recorded from direct product pages and primary technical sources; none establishes an installed receiver or transmitter match.",
+  "duplicate_check": {
+    "source_files": [
+      "research/crash-economics/price-research-components.json",
+      "research/crash-economics/price-research-fleet.json"
+    ],
+    "source_record_counts": {
+      "price-research-components.json": 26,
+      "price-research-fleet.json": 45,
+      "total_records_checked": 71
+    },
+    "existing_receiver_skus_reviewed": [
+      {
+        "brand": "Spektrum",
+        "sku": "SPM-1033",
+        "product": "AR8360T+ DSMX 8-channel receiver",
+        "source_file": "research/crash-economics/price-research-fleet.json"
+      },
+      {
+        "brand": "Spektrum",
+        "sku": "SPM-1032",
+        "product": "AR637T+ DSMX 6-channel receiver",
+        "source_file": "research/crash-economics/price-research-fleet.json"
+      },
+      {
+        "brand": "Futaba",
+        "sku": "01102381-1",
+        "product": "R7208SB FASSTest/S.Bus2 8-channel receiver",
+        "source_file": "research/crash-economics/price-research-fleet.json"
+      },
+      {
+        "brand": "FrSky",
+        "sku": "03020110",
+        "product": "ACCESS Archer Plus R10+ 10-port receiver",
+        "source_file": "research/crash-economics/price-research-fleet.json"
+      },
+      {
+        "brand": "RadioMaster",
+        "sku": "HP0157.RX-ER8",
+        "product": "ER8 ELRS PWM receiver",
+        "source_file": "research/crash-economics/price-research-fleet.json"
+      }
+    ],
+    "result": "The three new SKUs below do not duplicate the receiver SKUs in either current price-research file. The components file has no receiver offer SKU."
+  },
+  "new_current_observations": [
+    {
+      "id": "receiver_spektrum_ar620_horizon_20261016",
+      "brand": "Spektrum",
+      "product": "AR620 DSMX 6-channel sport receiver",
+      "sku": "SPMAR620",
+      "seller": "Horizon Hobby",
+      "category": "receiver",
+      "amount_usd": 37.99,
+      "currency": "USD",
+      "price_kind": "live_direct_seller_listing_price",
+      "availability": "In stock; page offers Add to Cart",
+      "quantity": "1 receiver unit listed; included accessories are not enumerated on the sale page",
+      "protocol": "2.4 GHz DSMX; Spektrum documentation also states DSM2 compatibility",
+      "pwm_channels": 6,
+      "servo_outputs": "Six servo ports; port 1 also serves as the DATA port",
+      "receiver_supply_voltage": "3.5-9 V",
+      "package_contents": "One standalone receiver listing. The seller page does not enumerate included leads or other accessories.",
+      "url": "https://www.horizonhobby.com/product/spektrum-ar620-dsmx-6-channel-sport-receiver/SPMAR620.html",
+      "technical_sources": [
+        "https://my.spektrumrc.com/Products/Default.aspx?ProdId=SPMAR620",
+        "https://www.spektrumrc.com/ProdInfo/Files/SPMAR620-Manual-EN.pdf"
+      ],
+      "observed_on": "2026-10-16",
+      "evidence_quality": "High. Horizon Hobby live product page shows the exact SKU, USD price, in-stock status, and add-to-cart offer. Spektrum manufacturer specifications and manual establish modulation compatibility, six channels, voltage range, and servo ports.",
+      "allocation": "Not allocated. The listing does not establish an installed AR620, receiver-to-transmitter compatibility for any fleet aircraft, or aircraft fit.",
+      "notes": "Tax and shipping are not included in the listed product price. Treat DSM2/DSMX as the receiver's documented protocols only; no installed radio identity is inferred."
+    },
+    {
+      "id": "receiver_futaba_r3006sb_futabausa_20261016",
+      "brand": "Futaba",
+      "product": "R3006SB T-FHSS telemetry 6-channel plus S.Bus receiver",
+      "sku": "01102306-1",
+      "seller": "FutabaUSA",
+      "category": "receiver",
+      "amount_usd": 65.99,
+      "currency": "USD",
+      "price_kind": "live_manufacturer_store_price",
+      "availability": "In stock; page offers Add to Cart",
+      "quantity": "1 receiver unit listed; in-box contents are not enumerated on the product page",
+      "protocol": "T-FHSS Air telemetry; S.Bus2 output feature",
+      "pwm_channels": 6,
+      "servo_outputs": "Six-channel receiver with S.Bus2; the product page names six channels and S.Bus but does not separately label the servo signal as PWM",
+      "receiver_supply_voltage": "Rated 4.8-7.4 V; operating 4.0-8.4 V",
+      "package_contents": "One receiver listing; the manufacturer store page does not list accessories or other box contents.",
+      "url": "https://futabausa.com/product/r3006sb/",
+      "technical_sources": [
+        "https://futabausa.com/product/r3006sb/",
+        "https://futabausa.com/wp-content/uploads/2018/09/R3006SB.pdf"
+      ],
+      "observed_on": "2026-10-16",
+      "evidence_quality": "High. FutabaUSA live direct product page shows SKU, USD price, in-stock status, T-FHSS/S.Bus2 labeling, channel count, rated and operating voltage. The linked manufacturer manual supplies the receiver connection diagram.",
+      "allocation": "Not allocated. The listing does not establish an installed R3006SB, receiver-to-transmitter compatibility for any fleet aircraft, or aircraft fit.",
+      "notes": "Tax and shipping are not included in the listed product price. Keep rated and operating voltage ranges distinct. No accessory contents are assumed from the unit listing."
+    },
+    {
+      "id": "receiver_radiomaster_er6g_radiomaster_20261016",
+      "brand": "RadioMaster",
+      "product": "ER6G 2.4 GHz ELRS PWM receiver, without vario",
+      "sku": "HP0157.RX-ER6-G",
+      "seller": "RadioMaster",
+      "category": "receiver",
+      "amount_usd": 29.99,
+      "currency": "USD",
+      "price_kind": "live_manufacturer_store_price",
+      "availability": "Available; the ER6G variant is marked available and the page offers Add to Cart",
+      "quantity": "1 ER6G receiver package",
+      "protocol": "2.4 GHz ExpressLRS 3.3.0 pre-installed",
+      "pwm_channels": 6,
+      "servo_outputs": "6 PWM outputs",
+      "receiver_supply_voltage": "DC 3.5-8.4 V",
+      "package_contents": "1 ER6G receiver, 1 Type-A voltage telemetry wire, 2 heat-shrink tubes, and 1 user card",
+      "url": "https://radiomasterrc.com/products/er6g-er6gv-2-4ghz-elrs-pwm-receiver",
+      "technical_sources": [
+        "https://radiomasterrc.com/products/er6g-er6gv-2-4ghz-elrs-pwm-receiver"
+      ],
+      "observed_on": "2026-10-16",
+      "evidence_quality": "High. RadioMaster direct store exposes the ER6G variant SKU, USD price and availability. Its product page gives the ER6G protocol, PWM count, supply range, and package contents.",
+      "allocation": "Not allocated. The listing does not establish an installed ER6G, an ExpressLRS transmitter or module in any fleet, or aircraft fit.",
+      "notes": "The ER6G variant is selected and recorded; the separate ER6GV variant costs USD 34.99 and adds a vario, so it is not part of this offer. Tax and shipping are calculated separately at checkout."
+    }
+  ],
+  "integration_recommendations": [
+    "Keep the three offers as separate receiver records with their exact protocol, channel count, voltage limits, seller package scope, and availability. Do not merge prices across SKUs or package variants.",
+    "Leave all three unallocated. They establish current replacement-price options only; they do not identify installed receivers, prove matching transmitter protocol, or support a fit assignment to an aircraft.",
+    "For the Spektrum and Futaba offers, preserve that the source page does not enumerate included accessories; do not expand their package contents beyond one listed receiver unit."
+  ]
+}

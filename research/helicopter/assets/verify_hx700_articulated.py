@@ -95,6 +95,8 @@ def main():
              "res://tests/test_heli_inspection_motion.gd"], out / "motion-timing-native-tests.log")
         run([godot, "--headless", "--path", REPO / "app", "--audio-driver", "Dummy", "--script",
              "res://tests/test_heli_elasticity.gd"], out / "elasticity-native-tests.log")
+        run([godot, "--headless", "--path", REPO / "app", "--audio-driver", "Dummy", "--script",
+             "res://tests/test_heli_inspection_controller.gd"], out / "controller-native-tests.log")
     run([godot, "--headless", "--path", REPO / "app", "--audio-driver", "Dummy", "--script",
          "res://tests/test_heli_construction.gd"], out / "native-tests.log")
     project = out / "fresh"
@@ -112,7 +114,11 @@ def main():
                          "render/rotor/hx700_mechanics_view.gd", "tools/inspect_hx700.gd", "tests/test_heli_mechanism.gd",
                          "tests/test_heli_mechanics_view.gd", "render/rotor/hx700_inspection_motion.gd",
                          "tests/test_heli_inspection_motion.gd", "physics/rotorcraft/hx700_flex_bench.gd", "physics/math3d.gd",
-                         "render/rotor/hx700_elastic_skin.gd", "tests/test_heli_elasticity.gd"):
+                         "render/rotor/hx700_elastic_skin.gd", "tests/test_heli_elasticity.gd",
+                         "render/rotor/hx700_controller_input.gd", "tests/test_heli_inspection_controller.gd",
+                         "input/controller_service.gd", "input/controller_registry.gd", "input/controller_profile_store.gd",
+                         "input/controller_profile.gd", "input/controller_actions.gd", "input/rc_input.gd",
+                         "input/rc_calibration.gd", "input/smoke_aux.gd"):
             target = project / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(REPO / "app" / relative, target)
@@ -139,6 +145,8 @@ def main():
              "res://tests/test_heli_inspection_motion.gd"], out / "motion-timing-fresh-tests.log")
         run([godot, "--headless", "--path", project, "--audio-driver", "Dummy", "--script",
              "res://tests/test_heli_elasticity.gd"], out / "elasticity-fresh-tests.log")
+        run([godot, "--headless", "--path", project, "--audio-driver", "Dummy", "--script",
+             "res://tests/test_heli_inspection_controller.gd"], out / "controller-fresh-tests.log")
     empty = out / "empty"
     empty.mkdir()
     for defect in ("", "profile", "raw-glb", "texture"):
@@ -159,6 +167,8 @@ def main():
                  "--script", "res://tests/test_heli_inspection_motion.gd"], out / "motion-timing-package-tests.log")
             run([godot, "--headless", "--path", empty, "--main-pack", pack, "--audio-driver", "Dummy",
                  "--script", "res://tests/test_heli_elasticity.gd"], out / "elasticity-package-tests.log")
+            run([godot, "--headless", "--path", empty, "--main-pack", pack, "--audio-driver", "Dummy",
+                 "--script", "res://tests/test_heli_inspection_controller.gd"], out / "controller-package-tests.log")
     if args.capture:
         run([godot, "--path", project, "--audio-driver", "Dummy", "--rendering-method", "gl_compatibility",
              "--script", "res://smoke.gd", "--", "--capture=" + str(out / "captures")], out / "capture.log")
@@ -170,7 +180,7 @@ def main():
               "production_export_qualified": False, "captured": args.capture}
     if args.motion:
         reject_world_neutral_rotation(godot, project, oracle, out)
-        report.update(step="HELI-26a", motion_native="pass", motion_fresh_import="pass", motion_package="pass", motion_ui="pass", motion_timing="pass", elasticity="pass", world_neutral_rotation_rejected=True, missing_or_changed_oracle_rejected=True, motion_source_integrity="pass")
+        report.update(step="HELI-26a", motion_native="pass", motion_fresh_import="pass", motion_package="pass", motion_ui="pass", motion_timing="pass", elasticity="pass", controller_input="pass", world_neutral_rotation_rejected=True, missing_or_changed_oracle_rejected=True, motion_source_integrity="pass")
     (out / "verification.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 

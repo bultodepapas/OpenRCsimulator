@@ -21,6 +21,8 @@ Per-aircraft output distinguishes known partial subtotals, missing prices, appro
 
 The audit also retains validated `service_parts` product-family crosswalks and whole-unit price references. These cannot establish installed fit or select a repair. [CR-31g](../CR-31g/README.md) records this extension and a new snapshot; the original dated queue above remains historical evidence.
 
+[CR-38b](../CR-38b/README.md) adds comparison between frozen review snapshots and a separate recheck flag for recorded sale quotes. A sale may require rechecking even while its calendar age remains inside the review window. Its dated snapshot retains price kind, condition, market and tax/shipping terms for comparison.
+
 ## Verification
 
 Eleven focused audit tests cover inclusive date thresholds, leap days, future observations, malformed policy/date rejection, mixed observation dates, inherited engine/prop overrides, composite quantities, unallocated comparator offers, unknown totals, deterministic output source immutability and guarded report output paths. The dated [CR-31f verification](../CR-31f/verification-2026-10-16.json) also runs generator freshness and the existing economics regressions.

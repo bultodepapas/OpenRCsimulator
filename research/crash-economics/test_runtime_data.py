@@ -153,7 +153,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
     def test_service_parts_do_not_duplicate_whole_engine_or_servo_costs(self) -> None:
         records = build_catalog.read(build_catalog.HERE / "price-research-components.json")
         parts = [row for row in records if "service_compatibility" in row]
-        self.assertEqual(len(parts), 5)
+        self.assertEqual(len(parts), 8)
         installed_offers = {row["offer_id"] for dossier in self.dossiers.values() for row in dossier["components"]}
         for part in parts:
             with self.subTest(part=part["id"]):

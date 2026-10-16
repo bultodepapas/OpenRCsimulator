@@ -29,7 +29,11 @@ func _initialize() -> void:
 			"res://render/rotor/hx700_mechanics_view.gd", "res://tools/inspect_hx700.gd", "res://tests/test_heli_mechanism.gd",
 			"res://tests/test_heli_mechanics_view.gd", "res://render/rotor/hx700_inspection_motion.gd",
 			"res://tests/test_heli_inspection_motion.gd", "res://physics/rotorcraft/hx700_flex_bench.gd", "res://physics/math3d.gd",
-			"res://render/rotor/hx700_elastic_skin.gd", "res://tests/test_heli_elasticity.gd"]:
+			"res://render/rotor/hx700_elastic_skin.gd", "res://tests/test_heli_elasticity.gd",
+			"res://render/rotor/hx700_controller_input.gd", "res://tests/test_heli_inspection_controller.gd",
+			"res://input/controller_service.gd", "res://input/controller_registry.gd", "res://input/controller_profile_store.gd",
+			"res://input/controller_profile.gd", "res://input/controller_actions.gd", "res://input/rc_input.gd",
+			"res://input/rc_calibration.gd", "res://input/smoke_aux.gd"]:
 		if FileAccess.file_exists(path):
 			files[path] = path
 	if packer.pck_start(destination) != OK:
