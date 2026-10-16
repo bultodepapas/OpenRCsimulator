@@ -90,7 +90,7 @@ var flight_scenario: Dictionary = {}
 var remember_lighting_selection: bool = true
 var _experimental_aircraft_path := ""
 var _electric_demo: String = ""
-## Interactive Home choice only; CLI and scripted routes retain the airborne default.
+## Home supplies its selection. Quick Flight defaults to runway; technical routes keep their reference start.
 var start_choice: String = "airborne"
 var weather_config: Dictionary = {}
 ## Resolved only when this flight is created. Session reset retains its draw and onset.
@@ -276,6 +276,17 @@ var _treeline_hidden: bool = false # L6c background-only capture (--hide_treelin
 
 func _ready() -> void:
 	var args := _user_args()
+	if not interactive_start:
+		if args.has("start"):
+			start_choice = str(args.start)
+		elif args.has("quick-flight"):
+			start_choice = FlightSession.START_RUNWAY
+		if start_choice not in [FlightSession.START_RUNWAY, FlightSession.START_AIRBORNE, FlightSession.START_HALF_POWER]:
+			printerr("--start must be runway, airborne or airborne_half_power")
+			set_process(false)
+			set_process_unhandled_input(false)
+			get_tree().quit(ERR_INVALID_PARAMETER)
+			return
 	var night_result: Dictionary = Preferences.validate_night_options(night_options) if interactive_start \
 		else Preferences.night_options_from_args(args)
 	if not night_result.get("ok", false):
@@ -611,12 +622,15 @@ func _ready() -> void:
 		set_process_unhandled_input(false)
 		get_tree().quit(ERR_INVALID_PARAMETER)
 		return
-	if interactive_start and not session.is_flyable():
+	if not _scripted and not session.is_flyable():
 		startup_error = session.start_error if not session.start_error.is_empty() else session.pause_reason
 		if startup_error.is_empty():
 			startup_error = "Aircraft data or starting condition invalid."
 		set_process(false)
 		set_process_unhandled_input(false)
+		if not interactive_start:
+			printerr("Flight start refused: " + startup_error)
+			get_tree().quit(ERR_INVALID_PARAMETER)
 		return
 	if args.has("trace"):
 		if not session.aircraft.ok or not session.surface_error.is_empty():
@@ -1913,6 +1927,7 @@ func _on_resetting() -> void:
 ## --visual_pose=level --visual_distance=100 [--visual_elevation=1.6 --visual_azimuth=0] (synthetic inspection,
 ## with --scripted and an explicit --autozoom), --frametimes=<file.json>, --shadow=sun|vertical|off, --engine_shadows,
 ## --aircraft=<catalog id> (default the Ugly Stik; a preview aircraft only with --scripted),
+## --quick-flight (runway default), --start=runway|airborne|airborne_half_power (explicit launch override),
 ## --rates=normal|full (D6e: the aircraft's normal-flight rates and expo on the keyboard/gamepad sticks, or the maximum throws),
 ## --field-lighting=club|airfield|off, --campfire=on|off (FW-71 visual options; direct routes ignore saved preferences),
 ## --experimental-aircraft-data=<absolute JSON path> (research-only Ugly Stik wing-polar candidate)

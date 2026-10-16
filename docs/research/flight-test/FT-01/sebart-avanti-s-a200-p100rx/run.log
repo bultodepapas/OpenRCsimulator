@@ -1,13 +1,15 @@
 
 aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
 FT sebart-avanti-s-a200-p100rx: 11.71 kg, S 0.702 m2, start 29.0 m/s, CL_max 0.85 -> Vs estimate 17.7 m/s
-FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.086,"first_untrimmable_mps":74.590557849656,"points":38,"slowest_trim_mps":19.49}
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.086,"first_untrimmable_mps":73.95,"points":38,"slowest_trim_mps":18.85}
 FT stall_power_off          valid {"altitude_lost_m":63.5,"bank_in_first_second_deg":31.3,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.59,"max_bank_in_recovery_deg":31.3,"ratio_to_cl_max_estimate":1.017,"recovery_time_s":5.37,"stall_alpha_deg":17.5,"stall_speed_mps":18.02,"wing_drop":"right"}
 FT vmax                     valid {"height_error_end_m":0.06,"height_error_run_m":1.35,"initial_acceleration_mps2":1.71,"max_level_speed_kmh":263.2,"max_level_speed_mps":73.11,"rpm_at_max":154000,"time_plus_10_mps_s":2.63,"time_plus_5_mps_s":1.68,"time_to_90_percent_s":14.26}
+FT modes                    valid {}
 FT stall_power_on           valid {"altitude_lost_m":57.2,"bank_in_first_second_deg":25.3,"break_kind":"wing drop or sink","deceleration_before_break_mps2":1.78,"max_bank_in_recovery_deg":25.3,"ratio_to_cl_max_estimate":0.751,"recovery_time_s":6.13,"stall_alpha_deg":22.5,"stall_speed_mps":13.3,"wing_drop":"right"}
 FT throttle_response        valid {"rpm_full":154000,"rpm_idle_end":44003,"rpm_trimmed":92101,"speed_gain_in_6_s_mps":23.55,"spool_down_90_10_s":1.6,"spool_up_10_90_s":1.242}
-FT climb                    valid {"best":{"path_angle_deg":34.1,"pitch_deg":36.1,"rpm":154000,"speed_mps":36.1,"vertical_speed_mps":20.2,"vs_factor":2.0}}
-FT glide                    valid {"best":{"glide_ratio":9.76,"path_angle_deg":-5.8,"pitch_deg":0.4,"rpm":44000,"speed_mps":23.43,"vertical_speed_mps":-2.39,"vs_factor":1.3}}
+FT hands_off                valid {"bank_10_s_deg":27.5,"bank_30_s_deg":33.3,"bank_after_aileron_pulse_deg":33.7,"heading_change_10_s_deg":79.4,"heading_change_30_s_deg":292.5,"height_change_10_s_m":-36.31,"height_change_30_s_m":-77.42,"phugoid_period_s":15.8,"reached_floor_s":null,"speed_change_10_s_mps":9.28,"speed_change_30_s_mps":8.15}
+FT climb                    valid {"best":{"case":"2.0Vs","path_angle_deg":34.1,"pitch_deg":36.1,"rpm":154000,"speed_mps":36.1,"vertical_speed_mps":20.2,"vs_factor":2.0}}
+FT glide                    valid {"best":{"case":"1.3Vs","glide_ratio":9.76,"path_angle_deg":-5.8,"pitch_deg":0.4,"rpm":44000,"speed_mps":23.43,"vertical_speed_mps":-2.39,"vs_factor":1.3}}
 FT roll_rate                valid {}
 FT pitch_pull               valid {}
 FT loop                     valid {"alpha_target_deg":8.3,"entry_speed_mps":58.49,"heading_change_deg":-0.2,"height_change_m":34.4,"loop_height_m":118.1,"loop_time_s":6.35,"max_load_factor_g":8.91,"max_sideslip_deg":0.1,"min_speed_mps":43.17}
@@ -18,4 +20,10 @@ FT knife_edge_full_rudder   valid {}
 FT inverted                 valid {"alpha_deg":-1.8,"elevator_servo":-0.026,"elevator_stick":-0.026,"speed_mps":43.87,"throttle":0.257,"upright_throttle":0.257,"vertical_speed_mps":0.02}
 FT spin                     valid {}
 FT takeoff                  valid {"ground_roll_m":55.9,"liftoff_speed_mps":25.55,"liftoff_speed_vs":1.42,"max_heading_error_deg":0.1,"max_rudder_stick":0.01,"rotation_attitude_deg":7.3,"rudder_free_heading_change_3_s_deg":0.1,"time_to_liftoff_s":6.68}
-FT report: tmp/ft-final/sebart-avanti-s-a200-p100rx/profile.md
+FT landing                  valid {"approach_speed_mps":23.43,"bounced":false,"flare_height_m":1.63855728886352,"max_heading_error_deg":0.1,"rollout_m":119.7,"rollout_time_s":9.8,"touchdown_past_threshold_m":26.2,"touchdown_pitch_deg":6.4,"touchdown_sink_mps":0.47,"touchdown_speed_mps":21.63,"touchdown_speed_vs":1.2}
+FT report: tmp\ft-base1/sebart-avanti-s-a200-p100rx/profile.md
+WARNING: `NaN` ("Not a Number") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.
+   at: _stringify (core/io/json.cpp:86)
+   GDScript backtrace (most recent call first):
+       [0] _run (research/flight-test/flight_test.gd:146)
+       [1] _initialize (research/flight-test/flight_test.gd:102)

@@ -69,7 +69,7 @@ func _preferences_cases() -> void:
 		cfg.set_value("flight", "aircraft", STIK)
 		cfg.set_value("flight", "start_choice", invalid)
 		_check("write invalid start preference %s" % str(invalid), cfg.save(PREFS) == OK)
-		_check("invalid start preference %s -> airborne" % str(invalid), Preferences.load_from(PREFS).start_choice == AIRBORNE)
+		_check("invalid start preference %s -> runway" % str(invalid), Preferences.load_from(PREFS).start_choice == RUNWAY)
 
 	_check("runway preference is valid for the Stik", _write_preferences(PREFS, 1, "en", STIK, RUNWAY) == OK
 		and Preferences.load_from(PREFS).start_choice == RUNWAY)
@@ -77,8 +77,11 @@ func _preferences_cases() -> void:
 		and Preferences.load_from(PREFS).aircraft == TIMBER and Preferences.load_from(PREFS).start_choice == RUNWAY)
 	_check("runway preference is valid for qualified Avanti", _write_preferences(PREFS, 1, "en", AVANTI, RUNWAY) == OK
 		and Preferences.load_from(PREFS).aircraft == AVANTI and Preferences.load_from(PREFS).start_choice == RUNWAY)
-	_check("runway preference for the Extra is sanitized", _write_preferences(PREFS, 1, "en", EXTRA, RUNWAY) == OK
-		and Preferences.load_from(PREFS).start_choice == AIRBORNE)
+	for id in Catalog.airplane_flyable_ids():
+		_check("%s defaults to runway with no saved start" % id, _write_preferences(PREFS, 1, "en", id, AIRBORNE, false) == OK
+			and Preferences.load_from(PREFS).start_choice == RUNWAY)
+		_check("%s retains explicit airborne preference" % id, _write_preferences(PREFS, 1, "en", id, AIRBORNE) == OK
+			and Preferences.load_from(PREFS).start_choice == AIRBORNE)
 
 	var future_text: String = "[meta]\nschema=99\n[ui]\nlanguage=\"es\"\nfirst_flight_hint_seen=true\n[flight]\naircraft=\"%s\"\nstart_choice=\"runway\"\n" % STIK
 	_write_text(FUTURE_PREFS, future_text)
@@ -98,12 +101,14 @@ func _home_fly_roundtrip_and_radio() -> void:
 	var home: Control = app.get("home") as Control
 	var start_button: Button = home.get("start_button") as Button
 	var before_choice: String = FileAccess.get_file_as_string(PREFS)
-	_check("Home defaults to air; the Stik can choose runway", home.get("start_choice") == AIRBORNE and not start_button.disabled)
+	_check("Home restores explicit airborne preference", home.get("start_choice") == AIRBORNE and not start_button.disabled)
 	_check("Home starts focused on Fly", ui.focus_name() == "Fly", ui.focus_name())
 
 	# The selector sits directly above Fly in the real keyboard path.
 	await ui.tap(KEY_UP)
 	_check("Up from Fly focuses the start selector", ui.focus_name() == "StartChoice", ui.focus_name())
+	await ui.tap(KEY_ENTER)
+	_check("airborne cycles to half power", home.get("start_choice") == "airborne_half_power")
 	await ui.tap(KEY_ENTER)
 	_check("a real Enter event selects runway", home.get("start_choice") == RUNWAY)
 	_check("changing start choice does not save it", FileAccess.get_file_as_string(PREFS) == before_choice)
@@ -113,18 +118,21 @@ func _home_fly_roundtrip_and_radio() -> void:
 	_check("radio axis cannot navigate Home or change the start", ui.focus_name() == "StartChoice" and home.get("start_choice") == RUNWAY)
 	await ui.joy_axis(JOY_AXIS_LEFT_Y, 0.0)
 
-	# Leaving the supported aircraft sanitizes the visible and stored choice. Returning to the Stik does not resurrect it.
+	# Changing aircraft retains the runway selection throughout the fleet.
 	app.call("set_aircraft", EXTRA)
 	await ui.settle()
-	_check("Extra disables runway and sanitizes the selected choice", home.get("aircraft_id") == EXTRA
-		and home.get("start_choice") == AIRBORNE and start_button.disabled)
-	_check("aircraft change persists the sanitized start", Preferences.load_from(PREFS).start_choice == AIRBORNE)
+	_check("Extra keeps runway available and selected", home.get("aircraft_id") == EXTRA
+		and home.get("start_choice") == RUNWAY and not start_button.disabled)
+	_check("aircraft change retains the saved start until Fly", Preferences.load_from(PREFS).start_choice == AIRBORNE)
 	app.call("set_aircraft", STIK)
 	await ui.settle()
-	_check("returning to Stik does not restore unsupported runway", home.get("start_choice") == AIRBORNE and not start_button.disabled)
+	_check("returning to Stik keeps runway", home.get("start_choice") == RUNWAY and not start_button.disabled)
 	var sanitized_settings: String = FileAccess.get_file_as_string(PREFS)
 
 	start_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("runway cycles to the secondary airborne choice", home.get("start_choice") == AIRBORNE)
+	await ui.tap(KEY_ENTER)
 	await ui.tap(KEY_ENTER)
 	_check("runway can be selected again on the supported Stik", home.get("start_choice") == RUNWAY)
 	_check("selection is still not persisted before Fly", Preferences.load_from(PREFS).start_choice == AIRBORNE
@@ -213,7 +221,9 @@ func _half_power_roundtrip() -> void:
 	var home: Control = app.home
 	home.start_button.grab_focus()
 	await ui.tap(KEY_ENTER)
-	_check("runway cycles to explicit half-power airborne start", home.start_choice == "airborne_half_power")
+	_check("runway cycles to airborne first", home.start_choice == AIRBORNE)
+	await ui.tap(KEY_ENTER)
+	_check("airborne cycles to explicit half-power airborne start", home.start_choice == "airborne_half_power")
 	_check("half-power label explains fixed trim", home.start_button.text == "Start: 50% throttle"
 		and home.limits_label.text.contains("Trim stays fixed"))
 	_check("new choice is not saved before Fly", Preferences.load_from(PREFS).start_choice == RUNWAY)
@@ -236,8 +246,8 @@ func _half_power_roundtrip() -> void:
 		_check("return to Home preserves half-power profile", app.home.start_choice == "airborne_half_power")
 		app.set_aircraft(TIMBER)
 		await ui.settle()
-		_check("unsupported aircraft clears half-power choice in UI and preferences", app.home.start_choice == AIRBORNE
-			and Preferences.load_from(PREFS).start_choice == AIRBORNE)
+		_check("unsupported half-power choice returns to runway in UI and preferences", app.home.start_choice == RUNWAY
+			and Preferences.load_from(PREFS).start_choice == RUNWAY)
 	await _close_app(app)
 
 
@@ -296,6 +306,7 @@ func _rejected_launch_and_retry() -> void:
 	home.get("fly_button").grab_focus()
 	await ui.tap(KEY_UP)
 	_check("Spanish Home focuses the start selector", ui.focus_name() == "StartChoice", ui.focus_name())
+	await ui.tap(KEY_ENTER)
 	await ui.tap(KEY_ENTER)
 	_check("real Spanish Home event selects runway without saving", home.get("start_choice") == RUNWAY
 		and FileAccess.get_file_as_string(ES_PREFS) == before)
@@ -376,25 +387,40 @@ func _alternate_field_and_aircraft_sanitization() -> void:
 	_check("write runway preference before aircraft sanitization", _write_preferences(PREFS, 1, "en", STIK, RUNWAY) == OK)
 	app = await _new_app(PREFS)
 	home = app.get("home") as Control
-	for unsupported_aircraft: String in [EXTRA]: # P51-21 qualified the P-51
-		app.call("set_aircraft", unsupported_aircraft)
+	for aircraft: String in Catalog.airplane_flyable_ids():
+		app.call("set_aircraft", aircraft)
 		await ui.settle()
-		_check("changing to %s sanitizes runway" % unsupported_aircraft, home.get("aircraft_id") == unsupported_aircraft
-			and home.get("start_choice") == AIRBORNE and home.get("start_button").disabled
-			and Preferences.load_from(PREFS).start_choice == AIRBORNE)
+		_check("changing to %s keeps runway" % aircraft, home.get("aircraft_id") == aircraft
+			and home.get("start_choice") == RUNWAY and not home.get("start_button").disabled
+			and Preferences.load_from(PREFS).start_choice == RUNWAY)
+		app.start_flight()
+		_check("%s Home Fly starts on the runway" % aircraft, app.flight != null
+			and app.flight.startup_error.is_empty() and app.flight.session.trace_meta().launch_choice == RUNWAY)
+		if app.flight != null:
+			var flight_session: Node = app.flight.session
+			flight_session.physics_enabled = false
+			flight_session.sim.process_mode = Node.PROCESS_MODE_DISABLED
+			_check("%s launches at idle with gear supported" % aircraft, flight_session.sim.inputs[3] == 0.0
+				and Array(flight_session.gear_compressions(flight_session.sim.state)).max() > 0.0)
+			app.open_pause()
+			app.end_flight()
+			await ui.settle()
+			home = app.home
 	app.call("set_aircraft", STIK)
 	await ui.settle()
-	_check("switching back to the Stik does not restore runway", home.get("start_choice") == AIRBORNE
+	_check("switching back to the Stik keeps runway", home.get("start_choice") == RUNWAY
 		and not home.get("start_button").disabled)
 	app.call("set_aircraft", P51)
 	await ui.settle()
 	_check("qualified P-51 enables the runway selector (P51-21)", home.get("aircraft_id") == P51
-		and home.get("start_choice") == AIRBORNE and not home.get("start_button").disabled)
+		and home.get("start_choice") == RUNWAY and not home.get("start_button").disabled)
 	app.call("set_aircraft", TIMBER)
 	await ui.settle()
 	_check("qualified Timber enables the runway selector", home.get("aircraft_id") == TIMBER
-		and home.get("start_choice") == AIRBORNE and not home.get("start_button").disabled)
+		and home.get("start_choice") == RUNWAY and not home.get("start_button").disabled)
 	home.get("start_button").grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("Timber offers airborne as the secondary choice", home.get("start_choice") == AIRBORNE)
 	await ui.tap(KEY_ENTER)
 	_check("Home can select runway for qualified Timber", home.get("start_choice") == RUNWAY)
 	await _close_app(app)

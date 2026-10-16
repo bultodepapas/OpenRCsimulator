@@ -1,0 +1,115 @@
+{
+	"baseline_aircraft_input_sha256": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
+	"baseline_fault": "",
+	"baseline_solver_sha256": "ccf3731c585fae4ff3a10f68bd7d1e4d16e6b0b623e126fc277eecc63b094586",
+	"candidate_aircraft": "res://data/aircraft/gp_extra_300s_60.json",
+	"candidate_aircraft_input_sha256": "9b174cb2b71df8878d92aa007f3118d196f66fda6183dc9ee6985457e39c1b62",
+	"candidate_fault": "",
+	"candidate_file_sha256": "9b174cb2b71df8878d92aa007f3118d196f66fda6183dc9ee6985457e39c1b62",
+	"candidate_identity": {
+		"format": "openrc-aircraft v2",
+		"sha256": "9b174cb2b71df8878d92aa007f3118d196f66fda6183dc9ee6985457e39c1b62"
+	},
+	"comparison_method": "Same complete baseline ORFL body and recorded post-conditioning input/intervention tape. Baseline aircraft from the ORFL and candidate aircraft are both run under the current source tree; explicit auxiliary projection only (preserve four shared auxiliaries, move wake value from source downwash_index to candidate downwash_index, initialize three new airborne anchors to zero). The recorded solver identity differs from the current source identity where indicated; this is not exact replay or extended-state equivalence.",
+	"complete": true,
+	"current_solver_sha256": "cb0817d879f12dc9b736422fd9521592b7ff389f3a8d6a895052044acce46365",
+	"dt_s": 0.004166666666666667,
+	"final_tick": 260,
+	"first_divergence": null,
+	"first_tick": 0,
+	"format": "openrc-extra-paired-trace v1",
+	"layout_projection": {
+		"baseline_aux_size": 5,
+		"baseline_downwash_index": 4,
+		"candidate_aux_size": 14,
+		"candidate_downwash_index": 13,
+		"new_anchor_count": 3,
+		"new_anchor_values": "zero (airborne initial condition)"
+	},
+	"loads": {
+		"Fx_N": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"Fy_N": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"Fz_N": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"Mx_Nm": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"My_Nm": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"Mz_Nm": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		}
+	},
+	"rows": 261,
+	"rows_processed": 261,
+	"solver_changed": true,
+	"source": "res://../research/extra-300/ex05/extra-runway-baseline-20261016.orfl",
+	"source_sha256": "086a39ec71ec772b1bf6a80bcbb222921e3f4cdd3f0ee5dec9f74b0cbcb63144",
+	"state": {
+		"down_m": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"east_m": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"north_m": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"p_radps": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"q_radps": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"qw": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"qx": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"qy": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"qz": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"r_radps": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"u_mps": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"v_mps": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		},
+		"w_mps": {
+			"max_abs": 0.0,
+			"rmse": 0.0
+		}
+	},
+	"status": "ok"
+}

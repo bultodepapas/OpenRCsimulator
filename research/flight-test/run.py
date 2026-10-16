@@ -43,7 +43,8 @@ def godot(binary, args, timeout):
 
 def git(*args):
     try:
-        return subprocess.run(["git", "-C", str(ROOT)] + list(args), capture_output=True, text=True, check=True).stdout.strip()
+        # rstrip only: porcelain lines start with a status column that may be a space.
+        return subprocess.run(["git", "-C", str(ROOT)] + list(args), capture_output=True, text=True, check=True).stdout.rstrip("\n")
     except (OSError, subprocess.CalledProcessError):
         return ""
 

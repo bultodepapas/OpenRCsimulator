@@ -1,10 +1,12 @@
 # Great Planes Extra 300S .60
 
-2026-10-12 · Revision 6 · **Status: experimental in-air aircraft implemented; software envelope checks are complete. Independent flight, target-hardware and export acceptance remain open.** Prefix: `EX-`. Owned paths: `assets/aircraft/extra-300s-60/`, `app/aircraft/extra_300s_*`, `app/aircraft/extra_clearance.gd`, `app/aircraft/verify_extra.gd`, `app/aircraft/inspect_extra.gd`, generated `app/data/aircraft/gp_extra_300s_60.json`, `app/tests/test_extra_handling.gd`, `research/extra-300/`, `docs/research/extra-300-*`, `docs/research/extra-300-realism/`.
+2026-10-16 · Revision 7 · **Status: experimental aircraft with runway and airborne starts; software envelope checks are complete. Independent flight, target-hardware and export acceptance remain open.** Prefix: `EX-`. Owned paths: `assets/aircraft/extra-300s-60/`, `app/aircraft/extra_300s_*`, `app/aircraft/extra_clearance.gd`, `app/aircraft/verify_extra.gd`, `app/aircraft/inspect_extra.gd`, generated `app/data/aircraft/gp_extra_300s_60.json`, `app/tests/test_extra_handling.gd`, `research/extra-300/`, `docs/research/extra-300-*`, `docs/research/extra-300-realism/`.
 
 The aircraft is the Great Planes GPMA0236, 64-inch balsa Extra 300S with an O.S. .61FX-class installation. The native model and physics are specific to this kit. The generated physics file is [gp_extra_300s_60.json](../app/data/aircraft/gp_extra_300s_60.json); regenerate it with [derive_physics.py](../research/extra-300/ex05/derive_physics.py) after changing any geometry inputs it reads. The [asset README](../assets/aircraft/extra-300s-60/README.md) documents source evidence, geometry, builders and current model interfaces.
 
 The model flies as `gp-extra-300s-60` and remains marked experimental. Its builder exposes the stable airplane, propeller, hinge and gear interfaces used by the Stik-compatible render adapter. Geometry data and appearance are separate from mass, inertia, propulsion and aerodynamic estimates.
+
+Runway is the default product start, with airborne practice still available. The generated contact data now includes an explicitly estimated breakaway factor; [EX-08-R1](research/extra-300-realism/README.md#2026-10-16--runway-startup-ex-08-r1) records parked/takeoff regressions and the paired airborne trace. Independent ground-handling acceptance remains open.
 
 ## Steps and evidence
 

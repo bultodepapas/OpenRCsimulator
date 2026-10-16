@@ -1,15 +1,17 @@
 
 aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
 FT jensen-das-ugly-stik-60: 2.89 kg, S 0.465 m2, start 15.0 m/s, CL_max 1.10 -> Vs estimate 9.5 m/s
-FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.282,"first_untrimmable_mps":32.4587807444682,"points":22,"slowest_trim_mps":10.46}
+FT trim_sweep               valid {"cruise_throttle_at_start_speed":0.282,"first_untrimmable_mps":32.25,"points":29,"slowest_trim_mps":10.5}
 FT stall_power_off          valid {"altitude_lost_m":34.6,"bank_in_first_second_deg":-80.7,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.33,"max_bank_in_recovery_deg":80.7,"ratio_to_cl_max_estimate":1.01,"recovery_time_s":3.32,"stall_alpha_deg":17.4,"stall_speed_mps":9.6,"wing_drop":"left"}
 FT vmax                     valid {"height_error_end_m":0.25,"height_error_run_m":0.31,"initial_acceleration_mps2":7.11,"max_level_speed_kmh":117.8,"max_level_speed_mps":32.72,"rpm_at_max":11149,"time_plus_10_mps_s":1.52,"time_plus_5_mps_s":0.8,"time_to_90_percent_s":3.55}
+FT modes                    valid {}
 FT stall_power_on           valid {"altitude_lost_m":5.7,"bank_in_first_second_deg":-79.8,"break_kind":"wing drop or sink","deceleration_before_break_mps2":0.72,"max_bank_in_recovery_deg":79.8,"ratio_to_cl_max_estimate":0.917,"recovery_time_s":2.43,"stall_alpha_deg":15.9,"stall_speed_mps":8.72,"wing_drop":"left"}
 FT throttle_response        valid {"rpm_full":11149,"rpm_idle_end":2800,"rpm_trimmed":5156,"speed_gain_in_6_s_mps":17.12,"spool_down_90_10_s":0.55,"spool_up_10_90_s":0.55}
-FT climb                    valid {"best":{"path_angle_deg":63.9,"pitch_deg":63.4,"rpm":11149,"speed_mps":19.33,"vertical_speed_mps":17.24,"vs_factor":2.0}}
+FT hands_off                valid {"bank_10_s_deg":12.1,"bank_30_s_deg":43.7,"bank_after_aileron_pulse_deg":9.5,"heading_change_10_s_deg":43.3,"heading_change_30_s_deg":374.4,"height_change_10_s_m":-2.14,"height_change_30_s_m":-88.75,"phugoid_period_s":null,"reached_floor_s":null,"speed_change_10_s_mps":1.69,"speed_change_30_s_mps":8.97}
+FT climb                    valid {"best":{"case":"2.0Vs","path_angle_deg":63.9,"pitch_deg":63.4,"rpm":11149,"speed_mps":19.33,"vertical_speed_mps":17.24,"vs_factor":2.0}}
    note: 1.3 Vs: thrust exceeds the climb need; at 74° pitch it holds 17.22 m/s, not 12.48
    note: 1.6 Vs: thrust exceeds the climb need; at 73° pitch it holds 17.38 m/s, not 15.36
-FT glide                    valid {"best":{"glide_ratio":9.3,"path_angle_deg":-6.1,"pitch_deg":0.5,"rpm":2800,"speed_mps":12.48,"vertical_speed_mps":-1.33,"vs_factor":1.3}}
+FT glide                    valid {"best":{"case":"1.3Vs","glide_ratio":9.3,"path_angle_deg":-6.1,"pitch_deg":0.5,"rpm":2800,"speed_mps":12.48,"vertical_speed_mps":-1.33,"vs_factor":1.3}}
 FT roll_rate                valid {}
 FT pitch_pull               valid {}
 FT loop                     valid {"alpha_target_deg":10.1,"entry_speed_mps":26.18,"heading_change_deg":3.8,"height_change_m":13.8,"loop_height_m":43.1,"loop_time_s":4.48,"max_load_factor_g":8.92,"max_sideslip_deg":1.4,"min_speed_mps":22.53}
@@ -20,4 +22,10 @@ FT knife_edge_full_rudder   valid {}
 FT inverted                 valid {"alpha_deg":-4.5,"elevator_servo":-0.028,"elevator_stick":-0.028,"speed_mps":19.66,"throttle":0.522,"upright_throttle":0.461,"vertical_speed_mps":0.0}
 FT spin                     valid {}
 FT takeoff                  valid {"ground_roll_m":14.8,"liftoff_speed_mps":16.24,"liftoff_speed_vs":1.69,"max_heading_error_deg":0.3,"max_rudder_stick":0.02,"rotation_attitude_deg":8.0,"rudder_free_heading_change_3_s_deg":3.8,"time_to_liftoff_s":2.96}
-FT report: tmp/ft-final/jensen-das-ugly-stik-60/profile.md
+FT landing                  valid {"approach_speed_mps":12.48,"bounced":false,"flare_height_m":0.872583023590009,"max_heading_error_deg":2.0,"rollout_m":40.1,"rollout_time_s":6.21,"touchdown_past_threshold_m":13.1,"touchdown_pitch_deg":4.4,"touchdown_sink_mps":0.48,"touchdown_speed_mps":12.0,"touchdown_speed_vs":1.25}
+FT report: tmp\ft-base1/jensen-das-ugly-stik-60/profile.md
+WARNING: `NaN` ("Not a Number") found in argument passed to JSON.stringify(). `NaN` cannot be represented in JSON, so the value has been replaced with `null`. This warning will not be printed for any later NaN occurrences.
+   at: _stringify (core/io/json.cpp:86)
+   GDScript backtrace (most recent call first):
+       [0] _run (research/flight-test/flight_test.gd:146)
+       [1] _initialize (research/flight-test/flight_test.gd:102)

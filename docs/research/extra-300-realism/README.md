@@ -74,3 +74,23 @@ The Extra whole-tick benchmark on this shared Windows workstation (Ryzen 9 5900X
 4. Qualify wind/crosswind, aerobatic sequences and graphical performance on target hardware. Keep the model experimental until those gates have evidence.
 
 The [reproduction and RC rate guide](../../../research/extra-300/ex06/README.md) gives generation commands, probe runners and manual-derived low-rate settings. This completes the bounded installation correction without claiming that undocumented flight characteristics have become measured facts.
+
+## 2026-10-16 — Runway startup (EX-08-R1)
+
+The Extra's generated contacts lacked the optional breakaway factor required by the static runway solver. Its [source pipeline](../../../research/extra-300/ex05/derive_physics.py) now declares 1.25 as the shared E3b1/Stik engineering estimate, explicitly unmeasured on the Extra. The runtime allows the Extra's selected runway start; no force law or generated geometry was changed. The generated physics, derivation and Workshop descriptor reproduce in a fresh sparse checkout with this change overlaid.
+
+`test_extra_runway.gd` passes 16 checks at 240 and 480 Hz: three supported wheels, six seconds at rest, then three seconds of full throttle and prescribed elevator without crash or propeller strike. Existing installation, airborne handling and stiction checks pass. The [fleet/UI evidence](../menu-investigations/UI-06b/README.md#2026-10-16--fleet-runway-default-ui-06d-r3) covers the product route, defaults and restart behavior. This supports an experimental software startup path, not physical taxi/takeoff validation.
+
+The pre-change [baseline ORFL](../../../research/extra-300/ex05/extra-runway-baseline-20261016.orfl), [CSV/export metadata](../../../research/extra-300/ex05/baseline-export-20261016/flight.csv), [exact replay report](../../../research/extra-300/ex05/baseline-exact-20261016/replay.json) and [comparison](../../../research/extra-300/ex05/baseline-exact-comparison-20261016.json) preserve 261 rows through tick 260. The exact replay passed before the source/data change with `complete: true`, `solver_changed: false` and zero numerical differences.
+
+Adding three wheel anchors expands the auxiliary layout from 5 to 14 values and moves the wake value from index 4 to 13. The ordinary [candidate replay correctly rejects the incompatible checkpoint](../../../research/extra-300/ex05/candidate-replay-20261016/replay.json). The separate [paired report](../../../research/extra-300/ex05/candidate-paired-20261016/paired-report.json) and [common-channel CSV](../../../research/extra-300/ex05/candidate-paired-20261016/paired-common.csv) run both old and new aircraft data under the same current source, using the complete recorded tick/input tape. The explicit projection preserves body/controls/wake and initializes the added airborne anchors to zero. All 13 body-state and six force/moment channels have zero differences across all 261 rows.
+
+The paired report has `complete: true` and `solver_changed: true`: changing the session's aircraft allowlist changes the source fingerprint relative to the recording. This is neither exact replay of the old recording nor equivalence of the extended state. The two data configurations are compared under one current solver; ground behavior is checked separately above. No golden flight was re-recorded.
+
+Reproduce the paired comparison into a new output directory (never overwrite retained evidence):
+
+```powershell
+& $GodotWindows --headless --path app --script ../research/extra-300/ex05/compare_runway_candidate.gd -- --out=res://../tmp/extra-paired-review
+```
+
+The [comparison script](../../../research/extra-300/ex05/compare_runway_candidate.gd) refuses existing outputs, incomplete recordings and auxiliary interventions that need another layout projection. Its integrated rerun reproduced all 261 zero-difference rows with the recorded source/configuration identities.

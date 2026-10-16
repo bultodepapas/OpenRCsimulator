@@ -1002,9 +1002,14 @@ func _modes() -> Dictionary:
 			notes.append("%s: %s" % [named[0], m.message])
 			continue
 		var spiral: float = m.spiral_tau
+		# A "phugoid" faster than the short period is a mislabelled root of the block projection, not a phugoid.
+		var phugoid: Dictionary = m.phugoid
+		if float(phugoid.get("f_hz", 0.0)) >= float(m.short_period.get("f_hz", INF)):
+			notes.append("%s: longitudinal roots do not separate into short period and phugoid; phugoid not reported" % named[0])
+			phugoid = {}
 		rows.append({ case = named[0], speed_mps = snappedf(named[1], 0.01),
 			short_period_hz = snappedf(float(m.short_period.get("f_hz", NAN)), 0.001), short_period_zeta = snappedf(float(m.short_period.get("zeta", NAN)), 0.001),
-			phugoid_period_s = snappedf(1.0 / float(m.phugoid.get("f_hz", NAN)), 0.01), phugoid_zeta = snappedf(float(m.phugoid.get("zeta", NAN)), 0.001),
+			phugoid_period_s = snappedf(1.0 / float(phugoid.get("f_hz", NAN)), 0.01), phugoid_zeta = snappedf(float(phugoid.get("zeta", NAN)), 0.001),
 			dutch_roll_hz = snappedf(float(m.dutch_roll.f_hz), 0.001), dutch_roll_zeta = snappedf(float(m.dutch_roll.zeta), 0.001),
 			roll_time_constant_s = snappedf(float(m.roll_tau), 0.001),
 			spiral_time_to_double_s = snappedf(-spiral * log(2.0), 0.1) if spiral < 0.0 else NAN,

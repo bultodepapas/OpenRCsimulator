@@ -417,3 +417,7 @@ Present accepted models on the existing field using render-only wheel/skid align
 ### 2026-10-15 — Keep menu feedback local to explicit navigation (UI-28-R3)
 
 Use one host-owned, two-voice service with a pinned CC0 sound subset, active-screen/input gating and duplicate suppression. Preview menu volume through the existing reversible presentation preferences; technical flight routes do not install menu audio. Separate Display, Interface and Sound to preserve bounded Settings, and retain each activity's own pinned primary action. Native mixer output, EN/ES captures and lifecycle checks establish the implemented slice; listening preference and exported-release acceptance remain separate. [Evidence](docs/research/menu-investigations/UI-28-R3/README.md).
+
+### 2026-10-16 — Default catalog airplanes to the runway (UI-06d-R3)
+
+Use the existing static ground-start solver for every catalog airplane on Home and Quick Flight. Keep airborne as the secondary explicit selection and preserve valid saved choices. Invalid preferences recover to runway; a failed ground solve refuses launch instead of silently starting airborne. Keep technical trace fixtures explicit and preserve their existing reference default. Extra receives an attributed provisional stiction parameter through its generator; this does not close physical handling acceptance. [Behavior and regression evidence](docs/research/menu-investigations/UI-06b/README.md#2026-10-16--fleet-runway-default-ui-06d-r3).

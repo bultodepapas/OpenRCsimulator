@@ -1,0 +1,35 @@
+{
+  "card": "ft-card-v2",
+  "commit": "d2c8bcebbb6d78d14cd6f6ec60586219c58bc997",
+  "dirty_paths": [
+    "app/app_root.gd",
+    "app/app_state/aircraft_catalog.gd",
+    "app/app_state/preferences.gd",
+    "app/assets/scenery/population/textures/161979d40c8341dd719ffd00ad3e1074102348bc313f6095a7d1cb10b783d2c9.png.import",
+    "app/assets/scenery/population/textures/3c43b0952b394597e91e5b54b82138e04748502e451e33c12d1d72ba0024b8a0.png.import",
+    "app/i18n/es.po",
+    "app/main.gd",
+    "app/tests/test_runway_start.gd",
+    "app/tests/test_start_choice.gd",
+    "app/tests/test_ui_runway.gd",
+    "app/ui/home.gd",
+    "app/render/rotor/hx700_controller_input.gd.uid",
+    "app/tests/test_heli_inspection_controller.gd.uid",
+    "app/tests/test_runway_cli.gd",
+    "app/tests/test_runway_fleet.gd"
+  ],
+  "godot": "4.7.2.stable.official.ed1daf0bf",
+  "app": "tmp/ft-mut/app (disposable copy; P-51 controls.max_throw.elevator \u00d7 1.2)",
+  "only": null,
+  "aircraft": {
+    "p51d-mustang-120": {
+      "exit": 0,
+      "script_errors": 0,
+      "wall_s": 313.8,
+      "valid_tests": 20,
+      "tests": 20,
+      "data_file": "data/aircraft/p51d_mustang_120.json",
+      "data_sha256": "6c74e5a2cba7e397233e42333b934586f4636ed60fb34df661287d94acce13ea"
+    }
+  }
+}

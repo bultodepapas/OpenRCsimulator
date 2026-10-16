@@ -47,7 +47,7 @@ func _array_matches(encoded: String, values: PackedFloat64Array, tolerance: floa
 
 func _initialize() -> void:
 	_check("Timber runway policy is explicitly qualified", Session.runway_aircraft_supported("turbo-lumber-evolution"))
-	_check("Extra remains outside the runway policy", not Session.runway_aircraft_supported("gp-extra-300s-60"))
+	_check("Extra supports the runway policy", Session.runway_aircraft_supported("gp-extra-300s-60"))
 	var field: Dictionary = _field()
 	if field.is_empty():
 		quit(1)
@@ -164,7 +164,11 @@ func _initialize() -> void:
 	var reload_recorder: RefCounted = Recorder.new(session.sim)
 	reload_recorder.start(session.trace_meta())
 	session.resetting.connect(func() -> void: reload_recorder.recording = false)
-	session.aircraft_path = Catalog.entry("gp-extra-300s-60").data
+	# Keep a genuinely unsupported synthetic ID now that the complete catalog supports runway starts.
+	output = FileAccess.open(reload_path, FileAccess.WRITE)
+	output.store_string(source.replace('"jensen-das-ugly-stik-60"', '"runway-test-unsupported"'))
+	output.close()
+	session.aircraft_path = reload_path
 	var unsupported_reload: String = session.reload()
 	_check("valid but unsupported runway reload is rejected before closing the recorder",
 		unsupported_reload.begins_with("reload failed") and reload_recorder.recording
@@ -173,7 +177,6 @@ func _initialize() -> void:
 	session.aircraft_path = source_path
 	_check("valid Stik reload succeeds after a refused candidate", session.reload().begins_with("aircraft reloaded: runway")
 		and session.is_flyable())
-	DirAccess.remove_absolute(ProjectSettings.globalize_path(reload_path))
 
 	# R04: a rejected replacement is diagnostic and preserves the committed flight. Initial failures above remain parked.
 	var rejection_events := [0, 0, 0]
@@ -210,7 +213,7 @@ func _initialize() -> void:
 	_check("valid retry after explicit runway failures succeeds", session.start_error.is_empty()
 		and session.is_flyable() and session.sim.state == launch_state)
 
-	var unsupported: Node = _session(Session.START_RUNWAY, Catalog.entry("gp-extra-300s-60").data)
+	var unsupported: Node = _session(Session.START_RUNWAY, reload_path)
 	_check("unsupported aircraft field loads", unsupported.set_field(field))
 	unsupported.reset()
 	_check("unsupported aircraft is refused without an airborne fallback",
@@ -244,6 +247,7 @@ func _initialize() -> void:
 
 	session.free()
 	unsupported.free()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(reload_path))
 	unsupported_field.free()
 	legacy.free()
 	print("UI-06a: %d checks, %d failed" % [_checks, _failures])

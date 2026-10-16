@@ -79,7 +79,7 @@ const ENTRIES := [
 		name = "Ventage Jet",
 		summary = "Sport jet · 2.00 m · JetCat P100-RX turbine",
 		status = EXPERIMENTAL,
-		status_note = "Experimental: first physics estimate (turbine, kit and owner data), not yet flight-tested. Flaps up, gear up: in-air start only.",
+		status_note = "Experimental: first physics estimate (turbine, kit and owner data), not yet flight-tested. Runway or airborne start.",
 		data = "res://data/aircraft/sebart_avanti_s_a200.json",
 	},
 	{

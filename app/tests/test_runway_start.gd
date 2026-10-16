@@ -160,16 +160,22 @@ func _physics_checks(session: Node, model: Dictionary, gear: Dictionary, solved:
 
 func _refusals(field: Dictionary) -> void:
 	var spot := GroundStart.threshold(field)
-	for id in ["gp-extra-300s-60"]: # P51-21 qualified the P-51 (test_p51_ground.gd)
-		var other := FlightSession.new()
-		other.setup(Catalog.entry(id).data)
-		root.add_child(other)
-		other.input_enabled = false
-		other.set_field(field)
-		var refused: bool = not other.reset_on_runway(spot.north, spot.east, spot.heading)
-		_check("%s (no stiction data) is refused and keeps its normal flying start" % id, refused and other.is_flyable()
-			and -other.sim.state[RB.POS + 2] > 5.0)
-		other.queue_free()
+	var source: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Catalog.entry(Catalog.DEFAULT_ID).data))
+	source.landing_gear.erase("breakaway_factor")
+	var path := "user://test_runway_no_stiction.json"
+	var file := FileAccess.open(path, FileAccess.WRITE)
+	file.store_string(JSON.stringify(source))
+	file.close()
+	var other := FlightSession.new()
+	other.setup(path)
+	root.add_child(other)
+	other.input_enabled = false
+	other.set_field(field)
+	var refused: bool = not other.reset_on_runway(spot.north, spot.east, spot.heading)
+	_check("missing stiction data is refused and keeps its normal flying start", refused and other.is_flyable()
+		and -other.sim.state[RB.POS + 2] > 5.0)
+	other.queue_free()
+	DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 
 
 func _normal_sum(s: PackedFloat64Array, gear: Dictionary, surfaces := PackedFloat64Array()) -> float:

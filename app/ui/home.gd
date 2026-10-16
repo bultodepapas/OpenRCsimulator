@@ -54,7 +54,7 @@ const HOME_AUTOWRAP_META := "_home_authored_autowrap_mode"
 
 ## The catalog aircraft that Fly starts (set_aircraft() changes it).
 var aircraft_id := Catalog.DEFAULT_ID
-var start_choice: String = "airborne"
+var start_choice: String = "runway"
 var runway_available: bool = true
 var weather_config: Dictionary = WeatherSettings.defaults()
 var failure_config: Dictionary = {"probability_percent": 0, "include_catastrophic": false, "notify": true}
@@ -912,7 +912,7 @@ func set_start_choice(choice: String) -> void:
 		return
 	var supported: bool = FlightSession.runway_aircraft_supported(aircraft_id) and runway_available
 	var half_power: bool = FlightSession.half_power_start_supported(aircraft_id)
-	start_choice = "runway" if supported and choice == "runway" else "airborne"
+	start_choice = "runway" if supported and choice != "airborne" else "airborne"
 	if half_power and choice == FlightSession.START_HALF_POWER:
 		start_choice = FlightSession.START_HALF_POWER
 	start_button.disabled = not supported and not half_power
@@ -929,9 +929,10 @@ func _cycle_start_choice() -> void:
 	if Catalog.is_rotorcraft(aircraft_id):
 		start_requested.emit("runway" if start_choice == "airborne" else "airborne")
 		return
-	var choices: Array[String] = ["airborne"]
+	var choices: Array[String] = []
 	if FlightSession.runway_aircraft_supported(aircraft_id) and runway_available:
 		choices.append("runway")
+	choices.append("airborne")
 	if FlightSession.half_power_start_supported(aircraft_id):
 		choices.append(FlightSession.START_HALF_POWER)
 	start_requested.emit(choices[(choices.find(start_choice) + 1) % choices.size()])

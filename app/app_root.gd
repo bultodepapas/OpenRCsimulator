@@ -269,7 +269,7 @@ func show_home() -> void:
 	home.ground_vehicle_id = selected_ground_vehicle_id
 	home.runway_available = home_scene.field.get("id", "") == "default"
 	home.set_aircraft(aircraft)
-	home.set_start_choice(preferences.get("start_choice", "airborne"))
+	home.set_start_choice(preferences.get("start_choice", Preferences.DEFAULTS.start_choice))
 	home.set_weather_config(home_weather)
 	home.set_lighting_config(lighting_config)
 	home.set_sky_config(preferences.get("sky_config", SkyConfig.defaults()))
@@ -399,7 +399,7 @@ func set_aircraft(id: String) -> void:
 	elif not FlightSession.runway_aircraft_supported(id):
 		preferences.start_choice = "airborne"
 	if preferences.start_choice == FlightSession.START_HALF_POWER and not FlightSession.half_power_start_supported(id):
-		preferences.start_choice = "airborne"
+		preferences.start_choice = home.start_choice
 	if home_scene != null:
 		home_scene.request_aircraft(id)
 	var err := Preferences.save_to(preferences_path, preferences)

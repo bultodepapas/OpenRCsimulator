@@ -84,10 +84,10 @@ static func load_from(path: String) -> Dictionary:
 	if typeof(aircraft) == TYPE_STRING and Catalog.has(aircraft):
 		prefs.aircraft = aircraft
 	var start_choice: Variant = cfg.get_value("flight", "start_choice", DEFAULTS.start_choice)
-	# Existing explicit airborne choices remain valid, and unsupported aircraft never inherit the runway default.
-	prefs.start_choice = "airborne"
+	# Missing or invalid choices use the product default; explicit airborne choices remain valid.
+	prefs.start_choice = "runway" if FlightSession.runway_aircraft_supported(prefs.aircraft) or Catalog.is_rotorcraft(prefs.aircraft) else "airborne"
 	if typeof(start_choice) == TYPE_STRING:
-		if start_choice == "airborne" or (start_choice == "runway" and FlightSession.runway_aircraft_supported(prefs.aircraft)) \
+		if start_choice == "airborne" or (start_choice == "runway" and (FlightSession.runway_aircraft_supported(prefs.aircraft) or Catalog.is_rotorcraft(prefs.aircraft))) \
 				or (start_choice == FlightSession.START_HALF_POWER and FlightSession.half_power_start_supported(prefs.aircraft)):
 			prefs.start_choice = start_choice
 	var latency_marker: Variant = cfg.get_value("flight", "latency_marker", DEFAULTS.latency_marker)

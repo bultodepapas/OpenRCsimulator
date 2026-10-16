@@ -62,3 +62,21 @@ Every image has a neighboring JSON manifest with the full hash and runtime evide
 ## Limits
 
 This is software evidence from the source tree on Linux with software rendering. It verifies the selector, transitions, save/error behavior and selected-start propagation. It does not test physical radio hardware, a packaged build, pilot readability on target hardware, flight handling, taxi, takeoff or landing. The runway choice remains experimental and supported only by the default field with the Ugly Stik.
+
+## 2026-10-16 — Fleet runway default (UI-06d-R3)
+
+This follow-up supersedes the original aircraft restriction above. All eight current catalog airplane configurations support runway starts on the default field. Home starts with runway, then cycles to airborne and the optional Stik half-power start. Missing/invalid saved choices recover to runway; explicit airborne choices remain valid. Quick Flight defaults to runway and accepts `--start=airborne`. Technical traces retain their airborne reference fixture. Restart repeats the selected condition.
+
+Native Windows Godot 4.7.2 checks passed without engine errors:
+
+- `test_ui_runway.gd`: real EN/ES navigation, preferences, rejection/retry, radio isolation, restart and Home → Fly → Home for every airplane.
+- `test_runway_fleet.gd`: 116 checks; every airplane launches at closed throttle on supported gear, stays parked for two seconds in calm and default gentle weather, restarts exactly and accepts an explicit airborne start. Maximum observed idle speed was 0.00224 m/s in gentle weather.
+- `test_runway_cli.gd`: 10 checks; Quick Flight, explicit airborne/half-power selection, technical reference trace and invalid-option rejection.
+- `test_start_choice.gd`: 36 checks; `test_runway_start.gd`: 18; `test_runway_checkpoint_metadata.gd`: 14; `test_prop_strike.gd`: 37; `test_ground_stiction.gd`: 25.
+- Existing Home, language, weather, turbulence, pause lighting, flight-log UI and Workshop integration tests passed. Launch-caption layout passed 44 checks. Extra installation and airborne handling passed 17 and 12 checks respectively.
+- `test_extra_runway.gd`: 16 checks; six seconds parked, followed by an uninterrupted three-second takeoff at both 240 and 480 Hz, with no crash or propeller strike. The 480 Hz run lifted off at 1.596 s and finished 5.04 m above its starting height. These are scripted software observations, not measured takeoff performance.
+- Resource import and changed-script parsing passed. The Extra physics JSON, generated derivation and Workshop descriptor also reproduced in a fresh sparse clone with the four changed source/output files overlaid.
+
+The native [Spanish Extra Home capture](captures/runway-home-extra-es.png), with [manifest](captures/runway-home-extra-es.json), was visually inspected at 1280×720 on the RTX 3090 Compatibility renderer: **Inicio: pista** is visible and **VOLAR** remains available.
+
+The Extra now authors the shared estimated 1.25 breakaway factor through its [generator](../../../../research/extra-300/ex05/derive_physics.py); its Workshop descriptor was regenerated. The global descriptor check also reports a pre-existing stale P-51 descriptor (its recorded hash matches neither HEAD nor current source bytes); that unrelated descriptor was preserved. Physical ground handling remains experimental. The glow-engine variants retain their explicit warm-engine starter procedure. These checks establish software startup behavior, not measured flight realism or a new packaged release.

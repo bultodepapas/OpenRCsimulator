@@ -30,7 +30,7 @@
 # recording_start_aux: "[6073.652990971725,0.011949709776655465,0.015830406523610185,0.04110295703393518]"
 # recording_start_engine_running: "true"
 # ground: "retractable tricycle; downlock point contacts; rudder nose steering; main wheel brakes; weight-on-wheels retraction interlock"
-# created_utc: "2026-10-16T22:28:57"
+# created_utc: "2026-10-16T23:21:47"
 # engine: "Godot 4.7.2-stable (official)"
 # dt_s: 0.00416666666666667
 # mass_kg: 21.499999
@@ -64,7 +64,7 @@
 # runway_fallback: "none"
 # aero_loads_law: "section-plane-source-weighted-wake-velocity-v2"
 # wake_state_unit: "m/s (equal-area mean of section Vp*CL)"
-# flight_test: "ft-card-v1"
+# flight_test: "ft-card-v2"
 # test: "loop"
 # rows: every 12 ticks
 tick,t_s,north_m,east_m,down_m,alt_m,u_mps,v_mps,w_mps,speed_mps,qw,qx,qy,qz,yaw_deg,pitch_deg,roll_deg,p_radps,q_radps,r_radps,Fx_N,Fy_N,Fz_N,Mx_Nm,My_Nm,Mz_Nm,cmd_roll,cmd_pitch,cmd_yaw,cmd_throttle,engine_rpm,srv_roll,srv_pitch,srv_yaw,gear_extension,gear_target_down,cmd_gear_down,cmd_wheel_brake,cmd_flaps,flap_fraction,flap_deg

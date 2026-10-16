@@ -383,8 +383,8 @@ const START_AIRBORNE := "airborne"
 const START_RUNWAY := "runway"
 const START_HALF_POWER := "airborne_half_power"
 const PowerTrim := preload("res://physics/cruise_trim.gd")
-## Aircraft whose runway starts have passed the ground qualification gate (TT-11).
-const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "stik-glow-61fx-2t", "sebart-avanti-s-a200-p100rx", "p51d-mustang-120"]
+## Catalog aircraft with supported static runway starts; physical ground handling remains aircraft-specific.
+const RUNWAY_AIRCRAFT_IDS := ["jensen-das-ugly-stik-60", "turbo-lumber-evolution", "stik-glow-55ax-2t", "stik-glow-fs64v-4t", "stik-glow-61fx-2t", "sebart-avanti-s-a200-p100rx", "p51d-mustang-120", "gp-extra-300s-60"]
 const RUNWAY_FIELD_ID := "default"
 
 

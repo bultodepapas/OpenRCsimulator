@@ -412,13 +412,14 @@ def gear_contact(identity, name, position, stiffness, travel, steering=0.0):
 
 
 landing_gear = {
-    "description": "E5a: fixed main wheels and rudder-linked tail wheel. File-backed GP-02 wheel profiles supply per-contact radius, inertia and rim-speed dynamics; terrain-aware contact and wheel-radius corrections are active. E5a spring, damping, tyre and steering values remain provisional; no caster, brakes or stiction anchors.",
+    "description": "E5a: fixed main wheels and rudder-linked tail wheel. File-backed GP-02 wheel profiles supply per-contact radius, inertia and rim-speed dynamics; terrain-aware contact and wheel-radius corrections are active. E5a spring, damping, tyre and steering values remain provisional. The 1.25 breakaway factor is the shared E3b1 engineering estimate midpoint borrowed from Stik, not an Extra measurement; no caster or brakes.",
     "contacts": [gear_contact("contact_main_left", "main_left", main_pos[0], k_main, 0.08),
                  gear_contact("contact_main_right", "main_right", main_pos[1], k_main, 0.08),
                  gear_contact("contact_tail", "tail", tail_pos, k_tail, 0.05, -25.0)],
     "rolling_resistance": q(0.04, "1", "estimated", "E5a: reuse Stik E2 reference C_rr for similarly sized model wheels; Extra 69.85 mm mains and 25.4 mm tail are not separately calibrated. Field factors apply per contact."),
     "side_friction": q(0.8, "1", "borrowed", "E5a: same provisional JSBSim c172x coefficient used by Stik and P-51 E2 fixtures; no Extra tyre measurement."),
     "peak_slip_angle": q(6.0, "deg", "borrowed", "E5a: same provisional 6 degree peak-slip regularization as Stik/P-51 E2; no Extra tyre measurement."),
+    "breakaway_factor": q(1.25, "1", "estimated", "E5a runway-start candidate: reuse the shared E3b1 engineering estimate midpoint (1.0-1.5) from the Stik ground knowledge base. Extra bearing/axle breakaway has not been measured; this is an explicit provisional transfer, not Extra-specific validation."),
 }
 
 # --- EX-06: physical installation from the rendered thrust frame --------------------------------------------
@@ -663,7 +664,7 @@ Throws (manual p43 high rate): aileron {throws['aileron']:.1f}°, elevator {thro
   zero-alpha lift reproduce aircraft-level CLa and CL0. This is a consistency calibration, not independent section data;
   Clp and detailed spanwise attached/post-stall loading remain model predictions at the current strip resolution.
 - CL-dependent cross terms (Clb wing part, Clr, Cnp, adverse yaw) are frozen at CL_ref = {CL_ref:.2f}.
-- No propwash or fuel burn. E5a spring, damping, tyre, steering and collapse values remain provisional. The file-backed GP-02 wheel profile supplies per-contact radii, inertias, spin relaxation and brake availability; the shared ground path applies wheel/terrain interaction and continuous rim-speed state. Extra has no caster, brakes or stiction anchors, and no Extra takeoff/landing handling acceptance yet.
+- No propwash or fuel burn. E5a spring, damping, tyre, steering and collapse values remain provisional. The file-backed GP-02 wheel profile supplies per-contact radii, inertias, spin relaxation and brake availability; the shared ground path applies wheel/terrain interaction and continuous rim-speed state. The breakaway factor 1.25 is the shared E3b1 engineering estimate midpoint transferred from Stik; Extra bearing/axle breakaway has not been measured. Extra has no caster or brakes, and no Extra takeoff/landing handling acceptance yet.
 """
 
 if "--check" in sys.argv:
