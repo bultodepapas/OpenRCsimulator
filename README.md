@@ -21,7 +21,7 @@ The five aircraft shown from changing angles. [Still views and render provenance
 
 **First flight:** new Home preferences start on the Stik runway with gentle wind and passing evening; saved choices take precedence. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. [Player guide and controls](docs/FIRST-LAUNCH.md).
 
-The latest stable download contains the **v0.1.1 snapshot**. The features and aircraft below describe current source. Work toward the next stable release, v0.1.2, is in progress; no public v0.1.2 package or prerelease download is available. The [draft release work notes](docs/releases/v0.1.2-rc.1.md) track the unresolved Ugly Stik rudder recovery, R02 yaw damping and experimental P-51D takeoff/loop acceptance. These checks remain open; v0.1.1 is still the latest stable release.
+The latest published download contains the **v0.1.1 snapshot**. The features and aircraft below describe current source. Preparation for stable v0.1.2 is underway, but its packages are not published yet; v0.1.1 remains the latest stable download. The [v0.1.2 release notes](docs/releases/v0.1.2.md) describe the planned software release and its known experimental-aircraft limits. Stik rudder recovery and R02 yaw-damping evaluation remain open, and P-51D P51-22 powered takeoff/loop acceptance is pending. These are disclosed limits of experimental aircraft, not blockers for the stable software release, and they do not count as passes or physical validation.
 
 ## Aircraft
 
@@ -29,7 +29,7 @@ The latest stable download contains the **v0.1.1 snapshot**. The features and ai
 | --- | --- | --- |
 | [Jensen Das Ugly Stik 60](docs/UGLY-STIK-PLAN.md) | 1.52 m, .61 glow, tricycle gear | Reference model under evaluation; Home offers airborne or experimental runway start |
 | [Great Planes Extra 300S .60](docs/EXTRA-300-PLAN.md) | 1.63 m, .61 glow, taildragger | Experimental |
-| [P-51D Mustang 1/4](docs/P51-PLAN.md) | 2.82 m, 120 cc gasoline, retractable taildragger gear | Experimental; simulated flaps; not flight-identified |
+| [P-51D Mustang 1/4](docs/P51-PLAN.md) | 2.82 m, 120 cc gasoline, retractable taildragger gear | Experimental; simulated flaps; not flight-identified; P51-22 takeoff/loop acceptance pending |
 | [Ventage Jet](docs/AVANTI-S-PLAN.md) | 2.00 m, JetCat P100-RX turbine | Experimental; airborne, flaps and gear up |
 | [Turbo Lumber Evolution](docs/TIMBER-INTEGRATION-PLAN.md) | 1.55 m, 800 Kv, 4S electric, fixed wheels | Experimental; airborne or runway start; flaps up, assists off |
 | [RC Helicopter Research Trainer](docs/HELICOPTER.md) | X-Cell .60 SE flight reference with an HX-700 visual surrogate | Experimental; integrated hover trainer, physical validation remains open |

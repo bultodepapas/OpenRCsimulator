@@ -1,0 +1,282 @@
+{
+  "schema": "openrc-p51-22-baseline-receipt v1",
+  "created_utc": "2026-10-16T18:33:09.987855+00:00",
+  "purpose": "Diagnostic software baselines for known P51-22 physical acceptance limits. The P-51 remains experimental in the stable game; these aircraft-specific limits are not general release blockers.",
+  "source": {
+    "repo": "OpenRCsimulator",
+    "commit": "8b8574da009e3e47860adb6d44871402a760a4b5",
+    "tree": "1a5941173c079e6ee8b5ed5785310486d8bd68e9",
+    "tracked_source_files_match_commit_blobs_after_crlf_normalization": true,
+    "baseline_build_source": "development",
+    "baseline_build_version": "0.1.1",
+    "embedded_commit": "",
+    "identity_note": "The pinned local Godot build embeds no commit. Git commit/tree and source-file hashes are retained here. The diagnostic source clone and Godot import cache are not retained."
+  },
+  "environment": {
+    "os": "Windows-10-10.0.26100-SP0",
+    "engine_path_repo_relative": ".tools/Godot_v4.7.2-stable_win64_console.exe",
+    "engine_version": "4.7.2.stable.official.ed1daf0bf",
+    "engine_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+  },
+  "strict_acceptance": {
+    "test_p51_ground.gd": {
+      "command": "Godot --headless --path app --audio-driver Dummy --script res://tests/test_p51_ground.gd",
+      "working_directory": "repository root",
+      "exit_code": 1,
+      "checks": "13 checks, 1 failed, 0 pending P51-22",
+      "observed": "takeoff liftoff 26.7 m/s at 57 m; strict 1.05–1.5 Vs screen failed",
+      "log": {
+        "path": "test_p51_ground.gd.strict.log",
+        "sha256": "bdbe07d095ca1132feb4bc5cca57277bcca3f5c99b0227817cc7e786b11f944a",
+        "bytes": 1859
+      }
+    },
+    "test_p51_handling.gd": {
+      "command": "Godot --headless --path app --audio-driver Dummy --script res://tests/test_p51_handling.gd",
+      "working_directory": "repository root",
+      "exit_code": 1,
+      "checks": "17 checks, 2 failed, 0 pending P51-22",
+      "observed": "loop accumulated 320° in 8 s; peak pitch 43.6°; maximum sideslip 19.5°",
+      "log": {
+        "path": "test_p51_handling.gd.strict.log",
+        "sha256": "5e2d53929bbfeac3109d83c9080cf1f3fcc0e093d75ee4211c143856ae38a86f",
+        "bytes": 1347
+      }
+    }
+  },
+  "allow_known_p51_22_used_for_recording_only": true,
+  "recorders": {
+    "takeoff": {
+      "path": "record_p51_takeoff.gd",
+      "sha256": "68abae2953110e0b911775f50832fc9eee0cf9d09e3453c9c6164764a6069ddd",
+      "source_test": "app/tests/test_p51_ground.gd",
+      "behavior": "Runs inherited test setup and state-dependent takeoff pilot; recording begins for the 12 s right-rudder takeoff."
+    },
+    "loop": {
+      "path": "record_p51_loop.gd",
+      "sha256": "0bafca7b337120c0644f282fa988df24e5bcdab513564463ac07ff73816d20c8",
+      "source_test": "app/tests/test_p51_handling.gd",
+      "behavior": "Uses the same setup, hands-off and roll prehistory, trim, altitude, loop stick function and per-tick command logic; replay CSV was compared before omission."
+    }
+  },
+  "recordings": {
+    "takeoff": {
+      "orfl": {
+        "path": "p51-powered-takeoff.orfl",
+        "sha256": "7545f9aa3ee85935bc394bc5ecf136208e0618ca278b1e3616ef05c3b52f5048",
+        "bytes": 2290072,
+        "ticks": 2880,
+        "rows": 2881,
+        "dt_s": 0.004166666666666667,
+        "duration_s": 12.0,
+        "source_sha256": "7545f9aa3ee85935bc394bc5ecf136208e0618ca278b1e3616ef05c3b52f5048"
+      },
+      "export": {
+        "report": "export-takeoff.json",
+        "report_sha256": "6169c294bdf89d78665eeaa53f864bd770628b19c043933ea8c7b86a917d15b2",
+        "csv": "export-takeoff.csv",
+        "csv_sha256": "9de404737858cdfe126cf9750b9e82590a8d036593efe03a8d0ec766d62dd9da",
+        "status": "ok",
+        "complete": true,
+        "solver_changed": false,
+        "solver_sha256": "24fb5f29139be02dbb2ff695e86717c7e1cf8e09f043ef13e57c6f9bb1064f5b"
+      },
+      "replay": {
+        "report": "replay-takeoff.json",
+        "report_sha256": "86abbf88c184ce3103f0634f92b9febd4b296e3d4c3503bcfb5d745a8789d978",
+        "csv_retained": false,
+        "status": "ok",
+        "complete": true,
+        "solver_changed": false,
+        "solver_sha256": "24fb5f29139be02dbb2ff695e86717c7e1cf8e09f043ef13e57c6f9bb1064f5b"
+      },
+      "comparison": {
+        "path": "compare-takeoff.json",
+        "sha256": "1dcdd46a2bf4ac003a3156a1f99429d221584ba66aabacf1b45230b18c015b85",
+        "status": "ok",
+        "first_divergence": null,
+        "rows": 2881,
+        "all_group_max_abs_zero": true,
+        "all_group_rmse_zero": true
+      }
+    },
+    "loop": {
+      "orfl": {
+        "path": "p51-inside-loop.orfl",
+        "sha256": "2cf701a2be6e908d87735002f30e9cff34b73e732766606f58c6f153f559d162",
+        "bytes": 1540464,
+        "ticks": 1920,
+        "rows": 1921,
+        "dt_s": 0.004166666666666667,
+        "duration_s": 8.0,
+        "source_sha256": "2cf701a2be6e908d87735002f30e9cff34b73e732766606f58c6f153f559d162"
+      },
+      "export": {
+        "report": "export-loop.json",
+        "report_sha256": "5ec06d3242b85b189f74cb9e75933292d9862114f58aa766e7ff3d0b4036a920",
+        "csv": "export-loop.csv",
+        "csv_sha256": "3431f29e016d87bbede20a2a1ee92cb46048cc24f74ed42d3cf82a6372a34eba",
+        "status": "ok",
+        "complete": true,
+        "solver_changed": false,
+        "solver_sha256": "24fb5f29139be02dbb2ff695e86717c7e1cf8e09f043ef13e57c6f9bb1064f5b"
+      },
+      "replay": {
+        "report": "replay-loop.json",
+        "report_sha256": "447d1c91d2c099388c08aa368abd4e1121d77396976b43c3c9c24e1ccd6b37cf",
+        "csv_retained": false,
+        "status": "ok",
+        "complete": true,
+        "solver_changed": false,
+        "solver_sha256": "24fb5f29139be02dbb2ff695e86717c7e1cf8e09f043ef13e57c6f9bb1064f5b"
+      },
+      "comparison": {
+        "path": "compare-loop.json",
+        "sha256": "4c473975824298ae18a8ffea2f91505b42af67bb446f37020a8065494e09d1a6",
+        "status": "ok",
+        "first_divergence": null,
+        "rows": 1921,
+        "all_group_max_abs_zero": true,
+        "all_group_rmse_zero": true
+      }
+    }
+  },
+  "solver_sha256": "24fb5f29139be02dbb2ff695e86717c7e1cf8e09f043ef13e57c6f9bb1064f5b",
+  "source_files": {
+    "app/tests/test_p51_ground.gd": {
+      "windows_working_sha256": "68ad3389f2f3f3c1ffcf9611e90157fd9fb15ccea8e0c0a0eed09b15d8cb79b7",
+      "normalized_lf_sha256": "ca729a9fd3d62a7b3778aa82be0c0d1a750dc249ba549de20f47543e6af689e1",
+      "git_blob_sha256": "ca729a9fd3d62a7b3778aa82be0c0d1a750dc249ba549de20f47543e6af689e1",
+      "line_ending_normalization": "CRLF to LF"
+    },
+    "app/tests/test_p51_handling.gd": {
+      "windows_working_sha256": "de45e5eef44d6e75725b8225ea4bd5ea8501dff751b27af661dd97d107c3c0d3",
+      "normalized_lf_sha256": "dbd23144dc6ccd3e7056b980a9e7d25695d2c0e9ea7ec5cd874f9f6559a1bc1f",
+      "git_blob_sha256": "dbd23144dc6ccd3e7056b980a9e7d25695d2c0e9ea7ec5cd874f9f6559a1bc1f",
+      "line_ending_normalization": "CRLF to LF"
+    },
+    "app/tests/p51_envelope_base.gd": {
+      "windows_working_sha256": "5199a22d786cbfac632f2d41ab5b2f7ced5d2d92d0e226e35d09e6b770de8e91",
+      "normalized_lf_sha256": "78f732320ae5e0455308918228352ed449b9899be17c8cfc42a663bcc2629f19",
+      "git_blob_sha256": "78f732320ae5e0455308918228352ed449b9899be17c8cfc42a663bcc2629f19",
+      "line_ending_normalization": "CRLF to LF"
+    },
+    "app/sim/maneuvers.gd": {
+      "windows_working_sha256": "4a6b014c5227941e13ac7daef465c520a8899045233731ecdd79139c165dd617",
+      "normalized_lf_sha256": "34b1b6ad69792b46343497aa6d2a0715e369634ee613d56ce405335c1532b2db",
+      "git_blob_sha256": "34b1b6ad69792b46343497aa6d2a0715e369634ee613d56ce405335c1532b2db",
+      "line_ending_normalization": "CRLF to LF"
+    },
+    "app/sim/flight_session.gd": {
+      "windows_working_sha256": "01556c220431ce45a23f69abfac430e5111876682274f92a3af355388395b5ca",
+      "normalized_lf_sha256": "2d946881fd7a4446fd62e2d9f4664009b5a03ae5f98bdeefa1e2112fd4451240",
+      "git_blob_sha256": "2d946881fd7a4446fd62e2d9f4664009b5a03ae5f98bdeefa1e2112fd4451240",
+      "line_ending_normalization": "CRLF to LF"
+    },
+    "app/sim/flight_log.gd": {
+      "windows_working_sha256": "94b1e55911012e07085bb29bee39d0ab692440f7484ca186b5e03b3edb583dc5",
+      "normalized_lf_sha256": "15732493fe476be55403d12dc65044b978c9a693bf2beaf79e612109dfaebc48",
+      "git_blob_sha256": "15732493fe476be55403d12dc65044b978c9a693bf2beaf79e612109dfaebc48",
+      "line_ending_normalization": "CRLF to LF"
+    },
+    "app/sim/simulation.gd": {
+      "windows_working_sha256": "e764f187ebcdc24163b59e2c5424440e016f0ad182a3c4a0f66d5dd1f40471b3",
+      "normalized_lf_sha256": "47a22c4d7f8539b5954f3bd36407d98bd1b2709a1378bf67916bd985e43681c6",
+      "git_blob_sha256": "47a22c4d7f8539b5954f3bd36407d98bd1b2709a1378bf67916bd985e43681c6",
+      "line_ending_normalization": "CRLF to LF"
+    },
+    "app/data/aircraft/p51d_mustang_120.json": {
+      "windows_working_sha256": "982e41c345dabe6be43da38438d36d725c84eaf41561d52750f4698585789ae6",
+      "normalized_lf_sha256": "3e9581d74b90b7b74826fc76e3cd0847d6e2088dab8e1bec88aba9f6f2597fe3",
+      "git_blob_sha256": "3e9581d74b90b7b74826fc76e3cd0847d6e2088dab8e1bec88aba9f6f2597fe3",
+      "line_ending_normalization": "CRLF to LF"
+    },
+    "app/tests/p51_baseline_diagnostics/record_p51_takeoff.gd": {
+      "artifact_path": "record_p51_takeoff.gd",
+      "sha256": "68abae2953110e0b911775f50832fc9eee0cf9d09e3453c9c6164764a6069ddd",
+      "git_blob_sha256": null,
+      "note": "Untracked D-only diagnostic script retained here for reproduction."
+    },
+    "app/tests/p51_baseline_diagnostics/record_p51_loop.gd": {
+      "artifact_path": "record_p51_loop.gd",
+      "sha256": "0bafca7b337120c0644f282fa988df24e5bcdab513564463ac07ff73816d20c8",
+      "git_blob_sha256": null,
+      "note": "Untracked D-only diagnostic script retained here for reproduction."
+    }
+  },
+  "tool_logs": {
+    "test_p51_ground.gd.strict.log": {
+      "path": "test_p51_ground.gd.strict.log",
+      "sha256": "bdbe07d095ca1132feb4bc5cca57277bcca3f5c99b0227817cc7e786b11f944a",
+      "bytes": 1859
+    },
+    "test_p51_handling.gd.strict.log": {
+      "path": "test_p51_handling.gd.strict.log",
+      "sha256": "5e2d53929bbfeac3109d83c9080cf1f3fcc0e093d75ee4211c143856ae38a86f",
+      "bytes": 1347
+    }
+  },
+  "report_path_normalization": "Only the source location string was changed from the D staging path to the sibling ORFL filename in each export/replay JSON. Result fields and source_sha256 are unchanged; retained JSON hashes are recorded above.",
+  "retained_artifacts": {
+    "compare-loop.json": {
+      "sha256": "4c473975824298ae18a8ffea2f91505b42af67bb446f37020a8065494e09d1a6",
+      "bytes": 1439
+    },
+    "compare-takeoff.json": {
+      "sha256": "1dcdd46a2bf4ac003a3156a1f99429d221584ba66aabacf1b45230b18c015b85",
+      "bytes": 1441
+    },
+    "export-loop.csv": {
+      "sha256": "3431f29e016d87bbede20a2a1ee92cb46048cc24f74ed42d3cf82a6372a34eba",
+      "bytes": 1409611
+    },
+    "export-loop.json": {
+      "sha256": "5ec06d3242b85b189f74cb9e75933292d9862114f58aa766e7ff3d0b4036a920",
+      "bytes": 6455
+    },
+    "export-takeoff.csv": {
+      "sha256": "9de404737858cdfe126cf9750b9e82590a8d036593efe03a8d0ec766d62dd9da",
+      "bytes": 2439913
+    },
+    "export-takeoff.json": {
+      "sha256": "6169c294bdf89d78665eeaa53f864bd770628b19c043933ea8c7b86a917d15b2",
+      "bytes": 6589
+    },
+    "p51-inside-loop.orfl": {
+      "sha256": "2cf701a2be6e908d87735002f30e9cff34b73e732766606f58c6f153f559d162",
+      "bytes": 1540464
+    },
+    "p51-powered-takeoff.orfl": {
+      "sha256": "7545f9aa3ee85935bc394bc5ecf136208e0618ca278b1e3616ef05c3b52f5048",
+      "bytes": 2290072
+    },
+    "README.md": {
+      "sha256": "faf5608e8648e820eb0859ef1f4b99aa46ef94368a6b4c0109db130073118571",
+      "bytes": 2291
+    },
+    "record_p51_loop.gd": {
+      "sha256": "0bafca7b337120c0644f282fa988df24e5bcdab513564463ac07ff73816d20c8",
+      "bytes": 4362
+    },
+    "record_p51_takeoff.gd": {
+      "sha256": "68abae2953110e0b911775f50832fc9eee0cf9d09e3453c9c6164764a6069ddd",
+      "bytes": 5202
+    },
+    "replay-loop.json": {
+      "sha256": "447d1c91d2c099388c08aa368abd4e1121d77396976b43c3c9c24e1ccd6b37cf",
+      "bytes": 6744
+    },
+    "replay-takeoff.json": {
+      "sha256": "86abbf88c184ce3103f0634f92b9febd4b296e3d4c3503bcfb5d745a8789d978",
+      "bytes": 6878
+    },
+    "test_p51_ground.gd.strict.log": {
+      "sha256": "bdbe07d095ca1132feb4bc5cca57277bcca3f5c99b0227817cc7e786b11f944a",
+      "bytes": 1859
+    },
+    "test_p51_handling.gd.strict.log": {
+      "sha256": "5e2d53929bbfeac3109d83c9080cf1f3fcc0e093d75ee4211c143856ae38a86f",
+      "bytes": 1347
+    }
+  }
+}

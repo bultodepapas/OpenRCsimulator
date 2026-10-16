@@ -17,6 +17,8 @@ A disposable probe combining a pending P51-22 result with an unrelated mandatory
 
 The aircraft selector and Details panel disclose the pending status in English and Spanish. [UI evidence](release-ui/evidence.json) records a fresh Godot 4.7.2 import and captures at 1280 × 720; the shortened warning fits both locales without clipping.
 
+The [2026-10-16 P51-22 baseline evidence](stable-20261016/README.md) preserves strict takeoff and loop failures with exact-replay traces. The P-51 remains experimental in the stable game; these documented aircraft-specific physics limits are known limitations, not general release blockers.
+
 ## Regression
 
 Two P-51 checks passed at the P51-15 baseline and fail at the current `HEAD` with every P-51 data revision:

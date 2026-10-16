@@ -1,0 +1,80 @@
+{
+  "base": "flight.csv",
+  "candidate": "flight.csv",
+  "differences": {
+    "angular_rate_radps": {
+      "components": {
+        "p_radps": {
+          "max_abs": 0.0,
+          "rmse": 0.0
+        },
+        "q_radps": {
+          "max_abs": 0.0,
+          "rmse": 0.0
+        },
+        "r_radps": {
+          "max_abs": 0.0,
+          "rmse": 0.0
+        }
+      },
+      "max_abs": 0.0,
+      "rmse": 0.0,
+      "unit": "rad/s"
+    },
+    "position_m": {
+      "components": {
+        "down_m": {
+          "max_abs": 0.0,
+          "rmse": 0.0
+        },
+        "east_m": {
+          "max_abs": 0.0,
+          "rmse": 0.0
+        },
+        "north_m": {
+          "max_abs": 0.0,
+          "rmse": 0.0
+        }
+      },
+      "max_abs": 0.0,
+      "rmse": 0.0,
+      "unit": "m"
+    },
+    "quaternion_angle_rad": {
+      "max_abs": 0.0,
+      "rmse": 0.0,
+      "unit": "rad"
+    },
+    "velocity_mps": {
+      "components": {
+        "u_mps": {
+          "max_abs": 0.0,
+          "rmse": 0.0
+        },
+        "v_mps": {
+          "max_abs": 0.0,
+          "rmse": 0.0
+        },
+        "w_mps": {
+          "max_abs": 0.0,
+          "rmse": 0.0
+        }
+      },
+      "max_abs": 0.0,
+      "rmse": 0.0,
+      "unit": "m/s"
+    }
+  },
+  "first_divergence": null,
+  "rows": 1921,
+  "status": "ok",
+  "tick": {
+    "first": 0,
+    "last": 1920
+  },
+  "time_s": {
+    "duration": 8.0,
+    "first": 0.0,
+    "last": 8.0
+  }
+}

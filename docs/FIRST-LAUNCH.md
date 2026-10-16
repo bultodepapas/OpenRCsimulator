@@ -1,10 +1,10 @@
 # OpenRC Simulator: first launch
 
-Status: current-source player guide, checked 2026-10-16. The latest stable package is [v0.1.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1); no public v0.1.2 package or prerelease download is available. The [draft v0.1.2 release work notes](releases/v0.1.2-rc.1.md) track unresolved Stik rudder recovery, R02 yaw damping and P51-22 acceptance. Features described under [Current source](#current-source) may not be included in v0.1.1. Aircraft remain under evaluation; start with the [Ugly Stik](UGLY-STIK-PLAN.md).
+Status: current-source player guide, checked 2026-10-16. Stable v0.1.2 is in preparation but is not published; [v0.1.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1) remains the latest stable package. The [v0.1.2 release notes](releases/v0.1.2.md) describe current-source changes and disclose open Stik rudder, R02 yaw-damping and experimental P51-22 evaluation. Those aircraft limits do not block the stable software release and are not represented as passes or physical validation. Features described under [Current source](#current-source) may not be included in v0.1.1. Aircraft remain under evaluation; start with the [Ugly Stik](UGLY-STIK-PLAN.md).
 
 ## 1. Download and check
 
-Download the latest stable release, [v0.1.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1). No public v0.1.2 package or prerelease is available. Download a platform ZIP and `SHA256SUMS` from the same v0.1.1 release. Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
+Download the latest stable release, [v0.1.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1). Stable v0.1.2 is being prepared but is not available yet. Download a platform ZIP and `SHA256SUMS` from the same v0.1.1 release. Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
 
 - Linux: `sha256sum -c SHA256SUMS --ignore-missing`
 - macOS: `shasum -a 256 openrc-simulator-*.zip`
