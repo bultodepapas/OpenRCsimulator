@@ -29,7 +29,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 		_failures += 1
 
 
-# Only the reference 240 Hz rudder recovery screen may be allow-listed for the preliminary release.
+# Only the reference 240 Hz rudder recovery screen may be allow-listed as experimental acceptance.
 # Direct invocation remains strict; finite state, stability screens and timestep convergence stay mandatory.
 func _check_pending_stik_rudder_recovery(label: String, ok: bool, eligible_for_pending: bool, detail := "") -> void:
 	if not ok and eligible_for_pending and OS.get_cmdline_user_args().has("--allow-known-stik-rudder-recovery"):
