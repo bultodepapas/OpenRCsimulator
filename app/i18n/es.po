@@ -3069,3 +3069,54 @@ msgstr "Luna llena"
 
 msgid "New moon"
 msgstr "Luna nueva"
+
+msgid "Interface"
+msgstr "Interfaz"
+
+msgid "Sound"
+msgstr "Sonido"
+
+msgid "Fullscreen changes have a 15-second safety timer."
+msgstr "La pantalla completa se prueba durante 15 segundos."
+
+msgid "Language is saved immediately."
+msgstr "El idioma se guarda al instante."
+
+msgid "Menu volume"
+msgstr "Volumen del menú"
+
+msgid "Subtle cues for focus, selection and navigation."
+msgstr "Sonidos sutiles al enfocar, seleccionar y navegar."
+
+msgid "Test sound"
+msgstr "Probar sonido"
+
+msgid "Muted"
+msgstr "Silenciado"
+
+msgid "Settings saved."
+msgstr "Ajustes guardados."
+
+msgid "Changes reverted. Saved settings restored."
+msgstr "Cambios revertidos. Se restauraron los ajustes guardados."
+
+msgid "Open RC car garage"
+msgstr "Abrir garaje de coches RC"
+
+msgid "Natural Random creates a flight setup to review. Failure practice schedules system faults for your next flight."
+msgstr "Aleatorio natural propone un vuelo para revisar. La práctica de fallos programa averías para tu próximo vuelo."
+
+msgid "Failure practice"
+msgstr "Práctica de fallos"
+
+msgid "Next flight failures: Airplanes only"
+msgstr "Fallos del próximo vuelo: solo aviones"
+
+msgid "Next flight failures: Off"
+msgstr "Fallos del próximo vuelo: desactivados"
+
+msgid "Next flight failures: %d%% · Standard"
+msgstr "Fallos del próximo vuelo: %d%% · Estándar"
+
+msgid "Next flight failures: %d%% · Catastrophic enabled"
+msgstr "Fallos del próximo vuelo: %d%% · Catastróficos activados"

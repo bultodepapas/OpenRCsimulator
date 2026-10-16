@@ -6,6 +6,11 @@ const Actions := preload("res://input/controller_actions.gd")
 var failures := 0
 var checks := 0
 
+class RestartShell extends Shell:
+	var restarts := 0
+	func open_pause() -> void: pass
+	func restart_flight() -> void: restarts += 1
+
 class FakeSession extends Node:
 	var calibration: Variant = null
 	var cut := false
@@ -32,7 +37,7 @@ func check(label: String, passed: bool) -> void:
 		printerr("FAIL ", label)
 
 func _initialize() -> void:
-	var shell := Shell.new()
+	var shell := RestartShell.new()
 	var service := FakeService.new()
 	service.registry.update_devices([{"id": 1, "known": true, "name": "Synthetic Xbox"}])
 	service.registry.select_device("flight", 1)
@@ -102,6 +107,36 @@ func _initialize() -> void:
 	equipment.pressed = true
 	shell._input(equipment)
 	check("gear works after releasing and pressing Back again in flight", flight.received == ["gear_toggle"])
+	equipment.button_index = JOY_BUTTON_BACK
+	check("default restart is handled by flight owner", shell._route_controller_restart(equipment) and shell.restarts == 1)
+	check("held restart cannot repeat", shell._route_controller_restart(equipment) and shell.restarts == 1)
+	equipment.pressed = false
+	shell._route_controller_restart(equipment)
+	equipment.device = 2
+	equipment.pressed = true
+	check("other device cannot restart", not shell._route_controller_restart(equipment) and shell.restarts == 1)
+	service.profile.kind = "radio"
+	service.profile.actions.restart_flight = {type = "axis", axis = 9, sign = 1, threshold = 0.65}
+	var motion := InputEventJoypadMotion.new()
+	motion.device = 1
+	motion.axis = 9
+	for value in [0.7, 0.64, 0.66]:
+		motion.axis_value = value
+		shell._route_controller_restart(motion)
+	check("radio channel jitter causes exactly one restart", shell.restarts == 2)
+	motion.axis_value = 0.4
+	shell._route_controller_restart(motion)
+	motion.axis_value = 0.7
+	shell._route_controller_restart(motion)
+	check("radio channel rearms after returning OFF", shell.restarts == 3)
+	motion.axis_value = 0.0
+	shell._route_controller_restart(motion)
+	session.calibration = RefCounted.new()
+	motion.axis_value = 0.8
+	check("calibration consumes no restart", not shell._route_controller_restart(motion) and shell.restarts == 3)
+	session.calibration = null
+	shell._route_controller_restart(motion)
+	check("held calibration channel cannot queue a reset", shell.restarts == 3)
 	shell.free()
 	flight.free()
 	session.free()

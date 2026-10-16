@@ -72,11 +72,14 @@ func _run() -> void:
 	var gamepad_profile: Dictionary = session.radio.profile.duplicate(true)
 	var smoke_binding := {"type": "button", "button": 11, "mode": "toggle_edge"}
 	gamepad_profile["aux"] = {"smoke": smoke_binding}
+	var restart_binding := {"type": "axis", "axis": 9, "sign": 1, "threshold": 0.65}
+	gamepad_profile.actions = {"restart_flight": restart_binding, "flaps_cycle": {"type": "unbound"}}
 	var saved: Dictionary = session.persist_full_controller_profile.call(gamepad_profile)
 	var gamepad_id := str(gamepad_profile.get("profile_id", ""))
 	var stored_gamepad := _stored_profile(service, gamepad_id)
 	check("managed AUX save succeeds", saved.get("ok", false), str(saved.get("error", "")))
 	check("AUX is persisted inside the V2 controller profile", stored_gamepad.get("aux", {}).get("smoke", {}) == smoke_binding)
+	check("restart channel and cleared flap default survive disk reload", stored_gamepad.get("actions", {}) == gamepad_profile.actions)
 	check("managed session applies the saved AUX profile", session.radio.profile.get("aux", {}).get("smoke", {}) == smoke_binding)
 	check("AUX save leaves legacy calibration bytes unchanged", FileAccess.get_file_as_bytes(LEGACY_PATH) == legacy_before)
 
@@ -97,6 +100,7 @@ func _run() -> void:
 	check("same-ID reconnect is not automatically selected", service.registry.selected_device_id("flight") == -1 and not session.radio.connected)
 	var reselection_ok: bool = service.select_devices(41, -1)
 	check("explicit re-selection reloads the saved AUX profile", reselection_ok and session.radio.profile.get("aux", {}).get("smoke", {}) == smoke_binding, str(service.registry.get_devices()) + " / " + str(session.radio.profile.get("aux", {})))
+	check("reconnect restores restart channel and intentional Clear", session.radio.profile.get("actions", {}) == gamepad_profile.actions)
 	check("legacy calibration remains unchanged after reconnect", FileAccess.get_file_as_bytes(LEGACY_PATH) == legacy_before)
 
 	check("explicit radio selection succeeds", service.select_devices(42, -1), str(service.registry.get_devices()))

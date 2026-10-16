@@ -5,10 +5,12 @@ signal assessment_changed(report: Dictionary, terminal: bool)
 
 const Catalog = preload("res://economy/catalog.gd")
 const Calculator = preload("res://economy/calculator.gd")
+const Inspection = preload("res://economy/inspection.gd")
 const Events = preload("res://sim/aircraft_contact_events.gd")
 const MAX_EVENTS := 128
 const ARCHIVE_PATH := "user://last_accident.json"
 const ARCHIVE_MAX_BYTES := 262144
+const MAX_INSPECTIONS := 16
 
 var dossier: Dictionary = {}
 var report: Dictionary = {}
@@ -31,6 +33,9 @@ var _revision := 0
 var _persisted_revision := -1
 var _flush_attempt_revision := -1
 var _flush_error := OK
+var _inspections: Array = []
+var _inspection_hashes: Dictionary = {}
+var _reuse_blocked: Dictionary = {}
 
 
 func begin(aircraft_id: String, source_hash: String) -> void:
@@ -58,6 +63,45 @@ func begin_with_catalog(loaded: Dictionary, aircraft_id: String, source_hash: St
 	_persisted_revision = -1
 	_flush_attempt_revision = -1
 	_flush_error = OK
+	_inspections = []
+	_inspection_hashes = {}
+	_reuse_blocked = {}
+
+
+## Read-only identity for an assessment producer. Not a player-controlled damage shortcut.
+func inspection_context() -> Dictionary:
+	return {identity = _identity.duplicate(true), catalog_hash = _catalog_hash, revision = _revision}
+
+
+## Frame-boundary only. An explicit inspection/scenario receipt updates disposition,
+## not physical state; rendering/VFX never creates one. Duplicate submission is idempotent.
+func apply_inspection(receipt: Dictionary) -> Dictionary:
+	if not has_damage() or dossier.is_empty():
+		return {ok = false, errors = ["No active incident with a compatible economic dossier."]}
+	if JSON.stringify(receipt).to_utf8_buffer().size() > Inspection.MAX_BYTES:
+		return {ok = false, errors = ["Inspection size limit exceeded."]}
+	var id := str(receipt.get("inspection_id", ""))
+	var receipt_hash := JSON.stringify(receipt, "", true, true).sha256_text()
+	if _inspection_hashes.has(id):
+		if _inspection_hashes[id] != receipt_hash:
+			return {ok = false, errors = ["Inspection ID already refers to different evidence."]}
+		return {ok = true, duplicate = true}
+	if _inspections.size() >= MAX_INSPECTIONS:
+		return {ok = false, errors = ["Inspection history limit reached; existing assessment retained."]}
+	var result := Inspection.validate(receipt, dossier, _assessment, _identity, _catalog_hash, _revision, _reuse_blocked)
+	if not result.get("ok", false):
+		return result
+	var prop_id: String = dossier.get("propeller_component_id", "")
+	if _confirmed_facts.has("propeller_strike") or _confirmed_facts.has("restored_propeller_strike"):
+		if result.assessment.components.get(prop_id, {}).get("disposition") in ["reuse", "repair"]:
+			return {ok = false, errors = ["Confirmed damaged propeller cannot receive repair or salvage credit."]}
+	_assessment = result.assessment
+	_reuse_blocked = result.blocked
+	_inspection_hashes[id] = receipt_hash
+	_inspections.append(receipt.duplicate(true))
+	_queue_assessment(_last_tick)
+	evaluate_pending()
+	return {ok = true, duplicate = false, revision = _revision}
 
 
 func observe(snapshot: Dictionary, bindings: Dictionary, crashed: bool, restored := false) -> void:
@@ -174,6 +218,9 @@ func _recalculate() -> void:
 		for field: String in source:
 			line[field] = source[field]
 	report["assumptions"] = ["USD prices exclude tax, shipping and transmitter/field equipment."]
+	for receipt: Dictionary in _inspections:
+		report.assumptions.append("%s [%s]: %s" % [receipt.inspection_id, receipt.basis, receipt.evidence])
+	report["inspections"] = _inspections.duplicate(true)
 	report["format"] = "openrc-accident-report v1"
 	report["identity"] = _identity.duplicate(true)
 	report["aircraft_name"] = _identity.aircraft_id

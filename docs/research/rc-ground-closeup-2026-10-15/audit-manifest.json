@@ -1,0 +1,93 @@
+{
+  "date": "2026-10-15",
+  "scope": "Static close-view audit; not performance or motion qualification",
+  "source_before": {
+    "app/vehicles/ground/airfield_track_view.gd": "72e608c8eda9e532cfa57ae6d8619d477b2879417df5d08d99169033b67cd014",
+    "app/vehicles/ground/ground_camera.gd": "d9f7c5daad09c04998ba1ec14097ef2fb50022cbf13e1182948610e100354e8b",
+    "app/vehicles/ground/ground_scene.gd": "82b2b2a99db852e4a23c83b59d3a6841950a33899c9cdd3ab4a3dd26794e28c2",
+    "app/scenery/gravel.gdshader": "92438b89c87fa25670f545266269f5f16f35f7669efb98a760308d9daf163bff",
+    "app/render/ground.gd": "b3756a152f7d67d8d8f8f452b2d03ef0c0003d971ef557814a906ba013923367",
+    "app/render/ground.gdshader": "5ce4208cce4124c7322a1967d4a75231c0ca38c71214d8a42d41c0967e614b99",
+    "app/render/grass_surface.gdshaderinc": "3699a1e3fcb4b08aab1046a7a8369b1b798f599710b17f712b80bb204780d9d0",
+    "app/render/turf_detail.gdshaderinc": "1ed68a1333192f7dde369ca9c815d70e92674a9b5c2e89a40fe52c886561dec1",
+    "app/render/near_grass.gd": "0880ba351602621a24ca12016aaee7cb8418558d6096f911d19492f621e13882",
+    "app/render/near_grass.gdshader": "a9e85de25e36f9d131c380af53b4180eaa71db49249c256135e1623789de766b",
+    "app/assets/landscape/turf/detail.png": "76e8c12ee861f729b24f75555dd2afdddbbbb94858d0a80212d486504c0a4d6e",
+    "app/assets/landscape/turf/detail.png.import": "0d9fde6a5c7d10762ddb7a95722f457dfb9f0c42989e86ea726e69341062ed98",
+    "app/data/fields/default.json": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+    "app/data/ground_vehicle/airfield_track.json": "b178c5c22dd77160a48bd72d2e473f52e66a65c52843d25770b224f6cebbba81",
+    "app/project.godot": "176399ac913ea694682334cf9ff29150236c3958c1aa544299e217bac844a6df",
+    "research/rc-monster-truck/visual/capture_activity.gd": "e76c6cbe9ac530333b19da06620d8c4a3dd56bec273a84bc57076907e84f1549"
+  },
+  "source_after": {
+    "app/vehicles/ground/airfield_track_view.gd": "72e608c8eda9e532cfa57ae6d8619d477b2879417df5d08d99169033b67cd014",
+    "app/vehicles/ground/ground_camera.gd": "d9f7c5daad09c04998ba1ec14097ef2fb50022cbf13e1182948610e100354e8b",
+    "app/vehicles/ground/ground_scene.gd": "82b2b2a99db852e4a23c83b59d3a6841950a33899c9cdd3ab4a3dd26794e28c2",
+    "app/scenery/gravel.gdshader": "92438b89c87fa25670f545266269f5f16f35f7669efb98a760308d9daf163bff",
+    "app/render/ground.gd": "b3756a152f7d67d8d8f8f452b2d03ef0c0003d971ef557814a906ba013923367",
+    "app/render/ground.gdshader": "5ce4208cce4124c7322a1967d4a75231c0ca38c71214d8a42d41c0967e614b99",
+    "app/render/grass_surface.gdshaderinc": "3699a1e3fcb4b08aab1046a7a8369b1b798f599710b17f712b80bb204780d9d0",
+    "app/render/turf_detail.gdshaderinc": "1ed68a1333192f7dde369ca9c815d70e92674a9b5c2e89a40fe52c886561dec1",
+    "app/render/near_grass.gd": "0880ba351602621a24ca12016aaee7cb8418558d6096f911d19492f621e13882",
+    "app/render/near_grass.gdshader": "a9e85de25e36f9d131c380af53b4180eaa71db49249c256135e1623789de766b",
+    "app/assets/landscape/turf/detail.png": "76e8c12ee861f729b24f75555dd2afdddbbbb94858d0a80212d486504c0a4d6e",
+    "app/assets/landscape/turf/detail.png.import": "0d9fde6a5c7d10762ddb7a95722f457dfb9f0c42989e86ea726e69341062ed98",
+    "app/data/fields/default.json": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+    "app/data/ground_vehicle/airfield_track.json": "b178c5c22dd77160a48bd72d2e473f52e66a65c52843d25770b224f6cebbba81",
+    "app/project.godot": "176399ac913ea694682334cf9ff29150236c3958c1aa544299e217bac844a6df",
+    "research/rc-monster-truck/visual/capture_activity.gd": "e76c6cbe9ac530333b19da06620d8c4a3dd56bec273a84bc57076907e84f1549"
+  },
+  "sources_stable": true,
+  "runs": [
+    {
+      "name": "dirt-current",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--position",
+        "-16000,-16000",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\visual\\capture_activity.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-closeup-2026-10-15\\dirt-current.png",
+        "--language=es",
+        "--mode=drive",
+        "--spawn=track_start",
+        "--ticks=0"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "grass-current",
+      "command": [
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+        "--path",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\app",
+        "--audio-driver",
+        "Dummy",
+        "--position",
+        "-16000,-16000",
+        "--script",
+        "C:\\DEVELOPMENT\\OpenRCsimulator\\research\\rc-monster-truck\\visual\\capture_activity.gd",
+        "--",
+        "--output=C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-closeup-2026-10-15\\grass-current.png",
+        "--language=es",
+        "--mode=drive",
+        "--spawn=start",
+        "--ticks=0"
+      ],
+      "exit_code": 0
+    }
+  ],
+  "evidence_sha256": {
+    "dirt-current.png": "226dd46c7001bfb55557bd23efcb5043a0eb0444d75fc782b3ded9879f522ebf",
+    "dirt-current.png.json": "623df74e03f7a75f71aa6d778e2a41a960239fdbc5d95de75e657dcab152d75d",
+    "dirt-current.log": "d147bea0cbaa26f4416ee9d905a931420fae786c6a8863dc0f93baab9cece8aa",
+    "grass-current.png": "6e38f888deae1ff6d7bff0ab7b4206f36483e25d07bb7edf43a28d75585da6a9",
+    "grass-current.png.json": "2e34c8f74395d6dbff44c9ff2af6e74d809743029542139fe551ae46bf90ca6d",
+    "grass-current.log": "18ef9b55b8325cffb4143544ab79682128a1a7ea6d5a1d4328738568adb13630"
+  }
+}

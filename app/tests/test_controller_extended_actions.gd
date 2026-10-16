@@ -22,6 +22,7 @@ func _initialize() -> void:
 	_test_aux_to_aux_collisions()
 	_test_radio_aux_pause_compatibility()
 	_test_aircraft_defaults()
+	_test_restart_and_flap_defaults()
 	if failures == 0:
 		print("PASS extended controller actions: %d checks" % checks)
 	else:
@@ -269,6 +270,37 @@ func _test_aircraft_defaults() -> void:
 		profile.actions.gear_toggle = {type = "button", button = 25}
 		_check("%s retains explicit equipment mappings" % kind, Actions.effective_bindings(profile).gear_toggle.button == 25)
 		profile.actions = {}
+
+
+func _test_restart_and_flap_defaults() -> void:
+	var profile := _profile()
+	profile.kind = "gamepad"
+	var bindings := Actions.effective_bindings(profile, {flaps = true})
+	_check("installed flaps receive A/Cross", bindings.flaps_cycle == {type = "button", button = JOY_BUTTON_A})
+	_check("restart receives View/Share independently of equipment", bindings.restart_flight == {type = "button", button = JOY_BUTTON_BACK})
+	_check("no equipment still allows restart", Actions.effective_bindings(profile, {}).restart_flight == bindings.restart_flight)
+	var event := InputEventJoypadButton.new()
+	event.device = 4
+	event.button_index = JOY_BUTTON_A
+	event.pressed = true
+	_check("A only cycles flaps in flight", Actions.resolve_event(event, bindings, 4, "flight") == PackedStringArray(["flaps_cycle"]))
+	_check("A still accepts in menus", Actions.resolve_event(event, bindings, 4, "menu") == PackedStringArray(["accept"]))
+	profile.actions = {flaps_cycle = {type = "unbound"}, restart_flight = {type = "unbound"}}
+	bindings = Actions.effective_bindings(profile)
+	_check("saved Clear wins for both new defaults", bindings.flaps_cycle.type == "unbound" and bindings.restart_flight.type == "unbound")
+	profile.actions = {camera_cycle = {type = "button", button = JOY_BUTTON_BACK}, lights_cycle = {type = "button", button = JOY_BUTTON_A}}
+	bindings = Actions.effective_bindings(profile)
+	_check("new defaults never steal a saved binding", bindings.restart_flight.type == "unbound" and bindings.flaps_cycle.type == "unbound" and Actions.validate_profile_bindings(profile).ok)
+	profile.actions = {}
+	profile.aux = {flaps = {type = "axis", axis = 9, off = -1.0, on = 1.0, invert = false}, smoke = {type = "button", button = JOY_BUTTON_BACK, mode = "level"}}
+	bindings = Actions.effective_bindings(profile)
+	_check("AUX owns flap semantics and restart button source", bindings.flaps_cycle.type == "unbound" and bindings.restart_flight.type == "unbound" and Actions.validate_profile_bindings(profile).ok)
+	profile.aux = {}
+	profile.kind = "radio"
+	profile.actions = {restart_flight = {type = "axis", axis = 9, sign = 1, threshold = 0.65}}
+	_check("radio can bind restart to an unused channel", Actions.validate_profile_bindings(profile).ok)
+	profile.actions.restart_flight.axis = 2
+	_check("restart cannot reuse a primary flight channel", not Actions.validate_profile_bindings(profile).ok)
 
 
 func _profile() -> Dictionary:

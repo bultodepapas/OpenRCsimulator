@@ -50,7 +50,9 @@ LU-00…27 adds licensed field assets, night lighting, imported vegetation and a
 | Pilot readability and lower-end hardware | Independent owner review and target-machine evidence remain open under Gate L and the scenery/world gates. | [L gates](#gates-and-evidence), [scenery guide](SCENERY-PLAN.md), [field-world guide](FIELD-WORLD-PLAN.md) |
 | Lake impact and buoyancy | Current land aircraft stop on water entry; the sinking effect is visual. Water response and impact parameters are not physically validated. | [LU-22](research/landscape-upgrade/LU-22/README.md) |
 
-L8 (near 3D tree models), L9d (photo grass), L16–18 (photo sky, owner's field and Terrain3D), and L20 (sky-grid aid) are optional and start only if a gate justifies them. L19's time-of-day work is owned by [TIME-OF-DAY-PLAN](TIME-OF-DAY-PLAN.md).
+L9d now has a bounded [RC ground close-view plan](plans/rc-ground-closeup.md): the [2026-10-15 audit](research/rc-ground-closeup-2026-10-15/README.md) documents dirt detail, shoulder continuity and grass limitations from native captures. L9d-01 is complete; L9d-02…06 material/vegetation implementation and qualification remain pending. Shared field adoption retains VQ/flight-readability gates.
+
+L8 (near 3D tree models), L16–18 (photo sky, owner's field and Terrain3D), and L20 (sky-grid aid) are optional and start only if a gate justifies them. L19's time-of-day work is owned by [TIME-OF-DAY-PLAN](TIME-OF-DAY-PLAN.md).
 
 ## Gates and evidence
 

@@ -255,21 +255,30 @@ func _run() -> void:
 	home._page_buttons[1].grab_focus()
 	await ui.tap(KEY_DOWN)
 	_check("catalog navigation enters on the selected aircraft", selected_catalog.has_focus())
-	var requested_catalog_id: String = home._catalog_ids[home._catalog_ids.size() - 1]
-	var requested_catalog_index: int = home._catalog_ids.find(requested_catalog_id)
-	var requested_catalog_button: Button = home._catalog_buttons[requested_catalog_index]
+	var async_home: Control = Home.new()
+	root.add_child(async_home)
+	await ui.settle()
+	async_home.set_aircraft("sebart-avanti-s-a200-p100rx")
+	async_home._select_page(1)
+	for frame in 4: await process_frame
+	var requested_catalog_id: String = async_home._catalog_ids[async_home._catalog_ids.size() - 1]
+	var requested_catalog_index: int = async_home._catalog_ids.find(requested_catalog_id)
+	var requested_catalog_button: Button = async_home._catalog_buttons[requested_catalog_index]
+	var async_scroll: ScrollContainer = async_home.get_node("HomeRail/HomeContentScroll")
 	var requested_ids := PackedStringArray()
-	home.aircraft_requested.connect(func(id: String) -> void: requested_ids.append(id))
+	async_home.aircraft_requested.connect(func(id: String) -> void: requested_ids.append(id))
 	requested_catalog_button.grab_focus()
-	home._request_aircraft(requested_catalog_id)
+	async_home._request_aircraft(requested_catalog_id)
 	_check("catalog request immediately selects and focuses its row", requested_catalog_button.has_focus()
 		and requested_catalog_button.button_pressed and requested_ids == PackedStringArray([requested_catalog_id]))
 	await process_frame # model preview may still be loading when the aircraft choice is committed
-	home.set_aircraft(requested_catalog_id)
+	async_home.set_aircraft(requested_catalog_id)
 	await process_frame
 	_check("asynchronous aircraft selection keeps its row focused and revealed",
 		requested_catalog_button.has_focus() and requested_catalog_button.button_pressed
-		and scroll.get_global_rect().encloses(requested_catalog_button.get_global_rect()))
+		and async_scroll.get_global_rect().encloses(requested_catalog_button.get_global_rect()))
+	async_home.free()
+	await process_frame
 	home._select_page(0)
 	home.set_aircraft(saved_aircraft)
 	fly.grab_focus()
@@ -285,9 +294,10 @@ func _run() -> void:
 	garage_home.fly_requested.connect(func() -> void: garage_flight_requests[0] += 1)
 	garage_home._page_buttons[3].grab_focus()
 	await ui.tap(KEY_ENTER)
-	_check("Garage replaces the pinned FLY action with Open garage",
+	_check("Garage replaces the pinned FLY action with Open RC car garage",
 		garage_home._pages[3].visible and garage_home.ground_vehicle_button.visible
-		and not garage_home.fly_button.visible and garage_home.ground_vehicle_button.text == "Open garage")
+		and garage_home._page_buttons[3].button_pressed
+		and not garage_home.fly_button.visible and garage_home.ground_vehicle_button.text == "Open RC car garage")
 	await ui.tap(KEY_DOWN)
 	_check("Garage keyboard navigation enters on the vehicle choice", garage_home.ground_vehicle_choice.has_focus())
 	await ui.tap(KEY_DOWN)

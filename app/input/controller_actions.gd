@@ -6,13 +6,16 @@ const OPTIONAL_ACTION_IDS: PackedStringArray = [
 	"camera_previous", "camera_pilot", "camera_chase", "camera_orbit",
 	"camera_zoom_in", "camera_zoom_out", "camera_auto_zoom", "lights_cycle",
 	"helicopter_arm", "helicopter_hold", "helicopter_mode", "helicopter_trainer",
+	"restart_flight",
 ]
 const AUX_CHANNEL_IDS: PackedStringArray = ["smoke", "flaps", "gear"]
 ## Product defaults on standardized gamepads, scoped to implemented aircraft equipment.
-## Profile/setup validation reserves both candidates; flight passes its actual capabilities.
+## Profile/setup validation reserves equipment candidates; flight passes its actual capabilities.
 const AUTOMATIC_AUX := {
 	"gear_toggle": {"channel": "gear", "button": JOY_BUTTON_B},
 	"smoke_toggle": {"channel": "smoke", "button": JOY_BUTTON_RIGHT_SHOULDER},
+	"flaps_cycle": {"channel": "flaps", "button": JOY_BUTTON_A},
+	"restart_flight": {"channel": "", "button": JOY_BUTTON_BACK},
 }
 const SUPPORTED_AUX := {"gear": true, "smoke": true, "flaps": true}
 static var _definition_cache: Dictionary = {}
@@ -27,6 +30,7 @@ const ACTIONS: Array[Dictionary] = [
 	{"id": "navigate_left", "label": "Navigate left", "context": "menu", "mode": "press"},
 	{"id": "navigate_right", "label": "Navigate right", "context": "menu", "mode": "press"},
 	{"id": "pause", "label": "Pause / resume", "context": "both", "mode": "press"},
+	{"id": "restart_flight", "label": "Restart flight", "context": "flight", "mode": "press"},
 	{"id": "camera_cycle", "label": "Cycle camera", "context": "flight", "mode": "press"},
 	{"id": "view_reset", "label": "Reset view", "context": "flight", "mode": "press"},
 	{"id": "trim_left", "label": "Trim left", "context": "flight", "mode": "press"},
@@ -155,7 +159,7 @@ static func _add_automatic_aux(profile: Dictionary, bindings: Dictionary, explic
 	var definitions := _definition_map()
 	for action_id: String in AUTOMATIC_AUX:
 		var entry: Dictionary = AUTOMATIC_AUX[action_id]
-		if explicit_ids.has(action_id) or not bool(capabilities.get(entry.channel, false)):
+		if explicit_ids.has(action_id) or (not str(entry.channel).is_empty() and not bool(capabilities.get(entry.channel, false))):
 			continue
 		var candidate := {"type": "button", "button": int(entry.button)}
 		var reserved := false

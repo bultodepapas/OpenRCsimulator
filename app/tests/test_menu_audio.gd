@@ -155,9 +155,23 @@ func _run() -> void:
 	_check("an eligible active button requests press audio", service.cue_count(&"press") == press_count_before + 1)
 	press_count_before = service.cue_count(&"press")
 
+	host.remove_child(screen_a)
+	host.add_child(screen_a)
+	_top_surface = screen_a
+	var reobserved_count := service.observe(screen_a)
+	_check("a detached and reattached menu surface can be observed again", reobserved_count >= 3,
+		str(reobserved_count))
+	await create_timer(0.11).timeout
+	button.pressed.emit()
+	await process_frame
+	_check("reattached controls retain one press connection", service.cue_count(&"press") == press_count_before + 1,
+		"presses=%d before=%d" % [service.cue_count(&"press"), press_count_before])
+	press_count_before = service.cue_count(&"press")
+
 	button.pressed.emit()
 	_check("semantic back cue is callable while a route is closing", service.play(&"back", button))
 	_top_surface = screen_b
+	button.queue_free()
 	screen_a.queue_free()
 	await process_frame
 	_check("host-owned audio service survives the source screen closing",

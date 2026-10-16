@@ -3,7 +3,7 @@
 extends RefCounted
 
 const Screen := preload("res://ui/screen.gd")
-signal surface_opened(surface: Control, id: String)
+signal surface_opened(surface: Control, id: String, feedback: bool)
 signal surface_closed(id: String, restoring_focus: bool)
 var _host: Node
 var _entries: Array[Dictionary] = []
@@ -40,7 +40,7 @@ func set_session(session: Node) -> void:
 	_sync_hold()
 
 
-func push(id: String, node: Node, from: Control = null) -> bool:
+func push(id: String, node: Node, from: Control = null, feedback := true) -> bool:
 	if not is_instance_valid(node) or node.is_queued_for_deletion() or node.get_parent() != null \
 		or get_screen(id) != null:
 		return false # caller retains ownership of a rejected node
@@ -59,7 +59,7 @@ func push(id: String, node: Node, from: Control = null) -> bool:
 	_sync_hold() # a pause screen holds the flight before it enters the tree
 	_host.add_child(node)
 	surface.open(from)
-	surface_opened.emit(surface, id)
+	surface_opened.emit(surface, id, feedback)
 	return true
 
 

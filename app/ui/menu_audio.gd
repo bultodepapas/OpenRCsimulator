@@ -156,26 +156,38 @@ func _connect_control(control: Control, screen: Control) -> bool:
 		return false
 	var connected := false
 	if control.focus_mode != Control.FOCUS_NONE:
-		control.focus_entered.connect(Callable(self, "_on_control_focused").bind(control, screen))
+		var focus_callback := Callable(self, "_on_control_focused").bind(control, screen)
+		if not control.focus_entered.is_connected(focus_callback):
+			control.focus_entered.connect(focus_callback)
 		connected = true
 	var pointer_target := control is BaseButton or control is Range
 	if pointer_target and control.mouse_filter != Control.MOUSE_FILTER_IGNORE:
-		control.mouse_entered.connect(Callable(self, "_on_control_hovered").bind(control, screen))
+		var hover_callback := Callable(self, "_on_control_hovered").bind(control, screen)
+		if not control.mouse_entered.is_connected(hover_callback):
+			control.mouse_entered.connect(hover_callback)
 		connected = true
 	if control is BaseButton:
-		(control as BaseButton).pressed.connect(Callable(self, "_on_button_pressed").bind(control, screen))
+		var press_callback := Callable(self, "_on_button_pressed").bind(control, screen)
+		if not (control as BaseButton).pressed.is_connected(press_callback):
+			(control as BaseButton).pressed.connect(press_callback)
 		connected = true
 	if control is OptionButton:
-		(control as OptionButton).item_selected.connect(Callable(self, "_on_option_selected").bind(control, screen))
+		var selection_callback := Callable(self, "_on_option_selected").bind(control, screen)
+		if not (control as OptionButton).item_selected.is_connected(selection_callback):
+			(control as OptionButton).item_selected.connect(selection_callback)
 		connected = true
 	if control is Range:
-		(control as Range).value_changed.connect(Callable(self, "_on_range_changed").bind(control, screen))
+		var range_callback := Callable(self, "_on_range_changed").bind(control, screen)
+		if not (control as Range).value_changed.is_connected(range_callback):
+			(control as Range).value_changed.connect(range_callback)
 		connected = true
 	if not connected:
 		return false
 	_observed_controls[control_id] = weakref(control)
 	_control_screen_ids[control_id] = screen.get_instance_id()
-	control.tree_exiting.connect(Callable(self, "_on_control_tree_exiting").bind(control_id))
+	var exiting_callback := Callable(self, "_on_control_tree_exiting").bind(control_id)
+	if not control.tree_exiting.is_connected(exiting_callback):
+		control.tree_exiting.connect(exiting_callback)
 	return true
 
 
@@ -212,10 +224,14 @@ func _on_button_pressed(button: BaseButton, screen: Control) -> void:
 	call_deferred("_deferred_button_press", button, screen, event_frame)
 
 
-func _deferred_button_press(button: BaseButton, screen: Control, event_frame: int) -> void:
+func _deferred_button_press(button: Variant, screen: Variant, event_frame: int) -> void:
+	if not is_instance_valid(button) or not button is BaseButton:
+		return
+	if not is_instance_valid(screen) or not screen is Control:
+		return
 	if event_frame == _last_semantic_frame:
 		return
-	_play_automatic(&"press", button, screen, PRESS_DEBOUNCE_MS)
+	_play_automatic(&"press", button as Control, screen as Control, PRESS_DEBOUNCE_MS)
 
 
 func _on_option_selected(_index: int, option: OptionButton, screen: Control) -> void:
@@ -294,6 +310,12 @@ func _request_cue(cue: StringName, source: Object = null) -> bool:
 		if not _voices[voice_index].playing:
 			available_voice = voice_index
 			break
+	if available_voice < 0 and _is_semantic_cue(cue):
+		for voice_index: int in range(_voices.size()):
+			if not _is_semantic_cue(_voice_cues[voice_index]):
+				_voices[voice_index].stop()
+				available_voice = voice_index
+				break
 	if available_voice < 0:
 		_dropped_voice_count += 1
 		return false
@@ -307,6 +329,10 @@ func _request_cue(cue: StringName, source: Object = null) -> bool:
 	if _volume > 0.0:
 		player.play()
 	return true
+
+
+func _is_semantic_cue(cue: StringName) -> bool:
+	return cue == &"accept" or cue == &"back" or cue == &"reject"
 
 
 func _update_voice_volume(voice_index: int) -> void:

@@ -39,6 +39,8 @@ func _run() -> void:
 	root.add_child(app)
 	await ui.settle()
 	_check("app opens at Home", app.home != null and app.screens.is_top("home"))
+	_check("Home opens without an automatic sound", app.menu_audio.cue_count(&"accept") == 0
+		and app.menu_audio.cue_count(&"focus") == 0)
 
 	# Open Settings with a real Enter event on Home's Settings button.
 	app.home.settings_button.grab_focus()
@@ -46,6 +48,20 @@ func _run() -> void:
 	var settings: CanvasLayer = app.screens.get_screen("settings") as CanvasLayer
 	await ui.settle()
 	_check("Home Settings button opens the Settings screen", settings != null and app.screens.is_top("settings"))
+	_check("opening Settings emits one accept and no automatic press", app.menu_audio.cue_count(&"accept") == 1
+		and app.menu_audio.cue_count(&"press") == 0)
+	settings._category_buttons[2].grab_focus()
+	await ui.tap(KEY_ENTER)
+	settings._volume_slider.grab_focus()
+	await ui.tap(KEY_HOME)
+	await ui.settle()
+	_check("keyboard volume preview mutes the live service without saving", app.menu_audio.get_volume() == 0.0
+		and DisplayPreferences.load_from(PREFS + ".display").menu_volume == DisplayPreferences.DEFAULTS.menu_volume)
+	settings._revert_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("Revert restores live menu volume", is_equal_approx(app.menu_audio.get_volume(), DisplayPreferences.DEFAULTS.menu_volume))
+	settings._category_buttons[0].grab_focus()
+	await ui.tap(KEY_ENTER)
 
 	# The 125% selector is driven through its real OptionButton popup. Theme font sizes are resolved on the
 	# Home and Settings controls after the root applies its presentation signal.
@@ -156,6 +172,13 @@ func _run() -> void:
 	await _wait(0.2)
 	_check("closing Settings returns to Pause without resuming or advancing ticks",
 		app.screens.is_top("pause") and session.sim.tick == held_tick and session.holds.has("menu") and session.sim.paused)
+	var accepted_before: int = app.menu_audio.cue_count(&"accept")
+	var backs_before: int = app.menu_audio.cue_count(&"back")
+	app.continue_flight()
+	await ui.settle()
+	_check("Resume emits acceptance and releases only through the explicit action", app.screens.top() == null
+		and not session.sim.paused and app.menu_audio.cue_count(&"accept") == accepted_before + 1
+		and app.menu_audio.cue_count(&"back") == backs_before)
 
 	app.queue_free()
 	await ui.settle()

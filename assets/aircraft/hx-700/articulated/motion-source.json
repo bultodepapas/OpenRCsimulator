@@ -1,0 +1,5801 @@
+{
+  "source_sha256": "1919de349b74286bc36770ab2d7d08f743fd8a4062608d488c7e4e276103725f",
+  "recipes": [
+    {
+      "id": "actuator.cyclic.front_left",
+      "node": "Brazo_Servo_Delantero_Izq",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        0.03800000250339508,
+        0.030000001192092896,
+        0.2175000011920929
+      ],
+      "rotation_euler": [
+        0.0,
+        2.842864716967597e-07,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "actuator.cyclic.front_right",
+      "node": "Brazo_Servo_Delantero_Der",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        0.03800000250339508,
+        -0.030000001192092896,
+        0.2175000011920929
+      ],
+      "rotation_euler": [
+        0.0,
+        2.842864716967597e-07,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "actuator.cyclic.rear",
+      "node": "Brazo_Servo_Trasero",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        -0.04649999737739563,
+        0.017999999225139618,
+        0.2175000011920929
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "actuator.tail",
+      "node": "Brazo_Servo_Cola",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        -0.12800000607967377,
+        -0.015500000678002834,
+        0.14499999582767487
+      ],
+      "rotation_euler": [
+        0.0,
+        -2.349540409340989e-06,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "main.blade.a",
+      "node": "Pala_Principal_A",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.3449999988079071,
+        0.0
+      ],
+      "location": [
+        0.0,
+        0.08799999952316284,
+        0.3449999988079071
+      ],
+      "rotation_euler": [
+        0.0,
+        -2.9331141959687557e-08,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "main.blade.b",
+      "node": "Pala_Principal_B",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.3449999988079071,
+        0.0
+      ],
+      "location": [
+        -7.693204295833311e-09,
+        -0.08799999952316284,
+        0.3449999988079071
+      ],
+      "rotation_euler": [
+        0.0,
+        2.9331141959687557e-08,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "main.grip.a",
+      "node": "Portapalas_A",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.3449999988079071,
+        0.0
+      ],
+      "location": [
+        0.0,
+        0.04500000178813934,
+        0.3449999988079071
+      ],
+      "rotation_euler": [
+        0.0,
+        -2.9331141959687557e-08,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "main.grip.b",
+      "node": "Portapalas_B",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.3449999988079071,
+        0.0
+      ],
+      "location": [
+        -3.934025105678529e-09,
+        -0.04500000178813934,
+        0.3449999988079071
+      ],
+      "rotation_euler": [
+        0.0,
+        2.9331141959687557e-08,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "main.shaft",
+      "node": "Pivote_Rotor_Principal",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.3449999988079071
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.5585053563117981
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "swash.fixed",
+      "node": "Plato_Exterior",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.2630000114440918
+      ],
+      "rotation_euler": [
+        0.0,
+        -2.630002882142435e-10,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "swash.rotating",
+      "node": "Plato_Interior",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.3449999988079071,
+        0.0
+      ],
+      "location": [
+        -1.7842951508667548e-12,
+        1.114951338719583e-12,
+        0.2709999978542328
+      ],
+      "rotation_euler": [
+        -1.3936891918309158e-10,
+        -2.2303689450886566e-10,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "tail.bellcrank",
+      "node": "Palanca_Acodada_Cola",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        -0.9380000233650208,
+        -0.00409999955445528,
+        0.16850000619888306
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        1.6322252349709743e-07
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "tail.blade.a",
+      "node": "Pala_Cola_A",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -4.371138828673793e-08,
+        -1.0,
+        0.0,
+        1.0,
+        -4.371138828673793e-08,
+        0.9419999718666077,
+        8.611143798020748e-09,
+        0.19699999690055847
+      ],
+      "location": [
+        -0.9419999718666077,
+        -0.06199999898672104,
+        0.2329999953508377
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -2.1681489670299925e-06
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "tail.blade.b",
+      "node": "Pala_Cola_B",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -4.371138828673793e-08,
+        -1.0,
+        0.0,
+        1.0,
+        -4.371138828673793e-08,
+        0.9419999718666077,
+        8.611143798020748e-09,
+        0.19699999690055847
+      ],
+      "location": [
+        -0.9419999718666077,
+        -0.06199999898672104,
+        0.16099999845027924
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        2.1681489670299925e-06
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "tail.grip.a",
+      "node": "Portapalas_Cola_A",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -4.371138828673793e-08,
+        -1.0,
+        0.0,
+        1.0,
+        -4.371138828673793e-08,
+        0.9419999718666077,
+        8.611143798020748e-09,
+        0.19699999690055847
+      ],
+      "location": [
+        -0.9419999718666077,
+        -0.06199999898672104,
+        0.19699999690055847
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -2.1681489670299925e-06
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "tail.grip.b",
+      "node": "Portapalas_Cola_B",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -4.371138828673793e-08,
+        -1.0,
+        0.0,
+        1.0,
+        -4.371138828673793e-08,
+        0.9419999718666077,
+        8.611143798020748e-09,
+        0.19699999690055847
+      ],
+      "location": [
+        -0.9419999718666077,
+        -0.06199999898672104,
+        0.19699999690055847
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        2.1681489670299925e-06
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "tail.shaft",
+      "node": "Pivote_Rotor_Cola",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        -0.9419999718666077,
+        0.0,
+        0.19699999690055847
+      ],
+      "rotation_euler": [
+        1.5707963705062866,
+        0.6108652353286743,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "tail.slider",
+      "node": "Corredera_Cola",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        -0.9419999718666077,
+        -0.029500005766749382,
+        0.19699999690055847
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "tail.yoke",
+      "node": "Yugo_Cola",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        -4.371138828673793e-08,
+        -1.0,
+        0.0,
+        1.0,
+        -4.371138828673793e-08,
+        0.9419999718666077,
+        8.611143798020748e-09,
+        0.19699999690055847
+      ],
+      "location": [
+        -0.9419999718666077,
+        -0.03550000488758087,
+        0.19699999690055847
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "visual.aleta_vertical",
+      "node": "Aleta_Vertical",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        -0.9574829936027527,
+        0.01645750179886818,
+        0.14553344249725342
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "visual.bateria_12s",
+      "node": "Bateria_12S",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        0.07199999690055847,
+        0.0,
+        0.10164999961853027
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "visual.caja_cola",
+      "node": "Caja_Cola",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        -0.9390000104904175,
+        -0.0012500006705522537,
+        0.1937749981880188
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "visual.carenado",
+      "node": "Carenado",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "visual.carenado_gomas",
+      "node": "Carenado_Gomas",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "visual.correa_motor_htd_333_3m",
+      "node": "Correa_Motor_HTD_333_3M",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        0.002533332910388708,
+        0.0,
+        0.0
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "visual.motor_campana_y_polea_22t",
+      "node": "Motor_Campana_y_Polea_22T",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        0.10924575477838516,
+        0.0,
+        0.1599999964237213
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        5.381960868835449
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "visual.polea_53t_rueda_libre",
+      "node": "Polea_53T_Rueda_Libre",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.1899999976158142
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        2.2340214252471924
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "visual.satelite_1",
+      "node": "Satelite_1",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.3449999988079071,
+        0.0
+      ],
+      "location": [
+        0.017999999225139618,
+        0.0,
+        0.14499999582767487
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -1.675516128540039
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "visual.satelite_2",
+      "node": "Satelite_2",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.3449999988079071,
+        0.0
+      ],
+      "location": [
+        -0.008999999612569809,
+        0.015588457696139812,
+        0.14499999582767487
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -1.675516128540039
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "visual.satelite_3",
+      "node": "Satelite_3",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        -0.3449999988079071,
+        0.0
+      ],
+      "location": [
+        -0.008999999612569809,
+        -0.015588457696139812,
+        0.14499999582767487
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        -1.675516128540039
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    },
+    {
+      "id": "visual.sol_18t_y_polea_cola_32t",
+      "node": "Sol_18T_y_Polea_Cola_32T",
+      "parent_inverse": [
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0,
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      "location": [
+        0.0,
+        0.0,
+        0.14499999582767487
+      ],
+      "rotation_euler": [
+        0.0,
+        0.0,
+        2.2340214252471924
+      ],
+      "scale": [
+        1.0,
+        1.0,
+        1.0
+      ]
+    }
+  ],
+  "objects": {
+    "Ajustes_Mecanicos": {
+      "properties": {
+        "subtrim_servo_delantero_izq": 0.0,
+        "subtrim_servo_delantero_der": 0.0,
+        "subtrim_servo_trasero": 0.0,
+        "subtrim_servo_cola": 0.0,
+        "limite_servos_ciclicos": 40.0,
+        "limite_servo_cola": 40.0,
+        "ajuste_varilla_delantera_izq": 0.0,
+        "ajuste_varilla_delantera_der": 0.0,
+        "ajuste_varilla_trasera": 0.0,
+        "ajuste_bieleta_cabeza_A": 0.0,
+        "ajuste_bieleta_cabeza_B": 0.0,
+        "ajuste_varilla_cola": 0.0,
+        "ajuste_bieleta_palanca_cola": 0.0,
+        "ajuste_bieletas_paso_cola": 0.0,
+        "tensado_correa_cola_mm": 0.0,
+        "precompensacion_par_cola": 0.0
+      },
+      "drivers": []
+    },
+    "Aleta_Vertical": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "location",
+          "index": 0,
+          "expression": "-0.957483 - 0.001*sld",
+          "variables": {
+            "sld": [
+              "Ajustes_Mecanicos",
+              "[\"tensado_correa_cola_mm\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Bateria_12S": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "location",
+          "index": 0,
+          "expression": "0.07200 + bat*0.20",
+          "variables": {
+            "bat": [
+              "HX-700",
+              "[\"bateria_extraida\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Brazo_Servo_Cola": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 1,
+          "expression": "GAM",
+          "variables": {
+            "GAM": [
+              "Mezclador_08_Servos",
+              "[\"GAM\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Brazo_Servo_Delantero_Der": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 1,
+          "expression": "SV_FR",
+          "variables": {
+            "SV_FR": [
+              "Mezclador_08_Servos",
+              "[\"SV_FR\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Brazo_Servo_Delantero_Izq": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 1,
+          "expression": "SV_FL",
+          "variables": {
+            "SV_FL": [
+              "Mezclador_08_Servos",
+              "[\"SV_FL\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Brazo_Servo_Trasero": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 0,
+          "expression": "SV_R",
+          "variables": {
+            "SV_R": [
+              "Mezclador_08_Servos",
+              "[\"SV_R\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Caja_Cola": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "location",
+          "index": 0,
+          "expression": "-0.939000 - 0.001*sld",
+          "variables": {
+            "sld": [
+              "Ajustes_Mecanicos",
+              "[\"tensado_correa_cola_mm\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Carenado": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "location",
+          "index": 0,
+          "expression": "carn*0.33",
+          "variables": {
+            "carn": [
+              "HX-700",
+              "[\"carenado_retirado\"]"
+            ]
+          }
+        },
+        {
+          "path": "location",
+          "index": 2,
+          "expression": "carn*0.05",
+          "variables": {
+            "carn": [
+              "HX-700",
+              "[\"carenado_retirado\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Carenado_Gomas": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "location",
+          "index": 0,
+          "expression": "carn*0.33",
+          "variables": {
+            "carn": [
+              "HX-700",
+              "[\"carenado_retirado\"]"
+            ]
+          }
+        },
+        {
+          "path": "location",
+          "index": 2,
+          "expression": "carn*0.05",
+          "variables": {
+            "carn": [
+              "HX-700",
+              "[\"carenado_retirado\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Carter_Transmision": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "hide_viewport",
+          "index": 0,
+          "expression": "tabr > 0.5",
+          "variables": {
+            "tabr": [
+              "HX-700",
+              "[\"transmision_abierta\"]"
+            ]
+          }
+        },
+        {
+          "path": "hide_render",
+          "index": 0,
+          "expression": "tabr > 0.5",
+          "variables": {
+            "tabr": [
+              "HX-700",
+              "[\"transmision_abierta\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Correa_Motor_HTD_333_3M": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "location",
+          "index": 0,
+          "expression": "BSM - 0.003*floor(BSM/0.003)",
+          "variables": {
+            "BSM": [
+              "Mezclador_02_FBL_Plano",
+              "[\"BSM\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Corredera_Cola": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "location",
+          "index": 1,
+          "expression": "-0.02950 + DY",
+          "variables": {
+            "DY": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"DY\"]"
+            ]
+          }
+        },
+        {
+          "path": "location",
+          "index": 0,
+          "expression": "-0.942000 - 0.001*sld",
+          "variables": {
+            "sld": [
+              "Ajustes_Mecanicos",
+              "[\"tensado_correa_cola_mm\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Flecha_Empuje_Cola": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "hide_viewport",
+          "index": 0,
+          "expression": "mf < 0.5",
+          "variables": {
+            "mf": [
+              "HX-700",
+              "[\"mostrar_fuerzas\"]"
+            ]
+          }
+        },
+        {
+          "path": "hide_render",
+          "index": 0,
+          "expression": "mf < 0.5",
+          "variables": {
+            "mf": [
+              "HX-700",
+              "[\"mostrar_fuerzas\"]"
+            ]
+          }
+        },
+        {
+          "path": "scale",
+          "index": 2,
+          "expression": "FLT",
+          "variables": {
+            "FLT": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"FLT\"]"
+            ]
+          }
+        },
+        {
+          "path": "location",
+          "index": 0,
+          "expression": "-0.942000 - 0.001*sld",
+          "variables": {
+            "sld": [
+              "Ajustes_Mecanicos",
+              "[\"tensado_correa_cola_mm\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Flecha_Empuje_Cola_Necesario": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "hide_viewport",
+          "index": 0,
+          "expression": "mf < 0.5",
+          "variables": {
+            "mf": [
+              "HX-700",
+              "[\"mostrar_fuerzas\"]"
+            ]
+          }
+        },
+        {
+          "path": "hide_render",
+          "index": 0,
+          "expression": "mf < 0.5",
+          "variables": {
+            "mf": [
+              "HX-700",
+              "[\"mostrar_fuerzas\"]"
+            ]
+          }
+        },
+        {
+          "path": "scale",
+          "index": 2,
+          "expression": "FLR",
+          "variables": {
+            "FLR": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"FLR\"]"
+            ]
+          }
+        },
+        {
+          "path": "location",
+          "index": 0,
+          "expression": "-0.942000 - 0.001*sld",
+          "variables": {
+            "sld": [
+              "Ajustes_Mecanicos",
+              "[\"tensado_correa_cola_mm\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Flecha_Empuje_Rotor": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "hide_viewport",
+          "index": 0,
+          "expression": "mf < 0.5",
+          "variables": {
+            "mf": [
+              "HX-700",
+              "[\"mostrar_fuerzas\"]"
+            ]
+          }
+        },
+        {
+          "path": "hide_render",
+          "index": 0,
+          "expression": "mf < 0.5",
+          "variables": {
+            "mf": [
+              "HX-700",
+              "[\"mostrar_fuerzas\"]"
+            ]
+          }
+        },
+        {
+          "path": "scale",
+          "index": 2,
+          "expression": "FLM",
+          "variables": {
+            "FLM": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"FLM\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "HX-700": {
+      "properties": {
+        "giro_rotor": 0.0,
+        "velocidad_rotor": 0.0,
+        "paso_colectivo": 0.0,
+        "ciclico_alabeo": 0.0,
+        "ciclico_cabeceo": 0.0,
+        "anillo_ciclico": 10.0,
+        "rotacion_virtual_plato": 53.13,
+        "paso_cola": 0.0,
+        "palas_plegadas": 0.0,
+        "bateria_extraida": 0.0,
+        "carenado_retirado": 0.0,
+        "rueda_libre_deslizamiento": 0.0,
+        "transmision_abierta": 0.0,
+        "mostrar_fuerzas": 0.0
+      },
+      "drivers": []
+    },
+    "Mezclador_01_Mandos": {
+      "properties": {
+        "R": 0.0,
+        "TH": 0.5585053563117981,
+        "THM": 0.5585053563117981,
+        "COL": 0.0,
+        "SA": 0.0,
+        "SC": 0.0,
+        "FRG": 1.0,
+        "PHI": 0.9272934794425964
+      },
+      "drivers": [
+        {
+          "path": "[\"R\"]",
+          "index": 0,
+          "expression": "giro + (frame - 1)*vel",
+          "variables": {
+            "giro": [
+              "HX-700",
+              "[\"giro_rotor\"]"
+            ],
+            "vel": [
+              "HX-700",
+              "[\"velocidad_rotor\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"TH\"]",
+          "index": 0,
+          "expression": "0.558505361 - giro - (frame - 1)*vel",
+          "variables": {
+            "giro": [
+              "HX-700",
+              "[\"giro_rotor\"]"
+            ],
+            "vel": [
+              "HX-700",
+              "[\"velocidad_rotor\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"THM\"]",
+          "index": 0,
+          "expression": "0.558505361 - giro - (frame - 1)*vel + desl",
+          "variables": {
+            "desl": [
+              "HX-700",
+              "[\"rueda_libre_deslizamiento\"]"
+            ],
+            "giro": [
+              "HX-700",
+              "[\"giro_rotor\"]"
+            ],
+            "vel": [
+              "HX-700",
+              "[\"velocidad_rotor\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"COL\"]",
+          "index": 0,
+          "expression": "radians(col)",
+          "variables": {
+            "col": [
+              "HX-700",
+              "[\"paso_colectivo\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SA\"]",
+          "index": 0,
+          "expression": "sin(radians(alab))",
+          "variables": {
+            "alab": [
+              "HX-700",
+              "[\"ciclico_alabeo\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SC\"]",
+          "index": 0,
+          "expression": "sin(radians(cab))",
+          "variables": {
+            "cab": [
+              "HX-700",
+              "[\"ciclico_cabeceo\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"FRG\"]",
+          "index": 0,
+          "expression": "min(1.0, sin(radians(ring))/max(0.000001, sqrt(sin(radians(alab))*sin(radians(alab)) + sin(radians(cab))*sin(radians(cab)))))",
+          "variables": {
+            "alab": [
+              "HX-700",
+              "[\"ciclico_alabeo\"]"
+            ],
+            "cab": [
+              "HX-700",
+              "[\"ciclico_cabeceo\"]"
+            ],
+            "ring": [
+              "HX-700",
+              "[\"anillo_ciclico\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"PHI\"]",
+          "index": 0,
+          "expression": "radians(fase)",
+          "variables": {
+            "fase": [
+              "HX-700",
+              "[\"rotacion_virtual_plato\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_01b_Precomp_Flujo": {
+      "properties": {
+        "PLM": 0.0,
+        "VTM": 173.73007202148438,
+        "VTT": 158.06561279296875
+      },
+      "drivers": [
+        {
+          "path": "[\"PLM\"]",
+          "index": 0,
+          "expression": "0.017799164*(sqrt(1 + 74.909887081*abs(COL)) - 1)",
+          "variables": {
+            "COL": [
+              "Mezclador_01_Mandos",
+              "[\"COL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"VTM\"]",
+          "index": 0,
+          "expression": "rpm*0.082728607",
+          "variables": {
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"VTT\"]",
+          "index": 0,
+          "expression": "rpm*0.075269338",
+          "variables": {
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_01c_Precomp_Par": {
+      "properties": {
+        "PQM": 3.9343016147613525
+      },
+      "drivers": [
+        {
+          "path": "[\"PQM\"]",
+          "index": 0,
+          "expression": "rho*1.5489277*VTM*VTM*(0.163752305*(abs(COL)/3 - PLM/2)*PLM + 0.000068699)",
+          "variables": {
+            "COL": [
+              "Mezclador_01_Mandos",
+              "[\"COL\"]"
+            ],
+            "PLM": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"PLM\"]"
+            ],
+            "VTM": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"VTM\"]"
+            ],
+            "rho": [
+              "Parametros_Transmision",
+              "[\"densidad_aire\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_01d_Precomp_Empuje": {
+      "properties": {
+        "PCT": 0.0020377470646053553
+      },
+      "drivers": [
+        {
+          "path": "[\"PCT\"]",
+          "index": 0,
+          "expression": "PQM/(rho*0.06308215*VTT*VTT)",
+          "variables": {
+            "PQM": [
+              "Mezclador_01c_Precomp_Par",
+              "[\"PQM\"]"
+            ],
+            "VTT": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"VTT\"]"
+            ],
+            "rho": [
+              "Parametros_Transmision",
+              "[\"densidad_aire\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_01e_Precomp_Paso": {
+      "properties": {
+        "PTH": 0.06609916687011719,
+        "PC": 0.0
+      },
+      "drivers": [
+        {
+          "path": "[\"PTH\"]",
+          "index": 0,
+          "expression": "3*(2.980328313*PCT + sqrt(PCT/2)/2)",
+          "variables": {
+            "PCT": [
+              "Mezclador_01d_Precomp_Empuje",
+              "[\"PCT\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"PC\"]",
+          "index": 0,
+          "expression": "-1*(radians(pcola) + prec*3*(2.980328313*PCT + sqrt(PCT/2)/2))",
+          "variables": {
+            "PCT": [
+              "Mezclador_01d_Precomp_Empuje",
+              "[\"PCT\"]"
+            ],
+            "pcola": [
+              "HX-700",
+              "[\"paso_cola\"]"
+            ],
+            "prec": [
+              "Ajustes_Mecanicos",
+              "[\"precompensacion_par_cola\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_02_FBL_Plano": {
+      "properties": {
+        "GX": 0.0,
+        "GY": 0.0,
+        "CGX": 9.999999717180685e-10,
+        "CGZ": -0.0004999950178898871,
+        "THW": 0.5585053563117981,
+        "BSM": 0.056533332914114,
+        "TGX": 0.01510000228881836,
+        "TGY": 0.008099999278783798
+      },
+      "drivers": [
+        {
+          "path": "[\"GX\"]",
+          "index": 0,
+          "expression": "-0.6*FRG*(cos(PHI)*SC + sin(PHI)*SA)",
+          "variables": {
+            "FRG": [
+              "Mezclador_01_Mandos",
+              "[\"FRG\"]"
+            ],
+            "PHI": [
+              "Mezclador_01_Mandos",
+              "[\"PHI\"]"
+            ],
+            "SA": [
+              "Mezclador_01_Mandos",
+              "[\"SA\"]"
+            ],
+            "SC": [
+              "Mezclador_01_Mandos",
+              "[\"SC\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"GY\"]",
+          "index": 0,
+          "expression": "-0.6*FRG*(sin(PHI)*SC - cos(PHI)*SA)",
+          "variables": {
+            "FRG": [
+              "Mezclador_01_Mandos",
+              "[\"FRG\"]"
+            ],
+            "PHI": [
+              "Mezclador_01_Mandos",
+              "[\"PHI\"]"
+            ],
+            "SA": [
+              "Mezclador_01_Mandos",
+              "[\"SA\"]"
+            ],
+            "SC": [
+              "Mezclador_01_Mandos",
+              "[\"SC\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"CGX\"]",
+          "index": 0,
+          "expression": "-0.027 + 0.027000001*cos(COL) + 0.000499995*sin(COL)",
+          "variables": {
+            "COL": [
+              "Mezclador_01_Mandos",
+              "[\"COL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"CGZ\"]",
+          "index": 0,
+          "expression": "0.027000001*sin(COL) - 0.000499995*cos(COL)",
+          "variables": {
+            "COL": [
+              "Mezclador_01_Mandos",
+              "[\"COL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"THW\"]",
+          "index": 0,
+          "expression": "atan2(sin(TH), cos(TH))",
+          "variables": {
+            "TH": [
+              "Mezclador_01_Mandos",
+              "[\"TH\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BSM\"]",
+          "index": 0,
+          "expression": "0.101222544*THM",
+          "variables": {
+            "THM": [
+              "Mezclador_01_Mandos",
+              "[\"THM\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"TGX\"]",
+          "index": 0,
+          "expression": "0.015100002*cos(PC) - 0.008099999*sin(PC)",
+          "variables": {
+            "PC": [
+              "Mezclador_01e_Precomp_Paso",
+              "[\"PC\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"TGY\"]",
+          "index": 0,
+          "expression": "0.015100002*sin(PC) + 0.008099999*cos(PC)",
+          "variables": {
+            "PC": [
+              "Mezclador_01e_Precomp_Paso",
+              "[\"PC\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_03_FBL_Plato": {
+      "properties": {
+        "BETc": 0.0,
+        "ALFc": 0.0,
+        "CZc": 0.2630000114440918,
+        "DYTc": 6.459207058107097e-10
+      },
+      "drivers": [
+        {
+          "path": "[\"BETc\"]",
+          "index": 0,
+          "expression": "atan(-GX)",
+          "variables": {
+            "GX": [
+              "Mezclador_02_FBL_Plano",
+              "[\"GX\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"ALFc\"]",
+          "index": 0,
+          "expression": "atan(GY/sqrt(1 + GX*GX))",
+          "variables": {
+            "GX": [
+              "Mezclador_02_FBL_Plano",
+              "[\"GX\"]"
+            ],
+            "GY": [
+              "Mezclador_02_FBL_Plano",
+              "[\"GY\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"CZc\"]",
+          "index": 0,
+          "expression": "0.345 + CGZ - sqrt(0.005402251 - CGX*CGX) - 0.008",
+          "variables": {
+            "CGX": [
+              "Mezclador_02_FBL_Plano",
+              "[\"CGX\"]"
+            ],
+            "CGZ": [
+              "Mezclador_02_FBL_Plano",
+              "[\"CGZ\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"DYTc\"]",
+          "index": 0,
+          "expression": "TGY + sqrt(0.00033881 - (TGX - 0.014599979)*(TGX - 0.014599979) - 0) - 0.026499998",
+          "variables": {
+            "TGX": [
+              "Mezclador_02_FBL_Plano",
+              "[\"TGX\"]"
+            ],
+            "TGY": [
+              "Mezclador_02_FBL_Plano",
+              "[\"TGY\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_04_FBL_Rotulas": {
+      "properties": {
+        "BXc_FL": 0.019999999552965164,
+        "BYc_FL": 0.03464101627469063,
+        "BZc_FL": 0.2630000114440918,
+        "BXc_FR": 0.019999999552965164,
+        "BYc_FR": -0.03464101627469063,
+        "BZc_FR": 0.2630000114440918,
+        "BXc_R": -0.03999999910593033,
+        "BYc_R": 0.0,
+        "BZc_R": 0.2630000114440918,
+        "TQ": 0.0003556000010576099,
+        "TK": 0.0001960000372491777
+      },
+      "drivers": [
+        {
+          "path": "[\"BXc_FL\"]",
+          "index": 0,
+          "expression": "0.02*cos(BETc) + 0.034641016*sin(ALFc)*sin(BETc)",
+          "variables": {
+            "ALFc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"ALFc\"]"
+            ],
+            "BETc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"BETc\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BYc_FL\"]",
+          "index": 0,
+          "expression": "0.034641016*cos(ALFc)",
+          "variables": {
+            "ALFc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"ALFc\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BZc_FL\"]",
+          "index": 0,
+          "expression": "CZc - 0.02*sin(BETc) + 0.034641016*sin(ALFc)*cos(BETc)",
+          "variables": {
+            "ALFc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"ALFc\"]"
+            ],
+            "BETc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"BETc\"]"
+            ],
+            "CZc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"CZc\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BXc_FR\"]",
+          "index": 0,
+          "expression": "0.02*cos(BETc) - 0.034641016*sin(ALFc)*sin(BETc)",
+          "variables": {
+            "ALFc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"ALFc\"]"
+            ],
+            "BETc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"BETc\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BYc_FR\"]",
+          "index": 0,
+          "expression": "-0.034641016*cos(ALFc)",
+          "variables": {
+            "ALFc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"ALFc\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BZc_FR\"]",
+          "index": 0,
+          "expression": "CZc - 0.02*sin(BETc) - 0.034641016*sin(ALFc)*cos(BETc)",
+          "variables": {
+            "ALFc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"ALFc\"]"
+            ],
+            "BETc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"BETc\"]"
+            ],
+            "CZc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"CZc\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BXc_R\"]",
+          "index": 0,
+          "expression": "-0.039999999*cos(BETc)",
+          "variables": {
+            "BETc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"BETc\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BYc_R\"]",
+          "index": 0,
+          "expression": "0",
+          "variables": {}
+        },
+        {
+          "path": "[\"BZc_R\"]",
+          "index": 0,
+          "expression": "CZc + 0.039999999*sin(BETc)",
+          "variables": {
+            "BETc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"BETc\"]"
+            ],
+            "CZc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"CZc\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"TQ\"]",
+          "index": 0,
+          "expression": "-0.013999999*(DYTc - 0.025400002)",
+          "variables": {
+            "DYTc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"DYTc\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"TK\"]",
+          "index": 0,
+          "expression": "(-0.00025316 + (DYTc - 0.025400002)*(DYTc - 0.025400002))/2",
+          "variables": {
+            "DYTc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"DYTc\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_05_FBL_Lazos": {
+      "properties": {
+        "SP_FL": 0.000324000051477924,
+        "SQ_FL": 0.0008190001244656742,
+        "SK_FL": 0.00032400028430856764,
+        "SP_FR": 0.000324000051477924,
+        "SQ_FR": 0.0008190001244656742,
+        "SK_FR": 0.00032400028430856764,
+        "SP_R": 0.0003239999641664326,
+        "SQ_R": -0.0008190001244656742,
+        "SK_R": 0.0003239999641664326,
+        "PSIc": 1.0475022094169617e-07
+      },
+      "drivers": [
+        {
+          "path": "[\"SP_FL\"]",
+          "index": 0,
+          "expression": "-0.017999999*(BXc_FL - 0.038000003)",
+          "variables": {
+            "BXc_FL": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BXc_FL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SQ_FL\"]",
+          "index": 0,
+          "expression": "0.017999999*(BZc_FL - 0.217500001)",
+          "variables": {
+            "BZc_FL": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BZc_FL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SK_FL\"]",
+          "index": 0,
+          "expression": "(-0.001872611 + (BXc_FL - 0.038000003)*(BXc_FL - 0.038000003) + (BYc_FL - 0.023399999)*(BYc_FL - 0.023399999) + (BZc_FL - 0.217500001)*(BZc_FL - 0.217500001))/2",
+          "variables": {
+            "BXc_FL": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BXc_FL\"]"
+            ],
+            "BYc_FL": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BYc_FL\"]"
+            ],
+            "BZc_FL": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BZc_FL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SP_FR\"]",
+          "index": 0,
+          "expression": "-0.017999999*(BXc_FR - 0.038000003)",
+          "variables": {
+            "BXc_FR": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BXc_FR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SQ_FR\"]",
+          "index": 0,
+          "expression": "0.017999999*(BZc_FR - 0.217500001)",
+          "variables": {
+            "BZc_FR": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BZc_FR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SK_FR\"]",
+          "index": 0,
+          "expression": "(-0.001872611 + (BXc_FR - 0.038000003)*(BXc_FR - 0.038000003) + (BYc_FR + 0.023399999)*(BYc_FR + 0.023399999) + (BZc_FR - 0.217500001)*(BZc_FR - 0.217500001))/2",
+          "variables": {
+            "BXc_FR": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BXc_FR\"]"
+            ],
+            "BYc_FR": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BYc_FR\"]"
+            ],
+            "BZc_FR": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BZc_FR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SP_R\"]",
+          "index": 0,
+          "expression": "-0.017999999*(BYc_R - 0.017999999)",
+          "variables": {
+            "BYc_R": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BYc_R\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SQ_R\"]",
+          "index": 0,
+          "expression": "-0.017999999*(BZc_R - 0.217500001)",
+          "variables": {
+            "BZc_R": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BZc_R\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SK_R\"]",
+          "index": 0,
+          "expression": "(-0.001746261 + (BXc_R + 0.039900001)*(BXc_R + 0.039900001) + (BYc_R - 0.017999999)*(BYc_R - 0.017999999) + (BZc_R - 0.217500001)*(BZc_R - 0.217500001))/2",
+          "variables": {
+            "BXc_R": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BXc_R\"]"
+            ],
+            "BYc_R": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BYc_R\"]"
+            ],
+            "BZc_R": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BZc_R\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"PSIc\"]",
+          "index": 0,
+          "expression": "atan2(TQ, 0.000196) - acos(max(-1, min(1, TK/sqrt(0.000196*0.000196 + TQ*TQ))))",
+          "variables": {
+            "TK": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"TK\"]"
+            ],
+            "TQ": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"TQ\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_06_FBL_Servos": {
+      "properties": {
+        "SVc_FL": 2.842864716967597e-07,
+        "SVc_FR": 2.842864716967597e-07,
+        "SVc_R": 0.0,
+        "GQ": -0.010529996827244759,
+        "GK": 0.0002392247406532988
+      },
+      "drivers": [
+        {
+          "path": "[\"SVc_FL\"]",
+          "index": 0,
+          "expression": "atan2(SQ_FL, SP_FL) - acos(max(-1, min(1, SK_FL/sqrt(SP_FL*SP_FL + SQ_FL*SQ_FL))))",
+          "variables": {
+            "SK_FL": [
+              "Mezclador_05_FBL_Lazos",
+              "[\"SK_FL\"]"
+            ],
+            "SP_FL": [
+              "Mezclador_05_FBL_Lazos",
+              "[\"SP_FL\"]"
+            ],
+            "SQ_FL": [
+              "Mezclador_05_FBL_Lazos",
+              "[\"SQ_FL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SVc_FR\"]",
+          "index": 0,
+          "expression": "atan2(SQ_FR, SP_FR) - acos(max(-1, min(1, SK_FR/sqrt(SP_FR*SP_FR + SQ_FR*SQ_FR))))",
+          "variables": {
+            "SK_FR": [
+              "Mezclador_05_FBL_Lazos",
+              "[\"SK_FR\"]"
+            ],
+            "SP_FR": [
+              "Mezclador_05_FBL_Lazos",
+              "[\"SP_FR\"]"
+            ],
+            "SQ_FR": [
+              "Mezclador_05_FBL_Lazos",
+              "[\"SQ_FR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SVc_R\"]",
+          "index": 0,
+          "expression": "atan2(SQ_R, SP_R) + acos(max(-1, min(1, SK_R/sqrt(SP_R*SP_R + SQ_R*SQ_R))))",
+          "variables": {
+            "SK_R": [
+              "Mezclador_05_FBL_Lazos",
+              "[\"SK_R\"]"
+            ],
+            "SP_R": [
+              "Mezclador_05_FBL_Lazos",
+              "[\"SP_R\"]"
+            ],
+            "SQ_R": [
+              "Mezclador_05_FBL_Lazos",
+              "[\"SQ_R\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"GQ\"]",
+          "index": 0,
+          "expression": "0.012999996*(-0.810000017 + 0.018*sin(PSIc))",
+          "variables": {
+            "PSIc": [
+              "Mezclador_05_FBL_Lazos",
+              "[\"PSIc\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"GK\"]",
+          "index": 0,
+          "expression": "(-0.655621575 + (-0.810000017 + 0.018*sin(PSIc))*(-0.810000017 + 0.018*sin(PSIc)) + (0.018 - 0.018*cos(PSIc))*(0.018 - 0.018*cos(PSIc)))/2",
+          "variables": {
+            "PSIc": [
+              "Mezclador_05_FBL_Lazos",
+              "[\"PSIc\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_07_FBL_Cola": {
+      "properties": {
+        "GAMc": -2.349540409340989e-06
+      },
+      "drivers": [
+        {
+          "path": "[\"GAMc\"]",
+          "index": 0,
+          "expression": "atan2(GQ, 0.0002392) + acos(max(-1, min(1, GK/sqrt(0.0002392*0.0002392 + GQ*GQ))))",
+          "variables": {
+            "GK": [
+              "Mezclador_06_FBL_Servos",
+              "[\"GK\"]"
+            ],
+            "GQ": [
+              "Mezclador_06_FBL_Servos",
+              "[\"GQ\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_08_Servos": {
+      "properties": {
+        "SVr_FL": 2.842864716967597e-07,
+        "SV_FL": 2.842864716967597e-07,
+        "SVr_FR": 2.842864716967597e-07,
+        "SV_FR": 2.842864716967597e-07,
+        "SVr_R": 0.0,
+        "SV_R": 0.0,
+        "GAMr": -2.349540409340989e-06,
+        "GAM": -2.349540409340989e-06
+      },
+      "drivers": [
+        {
+          "path": "[\"SVr_FL\"]",
+          "index": 0,
+          "expression": "SVc_FL + radians(st_fl)",
+          "variables": {
+            "SVc_FL": [
+              "Mezclador_06_FBL_Servos",
+              "[\"SVc_FL\"]"
+            ],
+            "st_fl": [
+              "Ajustes_Mecanicos",
+              "[\"subtrim_servo_delantero_izq\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SV_FL\"]",
+          "index": 0,
+          "expression": "max(-radians(lim), min(radians(lim), SVc_FL + radians(st_fl)))",
+          "variables": {
+            "SVc_FL": [
+              "Mezclador_06_FBL_Servos",
+              "[\"SVc_FL\"]"
+            ],
+            "lim": [
+              "Ajustes_Mecanicos",
+              "[\"limite_servos_ciclicos\"]"
+            ],
+            "st_fl": [
+              "Ajustes_Mecanicos",
+              "[\"subtrim_servo_delantero_izq\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SVr_FR\"]",
+          "index": 0,
+          "expression": "SVc_FR + radians(st_fr)",
+          "variables": {
+            "SVc_FR": [
+              "Mezclador_06_FBL_Servos",
+              "[\"SVc_FR\"]"
+            ],
+            "st_fr": [
+              "Ajustes_Mecanicos",
+              "[\"subtrim_servo_delantero_der\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SV_FR\"]",
+          "index": 0,
+          "expression": "max(-radians(lim), min(radians(lim), SVc_FR + radians(st_fr)))",
+          "variables": {
+            "SVc_FR": [
+              "Mezclador_06_FBL_Servos",
+              "[\"SVc_FR\"]"
+            ],
+            "lim": [
+              "Ajustes_Mecanicos",
+              "[\"limite_servos_ciclicos\"]"
+            ],
+            "st_fr": [
+              "Ajustes_Mecanicos",
+              "[\"subtrim_servo_delantero_der\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SVr_R\"]",
+          "index": 0,
+          "expression": "SVc_R + radians(st_r)",
+          "variables": {
+            "SVc_R": [
+              "Mezclador_06_FBL_Servos",
+              "[\"SVc_R\"]"
+            ],
+            "st_r": [
+              "Ajustes_Mecanicos",
+              "[\"subtrim_servo_trasero\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SV_R\"]",
+          "index": 0,
+          "expression": "max(-radians(lim), min(radians(lim), SVc_R + radians(st_r)))",
+          "variables": {
+            "SVc_R": [
+              "Mezclador_06_FBL_Servos",
+              "[\"SVc_R\"]"
+            ],
+            "lim": [
+              "Ajustes_Mecanicos",
+              "[\"limite_servos_ciclicos\"]"
+            ],
+            "st_r": [
+              "Ajustes_Mecanicos",
+              "[\"subtrim_servo_trasero\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"GAMr\"]",
+          "index": 0,
+          "expression": "GAMc + radians(st_t)",
+          "variables": {
+            "GAMc": [
+              "Mezclador_07_FBL_Cola",
+              "[\"GAMc\"]"
+            ],
+            "st_t": [
+              "Ajustes_Mecanicos",
+              "[\"subtrim_servo_cola\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"GAM\"]",
+          "index": 0,
+          "expression": "max(-radians(limt), min(radians(limt), GAMc + radians(st_t)))",
+          "variables": {
+            "GAMc": [
+              "Mezclador_07_FBL_Cola",
+              "[\"GAMc\"]"
+            ],
+            "limt": [
+              "Ajustes_Mecanicos",
+              "[\"limite_servo_cola\"]"
+            ],
+            "st_t": [
+              "Ajustes_Mecanicos",
+              "[\"subtrim_servo_cola\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_09_Brazos": {
+      "properties": {
+        "PX_FL": 0.020000003278255463,
+        "PY_FL": 0.023399999365210533,
+        "PZ_FL": 0.2175000011920929,
+        "PX_FR": 0.020000003278255463,
+        "PY_FR": -0.023399999365210533,
+        "PZ_FR": 0.2175000011920929,
+        "PX_R": -0.039900001138448715,
+        "PY_R": 0.0,
+        "PZ_R": 0.2175000011920929,
+        "TBX": -0.12800003588199615,
+        "TBZ": 0.15799999237060547
+      },
+      "drivers": [
+        {
+          "path": "[\"PX_FL\"]",
+          "index": 0,
+          "expression": "0.038000003 - 0.017999999*cos(SV_FL)",
+          "variables": {
+            "SV_FL": [
+              "Mezclador_08_Servos",
+              "[\"SV_FL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"PY_FL\"]",
+          "index": 0,
+          "expression": "0.023399999",
+          "variables": {}
+        },
+        {
+          "path": "[\"PZ_FL\"]",
+          "index": 0,
+          "expression": "0.217500001 + 0.017999999*sin(SV_FL)",
+          "variables": {
+            "SV_FL": [
+              "Mezclador_08_Servos",
+              "[\"SV_FL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"PX_FR\"]",
+          "index": 0,
+          "expression": "0.038000003 - 0.017999999*cos(SV_FR)",
+          "variables": {
+            "SV_FR": [
+              "Mezclador_08_Servos",
+              "[\"SV_FR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"PY_FR\"]",
+          "index": 0,
+          "expression": "-0.023399999",
+          "variables": {}
+        },
+        {
+          "path": "[\"PZ_FR\"]",
+          "index": 0,
+          "expression": "0.217500001 + 0.017999999*sin(SV_FR)",
+          "variables": {
+            "SV_FR": [
+              "Mezclador_08_Servos",
+              "[\"SV_FR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"PX_R\"]",
+          "index": 0,
+          "expression": "-0.039900001",
+          "variables": {}
+        },
+        {
+          "path": "[\"PY_R\"]",
+          "index": 0,
+          "expression": "0.017999999 - 0.017999999*cos(SV_R)",
+          "variables": {
+            "SV_R": [
+              "Mezclador_08_Servos",
+              "[\"SV_R\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"PZ_R\"]",
+          "index": 0,
+          "expression": "0.217500001 - 0.017999999*sin(SV_R)",
+          "variables": {
+            "SV_R": [
+              "Mezclador_08_Servos",
+              "[\"SV_R\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"TBX\"]",
+          "index": 0,
+          "expression": "-0.128000006 + 0.012999996*sin(GAM)",
+          "variables": {
+            "GAM": [
+              "Mezclador_08_Servos",
+              "[\"GAM\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"TBZ\"]",
+          "index": 0,
+          "expression": "0.144999996 + 0.012999996*cos(GAM)",
+          "variables": {
+            "GAM": [
+              "Mezclador_08_Servos",
+              "[\"GAM\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_10_Directa_Rotulas": {
+      "properties": {
+        "Z0_FL": 0.2630000114440918,
+        "Z0_FR": 0.2630000114440918,
+        "Z0_R": 0.2630000114440918,
+        "BQ": -0.014580000191926956,
+        "BK": -0.00032400237978436053
+      },
+      "drivers": [
+        {
+          "path": "[\"Z0_FL\"]",
+          "index": 0,
+          "expression": "PZ_FL + sqrt(max(0, (0.046868021 + aj_fl*0.001)*(0.046868021 + aj_fl*0.001) - (BXc_FL - PX_FL)*(BXc_FL - PX_FL) - (BYc_FL - PY_FL)*(BYc_FL - PY_FL)))",
+          "variables": {
+            "BXc_FL": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BXc_FL\"]"
+            ],
+            "BYc_FL": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BYc_FL\"]"
+            ],
+            "PX_FL": [
+              "Mezclador_09_Brazos",
+              "[\"PX_FL\"]"
+            ],
+            "PY_FL": [
+              "Mezclador_09_Brazos",
+              "[\"PY_FL\"]"
+            ],
+            "PZ_FL": [
+              "Mezclador_09_Brazos",
+              "[\"PZ_FL\"]"
+            ],
+            "aj_fl": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_varilla_delantera_izq\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"Z0_FR\"]",
+          "index": 0,
+          "expression": "PZ_FR + sqrt(max(0, (0.046868021 + aj_fr*0.001)*(0.046868021 + aj_fr*0.001) - (BXc_FR - PX_FR)*(BXc_FR - PX_FR) - (BYc_FR - PY_FR)*(BYc_FR - PY_FR)))",
+          "variables": {
+            "BXc_FR": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BXc_FR\"]"
+            ],
+            "BYc_FR": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BYc_FR\"]"
+            ],
+            "PX_FR": [
+              "Mezclador_09_Brazos",
+              "[\"PX_FR\"]"
+            ],
+            "PY_FR": [
+              "Mezclador_09_Brazos",
+              "[\"PY_FR\"]"
+            ],
+            "PZ_FR": [
+              "Mezclador_09_Brazos",
+              "[\"PZ_FR\"]"
+            ],
+            "aj_fr": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_varilla_delantera_der\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"Z0_R\"]",
+          "index": 0,
+          "expression": "PZ_R + sqrt(max(0, (0.04550012 + aj_r*0.001)*(0.04550012 + aj_r*0.001) - (BXc_R - PX_R)*(BXc_R - PX_R) - (BYc_R - PY_R)*(BYc_R - PY_R)))",
+          "variables": {
+            "BXc_R": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BXc_R\"]"
+            ],
+            "BYc_R": [
+              "Mezclador_04_FBL_Rotulas",
+              "[\"BYc_R\"]"
+            ],
+            "PX_R": [
+              "Mezclador_09_Brazos",
+              "[\"PX_R\"]"
+            ],
+            "PY_R": [
+              "Mezclador_09_Brazos",
+              "[\"PY_R\"]"
+            ],
+            "PZ_R": [
+              "Mezclador_09_Brazos",
+              "[\"PZ_R\"]"
+            ],
+            "aj_r": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_varilla_trasera\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BQ\"]",
+          "index": 0,
+          "expression": "-0.016884001 - 0.018*TBX - 0.000018*sld",
+          "variables": {
+            "TBX": [
+              "Mezclador_09_Brazos",
+              "[\"TBX\"]"
+            ],
+            "sld": [
+              "Ajustes_Mecanicos",
+              "[\"tensado_correa_cola_mm\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BK\"]",
+          "index": 0,
+          "expression": "((0.810017984 + aj_vc*0.001)*(0.810017984 + aj_vc*0.001) - (TBX + 0.001*sld + 0.938000023)*(TBX + 0.001*sld + 0.938000023) - (TBZ - 0.163399994)*(TBZ - 0.163399994) - 0.000648)/2",
+          "variables": {
+            "TBX": [
+              "Mezclador_09_Brazos",
+              "[\"TBX\"]"
+            ],
+            "TBZ": [
+              "Mezclador_09_Brazos",
+              "[\"TBZ\"]"
+            ],
+            "aj_vc": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_varilla_cola\"]"
+            ],
+            "sld": [
+              "Ajustes_Mecanicos",
+              "[\"tensado_correa_cola_mm\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_11_Directa_Plato": {
+      "properties": {
+        "CZ0": 0.2630000114440918,
+        "U0": -2.630002882142435e-10,
+        "V0": 0.0,
+        "PSI": 1.6322252349709743e-07
+      },
+      "drivers": [
+        {
+          "path": "[\"CZ0\"]",
+          "index": 0,
+          "expression": "0.333333333*Z0_FL + 0.333333333*Z0_FR + 0.333333333*Z0_R",
+          "variables": {
+            "Z0_FL": [
+              "Mezclador_10_Directa_Rotulas",
+              "[\"Z0_FL\"]"
+            ],
+            "Z0_FR": [
+              "Mezclador_10_Directa_Rotulas",
+              "[\"Z0_FR\"]"
+            ],
+            "Z0_R": [
+              "Mezclador_10_Directa_Rotulas",
+              "[\"Z0_R\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"U0\"]",
+          "index": 0,
+          "expression": "-8.33333352*Z0_FL - 8.33333352*Z0_FR + 16.666667039*Z0_R",
+          "variables": {
+            "Z0_FL": [
+              "Mezclador_10_Directa_Rotulas",
+              "[\"Z0_FL\"]"
+            ],
+            "Z0_FR": [
+              "Mezclador_10_Directa_Rotulas",
+              "[\"Z0_FR\"]"
+            ],
+            "Z0_R": [
+              "Mezclador_10_Directa_Rotulas",
+              "[\"Z0_R\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"V0\"]",
+          "index": 0,
+          "expression": "14.433756678*Z0_FL - 14.433756678*Z0_FR",
+          "variables": {
+            "Z0_FL": [
+              "Mezclador_10_Directa_Rotulas",
+              "[\"Z0_FL\"]"
+            ],
+            "Z0_FR": [
+              "Mezclador_10_Directa_Rotulas",
+              "[\"Z0_FR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"PSI\"]",
+          "index": 0,
+          "expression": "atan2(BQ, -0.000324) + acos(max(-1, min(1, BK/sqrt(-0.000324*-0.000324 + BQ*BQ))))",
+          "variables": {
+            "BK": [
+              "Mezclador_10_Directa_Rotulas",
+              "[\"BK\"]"
+            ],
+            "BQ": [
+              "Mezclador_10_Directa_Rotulas",
+              "[\"BQ\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_12_Directa_Rotulas_2": {
+      "properties": {
+        "BX1_FL": 0.019999999552965164,
+        "BY1_FL": 0.03464101627469063,
+        "BX1_FR": 0.019999999552965164,
+        "BY1_FR": -0.03464101627469063,
+        "BX1_R": -0.03999999910593033,
+        "BY1_R": 0.0,
+        "BBX": -0.9520000219345093,
+        "BBY": -0.004100002348423004
+      },
+      "drivers": [
+        {
+          "path": "[\"BX1_FL\"]",
+          "index": 0,
+          "expression": "0.02*sqrt(1 - U0*U0) + 0.034641016*U0*V0/sqrt(1 - U0*U0)",
+          "variables": {
+            "U0": [
+              "Mezclador_11_Directa_Plato",
+              "[\"U0\"]"
+            ],
+            "V0": [
+              "Mezclador_11_Directa_Plato",
+              "[\"V0\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BY1_FL\"]",
+          "index": 0,
+          "expression": "0.034641016*sqrt(max(0, 1 - V0*V0/(1 - U0*U0)))",
+          "variables": {
+            "U0": [
+              "Mezclador_11_Directa_Plato",
+              "[\"U0\"]"
+            ],
+            "V0": [
+              "Mezclador_11_Directa_Plato",
+              "[\"V0\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BX1_FR\"]",
+          "index": 0,
+          "expression": "0.02*sqrt(1 - U0*U0) + -0.034641016*U0*V0/sqrt(1 - U0*U0)",
+          "variables": {
+            "U0": [
+              "Mezclador_11_Directa_Plato",
+              "[\"U0\"]"
+            ],
+            "V0": [
+              "Mezclador_11_Directa_Plato",
+              "[\"V0\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BY1_FR\"]",
+          "index": 0,
+          "expression": "-0.034641016*sqrt(max(0, 1 - V0*V0/(1 - U0*U0)))",
+          "variables": {
+            "U0": [
+              "Mezclador_11_Directa_Plato",
+              "[\"U0\"]"
+            ],
+            "V0": [
+              "Mezclador_11_Directa_Plato",
+              "[\"V0\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BX1_R\"]",
+          "index": 0,
+          "expression": "-0.039999999*sqrt(1 - U0*U0) + 0*U0*V0/sqrt(1 - U0*U0)",
+          "variables": {
+            "U0": [
+              "Mezclador_11_Directa_Plato",
+              "[\"U0\"]"
+            ],
+            "V0": [
+              "Mezclador_11_Directa_Plato",
+              "[\"V0\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BY1_R\"]",
+          "index": 0,
+          "expression": "0*sqrt(max(0, 1 - V0*V0/(1 - U0*U0)))",
+          "variables": {
+            "U0": [
+              "Mezclador_11_Directa_Plato",
+              "[\"U0\"]"
+            ],
+            "V0": [
+              "Mezclador_11_Directa_Plato",
+              "[\"V0\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BBX\"]",
+          "index": 0,
+          "expression": "-0.938000023 - 0.013999999*cos(PSI)",
+          "variables": {
+            "PSI": [
+              "Mezclador_11_Directa_Plato",
+              "[\"PSI\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BBY\"]",
+          "index": 0,
+          "expression": "-0.0041 - 0.013999999*sin(PSI)",
+          "variables": {
+            "PSI": [
+              "Mezclador_11_Directa_Plato",
+              "[\"PSI\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_13_Directa_Alturas": {
+      "properties": {
+        "Z1_FL": 0.2630000114440918,
+        "Z1_FR": 0.2630000114440918,
+        "Z1_R": 0.2630000114440918,
+        "DY": -5.532400315644281e-09
+      },
+      "drivers": [
+        {
+          "path": "[\"Z1_FL\"]",
+          "index": 0,
+          "expression": "PZ_FL + sqrt(max(0, (0.046868021 + aj_fl*0.001)*(0.046868021 + aj_fl*0.001) - (BX1_FL - PX_FL)*(BX1_FL - PX_FL) - (BY1_FL - PY_FL)*(BY1_FL - PY_FL)))",
+          "variables": {
+            "BX1_FL": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BX1_FL\"]"
+            ],
+            "BY1_FL": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BY1_FL\"]"
+            ],
+            "PX_FL": [
+              "Mezclador_09_Brazos",
+              "[\"PX_FL\"]"
+            ],
+            "PY_FL": [
+              "Mezclador_09_Brazos",
+              "[\"PY_FL\"]"
+            ],
+            "PZ_FL": [
+              "Mezclador_09_Brazos",
+              "[\"PZ_FL\"]"
+            ],
+            "aj_fl": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_varilla_delantera_izq\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"Z1_FR\"]",
+          "index": 0,
+          "expression": "PZ_FR + sqrt(max(0, (0.046868021 + aj_fr*0.001)*(0.046868021 + aj_fr*0.001) - (BX1_FR - PX_FR)*(BX1_FR - PX_FR) - (BY1_FR - PY_FR)*(BY1_FR - PY_FR)))",
+          "variables": {
+            "BX1_FR": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BX1_FR\"]"
+            ],
+            "BY1_FR": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BY1_FR\"]"
+            ],
+            "PX_FR": [
+              "Mezclador_09_Brazos",
+              "[\"PX_FR\"]"
+            ],
+            "PY_FR": [
+              "Mezclador_09_Brazos",
+              "[\"PY_FR\"]"
+            ],
+            "PZ_FR": [
+              "Mezclador_09_Brazos",
+              "[\"PZ_FR\"]"
+            ],
+            "aj_fr": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_varilla_delantera_der\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"Z1_R\"]",
+          "index": 0,
+          "expression": "PZ_R + sqrt(max(0, (0.04550012 + aj_r*0.001)*(0.04550012 + aj_r*0.001) - (BX1_R - PX_R)*(BX1_R - PX_R) - (BY1_R - PY_R)*(BY1_R - PY_R)))",
+          "variables": {
+            "BX1_R": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BX1_R\"]"
+            ],
+            "BY1_R": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BY1_R\"]"
+            ],
+            "PX_R": [
+              "Mezclador_09_Brazos",
+              "[\"PX_R\"]"
+            ],
+            "PY_R": [
+              "Mezclador_09_Brazos",
+              "[\"PY_R\"]"
+            ],
+            "PZ_R": [
+              "Mezclador_09_Brazos",
+              "[\"PZ_R\"]"
+            ],
+            "aj_r": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_varilla_trasera\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"DY\"]",
+          "index": 0,
+          "expression": "BBY - -0.0295 - sqrt(max(0, (0.026218508 + aj_bp*0.001)*(0.026218508 + aj_bp*0.001) - (BBX + 0.952000022)*(BBX + 0.952000022) - 0.00004225))",
+          "variables": {
+            "BBX": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BBX\"]"
+            ],
+            "BBY": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BBY\"]"
+            ],
+            "aj_bp": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_bieleta_palanca_cola\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_14_Directa_Plato_2": {
+      "properties": {
+        "CZ": 0.2630000114440918,
+        "U": -2.630002882142435e-10,
+        "V": 0.0,
+        "YP": 0.000435109919635579,
+        "YQ": 0.00028188995202071965,
+        "YK": 0.0004351093084551394
+      },
+      "drivers": [
+        {
+          "path": "[\"CZ\"]",
+          "index": 0,
+          "expression": "0.333333333*Z1_FL + 0.333333333*Z1_FR + 0.333333333*Z1_R",
+          "variables": {
+            "Z1_FL": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"Z1_FL\"]"
+            ],
+            "Z1_FR": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"Z1_FR\"]"
+            ],
+            "Z1_R": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"Z1_R\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"U\"]",
+          "index": 0,
+          "expression": "-8.33333352*Z1_FL - 8.33333352*Z1_FR + 16.666667039*Z1_R",
+          "variables": {
+            "Z1_FL": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"Z1_FL\"]"
+            ],
+            "Z1_FR": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"Z1_FR\"]"
+            ],
+            "Z1_R": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"Z1_R\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"V\"]",
+          "index": 0,
+          "expression": "14.433756678*Z1_FL - 14.433756678*Z1_FR",
+          "variables": {
+            "Z1_FL": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"Z1_FL\"]"
+            ],
+            "Z1_FR": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"Z1_FR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"YP\"]",
+          "index": 0,
+          "expression": "0.00022046 + 0.008099999*(DY + 0.026499998)",
+          "variables": {
+            "DY": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"DY\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"YQ\"]",
+          "index": 0,
+          "expression": "-0.00011826 + 0.015100002*(DY + 0.026499998)",
+          "variables": {
+            "DY": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"DY\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"YK\"]",
+          "index": 0,
+          "expression": "(0.000506779 + (DY + 0.026499998)*(DY + 0.026499998) - (0.018406791 + aj_pt*0.001)*(0.018406791 + aj_pt*0.001))/2",
+          "variables": {
+            "DY": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"DY\"]"
+            ],
+            "aj_pt": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_bieletas_paso_cola\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_15_Plato_Real": {
+      "properties": {
+        "BET": -2.630002882142435e-10,
+        "ALF": 0.0,
+        "PCR": -2.1681489670299925e-06
+      },
+      "drivers": [
+        {
+          "path": "[\"BET\"]",
+          "index": 0,
+          "expression": "asin(U)",
+          "variables": {
+            "U": [
+              "Mezclador_14_Directa_Plato_2",
+              "[\"U\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"ALF\"]",
+          "index": 0,
+          "expression": "asin(V/sqrt(1 - U*U))",
+          "variables": {
+            "U": [
+              "Mezclador_14_Directa_Plato_2",
+              "[\"U\"]"
+            ],
+            "V": [
+              "Mezclador_14_Directa_Plato_2",
+              "[\"V\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"PCR\"]",
+          "index": 0,
+          "expression": "atan2(YQ, YP) - acos(max(-1, min(1, YK/sqrt(YP*YP + YQ*YQ))))",
+          "variables": {
+            "YK": [
+              "Mezclador_14_Directa_Plato_2",
+              "[\"YK\"]"
+            ],
+            "YP": [
+              "Mezclador_14_Directa_Plato_2",
+              "[\"YP\"]"
+            ],
+            "YQ": [
+              "Mezclador_14_Directa_Plato_2",
+              "[\"YQ\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_16_Rotor": {
+      "properties": {
+        "GXL": 2.2303689450886566e-10,
+        "GYL": -1.3936891918309158e-10,
+        "ICX": -1.7842951508667548e-12,
+        "ICY": 1.114951338719583e-12,
+        "ICZ": 0.2709999978542328
+      },
+      "drivers": [
+        {
+          "path": "[\"GXL\"]",
+          "index": 0,
+          "expression": "-tan(BET)*cos(TH) + tan(ALF)/cos(BET)*sin(TH)",
+          "variables": {
+            "ALF": [
+              "Mezclador_15_Plato_Real",
+              "[\"ALF\"]"
+            ],
+            "BET": [
+              "Mezclador_15_Plato_Real",
+              "[\"BET\"]"
+            ],
+            "TH": [
+              "Mezclador_01_Mandos",
+              "[\"TH\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"GYL\"]",
+          "index": 0,
+          "expression": "tan(ALF)/cos(BET)*cos(TH) + tan(BET)*sin(TH)",
+          "variables": {
+            "ALF": [
+              "Mezclador_15_Plato_Real",
+              "[\"ALF\"]"
+            ],
+            "BET": [
+              "Mezclador_15_Plato_Real",
+              "[\"BET\"]"
+            ],
+            "TH": [
+              "Mezclador_01_Mandos",
+              "[\"TH\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"ICX\"]",
+          "index": 0,
+          "expression": "0.008*(cos(ALF)*sin(BET)*cos(TH) - sin(ALF)*sin(TH))",
+          "variables": {
+            "ALF": [
+              "Mezclador_15_Plato_Real",
+              "[\"ALF\"]"
+            ],
+            "BET": [
+              "Mezclador_15_Plato_Real",
+              "[\"BET\"]"
+            ],
+            "TH": [
+              "Mezclador_01_Mandos",
+              "[\"TH\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"ICY\"]",
+          "index": 0,
+          "expression": "-0.008*(cos(ALF)*sin(BET)*sin(TH) + sin(ALF)*cos(TH))",
+          "variables": {
+            "ALF": [
+              "Mezclador_15_Plato_Real",
+              "[\"ALF\"]"
+            ],
+            "BET": [
+              "Mezclador_15_Plato_Real",
+              "[\"BET\"]"
+            ],
+            "TH": [
+              "Mezclador_01_Mandos",
+              "[\"TH\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"ICZ\"]",
+          "index": 0,
+          "expression": "CZ + 0.008*cos(ALF)*cos(BET)",
+          "variables": {
+            "ALF": [
+              "Mezclador_15_Plato_Real",
+              "[\"ALF\"]"
+            ],
+            "BET": [
+              "Mezclador_15_Plato_Real",
+              "[\"BET\"]"
+            ],
+            "CZ": [
+              "Mezclador_14_Directa_Plato_2",
+              "[\"CZ\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_17_Plato_Giratorio": {
+      "properties": {
+        "BL": -2.2303689450886566e-10,
+        "AL": -1.3936891918309158e-10
+      },
+      "drivers": [
+        {
+          "path": "[\"BL\"]",
+          "index": 0,
+          "expression": "atan(-GXL)",
+          "variables": {
+            "GXL": [
+              "Mezclador_16_Rotor",
+              "[\"GXL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"AL\"]",
+          "index": 0,
+          "expression": "atan(GYL/sqrt(1 + GXL*GXL))",
+          "variables": {
+            "GXL": [
+              "Mezclador_16_Rotor",
+              "[\"GXL\"]"
+            ],
+            "GYL": [
+              "Mezclador_16_Rotor",
+              "[\"GYL\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_18_Rotulas_Giratorias": {
+      "properties": {
+        "IAX": 0.027000000700354576,
+        "IAY": 0.035999998450279236,
+        "IAZ": 0.2709999978542328,
+        "IBX": -0.027000000700354576,
+        "IBY": -0.035999998450279236,
+        "IBZ": 0.2709999978542328
+      },
+      "drivers": [
+        {
+          "path": "[\"IAX\"]",
+          "index": 0,
+          "expression": "ICX + 0.027*cos(BL) + 0.036*sin(AL)*sin(BL)",
+          "variables": {
+            "AL": [
+              "Mezclador_17_Plato_Giratorio",
+              "[\"AL\"]"
+            ],
+            "BL": [
+              "Mezclador_17_Plato_Giratorio",
+              "[\"BL\"]"
+            ],
+            "ICX": [
+              "Mezclador_16_Rotor",
+              "[\"ICX\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"IAY\"]",
+          "index": 0,
+          "expression": "ICY + 0.036*cos(AL)",
+          "variables": {
+            "AL": [
+              "Mezclador_17_Plato_Giratorio",
+              "[\"AL\"]"
+            ],
+            "ICY": [
+              "Mezclador_16_Rotor",
+              "[\"ICY\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"IAZ\"]",
+          "index": 0,
+          "expression": "ICZ - 0.027*sin(BL) + 0.036*sin(AL)*cos(BL)",
+          "variables": {
+            "AL": [
+              "Mezclador_17_Plato_Giratorio",
+              "[\"AL\"]"
+            ],
+            "BL": [
+              "Mezclador_17_Plato_Giratorio",
+              "[\"BL\"]"
+            ],
+            "ICZ": [
+              "Mezclador_16_Rotor",
+              "[\"ICZ\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"IBX\"]",
+          "index": 0,
+          "expression": "ICX - 0.027*cos(BL) - 0.036*sin(AL)*sin(BL)",
+          "variables": {
+            "AL": [
+              "Mezclador_17_Plato_Giratorio",
+              "[\"AL\"]"
+            ],
+            "BL": [
+              "Mezclador_17_Plato_Giratorio",
+              "[\"BL\"]"
+            ],
+            "ICX": [
+              "Mezclador_16_Rotor",
+              "[\"ICX\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"IBY\"]",
+          "index": 0,
+          "expression": "ICY - 0.036*cos(AL)",
+          "variables": {
+            "AL": [
+              "Mezclador_17_Plato_Giratorio",
+              "[\"AL\"]"
+            ],
+            "ICY": [
+              "Mezclador_16_Rotor",
+              "[\"ICY\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"IBZ\"]",
+          "index": 0,
+          "expression": "ICZ + 0.027*sin(BL) - 0.036*sin(AL)*cos(BL)",
+          "variables": {
+            "AL": [
+              "Mezclador_17_Plato_Giratorio",
+              "[\"AL\"]"
+            ],
+            "BL": [
+              "Mezclador_17_Plato_Giratorio",
+              "[\"BL\"]"
+            ],
+            "ICZ": [
+              "Mezclador_16_Rotor",
+              "[\"ICZ\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_19_Lazos_Palas": {
+      "properties": {
+        "PA": 0.0007659996626898646,
+        "QA": 0.001984500326216221,
+        "KA": 0.0007659996044822037,
+        "KA0": 0.0007659996626898646,
+        "PB": 0.0007659996626898646,
+        "QB": 0.001984500326216221,
+        "KB": 0.0007659996044822037,
+        "KB0": 0.0007659996626898646
+      },
+      "drivers": [
+        {
+          "path": "[\"PA\"]",
+          "index": 0,
+          "expression": "0.027000001*IAX - 0.000499995*(IAZ - 0.345)",
+          "variables": {
+            "IAX": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IAX\"]"
+            ],
+            "IAZ": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IAZ\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"QA\"]",
+          "index": 0,
+          "expression": "-0.000499995*IAX - 0.027000001*(IAZ - 0.345)",
+          "variables": {
+            "IAX": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IAX\"]"
+            ],
+            "IAZ": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IAZ\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"KA\"]",
+          "index": 0,
+          "expression": "(0.00072925 - (0.073500008 + aj_a*0.001)*(0.073500008 + aj_a*0.001) + IAX*IAX + (IAY - 0.035999998)*(IAY - 0.035999998) + (IAZ - 0.345)*(IAZ - 0.345))/2",
+          "variables": {
+            "IAX": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IAX\"]"
+            ],
+            "IAY": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IAY\"]"
+            ],
+            "IAZ": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IAZ\"]"
+            ],
+            "aj_a": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_bieleta_cabeza_A\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"KA0\"]",
+          "index": 0,
+          "expression": "(-0.004673001 + IAX*IAX + (IAY - 0.035999998)*(IAY - 0.035999998) + (IAZ - 0.345)*(IAZ - 0.345))/2",
+          "variables": {
+            "IAX": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IAX\"]"
+            ],
+            "IAY": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IAY\"]"
+            ],
+            "IAZ": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IAZ\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"PB\"]",
+          "index": 0,
+          "expression": "0.027000001*(-IBX) - 0.000499995*(IBZ - 0.345)",
+          "variables": {
+            "IBX": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IBX\"]"
+            ],
+            "IBZ": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IBZ\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"QB\"]",
+          "index": 0,
+          "expression": "-0.000499995*(-IBX) - 0.027000001*(IBZ - 0.345)",
+          "variables": {
+            "IBX": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IBX\"]"
+            ],
+            "IBZ": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IBZ\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"KB\"]",
+          "index": 0,
+          "expression": "(0.00072925 - (0.073500008 + aj_b*0.001)*(0.073500008 + aj_b*0.001) + (-IBX)*(-IBX) + (-IBY - 0.035999998)*(-IBY - 0.035999998) + (IBZ - 0.345)*(IBZ - 0.345))/2",
+          "variables": {
+            "IBX": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IBX\"]"
+            ],
+            "IBY": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IBY\"]"
+            ],
+            "IBZ": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IBZ\"]"
+            ],
+            "aj_b": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_bieleta_cabeza_B\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"KB0\"]",
+          "index": 0,
+          "expression": "(-0.004673001 + (-IBX)*(-IBX) + (-IBY - 0.035999998)*(-IBY - 0.035999998) + (IBZ - 0.345)*(IBZ - 0.345))/2",
+          "variables": {
+            "IBX": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IBX\"]"
+            ],
+            "IBY": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IBY\"]"
+            ],
+            "IBZ": [
+              "Mezclador_18_Rotulas_Giratorias",
+              "[\"IBZ\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_20_Palas": {
+      "properties": {
+        "RA": -2.9331141959687557e-08,
+        "RB": 2.9331141959687557e-08,
+        "RA0": 0.0,
+        "RB0": 0.0
+      },
+      "drivers": [
+        {
+          "path": "[\"RA\"]",
+          "index": 0,
+          "expression": "atan2(QA, PA) - acos(max(-1, min(1, KA/sqrt(PA*PA + QA*QA))))",
+          "variables": {
+            "KA": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"KA\"]"
+            ],
+            "PA": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"PA\"]"
+            ],
+            "QA": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"QA\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"RB\"]",
+          "index": 0,
+          "expression": "-(atan2(QB, PB) - acos(max(-1, min(1, KB/sqrt(PB*PB + QB*QB)))))",
+          "variables": {
+            "KB": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"KB\"]"
+            ],
+            "PB": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"PB\"]"
+            ],
+            "QB": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"QB\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"RA0\"]",
+          "index": 0,
+          "expression": "atan2(QA, PA) - acos(max(-1, min(1, KA0/sqrt(PA*PA + QA*QA))))",
+          "variables": {
+            "KA0": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"KA0\"]"
+            ],
+            "PA": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"PA\"]"
+            ],
+            "QA": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"QA\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"RB0\"]",
+          "index": 0,
+          "expression": "-(atan2(QB, PB) - acos(max(-1, min(1, KB0/sqrt(PB*PB + QB*QB)))))",
+          "variables": {
+            "KB0": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"KB0\"]"
+            ],
+            "PB": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"PB\"]"
+            ],
+            "QB": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"QB\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_21_Diagnostico": {
+      "properties": {
+        "SAT_FL": 0.0,
+        "SAT_FR": 0.0,
+        "SAT_R": 0.0,
+        "SAT_T": 0.0,
+        "EPL": 1.5068806646922894e-08,
+        "EAL": 0.0,
+        "ECOL": 1.6805506675154902e-06,
+        "BLQ": 0.0,
+        "TRK": 0.0,
+        "ECOLA": 0.00012422578583937138,
+        "TCB": 32.65629577636719,
+        "ANG_FL": 89.99999237060547,
+        "ANG_FR": 89.99999237060547,
+        "ANG_R": 90.0
+      },
+      "drivers": [
+        {
+          "path": "[\"SAT_FL\"]",
+          "index": 0,
+          "expression": "abs(SVr_FL) > radians(lim)",
+          "variables": {
+            "SVr_FL": [
+              "Mezclador_08_Servos",
+              "[\"SVr_FL\"]"
+            ],
+            "lim": [
+              "Ajustes_Mecanicos",
+              "[\"limite_servos_ciclicos\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SAT_FR\"]",
+          "index": 0,
+          "expression": "abs(SVr_FR) > radians(lim)",
+          "variables": {
+            "SVr_FR": [
+              "Mezclador_08_Servos",
+              "[\"SVr_FR\"]"
+            ],
+            "lim": [
+              "Ajustes_Mecanicos",
+              "[\"limite_servos_ciclicos\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SAT_R\"]",
+          "index": 0,
+          "expression": "abs(SVr_R) > radians(lim)",
+          "variables": {
+            "SVr_R": [
+              "Mezclador_08_Servos",
+              "[\"SVr_R\"]"
+            ],
+            "lim": [
+              "Ajustes_Mecanicos",
+              "[\"limite_servos_ciclicos\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"SAT_T\"]",
+          "index": 0,
+          "expression": "abs(GAMr) > radians(limt)",
+          "variables": {
+            "GAMr": [
+              "Mezclador_08_Servos",
+              "[\"GAMr\"]"
+            ],
+            "limt": [
+              "Ajustes_Mecanicos",
+              "[\"limite_servo_cola\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"EPL\"]",
+          "index": 0,
+          "expression": "degrees(sqrt((ALF - ALFc)*(ALF - ALFc) + (BET - BETc)*(BET - BETc)))",
+          "variables": {
+            "ALF": [
+              "Mezclador_15_Plato_Real",
+              "[\"ALF\"]"
+            ],
+            "ALFc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"ALFc\"]"
+            ],
+            "BET": [
+              "Mezclador_15_Plato_Real",
+              "[\"BET\"]"
+            ],
+            "BETc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"BETc\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"EAL\"]",
+          "index": 0,
+          "expression": "(CZ - CZc)*1000",
+          "variables": {
+            "CZ": [
+              "Mezclador_14_Directa_Plato_2",
+              "[\"CZ\"]"
+            ],
+            "CZc": [
+              "Mezclador_03_FBL_Plato",
+              "[\"CZc\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"ECOL\"]",
+          "index": 0,
+          "expression": "degrees(RA0 - RA + RB - RB0)/2",
+          "variables": {
+            "RA": [
+              "Mezclador_20_Palas",
+              "[\"RA\"]"
+            ],
+            "RA0": [
+              "Mezclador_20_Palas",
+              "[\"RA0\"]"
+            ],
+            "RB": [
+              "Mezclador_20_Palas",
+              "[\"RB\"]"
+            ],
+            "RB0": [
+              "Mezclador_20_Palas",
+              "[\"RB0\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"BLQ\"]",
+          "index": 0,
+          "expression": "max(abs(KA) > sqrt(PA*PA + QA*QA), abs(KB) > sqrt(PB*PB + QB*QB), abs(BK) > sqrt(0.000000105 + BQ*BQ), abs(YK) > sqrt(YP*YP + YQ*YQ))",
+          "variables": {
+            "BK": [
+              "Mezclador_10_Directa_Rotulas",
+              "[\"BK\"]"
+            ],
+            "BQ": [
+              "Mezclador_10_Directa_Rotulas",
+              "[\"BQ\"]"
+            ],
+            "KA": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"KA\"]"
+            ],
+            "KB": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"KB\"]"
+            ],
+            "PA": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"PA\"]"
+            ],
+            "PB": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"PB\"]"
+            ],
+            "QA": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"QA\"]"
+            ],
+            "QB": [
+              "Mezclador_19_Lazos_Palas",
+              "[\"QB\"]"
+            ],
+            "YK": [
+              "Mezclador_14_Directa_Plato_2",
+              "[\"YK\"]"
+            ],
+            "YP": [
+              "Mezclador_14_Directa_Plato_2",
+              "[\"YP\"]"
+            ],
+            "YQ": [
+              "Mezclador_14_Directa_Plato_2",
+              "[\"YQ\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"TRK\"]",
+          "index": 0,
+          "expression": "degrees(RA0 - RA - RB + RB0)",
+          "variables": {
+            "RA": [
+              "Mezclador_20_Palas",
+              "[\"RA\"]"
+            ],
+            "RA0": [
+              "Mezclador_20_Palas",
+              "[\"RA0\"]"
+            ],
+            "RB": [
+              "Mezclador_20_Palas",
+              "[\"RB\"]"
+            ],
+            "RB0": [
+              "Mezclador_20_Palas",
+              "[\"RB0\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"ECOLA\"]",
+          "index": 0,
+          "expression": "-1*degrees(PCR - PC)",
+          "variables": {
+            "PC": [
+              "Mezclador_01e_Precomp_Paso",
+              "[\"PC\"]"
+            ],
+            "PCR": [
+              "Mezclador_15_Plato_Real",
+              "[\"PCR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"TCB\"]",
+          "index": 0,
+          "expression": "5089.058524173*(0.006416962 + 0.001999547*sld)",
+          "variables": {
+            "sld": [
+              "Ajustes_Mecanicos",
+              "[\"tensado_correa_cola_mm\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"ANG_FL\"]",
+          "index": 0,
+          "expression": "degrees(acos(max(-1, min(1, ((PX_FL - 0.038000003)*(BX1_FL - PX_FL) + (PY_FL - 0.023399999)*(BY1_FL - PY_FL) + (PZ_FL - 0.217500001)*(Z1_FL - PZ_FL))/(0.017999999*(0.046868021 + aj_fl*0.001))))))",
+          "variables": {
+            "BX1_FL": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BX1_FL\"]"
+            ],
+            "BY1_FL": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BY1_FL\"]"
+            ],
+            "PX_FL": [
+              "Mezclador_09_Brazos",
+              "[\"PX_FL\"]"
+            ],
+            "PY_FL": [
+              "Mezclador_09_Brazos",
+              "[\"PY_FL\"]"
+            ],
+            "PZ_FL": [
+              "Mezclador_09_Brazos",
+              "[\"PZ_FL\"]"
+            ],
+            "Z1_FL": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"Z1_FL\"]"
+            ],
+            "aj_fl": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_varilla_delantera_izq\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"ANG_FR\"]",
+          "index": 0,
+          "expression": "degrees(acos(max(-1, min(1, ((PX_FR - 0.038000003)*(BX1_FR - PX_FR) + (PY_FR + 0.023399999)*(BY1_FR - PY_FR) + (PZ_FR - 0.217500001)*(Z1_FR - PZ_FR))/(0.017999999*(0.046868021 + aj_fr*0.001))))))",
+          "variables": {
+            "BX1_FR": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BX1_FR\"]"
+            ],
+            "BY1_FR": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BY1_FR\"]"
+            ],
+            "PX_FR": [
+              "Mezclador_09_Brazos",
+              "[\"PX_FR\"]"
+            ],
+            "PY_FR": [
+              "Mezclador_09_Brazos",
+              "[\"PY_FR\"]"
+            ],
+            "PZ_FR": [
+              "Mezclador_09_Brazos",
+              "[\"PZ_FR\"]"
+            ],
+            "Z1_FR": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"Z1_FR\"]"
+            ],
+            "aj_fr": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_varilla_delantera_der\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"ANG_R\"]",
+          "index": 0,
+          "expression": "degrees(acos(max(-1, min(1, ((PX_R + 0.039900001)*(BX1_R - PX_R) + (PY_R - 0.017999999)*(BY1_R - PY_R) + (PZ_R - 0.217500001)*(Z1_R - PZ_R))/(0.017999999*(0.04550012 + aj_r*0.001))))))",
+          "variables": {
+            "BX1_R": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BX1_R\"]"
+            ],
+            "BY1_R": [
+              "Mezclador_12_Directa_Rotulas_2",
+              "[\"BY1_R\"]"
+            ],
+            "PX_R": [
+              "Mezclador_09_Brazos",
+              "[\"PX_R\"]"
+            ],
+            "PY_R": [
+              "Mezclador_09_Brazos",
+              "[\"PY_R\"]"
+            ],
+            "PZ_R": [
+              "Mezclador_09_Brazos",
+              "[\"PZ_R\"]"
+            ],
+            "Z1_R": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"Z1_R\"]"
+            ],
+            "aj_r": [
+              "Ajustes_Mecanicos",
+              "[\"ajuste_varilla_trasera\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_22_Aero_Flujo": {
+      "properties": {
+        "THC": 2.9331141959687557e-08,
+        "THT": 2.1681489670299925e-06,
+        "LMM": 1.9554084573769615e-08,
+        "LMT": 1.4454077472692006e-06
+      },
+      "drivers": [
+        {
+          "path": "[\"THC\"]",
+          "index": 0,
+          "expression": "(RB - RA)/2",
+          "variables": {
+            "RA": [
+              "Mezclador_20_Palas",
+              "[\"RA\"]"
+            ],
+            "RB": [
+              "Mezclador_20_Palas",
+              "[\"RB\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"THT\"]",
+          "index": 0,
+          "expression": "-1*PCR",
+          "variables": {
+            "PCR": [
+              "Mezclador_15_Plato_Real",
+              "[\"PCR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"LMM\"]",
+          "index": 0,
+          "expression": "0.017799164*(sqrt(1 + 37.45494354*abs(RB - RA)) - 1)",
+          "variables": {
+            "RA": [
+              "Mezclador_20_Palas",
+              "[\"RA\"]"
+            ],
+            "RB": [
+              "Mezclador_20_Palas",
+              "[\"RB\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"LMT\"]",
+          "index": 0,
+          "expression": "0.041941688*(sqrt(1 + 31.790168676*abs(PCR)) - 1)",
+          "variables": {
+            "PCR": [
+              "Mezclador_15_Plato_Real",
+              "[\"PCR\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_23_Aero_Coef": {
+      "properties": {
+        "CTM": 7.166671121940158e-16,
+        "CQM": 6.869900244055316e-05,
+        "CTT": 4.176958692120314e-12,
+        "CQT": 0.00016188000154215842,
+        "CTH": 0.0007036913302727044
+      },
+      "drivers": [
+        {
+          "path": "[\"CTM\"]",
+          "index": 0,
+          "expression": "(1 if THC >= 0 else -1)*0.142393309*(abs(THC)/3 - LMM/2)",
+          "variables": {
+            "LMM": [
+              "Mezclador_22_Aero_Flujo",
+              "[\"LMM\"]"
+            ],
+            "THC": [
+              "Mezclador_22_Aero_Flujo",
+              "[\"THC\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"CQM\"]",
+          "index": 0,
+          "expression": "0.163752305*(abs(THC)/3 - LMM/2)*LMM + 0.000068699",
+          "variables": {
+            "LMM": [
+              "Mezclador_22_Aero_Flujo",
+              "[\"LMM\"]"
+            ],
+            "THC": [
+              "Mezclador_22_Aero_Flujo",
+              "[\"THC\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"CTT\"]",
+          "index": 0,
+          "expression": "(1 if THT >= 0 else -1)*0.335533503*(abs(THT)/3 - LMT/2)",
+          "variables": {
+            "LMT": [
+              "Mezclador_22_Aero_Flujo",
+              "[\"LMT\"]"
+            ],
+            "THT": [
+              "Mezclador_22_Aero_Flujo",
+              "[\"THT\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"CQT\"]",
+          "index": 0,
+          "expression": "0.385863529*(abs(THT)/3 - LMT/2)*LMT + 0.00016188",
+          "variables": {
+            "LMT": [
+              "Mezclador_22_Aero_Flujo",
+              "[\"LMT\"]"
+            ],
+            "THT": [
+              "Mezclador_22_Aero_Flujo",
+              "[\"THT\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"CTH\"]",
+          "index": 0,
+          "expression": "kg*9.81/(rho*1.960667975*VTM*VTM)",
+          "variables": {
+            "VTM": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"VTM\"]"
+            ],
+            "kg": [
+              "Parametros_Transmision",
+              "[\"peso_kg\"]"
+            ],
+            "rho": [
+              "Parametros_Transmision",
+              "[\"densidad_aire\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Mezclador_24_Aero_Fuerzas": {
+      "properties": {
+        "TM": 5.195264010660061e-11,
+        "QM": 3.9343018531799316,
+        "PM": 865.1981201171875,
+        "TT": 8.561042541543884e-09,
+        "PTW": 52.44415283203125,
+        "CTR": 0.0020377470646053553,
+        "FLM": 1.5276594279942796e-13,
+        "FLT": 1.7122085693710432e-10,
+        "FLR": 0.08353082090616226
+      },
+      "drivers": [
+        {
+          "path": "[\"TM\"]",
+          "index": 0,
+          "expression": "CTM*rho*1.960667975*VTM*VTM",
+          "variables": {
+            "CTM": [
+              "Mezclador_23_Aero_Coef",
+              "[\"CTM\"]"
+            ],
+            "VTM": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"VTM\"]"
+            ],
+            "rho": [
+              "Parametros_Transmision",
+              "[\"densidad_aire\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"QM\"]",
+          "index": 0,
+          "expression": "CQM*rho*1.5489277*VTM*VTM",
+          "variables": {
+            "CQM": [
+              "Mezclador_23_Aero_Coef",
+              "[\"CQM\"]"
+            ],
+            "VTM": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"VTM\"]"
+            ],
+            "rho": [
+              "Parametros_Transmision",
+              "[\"densidad_aire\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"PM\"]",
+          "index": 0,
+          "expression": "CQM*rho*1.960667975*VTM*VTM*VTM",
+          "variables": {
+            "CQM": [
+              "Mezclador_23_Aero_Coef",
+              "[\"CQM\"]"
+            ],
+            "VTM": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"VTM\"]"
+            ],
+            "rho": [
+              "Parametros_Transmision",
+              "[\"densidad_aire\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"TT\"]",
+          "index": 0,
+          "expression": "CTT*rho*0.066966189*VTT*VTT",
+          "variables": {
+            "CTT": [
+              "Mezclador_23_Aero_Coef",
+              "[\"CTT\"]"
+            ],
+            "VTT": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"VTT\"]"
+            ],
+            "rho": [
+              "Parametros_Transmision",
+              "[\"densidad_aire\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"PTW\"]",
+          "index": 0,
+          "expression": "CQT*rho*0.066966189*VTT*VTT*VTT",
+          "variables": {
+            "CQT": [
+              "Mezclador_23_Aero_Coef",
+              "[\"CQT\"]"
+            ],
+            "VTT": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"VTT\"]"
+            ],
+            "rho": [
+              "Parametros_Transmision",
+              "[\"densidad_aire\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"CTR\"]",
+          "index": 0,
+          "expression": "CQM*24.554136143*VTM*VTM/(VTT*VTT)",
+          "variables": {
+            "CQM": [
+              "Mezclador_23_Aero_Coef",
+              "[\"CQM\"]"
+            ],
+            "VTM": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"VTM\"]"
+            ],
+            "VTT": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"VTT\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"FLM\"]",
+          "index": 0,
+          "expression": "0.15*CTM*rho*1.960667975*VTM*VTM/(kg*9.81)",
+          "variables": {
+            "CTM": [
+              "Mezclador_23_Aero_Coef",
+              "[\"CTM\"]"
+            ],
+            "VTM": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"VTM\"]"
+            ],
+            "kg": [
+              "Parametros_Transmision",
+              "[\"peso_kg\"]"
+            ],
+            "rho": [
+              "Parametros_Transmision",
+              "[\"densidad_aire\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"FLT\"]",
+          "index": 0,
+          "expression": "0.02*CTT*rho*0.066966189*VTT*VTT",
+          "variables": {
+            "CTT": [
+              "Mezclador_23_Aero_Coef",
+              "[\"CTT\"]"
+            ],
+            "VTT": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"VTT\"]"
+            ],
+            "rho": [
+              "Parametros_Transmision",
+              "[\"densidad_aire\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"FLR\"]",
+          "index": 0,
+          "expression": "0.02*CQM*rho*1.644296922*VTM*VTM",
+          "variables": {
+            "CQM": [
+              "Mezclador_23_Aero_Coef",
+              "[\"CQM\"]"
+            ],
+            "VTM": [
+              "Mezclador_01b_Precomp_Flujo",
+              "[\"VTM\"]"
+            ],
+            "rho": [
+              "Parametros_Transmision",
+              "[\"densidad_aire\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Motor_Campana_y_Polea_22T": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "9.6363636*THM",
+          "variables": {
+            "THM": [
+              "Mezclador_01_Mandos",
+              "[\"THM\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Pala_Cola_A": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "PCR",
+          "variables": {
+            "PCR": [
+              "Mezclador_15_Plato_Real",
+              "[\"PCR\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Pala_Cola_B": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "-PCR",
+          "variables": {
+            "PCR": [
+              "Mezclador_15_Plato_Real",
+              "[\"PCR\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Pala_Principal_A": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 1,
+          "expression": "RA",
+          "variables": {
+            "RA": [
+              "Mezclador_20_Palas",
+              "[\"RA\"]"
+            ]
+          }
+        },
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "pleg*(radians(86) - THW)",
+          "variables": {
+            "THW": [
+              "Mezclador_02_FBL_Plano",
+              "[\"THW\"]"
+            ],
+            "pleg": [
+              "HX-700",
+              "[\"palas_plegadas\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Pala_Principal_B": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 1,
+          "expression": "RB",
+          "variables": {
+            "RB": [
+              "Mezclador_20_Palas",
+              "[\"RB\"]"
+            ]
+          }
+        },
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "-pleg*(radians(86) + THW)",
+          "variables": {
+            "THW": [
+              "Mezclador_02_FBL_Plano",
+              "[\"THW\"]"
+            ],
+            "pleg": [
+              "HX-700",
+              "[\"palas_plegadas\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Palanca_Acodada_Cola": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "PSI",
+          "variables": {
+            "PSI": [
+              "Mezclador_11_Directa_Plato",
+              "[\"PSI\"]"
+            ]
+          }
+        },
+        {
+          "path": "location",
+          "index": 0,
+          "expression": "-0.938000 - 0.001*sld",
+          "variables": {
+            "sld": [
+              "Ajustes_Mecanicos",
+              "[\"tensado_correa_cola_mm\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Parametros_Transmision": {
+      "properties": {
+        "rpm_cabeza": 2100.0,
+        "kv_motor": 530.0,
+        "voltaje_bateria": 44.4,
+        "potencia_kw": 3.5,
+        "peso_kg": 5.2,
+        "densidad_aire": 1.225
+      },
+      "drivers": []
+    },
+    "Pivote_Rotor_Cola": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 1,
+          "expression": "0.610865238 - R*4.923076923",
+          "variables": {
+            "R": [
+              "Mezclador_01_Mandos",
+              "[\"R\"]"
+            ]
+          }
+        },
+        {
+          "path": "location",
+          "index": 0,
+          "expression": "-0.942 - 0.001*sld",
+          "variables": {
+            "sld": [
+              "Ajustes_Mecanicos",
+              "[\"tensado_correa_cola_mm\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Pivote_Rotor_Principal": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "TH",
+          "variables": {
+            "TH": [
+              "Mezclador_01_Mandos",
+              "[\"TH\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Plato_Exterior": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "location",
+          "index": 2,
+          "expression": "CZ",
+          "variables": {
+            "CZ": [
+              "Mezclador_14_Directa_Plato_2",
+              "[\"CZ\"]"
+            ]
+          }
+        },
+        {
+          "path": "rotation_euler",
+          "index": 0,
+          "expression": "ALF",
+          "variables": {
+            "ALF": [
+              "Mezclador_15_Plato_Real",
+              "[\"ALF\"]"
+            ]
+          }
+        },
+        {
+          "path": "rotation_euler",
+          "index": 1,
+          "expression": "BET",
+          "variables": {
+            "BET": [
+              "Mezclador_15_Plato_Real",
+              "[\"BET\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Plato_Interior": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "location",
+          "index": 0,
+          "expression": "ICX",
+          "variables": {
+            "ICX": [
+              "Mezclador_16_Rotor",
+              "[\"ICX\"]"
+            ]
+          }
+        },
+        {
+          "path": "location",
+          "index": 1,
+          "expression": "ICY",
+          "variables": {
+            "ICY": [
+              "Mezclador_16_Rotor",
+              "[\"ICY\"]"
+            ]
+          }
+        },
+        {
+          "path": "location",
+          "index": 2,
+          "expression": "ICZ",
+          "variables": {
+            "ICZ": [
+              "Mezclador_16_Rotor",
+              "[\"ICZ\"]"
+            ]
+          }
+        },
+        {
+          "path": "rotation_euler",
+          "index": 0,
+          "expression": "AL",
+          "variables": {
+            "AL": [
+              "Mezclador_17_Plato_Giratorio",
+              "[\"AL\"]"
+            ]
+          }
+        },
+        {
+          "path": "rotation_euler",
+          "index": 1,
+          "expression": "BL",
+          "variables": {
+            "BL": [
+              "Mezclador_17_Plato_Giratorio",
+              "[\"BL\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Polea_53T_Rueda_Libre": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "4.0000000*THM",
+          "variables": {
+            "THM": [
+              "Mezclador_01_Mandos",
+              "[\"THM\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Portapalas_A": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 1,
+          "expression": "RA",
+          "variables": {
+            "RA": [
+              "Mezclador_20_Palas",
+              "[\"RA\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Portapalas_B": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 1,
+          "expression": "RB",
+          "variables": {
+            "RB": [
+              "Mezclador_20_Palas",
+              "[\"RB\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Portapalas_Cola_A": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "PCR",
+          "variables": {
+            "PCR": [
+              "Mezclador_15_Plato_Real",
+              "[\"PCR\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Portapalas_Cola_B": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "-PCR",
+          "variables": {
+            "PCR": [
+              "Mezclador_15_Plato_Real",
+              "[\"PCR\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Satelite_1": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "-3.0000000*TH",
+          "variables": {
+            "TH": [
+              "Mezclador_01_Mandos",
+              "[\"TH\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Satelite_2": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "-3.0000000*TH",
+          "variables": {
+            "TH": [
+              "Mezclador_01_Mandos",
+              "[\"TH\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Satelite_3": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "-3.0000000*TH",
+          "variables": {
+            "TH": [
+              "Mezclador_01_Mandos",
+              "[\"TH\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Sol_18T_y_Polea_Cola_32T": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "rotation_euler",
+          "index": 2,
+          "expression": "4.0000000*TH",
+          "variables": {
+            "TH": [
+              "Mezclador_01_Mandos",
+              "[\"TH\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Telemetria_Aerodinamica": {
+      "properties": {
+        "empuje_rotor_kgf": 5.295885691786184e-12,
+        "peso_kgf": 5.199999809265137,
+        "empuje_sobre_peso": 1.0184396728729617e-12,
+        "colectivo_estacionario_grados": 2.4615399837493896,
+        "potencia_rotor_W": 865.1981201171875,
+        "par_rotor_Nm": 3.9343018531799316,
+        "empuje_cola_N": 8.561042541543884e-09,
+        "empuje_cola_necesario_N": 4.176541328430176,
+        "paso_cola_actual_grados": 0.00012422578583937138,
+        "paso_cola_necesario_grados": 3.787203073501587,
+        "precompensacion_paso_cola_grados": 0.0,
+        "momento_guinada_neto_Nm": -3.9343018531799316,
+        "potencia_cola_W": 52.44415283203125,
+        "fraccion_potencia_cola_pct": 5.715097904205322,
+        "potencia_eje_motor_estimada_W": 965.3295288085938,
+        "tension_correa_cola_N": 32.65629577636719,
+        "fuerza_util_correa_cola_N": 3.902094602584839,
+        "margen_salto_diente_N": 30.70524787902832
+      },
+      "drivers": [
+        {
+          "path": "[\"empuje_rotor_kgf\"]",
+          "index": 0,
+          "expression": "TM/9.81",
+          "variables": {
+            "TM": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"TM\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"peso_kgf\"]",
+          "index": 0,
+          "expression": "kg",
+          "variables": {
+            "kg": [
+              "Parametros_Transmision",
+              "[\"peso_kg\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"empuje_sobre_peso\"]",
+          "index": 0,
+          "expression": "TM/(kg*9.81)",
+          "variables": {
+            "TM": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"TM\"]"
+            ],
+            "kg": [
+              "Parametros_Transmision",
+              "[\"peso_kg\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"colectivo_estacionario_grados\"]",
+          "index": 0,
+          "expression": "degrees(3*(7.022801914*CTH + sqrt(CTH/2)/2))",
+          "variables": {
+            "CTH": [
+              "Mezclador_23_Aero_Coef",
+              "[\"CTH\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"potencia_rotor_W\"]",
+          "index": 0,
+          "expression": "PM",
+          "variables": {
+            "PM": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"PM\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"par_rotor_Nm\"]",
+          "index": 0,
+          "expression": "QM",
+          "variables": {
+            "QM": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"QM\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"empuje_cola_N\"]",
+          "index": 0,
+          "expression": "TT",
+          "variables": {
+            "TT": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"TT\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"empuje_cola_necesario_N\"]",
+          "index": 0,
+          "expression": "QM/0.942",
+          "variables": {
+            "QM": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"QM\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"paso_cola_actual_grados\"]",
+          "index": 0,
+          "expression": "degrees(THT)",
+          "variables": {
+            "THT": [
+              "Mezclador_22_Aero_Flujo",
+              "[\"THT\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"paso_cola_necesario_grados\"]",
+          "index": 0,
+          "expression": "degrees(3*(2.980328313*CTR + sqrt(CTR/2)/2))",
+          "variables": {
+            "CTR": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"CTR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"precompensacion_paso_cola_grados\"]",
+          "index": 0,
+          "expression": "degrees(prec*PTH)",
+          "variables": {
+            "PTH": [
+              "Mezclador_01e_Precomp_Paso",
+              "[\"PTH\"]"
+            ],
+            "prec": [
+              "Ajustes_Mecanicos",
+              "[\"precompensacion_par_cola\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"momento_guinada_neto_Nm\"]",
+          "index": 0,
+          "expression": "TT*0.942 - QM",
+          "variables": {
+            "QM": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"QM\"]"
+            ],
+            "TT": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"TT\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"potencia_cola_W\"]",
+          "index": 0,
+          "expression": "PTW",
+          "variables": {
+            "PTW": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"PTW\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"fraccion_potencia_cola_pct\"]",
+          "index": 0,
+          "expression": "100*PTW/max(1, PM + PTW)",
+          "variables": {
+            "PM": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"PM\"]"
+            ],
+            "PTW": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"PTW\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"potencia_eje_motor_estimada_W\"]",
+          "index": 0,
+          "expression": "(PM + PTW)/0.9506",
+          "variables": {
+            "PM": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"PM\"]"
+            ],
+            "PTW": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"PTW\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"tension_correa_cola_N\"]",
+          "index": 0,
+          "expression": "TCB",
+          "variables": {
+            "TCB": [
+              "Mezclador_21_Diagnostico",
+              "[\"TCB\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"fuerza_util_correa_cola_N\"]",
+          "index": 0,
+          "expression": "PTW/(rpm*0.0064)",
+          "variables": {
+            "PTW": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"PTW\"]"
+            ],
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"margen_salto_diente_N\"]",
+          "index": 0,
+          "expression": "TCB - PTW/(rpm*0.0064)/2",
+          "variables": {
+            "PTW": [
+              "Mezclador_24_Aero_Fuerzas",
+              "[\"PTW\"]"
+            ],
+            "TCB": [
+              "Mezclador_21_Diagnostico",
+              "[\"TCB\"]"
+            ],
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Telemetria_Mecanica": {
+      "properties": {
+        "estado_alerta": 0.0,
+        "paso_pala_A_grados": 1.6805506675154902e-06,
+        "paso_pala_B_grados": 1.6805506675154902e-06,
+        "paso_colectivo_medido_grados": 1.6805506675154902e-06,
+        "error_colectivo_bieletas_grados": 1.6805506675154902e-06,
+        "diferencia_tracking_grados": 0.0,
+        "altura_plato_mm": 1.1444091796875e-05,
+        "error_altura_plato_mm": 0.0,
+        "inclinacion_plato_X_grados": 0.0,
+        "inclinacion_plato_Y_grados": -1.5068806646922894e-08,
+        "error_inclinacion_plato_grados": 1.5068806646922894e-08,
+        "anillo_ciclico_factor": 1.0,
+        "servo_delantero_izq_grados": 1.6288415281451307e-05,
+        "servo_delantero_der_grados": 1.6288415281451307e-05,
+        "servo_trasero_grados": 0.0,
+        "servo_delantero_izq_saturado": 0.0,
+        "servo_delantero_der_saturado": 0.0,
+        "servo_trasero_saturado": 0.0,
+        "brazo_varilla_delantera_izq_grados": 89.99999237060547,
+        "brazo_varilla_delantera_der_grados": 89.99999237060547,
+        "brazo_varilla_trasera_grados": 90.0,
+        "servo_cola_grados": -0.00013461874914355576,
+        "servo_cola_saturado": 0.0,
+        "palanca_cola_grados": 9.351962034997996e-06,
+        "yugo_cola_mm": -5.5324003369605634e-06,
+        "paso_cola_real_grados": 0.00012422578583937138,
+        "error_paso_cola_grados": 0.00012422578583937138,
+        "tension_correa_cola_N": 32.65629577636719,
+        "bloqueo_mecanico": 0.0
+      },
+      "drivers": [
+        {
+          "path": "[\"estado_alerta\"]",
+          "index": 0,
+          "expression": "max(SAT_FL, SAT_FR, SAT_R, SAT_T, BLQ, EPL > 0.25, abs(EAL) > 0.3, abs(ECOL) > 0.3, abs(TRK) > 0.15, abs(ECOLA) > 0.5, TCB < 20.0, TCB > 45.0)",
+          "variables": {
+            "BLQ": [
+              "Mezclador_21_Diagnostico",
+              "[\"BLQ\"]"
+            ],
+            "EAL": [
+              "Mezclador_21_Diagnostico",
+              "[\"EAL\"]"
+            ],
+            "ECOL": [
+              "Mezclador_21_Diagnostico",
+              "[\"ECOL\"]"
+            ],
+            "ECOLA": [
+              "Mezclador_21_Diagnostico",
+              "[\"ECOLA\"]"
+            ],
+            "EPL": [
+              "Mezclador_21_Diagnostico",
+              "[\"EPL\"]"
+            ],
+            "SAT_FL": [
+              "Mezclador_21_Diagnostico",
+              "[\"SAT_FL\"]"
+            ],
+            "SAT_FR": [
+              "Mezclador_21_Diagnostico",
+              "[\"SAT_FR\"]"
+            ],
+            "SAT_R": [
+              "Mezclador_21_Diagnostico",
+              "[\"SAT_R\"]"
+            ],
+            "SAT_T": [
+              "Mezclador_21_Diagnostico",
+              "[\"SAT_T\"]"
+            ],
+            "TCB": [
+              "Mezclador_21_Diagnostico",
+              "[\"TCB\"]"
+            ],
+            "TRK": [
+              "Mezclador_21_Diagnostico",
+              "[\"TRK\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"paso_pala_A_grados\"]",
+          "index": 0,
+          "expression": "-degrees(RA)",
+          "variables": {
+            "RA": [
+              "Mezclador_20_Palas",
+              "[\"RA\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"paso_pala_B_grados\"]",
+          "index": 0,
+          "expression": "degrees(RB)",
+          "variables": {
+            "RB": [
+              "Mezclador_20_Palas",
+              "[\"RB\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"paso_colectivo_medido_grados\"]",
+          "index": 0,
+          "expression": "degrees(RB - RA)/2",
+          "variables": {
+            "RA": [
+              "Mezclador_20_Palas",
+              "[\"RA\"]"
+            ],
+            "RB": [
+              "Mezclador_20_Palas",
+              "[\"RB\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"error_colectivo_bieletas_grados\"]",
+          "index": 0,
+          "expression": "ECOL",
+          "variables": {
+            "ECOL": [
+              "Mezclador_21_Diagnostico",
+              "[\"ECOL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"diferencia_tracking_grados\"]",
+          "index": 0,
+          "expression": "TRK",
+          "variables": {
+            "TRK": [
+              "Mezclador_21_Diagnostico",
+              "[\"TRK\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"altura_plato_mm\"]",
+          "index": 0,
+          "expression": "(CZ - 0.263)*1000",
+          "variables": {
+            "CZ": [
+              "Mezclador_14_Directa_Plato_2",
+              "[\"CZ\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"error_altura_plato_mm\"]",
+          "index": 0,
+          "expression": "EAL",
+          "variables": {
+            "EAL": [
+              "Mezclador_21_Diagnostico",
+              "[\"EAL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"inclinacion_plato_X_grados\"]",
+          "index": 0,
+          "expression": "degrees(ALF)",
+          "variables": {
+            "ALF": [
+              "Mezclador_15_Plato_Real",
+              "[\"ALF\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"inclinacion_plato_Y_grados\"]",
+          "index": 0,
+          "expression": "degrees(BET)",
+          "variables": {
+            "BET": [
+              "Mezclador_15_Plato_Real",
+              "[\"BET\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"error_inclinacion_plato_grados\"]",
+          "index": 0,
+          "expression": "EPL",
+          "variables": {
+            "EPL": [
+              "Mezclador_21_Diagnostico",
+              "[\"EPL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"anillo_ciclico_factor\"]",
+          "index": 0,
+          "expression": "FRG",
+          "variables": {
+            "FRG": [
+              "Mezclador_01_Mandos",
+              "[\"FRG\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"servo_delantero_izq_grados\"]",
+          "index": 0,
+          "expression": "degrees(SV_FL)",
+          "variables": {
+            "SV_FL": [
+              "Mezclador_08_Servos",
+              "[\"SV_FL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"servo_delantero_der_grados\"]",
+          "index": 0,
+          "expression": "degrees(SV_FR)",
+          "variables": {
+            "SV_FR": [
+              "Mezclador_08_Servos",
+              "[\"SV_FR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"servo_trasero_grados\"]",
+          "index": 0,
+          "expression": "degrees(SV_R)",
+          "variables": {
+            "SV_R": [
+              "Mezclador_08_Servos",
+              "[\"SV_R\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"servo_delantero_izq_saturado\"]",
+          "index": 0,
+          "expression": "SAT_FL",
+          "variables": {
+            "SAT_FL": [
+              "Mezclador_21_Diagnostico",
+              "[\"SAT_FL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"servo_delantero_der_saturado\"]",
+          "index": 0,
+          "expression": "SAT_FR",
+          "variables": {
+            "SAT_FR": [
+              "Mezclador_21_Diagnostico",
+              "[\"SAT_FR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"servo_trasero_saturado\"]",
+          "index": 0,
+          "expression": "SAT_R",
+          "variables": {
+            "SAT_R": [
+              "Mezclador_21_Diagnostico",
+              "[\"SAT_R\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"brazo_varilla_delantera_izq_grados\"]",
+          "index": 0,
+          "expression": "ANG_FL",
+          "variables": {
+            "ANG_FL": [
+              "Mezclador_21_Diagnostico",
+              "[\"ANG_FL\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"brazo_varilla_delantera_der_grados\"]",
+          "index": 0,
+          "expression": "ANG_FR",
+          "variables": {
+            "ANG_FR": [
+              "Mezclador_21_Diagnostico",
+              "[\"ANG_FR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"brazo_varilla_trasera_grados\"]",
+          "index": 0,
+          "expression": "ANG_R",
+          "variables": {
+            "ANG_R": [
+              "Mezclador_21_Diagnostico",
+              "[\"ANG_R\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"servo_cola_grados\"]",
+          "index": 0,
+          "expression": "degrees(GAM)",
+          "variables": {
+            "GAM": [
+              "Mezclador_08_Servos",
+              "[\"GAM\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"servo_cola_saturado\"]",
+          "index": 0,
+          "expression": "SAT_T",
+          "variables": {
+            "SAT_T": [
+              "Mezclador_21_Diagnostico",
+              "[\"SAT_T\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"palanca_cola_grados\"]",
+          "index": 0,
+          "expression": "degrees(PSI)",
+          "variables": {
+            "PSI": [
+              "Mezclador_11_Directa_Plato",
+              "[\"PSI\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"yugo_cola_mm\"]",
+          "index": 0,
+          "expression": "DY*1000",
+          "variables": {
+            "DY": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"DY\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"paso_cola_real_grados\"]",
+          "index": 0,
+          "expression": "-1*degrees(PCR)",
+          "variables": {
+            "PCR": [
+              "Mezclador_15_Plato_Real",
+              "[\"PCR\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"error_paso_cola_grados\"]",
+          "index": 0,
+          "expression": "ECOLA",
+          "variables": {
+            "ECOLA": [
+              "Mezclador_21_Diagnostico",
+              "[\"ECOLA\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"tension_correa_cola_N\"]",
+          "index": 0,
+          "expression": "TCB",
+          "variables": {
+            "TCB": [
+              "Mezclador_21_Diagnostico",
+              "[\"TCB\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"bloqueo_mecanico\"]",
+          "index": 0,
+          "expression": "BLQ",
+          "variables": {
+            "BLQ": [
+              "Mezclador_21_Diagnostico",
+              "[\"BLQ\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Telemetria_Transmision": {
+      "properties": {
+        "relacion_rotor_principal": 9.636363983154297,
+        "relacion_rotor_cola": 4.92307710647583,
+        "relacion_planetario": 4.0,
+        "relacion_correa_motor": 2.409090995788574,
+        "rpm_motor": 20236.36328125,
+        "rpm_polea_53T_y_sol": 8400.0,
+        "rpm_satelites_sobre_su_perno": 6300.0,
+        "rpm_rotor_cola": 10338.4619140625,
+        "velocidad_correa_motor_m_s": 22.260000228881836,
+        "velocidad_correa_cola_m_s": 13.4399995803833,
+        "velocidad_punta_pala_m_s": 173.73007202148438,
+        "mach_punta_pala": 0.5065010786056519,
+        "velocidad_punta_cola_m_s": 158.06561279296875,
+        "rpm_motor_maxima_sin_carga": 23532.0,
+        "acelerador_gobernador_pct": 85.99508666992188,
+        "gobernador_con_margen": 1.0,
+        "par_motor_Nm": 1.651607871055603,
+        "fuerza_util_correa_motor_N": 157.2327117919922,
+        "par_rueda_libre_y_sol_Nm": 3.8992960453033447,
+        "fuerza_diente_sol_satelite_N": 144.4183807373047,
+        "par_eje_principal_Nm": 15.129268646240234,
+        "desfase_rueda_libre_vueltas": 0.0
+      },
+      "drivers": [
+        {
+          "path": "[\"relacion_rotor_principal\"]",
+          "index": 0,
+          "expression": "9.636363636",
+          "variables": {}
+        },
+        {
+          "path": "[\"relacion_rotor_cola\"]",
+          "index": 0,
+          "expression": "4.923076923",
+          "variables": {}
+        },
+        {
+          "path": "[\"relacion_planetario\"]",
+          "index": 0,
+          "expression": "4",
+          "variables": {}
+        },
+        {
+          "path": "[\"relacion_correa_motor\"]",
+          "index": 0,
+          "expression": "2.409090909",
+          "variables": {}
+        },
+        {
+          "path": "[\"rpm_motor\"]",
+          "index": 0,
+          "expression": "rpm*9.636363636",
+          "variables": {
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"rpm_polea_53T_y_sol\"]",
+          "index": 0,
+          "expression": "rpm*4",
+          "variables": {
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"rpm_satelites_sobre_su_perno\"]",
+          "index": 0,
+          "expression": "rpm*3",
+          "variables": {
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"rpm_rotor_cola\"]",
+          "index": 0,
+          "expression": "rpm*4.923076923",
+          "variables": {
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"velocidad_correa_motor_m_s\"]",
+          "index": 0,
+          "expression": "rpm*0.0106",
+          "variables": {
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"velocidad_correa_cola_m_s\"]",
+          "index": 0,
+          "expression": "rpm*0.0064",
+          "variables": {
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"velocidad_punta_pala_m_s\"]",
+          "index": 0,
+          "expression": "rpm*0.082728607",
+          "variables": {
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"mach_punta_pala\"]",
+          "index": 0,
+          "expression": "rpm*0.000241191",
+          "variables": {
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"velocidad_punta_cola_m_s\"]",
+          "index": 0,
+          "expression": "rpm*0.075269338",
+          "variables": {
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"rpm_motor_maxima_sin_carga\"]",
+          "index": 0,
+          "expression": "kv*volt",
+          "variables": {
+            "kv": [
+              "Parametros_Transmision",
+              "[\"kv_motor\"]"
+            ],
+            "volt": [
+              "Parametros_Transmision",
+              "[\"voltaje_bateria\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"acelerador_gobernador_pct\"]",
+          "index": 0,
+          "expression": "100*rpm*9.636363636/(kv*volt)",
+          "variables": {
+            "kv": [
+              "Parametros_Transmision",
+              "[\"kv_motor\"]"
+            ],
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ],
+            "volt": [
+              "Parametros_Transmision",
+              "[\"voltaje_bateria\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"gobernador_con_margen\"]",
+          "index": 0,
+          "expression": "100*rpm*9.636363636/(kv*volt) < 90",
+          "variables": {
+            "kv": [
+              "Parametros_Transmision",
+              "[\"kv_motor\"]"
+            ],
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ],
+            "volt": [
+              "Parametros_Transmision",
+              "[\"voltaje_bateria\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"par_motor_Nm\"]",
+          "index": 0,
+          "expression": "pkw*1000/(rpm*1.00911764)",
+          "variables": {
+            "pkw": [
+              "Parametros_Transmision",
+              "[\"potencia_kw\"]"
+            ],
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"fuerza_util_correa_motor_N\"]",
+          "index": 0,
+          "expression": "pkw*1000/(rpm*0.0106)",
+          "variables": {
+            "pkw": [
+              "Parametros_Transmision",
+              "[\"potencia_kw\"]"
+            ],
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"par_rueda_libre_y_sol_Nm\"]",
+          "index": 0,
+          "expression": "pkw*2339.577663451/rpm",
+          "variables": {
+            "pkw": [
+              "Parametros_Transmision",
+              "[\"potencia_kw\"]"
+            ],
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"fuerza_diente_sol_satelite_N\"]",
+          "index": 0,
+          "expression": "pkw*86651.024572254/rpm",
+          "variables": {
+            "pkw": [
+              "Parametros_Transmision",
+              "[\"potencia_kw\"]"
+            ],
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"par_eje_principal_Nm\"]",
+          "index": 0,
+          "expression": "pkw*9077.561334189/rpm",
+          "variables": {
+            "pkw": [
+              "Parametros_Transmision",
+              "[\"potencia_kw\"]"
+            ],
+            "rpm": [
+              "Parametros_Transmision",
+              "[\"rpm_cabeza\"]"
+            ]
+          }
+        },
+        {
+          "path": "[\"desfase_rueda_libre_vueltas\"]",
+          "index": 0,
+          "expression": "desl/6.283185307",
+          "variables": {
+            "desl": [
+              "HX-700",
+              "[\"rueda_libre_deslizamiento\"]"
+            ]
+          }
+        }
+      ]
+    },
+    "Yugo_Cola": {
+      "properties": {},
+      "drivers": [
+        {
+          "path": "location",
+          "index": 1,
+          "expression": "-0.03550 + DY",
+          "variables": {
+            "DY": [
+              "Mezclador_13_Directa_Alturas",
+              "[\"DY\"]"
+            ]
+          }
+        }
+      ]
+    }
+  }
+}

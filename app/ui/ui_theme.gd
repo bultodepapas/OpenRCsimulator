@@ -221,6 +221,13 @@ static func _controls(theme: Theme) -> void:
 		theme.set_color("font_disabled_color", type, DISABLED_TEXT)
 		theme.set_stylebox("tab_focus", type, theme.get_stylebox("focus", "Button"))
 	theme.set_stylebox("panel", "TabContainer", _box(PANEL, 12))
+	# A visible full track makes a slider's range readable even at low volume.
+	for item: String in ["slider", "grabber_area", "grabber_area_highlight"]:
+		var track := _box(Color("#64737C") if item == "slider" else FOCUS, 0)
+		track.content_margin_top = 2.0
+		track.content_margin_bottom = 2.0
+		track.set_corner_radius_all(2)
+		theme.set_stylebox(item, "HSlider", track)
 
 
 static func _box(color: Color, padding: int) -> StyleBoxFlat:

@@ -97,7 +97,14 @@ func _run() -> void:
 	check("accident navigation does not trim the aircraft", session.trims.roll == accident_trim and root.gui_get_focus_owner() == accident._details_button)
 	await button(JOY_BUTTON_A)
 	check("selected menu pad opens the accident breakdown", accident._details_scroll.visible)
-	accident.clear_report()
+	await button(JOY_BUTTON_BACK)
+	check("View restarts from the accident menu into explicit Continue", app.pause_menu != null and session.sim.paused and session.crash.is_empty() and not accident.wants_controller_menu())
+	for axis: JoyAxis in [JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_Y, JOY_AXIS_RIGHT_X, JOY_AXIS_RIGHT_Y]:
+		await ui.joy_axis(axis, 0.0)
+	await create_timer(0.25).timeout
+	app.pause_menu.continue_button.grab_focus()
+	await button(JOY_BUTTON_A)
+	check("controller can continue after button restart", app.pause_menu == null and not session.sim.paused)
 	await button(JOY_BUTTON_START)
 	check("Menu opens Pause", app.pause_menu != null and session.sim.paused)
 	var trim: float = session.trims.roll

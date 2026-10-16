@@ -100,6 +100,7 @@ var failure_menu: CanvasLayer:
 var has_home := false
 var controllers: Node
 var _controller_action_edges: Dictionary = {}
+var _controller_restart_edges: Dictionary = {}
 ## The flight session's own keyboard reader (HeldKeys masks wrap it, never each other).
 var _keyboard_reader: Callable
 var _settings_note: String = ""
@@ -172,13 +173,13 @@ func _ready() -> void:
 	display_preferences = DisplayPreferences.new(preferences_path + ".display")
 	menu_audio = MenuSounds.attach(self, func() -> Control:
 		return ScreenStack._surface(screens.top()) if screens.top() != null else null)
-	screens.surface_opened.connect(func(surface: Control, id: String) -> void:
+	screens.surface_opened.connect(func(surface: Control, id: String, feedback: bool) -> void:
 		menu_audio.observe(surface)
-		if id != "home":
+		if feedback and id != "home":
 			menu_audio.play(&"accept"))
 	screens.surface_closed.connect(func(id: String, restoring_focus: bool) -> void:
 		if restoring_focus and id != "home":
-			menu_audio.play(&"back"))
+			menu_audio.play(&"accept" if id == "pause" else &"back"))
 	_apply_presentation(display_preferences.config)
 	controllers = ControllerService.new()
 	controllers.allow_automatic_selection = func() -> bool:
@@ -335,6 +336,7 @@ func start_ground_vehicle(vehicle_id: String = "") -> void:
 		add_child(candidate)
 		error = str(candidate.get("startup_error"))
 		if error.is_empty():
+			_menu_feedback(&"accept")
 			ground_vehicle = candidate
 			selected_ground_vehicle_id = vehicle_id
 			ground_vehicle.home_requested.connect(end_ground_vehicle)
@@ -350,6 +352,7 @@ func start_ground_vehicle(vehicle_id: String = "") -> void:
 	if departing_home != null:
 		screens.push("home", departing_home)
 		departing_home.set_note(error)
+		_menu_feedback(&"reject")
 	else:
 		printerr(error)
 		get_tree().quit(ERR_CANT_CREATE)
@@ -550,9 +553,11 @@ func start_flight(request: Dictionary = {}) -> void:
 		# Keep the launch failure visible even if restoring the backdrop also fails.
 		departing_home.reject_start(tr("Could not start flight: %s") % reason)
 		if is_random:
-			screens.push("natural_random", departing_random, departing_home.natural_random_button)
+			screens.push("natural_random", departing_random, departing_home.natural_random_button, false)
 			departing_random.show_error(tr("Could not start flight: %s") % reason)
+		_menu_feedback(&"reject")
 		return
+	_menu_feedback(&"accept")
 	for screen in [departing_home, home_scene, departing_random]:
 		if screen != null:
 			screen.queue_free()
@@ -610,6 +615,11 @@ func open_settings(from: Control = null) -> void:
 		if route == "controls": open_controls(opener)
 		elif route == "about": open_help(opener))
 	screens.push("settings", settings, from)
+
+
+func _menu_feedback(cue: StringName) -> void:
+	if is_instance_valid(menu_audio):
+		menu_audio.play(cue)
 
 
 func _apply_presentation(config: Dictionary) -> void:
@@ -719,6 +729,7 @@ func _controller_ui_changed(id: int) -> void:
 
 func _clear_controller_actions() -> void:
 	_controller_action_edges.clear()
+	_controller_restart_edges.clear()
 	_release_controller_holds()
 
 
@@ -761,6 +772,9 @@ func _input(event: InputEvent) -> void:
 	if ground_vehicle != null: return # ground sampler and garage own their distinct control scheme
 	if event is not InputEventJoypadButton and event is not InputEventJoypadMotion and event is not InputEventKey: return
 	if event is InputEventKey and event.echo: return
+	if _route_controller_restart(event):
+		get_viewport().set_input_as_handled()
+		return
 	var in_menu := screens.top() != null
 	var calibrating: bool = flight != null and flight.session != null and flight.session.calibration != null
 	var accident_menu: bool = not in_menu and flight != null and flight.has_method("accident_menu_active") and flight.accident_menu_active()
@@ -801,6 +815,26 @@ func _input(event: InputEvent) -> void:
 			get_viewport().set_input_as_handled()
 			if calibrating and flight.session.calibration == null: open_pause.call_deferred()
 			return
+
+
+## Restart belongs to the flight device even when a separate pad navigates the crash report.
+## Observe its edge in menus too: holding a switch while closing setup cannot queue a reset.
+func _route_controller_restart(event: InputEvent) -> bool:
+	var id: int = controllers.registry.selected_device_id("flight")
+	if id < 0: return false
+	var source := ControllerActions.event_source(event)
+	if source.is_empty(): return false
+	var previous: PackedStringArray = _controller_restart_edges.get(source, PackedStringArray())
+	var binding: Dictionary = _controller_bindings(id, true).get("restart_flight", {"type": "unbound"})
+	var actions := ControllerActions.resolve_event(event, {"restart_flight": binding}, id, "flight", previous)
+	if actions.is_empty(): _controller_restart_edges.erase(source)
+	else: _controller_restart_edges[source] = actions
+	if actions.is_empty() or flight == null or flight.session == null: return false
+	if screens.top() != null or flight.session.calibration != null: return false
+	if previous.is_empty():
+		open_pause()
+		restart_flight()
+	return true
 
 
 func open_natural_random(from: Control = null) -> void:
@@ -1471,6 +1505,7 @@ func end_flight() -> void:
 	if flight == null or not has_home or (screens.top() != null and not screens.is_top("pause")) \
 		or not _trace_saved_or_discarded("Could not save the flight trace (error %d). Press End flight again to end without it."):
 		return
+	_menu_feedback(&"back")
 	var last_failure_status: Dictionary = {}
 	var session: Node = flight.get("session")
 	if session != null and session.has_method("failure_status"):

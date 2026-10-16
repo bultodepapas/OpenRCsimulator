@@ -469,9 +469,9 @@ func _init() -> void:
 	ground_vehicle_choice.select(GroundCatalog.IDS.find(ground_vehicle_id))
 	ground_vehicle_choice.item_selected.connect(func(index: int): ground_vehicle_id = GroundCatalog.IDS[index])
 	garage_page.add_child(ground_vehicle_choice)
-	ground_vehicle_button = _button("RC cars · Open garage", "HomeAction")
+	ground_vehicle_button = _button("Open RC car garage", "CompactPrimaryButton")
 	ground_vehicle_button.name = "GroundVehicles"
-	ground_vehicle_button.custom_minimum_size.y = 44
+	ground_vehicle_button.custom_minimum_size.y = 56
 	ground_vehicle_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	ground_vehicle_button.pressed.connect(func() -> void: ground_vehicle_requested.emit())
 
@@ -486,7 +486,6 @@ func _init() -> void:
 	fly_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	fly_button.pressed.connect(_on_fly)
 	primary_actions.add_child(fly_button)
-	ground_vehicle_button.text = tr("Open garage")
 	primary_actions.add_child(ground_vehicle_button)
 	var utility_row := HBoxContainer.new()
 	utility_row.name = "HomeUtilities"
