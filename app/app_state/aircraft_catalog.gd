@@ -24,7 +24,7 @@ const ENTRIES := [
 		name = "Jensen Das Ugly Stik 60",
 		summary = "High-wing sport trainer · 1.52 m · .61 glow",
 		status = FLYABLE,
-		status_note = "Flight model under evaluation.",
+		status_note = "Rudder recovery and R02 yaw damping acceptance remain pending.",
 		data = "res://data/aircraft/jensen_ugly_stik_60.json",
 	},
 	{

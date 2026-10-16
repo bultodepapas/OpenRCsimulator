@@ -1,5 +1,11 @@
 # R11 damping and lag failure diagnosis
 
+## Prerelease status — 2026-10-16
+
+The release owner explicitly deferred this physical acceptance item for `v0.1.2-rc.1`. `app/test.sh` supplies `--allow-known-r02-yaw-alpha11` to this test; direct invocation remains strict. Only the retained 7% fin-plus-wing-profile comparison is deferred. Analytic derivative, finite-metric, alpha-zero and refinement checks remain mandatory. No coefficient, equation or acceptance threshold changed. A pending result is not a pass and does not establish physical validation.
+
+The hardened reporting checks produce [18 checks, one failure in strict mode](prerelease-20261016/review-yaw-strict.log) and [18 checks, one pending and zero failures in prerelease mode](prerelease-20261016/review-yaw-pending.log) on native Godot 4.7.2. Unrelated-failure probes still exit 1 with the flag enabled. The diagnosis below is retained as the physical basis; its original requirement to resolve the gate still applies to physical acceptance.
+
 This note records the D11g rate-derivative repair and the downwash-lag fixture diagnosis from `linux-gd-remainder-after-contact-contract.log`. It does not change runtime aerodynamics, test bounds, or retained Linux evidence. The current D11g aircraft data now reflects the current R02 law; later catalog/golden requalification is tracked separately by the R11 integration owner.
 
 ## D11g rate-derivative pin

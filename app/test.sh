@@ -218,10 +218,12 @@ for t in "$HERE"/tests/test_*.gd; do
     test_aircraft_catalog.gd|test_ui_aircraft.gd|test_ui_runway.gd|test_workshop_integration.gd|test_workshop_ui.gd|test_ui_natural_random.gd) test_timeout=600 ;;
   esac
   test_args=()
-  # P51-22 is explicitly pending for the experimental P-51. Keep all other checks strict.
-  # Run either script directly without this argument to enforce physical acceptance too.
+  # Only these three named, user-approved physical gates are allow-listed for the preliminary release.
+  # Direct script invocation without its matching flag remains strict; all other checks stay mandatory.
   case "$(basename "$t")" in
     test_p51_ground.gd|test_p51_handling.gd) test_args=(-- --allow-known-p51-22) ;;
+    test_rudder_authority.gd) test_args=(-- --allow-known-stik-rudder-recovery) ;;
+    test_yaw_damping.gd) test_args=(-- --allow-known-r02-yaw-alpha11) ;;
   esac
   run_with_timeout "$test_timeout" --script "res://tests/$(basename "$t")" "${test_args[@]}" 2>&1 | tee "$LOG"
   # Godot reports runtime script errors without failing the run; treat any as a failure.

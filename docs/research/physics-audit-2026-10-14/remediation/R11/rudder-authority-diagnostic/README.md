@@ -1,5 +1,11 @@
 # R11 rudder recovery gate diagnostic
 
+## Prerelease status — 2026-10-16
+
+The release owner explicitly deferred this physical acceptance item for `v0.1.2-rc.1`. `app/test.sh` supplies `--allow-known-stik-rudder-recovery` to this test; direct invocation remains strict. Only the right-first reference 240 Hz recovery bound is deferred. The required recovery sample must exist and be finite; missing and NaN sample probes fail with zero pending results. No coefficient, equation or acceptance threshold changed. A pending result is not a pass and does not establish physical validation.
+
+The hardened reporting checks produce [27 checks, one failure in strict mode](prerelease-20261016/review-rudder-strict.log) and [27 checks, one pending and zero failures in prerelease mode](prerelease-20261016/review-rudder-pending.log) on native Godot 4.7.2. Unrelated-failure probes still exit 1 with the flag enabled. The diagnosis below is retained as the physical basis; its original requirement to resolve the gate still applies to physical acceptance.
+
 The frozen-07 failure is a repeatable software-acceptance regression caused by the regenerated Jensen Ugly Stik `Cnr` value. The reference case still completes without a fault and passes the peak sideslip and peak yaw-rate screens; only the 3.0 s yaw-rate recovery screen fails. This result does not establish a physical handling defect: the 15°/s recovery limit is explicitly an estimated engineering screen, not a measurement or validated aircraft limit.
 
 ## Reproduction and cause

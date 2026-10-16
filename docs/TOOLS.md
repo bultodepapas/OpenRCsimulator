@@ -45,14 +45,16 @@ Node 24 (`.nvmrc`) is only needed for tree authoring and the frozen three.js pro
 | Physics cost | `"$(app/get-godot.sh)" --headless --path app --script res://tests/bench_physics.gd` | Add `-- --aircraft=<catalog-id>`. Run alone on the target machine. |
 | Packages | `app/export.sh` | Windows/Linux/macOS ZIPs, pack smoke checks and `dist/SHA256SUMS`. Preserves exporter-managed native libraries beside Windows/Linux executables. Recreates `dist/`. |
 
-The experimental P-51's three known P51-22 physical acceptance results are reported as pending by `app/test.sh`; all other assertions stay mandatory. For strict acceptance, run:
+For the prerelease, `app/test.sh` reports five known physical acceptance assertions as pending: three P51-22 results, Stik right-first rudder recovery and the R02 yaw-damping comparison. All remaining assertions, including finite-state, stability and refinement checks, stay mandatory. Standalone scripts default to strict acceptance:
 
 ```sh
 "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script res://tests/test_p51_ground.gd
 "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script res://tests/test_p51_handling.gd
+"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script res://tests/test_rudder_authority.gd
+"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script res://tests/test_yaw_damping.gd
 ```
 
-The [P51-22 report](research/p51-realism/P51-22/README.md#release-status--2026-10-16) records the deferral and its verification. A pending physical check is not a pass.
+The [P51-22 report](research/p51-realism/P51-22/README.md#release-status--2026-10-16), [Stik recovery diagnostic](research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/README.md) and [yaw comparison diagnostic](research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/README.md) record these deferrals. The suite supplies only the corresponding `--allow-known-p51-22`, `--allow-known-stik-rudder-recovery` or `--allow-known-r02-yaw-alpha11` argument to each script. A pending physical check is not a pass.
 
 Before exporting, install both qualified x86_64 native libraries and their matching aggregate receipt through the [native builder's installation workflow](../research/rc-monster-truck/native/README.md#installing-and-exporting). Export rejects a missing platform row, incompatible source/ABI/solver identity or binary hash mismatch. Its Linux host probe also checks the selected native backend and float64 ABI; Windows/macOS resource checks under the Linux editor do not replace target-host execution.
 
