@@ -5,6 +5,7 @@ extends SceneTree
 const Flight := preload("res://sim/flight_session.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const AD := preload("res://physics/aircraft_data.gd")
+const WheelProfiles := preload("res://physics/wheel_profiles.gd")
 const Prop := preload("res://physics/propulsion.gd")
 const Dynamics := preload("res://physics/dynamics.gd")
 const Ground := preload("res://physics/ground_contact.gd")
@@ -55,7 +56,20 @@ func _coupled_fixture(transport: bool = false, weather: Dictionary = {}) -> Node
 		raw.propulsion.propeller.slipstream = wash_raw
 		var checked: Dictionary = AD.validate_and_derive(raw)
 		_check("P-51 test-only transported wash fixture validates", checked.ok, str(checked.errors))
-		if not checked.ok or not flight._apply(checked):
+		if not checked.ok:
+			flight.free()
+			return null
+		var profiled: Dictionary = WheelProfiles.apply_to_model(checked.model)
+		if not profiled.ok:
+			_check("P-51 test-only transported wash fixture applies current wheel profile", false, str(profiled.errors))
+			flight.free()
+			return null
+		checked.model = profiled.model
+		checked.wheel_profile_identity = profiled.identity
+		var wheel_profile: Dictionary = profiled.model.get("wheel_profile", {})
+		_check("P-51 transported-wash fixture retains the applied wheel profile",
+			wheel_profile.get("status", "") == "applied" and wheel_profile.get("aircraft_id", "") == P51_ID)
+		if not flight._apply(checked):
 			flight.free()
 			return null
 		flight.reset()
@@ -303,7 +317,7 @@ func _wind_time_purity() -> void:
 		_check("wind purity fixture starts", false)
 		return
 	var before: PackedByteArray = _dynamic_bits(flight.sim)
-	var rpm: float = flight.sim.continuous[-1]
+	var rpm: float = flight.sim.continuous[flight._rotor_index()]
 	var state: PackedFloat64Array = flight.sim.state.duplicate()
 	var during: float = flight._shaft_rate(state, rpm, 1.05)
 	var repeat: float = flight._shaft_rate(state, rpm, 1.05)
@@ -320,9 +334,12 @@ func _transported_wash_and_replay() -> void:
 		_check("coupled transported-wash fixture starts", false)
 		return
 	var pieces: int = flight.aircraft.model.propulsion.slipstream.pieces.size()
+	var rotor_index: int = flight._rotor_index()
+	var wheel_count: int = flight.wheel_count()
 	var initial: PackedFloat64Array = flight.sim.continuous.duplicate()
-	_check("transported wash precedes RPM in the continuous layout",
-		initial.size() == pieces + 1 and initial[-1] == flight.sim.aux[0]
+	_check("transported wash precedes RPM and appended wheel speeds in the continuous layout",
+		rotor_index == pieces and wheel_count == flight.aircraft.model.landing_gear.contacts.size()
+		and initial.size() == pieces + 1 + wheel_count and initial[rotor_index] == flight.sim.aux[0]
 		and initial.slice(0, pieces) == flight._settled_wash(flight.sim.state, flight.sim.aux))
 	flight.sim.inputs[3] = 1.0
 	flight.engine_running = true
@@ -339,21 +356,25 @@ func _transported_wash_and_replay() -> void:
 	if stages.size() == 4:
 		for i: int in range(1, 4):
 			wash_changed = wash_changed or stages[i].slice(0, pieces) != stages[0].slice(0, pieces)
-			rpm_changed = rpm_changed or stages[i][-1] != stages[0][-1]
+			rpm_changed = rpm_changed or stages[i][rotor_index] != stages[0][rotor_index]
 	_check("RK stages transport wash and solve RPM together", wash_changed and rpm_changed
-		and flight.sim.continuous[-1] == flight.sim.aux[0])
+		and flight.sim.continuous[rotor_index] == flight.sim.aux[0])
 	var metadata: Dictionary = flight.trace_meta()
 	_check("coupled traces retain schema and identify the shaft integrator",
-		metadata.metadata_schema == "openrc-flight-meta v2"
+		metadata.metadata_schema == "openrc-flight-meta v9"
+		and metadata.flap_base_metadata_schema == "openrc-flight-meta v8"
+		and metadata.wheel_profile_status == "applied"
+		and metadata.gear_law == "retractable-point-gear-v1"
+		and metadata.flap_law == "controls.flaps.hinged_trailing_edge.v1"
 		and metadata.propulsion_model == "propeller-shaft-coupled-rk4-v1"
 		and metadata.shaft_integrator == "coupled-rk4"
 		and metadata.rotor_coupling == "relative-spin-locked-inertia-reaction-v1"
-		and metadata.continuous_layout == "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled")
+		and metadata.continuous_layout == "axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm; RK4 coupled; wheel rim speeds in m/s, landing-gear contact order, appended continuous tail")
 	var boundary: Dictionary = flight.checkpoint()
 	_check("coupled checkpoint records a distinct v4 integrator identity",
 		boundary.format == "openrc-flight-checkpoint v4"
 		and boundary.get("shaft_integrator", "") == "coupled-rk4"
-		and boundary.simulation.continuous.size() == pieces + 1)
+		and boundary.simulation.continuous.size() == pieces + 1 + wheel_count)
 	if boundary.is_empty():
 		flight.free()
 		return
@@ -372,7 +393,7 @@ func _transported_wash_and_replay() -> void:
 	bad_layout.simulation.continuous = bad_layout.simulation.continuous.slice(0, pieces)
 	bad_cases.append(bad_layout)
 	var bad_rpm: Dictionary = captured.duplicate(true)
-	bad_rpm.simulation.continuous[-1] = -1.0
+	bad_rpm.simulation.continuous[rotor_index] = -1.0
 	bad_rpm.simulation.aux[0] = -1.0
 	bad_cases.append(bad_rpm)
 	var names: Array[String] = ["RPM mirror", "continuous layout", "negative RPM"]
