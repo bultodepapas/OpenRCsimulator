@@ -36,4 +36,4 @@ Use the [documentation map](docs/README.md) for authoritative topic homes, track
 
 ## Releases
 
-`app/export.sh` builds and smoke-tests packages for all three platforms. CI exports `main` and `v*` tags; a `v*` tag also publishes a GitHub prerelease using `docs/releases/<tag>.md`. Release tags identify the tested code and must stay fixed. Later documentation improvements belong in a new commit.
+`app/export.sh` builds and smoke-tests packages for all three platforms. CI exports `main` and `v*` tags. Numeric `vX.Y.Z` tags publish official stable releases; suffixed tags such as `vX.Y.Z-rc.N` publish prereleases using `docs/releases/<tag>.md`. Release tags identify the tested code and must stay fixed. Later documentation improvements belong in a new commit.

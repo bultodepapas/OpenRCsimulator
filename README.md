@@ -17,11 +17,11 @@ The five aircraft shown from changing angles. [Still views and render provenance
 
 ## Download and fly
 
-[Download v0.1.1, the latest stable patch release](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1) for Windows, Linux or macOS. Extract the ZIP and launch the executable. Godot is not required for a downloaded build. Packages are unsigned; see the [first-launch guide](docs/FIRST-LAUNCH.md) for platform setup, controls, radio calibration and diagnostics.
+[Download v0.1.2, the latest stable patch release](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.2) for Windows, Linux or macOS. Extract the ZIP and launch the executable. Godot is not required for a downloaded build. Packages are unsigned; see the [first-launch guide](docs/FIRST-LAUNCH.md) for platform setup, controls, radio calibration and diagnostics.
 
 **First flight:** new Home preferences start on the Stik runway with gentle wind and passing evening; saved choices take precedence. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. [Player guide and controls](docs/FIRST-LAUNCH.md).
 
-The latest published download contains the **v0.1.1 snapshot**. The features and aircraft below describe current source. Preparation for stable v0.1.2 is underway, but its packages are not published yet; v0.1.1 remains the latest stable download. The [v0.1.2 release notes](docs/releases/v0.1.2.md) describe the planned software release and its known experimental-aircraft limits. Stik rudder recovery and R02 yaw-damping evaluation remain open, and P-51D P51-22 powered takeoff/loop acceptance is pending. These are disclosed limits of experimental aircraft, not blockers for the stable software release, and they do not count as passes or physical validation.
+The latest published download is the **v0.1.2 snapshot**, a stable software release of an early-alpha simulator. The features and aircraft below describe current source and may include changes after this package. In the package snapshot (`40275349`), powered takeoff and inside-loop acceptance for experimental P-51D P51-22 remained pending. Stik rudder recovery and R02 yaw-damping evaluation remain open in current source. These are disclosed limits of experimental aircraft, not passes or physical flight validation; see the [v0.1.2 release notes](docs/releases/v0.1.2.md).
 
 ## Aircraft
 

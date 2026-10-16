@@ -45,7 +45,7 @@ Node 24 (`.nvmrc`) is only needed for tree authoring and the frozen three.js pro
 | Physics cost | `"$(app/get-godot.sh)" --headless --path app --script res://tests/bench_physics.gd` | Add `-- --aircraft=<catalog-id>`. Run alone on the target machine. |
 | Packages | `app/export.sh` | Windows/Linux/macOS ZIPs, pack smoke checks and `dist/SHA256SUMS`. Preserves exporter-managed native libraries beside Windows/Linux executables. Recreates `dist/`. |
 
-For the prerelease, `app/test.sh` reports five known physical acceptance assertions as pending: three P51-22 results, Stik right-first rudder recovery and the R02 yaw-damping comparison. All remaining assertions, including finite-state, stability and refinement checks, stay mandatory. Standalone scripts default to strict acceptance:
+For experimental-aircraft evaluation, `app/test.sh` reports five known physical acceptance assertions as pending: three P51-22 results, Stik right-first rudder recovery and the R02 yaw-damping comparison. All remaining assertions, including finite-state, stability and refinement checks, stay mandatory. Standalone scripts default to strict acceptance:
 
 ```sh
 "$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script res://tests/test_p51_ground.gd

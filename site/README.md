@@ -6,7 +6,7 @@ WEB-01/02/03/04/05 own `site/` and the isolated `gh-pages` deployment. No simula
 
 Visual thesis: an RC club's aircraft catalogue, combining oversized workshop typography, original dark studio renders, ivory paper and field green.
 
-Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and Savox introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → Savox partner details → development status and contribution paths. Spanish is the initial language; English and a page-wide night theme are selectable and saved locally. Downloads target latest published release v0.1.1; current-source features are explicitly separate.
+Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and Savox introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → Savox partner details → development status and contribution paths. Spanish is the initial language; English and a page-wide night theme are selectable and saved locally. Downloads target latest published release v0.1.2; the site distinguishes released features from ongoing aircraft evaluation.
 
 Interaction thesis: a short hero entrance, restrained section reveals and real aircraft turntables with drag, angle slider and play/pause controls. Reduced-motion preference disables autoplay and offers deliberate single-frame steps; core content, technical disclosures and downloads work without JavaScript. The viewer loads only near the hangar, pauses offscreen/when hidden, and retains at most two decoded sheets.
 
@@ -44,7 +44,7 @@ WEB-04 makes the jet the initial catalogue selection and adds direct inspector e
 
 WEB-05 keeps the same composition while reducing work: preload the two opening fonts, show the hero poster immediately, cache scroll geometry between layout changes, and defer distant editorial rendering with `content-visibility: auto`. Intrinsic section sizes are estimates until first rendering; the browser then remembers measured sizes. The turntable schedules one animation callback per frame at its existing 125 ms interval, updates only angle UI per frame, cancels obsolete image loads, retries failed selections, and retains a two-sheet LRU cache. Language and theme changes avoid identical HTML/image assignments. Rebuild only the lightweight Savox copies with `python site/prepare_assets.py --brands-only`.
 
-HTML references styles/scripts with a shared release query (`?v=source-20261016-p51`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
+HTML references styles/scripts with a shared release query (`?v=stable-v012-20261016`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
 
 Publication uses a separate `gh-pages` branch with only the static website. GitHub Pages serves `/` from that branch; `.nojekyll` disables processing. The main working tree and its unrelated pending changes are never included in that publication. The website is a project showcase, not a browser build of the simulator.
 
@@ -133,4 +133,4 @@ still labels v0.1.2 as in preparation. Public browser checks at 390×844 and
 release-notes link returned HTTP 200. Deployment
 `0e56ef4ad43d736dbb273344402d61ee6f9a0daf` passed the
 [Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38956887159).
-This updates the website status only; v0.1.2 packages are not published yet.
+The v0.1.2 stable packages are now published; the preparation-page deployment is retained above as history.
