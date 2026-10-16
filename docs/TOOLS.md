@@ -58,6 +58,8 @@ Before exporting, install both qualified x86_64 native libraries and their match
 
 [CI](../.github/workflows/ci.yml) also checks schemas, generated geometry/physics and the Windows/Linux native ground-vehicle evaluators. `app/test.sh` alone does not run every CI check. Software checks do not establish physical aircraft accuracy, radio latency or target-GPU performance.
 
+CI divides app verification into eight unit partitions and one integration job; all nine must pass before export. Each job imports its own checkout. The integration job retains every offline/reference check, complete GDScript parse pass, model contract and CLI/replay check. `app/test.sh` without these variables still runs the complete suite. Reproduce one partition with `OPENRC_TEST_PART=units OPENRC_UNIT_SHARDS=8 OPENRC_UNIT_SHARD=0 app/test.sh` (indices 0–7), or the remaining checks with `OPENRC_TEST_PART=integration app/test.sh`. A partition result alone is not a complete app result. `python3 app/tests/test_ci_partitions.py` verifies coverage, invalid selections and failure propagation with a disposable engine stub.
+
 The frozen prototype's separate CI job runs `npm ci`, `npm run typecheck`, `npm test`, `npx playwright install --with-deps chromium`, `npm run capture` and `npm run e2e` from `prototypes/stage0/three/`.
 
 ## Release sequence

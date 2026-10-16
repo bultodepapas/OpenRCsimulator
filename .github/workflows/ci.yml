@@ -31,8 +31,25 @@ jobs:
           path: prototypes/stage0/capture-three*.png
 
   app:
-    name: Godot app
+    name: Godot app (${{ matrix.part }} ${{ matrix.shard }})
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - {part: integration, shard: 0, shards: 1}
+          - {part: units, shard: 0, shards: 8}
+          - {part: units, shard: 1, shards: 8}
+          - {part: units, shard: 2, shards: 8}
+          - {part: units, shard: 3, shards: 8}
+          - {part: units, shard: 4, shards: 8}
+          - {part: units, shard: 5, shards: 8}
+          - {part: units, shard: 6, shards: 8}
+          - {part: units, shard: 7, shards: 8}
+    env:
+      OPENRC_TEST_PART: ${{ matrix.part }}
+      OPENRC_UNIT_SHARD: ${{ matrix.shard }}
+      OPENRC_UNIT_SHARDS: ${{ matrix.shards }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
       - name: Tagged releases require their own notes
@@ -46,6 +63,7 @@ jobs:
           path: .tools
           key: godot-${{ hashFiles('app/get-godot.sh') }}
       - name: Aircraft v2 contract and explicit v1 loader compatibility (AS-01, DATA-4a)
+        if: matrix.part == 'integration'
         run: |
           python3 -m venv "$RUNNER_TEMP/aircraft-schema-venv"
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" -m pip install -r research/aircraft-data/schema/requirements.txt
@@ -54,6 +72,7 @@ jobs:
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/helicopter/hx700/test_schema.py
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/aircraft-standardization/test_schema_v2.py --godot "$(app/get-godot.sh)"
       - name: Generated geometry and physics data match their sources
+        if: matrix.part == 'integration'
         run: |
           python3 assets/aircraft/ugly-stik-60/compile_geometry.py --check
           python3 assets/aircraft/extra-300s-60/compile_geometry.py --check
@@ -68,7 +87,10 @@ jobs:
           python3 assets/aircraft/turbo-lumber-evolution/compile_geometry.py --check
           python3 research/timber/tt07/derive_physics.py --check
       - name: Offline measurement and validation tool regressions
-        run: research/test-tools.sh
+        if: matrix.part == 'integration'
+        run: |
+          python3 app/tests/test_ci_partitions.py
+          research/test-tools.sh
       - run: app/test.sh
 
   native-linux:

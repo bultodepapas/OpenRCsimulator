@@ -2,6 +2,16 @@
 # Headless checks (no display needed). Fails if any script fails to parse or any test fails.
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
+# Full local verification remains the default. CI runs every partition as a required job.
+TEST_PART="${OPENRC_TEST_PART:-all}"
+UNIT_SHARDS="${OPENRC_UNIT_SHARDS:-1}"
+UNIT_SHARD="${OPENRC_UNIT_SHARD:-0}"
+case "$TEST_PART" in all|integration|units) ;; *) echo "invalid OPENRC_TEST_PART" >&2; exit 2 ;; esac
+[[ "$UNIT_SHARDS" =~ ^[1-9][0-9]*$ && "$UNIT_SHARD" =~ ^(0|[1-9][0-9]*)$ ]] || { echo "invalid unit shard numbers" >&2; exit 2; }
+(( UNIT_SHARDS <= 128 && UNIT_SHARD < UNIT_SHARDS )) || { echo "unit shard out of range" >&2; exit 2; }
+if [[ "$TEST_PART" != units && ( "$UNIT_SHARDS" != 1 || "$UNIT_SHARD" != 0 ) ]]; then
+  echo "unit shard selection requires OPENRC_TEST_PART=units" >&2; exit 2
+fi
 GODOT="$("$HERE/get-godot.sh")"
 run_with_timeout() {
   local timeout_seconds="$1"
@@ -19,6 +29,7 @@ if ! timeout 180 "$GODOT" --headless --path "$HERE" --audio-driver Dummy --impor
 fi
 rm -f "$IMPORT_LOG"
 
+if [[ "$TEST_PART" != units ]]; then
 echo "== HELI-03a/04: independent mean-inflow reference stays current"
 python3 "$HERE/../research/helicopter/reference/test_johnson_inflow.py"
 python3 "$HERE/../research/helicopter/reference/make_oracle.py" --check
@@ -176,8 +187,17 @@ echo "== parse check: every script"
   run --check-only --script "res://${f#./}" > /dev/null || { echo "parse error in $f"; exit 1; }
 done
 
+fi # offline generators, references and complete parse checks
+
 LOG="$(mktemp)"; trap 'rm -f "$LOG"' EXIT
+if [[ "$TEST_PART" != integration ]]; then
+unit_index=0
+selected_units=0
 for t in "$HERE"/tests/test_*.gd; do
+  shard_for_test=$((unit_index % UNIT_SHARDS))
+  unit_index=$((unit_index + 1))
+  [[ "$shard_for_test" == "$UNIT_SHARD" ]] || continue
+  selected_units=$((selected_units + 1))
   echo "== $(basename "$t")"
   test_timeout=60
   # Four 46-second simulated landings at 240/480 Hz: measured 75–82 s wall time on Linux (PT1-rc8).
@@ -207,6 +227,11 @@ for t in "$HERE"/tests/test_*.gd; do
   # Godot reports runtime script errors without failing the run; treat any as a failure.
   if grep -qE "^(SCRIPT )?ERROR:" "$LOG"; then echo "engine error during $(basename "$t") (see above)"; exit 1; fi
 done
+
+echo "== unit partition $UNIT_SHARD/$UNIT_SHARDS: $selected_units of $unit_index scripts"
+(( selected_units > 0 )) || { echo "empty unit partition" >&2; exit 2; }
+fi
+[[ "$TEST_PART" != units ]] || exit 0
 
 echo "== H7: exact one-ulp math sensitivity and golden branch signatures"
 OPENRC_TEST_GODOT="$GODOT" python3 "$HERE/tests/check_math_sensitivity.py"
