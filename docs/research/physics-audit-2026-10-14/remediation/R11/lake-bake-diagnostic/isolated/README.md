@@ -62,3 +62,11 @@ and 0 failures (`../live-test-lake-geometry-bake.txt`). Exact commands:
 
 The only live app paths changed for this regeneration are those two generated
 outputs; no generator, runtime, or test source was edited.
+
+## Release-source refresh — 2026-10-16
+
+At `b85392bc`, the LF-normalized `ground_terrain.gd` hash had changed to `42e9f30e155c8b710dbc3f0219da5b7ba72776fe5123132752a8f13dee260a90`. The other three generator source hashes and both input keys were unchanged; the [source probe](../release-20261016/before-probe-absolute.stdout.log) identifies the stale stamp.
+
+The unchanged production generator ran in an isolated checkout with official Windows Godot `4.7.2.stable.official.ed1daf0bf`. It normalizes CRLF before hashing. The regenerated source digest is `b124686058bfa6e7263cea1c9af2e9e73781474c29134b2b8ee63b5bba7a7019`. [Array comparison](../release-20261016/compare.stdout.log) confirms that both basin/water arrays and input keys are byte-identical to the committed resource. The [generator](../release-20261016/generator.stdout.log), [generator check](../release-20261016/generator-check.log) and [18-check focused test](../release-20261016/focused-test.log) passed. Only the two generated outputs were integrated; no simulation law, geometry, generator or assertion changed.
+
+WSL entered read-only mode after its host disk filled, so this refresh has Windows evidence and comparison against the committed arrays, not a fresh Linux regeneration. The full release suite remains required.
