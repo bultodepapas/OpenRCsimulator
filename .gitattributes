@@ -79,3 +79,7 @@
 # Native Windows/Linux receipts must bind identical compiler source bytes.
 /research/rc-monster-truck/native/src/*.cpp text eol=lf
 /research/rc-monster-truck/native/src/*.hpp text eol=lf
+
+# Native Windows release evidence retains exact captured bytes for verification hashes.
+/docs/research/release-readiness/PT1-v0.1.2/windows-source/*.csv -text
+/docs/research/release-readiness/PT1-v0.1.2/windows-source/*.log -text
