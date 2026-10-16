@@ -51,6 +51,7 @@ jobs:
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" -m pip install -r research/aircraft-data/schema/requirements.txt
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/aircraft-data/schema/check.py
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/aircraft-data/schema/test_contract.py
+          "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/helicopter/hx700/test_schema.py
           "$RUNNER_TEMP/aircraft-schema-venv/bin/python" research/aircraft-standardization/test_schema_v2.py --godot "$(app/get-godot.sh)"
       - name: Generated geometry and physics data match their sources
         run: |

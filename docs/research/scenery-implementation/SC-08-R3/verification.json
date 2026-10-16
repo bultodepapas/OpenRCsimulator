@@ -1,0 +1,60 @@
+{
+  "step": "SC-08-R3",
+  "date": "2026-10-16",
+  "complete": true,
+  "godot": "4.7.2.stable",
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "renderer": "gl_compatibility",
+  "tests": {
+    "scenery_build": {
+      "checks": 126,
+      "passed": true
+    },
+    "scenery_destruction": {
+      "checks": 78,
+      "passed": true
+    },
+    "field_projected_shadows": {
+      "checks": 57,
+      "passed": true
+    }
+  },
+  "views": {
+    "front": {
+      "draws_before": 52,
+      "draws_after": 52,
+      "matched_camera": true
+    },
+    "door": {
+      "draws_before": 45,
+      "draws_after": 45,
+      "matched_camera": true
+    },
+    "rear": {
+      "draws_before": 61,
+      "draws_after": 61,
+      "matched_camera": true
+    },
+    "roof": {
+      "draws_before": 42,
+      "draws_after": 42,
+      "matched_camera": true
+    }
+  },
+  "furniture_geometry_unchanged": {
+    "bench": "fc53687f88c4b98a4739f279f9aab46902ad2ef7cdc140fc2052d18a5ffc5c08",
+    "picnic": "114bf1ce120881d7eb19202a5023149c282b57d0c6325b76745e74570b9b0bf2"
+  },
+  "scenery_triangles": 638617,
+  "sources_sha256": {
+    "app/scenery/club_shed.gd": "fab17099843c23aa5912c37d2a9b9b14edd324cb87f0689917c491cf1d31c16b",
+    "app/scenery/club_furniture.gd": "e934e32425cfa88502e258a7f614009f5200e13a7044f8f2f14a2e1c9373a290",
+    "app/scenery/prefabs.gd": "2a4924cf9aa3679e0ba3984b7beccce5c031e3d36958696096c6ec4d9ceb1ed4",
+    "app/scenery/mesh_kit.gd": "ca1d755d09fe8c3a1526339aeca4024e308d21fdc4e9c2e4a857b9051c7139dc",
+    "tools/ground/capture_club_shed.gd": "83e72181145efb0cbda81ac2dbf0d529c6563b9503eca2473051645aa9ac6572",
+    "app/assets/landscape/flightline/Wood049_1K-JPG_Color.jpg": "451ee4dd719628289b4969f75dc583b5f77f8471d5d885ba5015fd90e7e5ce61",
+    "app/assets/landscape/flightline/PROVENANCE.json": "e60e428f6ed2f8996330be7038488696a7ecbf4fc4075076d9ea56ec4e69dd81"
+  },
+  "timing_note": "The first run overlapped a native capture and exceeded the 800 ms build gate (1288.4 ms). The sequential rerun passed at 734.1 ms. Both logs retained; no target-device frame-time claim.",
+  "scope": "Native matched-camera field renders and focused scenery regressions. Reused existing CC0 timber source. No new draw nodes, placement or physics changes."
+}

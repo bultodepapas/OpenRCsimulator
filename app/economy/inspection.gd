@@ -4,7 +4,7 @@ const Calculator = preload("res://economy/calculator.gd")
 const FORMAT := "openrc-accident-inspection v1"
 const MAX_BYTES := 65536
 const KEYS := ["format", "inspection_id", "incident_id", "aircraft_id", "source_sha256", "catalog_hash", "expected_revision", "full_inspection", "total_loss", "basis", "evidence", "components"]
-const ROW_KEYS := ["disposition", "quantity", "repair_minor", "inspection_minor", "salvage_eligible", "damage_flags", "evidence"]
+const ROW_KEYS := ["disposition", "quantity", "repair_minor", "inspection_minor", "salvage_eligible", "replacement_comparable", "damage_flags", "evidence"]
 const FLAGS := ["structural_damage", "thermal_damage", "electrical_damage", "lipo_damage", "unretrieved"]
 const RESOLVABLE := ["Impact or surface contact requires structural inspection.", "Water exposure requires inspection of electronics and powertrain.", "Crash inspection pending; component survival is not yet established.", "Propeller strike: inspect the powertrain, shaft and mount before return to service."]
 
@@ -53,6 +53,11 @@ static func validate(receipt: Dictionary, dossier: Dictionary, current: Dictiona
 		for key: Variant in decision:
 			if key not in ROW_KEYS:
 				return _failure("unknown component decision field")
+		if decision.has("replacement_comparable"):
+			if typeof(decision.replacement_comparable) != TYPE_BOOL:
+				return _failure("replacement_comparable must be an explicit boolean")
+			if decision.get("disposition") != "repair":
+				return _failure("replacement_comparable is only valid for an explicit repair decision")
 		if not _text(decision.get("evidence")) or typeof(decision.get("damage_flags")) != TYPE_ARRAY:
 			return _failure("each component needs evidence and explicit damage flags")
 		if decision.damage_flags.size() > FLAGS.size():

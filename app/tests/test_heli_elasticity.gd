@@ -62,6 +62,18 @@ func _run() -> void:
 					timing_error = maxf(timing_error, absf(timed.velocity[i] - baseline[str(load)].v[i]))
 				timing_error = maxf(timing_error, absf(timed.dissipated_j - baseline[str(load)].dissipated_j))
 	_check("held-load tape agrees at 1/30/60/144 Hz including energy", timing_error < 1e-11)
+	var random := RandomNumberGenerator.new()
+	random.seed = 260116
+	var changing := Flex.new()
+	var changing_ok := true
+	var maximum_balance := 0.0
+	for tick in 10000:
+		if tick % 4 == 0:
+			changing_ok = changing.set_loads(PackedFloat64Array([random.randf_range(0, 51), random.randf_range(0, 51), random.randf_range(-2, 2)])) and changing_ok
+		changing_ok = changing.advance(random.randf_range(.001, .03)) and changing_ok
+		maximum_balance = maxf(maximum_balance, absf(changing.work_j - changing.energy_j() - changing.dissipated_j))
+	_check("10000 variable load/time steps preserve the energy balance", changing_ok and maximum_balance < 1e-9)
+	print("VARIABLE_LOAD maximum_energy_balance_error_j=", maximum_balance)
 	flex = Flex.new()
 	flex.set_loads(PackedFloat64Array([51, 0, 0]))
 	flex.advance(0.03)
@@ -135,6 +147,7 @@ func _run() -> void:
 	skin.apply(PackedFloat64Array([.005, 0, -.002]))
 	_check("signed physical metres reach native blend weights", absf(skin.gear.get_blend_shape_value(0) - .5) < 1e-7 and skin.gear.get_blend_shape_value(1) == 0 and absf(skin.canopy.get_blend_shape_value(0) + .5) < 1e-7)
 	_check("invalid render deformation retains the accepted morphs", not skin.apply(PackedFloat64Array([.03, 0, 0])) and skin.gear.get_blend_shape_value(0) == .5)
+	_check_native_mix(skin)
 	preview.root.queue_free()
 	var view := View.new()
 	root.add_child(view)
@@ -159,6 +172,34 @@ func _run() -> void:
 	await process_frame
 	print("%d checks, %d failed; RK4 max error %.14f; frame-rate max error %.14f; pinned shell vertices %d" % [checks, failures, maximum_error, timing_error, canopy_pins])
 	quit(0 if failures == 0 else 1)
+
+func _check_native_mix(skin: RefCounted) -> void:
+	var accepted := true
+	var maximum_error := 0.0
+	# Exercise the engine's evaluated blend result, including negative weights
+	# and weights above one; inspecting only the authored targets misses mode errors.
+	for q in [PackedFloat64Array([0, 0, 0]), PackedFloat64Array([.015, .013, -.006]), PackedFloat64Array([-.02, .02, .008])]:
+		accepted = skin.apply(q) and accepted
+		for node: MeshInstance3D in [skin.gear, skin.canopy]:
+			var baked := node.bake_mesh_from_current_blend_shape_mix()
+			if baked == null:
+				accepted = false
+				continue
+			for surface in baked.get_surface_count():
+				var arrays := baked.surface_get_arrays(surface)
+				var base := node.mesh.surface_get_arrays(surface)
+				var shapes := node.mesh.surface_get_blend_shape_arrays(surface)
+				for vertex in arrays[Mesh.ARRAY_VERTEX].size():
+					var expected: Vector3 = base[Mesh.ARRAY_VERTEX][vertex]
+					for mode in shapes.size():
+						expected += (shapes[mode][Mesh.ARRAY_VERTEX][vertex] - base[Mesh.ARRAY_VERTEX][vertex]) * node.get_blend_shape_value(mode)
+					var point: Vector3 = arrays[Mesh.ARRAY_VERTEX][vertex]
+					var normal: Vector3 = arrays[Mesh.ARRAY_NORMAL][vertex]
+					accepted = accepted and point.is_finite() and normal.is_finite() and absf(normal.length() - 1) < 1e-5
+					maximum_error = maxf(maximum_error, point.distance_to(expected))
+	_check("engine-evaluated morphs preserve signed travel and finite unit normals", accepted and maximum_error < 1e-7)
+	print("NATIVE_MORPHS maximum_vertex_error_m=", maximum_error)
+
 
 func _derivative(state: PackedFloat64Array, mode: int, force: float) -> PackedFloat64Array:
 	return PackedFloat64Array([state[1], (force - Flex.STIFFNESS_N_M[mode] * state[0] - Flex.DAMPING_NS_M[mode] * state[1]) / Flex.MASS_KG[mode]])

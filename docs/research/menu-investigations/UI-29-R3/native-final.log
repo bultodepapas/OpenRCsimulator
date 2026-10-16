@@ -1,0 +1,188 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+HOST display=(3840, 2160) dpi=144
+CAPTURE en-1280x720-100-home.webp
+CAPTURE en-1280x720-100-aircraft.webp
+CAPTURE en-1280x720-100-practice.webp
+CAPTURE en-1280x720-100-garage.webp
+CAPTURE en-1280x720-100-settings-display.webp
+CAPTURE en-1280x720-100-settings-interface.webp
+CAPTURE en-1280x720-100-settings-sound.webp
+CAPTURE en-1280x720-100-help.webp
+CAPTURE en-1280x720-100-controls.webp
+CAPTURE en-1280x720-100-weather.webp
+CAPTURE en-1280x720-100-turbulence.webp
+CAPTURE en-1280x720-100-atmosphere.webp
+CAPTURE en-1280x720-100-time.webp
+CAPTURE en-1280x720-100-sky.webp
+CAPTURE en-1280x720-100-workshop.webp
+CAPTURE en-1280x720-100-failures.webp
+CAPTURE en-1280x720-100-natural_random.webp
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+CAPTURE en-1280x720-100-pause.webp
+CAPTURE en-1280x720-100-pause-session.webp
+CAPTURE en-1280x720-100-pause-settings.webp
+CAPTURE en-1280x720-100-pause-exit.webp
+FLOW en-1280x720-100 navigation, Escape, pause holds, settings return, End flight: PASS
+CAPTURE es-1280x720-100-home.webp
+CAPTURE es-1280x720-100-aircraft.webp
+CAPTURE es-1280x720-100-practice.webp
+CAPTURE es-1280x720-100-garage.webp
+CAPTURE es-1280x720-100-settings-display.webp
+CAPTURE es-1280x720-100-settings-interface.webp
+CAPTURE es-1280x720-100-settings-sound.webp
+CAPTURE es-1280x720-100-help.webp
+CAPTURE es-1280x720-100-controls.webp
+CAPTURE es-1280x720-100-weather.webp
+CAPTURE es-1280x720-100-turbulence.webp
+CAPTURE es-1280x720-100-atmosphere.webp
+CAPTURE es-1280x720-100-time.webp
+CAPTURE es-1280x720-100-sky.webp
+CAPTURE es-1280x720-100-workshop.webp
+CAPTURE es-1280x720-100-failures.webp
+CAPTURE es-1280x720-100-natural_random.webp
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-1280x720-100-pause.webp
+CAPTURE es-1280x720-100-pause-session.webp
+CAPTURE es-1280x720-100-pause-settings.webp
+CAPTURE es-1280x720-100-pause-exit.webp
+FLOW es-1280x720-100 navigation, Escape, pause holds, settings return, End flight: PASS
+FLUENCY en-1920x1080-100 frames=589 median=8.229 p95=10.539 max=25.685
+CAPTURE en-1920x1080-100-home.webp
+CAPTURE en-1920x1080-100-aircraft.webp
+CAPTURE en-1920x1080-100-practice.webp
+CAPTURE en-1920x1080-100-garage.webp
+CAPTURE en-1920x1080-100-settings-display.webp
+CAPTURE en-1920x1080-100-settings-interface.webp
+CAPTURE en-1920x1080-100-settings-sound.webp
+CAPTURE en-1920x1080-100-help.webp
+CAPTURE en-1920x1080-100-controls.webp
+CAPTURE en-1920x1080-100-weather.webp
+CAPTURE en-1920x1080-100-turbulence.webp
+CAPTURE en-1920x1080-100-atmosphere.webp
+CAPTURE en-1920x1080-100-time.webp
+CAPTURE en-1920x1080-100-sky.webp
+CAPTURE en-1920x1080-100-workshop.webp
+CAPTURE en-1920x1080-100-failures.webp
+CAPTURE en-1920x1080-100-natural_random.webp
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+CAPTURE en-1920x1080-100-pause.webp
+CAPTURE en-1920x1080-100-pause-session.webp
+CAPTURE en-1920x1080-100-pause-settings.webp
+CAPTURE en-1920x1080-100-pause-exit.webp
+FLOW en-1920x1080-100 navigation, Escape, pause holds, settings return, End flight: PASS
+CAPTURE es-1920x1080-100-home.webp
+CAPTURE es-1920x1080-100-aircraft.webp
+CAPTURE es-1920x1080-100-practice.webp
+CAPTURE es-1920x1080-100-garage.webp
+CAPTURE es-1920x1080-100-settings-display.webp
+CAPTURE es-1920x1080-100-settings-interface.webp
+CAPTURE es-1920x1080-100-settings-sound.webp
+CAPTURE es-1920x1080-100-help.webp
+CAPTURE es-1920x1080-100-controls.webp
+CAPTURE es-1920x1080-100-weather.webp
+CAPTURE es-1920x1080-100-turbulence.webp
+CAPTURE es-1920x1080-100-atmosphere.webp
+CAPTURE es-1920x1080-100-time.webp
+CAPTURE es-1920x1080-100-sky.webp
+CAPTURE es-1920x1080-100-workshop.webp
+CAPTURE es-1920x1080-100-failures.webp
+CAPTURE es-1920x1080-100-natural_random.webp
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-1920x1080-100-pause.webp
+CAPTURE es-1920x1080-100-pause-session.webp
+CAPTURE es-1920x1080-100-pause-settings.webp
+CAPTURE es-1920x1080-100-pause-exit.webp
+FLOW es-1920x1080-100 navigation, Escape, pause holds, settings return, End flight: PASS
+FLUENCY en-3840x2160-100 frames=525 median=11.048 p95=15.043 max=29.407
+CAPTURE en-3840x2160-100-home.webp
+CAPTURE en-3840x2160-100-aircraft.webp
+CAPTURE en-3840x2160-100-practice.webp
+CAPTURE en-3840x2160-100-garage.webp
+CAPTURE en-3840x2160-100-settings-display.webp
+CAPTURE en-3840x2160-100-settings-interface.webp
+CAPTURE en-3840x2160-100-settings-sound.webp
+CAPTURE en-3840x2160-100-help.webp
+CAPTURE en-3840x2160-100-controls.webp
+CAPTURE en-3840x2160-100-weather.webp
+CAPTURE en-3840x2160-100-turbulence.webp
+CAPTURE en-3840x2160-100-atmosphere.webp
+CAPTURE en-3840x2160-100-time.webp
+CAPTURE en-3840x2160-100-sky.webp
+CAPTURE en-3840x2160-100-workshop.webp
+CAPTURE en-3840x2160-100-failures.webp
+CAPTURE en-3840x2160-100-natural_random.webp
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+CAPTURE en-3840x2160-100-pause.webp
+CAPTURE en-3840x2160-100-pause-session.webp
+CAPTURE en-3840x2160-100-pause-settings.webp
+CAPTURE en-3840x2160-100-pause-exit.webp
+FLOW en-3840x2160-100 navigation, Escape, pause holds, settings return, End flight: PASS
+CAPTURE es-3840x2160-100-home.webp
+CAPTURE es-3840x2160-100-aircraft.webp
+CAPTURE es-3840x2160-100-practice.webp
+CAPTURE es-3840x2160-100-garage.webp
+CAPTURE es-3840x2160-100-settings-display.webp
+CAPTURE es-3840x2160-100-settings-interface.webp
+CAPTURE es-3840x2160-100-settings-sound.webp
+CAPTURE es-3840x2160-100-help.webp
+CAPTURE es-3840x2160-100-controls.webp
+CAPTURE es-3840x2160-100-weather.webp
+CAPTURE es-3840x2160-100-turbulence.webp
+CAPTURE es-3840x2160-100-atmosphere.webp
+CAPTURE es-3840x2160-100-time.webp
+CAPTURE es-3840x2160-100-sky.webp
+CAPTURE es-3840x2160-100-workshop.webp
+CAPTURE es-3840x2160-100-failures.webp
+CAPTURE es-3840x2160-100-natural_random.webp
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-3840x2160-100-pause.webp
+CAPTURE es-3840x2160-100-pause-session.webp
+CAPTURE es-3840x2160-100-pause-settings.webp
+CAPTURE es-3840x2160-100-pause-exit.webp
+FLOW es-3840x2160-100 navigation, Escape, pause holds, settings return, End flight: PASS
+CAPTURE es-960x540-200-home.webp
+CAPTURE es-960x540-200-aircraft.webp
+CAPTURE es-960x540-200-practice.webp
+CAPTURE es-960x540-200-garage.webp
+CAPTURE es-960x540-200-settings-display.webp
+CAPTURE es-960x540-200-settings-interface.webp
+CAPTURE es-960x540-200-settings-sound.webp
+CAPTURE es-960x540-200-help.webp
+CAPTURE es-960x540-200-controls.webp
+CAPTURE es-960x540-200-weather.webp
+CAPTURE es-960x540-200-turbulence.webp
+CAPTURE es-960x540-200-atmosphere.webp
+CAPTURE es-960x540-200-time.webp
+CAPTURE es-960x540-200-sky.webp
+CAPTURE es-960x540-200-workshop.webp
+CAPTURE es-960x540-200-failures.webp
+CAPTURE es-960x540-200-natural_random.webp
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-960x540-200-pause.webp
+CAPTURE es-960x540-200-pause-session.webp
+CAPTURE es-960x540-200-pause-settings.webp
+CAPTURE es-960x540-200-pause-exit.webp
+FLOW es-960x540-200 navigation, Escape, pause holds, settings return, End flight: PASS
+CAPTURE es-3440x1440-100-home.webp
+CAPTURE es-3440x1440-100-aircraft.webp
+CAPTURE es-3440x1440-100-practice.webp
+CAPTURE es-3440x1440-100-garage.webp
+CAPTURE es-3440x1440-100-settings-display.webp
+CAPTURE es-3440x1440-100-settings-interface.webp
+CAPTURE es-3440x1440-100-settings-sound.webp
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-3440x1440-100-pause.webp
+CAPTURE es-3440x1440-100-pause-session.webp
+CAPTURE es-3440x1440-100-pause-settings.webp
+CAPTURE es-3440x1440-100-pause-exit.webp
+FLOW es-3440x1440-100 navigation, Escape, pause holds, settings return, End flight: PASS

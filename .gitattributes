@@ -62,6 +62,8 @@
 # HELI-25c construction profiles are admitted by exact byte hashes.
 /assets/aircraft/hx-700/articulated/*.json text eol=lf
 /app/assets/aircraft/hx-700/articulated/*.json text eol=lf
+# HELI-26a also admits the independent motion oracle by its exact byte hash.
+/research/helicopter/reference/hx700_motion_oracle.json text eol=lf
 
 # RCV-35: supplied MONSTER CAR 2 Blender delivery is an immutable byte source.
 "monster car 2/**" -text

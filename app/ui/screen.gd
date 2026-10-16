@@ -55,7 +55,7 @@ func fade(width: int) -> TextureRect:
 	return rect
 
 
-## The stack opens after attach, without an extra frame or a tween (motion is a later step).
+## The stack opens after attach; reduced motion skips the short entrance fade.
 func open(from: Control = null) -> void:
 	return_focus = from
 	set_active(true)
@@ -116,4 +116,6 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 static func _is_escape(event: InputEvent) -> bool:
-	return event is InputEventKey and event.pressed and not event.echo and event.physical_keycode == KEY_ESCAPE
+	# Native/virtual keyboard sources can report a logical Escape with another scan code.
+	return event is InputEventKey and event.pressed and not event.echo \
+		and (event.physical_keycode == KEY_ESCAPE or event.keycode == KEY_ESCAPE)

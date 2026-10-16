@@ -304,7 +304,7 @@ msgid "Crashed. Continue to inspect the wreck, or restart the flight."
 msgstr "Accidente. Continúa para inspeccionar los restos o reinicia el vuelo."
 
 msgid "The radio was disconnected: engine at idle, sticks centred. Continue flies with the keyboard, or plug the radio back in."
-msgstr "La radio se desconectó: motor al ralentí y mandos centrados. Continuar vuela con el teclado, o vuelve a conectar la radio."
+msgstr "La radio se desconectó: motor al ralentí y mandos centrados. Pulsa Continuar para volar con el teclado o vuelve a conectar la radio."
 
 msgid "Radio calibration cancelled; the previous profile stays."
 msgstr "Calibración de la radio cancelada; se mantiene el perfil anterior."
@@ -337,7 +337,7 @@ msgid "Keys are shown as your keyboard layout prints them."
 msgstr "Las teclas se muestran como las rotula tu distribución de teclado."
 
 msgid "Connect an EdgeTX radio over USB (Model setup → USB Joystick: Advanced, Joystick). It flies while connected; the engine starts once the throttle stick has been low. Unplugging it pauses the flight with the engine at idle. K calibrates it. Assign gear AUX or the optional Toggle landing gear action in Controller settings."
-msgstr "Conecta una radio EdgeTX por USB (Model setup → USB Joystick: Advanced, Joystick). Vuela mientras está conectada; el motor arranca cuando el acelerador ha estado abajo. Desconectarla pausa el vuelo con el motor al ralentí. K la calibra. Asigna el tren a AUX o a la acción opcional Alternar tren de aterrizaje en Ajustes del controlador."
+msgstr "Conecta una radio EdgeTX por USB (Model setup → USB Joystick: Advanced, Joystick). Vuela mientras está conectada; el motor arranca cuando el acelerador ha estado abajo. Desconectarla pausa el vuelo con el motor al ralentí. K la calibra. Asigna el tren a AUX o a la acción opcional Alternar tren de aterrizaje en Configuración del control."
 
 msgid "Pause menu (in the radio calibration: cancel it)"
 msgstr "Menú de pausa (en la calibración: cancelarla)"
@@ -554,6 +554,9 @@ msgstr "El Sol está a más de 6° bajo el horizonte. No hay luces en el avión 
 
 msgid "Check the time, date, UTC offset and location. Apply will not save invalid lighting."
 msgstr "Revisa la hora, la fecha, el desfase UTC y la ubicación. Aplicar no guardará una iluminación no válida."
+
+msgid "Check the time, date, UTC offset and location."
+msgstr "Revisa la hora, la fecha, el desfase UTC y la ubicación."
 
 msgid "Daylight"
 msgstr "Luz diurna"
@@ -914,13 +917,13 @@ msgid "Elevator trim: %+.1f° (PgUp down / PgDn up)"
 msgstr "Trim de profundidad: %+.1f° (RePág baja / AvPág sube)"
 
 msgid "Aircraft Workshop"
-msgstr "Laboratorio de aviones"
+msgstr "Taller de aviones"
 
 msgid "Return to Workshop"
-msgstr "Volver al laboratorio"
+msgstr "Volver al taller"
 
 msgid "Experimental Workshop trial · Esc to return"
-msgstr "Prueba experimental del laboratorio · Esc para volver"
+msgstr "Prueba experimental del taller · Esc para volver"
 
 msgid "The source aircraft is not available in this catalog."
 msgstr "El avión original no está disponible en este catálogo."
@@ -1257,7 +1260,7 @@ msgid "Glow: cut, starter, lean/rich mixture"
 msgstr "Glow: corte, arranque, mezcla pobre/rica"
 
 msgid "Restart / resume after radio failsafe"
-msgstr "Reiniciar / reanudar tras fallo de radio"
+msgstr "Reiniciar / reanudar tras falla de radio"
 
 msgid "RC cars · Bisonte MT8"
 msgstr "Carros RC · Bisonte MT8"
@@ -1377,7 +1380,7 @@ msgid "Next flight failures: Off"
 msgstr "Fallas del próximo vuelo: desactivadas"
 
 msgid "Next flight failures: %d%% · catastrophic allowed"
-msgstr "Fallas del próximo vuelo: %d%% · permite catástrofes"
+msgstr "Fallas del próximo vuelo: %d%% · catastróficas permitidas"
 
 msgid "Next flight failures: %d%% · standard"
 msgstr "Fallas del próximo vuelo: %d%% · estándar"
@@ -1470,6 +1473,9 @@ msgstr "Elige el cielo. Se conservan la hora y el viento de vuelo seleccionados.
 
 msgid "Cloud motion"
 msgstr "Movimiento de nubes"
+
+msgid "Check the sky and cloud motion settings."
+msgstr "Revisa los ajustes del cielo y el movimiento de las nubes."
 
 msgid "Classic motion"
 msgstr "Movimiento clásico"
@@ -1649,6 +1655,9 @@ msgstr "Joystick · personalizado"
 msgid "Choose the flight profile for this unknown controller. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically."
 msgstr "Elige el perfil de vuelo para este control desconocido. Gamepad inicia en modo 2; la radio usa un perfil personalizado. La calibración nunca se inicia automáticamente."
 
+msgid "Choose an unknown controller type explicitly. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically."
+msgstr "Selecciona explícitamente el tipo para este control desconocido. El gamepad comienza en modo 2; la radio usa un perfil personalizado. La calibración no se inicia automáticamente."
+
 msgid "Could not create a profile for that controller type."
 msgstr "No se pudo crear un perfil para ese tipo de control."
 
@@ -1665,13 +1674,13 @@ msgid "CONTROLLER LOST · select controls to continue"
 msgstr "CONTROL DESCONECTADO · selecciona controles para continuar"
 
 msgid "Controller unavailable. Select a connected device or keyboard in Controller settings."
-msgstr "Controlador no disponible. Elige un dispositivo conectado o el teclado en Configuración de controles."
+msgstr "Controlador no disponible. Elige un dispositivo conectado o el teclado en Configuración del control."
 
 msgid "Move each mapped control once, release sticks and triggers, then wait for neutral. Continue is an explicit action."
 msgstr "Mueve una vez cada control asignado, suelta las palancas y los gatillos y espera el neutro. Debes elegir Continuar explícitamente."
 
 msgid "Lower the throttle to arm. If the mapping is wrong, open Controller settings and calibrate the selected radio."
-msgstr "Baja el acelerador para armar. Si la asignación no es correcta, abre Configuración de controles y calibra la radio seleccionada."
+msgstr "Baja el acelerador para armar. Si la asignación no es correcta, abre Configuración del control y calibra la radio seleccionada."
 
 msgid "Throttle on resume: %.0f%%"
 msgstr "Acelerador al reanudar: %.0f%%"
@@ -2477,10 +2486,10 @@ msgstr "No se pudo cargar la vista previa del avión."
 
 #. HELI-20 ground lifecycle
 msgid "USB radio: lower collective to arm the input, then match the displayed start pitch before motor arming. Gamepads retain the start collective. Assign Helicopter arm, hold and flight mode in Controller settings. Throttle cut latches hold; releasing it never starts the rotor. K calibrates."
-msgstr "Radio USB: baja el colectivo para habilitar la entrada; luego iguala el paso de inicio antes de armar el motor. El gamepad conserva el colectivo inicial. Asigna armado, hold y modo en Controles. El corte activa hold y soltarlo no arranca el rotor. K calibra."
+msgstr "Radio USB: baja el colectivo para habilitar la entrada; luego iguala el paso de inicio antes de armar el motor. El gamepad conserva el colectivo inicial. Asigna armado, hold y modo en Configuración del control. El corte activa hold y soltarlo no arranca el rotor. K calibra."
 
 msgid "USB radio (EdgeTX): select Advanced Joystick in Model setup. Lower throttle to arm; unplugging pauses. K: calibrate. Assign gear AUX or Toggle landing gear in Controller settings."
-msgstr "Radio USB (EdgeTX): selecciona Advanced Joystick en Model setup. Baja el acelerador para armar; desconectar pausa el vuelo. K: calibrar. Asigna AUX o Alternar tren de aterrizaje en Ajustes del mando."
+msgstr "Radio USB (EdgeTX): selecciona Advanced Joystick en Model setup. Baja el acelerador para armar; al desconectarla se pausa el vuelo. K: calibrar. Asigna el tren a AUX o a Alternar tren de aterrizaje en Configuración del control."
 msgid "Night lights: auto"
 msgstr "Luces nocturnas: automático"
 
@@ -2566,16 +2575,16 @@ msgid "Not available"
 msgstr "No disponible"
 
 msgid "Assign in Controller settings"
-msgstr "Asignar en Ajustes del control"
+msgstr "Asignar en Configuración del control"
 
 msgid "On"
 msgstr "Encendido"
 
 msgid "Checking controller input. If it does not respond, open Controller settings."
-msgstr "Comprobando el mando. Si no responde, abre Configuración de controles."
+msgstr "Comprobando el mando. Si no responde, abre Configuración del control."
 
 msgid "Flight controller: %s. Review your bindings in Controller settings."
-msgstr "Control de vuelo: %s. Revisa las asignaciones en Configuración de controles."
+msgstr "Control de vuelo: %s. Revisa las asignaciones en Configuración del control."
 
 msgid "Trigger throttle: left X yaw, right X roll, right Y pitch, RT/R2 throttle (axis 5)."
 msgstr "Acelerador en gatillo: X izquierdo guiñada, X derecho alabeo, Y derecho cabeceo, RT/R2 acelerador (eje 5)."
@@ -2650,7 +2659,7 @@ msgid "Changes apply immediately. Keep saves them; Revert or Back restores saved
 msgstr "Vista previa inmediata. Conservar guarda los cambios; Revertir o Volver restaura los ajustes de pantalla guardados."
 
 msgid "Keep the display test within %d seconds."
-msgstr "Confirma la pantalla antes de %d segundos."
+msgstr "Confirma el cambio de pantalla antes de que pasen %d segundos."
 
 msgid "Display test expired. Saved settings restored."
 msgstr "La prueba caducó. Se restauraron los ajustes guardados."
@@ -3011,7 +3020,7 @@ msgid "Aircraft"
 msgstr "Aeronaves"
 
 msgid "Aircraft Workshop is not available for this rotorcraft yet."
-msgstr "El laboratorio de aviones aún no está disponible para aeronaves de ala rotatoria."
+msgstr "El taller de aviones aún no está disponible para aeronaves de ala rotatoria."
 
 msgid "Choose a model. Flight capability and limitations are shown on each entry."
 msgstr "Elige un modelo. Cada ficha indica sus capacidades y limitaciones de vuelo."
@@ -3080,7 +3089,7 @@ msgid "Preview · Close to undo"
 msgstr "Vista previa · Cerrar revierte"
 
 msgid "Fullscreen changes have a 15-second safety timer."
-msgstr "La pantalla completa se prueba durante 15 segundos."
+msgstr "Los cambios de pantalla completa se revierten automáticamente a los 15 segundos si no los confirmas."
 
 msgid "Language is saved immediately."
 msgstr "El idioma se guarda al instante."
@@ -3107,25 +3116,22 @@ msgid "Open RC car garage"
 msgstr "Abrir garaje de coches RC"
 
 msgid "Natural Random creates a flight setup to review. Failure practice schedules system faults for your next flight."
-msgstr "Aleatorio natural propone un vuelo para revisar. La práctica de fallos programa averías para tu próximo vuelo."
+msgstr "Aleatorio natural propone un vuelo para revisar. La práctica de fallas programa averías para tu próximo vuelo."
 
 msgid "Review a random setup, or practice with system failures."
 msgstr "Revisa un vuelo aleatorio o practica con averías."
 
 msgid "Failure practice"
-msgstr "Práctica de fallos"
+msgstr "Práctica de fallas"
 
 msgid "Next flight failures: Airplanes only"
-msgstr "Fallos del próximo vuelo: solo aviones"
-
-msgid "Next flight failures: Off"
-msgstr "Fallos del próximo vuelo: desactivados"
+msgstr "Fallas del próximo vuelo: solo aviones"
 
 msgid "Next flight failures: %d%% · Standard"
-msgstr "Fallos del próximo vuelo: %d%% · Estándar"
+msgstr "Fallas del próximo vuelo: %d%% · Estándar"
 
 msgid "Next flight failures: %d%% · Catastrophic enabled"
-msgstr "Fallos del próximo vuelo: %d%% · Catastróficos activados"
+msgstr "Fallas del próximo vuelo: %d%% · Catastróficas activadas"
 
 msgid "Release throttle cut before releasing rotor hold."
 msgstr "Suelta el corte de motor antes de desactivar el hold del rotor."
@@ -3181,3 +3187,99 @@ msgstr "Disponibilidad en la fecha consultada: %s"
 
 msgid "Historical estimate; itemized package coverage was not saved."
 msgstr "Estimación histórica; no se guardó el detalle de las piezas incluidas."
+
+#: ui/accident_report.gd
+msgid "Selected repair details"
+msgstr "Detalle de la reparación seleccionada"
+
+#: ui/accident_report.gd
+msgid "Already included in the repair line above; not added again."
+msgstr "Ya está incluido en la línea de reparación anterior; no se suma de nuevo."
+
+#: ui/accident_report.gd
+msgid "Costing basis: %s"
+msgstr "Base de costo: %s"
+
+#: ui/accident_report.gd
+msgid "Cash purchase"
+msgstr "Costo de compra"
+
+#: ui/accident_report.gd
+msgid "Consumption allocation"
+msgstr "Asignación por consumo"
+
+#: ui/accident_report.gd
+msgid "Inspection basis: %s"
+msgstr "Base de inspección: %s"
+
+#: ui/accident_report.gd
+msgid "Scenario assumption"
+msgstr "Supuesto de escenario"
+
+#: ui/accident_report.gd
+msgid "Inspection evidence: %s"
+msgstr "Evidencia de inspección: %s"
+
+#: ui/accident_report.gd
+msgid "Measurement: %s = %s"
+msgstr "Medición: %s = %s"
+
+#: ui/accident_report.gd
+msgid "Labor: %s · %d min"
+msgstr "Mano de obra: %s · %d min"
+
+#: ui/accident_report.gd
+msgid "DIY"
+msgstr "Propia"
+
+#: ui/accident_report.gd
+msgid "Paid"
+msgstr "Contratada"
+
+#: ui/accident_report.gd
+msgid "Labor cost"
+msgstr "Costo de mano de obra"
+
+#: ui/accident_report.gd
+msgid "Material: %s"
+msgstr "Material: %s"
+
+#: ui/accident_report.gd
+msgid "Required: %s"
+msgstr "Cantidad requerida: %s"
+
+#: ui/accident_report.gd
+msgid "Package: %s at %s each"
+msgstr "Paquete: %s a %s cada uno"
+
+#: ui/accident_report.gd
+msgid "Cash for %d packages"
+msgstr "Compra de %d paquetes"
+
+#: ui/accident_report.gd
+msgid "Consumed material allocation"
+msgstr "Costo del material consumido"
+
+#: ui/accident_report.gd
+msgid "Selected repair subtotal"
+msgstr "Subtotal de reparación seleccionado"
+
+#: ui/accident_report.gd
+msgid "Inspection fee"
+msgstr "Costo de inspección"
+
+#: ui/accident_report.gd
+msgid "No separate inspection fee was itemized."
+msgstr "No se detalló un costo de inspección por separado."
+
+#: ui/accident_report.gd
+msgid "Full-package cash and consumed allocation are alternate material views."
+msgstr "El costo de los paquetes completos y la asignación por consumo son dos valoraciones alternativas del material."
+
+#: ui/accident_report.gd
+msgid "Product: %s"
+msgstr "Producto: %s"
+
+#: ui/accident_report.gd
+msgid "Source note: %s"
+msgstr "Nota de la fuente: %s"

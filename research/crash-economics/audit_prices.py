@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import argparse
+import copy
 from collections import Counter
 from datetime import date
 import json
@@ -96,7 +97,8 @@ def build_audit(document: dict, context: dict, as_of: str) -> dict:
                     "review_status_counts": {key: counts[key] for key in priority},
                     "unmapped_observations": sum(not row["uses"] for row in observations),
                     "incomplete_aircraft": sum(not row["inventory_cost_coverage_complete"] for row in aircraft)},
-        "aircraft": aircraft, "observations": observations}
+        "aircraft": aircraft, "observations": observations,
+        "service_parts": copy.deepcopy(context["price_catalog"].get("service_parts", []))}
 
 
 def _cell(value: str) -> str:
@@ -116,6 +118,13 @@ def render_markdown(audit: dict) -> str:
     for row in audit["observations"]:
         amount = row["amount_minor"]
         lines.append(f"| [{_cell(row['offer_id'])}]({row['source_url']}) | {amount // 100:,}.{amount % 100:02d} | {row['observed_on']} | {row['review_status']} | {len(row['uses'])} | {_cell(row['availability_at_observation'])} |")
+    if audit.get("service_parts"):
+        by_id = {row["offer_id"]: row for row in audit["observations"]}
+        lines += ["", "## Service-part references", "", "These named-model service references do not establish installed aircraft compatibility or a repair decision. A whole-engine price proxy cannot transfer mechanical fit to its service parts.", "",
+                  "| Part offer | Named target model | Whole-unit price reference |", "| --- | --- | --- |"]
+        for row in audit["service_parts"]:
+            offer = by_id[row["part_offer_id"]]
+            lines.append(f"| [{_cell(row['part_offer_id'])}]({offer['source_url']}) | {_cell(row['compatibility_evidence']['target_model'])} | {_cell(row['whole_unit_offer_id'])} |")
     lines += ["", "Component references, approximation bases, package descriptions and remaining dossier gaps are retained in the companion JSON.", ""]
     return "\n".join(lines)
 

@@ -19,6 +19,8 @@ The queue records direct unit prices, constituent quantities for composite estim
 
 Per-aircraft output distinguishes known partial subtotals, missing prices, approximations and complete *modeled* inventory estimates. An aircraft without any priced rows has a null subtotal, not zero. Complete inventory coverage can include proxies and labor assumptions; it is not a ready-to-fly retail quote or an installation qualification. Physical exclusions and aircraft-source identities remain governed by the existing dossier contract.
 
+The audit also retains validated `service_parts` product-family crosswalks and whole-unit price references. These cannot establish installed fit or select a repair. [CR-31g](../CR-31g/README.md) records this extension and a new snapshot; the original dated queue above remains historical evidence.
+
 ## Verification
 
 Eleven focused audit tests cover inclusive date thresholds, leap days, future observations, malformed policy/date rejection, mixed observation dates, inherited engine/prop overrides, composite quantities, unallocated comparator offers, unknown totals, deterministic output source immutability and guarded report output paths. The dated [CR-31f verification](../CR-31f/verification-2026-10-16.json) also runs generator freshness and the existing economics regressions.

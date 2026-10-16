@@ -15,6 +15,7 @@ func _initialize() -> void:
 	_test_known_inspection_fee_has_no_upper_bound()
 	_test_unknown_price_and_known_zero()
 	_test_repair_competes_with_replacement()
+	_test_incomparable_repair_keeps_selected_cost()
 	_test_invalid_quantity_and_fractional_cents()
 	_test_inputs_are_not_mutated()
 	_test_loaded_catalog_contract()
@@ -153,6 +154,31 @@ func _test_repair_competes_with_replacement() -> void:
 	cheaper_replacement["components"] = {"propeller": {"disposition": "repair", "repair_minor": 600}}
 	var replaced: Dictionary = Calculator.calculate(_dossier(), cheaper_replacement)
 	_check("cheaper exact replacement is selected", replaced["total_minor"] == 539 and replaced["lines"][0]["action"] == "replacement", str(replaced))
+
+
+func _test_incomparable_repair_keeps_selected_cost() -> void:
+	var dossier: Dictionary = _dossier()
+	var assessment: Dictionary = _assessment(false)
+	assessment["components"] = {"propeller": {"disposition": "repair", "repair_minor": 600,
+		"inspection_minor": 25, "replacement_comparable": false}}
+	var result: Dictionary = Calculator.calculate(dossier, assessment)
+	var line: Dictionary = result["lines"][0]
+	_check("incomparable replacement does not replace a known selected repair", result["ok"] and result["complete"] and result["total_minor"] == 625 and line["action"] == "repair" and line["amount_minor"] == 625 and result["replacement_minor"] == null and result["unresolved"].is_empty(), str(result))
+	var unknown: Dictionary = _dossier()
+	unknown["components"] = [_component("propeller", 1, null, null, null, ["item_propeller_main"], "estimated")]
+	var known_repair: Dictionary = _assessment(false)
+	known_repair["components"] = {"propeller": {"disposition": "repair", "repair_minor": 600,
+		"inspection_minor": 25, "replacement_comparable": false}}
+	var unknown_result: Dictionary = Calculator.calculate(unknown, known_repair)
+	_check("known incomparable repair and inspection fee remain exact when replacement price is unknown", unknown_result["ok"] and unknown_result["complete"] and unknown_result["total_minor"] == 625 and unknown_result["lines"][0]["action"] == "repair" and unknown_result["replacement_minor"] == null and unknown_result["unresolved"].is_empty(), str(unknown_result))
+	var wrong_type: Dictionary = _assessment(false)
+	wrong_type["components"] = {"propeller": {"disposition": "repair", "repair_minor": 600, "replacement_comparable": "false"}}
+	var wrong_type_result: Dictionary = Calculator.calculate(dossier, wrong_type)
+	_check("replacement comparability requires an explicit boolean", not wrong_type_result["ok"] and _has_error(wrong_type_result, "replacement_comparable: expected a boolean"), str(wrong_type_result["errors"]))
+	var nonrepair: Dictionary = _assessment(false)
+	nonrepair["components"] = {"propeller": {"disposition": "replace", "replacement_comparable": false}}
+	var nonrepair_result: Dictionary = Calculator.calculate(dossier, nonrepair)
+	_check("replacement comparability cannot decorate a nonrepair decision", not nonrepair_result["ok"] and _has_error(nonrepair_result, "only valid for an explicit repair decision"), str(nonrepair_result["errors"]))
 
 
 func _test_invalid_quantity_and_fractional_cents() -> void:

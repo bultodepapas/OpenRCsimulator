@@ -1,0 +1,103 @@
+{
+  "action_bounds_fit": true,
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "aircraft_id": "jensen-das-ugly-stik-60",
+  "complete": true,
+  "detail_bounds_fit": true,
+  "details_expanded": true,
+  "details_scrolled_to_bottom": false,
+  "format": "openrc-cr32-accident-report-capture-v1",
+  "headline": "US$27,64",
+  "headline_font_size": 56,
+  "image": "repair-details-es-1280x720.png",
+  "image_size": [
+    1280,
+    720
+  ],
+  "known_subtotal_minor": 2764,
+  "locale": "es",
+  "outcome": "repair",
+  "panel_fits_viewport": true,
+  "panel_rect": [
+    180.0,
+    241.0,
+    920.0,
+    451.0
+  ],
+  "parts_comparison": {},
+  "presentation": "terminal",
+  "price_sources_visible": false,
+  "renderer": "gl_compatibility",
+  "repair_details_visible": true,
+  "requested_size": [
+    1280,
+    720
+  ],
+  "scenario_basis": "Explicit synthetic covering-only inspection; not a physically validated crash",
+  "text_scale": 1.0,
+  "total_minor": 2764,
+  "viewport_size_bounds_checks": [
+    {
+      "action_bounds_fit": true,
+      "panel_fits_viewport": true,
+      "panel_rect": [
+        180.0,
+        241.0,
+        920.0,
+        451.0
+      ],
+      "requested_size": [
+        1280,
+        720
+      ],
+      "viewport_size": [
+        1280.0,
+        720.0
+      ]
+    },
+    {
+      "action_bounds_fit": true,
+      "panel_fits_viewport": true,
+      "panel_rect": [
+        500.0,
+        529.0,
+        920.0,
+        523.0
+      ],
+      "requested_size": [
+        1920,
+        1080
+      ],
+      "viewport_size": [
+        1920.0,
+        1080.0
+      ]
+    },
+    {
+      "action_bounds_fit": true,
+      "panel_fits_viewport": true,
+      "panel_rect": [
+        1460.0,
+        1609.0,
+        920.0,
+        523.0
+      ],
+      "requested_size": [
+        3840,
+        2160
+      ],
+      "viewport_size": [
+        3840.0,
+        2160.0
+      ]
+    }
+  ],
+  "source_sha256": {
+    "research/crash-economics/capture_report.gd": "a0e5357d5d85e0b24abd7da3d4f564322e7e707b1f2c13dea5627d2adadd39b7",
+    "app/economy/repair_details.gd": "95be217e28dbf86374a54fcc0e27b023ee138cdccdd9e602621c00515f08161b",
+    "app/ui/accident_report.gd": "6d9ea076d904c28b80b8d26353e130a01ad99699ac4b8ff920a426ccb0a4e299",
+    "app/i18n/es.po": "a9c6c1b654bfb69b82665dd85782aeb85f429455e95a352419b34eb5f2139cbb",
+    "app/data/economy/catalog.json": "2293fdca7b7918ec01760c6d0acb9c57120781c6c2dab23655ae3fb85252d89c"
+  },
+  "image_sha256": "5d4e5d8433d9cc8ccd89ccd56ab6527ffd29b944a80365fd5262f7276d78cf8a"
+}

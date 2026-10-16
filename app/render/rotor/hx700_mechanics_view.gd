@@ -52,7 +52,7 @@ var _mode_buttons: Array[Button] = []
 var _hint: Label
 var _shortcuts: Label
 var _layout_zoom_scale := 1.0
-var _camera_coverage := 0.25
+var _camera_coverage := 0.50
 
 
 func _ready() -> void:
@@ -512,32 +512,32 @@ func _camera_preset(choice: String) -> void:
 	match choice:
 		"Cabeza":
 			focus = Vector3(0, 0.27, 0)
-			_camera_coverage = 0.25
+			_camera_coverage = 0.50
 			yaw = 0.85
 			elevation = 0.23
 		"Cola":
 			focus = Vector3(-0.94, 0.19, 0.025)
 			preset_distance = 0.32
-			_camera_coverage = 0.40
+			_camera_coverage = 1.10
 			yaw = 0.65
 			elevation = 0.17
 		"Completo":
 			focus = Vector3(-0.25, 0.20, 0)
 			preset_distance = 2.5
-			_camera_coverage = 0.60
+			_camera_coverage = 0.70
 			yaw = 0.8
 			elevation = 0.28
 		"Patines":
 			focus = Vector3(0.02, 0.055, 0)
 			preset_distance = 0.92
-			_camera_coverage = 0.40
+			_camera_coverage = 0.70
 			yaw = 1.2
 			elevation = 0.08
 			_show_canopy(false)
 		"Carenado":
 			focus = Vector3(0.16, 0.19, 0)
 			preset_distance = 1.0
-			_camera_coverage = 0.60
+			_camera_coverage = 0.75
 			yaw = 0.75
 			elevation = 0.38
 			_show_canopy(true)
@@ -586,7 +586,7 @@ func _layout_zoom_scale_for_size(viewport_size: Vector2) -> float:
 	var clear_width := maxf(1.0, clear_bounds.y - clear_bounds.x)
 	var height_scale := viewport_size.y / REFERENCE_VIEW_HEIGHT
 	var width_scale := height_scale * (REFERENCE_CLEAR_WIDTH / clear_width) * _camera_coverage
-	return clampf(maxf(height_scale, width_scale), 0.25, 8.0)
+	return clampf(maxf(1.0, maxf(height_scale, width_scale)), 1.0, 8.0)
 
 
 func _unhandled_input(event: InputEvent) -> void:

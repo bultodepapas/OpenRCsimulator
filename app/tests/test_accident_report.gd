@@ -3,6 +3,7 @@
 extends SceneTree
 
 const AccidentReport := preload("res://ui/accident_report.gd")
+const Incident := preload("res://economy/incident.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 
 
@@ -436,6 +437,7 @@ func _report_behavior() -> void:
 	_check("controller details and cancel work for the archived report", report.controller_action("details")
 		and report.find_child("DamageDetailsScroll", true, false).visible and report.controller_action("cancel")
 		and report.find_child("ReopenAccidentReport", true, false).visible)
+	await _repair_details_display(report)
 	report.clear_report()
 	_check("clear_report removes the report intentionally", not report.find_child("AccidentReportSurface", true, false).visible
 		and not report.find_child("ReopenAccidentReport", true, false).visible)
@@ -446,6 +448,107 @@ func _report_behavior() -> void:
 	root.remove_child(probe)
 	probe.free()
 	await _ui.settle()
+
+
+func _repair_details_display(report: Node) -> void:
+	var repair_report := _repair_report_fixture()
+	var original_report := JSON.stringify(repair_report, "", true, true)
+	report.show_assessment(repair_report, true)
+	await _ui.settle()
+	var headline_before := (report.find_child("ReportAmount", true, false) as Label).text
+	_check("real planner and incident report retains its current repair line", _details_text(report).is_empty()
+		and _repair_line(repair_report).get("action") == "repair")
+	_check("real incident choice stays read-only before the breakdown is opened",
+		JSON.stringify(repair_report, "", true, true) == original_report)
+	_check("repair details open from the existing scrollable breakdown", report.controller_action("details")
+		and report.find_child("DamageDetailsScroll", true, false).visible)
+	await _ui.settle()
+	var details := _details_text(report)
+	var subtotal_index := details.find("Selected repair subtotal")
+	var fee_index := details.find("Inspection fee")
+	var disclaimer_index := details.find("Already included in the repair line above; not added again.")
+	var basis_index := details.find("Costing basis: Consumption allocation")
+	var labor_index := details.find("Labor: Paid")
+	var package_cash_index := details.find("Cash for 1 packages")
+	var consumed_index := details.find("Consumed material allocation")
+	var evidence_index := details.find("Inspection evidence:")
+	_check("subtotal and fee lead the visible breakdown before basis, materials and evidence",
+		subtotal_index >= 0 and subtotal_index < fee_index and fee_index < disclaimer_index
+		and disclaimer_index < basis_index and basis_index < labor_index and labor_index < package_cash_index
+		and package_cash_index < consumed_index and consumed_index < evidence_index, details)
+	_check("cash purchase and consumed allocation are both shown without adding them",
+		details.contains("US$22.99") and details.contains("US$0.14") and details.contains("not added again"), details)
+	_check("selected repair subtotal, labor and inspection fee stay separate",
+		details.contains("US$22.64") and details.contains("US$22.50") and details.contains("US$5.00"), details)
+	_check("square-inch material quantities are readable instead of raw milli-units",
+		details.contains("10.5 in²") and details.contains("1833 in²")
+		and not details.contains("10500") and not details.contains("1833000"), details)
+	_check("selected recipe source provenance remains visible", details.contains("Vortex Hobbies")
+		and details.contains("https://vortexhobbies.com/hangar-ultracote-deep-red-hanu871-p-25026.html"), details)
+	_check("expanding the detail leaves the headline and source report unchanged",
+		(report.find_child("ReportAmount", true, false) as Label).text == headline_before
+		and JSON.stringify(repair_report, "", true, true) == original_report)
+	_check_live_panel_bounds(report, "selected repair details")
+
+
+func _repair_report_fixture() -> Dictionary:
+	var incident := Incident.new()
+	incident.begin("jensen-das-ugly-stik-60", "")
+	incident._last_tick = 20
+	incident._queue_assessment(20)
+	var context: Dictionary = incident.inspection_context()
+	var component_id := "covered_airframe_and_installation_hardware"
+	var receipt := {
+		"format": "openrc-accident-inspection v1",
+		"inspection_id": "ui-selected-repair",
+		"incident_id": context.identity.incident_id,
+		"aircraft_id": context.identity.aircraft_id,
+		"source_sha256": context.identity.source_sha256,
+		"catalog_hash": context.catalog_hash,
+		"expected_revision": context.revision,
+		"full_inspection": true,
+		"total_loss": false,
+		"basis": "scenario_assumption",
+		"evidence": "UI scenario fixture; not physical validation.",
+		"components": {},
+	}
+	for component: Dictionary in incident.dossier.components:
+		receipt.components[component.id] = {
+			"disposition": "reuse",
+			"quantity": component.quantity,
+			"damage_flags": [],
+			"evidence": "Explicit scenario component conclusion.",
+		}
+	receipt.components[component_id].inspection_minor = 500
+	var repair_inspection := {
+		"format": "openrc-repair-inspection v1",
+		"basis": "scenario_assumption",
+		"components": {
+			component_id: {
+				"status": "inspected",
+				"damage_class": "covering_only",
+				"quantity": 1,
+				"replacement_comparable": false,
+				"measurements": {"covering_area_milli_sq_in": 10500},
+				"labor_minutes": 30,
+				"evidence": "Inspected a measured film patch; structure intact. Synthetic UI fixture.",
+			},
+		},
+	}
+	var applied: Dictionary = incident.apply_repair_choice(receipt, repair_inspection, component_id,
+		"covering-film-patch", "paid", "consumption")
+	_check("UI fixture records an explicit paid consumption choice", applied.get("ok", false), str(applied))
+	return incident.report.duplicate(true)
+
+
+func _repair_line(report_value: Dictionary) -> Dictionary:
+	var lines: Variant = report_value.get("lines", [])
+	if not lines is Array:
+		return {}
+	for line: Variant in lines:
+		if line is Dictionary and line.get("id") == "covered_airframe_and_installation_hardware":
+			return line
+	return {}
 
 
 func _key_reaches_probe(probe: KeyProbe, key: Key) -> bool:

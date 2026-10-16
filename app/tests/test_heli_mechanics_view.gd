@@ -20,6 +20,15 @@ func _run() -> void:
 	await process_frame
 	_check("advanced inspector opens with admitted neutral mechanics", view.rig != null and view.rig.pose.ok)
 	_check("native inspector declares a 640x480 minimum", InspectorLauncher.MIN_NATIVE_WINDOW_SIZE == Vector2i(640, 480))
+	root.size = Vector2i(640, 480)
+	await process_frame
+	await process_frame
+	var initial_head := _projected_geometry_bounds(view.camera, null, view.preview.bindings, ["main.shaft", "swash.fixed"])
+	var initial_bounds: Rect2 = initial_head.bounds
+	_check("initial head view fits after resize before any camera button is used", initial_head.vertex_count > 0 and initial_head.behind_vertices == 0 and initial_bounds.position.x >= 360 and initial_bounds.end.x <= 616 and initial_bounds.position.y >= 4 and initial_bounds.end.y <= 476)
+	root.size = Vector2i(1440, 900)
+	await process_frame
+	await process_frame
 	view._canopy_toggle.set_pressed_no_signal(false)
 	view._canopy_toggle.grab_focus()
 	var pause_before_key := view.paused
@@ -28,14 +37,14 @@ func _run() -> void:
 	_check("Space activates a focused visibility checkbox without pausing", view._canopy_toggle.button_pressed and view.paused == pause_before_key)
 	_key(KEY_SPACE)
 	await process_frame
-	view._mode_buttons[1].grab_focus()
+	var panel_scroll := view._panel.get_child(0) as ScrollContainer
+	var camera_row := (panel_scroll.get_child(0) as VBoxContainer).get_child(4) as HBoxContainer
+	var tail_camera_button := camera_row.get_child(1) as Button
+	tail_camera_button.grab_focus()
 	_key(KEY_SPACE)
 	await process_frame
-	_check("Space activates a focused mode button without pausing", view._elastic_mode and not view.paused)
-	view._mode_buttons[0].grab_focus()
-	_key(KEY_SPACE)
-	await process_frame
-	_check("Space switches back to mechanics through the focused mode button", not view._elastic_mode and not view.paused)
+	_check("Space activates a focused camera button without pausing", view.focus == Vector3(-0.94, 0.19, 0.025) and not view.paused)
+	view._camera_preset("Cabeza")
 	var canopy_before_p := view._canopy_toggle.button_pressed
 	_key(KEY_P)
 	await process_frame
@@ -148,15 +157,31 @@ func _run() -> void:
 	await process_frame
 	var first_control_rect: Rect2 = view._sliders[0].get_global_rect()
 	_check("640x480 scroll returns to the first mechanical control", first_control_rect.position.y >= scroll_rect.position.y - 1 and first_control_rect.end.y <= scroll_rect.end.y + 1)
-	var clear_left := 356.0
-	var clear_right := 620.0
+	var clear_bounds: Vector2 = view._clear_horizontal_bounds(root.size.x)
+	var safe_render_rect := Rect2(Vector2(clear_bounds.x + 4.0, 4.0), Vector2(clear_bounds.y - clear_bounds.x - 8.0, root.size.y - 8.0))
+	var camera_cases: Array[Dictionary] = [
+		{"name": "Cabeza", "ids": ["main.shaft", "swash.fixed"], "source": null},
+		{"name": "Cola", "ids": ["tail.shaft", "tail.slider", "tail.yoke", "tail.bellcrank"], "source": null},
+		{"name": "Completo", "ids": [], "source": view.preview.root},
+		{"name": "Patines", "ids": ["visual.tren_de_aterrizaje"], "source": null},
+		{"name": "Carenado", "ids": ["visual.carenado", "visual.carenado_gomas"], "source": null},
+	]
 	var focus_in_clear_area := true
-	for choice in ["Cabeza", "Cola", "Completo", "Patines", "Carenado"]:
+	for camera_case: Dictionary in camera_cases:
+		var choice: String = camera_case.name
 		view._camera_preset(choice)
 		await process_frame
 		var focus_screen: Vector2 = view.camera.unproject_position(view.focus)
-		focus_in_clear_area = focus_in_clear_area and focus_screen.x >= clear_left and focus_screen.x <= clear_right and absf(focus_screen.x - (clear_left + clear_right) * 0.5) < 2.0
-	_check("all camera presets keep their focus in the visible render region after resize", focus_in_clear_area)
+		focus_in_clear_area = focus_in_clear_area and focus_screen.x >= clear_bounds.x and focus_screen.x <= clear_bounds.y and absf(focus_screen.x - (clear_bounds.x + clear_bounds.y) * 0.5) < 2.0
+		var projected: Dictionary = _projected_geometry_bounds(view.camera, camera_case.source, view.preview.bindings, camera_case.ids)
+		var geometry_bounds: Rect2 = projected.bounds
+		var vertices_in_clear_area := int(projected.vertex_count) > 0 and int(projected.behind_vertices) == 0 \
+			and geometry_bounds.position.x >= safe_render_rect.position.x \
+			and geometry_bounds.position.y >= safe_render_rect.position.y \
+			and geometry_bounds.end.x <= safe_render_rect.end.x \
+			and geometry_bounds.end.y <= safe_render_rect.end.y
+		_check("640x480 %s preset frames its semantic mesh vertices clear of the panel and viewport edges" % choice, vertices_in_clear_area)
+	_check("all camera preset focus points remain centered in the clear render region after resize", focus_in_clear_area)
 	root.size = Vector2i(800, 600)
 	await process_frame
 	await process_frame
@@ -180,6 +205,45 @@ func _key(code: Key) -> void:
 	release.keycode = code
 	release.physical_keycode = code
 	Input.parse_input_event(release)
+
+
+func _projected_geometry_bounds(camera: Camera3D, source: Node, bindings: Dictionary, ids: Array) -> Dictionary:
+	var meshes: Array[MeshInstance3D] = []
+	if source != null:
+		_collect_meshes(source, meshes)
+	else:
+		for id: String in ids:
+			if bindings.has(id):
+				_collect_meshes(bindings[id], meshes)
+	var minimum := Vector2(1.0e20, 1.0e20)
+	var maximum := Vector2(-1.0e20, -1.0e20)
+	var vertex_count := 0
+	var behind_vertices := 0
+	for mesh in meshes:
+		if not mesh.is_visible_in_tree() or mesh.mesh == null:
+			continue
+		for surface in mesh.mesh.get_surface_count():
+			var surface_arrays: Array = mesh.mesh.surface_get_arrays(surface)
+			var vertices: PackedVector3Array = surface_arrays[Mesh.ARRAY_VERTEX]
+			for vertex: Vector3 in vertices:
+				vertex_count += 1
+				var world_vertex: Vector3 = mesh.global_transform * vertex
+				if camera.is_position_behind(world_vertex):
+					behind_vertices += 1
+					continue
+				var projected_vertex: Vector2 = camera.unproject_position(world_vertex)
+				minimum.x = minf(minimum.x, projected_vertex.x)
+				minimum.y = minf(minimum.y, projected_vertex.y)
+				maximum.x = maxf(maximum.x, projected_vertex.x)
+				maximum.y = maxf(maximum.y, projected_vertex.y)
+	return {"bounds": Rect2(minimum, maximum - minimum), "vertex_count": vertex_count, "behind_vertices": behind_vertices}
+
+
+func _collect_meshes(node: Node, meshes: Array[MeshInstance3D]) -> void:
+	if node is MeshInstance3D and (node as MeshInstance3D).mesh != null:
+		meshes.append(node as MeshInstance3D)
+	for child in node.get_children():
+		_collect_meshes(child, meshes)
 
 
 func _check(label: String, ok: bool) -> void:

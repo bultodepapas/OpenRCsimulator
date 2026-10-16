@@ -4,8 +4,8 @@
   "observed_on": "2026-10-16",
   "generated_by": "research/crash-economics/build_catalog.py",
   "source_hashes": {
-    "price-research-components.json": "c980171882fc6b933e241d4aac613d562d9c84eb49bef31bcb8d51f88d5e97e5",
-    "price-research-fleet.json": "66d0a319869ca158aa947783143fb2807497c42decb0c834eb84e6642198392d"
+    "price-research-components.json": "032eafe657877caaf57d1cddd70d89e9433c5aa0924a94f7cfd0f544aa479b45",
+    "price-research-fleet.json": "85026093f0172a0692e6b1c3c1813b2e8770ba0b13dbf04f033923223a002f13"
   },
   "policy": {
     "currency": "USD",
@@ -379,6 +379,15 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "power_unlimited_pu_2100_2s_life",
+      "brand": "Power Unlimited",
+      "sku": "PU-2100-2s-LiFe",
+      "name": "2100mAh 2S 6.6V 20C LiFe receiver battery",
+      "category": "aircraft_power_battery_candidate",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "radiomaster_hp0157_rx_er8",
       "brand": "RadioMaster",
       "sku": "HP0157.RX-ER8",
@@ -573,6 +582,15 @@
       "sku": "TOPQ-0208",
       "name": "MonoKote black heat-activated covering film roll",
       "category": "covering_roll",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "vp_racing_fuels_vp_449632701_12ct",
+      "brand": "VP Racing Fuels",
+      "sku": "VP-449632701 (12CT)",
+      "name": "10% Air / 18% Oil RC aviation nitro fuel, quart cans, case of 12",
+      "category": "glow_fuel_candidate",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     }
@@ -957,6 +975,26 @@
       "source_file": "price-research-fleet.json",
       "evidence_quality": "high",
       "notes": "Observed 2026-10-15. Same engine model identified for the simulated P-51. Includes engine, carburetor, twin ignition, spark plugs, exhaust gaskets and prop hardware; aircraft, propeller and radio are separate."
+    },
+    {
+      "id": "power_unlimited_pu2100_2s_life_gator_20261016",
+      "product_id": "power_unlimited_pu_2100_2s_life",
+      "amount_minor": 2595,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.gator-rc.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_us_retailer_listing_price",
+      "availability": "In stock on the seller product page.",
+      "sold_package_quantity": 1,
+      "package_description": "1 receiver battery; 2S/6.6V LiFe (LiFePO4), 2100mAh, 20C continuous; 99g; 3.75 x 0.75 x 1.125 in; JR Universal output lead and JST-XH balance connector.",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.gator-rc.com/products/2s-2100mah-k6-6v-20c-life-batteries-power-unlimited",
+      "source_file": "price-research-components.json",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. One battery pack; shipping and destination charges are not included. Unallocated offer. The price is not evidence that this SKU was installed in the P-51 or qualifies as a mass/fit match. The modeled mass is 150g per pack versus the product's 99g; installed brand, size fit, and exact connector/power-board compatibility are unknown. Candidate only; no allocation. Seller identifies it as a receiver pack. Ignition-module harness/connectors are unverified, and pack mass is 99g versus the modeled 150g. Candidate only; no allocation. See intake-power-20261016.json for electrical specifications, physical group comparisons and sources. Tax and shipping excluded."
     },
     {
       "id": "receiver_frsky_archer_plus_r10",
@@ -1957,6 +1995,93 @@
       "source_file": "price-research-components.json",
       "evidence_quality": "Direct retailer listing reviewed 2026-10-15; see CR-31b source review for package dimensions and scope.",
       "notes": "Observed 2026-10-15. Retailer listing showed SKU HANU871, US$22.99, stock text, and 78 × 23.5 inch package specifications. Price excludes tax/shipping. Exact color/airframe compatibility is not established. Source observation also backs the packaged covering repair recipe; package purchase and material consumption are distinct accounting bases."
+    },
+    {
+      "id": "vp_10air_18oil_case12_bulk55_20261016",
+      "product_id": "vp_racing_fuels_vp_449632701_12ct",
+      "amount_minor": 11799,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "bulk55.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_us_retailer_listing_price",
+      "availability": "7 cases listed in stock on 2026-10-16: 5 at Edwards, Illinois and 2 at Las Vegas, Nevada. Destination shipping was not verified.",
+      "sold_package_quantity": 1,
+      "package_description": "One 12-can case; each can contains 1 US quart. Product description states the 18% oil package is 80% multiviscosity synthetic and 20% castor.",
+      "reference_installation_quantity": null,
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://bulk55.com/products/12-count-vp-racing-10-aviation-rc-nitro-fuel-18-oil-premixed-quart-cans?_fid=345239e92&_pos=10&_ss=c",
+      "source_file": "price-research-components.json",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. Seller lists one case of 12 x 1-quart cans for USD 117.99, with a unit price of USD 9.83 per quart can; freight and hazardous-material charges were not captured in the displayed product price. Unallocated offer. The package is a case of 12 quarts; do not treat USD 117.99 as the cost of onboard 150mL or as an aircraft build total. The authored physical row specifies only a methanol/oil/nitro blend, not its percentages or brand. USD 1.56 excludes case-level purchase, freight and hazardous-material charges. This is a formula-compatible price candidate, not evidence of the installed blend or a modeled-physics match; no allocation. See intake-power-20261016.json for electrical specifications, physical group comparisons and sources. Tax and shipping excluded."
+    }
+  ],
+  "service_parts": [
+    {
+      "part_offer_id": "os-fs64v-crankshaft-4ay02000",
+      "whole_unit_offer_id": "os-fs64v-osmg901",
+      "compatibility_evidence": {
+        "manufacturer_model_source_url": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html",
+        "manufacturer_parts_manual_url": "https://www.os-engines.co.jp/english/line_up/engine/air/single/img/manual/3AY00.pdf",
+        "retailer_identity_source_url": "https://www.towerhobbies.com/product/crankshaft-o.s.-fs-64v/OSMG903.html",
+        "status": "Retailer product entry names FS-64V and identifies manufacturer part 4AY02000; O.S. lists the FS-64V manual as the engine parts reference.",
+        "target_model": "O.S. FS-64V (3AY00)"
+      },
+      "scope": "named_product_family_only",
+      "aircraft_applicability": "not_established",
+      "automatic_repair_selection": false
+    },
+    {
+      "part_offer_id": "os-fs64v-f4051-silencer-40625010",
+      "whole_unit_offer_id": "os-fs64v-osmg901",
+      "compatibility_evidence": {
+        "manufacturer_source_url": "https://www.os-engines.co.jp/english/line_up/engine/air/single/catalog/3AY00.html",
+        "retailer_identity_source_url": "https://www.towerhobbies.com/product/f-4051-silencer-o.s.-fs-64v/OSMG906.html",
+        "status": "Retailer entry names F-4051 and FS-64V and identifies manufacturer part 40625010; O.S. describes F-4051 as the FS-V-series silencer on its FS-64V page.",
+        "target_model": "O.S. FS-64V (3AY00)"
+      },
+      "scope": "named_product_family_only",
+      "aircraft_applicability": "not_established",
+      "automatic_repair_selection": false
+    },
+    {
+      "part_offer_id": "os-max55ax-crankshaft-25702000",
+      "whole_unit_offer_id": "os-max55ax-osmg0557",
+      "compatibility_evidence": {
+        "manufacturer_source_url": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/pdf/15612_55AX.pdf",
+        "status": "Exact model and part-number match in the O.S. MAX-55AX parts diagram/list.",
+        "target_model": "O.S. MAX-55AX"
+      },
+      "scope": "named_product_family_only",
+      "aircraft_applicability": "not_established",
+      "automatic_repair_selection": false
+    },
+    {
+      "part_offer_id": "savox-sb2270sgp-gear-set-sgsb2270sg",
+      "whole_unit_offer_id": "savox-sb2270sgp",
+      "compatibility_evidence": {
+        "manufacturer_source_url": "https://servos.net/collections/servos/products/savsb2270sgp-high-voltage-brushless-digital",
+        "part_listing_names_base_model": "SB2270SG",
+        "status": "Manufacturer SB2270SGP product page lists SGSB2270SG in its Spare Parts section.",
+        "target_model": "SB2270SGP"
+      },
+      "scope": "named_product_family_only",
+      "aircraft_applicability": "not_established",
+      "automatic_repair_selection": false
+    },
+    {
+      "part_offer_id": "savox-sc0254mgp-case-csc0254mg",
+      "whole_unit_offer_id": "savox-sc0254mgp",
+      "compatibility_evidence": {
+        "manufacturer_source_url": "https://servos.net/collections/servos/products/savsc0254mgp-standard-digital-servo-0-14sec",
+        "part_listing_names_base_model": "SC0254MG",
+        "status": "Manufacturer product page lists CSC0254MG in the SC0254MGP Spare Parts section.",
+        "target_model": "SC0254MGP"
+      },
+      "scope": "named_product_family_only",
+      "aircraft_applicability": "not_established",
+      "automatic_repair_selection": false
     }
   ]
 }

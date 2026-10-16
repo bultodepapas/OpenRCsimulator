@@ -198,13 +198,27 @@ func _repair_cases(bindings: Dictionary) -> void:
 	no_inspection.assessment.unresolved.clear()
 	check("uninspected hull contact cannot become a complete zero bill", not ledger.prepare_restore(StateCodec.seal(no_inspection), 20, bindings).ok)
 	var component := "covered_airframe_and_installation_hardware"
+	var priced_components: Array = ledger.dossier.components
+	for index: int in range(priced_components.size()):
+		var part: Dictionary = priced_components[index]
+		if part.id == component:
+			part.unit_minor = 100
+			part.low_unit_minor = 100
+			part.high_unit_minor = 100
+			priced_components[index] = part
+	ledger.dossier.components = priced_components
 	var receipt := _receipt(ledger, "checkpoint-film", "reuse", [])
-	receipt.components = {component: {disposition = "inspect", quantity = 1, damage_flags = [], evidence = "Fixture: intact structure, covering tear."}}
+	receipt.components = {component: {disposition = "inspect", quantity = 1, inspection_minor = 77, damage_flags = [], evidence = "Fixture: intact structure, covering tear."}}
 	var inspected := {format = "openrc-repair-inspection v1", basis = "scenario_assumption",
 		components = {component: {status = "inspected", damage_class = "covering_only", quantity = 1,
 			replacement_comparable = false, measurements = {covering_area_milli_sq_in = 10500},
 			labor_minutes = 30, evidence = "Synthetic measured patch, not physical qualification."}}}
-	check("repair checkpoint fixture accepts explicit film option", ledger.apply_repair_choice(receipt, inspected, component, "covering-film-patch", "paid", "consumption").ok)
+	var applied := ledger.apply_repair_choice(receipt, inspected, component, "covering-film-patch", "paid", "consumption")
+	var repair_line: Dictionary = {}
+	for line: Dictionary in ledger.report.get("lines", []):
+		if line.get("id") == component:
+			repair_line = line
+	check("repair checkpoint keeps known incomparable repair and inspection subtotal", applied.ok and ledger.report.get("known_subtotal_minor") == 2341 and ledger.report.get("total_minor") == null and ledger.report.get("replacement_minor") == null and not ledger.report.get("complete", true) and repair_line.get("action") == "repair" and repair_line.get("amount_minor") == 2341 and ledger._assessment.components[component].replacement_comparable == false)
 	var original := ledger.report.duplicate(true)
 	var saved := ledger.checkpoint(20, bindings)
 	var other := Incident.new()
@@ -213,7 +227,7 @@ func _repair_cases(bindings: Dictionary) -> void:
 	check("selected repair checkpoint validates", staged.ok)
 	if staged.ok:
 		other.commit_restore(staged)
-		check("repair amount and source provenance survive restore", other.report == original and other.report.repair_choices.size() == 1)
+		check("repair subtotal, scope flag and source provenance survive cross-scope restore", other.report == original and other.report.repair_choices.size() == 1 and other.report.get("known_subtotal_minor") == 2341 and other.report.get("total_minor") == null and other.report.get("replacement_minor") == null and other._assessment.components[component].replacement_comparable == false)
 		check("repeating restored repair choice remains idempotent", other.apply_repair_choice(receipt, inspected, component, "covering-film-patch", "paid", "consumption").get("duplicate", false) and other.report == original)
 		var bad := saved.duplicate(true)
 		bad.repair_choices.append(bad.repair_choices[0])

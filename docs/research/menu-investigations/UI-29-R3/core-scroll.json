@@ -1,0 +1,104 @@
+[
+  {
+    "image": "en-1280x720-100-home.webp",
+    "scroll": []
+  },
+  {
+    "image": "en-1280x720-100-settings-display.webp",
+    "scroll": []
+  },
+  {
+    "image": "en-1280x720-100-pause.webp",
+    "scroll": []
+  },
+  {
+    "image": "es-1280x720-100-home.webp",
+    "scroll": []
+  },
+  {
+    "image": "es-1280x720-100-settings-display.webp",
+    "scroll": []
+  },
+  {
+    "image": "es-1280x720-100-pause.webp",
+    "scroll": []
+  },
+  {
+    "image": "en-1920x1080-100-home.webp",
+    "scroll": []
+  },
+  {
+    "image": "en-1920x1080-100-settings-display.webp",
+    "scroll": []
+  },
+  {
+    "image": "en-1920x1080-100-pause.webp",
+    "scroll": []
+  },
+  {
+    "image": "es-1920x1080-100-home.webp",
+    "scroll": []
+  },
+  {
+    "image": "es-1920x1080-100-settings-display.webp",
+    "scroll": []
+  },
+  {
+    "image": "es-1920x1080-100-pause.webp",
+    "scroll": []
+  },
+  {
+    "image": "en-3840x2160-100-home.webp",
+    "scroll": []
+  },
+  {
+    "image": "en-3840x2160-100-settings-display.webp",
+    "scroll": []
+  },
+  {
+    "image": "en-3840x2160-100-pause.webp",
+    "scroll": []
+  },
+  {
+    "image": "es-3840x2160-100-home.webp",
+    "scroll": []
+  },
+  {
+    "image": "es-3840x2160-100-settings-display.webp",
+    "scroll": []
+  },
+  {
+    "image": "es-3840x2160-100-pause.webp",
+    "scroll": []
+  },
+  {
+    "image": "es-960x540-200-home.webp",
+    "scroll": [
+      "/root/AppRoot/Home/HomeRail/HomeContentScroll"
+    ]
+  },
+  {
+    "image": "es-960x540-200-settings-display.webp",
+    "scroll": [
+      "/root/AppRoot/Settings/@Control@10064/@CenterContainer@10066/@PanelContainer@10067/@VBoxContainer@10068/@ScrollContainer@10074"
+    ]
+  },
+  {
+    "image": "es-960x540-200-pause.webp",
+    "scroll": [
+      "/root/AppRoot/PauseMenu/Screen/@PanelContainer@11225/PauseScroll"
+    ]
+  },
+  {
+    "image": "es-3440x1440-100-home.webp",
+    "scroll": []
+  },
+  {
+    "image": "es-3440x1440-100-settings-display.webp",
+    "scroll": []
+  },
+  {
+    "image": "es-3440x1440-100-pause.webp",
+    "scroll": []
+  }
+]

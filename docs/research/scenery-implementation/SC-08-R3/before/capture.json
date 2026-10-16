@@ -1,0 +1,82 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "builder_sha256": "4eb981a710ab23f6e8574724e1d7ee680aaf0763665636346d1c42f95663c7d1",
+  "complete": true,
+  "method": "gl_compatibility",
+  "records": [
+    {
+      "draws": 52,
+      "eye": [
+        -28.2999992370605,
+        2.29999995231628,
+        44.5
+      ],
+      "fov": 45.0,
+      "sha256": "05f6c805ec9567e0e927268435f944a3539cb40696b4a4f2d6ae43544c15f7da",
+      "view": "front"
+    },
+    {
+      "draws": 45,
+      "eye": [
+        -30.3999996185303,
+        1.70000004768372,
+        42.2000007629395
+      ],
+      "fov": 46.0,
+      "sha256": "64601c05b9399c368937f02620d55e55888fd29aa89758af69426ba666d35852",
+      "view": "door"
+    },
+    {
+      "draws": 61,
+      "eye": [
+        -38.0,
+        2.70000004768372,
+        36.5
+      ],
+      "fov": 45.0,
+      "sha256": "5437ce6ca1fc7c98e55a00828741fc8fd8bf6a59d3f11364bfc1ff6d29f9dda8",
+      "view": "rear"
+    },
+    {
+      "draws": 42,
+      "eye": [
+        -29.8999996185303,
+        4.69999980926514,
+        44.0
+      ],
+      "fov": 45.0,
+      "sha256": "f2ecaed2f49b6d9e823621a8101016ca9c9f24adfcdf4377861b8eb1e3929203",
+      "view": "roof"
+    }
+  ],
+  "scenery_stats": {
+    "botanical_batches": 11,
+    "botanical_plants": 221,
+    "botanical_triangles": 83650,
+    "build_ms": 774.059,
+    "cells": 55,
+    "fleet": 4,
+    "flowers": 0,
+    "instances": 136,
+    "motion": 5,
+    "moving_people": 7,
+    "population": 24,
+    "population_triangles": 389787,
+    "quality": "high",
+    "shadows": 86,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "botanicals": 84.0,
+      "fence": 29.526,
+      "fleet": 16.128,
+      "hedge": 15.664,
+      "instances": 162.001,
+      "meshes": 27.229,
+      "patch": 72.281,
+      "track": 1.153
+    },
+    "vegetation_instances": 30,
+    "vegetation_triangles": 94440
+  }
+}

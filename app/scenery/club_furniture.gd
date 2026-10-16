@@ -53,15 +53,24 @@ static func bench(k: MeshKit) -> void:
 	k.beam(Vector3(-0.76,0.23,0.15),Vector3(0.76,0.23,0.15),0.03,Palette.col("steel_dark"))
 
 
+## Reuse the filtered source timber for fixed cladding in another local orientation.
+static func board(k: MeshKit, length_m: float, width: float, thickness: float,
+		centre: Vector3, orientation: Basis, seed: int, tone: Color, segments: int = 4) -> void:
+	var saved := k.xf
+	k.xf = saved*Transform3D(orientation,centre)
+	_plank(k,length_m,width,thickness,Vector3.ZERO,0.0,seed,tone,maxi(1,segments))
+	k.xf = saved
+
+
 static func _plank(k: MeshKit, length_m: float, width: float, thickness: float,
-		centre: Vector3, angle: float, seed: int, tone: Color) -> void:
+		centre: Vector3, angle: float, seed: int, tone: Color, segments: int = SEGMENTS) -> void:
 	var saved := k.xf
 	k.xf = saved*Transform3D(Basis(Vector3.RIGHT,angle),centre)
 	var bevel := 0.003
 	var rings: Array[PackedVector3Array] = []
-	for r in range(SEGMENTS+3):
-		var end := r == 0 or r == SEGMENTS+2
-		var x := lerpf(-length_m*0.5+bevel,length_m*0.5-bevel,float(r-1)/SEGMENTS)
+	for r in range(segments+3):
+		var end := r == 0 or r == segments+2
+		var x := lerpf(-length_m*0.5+bevel,length_m*0.5-bevel,float(r-1)/segments)
 		if end:
 			x = -length_m*0.5 if r == 0 else length_m*0.5
 		var h := thickness*0.5 - (bevel if end else 0.0)

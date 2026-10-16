@@ -40,10 +40,48 @@ def slug(value: str) -> str:
     return re.sub(r"[^a-z0-9]+", "_", value.lower()).strip("_")
 
 
+def service_relationships(records: list[dict]) -> list[dict]:
+    """Validate authored product-family crosswalks, never aircraft applicability."""
+    by_id = {row["id"]: row for row in records}
+    if len(by_id) != len(records):
+        raise ValueError("Duplicate offer identity in service reference input")
+    allowed = {"target_model", "status", "manufacturer_source_url", "manufacturer_model_source_url",
+               "manufacturer_parts_manual_url", "retailer_identity_source_url", "part_listing_names_base_model"}
+    result = []
+    for record in records:
+        if "service_compatibility" not in record and "whole_unit_reference" not in record:
+            continue
+        evidence = record.get("service_compatibility")
+        reference = record.get("whole_unit_reference")
+        if not isinstance(reference, str) or reference not in by_id or reference == record["id"]:
+            raise ValueError(f"{record['id']}: service part requires a different known whole-unit offer")
+        if "service_compatibility" in by_id[reference] or "whole_unit_reference" in by_id[reference]:
+            raise ValueError(f"{record['id']}: a service part cannot be its whole-unit reference")
+        if not isinstance(evidence, dict) or not {"target_model", "status"} <= evidence.keys() or evidence.keys() - allowed:
+            raise ValueError(f"{record['id']}: invalid service compatibility evidence fields")
+        urls = []
+        for key, value in evidence.items():
+            if not isinstance(value, str) or not value.strip() or len(value) > 2048:
+                raise ValueError(f"{record['id']}: service evidence must be bounded nonempty text")
+            if key.endswith("_url"):
+                parsed = urlparse(value)
+                if parsed.scheme != "https" or not parsed.netloc:
+                    raise ValueError(f"{record['id']}: service evidence URL must use HTTPS")
+                urls.append(value)
+        if not urls:
+            raise ValueError(f"{record['id']}: service relationship needs a source URL")
+        result.append({"part_offer_id": record["id"], "whole_unit_offer_id": reference,
+                       "compatibility_evidence": dict(sorted(evidence.items())),
+                       "scope": "named_product_family_only", "aircraft_applicability": "not_established",
+                       "automatic_repair_selection": False})
+    return sorted(result, key=lambda row: row["part_offer_id"])
+
+
 def build():
     products, observations, identities = {}, [], set()
+    source_records = {source: read(HERE / source) for source in SOURCES}
     for source in SOURCES:
-        for record in read(HERE / source):
+        for record in source_records[source]:
             required = {"id", "brand", "product", "sku", "category", "amount_usd", "price_kind", "availability", "quantity", "url", "evidence_quality", "notes"}
             assert required <= record.keys(), (source, record.get("id"))
             assert record["id"] not in identities, record["id"]
@@ -83,6 +121,7 @@ def build():
         "policy": {"currency": "USD", "amounts": "integer cents per sold package", "review_after_days": 90, "stale_after_days": 180, "freshness_policy_kind": "gameplay_estimate", "missing_price": None, "automatic_offer_selection": False, "sale_price_requires_refresh": True},
         "products": sorted(products.values(), key=lambda r: r["id"]),
         "observations": sorted(observations, key=lambda r: r["id"]),
+        "service_parts": service_relationships([row for rows in source_records.values() for row in rows]),
     }
     offers = {r["id"]: r for r in observations}
     cost = read(HERE / "aircraft-costing.json")

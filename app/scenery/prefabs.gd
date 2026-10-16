@@ -8,6 +8,7 @@ const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Palette = preload("res://scenery/palette.gd")
 const Furniture = preload("res://scenery/club_furniture.gd")
 const ClubSign = preload("res://scenery/club_sign.gd")
+const ClubShed = preload("res://scenery/club_shed.gd")
 const People = preload("res://scenery/people.gd")
 const Vegetation = preload("res://scenery/vegetation.gd")
 
@@ -356,14 +357,7 @@ static func _door(k: MeshKit, base: Vector3, w: float, h: float, col: Color, bac
 
 
 static func _shed(k: MeshKit) -> void:
-	var w := 3.0
-	var d := 2.4
-	k.block(Vector3(w, 2.1, d), Vector3.ZERO, _c("wood_grey"))
-	for i in 11: # board-and-batten lines
-		var x := -w * 0.5 + 0.15 + i * (w - 0.3) / 10.0
-		k.box(Vector3(0.05, 2.1, 0.03), Vector3(x, 1.05, -d * 0.5 - 0.015), _c("wood_grey").darkened(0.18), true)
-	_door(k, Vector3(0.6, 0, -d * 0.5 - 0.02), 0.9, 1.9, _c("door_green"), false)
-	k.gable_roof(w, d, 2.1, 0.75, 0.2, _c("roof_green"), _c("wood_grey"))
+	ClubShed.build(k)
 
 
 static func _picnic_table(k: MeshKit) -> void:

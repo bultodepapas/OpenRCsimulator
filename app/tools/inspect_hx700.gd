@@ -79,3 +79,23 @@ func _capture(directory: String) -> void:
 			quit(1)
 			return
 		print("CAPTURE ", path)
+	# Minimum-window samples stay after the established gallery and transition
+	# samples, with the same neutral hidden-blade/canopy state per camera preset.
+	root.size = MIN_NATIVE_WINDOW_SIZE
+	for entry in [["min-head", "Cabeza"], ["min-tail", "Cola"]]:
+		view._set_elastic_mode(false)
+		view._smooth_toggle.button_pressed = false
+		view._preset("Neutro")
+		view._phase_slider.value = 0
+		view._camera_preset(entry[1])
+		view._show_canopy(false)
+		view._show_main_blades(false)
+		await process_frame
+		await process_frame
+		await RenderingServer.frame_post_draw
+		var path := directory.path_join(entry[0] + ".png")
+		if root.get_texture().get_image().save_png(path) != OK:
+			push_error("Could not save " + path)
+			quit(1)
+			return
+		print("CAPTURE ", path)

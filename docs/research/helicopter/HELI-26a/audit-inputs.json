@@ -1,0 +1,59 @@
+{
+  "date": "2026-10-16",
+  "step": "HELI-26a",
+  "working_tree_matches_tested_fresh_project": true,
+  "inputs": [
+    {
+      "path": "app/aircraft/hx700_articulated_model.gd",
+      "sha256": "d350d35bc40805dccc3240829e55cb7382e17a31c463b7f5297b48394587e979"
+    },
+    {
+      "path": "app/render/rotor/hx700_motion_equations.gd",
+      "sha256": "fac56cbb2b2bf8c801ef8191c44a44ce65866e5edcd13ef3b4cd0e8a7888019b"
+    },
+    {
+      "path": "app/render/rotor/hx700_mechanism.gd",
+      "sha256": "763575e9dbf8182e91a44e0068f488b02f59516e4f96c72c301336be1213c71e"
+    },
+    {
+      "path": "app/render/rotor/hx700_mechanics_view.gd",
+      "sha256": "811db37d9953aeaa8351d1b6cc62503e4048fe440c8234705c4b650b570b22d6"
+    },
+    {
+      "path": "app/render/rotor/hx700_inspection_motion.gd",
+      "sha256": "15fa888af8b39bc1aba45e69243ae7d51c3cd9c4407be9b3f930012f524f6cbe"
+    },
+    {
+      "path": "app/render/rotor/hx700_elastic_skin.gd",
+      "sha256": "566f78e49b4ac03e7e40a128826e9c038bf3ba2bb9003d393184ed246607f7f5"
+    },
+    {
+      "path": "app/physics/rotorcraft/hx700_flex_bench.gd",
+      "sha256": "26a14fbc18feded9abbd710c53ce589d9c98d0e8ef6c128f00fb0317449dcfef"
+    },
+    {
+      "path": "app/physics/math3d.gd",
+      "sha256": "dda830cf7f85668b558e328368dec173cd2af75f6438b4506432409b7a92d80b"
+    },
+    {
+      "path": "app/tools/inspect_hx700.gd",
+      "sha256": "f22bbabbc172af3f8e22f32f601ecfe386ac7ff9f34b6467877fb57ef444bdf4"
+    },
+    {
+      "path": "app/tests/test_heli_mechanism.gd",
+      "sha256": "cb0bfa4809fa1f3f65ef651d43e14426bc333fdfa76d5b443f9caec8823e6f0e"
+    },
+    {
+      "path": "app/tests/test_heli_mechanics_view.gd",
+      "sha256": "c08ae91440996627ca6fbdd474fd9722525948774a77de8e2e8c7a44d9b7631c"
+    },
+    {
+      "path": "app/tests/test_heli_inspection_motion.gd",
+      "sha256": "15535bbe15fb7d4a1fd1930fde85a000264ec27e0cc1ae53971fb60d497e8915"
+    },
+    {
+      "path": "app/tests/test_heli_elasticity.gd",
+      "sha256": "bd8350d2bdc642c9de8a64458caa228da2e8e1bf7ef3708667682783f247cf70"
+    }
+  ]
+}

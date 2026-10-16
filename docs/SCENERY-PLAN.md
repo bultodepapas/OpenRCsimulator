@@ -1,6 +1,6 @@
 # Scenery plan: current field and remaining gates
 
-2026-10-16 · Revision 10 · Step prefix: **SC** · Gate: **SC**
+2026-10-16 · Revision 11 · Step prefix: **SC** · Gate: **SC**
 
 **Status:** scenery is implemented and on by default. The owner requested that default on 2026-10-11. Gate SC readability and performance acceptance remains open. SC-18, SC-22 and SC-24 are partial; optional SC-19b and SC-21 remain parked.
 
@@ -17,6 +17,8 @@ Placement data and source packages are documented in [scenery provenance](../ass
 [SC-08-R1](research/scenery-implementation/SC-08-R1/README.md) refines picnic tables and benches with separate bevelled boards, sampled wood colour variation, fitted supports and hardware while retaining the existing cell batches and seating heights.
 
 [SC-08-R2](research/scenery-implementation/SC-08-R2/README.md) gives the club sign legible identity graphics, a bevelled frame and fitted front/rear mounting details within its existing envelope and cell batch.
+
+[SC-08-R3](research/scenery-implementation/SC-08-R3/README.md) adds fitted timber cladding, door hardware, vents, roof seams and drainage to the parking-side shed, reusing the existing timber source and cell batch.
 
 Static object contact uses the separate float64 LU-05 collision world. [CR-17a local damage](research/crash-damage-investigations/CR-17a/README.md) removes failed fence pieces and lightweight props from their visual batches and subsequent contacts, with bounded material-specific effects and checkpoint/reset state. Large obstacles retain their main structure. Proxy dimensions, contact response and failure cutoffs are gameplay estimates. See the [LU-05 collision report](research/landscape-upgrade/LU-05/collision-report.md) for the original detector and measured cost.
 

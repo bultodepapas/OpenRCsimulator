@@ -133,6 +133,11 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 				errors.append("assessment.components[%s].repair_minor: expected a nonnegative integer minor-unit amount" % key_value)
 			if decision.has("inspection_minor") and not _is_minor(decision["inspection_minor"]):
 				errors.append("assessment.components[%s].inspection_minor: expected a nonnegative integer minor-unit amount" % key_value)
+			if decision.has("replacement_comparable"):
+				if typeof(decision["replacement_comparable"]) != TYPE_BOOL:
+					errors.append("assessment.components[%s].replacement_comparable: expected a boolean" % key_value)
+				elif decision.get("disposition") != "repair":
+					errors.append("assessment.components[%s]: replacement_comparable is only valid for an explicit repair decision" % key_value)
 			if decision.has("salvage_eligible") and typeof(decision["salvage_eligible"]) != TYPE_BOOL:
 				errors.append("assessment.components[%s].salvage_eligible: expected a boolean" % key_value)
 			if decision.get("disposition") == "reuse" and decision.get("salvage_eligible", true) == false:
@@ -326,7 +331,20 @@ static func calculate(dossier: Dictionary, assessment: Dictionary) -> Dictionary
 			elif disposition == "repair":
 				var has_repair_quote: bool = decision.has("repair_minor")
 				var repair_quote: int = int(decision["repair_minor"]) if has_repair_quote else 0
-				if has_repair_quote and replacement["amount"] != null:
+				if decision.has("replacement_comparable") and not decision["replacement_comparable"]:
+					replacement_complete = false
+					extra["replacement_comparable"] = false
+					if has_repair_quote:
+						base_amount = repair_quote
+						base_low = repair_quote
+						base_high = repair_quote
+						action = "repair"
+					else:
+						base_low = 0
+						base_high = null
+						row_incomplete = true
+						_append_one(unresolved, "%s: repair quote is unknown" % component_id)
+				elif has_repair_quote and replacement["amount"] != null:
 					if repair_quote <= int(replacement["amount"]):
 						base_amount = repair_quote
 						base_low = repair_quote

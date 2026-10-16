@@ -236,6 +236,8 @@ Replacement alternatives use explicit `component_id:index` coverage tokens for t
 
 Service-part research must retain the exact manufacturer model/part crosswalk and whole-unit price reference. A whole-engine price proxy does not grant mechanical compatibility to that engine's crankshaft, silencer or other internals. Keep service offers outside the installed BOM until an explicit repair recipe identifies the applicable component and inspected scope; do not add the service part and whole-unit replacement together. See [CR-31f](docs/research/crash-damage-investigations/CR-31f/service-prices.md).
 
+The research generator preserves service crosswalks in `service_parts`; runtime generation validates them against the authored records before building prices. They grant neither installed-aircraft applicability nor automatic repair selection. Explicit planner repair decisions retain a boolean `replacement_comparable` scope assertion: unlike-scope prices cannot override the selected repair. Legacy decisions without that optional field keep their original comparison behavior. See [CR-31g](docs/research/crash-damage-investigations/CR-31g/README.md) for receipt and report evidence.
+
 Run the [offline price upkeep audit](docs/research/crash-damage-investigations/CR-38a/README.md) with an explicit review date when refreshing or adding an aircraft dossier. Review each observation date, package contents, approximation basis and remaining gap; a recent catalog snapshot does not refresh older offers. A positive affected quantity is required for each explicit assessment row. New replacement-comparison archives retain selected costs and unit coverage for internal consistency checks; old snapshots remain view-only historical estimates.
 
 ## Workshop authoring standard

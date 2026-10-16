@@ -62,6 +62,28 @@ func _run() -> void:
 	await ui.tap(KEY_ESCAPE)
 	_check("Help restores the opener", app.help == null and root.gui_get_focus_owner() == app.home.help_button)
 
+	# Windows input injection can provide logical Escape with a different physical scan code.
+	# It must still unwind only the top menu and restore its opener.
+	app.open_settings(app.home.settings_button)
+	await ui.settle()
+	var settings: Node = app.screens.top()
+	settings._show_category(1)
+	var controls_opener: Control = settings._destinations.get_child(0)
+	app.open_controls(controls_opener)
+	await ui.settle()
+	for pressed: bool in [true, false]:
+		var escape := InputEventKey.new()
+		escape.keycode = KEY_ESCAPE
+		escape.physical_keycode = KEY_BACKSPACE
+		escape.pressed = pressed
+		Input.parse_input_event(escape)
+	await ui.settle()
+	_check("logical Escape closes nested Controls and restores Settings focus",
+		app.screens.top() == settings and root.gui_get_focus_owner() == controls_opener)
+	await ui.tap(KEY_ESCAPE)
+	_check("closing Settings restores Home after logical Escape", app.screens.is_top("home")
+		and root.gui_get_focus_owner() == app.home.settings_button)
+
 	# Destroy a lower control while it is suspended (keyboard-layout/focus notifications rebuild key caps).
 	app.open_help(app.home.help_button)
 	app.home.call("_fill_legend")

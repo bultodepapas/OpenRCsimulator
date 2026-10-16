@@ -7,6 +7,7 @@ const UiTheme := preload("res://ui/ui_theme.gd")
 const Calculator := preload("res://economy/calculator.gd")
 const Catalog := preload("res://economy/catalog.gd")
 const ReplacementQuote := preload("res://economy/replacement_quote.gd")
+const Incident := preload("res://economy/incident.gd")
 
 
 func _initialize() -> void:
@@ -22,6 +23,7 @@ func _capture() -> void:
 	var scroll_to_bottom := false
 	var show_parts_comparison := false
 	var show_price_sources := false
+	var show_repair_details := false
 	var settled := false
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--out="):
@@ -45,6 +47,9 @@ func _capture() -> void:
 		elif argument == "--price-sources":
 			expanded = true
 			show_price_sources = true
+		elif argument == "--repair-details":
+			expanded = true
+			show_repair_details = true
 		elif argument == "--settled":
 			settled = true
 		elif argument == "--details-bottom":
@@ -128,6 +133,13 @@ func _capture() -> void:
 		enriched_lines.append(line)
 	report_data["lines"] = enriched_lines
 	report_data["aircraft_name"] = "Jensen Das Ugly Stik 60"
+	if show_repair_details:
+		report_data = _repair_scenario()
+		if report_data.get("total_minor") != 2764 or not report_data.get("complete", false):
+			push_error("Repair capture must contain US$22.64 repair plus US$5.00 inspection")
+			quit(1)
+			return
+		report_data["aircraft_name"] = "Jensen Das Ugly Stik 60"
 	if settled:
 		report.show_settled(report_data)
 	else:
@@ -179,13 +191,21 @@ func _capture() -> void:
 		var details_bar := details_scroll.get_v_scroll_bar()
 		details_scroll.scroll_vertical = int(details_bar.max_value)
 		await process_frame
-	elif show_parts_comparison or show_price_sources:
+	elif show_parts_comparison or show_price_sources or show_repair_details:
 		var details_scroll := report.find_child("DamageDetailsScroll", true, false) as ScrollContainer
 		var target_text: String = report.tr("Observed: %s") % "2026-10-15" if show_price_sources else report.tr("Replacement parts comparison")
+		if show_repair_details:
+			target_text = report.tr("Selected repair details")
+		var target_found := false
 		for child: Node in report._details_content.get_children():
 			if child is Label and child.text == target_text:
 				details_scroll.scroll_vertical = int(child.position.y)
+				target_found = true
 				break
+		if not target_found:
+			push_error("Requested capture section was not rendered: %s" % target_text)
+			quit(1)
+			return
 		await process_frame
 	var panel_rect := panel.get_global_rect()
 	var viewport_size := viewport.get_visible_rect().size
@@ -223,6 +243,8 @@ func _capture() -> void:
 		"details_scrolled_to_bottom": scroll_to_bottom,
 		"parts_comparison": report_data.get("replacement_comparison", {}),
 		"price_sources_visible": show_price_sources,
+		"repair_details_visible": show_repair_details,
+		"scenario_basis": "Explicit synthetic covering-only inspection; not a physically validated crash" if show_repair_details else "Propeller strike lower-bound fixture",
 		"aircraft_id": "jensen-das-ugly-stik-60",
 		"known_subtotal_minor": report_data.get("known_subtotal_minor"),
 		"complete": report_data.get("complete"),
@@ -248,3 +270,30 @@ func _capture() -> void:
 	manifest.close()
 	print(JSON.stringify(evidence))
 	quit(0)
+
+
+func _repair_scenario() -> Dictionary:
+	var ledger := Incident.new()
+	ledger.begin("jensen-das-ugly-stik-60", "")
+	ledger._last_tick = 20
+	ledger._queue_assessment(20)
+	var context: Dictionary = ledger.inspection_context()
+	var receipt := {format = "openrc-accident-inspection v1", inspection_id = "capture-covering-repair",
+		incident_id = context.identity.incident_id, aircraft_id = context.identity.aircraft_id,
+		source_sha256 = context.identity.source_sha256, catalog_hash = context.catalog_hash,
+		expected_revision = context.revision, full_inspection = true, total_loss = false,
+		basis = "scenario_assumption", evidence = "Synthetic UI fixture: inspected structure intact, covering tear only.", components = {}}
+	for component: Dictionary in ledger.dossier.components:
+		receipt.components[component.id] = {disposition = "reuse", quantity = component.quantity,
+			damage_flags = [], evidence = "Explicit synthetic component inspection."}
+	var component_id := "covered_airframe_and_installation_hardware"
+	receipt.components[component_id].inspection_minor = 500
+	var repair_inspection := {format = "openrc-repair-inspection v1", basis = "scenario_assumption",
+		components = {component_id: {status = "inspected", damage_class = "covering_only", quantity = 1,
+			replacement_comparable = false, measurements = {covering_area_milli_sq_in = 10500},
+			labor_minutes = 30, evidence = "Synthetic inspected 10.5 square inch covering patch; structure intact."}}}
+	var result: Dictionary = ledger.apply_repair_choice(receipt, repair_inspection, component_id, "covering-film-patch", "paid", "consumption")
+	if not result.get("ok", false):
+		push_error("Repair capture selection failed: %s" % str(result))
+		return {}
+	return ledger.report.duplicate(true)

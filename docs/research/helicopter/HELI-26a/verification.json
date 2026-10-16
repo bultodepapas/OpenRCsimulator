@@ -15,5 +15,7 @@
   "motion_ui": "pass",
   "motion_timing": "pass",
   "elasticity": "pass",
-  "world_neutral_rotation_rejected": true
+  "world_neutral_rotation_rejected": true,
+  "missing_or_changed_oracle_rejected": true,
+  "motion_source_integrity": "pass"
 }

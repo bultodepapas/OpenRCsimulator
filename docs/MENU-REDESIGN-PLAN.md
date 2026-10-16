@@ -261,6 +261,10 @@ Download only identified missing free assets. Pin exact version/commit/hash, ret
 
 ## 9. Phased implementation
 
+### Delivered review · UI-29-R3 · visual and navigation checks
+
+The final source-tree review corrects clipped keyboard focus, logical-Escape handling and Spanish menu copy. Eight native resolution/language/text cases, 158 captures, fourteen functional scripts and warmed 1080p/4K navigation frame intervals are retained in [UI-29-R3](research/menu-investigations/UI-29-R3/README.md). Workshop model inspection remains visually too small; the attempted camera adjustment was rejected after measuring only a 6% gain. Export, mixed-monitor and human acceptance gates remain open.
+
 ### Delivered refinement · UI-23-R5 · measured menu cost
 
 Volume preview no longer rebuilds screen themes, and unchanged Home layout passes reuse their font overrides and gradients. Five alternating reference/candidate runs, functional regressions and native 720p/540p/4K captures are retained in [UI-23-R5](research/menu-investigations/UI-23-R5/README.md). These are CPU handler measurements; no general flight-FPS improvement is claimed.

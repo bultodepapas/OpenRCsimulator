@@ -11,6 +11,8 @@ import sys
 from pathlib import Path, PurePosixPath
 from typing import Any
 
+import build_catalog
+
 
 ROOT = Path(__file__).resolve().parents[2]
 RESEARCH_DIR = Path("research/crash-economics")
@@ -602,6 +604,24 @@ def _dossier(
     }
 
 
+def _validate_service_references(root: Path, price_catalog: dict[str, Any]) -> None:
+    records = []
+    for source in build_catalog.SOURCES:
+        try:
+            values = json.loads((root / RESEARCH_DIR / source).read_text(encoding="utf-8-sig"), object_pairs_hook=_unique_object)
+        except (OSError, ValueError) as error:
+            _fail(f"cannot read service reference source: {error}")
+        if not isinstance(values, list):
+            _fail("service reference source must contain an offer array")
+        records.extend(values)
+    try:
+        expected = build_catalog.service_relationships(records)
+    except (ValueError, KeyError, TypeError) as error:
+        _fail(f"invalid service references: {error}")
+    if price_catalog.get("service_parts", []) != expected:
+        _fail("price catalog service references are stale or differ from authored evidence")
+
+
 def _load_context(root: Path) -> dict[str, Any]:
     price_catalog, price_bytes = _read_json(root / PRICE_CATALOG_PATH)
     costing, costing_bytes = _read_json(root / COSTING_PATH)
@@ -613,6 +633,7 @@ def _load_context(root: Path) -> dict[str, Any]:
     if _date(costing.get("observed_on"), "aircraft costing.observed_on") != price_date:
         _fail("price catalog and aircraft costing observation dates differ")
     research_source_hashes = _validate_source_hashes(root, price_catalog)
+    _validate_service_references(root, price_catalog)
 
     catalog_path = root / AIRCRAFT_CATALOG_PATH
     try:

@@ -15,8 +15,15 @@ HERE = Path(__file__).resolve().parent
 
 
 def run(command, log, expected_missing_texture=False, expected_test_failures=()):
-    result = subprocess.run([str(v) for v in command], cwd=REPO, stdout=subprocess.PIPE,
-                            stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace", timeout=180)
+    try:
+        result = subprocess.run([str(v) for v in command], cwd=REPO, stdout=subprocess.PIPE,
+                                stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace", timeout=180)
+    except subprocess.TimeoutExpired as error:
+        output = error.stdout or ""
+        if isinstance(output, bytes):
+            output = output.decode("utf-8", errors="replace")
+        log.write_text(output, encoding="utf-8")
+        raise RuntimeError("Check timed out; diagnostic output saved: " + str(log)) from error
     log.write_text(result.stdout, encoding="utf-8")
     errors = re.findall(r"^(?:SCRIPT |SHADER )?ERROR:.*$", result.stdout, re.MULTILINE)
     if expected_test_failures:
@@ -78,6 +85,8 @@ def main():
     if args.motion:
         run([sys.executable, HERE / "compile_hx700_motion.py", "--check"], out / "motion-compiler.log")
         run([sys.executable, HERE / "test_compile_hx700_motion.py"], out / "motion-source-integrity.log")
+        run([godot, "--headless", "--path", REPO / "app", "--audio-driver", "Dummy", "--check-only",
+             "--script", "res://tests/test_heli_mechanics_view.gd"], out / "motion-native-parse.log")
         run([godot, "--headless", "--path", REPO / "app", "--audio-driver", "Dummy", "--script",
              "res://tests/test_heli_mechanism.gd"], out / "motion-native-tests.log")
         run([godot, "--headless", "--path", REPO / "app", "--audio-driver", "Dummy", "--script",
@@ -102,7 +111,7 @@ def main():
         for relative in ("render/rotor/hx700_motion_equations.gd", "render/rotor/hx700_mechanism.gd",
                          "render/rotor/hx700_mechanics_view.gd", "tools/inspect_hx700.gd", "tests/test_heli_mechanism.gd",
                          "tests/test_heli_mechanics_view.gd", "render/rotor/hx700_inspection_motion.gd",
-                         "tests/test_heli_inspection_motion.gd", "physics/rotorcraft/hx700_flex_bench.gd",
+                         "tests/test_heli_inspection_motion.gd", "physics/rotorcraft/hx700_flex_bench.gd", "physics/math3d.gd",
                          "render/rotor/hx700_elastic_skin.gd", "tests/test_heli_elasticity.gd"):
             target = project / relative
             target.parent.mkdir(parents=True, exist_ok=True)
@@ -112,6 +121,8 @@ def main():
          "--", "--proof=" + str(out / "fresh-proof.json")], out / "fresh-smoke.log")
     oracle = REPO / "research/helicopter/reference/hx700_motion_oracle.json"
     if args.motion:
+        run([godot, "--headless", "--path", project, "--audio-driver", "Dummy", "--check-only",
+             "--script", "res://tests/test_heli_mechanics_view.gd"], out / "motion-fresh-parse.log")
         run([godot, "--headless", "--path", project, "--audio-driver", "Dummy", "--script",
              "res://tests/test_heli_mechanism.gd", "--", "--oracle=" + str(oracle)], out / "motion-fresh-tests.log")
         for defect in ("missing", "changed"):

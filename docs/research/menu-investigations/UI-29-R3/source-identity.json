@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-16",
+  "host": "Windows / NVIDIA RTX 3090 / 3840x2160 / 144 DPI",
+  "git_head": "4658775315b7b273c4a547f60ca16d3b4e113e0e",
+  "sha256": {
+    "app/ui/screen.gd": "af592526e341e346e8fc93342ef041a5f95c2e0b1bfa70b7a18eafd3dd3e6008",
+    "app/ui/ui_theme.gd": "0b8ac50b3ffb702dce7bb14424374cf1992ed5c6f4d220daf50affb7a0563779",
+    "app/i18n/es.po": "890e2b325a1234713d43f7b748959b72a5757986fca0d7d4bc818ca3270f8bbb",
+    "app/ui/workshop_preview.gd": "aff793d98f8a686e327db6931adc043c7482ded6d864bfa2105dbe9a922f58c6",
+    "app/app_root.gd": "eae0cd901fa72ce6aeaadaca9606afc639a5c6f12adac5110277dbb1085450c2",
+    "app/tests/test_conditions_responsive.gd": "11db1aae49260fb63ee2c6d6fb9467526c3b61ac8dec0cb22c7e238aafbcdf99",
+    "app/tests/test_controller_responsive.gd": "f54998d5c60f4e81988990e014c6a8c5dcf9850c9afd70dd3d31365eb40c1aea",
+    "app/tests/test_failure_availability_ui.gd": "5d23ef63f9132de73dc747d15f02dfb78fa1adb6f9bbb658da121c85100aca61",
+    "app/tests/test_failure_ui.gd": "c4996630f7b1d7abf6a1fe520feb2f8c30cae229f269f85ee85839006cda1e57",
+    "app/tests/test_menu_audio.gd": "834a0ad90d57468455fb8a8e07e8cce45ec7b6c708707581651277e585faaf2f",
+    "app/tests/test_settings_ui.gd": "9533d25f845467daf4746d2cb9ad6d94def49630f5ddfe734e175df957375ed5",
+    "app/tests/test_ui_home.gd": "dc74b00d6901fb098992ad46567847806f1fc372db563bac47bd8378de340c73",
+    "app/tests/test_ui_language.gd": "85b8c3aae554922da8a6bfd7d62455e782d8920e85a054092a3a38d68c735add",
+    "app/tests/test_ui_modal_responsive.gd": "816779060d854ef0dd2f980cc8591accf4ba4badff80999bdf7b5aef5952800e",
+    "app/tests/test_ui_pause.gd": "ec0eb526ceba910f2e121280c652242bdc0be9d25695bf7fb817240db5d75f99",
+    "app/tests/test_ui_pause_responsive.gd": "21f0d238093db92a2eb75a927a1c29992cd38a3f35bd2aa189b4f71455cccf64",
+    "app/tests/test_ui_screen_stack.gd": "b8e1ea389c580491d225398de8c7536f518f39317841874f4c82706a2df5b173",
+    "app/tests/test_ui_settings_integration.gd": "ec31ce630410c53e5c210ab7cc8adf6143ee03111d95fdb5ffee07867b563d88",
+    "app/tests/test_workshop_ui.gd": "1b6a418bbcef4b80d9c5b47c13a379a09f16209eac64033fc3fdb70eac7ca076"
+  }
+}

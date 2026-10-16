@@ -3,11 +3,11 @@
   "currency": "USD",
   "price_date": "2026-10-16",
   "generated_from": {
-    "price_catalog_sha256": "6f09dfb402ee9647fd88932c9d54e68799531e3208f6c13edf5d4c433fe3440b",
-    "aircraft_costing_sha256": "63149c62aadd2079b47c6d2c9b6d9c581b22692cead69b3c3edc04b8b71b4615",
+    "price_catalog_sha256": "0a91154058511a146f3bf914912cd0a7ed80ad9fbf3e97eb1d713e99e227fcfd",
+    "aircraft_costing_sha256": "0488f842e50962f703840e0be8a1b4bdbc624b87c276f0af658d088b1a2530a2",
     "aircraft_catalog_sha256": "e0790acb9b1a5097d9d3cbcb564e72f074940a3813b52f70edf1c44dae5bc60c",
-    "price_research_components_sha256": "c980171882fc6b933e241d4aac613d562d9c84eb49bef31bcb8d51f88d5e97e5",
-    "price_research_fleet_sha256": "66d0a319869ca158aa947783143fb2807497c42decb0c834eb84e6642198392d"
+    "price_research_components_sha256": "032eafe657877caaf57d1cddd70d89e9433c5aa0924a94f7cfd0f544aa479b45",
+    "price_research_fleet_sha256": "85026093f0172a0692e6b1c3c1813b2e8770ba0b13dbf04f033923223a002f13"
   },
   "products": [
     {
@@ -371,6 +371,15 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "power_unlimited_pu_2100_2s_life",
+      "brand": "Power Unlimited",
+      "sku": "PU-2100-2s-LiFe",
+      "name": "2100mAh 2S 6.6V 20C LiFe receiver battery",
+      "category": "aircraft_power_battery_candidate",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "radiomaster_hp0157_rx_er8",
       "brand": "RadioMaster",
       "sku": "HP0157.RX-ER8",
@@ -565,6 +574,15 @@
       "sku": "TOPQ-0208",
       "name": "MonoKote black heat-activated covering film roll",
       "category": "covering_roll",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "vp_racing_fuels_vp_449632701_12ct",
+      "brand": "VP Racing Fuels",
+      "sku": "VP-449632701 (12CT)",
+      "name": "10% Air / 18% Oil RC aviation nitro fuel, quart cans, case of 12",
+      "category": "glow_fuel_candidate",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     }
@@ -911,6 +929,24 @@
       "source_url": "https://www.desertaircraft.com/products/da-120",
       "evidence_quality": "high",
       "notes": "Observed 2026-10-15. Same engine model identified for the simulated P-51. Includes engine, carburetor, twin ignition, spark plugs, exhaust gaskets and prop hardware; aircraft, propeller and radio are separate."
+    },
+    {
+      "id": "power_unlimited_pu2100_2s_life_gator_20261016",
+      "product_id": "power_unlimited_pu_2100_2s_life",
+      "amount_minor": 2595,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.gator-rc.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_us_retailer_listing_price",
+      "availability": "In stock on the seller product page.",
+      "sold_package_quantity": 1,
+      "package_description": "1 receiver battery; 2S/6.6V LiFe (LiFePO4), 2100mAh, 20C continuous; 99g; 3.75 x 0.75 x 1.125 in; JR Universal output lead and JST-XH balance connector.",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.gator-rc.com/products/2s-2100mah-k6-6v-20c-life-batteries-power-unlimited",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. One battery pack; shipping and destination charges are not included. Unallocated offer. The price is not evidence that this SKU was installed in the P-51 or qualifies as a mass/fit match. The modeled mass is 150g per pack versus the product's 99g; installed brand, size fit, and exact connector/power-board compatibility are unknown. Candidate only; no allocation. Seller identifies it as a receiver pack. Ignition-module harness/connectors are unverified, and pack mass is 99g versus the modeled 150g. Candidate only; no allocation. See intake-power-20261016.json for electrical specifications, physical group comparisons and sources. Tax and shipping excluded."
     },
     {
       "id": "receiver_frsky_archer_plus_r10",
@@ -1811,6 +1847,24 @@
       "source_url": "https://vortexhobbies.com/hangar-ultracote-deep-red-hanu871-p-25026.html",
       "evidence_quality": "Direct retailer listing reviewed 2026-10-15; see CR-31b source review for package dimensions and scope.",
       "notes": "Observed 2026-10-15. Retailer listing showed SKU HANU871, US$22.99, stock text, and 78 × 23.5 inch package specifications. Price excludes tax/shipping. Exact color/airframe compatibility is not established. Source observation also backs the packaged covering repair recipe; package purchase and material consumption are distinct accounting bases."
+    },
+    {
+      "id": "vp_10air_18oil_case12_bulk55_20261016",
+      "product_id": "vp_racing_fuels_vp_449632701_12ct",
+      "amount_minor": 11799,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "bulk55.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_us_retailer_listing_price",
+      "availability": "7 cases listed in stock on 2026-10-16: 5 at Edwards, Illinois and 2 at Las Vegas, Nevada. Destination shipping was not verified.",
+      "sold_package_quantity": 1,
+      "package_description": "One 12-can case; each can contains 1 US quart. Product description states the 18% oil package is 80% multiviscosity synthetic and 20% castor.",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://bulk55.com/products/12-count-vp-racing-10-aviation-rc-nitro-fuel-18-oil-premixed-quart-cans?_fid=345239e92&_pos=10&_ss=c",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. Seller lists one case of 12 x 1-quart cans for USD 117.99, with a unit price of USD 9.83 per quart can; freight and hazardous-material charges were not captured in the displayed product price. Unallocated offer. The package is a case of 12 quarts; do not treat USD 117.99 as the cost of onboard 150mL or as an aircraft build total. The authored physical row specifies only a methanol/oil/nitro blend, not its percentages or brand. USD 1.56 excludes case-level purchase, freight and hazardous-material charges. This is a formula-compatible price candidate, not evidence of the installed blend or a modeled-physics match; no allocation. See intake-power-20261016.json for electrical specifications, physical group comparisons and sources. Tax and shipping excluded."
     }
   ],
   "aircraft": [
@@ -2910,7 +2964,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "p51d-mustang-120",
-      "source_sha256": "982e41c345dabe6be43da38438d36d725c84eaf41561d52750f4698585789ae6",
+      "source_sha256": "e1e24f742a24204cd2875e42eb64760d3b0da5796fc74c3ca4b32834ffa2c544",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -3824,7 +3878,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "xcell-60-research",
-      "source_sha256": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
+      "source_sha256": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "unpriced",

@@ -1,0 +1,86 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   screen renders its title, preview and test action
+ok   airplane selector discovers every fixed-wing flyable aircraft
+ok   initial keyboard focus enters the aircraft selector
+ok   Workshop is a still editor with no flight session
+ok   layout fits 720p height
+ok   layout fits 1080p height
+ok   opening starts at the top of the editor
+ok   Spanish locale translates the Workshop title
+ok   Tab advances focus inside the editor
+ok   fixed-wing selection remains aligned: jensen-das-ugly-stik-60
+ok   no-op build validates: jensen-das-ugly-stik-60
+ok   unsupported controls stay visible and inactive: jensen-das-ugly-stik-60
+ok   fixed-wing selection remains aligned: stik-glow-61fx-2t
+ok   no-op build validates: stik-glow-61fx-2t
+ok   unsupported controls stay visible and inactive: stik-glow-61fx-2t
+ok   fixed-wing selection remains aligned: stik-glow-55ax-2t
+ok   no-op build validates: stik-glow-55ax-2t
+ok   unsupported controls stay visible and inactive: stik-glow-55ax-2t
+ok   fixed-wing selection remains aligned: stik-glow-fs64v-4t
+ok   no-op build validates: stik-glow-fs64v-4t
+ok   unsupported controls stay visible and inactive: stik-glow-fs64v-4t
+ok   fixed-wing selection remains aligned: gp-extra-300s-60
+ok   no-op build validates: gp-extra-300s-60
+ok   unsupported controls stay visible and inactive: gp-extra-300s-60
+ok   fixed-wing selection remains aligned: p51d-mustang-120
+ok   no-op build validates: p51d-mustang-120
+ok   unsupported controls stay visible and inactive: p51d-mustang-120
+ok   fixed-wing selection remains aligned: sebart-avanti-s-a200-p100rx
+ok   no-op build validates: sebart-avanti-s-a200-p100rx
+ok   unsupported controls stay visible and inactive: sebart-avanti-s-a200-p100rx
+ok   fixed-wing selection remains aligned: turbo-lumber-evolution
+ok   no-op build validates: turbo-lumber-evolution
+ok   unsupported controls stay visible and inactive: turbo-lumber-evolution
+ok   catalog includes aircraft with restricted Workshop adjustments
+ok   direct rotorcraft requests return to the fixed-wing default
+ok   direct rotorcraft requests explain the Workshop limit
+ok   intermediate recipe values are never silently rounded
+ok   slider displays the exact saved multiplier
+ok   scale selector includes the exact intermediate size
+ok   malformed recipe is refused before changing the draft
+ok   scale 50% compiles
+ok   scale 200% compiles
+ok   Mini preset produces a valid recipe
+ok   Giant preset produces a valid recipe
+ok   Light preset produces a valid recipe
+ok   Heavy preset produces a valid recipe
+ok   Fast preset produces a valid recipe
+ok   Agile preset produces a valid recipe
+ok   Slow preset produces a valid recipe
+ok   Undo restores the prior recipe
+ok   Reset returns every value to compiler defaults
+ok   first Undo restores the preceding edit
+ok   second Undo restores the original
+ok   Redo restores both edits
+ok   new edit clears the redo branch
+ok   slider drag contributes one history entry
+ok   undoing a slider drag restores its starting value
+ok   a drag without changes preserves redo
+ok   history is bounded
+ok   changing source clears both history branches
+ok   Save creates one local revision
+ok   Save updates the same variant as revision two
+ok   saved provenance pins exact source, compiler and dependencies
+ok   Test Fly emits the exact pinned snapshot and variant revision
+ok   Load restores the saved recipe and original source bytes
+ok   loading a saved variant clears unrelated undo state
+ok   Delete removes the saved variant and disables its actions
+ok   deleting the current variant leaves an unsaved draft
+ok   Undo delete restores the original revision
+ok   saving the retained draft creates a separate variant
+ok   concurrent save fixture advances the revision
+ok   stale editor save preserves the newer revision and current draft
+ok   conflicting draft can be saved as its own copy
+ok   precise saved recipe round-trips without quantization
+ok   removed catalog fixture is stored independently
+ok   unavailable source load preserves the entire current draft
+ok   backup recovery visibly identifies the earlier revision
+ok   saving a recovered draft advances past existing immutable revisions
+ok   historical metadata fixture saves
+ok   loaded draft separates recipe physics from record metadata
+ok   historical recipe can be renamed
+ok   historical recipe copy receives a separate identity
+ok   copy leaves the source history untouched
+Workshop UI: 0 failed

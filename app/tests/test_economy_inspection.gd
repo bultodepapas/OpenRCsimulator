@@ -35,6 +35,12 @@ func _initialize() -> void:
 		invalid_flags.components.receiver = row("reuse", 1)
 		invalid_flags.components.receiver.damage_flags = flags
 		check("unknown, duplicate or contradictory structural flags rejected", not ledger.apply_inspection(invalid_flags).get("ok", true) and ledger.report == before)
+	var bad_comparator_type := receipt(ledger, "bad-comparator-type")
+	bad_comparator_type.components.receiver.replacement_comparable = "false"
+	check("replacement comparability receipt field requires a boolean", not ledger.apply_inspection(bad_comparator_type).get("ok", true) and ledger.report == before)
+	var misplaced_comparator := receipt(ledger, "misplaced-comparator")
+	misplaced_comparator.components.receiver.replacement_comparable = false
+	check("replacement comparability receipt field requires an explicit repair", not ledger.apply_inspection(misplaced_comparator).get("ok", true) and ledger.report == before)
 	var omitted := receipt(ledger, "omitted")
 	omitted.components.erase("receiver")
 	check("full inspection must include every row", not ledger.apply_inspection(omitted).get("ok", true))
@@ -88,6 +94,16 @@ func _test_repair_choices() -> void:
 	for id: String in receipt_value.components:
 		receipt_value.components[id].disposition = "reuse"
 	var component_id := "covered_airframe_and_installation_hardware"
+	var priced_components: Array = ledger.dossier.components
+	for index: int in range(priced_components.size()):
+		var part: Dictionary = priced_components[index]
+		if part.id == component_id:
+			part.unit_minor = 100
+			part.low_unit_minor = 100
+			part.high_unit_minor = 100
+			priced_components[index] = part
+	ledger.dossier.components = priced_components
+	receipt_value.components[component_id].inspection_minor = 125
 	var repair_inspection := {format = "openrc-repair-inspection v1", basis = "scenario_assumption",
 		components = {component_id: {status = "inspected", damage_class = "covering_only", quantity = 1,
 			replacement_comparable = false, measurements = {covering_area_milli_sq_in = 10500},
@@ -95,7 +111,11 @@ func _test_repair_choices() -> void:
 	var result: Dictionary = ledger.apply_repair_choice(receipt_value, repair_inspection, component_id, "covering-film-patch", "paid", "consumption")
 	if not result.get("ok", false):
 		printerr(result)
-	check("selected film repair reaches calculator with explicit paid labor and consumption", result.get("ok", false) and ledger.report.get("total_minor") == 2264)
+	var repair_line: Dictionary = {}
+	for line: Dictionary in ledger.report.get("lines", []):
+		if line.get("id") == component_id:
+			repair_line = line
+	check("incomparable replacement keeps selected repair and inspection amounts exact", result.get("ok", false) and ledger.report.get("complete", false) and ledger.report.get("total_minor") == 2389 and ledger.report.get("replacement_minor") == null and repair_line.get("action") == "repair" and repair_line.get("amount_minor") == 2389 and ledger.report.inspections[0].components[component_id].replacement_comparable == false)
 	check("repair source and recipe identity frozen alongside report", ledger.report.get("repair_choices", []).size() == 1 and ledger.report.repair_choices[0].recipe_book_sha256.length() == 64)
 	var before := ledger.report.duplicate(true)
 	check("duplicate repair choice never bills or appends provenance twice", ledger.apply_repair_choice(receipt_value, repair_inspection, component_id, "covering-film-patch", "paid", "consumption").get("duplicate", false) and ledger.report == before)
@@ -111,7 +131,7 @@ func _test_repair_choices() -> void:
 	var reader := Incident.new()
 	reader.archive_path = ledger.archive_path
 	var archived: Dictionary = reader.load_archive()
-	check("archived repair keeps selected cash/material basis and source", archived.get("repair_choices", []).size() == 1 and archived.repair_choices[0].costing_basis == "consumption" and archived.get("total_minor") == 2264)
+	check("archive keeps repair amount, unmatched scope and inspection fee", archived.get("repair_choices", []).size() == 1 and archived.repair_choices[0].costing_basis == "consumption" and archived.get("total_minor") == 2389 and archived.get("replacement_minor") == null and archived.inspections[0].components[component_id].replacement_comparable == false)
 	for field: String in ["inspections", "repair_choices"]:
 		var broken := archived.duplicate(true)
 		broken[field] = "malformed optional provenance"

@@ -1,0 +1,186 @@
+{
+  "format": "openrc-crash-economics-power-intake v1",
+  "observed_on": "2026-10-16",
+  "scope": "Dated seller observations for unresolved aircraft receiver-power and onboard-fuel groups. Direct price/specification evidence is recorded separately from fit, installed identity, physics validation, or costing allocation.",
+  "physical_groups_reviewed": [
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "inventory_id": "item_receiver_battery",
+      "physical_description": "Receiver battery, 4.8 V, 600 mAh NiMH; mass is estimated at 0.105 kg.",
+      "costing_status": "Estimated USD 25 allowance; exact 600mAh quote still needed.",
+      "source_files": [
+        "app/data/aircraft/jensen_ugly_stik_60.json",
+        "research/crash-economics/aircraft-costing.json"
+      ]
+    },
+    {
+      "aircraft_id": "jensen-das-ugly-stik-60",
+      "inventory_id": "item_fuel_main",
+      "physical_description": "Onboard half-tank contents: estimated 150 mL, 0.12 kg, methanol/oil/nitro blend; exact formulation and brand are unspecified.",
+      "costing_status": "Estimated USD 3 allowance for the 150mL contents, not a quart/gallon purchase.",
+      "source_files": [
+        "app/data/aircraft/jensen_ugly_stik_60.json",
+        "research/crash-economics/aircraft-costing.json"
+      ]
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "inventory_id": "ignition_battery",
+      "physical_description": "One 2S LiFe ignition battery; estimated mass 0.15 kg and source capacity range 1500-2100mAh.",
+      "costing_status": "Unpriced; physical costing row has no brand or SKU.",
+      "source_files": [
+        "app/data/aircraft/p51d_mustang_120.json",
+        "research/crash-economics/aircraft-costing.json"
+      ]
+    },
+    {
+      "aircraft_id": "p51d-mustang-120",
+      "inventory_id": "receiver_batteries",
+      "physical_description": "Two redundant 2S LiFe receiver packs, each described as 2100mAh; modeled combined mass 0.30 kg (150g per pack).",
+      "costing_status": "Unpriced; installed brands and connectors are not identified.",
+      "source_files": [
+        "app/data/aircraft/p51d_mustang_120.json",
+        "research/crash-economics/aircraft-costing.json"
+      ]
+    },
+    {
+      "aircraft_id": "gp-extra-300s-60",
+      "inventory_id": "receiver_battery",
+      "physical_description": "One receiver battery, 4.8 V and 1100mAh NiMH; estimated mass 0.11 kg.",
+      "costing_status": "Unpriced; costing notes no aircraft-specific replacement offer.",
+      "source_files": [
+        "app/data/aircraft/gp_extra_300s_60.json",
+        "research/crash-economics/aircraft-costing.json"
+      ]
+    }
+  ],
+  "usd_observations": [
+    {
+      "id": "power_unlimited_pu2100_2s_life_gator_20261016",
+      "brand": "Power Unlimited",
+      "product": "2100mAh 2S 6.6V 20C LiFe receiver battery",
+      "sku": "PU-2100-2s-LiFe",
+      "category": "aircraft_power_battery_candidate",
+      "amount_usd": 25.95,
+      "currency": "USD",
+      "price_basis": "One battery pack; shipping and destination charges are not included.",
+      "availability": "In stock on the seller product page.",
+      "quantity": "1 receiver battery; 2S/6.6V LiFe (LiFePO4), 2100mAh, 20C continuous; 99g; 3.75 x 0.75 x 1.125 in; JR Universal output lead and JST-XH balance connector.",
+      "seller": "Gator RC",
+      "url": "https://www.gator-rc.com/products/2s-2100mah-k6-6v-20c-life-batteries-power-unlimited",
+      "observed_on": "2026-10-16",
+      "evidence_quality": "Direct live seller-page fetch on 2026-10-16 confirmed product name, SKU, USD 25.95, In stock status, chemistry, voltage, capacity, discharge rating, weight, dimensions, and connectors.",
+      "candidate_groups": [
+        {
+          "aircraft_id": "p51d-mustang-120",
+          "inventory_id": "receiver_batteries",
+          "basis": "Product is explicitly a receiver pack and its 2S LiFe/2100mAh rating matches the authored electrical description.",
+          "same_offer_for_both_physical_packs_usd": 51.9,
+          "group_arithmetic": "2 modeled packs x USD 25.95 per pack; scenario arithmetic only, not an installed-price allocation.",
+          "limitations": "The modeled mass is 150g per pack versus the product's 99g; installed brand, size fit, and exact connector/power-board compatibility are unknown. Candidate only; no allocation."
+        },
+        {
+          "aircraft_id": "p51d-mustang-120",
+          "inventory_id": "ignition_battery",
+          "basis": "The pack's 2S LiFe/2100mAh rating is at the upper end of the authored 1500-2100mAh range.",
+          "limitations": "Seller identifies it as a receiver pack. Ignition-module harness/connectors are unverified, and pack mass is 99g versus the modeled 150g. Candidate only; no allocation."
+        }
+      ],
+      "allocation": "Unallocated offer. The price is not evidence that this SKU was installed in the P-51 or qualifies as a mass/fit match."
+    },
+    {
+      "id": "vp_10air_18oil_case12_bulk55_20261016",
+      "brand": "VP Racing Fuels",
+      "product": "10% Air / 18% Oil RC aviation nitro fuel, quart cans, case of 12",
+      "sku": "VP-449632701 (12CT)",
+      "category": "glow_fuel_candidate",
+      "amount_usd": 117.99,
+      "currency": "USD",
+      "price_basis": "Seller lists one case of 12 x 1-quart cans for USD 117.99, with a unit price of USD 9.83 per quart can; freight and hazardous-material charges were not captured in the displayed product price.",
+      "availability": "7 cases listed in stock on 2026-10-16: 5 at Edwards, Illinois and 2 at Las Vegas, Nevada. Destination shipping was not verified.",
+      "quantity": "One 12-can case; each can contains 1 US quart. Product description states the 18% oil package is 80% multiviscosity synthetic and 20% castor.",
+      "seller": "Bulk55",
+      "url": "https://bulk55.com/products/12-count-vp-racing-10-aviation-rc-nitro-fuel-18-oil-premixed-quart-cans?_fid=345239e92&_pos=10&_ss=c",
+      "observed_on": "2026-10-16",
+      "evidence_quality": "Direct seller-page fetch on 2026-10-16 confirmed product, SKU, case count, USD 117.99 case price, USD 9.83 per-can price, stock by warehouse, fuel blend title, and oil-package description. The official O.S. MAX-50SX/40/46/61/91 FX instruction manual states 5-20% nitromethane is preferable and fuel must contain at least 18% lubricant by volume; the Ugly Stik inventory names an O.S. MAX-61FX.",
+      "candidate_groups": [
+        {
+          "aircraft_id": "jensen-das-ugly-stik-60",
+          "inventory_id": "item_fuel_main",
+          "basis": "The VP product's 10% nitromethane/18% total oil falls within the referenced MAX-61FX manual guidance. A volume-share arithmetic reference is USD 1.56 for the modeled 150mL contents: USD 9.83/quart x 150mL / 946.352946mL per US quart.",
+          "limitations": "The authored physical row specifies only a methanol/oil/nitro blend, not its percentages or brand. USD 1.56 excludes case-level purchase, freight and hazardous-material charges. This is a formula-compatible price candidate, not evidence of the installed blend or a modeled-physics match; no allocation."
+        }
+      ],
+      "allocation": "Unallocated offer. The package is a case of 12 quarts; do not treat USD 117.99 as the cost of onboard 150mL or as an aircraft build total."
+    }
+  ],
+  "foreign_currency_observations": [
+    {
+      "id": "overlander_ol1417_receiver_pack_nexus_20261016",
+      "brand": "Overlander",
+      "product": "2/3 AA 600mAh 4.8V flat NiMH receiver battery pack",
+      "sku": "OL-1417 (seller also displays SKU 1417)",
+      "category": "receiver_battery_candidate",
+      "amount": 7.12,
+      "currency": "GBP",
+      "price_basis": "Seller display price GBP 7.12; VAT treatment and destination shipping were not established in the captured product-page text.",
+      "availability": "Only 2 units left on the seller product page.",
+      "quantity": "One flat 4-cell 2/3 AA NiMH receiver pack; 4.8V nominal, 600mAh, 55g, 53 x 28 x 14mm; pre-fitted JR Universal connector.",
+      "seller": "Nexus Modelling Supplies",
+      "url": "https://nexusmodels.co.uk/products/overlander-nimh-battery-pack-2-3-aa-600mah-4-8v-receiver-flat-premium-sport-1417",
+      "observed_on": "2026-10-16",
+      "evidence_quality": "Direct seller-page fetch confirmed product, displayed price, two-unit stock count, chemistry, voltage, capacity, configuration, weight, dimensions, and connector.",
+      "candidate_groups": [
+        {
+          "aircraft_id": "jensen-das-ugly-stik-60",
+          "inventory_id": "item_receiver_battery",
+          "basis": "Exact authored voltage, capacity, chemistry, and receiver-pack role.",
+          "limitations": "The model estimates 105g while this pack is 55g; the authored pack layout and connector are unspecified. Foreign currency; do not convert into USD or allocate as installed."
+        }
+      ],
+      "allocation": "Unallocated foreign-currency candidate; preserve GBP separately from USD observations."
+    },
+    {
+      "id": "hrc05411f_receiver_pack_berlinski_20261016",
+      "brand": "HRC",
+      "product": "4.8V NiMH AAA 1100mAh flat receiver battery with JR connector",
+      "sku": "HRC05411F",
+      "category": "receiver_battery_candidate",
+      "amount": 10.99,
+      "currency": "EUR",
+      "price_basis": "Displayed gross price EUR 10.99 including 19% German VAT; delivery charges are extra.",
+      "availability": "1 unit in stock on the seller product page.",
+      "quantity": "One 4-cell flat AAA NiMH receiver pack; 4.8V, 1100mAh; approximately 45 x 40 x 11mm; pack weight is not stated.",
+      "seller": "Modellbau Berlinski",
+      "url": "https://www.modellbau-berlinski.de/electr_nica-rc-y-bater_as/bater_as/transmisor-y-receptor/bater_a-receptora-48v-nimh-aaa-1100mah-plana---jr",
+      "observed_on": "2026-10-16",
+      "evidence_quality": "Direct seller-page fetch on 2026-10-16 confirmed manufacturer SKU, product description, 1-unit stock, EUR 10.99 gross price, VAT basis, chemistry, voltage, capacity, connector type, and dimensions.",
+      "candidate_groups": [
+        {
+          "aircraft_id": "gp-extra-300s-60",
+          "inventory_id": "receiver_battery",
+          "basis": "Exact authored voltage, capacity, chemistry, and receiver-pack role; seller identifies a JR-connected receiver battery.",
+          "limitations": "Physical inventory does not specify pack shape or connector; modeled mass is estimated at 110g while this listing gives no weight. Foreign currency; do not convert into USD or allocate as installed."
+        }
+      ],
+      "allocation": "Unallocated foreign-currency candidate; preserve EUR separately from USD observations."
+    }
+  ],
+  "official_technical_references": [
+    {
+      "id": "os_max_fx_fuel_guidance",
+      "manufacturer": "O.S. Engines",
+      "document": "MAX-50SX / 40 / 46 / 61 / 91 FX-series instruction manual",
+      "url": "https://www.os-engines.co.jp/english/line_up/engine/air/aircraft/manual/50sx_40-91fx.pdf",
+      "observed_on": "2026-10-16",
+      "relevant_guidance": "For the FX series, the manual says 5-20% nitromethane is preferable and fuel must contain at least 18% lubricant by volume. This establishes an engine-fuel specification boundary only; it does not identify the Ugly Stik's installed blend."
+    }
+  ],
+  "integration_recommendations": [
+    "Retain all four offers as unallocated candidates. Do not change installed identity, aircraft costing, catalog values, or build completeness from these listings alone.",
+    "Keep the Ugly Stik receiver row unresolved in USD: the GBP Overlander quote is electrically exact but its 55g mass differs from the 105g modeled estimate and foreign currency must remain separate.",
+    "For the Ugly Stik's 150mL fuel contents, USD 1.56 is only a normalized volume-share reference against the listed per-quart price; the seller package is a 12-quart case and shipping/HazMat costs are unknown. The actual blend composition remains unspecified.",
+    "Treat the Gator pack as a current USD price observation for P-51 LiFe capacity/chemistry research only. Its 99g weight, receiver-only description, and unverified ignition and power-board connections do not establish a physical or installed match.",
+    "Keep the Extra receiver listing in EUR. The electrical description matches, but modeled weight and pack layout/connector are not verified; do not convert it into a USD economic amount."
+  ]
+}

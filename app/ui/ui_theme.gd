@@ -183,8 +183,9 @@ static func _button(
 		focus.draw_center = false
 		focus.set_border_width_all(FOCUS_WIDTH)
 		focus.border_color = FOCUS
-		focus.set_corner_radius_all(RADIUS + FOCUS_WIDTH)
-		focus.set_expand_margin_all(FOCUS_WIDTH + 1)
+		# Keep the complete focus outline inside scrollable rows and viewport edges.
+		focus.set_corner_radius_all(RADIUS)
+		focus.set_expand_margin_all(0)
 		theme.set_stylebox("focus", type, focus)
 
 

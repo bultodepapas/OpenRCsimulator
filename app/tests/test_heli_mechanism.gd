@@ -150,7 +150,7 @@ func _run() -> void:
 
 func _same(rig: RefCounted, before: Dictionary) -> bool:
 	for id: String in before:
-		if rig.bindings[id].transform != before[id]:
+		if not rig.bindings.has(id) or rig.bindings[id].transform != before[id]:
 			return false
 	return true
 

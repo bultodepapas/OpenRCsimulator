@@ -1,0 +1,7 @@
+{
+  "motion_oracle_sha256": "da7888a45377d4f1628d9cbe2495804c1d6e4da2a863dbd82edc819a14b3d6d7",
+  "core_autocrlf": "true",
+  "motion_source_sha256": "24f99dd8c7c1c9a79e4421198c27c837e44b3aa8eed9c4dfd0b4ee0293f13db3",
+  "attributes": "working-tree .gitattributes under review",
+  "fresh_clone": "pass"
+}

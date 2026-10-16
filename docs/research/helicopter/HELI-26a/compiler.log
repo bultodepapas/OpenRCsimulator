@@ -1,0 +1,10 @@
+{
+  "source_unchanged": true,
+  "bindings": 108,
+  "linkages": 9,
+  "max_source_basis_error": 3.324650580942279e-06,
+  "max_source_position_error_m": 2.741410369822006e-07,
+  "max_rod_error_m": 3.26312243892346e-08,
+  "glb_sha256": "f5f7de25a586b65b0f77ab17497665cc5f47cc409de6c531cadf490676159e47",
+  "profile_sha256": "e3a045e3da856cac11c53bb4a417b020d6737769d9c67a0f7370035bd01539d2"
+}

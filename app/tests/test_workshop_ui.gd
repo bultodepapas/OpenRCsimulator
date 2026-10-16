@@ -69,7 +69,7 @@ func _run() -> void:
 	TranslationServer.set_locale("es")
 	await _ui.settle()
 	_check("Spanish locale translates the Workshop title", title != null and title.can_auto_translate()
-		and title.atr(title.text) == "Laboratorio de aviones", title.atr(title.text) if title != null else "missing title")
+		and title.atr(title.text) == "Taller de aviones", title.atr(title.text) if title != null else "missing title")
 	TranslationServer.set_locale("en")
 	await _ui.settle()
 	await _ui.tap(KEY_TAB)

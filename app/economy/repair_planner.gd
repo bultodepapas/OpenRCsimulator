@@ -255,7 +255,12 @@ static func select_option(plan_value: Dictionary, component_id: String, option_i
 		return more_expensive
 	return {
 		"ok": true,
-		"decision": {"disposition": "repair", "quantity": int(quantity), "repair_minor": int(amount)},
+		"decision": {
+			"disposition": "repair",
+			"quantity": int(quantity),
+			"repair_minor": int(amount),
+			"replacement_comparable": bool(component.get("replacement_comparable", false)),
+		},
 		"provenance": _selection_provenance(component, selected, costing_basis, amount, str(plan_value.get("aircraft_id", ""))),
 		"costing_basis": costing_basis,
 		"labor_mode": plan_value.get("labor_mode", ""),

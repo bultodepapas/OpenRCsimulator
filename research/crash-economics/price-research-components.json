@@ -377,5 +377,35 @@
     },
     "whole_unit_reference": "os-fs64v-osmg901",
     "retailer_sku": "OSMG906"
+  },
+  {
+    "id": "power_unlimited_pu2100_2s_life_gator_20261016",
+    "brand": "Power Unlimited",
+    "product": "2100mAh 2S 6.6V 20C LiFe receiver battery",
+    "sku": "PU-2100-2s-LiFe",
+    "category": "aircraft_power_battery_candidate",
+    "amount_usd": 25.95,
+    "availability": "In stock on the seller product page.",
+    "quantity": "1 receiver battery; 2S/6.6V LiFe (LiFePO4), 2100mAh, 20C continuous; 99g; 3.75 x 0.75 x 1.125 in; JR Universal output lead and JST-XH balance connector.",
+    "url": "https://www.gator-rc.com/products/2s-2100mah-k6-6v-20c-life-batteries-power-unlimited",
+    "observed_on": "2026-10-16",
+    "price_kind": "live_us_retailer_listing_price",
+    "evidence_quality": "high",
+    "notes": "Observed 2026-10-16. One battery pack; shipping and destination charges are not included. Unallocated offer. The price is not evidence that this SKU was installed in the P-51 or qualifies as a mass/fit match. The modeled mass is 150g per pack versus the product's 99g; installed brand, size fit, and exact connector/power-board compatibility are unknown. Candidate only; no allocation. Seller identifies it as a receiver pack. Ignition-module harness/connectors are unverified, and pack mass is 99g versus the modeled 150g. Candidate only; no allocation. See intake-power-20261016.json for electrical specifications, physical group comparisons and sources. Tax and shipping excluded."
+  },
+  {
+    "id": "vp_10air_18oil_case12_bulk55_20261016",
+    "brand": "VP Racing Fuels",
+    "product": "10% Air / 18% Oil RC aviation nitro fuel, quart cans, case of 12",
+    "sku": "VP-449632701 (12CT)",
+    "category": "glow_fuel_candidate",
+    "amount_usd": 117.99,
+    "availability": "7 cases listed in stock on 2026-10-16: 5 at Edwards, Illinois and 2 at Las Vegas, Nevada. Destination shipping was not verified.",
+    "quantity": "One 12-can case; each can contains 1 US quart. Product description states the 18% oil package is 80% multiviscosity synthetic and 20% castor.",
+    "url": "https://bulk55.com/products/12-count-vp-racing-10-aviation-rc-nitro-fuel-18-oil-premixed-quart-cans?_fid=345239e92&_pos=10&_ss=c",
+    "observed_on": "2026-10-16",
+    "price_kind": "live_us_retailer_listing_price",
+    "evidence_quality": "high",
+    "notes": "Observed 2026-10-16. Seller lists one case of 12 x 1-quart cans for USD 117.99, with a unit price of USD 9.83 per quart can; freight and hazardous-material charges were not captured in the displayed product price. Unallocated offer. The package is a case of 12 quarts; do not treat USD 117.99 as the cost of onboard 150mL or as an aircraft build total. The authored physical row specifies only a methanol/oil/nitro blend, not its percentages or brand. USD 1.56 excludes case-level purchase, freight and hazardous-material charges. This is a formula-compatible price candidate, not evidence of the installed blend or a modeled-physics match; no allocation. See intake-power-20261016.json for electrical specifications, physical group comparisons and sources. Tax and shipping excluded."
   }
 ]

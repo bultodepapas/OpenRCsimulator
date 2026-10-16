@@ -8,6 +8,8 @@ ok static rail and shell deflection equals force / stiffness
 ok release rebounds then loses energy monotonically
 ok release preserves the work / dissipation balance
 ok held-load tape agrees at 1/30/60/144 Hz including energy
+ok 10000 variable load/time steps preserve the energy balance
+VARIABLE_LOAD maximum_energy_balance_error_j=0.00000000000142
 ok one skid load does not deform the opposite skid or canopy
 ok invalid loads and times fail atomically
 ok long frames cannot hide intermediate overtravel
@@ -20,8 +22,10 @@ ok actual shell flexes while four attachment patches stay fixed
 ok morph construction preserves base vertices, UVs, indices and materials
 ok signed physical metres reach native blend weights
 ok invalid render deformation retains the accepted morphs
+ok engine-evaluated morphs preserve signed travel and finite unit normals
+NATIVE_MORPHS maximum_vertex_error_m=0.0
 ok elastic bench advances with stopped controls and rotor
 ok pause freezes elastic state while loads are queued
 ok frame step advances released elastic state while paused
 ok mechanism rejection rolls back elastic state too
-24 checks, 0 failed; RK4 max error 0.00000000000000; frame-rate max error 0.00000000000000; pinned shell vertices 224
+26 checks, 0 failed; RK4 max error 0.00000000000000; frame-rate max error 0.00000000000000; pinned shell vertices 224

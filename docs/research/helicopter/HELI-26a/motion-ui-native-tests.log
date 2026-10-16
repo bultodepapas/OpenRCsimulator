@@ -1,6 +1,11 @@
 Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 
 ok advanced inspector opens with admitted neutral mechanics
+ok native inspector declares a 640x480 minimum
+ok initial head view fits after resize before any camera button is used
+ok Space activates a focused visibility checkbox without pausing
+ok Space activates a focused camera button without pausing
+ok P pauses globally while a checkbox is focused
 ok all five UI controls reach the mechanism with correct units/order
 ok slow inspection rotation advances the source mechanism
 ok Space freezes the mechanism without losing selected RPM
@@ -18,4 +23,16 @@ ok rejected animation rolls back hidden state as well as the visible rig
 ok rejected phase seek restores shaft history and requested RPM
 ok visibility controls reveal supplied canopy and blades
 ok invalid UI pose reports rejection and retains visible mechanism
-18 checks, 0 failed
+ok rejected azimuth seek restores the accepted slider, label, and state
+ok 640x480 keeps the readable control panel inside the window
+ok 640x480 hides the title when it would cover the focused geometry
+ok 640x480 scroll reaches the bottom help text
+ok 640x480 scroll returns to the first mechanical control
+ok 640x480 Cabeza preset frames its semantic mesh vertices clear of the panel and viewport edges
+ok 640x480 Cola preset frames its semantic mesh vertices clear of the panel and viewport edges
+ok 640x480 Completo preset frames its semantic mesh vertices clear of the panel and viewport edges
+ok 640x480 Patines preset frames its semantic mesh vertices clear of the panel and viewport edges
+ok 640x480 Carenado preset frames its semantic mesh vertices clear of the panel and viewport edges
+ok all camera preset focus points remain centered in the clear render region after resize
+ok 800x600 restores the wrapped title within the clear render region
+35 checks, 0 failed

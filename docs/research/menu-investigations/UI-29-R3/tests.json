@@ -1,0 +1,86 @@
+[
+  {
+    "test": "test_conditions_responsive",
+    "errors": [],
+    "passed": true,
+    "checks": 0
+  },
+  {
+    "test": "test_controller_responsive",
+    "errors": [],
+    "passed": true,
+    "checks": 0
+  },
+  {
+    "test": "test_failure_availability_ui",
+    "errors": [],
+    "passed": true,
+    "checks": 62
+  },
+  {
+    "test": "test_failure_ui",
+    "errors": [],
+    "passed": true,
+    "checks": 27
+  },
+  {
+    "test": "test_menu_audio",
+    "errors": [],
+    "passed": true,
+    "checks": 26
+  },
+  {
+    "test": "test_settings_ui",
+    "errors": [],
+    "passed": true,
+    "checks": 40
+  },
+  {
+    "test": "test_ui_home",
+    "errors": [],
+    "passed": true,
+    "checks": 240
+  },
+  {
+    "test": "test_ui_language",
+    "errors": [],
+    "passed": true,
+    "checks": 26
+  },
+  {
+    "test": "test_ui_modal_responsive",
+    "errors": [],
+    "passed": true,
+    "checks": 0
+  },
+  {
+    "test": "test_ui_pause",
+    "errors": [],
+    "passed": true,
+    "checks": 57
+  },
+  {
+    "test": "test_ui_pause_responsive",
+    "errors": [],
+    "passed": true,
+    "checks": 422
+  },
+  {
+    "test": "test_ui_screen_stack",
+    "errors": [],
+    "passed": true,
+    "checks": 38
+  },
+  {
+    "test": "test_ui_settings_integration",
+    "errors": [],
+    "passed": true,
+    "checks": 25
+  },
+  {
+    "test": "test_workshop_ui",
+    "errors": [],
+    "passed": true,
+    "checks": 83
+  }
+]

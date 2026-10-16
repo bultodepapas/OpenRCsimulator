@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 const UiTheme := preload("res://ui/ui_theme.gd")
+const RepairDetails := preload("res://economy/repair_details.gd")
 
 signal restart_requested
 signal inspect_requested
@@ -578,6 +579,7 @@ func _rebuild_details() -> void:
 			line_count += 1
 	if line_count == 0:
 		_add_detail_text(tr("No priced line items were supplied."), true)
+	_add_repair_details(RepairDetails.normalize(_report), currency)
 	var unresolved: Variant = _report.get("unresolved", [])
 	if unresolved is Array and not unresolved.is_empty():
 		_add_detail_section(tr("Unresolved items"))
@@ -590,6 +592,107 @@ func _rebuild_details() -> void:
 		_add_detail_section(tr("Assumptions"))
 		for assumption: Variant in assumptions:
 			_add_detail_text("• " + _unresolved_text(assumption), true)
+
+
+func _add_repair_details(rows: Array[Dictionary], currency: String) -> void:
+	if rows.is_empty():
+		return
+	_add_detail_section(tr("Selected repair details"))
+	for row: Dictionary in rows:
+		if rows.size() > 1:
+			_add_detail_text("%s · %s" % [
+				_humanize_identifier(str(row.get("component_id", ""))), str(row.get("recipe_label", ""))], false)
+		_add_detail_money(tr("Selected repair subtotal"), row.get("repair_minor"), currency)
+		if bool(row.get("inspection_fee_itemized", false)):
+			_add_detail_money(tr("Inspection fee"), row.get("inspection_minor"), currency)
+		else:
+			_add_detail_text(tr("No separate inspection fee was itemized."), true)
+	_add_detail_text(tr("Already included in the repair line above; not added again."), true)
+	for row: Dictionary in rows:
+		var component_name := _humanize_identifier(str(row.get("component_id", "")))
+		var recipe_label := str(row.get("recipe_label", ""))
+		_add_detail_text("%s · %s" % [component_name, recipe_label], false)
+		var costing_basis := tr("Cash purchase") if row.get("costing_basis") == "cash" else tr("Consumption allocation")
+		_add_detail_text(tr("Costing basis: %s") % costing_basis, true)
+		var labor_label := tr("DIY") if row.get("labor_mode") == "diy" else tr("Paid")
+		_add_detail_text(tr("Labor: %s · %d min") % [labor_label, int(row.get("labor_minutes", 0))], true)
+		_add_detail_money(tr("Labor cost"), row.get("labor_minor"), currency)
+		var materials: Variant = row.get("materials", [])
+		if materials is Array:
+			for material_value: Variant in materials:
+				if not material_value is Dictionary:
+					continue
+				var material: Dictionary = material_value
+				_add_detail_text(tr("Material: %s") % _humanize_identifier(str(material.get("material_id", ""))), false)
+				var unit := str(material.get("unit", ""))
+				var required := _format_repair_units(int(material.get("required_units", 0)), unit)
+				_add_detail_text(tr("Required: %s") % required, true)
+				var package_price := _format_money(int(material.get("package_price_minor", 0)), currency, true)
+				var package_units := _format_repair_units(int(material.get("package_units", 0)), unit)
+				_add_detail_text(tr("Package: %s at %s each") % [package_units, package_price], true)
+				_add_detail_money(tr("Cash for %d packages") % int(material.get("package_count", 0)), material.get("purchase_minor"), currency)
+				_add_detail_money(tr("Consumed material allocation"), material.get("consumption_minor"), currency)
+		_add_detail_text(tr("Full-package cash and consumed allocation are alternate material views."), true)
+		var inspection_basis := tr("Inspection") if row.get("inspection_basis") == "inspection" else tr("Scenario assumption")
+		_add_detail_text(tr("Inspection basis: %s") % inspection_basis, true)
+		_add_detail_text(tr("Inspection evidence: %s") % str(row.get("inspection_evidence", "")), true)
+		var measurements: Variant = row.get("inspection_measurements", {})
+		if measurements is Dictionary:
+			var measurement_keys: Array[String] = []
+			for key: Variant in measurements.keys():
+				measurement_keys.append(str(key))
+			measurement_keys.sort()
+			for key: String in measurement_keys:
+				var display_key := key.trim_suffix("_milli_sq_in")
+				var measurement_value := _format_milli_square_inches(int(measurements[key])) if key.ends_with("_milli_sq_in") else str(measurements[key])
+				_add_detail_text(tr("Measurement: %s = %s") % [_humanize_identifier(display_key), measurement_value], true)
+		_add_repair_source(row.get("labor_source", {}))
+		if materials is Array:
+			for material_value: Variant in materials:
+				if material_value is Dictionary:
+					_add_repair_source((material_value as Dictionary).get("source", {}))
+
+
+func _format_repair_units(value: int, unit: String) -> String:
+	if unit == "milli_square_inch":
+		return _format_milli_square_inches(value)
+	return "%s %s" % [str(value), _humanize_identifier(unit)]
+
+
+func _format_milli_square_inches(value: int) -> String:
+	var whole: int = value / 1000
+	var remainder: int = value % 1000
+	var result := str(whole)
+	if remainder > 0:
+		var fraction := "%03d" % remainder
+		while fraction.ends_with("0"):
+			fraction = fraction.left(fraction.length() - 1)
+		result += "." + fraction
+	return result + " in²"
+
+
+func _add_repair_source(value: Variant) -> void:
+	if not value is Dictionary:
+		return
+	var source: Dictionary = value
+	var source_name: Variant = source.get("source_name")
+	if source_name is String and not String(source_name).is_empty():
+		_add_detail_text(tr("Source: %s") % String(source_name), true)
+	var product: Variant = source.get("product")
+	if product is String and not String(product).is_empty():
+		_add_detail_text(tr("Product: %s") % String(product), true)
+	var observed_on: Variant = source.get("observed_on")
+	if observed_on is String and not String(observed_on).is_empty():
+		_add_detail_text(tr("Observed: %s") % String(observed_on), true)
+	var availability: Variant = source.get("availability")
+	if availability is String and not String(availability).is_empty():
+		_add_detail_text(tr("Availability when observed: %s") % String(availability), true)
+	var source_url: Variant = source.get("source_url")
+	if source_url is String and String(source_url).begins_with("https://"):
+		_add_detail_source(String(source_url))
+	var evidence: Variant = source.get("evidence", source.get("description", ""))
+	if evidence is String and not String(evidence).is_empty():
+		_add_detail_text(tr("Source note: %s") % String(evidence), true)
 
 
 func _add_replacement_comparison(currency: String) -> void:
