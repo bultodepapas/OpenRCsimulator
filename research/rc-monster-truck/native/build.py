@@ -312,6 +312,7 @@ def run_parity_test(library: Path, godot_arg: Path | None, lock: dict) -> None:
         "physics/math3d.gd",
         "physics/rigid_body.gd",
         "physics/integrator.gd",
+        "physics/generalized_coordinates.gd",
         "physics/ground_terrain.gd",
         "physics/lake_surface.gd",
         "physics/ground_vehicle/vehicle_dynamics.gd",

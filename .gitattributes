@@ -73,3 +73,7 @@
 /app/data/economy/*.json text eol=lf
 /app/data/economy/**/*.json text eol=lf
 /research/crash-economics/*.json text eol=lf
+
+# Native Windows/Linux receipts must bind identical compiler source bytes.
+/research/rc-monster-truck/native/src/*.cpp text eol=lf
+/research/rc-monster-truck/native/src/*.hpp text eol=lf
