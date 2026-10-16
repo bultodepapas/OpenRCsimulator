@@ -88,13 +88,81 @@ jobs:
           name: captures-app
           path: app/captures/*
 
+  native-windows:
+    name: RC native Windows build
+    runs-on: windows-2025-vs2026
+    steps:
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
+      - name: Download pinned Godot Windows console editor
+        shell: pwsh
+        run: |
+          $archive = Join-Path $env:RUNNER_TEMP 'Godot_v4.7.2-stable_win64.exe.zip'
+          $destination = Join-Path $env:RUNNER_TEMP 'godot-4.7.2-stable'
+          Invoke-WebRequest `
+            -Uri 'https://github.com/godotengine/godot/releases/download/4.7.2-stable/Godot_v4.7.2-stable_win64.exe.zip' `
+            -OutFile $archive
+          $expected = '83decd58fdf67b9d657958a1ae6bf1929c20785315a81effe245874cdc57acb709bf868e00778a96984338c1b29dafdb453c6847747694621c6ecf5da2259993'
+          $actual = (Get-FileHash -LiteralPath $archive -Algorithm SHA512).Hash.ToLowerInvariant()
+          if ($actual -ne $expected) {
+            throw "Godot Windows archive SHA-512 mismatch: expected $expected, got $actual."
+          }
+          Expand-Archive -LiteralPath $archive -DestinationPath $destination -Force
+          $godot = Get-ChildItem -LiteralPath $destination -Filter 'Godot_v4.7.2-stable_win64_console.exe' -File -Recurse |
+            Select-Object -First 1 -ExpandProperty FullName
+          if (-not $godot) {
+            throw 'Pinned Godot Windows console executable was not present in the verified archive.'
+          }
+          Add-Content -LiteralPath $env:GITHUB_ENV -Value "GODOT_WINDOWS_EXE=$godot"
+      - name: Build, load, float64-check and compare the native Windows evaluator
+        shell: pwsh
+        run: |
+          $vswhere = Join-Path ${env:ProgramFiles(x86)} 'Microsoft Visual Studio\Installer\vswhere.exe'
+          $installation = & $vswhere -latest -products '*' -requires Microsoft.VisualStudio.Component.VC.Tools.x86.x64 -property installationPath
+          if (-not $installation) {
+            throw 'The pinned MSVC C++ toolchain is not installed on this runner.'
+          }
+          $devcmd = Join-Path $installation 'Common7\Tools\VsDevCmd.bat'
+          if (-not (Test-Path -LiteralPath $devcmd -PathType Leaf)) {
+            throw "Visual Studio developer command file was not found: $devcmd"
+          }
+          $command = "call `"$devcmd`" -no_logo -arch=amd64 -host_arch=amd64 >nul && set"
+          $developerEnvironment = & $env:ComSpec /d /s /c $command
+          if ($LASTEXITCODE -ne 0) {
+            throw 'Could not initialize the x64 Visual Studio developer environment.'
+          }
+          foreach ($entry in $developerEnvironment) {
+            $separator = $entry.IndexOf('=')
+            if ($separator -gt 0) {
+              $name = $entry.Substring(0, $separator)
+              $value = $entry.Substring($separator + 1)
+              Set-Item -Path "Env:$name" -Value $value
+            }
+          }
+          where.exe cl.exe
+          if ($LASTEXITCODE -ne 0) {
+            throw 'MSVC cl.exe was not available after initializing the developer environment.'
+          }
+          python research/rc-monster-truck/native/build.py --jobs 2 --godot "$env:GODOT_WINDOWS_EXE"
+          if ($LASTEXITCODE -ne 0) {
+            exit $LASTEXITCODE
+          }
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
+        if: always()
+        with:
+          name: rc-native-windows
+          include-hidden-files: true # Explicit generated files inside .tools only.
+          path: |
+            .tools/native-ground-vehicle/openrc_ground_vehicle.dll
+            .tools/native-ground-vehicle/build-receipt.windows.json
+            .tools/native-ground-vehicle/parity-windows-latest.log
+
   # PT1: release builds. On main (which also warms the template cache: tag runs can only restore caches made on the
   # default branch), on v* tags, and by hand. Fails if an export errors, the exported Linux binary does not fly the
   # trimmed-flight check, or the macOS bundle is not universal and ad-hoc signed (app/export.sh).
   export:
     name: Release builds (Windows, Linux, macOS)
     if: github.ref == 'refs/heads/main' || startsWith(github.ref, 'refs/tags/v') || github.event_name == 'workflow_dispatch'
-    needs: app
+    needs: [app, native-windows]
     runs-on: ubuntu-24.04
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4.4.0
@@ -109,6 +177,23 @@ jobs:
         with:
           path: ~/.local/share/godot/export_templates
           key: godot-templates-${{ hashFiles('app/get-templates.sh') }}
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: rc-native-linux
+          path: ${{ runner.temp }}/rc-native-linux
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4.3.0
+        with:
+          name: rc-native-windows
+          path: ${{ runner.temp }}/rc-native-windows
+      - name: Install matching Windows and Linux native artifacts before export
+        run: |
+          native_tool_root=".tools/native-ground-vehicle"
+          mkdir -p "$native_tool_root"
+          cp "$RUNNER_TEMP/rc-native-linux/libopenrc_ground_vehicle.so" "$native_tool_root/"
+          cp "$RUNNER_TEMP/rc-native-linux/build-receipt.linux.json" "$native_tool_root/"
+          cp "$RUNNER_TEMP/rc-native-windows/openrc_ground_vehicle.dll" "$native_tool_root/"
+          cp "$RUNNER_TEMP/rc-native-windows/build-receipt.windows.json" "$native_tool_root/"
+          python3 research/rc-monster-truck/native/build.py --jobs 2 --install-app
       - run: app/export.sh # names the packages with git describe, the same identity the app shows (UI-04a)
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
@@ -120,7 +205,7 @@ jobs:
   release:
     name: GitHub release (v* tags)
     if: startsWith(github.ref, 'refs/tags/v')
-    needs: export
+    needs: [three, app, native-windows, export]
     runs-on: ubuntu-24.04
     permissions:
       contents: write

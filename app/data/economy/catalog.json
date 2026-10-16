@@ -3,11 +3,11 @@
   "currency": "USD",
   "price_date": "2026-10-16",
   "generated_from": {
-    "price_catalog_sha256": "159b5cff7b59e40895b503c371d87b9e287f9b37e348a5c4faa42b5b533b9414",
-    "aircraft_costing_sha256": "0488f842e50962f703840e0be8a1b4bdbc624b87c276f0af658d088b1a2530a2",
+    "price_catalog_sha256": "6f09dfb402ee9647fd88932c9d54e68799531e3208f6c13edf5d4c433fe3440b",
+    "aircraft_costing_sha256": "8f74e9b130d102e2292b5aa7c6e2140f1250aabe1597b89132c2784813299d84",
     "aircraft_catalog_sha256": "e0790acb9b1a5097d9d3cbcb564e72f074940a3813b52f70edf1c44dae5bc60c",
-    "price_research_components_sha256": "df0055da490b492f193f97021cf6639f01dc525a1793027bd68ed812f5fda494",
-    "price_research_fleet_sha256": "85026093f0172a0692e6b1c3c1813b2e8770ba0b13dbf04f033923223a002f13"
+    "price_research_components_sha256": "c980171882fc6b933e241d4aac613d562d9c84eb49bef31bcb8d51f88d5e97e5",
+    "price_research_fleet_sha256": "66d0a319869ca158aa947783143fb2807497c42decb0c834eb84e6642198392d"
   },
   "products": [
     {
@@ -3824,7 +3824,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "xcell-60-research",
-      "source_sha256": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
+      "source_sha256": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "unpriced",
