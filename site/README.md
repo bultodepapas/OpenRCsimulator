@@ -6,7 +6,7 @@ WEB-01/02/03/04/05 own `site/` and the isolated `gh-pages` deployment. No simula
 
 Visual thesis: an RC club's aircraft catalogue, combining oversized workshop typography, original dark studio renders, ivory paper and field green.
 
-Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and Savox introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → Savox partner details → development status and contribution paths. Spanish is the initial language; English and a page-wide night theme are selectable and saved locally. Downloads describe v0.1.1; source features are explicitly separate.
+Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and Savox introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → Savox partner details → development status and contribution paths. Spanish is the initial language; English and a page-wide night theme are selectable and saved locally. Downloads target latest published release v0.1.1; current-source features are explicitly separate.
 
 Interaction thesis: a short hero entrance, restrained section reveals and real aircraft turntables with drag, angle slider and play/pause controls. Reduced-motion preference disables autoplay and offers deliberate single-frame steps; core content, technical disclosures and downloads work without JavaScript. The viewer loads only near the hangar, pauses offscreen/when hidden, and retains at most two decoded sheets.
 
@@ -44,9 +44,11 @@ WEB-04 makes the jet the initial catalogue selection and adds direct inspector e
 
 WEB-05 keeps the same composition while reducing work: preload the two opening fonts, show the hero poster immediately, cache scroll geometry between layout changes, and defer distant editorial rendering with `content-visibility: auto`. Intrinsic section sizes are estimates until first rendering; the browser then remembers measured sizes. The turntable schedules one animation callback per frame at its existing 125 ms interval, updates only angle UI per frame, cancels obsolete image loads, retries failed selections, and retains a two-sheet LRU cache. Language and theme changes avoid identical HTML/image assignments. Rebuild only the lightweight Savox copies with `python site/prepare_assets.py --brands-only`.
 
-HTML references styles/scripts with a shared release query (`?v=web05-1`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
+HTML references styles/scripts with a shared release query (`?v=source-20261016`). Bump it when those files change so returning visitors do not combine cached JavaScript with new markup.
 
 Publication uses a separate `gh-pages` branch with only the static website. GitHub Pages serves `/` from that branch; `.nojekyll` disables processing. The main working tree and its unrelated pending changes are never included in that publication. The website is a project showcase, not a browser build of the simulator.
+
+The unpublished v0.1.2 draft refresh keeps download, first-launch and checksum links on the latest published v0.1.1 release, and labels the Settings, P-51 equipment and MONSTER CAR 2 highlights as current-source features. Archive sizes remain omitted. Local and public browser checks passed in English and Spanish: nonempty translated copy, no horizontal overflow, no broken images and no console warnings/errors. All 17 loaded local resource URLs returned HTTP 200. Public HTML and main.js match local SHA-256 values; all download URLs match the v0.1.1 release assets. Deployment `af902cc7e8e5370c731be2483639bc64c2986a7c` passed the [Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38917759203). No v0.1.2 package or public download is available.
 
 Publish with `python site/publish.py --message "WEB-step: change; proof: completed checks"` after browser verification, replacing the message with the actual change and checks. It requires Git identity and an authenticated `gh` with repository admin access; it refuses to replace a different existing Pages source. Only HTML, CSS, JS, favicon, `.nojekyll` and licensed assets are copied into a temporary checkout. No force push or changes to the working branch/index.
 

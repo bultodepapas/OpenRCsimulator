@@ -1,10 +1,10 @@
 # OpenRC Simulator: first launch
 
-Status: v0.1.1 player guide, checked 2026-10-14. [v0.1.1 release notes](releases/v0.1.1.md) describe the download; [flight setup](#current-source) explains its defaults and features. Aircraft remain under evaluation; start with the [Ugly Stik](UGLY-STIK-PLAN.md).
+Status: current-source player guide, checked 2026-10-16. The latest published package is [v0.1.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1); [v0.1.2 release notes](releases/v0.1.2.md) are an unpublished draft. Features described under [Current source](#current-source) may not be included in v0.1.1. Aircraft remain under evaluation; start with the [Ugly Stik](UGLY-STIK-PLAN.md).
 
 ## 1. Download and check
 
-Download a platform ZIP and `SHA256SUMS` from [v0.1.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1). Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
+Download a platform ZIP and `SHA256SUMS` from the latest published release, [v0.1.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1). Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
 
 - Linux: `sha256sum -c SHA256SUMS --ignore-missing`
 - macOS: `shasum -a 256 openrc-simulator-*.zip`
@@ -22,11 +22,11 @@ These test builds have no trusted developer signing/notarization. If macOS refus
 
 ## 3. Fly
 
-Home selects the aircraft, language, launch, weather and lighting. The rc8 package uses keyboard/mouse menus. Current source also supports an explicitly selected gamepad; a radio controls only flight. English is the default, Spanish is available, and valid settings are remembered.
+Home selects the aircraft, language, launch, weather and lighting. Menus support keyboard/mouse and an explicitly selected gamepad; a radio controls only flight. English is the default, Spanish is available, and valid settings are remembered.
 
 Fresh settings select the Ugly Stik at idle near the runway threshold. Other flight-capable catalog aircraft start airborne. Saved choices take precedence; Restart repeats the selected launch. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. See [defaults and features](#current-source).
 
-Home also offers two separate experimental activities, each with its own controls: [RC Helicopter Research Trainer](HELICOPTER.md) and [RC cars · Bisonte MT8](../research/rc-monster-truck/README.md).
+Home also offers two separate experimental activities, each with its own controls: [RC Helicopter Research Trainer](HELICOPTER.md) and [RC cars · Bisonte MT8 and MONSTER CAR 2](../research/rc-monster-truck/README.md).
 
 **Esc** opens Pause; losing window focus also pauses. Continue resumes explicitly. Pause can restart, return to Home or quit. The direct CLI route has no Home to return to.
 
@@ -84,7 +84,7 @@ Recognized gamepads with standard mapped axes become ready on the first valid li
 
 Default buttons: **A/Cross** accept, **B/Circle** back, **Menu/Options** pause, **Y/Triangle** camera, right-stick click reset view, **X/Square** overlays, D-pad trims during flight, and held LB/L1 throttle cut for fixed-wing flight. D-pad/left stick navigate menus. Remaps are profile-specific. Ground driving keeps left-stick steering, RT drive, LT brake and B+RT reverse.
 
-**Automatic aircraft controls:** on gamepad profiles, **A/Cross** cycles available flaps, **B/Circle** toggles retractable gear and **RB/R1** toggles an installed smoke pump. The jet receives flap and gear bindings; the Stik receives the smoke binding. Automatic assignments use only free flight buttons, preserve explicit remaps and cleared actions, and yield to existing AUX assignments. A/Cross and B/Circle still mean Accept and Back in menus; release them before pressing again in flight. The Control guide shows this aircraft's equipment, actual binding, gear movement and smoke output. Unknown joysticks and RC radios keep their configured buttons; use **Remap** for their actual layout.
+**Automatic aircraft controls:** on gamepad profiles, **A/Cross** cycles available flaps, **B/Circle** toggles retractable gear and **RB/R1** toggles an installed smoke pump. The P-51D and Ventage Jet receive flap and gear bindings; the Stik receives the smoke binding. Automatic assignments use only free flight buttons, preserve explicit remaps and cleared actions, and yield to existing AUX assignments. A/Cross and B/Circle still mean Accept and Back in menus; release them before pressing again in flight. The Control guide shows this aircraft's equipment, actual binding, gear movement and smoke output. Unknown joysticks and RC radios keep their configured buttons; use **Remap** for their actual layout.
 
 **Restart from the controller:** **View/Back** on Xbox or **Share/Create** on PlayStation restarts the selected flight, including from the accident report, then opens Pause for explicit **Continue**. The flight controller owns this command even when another pad navigates menus. In Controller settings → Buttons → Flight, remap **Restart flight** to a button or an unused radio/joystick axis, then **Save**. An axis fires once when it crosses its threshold; return it toward OFF before restarting again. Settings/calibration cannot queue a restart from a held control. While an ordinary menu is open, use Pause's **Restart flight** action.
 
@@ -94,7 +94,7 @@ The **Extra channels** section maps smoke, flap requests and gear requests indep
 
 Review the effective action list after assigning AUX: an inherited flight button on the same source becomes Unbound. For a radio/joystick AUX on the inherited Pause button, Pause uses **Escape**; an explicitly remapped Pause is preserved and conflicts must be resolved before saving.
 
-**Aircraft limits:** Ventage Jet has simulated retractable gear, including deployment, wheel contacts, drag and a retraction interlock while on its wheels. Fixed-gear aircraft cannot retract. Ventage Jet flaps move through the positions recommended in the [SebArt Avanti S 2.2m manual](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf): 0°, 20° takeoff and 50° landing. Its down-elevator mix scales with actual flap travel, to 8% of full elevator travel at 20° and 20% at 50°. The simulator shows requested and actual angle and an estimated overspeed advisory; it does not retract flaps automatically. Flap lift and drag behavior remains experimental. Other aircraft report flaps as unavailable. The jet has no implemented smoke emitter/pump; the guide reports it as unavailable. An inventory description mentioning smoke hardware does not enable that function.
+**Aircraft limits:** Ventage Jet has simulated retractable gear, including deployment, wheel contacts, drag and a retraction interlock while on its wheels. Fixed-gear aircraft cannot retract. Ventage Jet flaps move through the positions recommended in the [SebArt Avanti S 2.2m manual](https://www.sebart.it/download/AVANTI%20S%20JET%202.2m-Manual%20Intro.pdf): 0°, 20° takeoff and 50° landing. Its down-elevator mix scales with actual flap travel, to 8% of full elevator travel at 20° and 20% at 50°. The simulator shows requested and actual angle and an estimated overspeed advisory; it does not retract flaps automatically. Flap lift and drag behavior remains experimental. The P-51D also has simulated retractable taildragger gear and flaps at 0°, 15° takeoff and 45° landing, with an estimated 2.5-second flap travel time. Its aerodynamic calibration remains experimental. Other aircraft report flaps as unavailable. The jet has no implemented smoke emitter/pump; the guide reports it as unavailable. An inventory description mentioning smoke hardware does not enable that function.
 
 These are source features with automated checks, not a claim that every Xbox/PlayStation model or connection has been tested. [Implementation and remaining qualification](research/controller-support-2026-10-14/README.md#implementation-evidence).
 
