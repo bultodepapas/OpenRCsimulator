@@ -55,6 +55,25 @@ The full-suite and trace comparisons preceded concurrent DATA-3 metadata edits;
 the fresh-clone visual proof applies only this landscape change. Captured render
 and tool source hashes match the working files.
 
+## Intermittent headless import abort (2026-10-16)
+
+Two visual CI runs, [38931908363](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38931908363)
+and [38933493848](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38933493848),
+aborted a scratch-project Godot `--import` with status `-6`. Both logs reached
+`[ DONE ] reimport` and `[ DONE ] loading_editor_layout`, contain no Godot
+parse, shader or engine error lines, and end with `timeout: the monitored command
+dumped core`. Their captured import output matches the completed prefix of the
+visual import in [run 38925445015](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38925445015),
+where the visual job passed. The logs contain no native backtrace, so the cause
+of the abort remains unknown.
+
+The scratch mutation importer now permits one retry only for that exact
+completed-import SIGABRT/core signature. It keeps the first log, writes the retry
+to a separate `*-retry.log`, and still fails if the retry fails. Other import
+failures and all capture commands remain single-attempt. This is bounded handling
+of an observed process failure; it does not establish visual or physical
+acceptance.
+
 ## Motion measurement boundary
 
 The [controlled capture manifests](default-repeat-1.json) record **34.5% Weber

@@ -16,6 +16,7 @@ import math
 import os
 from pathlib import Path
 import re
+import signal
 import shutil
 import subprocess
 import sys
@@ -41,6 +42,8 @@ VIEWS = {
 }
 VERTICAL_SHIFT_VIEWS = {"runway_oblique_100", "runway_oblique_300"}
 EDGE_CONTRAST_FLOOR = 0.05
+GODOT_ERROR = re.compile(r"^\s*(?:(?:SCRIPT|SHADER)\s+)?ERROR:", re.M)
+IMPORT_RETRY_CORE_MARKER = "timeout: the monitored command dumped core"
 
 
 def sha256(path: Path) -> str:
@@ -83,7 +86,7 @@ def load_manifest(folder: Path) -> dict[str, Any]:
     return manifest
 
 
-def checked_run(command: list[str], log_path: Path, env: dict[str, str], timeout_s: int) -> None:
+def _run_logged(command: list[str], log_path: Path, env: dict[str, str], timeout_s: int) -> tuple[int, str]:
     with log_path.open("w") as output:
         result = subprocess.run(
             ["timeout", "--kill-after=5", str(timeout_s), *command],
@@ -93,15 +96,50 @@ def checked_run(command: list[str], log_path: Path, env: dict[str, str], timeout
             check=False,
         )
     log = re.sub(r"\x1b\[[0-9;]*m", "", log_path.read_text(errors="replace"))
-    if result.returncode or re.search(r"^\s*(?:(?:SCRIPT|SHADER)\s+)?ERROR:", log, re.M):
-        raise RuntimeError(f"Godot command failed ({result.returncode}); see {log_path}")
+    return result.returncode, log
+
+
+def checked_run(command: list[str], log_path: Path, env: dict[str, str], timeout_s: int) -> None:
+    returncode, log = _run_logged(command, log_path, env, timeout_s)
+    if returncode or GODOT_ERROR.search(log):
+        raise RuntimeError(f"Godot command failed ({returncode}); see {log_path}")
+
+
+def _completed_import_abort(returncode: int, log: str) -> bool:
+    """Recognize only the observed late Godot import SIGABRT signature."""
+    if returncode != -signal.SIGABRT or GODOT_ERROR.search(log):
+        return False
+    lines = [line.strip() for line in log.splitlines()]
+    if not lines or lines[-1] != IMPORT_RETRY_CORE_MARKER:
+        return False
+    try:
+        reimport = lines.index("[ DONE ] reimport")
+        layout = lines.index("[ DONE ] loading_editor_layout")
+        core = lines.index(IMPORT_RETRY_CORE_MARKER)
+    except ValueError:
+        return False
+    return reimport < layout < core
+
+
+def _retry_log_path(log_path: Path) -> Path:
+    return log_path.with_name(f"{log_path.stem}-retry{log_path.suffix}")
 
 
 def import_mutation_project(godot: Path, project: Path, log_path: Path,
                             env: dict[str, str], timeout_s: int) -> list[str]:
     command = [str(godot), "--headless", "--path", str(project), "--audio-driver", "Dummy", "--import"]
-    checked_run(command, log_path, env, timeout_s)
-    return command
+    returncode, log = _run_logged(command, log_path, env, timeout_s)
+    if not returncode and not GODOT_ERROR.search(log):
+        return command
+    if _completed_import_abort(returncode, log):
+        retry_log = _retry_log_path(log_path)
+        if retry_log.exists():
+            raise RuntimeError(f"refusing to overwrite prior retry log: {retry_log}")
+        retry_code, retry_output = _run_logged(command, retry_log, env, timeout_s)
+        if not retry_code and not GODOT_ERROR.search(retry_output):
+            return command
+        raise RuntimeError(f"Godot import retry failed ({retry_code}); see {log_path} and {retry_log}")
+    raise RuntimeError(f"Godot import failed ({returncode}); see {log_path}")
 
 
 def image_pixels(folder: Path, capture: dict[str, Any]) -> np.ndarray:

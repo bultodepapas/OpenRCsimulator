@@ -1,8 +1,14 @@
 #!/usr/bin/env python3
-"""Regression checks for L9c-R1 measurement, independent of a GPU."""
+"""GPU-independent regression checks for L9c measurements and import recovery."""
+from pathlib import Path
+import subprocess
+import tempfile
 import unittest
+from unittest.mock import patch
+
 import numpy as np
 from check_stripes import errors, mask_for, SIZE, verify_projection
+from check_surfaces import checked_run, import_mutation_project
 
 
 class StripeMeasurementTests(unittest.TestCase):
@@ -44,6 +50,114 @@ class StripeMeasurementTests(unittest.TestCase):
         enlarged["eye_render"] = [0, 1.001, 0]
         with self.assertRaisesRegex(RuntimeError, "camera mismatch"):
             verify_projection(native, other, 4)
+
+
+class MutationImportRetryTests(unittest.TestCase):
+    COMPLETED_IMPORT = "[ DONE ] reimport\n[ DONE ] loading_editor_layout\n"
+    CORE_DUMP = "timeout: the monitored command dumped core\n"
+
+    @staticmethod
+    def fake_run(responses, calls):
+        def run(command, **kwargs):
+            calls.append(command)
+            returncode, output = responses.pop(0)
+            kwargs["stdout"].write(output)
+            return subprocess.CompletedProcess(command, returncode)
+        return run
+
+    def test_completed_sigabrt_retries_once_to_a_separate_log(self):
+        calls = []
+        first_output = self.COMPLETED_IMPORT + self.CORE_DUMP
+        retry_output = self.COMPLETED_IMPORT
+        with tempfile.TemporaryDirectory() as temporary:
+            first_log = Path(temporary) / "unfiltered-stripe-import.log"
+            retry_log = Path(temporary) / "unfiltered-stripe-import-retry.log"
+            with patch("check_surfaces.subprocess.run", side_effect=self.fake_run(
+                    [(-6, first_output), (0, retry_output)], calls)):
+                command = import_mutation_project(Path("godot"), Path("mutation"), first_log, {}, 60)
+
+            self.assertEqual(len(calls), 2)
+            self.assertEqual(calls[0], calls[1])
+            self.assertEqual(command, calls[0][3:])
+            self.assertEqual(first_log.read_text(), first_output)
+            self.assertEqual(retry_log.read_text(), retry_output)
+
+    def test_only_exact_completed_sigabrt_signature_is_retryable(self):
+        complete = self.COMPLETED_IMPORT
+        rejected = (
+            ("missing core marker", -6, complete),
+            ("incomplete layout", -6, "[ DONE ] reimport\n" + self.CORE_DUMP),
+            ("out-of-order completion", -6,
+             "[ DONE ] loading_editor_layout\n[ DONE ] reimport\n" + self.CORE_DUMP),
+            ("parse error", -6, complete + "SCRIPT ERROR: Parse Error: bad script\n" + self.CORE_DUMP),
+            ("shader error", -6, complete + "SHADER ERROR: bad shader\n" + self.CORE_DUMP),
+            ("engine error", -6, complete + "ERROR: import failed\n" + self.CORE_DUMP),
+            ("shell-style 134 status", 134, complete + self.CORE_DUMP),
+        )
+        for label, returncode, output in rejected:
+            with self.subTest(label=label), tempfile.TemporaryDirectory() as temporary:
+                calls = []
+                first_log = Path(temporary) / "import.log"
+                retry_log = Path(temporary) / "import-retry.log"
+                with patch("check_surfaces.subprocess.run", side_effect=self.fake_run(
+                        [(returncode, output)], calls)):
+                    with self.assertRaisesRegex(RuntimeError, "Godot import failed"):
+                        import_mutation_project(Path("godot"), Path("mutation"), first_log, {}, 60)
+                self.assertEqual(len(calls), 1)
+                self.assertTrue(first_log.is_file())
+                self.assertFalse(retry_log.exists())
+
+    def test_failed_retry_is_fatal_after_one_retry_and_keeps_both_logs(self):
+        first_output = self.COMPLETED_IMPORT + self.CORE_DUMP
+        second_output = self.COMPLETED_IMPORT + self.CORE_DUMP
+        with tempfile.TemporaryDirectory() as temporary:
+            calls = []
+            first_log = Path(temporary) / "import.log"
+            retry_log = Path(temporary) / "import-retry.log"
+            with patch("check_surfaces.subprocess.run", side_effect=self.fake_run(
+                    [(-6, first_output), (-6, second_output)], calls)):
+                with self.assertRaisesRegex(RuntimeError, "Godot import retry failed"):
+                    import_mutation_project(Path("godot"), Path("mutation"), first_log, {}, 60)
+            self.assertEqual(len(calls), 2)
+            self.assertEqual(first_log.read_text(), first_output)
+            self.assertEqual(retry_log.read_text(), second_output)
+
+    def test_capture_command_never_uses_import_retry(self):
+        capture_output = self.COMPLETED_IMPORT + self.CORE_DUMP
+        with tempfile.TemporaryDirectory() as temporary:
+            calls = []
+            capture_log = Path(temporary) / "capture.log"
+            retry_log = Path(temporary) / "capture-retry.log"
+            with patch("check_surfaces.subprocess.run", side_effect=self.fake_run(
+                    [(-6, capture_output)], calls)):
+                with self.assertRaisesRegex(RuntimeError, "Godot command failed"):
+                    checked_run(["godot", "--script", "capture.gd"], capture_log, {}, 60)
+            self.assertEqual(len(calls), 1)
+            self.assertTrue(capture_log.is_file())
+            self.assertFalse(retry_log.exists())
+
+    def test_successful_import_does_not_create_a_retry_log(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            calls = []
+            first_log = Path(temporary) / "import.log"
+            with patch("check_surfaces.subprocess.run", side_effect=self.fake_run(
+                    [(0, self.COMPLETED_IMPORT)], calls)):
+                import_mutation_project(Path("godot"), Path("mutation"), first_log, {}, 60)
+            self.assertEqual(len(calls), 1)
+            self.assertFalse((Path(temporary) / "import-retry.log").exists())
+
+    def test_existing_retry_log_is_not_overwritten(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            calls = []
+            first_log = Path(temporary) / "import.log"
+            retry_log = Path(temporary) / "import-retry.log"
+            retry_log.write_text("prior evidence\n")
+            with patch("check_surfaces.subprocess.run", side_effect=self.fake_run(
+                    [(-6, self.COMPLETED_IMPORT + self.CORE_DUMP)], calls)):
+                with self.assertRaisesRegex(RuntimeError, "refusing to overwrite"):
+                    import_mutation_project(Path("godot"), Path("mutation"), first_log, {}, 60)
+            self.assertEqual(len(calls), 1)
+            self.assertEqual(retry_log.read_text(), "prior evidence\n")
 
 
 if __name__ == "__main__":
