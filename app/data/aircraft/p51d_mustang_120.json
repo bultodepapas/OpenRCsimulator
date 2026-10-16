@@ -2,7 +2,7 @@
   "format": "openrc-aircraft v2",
   "physical_identity_version": 1,
   "id": "p51d-mustang-120",
-  "description": "P-51D Mustang 1/4 scale, 120 cc class (plans/short-kit class: Chad Veich 1/4 plans, Jerry Bates 1/4, FokkeRC 1/4 short kit): 2.820 m span giant-scale P-51D Mustang, 120 cc gasoline. Physics derived by research/p51/p51-05/derive_physics.py (P51-05, realism pass P51-06/09/12/13) from the full-size airplane scaled 1/4 and documented NACA/RC-class sources; exercised by scripted tests/test_p51_envelope.gd and test_p51_ground.gd. Not flight-identified on a real model. Flaps and retracts are not simulated (gear DOWN). Visual geometry lives in assets/aircraft/p51d-mustang-120/geometry.json.",
+  "description": "P-51D Mustang 1/4 scale, 120 cc class (plans/short-kit class: Chad Veich 1/4 plans, Jerry Bates 1/4, FokkeRC 1/4 short kit): 2.820 m span giant-scale P-51D Mustang, 120 cc gasoline. Physics derived by research/p51/p51-05/derive_physics.py (P51-05, realism pass P51-06/09/12/13) from the full-size airplane scaled 1/4 and documented NACA/RC-class sources; exercised by scripted tests/test_p51_envelope.gd and test_p51_ground.gd. Not flight-identified on a real model. Flaps are simulated; retractable gear is modeled, with airborne starts stowed. Visual geometry lives in assets/aircraft/p51d-mustang-120/geometry.json.",
   "frames": {
     "le_frame": "positions in metres from the wing leading edge at the centreline (model z 0): [x_aft, y_right, z_up]; z = 0 on the thrust line (spinner axis)",
     "body": "simulation body axes FRD about the CG: x forward = -x_aft, y right, z down = -z_up"
