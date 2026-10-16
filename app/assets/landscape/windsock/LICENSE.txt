@@ -1,0 +1,5 @@
+Fabric001 by Lennart Demes / ambientCG.
+CC0 1.0 Universal: https://creativecommons.org/publicdomain/zero/1.0/
+Source license: https://docs.ambientcg.com/license/
+Original maps, URLs and hashes in PROVENANCE.json.
+Reused Metal032 / Concrete034 maps retain their adjacent pilot-station provenance.

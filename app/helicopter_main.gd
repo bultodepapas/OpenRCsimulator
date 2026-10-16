@@ -21,6 +21,8 @@ const Recorder = preload("res://sim/rotorcraft_recorder.gd")
 const Lighting = preload("res://render/time_of_day_lighting.gd")
 const LightingConfig = preload("res://environment/time_of_day_config.gd")
 const Preferences = preload("res://app_state/preferences.gd")
+const ControllerActions = preload("res://input/controller_actions.gd")
+const Prompts = preload("res://ui/controller_prompts.gd")
 signal pause_requested
 signal overlay_settings_changed(settings: Dictionary)
 var aircraft_id: String="xcell-60-research"
@@ -205,15 +207,19 @@ func _present(dt: float, requested_fraction: float=-1.0) -> void:
  _hud.text=tr("RC HELICOPTER · EXPERIMENTAL RESEARCH TRAINER")+"\n"+tr("X-Cell reference physics · HX-700 visual")+"\n"
  _hud.text+=tr("Altitude %.2f m  Speed %.2f m/s  Rotor %.0f / %.0f rpm")%[-s[2],speed,session.sim.aux[0],session.aircraft.context.drive_model.governor_target_main_rad_s*60.0/(2.0*PI)]+"\n"
  _hud.text+=tr("Collective %.1f deg (stick %.0f%%) · %s · %s")%[session.collective_pitch()*180.0/PI,session.commands.throttle*100.0,session.flight_mode,tr(session.power_phase())]+"\n"
- _hud.text+=tr("Arrows: cyclic · A/D: yaw · W/S: collective")+"\n"
- _hud.text+=tr("B: arm/disarm · H: hold/start · I: flight mode · G: trainer")+"\n"
+ if session.radio.connected:
+  _hud.text+=controller_controls_text()+"\n"
+ else:
+  _hud.text+=tr("Arrows: cyclic · A/D: yaw · W/S: collective")+"\n"
+  _hud.text+=tr("B: arm/disarm · H: hold/start · I: flight mode · G: trainer")+"\n"
  if _night_kit!=null: _hud.text+="L: "+tr("Night lights: "+_night_kit.mode)+"\n"
- _hud.text+=tr("R: restart · P: pause/resume · C: camera · Esc: menu")+"\n"
+ if not session.radio.connected: _hud.text+=tr("R: restart · P: pause/resume · C: camera · Esc: menu")+"\n"
  _hud.text+=tr("TRAINER") if session.trainer_enabled else tr("DIRECT CYCLIC")
  _hud.text+="\n"+(tr(session.pause_reason) if not session.pause_reason.is_empty() else _note)
  if wreck_active:
   _hud.text+="\n"+str(session.crash.component).replace("_"," ")+" · %.1f m/s · "%float(session.crash.normal_speed_mps)+tr("P: pause/resume wreck · R: restart")
- elif session.power_phase()=="DISARMED": _hud.text+="\n"+tr("Center cyclic/yaw and set zero pitch. B: arm, H: start; wait for governed RPM.")
+ elif session.power_phase()=="DISARMED":
+  _hud.text+="\n"+tr("Center cyclic/yaw and set zero pitch before arming; release hold and wait for governed RPM.")
  # Cold start/coast are expected lifecycle states; their low-RPM model label is
  # retained in telemetry without presenting normal startup as a pilot fault.
  if session.power_phase()=="GOVERNED" and (not _rotor_envelope_flags.within_identified_advance_ratio or not _rotor_envelope_flags.within_small_flap_angle_range):
@@ -336,13 +342,38 @@ static func main_rotor_envelope_flags(body: PackedFloat64Array,continuous: Packe
 func set_overlays_visible(on: bool) -> void:
  if _hud_layer!=null: _hud_layer.visible=on
 
+func controller_capabilities() -> Dictionary:
+ return ControllerActions.HELICOPTER_CAPABILITIES.duplicate()
+
+## Show the saved bindings, including raw radio channels, instead of keyboard-only instructions.
+func controller_controls_text() -> String:
+ var profile: Dictionary=session.radio.profile
+ var bindings: Dictionary=ControllerActions.effective_bindings(profile,controller_capabilities())
+ var family: String=str(profile.get("presentation",{}).get("glyph_family","auto"))
+ var info: Dictionary={"name":session.radio.device_name}
+ var lines: PackedStringArray=[]
+ for group: Array in [["helicopter_arm","helicopter_hold"],["helicopter_mode","helicopter_trainer"],["camera_cycle","throttle_cut"],["restart_flight","pause"]]:
+  var parts: PackedStringArray=[]
+  for action: String in group:
+   var binding: Dictionary=bindings.get(action,{"type":"unbound"})
+   var prompt: String=Prompts.prompt(binding,family,info).text
+   if profile.get("kind","")!="gamepad" and binding.get("type","")=="button":
+    prompt=tr("Button %d")%int(binding.button)
+   parts.append(prompt+": "+tr(str(ControllerActions.action_definition(action).label)))
+  lines.append(" · ".join(parts))
+ return "\n".join(lines)
+
 func controller_action(action: String) -> bool:
+ if session==null: return false
  match action:
   "lights_cycle": _cycle_night_lights()
   "helicopter_arm": session.toggle_motor_arm()
   "helicopter_hold": session.set_drive_hold(not session.zero_drive_hold)
-  "helicopter_mode": session.request_flight_mode()
-  "helicopter_trainer": session.trainer_enabled=not session.trainer_enabled
+  "helicopter_mode":
+   if not session.sim.paused and session.holds.is_empty() and not session._controller_lost: session.request_flight_mode()
+  "helicopter_trainer":
+   if not session.sim.paused and session.holds.is_empty() and not session._controller_lost: session.trainer_enabled=not session.trainer_enabled
+  "throttle_cut": session.set_controller_cut(true)
   "camera_cycle": _rig.cycle(1)
   "camera_previous": _rig.cycle(-1)
   "camera_pilot": _rig.set_view("pilot")

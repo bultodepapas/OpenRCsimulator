@@ -1,0 +1,65 @@
+{
+  "step": "L10b-R1",
+  "date": "2026-10-16",
+  "complete": true,
+  "godot": "4.7.2.stable",
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "tests": 279,
+  "visual_checks": {
+    "close": {
+      "changed_pixels": 26513,
+      "mean_changed_rgb_delta": 106.08961641458907,
+      "clipped_white_pixels": 0,
+      "added_draws": 1,
+      "added_primitives": 6124
+    },
+    "rear": {
+      "changed_pixels": 49366,
+      "mean_changed_rgb_delta": 124.92041080905886,
+      "clipped_white_pixels": 0,
+      "added_draws": 1,
+      "added_primitives": 6124
+    },
+    "overview": {
+      "changed_pixels": 571,
+      "mean_changed_rgb_delta": 97.92994746059544,
+      "clipped_white_pixels": 0,
+      "added_draws": 1,
+      "added_primitives": 6124
+    },
+    "pilot_left": {
+      "changed_pixels": 0
+    },
+    "pilot_right": {
+      "changed_pixels": 0
+    }
+  },
+  "sources_sha256": {
+    "app/render/pilot_station.gd": "aa5f9e62eb7ee9265a6cf3cec2284f69a12940a880ea4a0c89e8481180fd1704",
+    "app/render/pilot_station_detail.gd": "3dd3c775d76d526041567fe0271d5cc74e80fdbbb4a2b9a3eec62e22e20f3521",
+    "app/render/pilot_station.gdshader": "b82a2901fcf66319df14372b6e0bbdec00c639f6fe5123ac3f2a1ce37fde6cd2",
+    "app/tests/test_pilot_station.gd": "e1c8710ca96e357f6a64c8eb1323e7cecdd209df23cac9f283085cc789923a97",
+    "tools/ground/capture_pilot_station_detail.gd": "cca608eefcb3fd5d7b427c38564334423215d3dfee0f529e278120fddbb5fd17",
+    "tools/ground/capture_windsock.gd": "9d1f64ec58b92d599e183384a227b91ba023e007e1981451739a2073931c6047",
+    "tools/ground/check_windsock.py": "313415e247a1b12098a1d610cae56bf65242cabb173649dadf2b076c77180ce6",
+    "app/assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg": "8ceb9186d990b31fce785e06fdc6974c160f1d27c43f6160266f164deba713aa",
+    "app/assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg.import": "36ecc6ac3ceea7a16e8b1cb440e9ceab55120147836d49451ac7b933364634ec",
+    "app/assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg": "e509eb9dfa978e780fbebfd2acacc2ce158b5b7ced722ddc0759039dd51e18ca",
+    "app/assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg.import": "f777feabf076200b8023ce58c60e4a618e50e3d9d879f7c881ce8a372b9f2d9e",
+    "app/assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg": "a4a9e39857a19afd23a778e5abf44fcdf6bd7f93918f1cf6878b41933e553511",
+    "app/assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg.import": "9b5a5bd4a570bf9c03fe943bfcb835b8f7d1f6c4461654e0750b6519bfbea86b",
+    "app/assets/landscape/pilot-station/LICENSE.txt": "9319213944958c3a5019051f0dde0b84154ea1512710a57cdd0bbf42b554fb4d",
+    "app/assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg": "8537c1015de5cc33d20231e5b6aa27309edcb983e1c37e608d08bb00f733747d",
+    "app/assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg.import": "b5b94d824bde18e0fd3e3073d1d4cab7c37ebfccb23999cd59d441433d8e98f6",
+    "app/assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg": "55d3eee2b69008ad3701b18977495531d0e3515105102e56f40a4d1098d10bce",
+    "app/assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg.import": "c64f9fcd596904232eb3b7d24dd78ad8e705cfe64d292650645ba2465b0823d3",
+    "app/assets/landscape/pilot-station/PROVENANCE.json": "b580c9fb76d4865280d9b5b55dd2f65799e342a79a3020fab55564b2fe6d8a95",
+    "app/assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg": "a16cab3c789dd34570759b5bfb7ced36f983c180a20e3796d3dcb5571d94053d",
+    "app/assets/landscape/pilot-station/Wood050_1K-JPG_Color.jpg.import": "bbc1d01c1b74789a16dd524eb8c6a0e14526d6c4420c68c8e14cbccdeddb4753",
+    "app/assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg": "199be90187d780760012f479e492a913999e33a34ac4d9cd4186b4d2c570d9ce",
+    "app/assets/landscape/pilot-station/Wood050_1K-JPG_NormalGL.jpg.import": "c4a5d1a955368dc85b0daa14dd9735b1243fac9ab10b687d2cc1cf302f835594",
+    "app/assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg": "9055b55a3cf39e7dbeb1aa0479c86d30878622f28b2d521cb21983718b3e0b5d",
+    "app/assets/landscape/pilot-station/Wood050_1K-JPG_Roughness.jpg.import": "1031722d4ad2b01f86b537b9da97cbef8a737f6453ef5bf674dede58b3913e82"
+  },
+  "scope": "Native Windows compatibility renderer; four close-detail views and five on/off camera poses with scenery. Focused geometry, data and shadow regression tests. No full physics suite or target-device performance claim."
+}

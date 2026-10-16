@@ -1,6 +1,6 @@
 # Crash and damage investigations
 
-**Status:** research and implementation index, 2026-10-11. **Serves:** [CRASH-DAMAGE-PLAN](../../CRASH-DAMAGE-PLAN.md) (CR- steps). This folder records research, proposals and bounded presentation evidence; it does not certify crash realism.
+**Status:** research and implementation index, updated 2026-10-16. **Serves:** [CRASH-DAMAGE-PLAN](../../CRASH-DAMAGE-PLAN.md) (CR- steps). This folder records research, proposals and bounded presentation evidence; it does not certify crash realism.
 
 ## Reports
 
@@ -20,7 +20,7 @@
 | --- | --- | --- |
 | 01 | [Damage models in simulators and games](01-simulators-games-damage-models.md) | Crash handling, structural damage patterns, and lessons from RC simulators and other games. |
 | 02 | [Godot destruction techniques](02-godot-destruction-techniques.md) | Godot presentation, pre-split meshes, rigid bodies, particles, renderer and performance constraints. |
-| 03 | **Pending — RC construction and material/joint impact thresholds** | Owned by **CR-07**. This report must acquire traceable evidence for candidate failure limits, applicability to the modeled airframes, and uncertainty. The source document is not present. Until CR-07 completes this work, no structural threshold is accepted; do not infer one from effective mass or crash videos. |
+| 03 | [RC construction materials, joints, and post-impact disposition](03-rc-construction-material-joint-evidence.md) | CR-07 literature review: scoped coupon data, RC gear-mount examples, and product-specific inspection constraints. No threshold is validated for the installed Stik structure; CR-07 remains open. Do not infer one from effective mass or crash videos. |
 | 04 | [Crash audio, presentation and honest game feel](04-audio-presentation-feel.md) | Sound propagation, presentation boundaries, replay and pilot-facing feedback. |
 | 05 | [Architecture and impact model for this repository](05-architecture-impact-model.md) | Proposed impact snapshot, structure data, resolver, damage feedback and wreck handoff. Proposals remain subject to the dependencies in the plan. |
 
@@ -32,14 +32,18 @@ The existing effective-mass experiment is in [`research/crash-damage/cr-00/`](..
 
 - **CR-01 impact snapshot:** start with report [05](05-architecture-impact-model.md) for the proposed fields, then report [01](01-simulators-games-damage-models.md) for existing crash and reset patterns. CR-01 is limited to a typed contact snapshot and readable direct cause.
 - **CR-02–CR-05 presentation:** use reports [04](04-audio-presentation-feel.md) and [02](02-godot-destruction-techniques.md) only after Gate 2 prioritizes the work and the relevant contact interfaces are ready.
-- **CR-06–CR-10 structural breakup:** read reports [01](01-simulators-games-damage-models.md), [02](02-godot-destruction-techniques.md), and [05](05-architecture-impact-model.md). CR-07 owns the pending report 03 and must complete its evidence review before any threshold is accepted.
+- **CR-06–CR-10 structural breakup:** read reports [01](01-simulators-games-damage-models.md), [02](02-godot-destruction-techniques.md), [03](03-rc-construction-material-joint-evidence.md), and [05](05-architecture-impact-model.md). CR-07's literature review is recorded in report 03; aircraft-specific material/joint thresholds, uncertainty bounds, and held-out validation remain open.
 - **CR-11–CR-15 flyable damage:** read report [05](05-architecture-impact-model.md) with the plan's required H8 persistent-state and G4b shared mass-property dependencies.
 
 The current research has gaps and source-quality limits documented in each report. Treat borrowed examples as design references, not RC-airframe measurements. Record new sources, methods, uncertainty and non-results when completing CR-07.
 
 ## Implementation evidence
 
-[CR-33a](CR-33a/README.md) defines the measurements needed before structural or thermal outcomes can determine a bill. [CR-33b](CR-33b/README.md) verifies isolated impact-energy estimates and bounded allocations; it supplies no failure thresholds and does not close CR-07.
+[CR-33a](CR-33a/README.md) defines the measurements needed before structural or thermal outcomes can determine a bill. [CR-33b](CR-33b/README.md) verifies isolated impact-energy estimates and bounded allocations; it supplies no failure thresholds and does not close CR-07. [Report 03](03-rc-construction-material-joint-evidence.md) reviews relevant literature but accepts no installed-aircraft structural threshold.
+
+[CR-30c](CR-30c/README.md) records active-flight economic checkpoint validation. [CR-31d](CR-31d/README.md) specifies the bounded pure helper for package-cost optimization. [CR-36d electric](CR-36d/electric.md) records updated replacement-price proxies for the fictional Turbo Lumber inventory; its partial offers do not complete aircraft valuation.
+
+[CR-31e](CR-31e/README.md) connects replacement-only package comparison to incident reports and archives. [CR-33c](CR-33c/resolver-contract.md) implements declared-capacity interval comparisons without production billing or serviceability clearance. [CR-36e](CR-36e/fleet.md) records exact exhaust variants and their remaining installation limits.
 
 [CR-35a](CR-35a/README.md) verifies finite source budgets, explicit ignition ticks and analytic component heating/cooling. Its parameters and thresholds remain caller-declared; it is not connected to aircraft damage or visual fire.
 

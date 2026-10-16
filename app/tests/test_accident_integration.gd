@@ -69,6 +69,16 @@ func _run() -> void:
 	check("accepted contact does not calculate, publish or save a report", incident.report.is_empty() and not enabled._accident_report._content_visible and not FileAccess.file_exists(ARCHIVE))
 	enabled._update_accident_report()
 	check("confirmed propeller is priced once at USD 5.39", incident.report.get("known_subtotal_minor") == 539)
+	var comparison: Dictionary = incident.report.get("replacement_comparison", {})
+	check("production prop strike derives a bounded parts-only comparison", comparison.get("status") == "optimal" and comparison.get("total_cost_cents") == 539
+		and comparison.get("coverage_scope") == "replacements_only" and comparison.get("required_unit_ids") == ["propeller:0"])
+	check("optimal parts price does not complete the accident assessment", not comparison.get("assessment_complete", true)
+		and not comparison.get("complete", true) and incident.report.get("total_minor") == null)
+	var before_comparison: Dictionary = incident.report.duplicate(true)
+	var authored_option: Dictionary = incident.compare_replacements([{id = "synthetic-discount", coverage_ids = ["propeller:0"],
+		cost_cents = 400, available = true, compatible = true, provenance = "Software fixture; no retail price or physical-fit claim."}])
+	check("explicit package comparison can choose a cheaper complete cover", authored_option.get("selected_candidate_ids") == ["synthetic-discount"] and authored_option.get("total_cost_cents") == 400)
+	check("comparing an alternative cannot rebill or apply it", incident.report == before_comparison and incident.report.known_subtotal_minor == 539)
 	var prop_line: Dictionary = {}
 	for line: Dictionary in incident.report.get("lines", []):
 		if line.get("id") == "propeller":
@@ -83,6 +93,25 @@ func _run() -> void:
 	var reader := Incident.new()
 	reader.archive_path = ARCHIVE
 	check("stored report reopens with frozen catalog identity", reader.load_archive().get("catalog_hash") == incident.report.get("catalog_hash"))
+	var archived_comparison: Dictionary = reader.load_archive().get("replacement_comparison", {})
+	check("archive preserves the comparison snapshot without repricing", archived_comparison.get("total_cost_cents") == comparison.total_cost_cents
+		and archived_comparison.get("status") == comparison.status and archived_comparison.get("selected_provenance") == comparison.selected_provenance
+		and archived_comparison.get("required_unit_ids") == comparison.required_unit_ids and archived_comparison.get("catalog_hash") == comparison.catalog_hash)
+	for defect: String in ["negative_amount", "wrong_catalog", "false_complete"]:
+		var malformed: Dictionary = incident.report.duplicate(true)
+		if defect == "negative_amount":
+			malformed.replacement_comparison.total_cost_cents = -1
+		elif defect == "wrong_catalog":
+			malformed.replacement_comparison.catalog_hash = "different-catalog"
+		else:
+			malformed.replacement_comparison.complete = true
+		var file := FileAccess.open(ARCHIVE, FileAccess.WRITE)
+		file.store_string(JSON.stringify(malformed))
+		file.close()
+		check("malformed archived comparison is rejected: " + defect, reader.load_archive().is_empty())
+	var archive_file := FileAccess.open(ARCHIVE, FileAccess.WRITE)
+	archive_file.store_string(JSON.stringify(incident.report))
+	archive_file.close()
 	var saved_report: Dictionary = incident.report.duplicate(true)
 	check("invalid checkpoint cannot discard current costs", not session.restore_checkpoint({}) and incident.report == saved_report)
 	var checkpoint: Dictionary = session.checkpoint()

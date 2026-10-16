@@ -9,6 +9,7 @@ from pathlib import Path
 from unittest.mock import patch
 
 import build_runtime
+import build_catalog
 
 
 class RuntimeEconomicsTests(unittest.TestCase):
@@ -104,7 +105,7 @@ class RuntimeEconomicsTests(unittest.TestCase):
             self.assertEqual(dossier["propeller_inspection_ids"], [], aircraft_id)
 
     def test_fleet_part_subtotals_do_not_claim_full_aircraft_prices(self) -> None:
-        cases = {"turbo-lumber-evolution": 33294, "p51d-mustang-120": 200671,
+        cases = {"turbo-lumber-evolution": 46587, "p51d-mustang-120": 245671,
                  "sebart-avanti-s-a200-p100rx": 655912}
         for aircraft_id, subtotal in cases.items():
             dossier = self.dossiers[aircraft_id]
@@ -120,15 +121,92 @@ class RuntimeEconomicsTests(unittest.TestCase):
             self.assertTrue(any(row["unit_minor"] is None for row in parts))
         electric = self.dossiers["turbo-lumber-evolution"]
         self.assertEqual(electric["propeller_component_id"], "")
-        self.assertIsNone(next(row for row in electric["components"] if row["id"] == "propeller_main")["unit_minor"])
+        prop = next(row for row in electric["components"] if row["id"] == "propeller_main")
+        self.assertEqual(prop["unit_minor"], 1698)
+        self.assertIsNone(prop["offer_id"])  # Composite estimate, not a fabricated retail SKU.
+        self.assertEqual(prop["price_basis"], "estimated")
         selected = {row["offer_id"] for row in electric["components"]}
         self.assertNotIn("timber_evolution_pnp_aircraft_horizon_20261015", selected)
         self.assertNotIn("timber_evolution_bnf_aircraft_horizon_20261015", selected)
         self.assertEqual(self.dossiers["xcell-60-research"]["components"], [])
 
+    def test_p51_canister_count_and_selected_variant_do_not_close_exhaust_scope(self) -> None:
+        dossier = self.dossiers["p51d-mustang-120"]
+        line = next(row for row in dossier["components"] if row["id"] == "muffler_pair")
+        self.assertEqual(line["quantity"], 2)
+        self.assertEqual(line["unit_minor"], 22500)
+        self.assertEqual(line["quantity"] * line["unit_minor"], 45000)
+        self.assertEqual(line["price_basis"], "price_proxy")
+        offers = self.context["offer_by_id"]
+        canister = offers[line["offer_id"]]
+        self.assertIn("variant=5330902529", canister["source_url"])
+        self.assertEqual(canister["observed_on"], "2026-10-16")
+        comparison_id = "da120_slimline_pair_desert_aircraft_20261016"
+        self.assertEqual(offers[comparison_id]["amount_minor"], 21000)
+        self.assertNotIn(comparison_id, {row["offer_id"] for row in dossier["components"]})
+        self.assertFalse(dossier["complete"])
+        self.assertTrue(any("headers" in reason for reason in dossier["missing"]))
+        old_offer = offers["jetcat-p100-rx-850100-carf"]
+        self.assertEqual(old_offer["observed_on"], "2026-10-15")
+        self.assertEqual(old_offer["amount_minor"], 278000)
+
     def test_packaged_repair_recipes_match_authored_snapshot(self) -> None:
         self.assertEqual((build_runtime.ROOT / build_runtime.REPAIR_OUTPUT_PATH).read_bytes(),
                          build_runtime.render_repair_book())
+
+    def test_composite_prices_retain_constituents_and_use_live_catalog_arithmetic(self) -> None:
+        source = build_catalog.read(build_catalog.HERE / "aircraft-costing.json")
+        fleet = next(row for row in source["fleet"] if row["aircraft_id"] == "turbo-lumber-evolution")
+        wing = next(row for row in fleet["dossier"]["lines"] if row["id"] == "wing_main")
+        offers = copy.deepcopy(self.context["offer_by_id"])
+        result = build_runtime._baseline_components({"lines": [wing]}, offers)[0]
+        self.assertEqual(result["unit_minor"], 11595)
+        self.assertIn("4 x timber_evolution_servo_spmsa370_horizon_20261015", result["notes"])
+        self.assertIn("Backorder", result["notes"])
+        self.assertIn("https://", result["notes"])
+        offers[wing["price_constituents"][1]["offer_id"]]["amount_minor"] += 1
+        self.assertEqual(build_runtime._baseline_components({"lines": [wing]}, offers)[0]["unit_minor"], 11599)
+
+    def test_composite_references_counts_and_overrides_fail_closed(self) -> None:
+        source = build_catalog.read(build_catalog.HERE / "aircraft-costing.json")
+        fleet = next(row for row in source["fleet"] if row["aircraft_id"] == "turbo-lumber-evolution")
+        line = next(row for row in fleet["dossier"]["lines"] if row["id"] == "propeller_main")
+        variants = []
+        for quantity in [0, -1, True, 1.5, 1000001]:
+            candidate = copy.deepcopy(line)
+            candidate["price_constituents"][0]["quantity"] = quantity
+            variants.append(candidate)
+        for field, value in [("estimated_unit_minor", 1), ("price_observation", "apc-lp12060"), ("evidence_kind", "exact_product_price")]:
+            candidate = copy.deepcopy(line)
+            candidate[field] = value
+            variants.append(candidate)
+        candidate = copy.deepcopy(line)
+        candidate["price_constituents"].append(candidate["price_constituents"][0])
+        variants.append(candidate)
+        candidate = copy.deepcopy(line)
+        candidate["price_constituents"][0]["offer_id"] = "missing"
+        variants.append(candidate)
+        for candidate in variants:
+            with self.assertRaises(build_runtime.ContractError):
+                build_runtime._baseline_components({"lines": [candidate]}, self.context["offer_by_id"])
+
+    def test_mixed_observation_dates_preserve_history(self) -> None:
+        catalog = build_catalog.build()["catalog.json"]
+        offers = {row["id"]: row for row in catalog["observations"]}
+        self.assertEqual(catalog["observed_on"], "2026-10-16")
+        self.assertEqual(offers["apc-lp12060"]["observed_on"], "2026-10-15")
+        self.assertEqual(offers["timber_evolution_wheel_set_efl5258_horizon_20261016"]["observed_on"], "2026-10-16")
+
+    def test_new_offer_date_requires_matching_dated_evidence(self) -> None:
+        original = build_catalog.read
+        def modified(path):
+            data = original(path)
+            if path.name == "price-research-fleet.json":
+                data[0]["observed_on"] = "2026-02-30"
+            return data
+        with patch.object(build_catalog, "read", side_effect=modified):
+            with self.assertRaises(ValueError):
+                build_catalog.build()
 
     def test_recipe_prices_cannot_drift_from_reusable_catalog(self) -> None:
         read = build_runtime._read_json

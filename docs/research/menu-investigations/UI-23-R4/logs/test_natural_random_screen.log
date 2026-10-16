@@ -1,0 +1,43 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   English briefing title and actions
+ok   StockAirplaneHeading exists and inherits auto-translation
+ok   StockAirplaneHeading has its English source text
+ok   ModelStatusHeading exists and inherits auto-translation
+ok   ModelStatusHeading has its English source text
+ok   FlightConditionsHeading exists and inherits auto-translation
+ok   FlightConditionsHeading has its English source text
+ok   FlightDetailsHeading exists and inherits auto-translation
+ok   FlightDetailsHeading has its English source text
+ok   dynamic title remains explicitly translated
+ok   StockAirplaneHeading Spanish translation
+ok   ModelStatusHeading Spanish translation
+ok   FlightConditionsHeading Spanish translation
+ok   FlightDetailsHeading Spanish translation
+ok   dynamic title and actions rebuild in Spanish
+ok   details expand and label updates in Spanish
+ok   flight seed and atmosphere detail are shown
+ok   briefing sidebar fits 1024×576
+ok   briefing preserves theme gutters at 1024×576
+ok   briefing sidebar background is opaque at 1024×576
+ok   opaque sidebar leaves the field backdrop area uncovered at 1024×576
+ok   fixed actions fit below the scroll area at 1024×576
+ok   expanded details scroll at 1024×576
+ok   repeat action is visible and inside sidebar at 1024×576
+ok   Fly, Another flight and Back stay inside sidebar at 1024×576
+ok   briefing sidebar fits 1280×720
+ok   briefing preserves theme gutters at 1280×720
+ok   briefing sidebar background is opaque at 1280×720
+ok   opaque sidebar leaves the field backdrop area uncovered at 1280×720
+ok   fixed actions fit below the scroll area at 1280×720
+ok   expanded details scroll at 1280×720
+ok   repeat action is visible and inside sidebar at 1280×720
+ok   Fly, Another flight and Back stay inside sidebar at 1280×720
+ok   preparation holds duplicate actions but leaves Back enabled
+ok   error clears busy and keeps Fly disabled
+ok   error leaves Another, Repeat and Back enabled
+ok   error moves focus from disabled Fly to recovery action
+ok   focused recovery action activates Another flight
+ok   a freshly prepared scenario re-enables Fly
+ok   Fly emits the exact displayed scenario and enters busy state
+all Natural Random screen checks passed

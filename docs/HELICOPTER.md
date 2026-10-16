@@ -10,7 +10,22 @@ Select **RC Helicopter Research Trainer** on Home. The default start is on the a
 
 On the pad the rotor is stopped, the motor disarmed, hold engaged, and the collective initialized to zero blade pitch (about 17% stick on this model's normal curve). Center cyclic/yaw, press **B** to arm, then **H** to release hold. Wait for **GOVERNED** before increasing collective with W. The 12 s torque ramp is an explicit simulator estimate; it is not an identified engine or ESC response. The earlier 4 s candidate exceeded the configured skid yaw capacity.
 
-Arrow keys command cyclic: Up pitches the nose down, Down up. A/D command yaw; W/S change collective. B disarms as well as arms. H enters a latched zero-drive hold; the rotor coasts down physically. Releasing a controller's throttle-cut switch does not restart it. P pauses/resumes, C changes camera, Esc opens the pause menu. K and Enter operate radio calibration. Controller settings can assign helicopter arm, hold, mode and trainer actions; these additional bindings are unassigned by default.
+Arrow keys command cyclic: Up pitches the nose down, Down up. A/D command yaw; W/S change collective. Keyboard B disarms as well as arms. Keyboard H enters a latched zero-drive hold; the rotor coasts down physically. P pauses/resumes, C changes camera, Esc opens the pause menu. K and Enter operate radio calibration.
+
+Recognized standard gamepads receive these helicopter defaults automatically. Controller settings shows the active vehicle's assignments; **Remap**, **Clear** and **Save** preserve explicit choices. The flight HUD displays the actual bindings. Raw radios and unmapped joysticks require explicit configuration.
+
+| Action | Xbox / PlayStation |
+| --- | --- |
+| Arm / disarm | A / Cross |
+| Engage / release rotor hold | B / Circle |
+| Normal / idle-up curve | RB / R1 |
+| Trainer / direct cyclic | Left stick click (L3) |
+| Latched motor cut | LB / L1 |
+| Camera | Y / Triangle |
+| Restart selected flight, then Continue | View / Share or Create |
+| Pause menu | Menu / Options |
+
+Release the motor-cut button before attempting to release rotor hold. Releasing cut alone never restarts the rotor; an explicit hold-release command is still required. Arm, hold release, curve and trainer changes are refused during pause, modal holds or controller loss. Curve switching retains the pitch-jump confirmation described below.
 
 A physical radio must first satisfy input arming at low collective, then match the displayed zero blade pitch before motor arming. A gamepad retains the selected starting collective. Motor arming and hold release are refused during pause, a modal hold or controller loss. Pause freezes simulation time and the startup ramp. Resume is explicit.
 

@@ -1,0 +1,34 @@
+{
+  "asset": "ambientCG Fabric001",
+  "author": "Lennart Demes / ambientCG",
+  "downloaded": "2026-10-16",
+  "source": "https://ambientcg.com/view?id=Fabric001",
+  "license": "CC0-1.0",
+  "license_source": "https://docs.ambientcg.com/license/",
+  "archive_url": "https://ambientcg.com/get?file=Fabric001_1K-JPG.zip",
+  "archive_sha256": "cea13f8f2b44ba8a9d4bced83d26ab344e39502dba24b0b4025b7bd3a180a4c2",
+  "resolution": [
+    724,
+    1024
+  ],
+  "source_technique": "Approximation, as declared by ambientCG; not a measured windsock fabric.",
+  "runtime_tile_metres": [
+    0.72,
+    1.02
+  ],
+  "processing": "Unmodified source JPGs with lossless Godot imports, mipmaps and anisotropic filtering. Runtime band tint, seams, UV scale, roughness and normal strength are artistic estimates.",
+  "channels": {
+    "Color": "sRGB albedo sampled as luminance",
+    "NormalGL": "linear OpenGL tangent normal",
+    "Roughness": "linear scalar red"
+  },
+  "sha256": {
+    "Fabric001_1K-JPG_Color.jpg": "e4d03bf5210d01b4b21a846b0256b5d322104094688a7f2f7babb84e8140a20a",
+    "Fabric001_1K-JPG_NormalGL.jpg": "c2b8a5e28b31b330095500eb2d4b03c635e62d526f2fac0781f1409309be1d63",
+    "Fabric001_1K-JPG_Roughness.jpg": "1ecb388fff96904e1eead5dd1ebb270e0645c222b96c4f7343b2e84a869ef7b7"
+  },
+  "reused_assets": {
+    "Metal032": "../pilot-station/PROVENANCE.json",
+    "Concrete034": "../pilot-station/PROVENANCE.json"
+  }
+}

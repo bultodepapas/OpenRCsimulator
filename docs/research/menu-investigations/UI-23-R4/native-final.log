@@ -1,0 +1,106 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+HOST display_count=1 current_display=(3840, 2160) dpi=144
+CAPTURE en-1024x768-100-home.webp (1024, 768) logical=(1024.0, 768.0)
+CAPTURE en-1024x768-100-settings.webp (1024, 768) logical=(1024.0, 768.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE en-1024x768-100-pause.webp (1024, 768) logical=(1024.0, 768.0)
+FLOW en-1024x768-100 pause-held=true return=true
+CAPTURE en-1920x1080-100-home.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE en-1920x1080-100-settings.webp (1920, 1080) logical=(1920.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE en-1920x1080-100-pause.webp (1920, 1080) logical=(1920.0, 1080.0)
+FLOW en-1920x1080-100 pause-held=true return=true
+CAPTURE es-1280x800-100-home.webp (1280, 800) logical=(1280.0, 800.0)
+CAPTURE es-1280x800-100-settings.webp (1280, 800) logical=(1280.0, 800.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-1280x800-100-pause.webp (1280, 800) logical=(1280.0, 800.0)
+FLOW es-1280x800-100 pause-held=true return=true
+CAPTURE es-2560x1080-100-home.webp (2560, 1080) logical=(2560.0, 1080.0)
+CAPTURE es-2560x1080-100-settings.webp (2560, 1080) logical=(2560.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-2560x1080-100-pause.webp (2560, 1080) logical=(2560.0, 1080.0)
+FLOW es-2560x1080-100 pause-held=true return=true
+CAPTURE es-3440x1440-100-home.webp (3440, 1440) logical=(2580.0, 1080.0)
+CAPTURE es-3440x1440-100-settings.webp (3440, 1440) logical=(2580.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-3440x1440-100-pause.webp (3440, 1440) logical=(2580.0, 1080.0)
+FLOW es-3440x1440-100 pause-held=true return=true
+CAPTURE es-960x540-100-home.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-100-settings.webp (960, 540) logical=(960.0, 540.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-960x540-100-pause.webp (960, 540) logical=(960.0, 540.0)
+FLOW es-960x540-100 pause-held=true return=true
+CAPTURE es-3840x2160-100-home.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-settings.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-settings-interface.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-settings-sound.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-help.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-controls.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-controls-profile.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-controls-axes.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-controls-aux.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-controls-buttons.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-weather.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-weather-atmosphere.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-workshop.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-failures.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-natural_random.webp (3840, 2160) logical=(1920.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-3840x2160-100-pause.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-time_of_day.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-sky.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-overlays.webp (3840, 2160) logical=(1920.0, 1080.0)
+FLOW es-3840x2160-100 pause-held=true return=true
+CAPTURE es-960x540-200-home.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-settings.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-settings-interface.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-settings-sound.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-help.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-controls.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-controls-profile.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-controls-axes.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-controls-aux.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-controls-buttons.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-weather.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-weather-atmosphere.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-workshop.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-failures.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-natural_random.webp (960, 540) logical=(960.0, 540.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-960x540-200-pause.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-time_of_day.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-sky.webp (960, 540) logical=(960.0, 540.0)
+CAPTURE es-960x540-200-overlays.webp (960, 540) logical=(960.0, 540.0)
+FLOW es-960x540-200 pause-held=true return=true
+CAPTURE es-3840x2160-200-home.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-settings.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-settings-interface.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-settings-sound.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-help.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-controls.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-controls-profile.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-controls-axes.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-controls-aux.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-controls-buttons.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-weather.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-weather-atmosphere.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-workshop.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-failures.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-natural_random.webp (3840, 2160) logical=(1920.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-3840x2160-200-pause.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-time_of_day.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-sky.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-overlays.webp (3840, 2160) logical=(1920.0, 1080.0)
+FLOW es-3840x2160-200 pause-held=true return=true

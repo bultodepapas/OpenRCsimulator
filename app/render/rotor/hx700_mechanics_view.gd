@@ -3,6 +3,13 @@ extends Node3D
 
 const Model := preload("res://aircraft/hx700_articulated_model.gd")
 const Mechanism := preload("res://render/rotor/hx700_mechanism.gd")
+const Motion := preload("res://render/rotor/hx700_inspection_motion.gd")
+const Flex := preload("res://physics/rotorcraft/hx700_flex_bench.gd")
+const ElasticSkin := preload("res://render/rotor/hx700_elastic_skin.gd")
+var motion := Motion.new()
+var flex := Flex.new()
+var elastic_skin := ElasticSkin.new()
+var paused := false
 var rig: RefCounted
 var preview: Dictionary = {}
 var inputs := PackedFloat64Array([0, 0, 0, 0, 0])
@@ -20,10 +27,23 @@ var _phase_label: Label
 var _status: Label
 var _readout: Label
 var _speed: HSlider
+var _speed_label: Label
+var _smooth_toggle: CheckBox
+var _pause_button: Button
+var _step_button: Button
 var _blades_toggle: CheckBox
 var _canopy_toggle: CheckBox
 var _busy := false
 var _canvas: CanvasLayer
+var _mechanical_controls: VBoxContainer
+var _elastic_controls: VBoxContainer
+var _load_sliders: Array[HSlider] = []
+var _load_values: Array[Label] = []
+var _flex_readout: Label
+var _elastic_mode := false
+var _mode_buttons: Array[Button] = []
+var _hint: Label
+var _shortcuts: Label
 
 
 func _ready() -> void:
@@ -36,6 +56,10 @@ func _ready() -> void:
 	rig = Mechanism.new()
 	if not rig.configure(preview):
 		push_error("Advanced HX-700 neutral mechanism did not close.")
+		get_tree().quit(1)
+		return
+	if not elastic_skin.configure(preview):
+		push_error("Advanced HX-700 elastic geometry admission failed.")
 		get_tree().quit(1)
 		return
 	_build_stage()
@@ -53,21 +77,21 @@ func _build_stage() -> void:
 	environment.background_color = Color("131d2b")
 	environment.ambient_light_source = Environment.AMBIENT_SOURCE_COLOR
 	environment.ambient_light_color = Color("cad8eb")
-	environment.ambient_light_energy = 0.65
+	environment.ambient_light_energy = 0.4
 	environment.tonemap_mode = Environment.TONE_MAPPER_FILMIC
 	var world := WorldEnvironment.new()
 	world.environment = environment
 	add_child(world)
 	var key := DirectionalLight3D.new()
 	key.rotation_degrees = Vector3(-38, -25, 0)
-	key.light_energy = 2.4
+	key.light_energy = 1.2
 	key.shadow_enabled = true
 	key.directional_shadow_max_distance = 4.0
 	add_child(key)
 	var fill := DirectionalLight3D.new()
 	fill.rotation_degrees = Vector3(-25, 155, 0)
 	fill.light_color = Color("8eafff")
-	fill.light_energy = 0.9
+	fill.light_energy = 0.4
 	add_child(fill)
 	var floor_mesh := MeshInstance3D.new()
 	var plane := PlaneMesh.new()
@@ -112,7 +136,7 @@ func _build_ui() -> void:
 	panel.add_child(scroll)
 	var column := VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	column.add_theme_constant_override("separation", 6)
+	column.add_theme_constant_override("separation", 4)
 	scroll.add_child(column)
 	_label(column, "HX-700", 30, Color("f3f6fb"))
 	_label(column, "MECÁNICA AVANZADA", 13, Color("81bbff"))
@@ -126,6 +150,22 @@ func _build_ui() -> void:
 		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		button.pressed.connect(_camera_preset.bind(choice))
 		cameras.add_child(button)
+	var modes := HBoxContainer.new()
+	column.add_child(modes)
+	for choice in ["Mecánica", "Elasticidad"]:
+		var button := Button.new()
+		button.text = choice
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.pressed.connect(_set_elastic_mode.bind(choice == "Elasticidad"))
+		button.toggle_mode = true
+		button.button_pressed = choice == "Mecánica"
+		_mode_buttons.append(button)
+		modes.add_child(button)
+	var common := column
+	_mechanical_controls = VBoxContainer.new()
+	_mechanical_controls.add_theme_constant_override("separation", 4)
+	column.add_child(_mechanical_controls)
+	column = _mechanical_controls
 	var names := ["Colectivo", "Cíclico · alabeo", "Cíclico · cabeceo", "Paso de cola"]
 	var limits := [13.0, 10.0, 10.0, 20.0]
 	for i in 4:
@@ -134,6 +174,7 @@ func _build_ui() -> void:
 		var title := _label(row, names[i], 14, Color("dce6f4"))
 		title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		_values.append(_label(row, "0.0°", 14, Color("82c4ff")))
+		_values[-1].tooltip_text = "Posición animada → mando solicitado"
 		var slider := HSlider.new()
 		slider.min_value = -limits[i]
 		slider.max_value = limits[i]
@@ -145,6 +186,12 @@ func _build_ui() -> void:
 		_sliders.append(slider)
 	var presets := HBoxContainer.new()
 	column.add_child(presets)
+	_smooth_toggle = CheckBox.new()
+	_smooth_toggle.text = "Animación suave"
+	_smooth_toggle.button_pressed = true
+	_smooth_toggle.tooltip_text = "Suaviza mandos y giro del rotor. Desactive para poses exactas y cambios instantáneos de rpm. Es animación del banco, no respuesta física de servos."
+	_smooth_toggle.toggled.connect(_smooth_changed)
+	column.add_child(_smooth_toggle)
 	for choice in ["Neutro", "+Colectivo", "Cíclico", "Cola"]:
 		var button := Button.new()
 		button.text = choice
@@ -160,13 +207,28 @@ func _build_ui() -> void:
 	_phase_slider.custom_minimum_size.y = 24
 	_phase_slider.value_changed.connect(_phase_changed)
 	column.add_child(_phase_slider)
-	_label(column, "Giro de inspección · 0–12 rpm", 13, Color("aabbd0"))
+	_speed_label = _label(column, "Giro · 0.0 → 0.0 rpm", 13, Color("aabbd0"))
+	_speed_label.tooltip_text = "Velocidad animada → velocidad solicitada (máximo 12 rpm)"
 	_speed = HSlider.new()
 	_speed.max_value = 12
 	_speed.step = 0.5
 	_speed.custom_minimum_size.y = 24
-	_speed.value_changed.connect(func(value: float) -> void: speed_rpm = value)
+	_speed.value_changed.connect(_speed_changed)
 	column.add_child(_speed)
+	column = common
+	_build_elastic_controls(column)
+	var playback := HBoxContainer.new()
+	column.add_child(playback)
+	_pause_button = Button.new()
+	_pause_button.text = "Pausar"
+	_pause_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_pause_button.pressed.connect(_toggle_pause)
+	playback.add_child(_pause_button)
+	_step_button = Button.new()
+	_step_button.text = "Paso 1/60 s"
+	_step_button.disabled = true
+	_step_button.pressed.connect(_step)
+	playback.add_child(_step_button)
 	_canopy_toggle = CheckBox.new()
 	_canopy_toggle.text = "Mostrar carenado"
 	_canopy_toggle.toggled.connect(_show_canopy)
@@ -183,13 +245,101 @@ func _build_ui() -> void:
 	_readout = _label(column, "", 13, Color("bbcce0"))
 	_status = _label(column, "", 12, Color("8fdbb2"))
 	_status.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
-	_label(column, "Arrastre derecho: orbitar · Rueda: zoom\nEspacio: detener/reanudar · R: neutro", 12, Color("9cacbf"))
+	_shortcuts = _label(column, "Arrastre derecho: orbitar · Rueda: zoom\nEspacio: pausar todo · R: neutro", 12, Color("9cacbf"))
 	var hint := Label.new()
 	hint.text = "HX-700 articulado  /  servos, plato y transmisión"
 	hint.add_theme_font_size_override("font_size", 15)
 	hint.add_theme_color_override("font_color", Color("9fb5ce"))
 	hint.position = Vector2(365, 24)
 	_canvas.add_child(hint)
+	_hint = hint
+	_refresh_flex()
+
+
+func _build_elastic_controls(column: VBoxContainer) -> void:
+	_elastic_controls = VBoxContainer.new()
+	_elastic_controls.add_theme_constant_override("separation", 4)
+	_elastic_controls.visible = false
+	column.add_child(_elastic_controls)
+	_label(_elastic_controls, "CARGA Y RECUPERACIÓN", 14, Color("81bbff"))
+	var note := _label(_elastic_controls, "Ensayo en referencia al chasis.\nRigidez y amortiguación estimadas.\nDeformación a escala real (×1).", 13, Color("aabbd0"))
+	note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	var cameras := HBoxContainer.new()
+	_elastic_controls.add_child(cameras)
+	for choice in ["Patines", "Carenado"]:
+		var button := Button.new()
+		button.text = choice
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.pressed.connect(_camera_preset.bind(choice))
+		cameras.add_child(button)
+	for i in 3:
+		var row := HBoxContainer.new()
+		_elastic_controls.add_child(row)
+		var label := _label(row, ["Carga patín izquierdo", "Carga patín derecho", "Fuerza en carenado"][i], 13, Color("dce6f4"))
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		_load_values.append(_label(row, "0.0 N", 13, Color("82c4ff")))
+		var slider := HSlider.new()
+		slider.min_value = -2 if i == 2 else 0
+		slider.max_value = Flex.FORCE_LIMIT_N[i]
+		slider.step = 0.05 if i == 2 else 0.1
+		slider.custom_minimum_size.y = 24
+		slider.tooltip_text = "Fuerza aplicada en newtons; no es un mando de vuelo."
+		slider.value_changed.connect(_load_changed.bind(i))
+		_elastic_controls.add_child(slider)
+		_load_sliders.append(slider)
+	var presets := GridContainer.new()
+	presets.columns = 2
+	_elastic_controls.add_child(presets)
+	for choice in ["Apoyo 5,2 kg", "Un patín", "Presionar carenado", "Soltar cargas"]:
+		var button := Button.new()
+		button.text = choice
+		button.add_theme_font_size_override("font_size", 12)
+		button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		button.pressed.connect(_load_preset.bind(choice))
+		presets.add_child(button)
+	_flex_readout = _label(_elastic_controls, "", 13, Color("bbcce0"))
+	_label(_elastic_controls, "Soltar deja decaer la vibración.\nPausar y Paso permiten inspeccionarla.", 12, Color("9cacbf"))
+
+
+func _set_elastic_mode(enabled: bool) -> void:
+	_elastic_mode = enabled
+	_mechanical_controls.visible = not enabled
+	_elastic_controls.visible = enabled
+	_readout.visible = not enabled
+	_mode_buttons[0].set_pressed_no_signal(not enabled)
+	_mode_buttons[1].set_pressed_no_signal(enabled)
+	_hint.text = "HX-700 articulado  /  flexión de patines y carenado" if enabled else "HX-700 articulado  /  servos, plato y transmisión"
+	_shortcuts.text = "Arrastre derecho: orbitar · Rueda: zoom\nEspacio: pausar todo · R: " + ("soltar cargas" if enabled else "neutro")
+	if enabled:
+		_camera_preset("Patines")
+
+
+func _load_changed(value: float, index: int) -> void:
+	var loads := flex.force.duplicate()
+	loads[index] = value
+	flex.set_loads(loads)
+	_refresh_flex()
+
+
+func _load_preset(choice: String) -> void:
+	var loads := PackedFloat64Array([0, 0, 0])
+	match choice:
+		"Apoyo 5,2 kg": loads = PackedFloat64Array([25.49729, 25.49729, 0])
+		"Un patín": loads[0] = 50.99458
+		"Presionar carenado":
+			loads = flex.force.duplicate()
+			loads[2] = 2
+			_camera_preset("Carenado")
+	flex.set_loads(loads)
+	for i in 3:
+		_load_sliders[i].set_value_no_signal(loads[i])
+	_refresh_flex()
+
+
+func _refresh_flex() -> void:
+	for i in 3:
+		_load_values[i].text = "%.1f N" % flex.force[i]
+	_flex_readout.text = "Flexión I / D  %.2f / %.2f mm\nCarenado  %+.2f mm\nEnergía elástica + cinética  %.4f J\nEnergía disipada  %.4f J" % [flex.displacement[0] * 1000, flex.displacement[1] * 1000, flex.displacement[2] * 1000, flex.energy_j(), flex.dissipated_j]
 
 
 func _label(parent: Node, text_value: String, size: int, color: Color) -> Label:
@@ -202,12 +352,33 @@ func _label(parent: Node, text_value: String, size: int, color: Color) -> Label:
 
 
 func _process(delta: float) -> void:
-	if rig == null or speed_rpm == 0.0:
+	if rig == null or paused or (not motion.needs_advance() and not flex.needs_advance()):
 		return
-	phase += minf(delta, 0.1) * speed_rpm * TAU / 60.0
-	inputs[4] = phase
+	_advance(delta)
+
+
+func _advance(delta: float) -> void:
+	var previous := motion.capture_state()
+	var previous_flex := flex.capture_state()
+	if not motion.advance(delta):
+		_set_paused(true)
+		_status.text = "Avance rechazado: tiempo o azimut fuera de rango."
+		_status.add_theme_color_override("font_color", Color("ffb49d"))
+		return
+	if not flex.advance(delta):
+		motion.restore_state(previous)
+		_set_paused(true)
+		_status.text = "Carga fuera del dominio elástico del banco."
+		return
+	inputs = motion.inputs.duplicate()
+	phase = inputs[4]
 	if not _apply_pose():
-		_speed.value = 0
+		_restore_motion(previous)
+		flex.restore_state(previous_flex)
+		_set_paused(true)
+	else:
+		elastic_skin.apply(flex.displacement)
+	_refresh_flex()
 	_busy = true
 	_phase_slider.value = fposmod(rad_to_deg(phase), 360)
 	_busy = false
@@ -216,22 +387,81 @@ func _process(delta: float) -> void:
 func _control_changed(value: float, index: int) -> void:
 	if _busy:
 		return
-	inputs[index] = value
-	_apply_pose()
+	var values := motion.demand.duplicate()
+	values[index] = value
+	motion.set_controls(values)
+	_refresh_demand()
+	if not paused:
+		_advance(0)
 
 
 func _phase_changed(value: float) -> void:
 	if _busy:
 		return
-	phase = deg_to_rad(value)
-	inputs[4] = phase
-	_apply_pose()
+	var previous := motion.capture_state()
+	if not motion.seek_azimuth(value):
+		return
+	speed_rpm = 0
+	_speed.set_value_no_signal(0)
+	inputs[4] = motion.inputs[4]
+	phase = inputs[4]
+	if not _apply_pose():
+		_restore_motion(previous)
+		_set_paused(true)
+
+
+func _restore_motion(previous: Dictionary) -> void:
+	motion.restore_state(previous)
+	inputs = motion.inputs.duplicate()
+	phase = inputs[4]
+	speed_rpm = motion.speed_rpm
+	_speed.set_value_no_signal(speed_rpm)
+	_phase_slider.set_value_no_signal(fposmod(rad_to_deg(phase), 360))
+	_phase_label.text = "Azimut · %.0f°" % fposmod(rad_to_deg(phase), 360)
+	_refresh_demand()
+
+
+func _speed_changed(value: float) -> void:
+	speed_rpm = value
+	motion.set_speed(value)
+	_refresh_demand()
+
+
+func _smooth_changed(enabled: bool) -> void:
+	# While paused, queue the choice; the frozen visible state changes only on step/resume.
+	if not paused:
+		motion.set_smooth(enabled)
+		_advance(0)
+
+
+func _refresh_demand() -> void:
+	for i in 4:
+		_values[i].text = "%+.1f° → %+.1f°" % [inputs[i], motion.demand[i]]
+	_speed_label.text = "Giro · %.1f → %.1f rpm" % [motion.rpm, speed_rpm]
+
+
+func _set_paused(enabled: bool) -> void:
+	paused = enabled
+	_pause_button.text = "Reanudar" if paused else "Pausar"
+	_step_button.disabled = not paused
+
+
+func _toggle_pause() -> void:
+	_set_paused(not paused)
+	if not paused:
+		motion.set_smooth(_smooth_toggle.button_pressed)
+		_advance(0)
+
+
+func _step() -> void:
+	if paused:
+		motion.set_smooth(_smooth_toggle.button_pressed)
+		_advance(1.0 / 60.0)
 
 
 func _apply_pose() -> bool:
 	var result: Dictionary = rig.apply(inputs)
-	for i in 4:
-		_values[i].text = "%+.1f°" % inputs[i]
+	_refresh_demand()
 	_phase_label.text = "Azimut · %.0f°" % fposmod(rad_to_deg(phase), 360)
 	if not result.ok:
 		_status.text = "Pose rechazada: las uniones no cierran. Se conserva la última pose válida."
@@ -251,12 +481,14 @@ func _preset(choice: String) -> void:
 		"+Colectivo": values[0] = 10
 		"Cíclico": values[1] = 8
 		"Cola": values[3] = 15
-	inputs = values
+	motion.set_controls(values.slice(0, 4))
 	_busy = true
 	for i in 4:
-		_sliders[i].value = inputs[i]
+		_sliders[i].value = values[i]
 	_busy = false
-	_apply_pose()
+	_refresh_demand()
+	if not paused:
+		_advance(0)
 
 
 func _camera_preset(choice: String) -> void:
@@ -276,6 +508,18 @@ func _camera_preset(choice: String) -> void:
 			distance = 2.5
 			yaw = 0.8
 			elevation = 0.28
+		"Patines":
+			focus = Vector3(0.02, 0.055, 0)
+			distance = 0.92
+			yaw = 1.2
+			elevation = 0.08
+			_show_canopy(false)
+		"Carenado":
+			focus = Vector3(0.16, 0.19, 0)
+			distance = 1.0
+			yaw = 0.75
+			elevation = 0.38
+			_show_canopy(true)
 	_blades_toggle.button_pressed = choice == "Completo"
 	_update_camera()
 
@@ -302,10 +546,13 @@ func _input(event: InputEvent) -> void:
 	# Shortcuts also work after a slider/button receives keyboard focus.
 	if rig != null and event is InputEventKey and event.pressed and not event.echo:
 		if event.physical_keycode == KEY_R:
-			_preset("Neutro")
+			if _elastic_mode:
+				_load_preset("Soltar cargas")
+			else:
+				_preset("Neutro")
 			get_viewport().set_input_as_handled()
 		elif event.physical_keycode == KEY_SPACE:
-			_speed.value = 6.0 if speed_rpm == 0.0 else 0.0
+			_toggle_pause()
 			get_viewport().set_input_as_handled()
 
 
@@ -328,6 +575,18 @@ func _technical_materials(enabled: bool) -> void:
 		if not node is MeshInstance3D:
 			continue
 		var mesh := node as MeshInstance3D
+		if id == "visual.tren_de_aterrizaje":
+			# Distinguish bending struts from the rigid rail tubes and hardware.
+			mesh.material_override = null
+			for surface in mesh.mesh.get_surface_count():
+				var material: StandardMaterial3D = null
+				if enabled:
+					material = StandardMaterial3D.new()
+					material.albedo_color = Color("548fba") if surface == 0 else Color("a5b4c4")
+					material.metallic = 0.0 if surface == 0 else 0.5
+					material.roughness = 0.65
+				mesh.set_surface_override_material(surface, material)
+			continue
 		if not enabled:
 			mesh.material_override = null
 			continue
@@ -345,4 +604,12 @@ func _technical_materials(enabled: bool) -> void:
 			mat.albedo_color = Color("458cd0")
 		elif id.begins_with("linkage"):
 			mat.albedo_color = Color("768eaa")
+		elif id == "visual.carenado":
+			mat.albedo_color = Color("648ba8")
+			mat.metallic = 0
+			mat.roughness = 0.6
+		elif id == "visual.carenado_gomas":
+			mat.albedo_color = Color("252f3a")
+			mat.metallic = 0
+			mat.roughness = 0.85
 		mesh.material_override = mat

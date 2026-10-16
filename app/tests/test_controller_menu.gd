@@ -158,8 +158,63 @@ func _run() -> void:
 	await button(JOY_BUTTON_DPAD_DOWN)
 	await button(JOY_BUTTON_A)
 	check("gamepad can end flight and return Home", app.flight == null and app.screens.is_top("home"))
+	await _test_helicopter_flow()
 	app.free()
 	for suffix in ["", ".controllers", ".controllers.rollback", ".legacy_rc"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + suffix))
 	print("Controller menu: %d/%d checks passed" % [checks - failures, checks])
 	quit(1 if failures else 0)
+
+
+func _test_helicopter_flow() -> void:
+	app.controllers.select_devices(15, 15)
+	app.set_aircraft("xcell-60-research")
+	app.home.start_choice = "runway"
+	app.open_controls()
+	var setup: Node = app.screens.top()
+	check("Home helicopter settings show its automatic arm binding", setup._action_bindings.helicopter_arm.get("button", -1) == JOY_BUTTON_A)
+	setup.request_close()
+	await ui.settle()
+	app.start_flight()
+	await ui.settle() # the shared shell opens initial Pause on a deferred call
+	check("helicopter starts through the shared shell", app.flight != null and app.pause_menu != null)
+	if app.flight == null: return
+	var session: Node = app.flight.session
+	session.set_physics_process(false)
+	session.sim.set_physics_process(false)
+	session.read_axis = func(_device: int, _axis: int) -> float: return 0.0
+	session.read_button = func(_device: int, _button: int) -> bool: return false
+	session.radio.confirmed_gamepad_connection = func(id: int) -> bool: return id == 15
+	session._physics_process(1.0 / 240.0)
+	await ui.settle()
+	app.pause_menu.continue_button.grab_focus()
+	await button(JOY_BUTTON_A)
+	check("helicopter Continue does not also arm the motor", app.pause_menu == null and not session.power.armed and session.zero_drive_hold)
+	await button(JOY_BUTTON_A, 16)
+	check("another pad cannot arm the helicopter", not session.power.armed)
+	await button(JOY_BUTTON_A)
+	check("new A press arms helicopter in hold", session.power.armed and session.zero_drive_hold)
+	await button(JOY_BUTTON_B)
+	check("B explicitly releases hold for spool-up", not session.zero_drive_hold)
+	var cut := InputEventJoypadButton.new()
+	cut.device = 15
+	cut.button_index = JOY_BUTTON_LEFT_SHOULDER
+	cut.pressed = true
+	Input.parse_input_event(cut)
+	await button(JOY_BUTTON_B)
+	check("LB held dominates B hold-release", session.zero_drive_hold)
+	cut.pressed = false
+	Input.parse_input_event(cut)
+	check("LB release leaves rotor hold latched", session.zero_drive_hold)
+	await button(JOY_BUTTON_B)
+	check("B works again after releasing cut", not session.zero_drive_hold)
+	var trainer: bool = session.trainer_enabled
+	await button(JOY_BUTTON_LEFT_STICK)
+	check("L3 changes trainer without opening calibration", session.trainer_enabled != trainer and session.calibration == null)
+	await button(JOY_BUTTON_BACK)
+	check("View resets helicopter to stopped disarmed pad and explicit Continue", app.pause_menu != null and session.sim.paused and not session.power.armed and session.zero_drive_hold and session.sim.continuous[0] == 0.0)
+	app.open_controls()
+	setup = app.screens.top()
+	check("Pause helicopter settings retain aircraft context", setup._action_bindings.helicopter_hold.get("button", -1) == JOY_BUTTON_B and setup._action_bindings.flaps_cycle.type == "unbound")
+	setup.request_close()
+	app.end_flight()

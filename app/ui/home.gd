@@ -50,6 +50,7 @@ signal update_download_requested(url: String)
 signal update_hidden(tag: String)
 
 const SIDEBAR_WIDTH := 320
+const HOME_AUTOWRAP_META := "_home_authored_autowrap_mode"
 
 ## The catalog aircraft that Fly starts (set_aircraft() changes it).
 var aircraft_id := Catalog.DEFAULT_ID
@@ -111,6 +112,7 @@ var _rail_scrim: TextureRect
 var _top_scrim: TextureRect
 var _page_host: VBoxContainer
 var _navigation: GridContainer
+var _navigation_in_scroll := false
 var _conditions_row: GridContainer
 var _nav_buttons: Array[Button] = []
 var _catalog_buttons: Array[Button] = []
@@ -721,16 +723,44 @@ func _apply_responsive_layout() -> void:
 	var compact := viewport_size.x < 1500.0 or viewport_size.y < 850.0
 	var large_text := UiTheme.text_scale >= 1.5
 	var inset := 24.0 if compact else 48.0
-	var rail_width := minf(viewport_size.x * 0.39, 500.0) if large_text else \
+	var rail_width := minf(viewport_size.x * 0.48, 500.0) if large_text else \
 		clampf(viewport_size.x * 0.24, 280.0, 304.0) if compact else clampf(viewport_size.x * 0.167, 280.0, 340.0)
 	var header_top := 14.0 if compact else 20.0
+	var navigation_in_scroll := viewport_size.y < 720.0
+	if navigation_in_scroll != _navigation_in_scroll:
+		if navigation_in_scroll:
+			_left_layout.remove_child(_navigation)
+			_page_host.add_child(_navigation)
+			_page_host.move_child(_navigation, 0)
+		else:
+			_page_host.remove_child(_navigation)
+			_left_layout.add_child(_navigation)
+			_left_layout.move_child(_navigation, 0)
+		_navigation_in_scroll = navigation_in_scroll
+		var first_page_controls: Array[Control] = [previous_button, _catalog_buttons[0], natural_random_button, ground_vehicle_choice]
+		for index in _page_buttons.size():
+			_page_buttons[index].focus_neighbor_bottom = _page_buttons[index].get_path_to(first_page_controls[index])
+	# Large text needs room to wrap inside the bounded rail. Save each button's authored wrap mode so a live
+	# return to normal text restores its original presentation, including after a language change.
+	for button: Button in find_children("*", "Button", true, false):
+		if button == language_button or button == settings_button:
+			continue
+		if not button.has_meta(HOME_AUTOWRAP_META):
+			button.set_meta(HOME_AUTOWRAP_META, button.autowrap_mode)
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART if large_text else int(button.get_meta(HOME_AUTOWRAP_META))
+	for utility: Button in [controls_button, help_button, quit_button]:
+		if large_text:
+			# Keep the pinned utility row legible at 200% without letting its labels force a wide sidebar.
+			_set_responsive_font(utility, 20 if compact else UiTheme.SIZE.small)
+		else:
+			utility.remove_theme_font_size_override("font_size")
 	language_button.custom_minimum_size.x = maxf(200.0, language_button.get_theme_font("font").get_string_size(
 		language_button.text, HORIZONTAL_ALIGNMENT_LEFT, -1, language_button.get_theme_font_size("font_size")).x + 32.0)
 	settings_button.custom_minimum_size.x = maxf(130.0, settings_button.get_theme_font("font").get_string_size(
 		tr(settings_button.text), HORIZONTAL_ALIGNMENT_LEFT, -1, settings_button.get_theme_font_size("font_size")).x + 32.0)
 	_alpha_badge.visible = not large_text
 	_version_label.visible = not large_text
-	_brand_label.add_theme_font_size_override("font_size", UiTheme._font_size(UiTheme.SIZE.header, true))
+	_set_responsive_font(_brand_label, UiTheme.SIZE.header, true)
 	var header_height := maxf(_header.get_combined_minimum_size().y, _header_actions.get_combined_minimum_size().y)
 	var header_action_width := maxf(420.0, language_button.custom_minimum_size.x + settings_button.custom_minimum_size.x + 8.0)
 	_header.offset_left = inset
@@ -750,27 +780,39 @@ func _apply_responsive_layout() -> void:
 	_left_layout.offset_top = maxf(88.0 if compact else 108.0, header_top + header_height + 16.0)
 	_left_layout.offset_bottom = -24.0
 	_navigation.columns = 2 if compact else 1
-	_conditions_row.columns = 2 if compact else 1
+	_conditions_row.columns = 1 if large_text else 2 if compact else 1
 	for button in _nav_buttons:
 		button.custom_minimum_size.y = 36.0 if compact else 40.0
 		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
-		button.add_theme_font_size_override("font_size", UiTheme._font_size(20 if compact else UiTheme.SIZE.nav))
-	aircraft_name_label.add_theme_font_size_override("font_size", UiTheme._font_size(20 if compact else 28))
+		_set_responsive_font(button, 20 if compact else UiTheme.SIZE.nav)
+	if large_text:
+		for label: Label in _page_host.find_children("*", "Label", true, false):
+			label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+			label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_set_responsive_font(aircraft_name_label, 20 if compact else 28)
 	for condition_button in [weather_button, time_button]:
-		condition_button.add_theme_font_size_override("font_size", UiTheme._font_size(18 if compact else UiTheme.SIZE.button))
+		_set_responsive_font(condition_button, 18 if compact else UiTheme.SIZE.button)
 		condition_button.custom_minimum_size.y = 38.0 if compact else 48.0
 	for utility in [controls_button, help_button, quit_button]:
 		utility.custom_minimum_size.y = 32.0 if compact else 34.0
 		utility.autowrap_mode = TextServer.AUTOWRAP_OFF
-	control_label.add_theme_font_size_override("font_size", UiTheme._font_size(20 if compact else UiTheme.SIZE.small))
+	_set_responsive_font(control_label, 20 if compact else UiTheme.SIZE.small)
 	# A device identifier must not push the prepared flight below the pinned action at 720p.
 	# Keep the complete controller name in its tooltip and in Controls; large text can scroll the body.
 	control_label.max_lines_visible = 1 if compact and not large_text else -1
 	control_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS if compact and not large_text else TextServer.OVERRUN_NO_TRIMMING
 	if is_node_ready():
 		aircraft_name_label.text = _aircraft_display_name()
+		_left_layout.queue_sort()
+		_scroll.queue_sort()
 	if update_notice != null:
 		update_notice.offset_top = maxf(112.0, _header_actions.get_global_rect().end.y + 16.0)
+
+
+func _set_responsive_font(control: Control, logical_size: int, decorative := false) -> void:
+	var font_size := UiTheme._font_size(logical_size, decorative)
+	if not control.has_theme_font_size_override("font_size") or control.get_theme_font_size("font_size") != font_size:
+		control.add_theme_font_size_override("font_size", font_size)
 
 
 func _refresh_scrims() -> void:
@@ -781,9 +823,11 @@ func _refresh_scrims() -> void:
 			continue
 		var gradient := (rect.texture as GradientTexture2D).gradient
 		var alpha := top_alpha if rect == _top_scrim else plateau_alpha
-		gradient.set_color(0, Color(UiTheme.PANEL, alpha))
-		gradient.set_color(1, Color(UiTheme.PANEL, alpha))
-		gradient.set_color(2, Color(UiTheme.PANEL, 0.0))
+		# Gradient changes regenerate the texture. Resizing does not change these colors.
+		for index in 3:
+			var color := Color(UiTheme.PANEL, alpha if index < 2 else 0.0)
+			if gradient.get_color(index) != color:
+				gradient.set_color(index, color)
 
 
 ## The column opens at the top. Wrapped labels settle over a few frames; following the first focus during those

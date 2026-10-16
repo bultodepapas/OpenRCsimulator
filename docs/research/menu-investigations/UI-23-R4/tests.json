@@ -1,0 +1,272 @@
+[
+  {
+    "test": "test_ui_modal_responsive",
+    "exit": 0,
+    "errors": [],
+    "checks": 0,
+    "summary": [
+      "Responsive modals: 560 cases, 0 failures"
+    ],
+    "log": "logs/test_ui_modal_responsive.log"
+  },
+  {
+    "test": "test_ui_help",
+    "exit": 0,
+    "errors": [],
+    "checks": 38,
+    "summary": [
+      "all UI help checks passed"
+    ],
+    "log": "logs/test_ui_help.log"
+  },
+  {
+    "test": "test_natural_random_screen",
+    "exit": 0,
+    "errors": [],
+    "checks": 40,
+    "summary": [
+      "all Natural Random screen checks passed"
+    ],
+    "log": "logs/test_natural_random_screen.log"
+  },
+  {
+    "test": "test_ui_natural_random",
+    "exit": 0,
+    "errors": [],
+    "checks": 27,
+    "summary": [
+      "NR UI: 27 checks, 0 failures"
+    ],
+    "log": "logs/test_ui_natural_random.log"
+  },
+  {
+    "test": "test_workshop_ui",
+    "exit": 0,
+    "errors": [],
+    "checks": 83,
+    "summary": [],
+    "log": "logs/test_workshop_ui.log"
+  },
+  {
+    "test": "test_workshop_integration",
+    "exit": 0,
+    "errors": [],
+    "checks": 38,
+    "summary": [],
+    "log": "logs/test_workshop_integration.log"
+  },
+  {
+    "test": "test_workshop_trial",
+    "exit": 0,
+    "errors": [],
+    "checks": 0,
+    "summary": [],
+    "log": "logs/test_workshop_trial.log"
+  },
+  {
+    "test": "test_failure_availability_ui",
+    "exit": 0,
+    "errors": [
+      "ERROR: 2 resources still in use at exit (run with --verbose for details)."
+    ],
+    "checks": 62,
+    "summary": [],
+    "log": "logs/test_failure_availability_ui.log"
+  },
+  {
+    "test": "test_failure_ui",
+    "exit": 0,
+    "errors": [],
+    "checks": 27,
+    "summary": [
+      "all standalone failure UI checks passed"
+    ],
+    "log": "logs/test_failure_ui.log"
+  },
+  {
+    "test": "test_overlay_manager",
+    "exit": 0,
+    "errors": [],
+    "checks": 0,
+    "summary": [],
+    "log": "logs/test_overlay_manager.log"
+  },
+  {
+    "test": "test_settings_ui",
+    "exit": 0,
+    "errors": [],
+    "checks": 40,
+    "summary": [
+      "all Settings checks passed"
+    ],
+    "log": "logs/test_settings_ui.log"
+  },
+  {
+    "test": "test_ui_scale",
+    "exit": 0,
+    "errors": [],
+    "checks": 72,
+    "summary": [],
+    "log": "logs/test_ui_scale.log"
+  },
+  {
+    "test": "test_ui_home",
+    "exit": 0,
+    "errors": [],
+    "checks": 239,
+    "summary": [
+      "all UI home checks passed"
+    ],
+    "log": "logs/test_ui_home.log"
+  },
+  {
+    "test": "test_ui_pause",
+    "exit": 0,
+    "errors": [],
+    "checks": 57,
+    "summary": [
+      "all UI pause checks passed"
+    ],
+    "log": "logs/test_ui_pause.log"
+  },
+  {
+    "test": "test_ui_pause_responsive",
+    "exit": 0,
+    "errors": [],
+    "checks": 422,
+    "summary": [
+      "all responsive Pause checks passed (422)"
+    ],
+    "log": "logs/test_ui_pause_responsive.log"
+  },
+  {
+    "test": "test_conditions_responsive",
+    "exit": 0,
+    "errors": [],
+    "checks": 0,
+    "summary": [
+      "all responsive conditions checks passed"
+    ],
+    "log": "logs/test_conditions_responsive.log"
+  },
+  {
+    "test": "test_ui_time_of_day",
+    "exit": 0,
+    "errors": [],
+    "checks": 44,
+    "summary": [
+      "all UI time-of-day checks passed"
+    ],
+    "log": "logs/test_ui_time_of_day.log"
+  },
+  {
+    "test": "test_ui_time_of_day_pause",
+    "exit": 0,
+    "errors": [],
+    "checks": 44,
+    "summary": [
+      "all TOD-08b pause UI checks passed"
+    ],
+    "log": "logs/test_ui_time_of_day_pause.log"
+  },
+  {
+    "test": "test_ui_weather",
+    "exit": 0,
+    "errors": [],
+    "checks": 62,
+    "summary": [
+      "all UI weather checks passed"
+    ],
+    "log": "logs/test_ui_weather.log"
+  },
+  {
+    "test": "test_ui_weather_sliders",
+    "exit": 0,
+    "errors": [],
+    "checks": 32,
+    "summary": [
+      "all UI weather slider checks passed"
+    ],
+    "log": "logs/test_ui_weather_sliders.log"
+  },
+  {
+    "test": "test_ui_settings_integration",
+    "exit": 0,
+    "errors": [],
+    "checks": 21,
+    "summary": [
+      "all Settings integration checks passed"
+    ],
+    "log": "logs/test_ui_settings_integration.log"
+  },
+  {
+    "test": "test_ui_screen_stack",
+    "exit": 0,
+    "errors": [],
+    "checks": 36,
+    "summary": [
+      "all UI screen stack checks passed"
+    ],
+    "log": "logs/test_ui_screen_stack.log"
+  },
+  {
+    "test": "test_controller_responsive",
+    "exit": 0,
+    "errors": [],
+    "checks": 0,
+    "summary": [
+      "Controller responsive layout: 17245/17245 checks passed"
+    ],
+    "log": "logs/test_controller_responsive.log"
+  },
+  {
+    "test": "test_controller_sections",
+    "exit": 0,
+    "errors": [],
+    "checks": 0,
+    "summary": [
+      "Controller sections: 105/105 checks passed"
+    ],
+    "log": "logs/test_controller_sections.log"
+  },
+  {
+    "test": "test_controller_aux_setup",
+    "exit": 0,
+    "errors": [],
+    "checks": 19,
+    "summary": [
+      "all controller auxiliary setup checks passed"
+    ],
+    "log": "logs/test_controller_aux_setup.log"
+  },
+  {
+    "test": "test_controller_setup",
+    "exit": 0,
+    "errors": [],
+    "checks": 53,
+    "summary": [
+      "all controller setup checks passed"
+    ],
+    "log": "logs/test_controller_setup.log"
+  },
+  {
+    "test": "test_controller_integration",
+    "exit": 0,
+    "errors": [],
+    "checks": 0,
+    "summary": [
+      "Controller integration: 27/27 checks passed"
+    ],
+    "log": "logs/test_controller_integration.log"
+  },
+  {
+    "test": "test_controller_settings_save",
+    "exit": 0,
+    "errors": [],
+    "checks": 0,
+    "summary": [
+      "Controller settings save: 25/25 checks passed"
+    ],
+    "log": "logs/test_controller_settings_save.log"
+  }
+]

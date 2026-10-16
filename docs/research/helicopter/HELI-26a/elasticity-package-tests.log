@@ -1,0 +1,27 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok unloaded structure stays exactly at rest
+ok analytic load response agrees with independent RK4
+ok equal rail loads give identical compression
+ok input work equals stored plus dissipated energy
+ok static rail and shell deflection equals force / stiffness
+ok release rebounds then loses energy monotonically
+ok release preserves the work / dissipation balance
+ok held-load tape agrees at 1/30/60/144 Hz including energy
+ok one skid load does not deform the opposite skid or canopy
+ok invalid loads and times fail atomically
+ok long frames cannot hide intermediate overtravel
+ok advanced mesh receives two rail morphs and one shell morph
+ok source meshes and rigid mount parts remain untouched
+ok actual mesh chassis bases and bolts stay fixed
+ok actual rails, end caps, clamps and low screws translate as rigid sets
+ok actual support struts bend between fixed bases and moving clamps
+ok actual shell flexes while four attachment patches stay fixed
+ok morph construction preserves base vertices, UVs, indices and materials
+ok signed physical metres reach native blend weights
+ok invalid render deformation retains the accepted morphs
+ok elastic bench advances with stopped controls and rotor
+ok pause freezes elastic state while loads are queued
+ok frame step advances released elastic state while paused
+ok mechanism rejection rolls back elastic state too
+24 checks, 0 failed; RK4 max error 0.00000000000000; frame-rate max error 0.00000000000000; pinned shell vertices 224

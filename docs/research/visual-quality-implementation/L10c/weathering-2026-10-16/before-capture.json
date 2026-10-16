@@ -1,0 +1,54 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "barrier_surfaces": 1,
+  "barrier_triangles": 17520,
+  "builder_sha256": "20968328211b62f47c7feaf0937e2b1a49c772cf7b935f954a8b65c9294d72d9",
+  "complete": true,
+  "method": "gl_compatibility",
+  "records": [
+    {
+      "draws": 36,
+      "eye": [
+        3.5,
+        0.949999988079071,
+        -3.40000009536743
+      ],
+      "fov": 48.0,
+      "sha256": "a0b474307ab7f89c26745ee66d404860aece715dec49242d189552021e081848",
+      "view": "detail"
+    },
+    {
+      "draws": 110,
+      "eye": [
+        3.5,
+        0.949999988079071,
+        -5.59999990463257
+      ],
+      "fov": 48.0,
+      "sha256": "86655e8671c4c4542a9bb5b9f4f7aa546694ee1afea8e3d617138938f54e7558",
+      "view": "rear"
+    },
+    {
+      "draws": 48,
+      "eye": [
+        9.0,
+        1.70000004768372,
+        1.0
+      ],
+      "fov": 55.0,
+      "sha256": "156cae6394d7e1ae123818173172576cea34256ecbf8d61dfde2f185128018ac",
+      "view": "flightline"
+    },
+    {
+      "draws": 108,
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "fov": 50.0,
+      "sha256": "a518a1a7bf8514f5f689ae7bef8bc56ea46f7ad7f164d6468b5b121c3161b4fe",
+      "view": "pilot"
+    }
+  ]
+}

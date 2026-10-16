@@ -26,6 +26,9 @@ var mode_picker: OptionButton
 var switches := {}
 var done_button: Button
 var _syncing := false
+var _screen: Control
+var _switch_grid: GridContainer
+var _picker_rows: Array[BoxContainer] = []
 
 
 func _init(overlay_manager: CanvasLayer) -> void:
@@ -33,6 +36,7 @@ func _init(overlay_manager: CanvasLayer) -> void:
 	layer = LAYER
 	manager = overlay_manager
 	var screen := Screen.mount(self, "Modal")
+	_screen = screen
 	screen.dismiss_option_popup_first = true
 	screen.close_requested.connect(func() -> void: closed.emit())
 	screen.dim(0.2, "Dim") # light: the overlays preview behind it (the pause menu already dims the flight)
@@ -42,10 +46,21 @@ func _init(overlay_manager: CanvasLayer) -> void:
 	dialog_panel.theme_type_variation = "Sidebar"
 	dialog_panel.custom_minimum_size.x = 520.0
 	center.add_child(dialog_panel)
+	var shell := VBoxContainer.new()
+	shell.add_theme_constant_override("separation", 12)
+	dialog_panel.add_child(shell)
+	shell.add_child(Widgets.label(tr("Flight overlays"), "TitleLabel", true, false))
+	var scroll := ScrollContainer.new()
+	scroll.name = "OverlaysScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.follow_focus = true
+	scroll.focus_mode = Control.FOCUS_ALL
+	shell.add_child(scroll)
 	var column := VBoxContainer.new()
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 8)
-	dialog_panel.add_child(column)
-	column.add_child(Widgets.label(tr("Flight overlays"), "TitleLabel", false, false))
+	scroll.add_child(column)
 	column.add_child(Widgets.label(tr("Close any overlay with its × or press F2 to cycle presets; F3 shows the developer overlays."), "SecondaryLabel", true, false))
 
 	preset_picker = _picker(column, tr("Preset"), "Preset")
@@ -58,6 +73,7 @@ func _init(overlay_manager: CanvasLayer) -> void:
 			_sync())
 
 	var grid := GridContainer.new()
+	_switch_grid = grid
 	grid.columns = 2
 	grid.add_theme_constant_override("h_separation", 24)
 	column.add_child(grid)
@@ -65,6 +81,8 @@ func _init(overlay_manager: CanvasLayer) -> void:
 		var box := CheckBox.new()
 		box.name = id.capitalize().replace(" ", "")
 		box.text = tr(NAMES[id])
+		box.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		box.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		box.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 		box.toggled.connect(func(on: bool) -> void:
 			if not _syncing:
@@ -92,15 +110,28 @@ func _init(overlay_manager: CanvasLayer) -> void:
 	done_button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	done_button.pressed.connect(func() -> void: closed.emit())
 	actions.add_child(done_button)
-	column.add_child(actions)
+	shell.add_child(actions)
+	screen.resized.connect(_resize_layout)
+	screen.theme_changed.connect(_resize_layout)
 	_sync()
 
 
 func _ready() -> void:
+	_resize_layout()
 	if DisplayServer.has_feature(DisplayServer.FEATURE_SUBWINDOWS):
 		for picker: OptionButton in [preset_picker, units_picker, mode_picker]:
 			picker.get_popup().force_native = true # as the time-of-day dialog: avoids embedded-popup teardown errors
 	preset_picker.grab_focus.call_deferred()
+
+
+func _resize_layout() -> void:
+	if not is_inside_tree(): return
+	var available := _screen.size - Vector2(32, 32)
+	dialog_panel.custom_minimum_size = Vector2(minf(820, available.x), minf(700, available.y))
+	var stacked := preload("res://ui/ui_theme.gd").text_scale > 1.25 or available.x < 760
+	_switch_grid.columns = 1 if stacked else 2
+	for row in _picker_rows:
+		row.vertical = stacked
 
 
 ## Shows the manager's current settings without echoing changes back.
@@ -117,7 +148,8 @@ func _sync() -> void:
 
 
 func _picker(column: VBoxContainer, label_text: String, node_name: String) -> OptionButton:
-	var row := HBoxContainer.new()
+	var row := BoxContainer.new()
+	_picker_rows.append(row)
 	row.add_theme_constant_override("separation", 12)
 	column.add_child(row)
 	var label := Widgets.label(label_text, "SecondaryLabel", false, false)
@@ -125,6 +157,7 @@ func _picker(column: VBoxContainer, label_text: String, node_name: String) -> Op
 	row.add_child(label)
 	var picker := OptionButton.new()
 	picker.name = node_name
+	picker.fit_to_longest_item = false
 	picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(picker)

@@ -47,6 +47,11 @@ var save_button: Button:
 
 var _screen: Control
 var _body_scroll: ScrollContainer
+var _layout_panel: PanelContainer
+var _columns: BoxContainer
+var _aircraft_column: VBoxContainer
+var _recipe_selectors: GridContainer
+var _preset_grid: GridContainer
 var _settle_frames := 3
 var _base_selector: OptionButton
 var _variant_selector: OptionButton
@@ -113,6 +118,7 @@ func _init() -> void:
 
 
 func _ready() -> void:
+	_resize_layout()
 	_load_catalog_aircraft(initial_aircraft_id, false)
 	_refresh_variants()
 	_sync_controls()
@@ -153,10 +159,16 @@ func set_note(message: String) -> void:
 	if is_instance_valid(_status_label):
 		_status_label.text = tr(message) if message != "" else ""
 		_status_label.visible = message != ""
+		if message != "": _reveal_status.call_deferred()
 	if _trial_pending:
 		_trial_pending = false
 	if is_instance_valid(_trial_button):
 		_trial_button.disabled = not bool(_compiled.get("ok", false))
+
+
+func _reveal_status() -> void:
+	if is_inside_tree() and not is_queued_for_deletion() and _status_label.is_visible_in_tree():
+		_body_scroll.ensure_control_visible(_status_label)
 
 
 ## Test and integration seam: update the recipe through the same constraints as the visible controls.
@@ -208,16 +220,17 @@ func set_aircraft(id: String) -> void:
 
 
 func _build_ui() -> void:
-	var outer := MarginContainer.new()
+	var outer := CenterContainer.new()
 	outer.name = "WorkshopMargins"
 	outer.set_anchors_preset(Control.PRESET_FULL_RECT)
-	outer.add_theme_constant_override("margin_left", 24)
-	outer.add_theme_constant_override("margin_top", 18)
-	outer.add_theme_constant_override("margin_right", 24)
-	outer.add_theme_constant_override("margin_bottom", 18)
+	outer.offset_left = 24
+	outer.offset_top = 18
+	outer.offset_right = -24
+	outer.offset_bottom = -18
 	_screen.add_child(outer)
 
 	var shell := PanelContainer.new()
+	_layout_panel = shell
 	shell.name = "WorkshopPanel"
 	shell.theme_type_variation = "Sidebar"
 	shell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -241,6 +254,7 @@ func _build_ui() -> void:
 	heading.add_child(introduction)
 	header.add_child(heading)
 	var close_button := _button("Close", "", "CloseWorkshop")
+	close_button.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	close_button.pressed.connect(_request_close)
 	header.add_child(close_button)
 	page.add_child(header)
@@ -253,15 +267,22 @@ func _build_ui() -> void:
 	_body_scroll = body_scroll
 	body_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	page.add_child(body_scroll)
+	var body := VBoxContainer.new()
+	body.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	body.add_theme_constant_override("separation", 12)
+	body_scroll.add_child(body)
+	introduction.reparent(body)
 
-	var columns := HBoxContainer.new()
+	var columns := BoxContainer.new()
+	_columns = columns
 	columns.name = "WorkshopColumns"
 	columns.add_theme_constant_override("separation", 18)
 	columns.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	columns.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	body_scroll.add_child(columns)
+	body.add_child(columns)
 
 	var left := VBoxContainer.new()
+	_aircraft_column = left
 	left.name = "AircraftColumn"
 	left.custom_minimum_size.x = 390
 	left.size_flags_horizontal = Control.SIZE_FILL
@@ -303,6 +324,34 @@ func _build_ui() -> void:
 	_trial_button.pressed.connect(_request_trial)
 	footer.add_child(_trial_button)
 	page.add_child(footer)
+	for action in [reset_button, _undo_button, _redo_button, _trial_button]:
+		action.custom_minimum_size.x = 0
+		action.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		action.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	# History belongs with the recipe. Only the trial action stays pinned at small heights.
+	var history := HBoxContainer.new()
+	history.add_theme_constant_override("separation", 8)
+	right.add_child(history)
+	right.move_child(history, 0)
+	for action in [reset_button, _undo_button, _redo_button]: action.reparent(history)
+	_status_label.reparent(body)
+	_trial_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	footer.alignment = BoxContainer.ALIGNMENT_END
+	_screen.resized.connect(_resize_layout)
+	_screen.theme_changed.connect(_resize_layout)
+
+
+func _resize_layout() -> void:
+	if not is_inside_tree(): return
+	var available := _screen.size - Vector2(48, 36)
+	_layout_panel.custom_minimum_size = Vector2(minf(1480, available.x), minf(980, available.y))
+	var enlarged := preload("res://ui/ui_theme.gd").text_scale > 1.25
+	_columns.vertical = available.x < 1350 or enlarged
+	_aircraft_column.custom_minimum_size.x = 0 if _columns.vertical else 430
+	_aircraft_column.size_flags_horizontal = Control.SIZE_EXPAND_FILL if _columns.vertical else Control.SIZE_FILL
+	_recipe_selectors.columns = 1 if enlarged else 2
+	_preset_grid.columns = 2 if enlarged or not _columns.vertical else 3
+	_trial_button.custom_minimum_size.x = 440 if enlarged else 220
 
 
 func _build_aircraft_panel(parent: VBoxContainer) -> void:
@@ -311,6 +360,7 @@ func _build_aircraft_panel(parent: VBoxContainer) -> void:
 	var content := _card_content(card)
 	content.add_child(_section_label("AIRCRAFT"))
 	_base_selector = OptionButton.new()
+	_base_selector.fit_to_longest_item = false
 	_base_selector.name = "BaseAircraft"
 	_base_selector.focus_mode = Control.FOCUS_ALL
 	_base_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -330,10 +380,10 @@ func _build_aircraft_panel(parent: VBoxContainer) -> void:
 
 	_preview = WorkshopPreview.new()
 	_preview.name = "AircraftPreview"
-	_preview.custom_minimum_size = Vector2(380, 250)
+	_preview.custom_minimum_size = Vector2(0, 250)
 	_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_child(_preview)
-	var preview_caption := _label("Still preview · no flight simulation", "SecondaryLabel")
+	var preview_caption := _label("Still preview · no flight simulation", "SecondaryLabel", true)
 	preview_caption.name = "PreviewCaption"
 	content.add_child(preview_caption)
 	_validation_label = _label("Experimental simulation; handling may differ from a real aircraft.", "SecondaryLabel", true)
@@ -347,6 +397,7 @@ func _build_variants_panel(parent: VBoxContainer) -> void:
 	var content := _card_content(card)
 	content.add_child(_section_label("SAVED BUILDS"))
 	_variant_selector = OptionButton.new()
+	_variant_selector.fit_to_longest_item = false
 	_variant_selector.name = "SavedVariant"
 	_variant_selector.focus_mode = Control.FOCUS_ALL
 	_variant_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -391,12 +442,15 @@ func _build_presets_panel(parent: VBoxContainer) -> void:
 	var content := _card_content(card)
 	content.add_child(_section_label("STARTING PRESETS"))
 	var grid := GridContainer.new()
+	_preset_grid = grid
 	grid.name = "PresetGrid"
 	grid.columns = 3
 	grid.add_theme_constant_override("h_separation", 8)
 	grid.add_theme_constant_override("v_separation", 8)
 	for preset_id: String in PRESETS:
 		var preset_button := _button(PRESET_LABELS[preset_id], "", "Preset" + preset_id.capitalize())
+		preset_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		preset_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		preset_button.pressed.connect(_apply_preset.bind(preset_id))
 		grid.add_child(preset_button)
 		_preset_buttons[preset_id] = preset_button
@@ -412,6 +466,7 @@ func _build_recipe_panel(parent: VBoxContainer) -> void:
 	content.add_child(_section_label("AIRFRAME RECIPE · EXPERIMENTAL"))
 
 	var selector_grid := GridContainer.new()
+	_recipe_selectors = selector_grid
 	selector_grid.name = "RecipeSelectors"
 	selector_grid.columns = 2
 	selector_grid.add_theme_constant_override("h_separation", 16)
@@ -428,6 +483,7 @@ func _build_recipe_panel(parent: VBoxContainer) -> void:
 	selector_grid.add_child(_scale_selector)
 	selector_grid.add_child(_label("Mass scaling", "SecondaryLabel"))
 	_mass_policy_selector = OptionButton.new()
+	_mass_policy_selector.fit_to_longest_item = false
 	_mass_policy_selector.name = "MassPolicy"
 	_mass_policy_selector.focus_mode = Control.FOCUS_ALL
 	_mass_policy_selector.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -478,7 +534,7 @@ func _add_factor_row(parent: VBoxContainer, key: String, caption: String) -> voi
 	row.name = key.capitalize()
 	row.add_theme_constant_override("separation", 3)
 	var heading := HBoxContainer.new()
-	var caption_label := _label(caption, "SecondaryLabel")
+	var caption_label := _label(caption, "SecondaryLabel", true)
 	caption_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	heading.add_child(caption_label)
 	var value_label := _label("1.00×", "SecondaryLabel")
@@ -1179,7 +1235,7 @@ func _request_close() -> void:
 
 
 func _label(text: String, variation := "SecondaryLabel", wrap := false, translate := true) -> Label:
-	var result := Widgets.label(text, variation, wrap, translate)
+	var result := Widgets.label(text, variation, wrap or variation in ["TitleLabel", "SectionLabel"], translate)
 	return result
 
 

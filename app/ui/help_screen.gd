@@ -23,6 +23,7 @@ var _vehicle_type := Reference.AIRPLANE
 var _help_panel: PanelContainer
 var _help_columns: BoxContainer
 var _help_scroll: ScrollContainer
+var _key_tables: Array[GridContainer] = []
 
 
 func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLANE) -> void:
@@ -45,9 +46,9 @@ func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLA
 	_help_scroll = scroll
 	scroll.follow_focus = true # keyboard focus must reach what scaling pushes out of view (research 11)
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
-	scroll.custom_minimum_size = Vector2(0, 400) # 704 px including panel padding; the expanded EN/ES reference fits at 720p
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	scroll.focus_mode = Control.FOCUS_ALL
+	scroll.gui_input.connect(_scroll_input)
 	shell.add_child(scroll)
 	var page := VBoxContainer.new()
 	page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -55,7 +56,7 @@ func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLA
 	scroll.add_child(page)
 
 	var header := HBoxContainer.new()
-	var title := _text("Help", "TitleLabel")
+	var title := _text("Help", "TitleLabel", true)
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	# A full-width header line leaves room for the vehicle's startup/radio instructions.
@@ -98,14 +99,14 @@ func _init(return_focus: Control = null, vehicle_type: String = Reference.AIRPLA
 	_update_field_conditions_text()
 	right.add_child(field_conditions_label)
 
-	# About across the width, in two lines: everything fits at 1280x720 without scrolling, because nothing below
-	# Close is focusable and keyboard players could not scroll to it (tests/test_ui_help.gd checks the fit).
+	# About spans the body; the focusable scroll area exposes the full reference at small sizes.
 	page.add_child(_text("ABOUT", "SectionLabel"))
 	about_label = _text("", "SecondaryLabel", true)
 	about_label.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED # built with tr()
 	about_label.custom_minimum_size.x = 0
 	page.add_child(about_label)
 	screen.resized.connect(_resize_help)
+	screen.theme_changed.connect(_resize_help)
 
 
 func _ready() -> void:
@@ -119,7 +120,12 @@ func _resize_help() -> void:
 	var area: Vector2 = get_viewport().get_visible_rect().size
 	_help_panel.custom_minimum_size = Vector2(minf(1200, area.x - 48), area.y - 48)
 	_help_columns.vertical = preload("res://ui/ui_theme.gd").text_scale > 1.25 or area.x < 1180
-	_help_scroll.custom_minimum_size.y = maxf(180, area.y - 240)
+	# The scroll viewport receives the space left by the header; a fixed minimum can push Close offscreen.
+	for table in _key_tables:
+		table.columns = 2 if _help_columns.vertical else int(table.get_meta("wide_columns"))
+		for child in table.get_children():
+			if child is Label:
+				child.custom_minimum_size.x = 0 if _help_columns.vertical else float(table.get_meta("description_width"))
 
 
 func _notification(what: int) -> void:
@@ -127,6 +133,21 @@ func _notification(what: int) -> void:
 		_update_field_conditions_text()
 		_update_radio_help_text()
 		about_label.text = about_text(BuildInfo.current())
+
+
+func _scroll_input(event: InputEvent) -> void:
+	if not event is InputEventKey or not event.pressed: return
+	var bar := _help_scroll.get_v_scroll_bar()
+	var page := maxf(48, _help_scroll.size.y * 0.8)
+	match event.keycode:
+		KEY_DOWN: bar.value += 40
+		KEY_UP: bar.value -= 40
+		KEY_PAGEDOWN: bar.value += page
+		KEY_PAGEUP: bar.value -= page
+		KEY_HOME: bar.value = bar.min_value
+		KEY_END: bar.value = bar.max_value
+		_: return
+	_help_scroll.accept_event()
 
 
 func _update_field_conditions_text() -> void:
@@ -168,6 +189,9 @@ func close() -> void:
 func _key_table(rows: Array, columns := 2, description_width := 340) -> GridContainer:
 	var grid := GridContainer.new()
 	grid.columns = columns
+	grid.set_meta("wide_columns", columns)
+	grid.set_meta("description_width", description_width)
+	_key_tables.append(grid)
 	grid.add_theme_constant_override("h_separation", 14)
 	grid.add_theme_constant_override("v_separation", 0) # compact rows keep the full reference visible at 720p
 	for row in rows:
@@ -198,7 +222,4 @@ static func _column(parent: Control) -> VBoxContainer:
 
 
 static func _text(text: String, variation: String, wrap := false) -> Label:
-	var control := Widgets.label(text, variation, wrap)
-	if wrap:
-		control.custom_minimum_size.x = 400
-	return control
+	return Widgets.label(text, variation, wrap)

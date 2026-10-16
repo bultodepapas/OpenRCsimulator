@@ -234,7 +234,7 @@ func _test_loaded_catalog_contract() -> void:
 		extra_strike.components = {"propeller": {"disposition": "replace"}, "engine_main": {"disposition": "inspect"}}
 		var extra_repair := Calculator.calculate(incomplete.dossier, extra_strike)
 		_check("Extra isolated strike prices prop only with unresolved inspection", extra_repair.get("known_subtotal_minor") == 539 and extra_repair.get("total_minor") == null and extra_repair.get("high_minor") == null)
-	for spec: Array in [["turbo-lumber-evolution", 33294], ["p51d-mustang-120", 200671], ["sebart-avanti-s-a200-p100rx", 655912]]:
+	for spec: Array in [["turbo-lumber-evolution", 46587], ["p51d-mustang-120", 245671], ["sebart-avanti-s-a200-p100rx", 655912]]:
 		var fleet: Dictionary = Catalog.load_for(spec[0])
 		_check("fleet pricing dossier loads " + spec[0], fleet.get("ok", false))
 		if fleet.get("ok", false):

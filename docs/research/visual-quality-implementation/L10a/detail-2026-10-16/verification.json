@@ -1,0 +1,60 @@
+{
+  "step": "L10a-R1",
+  "date": "2026-10-16",
+  "complete": true,
+  "godot": "4.7.2.stable",
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "checks": 215,
+  "visual_checks": {
+    "close": {
+      "changed_pixels": 13460,
+      "mean_changed_rgb_delta": 95.8092867756315,
+      "clipped_white_pixels": 0,
+      "added_draws": 2,
+      "added_primitives": 5278
+    },
+    "pilot_turn": {
+      "changed_pixels": 1852,
+      "mean_changed_rgb_delta": 113.33747300215983,
+      "clipped_white_pixels": 0,
+      "added_draws": 2,
+      "added_primitives": 5278
+    },
+    "overview": {
+      "changed_pixels": 436,
+      "mean_changed_rgb_delta": 78.02752293577981,
+      "clipped_white_pixels": 0,
+      "added_draws": 2,
+      "added_primitives": 5278
+    }
+  },
+  "sources_sha256": {
+    "app/render/windsock.gd": "c533161d52fe01d58fa2ccb86e0d935b907a8827f8e838d29735c3d05c12a41d",
+    "app/render/windsock_fabric.gdshader": "e9c73cd48baebb5382971d731f13a65523f8a46e43d1e5e7e8fe1da028393b41",
+    "app/render/windsock_support.gdshader": "e5c23819262effa8429783cb873a7957f771a9d5a0e8f5ac1a0af49e2f756549",
+    "app/tests/test_windsock.gd": "5a37732f79a906130df0d629f96b506f958310aa6f739f8f5af1e52f32c89d07",
+    "tools/ground/capture_windsock_detail.gd": "cd697e215ba8e30f44ed9ec63308300454520abaedfaa545d72c8e0b8b2557f0",
+    "tools/ground/capture_windsock.gd": "9d1f64ec58b92d599e183384a227b91ba023e007e1981451739a2073931c6047",
+    "tools/ground/check_windsock.py": "8255a267c6822f097ebdaa6be51017d38543c9173dbac3324f5809e08a961a39",
+    "app/assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg": "e4d03bf5210d01b4b21a846b0256b5d322104094688a7f2f7babb84e8140a20a",
+    "app/assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg.import": "8387d5f8146558bfb5de18a78f44134aed78da32fef450e615b7ba5baa468df4",
+    "app/assets/landscape/windsock/Fabric001_1K-JPG_NormalGL.jpg": "c2b8a5e28b31b330095500eb2d4b03c635e62d526f2fac0781f1409309be1d63",
+    "app/assets/landscape/windsock/Fabric001_1K-JPG_NormalGL.jpg.import": "eca8e2ccfe8fe1e44773520fd6755cdeeca12640954fe92e49c69fbb86c10f56",
+    "app/assets/landscape/windsock/Fabric001_1K-JPG_Roughness.jpg": "1ecb388fff96904e1eead5dd1ebb270e0645c222b96c4f7343b2e84a869ef7b7",
+    "app/assets/landscape/windsock/Fabric001_1K-JPG_Roughness.jpg.import": "d58920c893c9dcad6ba6590daf0b70145012dda6d90e48bb802754be4f9a9dca",
+    "app/assets/landscape/windsock/LICENSE.txt": "8dd06c6548b44b92c4b42fd521d8d16e6e3384af909bdda2b34c0d59e64b302c",
+    "app/assets/landscape/windsock/PROVENANCE.json": "ca8664515567b7ca0a87a9a1ea47e7f2216552f2b70a2bc97d913235fe72e312",
+    "app/assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg": "8ceb9186d990b31fce785e06fdc6974c160f1d27c43f6160266f164deba713aa",
+    "app/assets/landscape/pilot-station/Concrete034_1K-JPG_Color.jpg.import": "36ecc6ac3ceea7a16e8b1cb440e9ceab55120147836d49451ac7b933364634ec",
+    "app/assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg": "e509eb9dfa978e780fbebfd2acacc2ce158b5b7ced722ddc0759039dd51e18ca",
+    "app/assets/landscape/pilot-station/Concrete034_1K-JPG_NormalGL.jpg.import": "f777feabf076200b8023ce58c60e4a618e50e3d9d879f7c881ce8a372b9f2d9e",
+    "app/assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg": "a4a9e39857a19afd23a778e5abf44fcdf6bd7f93918f1cf6878b41933e553511",
+    "app/assets/landscape/pilot-station/Concrete034_1K-JPG_Roughness.jpg.import": "9b5a5bd4a570bf9c03fe943bfcb835b8f7d1f6c4461654e0750b6519bfbea86b",
+    "app/assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg": "8537c1015de5cc33d20231e5b6aa27309edcb983e1c37e608d08bb00f733747d",
+    "app/assets/landscape/pilot-station/Metal032_1K-JPG_NormalGL.jpg.import": "b5b94d824bde18e0fd3e3073d1d4cab7c37ebfccb23999cd59d441433d8e98f6",
+    "app/assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg": "55d3eee2b69008ad3701b18977495531d0e3515105102e56f40a4d1098d10bce",
+    "app/assets/landscape/pilot-station/Metal032_1K-JPG_Roughness.jpg.import": "c64f9fcd596904232eb3b7d24dd78ad8e705cfe64d292650645ba2465b0823d3",
+    "app/assets/landscape/pilot-station/PROVENANCE.json": "b580c9fb76d4865280d9b5b55dd2f65799e342a79a3020fab55564b2fe6d8a95"
+  },
+  "scope": "Native Windows compatibility renderer, four detail views and three scenery-on ablation poses. Focused mesh, field-data and shadow tests. No wind simulation or physics change. Not target-device performance qualification."
+}

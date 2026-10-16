@@ -1,0 +1,379 @@
+{
+  "date": "2026-10-16",
+  "steps": [
+    "D6-GP-06-R3",
+    "RCV-05-R2"
+  ],
+  "platform": "native Windows",
+  "engine": "Godot 4.7.2 stable ed1daf0bf",
+  "head_at_receipt": "69c012227ffd284d31e6480027dcd27254880bd8",
+  "scope": "Synthetic controller defaults, persistence, activity routing and lifecycle regressions; no physical controller, physics tuning or canonical Linux app/test.sh acceptance.",
+  "shared_tree_note": "Other work changed shared UI files during the scan; initial failures are retained and final changed/failed-file parses are separate.",
+  "initial_suites": [
+    {
+      "script": "tests/test_controller_actions.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_auto_defaults.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_aux_runtime.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_aux_setup.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_binding_audit.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_car.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_conditioning.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_extended_actions.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_flight_actions.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_ground.gd",
+      "parse": false,
+      "ok": false,
+      "exit_code": 1
+    },
+    {
+      "script": "tests/test_controller_integration.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_menu.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_pause_recovery.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_persistence.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_profile.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_profile_hardening.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_prompts.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_registry.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_routing_audit.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_sections.gd",
+      "parse": false,
+      "ok": false,
+      "exit_code": 1
+    },
+    {
+      "script": "tests/test_controller_settings_save.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_setup.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_setup_safety.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_store.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_rc_input.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_smoke_aux.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_heli_control_actions.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_heli_lifecycle.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_heli_ground_start.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_heli_ground_session.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_heli_session.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_heli_crash_relaunch.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_rcv_activity.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_rcv_activity_audit.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_rcv_nitro_activity.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_rcv_nitro_service.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    }
+  ],
+  "initial_parse": {
+    "total": 958,
+    "passed": 953,
+    "failures": [
+      {
+        "script": "app_root.gd",
+        "parse": true,
+        "ok": false,
+        "exit_code": 0
+      },
+      {
+        "script": "tests/capture_ui.gd",
+        "parse": true,
+        "ok": false,
+        "exit_code": 0
+      },
+      {
+        "script": "tests/test_controller_car.gd",
+        "parse": true,
+        "ok": false,
+        "exit_code": 1
+      },
+      {
+        "script": "tests/test_rcv_menu.gd",
+        "parse": true,
+        "ok": false,
+        "exit_code": 0
+      },
+      {
+        "script": "tests/test_rcv_nitro_activity.gd",
+        "parse": true,
+        "ok": false,
+        "exit_code": 0
+      }
+    ]
+  },
+  "final_targeted_tests": [
+    {
+      "script": "tests/test_controller_car.gd",
+      "ok": true,
+      "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nCar controller audit: 43/43 checks passed\n"
+    },
+    {
+      "script": "tests/test_controller_ground.gd",
+      "ok": true,
+      "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nGround controller integration: 24/24 checks passed\n"
+    },
+    {
+      "script": "tests/test_controller_menu.gd",
+      "ok": true,
+      "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: calibrating radio\nHELICOPTER READY: Experimental research surrogate: X-Cell .60 equations, HX-700 flybarless visual. No aircraft-specific flight validation.\nController menu: 48/48 checks passed\nWARNING: 4 ObjectDB instances were leaked at exit (run with `--verbose` for details).\n   at: cleanup (core/object/object.cpp:2536)\n"
+    }
+  ],
+  "final_changed_and_failed_file_parses": [
+    {
+      "script": "app_root.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "helicopter_main.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "input/controller_actions.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "sim/helicopter_flight_session.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "tests/capture_ui.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "tests/test_controller_car.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "tests/test_controller_ground.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "tests/test_controller_menu.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "tests/test_controller_setup.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "tests/test_heli_control_actions.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "tests/test_rcv_menu.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "tests/test_rcv_nitro_activity.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "ui/controller_setup.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "vehicles/ground/ground_dashboard.gd",
+      "exit_code": 0,
+      "ok": true
+    },
+    {
+      "script": "vehicles/ground/ground_scene.gd",
+      "exit_code": 0,
+      "ok": true
+    }
+  ],
+  "remaining_findings": [
+    "test_controller_sections: two existing axis/AUX viewport-enclosure failures at 1280x720.",
+    "test_controller_menu: 48/48 assertions passed; four ObjectDB instances reported at shutdown.",
+    "Car remapping/persistence and physical Xbox/PlayStation/radio qualification remain open."
+  ],
+  "source_sha256_at_receipt": {
+    "app/app_root.gd": "8a3b4e277cf25baa5a2bbb420dccffa3d5c98fffa767f4197a1307f9a1cccd7e",
+    "app/helicopter_main.gd": "cd4dc36be8f0561f658c126e09039aef40f93046d5b94fe3c7854693ce7f1a6b",
+    "app/input/controller_actions.gd": "2c72610e642339354bf7ae332af3dd35d3fb651bc588cd542d27929d2c864a9f",
+    "app/sim/helicopter_flight_session.gd": "1974c518ef8350a5777464ef8b9e58d2717ba9c55574f344c345fd58dc5f5de9",
+    "app/ui/controller_setup.gd": "24915ce7fc71e8e572b6e8b1619d7181a1b9b3bc65aa0cdc1514d04ce0e25cd5",
+    "app/vehicles/ground/ground_scene.gd": "a815de531b48f7b2baa2f61846a63b15eff0b30b570cd27b012a413dab5cdc01",
+    "app/vehicles/ground/ground_dashboard.gd": "e9afe3756197fa8089558f0ed6ada734673469dcb71318cd690baaa978e46fea",
+    "app/tests/test_controller_car.gd": "e82c9f4ef2f2610304fafb600100699274a1fc26c693118c517b835b2fcfa604",
+    "app/tests/test_controller_ground.gd": "54a8fe1ed42d3638f5cbfa5329bf12454f67f2d3ed8cefffedcf03c4c7111164",
+    "app/tests/test_controller_menu.gd": "229fcf0b78b0fcb18b6ad567354d61ba84a9699e7b8bb6ad8fab5254275e8845",
+    "app/tests/test_controller_setup.gd": "70177273f6bdf21f39c3afd3ffa1adf2b3efe373ea65421de55f78f914263687",
+    "app/tests/test_heli_control_actions.gd": "f1594b4cb89feee5c92029a473846fa4f5815c1dd52d64455ac724fcb5694234"
+  }
+}

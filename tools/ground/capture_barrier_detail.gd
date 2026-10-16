@@ -47,6 +47,7 @@ func _run() -> void:
 	var barrier := world.get_node("flightline_barrier") as Node3D
 	var origin := barrier.position
 	var views := [
+		["foot", origin + Vector3(3.45, 0.32, 0.55), origin + Vector3(3.1, 0.11, 0), 52.0],
 		["detail", origin + Vector3(3.5, 0.95, 1.1), origin + Vector3(2.7, 0.39, 0.0), 48.0],
 		["rear", origin + Vector3(3.5, 0.95, -1.1), origin + Vector3(2.7, 0.39, 0.0), 48.0],
 		["flightline", origin + Vector3(9.0, 1.7, 5.5), origin + Vector3(0, 0.35, 0), 55.0],
@@ -72,6 +73,14 @@ func _run() -> void:
 		method = RenderingServer.get_current_rendering_method(), records = records,
 		barrier_triangles = mesh.surface_get_array_len(0) / 3, barrier_surfaces = mesh.get_surface_count(),
 		builder_sha256 = FileAccess.get_sha256("res://render/flightline_barrier.gd")}
+	var vegetation := barrier.get_node_or_null("PostVegetation")
+	if vegetation != null:
+		report["plants"] = vegetation.get_meta("layout").size()
+		report["plant_source_triangles"] = vegetation.get_meta("source_triangles")
+	var source_hashes := {}
+	for path: String in ["res://render/flightline_barrier.gd", "res://render/flightline_barrier.gdshader", "res://render/flightline_barrier_planting.gd", "res://render/flightline_barrier_foliage.gdshader", "res://render/flightline_barrier_soil.gdshader"]:
+		source_hashes[path] = FileAccess.get_sha256(path)
+	report["sources"] = source_hashes
 	var file := FileAccess.open(out.path_join("capture.json"), FileAccess.WRITE)
 	file.store_string(JSON.stringify(report, "  ") + "\n")
 	file.close()

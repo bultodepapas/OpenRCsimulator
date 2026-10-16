@@ -74,8 +74,14 @@ func _check_mesh(cue: Dictionary) -> void:
 	for i: int in vertices.size():
 		finite = finite and vertices[i].is_finite() and normals[i].is_finite() and absf(normals[i].length() - 1.0) < 0.00001
 	_check("finite mesh, unit normals", finite)
-	_check("bounded one-surface geometry", mesh.mesh.get_surface_count() == 1 and vertices.size() / 3 < 400)
-	_check("opaque material without shadow pass", mesh.mesh.surface_get_material(0).transparency == BaseMaterial3D.TRANSPARENCY_DISABLED and mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+	_check("bounded one-surface geometry", mesh.mesh.get_surface_count() == 1 and vertices.size() / 3 < 8000)
+	var material := mesh.mesh.surface_get_material(0) as ShaderMaterial
+	_check("opaque material without shadow pass", material != null and not material.shader.code.contains("ALPHA") and mesh.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+	var winding := true
+	for i in range(0, vertices.size(), 3):
+		var face := (vertices[i+2] - vertices[i]).cross(vertices[i+1] - vertices[i])
+		winding = winding and face.length_squared() > 1e-18 and face.normalized().dot(normals[i]) > 0.99
+	_check("nondegenerate faces with outward winding", winding)
 	_check("rear entry stays open", not _intersects(vertices, Vector3(0, 0.13, cue.depth), Vector3(0, 0.13, 0)))
 	_check("front and sides have barrier geometry", _intersects(vertices, Vector3(0, 0.13, -cue.depth), Vector3(0, 0.13, 0))
 		and _intersects(vertices, Vector3(cue.width, 0.13, 0), Vector3(0, 0.13, 0))

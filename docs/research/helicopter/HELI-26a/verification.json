@@ -12,5 +12,8 @@
   "motion_native": "pass",
   "motion_fresh_import": "pass",
   "motion_package": "pass",
-  "motion_ui": "pass"
+  "motion_ui": "pass",
+  "motion_timing": "pass",
+  "elasticity": "pass",
+  "world_neutral_rotation_rejected": true
 }

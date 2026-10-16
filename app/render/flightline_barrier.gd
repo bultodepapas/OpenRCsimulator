@@ -6,6 +6,7 @@ const MeshKit = preload("res://scenery/mesh_kit.gd")
 const DamageBatches = preload("res://scenery/damage_batches.gd")
 const Detail = preload("res://render/flightline_barrier_detail.gd")
 const Finish = preload("res://render/flightline_barrier.gdshader")
+const Planting = preload("res://render/flightline_barrier_planting.gd")
 const POST_WIDTH_M: float = 0.08
 const POST_DEPTH_M: float = 0.08
 const FOOT_HEIGHT_M: float = 0.02
@@ -95,6 +96,10 @@ static func build(cue: Dictionary) -> Node3D:
 	material.set_shader_parameter("wood_color", preload("res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg"))
 	material.set_shader_parameter("wood_normal", preload("res://assets/landscape/flightline/Wood049_1K-JPG_NormalGL.jpg"))
 	material.set_shader_parameter("wood_roughness", preload("res://assets/landscape/flightline/Wood049_1K-JPG_Roughness.jpg"))
+	material.set_shader_parameter("metal_color", preload("res://assets/landscape/flightline/Metal026_1K-JPG_Color.jpg"))
+	material.set_shader_parameter("metal_normal", preload("res://assets/landscape/flightline/Metal026_1K-JPG_NormalGL.jpg"))
+	material.set_shader_parameter("metal_roughness", preload("res://assets/landscape/flightline/Metal026_1K-JPG_Roughness.jpg"))
+	material.set_shader_parameter("metalness", preload("res://assets/landscape/flightline/Metal026_1K-JPG_Metalness.jpg"))
 	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 	mesh_instance.name = "Barrier"
 	mesh_instance.mesh = kit.to_mesh(material)
@@ -102,4 +107,5 @@ static func build(cue: Dictionary) -> Node3D:
 	mesh_instance.cast_shadow = GeometryInstance3D.SHADOW_CASTING_SETTING_OFF
 	mesh_instance.set_process(false)
 	root.add_child(mesh_instance)
+	root.add_child(Planting.build(cue, post_positions(cue)))
 	return root

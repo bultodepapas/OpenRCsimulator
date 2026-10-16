@@ -130,8 +130,9 @@ def load(folder, cue_type='windsock'):
                 raise RuntimeError('contact shadows brighten the ground')
         metric['added_draws'] = on['draws'] - off['draws']
         metric['added_primitives'] = on['primitives'] - off['primitives']
-        triangle_budget = 400 if station else 2000 if cue_type == 'windsock' else 20000 if barrier else 1500
-        if metric['added_draws'] != (2 if cue_type == 'windsock' else 1) or not 0 < metric['added_primitives'] < triangle_budget:
+        triangle_budget = 8000 if station else 6000 if cue_type == 'windsock' else 65000 if barrier else 1500
+        draw_budget = 2 if cue_type == 'windsock' else 5 if barrier else 1
+        if metric['added_draws'] != draw_budget or not 0 < metric['added_primitives'] < triangle_budget:
             raise RuntimeError(f'{view}: cue exceeds its draw or triangle budget')
         if metric['clipped_white_pixels']:
             raise RuntimeError(f'{view}: clipped whites on the cue')
@@ -178,7 +179,14 @@ def main():
         raise RuntimeError('independent repeat hashes/counters differ')
     sources = {"app/" + relative: sha256(app / relative) for relative in (
         'data/field_loader.gd', 'data/fields/default.json', 'render/field.gd',
-        'render/windsock.gd', 'render/pilot_station.gd', 'render/flightline_barrier.gd',
+        'render/windsock.gd', 'render/windsock_fabric.gdshader', 'render/windsock_support.gdshader',
+        'assets/landscape/windsock/PROVENANCE.json',
+        'render/pilot_station.gd', 'render/pilot_station_detail.gd',
+        'render/pilot_station.gdshader', 'assets/landscape/pilot-station/PROVENANCE.json',
+        'render/flightline_barrier.gd',
+        'render/flightline_barrier.gdshader', 'render/flightline_barrier_planting.gd',
+        'render/flightline_barrier_foliage.gdshader', 'render/flightline_barrier_soil.gdshader',
+        'assets/landscape/flightline/PROVENANCE.json', 'assets/landscape/vegetation/catalog.json',
         'render/flight_cue_shadows.gd', 'render/near_grass.gd', 'scenery/mesh_kit.gd')}
     sources.update({str(path.relative_to(ROOT)): sha256(path) for path in (CAPTURE, Path(__file__).resolve())})
     summary = {'format': f'openrc-{STEPS[args.cue]}-review v1', 'complete': True, 'metrics': metrics,

@@ -1,0 +1,138 @@
+{
+  "action_bounds_fit": true,
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "aircraft_id": "jensen-das-ugly-stik-60",
+  "complete": false,
+  "detail_bounds_fit": true,
+  "details_expanded": true,
+  "details_scrolled_to_bottom": false,
+  "format": "openrc-cr32-accident-report-capture-v1",
+  "headline": "At least US$5.39",
+  "headline_font_size": 56,
+  "image": "parts-comparison-en-1280x720.png",
+  "image_size": [
+    1280,
+    720
+  ],
+  "known_subtotal_minor": 539,
+  "locale": "en",
+  "outcome": "inspection",
+  "panel_fits_viewport": true,
+  "panel_rect": [
+    180.0,
+    241.0,
+    920.0,
+    451.0
+  ],
+  "parts_comparison": {
+    "assessment_complete": false,
+    "candidate_catalog": [
+      {
+        "available": true,
+        "candidate_id": "individual-000",
+        "candidate_kind": "dossier_individual_estimate",
+        "compatible": true,
+        "component_id": "propeller",
+        "cost_cents": 539,
+        "coverage_ids": [
+          "propeller:0"
+        ],
+        "live_availability_confirmed": false,
+        "physical_fit_confirmed": false,
+        "provenance": "Dossier snapshot estimate; not a live offer; price basis: exact_product_price; source offer: apc-lp12060; source notes: Matches physical APC 12x6 Sport LP12060; visual wooden finish is not a separate product identity.; catalog snapshot date: 2026-10-16",
+        "unit_index": 0
+      }
+    ],
+    "candidate_catalog_omitted": false,
+    "complete": false,
+    "coverage_scope": "replacements_only",
+    "currency": "USD",
+    "errors": [],
+    "estimate_note": "Replacement-only snapshot estimate; not a purchase, inventory, live availability, physical-fit, complete repair total, labor, or salvage result.",
+    "optimality_proven": true,
+    "optimizer_status": "optimal",
+    "price_date": "2026-10-16",
+    "required_unit_ids": [
+      "propeller:0"
+    ],
+    "search_complete": true,
+    "search_nodes": 2,
+    "selected_candidate_ids": [
+      "individual-000"
+    ],
+    "selected_provenance": [
+      {
+        "candidate_id": "individual-000",
+        "provenance": "Dossier snapshot estimate; not a live offer; price basis: exact_product_price; source offer: apc-lp12060; source notes: Matches physical APC 12x6 Sport LP12060; visual wooden finish is not a separate product identity.; catalog snapshot date: 2026-10-16"
+      }
+    ],
+    "selected_provenance_truncated": false,
+    "status": "optimal",
+    "total_cost_cents": 539,
+    "unknown_cost_alternative_found": false
+  },
+  "presentation": "terminal",
+  "renderer": "gl_compatibility",
+  "requested_size": [
+    1280,
+    720
+  ],
+  "text_scale": 1.0,
+  "total_minor": null,
+  "viewport_size_bounds_checks": [
+    {
+      "action_bounds_fit": true,
+      "panel_fits_viewport": true,
+      "panel_rect": [
+        180.0,
+        241.0,
+        920.0,
+        451.0
+      ],
+      "requested_size": [
+        1280,
+        720
+      ],
+      "viewport_size": [
+        1280.0,
+        720.0
+      ]
+    },
+    {
+      "action_bounds_fit": true,
+      "panel_fits_viewport": true,
+      "panel_rect": [
+        500.0,
+        529.0,
+        920.0,
+        523.0
+      ],
+      "requested_size": [
+        1920,
+        1080
+      ],
+      "viewport_size": [
+        1920.0,
+        1080.0
+      ]
+    },
+    {
+      "action_bounds_fit": true,
+      "panel_fits_viewport": true,
+      "panel_rect": [
+        1460.0,
+        1609.0,
+        920.0,
+        523.0
+      ],
+      "requested_size": [
+        3840,
+        2160
+      ],
+      "viewport_size": [
+        3840.0,
+        2160.0
+      ]
+    }
+  ]
+}

@@ -1,0 +1,202 @@
+[
+  {
+    "script": "res://ui/home.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://ui/pause_menu.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://ui/controller_setup.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://ui/weather_dialog.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://ui/time_of_day_dialog.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://ui/time_of_day_controls.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://ui/sky_controls.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://ui/failures_menu.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://ui/overlays_dialog.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://ui/help_screen.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://ui/workshop.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://ui/natural_random_screen.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_ui_modal_responsive.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_ui_help.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_natural_random_screen.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_ui_natural_random.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_workshop_ui.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_workshop_integration.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_workshop_trial.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_failure_availability_ui.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_failure_ui.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_overlay_manager.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_settings_ui.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_ui_scale.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_ui_home.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_ui_pause.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_ui_pause_responsive.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_conditions_responsive.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_ui_time_of_day.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_ui_time_of_day_pause.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_ui_weather.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_ui_weather_sliders.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_ui_settings_integration.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_ui_screen_stack.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_controller_responsive.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_controller_sections.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_controller_aux_setup.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_controller_setup.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_controller_integration.gd",
+    "exit": 0,
+    "diagnostics": []
+  },
+  {
+    "script": "res://tests/test_controller_settings_save.gd",
+    "exit": 0,
+    "diagnostics": []
+  }
+]

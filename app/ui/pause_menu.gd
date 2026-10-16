@@ -84,11 +84,8 @@ func _init(can_end := true) -> void:
 	screen.add_child(panel)
 	var sidebar_fade: TextureRect = screen.fade(roundi(panel_width))
 	_sidebar_fade = sidebar_fade
-	var sync_sidebar_fade := func() -> void:
-		sidebar_fade.offset_left = panel.size.x
-		sidebar_fade.offset_right = panel.size.x + 32.0
-	panel.resized.connect(sync_sidebar_fade)
-	sync_sidebar_fade.call_deferred()
+	panel.resized.connect(_sync_sidebar_fade)
+	call_deferred("_sync_sidebar_fade")
 	var scroll := ScrollContainer.new()
 	scroll.name = "PauseScroll"
 	scroll.follow_focus = true
@@ -172,6 +169,17 @@ func _init(can_end := true) -> void:
 	column.add_child(note_label)
 
 
+func _sync_sidebar_fade() -> void:
+	if not is_inside_tree() or is_queued_for_deletion():
+		return
+	if not is_instance_valid(_panel) or not is_instance_valid(_sidebar_fade):
+		return
+	if _panel.is_queued_for_deletion() or _sidebar_fade.is_queued_for_deletion():
+		return
+	_sidebar_fade.offset_left = _panel.size.x
+	_sidebar_fade.offset_right = _panel.size.x + 32.0
+
+
 ## Shows why the flight is paused and whether it can go on, and puts the keyboard focus on the first action.
 ## `session`: the flight's FlightSession. Updated again when a joypad comes or goes while the menu is open.
 func show_for(session: Node, failure_config: Dictionary = {}, notifications_enabled := true) -> void:
@@ -223,6 +231,31 @@ func _update_large_text_panel_width() -> void:
 	_panel.offset_right = panel_width
 	_sidebar_fade.offset_left = panel_width
 	_sidebar_fade.offset_right = panel_width + 32.0
+	_defer_scroll_restore()
+
+
+func _defer_scroll_restore() -> void:
+	if not is_inside_tree():
+		return
+	var tree := get_tree()
+	var callback := Callable(self, "_restore_scroll_after_layout")
+	if not tree.process_frame.is_connected(callback):
+		tree.process_frame.connect(callback, CONNECT_ONE_SHOT)
+
+
+func _restore_scroll_after_layout() -> void:
+	if not is_inside_tree():
+		return
+	var scroll := find_child("PauseScroll", true, false) as ScrollContainer
+	if scroll == null:
+		return
+	# A viewport resize can preserve the focused row's old screen position and scroll the status
+	# above the viewport. Start at the top, then follow the focused action only when it is offscreen.
+	scroll.scroll_vertical = 0
+	var focused := get_viewport().gui_get_focus_owner()
+	if (focused != null and scroll.is_ancestor_of(focused)
+			and not scroll.get_global_rect().encloses(focused.get_global_rect())):
+		scroll.ensure_control_visible(focused)
 
 
 func refresh() -> void:

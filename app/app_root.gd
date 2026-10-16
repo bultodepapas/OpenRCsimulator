@@ -625,10 +625,15 @@ func _menu_feedback(cue: StringName) -> void:
 func _apply_presentation(config: Dictionary) -> void:
 	if is_instance_valid(menu_audio):
 		menu_audio.set_volume(float(config.get("menu_volume", DisplayPreferences.DEFAULTS.menu_volume)))
+	# Audio, motion policy and window mode do not change Theme resources. A volume drag
+	# must not rebuild every screen and invalidate its text/layout on each slider step.
+	var theme_changed := not is_equal_approx(UiTheme.text_scale, float(config.ui_scale)) \
+		or UiTheme.opaque_panels != bool(config.opaque_panels)
 	UiTheme.text_scale = float(config.ui_scale)
 	UiTheme.opaque_panels = bool(config.opaque_panels)
 	UiTheme.reduced_motion = bool(config.reduced_motion)
-	_refresh_screen_themes(self)
+	if theme_changed:
+		_refresh_screen_themes(self)
 	var requested: String = config.window_mode
 	if requested == _display_window_mode or DisplayServer.get_name() == "headless": return
 	var window := get_window()
@@ -680,7 +685,12 @@ func open_controls(from: Control = null) -> void:
 	_clear_controller_actions()
 	var setup := ControllerSetup.new()
 	setup.save_and_apply = controllers.save_settings_from_setup
-	setup.configure(controllers.registry, controllers.store, controllers.registry.selected_device_id("flight"), controllers.registry.selected_device_id("ui"))
+	var capabilities: Dictionary = ControllerActions.SUPPORTED_AUX
+	if flight != null and flight.has_method("controller_capabilities"):
+		capabilities = flight.controller_capabilities()
+	elif home != null and Catalog.is_rotorcraft(home.aircraft_id):
+		capabilities = ControllerActions.HELICOPTER_CAPABILITIES
+	setup.configure(controllers.registry, controllers.store, controllers.registry.selected_device_id("flight"), controllers.registry.selected_device_id("ui"), capabilities)
 	setup.close_requested.connect(func() -> void:
 		if screens.is_top("controls"): screens.pop())
 	_update_controller_calibration_button(setup)

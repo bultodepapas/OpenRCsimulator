@@ -1,5 +1,17 @@
 # L10c — flightline barrier and complete-field review
 
+## 2026-10-16 — L10c-R2 planting and weathering
+
+The barrier now has silvered, unevenly faded timber, textured steel corrosion, darker damp bases, and small irregular soil collars. Four unmodified 1K [ambientCG Metal026](https://ambientcg.com/view?id=Metal026) maps supply colour, normal, roughness and metalness; [provenance](../../../../app/assets/landscape/flightline/PROVENANCE.json) retains URLs, CC0 licensing and hashes. Exposure and aging amounts are visual estimates, not a measured corrosion model.
+
+The default field has **99 clumps** of downloaded Quaternius grass and clover beside its 20 posts. The existing vegetation catalog and dirt texture are reused without altering their source files or other consumers. Three instanced plant batches use a local olive foliage material and slight dry-tip colouring. Seeded height, yaw and placement vary each cluster; source bounds keep every leaf outside the walking opening and below 0.23 m. Plants and soil are independent of removable fence parts and introduce no collision proxies or per-frame CPU processing. Plant motion and separate plant shadows are not added.
+
+[Before](weathering-2026-10-16/before.png) · [After](weathering-2026-10-16/detail.png) · [Post-foot close-up](weathering-2026-10-16/foot.png) · [Reverse side](weathering-2026-10-16/rear.png) · [Pilot view](weathering-2026-10-16/pilot.png) · [Full flightline](weathering-2026-10-16/flightline.png).
+
+**505 focused checks pass**: 206 barrier/material/planting, 144 data, 20 contact shadows, 78 destruction/reset and 57 projected-shadow assertions. The barrier checks include source-box grounding, opening/width containment at boundary field dimensions, deterministic layout and mipmaps. Logs and [source identities](weathering-2026-10-16/sources.json) are retained beside the captures. Native Compatibility rendering on an RTX 3090 produces no shader/runtime errors. [Ablation](weathering-2026-10-16/ablation.json) preserves 22,740 protected runway pixels in each pilot direction, rejects the existing occlusion/bounds mutations and has no clipped-white cue pixels.
+
+The barrier plus plants and soil now takes **five draws**, versus one for R1. Source plants contain 42,761 triangles; the imported automatic LODs reduce the whole visible cue to 19,206–19,396 primitives in the five 960×540 ablation views. The opaque fence itself remains 17,520 triangles. These counters are not a whole-flight frame-time or low-end GPU qualification. Full-suite and packaged-build checks were not rerun. The existing capture command below also includes the new post-foot view; [accepted manifest](weathering-2026-10-16/accepted-capture.json) and [baseline manifest](weathering-2026-10-16/before-capture.json) retain native camera and source context.
+
 ## 2026-10-15 — L10c-R1 close-view finish
 
 The flightline barrier now uses bevelled timber rails, inset steel posts with caps and ground shoes, and two-sided splice plates, washers and hex fasteners. The horizontal grain, normal and roughness maps reuse [ambientCG Wood049](https://ambientcg.com/view?id=Wood049), licensed CC0; [runtime provenance](../../../../app/assets/landscape/flightline/PROVENANCE.json) records the original files and archive hashes. Runtime tint, dimensions and weathering remain artistic estimates.

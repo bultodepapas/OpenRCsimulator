@@ -10,6 +10,7 @@ const TimeOfDayControls := preload("res://ui/time_of_day_controls.gd")
 const SkyControls := preload("res://ui/sky_controls.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const ResponsiveGrid := preload("res://ui/responsive_grid.gd")
 const SLIDER_GRABBER: Texture2D = preload("res://ui/slider_grabber.svg")
 
 signal applied(config: Dictionary)
@@ -73,9 +74,14 @@ var tab_container: TabBar
 var tab_bar: TabBar
 var tab_scroll: ScrollContainer
 var panel: PanelContainer
+var subtitle_label: Label
 var wind_page: VBoxContainer
 var turbulence_page: VBoxContainer
 var atmosphere_page: VBoxContainer
+var wind_grid: GridContainer
+var turbulence_grid: GridContainer
+var atmosphere_grid: GridContainer
+var atmosphere_mode_row: GridContainer
 var time_of_day_page: VBoxContainer
 var time_of_day_controls: VBoxContainer
 var sky_controls: VBoxContainer
@@ -106,6 +112,7 @@ var _initial_turbulence_enabled: bool = false
 var _focus_order: Array[Control] = []
 var _setting_fields: bool = false
 var _scroll_update_queued: bool = false
+var _compact_chrome: bool = false
 
 
 func _init(initial_config: Variant = null, initial_lighting_config: Variant = null, initial_night_options: Variant = null, initial_sky_config: Variant = null) -> void:
@@ -139,7 +146,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	header.add_child(title)
 	column.add_child(header)
-	column.add_child(_label("Uniform wind and repeating gusts with optional seeded turbulence.", "SecondaryLabel", true))
+	subtitle_label = _label("Uniform wind and repeating gusts with optional seeded turbulence.", "SecondaryLabel", true)
 
 	var preset_row: HBoxContainer = HBoxContainer.new()
 	preset_row.add_theme_constant_override("separation", 12)
@@ -178,12 +185,13 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	page_stack.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	page_stack.size_flags_vertical = Control.SIZE_SHRINK_BEGIN
 	tab_scroll.add_child(page_stack)
+	page_stack.add_child(subtitle_label)
 	wind_page = VBoxContainer.new()
 	wind_page.name = "WindAndGusts"
 	wind_page.add_theme_constant_override("separation", 10)
 	wind_page.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	page_stack.add_child(wind_page)
-	var wind_grid: GridContainer = GridContainer.new()
+	wind_grid = GridContainer.new()
 	wind_grid.columns = 2
 	wind_grid.add_theme_constant_override("h_separation", 18)
 	wind_grid.add_theme_constant_override("v_separation", 8)
@@ -203,7 +211,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	turbulence_enabled.text = "Enable turbulence"
 	turbulence_enabled.toggled.connect(_on_turbulence_toggled)
 	turbulence_page.add_child(turbulence_enabled)
-	var turbulence_grid: GridContainer = GridContainer.new()
+	turbulence_grid = GridContainer.new()
 	turbulence_grid.name = "TurbulenceFields"
 	turbulence_grid.columns = 2
 	turbulence_grid.add_theme_constant_override("h_separation", 18)
@@ -219,9 +227,13 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	atmosphere_page.visible = false
 	page_stack.add_child(atmosphere_page)
 	atmosphere_page.add_child(_label("Reference and custom field atmosphere are uniform; standard ISA changes with altitude.", "SecondaryLabel", true))
-	var atmosphere_mode_row: HBoxContainer = HBoxContainer.new()
-	atmosphere_mode_row.add_theme_constant_override("separation", 18)
-	atmosphere_mode_row.add_child(_label("Atmosphere mode", "SecondaryLabel"))
+	atmosphere_mode_row = GridContainer.new()
+	atmosphere_mode_row.columns = 2
+	atmosphere_mode_row.add_theme_constant_override("h_separation", 18)
+	atmosphere_mode_row.add_theme_constant_override("v_separation", 6)
+	var atmosphere_mode_label: Label = _label("Atmosphere mode", "SecondaryLabel", true)
+	atmosphere_mode_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	atmosphere_mode_row.add_child(atmosphere_mode_label)
 	atmosphere_mode_picker = OptionButton.new()
 	atmosphere_mode_picker.name = "AtmosphereMode"
 	atmosphere_mode_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
@@ -237,7 +249,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	atmosphere_note.name = "AtmosphereNote"
 	atmosphere_note.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	atmosphere_page.add_child(atmosphere_note)
-	var atmosphere_grid: GridContainer = GridContainer.new()
+	atmosphere_grid = GridContainer.new()
 	atmosphere_grid.name = "AtmosphereFields"
 	atmosphere_grid.columns = 2
 	atmosphere_grid.add_theme_constant_override("h_separation", 18)
@@ -393,15 +405,31 @@ func _update_scroll_height() -> void:
 	var content_width: float = maxf(0.0, target_width - 52.0)
 	var selector_width: float = minf(SELECTOR_MAX_WIDTH, content_width * 0.55)
 	var responsive_layout_changed := false
+	var compact_chrome: bool = viewport_size.y < 620.0
+	if compact_chrome != _compact_chrome:
+		_compact_chrome = compact_chrome
+		(panel.get_child(0) as VBoxContainer).add_theme_constant_override("separation", 6 if compact_chrome else 10)
+		responsive_layout_changed = true
 	if absf(panel.custom_minimum_size.x - target_width) >= 0.5:
 		panel.custom_minimum_size.x = target_width
 		responsive_layout_changed = true
 	for selector: OptionButton in find_children("*", "OptionButton", true, false):
+		if selector.fit_to_longest_item:
+			selector.fit_to_longest_item = false
+			responsive_layout_changed = true
 		if absf(selector.custom_minimum_size.x - selector_width) >= 0.5:
 			selector.custom_minimum_size.x = selector_width
 			responsive_layout_changed = true
 		if selector.size_flags_horizontal != Control.SIZE_SHRINK_BEGIN:
 			selector.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+			responsive_layout_changed = true
+	for grid: GridContainer in [wind_grid, turbulence_grid, atmosphere_grid, atmosphere_mode_row]:
+		var previous_columns: int = grid.columns
+		var two_column_width: float = ResponsiveGrid.two_column_minimum_width(grid)
+		var desired_columns: int = 1 if two_column_width > content_width else 2
+		if previous_columns != desired_columns:
+			grid.columns = desired_columns
+		if previous_columns != desired_columns:
 			responsive_layout_changed = true
 	if responsive_layout_changed:
 		# Let wrapped labels and the panel minimum recalculate at the new width

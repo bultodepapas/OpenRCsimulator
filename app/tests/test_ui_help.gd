@@ -27,7 +27,7 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	ui = UiDriver.new(self)
-	_run()
+	_run.call_deferred()
 
 
 func _caps_text(n: Node) -> PackedStringArray:
@@ -47,6 +47,8 @@ func _label_texts(n: Node) -> PackedStringArray:
 
 
 func _run() -> void:
+	root.size = Vector2i(1280, 720) # headless Window otherwise defaults to 64×64
+	await process_frame
 	# Key labels: the layout's printed character for a physical key, never stored state.
 	var azerty := func(k: Key) -> Key: return { KEY_A: KEY_Q, KEY_Q: KEY_A, KEY_W: KEY_Z, KEY_Z: KEY_W }.get(k, k)
 	var russian := func(k: Key) -> Key: return { KEY_A: 0x424 as Key, KEY_W: 0x426 as Key }.get(k, k)
@@ -85,9 +87,14 @@ func _run() -> void:
 		help.radio_help_label.text.contains("gear AUX") and help.radio_help_label.text.contains("Toggle landing gear"), help.radio_help_label.text)
 	var scroll: ScrollContainer = help.find_children("*", "ScrollContainer", true, false)[0]
 	_check("Help scrolls to keyboard focus", scroll.follow_focus)
-	var page: Control = scroll.get_child(0)
-	_check("English Help fits without scrolling (%d <= %d px)" % [page.get_combined_minimum_size().y, scroll.custom_minimum_size.y],
-		page.get_combined_minimum_size().y <= scroll.custom_minimum_size.y)
+	# Wrapped columns settle after their bounded parent assigns its final width.
+	for frame in 4: await process_frame
+	_check("English Help keeps its body and Close inside the real viewport",
+		scroll.size.y >= 100 and root.get_visible_rect().encloses(scroll.get_global_rect())
+		and root.get_visible_rect().encloses(help.close_button.get_global_rect()))
+	scroll.grab_focus()
+	await ui.tap(KEY_END)
+	_check("English Help keyboard scrolling reaches About", scroll.get_global_rect().grow(1).encloses(help.about_label.get_global_rect()))
 	await ui.tap(KEY_ESCAPE)
 	_check("Esc closes Help, focus back on Help", app.help == null and ui.focus_name() == "Help", ui.focus_name())
 	_check("Esc in Help did not start or quit anything", app.flight == null and app.home != null)
@@ -106,8 +113,11 @@ func _run() -> void:
 		app.help.radio_help_label.text.contains("AUX") and app.help.radio_help_label.text.contains("Alternar tren de aterrizaje"), app.help.radio_help_label.text)
 	var es_scroll: ScrollContainer = app.help.find_children("*", "ScrollContainer", true, false)[0]
 	var es_page: Control = es_scroll.get_child(0)
-	_check("Spanish Help fits without scrolling (%d <= %d px)" % [es_page.get_combined_minimum_size().y, es_scroll.custom_minimum_size.y],
-		es_page.get_combined_minimum_size().y <= es_scroll.custom_minimum_size.y)
+	for frame in 4: await process_frame
+	_check("Spanish Help content fits horizontally", es_page.size.x <= es_scroll.size.x + 1)
+	es_scroll.grab_focus()
+	await ui.tap(KEY_END)
+	_check("Spanish Help keyboard scrolling reaches About", es_scroll.get_global_rect().grow(1).encloses(app.help.about_label.get_global_rect()))
 	app.close_help()
 	TranslationServer.set_locale("en")
 	await ui.settle()
@@ -121,6 +131,7 @@ func _run() -> void:
 	var rotorcraft_labels := _label_texts(rotorcraft_help)
 	var rotorcraft_scroll: ScrollContainer = rotorcraft_help.find_children("*", "ScrollContainer", true, false)[0]
 	var rotorcraft_page: Control = rotorcraft_scroll.get_child(0)
+	for frame in 4: await process_frame
 	var rotorcraft_key_count := 0
 	for table in [Reference.shortcut_table(Reference.ROTORCRAFT), Reference.flight_table(Reference.ROTORCRAFT)]:
 		for row in table:
@@ -129,8 +140,8 @@ func _run() -> void:
 	_check("rotorcraft Help receives its explicit vehicle context", rotorcraft_help._vehicle_type == Reference.ROTORCRAFT)
 	_check("rotorcraft Help shows every key in its own tables", rotorcraft_caps.size() == rotorcraft_key_count,
 		"%d caps for %d listed keys" % [rotorcraft_caps.size(), rotorcraft_key_count])
-	_check("rotorcraft Help fits its compact reference at 720p (%d <= %d px)" % [rotorcraft_page.get_combined_minimum_size().y, rotorcraft_scroll.custom_minimum_size.y],
-		rotorcraft_page.get_combined_minimum_size().y <= rotorcraft_scroll.custom_minimum_size.y)
+	_check("rotorcraft Help keeps the reference horizontally contained at 720p", rotorcraft_page.size.x <= rotorcraft_scroll.size.x + 1
+		and rotorcraft_scroll.size.y >= 100 and root.get_visible_rect().encloses(rotorcraft_scroll.get_global_rect()))
 	_check("rotorcraft Help names cyclic, yaw and collective", rotorcraft_labels.has("Cyclic roll")
 		and rotorcraft_labels.has("Cyclic pitch") and rotorcraft_labels.has("Yaw") and rotorcraft_labels.has("Collective"))
 	_check("rotorcraft Help explains idle-up curves, trainer and zero-drive",

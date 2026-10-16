@@ -28,6 +28,8 @@ var availability_events_column: VBoxContainer
 var availability_unavailable_label: Label
 var source_loss_heading_label: Label
 var source_loss_reason_label: Label
+var _screen: Control
+var _catastrophic_row: BoxContainer
 
 
 func _init(initial_config: Dictionary, resolved_availability: Dictionary = {}) -> void:
@@ -38,6 +40,7 @@ func _init(initial_config: Dictionary, resolved_availability: Dictionary = {}) -
 	var include_catastrophic := bool(initial_config.get("include_catastrophic", false))
 	var notify := bool(initial_config.get("notify", true))
 	var screen := Screen.mount(self, "Screen")
+	_screen = screen
 	screen.kind = Screen.Kind.MODAL
 	screen.close_requested.connect(_on_screen_close_requested)
 	screen.dim(0.56)
@@ -47,11 +50,22 @@ func _init(initial_config: Dictionary, resolved_availability: Dictionary = {}) -
 	settings_card.theme_type_variation = "Card"
 	settings_card.custom_minimum_size.x = 620.0
 	center.add_child(settings_card)
+	var shell := VBoxContainer.new()
+	shell.add_theme_constant_override("separation", 12)
+	settings_card.add_child(shell)
+	var title := Widgets.label("FAILURES · NEXT FLIGHT", "TitleLabel", true)
+	shell.add_child(title)
+	var scroll := ScrollContainer.new()
+	scroll.name = "FailureSettingsScroll"
+	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	scroll.follow_focus = true
+	scroll.focus_mode = Control.FOCUS_ALL
+	shell.add_child(scroll)
 	var column := VBoxContainer.new()
+	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.add_theme_constant_override("separation", 12)
-	settings_card.add_child(column)
-	var title := Widgets.label("FAILURES · NEXT FLIGHT", "TitleLabel")
-	column.add_child(title)
+	scroll.add_child(column)
 	var probability_title := Widgets.label("Probability of failure per flight", "SectionLabel")
 	column.add_child(probability_title)
 	var next_flight_only := Widgets.label(
@@ -97,13 +111,16 @@ func _init(initial_config: Dictionary, resolved_availability: Dictionary = {}) -
 	catastrophic_check.name = "IncludeCatastrophic"
 	catastrophic_check.text = "Include catastrophic failures"
 	catastrophic_check.button_pressed = include_catastrophic
-	var catastrophic_row := HBoxContainer.new()
+	var catastrophic_row := BoxContainer.new()
+	_catastrophic_row = catastrophic_row
+	catastrophic_check.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	catastrophic_row.add_theme_constant_override("separation", 8)
 	catastrophic_check.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	catastrophic_row.add_child(catastrophic_check)
 	availability_button = Widgets.button("Available failures for this aircraft", "")
 	availability_button.name = "AvailableFailures"
 	availability_button.size_flags_horizontal = Control.SIZE_SHRINK_END
+	availability_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	availability_button.pressed.connect(_show_availability)
 	catastrophic_row.add_child(availability_button)
 	column.add_child(catastrophic_row)
@@ -114,6 +131,7 @@ func _init(initial_config: Dictionary, resolved_availability: Dictionary = {}) -
 	notify_check = CheckBox.new()
 	notify_check.name = "NotifyOnFailure"
 	notify_check.text = "Notify when a failure occurs"
+	notify_check.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	notify_check.button_pressed = notify
 	column.add_child(notify_check)
 	notice_hint_label = Widgets.label(
@@ -134,14 +152,27 @@ func _init(initial_config: Dictionary, resolved_availability: Dictionary = {}) -
 	apply_button.name = "Apply"
 	apply_button.pressed.connect(_on_apply)
 	buttons.add_child(apply_button)
-	column.add_child(buttons)
+	shell.add_child(buttons)
 	_build_availability_card(center)
+	screen.resized.connect(_resize_layout)
+	screen.theme_changed.connect(_resize_layout)
 
 
 func _ready() -> void:
+	_resize_layout()
 	if current_flight_settings:
 		notice_hint_label.text = tr("Applying changes updates notices in this flight. Probability and catastrophic settings apply to the next flight.")
 	apply_button.grab_focus.call_deferred()
+
+
+func _resize_layout() -> void:
+	if not is_inside_tree(): return
+	var available := _screen.size - Vector2(56, 56)
+	var dimensions := Vector2(minf(880, available.x), minf(740, available.y))
+	settings_card.custom_minimum_size = dimensions
+	availability_card.custom_minimum_size = dimensions
+	_catastrophic_row.vertical = preload("res://ui/ui_theme.gd").text_scale > 1.25 or dimensions.x < 800
+	availability_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 
 
 func _build_availability_card(parent: Control) -> void:
@@ -155,15 +186,8 @@ func _build_availability_card(parent: Control) -> void:
 	column.add_theme_constant_override("separation", 12)
 	availability_card.add_child(column)
 	column.add_child(Widgets.label("Available failures for this aircraft", "TitleLabel", true))
-	column.add_child(Widgets.label(
-		"These are the failure events supported by this aircraft.", "SecondaryLabel", true,
-	))
-	column.add_child(Widgets.label(
-		"Focus the list, then use arrow keys or Page Up/Down to scroll.", "SecondaryLabel", true,
-	))
 	availability_scroll = ScrollContainer.new()
 	availability_scroll.name = "AvailabilityScroll"
-	availability_scroll.custom_minimum_size.y = 300.0
 	availability_scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	availability_scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	availability_scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
@@ -173,6 +197,12 @@ func _build_availability_card(parent: Control) -> void:
 	content.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	content.add_theme_constant_override("separation", 8)
 	availability_scroll.add_child(content)
+	content.add_child(Widgets.label(
+		"These are the failure events supported by this aircraft.", "SecondaryLabel", true,
+	))
+	content.add_child(Widgets.label(
+		"Focus the list, then use arrow keys or Page Up/Down to scroll.", "SecondaryLabel", true,
+	))
 	availability_unavailable_label = Widgets.label(
 		"Availability details are unavailable.", "SecondaryLabel", true,
 	)

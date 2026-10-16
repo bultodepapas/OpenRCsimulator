@@ -542,6 +542,7 @@ func _rebuild_details() -> void:
 			_add_detail_money(tr("Low reference"), replacement_quote_low, currency)
 		if replacement_quote_high != null:
 			_add_detail_money(tr("High reference"), replacement_quote_high, currency)
+	_add_replacement_comparison(currency)
 	_add_detail_section(tr("Parts and actions"))
 	var lines: Variant = _report.get("lines", [])
 	var line_count := 0
@@ -586,6 +587,31 @@ func _rebuild_details() -> void:
 		_add_detail_section(tr("Assumptions"))
 		for assumption: Variant in assumptions:
 			_add_detail_text("• " + _unresolved_text(assumption), true)
+
+
+func _add_replacement_comparison(currency: String) -> void:
+	var value: Variant = _report.get("replacement_comparison")
+	if not value is Dictionary:
+		return
+	var status: Variant = value.get("status")
+	if status not in ["optimal", "unknown_cost", "search_limit", "infeasible", "cost_out_of_range"]:
+		return
+	_add_detail_section(tr("Replacement parts comparison"))
+	_add_detail_text(tr("Parts only. Inspection, repairs and labor are separate; this comparison is not added to the accident total."), true)
+	var proven: bool = value.get("optimality_proven") == true and status == "optimal" and _valid_minor(value.get("total_cost_cents")) != null
+	_add_detail_money(tr("Lowest priced combination for these parts") if proven else tr("Provisional parts estimate"), value.get("total_cost_cents"), currency)
+	if not proven:
+		var explanation := tr("Some package prices are unknown; the cheapest option is unresolved.")
+		if status == "search_limit":
+			explanation = tr("Comparison is incomplete; a cheaper combination may exist.")
+		elif status == "infeasible":
+			explanation = tr("No compatible combination covers all requested parts.")
+		elif status == "cost_out_of_range":
+			explanation = tr("Parts estimate exceeds the supported amount range.")
+		_add_detail_text(explanation, true)
+	if value.get("assessment_complete") != true:
+		_add_detail_text(tr("Other damage or inspection costs remain unresolved."), true)
+	_add_detail_text(tr("Catalog estimates; availability and physical fit require confirmation."), true)
 
 
 func _add_detail_section(text: String) -> void:

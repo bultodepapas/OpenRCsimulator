@@ -1,0 +1,43 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   fresh display settings use validated defaults
+ok   legacy display settings receive the default menu volume
+ok   invalid menu volume rejected: -0.1
+ok   invalid menu volume rejected: 1.1
+ok   invalid menu volume rejected: nan
+ok   invalid menu volume rejected: inf
+ok   invalid menu volume rejected: quiet
+ok   valid range and window mode accepted
+ok   scale below 100% rejected
+ok   scale outside the 5% steps rejected
+ok   unknown window mode rejected
+ok   wrong accessibility value type rejected
+ok   invalid settings cannot be saved
+ok   valid settings save
+ok   display preferences round-trip
+ok   new store instance reloads saved values
+ok   newer settings file is read-only
+ok   newer settings are never overwritten
+ok   unreadable settings are preserved for recovery
+ok   default 1080p/4K Settings Display page fits without scrolling
+ok   default Settings workspace is bounded on a wide viewport
+ok   default Settings category 0 fits without scrolling
+ok   default Settings category 1 fits without scrolling
+ok   default Settings category 2 fits without scrolling
+ok   muted preview disables Test sound
+ok   Keep persists menu mute
+ok   Revert restores the kept volume and slider
+ok   Close restores the kept volume
+ok   Close receives initial keyboard focus
+ok   200% text stacks settings rows
+ok   200% Settings scrolls only its body and pins title and Keep/Revert
+ok   200% focus scrolls the complete language selector into view
+ok   window change starts a 15-second trial
+ok   expired preview emits the saved display configuration
+ok   expired preview does not persist the tested window mode
+ok   language applies immediately through the host signal
+ok   locale refresh rebuilds status and window picker labels
+ok   Controls and Help/About expose host routes
+ok   Keep persists accessibility and scale changes
+ok   Back/close restores the last kept display configuration
+all Settings checks passed

@@ -44,7 +44,8 @@ func _check_mesh(cue: Dictionary) -> void:
 	var bounds: AABB = mesh.get_aabb()
 	_check("mesh dimensions contain exactly its full width, height, and 0.08 m face thickness", bounds.position.is_equal_approx(Vector3(-cue.width * 0.5, 0.0, -0.04)) and bounds.size.is_equal_approx(Vector3(cue.width, cue.height, 0.08)), str(bounds))
 	_check("barrier root follows NED field position", first.position.is_equal_approx(Frames.ned_to_render([cue.north, cue.east, 0.0])))
-	_check("one mesh and one surface, no processing or collision nodes", first.get_child_count() == 1 and mesh_instance.get_child_count() == 0 and mesh.get_surface_count() == 1 and not first.is_processing() and not mesh_instance.is_processing() and not _has_collision(first))
+	_check("one barrier surface plus grounded planting, no processing or collision nodes", first.get_child_count() == 2 and mesh_instance.get_child_count() == 0 and mesh.get_surface_count() == 1 and not first.is_processing() and not mesh_instance.is_processing() and not _has_collision(first))
+	_check_planting(first, second, cue)
 	var arrays: Array = mesh.surface_get_arrays(0)
 	var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
 	var normals: PackedVector3Array = arrays[Mesh.ARRAY_NORMAL]
@@ -125,7 +126,36 @@ func _test_boundary_variants(default_cue: Dictionary) -> void:
 		var positions: PackedVector3Array = Barrier.post_positions(variant)
 		var posts_per_bank: int = positions.size() / 2
 		_check("boundary post layout keeps the gap", absf(positions[posts_per_bank].x - positions[posts_per_bank - 1].x - FOOT_WIDTH_M - gap_width) < 0.00001)
+		_check_planting(root, null, variant)
 		root.free()
+
+
+func _check_planting(first: Node3D, second: Node3D, cue: Dictionary) -> void:
+	var plants := first.get_node("PostVegetation") as Node3D
+	var records: Array = plants.get_meta("layout")
+	_check("downloaded plants use three batches and one soil mesh", plants.get_child_count() == 4)
+	_check("bounded source geometry for post plants", int(plants.get_meta("source_triangles")) < 90000)
+	if second != null:
+		_check("plant placement is repeatable", records == second.get_node("PostVegetation").get_meta("layout"))
+	var state: Dictionary = plants.get_meta("_imported_vegetation_state")
+	var grounded := true
+	var bounded := true
+	for record: Dictionary in state.bounds:
+		var box: AABB = record.bounds
+		var xf: Transform3D = record.transform
+		var bottom := INF
+		for i in 8:
+			var p := xf * box.get_endpoint(i)
+			bottom = minf(bottom, p.y)
+			bounded = bounded and p.is_finite() and absf(p.x) >= cue.gap_width * 0.5 - 0.0001 and absf(p.x) <= cue.width * 0.5 + 0.0001 and absf(p.z) < 0.42 and p.y <= 0.231
+		grounded = grounded and absf(bottom) < 0.0001
+	_check("actual plant bounds preserve walking gap, width and low sightline", bounded)
+	_check("all source plant bottoms sit on the ground", grounded)
+	var soil: MeshInstance3D = plants.get_node("SoilCollars")
+	var soil_clear := true
+	for p: Vector3 in soil.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX]:
+		soil_clear = soil_clear and absf(p.x) >= cue.gap_width * 0.5 - 0.0001 and absf(p.x) <= cue.width * 0.5 + 0.0001 and p.y > 0.0 and p.y < 0.04
+	_check("soil collars leave the walking opening and shadow mask clear", soil_clear)
 
 
 func _check_detail(instance: MeshInstance3D, vertices: PackedVector3Array, normals: PackedVector3Array) -> void:
@@ -146,7 +176,7 @@ func _check_detail(instance: MeshInstance3D, vertices: PackedVector3Array, norma
 		cursor = item.end
 	_check("no floating fittings survive outside the damage ranges", cursor == vertices.size())
 	var material := instance.mesh.surface_get_material(0) as ShaderMaterial
-	for channel: String in ["wood_color", "wood_normal", "wood_roughness"]:
+	for channel: String in ["wood_color", "wood_normal", "wood_roughness", "metal_color", "metal_normal", "metal_roughness", "metalness"]:
 		var texture := material.get_shader_parameter(channel) as Texture2D
 		_check("downloaded %s has distance mipmaps" % channel, texture != null and texture.get_image().has_mipmaps())
 

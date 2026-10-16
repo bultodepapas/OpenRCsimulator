@@ -6,6 +6,7 @@ extends RefCounted
 
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Palette = preload("res://scenery/palette.gd")
+const Furniture = preload("res://scenery/club_furniture.gd")
 const People = preload("res://scenery/people.gd")
 const Vegetation = preload("res://scenery/vegetation.gd")
 
@@ -365,22 +366,11 @@ static func _shed(k: MeshKit) -> void:
 
 
 static func _picnic_table(k: MeshKit) -> void:
-	var wood := _c("wood_light")
-	k.block(Vector3(1.8, 0.05, 0.75), Vector3(0, 0.71, 0), wood)
-	for z: float in [-0.6, 0.6]:
-		k.block(Vector3(1.8, 0.05, 0.25), Vector3(0, 0.42, z), wood)
-	for x: float in [-0.7, 0.7]:
-		k.beam(Vector3(x, 0, -0.75), Vector3(x, 0.71, 0), 0.07, _c("wood"))
-		k.beam(Vector3(x, 0, 0.75), Vector3(x, 0.71, 0), 0.07, _c("wood"))
-		k.beam(Vector3(x, 0.4, -0.72), Vector3(x, 0.4, 0.72), 0.06, _c("wood"))
+	Furniture.picnic(k)
 
 
 static func _bench(k: MeshKit) -> void:
-	k.block(Vector3(1.8, 0.05, 0.42), Vector3(0, 0.43, 0), _c("wood"))
-	k.quad(Vector3(-0.9, 0.5, 0.22), Vector3(0.9, 0.5, 0.22), Vector3(0.9, 0.85, 0.28), Vector3(-0.9, 0.85, 0.28), _c("wood"))
-	k.quad(Vector3(0.9, 0.5, 0.23), Vector3(-0.9, 0.5, 0.23), Vector3(-0.9, 0.85, 0.29), Vector3(0.9, 0.85, 0.29), _c("wood_dark"))
-	for x: float in [-0.8, 0.8]:
-		k.block(Vector3(0.06, 0.43, 0.4), Vector3(x, 0, 0), _c("steel_dark"))
+	Furniture.bench(k)
 
 
 static func _flagpole(k: MeshKit) -> Array:

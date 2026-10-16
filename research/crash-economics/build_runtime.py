@@ -320,6 +320,30 @@ def _baseline_components(baseline: dict[str, Any], offers: dict[str, dict[str, A
             if reference_id not in offers:
                 _fail(f"baseline component {component_id}: unknown offer reference {reference_id}")
         raw_price = line.get("estimated_unit_minor")
+        composite_notes = ""
+        if "price_constituents" in line:
+            if reference_id is not None or "estimated_unit_minor" in line or line.get("evidence_kind") != "estimated":
+                _fail(f"baseline component {component_id}: composite prices require estimated basis without a single offer or override")
+            constituents = line["price_constituents"]
+            if not isinstance(constituents, list) or not 1 <= len(constituents) <= 64:
+                _fail(f"baseline component {component_id}: expected 1..64 composite constituents")
+            total = 0
+            used_offers = set()
+            source_notes = []
+            for constituent in constituents:
+                if not isinstance(constituent, dict) or set(constituent) != {"offer_id", "quantity"}:
+                    _fail(f"baseline component {component_id}: malformed composite constituent")
+                offer_id = _require_string(constituent["offer_id"], "composite offer_id")
+                count = _require_int(constituent["quantity"], "composite quantity", minimum=1, maximum=MAX_QUANTITY)
+                if offer_id not in offers or offer_id in used_offers:
+                    _fail(f"baseline component {component_id}: unknown or duplicate composite offer")
+                used_offers.add(offer_id)
+                offer = offers[offer_id]
+                amount = _require_int(offer["amount_minor"], "composite unit price")
+                total = _require_int(total + count * amount, "composite total")
+                source_notes.append(f"{count} x {offer_id}: {amount} USD cents each; observed {offer['observed_on']}; {offer['availability']}; {offer['source_url']}")
+            raw_price = total
+            composite_notes = " Composite estimate from separate offers, not one sold package: " + " | ".join(source_notes)
         if raw_price is None and reference_id is not None:
             raw_price = offers[reference_id]["amount_minor"]
         unit_minor: int | None = None if raw_price is None else _require_int(
@@ -361,7 +385,7 @@ def _baseline_components(baseline: dict[str, Any], offers: dict[str, dict[str, A
             "physical_inventory_ids": physical_ids,
             "price_basis": basis,
             "offer_id": reference_id,
-            "notes": _require_string(line.get("notes"), f"baseline component {component_id}.notes"),
+            "notes": _require_string(line.get("notes"), f"baseline component {component_id}.notes") + composite_notes,
         })
     return result
 
@@ -511,11 +535,14 @@ def _partial_missing(
     if not isinstance(references, list):
         _fail(f"fleet {aircraft_id}.price_observations: expected an array")
     refs: list[str] = []
+    attached = {row["offer_id"] for row in components}
+    for line in fleet_entry.get("dossier", {}).get("lines", []):
+        attached.update(part["offer_id"] for part in line.get("price_constituents", []))
     for reference in references:
         ref = _require_string(reference, f"fleet {aircraft_id}.price_observations[]")
         if ref not in offers:
             _fail(f"fleet {aircraft_id}: unknown offer reference {ref}")
-        if ref not in {row["offer_id"] for row in components}:
+        if ref not in attached:
             refs.append(ref)
     if refs:
         missing.append(

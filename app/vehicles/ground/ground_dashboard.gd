@@ -280,6 +280,10 @@ func set_controllers(devices: Array, selected: int, needs_selection: bool) -> vo
 			control_hint.text = words("Left stick: steer · %s: accelerate · %s: brake · No reverse\n%s: camera · %s: recover · %s: garage / continue", "Palanca izquierda: girar · %s: acelerar · %s: frenar · Sin reversa\n%s: cámara · %s: recuperar · %s: garaje / continuar") % [rt, lt, camera_button, recover_button, start]
 		else:
 			control_hint.text = words("W / ↑: accelerate · A/D / ←/→: steer · Space / S / ↓: brake · No reverse\nC: camera · R: recover · Esc: garage · Enter: continue", "W / ↑: acelerar · A/D / ←/→: girar · Espacio / S / ↓: frenar · Sin reversa\nC: cámara · R: recuperar · Esc: garaje · Enter: continuar")
+	if _using_gamepad:
+		control_hint.text += words("\n%s: restart · %s: headlights", "\n%s: reiniciar · %s: faros") % [_button_name(JOY_BUTTON_BACK, current), _button_name(JOY_BUTTON_LEFT_SHOULDER, current)]
+		if nitro:
+			control_hint.text += words(" · %s: auxiliary lights", " · %s: luces auxiliares") % _button_name(JOY_BUTTON_RIGHT_SHOULDER, current)
 	controller_choice.tooltip_text = words("This selection only controls the car. Aircraft settings are preserved.", "Esta selección controla solo el carro. Los ajustes de vuelo se conservan.")
 	update_input_status(false, needs_selection, true)
 

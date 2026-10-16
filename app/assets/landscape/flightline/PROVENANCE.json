@@ -26,5 +26,41 @@
     "Wood049_1K-JPG_Color.jpg": "451ee4dd719628289b4969f75dc583b5f77f8471d5d885ba5015fd90e7e5ce61",
     "Wood049_1K-JPG_NormalGL.jpg": "e9aaec13f9c6199e7ec440433005a8c52a88332f26a3887fc057179089fb747a",
     "Wood049_1K-JPG_Roughness.jpg": "7683f29e71c24b987e4a7dcc74d5a9ed5ab4cac2e145d507799ba9c9c2c4ef54"
+  },
+  "metal_weathering": {
+    "asset": "ambientCG Metal026",
+    "author": "Lennart Demes / ambientCG",
+    "downloaded": "2026-10-16",
+    "license": "CC0-1.0",
+    "source": "https://ambientcg.com/view?id=Metal026",
+    "license_source": "https://docs.ambientcg.com/license/",
+    "archive_url": "https://ambientcg.com/get?file=Metal026_1K-JPG.zip",
+    "archive_sha256": "4518575995725d0465d00f847ed90217b744e1b1a319cd5c81f1c9f0c4a0d630",
+    "resolution": [
+      1024,
+      1024
+    ],
+    "runtime_tile_metres": 0.35,
+    "processing": "Unmodified JPGs. Lossless imports with mipmaps; color is sRGB, OpenGL normal/roughness/metalness are linear. Corrosion strength, damp gradient and wood bleaching are artistic estimates.",
+    "sha256": {
+      "Metal026_1K-JPG_Color.jpg": "6f4edb2201ebf72832aa7cb44c883bd75edc3595dc8ad57ba25c0c02bb4c71c3",
+      "Metal026_1K-JPG_Metalness.jpg": "1eca99188667aebb5c7ca5144370720a92b8a4278fb05fb7c8dec32c6151df2e",
+      "Metal026_1K-JPG_NormalGL.jpg": "76d6607368f37410047194498f8370850b866e7112358f5e3dcae6c2d92ce375",
+      "Metal026_1K-JPG_Roughness.jpg": "6a849e369a2a21ff44f87327b64753616224ca6992f2efef4d233bf319e3c1b1"
+    }
+  },
+  "post_planting": {
+    "assets": [
+      "grass_common_short",
+      "grass_wispy_tall",
+      "clover_1"
+    ],
+    "source": "../vegetation/catalog.json",
+    "license": "../vegetation/LICENSE.txt",
+    "source_author": "Quaternius",
+    "geometry": "Existing unmodified downloaded source meshes, with fitted placement and local foliage material only.",
+    "soil_source": "../../../../assets/landscape/rc-ground/manifest.json",
+    "soil_texture": "../rc-ground/dirt-albedo.jpg",
+    "soil_sha256": "126d3e4886cc94b494ba609ddc323a77ff0362a1b156c3750d5d2a0a0ead02b8"
   }
 }

@@ -13,6 +13,7 @@ var _rest: Dictionary = {}
 var _parents: Dictionary = {}
 var _rest_world: Dictionary = {}
 var _linkages: Array = []
+var _aim_axes: Dictionary = {}
 
 
 func configure(preview: Dictionary) -> bool:
@@ -32,6 +33,10 @@ func configure(preview: Dictionary) -> bool:
 		_parents[record.id] = String(record.parent_id)
 	_linkages = profile.linkages.duplicate(true)
 	_rest_world = _world_frames(_rest)
+	for link: Dictionary in _linkages:
+		var direction: Vector3 = _rest_world[link.endpoint_b].origin - _rest_world[link.endpoint_a].origin
+		for endpoint: String in [link.endpoint_a, link.endpoint_b]:
+			_aim_axes[endpoint] = (_rest_world[endpoint].basis.inverse() * direction).normalized()
 	return apply(PackedFloat64Array([0, 0, 0, 0, 0])).ok
 
 
@@ -62,12 +67,13 @@ func apply(inputs: PackedFloat64Array) -> Dictionary:
 		if not is_finite(residual) or residual > CLOSURE_TOLERANCE_M:
 			return {"ok": false, "error": "Rigid linkage does not close: " + String(link.id), "residual_m": residual}
 		maximum_residual = maxf(maximum_residual, residual)
-		# Orient ball links and their rods without scaling/stretching them.
-		# A deterministic shortest rotation transports the neutral terminal frame.
-		var rest_direction: Vector3 = _rest_world[b].origin - _rest_world[a].origin
-		var turn := Basis(Quaternion(rest_direction.normalized(), direction.normalized()))
+		# Carry the terminal frame with its actual servo/swash/grip first, then
+		# swing its authored rod axis onto the opposite ball. A world-neutral
+		# frame would cancel parent roll and leave rotating sockets facing away.
 		for endpoint: String in [a, b]:
-			var endpoint_world := Transform3D(turn * _rest_world[endpoint].basis, world[endpoint].origin)
+			var carried_direction: Vector3 = world[endpoint].basis * _aim_axes[endpoint]
+			var turn := Basis(Quaternion(carried_direction.normalized(), direction.normalized()))
+			var endpoint_world := Transform3D(turn * world[endpoint].basis, world[endpoint].origin)
 			local[endpoint] = (world[_parents[endpoint]] as Transform3D).affine_inverse() * endpoint_world
 	# Endpoint orientation also carries the authored rods and their thread anchors.
 	for id: String in local:

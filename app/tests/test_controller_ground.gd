@@ -62,6 +62,8 @@ func _run() -> void:
 	check("selected flight handle alone is polled", not polled_ids.is_empty() and polled_ids.all(func(id: int) -> bool: return id == 7))
 	check("selected UI handle can send Start", ground._accept_controller_button(8))
 	check("selected flight handle can send Start", ground._accept_controller_button(7))
+	check("menu handle is excluded from driving-only shortcuts", not ground._accept_driving_controller_button(8))
+	check("selected flight handle owns driving-only shortcuts", ground._accept_driving_controller_button(7))
 	registry.select("ui", 11)
 	check("selected connected UI gamepad can send Start", ground._accept_controller_button(11))
 	registry.select("ui", 8)
@@ -104,7 +106,7 @@ func _run() -> void:
 	check("generation change pauses and requires reselection", not generation_controls.get("connected", true) and ground._controller_requires_selection)
 	check("same handle can be explicitly reselected after generation change", ground.apply_controller_selection(7) and not ground._controller_requires_selection)
 	registry.select("ui", 8)
-	check("selected UI device remains accepted for Start", ground._accept_controller_button(8))
+	check("selected UI device can send Start but cannot control the car", ground._accept_controller_button(8) and not ground._accept_driving_controller_button(8))
 	check("unselected handle is rejected for Start", not ground._accept_controller_button(99))
 
 	ground.controller_registry = null

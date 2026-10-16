@@ -1,0 +1,4 @@
+Wood050, Concrete034 and Metal032 by Lennart Demes / ambientCG.
+CC0 1.0 Universal: https://creativecommons.org/publicdomain/zero/1.0/
+Source license: https://docs.ambientcg.com/license/
+See PROVENANCE.json for download URLs and original file hashes.

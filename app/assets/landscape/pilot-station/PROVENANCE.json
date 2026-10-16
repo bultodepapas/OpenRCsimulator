@@ -1,0 +1,80 @@
+{
+  "downloaded": "2026-10-16",
+  "license_source": "https://docs.ambientcg.com/license/",
+  "assets": [
+    {
+      "asset": "ambientCG Wood050",
+      "author": "Lennart Demes / ambientCG",
+      "source": "https://ambientcg.com/view?id=Wood050",
+      "license": "CC0-1.0",
+      "archive_url": "https://ambientcg.com/get?file=Wood050_1K-JPG.zip",
+      "archive_sha256": "22ccc4c3602b1d2965b622ab01d8258adcf180c253702842ce66728d235f3bcc",
+      "source_tile_metres": [
+        0.8,
+        0.8
+      ],
+      "runtime_tile_metres": [
+        0.8,
+        0.8
+      ],
+      "resolution": [
+        1024,
+        1024
+      ],
+      "sha256": {
+        "Wood050_1K-JPG_Color.jpg": "a16cab3c789dd34570759b5bfb7ced36f983c180a20e3796d3dcb5571d94053d",
+        "Wood050_1K-JPG_NormalGL.jpg": "199be90187d780760012f479e492a913999e33a34ac4d9cd4186b4d2c570d9ce",
+        "Wood050_1K-JPG_Roughness.jpg": "9055b55a3cf39e7dbeb1aa0479c86d30878622f28b2d521cb21983718b3e0b5d"
+      }
+    },
+    {
+      "asset": "ambientCG Concrete034",
+      "author": "Lennart Demes / ambientCG",
+      "source": "https://ambientcg.com/view?id=Concrete034",
+      "license": "CC0-1.0",
+      "archive_url": "https://ambientcg.com/get?file=Concrete034_1K-JPG.zip",
+      "archive_sha256": "5839d284d94ffb8d2a56df742ec522b13dd311c52dbd42b8fd33f0409ceedb81",
+      "source_tile_metres": [
+        1.1,
+        0.55
+      ],
+      "runtime_tile_metres": [
+        1.1,
+        0.55
+      ],
+      "resolution": [
+        1024,
+        512
+      ],
+      "sha256": {
+        "Concrete034_1K-JPG_Color.jpg": "8ceb9186d990b31fce785e06fdc6974c160f1d27c43f6160266f164deba713aa",
+        "Concrete034_1K-JPG_NormalGL.jpg": "e509eb9dfa978e780fbebfd2acacc2ce158b5b7ced722ddc0759039dd51e18ca",
+        "Concrete034_1K-JPG_Roughness.jpg": "a4a9e39857a19afd23a778e5abf44fcdf6bd7f93918f1cf6878b41933e553511"
+      }
+    },
+    {
+      "asset": "ambientCG Metal032",
+      "author": "Lennart Demes / ambientCG",
+      "source": "https://ambientcg.com/view?id=Metal032",
+      "license": "CC0-1.0",
+      "archive_url": "https://ambientcg.com/get?file=Metal032_1K-JPG.zip",
+      "archive_sha256": "9e4f363905a647958c273154fa125d2a6440892d0e583f9b3af24bb08b5afc3c",
+      "source_tile_metres": null,
+      "runtime_tile_metres": 0.25,
+      "resolution": [
+        1024,
+        1024
+      ],
+      "sha256": {
+        "Metal032_1K-JPG_NormalGL.jpg": "8537c1015de5cc33d20231e5b6aa27309edcb983e1c37e608d08bb00f733747d",
+        "Metal032_1K-JPG_Roughness.jpg": "55d3eee2b69008ad3701b18977495531d0e3515105102e56f40a4d1098d10bce"
+      }
+    }
+  ],
+  "processing": "Unmodified source JPGs. Lossless Godot import with mipmaps and anisotropic filtering. Wood stain, petrol coating, roughness and normal strength are artistic runtime settings; source textures do not establish physical material properties.",
+  "channels": {
+    "Color": "sRGB albedo",
+    "NormalGL": "linear OpenGL tangent normal",
+    "Roughness": "linear scalar red"
+  }
+}

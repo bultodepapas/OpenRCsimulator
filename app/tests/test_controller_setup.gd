@@ -79,6 +79,7 @@ func _initialize() -> void:
 	await _test_glyph_family_save_and_cancel()
 	await _test_unknown_saved_gamepad_menu_gate()
 	await _test_entry_signals()
+	await _test_helicopter_default_save()
 	print("all controller setup checks passed" if failures == 0 else "%d controller setup checks failed" % failures)
 	quit(1 if failures > 0 else 0)
 
@@ -277,6 +278,34 @@ func _test_entry_signals() -> void:
 	pause.controls_button.pressed.emit()
 	_check("Pause exposes Controller settings with a source control", pause_requests.size() == 1 and pause_requests[0] == pause.controls_button)
 	pause.free()
+	await process_frame
+
+
+func _test_helicopter_default_save() -> void:
+	var registry := FakeRegistry.new()
+	var store := FakeStore.new()
+	store.save_succeeds = true
+	var setup := ControllerSetup.new()
+	setup.configure(registry, store, 5, 5, ControllerActions.HELICOPTER_CAPABILITIES)
+	root.add_child(setup)
+	await process_frame
+	_check("helicopter setup displays the automatic arm and hold buttons", setup._action_bindings.helicopter_arm.button == JOY_BUTTON_A and setup._action_bindings.helicopter_hold.button == JOY_BUTTON_B)
+	_check("helicopter setup does not promise fixed-wing equipment", setup._action_bindings.flaps_cycle.type == "unbound" and setup._action_bindings.gear_toggle.type == "unbound")
+	_check("saving untouched helicopter defaults succeeds", setup._save_profile(false))
+	_check("saving does not freeze automatic assignments or disable airplane equipment", store.last_saved_profile.actions.is_empty())
+	setup._clear_action_binding("helicopter_trainer")
+	var remap := setup.action_grid.find_child("Remap_helicopter_arm", true, false) as Button
+	setup._start_capture("helicopter_arm", remap)
+	var event := InputEventJoypadButton.new()
+	event.device = 5
+	event.button_index = 25
+	event.pressed = true
+	setup._capture_binding(event)
+	_check("helicopter remap capture preserves unrelated automatic defaults", setup._action_bindings.helicopter_arm.button == 25 and setup._action_bindings.helicopter_hold.button == JOY_BUTTON_B)
+	_check("edited helicopter profile saves", setup._save_profile(false))
+	setup.load_selected_profile(store.last_saved_profile)
+	_check("saved helicopter remap and Clear reload", setup._action_bindings.helicopter_arm.button == 25 and setup._action_bindings.helicopter_trainer.type == "unbound")
+	setup.free()
 	await process_frame
 
 

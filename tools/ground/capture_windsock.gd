@@ -140,14 +140,20 @@ func _run() -> void:
 func _bounds(sock: Node3D) -> Array[float]:
 	var minimum: Vector2 = Vector2(INF, INF)
 	var maximum: Vector2 = Vector2(-INF, -INF)
-	var candidates: Array[Node] = sock.get_children()
+	var candidates: Array[Node] = sock.find_children("*", "GeometryInstance3D", true, false)
 	if sock is MeshInstance3D:
 		candidates.append(sock)
 	for child: Node in candidates:
-		var mesh: MeshInstance3D = child as MeshInstance3D
+		var mesh: Node3D = child as Node3D
 		if mesh == null:
 			continue
-		var box: AABB = mesh.mesh.get_aabb()
+		var box: AABB
+		if mesh is MeshInstance3D:
+			box = mesh.mesh.get_aabb()
+		elif mesh is MultiMeshInstance3D:
+			box = mesh.multimesh.get_aabb()
+		else:
+			continue
 		var local_corners: Array[Vector3] = []
 		for i: int in 8:
 			local_corners.append(camera.global_transform.affine_inverse() * mesh.global_transform * box.get_endpoint(i))

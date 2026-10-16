@@ -16,8 +16,13 @@ const AUTOMATIC_BUTTONS := {
 	"smoke_toggle": {"channel": "smoke", "button": JOY_BUTTON_RIGHT_SHOULDER},
 	"flaps_cycle": {"channel": "flaps", "button": JOY_BUTTON_A},
 	"restart_flight": {"channel": "", "button": JOY_BUTTON_BACK},
+	"helicopter_arm": {"channel": "helicopter", "button": JOY_BUTTON_A},
+	"helicopter_hold": {"channel": "helicopter", "button": JOY_BUTTON_B},
+	"helicopter_mode": {"channel": "helicopter", "button": JOY_BUTTON_RIGHT_SHOULDER},
+	"helicopter_trainer": {"channel": "helicopter", "button": JOY_BUTTON_LEFT_STICK},
 }
 const SUPPORTED_AUX := {"gear": true, "smoke": true, "flaps": true}
+const HELICOPTER_CAPABILITIES := {"helicopter": true}
 static var _definition_cache: Dictionary = {}
 
 ## Semantic gamepad actions are data, not synthetic keyboard events. The owning input router
@@ -177,7 +182,7 @@ static func _add_automatic_buttons(profile: Dictionary, bindings: Dictionary, ex
 
 ## Validate the whole calibrated profile's semantic bindings and reserved AUX sources.
 ## `bindings` in the result is the merged action map suitable for the input router.
-static func validate_profile_bindings(profile: Dictionary) -> Dictionary:
+static func validate_profile_bindings(profile: Dictionary, capabilities: Dictionary = SUPPORTED_AUX) -> Dictionary:
 	var errors: Array[String] = []
 	var actions_value: Variant = _dict_value(profile, "actions", {})
 	if not actions_value is Dictionary:
@@ -185,7 +190,7 @@ static func validate_profile_bindings(profile: Dictionary) -> Dictionary:
 	var aux_value: Variant = _dict_value(profile, "aux", {})
 	if not aux_value is Dictionary:
 		errors.append("aux must be a dictionary")
-	var bindings := effective_bindings(profile)
+	var bindings := effective_bindings(profile, capabilities)
 	var action_report := validate(bindings)
 	for error in action_report.errors:
 		_append_error(errors, str(error))

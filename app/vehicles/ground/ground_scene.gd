@@ -540,6 +540,12 @@ func _accept_controller_button(device: int) -> bool:
 		return true
 	return false
 
+
+func _accept_driving_controller_button(device: int) -> bool:
+	return controller_registry != null and device == _controller_device_id \
+		and not _controller_requires_selection and _registry_selected_device_id("flight") == device \
+		and _has_flight_gamepad()
+
 func _key(code: Key) -> bool:
 	return Input.is_physical_key_pressed(code)
 
@@ -940,17 +946,24 @@ func _unhandled_input(event: InputEvent) -> void:
 			_: return
 		get_viewport().set_input_as_handled()
 	elif event is InputEventJoypadButton and event.pressed and _accept_controller_button(event.device):
+		# Remember every selected-pad press, including buttons that do nothing in the
+		# garage. If it remains down through Drive, a repeated press event cannot fire
+		# its driving shortcut on the other side of the menu transition.
+		var edge := "%d:%d" % [event.device, event.button_index]
+		if _shortcut_buttons.has(edge):
+			return
+		_shortcut_buttons[edge] = true
 		var action := ""
 		if event.button_index == JOY_BUTTON_START:
 			action = "resume" if dashboard.menu_visible else "menu"
-		elif not dashboard.menu_visible:
-			if event.button_index == JOY_BUTTON_X: action = "camera"
+		elif not dashboard.menu_visible and _accept_driving_controller_button(event.device):
+			if event.button_index == JOY_BUTTON_BACK: action = "reset"
+			elif event.button_index == JOY_BUTTON_X: action = "camera"
 			elif event.button_index == JOY_BUTTON_Y: action = "recover"
+			elif event.button_index == JOY_BUTTON_LEFT_SHOULDER: action = "lights"
+			elif event.button_index == JOY_BUTTON_RIGHT_SHOULDER and _vehicle_entry.get("nitro", false): action = "aux_lights"
 		if action.is_empty(): return
-		var edge := "%d:%d" % [event.device, event.button_index]
-		if not _shortcut_buttons.has(edge):
-			_shortcut_buttons[edge] = true
-			handle_action(action)
+		handle_action(action)
 		get_viewport().set_input_as_handled()
 	elif event is InputEventMouseMotion and Input.is_mouse_button_pressed(MOUSE_BUTTON_RIGHT):
 		camera_rig.drag(event.relative)

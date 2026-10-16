@@ -1,6 +1,6 @@
 # OpenRC Simulator — cinematic menu and experience redesign
 
-**Revision 7 · 2026-10-15 · Owner: product shell · UI-20…29.**
+**Revision 8 · 2026-10-16 · Owner: product shell · UI-20…29.**
 
 **Status: core redesign implemented; extended acceptance remains open.** The grounded Home composition, bounded navigation, 1920×1080 reference scaling, amber/charcoal theme, compact Pause, Settings and Conditions refinements are now in source. [UI-22–26-R2 evidence](research/menu-investigations/UI-25-R2/README.md) records the native EN/ES 720p–4K matrix and behavior checks. This revision retains the wider design targets below; thumbnails, optional effects, release packages and human visual acceptance are not implicitly complete.
 
@@ -261,7 +261,15 @@ Download only identified missing free assets. Pin exact version/commit/hash, ret
 
 ## 9. Phased implementation
 
-### Active refinement · UI-28-R3
+### Delivered refinement · UI-23-R4 · resolution and reflow
+
+1. **Measure:** exercise EN/ES at 100% and 200% text, from 960×540 through 4K, including 4:3, 16:10 and ultrawide canvases. Resize the same open screen from wide to narrow and back; distinguish physical pixels from the logical canvas.
+2. **Repair:** bound panels to available space; reflow navigation and form fields; keep primary actions and exits reachable. Scroll dense reference/editor bodies when needed, while normal Home and Pause remain free of unnecessary scrolling at 720p and above. Preserve typography and preferences.
+3. **Verify:** check real Control bounds, scroll content width, focus, popups and retained drafts. Run existing route/controller/Workshop tests and inspect native Windows captures. Record the monitor mode actually reported by the host, rather than inferring fullscreen 4K from a requested size.
+
+Evidence is retained in [UI-23-R4](research/menu-investigations/UI-23-R4/README.md). This slice does not claim mixed-monitor DPI acceptance, release export or physical flight validation.
+
+### Delivered refinement · UI-28-R3
 
 **Implemented and verified:** [UI-28-R3 evidence](research/menu-investigations/UI-28-R3/README.md). This closes the feedback/flow slice below, while the wider release and visual-acceptance gates remain open.
 

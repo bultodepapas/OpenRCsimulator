@@ -1,5 +1,21 @@
 # L10a — calm windsock
 
+## L10a-R1 — fabric and mast detail (2026-10-16)
+
+The current cue retains its calm pose, placement and field dimensions. The sleeve now has smooth normals, finer radial tessellation, soft slack folds, arc-length UVs, restrained hems and band/longitudinal seams. Downloaded **ambientCG Fabric001** colour, normal and roughness maps provide the weave and small wrinkles. The texture is CC0; [provenance](../../../../app/assets/landscape/windsock/PROVENANCE.json) records the original archive and map hashes. UV scale, orange/cream tint and seam dimensions are artistic estimates, not a measured fabric specification. Mipmaps, anisotropic filtering and distance-filtered stitches retain a quiet distant silhouette.
+
+The mast has splice/bearing collars, a diagonal support, a base flange, washers and four hex anchors inside the original concrete footprint. Metal032 and Concrete034 textures are reused from the pilot-station assets. The cue remains two opaque meshes with no processing, collision or added engine shadow pass; wind response is still separate work.
+
+Native Windows Godot 4.7.2 / OpenGL captures on an RTX 3090 verify four detail views and three scenery-on on/off comparisons. All visible differences stay inside the cue bounds, with **zero clipped-white pixels**. Cost is **two draws / 5,278 triangles**, below the revised 6,000-triangle ceiling. Focused tests pass **215 checks** (17 mesh/mapping, 121 data, 20 contact-shadow, 57 projected-shadow). This is engineering/visual evidence, not frame-time qualification or human Gate L acceptance.
+
+[Verification and source hashes](detail-2026-10-16/verification.json) · [Before](detail-2026-10-16/before/fabric.png) · [Whole cue](detail-2026-10-16/accepted/whole.png) · [Throat](detail-2026-10-16/accepted/throat.png) · [Base anchors](detail-2026-10-16/accepted/base.png).
+
+![Textured fabric and mast](detail-2026-10-16/accepted/fabric.png)
+
+Reproduce detail views with `tools/ground/capture_windsock_detail.gd -- --out=<new-directory>` using the native OpenGL renderer; the flight-cue checker below retains the on/off visibility and draw-budget checks.
+
+## Original implementation evidence (2026-10-08)
+
 **Status (2026-10-08): engineering verification passed; human Gate L remains open.** First bounded slice of [L10](../../../LANDSCAPE-PLAN.md). Wind response remains L15a/M5 work.
 
 ## Delivered

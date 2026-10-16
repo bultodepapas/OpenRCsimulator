@@ -40,7 +40,7 @@ func _initialize() -> void:
 	var rigid: bool = true
 	for i: int in range(1, centres.size()):
 		arc += centres[i].distance_to(centres[i - 1])
-		if i <= 15:
+		if float(i) / Windsock.SECTIONS <= 0.375:
 			rigid = rigid and is_equal_approx(centres[i].y, centres[0].y)
 	_check("cloth centreline follows field length", absf(arc - cue.length) < 0.002 * cue.length)
 	_check("first 3/8 is held open, remainder hangs", rigid and centres[-1].y < centres[0].y - 1.0)
@@ -52,8 +52,8 @@ func _initialize() -> void:
 	_check("pole and throat bounds follow mount height", is_equal_approx(support.mesh.get_aabb().end.y, cue.pole_height + cue.throat_diameter * 0.5 + 0.0045))
 	var transitions: int = 0
 	var last: Color = colours[0]
-	for i: int in 40:
-		var colour: Color = colours[i * 16 * 6]
+	for i: int in Windsock.SECTIONS:
+		var colour: Color = colours[i * Windsock.SIDES * 6]
 		if colour != last:
 			transitions += 1
 		last = colour
@@ -65,11 +65,20 @@ func _initialize() -> void:
 		finite = finite and normal.is_finite() and absf(normal.length() - 1.0) < 0.00001
 	_check("finite vertices and unit normals", finite)
 	_check("top of rigid cloth faces outward", normals[0].y > 0.9)
-	_check("opaque double-sided cloth, no engine shadow", fabric.mesh.surface_get_material(0).transparency == BaseMaterial3D.TRANSPARENCY_DISABLED
-		and fabric.mesh.surface_get_material(0).cull_mode == BaseMaterial3D.CULL_DISABLED
+	var material := fabric.mesh.surface_get_material(0) as ShaderMaterial
+	_check("opaque double-sided cloth, no engine shadow", material != null and not material.shader.code.contains("ALPHA")
+		and material.shader.code.contains("cull_disabled")
 		and fabric.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
 	var triangle_count: int = (vertices.size() + support.mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].size()) / 3
-	_check("two draws and fewer than 2000 triangles", fabric.mesh.get_surface_count() == 1 and support.mesh.get_surface_count() == 1 and triangle_count < 2000)
+	_check("two draws and fewer than 6000 triangles", fabric.mesh.get_surface_count() == 1 and support.mesh.get_surface_count() == 1 and triangle_count < 6000)
+	var uvs: PackedVector2Array = arrays[Mesh.ARRAY_TEX_UV]
+	var tangents: PackedFloat32Array = arrays[Mesh.ARRAY_TANGENT]
+	var mapped := uvs.size() == vertices.size() and tangents.size() == vertices.size() * 4
+	for i in vertices.size():
+		mapped = mapped and uvs[i].is_finite() and uvs[i].x >= 0.0 and uvs[i].x <= 1.0 and uvs[i].y >= 0.0 and uvs[i].y <= 1.0
+		var tangent := Vector3(tangents[i*4], tangents[i*4+1], tangents[i*4+2])
+		mapped = mapped and tangent.is_finite() and absf(tangent.dot(normals[i])) < 0.001 and absf(tangent.length() - 1.0) < 0.001
+	_check("finite sleeve UVs and orthonormal tangent frame", mapped)
 	_check("independent deterministic builds", fabric.mesh != second.get_node("Fabric").mesh
 		and vertices.to_byte_array() == second.get_node("Fabric").mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].to_byte_array())
 	first.free()

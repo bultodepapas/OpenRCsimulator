@@ -1,6 +1,7 @@
 extends CanvasLayer
 
 const Screen := preload("res://ui/screen.gd")
+const ScreenTheme := preload("res://ui/ui_theme.gd")
 const Widgets := preload("res://ui/widgets.gd")
 const UiInput := preload("res://ui/ui_input.gd")
 const ControllerProfile := preload("res://input/controller_profile.gd")
@@ -63,15 +64,29 @@ var glyph_family_help_label: Label
 
 var action_filter: OptionButton
 var _settings_panel: PanelContainer
+var _settings_panel_style: StyleBoxFlat
+var _shell: VBoxContainer
 var _section_pages: Dictionary = {}
 var _section_buttons: Dictionary = {}
-var _section_navigation: HBoxContainer
+var _section_navigation: HFlowContainer
 var _section_body: VBoxContainer
 var _selected_section := "devices"
 var _device_summary: Label
 var _empty_device_label: Label
+var _settings_title: Label
 var _preview_axis_labels: Dictionary = {}
+var _preview_grid: GridContainer
 var _axis_columns: BoxContainer
+var _axis_compact_grid: VBoxContainer
+var _axis_channel_labels: Dictionary = {}
+var _axis_layout_is_table := false
+var _device_roles: GridContainer
+var _profile_fields: GridContainer
+var _axis_field_grids: Array[GridContainer] = []
+var _aux_channel_rows: Array[BoxContainer] = []
+var _aux_field_grids: Array[BoxContainer] = []
+var _aux_inline_fields: Array[BoxContainer] = []
+var _action_binding_cells: Array[HBoxContainer] = []
 
 var _screen: Control
 var _profiles: Array[Dictionary] = []
@@ -82,6 +97,7 @@ var _drafts_by_context: Dictionary = {}
 var _draft_context_key := ""
 var _base_actions: Dictionary = {}
 var _action_bindings: Dictionary = {}
+var action_capabilities: Dictionary = ControllerActions.SUPPORTED_AUX.duplicate()
 var _axis_controls: Dictionary = {}
 var _aux_controls: Dictionary = {}
 var _clear_action_buttons: Dictionary = {}
@@ -111,7 +127,9 @@ func _init() -> void:
 
 ## The owner injects shared objects before adding this CanvasLayer to the tree.
 ## Controller choices and profile edits stay draft until one Save operation succeeds.
-func configure(controller_registry: Object, store: Object, flight_device_id := -1, ui_device_id := -1) -> void:
+func configure(controller_registry: Object, store: Object, flight_device_id := -1, ui_device_id := -1,
+		capabilities: Dictionary = ControllerActions.SUPPORTED_AUX) -> void:
+	action_capabilities = capabilities.duplicate()
 	registry = controller_registry
 	profile_store = store
 	_draft_flight_device_id = flight_device_id if flight_device_id >= 0 else _registry_selected("flight")
@@ -174,28 +192,37 @@ func _build() -> void:
 	panel_style.content_margin_right = 24.0
 	panel_style.content_margin_top = 20.0
 	panel_style.content_margin_bottom = 20.0
+	_settings_panel_style = panel_style
 	_settings_panel.add_theme_stylebox_override("panel", panel_style)
 	center.add_child(_settings_panel)
 	var shell := VBoxContainer.new()
+	_shell = shell
 	shell.add_theme_constant_override("separation", 12)
 	_settings_panel.add_child(shell)
 	var header := HBoxContainer.new()
 	header.name = "ControllerSetupHeader"
 	var title := _label("Controller settings", "TitleLabel")
-	title.add_theme_font_size_override("font_size", 28)
+	title.name = "ControllerSettingsTitle"
+	_settings_title = title
 	title.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	title.custom_minimum_size.x = 0.0
+	title.max_lines_visible = 1
+	title.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	header.add_child(title)
 	var close_button := _button("Close", "", "Close")
 	close_button.pressed.connect(request_close)
 	header.add_child(close_button)
 	shell.add_child(header)
-	_device_summary = _label("", "SecondaryLabel")
+	_device_summary = _label("", "SecondaryLabel", true)
 	_device_summary.name = "ControllerDeviceSummary"
+	_device_summary.max_lines_visible = 1
 	_device_summary.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 	shell.add_child(_device_summary)
-	_section_navigation = HBoxContainer.new()
+	_section_navigation = HFlowContainer.new()
 	_section_navigation.name = "ControllerSections"
 	_section_navigation.add_theme_constant_override("separation", 6)
+	_section_navigation.add_theme_constant_override("h_separation", 6)
+	_section_navigation.add_theme_constant_override("v_separation", 6)
 	shell.add_child(_section_navigation)
 	shell.add_child(HSeparator.new())
 	var scroll := ScrollContainer.new()
@@ -215,6 +242,7 @@ func _build() -> void:
 	page.add_child(_empty_device_label)
 	page.add_child(_section_label("DEVICES"))
 	var roles := GridContainer.new()
+	_device_roles = roles
 	roles.columns = 2
 	roles.add_theme_constant_override("h_separation", 24)
 	roles.add_theme_constant_override("v_separation", 4)
@@ -227,8 +255,10 @@ func _build() -> void:
 	_add_field(roles, "Menu controller", ui_device_picker)
 	page.add_child(_label("Use a gamepad for menus. Keyboard and mouse are always available.", "SecondaryLabel", true))
 
-	var role_actions := HBoxContainer.new()
+	var role_actions := HFlowContainer.new()
 	role_actions.add_theme_constant_override("separation", 8)
+	role_actions.add_theme_constant_override("h_separation", 8)
+	role_actions.add_theme_constant_override("v_separation", 8)
 	legacy_import_button = _button("Recover legacy profile…")
 	legacy_import_button.pressed.connect(_import_legacy_profiles)
 	role_actions.add_child(legacy_import_button)
@@ -245,8 +275,10 @@ func _build() -> void:
 	legacy_help_label = _label("Legacy radio data stays unchanged. Choose how to copy it into a new profile.", "SecondaryLabel", true)
 	legacy_help_label.visible = false
 	page.add_child(legacy_help_label)
-	var recovery_row := HBoxContainer.new()
+	var recovery_row := HFlowContainer.new()
 	recovery_row.add_theme_constant_override("separation", 8)
+	recovery_row.add_theme_constant_override("h_separation", 8)
+	recovery_row.add_theme_constant_override("v_separation", 8)
 	keep_radio_button = _button("Keep as radio profile")
 	keep_radio_button.visible = false
 	keep_radio_button.pressed.connect(_keep_legacy_radio)
@@ -260,6 +292,7 @@ func _build() -> void:
 	page = _make_section("profile", "Profile")
 	page.add_child(_section_label("PROFILE"))
 	var profile_row := GridContainer.new()
+	_profile_fields = profile_row
 	profile_row.columns = 2
 	profile_row.add_theme_constant_override("h_separation", 24)
 	profile_row.add_theme_constant_override("v_separation", 4)
@@ -277,14 +310,10 @@ func _build() -> void:
 	_add_field(profile_row, "Controller prompts", glyph_family_picker)
 	profile_kind_picker = _option("Profile type")
 	profile_kind_picker.item_selected.connect(_on_profile_kind_selected)
-	_profile_kind_label = _label("Profile type", "SecondaryLabel")
-	profile_row.add_child(_profile_kind_label)
-	profile_row.add_child(profile_kind_picker)
+	_profile_kind_label = _add_field(profile_row, "Profile type", profile_kind_picker)
 	preset_picker = _option("Gamepad preset")
 	preset_picker.item_selected.connect(_on_preset_selected)
-	_preset_label = _label("Gamepad preset", "SecondaryLabel")
-	profile_row.add_child(_preset_label)
-	profile_row.add_child(preset_picker)
+	_preset_label = _add_field(profile_row, "Gamepad preset", preset_picker)
 	preset_help_label = _label("Mode 2: left X yaw, left Y throttle; right X roll, right Y pitch.", "SecondaryLabel", true)
 	page.add_child(preset_help_label)
 	_profile_kind_help_label = _label("Choose an unknown controller type explicitly. Gamepad starts in Mode 2; radio uses a custom profile. Calibration never starts automatically.", "SecondaryLabel", true)
@@ -295,12 +324,12 @@ func _build() -> void:
 	joystick_enabled = CheckBox.new()
 	joystick_enabled.text = "Use this custom mapping for flight"
 	joystick_enabled.toggled.connect(_on_joystick_enabled)
-	_joystick_label = _label("Unknown joystick", "SecondaryLabel")
-	profile_row.add_child(_joystick_label)
-	profile_row.add_child(joystick_enabled)
+	_joystick_label = _add_field(profile_row, "Unknown joystick", joystick_enabled)
 
-	var profile_actions := HBoxContainer.new()
+	var profile_actions := HFlowContainer.new()
 	profile_actions.add_theme_constant_override("separation", 8)
+	profile_actions.add_theme_constant_override("h_separation", 8)
+	profile_actions.add_theme_constant_override("v_separation", 8)
 	var reset_button := _button("Restore selected preset")
 	_preset_reset_button = reset_button
 	reset_button.pressed.connect(_restore_selected_preset)
@@ -320,26 +349,49 @@ func _build() -> void:
 	axis_grid = GridContainer.new()
 	axis_grid.name = "AxisMapping"
 	axis_grid.columns = 5
+	axis_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	axis_grid.add_theme_constant_override("h_separation", 14)
 	axis_grid.add_theme_constant_override("v_separation", 5)
+	axis_grid.visible = false
 	axis_columns.add_child(axis_grid)
 	for heading in ["Channel", "Source axis", "Deadzone", "Expo", "Invert"]:
 		axis_grid.add_child(_label(heading, "SectionLabel"))
+	_axis_compact_grid = VBoxContainer.new()
+	_axis_compact_grid.name = "AxisMappingCompact"
+	_axis_compact_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_axis_compact_grid.add_theme_constant_override("separation", 8)
+	axis_columns.add_child(_axis_compact_grid)
 	for channel in CHANNELS:
-		var channel_label := _label(str(CHANNEL_LABELS[channel]), "SecondaryLabel")
-		axis_grid.add_child(channel_label)
+		var channel_block := VBoxContainer.new()
+		channel_block.name = "AxisChannel_%s" % channel
+		channel_block.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		channel_block.add_theme_constant_override("separation", 4)
+		_axis_compact_grid.add_child(channel_block)
+		channel_block.add_child(_label(str(CHANNEL_LABELS[channel]), "SectionLabel"))
+		var row_label := _label(str(CHANNEL_LABELS[channel]), "SecondaryLabel")
+		row_label.name = "AxisTableChannel_%s" % channel
+		_axis_channel_labels[channel] = row_label
+		axis_grid.add_child(row_label)
+		var channel_fields := GridContainer.new()
+		channel_fields.name = "AxisFields_%s" % channel
+		channel_fields.columns = 2
+		channel_fields.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		channel_fields.add_theme_constant_override("h_separation", 12)
+		channel_fields.add_theme_constant_override("v_separation", 6)
+		channel_block.add_child(channel_fields)
+		_axis_field_grids.append(channel_fields)
 		var axis_spin := _spin_box(0.0, float(ControllerProfile.AXIS_COUNT - 1), 1.0)
 		axis_spin.custom_minimum_size.x = 100.0
-		axis_grid.add_child(axis_spin)
 		var deadzone_spin := _spin_box(0.0, 0.95, 0.01)
 		deadzone_spin.custom_minimum_size.x = 110.0
-		axis_grid.add_child(deadzone_spin)
 		var expo_spin := _spin_box(0.0, 1.0, 0.01)
 		expo_spin.custom_minimum_size.x = 110.0
-		axis_grid.add_child(expo_spin)
 		var invert := CheckBox.new()
 		invert.text = "Invert"
-		axis_grid.add_child(invert)
+		_add_control_field(channel_fields, "Source axis", axis_spin)
+		_add_control_field(channel_fields, "Deadzone", deadzone_spin)
+		_add_control_field(channel_fields, "Expo", expo_spin)
+		_add_control_field(channel_fields, "Direction", invert)
 		_axis_controls[channel] = {"axis": axis_spin, "deadzone": deadzone_spin, "expo": expo_spin, "invert": invert}
 		axis_spin.value_changed.connect(_on_axis_changed.bind(channel, "axis"))
 		deadzone_spin.value_changed.connect(_on_axis_changed.bind(channel, "deadzone"))
@@ -363,12 +415,14 @@ func _build() -> void:
 		channel_block.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		channel_block.add_theme_constant_override("separation", 3)
 		aux_grid.add_child(channel_block)
-		var channel_row := HBoxContainer.new()
+		var channel_row := BoxContainer.new()
 		channel_row.name = "AuxMappingRow_%s" % aux_name
 		channel_row.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		channel_row.add_theme_constant_override("separation", 8)
+		_aux_channel_rows.append(channel_row)
 		channel_block.add_child(channel_row)
 		var aux_label := _label(tr(str(AUX_CHANNEL_LABELS[aux_name])), "SecondaryLabel")
+		aux_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		aux_label.custom_minimum_size.x = 160.0
 		channel_row.add_child(aux_label)
 		var type_picker := OptionButton.new()
@@ -379,46 +433,38 @@ func _build() -> void:
 			type_picker.add_item(tr(str(mode_data[0])), int(mode_data[1]))
 			type_picker.set_item_id(type_index, int(mode_data[1]))
 		channel_row.add_child(type_picker)
-		var mapping := HBoxContainer.new()
+		var mapping := VBoxContainer.new()
 		mapping.name = "AuxMapping_%s" % aux_name
 		mapping.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		mapping.add_theme_constant_override("separation", 4)
-		var axis_editor := HBoxContainer.new()
+		mapping.add_theme_constant_override("separation", 6)
+		var axis_editor := BoxContainer.new()
 		axis_editor.name = "AuxAxisEditor_%s" % aux_name
 		axis_editor.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		axis_editor.add_theme_constant_override("separation", 3)
-		var axis_label := _label("Axis", "SecondaryLabel")
-		axis_editor.add_child(axis_label)
+		axis_editor.add_theme_constant_override("separation", 6)
 		var axis_spin := _spin_box(0.0, float(ControllerProfile.AXIS_COUNT - 1), 1.0)
 		axis_spin.name = "AuxAxis_%s" % aux_name
 		axis_spin.custom_minimum_size.x = 58.0
-		axis_editor.add_child(axis_spin)
-		var off_label := _label("Off endpoint", "SecondaryLabel")
-		axis_editor.add_child(off_label)
 		var off_spin := _spin_box(-1.0, 1.0, 0.05)
 		off_spin.name = "AuxOff_%s" % aux_name
 		off_spin.custom_minimum_size.x = 66.0
-		axis_editor.add_child(off_spin)
-		var on_label := _label("On endpoint", "SecondaryLabel")
-		axis_editor.add_child(on_label)
 		var on_spin := _spin_box(-1.0, 1.0, 0.05)
 		on_spin.name = "AuxOn_%s" % aux_name
 		on_spin.custom_minimum_size.x = 66.0
-		axis_editor.add_child(on_spin)
 		var aux_invert := CheckBox.new()
 		aux_invert.name = "AuxInvert_%s" % aux_name
 		aux_invert.text = tr("Invert")
-		axis_editor.add_child(aux_invert)
+		_aux_inline_fields.append(_add_inline_control_field(axis_editor, "Axis", axis_spin))
+		_aux_inline_fields.append(_add_inline_control_field(axis_editor, "Off endpoint", off_spin))
+		_aux_inline_fields.append(_add_inline_control_field(axis_editor, "On endpoint", on_spin))
+		_aux_inline_fields.append(_add_inline_control_field(axis_editor, "Direction", aux_invert))
 		mapping.add_child(axis_editor)
-		var button_editor := HBoxContainer.new()
+		var button_editor := BoxContainer.new()
 		button_editor.name = "AuxButtonEditor_%s" % aux_name
 		button_editor.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-		button_editor.add_theme_constant_override("separation", 4)
-		button_editor.add_child(_label("Button", "SecondaryLabel"))
+		button_editor.add_theme_constant_override("separation", 8)
 		var button_spin := _spin_box(0.0, float(SmokeAux.MAX_BUTTONS - 1), 1.0)
 		button_spin.name = "AuxButton_%s" % aux_name
 		button_spin.custom_minimum_size.x = 70.0
-		button_editor.add_child(button_spin)
 		var button_mode := OptionButton.new()
 		button_mode.name = "AuxButtonMode_%s" % aux_name
 		button_mode.custom_minimum_size.x = 144.0
@@ -426,14 +472,18 @@ func _build() -> void:
 			var mode_index := button_mode.item_count
 			button_mode.add_item(tr(str(mode_data[0])), mode_index)
 			button_mode.set_item_id(mode_index, mode_index)
-		button_editor.add_child(button_mode)
+		_aux_inline_fields.append(_add_inline_control_field(button_editor, "Button", button_spin))
+		_aux_inline_fields.append(_add_inline_control_field(button_editor, "Mode", button_mode))
 		mapping.add_child(button_editor)
-		channel_block.add_child(mapping)
+		_aux_field_grids.append(axis_editor)
+		_aux_field_grids.append(button_editor)
 		var aux_preview := _label(tr("Unbound"), "SecondaryLabel", true)
 		aux_preview.name = "AuxPreview_%s" % aux_name
 		aux_preview.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		aux_preview.max_lines_visible = 1
+		aux_preview.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
 		channel_row.add_child(aux_preview)
-		channel_row.move_child(aux_preview, 1)
+		channel_row.add_child(mapping)
 		channel_block.add_child(HSeparator.new())
 		_aux_controls[aux_name] = {
 			"type": type_picker,
@@ -462,18 +512,26 @@ func _build() -> void:
 	preview_column.add_theme_constant_override("separation", 5)
 	axis_columns.add_child(preview_column)
 	preview_column.add_child(_section_label("LIVE PREVIEW"))
+	_preview_grid = GridContainer.new()
+	_preview_grid.name = "AxisLivePreview"
+	_preview_grid.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_preview_grid.columns = 2
+	_preview_grid.add_theme_constant_override("h_separation", 12)
+	_preview_grid.add_theme_constant_override("v_separation", 4)
+	preview_column.add_child(_preview_grid)
 	for channel in CHANNELS:
 		var live_row := VBoxContainer.new()
-		live_row.custom_minimum_size.y = 44.0
+		live_row.custom_minimum_size.y = 40.0
 		live_row.add_theme_constant_override("separation", 3)
-		preview_column.add_child(live_row)
+		_preview_grid.add_child(live_row)
 		var current := _label(tr("%s · raw — · conditioned —") % tr(str(CHANNEL_LABELS[channel])), "SecondaryLabel", false)
 		current.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		current.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		live_row.add_child(current)
 		var meter_row := HBoxContainer.new()
 		live_row.add_child(meter_row)
 		var meter := ProgressBar.new()
-		meter.custom_minimum_size = Vector2(180.0, 10.0)
+		meter.custom_minimum_size = Vector2(120.0, 10.0)
 		meter.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		meter.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 		meter.min_value = -1.0
@@ -513,11 +571,15 @@ func _build() -> void:
 		action_grid.add_child(_label(heading, "SectionLabel"))
 	for definition in ControllerActions.ACTIONS:
 		var action_id := str(definition.id)
-		action_grid.add_child(_label(tr(str(definition.label)), "SecondaryLabel"))
+		var action_label := _label(tr(str(definition.label)), "SecondaryLabel", true)
+		action_label.custom_minimum_size.x = 0.0
+		action_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		action_grid.add_child(action_label)
 		var binding_cell := HBoxContainer.new()
 		binding_cell.name = "BindingCell_%s" % action_id
 		binding_cell.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		binding_cell.add_theme_constant_override("separation", 8)
+		_action_binding_cells.append(binding_cell)
 		var binding_glyph := TextureRect.new()
 		binding_glyph.name = "BindingGlyph_%s" % action_id
 		binding_glyph.custom_minimum_size = Vector2(28.0, 28.0)
@@ -528,6 +590,7 @@ func _build() -> void:
 		var binding_label := _label("Unbound", "SecondaryLabel")
 		binding_label.name = "Binding_%s" % action_id
 		binding_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+		binding_label.custom_minimum_size.x = 0.0
 		binding_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 		binding_cell.add_child(binding_label)
 		var clear_button := _button("Clear")
@@ -561,12 +624,100 @@ func _build() -> void:
 	shell.add_child(footer)
 	select_section("devices")
 	_screen.resized.connect(_resize_panel)
+	_screen.theme_changed.connect(_resize_panel)
 	_resize_panel()
 
 
 func _resize_panel() -> void:
+	if not is_instance_valid(_settings_panel) or not is_instance_valid(_screen):
+		return
 	_settings_panel.custom_minimum_size = Vector2(minf(1160.0, maxf(0.0, _screen.size.x - 40.0)), minf(780.0, maxf(0.0, _screen.size.y - 40.0)))
-	_axis_columns.vertical = _screen.size.x < 1100.0
+	var scale := maxf(0.5, ScreenTheme.text_scale)
+	var effective_width := _screen.size.x / scale
+	var compact_height := _screen.size.y < 760.0
+	_shell.add_theme_constant_override("separation", 6 if compact_height else 12)
+	_settings_panel_style.content_margin_left = 16.0 if _screen.size.x < 1100.0 else 24.0
+	_settings_panel_style.content_margin_right = _settings_panel_style.content_margin_left
+	_settings_panel_style.content_margin_top = 12.0 if compact_height else 20.0
+	_settings_panel_style.content_margin_bottom = _settings_panel_style.content_margin_top
+	status_label.max_lines_visible = 2 if compact_height else 3
+	_settings_title.tooltip_text = _settings_title.text
+	var navigation_in_scroll := compact_height
+	if navigation_in_scroll and _section_navigation.get_parent() != _section_body:
+		if _section_navigation.get_parent() != null:
+			_section_navigation.get_parent().remove_child(_section_navigation)
+		_section_body.add_child(_section_navigation)
+		_section_body.move_child(_section_navigation, 0)
+		(_section_body.get_parent() as ScrollContainer).scroll_vertical = 0
+	elif not navigation_in_scroll and _section_navigation.get_parent() != _shell:
+		if _section_navigation.get_parent() != null:
+			_section_navigation.get_parent().remove_child(_section_navigation)
+		_shell.add_child(_section_navigation)
+		_shell.move_child(_section_navigation, 2)
+		(_section_body.get_parent() as ScrollContainer).scroll_vertical = 0
+	var compact_fields := effective_width < 1280.0
+	_device_roles.columns = 1 if compact_fields else 2
+	_profile_fields.columns = 1 if compact_fields else 2
+	aux_grid.add_theme_constant_override("separation", 2 if effective_width >= 1100.0 else 8)
+	(_section_pages["aux"] as VBoxContainer).add_theme_constant_override("separation", 4 if effective_width >= 1100.0 else 10)
+	if effective_width >= 1100.0:
+		aux_help_label.max_lines_visible = 1
+		aux_help_label.text_overrun_behavior = TextServer.OVERRUN_TRIM_ELLIPSIS
+		aux_help_label.tooltip_text = aux_help_label.text
+	else:
+		aux_help_label.max_lines_visible = 0
+		aux_help_label.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
+		aux_help_label.tooltip_text = ""
+	var use_axis_table := effective_width >= 1100.0
+	_axis_columns.vertical = not use_axis_table
+	_set_axis_grid_layout(use_axis_table)
+	var axis_columns_count := 1 if effective_width < 700.0 else 2
+	for fields in _axis_field_grids:
+		fields.columns = axis_columns_count
+	for fields in _aux_field_grids:
+		fields.vertical = effective_width < 1100.0
+	for field in _aux_inline_fields:
+		field.vertical = effective_width >= 1100.0
+	for row in _aux_channel_rows:
+		row.vertical = effective_width < 820.0
+		(row.get_parent() as VBoxContainer).add_theme_constant_override("separation", 1 if effective_width >= 1100.0 else 3)
+	_preview_grid.columns = 1 if effective_width < 1100.0 else 2
+
+
+func _set_axis_grid_layout(use_table: bool) -> void:
+	if use_table == _axis_layout_is_table:
+		return
+	_axis_layout_is_table = use_table
+	axis_grid.visible = use_table
+	_axis_compact_grid.visible = not use_table
+	var control_keys: Array[String] = ["axis", "deadzone", "expo", "invert"]
+	for channel_index in CHANNELS.size():
+		var channel: String = CHANNELS[channel_index]
+		var controls: Dictionary = _axis_controls[channel]
+		var fields: GridContainer = _axis_field_grids[channel_index]
+		var row_label: Label = _axis_channel_labels[channel]
+		var table_row_start := axis_grid.columns + channel_index * axis_grid.columns
+		if use_table:
+			if row_label.get_parent() != axis_grid:
+				axis_grid.add_child(row_label)
+			axis_grid.move_child(row_label, table_row_start)
+			for field_index in control_keys.size():
+				var key: String = control_keys[field_index]
+				var control: Control = controls[key]
+				if control.get_parent() != null:
+					control.get_parent().remove_child(control)
+				axis_grid.add_child(control)
+				axis_grid.move_child(control, table_row_start + field_index + 1)
+			controls.invert.text = ""
+		else:
+			for field_index in control_keys.size():
+				var key := control_keys[field_index]
+				var control: Control = controls[key]
+				if control.get_parent() != null:
+					control.get_parent().remove_child(control)
+				var field: VBoxContainer = fields.get_child(field_index)
+				field.add_child(control)
+			controls.invert.text = tr("Invert")
 
 
 func _make_section(section_id: String, caption: String) -> VBoxContainer:
@@ -577,7 +728,7 @@ func _make_section(section_id: String, caption: String) -> VBoxContainer:
 	active_style.border_color = Color("f5c65d")
 	button.add_theme_stylebox_override("pressed", active_style)
 	button.add_theme_stylebox_override("hover_pressed", active_style)
-	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
 	button.pressed.connect(select_section.bind(section_id))
 	_section_navigation.add_child(button)
 	_section_buttons[section_id] = button
@@ -943,7 +1094,7 @@ func _set_draft_profile(profile: Dictionary, context_key := "") -> void:
 	joystick_enabled.set_pressed_no_signal(bool(_draft_profile.get("configured", true)))
 	var existing_actions: Dictionary = _draft_profile.get("actions", {}).duplicate(true)
 	_base_actions = existing_actions
-	_action_bindings = ControllerActions.effective_bindings(_draft_profile)
+	_action_bindings = ControllerActions.effective_bindings(_draft_profile, action_capabilities)
 	_update_profile_kind_picker()
 	_update_glyph_family_picker()
 	_update_preset_options()
@@ -1145,8 +1296,8 @@ func _update_aux_controls() -> void:
 		var mode_id := 1 if binding_type == "axis" else (2 if binding_type == "button" else 0)
 		var type_picker: OptionButton = controls.type
 		type_picker.select(mode_id)
-		var axis_editor: HBoxContainer = controls.axis_editor
-		var button_editor: HBoxContainer = controls.button_editor
+		var axis_editor: BoxContainer = controls.axis_editor
+		var button_editor: BoxContainer = controls.button_editor
 		axis_editor.visible = mode_id == 1
 		button_editor.visible = mode_id == 2
 		var axis_spin: SpinBox = controls.axis
@@ -1265,7 +1416,7 @@ func _commit_aux_binding(aux_name: String, binding: Dictionary, report_status :=
 		_draft_profile.erase("aux")
 	else:
 		_draft_profile["aux"] = aux
-	_action_bindings = ControllerActions.effective_bindings(_draft_profile)
+	_action_bindings = ControllerActions.effective_bindings(_draft_profile, action_capabilities)
 	_update_aux_controls()
 	_update_action_controls()
 	_update_aux_preview()
@@ -1473,14 +1624,14 @@ func _capture_binding(event: InputEvent) -> void:
 	candidate[_capturing_action] = binding
 	var candidate_profile := _draft_profile.duplicate(true)
 	candidate_profile["actions"] = candidate
-	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile)
+	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile, action_capabilities)
 	if not bool(validation.get("ok", false)):
 		var errors: Array = validation.get("errors", [])
 		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
 	else:
 		_base_actions = candidate
 		_draft_profile["actions"] = _base_actions.duplicate(true)
-		_action_bindings = validation.get("bindings", ControllerActions.effective_bindings(_draft_profile))
+		_action_bindings = validation.get("bindings", ControllerActions.effective_bindings(_draft_profile, action_capabilities))
 		_set_status(tr("Binding updated. Save the profile to keep it."), false)
 	_capture_done()
 	get_viewport().set_input_as_handled()
@@ -1493,14 +1644,14 @@ func _clear_action_binding(action_id: String) -> void:
 	candidate[action_id] = {"type": "unbound"}
 	var candidate_profile := _draft_profile.duplicate(true)
 	candidate_profile["actions"] = candidate
-	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile)
+	var validation: Dictionary = ControllerActions.validate_profile_bindings(candidate_profile, action_capabilities)
 	if not bool(validation.get("ok", false)):
 		var errors: Array = validation.get("errors", [])
 		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
 		return
 	_base_actions = candidate
 	_draft_profile["actions"] = _base_actions.duplicate(true)
-	_action_bindings = validation.get("bindings", ControllerActions.effective_bindings(_draft_profile))
+	_action_bindings = validation.get("bindings", ControllerActions.effective_bindings(_draft_profile, action_capabilities))
 	_update_action_controls()
 	_set_status(tr("Action cleared. Save the profile to keep it."), false)
 
@@ -1548,11 +1699,11 @@ func _save_profile(close_on_success := true) -> bool:
 	candidate["actions"] = _base_actions.duplicate(true)
 	if str(candidate.get("kind", "")) == "joystick":
 		candidate["configured"] = joystick_enabled.button_pressed
-	var inherited_actions := ControllerActions.effective_bindings(candidate)
+	var inherited_actions := ControllerActions.effective_bindings(candidate, action_capabilities)
 	for action_id: Variant in _action_bindings:
 		if not inherited_actions.has(action_id) or _action_bindings[action_id] != inherited_actions[action_id]:
 			candidate.actions[str(action_id)] = _action_bindings[action_id].duplicate(true)
-	var actions_validation: Dictionary = ControllerActions.validate_profile_bindings(candidate)
+	var actions_validation: Dictionary = ControllerActions.validate_profile_bindings(candidate, action_capabilities)
 	if not bool(actions_validation.get("ok", false)):
 		var errors: Array = actions_validation.get("errors", [])
 		_set_status(tr("Profile cannot be saved: %s") % "; ".join(errors), true)
@@ -1710,7 +1861,33 @@ static func _spin_box(minimum: float, maximum: float, step_value: float) -> Spin
 	return spin
 
 
-static func _add_field(grid: GridContainer, label_text: String, control: Control) -> void:
-	grid.add_child(_label(label_text, "SecondaryLabel"))
+static func _add_field(grid: GridContainer, label_text: String, control: Control) -> Label:
+	return _add_control_field(grid, label_text, control)
+
+
+static func _add_control_field(parent: Container, label_text: String, control: Control) -> Label:
+	var field := VBoxContainer.new()
+	field.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	field.add_theme_constant_override("separation", 3)
+	var label := _label(label_text, "SecondaryLabel", true)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	field.add_child(label)
 	control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	grid.add_child(control)
+	field.add_child(control)
+	parent.add_child(field)
+	return label
+
+
+static func _add_inline_control_field(parent: BoxContainer, label_text: String, control: Control) -> BoxContainer:
+	var field := BoxContainer.new()
+	field.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	field.add_theme_constant_override("separation", 4)
+	var label := _label(label_text, "SectionLabel", true)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	label.custom_minimum_size.x = 42.0
+	label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	field.add_child(label)
+	control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	field.add_child(control)
+	parent.add_child(field)
+	return field

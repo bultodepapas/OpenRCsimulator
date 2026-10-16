@@ -6,6 +6,7 @@ const AccidentReport := preload("res://ui/accident_report.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
 const Calculator := preload("res://economy/calculator.gd")
 const Catalog := preload("res://economy/catalog.gd")
+const ReplacementQuote := preload("res://economy/replacement_quote.gd")
 
 
 func _initialize() -> void:
@@ -19,6 +20,7 @@ func _capture() -> void:
 	var requested_scale := 1.0
 	var expanded := false
 	var scroll_to_bottom := false
+	var show_parts_comparison := false
 	var settled := false
 	for argument: String in OS.get_cmdline_user_args():
 		if argument.begins_with("--out="):
@@ -36,6 +38,9 @@ func _capture() -> void:
 			requested_scale = argument.trim_prefix("--scale=").to_float()
 		elif argument == "--details":
 			expanded = true
+		elif argument == "--parts-comparison":
+			expanded = true
+			show_parts_comparison = true
 		elif argument == "--settled":
 			settled = true
 		elif argument == "--details-bottom":
@@ -89,6 +94,8 @@ func _capture() -> void:
 		"unresolved": ["Propeller strike: inspect the powertrain, shaft and mount before return to service."],
 	}
 	var report_data: Dictionary = Calculator.calculate(dossier, assessment)
+	if show_parts_comparison:
+		report_data.replacement_comparison = ReplacementQuote.quote(dossier, assessment)
 	if not bool(report_data.get("ok", false)) or report_data.get("known_subtotal_minor") != 539 \
 		or report_data.get("low_minor") != 539 or report_data.get("high_minor") != null \
 		or report_data.get("total_minor") != null or bool(report_data.get("complete", true)) \
@@ -167,6 +174,13 @@ func _capture() -> void:
 		var details_bar := details_scroll.get_v_scroll_bar()
 		details_scroll.scroll_vertical = int(details_bar.max_value)
 		await process_frame
+	elif show_parts_comparison:
+		var details_scroll := report.find_child("DamageDetailsScroll", true, false) as ScrollContainer
+		for child: Node in report._details_content.get_children():
+			if child is Label and child.text == report.tr("Replacement parts comparison"):
+				details_scroll.scroll_vertical = int(child.position.y)
+				break
+		await process_frame
 	var panel_rect := panel.get_global_rect()
 	var viewport_size := viewport.get_visible_rect().size
 	var image := viewport.get_texture().get_image()
@@ -201,6 +215,7 @@ func _capture() -> void:
 		"text_scale": requested_scale,
 		"details_expanded": expanded,
 		"details_scrolled_to_bottom": scroll_to_bottom,
+		"parts_comparison": report_data.get("replacement_comparison", {}),
 		"aircraft_id": "jensen-das-ugly-stik-60",
 		"known_subtotal_minor": report_data.get("known_subtotal_minor"),
 		"complete": report_data.get("complete"),

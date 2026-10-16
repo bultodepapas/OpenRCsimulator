@@ -1,0 +1,56 @@
+{
+  "step": "SC-08-R1",
+  "date": "2026-10-16",
+  "complete": true,
+  "tests": {
+    "scenery_build": {
+      "passed": true,
+      "checks": 126
+    },
+    "scenery_destruction": {
+      "passed": true,
+      "checks": 78
+    },
+    "landscape_population": {
+      "passed": true,
+      "checks": 40
+    },
+    "landscape_collision_support": {
+      "passed": true,
+      "checks": 24
+    }
+  },
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "renderer": "gl_compatibility",
+  "views": {
+    "table": {
+      "draws_before": 76,
+      "draws_after": 76,
+      "same_camera": true
+    },
+    "table-detail": {
+      "draws_before": 72,
+      "draws_after": 72,
+      "same_camera": true
+    },
+    "bench": {
+      "draws": 83,
+      "scope": "Final inspection only; camera changed to avoid the club sign."
+    },
+    "bench-rear": {
+      "draws": 151,
+      "scope": "Final inspection only; camera changed to avoid the club sign."
+    }
+  },
+  "baseline_scenery_triangles": 599765,
+  "accepted_scenery_triangles": 627623,
+  "sources_sha256": {
+    "app/scenery/club_furniture.gd": "41439c2caf567545f9112fdcc271cc9baeaa05bcf1a00b2e5e3611de573a818e",
+    "app/scenery/prefabs.gd": "a01fd76d5a892a9f5592aab50f92225bec7a59f4e33d1a23f2b4345e50a5a92a",
+    "app/scenery/mesh_kit.gd": "ca1d755d09fe8c3a1526339aeca4024e308d21fdc4e9c2e4a857b9051c7139dc",
+    "app/assets/landscape/flightline/Wood049_1K-JPG_Color.jpg": "451ee4dd719628289b4969f75dc583b5f77f8471d5d885ba5015fd90e7e5ce61",
+    "app/assets/landscape/flightline/PROVENANCE.json": "e60e428f6ed2f8996330be7038488696a7ecbf4fc4075076d9ea56ec4e69dd81",
+    "tools/ground/capture_club_furniture.gd": "e20f37c63d29367cc6af060c46e48685c8e9e2874abe3a86061c1951f9bed1bf"
+  },
+  "scope": "Native field captures and focused scenery regressions. No physics or placement edits. Draw-count equality only for the two paired table views; no target-device frame-time qualification."
+}

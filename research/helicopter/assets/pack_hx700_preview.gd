@@ -27,7 +27,9 @@ func _initialize() -> void:
 	# Optional HELI-26a mechanical inspection fixture, still separate from flight exports.
 	for path: String in ["res://render/rotor/hx700_motion_equations.gd", "res://render/rotor/hx700_mechanism.gd",
 			"res://render/rotor/hx700_mechanics_view.gd", "res://tools/inspect_hx700.gd", "res://tests/test_heli_mechanism.gd",
-			"res://tests/test_heli_mechanics_view.gd"]:
+			"res://tests/test_heli_mechanics_view.gd", "res://render/rotor/hx700_inspection_motion.gd",
+			"res://tests/test_heli_inspection_motion.gd", "res://physics/rotorcraft/hx700_flex_bench.gd",
+			"res://render/rotor/hx700_elastic_skin.gd", "res://tests/test_heli_elasticity.gd"]:
 		if FileAccess.file_exists(path):
 			files[path] = path
 	if packer.pck_start(destination) != OK:

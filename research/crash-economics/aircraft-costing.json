@@ -1,6 +1,6 @@
 {
   "format": "openrc-aircraft-costing-research v1",
-  "observed_on": "2026-10-15",
+  "observed_on": "2026-10-16",
   "runtime_supported": false,
   "currency": "USD",
   "baseline": {
@@ -599,16 +599,18 @@
       "price_observations": [
         "p51_engine_da120",
         "savox-sa1230sgp",
-        "stik_servos_hitec_hs311_four"
+        "stik_servos_hitec_hs311_four",
+        "da_ks3086_canister_desert_aircraft_20261016"
       ],
       "replacement_total_minor": null,
       "missing": [
         "No current matched 2.82 m P-51 airframe quote was verified. The existing CARF 1:4.3/50-85 cc offer and smaller P-51 products are not mapped to this aircraft.",
-        "No exact current USD price was verified for the Biela CFK 26x12 four-blade propeller, two mufflers/canisters, spinner, mount, cowl, tank, fuel, batteries, radio/power distribution, retract gear, or airframe parts.",
+        "No exact current USD price was verified for the Biela CFK 26x12 four-blade propeller, spinner, mount, cowl, tank, fuel, batteries, radio/power distribution, retract gear, or airframe parts.",
         "Seven flight-control servo positions use a large-aircraft servo value proxy; two small throttle/choke servos use a separate ordinary-servo proxy. Installed models remain unknown, and the proxy prices do not establish a complete order or compatibility.",
-        "Aircraft-specific assembly, commissioning, and post-crash inspection labor remain unknown."
+        "Aircraft-specific assembly, commissioning, and post-crash inspection labor remain unknown.",
+        "Two KS3086 canister bodies provide a count-matched price proxy only. Installed canister identity, headers, drop tubes, couplers, clamps and complete exhaust installation scope remain unverified or unpriced."
       ],
-      "notes": "Independent coverage of the physical P-51 inventory with exact DA-120 and explicit large-aircraft/ordinary-servo value proxies. The DA-120 amount is a current manufacturer listing but is Sold out. Known priced-part subtotal is $2,006.71: $1,249.00 DA-120 package, seven $103.39 SA-1230SG+ control-servo proxies, and two $16.99 HS-311 throttle/choke-servo proxies. Linkage, the rest of the aircraft and installed servo identities remain unpriced or unknown; this is not a complete-build purchase amount.",
+      "notes": "Independent coverage of the physical P-51 inventory with exact DA-120 and explicit large-aircraft/ordinary-servo and canister value proxies. The DA-120 amount is a current manufacturer listing but is Sold out. Known priced-part subtotal is $2,456.71: $1,249.00 DA-120 package, seven $103.39 SA-1230SG+ control-servo proxies, two $16.99 HS-311 throttle/choke-servo proxies, and two $225.00 KS3086 canister-body proxies. Linkage, exhaust headers/hardware, the rest of the aircraft and installed proxy identities remain unpriced or unknown; this is not a complete-build purchase amount.",
       "dossier": {
         "expected_source_sha256": "e1e24f742a24204cd2875e42eb64760d3b0da5796fc74c3ca4b32834ffa2c544",
         "lines": [
@@ -628,8 +630,9 @@
             "physical_inventory_ids": [
               "muffler_pair"
             ],
-            "evidence_kind": "estimated",
-            "notes": "Two mufflers/canisters are present in this physical inventory group. No exact current replacement-product USD quote was verified; the DA-120 offer includes gaskets, not the installed mufflers."
+            "evidence_kind": "price_proxy",
+            "notes": "Two canister bodies at $225 each, totaling $450; exact selected seller variant 5330902529 / EKS3086 observed 2026-10-16. Desert Aircraft recommends KS3086 for DA-120, but this does not establish the installed P-51 SKU or physical fit. Headers, drop tubes, couplers, clamps and mounting hardware remain unverified or unpriced; the full aircraft stays incomplete. The $210 DA-120 Slimline offer is a standard muffler pair and is comparison-only, not this canister row. Engine package gaskets are not charged again.",
+            "price_observation": "da_ks3086_canister_desert_aircraft_20261016"
           },
           {
             "id": "propeller",
@@ -1086,22 +1089,27 @@
         "timber_evolution_spinner_efl17553_horizon_20261015",
         "timber_evolution_fuselage_efl105251_horizon_20261015",
         "timber_evolution_horizontal_stab_efl5259_horizon_20261015",
-        "timber_evolution_led_controller_efla521_horizon_20261015"
+        "timber_evolution_led_controller_efla521_horizon_20261015",
+        "timber_evolution_landing_gear_efl105254_horizon_20261016",
+        "timber_evolution_gear_retainer_efl105255_horizon_20261016",
+        "timber_evolution_wheel_set_efl5258_horizon_20261016",
+        "timber_evolution_battery_hatch_efl105253_horizon_20261016",
+        "timber_evolution_cowl_efl105258_horizon_20261016",
+        "timber_evolution_landing_springs_efl5268_horizon_20261016",
+        "timber_evolution_wing_plugs_efl105257_horizon_20261016"
       ],
       "replacement_total_minor": null,
       "missing": [
-        "Fictional-to-commercial build mapping is unknown. All five attached component prices are commercial price proxies, not verified installed-product prices.",
+        "Fictional-to-commercial build mapping is unverified. Seven physical rows now have single-offer proxies or composite estimates; these are not verified installed-product prices.",
         "PNP and BNF are alternative complete-aircraft packages. PNP includes motor, ESC, six servos, slats and floats; BNF adds an AR637TA receiver. Battery, transmitter and charger are separate. Never sum a package with standalone components or with the other package.",
-        "wing_main remains unpriced: the replacement wing listing explicitly excludes servos, and the physical group also includes flaps and ailerons.",
         "fuselage_main remains unpriced: the fuselage offer does not confirm canopy and fittings coverage.",
         "tail_surfaces remains unpriced: the horizontal stabilizer offer omits the vertical tail.",
         "gear_main remains unpriced: the updated gear set listing does not verify the complete physical group of main gear and wheels. gear_tail is also unpriced because no complete tailwheel-and-fork quote was verified.",
-        "propeller_main remains unpriced: it combines a three-blade propeller and spinner, while the observed offers are separate single products. The current one-offer-per-line mapping cannot price the combined group without an unresolved partial-price assumption.",
         "wiring_lighting remains unpriced: the LED controller does not cover the wiring and navigation LEDs.",
         "The 4S 3200mAh battery and 9g servo offers showed backorder with an October 2026 estimate on 2026-10-15.",
         "No complete replacement valuation, labor basis, or foam repair recipe was verified. The virtual ballast_reference row is not installed hardware and is excluded from this physical-inventory dossier."
       ],
-      "notes": "Independent partial inventory valuation for a fictional aircraft using commercial E-flite/Spektrum products as proxies. Five mapped rows have a candidate subtotal of USD 332.94 (33,294 cents) before tax/shipping; this is not a full-aircraft or replacement total. Seven physical inventory rows remain explicitly unpriced. New dated offer IDs preserve the existing legacy offer observations. Do not combine package prices and standalone component prices.",
+      "notes": "Independent partial inventory coverage, reviewed 2026-10-16. Known replacement-parts subtotal $465.87 across seven physical rows; five physical groups and assembly remain unpriced. Wing and propeller/spinner values are composite estimates from separate offers. Six servo proxies are counted once: four in the wing and two in tail_servos. Complete package alternatives remain excluded. Automatic propeller billing remains disabled because propeller_main also includes its spinner.",
       "dossier": {
         "expected_source_sha256": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee",
         "lines": [
@@ -1112,7 +1120,17 @@
               "wing_main"
             ],
             "evidence_kind": "estimated",
-            "notes": "No price attached. The EFL105252 wing assembly is a partial candidate because servos are explicitly excluded and the physical row also includes flaps and ailerons."
+            "notes": "Composite commercial price-proxy estimate for the fictional aircraft, not installed-hardware qualification. Horizon explicitly says the EFL105252 wing listing excludes servos. The manufacturer manual names two aileron, two flap, one elevator, and one rudder SPMSA370 servo. This intake allocates four of the six unit-price proxies here and the remaining two to the already-priced tail_servos row. The two row allocations total six units and do not overlap. The servo page showed backorder with an October 2026 estimate in the 2026-10-15 observation.",
+            "price_constituents": [
+              {
+                "offer_id": "timber_evolution_replacement_wing_horizon_20261015",
+                "quantity": 1
+              },
+              {
+                "offer_id": "timber_evolution_servo_spmsa370_horizon_20261015",
+                "quantity": 4
+              }
+            ]
           },
           {
             "id": "fuselage_main",
@@ -1157,7 +1175,17 @@
               "propeller_main"
             ],
             "evidence_kind": "estimated",
-            "notes": "No price attached. EFL5962 propeller and EFL17553 spinner are separate offers; neither alone covers this combined physical inventory row."
+            "notes": "Composite commercial price-proxy estimate for the fictional aircraft, not installed-hardware qualification. The physical inventory row explicitly combines a three-blade propeller and spinner. The candidate replacement value can be recorded as a composite economic row, but a propeller strike must not automatically charge for the unstruck spinner. Preserve empty runtime propeller bindings unless the simulation separately models/bills these parts.",
+            "price_constituents": [
+              {
+                "offer_id": "timber_evolution_propeller_efl5962_horizon_20261015",
+                "quantity": 1
+              },
+              {
+                "offer_id": "timber_evolution_spinner_efl17553_horizon_20261015",
+                "quantity": 1
+              }
+            ]
           },
           {
             "id": "motor_main",

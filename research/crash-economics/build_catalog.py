@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 from collections import Counter
 from decimal import Decimal, ROUND_HALF_UP
+from datetime import date
 import hashlib
 import json
 from pathlib import Path
@@ -49,7 +50,9 @@ def build():
             identities.add(record["id"])
             parsed = urlparse(record["url"])
             assert parsed.scheme == "https" and parsed.netloc
-            assert DATE in record["notes"], "Observation date must be explicit"
+            observed_on = record.get("observed_on", DATE)
+            assert isinstance(observed_on, str) and date.fromisoformat(observed_on).isoformat() == observed_on
+            assert observed_on in record["notes"], "Observation date must be explicit"
             product_id = slug(record["brand"] + "_" + record["sku"])
             products.setdefault(product_id, {
                 "id": product_id, "brand": record["brand"], "sku": record["sku"],
@@ -62,7 +65,7 @@ def build():
             observations.append({
                 "id": record["id"], "product_id": product_id,
                 "amount_minor": cents(record["amount_usd"]), "currency": "USD",
-                "observed_on": DATE, "seller_domain": parsed.netloc,
+                "observed_on": observed_on, "seller_domain": parsed.netloc,
                 "market": "USD storefront; destination charges not assessed",
                 "condition": "new_listing", "price_kind": record["price_kind"],
                 "availability": record["availability"],
@@ -75,7 +78,7 @@ def build():
             })
     catalog = {
         "format": "openrc-price-catalog v1-draft", "runtime_supported": False,
-        "observed_on": DATE, "generated_by": "research/crash-economics/build_catalog.py",
+        "observed_on": max(row["observed_on"] for row in observations), "generated_by": "research/crash-economics/build_catalog.py",
         "source_hashes": {p: hashlib.sha256((HERE / p).read_bytes()).hexdigest() for p in SOURCES},
         "policy": {"currency": "USD", "amounts": "integer cents per sold package", "review_after_days": 90, "stale_after_days": 180, "freshness_policy_kind": "gameplay_estimate", "missing_price": None, "automatic_offer_selection": False, "sale_price_requires_refresh": True},
         "products": sorted(products.values(), key=lambda r: r["id"]),

@@ -1,5 +1,21 @@
 # L10b — pilot station
 
+## L10b-R1 — renewed materials and fitted joinery (2026-10-16)
+
+The current station uses light satin-finished timber, a dark petrol powder-coated frame, stainless fasteners, post caps and inset anchor plates. Bevelled edges catch light at close range. A textured concrete slab and low ribbed entrance strip complete the rear-open footprint. The original width, depth, height, pilot position and grass exclusion are retained.
+
+Downloaded **ambientCG Wood050, Concrete034 and Metal032** maps supply grain, surface relief and roughness; all are CC0. [Asset provenance](../../../../app/assets/landscape/pilot-station/PROVENANCE.json) records source links, archive/file hashes and source dimensions. Textures are unmodified JPGs with lossless imports, mipmaps and anisotropic filtering. The stain, coating, normal strength and fitting dimensions are artistic choices. The material uses model-space mapping, with grain following each side's boards. No transparent surfaces or extra shadow pass are introduced.
+
+The native Windows Godot 4.7.2 compatibility render contributes **one draw / 6,124 triangles**, within the revised 8,000-triangle ceiling. Four close-detail views were inspected. Five scenery-on ablation poses pass: visible geometry stays within projected bounds, no cue pixels clip white, and both actual pilot threshold views have **zero changed pixels**. Focused suites pass **279 checks** (39 geometry/grass, 163 data, 20 contact-shadow, 57 projected-shadow). The application entry script also parses. This is visual/engineering verification, not target-device timing or a replacement for human Gate L review.
+
+[Verification and source hashes](detail-2026-10-16/verification.json) · [Before](detail-2026-10-16/before/front.png) · [Rear entrance](detail-2026-10-16/after/rear.png) · [Joinery](detail-2026-10-16/after/joint.png) · [Floor](detail-2026-10-16/after/floor.png).
+
+![Renewed pilot station](detail-2026-10-16/after/front.png)
+
+Detail captures use `tools/ground/capture_pilot_station_detail.gd -- --out=<empty-directory>` with the native OpenGL renderer. The existing flight-cue checker below verifies visibility and draw budgets.
+
+## Original implementation evidence (2026-10-08)
+
 **Status (2026-10-08): engineering verification passed; human Gate L remains open.** One bounded [L10](../../../LANDSCAPE-PLAN.md) flight cue; broader safety-line fencing remains pending.
 
 ## Scope and provenance

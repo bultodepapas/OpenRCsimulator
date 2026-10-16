@@ -1,0 +1,26 @@
+[
+  {
+    "source_url": "https://www.desertaircraft.com/products/ks-canisters.js",
+    "observed_on": "2026-10-16",
+    "currency": "USD storefront",
+    "variant": {
+      "id": 5330902529,
+      "title": "KS 3086",
+      "sku": "EKS3086",
+      "price": 22500,
+      "available": true
+    }
+  },
+  {
+    "source_url": "https://www.desertaircraft.com/products/da-stock-mufflers.js",
+    "observed_on": "2026-10-16",
+    "currency": "USD storefront",
+    "variant": {
+      "id": 5302647233,
+      "title": "DA 120",
+      "sku": "EDA120C",
+      "price": 21000,
+      "available": true
+    }
+  }
+]

@@ -1,0 +1,54 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "builder_sha256": "efe0a9d227f95d86adc94f1e322e6ab5788a0b25f289a4cdc084a34605de14f7",
+  "complete": true,
+  "fabric_surfaces": 1,
+  "fabric_triangles": 1280,
+  "method": "gl_compatibility",
+  "records": [
+    {
+      "draws": 94,
+      "eye": [
+        -8.39999961853027,
+        2.70000004768372,
+        0.400000095367432
+      ],
+      "fov": 48.0,
+      "sha256": "089ed1e05c0585878e7c08506607f1a088c4b0d72495cd44be3731f27ab47ada",
+      "view": "whole"
+    },
+    {
+      "draws": 81,
+      "eye": [
+        -9.5,
+        3.90000009536743,
+        3.5
+      ],
+      "fov": 44.0,
+      "sha256": "c963953f73a219d571cc07175b57f1b34694e124867c8695c674130cf0239b00",
+      "view": "fabric"
+    },
+    {
+      "draws": 89,
+      "eye": [
+        -12.6000003814697,
+        3.90000009536743,
+        5.09999990463257
+      ],
+      "fov": 44.0,
+      "sha256": "390e2547b0b3e7c107d603718e0ccc8dff1e8396944ce425c488d6dfa926dda9",
+      "view": "throat"
+    },
+    {
+      "draws": 69,
+      "eye": [
+        -11.3500003814697,
+        0.649999976158142,
+        5.19999980926514
+      ],
+      "fov": 44.0,
+      "sha256": "2991df5e9a55e089d3a803455b4533b4bb57e70a219158790613586bc3f2da7d",
+      "view": "base"
+    }
+  ]
+}

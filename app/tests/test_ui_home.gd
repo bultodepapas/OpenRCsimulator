@@ -71,6 +71,8 @@ func _run() -> void:
 	var scene: Node3D = app.home_scene
 	_check("Home backdrop: our airplane, its camera current", scene != null and scene.airplane.root.is_inside_tree()
 		and root.get_viewport().get_camera_3d() == scene.camera)
+	await _probe_home_resolutions()
+	await _probe_layout_invalidation(home)
 
 	# Theme, read back from real controls (MENU-PLAN §7: 4.5:1 text, 3:1 focus). Translucent surfaces are judged
 	# over the worst sky or ground behind them (white and black).
@@ -493,6 +495,158 @@ func _run() -> void:
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + ".bad"))
 	print("all UI home checks passed" if _failures == 0 else "%d failed" % _failures)
 	quit(1 if _failures > 0 else 0)
+
+
+func _probe_layout_invalidation(home: Control) -> void:
+	home._apply_responsive_layout()
+	await ui.settle()
+	var counts := {"gradient": 0, "font": 0}
+	var gradient_changed := func() -> void: counts.gradient += 1
+	var font_changed := func() -> void: counts.font += 1
+	var rail_gradient: Gradient = home._rail_scrim.texture.gradient
+	var top_gradient: Gradient = home._top_scrim.texture.gradient
+	rail_gradient.changed.connect(gradient_changed)
+	top_gradient.changed.connect(gradient_changed)
+	var navigation: Button = home._nav_buttons[0]
+	navigation.theme_changed.connect(font_changed)
+	var original_size := root.size
+	for width in [1282, 1290, 1300, 1280]:
+		root.size = Vector2i(width, 720)
+		await ui.settle()
+	_check("same-density resizes reuse Home gradients and font overrides",
+		counts.gradient == 0 and counts.font == 0, str(counts))
+	rail_gradient.changed.disconnect(gradient_changed)
+	top_gradient.changed.disconnect(gradient_changed)
+	navigation.theme_changed.disconnect(font_changed)
+	root.size = original_size
+	await ui.settle()
+
+
+func _probe_home_resolutions() -> void:
+	var original_scale := UiTheme.text_scale
+	var original_locale := TranslationServer.get_locale()
+	var original_focus_owner: Control = root.get_viewport().gui_get_focus_owner()
+	var layout_viewport := SubViewport.new()
+	layout_viewport.name = "HomeResolutionProbe"
+	layout_viewport.size = Vector2i(3440, 1440)
+	layout_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(layout_viewport)
+	var responsive_home: Control = Home.new()
+	responsive_home.set_anchors_preset(Control.PRESET_FULL_RECT)
+	layout_viewport.add_child(responsive_home)
+	await process_frame
+	await process_frame
+	var sizes: Array[Vector2i] = [
+		Vector2i(3440, 1440), Vector2i(960, 540), Vector2i(1024, 576), Vector2i(1024, 768),
+		Vector2i(1280, 800), Vector2i(1366, 768), Vector2i(1920, 1200), Vector2i(2560, 1080),
+		Vector2i(2580, 1080), Vector2i(1920, 1080), Vector2i(1920, 1200)
+	]
+	for scale in [1.0, 2.0]:
+		UiTheme.text_scale = scale
+		responsive_home.theme = UiTheme.build()
+		for locale in ["en", "es"]:
+			TranslationServer.set_locale(locale)
+			var wide_rail_width := -1.0
+			var compact_rail_width := -1.0
+			var returned_wide_rail_width := -1.0
+			for size in sizes:
+				layout_viewport.size = size
+				await process_frame
+				await process_frame
+				responsive_home._select_page(0)
+				await process_frame
+				var screen := Rect2(Vector2.ZERO, Vector2(size))
+				var rail: Control = responsive_home.get_node("HomeRail")
+				var rail_rect := rail.get_global_rect()
+				if size == Vector2i(3440, 1440):
+					wide_rail_width = rail_rect.size.x
+				if size == Vector2i(960, 540):
+					compact_rail_width = rail_rect.size.x
+				if size == Vector2i(1920, 1200):
+					returned_wide_rail_width = rail_rect.size.x
+				var brand: Control = responsive_home.get_node("HomeHeader/Brand")
+				var header_actions: Control = responsive_home.get_node("HeaderActions")
+				var body: ScrollContainer = responsive_home.get_node("HomeRail/HomeContentScroll")
+				var primary: Control = responsive_home.get_node("HomeRail/PrimaryActions")
+				var utilities: Control = responsive_home.get_node("HomeRail/HomeUtilities")
+				var primary_rect := primary.get_global_rect()
+				var utility_rect := utilities.get_global_rect()
+				var brand_rect := brand.get_global_rect()
+				var header_rect := header_actions.get_global_rect()
+				var headers_do_not_overlap := brand_rect.end.x <= header_rect.position.x + 1.0
+				var controls_inside := (
+					screen.encloses(responsive_home.language_button.get_global_rect())
+					and screen.encloses(responsive_home.settings_button.get_global_rect())
+					and screen.encloses(responsive_home.fly_button.get_global_rect())
+					and screen.encloses(responsive_home.controls_button.get_global_rect())
+					and screen.encloses(responsive_home.help_button.get_global_rect())
+					and screen.encloses(responsive_home.quit_button.get_global_rect())
+				)
+				var rail_limit := minf(size.x * 0.52, 500.0) if scale >= 1.5 else minf(size.x * 0.45, 340.0)
+				var rail_bounded := screen.encloses(rail_rect) and rail_rect.size.x <= rail_limit + 1.0
+				var navigation_reflowed: bool = (size.y < 720) == (responsive_home._navigation.get_parent() == responsive_home._page_host)
+				var text_scale_preserved := true
+				if scale >= 1.5:
+					var compact := size.x < 1500 or size.y < 850
+					var expected_nav_font := UiTheme._font_size(20 if compact else UiTheme.SIZE.nav)
+					var expected_utility_font := UiTheme._font_size(20 if compact else UiTheme.SIZE.small)
+					text_scale_preserved = (
+						responsive_home._nav_buttons[0].get_theme_font_size("font_size") == expected_nav_font
+						and responsive_home.controls_button.get_theme_font_size("font_size") == expected_utility_font
+					)
+				_check("Home EN/ES %s text %.0f%%: header and fixed controls fit %s" % [locale, scale * 100.0, str(size)],
+					headers_do_not_overlap and screen.encloses(brand_rect) and screen.encloses(header_rect)
+					and controls_inside and rail_bounded and navigation_reflowed and text_scale_preserved
+					and primary_rect.end.y <= utility_rect.position.y + 1.0
+					and utility_rect.end.y <= size.y + 1.0,
+					"brand=%s header=%s rail=%s primary=%s utilities=%s" % [brand_rect, header_rect, rail_rect, primary_rect, utility_rect])
+				if scale == 1.0 and size.y >= 720:
+					_check("Home Flight avoids a scrollbar at 100%% in %s / %s" % [locale, str(size)],
+						not body.get_v_scroll_bar().visible,
+						"body=%s page=%s" % [body.get_global_rect(), responsive_home._pages[0].get_global_rect()])
+				if size == Vector2i(960, 540):
+					for page_index in responsive_home._pages.size():
+						responsive_home._select_page(page_index)
+						await process_frame
+						await process_frame
+						var page: Control = responsive_home._pages[page_index]
+						var page_rect := page.get_global_rect()
+						var body_rect := body.get_global_rect()
+						var page_content_fits := true
+						for control: Control in page.find_children("*", "Control", true, false):
+							if not control.is_visible_in_tree():
+								continue
+							var control_rect := control.get_global_rect()
+							if control_rect.position.x < body_rect.position.x - 1.0 or control_rect.end.x > body_rect.end.x + 1.0:
+								page_content_fits = false
+								break
+						var action: Control = responsive_home.ground_vehicle_button if page_index == 3 else responsive_home.fly_button
+						_check("Home page %d fits the bounded rail at %.0f%% / %s" % [page_index, scale * 100.0, locale],
+							page_rect.position.x >= body_rect.position.x - 1.0
+							and page_rect.end.x <= body_rect.end.x + 1.0 and page_content_fits
+							and rail.get_global_rect().size.x <= rail_limit + 1.0
+							and screen.encloses(action.get_global_rect())
+							and screen.encloses(responsive_home.controls_button.get_global_rect())
+							and screen.encloses(responsive_home.help_button.get_global_rect())
+							and screen.encloses(responsive_home.quit_button.get_global_rect()),
+							"page=%s body=%s content_fits=%s primary=%s utilities=%s" % [page_rect, body_rect, str(page_content_fits), action.get_global_rect(), utility_rect])
+						if page_index == 0:
+							_check("Home's shortest-height Flight body remains scrollable at %.0f%% / %s" % [scale * 100.0, locale],
+								body.size.y > 0.0 and body.vertical_scroll_mode == ScrollContainer.SCROLL_MODE_AUTO
+								and body.get_v_scroll_bar().visible)
+				responsive_home._select_page(0)
+			_check("Home rail shrinks after wide-to-compact resize at %.0f%% / %s" % [scale * 100.0, locale],
+				wide_rail_width > compact_rail_width and returned_wide_rail_width > compact_rail_width,
+				"wide=%.1f compact=%.1f returned_wide=%.1f" % [wide_rail_width, compact_rail_width, returned_wide_rail_width])
+	UiTheme.text_scale = original_scale
+	TranslationServer.set_locale(original_locale)
+	responsive_home.theme = UiTheme.build()
+	responsive_home.queue_free()
+	layout_viewport.queue_free()
+	await process_frame
+	if is_instance_valid(original_focus_owner) and original_focus_owner.is_inside_tree():
+		original_focus_owner.grab_focus()
+		await process_frame
 
 
 ## The background colour behind a label: the nearest PanelContainer ancestor's panel style, else `fallback`.

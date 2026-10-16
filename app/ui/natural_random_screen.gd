@@ -38,6 +38,7 @@ var fly_button: Button
 var reroll_button: Button
 var repeat_button: Button
 var back_button: Button
+var _briefing_scroll: ScrollContainer
 
 var _scenario: Dictionary = {}
 var _busy: bool = false
@@ -71,12 +72,14 @@ func _init(initial_scenario: Dictionary = {}) -> void:
 	sidebar.add_child(layout)
 
 	var scroll := ScrollContainer.new()
+	_briefing_scroll = scroll
 	scroll.name = "BriefingScroll"
 	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
-	scroll.custom_minimum_size.y = 160.0
+	scroll.custom_minimum_size.y = 64.0 # leave the four recovery actions reachable at 540p / 200% text
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
 	scroll.follow_focus = true
+	scroll.focus_mode = Control.FOCUS_ALL
 	layout.add_child(scroll)
 
 	var content := VBoxContainer.new()
@@ -146,12 +149,14 @@ func _init(initial_scenario: Dictionary = {}) -> void:
 
 	busy_label = _label("", "SecondaryLabel", true)
 	busy_label.visible = false
-	layout.add_child(busy_label)
+	content.add_child(busy_label)
+	content.move_child(busy_label, 0)
 	error_label = _label("", "SecondaryLabel", true)
 	error_label.name = "BriefingError"
 	error_label.visible = false
 	error_label.add_theme_color_override("font_color", Color(1.0, 0.72, 0.62))
-	layout.add_child(error_label)
+	content.add_child(error_label)
+	content.move_child(error_label, 0)
 
 	var actions := VBoxContainer.new()
 	actions.name = "BriefingActions"
@@ -212,6 +217,7 @@ func show_error(message: String) -> void:
 	if error_label != null:
 		error_label.text = message
 		error_label.visible = not message.is_empty()
+		_briefing_scroll.scroll_vertical = 0
 	var focused: Control = get_viewport().gui_get_focus_owner() if is_inside_tree() else null
 	set_busy(false)
 	if focused == null or focused == fly_button:
@@ -223,6 +229,7 @@ func set_busy(busy: bool) -> void:
 	if busy_label != null:
 		busy_label.text = tr("Preparing flight…") if busy else ""
 		busy_label.visible = busy
+		if busy: _briefing_scroll.scroll_vertical = 0
 		_update_buttons()
 
 

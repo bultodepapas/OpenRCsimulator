@@ -1,0 +1,30 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   Spanish failure notices are translated
+ok   Spanish Pause scope hint is translated
+ok   Spanish aileron-trim formatting keeps its placeholder
+ok   failure defaults are off, non-catastrophic and visible
+ok   failure validator accepts the maximum integer percentage
+ok   failure validator rejects a percentage outside the range
+ok   failure validator rejects a non-integer percentage
+ok   write invalid preference fixture
+ok   invalid failure preference recovers to defaults
+ok   preferences refuse to save invalid failure config
+ok   save valid failure preference
+ok   failure preferences round-trip
+ok   rotorcraft Home disables failure settings
+ok   default-off flight gets no failure debrief
+ok   scheduled but unreached failure is reported after End
+ok   enabled flight without a selected event gets an honest debrief
+ok   active incident label is reported after End
+ok   probability slider is editable on integer range 0..100
+ok   percentage entry is editable on integer range 0..100
+ok   menu uses safe checkbox defaults
+ok   menu explains next-flight settings do not reroll the current flight
+ok   slider updates percentage entry
+ok   percentage entry updates slider
+ok   Apply confirms the current draft
+ok   Cancel requests back without applying
+ok   Pause incident summary includes label and hint
+ok   Pause hides current incident when notices are disabled
+all standalone failure UI checks passed

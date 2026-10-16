@@ -1,6 +1,6 @@
 # Landscape plan: current field and open work
 
-2026-10-15 · Revision 5 · Step prefix: **L**
+2026-10-16 · Revision 8 · Step prefix: **L**
 
 **Status:** the daytime field, treeline and visual cues are implemented. The separate LU-00…27 landscape integration is also delivered; its remaining cost and acceptance gates are summarized below. L9 ground review, L6c owner readability review, terrain work and wind integration remain open. Static tree and scenery contacts are gameplay estimates, not physical calibration. Gate L remains open.
 
@@ -10,7 +10,7 @@
 
 - L0–L7 provide the capture baseline, fixed-sun sky/haze/clouds, shared field builder, treeline cards and far landscape. L6 uses validated CC0 source packages and a small runtime atlas; detailed source meshes remain authoring inputs.
 - L9 has filtered turf and field surfaces. L9e is engineering-verified; L9b's visual review and L9c's perceived stripe shimmer still need acceptance. Near grass is a separate opaque layer with no collision.
-- L10 cues include the windsock, pilot station and flightline barrier, with soft contact grounding. [L10c-R1](research/visual-quality-implementation/L10c/README.md#2026-10-15--l10c-r1-close-view-finish) adds bevelled rails, two-sided hardware and downloaded CC0 wood textures to the flightline barrier. L11a near grass is implemented. L11b reuses SC-16/17 flora through the scenery layer; it does not duplicate assets.
+- L10 cues include the windsock, pilot station and flightline barrier, with soft contact grounding. [L10a-R1](research/visual-quality-implementation/L10a/README.md) adds textured fabric, seams, folds and mast fittings. [L10b-R1](research/visual-quality-implementation/L10b/README.md) renews the station with textured timber, powder-coated framing and fitted hardware. [L10c-R1/R2](research/visual-quality-implementation/L10c/README.md) add bevelled rails, two-sided hardware, downloaded wood/metal textures, weathering and bounded grass/clover at post feet. L11a near grass is implemented. L11b reuses SC-16/17 flora through the scenery layer; it does not duplicate assets.
 - L14 static obstacle contacts now use the shared float64 LU-05 collision world, built from field, scenery and light data. Its inventory includes field-tree trunk/crown proxies and nearby structures, vehicles, parked aircraft, lights and field objects. The [LU-05 collision report](research/landscape-upgrade/LU-05/collision-report.md) records coverage and limits. Proxy sizes, foliage responses and impact thresholds are gameplay estimates, not sourced structural strength; the nearby-query cost gate remains open.
 - L15b tree sway and L15d cloud-shadow rendering are implemented. Their physical wind integration remains with M5. Dynamic wind and foliage sound is delivered by [AUD-01…05](AUDIO-PLAN.md), rather than pending L15e work.
 

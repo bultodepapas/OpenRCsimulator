@@ -114,7 +114,11 @@ func _run() -> void:
 	_check("radio-loss label appears only when catastrophe is enabled", _event_texts(menu).has("Radio link lost."), _event_texts(menu))
 	_check("ten supported rows appear in the bounded scroll area", menu.availability_events_column.get_child_count() == 10
 		and menu.availability_scroll.get_global_rect().size.y >= 200.0
-		and menu.availability_scroll.get_global_rect().size.y <= 350.0)
+		and _fits_viewport(menu.availability_scroll))
+	# A roomy dialog need not scroll. Exercise keyboard scrolling after shrinking the live window.
+	root.size = Vector2i(960, 540)
+	root.content_scale_size = root.size
+	for frame in 6: await process_frame
 	var scroll_max: float = menu.availability_scroll.get_v_scroll_bar().max_value
 	var scroll_page: float = menu.availability_scroll.get_v_scroll_bar().page
 	var scroll_bottom: float = maxf(0.0, scroll_max - scroll_page)
@@ -137,6 +141,9 @@ func _run() -> void:
 	await _ui.tap(KEY_HOME)
 	_check("Home returns the list to its first event", is_zero_approx(menu.availability_scroll.scroll_vertical),
 		menu.availability_scroll.scroll_vertical)
+	root.size = Vector2i(1280, 720)
+	root.content_scale_size = root.size
+	await _ui.settle()
 	_check("expanded ten-row details still fit the 1280x720 viewport", _fits_viewport(menu.availability_card), menu.availability_card.get_global_rect())
 	await _ui.tap(KEY_ESCAPE)
 	_check("Back from scrolled details preserves the settings draft",

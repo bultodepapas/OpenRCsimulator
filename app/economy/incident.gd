@@ -7,6 +7,8 @@ const Catalog = preload("res://economy/catalog.gd")
 const Calculator = preload("res://economy/calculator.gd")
 const Inspection = preload("res://economy/inspection.gd")
 const RepairPlanner = preload("res://economy/repair_planner.gd")
+const ReplacementQuote = preload("res://economy/replacement_quote.gd")
+const Checkpoint = preload("res://economy/checkpoint.gd")
 const RECIPE_PATH := "res://data/economy/repair-recipes.json"
 const Events = preload("res://sim/aircraft_contact_events.gd")
 const MAX_EVENTS := 128
@@ -136,6 +138,40 @@ func inspection_context() -> Dictionary:
 	return {identity = _identity.duplicate(true), catalog_hash = _catalog_hash, revision = _revision}
 
 
+func checkpoint(tick: int, bindings: Dictionary) -> Dictionary:
+	return Checkpoint.capture(self, tick, bindings)
+
+
+func prepare_restore(value: Variant, tick: int, bindings: Dictionary) -> Dictionary:
+	return Checkpoint.prepare(value, self, tick, bindings)
+
+
+## Internal transaction commit: call only with a successful prepare_restore result.
+## The UI owner commits this after its associated physics checkpoint succeeds.
+func commit_restore(prepared: Dictionary) -> void:
+	var data: Dictionary = prepared.data
+	_identity = data.identity.duplicate(true)
+	_assessment = data.assessment.duplicate(true)
+	_last_tick = data.last_tick
+	_assessment_tick = data.assessment_tick
+	_revision = data.revision
+	journal = data.journal.duplicate(true)
+	_confirmed_facts = data.facts.duplicate(true)
+	_inspections = data.inspections.duplicate(true)
+	_reuse_blocked = data.blocked.duplicate(true)
+	_repair_choices = data.repair_choices.duplicate(true)
+	_seen = prepared.seen.duplicate(true)
+	_inspection_hashes = prepared.receipt_hashes.duplicate(true)
+	terminal = false
+	report = {}
+	_pending = _revision > 0
+	_dirty = false
+	_persisted_revision = -1
+	_flush_attempt_revision = -1
+	_flush_error = OK
+	evaluate_pending()
+
+
 ## Frame-boundary only. An explicit inspection/scenario receipt updates disposition,
 ## not physical state; rendering/VFX never creates one. Duplicate submission is idempotent.
 func apply_inspection(receipt: Dictionary) -> Dictionary:
@@ -211,7 +247,9 @@ func observe(snapshot: Dictionary, bindings: Dictionary, crashed: bool, restored
 				_confirmed_facts.water_exposure = event.duplicate(true)
 				changed = true
 			changed = _add_unresolved("Water exposure requires inspection of electronics and powertrain.") or changed
-	if restored and (not snapshot.get("prop_strike", {}).is_empty() or not journal.is_empty()):
+	var active_hull_ids: Variant = snapshot.get("active_hull_ids", PackedStringArray())
+	var restored_contact: bool = typeof(active_hull_ids) in [TYPE_ARRAY, TYPE_PACKED_STRING_ARRAY] and not active_hull_ids.is_empty()
+	if restored and (restored_contact or not snapshot.get("prop_strike", {}).is_empty() or not journal.is_empty()):
 		changed = _add_unresolved("Session restored or aircraft reloaded: earlier damage history is unavailable.") or changed
 		if not snapshot.get("prop_strike", {}).is_empty() and not _confirmed_facts.has("propeller_strike") \
 			and not _confirmed_facts.has("restored_propeller_strike"):
@@ -263,6 +301,11 @@ func _add_unresolved(reason: String) -> bool:
 	return true
 
 
+## Frame-boundary comparison only. Authored alternatives never apply purchases or change this ledger.
+func compare_replacements(package_candidates: Array = []) -> Dictionary:
+	return ReplacementQuote.quote(dossier, _assessment, package_candidates)
+
+
 func _recalculate() -> void:
 	if dossier.is_empty():
 		report = {ok = false, currency = "USD", known_subtotal_minor = 0, total_minor = null,
@@ -287,6 +330,12 @@ func _recalculate() -> void:
 		report.assumptions.append("%s [%s]: %s" % [receipt.inspection_id, receipt.basis, receipt.evidence])
 	report["inspections"] = _inspections.duplicate(true)
 	report["repair_choices"] = _repair_choices.duplicate(true)
+	var comparison := compare_replacements()
+	if comparison.get("status") in ["optimal", "unknown_cost", "search_limit", "infeasible", "cost_out_of_range"]:
+		comparison.erase("candidate_catalog") # Freeze only the selected comparison, not every alternative.
+		comparison["format"] = "openrc-replacement-comparison v1"
+		comparison["catalog_hash"] = _catalog_hash
+		report["replacement_comparison"] = comparison
 	report["format"] = "openrc-accident-report v1"
 	report["identity"] = _identity.duplicate(true)
 	report["aircraft_name"] = _identity.aircraft_id
@@ -361,6 +410,8 @@ func load_archive() -> Dictionary:
 	for reason: Variant in value.unresolved:
 		if typeof(reason) != TYPE_STRING:
 			return {}
+	if value.has("replacement_comparison") and not _valid_comparison_archive(value.replacement_comparison, value.get("catalog_hash")):
+		return {}
 	for field: String in ["inspections", "repair_choices"]:
 		if not value.has(field):
 			continue # Older view-only archives predate explicit inspection receipts.
@@ -386,3 +437,40 @@ func load_archive() -> Dictionary:
 		return {}
 	last_report = value.duplicate(true)
 	return last_report.duplicate(true)
+
+
+static func _valid_comparison_archive(value: Variant, catalog_hash: Variant) -> bool:
+	if not value is Dictionary or value.get("format") != "openrc-replacement-comparison v1" \
+		or value.get("coverage_scope") != "replacements_only" or value.get("catalog_hash") != catalog_hash \
+		or value.get("status") not in ["optimal", "unknown_cost", "search_limit", "infeasible", "cost_out_of_range"]:
+		return false
+	for field: String in ["assessment_complete", "complete", "optimality_proven", "search_complete", "unknown_cost_alternative_found", "selected_provenance_truncated"]:
+		if not value.get(field) is bool:
+			return false
+	var amount: Variant = value.get("total_cost_cents")
+	if amount != null and (typeof(amount) not in [TYPE_INT, TYPE_FLOAT] or not is_finite(float(amount)) \
+		or float(amount) < 0.0 or float(amount) > 9000000000000000.0 or float(amount) != floor(float(amount))):
+		return false
+	if value.optimality_proven != (value.status == "optimal") \
+		or (value.optimality_proven and (amount == null or not value.search_complete)) \
+		or value.complete != (value.assessment_complete and value.optimality_proven):
+		return false
+	for field: String in ["required_unit_ids", "selected_candidate_ids"]:
+		if not value.get(field) is Array or value[field].size() > ReplacementQuote.MAX_REQUIRED_UNITS:
+			return false
+		var unique := {}
+		var max_length: int = ReplacementQuote.MAX_COVERAGE_ID_LENGTH if field == "required_unit_ids" else ReplacementQuote.MAX_ID_LENGTH
+		for id: Variant in value[field]:
+			if not id is String or id.is_empty() or id.length() > max_length or unique.has(id):
+				return false
+			unique[id] = true
+	if not value.get("selected_provenance") is Array or value.selected_provenance.size() != value.selected_candidate_ids.size():
+		return false
+	var provenance_ids := {}
+	for source: Variant in value.selected_provenance:
+		if not source is Dictionary or source.size() != 2 or not source.get("provenance") is String \
+			or source.provenance.is_empty() or source.provenance.length() > ReplacementQuote.MAX_PROVENANCE_LENGTH \
+			or source.get("candidate_id") not in value.selected_candidate_ids or provenance_ids.has(source.get("candidate_id")):
+			return false
+		provenance_ids[source.candidate_id] = true
+	return true

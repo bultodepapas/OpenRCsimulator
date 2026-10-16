@@ -14,11 +14,17 @@ REPO = Path(__file__).resolve().parents[3]
 HERE = Path(__file__).resolve().parent
 
 
-def run(command, log, expected_missing_texture=False):
+def run(command, log, expected_missing_texture=False, expected_test_failures=()):
     result = subprocess.run([str(v) for v in command], cwd=REPO, stdout=subprocess.PIPE,
                             stderr=subprocess.STDOUT, text=True, encoding="utf-8", errors="replace", timeout=180)
     log.write_text(result.stdout, encoding="utf-8")
     errors = re.findall(r"^(?:SCRIPT |SHADER )?ERROR:.*$", result.stdout, re.MULTILINE)
+    if expected_test_failures:
+        failures = re.findall(r"^FAIL (.*)$", result.stdout, re.MULTILINE)
+        completed = re.search(r"\d+ checks, " + str(len(expected_test_failures)) + r" failed;", result.stdout)
+        if result.returncode != 1 or errors or failures != list(expected_test_failures) or not completed:
+            raise RuntimeError("Rotation defect did not reach the expected assertions: " + str(log))
+        return result.stdout
     resource_path = r"res://(?:\.godot/imported/[^/]+\.(?:ctex|scn)|assets/aircraft/hx-700/articulated/[^/]+\.(?:png|glb))"
     expected_error = r"ERROR: (?:(?:Unable to open file|Failed loading resource): " + resource_path + r"\.|(?:Can't load dependency|Error loading resource): '" + resource_path + r"'\.)"
     allowed = expected_missing_texture and all(re.fullmatch(expected_error, line.strip()) for line in errors)
@@ -31,6 +37,29 @@ def run(command, log, expected_missing_texture=False):
     if expected_missing_texture and not any("Unable to open file:" in line and ".ctex" in line for line in errors):
         raise RuntimeError("Texture omission did not exercise the expected missing payload: " + str(log))
     return result.stdout
+
+
+def reject_world_neutral_rotation(godot, project, oracle, out):
+    """Recreate the old wrong roll convention in disposable scripts, never in app/."""
+    text = (project / "render/rotor/hx700_mechanism.gd").read_text(encoding="utf-8")
+    carried = "\t\t\tvar carried_direction: Vector3 = world[endpoint].basis * _aim_axes[endpoint]"
+    neutral = "\t\t\tvar carried_direction: Vector3 = _rest_world[b].origin - _rest_world[a].origin"
+    basis = "Transform3D(turn * world[endpoint].basis, world[endpoint].origin)"
+    if text.count(carried) != 1 or text.count(basis) != 1:
+        raise RuntimeError("Rotation fixture no longer matches the reviewed mechanism")
+    text = text.replace(carried, neutral).replace(basis, "Transform3D(turn * _rest_world[endpoint].basis, world[endpoint].origin)")
+    (project / "world_neutral_fixture.gd").write_text(text, encoding="utf-8", newline="\n")
+    test = (project / "tests/test_heli_mechanism.gd").read_text(encoding="utf-8")
+    original = 'preload("res://render/rotor/hx700_mechanism.gd")'
+    if test.count(original) != 1:
+        raise RuntimeError("Rotation fixture no longer matches the reviewed test")
+    test = test.replace(original, 'preload("res://world_neutral_fixture.gd")')
+    (project / "test_world_neutral_fixture.gd").write_text(test, encoding="utf-8", newline="\n")
+    run([godot, "--headless", "--path", project, "--audio-driver", "Dummy", "--script",
+         "res://test_world_neutral_fixture.gd", "--", "--oracle=" + str(oracle)],
+        out / "world-neutral-rotation-rejected.log", expected_test_failures=(
+            "all driven frames and 18 ball-link terminals match source orientation within 0.00002",
+            "all four head sockets follow a half-turn of the rotor"))
 
 
 def main():
@@ -52,6 +81,10 @@ def main():
              "res://tests/test_heli_mechanism.gd"], out / "motion-native-tests.log")
         run([godot, "--headless", "--path", REPO / "app", "--audio-driver", "Dummy", "--script",
              "res://tests/test_heli_mechanics_view.gd"], out / "motion-ui-native-tests.log")
+        run([godot, "--headless", "--path", REPO / "app", "--audio-driver", "Dummy", "--script",
+             "res://tests/test_heli_inspection_motion.gd"], out / "motion-timing-native-tests.log")
+        run([godot, "--headless", "--path", REPO / "app", "--audio-driver", "Dummy", "--script",
+             "res://tests/test_heli_elasticity.gd"], out / "elasticity-native-tests.log")
     run([godot, "--headless", "--path", REPO / "app", "--audio-driver", "Dummy", "--script",
          "res://tests/test_heli_construction.gd"], out / "native-tests.log")
     project = out / "fresh"
@@ -67,7 +100,9 @@ def main():
     if args.motion:
         for relative in ("render/rotor/hx700_motion_equations.gd", "render/rotor/hx700_mechanism.gd",
                          "render/rotor/hx700_mechanics_view.gd", "tools/inspect_hx700.gd", "tests/test_heli_mechanism.gd",
-                         "tests/test_heli_mechanics_view.gd"):
+                         "tests/test_heli_mechanics_view.gd", "render/rotor/hx700_inspection_motion.gd",
+                         "tests/test_heli_inspection_motion.gd", "physics/rotorcraft/hx700_flex_bench.gd",
+                         "render/rotor/hx700_elastic_skin.gd", "tests/test_heli_elasticity.gd"):
             target = project / relative
             target.parent.mkdir(parents=True, exist_ok=True)
             shutil.copyfile(REPO / "app" / relative, target)
@@ -80,6 +115,10 @@ def main():
              "res://tests/test_heli_mechanism.gd", "--", "--oracle=" + str(oracle)], out / "motion-fresh-tests.log")
         run([godot, "--headless", "--path", project, "--audio-driver", "Dummy", "--script",
              "res://tests/test_heli_mechanics_view.gd"], out / "motion-ui-fresh-tests.log")
+        run([godot, "--headless", "--path", project, "--audio-driver", "Dummy", "--script",
+             "res://tests/test_heli_inspection_motion.gd"], out / "motion-timing-fresh-tests.log")
+        run([godot, "--headless", "--path", project, "--audio-driver", "Dummy", "--script",
+             "res://tests/test_heli_elasticity.gd"], out / "elasticity-fresh-tests.log")
     empty = out / "empty"
     empty.mkdir()
     for defect in ("", "profile", "raw-glb", "texture"):
@@ -96,6 +135,10 @@ def main():
                  "--script", "res://tests/test_heli_mechanism.gd", "--", "--oracle=" + str(oracle)], out / "motion-package-tests.log")
             run([godot, "--headless", "--path", empty, "--main-pack", pack, "--audio-driver", "Dummy",
                  "--script", "res://tests/test_heli_mechanics_view.gd"], out / "motion-ui-package-tests.log")
+            run([godot, "--headless", "--path", empty, "--main-pack", pack, "--audio-driver", "Dummy",
+                 "--script", "res://tests/test_heli_inspection_motion.gd"], out / "motion-timing-package-tests.log")
+            run([godot, "--headless", "--path", empty, "--main-pack", pack, "--audio-driver", "Dummy",
+                 "--script", "res://tests/test_heli_elasticity.gd"], out / "elasticity-package-tests.log")
     if args.capture:
         run([godot, "--path", project, "--audio-driver", "Dummy", "--rendering-method", "gl_compatibility",
              "--script", "res://smoke.gd", "--", "--capture=" + str(out / "captures")], out / "capture.log")
@@ -106,7 +149,8 @@ def main():
               "missing_profile_rejected": True, "missing_raw_glb_rejected": True, "missing_texture_rejected": True, "flight_admitted": False,
               "production_export_qualified": False, "captured": args.capture}
     if args.motion:
-        report.update(step="HELI-26a", motion_native="pass", motion_fresh_import="pass", motion_package="pass", motion_ui="pass")
+        reject_world_neutral_rotation(godot, project, oracle, out)
+        report.update(step="HELI-26a", motion_native="pass", motion_fresh_import="pass", motion_package="pass", motion_ui="pass", motion_timing="pass", elasticity="pass", world_neutral_rotation_rejected=True)
     (out / "verification.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
     print(json.dumps(report, indent=2))
 

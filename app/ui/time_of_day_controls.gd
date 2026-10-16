@@ -4,6 +4,7 @@ extends VBoxContainer
 const TimeOfDay := preload("res://environment/time_of_day_config.gd")
 const Solar := preload("res://environment/solar_position.gd")
 const Preferences := preload("res://app_state/preferences.gd")
+const ResponsiveGrid := preload("res://ui/responsive_grid.gd")
 
 const PRESET_IDS: Array[String] = ["", "legacy", "dawn", "noon", "sunset", "night"]
 const PRESET_LABELS: Array[String] = ["Custom", "Legacy daylight", "Dawn", "Noon", "Sunset", "Night"]
@@ -19,6 +20,7 @@ var time_slider: HSlider
 var time_input: LineEdit
 var advanced_toggle: CheckButton
 var advanced_grid: GridContainer
+var _time_row: GridContainer
 var date_input: LineEdit
 var offset_input: LineEdit
 var latitude_input: LineEdit
@@ -35,6 +37,7 @@ var _draft: Dictionary = {}
 var _night_options: Dictionary = Preferences.NIGHT_DEFAULTS.duplicate(true)
 var _time_controls_visible: bool = true
 var _time_control_nodes: Array[Control] = []
+var _responsive_grids: Array[GridContainer] = []
 var _setting_fields: bool = false
 var _latitude_form_text: String = ""
 var _longitude_form_text: String = ""
@@ -58,25 +61,30 @@ func _init(initial_config: Variant = null, initial_night_options: Variant = null
 	_set_night_options(_night_options)
 
 
+func _ready() -> void:
+	resized.connect(_update_responsive_layout)
+	_update_responsive_layout.call_deferred()
+
+
 func _build_controls() -> void:
-	var mode_row: HBoxContainer = HBoxContainer.new()
-	mode_row.add_theme_constant_override("separation", 12)
-	mode_row.add_child(_label("Lighting model", "SecondaryLabel"))
+	var mode_row := _choice_row("Lighting model")
 	mode_picker = OptionButton.new()
 	mode_picker.name = "LightingMode"
 	mode_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	mode_picker.fit_to_longest_item = false
 	mode_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	mode_row.add_child(mode_picker)
+	_responsive_grids.append(mode_row)
 	add_child(mode_row)
 
-	var preset_row: HBoxContainer = HBoxContainer.new()
-	preset_row.add_theme_constant_override("separation", 12)
-	preset_row.add_child(_label("Time preset", "SecondaryLabel"))
+	var preset_row := _choice_row("Time preset")
 	preset_picker = OptionButton.new()
 	preset_picker.name = "TimePreset"
 	preset_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	preset_picker.fit_to_longest_item = false
 	preset_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	preset_row.add_child(preset_picker)
+	_responsive_grids.append(preset_row)
 	add_child(preset_row)
 	phase_summary = _label("", "SecondaryLabel", true)
 	phase_summary.name = "TimeOfDaySummary"
@@ -90,13 +98,16 @@ func _build_controls() -> void:
 	validation_note.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	add_child(validation_note)
 
-	var time_row: GridContainer = GridContainer.new()
-	time_row.name = "TimeFields"
-	time_row.columns = 2
-	time_row.add_theme_constant_override("h_separation", 18)
-	time_row.add_theme_constant_override("v_separation", 8)
-	add_child(time_row)
-	time_row.add_child(_label("Local time", "SecondaryLabel"))
+	_time_row = GridContainer.new()
+	_time_row.name = "TimeFields"
+	_time_row.columns = 2
+	_time_row.add_theme_constant_override("h_separation", 18)
+	_time_row.add_theme_constant_override("v_separation", 8)
+	_responsive_grids.append(_time_row)
+	add_child(_time_row)
+	var local_time_label := _label("Local time", "SecondaryLabel", true)
+	local_time_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_time_row.add_child(local_time_label)
 	var time_controls: HBoxContainer = HBoxContainer.new()
 	time_controls.add_theme_constant_override("separation", 12)
 	time_controls.size_flags_horizontal = Control.SIZE_EXPAND_FILL
@@ -115,7 +126,7 @@ func _build_controls() -> void:
 	time_input.max_length = 8
 	time_input.alignment = HORIZONTAL_ALIGNMENT_CENTER
 	time_controls.add_child(time_input)
-	time_row.add_child(time_controls)
+	_time_row.add_child(time_controls)
 
 	time_note = _label("Date, time and UTC offset are explicit. The selected time stays fixed during flight; OS time is not used.", "SecondaryLabel", true)
 	time_note.name = "TimeOfDayNote"
@@ -132,6 +143,7 @@ func _build_controls() -> void:
 	advanced_toggle = CheckButton.new()
 	advanced_toggle.name = "AdvancedLocation"
 	advanced_toggle.text = "Date and location (advanced)"
+	advanced_toggle.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	advanced_toggle.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	add_child(advanced_toggle)
 	advanced_grid = GridContainer.new()
@@ -140,34 +152,35 @@ func _build_controls() -> void:
 	advanced_grid.add_theme_constant_override("h_separation", 18)
 	advanced_grid.add_theme_constant_override("v_separation", 8)
 	advanced_grid.visible = false
+	_responsive_grids.append(advanced_grid)
 	add_child(advanced_grid)
 	date_input = _add_text_field("Date (YYYY-MM-DD)", "Date", 144.0, 10)
 	offset_input = _add_text_field("UTC offset (minutes)", "UtcOffset", 144.0, 5)
 	latitude_input = _add_text_field("Latitude (degrees)", "Latitude", 144.0, 16)
 	longitude_input = _add_text_field("Longitude (degrees)", "Longitude", 144.0, 16)
 	location_input = _add_text_field("Location name", "LocationName", 260.0, 80)
-	_time_control_nodes = [mode_row, preset_row, phase_summary, validation_note, time_row, time_note, night_note, advanced_toggle, advanced_grid]
+	_time_control_nodes = [mode_row, preset_row, phase_summary, validation_note, _time_row, time_note, night_note, advanced_toggle, advanced_grid]
 
-	var field_lighting_row: HBoxContainer = HBoxContainer.new()
+	var field_lighting_row := _choice_row("Field lighting")
 	field_lighting_row.name = "FieldLightingRow"
-	field_lighting_row.add_theme_constant_override("separation", 12)
-	field_lighting_row.add_child(_choice_label("Field lighting"))
 	field_lighting_picker = OptionButton.new()
 	field_lighting_picker.name = "FieldLighting"
 	field_lighting_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	field_lighting_picker.fit_to_longest_item = false
 	field_lighting_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	field_lighting_row.add_child(field_lighting_picker)
+	_responsive_grids.append(field_lighting_row)
 	add_child(field_lighting_row)
 
-	var campfire_row: HBoxContainer = HBoxContainer.new()
+	var campfire_row := _choice_row("Campfire")
 	campfire_row.name = "CampfireRow"
-	campfire_row.add_theme_constant_override("separation", 12)
-	campfire_row.add_child(_choice_label("Campfire"))
 	campfire_picker = OptionButton.new()
 	campfire_picker.name = "Campfire"
 	campfire_picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	campfire_picker.fit_to_longest_item = false
 	campfire_picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	campfire_row.add_child(campfire_picker)
+	_responsive_grids.append(campfire_row)
 	add_child(campfire_row)
 
 	mode_picker.item_selected.connect(_on_mode_selected)
@@ -182,11 +195,36 @@ func _build_controls() -> void:
 	location_input.text_changed.connect(_on_text_changed.bind("location"))
 	advanced_toggle.toggled.connect(_on_advanced_toggled)
 	_set_titles()
+	_update_responsive_layout()
+
+
+func _choice_row(label_text: String) -> GridContainer:
+	var row := GridContainer.new()
+	row.columns = 2
+	row.add_theme_constant_override("h_separation", 12)
+	row.add_theme_constant_override("v_separation", 6)
+	var label_control := _label(label_text, "SecondaryLabel", true)
+	label_control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(label_control)
+	return row
+
+
+func _update_responsive_layout() -> void:
+	var available_width: float = size.x
+	if available_width <= 0.0:
+		return
+	for grid: GridContainer in _responsive_grids:
+		var previous_columns: int = grid.columns
+		var two_column_width: float = ResponsiveGrid.two_column_minimum_width(grid)
+		var desired_columns: int = 1 if two_column_width > available_width else 2
+		if previous_columns != desired_columns:
+			grid.columns = desired_columns
 
 
 func _add_text_field(label_text: String, field_name: String, width: float, max_length: int) -> LineEdit:
-	var field_label: Label = _label(label_text, "SecondaryLabel")
+	var field_label: Label = _label(label_text, "SecondaryLabel", true)
 	field_label.name = field_name + "Label"
+	field_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	advanced_grid.add_child(field_label)
 	var edit: LineEdit = LineEdit.new()
 	edit.name = field_name
@@ -236,6 +274,7 @@ func _notification(what: int) -> void:
 	if what == NOTIFICATION_TRANSLATION_CHANGED and is_node_ready():
 		_set_titles()
 		_update_enabled()
+		_update_responsive_layout()
 
 
 func _set_controls(config: Dictionary) -> void:
@@ -442,7 +481,8 @@ static func _label(text: String, variation: String, wrap: bool = false) -> Label
 
 
 static func _choice_label(text: String) -> Label:
-	var label_control: Label = _label(text, "SecondaryLabel")
+	var label_control: Label = _label(text, "SecondaryLabel", true)
+	label_control.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	label_control.text = TranslationServer.translate(text)
 	label_control.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	return label_control

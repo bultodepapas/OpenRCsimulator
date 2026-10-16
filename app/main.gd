@@ -229,6 +229,8 @@ var _accident_settlement: RefCounted
 var _accident_settled_pending := false
 var _accident_ground_stable := false
 var _accident_reload_pending := false
+var _accident_checkpoint_restoring := false
+var _accident_paired_history := false
 var _crash_director: CrashDirector
 var _scenery_damage_director: SceneryDamageDirector
 var _cg_model := Vector3.ZERO
@@ -1455,7 +1457,16 @@ func checkpoint() -> Dictionary:
 				"water_render": water_render,
 			}
 			wrapped["payload_sha256"] = _water_checkpoint_digest(paired, water_render)
-			return wrapped
+			paired = wrapped
+	if _accident_incident != null and _accident_incident.has_damage():
+		if _accident_reload_pending:
+			return {}
+		var ledger: Dictionary = _accident_incident.checkpoint(session.sim.tick, _accident_bindings)
+		if ledger.is_empty():
+			return {}
+		paired = AccidentIncident.Checkpoint.wrap(paired, {ledger = ledger,
+			settlement = _accident_settlement.checkpoint(),
+			presentation = {ground_stable = _accident_ground_stable, settled_pending = _accident_settled_pending}})
 	return paired
 
 
@@ -1464,6 +1475,17 @@ func checkpoint() -> Dictionary:
 func restore_checkpoint(candidate: Variant) -> Dictionary:
 	if session == null or _scripted or _capturing or _field_world_lighting or _capture_scene_id() != "field" or not startup_error.is_empty():
 		return {ok = false, errors = ["visual checkpoint requires a ready production flight"]}
+	var economic_restore: Dictionary = {}
+	if candidate is Dictionary and candidate.get("format") == AccidentIncident.Checkpoint.ENVELOPE:
+		if _accident_incident == null:
+			return {ok = false, errors = ["Economics checkpoint requires accident reporting."]}
+		var unwrapped: Dictionary = AccidentIncident.Checkpoint.unwrap(candidate)
+		if not unwrapped.ok:
+			return unwrapped
+		economic_restore = unwrapped.economy
+		if economic_restore.is_empty():
+			return {ok = false, errors = ["Paired economics checkpoint has no ledger."]}
+		candidate = unwrapped.visual
 	var visual_candidate: Variant = candidate
 	var water_restore: Dictionary = {}
 	var has_water_render: bool = false
@@ -1487,6 +1509,19 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 	var decoded: Dictionary = VisualCheckpoint.read(sky_restore.visual, _field_identity())
 	if not decoded.ok:
 		return decoded
+	var prepared_economics: Dictionary = {}
+	if not economic_restore.is_empty():
+		if not AccidentIncident.Checkpoint.keys(economic_restore, ["ledger", "settlement", "presentation"]) \
+			or not AccidentSettlement.valid_checkpoint(economic_restore.settlement, decoded.physics.simulation.tick) \
+			or not economic_restore.presentation is Dictionary \
+			or not AccidentIncident.Checkpoint.keys(economic_restore.presentation, ["ground_stable", "settled_pending"]) \
+			or not economic_restore.presentation.ground_stable is bool or not economic_restore.presentation.settled_pending is bool:
+			return {ok = false, errors = ["Invalid economics settlement or presentation checkpoint."]}
+		if economic_restore.presentation.settled_pending and (not economic_restore.settlement.settled or not economic_restore.presentation.ground_stable):
+			return {ok = false, errors = ["Settled report requires completed dwell and stable ground contact."]}
+		prepared_economics = _accident_incident.prepare_restore(economic_restore.ledger, decoded.physics.simulation.tick, _accident_bindings)
+		if not prepared_economics.ok:
+			return prepared_economics
 	var restored_time: float = float(decoded.physics.simulation.tick) * float(decoded.physics.simulation.dt)
 	var restored_mean: Array = SkyConfig.mean_wind_ned(decoded.physics.get("weather_config", {}))
 	if not sky_restore.legacy and (float(sky_restore.transport.anchor_time_s) > restored_time + 1.0e-9 \
@@ -1503,8 +1538,20 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 	var staged: Dictionary = _prepare_checkpoint_lighting(decoded.config)
 	if not staged.ok:
 		return {ok = false, errors = ["could not prepare checkpoint lighting"]}
-	if not session.restore_checkpoint(decoded.physics):
+	_accident_checkpoint_restoring = not prepared_economics.is_empty()
+	var physics_restored: bool = session.restore_checkpoint(decoded.physics)
+	_accident_checkpoint_restoring = false
+	if not physics_restored:
 		return {ok = false, errors = ["physics checkpoint is invalid or incompatible"]}
+	if not prepared_economics.is_empty():
+		_accident_report.clear_report()
+		_accident_restored = false
+		_accident_paired_history = true
+		_accident_reload_pending = false
+		_accident_settlement.restore_checkpoint(economic_restore.settlement)
+		_accident_ground_stable = economic_restore.presentation.ground_stable
+		_accident_settled_pending = economic_restore.presentation.settled_pending or (economic_restore.settlement.settled and _accident_ground_stable)
+		_accident_incident.commit_restore(prepared_economics)
 	# Existing checkpoints contain no scenario envelope. Never label a restored flight with stale seed provenance.
 	_forget_scenario()
 	sky_config = sky_restore.config.duplicate(true)
@@ -1513,7 +1560,7 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 	if not sky_restore.legacy:
 		Atmosphere.restore_cloud_transport(sky_restore.transport)
 	if not _commit_lighting(staged, decoded.config):
-		return {ok = false, physics_restored = true, errors = ["physics restored, but visual scene changed during restoration"]}
+		return {ok = false, physics_restored = true, economics_restored = not prepared_economics.is_empty(), errors = ["physics restored, but visual scene changed during restoration"]}
 	_visual_timeline = decoded.timeline.duplicate(true)
 	_smoke_key_on = false
 	if _smoke != null:
@@ -1531,11 +1578,11 @@ func restore_checkpoint(candidate: Variant) -> Dictionary:
 		_update_storm(session.sim.time(), session.sim.paused)
 	if has_water_render:
 		if not _crash_director.restore_water_checkpoint(water_restore):
-			return {ok = false, physics_restored = true, errors = ["physics restored, but water aftermath could not be restored"]}
+			return {ok = false, physics_restored = true, economics_restored = not prepared_economics.is_empty(), errors = ["physics restored, but water aftermath could not be restored"]}
 	elif _crash_director != null:
 		_crash_director.reset()
 	_note = "Checkpoint restored; visual context: " + _visual_context_status
-	return {ok = true, context_status = _visual_context_status, errors = []}
+	return {ok = true, context_status = _visual_context_status, economics_restored = not prepared_economics.is_empty(), errors = []}
 
 
 func _water_checkpoint_digest(visual: Dictionary, water_render: Dictionary) -> String:
@@ -1752,12 +1799,12 @@ func _update_flight_log_label() -> void:
 
 ## CR-30: only accepted contact evidence enters costs. VFX severity never enters this path.
 func _on_accident_contacts() -> void:
-	if _accident_incident == null:
+	if _accident_incident == null or _accident_checkpoint_restoring:
 		return
 	if _accident_source_hash != str(session.aircraft.get("input_identity", {}).get("sha256", "")):
 		_accident_reload_pending = true
 		return # Rebind at the frame boundary; no catalog or archive I/O in an accepted callback.
-	_accident_restored = _accident_restored or session.pause_reason == "checkpoint restored (recorded inputs)"
+	_accident_restored = _accident_restored or (not _accident_paired_history and session.pause_reason == "checkpoint restored (recorded inputs)")
 	_accident_incident.observe(session.contact_events(), _accident_bindings, not session.crash.is_empty(), _accident_restored)
 	if _accident_incident.has_damage() and not _accident_incident.terminal:
 		_observe_accident_settlement()
@@ -1812,6 +1859,7 @@ func _begin_accident_ledger() -> void:
 	_accident_bindings = session.contact_contract()
 	_accident_incident.begin(aircraft_id, _accident_source_hash)
 	_accident_restored = false
+	_accident_paired_history = false
 	_accident_settlement.reset()
 	_accident_settled_pending = false
 	_accident_ground_stable = false
@@ -1831,7 +1879,7 @@ func _exit_tree() -> void:
 
 ## One file never mixes two flights.
 func _on_resetting() -> void:
-	if _accident_incident != null:
+	if _accident_incident != null and not _accident_checkpoint_restoring:
 		var archived: Dictionary = _accident_incident.archive()
 		_begin_accident_ledger()
 		_accident_report.clear_report()

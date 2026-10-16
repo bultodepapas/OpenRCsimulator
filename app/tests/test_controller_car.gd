@@ -18,6 +18,8 @@ const PAD := 15
 const RADIO := {"id": 13, "name": "RC radio", "kind": "radio", "known": false}
 const UNKNOWN := {"id": 14, "name": "Unmapped joystick", "kind": "joystick", "known": false}
 const GAMEPAD := {"id": PAD, "name": "DualSense", "guid": "test-car-pad", "known": true, "kind": "gamepad"}
+const MENU_PAD := 16
+const MENU_GAMEPAD := {"id": MENU_PAD, "name": "Xbox menu pad", "guid": "test-menu-pad", "known": true, "kind": "gamepad"}
 
 func _initialize() -> void:
 	_run.call_deferred()
@@ -33,18 +35,31 @@ func step() -> void:
 	activity._process(0.0)
 
 func button(index: JoyButton, device := PAD) -> void:
-	for pressed in [true, false]:
-		var event := InputEventJoypadButton.new()
-		event.device = device
-		event.button_index = index
-		event.pressed = pressed
-		Input.parse_input_event(event)
+	await press_button(index, device)
+	await release_button(index, device)
+
+func press_button(index: JoyButton, device := PAD) -> void:
+	var event := InputEventJoypadButton.new()
+	event.device = device
+	event.button_index = index
+	event.pressed = true
+	Input.parse_input_event(event)
 	await process_frame
 	await process_frame
 
-func create_activity(source: RefCounted) -> Node3D:
+func release_button(index: JoyButton, device := PAD) -> void:
+	var event := InputEventJoypadButton.new()
+	event.device = device
+	event.button_index = index
+	event.pressed = false
+	Input.parse_input_event(event)
+	await process_frame
+	await process_frame
+
+func create_activity(source: RefCounted, selected_vehicle := "mt8-bisonte") -> Node3D:
 	var candidate := TestActivity.new()
 	candidate.controller_registry = source
+	candidate.vehicle_id = selected_vehicle
 	candidate.use_practice_fixture = true
 	candidate.enable_audio = false
 	candidate.enable_course_visual = false
@@ -58,9 +73,9 @@ func create_activity(source: RefCounted) -> Node3D:
 func _run() -> void:
 	TranslationServer.set_locale("es")
 	var shared := Registry.new()
-	shared.update_devices([RADIO, UNKNOWN, GAMEPAD])
+	shared.update_devices([RADIO, UNKNOWN, GAMEPAD, MENU_GAMEPAD])
 	shared.select_device("flight", 13)
-	shared.select_device("ui", 14)
+	shared.select_device("ui", MENU_PAD)
 	activity = create_activity(shared)
 	await process_frame
 	await process_frame
@@ -70,8 +85,8 @@ func _run() -> void:
 		quit(1)
 		return
 	check(activity.controller_registry != shared and activity._controller_device_id == PAD, "aircraft radio does not override a recognized driving gamepad")
-	check(shared.selected_device_id("flight") == 13 and shared.selected_device_id("ui") == 14, "starting car preserves aircraft selections")
-	check(activity.dashboard.controller_choice.item_count == 2, "garage lists keyboard and mapped gamepad, not raw devices")
+	check(shared.selected_device_id("flight") == 13 and shared.selected_device_id("ui") == MENU_PAD, "starting car preserves aircraft selections")
+	check(activity.dashboard.controller_choice.item_count == 3, "garage lists keyboard and mapped gamepads, not raw devices")
 	check(UiInput.selected_gamepad_id() == PAD, "driving gamepad owns garage navigation")
 	check(activity.dashboard.control_hint.text.contains("R2") and activity.dashboard.control_hint.text.contains("L2") and activity.dashboard.resume_button.text.contains(tr("Options")), "DualSense prompts follow its actual driving scheme")
 	for i in 4: step()
@@ -83,13 +98,37 @@ func _run() -> void:
 	axes[JOY_AXIS_TRIGGER_RIGHT] = 0.03
 	await button(JOY_BUTTON_START, 14)
 	check(activity.session.paused, "unselected device cannot resume")
+	activity.controller_registry.select_device("ui", MENU_PAD)
+	await button(JOY_BUTTON_START, MENU_PAD)
+	check(not activity.session.paused and not activity.dashboard.menu_visible and activity.session.tick == 0,
+		"separate menu pad can resume before another physics tick")
+	var menu_pad_camera_before: int = activity.camera_rig.mode
+	await button(JOY_BUTTON_X, MENU_PAD)
+	check(activity.camera_rig.mode == menu_pad_camera_before, "menu pad cannot issue driving camera shortcuts")
+	activity.open_garage()
+	for i in 3: step()
+	await press_button(JOY_BUTTON_BACK)
+	check(activity.session.paused and activity._shortcut_buttons.has("%d:%d" % [PAD, JOY_BUTTON_BACK]),
+		"View pressed in garage is remembered without resetting")
 	await button(JOY_BUTTON_START)
 	check(not activity.session.paused and not activity.dashboard.menu_visible and activity.session.tick == 0, "fresh neutral Start resumes before another physics tick without advancing time")
+	await press_button(JOY_BUTTON_BACK)
+	check(not activity.session.paused and not activity.dashboard.menu_visible and activity.session.tick == 0,
+		"held View cannot restart after the garage closes")
+	await release_button(JOY_BUTTON_BACK)
 	axes[JOY_AXIS_TRIGGER_RIGHT] = 1.0
 	axes[JOY_AXIS_LEFT_X] = 0.56
 	step()
 	var tape: PackedFloat64Array = activity.session.control_tape_snapshot()
 	check(tape.size() == 4 and tape[0] == 1.0 and tape[1] > 0.0 and tape[2] == 0.0 and tape[3] == 0.0, "RT and right steer reach accepted simulation command")
+	var headlights_before: bool = activity._effects.headlights_enabled
+	await button(JOY_BUTTON_LEFT_SHOULDER, MENU_PAD)
+	check(activity._effects.headlights_enabled == headlights_before, "menu pad cannot toggle driving lights")
+	await button(JOY_BUTTON_LEFT_SHOULDER)
+	check(activity._effects.headlights_enabled != headlights_before, "LB toggles headlights on supported cars")
+	var bisonte_aux_before: bool = activity._effects.auxiliary_enabled
+	await button(JOY_BUTTON_RIGHT_SHOULDER)
+	check(activity._effects.auxiliary_enabled == bisonte_aux_before, "RB has no unsupported auxiliary-light action on Bisonte")
 	axes[JOY_AXIS_TRIGGER_LEFT] = 0.52
 	step()
 	tape = activity.session.control_tape_snapshot()
@@ -107,6 +146,15 @@ func _run() -> void:
 	var state_before: PackedFloat64Array = activity.session.state_snapshot()
 	await button(JOY_BUTTON_X)
 	check(activity.camera_rig.mode != camera_before and activity.session.state_snapshot() == state_before, "X/Square changes camera without touching physics")
+	var driving_tick_before_view: int = activity.session.tick
+	await button(JOY_BUTTON_BACK, MENU_PAD)
+	check(not activity.session.paused and activity.session.tick == driving_tick_before_view,
+		"menu pad cannot restart the driving session")
+	await button(JOY_BUTTON_BACK)
+	check(driving_tick_before_view > 0 and activity.session.paused and activity.dashboard.menu_visible
+		and activity.session.tick == 0 and activity.session.run_valid, "View restarts the car and returns to the garage")
+	await button(JOY_BUTTON_START)
+	check(not activity.session.paused and activity.session.run_valid, "Start continues after a View restart")
 	await button(JOY_BUTTON_Y)
 	check(activity.session.paused and not activity.session.run_valid and activity.dashboard.menu_visible, "Y/Triangle recovers explicitly and marks assistance")
 	activity.handle_action("reset")
@@ -140,9 +188,9 @@ func _run() -> void:
 	Input.parse_input_event(held_start)
 	await process_frame
 	await process_frame
-	shared.update_devices([RADIO, UNKNOWN])
+	shared.update_devices([RADIO, UNKNOWN, MENU_GAMEPAD])
 	check(activity.session.paused and activity._controller_requires_selection and UiInput.selected_gamepad_id() == -1, "disconnect pauses and removes stale navigation ownership")
-	shared.update_devices([RADIO, UNKNOWN, GAMEPAD])
+	shared.update_devices([RADIO, UNKNOWN, GAMEPAD, MENU_GAMEPAD])
 	step()
 	activity.handle_action("resume")
 	check(activity.session.paused and activity._controller_requires_selection, "reconnect does not take over automatically")
@@ -164,7 +212,7 @@ func _run() -> void:
 	step()
 	tape = activity.session.control_tape_snapshot()
 	check(tape[-4] == 1.0 and tape[-3] == -1.0 and tape[-1] == 1.0, "keyboard reverse and left work after local selection")
-	check(shared.selected_device_id("flight") == 13 and shared.selected_device_id("ui") == 14, "driving selection never writes aircraft ownership")
+	check(shared.selected_device_id("flight") == 13 and shared.selected_device_id("ui") == MENU_PAD, "driving selection never writes aircraft ownership")
 	activity.test_keys.clear()
 	activity.free()
 	await process_frame
@@ -173,9 +221,26 @@ func _run() -> void:
 	for i in 3: step()
 	activity.handle_action("resume")
 	check(activity._controller_device_id == -1 and not activity.session.paused, "radio-only setup falls back to usable keyboard")
-	shared.update_devices([RADIO, UNKNOWN, GAMEPAD])
+	shared.update_devices([RADIO, UNKNOWN, GAMEPAD, MENU_GAMEPAD])
 	step()
 	check(activity._controller_device_id == -1 and not activity.session.paused, "new gamepad never steals keyboard during driving")
+	activity.free()
+	await process_frame
+	await process_frame
+	axes[JOY_AXIS_LEFT_X] = 0.10
+	axes[JOY_AXIS_TRIGGER_RIGHT] = 0.03
+	axes[JOY_AXIS_TRIGGER_LEFT] = 0.02
+	activity = create_activity(shared, "monster-car-2")
+	await process_frame
+	await process_frame
+	check(activity.startup_error.is_empty(), "nitro car starts for supported-light shortcut coverage")
+	if activity.startup_error.is_empty():
+		for i in 4: step()
+		activity.handle_action("resume")
+		var aux_before: bool = activity._effects.auxiliary_enabled
+		await button(JOY_BUTTON_RIGHT_SHOULDER)
+		check(activity._vehicle_entry.nitro and activity._effects.auxiliary_enabled != aux_before,
+			"RB toggles auxiliary lights on the supported nitro car")
 	activity.free()
 	await process_frame
 	await process_frame

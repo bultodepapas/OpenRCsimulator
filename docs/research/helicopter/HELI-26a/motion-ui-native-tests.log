@@ -3,8 +3,19 @@ Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
 ok advanced inspector opens with admitted neutral mechanics
 ok all five UI controls reach the mechanism with correct units/order
 ok slow inspection rotation advances the source mechanism
-ok Space stops rotation even after a slider gains focus
-ok R resets all control demands without resetting shaft history
+ok Space freezes the mechanism without losing selected RPM
+ok paused reset queues neutral without moving the frozen pose
+ok single step advances exactly 1/60 second and remains paused
+ok resume retains the selected rotation speed
+ok smooth preset starts at the visible pose with a separate demand
+ok collective transition animates while the rotor is stopped
+ok pause freezes control transitions even after a new demand
+ok single step advances the queued smooth transition
+ok UI azimuth scrub preserves whole shaft turns
+ok actual tail shaft moves continuously across the azimuth seam
+ok selecting smooth mode while paused does not snap queued controls
+ok rejected animation rolls back hidden state as well as the visible rig
+ok rejected phase seek restores shaft history and requested RPM
 ok visibility controls reveal supplied canopy and blades
 ok invalid UI pose reports rejection and retains visible mechanism
-7 checks, 0 failed
+18 checks, 0 failed

@@ -30,8 +30,55 @@ func _initialize() -> void:
 func _run() -> void:
 	_layout_bounds()
 	await _report_behavior()
+	await _comparison_behavior()
 	print("accident report: %d checks, %d failed" % [_checks, _failures])
 	quit(1 if _failures > 0 else 0)
+
+
+func _comparison_behavior() -> void:
+	var report := AccidentReport.new()
+	root.add_child(report)
+	await _ui.settle()
+	var surface := report.find_child("AccidentReportSurface", true, false) as Control
+	surface.set_anchors_and_offsets_preset(Control.PRESET_TOP_LEFT)
+	surface.size = Vector2(1280.0, 720.0)
+	var assessment := {currency = "USD", known_subtotal_minor = 539, total_minor = null,
+		complete = false, outcome = "repair", lines = [{id = "propeller", action = "replace", quantity = 1, amount_minor = 539}],
+		replacement_comparison = {status = "optimal", total_cost_cents = 539, optimality_proven = true, assessment_complete = false}}
+	report.show_assessment(assessment, true)
+	report.controller_action("details")
+	await _ui.settle()
+	var details := _details_text(report)
+	_check("replacement comparison stays separate from accident subtotal", details.contains("Replacement parts comparison")
+		and details.contains("Lowest priced combination for these parts") and details.contains("not added to the accident total")
+		and report.find_child("ReportAmount", true, false).text == "US$5.39", details)
+	_check("parts optimum does not resolve other inspection costs", details.contains("Other damage or inspection costs remain unresolved.")
+		and details.contains("physical fit require confirmation"), details)
+	_check_live_panel_bounds(report, "parts comparison details")
+	for status: String in ["unknown_cost", "search_limit", "infeasible", "cost_out_of_range"]:
+		assessment.replacement_comparison.status = status
+		assessment.replacement_comparison.optimality_proven = false
+		assessment.replacement_comparison.total_cost_cents = null
+		report.show_assessment(assessment, true)
+		report.controller_action("details")
+		details = _details_text(report)
+		_check("unproven comparison never claims a cheapest zero-dollar option: " + status,
+			details.contains("Provisional parts estimate") and details.contains("Not priced")
+			and not details.contains("Lowest priced combination") and not details.contains("US$0.00"), details)
+	assessment.replacement_comparison = "malformed"
+	report.show_assessment(assessment, true)
+	report.controller_action("details")
+	_check("malformed optional comparison is not rendered", not _details_text(report).contains("Replacement parts comparison"))
+	TranslationServer.set_locale("es")
+	assessment.replacement_comparison = {status = "optimal", total_cost_cents = 539, optimality_proven = true, assessment_complete = false}
+	report.show_assessment(assessment, true)
+	report.controller_action("details")
+	details = _details_text(report)
+	_check("replacement comparison is localized", details.contains("Comparación de repuestos")
+		and details.contains("Combinación de menor precio") and details.contains("no se suma al total del accidente"), details)
+	TranslationServer.set_locale("en")
+	report.queue_free()
+	await _ui.settle()
 
 
 func _check(label: String, ok: bool, detail: String = "") -> void:

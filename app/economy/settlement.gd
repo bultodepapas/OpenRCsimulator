@@ -20,6 +20,33 @@ func reset() -> void:
 	_settled = false
 
 
+func checkpoint() -> Dictionary:
+	return {last_tick = _last_tick, stable_elapsed_s = _stable_elapsed_s,
+		has_stable_sample = _has_stable_sample, settled = _settled}
+
+
+static func valid_checkpoint(value: Variant, tick: int) -> bool:
+	if not value is Dictionary or value.size() != 4:
+		return false
+	if not value.get("last_tick") is int or value.last_tick < -1 or value.last_tick > tick \
+		or not value.get("stable_elapsed_s") is float or not is_finite(value.stable_elapsed_s) \
+		or value.stable_elapsed_s < 0.0 or value.stable_elapsed_s > REQUIRED_STABLE_S + MAX_SAMPLE_DT_S \
+		or not value.get("has_stable_sample") is bool or not value.get("settled") is bool:
+		return false
+	if not value.has_stable_sample and value.stable_elapsed_s != 0.0:
+		return false
+	if value.has_stable_sample and value.last_tick < 0:
+		return false
+	return value.settled == (value.stable_elapsed_s >= REQUIRED_STABLE_S)
+
+
+func restore_checkpoint(value: Dictionary) -> void:
+	_last_tick = value.last_tick
+	_stable_elapsed_s = value.stable_elapsed_s
+	_has_stable_sample = value.has_stable_sample
+	_settled = value.settled
+
+
 ## Presentation policy only; it does not classify damage or validate a physical landing.
 static func is_stable(grounded: bool, speed_mps: float, angular_speed_rad_s: float) -> bool:
 	return grounded and is_finite(speed_mps) and speed_mps >= 0.0 and speed_mps <= MAX_LINEAR_SPEED_MPS \

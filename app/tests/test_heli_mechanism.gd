@@ -46,13 +46,12 @@ func _run() -> void:
 			var observed: Transform3D = (rig.bindings[id] as Node3D).global_transform
 			var position_error := observed.origin.distance_to(expected.origin)
 			max_position = maxf(max_position, position_error)
-			# Ball-link roll is deterministic parallel transport; only its endpoints
-			# are constrained. Blender's Damped Track uses a different free twist.
-			if not id.begins_with("linkage."):
-				for column in 3:
-					max_basis = maxf(max_basis, (observed.basis[column] - expected.basis[column]).length())
+			# Include every terminal orientation: endpoint closure alone does not
+			# detect sockets that incorrectly cancel their carrier's rotation.
+			for column in 3:
+				max_basis = maxf(max_basis, (observed.basis[column] - expected.basis[column]).length())
 	_check("all 44 independent source poses match positions within 2 micrometres", max_position < 2e-6)
-	_check("all driven frames match source orientation within 0.00002", max_basis < 2e-5)
+	_check("all driven frames and 18 ball-link terminals match source orientation within 0.00002", max_basis < 2e-5)
 	print("ORACLE max_position_m=", max_position, " max_basis=", max_basis, " max_rod_residual_m=", max_residual)
 
 	var accepted: Dictionary = {}
@@ -95,6 +94,7 @@ func _run() -> void:
 		rods_match = rods_match and (bar.transform as Transform3D).is_equal_approx(rig._rest["visual." + String(link.id).trim_prefix("linkage.") + "_varilla"])
 		rods_match = rods_match and absf(a.global_basis.y.normalized().dot(direction)) > 0.9999
 	_check("rendered rods follow both terminal positions without stretching meshes", rods_match)
+	_check_rotating_terminals(rig)
 	for id: String in rig.bindings:
 		accepted[id] = rig.bindings[id].transform
 	for bad in [PackedFloat64Array([14, 0, 0, 0, 0]), PackedFloat64Array([0, 0, 0, INF, 0]), PackedFloat64Array([0, 0, 0]), PackedFloat64Array([NAN, 0, 0, 0, 0])]:
@@ -133,6 +133,86 @@ func _same(rig: RefCounted, before: Dictionary) -> bool:
 		if rig.bindings[id].transform != before[id]:
 			return false
 	return true
+
+
+func _check_rotating_terminals(rig: RefCounted) -> void:
+	rig.apply(PackedFloat64Array([0, 0, 0, 0, 0]))
+	var neutral: Dictionary = {}
+	var rod_references: Dictionary = {}
+	for link: Dictionary in rig._linkages:
+		for endpoint: String in [link.endpoint_a, link.endpoint_b]:
+			neutral[endpoint] = (rig.bindings[endpoint] as Node3D).global_basis
+		var a: Node3D = rig.bindings[link.endpoint_a]
+		var b: Node3D = rig.bindings[link.endpoint_b]
+		var bar: MeshInstance3D = rig.bindings["visual." + String(link.id).trim_prefix("linkage.") + "_varilla"]
+		var bounds := bar.mesh.get_aabb()
+		var longest := bounds.size.max_axis_index()
+		var direction := (b.global_position - a.global_position).normalized()
+		var tips := PackedVector3Array()
+		var offsets := PackedFloat64Array()
+		for end in [bounds.position[longest], bounds.end[longest]]:
+			var point := bounds.get_center()
+			point[longest] = end
+			tips.append(point)
+			offsets.append((bar.global_transform * point - a.global_position).dot(direction))
+		rod_references[link.id] = {"node": bar, "tips": tips, "offsets": offsets}
+	rig.apply(PackedFloat64Array([0, 0, 0, 0, PI]))
+	var head_follows := true
+	var fixed_stays := true
+	for id: String in neutral:
+		var observed: Basis = rig.bindings[id].global_basis
+		if id.begins_with("linkage.bieleta_cabeza"):
+			var expected: Basis = Basis(Vector3.UP, PI) * neutral[id]
+			head_follows = head_follows and _basis_error(observed, expected) < 2e-5
+		elif id.begins_with("linkage.varilla_servo"):
+			fixed_stays = fixed_stays and _basis_error(observed, neutral[id]) < 2e-5
+	_check("all four head sockets follow a half-turn of the rotor", head_follows)
+	_check("the six fixed servo-link sockets do not inherit rotor spin", fixed_stays)
+	var previous_frames: Dictionary = {}
+	var reference_pose: Dictionary = {}
+	var maximum_step := 0.0
+	var maximum_mesh_error := 0.0
+	var full_turn_ok := true
+	for i in 1441:
+		var phase := float(i) * TAU / 720.0
+		var result: Dictionary = rig.apply(PackedFloat64Array([6, 7, -4, 15, phase]))
+		full_turn_ok = full_turn_ok and result.ok
+		for link: Dictionary in rig._linkages:
+			var a: Node3D = rig.bindings[link.endpoint_a]
+			var b: Node3D = rig.bindings[link.endpoint_b]
+			var direction := (b.global_position - a.global_position).normalized()
+			# Check the actual rendered mesh's long axis and both centreline ends.
+			# Imported rod mesh axes differ from the terminal's authored +Y axis.
+			var rod: Dictionary = rod_references[link.id]
+			for tip_index in 2:
+				var offset: Vector3 = (rod.node as Node3D).global_transform * rod.tips[tip_index] - a.global_position
+				maximum_mesh_error = maxf(maximum_mesh_error, offset.cross(direction).length())
+				maximum_mesh_error = maxf(maximum_mesh_error, absf(offset.dot(direction) - rod.offsets[tip_index]))
+			for endpoint: String in [link.endpoint_a, link.endpoint_b]:
+				var node: Node3D = rig.bindings[endpoint]
+				var rotation := node.global_basis.orthonormalized().get_rotation_quaternion()
+				full_turn_ok = full_turn_ok and absf(node.global_basis.y.normalized().dot(direction)) > 0.9999
+				if previous_frames.has(endpoint):
+					maximum_step = maxf(maximum_step, rotation.angle_to(previous_frames[endpoint]))
+				previous_frames[endpoint] = rotation
+				if i == 360:
+					reference_pose[endpoint] = node.global_transform
+	_check("all 18 sockets stay aligned without flips through two full rotor turns", full_turn_ok and maximum_step < deg_to_rad(4))
+	_check("rendered rod centreline ends preserve their authored ball clearances throughout rotation", maximum_mesh_error < 2e-6)
+	print("TERMINALS maximum_step_deg=", rad_to_deg(maximum_step), " main_step_deg=0.5 poses=1441")
+	print("RENDERED_RODS maximum_axis_or_end_offset_error_m=", maximum_mesh_error)
+	rig.apply(PackedFloat64Array([6, 7, -4, 15, PI]))
+	var path_independent := true
+	for endpoint: String in reference_pose:
+		path_independent = path_independent and (rig.bindings[endpoint] as Node3D).global_transform.is_equal_approx(reference_pose[endpoint])
+	_check("revisiting an azimuth restores identical socket frames without accumulated twist", path_independent)
+
+
+func _basis_error(a: Basis, b: Basis) -> float:
+	var error := 0.0
+	for axis in 3:
+		error = maxf(error, a[axis].distance_to(b[axis]))
+	return error
 
 
 func _check(label: String, ok: bool) -> void:

@@ -1,13 +1,13 @@
 {
   "format": "openrc-aircraft-economics v1",
   "currency": "USD",
-  "price_date": "2026-10-15",
+  "price_date": "2026-10-16",
   "generated_from": {
-    "price_catalog_sha256": "a8c4ffba866491092fb4b42397b447c70f421902ad720d487358b9b370687f0f",
-    "aircraft_costing_sha256": "8e01a56e16ec5665298ffc4dd8f2733c5c37da60cb495cb7bce3a2f326f7301f",
+    "price_catalog_sha256": "5efacc93c3a13a523bd815f3a75fe845f601340d101161009df7909d4b3b2720",
+    "aircraft_costing_sha256": "0488f842e50962f703840e0be8a1b4bdbc624b87c276f0af658d088b1a2530a2",
     "aircraft_catalog_sha256": "e0790acb9b1a5097d9d3cbcb564e72f074940a3813b52f70edf1c44dae5bc60c",
     "price_research_components_sha256": "4f562870b5a7148dc1663f7598fbeba0de20e925456d3cf8367c88d1a4f4f996",
-    "price_research_fleet_sha256": "3330a282642645cbea9ce6cd3ddb82a4a2c440b0a076e1e3561862e3a186d881"
+    "price_research_fleet_sha256": "85026093f0172a0692e6b1c3c1813b2e8770ba0b13dbf04f033923223a002f13"
   },
   "products": [
     {
@@ -56,6 +56,15 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "desert_aircraft_slimline_eda120c",
+      "brand": "Desert Aircraft / Slimline",
+      "sku": "EDA120C",
+      "name": "Slimline mufflers for DA-120, left/right pair",
+      "category": "exhaust",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "e_flite_efl105250b",
       "brand": "E-flite",
       "sku": "EFL105250B",
@@ -83,6 +92,51 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "e_flite_efl105253",
+      "brand": "E-flite",
+      "sku": "EFL105253",
+      "name": "Battery Hatch: Turbo Timber Evolution 1.5m",
+      "category": "airframe",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "e_flite_efl105254",
+      "brand": "E-flite",
+      "sku": "EFL105254",
+      "name": "Landing Gear: Turbo Timber Evolution 1.5m",
+      "category": "airframe",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "e_flite_efl105255",
+      "brand": "E-flite",
+      "sku": "EFL105255",
+      "name": "Landing Gear Retainer: Timber 10-year, Turbo Timber Evolution 1.5m",
+      "category": "airframe",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "e_flite_efl105257",
+      "brand": "E-flite",
+      "sku": "EFL105257",
+      "name": "Wing Plug Set: Timber 10-year, Turbo Timber Evolution 1.5m",
+      "category": "airframe",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "e_flite_efl105258",
+      "brand": "E-flite",
+      "sku": "EFL105258",
+      "name": "Cowl: Turbo Timber Evolution 1.5m",
+      "category": "airframe",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "e_flite_efl105275b",
       "brand": "E-flite",
       "sku": "EFL105275B",
@@ -101,11 +155,29 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "e_flite_efl5258",
+      "brand": "E-flite",
+      "sku": "EFL5258",
+      "name": "Wheel Set: Timber",
+      "category": "airframe",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "e_flite_efl5259",
       "brand": "E-flite",
       "sku": "EFL5259",
       "name": "Horizontal stabilizer with tube: Timber",
       "category": "replacement_part",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "e_flite_efl5268",
+      "brand": "E-flite",
+      "sku": "EFL5268",
+      "name": "Landing Gear Springs (Pair): Timber",
+      "category": "airframe",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     },
@@ -214,6 +286,15 @@
       "sku": "JP EROLEB-150SA",
       "name": "ER-150 electric retract and brake set for 2.0m Avanti S",
       "category": "retracts",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "ks_sold_by_desert_aircraft_eks3086",
+      "brand": "KS, sold by Desert Aircraft",
+      "sku": "EKS3086",
+      "name": "KS 3086 rear-exit canister",
+      "category": "exhaust",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     },
@@ -497,6 +578,42 @@
       "source_url": "https://www.apcprop.com/product/12x7/?v=84de8e2b14bb",
       "evidence_quality": "Direct manufacturer product page opened 2026-10-15; LP12070, Sport 12x7, USD price and cart control are explicit.",
       "notes": "Observed 2026-10-15. Exact named propeller for the experimental Stik 55AX configuration. Source lists 1.52 oz and a 1/4-inch shaft. This is a component valuation, not a performance or installation qualification; no physics data changed."
+    },
+    {
+      "id": "da120_slimline_pair_desert_aircraft_20261016",
+      "product_id": "desert_aircraft_slimline_eda120c",
+      "amount_minor": 21000,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.desertaircraft.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "manufacturer_retail_price_comparison_only",
+      "availability": "Variant available; manufacturer warns lead times can vary",
+      "sold_package_quantity": 1,
+      "package_description": "1 DA-120 left/right muffler pair, with two exhaust gaskets and mounting hardware",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.desertaircraft.com/products/da-stock-mufflers?variant=5302647233",
+      "evidence_quality": "high",
+      "notes": "Exact DA-120 selection is variant 5302647233 / SKU EDA120C at $210.00. Manufacturer says DA-120 mufflers are sold as left/right pairs; twin pairs include two exhaust gaskets and all mufflers include mounting hardware. This is a standard muffler pair, not the P-51 inventory's two in-cowl canisters, so do not map it to muffler_pair. The page default is DA-35 single muffler SKU EDA35 at $105, which is not the DA-120 price. Observed 2026-10-16."
+    },
+    {
+      "id": "da_ks3086_canister_desert_aircraft_20261016",
+      "product_id": "ks_sold_by_desert_aircraft_eks3086",
+      "amount_minor": 22500,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.desertaircraft.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "manufacturer_retail_price_per_unit",
+      "availability": "Variant available; no shipment estimate stated",
+      "sold_package_quantity": 1,
+      "package_description": "1 individual KS 3086 canister; no pair or header package stated",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.desertaircraft.com/products/ks-canisters?variant=5330902529",
+      "evidence_quality": "high",
+      "notes": "Exact selected variant 5330902529 is KS 3086 / SKU EKS3086, $225.00, available in the official product-variant feed. Listing gives rear exit, 360 mm length, 25 mm inlet, 60 mm diameter, approximately 250 g. The DA-120 manufacturer page recommends KS3086 Rear Exhaust. This supports a price proxy for canister units but does not identify the P-51's installed brand/SKU or establish headers, drop tubes, or installation hardware. Observed 2026-10-16."
     },
     {
       "id": "extra_60e_pro_arf_price_proxy",
@@ -1039,6 +1156,24 @@
       "notes": "Observed 2026-10-15. Listed at $16.99 each; quantity 4 gives a $67.96 component subtotal. Standard analog servo price proxy only; historical model servo torque, dimensions, connector, and control-system compatibility are unknown."
     },
     {
+      "id": "timber_evolution_battery_hatch_efl105253_horizon_20261016",
+      "product_id": "e_flite_efl105253",
+      "amount_minor": 999,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "In stock",
+      "sold_package_quantity": 1,
+      "package_description": "1 battery hatch",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/battery-hatch-turbo-timber-evolution-1.5m/EFL105253.html",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. Exact named spare part for the reference aircraft. It is a candidate fuselage-group constituent, not proof that the fictional fuselage_main group contains this exact hatch or that the remaining canopy and fittings are covered."
+    },
+    {
       "id": "timber_evolution_battery_proxy",
       "product_id": "spektrum_spmx324s50",
       "amount_minor": 6999,
@@ -1111,6 +1246,24 @@
       "notes": "Observed 2026-10-15. Includes the PNP equipment plus one installed AR637TA receiver; compatible transmitter, battery and charger are separate. Alternative package reference only; PNP and BNF are mutually exclusive and neither is added to standalone component values."
     },
     {
+      "id": "timber_evolution_cowl_efl105258_horizon_20261016",
+      "product_id": "e_flite_efl105258",
+      "amount_minor": 1499,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "In stock",
+      "sold_package_quantity": 1,
+      "package_description": "1 cowl",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/cowl-turbo-timber-evolution-1.5m/EFL105258.html",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. Exact named spare part for the reference aircraft. The replacement catalog lists it separately from the fuselage. It is not attached to fuselage_main because the fictional row's canopy and fitting coverage is unresolved."
+    },
+    {
       "id": "timber_evolution_esc_spmxae70e_horizon_20261015",
       "product_id": "spektrum_spmxae70e",
       "amount_minor": 7499,
@@ -1147,6 +1300,24 @@
       "notes": "Observed 2026-10-15. Candidate reference only; package contents do not confirm canopy and fittings coverage required by fuselage_main."
     },
     {
+      "id": "timber_evolution_gear_retainer_efl105255_horizon_20261016",
+      "product_id": "e_flite_efl105255",
+      "amount_minor": 599,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "In stock",
+      "sold_package_quantity": 1,
+      "package_description": "1 set: 2 retaining plates and 8 mounting screws",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/landing-gear-retainer-turbo-timber-evolution-1.5m/EFL105255.html",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. Official listing identifies two landing-gear retaining plates and mounting screws. This is a small fitting set, not a complete landing gear or wheel assembly; no economic row is priced from it alone."
+    },
+    {
       "id": "timber_evolution_horizontal_stab_efl5259_horizon_20261015",
       "product_id": "e_flite_efl5259",
       "amount_minor": 1999,
@@ -1163,6 +1334,42 @@
       "source_url": "https://www.horizonhobby.com/product/horizontal-stabilizer-with-tube-timber/EFL5259.html",
       "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
       "notes": "Observed 2026-10-15. Candidate reference only; it does not cover the vertical tail included in tail_surfaces."
+    },
+    {
+      "id": "timber_evolution_landing_gear_efl105254_horizon_20261016",
+      "product_id": "e_flite_efl105254",
+      "amount_minor": 1699,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "In stock",
+      "sold_package_quantity": 1,
+      "package_description": "1 replacement part",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/landing-gear-turbo-timber-evolution-1.5m/EFL105254.html",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. Horizon Hobby lists this exact Turbo Timber Evolution replacement part and compatibility. The captured page does not enumerate the box contents. Candidate for the main landing-gear group only; do not infer wheel, spring, retainer, or tailwheel coverage."
+    },
+    {
+      "id": "timber_evolution_landing_springs_efl5268_horizon_20261016",
+      "product_id": "e_flite_efl5268",
+      "amount_minor": 499,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "Not stated on captured listing",
+      "sold_package_quantity": 1,
+      "package_description": "1 pair",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/landing-gear-springs-pair-timber/EFL5268.html",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. Official parts listing prices a pair of Timber landing-gear springs; the Turbo Timber Evolution manual lists EFL5268. Treat this as a candidate only because the existing EFL-1249 updated gear-set offer may overlap its contents."
     },
     {
       "id": "timber_evolution_led_controller_efla521_horizon_20261015",
@@ -1381,6 +1588,42 @@
       "notes": "Observed 2026-10-15. One spinner only. This is not a combined propeller-and-spinner offer and is not attached to propeller_main."
     },
     {
+      "id": "timber_evolution_wheel_set_efl5258_horizon_20261016",
+      "product_id": "e_flite_efl5258",
+      "amount_minor": 1999,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "In stock",
+      "sold_package_quantity": 1,
+      "package_description": "1 set: 2 main wheels (108 mm) and 1 tailwheel",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/wheel-set-timber/EFL5258.html",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. The Turbo Timber Evolution manufacturer manual lists EFL5258 as a replacement part, and the current product page confirms two 108 mm main wheels plus one tailwheel. The pack spans main- and tail-wheel subparts; keep it unallocated until it can be counted once without implying the missing tail fork or duplicating the set across rows."
+    },
+    {
+      "id": "timber_evolution_wing_plugs_efl105257_horizon_20261016",
+      "product_id": "e_flite_efl105257",
+      "amount_minor": 1499,
+      "currency": "USD",
+      "observed_on": "2026-10-16",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retail_price",
+      "availability": "Backorder; estimated January 2027",
+      "sold_package_quantity": 1,
+      "package_description": "1 set: 2 wing plugs",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/wing-plug-set-turbo-timber-evolution-1.5m/EFL105257.html",
+      "evidence_quality": "high",
+      "notes": "Observed 2026-10-16. Horizon Hobby describes two wing plugs. The physical inventory does not identify a wing-plug or connector line, so this remains unassigned and is excluded from every row subtotal."
+    },
+    {
       "id": "topflite-monokote-roll-topq0208",
       "product_id": "top_flite_topq_0208",
       "amount_minor": 2499,
@@ -1441,7 +1684,7 @@
       "aircraft_id": "jensen-das-ugly-stik-60",
       "source_sha256": "bdcf4d64c45676a112d837513ee1eef7ed017c39fa8b39b21236cd801950f723",
       "currency": "USD",
-      "price_date": "2026-10-15",
+      "price_date": "2026-10-16",
       "valuation_kind": "complete_inventory_coverage_with_cost_estimates",
       "components": [
         {
@@ -1629,7 +1872,7 @@
       "aircraft_id": "stik-glow-61fx-2t",
       "source_sha256": "4f50726804a1fbc6dbac3570e4ca4b2b20a270933816ff0032cd0463de7a5177",
       "currency": "USD",
-      "price_date": "2026-10-15",
+      "price_date": "2026-10-16",
       "valuation_kind": "inherited_complete_inventory_coverage_with_cost_estimates",
       "components": [
         {
@@ -1817,7 +2060,7 @@
       "aircraft_id": "stik-glow-55ax-2t",
       "source_sha256": "e5494601e2bf3390f95c37f2175bb28b508b2a340c8c9fe55d56b1a7b335c3ae",
       "currency": "USD",
-      "price_date": "2026-10-15",
+      "price_date": "2026-10-16",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
       "components": [
         {
@@ -2005,7 +2248,7 @@
       "aircraft_id": "stik-glow-fs64v-4t",
       "source_sha256": "d381fc6c3fb014e2c727410b1c1996c8f7cf35e0ad6af63c0268e11c5b1092af",
       "currency": "USD",
-      "price_date": "2026-10-15",
+      "price_date": "2026-10-16",
       "valuation_kind": "reconciled_variant_inventory_coverage_with_cost_estimates",
       "components": [
         {
@@ -2193,7 +2436,7 @@
       "aircraft_id": "gp-extra-300s-60",
       "source_sha256": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
       "currency": "USD",
-      "price_date": "2026-10-15",
+      "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
       "components": [
         {
@@ -2534,7 +2777,7 @@
       "aircraft_id": "p51d-mustang-120",
       "source_sha256": "e1e24f742a24204cd2875e42eb64760d3b0da5796fc74c3ca4b32834ffa2c544",
       "currency": "USD",
-      "price_date": "2026-10-15",
+      "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
       "components": [
         {
@@ -2553,15 +2796,15 @@
         {
           "id": "muffler_pair",
           "quantity": 2,
-          "unit_minor": null,
+          "unit_minor": 22500,
           "low_unit_minor": null,
           "high_unit_minor": null,
           "physical_inventory_ids": [
             "muffler_pair"
           ],
-          "price_basis": "estimated",
-          "offer_id": null,
-          "notes": "Two mufflers/canisters are present in this physical inventory group. No exact current replacement-product USD quote was verified; the DA-120 offer includes gaskets, not the installed mufflers."
+          "price_basis": "price_proxy",
+          "offer_id": "da_ks3086_canister_desert_aircraft_20261016",
+          "notes": "Two canister bodies at $225 each, totaling $450; exact selected seller variant 5330902529 / EKS3086 observed 2026-10-16. Desert Aircraft recommends KS3086 for DA-120, but this does not establish the installed P-51 SKU or physical fit. Headers, drop tubes, couplers, clamps and mounting hardware remain unverified or unpriced; the full aircraft stays incomplete. The $210 DA-120 Slimline offer is a standard muffler pair and is comparison-only, not this canister row. Engine package gaskets are not charged again."
         },
         {
           "id": "propeller",
@@ -2905,10 +3148,10 @@
       ],
       "missing": [
         "No current matched 2.82 m P-51 airframe quote was verified. The existing CARF 1:4.3/50-85 cc offer and smaller P-51 products are not mapped to this aircraft.",
-        "No exact current USD price was verified for the Biela CFK 26x12 four-blade propeller, two mufflers/canisters, spinner, mount, cowl, tank, fuel, batteries, radio/power distribution, retract gear, or airframe parts.",
+        "No exact current USD price was verified for the Biela CFK 26x12 four-blade propeller, spinner, mount, cowl, tank, fuel, batteries, radio/power distribution, retract gear, or airframe parts.",
         "Seven flight-control servo positions use a large-aircraft servo value proxy; two small throttle/choke servos use a separate ordinary-servo proxy. Installed models remain unknown, and the proxy prices do not establish a complete order or compatibility.",
         "Aircraft-specific assembly, commissioning, and post-crash inspection labor remain unknown.",
-        "No replacement price for economic component: muffler_pair.",
+        "Two KS3086 canister bodies provide a count-matched price proxy only. Installed canister identity, headers, drop tubes, couplers, clamps and complete exhaust installation scope remain unverified or unpriced.",
         "No replacement price for economic component: propeller.",
         "No replacement price for economic component: spinner_main.",
         "No replacement price for economic component: engine_mount.",
@@ -2955,7 +3198,7 @@
       "aircraft_id": "sebart-avanti-s-a200-p100rx",
       "source_sha256": "387047f77349b61fe0eb463a93794b50d31ec76c65087f0d3cb3f9fe402f7e75",
       "currency": "USD",
-      "price_date": "2026-10-15",
+      "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
       "components": [
         {
@@ -3212,13 +3455,13 @@
       "aircraft_id": "turbo-lumber-evolution",
       "source_sha256": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee",
       "currency": "USD",
-      "price_date": "2026-10-15",
+      "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
       "components": [
         {
           "id": "wing_main",
           "quantity": 1,
-          "unit_minor": null,
+          "unit_minor": 11595,
           "low_unit_minor": null,
           "high_unit_minor": null,
           "physical_inventory_ids": [
@@ -3226,7 +3469,7 @@
           ],
           "price_basis": "estimated",
           "offer_id": null,
-          "notes": "No price attached. The EFL105252 wing assembly is a partial candidate because servos are explicitly excluded and the physical row also includes flaps and ailerons."
+          "notes": "Composite commercial price-proxy estimate for the fictional aircraft, not installed-hardware qualification. Horizon explicitly says the EFL105252 wing listing excludes servos. The manufacturer manual names two aileron, two flap, one elevator, and one rudder SPMSA370 servo. This intake allocates four of the six unit-price proxies here and the remaining two to the already-priced tail_servos row. The two row allocations total six units and do not overlap. The servo page showed backorder with an October 2026 estimate in the 2026-10-15 observation. Composite estimate from separate offers, not one sold package: 1 x timber_evolution_replacement_wing_horizon_20261015: 5999 USD cents each; observed 2026-10-15; In stock at Horizon Hobby; https://www.horizonhobby.com/product/wing-turbo-timber-evolution-1.5m/EFL105252.html | 4 x timber_evolution_servo_spmsa370_horizon_20261015: 1399 USD cents each; observed 2026-10-15; Backorder; estimated October 2026; https://www.horizonhobby.com/product/a370-digital-9g-metal-gear-aircraft-servo/SPMSA370.html"
         },
         {
           "id": "fuselage_main",
@@ -3283,7 +3526,7 @@
         {
           "id": "propeller_main",
           "quantity": 1,
-          "unit_minor": null,
+          "unit_minor": 1698,
           "low_unit_minor": null,
           "high_unit_minor": null,
           "physical_inventory_ids": [
@@ -3291,7 +3534,7 @@
           ],
           "price_basis": "estimated",
           "offer_id": null,
-          "notes": "No price attached. EFL5962 propeller and EFL17553 spinner are separate offers; neither alone covers this combined physical inventory row."
+          "notes": "Composite commercial price-proxy estimate for the fictional aircraft, not installed-hardware qualification. The physical inventory row explicitly combines a three-blade propeller and spinner. The candidate replacement value can be recorded as a composite economic row, but a propeller strike must not automatically charge for the unstruck spinner. Preserve empty runtime propeller bindings unless the simulation separately models/bills these parts. Composite estimate from separate offers, not one sold package: 1 x timber_evolution_propeller_efl5962_horizon_20261015: 799 USD cents each; observed 2026-10-15; In stock at Horizon Hobby; https://www.horizonhobby.com/product/3-blade-propeller-11-x-7.3/EFL5962.html | 1 x timber_evolution_spinner_efl17553_horizon_20261015: 899 USD cents each; observed 2026-10-15; In stock at Horizon Hobby; https://www.horizonhobby.com/product/spinner-turbo-timber/EFL17553.html"
         },
         {
           "id": "motor_main",
@@ -3394,23 +3637,19 @@
         }
       ],
       "missing": [
-        "Fictional-to-commercial build mapping is unknown. All five attached component prices are commercial price proxies, not verified installed-product prices.",
+        "Fictional-to-commercial build mapping is unverified. Seven physical rows now have single-offer proxies or composite estimates; these are not verified installed-product prices.",
         "PNP and BNF are alternative complete-aircraft packages. PNP includes motor, ESC, six servos, slats and floats; BNF adds an AR637TA receiver. Battery, transmitter and charger are separate. Never sum a package with standalone components or with the other package.",
-        "wing_main remains unpriced: the replacement wing listing explicitly excludes servos, and the physical group also includes flaps and ailerons.",
         "fuselage_main remains unpriced: the fuselage offer does not confirm canopy and fittings coverage.",
         "tail_surfaces remains unpriced: the horizontal stabilizer offer omits the vertical tail.",
         "gear_main remains unpriced: the updated gear set listing does not verify the complete physical group of main gear and wheels. gear_tail is also unpriced because no complete tailwheel-and-fork quote was verified.",
-        "propeller_main remains unpriced: it combines a three-blade propeller and spinner, while the observed offers are separate single products. The current one-offer-per-line mapping cannot price the combined group without an unresolved partial-price assumption.",
         "wiring_lighting remains unpriced: the LED controller does not cover the wiring and navigation LEDs.",
         "The 4S 3200mAh battery and 9g servo offers showed backorder with an October 2026 estimate on 2026-10-15.",
         "No complete replacement valuation, labor basis, or foam repair recipe was verified. The virtual ballast_reference row is not installed hardware and is excluded from this physical-inventory dossier.",
-        "Candidate offer references are not attached to a component until physical fit and package coverage are reconciled: timber_evolution_pnp_aircraft_horizon_20261015, timber_evolution_bnf_aircraft_horizon_20261015, timber_evolution_replacement_wing_horizon_20261015, timber_evolution_replacement_landing_gear_horizon_20261015, timber_evolution_propeller_efl5962_horizon_20261015, timber_evolution_spinner_efl17553_horizon_20261015, timber_evolution_fuselage_efl105251_horizon_20261015, timber_evolution_horizontal_stab_efl5259_horizon_20261015, timber_evolution_led_controller_efla521_horizon_20261015.",
-        "No replacement price for economic component: wing_main.",
+        "Candidate offer references are not attached to a component until physical fit and package coverage are reconciled: timber_evolution_pnp_aircraft_horizon_20261015, timber_evolution_bnf_aircraft_horizon_20261015, timber_evolution_replacement_landing_gear_horizon_20261015, timber_evolution_fuselage_efl105251_horizon_20261015, timber_evolution_horizontal_stab_efl5259_horizon_20261015, timber_evolution_led_controller_efla521_horizon_20261015, timber_evolution_landing_gear_efl105254_horizon_20261016, timber_evolution_gear_retainer_efl105255_horizon_20261016, timber_evolution_wheel_set_efl5258_horizon_20261016, timber_evolution_battery_hatch_efl105253_horizon_20261016, timber_evolution_cowl_efl105258_horizon_20261016, timber_evolution_landing_springs_efl5268_horizon_20261016, timber_evolution_wing_plugs_efl105257_horizon_20261016.",
         "No replacement price for economic component: fuselage_main.",
         "No replacement price for economic component: tail_surfaces.",
         "No replacement price for economic component: gear_main.",
         "No replacement price for economic component: gear_tail.",
-        "No replacement price for economic component: propeller_main.",
         "No replacement price for economic component: wiring_lighting.",
         "No replacement price for economic component: final_assembly_and_commissioning."
       ],
@@ -3452,7 +3691,7 @@
       "aircraft_id": "xcell-60-research",
       "source_sha256": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
       "currency": "USD",
-      "price_date": "2026-10-15",
+      "price_date": "2026-10-16",
       "valuation_kind": "unpriced",
       "components": [],
       "exclusions": [],

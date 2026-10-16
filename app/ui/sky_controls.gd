@@ -3,6 +3,7 @@ extends VBoxContainer
 
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
 const Widgets := preload("res://ui/widgets.gd")
+const ResponsiveGrid := preload("res://ui/responsive_grid.gd")
 signal focus_order_changed
 signal night_requested
 
@@ -18,6 +19,8 @@ var speed_input: SpinBox
 var direction_input: SpinBox
 var volume_input: HSlider
 var night_button: Button
+var _gallery: GridContainer
+var _responsive_grids: Array[GridContainer] = []
 var _aloft: VBoxContainer
 var _storm: VBoxContainer
 var _description: Label
@@ -30,13 +33,14 @@ func _init(initial: Variant = null) -> void:
 	var checked: Dictionary = SkyConfig.validate(SkyConfig.defaults() if initial == null else initial)
 	draft = checked.config if checked.ok else SkyConfig.defaults()
 	add_child(Widgets.label("Choose the cloudscape. Time and flight wind stay as selected.", "SecondaryLabel", true))
-	var gallery := GridContainer.new()
-	gallery.name = "SkyGallery"
-	gallery.columns = 2
-	gallery.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	gallery.add_theme_constant_override("h_separation", 12)
-	gallery.add_theme_constant_override("v_separation", 10)
-	add_child(gallery)
+	_gallery = GridContainer.new()
+	_gallery.name = "SkyGallery"
+	_gallery.columns = 2
+	_gallery.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	_gallery.add_theme_constant_override("h_separation", 12)
+	_gallery.add_theme_constant_override("v_separation", 10)
+	_responsive_grids.append(_gallery)
+	add_child(_gallery)
 	for entry: Dictionary in SkyConfig.presets():
 		var card := Button.new()
 		card.name = "Sky_" + str(entry.id)
@@ -64,9 +68,11 @@ func _init(initial: Variant = null) -> void:
 		content.add_child(picture)
 		var label := Widgets.label(str(entry.name), "", false)
 		label.mouse_filter = Control.MOUSE_FILTER_IGNORE
+		label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+		label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 		content.add_child(label)
 		card.pressed.connect(select_preset.bind(str(entry.id)))
-		gallery.add_child(card)
+		_gallery.add_child(card)
 		preset_buttons[str(entry.id)] = card
 	_description = Widgets.label("", "SecondaryLabel", true)
 	_description.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
@@ -101,6 +107,11 @@ func _init(initial: Variant = null) -> void:
 	night_button.pressed.connect(func() -> void: night_requested.emit())
 	_storm.add_child(night_button)
 	_refresh()
+
+
+func _ready() -> void:
+	resized.connect(_update_responsive_layout)
+	_update_responsive_layout.call_deferred()
 
 
 func _notification(what: int) -> void:
@@ -176,28 +187,35 @@ func _refresh() -> void:
 	flash_picker.select(FLASHES.find(draft.flashes))
 	volume_input.set_value_no_signal(float(draft.thunder_volume))
 	_changing = false
+	_update_responsive_layout()
 	focus_order_changed.emit()
 
 
 func _picker(label_text: String, options: Array, parent: VBoxContainer = null) -> OptionButton:
 	if parent == null:
 		parent = self
-	var row := HBoxContainer.new()
-	row.add_theme_constant_override("separation", 12)
-	row.add_child(Widgets.label(label_text, "SecondaryLabel"))
+	var row := GridContainer.new()
+	row.columns = 2
+	row.add_theme_constant_override("h_separation", 12)
+	row.add_theme_constant_override("v_separation", 6)
+	var label := Widgets.label(label_text, "SecondaryLabel", true)
+	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	row.add_child(label)
 	var picker := OptionButton.new()
 	picker.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	picker.fit_to_longest_item = false
 	picker.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	for option: String in options:
 		picker.add_item(tr(option))
 	row.add_child(picker)
+	_responsive_grids.append(row)
 	parent.add_child(row)
 	return picker
 
 
 func _number(parent: VBoxContainer, label_text: String, minimum: float, maximum: float, increment: float) -> SpinBox:
 	var row := HBoxContainer.new()
-	var label := Widgets.label(label_text, "SecondaryLabel")
+	var label := Widgets.label(label_text, "SecondaryLabel", true)
 	label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(label)
 	var input := SpinBox.new()
@@ -208,3 +226,15 @@ func _number(parent: VBoxContainer, label_text: String, minimum: float, maximum:
 	row.add_child(input)
 	parent.add_child(row)
 	return input
+
+
+func _update_responsive_layout() -> void:
+	var available_width: float = size.x
+	if available_width <= 0.0:
+		return
+	for grid: GridContainer in _responsive_grids:
+		var previous_columns: int = grid.columns
+		var two_column_width: float = ResponsiveGrid.two_column_minimum_width(grid)
+		var desired_columns: int = 1 if two_column_width > available_width else 2
+		if previous_columns != desired_columns:
+			grid.columns = desired_columns

@@ -1,0 +1,169 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "cue": {
+    "collides": false,
+    "east": -12.0,
+    "id": "windsock",
+    "length": 2.5,
+    "north": -6.0,
+    "pole_height": 3.6,
+    "tail_diameter": 0.18,
+    "throat_diameter": 0.45,
+    "type": "windsock"
+  },
+  "driver": "opengl3",
+  "format": "openrc-l10a-capture v1",
+  "method": "gl_compatibility",
+  "records": [
+    {
+      "bounds": [
+        411.266387939453,
+        89.8877944946289,
+        610.394287109375,
+        519.55517578125
+      ],
+      "draws": 44,
+      "eye": [
+        -7.0,
+        4.0,
+        11.0
+      ],
+      "fov": 40.0,
+      "image": "close-off.png",
+      "primitives": 142661,
+      "runway_polygon": [],
+      "sha256": "10d2fb609006a45f5ba4595a5439f28f2324878c4ffd1b5c5edab3342d30d4c5",
+      "target": [
+        -11.5,
+        2.20000004768372,
+        6.0
+      ]
+    },
+    {
+      "bounds": [
+        411.266387939453,
+        89.8877944946289,
+        610.394287109375,
+        519.55517578125
+      ],
+      "draws": 46,
+      "eye": [
+        -7.0,
+        4.0,
+        11.0
+      ],
+      "fov": 40.0,
+      "image": "close-on.png",
+      "primitives": 147939,
+      "runway_polygon": [],
+      "sha256": "218e14b47f64323595d4d893cd3d20ccfdfaecf3e4ba0308ff069ee301778d48",
+      "target": [
+        -11.5,
+        2.20000004768372,
+        6.0
+      ]
+    },
+    {
+      "bounds": [
+        443.659088134766,
+        184.090057373047,
+        501.62646484375,
+        369.212677001953
+      ],
+      "draws": 100,
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "fov": 50.0,
+      "image": "pilot_turn-off.png",
+      "primitives": 229626,
+      "runway_polygon": [],
+      "sha256": "9191d1b321f048e42d5c6459e493bc39cc004901617652d4101a443cbfd56aff",
+      "target": [
+        -11.5,
+        2.09999990463257,
+        6.0
+      ]
+    },
+    {
+      "bounds": [
+        443.659088134766,
+        184.090057373047,
+        501.62646484375,
+        369.212677001953
+      ],
+      "draws": 102,
+      "eye": [
+        0.0,
+        1.70000004768372,
+        0.0
+      ],
+      "fov": 50.0,
+      "image": "pilot_turn-on.png",
+      "primitives": 234904,
+      "runway_polygon": [],
+      "sha256": "b58b02ab629b50e322190a1152249493e702f0854eeec5f54a8e21c6aee9eed1",
+      "target": [
+        -11.5,
+        2.09999990463257,
+        6.0
+      ]
+    },
+    {
+      "bounds": [
+        170.826278686523,
+        248.607177734375,
+        208.365325927734,
+        321.175964355469
+      ],
+      "draws": 102,
+      "eye": [
+        14.0,
+        12.0,
+        28.0
+      ],
+      "fov": 50.0,
+      "image": "overview-off.png",
+      "primitives": 222312,
+      "runway_polygon": [],
+      "sha256": "5d45fb92357dc36a7dbcc8ab195262315b3f34b425f7ef14018af0fa30503e66",
+      "target": [
+        0.0,
+        0.0,
+        -8.0
+      ]
+    },
+    {
+      "bounds": [
+        170.826278686523,
+        248.607177734375,
+        208.365325927734,
+        321.175964355469
+      ],
+      "draws": 104,
+      "eye": [
+        14.0,
+        12.0,
+        28.0
+      ],
+      "fov": 50.0,
+      "image": "overview-on.png",
+      "primitives": 227590,
+      "runway_polygon": [],
+      "sha256": "41a3942abff23d8e324a89c5f4f25951419e6f4552195a0d920632dd4b0cba33",
+      "target": [
+        0.0,
+        0.0,
+        -8.0
+      ]
+    }
+  ],
+  "scenery": true,
+  "shader_time": 0.0,
+  "viewport": [
+    960,
+    540
+  ]
+}

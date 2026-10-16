@@ -61,6 +61,7 @@ var ground_surfaces: PackedFloat64Array:
 var flight_mode: String = "normal"
 var trainer_enabled: bool = true
 var zero_drive_hold: bool = false
+var _controller_cut_held: bool = false
 var start_choice: String = "airborne"
 var power: Dictionary = Lifecycle.initial(true)
 var startup_collective: float = 0.0
@@ -555,6 +556,9 @@ func set_drive_hold(enabled: bool) -> bool:
   zero_drive_hold=true
   pending_mode=""
   return true
+ if _controller_cut_held:
+  pause_reason="Release throttle cut before releasing rotor hold."
+  return false
  if not power.armed:
   pause_reason="Motor is disarmed. Arm at zero collective pitch first."
   return false
@@ -569,6 +573,7 @@ func set_drive_hold(enabled: bool) -> bool:
 
 # The standard cut control always enters a latched hold; releasing it never starts a motor.
 func set_controller_cut(enabled: bool) -> void:
+ _controller_cut_held=enabled
  if enabled: set_drive_hold(true)
 
 func request_flight_mode() -> bool:

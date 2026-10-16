@@ -52,11 +52,17 @@ func _run() -> void:
 		and app.menu_audio.cue_count(&"press") == 0)
 	settings._category_buttons[2].grab_focus()
 	await ui.tap(KEY_ENTER)
+	var home_theme_before_volume: Theme = app.home.theme
+	var settings_theme_before_volume: Theme = settings._surface.theme
 	settings._volume_slider.grab_focus()
 	await ui.tap(KEY_HOME)
 	await ui.settle()
 	_check("keyboard volume preview mutes the live service without saving", app.menu_audio.get_volume() == 0.0
 		and DisplayPreferences.load_from(PREFS + ".display").menu_volume == DisplayPreferences.DEFAULTS.menu_volume)
+	_check("volume preview preserves both existing themes", app.home.theme == home_theme_before_volume
+		and settings._surface.theme == settings_theme_before_volume)
+	home_theme_before_volume = null
+	settings_theme_before_volume = null
 	settings._revert_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	_check("Revert restores live menu volume", is_equal_approx(app.menu_audio.get_volume(), DisplayPreferences.DEFAULTS.menu_volume))
@@ -86,6 +92,24 @@ func _run() -> void:
 		app.screens.is_top("settings") and is_equal_approx(UiTheme.text_scale, 1.0)
 		and app.home.fly_button.get_theme_font_size("font_size", "PrimaryButton") == home_font_before
 		and is_equal_approx(DisplayPreferences.load_from(PREFS + ".display").ui_scale, 1.0))
+
+	# Audio/motion changes must not invalidate unrelated visuals, but opacity still does.
+	var home_theme_before_motion: Theme = app.home.theme
+	settings._motion_toggle.button_pressed = true
+	await ui.settle()
+	_check("motion policy updates without rebuilding Home's theme", UiTheme.reduced_motion
+		and app.home.theme == home_theme_before_motion)
+	settings._opaque_toggle.button_pressed = true
+	await ui.settle()
+	_check("opacity still replaces themes and updates Home scrims", UiTheme.opaque_panels
+		and app.home.theme != home_theme_before_motion
+		and is_equal_approx(app.home._rail_scrim.texture.gradient.get_color(0).a, 1.0))
+	home_theme_before_motion = null
+	settings._revert()
+	await ui.settle()
+	_check("Revert restores translucent scrims and motion policy", not UiTheme.opaque_panels
+		and not UiTheme.reduced_motion
+		and is_equal_approx(app.home._rail_scrim.texture.gradient.get_color(0).a, 0.92))
 
 	# Choose Spanish through the live language selector; the root persists it immediately and refreshes open screens.
 	settings._category_buttons[1].grab_focus()

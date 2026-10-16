@@ -1,0 +1,22 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+HOST display_count=1 current_display=(3840, 2160) dpi=144
+CAPTURE en-3840x2160-100-fullscreen-home.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE en-3840x2160-100-fullscreen-settings.webp (3840, 2160) logical=(1920.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE en-3840x2160-100-fullscreen-pause.webp (3840, 2160) logical=(1920.0, 1080.0)
+FLOW en-3840x2160-100-fullscreen pause-held=true return=true
+CAPTURE es-3840x2160-100-fullscreen-home.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-100-fullscreen-settings.webp (3840, 2160) logical=(1920.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-3840x2160-100-fullscreen-pause.webp (3840, 2160) logical=(1920.0, 1080.0)
+FLOW es-3840x2160-100-fullscreen pause-held=true return=true
+CAPTURE es-3840x2160-200-fullscreen-home.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-3840x2160-200-fullscreen-settings.webp (3840, 2160) logical=(1920.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-3840x2160-200-fullscreen-pause.webp (3840, 2160) logical=(1920.0, 1080.0)
+FLOW es-3840x2160-200-fullscreen pause-held=true return=true

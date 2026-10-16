@@ -1,6 +1,6 @@
 # Scenery plan: current field and remaining gates
 
-2026-10-12 · Revision 8 · Step prefix: **SC** · Gate: **SC**
+2026-10-16 · Revision 9 · Step prefix: **SC** · Gate: **SC**
 
 **Status:** scenery is implemented and on by default. The owner requested that default on 2026-10-11. Gate SC readability and performance acceptance remains open. SC-18, SC-22 and SC-24 are partial; optional SC-19b and SC-21 remain parked.
 
@@ -13,6 +13,8 @@ The normal Home and flight routes include the complete club field: parking, open
 Scenery can be disabled with OPENRC_SCENERY=off or --scenery=off. The shared attachment hook is a no-op when disabled, and capture/parity tools select their reference mode explicitly. Current default and opt-out evidence is in [SC-02a](research/scenery-implementation/SC-02a/README.md); the owner-reviewed view harness is in [SC-03](research/scenery-implementation/SC-03/README.md).
 
 Placement data and source packages are documented in [scenery provenance](../assets/scenery/PROVENANCE.json). Baked models use deterministic vertex-colour meshes, merged by spatial cells. Optional quality tiers retain landmarks and deterministically remove ornament. Current Home postcards exist as scenery compositions; putting them into the menu is still UI work.
+
+[SC-08-R1](research/scenery-implementation/SC-08-R1/README.md) refines picnic tables and benches with separate bevelled boards, sampled wood colour variation, fitted supports and hardware while retaining the existing cell batches and seating heights.
 
 Static object contact uses the separate float64 LU-05 collision world. [CR-17a local damage](research/crash-damage-investigations/CR-17a/README.md) removes failed fence pieces and lightweight props from their visual batches and subsequent contacts, with bounded material-specific effects and checkpoint/reset state. Large obstacles retain their main structure. Proxy dimensions, contact response and failure cutoffs are gameplay estimates. See the [LU-05 collision report](research/landscape-upgrade/LU-05/collision-report.md) for the original detector and measured cost.
 

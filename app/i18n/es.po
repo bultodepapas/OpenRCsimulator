@@ -3126,3 +3126,49 @@ msgstr "Fallos del próximo vuelo: %d%% · Estándar"
 
 msgid "Next flight failures: %d%% · Catastrophic enabled"
 msgstr "Fallos del próximo vuelo: %d%% · Catastróficos activados"
+
+msgid "Release throttle cut before releasing rotor hold."
+msgstr "Suelta el corte de motor antes de desactivar el hold del rotor."
+
+msgid "Center cyclic/yaw and set zero pitch before arming; release hold and wait for governed RPM."
+msgstr "Centra cíclico y guiñada y ajusta paso cero antes de armar; desactiva el hold y espera las RPM reguladas."
+
+#: ui/accident_report.gd
+msgid "Replacement parts comparison"
+msgstr "Comparación de repuestos"
+
+#: ui/accident_report.gd
+msgid "Parts only. Inspection, repairs and labor are separate; this comparison is not added to the accident total."
+msgstr "Solo repuestos. La inspección, las reparaciones y la mano de obra se calculan aparte; esta comparación no se suma al total del accidente."
+
+#: ui/accident_report.gd
+msgid "Lowest priced combination for these parts"
+msgstr "Combinación de menor precio para estas piezas"
+
+#: ui/accident_report.gd
+msgid "Provisional parts estimate"
+msgstr "Estimación provisional de repuestos"
+
+#: ui/accident_report.gd
+msgid "Some package prices are unknown; the cheapest option is unresolved."
+msgstr "Faltan precios de algunos conjuntos; la opción más económica sigue sin determinarse."
+
+#: ui/accident_report.gd
+msgid "Comparison is incomplete; a cheaper combination may exist."
+msgstr "La comparación está incompleta; podría existir una combinación más económica."
+
+#: ui/accident_report.gd
+msgid "No compatible combination covers all requested parts."
+msgstr "Ninguna combinación compatible cubre todas las piezas necesarias."
+
+#: ui/accident_report.gd
+msgid "Parts estimate exceeds the supported amount range."
+msgstr "La estimación de repuestos excede el rango de importes admitido."
+
+#: ui/accident_report.gd
+msgid "Other damage or inspection costs remain unresolved."
+msgstr "Quedan pendientes otros daños o costos de inspección."
+
+#: ui/accident_report.gd
+msgid "Catalog estimates; availability and physical fit require confirmation."
+msgstr "Estimaciones del catálogo; se deben confirmar la disponibilidad y la compatibilidad física."
