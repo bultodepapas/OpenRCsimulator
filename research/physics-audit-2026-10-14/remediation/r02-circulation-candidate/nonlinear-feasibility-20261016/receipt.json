@@ -1,0 +1,52 @@
+{
+  "scope": "Research-only negative control; not a production aerodynamic law or aircraft validation",
+  "independent_review": {
+    "external_speed_yaw_nm": [
+      -0.7617967085693516,
+      0.7621358896342215
+    ],
+    "symmetric_input_yaw_nm": [
+      -0.7619659642618265,
+      0.7619659642618251
+    ],
+    "effective_speed_yaw_gap_nm": 0.60299438,
+    "method": "Independent reconstruction of influence matrix, polar residual and panel-center-downwash/Gauss-16 KJ force from retained roots"
+  },
+  "files": [
+    {
+      "path": "multiroot_effectivespeed.json",
+      "size_bytes": 23205,
+      "sha256": "e6f8c24a0278fb97fc0eefbb1dec4107f9d504d1aedb1e6444af74f8512cd0ab"
+    },
+    {
+      "path": "multiroot_effectivespeed.py",
+      "size_bytes": 3098,
+      "sha256": "a31e0f832e263f33d68c6b3bc9d0a57319b13688d737c45366c9b95d66b692f5"
+    },
+    {
+      "path": "multiroot_focused.json",
+      "size_bytes": 24187,
+      "sha256": "b9d7ee1717cd28f3a5f6df15e0a6735b93fb2f14c9abf45bab3a8d7fbc89b1df"
+    },
+    {
+      "path": "multiroot_focused.py",
+      "size_bytes": 3063,
+      "sha256": "3e12d3602fef0ae573934a35790209211ec848824c92e0d8a5b5c711eb16c621"
+    },
+    {
+      "path": "prototype.py",
+      "size_bytes": 28610,
+      "sha256": "649120e3623556d6fa68b2ba1e0b47a38a2b4f035beca7d897aad3f0321f1551"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 6217,
+      "sha256": "132d040f930afe3426ad9001a4d2ac72044a6aa5c1a4c05f9e7ca85ff486b428"
+    },
+    {
+      "path": "results.json",
+      "size_bytes": 32236,
+      "sha256": "94d2d864759e8882f50c795a2692a403db94e144e952257fc66fb641b4c5cc34"
+    }
+  ]
+}

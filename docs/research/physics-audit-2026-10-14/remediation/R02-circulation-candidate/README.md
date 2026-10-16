@@ -82,6 +82,16 @@ The tested candidate has no section polar, Reynolds-number dependence, separatio
 
 The independent [NASA/TM-2016-219349 record](https://ntrs.nasa.gov/citations/20170000682) describes discrete horseshoe derivative calculations in an unseparated, inviscid, incompressible domain and reports comparisons in a low-angle range. That bounds the context; it does not validate this candidate or the simulator. Further admission would require sourced section properties, a sourced and resolution-tested wake/force law, powered and crossflow cases, and independent physical evidence. The full-aircraft R02 yaw comparison remains a normal open gate.
 
+## Dated nonlinear-feasibility follow-up (2026-10-16)
+
+The [nonlinear feasibility evidence](../../../../../research/physics-audit-2026-10-14/remediation/r02-circulation-candidate/nonlinear-feasibility-20261016/README.md) tests a memoryless nonlinear extension using the Stik whole-aircraft fallback proxy (`CL0=0.1068`, `CLa=4.58 rad⁻¹`, `CLmax=1.1`, `CLmin=-0.8`, `CD90=1.2`, 6° stall blend), six panels (`b=1.524 m`, `c=0.3048 m`, `S=0.4645152 m²`), `V=15 m/s`, and `ρ=1.225 kg/m³`. At 20° and `r=0.05 rad/s`, 29 fixed-seed solves found 10 distinct roots for identical inputs; an independently reproduced pair differs by `1.524 N·m` in KJ yaw, with normalized residuals below `7e-16`. Using induced-adjusted local speed also produced 10 roots. This rejects promotion of this specific memoryless full-envelope closure; it is not an aircraft prediction or physical validation. The evidence records exact inputs, source and artifact hashes, and dependency pins. The files were copied byte-for-byte from `D:\OpenRC-release-v012-temp\yaw-circulation-prototype-20dc6efe`; their absolute path constants and setup HEAD field remain as recorded, not rewritten or treated as pinned checkout provenance.
+
+For this nonlinear follow-up, rerun only from a disposable copy with its repository,
+output and imported-prototype paths redirected to a fresh directory. The retained
+scripts preserve their original absolute paths and can overwrite their original
+scratch outputs if run unchanged. The local `receipt.json` binds all seven retained
+artifacts and summarizes the independent equation/force check.
+
 ## Reproduction and identities
 
 The v3 run used Python `3.11.9`, NumPy `2.4.6`, and SciPy `1.17.1` from the default interpreter recorded in the result JSON. These dependency pins are listed in [`requirements-v3.txt`](../../../../../research/physics-audit-2026-10-14/remediation/r02-circulation-candidate/requirements-v3.txt). The script uses SciPy's `roots_legendre`, dense inverse, and dense solve; it contains no hand-written quadrature generator or matrix solver.
