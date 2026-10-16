@@ -138,6 +138,7 @@ def import_mutation_project(godot: Path, project: Path, log_path: Path,
             raise RuntimeError(f"refusing to overwrite prior retry log: {retry_log}")
         retry_code, retry_output = _run_logged(command, retry_log, env, timeout_s)
         if not retry_code and not GODOT_ERROR.search(retry_output):
+            print(f"Recovered completed-import SIGABRT; retained {log_path} and successful {retry_log}")
             return command
         raise RuntimeError(f"Godot import retry failed ({retry_code}); see {log_path} and {retry_log}")
     raise RuntimeError(f"Godot import failed ({returncode}); see {log_path}")
