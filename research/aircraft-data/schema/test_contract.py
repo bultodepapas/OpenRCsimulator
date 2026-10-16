@@ -18,6 +18,29 @@ HERE = Path(__file__).resolve().parent
 
 
 class ContractTests(unittest.TestCase):
+    def test_v1_extensions_stay_permissive_and_polar_grouping_stays_runtime_only(self):
+        cases = {case.name: case for case in build_cases()}
+        p51 = cases['p51d_mustang_120']
+        avanti = cases['sebart_avanti_s_a200']
+        self.assertTrue(p51.schema_ok and p51.loader_ok)
+        self.assertIn('retraction_path', p51.data['landing_gear']['contacts'][0])
+        self.assertTrue(avanti.schema_ok and avanti.loader_ok)
+        self.assertIn('keyboard', avanti.data['controls'])
+        self.assertIn('gamepad', avanti.data['controls'])
+
+        # These are opaque in the explicit v1 compatibility view, so its
+        # structural mutation corpus must not turn them into v1 constraints.
+        self.assertNotIn(
+            'p51d_mustang_120:landing_gear.contacts.0.retraction_path:missing-value', cases)
+        self.assertNotIn(
+            'sebart_avanti_s_a200:controls.keyboard.pitch_press_time:missing-value', cases)
+
+        # Adding a fourth-column-breaking sample remains structurally legal;
+        # the production loader owns the grouped-row rule.
+        appended = cases['sebart_avanti_s_a200:aero.wing_polar.positive:extra-vector-entry']
+        self.assertTrue(appended.schema_ok)
+        self.assertFalse(appended.loader_ok)
+
     def test_schema_and_real_loader_agree_on_cases(self):
         cases = build_cases()
         self.assertEqual(len({case.name for case in cases}), len(cases), 'case names must be unique')

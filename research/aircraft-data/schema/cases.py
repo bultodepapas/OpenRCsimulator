@@ -4,7 +4,7 @@ from dataclasses import dataclass
 import importlib.util
 from pathlib import Path
 
-from check import FLEET, ROOT, read_json
+from check import FLEET, ROOT, SCHEMA, read_json
 
 NO_GEAR_FIXTURE_ID = 'schema-contract-no-gear-fixture'
 
@@ -23,19 +23,111 @@ def at(data, path):
     return data
 
 
-def quantities(node, path=()):
+def _expand_schema_nodes(schemas, root_schema):
+    pending = list(schemas)
+    seen = set()
+    while pending:
+        schema = pending.pop()
+        if not isinstance(schema, dict) or id(schema) in seen:
+            continue
+        seen.add(id(schema))
+        yield schema
+        reference = schema.get('$ref')
+        if isinstance(reference, str) and reference.startswith('#/'):
+            target = root_schema
+            for part in reference[2:].split('/'):
+                part = part.replace('~1', '/').replace('~0', '~')
+                target = target[part]
+            pending.append(target)
+        for keyword in ('allOf', 'anyOf', 'oneOf', 'then', 'else'):
+            branches = schema.get(keyword, [])
+            if isinstance(branches, list):
+                pending.extend(branches)
+            elif isinstance(branches, dict):
+                pending.append(branches)
+
+
+def _property_schemas(schemas, key, root_schema):
+    return [node['properties'][key]
+            for node in _expand_schema_nodes(schemas, root_schema)
+            if key in node.get('properties', {})]
+
+
+def _item_schemas(schemas, index, root_schema):
+    result = []
+    for node in _expand_schema_nodes(schemas, root_schema):
+        prefix_items = node.get('prefixItems', [])
+        if index < len(prefix_items):
+            result.append(prefix_items[index])
+        elif 'items' in node:
+            items = node['items']
+            if isinstance(items, list):
+                if index < len(items):
+                    result.append(items[index])
+            else:
+                result.append(items)
+    return result
+
+
+def _appended_zero_schema_ok(value, value_schemas, root_schema):
+    if not isinstance(value, list):
+        return None
+    arrays = [node for node in _expand_schema_nodes(value_schemas, root_schema)
+              if node.get('type') == 'array']
+    if not arrays:
+        return None
+    for array_schema in arrays:
+        new_length = len(value) + 1
+        if new_length < array_schema.get('minItems', 0):
+            return False
+        if new_length > array_schema.get('maxItems', float('inf')):
+            return False
+        items = array_schema.get('items', {})
+        if items is False or isinstance(items, list):
+            return False
+        if not isinstance(items, dict):
+            continue
+        if items.get('type') not in (None, 'number', 'integer'):
+            return False
+        if items.get('minimum', float('-inf')) > 0:
+            return False
+        if items.get('exclusiveMinimum', float('-inf')) >= 0:
+            return False
+        if items.get('maximum', float('inf')) < 0:
+            return False
+        if items.get('exclusiveMaximum', float('inf')) <= 0:
+            return False
+        if 'const' in items and items['const'] != 0:
+            return False
+        if 'enum' in items and 0 not in items['enum']:
+            return False
+    return True
+
+
+def quantities(node, schema, root_schema, path=()):
+    """Yield only quantities governed by the v1 schema.
+
+    The v1 loader view retains newer v2-only modules as opaque extensions. Those
+    must stay permissive in the historical contract corpus; v2 owns their strict
+    structural checks in its separate agreement suite.
+    """
     if isinstance(node, dict):
         if all(key in node for key in ('value', 'unit', 'kind', 'source')):
-            yield path, node
+            yield path, node, _property_schemas(schema, 'value', root_schema)
         else:
             for key, value in node.items():
-                yield from quantities(value, (*path, key))
+                child_schema = _property_schemas(schema, key, root_schema)
+                if child_schema:
+                    yield from quantities(value, child_schema, root_schema, (*path, key))
     elif isinstance(node, list) and node:
         # Every element shares a contract; additional late-row tests below.
-        yield from quantities(node[0], (*path, 0))
+        item_schema = _item_schemas(schema, 0, root_schema)
+        if item_schema:
+            yield from quantities(node[0], item_schema, root_schema, (*path, 0))
 
 
 def build_cases():
+    v1_schema = read_json(SCHEMA)
     # DATA-4 pins historical v1 acceptance (including permissive metadata and
     # optional/null defaults). AS has a separate strict v2 agreement corpus.
     spec = importlib.util.spec_from_file_location(
@@ -74,7 +166,7 @@ def build_cases():
     }
     seen = set()
     for name, raw in fleet.items():
-        for path, quantity in quantities(raw):
+        for path, quantity, value_schemas in quantities(raw, [v1_schema], v1_schema):
             # Units and value shape distinguish the shared prop/turbine paths.
             signature = (path, quantity['unit'])
             if signature in seen:
@@ -107,7 +199,10 @@ def build_cases():
                 else:
                     data = deepcopy(raw)
                     at(data, path)['value'].append(0)
-                    cases.append(Case(prefix + ':extra-vector-entry', data))
+                    schema_ok = _appended_zero_schema_ok(value, value_schemas, v1_schema)
+                    if schema_ok is not None:
+                        cases.append(Case(prefix + ':extra-vector-entry', data,
+                                          schema_ok=schema_ok, loader_ok=False))
 
     stik = fleet['jensen_ugly_stik_60']
     p51 = fleet['p51d_mustang_120']
