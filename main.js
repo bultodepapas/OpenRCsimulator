@@ -1,11 +1,12 @@
 const translations = {
+  releaseHighlights: 'Current source adds display and accessibility settings, P-51D flaps and retractable gear, and MONSTER CAR 2 nitro. These experimental features are not in the v0.1.1 download.',
   skip: 'Skip to content', navHangar: 'The hangar', navField: 'The field', navProject: 'The project', download: 'Download',
   heroEyebrow: 'MODEL AVIATION · OPEN SOURCE', renderNote: 'SIMULATOR MODEL · STUDIO VIEW',
   heroHeading: 'The flying field<br>is open.', heroCopy: 'Your transmitter. Your next flight.<br>An RC simulator we’re building in the open.', heroCta: 'Download',
   platforms: 'WINDOWS / LINUX / macOS', explore: 'EXPLORE THE PROJECT', free: 'FREE. FROM YOUR FIRST FLIGHT.',
   hangarKicker: '01 / THE HANGAR', hangarHeading: 'Every aircraft.<br>A different character.', hangarIntro: 'From a wooden classic to a jet.<br>Five fixed-wing aircraft in current source, each with its own configuration.',
   studio: 'AIRCRAFT STUDY / OPENRC', actualModel: 'ACTUAL PROJECT MODEL', span: 'Wingspan', power: 'Powerplant', gear: 'Landing gear', aircraftDetails: 'Explore the model',
-  sourceNote: 'CURRENT SOURCE CATALOGUE. Models are experimental and still need measurements and pilot validation. The v0.1.1 download represents its own published snapshot.',
+  sourceNote: 'CURRENT SOURCE CATALOGUE. Models are experimental and still need measurements and pilot validation. The latest published download, v0.1.1, represents its own snapshot.',
   fieldKicker: '02 / SEE YOU AT THE FIELD', fieldHeading: 'That place<br>you always<br>come back to.', fieldCopy: 'The grass runway. The trees on the horizon.<br>Fly from the pilot’s position or follow your aircraft with the flight cameras.',
   capture: 'IN-SIMULATOR CAPTURE · GODOT', day: 'Day', night: 'Night',
   projectKicker: '03 / UNDER THE COWLING', projectHeading: 'Physics matters.<br>So does evidence.', projectIntro: 'We’re building an RC simulator one step at a time. With code you can read, flights you can repeat, and questions we’re still working through.', source: 'Explore the source', sourceKicker: 'IMPLEMENTED IN CURRENT SOURCE',
@@ -13,7 +14,7 @@ const translations = {
   radioHeading: 'Your controls, in the loop.', radioCopy: 'USB transmitter, gamepad or keyboard. Saved calibration, throttle arming and a disconnection failsafe.',
   replayHeading: 'Fly. Record. Compare.', replayCopy: 'Flight logs, exact replay and CSV export to study aircraft behavior with the same recorded inputs.',
   honesty: 'Software is checked. Realism must be demonstrated. Independent physical validation and pilot evaluation remain open.', roadmap: 'See what’s next',
-  downloadKicker: '04 / YOUR NEXT TAKEOFF', downloadHeading: 'Less watching.<br>More flying.', downloadIntro: 'Download, extract the ZIP and launch.<br>No Godot installation needed.', downloadNote: 'Published release v0.1.1. Packages are unsigned.<br>Later source features may not be included.', firstFlight: 'First-flight guide ↗', releaseNotes: 'Release notes ↗',
+  downloadKicker: '04 / YOUR NEXT TAKEOFF', downloadHeading: 'Less watching.<br>More flying.', downloadIntro: 'Download, extract the ZIP and launch.<br>No Godot installation needed.', downloadNote: 'Latest published release v0.1.1. Packages are unsigned.<br>Current-source features may not be included.', firstFlight: 'First-flight guide ↗', releaseNotes: 'Release notes ↗',
   communityKicker: 'AN OPEN PROJECT. A SHARED EFFORT.', communityHeading: 'The next improvement<br>could start with you.', communityCopy: 'A test with your transmitter. A real measurement. A code improvement. Every contribution helps build the next flight.', contribute: 'Contribute on GitHub', feedback: 'Share your experience',
   thanks: 'With OpenAI’s support for development.<br>Thanks to Savox for permission to represent its products.', license: 'MIT CODE · ASSETS RETAIN THEIR OWN LICENSES', credits: 'Project imagery & credits ↗', backTop: 'Back to top ↑'
 };
