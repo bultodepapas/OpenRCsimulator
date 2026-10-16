@@ -4,8 +4,8 @@
   "observed_on": "2026-10-16",
   "generated_by": "research/crash-economics/build_catalog.py",
   "source_hashes": {
-    "price-research-components.json": "032eafe657877caaf57d1cddd70d89e9433c5aa0924a94f7cfd0f544aa479b45",
-    "price-research-fleet.json": "85026093f0172a0692e6b1c3c1813b2e8770ba0b13dbf04f033923223a002f13"
+    "price-research-components.json": "0336b25047195ceafc4e3afc864b7a01502dfe5b1d063697215d89a887828652",
+    "price-research-fleet.json": "66d0a319869ca158aa947783143fb2807497c42decb0c834eb84e6642198392d"
   },
   "policy": {
     "currency": "USD",

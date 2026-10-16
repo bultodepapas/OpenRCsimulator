@@ -45,9 +45,18 @@ Node 24 (`.nvmrc`) is only needed for tree authoring and the frozen three.js pro
 | Physics cost | `"$(app/get-godot.sh)" --headless --path app --script res://tests/bench_physics.gd` | Add `-- --aircraft=<catalog-id>`. Run alone on the target machine. |
 | Packages | `app/export.sh` | Windows/Linux/macOS ZIPs, pack smoke checks and `dist/SHA256SUMS`. Preserves exporter-managed native libraries beside Windows/Linux executables. Recreates `dist/`. |
 
+The experimental P-51's three known P51-22 physical acceptance results are reported as pending by `app/test.sh`; all other assertions stay mandatory. For strict acceptance, run:
+
+```sh
+"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script res://tests/test_p51_ground.gd
+"$(app/get-godot.sh)" --headless --path app --audio-driver Dummy --script res://tests/test_p51_handling.gd
+```
+
+The [P51-22 report](research/p51-realism/P51-22/README.md#release-status--2026-10-16) records the deferral and its verification. A pending physical check is not a pass.
+
 Before exporting, install both qualified x86_64 native libraries and their matching aggregate receipt through the [native builder's installation workflow](../research/rc-monster-truck/native/README.md#installing-and-exporting). Export rejects a missing platform row, incompatible source/ABI/solver identity or binary hash mismatch. Its Linux host probe also checks the selected native backend and float64 ABI; Windows/macOS resource checks under the Linux editor do not replace target-host execution.
 
-[CI](../.github/workflows/ci.yml) also checks schemas, generated geometry/physics and the Linux native ground-vehicle evaluator. `app/test.sh` alone does not run every CI check. Software checks do not establish physical aircraft accuracy, radio latency or target-GPU performance.
+[CI](../.github/workflows/ci.yml) also checks schemas, generated geometry/physics and the Windows/Linux native ground-vehicle evaluators. `app/test.sh` alone does not run every CI check. Software checks do not establish physical aircraft accuracy, radio latency or target-GPU performance.
 
 The frozen prototype's separate CI job runs `npm ci`, `npm run typecheck`, `npm test`, `npx playwright install --with-deps chromium`, `npm run capture` and `npm run e2e` from `prototypes/stage0/three/`.
 

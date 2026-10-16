@@ -3,11 +3,11 @@
   "currency": "USD",
   "price_date": "2026-10-16",
   "generated_from": {
-    "price_catalog_sha256": "0a91154058511a146f3bf914912cd0a7ed80ad9fbf3e97eb1d713e99e227fcfd",
-    "aircraft_costing_sha256": "0488f842e50962f703840e0be8a1b4bdbc624b87c276f0af658d088b1a2530a2",
+    "price_catalog_sha256": "6b678cf886d2c80c1a2a96af870555151a83643045d0fdd2e2eac8c283bb1597",
+    "aircraft_costing_sha256": "63149c62aadd2079b47c6d2c9b6d9c581b22692cead69b3c3edc04b8b71b4615",
     "aircraft_catalog_sha256": "e0790acb9b1a5097d9d3cbcb564e72f074940a3813b52f70edf1c44dae5bc60c",
-    "price_research_components_sha256": "032eafe657877caaf57d1cddd70d89e9433c5aa0924a94f7cfd0f544aa479b45",
-    "price_research_fleet_sha256": "85026093f0172a0692e6b1c3c1813b2e8770ba0b13dbf04f033923223a002f13"
+    "price_research_components_sha256": "0336b25047195ceafc4e3afc864b7a01502dfe5b1d063697215d89a887828652",
+    "price_research_fleet_sha256": "66d0a319869ca158aa947783143fb2807497c42decb0c834eb84e6642198392d"
   },
   "products": [
     {
@@ -2964,7 +2964,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "p51d-mustang-120",
-      "source_sha256": "e1e24f742a24204cd2875e42eb64760d3b0da5796fc74c3ca4b32834ffa2c544",
+      "source_sha256": "982e41c345dabe6be43da38438d36d725c84eaf41561d52750f4698585789ae6",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "independent_partial_inventory_costing",
@@ -3878,7 +3878,7 @@
     {
       "format": "openrc-aircraft-economics v1",
       "aircraft_id": "xcell-60-research",
-      "source_sha256": "60edd8701bc6c6d5dca646c141069aed4be4467f5aa9e18b721c5ac56c4f197f",
+      "source_sha256": "29b4cbc6ff258c18839589b1eacd88968b58bc691dd61502177bb741c0c1da04",
       "currency": "USD",
       "price_date": "2026-10-16",
       "valuation_kind": "unpriced",
