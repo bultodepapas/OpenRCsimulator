@@ -17,6 +17,7 @@ from pathlib import Path
 
 APP_ROOT = Path(__file__).resolve().parents[1]
 IGNORED = shutil.ignore_patterns(".godot", "captures")
+RESOURCE_PRELOAD = re.compile(r"\b(?:preload|load)\s*\(\s*[\"']res://([^\"']+)[\"']\s*\)")
 PROBE = '''extends SceneTree
 
 const M := preload("res://physics/math3d.gd")
@@ -334,8 +335,54 @@ def mutate_branch(project: Path) -> None:
     path.write_text(source, encoding="utf-8")
 
 
+def stage_render_imports(source: Path, destination: Path) -> None:
+    """Copy imported caches for static render/scenery resource references.
+
+    H7 copies a clean source tree for each mutation and intentionally excludes the
+    editor cache. FlightSession still preloads scenery/render scripts, whose image
+    resources resolve through `.import` remaps, so stage only those referenced
+    imported outputs rather than copying the full `.godot` directory.
+    """
+    resources: set[str] = set()
+    for folder in ("render", "scenery"):
+        for script in (source / folder).rglob("*.gd"):
+            text = script.read_text(encoding="utf-8")
+            resources.update(RESOURCE_PRELOAD.findall(text))
+
+    for resource in sorted(resources):
+        import_relative = Path(f"{resource}.import")
+        source_import = source / import_relative
+        if not source_import.is_file():
+            continue
+
+        cache_paths = re.findall(
+            r"(?m)^path(?:\.[A-Za-z0-9_]+)?=[\"']res://([^\"']+)[\"']\s*$",
+            source_import.read_text(encoding="utf-8"),
+        )
+        if not cache_paths:
+            raise RuntimeError(f"could not find imported cache remap in {source_import}")
+        for cache_path in cache_paths:
+            cache_relative = Path(cache_path)
+            if cache_relative.parts[:2] != (".godot", "imported"):
+                raise RuntimeError(f"unexpected imported cache path in {source_import}: {cache_relative}")
+
+            source_cache = source / cache_relative
+            if not source_cache.is_file():
+                raise RuntimeError(f"imported cache is missing for {resource}: {source_cache}")
+            destination_cache = destination / cache_relative
+            destination_cache.parent.mkdir(parents=True, exist_ok=True)
+            shutil.copy2(source_cache, destination_cache)
+
+            # Preserve importer metadata when available; runtime loads the cache
+            # directly, while the sidecar keeps later editor checks consistent.
+            source_md5 = Path(f"{source_cache}.md5")
+            if source_md5.is_file():
+                shutil.copy2(source_md5, Path(f"{destination_cache}.md5"))
+
+
 def make_copy(source: Path, destination: Path, mutation: str) -> None:
     shutil.copytree(source, destination, ignore=IGNORED)
+    stage_render_imports(source, destination)
     instrument_branches(destination)
     if mutation == "ulp":
         perturb_math3d(destination)

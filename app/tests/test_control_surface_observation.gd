@@ -38,6 +38,8 @@ func _initialize() -> void:
 		servo_inputs[1] = -0.4
 		servo_inputs[2] = 0.3
 		servo_inputs[3] = 0.6
+		if flight.flaps_available():
+			servo_inputs[flight.flap_input_index()] = 0.6
 		flight.sim.inputs = servo_inputs
 		flight.sim.step()
 		_check(aircraft_id + " accepts a servo step", flight.sim.tick == 1)
@@ -45,8 +47,15 @@ func _initialize() -> void:
 		var angles: Dictionary = flight.surface_angles_deg()
 		_check(aircraft_id + " observes actual positions distinct from full demand",
 			angles.aileron_right != 0.8 * flight.throws_deg().aileron)
+		var expected_deflections: Dictionary = Surfaces.deflections_from_surfaces(angles)
+		if flight.flaps_available():
+			var accepted_aux: PackedFloat64Array = accepted.simulation.aux
+			var flap_fraction: float = accepted_aux[flight.flap_aux_index()]
+			_check(aircraft_id + " accepts a nonzero flap servo position", flap_fraction > 0.0)
+			expected_deflections.flap = deg_to_rad(
+				flap_fraction * float(flight.aircraft.model.flaps.max_angle_deg))
 		_check(aircraft_id + " aero receives the observed surface angles",
-			var_to_bytes(flight._deflections(flight.sim.aux)) == var_to_bytes(Surfaces.deflections_from_surfaces(angles)))
+			var_to_bytes(flight._deflections(flight.sim.aux)) == var_to_bytes(expected_deflections))
 		angles.aileron_right = 999.0
 		_check(aircraft_id + " observation is detached and read-only",
 			flight.surface_angles_deg().aileron_right != 999.0
