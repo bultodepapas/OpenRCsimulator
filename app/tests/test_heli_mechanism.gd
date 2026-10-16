@@ -18,6 +18,7 @@ func _run() -> void:
 		quit(1)
 		return
 	var rig := Mechanism.new()
+	root.add_child(preview.root)
 	_check("mechanical adapter configures neutral", rig.configure(preview))
 	if rig.pose.is_empty():
 		print(rig.apply(PackedFloat64Array([0, 0, 0, 0, 0])))
@@ -40,13 +41,9 @@ func _run() -> void:
 			print(result)
 			continue
 		max_residual = maxf(max_residual, result.residual_m)
-		var local: Dictionary = {}
-		for id: String in rig.bindings:
-			local[id] = rig.bindings[id].transform
-		var world := rig._world_frames(local)
 		for id: String in sample.frames:
 			var expected: Transform3D = Model._parse_transform(sample.frames[id]).transform
-			var observed: Transform3D = world[id]
+			var observed: Transform3D = (rig.bindings[id] as Node3D).global_transform
 			var position_error := observed.origin.distance_to(expected.origin)
 			max_position = maxf(max_position, position_error)
 			# Ball-link roll is deterministic parallel transport; only its endpoints
@@ -75,6 +72,29 @@ func _run() -> void:
 				continuous = continuous and absf(result.servos[j] - previous.servos[j]) < deg_to_rad(3)
 		previous = result
 	_check("dense combined sweep keeps all nine rods rigid and servos continuous", sweep_ok and continuous)
+	var extreme_ok := true
+	for collective: float in [-13, 0, 13]:
+		for roll: float in [-10, 0, 10]:
+			for pitch: float in [-10, 0, 10]:
+				for tail: float in [-20, 0, 20]:
+					for step in 12:
+						extreme_ok = rig.apply(PackedFloat64Array([collective, roll, pitch, tail, step * TAU / 12])).ok and extreme_ok
+	_check("full travel and combined cyclic ring limits close over 972 poses", extreme_ok)
+	for tail: float in [-15, 15]:
+		rig.apply(PackedFloat64Array([0, 0, 0, tail, 0]))
+		_check("tail collective retains its signed source pitch %.0f" % tail, absf(rig.pose.blade_pitch[2] - deg_to_rad(tail)) < 1e-4)
+	var rods_match := true
+	for link: Dictionary in rig._linkages:
+		var a: Node3D = rig.bindings[link.endpoint_a]
+		var b: Node3D = rig.bindings[link.endpoint_b]
+		var direction: Vector3 = (b.global_position - a.global_position).normalized()
+		rods_match = rods_match and absf(a.global_position.distance_to(b.global_position) - link.length_m) < 2e-6
+		# Rod meshes retain their neutral scale, inherit the moving terminal,
+		# and extend along its authored local +Y. Neither shaft nor tube stretches.
+		var bar: Node3D = rig.bindings["visual." + String(link.id).trim_prefix("linkage.") + "_varilla"]
+		rods_match = rods_match and (bar.transform as Transform3D).is_equal_approx(rig._rest["visual." + String(link.id).trim_prefix("linkage.") + "_varilla"])
+		rods_match = rods_match and absf(a.global_basis.y.normalized().dot(direction)) > 0.9999
+	_check("rendered rods follow both terminal positions without stretching meshes", rods_match)
 	for id: String in rig.bindings:
 		accepted[id] = rig.bindings[id].transform
 	for bad in [PackedFloat64Array([14, 0, 0, 0, 0]), PackedFloat64Array([0, 0, 0, INF, 0]), PackedFloat64Array([0, 0, 0]), PackedFloat64Array([NAN, 0, 0, 0, 0])]:
@@ -83,6 +103,7 @@ func _run() -> void:
 	_check("unreachable +100 mm rod cannot be hidden by source trigonometric clamps", not rig.apply(PackedFloat64Array([0, 0, 0, 0, 0])).ok and _same(rig, accepted))
 	rig._linkages[0].length_m -= 0.1
 	var second := Model.load_preview()
+	root.add_child(second.root)
 	var second_rig := Mechanism.new()
 	_check("second independent instance initializes", second_rig.configure(second))
 	var first_before: Transform3D = rig.bindings["swash.fixed"].transform

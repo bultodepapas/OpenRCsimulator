@@ -11,7 +11,7 @@ const OPTIONAL_ACTION_IDS: PackedStringArray = [
 const AUX_CHANNEL_IDS: PackedStringArray = ["smoke", "flaps", "gear"]
 ## Product defaults on standardized gamepads, scoped to implemented aircraft equipment.
 ## Profile/setup validation reserves equipment candidates; flight passes its actual capabilities.
-const AUTOMATIC_AUX := {
+const AUTOMATIC_BUTTONS := {
 	"gear_toggle": {"channel": "gear", "button": JOY_BUTTON_B},
 	"smoke_toggle": {"channel": "smoke", "button": JOY_BUTTON_RIGHT_SHOULDER},
 	"flaps_cycle": {"channel": "flaps", "button": JOY_BUTTON_A},
@@ -146,19 +146,19 @@ static func effective_bindings(profile: Dictionary, capabilities: Dictionary = S
 			if _same_aux_control(bindings.pause, aux_entry.binding):
 				bindings.pause = {"type": "key", "physical_keycode": KEY_ESCAPE}
 				break
-	_add_automatic_aux(profile, bindings, explicit_ids, aux_bindings, capabilities)
+	_add_automatic_buttons(profile, bindings, explicit_ids, aux_bindings, capabilities)
 	return bindings
 
 
 ## Additive only: a saved Clear is intentional, and AUX/other actions always own their source.
 ## Unknown joysticks/radios have no standardized button layout and never gain inferred buttons.
-static func _add_automatic_aux(profile: Dictionary, bindings: Dictionary, explicit_ids: Dictionary,
+static func _add_automatic_buttons(profile: Dictionary, bindings: Dictionary, explicit_ids: Dictionary,
 		aux_bindings: Array[Dictionary], capabilities: Dictionary) -> void:
 	if str(_dict_value(profile, "kind", "")) != "gamepad":
 		return
 	var definitions := _definition_map()
-	for action_id: String in AUTOMATIC_AUX:
-		var entry: Dictionary = AUTOMATIC_AUX[action_id]
+	for action_id: String in AUTOMATIC_BUTTONS:
+		var entry: Dictionary = AUTOMATIC_BUTTONS[action_id]
 		if explicit_ids.has(action_id) or (not str(entry.channel).is_empty() and not bool(capabilities.get(entry.channel, false))):
 			continue
 		var candidate := {"type": "button", "button": int(entry.button)}

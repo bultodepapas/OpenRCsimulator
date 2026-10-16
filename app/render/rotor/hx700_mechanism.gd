@@ -16,11 +16,16 @@ var _linkages: Array = []
 
 
 func configure(preview: Dictionary) -> bool:
-	if not preview.get("ok", false) or Equations.SOURCE_SHA256 != Model.SOURCE_SHA256:
+	if not preview.get("ok", false) or Equations.SOURCE_SHA256 != Model.SOURCE_SHA256 \
+			or Equations.PROFILE_SHA256 != Model.PROFILE_SHA256:
 		return false
 	if preview.get("bindings", {}).size() != 108:
 		return false
 	bindings = preview.bindings
+	for id: String in Equations.POSE_IDS:
+		if not bindings.has(id) or not bindings[id] is Node3D:
+			bindings = {}
+			return false
 	var profile: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Model.PROFILE_PATH))
 	for record: Dictionary in profile.bindings:
 		_rest[record.id] = (bindings[record.id] as Node3D).transform
@@ -39,6 +44,8 @@ func apply(inputs: PackedFloat64Array) -> Dictionary:
 		if not is_finite(inputs[i]) or absf(inputs[i]) > float(LIMITS[i]):
 			return {"ok": false, "error": "Mechanical input %d is outside the inspected range." % i}
 	var calculated: Dictionary = Equations.evaluate(inputs[0], inputs[1], inputs[2], inputs[3], inputs[4])
+	if calculated.poses.size() != Equations.POSE_IDS.size():
+		return {"ok": false, "error": "Motion recipes do not match the admitted construction profile."}
 	var local: Dictionary = _rest.duplicate()
 	for id: String in calculated.poses:
 		var frame: Transform3D = calculated.poses[id]

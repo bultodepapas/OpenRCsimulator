@@ -107,6 +107,17 @@ func _initialize() -> void:
 	equipment.pressed = true
 	shell._input(equipment)
 	check("gear works after releasing and pressing Back again in flight", flight.received == ["gear_toggle"])
+	flight.received.clear()
+	flight.capabilities = {flaps = true}
+	equipment.button_index = JOY_BUTTON_A
+	shell._controller_action_edges[Actions.event_source(equipment)] = PackedStringArray(["accept"])
+	shell._input(equipment)
+	check("held menu Accept cannot deploy flaps after launch", flight.received.is_empty())
+	equipment.pressed = false
+	shell._input(equipment)
+	equipment.pressed = true
+	shell._input(equipment)
+	check("A cycles flaps after release and a new press", flight.received == ["flaps_cycle"])
 	equipment.button_index = JOY_BUTTON_BACK
 	check("default restart is handled by flight owner", shell._route_controller_restart(equipment) and shell.restarts == 1)
 	check("held restart cannot repeat", shell._route_controller_restart(equipment) and shell.restarts == 1)

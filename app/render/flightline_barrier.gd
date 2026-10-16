@@ -4,6 +4,8 @@ extends RefCounted
 const Frames = preload("res://render/frames.gd")
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const DamageBatches = preload("res://scenery/damage_batches.gd")
+const Detail = preload("res://render/flightline_barrier_detail.gd")
+const Finish = preload("res://render/flightline_barrier.gdshader")
 const POST_WIDTH_M: float = 0.08
 const POST_DEPTH_M: float = 0.08
 const FOOT_HEIGHT_M: float = 0.02
@@ -82,14 +84,17 @@ static func build(cue: Dictionary) -> Node3D:
 	root.position = Frames.ned_to_render([cue.north, cue.east, 0.0])
 	root.set_process(false)
 	var kit := MeshKit.new()
+	var index := 0
 	for part: Dictionary in parts(cue):
 		var first := kit.verts.size()
-		kit.block(part.size, part.base, part.color)
+		Detail.append(kit, part, index)
 		kit.tag_damage(first, part.id)
-	var material: StandardMaterial3D = StandardMaterial3D.new()
-	material.vertex_color_use_as_albedo = true
-	material.roughness = 0.95
-	material.transparency = BaseMaterial3D.TRANSPARENCY_DISABLED
+		index += 1
+	var material := ShaderMaterial.new()
+	material.shader = Finish
+	material.set_shader_parameter("wood_color", preload("res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg"))
+	material.set_shader_parameter("wood_normal", preload("res://assets/landscape/flightline/Wood049_1K-JPG_NormalGL.jpg"))
+	material.set_shader_parameter("wood_roughness", preload("res://assets/landscape/flightline/Wood049_1K-JPG_Roughness.jpg"))
 	var mesh_instance: MeshInstance3D = MeshInstance3D.new()
 	mesh_instance.name = "Barrier"
 	mesh_instance.mesh = kit.to_mesh(material)

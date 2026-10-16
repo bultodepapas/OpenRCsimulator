@@ -3,6 +3,8 @@
 extends RefCounted
 
 const SOURCE_SHA256 := "1919de349b74286bc36770ab2d7d08f743fd8a4062608d488c7e4e276103725f"
+const PROFILE_SHA256 := "e3a045e3da856cac11c53bb4a417b020d6737769d9c67a0f7370035bd01539d2"
+const POSE_IDS := ["actuator.cyclic.front_left", "actuator.cyclic.front_right", "actuator.cyclic.rear", "actuator.tail", "main.blade.a", "main.blade.b", "main.grip.a", "main.grip.b", "main.shaft", "swash.fixed", "swash.rotating", "tail.bellcrank", "tail.blade.a", "tail.blade.b", "tail.grip.a", "tail.grip.b", "tail.shaft", "tail.slider", "tail.yoke", "visual.aleta_vertical", "visual.bateria_12s", "visual.caja_cola", "visual.carenado", "visual.carenado_gomas", "visual.correa_motor_htd_333_3m", "visual.motor_campana_y_polea_22t", "visual.polea_53t_rueda_libre", "visual.satelite_1", "visual.satelite_2", "visual.satelite_3", "visual.sol_18t_y_polea_cola_32t"]
 
 static func evaluate(collective_deg: float, roll_deg: float, pitch_deg: float, tail_deg: float, phase_rad: float) -> Dictionary:
 	var v0: float = deg_to_rad(collective_deg) # Mezclador_01_Mandos.COL

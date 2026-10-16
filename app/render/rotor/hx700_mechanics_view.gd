@@ -20,6 +20,7 @@ var _phase_label: Label
 var _status: Label
 var _readout: Label
 var _speed: HSlider
+var _blades_toggle: CheckBox
 var _busy := false
 var _orbiting := false
 var _canvas: CanvasLayer
@@ -40,6 +41,7 @@ func _ready() -> void:
 	_build_stage()
 	_build_ui()
 	_show_canopy(false)
+	_show_main_blades(false)
 	_technical_materials(true)
 	_update_camera()
 	_apply_pose()
@@ -168,6 +170,10 @@ func _build_ui() -> void:
 	canopy.text = "Mostrar carenado"
 	canopy.toggled.connect(_show_canopy)
 	column.add_child(canopy)
+	_blades_toggle = CheckBox.new()
+	_blades_toggle.text = "Mostrar palas principales"
+	_blades_toggle.toggled.connect(_show_main_blades)
+	column.add_child(_blades_toggle)
 	var materials := CheckBox.new()
 	materials.text = "Colores de inspección"
 	materials.button_pressed = true
@@ -269,6 +275,7 @@ func _camera_preset(choice: String) -> void:
 			distance = 2.5
 			yaw = 0.8
 			elevation = 0.28
+	_blades_toggle.button_pressed = choice == "Completo"
 	_update_camera()
 
 
@@ -299,6 +306,11 @@ func _unhandled_input(event: InputEvent) -> void:
 
 func _show_canopy(shown: bool) -> void:
 	for id in ["visual.carenado", "visual.carenado_gomas"]:
+		(preview.bindings[id] as Node3D).visible = shown
+
+
+func _show_main_blades(shown: bool) -> void:
+	for id in ["main.blade.a", "main.blade.b"]:
 		(preview.bindings[id] as Node3D).visible = shown
 
 
