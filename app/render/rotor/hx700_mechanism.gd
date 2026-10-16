@@ -20,24 +20,37 @@ func configure(preview: Dictionary) -> bool:
 	if not preview.get("ok", false) or Equations.SOURCE_SHA256 != Model.SOURCE_SHA256 \
 			or Equations.PROFILE_SHA256 != Model.PROFILE_SHA256:
 		return false
-	if preview.get("bindings", {}).size() != 108:
+	if not preview.get("bindings") is Dictionary or preview.bindings.size() != 108:
 		return false
-	bindings = preview.bindings
-	for id: String in Equations.POSE_IDS:
-		if not bindings.has(id) or not bindings[id] is Node3D:
-			bindings = {}
-			return false
+	if FileAccess.get_sha256(Model.PROFILE_PATH) != Model.PROFILE_SHA256:
+		return false
 	var profile: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(Model.PROFILE_PATH))
+	# Build a detached candidate. A rejected rebind must retain the accepted rig,
+	# and reconfiguring an articulated instance must use authored rest frames.
+	var candidate: RefCounted = get_script().new()
+	candidate.bindings = preview.bindings.duplicate()
 	for record: Dictionary in profile.bindings:
-		_rest[record.id] = (bindings[record.id] as Node3D).transform
-		_parents[record.id] = String(record.parent_id)
-	_linkages = profile.linkages.duplicate(true)
-	_rest_world = _world_frames(_rest)
-	for link: Dictionary in _linkages:
-		var direction: Vector3 = _rest_world[link.endpoint_b].origin - _rest_world[link.endpoint_a].origin
+		var node: Variant = candidate.bindings.get(record.id)
+		if not is_instance_valid(node) or not node is Node3D:
+			return false
+		candidate._rest[record.id] = Model._parse_transform(record.rest_transform).transform
+		candidate._parents[record.id] = String(record.parent_id)
+	candidate._linkages = profile.linkages.duplicate(true)
+	candidate._rest_world = candidate._world_frames(candidate._rest)
+	for link: Dictionary in candidate._linkages:
+		var direction: Vector3 = candidate._rest_world[link.endpoint_b].origin - candidate._rest_world[link.endpoint_a].origin
 		for endpoint: String in [link.endpoint_a, link.endpoint_b]:
-			_aim_axes[endpoint] = (_rest_world[endpoint].basis.inverse() * direction).normalized()
-	return apply(PackedFloat64Array([0, 0, 0, 0, 0])).ok
+			candidate._aim_axes[endpoint] = (candidate._rest_world[endpoint].basis.inverse() * direction).normalized()
+	if not candidate.apply(PackedFloat64Array([0, 0, 0, 0, 0])).ok:
+		return false
+	bindings = candidate.bindings
+	pose = candidate.pose
+	_rest = candidate._rest
+	_parents = candidate._parents
+	_linkages = candidate._linkages
+	_rest_world = candidate._rest_world
+	_aim_axes = candidate._aim_axes
+	return true
 
 
 ## Degrees: collective, lateral cyclic, longitudinal cyclic, tail; shaft phase in radians.

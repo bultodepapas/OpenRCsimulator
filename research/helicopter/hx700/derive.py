@@ -19,8 +19,11 @@ ESTIMATED = (
     "measurement or identified flight response"
 )
 GEOMETRY = (
-    "docs/research/helicopter/HELI-25/README.md: measured supplied HX-700 GLB "
-    "skid rail corners relative to the visual CG datum"
+    "docs/research/helicopter/HELI-25/README.md: legacy supplied HX-700 GLB "
+    "skid rail corner coordinates measured from its visual CG datum; retained "
+    "as provisional contact estimates. The active HX-700 articulated source "
+    "has no authored physical CG datum, so these are not coordinates derived "
+    "from the advanced candidate's CG."
 )
 
 TAIL_RATIO = 4.92307710647583
@@ -215,7 +218,7 @@ def derive():
             "points_body_frd_m": q(
                 [0.0974, -0.0858, 0.1098, 0.0974, 0.0858, 0.1098,
                  -0.0974, -0.0858, 0.1098, -0.0974, 0.0858, 0.1098],
-                "m", "derived", GEOMETRY,
+                "m", "estimated", GEOMETRY,
             ),
         },
     }

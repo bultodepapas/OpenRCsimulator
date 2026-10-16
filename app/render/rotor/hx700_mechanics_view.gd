@@ -552,7 +552,7 @@ func _update_camera() -> void:
 
 
 func _clear_horizontal_bounds(viewport_width: float) -> Vector2:
-	var panel_right := _panel.get_global_rect().end.x
+	var panel_right := PANEL_LEFT + PANEL_WIDTH
 	var left := minf(panel_right + CLEAR_GAP, maxf(0.0, viewport_width - CLEAR_RIGHT_MARGIN))
 	var right := maxf(left, viewport_width - CLEAR_RIGHT_MARGIN)
 	return Vector2(left, right)

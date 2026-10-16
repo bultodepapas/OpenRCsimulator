@@ -1,6 +1,8 @@
 extends SceneTree
 
 const View := preload("res://render/rotor/hx700_mechanics_view.gd")
+const Motion := preload("res://render/rotor/hx700_inspection_motion.gd")
+const InspectorLauncher := preload("res://tools/inspect_hx700.gd")
 var checks := 0
 var failures := 0
 
@@ -10,11 +12,28 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	var original_window_size := root.size
+	root.size = Vector2i(1440, 900)
 	var view := View.new()
 	root.add_child(view)
 	view.set_process(false)
 	await process_frame
 	_check("advanced inspector opens with admitted neutral mechanics", view.rig != null and view.rig.pose.ok)
+	_check("native inspector declares a 640x480 minimum", InspectorLauncher.MIN_NATIVE_WINDOW_SIZE == Vector2i(640, 480))
+	view._canopy_toggle.set_pressed_no_signal(false)
+	view._canopy_toggle.grab_focus()
+	var pause_before_key := view.paused
+	_key(KEY_SPACE)
+	await process_frame
+	_check("Space activates a focused visibility checkbox without pausing", view._canopy_toggle.button_pressed and view.paused == pause_before_key)
+	_key(KEY_SPACE)
+	await process_frame
+	var canopy_before_p := view._canopy_toggle.button_pressed
+	_key(KEY_P)
+	await process_frame
+	_check("P pauses globally while a checkbox is focused", view.paused and view._canopy_toggle.button_pressed == canopy_before_p)
+	_key(KEY_P)
+	await process_frame
 	view._smooth_toggle.button_pressed = false
 	for i in 4:
 		view._sliders[i].value = [8.0, -6.0, 4.0, -10.0][i]
