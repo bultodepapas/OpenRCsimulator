@@ -5,6 +5,8 @@
 # Geometry/provenance and coefficient rationale: HELI-26a/elasticity.md.
 extends RefCounted
 
+const M := preload("res://physics/math3d.gd")
+
 const MASS_KG := [2.6, 2.6, 0.06]
 const STIFFNESS_N_M := [6000.0, 6000.0, 800.0]
 const DAMPING_NS_M := [80.0, 80.0, 2.5]
@@ -50,21 +52,21 @@ func advance(dt: float) -> bool:
 	for i in 3:
 		var a: float = DAMPING_NS_M[i] / (2.0 * MASS_KG[i])
 		var omega2: float = STIFFNESS_N_M[i] / MASS_KG[i]
-		var w := sqrt(omega2 - a * a)
+		var w := M.sqrt_(omega2 - a * a)
 		var equilibrium: float = force[i] / STIFFNESS_N_M[i]
 		var u := displacement[i] - equilibrium
 		# Check both alternating extrema, not only the end of a long frame.
 		# Subsequent peaks decay about equilibrium and cannot exceed these two.
-		var first_peak := fposmod(atan2(velocity[i], (a * velocity[i] + omega2 * u) / w), PI) / w
+		var first_peak := fposmod(M.atan2_(velocity[i], (a * velocity[i] + omega2 * u) / w), PI) / w
 		for peak in 2:
 			var t := first_peak + peak * PI / w
 			if t <= dt:
-				var peak_q := equilibrium + exp(-a * t) * (u * cos(w * t) + (velocity[i] + a * u) * sin(w * t) / w)
+				var peak_q := equilibrium + M.exp_(-a * t) * (u * M.cos_(w * t) + (velocity[i] + a * u) * M.sin_(w * t) / w)
 				if absf(peak_q) > TRAVEL_LIMIT_M[i]:
 					return false
-		var decay := exp(-a * dt)
-		var cosine := cos(w * dt)
-		var sine := sin(w * dt)
+		var decay := M.exp_(-a * dt)
+		var cosine := M.cos_(w * dt)
+		var sine := M.sin_(w * dt)
 		q[i] = equilibrium + decay * (u * cosine + (velocity[i] + a * u) * sine / w)
 		v[i] = decay * (velocity[i] * cosine - (a * velocity[i] + omega2 * u) * sine / w)
 		if not is_finite(q[i]) or not is_finite(v[i]) or absf(q[i]) > TRAVEL_LIMIT_M[i]:
