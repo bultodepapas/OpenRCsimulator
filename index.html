@@ -15,14 +15,14 @@
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
   <link rel="preload" href="assets/barlow-condensed-600-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="assets/dm-sans-variable-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="stylesheet" href="style.css?v=source-20261016-stable-preparation">
-  <link rel="stylesheet" href="details.css?v=source-20261016-stable-preparation">
-  <link rel="stylesheet" href="cinema.css?v=source-20261016-stable-preparation">
-  <script src="details.js?v=source-20261016-stable-preparation" defer></script>
-  <script src="viewer.js?v=source-20261016-stable-preparation" defer></script>
-  <script src="main.js?v=source-20261016-stable-preparation" defer></script>
-  <script src="cinema.js?v=source-20261016-stable-preparation" defer></script>
-  <script src="inspector.js?v=source-20261016-stable-preparation" defer></script>
+  <link rel="stylesheet" href="style.css?v=stable-v012-20261016">
+  <link rel="stylesheet" href="details.css?v=stable-v012-20261016">
+  <link rel="stylesheet" href="cinema.css?v=stable-v012-20261016">
+  <script src="details.js?v=stable-v012-20261016" defer></script>
+  <script src="viewer.js?v=stable-v012-20261016" defer></script>
+  <script src="main.js?v=stable-v012-20261016" defer></script>
+  <script src="cinema.js?v=stable-v012-20261016" defer></script>
+  <script src="inspector.js?v=stable-v012-20261016" defer></script>
 </head>
 <body>
   <div class="reading-progress" aria-hidden="true"></div>
@@ -39,7 +39,7 @@
   </header>
   <main id="main">
     <section class="hero" aria-labelledby="hero-title">
-      <div class="hero-top"><span class="eyebrow" data-i18n="heroEyebrow">AEROMODELISMO · CÓDIGO ABIERTO</span><span class="alpha"><i></i> EARLY ALPHA / 0.1.1</span></div>
+      <div class="hero-top"><span class="eyebrow" data-i18n="heroEyebrow">AEROMODELISMO · CÓDIGO ABIERTO</span><span class="alpha"><i></i> EARLY ALPHA / 0.1.2</span></div>
       <h1 id="hero-title">OpenRC<span class="hero-asterisk" aria-hidden="true">✳</span></h1>
       <div class="hero-aircraft"><div class="hero-film"><img src="assets/cinema/jet-hero.webp" alt="Ventage Jet naranja y violeta, render del modelo del simulador" data-alt="heroAlt" width="1600" height="1000" fetchpriority="high"><video id="hero-video" muted loop playsinline preload="none" aria-hidden="true" tabindex="-1" data-src="assets/cinema/jet-hero.mp4"></video></div></div>
       <div class="hero-scene-caption"><span class="aircraft-note">01 / VENTAGE JET<br><span data-i18n="renderNote">MODELO DEL SIMULADOR · VISTA DE ESTUDIO</span></span><button id="film-toggle" type="button" hidden><span class="film-icon" aria-hidden="true">Ⅱ</span><span class="film-label">Pausar escena</span></button></div>
@@ -71,7 +71,7 @@
       <div class="hangar-foot"><p id="viewer-hint" data-i18n="spinHint">Arrastra para explorar · Usa el control para cambiar de ángulo.</p><p data-i18n="stikVariants">TAMBIÉN EN EL STIK: MAX-61FX · MAX-55AX · FS-64V. Tres instalaciones glow experimentales, de dos y cuatro tiempos.</p></div>
       <button class="inspect-launch" id="open-inspector" type="button" aria-haspopup="dialog" hidden><span class="inspect-symbol" aria-hidden="true">↗</span><span><strong data-i18n="inspectCta">Acércate. Explora en 3D.</strong><span data-i18n="inspectSub">Gira libremente, cambia de vista y descubre los detalles.</span></span><span class="inspect-tag">3D / OPENRC</span></button>
       <noscript><p>El catálogo completo está en <a href="https://github.com/bultodepapas/OpenRCsimulator#aircraft">GitHub / Full aircraft catalogue</a>.</p></noscript>
-      <p class="source-note" data-i18n="sourceNote">CATÁLOGO DEL CÓDIGO ACTUAL. Los modelos son experimentales y todavía requieren mediciones y validación de pilotos. La descarga v0.1.1 corresponde a su propia versión publicada.</p>
+      <p class="source-note" data-i18n="sourceNote">CATÁLOGO DEL CÓDIGO ACTUAL. Los modelos son experimentales y todavía requieren mediciones y validación de pilotos. La descarga v0.1.2 es la versión estable publicada; los modelos siguen bajo evaluación.</p>
     </section>
 
     <section id="jet-study" class="jet-study section-pad" aria-labelledby="jet-study-title">
@@ -80,28 +80,28 @@
     </section>
 
     <section id="download" class="download section-pad" aria-labelledby="download-title">
-      <div class="download-top"><p class="eyebrow" data-i18n="downloadKicker">02 / TU PRÓXIMO DESPEGUE</p><span class="release-tag">v0.1.1 / EARLY ALPHA</span></div>
+      <div class="download-top"><p class="eyebrow" data-i18n="downloadKicker">02 / TU PRÓXIMO DESPEGUE</p><span class="release-tag">v0.1.2 / STABLE SOFTWARE</span></div>
       <h2 id="download-title" data-i18n="downloadHeading">Menos mirar.<br>Más volar.</h2><p class="download-intro" data-i18n="downloadIntro">Descarga, extrae el ZIP y abre el simulador.<br>No necesitas instalar Godot.</p>
-      <p class="download-intro" data-i18n="releaseHighlights">En el código actual: ajustes de pantalla y accesibilidad, flaps y tren retráctil del P-51D y MONSTER CAR 2 con nitro. La descarga v0.1.1 es una versión anterior; todo sigue siendo experimental.</p>
+      <p class="download-intro" data-i18n="releaseHighlights">v0.1.2 incluye ajustes de pantalla y accesibilidad, acciones configurables de gamepad, flaps y tren retráctil simulados para el P-51D y Ventage Jet, y MONSTER CAR 2 con nitro. El comportamiento de vuelo sigue en evaluación.</p>
       <div class="download-links">
-        <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.1/openrc-simulator-v0.1.1-windows-x86_64.zip"><span class="os-symbol" aria-hidden="true">01</span><strong>Windows</strong><span>x86_64 · ZIP</span><span class="download-arrow" aria-hidden="true">↓</span></a>
-        <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.1/openrc-simulator-v0.1.1-linux-x86_64.zip"><span class="os-symbol" aria-hidden="true">02</span><strong>Linux</strong><span>x86_64 · ZIP</span><span class="download-arrow" aria-hidden="true">↓</span></a>
-        <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.1/openrc-simulator-v0.1.1-macos-universal.zip"><span class="os-symbol" aria-hidden="true">03</span><strong>macOS</strong><span>Universal · ZIP</span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.2/openrc-simulator-v0.1.2-windows-x86_64.zip"><span class="os-symbol" aria-hidden="true">01</span><strong>Windows</strong><span>x86_64 · ZIP</span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.2/openrc-simulator-v0.1.2-linux-x86_64.zip"><span class="os-symbol" aria-hidden="true">02</span><strong>Linux</strong><span>x86_64 · ZIP</span><span class="download-arrow" aria-hidden="true">↓</span></a>
+        <a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.2/openrc-simulator-v0.1.2-macos-universal.zip"><span class="os-symbol" aria-hidden="true">03</span><strong>macOS</strong><span>Universal · ZIP</span><span class="download-arrow" aria-hidden="true">↓</span></a>
       </div>
-      <div class="download-help"><p data-i18n="downloadNote">Versión publicada v0.1.1. Paquetes sin firma de desarrollador.<br>Las novedades del código actual pueden no estar incluidas.</p><div><a href="https://github.com/bultodepapas/OpenRCsimulator/blob/v0.1.1/docs/FIRST-LAUNCH.md" data-i18n="firstFlight">Guía del primer vuelo ↗</a><a href="https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1" data-i18n="releaseNotes">Notas de la versión ↗</a><a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.1/SHA256SUMS">SHA256SUMS ↗</a></div></div>
+      <div class="download-help"><p data-i18n="downloadNote">Última versión estable publicada: v0.1.2. Paquetes sin firma de desarrollador.<br>Las aeronaves y funciones experimentales siguen en evaluación.</p><div><a href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/FIRST-LAUNCH.md" data-i18n="firstFlight">Guía del primer vuelo ↗</a><a href="https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.2" data-i18n="releaseNotes">Notas de la versión ↗</a><a href="https://github.com/bultodepapas/OpenRCsimulator/releases/download/v0.1.2/SHA256SUMS">SHA256SUMS ↗</a></div></div>
       <aside class="honesty candidate-announcement" aria-labelledby="candidate-title">
-        <span class="release-tag" data-i18n="candidateKicker">VERSIÓN ESTABLE DE SOFTWARE · EN PREPARACIÓN</span>
+        <span class="release-tag" data-i18n="candidateKicker">VERSIÓN ESTABLE DE SOFTWARE · DISPONIBLE</span>
         <div>
-          <h3 id="candidate-title" data-i18n="candidateTitle">v0.1.2 en preparación</h3>
-          <p data-i18n="candidateIntro">v0.1.2 todavía no está publicada; v0.1.1 sigue siendo la descarga estable más reciente. Faltan las comprobaciones finales del software y los paquetes antes de publicarla.</p>
-          <p data-i18n="candidateLimitsNote">La evaluación de aeronaves experimentales sigue abierta. Estos límites se comunican y no bloquean la versión estable de software:</p>
+          <h3 id="candidate-title" data-i18n="candidateTitle">v0.1.2 ya disponible</h3>
+          <p data-i18n="candidateIntro">Descarga v0.1.2 para Windows, Linux o macOS. Esta versión estable del software incluye aeronaves y funciones experimentales.</p>
+          <p data-i18n="candidateLimitsNote">La evaluación independiente de algunas aeronaves sigue abierta:</p>
           <ul>
-            <li data-i18n="candidateStikLimit">El doblete de timón del Ugly Stik a 15 m/s llega a 15,13°/s frente al umbral interno de 15°/s. La evaluación independiente del avión sigue abierta.</li>
-            <li data-i18n="candidateYawLimit">La comparación del modelo R02 a α=11° da 7,75% frente al umbral interno de 7%; no es una medición física.</li>
-            <li data-i18n="candidateP51Limit">P-51D experimental, P51-22: siguen pendientes la aceptación del despegue con potencia y del looping interior.</li>
+            <li data-i18n="candidateStikLimit">La respuesta del timón del Ugly Stik sigue bajo evaluación independiente.</li>
+            <li data-i18n="candidateYawLimit">La amortiguación de guiñada R02 sigue en evaluación; la comparación del modelo no es una medición física.</li>
+            <li data-i18n="candidateP51Limit">El P-51D experimental P51-22 sigue pendiente de aceptación para despegue con potencia y looping interior.</li>
           </ul>
         </div>
-        <a class="text-link" href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/releases/v0.1.2.md" data-i18n="candidateRelease">Notas de la versión v0.1.2 ↗</a>
+        <a class="text-link" href="https://github.com/bultodepapas/OpenRCsimulator/blob/v0.1.2/docs/releases/v0.1.2.md" data-i18n="candidateRelease">Notas de la versión v0.1.2 ↗</a>
       </aside>
     </section>
 
@@ -136,7 +136,7 @@
       <div class="resource-index"><a href="https://github.com/bultodepapas/OpenRCsimulator/tree/main/assets/aircraft"><span>01</span><strong data-i18n="assetModels">Modelos y geometría</strong><small data-i18n="assetModelsSub">Fuentes, generadores y articulaciones</small><b>↗</b></a><a href="https://github.com/bultodepapas/OpenRCsimulator/tree/main/app/assets/audio"><span>02</span><strong data-i18n="assetAudio">Paisaje sonoro</strong><small data-i18n="assetAudioSub">Motores, viento, follaje y fauna</small><b>↗</b></a><a href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/plans/flight-overlays.md"><span>03</span><strong data-i18n="assetInstruments">Instrumentación de vuelo</strong><small data-i18n="assetInstrumentsSub">Telemetría, sticks, alertas y diagnóstico</small><b>↗</b></a></div>
     </section>
     <section id="partners" class="partners section-pad" aria-labelledby="partners-title"><div><p class="eyebrow" data-i18n="partnersKicker">06 / ALIADOS DEL PROYECTO</p><h2 id="partners-title" data-i18n="partnersHeading">El apoyo también<br>mueve los mandos.</h2><p data-i18n="partnersIntro">Gracias a quienes hacen espacio para que un proyecto abierto siga creciendo.</p></div><div class="savox-partner"><a href="https://www.teamsavox.com/"><img src="assets/brands/savox/TeamSavox-Logo-Mono-Black.webp" alt="Savox" width="768" height="261" loading="lazy"></a><span class="eyebrow" data-i18n="savoxRole">ALIADO / SERVOS RC</span><p data-i18n="savoxCopy">Savox nos ha autorizado a incluir representaciones de sus productos en OpenRC Simulator. Gracias por acompañar al proyecto y conectar el mundo del hardware RC con la simulación abierta.</p><p class="partner-status" data-i18n="savoxStatus">La selección de servos del catálogo está planificada. Este apoyo no implica validación de nuestros modelos físicos.</p><a class="text-link" href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/docs/plans/savox-servos.md" data-i18n="savoxLink">Conoce la integración prevista ↗</a></div></section>
-    <section class="development section-pad" aria-labelledby="development-title"><div class="development-heading"><p class="eyebrow" data-i18n="developmentKicker">07 / DESARROLLO A LA VISTA</p><h2 id="development-title" data-i18n="developmentHeading">Un proyecto que avanza.<br>Sin saltarse las preguntas.</h2></div><div class="development-track"><article><span class="dev-status" data-i18n="devAvailable">DISPONIBLE</span><h3 data-i18n="devAvailableTitle">Descargar y volar.</h3><p data-i18n="devAvailableCopy">Versión v0.1.1 para escritorio. Sus notas describen exactamente lo que contiene el paquete.</p><a href="#download" data-i18n="devDownload">Ir a descargas ↑</a></article><article><span class="dev-status" data-i18n="devActive">EN DESARROLLO</span><h3 data-i18n="devActiveTitle">Probar y refinar.</h3><p data-i18n="devActiveCopy">Aeronaves experimentales, motores, terreno, controles, helicóptero y vehículos RC. El código actual sigue evolucionando.</p><a href="https://github.com/bultodepapas/OpenRCsimulator/commits/main/" data-i18n="devChanges">Cambios del proyecto ↗</a></article><article><span class="dev-status" data-i18n="devOpen">POR DEMOSTRAR</span><h3 data-i18n="devOpenTitle">Medir en el mundo real.</h3><p data-i18n="devOpenCopy">Masa, centro de gravedad, inercia, propulsión, maniobras y evaluación de pilotos. El siguiente paso necesita evidencia.</p><a href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/ROADMAP.md" data-i18n="devRoadmap">Hoja de ruta y criterios ↗</a></article></div><p class="research-note" data-i18n="droneNote">EN INVESTIGACIÓN: carreras FPV. El dron y el modo de carreras todavía no son una actividad volable.</p></section>
+    <section class="development section-pad" aria-labelledby="development-title"><div class="development-heading"><p class="eyebrow" data-i18n="developmentKicker">07 / DESARROLLO A LA VISTA</p><h2 id="development-title" data-i18n="developmentHeading">Un proyecto que avanza.<br>Sin saltarse las preguntas.</h2></div><div class="development-track"><article><span class="dev-status" data-i18n="devAvailable">DISPONIBLE</span><h3 data-i18n="devAvailableTitle">Descargar y volar.</h3><p data-i18n="devAvailableCopy">Versión v0.1.2 para escritorio. Sus notas describen exactamente lo que contiene el paquete.</p><a href="#download" data-i18n="devDownload">Ir a descargas ↑</a></article><article><span class="dev-status" data-i18n="devActive">EN DESARROLLO</span><h3 data-i18n="devActiveTitle">Probar y refinar.</h3><p data-i18n="devActiveCopy">Aeronaves experimentales, motores, terreno, controles, helicóptero y vehículos RC. El código actual sigue evolucionando.</p><a href="https://github.com/bultodepapas/OpenRCsimulator/commits/main/" data-i18n="devChanges">Cambios del proyecto ↗</a></article><article><span class="dev-status" data-i18n="devOpen">POR DEMOSTRAR</span><h3 data-i18n="devOpenTitle">Medir en el mundo real.</h3><p data-i18n="devOpenCopy">Masa, centro de gravedad, inercia, propulsión, maniobras y evaluación de pilotos. El siguiente paso necesita evidencia.</p><a href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/ROADMAP.md" data-i18n="devRoadmap">Hoja de ruta y criterios ↗</a></article></div><p class="research-note" data-i18n="droneNote">EN INVESTIGACIÓN: carreras FPV. El dron y el modo de carreras todavía no son una actividad volable.</p></section>
     <section class="community section-pad"><p class="eyebrow" data-i18n="communityKicker">UN PROYECTO ABIERTO, UN TRABAJO COMPARTIDO.</p><h2 data-i18n="communityHeading">El próximo avance<br>puede empezar contigo.</h2><div><p data-i18n="communityCopy">Una prueba con tu emisora. Una medición real. Una mejora en el código. Cada contribución ayuda a construir el siguiente vuelo.</p><a class="text-link" href="https://github.com/bultodepapas/OpenRCsimulator/blob/main/CONTRIBUTING.md"><span data-i18n="contribute">Participa en GitHub</span> ↗</a><a class="text-link" href="https://github.com/bultodepapas/OpenRCsimulator/issues/new?template=pilot_feedback.md"><span data-i18n="feedback">Comparte tu experiencia</span> ↗</a></div></section>
   </main>
   <dialog id="model-inspector" class="model-inspector" aria-labelledby="inspector-title" aria-describedby="inspector-help">
