@@ -1,0 +1,24 @@
+RC ground textures — license and attribution
+
+License evidence checked: 2026-10-15
+The original texture files are unchanged and are available under CC0 1.0 Universal.
+Attribution is not required; these credits are included voluntarily.
+CC0 legal text: https://creativecommons.org/publicdomain/zero/1.0/
+
+Dirt — Charlotte Baglioni (Poly Haven)
+Asset: https://polyhaven.com/a/dirt
+License: CC0 1.0 Universal — https://polyhaven.com/license
+  dirt-albedo.jpg: albedo from https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/dirt/dirt_diff_2k.jpg
+  dirt-normal.jpg: normal (OpenGL, +Y) from https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/dirt/dirt_nor_gl_2k.jpg
+  dirt-roughness.jpg: roughness from https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/dirt/dirt_rough_2k.jpg
+
+Grass 001 — ambientCG (the asset API lists no individual creator).
+Asset: https://ambientcg.com/view?id=Grass001
+License: CC0 1.0 Universal — https://docs.ambientcg.com/license/
+  grass-albedo.jpg: albedo from https://ambientcg.com/get?file=Grass001_2K-JPG.zip (archive member Grass001_2K-JPG_Color.jpg)
+  grass-normal.jpg: normal (OpenGL, +Y) from https://ambientcg.com/get?file=Grass001_2K-JPG.zip (archive member Grass001_2K-JPG_NormalGL.jpg)
+  grass-roughness.jpg: roughness from https://ambientcg.com/get?file=Grass001_2K-JPG.zip (archive member Grass001_2K-JPG_Roughness.jpg)
+
+Map meanings: albedo/Color is sRGB base color; normal is tangent-space OpenGL (+Y);
+roughness is a linear data map. The 4K originals are source-only A/B references,
+not part of the runtime package.

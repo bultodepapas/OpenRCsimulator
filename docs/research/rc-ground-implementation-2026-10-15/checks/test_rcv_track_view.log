@@ -1,0 +1,14 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+PASS: default course loads
+PASS: render vertices match physics height plus 2 mm separation: 0.00000187 m
+PASS: triangle interpolation error stays below 8 mm: 0.006135 m
+PASS: render normals match physical gradient within packed-normal precision: 0.00011276
+PASS: terrain uses visible clockwise Godot front faces
+PASS: wall mesh matches its collision bounds: slalom_1
+PASS: wall mesh matches its collision bounds: slalom_2
+PASS: wall mesh matches its collision bounds: slalom_3
+PASS: wall mesh matches its collision bounds: start_south
+PASS: wall mesh matches its collision bounds: start_north
+PASS: renderer creates no second physical world
+RCV track view: 0 failures

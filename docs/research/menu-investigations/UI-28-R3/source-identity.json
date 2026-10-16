@@ -1,0 +1,21 @@
+{
+  "head_at_evidence_collection": "8f48b5afa30bc703a65f69de57dcca46a4fabf15",
+  "engine": "Godot 4.7.2 stable ed1daf0bf",
+  "renderer": "Compatibility OpenGL 3.3",
+  "gpu": "NVIDIA GeForce RTX 3090",
+  "note": "Shared working tree; UI hashes identify this slice. No exported package or frozen whole-repository claim.",
+  "sha256": {
+    "app/app_root.gd": "4a4de8c24b4ca61a0ff96098d2a28a924646430f94ec2b998526f530ee53ac31",
+    "app/app_state/display_preferences.gd": "dd41ea5a1457007c5ac21ed367b04fdcbfb4cac8d9fb954a59423486c63670d2",
+    "app/ui/screen_stack.gd": "098c224e6363a544addadfba859ba2d1210a807b7883dbcdd00792e4f70d85e3",
+    "app/ui/settings_screen.gd": "4fdbd5bb3c238a529b566120106f8cf99b7dccc72cb510e10de7405836dae755",
+    "app/ui/home.gd": "314d4ea5a226f62da7ce20c6c447879e198cf6c4ecf240d0e1edb16f6216ab50",
+    "app/ui/menu_audio.gd": "e016093d64c9f63daf73bad5dc2714341a69250bfa44681ed252537ab40e86a7",
+    "app/ui/ui_theme.gd": "d69d85eea9d2400f656a8c23e39a9db017dfb8cf7fdd24048d51bf3dfc1f14cb",
+    "app/i18n/es.po": "d97859efd9829deaa23771fb69357232284a4722b9fd9eea2783bd36b08e5232",
+    "app/tests/test_menu_audio.gd": "834a0ad90d57468455fb8a8e07e8cce45ec7b6c708707581651277e585faaf2f",
+    "app/tests/test_ui_settings_integration.gd": "28f2b7df822b229a3ee71166e5c053233455256afccf09fa192bf11e6964e01b",
+    "app/tests/test_settings_ui.gd": "9533d25f845467daf4746d2cb9ad6d94def49630f5ddfe734e175df957375ed5",
+    "app/tests/test_ui_home.gd": "ac8614892d0c94197fe8d7c1c64d81f9bc03119ff6bb32fe7f2d7820f8181871"
+  }
+}

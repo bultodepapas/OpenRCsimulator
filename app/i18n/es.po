@@ -3076,6 +3076,9 @@ msgstr "Interfaz"
 msgid "Sound"
 msgstr "Sonido"
 
+msgid "Preview · Close to undo"
+msgstr "Vista previa · Cerrar revierte"
+
 msgid "Fullscreen changes have a 15-second safety timer."
 msgstr "La pantalla completa se prueba durante 15 segundos."
 
@@ -3105,6 +3108,9 @@ msgstr "Abrir garaje de coches RC"
 
 msgid "Natural Random creates a flight setup to review. Failure practice schedules system faults for your next flight."
 msgstr "Aleatorio natural propone un vuelo para revisar. La práctica de fallos programa averías para tu próximo vuelo."
+
+msgid "Review a random setup, or practice with system failures."
+msgstr "Revisa un vuelo aleatorio o practica con averías."
 
 msgid "Failure practice"
 msgstr "Práctica de fallos"

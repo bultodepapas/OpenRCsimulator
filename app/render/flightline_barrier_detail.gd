@@ -7,8 +7,8 @@ static func append(kit: MeshKit, part: Dictionary, index: int) -> void:
 	var centre: Vector3 = part.base + Vector3.UP * size.y * 0.5
 	var color: Color = part.color
 	if part.profile == "wood":
-		# Opaque shader uses alpha as a stable grain/stain offset, never transparency.
-		color.a = float((index * 37) % 101) / 100.0
+		# Red carries the grain/stain offset. Keep alpha opaque for detached debris.
+		color = Color(0.72 + 0.18 * float((index * 37) % 101) / 100.0, 0.46, 0.28)
 		var saved := kit.xf
 		kit.xf = Transform3D(Basis(Vector3.BACK, -PI * 0.5), centre)
 		_prism(kit, Vector3(size.y, size.x - 0.08, size.z), Vector3.ZERO, 0.002, color)
@@ -19,7 +19,7 @@ static func append(kit: MeshKit, part: Dictionary, index: int) -> void:
 				# A shallow galvanized splice plate, washer and hexagonal fastener.
 				kit.box(Vector3(0.035, 0.038, 0.0015), Vector3(x, centre.y, side * 0.03075), Color("#737b7d"), true)
 				kit.xf = Transform3D(Basis(Vector3.RIGHT, side * PI * 0.5), Vector3(x, centre.y, side * 0.0315))
-				kit.cylinder(0.008, 0.008, 0.001, 8, Vector3.ZERO, Color("#929b9d"))
+				kit.cylinder(0.008, 0.008, 0.001, 6, Vector3.ZERO, Color("#929b9d"))
 				kit.cylinder(0.0055, 0.0055, 0.003, 6, Vector3(0, 0.001, 0), Color("#bac1c0"))
 				kit.xf = saved
 	else:

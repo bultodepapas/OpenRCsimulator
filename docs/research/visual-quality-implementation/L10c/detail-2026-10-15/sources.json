@@ -1,0 +1,17 @@
+{
+  "app/assets/landscape/flightline/LICENSE.txt": "919a966d97f0c8480378dc796c3a7b80c96906992b147a74f28679c3cd3df616",
+  "app/assets/landscape/flightline/PROVENANCE.json": "f3b7592dd850dcce5442954d839eece21ed284f08dfead335548ce4a136a6868",
+  "app/assets/landscape/flightline/Wood049_1K-JPG_Color.jpg": "451ee4dd719628289b4969f75dc583b5f77f8471d5d885ba5015fd90e7e5ce61",
+  "app/assets/landscape/flightline/Wood049_1K-JPG_Color.jpg.import": "9f1661c5dbb97572a69b0f31f2e9851854ddf51615ae5ee3905baee759dfd011",
+  "app/assets/landscape/flightline/Wood049_1K-JPG_NormalGL.jpg": "e9aaec13f9c6199e7ec440433005a8c52a88332f26a3887fc057179089fb747a",
+  "app/assets/landscape/flightline/Wood049_1K-JPG_NormalGL.jpg.import": "de91cbbb22416fbd21303343aa116349f78e41f6108f29e61a05cd18d4651ced",
+  "app/assets/landscape/flightline/Wood049_1K-JPG_Roughness.jpg": "7683f29e71c24b987e4a7dcc74d5a9ed5ab4cac2e145d507799ba9c9c2c4ef54",
+  "app/assets/landscape/flightline/Wood049_1K-JPG_Roughness.jpg.import": "93bc119c1e2b48536fea748a962e46e7b4838833780f2eb765a401e25df53145",
+  "app/data/fields/default.json": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+  "app/render/flightline_barrier.gd": "20968328211b62f47c7feaf0937e2b1a49c772cf7b935f954a8b65c9294d72d9",
+  "app/render/flightline_barrier.gdshader": "30a7f614f9ef46c059cc96d46688f2972519cba42b8ae92c0d74e9ea7d7c9d64",
+  "app/render/flightline_barrier_detail.gd": "45a127c2463b589c1866be3b8b8432ee9b489a9e9e49134fe9872124994c71fa",
+  "app/tests/test_flightline_barrier.gd": "d217dc9f642b7b2e45006c9d1255f11695643ec7806252bde4a8831cbd0e6c68",
+  "tools/ground/capture_barrier_detail.gd": "d37a9e5be1112a920fdefed1c78c654c9216458c47a7de064e6963ff7f67e624",
+  "tools/ground/check_windsock.py": "413a0e12233ce988075f0d8eee152fa92f8023a49afdba304dfdf3a89ee7e61b"
+}

@@ -24,6 +24,12 @@ func _initialize() -> void:
 		"res://assets/aircraft/hx-700/articulated/construction.json": "res://assets/aircraft/hx-700/articulated/construction.json",
 	}
 	var packer := PCKPacker.new()
+	# Optional HELI-26a mechanical inspection fixture, still separate from flight exports.
+	for path: String in ["res://render/rotor/hx700_motion_equations.gd", "res://render/rotor/hx700_mechanism.gd",
+			"res://render/rotor/hx700_mechanics_view.gd", "res://tools/inspect_hx700.gd", "res://tests/test_heli_mechanism.gd",
+			"res://tests/test_heli_mechanics_view.gd"]:
+		if FileAccess.file_exists(path):
+			files[path] = path
 	if packer.pck_start(destination) != OK:
 		quit(1)
 		return

@@ -4,6 +4,8 @@ The playable rotorcraft uses published X-Cell .60 SE equations and the supplied 
 
 ## Start and controls
 
+For the **advanced articulated HX-700 mechanism**, run `./research/helicopter/inspect-mechanics.ps1`. Its separate inspector exposes collective, cyclic, four servo horns, nine rigid links and tail pitch with close cameras and slow rotation. [Controls, source pipeline and limits](../assets/aircraft/hx-700/articulated/README.md); [HELI-26a verification](research/helicopter/HELI-26a/README.md). This mechanical inspection does not yet replace the flight session below or provide achieved servo dynamics.
+
 Select **RC Helicopter Research Trainer** on Home. The default start is on the authored flat grass pad at north 6 m, east 0 m, facing east, beside the runway midpoint. The runway occupies north 9–21 m; the helicopter is outside it. **Start: hover** remains available for airborne practice. R repeats the selected start. Home removes unqualified turbulence while preserving supported steady wind and deterministic gusts.
 
 On the pad the rotor is stopped, the motor disarmed, hold engaged, and the collective initialized to zero blade pitch (about 17% stick on this model's normal curve). Center cyclic/yaw, press **B** to arm, then **H** to release hold. Wait for **GOVERNED** before increasing collective with W. The 12 s torque ramp is an explicit simulator estimate; it is not an identified engine or ESC response. The earlier 4 s candidate exceeded the configured skid yaw capacity.

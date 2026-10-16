@@ -1,6 +1,6 @@
 # Landscape plan: current field and open work
 
-2026-10-14 · Revision 4 · Step prefix: **L**
+2026-10-15 · Revision 5 · Step prefix: **L**
 
 **Status:** the daytime field, treeline and visual cues are implemented. The separate LU-00…27 landscape integration is also delivered; its remaining cost and acceptance gates are summarized below. L9 ground review, L6c owner readability review, terrain work and wind integration remain open. Static tree and scenery contacts are gameplay estimates, not physical calibration. Gate L remains open.
 
@@ -10,7 +10,7 @@
 
 - L0–L7 provide the capture baseline, fixed-sun sky/haze/clouds, shared field builder, treeline cards and far landscape. L6 uses validated CC0 source packages and a small runtime atlas; detailed source meshes remain authoring inputs.
 - L9 has filtered turf and field surfaces. L9e is engineering-verified; L9b's visual review and L9c's perceived stripe shimmer still need acceptance. Near grass is a separate opaque layer with no collision.
-- L10 cues include the windsock, pilot station and flightline barrier, with soft contact grounding. L11a near grass is implemented. L11b reuses SC-16/17 flora through the scenery layer; it does not duplicate assets.
+- L10 cues include the windsock, pilot station and flightline barrier, with soft contact grounding. [L10c-R1](research/visual-quality-implementation/L10c/README.md#2026-10-15--l10c-r1-close-view-finish) adds bevelled rails, two-sided hardware and downloaded CC0 wood textures to the flightline barrier. L11a near grass is implemented. L11b reuses SC-16/17 flora through the scenery layer; it does not duplicate assets.
 - L14 static obstacle contacts now use the shared float64 LU-05 collision world, built from field, scenery and light data. Its inventory includes field-tree trunk/crown proxies and nearby structures, vehicles, parked aircraft, lights and field objects. The [LU-05 collision report](research/landscape-upgrade/LU-05/collision-report.md) records coverage and limits. Proxy sizes, foliage responses and impact thresholds are gameplay estimates, not sourced structural strength; the nearby-query cost gate remains open.
 - L15b tree sway and L15d cloud-shadow rendering are implemented. Their physical wind integration remains with M5. Dynamic wind and foliage sound is delivered by [AUD-01…05](AUDIO-PLAN.md), rather than pending L15e work.
 
@@ -50,7 +50,7 @@ LU-00…27 adds licensed field assets, night lighting, imported vegetation and a
 | Pilot readability and lower-end hardware | Independent owner review and target-machine evidence remain open under Gate L and the scenery/world gates. | [L gates](#gates-and-evidence), [scenery guide](SCENERY-PLAN.md), [field-world guide](FIELD-WORLD-PLAN.md) |
 | Lake impact and buoyancy | Current land aircraft stop on water entry; the sinking effect is visual. Water response and impact parameters are not physically validated. | [LU-22](research/landscape-upgrade/LU-22/README.md) |
 
-L9d now has a bounded [RC ground close-view plan](plans/rc-ground-closeup.md): the [2026-10-15 audit](research/rc-ground-closeup-2026-10-15/README.md) documents dirt detail, shoulder continuity and grass limitations from native captures. L9d-01 is complete; L9d-02…06 material/vegetation implementation and qualification remain pending. Shared field adoption retains VQ/flight-readability gates.
+L9d now has a bounded [RC ground close-view plan](plans/rc-ground-closeup.md): the [2026-10-15 audit](research/rc-ground-closeup-2026-10-15/README.md) documents dirt detail, shoulder continuity and grass limitations from native captures. L9d-01…04 now have an RC-local 2K CC0 dirt/grass implementation with shared shoulders and exact mesh/state checks; see the [implementation evidence](research/rc-ground-implementation-2026-10-15/README.md). L9d-05 remains conditional vegetation work; L9d-06 retains lower-end hardware, owner playtest and shared Home/flight qualification. Shared field adoption retains VQ/flight-readability gates.
 
 L8 (near 3D tree models), L16–18 (photo sky, owner's field and Terrain3D), and L20 (sky-grid aid) are optional and start only if a gate justifies them. L19's time-of-day work is owned by [TIME-OF-DAY-PLAN](TIME-OF-DAY-PLAN.md).
 

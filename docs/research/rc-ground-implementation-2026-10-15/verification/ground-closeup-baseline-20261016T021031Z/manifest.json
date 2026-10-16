@@ -1,0 +1,63 @@
+{
+  "format": "openrc-ground-closeup-manifest-v1",
+  "variant": "baseline",
+  "output_dir": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\ground-closeup-baseline-20261016T021031Z",
+  "created_utc": "2026-10-16T02:10:31.609948+00:00",
+  "scope": "native offscreen Godot renderer; production ground activity; no simulation during render timing; optional deterministic Session preconditioning is recorded separately",
+  "physical_validation": false,
+  "resolution": [
+    1280,
+    720
+  ],
+  "frames": 0,
+  "capture_only": true,
+  "warmup_frames": 30,
+  "ticks": 0,
+  "pan_frames": 0,
+  "case_count": 1,
+  "cases": [
+    {
+      "id": "mt8-bisonte__track_rollers__low-orbit__day",
+      "vehicle_id": "mt8-bisonte",
+      "spawn": "track_rollers",
+      "camera": "low-orbit",
+      "lighting": "day"
+    }
+  ],
+  "source_sha256_before": {
+    "app/project.godot": "176399ac913ea694682334cf9ff29150236c3958c1aa544299e217bac844a6df",
+    "app/vehicles/ground/ground_scene.gd": "f76d1522b1ed3733af0ad0cb041b3d342d736edcc1ee502076a5c5bd6a428b6f",
+    "app/vehicles/ground/airfield_track_view.gd": "66912786f5339392a7ab9f1470aa2ad6bcbecbe5ecbece7b3d4ac101cca85ad1",
+    "app/vehicles/ground/ground_camera.gd": "d9f7c5daad09c04998ba1ec14097ef2fb50022cbf13e1182948610e100354e8b",
+    "app/vehicles/ground/mt8_model.gd": "eb1076020a548050aea1d4961f887b68eb3fc12fc0354a8a52db5cea283b9c65",
+    "app/vehicles/ground/monster_car_2_model.gd": "cd19dec6f75f0fbdb929206a3988da157df3b18bbcf066a91e9aca58e2714a73",
+    "app/vehicles/ground/vehicle_catalog.gd": "34ac3ecf1155755bd2dafb565e5b66ab73d9184b023ee276ca58da728b2af372",
+    "app/render/ground.gd": "b3756a152f7d67d8d8f8f452b2d03ef0c0003d971ef557814a906ba013923367",
+    "app/render/ground.gdshader": "d8a7bf05cbcd3f6ff0412cb73a8d232a5b18aeecbdae33539f939748c55acec7",
+    "app/render/rc_ground_detail.gdshaderinc": "3a7569a86fd7cffb465df41e2709f4cbb82f438b319650d81bfc45b362ae4ad0",
+    "app/render/rc_ground_material.gd": "acd6778ecceac0f5c604d3b4697f387c32b641861ce7c501505c040af865d9e0",
+    "app/render/grass_surface.gdshaderinc": "3699a1e3fcb4b08aab1046a7a8369b1b798f599710b17f712b80bb204780d9d0",
+    "app/render/turf_detail.gdshaderinc": "1ed68a1333192f7dde369ca9c815d70e92674a9b5c2e89a40fe52c886561dec1",
+    "app/render/cloud_field.gdshaderinc": "453eb83fd256f8645af888768cc0bea62cf4f08d2f804e263173996aaa55883e",
+    "app/scenery/gravel.gdshader": "92438b89c87fa25670f545266269f5f16f35f7669efb98a760308d9daf163bff",
+    "app/data/fields/default.json": "a4908850c54f183e8d479623384ae249e2024a893b3fb8288030fd69eb20069d",
+    "app/data/fields/lake.json": "a05a4e0461774fca8a3fce908df73122af67a4c0b17c777d5366036f1794ad74",
+    "app/data/ground_vehicle/airfield_track.json": "b178c5c22dd77160a48bd72d2e473f52e66a65c52843d25770b224f6cebbba81",
+    "app/data/ground/surface_friction.json": "00c63125e7ed315e6a262227a9a3be0e05b6c2aab812c2247568e9a509169586",
+    "app/data/vehicles/ground/mt8_bisonte.json": "425f2a3fe810f82d609ad2b9dd9618b9fb45bcd813df57873cd8bc8759a750a5",
+    "research/rc-monster-truck/ground-closeup/capture.gd": "19ceee5e610aa0133534c824afb00583b585d9bb7dded1b606f74be3c4da96ba",
+    "research/rc-monster-truck/ground-closeup/run.py": "27591585cd302e94ae634e2e8804592e3e979c2c415c652a4d0e2c5e3d6808de"
+  },
+  "godot_executable": "C:\\DEVELOPMENT\\OpenRCsimulator\\.tools\\Godot_v4.7.2-stable_win64.exe",
+  "compare_dir": null,
+  "renderer_requirement": "normal native renderer at offscreen window position; never --headless",
+  "bounds": {
+    "max_cases": 64,
+    "max_rendered_frames_total": 48000,
+    "max_timing_frames_per_case": 600,
+    "max_warmup_frames_per_case": 300,
+    "max_preconditioning_ticks": 240,
+    "max_pan_frames_per_case": 120,
+    "timeout_seconds": 300
+  }
+}

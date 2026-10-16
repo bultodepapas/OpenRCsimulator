@@ -115,8 +115,15 @@ func _test_missing_prices_do_not_gate_routes() -> void:
 					if component.id in ["fuselage_servos", "aileron_servos"]:
 						count += component.quantity
 				_check("Extra has five independently counted servo proxies", count == 5)
-			else:
+			elif aircraft_id == "xcell-60-research":
 				_check("unpriced route invents no component prices " + aircraft_id, (dossier.get("components", []) as Array).is_empty())
+			else:
+				_check("independent fleet dossier maps its own inventory " + aircraft_id, not dossier.components.is_empty())
+				var null_count := 0
+				for component: Dictionary in dossier.components:
+					if component.unit_minor == null:
+						null_count += 1
+				_check("partial fleet dossier preserves unknown prices " + aircraft_id, null_count > 0)
 	_check("other five fleet routes remain economically incomplete", incomplete_count == 5, str(incomplete_count))
 
 

@@ -3,6 +3,16 @@
 2026-10-14. Source snapshot: `22b3e4825ec97289b76666ca9e942eaa7a8f703d` plus the existing working tree. Scope: Xbox, PlayStation DualSense and other controllers, with Windows prioritized by the owner. The [implementation plan](../../plans/controller-support.md) owns proposed work and acceptance; this report owns the dated findings and sources.
 
 
+## Complete flight button defaults (2026-10-15, D6-GP-06-R2)
+
+The owner requested useful automatic buttons plus a saved, remappable flight restart on a button or radio channel. Standard gamepad profiles now inherit A/Cross for implemented flap detents and View/Share for restart, alongside B/Circle gear and RB/R1 smoke. Equipment defaults follow the active aircraft. Explicit remaps, explicit Clear and AUX ownership take precedence; unknown raw layouts retain explicit configuration. The current [player guide](../../FIRST-LAUNCH.md#controller-settings-current-source) owns the control list.
+
+Restart is routed by AppRoot through the existing Pause → Restart operation, including when a different menu pad owns the accident report. It resets the selected start and requires Continue. Its own source latch observes menu input without executing a restart there; repeated presses and axis jitter cannot queue repeated resets. Calibration, ordinary menu actions and the ground activity retain their existing routing. No simulation equations, aircraft data, conditioning curves or golden flights changed.
+
+Focused native Windows checks cover inherited/cleared/occupied defaults, AUX collisions, primary-axis refusal, channel hysteresis, device isolation, held Accept/Back, disk persistence/reconnect and the real accident → restart → Continue flow. The final action suite passes 104 checks, routing 21, persistence 27 and menu integration 36. All 940 application GDScript files in the scan pass native syntax checks. The action-category fixture now includes Restart flight. [Check receipt](flight-button-defaults-windows.json) retains the broader suite results, syntax scan and final reruns.
+
+The broader run is not an unconditional repository pass: the standalone sections fixture reports two viewport-enclosure failures for the bottom axis and AUX editors at 1280×720. Its category failures were corrected for the newly added action. Pause recovery passed all 24 assertions but initially reported resources still in use at shutdown; a separate verbose rerun passed without that error. Shared work changed the tree during verification. The canonical Linux `app/test.sh` and physical Xbox/PlayStation/radio button qualification were not run; these checks use synthetic device observations with the pinned native Windows engine.
+
 ## Gamepad readiness (2026-10-15, F3-GP-02-R2)
 
 The owner reported confusing GAMEPAD SAFE behavior. The old gate required motion evidence on every mapped axis, a centered dwell and released buttons. Verified stationary polling existed only during paused sampling; direct fixed-wing launches had no engine confirmation callback. This left normal connected controllers waiting for an unnecessary gesture.

@@ -398,7 +398,7 @@ func _init() -> void:
 		item.clip_text = false
 		item.text_overrun_behavior = TextServer.OVERRUN_NO_TRIMMING
 		item.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
-		var selected_style := item.get_theme_stylebox("pressed").duplicate() as StyleBoxFlat
+		var selected_style := theme.get_stylebox("pressed", "HomeAction").duplicate() as StyleBoxFlat
 		selected_style.bg_color = Color(UiTheme.FOCUS, 0.12)
 		selected_style.border_width_left = 3
 		selected_style.border_color = UiTheme.FOCUS
@@ -421,13 +421,13 @@ func _init() -> void:
 	_pages.append(practice_page)
 	practice_page.add_child(_label("Practice", "SectionTitle"))
 	var practice_intro := _label(
-		"Natural Random creates a flight setup to review. Failure practice schedules system faults for your next flight.",
+		"Review a random setup, or practice with system failures.",
 		"SecondaryLabel"
 	)
 	practice_intro.name = "PracticeSummary"
 	practice_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	practice_page.add_child(practice_intro)
-	var practice_row := HBoxContainer.new()
+	var practice_row := VBoxContainer.new()
 	practice_row.name = "PracticeActions"
 	practice_row.add_theme_constant_override("separation", 6)
 	practice_page.add_child(practice_row)
@@ -456,7 +456,9 @@ func _init() -> void:
 	_page_host.add_child(garage_page)
 	_pages.append(garage_page)
 	garage_page.add_child(_label("RC garage", "SectionTitle"))
-	garage_page.add_child(_label("Select a vehicle before opening the garage.", "SecondaryLabel"))
+	var garage_intro := _label("Select a vehicle before opening the garage.", "SecondaryLabel")
+	garage_intro.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	garage_page.add_child(garage_intro)
 	ground_vehicle_choice = OptionButton.new()
 	ground_vehicle_choice.name = "GroundVehicleChoice"
 	ground_vehicle_choice.tooltip_text = "RC car"
@@ -473,6 +475,7 @@ func _init() -> void:
 	ground_vehicle_button.name = "GroundVehicles"
 	ground_vehicle_button.custom_minimum_size.y = 56
 	ground_vehicle_button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	ground_vehicle_button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	ground_vehicle_button.pressed.connect(func() -> void: ground_vehicle_requested.emit())
 
 	var primary_actions := VBoxContainer.new()
@@ -711,7 +714,7 @@ func _schedule_selected_aircraft_reveal() -> void:
 
 
 func _apply_responsive_layout() -> void:
-	if _left_layout == null or _header == null:
+	if not is_inside_tree() or is_queued_for_deletion() or _left_layout == null or _header == null:
 		return
 	_refresh_scrims()
 	var viewport_size := get_viewport_rect().size

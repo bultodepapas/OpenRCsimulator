@@ -117,8 +117,7 @@ func _run() -> void:
 		home.ground_vehicle_choice.get_parent() == home._pages[3] and home.ground_vehicle_button.get_parent() == primary_actions)
 	var practice_summary: Label = home.get_node("HomeRail/HomeContentScroll/HomePages/PracticePage/PracticeSummary")
 	_check("Practice distinguishes random setups from next-flight failure practice",
-		practice_summary.text.contains("Natural Random") and practice_summary.text.contains("Failure practice")
-		and practice_summary.text.contains("next flight")
+		practice_summary.text.contains("random setup") and practice_summary.text.contains("system failures")
 		and home.failure_summary_label.text.contains("Next flight failures: Off"))
 	_check("flight details disclosure starts collapsed with a right caret",
 		not home._flight_details.visible and home._details_button.text == "More flight details"
@@ -208,6 +207,19 @@ func _run() -> void:
 		await ui.tap(KEY_ENTER)
 		_check("keyboard opens section %d without launching" % section, home._pages[section].visible
 			and home._pages.filter(func(page): return page.visible).size() == 1 and app.flight == null)
+	home._select_page(0)
+	for locale: String in ["en", "es"]:
+		TranslationServer.set_locale(locale)
+		home._select_page(2)
+		await ui.settle()
+		_check("Practice preserves the compact rail in " + locale, home.get_node("HomeRail").size.x <= 304.5
+			and not scroll.get_v_scroll_bar().visible)
+		home._select_page(3)
+		await ui.settle()
+		_check("Garage preserves the compact rail and visible action in " + locale,
+			home.get_node("HomeRail").size.x <= 304.5 and home.ground_vehicle_button.is_visible_in_tree()
+			and not scroll.get_v_scroll_bar().visible)
+	TranslationServer.set_locale("en")
 	home._select_page(0)
 	var saved_aircraft: String = home.aircraft_id
 	var long_device := "FrSky Tandem X20S USB Joystick Controller"

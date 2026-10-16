@@ -18,6 +18,8 @@ PRICE_CATALOG_PATH = RESEARCH_DIR / "catalog.json"
 COSTING_PATH = RESEARCH_DIR / "aircraft-costing.json"
 AIRCRAFT_CATALOG_PATH = Path("app/app_state/aircraft_catalog.gd")
 OUTPUT_PATH = Path("app/data/economy/catalog.json")
+REPAIR_SOURCE_PATH = RESEARCH_DIR / "repair-recipes.json"
+REPAIR_OUTPUT_PATH = Path("app/data/economy/repair-recipes.json")
 FORMAT = "openrc-aircraft-economics v1"
 PRICE_FORMAT = "openrc-price-catalog v1-draft"
 COSTING_FORMAT = "openrc-aircraft-costing-research v1"
@@ -1012,6 +1014,35 @@ def render_runtime_json(document: dict[str, Any]) -> bytes:
     return (json.dumps(document, ensure_ascii=False, indent=2, allow_nan=False) + "\n").encode("utf-8")
 
 
+def render_repair_book(root: Path = ROOT) -> bytes:
+    """Package authored recipes offline; the runtime planner validates candidate math."""
+    book, _ = _read_json(root / REPAIR_SOURCE_PATH)
+    if book.get("format") != "openrc-repair-recipes v1" or book.get("currency") != "USD" \
+            or not isinstance(book.get("recipes"), list) or not book["recipes"]:
+        _fail("repair recipe source has invalid format, currency or recipes")
+    catalog, _ = _read_json(root / PRICE_CATALOG_PATH)
+    offers = {row["id"]: row for row in catalog["observations"]}
+    for recipe in book["recipes"]:
+        if not isinstance(recipe, dict) or not isinstance(recipe.get("materials"), list):
+            _fail("repair recipe must declare material rows")
+        for material in recipe["materials"]:
+            if not isinstance(material, dict):
+                _fail("repair material must be an object")
+            price = material.get("package_price_minor")
+            if price is None:
+                continue
+            _require_int(price, "repair material package price")
+            offer = offers.get(material.get("offer_id"))
+            source = material.get("source")
+            if offer is None or not isinstance(source, dict):
+                _fail("priced repair material requires a catalog offer and source")
+            if price != offer["amount_minor"] or source.get("price_minor") != price \
+                    or source.get("source_url") != offer["source_url"] \
+                    or source.get("observed_on") != offer["observed_on"]:
+                _fail("repair material price/source differs from the selected catalog offer")
+    return render_runtime_json(book)
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--check", action="store_true", help="verify the generated sidecar without writing it")
@@ -1019,15 +1050,19 @@ def main(argv: list[str] | None = None) -> int:
     try:
         document, context = build_runtime_data(ROOT)
         rendered = render_runtime_json(document)
-        output_path = ROOT / OUTPUT_PATH
+        artifacts = {OUTPUT_PATH: rendered, REPAIR_OUTPUT_PATH: render_repair_book(ROOT)}
+        for relative, payload in artifacts.items():
+            output_path = ROOT / relative
+            if args.check:
+                if not output_path.exists() or output_path.read_bytes() != payload:
+                    print(f"stale runtime economics artifact: {relative.as_posix()}", file=sys.stderr)
+                    return 1
+            else:
+                output_path.parent.mkdir(parents=True, exist_ok=True)
+                output_path.write_bytes(payload)
         if args.check:
-            if not output_path.exists() or output_path.read_bytes() != rendered:
-                print(f"stale runtime economics sidecar: {OUTPUT_PATH.as_posix()}", file=sys.stderr)
-                return 1
             print(f"runtime economics sidecar is current ({len(context['routes'])} aircraft routes)")
             return 0
-        output_path.parent.mkdir(parents=True, exist_ok=True)
-        output_path.write_bytes(rendered)
         print(f"wrote {OUTPUT_PATH.as_posix()} ({len(context['routes'])} aircraft routes)")
         return 0
     except (ContractError, OSError) as exc:

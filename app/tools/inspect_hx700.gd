@@ -11,6 +11,7 @@ func _initialize() -> void:
 func _start() -> void:
 	root.title = "HX-700 · Mecánica avanzada"
 	root.size = Vector2i(1440, 900)
+	root.msaa_3d = Viewport.MSAA_4X
 	view = View.new()
 	root.add_child(view)
 	for arg: String in OS.get_cmdline_user_args():

@@ -1,0 +1,81 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+CAPTURE en-1080-home.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE en-1080-aircraft.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE en-1080-practice.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE en-1080-garage.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE en-1080-settings-display.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE en-1080-settings-interface.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE en-1080-settings-sound.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE en-1080-weather.webp (1920, 1080) logical=(1920.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE en-1080-pause.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE en-1080-pause-settings.webp (1920, 1080) logical=(1920.0, 1080.0)
+FLOW en-1080 pause-held=true return=true
+CAPTURE es-1080-home.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE es-1080-aircraft.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE es-1080-practice.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE es-1080-garage.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE es-1080-settings-display.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE es-1080-settings-interface.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE es-1080-settings-sound.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE es-1080-weather.webp (1920, 1080) logical=(1920.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-1080-pause.webp (1920, 1080) logical=(1920.0, 1080.0)
+CAPTURE es-1080-pause-settings.webp (1920, 1080) logical=(1920.0, 1080.0)
+FLOW es-1080 pause-held=true return=true
+CAPTURE en-2160-home.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE en-2160-aircraft.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE en-2160-practice.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE en-2160-garage.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE en-2160-settings-display.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE en-2160-settings-interface.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE en-2160-settings-sound.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE en-2160-weather.webp (3840, 2160) logical=(1920.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE en-2160-pause.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE en-2160-pause-settings.webp (3840, 2160) logical=(1920.0, 1080.0)
+FLOW en-2160 pause-held=true return=true
+CAPTURE es-2160-home.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-2160-aircraft.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-2160-practice.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-2160-garage.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-2160-settings-display.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-2160-settings-interface.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-2160-settings-sound.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-2160-weather.webp (3840, 2160) logical=(1920.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-2160-pause.webp (3840, 2160) logical=(1920.0, 1080.0)
+CAPTURE es-2160-pause-settings.webp (3840, 2160) logical=(1920.0, 1080.0)
+FLOW es-2160 pause-held=true return=true
+CAPTURE en-720-home.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE en-720-aircraft.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE en-720-practice.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE en-720-garage.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE en-720-settings-display.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE en-720-settings-interface.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE en-720-settings-sound.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE en-720-weather.webp (1280, 720) logical=(1280.0, 720.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE en-720-pause.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE en-720-pause-settings.webp (1280, 720) logical=(1280.0, 720.0)
+FLOW en-720 pause-held=true return=true
+CAPTURE es-720-home.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE es-720-aircraft.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE es-720-practice.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE es-720-garage.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE es-720-settings-display.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE es-720-settings-interface.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE es-720-settings-sound.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE es-720-weather.webp (1280, 720) logical=(1280.0, 720.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-720-pause.webp (1280, 720) logical=(1280.0, 720.0)
+CAPTURE es-720-pause-settings.webp (1280, 720) logical=(1280.0, 720.0)
+FLOW es-720 pause-held=true return=true

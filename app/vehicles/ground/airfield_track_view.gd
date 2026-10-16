@@ -5,7 +5,7 @@ const GRAVEL_SHADER := preload("res://scenery/gravel.gdshader")
 const PALETTE := preload("res://scenery/palette.gd")
 const GRID_STEP_M := 0.10
 
-static func build(course: Dictionary, road: Callable) -> Node3D:
+static func build(course: Dictionary, road: Callable, ground_material: ShaderMaterial = null) -> Node3D:
 	var root := Node3D.new()
 	root.name = "RCObstacleTrack"
 	var value: Variant = course.get("track", {})
@@ -62,6 +62,11 @@ static func build(course: Dictionary, road: Callable) -> Node3D:
 		var material := ShaderMaterial.new()
 		material.shader = GRAVEL_SHADER
 		material.set_shader_parameter("detail_strength", 0.72)
+		if ground_material != null:
+			material = ground_material.duplicate() as ShaderMaterial
+			material.set_shader_parameter("rc_track_surface", true)
+			# The physical road already supplied geometric normals, including micro-relief.
+			material.set_shader_parameter("terrain_relief_enabled", false)
 		var surface := MeshInstance3D.new()
 		surface.name = "DirtLoopSurface"
 		surface.mesh = mesh

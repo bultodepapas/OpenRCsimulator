@@ -234,7 +234,13 @@ func _test_loaded_catalog_contract() -> void:
 		extra_strike.components = {"propeller": {"disposition": "replace"}, "engine_main": {"disposition": "inspect"}}
 		var extra_repair := Calculator.calculate(incomplete.dossier, extra_strike)
 		_check("Extra isolated strike prices prop only with unresolved inspection", extra_repair.get("known_subtotal_minor") == 539 and extra_repair.get("total_minor") == null and extra_repair.get("high_minor") == null)
-	incomplete = Catalog.load_for("turbo-lumber-evolution")
+	for spec: Array in [["turbo-lumber-evolution", 33294], ["p51d-mustang-120", 200671], ["sebart-avanti-s-a200-p100rx", 655912]]:
+		var fleet: Dictionary = Catalog.load_for(spec[0])
+		_check("fleet pricing dossier loads " + spec[0], fleet.get("ok", false))
+		if fleet.get("ok", false):
+			var report := Calculator.calculate(fleet.dossier, _assessment(true))
+			_check("fleet known parts never masquerade as whole-build replacement " + spec[0], report.get("known_subtotal_minor") == spec[1] and report.get("total_minor") == null and report.get("replacement_minor") == null and report.get("high_minor") == null, str(report))
+	incomplete = Catalog.load_for("xcell-60-research")
 	if bool(incomplete.get("ok", false)):
 		var partial_report: Dictionary = Calculator.calculate(incomplete["dossier"], _assessment(true))
 		_check("runtime incomplete route cannot produce a total or zero replacement quote", not partial_report["complete"] and partial_report["total_minor"] == null and partial_report["replacement_minor"] == null and partial_report["low_minor"] == null and partial_report["high_minor"] == null and not partial_report["unresolved"].is_empty(), str(partial_report))

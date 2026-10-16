@@ -97,14 +97,27 @@ func _run() -> void:
 	check("accident navigation does not trim the aircraft", session.trims.roll == accident_trim and root.gui_get_focus_owner() == accident._details_button)
 	await button(JOY_BUTTON_A)
 	check("selected menu pad opens the accident breakdown", accident._details_scroll.visible)
+	observed.append({"id": 16, "name": "Separate menu gamepad", "guid": "menu-pad", "known": true})
+	app.controllers.refresh()
+	app.controllers.registry.select_device("ui", 16)
 	await button(JOY_BUTTON_BACK)
-	check("View restarts from the accident menu into explicit Continue", app.pause_menu != null and session.sim.paused and session.crash.is_empty() and not accident.wants_controller_menu())
+	check("flight View restarts from accident with a separate menu pad", app.pause_menu != null and session.sim.paused and session.crash.is_empty() and not accident.wants_controller_menu())
+	app.controllers.registry.select_device("ui", 15)
 	for axis: JoyAxis in [JOY_AXIS_LEFT_X, JOY_AXIS_LEFT_Y, JOY_AXIS_RIGHT_X, JOY_AXIS_RIGHT_Y]:
 		await ui.joy_axis(axis, 0.0)
 	await create_timer(0.25).timeout
+	var held_restart := InputEventJoypadButton.new()
+	held_restart.device = 15
+	held_restart.button_index = JOY_BUTTON_BACK
+	held_restart.pressed = true
+	app._input(held_restart)
 	app.pause_menu.continue_button.grab_focus()
 	await button(JOY_BUTTON_A)
+	app._input(held_restart)
 	check("controller can continue after button restart", app.pause_menu == null and not session.sim.paused)
+	check("holding restart in Pause cannot reset after Continue", app.pause_menu == null)
+	held_restart.pressed = false
+	app._input(held_restart)
 	await button(JOY_BUTTON_START)
 	check("Menu opens Pause", app.pause_menu != null and session.sim.paused)
 	var trim: float = session.trims.roll

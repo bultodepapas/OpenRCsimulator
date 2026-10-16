@@ -1,0 +1,144 @@
+{
+  "format": "openrc-repair-recipes v1",
+  "currency": "USD",
+  "research_date": "2026-10-15",
+  "policy": {
+    "purpose": "Candidate costing after an explicit inspection; not a damage predictor or return-to-service determination.",
+    "replacement_comparison": "Only calculate a replacement comparator when the inspection explicitly confirms that the dossier row is scope-comparable.",
+    "material_rounding": "Consumption allocation rounds up to the next cent. Cash purchase rounds required integer material units up to whole packages.",
+    "measurements": "Repair area/units and labor minutes are explicit integer inputs. The planner does not infer them from contact, damage flags, or component count.",
+    "labor": "DIY money rate is explicitly zero while time is retained. Paid labor rate is a planning scenario, not a market quote.",
+    "applicability": "Recipe candidates require an exact authored aircraft_id and economic component ID match. The map does not establish physical product compatibility, repair suitability or airworthiness. Unlisted foam, composite, P-51 and other components are not eligible."
+  },
+  "recipes": [
+    {
+      "id": "covering-film-patch",
+      "label": "Covering-only film patch candidate",
+      "damage_classes": [
+        "covering_only"
+      ],
+      "compatible_components": {
+        "jensen-das-ugly-stik-60": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "stik-glow-61fx-2t": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "stik-glow-55ax-2t": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "stik-glow-fs64v-4t": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "gp-extra-300s-60": [
+          "wing_main",
+          "fuselage_front",
+          "fuselage_rear",
+          "horizontal_tail",
+          "vertical_tail"
+        ]
+      },
+      "repair_unit": "explicit covering area",
+      "materials": [
+        {
+          "id": "ultracote-hanu871",
+          "requirement_key": "covering_area_milli_sq_in",
+          "unit": "milli_square_inch",
+          "package_units": 1833000,
+          "package_price_minor": 2299,
+          "package_description": "One 6.5 ft × 23.5 in roll; 1,833 sq in (1,833,000 milli-sq-in)",
+          "source": {
+            "kind": "retail_listing",
+            "source_name": "Vortex Hobbies",
+            "product": "Hangar 9 UltraCote Deep Red, HANU871",
+            "source_url": "https://vortexhobbies.com/hangar-ultracote-deep-red-hanu871-p-25026.html",
+            "observed_on": "2026-10-15",
+            "price_minor": 2299,
+            "currency": "USD",
+            "availability": "Listing said In Stock For Shipping and South Jordan, UT Available Now at observation; recheck seller stock and destination charges before purchase.",
+            "package_length_in": 78,
+            "package_width_in": 23.5,
+            "evidence": "Retailer listing showed SKU HANU871, US$22.99, stock text, and 78 × 23.5 inch package specifications. Price excludes tax/shipping. Exact color/airframe compatibility is not established."
+          },
+          "offer_id": "ultracote-hanu871-vortex-20261015"
+        }
+      ],
+      "labor": {
+        "diy_rate_minor_per_hour": 0,
+        "paid_rate_minor_per_hour": 4500,
+        "diy_provenance": {
+          "kind": "explicit_costing_policy",
+          "description": "DIY money cost is set to US$0/hour for cash costing; labor minutes remain visible and are not valued as opportunity cost."
+        },
+        "paid_provenance": {
+          "kind": "planning_assumption",
+          "rate_minor_per_hour": 4500,
+          "observed_on": "2026-10-15",
+          "description": "US$45/hour scenario input only. No RC repair shop labor quote was found or claimed; replace this assumption with a dated local quote before using it as market cost."
+        }
+      }
+    },
+    {
+      "id": "structural-repair-unpriced-candidate",
+      "label": "Structural repair candidate — unpriced",
+      "damage_classes": [
+        "structural"
+      ],
+      "compatible_components": {
+        "jensen-das-ugly-stik-60": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "stik-glow-61fx-2t": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "stik-glow-55ax-2t": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "stik-glow-fs64v-4t": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "gp-extra-300s-60": [
+          "wing_main",
+          "fuselage_front",
+          "fuselage_rear",
+          "horizontal_tail",
+          "vertical_tail"
+        ]
+      },
+      "repair_unit": "explicit repair-material units; not defined by this research",
+      "materials": [
+        {
+          "id": "structural-materials-unpriced",
+          "requirement_key": "structural_material_units",
+          "unit": "unqualified_material_unit",
+          "package_units": null,
+          "package_price_minor": null,
+          "package_description": "No material package specified or priced.",
+          "source": {
+            "kind": "unpriced_candidate",
+            "source_name": "No source",
+            "product": "No structural repair material selected",
+            "source_url": null,
+            "observed_on": "2026-10-15",
+            "price_minor": null,
+            "currency": "USD",
+            "availability": "Unpriced; not eligible for a finite estimate.",
+            "evidence": "Candidate row preserves structural inspection uncertainty. It does not prescribe material, joint design, repair method, strength, or airworthiness."
+          }
+        }
+      ],
+      "labor": {
+        "diy_rate_minor_per_hour": 0,
+        "paid_rate_minor_per_hour": null,
+        "diy_provenance": {
+          "kind": "explicit_costing_policy",
+          "description": "DIY money cost is set to US$0/hour while time remains visible; structural work and labor duration are not qualified by this candidate."
+        },
+        "paid_provenance": {
+          "kind": "unpriced_candidate",
+          "description": "No paid structural repair labor quote is available."
+        }
+      }
+    }
+  ]
+}

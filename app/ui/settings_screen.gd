@@ -192,6 +192,7 @@ func _build() -> void:
 	_volume_slider.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	_volume_slider.custom_minimum_size.y = 48.0
 	_volume_slider.value_changed.connect(_volume_changed)
+	_volume_slider.focus_entered.connect(func() -> void: _reveal_focused_control.call_deferred())
 	volume_control.add_child(_volume_slider)
 	_volume_value = _label("", "SecondaryLabel")
 	_volume_value.name = "VolumeValue"
@@ -267,8 +268,24 @@ func _add_row(parent: Control, caption: String, input: Control) -> void:
 	input.size_flags_horizontal = Control.SIZE_SHRINK_END
 	input.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	row.add_child(input)
+	input.focus_entered.connect(func() -> void: _reveal_focused_control.call_deferred())
 	parent.add_child(row)
 	_rows.append(row)
+
+
+func _reveal_focused_control() -> void:
+	if not is_inside_tree() or is_queued_for_deletion():
+		return
+	var focused := get_viewport().gui_get_focus_owner()
+	if focused == null or not focused.is_visible_in_tree() or not _scroll.is_ancestor_of(focused):
+		return
+	var body := _scroll.get_global_rect()
+	var control := focused.get_global_rect().grow(6.0)
+	# Scroll offsets are integers; ceil preserves fractional-sized controls and their focus outline.
+	if control.end.y > body.end.y:
+		_scroll.scroll_vertical += ceili(control.end.y - body.end.y)
+	elif control.position.y < body.position.y:
+		_scroll.scroll_vertical -= ceili(body.position.y - control.position.y)
 
 
 func _window_mode_selected(index: int) -> void:
@@ -423,6 +440,7 @@ func _label(source: String, variation: String, wrap := false) -> Label:
 
 func _button(source: String, variation := "", node_name := "") -> Button:
 	var button := Widgets.button(tr(source), variation, node_name)
+	button.focus_entered.connect(func() -> void: _reveal_focused_control.call_deferred())
 	button.auto_translate_mode = Node.AUTO_TRANSLATE_MODE_DISABLED
 	_localized_controls.append({"control": button, "source": source})
 	return button
@@ -443,7 +461,7 @@ func _refresh_status_text() -> void:
 		"saved": _status.text = tr("Settings saved.")
 		"reverted": _status.text = tr("Changes reverted. Saved settings restored.")
 		"save_error": _status.text = tr("Could not save settings (error %d).") % int(_status_value)
-		_: _status.text = tr("Changes apply immediately. Close to revert.")
+		_: _status.text = tr("Preview · Close to undo")
 
 
 func _select_metadata(picker: OptionButton, value: Variant) -> void:

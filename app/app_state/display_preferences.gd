@@ -1,4 +1,4 @@
-# UI-24: display and accessibility preferences use their own versioned file so settings.cfg's
+# UI-24/UI-28: display, accessibility and menu audio use their own versioned file so settings.cfg's
 # flight/profile contents and controller calibration remain untouched.
 extends RefCounted
 

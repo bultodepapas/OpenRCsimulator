@@ -1,0 +1,12 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+AUDIO cue=focus accepted=true
+AUDIO cue=press accepted=true
+AUDIO cue=select accepted=true
+AUDIO cue=change accepted=true
+AUDIO cue=accept accepted=true
+AUDIO cue=back accepted=true
+AUDIO cue=reject accepted=true
+AUDIO recording=0 bytes=980992 mix_rate=48000
+AUDIO mute=0 bytes=133120

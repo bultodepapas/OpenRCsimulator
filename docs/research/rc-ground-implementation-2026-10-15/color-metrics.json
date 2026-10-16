@@ -1,0 +1,38 @@
+{
+  "scope": "Fixed unobstructed near-turf ROI, not a whole-image quality score",
+  "roi_xyxy": [
+    80,
+    480,
+    420,
+    680
+  ],
+  "images": {
+    "baseline": {
+      "file": "verification\\ground-closeup-switch-check-baseline\\mt8-bisonte__start__chase__day.png",
+      "sha256": "7bb4052a67e85ba41a62c5094676f94890042611c61e2fb4b5aedaf051b683e5",
+      "mean_rgb": [
+        113.23217647058823,
+        136.97792647058824,
+        73.19817647058824
+      ]
+    },
+    "candidate": {
+      "file": "verification\\ground-closeup-switch-check-candidate\\mt8-bisonte__start__chase__day.png",
+      "sha256": "27ab234bf6f28710861f298893085432e639dfabbd5e2ffc5cebdcfde69b1141",
+      "mean_rgb": [
+        110.39914705882353,
+        135.39473529411765,
+        67.07470588235294
+      ]
+    },
+    "rejected_color_bug": {
+      "file": "verification\\ground-closeup-smoke-candidate\\mt8-bisonte__start__chase__day.png",
+      "sha256": "7851ccca404790b57e1a435ed4a2f83cd4b5f701607474d2463e5d919aebfdaa",
+      "mean_rgb": [
+        254.99886764705883,
+        254.99789705882353,
+        241.63163235294118
+      ]
+    }
+  }
+}

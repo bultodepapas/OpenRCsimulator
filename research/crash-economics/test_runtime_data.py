@@ -6,6 +6,7 @@ import copy
 import hashlib
 import unittest
 from pathlib import Path
+from unittest.mock import patch
 
 import build_runtime
 
@@ -96,11 +97,50 @@ class RuntimeEconomicsTests(unittest.TestCase):
                 continue
             self.assertFalse(dossier["complete"], aircraft_id)
             self.assertTrue(dossier["missing"], aircraft_id)
-            if aircraft_id == "gp-extra-300s-60":
+            if aircraft_id in {"gp-extra-300s-60", "turbo-lumber-evolution", "p51d-mustang-120", "sebart-avanti-s-a200-p100rx"}:
                 continue
             self.assertEqual(dossier["components"], [], aircraft_id)
             self.assertEqual(dossier["propeller_component_id"], "", aircraft_id)
             self.assertEqual(dossier["propeller_inspection_ids"], [], aircraft_id)
+
+    def test_fleet_part_subtotals_do_not_claim_full_aircraft_prices(self) -> None:
+        cases = {"turbo-lumber-evolution": 33294, "p51d-mustang-120": 200671,
+                 "sebart-avanti-s-a200-p100rx": 655912}
+        for aircraft_id, subtotal in cases.items():
+            dossier = self.dossiers[aircraft_id]
+            self.assertFalse(dossier["complete"])
+            self.assertTrue(dossier["missing"])
+            parts = dossier["components"]
+            self.assertEqual(sum(row["quantity"] * (row["unit_minor"] or 0) for row in parts), subtotal)
+            bound = [pid for row in parts for pid in row["physical_inventory_ids"]]
+            excluded = [pid for row in dossier["exclusions"] for pid in row["physical_inventory_ids"]]
+            source_ids = {row["id"] for row in self.context["route_sources"][aircraft_id]["inventory_rows"]}
+            self.assertEqual(len(bound), len(set(bound)))
+            self.assertEqual(set(bound + excluded), source_ids)
+            self.assertTrue(any(row["unit_minor"] is None for row in parts))
+        electric = self.dossiers["turbo-lumber-evolution"]
+        self.assertEqual(electric["propeller_component_id"], "")
+        self.assertIsNone(next(row for row in electric["components"] if row["id"] == "propeller_main")["unit_minor"])
+        selected = {row["offer_id"] for row in electric["components"]}
+        self.assertNotIn("timber_evolution_pnp_aircraft_horizon_20261015", selected)
+        self.assertNotIn("timber_evolution_bnf_aircraft_horizon_20261015", selected)
+        self.assertEqual(self.dossiers["xcell-60-research"]["components"], [])
+
+    def test_packaged_repair_recipes_match_authored_snapshot(self) -> None:
+        self.assertEqual((build_runtime.ROOT / build_runtime.REPAIR_OUTPUT_PATH).read_bytes(),
+                         build_runtime.render_repair_book())
+
+    def test_recipe_prices_cannot_drift_from_reusable_catalog(self) -> None:
+        read = build_runtime._read_json
+        for field, value in [("package_price_minor", 1), ("offer_id", "unknown-offer")]:
+            def mutated(path, field=field, value=value):
+                document, raw = read(path)
+                if path == build_runtime.ROOT / build_runtime.REPAIR_SOURCE_PATH:
+                    document["recipes"][0]["materials"][0][field] = value
+                return document, raw
+            with patch.object(build_runtime, "_read_json", side_effect=mutated):
+                with self.assertRaises(build_runtime.ContractError):
+                    build_runtime.render_repair_book()
 
     def test_independent_extra_maps_five_servos_without_inventing_full_price(self) -> None:
         dossier = self.dossiers["gp-extra-300s-60"]

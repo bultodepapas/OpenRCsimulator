@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok advanced inspector opens with admitted neutral mechanics
+ok all five UI controls reach the mechanism with correct units/order
+ok slow inspection rotation advances the source mechanism
+ok Space stops rotation even after a slider gains focus
+ok R resets all control demands without resetting shaft history
+ok visibility controls reveal supplied canopy and blades
+ok invalid UI pose reports rejection and retains visible mechanism
+7 checks, 0 failed

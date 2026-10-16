@@ -1,0 +1,26 @@
+{
+  "format": "openrc-ground-closeup-physical-parity-v1",
+  "baseline_dir": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\ground-closeup-switch-check-baseline",
+  "candidate_case_count": 1,
+  "matched_case_count": 1,
+  "state_exact_all": true,
+  "model_exact_all": true,
+  "identities_exact_all": true,
+  "solver_identity_exact_all": true,
+  "mesh_geometry_exact_all": true,
+  "cases": [
+    {
+      "case_id": "mt8-bisonte__start__chase__day",
+      "matched": true,
+      "state_exact": true,
+      "model_exact": true,
+      "identities_exact": true,
+      "solver_identity_exact": true,
+      "mesh_geometry_exact": true,
+      "baseline_state_sha256": "8167b039d20429834bb6aa1148b2cd6f5bac31f044677f59fa74e54738077252",
+      "candidate_state_sha256": "8167b039d20429834bb6aa1148b2cd6f5bac31f044677f59fa74e54738077252",
+      "baseline_tick": 0,
+      "candidate_tick": 0
+    }
+  ]
+}

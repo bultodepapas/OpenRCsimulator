@@ -250,5 +250,19 @@
     "url": "https://www.masterairscrew.com/products/k-series-14x6-propeller",
     "evidence_quality": "Direct manufacturer page opened 2026-10-15 names K Series 14x6, shows USD 11.65 and Sold out. Manufacturer SKU is not displayed; MAS1460 is a retailer identifier.",
     "notes": "Observed 2026-10-15. Exact named model for experimental Stik FS-64V; not a currently available purchase. Manufacturer labels the amount Sale price but shows no comparison price. MAS1460 identity is corroborated by https://www.amainhobbies.com/master-airscrew-14x6-kseries-propeller-mas1460/p97682 (its June 2026 backorder date is stale and is not used for availability). Manufacturer lists 58.1 g; modeled 60 g remains an installation estimate and is not modified. No installation or performance qualification implied."
+  },
+  {
+    "id": "ultracote-hanu871-vortex-20261015",
+    "brand": "Hangar 9",
+    "product": "Hangar 9 UltraCote Deep Red, HANU871",
+    "sku": "HANU871",
+    "category": "covering_film",
+    "amount_usd": 22.99,
+    "price_kind": "live_retailer_listing_price",
+    "availability": "Listing said In Stock For Shipping and South Jordan, UT Available Now at observation; recheck seller stock and destination charges before purchase.",
+    "quantity": "One 6.5 ft × 23.5 in roll; 1,833 sq in (1,833,000 milli-sq-in)",
+    "url": "https://vortexhobbies.com/hangar-ultracote-deep-red-hanu871-p-25026.html",
+    "evidence_quality": "Direct retailer listing reviewed 2026-10-15; see CR-31b source review for package dimensions and scope.",
+    "notes": "Observed 2026-10-15. Retailer listing showed SKU HANU871, US$22.99, stock text, and 78 × 23.5 inch package specifications. Price excludes tax/shipping. Exact color/airframe compatibility is not established. Source observation also backs the packaged covering repair recipe; package purchase and material consumption are distinct accounting bases."
   }
 ]

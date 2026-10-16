@@ -263,7 +263,9 @@ Download only identified missing free assets. Pin exact version/commit/hash, ret
 
 ### Active refinement · UI-28-R3
 
-The next slice improves feedback and decisions inside the delivered compact shell:
+**Implemented and verified:** [UI-28-R3 evidence](research/menu-investigations/UI-28-R3/README.md). This closes the feedback/flow slice below, while the wider release and visual-acceptance gates remain open.
+
+This slice improves feedback and decisions inside the delivered compact shell:
 
 1. **Home flow:** give the garage its own primary drive action; shorten catalog rows; explain Practice choices and retain selected-entry keyboard focus. Keep Flight free of scrolling at default text size.
 2. **Settings:** separate Display, Interface and Sound into compact categories with pinned Close/Keep/Revert. Preview and persist menu volume, including mute; explicitly explain the existing immediate-save language behavior.
@@ -287,7 +289,7 @@ Each phase leaves a working, reviewable app. Do not style all screens before Hom
 
 **Next gates:** inspect the delivered native result, then complete the remaining dense-tab/accessibility, lighting, performance and export evidence. Catalog thumbnails and optional motion/blur remain separate follow-ups; they are not required to preserve the corrected compact layout.
 
-Prior work remains in [UI-20-R1](research/menu-investigations/UI-20-R1/README.md), [UI-21](research/menu-investigations/UI-21/README.md) and [UI-22–26-R1](research/menu-investigations/UI-22-26-R1/README.md). UI-27 functionality belongs to [HUD](plans/flight-overlays.md). Audio/safe-margin settings, paused-weather staging and loading performance remain explicit open tasks, not implicitly completed by this plan.
+Prior work remains in [UI-20-R1](research/menu-investigations/UI-20-R1/README.md), [UI-21](research/menu-investigations/UI-21/README.md) and [UI-22–26-R1](research/menu-investigations/UI-22-26-R1/README.md). UI-27 functionality belongs to [HUD](plans/flight-overlays.md). Safe-margin settings, paused-weather staging and loading performance remain explicit open tasks. Menu volume and feedback are delivered in UI-28-R3; a general flight-audio mixer is outside this slice.
 
 ## 10. Acceptance and completion
 

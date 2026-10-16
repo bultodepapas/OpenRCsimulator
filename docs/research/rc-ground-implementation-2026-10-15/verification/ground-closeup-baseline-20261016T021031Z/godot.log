@@ -1,0 +1,10 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+GROUND_CLOSEUP {"case_id":"mt8-bisonte__track_rollers__low-orbit__day","complete":true,"frame_count":0,"image":"C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\ground-closeup-baseline-20261016T021031Z/mt8-bisonte__track_rollers__low-orbit__day.png","state_unchanged":true}
+
+SCRIPT ERROR: Invalid call. Nonexistent function 'surface_get_primitive_type' in base 'SphereMesh'.
+   at: _mesh_diagnostics (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:492)
+   GDScript backtrace (most recent call first):
+       [0] _mesh_diagnostics (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:492)
+       [1] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:118)

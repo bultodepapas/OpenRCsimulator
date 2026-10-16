@@ -179,11 +179,19 @@ func _run() -> void:
 	_check("semantic cues remain observable after route closure", service.play(&"reject"))
 	_check("semantic cue counters reflect logical requests", service.cue_count(&"back") == 1
 		and service.cue_count(&"reject") == 1)
+	var accepts_before: int = service.cue_count(&"accept")
+	service.play(&"accept")
+	service.play(&"accept") # an accepted launch can mount a controller-readiness Pause in the same frame
+	_check("one transition produces one acceptance cue", service.cue_count(&"accept") == accepts_before + 1)
 
 	service.set_volume(2.0)
 	_check("normalized volume is clamped to its public range", service.get_volume() == 1.0)
 	service.set_volume(-1.0)
 	_check("negative normalized volume is clamped to mute", service.get_volume() == 0.0)
+	service.set_volume(0.35)
+	service.play(&"focus")
+	service.set_volume(0.0)
+	_check("muting stops an already playing cue", service._voices.all(func(voice: AudioStreamPlayer) -> bool: return not voice.playing))
 
 	host.queue_free()
-	await process_frame
+	await create_timer(0.1).timeout # allow the audio mixer to release the stopped playback before process teardown

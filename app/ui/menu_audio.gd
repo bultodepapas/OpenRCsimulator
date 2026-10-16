@@ -53,6 +53,7 @@ var _observed_controls: Dictionary = {}
 var _control_screen_ids: Dictionary = {}
 var _last_automatic_ms: Dictionary = {}
 var _last_semantic_frame: int = -1
+var _last_semantic_cue: StringName = &""
 
 var _current_input_frame: int = -1
 var _current_input_kind: StringName = &""
@@ -112,7 +113,10 @@ func play(cue: StringName, source: Object = null) -> bool:
 	if not STREAM_BY_CUE.has(cue):
 		return false
 	if cue == &"accept" or cue == &"back" or cue == &"reject":
+		if _last_semantic_frame == Engine.get_process_frames() and _last_semantic_cue == cue:
+			return false # one transition may mount several nested surfaces in the same frame
 		_last_semantic_frame = Engine.get_process_frames()
+		_last_semantic_cue = cue
 	return _request_cue(cue, source)
 
 
@@ -123,6 +127,8 @@ func set_volume(normalized: float) -> void:
 	_volume = clampf(normalized, 0.0, 1.0)
 	for voice_index: int in range(_voices.size()):
 		_update_voice_volume(voice_index)
+		if _volume <= 0.0:
+			_voices[voice_index].stop()
 
 
 func get_volume() -> float:

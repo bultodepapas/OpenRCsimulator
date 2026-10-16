@@ -1,0 +1,92 @@
+[
+  {
+    "test": "test_settings_ui",
+    "exit": 0,
+    "errors": [],
+    "checks": 40
+  },
+  {
+    "test": "test_ui_settings_integration",
+    "exit": 0,
+    "errors": [],
+    "checks": 21
+  },
+  {
+    "test": "test_menu_audio",
+    "exit": 0,
+    "errors": [],
+    "checks": 26
+  },
+  {
+    "test": "test_ui_home",
+    "exit": 0,
+    "errors": [],
+    "checks": 153
+  },
+  {
+    "test": "test_ui_screen_stack",
+    "exit": 0,
+    "errors": [],
+    "checks": 36
+  },
+  {
+    "test": "test_ui_pause",
+    "exit": 0,
+    "errors": [],
+    "checks": 57
+  },
+  {
+    "test": "test_ui_language",
+    "exit": 0,
+    "errors": [],
+    "checks": 26
+  },
+  {
+    "test": "test_ui_natural_random",
+    "exit": 0,
+    "errors": [],
+    "checks": 27
+  },
+  {
+    "test": "test_controller_menu",
+    "exit": 0,
+    "errors": [],
+    "checks": 0
+  },
+  {
+    "test": "test_ui_input",
+    "exit": 0,
+    "errors": [],
+    "checks": 17
+  },
+  {
+    "test": "test_workshop_trial",
+    "exit": 0,
+    "errors": [],
+    "checks": 0
+  },
+  {
+    "test": "test_controller_ground",
+    "exit": 0,
+    "errors": [],
+    "checks": 0
+  },
+  {
+    "test": "test_ui_preview_requests",
+    "exit": 0,
+    "errors": [],
+    "checks": 23
+  },
+  {
+    "test": "test_ui_home_preview_cache",
+    "exit": 0,
+    "errors": [],
+    "checks": 0
+  },
+  {
+    "test": "test_ui_weather",
+    "exit": 0,
+    "errors": [],
+    "checks": 62
+  }
+]

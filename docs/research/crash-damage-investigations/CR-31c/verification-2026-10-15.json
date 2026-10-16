@@ -1,0 +1,124 @@
+{
+  "format": "openrc-software-verification v1",
+  "date": "2026-10-15",
+  "scope": "CR-31b/c, CR-33b, CR-35a and CR-36c integrated economics extension",
+  "host_os": "Windows",
+  "engine": "Godot 4.7.2 stable official ed1daf0bf",
+  "git_head": "8f48b5afa30bc703a65f69de57dcca46a4fabf15",
+  "working_tree": "uncommitted economics changes; unrelated concurrent changes preserved",
+  "godot_command_template": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_<name>.gd",
+  "godot_checks": 500,
+  "godot_results": [
+    {
+      "test": "economy_catalog",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 1.078,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n74 checks, 0 failed\n",
+      "checks": 74
+    },
+    {
+      "test": "economy_calculator",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.61,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n52 checks, 0 failed\n",
+      "checks": 52
+    },
+    {
+      "test": "economy_repair_planner",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.437,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n50 checks, 0 failed\n",
+      "checks": 50
+    },
+    {
+      "test": "economy_inspection",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 1.36,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\n46 checks, 0 failed\n",
+      "checks": 46
+    },
+    {
+      "test": "economy_impact_budget",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.421,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nPASS: central impact uses inverse translational mass only\nPASS: normal restitution loss matches central analytic value\nPASS: quantities retain units and isolated-estimate provenance\nPASS: off-center normal impulse includes r-cross-n rotational inverse mass\nPASS: same-speed glancing contact estimates less normal loss than head-on\nPASS: contact velocity includes translation plus omega-cross-arm\nPASS: separating motion adds no rebound or slapdown energy\nPASS: tangential velocity is reported without invented frictional loss\nPASS: simultaneous allocations are sorted and independent of sample order\nPASS: allocation partitions are nonnegative and stay within supplied total budget\nPASS: per-contact allocations never exceed candidate source energy\nPASS: budget above candidates cannot create energy\nPASS: duplicate contact IDs are rejected before allocation\nPASS: an episode cannot combine contacts from different accepted ticks\nPASS: negative accepted budget is rejected\nPASS: nonfinite accepted budget is rejected\nPASS: caller partitions preserve unassigned energy and never normalize\nPASS: caller partition order does not change sorted allocations\nPASS: decimal partition accumulation uses stable target order\nPASS: negative partition fraction is rejected\nPASS: partition sum above one is rejected\nPASS: duplicate partition target is rejected\nPASS: nonfinite partition source energy is rejected\nPASS: negative mass is rejected\nPASS: nonfinite mass is rejected\nPASS: inconsistent inverse mass is rejected\nPASS: singular inverse inertia is rejected\nPASS: nonfinite inverse inertia is rejected\nPASS: indefinite inverse inertia is rejected before it can produce negative energy\nPASS: unnormalized contact normal is rejected\nPASS: nonfinite linear velocity is rejected\nPASS: active restitution above one is rejected\nPASS: negative restitution is rejected\nPASS: missing input provenance is rejected\nPASS: speculative trial states are rejected\nPASS: malformed packed vectors are rejected\n36 checks, 0 failed\n",
+      "checks": 36
+    },
+    {
+      "test": "accident_integration",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 21.829,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nok   report exists independently of VFX and holds crash for deliberate restart\nok   read-only economics preserves healthy float64 state exactly\nok   healthy flight has no accident report\nPROP STRIKE at 9158 rpm, 2.1 m/s: engine stopped\nok   production prop strike continues flight with engine stopped\nok   accepted contact does not calculate, publish or save a report\nok   confirmed propeller is priced once at USD 5.39\nok   priced part freezes its source and compatibility notes\nok   shaft and engine inspection prevents a false total or upper cost bound\nok   repeated notification cannot bill the prop twice\nok   snapshot persists outside accepted physics callbacks\nok   stored report reopens with frozen catalog identity\nok   invalid checkpoint cannot discard current costs\nok   valid physics checkpoint restores\nok   restored prop latch is costed once with explicit missing-history caveat\nok   settlement queues presentation without opening UI inside accepted ticks\nok   movement before publication cancels a stale landed card\nok   nonterminal prop damage opens a large report after supported rest\nok   landing presentation preserves the inspection subtotal and no restart action\nok   renewed movement collapses automatic report without clearing costs or changing physics\nCRASH at 20.0 m/s (sink 12.0 m/s, airframe contact (hull point 8), point speed 20.0 m/s at detected tick) - [R] restart\nok   terminal production contact opens persistent report\nok   unknown structural damage does not invent total loss or servo salvage\nok   source changes quarantine contacts without catalog, publication or archive work in callback\nok   frame-boundary rebind refuses stale prices for a changed aircraft\nok   restart clears only current ledger and keeps archived report\nok   archived report reopening is view-only\nok   contact journal is bounded and duplicate parts stay one purchase\nok   late prop strike survives a full journal with bounded separate evidence\nok   overflow strike duplicates cannot change valuation or grow dedup memory\nok   lake fixture uses valid accepted-event contract (bank_ground)\nok   lake-bank ground impact does not invent water exposure\nok   lake fixture uses valid accepted-event contract (water)\nok   late water exposure survives full history and retains its evidence\nok   journal overflow remains explicit incomplete evidence\nok   source mismatch cannot misprice a modified aircraft\nok   archive failure is reported without repeated per-frame writes\nok   explicit archival retries a previous failed write\nok   invalid contact evidence still presents a terminal inspection report\nok   malformed saved report is refused\nok   reset/archive publishes pending accepted damage without needing a frame\nok   30/60/144 Hz publication keeps amounts, evidence, tick and revision identical (30 Hz)\nok   30/60/144 Hz publication keeps amounts, evidence, tick and revision identical (60 Hz)\nok   30/60/144 Hz publication keeps amounts, evidence, tick and revision identical (144 Hz)\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\nok   variant glow start accepts the configured runway state: stik-glow-55ax-2t\nPROP STRIKE at 2200 rpm, 4.0 m/s: engine stopped\nok   variant production prop strike remains nonterminal: stik-glow-55ax-2t\nok   variant prices its own propeller once: stik-glow-55ax-2t\nok   variant retains selected source identity and inspection uncertainty: stik-glow-55ax-2t\naircraft data warning: Experimental glow installation: inferred torque/propeller, transport and thermal data; physical/pilot validation pending\nok   variant glow start accepts the configured runway state: stik-glow-fs64v-4t\nPROP STRIKE at 2200 rpm, 4.0 m/s: engine stopped\nok   variant production prop strike remains nonterminal: stik-glow-fs64v-4t\nok   variant prices its own propeller once: stik-glow-fs64v-4t\nok   variant retains selected source identity and inspection uncertainty: stik-glow-fs64v-4t\nok   sold-out manufacturer offer stays labeled in report\nok   Extra prescribed propulsion is running at runway start\nPROP STRIKE at 5782 rpm, 4.0 m/s: engine stopped\nok   variant production prop strike remains nonterminal: gp-extra-300s-60\nok   variant prices its own propeller once: gp-extra-300s-60\nok   variant retains selected source identity and inspection uncertainty: gp-extra-300s-60\nCR-30/32: 55 checks, 0 failed\n",
+      "checks": 55
+    },
+    {
+      "test": "accident_report",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.718,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naccident report: 73 checks, 0 failed\n",
+      "checks": 73
+    },
+    {
+      "test": "accident_settlement",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.328,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nok   first stable sample establishes the timer origin\nok   settlement does not fire before two seconds\nok   two seconds between accepted samples emits one edge\nok   settled detector emits no second edge\nok   edge remains once-only while still resting\nok   pause fixture starts without settlement\nok   repeated tick is inert\nok   repeated ticks add no stable time\nok   settles after two accepted seconds after pause\nok   unsafe duplicate does not emit or advance\nok   first safe tick after unsafe duplicate establishes a new baseline\nok   unsafe duplicate reset cannot settle early\nok   unsafe duplicate requires a full new stable interval\nok   linear motion clears a pending stable interval\nok   post-motion sample restarts the interval\nok   airborne bounce clears a pending stable interval\nok   landing after bounce starts a new interval\nok   go-around or bounce cannot settle early\nok   full grounded interval after bounce settles\nok   forward tick gap starts a fresh window\nok   backward tick discontinuity starts a fresh window\nok   post-discontinuity interval remains pending\nok   settles only after full stable interval following discontinuity\nok   invalid dt clears the pending window\nok   invalid dt cannot be counted\nok   invalid dt clears the pending window\nok   invalid dt cannot be counted\nok   invalid dt clears the pending window\nok   invalid dt cannot be counted\nok   invalid dt clears the pending window\nok   invalid dt cannot be counted\nok   invalid dt clears the pending window\nok   invalid dt cannot be counted\nok   invalid linear speed clears the pending window\nok   invalid angular speed clears the pending window\nok   invalid linear speed clears the pending window\nok   invalid angular speed clears the pending window\nok   invalid linear speed clears the pending window\nok   invalid angular speed clears the pending window\nok   speed boundaries are accepted as low speed\nok   angular movement above its policy threshold clears stability\nok   shared stability policy accepts its inclusive thresholds\nok   shared stability policy rejects airborne samples\nok   reset clears an in-progress interval\nok   reset accepts a new baseline\nok   reset requires a complete new duration\naccident settlement: 46 checks, 0 failed\n",
+      "checks": 46
+    },
+    {
+      "test": "economy_thermal_budget",
+      "ok": true,
+      "exit_code": 0,
+      "seconds": 0.312,
+      "output": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nThermalBudget tests passed: 68 checks\n",
+      "checks": 68
+    }
+  ],
+  "python_command": "python research/crash-economics/test_runtime_data.py",
+  "python_tests": 22,
+  "python_passed": true,
+  "freshness_commands": [
+    "python research/crash-economics/build_catalog.py --check",
+    "python research/crash-economics/build_runtime.py --check"
+  ],
+  "freshness_passed": true,
+  "changed_gd_parse_checks_passed": true,
+  "local_document_links_checked": 170,
+  "limitations": [
+    "Focused regression suite, not the entire repository test.sh suite.",
+    "Software arithmetic and integration verification only; no physical crash, material, ignition or salvage validation.",
+    "Impact and thermal helpers are not connected to automatic incident diagnosis.",
+    "Incomplete fleet valuations remain incomplete."
+  ],
+  "file_sha256": {
+    "app/data/economy/catalog.json": "c152698fb9900cb50a1a46df725eeb678efc74e98a1ec01a6f22270a32837784",
+    "app/data/economy/repair-recipes.json": "ef1061301e658fca9c1609cd726fc58dd8967a2ba7505df75b196acfe0f50b02",
+    "app/economy/impact_budget.gd": "4e85fd359c43508a749fd00871498ffee66521ecd66c319aba13f5db3dc7ca2d",
+    "app/economy/incident.gd": "95747cbb97273cb8a133f65d5979c62fdad68b23db35ae01942083e636329b09",
+    "app/economy/inspection.gd": "6a6367560944706642d900bec452720a7228c9c2f319a15befa58c8d5b584710",
+    "app/economy/repair_planner.gd": "84e275ef5d977be5544a3962a097e136423bb128f531ddf1f90d387710c3e549",
+    "app/economy/thermal_budget.gd": "072084c73597dfeddf6a8feb98298b3db4267957070596823644f1de53b79a5e",
+    "app/tests/test_economy_calculator.gd": "f75964cee2bda9783415aa9f8d2e25491131f188f5293ecfa8b59825a2a82ba9",
+    "app/tests/test_economy_catalog.gd": "f2a2d1dac0040d298efc60ffacfb9cfa1466a910ab520e0a1db97ae6b2cfda9b",
+    "app/tests/test_economy_impact_budget.gd": "0d9a91a91cd128837a0e344e045fa5836495a5833da6edb6b6ee71e4a3e554b4",
+    "app/tests/test_economy_inspection.gd": "3e295f39967f701dadb53c6b2f681d82627ea8c77cd26d848ffc87be107b752d",
+    "app/tests/test_economy_repair_planner.gd": "b60c483c905bf33e241ce45839c08b72e9472514b13f49bc980d21475b0611da",
+    "app/tests/test_economy_thermal_budget.gd": "e634caff9e47c28af1dab8e4caf37b1fc592b21d680ee45f3b0a260a44b3c25b",
+    "research/crash-economics/aircraft-costing.json": "8e01a56e16ec5665298ffc4dd8f2733c5c37da60cb495cb7bce3a2f326f7301f",
+    "research/crash-economics/build_runtime.py": "e6f11a53fa07015a746375ef080dc3414bf41660781569016d7211579ae6a729",
+    "research/crash-economics/catalog.json": "a8c4ffba866491092fb4b42397b447c70f421902ad720d487358b9b370687f0f",
+    "research/crash-economics/price-research-components.json": "4f562870b5a7148dc1663f7598fbeba0de20e925456d3cf8367c88d1a4f4f996",
+    "research/crash-economics/price-research-fleet.json": "3330a282642645cbea9ce6cd3ddb82a4a2c440b0a076e1e3561862e3a186d881",
+    "research/crash-economics/repair-recipes.json": "093ac19f3714e60b27b05888a80f9e704622483d199e5560e2a81cbd8fac08db",
+    "research/crash-economics/test_runtime_data.py": "25a2b794b093fe1fe98d880232ebbd6d6a7e4fdabd43a7ff6b2cb00fb9729100",
+    "research/crash-economics/worked-examples.json": "c8f0009167bc43ab7de76bb467c149e79b3c9d1861e3df1aca12c4eff6d17fb8"
+  }
+}

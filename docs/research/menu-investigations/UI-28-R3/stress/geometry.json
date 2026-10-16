@@ -1,0 +1,2004 @@
+[
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86",
+        "rect": [
+          240.0,
+          60.0,
+          800.0,
+          600.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@89/@Label@88",
+        "rect": [
+          264.0,
+          86.0,
+          597.0,
+          59.0
+        ],
+        "text": "Ajustes",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@89/Close",
+        "rect": [
+          865.0,
+          80.0,
+          151.0,
+          72.0
+        ],
+        "text": "Cerrar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/DisplayCategory",
+        "rect": [
+          264.0,
+          164.0,
+          245.0,
+          72.0
+        ],
+        "text": "Pantalla",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/InterfaceCategory",
+        "rect": [
+          517.0,
+          164.0,
+          245.0,
+          72.0
+        ],
+        "text": "Interfaz",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/SoundCategory",
+        "rect": [
+          770.0,
+          164.0,
+          246.0,
+          72.0
+        ],
+        "text": "Sonido",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93",
+        "rect": [
+          264.0,
+          248.0,
+          752.0,
+          235.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category0/@BoxContainer@106/@Label@105",
+        "rect": [
+          264.0,
+          248.0,
+          744.0,
+          61.0
+        ],
+        "text": "Modo de ventana",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category0/@BoxContainer@106/WindowMode",
+        "rect": [
+          264.0,
+          317.0,
+          672.0,
+          75.4000015258789
+        ],
+        "text": "En ventana",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category0/@BoxContainer@118/@Label@117",
+        "rect": [
+          264.0,
+          409.0,
+          744.0,
+          61.0
+        ],
+        "text": "Tamaño del texto",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category0/@BoxContainer@118/UiScale",
+        "rect": [
+          264.0,
+          478.0,
+          600.0,
+          75.4000015258789
+        ],
+        "text": "200%",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category0/@Label@119",
+        "rect": [
+          264.0,
+          570.0,
+          744.0,
+          117.0
+        ],
+        "text": "La pantalla completa se prueba durante 15 segundos.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/Status",
+        "rect": [
+          264.0,
+          495.0,
+          752.0,
+          57.0
+        ],
+        "text": "Vista previa · Cerrar revierte",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@141/Revert",
+        "rect": [
+          380.0,
+          564.0,
+          194.0,
+          76.0
+        ],
+        "text": "Revertir",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@141/Keep",
+        "rect": [
+          586.0,
+          564.0,
+          430.0,
+          76.0
+        ],
+        "text": "Conservar cambios",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-720-settings-display.webp",
+    "logical": "(1280.0, 720.0)",
+    "pixels": [
+      1280,
+      720
+    ],
+    "window_mode": 0
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86",
+        "rect": [
+          240.0,
+          60.0,
+          800.0,
+          600.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@89/@Label@88",
+        "rect": [
+          264.0,
+          86.0,
+          597.0,
+          59.0
+        ],
+        "text": "Ajustes",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@89/Close",
+        "rect": [
+          865.0,
+          80.0,
+          151.0,
+          72.0
+        ],
+        "text": "Cerrar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/DisplayCategory",
+        "rect": [
+          264.0,
+          164.0,
+          245.0,
+          72.0
+        ],
+        "text": "Pantalla",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/InterfaceCategory",
+        "rect": [
+          517.0,
+          164.0,
+          245.0,
+          72.0
+        ],
+        "text": "Interfaz",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/SoundCategory",
+        "rect": [
+          770.0,
+          164.0,
+          246.0,
+          72.0
+        ],
+        "text": "Sonido",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93",
+        "rect": [
+          264.0,
+          248.0,
+          752.0,
+          235.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@121/@Label@120",
+        "rect": [
+          264.0,
+          248.0,
+          632.0,
+          61.0
+        ],
+        "text": "Usar paneles opacos",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@121/OpaquePanels",
+        "rect": [
+          904.0,
+          249.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@123/@Label@122",
+        "rect": [
+          264.0,
+          325.0,
+          632.0,
+          61.0
+        ],
+        "text": "Reducir animaciones",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@123/ReducedMotion",
+        "rect": [
+          904.0,
+          326.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@135/@Label@134",
+        "rect": [
+          264.0,
+          402.0,
+          744.0,
+          61.0
+        ],
+        "text": "Idioma de la interfaz",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@135/Language",
+        "rect": [
+          264.0,
+          471.0,
+          600.0,
+          75.4000015258789
+        ],
+        "text": "Español",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@Label@136",
+        "rect": [
+          264.0,
+          563.0,
+          744.0,
+          57.0
+        ],
+        "text": "El idioma se guarda al instante.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@140/Controls",
+        "rect": [
+          264.0,
+          636.0,
+          744.0,
+          72.0
+        ],
+        "text": "Controles",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@140/HelpAbout",
+        "rect": [
+          264.0,
+          720.0,
+          744.0,
+          72.0
+        ],
+        "text": "Ayuda y acerca de",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/Status",
+        "rect": [
+          264.0,
+          495.0,
+          752.0,
+          57.0
+        ],
+        "text": "Vista previa · Cerrar revierte",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@141/Revert",
+        "rect": [
+          380.0,
+          564.0,
+          194.0,
+          76.0
+        ],
+        "text": "Revertir",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@141/Keep",
+        "rect": [
+          586.0,
+          564.0,
+          430.0,
+          76.0
+        ],
+        "text": "Conservar cambios",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-720-settings-interface.webp",
+    "logical": "(1280.0, 720.0)",
+    "pixels": [
+      1280,
+      720
+    ],
+    "window_mode": 0
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86",
+        "rect": [
+          240.0,
+          60.0,
+          800.0,
+          600.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@89/@Label@88",
+        "rect": [
+          264.0,
+          86.0,
+          597.0,
+          59.0
+        ],
+        "text": "Ajustes",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@89/Close",
+        "rect": [
+          865.0,
+          80.0,
+          151.0,
+          72.0
+        ],
+        "text": "Cerrar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/DisplayCategory",
+        "rect": [
+          264.0,
+          164.0,
+          245.0,
+          72.0
+        ],
+        "text": "Pantalla",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/InterfaceCategory",
+        "rect": [
+          517.0,
+          164.0,
+          245.0,
+          72.0
+        ],
+        "text": "Interfaz",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/SoundCategory",
+        "rect": [
+          770.0,
+          164.0,
+          246.0,
+          72.0
+        ],
+        "text": "Sonido",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93",
+        "rect": [
+          264.0,
+          248.0,
+          752.0,
+          235.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@121/@Label@120",
+        "rect": [
+          264.0,
+          178.0,
+          632.0,
+          61.0
+        ],
+        "text": "Usar paneles opacos",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@121/OpaquePanels",
+        "rect": [
+          904.0,
+          179.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@123/@Label@122",
+        "rect": [
+          264.0,
+          255.0,
+          632.0,
+          61.0
+        ],
+        "text": "Reducir animaciones",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@123/ReducedMotion",
+        "rect": [
+          904.0,
+          256.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@135/@Label@134",
+        "rect": [
+          264.0,
+          332.0,
+          744.0,
+          61.0
+        ],
+        "text": "Idioma de la interfaz",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@135/Language",
+        "rect": [
+          264.0,
+          401.0,
+          600.0,
+          75.4000015258789
+        ],
+        "text": "Español",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@Label@136",
+        "rect": [
+          264.0,
+          493.0,
+          744.0,
+          57.0
+        ],
+        "text": "El idioma se guarda al instante.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@140/Controls",
+        "rect": [
+          264.0,
+          566.0,
+          744.0,
+          72.0
+        ],
+        "text": "Controles",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@140/HelpAbout",
+        "rect": [
+          264.0,
+          650.0,
+          744.0,
+          72.0
+        ],
+        "text": "Ayuda y acerca de",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/Status",
+        "rect": [
+          264.0,
+          495.0,
+          752.0,
+          57.0
+        ],
+        "text": "Vista previa · Cerrar revierte",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@141/Revert",
+        "rect": [
+          380.0,
+          564.0,
+          194.0,
+          76.0
+        ],
+        "text": "Revertir",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@141/Keep",
+        "rect": [
+          586.0,
+          564.0,
+          430.0,
+          76.0
+        ],
+        "text": "Conservar cambios",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-720-settings-interface-language.webp",
+    "logical": "(1280.0, 720.0)",
+    "pixels": [
+      1280,
+      720
+    ],
+    "window_mode": 0
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86",
+        "rect": [
+          240.0,
+          60.0,
+          800.0,
+          600.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@89/@Label@88",
+        "rect": [
+          264.0,
+          86.0,
+          597.0,
+          59.0
+        ],
+        "text": "Ajustes",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@89/Close",
+        "rect": [
+          865.0,
+          80.0,
+          151.0,
+          72.0
+        ],
+        "text": "Cerrar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/DisplayCategory",
+        "rect": [
+          264.0,
+          164.0,
+          245.0,
+          72.0
+        ],
+        "text": "Pantalla",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/InterfaceCategory",
+        "rect": [
+          517.0,
+          164.0,
+          245.0,
+          72.0
+        ],
+        "text": "Interfaz",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/SoundCategory",
+        "rect": [
+          770.0,
+          164.0,
+          246.0,
+          72.0
+        ],
+        "text": "Sonido",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93",
+        "rect": [
+          264.0,
+          248.0,
+          752.0,
+          235.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@121/@Label@120",
+        "rect": [
+          264.0,
+          178.0,
+          632.0,
+          61.0
+        ],
+        "text": "Usar paneles opacos",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@121/OpaquePanels",
+        "rect": [
+          904.0,
+          179.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@123/@Label@122",
+        "rect": [
+          264.0,
+          255.0,
+          632.0,
+          61.0
+        ],
+        "text": "Reducir animaciones",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@123/ReducedMotion",
+        "rect": [
+          904.0,
+          256.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@135/@Label@134",
+        "rect": [
+          264.0,
+          332.0,
+          744.0,
+          61.0
+        ],
+        "text": "Idioma de la interfaz",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@135/Language",
+        "rect": [
+          264.0,
+          401.0,
+          600.0,
+          75.4000015258789
+        ],
+        "text": "Español",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@Label@136",
+        "rect": [
+          264.0,
+          493.0,
+          744.0,
+          57.0
+        ],
+        "text": "El idioma se guarda al instante.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@140/Controls",
+        "rect": [
+          264.0,
+          566.0,
+          744.0,
+          72.0
+        ],
+        "text": "Controles",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category1/@BoxContainer@140/HelpAbout",
+        "rect": [
+          264.0,
+          650.0,
+          744.0,
+          72.0
+        ],
+        "text": "Ayuda y acerca de",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/Status",
+        "rect": [
+          264.0,
+          495.0,
+          752.0,
+          57.0
+        ],
+        "text": "Vista previa · Cerrar revierte",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@141/Revert",
+        "rect": [
+          380.0,
+          564.0,
+          194.0,
+          76.0
+        ],
+        "text": "Revertir",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@141/Keep",
+        "rect": [
+          586.0,
+          564.0,
+          430.0,
+          76.0
+        ],
+        "text": "Conservar cambios",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-720-settings-language-popup.webp",
+    "logical": "(1280.0, 720.0)",
+    "pixels": [
+      1280,
+      720
+    ],
+    "window_mode": 0
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86",
+        "rect": [
+          240.0,
+          60.0,
+          800.0,
+          600.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@89/@Label@88",
+        "rect": [
+          264.0,
+          86.0,
+          597.0,
+          59.0
+        ],
+        "text": "Ajustes",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@89/Close",
+        "rect": [
+          865.0,
+          80.0,
+          151.0,
+          72.0
+        ],
+        "text": "Cerrar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/DisplayCategory",
+        "rect": [
+          264.0,
+          164.0,
+          245.0,
+          72.0
+        ],
+        "text": "Pantalla",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/InterfaceCategory",
+        "rect": [
+          517.0,
+          164.0,
+          245.0,
+          72.0
+        ],
+        "text": "Interfaz",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@90/SoundCategory",
+        "rect": [
+          770.0,
+          164.0,
+          246.0,
+          72.0
+        ],
+        "text": "Sonido",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93",
+        "rect": [
+          264.0,
+          248.0,
+          752.0,
+          235.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category2/@BoxContainer@138/@Label@137",
+        "rect": [
+          264.0,
+          248.0,
+          744.0,
+          61.0
+        ],
+        "text": "Volumen del menú",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category2/@BoxContainer@138/VolumeControl/VolumeValue",
+        "rect": [
+          782.0,
+          317.0,
+          82.0,
+          57.0
+        ],
+        "text": "35%",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category2/@Label@139",
+        "rect": [
+          264.0,
+          390.0,
+          744.0,
+          117.0
+        ],
+        "text": "Sonidos sutiles al enfocar, seleccionar y navegar.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@ScrollContainer@93/@VBoxContainer@94/Category2/TestSound",
+        "rect": [
+          264.0,
+          523.0,
+          303.0,
+          72.0
+        ],
+        "text": "Probar sonido",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/Status",
+        "rect": [
+          264.0,
+          495.0,
+          752.0,
+          57.0
+        ],
+        "text": "Vista previa · Cerrar revierte",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@141/Revert",
+        "rect": [
+          380.0,
+          564.0,
+          194.0,
+          76.0
+        ],
+        "text": "Revertir",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@83/@CenterContainer@85/@PanelContainer@86/@VBoxContainer@87/@HBoxContainer@141/Keep",
+        "rect": [
+          586.0,
+          564.0,
+          430.0,
+          76.0
+        ],
+        "text": "Conservar cambios",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-720-settings-sound.webp",
+    "logical": "(1280.0, 720.0)",
+    "pixels": [
+      1280,
+      720
+    ],
+    "window_mode": 0
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226",
+        "rect": [
+          540.0,
+          240.0,
+          839.0,
+          600.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@229/@Label@228",
+        "rect": [
+          564.0,
+          263.0,
+          627.0,
+          70.0
+        ],
+        "text": "Ajustes",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@229/Close",
+        "rect": [
+          1195.0,
+          260.0,
+          160.0,
+          76.0
+        ],
+        "text": "Cerrar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/DisplayCategory",
+        "rect": [
+          564.0,
+          348.0,
+          258.0,
+          76.0
+        ],
+        "text": "Pantalla",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/InterfaceCategory",
+        "rect": [
+          830.0,
+          348.0,
+          258.0,
+          76.0
+        ],
+        "text": "Interfaz",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/SoundCategory",
+        "rect": [
+          1096.0,
+          348.0,
+          259.0,
+          76.0
+        ],
+        "text": "Sonido",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233",
+        "rect": [
+          564.0,
+          436.0,
+          791.0,
+          217.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category0/@BoxContainer@246/@Label@245",
+        "rect": [
+          564.0,
+          436.0,
+          783.0,
+          72.0
+        ],
+        "text": "Modo de ventana",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category0/@BoxContainer@246/WindowMode",
+        "rect": [
+          564.0,
+          516.0,
+          783.0,
+          81.4000015258789
+        ],
+        "text": "Pantalla completa sin bordes",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category0/@BoxContainer@258/@Label@257",
+        "rect": [
+          564.0,
+          614.0,
+          783.0,
+          72.0
+        ],
+        "text": "Tamaño del texto",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category0/@BoxContainer@258/UiScale",
+        "rect": [
+          564.0,
+          694.0,
+          600.0,
+          81.4000015258789
+        ],
+        "text": "200%",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category0/@Label@259",
+        "rect": [
+          564.0,
+          792.0,
+          783.0,
+          125.0
+        ],
+        "text": "La pantalla completa se prueba durante 15 segundos.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/Status",
+        "rect": [
+          564.0,
+          665.0,
+          791.0,
+          61.0
+        ],
+        "text": "Vista previa · Cerrar revierte",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@281/Revert",
+        "rect": [
+          668.0,
+          738.0,
+          209.0,
+          82.0
+        ],
+        "text": "Revertir",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@281/Keep",
+        "rect": [
+          889.0,
+          738.0,
+          466.0,
+          82.0
+        ],
+        "text": "Conservar cambios",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-2160-settings-display.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      3840,
+      2160
+    ],
+    "window_mode": 3
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226",
+        "rect": [
+          560.0,
+          240.0,
+          800.0,
+          600.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@229/@Label@228",
+        "rect": [
+          584.0,
+          263.0,
+          588.0,
+          70.0
+        ],
+        "text": "Ajustes",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@229/Close",
+        "rect": [
+          1176.0,
+          260.0,
+          160.0,
+          76.0
+        ],
+        "text": "Cerrar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/DisplayCategory",
+        "rect": [
+          584.0,
+          348.0,
+          245.0,
+          76.0
+        ],
+        "text": "Pantalla",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/InterfaceCategory",
+        "rect": [
+          837.0,
+          348.0,
+          245.0,
+          76.0
+        ],
+        "text": "Interfaz",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/SoundCategory",
+        "rect": [
+          1090.0,
+          348.0,
+          246.0,
+          76.0
+        ],
+        "text": "Sonido",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233",
+        "rect": [
+          584.0,
+          436.0,
+          752.0,
+          217.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@261/@Label@260",
+        "rect": [
+          584.0,
+          436.0,
+          632.0,
+          72.0
+        ],
+        "text": "Usar paneles opacos",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@261/OpaquePanels",
+        "rect": [
+          1224.0,
+          443.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@263/@Label@262",
+        "rect": [
+          584.0,
+          524.0,
+          632.0,
+          72.0
+        ],
+        "text": "Reducir animaciones",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@263/ReducedMotion",
+        "rect": [
+          1224.0,
+          531.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@275/@Label@274",
+        "rect": [
+          584.0,
+          612.0,
+          744.0,
+          72.0
+        ],
+        "text": "Idioma de la interfaz",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@275/Language",
+        "rect": [
+          584.0,
+          692.0,
+          600.0,
+          81.4000015258789
+        ],
+        "text": "Español",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@Label@276",
+        "rect": [
+          584.0,
+          790.0,
+          744.0,
+          61.0
+        ],
+        "text": "El idioma se guarda al instante.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@280/Controls",
+        "rect": [
+          584.0,
+          867.0,
+          744.0,
+          76.0
+        ],
+        "text": "Controles",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@280/HelpAbout",
+        "rect": [
+          584.0,
+          955.0,
+          744.0,
+          76.0
+        ],
+        "text": "Ayuda y acerca de",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/Status",
+        "rect": [
+          584.0,
+          665.0,
+          752.0,
+          61.0
+        ],
+        "text": "Vista previa · Cerrar revierte",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@281/Revert",
+        "rect": [
+          649.0,
+          738.0,
+          209.0,
+          82.0
+        ],
+        "text": "Revertir",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@281/Keep",
+        "rect": [
+          870.0,
+          738.0,
+          466.0,
+          82.0
+        ],
+        "text": "Conservar cambios",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-2160-settings-interface.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      3840,
+      2160
+    ],
+    "window_mode": 3
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226",
+        "rect": [
+          560.0,
+          240.0,
+          800.0,
+          600.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@229/@Label@228",
+        "rect": [
+          584.0,
+          263.0,
+          588.0,
+          70.0
+        ],
+        "text": "Ajustes",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@229/Close",
+        "rect": [
+          1176.0,
+          260.0,
+          160.0,
+          76.0
+        ],
+        "text": "Cerrar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/DisplayCategory",
+        "rect": [
+          584.0,
+          348.0,
+          245.0,
+          76.0
+        ],
+        "text": "Pantalla",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/InterfaceCategory",
+        "rect": [
+          837.0,
+          348.0,
+          245.0,
+          76.0
+        ],
+        "text": "Interfaz",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/SoundCategory",
+        "rect": [
+          1090.0,
+          348.0,
+          246.0,
+          76.0
+        ],
+        "text": "Sonido",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233",
+        "rect": [
+          584.0,
+          436.0,
+          752.0,
+          217.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@261/@Label@260",
+        "rect": [
+          584.0,
+          309.0,
+          632.0,
+          72.0
+        ],
+        "text": "Usar paneles opacos",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@261/OpaquePanels",
+        "rect": [
+          1224.0,
+          316.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@263/@Label@262",
+        "rect": [
+          584.0,
+          397.0,
+          632.0,
+          72.0
+        ],
+        "text": "Reducir animaciones",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@263/ReducedMotion",
+        "rect": [
+          1224.0,
+          404.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@275/@Label@274",
+        "rect": [
+          584.0,
+          485.0,
+          744.0,
+          72.0
+        ],
+        "text": "Idioma de la interfaz",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@275/Language",
+        "rect": [
+          584.0,
+          565.0,
+          600.0,
+          81.4000015258789
+        ],
+        "text": "Español",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@Label@276",
+        "rect": [
+          584.0,
+          663.0,
+          744.0,
+          61.0
+        ],
+        "text": "El idioma se guarda al instante.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@280/Controls",
+        "rect": [
+          584.0,
+          740.0,
+          744.0,
+          76.0
+        ],
+        "text": "Controles",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@280/HelpAbout",
+        "rect": [
+          584.0,
+          828.0,
+          744.0,
+          76.0
+        ],
+        "text": "Ayuda y acerca de",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/Status",
+        "rect": [
+          584.0,
+          665.0,
+          752.0,
+          61.0
+        ],
+        "text": "Vista previa · Cerrar revierte",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@281/Revert",
+        "rect": [
+          649.0,
+          738.0,
+          209.0,
+          82.0
+        ],
+        "text": "Revertir",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@281/Keep",
+        "rect": [
+          870.0,
+          738.0,
+          466.0,
+          82.0
+        ],
+        "text": "Conservar cambios",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-2160-settings-interface-language.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      3840,
+      2160
+    ],
+    "window_mode": 3
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226",
+        "rect": [
+          560.0,
+          240.0,
+          800.0,
+          600.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@229/@Label@228",
+        "rect": [
+          584.0,
+          263.0,
+          588.0,
+          70.0
+        ],
+        "text": "Ajustes",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@229/Close",
+        "rect": [
+          1176.0,
+          260.0,
+          160.0,
+          76.0
+        ],
+        "text": "Cerrar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/DisplayCategory",
+        "rect": [
+          584.0,
+          348.0,
+          245.0,
+          76.0
+        ],
+        "text": "Pantalla",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/InterfaceCategory",
+        "rect": [
+          837.0,
+          348.0,
+          245.0,
+          76.0
+        ],
+        "text": "Interfaz",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/SoundCategory",
+        "rect": [
+          1090.0,
+          348.0,
+          246.0,
+          76.0
+        ],
+        "text": "Sonido",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233",
+        "rect": [
+          584.0,
+          436.0,
+          752.0,
+          217.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@261/@Label@260",
+        "rect": [
+          584.0,
+          309.0,
+          632.0,
+          72.0
+        ],
+        "text": "Usar paneles opacos",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@261/OpaquePanels",
+        "rect": [
+          1224.0,
+          316.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@263/@Label@262",
+        "rect": [
+          584.0,
+          397.0,
+          632.0,
+          72.0
+        ],
+        "text": "Reducir animaciones",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@263/ReducedMotion",
+        "rect": [
+          1224.0,
+          404.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@275/@Label@274",
+        "rect": [
+          584.0,
+          485.0,
+          744.0,
+          72.0
+        ],
+        "text": "Idioma de la interfaz",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@275/Language",
+        "rect": [
+          584.0,
+          565.0,
+          600.0,
+          81.4000015258789
+        ],
+        "text": "Español",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@Label@276",
+        "rect": [
+          584.0,
+          663.0,
+          744.0,
+          61.0
+        ],
+        "text": "El idioma se guarda al instante.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@280/Controls",
+        "rect": [
+          584.0,
+          740.0,
+          744.0,
+          76.0
+        ],
+        "text": "Controles",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category1/@BoxContainer@280/HelpAbout",
+        "rect": [
+          584.0,
+          828.0,
+          744.0,
+          76.0
+        ],
+        "text": "Ayuda y acerca de",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/Status",
+        "rect": [
+          584.0,
+          665.0,
+          752.0,
+          61.0
+        ],
+        "text": "Vista previa · Cerrar revierte",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@281/Revert",
+        "rect": [
+          649.0,
+          738.0,
+          209.0,
+          82.0
+        ],
+        "text": "Revertir",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@281/Keep",
+        "rect": [
+          870.0,
+          738.0,
+          466.0,
+          82.0
+        ],
+        "text": "Conservar cambios",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-2160-settings-language-popup.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      3840,
+      2160
+    ],
+    "window_mode": 3
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226",
+        "rect": [
+          560.0,
+          240.0,
+          800.0,
+          600.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@229/@Label@228",
+        "rect": [
+          584.0,
+          263.0,
+          588.0,
+          70.0
+        ],
+        "text": "Ajustes",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@229/Close",
+        "rect": [
+          1176.0,
+          260.0,
+          160.0,
+          76.0
+        ],
+        "text": "Cerrar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/DisplayCategory",
+        "rect": [
+          584.0,
+          348.0,
+          245.0,
+          76.0
+        ],
+        "text": "Pantalla",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/InterfaceCategory",
+        "rect": [
+          837.0,
+          348.0,
+          245.0,
+          76.0
+        ],
+        "text": "Interfaz",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@230/SoundCategory",
+        "rect": [
+          1090.0,
+          348.0,
+          246.0,
+          76.0
+        ],
+        "text": "Sonido",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233",
+        "rect": [
+          584.0,
+          436.0,
+          752.0,
+          217.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category2/@BoxContainer@278/@Label@277",
+        "rect": [
+          584.0,
+          436.0,
+          744.0,
+          72.0
+        ],
+        "text": "Volumen del menú",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category2/@BoxContainer@278/VolumeControl/VolumeValue",
+        "rect": [
+          1096.0,
+          516.0,
+          88.0,
+          61.0
+        ],
+        "text": "35%",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category2/@Label@279",
+        "rect": [
+          584.0,
+          593.0,
+          744.0,
+          125.0
+        ],
+        "text": "Sonidos sutiles al enfocar, seleccionar y navegar.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@ScrollContainer@233/@VBoxContainer@234/Category2/TestSound",
+        "rect": [
+          584.0,
+          734.0,
+          323.0,
+          76.0
+        ],
+        "text": "Probar sonido",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/Status",
+        "rect": [
+          584.0,
+          665.0,
+          752.0,
+          61.0
+        ],
+        "text": "Vista previa · Cerrar revierte",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@281/Revert",
+        "rect": [
+          649.0,
+          738.0,
+          209.0,
+          82.0
+        ],
+        "text": "Revertir",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@223/@CenterContainer@225/@PanelContainer@226/@VBoxContainer@227/@HBoxContainer@281/Keep",
+        "rect": [
+          870.0,
+          738.0,
+          466.0,
+          82.0
+        ],
+        "text": "Conservar cambios",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-2160-settings-sound.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      3840,
+      2160
+    ],
+    "window_mode": 3
+  }
+]

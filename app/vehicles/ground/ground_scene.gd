@@ -10,6 +10,7 @@ const Dashboard = preload("res://vehicles/ground/ground_dashboard.gd")
 const CameraRig = preload("res://vehicles/ground/ground_camera.gd")
 const CourseView = preload("res://vehicles/ground/course_view.gd")
 const TrackView = preload("res://vehicles/ground/airfield_track_view.gd")
+const RcGroundMaterial = preload("res://render/rc_ground_material.gd")
 const Course = preload("res://physics/ground_vehicle/course.gd")
 const AirfieldCourse = preload("res://physics/ground_vehicle/airfield_course.gd")
 const FieldLoader = preload("res://data/field_loader.gd")
@@ -292,9 +293,17 @@ func _build_airfield() -> void:
 			Vector2(float(access.north_min_m) - float(track.shoulder_m), float(access.east_m) + half)])
 		exclusions.append(GrassMask._record("rc-access", "dirt_track", points))
 		camera_rig.track_center = Vector3(track.center_east_m, 0.0, -float(track.center_north_m))
-	add_child(FieldBuilder.build(field, _lighting, exclusions))
+	var field_node := FieldBuilder.build(field, _lighting, exclusions)
+	add_child(field_node)
+	var ground_material := RcGroundMaterial.configure_field(field_node)
 	if _course.has("track"):
-		add_child(TrackView.build(_course, _render_road))
+		var track_view := TrackView.build(_course, _render_road, ground_material)
+		add_child(track_view)
+		var surface := track_view.get_node_or_null("DirtLoopSurface") as MeshInstance3D
+		if surface != null and ground_material != null:
+			# Shared field lighting updates must reach the shoulder material too.
+			var materials: Array = field_node.get_meta("lighting_materials")
+			materials.append(surface.material_override)
 
 func _prepare_airfield() -> bool:
 	var loaded := FieldLoader.load_from(field_path)

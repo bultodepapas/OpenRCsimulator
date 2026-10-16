@@ -1,0 +1,672 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+
+ERROR: Parameter "mem" is null.
+   at: alloc_static (core/os/memory.cpp:104)
+   GDScript backtrace (most recent call first):
+       [0] _atlas (res://scenery/imported_hedge.gd:344)
+       [1] _impostor_material (res://scenery/imported_hedge.gd:353)
+       [2] build (res://scenery/imported_hedge.gd:46)
+       [3] build (res://scenery/scenery.gd:358)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parameter "mem_new" is null.
+   at: _alloc_exact (./core/templates/cowdata.h:476)
+   GDScript backtrace (most recent call first):
+       [0] _atlas (res://scenery/imported_hedge.gd:344)
+       [1] _impostor_material (res://scenery/imported_hedge.gd:353)
+       [2] build (res://scenery/imported_hedge.gd:46)
+       [3] build (res://scenery/scenery.gd:358)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed decoding WebP image.
+   at: _webp_unpack (modules/webp/webp_common.cpp:147)
+   GDScript backtrace (most recent call first):
+       [0] _atlas (res://scenery/imported_hedge.gd:344)
+       [1] _impostor_material (res://scenery/imported_hedge.gd:353)
+       [2] build (res://scenery/imported_hedge.gd:46)
+       [3] build (res://scenery/scenery.gd:358)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Condition "img.is_null() || img->is_empty()" is true. Returning: Ref<Image>()
+   at: load_image_from_file (scene/resources/compressed_texture.cpp:343)
+   GDScript backtrace (most recent call first):
+       [0] _atlas (res://scenery/imported_hedge.gd:344)
+       [1] _impostor_material (res://scenery/imported_hedge.gd:353)
+       [2] build (res://scenery/imported_hedge.gd:46)
+       [3] build (res://scenery/scenery.gd:358)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed loading resource: res://.godot/imported/bush_common_flowers_4view.png-dc10a4cfb048bb02e62177041552fb0f.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _atlas (res://scenery/imported_hedge.gd:344)
+       [1] _impostor_material (res://scenery/imported_hedge.gd:353)
+       [2] build (res://scenery/imported_hedge.gd:46)
+       [3] build (res://scenery/scenery.gd:358)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed loading resource: res://assets/landscape/vegetation/impostors/bush_common_flowers_4view.png.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _atlas (res://scenery/imported_hedge.gd:344)
+       [1] _impostor_material (res://scenery/imported_hedge.gd:353)
+       [2] build (res://scenery/imported_hedge.gd:46)
+       [3] build (res://scenery/scenery.gd:358)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parameter "mem" is null.
+   at: realloc_static (core/os/memory.cpp:161)
+   GDScript backtrace (most recent call first):
+       [0] tri (res://scenery/mesh_kit.gd:49)
+       [1] quad (res://scenery/mesh_kit.gd:53)
+       [2] box (res://scenery/mesh_kit.gd:73)
+       [3] beam (res://scenery/mesh_kit.gd:96)
+       [4] build (res://scenery/scenery.gd:351)
+       [5] attach (res://scenery/scenery.gd:171)
+       [6] build (res://render/field.gd:82)
+       [7] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [8] build (res://render/world/world.gd:260)
+       [9] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [10] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [11] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parameter "mem_new" is null.
+   at: _realloc_exact (./core/templates/cowdata.h:494)
+   GDScript backtrace (most recent call first):
+       [0] tri (res://scenery/mesh_kit.gd:49)
+       [1] quad (res://scenery/mesh_kit.gd:53)
+       [2] box (res://scenery/mesh_kit.gd:73)
+       [3] beam (res://scenery/mesh_kit.gd:96)
+       [4] build (res://scenery/scenery.gd:351)
+       [5] attach (res://scenery/scenery.gd:171)
+       [6] build (res://render/field.gd:82)
+       [7] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [8] build (res://render/world/world.gd:260)
+       [9] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [10] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [11] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parameter "mem" is null.
+   at: alloc_static (core/os/memory.cpp:104)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parameter "mem_new" is null.
+   at: _alloc_exact (./core/templates/cowdata.h:476)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed decoding WebP image.
+   at: _webp_unpack (modules/webp/webp_common.cpp:147)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Condition "img.is_null() || img->is_empty()" is true. Returning: Ref<Image>()
+   at: load_image_from_file (scene/resources/compressed_texture.cpp:343)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed loading resource: res://.godot/imported/Leaf_Pine_C.png-016dab428dc30ce651e3cfdbe4017841.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed loading resource: res://assets/landscape/vegetation/models/Leaf_Pine_C.png.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Can't load dependency: 'res://assets/landscape/vegetation/models/Leaf_Pine_C.png'.
+   at: parse_variant (core/io/resource_format_binary.cpp:444)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed loading resource: res://.godot/imported/Pine_1.gltf-e0cb0bbe723504e29f0268031ef9b4e0.scn.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed loading resource: res://assets/landscape/vegetation/models/Pine_1.gltf.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Error loading resource: 'res://assets/landscape/vegetation/models/Pine_1.gltf'.
+   at: load (core/core_bind.cpp:82)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Imported vegetation scene did not load: res://assets/landscape/vegetation/models/Pine_1.gltf
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:286)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parameter "mem" is null.
+   at: alloc_static (core/os/memory.cpp:104)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parameter "mem_new" is null.
+   at: _alloc_exact (./core/templates/cowdata.h:476)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Condition "!p_dst && p_length > 0" is true. Returning: -1
+   at: get_buffer (drivers/windows/file_access_windows.cpp:338)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Condition "size <= 0" is true. Returning: Ref<Image>()
+   at: _webp_unpack (modules/webp/webp_common.cpp:124)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Condition "img.is_null() || img->is_empty()" is true. Returning: Ref<Image>()
+   at: load_image_from_file (scene/resources/compressed_texture.cpp:343)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed loading resource: res://.godot/imported/Bark_NormalTree.png-df6bfd0e8f4c8146c86e65e43df4294e.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed loading resource: res://assets/landscape/vegetation/models/Bark_NormalTree.png.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parameter "mem" is null.
+   at: alloc_static (core/os/memory.cpp:104)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parameter "mem_new" is null.
+   at: _alloc_exact (./core/templates/cowdata.h:476)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Condition "!p_dst && p_length > 0" is true. Returning: -1
+   at: get_buffer (drivers/windows/file_access_windows.cpp:338)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Condition "size <= 0" is true. Returning: Ref<Image>()
+   at: _webp_unpack (modules/webp/webp_common.cpp:124)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Condition "img.is_null() || img->is_empty()" is true. Returning: Ref<Image>()
+   at: load_image_from_file (scene/resources/compressed_texture.cpp:343)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed loading resource: res://.godot/imported/Bark_NormalTree_Normal.png-e701b5b4217b1999fc694b3375a1be4e.ctex.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed loading resource: res://assets/landscape/vegetation/models/Bark_NormalTree_Normal.png.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Can't load dependency: 'res://assets/landscape/vegetation/models/Bark_NormalTree.png'.
+   at: parse_variant (core/io/resource_format_binary.cpp:444)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed loading resource: res://.godot/imported/CommonTree_3.gltf-bbff1f85eb21b0413f98a2d334ce4925.scn.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Failed loading resource: res://assets/landscape/vegetation/models/CommonTree_3.gltf.
+   at: _load (core/io/resource_loader.cpp:317)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Error loading resource: 'res://assets/landscape/vegetation/models/CommonTree_3.gltf'.
+   at: load (core/core_bind.cpp:82)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Imported vegetation scene did not load: res://assets/landscape/vegetation/models/CommonTree_3.gltf
+   at: push_error (core/variant/variant_utility.cpp:1023)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:286)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parameter "mem" is null.
+   at: alloc_static (core/os/memory.cpp:104)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+ERROR: Parameter "mem_new" is null.
+   at: _alloc_exact (./core/templates/cowdata.h:476)
+   GDScript backtrace (most recent call first):
+       [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+       [1] get_parts (res://scenery/imported_vegetation.gd:63)
+       [2] build (res://scenery/imported_vegetation.gd:119)
+       [3] build (res://scenery/scenery.gd:377)
+       [4] attach (res://scenery/scenery.gd:171)
+       [5] build (res://render/field.gd:82)
+       [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+       [7] build (res://render/world/world.gd:260)
+       [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+       [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+       [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+
+================================================================
+CrashHandlerException: Program crashed with signal 11
+Engine version: Godot Engine v4.7.2.stable.official (ed1daf0bf001b61586d9930840f2f1394092c079)
+Dumping the backtrace. Please include this when reporting the bug on: https://github.com/godotengine/godot/issues
+Load address: 7ff5ce840000
+
+[1] 7ff712914d61 (main+40d4d61) - no debug info in PE/COFF executable
+[2] 7ffc32261b72 (ntdll.dll+121b72) - no debug info in PE/COFF executable
+[3] 7ffc322a640e (ntdll.dll+16640e) - no debug info in PE/COFF executable
+[4] 7ffc32152326 (ntdll.dll+12326) - no debug info in PE/COFF executable
+[5] 7ffc322a5d4d (ntdll.dll+165d4d) - no debug info in PE/COFF executable
+[6] 7ffc3038bf3b (msvcrt.dll+7bf3b) - no debug info in PE/COFF executable
+[7] 7ff71224a8ca (main+3a0a8ca) - no debug info in PE/COFF executable
+[8] 7ff71224c0da (main+3a0c0da) - no debug info in PE/COFF executable
+[9] 7ff7115f22ab (main+2db22ab) - no debug info in PE/COFF executable
+[10] 7ff7115f2e31 (main+2db2e31) - no debug info in PE/COFF executable
+[11] 7ff7115f31e9 (main+2db31e9) - no debug info in PE/COFF executable
+[12] 7ff7115f4cbc (main+2db4cbc) - no debug info in PE/COFF executable
+[13] 7ff7122d04a5 (main+3a904a5) - no debug info in PE/COFF executable
+[14] 7ff7122c677d (main+3a8677d) - no debug info in PE/COFF executable
+[15] 7ff7122c68d0 (main+3a868d0) - no debug info in PE/COFF executable
+[16] 7ff7122d04a5 (main+3a904a5) - no debug info in PE/COFF executable
+[17] 7ff7122d0eb4 (main+3a90eb4) - no debug info in PE/COFF executable
+[18] 7ff7122d97da (main+3a997da) - no debug info in PE/COFF executable
+[19] 7ff7122b7ab9 (main+3a77ab9) - no debug info in PE/COFF executable
+[20] 7ff7122bb7ff (main+3a7b7ff) - no debug info in PE/COFF executable
+[21] 7ff7122d04a5 (main+3a904a5) - no debug info in PE/COFF executable
+[22] 7ff7122c677d (main+3a8677d) - no debug info in PE/COFF executable
+[23] 7ff7122c68d0 (main+3a868d0) - no debug info in PE/COFF executable
+[24] 7ff7122d04a5 (main+3a904a5) - no debug info in PE/COFF executable
+[25] 7ff7122d0eb4 (main+3a90eb4) - no debug info in PE/COFF executable
+[26] 7ff7122d97da (main+3a997da) - no debug info in PE/COFF executable
+[27] 7ff7122d9b45 (main+3a99b45) - no debug info in PE/COFF executable
+[28] 7ff7120fd713 (main+38bd713) - no debug info in PE/COFF executable
+[29] 7ff714279bc6 (main+5a39bc6) - no debug info in PE/COFF executable
+[30] 7ff70eeadc94 (main+66dc94) - no debug info in PE/COFF executable
+[31] 7ff70ed76139 (main+536139) - no debug info in PE/COFF executable
+[32] 7ff7123dc471 (main+3b9c471) - no debug info in PE/COFF executable
+[33] 7ff70ee93b25 (main+653b25) - no debug info in PE/COFF executable
+[34] 7ff70ed76139 (main+536139) - no debug info in PE/COFF executable
+[35] 7ff7123dc471 (main+3b9c471) - no debug info in PE/COFF executable
+[36] 7ff70ee93b25 (main+653b25) - no debug info in PE/COFF executable
+[37] 7ff70ed76139 (main+536139) - no debug info in PE/COFF executable
+[38] 7ff7123dc471 (main+3b9c471) - no debug info in PE/COFF executable
+[39] 7ff70ee93b25 (main+653b25) - no debug info in PE/COFF executable
+[40] 7ff70ed76139 (main+536139) - no debug info in PE/COFF executable
+[41] 7ff7123dc471 (main+3b9c471) - no debug info in PE/COFF executable
+[42] 7ff70ee93b25 (main+653b25) - no debug info in PE/COFF executable
+[43] 7ff70ed76139 (main+536139) - no debug info in PE/COFF executable
+[44] 7ff7123dc471 (main+3b9c471) - no debug info in PE/COFF executable
+[45] 7ff70eeb07b0 (main+6707b0) - no debug info in PE/COFF executable
+[46] 7ff70ed76139 (main+536139) - no debug info in PE/COFF executable
+[47] 7ff7123dc471 (main+3b9c471) - no debug info in PE/COFF executable
+[48] 7ff70ee93b25 (main+653b25) - no debug info in PE/COFF executable
+[49] 7ff70ed74797 (main+534797) - no debug info in PE/COFF executable
+[50] 7ff71265803e (main+3e1803e) - no debug info in PE/COFF executable
+[51] 7ff71236d0dd (main+3b2d0dd) - no debug info in PE/COFF executable
+[52] 7ff70eeb07b0 (main+6707b0) - no debug info in PE/COFF executable
+[53] 7ff70ed76139 (main+536139) - no debug info in PE/COFF executable
+[54] 7ff7123dc471 (main+3b9c471) - no debug info in PE/COFF executable
+[55] 7ff70ee93b25 (main+653b25) - no debug info in PE/COFF executable
+[56] 7ff70ed74797 (main+534797) - no debug info in PE/COFF executable
+[57] 7ff710ca1689 (main+2461689) - no debug info in PE/COFF executable
+[58] 7ff71394da64 (main+510da64) - no debug info in PE/COFF executable
+[59] 7ff7126562c0 (main+3e162c0) - no debug info in PE/COFF executable
+[60] 7ff710c8be05 (main+244be05) - no debug info in PE/COFF executable
+[61] 7ff710c9315f (main+245315f) - no debug info in PE/COFF executable
+[62] 7ff710c94e5a (main+2454e5a) - no debug info in PE/COFF executable
+[63] 7ff713df76b3 (main+55b76b3) - no debug info in PE/COFF executable
+[64] 7ff70ee93db5 (main+653db5) - no debug info in PE/COFF executable
+[65] 7ff70ed74797 (main+534797) - no debug info in PE/COFF executable
+[66] 7ff71265803e (main+3e1803e) - no debug info in PE/COFF executable
+[67] 7ff7123dc471 (main+3b9c471) - no debug info in PE/COFF executable
+[68] 7ff70ee93b25 (main+653b25) - no debug info in PE/COFF executable
+[69] 7ff70ed74797 (main+534797) - no debug info in PE/COFF executable
+[70] 7ff71265803e (main+3e1803e) - no debug info in PE/COFF executable
+[71] 7ff71236d0dd (main+3b2d0dd) - no debug info in PE/COFF executable
+[72] 7ff71264e831 (main+3e0e831) - no debug info in PE/COFF executable
+[73] 7ff71264ea38 (main+3e0ea38) - no debug info in PE/COFF executable
+[74] 7ff710cd248e (main+249248e) - no debug info in PE/COFF executable
+[75] 7ff70e89d7af (main+5d7af) - no debug info in PE/COFF executable
+[76] 7ff70e842ef0 (main+2ef0) - no debug info in PE/COFF executable
+[77] 7ff70e892b41 (main+52b41) - no debug info in PE/COFF executable
+[78] 7ff70e892b7d (main+52b7d) - no debug info in PE/COFF executable
+[79] 7ff70e8410c8 (main+10c8) - no debug info in PE/COFF executable
+[80] 7ff70e8413f5 (main+13f5) - no debug info in PE/COFF executable
+[81] 7ffc30b3e8d6 (kernel32.dll+2e8d6) - no debug info in PE/COFF executable
+[82] 7ffc321cc53b (ntdll.dll+8c53b) - no debug info in PE/COFF executable
+[83] -1 (main+-7ff70e840001) - no debug info in PE/COFF executable
+-- END OF C++ BACKTRACE --
+================================================================
+GDScript backtrace (most recent call first):
+    [0] _load_parts (res://scenery/imported_vegetation.gd:284)
+    [1] get_parts (res://scenery/imported_vegetation.gd:63)
+    [2] build (res://scenery/imported_vegetation.gd:119)
+    [3] build (res://scenery/scenery.gd:377)
+    [4] attach (res://scenery/scenery.gd:171)
+    [5] build (res://render/field.gd:82)
+    [6] _build_airfield (res://vehicles/ground/ground_scene.gd:296)
+    [7] build (res://render/world/world.gd:260)
+    [8] _ready (res://vehicles/ground/ground_scene.gd:175)
+    [9] _create_activity (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:139)
+    [10] _run (C:/DEVELOPMENT/OpenRCsimulator/research/rc-monster-truck/ground-closeup/capture.gd:101)
+-- END OF GDSCRIPT BACKTRACE --
+================================================================

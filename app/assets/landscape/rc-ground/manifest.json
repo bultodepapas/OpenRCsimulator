@@ -1,0 +1,152 @@
+{
+  "schema_version": 1,
+  "generated_by": "tools/ground/import_rc_ground.py",
+  "source_manifest": "assets/landscape/rc-ground/manifest.json",
+  "license_evidence": {
+    "checked_date": "2026-10-15",
+    "references": [
+      {
+        "provider": "Poly Haven",
+        "asset_url": "https://polyhaven.com/a/dirt",
+        "license": "CC0 1.0 Universal",
+        "license_url": "https://polyhaven.com/license",
+        "license_text_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      {
+        "provider": "ambientCG",
+        "asset_url": "https://ambientcg.com/view?id=Grass001",
+        "license": "CC0 1.0 Universal",
+        "license_url": "https://docs.ambientcg.com/license/",
+        "license_text_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+      }
+    ]
+  },
+  "assets": {
+    "dirt": {
+      "name": "Dirt",
+      "author": {
+        "Charlotte Baglioni": "All"
+      },
+      "asset_url": "https://polyhaven.com/a/dirt",
+      "api_dimensions_px": [
+        2000,
+        2000
+      ],
+      "license": "CC0 1.0 Universal",
+      "license_url": "https://polyhaven.com/license",
+      "files": [
+        {
+          "map": "albedo",
+          "map_key": "Diffuse",
+          "resolution": "2k",
+          "format": "jpg",
+          "path": "app/assets/landscape/rc-ground/dirt-albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/dirt/dirt_diff_2k.jpg",
+          "size_bytes": 3053062,
+          "dimensions_px": [
+            2048,
+            2048
+          ],
+          "md5": "8e6fb7316bca5840c386cb72a3f16c62",
+          "sha256": "126d3e4886cc94b494ba609ddc323a77ff0362a1b156c3750d5d2a0a0ead02b8"
+        },
+        {
+          "map": "normal (OpenGL, +Y)",
+          "map_key": "nor_gl",
+          "resolution": "2k",
+          "format": "jpg",
+          "path": "app/assets/landscape/rc-ground/dirt-normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/dirt/dirt_nor_gl_2k.jpg",
+          "size_bytes": 4914156,
+          "dimensions_px": [
+            2048,
+            2048
+          ],
+          "md5": "060d0ca175eeb140ac46f48bc56263ad",
+          "sha256": "ff629fce04c5d6d581cfcb604ea85df6b726798e60d982fd5484c60cddcccd88"
+        },
+        {
+          "map": "roughness",
+          "map_key": "Rough",
+          "resolution": "2k",
+          "format": "jpg",
+          "path": "app/assets/landscape/rc-ground/dirt-roughness.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/dirt/dirt_rough_2k.jpg",
+          "size_bytes": 964887,
+          "dimensions_px": [
+            2048,
+            2048
+          ],
+          "md5": "420569deb8fab894119e32ed3712f7b8",
+          "sha256": "a17048230e1a86fc874b381360f6a821df1f6b0174ca7f85a59596c4290080fa"
+        }
+      ]
+    },
+    "grass001": {
+      "name": "Grass 001",
+      "author": "ambientCG (no individual creator name is listed in the asset API)",
+      "asset_url": "https://ambientcg.com/view?id=Grass001",
+      "api_dimensions": {
+        "x": 140,
+        "y": 140,
+        "api_unit": "AmbientCG page describes this as approximately 1.4 m × 1.4 m",
+        "tile_dimensions_m_approx": [
+          1.4,
+          1.4
+        ]
+      },
+      "license": "CC0 1.0 Universal",
+      "license_url": "https://docs.ambientcg.com/license/",
+      "files": [
+        {
+          "map": "albedo",
+          "source_map": "Color",
+          "resolution": "2K",
+          "format": "jpg",
+          "path": "app/assets/landscape/rc-ground/grass-albedo.jpg",
+          "url": "https://ambientcg.com/get?file=Grass001_2K-JPG.zip",
+          "archive_member": "Grass001_2K-JPG_Color.jpg",
+          "size_bytes": 6953345,
+          "dimensions_px": [
+            2048,
+            2048
+          ],
+          "md5": "dc6b08f588b0581702296c9c58951b31",
+          "sha256": "8a8bfcffd087134caad2a7def216f3dd2d307fbe02340ca47e3c5c71f49d50b4"
+        },
+        {
+          "map": "normal (OpenGL, +Y)",
+          "source_map": "NormalGL",
+          "resolution": "2K",
+          "format": "jpg",
+          "path": "app/assets/landscape/rc-ground/grass-normal.jpg",
+          "url": "https://ambientcg.com/get?file=Grass001_2K-JPG.zip",
+          "archive_member": "Grass001_2K-JPG_NormalGL.jpg",
+          "size_bytes": 9979388,
+          "dimensions_px": [
+            2048,
+            2048
+          ],
+          "md5": "67509926610e7b1db493e9d9f41aa0b9",
+          "sha256": "7ccaf9e28ea7a533e590c2e07a39e141017a5a5db8b7241730a3c287c540e881"
+        },
+        {
+          "map": "roughness",
+          "source_map": "Roughness",
+          "resolution": "2K",
+          "format": "jpg",
+          "path": "app/assets/landscape/rc-ground/grass-roughness.jpg",
+          "url": "https://ambientcg.com/get?file=Grass001_2K-JPG.zip",
+          "archive_member": "Grass001_2K-JPG_Roughness.jpg",
+          "size_bytes": 3286058,
+          "dimensions_px": [
+            2048,
+            2048
+          ],
+          "md5": "5007981963ec7e10686051486afe6db3",
+          "sha256": "2a2a3f9220a351f14858075d4c6ba1ff7fde8bedd7009c94cb432bc2b9a362e4"
+        }
+      ]
+    }
+  }
+}

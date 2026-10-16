@@ -1,6 +1,6 @@
 # RC ground close-view improvement
 
-2026-10-15. Owner: landscape **L9d**, coordinated with RCV presentation, L11 and VQ. Status: audit and plan complete; material implementation pending.
+2026-10-15. Owner: landscape **L9d**, coordinated with RCV presentation, L11 and VQ. Status: RC material implementation complete; target-hardware and shared-view qualification remain open. See [implementation evidence](../research/rc-ground-implementation-2026-10-15/README.md).
 
 The RC chase/orbit cameras expose ground detail that pilot-distance landscape checks do not cover. Improve compacted dirt first, then grass transitions and near vegetation. Use existing or freely downloadable assets. The [dated audit, native captures and sources](../research/rc-ground-closeup-2026-10-15/README.md) establish the problem; this document owns the implementation sequence.
 
@@ -17,11 +17,11 @@ The existing L9e-R1 Laplacian experiment remains a separate comparison. First qu
 | ID | Work | Proof / status |
 | --- | --- | --- |
 | L9d-01 | Audit actual shaders, imports, placement, current close views and free source options. | Complete: two native static captures, source hashes and primary references in the audit. Motion, low orbit and full target-hardware baseline remain prerequisites for adoption. |
-| L9d-02 | Download one dirt and one short-grass candidate, retaining source URL, author, license, exact bytes/hash, map semantics and declared tile dimensions. Produce reproducible 2K/4K variants. | Pending. Compare Dirt against Sandy Gravel 02 only if visible footprints or stones make Dirt unsuitable at RC scale. No custom texture painting or generated replacement of available assets. |
-| L9d-03 | Integrate one opaque RC-local dirt material with world-space scale, albedo, normal and roughness. Preserve mesh/contact and existing markings. | Pending. Paired chase/low-orbit/bank captures, motion clips, exact mesh and state comparisons, native shader validation, time/memory report. This is the first independently reviewable implementation. |
-| L9d-04 | Match the shoulder to the actual shared turf, then compare downloaded grass detail near the car. | Pending. Both sides of the boundary converge in color, normal and lighting; no rectangular seam or double shading. Preserve mown/runway masks, stripes, distant color and aircraft visibility. |
-| L9d-05 | Extend nearby grass coverage for the RC camera only if texture improvement leaves a demonstrated silhouette deficit. Reuse accepted vegetation or a suitable free asset. | Pending with L11 owner. Deterministic bounded chunks, terrain-sampled roots, course/runway/water exclusions, hysteresis and visibility fade; no new physics objects or per-frame full-field rebuilding. |
-| L9d-06 | Qualify combined appearance, movement, lifecycle, memory and packaged assets for both RC vehicles and shared flight/Home. | Pending. Publish accepted A/B result or retain baseline; consolidate this plan into the landscape guide after completion. |
+| L9d-02 | Download one dirt and one short-grass candidate, retaining source URL, author, license, exact bytes/hash, map semantics and declared tile dimensions. Produce reproducible 2K/4K variants. | Complete: original CC0 Dirt and Grass001 maps, 2K runtime and 4K research sources; reproducible manifests, hashes, licenses and offline integrity check. |
+| L9d-03 | Integrate one opaque RC-local dirt material with world-space scale, albedo, normal and roughness. Preserve mesh/contact and existing markings. | Implemented: 2 m scale, projected bank normals, mipmaps/anisotropic sampling, distance filtering and dry-soil roughness. Mesh/state parity and native checks recorded in implementation evidence; lower-end qualification remains open. |
+| L9d-04 | Match the shoulder to the actual shared turf, then compare downloaded grass detail near the car. | Implemented: private copy of the actual field material, opaque coverage blend and 1.4 m Grass001 detail normalized to the field palette. Runway masks/stripes remain authoritative; shared flight adoption is not enabled. |
+| L9d-05 | Extend nearby grass coverage for the RC camera only if texture improvement leaves a demonstrated silhouette deficit. Reuse accepted vegetation or a suitable free asset. | Conditional, not introduced in this material change. Reassess with L11 after owner playtest; retain bounded placement and terrain/exclusion contracts. |
+| L9d-06 | Qualify combined appearance, movement, lifecycle, memory and packaged assets for both RC vehicles and shared flight/Home. | Partial: software/native evidence is recorded in the implementation report. Lower-end hardware, independent playtest and full shared Home/flight release qualification remain open. Consolidate this plan when those gates close. |
 
 ## Material implementation decisions
 

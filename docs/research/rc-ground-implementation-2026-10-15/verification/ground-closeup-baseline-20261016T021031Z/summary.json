@@ -1,0 +1,47 @@
+{
+  "format": "openrc-ground-closeup-summary-v1",
+  "complete": true,
+  "case_count": 1,
+  "cases": [
+    {
+      "case_id": "mt8-bisonte__track_rollers__low-orbit__day",
+      "complete": true,
+      "image": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\ground-closeup-baseline-20261016T021031Z/mt8-bisonte__track_rollers__low-orbit__day.png",
+      "image_sha256": "585dc7d248d188d18a5116a4cd0412f15711ce7bf8e4bed59a531742d9f65347",
+      "vehicle_id": "mt8-bisonte",
+      "spawn_id": "track_rollers",
+      "camera_mode": "low-orbit",
+      "lighting": "day",
+      "state_sha256": "552ec415c6ace85521bc61e0ff04335c22238f47b8f2630c8da4e195e4579b48",
+      "tick": 0,
+      "preconditioning": {
+        "drive_control": {
+          "armed": true,
+          "brake": 0.0,
+          "reverse": false,
+          "steering": 0.0,
+          "throttle": 0.25
+        },
+        "drive_ticks_completed": 0,
+        "neutral_arm_ticks": 0,
+        "ok": true,
+        "requested_drive_ticks": 0,
+        "scope": "paused normal reset state; no physics ticks"
+      },
+      "frame_ms": {
+        "count": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "draw_calls": {
+        "count": 0,
+        "p50": null,
+        "p95": null,
+        "p99": null
+      },
+      "mesh_signature_sha256": null,
+      "unique_texture_count": null
+    }
+  ]
+}

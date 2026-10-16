@@ -1,0 +1,11 @@
+Wood049 by ambientCG (Lennart Demes)
+https://ambientcg.com/view?id=Wood049
+
+The three Wood049_1K-JPG texture files are distributed under the
+Creative Commons CC0 1.0 Universal public-domain dedication.
+https://creativecommons.org/publicdomain/zero/1.0/
+https://docs.ambientcg.com/license/
+
+Downloaded 2026-10-15. Original files, without image modifications.
+The runtime shader applies a warm stain and restrained normal depth.
+See PROVENANCE.json for source URLs, archive identity and file hashes.

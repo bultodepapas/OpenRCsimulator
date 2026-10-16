@@ -4,6 +4,8 @@
 
 ## Reports
 
+[CR-31b repair planning](CR-31b/README.md), [CR-31c explicit inspection integration](CR-31c/README.md) and [CR-36c fleet valuation](CR-36c/README.md) record the 2026-10-15 extension: compatible repair choices, guarded salvage updates and independent electric/warbird/jet component prices.
+
 [CR-36b: independent Extra 300S costs](CR-36b/README.md) records partial aircraft-specific inventory coverage, five servo proxies, prop-strike valuation and guarded independent dossier authoring.
 
 [CR-28: component damage and USD repair economics](CR-28/README.md) records the 2026-10-15 source audit, price catalog, reconstructed Stik valuation, crash/salvage examples and fleet coverage gaps. The [active CR-28…38 plan](../../plans/crash-damage-economics.md) owns implementation; prices and gameplay assumptions do not establish physical failure thresholds.
@@ -36,6 +38,10 @@ The existing effective-mass experiment is in [`research/crash-damage/cr-00/`](..
 The current research has gaps and source-quality limits documented in each report. Treat borrowed examples as design references, not RC-airframe measurements. Record new sources, methods, uncertainty and non-results when completing CR-07.
 
 ## Implementation evidence
+
+[CR-33a](CR-33a/README.md) defines the measurements needed before structural or thermal outcomes can determine a bill. [CR-33b](CR-33b/README.md) verifies isolated impact-energy estimates and bounded allocations; it supplies no failure thresholds and does not close CR-07.
+
+[CR-35a](CR-35a/README.md) verifies finite source budgets, explicit ignition ticks and analytic component heating/cooling. Its parameters and thresholds remain caller-declared; it is not connected to aircraft damage or visual fire.
 
 [CR-36a](CR-36a/README.md) extends the economic dossier to the 55AX and FS-64V Stik configurations with exact propeller offers, explicit engine/silencer coverage substitutions, guarded inventory inheritance and production contact-to-report checks. Complete cost coverage remains separate from physical installation qualification.
 

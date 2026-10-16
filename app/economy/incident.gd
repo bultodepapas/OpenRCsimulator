@@ -6,6 +6,8 @@ signal assessment_changed(report: Dictionary, terminal: bool)
 const Catalog = preload("res://economy/catalog.gd")
 const Calculator = preload("res://economy/calculator.gd")
 const Inspection = preload("res://economy/inspection.gd")
+const RepairPlanner = preload("res://economy/repair_planner.gd")
+const RECIPE_PATH := "res://data/economy/repair-recipes.json"
 const Events = preload("res://sim/aircraft_contact_events.gd")
 const MAX_EVENTS := 128
 const ARCHIVE_PATH := "user://last_accident.json"
@@ -36,6 +38,9 @@ var _flush_error := OK
 var _inspections: Array = []
 var _inspection_hashes: Dictionary = {}
 var _reuse_blocked: Dictionary = {}
+var _recipe_book: Dictionary = {}
+var _recipe_hash := ""
+var _repair_choices: Array = []
 
 
 func begin(aircraft_id: String, source_hash: String) -> void:
@@ -47,7 +52,7 @@ func begin_with_catalog(loaded: Dictionary, aircraft_id: String, source_hash: St
 	_catalog_errors = Array(loaded.get("errors", []))
 	_catalog_hash = str(loaded.get("catalog_hash", ""))
 	_offer_sources = loaded.get("offer_sources", {}).duplicate(true)
-	_identity = {aircraft_id = aircraft_id, source_sha256 = source_hash,
+	_identity = {aircraft_id = aircraft_id, source_sha256 = dossier.get("source_sha256", source_hash),
 		incident_id = "%s-%d" % [Time.get_datetime_string_from_system(true), Time.get_ticks_usec()]}
 	report = {}
 	journal = []
@@ -66,6 +71,64 @@ func begin_with_catalog(loaded: Dictionary, aircraft_id: String, source_hash: St
 	_inspections = []
 	_inspection_hashes = {}
 	_reuse_blocked = {}
+	_repair_choices = []
+	_recipe_book = {}
+	_recipe_hash = ""
+	var recipe_bytes := FileAccess.get_file_as_bytes(RECIPE_PATH)
+	if not recipe_bytes.is_empty() and recipe_bytes.size() <= Inspection.MAX_BYTES:
+		var parsed: Variant = JSON.parse_string(recipe_bytes.get_string_from_utf8())
+		if typeof(parsed) == TYPE_DICTIONARY:
+			_recipe_book = parsed
+			var hash_context := HashingContext.new()
+			hash_context.start(HashingContext.HASH_SHA256)
+			hash_context.update(recipe_bytes)
+			_recipe_hash = hash_context.finish().hex_encode()
+
+
+## Cost an explicitly chosen compatible repair against the frozen session recipe book.
+## No cheapest-option auto-selection, damage inference, inventory debit or solver mutation.
+func apply_repair_choice(receipt: Dictionary, repair_inspection: Dictionary, component_id: String,
+		option_id: String, labor_mode: String, costing_basis: String) -> Dictionary:
+	if receipt.get("total_loss", true) or receipt.get("basis") != repair_inspection.get("basis"):
+		return {ok = false, errors = ["Repair choice requires a repair assessment with the same evidence basis."]}
+	if typeof(receipt.get("components")) != TYPE_DICTIONARY \
+		or typeof(receipt.components.get(component_id)) != TYPE_DICTIONARY:
+		return {ok = false, errors = ["Repair choice requires an explicit component receipt."]}
+	var component_receipt: Dictionary = receipt.components[component_id]
+	if typeof(component_receipt.get("damage_flags")) != TYPE_ARRAY:
+		return {ok = false, errors = ["Repair choice requires explicit damage flags."]}
+	var plan: Dictionary = RepairPlanner.plan(dossier, repair_inspection, _recipe_book, labor_mode)
+	if not plan.get("ok", false):
+		return plan
+	if "structural_damage" in component_receipt.damage_flags \
+		and plan.get("components", {}).get(component_id, {}).get("damage_class") != "structural":
+		return {ok = false, errors = ["Structural damage cannot use a covering-only repair."]}
+	var selection: Dictionary = RepairPlanner.select_option(plan, component_id, option_id, costing_basis)
+	if not selection.get("ok", false):
+		return selection
+	var candidate := receipt.duplicate(true)
+	var decision: Dictionary = selection.decision.duplicate(true)
+	var choice_identity := JSON.stringify({inspection = repair_inspection, selection = selection,
+		recipe_hash = _recipe_hash, labor = labor_mode, material_basis = costing_basis}, "", true, true).sha256_text()
+	decision.evidence = str(component_receipt.get("evidence", "")) + " Repair evidence SHA-256: " + choice_identity
+	decision.damage_flags = component_receipt.damage_flags.duplicate()
+	if component_receipt.has("inspection_minor"):
+		decision.inspection_minor = component_receipt.inspection_minor
+	candidate.components[component_id] = decision
+	candidate.evidence = str(candidate.get("evidence", "")) + " Repair: %s/%s; %s labor; %s material basis." % [component_id, option_id, labor_mode, costing_basis]
+	if _inspection_hashes.has(str(candidate.get("inspection_id", ""))):
+		return apply_inspection(candidate)
+	var choice := {inspection_id = candidate.get("inspection_id", ""), recipe_book_sha256 = _recipe_hash,
+		component_id = component_id, option_id = option_id, labor_mode = labor_mode,
+		costing_basis = costing_basis, provenance = selection.provenance.duplicate(true)}
+	if _repair_choices.size() >= MAX_INSPECTIONS \
+		or JSON.stringify(_repair_choices + [choice]).to_utf8_buffer().size() > Inspection.MAX_BYTES:
+		return {ok = false, errors = ["Repair choice history limit reached; existing assessment retained."]}
+	_repair_choices.append(choice)
+	var applied := apply_inspection(candidate)
+	if not applied.get("ok", false) or applied.get("duplicate", false):
+		_repair_choices.pop_back()
+	return applied
 
 
 ## Read-only identity for an assessment producer. Not a player-controlled damage shortcut.
@@ -88,6 +151,8 @@ func apply_inspection(receipt: Dictionary) -> Dictionary:
 		return {ok = true, duplicate = true}
 	if _inspections.size() >= MAX_INSPECTIONS:
 		return {ok = false, errors = ["Inspection history limit reached; existing assessment retained."]}
+	if JSON.stringify(_inspections + [receipt]).to_utf8_buffer().size() > Inspection.MAX_BYTES:
+		return {ok = false, errors = ["Inspection history byte limit reached; existing assessment retained."]}
 	var result := Inspection.validate(receipt, dossier, _assessment, _identity, _catalog_hash, _revision, _reuse_blocked)
 	if not result.get("ok", false):
 		return result
@@ -221,6 +286,7 @@ func _recalculate() -> void:
 	for receipt: Dictionary in _inspections:
 		report.assumptions.append("%s [%s]: %s" % [receipt.inspection_id, receipt.basis, receipt.evidence])
 	report["inspections"] = _inspections.duplicate(true)
+	report["repair_choices"] = _repair_choices.duplicate(true)
 	report["format"] = "openrc-accident-report v1"
 	report["identity"] = _identity.duplicate(true)
 	report["aircraft_name"] = _identity.aircraft_id
@@ -295,6 +361,22 @@ func load_archive() -> Dictionary:
 	for reason: Variant in value.unresolved:
 		if typeof(reason) != TYPE_STRING:
 			return {}
+	for field: String in ["inspections", "repair_choices"]:
+		if not value.has(field):
+			continue # Older view-only archives predate explicit inspection receipts.
+		if typeof(value[field]) != TYPE_ARRAY or value[field].size() > MAX_INSPECTIONS:
+			return {}
+		for entry: Variant in value[field]:
+			if typeof(entry) != TYPE_DICTIONARY or not Inspection._text(entry.get("inspection_id")):
+				return {}
+			if field == "inspections":
+				if entry.get("format") != Inspection.FORMAT or typeof(entry.get("components")) != TYPE_DICTIONARY \
+					or entry.get("basis") not in ["inspection", "scenario_assumption"] or not Inspection._text(entry.get("evidence")):
+					return {}
+			elif typeof(entry.get("provenance")) != TYPE_DICTIONARY \
+				or not Inspection._text(entry.get("recipe_book_sha256")) \
+				or entry.get("labor_mode") not in ["diy", "paid"] or entry.get("costing_basis") not in ["cash", "consumption"]:
+				return {}
 	for field: String in ["known_subtotal_minor", "salvage_minor", "total_minor", "low_minor", "high_minor", "replacement_minor"]:
 		var amount: Variant = value.get(field)
 		if amount != null and (typeof(amount) not in [TYPE_FLOAT, TYPE_INT] or not is_finite(float(amount)) \

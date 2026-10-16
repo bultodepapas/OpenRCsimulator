@@ -13,14 +13,15 @@
 // surface_kind 1/2 retain the existing plane fallback for custom layouts that cannot be consolidated.
 // They first compute the rough grass exactly as the ground below does, then blend to mown turf inside a noisy border,
 // so the edge is soft and irregular and never a colour seam. The runway adds filtered mowing stripes (view-dependent,
-// as real stripes are) and worn touchdown zones. No TIME, no textures beyond the grass tile: every value is a pure
-// function of position and view.
+// as real stripes are) and worn touchdown zones. RC sessions optionally bind downloaded soil/grass detail maps.
+// No TIME: every value is a pure function of position and view.
 shader_type spatial;
 render_mode cull_back;
 
 #include "res://render/cloud_field.gdshaderinc"
 #include "res://render/grass_surface.gdshaderinc"
 #include "res://render/turf_detail.gdshaderinc"
+#include "res://render/rc_ground_detail.gdshaderinc"
 
 // L15d: the same cumulus density as the sky, projected along the sun ray to a 1.5 km deck.
 // Only direct sunlight is attenuated. Ambient light and the calibrated haze keep their energy.
@@ -256,6 +257,7 @@ vec3 terrain_height(vec2 north_east) {
 
 void vertex() {
 	world_pos = (MODEL_MATRIX * vec4(VERTEX, 1.0)).xyz;
+	rc_coverage = 1.0 - COLOR.a;
 }
 
 // FW-61/FW-22: the twilight arch toward the brighter source, azimuth exponent `lobe_k`, vertical e-folding
@@ -324,6 +326,8 @@ void fragment() {
 		cloud_transmission -= clamp(cloud_shadow_strength, 0.0, 1.0) * density * smoothstep(0.01, 0.1, sun_dir.y);
 	}
 	float detail_weight = turf_weight(turf_dx, turf_dy, d);
+	float photo_weight = rc_surface_enabled ? rc_near_weight(turf_dx, turf_dy, d) : 0.0;
+	detail_weight *= 1.0 - photo_weight;
 	if (detail_weight > 0.0) {
 		vec3 detail = turf_sample(world_pos.xz, turf_dx, turf_dy);
 		col *= 1.0 + (detail.b - 0.5) * 0.9 * detail_weight;
@@ -338,6 +342,38 @@ void fragment() {
 	ROUGHNESS = 1.0;
 	METALLIC = 0.0;
 	SPECULAR = 0.0;
+	rc_soil_specular = 0.0;
+	if (rc_surface_enabled) {
+		vec2 uv_a;
+		vec2 uv_b;
+		float uv_blend;
+		rc_uvs(world_pos.xz, 1.4, uv_a, uv_b, uv_blend);
+		vec3 base_normal = normalize(NORMAL);
+		float dirt_weight = rc_track_surface ? smoothstep(0.0, 1.0, clamp(rc_coverage, 0.0, 1.0)) : 0.0;
+		if (photo_weight > 0.0 && dirt_weight < 1.0) {
+			vec3 grass_color;
+			vec3 grass_normal;
+			float grass_roughness;
+			rc_grass_sample(uv_a, uv_b, turf_dx / 1.4, turf_dy / 1.4, uv_blend, grass_color, grass_normal, grass_roughness);
+			// Retain the accepted field palette/stripes and distant brightness.
+			vec3 grass_mean = OUTPUT_IS_SRGB ? RC_GRASS_MEAN_SRGB : RC_GRASS_MEAN_LINEAR;
+			vec3 modulation = clamp(grass_color / grass_mean, vec3(0.25), vec3(2.4));
+			ALBEDO *= mix(vec3(1.0), modulation, photo_weight * 0.7);
+			NORMAL = rc_project_normal(base_normal, grass_normal, VIEW_MATRIX, photo_weight * 0.65);
+			ROUGHNESS = mix(1.0, max(grass_roughness, 0.78), photo_weight);
+		}
+		if (dirt_weight > 0.0) {
+			rc_uvs(world_pos.xz, 2.0, uv_a, uv_b, uv_blend);
+			vec3 dirt_color;
+			vec3 dirt_normal;
+			float dirt_roughness;
+			rc_dirt_sample(uv_a, uv_b, turf_dx * 0.5, turf_dy * 0.5, uv_blend, dirt_color, dirt_normal, dirt_roughness);
+			ALBEDO = mix(ALBEDO, dirt_color, dirt_weight);
+			NORMAL = normalize(mix(NORMAL, rc_project_normal(base_normal, dirt_normal, VIEW_MATRIX, 0.55 * photo_weight), dirt_weight));
+			ROUGHNESS = mix(ROUGHNESS, clamp(dirt_roughness, 0.65, 1.0), dirt_weight);
+			rc_soil_specular = dirt_weight;
+		}
+	}
 	vec3 haze = haze_lin + sun_lin * pow(max(dot(v, sun_dir), 0.0), 8.0) * sun_scatter + lobe_term(v);
 	float rim = rim_angular
 		? 1.0 - smoothstep(1.0 / rim_end, 1.0 / rim_start, 1.0 / max(d, 1e-3))
@@ -357,4 +393,20 @@ void light() {
 	float diffuse = max(dot(NORMAL, LIGHT), 0.0) * (1.0 / PI);
 	float transmission = LIGHT_IS_DIRECTIONAL ? cloud_transmission : 1.0;
 	DIFFUSE_LIGHT += LIGHT_COLOR * diffuse * ATTENUATION * transmission;
+	// Dry soil's weak dielectric reflection, with the downloaded roughness.
+	// Zero outside the RC dirt; the accepted field lighting remains exact there.
+	if (rc_soil_specular > 0.0) {
+		vec3 half_vector = normalize(LIGHT + VIEW);
+		float nl = max(dot(NORMAL, LIGHT), 0.0);
+		float nv = max(dot(NORMAL, VIEW), 0.001);
+		float nh = max(dot(NORMAL, half_vector), 0.0);
+		float vh = max(dot(VIEW, half_vector), 0.0);
+		float a2 = pow(ROUGHNESS, 4.0);
+		float denominator = nh * nh * (a2 - 1.0) + 1.0;
+		float distribution = a2 / max(PI * denominator * denominator, 0.0001);
+		float k = pow(ROUGHNESS + 1.0, 2.0) * 0.125;
+		float geometry = (nl / max(nl * (1.0 - k) + k, 0.001)) * (nv / (nv * (1.0 - k) + k));
+		float fresnel = 0.04 + 0.96 * pow(1.0 - vh, 5.0);
+		SPECULAR_LIGHT += LIGHT_COLOR * ATTENUATION * transmission * rc_soil_specular * distribution * geometry * fresnel / (4.0 * nv);
+	}
 }

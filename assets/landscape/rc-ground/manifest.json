@@ -1,0 +1,406 @@
+{
+  "schema_version": 1,
+  "sources": [
+    "Poly Haven",
+    "ambientCG"
+  ],
+  "license": "CC0 1.0 Universal",
+  "license_url": "https://polyhaven.com/license",
+  "license_evidence": {
+    "checked_date": "2026-10-15",
+    "references": [
+      {
+        "provider": "Poly Haven",
+        "asset_url": "https://polyhaven.com/a/dirt",
+        "license": "CC0 1.0 Universal",
+        "license_url": "https://polyhaven.com/license",
+        "license_text_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+      },
+      {
+        "provider": "ambientCG",
+        "asset_url": "https://ambientcg.com/view?id=Grass001",
+        "license": "CC0 1.0 Universal",
+        "license_url": "https://docs.ambientcg.com/license/",
+        "license_text_url": "https://creativecommons.org/publicdomain/zero/1.0/"
+      }
+    ]
+  },
+  "api_roots": [
+    "https://api.polyhaven.com",
+    "https://ambientcg.com/api/v2"
+  ],
+  "importer": "tools/ground/import_rc_ground.py",
+  "runtime_policy": {
+    "resolution": "2k",
+    "format": "original JPGs from the publisher packages; no pixel transformation",
+    "texture_import": "Godot VRAM compressed with mipmaps",
+    "albedo_color_space": "sRGB (shader sampler hint is assigned by the material owner)",
+    "normal_map": "OpenGL tangent-space (+Y), imported with Godot normal-map compression"
+  },
+  "source_policy": {
+    "resolution": "4k",
+    "format": "only original maps used by the material are retained for A/B comparisons",
+    "ambientcg_archives": "downloaded and CRC-checked; ZIP identity is recorded, then only used original JPG maps are retained"
+  },
+  "assets": {
+    "dirt": {
+      "name": "Dirt",
+      "author": {
+        "Charlotte Baglioni": "All"
+      },
+      "description": "Free 8K dirt texture showing dusty, compacted earth with small rocks, debris and subtle footprints; rough, low-gloss surface with detailed soil variation.",
+      "category": "Ground & Terrain/Soil & Mud/Bare Dirt & Soil",
+      "api_dimensions_px": [
+        2000,
+        2000
+      ],
+      "api_max_resolution_px": [
+        8192,
+        8192
+      ],
+      "api_files_hash": "fe7ab433626bec3f3bdc5a478b06eed2eb12572e",
+      "asset_url": "https://polyhaven.com/a/dirt",
+      "info_api_url": "https://api.polyhaven.com/info/dirt",
+      "files_api_url": "https://api.polyhaven.com/files/dirt",
+      "files": [
+        {
+          "map": "albedo",
+          "map_key": "Diffuse",
+          "resolution": "2k",
+          "format": "jpg",
+          "path": "app/assets/landscape/rc-ground/dirt-albedo.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/dirt/dirt_diff_2k.jpg",
+          "size_bytes": 3053062,
+          "dimensions_px": [
+            2048,
+            2048
+          ],
+          "md5": "8e6fb7316bca5840c386cb72a3f16c62",
+          "sha256": "126d3e4886cc94b494ba609ddc323a77ff0362a1b156c3750d5d2a0a0ead02b8"
+        },
+        {
+          "map": "albedo",
+          "map_key": "Diffuse",
+          "resolution": "4k",
+          "format": "jpg",
+          "path": "assets/landscape/rc-ground/source/dirt/dirt_diff_4k.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/dirt/dirt_diff_4k.jpg",
+          "size_bytes": 12098794,
+          "dimensions_px": [
+            4096,
+            4096
+          ],
+          "md5": "4acf5dfa053d382b7e2ece3c684e7c48",
+          "sha256": "5368432e1458424c3da3a9962db54941ed75d926eced7527f38f9f63ffad6ae9"
+        },
+        {
+          "map": "normal (OpenGL, +Y)",
+          "map_key": "nor_gl",
+          "resolution": "2k",
+          "format": "jpg",
+          "path": "app/assets/landscape/rc-ground/dirt-normal.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/dirt/dirt_nor_gl_2k.jpg",
+          "size_bytes": 4914156,
+          "dimensions_px": [
+            2048,
+            2048
+          ],
+          "md5": "060d0ca175eeb140ac46f48bc56263ad",
+          "sha256": "ff629fce04c5d6d581cfcb604ea85df6b726798e60d982fd5484c60cddcccd88"
+        },
+        {
+          "map": "normal (OpenGL, +Y)",
+          "map_key": "nor_gl",
+          "resolution": "4k",
+          "format": "jpg",
+          "path": "assets/landscape/rc-ground/source/dirt/dirt_nor_gl_4k.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/dirt/dirt_nor_gl_4k.jpg",
+          "size_bytes": 18081467,
+          "dimensions_px": [
+            4096,
+            4096
+          ],
+          "md5": "a32fcefb8fa105fe09dfd33a74337b5c",
+          "sha256": "85c852b4676468ea3883444f318a676f67a37a05852b100a6012634c273b2c96"
+        },
+        {
+          "map": "roughness",
+          "map_key": "Rough",
+          "resolution": "2k",
+          "format": "jpg",
+          "path": "app/assets/landscape/rc-ground/dirt-roughness.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/dirt/dirt_rough_2k.jpg",
+          "size_bytes": 964887,
+          "dimensions_px": [
+            2048,
+            2048
+          ],
+          "md5": "420569deb8fab894119e32ed3712f7b8",
+          "sha256": "a17048230e1a86fc874b381360f6a821df1f6b0174ca7f85a59596c4290080fa"
+        },
+        {
+          "map": "roughness",
+          "map_key": "Rough",
+          "resolution": "4k",
+          "format": "jpg",
+          "path": "assets/landscape/rc-ground/source/dirt/dirt_rough_4k.jpg",
+          "url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/dirt/dirt_rough_4k.jpg",
+          "size_bytes": 3565704,
+          "dimensions_px": [
+            4096,
+            4096
+          ],
+          "md5": "be7b47facc517c4e63a2f18a7b105e60",
+          "sha256": "41be39b60e63dee25f42fd6049e9c51ea3f868440c16f3fee38162004c5ba72a"
+        }
+      ]
+    }
+  },
+  "candidates": {
+    "sparse_grass": {
+      "name": "Sparse Grass",
+      "author": {
+        "Amal Kumar": "All"
+      },
+      "description": "Free 8K texture of sparse grass: thin green tufts and visible roots over rough, damp soil, with subtle height detail and organic, earthy brown-green tones.",
+      "category": "Ground & Terrain/Grass & Vegetation/Dry & Sparse Grass",
+      "api_dimensions_px": [
+        2000,
+        2000
+      ],
+      "api_max_resolution_px": [
+        8192,
+        8192
+      ],
+      "api_files_hash": "1293431c7316b89282b883ff760be963802f9000",
+      "asset_url": "https://polyhaven.com/a/sparse_grass",
+      "info_api_url": "https://api.polyhaven.com/info/sparse_grass",
+      "files_api_url": "https://api.polyhaven.com/files/sparse_grass",
+      "runtime_selected": false,
+      "assessment": "Rejected for the maintained runway turf slot: the 2k diffuse is brown, rooty, and leaves frequent bare-soil gaps. Keep its source metadata as a possible rough field-edge comparison only.",
+      "screening": {
+        "reviewed_resolution": "2k",
+        "visual_review": "Rejected for the maintained runway turf slot: the 2k diffuse is brown, rooty, and leaves frequent bare-soil gaps. Keep its source metadata as a possible rough field-edge comparison only.",
+        "screened_sha256": {
+          "Diffuse": "3b655de96161164bf2324e136b3409ad8417c9f94750bc008e9c93ee507c2fac",
+          "nor_gl": "5539a5913653a106a4e8a699a1d288f0b41907775b5fb36156ef5be2e937718b",
+          "Rough": "b023f187999956449b5f25df19f4eaae1c891f474e0a599b23d986118fe706d7"
+        }
+      },
+      "files": [
+        {
+          "map": "albedo",
+          "map_key": "Diffuse",
+          "resolution": "2k",
+          "format": "jpg",
+          "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/sparse_grass/sparse_grass_diff_2k.jpg",
+          "api_size_bytes": 3733797,
+          "api_md5": "b181e9c61bae87c1bb9b14eecd767d65"
+        },
+        {
+          "map": "albedo",
+          "map_key": "Diffuse",
+          "resolution": "4k",
+          "format": "jpg",
+          "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/sparse_grass/sparse_grass_diff_4k.jpg",
+          "api_size_bytes": 13803613,
+          "api_md5": "569f9a6a0cf566c88d281bc81f832e97"
+        },
+        {
+          "map": "normal (OpenGL, +Y)",
+          "map_key": "nor_gl",
+          "resolution": "2k",
+          "format": "jpg",
+          "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/sparse_grass/sparse_grass_nor_gl_2k.jpg",
+          "api_size_bytes": 5892473,
+          "api_md5": "8ec54ff3b639e6e044ea83792d7c49b0"
+        },
+        {
+          "map": "normal (OpenGL, +Y)",
+          "map_key": "nor_gl",
+          "resolution": "4k",
+          "format": "jpg",
+          "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/sparse_grass/sparse_grass_nor_gl_4k.jpg",
+          "api_size_bytes": 21700368,
+          "api_md5": "593823ffcf6fad3ee04e20111168d9dd"
+        },
+        {
+          "map": "roughness",
+          "map_key": "Rough",
+          "resolution": "2k",
+          "format": "jpg",
+          "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/2k/sparse_grass/sparse_grass_rough_2k.jpg",
+          "api_size_bytes": 1729786,
+          "api_md5": "446cbe6254b1b210de44ef7c53da6204"
+        },
+        {
+          "map": "roughness",
+          "map_key": "Rough",
+          "resolution": "4k",
+          "format": "jpg",
+          "source_url": "https://dl.polyhaven.org/file/ph-assets/Textures/jpg/4k/sparse_grass/sparse_grass_rough_4k.jpg",
+          "api_size_bytes": 6181831,
+          "api_md5": "32bf8656b6fc80cf7bbb98cd37282a63"
+        }
+      ]
+    }
+  },
+  "ambientcg_grass": {
+    "name": "Grass 001",
+    "author": "ambientCG (no individual creator name is listed in the asset API)",
+    "creation_method": "Height field photogrammetry",
+    "tags": [
+      "001",
+      "1",
+      "cover",
+      "dark",
+      "dense",
+      "fresh",
+      "garden",
+      "grass",
+      "grass001",
+      "green",
+      "ground",
+      "lawn",
+      "natural",
+      "park",
+      "short",
+      "soft"
+    ],
+    "api_dimensions": {
+      "x": 140,
+      "y": 140,
+      "api_unit": "AmbientCG page describes this as approximately 1.4 m × 1.4 m",
+      "tile_dimensions_m_approx": [
+        1.4,
+        1.4
+      ]
+    },
+    "asset_url": "https://ambientcg.com/view?id=Grass001",
+    "api_url": "https://ambientcg.com/api/v2/full_json?id=Grass001&include=downloadData,displayData,dimensionsData,tagData",
+    "license": "CC0 1.0 Universal",
+    "license_url": "https://docs.ambientcg.com/license/",
+    "archives": {
+      "2K": {
+        "attribute": "2K-JPG",
+        "file_name": "Grass001_2K-JPG.zip",
+        "download_url": "https://ambientcg.com/get?file=Grass001_2K-JPG.zip",
+        "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Grass001_lmIxuoR7/Grass001_2K-JPG.zip",
+        "size_bytes": 38930280,
+        "md5": "e80ac9bf7cc4e81ee1802ed68d03a8a5",
+        "sha256": "a47570077b55f260a6c54890a560087caffb9eb8b2b78a84f8247ba1966d7d1d",
+        "crc_verified": true,
+        "retained": false
+      },
+      "4K": {
+        "attribute": "4K-JPG",
+        "file_name": "Grass001_4K-JPG.zip",
+        "download_url": "https://ambientcg.com/get?file=Grass001_4K-JPG.zip",
+        "resolved_url": "https://acg-download.struffelproductions.com/file/ambientCG-Web/download/Grass001_lmIxuoR7/Grass001_4K-JPG.zip",
+        "size_bytes": 148824729,
+        "md5": "8bdc65fea3bd3d10e18fd139ebc722ec",
+        "sha256": "d16ce0597e072c0718ee0da90b2a21bfa22d5c90c218b34bc7eddaa2fd304c21",
+        "crc_verified": true,
+        "retained": false
+      }
+    },
+    "files": [
+      {
+        "map": "albedo",
+        "source_map": "Color",
+        "resolution": "2K",
+        "format": "jpg",
+        "path": "app/assets/landscape/rc-ground/grass-albedo.jpg",
+        "url": "https://ambientcg.com/get?file=Grass001_2K-JPG.zip",
+        "archive_member": "Grass001_2K-JPG_Color.jpg",
+        "size_bytes": 6953345,
+        "dimensions_px": [
+          2048,
+          2048
+        ],
+        "md5": "dc6b08f588b0581702296c9c58951b31",
+        "sha256": "8a8bfcffd087134caad2a7def216f3dd2d307fbe02340ca47e3c5c71f49d50b4"
+      },
+      {
+        "map": "normal (OpenGL, +Y)",
+        "source_map": "NormalGL",
+        "resolution": "2K",
+        "format": "jpg",
+        "path": "app/assets/landscape/rc-ground/grass-normal.jpg",
+        "url": "https://ambientcg.com/get?file=Grass001_2K-JPG.zip",
+        "archive_member": "Grass001_2K-JPG_NormalGL.jpg",
+        "size_bytes": 9979388,
+        "dimensions_px": [
+          2048,
+          2048
+        ],
+        "md5": "67509926610e7b1db493e9d9f41aa0b9",
+        "sha256": "7ccaf9e28ea7a533e590c2e07a39e141017a5a5db8b7241730a3c287c540e881"
+      },
+      {
+        "map": "roughness",
+        "source_map": "Roughness",
+        "resolution": "2K",
+        "format": "jpg",
+        "path": "app/assets/landscape/rc-ground/grass-roughness.jpg",
+        "url": "https://ambientcg.com/get?file=Grass001_2K-JPG.zip",
+        "archive_member": "Grass001_2K-JPG_Roughness.jpg",
+        "size_bytes": 3286058,
+        "dimensions_px": [
+          2048,
+          2048
+        ],
+        "md5": "5007981963ec7e10686051486afe6db3",
+        "sha256": "2a2a3f9220a351f14858075d4c6ba1ff7fde8bedd7009c94cb432bc2b9a362e4"
+      },
+      {
+        "map": "albedo",
+        "source_map": "Color",
+        "resolution": "4K",
+        "format": "jpg",
+        "path": "assets/landscape/rc-ground/source/ambientcg/Grass001_4K-JPG_Color.jpg",
+        "url": "https://ambientcg.com/get?file=Grass001_4K-JPG.zip",
+        "archive_member": "Grass001_4K-JPG_Color.jpg",
+        "size_bytes": 26284782,
+        "dimensions_px": [
+          4096,
+          4096
+        ],
+        "md5": "f5df2afa4447b0d99f48a758cdcc09ac",
+        "sha256": "0a6ce2d9e4d0fd4c92c10b8411dac06577b4166f94781161d3127cd787c9be01"
+      },
+      {
+        "map": "normal (OpenGL, +Y)",
+        "source_map": "NormalGL",
+        "resolution": "4K",
+        "format": "jpg",
+        "path": "assets/landscape/rc-ground/source/ambientcg/Grass001_4K-JPG_NormalGL.jpg",
+        "url": "https://ambientcg.com/get?file=Grass001_4K-JPG.zip",
+        "archive_member": "Grass001_4K-JPG_NormalGL.jpg",
+        "size_bytes": 41310481,
+        "dimensions_px": [
+          4096,
+          4096
+        ],
+        "md5": "8c7f3168a920968b4d5cec5917c9e5fc",
+        "sha256": "ded7c61a940fb079b7fcd83b9ecef33fa500b1b3f8697ff2e8e5de5a5be96c9d"
+      },
+      {
+        "map": "roughness",
+        "source_map": "Roughness",
+        "resolution": "4K",
+        "format": "jpg",
+        "path": "assets/landscape/rc-ground/source/ambientcg/Grass001_4K-JPG_Roughness.jpg",
+        "url": "https://ambientcg.com/get?file=Grass001_4K-JPG.zip",
+        "archive_member": "Grass001_4K-JPG_Roughness.jpg",
+        "size_bytes": 11779810,
+        "dimensions_px": [
+          4096,
+          4096
+        ],
+        "md5": "b2fe2e61d3340687e500709561a7bdb6",
+        "sha256": "8cbb70cf7b0fccbe5f8b9d1cf8cda103c21811f9e333a1263fa82937e1448301"
+      }
+    ]
+  }
+}

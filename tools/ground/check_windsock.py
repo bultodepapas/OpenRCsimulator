@@ -130,7 +130,8 @@ def load(folder, cue_type='windsock'):
                 raise RuntimeError('contact shadows brighten the ground')
         metric['added_draws'] = on['draws'] - off['draws']
         metric['added_primitives'] = on['primitives'] - off['primitives']
-        if metric['added_draws'] != (2 if cue_type == 'windsock' else 1) or not 0 < metric['added_primitives'] < (400 if station else 2000 if cue_type == 'windsock' else 1500):
+        triangle_budget = 400 if station else 2000 if cue_type == 'windsock' else 20000 if barrier else 1500
+        if metric['added_draws'] != (2 if cue_type == 'windsock' else 1) or not 0 < metric['added_primitives'] < triangle_budget:
             raise RuntimeError(f'{view}: cue exceeds its draw or triangle budget')
         if metric['clipped_white_pixels']:
             raise RuntimeError(f'{view}: clipped whites on the cue')

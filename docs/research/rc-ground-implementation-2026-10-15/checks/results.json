@@ -1,0 +1,56 @@
+[
+  {
+    "check": "import",
+    "exit_code": 0,
+    "errors": [],
+    "seconds": 14.687999999994645
+  },
+  {
+    "check": "test_rcv_ground_material",
+    "exit_code": 0,
+    "errors": [],
+    "seconds": 11.25
+  },
+  {
+    "check": "test_rcv_track_view",
+    "exit_code": 0,
+    "errors": [],
+    "seconds": 6.437999999994645
+  },
+  {
+    "check": "test_rcv_airfield_track",
+    "exit_code": 0,
+    "errors": [],
+    "seconds": 24.90600000001723
+  },
+  {
+    "check": "test_ground_image_cache",
+    "exit_code": 0,
+    "errors": [],
+    "seconds": 1.7189999999827705
+  },
+  {
+    "check": "test_ground_terrain",
+    "exit_code": 0,
+    "errors": [],
+    "seconds": 4.0310000000172295
+  },
+  {
+    "check": "test_near_grass",
+    "exit_code": 0,
+    "errors": [],
+    "seconds": 6.437999999994645
+  },
+  {
+    "check": "test_rcv_activity",
+    "exit_code": 0,
+    "errors": [],
+    "seconds": 5.592999999993481
+  },
+  {
+    "check": "test_rcv_nitro_activity",
+    "exit_code": 0,
+    "errors": [],
+    "seconds": 37.39100000000326
+  }
+]

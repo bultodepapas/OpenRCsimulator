@@ -1,0 +1,20 @@
+[
+  {
+    "file": "menu-cues.wav",
+    "channels": 2,
+    "rate": 48000,
+    "duration_s": 5.109333333333334,
+    "peak": 0.15093994140625,
+    "rms": 0.011292432858874251,
+    "nonzero_samples": 64408
+  },
+  {
+    "file": "muted.wav",
+    "channels": 2,
+    "rate": 48000,
+    "duration_s": 0.6933333333333334,
+    "peak": 0.0,
+    "rms": 0.0,
+    "nonzero_samples": 0
+  }
+]

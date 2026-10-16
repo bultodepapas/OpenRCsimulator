@@ -1,0 +1,30 @@
+{
+  "asset": "ambientCG Wood049",
+  "downloaded": "2026-10-15",
+  "license": "CC0-1.0",
+  "author": "Lennart Demes / ambientCG",
+  "source": "https://ambientcg.com/view?id=Wood049",
+  "license_source": "https://docs.ambientcg.com/license/",
+  "archive_url": "https://ambientcg.com/get?file=Wood049_1K-JPG.zip",
+  "archive_sha256": "74ec51bcf5ddfc2e9af6205dc5cbcc90ad51c22117e013ff8b1c7258f8ecbc69",
+  "source_tile_metres": [
+    0.8,
+    0.8
+  ],
+  "resolution": [
+    1024,
+    1024
+  ],
+  "source_technique": "Procedural, as declared by ambientCG; not a wood measurement or photograph.",
+  "processing": "Unmodified JPGs extracted from source archive. Godot lossless import, mipmaps and anisotropic shader filtering. Warm tint and normal strength are artistic runtime settings.",
+  "channels": {
+    "Color": "sRGB albedo (source_color)",
+    "NormalGL": "linear OpenGL tangent normal (hint_normal)",
+    "Roughness": "linear scalar in red"
+  },
+  "sha256": {
+    "Wood049_1K-JPG_Color.jpg": "451ee4dd719628289b4969f75dc583b5f77f8471d5d885ba5015fd90e7e5ce61",
+    "Wood049_1K-JPG_NormalGL.jpg": "e9aaec13f9c6199e7ec440433005a8c52a88332f26a3887fc057179089fb747a",
+    "Wood049_1K-JPG_Roughness.jpg": "7683f29e71c24b987e4a7dcc74d5a9ed5ab4cac2e145d507799ba9c9c2c4ef54"
+  }
+}

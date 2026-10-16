@@ -21,8 +21,8 @@ var _status: Label
 var _readout: Label
 var _speed: HSlider
 var _blades_toggle: CheckBox
+var _canopy_toggle: CheckBox
 var _busy := false
-var _orbiting := false
 var _canvas: CanvasLayer
 
 
@@ -62,6 +62,7 @@ func _build_stage() -> void:
 	key.rotation_degrees = Vector3(-38, -25, 0)
 	key.light_energy = 2.4
 	key.shadow_enabled = true
+	key.directional_shadow_max_distance = 4.0
 	add_child(key)
 	var fill := DirectionalLight3D.new()
 	fill.rotation_degrees = Vector3(-25, 155, 0)
@@ -111,11 +112,11 @@ func _build_ui() -> void:
 	panel.add_child(scroll)
 	var column := VBoxContainer.new()
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	column.add_theme_constant_override("separation", 9)
+	column.add_theme_constant_override("separation", 6)
 	scroll.add_child(column)
 	_label(column, "HX-700", 30, Color("f3f6fb"))
 	_label(column, "MECÁNICA AVANZADA", 13, Color("81bbff"))
-	_label(column, "Banco de movimiento · sin dinámica de vuelo", 12, Color("aabbd0"))
+	_label(column, "Banco mecánico · sin dinámica de vuelo", 12, Color("aabbd0"))
 	column.add_child(HSeparator.new())
 	var cameras := HBoxContainer.new()
 	column.add_child(cameras)
@@ -166,10 +167,10 @@ func _build_ui() -> void:
 	_speed.custom_minimum_size.y = 24
 	_speed.value_changed.connect(func(value: float) -> void: speed_rpm = value)
 	column.add_child(_speed)
-	var canopy := CheckBox.new()
-	canopy.text = "Mostrar carenado"
-	canopy.toggled.connect(_show_canopy)
-	column.add_child(canopy)
+	_canopy_toggle = CheckBox.new()
+	_canopy_toggle.text = "Mostrar carenado"
+	_canopy_toggle.toggled.connect(_show_canopy)
+	column.add_child(_canopy_toggle)
 	_blades_toggle = CheckBox.new()
 	_blades_toggle.text = "Mostrar palas principales"
 	_blades_toggle.toggled.connect(_show_main_blades)
@@ -288,23 +289,28 @@ func _update_camera() -> void:
 
 func _unhandled_input(event: InputEvent) -> void:
 	if event is InputEventMouseButton:
-		if event.button_index == MOUSE_BUTTON_RIGHT:
-			_orbiting = event.pressed
 		if event.pressed and event.button_index in [MOUSE_BUTTON_WHEEL_UP, MOUSE_BUTTON_WHEEL_DOWN]:
 			distance = clampf(distance * (0.9 if event.button_index == MOUSE_BUTTON_WHEEL_UP else 1.1), 0.12, 4)
 			_update_camera()
-	if event is InputEventMouseMotion and _orbiting:
+	if event is InputEventMouseMotion and (event.button_mask & MOUSE_BUTTON_MASK_RIGHT) != 0:
 		yaw -= event.relative.x * 0.006
 		elevation = clampf(elevation + event.relative.y * 0.006, -1.2, 1.2)
 		_update_camera()
-	if event is InputEventKey and event.pressed and not event.echo:
+
+
+func _input(event: InputEvent) -> void:
+	# Shortcuts also work after a slider/button receives keyboard focus.
+	if rig != null and event is InputEventKey and event.pressed and not event.echo:
 		if event.physical_keycode == KEY_R:
 			_preset("Neutro")
+			get_viewport().set_input_as_handled()
 		elif event.physical_keycode == KEY_SPACE:
 			_speed.value = 6.0 if speed_rpm == 0.0 else 0.0
+			get_viewport().set_input_as_handled()
 
 
 func _show_canopy(shown: bool) -> void:
+	_canopy_toggle.set_pressed_no_signal(shown)
 	for id in ["visual.carenado", "visual.carenado_gomas"]:
 		(preview.bindings[id] as Node3D).visible = shown
 

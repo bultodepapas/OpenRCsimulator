@@ -1,0 +1,219 @@
+{
+  "step": "D6-GP-06-R2",
+  "date": "2026-10-15",
+  "platform": "native Windows",
+  "engine": "Godot 4.7.2-stable ed1daf0bf",
+  "head_at_receipt": "8f48b5afa30bc703a65f69de57dcca46a4fabf15",
+  "scope": "Synthetic input/profile/UI checks; shared working tree changed during this run. No physical controller qualification or full app/test.sh run.",
+  "initial_suites": [
+    {
+      "script": "tests/test_controller_actions.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_auto_defaults.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_aux_runtime.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_aux_setup.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_binding_audit.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_car.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_conditioning.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_extended_actions.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_flight_actions.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_ground.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_integration.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_menu.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_pause_recovery.gd",
+      "parse": false,
+      "ok": false,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_persistence.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_profile.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_profile_hardening.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_prompts.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_registry.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_routing_audit.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_sections.gd",
+      "parse": false,
+      "ok": false,
+      "exit_code": 1
+    },
+    {
+      "script": "tests/test_controller_settings_save.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_setup.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_setup_safety.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_controller_store.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_rc_input.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_smoke_aux.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    },
+    {
+      "script": "tests/test_heli_control_actions.gd",
+      "parse": false,
+      "ok": true,
+      "exit_code": 0
+    }
+  ],
+  "syntax": {
+    "checked": 940,
+    "passed": 940,
+    "failures": []
+  },
+  "final_reruns": [
+    {
+      "suite": "test_controller_extended_actions",
+      "errors_or_failed_checks": false,
+      "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nPASS extended controller actions: 104 checks\n"
+    },
+    {
+      "suite": "test_controller_menu",
+      "errors_or_failed_checks": false,
+      "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: calibrating radio\nController menu: 36/36 checks passed\n"
+    },
+    {
+      "suite": "test_controller_persistence",
+      "errors_or_failed_checks": false,
+      "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\naircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller lost. Select a controller or keyboard in Controls.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nfailsafe: Controller selected; check controls and continue.\nController persistence: 27 checks, 0 failures\n"
+    },
+    {
+      "suite": "test_controller_routing_audit",
+      "errors_or_failed_checks": false,
+      "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\ncontroller routing audit: 21 checks, 0 failures\n"
+    },
+    {
+      "suite": "test_controller_sections",
+      "errors_or_failed_checks": true,
+      "log": "Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org\n\nFAIL all four live meters fit beside their axis controls\nFAIL all three configured AUX editors fit at 1280x720 in Spanish\nController sections: 103/105 checks passed\n"
+    }
+  ],
+  "source_sha256": {
+    "app/app_root.gd": "4a4de8c24b4ca61a0ff96098d2a28a924646430f94ec2b998526f530ee53ac31",
+    "app/input/controller_actions.gd": "e9fbbc7e94bb68a7fdad1475add749da02dfc1edc455e6f63b642a398cee7032",
+    "app/tests/test_controller_extended_actions.gd": "5701831037b130b61c9ec39723ca0009636587ff9f5923712be70ae71e979470",
+    "app/tests/test_controller_routing_audit.gd": "345bd26f4a11eac5ef4a3dccb282c3f017a528c82739577f6bcbf976abcc29e6",
+    "app/tests/test_controller_persistence.gd": "612ca6feb8a66b4ed9f601b2f5d00ac5e9d7c7c8186943c3ce3b49a3dbbe1915",
+    "app/tests/test_controller_menu.gd": "86f55f821a4f1fcbddc7fb35633156a20e1c0fd626f628c7f7e96efb68438245",
+    "app/tests/test_controller_sections.gd": "d6bd3a4e1e022d5b3bafd5f592c8c13fb56313923883af29deca67b73cbe0ac6"
+  },
+  "pause_recovery_verbose_rerun": {
+    "errors": false,
+    "summary": [
+      "Controller pause recovery: 24/24 checks passed"
+    ]
+  }
+}

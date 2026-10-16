@@ -62,9 +62,12 @@ static func validate(receipt: Dictionary, dossier: Dictionary, current: Dictiona
 			if flag not in FLAGS or seen.has(flag):
 				return _failure("unknown or duplicate damage flag")
 			seen[flag] = true
+			if flag == "structural_damage" and not next_blocked.has(id):
+				next_blocked[id] = "repair_required"
 			if flag in ["thermal_damage", "electrical_damage", "lipo_damage", "unretrieved"]:
-				next_blocked[id] = true
-		if next_blocked.has(id) and decision.get("disposition") in ["reuse", "repair"]:
+				next_blocked[id] = "replace_only"
+		if next_blocked.has(id) and (decision.get("disposition") == "reuse" \
+			or (decision.get("disposition") == "repair" and next_blocked[id] == "replace_only")):
 			return _failure("damaged or unretrieved component is not eligible for reuse/repair in this version")
 		var count: Variant = decision.get("quantity", parts[id].quantity)
 		if typeof(count) != TYPE_INT or count <= 0:

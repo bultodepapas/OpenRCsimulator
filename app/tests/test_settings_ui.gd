@@ -134,6 +134,13 @@ func _run() -> void:
 		"scrollbar=%s panel=%s close=%s keep=%s revert=%s" % [str(settings._scroll.get_v_scroll_bar().visible),
 		str(panel_rect), str(settings._close_button.get_global_rect()), str(settings._keep_button.get_global_rect()),
 		str(settings._revert_button.get_global_rect())])
+	settings._show_category(1)
+	await process_frame
+	settings._language_picker.grab_focus()
+	await process_frame
+	await process_frame
+	_check("200% focus scrolls the complete language selector into view", settings._scroll.get_global_rect().encloses(settings._language_picker.get_global_rect()))
+	settings._show_category(0)
 	settings._window_mode_selected(1)
 	_check("window change starts a 15-second trial", settings._trial_deadline_msec - Time.get_ticks_msec() > 14500
 		and settings._trial_deadline_msec - Time.get_ticks_msec() <= 15000)

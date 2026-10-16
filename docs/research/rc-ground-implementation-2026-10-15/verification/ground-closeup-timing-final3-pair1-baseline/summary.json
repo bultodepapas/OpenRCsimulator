@@ -1,0 +1,171 @@
+{
+  "format": "openrc-ground-closeup-summary-v1",
+  "complete": true,
+  "case_count": 4,
+  "cases": [
+    {
+      "case_id": "monster-car-2__start__chase__day",
+      "complete": true,
+      "image": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\ground-closeup-timing-final3-pair1-baseline/monster-car-2__start__chase__day.png",
+      "image_sha256": "12d27baab1e9be9435b9da85ef79f4ceeeb544a3f9ea39263864c45e3ab9d816",
+      "vehicle_id": "monster-car-2",
+      "spawn_id": "start",
+      "camera_mode": "chase",
+      "lighting": "day",
+      "state_sha256": "497b98d9f45b6eee00013b9f8e70ba3bb7720287a3bf3a3cd7d594d2283bac91",
+      "tick": 0,
+      "preconditioning": {
+        "drive_control": {
+          "armed": true,
+          "brake": 0.0,
+          "reverse": false,
+          "steering": 0.0,
+          "throttle": 0.25
+        },
+        "drive_ticks_completed": 0,
+        "neutral_arm_ticks": 0,
+        "ok": true,
+        "requested_drive_ticks": 0,
+        "scope": "paused normal reset state; no physics ticks"
+      },
+      "frame_ms": {
+        "count": 240,
+        "p50": 8.4255,
+        "p95": 10.64665,
+        "p99": 11.886199999999993
+      },
+      "draw_calls": {
+        "count": 240,
+        "p50": 1083.0,
+        "p95": 1083.0,
+        "p99": 1083.0
+      },
+      "mesh_signature_sha256": "919a316e52e4f82212cc1369027dc86e03c05a1836707aca1617cda5c6326e36",
+      "mesh_geometry_signature_sha256": "ba572b31d412fb8f7b37d296b3f3e9eab6bea42a05d92be8ef3e8c45df0846ba",
+      "unique_texture_count": 45
+    },
+    {
+      "case_id": "monster-car-2__track_start__chase__day",
+      "complete": true,
+      "image": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\ground-closeup-timing-final3-pair1-baseline/monster-car-2__track_start__chase__day.png",
+      "image_sha256": "d5359bc536f5209cf74d7f0944a7920627427d3e94f1e2fa676a8c94e0e3ac71",
+      "vehicle_id": "monster-car-2",
+      "spawn_id": "track_start",
+      "camera_mode": "chase",
+      "lighting": "day",
+      "state_sha256": "8471202c10e4d7ed9bf4fb96a6dbf775f903d950aabf267fff88b9b1553e4d2c",
+      "tick": 0,
+      "preconditioning": {
+        "drive_control": {
+          "armed": true,
+          "brake": 0.0,
+          "reverse": false,
+          "steering": 0.0,
+          "throttle": 0.25
+        },
+        "drive_ticks_completed": 0,
+        "neutral_arm_ticks": 0,
+        "ok": true,
+        "requested_drive_ticks": 0,
+        "scope": "paused normal reset state; no physics ticks"
+      },
+      "frame_ms": {
+        "count": 240,
+        "p50": 8.817,
+        "p95": 11.988599999999995,
+        "p99": 13.248259999999998
+      },
+      "draw_calls": {
+        "count": 240,
+        "p50": 1076.0,
+        "p95": 1076.0,
+        "p99": 1076.0
+      },
+      "mesh_signature_sha256": "919a316e52e4f82212cc1369027dc86e03c05a1836707aca1617cda5c6326e36",
+      "mesh_geometry_signature_sha256": "ba572b31d412fb8f7b37d296b3f3e9eab6bea42a05d92be8ef3e8c45df0846ba",
+      "unique_texture_count": 45
+    },
+    {
+      "case_id": "mt8-bisonte__start__chase__day",
+      "complete": true,
+      "image": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\ground-closeup-timing-final3-pair1-baseline/mt8-bisonte__start__chase__day.png",
+      "image_sha256": "7bb4052a67e85ba41a62c5094676f94890042611c61e2fb4b5aedaf051b683e5",
+      "vehicle_id": "mt8-bisonte",
+      "spawn_id": "start",
+      "camera_mode": "chase",
+      "lighting": "day",
+      "state_sha256": "8167b039d20429834bb6aa1148b2cd6f5bac31f044677f59fa74e54738077252",
+      "tick": 0,
+      "preconditioning": {
+        "drive_control": {
+          "armed": true,
+          "brake": 0.0,
+          "reverse": false,
+          "steering": 0.0,
+          "throttle": 0.25
+        },
+        "drive_ticks_completed": 0,
+        "neutral_arm_ticks": 0,
+        "ok": true,
+        "requested_drive_ticks": 0,
+        "scope": "paused normal reset state; no physics ticks"
+      },
+      "frame_ms": {
+        "count": 240,
+        "p50": 4.118,
+        "p95": 6.2360500000000005,
+        "p99": 7.241009999999999
+      },
+      "draw_calls": {
+        "count": 240,
+        "p50": 427.0,
+        "p95": 427.0,
+        "p99": 427.0
+      },
+      "mesh_signature_sha256": "51979b9a80b63d0c01ad6500f302df5d94e07faf4738b85ea94de90cf5c6dc0b",
+      "mesh_geometry_signature_sha256": "2f5193fcd30b8802540dbe3d84e3a44a351c810575be5c502b6208f5640d3261",
+      "unique_texture_count": 39
+    },
+    {
+      "case_id": "mt8-bisonte__track_start__chase__day",
+      "complete": true,
+      "image": "C:\\DEVELOPMENT\\OpenRCsimulator\\docs\\research\\rc-ground-implementation-2026-10-15\\verification\\ground-closeup-timing-final3-pair1-baseline/mt8-bisonte__track_start__chase__day.png",
+      "image_sha256": "11ec2e8dc8911a0db765fb047597ac7654191fcc825c3d206ec385862e18d23f",
+      "vehicle_id": "mt8-bisonte",
+      "spawn_id": "track_start",
+      "camera_mode": "chase",
+      "lighting": "day",
+      "state_sha256": "275f741536e4b862cef1f28e9e1ce0b4e13d98dc01d2544bc6bbba6319e1b37d",
+      "tick": 0,
+      "preconditioning": {
+        "drive_control": {
+          "armed": true,
+          "brake": 0.0,
+          "reverse": false,
+          "steering": 0.0,
+          "throttle": 0.25
+        },
+        "drive_ticks_completed": 0,
+        "neutral_arm_ticks": 0,
+        "ok": true,
+        "requested_drive_ticks": 0,
+        "scope": "paused normal reset state; no physics ticks"
+      },
+      "frame_ms": {
+        "count": 240,
+        "p50": 3.8865,
+        "p95": 5.310599999999999,
+        "p99": 5.561489999999999
+      },
+      "draw_calls": {
+        "count": 240,
+        "p50": 420.0,
+        "p95": 420.0,
+        "p99": 420.0
+      },
+      "mesh_signature_sha256": "51979b9a80b63d0c01ad6500f302df5d94e07faf4738b85ea94de90cf5c6dc0b",
+      "mesh_geometry_signature_sha256": "2f5193fcd30b8802540dbe3d84e3a44a351c810575be5c502b6208f5640d3261",
+      "unique_texture_count": 39
+    }
+  ]
+}

@@ -26,6 +26,10 @@ def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--out", required=True, type=Path)
     args = parser.parse_args(sys.argv[sys.argv.index("--") + 1:])
+    out = args.out.resolve()
+    out.relative_to((ROOT / ".tools").resolve())
+    if out.exists() and any(out.iterdir()):
+        raise ValueError("Use a fresh output directory under .tools.")
     source = Path(bpy.data.filepath)
     assert hashlib.sha256(source.read_bytes()).hexdigest() == SHA
     profile = json.loads((ROOT / "assets/aircraft/hx-700/articulated/construction.json").read_text())
@@ -85,7 +89,6 @@ def main():
                       ("actuator_output", "main_blade", "tail_blade", "main_grip", "tail_grip", "fixed_swash", "rotating_swash", "tail_slider", "tail_yoke", "tail_bellcrank", "main_shaft", "tail_shaft", "link_endpoint")}
             samples.append({"inputs": list(case) + [phase], "frames": frames})
     assert hashlib.sha256(source.read_bytes()).hexdigest() == SHA
-    out = args.out.resolve()
     out.mkdir(parents=True, exist_ok=True)
     for name, data in (("motion-source.json", {"source_sha256": SHA, "recipes": recipes, "objects": objects}),
                        ("motion-oracle.json", {"source_sha256": SHA, "samples": samples})):

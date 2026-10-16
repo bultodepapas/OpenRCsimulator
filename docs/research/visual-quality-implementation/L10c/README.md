@@ -1,5 +1,27 @@
 # L10c — flightline barrier and complete-field review
 
+## 2026-10-15 — L10c-R1 close-view finish
+
+The flightline barrier now uses bevelled timber rails, inset steel posts with caps and ground shoes, and two-sided splice plates, washers and hex fasteners. The horizontal grain, normal and roughness maps reuse [ambientCG Wood049](https://ambientcg.com/view?id=Wood049), licensed CC0; [runtime provenance](../../../../app/assets/landscape/flightline/PROVENANCE.json) records the original files and archive hashes. Runtime tint, dimensions and weathering remain artistic estimates.
+
+[Before](detail-2026-10-15/before.png) · [After](detail-2026-10-15/after.png) · [Reverse side](detail-2026-10-15/rear.png) · [Pilot view](detail-2026-10-15/pilot.png).
+
+The detail builder retains the shared collision parts, dimensions, walking opening and damage IDs. Every fitting belongs to its rail's removable geometry. Model-space texture mapping survives damage-batch rebuilds without adding UV dependencies to the shared scenery code; vertex alpha stays opaque for detached debris. The separate pilot station is unchanged.
+
+Native Godot 4.7.2 Compatibility captures on an RTX 3090 show one added draw and **17,520 triangles**, versus the original 1,320. The intentional detail budget is below 20,000 triangles for the default and 34,000 for the maximum supported width. Three 1024² textures use lossless imports, mipmaps and anisotropic filtering. This is a geometry/material tradeoff, not a measured frame-time improvement or low-end GPU acceptance.
+
+All **485 focused checks** pass: [186 geometry/material](detail-2026-10-15/test-barrier.log), [144 data](detail-2026-10-15/test_flightline_barrier_data.log), [20 contact shadows](detail-2026-10-15/test_flight_cue_shadows.log), [78 destruction/reset](detail-2026-10-15/test_scenery_destruction.log), and [57 projected shadows](detail-2026-10-15/test_field_projected_shadows.log). The native [ten-image ablation result](detail-2026-10-15/ablation.json) passes the existing runway-clearance and outside-bounds mutation guards, with zero clipped-white cue pixels; both pilot views preserve 22,740 protected runway pixels. [Source identities](detail-2026-10-15/sources.json), [before capture manifest](detail-2026-10-15/before-capture.json), [after capture manifest](detail-2026-10-15/after-capture.json).
+
+Reproduce the fixed full-field detail views with the pinned native Godot binary:
+
+```powershell
+& .tools/Godot_v4.7.2-stable_win64_console.exe --path app --audio-driver Dummy --rendering-driver opengl3 --script ../tools/ground/capture_barrier_detail.gd -- --out=C:/new-empty-location/barrier-review
+```
+
+The capture uses an offscreen 1280×720 4×MSAA viewport and explicit native draws. Full-suite, packaged-build, low-end frame-time and human flight-readability acceptance were not rerun for this visual change. The following section preserves the original delivery evidence.
+
+## Original 2026-10-08 delivery
+
 **Status (2026-10-08): engineering verification passed. Gate L and Gate SC remain open.**
 
 The default field now has a low orange-and-grey flightline barrier: 48 m across, 0.65 m high, with a 6 m central opening. Twenty posts, pale caps, footings and four open slats per bay match the pilot station. All dimensions and colours are estimated original procedural artwork, informed by the existing [field-layout references](../../scenery-investigations/03-rc-field-layout-references.md). This is a visual cue, with no collision or claim of physical protection. Aircraft, pilot datum, runway and physics are unchanged.

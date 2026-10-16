@@ -269,6 +269,8 @@ static func _settings(theme: Theme) -> void:
 	theme.set_stylebox("panel", "SettingsPanel", panel)
 	theme.set_type_variation("SettingsAction", "Button")
 	_button(theme, "SettingsAction", PRIMARY, PRIMARY.normal, 0, SIZE.button, PRIMARY_TEXT, PRIMARY_TEXT)
+	theme.set_stylebox("disabled", "SettingsAction", _box(BUTTON.disabled, 12))
+	theme.set_color("font_disabled_color", "SettingsAction", DISABLED_TEXT)
 	theme.set_type_variation("QuietButton", "Button")
 	var quiet := {normal = Color.TRANSPARENT, hover = BUTTON.hover, pressed = BUTTON.pressed, disabled = Color.TRANSPARENT}
 	_button(theme, "QuietButton", quiet, Color.TRANSPARENT, 0, SIZE.small)

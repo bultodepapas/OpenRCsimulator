@@ -3,11 +3,11 @@
   "currency": "USD",
   "price_date": "2026-10-15",
   "generated_from": {
-    "price_catalog_sha256": "58ade6aa478c00d59a95f8a45de78dcacba3e7f058eb921f19f144706b6bc903",
-    "aircraft_costing_sha256": "327e8e8b597e14da99f74bb2d0d7fa3d6ecdd881b11e434ac90d1996d5fca6ff",
+    "price_catalog_sha256": "a8c4ffba866491092fb4b42397b447c70f421902ad720d487358b9b370687f0f",
+    "aircraft_costing_sha256": "8e01a56e16ec5665298ffc4dd8f2733c5c37da60cb495cb7bce3a2f326f7301f",
     "aircraft_catalog_sha256": "e0790acb9b1a5097d9d3cbcb564e72f074940a3813b52f70edf1c44dae5bc60c",
-    "price_research_components_sha256": "52aca914b95cf375e8ef3d3e12fe1c2a70d0d762a663e8dc01a039255f123cd9",
-    "price_research_fleet_sha256": "07345414daf3b8e6f1252e0b060e51af37f0ed3349c7d57ddc99ac7745886fc9"
+    "price_research_components_sha256": "4f562870b5a7148dc1663f7598fbeba0de20e925456d3cf8367c88d1a4f4f996",
+    "price_research_fleet_sha256": "3330a282642645cbea9ce6cd3ddb82a4a2c440b0a076e1e3561862e3a186d881"
   },
   "products": [
     {
@@ -65,6 +65,15 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "e_flite_efl105251",
+      "brand": "E-flite",
+      "sku": "EFL105251",
+      "name": "Fuselage for Turbo Timber Evolution 1.5m",
+      "category": "replacement_part",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "e_flite_efl105252",
       "brand": "E-flite",
       "sku": "EFL105252",
@@ -83,11 +92,47 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "e_flite_efl17553",
+      "brand": "E-flite",
+      "sku": "EFL17553",
+      "name": "Spinner for Turbo Timber",
+      "category": "spinner",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "e_flite_efl5259",
+      "brand": "E-flite",
+      "sku": "EFL5259",
+      "name": "Horizontal stabilizer with tube: Timber",
+      "category": "replacement_part",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "e_flite_efl5962",
+      "brand": "E-flite",
+      "sku": "EFL5962",
+      "name": "3-blade 11 x 7.3 propeller",
+      "category": "propeller",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "e_flite_efl_1249",
       "brand": "E-flite",
       "sku": "EFL-1249",
       "name": "Complete updated landing gear set with heavy-duty springs for Turbo Timber Evolution 1.5m",
       "category": "replacement_part",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "e_flite_efla521",
+      "brand": "E-flite",
+      "sku": "EFLA521",
+      "name": "LED controller for Timber",
+      "category": "electronics",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     },
@@ -128,11 +173,29 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "hangar_9_hanu871",
+      "brand": "Hangar 9",
+      "sku": "HANU871",
+      "name": "Hangar 9 UltraCote Deep Red, HANU871",
+      "category": "covering_film",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "hitec_rcd_hrc31311s",
       "brand": "Hitec RCD",
       "sku": "HRC31311S",
       "name": "HS-311 standard analog sport servo",
       "category": "servo",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "jetcat_850100",
+      "brand": "JetCat",
+      "sku": "850100",
+      "name": "P100-RX turbine (legacy non-BL model)",
+      "category": "engine_turbine",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     },
@@ -281,6 +344,51 @@
       "partner_status": "representation_permission_recorded"
     },
     {
+      "id": "sebart_seb_a200_wb",
+      "brand": "SebArt",
+      "sku": "SEB-A200-WB",
+      "name": "Avanti S Jet 2m (White/Blue) ARF without retracts",
+      "category": "airframe_arf",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "sebart_seba227_yellow",
+      "brand": "SebArt",
+      "sku": "SEBA227-Yellow",
+      "name": "Avanti S 2M Yellow ARF with electric landing gear and brakes",
+      "category": "airframe_arf_with_retracts_comparator",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "sebart_seba_200_16",
+      "brand": "SebArt",
+      "sku": "SEBA-200-16",
+      "name": "Kero + Smoke Tank for Avanti 2m",
+      "category": "fuel_tank",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "spektrum_spm_1012",
+      "brand": "Spektrum",
+      "sku": "SPM-1012",
+      "name": "Avian 2815-800Kv brushless outrunner motor",
+      "category": "motor",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "spektrum_spm_1032",
+      "brand": "Spektrum",
+      "sku": "SPM-1032",
+      "name": "AR637T+ 6-channel DSMX receiver with AS3X+/SAFE",
+      "category": "receiver",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "spektrum_spm_1033",
       "brand": "Spektrum",
       "sku": "SPM-1033",
@@ -290,11 +398,29 @@
       "partner_status": "not_recorded"
     },
     {
+      "id": "spektrum_spmsa370",
+      "brand": "Spektrum",
+      "sku": "SPMSA370",
+      "name": "A370 digital 9g metal-gear aircraft servo",
+      "category": "servo",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
       "id": "spektrum_spmx324s50",
       "brand": "Spektrum",
       "sku": "SPMX324S50",
       "name": "14.8V 3200mAh 4S 50C Smart G2 LiPo battery, IC3",
       "category": "battery",
+      "physical_compatibility": "not_established_by_price_catalog",
+      "partner_status": "not_recorded"
+    },
+    {
+      "id": "spektrum_spmxae70e",
+      "brand": "Spektrum",
+      "sku": "SPMXAE70E",
+      "name": "Avian 70A Smart Lite brushless ESC, 3S-6S, IC3 Ver. E",
+      "category": "esc",
       "physical_compatibility": "not_established_by_price_catalog",
       "partner_status": "not_recorded"
     },
@@ -425,6 +551,24 @@
       "source_url": "https://www.chiefrc.com/products/p100-rx-bl-turbine-engine-with-brushless-pump-22-5-lbs-thrust-from-jetcat",
       "evidence_quality": "high",
       "notes": "Observed 2026-10-15. Direct Chief RC product-page fetch (Firecrawl maxAge=0, HTTP 200) confirmed the listed US$2,649.00 price and Backordered status on this date. Current 100 N brushless-pump P100-RX variant is a price proxy for the simulated P100-RX; it is not a 200 N-class P200. Listing includes starter, ECU, pump and installation accessories; the recommended 3S LiFePO4 battery is separate."
+    },
+    {
+      "id": "jetcat-p100-rx-850100-carf",
+      "product_id": "jetcat_850100",
+      "amount_minor": 278000,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "carf-models.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_vendor_listing_price",
+      "availability": "CARF-Models shows Add to Cart; no stock count or lead time is stated",
+      "sold_package_quantity": 1,
+      "package_description": "1 turbine",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://carf-models.com/de/products/jetcat-p100rx",
+      "evidence_quality": "Direct CARF-Models product page opened 2026-10-15; page names JetCat P100-RX, product no. 850100, displays USD 2,780.00, and shows Add to Cart. It gives weight including autostart and valves; it does not state a stock count.",
+      "notes": "Observed 2026-10-15. Exact P100-RX identity for the authored Avanti installation, not P100-RX-BL (JetCat part 71113-0050). The physical engine_main row names the turbine with valves; the additional ECU, pump, valves, UAT/hopper package contents are not itemized by this listing and remain unpriced in the dossier."
     },
     {
       "id": "ma-k14x6",
@@ -769,6 +913,60 @@
       "notes": "Observed 2026-10-15. RCSuperstore lists $40.99 for SAVSH0255MGP. SavoxUSA's cached manufacturer listing showed $34.99 and Sold Out, crawled about 4 months earlier; current manufacturer-store price/stock was not verified (https://www.savoxusa.com/collections/micro-servos). Candidate price only: four generic servos are present in the project baseline and no Savox installation is confirmed."
     },
     {
+      "id": "sebart-a200-16-kero-smoke-tank-gator",
+      "product_id": "sebart_seba_200_16",
+      "amount_minor": 22500,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.gator-rc.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "Gator RC page says In stock",
+      "sold_package_quantity": 1,
+      "package_description": "1 tank",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.gator-rc.com/products/sebart-kero-smoke-tank-fits-avanti-2m",
+      "evidence_quality": "Direct Gator RC product page opened 2026-10-15; exact SEBA-200-16 SKU, Avanti 2m fit, USD price, and In stock status are displayed.",
+      "notes": "Observed 2026-10-15. Matches the authored empty A200-16 tank. This does not price the separate in-flight kerosene/oil, UAT/hopper, smoke contents, or plumbing beyond what the product listing establishes."
+    },
+    {
+      "id": "sebart-avanti-a200-arf-electric-gear-comparator-gator",
+      "product_id": "sebart_seba227_yellow",
+      "amount_minor": 312495,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.gator-rc.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "Gator RC page says Only 3 left",
+      "sold_package_quantity": 1,
+      "package_description": "1 Avanti S 2m ARF package with electric landing gear",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.gator-rc.com/products/sebart-avanti-s-jet-2m-arf-landing-yellow",
+      "evidence_quality": "Direct Gator RC product page opened 2026-10-15; exact 2,000 mm/2,220 mm Avanti S package, SKU, USD price, included electric aluminum gear/brakes, and stock count are displayed.",
+      "notes": "Observed 2026-10-15 as a comparator only. The package includes electric aluminum landing gear with brakes. The authored Avanti inventory separately includes pneumatic gear and an air system, so this quote is not mapped to those rows and cannot price the pneumatic retract installation."
+    },
+    {
+      "id": "sebart-avanti-a200-arf-no-retracts-turbines-rc",
+      "product_id": "sebart_seb_a200_wb",
+      "amount_minor": 274900,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.turbines-rc.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "Seller page says Available on order and also warns Last items in stock; availability text conflicts",
+      "sold_package_quantity": 1,
+      "package_description": "1 Avanti S 2m ARF without landing gear",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.turbines-rc.com/en/jets-edf/574-sebart-avanti-s-jet-2m-whiteblue-arf-no-retracts.html",
+      "evidence_quality": "Direct retailer page opened 2026-10-15; exact reference SEB-A200-WB, 2,000 mm wingspan, 2,220 mm length, USD price, package contents, and exclusions are shown.",
+      "notes": "Observed 2026-10-15. Exact 2m Avanti airframe package for the authored 2.0m/2.22m aircraft. Includes ARF, hardware/plastic assembly parts, cockpit/canopy, decals, and manual. Explicitly excludes landing gear, turbine, radio, servos, and battery. It is mapped only to airframe structure/hardware, not retract, power, avionics, or battery inventory."
+    },
+    {
       "id": "stik_airframe_ultra_stick_10cc_arf",
       "product_id": "hangar_9_han2345",
       "amount_minor": 27999,
@@ -859,6 +1057,24 @@
       "notes": "Observed 2026-10-15. Current 4S 3200mAh IC3 pack falls within the Turbo Timber Evolution's listed 4S 2200–5000mAh range; battery is separate from aircraft and charger is not included."
     },
     {
+      "id": "timber_evolution_battery_proxy_horizon_20261015",
+      "product_id": "spektrum_spmx324s50",
+      "amount_minor": 6999,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "battery_unit_price",
+      "availability": "Backorder; estimated October 2026",
+      "sold_package_quantity": 1,
+      "package_description": "1 battery",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/14.8v-3200mah-4s-50c-smart-g2-lipo-battery-ic3/SPMX324S50.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. A current 4S 3200mAh IC3 capacity-class price proxy; the page shows Backorder with an October 2026 estimate. Smart G2/50C identity is not established for the fictional build. Battery is separate from the aircraft package and charger is not included."
+    },
+    {
       "id": "timber_evolution_bnf_aircraft",
       "product_id": "e_flite_efl105250b",
       "amount_minor": 34999,
@@ -875,6 +1091,114 @@
       "source_url": "https://www.hubhobby.com/e-flite-efl105250b-turbo-timber-evolution-15m-bnf.html",
       "evidence_quality": "high",
       "notes": "Observed 2026-10-15. Includes the PNP equipment plus installed Spektrum AR637TA receiver; requires a compatible Spektrum DSMX/DSM2 transmitter, battery and charger. BNF Basic is not RTF."
+    },
+    {
+      "id": "timber_evolution_bnf_aircraft_horizon_20261015",
+      "product_id": "e_flite_efl105250b",
+      "amount_minor": 34999,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "bnf_aircraft_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 complete aircraft package",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/e-flite-turbo-timber-evolution-1.5m-bnf-basic-includes-floats/EFL105250B.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. Includes the PNP equipment plus one installed AR637TA receiver; compatible transmitter, battery and charger are separate. Alternative package reference only; PNP and BNF are mutually exclusive and neither is added to standalone component values."
+    },
+    {
+      "id": "timber_evolution_esc_spmxae70e_horizon_20261015",
+      "product_id": "spektrum_spmxae70e",
+      "amount_minor": 7499,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 ESC",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/spektrum-avian-70-amp-smart-lite-brushless-esc-3s-6s-ic3-ver.-e/SPMXAE70E.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. One 70 A ESC listing matches the fictional inventory's class and is a current commercial replacement-price proxy only; the exact installed SKU is unverified."
+    },
+    {
+      "id": "timber_evolution_fuselage_efl105251_horizon_20261015",
+      "product_id": "e_flite_efl105251",
+      "amount_minor": 5499,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 fuselage",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/fuselage-turbo-timber-evolution-1.5m/EFL105251.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. Candidate reference only; package contents do not confirm canopy and fittings coverage required by fuselage_main."
+    },
+    {
+      "id": "timber_evolution_horizontal_stab_efl5259_horizon_20261015",
+      "product_id": "e_flite_efl5259",
+      "amount_minor": 1999,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 horizontal stabilizer",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/horizontal-stabilizer-with-tube-timber/EFL5259.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. Candidate reference only; it does not cover the vertical tail included in tail_surfaces."
+    },
+    {
+      "id": "timber_evolution_led_controller_efla521_horizon_20261015",
+      "product_id": "e_flite_efla521",
+      "amount_minor": 1399,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 LED controller",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/led-controller-timber/EFLA521.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. Controller alone does not value the wiring and navigation LED hardware in wiring_lighting; candidate reference only."
+    },
+    {
+      "id": "timber_evolution_motor_spm1012_horizon_20261015",
+      "product_id": "spektrum_spm_1012",
+      "amount_minor": 7499,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 motor",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/spektrum-avian-2815-800kv-brushless-outrunner-motor/SPM-1012.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. One 800Kv motor listing matches the fictional inventory's class, not a verified installed SKU. Cinch collet prop adapter is sold separately. Use only as a price proxy."
     },
     {
       "id": "timber_evolution_pnp_aircraft",
@@ -895,6 +1219,60 @@
       "notes": "Observed 2026-10-15. PNP includes airframe, six installed metal-geared servos, motor, 70A ESC, floats and slats; receiver, transmitter, 3S/4S 2200–5000mAh battery and charger are separate. PNP is not RTF."
     },
     {
+      "id": "timber_evolution_pnp_aircraft_horizon_20261015",
+      "product_id": "e_flite_efl105275b",
+      "amount_minor": 29999,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "pnp_aircraft_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 complete aircraft package",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/e-flite-turbo-timber-evolution-1.5m-pnp-includes-floats/EFL105275B.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. Package includes the aircraft, six installed metal-geared servos, one brushless motor, one 70 A ESC, slats and floats. Receiver, transmitter, 3S/4S battery and charger are separate. Alternative package reference only; do not add to standalone component values."
+    },
+    {
+      "id": "timber_evolution_propeller_efl5962_horizon_20261015",
+      "product_id": "e_flite_efl5962",
+      "amount_minor": 799,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 propeller",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/3-blade-propeller-11-x-7.3/EFL5962.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. One propeller only. Separate spinner is required for the modeled propeller_main group, so this offer does not price that group."
+    },
+    {
+      "id": "timber_evolution_receiver_spm1032_horizon_20261015",
+      "product_id": "spektrum_spm_1032",
+      "amount_minor": 8499,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 receiver",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/ar637t-dsmx-6-channel-as3x-and-safe-telemetry-receiver/SPM-1032.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. Current AR637T+ listing used as a generic receiver price proxy. PNP excludes a receiver; BNF includes the older AR637TA. Neither package establishes this SKU as the fictional build's installed receiver."
+    },
+    {
       "id": "timber_evolution_replacement_landing_gear",
       "product_id": "e_flite_efl_1249",
       "amount_minor": 1699,
@@ -913,6 +1291,24 @@
       "notes": "Observed 2026-10-15. Manufacturer lists compatibility with Turbo Timber Evolution 1.5m PNP EFL105275B and BNF EFL105250B."
     },
     {
+      "id": "timber_evolution_replacement_landing_gear_horizon_20261015",
+      "product_id": "e_flite_efl_1249",
+      "amount_minor": 1699,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "replacement_landing_gear_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 landing gear set",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/e-flite-complete-updated-landing-gear-set-with-heavy-duty-springs-turbo-timber-evolution-1.5m/EFL-1249.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. Page lists compatibility with Turbo Timber Evolution 1.5m PNP and BNF. Contents do not establish coverage of both main gear and wheels, and do not cover the separate tailwheel and fork; left unbound."
+    },
+    {
       "id": "timber_evolution_replacement_wing",
       "product_id": "e_flite_efl105252",
       "amount_minor": 5999,
@@ -929,6 +1325,60 @@
       "source_url": "https://www.horizonhobby.com/product/wing-turbo-timber-evolution-1.5m/EFL105252.html",
       "evidence_quality": "high",
       "notes": "Observed 2026-10-15. Manufacturer notes servos are not included; verify the wing assembly contents and reuse or replace servos separately."
+    },
+    {
+      "id": "timber_evolution_replacement_wing_horizon_20261015",
+      "product_id": "e_flite_efl105252",
+      "amount_minor": 5999,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "replacement_wing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 wing assembly",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/wing-turbo-timber-evolution-1.5m/EFL105252.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. The page says servos are not included. Candidate reference only: it does not cover the full wing_main group, which also includes flaps, ailerons and wing servos."
+    },
+    {
+      "id": "timber_evolution_servo_spmsa370_horizon_20261015",
+      "product_id": "spektrum_spmsa370",
+      "amount_minor": 1399,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "Backorder; estimated October 2026",
+      "sold_package_quantity": 1,
+      "package_description": "1 servo",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/a370-digital-9g-metal-gear-aircraft-servo/SPMSA370.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. One 9g metal-gear servo is a generic class proxy for the two modeled tail servos. Page shows Backorder with an October 2026 estimate. Exact installed servos are unverified; do not use this offer to value the wing group."
+    },
+    {
+      "id": "timber_evolution_spinner_efl17553_horizon_20261015",
+      "product_id": "e_flite_efl17553",
+      "amount_minor": 899,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "www.horizonhobby.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "In stock at Horizon Hobby",
+      "sold_package_quantity": 1,
+      "package_description": "1 spinner",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://www.horizonhobby.com/product/spinner-turbo-timber/EFL17553.html",
+      "evidence_quality": "Direct official US retailer product page; observed 2026-10-15.",
+      "notes": "Observed 2026-10-15. One spinner only. This is not a combined propeller-and-spinner offer and is not attached to propeller_main."
     },
     {
       "id": "topflite-monokote-roll-topq0208",
@@ -965,6 +1415,24 @@
       "source_url": "https://www.horizonhobby.com/product/trim-monokote-missile-red/TOPQ4101.html",
       "evidence_quality": "Horizon Hobby direct product page snapshot gives price and out-of-stock status but is stale; current price and availability are unverified.",
       "notes": "Observed 2026-10-15 from a page snapshot showing $4.99. This is adhesive-backed trim material, distinct from the heat-activated roll. Top Flite's MonoKote guidance discusses trim sheet as a field patch material; it does not establish repair success rates or full-airframe repair cost."
+    },
+    {
+      "id": "ultracote-hanu871-vortex-20261015",
+      "product_id": "hangar_9_hanu871",
+      "amount_minor": 2299,
+      "currency": "USD",
+      "observed_on": "2026-10-15",
+      "seller_domain": "vortexhobbies.com",
+      "market": "USD storefront; destination charges not assessed",
+      "condition": "new_listing",
+      "price_kind": "live_retailer_listing_price",
+      "availability": "Listing said In Stock For Shipping and South Jordan, UT Available Now at observation; recheck seller stock and destination charges before purchase.",
+      "sold_package_quantity": 1,
+      "package_description": "One 6.5 ft × 23.5 in roll; 1,833 sq in (1,833,000 milli-sq-in)",
+      "tax_shipping": "excluded_from_model; verify seller/destination charges",
+      "source_url": "https://vortexhobbies.com/hangar-ultracote-deep-red-hanu871-p-25026.html",
+      "evidence_quality": "Direct retailer listing reviewed 2026-10-15; see CR-31b source review for package dimensions and scope.",
+      "notes": "Observed 2026-10-15. Retailer listing showed SKU HANU871, US$22.99, stock text, and 78 × 23.5 inch package specifications. Price excludes tax/shipping. Exact color/airframe compatibility is not established. Source observation also backs the packaged covering repair recipe; package purchase and material consumption are distinct accounting bases."
     }
   ],
   "aircraft": [
@@ -2067,8 +2535,364 @@
       "source_sha256": "e1e24f742a24204cd2875e42eb64760d3b0da5796fc74c3ca4b32834ffa2c544",
       "currency": "USD",
       "price_date": "2026-10-15",
-      "valuation_kind": "partial",
-      "components": [],
+      "valuation_kind": "independent_partial_inventory_costing",
+      "components": [
+        {
+          "id": "engine_main",
+          "quantity": 1,
+          "unit_minor": 124900,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "engine_main"
+          ],
+          "price_basis": "exact_product_price",
+          "offer_id": "p51_engine_da120",
+          "notes": "Exact DA-120 engine identity. Desert Aircraft's current $1,249 listing includes the carburetor, twin ignition module, plugs, exhaust gaskets, prop bolts, and prop washer. The ignition battery is a separate inventory row; the installed pair of mufflers/canisters is also separate and is not included in this engine package. The manufacturer page says Sold out."
+        },
+        {
+          "id": "muffler_pair",
+          "quantity": 2,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "muffler_pair"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Two mufflers/canisters are present in this physical inventory group. No exact current replacement-product USD quote was verified; the DA-120 offer includes gaskets, not the installed mufflers."
+        },
+        {
+          "id": "propeller",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "propeller_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced Biela CFK 26x12 four-blade propeller. The current DA-120 manufacturer guidance lists a 26x12 three-blade propeller, which is not the installed four-blade item; a two-blade price is not substituted."
+        },
+        {
+          "id": "spinner_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "spinner_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced 7.7-inch aluminum spinner/backplate. No exact current USD quote was verified."
+        },
+        {
+          "id": "engine_mount",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "engine_mount"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced engine standoffs/mount and bolts. DA-120 prop bolts are included in its package but are not this mount assembly."
+        },
+        {
+          "id": "cowl_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "cowl_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced fiberglass cowl with dummy exhausts; no matched current part quote was verified."
+        },
+        {
+          "id": "fuel_tank",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fuel_tank"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced empty 1 L fuel tank with lines. No matched current tank quote was verified."
+        },
+        {
+          "id": "fuel_flight",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fuel_flight"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced half-tank flight fuel; exact fill quantity and current fuel price are not established."
+        },
+        {
+          "id": "ignition_battery",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "ignition_battery"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced 2S LiFe ignition battery. The DA-120 includes the ignition module, not this separate battery."
+        },
+        {
+          "id": "receiver_batteries",
+          "quantity": 2,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "receiver_batteries"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced pair of 2S LiFe receiver batteries; no brand/capacity-specific current quote was verified."
+        },
+        {
+          "id": "receiver_radio",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "receiver_radio"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced receiver, switches, and power distribution; exact installed models are unknown."
+        },
+        {
+          "id": "flight_control_servos",
+          "quantity": 7,
+          "unit_minor": 10339,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "servo_aileron_left",
+            "servo_aileron_right",
+            "servo_flap_left",
+            "servo_flap_right",
+            "servo_elevator_left",
+            "servo_elevator_right",
+            "servo_rudder"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "savox-sa1230sgp",
+          "notes": "Seven control servos: two aileron, two flap, two elevator and one rudder, from the seven dedicated inventory IDs. The source estimates the aileron/flap servos at about 80 g and 20-25 kg·cm, and the elevator pair at about 80 g each. Team Savox lists SA-1230SG+ as a standard AIRPLANE servo, 79 g and 36 kg·cm at 6 V; ServoCity lists $103.39. It is a mass/class value proxy with higher stated torque, not an installed identity or fit qualification. ServoCity gives no stock count, so seven-unit availability is unestablished; the rudder row also contains pull-pull hardware that is not priced by this servo quote."
+        },
+        {
+          "id": "throttle_choke_servos",
+          "quantity": 2,
+          "unit_minor": 1699,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "servo_throttle_choke"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "stik_servos_hitec_hs311_four",
+          "notes": "The physical row explicitly groups two small throttle/choke servos with linkage and gives 80 g total. Hitec HS-311 is an ordinary standard analog-servo value proxy: 43 g and 3.7 kg·cm at 6 V per Hitec; Tower lists $16.99 each and In Stock. The quote prices only two servo units; the bundled linkage remains unpriced, and no installed model or compatibility is claimed."
+        },
+        {
+          "id": "gear_main_left",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "gear_main_left"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced left main retract assembly. No matched 2.82 m P-51 retract/strut/door price was verified."
+        },
+        {
+          "id": "gear_main_right",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "gear_main_right"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced right main retract assembly. No matched 2.82 m P-51 retract/strut/door price was verified."
+        },
+        {
+          "id": "gear_tail",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "gear_tail"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced retractable tail-wheel assembly. No exact current USD replacement quote was verified."
+        },
+        {
+          "id": "wing_left",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "wing_left"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced covered left wing panel with flap and aileron; no matching current airframe quote or part price was verified."
+        },
+        {
+          "id": "wing_right",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "wing_right"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced covered right wing panel with flap and aileron; no matching current airframe quote or part price was verified."
+        },
+        {
+          "id": "wing_joiner",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "wing_joiner"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced wing tube/joiner and bolts; no current matching part quote was verified."
+        },
+        {
+          "id": "fuselage_front",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fuselage_front"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced covered front fuselage section; no matched current 2.82 m airframe quote was verified."
+        },
+        {
+          "id": "belly_scoop",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "belly_scoop"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced fiberglass belly scoop; no exact current replacement quote was verified."
+        },
+        {
+          "id": "fuselage_rear",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fuselage_rear"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced covered rear fuselage/turtle-deck section; no matched current 2.82 m airframe quote was verified."
+        },
+        {
+          "id": "canopy_pilot",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "canopy_pilot"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced canopy, frame, and pilot; no exact current USD quote was verified."
+        },
+        {
+          "id": "horizontal_tail",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "horizontal_tail"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced covered stabilizer/elevator assembly; no exact current replacement quote was verified."
+        },
+        {
+          "id": "vertical_tail",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "vertical_tail"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced covered fin/rudder assembly; no exact current replacement quote was verified."
+        },
+        {
+          "id": "control_hardware",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "control_hardware"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced pushrods, horns, cowl fasteners, and other installation hardware."
+        },
+        {
+          "id": "final_assembly_and_commissioning",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced P-51-specific final assembly, balancing, commissioning, and post-crash inspection labor. No transferable allowance assumed."
+        }
+      ],
       "exclusions": [
         {
           "id": "ballast_reference",
@@ -2080,18 +2904,51 @@
         }
       ],
       "missing": [
-        "Matched 2.82m airframe",
-        "Retracts/struts/doors",
-        "Servo count and products",
-        "Ignition/power/radio",
-        "Large prop and installation BOM",
-        "Candidate offer references are not attached to a component until physical fit and package coverage are reconciled: p51_carf_143_arf_proxy, p51_engine_da120.",
-        "No reconciled economic component coverage for physical inventory IDs: engine_main, muffler_pair, propeller_main, spinner_main, engine_mount, cowl_main, fuel_tank, fuel_flight, ignition_battery, receiver_batteries, receiver_radio, servo_aileron_left, servo_aileron_right, servo_flap_left, servo_flap_right, servo_elevator_left, servo_elevator_right, servo_rudder, servo_throttle_choke, gear_main_left, gear_main_right, gear_tail, wing_left, wing_right, wing_joiner, fuselage_front, belly_scoop, fuselage_rear, canopy_pilot, horizontal_tail, vertical_tail, control_hardware."
+        "No current matched 2.82 m P-51 airframe quote was verified. The existing CARF 1:4.3/50-85 cc offer and smaller P-51 products are not mapped to this aircraft.",
+        "No exact current USD price was verified for the Biela CFK 26x12 four-blade propeller, two mufflers/canisters, spinner, mount, cowl, tank, fuel, batteries, radio/power distribution, retract gear, or airframe parts.",
+        "Seven flight-control servo positions use a large-aircraft servo value proxy; two small throttle/choke servos use a separate ordinary-servo proxy. Installed models remain unknown, and the proxy prices do not establish a complete order or compatibility.",
+        "Aircraft-specific assembly, commissioning, and post-crash inspection labor remain unknown.",
+        "No replacement price for economic component: muffler_pair.",
+        "No replacement price for economic component: propeller.",
+        "No replacement price for economic component: spinner_main.",
+        "No replacement price for economic component: engine_mount.",
+        "No replacement price for economic component: cowl_main.",
+        "No replacement price for economic component: fuel_tank.",
+        "No replacement price for economic component: fuel_flight.",
+        "No replacement price for economic component: ignition_battery.",
+        "No replacement price for economic component: receiver_batteries.",
+        "No replacement price for economic component: receiver_radio.",
+        "No replacement price for economic component: gear_main_left.",
+        "No replacement price for economic component: gear_main_right.",
+        "No replacement price for economic component: gear_tail.",
+        "No replacement price for economic component: wing_left.",
+        "No replacement price for economic component: wing_right.",
+        "No replacement price for economic component: wing_joiner.",
+        "No replacement price for economic component: fuselage_front.",
+        "No replacement price for economic component: belly_scoop.",
+        "No replacement price for economic component: fuselage_rear.",
+        "No replacement price for economic component: canopy_pilot.",
+        "No replacement price for economic component: horizontal_tail.",
+        "No replacement price for economic component: vertical_tail.",
+        "No replacement price for economic component: control_hardware.",
+        "No replacement price for economic component: final_assembly_and_commissioning."
       ],
       "complete": false,
-      "contact_components": {},
-      "propeller_component_id": "",
-      "propeller_inspection_ids": []
+      "contact_components": {
+        "propeller/propulsion_main": [
+          "propeller"
+        ]
+      },
+      "propeller_component_id": "propeller",
+      "propeller_inspection_ids": [
+        "engine_main",
+        "muffler_pair",
+        "propeller",
+        "spinner_main",
+        "engine_mount",
+        "cowl_main",
+        "fuselage_front"
+      ]
     },
     {
       "format": "openrc-aircraft-economics v1",
@@ -2099,8 +2956,226 @@
       "source_sha256": "387047f77349b61fe0eb463a93794b50d31ec76c65087f0d3cb3f9fe402f7e75",
       "currency": "USD",
       "price_date": "2026-10-15",
-      "valuation_kind": "partial",
-      "components": [],
+      "valuation_kind": "independent_partial_inventory_costing",
+      "components": [
+        {
+          "id": "airframe_arf_package",
+          "quantity": 1,
+          "unit_minor": 274900,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "wing_left",
+            "wing_right",
+            "stabilizer_left",
+            "stabilizer_right",
+            "fuselage_shell_nose_to_front",
+            "fuselage_shell_front_to_cabin",
+            "fuselage_shell_cabin_forward",
+            "fuselage_shell_cabin_center",
+            "fuselage_shell_cabin_aft",
+            "fuselage_shell_wing_front",
+            "fuselage_shell_wing_aft",
+            "fuselage_shell_mid_tail",
+            "fuselage_shell_tail_forward",
+            "fuselage_shell_tail_aft",
+            "fuselage_shell_exhaust_exit",
+            "vertical_tail",
+            "canopy_pilot",
+            "wing_joiner",
+            "control_hardware"
+          ],
+          "price_basis": "exact_product_price",
+          "offer_id": "sebart-avanti-a200-arf-no-retracts-turbines-rc",
+          "notes": "One exact SebArt Avanti S Jet 2m ARF, ref SEB-A200-WB, at the listed $2,749. It covers the authored airframe structure, cockpit/canopy, wing joiner, and assembly hardware group. The seller states 2,000 mm span/2,220 mm length and excludes landing gear, turbine, radio, servos, and batteries. The separate A200-13 thrust tube and A200-16 tank are optional in the manufacturer manual and absent from the seller contents list; excluding them from this ARF price is an explicit package-scope inference."
+        },
+        {
+          "id": "engine_main",
+          "quantity": 1,
+          "unit_minor": 278000,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "engine_main"
+          ],
+          "price_basis": "exact_product_price",
+          "offer_id": "jetcat-p100-rx-850100-carf",
+          "notes": "Exact non-BL JetCat P100-RX, CARF product no. 850100, listed at $2,780. The product details include autostart and valves. The distinct turbine_accessories row contains ECU/pump/valves and UAT/hopper; the listing does not itemize that installation group, so it stays unpriced and the turbine price is not represented as a complete avionics/fuel installation."
+        },
+        {
+          "id": "turbine_accessories",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "turbine_accessories"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced ECU, fuel pump, valve and UAT/hopper group. The old P100-RX listing does not establish whether all these items are bundled; no accessory amount is inferred or counted twice. The current P100-RX-BL listing is a separate turbine model and is not used as an accessory/engine proxy."
+        },
+        {
+          "id": "thrust_tube",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "thrust_tube"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced P100-RX-specific SebArt A200-13 thrust tube. Current P160-180 Avanti tubes and P60-100 tubes for smaller Avanti XS/MB-339 airframes do not match this inventory."
+        },
+        {
+          "id": "fuel_tank",
+          "quantity": 1,
+          "unit_minor": 22500,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fuel_tank"
+          ],
+          "price_basis": "exact_product_price",
+          "offer_id": "sebart-a200-16-kero-smoke-tank-gator",
+          "notes": "Exact A200-16 Avanti 2m kero+smoke tank SKU SEBA-200-16 at $225.00, listed In stock. The price covers the tank only; in-flight fuel and separate UAT/hopper/plumbing scope are not inferred."
+        },
+        {
+          "id": "gear_main_left",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "gear_main_left"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced left main retract, leg, wheel and brake. Physical Avanti source uses pneumatic gear; an electric ER-150 set or the seller's electric landing-gear ARF package is not mapped."
+        },
+        {
+          "id": "gear_main_right",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "gear_main_right"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced right main retract, leg, wheel and brake. Physical Avanti source uses pneumatic gear; an electric ER-150 set or the seller's electric landing-gear ARF package is not mapped."
+        },
+        {
+          "id": "gear_nose",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "gear_nose"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced pneumatic nose retract and steering assembly; no exact current pneumatic set quote was verified."
+        },
+        {
+          "id": "pneumatic_system",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "pneumatic_system"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced air tanks, valves and lines. The SebArt Avanti S manual requires a dual air valve for pneumatic landing-gear operation; the current electric retract package does not price this system."
+        },
+        {
+          "id": "servos_ds8411_class",
+          "quantity": 5,
+          "unit_minor": 9899,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "servo_aileron_left",
+            "servo_aileron_right",
+            "servo_elevator_left",
+            "servo_elevator_right",
+            "servo_nose_steering"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "savox-sa1258tgp",
+          "notes": "Five positions (two ailerons, two elevators and nose steering) match the SebArt Avanti S manual's recommended five JR DS8411 servos. The physical source estimates about 65 g per servo; Team Savox lists the SA-1258TG+ as a standard AIRPLANE servo at 64 g and 12 kg·cm at 6 V, with a $98.99 current Nitro Hobbies price listing. This is value-class arithmetic only, not a servo substitution; the listed servo is out of stock and its torque/fit are not established as equivalent."
+        },
+        {
+          "id": "servos_ds8911_class",
+          "quantity": 3,
+          "unit_minor": 10339,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "servo_flap_left",
+            "servo_flap_right",
+            "servo_rudder"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "savox-sa1230sgp",
+          "notes": "Three positions (two flaps and rudder) match the SebArt Avanti S manual's recommended three JR DS8911 servos. The physical source estimates about 75 g per servo; Team Savox lists the SA-1230SG+ as a standard AIRPLANE servo at 79 g and 36 kg·cm at 6 V, and ServoCity lists $103.39. This is a mass/class value proxy only, not a fit or torque equivalence; ServoCity gives no stock count."
+        },
+        {
+          "id": "receiver_batteries",
+          "quantity": 3,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "receiver_batteries"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced battery group identified as two 2S 2500 mAh receiver packs plus an ECU battery; the ECU pack chemistry/capacity and installed brands are unknown."
+        },
+        {
+          "id": "avionics",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "avionics"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced PowerBox Cockpit, iGyro, smoke pump, receivers and wiring group. Model/revision identities and current replacement prices are not reconciled."
+        },
+        {
+          "id": "fuel_flight",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fuel_flight"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced in-flight kerosene and declared oil mix; the authored inventory does not give a purchasable quantity or current fuel quote."
+        },
+        {
+          "id": "final_assembly_and_commissioning",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced Avanti-specific final assembly, balancing, turbine commissioning and post-crash inspection labor. No generic assembly allowance is assumed."
+        }
+      ],
       "exclusions": [
         {
           "id": "ballast_reference",
@@ -2112,12 +3187,20 @@
         }
       ],
       "missing": [
-        "Exact A200 airframe quote",
-        "Retract unit/repair-kit prices",
-        "Complete electronics and fuel-system BOM",
-        "Turbine inspection/service quote",
-        "Candidate offer references are not attached to a component until physical fit and package coverage are reconciled: jet_turbine_jetcat_p100_rx_bl_proxy, jet_retracts_jp_hobby_er150_avanti.",
-        "No reconciled economic component coverage for physical inventory IDs: wing_left, wing_right, stabilizer_left, stabilizer_right, fuselage_shell_nose_to_front, fuselage_shell_front_to_cabin, fuselage_shell_cabin_forward, fuselage_shell_cabin_center, fuselage_shell_cabin_aft, fuselage_shell_wing_front, fuselage_shell_wing_aft, fuselage_shell_mid_tail, fuselage_shell_tail_forward, fuselage_shell_tail_aft, fuselage_shell_exhaust_exit, vertical_tail, canopy_pilot, wing_joiner, control_hardware, engine_main, turbine_accessories, thrust_tube, fuel_tank, gear_main_left, gear_main_right, gear_nose, pneumatic_system, servo_aileron_left, servo_aileron_right, servo_flap_left, servo_flap_right, servo_elevator_left, servo_elevator_right, servo_rudder, servo_nose_steering, receiver_batteries, avionics, fuel_flight."
+        "The current Avanti airframe offer is without retracts; the physical inventory's pneumatic retract/air-system package has no matched current USD quote. The current electric-gear Avanti ARF and JP Hobby ER-150 offers are not mapped to pneumatic gear.",
+        "Exact installed ECU/pump/valve/UAT/hopper package coverage and a P100-RX-specific A200-13 thrust-tube price remain unresolved; the P100-RX-BL is a different model and its package price is not substituted.",
+        "The SebArt manual specifies five DS8411 and three DS8911 positions, while the source's installed brands remain unverified. Separate current aircraft-servo price proxies are mapped to those manual-defined groups; the SA-1258TG+ listing is out of stock and the SA-1230SG+ listing gives no stock count.",
+        "Receiver/ECU batteries, avionics, in-flight fuel, and aircraft-specific assembly/commissioning/inspection labor remain unpriced.",
+        "No replacement price for economic component: turbine_accessories.",
+        "No replacement price for economic component: thrust_tube.",
+        "No replacement price for economic component: gear_main_left.",
+        "No replacement price for economic component: gear_main_right.",
+        "No replacement price for economic component: gear_nose.",
+        "No replacement price for economic component: pneumatic_system.",
+        "No replacement price for economic component: receiver_batteries.",
+        "No replacement price for economic component: avionics.",
+        "No replacement price for economic component: fuel_flight.",
+        "No replacement price for economic component: final_assembly_and_commissioning."
       ],
       "complete": false,
       "contact_components": {},
@@ -2130,8 +3213,176 @@
       "source_sha256": "61b0e5329732a8cabaf2deef11e9c297d8e745bb724370348609909b03c8e1ee",
       "currency": "USD",
       "price_date": "2026-10-15",
-      "valuation_kind": "partial_reference_product",
-      "components": [],
+      "valuation_kind": "independent_partial_inventory_costing",
+      "components": [
+        {
+          "id": "wing_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "wing_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "No price attached. The EFL105252 wing assembly is a partial candidate because servos are explicitly excluded and the physical row also includes flaps and ailerons."
+        },
+        {
+          "id": "fuselage_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fuselage_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "No price attached. The EFL105251 fuselage listing does not establish complete canopy and fittings coverage."
+        },
+        {
+          "id": "tail_surfaces",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "tail_surfaces"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "No price attached. The EFL5259 horizontal stabilizer does not cover the vertical tail."
+        },
+        {
+          "id": "gear_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "gear_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "No price attached. The EFL-1249 complete updated landing gear set is a candidate, but its listed contents do not establish main-gear-and-wheels coverage."
+        },
+        {
+          "id": "gear_tail",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "gear_tail"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "No complete tailwheel-and-fork price was verified."
+        },
+        {
+          "id": "propeller_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "propeller_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "No price attached. EFL5962 propeller and EFL17553 spinner are separate offers; neither alone covers this combined physical inventory row."
+        },
+        {
+          "id": "motor_main",
+          "quantity": 1,
+          "unit_minor": 7499,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "motor_main"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "timber_evolution_motor_spm1012_horizon_20261015",
+          "notes": "Spektrum SPM-1012 is an 800Kv motor and a commercial proxy only. The fictional build does not establish its exact installed motor SKU."
+        },
+        {
+          "id": "esc_main",
+          "quantity": 1,
+          "unit_minor": 7499,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "esc_main"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "timber_evolution_esc_spmxae70e_horizon_20261015",
+          "notes": "Spektrum SPMXAE70E is a 70A ESC and a commercial proxy only. Exact installed product and connector revision are unverified."
+        },
+        {
+          "id": "receiver_radio",
+          "quantity": 1,
+          "unit_minor": 8499,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "receiver_radio"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "timber_evolution_receiver_spm1032_horizon_20261015",
+          "notes": "Current Spektrum AR637T+ listing is a generic receiver price proxy. PNP excludes a receiver and BNF includes an older AR637TA; the fictional installed receiver is unknown."
+        },
+        {
+          "id": "tail_servos",
+          "quantity": 2,
+          "unit_minor": 1399,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "tail_servos"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "timber_evolution_servo_spmsa370_horizon_20261015",
+          "notes": "Two 9g metal-gear servos at the observed per-unit price proxy the modeled elevator and rudder servos. Exact installed products are unknown; listing was on backorder."
+        },
+        {
+          "id": "wiring_lighting",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "wiring_lighting"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "No price attached. The EFLA521 LED controller does not cover the physical row's wiring and navigation LEDs."
+        },
+        {
+          "id": "battery_main",
+          "quantity": 1,
+          "unit_minor": 6999,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "battery_main"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "timber_evolution_battery_proxy_horizon_20261015",
+          "notes": "The SPMX324S50 matches the fictional 4S 3200mAh capacity class but is a newer 50C Smart G2 model, not a verified installation; the offer was on backorder."
+        },
+        {
+          "id": "final_assembly_and_commissioning",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Aircraft-specific assembly, setup and inspection labor has no verified quote. Unknown; not salvageable."
+        }
+      ],
       "exclusions": [
         {
           "id": "ballast_reference",
@@ -2143,15 +3394,56 @@
         }
       ],
       "missing": [
-        "Fictional-to-commercial configuration mapping",
-        "Installed receiver and servo identities",
-        "Motor/ESC single-part prices",
-        "Foam repair recipes",
-        "Candidate offer references are not attached to a component until physical fit and package coverage are reconciled: timber_evolution_pnp_aircraft, timber_evolution_bnf_aircraft, timber_evolution_replacement_wing, timber_evolution_replacement_landing_gear, timber_evolution_battery_proxy.",
-        "No reconciled economic component coverage for physical inventory IDs: wing_main, fuselage_main, tail_surfaces, gear_main, gear_tail, propeller_main, motor_main, esc_main, receiver_radio, tail_servos, wiring_lighting, battery_main."
+        "Fictional-to-commercial build mapping is unknown. All five attached component prices are commercial price proxies, not verified installed-product prices.",
+        "PNP and BNF are alternative complete-aircraft packages. PNP includes motor, ESC, six servos, slats and floats; BNF adds an AR637TA receiver. Battery, transmitter and charger are separate. Never sum a package with standalone components or with the other package.",
+        "wing_main remains unpriced: the replacement wing listing explicitly excludes servos, and the physical group also includes flaps and ailerons.",
+        "fuselage_main remains unpriced: the fuselage offer does not confirm canopy and fittings coverage.",
+        "tail_surfaces remains unpriced: the horizontal stabilizer offer omits the vertical tail.",
+        "gear_main remains unpriced: the updated gear set listing does not verify the complete physical group of main gear and wheels. gear_tail is also unpriced because no complete tailwheel-and-fork quote was verified.",
+        "propeller_main remains unpriced: it combines a three-blade propeller and spinner, while the observed offers are separate single products. The current one-offer-per-line mapping cannot price the combined group without an unresolved partial-price assumption.",
+        "wiring_lighting remains unpriced: the LED controller does not cover the wiring and navigation LEDs.",
+        "The 4S 3200mAh battery and 9g servo offers showed backorder with an October 2026 estimate on 2026-10-15.",
+        "No complete replacement valuation, labor basis, or foam repair recipe was verified. The virtual ballast_reference row is not installed hardware and is excluded from this physical-inventory dossier.",
+        "Candidate offer references are not attached to a component until physical fit and package coverage are reconciled: timber_evolution_pnp_aircraft_horizon_20261015, timber_evolution_bnf_aircraft_horizon_20261015, timber_evolution_replacement_wing_horizon_20261015, timber_evolution_replacement_landing_gear_horizon_20261015, timber_evolution_propeller_efl5962_horizon_20261015, timber_evolution_spinner_efl17553_horizon_20261015, timber_evolution_fuselage_efl105251_horizon_20261015, timber_evolution_horizontal_stab_efl5259_horizon_20261015, timber_evolution_led_controller_efla521_horizon_20261015.",
+        "No replacement price for economic component: wing_main.",
+        "No replacement price for economic component: fuselage_main.",
+        "No replacement price for economic component: tail_surfaces.",
+        "No replacement price for economic component: gear_main.",
+        "No replacement price for economic component: gear_tail.",
+        "No replacement price for economic component: propeller_main.",
+        "No replacement price for economic component: wiring_lighting.",
+        "No replacement price for economic component: final_assembly_and_commissioning."
       ],
       "complete": false,
-      "contact_components": {},
+      "contact_components": {
+        "probe_wing_left_tip": [
+          "wing_main"
+        ],
+        "probe_wing_right_tip": [
+          "wing_main"
+        ],
+        "probe_tail_rudder_edge": [
+          "tail_surfaces"
+        ],
+        "probe_stabilizer_left_tip": [
+          "tail_surfaces"
+        ],
+        "probe_stabilizer_right_tip": [
+          "tail_surfaces"
+        ],
+        "probe_fin_top": [
+          "tail_surfaces"
+        ],
+        "contact_main_left": [
+          "gear_main"
+        ],
+        "contact_main_right": [
+          "gear_main"
+        ],
+        "contact_tail": [
+          "gear_tail"
+        ]
+      },
       "propeller_component_id": "",
       "propeller_inspection_ids": []
     },
@@ -2165,9 +3457,11 @@
       "components": [],
       "exclusions": [],
       "missing": [
-        "X-Cell actual physical build BOM",
-        "Rotorcraft-specific components/contract",
-        "Separated HX-700 visual identity"
+        "The physical source app/data/aircraft/xcell_60_research.json has no inventory array, physical inventory IDs, or installed quantities. There is no source-backed component map to price.",
+        "The main-rotor and tail-rotor blade-count parameters, rotor geometry, and skid contact geometry are simulation parameters, not a replaceable-part inventory. The estimated 1.8 kW drive parameter does not identify an engine, clutch, transmission, or exhaust package.",
+        "Exact installed rotor/blade, engine/drive, flybarless electronics, servos, batteries, airframe, and skid identities and quantities are unknown; no exact offer or justified count-based price proxy is attached.",
+        "Aircraft-specific assembly, commissioning, and post-crash inspection labor have no BOM or verified service-price basis and remain unpriced.",
+        "The source describes the HX-700 as a flybarless visual only. No HX-700 identity, component, count, or price is used for this X-Cell research route."
       ],
       "complete": false,
       "contact_components": {},

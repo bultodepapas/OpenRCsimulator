@@ -52,7 +52,9 @@ func _check_mesh(cue: Dictionary) -> void:
 	for index: int in vertices.size():
 		finite_unit = finite_unit and vertices[index].is_finite() and normals[index].is_finite() and absf(normals[index].length() - 1.0) < 0.00001
 	_check("all geometry and normals are finite and unit length", finite_unit)
-	_check("one merged opaque mesh stays below 1,500 triangles", vertices.size() / 3 < 1500 and mesh.surface_get_material(0).transparency == BaseMaterial3D.TRANSPARENCY_DISABLED and mesh_instance.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF)
+	var material := mesh.surface_get_material(0) as ShaderMaterial
+	_check("one merged opaque detail mesh stays below 20,000 triangles", vertices.size() / 3 < 20000 and material != null and not material.shader.code.contains("ALPHA =") and mesh_instance.cast_shadow == GeometryInstance3D.SHADOW_CASTING_SETTING_OFF, str(vertices.size() / 3))
+	_check_detail(mesh_instance, vertices, normals)
 	_check("repeat build owns distinct, byte-identical mesh data", mesh != repeat_mesh and vertices.to_byte_array() == repeat_mesh.surface_get_arrays(0)[Mesh.ARRAY_VERTEX].to_byte_array() and normals.to_byte_array() == repeat_mesh.surface_get_arrays(0)[Mesh.ARRAY_NORMAL].to_byte_array())
 	_test_posts_and_bays(cue, vertices)
 	_test_opening_and_slats(cue, vertices)
@@ -119,11 +121,34 @@ func _test_boundary_variants(default_cue: Dictionary) -> void:
 		_check("boundary dimensions remain contained", bounds.size.is_equal_approx(Vector3(width, height, 0.08)) and absf(bounds.position.x + width * 0.5) < 0.00001 and absf(bounds.position.y) < 0.00001)
 		var arrays: Array = mesh.mesh.surface_get_arrays(0)
 		var vertices: PackedVector3Array = arrays[Mesh.ARRAY_VERTEX]
-		_check("maximum custom geometry remains below 3,000 triangles", vertices.size() / 3 < 3000, str(vertices.size() / 3))
+		_check("maximum custom detail geometry remains below 34,000 triangles", vertices.size() / 3 < 34000, str(vertices.size() / 3))
 		var positions: PackedVector3Array = Barrier.post_positions(variant)
 		var posts_per_bank: int = positions.size() / 2
 		_check("boundary post layout keeps the gap", absf(positions[posts_per_bank].x - positions[posts_per_bank - 1].x - FOOT_WIDTH_M - gap_width) < 0.00001)
 		root.free()
+
+
+func _check_detail(instance: MeshInstance3D, vertices: PackedVector3Array, normals: PackedVector3Array) -> void:
+	var colors: PackedColorArray = instance.mesh.surface_get_arrays(0)[Mesh.ARRAY_COLOR]
+	var opaque := true
+	for color in colors:
+		opaque = opaque and color.a == 1.0
+	_check("detached debris retains opaque vertex colours", opaque)
+	var outward := true
+	for i in range(0, vertices.size(), 3):
+		var geometric := (vertices[i + 2] - vertices[i]).cross(vertices[i + 1] - vertices[i]).normalized()
+		outward = outward and geometric.dot(normals[i]) > 0.999
+	_check("bevel and fitting faces match Godot winding", outward)
+	var ranges: Array = instance.get_meta("damage_ranges")
+	var cursor := 0
+	for item: Dictionary in ranges:
+		_check("joinery belongs to a contiguous damage piece", item.first == cursor and item.end > item.first)
+		cursor = item.end
+	_check("no floating fittings survive outside the damage ranges", cursor == vertices.size())
+	var material := instance.mesh.surface_get_material(0) as ShaderMaterial
+	for channel: String in ["wood_color", "wood_normal", "wood_roughness"]:
+		var texture := material.get_shader_parameter(channel) as Texture2D
+		_check("downloaded %s has distance mipmaps" % channel, texture != null and texture.get_image().has_mipmaps())
 
 
 func _intersects_z(vertices: PackedVector3Array, y: float, x: float) -> bool:
