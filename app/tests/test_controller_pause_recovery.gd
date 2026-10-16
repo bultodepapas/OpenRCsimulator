@@ -119,6 +119,7 @@ func _run() -> void:
 	await ui.tap(KEY_ENTER)
 	check("verified neutral focus recovery can Continue without moving sticks", app.pause_menu == null and not session.sim.paused)
 	app.free()
+	await ui.settle() # Let freed audio players release playback resources before SceneTree shutdown.
 	for suffix in ["", ".controllers", ".controllers.rollback", ".legacy_rc"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + suffix))
 	print("Controller pause recovery: %d/%d checks passed" % [checks - failures, checks])
