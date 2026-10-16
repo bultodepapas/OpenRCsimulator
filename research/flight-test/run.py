@@ -3,7 +3,7 @@
 
 Usage (repository root):
   python research/flight-test/run.py --out tmp/ft-baseline [--aircraft all|id,id] [--godot PATH] [--jobs N]
-                                     [--only test,test] [--full-traces]
+                                     [--only test,test] [--full-traces] [--app DISPOSABLE_COPY_OF_APP]
 
 Writes <out>/<aircraft>/profile.{json,md} plus traces (flight_test.gd), <out>/run.json (card version, git commit and
 dirty paths, Godot version, data-file SHA-256 and exit status per aircraft) and <out>/summary.md. Exit status 1 when a
@@ -33,8 +33,11 @@ def find_godot(explicit):
     sys.exit("no Godot found: pass --godot or set GODOT (pinned version: app/get-godot.sh)")
 
 
+APP = ROOT / "app"
+
+
 def godot(binary, args, timeout):
-    command = [binary, "--headless", "--path", str(ROOT / "app"), "--audio-driver", "Dummy", "--script", str(SCRIPT), "--"] + args
+    command = [binary, "--headless", "--path", str(APP), "--audio-driver", "Dummy", "--script", str(SCRIPT), "--"] + args
     return subprocess.run(command, capture_output=True, text=True, encoding="utf-8", errors="replace", timeout=timeout)
 
 
@@ -52,9 +55,9 @@ def card_version():
 
 def data_paths():
     """Catalog ID -> data file, read from the catalog source (res:// paths under app/)."""
-    text = (ROOT / "app" / "app_state" / "aircraft_catalog.gd").read_text(encoding="utf-8")
+    text = (APP / "app_state" / "aircraft_catalog.gd").read_text(encoding="utf-8")
     pairs = re.findall(r'id = "([^"]+)".*?data = "res://([^"]+)"', text, re.S)
-    return {aircraft: ROOT / "app" / path for aircraft, path in pairs}
+    return {aircraft: APP / path for aircraft, path in pairs}
 
 
 def main():
@@ -66,7 +69,11 @@ def main():
     parser.add_argument("--only")
     parser.add_argument("--full-traces", action="store_true")
     parser.add_argument("--timeout", type=float, default=1800.0, help="seconds per aircraft")
+    parser.add_argument("--app", help="a disposable copy of app/ holding one explicit candidate change")
     args = parser.parse_args()
+    global APP
+    if args.app:
+        APP = Path(args.app).resolve()
     binary = find_godot(args.godot)
     out = Path(args.out).resolve()
     out.mkdir(parents=True, exist_ok=True)
@@ -104,7 +111,7 @@ def main():
         data = paths.get(aircraft)
         return aircraft, {
             "exit": code, "script_errors": errors, "wall_s": round(time.time() - started, 1), "valid_tests": valid, "tests": total,
-            "data_file": str(data.relative_to(ROOT)).replace("\\", "/") if data else None,
+            "data_file": str(data.relative_to(APP)).replace("\\", "/") if data else None,
             "data_sha256": hashlib.sha256(data.read_bytes()).hexdigest() if data and data.is_file() else None,
         }
 
@@ -114,6 +121,7 @@ def main():
     version = subprocess.run([binary, "--version"], capture_output=True, text=True).stdout.strip()
     dirty = [line[3:] for line in git("status", "--porcelain", "--", "app", "research/flight-test").splitlines()]
     record = {"card": card_version(), "commit": git("rev-parse", "HEAD"), "dirty_paths": dirty, "godot": version,
+              "app": "app" if APP == ROOT / "app" else str(APP),
               "only": args.only, "aircraft": runs}
     (out / "run.json").write_text(json.dumps(record, indent=2) + "\n", encoding="utf-8")
 
