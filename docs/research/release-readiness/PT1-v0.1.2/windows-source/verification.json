@@ -1,0 +1,53 @@
+{
+  "source_commit": "6ce6eec9",
+  "engine": "4.7.2.stable.official.ed1daf0bf",
+  "trace_producer": "Windows Godot console, headless, isolated APPDATA and LOCALAPPDATA",
+  "validator": "app/tests/check_trimmed_flight.py --duration 3",
+  "validation": [
+    {
+      "aircraft": "default",
+      "exit_code": 0,
+      "result": "trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 15.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)",
+      "stderr": ""
+    },
+    {
+      "aircraft": "extra",
+      "exit_code": 0,
+      "result": "trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 17.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)",
+      "stderr": ""
+    },
+    {
+      "aircraft": "p51",
+      "exit_code": 0,
+      "result": "trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 25.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)",
+      "stderr": ""
+    },
+    {
+      "aircraft": "avanti",
+      "exit_code": 0,
+      "result": "trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 29.0000 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)",
+      "stderr": ""
+    },
+    {
+      "aircraft": "timber",
+      "exit_code": 0,
+      "result": "trimmed level flight: 720 ticks, 3.000000000 s, all samples finite; alt 30.000 -> 30.000 m, speed 13.0982 m/s; exact aircraft input SHA-256 recorded (source bytes not checked)",
+      "stderr": ""
+    }
+  ],
+  "sha256": {
+    "trace-default.csv": "fa1d3761e66bdca386b87143fc40bc5521f4489503a41794d49365dff15d35cf",
+    "trace-default.log": "c693a2cc37f45ef9f64d07a8da3fe14eb6a3ba991c3b8d185f7e4495714caea3",
+    "trace-extra.csv": "fbb38f4fde08ac2d772fc27f8b5c0e96597ea71cc94aa7b9a8214360bfe416ab",
+    "trace-extra.log": "b28f2f4f639b2a8f88ca658c521a12e9f33c39097d73d6f1e63752caa377f9f1",
+    "trace-p51.csv": "5ddef5f6892e485e909ed0754c683d21e9c1a3ae05e047a597fad5ee64f1e91e",
+    "trace-p51.log": "f937ccde6747dd54b0500a7e7c8915a56a0b574112a035db5c7212e1bae5c668",
+    "trace-avanti.csv": "5fd121bc374a1b944af99cb3376f26b0eb09d8663287c842cd4bcbaf2d803c2d",
+    "trace-avanti.log": "cbaf8ced6c10d666102e7560744f7a3cc33fa3f9e748e2c45a92f5a4fc992149",
+    "trace-timber.csv": "6155d1dca231afdc537f84f66afe3505eec3d4957248479cd83ca0d3f04683b2",
+    "trace-timber.log": "3694b14ecc8e3dd0401099c1acb80b461653b66b6e7f3f48abf878b57b165462",
+    "windows-controller-pause.log": "ff153988a730833643663ce0d79473d69b06bcc59880bc59be78c5af0155027a",
+    "windows-import-rerun.log": "b728de0c23f24d9aa31bc7608b177d7ca13857d7c3aca862a08506d00675123b"
+  },
+  "engine_windows_console_sha256": "c8f0a6bc45a19b33541501e57f6f7cd972ab18453743266339d495cbbe846643"
+}
