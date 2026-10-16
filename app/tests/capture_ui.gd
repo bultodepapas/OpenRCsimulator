@@ -510,32 +510,34 @@ func _new_app(user_args: PackedStringArray, preferences_path: String) -> Node:
 	return app
 
 
-## Verifies that the translated selector is visible inside the Home sidebar and does not overlap Fly.
+## Verifies the translated selector is visible in the Home flight setup and does not overlap pinned Fly.
 func _check_start_selector(home: Control, choice: String, lang: String) -> Dictionary:
 	var button: Button = home.get("start_button") as Button
 	var fly: Button = home.get("fly_button") as Button
-	if button == null or fly == null:
-		push_error("Home capture has no start selector or Fly button")
+	var rail: Control = home.get_node_or_null("HomeRail") as Control
+	var setup_scroll: ScrollContainer = home.get_node_or_null("HomeRail/HomeContentScroll") as ScrollContainer
+	if button == null or fly == null or rail == null or setup_scroll == null:
+		push_error("Home capture has no start selector, flight setup scroll area, or Fly button")
 		return {}
 	var rect: Rect2 = button.get_global_rect()
 	var fly_rect: Rect2 = fly.get_global_rect()
-	var sidebar: Control = home.get_node("Sidebar") as Control
-	var sidebar_rect: Rect2 = sidebar.get_global_rect()
+	var rail_rect: Rect2 = rail.get_global_rect()
+	var setup_rect: Rect2 = setup_scroll.get_global_rect()
 	var viewport_size: Vector2 = root.get_viewport().get_visible_rect().size
 	var shown_text: String = button.atr(button.text)
 	var expected: String = "Start: runway" if choice == "runway" else "Start: in the air"
 	if lang == "es":
 		expected = "Inicio: pista (experimental)" if choice == "runway" else "Inicio: en el aire"
-	var fits: bool = rect.has_area() and sidebar_rect.encloses(rect) and not rect.intersects(fly_rect) \
+	var fits: bool = rect.has_area() and rail_rect.encloses(rect) and setup_rect.encloses(rect) and not rect.intersects(fly_rect) \
 		and rect.position.x >= 0.0 and rect.position.y >= 0.0 and rect.end.x <= viewport_size.x and rect.end.y <= viewport_size.y
 	if not button.is_visible_in_tree() or shown_text != expected or not fits:
-		push_error("Home start selector layout/translation failed: language=%s text='%s' expected='%s' rect=%s sidebar=%s viewport=%s" % [lang, shown_text, expected, rect, sidebar_rect, viewport_size])
+		push_error("Home start selector layout/translation failed: language=%s text='%s' expected='%s' rect=%s setup_scroll=%s rail=%s viewport=%s" % [lang, shown_text, expected, rect, setup_rect, rail_rect, viewport_size])
 		return {}
 	return {
 		"choice": choice,
 		"label": shown_text,
 		"rect": [rect.position.x, rect.position.y, rect.size.x, rect.size.y],
-		"sidebar_rect": [sidebar_rect.position.x, sidebar_rect.position.y, sidebar_rect.size.x, sidebar_rect.size.y],
+		"flight_setup_scroll_rect": [setup_rect.position.x, setup_rect.position.y, setup_rect.size.x, setup_rect.size.y],
 		"fits_viewport": fits,
 		"does_not_overlap_fly": not rect.intersects(fly_rect),
 	}
