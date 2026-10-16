@@ -4,6 +4,8 @@ extends RefCounted
 const MeshKit = preload("res://scenery/mesh_kit.gd")
 const Palette = preload("res://scenery/palette.gd")
 const Fabric = preload("res://assets/landscape/windsock/Fabric001_1K-JPG_Color.jpg")
+const TUBE_RADIAL_SEGMENTS := 4
+const CLOTH_EDGE_SEGMENTS := 4
 static var _fabric: Image
 
 static func build(k: MeshKit, at: Vector3, yaw: float, seed: int) -> void:
@@ -41,7 +43,7 @@ static func _tube(k: MeshKit, a: Vector3, b: Vector3, radius: float, color: Colo
 	var across := axis.cross(Vector3.RIGHT if absf(axis.x)<0.9 else Vector3.UP).normalized()
 	var saved := k.xf
 	k.xf = saved*Transform3D(Basis(across,axis,across.cross(axis)),a)
-	k.cylinder(radius,radius,a.distance_to(b),6,Vector3.ZERO,color,true,null,true)
+	k.cylinder(radius,radius,a.distance_to(b),TUBE_RADIAL_SEGMENTS,Vector3.ZERO,color,true,null,true)
 	k.xf = saved
 
 static func _point(u: float, v: float, back: bool) -> Vector3:
@@ -74,9 +76,9 @@ static func _cloth(k: MeshKit, back: bool, tone: Color, seed: int) -> void:
 	# Double-fold edge binding and sparse stitch marks follow the curved cloth.
 	var lift := Vector3(0,0,-0.001) if back else Vector3(0,0.001,0)
 	for edge in 4:
-		for i in 8:
-			var t0 := i/8.0
-			var t1 := (i+1)/8.0
+		for i in CLOTH_EDGE_SEGMENTS:
+			var t0 := float(i)/float(CLOTH_EDGE_SEGMENTS)
+			var t1 := float(i+1)/float(CLOTH_EDGE_SEGMENTS)
 			var uv0 := Vector2(t0,0) if edge==0 else Vector2(t0,1) if edge==1 else Vector2(0,t0) if edge==2 else Vector2(1,t0)
 			var uv1 := Vector2(t1,0) if edge==0 else Vector2(t1,1) if edge==1 else Vector2(0,t1) if edge==2 else Vector2(1,t1)
 			var inward := Vector2(0,0.018) if edge==0 else Vector2(0,-0.018) if edge==1 else Vector2(0.018,0) if edge==2 else Vector2(-0.018,0)

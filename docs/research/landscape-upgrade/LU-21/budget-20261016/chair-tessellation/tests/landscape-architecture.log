@@ -1,0 +1,18 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+
+ok   detailed folding chair stays within its LU-21 unit triangle allowance
+ok   reference and production shelter retain the same four chair placements
+     structural shelter reference: 4334 = 1582 legacy structure + 2752 current shared-chair triangles; removed 248 legacy-chair triangles
+ok   pavilion stays within its recorded, offset-aware LU-11 mesh bounds
+ok   pavilion remains deterministic for the same seed
+ok   pavilion adds no moving parts
+ok   pavilion still emits one batched surface
+     pavilion: 3632 triangles; min=(-5.0, 0.0, -6.2) max=(5.0, 4.65, 3.5)
+ok   pit_shelter stays within its recorded, offset-aware LU-11 mesh bounds
+ok   pit_shelter remains deterministic for the same seed
+ok   pit_shelter adds no moving parts
+ok   pit_shelter still emits one batched surface
+     pit_shelter: 4422 triangles; min=(-14.3175, 0.0, -2.901742) max=(14.5317, 3.477413, 3.01)
+ok   structural additions stay under the 3k default-layout triangle budget
+     structural additions: pavilion +2816, shelter +88 each, default total +2992 (budget 3000)
+all architecture checks passed

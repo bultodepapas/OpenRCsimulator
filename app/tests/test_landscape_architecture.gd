@@ -19,6 +19,7 @@ const SHELTER_SEED := 1234
 const SHELTER_CHAIR_SLOTS := 5
 const DEFAULT_SHELTER_CHAIR_COUNT := 4
 const TRIANGLE_BUDGET := 3000 # Pavilion and two shelters' structural additions; shared furniture is held constant.
+const CHAIR_TRIANGLE_BUDGET := 700 # Per-chair implementation budget; the full-scene 650k ceiling remains in vegetation tests.
 
 var _failures := 0
 
@@ -34,6 +35,11 @@ func _check(label: String, ok: bool, detail: String = "") -> void:
 func _initialize() -> void:
 	var legacy_chairs := _shelter_chairs(SHELTER_SEED, false)
 	var current_chairs := _shelter_chairs(SHELTER_SEED, true)
+	var chair := MeshKit.new()
+	PitChair.build(chair, Vector3.ZERO, 0.0, SHELTER_SEED)
+	_check("detailed folding chair stays within its LU-21 unit triangle allowance",
+		chair.triangle_count() <= CHAIR_TRIANGLE_BUDGET,
+		"triangles=%d, budget=%d" % [chair.triangle_count(), CHAIR_TRIANGLE_BUDGET])
 	_check("reference and production shelter retain the same four chair placements",
 		legacy_chairs.count == DEFAULT_SHELTER_CHAIR_COUNT
 		and current_chairs.count == DEFAULT_SHELTER_CHAIR_COUNT,

@@ -1,0 +1,82 @@
+{
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "builder_sha256": "ec73d2ebe780e77decb02c5ec857e73f6fd2334d8dfe1900eba8a7985873f227",
+  "complete": true,
+  "method": "gl_compatibility",
+  "records": [
+    {
+      "draws": 23,
+      "eye": [
+        -40.0235252380371,
+        1.12999999523163,
+        17.0947036743164
+      ],
+      "fov": 45.0,
+      "sha256": "13a0200da8b9467aa91ea656d99d707f7b063d994de0336df3c5aa669946da10",
+      "view": "front"
+    },
+    {
+      "draws": 22,
+      "eye": [
+        -40.3172225952148,
+        0.75,
+        18.1309185028076
+      ],
+      "fov": 46.0,
+      "sha256": "5722c6fa17ca514664e7d1fc32a44c3865264382c99fdcc38c7255ebc94d11ac",
+      "view": "detail"
+    },
+    {
+      "draws": 131,
+      "eye": [
+        -42.0119285583496,
+        1.14999997615814,
+        20.6711902618408
+      ],
+      "fov": 45.0,
+      "sha256": "f753e183f86314672a761dc3bee7415e09fb2136a718a703cc84e10c81cf153a",
+      "view": "rear"
+    },
+    {
+      "draws": 47,
+      "eye": [
+        -38.6271896362305,
+        1.89999997615814,
+        14.5856704711914
+      ],
+      "fov": 55.0,
+      "sha256": "9a4f3aa9dd39a753265eba8466746d43bc386a48bf108e3a0ac9c731450e396d",
+      "view": "context"
+    }
+  ],
+  "scenery_stats": {
+    "botanical_batches": 11,
+    "botanical_plants": 221,
+    "botanical_triangles": 83650,
+    "build_ms": 578.953,
+    "cells": 55,
+    "fleet": 4,
+    "flowers": 0,
+    "instances": 136,
+    "motion": 5,
+    "moving_people": 7,
+    "population": 24,
+    "population_triangles": 371573,
+    "quality": "high",
+    "shadows": 86,
+    "skipped": 0,
+    "theme": "temperate",
+    "timing_ms": {
+      "botanicals": 49.983,
+      "fence": 16.563,
+      "fleet": 11.215,
+      "hedge": 10.57,
+      "instances": 142.919,
+      "meshes": 24.513,
+      "patch": 43.551,
+      "track": 0.833
+    },
+    "vegetation_instances": 30,
+    "vegetation_triangles": 94440
+  }
+}

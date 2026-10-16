@@ -1,0 +1,94 @@
+{
+  "step": "LU-21",
+  "date": "2026-10-16",
+  "base_commit": "cae7a0b2",
+  "godot": "4.7.2.stable",
+  "complete_scene_gate": {
+    "test": "app/tests/test_landscape_vegetation.gd",
+    "limit_triangles_unchanged": 650000,
+    "baseline_at_base_commit": 652301,
+    "candidate_triangles": 649421,
+    "margin_triangles": 579,
+    "checks": 36,
+    "failures": 0
+  },
+  "chair_geometry": {
+    "chairs_in_default_scene": 9,
+    "historical_simple_chair_triangles_each": 62,
+    "pre_reduction_chair_triangles_each": 1008,
+    "candidate_chair_triangles_each": 688,
+    "per_chair_implementation_budget": 700,
+    "triangles_saved_each": 320,
+    "triangles_saved_in_scene": 2880,
+    "changes": [
+      "Small frame tubes: 6 radial sides to 4.",
+      "Curved cloth binding and sparse stitches: 8 edge segments to 4."
+    ],
+    "unchanged": [
+      "Chair placements and yaw.",
+      "Dimensions and panel grid.",
+      "Materials and CC0 Fabric001 source.",
+      "Global 650000-triangle scene ceiling."
+    ]
+  },
+  "separate_scenery_build_metric": {
+    "test": "app/tests/test_scenery_build.gd",
+    "candidate_triangles": 625077,
+    "limit_triangles": 650000,
+    "checks": 126,
+    "failures": 0,
+    "note": "This is a different metric from the complete-scene gate."
+  },
+  "other_checks": {
+    "test_landscape_architecture": {
+      "chair_triangles": 688,
+      "chair_budget": 700,
+      "structural_additions": 2992,
+      "structural_budget": 3000,
+      "passed": true
+    },
+    "test_scenery_destruction": {
+      "checks": 78,
+      "failures": 0
+    },
+    "test_field_projected_shadows": {
+      "checks": 57,
+      "failures": 0
+    }
+  },
+  "native_capture": {
+    "adapter": "NVIDIA GeForce RTX 3090",
+    "renderer": "gl_compatibility",
+    "complete_before_and_after": true,
+    "views": {
+      "front": {
+        "before_draws": 23,
+        "after_draws": 23,
+        "before_image_sha256": "8f4032e394df9587fdaf20fa3b4f8657a14f5f2bc1abfcb21162e19e13da1833",
+        "after_image_sha256": "13a0200da8b9467aa91ea656d99d707f7b063d994de0336df3c5aa669946da10"
+      },
+      "detail": {
+        "before_draws": 22,
+        "after_draws": 22,
+        "before_image_sha256": "ae16afdbb2775792a200dfc0c03ac6ffeb2d2c577a7fe75d54e69447dd1fcd27",
+        "after_image_sha256": "5722c6fa17ca514664e7d1fc32a44c3865264382c99fdcc38c7255ebc94d11ac"
+      },
+      "rear": {
+        "before_draws": 131,
+        "after_draws": 131,
+        "before_image_sha256": "cf89d67f89d8b9967c3acf1ffb67df5ffcfab2136b2cffa21e4df35823754d36",
+        "after_image_sha256": "f753e183f86314672a761dc3bee7415e09fb2136a718a703cc84e10c81cf153a"
+      },
+      "context": {
+        "before_draws": 47,
+        "after_draws": 47,
+        "before_image_sha256": "e3dc038676bafc30729cb1178fcbebe42696bb4a9f91b1c86990430f4f30c672",
+        "after_image_sha256": "9a4f3aa9dd39a753265eba8466746d43bc386a48bf108e3a0ac9c731450e396d"
+      }
+    }
+  },
+  "source_sha256": {
+    "app/scenery/pit_chair.gd": "7885be9beca6c9f4912dfdd713cb2e65f232042f81c9fe1ce8cd20f70f07d065",
+    "app/tests/test_landscape_architecture.gd": "f9e0adc3b37a18b53cb8b3eb9bd222820af099c1b4f0e0f93b1a64dd8458915b"
+  }
+}
