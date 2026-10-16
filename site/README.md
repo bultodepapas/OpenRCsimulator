@@ -122,3 +122,15 @@ console errors; the desktop notice was visually reviewed. Deployment
 The public page serves `source-20261016-release-work`, displays the Spanish status
 notice, has no unpublished v0.1.2 asset/tag links, and reports no console errors.
 This publishes website status only, not a simulator release or physical qualification.
+
+Stable-preparation site refresh, 2026-10-16: the public page now serves
+`source-20261016-stable-preparation`. It keeps all three desktop downloads and
+`SHA256SUMS` on v0.1.1, links the preparation notice to
+`docs/releases/v0.1.2.md` on `main`, and states in English and Spanish that open
+experimental-aircraft checks do not block the stable software release. The page
+still labels v0.1.2 as in preparation. Public browser checks at 390×844 and
+1280×900 in both languages found no horizontal overflow or console errors; the
+release-notes link returned HTTP 200. Deployment
+`0e56ef4ad43d736dbb273344402d61ee6f9a0daf` passed the
+[Pages workflow](https://github.com/bultodepapas/OpenRCsimulator/actions/runs/38956887159).
+This updates the website status only; v0.1.2 packages are not published yet.
