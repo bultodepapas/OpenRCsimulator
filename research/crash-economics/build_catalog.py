@@ -78,6 +78,11 @@ def service_relationships(records: list[dict]) -> list[dict]:
 
 
 def build():
+    # Git stores these research inputs as LF; hashing a stale CRLF working copy
+    # would generate identities that fail immediately in a fresh CI checkout.
+    for source in SOURCES:
+        if b"\r\n" in (HERE / source).read_bytes():
+            raise ValueError(f"{source}: use LF line endings as required by .gitattributes before generating")
     products, observations, identities = {}, [], set()
     source_records = {source: read(HERE / source) for source in SOURCES}
     for source in SOURCES:

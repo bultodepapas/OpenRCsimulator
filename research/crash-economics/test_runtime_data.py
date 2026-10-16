@@ -13,6 +13,18 @@ import build_catalog
 
 
 class RuntimeEconomicsTests(unittest.TestCase):
+    def test_price_generator_rejects_crlf_sources_before_hashing(self) -> None:
+        original = Path.read_bytes
+        target = build_catalog.HERE / build_catalog.SOURCES[0]
+
+        def stale_checkout(path):
+            data = original(path)
+            return data.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n") if path == target else data
+
+        with patch.object(Path, "read_bytes", stale_checkout):
+            with self.assertRaisesRegex(ValueError, "use LF line endings"):
+                build_catalog.build()
+
     @classmethod
     def setUpClass(cls) -> None:
         cls.document, cls.context = build_runtime.build_runtime_data()
