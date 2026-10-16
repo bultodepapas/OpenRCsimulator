@@ -5,7 +5,7 @@
 
 ## Helicopter and car buttons (2026-10-16, D6-GP-06-R3, RCV-05-R2)
 
-The helicopter now inherits arm/disarm, rotor hold, flight curve and trainer buttons only in its activity context. Home and Pause settings resolve the same defaults as flight; saving an untouched helicopter profile does not freeze defaults into explicit assignments or erase fixed-wing equipment defaults. Explicit remaps and Clear persist. The HUD names the actual saved bindings, including radio channels. [Helicopter controls](../../HELICOPTER.md#start-and-controls) owns the button list.
+The helicopter now inherits arm/disarm, rotor hold, flight curve and trainer buttons only in its activity context. Home and Pause settings resolve the same defaults as flight; saving an untouched helicopter profile does not freeze defaults into explicit assignments or erase fixed-wing equipment defaults. Explicit remaps and Clear persist. The HUD names the actual saved bindings, including radio channels. [Helicopter controls](../../HELICOPTER.md#historical-playable-reference-start-and-controls) owns the button list.
 
 The review reproduced a cut/hold ordering defect: pressing rotor-hold release after motor cut in the same input interval could release the rotor while cut was still held. The session now remembers the held cut and refuses hold release until it is released; releasing cut alone leaves hold latched. Controller curve/trainer commands also respect pause, modal hold and controller loss. No equations, aircraft data, input shaping or golden flights changed.
 
