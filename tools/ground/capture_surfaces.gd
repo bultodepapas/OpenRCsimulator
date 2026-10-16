@@ -13,7 +13,7 @@ const HEIGHT: int = 720
 const STRIPE_WIDTH: int = 640
 const STRIPE_HEIGHT: int = 64
 const SETTLE_FRAMES: int = 2
-const KIND_BY_NAME: Dictionary = {"mown": 1, "runway": 2}
+const KIND_BY_NAME: Dictionary = {"mown": 1, "runway": 2, "rotorpad": 3}
 
 var _args: Dictionary = {}
 var _out_dir: String = ""
@@ -186,7 +186,7 @@ func _inspect_surface_contract() -> bool:
 			_fail("ground shader is missing uniform " + parameter)
 			return false
 	var expected: Array[Dictionary] = []
-	for kind_name: String in ["mown", "runway"]:
+	for kind_name: String in ["mown", "rotorpad", "runway"]:
 		for surface: Dictionary in _field.get("surfaces", []):
 			if surface.get("type") == kind_name:
 				expected.append(surface)

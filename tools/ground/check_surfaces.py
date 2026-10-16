@@ -157,10 +157,11 @@ def index_captures(manifest: dict[str, Any], folder: Path,
 
 
 def check_surface_metadata(manifest: dict[str, Any], priority: bool) -> None:
-    expected_kinds = [1, 2] if priority else [2]
+    expected_kinds = [1, 2] if priority else [3, 2]
     if manifest.get("surface_count") != len(expected_kinds) or manifest.get("surface_kinds") != expected_kinds:
-        raise RuntimeError("surface arrays do not contain mown-before-runway priority order")
-    expected_input_order = ["rough", "runway", "mown"] if priority else ["rough", "runway"]
+        raise RuntimeError("surface arrays do not contain mown/rotorpad-before-runway priority order")
+    expected_input_order = (["rough", "runway", "mown"] if priority
+                            else ["rough", "runway", "helicopter-pad-surface"])
     if manifest.get("surface_input_order") != expected_input_order:
         raise RuntimeError("priority fixture input order was not reversed as intended")
     rects = manifest.get("surface_rects")
@@ -307,6 +308,7 @@ def make_priority_field(default_path: Path, output_path: Path) -> None:
     # The broad pad crosses the field validator's reserved tree corridor; trees are irrelevant to this GPU fixture.
     raw["objects"] = []
     raw.pop("flight_cues", None)  # Broad synthetic mown pad is independent of flight-cue placement.
+    raw.pop("rotorcraft_pad", None)  # This synthetic layout replaces the referenced rotorpad surface.
     output_path.write_text(json.dumps(raw, indent=2) + "\n")
 
 
