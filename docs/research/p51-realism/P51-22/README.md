@@ -2,6 +2,19 @@
 
 2026-10-15 · Revision 2 · **Status: root cause identified; the denominator candidate is withdrawn after the physics-audit review. The fix requires the powered wing/tail coupling that the R02/R06 owner has specified.** Prefix: P51-22. [Plan](../../../P51-REALISM-PLAN.md) · [Owner review](../../physics-audit-2026-10-14/remediation/R11/washed-downwash-diagnostic/README.md)
 
+## Release status — 2026-10-16
+
+The P-51D is experimental with P51-22 pending. The preliminary release suite executes the ground and handling maneuvers with `--allow-known-p51-22`: only the lift-off-speed band and the two loop-acceptance assertions can report `PENDING P51-22`. Finite-state checks and every other assertion remain mandatory. Direct invocation without that argument retains strict physical acceptance. This deferral changes no simulation law, coefficient or threshold; the withdrawn candidate remains withdrawn.
+
+Local Godot 4.7.2 verification of the reporting change used the isolated release diagnostic checkout (unchanged simulation and P-51 data):
+
+| Mode | Ground | Handling |
+| --- | --- | --- |
+| Strict | [13 checks, 1 failure](release-ground-strict.log) | [17 checks, 2 failures](release-handling-strict.log) |
+| Experimental | [13 checks, 0 failures, 1 pending](release-ground-pending.log) | [17 checks, 0 failures, 2 pending](release-handling-pending.log) |
+
+A disposable probe combining a pending P51-22 result with an unrelated mandatory failure still returned exit 1. These results verify reporting, not physical acceptance or final package qualification.
+
 ## Regression
 
 Two P-51 checks passed at the P51-15 baseline and fail at the current `HEAD` with every P-51 data revision:

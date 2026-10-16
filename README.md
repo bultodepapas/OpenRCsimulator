@@ -21,7 +21,7 @@ The five aircraft shown from changing angles. [Still views and render provenance
 
 **First flight:** new Home preferences start on the Stik runway with gentle wind and passing evening; saved choices take precedence. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. [Player guide and controls](docs/FIRST-LAUNCH.md).
 
-The latest published download contains the **v0.1.1 snapshot**. The features and aircraft below describe current source and may include unreleased changes. See the [draft v0.1.2 release notes](docs/releases/v0.1.2.md) for proposed package contents; v0.1.2 is not published.
+The latest published download contains the **v0.1.1 snapshot**. The features and aircraft below describe current source and may include unreleased changes. See the [draft v0.1.2 release notes](docs/releases/v0.1.2.md) for proposed package contents; v0.1.2 is not published. The P-51D remains experimental with [P51-22 lift-off and loop acceptance pending](docs/research/p51-realism/P51-22/README.md).
 
 ## Aircraft
 
