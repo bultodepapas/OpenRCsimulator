@@ -1,0 +1,103 @@
+{
+  "scope": "Model comparison only; equivalent incidence is not measured camber.",
+  "source_comparison_sha256": "7fd711ddecc0ee46208b07bad0076f4c38cdda7e18fb3348cb4ebf4cef36c83b",
+  "incidence_deg": 1.342026566180094,
+  "rows": [
+    {
+      "panels": 6,
+      "profile_CD0": 0.0434,
+      "alpha_deg": 0,
+      "Cnr": -0.014262,
+      "CLtot": 0.09901,
+      "CDtot": 0.04394
+    },
+    {
+      "panels": 6,
+      "profile_CD0": 0.0434,
+      "alpha_deg": 4,
+      "Cnr": -0.014039,
+      "CLtot": 0.39298,
+      "CDtot": 0.05191
+    },
+    {
+      "panels": 6,
+      "profile_CD0": 0.0434,
+      "alpha_deg": 11,
+      "Cnr": -0.013486,
+      "CLtot": 0.89501,
+      "CDtot": 0.08756
+    },
+    {
+      "panels": 6,
+      "profile_CD0": 0.0,
+      "alpha_deg": 0,
+      "Cnr": -0.000197,
+      "CLtot": 0.09901,
+      "CDtot": 0.00054
+    },
+    {
+      "panels": 6,
+      "profile_CD0": 0.0,
+      "alpha_deg": 4,
+      "Cnr": -8e-06,
+      "CLtot": 0.39298,
+      "CDtot": 0.00851
+    },
+    {
+      "panels": 6,
+      "profile_CD0": 0.0,
+      "alpha_deg": 11,
+      "Cnr": 0.000323,
+      "CLtot": 0.89501,
+      "CDtot": 0.04416
+    },
+    {
+      "panels": 20,
+      "profile_CD0": 0.0434,
+      "alpha_deg": 0,
+      "Cnr": -0.014612,
+      "CLtot": 0.0929,
+      "CDtot": 0.04393
+    },
+    {
+      "panels": 20,
+      "profile_CD0": 0.0434,
+      "alpha_deg": 4,
+      "Cnr": -0.014439,
+      "CLtot": 0.3687,
+      "CDtot": 0.05174
+    },
+    {
+      "panels": 20,
+      "profile_CD0": 0.0434,
+      "alpha_deg": 11,
+      "Cnr": -0.013971,
+      "CLtot": 0.83941,
+      "CDtot": 0.08664
+    },
+    {
+      "panels": 80,
+      "profile_CD0": 0.0434,
+      "alpha_deg": 0,
+      "Cnr": -0.014637,
+      "CLtot": 0.09067,
+      "CDtot": 0.04392
+    },
+    {
+      "panels": 80,
+      "profile_CD0": 0.0434,
+      "alpha_deg": 4,
+      "Cnr": -0.014478,
+      "CLtot": 0.35986,
+      "CDtot": 0.05163
+    },
+    {
+      "panels": 80,
+      "profile_CD0": 0.0434,
+      "alpha_deg": 11,
+      "Cnr": -0.014034,
+      "CLtot": 0.81921,
+      "CDtot": 0.08611
+    }
+  ]
+}

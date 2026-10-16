@@ -1,0 +1,26 @@
+[
+  {
+    "alpha_deg": 0,
+    "total_cnr": -0.01406481481481489,
+    "circulatory_cnr": 0.0,
+    "profile_cnr": -0.01406481481481489,
+    "analytic_profile_cnr": -0.014064814814814815,
+    "profile_error": -7.45931094670027e-17
+  },
+  {
+    "alpha_deg": 4,
+    "total_cnr": -0.01403055363282133,
+    "circulatory_cnr": 3.4301973841785143e-17,
+    "profile_cnr": -0.014030553632821364,
+    "analytic_profile_cnr": -0.014030553632821045,
+    "profile_error": -3.191891195797325e-16
+  },
+  {
+    "alpha_deg": 11,
+    "total_cnr": -0.013806404552380096,
+    "circulatory_cnr": 2.7441579073428115e-16,
+    "profile_cnr": -0.01380640455238037,
+    "analytic_profile_cnr": -0.013806404552379643,
+    "profile_error": -7.268491364342822e-16
+  }
+]

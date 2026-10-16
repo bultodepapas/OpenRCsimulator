@@ -83,3 +83,7 @@
 # Native Windows release evidence retains exact captured bytes for verification hashes.
 /docs/research/release-readiness/PT1-v0.1.2/windows-source/*.csv -text
 /docs/research/release-readiness/PT1-v0.1.2/windows-source/*.log -text
+
+# R11 captured replay and AVL receipts bind exact artifact bytes on every platform.
+/docs/research/physics-audit-2026-10-14/remediation/R11/rudder-authority-diagnostic/stable-20261016/** -text whitespace=cr-at-eol
+/docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/avl-reference-20261016/** -text whitespace=cr-at-eol

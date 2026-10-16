@@ -1,0 +1,31 @@
+ ---------------------------------------------------------------
+ Vortex Lattice Output -- Total Forces
+
+ Configuration: D11f matched equivalent-incidence rectangular wing, AVL 3.52
+     # Surfaces =   1
+     # Strips   =   6
+     # Vortices =   6
+
+  Sref = 0.46452       Cref = 0.30480       Bref =  1.5240    
+  Xref =  0.0000       Yref =  0.0000       Zref =  0.0000    
+
+ Standard axis orientation,  X fwd, Z down         
+
+ Run case:  -unnamed-                              
+
+  Alpha =   0.00000     pb/2V =  -0.00000     p'b/2V =  -0.00000
+  Beta  =   0.00000     qc/2V =   0.00000
+  Mach  =     0.000     rb/2V =  -0.00000     r'b/2V =  -0.00000
+
+  CXtot =  -0.04394     Cltot =  -0.00000     Cl'tot =  -0.00000
+  CYtot =   0.00000     Cmtot =   0.00000
+  CZtot =  -0.09901     Cntot =   0.00000     Cn'tot =   0.00000
+
+  CLtot =   0.09901
+  CDtot =   0.04394
+  CDvis =   0.04340     CDind = 0.0005401
+  CLff  =   0.09901     CDff  = 0.0005401    | Trefftz
+  CYff  =   0.00000         e =    1.1555    | Plane  
+
+
+ ---------------------------------------------------------------

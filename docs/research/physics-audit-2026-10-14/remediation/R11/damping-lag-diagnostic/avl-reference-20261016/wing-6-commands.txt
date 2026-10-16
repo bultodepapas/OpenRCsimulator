@@ -1,0 +1,21 @@
+OPER
+A A 0
+X
+SB
+wing-6-a0-body.txt
+FT
+wing-6-a0-forces.txt
+A A 4
+X
+SB
+wing-6-a4-body.txt
+FT
+wing-6-a4-forces.txt
+A A 11
+X
+SB
+wing-6-a11-body.txt
+FT
+wing-6-a11-forces.txt
+
+QUIT

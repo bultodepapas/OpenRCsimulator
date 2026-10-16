@@ -1,0 +1,385 @@
+{
+  "evidence_date": "2026-10-16",
+  "source_bundle": "D:\\OpenRC-release-v012-temp\\avl352-reference",
+  "receipt_created_from_checkout_head": "20dc6efe93cfc0a4149ed7617e0d6e5f6075d59e",
+  "executable": {
+    "name": "AVL 3.52 for Windows",
+    "source_url": "https://web.mit.edu/drela/Public/web/avl/avl352.exe",
+    "sha256": "443520d255408491222a8df9060bd000f78da95a68845a2f6efdbc67e203f07a",
+    "included": false
+  },
+  "excluded_downloads": [
+    {
+      "path": "avl352.exe",
+      "reason": "Executable is not retained; fetch from official MIT URL above and verify hash."
+    },
+    {
+      "path": "avl_doc.txt",
+      "reason": "Downloaded user guide is not retained; consult official MIT AVL page."
+    }
+  ],
+  "linked_source_inputs": [
+    {
+      "path": "docs/research/physics-audit-2026-10-14/remediation/R11/damping-lag-diagnostic/d11g-repair/yaw_r02_vs_kj_comparison-v4.json",
+      "sha256": "7fd711ddecc0ee46208b07bad0076f4c38cdda7e18fb3348cb4ebf4cef36c83b",
+      "retained_copy": "inputs/yaw_r02_vs_kj_comparison-v4.json"
+    },
+    {
+      "path": "research/aero/d11f/wing_yaw_damping.py",
+      "sha256": "b71405f04f9385a27a733c2b719560ca6032f682289a53d996ed338b8ef737e8",
+      "retained_copy": null
+    }
+  ],
+  "retained_files": [
+    {
+      "path": "check_reference_split.json",
+      "size_bytes": 765,
+      "sha256": "a4c16e515ee63b4f4de3c9bc1a29a138928714fd3df1c88d97fa2d96cf22116b"
+    },
+    {
+      "path": "check_reference_split.py",
+      "size_bytes": 1246,
+      "sha256": "07f346ac2b534caf756ddc3f931df621ec2d4b325ca06166cabb2fe45b6c70ea"
+    },
+    {
+      "path": "inputs/yaw_r02_vs_kj_comparison-v4.json",
+      "size_bytes": 15022,
+      "sha256": "7fd711ddecc0ee46208b07bad0076f4c38cdda7e18fb3348cb4ebf4cef36c83b"
+    },
+    {
+      "path": "matched-20-profile/a0-body.txt",
+      "size_bytes": 2371,
+      "sha256": "5293e3877aaf6648ba1e4fb8d27d99751b6be2a38a7c54a246bc9e7419bf3629"
+    },
+    {
+      "path": "matched-20-profile/a0-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "607eeaecb5d063c57ecbc14c932f2609608dd197cc96236527cf8952473bbd23"
+    },
+    {
+      "path": "matched-20-profile/a11-body.txt",
+      "size_bytes": 2371,
+      "sha256": "8d7384d75c00ca0798f9dd4084adf0976a38e9a36aa5520cd6a6bfc8b2ac291a"
+    },
+    {
+      "path": "matched-20-profile/a11-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "104d1c6b8b558be28fa6178eca5b24ae22d68bc1b4b38e27c5a2eb260a13a4de"
+    },
+    {
+      "path": "matched-20-profile/a4-body.txt",
+      "size_bytes": 2371,
+      "sha256": "5f05dc0c2f1047043dbd58718deb9c263c70ddedb04a55f436ad0e5f41e7ead4"
+    },
+    {
+      "path": "matched-20-profile/a4-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "bfe1dc1db0ac18f53c6ce66c7c31b8745e8d1db7a4dfdcbe28736d09d7a8c000"
+    },
+    {
+      "path": "matched-20-profile/commands.txt",
+      "size_bytes": 155,
+      "sha256": "9c9a9fc5c64f74c004fd24abb434d3749332b9bcba66562ac88b7881f15b5122"
+    },
+    {
+      "path": "matched-20-profile/run.log",
+      "size_bytes": 26617,
+      "sha256": "e325f9cacac088321e0c65df7c623eded8fd6a731e8d0ec973e8d8f55859f7dd"
+    },
+    {
+      "path": "matched-20-profile/wing.avl",
+      "size_bytes": 362,
+      "sha256": "e43646b3e9f2a4f8bf2b5b3bef63ed7ec6cb60b84b9d1bd7f1c1248e215ddefd"
+    },
+    {
+      "path": "matched-6-inviscid/a0-body.txt",
+      "size_bytes": 2371,
+      "sha256": "def870119c7e490a9a52492a40dbec694615967e8cfd07417a3b468c3af1d6b1"
+    },
+    {
+      "path": "matched-6-inviscid/a0-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "1bf7143014cbffb5ba75cb3679855b0c7dcd9b8c204580ebe49abc83bd004788"
+    },
+    {
+      "path": "matched-6-inviscid/a11-body.txt",
+      "size_bytes": 2371,
+      "sha256": "e63f92b95b11a4cd576791f85978dd3606690dbe9f1dfe13970a9dec6af97a9d"
+    },
+    {
+      "path": "matched-6-inviscid/a11-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "7ff8785cb14577c575afaa4cebd7631b962810a196dd0cb511727b90ed615667"
+    },
+    {
+      "path": "matched-6-inviscid/a4-body.txt",
+      "size_bytes": 2371,
+      "sha256": "8ec6f51934ef490ca45c5322777a448b2b8979da1bbcbf90ba1d28b5e6a9f79b"
+    },
+    {
+      "path": "matched-6-inviscid/a4-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "419abefe838ae8a3c4418c3c47a742cd917dadc9bce31b595b3e00c265ff38cd"
+    },
+    {
+      "path": "matched-6-inviscid/commands.txt",
+      "size_bytes": 155,
+      "sha256": "9c9a9fc5c64f74c004fd24abb434d3749332b9bcba66562ac88b7881f15b5122"
+    },
+    {
+      "path": "matched-6-inviscid/run.log",
+      "size_bytes": 26617,
+      "sha256": "c50881ab118d3869df55b0407648d764ab744ad8c4700efbb5c34b7b8ef977c3"
+    },
+    {
+      "path": "matched-6-inviscid/wing.avl",
+      "size_bytes": 351,
+      "sha256": "881bc82b44ee9986627da38ff418b1b0e3dbc73d00e3921458cdad967482fd27"
+    },
+    {
+      "path": "matched-6-profile/a0-body.txt",
+      "size_bytes": 2371,
+      "sha256": "12317ed038a1945ed77fefbe3d93dde57906f302f9c5bd0cdcc8f1aede3cb427"
+    },
+    {
+      "path": "matched-6-profile/a0-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "c2a896f1fd945f06080e296be319c33d69455e8a38f422ec7e41d283e53bbba3"
+    },
+    {
+      "path": "matched-6-profile/a11-body.txt",
+      "size_bytes": 2371,
+      "sha256": "9e85fa6b75867acad178ad07939692ba88323b1731b4f7e8b0039b9fd398d767"
+    },
+    {
+      "path": "matched-6-profile/a11-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "109314d19123255186c75b2944ed8cc6a0bdb57f96dc1453e807993bda8d00f0"
+    },
+    {
+      "path": "matched-6-profile/a4-body.txt",
+      "size_bytes": 2371,
+      "sha256": "4b2782a85c896accd8b842ab139f128d0253d80b97ef4ab5ae6999102e0397a9"
+    },
+    {
+      "path": "matched-6-profile/a4-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "65040f4b33c189e28f9bc1acc638bfd1957ae1b79235e31a3d712934b04b8cef"
+    },
+    {
+      "path": "matched-6-profile/commands.txt",
+      "size_bytes": 155,
+      "sha256": "9c9a9fc5c64f74c004fd24abb434d3749332b9bcba66562ac88b7881f15b5122"
+    },
+    {
+      "path": "matched-6-profile/run.log",
+      "size_bytes": 26617,
+      "sha256": "982b55d1010417f5a4d681e72b6a4923e9e59282db4fc9b1be8c9ef8962b1844"
+    },
+    {
+      "path": "matched-6-profile/wing.avl",
+      "size_bytes": 360,
+      "sha256": "7790c30e59d1168f84e5d2db6688da919884a0e67cd79f339e202d531eb896ac"
+    },
+    {
+      "path": "matched-80-profile/a0-body.txt",
+      "size_bytes": 2371,
+      "sha256": "d421c6ee8322b7aa1fd67d393fc935dd6e1eece52277de3b825d609e32b620fd"
+    },
+    {
+      "path": "matched-80-profile/a0-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "01954eac59b8a1c11959117b6e4e51254bc8f3cebe513edd83a314854b4b39d8"
+    },
+    {
+      "path": "matched-80-profile/a11-body.txt",
+      "size_bytes": 2371,
+      "sha256": "53a1bd02acfe978f076a407b89b3bf52b8eb868bd62391aa965a1672c3bc4502"
+    },
+    {
+      "path": "matched-80-profile/a11-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "53f25b9ef4a721d0be85a7011c3bef7c691daac7d7db76a659733ec95d2969d7"
+    },
+    {
+      "path": "matched-80-profile/a4-body.txt",
+      "size_bytes": 2371,
+      "sha256": "ac9ba8120945eb552c1d2e62c9c65d8ba3737e88334fe55f21009a406eae4c79"
+    },
+    {
+      "path": "matched-80-profile/a4-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "6b39824bf68f58d5d22112072db188db0951652d3c74d20de7ddcf7eb3bfc12a"
+    },
+    {
+      "path": "matched-80-profile/commands.txt",
+      "size_bytes": 155,
+      "sha256": "9c9a9fc5c64f74c004fd24abb434d3749332b9bcba66562ac88b7881f15b5122"
+    },
+    {
+      "path": "matched-80-profile/run.log",
+      "size_bytes": 26617,
+      "sha256": "20f9949726e8c2fb5f7252033009a4142ea4ae8e48d39b2c54197dd444dc9015"
+    },
+    {
+      "path": "matched-80-profile/wing.avl",
+      "size_bytes": 362,
+      "sha256": "61b6301bc3538861f6479d87421cc24a9a2adf549acfba83a2faaf0d19f41968"
+    },
+    {
+      "path": "matched-summary.json",
+      "size_bytes": 2183,
+      "sha256": "3d9aa4a0e7f6e94cb980353b8f4069a80ed2cf4651c3cc17d69d3f2ba8dfc2dd"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 4543,
+      "sha256": "a517821d418894c50f2c3a4bd8064e5b9d7c4041a553c2c485605d2273425cb7"
+    },
+    {
+      "path": "run_matched_wing.py",
+      "size_bytes": 2532,
+      "sha256": "97e56dbb6565f2898b6603c44adffe9e2a6191921addd8575da54a5c46c35449"
+    },
+    {
+      "path": "run_wing.py",
+      "size_bytes": 1909,
+      "sha256": "99d52818edb6711bb5807f64af5b08db87c5178a2fb077c7523c2293b8ba0953"
+    },
+    {
+      "path": "wing-20-a0-body.txt",
+      "size_bytes": 2371,
+      "sha256": "60cbf54e6ccd96243391963a7765ac9ace36c59c6096c2b071d04f7da900e357"
+    },
+    {
+      "path": "wing-20-a0-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "591d4b13aeb468d0eeb6818edc8aa81c712b8f7739c1df45a6aaa196be2377d3"
+    },
+    {
+      "path": "wing-20-a11-body.txt",
+      "size_bytes": 2371,
+      "sha256": "19015c71155dcb0e7348eddaa7d63319b613a602ea223f2faccbda51a7f1acb2"
+    },
+    {
+      "path": "wing-20-a11-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "89cdd3931d2f5b98bacca3ba4c34ec92074fc1a90ffcb0545c104b2758415676"
+    },
+    {
+      "path": "wing-20-a4-body.txt",
+      "size_bytes": 2371,
+      "sha256": "7b82e46b34916047a1560b53cf8296a100c141121374a0254e5553091162a150"
+    },
+    {
+      "path": "wing-20-a4-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "183d1814be3a721793d71ade5f338ebee0221404c01149182e985bc6fe99c35e"
+    },
+    {
+      "path": "wing-20-commands.txt",
+      "size_bytes": 203,
+      "sha256": "68c55b3ba6e7451beaef1e6ae8fc21c8a2caa23400de5326c325baeed4a3804d"
+    },
+    {
+      "path": "wing-20-run.log",
+      "size_bytes": 26632,
+      "sha256": "18eda3d370e57e1eb0118f04bd7aad399407856880fb60477b3afadf703647fd"
+    },
+    {
+      "path": "wing-20.avl",
+      "size_bytes": 326,
+      "sha256": "78b309450d297b656cb04fddbd80a5f58de459c2ad80db1b3103c7b56ad9d117"
+    },
+    {
+      "path": "wing-6-a0-body.txt",
+      "size_bytes": 2371,
+      "sha256": "ceb1601eab04528ca9646ddcb7071728a83bad64ff888017254b1f2a4212f6ea"
+    },
+    {
+      "path": "wing-6-a0-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "3ca2b088c982be91af057c2704fc5781dfd0b1c05dac6e65552c67eff9fc273d"
+    },
+    {
+      "path": "wing-6-a11-body.txt",
+      "size_bytes": 2371,
+      "sha256": "dee8e6ae4fb25eda35184fc9dbdfce6c8362176fda176288268c2837de1b535d"
+    },
+    {
+      "path": "wing-6-a11-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "e8004e0ee80cc687de3d259496ab3dbebf631c29d81fa9ca20b08aa498c3fd60"
+    },
+    {
+      "path": "wing-6-a4-body.txt",
+      "size_bytes": 2371,
+      "sha256": "e7ab94cc465f46b8dd1db0ac8d38ce3768d3a1e6edab0d52ecf30b96150dc5ee"
+    },
+    {
+      "path": "wing-6-a4-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "da9035e2c4618e3f10cc8c75f1de8f7a8865d3f8c5631bb7e726858f1d5522c5"
+    },
+    {
+      "path": "wing-6-commands.txt",
+      "size_bytes": 197,
+      "sha256": "6d12e1c2fd57da8ec6d5399605faf42554b8599220c17c2b6509e1f1d333860a"
+    },
+    {
+      "path": "wing-6-run.log",
+      "size_bytes": 26627,
+      "sha256": "17ea6249b7e6bf905a662f367fe84aaa68e31bbfe2eae461f932b7faee7dcb7e"
+    },
+    {
+      "path": "wing-6.avl",
+      "size_bytes": 324,
+      "sha256": "7983dd22bfada477f3b136de153de2f5226834d1d06ba47b5d4049ad4bf2a723"
+    },
+    {
+      "path": "wing-80-a0-body.txt",
+      "size_bytes": 2371,
+      "sha256": "db90e4e571c8fa0858c7fe9f063927f1cc0518833a319feb4378512cd31c63fa"
+    },
+    {
+      "path": "wing-80-a0-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "e8305b63ab268759966462cf3a75a0ca90dcbaf9fd9273cfa795ce3243a79908"
+    },
+    {
+      "path": "wing-80-a11-body.txt",
+      "size_bytes": 2371,
+      "sha256": "5568b28417feb6aee69976eac9b6abe5c989d8a9418856e2695711ccffbc8581"
+    },
+    {
+      "path": "wing-80-a11-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "25846965b081da4b14c3128eda04bceb933807c9092c46fcf856d67a6ebe15ec"
+    },
+    {
+      "path": "wing-80-a4-body.txt",
+      "size_bytes": 2371,
+      "sha256": "301c93e40a481492b09f576efd2f7fe6fb540fd0a4adf46f32a5fcdbaf6a75f9"
+    },
+    {
+      "path": "wing-80-a4-forces.txt",
+      "size_bytes": 1118,
+      "sha256": "03cc6191c1a09b7d51cbd747cad8f0cc6f667251680c390c47144ade3ae44e52"
+    },
+    {
+      "path": "wing-80-commands.txt",
+      "size_bytes": 203,
+      "sha256": "c887f170cf5a1234f80a5c71d2919ae7095da6f9feb2cab8c1add8cc85eda263"
+    },
+    {
+      "path": "wing-80-run.log",
+      "size_bytes": 26632,
+      "sha256": "3580065b5344fc4c6c91a422b1921dbd8fedf0baf25b941802f702fee54dae4f"
+    },
+    {
+      "path": "wing-80.avl",
+      "size_bytes": 326,
+      "sha256": "7f0f597e67f091aecc6d5c8e7911bceba90d21d90d639ae1ff27874a91b1f619"
+    }
+  ]
+}

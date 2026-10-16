@@ -148,7 +148,7 @@
     ]
   },
   "inventory": {
-    "file_count_excluding_receipt": 24,
+    "file_count_excluding_receipt": 26,
     "receipt_excludes_its_own_hash": true,
     "csv_count": 4,
     "replay_csv_duplicates_omitted": true,
@@ -172,6 +172,11 @@
         "path": "comparisons/rudder-480hz-3s-right-comparison.json",
         "size_bytes": 1439,
         "sha256": "754d6abeb54a2e7b298d5edb8fada8f45fa96a1ba1f8a9cffefaa73096089718"
+      },
+      {
+        "path": "diagnose-blend.log",
+        "size_bytes": 70683,
+        "sha256": "7ebfccb2114112ba9d36df1fd013993d84756f9131f28b528c1cb4d31d2ca8e5"
       },
       {
         "path": "exports/rudder-240hz-12s-left/export.json",
@@ -235,8 +240,8 @@
       },
       {
         "path": "README.md",
-        "size_bytes": 2648,
-        "sha256": "07615d97ea865e8b555767ce2769eb69c464f6ceb056e56668f66abec0af1911"
+        "size_bytes": 3761,
+        "sha256": "0849013f32bee2d6311ff1de64bd8e52ea2472fa92ae007434c2c782dee327e2"
       },
       {
         "path": "replays/negative-control/rudder-480hz-rejected-at-240hz.json",
@@ -264,6 +269,11 @@
         "sha256": "b0e90dc645b484d7113eb22674f0eef98726622b6d6608390e0979fe59c49173"
       },
       {
+        "path": "scripts/diagnose_blend.gd",
+        "size_bytes": 2048,
+        "sha256": "b3e08f2e05d92db6964eb8d0494dc934548eae49a0c80af1ee2e20e9ea08acfb"
+      },
+      {
         "path": "scripts/record_rudder.gd",
         "size_bytes": 2153,
         "sha256": "3d49513b4fb381e71c6e4461e78d63a8f1ca801eeb0996da6d782c8b40112569"
@@ -274,5 +284,12 @@
         "sha256": "e00124b544d6f8d9b9d90dba086e16848babb86187b19bf1c30951a50752b5dd"
       }
     ]
+  },
+  "load_selector_diagnostic": {
+    "source_commit": "20dc6efe93cfc0a4149ed7617e0d6e5f6075d59e",
+    "samples": 721,
+    "source_diff_from_baseline_physics_sim_aircraft": "empty",
+    "r_at_3s_deg_s": -15.125273049996,
+    "load_identity_tolerance_nm": 1e-12
   }
 }

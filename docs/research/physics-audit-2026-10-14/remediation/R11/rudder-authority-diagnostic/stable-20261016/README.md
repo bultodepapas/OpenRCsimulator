@@ -16,6 +16,25 @@ This proves exact software replay for the identified source snapshot. It is not 
 
 ## Preserved files
 
+### Load-selector diagnostic
+
+The separately retained [`scripts/diagnose_blend.gd`](scripts/diagnose_blend.gd) and
+[`diagnose-blend.log`](diagnose-blend.log) sample the unmodified 240 Hz maneuver at
+721 endpoints. They reproduce the final `r = -15.125273049996°/s` and assert that
+the selected aerodynamic yaw moment equals the blend of the global and local
+moments within `1e-12 N·m` at every sample. Source commit `20dc6efe` has no changes
+to `app/physics/`, `app/sim/` or the Stik input relative to the recording source.
+
+The local contribution is intermittently active from 0.591667 to 2.6375 seconds;
+at 1.25, 1.75 and 2 seconds it supplies the complete aerodynamic load. At 3 seconds
+the selector uses only the global oracle: its yaw moment is `0.611433 N·m`, versus
+`0.836715 N·m` from the unused local law at the same state. These are endpoint
+diagnostics, not RK-stage histories or a causal attribution of the recovery error.
+A local-law candidate must therefore distinguish its trajectory effects from any
+subsequent regeneration of the oracle's derived rate coefficients.
+
+### Recording inventory
+
 - `flights/`: four original `.orfl` recordings.
 - `scripts/`: the recorder and 480 Hz replay wrapper used for this diagnostic.
 - `exports/`: one `flight.csv` and its `export.json` report per recording.
