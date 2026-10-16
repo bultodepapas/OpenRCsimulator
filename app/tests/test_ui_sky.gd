@@ -164,7 +164,7 @@ func _test_home_at_720() -> void:
 	for _index: int in 4:
 		await process_frame
 	var weather_rect: Rect2 = home.weather_button.get_global_rect()
-	var scroll: ScrollContainer = home.find_child("Scroll", true, false) as ScrollContainer
+	var scroll: ScrollContainer = home.get_node_or_null("HomeRail/HomeContentScroll") as ScrollContainer
 	var scroll_rect: Rect2 = scroll.get_global_rect() if scroll != null else Rect2()
 	_check("1280x720 Home weather affordance is visible and actionable", root.size == Vector2i(1280, 720)
 		and home.weather_button.is_visible_in_tree() and not home.weather_button.disabled
@@ -173,7 +173,6 @@ func _test_home_at_720() -> void:
 		and weather_rect.position.y >= scroll_rect.position.y
 		and weather_rect.end.y <= scroll_rect.end.y)
 	_check("Home weather summary exposes the selected sky", home.weather_button.text.contains("Weather")
-		and home.weather_button.text.contains("Distant Storm")
 		and home.weather_button.tooltip_text.contains("Distant Storm"))
 	var requested := [0]
 	home.weather_requested.connect(func(_from: Control) -> void: requested[0] += 1)

@@ -221,6 +221,11 @@ func _run() -> void:
 	await ui.tap(KEY_ESCAPE)
 	_check("Escape cancels edits from every tab", app.weather_dialog == null
 		and Preferences.load_from(PREFS).weather_config == saved)
+	# The back-cue playback is unrelated to slider behavior; stop it before closing
+	# the headless test tree so the audio backend has no active stream at process exit.
+	if is_instance_valid(app.menu_audio):
+		app.menu_audio.set_volume(0.0)
+		await process_frame
 	await _close(app)
 	_remove_prefs()
 	TranslationServer.set_locale("en")

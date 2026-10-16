@@ -94,8 +94,9 @@ func _run() -> void:
 	await ui.settle()
 	home.set_weather_config(expected_v4)
 	_check("Home summarizes standard-column conditions and their reference status",
-		home.weather_button.text.contains("Standard atmosphere")
+		home.weather_button.text.contains("Weather")
 		and home.weather_button.tooltip_text.contains("11,000 m")
+		and home.weather_button.tooltip_text.contains("Standard ISA at field 1200.0 m")
 		and home.weather_button.tooltip_text.contains("not measured weather"),
 		"summary=%s tooltip=%s" % [home.weather_button.text, home.weather_button.tooltip_text])
 	var helicopter_id: String = ""

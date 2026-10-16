@@ -153,7 +153,8 @@ func _dialog_flow() -> void:
 	_check("Apply saves v2 turbulence values and exact uint32 seed", active_weather.format == V2_FORMAT
 		and active_weather.turbulence_rms_mps == [0.61, 0.62, 0.43]
 		and active_weather.turbulence_tau_s == 2.5 and active_weather.turbulence_seed == 4294967295)
-	_check("Home summary shows turbulence settings", app.home.weather_button.text.contains("Turbulence")
+	_check("Home weather tooltip shows turbulence settings", app.home.weather_button.text.contains("Weather")
+		and app.home.weather_button.tooltip_text.contains("Turbulence RMS N/E/Up")
 		and app.home.weather_button.tooltip_text.contains("seed 4294967295"))
 
 	dialog = await _open_weather(app)
