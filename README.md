@@ -21,7 +21,7 @@ The five aircraft shown from changing angles. [Still views and render provenance
 
 **First flight:** new Home preferences start on the Stik runway with gentle wind and passing evening; saved choices take precedence. Select **Airborne**, **Calm** and **Day** for trimmed airborne practice. [Player guide and controls](docs/FIRST-LAUNCH.md).
 
-The latest stable download contains the **v0.1.1 snapshot**. The features and aircraft below describe current source. The [v0.1.2-rc.1 prerelease](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.2-rc.1) collects the next changes; its assets become available only after all release checks pass. [Candidate notes](docs/releases/v0.1.2-rc.1.md) explain the deferred Ugly Stik rudder recovery, R02 yaw damping and experimental P-51D takeoff/loop acceptance. These physical checks remain pending, not passed; v0.1.1 remains the latest stable release.
+The latest stable download contains the **v0.1.1 snapshot**. The features and aircraft below describe current source. Work toward the next stable release, v0.1.2, is in progress; no public v0.1.2 package or prerelease download is available. The [draft release work notes](docs/releases/v0.1.2-rc.1.md) track the unresolved Ugly Stik rudder recovery, R02 yaw damping and experimental P-51D takeoff/loop acceptance. These checks remain open; v0.1.1 is still the latest stable release.
 
 ## Aircraft
 
