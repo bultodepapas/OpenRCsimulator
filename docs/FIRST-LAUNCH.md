@@ -1,10 +1,10 @@
 # OpenRC Simulator: first launch
 
-Status: current-source player guide, checked 2026-10-16. The latest stable package is [v0.1.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1); the [v0.1.2-rc.1 candidate](releases/v0.1.2-rc.1.md) is in preparation and has not been published. Features described under [Current source](#current-source) may not be included in v0.1.1. Aircraft remain under evaluation; start with the [Ugly Stik](UGLY-STIK-PLAN.md).
+Status: v0.1.2-rc.1 candidate player guide, checked 2026-10-16. The latest stable package is [v0.1.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1). The [candidate notes](releases/v0.1.2-rc.1.md) describe the changes and deferred Stik rudder recovery, R02 yaw damping and P51-22 acceptance. Features described under [Current source](#current-source) may not be included in v0.1.1. Aircraft remain under evaluation; start with the [Ugly Stik](UGLY-STIK-PLAN.md).
 
 ## 1. Download and check
 
-Download a platform ZIP and `SHA256SUMS` from the latest stable release, [v0.1.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1). The v0.1.2-rc.1 candidate is not published yet. Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
+Choose the latest stable release, [v0.1.1](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.1), or the [v0.1.2-rc.1 prerelease](https://github.com/bultodepapas/OpenRCsimulator/releases/tag/v0.1.2-rc.1) for early testing. Candidate assets become available only after all release checks pass. Download a platform ZIP and `SHA256SUMS` from the same release. Extract the ZIP before launching. Compare the archive's SHA-256 with its matching entry:
 
 - Linux: `sha256sum -c SHA256SUMS --ignore-missing`
 - macOS: `shasum -a 256 openrc-simulator-*.zip`
