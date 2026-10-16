@@ -88,6 +88,7 @@ func _run() -> void:
 		var flight: Node = load("res://main.tscn").instantiate()
 		flight.aircraft_id = entry.id
 		flight.crash_effects_enabled = false # CR-01 diagnostic pose and legacy timer fixture
+		flight.accident_reports_enabled = false # CR-30 reports intentionally disable automatic restart.
 		root.add_child(flight)
 		flight.set_process(false)
 		var session: Node = flight.session

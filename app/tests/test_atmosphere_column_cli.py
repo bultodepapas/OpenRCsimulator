@@ -19,7 +19,7 @@ EVIDENCE_ENV = 'OPENRC_ATMOS_COLUMN_EVIDENCE'
 FAMILIES = (
     ('stik', 'jensen-das-ugly-stik-60', (), 'openrc-flight-meta v6', 'rpm-lag'),
     ('jet', 'sebart-avanti-s-a200-p100rx', (), 'openrc-flight-meta v9', 'retractable-gear'),
-    ('p51-shaft', 'p51d-mustang-120', ('--shaft-integrator=coupled-rk4',), 'openrc-flight-meta v6', 'shaft'),
+    ('p51-shaft', 'p51d-mustang-120', ('--shaft-integrator=coupled-rk4',), 'openrc-flight-meta v9', 'shaft'),
     ('timber-electric', 'turbo-lumber-evolution', (), 'openrc-flight-meta v6', 'electric'),
     ('glow', 'stik-glow-61fx-2t', (), 'openrc-flight-meta v7', 'glow'),
 )
@@ -139,7 +139,8 @@ class AtmosphereColumnCLI(unittest.TestCase):
         for family, _aircraft, _options, schema, kind in FAMILIES:
             with self.subTest(family=family):
                 result = self.reader_results[family]
-                self.assertEqual(result['format'], 'openrc-trace v12' if family == 'jet' else 'openrc-trace v11')
+                has_flaps = family in ('jet', 'p51-shaft')
+                self.assertEqual(result['format'], 'openrc-trace v12' if has_flaps else 'openrc-trace v11')
                 self.assertEqual(result['metadata_schema'], schema)
                 self.assertEqual((result['rows'], result['first_tick'], result['last_tick']), (25, 0, 24))
                 self.assertAlmostEqual(result['elapsed_s'], 0.1, places=8)

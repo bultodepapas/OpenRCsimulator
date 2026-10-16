@@ -52,7 +52,7 @@ class ShaftCLI(unittest.TestCase):
         self.assertEqual(metadata['shaft_integrator'], 'coupled-rk4')
         self.assertEqual(len(table) - 1, 61)
         wheel_layout = json.loads(metadata['wheel_state_layout'])
-        self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v6')
+        self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v9')
         self.assertEqual(metadata['wheel_state_model'], 'relative-wheel-rim-speed-rk4-v1')
         battery_slots = 3 if metadata['continuous_layout'].startswith(
             'axial wash increment m/s, slipstream.pieces order, then propeller shaft rpm, remaining charge C,') else 0

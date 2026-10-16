@@ -153,9 +153,10 @@ class AtmosphereCLI(unittest.TestCase):
             for duration, rows in (('.1', 25), ('1', 241)):
                 with self.subTest(aircraft=aircraft, duration=duration):
                     result = check(self.aircraft_traces[(aircraft, duration)], float(duration))
+                    has_flaps = aircraft in ('p51d-mustang-120', 'sebart-avanti-s-a200-p100rx')
                     is_retractable = aircraft == 'sebart-avanti-s-a200-p100rx'
-                    self.assertEqual(result['format'], 'openrc-trace v12' if is_retractable else 'openrc-trace v6')
-                    expected_schema = ('openrc-flight-meta v9' if is_retractable
+                    self.assertEqual(result['format'], 'openrc-trace v12' if has_flaps else 'openrc-trace v6')
+                    expected_schema = ('openrc-flight-meta v9' if has_flaps
                                        else 'openrc-flight-meta v6')
                     self.assertEqual(result['metadata_schema'], expected_schema)
                     self.assertEqual((result['rows'], result['first_tick'], result['last_tick']),

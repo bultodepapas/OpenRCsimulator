@@ -105,9 +105,11 @@ class TraceAcceptance(unittest.TestCase):
                 self.assertEqual(metadata['propulsion_model'], propulsion)
                 self.assertEqual(metadata['propwash_model'], propwash)
                 source = APP / metadata['aircraft'].split('(res://', 1)[1].removesuffix(')')
-                self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v9' if aircraft == 'sebart-avanti-s-a200-p100rx' else 'openrc-flight-meta v6')
-                if aircraft == 'sebart-avanti-s-a200-p100rx':
+                has_flaps = aircraft in ('p51d-mustang-120', 'sebart-avanti-s-a200-p100rx')
+                self.assertEqual(metadata['metadata_schema'], 'openrc-flight-meta v9' if has_flaps else 'openrc-flight-meta v6')
+                if has_flaps:
                     self.assertEqual(metadata['format'], 'openrc-trace v12')
+                if aircraft == 'sebart-avanti-s-a200-p100rx':
                     self.assertEqual(json.loads(metadata['input_layout']),
                                      ['roll', 'pitch', 'yaw', 'throttle', 'gear_down', 'wheel_brake', 'flaps'])
                     self.assertEqual(metadata['gear_law'], 'retractable-point-gear-v1')
