@@ -41,7 +41,7 @@ func _run_case(label: String, state: PackedFloat64Array, context: Dictionary,
     sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.5])
     sim.continuous = state.slice(RB.SIZE)
     var last_fault: Array[String] = [""]
-    sim.continuous_evaluate = func(body_state: PackedFloat64Array, continuous: PackedFloat64Array,
+    sim.model.stage = func(body_state: PackedFloat64Array, continuous: PackedFloat64Array,
             t: float) -> Dictionary:
         var full: PackedFloat64Array = body_state.duplicate()
         full.append_array(continuous)
@@ -63,7 +63,7 @@ func _run_case(label: String, state: PackedFloat64Array, context: Dictionary,
         "fault_reason": sim.fault_reason,
         "tick": sim.tick,
         "last_flight_fault": last_fault[0],
-        "continuous_step_installed": sim.continuous_step.is_valid(),
+        "continuous_step_installed": sim.model.step_policy.is_valid(),
     }
     sim.free()
     print(JSON.stringify({

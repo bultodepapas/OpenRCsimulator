@@ -557,7 +557,7 @@ func setup(path := Scenarios.AIRCRAFT, expected_id: String = "", frozen_data: Di
 	sim = Sim.new()
 	sim.modes = PackedInt64Array([1])
 	if _has_collision_query():
-		sim.post_step = Callable(self, "_resolve_collision_step")
+		sim.model.post_tick = Callable(self, "_resolve_collision_step")
 	sim.faulted.connect(_on_sim_faulted)
 	sim.stepped.connect(_on_sim_stepped)
 	var prepared := _prepare_aircraft(_load_selected_aircraft())
@@ -808,7 +808,7 @@ func _inside_lake_bank_bounds(north: float, east: float) -> bool:
 
 func _sync_post_step() -> void:
 	if sim != null:
-		sim.post_step = Callable(self, "_resolve_collision_step") if _has_collision_query() else Callable()
+		sim.model.post_tick = Callable(self, "_resolve_collision_step") if _has_collision_query() else Callable()
 
 
 ## Installs one normalized, detached world at a flight boundary. Proxy data contains scalar NED geometry only.
@@ -1011,7 +1011,7 @@ func _apply(data: Dictionary) -> bool:
 
 func _commit_aircraft(prepared: Dictionary) -> void:
 	aircraft = prepared.data
-	sim.input_size = 6 if gear_is_retractable() else 4
+	sim.model.input_size = 6 if gear_is_retractable() else 4
 	_gear_cache.clear()
 	_gear_cache_fraction = -1.0
 	_contact_bindings = ContactContract.describe(aircraft.model, soft_hull_contacts)
@@ -1028,10 +1028,10 @@ func _commit_aircraft(prepared: Dictionary) -> void:
 	_prop_disc = HullContact.prop_disc(aircraft.model.propulsion)
 	_deflection_key = PackedFloat64Array()
 	_ground_effect_reach = GroundEffect.reach(aircraft.model)
-	sim.loads = _loads
+	sim.model.loads = _loads
 	_configure_continuous_callbacks()
-	sim.pre_step = _pre_step
-	sim.rotor_momentum = rotor_momentum
+	sim.model.pre_tick = _pre_step
+	sim.model.rotor_momentum = rotor_momentum
 	for warning in aircraft.warnings:
 		print("aircraft data warning: ", warning)
 

@@ -1,5 +1,5 @@
 Alias cleanup (2026-10-15): every test program touched by the migration plus the kernel, law, multirotor, rotorcraft and ground-vehicle suites, run one at a time on the migrated tree.
-test_shaft_coupled fails the same two checks on the untouched baseline tree 1da9e092 (G2 coupled shaft: 43 checks, 2 failed there as well): pre-existing, not caused by the cleanup.
+test_shaft_coupled fails the same two checks on the untouched baseline tree 1da9e092 (G2 coupled shaft: 43 checks, 2 failed there as well) and passes 43/43 at d16ed71a, the last commit before merge f78901b9 brought the upstream P-51 data rewrite: the coupled fixture's P-51 now reports wheels, so trace_meta() emits schema v6 with wheel metadata while the test expects v2 and a wash value at continuous[0]. Pre-existing, owned by the G2/P-51 tracks, not caused by the cleanup.
 
 RESULT PASS test_aircraft_contact_session 2s AS-13 contact session: 63 checks, 0 failures
 RESULT PASS test_aircraft_propulsion_runtime 9s aircraft propulsion runtime: 214 checks, 0 failed

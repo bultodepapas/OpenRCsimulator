@@ -146,7 +146,7 @@ func _sim_for(model: Dictionary, gear: Dictionary, steer: float = 0.0) -> Node:
 	var simulation: Node = SimScript.new()
 	simulation.mass = float(model.mass_kg)
 	simulation.inertia = model.inertia.duplicate()
-	simulation.loads = func(state: PackedFloat64Array, _time: float) -> PackedFloat64Array:
+	simulation.model.loads = func(state: PackedFloat64Array, _time: float) -> PackedFloat64Array:
 		var loads: PackedFloat64Array = Ground.loads(state, gear, steer)
 		return _zero_loads() if loads.is_empty() else loads
 	return simulation

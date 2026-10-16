@@ -37,7 +37,7 @@ func _initialize() -> void:
 	_mutated_inertia = PackedFloat64Array([3.4, 2.9, 5.1, -0.07, 0.09, 0.04])
 	_sim.inertia = _initial_inertia.duplicate()
 	_sim.continuous = PackedFloat64Array([0.0])
-	_sim.continuous_evaluate = Callable(self, "_joint_evaluation")
+	_sim.model.stage = Callable(self, "_joint_evaluation")
 
 	var unprimed: PackedFloat64Array = _sim._inertia_inverse_for_callback()
 	_check("unprimed direct callback equals a fresh inverse", _same(unprimed, RB.inertia_inverse(_sim.inertia)))

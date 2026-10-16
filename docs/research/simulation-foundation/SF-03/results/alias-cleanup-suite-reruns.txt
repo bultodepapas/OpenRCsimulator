@@ -1,0 +1,25 @@
+Python suite sections that timed out in the full continue-on-failure run, rerun one at a time (2026-10-16).
+
+== migrated tree before the research-script migration (commit 0d5eaf48 content)
+RESULT FAIL test_trace_acceptance 197s Ran 17 tests in 196.986s FAILED (failures=1) 
+RESULT FAIL test_atmosphere_cli 125s Ran 7 tests in 124.515s FAILED (failures=2) 
+RESULT FAIL test_atmosphere_column_cli 38s Ran 4 tests in 38.385s FAILED (failures=1) 
+RESULT FAIL test_shaft_cli 125s Ran 10 tests in 124.622s FAILED (failures=1) 
+RESULT FAIL e5a-verify 1s RuntimeError: engine error: /tmp/tmp.4T52Sg1sNE/results/checks.gd.log
+RESULT FAIL e5b-verify 300s subprocess.TimeoutExpired: Command '['/home/bulto/OpenRCsimulator/.tools/Godot_v4.7.2-stable_linux.x86_64', '--headless', '--path', '/home/bulto/OpenRCsimulator
+assertion messages: test_trace_acceptance and test_shaft_cli 'openrc-flight-meta v9' != 'v6' (P-51); test_atmosphere_cli 'openrc-trace v12' != 'v6' (P-51); test_atmosphere_column_cli 'openrc-trace v12' != 'v11' (p51-shaft)
+e5a: engine error in research/ground-contact/e5a/checks.gd; e5b: 300 s subprocess timeout in research/ground-contact/e5b/checks.gd. Both scripts still set the retired kernel properties (simulation.loads, sim.loads): a cleanup regression outside app/.
+
+== untouched baseline copy (commit 1da9e092, before the cleanup; not a git checkout)
+RESULT FAIL test_trace_acceptance 207s Ran 17 tests in 206.395s FAILED (failures=1) 
+RESULT FAIL test_atmosphere_cli 124s Ran 7 tests in 123.870s FAILED (failures=2) 
+RESULT FAIL test_atmosphere_column_cli 40s Ran 4 tests in 39.739s FAILED (failures=1) 
+RESULT FAIL test_shaft_cli 126s Ran 10 tests in 126.719s FAILED (failures=1) 
+RESULT FAIL e5a-verify 39s subprocess.CalledProcessError: Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.
+RESULT FAIL e5b-verify 103s subprocess.CalledProcessError: Command '['git', 'rev-parse', 'HEAD']' returned non-zero exit status 128.
+The four CLI programs fail with the same counts and the same assertion messages: the P-51 trace/meta schema expectations are stale since the upstream P-51 rewrite (merge f78901b9), not the cleanup. e5a/e5b ran their Godot checks there (39 s and 103 s) and failed only at the record step, which needs 'git rev-parse HEAD' in a git checkout.
+
+== migrated tree after the research-script migration (38 uses in 14 research scripts rewritten)
+RESULT PASS e5a-verify 41s }
+RESULT PASS e5b-verify 104s }
+research/aircraft-standardization/contact_probe.gd spot run: all AS contact cases PASS, contacts.json written, 0 engine errors.

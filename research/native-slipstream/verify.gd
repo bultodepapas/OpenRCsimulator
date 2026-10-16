@@ -164,7 +164,7 @@ func _initialize() -> void:
 		var tick_before: int = refusal_sim.tick
 		var emissions: Array[int] = [0]
 		refusal_sim.stepped.connect(func(_tick, _time, _state, _loads, _inputs, _aux): emissions[0] += 1)
-		refusal_sim.loads = func(_s: PackedFloat64Array, _time: float) -> PackedFloat64Array:
+		refusal_sim.model.loads = func(_s: PackedFloat64Array, _time: float) -> PackedFloat64Array:
 			return Native.loads(state, {v_air = bad_velocity}, d, original, 5000.0, Air.RHO_SEA_LEVEL)
 		refusal_sim.step()
 		check("adapter refusal faults and rolls back the simulation tick",

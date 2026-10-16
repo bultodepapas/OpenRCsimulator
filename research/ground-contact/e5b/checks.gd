@@ -123,7 +123,7 @@ func ramp(model: Dictionary, hz: int, scale: float, ramp_rate: float) -> Diction
 	var sim: Node = Sim.new()
 	sim.mass = model.mass_kg
 	sim.inertia = model.inertia.duplicate()
-	sim.loads = func(s: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	sim.model.loads = func(s: PackedFloat64Array, t: float) -> PackedFloat64Array:
 		gear.rolling_resistance = maxf(0.0, t - 1.5) * ramp_rate
 		var load: PackedFloat64Array = ground_load(s, gear)
 		var world: PackedFloat64Array = M.q_rotate(attitude(s), M.v3(load[0], load[1], load[2]))
@@ -188,7 +188,7 @@ func patch_trial(model: Dictionary, hz: int, fraction: float) -> Dictionary:
 	var sim: Node = Sim.new()
 	sim.mass = model.mass_kg
 	sim.inertia = model.inertia.duplicate()
-	sim.loads = func(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.loads = func(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return ground_load(s, gear, surfaces)
 	var reset_ok: bool = sim.reset(initial)
 	var rows: Array = []

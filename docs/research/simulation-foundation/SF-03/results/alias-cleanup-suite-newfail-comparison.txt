@@ -1,0 +1,43 @@
+The 19 programs that fail in the full suite but passed in the last recorded full suite (SF-04, before merge f78901b9), re-run one at a time on the untouched baseline copy (commit 1da9e092, before the cleanup) and on the migrated tree. Identical status and summary on both: upstream, not the cleanup.
+
+== baseline 1da9e092
+RESULT FAIL test_aircraft_contract 14s AS aircraft contract: 2932 checks, 2 failures
+RESULT FAIL test_atmosphere_flight 10s M5-ATM flight: 142 checks, 2 failed
+RESULT FAIL test_avanti_rudder 3s AV-17-R3 rudder checks: 33 checks, 1 failures
+RESULT FAIL test_control_surface_observation 7s Control surface observation: 50 checks, 2 failed
+RESULT FAIL test_failure_routes 8s FAIL flight notices start from the saved preference 
+RESULT FAIL test_lake_geometry_bake 5s 18 lake geometry bake checks, 1 failed
+RESULT FAIL test_overlay_manager 13s overlay manager: 95 checks, 1 failed
+RESULT FAIL test_rcv_damage_session 21s RCV damage Session: 15/17 checks passed
+RESULT FAIL test_retractable_gear_ground 4s 26 checks, 14 failed
+RESULT FAIL test_shaft_coupled 5s G2 coupled shaft: 43 checks, 2 failed
+RESULT FAIL test_ui_aircraft 17s all UI aircraft checks failed to reach End flight
+RESULT FAIL test_ui_atmosphere 17s 2 UI atmosphere checks failed
+RESULT FAIL test_ui_home_layout 8s 36 failed
+RESULT FAIL test_ui_language 13s 1 failed
+RESULT FAIL test_ui_runway 23s 12 UI runway checks failed
+RESULT FAIL test_ui_time_of_day 21s 1 UI time-of-day checks failed
+RESULT FAIL test_ui_time_of_day_pause 13s 2 TOD-08b pause UI checks failed
+RESULT FAIL test_ui_weather 14s 3 UI weather checks failed
+RESULT FAIL test_ui_weather_sliders 7s 4 UI weather slider checks failed
+
+== migrated tree
+RESULT FAIL test_aircraft_contract 14s AS aircraft contract: 2932 checks, 2 failures
+RESULT FAIL test_atmosphere_flight 10s M5-ATM flight: 142 checks, 2 failed
+RESULT FAIL test_avanti_rudder 3s AV-17-R3 rudder checks: 33 checks, 1 failures
+RESULT FAIL test_control_surface_observation 7s Control surface observation: 50 checks, 2 failed
+RESULT FAIL test_failure_routes 8s FAIL flight notices start from the saved preference 
+RESULT FAIL test_lake_geometry_bake 5s 18 lake geometry bake checks, 1 failed
+RESULT FAIL test_overlay_manager 13s overlay manager: 95 checks, 1 failed
+RESULT FAIL test_rcv_damage_session 21s RCV damage Session: 15/17 checks passed
+RESULT FAIL test_retractable_gear_ground 4s 26 checks, 14 failed
+RESULT FAIL test_shaft_coupled 5s G2 coupled shaft: 43 checks, 2 failed
+RESULT FAIL test_ui_aircraft 17s all UI aircraft checks failed to reach End flight
+RESULT FAIL test_ui_atmosphere 17s 2 UI atmosphere checks failed
+RESULT FAIL test_ui_home_layout 8s 36 failed
+RESULT FAIL test_ui_language 13s 1 failed
+RESULT FAIL test_ui_runway 23s 12 UI runway checks failed
+RESULT FAIL test_ui_time_of_day 20s 1 UI time-of-day checks failed
+RESULT FAIL test_ui_time_of_day_pause 14s 2 TOD-08b pause UI checks failed
+RESULT FAIL test_ui_weather 14s 3 UI weather checks failed
+RESULT FAIL test_ui_weather_sliders 7s 4 UI weather slider checks failed
