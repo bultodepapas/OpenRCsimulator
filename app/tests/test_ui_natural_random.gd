@@ -77,7 +77,7 @@ func _run() -> void:
 	await _press(app.home.natural_random_button)
 	check("Home opens briefing without a flight", app.natural_random_screen != null and app.flight == null)
 	if app.natural_random_screen == null:
-		app.free()
+		await ui.close_app(app)
 		_finish()
 		return
 	check("prepared draw can fly", not app.natural_random_screen.fly_button.disabled)
@@ -104,7 +104,7 @@ func _run() -> void:
 	await _press(app.natural_random_screen.fly_button)
 	check("briefing launches one accepted random flight", app.flight != null and app.home == null and app.natural_random_screen == null)
 	if app.flight == null:
-		app.free()
+		await ui.close_app(app)
 		_finish()
 		return
 	var flight: Node = app.flight
@@ -181,8 +181,7 @@ func _run() -> void:
 		app._on_time_of_day_applied(edited)
 		check("checkpoint restore preserves normal preference isolation", app.preferences == normal
 			and FileAccess.get_file_as_bytes(_prefs_path) == saved_bytes)
-	app.free()
-	await ui.settle()
+	await ui.close_app(app)
 	_finish()
 
 func _finish() -> void:

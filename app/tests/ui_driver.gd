@@ -53,3 +53,42 @@ func focus_name() -> String:
 func settle() -> void:
 	await _tree.process_frame
 	await _tree.process_frame
+
+
+func _release_audio_players(node: Node) -> void:
+	if node is AudioStreamPlayer3D:
+		var player_3d: AudioStreamPlayer3D = node as AudioStreamPlayer3D
+		player_3d.stop()
+		player_3d.stream = null
+	elif node is AudioStreamPlayer2D:
+		var player_2d: AudioStreamPlayer2D = node as AudioStreamPlayer2D
+		player_2d.stop()
+		player_2d.stream = null
+	elif node is AudioStreamPlayer:
+		var player: AudioStreamPlayer = node as AudioStreamPlayer
+		player.stop()
+		player.stream = null
+	for child: Node in node.get_children():
+		_release_audio_players(child)
+
+
+## Stop app-owned audio and drain one mixer interval before releasing the UI scene.
+func close_app(app: Node) -> void:
+	app.set_process(false)
+	app.set_physics_process(false)
+	var flight: Node = app.get("flight")
+	if flight != null:
+		flight.set_process(false)
+		flight.set_physics_process(false)
+		var audio: Node = flight.get("_soundscape_audio")
+		if audio != null:
+			audio.set_process(false)
+			audio.set_physics_process(false)
+	_release_audio_players(app)
+	# A real audio mix interval releases stopped playback in headless runs.
+	await _tree.create_timer(0.05).timeout
+	if app.get_parent() == _tree.root:
+		_tree.root.remove_child(app)
+	app.free()
+	await _tree.process_frame
+	await _tree.process_frame

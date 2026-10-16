@@ -279,9 +279,7 @@ func _test_real_model_routes() -> void:
 		await _ui.settle()
 	else:
 		_check("Pause source-loss verification found a supported power model", false)
-	app.queue_free()
-	await process_frame
-	await process_frame
+	await _ui.close_app(app)
 	for path in [PREFS, PREFS + ".bad"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(path))
 

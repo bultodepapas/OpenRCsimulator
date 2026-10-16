@@ -49,9 +49,7 @@ func _app() -> Node:
 
 
 func _close(app: Node) -> void:
-	root.remove_child(app)
-	app.free()
-	await ui.settle()
+	await ui.close_app(app)
 
 
 ## UI-05-R3: input settles separately from asynchronous preview preparation.

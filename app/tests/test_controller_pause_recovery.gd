@@ -118,45 +118,8 @@ func _run() -> void:
 	app.pause_menu.continue_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	check("verified neutral focus recovery can Continue without moving sticks", app.pause_menu == null and not session.sim.paused)
-	await _release_app(app)
+	await ui.close_app(app)
 	for suffix in ["", ".controllers", ".controllers.rollback", ".legacy_rc"]:
 		DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS + suffix))
 	print("Controller pause recovery: %d/%d checks passed" % [checks - failures, checks])
 	quit(1 if failures else 0)
-
-func _release_audio_players(node: Node) -> void:
-	if node is AudioStreamPlayer3D:
-		var player_3d: AudioStreamPlayer3D = node as AudioStreamPlayer3D
-		player_3d.stop()
-		player_3d.stream = null
-	elif node is AudioStreamPlayer2D:
-		var player_2d: AudioStreamPlayer2D = node as AudioStreamPlayer2D
-		player_2d.stop()
-		player_2d.stream = null
-	elif node is AudioStreamPlayer:
-		var player: AudioStreamPlayer = node as AudioStreamPlayer
-		player.stop()
-		player.stream = null
-	for child: Node in node.get_children():
-		_release_audio_players(child)
-
-
-func _release_app(app: Node) -> void:
-	app.set_process(false)
-	app.set_physics_process(false)
-	var flight: Node = app.get("flight")
-	if flight != null:
-		flight.set_process(false)
-		flight.set_physics_process(false)
-		var audio: Node = flight.get("_soundscape_audio")
-		if audio != null:
-			audio.set_process(false)
-			audio.set_physics_process(false)
-	_release_audio_players(app)
-	# A real audio mix interval releases stopped WAV/MP3 playback even in headless runs.
-	await create_timer(0.05).timeout
-	if app.get_parent() == root:
-		root.remove_child(app)
-	app.free()
-	await process_frame
-	await process_frame

@@ -136,14 +136,12 @@ func _test_home_to_fly(custom_source: String, original_default: String) -> void:
 	var home: Control = app.get("home") as Control
 	_check("interactive route opens Home with no flight", home_scene != null and home != null and app.get("flight") == null)
 	if home_scene == null or home == null:
-		app.queue_free()
-		await _ui.settle()
+		await _ui.close_app(app)
 		return
 	var home_field: Node3D = home_scene.get_node_or_null("Field") as Node3D
 	_check("Home built the field from the injected file", home_field != null and home_scene.get("field").id == "default")
 	if home_field == null:
-		app.queue_free()
-		await _ui.settle()
+		await _ui.close_app(app)
 		return
 	var parked: Vector3 = home_scene.get("airplane").root.global_position
 	_check("Home parks on the injected runway and frames the selected model",
@@ -155,8 +153,7 @@ func _test_home_to_fly(custom_source: String, original_default: String) -> void:
 	var fly_button: Button = home.get("fly_button") as Button
 	_check("Home initially focuses Fly", fly_button != null and fly_button.has_focus())
 	if fly_button == null:
-		app.queue_free()
-		await _ui.settle()
+		await _ui.close_app(app)
 		return
 
 	# This uses the actual Home control and its key route, including app_root's scene transition.
@@ -164,8 +161,7 @@ func _test_home_to_fly(custom_source: String, original_default: String) -> void:
 	var flight: Node = app.get("flight") as Node
 	_check("activating Home Fly creates the flight", flight != null and app.get("home") == null and app.get("home_scene") == null)
 	if flight == null:
-		app.queue_free()
-		await _ui.settle()
+		await _ui.close_app(app)
 		return
 	var flight_field: Node3D = flight.get_node_or_null("Field") as Node3D
 	_check("flight built the same custom field geometry and materials",
@@ -211,8 +207,7 @@ func _test_home_to_fly(custom_source: String, original_default: String) -> void:
 	_check("app did not mutate either field JSON file",
 		FileAccess.get_file_as_string(FieldLoader.DEFAULT_PATH) == original_default
 		and FileAccess.get_file_as_string(CUSTOM_FIELD) == custom_source)
-	app.queue_free()
-	await _ui.settle()
+	await _ui.close_app(app)
 
 
 func _test_field_error_screen() -> void:
