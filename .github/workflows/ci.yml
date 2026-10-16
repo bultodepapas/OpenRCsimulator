@@ -243,7 +243,7 @@ jobs:
           cp "$RUNNER_TEMP/rc-native-linux/build-receipt.linux.json" "$native_tool_root/"
           cp "$RUNNER_TEMP/rc-native-windows/openrc_ground_vehicle.dll" "$native_tool_root/"
           cp "$RUNNER_TEMP/rc-native-windows/build-receipt.windows.json" "$native_tool_root/"
-          python3 research/rc-monster-truck/native/build.py --jobs 2 --install-app
+          python3 research/rc-monster-truck/native/build.py --jobs 2 --install-app --godot "$(app/get-godot.sh)"
       - run: app/export.sh # names the packages with git describe, the same identity the app shows (UI-04a)
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4.6.2
         with:
