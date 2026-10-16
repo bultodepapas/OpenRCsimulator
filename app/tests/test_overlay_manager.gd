@@ -53,6 +53,7 @@ func _run() -> void:
 	await _controls_guide()
 	await _flight_scene()
 	await _pause_preview()
+	await create_timer(1.0).timeout # allow the final semantic menu cue to finish and release its audio stream
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	print("overlay manager: %d checks, %d failed" % [_count, _failures])
 	quit(1 if _failures else 0)
