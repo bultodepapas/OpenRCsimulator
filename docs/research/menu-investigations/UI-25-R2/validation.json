@@ -1,0 +1,9 @@
+{
+  "normal_text_screens": 104,
+  "stress_screens": 9,
+  "scene_studies": 9,
+  "native_4k_screens": 26,
+  "suites_passed": 23,
+  "normal_text_home_settings_pause_scrollbars": 0,
+  "image_size_and_primary_header_bounds_issues": []
+}

@@ -42,6 +42,13 @@ func check(label: String, condition: bool) -> void:
 		print("ok   " + label)
 
 func _press(button: Button) -> void:
+	if button.name == "NaturalRandom" and not button.is_visible_in_tree():
+		var home: Node = button
+		while home != null and home.name != "Home": home = home.get_parent()
+		if home != null:
+			home.get("_page_buttons")[2].grab_focus()
+			await ui.tap(KEY_ENTER)
+			await ui.settle()
 	button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	await ui.settle()

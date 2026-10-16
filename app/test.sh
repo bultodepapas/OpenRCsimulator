@@ -219,8 +219,8 @@ echo "== P-51D Mustang 1/4 model contract (aircraft/verify_p51.gd, P51-02: geome
 run --script res://aircraft/verify_p51.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "P-51 model contract failed (see above)"; exit 1; fi
 
-echo "== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01: rudder and elevators at the flown throws and 45 deg)"
-run --script res://aircraft/verify_p51_clearance.gd 2>&1 | tee "$LOG" | tail -1
+echo "== P-51D hinge clearances (aircraft/verify_p51_clearance.gd, P51-04/V01/V14: rudder, elevators and flaps at the flown throws and 45 deg; ~75 s native)"
+run_with_timeout 180 --script res://aircraft/verify_p51_clearance.gd 2>&1 | tee "$LOG" | tail -1
 if grep -qE "^(SCRIPT )?ERROR:|FAIL" "$LOG"; then echo "P-51 clearance contract failed (see above)"; exit 1; fi
 
 echo "== Ventage Jet Blender source and visual contract (AV-31: imported geometry, controls, sections, no propeller)"

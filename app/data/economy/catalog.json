@@ -4,7 +4,7 @@
   "price_date": "2026-10-15",
   "generated_from": {
     "price_catalog_sha256": "58ade6aa478c00d59a95f8a45de78dcacba3e7f058eb921f19f144706b6bc903",
-    "aircraft_costing_sha256": "90839f3e65c9b309cce63b5f9360d0fe5689e6cc80a75d2b6a62523463d976b5",
+    "aircraft_costing_sha256": "327e8e8b597e14da99f74bb2d0d7fa3d6ecdd881b11e434ac90d1996d5fca6ff",
     "aircraft_catalog_sha256": "e0790acb9b1a5097d9d3cbcb564e72f074940a3813b52f70edf1c44dae5bc60c",
     "price_research_components_sha256": "52aca914b95cf375e8ef3d3e12fe1c2a70d0d762a663e8dc01a039255f123cd9",
     "price_research_fleet_sha256": "07345414daf3b8e6f1252e0b060e51af37f0ed3349c7d57ddc99ac7745886fc9"
@@ -1726,8 +1726,293 @@
       "source_sha256": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
       "currency": "USD",
       "price_date": "2026-10-15",
-      "valuation_kind": "price_comparison_only",
-      "components": [],
+      "valuation_kind": "independent_partial_inventory_costing",
+      "components": [
+        {
+          "id": "engine_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "engine_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced historical O.S. MAX-61FX engine. Do not price it with a complete 55AX/stock-silencer package and separately count the Slimline exhaust."
+        },
+        {
+          "id": "muffler_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "muffler_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced Slimline Pitts #3217 / SLIG2217 named in the Great Planes Extra 300S .60 manual. No current exact USD quote verified. Stock O.S. engine/muffler packages are not this in-cowl exhaust."
+        },
+        {
+          "id": "propeller",
+          "quantity": 1,
+          "unit_minor": 539,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "propeller_main"
+          ],
+          "price_basis": "exact_product_price",
+          "offer_id": "apc-lp12060",
+          "notes": "APC LP12060 matches the authored 12x6 Sport propeller. Price rechecked 2026-10-15. Spinner and prop nut are a separate unpriced item. This identifies the simulated build, not the unidentified original prototype propeller."
+        },
+        {
+          "id": "spinner_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "spinner_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: 2-1/2 in spinner and prop nut. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "engine_mount",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "engine_mount"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: engine mount and bolts. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "cowl_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "cowl_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: cowl. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "fuel_tank",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fuel_tank"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: fuel tank 12 oz (empty). No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "receiver_battery",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "receiver_battery"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: receiver battery 4.8 V. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "receiver_radio",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "receiver_radio"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: receiver and switch. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "fuselage_servos",
+          "quantity": 3,
+          "unit_minor": 3399,
+          "low_unit_minor": 3399,
+          "high_unit_minor": 4399,
+          "physical_inventory_ids": [
+            "fuselage_servos"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "savox-sc0252mgp",
+          "notes": "Generic installed standard servos; SAVOX SC-0252MG+ is a commercial value proxy only, not a qualified installation. Authored counts are three fuselage and two aileron servos. Retailer displayed only two units on 2026-10-15, so five-unit availability is not established. Partial salvage requires an explicit inspected quantity."
+        },
+        {
+          "id": "aileron_servos",
+          "quantity": 2,
+          "unit_minor": 3399,
+          "low_unit_minor": 3399,
+          "high_unit_minor": 4399,
+          "physical_inventory_ids": [
+            "aileron_servos"
+          ],
+          "price_basis": "price_proxy",
+          "offer_id": "savox-sc0252mgp",
+          "notes": "Generic installed standard servos; SAVOX SC-0252MG+ is a commercial value proxy only, not a qualified installation. Authored counts are three fuselage and two aileron servos. Retailer displayed only two units on 2026-10-15, so five-unit availability is not established. Partial salvage requires an explicit inspected quantity."
+        },
+        {
+          "id": "landing_gear_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "landing_gear_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: main gear, 2-3/4 in wheels and pants. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "landing_gear_tail",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "landing_gear_tail"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: tail wheel assembly. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "wing_main",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "wing_main"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: wing incl. ailerons, covered. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "fuselage_front",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fuselage_front"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: fuselage front (firewall to cockpit), covered. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "fuselage_rear",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fuselage_rear"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: fuselage rear and turtle deck, covered. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "canopy_pilot",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "canopy_pilot"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: canopy and pilot. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "horizontal_tail",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "horizontal_tail"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: stabilizer and elevators, covered. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "vertical_tail",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "vertical_tail"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: fin and rudder, covered. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "control_hardware",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "control_hardware"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: pushrods, horns, hardware. No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "fuel_flight",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [
+            "fuel_flight"
+          ],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced: fuel (half tank). No aircraft-specific replacement quote verified; null is not zero."
+        },
+        {
+          "id": "final_assembly_and_commissioning",
+          "quantity": 1,
+          "unit_minor": null,
+          "low_unit_minor": null,
+          "high_unit_minor": null,
+          "physical_inventory_ids": [],
+          "price_basis": "estimated",
+          "offer_id": null,
+          "notes": "Unpriced Extra-specific assembly and commissioning labor. No transferable Ugly Stick allowance assumed; labor cannot be salvaged."
+        }
+      ],
       "exclusions": [
         {
           "id": "ballast_reference",
@@ -1739,16 +2024,42 @@
         }
       ],
       "missing": [
-        "Historical .60 glow airframe quote",
-        "Own complete BOM",
-        "Servo topology and fixed gear",
+        "Historical .60 glow airframe and installed accessories need current quotes; the unrelated 60E electric ARF is not a replacement.",
+        "Five generic servos use a SAVOX value proxy; installation compatibility and five-unit availability remain unverified.",
         "Candidate offer references are not attached to a component until physical fit and package coverage are reconciled: extra_60e_pro_arf_price_proxy.",
-        "No reconciled economic component coverage for physical inventory IDs: engine_main, muffler_main, propeller_main, spinner_main, engine_mount, cowl_main, fuel_tank, receiver_battery, receiver_radio, fuselage_servos, aileron_servos, landing_gear_main, landing_gear_tail, wing_main, fuselage_front, fuselage_rear, canopy_pilot, horizontal_tail, vertical_tail, control_hardware, fuel_flight."
+        "No replacement price for economic component: engine_main.",
+        "No replacement price for economic component: muffler_main.",
+        "No replacement price for economic component: spinner_main.",
+        "No replacement price for economic component: engine_mount.",
+        "No replacement price for economic component: cowl_main.",
+        "No replacement price for economic component: fuel_tank.",
+        "No replacement price for economic component: receiver_battery.",
+        "No replacement price for economic component: receiver_radio.",
+        "No replacement price for economic component: landing_gear_main.",
+        "No replacement price for economic component: landing_gear_tail.",
+        "No replacement price for economic component: wing_main.",
+        "No replacement price for economic component: fuselage_front.",
+        "No replacement price for economic component: fuselage_rear.",
+        "No replacement price for economic component: canopy_pilot.",
+        "No replacement price for economic component: horizontal_tail.",
+        "No replacement price for economic component: vertical_tail.",
+        "No replacement price for economic component: control_hardware.",
+        "No replacement price for economic component: fuel_flight.",
+        "No replacement price for economic component: final_assembly_and_commissioning."
       ],
       "complete": false,
-      "contact_components": {},
-      "propeller_component_id": "",
-      "propeller_inspection_ids": []
+      "contact_components": {
+        "propeller/propulsion_main": [
+          "propeller"
+        ]
+      },
+      "propeller_component_id": "propeller",
+      "propeller_inspection_ids": [
+        "engine_main",
+        "engine_mount",
+        "spinner_main",
+        "fuselage_front"
+      ]
     },
     {
       "format": "openrc-aircraft-economics v1",

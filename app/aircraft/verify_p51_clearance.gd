@@ -1,6 +1,6 @@
-# P51-04 / V01 / P51-11a: clearances of the P-51D's rudder, elevators and flaps against their fixed neighbours, with the Extra's generic
-# mesh-pair checker (EX-04) at the extreme poses: both surfaces at the flown throws (data file) and at 45 deg. Its own
-# script because each pose and pair costs ~5 s on these lofts; test.sh gives every script 60 s.
+# P51-04 / V01 / P51-11a / P51-V14 / V15: clearances of the P-51D's rudder, elevators, ailerons and flaps against their fixed neighbours, with the Extra's generic
+# mesh-pair checker (EX-04) at the extreme poses: every surface at the flown throws (data file controls.max_throw) and at 45 deg. Its own
+# script because each pose and pair costs ~4 s on these lofts (~75 s in all); test.sh gives it 180 s.
 # Run: godot --headless --path app --script res://aircraft/verify_p51_clearance.gd
 extends SceneTree
 
@@ -8,7 +8,12 @@ const P51 := preload("res://aircraft/p51d_model.gd")
 const Clearance := preload("res://aircraft/extra_clearance.gd")
 const AirplaneBuilder := preload("res://render/airplane.gd")
 const Commands := preload("res://input/commands.gd")
-const PAIRS := [["rudder", "fin"], ["elevator_right", "stab"], ["elevator_left", "stab"]]
+# P51-V14: the lower rudder turns in the fuselage's concave cut and the fin root reaches down beside the elevators.
+const PAIRS := [["rudder", "fin"], ["rudder", "fuselage"], ["rudder", "elevator_right"], ["rudder", "elevator_left"],
+	["elevator_right", "stab"], ["elevator_left", "stab"], ["elevator_right", "fin"], ["elevator_left", "fin"],
+	# P51-V15: the ailerons against the fixed panels around them (never checked before).
+	["aileron_left", "wing_left_ahead_of_aileron"], ["aileron_left", "wing_left_between"], ["aileron_left", "wing_left_tip"],
+	["aileron_right", "wing_right_ahead_of_aileron"], ["aileron_right", "wing_right_between"], ["aileron_right", "wing_right_tip"]]
 const FLAP_PAIRS := [["flap_left", "wing_left_ahead_of_flap"], ["flap_left", "wing_left_root"], ["flap_left", "wing_left_between"],
 	["flap_right", "wing_right_ahead_of_flap"], ["flap_right", "wing_right_root"], ["flap_right", "wing_right_between"]]
 const MINIMUM_GAP_M := 0.0005

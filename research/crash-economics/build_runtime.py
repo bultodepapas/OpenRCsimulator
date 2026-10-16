@@ -495,8 +495,10 @@ def _other_exclusions(source: dict[str, Any], aircraft_id: str) -> list[dict[str
 
 
 def _partial_missing(
-    fleet_entry: dict[str, Any], source: dict[str, Any], aircraft_id: str, offers: dict[str, dict[str, Any]]
+    fleet_entry: dict[str, Any], source: dict[str, Any], aircraft_id: str, offers: dict[str, dict[str, Any]],
+    components: list[dict[str, Any]] | None = None,
 ) -> list[str]:
+    components = components or []
     missing: list[str] = []
     raw_missing = fleet_entry.get("missing", [])
     if not isinstance(raw_missing, list):
@@ -511,7 +513,8 @@ def _partial_missing(
         ref = _require_string(reference, f"fleet {aircraft_id}.price_observations[]")
         if ref not in offers:
             _fail(f"fleet {aircraft_id}: unknown offer reference {ref}")
-        refs.append(ref)
+        if ref not in {row["offer_id"] for row in components}:
+            refs.append(ref)
     if refs:
         missing.append(
             "Candidate offer references are not attached to a component until physical fit and package coverage are reconciled: "
@@ -519,10 +522,14 @@ def _partial_missing(
             + "."
         )
     excluded_ids = {item_id for exclusion in _other_exclusions(source, aircraft_id) for item_id in exclusion["physical_inventory_ids"]}
-    uncovered = [row["id"] for row in _inventory_rows(source, aircraft_id) if row["id"] not in excluded_ids]
+    covered_ids = {item for row in components for item in row["physical_inventory_ids"]}
+    uncovered = [row["id"] for row in _inventory_rows(source, aircraft_id) if row["id"] not in excluded_ids | covered_ids]
     if uncovered:
         missing.append("No reconciled economic component coverage for physical inventory IDs: " + ", ".join(uncovered) + ".")
-    if not missing:
+    for component in components:
+        if component["unit_minor"] is None:
+            missing.append("No replacement price for economic component: " + component["id"] + ".")
+    if not missing and not components:
         missing.append("No validated aircraft-specific economic BOM is available.")
     return missing
 
@@ -548,7 +555,7 @@ def _dossier(
         for exclusion in exclusions
         for item_id in exclusion.get("physical_inventory_ids", [])
     }
-    complete = bool(inventory_ids) and inventory_ids == (covered_ids | excluded_ids)
+    complete = not missing and bool(inventory_ids) and inventory_ids == (covered_ids | excluded_ids)
     return {
         "format": FORMAT,
         "aircraft_id": aircraft_id,
@@ -560,9 +567,9 @@ def _dossier(
         "exclusions": exclusions,
         "missing": missing,
         "complete": complete,
-        "contact_components": contact_components or {},
+        "contact_components": {} if contact_components is None else contact_components,
         "propeller_component_id": propeller_component_id,
-        "propeller_inspection_ids": propeller_inspection_ids or [],
+        "propeller_inspection_ids": [] if propeller_inspection_ids is None else propeller_inspection_ids,
     }
 
 
@@ -701,6 +708,9 @@ def _build_dossiers(context: dict[str, Any]) -> list[dict[str, Any]]:
         route = context["route_sources"][aircraft_id]
         source = route["source"]
         inherited_from = fleet_entry.get("inherits")
+        authored = fleet_entry.get("dossier")
+        if authored is not None and inherited_from is not None:
+            _fail(f"{aircraft_id}: independent dossier cannot also inherit a BOM")
         override_fields = {"component_overrides", "expected_inventory", "expected_propulsion"}
         if inherited_from is None and override_fields & fleet_entry.keys():
             _fail(f"{aircraft_id}: component override fields require explicit baseline inheritance")
@@ -729,6 +739,25 @@ def _build_dossiers(context: dict[str, Any]) -> list[dict[str, Any]]:
             continue
 
         exclusions_for_route = _other_exclusions(source, aircraft_id)
+        if authored is not None:
+            required = {"expected_source_sha256", "lines", "contact_components", "propeller_component_id", "propeller_inspection_ids"}
+            if not isinstance(authored, dict) or set(authored) != required:
+                _fail(f"{aircraft_id}: independent dossier requires exactly {sorted(required)}")
+            if authored["expected_source_sha256"] != route["source_sha256"]:
+                _fail(f"{aircraft_id}: independent dossier physical source identity mismatch; review before rebinding")
+            own_components = _baseline_components(authored, context["offer_by_id"])
+            if not own_components:
+                _fail(f"{aircraft_id}: independent dossier requires nonempty lines")
+            dossiers[aircraft_id] = _dossier(
+                aircraft_id, source, route["source_sha256"], price_date=context["price_date"],
+                valuation_kind=_require_string(fleet_entry.get("status"), f"fleet {aircraft_id}.status"),
+                components=own_components, exclusions=exclusions_for_route,
+                missing=_partial_missing(fleet_entry, source, aircraft_id, context["offer_by_id"], own_components),
+                contact_components=authored["contact_components"],
+                propeller_component_id=authored["propeller_component_id"],
+                propeller_inspection_ids=authored["propeller_inspection_ids"],
+            )
+            continue
         missing = _partial_missing(fleet_entry, source, aircraft_id, context["offer_by_id"])
         dossier = _dossier(
             aircraft_id,
@@ -916,6 +945,8 @@ def validate_runtime_document(document: dict[str, Any], context: dict[str, Any])
             _fail(f"{aircraft_id}: complete dossier has orphaned physical inventory")
         if not complete and not missing:
             _fail(f"{aircraft_id}: incomplete dossier must state missing/unknown coverage")
+        if complete and (missing or any(row["unit_minor"] is None for row in components)):
+            _fail(f"{aircraft_id}: complete dossier cannot have missing prices or unresolved coverage")
         if (bound_inventory_ids | excluded_inventory_ids) - inventory_ids:
             _fail(f"{aircraft_id}: physical coverage contains orphaned inventory references")
 

@@ -154,13 +154,13 @@ cf_e = note("tail", "elevator chord fraction", 1 - T["elevator_hinge_fraction"],
 
 # Vertical tail: fin + rudder side polygon (z, y) above the fuselage top line, dorsal fillet included.
 fus_top = lambda z: next(r0[2] + (r1[2] - r0[2]) * (z - r0[0]) / (r1[0] - r0[0]) for r0, r1 in zip(st, st[1:]) if r0[0] <= z <= r1[0])
-z_post = T["rudder_hinge_z"]
+z_post = T["tail_post_z"]  # the side polygon keeps the earlier tail-post corner (P51-24 values unchanged; P51-V14)
 fin_top_te = T["fin_top_le_z"] + T["fin_top_chord"]
 fin = [(T["dorsal_start_z"], fus_top(T["dorsal_start_z"])), (T["fin_root_le_z"], fus_top(T["fin_root_le_z"]) + 0.06),
        (T["fin_top_le_z"], T["fin_top_y"]), (fin_top_te, T["fin_top_y"]), tuple(T["rudder_te_bottom"]), (z_post, T["rudder_te_bottom"][1])]
 Sv, fin_cz, fin_cy = shoelace(fin)
 note("tail", "Sv (m2)", Sv, "fin (with dorsal fillet) + rudder side polygon")
-# P51-24: the rudder's aerodynamic hinge. The visual hinge (geometry rudder_hinge_z, the tail post) is an unmeasured
+# P51-24: the rudder's aerodynamic hinge. The earlier tail post (geometry tail_post_z) is an unmeasured
 # constant that leaves 7.2 ft2 of rudder; the production P-51D rudder is 10.41 ft2 of the 20.02 ft2 vertical tail (fin 9.61,
 # NACA RM L6J25 / MR L-566 dimension tables). Solve the hinge so the measured full-size tail silhouette aft of it has that
 # area; it then reproduces the published 26 in maximum chord and 74 in span within about 1 in and 3 in.
@@ -188,7 +188,9 @@ for _ in range(60):
     _mid = 0.5 * (_lo_h + _hi_h)
     _lo_h, _hi_h = (_mid, _hi_h) if _area_aft(_mid) > RUDDER_AREA_FT2 * (12 * IN) ** 2 else (_lo_h, _mid)
 z_rudder_aero = note("tail", "rudder aerodynamic hinge (model z)", 0.5 * (_lo_h + _hi_h) * g["scale"]["factor"],
-                     f"full-size {0.5 * (_lo_h + _hi_h):.3f} m: the measured silhouette aft of it is the NACA production rudder area {RUDDER_AREA_FT2} ft2; the visual hinge {z_post:.4f} (tail post, unmeasured) leaves {_area_aft(z_post / g['scale']['factor']) / (12 * IN) ** 2:.1f} ft2")
+                     f"full-size {0.5 * (_lo_h + _hi_h):.3f} m: the measured silhouette aft of it is the NACA production rudder area {RUDDER_AREA_FT2} ft2; the visual model hinges its rudder here (P51-V14); the earlier tail post {z_post:.4f} (unmeasured) left {_area_aft(z_post / g['scale']['factor']) / (12 * IN) ** 2:.1f} ft2")
+# P51-V14: the visual hinge (source.json, written by apply_metrology.py) must be this solved hinge.
+assert abs(T["rudder_hinge_z"] - z_rudder_aero) < 5e-4, f"visual rudder hinge {T['rudder_hinge_z']} differs from the aerodynamic hinge {z_rudder_aero:.4f}"
 rud = [(z_rudder_aero, T["fin_top_y"]), (fin_top_te, T["fin_top_y"]), tuple(T["rudder_te_bottom"]), (z_rudder_aero, T["rudder_te_bottom"][1])]
 Sr, _, _ = shoelace(rud)
 cf_r = note("tail", "rudder area fraction", Sr / Sv, "exposed side polygon aft of the aerodynamic hinge (P51-24); used as its chord fraction")

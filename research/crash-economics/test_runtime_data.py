@@ -96,9 +96,53 @@ class RuntimeEconomicsTests(unittest.TestCase):
                 continue
             self.assertFalse(dossier["complete"], aircraft_id)
             self.assertTrue(dossier["missing"], aircraft_id)
+            if aircraft_id == "gp-extra-300s-60":
+                continue
             self.assertEqual(dossier["components"], [], aircraft_id)
             self.assertEqual(dossier["propeller_component_id"], "", aircraft_id)
             self.assertEqual(dossier["propeller_inspection_ids"], [], aircraft_id)
+
+    def test_independent_extra_maps_five_servos_without_inventing_full_price(self) -> None:
+        dossier = self.dossiers["gp-extra-300s-60"]
+        parts = {row["id"]: row for row in dossier["components"]}
+        self.assertEqual(parts["fuselage_servos"]["quantity"], 3)
+        self.assertEqual(parts["aileron_servos"]["quantity"], 2)
+        self.assertEqual(sum(row["quantity"] * (row["unit_minor"] or 0) for row in parts.values()), 17534)
+        self.assertEqual(parts["propeller"]["unit_minor"], 539)
+        self.assertIsNone(parts["muffler_main"]["unit_minor"])
+        self.assertIsNone(parts["engine_main"]["unit_minor"])
+        self.assertEqual(dossier["contact_components"], {"propeller/propulsion_main": ["propeller"]})
+        covered = [item for row in parts.values() for item in row["physical_inventory_ids"]]
+        source_ids = {row["id"] for row in self.context["route_sources"]["gp-extra-300s-60"]["inventory_rows"]}
+        self.assertEqual(set(covered) | {"ballast_reference"}, source_ids)
+        self.assertEqual(len(covered), len(set(covered)))
+        self.assertFalse(dossier["complete"])
+
+    def test_independent_authoring_refuses_drift_and_ambiguous_inheritance(self) -> None:
+        aircraft_id = "gp-extra-300s-60"
+        mutations = [
+            lambda row: row["dossier"].update(expected_source_sha256="0" * 64),
+            lambda row: row.update(inherits="jensen-das-ugly-stik-60"),
+            lambda row: row["dossier"].pop("propeller_inspection_ids"),
+            lambda row: row["dossier"].update(lines=[]),
+        ]
+        for mutate in mutations:
+            changed = copy.deepcopy(self.context)
+            mutate(changed["fleet"][aircraft_id])
+            with self.assertRaises(build_runtime.ContractError):
+                build_runtime._build_dossiers(changed)
+
+    def test_independent_unknown_prices_cannot_claim_complete_coverage(self) -> None:
+        changed = copy.deepcopy(self.context)
+        changed["fleet"]["gp-extra-300s-60"]["missing"] = []
+        changed["fleet"]["gp-extra-300s-60"]["price_observations"] = []
+        dossier = next(row for row in build_runtime._build_dossiers(changed) if row["aircraft_id"] == "gp-extra-300s-60")
+        self.assertFalse(dossier["complete"])
+        self.assertTrue(any("No replacement price" in reason for reason in dossier["missing"]))
+        document = copy.deepcopy(self.document)
+        next(row for row in document["aircraft"] if row["aircraft_id"] == "gp-extra-300s-60")["complete"] = True
+        with self.assertRaisesRegex(build_runtime.ContractError, "missing prices"):
+            build_runtime.validate_runtime_document(document, self.context)
 
     def test_variant_groups_replace_donor_parts_once(self) -> None:
         base = {row["id"]: row for row in self.dossiers["jensen-das-ugly-stik-60"]["components"]}

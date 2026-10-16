@@ -2338,7 +2338,7 @@ msgstr "Usa un mando para los menús. El teclado y el ratón siempre están disp
 
 #. HELI-20 ground lifecycle
 msgid "Start: helicopter pad"
-msgstr "Inicio: plataforma de helicóptero"
+msgstr "Inicio: helipuerto"
 
 #. HELI-20 ground lifecycle
 msgid "Choose a stopped rotor on the pad or a trimmed practice hover."
@@ -3003,3 +3003,69 @@ msgstr "Garaje"
 
 msgid "Details"
 msgstr "Detalles"
+
+msgid "AIRCRAFT CATALOG"
+msgstr "CATÁLOGO DE AERONAVES"
+
+msgid "Aircraft"
+msgstr "Aeronaves"
+
+msgid "Aircraft Workshop is not available for this rotorcraft yet."
+msgstr "El laboratorio de aviones aún no está disponible para aeronaves de ala rotatoria."
+
+msgid "Choose a model. Flight capability and limitations are shown on each entry."
+msgstr "Elige un modelo. Cada ficha indica sus capacidades y limitaciones de vuelo."
+
+msgid "Experimental"
+msgstr "Experimental"
+
+msgid "Flight input: %s"
+msgstr "Control de vuelo: %s"
+
+msgid "Flight input: Keyboard"
+msgstr "Control de vuelo: teclado"
+
+msgid "Flyable"
+msgstr "Apto para volar"
+
+msgid "Hide flight details"
+msgstr "Ocultar detalles del vuelo"
+
+msgid "Menu input: %s"
+msgstr "Control de menú: %s"
+
+msgid "Menu input: Keyboard"
+msgstr "Control de menú: teclado"
+
+msgid "More flight details"
+msgstr "Más detalles del vuelo"
+
+msgid "Natural Random currently supports airplanes only."
+msgstr "Por ahora, Aleatorio natural solo funciona con aviones."
+
+msgid "Preview only"
+msgstr "Solo vista previa"
+
+msgid "RC garage"
+msgstr "Garaje RC"
+
+msgid "Select a vehicle before opening the garage."
+msgstr "Selecciona un vehículo antes de abrir el garaje."
+
+msgid "Start: hover"
+msgstr "Inicio: vuelo estacionario"
+
+msgid "Start: runway"
+msgstr "Inicio: pista"
+
+msgid "Start: 50% throttle"
+msgstr "Inicio: 50 % acelerador"
+
+msgid "Evening"
+msgstr "Atardecer"
+
+msgid "Full moon"
+msgstr "Luna llena"
+
+msgid "New moon"
+msgstr "Luna nueva"

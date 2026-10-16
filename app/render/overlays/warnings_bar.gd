@@ -78,7 +78,7 @@ func _chip(code: String) -> PanelContainer:
 	var box := StyleBoxFlat.new()
 	var text_color := UiTheme.TEXT
 	if code in DANGER:
-		box.bg_color = UiTheme.PRIMARY.pressed # contrast under the cream text checked by test_overlay_manager
+		box.bg_color = UiTheme.DANGER.pressed
 	elif code in INFO:
 		box.bg_color = Color(UiTheme.PANEL, Frame.BACKPLATE_ALPHA)
 	else:

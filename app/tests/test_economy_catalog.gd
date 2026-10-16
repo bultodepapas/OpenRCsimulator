@@ -108,7 +108,15 @@ func _test_missing_prices_do_not_gate_routes() -> void:
 		if not bool(dossier.get("complete", false)):
 			incomplete_count += 1
 			_check("unpriced route has explicit missing reasons " + aircraft_id, not (dossier.get("missing", []) as Array).is_empty())
-			_check("unpriced route invents no component prices " + aircraft_id, (dossier.get("components", []) as Array).is_empty())
+			if aircraft_id == "gp-extra-300s-60":
+				_check("Extra partial dossier binds its own propeller", dossier.propeller_component_id == "propeller" and dossier.contact_components.get("propeller/propulsion_main") == ["propeller"])
+				var count := 0
+				for component: Dictionary in dossier.components:
+					if component.id in ["fuselage_servos", "aileron_servos"]:
+						count += component.quantity
+				_check("Extra has five independently counted servo proxies", count == 5)
+			else:
+				_check("unpriced route invents no component prices " + aircraft_id, (dossier.get("components", []) as Array).is_empty())
 	_check("other five fleet routes remain economically incomplete", incomplete_count == 5, str(incomplete_count))
 
 
@@ -152,6 +160,12 @@ func _test_document_integrity_checks() -> void:
 	unknown_offer["aircraft"][0]["components"][0]["offer_id"] = "unknown_offer"
 	_check("unknown offer reference is rejected", _has_error(Catalog._validate_document(unknown_offer), "unknown offer"))
 	var fractional_minor: Dictionary = raw.duplicate(true)
+	var false_complete: Dictionary = raw.duplicate(true)
+	for dossier: Dictionary in false_complete.aircraft:
+		if dossier.aircraft_id == "gp-extra-300s-60":
+			dossier.complete = true
+			dossier.missing = []
+	_check("full inventory mapping with null prices cannot masquerade as complete", _has_error(Catalog._validate_document(false_complete), "missing replacement prices"))
 	fractional_minor["aircraft"][0]["components"][0]["unit_minor"] = 35000.5
 	_check("fractional cents are rejected", _has_error(Catalog._validate_document(fractional_minor), "unit_minor"))
 	var unknown_contact: Dictionary = raw.duplicate(true)

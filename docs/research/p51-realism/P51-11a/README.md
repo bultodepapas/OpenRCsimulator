@@ -54,7 +54,7 @@ Before the correction the trim change was +2.9 / +3.6 / +4.8° power off. Sensit
 
 ## Mechanism and rendering
 
-[`p51d_model.gd`](../../../../app/aircraft/p51d_model.gd) hangs each flap panel on `flap_<side>_hinge` on the swept hinge line, as the ailerons. The pivots sit outside the four control-surface hinges, so the model contract and radio bindings are unchanged. `set_flaps()` renders the session's accepted angle. The flap nose uses a 2:1 bevel and a 3 mm cove: the swept hinge carries the nose apex at the flap ends about 0.5 mm forward at 40–45°, and `verify_p51_clearance` caught it. Clearance now passes with the flaps at 15° and 45°: 28 checks in 42 s.
+[`p51d_model.gd`](../../../../app/aircraft/p51d_model.gd) hangs each flap panel on `flap_<side>_hinge` on the swept hinge line, as the ailerons. The pivots sit outside the four control-surface hinges, so the model contract and radio bindings are unchanged. `set_flaps()` renders the session's accepted angle. The flap nose uses a 2:1 bevel and a 3 mm cove: the swept hinge carries the nose apex at the flap ends about 0.5 mm forward at 40–45°, and `verify_p51_clearance` caught it. Clearance now passes with the flaps at 15° and 45°: 28 checks in 42 s. **Correction ([P51-V15](../P51-V15/README.md)):** the panels were drawn at the aileron's 0.19 chord fraction while the hinge and the physics use the flap's 0.21, so the drawn flap was 10 % short in chord and turned about a point ahead of its nose. It is now drawn at 0.21.
 
 ## Engine smoke (P51-V12)
 

@@ -21,18 +21,11 @@ const FieldError = preload("res://ui/field_error.gd")
 const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const Preferences := preload("res://app_state/preferences.gd")
 const SkyConfig := preload("res://environment/sky_appearance_config.gd")
+const Presentation := preload("res://ui/home_presentation.gd")
 
-## Composition, in NED metres from the pilot's eyes and degrees: a low pass along the runway at eye height, banked
-## toward the camera so the planform shows, seen with a long lens from the field edge (a photographer's view:
-## flat perspective, the horizon in the lower third, the airplane in the right third facing the menu).
-const AIRPLANE_NED := [15.0, 3.0, -1.05]
-const ATTITUDE_DEG := { yaw = -112.0, pitch = 2.0, roll = -30.0 }
-const HELICOPTER_ATTITUDE_DEG := { yaw = -112.0, pitch = 0.0, roll = 0.0 }
-const CAMERA_NED := [2.0, 3.0, 0.0]
-const FOV_DEG := 12.0
-## The camera looks this far left of the airplane (deg), and this far above the horizon (deg).
-const AIRPLANE_RIGHT_DEG := 4.5
-const CAMERA_PITCH_DEG := 3.2
+## Render-only parked presentation. Contact points come from the visual wheels/skids;
+## the simulator's start state and aircraft configuration remain independent.
+const PARKED_YAW_DEG := 80.0
 const PROP_ANGLE := 0.6 # rad: a blade off the vertical reads better than a single line
 ## Fixed clock (s) for clouds and any time-based shader: a still picture.
 const CLOCK := 37.0
@@ -59,6 +52,8 @@ var _preview_generation := 0
 var airplane: Dictionary
 var camera: Camera3D
 var _shadow: MeshInstance3D
+var _environment: Environment
+var _presentation: Dictionary = {}
 
 
 ## `aircraft`: the catalog ID to show (app_state/aircraft_catalog.gd); show_aircraft() swaps it in place.
@@ -89,40 +84,41 @@ func _init(aircraft := AirplaneBuilder.STIK_ID, field_path: String = FieldLoader
 	sky_config = checked_sky.config
 	Atmosphere.configure_appearance(sky_config)
 	var snapshot: Dictionary = _lighting if lighting_config.get("mode", "legacy") != "legacy" else {}
-	var env: Environment = World.build(self, field, Callable(), {}, snapshot, night_options).environment
+	_environment = World.build(self, field, Callable(), {}, snapshot, night_options).environment
 
 	_shadow = Shadow.create(self)
 	show_aircraft(aircraft)
-	var pos := _composition_position(AIRPLANE_NED)
-
 	camera = Camera3D.new()
-	camera.fov = FOV_DEG
 	camera.near = Spec.CAMERA.near
 	camera.far = Spec.CAMERA.far
 	add_child(camera)
-	camera.position = _composition_position(CAMERA_NED)
-	var to_airplane := pos - camera.position
-	var azimuth := atan2(to_airplane.x, -to_airplane.z) - deg_to_rad(AIRPLANE_RIGHT_DEG) # render: x east, -z north
-	var elevation := deg_to_rad(CAMERA_PITCH_DEG)
-	var look := Vector3(sin(azimuth) * cos(elevation), sin(elevation), -cos(azimuth) * cos(elevation))
-	camera.look_at_from_position(camera.position, camera.position + look, Vector3.UP)
 	camera.current = true
 
-	World.update(env, CLOCK, Vector3.ZERO, _composition_position(AIRPLANE_NED), camera) # FW-23: the eye adapts to the view
+
+func _parking_position(lift: float) -> Vector3:
+	for surface: Dictionary in field.surfaces:
+		if surface.id == field.runway:
+			# Ordinary fields consolidate the runway into ground. Other accepted
+			# layouts retain a raised render plane; support the model on that plane.
+			var rendered_surface := get_node_or_null(NodePath("Field/" + str(surface.id))) as Node3D
+			var ground_height := rendered_surface.position.y if rendered_surface != null else 0.0
+			return Vector3(float(surface.center_east) + minf(7.0, float(surface.length_east_west) * 0.07), lift + ground_height, -float(surface.center_north))
+	return Vector3(float(field.pilot.east) + 7.0, lift, -float(field.pilot.north) - 15.0)
+
+
+func _frame_aircraft() -> void:
+	if not is_inside_tree() or camera == null or _presentation.is_empty(): return
+	Presentation.fit(camera, airplane.root, _presentation.bounds, get_viewport().get_visible_rect().size)
+	World.update(_environment, CLOCK, Vector3.ZERO, airplane.root.position, camera)
 	_update_helicopter_lights()
-
-
-func _composition_position(offset_ned: Array) -> Vector3:
-	return Frames.ned_to_render([
-		float(field.pilot.north) + float(offset_ned[0]),
-		float(field.pilot.east) + float(offset_ned[1]),
-		float(field.pilot.down) - float(field.pilot.eye_height) + float(offset_ned[2]),
-	])
 
 
 func _ready() -> void:
 	if not field_errors.is_empty():
 		FieldError.report(self, field_errors)
+		return
+	get_viewport().size_changed.connect(_frame_aircraft)
+	_frame_aircraft()
 
 
 ## Shows `id` in the fixed pose, retaining at most three recent visual models for this Home only.
@@ -151,11 +147,12 @@ func show_aircraft(id: String) -> bool:
 		remove_child(obsolete)
 		obsolete.queue_free()
 	var rotorcraft: bool = Catalog.is_rotorcraft(id)
-	var attitude: Dictionary = HELICOPTER_ATTITUDE_DEG if rotorcraft else ATTITUDE_DEG
-	var basis := Frames.attitude_to_render(deg_to_rad(attitude.yaw), deg_to_rad(attitude.pitch), deg_to_rad(attitude.roll))
-	var pos := _composition_position(AIRPLANE_NED)
-	var model_cg: Vector3 = airplane.get("cg_model_m", Vector3.ZERO) if rotorcraft else Vector3.ZERO
-	airplane.root.transform = Frames.root_transform(basis, pos, model_cg)
+	if not retained:
+		_preview_geometry[id] = {presentation = Presentation.prepare(airplane)}
+	_presentation = _preview_geometry[id].presentation
+	var basis := Frames.attitude_to_render(deg_to_rad(PARKED_YAW_DEG), 0.0, 0.0) * (_presentation.alignment as Basis)
+	var pos := _parking_position(_presentation.lift)
+	airplane.root.transform = Transform3D(basis, pos)
 	if rotorcraft:
 		var main_pivot: Node3D = airplane.get("main_rotor_pivot") as Node3D
 		if main_pivot != null:
@@ -164,7 +161,8 @@ func show_aircraft(id: String) -> bool:
 		airplane.propeller.rotation.z = PROP_ANGLE
 	if not retained:
 		# Capture the neutral model before the night kit is fitted; it must not enter the silhouette.
-		_preview_geometry[id] = {extent = Shadow.model_extent(airplane.root), shape = ProjectedShadow.collect(airplane.root)}
+		_presentation.bounds = Presentation.mesh_bounds(airplane.root, airplane.root)
+		_preview_geometry[id].merge({extent = Shadow.model_extent(airplane.root), shape = ProjectedShadow.collect(airplane.root)})
 	var geometry: Dictionary = _preview_geometry[id]
 	var extent: Vector2 = geometry.extent
 	Shadow.bind_model(_shadow, airplane.root, geometry.shape)
@@ -178,7 +176,8 @@ func show_aircraft(id: String) -> bool:
 	var strength: float = Atmosphere.shadow_strength(_lighting) if snapshot_lighting else 1.0
 	_shadow.visible = strength > 0.0
 	var direction: Vector3 = Atmosphere.sun_direction(_lighting) if snapshot_lighting else Atmosphere.shadow_direction()
-	Shadow.update(_shadow, basis, pos, extent.x, extent.y, direction, strength)
+	Shadow.update(_shadow, basis, pos, extent.x, extent.y, direction, strength * 0.65)
+	_frame_aircraft()
 
 	return true
 

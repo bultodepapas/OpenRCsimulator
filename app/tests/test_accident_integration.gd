@@ -175,12 +175,15 @@ func _strike(tick: int, bindings: Dictionary) -> Dictionary:
 
 
 func _test_variant_strikes() -> void:
-	for spec: Array in [["stik-glow-55ax-2t", 539, "apc-lp12070"], ["stik-glow-fs64v-4t", 1165, "ma-k14x6"]]:
+	for spec: Array in [["stik-glow-55ax-2t", 539, "apc-lp12070"], ["stik-glow-fs64v-4t", 1165, "ma-k14x6"], ["gp-extra-300s-60", 539, "apc-lp12060"]]:
 		var main: Variant = _make(true, spec[0])
 		var session: Variant = main.session
 		session.start_choice = Session.START_RUNWAY
 		session.reset()
-		check("variant glow start accepts the configured runway state: " + spec[0], session.glow_start())
+		if spec[0] == "gp-extra-300s-60":
+			check("Extra prescribed propulsion is running at runway start", session.engine_running)
+		else:
+			check("variant glow start accepts the configured runway state: " + spec[0], session.glow_start())
 		session.sim.state = _nose_over(session)
 		# Controlled endpoint fixture: just penetrate the disc, retaining the initialized
 		# glow continuous state. This tests contact-to-report plumbing, not a flight trajectory.

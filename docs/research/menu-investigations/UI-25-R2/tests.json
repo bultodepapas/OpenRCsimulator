@@ -1,0 +1,194 @@
+[
+  {
+    "test": "test_ui_home",
+    "exit": 0,
+    "errors": [],
+    "warnings": [
+      "WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ],
+    "ok_lines": 137,
+    "log": "logs/test_ui_home.log"
+  },
+  {
+    "test": "test_ui_home_start_layout",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 0,
+    "log": "logs/test_ui_home_start_layout.log"
+  },
+  {
+    "test": "test_ui_update_notice",
+    "exit": 0,
+    "errors": [],
+    "warnings": [
+      "WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ],
+    "ok_lines": 28,
+    "log": "logs/test_ui_update_notice.log"
+  },
+  {
+    "test": "test_ui_language",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 26,
+    "log": "logs/test_ui_language.log"
+  },
+  {
+    "test": "test_ui_scale",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 72,
+    "log": "logs/test_ui_scale.log"
+  },
+  {
+    "test": "test_settings_ui",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 26,
+    "log": "logs/test_settings_ui.log"
+  },
+  {
+    "test": "test_ui_pause",
+    "exit": 0,
+    "errors": [],
+    "warnings": [
+      "WARNING: 2 ObjectDB instances were leaked at exit (run with `--verbose` for details)."
+    ],
+    "ok_lines": 57,
+    "log": "logs/test_ui_pause.log"
+  },
+  {
+    "test": "test_overlay_manager",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 0,
+    "log": "logs/test_overlay_manager.log"
+  },
+  {
+    "test": "test_ui_weather_sliders",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 32,
+    "log": "logs/test_ui_weather_sliders.log"
+  },
+  {
+    "test": "test_ui_weather",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 62,
+    "log": "logs/test_ui_weather.log"
+  },
+  {
+    "test": "test_ui_runway",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 92,
+    "log": "logs/test_ui_runway.log"
+  },
+  {
+    "test": "test_ui_natural_random",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 27,
+    "log": "logs/test_ui_natural_random.log"
+  },
+  {
+    "test": "test_ui_screen_stack",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 36,
+    "log": "logs/test_ui_screen_stack.log"
+  },
+  {
+    "test": "test_ui_home_preview_cache",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 0,
+    "log": "logs/test_ui_home_preview_cache.log"
+  },
+  {
+    "test": "test_ui_preview_requests",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 23,
+    "log": "logs/test_ui_preview_requests.log"
+  },
+  {
+    "test": "test_home_presentation",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 81,
+    "log": "logs/test_home_presentation.log"
+  },
+  {
+    "test": "test_field_integration",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 39,
+    "log": "logs/test_field_integration.log"
+  },
+  {
+    "test": "test_workshop_trial",
+    "exit": 0,
+    "errors": [],
+    "warnings": [
+      "WARNING: Aircraft presentation changed after the Workshop trial was frozen."
+    ],
+    "ok_lines": 0,
+    "log": "logs/test_workshop_trial.log"
+  },
+  {
+    "test": "test_ui_settings_integration",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 16,
+    "log": "logs/test_ui_settings_integration.log"
+  },
+  {
+    "test": "test_ui_preview_resources",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 13,
+    "log": "logs/test_ui_preview_resources.log"
+  },
+  {
+    "test": "test_workshop_ui",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 83,
+    "log": "logs/test_workshop_ui.log"
+  },
+  {
+    "test": "test_ui_input",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 17,
+    "log": "logs/test_ui_input.log"
+  },
+  {
+    "test": "test_ui_time_of_day",
+    "exit": 0,
+    "errors": [],
+    "warnings": [],
+    "ok_lines": 44,
+    "log": "logs/test_ui_time_of_day.log"
+  }
+]

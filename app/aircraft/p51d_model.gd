@@ -46,6 +46,14 @@ const FLAP_COVE_M := 0.003
 ## P51-V12: estimated canister outlet radius (an MTW 110-class outlet, about 16 mm bore) and its height above the door edge.
 const EXHAUST_OUTLET_RADIUS_M := 0.008
 const EXHAUST_LIP_M := 0.005
+## P51-V14: radial clearance between the lower rudder's round nose and the fixed fuselage's concave cut, rings on the
+## cut face, the lower rudder's trailing-edge half-thickness and the round-nose samples per side.
+const RUDDER_CUT_GAP_M := 0.0025
+const CUT_FACE_RINGS := 10
+const RUDDER_CONE_TE_M := 0.0008
+const RUDDER_NOSE_SAMPLES := 7
+## P51-V15: the physics data file (flown throws for the inspector and clearance checks).
+const DATA_PATH := "res://data/aircraft/p51d_mustang_120.json"
 ## P51-V13: landing-lamp lens radius, an estimated 24 mm RC LED lamp.
 const LANDING_LAMP_RADIUS_M := 0.012
 const PROP_TIP_M := 0.03 # yellow blade tips
@@ -164,6 +172,23 @@ static func _loft(rings: Array, mat: Material, caps := [true, true], into: Array
 		var axis: Vector3 = (centers[end] - centers[1 if end == 0 else end - 1]).normalized()
 		for j in count:
 			_tri(st, centers[end], rings[end][j], rings[end][(j + 1) % count], axis, axis, axis, axis)
+	return st.commit(into)
+
+
+# P51-V14: quads between closed rings with the same point count, flat shaded, facing `outward` (for a concave face
+# such as the fuselage's cut behind the rudder, where the loft's away-from-centroid rule is ambiguous).
+static func _face_strip(rings: Array, mat: Material, outward: Vector3, into: ArrayMesh = null) -> ArrayMesh:
+	var st := _surface(mat)
+	var count: int = rings[0].size()
+	for i in rings.size() - 1:
+		for j in count:
+			var k := (j + 1) % count
+			for tri in [[rings[i][j], rings[i][k], rings[i + 1][k]], [rings[i][j], rings[i + 1][k], rings[i + 1][j]]]:
+				var n: Vector3 = (tri[2] - tri[0]).cross(tri[1] - tri[0])
+				if n.length_squared() < 1e-16: continue
+				n = n.normalized()
+				if n.dot(outward) < 0.0: n = -n
+				_tri(st, tri[0], tri[1], tri[2], n, n, n, outward)
 	return st.commit(into)
 
 
@@ -300,9 +325,21 @@ static func _fuselage(root: Node3D) -> void:
 	var band_rings := []
 	for z in _zs(z0, band): band_rings.append(_super_ring(z))
 	_instance("cowl_band", _loft(band_rings, material(RED, 0.35, 0.2), [true, false]), root) # front cap against the spinner back
+	# P51-V14: the fixed fuselage ends at the rudder hinge; aft of it the tail cone is the lower rudder. Its end is a
+	# concave cut about the hinge axis, RUDDER_CUT_GAP_M outside the rudder's round nose, so any deflection clears.
+	var h: float = D.tail.rudder_hinge_z
 	var rings := []
-	for z in _zs(band, z_end): rings.append(_super_ring(z))
-	_instance("fuselage", _loft(rings, _skin(Finish.FUSELAGE), [false, true]), root)
+	for z in _zs(band, minf(z_end, h)): rings.append(_clip_to_hinge_cut(_super_ring(z), h))
+	var skin := _skin(Finish.FUSELAGE)
+	var mesh := _loft(rings, skin, [false, false])
+	var face := [rings[-1]]
+	for k in range(1, CUT_FACE_RINGS + 1):
+		var f := 1.0 - float(k) / CUT_FACE_RINGS
+		var ring: Array[Vector3] = []
+		for p: Vector3 in rings[-1]:
+			ring.append(Vector3(p.x * f, p.y * f, h + _fixed_cut_z(p.x * f, p.y * f)))
+		face.append(ring)
+	_instance("fuselage", _face_strip(face, skin, Vector3.BACK, mesh), root)
 	# Anti-glare panel: olive strip 1.2 mm above the cowl top, out to 62 % of the half-width, band to windscreen.
 	var rows := []
 	for z in _zs(band, D.canopy.top[0][0]):
@@ -695,9 +732,11 @@ static func _wing_ring(x: float, x0: float, x1: float, bevel_nose := false, with
 
 # Wing panel between spanwise stations, as lofts per material group ([[material, [stations...]], ...], consecutive
 # groups share their end station) in one mesh. part: full | fixed (LE to hinge - gap) | moving (bevel nose at hinge + gap).
-static func _wing_panel(label: String, groups: Array, part: String, parent: Node3D, sign: float, to_local := Transform3D.IDENTITY) -> MeshInstance3D:
+# chord_fraction: the hinged surface's chord fraction (default the aileron's; P51-V15: the flap and the panel ahead of it
+# pass the flap's, which differs since P51-13 set the ailerons to the XP-51's 0.19).
+static func _wing_panel(label: String, groups: Array, part: String, parent: Node3D, sign: float, to_local := Transform3D.IDENTITY, chord_fraction := -1.0) -> MeshInstance3D:
 	var g: float = D.wing.hinge_gap / 2.0
-	var h: float = 1.0 - float(D.wing.aileron_chord_fraction) # flap_chord_fraction is the same 0.21
+	var h: float = 1.0 - (float(D.wing.aileron_chord_fraction) if chord_fraction < 0.0 else chord_fraction)
 	var mesh: ArrayMesh = null
 	for gi in groups.size():
 		var rings := []
@@ -773,7 +812,7 @@ static func _wings(root: Node3D, hinges: Dictionary, flaps: Dictionary) -> Dicti
 		for row in w.root_extension:
 			if row[0] > w.flap_inner + 0.005 and row[0] < w.flap_outer - 0.02: ahead_stations.append(row[0])
 		ahead_stations.append(w.flap_outer)
-		_wing_panel("wing_%s_ahead_of_flap" % suffix, [[alu, ahead_stations]], "fixed", frame, sign)
+		_wing_panel("wing_%s_ahead_of_flap" % suffix, [[alu, ahead_stations]], "fixed", frame, sign, Transform3D.IDENTITY, float(w.flap_chord_fraction))
 		# P51-11a: the plain flap on its own hinge (constant chord fraction on the camber line, like the aileron), drawn in
 		# the hinge frame with the hinge gap and driven by set_flaps(); positive rotation.x lowers the trailing edge.
 		var flap_in := _hinge_point(sign * w.flap_inner, float(w.flap_chord_fraction))
@@ -789,12 +828,15 @@ static func _wings(root: Node3D, hinges: Dictionary, flaps: Dictionary) -> Dicti
 		flap_frame.add_child(flap_pivot)
 		flaps[suffix] = flap_pivot
 		_wing_panel("flap_" + suffix, [[plain, [w.flap_inner + END_GAP_M, w.flap_outer - END_GAP_M]]], "flap", flap_pivot, sign,
-			flap_frame.transform.affine_inverse())
+			flap_frame.transform.affine_inverse(), float(w.flap_chord_fraction))
 		_wing_panel("wing_%s_between" % suffix, [[alu, [w.flap_outer, w.aileron_inner]]], "full", frame, sign)
 		_wing_panel("wing_%s_ahead_of_aileron" % suffix, [[alu, [w.aileron_inner, band]], [yellow, [band, w.aileron_outer]]], "fixed", frame, sign)
 		var tip_stations: Array = [w.aileron_outer]
 		var r_plan: float = w.tip_round_plan
-		for k in range(0, 9): tip_stations.append(half - r_plan * (1.0 - float(k) / 9.0) ** 1.6 - 0.001 * (8 - k))
+		# P51-V15: only rounding stations outboard of the aileron's end, or the full-chord tip panel overlaps the aileron.
+		for k in range(0, 9):
+			var st: float = half - r_plan * (1.0 - float(k) / 9.0) ** 1.6 - 0.001 * (8 - k)
+			if st > float(w.aileron_outer) + 0.001: tip_stations.append(st)
 		for s in [half - 0.012, half - 0.006, half - 0.002, half]: tip_stations.append(s)
 		tip_stations.sort()
 		_wing_panel("wing_%s_tip" % suffix, [[yellow, tip_stations]], "full", frame, sign)
@@ -899,10 +941,99 @@ static func _tail_lower_y(z: float) -> float:
 	return monotone(D.tail.lower_outline, z)
 
 
+## P51-V14: half-width of the fuselage section at the rudder hinge at height y (0 outside it). The lower rudder's nose
+## is a circle of this radius about the hinge axis in every horizontal slice, so it turns within itself.
+static func _hinge_radius(y: float) -> float:
+	var h: float = D.tail.rudder_hinge_z
+	var a: float = profile(h, 2) if y >= 0.0 else -profile(h, 3)
+	var n := _station_value(h, 4 if y >= 0.0 else 5)
+	var v := absf(y) / a
+	if v >= 1.0: return 0.0
+	return profile(h, 1) * pow(1.0 - pow(v, n), 1.0 / n)
+
+
+## P51-V14: radius of the fixed concave cut (before the gap) at height y: the hinge section, held at the end sections'
+## radii beyond the lower rudder (below its base, and through the short band where its lofted nose rises to the foil's
+## bevel), so the straight facets between fixed vertices never cut inside the rudder's nose.
+static func _cut_radius(y: float) -> float:
+	var top := _cone_top_y()
+	if y > top and y <= profile(float(D.tail.rudder_hinge_z), 2) + 0.006:
+		return _hinge_radius(top)
+	var base := _rudder_base_y()
+	if y < base:
+		return _hinge_radius(base)
+	return _hinge_radius(y)
+
+
+## Lowest rudder section: 3 mm above the measured lower contour at the hinge.
+static func _rudder_base_y() -> float:
+	return _tail_lower_y(float(D.tail.rudder_hinge_z)) + 0.003
+
+
+## P51-V14: z (relative to the hinge) of the fixed concave cut at (x, y).
+static func _fixed_cut_z(x: float, y: float) -> float:
+	var r := _cut_radius(y) + RUDDER_CUT_GAP_M
+	return -sqrt(maxf(r * r - x * x, 0.0))
+
+
+## P51-V14: pull fixed points back behind the concave cut; `h` is the hinge z in the ring's frame.
+static func _clip_to_hinge_cut(ring: Array[Vector3], h: float) -> Array[Vector3]:
+	var out: Array[Vector3] = []
+	for p in ring:
+		var r := _cut_radius(p.y) + RUDDER_CUT_GAP_M
+		out.append(Vector3(p.x, p.y, minf(p.z, h + _fixed_cut_z(p.x, p.y))) if absf(p.x) < r else p)
+	return out
+
+
+## P51-V14: horizontal section of the lower rudder (fin frame: x thickness, z aft of the hinge) at height y, laid out as a
+## bevel-nosed rudder foil ring (nose point, one side to the TE, the other back): a round nose of the hinge-section
+## radius about the hinge axis, then sides tapering to the trailing edge, never thinner than the rudder foil.
+static func _rudder_cone_ring(y: float) -> Array[Vector3]:
+	var r := maxf(_hinge_radius(y), 0.001)
+	var te := _rudder_te(y) - float(D.tail.rudder_hinge_z)
+	var foil := _fin_ring(y, "moving")
+	var half_count := CHORD_SAMPLES + 1
+	var side: Array[Vector3] = []
+	for j in half_count:
+		if j < RUDDER_NOSE_SAMPLES:
+			var phi := PI / 2.0 * float(j + 1) / RUDDER_NOSE_SAMPLES
+			side.append(Vector3(r * sin(phi), y, -r * cos(phi)))
+		else:
+			var v := float(j - RUDDER_NOSE_SAMPLES + 1) / float(half_count - RUDDER_NOSE_SAMPLES)
+			var z := v * te
+			side.append(Vector3(maxf(lerpf(r, RUDDER_CONE_TE_M, v), _foil_half(foil, z)), y, z))
+	var ring: Array[Vector3] = [Vector3(0, y, -r)]
+	for p in side: ring.append(p)
+	for k in range(side.size() - 1, -1, -1): ring.append(Vector3(-side[k].x, y, side[k].z))
+	return ring
+
+
+## Half-thickness of a rudder foil ring (fin frame) at chord position z, from its +x side (0 ahead of its nose).
+static func _foil_half(ring: Array[Vector3], z: float) -> float:
+	var prev := ring[0]
+	for i in range(1, ring.size()):
+		var p := ring[i]
+		if p.x < 0.0: break
+		if z <= p.z:
+			return lerpf(prev.x, p.x, clampf((z - prev.z) / maxf(p.z - prev.z, 1e-9), 0.0, 1.0)) if z >= prev.z else 0.0
+		prev = p
+	return 0.0
+
+
+## P51-V14: the rudder section at height y: the faired lower rudder up to the top of the hinge section, the foil above.
+static func _rudder_ring(y: float) -> Array[Vector3]:
+	return _rudder_cone_ring(y) if y <= _cone_top_y() else _fin_ring(y, "moving")
+
+
+## P51-V14: highest lower-rudder section (its round nose is about 3 mm), just under the deck at the hinge.
+static func _cone_top_y() -> float:
+	return profile(float(D.tail.rudder_hinge_z), 2) - 0.0005
+
+
 # Vertical tail section at height y in the fin frame (origin on the rudder hinge line). The fin's section continues into
 # the rudder; near the deck the fin widens quadratically into the dorsal fairing (up to 0.7 of the local half-width).
 # Axes relabelled so thickness is X and height is Y.
-static func _fin_ring(y: float, part: String) -> Array[Vector3]:
+static func _fin_ring(y: float, part: String, plain := false) -> Array[Vector3]:
 	var t: Dictionary = D.tail
 	var g: float = t.hinge_gap / 2.0
 	var rz: float = t.rudder_hinge_z
@@ -912,7 +1043,7 @@ static func _fin_ring(y: float, part: String) -> Array[Vector3]:
 	var y_deck: float = profile(z_le, 2) - 0.004
 	var top := _fin_top_y()
 	var blend := clampf(1.0 - (y - y_deck) / (0.12 * (top - y_deck)), 0.0, 1.0)
-	var widen: float = 1.0 + (minf(0.7 * profile(z_le, 1), 4.0 * t.fin_thickness) / t.fin_thickness - 1.0) * blend * blend
+	var widen: float = 1.0 if plain else 1.0 + (minf(0.7 * profile(z_le, 1), 4.0 * t.fin_thickness) / t.fin_thickness - 1.0) * blend * blend
 	var shrink := _round_factor(top - y, 0.02)
 	var c_fixed := -g - le
 	var c_ref: float = rz - g - _upper_z_at(y_deck + 0.3 * (top - y_deck), true) # thickness reference chord: fin at 30 % height
@@ -1016,16 +1147,26 @@ static func _tail(root: Node3D, hinges: Dictionary) -> void:
 	for k in range(1, 7): heights.append(lerpf(y_deck, y_deck + 0.12 * (top - y_deck), float(k) / 6.0))
 	for k in range(1, 9): heights.append(lerpf(y_deck + 0.12 * (top - y_deck), top - 0.03, float(k) / 8.0))
 	for y in [top - 0.018, top - 0.01, top - 0.005, top - 0.002]: heights.append(y)
+	# P51-V14: the fin root continues down into the fuselage (plain thickness, clear of the elevators), so it meets the
+	# deck as it falls towards the tail; below the deck at the hinge its trailing edge follows the concave cut.
+	var cone_top := _cone_top_y()
+	var deck_h: float = profile(float(t.rudder_hinge_z), 2)
 	var fin := []
+	for y in [deck_h - 0.012, cone_top]:
+		fin.append(_clip_to_hinge_cut(_fin_ring(y, "fixed", true), 0.0))
+	fin.append(_fin_ring(deck_h + 0.004, "fixed", true))
 	for y in heights: fin.append(_fin_ring(y, "fixed"))
 	_instance("fin", _loft(fin, _skin(Finish.TAIL_V)), fin_frame)
 	var rudder := _hinge("rudder", fin_frame, hinges)
+	# P51-V14: the lower rudder is the tail cone aft of the hinge, from its base up to the deck; the rudder foil above.
 	var rud := []
-	var y_base: float = _tail_lower_y(t.rudder_hinge_z) + 0.003
-	rud.append(_fin_ring(y_base, "moving"))
-	rud.append(_fin_ring(float(t.rudder_te_bottom[1]), "moving"))
-	for y in heights:
-		if y > float(t.rudder_te_bottom[1]) + 0.01: rud.append(_fin_ring(y, "moving"))
+	var y_base := _rudder_base_y()
+	var cone_heights: Array[float] = [float(t.rudder_te_bottom[1])]
+	for k in 17: cone_heights.append(lerpf(y_base, cone_top, 0.5 - 0.5 * cos(PI * float(k) / 16.0)))
+	cone_heights.sort()
+	for y in cone_heights: rud.append(_rudder_cone_ring(y))
+	rud.append(_fin_ring(deck_h + 0.004, "moving"))
+	for y in heights: rud.append(_fin_ring(y, "moving"))
 	_instance("rudder", _loft(rud, material(YELLOW, 0.4)), rudder)
 
 
@@ -1332,9 +1473,12 @@ static func _propeller(root: Node3D) -> Node3D:
 	return propeller
 
 
-## Kit placeholder throws (degrees), used by the inspector until the P-51 data file sets flight throws.
+## P51-V15: the flown throws (degrees) for the inspector and the clearance checks: the data file's controls.max_throw, so
+## the poses checked are the poses flown.
 static func manual_throws_deg() -> Dictionary:
-	return {aileron = 16.1, elevator = 14.7, rudder = 33.5} # app/data/aircraft/p51d_mustang_120.json controls.max_throw (V01)
+	var data: Variant = JSON.parse_string(FileAccess.get_file_as_string(DATA_PATH))
+	var t: Dictionary = (data as Dictionary).controls.max_throw
+	return {aileron = float(t.aileron.value), elevator = float(t.elevator.value), rudder = float(t.rudder.value)}
 
 
 # Trim-tab sleeve (V10): for each station the surface's own section is sampled at the tab's front (half thickness
@@ -1427,7 +1571,7 @@ static func _details(root: Node3D, frames: Dictionary, hinges: Dictionary) -> vo
 	wire.quaternion = Quaternion(Vector3.UP, (wire_end - mast_top).normalized())
 	# Rudder trim tab on the trailing edge, following the rake, child of the rudder hinge; tail light at the rudder base.
 	var rt: Dictionary = de.rudder_tab
-	var y_base: float = _tail_lower_y(t.rudder_hinge_z) + 0.003
+	var y_base := _rudder_base_y()
 	var y0: float = maxf(y_base + float(rt.y0), float(t.rudder_te_bottom[1]) + 0.005) # above the base bevel: the tab follows one straight TE
 	var y1: float = y0 + float(rt.span)
 	var r_stations := []
@@ -1436,7 +1580,7 @@ static func _details(root: Node3D, frames: Dictionary, hinges: Dictionary) -> vo
 	for k in 5:
 		var yk: float = lerpf(y0, y1, float(k) / 4.0)
 		var sec := []
-		for v in _fin_ring(yk, "moving"): sec.append([v.x, v.z])
+		for v in _rudder_ring(yk): sec.append([v.x, v.z])
 		r_stations.append(yk)
 		r_sections.append(sec)
 		r_tes.append(_rudder_te(yk) - t.rudder_hinge_z)

@@ -98,19 +98,24 @@ func _default_and_switch() -> void:
 		TranslationServer.get_locale())
 	_check("language button names the language in itself", home.language_button.text == "Language: English", home.language_button.text)
 
-	await ui.tap(KEY_DOWN) # Workshop
-	await ui.tap(KEY_DOWN)
+	home.language_button.grab_focus()
+	_check("language control can receive keyboard focus", ui.focus_name() == "Language", ui.focus_name())
 	await ui.tap(KEY_ENTER)
 	_check("Enter on Language -> Spanish at once", TranslationServer.get_locale() == "es" and home.fly_button.atr(home.fly_button.text) == "VOLAR")
-	_check("dynamic texts rebuilt in Spanish", home.language_button.text == "Idioma: Español" and home.control_label.text.begins_with("Vuelo: teclado"),
+	_check("dynamic texts rebuilt in Spanish", home.language_button.text == "Idioma: Español" and home.control_label.text == "Control de vuelo: teclado",
 		"%s | %s" % [home.language_button.text, home.control_label.text])
 	_check("AUX profile errors translate", TranslationServer.translate("Could not save the updated controller profile; the existing profile is unchanged.") == "No se pudo guardar el perfil de control actualizado; el perfil existente no cambió." and TranslationServer.translate("The current controller profile could not be updated.") == "No se pudo actualizar el perfil de control actual.")
 	_check("focus stays on Language", ui.focus_name() == "Language", ui.focus_name())
 	var untranslated := PackedStringArray()
+	var spanish_values := {}
+	var spanish_catalog: Translation = load("res://i18n/es.po")
+	for source in spanish_catalog.get_message_list():
+		spanish_values[spanish_catalog.get_message(source)] = true
 	for c in home.find_children("*", "", true, false):
-		if (c is Label or c is Button) and c.can_auto_translate() and c.text != "" and c.atr(c.text) == c.text:
+		if (c is Label or c is Button) and c.can_auto_translate() and c.text != "" \
+			and c.atr(c.text) == c.text and not spanish_values.has(c.text):
 			untranslated.append(c.text)
-	_check("every translatable Home text has a Spanish translation", untranslated.is_empty(), str(untranslated))
+	_check("every Home text resolves from English or matches an explicit Spanish translation", untranslated.is_empty(), str(untranslated))
 	_check("choice saved", Preferences.load_from(PREFS).language == "es")
 	app.free()
 
@@ -118,8 +123,7 @@ func _default_and_switch() -> void:
 	root.add_child(again)
 	await ui.settle()
 	_check("next start remembers Spanish", TranslationServer.get_locale() == "es" and again.home.language_button.text == "Idioma: Español")
-	await ui.tap(KEY_DOWN) # Workshop
-	await ui.tap(KEY_DOWN)
+	again.home.language_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	_check("and cycles back to English", TranslationServer.get_locale() == "en" and Preferences.load_from(PREFS).language == "en")
 	again.free()

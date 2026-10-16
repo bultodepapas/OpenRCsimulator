@@ -1,0 +1,6 @@
+visual rudder side area aft of the hinge 0.06154 m2 = 10.61 ft2 full size (NACA production rudder 10.41 ft2: 0.06038 m2, +1.9 %)
+rudder  +0.0 deg: rudder vertex -> fuselage 0.78 mm at (-0.004, 0.0698, 1.6129) | fuselage vertex -> rudder 1.17 mm at (-0.0034, 0.0744, 1.6164)
+rudder +33.5 deg: rudder vertex -> fuselage 0.93 mm at (0.002858, 0.0698, 1.612473) | fuselage vertex -> rudder 1.19 mm at (0.0034, 0.0744, 1.6164)
+rudder -33.5 deg: rudder vertex -> fuselage 0.90 mm at (-0.004714, 0.0698, 1.613283) | fuselage vertex -> rudder 1.19 mm at (-0.0034, 0.0744, 1.6164)
+rudder +45.0 deg: rudder vertex -> fuselage 0.90 mm at (-0.003041, 0.0698, 1.612503) | fuselage vertex -> rudder 1.20 mm at (0.0034, 0.0744, 1.6164)
+rudder -45.0 deg: rudder vertex -> fuselage 0.90 mm at (-0.003041, 0.0698, 1.612503) | fuselage vertex -> rudder 1.20 mm at (0.0034, 0.0744, 1.6164)

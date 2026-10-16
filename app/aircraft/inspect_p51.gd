@@ -2,7 +2,7 @@
 # render/airplane.gd), resets controls, attitude and propeller for every capture and records the camera in
 # manifest.json. All distances scale with D.wing.span so a regenerated geometry keeps framing the airplane.
 # Run (needs a display, e.g. xvfb-run): godot --path app --rendering-driver opengl3 \
-#   --script res://aircraft/inspect_p51.gd -- --output-dir=/new/dir [--suite=inspection|orbit|all] [--size=WIDTHxHEIGHT]
+#   --script res://aircraft/inspect_p51.gd -- --output-dir=/new/dir [--suite=inspection|orbit|tail|all] [--size=WIDTHxHEIGHT]
 extends SceneTree
 
 const P51 := preload("res://aircraft/p51d_model.gd")
@@ -42,8 +42,9 @@ func _initialize() -> void:
 	call_deferred("_run")
 
 
-static func _view(name: String, position: Vector3, target: Vector3, projection := "persp", controls := NEUTRAL, fov := 40.0, up := Vector3.UP) -> Dictionary:
-	return {name = name, position = position, target = target, projection = projection, controls = controls, fov = fov, up = up}
+static func _view(name: String, position: Vector3, target: Vector3, projection := "persp", controls := NEUTRAL, fov := 40.0, up := Vector3.UP, ortho_m := 0.0) -> Dictionary:
+	return {name = name, position = position, target = target, projection = projection, controls = controls, fov = fov, up = up,
+		ortho_m = ortho_m if ortho_m > 0.0 else ortho_size_m()}
 
 
 static func _orbit_position(azimuth_deg: float, elevation_deg: float, distance: float) -> Vector3:
@@ -72,6 +73,20 @@ static func views(suite: String) -> Array:
 			_view("inspection_cockpit_left", Vector3(0, 0.1, 0.25) * (s / 2.508) + s * Vector3(-0.3, 0.14, -0.08), Vector3(0, 0.12, 0.25) * (s / 2.508), "persp", NEUTRAL, 30.0),
 			# V04: windscreen facets and frames read best from low front-right
 			_view("inspection_cockpit_front_right", Vector3(0, 0.1, 0.2) * (s / 2.508) + s * Vector3(0.26, 0.1, -0.24), Vector3(0, 0.1, 0.2) * (s / 2.508), "persp", NEUTRAL, 28.0),
+		]
+	if suite in ["tail", "all"]:
+		# P51-V14: close-ups of the tail cone, rudder hinge and lower rudder, neutral and at full rudder both ways.
+		var t := Vector3(0, 0.06, float(D.tail.rudder_te_bottom[0]) - 0.15)
+		var rl := {aileron = 0.0, elevator = 0.0, rudder = -1.0}
+		var tail_size := s * 0.22
+		out += [
+			_view("tail_side_left", t + Vector3(-far, 0, 0), t, "ortho", NEUTRAL, 40.0, Vector3.UP, tail_size),
+			_view("tail_top", t + Vector3(0, far, 0), t, "ortho", NEUTRAL, 40.0, PLAN_UP, tail_size),
+			_view("tail_top_rudder_right", t + Vector3(0, far, 0), t, "ortho", FULL, 40.0, PLAN_UP, tail_size),
+			_view("tail_bottom_rudder_left", t + Vector3(0, -far, 0), t, "ortho", rl, 40.0, PLAN_UP, tail_size),
+			_view("tail_rear_right", t + s * Vector3(0.16, 0.08, 0.22), t, "persp", NEUTRAL, 30.0),
+			_view("tail_rear_right_rudder_right", t + s * Vector3(0.16, 0.08, 0.22), t, "persp", FULL, 30.0),
+			_view("tail_low_left_rudder_left", t + s * Vector3(-0.18, -0.06, 0.12), t, "persp", rl, 30.0),
 		]
 	if suite in ["orbit", "all"]:
 		for elevation in [-25.0, 10.0, 40.0]:
@@ -143,7 +158,7 @@ func _run() -> void:
 		_airplane.propeller.rotation = Vector3.ZERO
 		_airplane.root.rotation = Vector3.ZERO
 		_camera.projection = Camera3D.PROJECTION_ORTHOGONAL if view.projection == "ortho" else Camera3D.PROJECTION_PERSPECTIVE
-		_camera.size = ortho_size_m()
+		_camera.size = float(view.ortho_m)
 		_camera.fov = view.fov
 		var up: Vector3 = view.up
 		_camera.look_at_from_position(view.position, view.target, up)
@@ -158,7 +173,7 @@ func _run() -> void:
 		records.append({
 			"file": "%s.png" % view.name, "projection": view.projection,
 			"camera_position_m": [view.position.x, view.position.y, view.position.z], "target_m": [view.target.x, view.target.y, view.target.z],
-			"up": [up.x, up.y, up.z], "ortho_size_m": ortho_size_m() if view.projection == "ortho" else null,
+			"up": [up.x, up.y, up.z], "ortho_size_m": view.ortho_m if view.projection == "ortho" else null,
 			"fov_deg": view.fov if view.projection == "persp" else null, "controls": view.controls,
 			"png_sha256": FileAccess.get_sha256(path),
 		})
@@ -175,7 +190,7 @@ func _run() -> void:
 		"ortho_size_m": ortho_size_m(),
 		"span_m": span(),
 		"throws_deg": _throws,
-		"throws_source": "kit placeholder throws from p51d_model.gd manual_throws_deg(); visual only",
+		"throws_source": "flown throws: app/data/aircraft/p51d_mustang_120.json controls.max_throw via p51d_model.gd manual_throws_deg() (P51-V15)",
 		"light": {"sun_rotation_deg": [-50, -35, 0], "sun_energy": 1.1, "ambient": [0.75, 0.78, 0.82], "ambient_energy": 0.55, "sky": SKY.to_html(false), "reflections": "procedural sky (V08)"},
 		"renderer": RenderingServer.get_video_adapter_name(),
 		"captures": records,

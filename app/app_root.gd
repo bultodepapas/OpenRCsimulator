@@ -51,7 +51,9 @@ const HELICOPTER_MAIN_SCRIPT := "res://helicopter_main.gd"
 const DisplayPreferences := preload("res://app_state/display_preferences.gd")
 const SettingsScreen := preload("res://ui/settings_screen.gd")
 const UiTheme := preload("res://ui/ui_theme.gd")
+const UiScale := preload("res://ui/ui_scale.gd")
 const UiSurface := preload("res://ui/screen.gd")
+var _popup_realign_pending := false
 var display_preferences: DisplayPreferences
 var _display_window_mode := "windowed"
 var _windowed_size := Vector2i(1280, 720)
@@ -161,7 +163,10 @@ func _ready() -> void:
 		start_flight()
 		return
 	has_home = true
-	preload("res://ui/ui_scale.gd").apply(get_tree().root)
+	var ui_window: Window = get_tree().root
+	var initial_ui_scale: Dictionary = UiScale.apply(ui_window)
+	UiTheme.compact_layout = bool(initial_ui_scale.compact)
+	ui_window.size_changed.connect(_on_ui_window_resized)
 	display_preferences = DisplayPreferences.new(preferences_path + ".display")
 	_apply_presentation(display_preferences.config)
 	controllers = ControllerService.new()
@@ -625,6 +630,24 @@ func _refresh_screen_themes(node: Node) -> void:
 	if node is UiSurface:
 		node.theme = UiTheme.build()
 	for child: Node in node.get_children(): _refresh_screen_themes(child)
+
+
+func _on_ui_window_resized() -> void:
+	var ui_window: Window = get_tree().root
+	var scale_state: Dictionary = UiScale.apply(ui_window)
+	if not _popup_realign_pending:
+		_popup_realign_pending = true
+		call_deferred("_realign_open_popups")
+	var compact: bool = bool(scale_state.compact)
+	if UiTheme.compact_layout == compact:
+		return
+	UiTheme.compact_layout = compact
+	_refresh_screen_themes(self)
+
+
+func _realign_open_popups() -> void:
+	_popup_realign_pending = false
+	UiScale.realign_popups(self)
 
 
 func open_controls(from: Control = null) -> void:

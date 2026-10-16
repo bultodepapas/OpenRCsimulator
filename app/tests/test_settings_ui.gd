@@ -14,13 +14,18 @@ var _routes: Array[String] = []
 
 
 func _initialize() -> void:
-	_run()
+	await _run()
 	print("all Settings checks passed" if _failures == 0 else "%d Settings checks failed" % _failures)
 	quit(1 if _failures > 0 else 0)
 
 
 func _run() -> void:
 	_clean()
+	var test_viewport := SubViewport.new()
+	test_viewport.size = Vector2i(1920, 1080) # reference logical canvas used at native 1080p and fullscreen 4K
+	test_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(test_viewport)
+	await process_frame
 	var store := DisplayPreferences.new(PREFS)
 	_check("fresh display settings use validated defaults", store.config == DisplayPreferences.DEFAULTS and store.writable)
 
@@ -65,7 +70,22 @@ func _run() -> void:
 	_clean()
 	store = DisplayPreferences.new(PREFS)
 
-	ScreenTheme.text_scale = 1.5
+	var default_settings := SettingsScreen.new(store, "en")
+	test_viewport.add_child(default_settings)
+	await process_frame
+	await process_frame
+	_check("default 1080p/4K Settings keeps Display and Accessibility on one visible page",
+		not default_settings._scroll.get_v_scroll_bar().visible,
+		"scrollbar=%s viewport=%s surface=%s page=%s panel=%s" % [
+		str(default_settings._scroll.get_v_scroll_bar().visible), str(test_viewport.size),
+		str(default_settings._surface.size),
+		str(default_settings._scroll.get_child(0).size), str(default_settings._layout_panel.size)])
+	_check("default Settings workspace is bounded on a wide viewport",
+		default_settings._layout_panel.size.x <= 800.0)
+	default_settings.queue_free()
+	await process_frame
+
+	ScreenTheme.text_scale = 2.0
 	var settings := SettingsScreen.new(store, "en")
 	settings.presentation_changed.connect(_capture_presentation)
 	settings.language_changed.connect(_capture_language)
@@ -74,8 +94,19 @@ func _run() -> void:
 	var all_rows_stack := true
 	for row: BoxContainer in settings._rows:
 		all_rows_stack = all_rows_stack and row.vertical
-	_check("larger text stacks settings rows", all_rows_stack and not settings._rows.is_empty())
-	root.add_child(settings)
+	_check("200% text stacks settings rows", all_rows_stack and not settings._rows.is_empty())
+	test_viewport.add_child(settings)
+	await process_frame
+	await process_frame
+	var panel_rect := settings._layout_panel.get_global_rect()
+	_check("200% Settings scrolls only its body and pins title and Keep/Revert",
+		settings._scroll.get_v_scroll_bar().visible
+		and panel_rect.encloses(settings._close_button.get_global_rect())
+		and panel_rect.encloses(settings._keep_button.get_global_rect())
+		and panel_rect.encloses(settings._revert_button.get_global_rect()),
+		"scrollbar=%s panel=%s close=%s keep=%s revert=%s" % [str(settings._scroll.get_v_scroll_bar().visible),
+		str(panel_rect), str(settings._close_button.get_global_rect()), str(settings._keep_button.get_global_rect()),
+		str(settings._revert_button.get_global_rect())])
 	settings._window_mode_selected(1)
 	_check("window change starts a 15-second trial", settings._trial_deadline_msec - Time.get_ticks_msec() > 14500
 		and settings._trial_deadline_msec - Time.get_ticks_msec() <= 15000)
@@ -106,6 +137,8 @@ func _run() -> void:
 		and DisplayPreferences.load_from(PREFS).window_mode == "windowed"
 		and not DisplayPreferences.load_from(PREFS).opaque_panels)
 	settings.queue_free()
+	test_viewport.queue_free()
+	await process_frame
 	ScreenTheme.text_scale = 1.0
 	_clean()
 

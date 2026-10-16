@@ -178,6 +178,8 @@ func _home_fly_roundtrip_and_radio() -> void:
 	for i in 12: # Other menu tracks may add actions; still reach End through real key events.
 		if ui.focus_name() == "End":
 			break
+		if ui.focus_name() == "ExitOptions":
+			await ui.tap(KEY_ENTER)
 		await ui.tap(KEY_DOWN)
 	_check("pause navigation reaches End", ui.focus_name() == "End", ui.focus_name())
 	await ui.tap(KEY_ENTER)
@@ -212,7 +214,7 @@ func _half_power_roundtrip() -> void:
 	home.start_button.grab_focus()
 	await ui.tap(KEY_ENTER)
 	_check("runway cycles to explicit half-power airborne start", home.start_choice == "airborne_half_power")
-	_check("half-power label explains fixed trim", home.start_button.text == "Start: in the air at 50% throttle"
+	_check("half-power label explains fixed trim", home.start_button.text == "Start: 50% throttle"
 		and home.limits_label.text.contains("Trim stays fixed"))
 	_check("new choice is not saved before Fly", Preferences.load_from(PREFS).start_choice == RUNWAY)
 	app.start_flight()

@@ -47,6 +47,10 @@ top_f[fin_zone] = np.nan
 # V01: the tail cone ends just ahead of the rudder hinge, faired to the fin post (half-width 0.045 m), so the rudder owns
 # everything aft of the hinge; the cone top meets the fin root, its bottom the measured lower outline.
 post_z = 6.64 - 0.02
+# P51-V14: the rudder hinge is the aerodynamic hinge P51-24 solved so the measured silhouette aft of it is the NACA
+# production rudder area (10.41 ft2; research/p51/p51-05/derive_physics.py solves it and checks this value). The earlier
+# unmeasured tail post (6.64 m) stays as `tail_post_z`: the cone stations above and the physics side polygon's corner.
+RUDDER_HINGE_Z = 6.4883
 deck_anchor_i = int(np.argmin(np.abs(z - post_z)))
 top_f[deck_anchor_i] = 0.25
 bot_f[deck_anchor_i] = -0.03
@@ -142,7 +146,8 @@ fs["quarter_chord_sweep_deg"] = round(float(np.degrees(np.arctan((w["le_z_tip"] 
 fs["chord_plane_y_root"] = round(-26.5 * IN, 3)  # printed wing reference line
 fs["span"] = round(2 * w["semi_span"], 3)
 fs["length"] = round(length, 3)
-fs["aileron"] = {"inner": 3.25, "outer": 5.50, "chord_fraction": 0.21}
+# P51-13: each aileron 6 ft 11.6 in long (inner end 5.5 - 2.123 m), chord 0.187-0.189 of the wing chord (NACA XP-51 report).
+fs["aileron"] = {"inner": 3.377, "outer": 5.50, "chord_fraction": 0.19}
 fs["flap"] = {"inner": 0.50, "outer": 3.20, "chord_fraction": 0.21}
 # V02: root leading-edge extension measured in the plan view ([x from the centreline, dz forward of the straight LE]),
 # kept where it is clearly above the pick noise (> 0.02 m) and closed with a zero at the next station; the fuselage side
@@ -165,7 +170,7 @@ stab_y = 0.35
 fs["tail"].update({"stab_y": stab_y, "stab_root_le_z": st["root_le_z"], "stab_tip_le_z": st["tip_le_z"], "stab_half_span": st["half_span"],
                    "stab_root_chord": st["root_chord"], "stab_tip_chord": st["tip_chord"],
                    "fin_root_le_z": 5.7, "dorsal_start_z": 4.6, "fin_top_y": m["fin"]["top_y"], "fin_top_le_z": 6.15, "fin_top_chord": 0.6,
-                   "rudder_hinge_z": 6.64, "rudder_te_bottom": [round(tail_z, 3), 0.03]})
+                   "rudder_hinge_z": RUDDER_HINGE_Z, "tail_post_z": 6.64, "rudder_te_bottom": [round(tail_z, 3), 0.03]})
 # V01: tail outlines and stab planform as measured point lists; fin_top_y from the outline's maximum.
 to = m["tail_outlines"]
 fs["tail"]["upper_outline"] = to["upper"]

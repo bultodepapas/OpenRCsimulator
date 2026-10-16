@@ -135,9 +135,11 @@ func _draft_dialog() -> void:
 	var app: Node = await _app()
 	var home: Control = app.home
 	_check("Home presents a weather button next to Fly", home.weather_button != null and home.weather_button.text.contains("Weather"), home.weather_button.text)
-	_check("Tab from Fly reaches Weather without stealing aircraft arrow navigation", ui.focus_name() == "Fly", ui.focus_name())
-	await ui.tap(KEY_TAB)
-	_check("Weather is keyboard reachable next to Fly", ui.focus_name() == "Weather", ui.focus_name())
+	_check("Home initially focuses Fly", ui.focus_name() == "Fly", ui.focus_name())
+	for step in 40:
+		if ui.focus_name() == "Weather": break
+		await ui.tap(KEY_TAB)
+	_check("Weather remains reachable in the Home keyboard cycle", ui.focus_name() == "Weather", ui.focus_name())
 	await ui.joy_axis(JOY_AXIS_LEFT_X, 1.0)
 	_check("radio axis cannot move Home focus", ui.focus_name() == "Weather", ui.focus_name())
 	await ui.tap(KEY_ENTER)
@@ -280,7 +282,9 @@ func _future_schema_apply() -> void:
 	_check("future-schema UI fixture saves", cfg.save(PREFS) == OK)
 	var original := FileAccess.get_file_as_string(PREFS)
 	var app: Node = await _app()
-	await ui.tap(KEY_TAB)
+	for step in 40:
+		if ui.focus_name() == "Weather": break
+		await ui.tap(KEY_TAB)
 	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	var dialog: CanvasLayer = app.weather_dialog

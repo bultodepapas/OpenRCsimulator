@@ -110,6 +110,7 @@ def main():
             "fin_top_le_z": L(t["fin_top_le_z"]),
             "fin_top_chord": L(t["fin_top_chord"]),
             "rudder_hinge_z": L(t["rudder_hinge_z"]),
+            "tail_post_z": L(t["tail_post_z"]),  # P51-V14: the earlier tail post; physics side-polygon corner only
             "rudder_te_bottom": [L(t["rudder_te_bottom"][0]), L(t["rudder_te_bottom"][1])],
             "fin_thickness": L(t["fin_thickness_ratio"] * t["fin_top_chord"] * 1.6),
             "hinge_gap": 0.003,

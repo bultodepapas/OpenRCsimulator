@@ -39,6 +39,46 @@ func _meshes(node: Node, out: Array[MeshInstance3D]) -> void:
 
 
 # Root-frame vertices of a mesh.
+## P51-V14: side-view (z, y) area aft of z = 0 covered by the meshes under a hinge node, in the hinge's frame.
+static func _side_area_aft(hinge: Node3D) -> float:
+	var tris := []
+	var box := Rect2()
+	var first := true
+	for m in hinge.find_children("*", "MeshInstance3D", true, false):
+		var mi := m as MeshInstance3D
+		var to_hinge := Transform3D.IDENTITY
+		var n: Node = mi
+		while n != hinge:
+			to_hinge = (n as Node3D).transform * to_hinge
+			n = n.get_parent()
+		var faces := mi.mesh.get_faces()
+		for i in range(0, faces.size(), 3):
+			var tri := PackedVector2Array()
+			for k in 3:
+				var v := to_hinge * faces[i + k]
+				tri.append(Vector2(v.z, v.y))
+				box = Rect2(tri[k], Vector2.ZERO) if first else box.expand(tri[k])
+				first = false
+			tris.append(tri)
+	var cell := 0.001
+	var nz := ceili(box.size.x / cell) + 1
+	var ny := ceili(box.size.y / cell) + 1
+	var covered := PackedByteArray()
+	covered.resize(nz * ny)
+	for tri: PackedVector2Array in tris:
+		var lo := Vector2(minf(tri[0].x, minf(tri[1].x, tri[2].x)), minf(tri[0].y, minf(tri[1].y, tri[2].y)))
+		var hi := Vector2(maxf(tri[0].x, maxf(tri[1].x, tri[2].x)), maxf(tri[0].y, maxf(tri[1].y, tri[2].y)))
+		for iz in range(floori((lo.x - box.position.x) / cell), ceili((hi.x - box.position.x) / cell) + 1):
+			for iy in range(floori((lo.y - box.position.y) / cell), ceili((hi.y - box.position.y) / cell) + 1):
+				if iz < 0 or iy < 0 or iz >= nz or iy >= ny: continue
+				var c := box.position + Vector2(iz + 0.5, iy + 0.5) * cell
+				if c.x >= 0.0 and Geometry2D.point_is_inside_triangle(c, tri[0], tri[1], tri[2]):
+					covered[iz * ny + iy] = 1
+	var count := 0
+	for b in covered: count += b
+	return count * cell * cell
+
+
 func _vertices(root: Node3D, m: MeshInstance3D) -> PackedVector3Array:
 	var out := PackedVector3Array()
 	var t := root.global_transform.affine_inverse() * m.global_transform
@@ -408,6 +448,33 @@ func _run() -> void:
 		if m.name == "fuselage":
 			for v in _vertices(root, m): fus_max_z = maxf(fus_max_z, v.z)
 	_check("tail cone ends ahead of the rudder hinge", fus_max_z < float(t.rudder_hinge_z) - 0.002, "%.4f vs hinge %.4f" % [fus_max_z, t.rudder_hinge_z])
+	# P51-V14: the visual rudder is the physics rudder. Its side area aft of the hinge (rudder and tab, in the hinge's own
+	# frame, rasterized at 1 mm) is the NACA production rudder area, 10.41 ft2 at the model scale (P51-24), within 5 %.
+	var rudder_hinge: Node3D = root.find_child("rudder_hinge", true, false)
+	var rudder_area := _side_area_aft(rudder_hinge)
+	var naca_area: float = 10.41 * pow(12.0 * 0.0254, 2) * pow(float(D.scale.factor), 2)
+	_check("visual rudder side area is the NACA production rudder area (within 5 %)", absf(rudder_area / naca_area - 1.0) < 0.05,
+		"%.4f vs %.4f m2" % [rudder_area, naca_area])
+	# P51-V15: the drawn flap is the physics flap. Over its span (left wing frame, flaps up, straight-LE chord at each
+	# vertex's own station) the flap's nose and the fixed panel's trailing edge sit at the data file's flap hinge
+	# fraction, within the hinge gap and cove.
+	var physics: Dictionary = JSON.parse_string(FileAccess.get_file_as_string(P51.DATA_PATH))
+	var flap_hinge := float(physics.flaps.hinge_fraction.value)
+	var wing_frame: Node3D = root.find_child("wing_frame_left", true, false)
+	var cos_dihedral := cos(deg_to_rad(float(D.wing.dihedral_deg)))
+	var flap_nose := INF
+	var fixed_te := -INF
+	for part in ["flap_left", "wing_left_ahead_of_flap"]:
+		var mi: MeshInstance3D = root.find_child(part, true, false)
+		var to_frame := wing_frame.global_transform.affine_inverse() * mi.global_transform
+		for v in mi.mesh.get_faces():
+			var q := to_frame * v
+			var station := absf(q.x) * cos_dihedral
+			var frac := (q.z - (P51._le_z(station) - float(D.wing.le_z_root))) / P51._chord(station)
+			if part == "flap_left": flap_nose = minf(flap_nose, frac)
+			else: fixed_te = maxf(fixed_te, frac)
+	_check("visual flap chord is the physics flap (nose and fixed trailing edge at the hinge fraction)", absf(flap_nose - flap_hinge) < 0.012
+		and absf(fixed_te - flap_hinge) < 0.012, "nose %.4f, fixed TE %.4f, physics hinge %.4f" % [flap_nose, fixed_te, flap_hinge])
 	var crown := -INF
 	for p in D.canopy.top: crown = maxf(crown, p[1])
 	_check("canopy crown", absf(highs.canopy - crown) < 0.004, "%.4f vs %.4f" % [highs.canopy, crown])

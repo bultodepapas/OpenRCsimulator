@@ -1,8 +1,8 @@
 # OpenRC Simulator — cinematic menu and experience redesign
 
-**Revision 5 · 2026-10-15 · Owner: product shell · UI-20…29.**
+**Revision 6 · 2026-10-15 · Owner: product shell · UI-20…29.**
 
-**Status: detailed implementation plan.** The earlier shell/scaling implementation and Home/Settings repairs exist in source, but the owner rejected their aesthetic result. This revision replaces the previous visual direction and delivery sequence. The new composition, camera, materials and scaling policy below are **proposed**, not implemented.
+**Status: core redesign implemented; extended acceptance remains open.** The grounded Home composition, bounded navigation, 1920×1080 reference scaling, amber/charcoal theme, compact Pause, Settings and Conditions refinements are now in source. [UI-22–26-R2 evidence](research/menu-investigations/UI-25-R2/README.md) records the native EN/ES 720p–4K matrix and behavior checks. This revision retains the wider design targets below; thumbnails, optional effects, release packages and human visual acceptance are not implicitly complete.
 
 Build an aircraft-led RC club experience: a believable field, a well-lit model, a clear route to flight and a restrained interface that leaves the world visible. The [dated visual/resource investigation](research/menu-investigations/UI-20-R2/README.md) owns the current-screen diagnosis, reference analysis, Godot/GitHub research and source licenses.
 
@@ -47,7 +47,7 @@ Avoid literal neon-city/fantasy dressing, airline-scale terminals that make RC m
 
 ### Desktop arrangement
 
-At the 1920×1080 reference composition, start with a 48-pixel safe inset, a **304–340-pixel navigation column**, and a dominant open scene. Numbers in this plan are prototype targets until measured. Controls should occupy no more than approximately 25% of image area; the readability scrim may extend beyond them.
+At the 1920×1080 reference composition, start with a 48-pixel safe inset, a **304–340-pixel navigation column**, and a dominant open scene. Delivered navigation measures approximately 320 logical pixels at the reference size; remaining numeric composition targets still require their stated evidence. Controls should occupy no more than approximately 25% of image area; the readability scrim may extend beyond them.
 
 ```text
 ┌───────────────────────────────────────────────────────────────────────┐
@@ -139,7 +139,7 @@ A bounded reflection-probe experiment must account for the existing lake and two
 
 ### Color and surfaces
 
-Prototype charcoal `#111A20`, warm white `#F3F1EB`, secondary gray `#B8C4C9` and amber `#EABF66`. These are candidate tokens, not certified contrast pairs. Reserve red for destructive/error states; normal Fly/Resume no longer uses a large danger-colored area.
+Implemented tokens are charcoal `#111A20`, warm white `#F3F1EB`, secondary gray `#B8C4C9` and amber `#EABF66`. Flat-color contrast checks pass; this is not a certification of every composited scene/state. Reserve red for destructive/error states; normal Fly/Resume no longer uses a large danger-colored area.
 
 Use local scrims and limited translucent surfaces. Start opacity near 0.86–0.94, increasing it where measured contrast requires; opaque mode is 1.0. Start with quiet 1-pixel edges and 6–8-pixel radii. Avoid borders around every row and nested cards. Focus uses an outline/shape as well as color and remains distinguishable from selection.
 
@@ -165,7 +165,7 @@ Reduced motion removes camera travel/movement reveals. Opaque mode remains equal
 
 ### A desktop composition with real compact reflow
 
-The present 1280×720 canvas becomes 3× at 4K and preserves its oversized proportions. Test a **1920×1080 desktop composition**, with a compact layout below that size. This is a proposed policy, not a direct constant substitution.
+The present 1280×720 canvas becomes 3× at 4K and preserves its oversized proportions. Test a **1920×1080 desktop composition**, with a compact layout below that size. This policy is implemented through a dynamic logical canvas and compact breakpoints; text scaling remains independent.
 
 ```text
 s = max(1.0, min(physical_width / 1920, physical_height / 1080))
@@ -174,12 +174,12 @@ available_logical_size = physical_size / s
 
 Apply the result once through Godot native canvas scaling; test rounding, resize and pointer alignment. Text scaling stays separate at 100–200%. Do not multiply by Windows DPI again. Keep native 3D resolution independent. [Godot resolution guidance](https://docs.godotengine.org/en/4.7/tutorials/rendering/multiple_resolutions.html).
 
-| Physical output | Candidate factor | Logical area | Navigation width, physical pixels |
+| Physical output | Canvas factor | Logical area | Navigation width, physical pixels |
 | --- | --- | --- | --- |
 | 1280×720 | 1.0 | 1280×720 compact | 280–304, summary reflows |
 | 1920×1080 | 1.0 | 1920×1080 | 304–340 |
 | 2560×1440 | 1.333… | 1920×1080 | approximately 405–453 |
-| 3840×2160 | 2.0 | 1920×1080 | 608–680; present sidebar approximately 1320 |
+| 3840×2160 | 2.0 | 1920×1080 | 608–680; rejected baseline approximately 1320 |
 | 3440×1440 | 1.333… | 2580×1080 | Same bounded navigation; more world |
 
 At 1024×576 use a recovery layout with less simultaneous content; document limits. Choose breakpoints from content fit. Audit all CanvasLayers, popups, Help, Workshop, HUD and ground-vehicle screens before adopting a root-window policy; Home must not break flight UI.
@@ -265,16 +265,16 @@ Each phase leaves a working, reviewable app. Do not style all screens before Hom
 
 | Phase / step | Delivery | Exit evidence | Status |
 | --- | --- | --- | --- |
-| 0 · UI-20-R2 | Diagnosis, references/resources, revised plan | Dated report, real baseline, source-linked choices and limits | Research/plan delivered; new runtime work pending |
-| 1 · UI-25-R2a | Three scene studies: runway/club, pits, overview | Same jet/trainer/helicopter at 1080p/4K; UI-off captures plus overlay masks; grounding/landmarks visible | Pending |
-| 2 · UI-22-R2 / UI-23-R2 | One complete slice: selected scene + Home + tokens + scale | Native EN/ES 720/1080/1440/4K; old/new comparison; no default scroll; panel/type/model bounds and click alignment | Pending; after phase 1 |
-| 3 · UI-25-R2b | Catalog, prepared-flight summary, Practice/garage entry | All catalog capabilities; rapid selection/loading/error; mouse/keyboard/pad route to flight | Pending; after phase 2 |
-| 4 · UI-26-R2a | Pause and nested session navigation | Frozen tick/camera, Resume/Restart/Home/Quit, trial return, device loss and recording/save failure | Pending; after phase 2 |
-| 5 · UI-24-R2 / UI-26-R2b | Settings/Controls/Conditions/Help/dense screens | Every tab EN/ES 100/200%; display recovery, drafts/focus/persistence, long labels | Pending; shared phase 2 foundation |
-| 6 · UI-28-R2 | Optional glass, settled camera transitions, loading/sound polish | Reduced-motion/opaque parity; same-host GPU/CPU/memory evidence; immediate input/holds | Pending; after composition passes |
-| 7 · UI-29-R2 | Acceptance matrix, fresh exports, operating docs | Native Windows 4K package flows/captures; explicit other-platform status; user tasks and visual review | Pending |
+| 0 · UI-20-R2 | Diagnosis, references/resources, revised plan | Dated report, real baseline, source-linked choices and limits | Delivered; runtime evidence linked above |
+| 1 · UI-25-R2a | Three scene studies: runway/club, pits, overview | Same jet/trainer/helicopter at 1080p/4K; UI-off captures plus overlay masks; grounding/landmarks visible | Implemented chosen shot; nine 1080p studies, final scene at 4K; complete study matrix not repeated |
+| 2 · UI-22-R2 / UI-23-R2 | One complete slice: selected scene + Home + tokens + scale | Native EN/ES 720/1080/1440/4K; old/new comparison; no default scroll; panel/type/model bounds and click alignment | Implemented and native matrix verified; owner aesthetic acceptance remains open |
+| 3 · UI-25-R2b | Catalog, prepared-flight summary, Practice/garage entry | All catalog capabilities; rapid selection/loading/error; mouse/keyboard/pad route to flight | Implemented destinations/summary and selected-entry navigation; native thumbnails remain open |
+| 4 · UI-26-R2a | Pause and nested session navigation | Frozen tick/camera, Resume/Restart/Home/Quit, trial return, device loss and recording/save failure | Implemented compact/disclosure layout; session/lifecycle regressions pass |
+| 5 · UI-24-R2 / UI-26-R2b | Settings/Controls/Conditions/Help/dense screens | Every tab EN/ES 100/200%; display recovery, drafts/focus/persistence, long labels | Implemented bounded Settings/Conditions and shared theme; all dense tabs/200% matrix still open |
+| 6 · UI-28-R2 | Optional glass, settled camera transitions, loading/sound polish | Reduced-motion/opaque parity; same-host GPU/CPU/memory evidence; immediate input/holds | Optional blur/camera travel and performance study pending; opaque/reduced-motion paths retained |
+| 7 · UI-29-R2 | Acceptance matrix, fresh exports, operating docs | Native Windows 4K package flows/captures; explicit other-platform status; user tasks and visual review | Native core matrix delivered; fresh exports, DPI/monitor matrix and human acceptance pending |
 
-**Next task: phase 1.** Its useful result is a substantially better native scene, not another palette on the existing 12° airborne view. Phase 2 is the first end-to-end visual milestone. Fix the shot before expanding the styling to secondary screens.
+**Next gates:** inspect the delivered native result, then complete the remaining dense-tab/accessibility, lighting, performance and export evidence. Catalog thumbnails and optional motion/blur remain separate follow-ups; they are not required to preserve the corrected compact layout.
 
 Prior work remains in [UI-20-R1](research/menu-investigations/UI-20-R1/README.md), [UI-21](research/menu-investigations/UI-21/README.md) and [UI-22–26-R1](research/menu-investigations/UI-22-26-R1/README.md). UI-27 functionality belongs to [HUD](plans/flight-overlays.md). Audio/safe-margin settings, paused-weather staging and loading performance remain explicit open tasks, not implicitly completed by this plan.
 

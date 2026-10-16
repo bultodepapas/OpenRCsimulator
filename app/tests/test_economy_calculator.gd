@@ -225,6 +225,18 @@ func _test_loaded_catalog_contract() -> void:
 	var incomplete: Dictionary = Catalog.load_for("gp-extra-300s-60")
 	if bool(incomplete.get("ok", false)):
 		var partial_report: Dictionary = Calculator.calculate(incomplete["dossier"], _assessment(true))
+		_check("Extra known parts are a subtotal, never a full aircraft quote", partial_report.get("known_subtotal_minor") == 17534 and partial_report.get("total_minor") == null and partial_report.get("replacement_minor") == null, str(partial_report))
+		var partial_reuse := _assessment(true)
+		partial_reuse.components = {"aileron_servos": {"disposition": "reuse", "quantity": 2}}
+		var extra_salvage := Calculator.calculate(incomplete.dossier, partial_reuse)
+		_check("Extra two-servo reuse reduces known subtotal once without inventing unknown losses", extra_salvage.get("salvage_minor") == 6798 and extra_salvage.get("known_subtotal_minor") == 10736 and extra_salvage.get("total_minor") == null, str(extra_salvage))
+		var extra_strike := _assessment(false)
+		extra_strike.components = {"propeller": {"disposition": "replace"}, "engine_main": {"disposition": "inspect"}}
+		var extra_repair := Calculator.calculate(incomplete.dossier, extra_strike)
+		_check("Extra isolated strike prices prop only with unresolved inspection", extra_repair.get("known_subtotal_minor") == 539 and extra_repair.get("total_minor") == null and extra_repair.get("high_minor") == null)
+	incomplete = Catalog.load_for("turbo-lumber-evolution")
+	if bool(incomplete.get("ok", false)):
+		var partial_report: Dictionary = Calculator.calculate(incomplete["dossier"], _assessment(true))
 		_check("runtime incomplete route cannot produce a total or zero replacement quote", not partial_report["complete"] and partial_report["total_minor"] == null and partial_report["replacement_minor"] == null and partial_report["low_minor"] == null and partial_report["high_minor"] == null and not partial_report["unresolved"].is_empty(), str(partial_report))
 
 

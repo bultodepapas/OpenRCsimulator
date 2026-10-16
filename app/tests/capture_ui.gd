@@ -523,7 +523,7 @@ func _check_start_selector(home: Control, choice: String, lang: String) -> Dicti
 	var sidebar_rect: Rect2 = sidebar.get_global_rect()
 	var viewport_size: Vector2 = root.get_viewport().get_visible_rect().size
 	var shown_text: String = button.atr(button.text)
-	var expected: String = "Start: runway (experimental)" if choice == "runway" else "Start: in the air"
+	var expected: String = "Start: runway" if choice == "runway" else "Start: in the air"
 	if lang == "es":
 		expected = "Inicio: pista (experimental)" if choice == "runway" else "Inicio: en el aire"
 	var fits: bool = rect.has_area() and sidebar_rect.encloses(rect) and not rect.intersects(fly_rect) \

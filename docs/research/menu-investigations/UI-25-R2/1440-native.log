@@ -1,0 +1,37 @@
+Godot Engine v4.7.2.stable.official.ed1daf0bf - https://godotengine.org
+OpenGL API 3.3.0 NVIDIA 610.88 - Compatibility - Using Device: NVIDIA - NVIDIA GeForce RTX 3090
+
+CAPTURE en-1440-home.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE en-1440-aircraft.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE en-1440-practice.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE en-1440-garage.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE en-1440-settings.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE en-1440-help.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE en-1440-controls.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE en-1440-weather.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE en-1440-workshop.webp (2560, 1440) logical=(1920.0, 1080.0)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+CAPTURE en-1440-natural_random.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE en-1440-failures.webp (2560, 1440) logical=(1920.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE en-1440-pause.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE en-1440-pause-settings.webp (2560, 1440) logical=(1920.0, 1080.0)
+FLOW en-1440 pause-held=true return=true
+CAPTURE es-1440-home.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE es-1440-aircraft.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE es-1440-practice.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE es-1440-garage.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE es-1440-settings.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE es-1440-help.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE es-1440-controls.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE es-1440-weather.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE es-1440-workshop.webp (2560, 1440) logical=(1920.0, 1080.0)
+aircraft data warning: inertia: Jyy = 0.3871 kg·m2 is 2.11× the scaled UltraStick25e value
+CAPTURE es-1440-natural_random.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE es-1440-failures.webp (2560, 1440) logical=(1920.0, 1080.0)
+aircraft data warning: Experimental tabulated wing polar: provenance and aircraft-specific post-stall validation must be reviewed
+failsafe: Controller selected; check controls and continue.
+CAPTURE es-1440-pause.webp (2560, 1440) logical=(1920.0, 1080.0)
+CAPTURE es-1440-pause-settings.webp (2560, 1440) logical=(1920.0, 1080.0)
+FLOW es-1440 pause-held=true return=true

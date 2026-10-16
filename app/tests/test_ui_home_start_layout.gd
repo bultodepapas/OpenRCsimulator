@@ -13,6 +13,7 @@ func _run() -> void:
 	for arg in OS.get_cmdline_user_args():
 		if arg.begins_with("--home="): script = load(arg.trim_prefix("--home="))
 	var locale := TranslationServer.get_locale()
+	preload("res://ui/ui_theme.gd").compact_layout = true
 	var home: Control = script.new()
 	root.size = Vector2i(1280, 720)
 	home.set_aircraft("xcell-60-research")
@@ -50,10 +51,10 @@ func _run() -> void:
 	quit(1 if _failures else 0)
 
 func _check_layout(home: Control, label: String) -> void:
-	var sidebar: Control = home.get_node("Sidebar")
+	var sidebar: Control = home.get_node("HomeRail")
 	var button: Button = home.start_button
-	var card: Control = home.get_node("Sidebar/SidebarContent/Scroll/Column/AircraftCard")
-	_check(label + " sidebar remains 440 px", is_equal_approx(sidebar.size.x, 440.0))
+	var card: Control = home.find_child("PreparedFlight", true, false)
+	_check(label + " compact rail remains bounded", sidebar.size.x <= 304.0)
 	_check(label + " button stays inside its card", button.global_position.x >= card.global_position.x and button.global_position.x + button.size.x <= card.global_position.x + card.size.x)
 	_check(label + " full button height fits its content", button.size.y >= button.get_combined_minimum_size().y - 0.5)
 

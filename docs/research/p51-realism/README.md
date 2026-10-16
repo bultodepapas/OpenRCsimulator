@@ -2,7 +2,7 @@
 
 2026-10-12 · **Status: P51-15…18 audit, correction and verification complete; aircraft physical acceptance remains experimental.** [Plan](../../P51-REALISM-PLAN.md) · [Reproduction tools](../../../research/p51/p51-15/README.md)
 
-Later steps: [P51-19 trim calibration to the XP-51 flight data](P51-19/README.md) · [P51-20 planform ground effect](P51-20/README.md) · [P51-21 runway start](P51-21/README.md) · [P51-22 slipstream downwash regression](P51-22/README.md) · [P51-23 CI and Linux verification](P51-23/README.md) · [P51-24 lateral-directional audit](P51-24/README.md) · [P51-25 fuselage directional term](P51-25/README.md) · [P51-26 slipstream quadrature and sidewash](P51-26/README.md) · [P51-11a flaps and engine smoke](P51-11a/README.md) · [P51-11b retractable gear and P51-11c brakes](P51-11b/README.md) · [P51-V13 scale lights](P51-V13/README.md).
+Later steps: [P51-19 trim calibration to the XP-51 flight data](P51-19/README.md) · [P51-20 planform ground effect](P51-20/README.md) · [P51-21 runway start](P51-21/README.md) · [P51-22 slipstream downwash regression](P51-22/README.md) · [P51-23 CI and Linux verification](P51-23/README.md) · [P51-24 lateral-directional audit](P51-24/README.md) · [P51-25 fuselage directional term](P51-25/README.md) · [P51-26 slipstream quadrature and sidewash](P51-26/README.md) · [P51-11a flaps and engine smoke](P51-11a/README.md) · [P51-11b retractable gear and P51-11c brakes](P51-11b/README.md) · [P51-V13 scale lights](P51-V13/README.md) · [P51-V14 rudder on the aerodynamic hinge](P51-V14/README.md) · [P51-V15 control-surface audit](P51-V15/README.md).
 
 ## Delivered correction
 

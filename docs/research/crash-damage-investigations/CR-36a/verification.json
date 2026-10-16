@@ -1,0 +1,48 @@
+{
+  "format": "openrc-cr36a-verification-v1",
+  "date": "2026-10-15",
+  "host": "Windows",
+  "godot": "4.7.2-stable",
+  "scope": "Focused economics generation, guarded inheritance and controlled contact-to-report integration. Not whole-suite or physical qualification.",
+  "checks": [
+    {
+      "command": "python research/crash-economics/build_catalog.py --check",
+      "result": "passed"
+    },
+    {
+      "command": "python research/crash-economics/build_runtime.py --check",
+      "result": "passed"
+    },
+    {
+      "command": "python research/crash-economics/test_runtime_data.py",
+      "tests": 16,
+      "failed": 0
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_economy_catalog.gd",
+      "checks": 69,
+      "failed": 0
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_economy_calculator.gd",
+      "checks": 43,
+      "failed": 0
+    },
+    {
+      "command": ".tools/Godot_v4.7.2-stable_win64_console.exe --headless --path app --audio-driver Dummy --script res://tests/test_accident_integration.gd",
+      "checks": 51,
+      "failed": 0
+    }
+  ],
+  "sha256": {
+    "research/crash-economics/build_runtime.py": "3246d43d8d223241c7b2be0ecbecddfe750987835c45b91dc97e0b68976d09ee",
+    "research/crash-economics/aircraft-costing.json": "90839f3e65c9b309cce63b5f9360d0fe5689e6cc80a75d2b6a62523463d976b5",
+    "research/crash-economics/price-research-components.json": "52aca914b95cf375e8ef3d3e12fe1c2a70d0d762a663e8dc01a039255f123cd9",
+    "research/crash-economics/catalog.json": "58ade6aa478c00d59a95f8a45de78dcacba3e7f058eb921f19f144706b6bc903",
+    "app/data/economy/catalog.json": "76354457bbaa398d5d7f1c2bc8d6cbba1703b7b4d4df16876b1b4c94ad70d8cb",
+    "research/crash-economics/test_runtime_data.py": "7afe92e69028b591ec6b1b6e5a057e73e459079c7781e298f994b5cc06585d07",
+    "app/tests/test_accident_integration.gd": "a532570a406de1df534cddc634e9cadf118e5767ea9fb8d6e32c7b6c282b2616",
+    "app/tests/test_economy_catalog.gd": "502fc65fa203a69f9a963b800e784c806f602f8bf964b552c534c30093ac98dd",
+    "app/tests/test_economy_calculator.gd": "9e35af9f29c4febfee4e3745b7c4df74814d03da75ce9e8207b99b5a8351ea7a"
+  }
+}

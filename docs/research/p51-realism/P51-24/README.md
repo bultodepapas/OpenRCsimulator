@@ -1,6 +1,6 @@
 # P51-24: lateral-directional audit against P-51 flight data; rudder area corrected
 
-2026-10-15 · Revision 1 · **Status: rudder area corrected in the physics and verified. Directional stability remains about 2–3.5× too high relative to rudder power, and the remaining fix is a shared fuselage term. The visual rudder outline is still narrow.** The fuselage term followed in [P51-25](../P51-25/README.md). Prefix: P51-24. [Plan](../../../P51-REALISM-PLAN.md)
+2026-10-15 · Revision 1 · **Status: rudder area corrected in the physics and verified. Directional stability remains about 2–3.5× too high relative to rudder power, and the remaining fix is a shared fuselage term. The visual rudder followed in [P51-V14](../P51-V14/README.md).** The fuselage term followed in [P51-25](../P51-25/README.md). Prefix: P51-24. [Plan](../../../P51-REALISM-PLAN.md)
 
 ## Method
 
@@ -33,7 +33,7 @@ The P-51 geometry put the hinge at 6.64 m. That was an unmeasured constant in `a
 | `surfaces.vertical.control_effectiveness` | 0.449208 | 0.533637 |
 | `Cndr` / `CYdr` / `Cldr` | −0.06266 / 0.12781 / 0.01657 | −0.07444 / 0.15183 / 0.01969 |
 
-**The visual model is unchanged.** Moving the visual hinge to 6.488 m fails `verify_p51` ("tail cone ends ahead of the rudder hinge"). On the real airplane the lower rudder continues the fuselage outline aft of the sternpost, so the builder would have to split the tail cone. That is a visual rework for owner review, not part of this step. The narrow visual rudder is an open visual item.
+**The visual model is unchanged.** Moving the visual hinge to 6.488 m fails `verify_p51` ("tail cone ends ahead of the rudder hinge"). On the real airplane the lower rudder continues the fuselage outline aft of the sternpost, so the builder would have to split the tail cone. That is a visual rework for owner review, not part of this step. [P51-V14](../P51-V14/README.md) later made that split: the visual rudder now uses this hinge.
 
 ### Cause 2, open: directional stability without a fuselage term
 

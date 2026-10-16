@@ -27,6 +27,7 @@ var _status_value := 0
 var _layout_panel: PanelContainer
 var _layout_shell: VBoxContainer
 var _scroll: ScrollContainer
+var _destinations: BoxContainer
 var _close_button: Button
 var _rows: Array[BoxContainer] = []
 var _localized_controls: Array[Dictionary] = []
@@ -84,8 +85,8 @@ func _build() -> void:
 	var center: CenterContainer = _surface.center(24.0)
 	_layout_panel = PanelContainer.new()
 	_layout_panel.theme_type_variation = "SettingsPanel"
-	_layout_panel.size_flags_horizontal = Control.SIZE_EXPAND_FILL
-	_layout_panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
+	_layout_panel.size_flags_horizontal = Control.SIZE_SHRINK_CENTER
+	_layout_panel.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	center.add_child(_layout_panel)
 	_layout_shell = VBoxContainer.new()
 	_layout_shell.add_theme_constant_override("separation", 12)
@@ -144,7 +145,7 @@ func _build() -> void:
 	_motion_toggle.toggled.connect(_motion_toggled)
 	_add_row(page, "Reduce interface motion", _motion_toggle)
 
-	page.add_child(HSeparator.new())
+	page.add_child(_label("Language", "SectionLabel"))
 	_language_picker = OptionButton.new()
 	_language_picker.name = "Language"
 	_language_picker.add_item("English")
@@ -155,15 +156,15 @@ func _build() -> void:
 	_add_row(page, "Interface language", _language_picker)
 
 	page.add_child(HSeparator.new())
-	var destinations := HBoxContainer.new()
-	destinations.add_theme_constant_override("separation", 12)
+	_destinations = BoxContainer.new()
+	_destinations.add_theme_constant_override("separation", 12)
 	var controls_button := _button("Controls", "QuietButton", "Controls")
 	controls_button.pressed.connect(func() -> void: _request_route("controls", controls_button))
-	destinations.add_child(controls_button)
+	_destinations.add_child(controls_button)
 	var about_button := _button("Help & About", "QuietButton", "HelpAbout")
 	about_button.pressed.connect(func() -> void: _request_route("about", about_button))
-	destinations.add_child(about_button)
-	page.add_child(destinations)
+	_destinations.add_child(about_button)
+	page.add_child(_destinations)
 
 	_status = Widgets.label("", "SecondaryLabel", true)
 	_status.name = "Status"
@@ -300,8 +301,9 @@ func _update_layout() -> void:
 	if _surface == null or _layout_panel == null:
 		return
 	var available: Vector2 = _surface.size - Vector2(48.0, 48.0)
-	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(640.0, maxf(0.0, available.y)))
+	_layout_panel.custom_minimum_size = Vector2(minf(800.0, maxf(0.0, available.x)), minf(720.0, maxf(0.0, available.y)))
 	var stack_rows := _should_stack_rows()
+	_destinations.vertical = stack_rows
 	for row: BoxContainer in _rows:
 		row.vertical = stack_rows
 		row.add_theme_constant_override("separation", 8 if stack_rows else 24)

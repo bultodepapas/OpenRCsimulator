@@ -35,6 +35,9 @@ func _initialize() -> void:
 
 
 func _run() -> void:
+	await process_frame
+	root.size = Vector2i(1280, 720)
+	await ui.settle()
 	await _card()
 	await _route()
 	for path in [PREFS, PREFS + ".bad", STATE]:
@@ -55,12 +58,12 @@ func _card() -> void:
 	var notice: PanelContainer = home.update_notice
 	_check("card shown, in English", notice != null and notice.visible and notice.label.text == "Update available: 0.1.0-rc8", str(notice))
 	_check("Fly keeps the focus", ui.focus_name() == "Fly", ui.focus_name())
-	# Headless, the window is 64x64: the card hangs from Home's top-right corner by its anchors and grows leftwards, so
-	# on a real 1280-wide Home it sits at x = 821, right of the 440 px column (the UI-16 captures show it).
+	# The notice sits below the global actions and does not cover the flight rail.
 	var right_edge := notice.position.x + notice.size.x
 	_check("hangs from the top-right corner, outside the column: nothing on Home moved", notice.get_parent() == home
 		and notice.anchor_left == 1.0 and notice.anchor_right == 1.0 and notice.grow_horizontal == Control.GROW_DIRECTION_BEGIN
-		and is_equal_approx(notice.position.y, 24.0) and absf(right_edge - (home.size.x - 24)) < 1.0
+		and notice.position.y >= home.settings_button.get_global_rect().end.y
+		and absf(right_edge - (home.size.x - 24)) < 1.0
 		and home.size.x - 24 - notice.size.x + 1280 - home.size.x > Home.SIDEBAR_WIDTH,
 		"%s %s in %s" % [notice.position, notice.size, home.size])
 	var bg: Color = notice.get_theme_stylebox("panel").bg_color

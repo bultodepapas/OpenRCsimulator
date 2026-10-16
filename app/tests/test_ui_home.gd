@@ -25,11 +25,13 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 
 func _initialize() -> void:
-	ui = UiDriver.new(self)
-	_run()
+	_run.call_deferred()
 
 
 func _run() -> void:
+	# SceneTree --script starts with a 64×64 root in headless runs; exercise the intended compact Home size.
+	root.size = Vector2i(1280, 720)
+	ui = UiDriver.new(self)
 	# Route: any user argument keeps the direct flight (traces, captures, --quick-flight); none shows Home.
 	_check("route: no user arguments -> Home", not AppRoot.wants_direct_flight(PackedStringArray()))
 	_check("route: --trace -> direct flight", AppRoot.wants_direct_flight(PackedStringArray(["--trace=/tmp/t.csv", "--t=3"])))
@@ -61,6 +63,8 @@ func _run() -> void:
 	app.preferences_path = PREFS # never the player's own settings
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(PREFS))
 	root.add_child(app)
+	# AppRoot's headless startup may restore the dummy Window's 64×64 default; resize after its initial setup too.
+	root.size = Vector2i(1280, 720)
 	await ui.settle() # Theme lookups and deferred focus need a frame inside the tree
 	var home: Control = app.home
 	_check("Home shown, no flight scene, no simulation", home != null and app.flight == null and _sessions(root) == 0)
@@ -72,33 +76,52 @@ func _run() -> void:
 	# over the worst sky or ground behind them (white and black).
 	var fly: Button = home.fly_button
 	var quit_b: Button = home.quit_button
-	var column: Control = home.get_node("Sidebar/SidebarContent/Scroll/Column")
-	var primary_actions: Control = home.get_node("Sidebar/SidebarContent/PrimaryActions")
-	var scroll: ScrollContainer = home.get_node("Sidebar/SidebarContent/Scroll")
-	var footer: Control = home.get_node("HomeFooter")
+	var left_rail: Control = home.get_node("HomeRail")
+	var nav: Control = home.get_node("HomeRail/HomeNavigation")
+	var scroll: ScrollContainer = home.get_node("HomeRail/HomeContentScroll")
+	var primary_actions: Control = home.get_node("HomeRail/PrimaryActions")
+	var utilities: Control = home.get_node("HomeRail/HomeUtilities")
+	var header_actions: Control = home.get_node("HeaderActions")
+	var flight_card: Control = home.get_node("HomeRail/HomeContentScroll/HomePages/FlightPage/PreparedFlight")
+	_check("Home uses a transparent bounded rail without a full-width footer",
+		home.get_node_or_null("Sidebar") == null and home.get_node_or_null("HomeFooter") == null
+		and left_rail.size.x <= home.get_viewport_rect().size.x * 0.25)
+	_check("navigation keeps five destinations, with Workshop routed as an action",
+		nav.get_child_count() == 5 and home.workshop_button.get_parent() == nav
+		and home._pages.size() == 4)
 	_check("Fly is full width in the pinned primary action strip", fly.get_parent() == primary_actions
 		and fly.size_flags_horizontal == Control.SIZE_EXPAND_FILL
 		and absf(fly.size.x - primary_actions.size.x) < 1.0
-		and primary_actions.get_global_rect().end.y <= footer.get_global_rect().position.y)
-	_check("Workshop stays in the scrollable action route", home.workshop_button.get_parent() == home._pages[0])
+		and primary_actions.get_global_rect().end.y <= utilities.get_global_rect().position.y)
+	_check("aircraft arrows stay in the compact Flight destination",
+		home.previous_button.get_parent() == home.get_node("HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading")
+		and home.next_button.get_parent() == home.previous_button.get_parent())
+	_check("Aircraft destination lists every catalog entry with proper-name capability text",
+		home.get_node("HomeRail/HomeContentScroll/HomePages/AircraftPage/AircraftCatalog").get_child_count() == Catalog.ids().size()
+		and home._catalog_buttons.size() == Catalog.ids().size())
 	_check("garage selector and entry are integrated into the Home column",
-		home.ground_vehicle_choice.get_parent() == home._pages[2] and home.ground_vehicle_button.get_parent() == home._pages[2])
-	_check("language, Help, Controls and Settings stay in the pinned footer",
-		home.language_button.get_parent().get_parent() == footer and home.help_button.get_parent().get_parent() == footer
-		and home.controls_button.get_parent().get_parent() == footer and home.settings_button.get_parent().get_parent() == footer)
+		home.ground_vehicle_choice.get_parent() == home._pages[3] and home.ground_vehicle_button.get_parent() == home._pages[3])
+	_check("Language and Settings stay in the top-right header",
+		home.language_button.get_parent() == header_actions and home.settings_button.get_parent() == header_actions)
+	_check("Controls, Help and Quit stay directly accessible in the quiet bottom row",
+		home.controls_button.get_parent() == utilities and home.help_button.get_parent() == utilities
+		and home.quit_button.get_parent() == utilities)
 	var viewport_height := home.get_viewport_rect().size.y
-	_check("Help and Settings fit in the initial Home viewport",
+	_check("Help, Controls and Settings fit in the initial Home viewport",
 		home.help_button.get_global_rect().end.y <= viewport_height
+		and home.controls_button.get_global_rect().end.y <= viewport_height
 		and home.settings_button.get_global_rect().end.y <= viewport_height)
-	_check("Default flight page fits without scrolling", scroll.vertical_scroll_mode == ScrollContainer.SCROLL_MODE_AUTO
-		and not scroll.get_v_scroll_bar().visible)
+	_check("Default Flight page fits without scrolling", scroll.vertical_scroll_mode == ScrollContainer.SCROLL_MODE_AUTO
+		and home._pages[0].visible and not scroll.get_v_scroll_bar().visible)
 	_check("Language and Controls keep their full labels", not home.language_button.clip_text
 		and not home.controls_button.clip_text
 		and home.language_button.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS
 		and home.controls_button.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS)
-	_check("footer flows controls into rows rather than wrapping button text",
-		home.language_button.get_parent() is HFlowContainer and home.language_button.autowrap_mode == TextServer.AUTOWRAP_OFF)
-	var panel_bg: Color = (home.get_node("Sidebar") as Control).get_theme_stylebox("panel").bg_color
+	_check("header and quiet utility buttons preserve full labels",
+		home.language_button.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS
+		and home.controls_button.text_overrun_behavior != TextServer.OVERRUN_TRIM_ELLIPSIS
+		and home.controls_button.get_minimum_size().x <= home.controls_button.size.x)
+	var panel_bg: Color = flight_card.get_theme_stylebox("panel").bg_color
 	for b in [fly, quit_b]:
 		for state in ["normal", "hover", "pressed"]:
 			var bg: Color = b.get_theme_stylebox(state).bg_color
@@ -134,17 +157,23 @@ func _run() -> void:
 	TranslationServer.set_locale("en")
 	await process_frame
 
-	# Keyboard: focus starts on Fly and is visible; arrows move it; nothing flies while navigating.
+	# Keyboard: focus starts on Fly and is visible; quiet bottom actions remain reachable without launching.
 	_check("initial focus on Fly", ui.focus_name() == "Fly", ui.focus_name())
 	_check("focus outline visible (keyboard focus)", fly.has_focus(true))
 	await ui.tap(KEY_DOWN)
-	_check("Down -> Language", ui.focus_name() == "Language", ui.focus_name())
+	_check("Down -> Controls", ui.focus_name() == "ControllerSettings", ui.focus_name())
 	await ui.tap(KEY_RIGHT)
-	_check("Right -> Controls", ui.focus_name() == "ControllerSettings", ui.focus_name())
+	_check("Right -> Help", ui.focus_name() == "Help", ui.focus_name())
 	await ui.tap(KEY_RIGHT)
-	_check("Right -> Settings", ui.focus_name() == "Settings", ui.focus_name())
+	_check("Right -> Quit", ui.focus_name() == "Quit", ui.focus_name())
 	await ui.tap(KEY_UP)
 	_check("Up -> Fly", ui.focus_name() == "Fly", ui.focus_name())
+	await ui.tap(KEY_UP)
+	_check("Up from Fly -> start choice", ui.focus_name() == "StartChoice", ui.focus_name())
+	await ui.tap(KEY_DOWN)
+	_check("Down from start choice -> Fly", ui.focus_name() == "Fly", ui.focus_name())
+	await ui.tap(KEY_DOWN)
+	_check("Down from Fly -> Controls", ui.focus_name() == "ControllerSettings", ui.focus_name())
 	for section in range(4):
 		home._page_buttons[section].grab_focus()
 		await ui.tap(KEY_ENTER)
@@ -152,14 +181,52 @@ func _run() -> void:
 			and home._pages.filter(func(page): return page.visible).size() == 1 and app.flight == null)
 	home._select_page(0)
 	var saved_aircraft: String = home.aircraft_id
+	var long_device := "FrSky Tandem X20S USB Joystick Controller"
+	home.set_controller_devices(long_device, "XInput Controller")
 	for locale in ["en", "es"]:
 		TranslationServer.set_locale(locale)
 		for aircraft in Catalog.ids():
 			home.set_aircraft(aircraft)
 			for frame in 4: await process_frame
 			_check("flight page fits %s / %s without scrolling" % [aircraft, locale], not scroll.get_v_scroll_bar().visible
-				and home.workshop_button.get_global_rect().end.y <= scroll.get_global_rect().end.y)
+				and home._pages[0].visible and fly.get_global_rect().end.y <= home.get_viewport_rect().end.y
+				and left_rail.size.x <= 304.5, "rail=%s body=%s content=%s bar=%s" % [left_rail.size, scroll.size, home._pages[0].size, scroll.get_v_scroll_bar().visible])
+			_check("full controller identity stays available %s / %s" % [aircraft, locale],
+				home.control_label.tooltip_text.contains(long_device) and home.control_label.max_lines_visible == 1)
 	TranslationServer.set_locale("en")
+	home.set_controller_devices("", "")
+	for locale in ["en", "es"]:
+		TranslationServer.set_locale(locale)
+		for preset in preload("res://render/world/conditions.gd").HOME_CHOICES:
+			home.set_time_of_day(preset)
+			for frame in 4: await process_frame
+			_check("conditions remain bounded %s / %s" % [preset, locale], left_rail.size.x <= 304.5 and not scroll.get_v_scroll_bar().visible)
+	TranslationServer.set_locale("en")
+	home.set_time_of_day("evening")
+	var normal_theme: Theme = home.theme
+	UiTheme.text_scale = 2.0
+	home.theme = UiTheme.build()
+	for locale in ["en", "es"]:
+		TranslationServer.set_locale(locale)
+		for frame in 6: await process_frame
+		_check("200% header actions stay inside the viewport / " + locale,
+			home.get_viewport_rect().encloses(home.language_button.get_global_rect())
+			and home.get_viewport_rect().encloses(home.settings_button.get_global_rect())
+			and home.language_button.get_global_rect().end.x <= home.settings_button.global_position.x)
+	UiTheme.text_scale = 1.0
+	home.theme = normal_theme
+	TranslationServer.set_locale("en")
+	for frame in 6: await process_frame
+	home.set_aircraft("sebart-avanti-s-a200-p100rx")
+	home._select_page(1)
+	home._select_page(1) # Repeated activation in the same frame must not connect a second reveal callback.
+	for frame in 6: await process_frame
+	var selected_catalog: Control = home._catalog_buttons[home._catalog_ids.find(home.aircraft_id)]
+	_check("opening the catalog reveals the current aircraft", scroll.get_global_rect().encloses(selected_catalog.get_global_rect()))
+	home._page_buttons[1].grab_focus()
+	await ui.tap(KEY_DOWN)
+	_check("catalog navigation enters on the selected aircraft", selected_catalog.has_focus())
+	home._select_page(0)
 	home.set_aircraft(saved_aircraft)
 	fly.grab_focus()
 	_check("navigating did not start a flight", app.flight == null and _sessions(root) == 0)

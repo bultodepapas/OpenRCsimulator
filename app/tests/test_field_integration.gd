@@ -145,9 +145,10 @@ func _test_home_to_fly(custom_source: String, original_default: String) -> void:
 		app.queue_free()
 		await _ui.settle()
 		return
-	_check("Home composition follows the custom pilot station and eye height",
-		home_scene.get("camera").global_position.is_equal_approx(Vector3(-3.5, 2.15, -9.25))
-		and home_scene.get("airplane").root.global_position.is_equal_approx(Vector3(-3.5, 3.2, -22.25)))
+	var parked: Vector3 = home_scene.get("airplane").root.global_position
+	_check("Home parks on the injected runway and frames the selected model",
+		is_equal_approx(parked.x, -4.25) and is_equal_approx(parked.z, -38.5)
+		and parked.y > 0.0 and parked.y < 0.5 and home_scene.get("camera").fov == 40.0)
 	var home_signature: Array[Dictionary] = _field_signature(home_field)
 	var home_resource_ids: Dictionary = _field_resource_ids(home_field)
 	_check("Home consumes custom runway center and dimensions", _custom_runway_is_present(home_field))

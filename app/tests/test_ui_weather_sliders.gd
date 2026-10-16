@@ -4,6 +4,7 @@ extends SceneTree
 
 const Preferences := preload("res://app_state/preferences.gd")
 const WeatherSettings := preload("res://physics/wind_config.gd")
+const WeatherDialog := preload("res://ui/weather_dialog.gd")
 const UiDriver := preload("res://tests/ui_driver.gd")
 
 const PREFS: String = "user://test_ui_weather_sliders_settings.cfg"
@@ -22,7 +23,59 @@ func _check(label: String, ok: bool, detail: String = "") -> void:
 
 func _initialize() -> void:
 	ui = UiDriver.new(self)
+	await _responsive_weather_layout()
 	await _run()
+
+
+func _responsive_weather_layout() -> void:
+	TranslationServer.set_locale("en")
+	var viewport := SubViewport.new()
+	viewport.size = Vector2i(1920, 1080)
+	viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(viewport)
+	await process_frame
+	var wide_dialog := WeatherDialog.new(WeatherSettings.defaults())
+	viewport.add_child(wide_dialog)
+	await process_frame
+	await process_frame
+	await process_frame
+	var wide_rect: Rect2 = wide_dialog.panel.get_global_rect()
+	_check("1080p weather panel fits all five tabs without overflow arrows",
+		wide_dialog.tab_container.tab_count == 5
+		and not wide_dialog.tab_container.get_offset_buttons_visible(),
+		"panel=%s tabs=%d overflow=%s" % [str(wide_rect), wide_dialog.tab_container.tab_count,
+		str(wide_dialog.tab_container.get_offset_buttons_visible())])
+	_check("wide weather panel is centered at its bounded width",
+		is_equal_approx(wide_rect.size.x, 960.0)
+		and wide_rect.position.x >= 16.0 and wide_rect.end.x <= 1904.0,
+		str(wide_rect))
+	var selectors_bounded := true
+	var oversized_selectors: Array[String] = []
+	for selector: OptionButton in wide_dialog.find_children("*", "OptionButton", true, false):
+		selectors_bounded = selectors_bounded and selector.custom_minimum_size.x <= 360.0
+		selectors_bounded = selectors_bounded and selector.size_flags_horizontal == Control.SIZE_SHRINK_BEGIN
+		if selector.size.x > 480.5:
+			selectors_bounded = false
+			oversized_selectors.append("%s=%s (min %s)" % [selector.name, str(selector.size.x), str(selector.custom_minimum_size.x)])
+	_check("weather selectors stay bounded as the panel widens", selectors_bounded, str(oversized_selectors))
+	wide_dialog.queue_free()
+	await process_frame
+
+	viewport.size = Vector2i(800, 600)
+	await process_frame
+	var compact_dialog := WeatherDialog.new(WeatherSettings.defaults())
+	viewport.add_child(compact_dialog)
+	await process_frame
+	await process_frame
+	await process_frame
+	var compact_rect: Rect2 = compact_dialog.panel.get_global_rect()
+	_check("weather panel stays inside the 800×600 viewport",
+		compact_rect.position.x >= 0.0 and compact_rect.position.y >= 0.0
+		and compact_rect.end.x <= 800.0 and compact_rect.end.y <= 600.0,
+		str(compact_rect))
+	compact_dialog.queue_free()
+	viewport.queue_free()
+	await process_frame
 
 
 func _run() -> void:

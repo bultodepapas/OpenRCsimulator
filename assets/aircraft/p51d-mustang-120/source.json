@@ -474,7 +474,7 @@
       "fin_top_y": 1.7669,
       "fin_top_le_z": 6.15,
       "fin_top_chord": 0.6,
-      "rudder_hinge_z": 6.64,
+      "rudder_hinge_z": 6.4883,
       "rudder_te_bottom": [
         7.161,
         0.03
@@ -1162,7 +1162,8 @@
         "span_from_fraction": 0.86,
         "chord_fraction": 0.42
       },
-      "stab_tip_round": 0.24
+      "stab_tip_round": 0.24,
+      "tail_post_z": 6.64
     },
     "gear": {
       "main_axle": [

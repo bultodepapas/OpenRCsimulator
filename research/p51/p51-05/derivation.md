@@ -30,7 +30,7 @@ Propeller: static 4951 rpm, static thrust 235 N (24.0 kgf), thrust/weight 1.12; 
 | tail | horizontal ac (model z) | 1.391 | quarter chord of the stab MAC |
 | tail | elevator chord fraction | 0.35 | hinge at a constant chord fraction |
 | tail | Sv (m2) | 0.1351 | fin (with dorsal fillet) + rudder side polygon |
-| tail | rudder aerodynamic hinge (model z) | 1.621 | full-size 6.488 m: the measured silhouette aft of it is the NACA production rudder area 10.41 ft2; the visual hinge 1.6591 (tail post, unmeasured) leaves 7.2 ft2 |
+| tail | rudder aerodynamic hinge (model z) | 1.621 | full-size 6.488 m: the measured silhouette aft of it is the NACA production rudder area 10.41 ft2; the visual model hinges its rudder here (P51-V14); the earlier tail post 1.6591 (unmeasured) left 7.2 ft2 |
 | tail | rudder area fraction | 0.3748 | exposed side polygon aft of the aerodynamic hinge (P51-24); used as its chord fraction |
 | tail | fin ac (model z, y) | 1.496, 0.1975 | LE at the area-centroid height + 1/4 of the mean chord |
 | aero | section lift slope / 2pi | 0.86 | NACA 66(2)-415 at Re 0.7-1.0e6: 0.093-0.095 /deg (Loftin & Smith, NACA TN 1945, ntrs.nasa.gov/citations/19930082618); the NAA 45-100 is a 6-series-type laminar section; the full-size section measured 0.111 /deg at Re 13e6 (NACA MR 1943), the low Re lowers it |

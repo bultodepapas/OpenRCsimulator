@@ -1,0 +1,7 @@
+aileron_left  +0.0 deg: aileron_left vertex -> wing_left_tip 1.92 mm at (-1.372578, -0.057134, 0.358076) | wing_left_tip vertex -> aileron_left 1.93 mm at (-1.374111, -0.053224, 0.393467)
+aileron_left +18.0 deg: aileron_left vertex -> wing_left_tip 1.83 mm at (-1.372007, -0.049369, 0.356807) | wing_left_tip vertex -> aileron_left 2.03 mm at (-1.374399, -0.056087, 0.369113)
+aileron_left -18.0 deg: aileron_left vertex -> wing_left_tip 1.76 mm at (-1.37255, -0.054796, 0.357202) | wing_left_tip vertex -> aileron_left 1.89 mm at (-1.373797, -0.049214, 0.369233)
+aileron_left +30.0 deg: aileron_left vertex -> wing_left_tip 1.80 mm at (-1.372196, -0.051178, 0.356995) | wing_left_tip vertex -> aileron_left 2.32 mm at (-1.374529, -0.057304, 0.353189)
+aileron_left -30.0 deg: aileron_left vertex -> wing_left_tip 1.70 mm at (-1.372453, -0.052856, 0.357758) | wing_left_tip vertex -> aileron_left 2.22 mm at (-1.373562, -0.046248, 0.353382)
+aileron_left +45.0 deg: aileron_left vertex -> wing_left_tip 1.85 mm at (-1.372358, -0.053436, 0.356698) | wing_left_tip vertex -> aileron_left 2.39 mm at (-1.374529, -0.057304, 0.353189)
+aileron_left -45.0 deg: aileron_left vertex -> wing_left_tip 1.68 mm at (-1.372243, -0.050343, 0.357872) | wing_left_tip vertex -> aileron_left 2.26 mm at (-1.373562, -0.046248, 0.353382)

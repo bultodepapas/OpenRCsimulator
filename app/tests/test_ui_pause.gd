@@ -5,6 +5,7 @@ extends SceneTree
 
 const UiDriver := preload("res://tests/ui_driver.gd")
 const RcCalibration := preload("res://input/rc_calibration.gd")
+const ScreenTheme := preload("res://ui/ui_theme.gd")
 const PREFS := "user://test_ui_pause_settings.cfg"
 
 var _failures := 0
@@ -22,7 +23,8 @@ func _check(label: String, ok: bool, detail := "") -> void:
 
 func _initialize() -> void:
 	ui = UiDriver.new(self)
-	_run()
+	await _run_pause_layout_checks()
+	await _run()
 
 
 func _wait(seconds: float) -> void:
@@ -64,15 +66,22 @@ func _run() -> void:
 	await ui.settle()
 	await ui.tap(KEY_ESCAPE)
 	await ui.settle()
-	var pause_scroll: ScrollContainer = app.pause_menu.find_child("PauseScroll", true, false) as ScrollContainer
-	_check("200% Spanish opens Pause with Resume focused and visible",
-		ui.focus_name() == "Continue" and pause_scroll.get_global_rect().encloses(app.pause_menu.continue_button.get_global_rect()),
-		"focus=%s scroll=%s resume=%s" % [ui.focus_name(), str(pause_scroll.get_global_rect()),
-		str(app.pause_menu.continue_button.get_global_rect())])
+	_check("200% Spanish opens Pause with Continue focused",
+		ui.focus_name() == "Continue", ui.focus_name())
 	TranslationServer.set_locale("en")
 	app._apply_presentation(default_presentation)
 	await ui.settle()
 	_check("Esc opens the pause menu, focus on Continue", app.pause_menu != null and ui.focus_name() == "Continue", ui.focus_name())
+	_check("secondary Pause actions use the quiet treatment",
+		app.pause_menu.restart_button.theme_type_variation == "QuietButton"
+		and app.pause_menu.settings_button.theme_type_variation == "QuietButton"
+		and app.pause_menu.help_button.theme_type_variation == "QuietButton")
+	_check("quiet Pause rows are left-aligned while Continue stays centered",
+		app.pause_menu.restart_button.alignment == HORIZONTAL_ALIGNMENT_LEFT
+		and app.pause_menu.settings_button.alignment == HORIZONTAL_ALIGNMENT_LEFT
+		and app.pause_menu.session_options_button.alignment == HORIZONTAL_ALIGNMENT_LEFT
+		and app.pause_menu.help_button.alignment == HORIZONTAL_ALIGNMENT_LEFT
+		and app.pause_menu.continue_button.alignment == HORIZONTAL_ALIGNMENT_CENTER)
 	_check("the session is held and paused", session.holds.has("menu") and session.sim.paused)
 	var tick: int = session.sim.tick
 	var prop: float = main._prop_angle
@@ -252,6 +261,144 @@ func _run() -> void:
 	quit(1 if _failures > 0 else 0)
 
 
+func _run_pause_layout_checks() -> void:
+	var saved_text_scale := ScreenTheme.text_scale
+	ScreenTheme.text_scale = 1.0
+	for reference_size: Vector2i in [Vector2i(1280, 720), Vector2i(1920, 1080)]:
+		var layout_viewport := SubViewport.new()
+		layout_viewport.size = reference_size
+		layout_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+		root.add_child(layout_viewport)
+		var session := PauseLayoutSession.new()
+		layout_viewport.add_child(session)
+		var pause := load("res://ui/pause_menu.gd").new() as CanvasLayer
+		layout_viewport.add_child(pause)
+		pause.show_for(session)
+		await process_frame
+		await process_frame
+		var scroll: ScrollContainer = pause.find_child("PauseScroll", true, false) as ScrollContainer
+		var panel_rect: Rect2 = scroll.get_parent().get_global_rect()
+		_check("default Pause fits %s without a scrollbar" % str(reference_size),
+			not scroll.get_v_scroll_bar().visible,
+			"screen=%s panel=%s scroll=%s" % [str(layout_viewport.size),
+			str(panel_rect), str(scroll.get_global_rect())])
+		_check("100% Pause rail stays at its original 384px width",
+			is_equal_approx(panel_rect.size.x, 384.0), str(panel_rect))
+		_check("default Resume stays inside the pause panel",
+			scroll.get_global_rect().encloses(pause.continue_button.get_global_rect()))
+		pause.queue_free()
+		session.queue_free()
+		layout_viewport.queue_free()
+		await process_frame
+
+	var teardown_parent := Node.new()
+	root.add_child(teardown_parent)
+	var teardown_session := PauseLayoutSession.new()
+	teardown_parent.add_child(teardown_session)
+	var teardown_pause := load("res://ui/pause_menu.gd").new() as CanvasLayer
+	teardown_parent.add_child(teardown_pause)
+	teardown_pause.show_for(teardown_session)
+	var pending_focus := Callable(teardown_pause, "_focus_primary")
+	teardown_pause.queue_free()
+	await process_frame
+	_check("pending Pause focus is disconnected when teardown frees the menu",
+		not is_instance_valid(teardown_pause) and not process_frame.is_connected(pending_focus))
+	teardown_session.queue_free()
+	teardown_parent.queue_free()
+	await process_frame
+
+	var scale_viewport := SubViewport.new()
+	scale_viewport.size = Vector2i(1920, 1080)
+	scale_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(scale_viewport)
+	var scale_parent := Node.new()
+	scale_viewport.add_child(scale_parent)
+	var scale_session := PauseLayoutSession.new()
+	scale_parent.add_child(scale_session)
+	var scale_pause := load("res://ui/pause_menu.gd").new() as CanvasLayer
+	scale_parent.add_child(scale_pause)
+	scale_pause.show_for(scale_session)
+	await process_frame
+	var scale_panel: PanelContainer = scale_pause.find_children("*", "PanelContainer", true, false)[0] as PanelContainer
+	var scale_screen := scale_pause.get_node("Screen") as Control
+	_check("live Pause starts with a 384px rail at 100%",
+		is_equal_approx(scale_panel.custom_minimum_size.x, 384.0), str(scale_panel.custom_minimum_size))
+	ScreenTheme.text_scale = 2.0
+	scale_screen.theme = ScreenTheme.build()
+	await process_frame
+	_check("live theme change expands the Pause rail at 200%",
+		scale_panel.custom_minimum_size.x > 384.0 and scale_panel.custom_minimum_size.x <= 768.0,
+		str(scale_panel.custom_minimum_size))
+	ScreenTheme.text_scale = 1.0
+	scale_screen.theme = ScreenTheme.build()
+	await process_frame
+	_check("live theme revert restores the 384px Pause rail at 100%",
+		is_equal_approx(scale_panel.custom_minimum_size.x, 384.0), str(scale_panel.custom_minimum_size))
+	scale_pause.queue_free()
+	scale_session.queue_free()
+	scale_parent.queue_free()
+	scale_viewport.queue_free()
+	await process_frame
+
+	ScreenTheme.text_scale = 2.0
+	TranslationServer.set_locale("es")
+	var enlarged_viewport := SubViewport.new()
+	enlarged_viewport.size = Vector2i(1920, 1080)
+	enlarged_viewport.render_target_update_mode = SubViewport.UPDATE_ALWAYS
+	root.add_child(enlarged_viewport)
+	var delayed_session := PauseLayoutSession.new()
+	delayed_session.pause_reason = "radio disconnected"
+	enlarged_viewport.add_child(delayed_session)
+	var enlarged_pause := load("res://ui/pause_menu.gd").new() as CanvasLayer
+	enlarged_viewport.add_child(enlarged_pause)
+	enlarged_pause.show_for(delayed_session)
+	await process_frame
+	await process_frame
+	var enlarged_scroll: ScrollContainer = enlarged_pause.find_child("PauseScroll", true, false) as ScrollContainer
+	var enlarged_panel_rect: Rect2 = enlarged_scroll.get_parent().get_global_rect()
+	_check("200% Pause rail widens while staying within the viewport bound",
+		enlarged_panel_rect.size.x >= 700.0 and enlarged_panel_rect.size.x <= 1920.0 * 0.45
+		and enlarged_panel_rect.end.x <= 1920.0,
+		str(enlarged_panel_rect))
+	var continue_button: Button = enlarged_pause.continue_button
+	continue_button.text = "Continuar" # SceneTree translation is bypassed in this detached viewport fixture.
+	var button_style: StyleBox = continue_button.get_theme_stylebox("normal")
+	var text_font: Font = continue_button.get_theme_font("font")
+	var text_width: float = text_font.get_string_size(
+		continue_button.text, HORIZONTAL_ALIGNMENT_LEFT, -1.0, continue_button.get_theme_font_size("font_size")
+	).x
+	var available_text_width: float = continue_button.size.x - button_style.get_content_margin(SIDE_LEFT) - button_style.get_content_margin(SIDE_RIGHT)
+	_check("Spanish Continue stays on one line at 200% text",
+		continue_button.text == "Continuar" and continue_button.autowrap_mode == TextServer.AUTOWRAP_WORD
+		and text_width <= available_text_width,
+		"text=%s width=%.1f available=%.1f mode=%d" % [continue_button.text, text_width, available_text_width,
+		continue_button.autowrap_mode])
+	var enlarged_column: VBoxContainer = enlarged_scroll.get_child(0) as VBoxContainer
+	var pause_header: Control = enlarged_column.get_child(0) as Control
+	enlarged_scroll.ensure_control_visible(continue_button)
+	await process_frame
+	var scroll_rect: Rect2 = enlarged_scroll.get_global_rect()
+	var header_rect: Rect2 = pause_header.get_global_rect()
+	var continue_rect: Rect2 = continue_button.get_global_rect()
+	_check("200% Pause keeps its header and Continue visible together",
+		scroll_rect.encloses(header_rect) and scroll_rect.encloses(continue_rect),
+		"scroll=%s header=%s continue=%s scroll_y=%d max=%d" % [str(scroll_rect), str(header_rect),
+		str(continue_rect), enlarged_scroll.scroll_vertical, enlarged_scroll.get_v_scroll_bar().max_value])
+	_check("200% Continue remains enabled and keyboard-focusable",
+		not continue_button.disabled and continue_button.focus_mode != Control.FOCUS_NONE)
+	enlarged_pause._toggle_group("exit")
+	_check("200% exit options open and Quit remains operable",
+		enlarged_pause.exit_options_container.visible and enlarged_pause.quit_button.visible
+		and not enlarged_pause.quit_button.disabled
+		and enlarged_pause.quit_button.focus_mode != Control.FOCUS_NONE)
+	enlarged_pause.queue_free()
+	delayed_session.queue_free()
+	enlarged_viewport.queue_free()
+	await process_frame
+	TranslationServer.set_locale("en")
+	ScreenTheme.text_scale = saved_text_scale
+
+
 static func _count(n: Node, script_name: String) -> int:
 	var count := 0
 	for c in n.find_children("*", "Node", true, false):
@@ -276,3 +423,12 @@ class FakeRecorder extends RefCounted:
 
 	func seconds() -> float:
 		return 0.0
+
+
+class PauseLayoutSession extends Node:
+	var pause_reason := ""
+	var external_controller_selection := false
+	var crash: Dictionary = {}
+
+	func is_flyable() -> bool:
+		return true

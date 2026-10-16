@@ -1,6 +1,8 @@
 # Investigaciones para la entrada y los menús de OpenRC
 
-2026-10-15 direction revision: [UI-20-R2 — cinematic composition, Godot feasibility and free-resource research](UI-20-R2/README.md). Documents the owner's rejection of the oversized composition, current camera/scale causes, inspected commercial references and implementation options. [Redesign plan revision 5](../../MENU-REDESIGN-PLAN.md) sequences the new native visual slice; the proposed direction is not yet implemented.
+2026-10-15 implementation: [UI-22–26-R2 — grounded Home, bounded menus and native 720p–4K evidence](UI-25-R2/README.md). Includes the new scene/scale/theme, compact Home/Pause, Settings/Conditions and EN/ES behavior checks.
+
+2026-10-15 direction revision: [UI-20-R2 — cinematic composition, Godot feasibility and free-resource research](UI-20-R2/README.md). Documents the owner's rejection of the oversized composition, current camera/scale causes, inspected commercial references and implementation options. [Redesign plan revision 6](../../MENU-REDESIGN-PLAN.md) tracks the delivered core slice and remaining acceptance gates.
 
 2026-10-15 implementation follow-up: [UI-22–26-R1 — scalable shell, Settings and compact Pause](UI-22-26-R1/README.md). Native EN/ES captures, 200% text, aspect ratios and display recovery checks.
 

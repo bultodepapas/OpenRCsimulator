@@ -660,7 +660,8 @@ const DATA := {
 		"fin_top_y": 0.4415,
 		"fin_top_le_z": 1.5367,
 		"fin_top_chord": 0.1499,
-		"rudder_hinge_z": 1.6591,
+		"rudder_hinge_z": 1.6212,
+		"tail_post_z": 1.6591,
 		"rudder_te_bottom": [
 			1.7893,
 			0.0075

@@ -91,7 +91,7 @@ func _contrast() -> void:
 	var backplate := Color(UiTheme.PANEL, Frame.BACKPLATE_ALPHA)
 	_check("secondary text ≥ 4.5:1 on the backplate over any sky", UiTheme.contrast(UiTheme.TEXT_2, backplate) >= 4.5, "%.2f" % UiTheme.contrast(UiTheme.TEXT_2, backplate))
 	_check("values ≥ 4.5:1 on the backplate over any sky", UiTheme.contrast(UiTheme.TEXT, backplate) >= 4.5)
-	_check("danger chip text ≥ 4.5:1", UiTheme.contrast(UiTheme.TEXT, UiTheme.PRIMARY.pressed) >= 4.5, "%.2f" % UiTheme.contrast(UiTheme.TEXT, UiTheme.PRIMARY.pressed))
+	_check("danger chip text ≥ 4.5:1", UiTheme.contrast(UiTheme.TEXT, UiTheme.DANGER.pressed) >= 4.5, "%.2f" % UiTheme.contrast(UiTheme.TEXT, UiTheme.DANGER.pressed))
 	_check("caution chip text ≥ 4.5:1", UiTheme.contrast(UiTheme.PANEL, UiTheme.FOCUS) >= 4.5)
 
 
@@ -434,7 +434,12 @@ func _pause_preview() -> void:
 		_check("the latency marker overlaps no Pilot overlay at 1280×720", marker_clear, "marker %s; %s" % [area, _rects(overlays)])
 	await ui.tap(KEY_ESCAPE)
 	_check("pause hides the overlays", overlays != null and not overlays.visible)
-	app.open_overlays()
+	app.pause_menu.session_options_button.grab_focus()
+	await ui.tap(KEY_ENTER)
+	_check("Session options reveals the Flight overlays action",
+		app.pause_menu.session_options_container.visible and app.pause_menu.overlays_button.is_visible_in_tree())
+	app.pause_menu.overlays_button.grab_focus()
+	await ui.tap(KEY_ENTER)
 	await ui.settle()
 	_check("the dialog previews the overlays above the pause menu", overlays.visible and overlays.layer > app.pause_menu.layer
 		and overlays.layer < app.screens.top().layer, "overlays %d pause %d dialog %d" % [overlays.layer, app.pause_menu.layer, app.screens.top().layer])
@@ -443,6 +448,9 @@ func _pause_preview() -> void:
 	_check("closing the dialog hides them again under the pause menu", app.pause_menu != null and not overlays.visible
 		and overlays.layer == Manager.FLIGHT_LAYER and app.pause_menu.visible)
 	_check("focus returns to the pause menu's Flight overlays button", ui.focus_name() == "Overlays", ui.focus_name())
+	await ui.tap(KEY_ESCAPE) # Back first closes Session options.
+	_check("Back closes Session options before returning to the flight",
+		app.pause_menu != null and not app.pause_menu.session_options_container.visible)
 	await ui.tap(KEY_ESCAPE) # Continue
 	await ui.settle()
 	_check("continue shows them at the flight layer", overlays.visible and overlays.layer == Manager.FLIGHT_LAYER)

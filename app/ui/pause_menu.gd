@@ -5,6 +5,7 @@
 extends CanvasLayer
 
 const Screen := preload("res://ui/screen.gd")
+const ScreenTheme := preload("res://ui/ui_theme.gd")
 const Widgets := preload("res://ui/widgets.gd")
 
 signal continue_requested
@@ -20,7 +21,10 @@ signal settings_requested(from: Control)
 signal quit_requested
 
 const LAYER := 10 # above the flight's HUD/panel CanvasLayers
-const WIDTH := 400
+const WIDTH := 384
+const LARGE_TEXT_SCALE := 1.5
+const MAX_TEXT_SCALE := 2.0
+const MAX_RAIL_VIEWPORT_RATIO := 0.45
 
 var continue_button: Button
 var restart_button: Button
@@ -49,6 +53,8 @@ var _failure_notifications_enabled := true
 var _failure_summary_disclosed := false
 var _controller_status_elapsed := 0.0
 var _open_group := ""
+var _panel: PanelContainer
+var _sidebar_fade: TextureRect
 
 
 ## `can_end`: whether "End flight" (back to Home) is offered; the direct route (`--` arguments) has no Home.
@@ -63,11 +69,21 @@ func _init(can_end := true) -> void:
 	screen.dim(0.25) # keep the frozen pilot view readable
 	# A column on the left, like Home: the airplane, centred by the pilot camera, stays in view.
 	var panel := PanelContainer.new()
+	_panel = panel
 	panel.theme_type_variation = "Sidebar"
-	panel.set_anchors_preset(Control.PRESET_LEFT_WIDE)
-	panel.custom_minimum_size.x = WIDTH
+	panel.anchor_left = 0.0
+	panel.anchor_top = 0.0
+	panel.anchor_right = 0.0
+	panel.anchor_bottom = 1.0
+	panel.offset_left = 0.0
+	panel.offset_top = 0.0
+	var panel_width := _initial_panel_width()
+	panel.offset_right = panel_width
+	panel.offset_bottom = 0.0
+	panel.custom_minimum_size.x = panel_width
 	screen.add_child(panel)
-	var sidebar_fade: TextureRect = screen.fade(WIDTH)
+	var sidebar_fade: TextureRect = screen.fade(roundi(panel_width))
+	_sidebar_fade = sidebar_fade
 	var sync_sidebar_fade := func() -> void:
 		sidebar_fade.offset_left = panel.size.x
 		sidebar_fade.offset_right = panel.size.x + 32.0
@@ -76,10 +92,13 @@ func _init(can_end := true) -> void:
 	var scroll := ScrollContainer.new()
 	scroll.name = "PauseScroll"
 	scroll.follow_focus = true
+	scroll.vertical_scroll_mode = ScrollContainer.SCROLL_MODE_AUTO
 	scroll.horizontal_scroll_mode = ScrollContainer.SCROLL_MODE_DISABLED
+	scroll.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	scroll.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.add_child(scroll)
 	var column := VBoxContainer.new()
-	column.add_theme_constant_override("separation", 12)
+	column.add_theme_constant_override("separation", 8)
 	column.alignment = BoxContainer.ALIGNMENT_CENTER
 	column.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	column.size_flags_vertical = Control.SIZE_EXPAND_FILL
@@ -101,52 +120,51 @@ func _init(can_end := true) -> void:
 	failure_summary_label.name = "FailureSummary"
 	failure_summary_label.visible = false
 	column.add_child(failure_summary_label)
-	column.add_child(_gap(6))
 	continue_button = _button("Continue", "PrimaryButton", "Continue")
-	continue_button.custom_minimum_size.y = 58
+	continue_button.custom_minimum_size.y = 56
 	continue_button.pressed.connect(func() -> void: continue_requested.emit())
 	column.add_child(continue_button)
-	restart_button = _button("Restart flight", "", "Restart")
+	restart_button = _button("Restart flight", "QuietButton", "Restart")
 	restart_button.pressed.connect(func() -> void: restart_requested.emit())
 	column.add_child(restart_button)
 	session_options_button = _disclosure_button("Session options", "SessionOptions")
 	session_options_button.pressed.connect(func() -> void: _toggle_group("session"))
 	column.add_child(session_options_button)
 	session_options_container = _option_group("SessionOptionsGroup", column)
-	settings_button = _button("Settings", "", "Settings")
+	settings_button = _button("Settings", "QuietButton", "Settings")
 	settings_button.pressed.connect(func() -> void: settings_requested.emit(settings_button))
 	column.add_child(settings_button)
 
-	workshop_button = _button("Aircraft Workshop", "", "Workshop")
+	workshop_button = _button("Aircraft Workshop", "QuietButton", "Workshop")
 	workshop_button.pressed.connect(func() -> void: workshop_requested.emit(workshop_button))
 	session_options_container.add_child(workshop_button)
-	time_of_day_button = _button("Time of day", "", "TimeOfDay")
+	time_of_day_button = _button("Time of day", "QuietButton", "TimeOfDay")
 	time_of_day_button.pressed.connect(func() -> void: time_of_day_requested.emit(time_of_day_button))
 	session_options_container.add_child(time_of_day_button)
-	failure_settings_button = _button("Failure settings · next flight", "", "Failures")
+	failure_settings_button = _button("Failure settings · next flight", "QuietButton", "Failures")
 	failure_settings_button.pressed.connect(func() -> void: failure_settings_requested.emit(failure_settings_button))
 	failure_settings_button.visible = false # the direct route has no next Home flight
 	session_options_container.add_child(failure_settings_button)
-	controls_button = _button("Controller settings", "", "ControllerSettings")
+	controls_button = _button("Controller settings", "QuietButton", "ControllerSettings")
 	controls_button.pressed.connect(func() -> void: controls_requested.emit(controls_button))
 	session_options_container.add_child(controls_button)
-	overlays_button = _button("Flight overlays", "", "Overlays") # HUD-06; hidden when the flight has none
+	overlays_button = _button("Flight overlays", "QuietButton", "Overlays") # HUD-06; hidden when the flight has none
 	overlays_button.pressed.connect(func() -> void: overlays_requested.emit(overlays_button))
 	overlays_button.visible = false
 	session_options_container.add_child(overlays_button)
 
-	help_button = _button("Help", "", "Help")
+	help_button = _button("Help", "QuietButton", "Help")
 	help_button.pressed.connect(func() -> void: help_requested.emit(help_button))
 	column.add_child(help_button)
 	exit_options_button = _disclosure_button("Exit options", "ExitOptions")
 	exit_options_button.pressed.connect(func() -> void: _toggle_group("exit"))
 	column.add_child(exit_options_button)
 	exit_options_container = _option_group("ExitOptionsGroup", column)
-	end_button = _button("End flight", "", "End")
+	end_button = _button("End flight", "QuietButton", "End")
 	end_button.pressed.connect(func() -> void: end_requested.emit())
 	end_button.visible = can_end
 	exit_options_container.add_child(end_button)
-	quit_button = _button("Quit", "", "Quit")
+	quit_button = _button("Quit", "QuietButton", "Quit")
 	quit_button.pressed.connect(func() -> void: quit_requested.emit())
 	exit_options_container.add_child(quit_button)
 	note_label = _wrapped_label()
@@ -162,13 +180,49 @@ func show_for(session: Node, failure_config: Dictionary = {}, notifications_enab
 	_failure_notifications_enabled = notifications_enabled
 	_failure_summary_disclosed = notifications_enabled
 	refresh()
-	_focus_primary.call_deferred()
+	if not is_inside_tree():
+		return
+	var tree := get_tree()
+	var focus_callback := Callable(self, "_focus_primary")
+	if not tree.process_frame.is_connected(focus_callback):
+		tree.process_frame.connect(focus_callback, CONNECT_ONE_SHOT)
 
 
 func _focus_primary() -> void:
-	if not is_inside_tree() or not get_node("Screen")._active:
+	if not is_inside_tree():
 		return
-	(continue_button if not continue_button.disabled else restart_button).grab_focus()
+	var screen := get_node_or_null("Screen")
+	if screen == null or not screen._active:
+		return
+	var primary := continue_button if not continue_button.disabled else restart_button
+	primary.grab_focus()
+	var scroll := find_child("PauseScroll", true, false) as ScrollContainer
+	if scroll != null:
+		scroll.ensure_control_visible(primary)
+
+
+func _initial_panel_width() -> float:
+	if ScreenTheme.text_scale < LARGE_TEXT_SCALE:
+		return WIDTH
+	return minf(WIDTH * ScreenTheme.text_scale, WIDTH * MAX_TEXT_SCALE)
+
+
+func _update_large_text_panel_width() -> void:
+	if not is_inside_tree() or not is_instance_valid(_panel) or not is_instance_valid(_sidebar_fade):
+		return
+	var viewport := get_viewport()
+	if viewport == null:
+		return
+	var viewport_width := viewport.get_visible_rect().size.x
+	var desired_width := _initial_panel_width()
+	var panel_width := desired_width
+	if viewport_width > 0.0:
+		var viewport_limit := maxf(WIDTH, viewport_width * MAX_RAIL_VIEWPORT_RATIO)
+		panel_width = minf(desired_width, viewport_limit)
+	_panel.custom_minimum_size.x = panel_width
+	_panel.offset_right = panel_width
+	_sidebar_fade.offset_left = panel_width
+	_sidebar_fade.offset_right = panel_width + 32.0
 
 
 func refresh() -> void:
@@ -217,6 +271,13 @@ func active_failure_text(session: Node, notices_enabled: bool) -> String:
 
 func _ready() -> void:
 	Input.joy_connection_changed.connect(_on_joy_changed) # disconnected automatically when the menu is freed
+	var screen := get_node_or_null("Screen") as Control
+	if screen != null and not screen.theme_changed.is_connected(_update_large_text_panel_width):
+		screen.theme_changed.connect(_update_large_text_panel_width)
+	var viewport := get_viewport()
+	if viewport != null:
+		viewport.size_changed.connect(_update_large_text_panel_width)
+		_update_large_text_panel_width()
 
 
 func _unhandled_input(event: InputEvent) -> void:
@@ -313,11 +374,16 @@ func _button(text: String, variation: String, node_name: String) -> Button:
 	var button := Widgets.button(text, variation, node_name)
 	button.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
 	button.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	button.custom_minimum_size.y = 44
+	if node_name == "Continue":
+		button.autowrap_mode = TextServer.AUTOWRAP_WORD
+	if variation == "QuietButton":
+		button.alignment = HORIZONTAL_ALIGNMENT_LEFT
 	return button
 
 
 func _disclosure_button(text: String, node_name: String) -> Button:
-	var button := _button(text, "", node_name)
+	var button := _button(text, "QuietButton", node_name)
 	button.toggle_mode = true
 	return button
 

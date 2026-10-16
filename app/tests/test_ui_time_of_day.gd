@@ -227,13 +227,14 @@ func _modal_draft_apply_cancel_and_flight_cycle() -> void:
 	root.size = Vector2i(800, 600)
 	await ui.settle()
 	var weather_rect: Rect2 = app.home.weather_button.get_global_rect()
-	_check("Home keeps a compact phase and local-time summary while the tooltip shows full context",
-		app.home.weather_button.text.contains("18:45:30")
+	_check("Home shows the accepted local time in its time row while the tooltip retains full context",
+		app.home.time_button.text.contains("18:45:30")
 		and not app.home.weather_button.text.contains("Test location")
 		and app.home.weather_button.tooltip_text.contains("2026-06-21")
 		and app.home.weather_button.tooltip_text.contains("Test location")
 		and app.home.weather_button.tooltip_text.contains("UTC−05:00")
-		and weather_rect.position.x >= 0.0 and weather_rect.end.x <= 440.0
+		and app.home.time_button.tooltip_text.contains("18:45:30")
+		and weather_rect.position.x >= 0.0 and weather_rect.end.x <= app.home.get_viewport_rect().end.x
 		and app.home.weather_config == weather,
 		"text=%s rect=%s tooltip=%s" % [app.home.weather_button.text, str(weather_rect), app.home.weather_button.tooltip_text])
 	root.size = old_size

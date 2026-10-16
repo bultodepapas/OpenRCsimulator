@@ -404,6 +404,10 @@ static func _validate_document(node: Variant, verify_physical_aircraft_id: Strin
 			var should_be_complete: bool = missing.is_empty() and exact_coverage
 			if bool(item.get("complete")) != should_be_complete:
 				errors.append(path + ".complete does not match missing entries and physical inventory coverage")
+			if bool(item.get("complete")) and typeof(components) == TYPE_ARRAY:
+				for component: Variant in components:
+					if typeof(component) == TYPE_DICTIONARY and component.get("unit_minor") == null:
+						errors.append(path + ".complete cannot have missing replacement prices")
 		var contact_components: Variant = item.get("contact_components")
 		if typeof(contact_components) != TYPE_DICTIONARY:
 			errors.append(path + ".contact_components must be an object")

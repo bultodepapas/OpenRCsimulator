@@ -16,6 +16,9 @@ signal applied(config: Dictionary)
 signal cancelled
 
 const LAYER: int = 12
+const PANEL_MAX_WIDTH: float = 960.0
+const PANEL_VIEWPORT_GUTTER: float = 16.0
+const SELECTOR_MAX_WIDTH: float = 360.0
 const DEFAULT_TURBULENCE_RMS: Array[float] = [0.6, 0.6, 0.4]
 const TURBULENCE_DEFAULT_TAU: float = 2.0
 const TURBULENCE_DEFAULT_SEED: int = 20261009
@@ -123,7 +126,7 @@ func _init(initial_config: Variant = null, initial_lighting_config: Variant = nu
 	panel = PanelContainer.new()
 	panel.name = "WeatherPanel"
 	panel.theme_type_variation = "Sidebar"
-	panel.custom_minimum_size = Vector2(760.0, 0.0)
+	panel.custom_minimum_size = Vector2(PANEL_MAX_WIDTH, 0.0)
 	panel.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	panel.minimum_size_changed.connect(_schedule_scroll_height_update)
 	center.add_child(panel)
@@ -385,10 +388,30 @@ func _update_scroll_height() -> void:
 	_scroll_update_queued = false
 	if tab_scroll == null or panel == null or not is_inside_tree():
 		return
+	var viewport_size: Vector2 = get_viewport().get_visible_rect().size
+	var target_width: float = minf(PANEL_MAX_WIDTH, maxf(0.0, viewport_size.x - PANEL_VIEWPORT_GUTTER * 2.0))
+	var content_width: float = maxf(0.0, target_width - 52.0)
+	var selector_width: float = minf(SELECTOR_MAX_WIDTH, content_width * 0.55)
+	var responsive_layout_changed := false
+	if absf(panel.custom_minimum_size.x - target_width) >= 0.5:
+		panel.custom_minimum_size.x = target_width
+		responsive_layout_changed = true
+	for selector: OptionButton in find_children("*", "OptionButton", true, false):
+		if absf(selector.custom_minimum_size.x - selector_width) >= 0.5:
+			selector.custom_minimum_size.x = selector_width
+			responsive_layout_changed = true
+		if selector.size_flags_horizontal != Control.SIZE_SHRINK_BEGIN:
+			selector.size_flags_horizontal = Control.SIZE_SHRINK_BEGIN
+			responsive_layout_changed = true
+	if responsive_layout_changed:
+		# Let wrapped labels and the panel minimum recalculate at the new width
+		# before assigning the remaining height to the scroll body.
+		_schedule_scroll_height_update()
+		return
 	# Measure the header, preset, tabs, error and actions as built. The scroll body
 	# gets only the space remaining inside the centered panel's 16 px margins.
 	var fixed_chrome_height: float = panel.get_combined_minimum_size().y - tab_scroll.custom_minimum_size.y
-	var viewport_height: float = get_viewport().get_visible_rect().size.y
+	var viewport_height: float = viewport_size.y
 	var available_height: float = maxf(0.0, viewport_height - 32.0 - fixed_chrome_height)
 	var target_height: float = minf(340.0, available_height)
 	if available_height >= 120.0:
@@ -800,6 +823,8 @@ func _set_focus_ring() -> void:
 func _add_number_field(grid: GridContainer, key: String, label_text: String, inputs: Dictionary, integer_only: bool, turbulence_field: bool, atmosphere_field: bool = false) -> void:
 	var field_label: Label = _label(label_text, "SecondaryLabel")
 	field_label.name = key + "Label"
+	field_label.autowrap_mode = TextServer.AUTOWRAP_WORD_SMART
+	field_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	field_label.size_flags_vertical = Control.SIZE_SHRINK_CENTER
 	grid.add_child(field_label)
 	var category: String = "atmosphere" if atmosphere_field else ("turbulence" if turbulence_field else "wind")

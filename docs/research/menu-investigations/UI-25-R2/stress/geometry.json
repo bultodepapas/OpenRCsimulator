@@ -1,0 +1,2081 @@
+[
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Home/HomeHeader/Brand/@VBoxContainer@43/@Label@41",
+        "rect": [
+          24.0,
+          14.0,
+          194.0,
+          65.0
+        ],
+        "text": "OpenRC",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeHeader/Brand/@VBoxContainer@43/@Label@42",
+        "rect": [
+          24.0,
+          73.0,
+          194.0,
+          47.0
+        ],
+        "text": "SIMULATOR",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HeaderActions/Language",
+        "rect": [
+          726.0,
+          14.0,
+          346.0,
+          106.0
+        ],
+        "text": "Idioma: Español",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HeaderActions/Settings",
+        "rect": [
+          1080.0,
+          14.0,
+          176.0,
+          106.0
+        ],
+        "text": "Ajustes",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/NavFlight",
+        "rect": [
+          24.0,
+          136.0,
+          248.0,
+          67.0
+        ],
+        "text": "Vuelo",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/NavAircraft",
+        "rect": [
+          276.0,
+          136.0,
+          247.0,
+          67.4000015258789
+        ],
+        "text": "Aeronaves",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/NavPractice",
+        "rect": [
+          24.0,
+          206.0,
+          248.0,
+          67.4000015258789
+        ],
+        "text": "Práctica",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/Workshop",
+        "rect": [
+          276.0,
+          206.0,
+          247.0,
+          67.4000015258789
+        ],
+        "text": "Taller",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/NavGarage",
+        "rect": [
+          24.0,
+          276.0,
+          248.0,
+          67.4000015258789
+        ],
+        "text": "Garaje RC",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll",
+        "rect": [
+          24.0,
+          351.0,
+          499.0,
+          181.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading/@Label@47",
+        "rect": [
+          24.0,
+          356.0,
+          307.0,
+          47.0
+        ],
+        "text": "PRÓXIMO VUELO",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading/AircraftCount",
+        "rect": [
+          335.0,
+          351.0,
+          84.0,
+          57.0
+        ],
+        "text": "1 / 9",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading/PreviousAircraft",
+        "rect": [
+          423.0,
+          351.0,
+          44.0,
+          57.0
+        ],
+        "text": "",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading/NextAircraft",
+        "rect": [
+          471.0,
+          351.0,
+          44.0,
+          57.0
+        ],
+        "text": "",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/PreparedFlight",
+        "rect": [
+          24.0,
+          414.0,
+          491.0,
+          214.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/PreparedFlight/@VBoxContainer@50/AircraftName",
+        "rect": [
+          42.0,
+          424.799987792969,
+          455.0,
+          53.0
+        ],
+        "text": "Jensen Das Ugly Stik 60",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/PreparedFlight/@VBoxContainer@50/AircraftCapability",
+        "rect": [
+          42.0,
+          480.799987792969,
+          455.0,
+          57.0
+        ],
+        "text": "Apto para volar",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/PreparedFlight/@VBoxContainer@50/StartChoice",
+        "rect": [
+          42.0,
+          540.799987792969,
+          455.0,
+          76.0
+        ],
+        "text": "Inicio: pista",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/FlightConditions/Weather",
+        "rect": [
+          24.0,
+          634.0,
+          244.0,
+          108.400001525879
+        ],
+        "text": "Clima\n1.5 m/s",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/FlightConditions/TimeOfDay",
+        "rect": [
+          272.0,
+          634.0,
+          243.0,
+          108.400001525879
+        ],
+        "text": "Hora del día\nDía",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/FlightInputSummary",
+        "rect": [
+          24.0,
+          748.0,
+          491.0,
+          109.0
+        ],
+        "text": "Control de vuelo: XInput Controller",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/FlightDetailsToggle",
+        "rect": [
+          24.0,
+          863.0,
+          491.0,
+          72.0
+        ],
+        "text": "Más detalles del vuelo",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/PrimaryActions/Fly",
+        "rect": [
+          24.0,
+          540.0,
+          499.0,
+          76.0
+        ],
+        "text": "VOLAR",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeUtilities/ControllerSettings",
+        "rect": [
+          24.0,
+          624.0,
+          215.0,
+          72.0
+        ],
+        "text": "Controles",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeUtilities/Help",
+        "rect": [
+          243.0,
+          624.0,
+          148.0,
+          72.0
+        ],
+        "text": "Ayuda",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeUtilities/Quit",
+        "rect": [
+          395.0,
+          624.0,
+          128.0,
+          72.0
+        ],
+        "text": "Salir",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-720-200-home.webp",
+    "logical": "(1280.0, 720.0)",
+    "pixels": [
+      1280,
+      720
+    ],
+    "window_mode": 0
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97",
+        "rect": [
+          240.0,
+          24.0,
+          800.0,
+          672.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@HBoxContainer@100/@Label@99",
+        "rect": [
+          264.0,
+          50.0,
+          597.0,
+          59.0
+        ],
+        "text": "Ajustes",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@HBoxContainer@100/Close",
+        "rect": [
+          865.0,
+          44.0,
+          151.0,
+          72.0
+        ],
+        "text": "Cerrar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103",
+        "rect": [
+          264.0,
+          128.0,
+          752.0,
+          331.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@Label@105",
+        "rect": [
+          264.0,
+          128.0,
+          744.0,
+          47.0
+        ],
+        "text": "Pantalla",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@BoxContainer@117/@Label@116",
+        "rect": [
+          264.0,
+          185.0,
+          744.0,
+          61.0
+        ],
+        "text": "Modo de ventana",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@BoxContainer@117/WindowMode",
+        "rect": [
+          264.0,
+          254.0,
+          672.0,
+          75.4000015258789
+        ],
+        "text": "En ventana",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@BoxContainer@129/@Label@128",
+        "rect": [
+          264.0,
+          340.0,
+          744.0,
+          61.0
+        ],
+        "text": "Tamaño del texto",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@BoxContainer@129/UiScale",
+        "rect": [
+          264.0,
+          409.0,
+          600.0,
+          75.4000015258789
+        ],
+        "text": "200%",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@Label@131",
+        "rect": [
+          264.0,
+          517.0,
+          744.0,
+          47.0
+        ],
+        "text": "Accesibilidad",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@BoxContainer@133/@Label@132",
+        "rect": [
+          264.0,
+          574.0,
+          632.0,
+          61.0
+        ],
+        "text": "Usar paneles opacos",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@BoxContainer@133/OpaquePanels",
+        "rect": [
+          904.0,
+          575.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@BoxContainer@135/@Label@134",
+        "rect": [
+          264.0,
+          645.0,
+          632.0,
+          61.0
+        ],
+        "text": "Reducir animaciones",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@BoxContainer@135/ReducedMotion",
+        "rect": [
+          904.0,
+          646.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@Label@136",
+        "rect": [
+          264.0,
+          716.0,
+          744.0,
+          47.0
+        ],
+        "text": "Idioma",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@BoxContainer@148/@Label@147",
+        "rect": [
+          264.0,
+          773.0,
+          744.0,
+          61.0
+        ],
+        "text": "Idioma de la interfaz",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@BoxContainer@148/Language",
+        "rect": [
+          264.0,
+          842.0,
+          600.0,
+          75.4000015258789
+        ],
+        "text": "Español",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@BoxContainer@150/Controls",
+        "rect": [
+          264.0,
+          950.0,
+          744.0,
+          72.0
+        ],
+        "text": "Controles",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@ScrollContainer@103/@VBoxContainer@104/@BoxContainer@150/HelpAbout",
+        "rect": [
+          264.0,
+          1034.0,
+          744.0,
+          72.0
+        ],
+        "text": "Ayuda y acerca de",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/Status",
+        "rect": [
+          264.0,
+          471.0,
+          752.0,
+          117.0
+        ],
+        "text": "Los cambios se aplican al instante. Cierra para revertirlos.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@HBoxContainer@151/Revert",
+        "rect": [
+          380.0,
+          600.0,
+          194.0,
+          76.0
+        ],
+        "text": "Revertir",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@94/@CenterContainer@96/@PanelContainer@97/@VBoxContainer@98/@HBoxContainer@151/Keep",
+        "rect": [
+          586.0,
+          600.0,
+          430.0,
+          76.0
+        ],
+        "text": "Conservar cambios",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-720-200-settings.webp",
+    "logical": "(1280.0, 720.0)",
+    "pixels": [
+      1280,
+      720
+    ],
+    "window_mode": 0
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@414",
+        "rect": [
+          0.0,
+          0.0,
+          576.0,
+          720.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@414/PauseScroll",
+        "rect": [
+          26.0,
+          30.0,
+          524.0,
+          666.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@414/PauseScroll/@VBoxContainer@418/@Label@419",
+        "rect": [
+          26.0,
+          20.0,
+          516.0,
+          88.0
+        ],
+        "text": "PAUSA",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@414/PauseScroll/@VBoxContainer@418/@Label@420",
+        "rect": [
+          26.0,
+          116.0,
+          516.0,
+          117.0
+        ],
+        "text": "Controles listos. Pulsa Continuar para volar.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@414/PauseScroll/@VBoxContainer@418/@Label@421",
+        "rect": [
+          26.0,
+          241.0,
+          516.0,
+          117.0
+        ],
+        "text": "Acelerador al reanudar: 50%",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@414/PauseScroll/@VBoxContainer@418/FailureConfig",
+        "rect": [
+          26.0,
+          366.0,
+          516.0,
+          117.0
+        ],
+        "text": "Fallas del próximo vuelo: desactivadas",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@414/PauseScroll/@VBoxContainer@418/Continue",
+        "rect": [
+          26.0,
+          491.0,
+          516.0,
+          80.0
+        ],
+        "text": "Continuar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@414/PauseScroll/@VBoxContainer@418/Restart",
+        "rect": [
+          26.0,
+          579.0,
+          516.0,
+          72.0
+        ],
+        "text": "Reiniciar vuelo",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@414/PauseScroll/@VBoxContainer@418/SessionOptions",
+        "rect": [
+          26.0,
+          659.0,
+          516.0,
+          72.0
+        ],
+        "text": "Opciones de la sesión",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@414/PauseScroll/@VBoxContainer@418/Settings",
+        "rect": [
+          26.0,
+          739.0,
+          516.0,
+          72.0
+        ],
+        "text": "Ajustes",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@414/PauseScroll/@VBoxContainer@418/Help",
+        "rect": [
+          26.0,
+          819.0,
+          516.0,
+          72.0
+        ],
+        "text": "Ayuda",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@414/PauseScroll/@VBoxContainer@418/ExitOptions",
+        "rect": [
+          26.0,
+          899.0,
+          516.0,
+          72.0
+        ],
+        "text": "Opciones de salida",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-720-200-pause.webp",
+    "logical": "(1280.0, 720.0)",
+    "pixels": [
+      1280,
+      720
+    ],
+    "window_mode": 0
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Home/HomeHeader/Brand/@VBoxContainer@569/@Label@567",
+        "rect": [
+          48.0,
+          20.0,
+          218.0,
+          77.0
+        ],
+        "text": "OpenRC",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeHeader/Brand/@VBoxContainer@569/@Label@568",
+        "rect": [
+          48.0,
+          91.0,
+          218.0,
+          50.0
+        ],
+        "text": "SIMULATOR",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HeaderActions/Language",
+        "rect": [
+          1308.0,
+          20.0,
+          369.0,
+          121.0
+        ],
+        "text": "Idioma: Español",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HeaderActions/Settings",
+        "rect": [
+          1685.0,
+          20.0,
+          187.0,
+          121.0
+        ],
+        "text": "Ajustes",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/NavFlight",
+        "rect": [
+          48.0,
+          157.0,
+          512.0,
+          89.0
+        ],
+        "text": "Vuelo",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/NavAircraft",
+        "rect": [
+          48.0,
+          249.0,
+          512.0,
+          91.4000015258789
+        ],
+        "text": "Aeronaves",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/NavPractice",
+        "rect": [
+          48.0,
+          343.0,
+          512.0,
+          91.4000015258789
+        ],
+        "text": "Práctica",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/Workshop",
+        "rect": [
+          48.0,
+          437.0,
+          512.0,
+          91.4000015258789
+        ],
+        "text": "Taller",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/NavGarage",
+        "rect": [
+          48.0,
+          531.0,
+          512.0,
+          91.4000015258789
+        ],
+        "text": "Garaje RC",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll",
+        "rect": [
+          48.0,
+          630.0,
+          512.0,
+          252.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading/@Label@573",
+        "rect": [
+          48.0,
+          635.0,
+          313.0,
+          50.0
+        ],
+        "text": "PRÓXIMO VUELO",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading/AircraftCount",
+        "rect": [
+          365.0,
+          630.0,
+          91.0,
+          61.0
+        ],
+        "text": "1 / 9",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading/PreviousAircraft",
+        "rect": [
+          460.0,
+          630.0,
+          44.0,
+          61.0
+        ],
+        "text": "",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading/NextAircraft",
+        "rect": [
+          508.0,
+          630.0,
+          44.0,
+          61.0
+        ],
+        "text": "",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/PreparedFlight",
+        "rect": [
+          48.0,
+          697.0,
+          504.0,
+          328.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/PreparedFlight/@VBoxContainer@576/AircraftName",
+        "rect": [
+          66.0,
+          707.799987792969,
+          468.0,
+          157.0
+        ],
+        "text": "Jensen Das Ugly Stik 60",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/PreparedFlight/@VBoxContainer@576/AircraftCapability",
+        "rect": [
+          66.0,
+          867.799987792969,
+          468.0,
+          61.0
+        ],
+        "text": "Apto para volar",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/PreparedFlight/@VBoxContainer@576/StartChoice",
+        "rect": [
+          66.0,
+          931.799987792969,
+          468.0,
+          82.0
+        ],
+        "text": "Inicio: pista",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/FlightConditions/Weather",
+        "rect": [
+          48.0,
+          1031.0,
+          504.0,
+          148.399993896484
+        ],
+        "text": "Clima\n1.5 m/s · 090°",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/FlightConditions/TimeOfDay",
+        "rect": [
+          48.0,
+          1181.0,
+          504.0,
+          148.399993896484
+        ],
+        "text": "Hora del día\nDía",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/FlightInputSummary",
+        "rect": [
+          48.0,
+          1335.0,
+          504.0,
+          125.0
+        ],
+        "text": "Control de vuelo: XInput Controller",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/FlightDetailsToggle",
+        "rect": [
+          48.0,
+          1466.0,
+          504.0,
+          76.0
+        ],
+        "text": "Más detalles del vuelo",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/PrimaryActions/Fly",
+        "rect": [
+          48.0,
+          890.0,
+          512.0,
+          82.0
+        ],
+        "text": "VOLAR",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeUtilities/ControllerSettings",
+        "rect": [
+          48.0,
+          980.0,
+          229.0,
+          76.0
+        ],
+        "text": "Controles",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeUtilities/Help",
+        "rect": [
+          281.0,
+          980.0,
+          158.0,
+          76.0
+        ],
+        "text": "Ayuda",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeUtilities/Quit",
+        "rect": [
+          443.0,
+          980.0,
+          117.0,
+          76.0
+        ],
+        "text": "Salir",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-1080-200-home.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      1920,
+      1080
+    ],
+    "window_mode": 0
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623",
+        "rect": [
+          540.0,
+          180.0,
+          839.0,
+          720.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@HBoxContainer@626/@Label@625",
+        "rect": [
+          564.0,
+          203.0,
+          627.0,
+          70.0
+        ],
+        "text": "Ajustes",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@HBoxContainer@626/Close",
+        "rect": [
+          1195.0,
+          200.0,
+          160.0,
+          76.0
+        ],
+        "text": "Cerrar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629",
+        "rect": [
+          564.0,
+          288.0,
+          791.0,
+          361.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@Label@631",
+        "rect": [
+          564.0,
+          288.0,
+          783.0,
+          50.0
+        ],
+        "text": "Pantalla",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@BoxContainer@643/@Label@642",
+        "rect": [
+          564.0,
+          348.0,
+          783.0,
+          72.0
+        ],
+        "text": "Modo de ventana",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@BoxContainer@643/WindowMode",
+        "rect": [
+          564.0,
+          428.0,
+          783.0,
+          81.4000015258789
+        ],
+        "text": "En ventana",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@BoxContainer@655/@Label@654",
+        "rect": [
+          564.0,
+          520.0,
+          783.0,
+          72.0
+        ],
+        "text": "Tamaño del texto",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@BoxContainer@655/UiScale",
+        "rect": [
+          564.0,
+          600.0,
+          600.0,
+          81.4000015258789
+        ],
+        "text": "200%",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@Label@657",
+        "rect": [
+          564.0,
+          714.0,
+          783.0,
+          50.0
+        ],
+        "text": "Accesibilidad",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@BoxContainer@659/@Label@658",
+        "rect": [
+          564.0,
+          774.0,
+          671.0,
+          72.0
+        ],
+        "text": "Usar paneles opacos",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@BoxContainer@659/OpaquePanels",
+        "rect": [
+          1243.0,
+          781.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@BoxContainer@661/@Label@660",
+        "rect": [
+          564.0,
+          856.0,
+          671.0,
+          72.0
+        ],
+        "text": "Reducir animaciones",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@BoxContainer@661/ReducedMotion",
+        "rect": [
+          1243.0,
+          863.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@Label@662",
+        "rect": [
+          564.0,
+          938.0,
+          783.0,
+          50.0
+        ],
+        "text": "Idioma",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@BoxContainer@674/@Label@673",
+        "rect": [
+          564.0,
+          998.0,
+          783.0,
+          72.0
+        ],
+        "text": "Idioma de la interfaz",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@BoxContainer@674/Language",
+        "rect": [
+          564.0,
+          1078.0,
+          600.0,
+          81.4000015258789
+        ],
+        "text": "Español",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@BoxContainer@676/Controls",
+        "rect": [
+          564.0,
+          1192.0,
+          783.0,
+          76.0
+        ],
+        "text": "Controles",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@ScrollContainer@629/@VBoxContainer@630/@BoxContainer@676/HelpAbout",
+        "rect": [
+          564.0,
+          1280.0,
+          783.0,
+          76.0
+        ],
+        "text": "Ayuda y acerca de",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/Status",
+        "rect": [
+          564.0,
+          661.0,
+          791.0,
+          125.0
+        ],
+        "text": "Los cambios se aplican al instante. Cierra para revertirlos.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@HBoxContainer@677/Revert",
+        "rect": [
+          668.0,
+          798.0,
+          209.0,
+          82.0
+        ],
+        "text": "Revertir",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@620/@CenterContainer@622/@PanelContainer@623/@VBoxContainer@624/@HBoxContainer@677/Keep",
+        "rect": [
+          889.0,
+          798.0,
+          466.0,
+          82.0
+        ],
+        "text": "Conservar cambios",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-1080-200-settings.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      1920,
+      1080
+    ],
+    "window_mode": 0
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@940",
+        "rect": [
+          0.0,
+          0.0,
+          768.0,
+          1080.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@940/PauseScroll",
+        "rect": [
+          26.0,
+          30.0,
+          716.0,
+          1026.0
+        ],
+        "scroll_visible": false,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@940/PauseScroll/@VBoxContainer@944/@Label@945",
+        "rect": [
+          26.0,
+          63.0,
+          716.0,
+          105.0
+        ],
+        "text": "PAUSA",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@940/PauseScroll/@VBoxContainer@944/@Label@946",
+        "rect": [
+          26.0,
+          176.0,
+          716.0,
+          125.0
+        ],
+        "text": "Controles listos. Pulsa Continuar para volar.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@940/PauseScroll/@VBoxContainer@944/@Label@947",
+        "rect": [
+          26.0,
+          309.0,
+          716.0,
+          61.0
+        ],
+        "text": "Acelerador al reanudar: 50%",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@940/PauseScroll/@VBoxContainer@944/FailureConfig",
+        "rect": [
+          26.0,
+          378.0,
+          716.0,
+          125.0
+        ],
+        "text": "Fallas del próximo vuelo: desactivadas",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@940/PauseScroll/@VBoxContainer@944/Continue",
+        "rect": [
+          26.0,
+          511.0,
+          716.0,
+          92.0
+        ],
+        "text": "Continuar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@940/PauseScroll/@VBoxContainer@944/Restart",
+        "rect": [
+          26.0,
+          611.0,
+          716.0,
+          76.0
+        ],
+        "text": "Reiniciar vuelo",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@940/PauseScroll/@VBoxContainer@944/SessionOptions",
+        "rect": [
+          26.0,
+          695.0,
+          716.0,
+          76.0
+        ],
+        "text": "Opciones de la sesión",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@940/PauseScroll/@VBoxContainer@944/Settings",
+        "rect": [
+          26.0,
+          779.0,
+          716.0,
+          76.0
+        ],
+        "text": "Ajustes",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@940/PauseScroll/@VBoxContainer@944/Help",
+        "rect": [
+          26.0,
+          863.0,
+          716.0,
+          76.0
+        ],
+        "text": "Ayuda",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@940/PauseScroll/@VBoxContainer@944/ExitOptions",
+        "rect": [
+          26.0,
+          947.0,
+          716.0,
+          76.0
+        ],
+        "text": "Opciones de salida",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-1080-200-pause.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      1920,
+      1080
+    ],
+    "window_mode": 0
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Home/HomeHeader/Brand/@VBoxContainer@1095/@Label@1093",
+        "rect": [
+          48.0,
+          20.0,
+          218.0,
+          77.0
+        ],
+        "text": "OpenRC",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeHeader/Brand/@VBoxContainer@1095/@Label@1094",
+        "rect": [
+          48.0,
+          91.0,
+          218.0,
+          50.0
+        ],
+        "text": "SIMULATOR",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HeaderActions/Language",
+        "rect": [
+          1308.0,
+          20.0,
+          369.0,
+          121.0
+        ],
+        "text": "Idioma: Español",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HeaderActions/Settings",
+        "rect": [
+          1685.0,
+          20.0,
+          187.0,
+          121.0
+        ],
+        "text": "Ajustes",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/NavFlight",
+        "rect": [
+          48.0,
+          157.0,
+          512.0,
+          89.0
+        ],
+        "text": "Vuelo",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/NavAircraft",
+        "rect": [
+          48.0,
+          249.0,
+          512.0,
+          91.4000015258789
+        ],
+        "text": "Aeronaves",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/NavPractice",
+        "rect": [
+          48.0,
+          343.0,
+          512.0,
+          91.4000015258789
+        ],
+        "text": "Práctica",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/Workshop",
+        "rect": [
+          48.0,
+          437.0,
+          512.0,
+          91.4000015258789
+        ],
+        "text": "Taller",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeNavigation/NavGarage",
+        "rect": [
+          48.0,
+          531.0,
+          512.0,
+          91.4000015258789
+        ],
+        "text": "Garaje RC",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll",
+        "rect": [
+          48.0,
+          630.0,
+          512.0,
+          252.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading/@Label@1099",
+        "rect": [
+          48.0,
+          635.0,
+          313.0,
+          50.0
+        ],
+        "text": "PRÓXIMO VUELO",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading/AircraftCount",
+        "rect": [
+          365.0,
+          630.0,
+          91.0,
+          61.0
+        ],
+        "text": "1 / 9",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading/PreviousAircraft",
+        "rect": [
+          460.0,
+          630.0,
+          44.0,
+          61.0
+        ],
+        "text": "",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/AircraftHeading/NextAircraft",
+        "rect": [
+          508.0,
+          630.0,
+          44.0,
+          61.0
+        ],
+        "text": "",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/PreparedFlight",
+        "rect": [
+          48.0,
+          697.0,
+          504.0,
+          328.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/PreparedFlight/@VBoxContainer@1102/AircraftName",
+        "rect": [
+          66.0,
+          707.799987792969,
+          468.0,
+          157.0
+        ],
+        "text": "Jensen Das Ugly Stik 60",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/PreparedFlight/@VBoxContainer@1102/AircraftCapability",
+        "rect": [
+          66.0,
+          867.799987792969,
+          468.0,
+          61.0
+        ],
+        "text": "Apto para volar",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/PreparedFlight/@VBoxContainer@1102/StartChoice",
+        "rect": [
+          66.0,
+          931.799987792969,
+          468.0,
+          82.0
+        ],
+        "text": "Inicio: pista",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/FlightConditions/Weather",
+        "rect": [
+          48.0,
+          1031.0,
+          504.0,
+          148.399993896484
+        ],
+        "text": "Clima\n1.5 m/s · 090°",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/FlightConditions/TimeOfDay",
+        "rect": [
+          48.0,
+          1181.0,
+          504.0,
+          148.399993896484
+        ],
+        "text": "Hora del día\nDía",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/FlightInputSummary",
+        "rect": [
+          48.0,
+          1335.0,
+          504.0,
+          125.0
+        ],
+        "text": "Control de vuelo: XInput Controller",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeContentScroll/HomePages/FlightPage/FlightDetailsToggle",
+        "rect": [
+          48.0,
+          1466.0,
+          504.0,
+          76.0
+        ],
+        "text": "Más detalles del vuelo",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/PrimaryActions/Fly",
+        "rect": [
+          48.0,
+          890.0,
+          512.0,
+          82.0
+        ],
+        "text": "VOLAR",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeUtilities/ControllerSettings",
+        "rect": [
+          48.0,
+          980.0,
+          229.0,
+          76.0
+        ],
+        "text": "Controles",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeUtilities/Help",
+        "rect": [
+          281.0,
+          980.0,
+          158.0,
+          76.0
+        ],
+        "text": "Ayuda",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Home/HomeRail/HomeUtilities/Quit",
+        "rect": [
+          443.0,
+          980.0,
+          117.0,
+          76.0
+        ],
+        "text": "Salir",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-2160-200-home.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      3840,
+      2160
+    ],
+    "window_mode": 3
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149",
+        "rect": [
+          540.0,
+          180.0,
+          839.0,
+          720.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@HBoxContainer@1152/@Label@1151",
+        "rect": [
+          564.0,
+          203.0,
+          627.0,
+          70.0
+        ],
+        "text": "Ajustes",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@HBoxContainer@1152/Close",
+        "rect": [
+          1195.0,
+          200.0,
+          160.0,
+          76.0
+        ],
+        "text": "Cerrar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155",
+        "rect": [
+          564.0,
+          288.0,
+          791.0,
+          361.0
+        ],
+        "scroll_visible": true,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@Label@1157",
+        "rect": [
+          564.0,
+          288.0,
+          783.0,
+          50.0
+        ],
+        "text": "Pantalla",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@BoxContainer@1169/@Label@1168",
+        "rect": [
+          564.0,
+          348.0,
+          783.0,
+          72.0
+        ],
+        "text": "Modo de ventana",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@BoxContainer@1169/WindowMode",
+        "rect": [
+          564.0,
+          428.0,
+          783.0,
+          81.4000015258789
+        ],
+        "text": "Pantalla completa sin bordes",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@BoxContainer@1181/@Label@1180",
+        "rect": [
+          564.0,
+          520.0,
+          783.0,
+          72.0
+        ],
+        "text": "Tamaño del texto",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@BoxContainer@1181/UiScale",
+        "rect": [
+          564.0,
+          600.0,
+          600.0,
+          81.4000015258789
+        ],
+        "text": "200%",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@Label@1183",
+        "rect": [
+          564.0,
+          714.0,
+          783.0,
+          50.0
+        ],
+        "text": "Accesibilidad",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@BoxContainer@1185/@Label@1184",
+        "rect": [
+          564.0,
+          774.0,
+          671.0,
+          72.0
+        ],
+        "text": "Usar paneles opacos",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@BoxContainer@1185/OpaquePanels",
+        "rect": [
+          1243.0,
+          781.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@BoxContainer@1187/@Label@1186",
+        "rect": [
+          564.0,
+          856.0,
+          671.0,
+          72.0
+        ],
+        "text": "Reducir animaciones",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@BoxContainer@1187/ReducedMotion",
+        "rect": [
+          1243.0,
+          863.0,
+          104.0,
+          57.5999984741211
+        ],
+        "text": "",
+        "type": "CheckButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@Label@1188",
+        "rect": [
+          564.0,
+          938.0,
+          783.0,
+          50.0
+        ],
+        "text": "Idioma",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@BoxContainer@1200/@Label@1199",
+        "rect": [
+          564.0,
+          998.0,
+          783.0,
+          72.0
+        ],
+        "text": "Idioma de la interfaz",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@BoxContainer@1200/Language",
+        "rect": [
+          564.0,
+          1078.0,
+          600.0,
+          81.4000015258789
+        ],
+        "text": "Español",
+        "type": "OptionButton"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@BoxContainer@1202/Controls",
+        "rect": [
+          564.0,
+          1192.0,
+          783.0,
+          76.0
+        ],
+        "text": "Controles",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@ScrollContainer@1155/@VBoxContainer@1156/@BoxContainer@1202/HelpAbout",
+        "rect": [
+          564.0,
+          1280.0,
+          783.0,
+          76.0
+        ],
+        "text": "Ayuda y acerca de",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/Status",
+        "rect": [
+          564.0,
+          661.0,
+          791.0,
+          125.0
+        ],
+        "text": "Los cambios se aplican al instante. Cierra para revertirlos.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@HBoxContainer@1203/Revert",
+        "rect": [
+          668.0,
+          798.0,
+          209.0,
+          82.0
+        ],
+        "text": "Revertir",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/Settings/@Control@1146/@CenterContainer@1148/@PanelContainer@1149/@VBoxContainer@1150/@HBoxContainer@1203/Keep",
+        "rect": [
+          889.0,
+          798.0,
+          466.0,
+          82.0
+        ],
+        "text": "Conservar cambios",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-2160-200-settings.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      3840,
+      2160
+    ],
+    "window_mode": 3
+  },
+  {
+    "controls": [
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@1466",
+        "rect": [
+          0.0,
+          0.0,
+          768.0,
+          1080.0
+        ],
+        "type": "PanelContainer"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@1466/PauseScroll",
+        "rect": [
+          26.0,
+          30.0,
+          716.0,
+          1026.0
+        ],
+        "scroll_visible": false,
+        "type": "ScrollContainer"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@1466/PauseScroll/@VBoxContainer@1470/@Label@1471",
+        "rect": [
+          26.0,
+          63.0,
+          716.0,
+          105.0
+        ],
+        "text": "PAUSA",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@1466/PauseScroll/@VBoxContainer@1470/@Label@1472",
+        "rect": [
+          26.0,
+          176.0,
+          716.0,
+          125.0
+        ],
+        "text": "Controles listos. Pulsa Continuar para volar.",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@1466/PauseScroll/@VBoxContainer@1470/@Label@1473",
+        "rect": [
+          26.0,
+          309.0,
+          716.0,
+          61.0
+        ],
+        "text": "Acelerador al reanudar: 50%",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@1466/PauseScroll/@VBoxContainer@1470/FailureConfig",
+        "rect": [
+          26.0,
+          378.0,
+          716.0,
+          125.0
+        ],
+        "text": "Fallas del próximo vuelo: desactivadas",
+        "type": "Label"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@1466/PauseScroll/@VBoxContainer@1470/Continue",
+        "rect": [
+          26.0,
+          511.0,
+          716.0,
+          92.0
+        ],
+        "text": "Continuar",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@1466/PauseScroll/@VBoxContainer@1470/Restart",
+        "rect": [
+          26.0,
+          611.0,
+          716.0,
+          76.0
+        ],
+        "text": "Reiniciar vuelo",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@1466/PauseScroll/@VBoxContainer@1470/SessionOptions",
+        "rect": [
+          26.0,
+          695.0,
+          716.0,
+          76.0
+        ],
+        "text": "Opciones de la sesión",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@1466/PauseScroll/@VBoxContainer@1470/Settings",
+        "rect": [
+          26.0,
+          779.0,
+          716.0,
+          76.0
+        ],
+        "text": "Ajustes",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@1466/PauseScroll/@VBoxContainer@1470/Help",
+        "rect": [
+          26.0,
+          863.0,
+          716.0,
+          76.0
+        ],
+        "text": "Ayuda",
+        "type": "Button"
+      },
+      {
+        "path": "/root/AppRoot/PauseMenu/Screen/@PanelContainer@1466/PauseScroll/@VBoxContainer@1470/ExitOptions",
+        "rect": [
+          26.0,
+          947.0,
+          716.0,
+          76.0
+        ],
+        "text": "Opciones de salida",
+        "type": "Button"
+      }
+    ],
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "image": "es-2160-200-pause.webp",
+    "logical": "(1920.0, 1080.0)",
+    "pixels": [
+      3840,
+      2160
+    ],
+    "window_mode": 3
+  }
+]
