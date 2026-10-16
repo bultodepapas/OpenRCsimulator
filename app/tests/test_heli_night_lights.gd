@@ -58,6 +58,9 @@ func run() -> void:
  check("dusk fades both capped body lights and rotor",is_equal_approx(main.gain,.5) and is_equal_approx(kit._optics[0].material.get_shader_parameter("display_cap"),.325))
  check("unknown mode is rejected",not kit.set_mode("broken") and kit.mode=="auto")
  var flight: Node=Flight.new()
+ # controller_action requires an active session even though this light action does not use it.
+ var session_stub:=Node.new()
+ flight.session=session_stub
  flight._night_kit=kit
  check("controller light action works",flight.controller_action("lights_cycle") and kit.mode=="all")
  var event=InputEventKey.new()
@@ -78,7 +81,7 @@ func run() -> void:
  var begin: int=Time.get_ticks_usec()
  for i: int in 1000: kit.update_visual(-20,2000,state,float(i)/60,float(i)/13,true)
  print("HELI night update mean us: ",(Time.get_ticks_usec()-begin)/1000.0)
- flight._night_kit=null; flight.free()
+ flight._night_kit=null; flight.session=null; session_stub.free(); flight.free()
  model.root.free(); other_model.root.free()
  Conditions.session_preset="night"
  var home=Home.new("xcell-60-research")

@@ -32,8 +32,10 @@ func _run() -> void:
 	_key(KEY_SPACE)
 	await process_frame
 	_check("Space activates a focused mode button without pausing", view._elastic_mode and not view.paused)
+	view._mode_buttons[0].grab_focus()
 	_key(KEY_SPACE)
 	await process_frame
+	_check("Space switches back to mechanics through the focused mode button", not view._elastic_mode and not view.paused)
 	var canopy_before_p := view._canopy_toggle.button_pressed
 	_key(KEY_P)
 	await process_frame
