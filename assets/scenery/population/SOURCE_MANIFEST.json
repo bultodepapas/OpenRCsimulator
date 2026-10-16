@@ -51,10 +51,10 @@
         "close": {
           "file": "innerscene-sedan-selective.glb",
           "expected": {
-            "triangles": 27517,
+            "triangles": 25686,
             "surfaces": 10,
-            "bytes": 1114108,
-            "sha256": "221179C8036C3C3D199CD40C9A6A25051B4A4F408CAD3CE62A38A2373DC7A4E7"
+            "bytes": 1042088,
+            "sha256": "8DD24F39B09B062E1BCF235BA06FC48661EAE1271ECC498257BC149C7A8EEE17"
           }
         },
         "far": {
@@ -89,10 +89,10 @@
         "close": {
           "file": "innerscene-hatch-selective.glb",
           "expected": {
-            "triangles": 26066,
+            "triangles": 24470,
             "surfaces": 10,
-            "bytes": 1032044,
-            "sha256": "DE30653293F70611BF72CC4D4E4EC391F7CC79EE733326EA7D6AE6553237184F"
+            "bytes": 967164,
+            "sha256": "257AC6A3F9FBEEFE58A69068166B352209C79D056C98EAA22B67A1808B6086C5"
           }
         },
         "far": {
@@ -127,10 +127,10 @@
         "close": {
           "file": "innerscene-crossover-selective.glb",
           "expected": {
-            "triangles": 27002,
+            "triangles": 25359,
             "surfaces": 10,
-            "bytes": 1080584,
-            "sha256": "35F9185AFFC226448E22582B34F6427202B713903FB91C028E63E15B385A5401"
+            "bytes": 1015168,
+            "sha256": "4C86A201E4DA60B8E39D77E92530E564CC20AE107286985E4F51C7B923940A98"
           }
         },
         "far": {

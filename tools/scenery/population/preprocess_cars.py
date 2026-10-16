@@ -83,17 +83,17 @@ def material_names(mesh: Any) -> set[str]:
 
 def close_ratio(name: str, materials: set[str], triangles: int) -> float | None:
     if any(token in name for token in ("sculpted_tyre", "alloy_five_spoke_rim", "lug_", "center_cap", "valve_stem", "rotor drill", "brake")):
-        return 0.07
+        return 0.064
     if "interior" in materials:
-        return 0.12
+        return 0.108
     if "body shell" in name:
-        return 0.50
+        return 0.45
     if any(token in name for token in ("roof pressing", "roof pillar", "fender lip")):
-        return 0.42
+        return 0.38
     if triangles > 500:
-        return 0.12
+        return 0.108
     if triangles > 150:
-        return 0.22
+        return 0.197
     return None
 
 

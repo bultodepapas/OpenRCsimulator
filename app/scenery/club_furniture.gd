@@ -6,6 +6,7 @@ const Palette = preload("res://scenery/palette.gd")
 const Wood = preload("res://assets/landscape/flightline/Wood049_1K-JPG_Color.jpg")
 static var _wood: Image
 const SEGMENTS := 16
+const BENCH_SEGMENTS := 14
 
 static func picnic(k: MeshKit) -> void:
 	for i in 5:
@@ -31,7 +32,7 @@ static func picnic(k: MeshKit) -> void:
 
 static func bench(k: MeshKit) -> void:
 	for i in 3:
-		_plank(k,1.8,0.13,0.05,Vector3(0,0.455,-0.145+i*0.145),0.0,i+12,Palette.col("wood_light"))
+		_plank(k,1.8,0.13,0.05,Vector3(0,0.455,-0.145+i*0.145),0.0,i+12,Palette.col("wood_light"),BENCH_SEGMENTS)
 		for x: float in [-0.76,0.76]:
 			_bolt(k,Vector3(x,0.4802,-0.145+i*0.145),Vector3.UP,0.005)
 	var angle := -PI*0.5+atan(0.06/0.35)
@@ -39,7 +40,7 @@ static func bench(k: MeshKit) -> void:
 	for i in 3:
 		var y := 0.554+float(i)*0.117
 		var centre := Vector3(0,y,0.22+(y-0.5)/0.35*0.06)
-		_plank(k,1.8,0.105,0.035,centre,angle,i+22,Palette.col("wood_light"))
+		_plank(k,1.8,0.105,0.035,centre,angle,i+22,Palette.col("wood_light"),BENCH_SEGMENTS)
 		for x: float in [-0.76,0.76]:
 			_bolt(k,centre+Vector3(x,0,0)+front*0.0177,front,0.005)
 	for x: float in [-0.76,0.76]:

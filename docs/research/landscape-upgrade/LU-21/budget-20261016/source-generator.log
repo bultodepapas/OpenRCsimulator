@@ -1,0 +1,962 @@
+11:03:43 | INFO: Data are loaded, start creating Blender stuff
+11:03:43 | INFO: Blender create Mesh node 107 reused Alloy_five_spoke_rim
+11:03:43 | INFO: Blender create Mesh node 107 reused Alloy_five_spoke_rim.001
+11:03:43 | INFO: Blender create Mesh node 107 reused Alloy_five_spoke_rim.002
+11:03:43 | INFO: Blender create Mesh node 107 reused Alloy_five_spoke_rim.003
+11:03:43 | INFO: Blender create Mesh node 107 reused Center_cap
+11:03:43 | INFO: Blender create Mesh node 107 reused Center_cap.001
+11:03:43 | INFO: Blender create Mesh node 107 reused Center_cap.002
+11:03:43 | INFO: Blender create Mesh node 107 reused Center_cap.003
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_1
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_1.001
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_1.002
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_1.003
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_2
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_2.001
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_2.002
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_2.003
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_3
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_3.001
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_3.002
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_3.003
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_4
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_4.001
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_4.002
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_4.003
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_5
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_5.001
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_5.002
+11:03:43 | INFO: Blender create Mesh node 107 reused Lug_5.003
+11:03:43 | INFO: Blender create Mesh node 107 reused Sculpted_tyre
+11:03:43 | INFO: Blender create Mesh node 107 reused Sculpted_tyre.001
+11:03:43 | INFO: Blender create Mesh node 107 reused Sculpted_tyre.002
+11:03:43 | INFO: Blender create Mesh node 107 reused Sculpted_tyre.003
+11:03:43 | INFO: Blender create Mesh node 107 reused Valve_stem
+11:03:43 | INFO: Blender create Mesh node 107 reused Valve_stem.001
+11:03:43 | INFO: Blender create Mesh node 107 reused Valve_stem.002
+11:03:43 | INFO: Blender create Mesh node 107 reused Valve_stem.003
+11:03:43 | INFO: Blender create Mesh node Sphere.002
+11:03:43 | INFO: Blender create Mesh node Sphere.005
+11:03:43 | INFO: Blender create Mesh node Sphere.008
+11:03:43 | INFO: Blender create Mesh node Sphere.011
+11:03:43 | INFO: Blender create Mesh node Sphere.013
+11:03:43 | INFO: Blender create Mesh node Sphere.016
+11:03:43 | INFO: Blender create Mesh node Sphere.014
+11:03:43 | INFO: Blender create Mesh node Sphere.017
+11:03:43 | INFO: Blender create Mesh node Beltline satin bead
+11:03:43 | INFO: Blender create Mesh node Beltline satin bead.001
+11:03:43 | INFO: Blender create Mesh node Brake caliper
+11:03:43 | INFO: Blender create Mesh node Brake caliper.001
+11:03:43 | INFO: Blender create Mesh node Brake caliper.002
+11:03:43 | INFO: Blender create Mesh node Brake caliper.003
+11:03:43 | INFO: Blender create Mesh node Cylinder.002
+11:03:43 | INFO: Blender create Mesh node Cylinder.022
+11:03:43 | INFO: Blender create Mesh node Cylinder.043
+11:03:43 | INFO: Blender create Mesh node Cylinder.063
+11:03:43 | INFO: Blender create Mesh node Cabin carpet
+11:03:43 | INFO: Blender create Mesh node Center console
+11:03:43 | INFO: Blender create Mesh node Clear reversing lens insert
+11:03:43 | INFO: Blender create Mesh node Clear reversing lens insert.001
+11:03:43 | INFO: Blender create Mesh node Sphere.001
+11:03:43 | INFO: Blender create Mesh node Sphere.004
+11:03:43 | INFO: Blender create Mesh node Sphere.007
+11:03:43 | INFO: Blender create Mesh node Sphere.010
+11:03:43 | INFO: Blender create Mesh node Sphere
+11:03:43 | INFO: Blender create Mesh node Sphere.003
+11:03:43 | INFO: Blender create Mesh node Sphere.006
+11:03:43 | INFO: Blender create Mesh node Sphere.009
+11:03:43 | INFO: Blender create Mesh node Crowned roof pressing
+11:03:43 | INFO: Blender create Mesh node Distinct trunk lid shut line
+11:03:43 | INFO: Blender create Mesh node Door panel shut line
+11:03:43 | INFO: Blender create Mesh node Door panel shut line.001
+11:03:43 | INFO: Blender create Mesh node Door panel shut line.002
+11:03:43 | INFO: Blender create Mesh node Door panel shut line.003
+11:03:43 | INFO: Blender create Mesh node Cylinder.094
+11:03:43 | INFO: Blender create Mesh node Cylinder.096
+11:03:43 | INFO: Blender create Mesh node Cylinder.093
+11:03:43 | INFO: Blender create Mesh node Cylinder.095
+11:03:43 | INFO: Blender create Mesh node Faceted headlamp reflector interior
+11:03:43 | INFO: Blender create Mesh node Faceted headlamp reflector interior.001
+11:03:43 | INFO: Blender create Mesh node Fine headlamp perimeter gasket
+11:03:43 | INFO: Blender create Mesh node Fine headlamp perimeter gasket.001
+11:03:43 | INFO: Blender create Mesh node Flat black B pillar trim
+11:03:43 | INFO: Blender create Mesh node Flat black B pillar trim.001
+11:03:43 | INFO: Blender create Mesh node Flush corner wrapping ruby lamp lens
+11:03:43 | INFO: Blender create Mesh node Flush corner wrapping ruby lamp lens.001
+11:03:43 | INFO: Blender create Mesh node Flush pressed A pillar
+11:03:43 | INFO: Blender create Mesh node Flush pressed A pillar.001
+11:03:43 | INFO: Blender create Mesh node Flush roof side flange
+11:03:43 | INFO: Blender create Mesh node Flush roof side flange.001
+11:03:43 | INFO: Blender create Mesh node Flush swept transparent headlamp lens
+11:03:43 | INFO: Blender create Mesh node Flush swept transparent headlamp lens.001
+11:03:43 | INFO: Blender create Mesh node Sphere.021
+11:03:43 | INFO: Blender create Mesh node Sphere.024
+11:03:43 | INFO: Blender create Mesh node Fog lamp recessed housing
+11:03:43 | INFO: Blender create Mesh node Fog lamp recessed housing.001
+11:03:43 | INFO: Blender create Mesh node Cylinder.089
+11:03:43 | INFO: Blender create Mesh node Cylinder.092
+11:03:43 | INFO: Blender create Mesh node Formed painted rear bumper cover
+11:03:43 | INFO: Blender create Mesh node Front bumper continuous shut line
+11:03:43 | INFO: Blender create Mesh node Front license plate
+11:03:43 | INFO: Blender create Mesh node Front side door glass
+11:03:43 | INFO: Blender create Mesh node Front side door glass rubber seal
+11:03:43 | INFO: Blender create Mesh node Front side door glass rubber seal.001
+11:03:43 | INFO: Blender create Mesh node Front side door glass.001
+11:03:43 | INFO: Blender create Mesh node Front splitter
+11:03:43 | INFO: Blender create Mesh node Fuel filler seam
+11:03:43 | INFO: Blender create Mesh node Fuel filler seam.001
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.001
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.002
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.003
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.004
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.005
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.006
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.007
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.008
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.009
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.010
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.011
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.012
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.013
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.014
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.015
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.016
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.017
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.018
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.019
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.020
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.021
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.022
+11:03:43 | INFO: Blender create Mesh node Grille inner mesh.023
+11:03:43 | INFO: Blender create Mesh node Grille shadow cavity
+11:03:43 | INFO: Blender create Mesh node Headlamp deep graphite housing
+11:03:43 | INFO: Blender create Mesh node Headlamp deep graphite housing.001
+11:03:43 | INFO: Blender create Mesh node Hood shut line
+11:03:43 | INFO: Blender create Mesh node Instrument panel
+11:03:43 | INFO: Blender create Mesh node Lower intake bridge
+11:03:43 | INFO: Blender create Mesh node Lower intake bridge.001
+11:03:43 | INFO: Blender create Mesh node Lower intake bridge.002
+11:03:43 | INFO: Blender create Mesh node Lower intake recessed mesh
+11:03:43 | INFO: Blender create Mesh node Sphere.015
+11:03:43 | INFO: Blender create Mesh node Sphere.018
+11:03:43 | INFO: Blender create Mesh node Painted door glazing lower sill
+11:03:43 | INFO: Blender create Mesh node Painted door glazing lower sill.001
+11:03:43 | INFO: Blender create Mesh node Painted rear glazing lower surround
+11:03:43 | INFO: Blender create Mesh node Raked laminated windshield
+11:03:43 | INFO: Blender create Mesh node Raked laminated windshield rubber seal
+11:03:43 | INFO: Blender create Mesh node Rear bumper corner joint
+11:03:43 | INFO: Blender create Mesh node Rear bumper corner joint.001
+11:03:43 | INFO: Blender create Mesh node Rear bumper formed corner
+11:03:43 | INFO: Blender create Mesh node Rear bumper formed corner.001
+11:03:43 | INFO: Blender create Mesh node Rear bumper joint clear of plate recess
+11:03:43 | INFO: Blender create Mesh node Rear bumper joint clear of plate recess.001
+11:03:43 | INFO: Blender create Mesh node Rear glass lower stop lamp housing
+11:03:43 | INFO: Blender create Mesh node Rear glass lower stop lens
+11:03:43 | INFO: Blender create Mesh node Sphere.025
+11:03:43 | INFO: Blender create Mesh node Sphere.026
+11:03:43 | INFO: Blender create Mesh node Sphere.027
+11:03:43 | INFO: Blender create Mesh node Sphere.028
+11:03:43 | INFO: Blender create Mesh node Rear plate recessed back
+11:03:43 | INFO: Blender create Mesh node Rear registration plate
+11:03:43 | INFO: Blender create Mesh node Rear side door glass
+11:03:43 | INFO: Blender create Mesh node Rear side door glass rubber seal
+11:03:43 | INFO: Blender create Mesh node Rear side door glass rubber seal.001
+11:03:43 | INFO: Blender create Mesh node Rear side door glass.001
+11:03:43 | INFO: Blender create Mesh node Recessed grille blade
+11:03:43 | INFO: Blender create Mesh node Recessed grille blade.001
+11:03:43 | INFO: Blender create Mesh node Recessed grille blade.002
+11:03:43 | INFO: Blender create Mesh node Recessed grille blade.003
+11:03:43 | INFO: Blender create Mesh node Recessed grille blade.004
+11:03:43 | INFO: Blender create Mesh node Recessed handle pocket
+11:03:43 | INFO: Blender create Mesh node Recessed handle pocket.001
+11:03:43 | INFO: Blender create Mesh node Recessed handle pocket.002
+11:03:43 | INFO: Blender create Mesh node Recessed handle pocket.003
+11:03:43 | INFO: Blender create Mesh node Sphere.019
+11:03:43 | INFO: Blender create Mesh node Sphere.020
+11:03:43 | INFO: Blender create Mesh node Sphere.022
+11:03:43 | INFO: Blender create Mesh node Sphere.023
+11:03:43 | INFO: Blender create Mesh node Cylinder.087
+11:03:43 | INFO: Blender create Mesh node Cylinder.088
+11:03:43 | INFO: Blender create Mesh node Cylinder.090
+11:03:43 | INFO: Blender create Mesh node Cylinder.091
+11:03:43 | INFO: Blender create Mesh node Rolled fender lip
+11:03:43 | INFO: Blender create Mesh node Rolled fender lip.001
+11:03:43 | INFO: Blender create Mesh node Rolled fender lip.002
+11:03:43 | INFO: Blender create Mesh node Rolled fender lip.003
+11:03:43 | INFO: Blender create Mesh node Cylinder.003
+11:03:43 | INFO: Blender create Mesh node Cylinder.004
+11:03:43 | INFO: Blender create Mesh node Cylinder.005
+11:03:43 | INFO: Blender create Mesh node Cylinder.006
+11:03:43 | INFO: Blender create Mesh node Cylinder.007
+11:03:43 | INFO: Blender create Mesh node Cylinder.008
+11:03:43 | INFO: Blender create Mesh node Cylinder.009
+11:03:43 | INFO: Blender create Mesh node Cylinder.010
+11:03:43 | INFO: Blender create Mesh node Cylinder.011
+11:03:43 | INFO: Blender create Mesh node Cylinder.012
+11:03:43 | INFO: Blender create Mesh node Cylinder.013
+11:03:43 | INFO: Blender create Mesh node Cylinder.014
+11:03:43 | INFO: Blender create Mesh node Cylinder.015
+11:03:43 | INFO: Blender create Mesh node Cylinder.016
+11:03:43 | INFO: Blender create Mesh node Cylinder.017
+11:03:43 | INFO: Blender create Mesh node Cylinder.018
+11:03:43 | INFO: Blender create Mesh node Cylinder.019
+11:03:43 | INFO: Blender create Mesh node Cylinder.020
+11:03:43 | INFO: Blender create Mesh node Cylinder.023
+11:03:43 | INFO: Blender create Mesh node Cylinder.024
+11:03:43 | INFO: Blender create Mesh node Cylinder.025
+11:03:43 | INFO: Blender create Mesh node Cylinder.026
+11:03:43 | INFO: Blender create Mesh node Cylinder.027
+11:03:43 | INFO: Blender create Mesh node Cylinder.028
+11:03:43 | INFO: Blender create Mesh node Cylinder.029
+11:03:43 | INFO: Blender create Mesh node Cylinder.030
+11:03:43 | INFO: Blender create Mesh node Cylinder.031
+11:03:43 | INFO: Blender create Mesh node Cylinder.032
+11:03:43 | INFO: Blender create Mesh node Cylinder.033
+11:03:43 | INFO: Blender create Mesh node Cylinder.034
+11:03:43 | INFO: Blender create Mesh node Cylinder.035
+11:03:43 | INFO: Blender create Mesh node Cylinder.036
+11:03:43 | INFO: Blender create Mesh node Cylinder.037
+11:03:43 | INFO: Blender create Mesh node Cylinder.038
+11:03:43 | INFO: Blender create Mesh node Cylinder.039
+11:03:43 | INFO: Blender create Mesh node Cylinder.040
+11:03:43 | INFO: Blender create Mesh node Cylinder.044
+11:03:43 | INFO: Blender create Mesh node Cylinder.045
+11:03:43 | INFO: Blender create Mesh node Cylinder.046
+11:03:43 | INFO: Blender create Mesh node Cylinder.047
+11:03:43 | INFO: Blender create Mesh node Cylinder.048
+11:03:43 | INFO: Blender create Mesh node Cylinder.049
+11:03:43 | INFO: Blender create Mesh node Cylinder.050
+11:03:43 | INFO: Blender create Mesh node Cylinder.051
+11:03:43 | INFO: Blender create Mesh node Cylinder.052
+11:03:43 | INFO: Blender create Mesh node Cylinder.053
+11:03:43 | INFO: Blender create Mesh node Cylinder.054
+11:03:43 | INFO: Blender create Mesh node Cylinder.055
+11:03:43 | INFO: Blender create Mesh node Cylinder.056
+11:03:43 | INFO: Blender create Mesh node Cylinder.057
+11:03:43 | INFO: Blender create Mesh node Cylinder.058
+11:03:43 | INFO: Blender create Mesh node Cylinder.059
+11:03:43 | INFO: Blender create Mesh node Cylinder.060
+11:03:43 | INFO: Blender create Mesh node Cylinder.061
+11:03:43 | INFO: Blender create Mesh node Cylinder.064
+11:03:43 | INFO: Blender create Mesh node Cylinder.065
+11:03:43 | INFO: Blender create Mesh node Cylinder.066
+11:03:43 | INFO: Blender create Mesh node Cylinder.067
+11:03:43 | INFO: Blender create Mesh node Cylinder.068
+11:03:43 | INFO: Blender create Mesh node Cylinder.069
+11:03:43 | INFO: Blender create Mesh node Cylinder.070
+11:03:43 | INFO: Blender create Mesh node Cylinder.071
+11:03:43 | INFO: Blender create Mesh node Cylinder.072
+11:03:43 | INFO: Blender create Mesh node Cylinder.073
+11:03:43 | INFO: Blender create Mesh node Cylinder.074
+11:03:43 | INFO: Blender create Mesh node Cylinder.075
+11:03:43 | INFO: Blender create Mesh node Cylinder.076
+11:03:43 | INFO: Blender create Mesh node Cylinder.077
+11:03:43 | INFO: Blender create Mesh node Cylinder.078
+11:03:43 | INFO: Blender create Mesh node Cylinder.079
+11:03:43 | INFO: Blender create Mesh node Cylinder.080
+11:03:43 | INFO: Blender create Mesh node Cylinder.081
+11:03:43 | INFO: Blender create Mesh node Satin door pull handle
+11:03:43 | INFO: Blender create Mesh node Satin door pull handle.001
+11:03:43 | INFO: Blender create Mesh node Satin door pull handle.002
+11:03:43 | INFO: Blender create Mesh node Satin door pull handle.003
+11:03:43 | INFO: Blender create Mesh node Satin grille surround
+11:03:43 | INFO: Blender create Mesh node Sculpted rear lower bumper insert
+11:03:43 | INFO: Blender create Mesh node Sculpted rocker panel seam
+11:03:44 | INFO: Blender create Mesh node Sculpted rocker panel seam.001
+11:03:44 | INFO: Blender create Mesh node Sphere.029
+11:03:44 | INFO: Blender create Mesh node Cylinder.085
+11:03:44 | INFO: Blender create Mesh node Cylinder.086
+11:03:44 | INFO: Blender create Mesh node Siped tread blocks
+11:03:44 | INFO: Blender create Mesh node Siped tread blocks.001
+11:03:44 | INFO: Blender create Mesh node Siped tread blocks.002
+11:03:44 | INFO: Blender create Mesh node Siped tread blocks.003
+11:03:44 | INFO: Blender create Mesh node Sloping rear glass
+11:03:44 | INFO: Blender create Mesh node Sloping rear glass rubber seal
+11:03:44 | INFO: Blender create Mesh node Sphere.012
+11:03:44 | INFO: Blender create Mesh node Torus
+11:03:44 | INFO: Blender create Mesh node Cylinder.082
+11:03:44 | INFO: Blender create Mesh node Cylinder.083
+11:03:44 | INFO: Blender create Mesh node Cylinder.084
+11:03:44 | INFO: Blender create Mesh node Surface integrated sedan rear roof pillar
+11:03:44 | INFO: Blender create Mesh node Surface integrated sedan rear roof pillar.001
+11:03:44 | INFO: Blender create Mesh node Tail lamp molded perimeter housing
+11:03:44 | INFO: Blender create Mesh node Tail lamp molded perimeter housing.001
+11:03:44 | INFO: Blender create Mesh node Tail lamp optical separator
+11:03:44 | INFO: Blender create Mesh node Tail lamp optical separator.001
+11:03:44 | INFO: Blender create Mesh node Tail lamp optical separator.002
+11:03:44 | INFO: Blender create Mesh node Tail lamp optical separator.003
+11:03:44 | INFO: Blender create Mesh node Tail lamp recessed inner housing
+11:03:44 | INFO: Blender create Mesh node Tail lamp recessed inner housing.001
+11:03:44 | INFO: Blender create Mesh node Tail lamp reflective optical inner
+11:03:44 | INFO: Blender create Mesh node Tail lamp reflective optical inner.001
+11:03:44 | INFO: Blender create Mesh node Cylinder.001
+11:03:44 | INFO: Blender create Mesh node Cylinder.021
+11:03:44 | INFO: Blender create Mesh node Cylinder.042
+11:03:44 | INFO: Blender create Mesh node Cylinder.062
+11:03:44 | INFO: Blender create Mesh node Watertight 14-station body shell_closed_tessellation
+11:03:44 | INFO: Blender create Mesh node Wheelhouse inner liner
+11:03:44 | INFO: Blender create Mesh node Wheelhouse inner liner.001
+11:03:44 | INFO: Blender create Mesh node Wheelhouse inner liner.002
+11:03:44 | INFO: Blender create Mesh node Wheelhouse inner liner.003
+11:03:44 | INFO: Blender create Mesh node Cylinder.097
+11:03:44 | INFO: Blender create Mesh node Cylinder.098
+11:03:44 | INFO: Blender create Mesh node Wiper rubber blade
+11:03:44 | INFO: Blender create Mesh node Wiper rubber blade.001
+11:03:44 | INFO: glTF import finished in 0.88s
+INFO Draco is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_draco_bridge.dll
+INFO MeshOptimizer is available, use library at C:\Program Files\Blender Foundation\Blender 5.2\5.2\scripts\addons_core\io_scene_gltf2\bf_intern_meshopt_bridge.dll
+11:03:50 | INFO: Starting glTF 2.0 export
+11:03:50 | INFO: Extracting primitive: 107 reused Alloy_five_spoke_rim
+11:03:50 | INFO: Primitives created: 10
+11:03:50 | INFO: Finished glTF 2.0 export in 0.24646377563476562 s
+
+11:03:50 | INFO: Data are loaded, start creating Blender stuff
+11:03:50 | INFO: Blender create Mesh node 107 reused Alloy_five_spoke_rim
+11:03:50 | INFO: Blender create Mesh node 107 reused Alloy_five_spoke_rim.001
+11:03:50 | INFO: Blender create Mesh node 107 reused Alloy_five_spoke_rim.002
+11:03:50 | INFO: Blender create Mesh node 107 reused Alloy_five_spoke_rim.003
+11:03:51 | INFO: Blender create Mesh node 107 reused Center_cap
+11:03:51 | INFO: Blender create Mesh node 107 reused Center_cap.001
+11:03:51 | INFO: Blender create Mesh node 107 reused Center_cap.002
+11:03:51 | INFO: Blender create Mesh node 107 reused Center_cap.003
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_1
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_1.001
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_1.002
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_1.003
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_2
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_2.001
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_2.002
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_2.003
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_3
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_3.001
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_3.002
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_3.003
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_4
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_4.001
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_4.002
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_4.003
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_5
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_5.001
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_5.002
+11:03:51 | INFO: Blender create Mesh node 107 reused Lug_5.003
+11:03:51 | INFO: Blender create Mesh node 107 reused Sculpted_tyre
+11:03:51 | INFO: Blender create Mesh node 107 reused Sculpted_tyre.001
+11:03:51 | INFO: Blender create Mesh node 107 reused Sculpted_tyre.002
+11:03:51 | INFO: Blender create Mesh node 107 reused Sculpted_tyre.003
+11:03:51 | INFO: Blender create Mesh node 107 reused Valve_stem
+11:03:51 | INFO: Blender create Mesh node 107 reused Valve_stem.001
+11:03:51 | INFO: Blender create Mesh node 107 reused Valve_stem.002
+11:03:51 | INFO: Blender create Mesh node 107 reused Valve_stem.003
+11:03:51 | INFO: Blender create Mesh node Sphere.002
+11:03:51 | INFO: Blender create Mesh node Sphere.005
+11:03:51 | INFO: Blender create Mesh node Sphere.008
+11:03:51 | INFO: Blender create Mesh node Sphere.011
+11:03:51 | INFO: Blender create Mesh node Sphere.013
+11:03:51 | INFO: Blender create Mesh node Sphere.016
+11:03:51 | INFO: Blender create Mesh node Sphere.014
+11:03:51 | INFO: Blender create Mesh node Sphere.017
+11:03:51 | INFO: Blender create Mesh node Beltline satin bead
+11:03:51 | INFO: Blender create Mesh node Beltline satin bead.001
+11:03:51 | INFO: Blender create Mesh node Brake caliper
+11:03:51 | INFO: Blender create Mesh node Brake caliper.001
+11:03:51 | INFO: Blender create Mesh node Brake caliper.002
+11:03:51 | INFO: Blender create Mesh node Brake caliper.003
+11:03:51 | INFO: Blender create Mesh node Cylinder.002
+11:03:51 | INFO: Blender create Mesh node Cylinder.022
+11:03:51 | INFO: Blender create Mesh node Cylinder.043
+11:03:51 | INFO: Blender create Mesh node Cylinder.063
+11:03:51 | INFO: Blender create Mesh node Cabin carpet
+11:03:51 | INFO: Blender create Mesh node Center console
+11:03:51 | INFO: Blender create Mesh node Clear reversing lens insert
+11:03:51 | INFO: Blender create Mesh node Clear reversing lens insert.001
+11:03:51 | INFO: Blender create Mesh node Sphere.001
+11:03:51 | INFO: Blender create Mesh node Sphere.004
+11:03:51 | INFO: Blender create Mesh node Sphere.007
+11:03:51 | INFO: Blender create Mesh node Sphere.010
+11:03:51 | INFO: Blender create Mesh node Sphere
+11:03:51 | INFO: Blender create Mesh node Sphere.003
+11:03:51 | INFO: Blender create Mesh node Sphere.006
+11:03:51 | INFO: Blender create Mesh node Sphere.009
+11:03:51 | INFO: Blender create Mesh node Crowned roof pressing
+11:03:51 | INFO: Blender create Mesh node Door panel shut line
+11:03:51 | INFO: Blender create Mesh node Door panel shut line.001
+11:03:51 | INFO: Blender create Mesh node Door panel shut line.002
+11:03:51 | INFO: Blender create Mesh node Door panel shut line.003
+11:03:51 | INFO: Blender create Mesh node Cylinder.094
+11:03:51 | INFO: Blender create Mesh node Cylinder.096
+11:03:51 | INFO: Blender create Mesh node Cylinder.093
+11:03:51 | INFO: Blender create Mesh node Cylinder.095
+11:03:51 | INFO: Blender create Mesh node Faceted headlamp reflector interior
+11:03:51 | INFO: Blender create Mesh node Faceted headlamp reflector interior.001
+11:03:51 | INFO: Blender create Mesh node Fine headlamp perimeter gasket
+11:03:51 | INFO: Blender create Mesh node Fine headlamp perimeter gasket.001
+11:03:51 | INFO: Blender create Mesh node Flat black B pillar trim
+11:03:51 | INFO: Blender create Mesh node Flat black B pillar trim.001
+11:03:51 | INFO: Blender create Mesh node Flush corner wrapping ruby lamp lens
+11:03:51 | INFO: Blender create Mesh node Flush corner wrapping ruby lamp lens.001
+11:03:51 | INFO: Blender create Mesh node Flush pressed A pillar
+11:03:51 | INFO: Blender create Mesh node Flush pressed A pillar.001
+11:03:51 | INFO: Blender create Mesh node Flush roof side flange
+11:03:51 | INFO: Blender create Mesh node Flush roof side flange.001
+11:03:51 | INFO: Blender create Mesh node Flush swept transparent headlamp lens
+11:03:51 | INFO: Blender create Mesh node Flush swept transparent headlamp lens.001
+11:03:51 | INFO: Blender create Mesh node Sphere.021
+11:03:51 | INFO: Blender create Mesh node Sphere.024
+11:03:51 | INFO: Blender create Mesh node Fog lamp recessed housing
+11:03:51 | INFO: Blender create Mesh node Fog lamp recessed housing.001
+11:03:51 | INFO: Blender create Mesh node Cylinder.089
+11:03:51 | INFO: Blender create Mesh node Cylinder.092
+11:03:51 | INFO: Blender create Mesh node Formed painted rear bumper cover
+11:03:51 | INFO: Blender create Mesh node Front bumper continuous shut line
+11:03:51 | INFO: Blender create Mesh node Front license plate
+11:03:51 | INFO: Blender create Mesh node Front side door glass
+11:03:51 | INFO: Blender create Mesh node Front side door glass rubber seal
+11:03:51 | INFO: Blender create Mesh node Front side door glass rubber seal.001
+11:03:51 | INFO: Blender create Mesh node Front side door glass.001
+11:03:51 | INFO: Blender create Mesh node Front splitter
+11:03:51 | INFO: Blender create Mesh node Fuel filler seam
+11:03:51 | INFO: Blender create Mesh node Fuel filler seam.001
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.001
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.002
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.003
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.004
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.005
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.006
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.007
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.008
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.009
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.010
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.011
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.012
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.013
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.014
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.015
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.016
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.017
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.018
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.019
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.020
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.021
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.022
+11:03:51 | INFO: Blender create Mesh node Grille inner mesh.023
+11:03:51 | INFO: Blender create Mesh node Grille shadow cavity
+11:03:51 | INFO: Blender create Mesh node Headlamp deep graphite housing
+11:03:51 | INFO: Blender create Mesh node Headlamp deep graphite housing.001
+11:03:51 | INFO: Blender create Mesh node Hood shut line
+11:03:51 | INFO: Blender create Mesh node Instrument panel
+11:03:51 | INFO: Blender create Mesh node Lower intake bridge
+11:03:51 | INFO: Blender create Mesh node Lower intake bridge.001
+11:03:51 | INFO: Blender create Mesh node Lower intake bridge.002
+11:03:51 | INFO: Blender create Mesh node Lower intake recessed mesh
+11:03:51 | INFO: Blender create Mesh node Sphere.015
+11:03:51 | INFO: Blender create Mesh node Sphere.018
+11:03:51 | INFO: Blender create Mesh node Painted door glazing lower sill
+11:03:51 | INFO: Blender create Mesh node Painted door glazing lower sill.001
+11:03:51 | INFO: Blender create Mesh node Painted quarter glazing lower sill
+11:03:51 | INFO: Blender create Mesh node Painted quarter glazing lower sill.001
+11:03:51 | INFO: Blender create Mesh node Painted rear glazing lower surround
+11:03:51 | INFO: Blender create Mesh node Quarter division pillar
+11:03:51 | INFO: Blender create Mesh node Quarter division pillar.001
+11:03:51 | INFO: Blender create Mesh node Raked laminated windshield
+11:03:51 | INFO: Blender create Mesh node Raked laminated windshield rubber seal
+11:03:51 | INFO: Blender create Mesh node Rear bumper corner joint
+11:03:51 | INFO: Blender create Mesh node Rear bumper corner joint.001
+11:03:51 | INFO: Blender create Mesh node Rear bumper formed corner
+11:03:51 | INFO: Blender create Mesh node Rear bumper formed corner.001
+11:03:51 | INFO: Blender create Mesh node Rear bumper joint clear of plate recess
+11:03:51 | INFO: Blender create Mesh node Rear bumper joint clear of plate recess.001
+11:03:51 | INFO: Blender create Mesh node Rear glazing red stop lens
+11:03:51 | INFO: Blender create Mesh node Rear glazing stop lamp housing
+11:03:51 | INFO: Blender create Mesh node Sphere.025
+11:03:51 | INFO: Blender create Mesh node Sphere.026
+11:03:51 | INFO: Blender create Mesh node Sphere.027
+11:03:51 | INFO: Blender create Mesh node Sphere.028
+11:03:51 | INFO: Blender create Mesh node Rear plate recessed back
+11:03:51 | INFO: Blender create Mesh node Rear quarter glass
+11:03:51 | INFO: Blender create Mesh node Rear quarter glass rubber seal
+11:03:51 | INFO: Blender create Mesh node Rear quarter glass rubber seal.001
+11:03:51 | INFO: Blender create Mesh node Rear quarter glass.001
+11:03:51 | INFO: Blender create Mesh node Rear registration plate
+11:03:51 | INFO: Blender create Mesh node Rear side door glass
+11:03:51 | INFO: Blender create Mesh node Rear side door glass rubber seal
+11:03:51 | INFO: Blender create Mesh node Rear side door glass rubber seal.001
+11:03:51 | INFO: Blender create Mesh node Rear side door glass.001
+11:03:51 | INFO: Blender create Mesh node Rear window wiper
+11:03:51 | INFO: Blender create Mesh node Recessed grille blade
+11:03:51 | INFO: Blender create Mesh node Recessed grille blade.001
+11:03:51 | INFO: Blender create Mesh node Recessed grille blade.002
+11:03:51 | INFO: Blender create Mesh node Recessed grille blade.003
+11:03:51 | INFO: Blender create Mesh node Recessed grille blade.004
+11:03:51 | INFO: Blender create Mesh node Recessed handle pocket
+11:03:51 | INFO: Blender create Mesh node Recessed handle pocket.001
+11:03:51 | INFO: Blender create Mesh node Recessed handle pocket.002
+11:03:51 | INFO: Blender create Mesh node Recessed handle pocket.003
+11:03:51 | INFO: Blender create Mesh node Sphere.019
+11:03:51 | INFO: Blender create Mesh node Sphere.020
+11:03:51 | INFO: Blender create Mesh node Sphere.022
+11:03:51 | INFO: Blender create Mesh node Sphere.023
+11:03:51 | INFO: Blender create Mesh node Cylinder.087
+11:03:51 | INFO: Blender create Mesh node Cylinder.088
+11:03:51 | INFO: Blender create Mesh node Cylinder.090
+11:03:51 | INFO: Blender create Mesh node Cylinder.091
+11:03:51 | INFO: Blender create Mesh node Rolled fender lip
+11:03:51 | INFO: Blender create Mesh node Rolled fender lip.001
+11:03:51 | INFO: Blender create Mesh node Rolled fender lip.002
+11:03:51 | INFO: Blender create Mesh node Rolled fender lip.003
+11:03:51 | INFO: Blender create Mesh node Roof spoiler lip
+11:03:51 | INFO: Blender create Mesh node Cylinder.003
+11:03:51 | INFO: Blender create Mesh node Cylinder.004
+11:03:51 | INFO: Blender create Mesh node Cylinder.005
+11:03:51 | INFO: Blender create Mesh node Cylinder.006
+11:03:51 | INFO: Blender create Mesh node Cylinder.007
+11:03:51 | INFO: Blender create Mesh node Cylinder.008
+11:03:51 | INFO: Blender create Mesh node Cylinder.009
+11:03:51 | INFO: Blender create Mesh node Cylinder.010
+11:03:51 | INFO: Blender create Mesh node Cylinder.011
+11:03:51 | INFO: Blender create Mesh node Cylinder.012
+11:03:51 | INFO: Blender create Mesh node Cylinder.013
+11:03:51 | INFO: Blender create Mesh node Cylinder.014
+11:03:51 | INFO: Blender create Mesh node Cylinder.015
+11:03:51 | INFO: Blender create Mesh node Cylinder.016
+11:03:51 | INFO: Blender create Mesh node Cylinder.017
+11:03:51 | INFO: Blender create Mesh node Cylinder.018
+11:03:51 | INFO: Blender create Mesh node Cylinder.019
+11:03:51 | INFO: Blender create Mesh node Cylinder.020
+11:03:51 | INFO: Blender create Mesh node Cylinder.023
+11:03:51 | INFO: Blender create Mesh node Cylinder.024
+11:03:51 | INFO: Blender create Mesh node Cylinder.025
+11:03:51 | INFO: Blender create Mesh node Cylinder.026
+11:03:51 | INFO: Blender create Mesh node Cylinder.027
+11:03:51 | INFO: Blender create Mesh node Cylinder.028
+11:03:51 | INFO: Blender create Mesh node Cylinder.029
+11:03:51 | INFO: Blender create Mesh node Cylinder.030
+11:03:51 | INFO: Blender create Mesh node Cylinder.031
+11:03:51 | INFO: Blender create Mesh node Cylinder.032
+11:03:51 | INFO: Blender create Mesh node Cylinder.033
+11:03:51 | INFO: Blender create Mesh node Cylinder.034
+11:03:51 | INFO: Blender create Mesh node Cylinder.035
+11:03:51 | INFO: Blender create Mesh node Cylinder.036
+11:03:51 | INFO: Blender create Mesh node Cylinder.037
+11:03:51 | INFO: Blender create Mesh node Cylinder.038
+11:03:51 | INFO: Blender create Mesh node Cylinder.039
+11:03:51 | INFO: Blender create Mesh node Cylinder.040
+11:03:51 | INFO: Blender create Mesh node Cylinder.044
+11:03:51 | INFO: Blender create Mesh node Cylinder.045
+11:03:51 | INFO: Blender create Mesh node Cylinder.046
+11:03:51 | INFO: Blender create Mesh node Cylinder.047
+11:03:51 | INFO: Blender create Mesh node Cylinder.048
+11:03:51 | INFO: Blender create Mesh node Cylinder.049
+11:03:51 | INFO: Blender create Mesh node Cylinder.050
+11:03:51 | INFO: Blender create Mesh node Cylinder.051
+11:03:51 | INFO: Blender create Mesh node Cylinder.052
+11:03:51 | INFO: Blender create Mesh node Cylinder.053
+11:03:51 | INFO: Blender create Mesh node Cylinder.054
+11:03:51 | INFO: Blender create Mesh node Cylinder.055
+11:03:51 | INFO: Blender create Mesh node Cylinder.056
+11:03:51 | INFO: Blender create Mesh node Cylinder.057
+11:03:51 | INFO: Blender create Mesh node Cylinder.058
+11:03:51 | INFO: Blender create Mesh node Cylinder.059
+11:03:51 | INFO: Blender create Mesh node Cylinder.060
+11:03:51 | INFO: Blender create Mesh node Cylinder.061
+11:03:51 | INFO: Blender create Mesh node Cylinder.064
+11:03:51 | INFO: Blender create Mesh node Cylinder.065
+11:03:51 | INFO: Blender create Mesh node Cylinder.066
+11:03:51 | INFO: Blender create Mesh node Cylinder.067
+11:03:51 | INFO: Blender create Mesh node Cylinder.068
+11:03:51 | INFO: Blender create Mesh node Cylinder.069
+11:03:51 | INFO: Blender create Mesh node Cylinder.070
+11:03:51 | INFO: Blender create Mesh node Cylinder.071
+11:03:51 | INFO: Blender create Mesh node Cylinder.072
+11:03:51 | INFO: Blender create Mesh node Cylinder.073
+11:03:51 | INFO: Blender create Mesh node Cylinder.074
+11:03:51 | INFO: Blender create Mesh node Cylinder.075
+11:03:51 | INFO: Blender create Mesh node Cylinder.076
+11:03:51 | INFO: Blender create Mesh node Cylinder.077
+11:03:51 | INFO: Blender create Mesh node Cylinder.078
+11:03:51 | INFO: Blender create Mesh node Cylinder.079
+11:03:51 | INFO: Blender create Mesh node Cylinder.080
+11:03:51 | INFO: Blender create Mesh node Cylinder.081
+11:03:51 | INFO: Blender create Mesh node Satin door pull handle
+11:03:51 | INFO: Blender create Mesh node Satin door pull handle.001
+11:03:51 | INFO: Blender create Mesh node Satin door pull handle.002
+11:03:51 | INFO: Blender create Mesh node Satin door pull handle.003
+11:03:51 | INFO: Blender create Mesh node Satin grille surround
+11:03:51 | INFO: Blender create Mesh node Sculpted rear lower bumper insert
+11:03:51 | INFO: Blender create Mesh node Sculpted rocker panel seam
+11:03:51 | INFO: Blender create Mesh node Sculpted rocker panel seam.001
+11:03:51 | INFO: Blender create Mesh node Sphere.029
+11:03:51 | INFO: Blender create Mesh node Cylinder.085
+11:03:51 | INFO: Blender create Mesh node Cylinder.086
+11:03:51 | INFO: Blender create Mesh node Siped tread blocks
+11:03:51 | INFO: Blender create Mesh node Siped tread blocks.001
+11:03:51 | INFO: Blender create Mesh node Siped tread blocks.002
+11:03:51 | INFO: Blender create Mesh node Siped tread blocks.003
+11:03:51 | INFO: Blender create Mesh node Sphere.012
+11:03:51 | INFO: Blender create Mesh node Torus
+11:03:51 | INFO: Blender create Mesh node Cylinder.082
+11:03:51 | INFO: Blender create Mesh node Cylinder.083
+11:03:51 | INFO: Blender create Mesh node Cylinder.084
+11:03:51 | INFO: Blender create Mesh node Surface integrated tailgate rear pillar
+11:03:51 | INFO: Blender create Mesh node Surface integrated tailgate rear pillar.001
+11:03:51 | INFO: Blender create Mesh node Tail lamp molded perimeter housing
+11:03:51 | INFO: Blender create Mesh node Tail lamp molded perimeter housing.001
+11:03:51 | INFO: Blender create Mesh node Tail lamp optical separator
+11:03:51 | INFO: Blender create Mesh node Tail lamp optical separator.001
+11:03:51 | INFO: Blender create Mesh node Tail lamp optical separator.002
+11:03:51 | INFO: Blender create Mesh node Tail lamp optical separator.003
+11:03:51 | INFO: Blender create Mesh node Tail lamp recessed inner housing
+11:03:51 | INFO: Blender create Mesh node Tail lamp recessed inner housing.001
+11:03:51 | INFO: Blender create Mesh node Tail lamp reflective optical inner
+11:03:51 | INFO: Blender create Mesh node Tail lamp reflective optical inner.001
+11:03:51 | INFO: Blender create Mesh node Tailgate rear glazing
+11:03:51 | INFO: Blender create Mesh node Tailgate rear glazing rubber seal
+11:03:51 | INFO: Blender create Mesh node Tailgate shut line
+11:03:51 | INFO: Blender create Mesh node Cylinder.001
+11:03:51 | INFO: Blender create Mesh node Cylinder.021
+11:03:51 | INFO: Blender create Mesh node Cylinder.042
+11:03:51 | INFO: Blender create Mesh node Cylinder.062
+11:03:51 | INFO: Blender create Mesh node Watertight 14-station body shell_closed_tessellation
+11:03:51 | INFO: Blender create Mesh node Wheelhouse inner liner
+11:03:51 | INFO: Blender create Mesh node Wheelhouse inner liner.001
+11:03:51 | INFO: Blender create Mesh node Wheelhouse inner liner.002
+11:03:51 | INFO: Blender create Mesh node Wheelhouse inner liner.003
+11:03:51 | INFO: Blender create Mesh node Cylinder.097
+11:03:51 | INFO: Blender create Mesh node Cylinder.098
+11:03:51 | INFO: Blender create Mesh node Wiper rubber blade
+11:03:51 | INFO: Blender create Mesh node Wiper rubber blade.001
+11:03:51 | INFO: glTF import finished in 0.82s
+11:03:56 | INFO: Starting glTF 2.0 export
+11:03:56 | INFO: Extracting primitive: 107 reused Alloy_five_spoke_rim
+11:03:56 | INFO: Primitives created: 10
+11:03:56 | INFO: Finished glTF 2.0 export in 0.08650922775268555 s
+
+11:03:57 | INFO: Data are loaded, start creating Blender stuff
+11:03:57 | INFO: Blender create Mesh node 107 reused Alloy_five_spoke_rim
+11:03:57 | INFO: Blender create Mesh node 107 reused Alloy_five_spoke_rim.001
+11:03:57 | INFO: Blender create Mesh node 107 reused Alloy_five_spoke_rim.002
+11:03:57 | INFO: Blender create Mesh node 107 reused Alloy_five_spoke_rim.003
+11:03:57 | INFO: Blender create Mesh node 107 reused Center_cap
+11:03:57 | INFO: Blender create Mesh node 107 reused Center_cap.001
+11:03:57 | INFO: Blender create Mesh node 107 reused Center_cap.002
+11:03:57 | INFO: Blender create Mesh node 107 reused Center_cap.003
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_1
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_1.001
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_1.002
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_1.003
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_2
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_2.001
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_2.002
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_2.003
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_3
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_3.001
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_3.002
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_3.003
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_4
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_4.001
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_4.002
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_4.003
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_5
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_5.001
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_5.002
+11:03:57 | INFO: Blender create Mesh node 107 reused Lug_5.003
+11:03:57 | INFO: Blender create Mesh node 107 reused Sculpted_tyre
+11:03:57 | INFO: Blender create Mesh node 107 reused Sculpted_tyre.001
+11:03:57 | INFO: Blender create Mesh node 107 reused Sculpted_tyre.002
+11:03:57 | INFO: Blender create Mesh node 107 reused Sculpted_tyre.003
+11:03:57 | INFO: Blender create Mesh node 107 reused Valve_stem
+11:03:57 | INFO: Blender create Mesh node 107 reused Valve_stem.001
+11:03:57 | INFO: Blender create Mesh node 107 reused Valve_stem.002
+11:03:57 | INFO: Blender create Mesh node 107 reused Valve_stem.003
+11:03:57 | INFO: Blender create Mesh node Sphere.002
+11:03:57 | INFO: Blender create Mesh node Sphere.005
+11:03:57 | INFO: Blender create Mesh node Sphere.008
+11:03:57 | INFO: Blender create Mesh node Sphere.011
+11:03:57 | INFO: Blender create Mesh node Sphere.013
+11:03:57 | INFO: Blender create Mesh node Sphere.016
+11:03:57 | INFO: Blender create Mesh node Sphere.014
+11:03:57 | INFO: Blender create Mesh node Sphere.017
+11:03:57 | INFO: Blender create Mesh node Beltline satin bead
+11:03:57 | INFO: Blender create Mesh node Beltline satin bead.001
+11:03:57 | INFO: Blender create Mesh node Brake caliper
+11:03:57 | INFO: Blender create Mesh node Brake caliper.001
+11:03:57 | INFO: Blender create Mesh node Brake caliper.002
+11:03:57 | INFO: Blender create Mesh node Brake caliper.003
+11:03:57 | INFO: Blender create Mesh node Cylinder.002
+11:03:57 | INFO: Blender create Mesh node Cylinder.022
+11:03:57 | INFO: Blender create Mesh node Cylinder.043
+11:03:57 | INFO: Blender create Mesh node Cylinder.063
+11:03:57 | INFO: Blender create Mesh node Cabin carpet
+11:03:57 | INFO: Blender create Mesh node Center console
+11:03:57 | INFO: Blender create Mesh node Clear reversing lens insert
+11:03:57 | INFO: Blender create Mesh node Clear reversing lens insert.001
+11:03:57 | INFO: Blender create Mesh node Sphere.001
+11:03:57 | INFO: Blender create Mesh node Sphere.004
+11:03:57 | INFO: Blender create Mesh node Sphere.007
+11:03:57 | INFO: Blender create Mesh node Sphere.010
+11:03:57 | INFO: Blender create Mesh node Sphere
+11:03:57 | INFO: Blender create Mesh node Sphere.003
+11:03:57 | INFO: Blender create Mesh node Sphere.006
+11:03:57 | INFO: Blender create Mesh node Sphere.009
+11:03:57 | INFO: Blender create Mesh node Crowned roof pressing
+11:03:57 | INFO: Blender create Mesh node Door panel shut line
+11:03:57 | INFO: Blender create Mesh node Door panel shut line.001
+11:03:57 | INFO: Blender create Mesh node Door panel shut line.002
+11:03:57 | INFO: Blender create Mesh node Door panel shut line.003
+11:03:57 | INFO: Blender create Mesh node Cylinder.098
+11:03:57 | INFO: Blender create Mesh node Cylinder.100
+11:03:57 | INFO: Blender create Mesh node Cylinder.097
+11:03:57 | INFO: Blender create Mesh node Cylinder.099
+11:03:57 | INFO: Blender create Mesh node Faceted headlamp reflector interior
+11:03:57 | INFO: Blender create Mesh node Faceted headlamp reflector interior.001
+11:03:57 | INFO: Blender create Mesh node Fine headlamp perimeter gasket
+11:03:57 | INFO: Blender create Mesh node Fine headlamp perimeter gasket.001
+11:03:57 | INFO: Blender create Mesh node Flat black B pillar trim
+11:03:57 | INFO: Blender create Mesh node Flat black B pillar trim.001
+11:03:57 | INFO: Blender create Mesh node Flush corner wrapping ruby lamp lens
+11:03:57 | INFO: Blender create Mesh node Flush corner wrapping ruby lamp lens.001
+11:03:57 | INFO: Blender create Mesh node Flush pressed A pillar
+11:03:57 | INFO: Blender create Mesh node Flush pressed A pillar.001
+11:03:57 | INFO: Blender create Mesh node Flush roof side flange
+11:03:57 | INFO: Blender create Mesh node Flush roof side flange.001
+11:03:57 | INFO: Blender create Mesh node Flush swept transparent headlamp lens
+11:03:57 | INFO: Blender create Mesh node Flush swept transparent headlamp lens.001
+11:03:57 | INFO: Blender create Mesh node Sphere.021
+11:03:57 | INFO: Blender create Mesh node Sphere.024
+11:03:57 | INFO: Blender create Mesh node Fog lamp recessed housing
+11:03:57 | INFO: Blender create Mesh node Fog lamp recessed housing.001
+11:03:57 | INFO: Blender create Mesh node Cylinder.093
+11:03:57 | INFO: Blender create Mesh node Cylinder.096
+11:03:57 | INFO: Blender create Mesh node Formed lower door protective cladding
+11:03:57 | INFO: Blender create Mesh node Formed lower door protective cladding.001
+11:03:57 | INFO: Blender create Mesh node Formed painted rear bumper cover
+11:03:57 | INFO: Blender create Mesh node Front bumper continuous shut line
+11:03:57 | INFO: Blender create Mesh node Front license plate
+11:03:57 | INFO: Blender create Mesh node Front side door glass
+11:03:57 | INFO: Blender create Mesh node Front side door glass rubber seal
+11:03:57 | INFO: Blender create Mesh node Front side door glass rubber seal.001
+11:03:57 | INFO: Blender create Mesh node Front side door glass.001
+11:03:57 | INFO: Blender create Mesh node Front splitter
+11:03:57 | INFO: Blender create Mesh node Fuel filler seam
+11:03:57 | INFO: Blender create Mesh node Fuel filler seam.001
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.001
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.002
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.003
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.004
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.005
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.006
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.007
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.008
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.009
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.010
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.011
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.012
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.013
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.014
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.015
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.016
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.017
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.018
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.019
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.020
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.021
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.022
+11:03:57 | INFO: Blender create Mesh node Grille inner mesh.023
+11:03:57 | INFO: Blender create Mesh node Grille shadow cavity
+11:03:57 | INFO: Blender create Mesh node Headlamp deep graphite housing
+11:03:57 | INFO: Blender create Mesh node Headlamp deep graphite housing.001
+11:03:57 | INFO: Blender create Mesh node High mount stop lamp
+11:03:57 | INFO: Blender create Mesh node Hood shut line
+11:03:57 | INFO: Blender create Mesh node Instrument panel
+11:03:57 | INFO: Blender create Mesh node Lower intake bridge
+11:03:57 | INFO: Blender create Mesh node Lower intake bridge.001
+11:03:57 | INFO: Blender create Mesh node Lower intake bridge.002
+11:03:57 | INFO: Blender create Mesh node Lower intake recessed mesh
+11:03:57 | INFO: Blender create Mesh node Sphere.015
+11:03:57 | INFO: Blender create Mesh node Sphere.018
+11:03:57 | INFO: Blender create Mesh node Painted door glazing lower sill
+11:03:57 | INFO: Blender create Mesh node Painted door glazing lower sill.001
+11:03:57 | INFO: Blender create Mesh node Painted quarter glazing lower sill
+11:03:57 | INFO: Blender create Mesh node Painted quarter glazing lower sill.001
+11:03:57 | INFO: Blender create Mesh node Painted rear glazing lower surround
+11:03:57 | INFO: Blender create Mesh node Quarter division pillar
+11:03:57 | INFO: Blender create Mesh node Quarter division pillar.001
+11:03:57 | INFO: Blender create Mesh node Cylinder.086
+11:03:57 | INFO: Blender create Mesh node Cylinder.087
+11:03:57 | INFO: Blender create Mesh node Cylinder.089
+11:03:57 | INFO: Blender create Mesh node Cylinder.090
+11:03:57 | INFO: Blender create Mesh node Raised satin roof rail
+11:03:57 | INFO: Blender create Mesh node Raised satin roof rail.001
+11:03:57 | INFO: Blender create Mesh node Raked laminated windshield
+11:03:57 | INFO: Blender create Mesh node Raked laminated windshield rubber seal
+11:03:57 | INFO: Blender create Mesh node Rear bumper corner joint
+11:03:57 | INFO: Blender create Mesh node Rear bumper corner joint.001
+11:03:57 | INFO: Blender create Mesh node Rear bumper formed corner
+11:03:57 | INFO: Blender create Mesh node Rear bumper formed corner.001
+11:03:57 | INFO: Blender create Mesh node Rear bumper joint clear of plate recess
+11:03:57 | INFO: Blender create Mesh node Rear bumper joint clear of plate recess.001
+11:03:57 | INFO: Blender create Mesh node Sphere.025
+11:03:57 | INFO: Blender create Mesh node Sphere.026
+11:03:57 | INFO: Blender create Mesh node Sphere.027
+11:03:57 | INFO: Blender create Mesh node Sphere.028
+11:03:57 | INFO: Blender create Mesh node Rear plate recessed back
+11:03:57 | INFO: Blender create Mesh node Rear quarter glass
+11:03:57 | INFO: Blender create Mesh node Rear quarter glass rubber seal
+11:03:57 | INFO: Blender create Mesh node Rear quarter glass rubber seal.001
+11:03:57 | INFO: Blender create Mesh node Rear quarter glass.001
+11:03:57 | INFO: Blender create Mesh node Rear registration plate
+11:03:57 | INFO: Blender create Mesh node Rear side door glass
+11:03:57 | INFO: Blender create Mesh node Rear side door glass rubber seal
+11:03:57 | INFO: Blender create Mesh node Rear side door glass rubber seal.001
+11:03:57 | INFO: Blender create Mesh node Rear side door glass.001
+11:03:57 | INFO: Blender create Mesh node Rear window wiper
+11:03:57 | INFO: Blender create Mesh node Recessed grille blade
+11:03:57 | INFO: Blender create Mesh node Recessed grille blade.001
+11:03:57 | INFO: Blender create Mesh node Recessed grille blade.002
+11:03:57 | INFO: Blender create Mesh node Recessed grille blade.003
+11:03:57 | INFO: Blender create Mesh node Recessed grille blade.004
+11:03:57 | INFO: Blender create Mesh node Recessed handle pocket
+11:03:57 | INFO: Blender create Mesh node Recessed handle pocket.001
+11:03:57 | INFO: Blender create Mesh node Recessed handle pocket.002
+11:03:57 | INFO: Blender create Mesh node Recessed handle pocket.003
+11:03:57 | INFO: Blender create Mesh node Sphere.019
+11:03:57 | INFO: Blender create Mesh node Sphere.020
+11:03:57 | INFO: Blender create Mesh node Sphere.022
+11:03:57 | INFO: Blender create Mesh node Sphere.023
+11:03:57 | INFO: Blender create Mesh node Cylinder.091
+11:03:57 | INFO: Blender create Mesh node Cylinder.092
+11:03:57 | INFO: Blender create Mesh node Cylinder.094
+11:03:57 | INFO: Blender create Mesh node Cylinder.095
+11:03:57 | INFO: Blender create Mesh node Rolled fender lip
+11:03:57 | INFO: Blender create Mesh node Rolled fender lip.001
+11:03:57 | INFO: Blender create Mesh node Rolled fender lip.002
+11:03:57 | INFO: Blender create Mesh node Rolled fender lip.003
+11:03:57 | INFO: Blender create Mesh node Roof spoiler lip
+11:03:57 | INFO: Blender create Mesh node Cylinder.003
+11:03:57 | INFO: Blender create Mesh node Cylinder.004
+11:03:57 | INFO: Blender create Mesh node Cylinder.005
+11:03:57 | INFO: Blender create Mesh node Cylinder.006
+11:03:57 | INFO: Blender create Mesh node Cylinder.007
+11:03:57 | INFO: Blender create Mesh node Cylinder.008
+11:03:57 | INFO: Blender create Mesh node Cylinder.009
+11:03:57 | INFO: Blender create Mesh node Cylinder.010
+11:03:57 | INFO: Blender create Mesh node Cylinder.011
+11:03:57 | INFO: Blender create Mesh node Cylinder.012
+11:03:57 | INFO: Blender create Mesh node Cylinder.013
+11:03:57 | INFO: Blender create Mesh node Cylinder.014
+11:03:57 | INFO: Blender create Mesh node Cylinder.015
+11:03:57 | INFO: Blender create Mesh node Cylinder.016
+11:03:57 | INFO: Blender create Mesh node Cylinder.017
+11:03:57 | INFO: Blender create Mesh node Cylinder.018
+11:03:57 | INFO: Blender create Mesh node Cylinder.019
+11:03:57 | INFO: Blender create Mesh node Cylinder.020
+11:03:57 | INFO: Blender create Mesh node Cylinder.023
+11:03:57 | INFO: Blender create Mesh node Cylinder.024
+11:03:57 | INFO: Blender create Mesh node Cylinder.025
+11:03:57 | INFO: Blender create Mesh node Cylinder.026
+11:03:57 | INFO: Blender create Mesh node Cylinder.027
+11:03:57 | INFO: Blender create Mesh node Cylinder.028
+11:03:57 | INFO: Blender create Mesh node Cylinder.029
+11:03:57 | INFO: Blender create Mesh node Cylinder.030
+11:03:57 | INFO: Blender create Mesh node Cylinder.031
+11:03:57 | INFO: Blender create Mesh node Cylinder.032
+11:03:57 | INFO: Blender create Mesh node Cylinder.033
+11:03:57 | INFO: Blender create Mesh node Cylinder.034
+11:03:57 | INFO: Blender create Mesh node Cylinder.035
+11:03:57 | INFO: Blender create Mesh node Cylinder.036
+11:03:57 | INFO: Blender create Mesh node Cylinder.037
+11:03:57 | INFO: Blender create Mesh node Cylinder.038
+11:03:57 | INFO: Blender create Mesh node Cylinder.039
+11:03:57 | INFO: Blender create Mesh node Cylinder.040
+11:03:57 | INFO: Blender create Mesh node Cylinder.044
+11:03:57 | INFO: Blender create Mesh node Cylinder.045
+11:03:57 | INFO: Blender create Mesh node Cylinder.046
+11:03:57 | INFO: Blender create Mesh node Cylinder.047
+11:03:57 | INFO: Blender create Mesh node Cylinder.048
+11:03:57 | INFO: Blender create Mesh node Cylinder.049
+11:03:57 | INFO: Blender create Mesh node Cylinder.050
+11:03:57 | INFO: Blender create Mesh node Cylinder.051
+11:03:57 | INFO: Blender create Mesh node Cylinder.052
+11:03:57 | INFO: Blender create Mesh node Cylinder.053
+11:03:57 | INFO: Blender create Mesh node Cylinder.054
+11:03:57 | INFO: Blender create Mesh node Cylinder.055
+11:03:57 | INFO: Blender create Mesh node Cylinder.056
+11:03:57 | INFO: Blender create Mesh node Cylinder.057
+11:03:57 | INFO: Blender create Mesh node Cylinder.058
+11:03:57 | INFO: Blender create Mesh node Cylinder.059
+11:03:57 | INFO: Blender create Mesh node Cylinder.060
+11:03:57 | INFO: Blender create Mesh node Cylinder.061
+11:03:57 | INFO: Blender create Mesh node Cylinder.064
+11:03:57 | INFO: Blender create Mesh node Cylinder.065
+11:03:57 | INFO: Blender create Mesh node Cylinder.066
+11:03:57 | INFO: Blender create Mesh node Cylinder.067
+11:03:57 | INFO: Blender create Mesh node Cylinder.068
+11:03:57 | INFO: Blender create Mesh node Cylinder.069
+11:03:57 | INFO: Blender create Mesh node Cylinder.070
+11:03:57 | INFO: Blender create Mesh node Cylinder.071
+11:03:57 | INFO: Blender create Mesh node Cylinder.072
+11:03:57 | INFO: Blender create Mesh node Cylinder.073
+11:03:57 | INFO: Blender create Mesh node Cylinder.074
+11:03:57 | INFO: Blender create Mesh node Cylinder.075
+11:03:57 | INFO: Blender create Mesh node Cylinder.076
+11:03:57 | INFO: Blender create Mesh node Cylinder.077
+11:03:57 | INFO: Blender create Mesh node Cylinder.078
+11:03:57 | INFO: Blender create Mesh node Cylinder.079
+11:03:57 | INFO: Blender create Mesh node Cylinder.080
+11:03:57 | INFO: Blender create Mesh node Cylinder.081
+11:03:57 | INFO: Blender create Mesh node Satin door pull handle
+11:03:57 | INFO: Blender create Mesh node Satin door pull handle.001
+11:03:57 | INFO: Blender create Mesh node Satin door pull handle.002
+11:03:57 | INFO: Blender create Mesh node Satin door pull handle.003
+11:03:57 | INFO: Blender create Mesh node Satin grille surround
+11:03:57 | INFO: Blender create Mesh node Sculpted rear lower bumper insert
+11:03:57 | INFO: Blender create Mesh node Sculpted rocker panel seam
+11:03:57 | INFO: Blender create Mesh node Sculpted rocker panel seam.001
+11:03:57 | INFO: Blender create Mesh node Sphere.029
+11:03:57 | INFO: Blender create Mesh node Cylinder.085
+11:03:57 | INFO: Blender create Mesh node Cylinder.088
+11:03:57 | INFO: Blender create Mesh node Siped tread blocks
+11:03:57 | INFO: Blender create Mesh node Siped tread blocks.001
+11:03:57 | INFO: Blender create Mesh node Siped tread blocks.002
+11:03:57 | INFO: Blender create Mesh node Siped tread blocks.003
+11:03:57 | INFO: Blender create Mesh node Sphere.012
+11:03:57 | INFO: Blender create Mesh node Torus
+11:03:57 | INFO: Blender create Mesh node Cylinder.082
+11:03:57 | INFO: Blender create Mesh node Cylinder.083
+11:03:57 | INFO: Blender create Mesh node Cylinder.084
+11:03:57 | INFO: Blender create Mesh node Surface integrated tailgate rear pillar
+11:03:57 | INFO: Blender create Mesh node Surface integrated tailgate rear pillar.001
+11:03:57 | INFO: Blender create Mesh node Tail lamp fine gasket
+11:03:57 | INFO: Blender create Mesh node Tail lamp fine gasket.001
+11:03:57 | INFO: Blender create Mesh node Tail lamp recessed inner housing
+11:03:57 | INFO: Blender create Mesh node Tail lamp recessed inner housing.001
+11:03:57 | INFO: Blender create Mesh node Tail lamp reflective optical inner
+11:03:57 | INFO: Blender create Mesh node Tail lamp reflective optical inner.001
+11:03:57 | INFO: Blender create Mesh node Tailgate rear glazing
+11:03:57 | INFO: Blender create Mesh node Tailgate rear glazing rubber seal
+11:03:57 | INFO: Blender create Mesh node Tailgate shut line
+11:03:57 | INFO: Blender create Mesh node Cylinder.001
+11:03:57 | INFO: Blender create Mesh node Cylinder.021
+11:03:57 | INFO: Blender create Mesh node Cylinder.042
+11:03:57 | INFO: Blender create Mesh node Cylinder.062
+11:03:57 | INFO: Blender create Mesh node Watertight 14-station body shell_closed_tessellation
+11:03:57 | INFO: Blender create Mesh node Wheelhouse inner liner
+11:03:57 | INFO: Blender create Mesh node Wheelhouse inner liner.001
+11:03:57 | INFO: Blender create Mesh node Wheelhouse inner liner.002
+11:03:57 | INFO: Blender create Mesh node Wheelhouse inner liner.003
+11:03:57 | INFO: Blender create Mesh node Cylinder.101
+11:03:57 | INFO: Blender create Mesh node Cylinder.102
+11:03:57 | INFO: Blender create Mesh node Wiper rubber blade
+11:03:57 | INFO: Blender create Mesh node Wiper rubber blade.001
+11:03:57 | INFO: glTF import finished in 0.84s
+11:04:04 | INFO: Starting glTF 2.0 export
+11:04:04 | INFO: Extracting primitive: 107 reused Alloy_five_spoke_rim
+11:04:04 | INFO: Primitives created: 10
+11:04:04 | INFO: Finished glTF 2.0 export in 0.14084625244140625 s
+
+LU21_CAR_PREPROCESS {"blender_version": "5.2.2 LTS", "format": "openrc-population-preprocess-report-v1", "license_evidence_sha256": "E8DA1C723E60AA7549405A8502BC56A864991407B7D130D581CDC0E55E1F384C", "manifest": "\\\\wsl.localhost\\Ubuntu\\home\\bulto\\openrc-release-scenery-978c36\\assets\\scenery\\population\\SOURCE_MANIFEST.json", "manifest_sha256": "1E10E2F326134F42A00C2F7FE8999065DAFA1B5341F893A65EB0B2F17BA1DF5F", "results": [{"bytes": 1042088, "deleted_objects": 76, "deleted_triangles": 11232, "derived_file": "innerscene-sedan-selective.glb", "forward_axis": "-Z", "id": "sedan", "lod": "close", "long_axis": "Z", "modified_objects": 176, "protected_glass_meshes": 6, "protected_glass_triangles": 4032, "sha256": "8DD24F39B09B062E1BCF235BA06FC48661EAE1271ECC498257BC149C7A8EEE17", "source_file": "white-four-door-sedan.glb", "source_meshes": 304, "source_sha256": "0CD9FE7520255F93F0B1B56B6597100B058579AF980506C23E285ABD511C2845", "source_triangles": 132082, "surfaces": 10, "triangles": 25686}, {"bytes": 967164, "deleted_objects": 96, "deleted_triangles": 23792, "derived_file": "innerscene-hatch-selective.glb", "forward_axis": "-Z", "id": "hatch", "lod": "close", "long_axis": "Z", "modified_objects": 160, "protected_glass_meshes": 8, "protected_glass_triangles": 5376, "sha256": "257AC6A3F9FBEEFE58A69068166B352209C79D056C98EAA22B67A1808B6086C5", "source_file": "silver-five-door-compact-hatchback.glb", "source_meshes": 314, "source_sha256": "B91FD6ABFA24F1056B408517CE4DDBCD8E3E92406625A85790756C05A9A5849E", "source_triangles": 130902, "surfaces": 10, "triangles": 24470}, {"bytes": 1015168, "deleted_objects": 76, "deleted_triangles": 11232, "derived_file": "innerscene-crossover-selective.glb", "forward_axis": "-Z", "id": "crossover", "lod": "close", "long_axis": "Z", "modified_objects": 180, "protected_glass_meshes": 8, "protected_glass_triangles": 5376, "sha256": "4C86A201E4DA60B8E39D77E92530E564CC20AE107286985E4F51C7B923940A98", "source_file": "sage-five-door-crossover-suv.glb", "source_meshes": 317, "source_sha256": "D8DE49CEF044F82816F9C1CB99597CB6FB6090AA90BEE1AB182C64856FE210D5", "source_triangles": 132132, "surfaces": 10, "triangles": 25359}]}
+Blender 5.2.2 LTS (hash d13f752e3b9c built 2026-09-15 01:37:04)
+
+Blender quit

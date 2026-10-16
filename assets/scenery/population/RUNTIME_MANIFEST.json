@@ -5,10 +5,10 @@
   "assets": {
     "sedan": {
       "source": "innerscene-sedan-selective.glb",
-      "source_sha256": "221179c8036c3c3d199cd40c9a6a25051b4a4f408cad3ce62a38a2373dc7a4e7",
+      "source_sha256": "8dd24f39b09b062e1bcf235ba06fc48661eae1271ecc498257bc149c7a8eee17",
       "output": "sedan.glb",
-      "output_sha256": "06984cef8ed4811b91e7927fb85644af4980371bfd04838cbb6edc36809e04f0",
-      "geometry_bytes": 1111672,
+      "output_sha256": "87075fa09feb0ece1979ae56768d2d0edf34b2cc7e80be300ed5fd6427c051c6",
+      "geometry_bytes": 1039656,
       "images": [
         {
           "name": "52f8b1ed1a99caf4",
@@ -74,10 +74,10 @@
     },
     "hatch": {
       "source": "innerscene-hatch-selective.glb",
-      "source_sha256": "de30653293f70611bf72cc4d4e4ec391f7cc79ee733326ea7d6ae6553237184f",
+      "source_sha256": "257ac6a3f9fbeefe58a69068166b352209c79d056c98eaa22b67a1808b6086c5",
       "output": "hatch.glb",
-      "output_sha256": "ca5253274389dca268ced8c4d108a5a97a02ee1458f86c0346174191071ce8c4",
-      "geometry_bytes": 1029612,
+      "output_sha256": "10697373822bfa2313ec38ee3a264f8970ca4a57f08200c82be752d668f6d476",
+      "geometry_bytes": 964732,
       "images": [
         {
           "name": "52f8b1ed1a99caf4",
@@ -143,10 +143,10 @@
     },
     "crossover": {
       "source": "innerscene-crossover-selective.glb",
-      "source_sha256": "35f9185affc226448e22582b34f6427202b713903fb91c028e63e15b385a5401",
+      "source_sha256": "4c86a201e4da60b8e39d77e92530e564cc20ae107286985e4f51c7b923940a98",
       "output": "crossover.glb",
-      "output_sha256": "a63a609f97c4402de176f8f41273caa35500e28ab5708f5bcaa4a6428561a8a3",
-      "geometry_bytes": 1078148,
+      "output_sha256": "8c57dc13f63a6fbd5e056734317709d26ff72598d6fc54f14b6c969c5229ca0f",
+      "geometry_bytes": 1012736,
       "images": [
         {
           "name": "52f8b1ed1a99caf4",
