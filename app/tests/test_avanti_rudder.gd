@@ -191,9 +191,11 @@ func _test_sampler_and_boundaries() -> void:
 	# Reinstate filtering to check that disarming clears a real nonzero response state.
 	controls.yaw_response_time = 0.1
 	fallback.radio.armed = false
+	fallback.radio.confirmed_gamepad_connection = func(_id: int) -> bool: return false
 	fallback_axes.yaw = 0.5
 	fallback._physics_process(fallback.sim.dt())
-	_check("unarmed gamepad polling clears command without response memory", absf(float(fallback.commands.yaw)) < EPS)
+	_check("unarmed gamepad polling clears command without response memory",
+		not fallback.radio.armed and absf(float(fallback.commands.yaw)) < EPS)
 	fallback.free()
 
 	var full := _new_detached_session(model, "gamepad", "full")

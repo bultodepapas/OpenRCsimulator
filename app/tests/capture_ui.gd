@@ -527,7 +527,7 @@ func _check_start_selector(home: Control, choice: String, lang: String) -> Dicti
 	var shown_text: String = button.atr(button.text)
 	var expected: String = "Start: runway" if choice == "runway" else "Start: in the air"
 	if lang == "es":
-		expected = "Inicio: pista (experimental)" if choice == "runway" else "Inicio: en el aire"
+		expected = "Inicio: pista" if choice == "runway" else "Inicio: en el aire"
 	var fits: bool = rect.has_area() and rail_rect.encloses(rect) and setup_rect.encloses(rect) and not rect.intersects(fly_rect) \
 		and rect.position.x >= 0.0 and rect.position.y >= 0.0 and rect.end.x <= viewport_size.x and rect.end.y <= viewport_size.y
 	if not button.is_visible_in_tree() or shown_text != expected or not fits:
