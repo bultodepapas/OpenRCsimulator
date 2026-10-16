@@ -61,17 +61,17 @@ func _initialize() -> void:
 	_check("rejected reload preserves start and trims", session.start.state == old_start and session.trims == old_trims)
 	_check("rejected reload preserves current and previous state", session.sim.state == old_state and session.sim.previous == old_previous)
 	_check("rejected reload preserves tick and pause status", session.sim.tick == old_tick and session.sim.paused == old_paused)
-	var session_loads: Callable = session.sim.loads
-	var session_evaluate: Callable = session.sim.continuous_evaluate
-	session.sim.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	var session_loads: Callable = session.sim.model.loads
+	var session_evaluate: Callable = session.sim.model.stage
+	session.sim.model.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([NAN, 0.0, 0.0, 0.0, 0.0, 0.0])
 	if session_evaluate.is_valid():
-		session.sim.continuous_evaluate = func(_s: PackedFloat64Array, _values: PackedFloat64Array, _t: float) -> Dictionary:
+		session.sim.model.stage = func(_s: PackedFloat64Array, _values: PackedFloat64Array, _t: float) -> Dictionary:
 			return {}
 	session.sim.step()
 	_check("session exposes a runtime fault and pauses", session.sim.paused and session.pause_reason.begins_with("simulation fault:"))
-	session.sim.loads = session_loads
-	session.sim.continuous_evaluate = session_evaluate
+	session.sim.model.loads = session_loads
+	session.sim.model.stage = session_evaluate
 	session.resume()
 	_check("session resume cannot bypass a runtime fault", session.sim.paused and session.pause_reason.begins_with("simulation fault:"))
 
@@ -99,14 +99,14 @@ func _initialize() -> void:
 	var valid_state := _state()
 	_check("simulation accepts a valid initial state", load_sim.reset(valid_state))
 	var saved_load_state: PackedFloat64Array = load_sim.state.duplicate()
-	load_sim.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	load_sim.model.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([NAN, 0.0, 0.0, 0.0, 0.0, 0.0])
 	load_sim.step()
 	_check("nonfinite loads pause at the last valid state", load_sim.paused and load_sim.state == saved_load_state)
 	_check("nonfinite loads expose a readable fault", load_sim.fault_reason.contains("loads"), load_sim.fault_reason)
 	load_sim.set_paused(false)
 	_check("numerical fault cannot be resumed without a valid reset", load_sim.paused)
-	load_sim.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	load_sim.model.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	_check("explicit valid reset clears the simulation fault", load_sim.reset(valid_state) and load_sim.fault_reason.is_empty())
 	for failing_stage in [2, 3, 4]:
@@ -118,7 +118,7 @@ func _initialize() -> void:
 		var stage_aux: PackedFloat64Array = stage_sim.aux.duplicate()
 		var calls := [0]
 		var fail_on_call: int = failing_stage # loads() is called once before RK (H2: that call is also k1), then for k2…k4.
-		stage_sim.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+		stage_sim.model.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 			calls[0] += 1
 			if calls[0] == fail_on_call:
 				return PackedFloat64Array([NAN, 0.0, 0.0, 0.0, 0.0, 0.0])
@@ -135,7 +135,7 @@ func _initialize() -> void:
 	root.add_child(count_sim)
 	count_sim.reset(valid_state)
 	var load_calls := [0]
-	count_sim.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	count_sim.model.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		load_calls[0] += 1
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	count_sim.step()
@@ -153,7 +153,7 @@ func _initialize() -> void:
 	root.add_child(pre_step_sim)
 	pre_step_sim.reset(valid_state)
 	var saved_pre_step_state: PackedFloat64Array = pre_step_sim.state.duplicate()
-	pre_step_sim.pre_step = func(_aux: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
+	pre_step_sim.model.pre_tick = func(_aux: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
 		return PackedFloat64Array([NAN])
 	pre_step_sim.step()
 	_check("nonfinite pre-step auxiliary output rolls back and pauses", pre_step_sim.paused
@@ -195,7 +195,7 @@ func _initialize() -> void:
 
 	var changed_inertia_sim := Sim.new()
 	root.add_child(changed_inertia_sim)
-	changed_inertia_sim.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	changed_inertia_sim.model.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([4.0, 0.0, 0.0, 2.0, 0.0, 0.0])
 	changed_inertia_sim.reset(valid_state)
 	changed_inertia_sim.mass = 2.0

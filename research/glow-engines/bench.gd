@@ -297,10 +297,10 @@ func _new_sim() -> Node:
 	sim.continuous = PackedFloat64Array([DEFAULT_RPM, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	sim.aux = PackedFloat64Array([DEFAULT_RPM])
 	sim.modes = PackedInt64Array([1])
-	sim.continuous_aux = func(values: PackedFloat64Array, _sampled_aux: PackedFloat64Array) -> PackedFloat64Array:
+	sim.model.block_aux = func(values: PackedFloat64Array, _sampled_aux: PackedFloat64Array) -> PackedFloat64Array:
 		return PackedFloat64Array([values[0]])
 	_last_stage_failure = ""
-	sim.continuous_evaluate = func(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
+	sim.model.stage = func(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
 		var point: Dictionary = _evaluate_point(body, values, time_s)
 		if not point.get("ok", false):
 			_last_stage_failure = str(point.get("error", "coupled engine stage was rejected"))

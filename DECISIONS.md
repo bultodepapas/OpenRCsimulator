@@ -173,6 +173,10 @@ The researched electric Ultra Stick 25e remains a comparison specimen. Only its 
 
 ## Notes
 
+### 2026-10-15 — Native backends replace one evaluation boundary on evidence, never the kernel (SF-08)
+
+The reference GDScript evaluator stays authoritative for every vehicle. A native backend may implement one `VehicleModel.stage` with the same inputs, outputs and a pinned identity (ABI, backend version, build receipt) that checkpoints carry and replays refuse to switch; it is adopted only after a byte-identical oracle comparison, exact kernel trajectories, fleet fingerprints and target-host p50/p95 cost, and it is ported only when the optimized GDScript path still exceeds the 500 µs budget on the owner's host. The RC ground vehicle's evaluator is the worked example; no fixed-wing port is started (owner decision D5). [Policy](docs/plans/simulation-foundation.md#6-backend-policy-sf-08).
+
 ### 2026-10-15 — Make the EL1d locator the kernel's event protocol and keep other locators as reporting policies (SF-04)
 
 The electric rotor stop already had the protocol's numerics: a continuous value held at or above zero, RK4 trials, a secant/bisection bracket to 1e-12 of local tick time, a projection at the boundary and the tick remainder. It moves verbatim to `physics/event_step.gd` as the kernel's locator, and a `VehicleModel` can declare that boundary instead of owning a step policy; the fixed-bus electric route does. The finite-battery composition, the glow lifecycle step and the rotorcraft stop predictor keep their own policies because unifying their numerics would change trajectories; they now return `{state, events}` so the kernel records and signals every located event. Hull crossing is a post-tick pose estimate, not an integration event. [Evidence](docs/research/simulation-foundation/SF-04/README.md).

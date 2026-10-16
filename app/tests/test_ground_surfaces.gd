@@ -158,7 +158,7 @@ func _bare(model: Dictionary, rects: PackedFloat64Array) -> Node:
 	var sim: Node = Sim.new()
 	sim.mass = model.mass_kg
 	sim.inertia = model.inertia.duplicate()
-	sim.loads = func(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.loads = func(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		var g := Ground.loads(s, gear, 0.0, rects)
 		return g if not g.is_empty() else PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	return sim

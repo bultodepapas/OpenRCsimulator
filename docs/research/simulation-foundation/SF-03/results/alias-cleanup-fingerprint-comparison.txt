@@ -1,0 +1,26 @@
+fingerprint_vehicles.gd: baseline commit 1da9e092 (before the alias cleanup) versus the alias-cleanup tree.
+same jensen-das-ugly-stik-60              ticks=960 6d7594a9390caf3c
+same jensen-das-ugly-stik-60/cut          ticks=960 5fb09382b78efd8e
+same stik-glow-61fx-2t                    ticks=960 a974bd15d095bf03
+same stik-glow-61fx-2t/cut                ticks=960 c4b566c4b3229162
+same stik-glow-55ax-2t                    ticks=960 7ec157b10abd7896
+same stik-glow-55ax-2t/cut                ticks=960 968220bb40549cc6
+same stik-glow-fs64v-4t                   ticks=960 e542ac154a68e6a8
+same stik-glow-fs64v-4t/cut               ticks=960 0ae7d0d7d6c2bf20
+same gp-extra-300s-60                     ticks=960 199a3652339d2003
+same gp-extra-300s-60/cut                 ticks=960 c4534c5622169a9a
+same p51d-mustang-120                     ticks=960 8a6033487d6a8c40
+same p51d-mustang-120/cut                 ticks=960 ae15fb001942cf56
+same sebart-avanti-s-a200-p100rx          ticks=960 da1187e6a69bbc1c
+same sebart-avanti-s-a200-p100rx/cut      ticks=301 ad516348ee601f64 fault: tick 300: step rejected: joint stage evaluation is nonfinite or malformed
+same turbo-lumber-evolution               ticks=960 cbb362ffe861a4bc
+same turbo-lumber-evolution/cut           ticks=960 15fff27e2a71ad81
+same synthetic_stik_electric_4s           ticks=960 bb7a43f9b23410af
+same synthetic_stik_electric_4s/cut       ticks=960 49e47bb60b081fbd
+same synthetic_stik_electric_4s_battery   ticks=960 edfbf3c8fcbdd5af
+same synthetic_stik_electric_4s_battery/cut ticks=960 73d9e22c82d766d6
+same helicopter/airborne                  ticks=1200 6dd21915b882ddea
+same helicopter/airborne-hold             ticks=1200 89474c773d9962e3
+same helicopter/ground                    ticks=1200 c9f2661466e2cab9
+same ground-vehicle/default               ticks=960 0dd293ffa0a84119
+24/24 identical

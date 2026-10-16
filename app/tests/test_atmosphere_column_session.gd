@@ -46,9 +46,9 @@ func flight(path: String, config: Dictionary) -> Flight:
 	return s
 
 func _stage(s: Flight, body: PackedFloat64Array) -> Dictionary:
-	if s.sim.continuous_evaluate.is_valid():
-		return s.sim.continuous_evaluate.call(body, s.sim.continuous, 0.0)
-	return {loads = s.sim.loads.call(body, 0.0)}
+	if s.sim.model.stage.is_valid():
+		return s.sim.model.stage.call(body, s.sim.continuous, 0.0)
+	return {loads = s.sim.model.loads.call(body, 0.0)}
 
 func _near(a: PackedFloat64Array, b: PackedFloat64Array) -> bool:
 	if a.size() != b.size(): return false

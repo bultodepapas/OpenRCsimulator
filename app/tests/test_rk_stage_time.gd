@@ -60,10 +60,10 @@ func _sampling_and_faults() -> void:
 		var seen: Array[float] = []
 		var sampled: Array[float] = []
 		var input_samples: Array[float] = []
-		sim.pre_step = func(a: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
+		sim.model.pre_tick = func(a: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
 			a[0] += 1.0
 			return a
-		sim.loads = func(_s: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
+		sim.model.loads = func(_s: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
 			seen.append(stage_t)
 			sampled.append(sim.aux[0])
 			input_samples.append(sim.inputs[0])
@@ -97,7 +97,7 @@ func _coupled_error(hz: int) -> float:
 	var sim := Sim.new()
 	sim.gravity = 0.0
 	# Unit-mass x'' = x + t; x(0)=v(0)=0. Exact x=sinh(t)-t, v=cosh(t)-1.
-	sim.loads = func(s: PackedFloat64Array, t: float) -> PackedFloat64Array:
+	sim.model.loads = func(s: PackedFloat64Array, t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([s[RB.POS] + t, 0, 0, 0, 0, 0])
 	sim.reset(_initial())
 	for tick in hz:

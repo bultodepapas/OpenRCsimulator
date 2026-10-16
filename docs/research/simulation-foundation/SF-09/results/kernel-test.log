@@ -1,0 +1,8 @@
+ok   cart–pendulum energy drifts below 1e-10 J over ten seconds 1.2301271112846734e-13 J
+ok   at least five downward crossings observed in ten seconds (period 1.6 s) 6
+ok   small-amplitude period matches ω² = g (M + m) / (M l) within 1e-4 1.605147 s vs 1.605127 s
+ok   horizontal momentum is conserved through a large swing within RK4 truncation (1e-7 kg·m/s) 1.7770465099431476e-09
+ok   block factorization agrees with the dense inverse and satisfies M·a = rhs (20 random sizes 7…14) within 1e-9 3.552713678800501e-15
+ok   a zero local mass is refused 
+ok   point-mass assembly reproduces m·JᵀJ exactly and symmetrically 0
+7 checks, 0 failed

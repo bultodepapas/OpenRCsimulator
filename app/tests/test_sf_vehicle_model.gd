@@ -64,14 +64,13 @@ func _kernel_installation() -> void:
 	bad.input_size = 0
 	_check("set_model refuses an invalid model and keeps the current one", not sim.set_model(bad) and sim.model == good)
 	_check("set_model refuses a non-model object", not sim.set_model(RefCounted.new()) and sim.model == good)
-	# Compatibility properties forward to the installed model under their pre-SF-01 names.
-	var marker := func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array: return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-	sim.loads = marker
-	sim.input_size = 6
-	sim.set("continuous_step", Callable())
-	_check("sim.loads forwards to model.loads", good.loads == marker and sim.loads == marker)
-	_check("sim.input_size forwards to model.input_size", good.input_size == 6 and sim.input_size == 6)
-	_check("Object.set on a compatibility property reaches the model", not good.step_policy.is_valid())
+	# SF-03 alias cleanup: the pre-SF-01 per-callback properties are gone; evaluators live only on `model`.
+	var retired: bool = true
+	for legacy: String in ["loads", "input_size", "pre_step", "post_step", "post_step_joint", "rotor_momentum",
+			"continuous_loads", "continuous_derivative", "continuous_evaluate", "continuous_rotor_momentum",
+			"continuous_aux", "continuous_step"]:
+		retired = retired and sim.get(legacy) == null
+	_check("kernel exposes no compatibility properties", retired)
 	# Five inputs and a zero-load model: free fall, w = g·t exactly for RK4 on a constant derivative.
 	good.input_size = 5
 	sim.inputs = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0])

@@ -80,12 +80,12 @@ func _conservation() -> void:
 	sim.gravity = 0.0
 	sim.inertia = PackedFloat64Array(J)
 	sim.continuous = PackedFloat64Array([5.0, 0.0]) # relative rad/s and accumulated motor work (J)
-	sim.continuous_loads = func(s: PackedFloat64Array, z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.block_loads = func(s: PackedFloat64Array, z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		var result: Dictionary = response(s, z, M.v3(0.0, 0.0, 0.0))
 		return PackedFloat64Array([0.0, 0.0, 0.0, result.reaction[0], result.reaction[1], result.reaction[2]])
-	sim.continuous_rotor_momentum = func(_s: PackedFloat64Array, z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.stage_rotor_momentum = func(_s: PackedFloat64Array, z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return M.scale(axis(), I * z[0])
-	sim.continuous_derivative = func(s: PackedFloat64Array, z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.block_derivative = func(s: PackedFloat64Array, z: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([response(s, z, M.v3(0.0, 0.0, 0.0)).spin_acceleration, Q * z[0]])
 	var initial: PackedFloat64Array = RB.make_state(M.v3(0.0, 0.0, 0.0), M.v3(0.0, 0.0, 0.0), M.q_identity(), M.v3(0.2, -0.15, 0.12))
 	check("free internal-motor fixture resets", sim.reset(initial))

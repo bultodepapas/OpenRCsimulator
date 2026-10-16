@@ -158,9 +158,9 @@ func _test_checkpoint_pause_and_fault(engine: String) -> void:
 	for _tick: int in 8:
 		fault_sim.step()
 	var before_fault: Dictionary = fault_sim.checkpoint()
-	var original_evaluate: Callable = fault_sim.continuous_evaluate
+	var original_evaluate: Callable = fault_sim.model.stage
 	var evaluate_calls: Array[int] = [0]
-	fault_sim.continuous_evaluate = func(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
+	fault_sim.model.stage = func(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
 		evaluate_calls[0] += 1
 		if evaluate_calls[0] == 3:
 			return {}
@@ -254,9 +254,9 @@ func _new_sim(engine: String, hz: int) -> Node:
 	sim.continuous = PackedFloat64Array([5000.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	sim.aux = PackedFloat64Array([5000.0])
 	sim.modes = PackedInt64Array([1])
-	sim.continuous_aux = func(values: PackedFloat64Array, _sampled_aux: PackedFloat64Array) -> PackedFloat64Array:
+	sim.model.block_aux = func(values: PackedFloat64Array, _sampled_aux: PackedFloat64Array) -> PackedFloat64Array:
 		return PackedFloat64Array([values[0]])
-	sim.continuous_evaluate = func(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
+	sim.model.stage = func(body: PackedFloat64Array, values: PackedFloat64Array, time_s: float) -> Dictionary:
 		var point: Dictionary = _evaluate_point(engine, body, values, time_s, parameters, prop)
 		if not point.get("ok", false):
 			return {}

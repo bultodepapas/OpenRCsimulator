@@ -52,7 +52,7 @@ func _drop(model: Dictionary, alt: float, seconds: float, normal_only := false) 
 	var sim: Node = Sim.new()
 	sim.mass = model.mass_kg
 	sim.inertia = model.inertia.duplicate()
-	sim.loads = func(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	sim.model.loads = func(s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		var g := Ground.loads(s, gear)
 		return g if not g.is_empty() else PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	sim.reset(_level(alt))

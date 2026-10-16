@@ -38,6 +38,14 @@ def _capabilities(gear: str, layout: str, energy: str) -> dict[str, str]:
     }
 
 
+# A v2 source that declares simulated flaps carries at least these fields.
+FLAPS_REQUIRED = frozenset({
+    "max_angle_deg", "takeoff_angle_deg", "inner_span_m", "outer_span_m", "hinge_fraction",
+    "extension_time", "retraction_time", "max_speed_mps", "elevator_mix_per_flap_fraction",
+    "effective_angle_limit_deg", "profile_drag_coefficient", "aerodynamic_gain",
+})
+
+
 # These policies apply only to existing, reviewed configurations. The names
 # deliberately describe simulated configuration, not all physical hardware.
 POLICIES: dict[str, dict[str, Any]] = {
@@ -213,36 +221,19 @@ def _check_v2(data: dict[str, Any], policy: dict[str, Any]) -> None:
         if not isinstance(contacts, list) or len(contacts) != 3 or any(not isinstance(c, dict) or not isinstance(c.get("retraction_path"), dict) for c in contacts):
             raise ValueError("AV-09 requires three declared retraction contact paths")
         expected_capabilities["gear"] = "retractable_tricycle"
-    # AV-09 extends the current Avanti source with a complete flap module.
-    # Historical v1 migration still defaults to not_simulated; this exception
-    # only keeps a reviewed v2 source with explicit flap data idempotent.
-    if data.get("id") == "sebart-avanti-s-a200-p100rx" and data.get("capabilities", {}).get("flaps") == "simulated":
+    # AV-09 extended the Avanti and the P-51 flap probe extended the P-51 with a
+    # complete flap module. Historical v1 migration still defaults to
+    # not_simulated; this exception only keeps a reviewed v2 source with explicit
+    # flap data idempotent. The module may carry further reviewed fields (the
+    # P-51 adds lift_reference_offset_m and stall_shift_fraction); the schema
+    # owns the allowed keys, this check owns completeness.
+    if data.get("capabilities", {}).get("flaps") == "simulated":
         flaps = _require_dict(data, "flaps", "flaps")
-        required = {
-            "max_angle_deg", "takeoff_angle_deg", "inner_span_m", "outer_span_m", "hinge_fraction",
-            "extension_time", "retraction_time", "max_speed_mps", "elevator_mix_per_flap_fraction",
-            "effective_angle_limit_deg", "profile_drag_coefficient", "aerodynamic_gain",
-        }
-        if set(flaps) != required:
-            raise ValueError("AV-09 requires its complete flaps module")
+        if not FLAPS_REQUIRED <= set(flaps):
+            raise ValueError(f"{data.get('id')}: a simulated flaps capability requires the complete flaps module")
         expected_capabilities["flaps"] = "simulated"
-    elif data.get("id") == "sebart-avanti-s-a200-p100rx" and "flaps" in data:
-        raise ValueError("AV-09 flaps data requires the simulated capability")
-    # P51-11a/b extend the P-51 source with a complete flap module (the shared law plus its two optional refinements)
-    # and retractable taildragger gear. As for AV-09, only a reviewed, complete v2 module is accepted.
-    if data.get("id") == "p51d-mustang-120" and data.get("capabilities", {}).get("flaps") == "simulated":
-        flaps = _require_dict(data, "flaps", "flaps")
-        required = {
-            "max_angle_deg", "takeoff_angle_deg", "inner_span_m", "outer_span_m", "hinge_fraction",
-            "extension_time", "retraction_time", "max_speed_mps", "elevator_mix_per_flap_fraction",
-            "effective_angle_limit_deg", "profile_drag_coefficient", "aerodynamic_gain",
-            "stall_shift_fraction", "lift_reference_offset_m",
-        }
-        if set(flaps) != required:
-            raise ValueError("P51-11a requires its complete flaps module")
-        expected_capabilities["flaps"] = "simulated"
-    elif data.get("id") == "p51d-mustang-120" and "flaps" in data:
-        raise ValueError("P51-11a flaps data requires the simulated capability")
+    elif "flaps" in data:
+        raise ValueError(f"{data.get('id')}: flaps data requires the simulated capability")
     if data.get("id") == "p51d-mustang-120" and data.get("capabilities", {}).get("gear") == "retractable_taildragger":
         gear = _require_dict(data, "landing_gear", "landing_gear")
         retraction = _require_dict(gear, "retraction", "landing_gear.retraction")

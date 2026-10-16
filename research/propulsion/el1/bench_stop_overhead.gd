@@ -53,7 +53,7 @@ func benchmark(coast: bool) -> void:
 		print("RESULT direct restore_failed")
 		tracked.free(); direct.free()
 		return
-	direct.sim.continuous_step = Callable() # ordinary coupled RK4; same stage function and initial derivative
+	direct.sim.model.step_policy = Callable() # ordinary coupled RK4; same stage function and initial derivative
 	var event_times: Array[float] = []
 	var direct_times: Array[float] = []
 	var exact: bool = true
@@ -63,7 +63,7 @@ func benchmark(coast: bool) -> void:
 			failures += 1
 			print("RESULT restore_failed batch=", batch)
 			break
-		direct.sim.continuous_step = Callable()
+		direct.sim.model.step_policy = Callable()
 		var first_direct: bool = batch % 2 == 1
 		if first_direct:
 			var before_direct: int = Time.get_ticks_usec()

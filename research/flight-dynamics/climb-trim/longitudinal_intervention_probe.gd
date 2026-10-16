@@ -215,7 +215,7 @@ func _run_case(case_name: String, mode: String, tick_rate: int, duration_s: floa
 	}
 	_install_stage_observer(session, mode == "projected_longitudinal")
 	if mode == "projected_longitudinal":
-		session.sim.continuous_step = func(s: PackedFloat64Array, t: float, dt: float, f: Callable, _k1: PackedFloat64Array) -> PackedFloat64Array:
+		session.sim.model.step_policy = func(s: PackedFloat64Array, t: float, dt: float, f: Callable, _k1: PackedFloat64Array) -> PackedFloat64Array:
 			return _projected_rk4_step(s, t, dt, f)
 
 	var history_end_tick := int(round(HISTORY_SECONDS * float(tick_rate)))
@@ -389,9 +389,9 @@ func _run_case(case_name: String, mode: String, tick_rate: int, duration_s: floa
 
 func _install_stage_observer(session: Node, project_lateral: bool) -> void:
 	var sim = session.sim
-	if sim.continuous_evaluate.is_valid():
-		var original_joint: Callable = sim.continuous_evaluate
-		sim.continuous_evaluate = func(s: PackedFloat64Array, continuous: PackedFloat64Array, stage_t: float) -> Dictionary:
+	if sim.model.stage.is_valid():
+		var original_joint: Callable = sim.model.stage
+		sim.model.stage = func(s: PackedFloat64Array, continuous: PackedFloat64Array, stage_t: float) -> Dictionary:
 			var candidate: Dictionary = original_joint.call(s, continuous, stage_t)
 			if not candidate.has("loads") or not candidate.loads is PackedFloat64Array or candidate.loads.size() != 6:
 				return candidate
@@ -406,17 +406,17 @@ func _install_stage_observer(session: Node, project_lateral: bool) -> void:
 			projected.loads = stage_loads
 			return projected
 		return
-	if sim.continuous_loads.is_valid():
-		var original_continuous_loads: Callable = sim.continuous_loads
-		sim.continuous_loads = func(s: PackedFloat64Array, continuous: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
+	if sim.model.block_loads.is_valid():
+		var original_continuous_loads: Callable = sim.model.block_loads
+		sim.model.block_loads = func(s: PackedFloat64Array, continuous: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
 			var stage_loads: PackedFloat64Array = original_continuous_loads.call(s, continuous, stage_t)
 			_record_stage(session, s, stage_t, stage_loads)
 			if project_lateral and stage_loads.size() == 6:
 				_project_lateral_loads(stage_loads)
 			return stage_loads
 		return
-	var original_loads: Callable = sim.loads
-	sim.loads = func(s: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
+	var original_loads: Callable = sim.model.loads
+	sim.model.loads = func(s: PackedFloat64Array, stage_t: float) -> PackedFloat64Array:
 		var stage_loads: PackedFloat64Array = original_loads.call(s, stage_t)
 		_record_stage(session, s, stage_t, stage_loads)
 		if project_lateral and stage_loads.size() == 6:

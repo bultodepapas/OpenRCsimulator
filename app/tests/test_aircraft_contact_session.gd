@@ -33,15 +33,15 @@ func _session(soft := false) -> Node:
 	s.soft_hull_contacts = soft
 	s.setup()
 	s.sim.continuous = PackedFloat64Array()
-	for field: String in ["continuous_step", "continuous_evaluate", "continuous_loads",
-		"continuous_derivative", "continuous_rotor_momentum", "continuous_aux"]:
-		s.sim.set(field, Callable())
+	for field: String in ["step_policy", "stage", "block_loads", "block_derivative",
+		"stage_rotor_momentum", "block_aux"]:
+		s.sim.model.set(field, Callable())
 	s.sim.gravity = 0.0
-	s.sim.loads = func(_body: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	s.sim.model.loads = func(_body: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([0, 0, 0, 0, 0, 0])
-	s.sim.pre_step = func(aux: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
+	s.sim.model.pre_tick = func(aux: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array:
 		return aux
-	s.sim.rotor_momentum = func(_aux: PackedFloat64Array) -> PackedFloat64Array:
+	s.sim.model.rotor_momentum = func(_aux: PackedFloat64Array) -> PackedFloat64Array:
 		return PackedFloat64Array()
 	return s
 
@@ -167,7 +167,7 @@ func _rejected_collision() -> void:
 	s.contact_events_changed.connect(func() -> void: published[0] += 1)
 	var before := var_to_bytes(s.contact_events())
 	var state: PackedByteArray = s.sim.state.to_byte_array()
-	s.sim.post_step = func(previous: PackedFloat64Array, candidate: PackedFloat64Array, tick: int) -> PackedFloat64Array:
+	s.sim.model.post_tick = func(previous: PackedFloat64Array, candidate: PackedFloat64Array, tick: int) -> PackedFloat64Array:
 		s._resolve_collision_step(previous, candidate, tick)
 		check("candidate crash is still private", s.crash.is_empty() and s.last_scenery_event() == null)
 		return PackedFloat64Array([NAN])
@@ -210,17 +210,17 @@ func _strike_checkpoint() -> void:
 func _rejected_projection() -> void:
 	var s := _session()
 	s.sim.continuous = PackedFloat64Array([0.0])
-	s.sim.continuous_loads = func(_body: PackedFloat64Array, _extra: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	s.sim.model.block_loads = func(_body: PackedFloat64Array, _extra: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([0, 0, 0, 0, 0, 0])
-	s.sim.continuous_derivative = func(_body: PackedFloat64Array, _extra: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+	s.sim.model.block_derivative = func(_body: PackedFloat64Array, _extra: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 		return PackedFloat64Array([0.0])
-	s.sim.continuous_aux = func(_extra: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
+	s.sim.model.block_aux = func(_extra: PackedFloat64Array, aux: PackedFloat64Array) -> PackedFloat64Array:
 		return aux
 	_install_obstacle(s)
 	var before := var_to_bytes(s.contact_events())
 	var before_body: PackedByteArray = s.sim.state.to_byte_array()
 	# Fail after the valid swept collision, at the final projection before commit.
-	s.sim.continuous_aux = func(_extra: PackedFloat64Array, _aux: PackedFloat64Array) -> PackedFloat64Array:
+	s.sim.model.block_aux = func(_extra: PackedFloat64Array, _aux: PackedFloat64Array) -> PackedFloat64Array:
 		return PackedFloat64Array()
 	s.sim.step()
 	check("projection failure rolls back the valid contact body", s.sim.tick == 0
@@ -261,7 +261,7 @@ func _water_transaction() -> void:
 		check("water fixture resets", s.sim.reset(body))
 		var before := var_to_bytes(s.contact_events())
 		if reject:
-			s.sim.post_step = func(previous: PackedFloat64Array, candidate: PackedFloat64Array, tick: int) -> PackedFloat64Array:
+			s.sim.model.post_tick = func(previous: PackedFloat64Array, candidate: PackedFloat64Array, tick: int) -> PackedFloat64Array:
 				s._resolve_collision_step(previous, candidate, tick)
 				check("water stop stays inside transaction", not s.engine_running and s.crash.is_empty()
 					and s.last_lake_event() == null)

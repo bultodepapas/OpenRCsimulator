@@ -6,12 +6,12 @@ const Catalog: Script = preload("res://app_state/aircraft_catalog.gd")
 const Propulsion: Script = preload("res://physics/propulsion.gd")
 
 const CALLBACK_FIELDS: PackedStringArray = [
-	"continuous_step",
-	"continuous_evaluate",
-	"continuous_loads",
-	"continuous_derivative",
-	"continuous_rotor_momentum",
-	"continuous_aux",
+	"step_policy",
+	"stage",
+	"block_loads",
+	"block_derivative",
+	"stage_rotor_momentum",
+	"block_aux",
 ]
 
 const AVANTI_PATH: String = "res://data/aircraft/sebart_avanti_s_a200.json"
@@ -163,12 +163,12 @@ func _check_callback_set(label: String, flight: Node, prepared: Dictionary) -> v
 	var sim: Node = flight.sim
 	for field: String in CALLBACK_FIELDS:
 		_check(label + " callback matches current FlightSession route: " + field,
-			prepared.has(field) and prepared[field] == sim.get(field))
+			prepared.has(field) and prepared[field] == sim.model.get(field))
 
 
 func _install_callbacks(flight: Node, prepared: Dictionary) -> void:
 	for field: String in CALLBACK_FIELDS:
-		flight.sim.set(field, prepared.get(field, Callable()))
+		flight.sim.model.set(field, prepared.get(field, Callable()))
 
 
 func _check_observation(label: String, flight: Node, observed: Dictionary) -> void:
@@ -271,8 +271,8 @@ func _test_preparation_before_endpoint_state() -> void:
 	_check("uninitialized session probe prepares callbacks without a trace snapshot",
 		blank_result.get("ok", false) and blank_probe.trace_meta_calls == 0)
 	_check("preparation binds the selected coupled route",
-		blank_result.get("continuous_evaluate") == Callable(blank_probe, "_coupled_evaluate")
-		and blank_result.get("continuous_rotor_momentum") == Callable(blank_probe, "_coupled_rotor"))
+		blank_result.get("stage") == Callable(blank_probe, "_coupled_evaluate")
+		and blank_result.get("stage_rotor_momentum") == Callable(blank_probe, "_coupled_rotor"))
 	blank_probe.sim.free()
 	blank_probe.free()
 

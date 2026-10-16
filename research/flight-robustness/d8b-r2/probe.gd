@@ -52,7 +52,7 @@ func trial(speed: float, variant: String, hz: int) -> void:
 			exact[12] = 0.0
 			session.sim.reset(exact)
 	if variant == "no_gyro":
-		session.sim.rotor_momentum = func(_a: PackedFloat64Array) -> PackedFloat64Array: return M.v3(0, 0, 0)
+		session.sim.model.rotor_momentum = func(_a: PackedFloat64Array) -> PackedFloat64Array: return M.v3(0, 0, 0)
 	if variant == "keyboard":
 		session.input_enabled = true
 		session.radio.connected = false

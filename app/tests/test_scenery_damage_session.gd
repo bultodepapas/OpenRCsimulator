@@ -79,20 +79,20 @@ func _new_session(world: Dictionary) -> Session:
 func _prepare_direct_step(session: Session, project_continuous: bool = false) -> PackedFloat64Array:
 	session.aircraft.model.crash_hull = PackedFloat64Array([0.0, 0.0, 0.0])
 	session.sim.gravity = 0.0
-	session.sim.loads = func(_state: PackedFloat64Array, _time_s: float) -> PackedFloat64Array:
+	session.sim.model.loads = func(_state: PackedFloat64Array, _time_s: float) -> PackedFloat64Array:
 		return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	if project_continuous:
 		session.sim.continuous = PackedFloat64Array([0.0])
-		session.sim.continuous_evaluate = Callable()
-		session.sim.continuous_step = Callable()
-		session.sim.continuous_rotor_momentum = Callable()
-		session.sim.continuous_loads = func(_state: PackedFloat64Array, _extra: PackedFloat64Array,
+		session.sim.model.stage = Callable()
+		session.sim.model.step_policy = Callable()
+		session.sim.model.stage_rotor_momentum = Callable()
+		session.sim.model.block_loads = func(_state: PackedFloat64Array, _extra: PackedFloat64Array,
 				_time_s: float) -> PackedFloat64Array:
 			return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
-		session.sim.continuous_derivative = func(_state: PackedFloat64Array, _extra: PackedFloat64Array,
+		session.sim.model.block_derivative = func(_state: PackedFloat64Array, _extra: PackedFloat64Array,
 				_time_s: float) -> PackedFloat64Array:
 			return PackedFloat64Array([0.0])
-		session.sim.continuous_aux = func(_extra: PackedFloat64Array, sampled: PackedFloat64Array) -> PackedFloat64Array:
+		session.sim.model.block_aux = func(_extra: PackedFloat64Array, sampled: PackedFloat64Array) -> PackedFloat64Array:
 			return sampled
 	var initial := PackedFloat64Array()
 	initial.resize(RB.SIZE)
@@ -102,8 +102,8 @@ func _prepare_direct_step(session: Session, project_continuous: bool = false) ->
 	var reset_ok: bool = session.sim.reset(initial)
 	_check("test state reset succeeds", reset_ok, str(session.sim.fault_reason))
 	if project_continuous:
-		# Reset accepts the projection; this fails only after post_step stages a scenery hit.
-		session.sim.continuous_aux = func(_extra: PackedFloat64Array, _sampled: PackedFloat64Array) -> PackedFloat64Array:
+		# Reset accepts the projection; this fails only after post_tick stages a scenery hit.
+		session.sim.model.block_aux = func(_extra: PackedFloat64Array, _sampled: PackedFloat64Array) -> PackedFloat64Array:
 			return PackedFloat64Array()
 	session.sim.set_paused(false)
 	return initial

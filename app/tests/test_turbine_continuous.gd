@@ -127,8 +127,8 @@ func _analytic(hz: int) -> PackedFloat64Array:
 	f.sim.aux[0] = n0
 	f.sim.continuous[0] = n0
 	f.sim.gravity = 0.0
-	var native: Callable = f.sim.continuous_evaluate
-	f.sim.continuous_evaluate = func(s: PackedFloat64Array, c: PackedFloat64Array, t: float) -> Dictionary:
+	var native: Callable = f.sim.model.stage
+	f.sim.model.stage = func(s: PackedFloat64Array, c: PackedFloat64Array, t: float) -> Dictionary:
 		var result: Dictionary = native.call(s, c, t)
 		if result.is_empty():
 			return result
@@ -184,16 +184,16 @@ func _lifecycle() -> void:
 	f.release("test")
 	f.reset()
 	var before: PackedByteArray = _bits(f.sim)
-	var native: Callable = f.sim.continuous_evaluate
+	var native: Callable = f.sim.model.stage
 	var fault_at: float = f.sim.time() + f.sim.dt() / 2.0
-	f.sim.continuous_evaluate = func(s: PackedFloat64Array, c: PackedFloat64Array, t: float) -> Dictionary:
+	f.sim.model.stage = func(s: PackedFloat64Array, c: PackedFloat64Array, t: float) -> Dictionary:
 		var result: Dictionary = native.call(s, c, t)
 		if t >= fault_at:
 			result.derivative[0] = NAN
 		return result
 	f.sim.step()
 	_check("failed RK stage rolls back complete turbine/body transaction", not f.sim.fault_reason.is_empty() and _bits(f.sim) == before)
-	f.sim.continuous_evaluate = native
+	f.sim.model.stage = native
 	f.reset()
 	_check("explicit reset clears fault and rebuilds settled RPM", f.sim.fault_reason.is_empty()
 		and f.sim.continuous[0] == f.start.rpm and f.sim.aux[0] == f.start.rpm)

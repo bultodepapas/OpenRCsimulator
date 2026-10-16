@@ -11,6 +11,7 @@ const HX700 := preload("res://aircraft/hx700_model.gd")
 
 const STIK_ID := "jensen-das-ugly-stik-60"
 const EXTRA_ID := "gp-extra-300s-60"
+const AVANTI_ID := "sebart-avanti-s-a200-p100rx" # catalog ID; the jet is an imported V2 scene, built through its visual family
 const P51_ID := "p51d-mustang-120"
 const TIMBER_ID := "turbo-lumber-evolution"
 const STIK_GLOW_55AX_ID := "stik-glow-55ax-2t"

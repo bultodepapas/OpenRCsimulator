@@ -46,12 +46,12 @@ func configured(coupled: bool) -> Node:
 	sim.modes = PackedInt64Array([1, 7])
 	if coupled:
 		sim.continuous = PackedFloat64Array([0.0])
-		sim.continuous_loads = func(_body: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
+		sim.model.block_loads = func(_body: PackedFloat64Array, z: PackedFloat64Array, t: float) -> PackedFloat64Array:
 			return PackedFloat64Array([z[0] + t, 0, 0, 0, 0, 0])
-		sim.continuous_derivative = func(body: PackedFloat64Array, _z: PackedFloat64Array, t: float) -> PackedFloat64Array:
+		sim.model.block_derivative = func(body: PackedFloat64Array, _z: PackedFloat64Array, t: float) -> PackedFloat64Array:
 			return PackedFloat64Array([-body[RB.VEL] + t])
 	else:
-		sim.loads = func(_body: PackedFloat64Array, t: float) -> PackedFloat64Array:
+		sim.model.loads = func(_body: PackedFloat64Array, t: float) -> PackedFloat64Array:
 			return PackedFloat64Array([t, 0, 0, 0, 0, 0])
 	return sim
 

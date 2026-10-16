@@ -19,6 +19,7 @@ const Keyboard = preload("res://input/keyboard.gd")
 const RcInput = preload("res://input/rc_input.gd")
 const RcCalibration = preload("res://input/rc_calibration.gd")
 const WeatherField = preload("res://physics/wind_field.gd")
+const SimEnvironment = preload("res://sim/environment.gd")
 const GroundSurfaces = preload("res://physics/ground_surfaces.gd")
 const Terrain = preload("res://physics/ground_terrain.gd")
 signal resetting
@@ -50,7 +51,13 @@ var surface_error: String = ""
 var weather_error: String = ""
 var crash: Dictionary = {}
 var crash_auto_restart: bool = false
-var ground_surfaces: PackedFloat64Array = PackedFloat64Array()
+## SF-07: the environment contract (physical weather and the field's surfaces); the fields below are views of it.
+var environment: SimEnvironment = SimEnvironment.new()
+var ground_surfaces: PackedFloat64Array:
+ get:
+  return environment.surfaces
+ set(value):
+  environment.surfaces = value
 var flight_mode: String = "normal"
 var trainer_enabled: bool = true
 var zero_drive_hold: bool = false
@@ -64,7 +71,11 @@ var _field: Dictionary = {}
 var _collision_world: Dictionary = {}
 var _impact_geometry: Dictionary = {}
 var _ground_start: Dictionary = {}
-var _weather: RefCounted = WeatherField.new()
+var _weather: WeatherField:
+ get:
+  return environment.weather
+ set(value):
+  environment.weather = value
 var _start: PackedFloat64Array = PackedFloat64Array([12,4,-3])
 var _hover: Dictionary = {}
 var _trim: Dictionary = {}
@@ -254,7 +265,7 @@ func reset() -> bool:
   else:
    solved={ok=false,message=_ground_start.get("reason","") if not _ground_start.ok else pickup.reason}
  else:
-  var ground: float=Terrain.sample_validated(_start[0],_start[1],ground_surfaces)[0]
+  var ground: float=environment.terrain(_start[0],_start[1])[0]
   # Match trim to the same terrain sample used by each live RK stage, including hub offset.
   for iteration: int in 5:
    solved=Hover.solve_hover(aircraft.context,0.0,_start,wind_at(0.0),{"ground_height_up_m":ground})
@@ -319,11 +330,11 @@ func _hub_offset(state: PackedFloat64Array) -> PackedFloat64Array:
 
 func _ground_under_hub(state: PackedFloat64Array) -> float:
  var offset: PackedFloat64Array=_hub_offset(state)
- return Terrain.sample_validated(state[0]+offset[0],state[1]+offset[1],ground_surfaces)[0]
+ return environment.terrain(state[0]+offset[0],state[1]+offset[1])[0]
 
 func _height_over_radius(state: PackedFloat64Array) -> float:
  var offset: PackedFloat64Array=_hub_offset(state)
- var ground: float=Terrain.sample_validated(state[0]+offset[0],state[1]+offset[1],ground_surfaces)[0]
+ var ground: float=environment.terrain(state[0]+offset[0],state[1]+offset[1])[0]
  return (-state[2]-offset[2]-ground)/aircraft.context.main_model.rotor_radius_m
 
 func _ready() -> void:
@@ -387,7 +398,7 @@ func _on_stepped(_tick: int,_t: float,body: PackedFloat64Array,_loads: PackedFlo
   crash.time_s=sim.time()
   crash.shaft_phase=shaft_phase.duplicate()
   var point: PackedFloat64Array=crash.point_world_ned
-  var terrain: PackedFloat64Array=Terrain.sample_validated(point[0],point[1],ground_surfaces)
+  var terrain: PackedFloat64Array=environment.terrain(point[0],point[1])
   crash.ground_point_world_ned=PackedFloat64Array([point[0],point[1],-terrain[0]])
   var up: PackedFloat64Array=PackedFloat64Array([-terrain[1],-terrain[2],-1.0])
   crash.ground_normal_world_ned=M.scale(up,1.0/M.norm(up))
@@ -512,8 +523,8 @@ func controller_focus_lost() -> void:
   sim.set_paused(true)
   pause_reason="Focus lost. Release controls and review collective before continuing."
 
-func air_density() -> float: return _weather.air_density()
-func wind_at(t: float) -> PackedFloat64Array: return _weather.sample(t)
+func air_density() -> float: return environment.air_density()
+func wind_at(t: float) -> PackedFloat64Array: return environment.wind(t)
 func weather_configuration() -> Dictionary: return _weather.configuration()
 func collective_pitch(mode: String="") -> float:
  var model: Dictionary=aircraft.context.electronics_model

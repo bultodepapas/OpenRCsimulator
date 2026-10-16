@@ -33,7 +33,7 @@ func _initialize() -> void:
 	var initial_modes: PackedInt64Array = flight.sim.modes.duplicate()
 	var initial_loads: PackedFloat64Array = flight.sim.last_loads.duplicate()
 	var initial_tick: int = flight.sim.tick
-	var input_size_before: int = flight.sim.input_size
+	var input_size_before: int = flight.sim.model.input_size
 	var gear_is_retractable: bool = flight.gear_is_retractable()
 	_before_step_count = 0
 	flight.sim.before_step.connect(_on_before_step)
@@ -53,7 +53,7 @@ func _initialize() -> void:
 		"tick_after": flight.sim.tick,
 		"fault_reason": flight.sim.fault_reason,
 		"before_step_signal_count": _before_step_count,
-		"input_size_after": flight.sim.input_size,
+		"input_size_after": flight.sim.model.input_size,
 		"inputs_after_rollback": flight.sim.inputs,
 		"input_length_after_rollback": flight.sim.inputs.size(),
 		"state_unchanged": var_to_bytes(flight.sim.state) == var_to_bytes(initial_state),

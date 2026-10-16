@@ -235,7 +235,7 @@ func _make_sim(case_data: Dictionary) -> Node:
 	simulation.mass = case_data.mass
 	simulation.inertia = case_data.inertia.duplicate()
 	var gear: Dictionary = case_data.gear
-	simulation.loads = func(state: PackedFloat64Array, _time: float) -> PackedFloat64Array:
+	simulation.model.loads = func(state: PackedFloat64Array, _time: float) -> PackedFloat64Array:
 		var loads := Ground.loads(state, gear)
 		return loads if not loads.is_empty() else PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	return simulation

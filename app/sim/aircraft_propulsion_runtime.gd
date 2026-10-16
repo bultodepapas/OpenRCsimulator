@@ -5,13 +5,14 @@ const Turbine: Script = preload("res://physics/turbine.gd")
 const GlowFlight: Script = preload("res://physics/glow/flight.gd")
 const RB: Script = preload("res://physics/rigid_body.gd")
 
+## VehicleModel fields (sim/vehicle_model.gd) the fixed-wing propulsion route fills.
 const CALLBACK_FIELDS: PackedStringArray = [
-	"continuous_step",
-	"continuous_evaluate",
-	"continuous_loads",
-	"continuous_derivative",
-	"continuous_rotor_momentum",
-	"continuous_aux",
+	"step_policy",
+	"stage",
+	"block_loads",
+	"block_derivative",
+	"stage_rotor_momentum",
+	"block_aux",
 ]
 
 
@@ -29,13 +30,13 @@ static func prepare_callbacks(session: Node) -> Dictionary:
 
 	# Match FlightSession._configure_continuous_callbacks selection and early-return order.
 	if context.glow_active:
-		result.continuous_step = GlowFlight.step.bind(session)
-		result.continuous_evaluate = GlowFlight.evaluate.bind(session)
-		result.continuous_aux = Callable(session, "_coupled_aux")
+		result.step_policy = GlowFlight.step.bind(session)
+		result.stage = GlowFlight.evaluate.bind(session)
+		result.block_aux = Callable(session, "_coupled_aux")
 		return result
 	if context.turbine_continuous:
-		result.continuous_evaluate = Callable(session, "_turbine_evaluate")
-		result.continuous_aux = Callable(session, "_turbine_aux")
+		result.stage = Callable(session, "_turbine_evaluate")
+		result.block_aux = Callable(session, "_turbine_aux")
 		return result
 
 	var coupled: bool = bool(session.call("shaft_is_coupled"))
@@ -43,17 +44,17 @@ static func prepare_callbacks(session: Node) -> Dictionary:
 	if context.electric:
 		if context.family == "electric_finite_battery":
 			# Two composed boundaries (rotor stop inside battery exhaustion) keep their own policy.
-			result.continuous_step = Callable(session, "_electric_step")
+			result.step_policy = Callable(session, "_electric_step")
 		else:
 			# SF-04: the fixed-bus rotor stop is a declared kernel event, located by physics/event_step.gd.
 			declared_events.append({"type": "rotor_stop", "index": RB.SIZE + int(session.call("_rotor_index")),
 				"transition": Callable(session, "_project_electric_stop")})
-	result.continuous_evaluate = Callable(session, "_coupled_evaluate") if coupled else (
+	result.stage = Callable(session, "_coupled_evaluate") if coupled else (
 		Callable(session, "_wheel_evaluate") if has_wheels else Callable())
-	result.continuous_loads = Callable(session, "_coupled_loads") if coupled else Callable(session, "_wash_loads")
-	result.continuous_derivative = Callable(session, "_coupled_derivative") if coupled else Callable(session, "_wash_derivative")
-	result.continuous_rotor_momentum = Callable(session, "_coupled_rotor") if coupled else Callable()
-	result.continuous_aux = Callable(session, "_coupled_aux") if coupled else Callable()
+	result.block_loads = Callable(session, "_coupled_loads") if coupled else Callable(session, "_wash_loads")
+	result.block_derivative = Callable(session, "_coupled_derivative") if coupled else Callable(session, "_wash_derivative")
+	result.stage_rotor_momentum = Callable(session, "_coupled_rotor") if coupled else Callable()
+	result.block_aux = Callable(session, "_coupled_aux") if coupled else Callable()
 	return result
 
 

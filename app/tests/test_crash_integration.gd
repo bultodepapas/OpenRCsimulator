@@ -112,7 +112,7 @@ func _test_aircraft(aircraft_id: String) -> void:
 	session.sim.state = previous_state.duplicate()
 	session.sim.previous = previous_state.duplicate()
 	session.sim.set_paused(false)
-	# Exercise the accepted tick. Glow terminals are evaluated inside post_step_joint with the incoming
+	# Exercise the accepted tick. Glow terminals are evaluated inside post_tick_joint with the incoming
 	# live mass snapshot; other families classify the same accepted endpoint in FlightSession.
 	session.sim.step()
 	var accepted_checkpoint: Dictionary = session.sim.checkpoint()

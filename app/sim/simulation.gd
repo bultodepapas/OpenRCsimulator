@@ -2,8 +2,8 @@
 # Steps in _physics_process at the project's fixed tick (240 Hz), independent of rendering.
 # Rendering reads interpolated() with Engine.get_physics_interpolation_fraction().
 # SF-01: the kernel steps exactly one VehicleModel (sim/vehicle_model.gd): it declares the state layout and
-# supplies the read-only stage evaluators. The compatibility properties below forward to that model, so
-# sessions and tests that still configure callbacks one by one keep working until they install a model.
+# supplies the read-only stage evaluators. Sessions and tests configure evaluators only through `model`; the
+# pre-SF-01 per-callback properties were retired by the SF-03 alias cleanup.
 extends Node
 
 const M := preload("res://physics/math3d.gd")
@@ -47,69 +47,6 @@ var last_events: Array[Dictionary] = []
 const EVENT_TIME_SLACK_S := 1e-9
 ## SF-05: bound on a model's declared substeps per tick.
 const MAX_SUBSTEPS := 16
-
-## Compatibility properties (SF-01): each forwards to the installed model under its pre-SF-01 name.
-## New code sets `model` fields directly; these are retired once every caller installs a VehicleModel.
-var loads: Callable:
-	set(value):
-		model.loads = value
-	get:
-		return model.loads
-var input_size: int:
-	set(value):
-		model.input_size = value
-	get:
-		return model.input_size
-var pre_step: Callable:
-	set(value):
-		model.pre_tick = value
-	get:
-		return model.pre_tick
-var post_step: Callable:
-	set(value):
-		model.post_tick = value
-	get:
-		return model.post_tick
-var post_step_joint: Callable:
-	set(value):
-		model.post_tick_joint = value
-	get:
-		return model.post_tick_joint
-var rotor_momentum: Callable:
-	set(value):
-		model.rotor_momentum = value
-	get:
-		return model.rotor_momentum
-var continuous_loads: Callable:
-	set(value):
-		model.block_loads = value
-	get:
-		return model.block_loads
-var continuous_derivative: Callable:
-	set(value):
-		model.block_derivative = value
-	get:
-		return model.block_derivative
-var continuous_evaluate: Callable:
-	set(value):
-		model.stage = value
-	get:
-		return model.stage
-var continuous_rotor_momentum: Callable:
-	set(value):
-		model.stage_rotor_momentum = value
-	get:
-		return model.stage_rotor_momentum
-var continuous_aux: Callable:
-	set(value):
-		model.block_aux = value
-	get:
-		return model.block_aux
-var continuous_step: Callable:
-	set(value):
-		model.step_policy = value
-	get:
-		return model.step_policy
 
 var state := PackedFloat64Array()
 var previous := PackedFloat64Array()

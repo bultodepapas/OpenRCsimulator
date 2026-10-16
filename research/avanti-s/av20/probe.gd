@@ -73,15 +73,15 @@ func _bench(up: bool) -> Dictionary:
 	f.sim.aux[0] = n0
 	if not f.sim.continuous.is_empty():
 		f.sim.continuous[0] = n0
-		var native: Callable = f.sim.continuous_evaluate
-		f.sim.continuous_evaluate = func(s: PackedFloat64Array, c: PackedFloat64Array, t: float) -> Dictionary:
+		var native: Callable = f.sim.model.stage
+		f.sim.model.stage = func(s: PackedFloat64Array, c: PackedFloat64Array, t: float) -> Dictionary:
 			var result: Dictionary = native.call(s, c, t)
 			if not result.is_empty():
 				result.loads = PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 				result.rotor_momentum = PackedFloat64Array([0.0, 0.0, 0.0])
 			return result
 	else:
-		f.sim.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
+		f.sim.model.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array:
 			return PackedFloat64Array([0.0, 0.0, 0.0, 0.0, 0.0, 0.0])
 	f.sim.gravity = 0.0
 	var state := PackedFloat64Array([0.0, 0.0, -1000.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0])

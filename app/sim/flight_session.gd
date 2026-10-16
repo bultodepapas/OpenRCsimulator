@@ -50,7 +50,7 @@ func propulsion_power_enabled() -> bool:
 
 ## Training delay counts only accepted ticks at least five metres above local terrain and clear of the wheels.
 func _failure_airborne() -> bool:
-	var ground_up: float = GroundTerrain.sample_validated(sim.state[RB.POS], sim.state[RB.POS + 1], ground_surfaces)[0]
+	var ground_up: float = environment.terrain(sim.state[RB.POS], sim.state[RB.POS + 1])[0]
 	if -sim.state[RB.POS + 2] - ground_up < 5.0:
 		return false
 	for compression: float in gear_compressions(sim.state):
@@ -71,9 +71,17 @@ const ELECTRIC_LAW: String = "electric-fixed-bus-coupled-stop-v1"
 const ELECTRIC_MAX_STEP_RATIO: float = 0.25
 
 const WeatherField = preload("res://physics/wind_field.gd")
+const SimEnvironment := preload("res://sim/environment.gd")
 const Turbulence = preload("res://physics/wind_turbulence.gd")
 const WeatherConfig = preload("res://physics/wind_config.gd")
-var _weather: WeatherField = WeatherField.new()
+## SF-07: the environment contract this session consumes (physical weather, turbulence, field surfaces, lake).
+## The private fields below are views of it, so every existing consumer reads the same providers.
+var environment: SimEnvironment = SimEnvironment.new()
+var _weather: WeatherField:
+	get:
+		return environment.weather
+	set(value):
+		environment.weather = value
 var weather_error: String = ""
 var _trim_density: float = 1.225
 var _trim_charge: float = 1.0
@@ -250,11 +258,11 @@ func _atmosphere_down(s: PackedFloat64Array = PackedFloat64Array()) -> float:
 
 
 func environment_at(s: PackedFloat64Array) -> Dictionary:
-	return _weather.atmosphere(_atmosphere_down(s))
+	return environment.air(_atmosphere_down(s))
 
 
 func atmosphere_configuration(s: PackedFloat64Array = PackedFloat64Array()) -> Dictionary:
-	return _weather.atmosphere(_atmosphere_down(s))
+	return environment.air(_atmosphere_down(s))
 
 
 func atmosphere_is_reference() -> bool:
@@ -262,25 +270,28 @@ func atmosphere_is_reference() -> bool:
 
 
 func air_density(s: PackedFloat64Array = PackedFloat64Array()) -> float:
-	return _weather.air_density(_atmosphere_down(s))
+	return environment.air_density(_atmosphere_down(s))
 
 
 func engine_charge_ratio(s: PackedFloat64Array = PackedFloat64Array()) -> float:
-	return _weather.engine_charge_ratio(_atmosphere_down(s))
+	return environment.engine_charge_ratio(_atmosphere_down(s))
 
 
 func wind_at(time_s: float) -> PackedFloat64Array:
 	if _weather_pending_reset:
 		return M.v3(NAN, NAN, NAN)
-	var wind: PackedFloat64Array = _weather.sample(time_s)
-	if _weather.has_turbulence() and sim != null:
-		var index: int = _turbulence_aux_index
-		if index < AUX_ANCHORS or sim.aux.size() != index + 7:
-			return M.v3(NAN, NAN, NAN)
-		var noise: PackedFloat64Array = turbulence_at(sim.aux, index, time_s, sim.dt())
-		for axis: int in 3:
-			wind[axis] += noise[axis]
-	return wind
+	return environment.wind(time_s)
+
+
+## The owner's turbulence sample for the environment contract: empty without turbulence (nothing is added), a NAN
+## vector when the sampled state is malformed, otherwise the committed tick's interpolated noise.
+func _turbulence_noise(time_s: float) -> PackedFloat64Array:
+	if not _weather.has_turbulence() or sim == null:
+		return PackedFloat64Array()
+	var index: int = _turbulence_aux_index
+	if index < AUX_ANCHORS or sim.aux.size() != index + 7:
+		return M.v3(NAN, NAN, NAN)
+	return turbulence_at(sim.aux, index, time_s, sim.dt())
 
 
 ## Read-only interpolation of the committed tick's wind interval. No draws during RK/render/trace queries.
@@ -522,7 +533,11 @@ var input_enabled := true
 ## the simulation paused. Releasing the last hold does not resume: continuing stays the pilot's explicit resume().
 var holds := {}
 ## E3a: the field's surfaces as a flat table for the tyre forces (set_field); empty = dry pavement everywhere.
-var ground_surfaces := PackedFloat64Array()
+var ground_surfaces: PackedFloat64Array:
+	get:
+		return environment.surfaces
+	set(value):
+		environment.surfaces = value
 ## H2: last deflections built by _deflections() and the servo positions they belong to (cleared with each aircraft).
 var _deflection_key := PackedFloat64Array()
 var _deflection_cache := {}
@@ -535,7 +550,11 @@ var surface_error := ""
 var _collision_world: Dictionary = {}
 var _last_scenery_event: SceneryCollision.Event = null
 ## Accepted, normalized lake geometry for this session only; empty disables lake terrain and collision queries.
-var _lake: Dictionary = {}
+var _lake: Dictionary:
+	get:
+		return environment.lake
+	set(value):
+		environment.lake = value
 var _lake_bank_bounds: PackedFloat64Array = PackedFloat64Array()
 var _last_lake_event: LakeCollision.WaterEvent = null
 var _scenery_damage: Dictionary = {}
@@ -546,6 +565,7 @@ var physics_enabled := true
 
 
 func _init() -> void:
+	environment.turbulence = _turbulence_noise
 	process_physics_priority = -1 # lower runs first: shape this tick's commands before the simulation steps
 
 
@@ -824,8 +844,8 @@ func _sync_post_step() -> void:
 	if sim == null:
 		return
 	var dynamic_mass: bool = glow_is_active()
-	sim.post_step = Callable(self, "_resolve_collision_step") if _has_collision_query() and not dynamic_mass else Callable()
-	sim.post_step_joint = Callable(self, "_resolve_mass_contact_step") if dynamic_mass else Callable()
+	sim.model.post_tick = Callable(self, "_resolve_collision_step") if _has_collision_query() and not dynamic_mass else Callable()
+	sim.model.post_tick_joint = Callable(self, "_resolve_mass_contact_step") if dynamic_mass else Callable()
 
 
 func _prepare_hull_contact() -> Dictionary:
@@ -1073,7 +1093,7 @@ func _configure_continuous_callbacks() -> void:
 		push_error("Cannot prepare aircraft propulsion: " + str(prepared.get("errors", [])))
 		return
 	for field: String in PropulsionRuntime.CALLBACK_FIELDS:
-		sim.set(field, prepared[field])
+		sim.model.set(field, prepared[field])
 	var declared: Array[Dictionary] = []
 	for event: Variant in prepared.get("events", []):
 		declared.append(event)
@@ -3085,9 +3105,9 @@ func _wing_cl(s: PackedFloat64Array, aux: PackedFloat64Array, time_s: float = NA
 func _ground_up(s: PackedFloat64Array) -> float:
 	if _ground_effect_reach <= 0.0:
 		return NAN
-	if -s[RB.POS + 2] >= _ground_effect_reach + GroundTerrain.max_height_validated(ground_surfaces):
+	if -s[RB.POS + 2] >= _ground_effect_reach + environment.ground_max_height():
 		return NAN
-	return GroundTerrain.sample_validated(s[RB.POS], s[RB.POS + 1], ground_surfaces)[0]
+	return environment.terrain(s[RB.POS], s[RB.POS + 1])[0]
 
 
 ## Compatibility helper for tests/captures: one-shot runway start at (north, east), facing `heading` (rad, 0 = north).

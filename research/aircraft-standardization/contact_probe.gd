@@ -51,9 +51,9 @@ func _exercise(fixture: String) -> Dictionary:
 			for field: String in ["continuous_step", "continuous_evaluate", "continuous_loads", "continuous_derivative", "continuous_rotor_momentum", "continuous_aux"]:
 				f.sim.set(field, Callable())
 			f.sim.gravity = 0.0
-			f.sim.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array: return PackedFloat64Array([0, 0, 0, 0, 0, 0])
-			f.sim.pre_step = func(aux: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array: return aux
-			f.sim.rotor_momentum = func(_aux: PackedFloat64Array) -> PackedFloat64Array: return PackedFloat64Array()
+			f.sim.model.loads = func(_s: PackedFloat64Array, _t: float) -> PackedFloat64Array: return PackedFloat64Array([0, 0, 0, 0, 0, 0])
+			f.sim.model.pre_tick = func(aux: PackedFloat64Array, _inputs: PackedFloat64Array, _dt: float) -> PackedFloat64Array: return aux
+			f.sim.model.rotor_momentum = func(_aux: PackedFloat64Array) -> PackedFloat64Array: return PackedFloat64Array()
 			if fixture == "water":
 				f.set_lake_context(Lake.load_from("res://data/fields/lake.json").lake)
 				body = RB.make_state(M.v3(110, 125, -1), M.v3(0, 0, 480), M.quat(1, 0, 0, 0), M.v3(0, 0, 0))

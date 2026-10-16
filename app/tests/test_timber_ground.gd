@@ -176,7 +176,7 @@ func _taxi_turn(model: Dictionary, parked: PackedFloat64Array, steer: float) -> 
 	sim.mass = float(model.mass_kg)
 	sim.inertia = model.inertia.duplicate()
 	var gear: Dictionary = model.landing_gear
-	sim.loads = func(state: PackedFloat64Array, _time: float) -> PackedFloat64Array:
+	sim.model.loads = func(state: PackedFloat64Array, _time: float) -> PackedFloat64Array:
 		var loads: PackedFloat64Array = Ground.loads(state, gear, steer)
 		loads[0] += 20.0 * (1.0 - state[RB.VEL])
 		return loads
