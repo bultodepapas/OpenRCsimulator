@@ -60,6 +60,10 @@ Add a lesson when an observed failure or surprising result changes how a future 
 
 Put step status and next actions in the owning plan, measurements and reproduction details in the evidence report, architectural choices in [DECISIONS](DECISIONS.md), and shipped changes in release notes. Routine passes, test counts, machine inventories and generic advice do not need a learning entry. If a later experiment corrects a lesson, update the recommendation and link the correction rather than leaving contradictory advice.
 
+## 2026-10-16 · FT-01 — a scripted pilot must fly like a pilot before its numbers describe the airplane
+
+Building a generic flight-test card, most first failures were the pilot's, not the airplanes'. Coordinating to zero sideslip made the P-51's left and right turns differ by 17 % because the slipstream adds a side force at β = 0; centring the ball, as a pilot does, made them equal. A fixed sideslip gain diverged at high speed; integrators bounded inside a scheduled gain stopped short of the stick a hold needed; an attitude-holding inverted pilot stalled a cambered wing. Schedule gains with dynamic pressure, keep integrators in stick units, bound α near limits, judge saturation on the pilot's own commands (recorded command columns include trims) and report every test as valid only when its pilot met the card. Then a remaining failure is a finding: the card exposed that no propeller aircraft can knife-edge because the local model has no fuselage side force beyond the sideslip blend. [FT-01](docs/research/flight-test/FT-01/README.md)
+
 ## 2026-10-15 · SF-05 — substep with the full loads and the proof becomes bitwise
 
 Holding slow loads while substepping a stiff contact needs a splitting argument and a tolerance. Integrating full RK4 pieces of dt/n with the tick's inputs is exactly what a finer tick does, so the scheme is checked by byte equality against the 480 Hz run and refinement is measured against 960 Hz with no fitted budget. The cost is paid only while a stiff gear is within reach of the ground. [SF-05 evidence](docs/research/simulation-foundation/SF-05/README.md).

@@ -1,0 +1,1007 @@
+# FT-01: a generic flight-test card for any fixed-wing catalog aircraft, flown through the real session loop (servos,
+# aero, propulsion, slipstream, gear, field surfaces and crash checks). Each test starts from the session's own trimmed
+# airborne start or its qualified runway start, flies a closed-loop test pilot (pilot.gd), records a trace and derives
+# metrics. Every test reports whether its pilot did what the card asks (target reached, controls saturated, crash):
+# a failed pilot is reported as such, never as an airplane property. Software evidence, not physical validation.
+#
+# Run (repository root):
+#   <godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-test/flight_test.gd" -- \
+#       --aircraft=p51d-mustang-120 --out=tmp/flight-test [--only=vmax,roll] [--full-traces]
+# Writes <out>/<aircraft>/profile.json, profile.md and one 20 Hz CSV per flown test (--full-traces: every tick).
+extends SceneTree
+
+const FlightSession := preload("res://sim/flight_session.gd")
+const Recorder := preload("res://sim/recorder.gd")
+const Catalog := preload("res://app_state/aircraft_catalog.gd")
+const FieldLoader := preload("res://data/field_loader.gd")
+const Propulsion := preload("res://physics/propulsion.gd")
+const Ground := preload("res://physics/ground_contact.gd")
+const RB := preload("res://physics/rigid_body.gd")
+const P := preload("pilot.gd")
+
+const G := 9.80665
+const RHO := 1.225
+const VERSION := "ft-card-v1"
+const HIGH := 250.0 # m, airborne tests that may lose height
+const CSV_EVERY := 12 # 240 Hz ticks per committed CSV row (20 Hz)
+
+var session: Node
+var model: Dictionary
+var aircraft_id := ""
+var out_dir := ""
+var only: PackedStringArray = []
+var full_traces := false
+var v_start := 0.0
+var vs_estimate := 0.0
+var vs := 0.0 # measured power-off stall speed, else the CL_max estimate
+var vmax := 0.0 # measured full-throttle level speed, else the trim-sweep limit
+var a1 := 0.0 # solved stall start (rad)
+var n1 := 0.0 # solved negative stall start, magnitude (rad)
+var results := {}
+var order: Array[String] = []
+var _flight_notes: Array = [] # start substitutions and floor stops of the current test, merged into its notes
+const FLOOR := 60.0 # m: airborne tests stop here instead of flying into the ground
+
+
+func _initialize() -> void:
+	for arg in OS.get_cmdline_user_args():
+		if arg.begins_with("--aircraft="):
+			aircraft_id = arg.substr(11)
+		elif arg.begins_with("--out="):
+			out_dir = arg.substr(6)
+		elif arg.begins_with("--only="):
+			only = arg.substr(7).split(",")
+		elif arg == "--full-traces":
+			full_traces = true
+	if aircraft_id.is_empty() or out_dir.is_empty():
+		push_error("usage: -- --aircraft=<catalog id> --out=<dir>")
+		quit(2)
+		return
+	var entry: Dictionary = Catalog.entry(aircraft_id)
+	if entry.is_empty():
+		push_error("unknown catalog aircraft: " + aircraft_id)
+		quit(2)
+		return
+	session = FlightSession.new()
+	session.setup(entry.data)
+	root.add_child(session)
+	session.input_enabled = false
+	session.crash_auto_restart = false
+	var field: Dictionary = FieldLoader.load_from(FieldLoader.DEFAULT_PATH)
+	if not session.aircraft.get("ok", false) or not session.start.get("ok", false) or not session.set_field(field.get("field", field)):
+		push_error("session setup failed: %s %s" % [session.start.get("message", ""), session.surface_error])
+		quit(2)
+		return
+	if session._weather.has_turbulence():
+		push_error("flight tests need calm, steady weather")
+		quit(2)
+		return
+	model = session.aircraft.model
+	v_start = float(model.start_speed)
+	a1 = float(model.envelope.get("a1", deg_to_rad(12.0)))
+	n1 = float(model.envelope.get("n1", deg_to_rad(10.0)))
+	var cl_max: float = float(model.envelope.get("CL_max", 1.0))
+	vs_estimate = sqrt(2.0 * model.mass_kg * G / (RHO * float(model.reference.S) * cl_max))
+	vs = vs_estimate
+	vmax = 2.0 * v_start
+	out_dir = out_dir.path_join(aircraft_id)
+	DirAccess.make_dir_recursive_absolute(ProjectSettings.globalize_path(out_dir) if out_dir.begins_with("res://") or out_dir.begins_with("user://") else out_dir)
+	print("FT %s: %.2f kg, S %.3f m2, start %.1f m/s, CL_max %.2f -> Vs estimate %.1f m/s" % [aircraft_id, model.mass_kg, model.reference.S, v_start, cl_max, vs_estimate])
+	_run("trim_sweep", _trim_sweep)
+	_run("stall_power_off", _stall_power_off)
+	_run("vmax", _vmax)
+	_run("stall_power_on", _stall_power_on)
+	_run("throttle_response", _throttle_response)
+	_run("climb", _climb)
+	_run("glide", _glide)
+	_run("roll_rate", _roll_rate)
+	_run("pitch_pull", _pitch_pull)
+	_run("loop", _loop)
+	_run("turn_60", _turn_60)
+	_run("rudder_step", _rudder_step)
+	_run("knife_edge", _knife_edge)
+	_run("knife_edge_full_rudder", _knife_edge_full_rudder)
+	_run("inverted", _inverted)
+	_run("spin", _spin)
+	_run("takeoff", _takeoff)
+	_write_report()
+	quit(0)
+
+
+func _run(name: String, test: Callable) -> void:
+	if not only.is_empty() and not only.has(name):
+		return
+	var started := Time.get_ticks_msec()
+	_flight_notes = []
+	var r: Dictionary = test.call()
+	var notes: Array = r.get("notes", [])
+	for note in _flight_notes:
+		if not notes.has(note):
+			notes.append(note)
+	r.notes = notes
+	r.wall_s = (Time.get_ticks_msec() - started) / 1000.0
+	results[name] = r
+	order.append(name)
+	print("FT %-24s %s %s" % [name, "valid" if r.get("valid", false) else "INVALID", JSON.stringify(r.get("metrics", {}))])
+	for note in r.get("notes", []):
+		print("   note: " + str(note))
+
+
+# --- Flying -------------------------------------------------------------------------------------------------------
+
+## Starts from the session's trimmed airborne start at `speed` and `altitude`, or its runway start, then calls
+## pilot(t, s, ctx) -> { roll, pitch, yaw (sticks added to the trims), throttle (absolute) } every tick until `seconds`
+## or stop(t, s, ctx). Returns { trace, crashed, ctx, ok, message, dt, t_end }.
+func _fly(name: String, start: Dictionary, seconds: float, pilot: Callable, stop := Callable()) -> Dictionary:
+	var runway: bool = start.get("runway", false)
+	if runway:
+		session.start_choice = FlightSession.START_RUNWAY
+	else:
+		session.start_choice = FlightSession.START_AIRBORNE
+		# A trim that fails at the requested speed starts at the nearest faster trimmable one, and says so.
+		var speed: float = start.speed
+		var trim: Dictionary = session.trim_at(speed, "level")
+		while not trim.ok and speed < maxf(1.6 * float(start.speed), v_start):
+			speed *= 1.05
+			trim = session.trim_at(speed, "level")
+		if not trim.ok:
+			return { ok = false, message = "trim at %.1f m/s failed: %s" % [start.speed, trim.message] }
+		if speed != start.speed:
+			_note("%s: no trim at %.1f m/s, started at %.1f m/s" % [name, start.speed, speed])
+		session.set_start_altitude(start.get("altitude", HIGH))
+	session.reset()
+	if not session.is_flyable() or not session.sim.fault_reason.is_empty() or not session.start_error.is_empty():
+		return { ok = false, message = "start failed: %s %s %s" % [session.start_error, session.pause_reason, session.sim.fault_reason] }
+	if runway and session.glow_is_active() and not session.engine_running and not session.glow_start():
+		return { ok = false, message = "glow engine did not start on the runway" }
+	var sim: Node = session.sim
+	var rec := Recorder.new(sim, session.electrical_state)
+	var metadata: Dictionary = { flight_test = VERSION, test = name, aircraft = aircraft_id }
+	if session.electrical_state().get("ok", false) or session.flaps_available() or session.gear_is_retractable():
+		metadata = session.trace_meta()
+		metadata.flight_test = VERSION
+		metadata.test = name
+	rec.start(metadata)
+	var ctx := { start_throttle = float(session.start.get("throttle", 0.0)) }
+	var crashed := ""
+	var dt: float = sim.dt()
+	var t := 0.0
+	for k in roundi(seconds / dt):
+		t = k * dt
+		var s: PackedFloat64Array = sim.state
+		ctx.ay = sim.last_loads[1] / (model.mass_kg * G) if sim.last_loads.size() >= 2 else 0.0
+		var c: Dictionary = pilot.call(t, s, ctx)
+		for axis in ["roll", "pitch", "yaw"]:
+			var raw: PackedFloat64Array = ctx.get("raw_" + axis, PackedFloat64Array())
+			raw.append(clampf(c.get(axis, 0.0), -1.0, 1.0))
+			ctx["raw_" + axis] = raw
+		session.commands = { roll = clampf(c.get("roll", 0.0), -1.0, 1.0), pitch = clampf(c.get("pitch", 0.0), -1.0, 1.0),
+			yaw = clampf(c.get("yaw", 0.0), -1.0, 1.0), throttle = clampf(c.get("throttle", ctx.start_throttle), 0.0, 1.0) }
+		sim.inputs = session._inputs()
+		session._physics_process(dt)
+		if not session.crash.is_empty():
+			crashed = str(session.pause_reason)
+			break
+		if not sim.fault_reason.is_empty():
+			crashed = "simulation fault: " + sim.fault_reason
+			break
+		sim.step()
+		if stop.is_valid() and stop.call(t, sim.state, ctx):
+			break
+		if not runway and P.altitude(sim.state) < FLOOR:
+			ctx.floor_t = t
+			_note("%s%s: stopped at the %.0f m floor after %.1f s" % [name, "" if not ctx.has("suffix") else " " + str(ctx.suffix), FLOOR, t])
+			break
+	rec.detach()
+	_save_trace(name + ("" if not ctx.has("suffix") else "_" + str(ctx.suffix)), rec.trace)
+	return { ok = true, trace = rec.trace, crashed = crashed, ctx = ctx, dt = dt, t_end = t }
+
+
+func _note(text: String) -> void:
+	if not _flight_notes.has(text):
+		_flight_notes.append(text)
+
+
+func _save_trace(name: String, trace: RefCounted) -> void:
+	var path := out_dir.path_join(name + ".csv")
+	if full_traces:
+		trace.save(path)
+		return
+	var columns: Array = trace.columns()
+	var lines := PackedStringArray()
+	for key in trace.meta:
+		lines.append("# %s: %s" % [key, JSON.stringify(trace.meta[key])])
+	lines.append("# rows: every %d ticks" % CSV_EVERY)
+	lines.append(",".join(columns))
+	for r in range(0, trace.row_count(), CSV_EVERY):
+		var row := PackedStringArray()
+		for c in columns:
+			row.append(String.num(trace.value(r, c), 6))
+		lines.append(",".join(row))
+	var f := FileAccess.open(path, FileAccess.WRITE)
+	if f != null:
+		f.store_string("\n".join(lines) + "\n")
+
+
+# --- Trace helpers ------------------------------------------------------------------------------------------------
+
+static func _col(trace: RefCounted, column: String, r0 := 0, r1 := -1) -> PackedFloat64Array:
+	var out := PackedFloat64Array()
+	var last: int = trace.row_count() if r1 < 0 else mini(r1, trace.row_count())
+	for r in range(r0, last):
+		out.append(trace.value(r, column))
+	return out
+
+
+static func _max(a: PackedFloat64Array) -> float:
+	var m := -INF
+	for x in a:
+		m = maxf(m, x)
+	return m
+
+
+static func _min(a: PackedFloat64Array) -> float:
+	var m := INF
+	for x in a:
+		m = minf(m, x)
+	return m
+
+
+static func _mean(a: PackedFloat64Array) -> float:
+	var s := 0.0
+	for x in a:
+		s += x
+	return s / maxf(a.size(), 1)
+
+
+static func _row_at(trace: RefCounted, t: float) -> int:
+	return clampi(roundi(t / (trace.value(1, "t_s") - trace.value(0, "t_s"))) if trace.row_count() > 1 else 0, 0, trace.row_count() - 1)
+
+
+## Fraction of the pilot's own commands (sticks before the radio trims) on an axis in [r0, r1) at |cmd| ≥ 0.98.
+static func _saturated(ctx: Dictionary, axis: String, r0: int, r1: int) -> float:
+	var raw: PackedFloat64Array = ctx.get("raw_" + axis, PackedFloat64Array())
+	var n := 0
+	var hit := 0
+	for r in range(r0, mini(r1, raw.size())):
+		n += 1
+		hit += int(absf(raw[r]) >= 0.98)
+	return float(hit) / maxf(n, 1)
+
+
+static func _alpha_deg(trace: RefCounted, r: int) -> float:
+	return rad_to_deg(atan2(trace.value(r, "w_mps"), trace.value(r, "u_mps")))
+
+
+static func _beta_deg(trace: RefCounted, r: int) -> float:
+	var u: float = trace.value(r, "u_mps")
+	var w: float = trace.value(r, "w_mps")
+	return rad_to_deg(atan2(trace.value(r, "v_mps"), sqrt(u * u + w * w)))
+
+
+func _load_factor(trace: RefCounted, r: int) -> float:
+	return -trace.value(r, "Fz_N") / (model.mass_kg * G)
+
+
+## Slope of a column against time over [r0, r1) by least squares (units per second).
+static func _slope(trace: RefCounted, column: String, r0: int, r1: int) -> float:
+	var n := 0.0
+	var st := 0.0
+	var sy := 0.0
+	var stt := 0.0
+	var sty := 0.0
+	for r in range(r0, mini(r1, trace.row_count())):
+		var t: float = trace.value(r, "t_s")
+		var y: float = trace.value(r, column)
+		n += 1.0
+		st += t
+		sy += y
+		stt += t * t
+		sty += t * y
+	var d := n * stt - st * st
+	return (n * sty - st * sy) / d if d != 0.0 else 0.0
+
+
+## Mean rate (deg/s) of the ground track over [r0, r1): the turn rate, from positions only.
+static func _track_rate(trace: RefCounted, r0: int, r1: int) -> float:
+	var last: int = mini(r1, trace.row_count()) - 1
+	var total := 0.0
+	var previous := NAN
+	for r in range(r0, last):
+		var track := rad_to_deg(atan2(trace.value(r + 1, "east_m") - trace.value(r, "east_m"), trace.value(r + 1, "north_m") - trace.value(r, "north_m")))
+		if not is_nan(previous):
+			total += wrapf(track - previous, -180.0, 180.0)
+		previous = track
+	return total / (trace.value(last, "t_s") - trace.value(r0 + 1, "t_s"))
+
+
+## Mean rate (deg/s) of an angle column over [r0, r1), unwrapping its ±180° seam.
+static func _unwrapped_rate(trace: RefCounted, column: String, r0: int, r1: int) -> float:
+	var total := 0.0
+	var last: int = mini(r1, trace.row_count()) - 1
+	for r in range(r0, last):
+		total += wrapf(trace.value(r + 1, column) - trace.value(r, column), -180.0, 180.0)
+	return total / (trace.value(last, "t_s") - trace.value(r0, "t_s"))
+
+
+func _result(valid: bool, metrics: Dictionary, notes: Array, extra := {}) -> Dictionary:
+	var r := { valid = valid, metrics = metrics, notes = notes }
+	r.merge(extra)
+	return r
+
+
+func _failed(flight: Dictionary) -> Dictionary:
+	return _result(false, {}, [str(flight.get("message", "flight failed"))])
+
+
+# --- Tests --------------------------------------------------------------------------------------------------------
+
+## Steady level trims from 1.1 Vs up to the speed whose trim needs full throttle: the throttle/speed map.
+func _trim_sweep() -> Dictionary:
+	var rows := []
+	var v := 1.1 * vs_estimate
+	var limit := NAN
+	var first_failures := 0
+	while v < 4.0 * v_start:
+		var t: Dictionary = session.trim_at(v, "level")
+		if not t.ok or float(t.throttle) > 1.0:
+			if rows.is_empty() and v < 1.5 * v_start:
+				first_failures += 1 # slow trims that do not converge: keep looking for the first trimmable speed
+				v += maxf(1.0, 0.05 * v_start)
+				continue
+			limit = v
+			break
+		rows.append({ speed_mps = snappedf(v, 0.01), throttle = snappedf(float(t.throttle), 0.001), stick_pitch = snappedf(float(t.pitch_command), 0.001),
+			alpha_deg = snappedf(rad_to_deg(P.alpha(t.state)), 0.01), rpm = roundi(float(t.get("rpm", 0.0))) })
+		v += maxf(1.0, 0.05 * v_start)
+	if is_finite(limit):
+		vmax = limit
+	session.trim_at(v_start, "level")
+	var sweep_notes := [] if rows.size() > 3 else ["few trimmable points"]
+	if first_failures > 0 and not rows.is_empty():
+		sweep_notes.append("no level trim below %.1f m/s (%d slower speeds failed)" % [rows[0].speed_mps, first_failures])
+	return _result(rows.size() > 3, { points = rows.size(), slowest_trim_mps = rows[0].speed_mps if not rows.is_empty() else NAN, first_untrimmable_mps = limit,
+		cruise_throttle_at_start_speed = _interp(rows, v_start) }, sweep_notes, { table = rows })
+
+
+static func _interp(rows: Array, v: float) -> float:
+	for i in rows.size() - 1:
+		if rows[i].speed_mps <= v and rows[i + 1].speed_mps >= v:
+			var f: float = (v - rows[i].speed_mps) / (rows[i + 1].speed_mps - rows[i].speed_mps)
+			return snappedf(lerpf(rows[i].throttle, rows[i + 1].throttle, f), 0.001)
+	return NAN
+
+
+## Power-off 1-g stall: idle, the pilot holds height with the elevator (slowing about 0.5-1.5 m/s per s), wings level,
+## feet on the ball. The break is a 2 m/s sink or 20° of bank; then unload, wings level, full throttle, pull out.
+func _stall_power_off() -> Dictionary:
+	return _stall("stall_power_off", 0.0, false)
+
+
+## Power-on stall: half throttle, nose raised 2°/s from the trimmed attitude, wings level, feet on the ball. For both,
+## the break needs α within 1° of the solved stall start, so a pilot transient is not a stall.
+func _stall_power_on() -> Dictionary:
+	return _stall("stall_power_on", 0.5, true)
+
+
+func _stall(name: String, throttle: float, ramp: bool) -> Dictionary:
+	var entry := 1.4 * vs
+	var alt0 := HIGH
+	var flight := _fly(name, { speed = entry, altitude = alt0 }, 40.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+		var k := P.schedule(s, v_start)
+		var e := P.euler(s)
+		if not ctx.has("pitch0"):
+			ctx.pitch0 = e[1]
+		if not ctx.has("break_t"):
+			var broke: bool = t > 1.0 and P.alpha(s) > a1 - deg_to_rad(1.0) and (P.climb_rate(s) < -2.0 or absf(e[2]) > deg_to_rad(20.0))
+			# A benign wing that only mushes: the elevator stays at its stop for 1 s with α near the stall start.
+			var raw: PackedFloat64Array = ctx.get("raw_pitch", PackedFloat64Array())
+			var at_stop: bool = raw.size() > 240 and P.alpha(s) > 0.8 * a1
+			if at_stop:
+				for j in range(raw.size() - 240, raw.size()):
+					at_stop = at_stop and raw[j] >= 0.98
+			if at_stop and not broke:
+				broke = true
+				ctx.break_kind = "elevator limit (mush)"
+			if broke:
+				ctx.break_t = t
+				ctx.break_v = P.speed(s)
+				ctx.break_alpha = P.alpha(s)
+				ctx.break_bank = e[2]
+			else:
+				var pitch_cmd := P.pitch(s, float(ctx.pitch0) + deg_to_rad(2.0) * t, k, ctx, 1.0 / 240.0) if ramp else P.hold_altitude(s, alt0, k, ctx, 1.0 / 240.0)
+				return { roll = P.bank(s, 0.0, k), pitch = pitch_cmd, yaw = P.ball(s, k, ctx, 1.0 / 240.0), throttle = throttle }
+		# Recovery: unload to half the stall-start α, level the wings, full power; record the deepest bank.
+		ctx.max_bank = maxf(float(ctx.get("max_bank", 0.0)), absf(e[2]))
+		if t - float(ctx.break_t) < 1.0:
+			ctx.max_bank_signed = e[2] if absf(e[2]) >= absf(float(ctx.get("max_bank_signed", 0.0))) else float(ctx.max_bank_signed)
+		return { roll = P.bank(s, 0.0, k) if t - float(ctx.break_t) > 0.3 else 0.0, pitch = P.alpha_hold(s, 0.5 * a1, k, ctx, 1.0 / 240.0),
+			yaw = P.ball(s, k, ctx, 1.0 / 240.0), throttle = 1.0 }, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> bool:
+		if ctx.has("break_t") and t - float(ctx.break_t) > 1.5 and P.climb_rate(s) > 0.0 and P.speed(s) > 1.2 * float(ctx.break_v):
+			ctx.recovered_t = t
+			return true
+		return false)
+	if not flight.ok:
+		return _failed(flight)
+	var ctx: Dictionary = flight.ctx
+	var trace: RefCounted = flight.trace
+	var notes := []
+	if flight.crashed != "":
+		notes.append("crashed: " + flight.crashed)
+	if not ctx.has("break_t"):
+		notes.append("no stall break within 40 s")
+		return _result(false, {}, notes)
+	var r0 := _row_at(trace, float(ctx.break_t))
+	var alt_min := _min(_col(trace, "alt_m", r0))
+	var metrics := { stall_speed_mps = snappedf(ctx.break_v, 0.01), stall_alpha_deg = snappedf(rad_to_deg(ctx.break_alpha), 0.1),
+		wing_drop = "left" if float(ctx.get("max_bank_signed", 0.0)) < 0.0 else "right", bank_in_first_second_deg = snappedf(rad_to_deg(float(ctx.get("max_bank_signed", 0.0))), 0.1),
+		max_bank_in_recovery_deg = snappedf(rad_to_deg(float(ctx.get("max_bank", 0.0))), 0.1),
+		altitude_lost_m = snappedf(trace.value(r0, "alt_m") - alt_min, 0.1),
+		recovery_time_s = snappedf(float(ctx.get("recovered_t", NAN)) - float(ctx.break_t), 0.01), break_kind = str(ctx.get("break_kind", "wing drop or sink")),
+		deceleration_before_break_mps2 = snappedf(-_slope(trace, "speed_mps", maxi(r0 - 480, 0), r0), 0.01),
+		ratio_to_cl_max_estimate = snappedf(float(ctx.break_v) / vs_estimate, 0.001) }
+	if not ctx.has("recovered_t"):
+		notes.append("not recovered within the test time")
+	var valid: bool = flight.crashed == "" and ctx.has("recovered_t")
+	if name == "stall_power_off" and valid:
+		vs = float(ctx.break_v)
+	return _result(valid, metrics, notes)
+
+
+## Maximum level speed and horizontal acceleration: full throttle from the start speed, height and wings held, feet on
+## the ball, until the speed changes by less than 0.05 m/s per second over 3 s (or 60 s).
+func _vmax() -> Dictionary:
+	var alt0 := 150.0
+	var flight := _fly("vmax", { speed = v_start, altitude = alt0 }, 60.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+		var k := P.schedule(s, v_start)
+		return { roll = P.bank(s, 0.0, k), pitch = P.hold_altitude(s, alt0, k, ctx, 1.0 / 240.0), yaw = P.ball(s, k, ctx, 1.0 / 240.0), throttle = 1.0 }, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> bool:
+		var history: Array = ctx.get("history", [])
+		if roundi(t * 240.0) % 24 == 0:
+			history.append(P.speed(s))
+			ctx.history = history
+		return history.size() > 30 and absf(history[-1] - history[-31]) < 0.15)
+	if not flight.ok:
+		return _failed(flight)
+	var trace: RefCounted = flight.trace
+	var n: int = trace.row_count()
+	var v_end: float = trace.value(n - 1, "speed_mps")
+	var times := {}
+	for gain in [5.0, 10.0]:
+		for r in n:
+			if trace.value(r, "speed_mps") >= v_start + gain:
+				times[gain] = trace.value(r, "t_s")
+				break
+	var t90 := NAN
+	for r in n:
+		if trace.value(r, "speed_mps") >= v_start + 0.9 * (v_end - v_start):
+			t90 = trace.value(r, "t_s")
+			break
+	var settled: bool = flight.t_end < 59.9
+	var r_end := maxi(n - 720, 0) # the last 3 s, where the speed is read
+	var alt_err := maxf(absf(_max(_col(trace, "alt_m", r_end)) - alt0), absf(_min(_col(trace, "alt_m", r_end)) - alt0))
+	var alt_err_run := maxf(absf(_max(_col(trace, "alt_m")) - alt0), absf(_min(_col(trace, "alt_m")) - alt0))
+	var notes := []
+	if not settled:
+		notes.append("still accelerating after 60 s")
+	if alt_err > 5.0:
+		notes.append("height at the end held only within %.1f m" % alt_err)
+	if settled:
+		vmax = v_end
+	return _result(settled and flight.crashed == "" and alt_err <= 5.0, { max_level_speed_mps = snappedf(v_end, 0.01),
+		max_level_speed_kmh = snappedf(v_end * 3.6, 0.1), rpm_at_max = roundi(trace.value(n - 1, "engine_rpm")),
+		time_plus_5_mps_s = snappedf(times.get(5.0, NAN), 0.01), time_plus_10_mps_s = snappedf(times.get(10.0, NAN), 0.01),
+		time_to_90_percent_s = snappedf(t90, 0.01), initial_acceleration_mps2 = snappedf(_slope(trace, "speed_mps", 0, 240), 0.01),
+		height_error_end_m = snappedf(alt_err, 0.01), height_error_run_m = snappedf(alt_err_run, 0.01) }, notes)
+
+
+## Throttle steps at the start speed: trimmed → full at 1 s, full → idle at 7 s, height and wings held.
+func _throttle_response() -> Dictionary:
+	var alt0 := 150.0
+	var flight := _fly("throttle_response", { speed = v_start, altitude = alt0 }, 12.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+		var k := P.schedule(s, v_start)
+		var thr: float = ctx.start_throttle if t < 1.0 else (1.0 if t < 7.0 else 0.0)
+		return { roll = P.bank(s, 0.0, k), pitch = P.hold_altitude(s, alt0, k, ctx, 1.0 / 240.0), yaw = P.ball(s, k, ctx, 1.0 / 240.0), throttle = thr })
+	if not flight.ok:
+		return _failed(flight)
+	var trace: RefCounted = flight.trace
+	var up := _rise(trace, 1.0, 7.0)
+	var down := _rise(trace, 7.0, 12.0)
+	return _result(flight.crashed == "", { rpm_trimmed = roundi(trace.value(_row_at(trace, 0.9), "engine_rpm")),
+		rpm_full = roundi(trace.value(_row_at(trace, 6.9), "engine_rpm")), rpm_idle_end = roundi(trace.value(trace.row_count() - 1, "engine_rpm")),
+		spool_up_10_90_s = up, spool_down_90_10_s = down,
+		speed_gain_in_6_s_mps = snappedf(trace.value(_row_at(trace, 6.9), "speed_mps") - trace.value(_row_at(trace, 0.9), "speed_mps"), 0.01) }, [])
+
+
+## 10 %-90 % time of the rpm change between t0 and t1.
+func _rise(trace: RefCounted, t0: float, t1: float) -> float:
+	var r0 := _row_at(trace, t0)
+	var r1 := _row_at(trace, t1) - 1
+	var a: float = trace.value(r0, "engine_rpm")
+	var b: float = trace.value(r1, "engine_rpm")
+	var t10 := NAN
+	var t90 := NAN
+	for r in range(r0, r1 + 1):
+		var f: float = (trace.value(r, "engine_rpm") - a) / (b - a) if b != a else 1.0
+		if is_nan(t10) and f >= 0.1:
+			t10 = trace.value(r, "t_s")
+		if is_nan(t90) and f >= 0.9:
+			t90 = trace.value(r, "t_s")
+	return snappedf(t90 - t10, 0.001)
+
+
+## Full-throttle climb at 1.3, 1.6 and 2.0 Vs, speed held with the elevator (pitch up to 75°); rate from the last 7 of 25 s.
+func _climb() -> Dictionary:
+	return _steady_path("climb", 1.0)
+
+
+## Idle glide at the same speeds: sink rate and L/D.
+func _glide() -> Dictionary:
+	return _steady_path("glide", 0.0)
+
+
+func _steady_path(name: String, throttle: float) -> Dictionary:
+	var rows := []
+	var notes := []
+	var valid := true
+	for factor in [1.3, 1.6, 2.0]:
+		var target: float = factor * vs
+		if target >= 0.95 * vmax:
+			continue
+		var flight := _fly(name, { speed = target, altitude = HIGH }, 25.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+			ctx.suffix = "%.1fVs" % factor
+			var k := P.schedule(s, v_start)
+			return { roll = P.bank(s, 0.0, k), pitch = P.hold_speed(s, target, k, ctx, 1.0 / 240.0), yaw = P.ball(s, k, ctx, 1.0 / 240.0), throttle = throttle })
+		if not flight.ok:
+			notes.append(flight.message)
+			valid = false
+			continue
+		var trace: RefCounted = flight.trace
+		var r0 := _row_at(trace, 18.0)
+		var speeds := _col(trace, "speed_mps", r0)
+		var rate := _slope(trace, "alt_m", r0, trace.row_count())
+		var pitch_mean := _mean(_col(trace, "pitch_deg", r0))
+		# Thrust above weight: the speed cannot fall to the target even near vertical. That is the result, not a pilot fault.
+		var vertical: bool = name == "climb" and pitch_mean > 65.0 and _mean(speeds) > target
+		var held: bool = (absf(_mean(speeds) - target) < 0.5 or vertical) and flight.crashed == ""
+		valid = valid and held
+		if vertical:
+			notes.append("%.1f Vs: thrust exceeds the climb need; at %.0f° pitch it holds %.2f m/s, not %.2f" % [factor, pitch_mean, _mean(speeds), target])
+		elif not held:
+			notes.append("%.1f Vs: speed held at %.2f m/s, target %.2f" % [factor, _mean(speeds), target])
+		var row := { speed_mps = snappedf(_mean(speeds), 0.01), vs_factor = factor, vertical_speed_mps = snappedf(rate, 0.01), pitch_deg = snappedf(pitch_mean, 0.1),
+			path_angle_deg = snappedf(rad_to_deg(asin(clampf(rate / target, -1.0, 1.0))), 0.1), rpm = roundi(_mean(_col(trace, "engine_rpm", r0))) }
+		if rate < 0.0:
+			row.glide_ratio = snappedf(sqrt(maxf(_mean(speeds) ** 2 - rate * rate, 0.0)) / -rate, 0.01)
+		rows.append(row)
+	var best := {}
+	for row in rows:
+		if best.is_empty() or (row.vertical_speed_mps > best.vertical_speed_mps):
+			best = row
+	return _result(valid and not rows.is_empty(), { best = best }, notes, { table = rows })
+
+
+## Full aileron, both ways, at 1.3 Vs, the start speed and 0.8 Vmax; other controls at trim. Rate, time to 360°,
+## height change and adverse sideslip.
+func _roll_rate() -> Dictionary:
+	var rows := []
+	var notes := []
+	for speed in [1.3 * vs, v_start, 0.8 * vmax]:
+		for side in [1.0, -1.0]:
+			var flight := _fly("roll_rate", { speed = speed, altitude = HIGH }, 5.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+				ctx.suffix = "%.0fmps_%s" % [speed, "right" if side > 0.0 else "left"]
+				ctx.turned = float(ctx.get("turned", 0.0)) + s[RB.RATE] / 240.0 if t >= 0.25 else 0.0
+				return { roll = side if t >= 0.25 else 0.0, throttle = ctx.start_throttle }, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> bool:
+				if absf(float(ctx.get("turned", 0.0))) >= TAU and not ctx.has("full_t"):
+					ctx.full_t = t
+				return ctx.has("full_t") and t > float(ctx.full_t) + 0.25)
+			if not flight.ok:
+				notes.append(flight.message)
+				continue
+			var trace: RefCounted = flight.trace
+			var p := _col(trace, "p_radps")
+			var peak := _max(p) if side > 0.0 else -_min(p)
+			var beta := 0.0
+			for r in trace.row_count():
+				beta = maxf(beta, absf(_beta_deg(trace, r)))
+			rows.append({ speed_mps = snappedf(speed, 0.01), direction = "right" if side > 0.0 else "left", max_roll_rate_dps = snappedf(rad_to_deg(peak), 0.1),
+				time_to_360_s = snappedf(float(flight.ctx.get("full_t", NAN)) - 0.25, 0.01),
+				height_change_m = snappedf(trace.value(trace.row_count() - 1, "alt_m") - trace.value(0, "alt_m"), 0.1), max_sideslip_deg = snappedf(beta, 0.1) })
+	return _result(rows.size() == 6, {}, notes, { table = rows })
+
+
+## Full up elevator for 1 s from the start speed and 0.8 Vmax: peak load factor, α and pitch rate; does it stall?
+func _pitch_pull() -> Dictionary:
+	var rows := []
+	for speed in [v_start, 0.8 * vmax]:
+		var flight := _fly("pitch_pull", { speed = speed, altitude = HIGH }, 2.5, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+			ctx.suffix = "%.0fmps" % speed
+			return { pitch = 1.0 if t >= 0.25 and t < 1.25 else 0.0, throttle = ctx.start_throttle })
+		if not flight.ok:
+			continue
+		var trace: RefCounted = flight.trace
+		var n_max := -INF
+		var a_max := -INF
+		for r in _row_at(trace, 1.5):
+			n_max = maxf(n_max, _load_factor(trace, r))
+			a_max = maxf(a_max, _alpha_deg(trace, r))
+		rows.append({ speed_mps = snappedf(speed, 0.01), peak_load_factor_g = snappedf(n_max, 0.01), peak_alpha_deg = snappedf(a_max, 0.1),
+			peak_pitch_rate_dps = snappedf(rad_to_deg(_max(_col(trace, "q_radps"))), 0.1), stalls = a_max > rad_to_deg(a1),
+			load_factor_at_cl_max = snappedf((speed / vs) ** 2, 0.01) })
+	return _result(rows.size() == 2, {}, [], { table = rows })
+
+
+## Inside loop as a pilot flies it: full throttle from 0.8 Vmax, α held 2° below the stall start, roll rate stopped
+## with the ailerons, feet off. Height, time, minimum speed, sideslip and heading change at the bottom.
+func _loop() -> Dictionary:
+	var entry := maxf(v_start, 0.8 * vmax)
+	var target := a1 - deg_to_rad(2.0)
+	var flight := _fly("loop", { speed = entry, altitude = HIGH }, 15.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+		ctx.turned = float(ctx.get("turned", 0.0)) + s[RB.RATE + 1] / 240.0
+		var k := P.schedule(s, v_start)
+		return { roll = P.roll_damper(s, k), pitch = P.alpha_hold(s, target, k, ctx, 1.0 / 240.0), throttle = 1.0 }, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> bool:
+		if float(ctx.get("turned", 0.0)) >= TAU:
+			ctx.closed_t = t
+			return true
+		return false)
+	if not flight.ok:
+		return _failed(flight)
+	var trace: RefCounted = flight.trace
+	var n: int = trace.row_count()
+	var beta := 0.0
+	for r in n:
+		beta = maxf(beta, absf(_beta_deg(trace, r)))
+	var closed: bool = flight.ctx.has("closed_t")
+	var heading_change := wrapf(trace.value(n - 1, "yaw_deg") - trace.value(0, "yaw_deg"), -180.0, 180.0)
+	var notes := []
+	if not closed:
+		notes.append("loop not closed in 15 s")
+	if beta >= 10.0:
+		notes.append("sideslip above 10°: rolling departure, not a clean loop")
+	return _result(closed and flight.crashed == "" and beta < 10.0, { entry_speed_mps = snappedf(entry, 0.01), alpha_target_deg = snappedf(rad_to_deg(target), 0.1),
+		loop_time_s = snappedf(float(flight.ctx.get("closed_t", NAN)), 0.01), loop_height_m = snappedf(_max(_col(trace, "alt_m")) - trace.value(0, "alt_m"), 0.1),
+		min_speed_mps = snappedf(_min(_col(trace, "speed_mps")), 0.01), max_load_factor_g = snappedf(_max_load(trace), 0.01),
+		max_sideslip_deg = snappedf(beta, 0.1), heading_change_deg = snappedf(heading_change, 0.1), height_change_m = snappedf(trace.value(n - 1, "alt_m") - trace.value(0, "alt_m"), 0.1) }, notes)
+
+
+func _max_load(trace: RefCounted) -> float:
+	var m := -INF
+	for r in trace.row_count():
+		m = maxf(m, _load_factor(trace, r))
+	return m
+
+
+## Level 60° turn both ways at the start speed, full throttle, height held, feet on the ball: sustained speed,
+## turn rate and radius after 10 s.
+func _turn_60() -> Dictionary:
+	var rows := []
+	var notes := []
+	var alt0 := HIGH
+	for side in [1.0, -1.0]:
+		var flight := _fly("turn_60", { speed = v_start, altitude = alt0 }, 20.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+			ctx.suffix = "right" if side > 0.0 else "left"
+			var k := P.schedule(s, v_start)
+			# Height through the attitude PI: its integral supplies the turn's extra pull.
+			return { roll = P.bank(s, side * deg_to_rad(60.0), k), pitch = P.hold_altitude(s, alt0, k, ctx, 1.0 / 240.0),
+				yaw = P.ball(s, k, ctx, 1.0 / 240.0), throttle = 1.0 })
+		if not flight.ok:
+			notes.append(flight.message)
+			continue
+		var trace: RefCounted = flight.trace
+		var r0 := _row_at(trace, 12.0)
+		var v := _mean(_col(trace, "speed_mps", r0))
+		var rate := absf(_track_rate(trace, r0, trace.row_count()))
+		var alt_rate := _slope(trace, "alt_m", r0, trace.row_count())
+		var bank := _mean(_col(trace, "roll_deg", r0))
+		var held: bool = absf(absf(bank) - 60.0) < 5.0 and absf(alt_rate) < 1.0 and flight.crashed == ""
+		if not held:
+			notes.append("%s: bank %.1f°, vertical speed %.2f m/s" % ["right" if side > 0.0 else "left", bank, alt_rate])
+		rows.append({ direction = "right" if side > 0.0 else "left", sustained_speed_mps = snappedf(v, 0.01), turn_rate_dps = snappedf(rate, 0.1),
+			radius_m = snappedf(v / deg_to_rad(rate), 0.1) if rate > 0.0 else NAN, bank_deg = snappedf(bank, 0.1), vertical_speed_mps = snappedf(alt_rate, 0.01),
+			load_factor_g = snappedf(_mean(PackedFloat64Array(range(r0, trace.row_count()).map(func(r): return _load_factor(trace, r)))), 0.01), held = held })
+	return _result(rows.size() == 2 and rows.all(func(r): return r.held), {}, notes, { table = rows })
+
+
+## Full rudder step at the start speed, ailerons and elevator at trim: yaw rate, sideslip and the roll it induces.
+func _rudder_step() -> Dictionary:
+	var rows := []
+	for side in [1.0, -1.0]:
+		var flight := _fly("rudder_step", { speed = v_start, altitude = HIGH }, 3.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+			ctx.suffix = "right" if side > 0.0 else "left"
+			return { yaw = side if t >= 0.25 else 0.0, throttle = ctx.start_throttle })
+		if not flight.ok:
+			continue
+		var trace: RefCounted = flight.trace
+		var n: int = trace.row_count()
+		var beta := 0.0
+		for r in n:
+			beta = maxf(beta, absf(_beta_deg(trace, r)))
+		var r_col := _col(trace, "r_radps")
+		rows.append({ direction = "right" if side > 0.0 else "left", peak_yaw_rate_dps = snappedf(rad_to_deg(_max(r_col) if side > 0.0 else -_min(r_col)), 0.1),
+			max_sideslip_deg = snappedf(beta, 0.1), bank_after_2_75_s_deg = snappedf(trace.value(n - 1, "roll_deg"), 0.1),
+			peak_roll_rate_dps = snappedf(rad_to_deg(_max(_col(trace, "p_radps")) if side > 0.0 else _min(_col(trace, "p_radps"))), 0.1),
+			pitch_change_deg = snappedf(trace.value(n - 1, "pitch_deg") - trace.value(0, "pitch_deg"), 0.1) })
+	return _result(rows.size() == 2, {}, [], { table = rows })
+
+
+## Sustained knife-edge both ways at 0.8 Vmax and full throttle: roll to 90° and hold it with the ailerons, the height
+## with top rudder (PI) and the heading with the elevator. Reports the rudder it needs, whether it saturates, and the
+## sink rate with what it has, plus the aileron and elevator couplings.
+func _knife_edge() -> Dictionary:
+	return _knife("knife_edge", false)
+
+
+## Knife-edge with full top rudder held: does it climb or sink, and how much?
+func _knife_edge_full_rudder() -> Dictionary:
+	return _knife("knife_edge_full_rudder", true)
+
+
+func _knife(name: String, full_rudder: bool) -> Dictionary:
+	var rows := []
+	var notes := []
+	var valid := true
+	for throttle in [1.0, 0.5]:
+		for side in [1.0, -1.0]:
+			var entry := 0.8 * vmax
+			var alt0 := HIGH
+			var heading := 0.0
+			var flight := _fly(name, { speed = entry, altitude = alt0 }, 10.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+				ctx.suffix = "%s_%.0fpct" % ["right" if side > 0.0 else "left", 100.0 * throttle]
+				var k := P.schedule(s, v_start)
+				var e := P.euler(s)
+				if not ctx.has("heading"):
+					ctx.heading = e[0]
+				var phi: float = e[2]
+				var sphi := sin(phi)
+				# Nose elevation through top rudder: raising the nose in a right knife-edge (φ = +90°) is left rudder.
+				# The nose must rise as far as the sideslip the fuselage needs: allow up to 35°.
+				var wanted := clampf(0.02 * (alt0 - P.altitude(s)) - 0.03 * P.climb_rate(s), -0.6, 0.6)
+				var error: float = wanted - e[1]
+				ctx.ke_i = clampf(float(ctx.get("ke_i", 0.0)) + 6.0 * k * error / 240.0 * absf(sphi), -1.0, 1.0)
+				var nose_up: float = k * (3.0 * error + 0.6 * s[RB.RATE + 2] * sphi) + float(ctx.ke_i)
+				var yaw := -sphi * nose_up
+				if full_rudder and absf(sphi) > 0.7:
+					yaw = -signf(sphi)
+				# Heading with the elevator: in a right knife-edge nose-up elevator turns right.
+				var pitch: float = k * (3.0 * sphi * wrapf(float(ctx.heading) - e[0], -PI, PI) - 0.6 * s[RB.RATE + 1])
+				return { roll = P.bank_pi(s, side * PI / 2.0, k, ctx, 1.0 / 240.0), pitch = pitch, yaw = yaw, throttle = throttle })
+			if not flight.ok:
+				notes.append(flight.message)
+				valid = false
+				continue
+			var trace: RefCounted = flight.trace
+			var n: int = trace.row_count()
+			var r0 := mini(_row_at(trace, 5.0), maxi(n - 240, 0)) # a floor stop leaves at least the last second
+			var bank := _mean(_col(trace, "roll_deg", r0))
+			var rudder := _mean(_col(trace, "cmd_yaw", r0))
+			var sat := _saturated(flight.ctx, "yaw", r0, n)
+			var climb := _slope(trace, "alt_m", r0, n)
+			# The card is met when the bank is held and either the height is held or the rudder is at its stop; a pilot
+			# that sinks with rudder to spare measured itself, not the airplane.
+			var held: bool = absf(absf(bank) - 90.0) < 10.0 and flight.crashed == "" and (full_rudder or absf(climb) < 0.5 or sat > 0.5)
+			if not held:
+				notes.append("%s %.0f %%: bank %.1f°, vertical speed %.2f m/s, rudder saturated %.0f %% %s" % ["right" if side > 0.0 else "left", 100.0 * throttle, bank, climb, 100.0 * sat, flight.crashed])
+			valid = valid and held
+			rows.append({ direction = "right" if side > 0.0 else "left", throttle = throttle, entry_speed_mps = snappedf(entry, 0.01),
+				speed_after_5_s_mps = snappedf(trace.value(r0, "speed_mps"), 0.01), speed_end_mps = snappedf(trace.value(n - 1, "speed_mps"), 0.01),
+				vertical_speed_mps = snappedf(_slope(trace, "alt_m", r0, n), 0.01), height_change_10_s_m = snappedf(trace.value(n - 1, "alt_m") - alt0, 0.1),
+				rudder_stick = snappedf(rudder, 0.001), rudder_saturated_fraction = snappedf(sat, 0.01),
+				aileron_stick = snappedf(_mean(_col(trace, "cmd_roll", r0)), 0.001), elevator_stick = snappedf(_mean(_col(trace, "cmd_pitch", r0)), 0.001),
+				sideslip_deg = snappedf(_mean(PackedFloat64Array(range(r0, n).map(func(r): return _beta_deg(trace, r)))), 0.1),
+				pitch_attitude_deg = snappedf(_mean(_col(trace, "pitch_deg", r0)), 0.1), bank_deg = snappedf(bank, 0.1),
+				sustained = not full_rudder and sat < 0.05 and absf(_slope(trace, "alt_m", r0, n)) < 0.5 })
+	return _result(valid, {}, notes, { table = rows })
+
+
+## Inverted level pass at 0.6 Vmax (at least the start speed): roll over, hold 180°, the height through a bounded α
+## and the speed with the throttle. Reports the elevator, α and throttle it needs.
+func _inverted() -> Dictionary:
+	var alt0 := HIGH
+	var pass_speed := maxf(v_start, 0.6 * vmax)
+	var flight := _fly("inverted", { speed = pass_speed, altitude = alt0 }, 16.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+		var k := P.schedule(s, v_start)
+		var e := P.euler(s)
+		# Roll over with the elevator only damping, then hold the height through an angle of attack bounded by the
+		# negative stall start (+2°) and +5°: inverted, a climb needs a more negative α. Euler-free inner α loop.
+		var pitch: float = -k * 0.6 * s[RB.RATE + 1]
+		if not ctx.has("over_t") and absf(e[2]) >= deg_to_rad(160.0):
+			ctx.over_t = t
+			ctx.bank_i = 0.0 # the roll-over wound the bank integrator up; start the hold from zero
+			ctx.alpha_i = 0.0
+		if ctx.has("over_t"):
+			var e_alt: float = alt0 - P.altitude(s)
+			ctx.inv_i = clampf(float(ctx.get("inv_i", 0.0)) + e_alt / 240.0, -40.0, 40.0)
+			var wanted := clampf(-(0.02 * e_alt - 0.03 * P.climb_rate(s) + 0.004 * float(ctx.inv_i)),
+				-(n1 - deg_to_rad(2.0)), deg_to_rad(5.0))
+			pitch = P.alpha_hold(s, wanted, k, ctx, 1.0 / 240.0)
+		var throttle: float = clampf(float(ctx.start_throttle) + 0.1 * (pass_speed - P.speed(s)) + 0.05 * float(ctx.get("thr_i", 0.0)), 0.0, 1.0)
+		ctx.thr_i = clampf(float(ctx.get("thr_i", 0.0)) + (pass_speed - P.speed(s)) / 240.0, -20.0, 20.0)
+		return { roll = P.bank_pi(s, PI, k, ctx, 1.0 / 240.0), pitch = pitch, yaw = P.ball(s, k, ctx, 1.0 / 240.0), throttle = throttle })
+	if not flight.ok:
+		return _failed(flight)
+	var trace: RefCounted = flight.trace
+	var n: int = trace.row_count()
+	var r0 := _row_at(trace, 11.0)
+	var bank := absf(_mean(PackedFloat64Array(range(r0, n).map(func(r): return absf(trace.value(r, "roll_deg"))))))
+	var rate := _slope(trace, "alt_m", r0, n)
+	var held: bool = bank > 170.0 and absf(rate) < 0.5 and flight.crashed == ""
+	return _result(held, { elevator_stick = snappedf(_mean(_col(trace, "cmd_pitch", r0)), 0.001), elevator_servo = snappedf(_mean(_col(trace, "srv_pitch", r0)), 0.001),
+		alpha_deg = snappedf(_mean(PackedFloat64Array(range(r0, n).map(func(r): return _alpha_deg(trace, r)))), 0.1),
+		throttle = snappedf(_mean(_col(trace, "cmd_throttle", r0)), 0.001), upright_throttle = snappedf(float(flight.ctx.start_throttle), 0.001),
+		speed_mps = snappedf(_mean(_col(trace, "speed_mps", r0)), 0.01), vertical_speed_mps = snappedf(rate, 0.01) },
+		[] if held else ["inverted hold not achieved: |bank| %.1f°, vertical speed %.2f m/s %s" % [bank, rate, flight.crashed]])
+
+
+## Spins both ways: idle, full up and full rudder for 6 s from 1.2 Vs, then opposite rudder and stick half forward until
+## the yaw rate falls below 0.5 rad/s, then neutral and pull out at half the stall-start α.
+func _spin() -> Dictionary:
+	var rows := []
+	var notes := []
+	for side in [1.0, -1.0]:
+		var flight := _fly("spin", { speed = 1.2 * vs, altitude = 400.0 }, 25.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+			ctx.suffix = "right" if side > 0.0 else "left"
+			var k := P.schedule(s, v_start)
+			if t < 6.25:
+				if t >= 0.25:
+					ctx.turns_pro = float(ctx.get("turns_pro", 0.0)) + absf(_earth_yaw_rate(s)) / TAU / 240.0
+				return { pitch = 1.0 if t >= 0.25 else 0.0, yaw = side if t >= 0.25 else 0.0, throttle = 0.0 }
+			if not ctx.has("stopped_t"):
+				ctx.turns_recovery = float(ctx.get("turns_recovery", 0.0)) + absf(_earth_yaw_rate(s)) / TAU / 240.0
+				if absf(s[RB.RATE + 2]) < 0.5 and t > 6.5:
+					ctx.stopped_t = t
+				return { pitch = -0.5, yaw = -side, throttle = 0.0 }
+			return { roll = P.roll_damper(s, k), pitch = P.alpha_hold(s, 0.5 * a1, k, ctx, 1.0 / 240.0), throttle = 0.0 }, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> bool:
+			if t > 4.0 and t < 6.25:
+				ctx.rate_samples = ctx.get("rate_samples", []) + [absf(_earth_yaw_rate(s))]
+			if ctx.has("stopped_t") and P.climb_rate(s) > 0.0 and t > float(ctx.stopped_t) + 0.5:
+				ctx.level_t = t
+				return true
+			return false)
+		if not flight.ok:
+			notes.append(flight.message)
+			continue
+		var trace: RefCounted = flight.trace
+		var ctx: Dictionary = flight.ctx
+		var rate := _mean(PackedFloat64Array(ctx.get("rate_samples", [])))
+		var r6 := _row_at(trace, 6.25)
+		var alt_entry: float = trace.value(_row_at(trace, 0.25), "alt_m")
+		var turns_pro: float = float(ctx.get("turns_pro", 0.0))
+		var row := { direction = "right" if side > 0.0 else "left", steady_turn_time_s = snappedf(TAU / rate, 0.01) if rate > 0.0 else NAN,
+			turns_in_6_s = snappedf(turns_pro, 0.01), height_lost_per_turn_m = snappedf((alt_entry - trace.value(r6, "alt_m")) / maxf(turns_pro, 0.01), 0.1),
+			max_alpha_deg = snappedf(_max(PackedFloat64Array(range(0, r6).map(func(r): return _alpha_deg(trace, r)))), 0.1),
+			recovery_turns = snappedf(float(ctx.get("turns_recovery", NAN)), 0.01), recovery_time_s = snappedf(float(ctx.get("stopped_t", NAN)) - 6.25, 0.01),
+			total_height_lost_m = snappedf(alt_entry - _min(_col(trace, "alt_m")), 0.1), recovered = ctx.has("level_t") and flight.crashed == "" }
+		# A spin turns faster than once per 3 s with the wing past its stall start; anything slower is a spiral.
+		row.entered = "spin" if rate > TAU / 3.0 and row.max_alpha_deg > rad_to_deg(a1) else "spiral (no spin)"
+		if not row.recovered:
+			notes.append("%s spin not recovered %s" % [row.direction, flight.crashed])
+		rows.append(row)
+	return _result(rows.size() == 2, {}, notes, { table = rows })
+
+
+func _wheels_down(s: PackedFloat64Array) -> int:
+	var n := 0
+	for c in Ground.compressions(s, session.current_landing_gear()):
+		n += int(c > 0.0)
+	return n
+
+
+## Yaw rate about the earth vertical (rad/s): the spin's rotation, whatever the attitude.
+static func _earth_yaw_rate(s: PackedFloat64Array) -> float:
+	var up := P.up_body(s)
+	return -(s[RB.RATE] * up[0] + s[RB.RATE + 1] * up[1] + s[RB.RATE + 2] * up[2])
+
+
+## Takeoff from the qualified runway start: throttle up over 2 s, stick back below 0.4 Vs, then a 1° attitude, rotate at
+## 1.25 Vs to min(8°, stall start − 3°) with a PI pitch loop, heading held with the rudder, wings level. Also a
+## rudder-free sample: the swing in 3 s.
+func _takeoff() -> Dictionary:
+	if not FlightSession.runway_aircraft_supported(aircraft_id):
+		return _result(false, {}, ["no qualified runway start for this aircraft"], { skipped = true })
+	var rotate := minf(deg_to_rad(8.0), a1 - deg_to_rad(3.0))
+	var heading := NAN
+	var pilot := func(rudder: bool) -> Callable:
+		return func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+			if not ctx.has("heading"):
+				ctx.heading = P.euler(s)[0]
+			var v := P.speed(s)
+			var k := 1.0
+			var c := { roll = P.bank(s, 0.0, k), yaw = P.ground_heading(s, ctx.heading) if rudder else 0.0, throttle = clampf(t / 2.0, 0.0, 1.0) }
+			if v < 0.4 * vs:
+				c.pitch = 0.6
+			elif v < 1.25 * vs:
+				c.pitch = P.pitch(s, deg_to_rad(1.0), k, ctx, 1.0 / 240.0)
+			else:
+				if not ctx.has("rotation_t"):
+					ctx.rotation_t = t
+					ctx.erase("pitch_i")
+				c.pitch = P.pitch(s, rotate, k, ctx, 1.0 / 240.0)
+				ctx.rotation_pitch = maxf(float(ctx.get("rotation_pitch", -1.0)), P.euler(s)[1]) if t - float(ctx.rotation_t) <= 1.5 else float(ctx.get("rotation_pitch", -1.0))
+			if not ctx.has("x0"):
+				ctx.x0 = s[RB.POS]
+				ctx.y0 = s[RB.POS + 1]
+			if not ctx.has("liftoff_t") and t > 1.0 and _wheels_down(s) == 0:
+				ctx.liftoff_t = t
+				ctx.liftoff_v = v
+				ctx.liftoff_x = sqrt((s[RB.POS] - float(ctx.x0)) ** 2 + (s[RB.POS + 1] - float(ctx.y0)) ** 2)
+			if not ctx.has("liftoff_t"):
+				ctx.max_heading_error = maxf(float(ctx.get("max_heading_error", 0.0)), absf(wrapf(P.euler(s)[0] - float(ctx.heading), -PI, PI)))
+				ctx.max_rudder = maxf(float(ctx.get("max_rudder", 0.0)), absf(c.yaw))
+			return c
+	var free := _fly("takeoff_rudder_free", { runway = true }, 3.0, pilot.call(false))
+	var flight := _fly("takeoff", { runway = true }, 15.0, pilot.call(true), func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> bool:
+		return ctx.has("liftoff_t") and t > float(ctx.liftoff_t) + 3.0)
+	if not flight.ok:
+		return _failed(flight)
+	var ctx: Dictionary = flight.ctx
+	var notes := []
+	var swing := NAN
+	if free.ok:
+		var tr: RefCounted = free.trace
+		swing = wrapf(tr.value(tr.row_count() - 1, "yaw_deg") - tr.value(0, "yaw_deg"), -180.0, 180.0)
+	if not ctx.has("liftoff_t"):
+		notes.append("no lift-off in 15 s " + flight.crashed)
+		return _result(false, {}, notes)
+	var rotated: bool = rad_to_deg(float(ctx.get("rotation_pitch", -1.0))) >= rad_to_deg(rotate) - 1.0
+	if not rotated:
+		notes.append("rotation attitude not reached: %.1f° of %.1f°" % [rad_to_deg(float(ctx.get("rotation_pitch", -1.0))), rad_to_deg(rotate)])
+	return _result(rotated and flight.crashed == "", { liftoff_speed_mps = snappedf(ctx.liftoff_v, 0.01), liftoff_speed_vs = snappedf(float(ctx.liftoff_v) / vs, 0.01),
+		ground_roll_m = snappedf(float(ctx.liftoff_x), 0.1), time_to_liftoff_s = snappedf(ctx.liftoff_t, 0.01),
+		rotation_attitude_deg = snappedf(rad_to_deg(rotate), 0.1), max_rudder_stick = snappedf(float(ctx.get("max_rudder", 0.0)), 0.01),
+		max_heading_error_deg = snappedf(rad_to_deg(float(ctx.get("max_heading_error", 0.0))), 0.1), rudder_free_heading_change_3_s_deg = snappedf(swing, 0.1) }, notes)
+
+
+# --- Report -------------------------------------------------------------------------------------------------------
+
+func _write_report() -> void:
+	var data := { format = VERSION, aircraft = aircraft_id, name = Catalog.entry(aircraft_id).get("name", aircraft_id),
+		data_sha256 = model.get("data_sha256", ""), mass_kg = model.mass_kg, wing_area_m2 = model.reference.S, span_m = model.reference.b,
+		start_speed_mps = v_start, stall_speed_estimate_mps = vs_estimate, stall_start_alpha_deg = rad_to_deg(a1),
+		engine = Engine.get_version_info().string, results = {} }
+	for name in order:
+		data.results[name] = results[name]
+	var f := FileAccess.open(out_dir.path_join("profile.json"), FileAccess.WRITE)
+	f.store_string(JSON.stringify(_finite_json(data), "  ", false) + "\n")
+	var md := PackedStringArray()
+	md.append("# Flight-test profile: %s" % data.name)
+	md.append("")
+	md.append("`%s` · %s · mass %.2f kg · S %.3f m² · span %.2f m · start %.1f m/s · Vs estimate %.1f m/s (CL_max) · Godot %s. Generated by `research/flight-test/flight_test.gd`; software evidence, not physical validation." %
+		[aircraft_id, VERSION, model.mass_kg, model.reference.S, model.reference.b, v_start, vs_estimate, data.engine])
+	md.append("")
+	md.append("| Test | Valid | Result |")
+	md.append("| --- | --- | --- |")
+	for name in order:
+		var r: Dictionary = results[name]
+		var text := _fmt(r.get("metrics", {}))
+		if r.has("table"):
+			var parts := PackedStringArray()
+			for row in r.table:
+				parts.append(_fmt(row))
+			text += ("<br>" if not text.is_empty() else "") + "<br>".join(parts)
+		for note in r.get("notes", []):
+			text += "<br>*%s*" % str(note)
+		md.append("| %s | %s | %s |" % [name, "yes" if r.get("valid", false) else ("skipped" if r.get("skipped", false) else "**no**"), text])
+	var m := FileAccess.open(out_dir.path_join("profile.md"), FileAccess.WRITE)
+	m.store_string("\n".join(md) + "\n")
+	print("FT report: " + out_dir.path_join("profile.md"))
+
+
+## JSON has no NaN or infinity: undefined results become null.
+static func _finite_json(v: Variant) -> Variant:
+	if v is float:
+		return v if is_finite(v) else null
+	if v is Dictionary:
+		var out := {}
+		for key in v:
+			out[key] = _finite_json(v[key])
+		return out
+	if v is Array:
+		return v.map(func(x): return _finite_json(x))
+	return v
+
+
+static func _fmt(d: Dictionary) -> String:
+	var parts := PackedStringArray()
+	for key in d:
+		var v = d[key]
+		parts.append("%s %s" % [key, JSON.stringify(v) if v is Dictionary else str(v)])
+	return ", ".join(parts)
