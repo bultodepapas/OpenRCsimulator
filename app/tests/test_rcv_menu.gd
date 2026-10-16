@@ -44,7 +44,9 @@ func _run() -> void:
 	var home_field: Dictionary = original_background.field.duplicate(true)
 	var home_lighting: Dictionary = original_background.lighting_config.duplicate(true)
 	var home_sky: Dictionary = original_background.sky_config.duplicate(true)
-	check(app.home.ground_vehicle_button.is_visible_in_tree(), "RC vehicle choice is visible")
+	app.home._page_buttons[3].pressed.emit()
+	await process_frame
+	check(app.home.ground_vehicle_choice.is_visible_in_tree() and app.home.ground_vehicle_button.is_visible_in_tree(), "RC vehicle choice is visible on the Garage page")
 	app.ground_vehicle_factory = func(): return RejectedActivity.new()
 	app.home.ground_vehicle_requested.emit()
 	await process_frame
