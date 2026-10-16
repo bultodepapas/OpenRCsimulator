@@ -24,22 +24,27 @@ def main():
         'p51d-mustang-120': 'p51d-mustang.png',
         'sebart-avanti-s-a200-p100rx': 'avanti-s.png',
         'turbo-lumber-evolution': 'turbo-lumber-evolution.png',
+        'xcell-60-research': 'helicopter.png',
+        'mt8-bisonte': 'bisonte-mt8.png',
+        'monster-car-2': 'monster-car-2.png',
     }
-    if {a['id'] for a in manifest['aircraft']} != set(names):
-        raise ValueError('Expected the five catalog aircraft')
-    expected_frames = sum(a['frames'] for a in manifest['aircraft'])
+    if {a['id'] for a in manifest['vehicles']} != set(names):
+        raise ValueError('Expected eight tour vehicles')
+    if [a['id'] for a in manifest['vehicles']][:4] != ['sebart-avanti-s-a200-p100rx', 'xcell-60-research', 'mt8-bisonte', 'monster-car-2']:
+        raise ValueError('Expected jet, helicopter and both trucks first')
+    expected_frames = sum(a['frames'] for a in manifest['vehicles'])
     frame_paths = sorted((args.source / 'frames').glob('*.png'))
-    if expected_frames != 120 or len(frame_paths) != expected_frames or manifest['frame_count'] != expected_frames:
-        raise ValueError('Expected 120 fresh rendered frames')
+    if expected_frames != 576 or len(frame_paths) != expected_frames or manifest['frame_count'] != expected_frames:
+        raise ValueError('Expected 576 fresh rendered frames')
     frames = []
     for path in frame_paths:
         with Image.open(path) as image:
-            if image.size != (640, 360):
+            if image.size != (800, 450):
                 raise ValueError(f'Wrong frame size: {path}')
-            frames.append(image.convert('RGB').quantize(colors=128, dither=Image.Dither.NONE))
+            frames.append(image.convert('RGB').quantize(colors=64, dither=Image.Dither.NONE))
     args.destination.mkdir(parents=True, exist_ok=True)
     gif = args.destination / 'aircraft-tour.gif'
-    frames[0].save(gif, save_all=True, append_images=frames[1:], duration=110,
+    frames[0].save(gif, save_all=True, append_images=frames[1:], duration=60,
                   loop=0, optimize=True)
     with Image.open(gif) as image:
         if image.n_frames != expected_frames:
@@ -48,9 +53,9 @@ def main():
         for i in range(image.n_frames):
             image.seek(i)
             duration_ms += image.info['duration']
-    if gif.stat().st_size > 2_000_000:
-        raise ValueError('README animation exceeds 2 MB')
-    for aircraft in manifest['aircraft']:
+    if gif.stat().st_size > 12_000_000:
+        raise ValueError('README animation exceeds 12 MB')
+    for aircraft in manifest['vehicles']:
         with Image.open(args.source / aircraft['still']) as image:
             if image.size != (960, 540):
                 raise ValueError('Wrong still size')
@@ -60,15 +65,19 @@ def main():
         aircraft['still'] = target
     shutil.copyfile(args.source / 'flight.png', args.destination / 'flight.png')
     shutil.copyfile(args.source / 'flight.json', args.destination / 'flight.json')
+    manifest['capture_tools_sha256'] = {
+        name: hashlib.sha256(Path(__file__).with_name(name).read_bytes()).hexdigest()
+        for name in ('capture_aircraft.gd', 'package_media.py')
+    }
     manifest['animation'] = {'file': gif.name, 'duration_ms': duration_ms,
-                             'pillow': PIL.__version__, 'frame_duration_ms': 110}
+                             'pillow': PIL.__version__, 'frame_duration_ms': 60}
     manifest['sha256'] = {
         p.name: hashlib.sha256(p.read_bytes()).hexdigest()
         for p in sorted(args.destination.iterdir())
         if p.suffix in ('.png', '.gif')
     }
     (args.destination / 'manifest.json').write_text(json.dumps(manifest, indent=2) + '\n')
-    print(f"Packaged {len(manifest['aircraft'])} aircraft, flight screenshot, {len(frames)} GIF frames ({gif.stat().st_size:,} bytes)")
+    print(f"Packaged {len(manifest['vehicles'])} vehicles, flight screenshot, {len(frames)} GIF frames ({gif.stat().st_size:,} bytes)")
 
 
 if __name__ == '__main__':

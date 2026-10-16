@@ -8,6 +8,8 @@
 #   <godot> --headless --path app --audio-driver Dummy --script "$PWD/research/flight-test/flight_test.gd" -- \
 #       --aircraft=p51d-mustang-120 --out=tmp/flight-test [--only=vmax,roll] [--full-traces]
 # Writes <out>/<aircraft>/profile.json, profile.md and one 20 Hz CSV per flown test (--full-traces: every tick).
+# --list prints the fixed-wing catalog IDs the card can fly and exits. Table rows carry a stable `case` ID so two
+# profiles compare case by case (research/flight-test/compare.py).
 extends SceneTree
 
 const FlightSession := preload("res://sim/flight_session.gd")
@@ -16,12 +18,13 @@ const Catalog := preload("res://app_state/aircraft_catalog.gd")
 const FieldLoader := preload("res://data/field_loader.gd")
 const Propulsion := preload("res://physics/propulsion.gd")
 const Ground := preload("res://physics/ground_contact.gd")
+const FlightModes := preload("res://physics/flight_modes.gd")
 const RB := preload("res://physics/rigid_body.gd")
 const P := preload("pilot.gd")
 
 const G := 9.80665
 const RHO := 1.225
-const VERSION := "ft-card-v1"
+const VERSION := "ft-card-v2"
 const HIGH := 250.0 # m, airborne tests that may lose height
 const CSV_EVERY := 12 # 240 Hz ticks per committed CSV row (20 Hz)
 
@@ -45,6 +48,9 @@ const FLOOR := 60.0 # m: airborne tests stop here instead of flying into the gro
 
 func _initialize() -> void:
 	for arg in OS.get_cmdline_user_args():
+		if arg == "--list":
+			_list()
+			return
 		if arg.begins_with("--aircraft="):
 			aircraft_id = arg.substr(11)
 		elif arg.begins_with("--out="):
@@ -90,8 +96,10 @@ func _initialize() -> void:
 	_run("trim_sweep", _trim_sweep)
 	_run("stall_power_off", _stall_power_off)
 	_run("vmax", _vmax)
+	_run("modes", _modes)
 	_run("stall_power_on", _stall_power_on)
 	_run("throttle_response", _throttle_response)
+	_run("hands_off", _hands_off)
 	_run("climb", _climb)
 	_run("glide", _glide)
 	_run("roll_rate", _roll_rate)
@@ -104,7 +112,20 @@ func _initialize() -> void:
 	_run("inverted", _inverted)
 	_run("spin", _spin)
 	_run("takeoff", _takeoff)
+	_run("landing", _landing)
 	_write_report()
+	quit(0)
+
+
+## Fixed-wing catalog aircraft: the ones whose data a FlightSession accepts with a trimmed start.
+func _list() -> void:
+	for id in Catalog.ids():
+		var probe := FlightSession.new()
+		probe.setup(Catalog.entry(id).data)
+		root.add_child(probe)
+		if probe.aircraft.get("ok", false) and probe.start.get("ok", false):
+			print("FT-AIRCRAFT " + id)
+		probe.queue_free()
 	quit(0)
 
 
@@ -149,11 +170,23 @@ func _fly(name: String, start: Dictionary, seconds: float, pilot: Callable, stop
 		if speed != start.speed:
 			_note("%s: no trim at %.1f m/s, started at %.1f m/s" % [name, start.speed, speed])
 		session.set_start_altitude(start.get("altitude", HIGH))
+		if start.has("north"):
+			var placed: PackedFloat64Array = session.start.state
+			placed[RB.POS] = start.north
+			placed[RB.POS + 1] = start.east
+			session.start.state = placed
 	session.reset()
 	if not session.is_flyable() or not session.sim.fault_reason.is_empty() or not session.start_error.is_empty():
 		return { ok = false, message = "start failed: %s %s %s" % [session.start_error, session.pause_reason, session.sim.fault_reason] }
 	if runway and session.glow_is_active() and not session.engine_running and not session.glow_start():
 		return { ok = false, message = "glow engine did not start on the runway" }
+	if start.get("gear_down", false) and session.gear_is_retractable():
+		# Down and locked from the start, as on final approach (the P-51 envelope fixture does the same).
+		session._gear_requested_down = true
+		var aux: PackedFloat64Array = session.sim.aux
+		aux[session.gear_aux_index()] = 1.0
+		aux[session.gear_aux_index() + 1] = 1.0
+		session.sim.aux = aux
 	var sim: Node = session.sim
 	var rec := Recorder.new(sim, session.electrical_state)
 	var metadata: Dictionary = { flight_test = VERSION, test = name, aircraft = aircraft_id }
@@ -188,9 +221,9 @@ func _fly(name: String, start: Dictionary, seconds: float, pilot: Callable, stop
 		sim.step()
 		if stop.is_valid() and stop.call(t, sim.state, ctx):
 			break
-		if not runway and P.altitude(sim.state) < FLOOR:
+		if not runway and P.altitude(sim.state) < float(start.get("floor", FLOOR)):
 			ctx.floor_t = t
-			_note("%s%s: stopped at the %.0f m floor after %.1f s" % [name, "" if not ctx.has("suffix") else " " + str(ctx.suffix), FLOOR, t])
+			_note("%s%s: stopped at the %.0f m floor after %.1f s" % [name, "" if not ctx.has("suffix") else " " + str(ctx.suffix), float(start.get("floor", FLOOR)), t])
 			break
 	rec.detach()
 	_save_trace(name + ("" if not ctx.has("suffix") else "_" + str(ctx.suffix)), rec.trace)
@@ -336,24 +369,31 @@ func _failed(flight: Dictionary) -> Dictionary:
 
 # --- Tests --------------------------------------------------------------------------------------------------------
 
-## Steady level trims from 1.1 Vs up to the speed whose trim needs full throttle: the throttle/speed map.
+## Steady level trims on a fixed grid of start-speed multiples, from just above the stall estimate to the speed whose
+## trim needs more than full throttle: the throttle/speed map.
 func _trim_sweep() -> Dictionary:
 	var rows := []
-	var v := 1.1 * vs_estimate
 	var limit := NAN
 	var first_failures := 0
-	while v < 4.0 * v_start:
+	var step := 0
+	while true:
+		# Fixed grid of start-speed multiples (x0.50, x0.55, ...): identical cases across versions of the same aircraft.
+		var factor := 0.5 + 0.05 * step
+		var v := factor * v_start
+		step += 1
+		if factor > 4.0:
+			break
+		if v < 1.05 * vs_estimate:
+			continue
 		var t: Dictionary = session.trim_at(v, "level")
 		if not t.ok or float(t.throttle) > 1.0:
 			if rows.is_empty() and v < 1.5 * v_start:
 				first_failures += 1 # slow trims that do not converge: keep looking for the first trimmable speed
-				v += maxf(1.0, 0.05 * v_start)
 				continue
 			limit = v
 			break
-		rows.append({ speed_mps = snappedf(v, 0.01), throttle = snappedf(float(t.throttle), 0.001), stick_pitch = snappedf(float(t.pitch_command), 0.001),
+		rows.append({ case = "x%.2f" % factor, speed_mps = snappedf(v, 0.01), throttle = snappedf(float(t.throttle), 0.001), stick_pitch = snappedf(float(t.pitch_command), 0.001),
 			alpha_deg = snappedf(rad_to_deg(P.alpha(t.state)), 0.01), rpm = roundi(float(t.get("rpm", 0.0))) })
-		v += maxf(1.0, 0.05 * v_start)
 	if is_finite(limit):
 		vmax = limit
 	session.trim_at(v_start, "level")
@@ -568,7 +608,7 @@ func _steady_path(name: String, throttle: float) -> Dictionary:
 			notes.append("%.1f Vs: thrust exceeds the climb need; at %.0f° pitch it holds %.2f m/s, not %.2f" % [factor, pitch_mean, _mean(speeds), target])
 		elif not held:
 			notes.append("%.1f Vs: speed held at %.2f m/s, target %.2f" % [factor, _mean(speeds), target])
-		var row := { speed_mps = snappedf(_mean(speeds), 0.01), vs_factor = factor, vertical_speed_mps = snappedf(rate, 0.01), pitch_deg = snappedf(pitch_mean, 0.1),
+		var row := { case = "%.1fVs" % factor, speed_mps = snappedf(_mean(speeds), 0.01), vs_factor = factor, vertical_speed_mps = snappedf(rate, 0.01), pitch_deg = snappedf(pitch_mean, 0.1),
 			path_angle_deg = snappedf(rad_to_deg(asin(clampf(rate / target, -1.0, 1.0))), 0.1), rpm = roundi(_mean(_col(trace, "engine_rpm", r0))) }
 		if rate < 0.0:
 			row.glide_ratio = snappedf(sqrt(maxf(_mean(speeds) ** 2 - rate * rate, 0.0)) / -rate, 0.01)
@@ -585,7 +625,8 @@ func _steady_path(name: String, throttle: float) -> Dictionary:
 func _roll_rate() -> Dictionary:
 	var rows := []
 	var notes := []
-	for speed in [1.3 * vs, v_start, 0.8 * vmax]:
+	for named in [["1.3Vs", 1.3 * vs], ["start", v_start], ["0.8Vmax", 0.8 * vmax]]:
+		var speed: float = named[1]
 		for side in [1.0, -1.0]:
 			var flight := _fly("roll_rate", { speed = speed, altitude = HIGH }, 5.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
 				ctx.suffix = "%.0fmps_%s" % [speed, "right" if side > 0.0 else "left"]
@@ -603,7 +644,7 @@ func _roll_rate() -> Dictionary:
 			var beta := 0.0
 			for r in trace.row_count():
 				beta = maxf(beta, absf(_beta_deg(trace, r)))
-			rows.append({ speed_mps = snappedf(speed, 0.01), direction = "right" if side > 0.0 else "left", max_roll_rate_dps = snappedf(rad_to_deg(peak), 0.1),
+			rows.append({ case = "%s_%s" % [named[0], "right" if side > 0.0 else "left"], speed_mps = snappedf(speed, 0.01), direction = "right" if side > 0.0 else "left", max_roll_rate_dps = snappedf(rad_to_deg(peak), 0.1),
 				time_to_360_s = snappedf(float(flight.ctx.get("full_t", NAN)) - 0.25, 0.01),
 				height_change_m = snappedf(trace.value(trace.row_count() - 1, "alt_m") - trace.value(0, "alt_m"), 0.1), max_sideslip_deg = snappedf(beta, 0.1) })
 	return _result(rows.size() == 6, {}, notes, { table = rows })
@@ -612,7 +653,8 @@ func _roll_rate() -> Dictionary:
 ## Full up elevator for 1 s from the start speed and 0.8 Vmax: peak load factor, α and pitch rate; does it stall?
 func _pitch_pull() -> Dictionary:
 	var rows := []
-	for speed in [v_start, 0.8 * vmax]:
+	for named in [["start", v_start], ["0.8Vmax", 0.8 * vmax]]:
+		var speed: float = named[1]
 		var flight := _fly("pitch_pull", { speed = speed, altitude = HIGH }, 2.5, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
 			ctx.suffix = "%.0fmps" % speed
 			return { pitch = 1.0 if t >= 0.25 and t < 1.25 else 0.0, throttle = ctx.start_throttle })
@@ -624,7 +666,7 @@ func _pitch_pull() -> Dictionary:
 		for r in _row_at(trace, 1.5):
 			n_max = maxf(n_max, _load_factor(trace, r))
 			a_max = maxf(a_max, _alpha_deg(trace, r))
-		rows.append({ speed_mps = snappedf(speed, 0.01), peak_load_factor_g = snappedf(n_max, 0.01), peak_alpha_deg = snappedf(a_max, 0.1),
+		rows.append({ case = named[0], speed_mps = snappedf(speed, 0.01), peak_load_factor_g = snappedf(n_max, 0.01), peak_alpha_deg = snappedf(a_max, 0.1),
 			peak_pitch_rate_dps = snappedf(rad_to_deg(_max(_col(trace, "q_radps"))), 0.1), stalls = a_max > rad_to_deg(a1),
 			load_factor_at_cl_max = snappedf((speed / vs) ** 2, 0.01) })
 	return _result(rows.size() == 2, {}, [], { table = rows })
@@ -695,7 +737,7 @@ func _turn_60() -> Dictionary:
 		var held: bool = absf(absf(bank) - 60.0) < 5.0 and absf(alt_rate) < 1.0 and flight.crashed == ""
 		if not held:
 			notes.append("%s: bank %.1f°, vertical speed %.2f m/s" % ["right" if side > 0.0 else "left", bank, alt_rate])
-		rows.append({ direction = "right" if side > 0.0 else "left", sustained_speed_mps = snappedf(v, 0.01), turn_rate_dps = snappedf(rate, 0.1),
+		rows.append({ case = "right" if side > 0.0 else "left", direction = "right" if side > 0.0 else "left", sustained_speed_mps = snappedf(v, 0.01), turn_rate_dps = snappedf(rate, 0.1),
 			radius_m = snappedf(v / deg_to_rad(rate), 0.1) if rate > 0.0 else NAN, bank_deg = snappedf(bank, 0.1), vertical_speed_mps = snappedf(alt_rate, 0.01),
 			load_factor_g = snappedf(_mean(PackedFloat64Array(range(r0, trace.row_count()).map(func(r): return _load_factor(trace, r)))), 0.01), held = held })
 	return _result(rows.size() == 2 and rows.all(func(r): return r.held), {}, notes, { table = rows })
@@ -716,7 +758,7 @@ func _rudder_step() -> Dictionary:
 		for r in n:
 			beta = maxf(beta, absf(_beta_deg(trace, r)))
 		var r_col := _col(trace, "r_radps")
-		rows.append({ direction = "right" if side > 0.0 else "left", peak_yaw_rate_dps = snappedf(rad_to_deg(_max(r_col) if side > 0.0 else -_min(r_col)), 0.1),
+		rows.append({ case = "right" if side > 0.0 else "left", direction = "right" if side > 0.0 else "left", peak_yaw_rate_dps = snappedf(rad_to_deg(_max(r_col) if side > 0.0 else -_min(r_col)), 0.1),
 			max_sideslip_deg = snappedf(beta, 0.1), bank_after_2_75_s_deg = snappedf(trace.value(n - 1, "roll_deg"), 0.1),
 			peak_roll_rate_dps = snappedf(rad_to_deg(_max(_col(trace, "p_radps")) if side > 0.0 else _min(_col(trace, "p_radps"))), 0.1),
 			pitch_change_deg = snappedf(trace.value(n - 1, "pitch_deg") - trace.value(0, "pitch_deg"), 0.1) })
@@ -781,7 +823,7 @@ func _knife(name: String, full_rudder: bool) -> Dictionary:
 			if not held:
 				notes.append("%s %.0f %%: bank %.1f°, vertical speed %.2f m/s, rudder saturated %.0f %% %s" % ["right" if side > 0.0 else "left", 100.0 * throttle, bank, climb, 100.0 * sat, flight.crashed])
 			valid = valid and held
-			rows.append({ direction = "right" if side > 0.0 else "left", throttle = throttle, entry_speed_mps = snappedf(entry, 0.01),
+			rows.append({ case = "%s_%.0fpct" % ["right" if side > 0.0 else "left", 100.0 * throttle], direction = "right" if side > 0.0 else "left", throttle = throttle, entry_speed_mps = snappedf(entry, 0.01),
 				speed_after_5_s_mps = snappedf(trace.value(r0, "speed_mps"), 0.01), speed_end_mps = snappedf(trace.value(n - 1, "speed_mps"), 0.01),
 				vertical_speed_mps = snappedf(_slope(trace, "alt_m", r0, n), 0.01), height_change_10_s_m = snappedf(trace.value(n - 1, "alt_m") - alt0, 0.1),
 				rudder_stick = snappedf(rudder, 0.001), rudder_saturated_fraction = snappedf(sat, 0.01),
@@ -865,7 +907,7 @@ func _spin() -> Dictionary:
 		var r6 := _row_at(trace, 6.25)
 		var alt_entry: float = trace.value(_row_at(trace, 0.25), "alt_m")
 		var turns_pro: float = float(ctx.get("turns_pro", 0.0))
-		var row := { direction = "right" if side > 0.0 else "left", steady_turn_time_s = snappedf(TAU / rate, 0.01) if rate > 0.0 else NAN,
+		var row := { case = "right" if side > 0.0 else "left", direction = "right" if side > 0.0 else "left", steady_turn_time_s = snappedf(TAU / rate, 0.01) if rate > 0.0 else NAN,
 			turns_in_6_s = snappedf(turns_pro, 0.01), height_lost_per_turn_m = snappedf((alt_entry - trace.value(r6, "alt_m")) / maxf(turns_pro, 0.01), 0.1),
 			max_alpha_deg = snappedf(_max(PackedFloat64Array(range(0, r6).map(func(r): return _alpha_deg(trace, r)))), 0.1),
 			recovery_turns = snappedf(float(ctx.get("turns_recovery", NAN)), 0.01), recovery_time_s = snappedf(float(ctx.get("stopped_t", NAN)) - 6.25, 0.01),
@@ -948,6 +990,141 @@ func _takeoff() -> Dictionary:
 		ground_roll_m = snappedf(float(ctx.liftoff_x), 0.1), time_to_liftoff_s = snappedf(ctx.liftoff_t, 0.01),
 		rotation_attitude_deg = snappedf(rad_to_deg(rotate), 0.1), max_rudder_stick = snappedf(float(ctx.get("max_rudder", 0.0)), 0.01),
 		max_heading_error_deg = snappedf(rad_to_deg(float(ctx.get("max_heading_error", 0.0))), 0.1), rudder_free_heading_change_3_s_deg = snappedf(swing, 0.1) }, notes)
+
+
+## Linearized modes of the real equations (physics/flight_modes.gd) at 1.3 Vs, the start speed and 0.8 Vmax. No flight.
+func _modes() -> Dictionary:
+	var rows := []
+	var notes := []
+	for named in [["1.3Vs", 1.3 * vs], ["start", v_start], ["0.8Vmax", 0.8 * vmax]]:
+		var m := FlightModes.analyze(model, named[1])
+		if not m.ok:
+			notes.append("%s: %s" % [named[0], m.message])
+			continue
+		var spiral: float = m.spiral_tau
+		rows.append({ case = named[0], speed_mps = snappedf(named[1], 0.01),
+			short_period_hz = snappedf(float(m.short_period.get("f_hz", NAN)), 0.001), short_period_zeta = snappedf(float(m.short_period.get("zeta", NAN)), 0.001),
+			phugoid_period_s = snappedf(1.0 / float(m.phugoid.get("f_hz", NAN)), 0.01), phugoid_zeta = snappedf(float(m.phugoid.get("zeta", NAN)), 0.001),
+			dutch_roll_hz = snappedf(float(m.dutch_roll.f_hz), 0.001), dutch_roll_zeta = snappedf(float(m.dutch_roll.zeta), 0.001),
+			roll_time_constant_s = snappedf(float(m.roll_tau), 0.001),
+			spiral_time_to_double_s = snappedf(-spiral * log(2.0), 0.1) if spiral < 0.0 else NAN,
+			spiral_time_to_half_s = snappedf(spiral * log(2.0), 0.1) if spiral > 0.0 else NAN })
+	return _result(rows.size() == 3, {}, notes, { table = rows })
+
+
+## Hands off for 30 s from the trimmed start after two small disturbances: 0.2 up elevator for 0.5 s at 1 s (phugoid,
+## from the speed extrema) and 0.2 right aileron for 0.5 s at 2 s (spiral, from the bank and heading afterwards). An exact
+## trim in calm air would otherwise show no motion at all.
+func _hands_off() -> Dictionary:
+	var flight := _fly("hands_off", { speed = v_start, altitude = HIGH }, 30.0, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+		return { pitch = 0.2 if t >= 1.0 and t < 1.5 else 0.0, roll = 0.2 if t >= 2.0 and t < 2.5 else 0.0, throttle = ctx.start_throttle })
+	if not flight.ok:
+		return _failed(flight)
+	var trace: RefCounted = flight.trace
+	var n: int = trace.row_count()
+	var peaks := PackedFloat64Array()
+	var mean_v := _mean(_col(trace, "speed_mps"))
+	for r in range(24, n - 24):
+		var v: float = trace.value(r, "speed_mps")
+		var local_peak: bool = v > trace.value(r - 24, "speed_mps") and v >= trace.value(r + 24, "speed_mps") and v > trace.value(r - 1, "speed_mps") and v >= trace.value(r + 1, "speed_mps")
+		if local_peak and absf(v - mean_v) > 0.02 and trace.value(r, "t_s") > 2.0:
+			if peaks.is_empty() or trace.value(r, "t_s") - peaks[-1] > 1.0:
+				peaks.append(trace.value(r, "t_s"))
+	var period := NAN
+	if peaks.size() >= 2:
+		period = (peaks[-1] - peaks[0]) / (peaks.size() - 1)
+	var metrics := {}
+	for at in [10.0, 30.0]:
+		var r := mini(_row_at(trace, at), n - 1)
+		var label := "%.0f_s" % at
+		metrics["height_change_" + label + "_m"] = snappedf(trace.value(r, "alt_m") - trace.value(0, "alt_m"), 0.01)
+		metrics["speed_change_" + label + "_mps"] = snappedf(trace.value(r, "speed_mps") - trace.value(0, "speed_mps"), 0.01)
+		metrics["bank_" + label + "_deg"] = snappedf(trace.value(r, "roll_deg"), 0.1)
+		metrics["heading_change_" + label + "_deg"] = snappedf(_unwrapped_rate(trace, "yaw_deg", 0, r + 1) * (trace.value(r, "t_s") - trace.value(0, "t_s")), 0.1)
+	metrics.bank_after_aileron_pulse_deg = snappedf(trace.value(_row_at(trace, 3.0), "roll_deg"), 0.1)
+	metrics.phugoid_period_s = snappedf(period, 0.01) # flown: the spiral and the trimmed throttle mix in; damping is in `modes`
+	return _result(flight.crashed == "" and not flight.ctx.has("floor_t"), metrics, [] if flight.crashed == "" else [flight.crashed])
+
+
+## Landing on the field's runway (qualified runway aircraft only): gear down, 4° approach at 1.3 Vs aimed 10 m past the
+## threshold, speed with the elevator and path with the throttle, heading with the rudder; flare one second of approach
+## sink above the wheels with the throttle closed, raising the nose from the approach attitude until the sink follows the
+## height down (0.3 m/s + 0.6/s × height); after touchdown the attitude is held
+## until 0.7 Vs, then the stick comes back. No brakes.
+func _landing() -> Dictionary:
+	if not FlightSession.runway_aircraft_supported(aircraft_id):
+		return _result(false, {}, ["no qualified runway start for this aircraft"], { skipped = true })
+	var v_app := 1.3 * vs
+	var gamma := deg_to_rad(4.0)
+	var threshold := 15.0 # m north of the field origin; the runway runs east from -45 m (app/data/fields)
+	var threshold_east := -45.0
+	var aim := threshold_east + 10.0
+	var h0 := 15.0
+	# Flare one second of approach sink above the wheels (constant time to touchdown, as a pilot judges it).
+	var flare := clampf(v_app * tan(gamma) * 1.0, 0.5, 3.0)
+	var flight := _fly("landing", { speed = v_app, altitude = h0, north = threshold, east = aim - h0 / tan(gamma), gear_down = true, floor = -INF }, 40.0,
+			func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> Dictionary:
+		var k := P.schedule(s, v_start)
+		var h := _wheel_height(s)
+		var c := { roll = P.bank(s, 0.0, k), yaw = P.ground_heading(s, PI / 2.0), throttle = 0.0, pitch = 0.0 }
+		if not ctx.has("td_t") and _wheels_down(s) > 0:
+			ctx.td_t = t
+			ctx.td_sink = -P.climb_rate(s)
+			ctx.td_v = P.speed(s)
+			ctx.td_east = s[RB.POS + 1]
+			ctx.td_pitch = P.euler(s)[1]
+		if not ctx.has("td_t"):
+			if h > flare:
+				var h_path := (aim - s[RB.POS + 1]) * tan(gamma)
+				ctx.path_i = clampf(float(ctx.get("path_i", 0.0)) + (h_path - h) / 240.0, -20.0, 20.0)
+				c.pitch = P.hold_speed(s, v_app, k, ctx, 1.0 / 240.0)
+				c.throttle = clampf(0.5 * float(ctx.start_throttle) + 0.1 * (h_path - h) + 0.02 * float(ctx.path_i)
+					+ 0.15 * (-v_app * tan(gamma) - P.climb_rate(s)), 0.0, 0.8)
+			else:
+				# Flare: from the approach attitude, raise the nose until the sink follows the height down (PI on sink).
+				if not ctx.has("flare_pitch0"):
+					ctx.flare_pitch0 = P.euler(s)[1]
+				var sink_error: float = -P.climb_rate(s) - (0.3 + 0.6 * h)
+				ctx.flare_i = clampf(float(ctx.get("flare_i", 0.0)) + sink_error / 240.0, -2.0, 2.0)
+				var wanted: float = float(ctx.flare_pitch0) + 0.1 * sink_error + 0.3 * float(ctx.flare_i)
+				c.pitch = P.pitch(s, clampf(wanted, deg_to_rad(-2.0), minf(deg_to_rad(12.0), a1 - deg_to_rad(2.0))), k, ctx, 1.0 / 240.0)
+		else:
+			c.pitch = P.pitch(s, float(ctx.td_pitch), 1.0, ctx, 1.0 / 240.0) if P.speed(s) > 0.7 * vs else clampf((0.7 * vs - P.speed(s)) / 3.0, 0.0, 1.0)
+			if t > float(ctx.td_t) + 0.3 and _wheels_down(s) == 0 and h > 0.3:
+				ctx.bounced = true
+			ctx.max_heading_error = maxf(float(ctx.get("max_heading_error", 0.0)), absf(wrapf(P.euler(s)[0] - PI / 2.0, -PI, PI)))
+		return c, func(t: float, s: PackedFloat64Array, ctx: Dictionary) -> bool:
+			if ctx.has("td_t") and P.speed(s) < 1.0:
+				ctx.stop_t = t
+				ctx.stop_east = s[RB.POS + 1]
+				return true
+			return false)
+	if not flight.ok:
+		return _failed(flight)
+	var ctx: Dictionary = flight.ctx
+	if not ctx.has("td_t"):
+		return _result(false, {}, ["no touchdown " + flight.crashed])
+	var td_x: float = float(ctx.td_east) - threshold_east
+	var on_runway: bool = td_x > -5.0 and td_x < 100.0
+	var notes := []
+	if not on_runway:
+		notes.append("touchdown %.0f m from the threshold, off the 100 m runway" % td_x)
+	if flight.crashed != "":
+		notes.append(flight.crashed)
+	return _result(on_runway and flight.crashed == "", { approach_speed_mps = snappedf(v_app, 0.01), touchdown_speed_mps = snappedf(ctx.td_v, 0.01),
+		touchdown_speed_vs = snappedf(float(ctx.td_v) / vs, 0.01), touchdown_sink_mps = snappedf(ctx.td_sink, 0.01),
+		touchdown_pitch_deg = snappedf(rad_to_deg(ctx.td_pitch), 0.1), touchdown_past_threshold_m = snappedf(td_x, 0.1),
+		bounced = ctx.get("bounced", false), rollout_m = snappedf(float(ctx.get("stop_east", NAN)) - float(ctx.td_east), 0.1),
+		rollout_time_s = snappedf(float(ctx.get("stop_t", NAN)) - float(ctx.td_t), 0.01),
+		max_heading_error_deg = snappedf(rad_to_deg(float(ctx.get("max_heading_error", 0.0))), 0.1), flare_height_m = flare }, notes)
+
+
+## Height of the lowest landing-gear contact above the ground (m); the crash hull is not a wheel.
+func _wheel_height(s: PackedFloat64Array) -> float:
+	var deepest := -INF
+	for c in Ground.compressions(s, session.current_landing_gear()):
+		deepest = maxf(deepest, c)
+	return -deepest if is_finite(deepest) else P.altitude(s)
 
 
 # --- Report -------------------------------------------------------------------------------------------------------

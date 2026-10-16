@@ -1,5 +1,96 @@
 {
-  "aircraft": [
+  "background": "#111820",
+  "engine": "4.7.2-stable (official)",
+  "format": "openrc-readme-renders v1",
+  "frame_count": 576,
+  "purpose": "Studio model presentation; not gameplay or flight validation",
+  "renderer": "gl_compatibility",
+  "source_commit": "404bb1bfd225f25159a03d60dfebdf89622936e6",
+  "stills_size": [
+    960,
+    540
+  ],
+  "tour_size": [
+    800,
+    450
+  ],
+  "vehicles": [
+    {
+      "bounds": {
+        "position": [
+          -0.998200178146362,
+          -0.0784326195716858,
+          -0.938040018081665
+        ],
+        "size": [
+          1.99640011787415,
+          0.675601959228516,
+          2.26121664047241
+        ]
+      },
+      "frames": 72,
+      "id": "sebart-avanti-s-a200-p100rx",
+      "name": "Ventage Jet",
+      "status": "experimental",
+      "still": "avanti-s.png"
+    },
+    {
+      "bounds": {
+        "position": [
+          -0.664143741130829,
+          0.000199999660253525,
+          -0.448599338531494
+        ],
+        "size": [
+          1.32828748226166,
+          0.362300008535385,
+          1.47987127304077
+        ]
+      },
+      "frames": 72,
+      "id": "xcell-60-research",
+      "name": "RC Helicopter Research Trainer",
+      "status": "experimental",
+      "still": "helicopter.png"
+    },
+    {
+      "bounds": {
+        "position": [
+          -0.261676847934723,
+          -0.125416696071625,
+          -0.333499997854233
+        ],
+        "size": [
+          0.523353695869446,
+          0.364916682243347,
+          0.666999995708466
+        ]
+      },
+      "frames": 72,
+      "id": "mt8-bisonte",
+      "name": "Bisonte MT8",
+      "status": "experimental",
+      "still": "bisonte-mt8.png"
+    },
+    {
+      "bounds": {
+        "position": [
+          -0.246332511305809,
+          -0.0870000049471855,
+          -0.326645314693451
+        ],
+        "size": [
+          0.49266505241394,
+          0.366366624832153,
+          0.665645241737366
+        ]
+      },
+      "frames": 72,
+      "id": "monster-car-2",
+      "name": "MONSTER CAR 2",
+      "status": "experimental",
+      "still": "monster-car-2.png"
+    },
     {
       "bounds": {
         "position": [
@@ -9,11 +100,11 @@
         ],
         "size": [
           1.5223433971405,
-          0.436234056949615,
+          0.436286866664886,
           1.32597398757935
         ]
       },
-      "frames": 24,
+      "frames": 72,
       "id": "jensen-das-ugly-stik-60",
       "name": "Jensen Das Ugly Stik 60",
       "status": "flyable",
@@ -32,7 +123,7 @@
           1.38627004623413
         ]
       },
-      "frames": 24,
+      "frames": 72,
       "id": "gp-extra-300s-60",
       "name": "Great Planes Extra 300S .60",
       "status": "experimental",
@@ -41,17 +132,17 @@
     {
       "bounds": {
         "position": [
-          -1.41127383708954,
+          -1.41125762462616,
           -0.510500013828278,
           -0.671489119529724
         ],
         "size": [
-          2.82254767417908,
+          2.82251524925232,
           0.950000166893005,
-          2.4607892036438
+          2.46078896522522
         ]
       },
-      "frames": 24,
+      "frames": 72,
       "id": "p51d-mustang-120",
       "name": "P-51D Mustang 1/4",
       "status": "experimental",
@@ -60,70 +151,43 @@
     {
       "bounds": {
         "position": [
-          -1.0,
-          -0.119999997317791,
-          -1.04999995231628
-        ],
-        "size": [
-          2.0,
-          0.629999995231628,
-          2.21999979019165
-        ]
-      },
-      "frames": 24,
-      "id": "sebart-avanti-s-a200-p100rx",
-      "name": "Ventage Jet",
-      "status": "experimental",
-      "still": "avanti-s.png"
-    },
-    {
-      "bounds": {
-        "position": [
-          -0.773956000804901,
+          -0.772751808166504,
           -0.256000012159348,
-          -0.291325956583023
+          -0.291325747966766
         ],
         "size": [
-          1.5479120016098,
-          0.434000015258789,
-          1.12442517280579
+          1.54550361633301,
+          0.434000074863434,
+          1.12332582473755
         ]
       },
-      "frames": 24,
+      "frames": 72,
       "id": "turbo-lumber-evolution",
       "name": "Turbo Lumber Evolution",
       "status": "experimental",
       "still": "turbo-lumber-evolution.png"
     }
   ],
-  "background": "#111820",
-  "engine": "4.7.2-stable (official)",
-  "format": "openrc-readme-renders v1",
-  "frame_count": 120,
-  "purpose": "Studio model presentation; not gameplay or flight validation",
-  "renderer": "gl_compatibility",
-  "source_commit": "bc48fdd70cbdfc024390c9d081304e9896afeb61",
-  "stills_size": [
-    960,
-    540
-  ],
-  "tour_size": [
-    640,
-    360
-  ],
+  "capture_tools_sha256": {
+    "capture_aircraft.gd": "f06291cbc484617a60e7f1c10074c1c3030c38588ddebb5297996be0a95a19fa",
+    "package_media.py": "afa6344bbeddb758c47b3860cde1bfa72ce462a666b888ffc53101a20cd1246e"
+  },
   "animation": {
     "file": "aircraft-tour.gif",
-    "duration_ms": 13200,
+    "duration_ms": 34560,
     "pillow": "12.3.0",
-    "frame_duration_ms": 110
+    "frame_duration_ms": 60
   },
   "sha256": {
-    "aircraft-tour.gif": "b691c44ccd5b40ca0bab56cb7d16c0342b314266752d5180b5ee1710d2ed869d",
-    "avanti-s.png": "8f0c1f88ca123fa891978c6233c9a9ad77cb356d87912a0866c6048f892cea42",
-    "extra-300s.png": "2428bd12707db00e116734537f91d5a6da5dedb0e312f6006cc15495e4f8e773",
+    "aircraft-tour.gif": "3613c21f7b7598c5156ccfeb3931270bf617208e9bd56c52a608d19474abf1fa",
+    "avanti-s.png": "bea361c7094a2a9b7f4081874349fd09506828a86287baf7a9d0f5b475806c8f",
+    "bisonte-mt8.png": "6ef9cab68c2c0376b46929c243c0e3f3c13301fd46e9c258fdbd77a633ba3bfd",
+    "extra-300s.png": "b0fad3d6bf88fe25f7121c592e9866c5eed130fb4218743a01e535dbc36ee63f",
     "flight.png": "505a75ca931ff1d74b950e04ee69bee7fdb633d1de0c85126b1373e09195a10c",
-    "p51d-mustang.png": "26c0ba95641ada08d5ffae1329541c4e8de42792d907ddd0944823b11ef10270",
-    "turbo-lumber-evolution.png": "00aebd56a107ef0d2a2c4af519b5141c5157a0be39444674c6b3901124552aaf",
-    "ugly-stik.png": "390a66714606d74ba73fba20fc848419d24ef50dd5d0832bee46492a4102f1e3"
+    "helicopter.png": "922e78aecf296bc1263ae8d25790a6c2b116aa7a95074a2b773a6e7e30722aea",
+    "monster-car-2.png": "d8bd4f37fe1b9468055fcda22115e3e9c50a52c611025c22950665d35feebe35",
+    "p51d-mustang.png": "fb29717ca8c934f267eb66bf196fa61e426742ccb40983087daf3aec66ca01fb",
+    "turbo-lumber-evolution.png": "69d605f3f50452d8142163a89f776f7708ea63778e11576e4185da7689e9ac7b",
+    "ugly-stik.png": "962370c925445dc2f0419f089fd4d1cfe24e075f4cbf17dd0ff3f0810868e22d"
   }
 }

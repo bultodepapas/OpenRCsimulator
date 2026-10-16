@@ -5,10 +5,14 @@ extends SceneTree
 
 const Builder = preload("res://render/airplane.gd")
 const Catalog = preload("res://app_state/aircraft_catalog.gd")
-const FRAME_COUNT: int = 24
+const FRAME_COUNT: int = 72
 const STILL_SIZE: Vector2i = Vector2i(960, 540)
-const TOUR_SIZE: Vector2i = Vector2i(640, 360)
+const TOUR_SIZE: Vector2i = Vector2i(800, 450)
 const BACKGROUND: Color = Color("111820")
+
+const TOUR_IDS = ["sebart-avanti-s-a200-p100rx", "xcell-60-research", "mt8-bisonte", "monster-car-2", "jensen-das-ugly-stik-60", "gp-extra-300s-60", "p51d-mustang-120", "turbo-lumber-evolution"]
+const MT8 = preload("res://vehicles/ground/mt8_model.gd")
+const Monster = preload("res://vehicles/ground/monster_car_2_model.gd")
 
 var output: String = ""
 var world: Node3D
@@ -54,8 +58,18 @@ func _run() -> void:
 	canvas.add_child(status)
 	var manifest: Array[Dictionary] = []
 	var global_frame: int = 0
-	for entry: Dictionary in Catalog.ENTRIES:
-		var model: Dictionary = Builder.build(entry.id)
+	for id: String in TOUR_IDS:
+		var entry: Dictionary = Catalog.entry(id)
+		var model: Dictionary
+		if id in ["mt8-bisonte", "monster-car-2"]:
+			entry = {"id": id, "name": "Bisonte MT8" if id == "mt8-bisonte" else "MONSTER CAR 2", "status": "experimental"}
+			model = MT8.build() if id == "mt8-bisonte" else Monster.build()
+		else:
+			model = Builder.build(id)
+		if not model.get("root") is Node3D:
+			push_error("Cannot build tour vehicle: " + id)
+			quit(1)
+			return
 		var airplane: Node3D = model.root
 		world.add_child(airplane)
 		var bounds: AABB = _bounds(airplane, Transform3D.IDENTITY)
@@ -69,16 +83,16 @@ func _run() -> void:
 		root.size = TOUR_SIZE
 		title.text = entry.name
 		title.position = Vector2(22, 17)
-		title.add_theme_font_size_override("font_size", 21)
+		title.add_theme_font_size_override("font_size", 26)
 		title.add_theme_color_override("font_color", Color("f3f6f8"))
-		status.text = {"flyable": "FLYABLE · flight model under evaluation", "experimental": "EXPERIMENTAL · flight estimate", "preview": "VISUAL PREVIEW · Fly disabled"}[entry.status]
-		status.position = Vector2(22, 46)
-		status.add_theme_font_size_override("font_size", 13)
+		status.text = {"flyable": "FLYABLE · flight model under evaluation", "experimental": "EXPERIMENTAL · physical validation pending", "preview": "VISUAL PREVIEW · Fly disabled"}[entry.status]
+		status.position = Vector2(22, 53)
+		status.add_theme_font_size_override("font_size", 15)
 		status.add_theme_color_override("font_color", Color("a9bac9"))
 		title.visible = true
 		status.visible = true
 		for frame: int in range(FRAME_COUNT):
-			var angle: float = -65.0 + 100.0 * float(frame) / float(FRAME_COUNT - 1)
+			var angle: float = -42.0 + 360.0 * float(frame) / float(FRAME_COUNT)
 			_aim(center, extent, angle)
 			await _save(output.path_join("frames/%03d.png" % global_frame))
 			global_frame += 1
@@ -96,9 +110,9 @@ func _run() -> void:
 	file.store_string(JSON.stringify({"format": "openrc-readme-renders v1", "engine": Engine.get_version_info().string,
 		"renderer": RenderingServer.get_current_rendering_method(), "source_commit": OS.get_environment("OPENRC_DOCS_COMMIT"),
 		"purpose": "Studio model presentation; not gameplay or flight validation", "background": "#111820",
-		"stills_size": [960, 540], "tour_size": [640, 360], "frame_count": global_frame, "aircraft": manifest}, "\t") + "\n")
+		"stills_size": [960, 540], "tour_size": [800, 450], "frame_count": global_frame, "vehicles": manifest}, "\t") + "\n")
 	file.close()
-	print("README_RENDER_OK: %d aircraft, %d animation frames" % [manifest.size(), global_frame])
+	print("README_RENDER_OK: %d vehicles, %d animation frames" % [manifest.size(), global_frame])
 	quit(0)
 
 func _add_light(angles: Vector3, energy: float) -> void:
@@ -122,7 +136,7 @@ func _bounds(node: Node3D, parent_transform: Transform3D) -> AABB:
 func _aim(center: Vector3, extent: float, azimuth: float) -> void:
 	var az: float = deg_to_rad(azimuth)
 	var elevation: float = deg_to_rad(22.0)
-	var offset: Vector3 = extent * 1.28 * Vector3(sin(az) * cos(elevation), sin(elevation), -cos(az) * cos(elevation))
+	var offset: Vector3 = extent * 1.70 * Vector3(sin(az) * cos(elevation), sin(elevation), -cos(az) * cos(elevation))
 	camera.look_at_from_position(center + offset, center)
 
 func _save(path: String) -> void:

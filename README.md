@@ -11,9 +11,9 @@
 
 An open-source RC airplane simulator for a USB transmitter, gamepad or keyboard. Fly from the pilot's position on the field, or use chase, orbit and close-up views. **Early alpha:** automated checks verify the software; flight models still need independent RC measurements and pilot validation.
 
-![Animated studio tour of all five aircraft](docs/media/aircraft-tour.gif)
+![Rotating studio tour: Ventage Jet, helicopter, two RC trucks and four more airplanes](docs/media/aircraft-tour.gif)
 
-The five aircraft shown from changing angles. [Still views and render provenance](docs/media/README.md#aircraft-stills).
+Eight vehicles in a full 360° studio tour: Ventage Jet first, followed by the helicopter, Bisonte MT8, MONSTER CAR 2 and the other four airplanes. [Still views and render provenance](docs/media/README.md#aircraft-stills).
 
 ## Download and fly
 
