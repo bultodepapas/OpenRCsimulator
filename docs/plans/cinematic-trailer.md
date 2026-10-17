@@ -1,6 +1,6 @@
 # OpenRC Simulator — cinematic trailer production plan
 
-2026-10-17 · **Owner:** trailer/media · **Prefix:** TRA-00…08 · **Status:** local 60-second film delivered; listening review and the existing Turbo Lumber asset notice remain open before publication. See the [production evidence and accepted cut](../research/cinematic-trailer/production-2026-10-17.md).
+2026-10-17 · **Owner:** trailer/media · **Prefix:** TRA-00…08 · **Status:** local 60-second film delivered; [revision 2](../research/cinematic-trailer/revision-2-2026-10-17.md) opens with formation and continuous music. Listening review and the existing Turbo Lumber asset notice remain open before publication. [Original capture evidence](../research/cinematic-trailer/production-2026-10-17.md).
 
 User brief: an **exactly 60-second, very cinematic, AAA-style game trailer**, entirely in **English**, showing every current vehicle, aerobatics, crashes, controls and several airplanes performing together in the spirit of an airshow. **Helicopter, both cars, electrical storms and physical wind are mandatory.** Review the complete player-facing feature inventory and select its strongest visual moments. **Prices mean the estimated accident/repair cost displayed after a crash, not the simulator's purchase price or vehicle shopping prices.** This revision replaces the longer first-cut proposal.
 

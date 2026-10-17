@@ -1,0 +1,107 @@
+{
+  "date": "2026-10-17",
+  "revision": 2,
+  "export_directory": "C:\\DEVELOPMENT\\OpenRCsimulator-exports\\trailer-2026-10-17-v2",
+  "film": "OpenRC-Every-Input-Matters-60s-1080p60.mp4",
+  "sha256": "2d25f5ec42e6134e9856d36ad31eae687ff8ce9a9c73b79a2922f1ee59f53fe2",
+  "bytes": 251009562,
+  "duration_s": 60,
+  "fps": 60,
+  "frames": 3600,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "opening": "Seven-second cinematic formation",
+  "music": {
+    "continuous": true,
+    "constant_gain": 0.9,
+    "game_gain": 0.65,
+    "sha256": "131e7d2d6d1fa62f12dafae6aee5a3e998d24daee42b88de4b0ffc89394c3d9c",
+    "nominal_tempo_bpm": 90,
+    "no_silent_half_second_windows": true,
+    "minimum_half_second_rms_dbfs_at_mix_gain": -20.64,
+    "ending_fade_s": 0.6666666666666666,
+    "direct_listening_available": false
+  },
+  "decoded_aac": {
+    "input_i": "-14.02",
+    "input_tp": "-2.98",
+    "input_lra": "1.90"
+  },
+  "shots": [
+    {
+      "id": "formation",
+      "frames": 420
+    },
+    {
+      "id": "jet-pass",
+      "frames": 240
+    },
+    {
+      "id": "stik-bank",
+      "frames": 240
+    },
+    {
+      "id": "extra-roll",
+      "frames": 240
+    },
+    {
+      "id": "mustang-pass",
+      "frames": 180
+    },
+    {
+      "id": "timber-pass",
+      "frames": 180
+    },
+    {
+      "id": "helicopter",
+      "frames": 300
+    },
+    {
+      "id": "bisonte",
+      "frames": 240
+    },
+    {
+      "id": "monster-car-2",
+      "frames": 240
+    },
+    {
+      "id": "storm",
+      "frames": 180
+    },
+    {
+      "id": "wind",
+      "frames": 240
+    },
+    {
+      "id": "controls",
+      "frames": 240
+    },
+    {
+      "id": "crash-approach",
+      "frames": 87
+    },
+    {
+      "id": "crash-aftermath",
+      "frames": 63
+    },
+    {
+      "id": "crash-report",
+      "frames": 210
+    },
+    {
+      "id": "restart",
+      "frames": 120
+    },
+    {
+      "id": "end-card",
+      "frames": 180
+    }
+  ],
+  "published": false,
+  "review_limits": [
+    "Signal analysis and sampled visuals; direct listening unavailable",
+    "Existing Turbo Lumber asset release notice remains unresolved"
+  ]
+}

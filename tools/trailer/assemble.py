@@ -59,8 +59,9 @@ def plate(path, label="", subtitle="", title="", cinematic=False, brand=False, t
         d.rectangle((78, 68, 510, 111), fill=(4, 12, 20, 160))
         tracked(d, (92, 72), "CINEMATIC FORMATION SEQUENCE", 23, 1.3, (243, 247, 252, 255), True)
     if brand:
-        d.text((88, 72), "OpenRC", font=font(38), fill=(255, 255, 255, 240))
-        tracked(d, (89, 119), "SIMULATOR", 20, 4, (230, 239, 247, 230), True)
+        brand_x = 1640 if cinematic else 88
+        d.text((brand_x, 72), "OpenRC", font=font(38), fill=(255, 255, 255, 240))
+        tracked(d, (brand_x + 1, 119), "SIMULATOR", 20, 4, (230, 239, 247, 230), True)
     im.save(path)
 
 
@@ -124,7 +125,8 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
             timeline += frames
             continue
         source_hash = sha(source) if kind != "frames" else "individual frame hashes in capture manifest"
-        fingerprint = hashlib.sha256(json.dumps({"shot":shot,"source":source_hash,"editor":editor_hash},sort_keys=True).encode()).hexdigest()
+        audio_hash = sha(shot["audio"]) if shot.get("audio") else None
+        fingerprint = hashlib.sha256(json.dumps({"shot":shot,"source":source_hash,"audio":audio_hash,"editor":editor_hash},sort_keys=True).encode()).hexdigest()
         cache = work / f"{index:02}-{name}.cache.json"
         if cache.exists() and target.exists() and audio_out.exists() and json.loads(cache.read_text())["fingerprint"] == fingerprint:
             video_clips.append(target)
@@ -187,8 +189,17 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     run([ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-f", "concat", "-safe", 0, "-i", work / "picture-list.txt", "-c", "copy", picture])
     run([ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-f", "concat", "-safe", 0, "-i", work / "sound-list.txt", "-c:a", "pcm_s24le", game])
     mixed = work / "mix.wav"
+    mix_settings = spec.get("mix", {})
+    game_gain = float(mix_settings.get("game_gain", 1.0))
+    music_gain = float(mix_settings.get("music_gain", 0.72))
+    assert 0 < music_gain <= 2 and 0 <= game_gain <= 2
+    # Keep the score continuous. Shot order must never inherit time-coded ducks
+    # from an older edit; prominence is explicit in the portable manifest.
+    mix_filter = (f"[0:a]volume={game_gain}[g];[1:a]volume={music_gain}[m];"
+                  "[g][m]amix=inputs=2:normalize=0:duration=longest,"
+                  "alimiter=limit=0.89:level=false:latency=true,atrim=duration=60[a]")
     run([ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-i", game, "-i", spec["music"],
-         "-filter_complex", "[0:a]volume=1.0[g];[1:a]volume='0.72*if(lt(t,1),0.5,if(between(t,18,23),0.7,if(between(t,44,48),0.45,1)))':eval=frame[m];[g][m]amix=inputs=2:normalize=0:duration=longest,alimiter=limit=0.89:level=false:latency=true,atrim=duration=60[a]",
+         "-filter_complex", mix_filter,
          "-map", "[a]", "-ar", 48000, "-c:a", "pcm_s24le", mixed])
     # Two-pass loudness normalization on the full mixed program.
     measure = run([ffmpeg, "-hide_banner", "-i", mixed, "-af", "loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-"])
@@ -210,11 +221,11 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     decoded_measure = run([ffmpeg, "-hide_banner", "-i", final, "-vn", "-af", "loudnorm=I=-14:TP=-1:LRA=11:print_format=json", "-f", "null", "-"])
     decoded_loud = json.JSONDecoder().raw_decode(decoded_measure.stderr[decoded_measure.stderr.rfind("{"):])[0]
     assert float(decoded_loud["input_tp"]) <= -1.0, decoded_loud
-    (out / "render-manifest.json").write_text(json.dumps({"shots": source_rows, "loudness_first_pass": loud, "decoded_aac_loudness": decoded_loud, "probe": probe, "sha256": sha(final)}, indent=2), encoding="utf-8")
+    (out / "render-manifest.json").write_text(json.dumps({"shots": source_rows, "mix":{"game_gain":game_gain,"music_gain":music_gain,"music_sha256":sha(spec["music"]),"music_ducks":False}, "loudness_first_pass": loud, "decoded_aac_loudness": decoded_loud, "probe": probe, "sha256": sha(final)}, indent=2), encoding="utf-8")
     (out / "VIDEO-DESCRIPTION.txt").write_text(
         "OpenRC Simulator — Every Input Matters\n\n"
         "An open-source RC simulator. Development footage with current aircraft, helicopter and RC cars. "
-        "The simultaneous four-aircraft finale is labeled cinematic choreography using the original game models; it does not demonstrate multiplayer.\n\n"
+        "The simultaneous four-aircraft sequence is labeled cinematic choreography using the original game models; it does not demonstrate multiplayer.\n\n"
         "Project: https://bultodepapas.github.io/OpenRCsimulator/\n\n"
         "'Uprising' by Scott Buckley - released under CC-BY 4.0. www.scottbuckley.com.au\n"
         "https://www.scottbuckley.com.au/library/uprising/\n"
