@@ -27,6 +27,19 @@ const DELAYED_CONTINUOUS: Array[String] = ["source", "source_velocity", "exhaust
 	"throttle", "airspeed", "jet_velocity", "jet_velocity_max"]
 const DELAYED_DISCRETE: Array[String] = ["running", "blades", "max_rpm"]
 var propagation_delay: bool = true
+## AUD-11b: all aircraft voices share one source, so their path filters live on the aircraft bus. Measured on Godot
+## 4.7.2 (research/audio/air-absorption-2026-10-17): FILTER_6DB is one 12 dB/octave biquad, resonance 0.7071 makes it
+## Butterworth, a shelf's effect is gain squared, and enabling an effect mid-stream clicks, so both stay enabled.
+## AudioStreamPlayer3D's distance shelf doubles its configured depth as well (-12 dB measured -24 dB at 200 m) and
+## barely changes with distance; aircraft voices disable it.
+const FILTER_BUTTERWORTH_Q: float = 0.7071
+const ABSORPTION_SMOOTHING_S: float = 0.15
+## Canopy screening as authored before AUD-11b: shelf from 6.5 kHz to 1.5 kHz, -24 dB when fully screened.
+const SCREEN_SHELF_DB: float = -24.0
+var absorption_filter: AudioEffectLowPassFilter = AudioEffectLowPassFilter.new()
+var screen_filter: AudioEffectHighShelfFilter = AudioEffectHighShelfFilter.new()
+var last_absorption_cutoff_hz: float = 0.0
+var _absorption_primed: bool = false
 var last_delay_s: float = 0.0
 var _history_times: PackedFloat64Array = PackedFloat64Array()
 var _history_positions: PackedVector3Array = PackedVector3Array()
@@ -153,7 +166,7 @@ func _create_glow_player() -> void:
 	glow_player.max_distance = 1500.0
 	glow_player.panning_strength = 0.75
 	glow_player.attenuation_filter_cutoff_hz = 6500.0
-	glow_player.attenuation_filter_db = -12.0
+	glow_player.attenuation_filter_db = 0.0 # bus-level absorption and screening (AUD-11b)
 	glow_player.volume_db = -80.0
 	add_child(glow_player)
 	_glow_pending_start = true
@@ -172,6 +185,15 @@ func _setup_buses() -> void:
 		AudioServer.set_bus_send(index, &"Master" if _bus_names.is_empty() else _bus_names[0])
 		_bus_names.append(bus_name)
 	AudioServer.set_bus_volume_db(AudioServer.get_bus_index(_bus_names[1]), AIRCRAFT_TRIM_DB)
+	for filter: AudioEffectFilter in [absorption_filter, screen_filter]:
+		filter.resonance = FILTER_BUTTERWORTH_Q
+		filter.db = AudioEffectFilter.FILTER_6DB
+	if last_absorption_cutoff_hz <= 0.0:
+		absorption_filter.cutoff_hz = Model.ABSORPTION_CEILING_HZ
+		screen_filter.cutoff_hz = 6500.0
+		screen_filter.gain = 1.0
+	AudioServer.add_bus_effect(AudioServer.get_bus_index(_bus_names[1]), absorption_filter)
+	AudioServer.add_bus_effect(AudioServer.get_bus_index(_bus_names[1]), screen_filter)
 	# AUD-07d: Godot 4.7.2's AudioEffectHardLimiter never fully releases: after an overshoot it stays about
 	# 0.15 dB·s / release low for the rest of the session (-1.3 dB at 0.12 s). This stateless limiter recovers
 	# at once and holds the same -1 dBFS ceiling (research/audio/review-2026-10-13, limiter probe).
@@ -190,7 +212,8 @@ func _voice(label: String, asset: String, bus_name: StringName, reference_distan
 	player.max_distance = 1500.0 if bus_name == AIRCRAFT_BUS else (70.0 if label.begins_with("Wind") else 1000.0)
 	player.panning_strength = 0.75 # speaker-first: retain a useful phantom centre
 	player.attenuation_filter_cutoff_hz = 6500.0
-	player.attenuation_filter_db = -12.0
+	# Aircraft voices take air absorption and screening from their bus (AUD-11b); ambience keeps the 3D shelf.
+	player.attenuation_filter_db = 0.0 if bus_name == AIRCRAFT_BUS else -12.0
 	player.volume_db = -80.0
 	# Doppler is computed once from both moving endpoints; Godot Doppler stays disabled.
 	add_child(player)
@@ -259,6 +282,7 @@ func _find_trees(field: Dictionary) -> void:
 
 func reset_observer() -> void:
 	_primed = false
+	_absorption_primed = false
 	_clear_history()
 	gain = 0.0
 	_levels.fill(0.0)
@@ -326,13 +350,10 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	var use_glow_voice: bool = glow_player != null and str(glow_snapshot.get("family", glow_family)) == glow_family
 	for i: int in 3:
 		voices[i].global_position = source
-		voices[i].attenuation_filter_cutoff_hz = lerpf(6500.0, 1500.0, screened)
-		voices[i].attenuation_filter_db = lerpf(-12.0, -24.0, screened)
 	if glow_player != null:
 		glow_player.global_position = source
-		glow_player.attenuation_filter_cutoff_hz = lerpf(6500.0, 1500.0, screened)
-		glow_player.attenuation_filter_db = lerpf(-12.0, -24.0, screened)
 		glow_player.pitch_scale = lerpf(glow_player.pitch_scale, clampf(last_doppler, 0.1, 4.0), 1.0 - exp(-dt / 0.04))
+	_update_path_filters(snapshot, source, listener, dt)
 	var screen_gain: float = db_to_linear(-7.0 * screened)
 	if use_glow_voice:
 		# Explicit glow profiles use the physical firing cadence voice; the old motor and
@@ -441,6 +462,24 @@ func heard_snapshot(snapshot: Dictionary) -> Dictionary:
 		if nearest.has(key):
 			heard[key] = nearest[key]
 	return heard
+
+
+## AUD-11b: ISO 9613-1 path loss over the heard (retarded) path and canopy screening, on the aircraft bus.
+func _update_path_filters(snapshot: Dictionary, source: Vector3, listener: Vector3, dt: float) -> void:
+	var temperature_k: float = float(snapshot.get("temperature_c", 15.0)) + 273.15
+	var pressure_pa: float = float(snapshot.get("pressure_pa", Model.ISO_REFERENCE_PRESSURE_PA))
+	var humidity: float = float(snapshot.get("humidity_molar_pct",
+		Model.humidity_molar_pct(Model.REFERENCE_RELATIVE_HUMIDITY_PCT, temperature_k, pressure_pa)))
+	var target: float = Model.absorption_cutoff_hz(source.distance_to(listener), temperature_k, pressure_pa, humidity)
+	# Log-frequency smoothing: a camera cut or history restart must not step the coefficients (a step clicks).
+	if not _absorption_primed or last_absorption_cutoff_hz <= 0.0:
+		last_absorption_cutoff_hz = target
+		_absorption_primed = true
+	else:
+		last_absorption_cutoff_hz = exp(lerpf(log(last_absorption_cutoff_hz), log(target), 1.0 - exp(-dt / ABSORPTION_SMOOTHING_S)))
+	absorption_filter.cutoff_hz = last_absorption_cutoff_hz
+	screen_filter.cutoff_hz = lerpf(6500.0, 1500.0, screened)
+	screen_filter.gain = db_to_linear(0.5 * SCREEN_SHELF_DB * screened) # the shelf applies gain squared
 
 
 func _clear_history() -> void:
