@@ -76,23 +76,46 @@ static func absorption_db_per_m(frequency_hz: float, temperature_k: float = 288.
 
 
 ## Frequency where absorption over the path reaches ABSORPTION_KNEE_DB, clamped to [floor, ceiling].
-## Absorption rises monotonically with frequency, so bisection in log frequency is exact to the iteration count.
+## Absorption rises monotonically with frequency and is nearly a power law, so the log loss is nearly linear in
+## log frequency: bracketed regula falsi (Illinois) converges in a few evaluations and never leaves the bracket.
 static func absorption_cutoff_hz(path_m: float, temperature_k: float = 288.15,
 		pressure_pa: float = ISO_REFERENCE_PRESSURE_PA, humidity_pct: float = 0.0) -> float:
 	var path: float = maxf(path_m, 0.0)
-	if absorption_db_per_m(ABSORPTION_CEILING_HZ, temperature_k, pressure_pa, humidity_pct) * path <= ABSORPTION_KNEE_DB:
-		return ABSORPTION_CEILING_HZ
-	if absorption_db_per_m(ABSORPTION_FLOOR_HZ, temperature_k, pressure_pa, humidity_pct) * path >= ABSORPTION_KNEE_DB:
-		return ABSORPTION_FLOOR_HZ
 	var low: float = log(ABSORPTION_FLOOR_HZ)
 	var high: float = log(ABSORPTION_CEILING_HZ)
-	for iteration: int in 48:
-		var mid: float = 0.5 * (low + high)
-		if absorption_db_per_m(exp(mid), temperature_k, pressure_pa, humidity_pct) * path < ABSORPTION_KNEE_DB:
-			low = mid
+	var g_high: float = _log_loss_ratio(high, path, temperature_k, pressure_pa, humidity_pct)
+	if g_high <= 0.0:
+		return ABSORPTION_CEILING_HZ
+	var g_low: float = _log_loss_ratio(low, path, temperature_k, pressure_pa, humidity_pct)
+	if g_low >= 0.0:
+		return ABSORPTION_FLOOR_HZ
+	var x: float = low
+	var side: int = 0
+	for iteration: int in 60:
+		x = (low * g_high - high * g_low) / (g_high - g_low)
+		var g: float = _log_loss_ratio(x, path, temperature_k, pressure_pa, humidity_pct)
+		if absf(g) < 1e-12 or high - low < 1e-12:
+			break
+		if g < 0.0:
+			low = x
+			g_low = g
+			if side == -1:
+				g_high *= 0.5
+			side = -1
 		else:
-			high = mid
-	return exp(0.5 * (low + high))
+			high = x
+			g_high = g
+			if side == 1:
+				g_low *= 0.5
+			side = 1
+	return exp(x)
+
+
+## ln(path loss / knee) at log frequency x: negative below the cutoff, positive above it.
+static func _log_loss_ratio(log_frequency: float, path_m: float, temperature_k: float, pressure_pa: float,
+		humidity_pct: float) -> float:
+	return log(maxf(absorption_db_per_m(exp(log_frequency), temperature_k, pressure_pa, humidity_pct) * path_m, 1e-300)
+		/ ABSORPTION_KNEE_DB)
 
 
 static func targets(snapshot: Dictionary) -> Dictionary:
