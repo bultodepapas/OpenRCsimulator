@@ -576,6 +576,10 @@ func output_bus() -> StringName:
 	return _bus_names[0]
 
 
+func environment_bus() -> StringName:
+	return _bus_names[2]
+
+
 func _exit_tree() -> void:
 	# External ambience players must stop before their destination bus disappears.
 	buses_releasing.emit()

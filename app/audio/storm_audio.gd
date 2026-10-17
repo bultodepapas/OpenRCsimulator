@@ -23,6 +23,19 @@ var _listener_primed: bool = false
 var _volume: float = 0.7
 var _enabled: bool = false
 var _audio_allowed: bool = true
+var _soundscape: Node
+
+
+## Follow this flight's unique environment bus, including detach/reattach for Workshop.
+func bind_soundscape(soundscape: Node) -> void:
+	if is_instance_valid(_soundscape) and _soundscape == soundscape:
+		return
+	if is_instance_valid(_soundscape) and _soundscape.buses_releasing.is_connected(_stop_players):
+		_soundscape.buses_releasing.disconnect(_stop_players)
+	_soundscape = soundscape
+	if is_instance_valid(_soundscape):
+		_soundscape.buses_releasing.connect(_stop_players)
+	_refresh_bus()
 
 
 func configure(config: Dictionary) -> void:
@@ -182,7 +195,7 @@ func _update_active_fades(now_s: float) -> void:
 func _ensure_players() -> void:
 	if not _players.is_empty():
 		return
-	var bus: StringName = ENVIRONMENT_BUS if AudioServer.get_bus_index(ENVIRONMENT_BUS) >= 0 else &"Master"
+	var bus: StringName = _environment_bus()
 	for index: int in MAX_VOICES:
 		var player: AudioStreamPlayer3D = AudioStreamPlayer3D.new()
 		player.name = "ThunderVoice%d" % index
@@ -201,11 +214,15 @@ func _ensure_players() -> void:
 
 
 func _refresh_bus() -> void:
-	if AudioServer.get_bus_index(ENVIRONMENT_BUS) < 0:
-		return
+	var bus: StringName = _environment_bus()
 	for player: AudioStreamPlayer3D in _players:
-		if player.bus != ENVIRONMENT_BUS:
-			player.bus = ENVIRONMENT_BUS
+		if player.bus != bus:
+			player.bus = bus
+
+
+func _environment_bus() -> StringName:
+	var bus: StringName = _soundscape.environment_bus() if is_instance_valid(_soundscape) else ENVIRONMENT_BUS
+	return bus if AudioServer.get_bus_index(bus) >= 0 else &"Master"
 
 
 func _stop_players() -> void:

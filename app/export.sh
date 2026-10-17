@@ -10,10 +10,19 @@
 set -euo pipefail
 HERE="$(cd "$(dirname "$0")" && pwd)"
 ROOT="$(cd "$HERE/.." && pwd)"
-GODOT="$("$HERE/get-godot.sh")"
-"$HERE/get-templates.sh" > /dev/null
 [ $# -eq 0 ] || { echo "export.sh takes no version argument any more: the build identity is git describe (UI-04a)"; exit 1; }
 VERSION="$(git -C "$ROOT" describe --tags --always --dirty)"
+# git describe prefers annotated tags when several tags name HEAD. A release
+# must carry its triggering tag even when another tag exists on that commit.
+if [[ "${GITHUB_REF:-}" == refs/tags/v* ]]; then
+  RELEASE_TAG="${GITHUB_REF#refs/tags/}"
+  [[ "$RELEASE_TAG" =~ ^v([0-9]+\.[0-9]+\.[0-9]+)(-[0-9A-Za-z]+(\.[0-9A-Za-z]+)*)?$ ]] \
+    || { echo "release tag must be vX.Y.Z or vX.Y.Z-prerelease: $RELEASE_TAG"; exit 1; }
+  [ "$(git -C "$ROOT" rev-parse "$GITHUB_REF^{commit}")" = "$(git -C "$ROOT" rev-parse HEAD)" ] \
+    || { echo "release tag $RELEASE_TAG does not identify HEAD"; exit 1; }
+  [[ "$VERSION" != *-dirty ]] || { echo "tagged release requires a clean working tree"; exit 1; }
+  VERSION="$RELEASE_TAG"
+fi
 NUMERIC="$(sed -n 's/^config\/version="\(.*\)"$/\1/p' "$HERE/project.godot")"
 [[ "$NUMERIC" =~ ^[0-9]+\.[0-9]+\.[0-9]+$ ]] || { echo "project.godot config/version must be x.y.z (found '$NUMERIC')"; exit 1; }
 if [[ "$VERSION" =~ ^v([0-9]+\.[0-9]+\.[0-9]+) ]] && [ "${BASH_REMATCH[1]}" != "$NUMERIC" ]; then
@@ -24,6 +33,8 @@ export OPENRC_BUILD_COMMIT="$(git -C "$ROOT" rev-parse HEAD)"
 export OPENRC_BUILD_DIRTY="$([[ "$VERSION" == *-dirty ]] && echo 1 || echo 0)"
 export OPENRC_BUILD_DATE="$(git -C "$ROOT" show -s --format=%cI HEAD)"
 echo "== build identity: $VERSION (commit $OPENRC_BUILD_COMMIT, $OPENRC_BUILD_DATE), numeric $NUMERIC"
+GODOT="$("$HERE/get-godot.sh")"
+"$HERE/get-templates.sh" > /dev/null
 DIST="$ROOT/dist"
 rm -rf "$DIST" && mkdir -p "$DIST/linux" "$DIST/windows" "$DIST/macos"
 run() { timeout 600 "$GODOT" --headless --path "$HERE" --audio-driver Dummy "$@"; }
@@ -34,6 +45,7 @@ trap 'rm -f "$LOG"; rm -rf "$PACK_PROBE" "$HOST_PROBE"' EXIT
 
 echo "== import (a fresh clone has no .godot cache)"
 run --import > "$LOG" 2>&1 || { cat "$LOG"; exit 1; }
+if grep -qE "^(SCRIPT |SHADER )?ERROR:" "$LOG"; then cat "$LOG"; echo "engine error while importing"; exit 1; fi
 for preset in Linux Windows macOS; do
   case "$preset" in
     Linux) out="$DIST/linux/openrc-simulator.x86_64" ;;

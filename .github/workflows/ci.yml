@@ -93,6 +93,7 @@ jobs:
         if: matrix.part == 'integration'
         run: |
           python3 app/tests/test_ci_partitions.py
+          python3 app/tests/test_export_identity.py
           research/test-tools.sh
       - run: app/test.sh
 
