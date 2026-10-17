@@ -1,12 +1,12 @@
 # OpenRC Simulator — cinematic trailer production plan
 
-2026-10-17 · **Owner:** trailer/media · **Prefix:** TRA-00…08 · **Status:** production authorized and underway; final delivery evidence will record the accepted edit and remaining review limits.
+2026-10-17 · **Owner:** trailer/media · **Prefix:** TRA-00…08 · **Status:** local 60-second film delivered; listening review and the existing Turbo Lumber asset notice remain open before publication. See the [production evidence and accepted cut](../research/cinematic-trailer/production-2026-10-17.md).
 
 User brief: an **exactly 60-second, very cinematic, AAA-style game trailer**, entirely in **English**, showing every current vehicle, aerobatics, crashes, controls and several airplanes performing together in the spirit of an airshow. **Helicopter, both cars, electrical storms and physical wind are mandatory.** Review the complete player-facing feature inventory and select its strongest visual moments. **Prices mean the estimated accident/repair cost displayed after a crash, not the simulator's purchase price or vehicle shopping prices.** This revision replaces the longer first-cut proposal.
 
-This is the authoritative production plan. The [dated investigation](../research/cinematic-trailer/2026-10-17.md) records source findings and research limits. Runtime facts below were checked against source commit `049df2034de017e6fedc649a55194eb5977191cd`; refresh the inventory when freezing the filming build.
+This plan retains the creative targets and remaining review gates. The [production evidence](../research/cinematic-trailer/production-2026-10-17.md) is authoritative for the delivered film, source identities and deliberate changes from those targets. The [dated investigation](../research/cinematic-trailer/2026-10-17.md) records the earlier source audit at commit `049df2034de017e6fedc649a55194eb5977191cd` and research limits.
 
-Research expansion: **16 internet investigations**, a parallel **five-track music shortlist**, and comparisons of code-video skills and generative-video tools are recorded in the [research ledger](../research/cinematic-trailer/2026-10-17.md#expanded-investigation-16-research-topics). The chosen additions below improve the same minute; music audition and effect pilots remain production work.
+Research expansion: **16 internet investigations**, a parallel **five-track music shortlist**, and comparisons of code-video skills and generative-video tools are recorded in the [research ledger](../research/cinematic-trailer/2026-10-17.md#expanded-investigation-16-research-topics). Production selected Scott Buckley's **Uprising**, native Godot capture and a small Python/FFmpeg edit pipeline. Listening review remains open; captures, effects and the full minute have been rendered.
 
 ## 1. Creative direction
 
@@ -45,7 +45,7 @@ The source of aircraft identity is the [catalog](../../app/app_state/aircraft_ca
 
 ## 3. Main storyboard — exactly 1:00
 
-Times are edit targets, not an assertion that these shots have been captured. Prefer one hero action per slot and cuts on movement or sound; avoid rapid fragments that hide the vehicle. The letter identifies the source: **G** = actual gameplay, **S** = model/studio presentation, **C** = staged formation cinematic. At 60 fps the finished film contains exactly **3,600 frames**.
+This table preserves the original edit targets. The [accepted timeline](../research/cinematic-trailer/production-2026-10-17.md#accepted-timeline) records the actual shots: a Stik bank rather than takeoff, grounded truck driving, a Mustang pass without a gear-transition claim, and the shorter title `MISTAKES COST.`. The letter identifies the intended source: **G** = actual gameplay, **S** = model/studio presentation, **C** = staged formation cinematic. The delivered film contains exactly **3,600 frames** at 60 fps.
 
 | Time | Shot and action | Camera / edit / sound | English copy and purpose |
 | --- | --- | --- | --- |
@@ -222,19 +222,19 @@ The trailer track does not own `app/sim/`, physics data, aircraft generators, cr
 
 Estimates are planning ranges for focused production work, excluding unattended rendering and unknown defects; they are not delivery promises. Formation and capture feasibility determine the final schedule.
 
-| ID | Work | Proof / status | Effort |
-| --- | --- | --- | --- |
-| TRA-00 | Inspect source and all player-facing feature families; incorporate the one-minute brief; complete 16 expanded web investigations, parallel music shortlist and effect/skill comparison | Delivered as documentation only; [research snapshot](../research/cinematic-trailer/2026-10-17.md) | Completed planning/research |
-| TRA-01 | Freeze filming build; audit all 11 configurations and one usable priced incident; inventory tools/licenses | Pending: selected build, shot coverage matrix, incident/report and exact tool versions | 2–4 h |
-| TRA-02 | Technical pilot: real-time capture, gusts, storm event, offline timing/audio and four-actor shot | Pending: short pilot, frame/audio inspection, actual weather behavior and supported crash-report path | 4–8 h |
-| TRA-03 | Animatic, camera boards, music audition and final capture list | Pending: English 60-second timing cut with every distinct vehicle and all mandatory beats allocated | 2–4 h |
-| TRA-04 | Record solo flights, controls, features, trucks and crash/report | Pending: complete take sheet and original media; relevant replay/recorder evidence | 6–12 h |
-| TRA-05 | Produce four-ship formation; test six-ship/roll alternatives within the same seven seconds | Pending: simultaneous actors, readable choreography, clearance review, cinematic labels | 4–10 h |
-| TRA-06 | Edit, sound design, English titles, grading and cost-report treatment | Pending: full rough cut then polished master | 6–12 h |
-| TRA-07 | Complete quality/claim review, encoding, poster and handoff; derivatives optional | Pending: decoded 60-second output, credits/licenses, hashes, complete mandatory coverage | 3–5 h |
-| TRA-08 | Adapt and publish to a chosen channel, if subsequently requested | Pending; delivery of the video does not publish it | Separate scope |
+| ID | Work | Result / remaining gate |
+| --- | --- | --- |
+| TRA-00 | Source/feature audit, 16 web investigations, five-track shortlist and skills/effects comparison | Completed; [research snapshot](../research/cinematic-trailer/2026-10-17.md). |
+| TRA-01 | Capture source, eight visual families / eleven configurations, priced incident, tools/licenses | Source/tree identities and original incident retained. Capture used the working tree, not a frozen checkout. Existing Turbo Lumber redistribution notice remains unresolved. |
+| TRA-02 | Native 1080p60 timing/audio, gusts, storm and four-actor pilot | Captured and checked; four 240 Hz simulation ticks per ordinary rendered flight frame. |
+| TRA-03 | English one-minute edit, cameras and music | 17-shot timing locked; Uprising acquired with attribution. Listening review remains open. |
+| TRA-04 | Solo aircraft, helicopter, trucks, controls, weather and crash/report | All required subjects captured. Actual inputs/state records retained; no exact-replay or physical qualification claimed. |
+| TRA-05 | Four-ship formation | Seven seconds / 420 frames; four visible actors, measured separation and persistent cinematic label. Six-ship alternate omitted. |
+| TRA-06 | Edit, sound, titles, grading and report | Complete local H.264/AAC film; source audio, music, timeline and editor retained. |
+| TRA-07 | Technical review, poster and editable handoff | Full decode, 3,600 frames, 60.000 s and measured audio passed. Sampled visual review complete. Listening and asset release gate remain open. |
+| TRA-08 | Channel adaptation/publication | Not requested; no upload or publication performed. |
 
-Dependency order: TRA-01 → TRA-02 → TRA-03 → TRA-04/05 → TRA-06 → TRA-07. TRA-02 proves the two signature shots before expensive full-fleet filming. Expected active production: **27–55 hours**, revised after the pilot.
+The original **27–55 hour** range was a planning estimate, not a measured production duration. The remaining work concerns listening review and release clearance; the movie and editable handoff already exist.
 
 ## 11. Acceptance gates
 
