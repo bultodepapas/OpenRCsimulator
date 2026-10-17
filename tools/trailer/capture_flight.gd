@@ -78,7 +78,7 @@ func _run() -> void:
 	_main.name = "Main"
 	_main.interactive_start = true
 	_main.aircraft_id = str(_options.get("aircraft", "jensen-das-ugly-stik-60"))
-	_main.start_choice = "airborne"
+	_main.start_choice = str(_options.get("start", "airborne"))
 	_main.overlays_enabled = _shot == "controls"
 	if _options.has("sky"):
 		_main.sky_config = SkyConfig.for_preset(str(_options.sky))
@@ -209,6 +209,7 @@ func _write_manifest(ok: bool) -> void:
 	var archive_path := str(_main.accident_archive_path) if _main != null else ""
 	var lead_frames := int(_options.get("writer-lead-frames", 3))
 	var impact_movie_frame := lead_frames + _impact_preroll_frames if _impact_preroll_frames >= 0 else -1
+	var clip_start_frame := maxi(0, impact_movie_frame - CRASH_CLIP_APPROACH_FRAMES) if impact_movie_frame >= 0 else -1
 	var manifest := {
 		format = "openrc-trailer-flight-capture v1",
 		complete = ok and _failure.is_empty(),
@@ -224,8 +225,9 @@ func _write_manifest(ok: bool) -> void:
 		movie_file = str(_options.get("movie-file", "")),
 		movie_writer_lead_frames_expected = lead_frames,
 		movie_impact_frame_estimate = impact_movie_frame,
-		movie_eight_second_clip_start_frame_estimate = maxi(0, impact_movie_frame - CRASH_CLIP_APPROACH_FRAMES) if impact_movie_frame >= 0 else -1,
+		movie_eight_second_clip_start_frame_estimate = clip_start_frame,
 		movie_eight_second_clip_end_frame_estimate_exclusive = impact_movie_frame + CRASH_CLIP_POST_IMPACT_FRAMES if impact_movie_frame >= 0 else -1,
+		movie_clip_approach_available_seconds_estimate = float(impact_movie_frame - clip_start_frame) / float(_fps) if impact_movie_frame >= 0 else 0.0,
 		movie_clip_approach_frames_target = CRASH_CLIP_APPROACH_FRAMES,
 		movie_clip_post_impact_frames_target = CRASH_CLIP_POST_IMPACT_FRAMES,
 		seconds = float(_frame_count) / float(_fps),

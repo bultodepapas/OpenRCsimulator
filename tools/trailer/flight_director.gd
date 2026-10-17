@@ -133,7 +133,7 @@ func _commands_at(t: float) -> Dictionary:
 		"crash":
 			c.throttle = 1.0
 			c.roll = 0.0
-			c.pitch = -1.0 # Real pilot input: a straight sustained push-over for a prop-first low approach.
+			c.pitch = -0.2 # Shallow, straight low approach: keep the propeller disc ahead of the spinner/hull contact.
 		_:
 			c.roll = 0.24 if t >= 0.5 and t < 1.6 else 0.0
 	return c
