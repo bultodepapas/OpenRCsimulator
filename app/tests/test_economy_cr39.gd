@@ -66,7 +66,7 @@ func _test_contact_mapping() -> void:
 	ledger._mark_contact_inspection(["gear_main"])
 	check("contact never downgrades a confirmed replacement", ledger._assessment.components.gear_main.disposition == "replace")
 	ledger._assessment.components["tail_surfaces"] = {"disposition": "reuse"}
-	check("contact on an already reused part reopens structural inspection", ledger._mark_contact_inspection(["tail_surfaces"]) and not ledger._assessment.unresolved.is_empty())
+	check("contact keeps an existing receipt decision; the structural note stays owned by observe()", not ledger._mark_contact_inspection(["tail_surfaces"]) and ledger._assessment.components.tail_surfaces.disposition == "reuse")
 	ledger._queue_assessment(1)
 	ledger.evaluate_pending()
 	var named := false

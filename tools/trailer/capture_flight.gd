@@ -38,6 +38,8 @@ var _restart_movie_frame := -1
 var _restart_tick_before := -1
 var _restart_tick_after := -1
 var _details_frame := -1
+var _report_layer_hidden_before_impact := false
+var _report_layer_reveal_frame := -1
 
 
 func _initialize() -> void:
@@ -100,6 +102,10 @@ func _run() -> void:
 		if _options.has(key):
 			_main.user_args.append("--%s=%s" % [key, str(_options[key])])
 	root.add_child(_main)
+	# Hide only the presentation CanvasLayer before the real flight input starts; the incident ledger remains live.
+	if _main._accident_report != null:
+		_main._accident_report.visible = false
+		_report_layer_hidden_before_impact = true
 	await process_frame
 	await RenderingServer.frame_post_draw
 	if not _main.startup_error.is_empty() or _main.session == null or not _main.session.is_flyable():
@@ -110,6 +116,15 @@ func _run() -> void:
 		_write_manifest(false)
 		quit(1)
 		return
+	if _main._accident_report == null:
+		_failure = "Crash capture requires the native accident report CanvasLayer."
+		push_error(_failure)
+		_write_manifest(false)
+		quit(1)
+		return
+	if not _report_layer_hidden_before_impact:
+		_main._accident_report.visible = false
+		_report_layer_hidden_before_impact = true
 	if _main._panel != null:
 		_main._panel.visible = _shot == "controls"
 	if _main._hud != null:
@@ -160,6 +175,15 @@ func _capture_crash_report() -> void:
 
 func _capture_frames(count: int, preroll: int) -> void:
 	for index: int in range(count):
+		if _shot == "crash" and index == 60:
+			# Let the viewer see the actual impact and wreck for one second before revealing the native report.
+			_main._accident_report.visible = true
+			_report_layer_reveal_frame = index
+			if not _main.controller_action("details"):
+				_failure = "Native accident report details action was unavailable at the scheduled reveal frame."
+				push_error(_failure)
+				return
+			_details_frame = index
 		if _shot == "crash" and index == CRASH_RESTART_AFTER_IMPACT_FRAMES:
 			_preserved_report = _main._accident_incident.report.duplicate(true) if _main._accident_incident != null else {}
 			_preserved_crash = _main.session.crash.duplicate(true)
@@ -174,8 +198,6 @@ func _capture_frames(count: int, preroll: int) -> void:
 				return
 			_restart_tick_after = int(_main.session.sim.tick)
 			_director.resume_after_report_restart()
-		if _shot == "crash" and _details_frame < 0 and _main.controller_action("details"):
-			_details_frame = index
 		await process_frame
 		await RenderingServer.frame_post_draw
 		_director.record_presented_frame(index, preroll)
@@ -245,6 +267,8 @@ func _write_manifest(ok: bool) -> void:
 		prop_strike = _preserved_prop_strike if not _preserved_prop_strike.is_empty() else (session.prop_strike.duplicate(true) if session != null else {}),
 		accident_report = report,
 		incident_snapshot_preserved_before_restart = not _preserved_report.is_empty(),
+		report_canvas_layer_hidden_before_impact = _report_layer_hidden_before_impact,
+		report_canvas_layer_reveal_frame_after_impact = _report_layer_reveal_frame,
 		native_report_details_expanded_frame = _details_frame,
 		restart = {
 			action = "native_accident_report_restart",

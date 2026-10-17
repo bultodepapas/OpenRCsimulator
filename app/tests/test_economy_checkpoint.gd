@@ -197,6 +197,11 @@ func _repair_cases(bindings: Dictionary) -> void:
 	var no_inspection := ledger.checkpoint(20, bindings)
 	no_inspection.assessment.unresolved.clear()
 	check("uninspected hull contact cannot become a complete zero bill", not ledger.prepare_restore(StateCodec.seal(no_inspection), 20, bindings).ok)
+	var mapped_contact := ledger.checkpoint(20, bindings)
+	check("CR-39d mapped hull contact checkpoints its part inspection", mapped_contact.assessment.components.get("covered_airframe_and_installation_hardware") == {disposition = "inspect"}
+		and ledger.prepare_restore(mapped_contact, 20, bindings).ok)
+	mapped_contact.assessment.components["receiver"] = {disposition = "inspect"}
+	check("CR-39d unmapped part cannot claim a contact-derived inspection", not ledger.prepare_restore(StateCodec.seal(mapped_contact), 20, bindings).ok)
 	var component := "covered_airframe_and_installation_hardware"
 	var priced_components: Array = ledger.dossier.components
 	for index: int in range(priced_components.size()):

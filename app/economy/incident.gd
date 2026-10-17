@@ -243,7 +243,8 @@ func observe(snapshot: Dictionary, bindings: Dictionary, crashed: bool, restored
 		var key := str(event.event_id) + ":" + str(event.response)
 		if _seen.has(key):
 			continue
-		if journal.size() < MAX_EVENTS:
+		var retained := journal.size() < MAX_EVENTS
+		if retained:
 			_seen[key] = true
 			journal.append(event.duplicate(true))
 			changed = true
@@ -257,11 +258,9 @@ func observe(snapshot: Dictionary, bindings: Dictionary, crashed: bool, restored
 				_mark_propeller()
 				changed = true
 		else:
-			var mapped := _contact_components(event)
-			if mapped.is_empty():
-				changed = _add_unresolved("Impact or surface contact requires structural inspection.") or changed
-			else:
-				changed = _mark_contact_inspection(mapped) or changed
+			changed = _add_unresolved("Impact or surface contact requires structural inspection.") or changed
+			if retained: # Checkpoints re-derive these inspections from the retained journal.
+				changed = _mark_contact_inspection(_contact_components(event)) or changed
 		if event.source == "lake" and event.get("material") == "water":
 			if not _confirmed_facts.has("water_exposure"):
 				_confirmed_facts.water_exposure = event.duplicate(true)
@@ -332,16 +331,14 @@ func _contact_components(event: Dictionary) -> Array:
 	return result
 
 
-## A mapped contact makes its parts pending inspection; it never downgrades a confirmed replacement.
+## A mapped contact names its parts as pending inspection beside the structural note; it never
+## overrides an existing decision, so a confirmed replacement or receipt outcome is kept.
 func _mark_contact_inspection(component_ids: Array) -> bool:
 	var changed := false
 	for component_id: String in component_ids:
 		if not _assessment.components.has(component_id):
 			_assessment.components[component_id] = {disposition = "inspect"}
 			changed = true
-		elif _assessment.components[component_id].get("disposition") not in ["inspect", "replace", "unrecoverable"]:
-			# A later contact on an already assessed part reopens its condition.
-			changed = _add_unresolved("Impact or surface contact requires structural inspection.") or changed
 	return changed
 
 

@@ -193,7 +193,8 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     # Two-pass loudness normalization on the full mixed program.
     measure = run([ffmpeg, "-hide_banner", "-i", mixed, "-af", "loudnorm=I=-14:TP=-1.5:LRA=11:print_format=json", "-f", "null", "-"])
     raw = measure.stderr[measure.stderr.rfind("{"):]
-    loud = json.loads(raw)
+    # FFmpeg can append progress statistics after the filter's JSON object.
+    loud = json.JSONDecoder().raw_decode(raw)[0]
     normalizer = ("loudnorm=I=-14:TP=-1.5:LRA=11:linear=true:"
                   f"measured_I={loud['input_i']}:measured_TP={loud['input_tp']}:measured_LRA={loud['input_lra']}:"
                   f"measured_thresh={loud['input_thresh']}:offset={loud['target_offset']}")
@@ -207,7 +208,7 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     assert abs(float(probe["format"]["duration"]) - 60) < .05
     run([ffmpeg, "-hide_banner", "-v", "error", "-i", final, "-f", "null", "-"])
     decoded_measure = run([ffmpeg, "-hide_banner", "-i", final, "-vn", "-af", "loudnorm=I=-14:TP=-1:LRA=11:print_format=json", "-f", "null", "-"])
-    decoded_loud = json.loads(decoded_measure.stderr[decoded_measure.stderr.rfind("{"):])
+    decoded_loud = json.JSONDecoder().raw_decode(decoded_measure.stderr[decoded_measure.stderr.rfind("{"):])[0]
     assert float(decoded_loud["input_tp"]) <= -1.0, decoded_loud
     (out / "render-manifest.json").write_text(json.dumps({"shots": source_rows, "loudness_first_pass": loud, "decoded_aac_loudness": decoded_loud, "probe": probe, "sha256": sha(final)}, indent=2), encoding="utf-8")
     (out / "VIDEO-DESCRIPTION.txt").write_text(

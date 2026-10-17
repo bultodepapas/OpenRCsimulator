@@ -1,0 +1,95 @@
+{
+  "action_bounds_fit": true,
+  "adapter": "NVIDIA GeForce RTX 3090",
+  "aircraft_id": "jensen-das-ugly-stik-60",
+  "complete": false,
+  "detail_bounds_fit": true,
+  "details_expanded": false,
+  "details_scrolled_to_bottom": false,
+  "format": "openrc-cr32-accident-report-capture-v1",
+  "headline": "Up to US$1,331",
+  "headline_font_size": 56,
+  "image": "hull-crash-en-1280x720.png",
+  "image_size": [
+    1280,
+    720
+  ],
+  "known_subtotal_minor": 0,
+  "locale": "en",
+  "outcome": "inspection",
+  "panel_fits_viewport": true,
+  "panel_rect": [
+    180.0,
+    358.0,
+    920.0,
+    334.0
+  ],
+  "parts_comparison": {},
+  "presentation": "terminal",
+  "price_sources_visible": false,
+  "renderer": "gl_compatibility",
+  "repair_details_visible": false,
+  "requested_size": [
+    1280,
+    720
+  ],
+  "scenario_basis": "Propeller strike lower-bound fixture",
+  "text_scale": 1.0,
+  "total_minor": null,
+  "viewport_size_bounds_checks": [
+    {
+      "action_bounds_fit": true,
+      "panel_fits_viewport": true,
+      "panel_rect": [
+        180.0,
+        358.0,
+        920.0,
+        334.0
+      ],
+      "requested_size": [
+        1280,
+        720
+      ],
+      "viewport_size": [
+        1280.0,
+        720.0
+      ]
+    },
+    {
+      "action_bounds_fit": true,
+      "panel_fits_viewport": true,
+      "panel_rect": [
+        500.0,
+        718.0,
+        920.0,
+        334.0
+      ],
+      "requested_size": [
+        1920,
+        1080
+      ],
+      "viewport_size": [
+        1920.0,
+        1080.0
+      ]
+    },
+    {
+      "action_bounds_fit": true,
+      "panel_fits_viewport": true,
+      "panel_rect": [
+        1460.0,
+        1798.0,
+        920.0,
+        334.0
+      ],
+      "requested_size": [
+        3840,
+        2160
+      ],
+      "viewport_size": [
+        3840.0,
+        2160.0
+      ]
+    }
+  ]
+}
