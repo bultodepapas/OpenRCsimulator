@@ -18,6 +18,19 @@ const MAX_LISTENER_SPEED: float = 150.0
 ## AUD-07c (F7): Godot clamps volume_db + distance gain to max_db. Aircraft voices run this much lower
 ## and their bus this much higher: the far field is unchanged and the clamp moves 4x closer.
 const AIRCRAFT_TRIM_DB: float = 12.0
+## AUD-11 (D6): aircraft voices play the source as it was at the retarded time t - r/c, so position, Doppler,
+## directivity and engine state agree. Needs the accepted simulation clock (`time`); snapshots without it play
+## undelayed. The explicit glow-cycle voice keeps its accepted phase-anchored telemetry; only its position is delayed.
+const HISTORY_SECONDS: float = 5.5 # beyond max_distance 1500 m at the 300 m/s minimum sound speed
+const HISTORY_GAP_S: float = 0.5 # a larger clock jump (restore, load stall) is a discontinuity, not motion
+const DELAYED_CONTINUOUS: Array[String] = ["source", "source_velocity", "exhaust_direction", "rpm", "load",
+	"throttle", "airspeed", "jet_velocity", "jet_velocity_max"]
+const DELAYED_DISCRETE: Array[String] = ["running", "blades", "max_rpm"]
+var propagation_delay: bool = true
+var last_delay_s: float = 0.0
+var _history_times: PackedFloat64Array = PackedFloat64Array()
+var _history_positions: PackedVector3Array = PackedVector3Array()
+var _history: Array[Dictionary] = []
 var voices: Array[AudioStreamPlayer3D] = []
 var trees: Array[Vector3] = []
 var canopies: Array[AABB] = []
@@ -66,6 +79,7 @@ func _enter_tree() -> void:
 	_setup_buses()
 	gain = 0.0
 	_primed = false
+	_clear_history()
 	_levels.fill(0.0)
 	for index: int in voices.size():
 		var voice: AudioStreamPlayer3D = voices[index]
@@ -245,6 +259,7 @@ func _find_trees(field: Dictionary) -> void:
 
 func reset_observer() -> void:
 	_primed = false
+	_clear_history()
 	gain = 0.0
 	_levels.fill(0.0)
 	for i: int in voices.size():
@@ -267,6 +282,8 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 		return
 	var dt: float = clampf(delta, 0.0, 0.1)
 	var paused: bool = bool(snapshot.get("paused", false))
+	var actual_source: Vector3 = snapshot.get("source", Vector3.ZERO)
+	snapshot = heard_snapshot(snapshot)
 	var source: Vector3 = snapshot.get("source", Vector3.ZERO)
 	var listener: Vector3 = snapshot.get("listener", Vector3.ZERO)
 	if paused != _previous_paused:
@@ -352,7 +369,7 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 	var disturbed: bool = false
 	if float(t.motor_gain) > 0.20 and float(snapshot.get("airspeed", 0.0)) > 12.0:
 		for perch: Vector3 in trees:
-			if source.distance_squared_to(perch) < 35.0 * 35.0:
+			if actual_source.distance_squared_to(perch) < 35.0 * 35.0:
 				disturbed = true
 				break
 	var event: Dictionary = wildlife.advance(snapshot, dt, trees.size(), disturbed)
@@ -373,6 +390,64 @@ func update_sound(snapshot: Dictionary, delta: float) -> void:
 		_start_offsets.clear()
 	last_update_usec = Time.get_ticks_usec() - started
 	peak_update_usec = maxi(peak_update_usec, last_update_usec)
+
+
+## AUD-11: records the accepted source sample and returns the snapshot with its source-side fields at the
+## retarded time. Listener, wind and light stay current.
+func heard_snapshot(snapshot: Dictionary) -> Dictionary:
+	if not propagation_delay or not snapshot.has("time"):
+		last_delay_s = 0.0
+		return snapshot
+	var now: float = float(snapshot.time)
+	var count: int = _history_times.size()
+	if count > 0 and (now < _history_times[count - 1] or now - _history_times[count - 1] > HISTORY_GAP_S):
+		_clear_history()
+		count = 0
+	var sample: Dictionary = {}
+	for key: String in DELAYED_CONTINUOUS + DELAYED_DISCRETE:
+		if snapshot.has(key):
+			sample[key] = snapshot[key]
+	var position: Vector3 = snapshot.get("source", Vector3.ZERO)
+	if count > 0 and now == _history_times[count - 1]:
+		# Paused or the same accepted tick: the newest values replace the sample.
+		_history[count - 1] = sample
+		_history_positions[count - 1] = position
+	else:
+		_history_times.append(now)
+		_history_positions.append(position)
+		_history.append(sample)
+	var keep_from: int = 0
+	while keep_from + 1 < _history_times.size() and _history_times[keep_from + 1] < now - HISTORY_SECONDS:
+		keep_from += 1
+	if keep_from > 0:
+		_history_times = _history_times.slice(keep_from)
+		_history_positions = _history_positions.slice(keep_from)
+		_history = _history.slice(keep_from)
+	var emission: Dictionary = Model.retarded_emission(_history_times, _history_positions,
+		snapshot.get("listener", Vector3.ZERO), now, float(snapshot.get("sound_speed", 343.0)))
+	last_delay_s = float(emission.delay)
+	var alpha: float = float(emission.alpha)
+	var older: Dictionary = _history[int(emission.index)]
+	var newer: Dictionary = _history[mini(int(emission.index) + 1, _history.size() - 1)]
+	var heard: Dictionary = snapshot.duplicate()
+	for key: String in DELAYED_CONTINUOUS:
+		if older.has(key) and newer.has(key):
+			var from: Variant = older[key]
+			heard[key] = (from as Vector3).lerp(newer[key], alpha) if from is Vector3 else lerpf(float(from), float(newer[key]), alpha)
+		elif older.has(key):
+			heard[key] = older[key]
+	var nearest: Dictionary = newer if alpha >= 0.5 else older
+	for key: String in DELAYED_DISCRETE:
+		if nearest.has(key):
+			heard[key] = nearest[key]
+	return heard
+
+
+func _clear_history() -> void:
+	_history_times = PackedFloat64Array()
+	_history_positions = PackedVector3Array()
+	_history.clear()
+	last_delay_s = 0.0
 
 
 func _update_glow_voice(glow_snapshot: Dictionary, snapshot: Dictionary,
