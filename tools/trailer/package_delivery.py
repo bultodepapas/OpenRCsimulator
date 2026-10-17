@@ -19,9 +19,10 @@ def sha(path):
 
 def package(out, work, ffmpeg):
     root = Path(__file__).resolve().parents[2]
-    film = out / 'OpenRC-Every-Input-Matters-60s-1080p60.mp4'
-    assert film.exists()
     spec = json.loads((out / 'timeline.json').read_text(encoding='utf-8'))
+    duration = sum(shot['frames'] for shot in spec['shots']) / 60
+    film = out / spec.get('output_filename', f'OpenRC-Every-Input-Matters-{duration:g}s-1080p60.mp4')
+    assert film.exists()
     assert spec['status'] == 'accepted production edit'
     shutil.copytree(root / 'tools/trailer', out / 'editor', dirs_exist_ok=True,
                     ignore=shutil.ignore_patterns('__pycache__', '*.pyc'))
@@ -30,7 +31,7 @@ def package(out, work, ffmpeg):
     run(ffmpeg, '-y', '-v', 'error', '-ss', '2.5', '-i', film, '-frames:v', 1, out / 'poster.png')
     review = out / 'evidence/visual-review'
     review.mkdir(parents=True, exist_ok=True)
-    sheet = Image.new('RGB', (1920, 5 * 306), '#08111c')
+    sheet = Image.new('RGB', (1920, ((len(spec['shots']) + 3) // 4) * 306), '#08111c')
     draw = ImageDraw.Draw(sheet)
     face = ImageFont.truetype(str(root / 'tools/trailer/assets/fonts/BarlowCondensed-Regular.ttf'), 24)
     frame = 0

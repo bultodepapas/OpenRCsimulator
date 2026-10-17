@@ -1,0 +1,941 @@
+{
+  "date": "2026-10-17",
+  "revision": 5,
+  "export_directory": "C:\\DEVELOPMENT\\OpenRCsimulator-exports\\trailer-2026-10-17-v5",
+  "film": "OpenRC-Every-Input-Matters-60s-1080p60.mp4",
+  "sha256": "d53541b474f1f861d87df1ef9151d60cecbd1ac5923acdc460c2494aca87217d",
+  "bytes": 242914044,
+  "duration_s": 60,
+  "fps": 60,
+  "frames": 3600,
+  "resolution": [
+    1920,
+    1080
+  ],
+  "opening": "Five-second cinematic formation using source seconds 2-7",
+  "extra": {
+    "timeline_seconds": [
+      13,
+      19
+    ],
+    "normal_speed": true,
+    "roll_crossings_deg": {
+      "360": {
+        "frame": 187,
+        "capture_time_s": 3.11666666666667
+      },
+      "720": {
+        "frame": 342,
+        "capture_time_s": 5.7
+      }
+    },
+    "final_unwrapped_roll_deg": 777.923304850624,
+    "minimum_altitude_m": 145.618591381397,
+    "final_altitude_m": 179.0980094503,
+    "frame_mesh_bounds_fully_inside_viewport": 360,
+    "source_sha256": "144bcd5f7b94140b8df0a88e779ff7a591697375758bc80f569fc9ff34f90915"
+  },
+  "lumber": {
+    "timeline_seconds": [
+      22,
+      25
+    ],
+    "world_conditions": {
+      "preset": "",
+      "time_of_day": true,
+      "time_scale": 0.0,
+      "when": {
+        "day": 21,
+        "hour": 21.85,
+        "latitude_deg": 40.0,
+        "longitude_deg": -3.7,
+        "month": 6,
+        "utc_offset_h": 2.0,
+        "year": 2026
+      }
+    },
+    "field_world_lighting": true,
+    "native_color_preserved": true,
+    "source_sha256": "d660c8311e8708cc3bc5031f1a93c82aa53e627baa4631442160e6f654003f6a"
+  },
+  "music": {
+    "continuous": true,
+    "constant_gain": 0.9,
+    "game_gain": 0.65,
+    "sha256": "131e7d2d6d1fa62f12dafae6aee5a3e998d24daee42b88de4b0ffc89394c3d9c",
+    "nominal_tempo_bpm": 90,
+    "no_silent_half_second_windows": true,
+    "minimum_half_second_rms_dbfs_at_mix_gain": -20.64,
+    "ending_fade_s": 0.6666666666666666,
+    "direct_listening_available": false
+  },
+  "decoded_aac": {
+    "input_i": "-14.01",
+    "input_tp": "-3.22",
+    "input_lra": "1.90"
+  },
+  "shots": [
+    {
+      "id": "formation",
+      "frames": 300
+    },
+    {
+      "id": "jet-pass",
+      "frames": 240
+    },
+    {
+      "id": "stik-bank",
+      "frames": 240
+    },
+    {
+      "id": "extra-roll",
+      "frames": 360
+    },
+    {
+      "id": "mustang-pass",
+      "frames": 180
+    },
+    {
+      "id": "timber-pass",
+      "frames": 180
+    },
+    {
+      "id": "helicopter",
+      "frames": 300
+    },
+    {
+      "id": "bisonte",
+      "frames": 240
+    },
+    {
+      "id": "monster-car-2",
+      "frames": 240
+    },
+    {
+      "id": "storm",
+      "frames": 180
+    },
+    {
+      "id": "wind",
+      "frames": 240
+    },
+    {
+      "id": "controls",
+      "frames": 240
+    },
+    {
+      "id": "crash-approach",
+      "frames": 87
+    },
+    {
+      "id": "crash-aftermath",
+      "frames": 63
+    },
+    {
+      "id": "crash-report",
+      "frames": 210
+    },
+    {
+      "id": "restart",
+      "frames": 120
+    },
+    {
+      "id": "end-card",
+      "frames": 180
+    }
+  ],
+  "published": false,
+  "review_limits": [
+    "Signal analysis and sampled visuals; direct listening unavailable",
+    "Development footage; not physical-validation or exact ORFL replay evidence",
+    "Existing Turbo Lumber asset release notice remains unresolved"
+  ],
+  "car_jump": {
+    "vehicle_id": "monster-car-2",
+    "source_sha256": "3ca335ff17493f1b7603f64435c30d3cb590545a296a248104862274383bf023",
+    "timeline_seconds": [
+      34,
+      38
+    ],
+    "source_trim_frames": [
+      107,
+      347
+    ],
+    "normal_speed": true,
+    "launch_speed_mps": 7.640407898062347,
+    "launch_speed_kmh": 27.50546843302445,
+    "airtime_s": 0.7166666666666663,
+    "airborne_presented_frames": 43,
+    "timeline_first_post_landing_frame": 2215,
+    "timeline_first_post_landing_time_s": 36.916666666666664,
+    "music_detected_accent_time_s": 36.9161,
+    "verified_movie_frame_offset": 3
+  },
+  "feature_titles": [
+    {
+      "shot": "formation",
+      "start_s": 0.6666666666666666,
+      "end_s": 4.75,
+      "kicker": "OPEN SOURCE RC SIMULATION",
+      "headline": [
+        "EVERY INPUT",
+        "MATTERS."
+      ],
+      "detail": "Airplanes. Helicopters. RC cars.",
+      "start": 0.6666666666666666,
+      "end": 4.75,
+      "text_bounds": [
+        [
+          148,
+          96,
+          397,
+          116
+        ],
+        [
+          95,
+          153,
+          472,
+          214
+        ],
+        [
+          95,
+          232,
+          379,
+          294
+        ],
+        [
+          97,
+          316,
+          427,
+          346
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 506
+    },
+    {
+      "shot": "jet-pass",
+      "start_s": 5.333333333333333,
+      "end_s": 8.75,
+      "kicker": "ADVANCED FLIGHT PHYSICS",
+      "headline": [
+        "FEEL EVERY",
+        "INPUT."
+      ],
+      "detail": "6 degrees of freedom. 240 Hz simulation.",
+      "start": 0.3333333333333333,
+      "end": 3.75,
+      "text_bounds": [
+        [
+          148,
+          96,
+          378,
+          116
+        ],
+        [
+          95,
+          153,
+          439,
+          213
+        ],
+        [
+          95,
+          233,
+          287,
+          294
+        ],
+        [
+          97,
+          316,
+          533,
+          346
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 506
+    },
+    {
+      "shot": "stik-bank",
+      "start_s": 9.333333333333334,
+      "end_s": 12.75,
+      "kicker": "FLEXIBLE DETAILS",
+      "headline": [
+        "LANDING-GEAR",
+        "FLEX."
+      ],
+      "detail": "Visible gear deformation on the Stik.",
+      "start": 0.3333333333333333,
+      "end": 3.75,
+      "text_bounds": [
+        [
+          148,
+          96,
+          303,
+          116
+        ],
+        [
+          95,
+          152,
+          523,
+          214
+        ],
+        [
+          95,
+          233,
+          256,
+          293
+        ],
+        [
+          97,
+          316,
+          483,
+          346
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 506
+    },
+    {
+      "shot": "extra-roll",
+      "start_s": 13.333333333333334,
+      "end_s": 16.05,
+      "kicker": "AIRCRAFT WORKSHOP",
+      "headline": [
+        "CUSTOMIZE.",
+        "TEST-FLY."
+      ],
+      "detail": "Build and save experimental variants.",
+      "start": 0.3333333333333333,
+      "end": 3.05,
+      "text_bounds": [
+        [
+          148,
+          96,
+          327,
+          116
+        ],
+        [
+          95,
+          152,
+          432,
+          214
+        ],
+        [
+          95,
+          232,
+          392,
+          294
+        ],
+        [
+          97,
+          316,
+          495,
+          346
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 506
+    },
+    {
+      "shot": "extra-roll",
+      "start_s": 16.333333333333332,
+      "end_s": 18.75,
+      "kicker": "OPTIONAL EMERGENCY PRACTICE",
+      "headline": [
+        "RANDOMIZED",
+        "FAILURES."
+      ],
+      "detail": "Choose your per-flight odds.",
+      "start": 3.3333333333333335,
+      "end": 5.75,
+      "text_bounds": [
+        [
+          148,
+          96,
+          424,
+          116
+        ],
+        [
+          95,
+          152,
+          461,
+          214
+        ],
+        [
+          95,
+          232,
+          386,
+          294
+        ],
+        [
+          97,
+          316,
+          398,
+          346
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 506
+    },
+    {
+      "shot": "mustang-pass",
+      "start_s": 19.333333333333332,
+      "end_s": 21.9,
+      "kicker": "THE HANGAR KEEPS GROWING",
+      "headline": [
+        "NEW MODELS",
+        "EVERY WEEK"
+      ],
+      "detail": "",
+      "start": 0.3333333333333333,
+      "end": 2.9,
+      "text_bounds": [
+        [
+          148,
+          96,
+          396,
+          116
+        ],
+        [
+          95,
+          152,
+          473,
+          214
+        ],
+        [
+          95,
+          233,
+          465,
+          293
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 453
+    },
+    {
+      "shot": "timber-pass",
+      "start_s": 22.0,
+      "end_s": 24.9,
+      "kicker": "NIGHT FLIGHT + TIME OF DAY",
+      "headline": [
+        "CHASE THE",
+        "LAST LIGHT."
+      ],
+      "detail": "Dawn. Day. Dusk. Night.",
+      "start": 0,
+      "end": 2.9,
+      "text_bounds": [
+        [
+          148,
+          96,
+          390,
+          116
+        ],
+        [
+          95,
+          152,
+          410,
+          214
+        ],
+        [
+          95,
+          232,
+          440,
+          294
+        ],
+        [
+          97,
+          316,
+          343,
+          346
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 506
+    },
+    {
+      "shot": "helicopter",
+      "start_s": 25.333333333333332,
+      "end_s": 29.5,
+      "kicker": "HELICOPTER FLIGHT",
+      "headline": [
+        "MASTER",
+        "THE HOVER."
+      ],
+      "detail": "Hover. Yaw. Forward flight.",
+      "start": 0.3333333333333333,
+      "end": 4.5,
+      "text_bounds": [
+        [
+          148,
+          96,
+          318,
+          116
+        ],
+        [
+          95,
+          152,
+          325,
+          214
+        ],
+        [
+          95,
+          232,
+          432,
+          294
+        ],
+        [
+          97,
+          316,
+          382,
+          346
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 506
+    },
+    {
+      "shot": "bisonte",
+      "start_s": 30.0,
+      "end_s": 33.75,
+      "kicker": "RC GROUND VEHICLES",
+      "headline": [
+        "TAKE IT",
+        "OFF ROAD."
+      ],
+      "detail": "Two RC monster trucks.",
+      "start": 0,
+      "end": 3.75,
+      "text_bounds": [
+        [
+          148,
+          96,
+          332,
+          116
+        ],
+        [
+          95,
+          153,
+          317,
+          213
+        ],
+        [
+          95,
+          232,
+          388,
+          294
+        ],
+        [
+          97,
+          316,
+          349,
+          340
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 500
+    },
+    {
+      "shot": "monster-car-2",
+      "start_s": 34.0,
+      "end_s": 36.15,
+      "kicker": "RAMPS + JUMPS",
+      "headline": [
+        "FULL",
+        "THROTTLE."
+      ],
+      "detail": "",
+      "start": 0,
+      "end": 2.15,
+      "text_bounds": [
+        [
+          148,
+          96,
+          283,
+          116
+        ],
+        [
+          95,
+          153,
+          238,
+          214
+        ],
+        [
+          95,
+          232,
+          410,
+          294
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 454
+    },
+    {
+      "shot": "storm",
+      "start_s": 38.0,
+      "end_s": 40.9,
+      "kicker": "ELECTRICAL STORMS",
+      "headline": [
+        "UNDER",
+        "DARKER SKIES."
+      ],
+      "detail": "Lightning. Thunder. Atmosphere.",
+      "start": 0,
+      "end": 2.9,
+      "size": 76,
+      "text_bounds": [
+        [
+          148,
+          96,
+          322,
+          116
+        ],
+        [
+          95,
+          151,
+          276,
+          208
+        ],
+        [
+          95,
+          224,
+          490,
+          282
+        ],
+        [
+          97,
+          304,
+          440,
+          334
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 494
+    },
+    {
+      "shot": "wind",
+      "start_s": 41.333333333333336,
+      "end_s": 44.75,
+      "kicker": "SIMULATED WIND",
+      "headline": [
+        "FEEL",
+        "THE GUSTS."
+      ],
+      "detail": "Wind. Gusts. Turbulence.",
+      "start": 0.3333333333333333,
+      "end": 3.75,
+      "text_bounds": [
+        [
+          148,
+          96,
+          294,
+          116
+        ],
+        [
+          95,
+          153,
+          237,
+          213
+        ],
+        [
+          95,
+          232,
+          428,
+          294
+        ],
+        [
+          97,
+          316,
+          357,
+          340
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 500
+    },
+    {
+      "shot": "controls",
+      "start_s": 45.333333333333336,
+      "end_s": 48.75,
+      "kicker": "JOYSTICKS + RC TRANSMITTERS",
+      "headline": [
+        "YOUR RADIO.",
+        "YOUR RULES."
+      ],
+      "detail": "EdgeTX / OpenTX in USB joystick mode.",
+      "start": 0.3333333333333333,
+      "end": 3.75,
+      "xy": [
+        422,
+        88
+      ],
+      "size": 76,
+      "text_bounds": [
+        [
+          474,
+          96,
+          741,
+          116
+        ],
+        [
+          421,
+          150,
+          753,
+          208
+        ],
+        [
+          421,
+          224,
+          764,
+          282
+        ],
+        [
+          423,
+          304,
+          835,
+          334
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 494
+    },
+    {
+      "shot": "crash-approach",
+      "start_s": 49.0,
+      "end_s": 50.45,
+      "kicker": "IMPACT + CONSEQUENCE",
+      "headline": [
+        "MISTAKES",
+        "HAVE A COST."
+      ],
+      "detail": "",
+      "start": 0,
+      "end": 2.5,
+      "text_bounds": [
+        [
+          148,
+          96,
+          355,
+          119
+        ],
+        [
+          95,
+          152,
+          380,
+          214
+        ],
+        [
+          95,
+          232,
+          482,
+          294
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 454
+    },
+    {
+      "shot": "crash-aftermath",
+      "start_s": 50.45,
+      "end_s": 51.5,
+      "kicker": "IMPACT + CONSEQUENCE",
+      "headline": [
+        "MISTAKES",
+        "HAVE A COST."
+      ],
+      "detail": "",
+      "start": -1.45,
+      "end": 1.05,
+      "text_bounds": [
+        [
+          148,
+          96,
+          355,
+          119
+        ],
+        [
+          95,
+          152,
+          380,
+          214
+        ],
+        [
+          95,
+          232,
+          482,
+          294
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 454
+    },
+    {
+      "shot": "crash-report",
+      "start_s": 51.666666666666664,
+      "end_s": 54.9,
+      "kicker": "ACCIDENT REPORTS",
+      "headline": [
+        "REPAIR. REPLACE."
+      ],
+      "detail": "Provisional repair and replacement estimates.",
+      "start": 0.16666666666666666,
+      "end": 3.4,
+      "size": 70,
+      "xy": [
+        96,
+        72
+      ],
+      "text_bounds": [
+        [
+          148,
+          80,
+          314,
+          100
+        ],
+        [
+          95,
+          133,
+          532,
+          186
+        ],
+        [
+          97,
+          208,
+          586,
+          238
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 398
+    },
+    {
+      "shot": "restart",
+      "start_s": 55.0,
+      "end_s": 56.9,
+      "kicker": "RESET + RETRY",
+      "headline": [
+        "BACK IN THE AIR."
+      ],
+      "detail": "",
+      "start": 0,
+      "end": 1.9,
+      "size": 74,
+      "text_bounds": [
+        [
+          148,
+          96,
+          280,
+          116
+        ],
+        [
+          95,
+          149,
+          535,
+          206
+        ]
+      ],
+      "safe_area": [
+        72,
+        64,
+        1848,
+        450
+      ],
+      "scrim_bottom": 366
+    }
+  ],
+  "feature_verification": {
+    "unchanged_source_frames_and_audio_trims": true,
+    "unchanged_source_hashes": true,
+    "unchanged_music_and_game_stems": true,
+    "identical_final_aac_packets": true,
+    "final_aac_packet_sha256": "SHA256=28c2867632da5bd1e9ae1e3b54f4fc048282a341f775b3e97ae8ff674fd96cfe",
+    "feature_plates": 17,
+    "all_text_inside_title_safe_area": true,
+    "report_region_overlay_alpha": 0,
+    "entrance_times_on_90bpm_half_beat_grid": true,
+    "car_title_clear_before_touchdown": true,
+    "touchdown_frame": 2215,
+    "additional_frame_samples": 12
+  },
+  "owner_confirmed_announcement": "New models every week"
+}
