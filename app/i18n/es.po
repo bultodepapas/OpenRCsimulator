@@ -3300,3 +3300,6 @@ msgstr "Límite superior: reemplazar el avión completo. Inspección pendiente."
 
 msgid "Cost data is out of date for this aircraft version; no prices were applied."
 msgstr "Los datos de costes no corresponden a esta versión del avión; no se aplicaron precios."
+
+msgid "Prices were authored for an earlier revision of this aircraft; its priced parts and contacts were verified unchanged."
+msgstr "Los precios se crearon para una revisión anterior de este avión; se verificó que sus piezas con precio y sus contactos no cambiaron."

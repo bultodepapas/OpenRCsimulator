@@ -4,7 +4,7 @@
   "price_date": "2026-10-16",
   "generated_from": {
     "price_catalog_sha256": "64b009a22268f84d81a1b5cf53f87f653d47bb4f483444c072d3e17d455c297e",
-    "aircraft_costing_sha256": "297143976d29dfe2b1263f3ae8c9e717c59ddbedf8e3998e960bf2f68357446e",
+    "aircraft_costing_sha256": "0c1d76d155352d03edc886ba72238d270c05aba2fb8d9d6c0e28ca170208946e",
     "aircraft_catalog_sha256": "631d575501323c84219fabd3adf15707e0bb260bc30c87a5ea7b49a773318e7a",
     "price_research_components_sha256": "9e4fae3dc663ff8212604790b1c2a3308cc7923f1164d5f71419cd6a77600bdd",
     "price_research_fleet_sha256": "66d0a319869ca158aa947783143fb2807497c42decb0c834eb84e6642198392d"
@@ -2210,13 +2210,190 @@
       "contact_components": {
         "propeller/propulsion_main": [
           "propeller"
+        ],
+        "probe_wing_left_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_tail_end": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_stabilizer_left_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_stabilizer_right_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_fin_top": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_belly_main": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "contact_main_left": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "contact_main_right": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "contact_nose": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_spinner_tip": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
         ]
       },
       "propeller_component_id": "propeller",
       "propeller_inspection_ids": [
         "engine_and_muffler",
         "covered_airframe_and_installation_hardware"
-      ]
+      ],
+      "physical_signature": {
+        "inventory": {
+          "item_engine_main": {
+            "name": "engine O.S. MAX-61FX",
+            "mass": 0.55,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_muffler_main": {
+            "name": "muffler E-4010",
+            "mass": 0.15,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_propeller_main": {
+            "name": "propeller APC 12x6 Sport",
+            "mass": 0.046,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_spinner_main": {
+            "name": "spinner and prop nut",
+            "mass": 0.025,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_engine_mount": {
+            "name": "engine mount and bolts",
+            "mass": 0.045,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuel_tank": {
+            "name": "fuel tank (empty)",
+            "mass": 0.055,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuel_main": {
+            "name": "fuel (half tank)",
+            "mass": 0.12,
+            "mass_unit": "kg",
+            "energy_source": "glow_fuel"
+          },
+          "item_receiver_battery": {
+            "name": "receiver battery 4.8 V 600 mAh",
+            "mass": 0.105,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_receiver_main": {
+            "name": "receiver",
+            "mass": 0.025,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_servos": {
+            "name": "fuselage servos (3)",
+            "mass": 0.135,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_aileron_servo": {
+            "name": "aileron servo",
+            "mass": 0.045,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_nose_gear_assembly": {
+            "name": "nose gear and 2.75 in wheel",
+            "mass": 0.065,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_main_gear_assembly": {
+            "name": "main gear and 3 in wheels",
+            "mass": 0.13,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_wing_airframe": {
+            "name": "wing incl. ailerons",
+            "mass": 0.52,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_front": {
+            "name": "fuselage front (firewall to F4)",
+            "mass": 0.22,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_rear": {
+            "name": "fuselage rear (F4 to tail)",
+            "mass": 0.14,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_stabilizer_elevator": {
+            "name": "stabilizer and elevator",
+            "mass": 0.1,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fin_rudder": {
+            "name": "fin and rudder",
+            "mass": 0.055,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_control_hardware": {
+            "name": "pushrods, horns, hardware",
+            "mass": 0.07,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_balance_mass_virtual": {
+            "name": "virtual reference-build balancing mass",
+            "mass": 0.2840582910437526,
+            "mass_unit": "kg",
+            "energy_source": ""
+          }
+        },
+        "propulsion": {
+          "id": "propulsion_main",
+          "kind": "glow_prop",
+          "propeller": true
+        },
+        "contacts": [
+          "contact_main_left",
+          "contact_main_right",
+          "contact_nose",
+          "probe_belly_main",
+          "probe_fin_top",
+          "probe_spinner_tip",
+          "probe_stabilizer_left_tip",
+          "probe_stabilizer_right_tip",
+          "probe_tail_end",
+          "probe_wing_left_tip",
+          "probe_wing_right_tip",
+          "propeller/propulsion_main"
+        ]
+      }
     },
     {
       "format": "openrc-aircraft-economics v1",
@@ -2398,13 +2575,190 @@
       "contact_components": {
         "propeller/propulsion_main": [
           "propeller"
+        ],
+        "probe_wing_left_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_tail_end": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_stabilizer_left_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_stabilizer_right_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_fin_top": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_belly_main": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "contact_main_left": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "contact_main_right": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "contact_nose": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_spinner_tip": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
         ]
       },
       "propeller_component_id": "propeller",
       "propeller_inspection_ids": [
         "engine_and_muffler",
         "covered_airframe_and_installation_hardware"
-      ]
+      ],
+      "physical_signature": {
+        "inventory": {
+          "item_engine_main": {
+            "name": "engine O.S. MAX-61FX",
+            "mass": 0.55,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_muffler_main": {
+            "name": "muffler E-4010",
+            "mass": 0.15,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_propeller_main": {
+            "name": "propeller APC 12x6 Sport",
+            "mass": 0.046,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_spinner_main": {
+            "name": "spinner and prop nut",
+            "mass": 0.025,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_engine_mount": {
+            "name": "engine mount and bolts",
+            "mass": 0.045,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuel_tank": {
+            "name": "fuel tank (empty)",
+            "mass": 0.055,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuel_main": {
+            "name": "usable glow premix",
+            "mass": 0.12,
+            "mass_unit": "kg",
+            "energy_source": "glow_fuel"
+          },
+          "item_receiver_battery": {
+            "name": "receiver battery 4.8 V 600 mAh",
+            "mass": 0.105,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_receiver_main": {
+            "name": "receiver",
+            "mass": 0.025,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_servos": {
+            "name": "fuselage servos (3)",
+            "mass": 0.135,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_aileron_servo": {
+            "name": "aileron servo",
+            "mass": 0.045,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_nose_gear_assembly": {
+            "name": "nose gear and 2.75 in wheel",
+            "mass": 0.065,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_main_gear_assembly": {
+            "name": "main gear and 3 in wheels",
+            "mass": 0.13,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_wing_airframe": {
+            "name": "wing incl. ailerons",
+            "mass": 0.52,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_front": {
+            "name": "fuselage front (firewall to F4)",
+            "mass": 0.22,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_rear": {
+            "name": "fuselage rear (F4 to tail)",
+            "mass": 0.14,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_stabilizer_elevator": {
+            "name": "stabilizer and elevator",
+            "mass": 0.1,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fin_rudder": {
+            "name": "fin and rudder",
+            "mass": 0.055,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_control_hardware": {
+            "name": "pushrods, horns, hardware",
+            "mass": 0.07,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_balance_mass_virtual": {
+            "name": "virtual reference-build balancing mass",
+            "mass": 0.2840582910437527,
+            "mass_unit": "kg",
+            "energy_source": ""
+          }
+        },
+        "propulsion": {
+          "id": "propulsion_main",
+          "kind": "glow_prop",
+          "propeller": true
+        },
+        "contacts": [
+          "contact_main_left",
+          "contact_main_right",
+          "contact_nose",
+          "probe_belly_main",
+          "probe_fin_top",
+          "probe_spinner_tip",
+          "probe_stabilizer_left_tip",
+          "probe_stabilizer_right_tip",
+          "probe_tail_end",
+          "probe_wing_left_tip",
+          "probe_wing_right_tip",
+          "propeller/propulsion_main"
+        ]
+      }
     },
     {
       "format": "openrc-aircraft-economics v1",
@@ -2586,13 +2940,190 @@
       "contact_components": {
         "propeller/propulsion_main": [
           "propeller"
+        ],
+        "probe_wing_left_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_tail_end": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_stabilizer_left_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_stabilizer_right_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_fin_top": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_belly_main": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "contact_main_left": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "contact_main_right": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "contact_nose": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_spinner_tip": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
         ]
       },
       "propeller_component_id": "propeller",
       "propeller_inspection_ids": [
         "engine_and_muffler",
         "covered_airframe_and_installation_hardware"
-      ]
+      ],
+      "physical_signature": {
+        "inventory": {
+          "item_engine_main": {
+            "name": "O.S. MAX-55AX",
+            "mass": 0.404,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_muffler_main": {
+            "name": "stock silencer",
+            "mass": 0.121,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_propeller_main": {
+            "name": "APC Sport LP12070 12x7",
+            "mass": 0.0430913,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_spinner_main": {
+            "name": "spinner and prop nut",
+            "mass": 0.025,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_engine_mount": {
+            "name": "engine mount and bolts",
+            "mass": 0.045,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuel_tank": {
+            "name": "fuel tank (empty)",
+            "mass": 0.055,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuel_main": {
+            "name": "usable glow premix",
+            "mass": 0.12,
+            "mass_unit": "kg",
+            "energy_source": "glow_fuel"
+          },
+          "item_receiver_battery": {
+            "name": "receiver battery 4.8 V 600 mAh",
+            "mass": 0.105,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_receiver_main": {
+            "name": "receiver",
+            "mass": 0.025,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_servos": {
+            "name": "fuselage servos (3)",
+            "mass": 0.135,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_aileron_servo": {
+            "name": "aileron servo",
+            "mass": 0.045,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_nose_gear_assembly": {
+            "name": "nose gear and 2.75 in wheel",
+            "mass": 0.065,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_main_gear_assembly": {
+            "name": "main gear and 3 in wheels",
+            "mass": 0.13,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_wing_airframe": {
+            "name": "wing incl. ailerons",
+            "mass": 0.52,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_front": {
+            "name": "fuselage front (firewall to F4)",
+            "mass": 0.22,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_rear": {
+            "name": "fuselage rear (F4 to tail)",
+            "mass": 0.14,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_stabilizer_elevator": {
+            "name": "stabilizer and elevator",
+            "mass": 0.1,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fin_rudder": {
+            "name": "fin and rudder",
+            "mass": 0.055,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_control_hardware": {
+            "name": "pushrods, horns, hardware",
+            "mass": 0.07,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_balance_mass_virtual": {
+            "name": "virtual reference-build balancing mass",
+            "mass": 0.19980777666986707,
+            "mass_unit": "kg",
+            "energy_source": ""
+          }
+        },
+        "propulsion": {
+          "id": "propulsion_main",
+          "kind": "glow_prop",
+          "propeller": true
+        },
+        "contacts": [
+          "contact_main_left",
+          "contact_main_right",
+          "contact_nose",
+          "probe_belly_main",
+          "probe_fin_top",
+          "probe_spinner_tip",
+          "probe_stabilizer_left_tip",
+          "probe_stabilizer_right_tip",
+          "probe_tail_end",
+          "probe_wing_left_tip",
+          "probe_wing_right_tip",
+          "propeller/propulsion_main"
+        ]
+      }
     },
     {
       "format": "openrc-aircraft-economics v1",
@@ -2774,13 +3305,190 @@
       "contact_components": {
         "propeller/propulsion_main": [
           "propeller"
+        ],
+        "probe_wing_left_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_wing_right_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_tail_end": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_stabilizer_left_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_stabilizer_right_tip": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_fin_top": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_belly_main": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "contact_main_left": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "contact_main_right": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "contact_nose": [
+          "covered_airframe_and_installation_hardware"
+        ],
+        "probe_spinner_tip": [
+          "covered_airframe_and_installation_hardware",
+          "engine_and_muffler"
         ]
       },
       "propeller_component_id": "propeller",
       "propeller_inspection_ids": [
         "engine_and_muffler",
         "covered_airframe_and_installation_hardware"
-      ]
+      ],
+      "physical_signature": {
+        "inventory": {
+          "item_engine_main": {
+            "name": "O.S. FS-64V",
+            "mass": 0.442,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_muffler_main": {
+            "name": "stock silencer",
+            "mass": 0.044,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_propeller_main": {
+            "name": "Master Airscrew K Series 14x6",
+            "mass": 0.06,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_spinner_main": {
+            "name": "spinner and prop nut",
+            "mass": 0.025,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_engine_mount": {
+            "name": "engine mount and bolts",
+            "mass": 0.045,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuel_tank": {
+            "name": "fuel tank (empty)",
+            "mass": 0.055,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuel_main": {
+            "name": "usable glow premix",
+            "mass": 0.12,
+            "mass_unit": "kg",
+            "energy_source": "glow_fuel"
+          },
+          "item_receiver_battery": {
+            "name": "receiver battery 4.8 V 600 mAh",
+            "mass": 0.105,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_receiver_main": {
+            "name": "receiver",
+            "mass": 0.025,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_servos": {
+            "name": "fuselage servos (3)",
+            "mass": 0.135,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_aileron_servo": {
+            "name": "aileron servo",
+            "mass": 0.045,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_nose_gear_assembly": {
+            "name": "nose gear and 2.75 in wheel",
+            "mass": 0.065,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_main_gear_assembly": {
+            "name": "main gear and 3 in wheels",
+            "mass": 0.13,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_wing_airframe": {
+            "name": "wing incl. ailerons",
+            "mass": 0.52,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_front": {
+            "name": "fuselage front (firewall to F4)",
+            "mass": 0.22,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fuselage_rear": {
+            "name": "fuselage rear (F4 to tail)",
+            "mass": 0.14,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_stabilizer_elevator": {
+            "name": "stabilizer and elevator",
+            "mass": 0.1,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_fin_rudder": {
+            "name": "fin and rudder",
+            "mass": 0.055,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_control_hardware": {
+            "name": "pushrods, horns, hardware",
+            "mass": 0.07,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "item_balance_mass_virtual": {
+            "name": "virtual reference-build balancing mass",
+            "mass": 0.19237813742970794,
+            "mass_unit": "kg",
+            "energy_source": ""
+          }
+        },
+        "propulsion": {
+          "id": "propulsion_main",
+          "kind": "glow_prop",
+          "propeller": true
+        },
+        "contacts": [
+          "contact_main_left",
+          "contact_main_right",
+          "contact_nose",
+          "probe_belly_main",
+          "probe_fin_top",
+          "probe_spinner_tip",
+          "probe_stabilizer_left_tip",
+          "probe_stabilizer_right_tip",
+          "probe_tail_end",
+          "probe_wing_left_tip",
+          "probe_wing_right_tip",
+          "propeller/propulsion_main"
+        ]
+      }
     },
     {
       "format": "openrc-aircraft-economics v1",
@@ -3113,6 +3821,49 @@
       "contact_components": {
         "propeller/propulsion_main": [
           "propeller"
+        ],
+        "probe_wing_left_le": [
+          "wing_main"
+        ],
+        "probe_wing_right_le": [
+          "wing_main"
+        ],
+        "probe_wing_left_te": [
+          "wing_main"
+        ],
+        "probe_wing_right_te": [
+          "wing_main"
+        ],
+        "probe_spinner_tip": [
+          "spinner_main",
+          "engine_main",
+          "engine_mount",
+          "fuselage_front"
+        ],
+        "probe_rudder_bottom": [
+          "vertical_tail"
+        ],
+        "probe_fin_top": [
+          "vertical_tail"
+        ],
+        "probe_stabilizer_left_tip": [
+          "horizontal_tail"
+        ],
+        "probe_stabilizer_right_tip": [
+          "horizontal_tail"
+        ],
+        "probe_canopy_top": [
+          "canopy_pilot",
+          "fuselage_front"
+        ],
+        "contact_main_left": [
+          "landing_gear_main"
+        ],
+        "contact_main_right": [
+          "landing_gear_main"
+        ],
+        "contact_tail": [
+          "landing_gear_tail"
         ]
       },
       "propeller_component_id": "propeller",
@@ -3121,7 +3872,164 @@
         "engine_mount",
         "spinner_main",
         "fuselage_front"
-      ]
+      ],
+      "physical_signature": {
+        "inventory": {
+          "engine_main": {
+            "name": "engine O.S. MAX-61FX",
+            "mass": 0.55,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "muffler_main": {
+            "name": "in-cowl muffler Slimline Pitts #3217",
+            "mass": 0.13,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "propeller_main": {
+            "name": "propeller APC 12x6 Sport",
+            "mass": 0.046,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "spinner_main": {
+            "name": "2-1/2 in spinner and prop nut",
+            "mass": 0.03,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "engine_mount": {
+            "name": "engine mount and bolts",
+            "mass": 0.06,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "cowl_main": {
+            "name": "cowl",
+            "mass": 0.09,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuel_tank": {
+            "name": "fuel tank 12 oz (empty)",
+            "mass": 0.06,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "receiver_battery": {
+            "name": "receiver battery 4.8 V",
+            "mass": 0.11,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "receiver_radio": {
+            "name": "receiver and switch",
+            "mass": 0.04,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_servos": {
+            "name": "fuselage servos (3: elevator, rudder, throttle)",
+            "mass": 0.135,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "aileron_servos": {
+            "name": "aileron servos (2)",
+            "mass": 0.09,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "landing_gear_main": {
+            "name": "main gear, 2-3/4 in wheels and pants",
+            "mass": 0.2,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "landing_gear_tail": {
+            "name": "tail wheel assembly",
+            "mass": 0.03,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "wing_main": {
+            "name": "wing incl. ailerons, covered",
+            "mass": 0.66,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_front": {
+            "name": "fuselage front (firewall to cockpit), covered",
+            "mass": 0.33,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_rear": {
+            "name": "fuselage rear and turtle deck, covered",
+            "mass": 0.2,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "canopy_pilot": {
+            "name": "canopy and pilot",
+            "mass": 0.08,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "horizontal_tail": {
+            "name": "stabilizer and elevators, covered",
+            "mass": 0.12,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "vertical_tail": {
+            "name": "fin and rudder, covered",
+            "mass": 0.07,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "control_hardware": {
+            "name": "pushrods, horns, hardware",
+            "mass": 0.1,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "ballast_reference": {
+            "name": "virtual reference-build balancing mass",
+            "mass": 0.142469,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuel_flight": {
+            "name": "fuel (half tank)",
+            "mass": 0.146,
+            "mass_unit": "kg",
+            "energy_source": "glow_fuel"
+          }
+        },
+        "propulsion": {
+          "id": "propulsion_main",
+          "kind": "glow_prop",
+          "propeller": true
+        },
+        "contacts": [
+          "contact_main_left",
+          "contact_main_right",
+          "contact_tail",
+          "probe_canopy_top",
+          "probe_fin_top",
+          "probe_rudder_bottom",
+          "probe_spinner_tip",
+          "probe_stabilizer_left_tip",
+          "probe_stabilizer_right_tip",
+          "probe_wing_left_le",
+          "probe_wing_left_te",
+          "probe_wing_right_le",
+          "probe_wing_right_te",
+          "propeller/propulsion_main"
+        ]
+      }
     },
     {
       "format": "openrc-aircraft-economics v1",
@@ -3531,6 +4439,61 @@
       "contact_components": {
         "propeller/propulsion_main": [
           "propeller"
+        ],
+        "probe_wing_left_le": [
+          "wing_left"
+        ],
+        "probe_wing_left_te": [
+          "wing_left"
+        ],
+        "probe_wing_right_le": [
+          "wing_right"
+        ],
+        "probe_wing_right_te": [
+          "wing_right"
+        ],
+        "probe_spinner_tip": [
+          "spinner_main",
+          "engine_main",
+          "engine_mount",
+          "fuselage_front"
+        ],
+        "probe_propeller_bottom": [
+          "propeller"
+        ],
+        "probe_propeller_lower_left": [
+          "propeller"
+        ],
+        "probe_propeller_lower_right": [
+          "propeller"
+        ],
+        "probe_rudder_bottom": [
+          "vertical_tail"
+        ],
+        "probe_fin_top": [
+          "vertical_tail"
+        ],
+        "probe_stabilizer_left_tip": [
+          "horizontal_tail"
+        ],
+        "probe_stabilizer_right_tip": [
+          "horizontal_tail"
+        ],
+        "probe_canopy_top": [
+          "canopy_pilot",
+          "fuselage_front"
+        ],
+        "probe_scoop_bottom": [
+          "belly_scoop"
+        ],
+        "contact_main_left": [
+          "gear_main_left"
+        ],
+        "contact_main_right": [
+          "gear_main_right"
+        ],
+        "contact_tail": [
+          "gear_tail"
         ]
       },
       "propeller_component_id": "propeller",
@@ -3542,7 +4505,234 @@
         "engine_mount",
         "cowl_main",
         "fuselage_front"
-      ]
+      ],
+      "physical_signature": {
+        "inventory": {
+          "engine_main": {
+            "name": "engine DA-120 with ignition module",
+            "mass": 2.45,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "muffler_pair": {
+            "name": "mufflers / canisters (2)",
+            "mass": 0.6,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "propeller_main": {
+            "name": "propeller 4-blade 26x12",
+            "mass": 0.43,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "spinner_main": {
+            "name": "spinner 7.7 in aluminium with backplate",
+            "mass": 0.35,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "engine_mount": {
+            "name": "engine standoffs / mount and bolts",
+            "mass": 0.25,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "cowl_main": {
+            "name": "cowl (fiberglass) with dummy exhausts",
+            "mass": 0.742858,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuel_tank": {
+            "name": "fuel tank 1 l (empty) with lines",
+            "mass": 0.2,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuel_flight": {
+            "name": "fuel (half tank)",
+            "mass": 0.37,
+            "mass_unit": "kg",
+            "energy_source": "gasoline"
+          },
+          "ignition_battery": {
+            "name": "ignition battery 2S LiFe",
+            "mass": 0.15,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "receiver_batteries": {
+            "name": "receiver batteries 2S LiFe (2)",
+            "mass": 0.3,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "receiver_radio": {
+            "name": "receiver, switches, power distribution",
+            "mass": 0.12,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_aileron_left": {
+            "name": "aileron servo left",
+            "mass": 0.08,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_aileron_right": {
+            "name": "aileron servo right",
+            "mass": 0.08,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_flap_left": {
+            "name": "flap servo left",
+            "mass": 0.08,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_flap_right": {
+            "name": "flap servo right",
+            "mass": 0.08,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_elevator_left": {
+            "name": "elevator servo left",
+            "mass": 0.08,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_elevator_right": {
+            "name": "elevator servo right",
+            "mass": 0.08,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_rudder": {
+            "name": "rudder servo and pull-pull",
+            "mass": 0.1,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_throttle_choke": {
+            "name": "throttle, choke servos and linkage",
+            "mass": 0.08,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "gear_main_left": {
+            "name": "main gear assembly left",
+            "mass": 1.0,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "gear_main_right": {
+            "name": "main gear assembly right",
+            "mass": 1.0,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "gear_tail": {
+            "name": "tail wheel assembly (retractable)",
+            "mass": 0.2,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "wing_left": {
+            "name": "wing panel, left, sheeted, with flap and aileron",
+            "mass": 2.476195,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "wing_right": {
+            "name": "wing panel, right, sheeted, with flap and aileron",
+            "mass": 2.476195,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "wing_joiner": {
+            "name": "wing tube and bolts",
+            "mass": 0.433334,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_front": {
+            "name": "fuselage front (engine box to cockpit rear), covered",
+            "mass": 2.228575,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "belly_scoop": {
+            "name": "belly scoop (fiberglass)",
+            "mass": 0.433334,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_rear": {
+            "name": "fuselage rear and turtle deck, covered",
+            "mass": 1.238097,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "canopy_pilot": {
+            "name": "canopy, frame and pilot",
+            "mass": 0.433334,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "horizontal_tail": {
+            "name": "stabilizer and elevators, covered",
+            "mass": 0.804763,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "vertical_tail": {
+            "name": "fin and rudder, covered",
+            "mass": 0.433334,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "control_hardware": {
+            "name": "pushrods, horns, cowl fasteners, hardware",
+            "mass": 0.433334,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "ballast_reference": {
+            "name": "virtual reference-build balancing mass",
+            "mass": 1.286646,
+            "mass_unit": "kg",
+            "energy_source": ""
+          }
+        },
+        "propulsion": {
+          "id": "propulsion_main",
+          "kind": "glow_prop",
+          "propeller": true
+        },
+        "contacts": [
+          "contact_main_left",
+          "contact_main_right",
+          "contact_tail",
+          "probe_canopy_top",
+          "probe_fin_top",
+          "probe_propeller_bottom",
+          "probe_propeller_lower_left",
+          "probe_propeller_lower_right",
+          "probe_rudder_bottom",
+          "probe_scoop_bottom",
+          "probe_spinner_tip",
+          "probe_stabilizer_left_tip",
+          "probe_stabilizer_right_tip",
+          "probe_wing_left_le",
+          "probe_wing_left_te",
+          "probe_wing_right_le",
+          "probe_wing_right_te",
+          "propeller/propulsion_main"
+        ]
+      }
     },
     {
       "format": "openrc-aircraft-economics v1",
@@ -3797,9 +4987,320 @@
         "No replacement price for economic component: final_assembly_and_commissioning."
       ],
       "complete": false,
-      "contact_components": {},
+      "contact_components": {
+        "probe_wing_left_le": [
+          "airframe_arf_package"
+        ],
+        "probe_wing_right_le": [
+          "airframe_arf_package"
+        ],
+        "probe_wing_left_te": [
+          "airframe_arf_package"
+        ],
+        "probe_wing_right_te": [
+          "airframe_arf_package"
+        ],
+        "probe_nose_tip": [
+          "airframe_arf_package"
+        ],
+        "probe_belly_station_zero": [
+          "airframe_arf_package"
+        ],
+        "probe_belly_station_minus_half": [
+          "airframe_arf_package"
+        ],
+        "probe_belly_station_plus_six": [
+          "airframe_arf_package"
+        ],
+        "probe_stabilizer_left_tip": [
+          "airframe_arf_package"
+        ],
+        "probe_stabilizer_right_tip": [
+          "airframe_arf_package"
+        ],
+        "probe_fin_top": [
+          "airframe_arf_package"
+        ],
+        "probe_canopy_top": [
+          "airframe_arf_package"
+        ],
+        "probe_tail_cone": [
+          "airframe_arf_package",
+          "thrust_tube"
+        ],
+        "contact_main_left": [
+          "gear_main_left"
+        ],
+        "contact_main_right": [
+          "gear_main_right"
+        ],
+        "contact_nose": [
+          "gear_nose"
+        ]
+      },
       "propeller_component_id": "",
-      "propeller_inspection_ids": []
+      "propeller_inspection_ids": [],
+      "physical_signature": {
+        "inventory": {
+          "wing_left": {
+            "name": "wing panel left, covered, with flap and aileron",
+            "mass": 0.626,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "wing_right": {
+            "name": "wing panel right, covered, with flap and aileron",
+            "mass": 0.626,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "stabilizer_left": {
+            "name": "stab half left with elevator",
+            "mass": 0.149,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "stabilizer_right": {
+            "name": "stab half right with elevator",
+            "mass": 0.149,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_shell_nose_to_front": {
+            "name": "fuselage shell -1.05 to -1.00 m",
+            "mass": 0.007506,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_shell_front_to_cabin": {
+            "name": "fuselage shell -1.00 to -0.85 m",
+            "mass": 0.081112,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_shell_cabin_forward": {
+            "name": "fuselage shell -0.85 to -0.65 m",
+            "mass": 0.210851,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_shell_cabin_center": {
+            "name": "fuselage shell -0.65 to -0.40 m",
+            "mass": 0.377233,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_shell_cabin_aft": {
+            "name": "fuselage shell -0.40 to -0.15 m",
+            "mass": 0.451559,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_shell_wing_front": {
+            "name": "fuselage shell -0.15 to +0.00 m",
+            "mass": 0.290834,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_shell_wing_aft": {
+            "name": "fuselage shell +0.00 to +0.30 m",
+            "mass": 0.543413,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_shell_mid_tail": {
+            "name": "fuselage shell +0.30 to +0.60 m",
+            "mass": 0.440244,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_shell_tail_forward": {
+            "name": "fuselage shell +0.60 to +0.86 m",
+            "mass": 0.28173,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_shell_tail_aft": {
+            "name": "fuselage shell +0.86 to +1.05 m",
+            "mass": 0.14559,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_shell_exhaust_exit": {
+            "name": "fuselage shell +1.05 to +1.17 m",
+            "mass": 0.069928,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "vertical_tail": {
+            "name": "fin and rudder",
+            "mass": 0.2,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "canopy_pilot": {
+            "name": "canopy, frame and cockpit",
+            "mass": 0.3,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "wing_joiner": {
+            "name": "carbon wing tube 25 mm and bolts",
+            "mass": 0.15,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "control_hardware": {
+            "name": "hardware, horns, linkages",
+            "mass": 0.2,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "engine_main": {
+            "name": "JetCat P100-RX with valves",
+            "mass": 1.08,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "turbine_accessories": {
+            "name": "ECU, fuel pump, valves, UAT/hopper",
+            "mass": 0.3,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "thrust_tube": {
+            "name": "thrust tube A200-13",
+            "mass": 0.35,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuel_tank": {
+            "name": "tank A200-16 (empty)",
+            "mass": 0.3,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "gear_main_left": {
+            "name": "main retract left, leg, wheel, brake",
+            "mass": 0.4,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "gear_main_right": {
+            "name": "main retract right, leg, wheel, brake",
+            "mass": 0.4,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "gear_nose": {
+            "name": "nose retract with steering",
+            "mass": 0.3,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "pneumatic_system": {
+            "name": "air tanks, valves, lines",
+            "mass": 0.2,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_aileron_left": {
+            "name": "aileron servo left",
+            "mass": 0.065,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_aileron_right": {
+            "name": "aileron servo right",
+            "mass": 0.065,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_flap_left": {
+            "name": "flap servo left",
+            "mass": 0.075,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_flap_right": {
+            "name": "flap servo right",
+            "mass": 0.075,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_elevator_left": {
+            "name": "elevator servo left",
+            "mass": 0.065,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_elevator_right": {
+            "name": "elevator servo right",
+            "mass": 0.065,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_rudder": {
+            "name": "rudder servo",
+            "mass": 0.075,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "servo_nose_steering": {
+            "name": "nose steering servo",
+            "mass": 0.065,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "receiver_batteries": {
+            "name": "receiver batteries 2 x 2S 2500 and ECU battery",
+            "mass": 0.45,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "avionics": {
+            "name": "PowerBox Cockpit, iGyro, smoke pump, receivers, wiring",
+            "mass": 0.45,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuel_flight": {
+            "name": "kerosene + 5 % oil (declared fuel state)",
+            "mass": 1.28,
+            "mass_unit": "kg",
+            "energy_source": "kerosene"
+          },
+          "ballast_reference": {
+            "name": "virtual reference-build balancing mass",
+            "mass": 0.345089,
+            "mass_unit": "kg",
+            "energy_source": ""
+          }
+        },
+        "propulsion": {
+          "id": "propulsion_main",
+          "kind": "turbine",
+          "propeller": false
+        },
+        "contacts": [
+          "contact_main_left",
+          "contact_main_right",
+          "contact_nose",
+          "probe_belly_station_minus_half",
+          "probe_belly_station_plus_six",
+          "probe_belly_station_zero",
+          "probe_canopy_top",
+          "probe_fin_top",
+          "probe_nose_tip",
+          "probe_stabilizer_left_tip",
+          "probe_stabilizer_right_tip",
+          "probe_tail_cone",
+          "probe_wing_left_le",
+          "probe_wing_left_te",
+          "probe_wing_right_le",
+          "probe_wing_right_te"
+        ]
+      }
     },
     {
       "format": "openrc-aircraft-economics v1",
@@ -4032,10 +5533,161 @@
         ],
         "contact_tail": [
           "gear_tail"
+        ],
+        "propeller/propulsion_main": [
+          "propeller_main"
+        ],
+        "probe_spinner_tip": [
+          "propeller_main",
+          "motor_main",
+          "fuselage_main"
+        ],
+        "probe_propeller_bottom": [
+          "propeller_main"
+        ],
+        "probe_belly_nose": [
+          "fuselage_main"
+        ],
+        "probe_belly_forward_fuselage": [
+          "fuselage_main"
+        ],
+        "probe_belly_wing_front": [
+          "fuselage_main"
+        ],
+        "probe_belly_wing_center": [
+          "fuselage_main"
+        ],
+        "probe_belly_wing_aft": [
+          "fuselage_main"
+        ],
+        "probe_belly_cabin_aft": [
+          "fuselage_main"
+        ],
+        "probe_belly_tail_forward": [
+          "fuselage_main"
+        ],
+        "probe_belly_tail_center": [
+          "fuselage_main"
+        ],
+        "probe_belly_tail_end": [
+          "fuselage_main"
         ]
       },
-      "propeller_component_id": "",
-      "propeller_inspection_ids": []
+      "propeller_component_id": "propeller_main",
+      "propeller_inspection_ids": [
+        "motor_main",
+        "fuselage_main"
+      ],
+      "physical_signature": {
+        "inventory": {
+          "wing_main": {
+            "name": "wing, flaps, ailerons and wing servos",
+            "mass": 0.456,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "fuselage_main": {
+            "name": "fuselage foam, canopy and fittings",
+            "mass": 0.605,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "tail_surfaces": {
+            "name": "horizontal and vertical tail",
+            "mass": 0.08,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "gear_main": {
+            "name": "main gear and wheels",
+            "mass": 0.135,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "gear_tail": {
+            "name": "tailwheel and fork",
+            "mass": 0.012,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "propeller_main": {
+            "name": "three-blade propeller and spinner",
+            "mass": 0.032,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "motor_main": {
+            "name": "800 Kv motor",
+            "mass": 0.16,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "esc_main": {
+            "name": "70 A ESC",
+            "mass": 0.06,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "receiver_radio": {
+            "name": "receiver",
+            "mass": 0.012,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "tail_servos": {
+            "name": "elevator and rudder servos",
+            "mass": 0.018,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "wiring_lighting": {
+            "name": "wiring and navigation LEDs",
+            "mass": 0.04,
+            "mass_unit": "kg",
+            "energy_source": ""
+          },
+          "battery_main": {
+            "name": "4S 3200 mAh battery",
+            "mass": 0.33,
+            "mass_unit": "kg",
+            "energy_source": "lipo"
+          },
+          "ballast_reference": {
+            "name": "virtual reference-build balancing mass",
+            "mass": 0.24999999999999978,
+            "mass_unit": "kg",
+            "energy_source": ""
+          }
+        },
+        "propulsion": {
+          "id": "propulsion_main",
+          "kind": "electric_prop",
+          "propeller": true
+        },
+        "contacts": [
+          "contact_main_left",
+          "contact_main_right",
+          "contact_tail",
+          "probe_belly_cabin_aft",
+          "probe_belly_forward_fuselage",
+          "probe_belly_nose",
+          "probe_belly_tail_center",
+          "probe_belly_tail_end",
+          "probe_belly_tail_forward",
+          "probe_belly_wing_aft",
+          "probe_belly_wing_center",
+          "probe_belly_wing_front",
+          "probe_fin_top",
+          "probe_propeller_bottom",
+          "probe_spinner_tip",
+          "probe_stabilizer_left_tip",
+          "probe_stabilizer_right_tip",
+          "probe_tail_rudder_edge",
+          "probe_wing_left_tip",
+          "probe_wing_right_tip",
+          "propeller/propulsion_main"
+        ]
+      }
     },
     {
       "format": "openrc-aircraft-economics v1",
@@ -4056,7 +5708,16 @@
       "complete": false,
       "contact_components": {},
       "propeller_component_id": "",
-      "propeller_inspection_ids": []
+      "propeller_inspection_ids": [],
+      "physical_signature": {
+        "inventory": {},
+        "propulsion": {
+          "id": "",
+          "kind": "",
+          "propeller": false
+        },
+        "contacts": []
+      }
     }
   ]
 }

@@ -6,7 +6,7 @@ WEB-01/02/03/04/05 own `site/` and the isolated `gh-pages` deployment. No simula
 
 Visual thesis: an RC club's aircraft catalogue, combining oversized workshop typography, original dark studio renders, ivory paper and field green.
 
-Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and Savox introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → Savox partner details → development status and contribution paths. Spanish is the initial language; English and a page-wide night theme are selectable and saved locally. Downloads target latest published release v0.1.2; the site distinguishes released features from ongoing aircraft evaluation.
+Content: aircraft-led poster → OpenAI principal sponsor acknowledgment and manufacturer introduction → six-aircraft 360° hangar → platform downloads → day/night field → technical system index → asset/vehicle showcase → manufacturer partner details → development status and contribution paths. Spanish is the initial language; English and a page-wide night theme are selectable and saved locally. Downloads target latest published release v0.1.2; the site distinguishes released features from ongoing aircraft evaluation.
 
 Interaction thesis: a short hero entrance, restrained section reveals and real aircraft turntables with drag, angle slider and play/pause controls. Reduced-motion preference disables autoplay and offers deliberate single-frame steps; core content, technical disclosures and downloads work without JavaScript. The viewer loads only near the hangar, pauses offscreen/when hidden, and retains at most two decoded sheets.
 

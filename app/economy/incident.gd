@@ -15,6 +15,7 @@ const MAX_EVENTS := 128
 const ARCHIVE_PATH := "user://last_accident.json"
 const ARCHIVE_MAX_BYTES := 262144
 const MAX_INSPECTIONS := 16
+const BINDING_NOTE := "Prices were authored for an earlier revision of this aircraft; its priced parts and contacts were verified unchanged."
 
 var dossier: Dictionary = {}
 var report: Dictionary = {}
@@ -31,6 +32,7 @@ var _confirmed_facts: Dictionary = {}
 var _catalog_hash := ""
 var _identity: Dictionary = {}
 var _catalog_errors: Array = []
+var _binding := "exact"
 var _offer_sources: Dictionary = {}
 var _dirty := false
 var _revision := 0
@@ -63,6 +65,7 @@ func begin(aircraft_id: String, source_hash: String) -> void:
 func begin_with_catalog(loaded: Dictionary, aircraft_id: String, source_hash: String) -> void:
 	dossier = loaded.get("dossier", {}).duplicate(true) if loaded.get("ok", false) else {}
 	_catalog_errors = Array(loaded.get("errors", []))
+	_binding = str(loaded.get("binding", "exact"))
 	_catalog_hash = str(loaded.get("catalog_hash", ""))
 	_offer_sources = loaded.get("offer_sources", {}).duplicate(true)
 	_identity = {aircraft_id = aircraft_id, source_sha256 = dossier.get("source_sha256", source_hash),
@@ -381,6 +384,8 @@ func _recalculate() -> void:
 		for field: String in source:
 			line[field] = source[field]
 	report["assumptions"] = ["USD prices exclude tax, shipping and transmitter/field equipment."]
+	if _binding == "physical_signature" and not dossier.is_empty():
+		report.assumptions.append(BINDING_NOTE)
 	for receipt: Dictionary in _inspections:
 		report.assumptions.append("%s [%s]: %s" % [receipt.inspection_id, receipt.basis, receipt.evidence])
 	report["inspections"] = _inspections.duplicate(true)

@@ -183,5 +183,10 @@ func _test_document_integrity_checks() -> void:
 		if typeof(dossier) == TYPE_DICTIONARY and dossier.get("aircraft_id") == "p51d-mustang-120":
 			dossier["source_sha256"] = "0".repeat(64)
 	_check("unrelated aircraft source drift does not invalidate the selected route", Catalog._validate_document(stale_unrelated_route, "jensen-das-ugly-stik-60").is_empty())
-	_check("selected aircraft source drift remains rejected", _has_error(Catalog._validate_document(stale_unrelated_route, "p51d-mustang-120"), "source_sha256 is stale"))
+	_check("CR-39b: selected byte drift with unchanged priced parts is accepted by physical signature", Catalog._validate_document(stale_unrelated_route, "p51d-mustang-120").is_empty())
+	for dossier: Variant in stale_unrelated_route["aircraft"]:
+		if typeof(dossier) == TYPE_DICTIONARY and dossier.get("aircraft_id") == "p51d-mustang-120":
+			var signed: Dictionary = dossier["physical_signature"]["inventory"]
+			signed[signed.keys()[0]]["name"] = "different installed hardware"
+	_check("selected aircraft source drift with changed priced parts remains rejected", _has_error(Catalog._validate_document(stale_unrelated_route, "p51d-mustang-120"), "source_sha256 is stale"))
 

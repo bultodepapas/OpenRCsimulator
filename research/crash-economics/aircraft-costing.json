@@ -582,6 +582,49 @@
         "contact_components": {
           "propeller/propulsion_main": [
             "propeller"
+          ],
+          "probe_wing_left_le": [
+            "wing_main"
+          ],
+          "probe_wing_right_le": [
+            "wing_main"
+          ],
+          "probe_wing_left_te": [
+            "wing_main"
+          ],
+          "probe_wing_right_te": [
+            "wing_main"
+          ],
+          "probe_spinner_tip": [
+            "spinner_main",
+            "engine_main",
+            "engine_mount",
+            "fuselage_front"
+          ],
+          "probe_rudder_bottom": [
+            "vertical_tail"
+          ],
+          "probe_fin_top": [
+            "vertical_tail"
+          ],
+          "probe_stabilizer_left_tip": [
+            "horizontal_tail"
+          ],
+          "probe_stabilizer_right_tip": [
+            "horizontal_tail"
+          ],
+          "probe_canopy_top": [
+            "canopy_pilot",
+            "fuselage_front"
+          ],
+          "contact_main_left": [
+            "landing_gear_main"
+          ],
+          "contact_main_right": [
+            "landing_gear_main"
+          ],
+          "contact_tail": [
+            "landing_gear_tail"
           ]
         },
         "propeller_component_id": "propeller",
@@ -869,6 +912,61 @@
         "contact_components": {
           "propeller/propulsion_main": [
             "propeller"
+          ],
+          "probe_wing_left_le": [
+            "wing_left"
+          ],
+          "probe_wing_left_te": [
+            "wing_left"
+          ],
+          "probe_wing_right_le": [
+            "wing_right"
+          ],
+          "probe_wing_right_te": [
+            "wing_right"
+          ],
+          "probe_spinner_tip": [
+            "spinner_main",
+            "engine_main",
+            "engine_mount",
+            "fuselage_front"
+          ],
+          "probe_propeller_bottom": [
+            "propeller"
+          ],
+          "probe_propeller_lower_left": [
+            "propeller"
+          ],
+          "probe_propeller_lower_right": [
+            "propeller"
+          ],
+          "probe_rudder_bottom": [
+            "vertical_tail"
+          ],
+          "probe_fin_top": [
+            "vertical_tail"
+          ],
+          "probe_stabilizer_left_tip": [
+            "horizontal_tail"
+          ],
+          "probe_stabilizer_right_tip": [
+            "horizontal_tail"
+          ],
+          "probe_canopy_top": [
+            "canopy_pilot",
+            "fuselage_front"
+          ],
+          "probe_scoop_bottom": [
+            "belly_scoop"
+          ],
+          "contact_main_left": [
+            "gear_main_left"
+          ],
+          "contact_main_right": [
+            "gear_main_right"
+          ],
+          "contact_tail": [
+            "gear_tail"
           ]
         },
         "propeller_component_id": "propeller",
@@ -1067,7 +1165,57 @@
             "notes": "Unpriced Avanti-specific final assembly, balancing, turbine commissioning and post-crash inspection labor. No generic assembly allowance is assumed."
           }
         ],
-        "contact_components": {},
+        "contact_components": {
+          "probe_wing_left_le": [
+            "airframe_arf_package"
+          ],
+          "probe_wing_right_le": [
+            "airframe_arf_package"
+          ],
+          "probe_wing_left_te": [
+            "airframe_arf_package"
+          ],
+          "probe_wing_right_te": [
+            "airframe_arf_package"
+          ],
+          "probe_nose_tip": [
+            "airframe_arf_package"
+          ],
+          "probe_belly_station_zero": [
+            "airframe_arf_package"
+          ],
+          "probe_belly_station_minus_half": [
+            "airframe_arf_package"
+          ],
+          "probe_belly_station_plus_six": [
+            "airframe_arf_package"
+          ],
+          "probe_stabilizer_left_tip": [
+            "airframe_arf_package"
+          ],
+          "probe_stabilizer_right_tip": [
+            "airframe_arf_package"
+          ],
+          "probe_fin_top": [
+            "airframe_arf_package"
+          ],
+          "probe_canopy_top": [
+            "airframe_arf_package"
+          ],
+          "probe_tail_cone": [
+            "airframe_arf_package",
+            "thrust_tube"
+          ],
+          "contact_main_left": [
+            "gear_main_left"
+          ],
+          "contact_main_right": [
+            "gear_main_right"
+          ],
+          "contact_nose": [
+            "gear_nose"
+          ]
+        },
         "propeller_component_id": "",
         "propeller_inspection_ids": []
       }
@@ -1281,10 +1429,51 @@
           ],
           "contact_tail": [
             "gear_tail"
+          ],
+          "propeller/propulsion_main": [
+            "propeller_main"
+          ],
+          "probe_spinner_tip": [
+            "propeller_main",
+            "motor_main",
+            "fuselage_main"
+          ],
+          "probe_propeller_bottom": [
+            "propeller_main"
+          ],
+          "probe_belly_nose": [
+            "fuselage_main"
+          ],
+          "probe_belly_forward_fuselage": [
+            "fuselage_main"
+          ],
+          "probe_belly_wing_front": [
+            "fuselage_main"
+          ],
+          "probe_belly_wing_center": [
+            "fuselage_main"
+          ],
+          "probe_belly_wing_aft": [
+            "fuselage_main"
+          ],
+          "probe_belly_cabin_aft": [
+            "fuselage_main"
+          ],
+          "probe_belly_tail_forward": [
+            "fuselage_main"
+          ],
+          "probe_belly_tail_center": [
+            "fuselage_main"
+          ],
+          "probe_belly_tail_end": [
+            "fuselage_main"
           ]
         },
-        "propeller_component_id": "",
-        "propeller_inspection_ids": []
+        "propeller_component_id": "propeller_main",
+        "propeller_inspection_ids": [
+          "motor_main",
+          "fuselage_main"
+        ]
       }
     },
     {

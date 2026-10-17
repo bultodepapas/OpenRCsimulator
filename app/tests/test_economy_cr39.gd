@@ -8,6 +8,7 @@ const ReplacementQuote = preload("res://economy/replacement_quote.gd")
 const AccidentReport = preload("res://ui/accident_report.gd")
 const STALE := "Cost data is out of date for this aircraft version; no prices were applied."
 const ARCHIVE := "user://test_cr39_last_accident.json"
+const Catalog = preload("res://economy/catalog.gd")
 
 var checks := 0
 var failures := 0
@@ -20,6 +21,8 @@ func _initialize() -> void:
 	_test_quote_parity()
 	_test_compact_archive()
 	_test_terminal_headline()
+	_test_physical_signature()
+	_test_fleet_contact_bindings()
 	DirAccess.remove_absolute(ProjectSettings.globalize_path(ARCHIVE))
 	print("CR-39 economics: %d checks, %d failed" % [checks, failures])
 	quit(1 if failures > 0 else 0)
@@ -130,3 +133,55 @@ func _test_terminal_headline() -> void:
 	check("provisional loss headline is translated", state.status == "PÉRDIDA ESTIMADA · PROVISIONAL" and state.caption.begins_with("Límite superior"), str(state))
 	TranslationServer.set_locale("en")
 	report.free()
+
+
+func _test_physical_signature() -> void:
+	var loaded: Dictionary = Catalog.load_for("jensen-das-ugly-stik-60", "")
+	check("current sidecar binds the Stik exactly", loaded.get("ok", false) and loaded.get("binding") == "exact")
+	var source: Dictionary = JSON.parse_string(FileAccess.get_file_as_string("res://data/aircraft/jensen_ugly_stik_60.json"))
+	var signature: Variant = loaded.dossier.get("physical_signature")
+	check("generated signature matches the current physical source", Catalog._physical_signature_matches(signature, source))
+	var text_edit := source.duplicate(true)
+	text_edit["landing_gear"]["description"] = "Edited description only."
+	text_edit["inventory"][0]["position"]["source"] = "Edited provenance note."
+	check("text-only and unpriced edits keep the signature", Catalog._physical_signature_matches(signature, text_edit))
+	var renamed := source.duplicate(true)
+	renamed["inventory"][0]["name"] = "engine O.S. MAX-91FX"
+	check("a changed item name invalidates the signature", not Catalog._physical_signature_matches(signature, renamed))
+	var heavier := source.duplicate(true)
+	heavier["inventory"][0]["mass"]["value"] = float(heavier["inventory"][0]["mass"]["value"]) + 0.01
+	check("a changed item mass invalidates the signature", not Catalog._physical_signature_matches(signature, heavier))
+	var removed := source.duplicate(true)
+	removed["inventory"].pop_back()
+	check("a removed item invalidates the signature", not Catalog._physical_signature_matches(signature, removed))
+	var probe := source.duplicate(true)
+	probe["crash_hull_ids"].append("probe_new_test")
+	check("a new contact invalidates the signature", not Catalog._physical_signature_matches(signature, probe))
+	var electric := source.duplicate(true)
+	electric["propulsion"]["kind"] = "electric_prop"
+	check("a changed propulsion kind invalidates the signature", not Catalog._physical_signature_matches(signature, electric))
+	check("a missing signature never matches", not Catalog._physical_signature_matches(null, source))
+
+
+func _test_fleet_contact_bindings() -> void:
+	for spec: Array in [["jensen-das-ugly-stik-60", "probe_wing_left_tip", "covered_airframe_and_installation_hardware"],
+			["stik-glow-fs64v-4t", "contact_nose", "covered_airframe_and_installation_hardware"],
+			["gp-extra-300s-60", "probe_wing_right_te", "wing_main"],
+			["p51d-mustang-120", "probe_scoop_bottom", "belly_scoop"],
+			["sebart-avanti-s-a200-p100rx", "contact_nose", "gear_nose"],
+			["turbo-lumber-evolution", "probe_belly_nose", "fuselage_main"]]:
+		var ledger := Incident.new()
+		ledger.begin(spec[0], "")
+		check("%s loads its current dossier" % spec[0], not ledger.dossier.is_empty(), str(ledger._catalog_errors))
+		check("%s maps %s to %s" % spec, ledger._contact_components({source = "hull", contact_id = spec[1]}).has(spec[2]))
+	var lumber := Incident.new()
+	lumber.begin("turbo-lumber-evolution", "")
+	lumber._mark_propeller()
+	lumber._queue_assessment(1)
+	lumber.evaluate_pending()
+	var prop_line: Dictionary = {}
+	for line: Dictionary in lumber.report.get("lines", []):
+		if line.get("id") == "propeller_main":
+			prop_line = line
+	check("electric prop strike prices the Lumber propeller once", prop_line.get("action") == "replacement" and prop_line.get("amount_minor") == 1698
+		and not lumber.report.unresolved.has("A propeller strike was recorded; no compatible replacement price is available."), str(lumber.report.get("unresolved")))
