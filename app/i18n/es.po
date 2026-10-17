@@ -3290,3 +3290,13 @@ msgstr "Nota de la fuente: %s"
 # P51-22 closed in software (2026-10-16); the P-51 remains an unvalidated estimate.
 msgid "Experimental: estimated quarter-scale physics, not yet flight-tested."
 msgstr "Experimental: física estimada a escala 1/4, aún sin contrastar en vuelo."
+
+# CR-39c/g accident cost report
+msgid "ESTIMATED LOSS · PROVISIONAL"
+msgstr "PÉRDIDA ESTIMADA · PROVISIONAL"
+
+msgid "Upper limit: replacing the whole aircraft. Inspection is pending."
+msgstr "Límite superior: reemplazar el avión completo. Inspección pendiente."
+
+msgid "Cost data is out of date for this aircraft version; no prices were applied."
+msgstr "Los datos de costes no corresponden a esta versión del avión; no se aplicaron precios."

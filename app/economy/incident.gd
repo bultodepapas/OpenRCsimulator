@@ -43,10 +43,21 @@ var _reuse_blocked: Dictionary = {}
 var _recipe_book: Dictionary = {}
 var _recipe_hash := ""
 var _repair_choices: Array = []
+# CR-39e: res:// catalog, aircraft and recipe bytes are fixed for a session; a reset reuses
+# the validated load for the same route and physical identity instead of reparsing ~200 KB.
+var _catalog_cache_key := ""
+var _catalog_cache: Dictionary = {}
+var _recipe_cache_loaded := false
+var _recipe_cache: Dictionary = {}
+var _recipe_cache_hash := ""
 
 
 func begin(aircraft_id: String, source_hash: String) -> void:
-	begin_with_catalog(Catalog.load_for(aircraft_id, source_hash), aircraft_id, source_hash)
+	var key := aircraft_id + "|" + source_hash
+	if key != _catalog_cache_key:
+		_catalog_cache = Catalog.load_for(aircraft_id, source_hash)
+		_catalog_cache_key = key
+	begin_with_catalog(_catalog_cache, aircraft_id, source_hash)
 
 
 func begin_with_catalog(loaded: Dictionary, aircraft_id: String, source_hash: String) -> void:
@@ -74,17 +85,19 @@ func begin_with_catalog(loaded: Dictionary, aircraft_id: String, source_hash: St
 	_inspection_hashes = {}
 	_reuse_blocked = {}
 	_repair_choices = []
-	_recipe_book = {}
-	_recipe_hash = ""
-	var recipe_bytes := FileAccess.get_file_as_bytes(RECIPE_PATH)
-	if not recipe_bytes.is_empty() and recipe_bytes.size() <= Inspection.MAX_BYTES:
-		var parsed: Variant = JSON.parse_string(recipe_bytes.get_string_from_utf8())
-		if typeof(parsed) == TYPE_DICTIONARY:
-			_recipe_book = parsed
-			var hash_context := HashingContext.new()
-			hash_context.start(HashingContext.HASH_SHA256)
-			hash_context.update(recipe_bytes)
-			_recipe_hash = hash_context.finish().hex_encode()
+	if not _recipe_cache_loaded:
+		_recipe_cache_loaded = true
+		var recipe_bytes := FileAccess.get_file_as_bytes(RECIPE_PATH)
+		if not recipe_bytes.is_empty() and recipe_bytes.size() <= Inspection.MAX_BYTES:
+			var parsed: Variant = JSON.parse_string(recipe_bytes.get_string_from_utf8())
+			if typeof(parsed) == TYPE_DICTIONARY:
+				_recipe_cache = parsed
+				var hash_context := HashingContext.new()
+				hash_context.start(HashingContext.HASH_SHA256)
+				hash_context.update(recipe_bytes)
+				_recipe_cache_hash = hash_context.finish().hex_encode()
+	_recipe_book = _recipe_cache.duplicate(true)
+	_recipe_hash = _recipe_cache_hash
 
 
 ## Cost an explicitly chosen compatible repair against the frozen session recipe book.
@@ -241,7 +254,11 @@ func observe(snapshot: Dictionary, bindings: Dictionary, crashed: bool, restored
 				_mark_propeller()
 				changed = true
 		else:
-			changed = _add_unresolved("Impact or surface contact requires structural inspection.") or changed
+			var mapped := _contact_components(event)
+			if mapped.is_empty():
+				changed = _add_unresolved("Impact or surface contact requires structural inspection.") or changed
+			else:
+				changed = _mark_contact_inspection(mapped) or changed
 		if event.source == "lake" and event.get("material") == "water":
 			if not _confirmed_facts.has("water_exposure"):
 				_confirmed_facts.water_exposure = event.duplicate(true)

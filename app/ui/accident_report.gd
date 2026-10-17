@@ -446,6 +446,15 @@ func _headline_state(report: Dictionary) -> Dictionary:
 			"amount": _format_headline_money(int(total), currency),
 			"caption": tr("Estimated total. Expand for cents, line items, and price assumptions."),
 		}
+	if not complete and high != null and report.get("range_basis") == "complete_build_replacement_ceiling":
+		# CR-39c: pending inspection under a whole-aircraft replacement ceiling; a range, never a total.
+		var floor_minor: int = int(low) if low != null else 0
+		return {
+			"status": tr("ESTIMATED LOSS · PROVISIONAL"),
+			"amount": tr("Up to %s") % _format_headline_money(int(high), currency) if floor_minor <= 0 \
+				else "%s – %s" % [_format_headline_money(mini(floor_minor, int(high)), currency), _format_headline_money(int(high), currency)],
+			"caption": tr("Upper limit: replacing the whole aircraft. Inspection is pending."),
+		}
 	if not complete:
 		if low != null and high != null and (int(low) != 0 or int(high) != 0 or has_priced_action):
 			var low_value := mini(int(low), int(high))

@@ -124,7 +124,21 @@ func _test_prop_only_with_engine_inspection() -> void:
 	terminal["terminal"] = true
 	terminal["components"] = {"propeller": {"disposition": "inspect"}}
 	var terminal_result: Dictionary = Calculator.calculate(_dossier(), terminal)
-	_check("terminal replacement comparison stays separate from unbounded assessed costs", terminal_result["outcome"] == "inspection" and terminal_result["high_minor"] == null and terminal_result["range_basis"] == "component_price_bounds" and terminal_result["replacement_quote_low_minor"] == 82734 and terminal_result["replacement_quote_high_minor"] == 133134 and terminal_result["replacement_quote_scope"] == "complete_build_replacement_quote_comparison", str(terminal_result))
+	_check("CR-39c terminal pending inspection is bounded by the complete-build replacement ceiling", terminal_result["outcome"] == "inspection" and terminal_result["high_minor"] == 133134 and terminal_result["low_minor"] == 0 and terminal_result["total_minor"] == null and not terminal_result["complete"] and terminal_result["range_basis"] == "complete_build_replacement_ceiling" and terminal_result["replacement_quote_low_minor"] == 82734 and terminal_result["replacement_quote_high_minor"] == 133134 and terminal_result["replacement_quote_scope"] == "complete_build_replacement_quote_comparison", str(terminal_result))
+	var hull_crash: Dictionary = _assessment(false)
+	hull_crash["terminal"] = true
+	hull_crash["unresolved"] = ["Crash inspection pending; component survival is not yet established."]
+	var hull_result: Dictionary = Calculator.calculate(_dossier(), hull_crash)
+	_check("CR-39c terminal crash without assessed parts reports a 0..ceiling range, never a total", hull_result["ok"] and hull_result["low_minor"] == 0 and hull_result["high_minor"] == 133134 and hull_result["total_minor"] == null and hull_result["known_subtotal_minor"] == 0, str(hull_result))
+	var struck: Dictionary = hull_crash.duplicate(true)
+	struck["components"] = {"propeller": {"disposition": "replace"}, "engine_and_muffler": {"disposition": "inspect"}}
+	var struck_result: Dictionary = Calculator.calculate(_dossier(), struck)
+	_check("CR-39c terminal prop strike keeps its exact lower bound under the ceiling", struck_result["low_minor"] == 539 and struck_result["high_minor"] == 133134 and struck_result["total_minor"] == null, str(struck_result))
+	var incomplete_dossier: Dictionary = _dossier()
+	incomplete_dossier["complete"] = false
+	incomplete_dossier["missing"] = ["unpriced test item"]
+	var incomplete_result: Dictionary = Calculator.calculate(incomplete_dossier, hull_crash)
+	_check("CR-39c incomplete dossier has no replacement ceiling", incomplete_result["high_minor"] == null and incomplete_result["range_basis"] == "component_price_bounds", str(incomplete_result))
 	var unknown_quote_dossier: Dictionary = _dossier()
 	var unknown_quote_components: Array = unknown_quote_dossier["components"]
 	for index: int in range(unknown_quote_components.size()):
