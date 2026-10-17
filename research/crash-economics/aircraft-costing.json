@@ -369,7 +369,7 @@
       ],
       "notes": "Own physical inventory coverage, with explicit null prices and five servo units. Full replacement total remains unknown. No baseline BOM inheritance.",
       "dossier": {
-        "expected_source_sha256": "9106d313d13f86513e5db4b81710fcc867e3b2f88f707c2c7aaf1ab5c1d9179e",
+        "expected_source_sha256": "9b174cb2b71df8878d92aa007f3118d196f66fda6183dc9ee6985457e39c1b62",
         "lines": [
           {
             "id": "engine_main",
@@ -612,7 +612,7 @@
       ],
       "notes": "Independent coverage of the physical P-51 inventory with exact DA-120 and explicit large-aircraft/ordinary-servo and canister value proxies. The DA-120 amount is a current manufacturer listing but is Sold out. Known priced-part subtotal is $2,456.71: $1,249.00 DA-120 package, seven $103.39 SA-1230SG+ control-servo proxies, two $16.99 HS-311 throttle/choke-servo proxies, and two $225.00 KS3086 canister-body proxies. Linkage, exhaust headers/hardware, the rest of the aircraft and installed proxy identities remain unpriced or unknown; this is not a complete-build purchase amount.",
       "dossier": {
-        "expected_source_sha256": "982e41c345dabe6be43da38438d36d725c84eaf41561d52750f4698585789ae6",
+        "expected_source_sha256": "a37f7f4296b789b2fec3d48d73bfadd3ad83177954d2db5b1348db557be5a321",
         "lines": [
           {
             "id": "engine_main",

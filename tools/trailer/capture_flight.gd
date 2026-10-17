@@ -10,6 +10,9 @@ const DEFAULT_FPS := 60
 const DEFAULT_WIDTH := 1920
 const DEFAULT_HEIGHT := 1080
 const MAX_CRASH_PREROLL_S := 30.0
+const CRASH_CLIP_APPROACH_FRAMES := 120
+const CRASH_CLIP_POST_IMPACT_FRAMES := 360
+const CRASH_RESTART_AFTER_IMPACT_FRAMES := 240
 
 var _options: Dictionary = {}
 var _main: Node
@@ -25,6 +28,16 @@ var _image_count := 0
 var _sample_every := 1
 var _save_images := true
 var _failure := ""
+var _preserved_report: Dictionary = {}
+var _preserved_crash: Dictionary = {}
+var _preserved_prop_strike: Dictionary = {}
+var _impact_preroll_frames := -1
+var _restart_result := false
+var _restart_frame := -1
+var _restart_movie_frame := -1
+var _restart_tick_before := -1
+var _restart_tick_after := -1
+var _details_frame := -1
 
 
 func _initialize() -> void:
@@ -65,7 +78,7 @@ func _run() -> void:
 	_main.name = "Main"
 	_main.interactive_start = true
 	_main.aircraft_id = str(_options.get("aircraft", "jensen-das-ugly-stik-60"))
-	_main.start_choice = "airborne"
+	_main.start_choice = str(_options.get("start", "airborne"))
 	_main.overlays_enabled = _shot == "controls"
 	if _options.has("sky"):
 		_main.sky_config = SkyConfig.for_preset(str(_options.sky))
@@ -139,12 +152,30 @@ func _capture_crash_report() -> void:
 		_failure = "No physical crash occurred within %.1f s; no report clip was captured." % MAX_CRASH_PREROLL_S
 		push_error(_failure)
 		return
-	# Begin the deliverable on the real impact; all saved frames then show the live crash/report aftermath.
-	await _capture_frames(8 * _fps, preroll)
+	_impact_preroll_frames = preroll
+	# The movie writer runs from process launch. Retain a 2s approach plus 6s aftermath in the source,
+	# so the editor can cut a truthful 8s beat around this actual impact. Restart is the final 2s.
+	await _capture_frames(CRASH_CLIP_POST_IMPACT_FRAMES, preroll)
 
 
 func _capture_frames(count: int, preroll: int) -> void:
 	for index: int in range(count):
+		if _shot == "crash" and index == CRASH_RESTART_AFTER_IMPACT_FRAMES:
+			_preserved_report = _main._accident_incident.report.duplicate(true) if _main._accident_incident != null else {}
+			_preserved_crash = _main.session.crash.duplicate(true)
+			_preserved_prop_strike = _main.session.prop_strike.duplicate(true)
+			_restart_tick_before = int(_main.session.sim.tick)
+			_restart_frame = index
+			_restart_movie_frame = int(_options.get("writer-lead-frames", 3)) + preroll + index
+			_restart_result = bool(_main.controller_action("restart"))
+			if not _restart_result:
+				_failure = "Native accident report did not accept the restart action after the incident snapshot."
+				push_error(_failure)
+				return
+			_restart_tick_after = int(_main.session.sim.tick)
+			_director.resume_after_report_restart()
+		if _shot == "crash" and _details_frame < 0 and _main.controller_action("details"):
+			_details_frame = index
 		await process_frame
 		await RenderingServer.frame_post_draw
 		_director.record_presented_frame(index, preroll)
@@ -173,8 +204,12 @@ func _capture_frames(count: int, preroll: int) -> void:
 
 func _write_manifest(ok: bool) -> void:
 	var session: Node = _main.session if _main != null else null
-	var report: Dictionary = _main._accident_incident.report.duplicate(true) if _main != null and _main._accident_incident != null else {}
+	var current_report: Dictionary = _main._accident_incident.report.duplicate(true) if _main != null and _main._accident_incident != null else {}
+	var report: Dictionary = _preserved_report if not _preserved_report.is_empty() else current_report
 	var archive_path := str(_main.accident_archive_path) if _main != null else ""
+	var lead_frames := int(_options.get("writer-lead-frames", 3))
+	var impact_movie_frame := lead_frames + _impact_preroll_frames if _impact_preroll_frames >= 0 else -1
+	var clip_start_frame := maxi(0, impact_movie_frame - CRASH_CLIP_APPROACH_FRAMES) if impact_movie_frame >= 0 else -1
 	var manifest := {
 		format = "openrc-trailer-flight-capture v1",
 		complete = ok and _failure.is_empty(),
@@ -188,7 +223,13 @@ func _write_manifest(ok: bool) -> void:
 		image_sample_every = _sample_every,
 		image_sequence_enabled = _save_images,
 		movie_file = str(_options.get("movie-file", "")),
-		movie_writer_lead_frames_expected = int(_options.get("writer-lead-frames", 3)),
+		movie_writer_lead_frames_expected = lead_frames,
+		movie_impact_frame_estimate = impact_movie_frame,
+		movie_eight_second_clip_start_frame_estimate = clip_start_frame,
+		movie_eight_second_clip_end_frame_estimate_exclusive = impact_movie_frame + CRASH_CLIP_POST_IMPACT_FRAMES if impact_movie_frame >= 0 else -1,
+		movie_clip_approach_available_seconds_estimate = float(impact_movie_frame - clip_start_frame) / float(_fps) if impact_movie_frame >= 0 else 0.0,
+		movie_clip_approach_frames_target = CRASH_CLIP_APPROACH_FRAMES,
+		movie_clip_post_impact_frames_target = CRASH_CLIP_POST_IMPACT_FRAMES,
 		seconds = float(_frame_count) / float(_fps),
 		engine = Engine.get_version_info().string,
 		fixed_fps_argument_required = 60,
@@ -200,8 +241,19 @@ func _write_manifest(ok: bool) -> void:
 		weather_config = session.weather_configuration() if session != null else {},
 		flight_tick_end = int(session.sim.tick) if session != null else -1,
 		flight_time_end_s = float(session.sim.time()) if session != null else 0.0,
-		crash = session.crash.duplicate(true) if session != null and not session.crash.is_empty() else {},
+		crash = _preserved_crash if not _preserved_crash.is_empty() else (session.crash.duplicate(true) if session != null and not session.crash.is_empty() else {}),
+		prop_strike = _preserved_prop_strike if not _preserved_prop_strike.is_empty() else (session.prop_strike.duplicate(true) if session != null else {}),
 		accident_report = report,
+		incident_snapshot_preserved_before_restart = not _preserved_report.is_empty(),
+		native_report_details_expanded_frame = _details_frame,
+		restart = {
+			action = "native_accident_report_restart",
+			accepted = _restart_result,
+			capture_frame = _restart_frame,
+			movie_frame_estimate = _restart_movie_frame,
+			tick_before = _restart_tick_before,
+			tick_immediately_after_reset = _restart_tick_after,
+		},
 		accident_archive_path = archive_path,
 		capture_error = _failure,
 		frame_records = _director.frame_records if _director != null else [],

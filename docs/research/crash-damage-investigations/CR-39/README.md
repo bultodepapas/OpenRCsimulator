@@ -59,4 +59,19 @@ Each step is one small, reviewable change. Pricing/UI steps do not change physic
 | CR-39g | Make failures visible: show a stale or missing dossier as "Cost data out of date for this aircraft", not a generic unavailable. Add a cheap pre-push check that runs `build_runtime.py --check` when `app/data/aircraft/*.json` changes. | Fault-injection tests (stale hash, missing recipes, corrupt archive, failed write) and a hook run log. |
 | CR-39h | Run the plan's determinism matrix end to end: replay one recorded `.orfl` crash tape at 30/60/144 FPS and with effects off. Compare the report minus `incident_id` and time. | Identical lines and amounts across runs; tape, config identities and report retained here. |
 
+### Implementation status — 2026-10-17
+
+| ID | Status | Evidence |
+| --- | --- | --- |
+| CR-39a | **Pending owner approval.** The rebind edits `research/crash-economics/aircraft-costing.json` and regenerates the sidecar. The reviewed diffs since binding are aero/ground only: P-51 `propeller_sidewash` (`0296ac59`); Extra gear description and `breakaway_factor` (`208f0b89`). No inventory changed. | `expected_source_sha256` → Extra `9b174cb2…1c62`, P-51 `a37f7f42…a321` (CRLF checkout bytes, `.gitattributes`). |
+| CR-39b | Pending (AS contract). | — |
+| CR-39c | Done in [`calculator.gd`](../../../../app/economy/calculator.gd) and the [`accident_report.gd`](../../../../app/ui/accident_report.gd) headline (EN/ES). `range_basis = complete_build_replacement_ceiling`. | Terminal Stik crash without a strike: US$0–1,331.34, headline "Up to US$1,331". With a strike: "US$5.39 – US$1,331". [Decision](../../../../DECISIONS.md). |
+| CR-39d | Code done in [`incident.gd`](../../../../app/economy/incident.gd): mapped contacts open a part inspection; unmapped ones keep the generic note; a contact on an already reused part reopens inspection. Data pending: Stik/Extra/P-51 hull maps and the Lumber `propeller_component_id` (generator sources, same approval as CR-39a). | Lumber wingtip → `wing_main` inspection line; fin probe via scenery event → `tail_surfaces`. |
+| CR-39e | Done: per-ledger cache keyed by route + physical identity, recipe book loaded once. | Reset `begin()` 0.09–0.19 ms (first load 12–20 ms). Same workstation. |
+| CR-39f | Done: `ReplacementQuote.quote_calculated()` reuses the revision's calculation; compact archive JSON. Signal copies unchanged. | Recalc 0.11–0.26 ms and flush 1.3–1.8 ms: no measurable gain beyond run-to-run noise. Flush is disk-bound. |
+| CR-39g | Reason done: a stale dossier reports "Cost data is out of date for this aircraft version; no prices were applied." (EN/ES). Pre-push hook not added. | — |
+| CR-39h | Pending. | — |
+
+[`test_economy_cr39.gd`](../../../../app/tests/test_economy_cr39.gd): 24 checks, 0 failed. The calculator test now asserts the ceiling instead of the former breakdown-only rule. The other economy/accident failures are the pre-existing Extra/P-51 stale-dossier checks closed by CR-39a.
+
 Order: CR-39a first (unblocks CI), then c → d (the visible product gain), e → f (optimization), and g/h alongside. CR-39b needs AS agreement. Severity-based damage, structural thresholds and thermal billing stay in CR-33/CR-35. CR-39 adds no joule cut-offs or speed × price rules.
