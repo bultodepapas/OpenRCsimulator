@@ -91,7 +91,7 @@ def sha(path):
     return h.hexdigest()
 
 
-def assemble(manifest_path, ffmpeg, ffprobe, out, work):
+def assemble(manifest_path, ffmpeg, ffprobe, out, work, prepare_only=False):
     spec = json.loads(manifest_path.read_text(encoding="utf-8"))
     def media_path(value):
         path = Path(value)
@@ -110,13 +110,29 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work):
     source_rows = []
     video_clips, audio_clips = [], []
     timeline = 0
+    editor_hash = sha(__file__)
     for index, shot in enumerate(shots):
         name = shot["id"]
         frames = shot["frames"]
         duration = frames / FPS
         target = work / f"{index:02}-{name}.mp4"
+        audio_out = work / f"{index:02}-{name}.wav"
         source = Path(shot["source"]) if name != "end-card" else work / "end-card.png"
         kind = shot.get("kind", "video")
+        if prepare_only and kind != "frames" and not source.exists():
+            print(f"AWAITING_SOURCE {name}", flush=True)
+            timeline += frames
+            continue
+        source_hash = sha(source) if kind != "frames" else "individual frame hashes in capture manifest"
+        fingerprint = hashlib.sha256(json.dumps({"shot":shot,"source":source_hash,"editor":editor_hash},sort_keys=True).encode()).hexdigest()
+        cache = work / f"{index:02}-{name}.cache.json"
+        if cache.exists() and target.exists() and audio_out.exists() and json.loads(cache.read_text())["fingerprint"] == fingerprint:
+            video_clips.append(target)
+            audio_clips.append(audio_out)
+            source_rows.append({**shot, "timeline_start_frame":timeline, "encoded_sha256":sha(target), "source_sha256":source_hash})
+            timeline += frames
+            print(f"EDIT_SHOT_CACHED {name}: {frames} frames", flush=True)
+            continue
         input_args = []
         if kind == "frames":
             input_args = ["-framerate", FPS, "-start_number", shot.get("start_frame", 0), "-i", source]
@@ -158,9 +174,12 @@ def assemble(manifest_path, ffmpeg, ffprobe, out, work):
             run([ffmpeg, "-y", "-hide_banner", "-loglevel", "error", "-f", "lavfi", "-i", "anullsrc=r=48000:cl=stereo", "-t", duration, "-c:a", "pcm_s24le", audio_out])
         audio_clips.append(audio_out)
         source_rows.append({**shot, "timeline_start_frame": timeline, "encoded_sha256": sha(target),
-                            "source_sha256": sha(source) if kind != "frames" else "individual frame hashes in capture manifest"})
+                            "source_sha256": source_hash})
+        cache.write_text(json.dumps({"fingerprint":fingerprint}),encoding="utf-8")
         timeline += frames
         print(f"EDIT_SHOT_OK {name}: {frames} frames", flush=True)
+    if prepare_only:
+        return
     for filename, paths in [("picture-list.txt", video_clips), ("sound-list.txt", audio_clips)]:
         (work / filename).write_text("".join("file '" + x.resolve().as_posix().replace("'", "'\\''") + "'\n" for x in paths), encoding="utf-8")
     picture = work / "picture.mp4"
@@ -212,9 +231,10 @@ if __name__ == "__main__":
     parser.add_argument("--out", type=Path)
     parser.add_argument("--work", type=Path, default=Path("tmp/trailer/edit"))
     parser.add_argument("--graphics-only", action="store_true")
+    parser.add_argument("--prepare-only", action="store_true")
     args = parser.parse_args()
     if args.graphics_only:
         args.work.mkdir(parents=True, exist_ok=True)
         end_card(args.work / "end-card.png")
     else:
-        assemble(args.manifest, args.ffmpeg, args.ffprobe, args.out, args.work)
+        assemble(args.manifest, args.ffmpeg, args.ffprobe, args.out, args.work, args.prepare_only)

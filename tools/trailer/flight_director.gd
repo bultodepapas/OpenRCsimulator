@@ -11,6 +11,7 @@ var fps := 60
 var tick_records: Array[Dictionary] = []
 var frame_records: Array[Dictionary] = []
 var _gear_keys: Array[String] = ["left", "right", "nose", "tail"]
+var _post_report_restart := false
 
 
 func configure(flight_main: Node, shot_name: String, shot_duration_s: float, output_fps: int) -> void:
@@ -24,6 +25,10 @@ func configure(flight_main: Node, shot_name: String, shot_duration_s: float, out
 	main.session.sim.stepped.connect(_on_sim_stepped)
 	main._rig.set_view("chase")
 	main._rig.auto_zoom = false
+
+
+func resume_after_report_restart() -> void:
+	_post_report_restart = true
 
 
 func _physics_process(_delta: float) -> void:
@@ -102,6 +107,9 @@ func _commands_at(t: float) -> Dictionary:
 	var session: Node = main.session
 	var throttle := clampf(float(session.start.get("throttle", 0.65)) + 0.08, 0.0, 1.0)
 	var c := {roll = 0.0, pitch = 0.0, yaw = 0.0, throttle = throttle}
+	if shot == "crash" and _post_report_restart:
+		# Resume the native reset into its trimmed airborne start for the final two source seconds.
+		return c
 	match shot:
 		"stik-bank", "wind", "storm":
 			c.roll = 0.36 if t >= 0.42 and t < 1.55 else (-0.16 if t >= 1.95 and t < 2.45 else 0.0)
@@ -123,9 +131,9 @@ func _commands_at(t: float) -> Dictionary:
 			c.roll = 0.5 if t >= 0.38 and t < 1.35 else -0.24 if t >= 1.65 and t < 2.2 else 0.0
 			c.pitch = -0.12 if t >= 2.45 and t < 2.85 else 0.0
 		"crash":
-			c.throttle = 0.82
-			c.roll = 0.12 if t < 0.55 else 0.0
-			c.pitch = -1.0 if t >= 0.4 else 0.0 # Real pilot input: a sustained push-over, not a fabricated impact.
+			c.throttle = 1.0
+			c.roll = 0.0
+			c.pitch = -1.0 # Real pilot input: a straight sustained push-over for a prop-first low approach.
 		_:
 			c.roll = 0.24 if t >= 0.5 and t < 1.6 else 0.0
 	return c
